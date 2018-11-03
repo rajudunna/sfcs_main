@@ -39,12 +39,14 @@
             for($i=0;$i<sizeof($size_ary);$i++)
             {
                 $sql_tid="select order_tid from $bai_pro3.bai_orders_db where order_del_no='".$schedule."' and order_col_des='".$color[$i]."'";
+                // echo $sql_tid."<br>";
                 $sql_result_tid=mysqli_query($link, $sql_tid) or exit("Sql Error6 $sql_tid".mysqli_error($GLOBALS["___mysqli_ston"]));
                  while($sql_row_tid=mysqli_fetch_array($sql_result_tid))
 					{
 						$order_tid=$sql_row_tid["order_tid"];
                     }  
             $sql23="select title_size_$size_ary[$i] as size_val,title_flag from $bai_pro3.bai_orders_db_confirm where order_tid='$order_tid' and order_style_no='$style' and order_del_no='$schedule' and order_col_des='".$color[$i]."'";
+            // echo $sql23."<br>";
             $sql_result_size=mysqli_query($link, $sql23) or exit("Sql Error6 $sql_tid".mysqli_error($GLOBALS["___mysqli_ston"]));
             while($sql_row_tid=mysqli_fetch_array($sql_result_size))
                {
@@ -55,6 +57,7 @@
                 /* Replace Panels  with qms_tran_type 2*/
                 $insert_qry = "insert into $bai_pro3.bai_qms_db(qms_style,qms_schedule,qms_color,qms_remarks,bundle_no,log_user,log_date,issued_by,qms_size,qms_qty,qms_tran_type,remarks,ref1,doc_no,location_id,input_job_no,operation_id)
                 VALUES('$style','$schedule','$color[$i]','','','','','','$size_ary[$i]','$qty_ary[$i]','2','$remarks_in','','$doc_ary[$i]','','$job_no','')";
+                // echo $insert_qry."<br>";
                $res_qry =mysqli_query($link,$insert_qry) or exit("erro1");
 
                 /* Replace Panels with qms_tran_type 1 */
@@ -81,7 +84,7 @@
                 /* Get data of sewing job for this input_job,size,doc_no */
 
                 $get_job_data = "select * from bai_pro3.pac_stat_log_input_job WHERE input_job_no_random = '$job_no' AND old_size='$size_ary[$i]' AND doc_no='$doc_ary[$i]' "; 
-                
+                // echo $get_job_data."<br>";
                $res_get_job_data =mysqli_query($link,$get_job_data) or exit("erro3");
               
                 while($result1 = mysqli_fetch_array($res_get_job_data))
@@ -96,7 +99,7 @@
                 // echo $status."--".$input_job."--".$destination."--".$pack_mode."--".$o_size."--".$doc_type."--".$type_sewing."-".$barcode_sequence."<br>";die();
                 
                 $insert_packing = "insert into $bai_pro3.pac_stat_log_input_job (doc_no,size_code,carton_act_qty,status,doc_no_ref,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,type_of_sewing,sref_id,pac_seq_no,barcode_sequence)VALUES('$doc_ary[$i]','$size_code','$qty_ary[$i]','$status','','$input_job_no','$job_no','$destination','$pack_mode','$size_ary[$i]','$doc_type','$type_sewing','$sref_id','$pac_seq_no','$barcode_sequence')";
-
+                // echo $insert_packing."<br>";
                 $res_get_job_data =mysqli_query($link,$insert_packing) or exit("erro4");
                 if($res_get_job_data){
                     $bundle_no = mysqli_insert_id($link); 
@@ -126,12 +129,12 @@
                     
                      $opid = $resop['operation_id'];
 
-                    $insert_bundle =" SELECT *  FROM brandix_bts.bundle_creation_data WHERE style='$style' AND SCHEDULE='$schedule' AND color='$color[$i]' AND operation_id = '$opid' AND size_title='$size_ary[$i]'  LIMIT  0,1 ";
+                    $insert_bundle =" SELECT *  FROM brandix_bts.bundle_creation_data WHERE style='$style' AND SCHEDULE='$schedule' AND color='$color[$i]' AND operation_id = '$opid' AND size_id='$size_ary[$i]'  LIMIT  0,1 ";
                     // echo $insert_bundle."<br>";
 
                     $res_bundle_data = mysqli_query($link,$insert_bundle) or exit("erro6");
                     while($res_bundle_data_ary = mysqli_fetch_array($res_bundle_data) ){
-                        $o_size = $res_bundle_data_ary['size_id'];$sfcs_smv = $res_bundle_data_ary['sfcs_smv'];
+                        $o_size = $res_bundle_data_ary['size_title'];$sfcs_smv = $res_bundle_data_ary['sfcs_smv'];
                         $op_code = $res_bundle_data_ary['operation_id'];$operation_sequence = $res_bundle_data_ary['operation_sequence'];$operation_dependency = $res_bundle_data_ary['ops_dependency'];
                         $sewing_order_status = $res_bundle_data_ary['sewing_order_status'];
                         $is_sewing_order= $res_bundle_data_ary['is_sewing_order'];
@@ -139,7 +142,7 @@
                         $input_job = $res_bundle_data_ary['input_job_no'];
 
                         $bundle_insert ="insert into $brandix_bts.bundle_creation_data (date_time,cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,original_qty,send_qty,recevied_qty,missing_qty,rejected_qty,left_over,operation_id,operation_sequence,ops_dependency,docket_number,bundle_status,split_status,sewing_order_status,is_sewing_order,sewing_order,assigned_module,remarks,scanned_date,shift,scanned_user,sync_status,shade,input_job_no,input_job_no_random_ref,mapped_color,barcode_sequence,barcode_number,cancel_qty) 
-                       VALUES(NOW(),'$cut_no','$style','$schedule','$color[$i]','$o_size','$size_ary[$i]','$sfcs_smv','$bundle_no','$qty_ary[$i]','$qty_ary[$i]','0','0','0','0','$op_code','$operation_sequence','$operation_dependency','$doc_ary[$i]','OPEN','','$sewing_order_status','$is_sewing_order','$sewing_order','$module','$remarks','','$shift_ary[$i]','','','','$input_job','$job_no','$color[$i]','$barcode_sequence','$bundle_no','')";
+                       VALUES(NOW(),'$cut_no','$style','$schedule','$color[$i]','$size_ary[$i]','$o_size','$sfcs_smv','$bundle_no','$qty_ary[$i]','$qty_ary[$i]','0','0','0','0','$op_code','$operation_sequence','$operation_dependency','$doc_ary[$i]','OPEN','','$sewing_order_status','$is_sewing_order','$sewing_order','$module','$remarks','','$shift_ary[$i]','','','','$input_job','$job_no','$color[$i]','$barcode_sequence','$bundle_no','')";
                     //   echo $bundle_insert."7<br>";
                      $res_gen_bundles =mysqli_query($link,$bundle_insert) or exit("erro6");
 
@@ -155,8 +158,8 @@
 
                         $qty = (int)$qty_ary[$i];
                         $cps_operation = $previous[$key-1];
-                        $cpslog_update = "UPDATE $bai_pro3.cps_log SET remaining_qty= remaining_qty+$qty WHERE doc_no='$doc_ary[$i]' AND size_title='$size_ary[$i]' AND operation_code='$cps_operation'";
-                       
+                        $cpslog_update = "UPDATE $bai_pro3.cps_log SET remaining_qty= remaining_qty+$qty WHERE doc_no='$doc_ary[$i]' AND size_code='$size_ary[$i]' AND operation_code='$cps_operation'";
+                    //    echo $cpslog_update."<br>";
                         $cps_execute = mysqli_query($link,$cpslog_update) or exit("erro6.1");
                     }
                    
@@ -175,11 +178,11 @@
                 }
                 // $list_codes = explode(',',$list_codes);
 
-                // echo $list_codes."op codes list";
+                echo $list_codes."op codes list";
                 $get_mo_details ="SELECT md.id as mid,md.mo_no as mo_no,md.rejected_quantity as rej_qty,md.status as rstatus,md.op_code as opcode,md.op_desc as opdes,m.size as sizeid FROM $bai_pro3.mo_operation_quantites md 
                 LEFT JOIN $bai_pro3.mo_details m ON m.mo_no = md.mo_no 
                 WHERE  style='$style' AND schedule='$schedule' AND color='$color[$i]' AND m.size='$size_ary[$i]' AND rejected_quantity  >0 and op_code in ($list_codes) GROUP BY op_code ORDER BY md.mo_no DESC" ;
-                //  echo $get_mo_details."10<br>";
+                 echo $get_mo_details."10<br>";
              
                 $res_mo =mysqli_query($link,$get_mo_details) or exit("error8");
                 // var_dump($res_mo);
