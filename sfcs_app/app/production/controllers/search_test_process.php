@@ -679,7 +679,7 @@ if(isset($_POST['search']))
 			{
 				$validate_1="onchange=\"if(check1(this.value,".$qms_qty[$i].")==1010) { this.value=".$qms_qty[$i]."; }\"";
 			}
-			$table.= "<td style 'text-align:center'><div class='row'><div class='col-md-3'><input type=\"text\" class='form-control' name=\"qty[p_$qms_size[$i]][]\" id='qty_$i' value =\"".$qms_qty[$i]."\" size=\"5\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" autocomplete=\"off\" onkeypress=\"return isNum(event)\" $validate_1></div></td></tr>";
+			$table.= "<td style 'text-align:center'><div class='row'><div class='col-md-3'><input type=\"text\" readonly class='form-control' name=\"qty[p_$qms_size[$i]][]\" id='qty_$i' value =\"".$qms_qty[$i]."\" size=\"5\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" autocomplete=\"off\" onkeypress=\"return isNum(event)\" $validate_1></div></td></tr>";
 			$x1 = $x1+1;
 		}
 		$table.="</table><div id=\"button1\">
