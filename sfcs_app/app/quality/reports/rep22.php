@@ -122,6 +122,7 @@ background-position:center middle;
 				//$choice=-1;
 				$sec_db="";
 				$sql="select sec_mods from $bai_pro3.sections_db where sec_id=$section";
+				//echo $sql;
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
@@ -129,7 +130,7 @@ background-position:center middle;
 				}
 			}
 			
-
+             
 			echo "<br/><hr/><br/><div class='table-responsive'><table class='table table-bordered'>";
 			echo "<tr class='tblheading'>
 				<th rowspan=3>Module</th>
@@ -160,38 +161,49 @@ background-position:center middle;
 
 					</tr>";
 
+                    // To get sewing output operation
 					$application='IMS_OUT';
                     $scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
 		            //echo $scanning_query;
 		            $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		            while($sql_row=mysqli_fetch_array($scanning_result))
 		            {
-		                $operation_code=$sql_row['operation_code'];
+		                $sewing_out_op=$sql_row['operation_code'];
 		            } 
-
-
+                   
+                    // To get category sewing
+		            $get_category="SELECT group_concat(operation_code) as op_codes FROM $brandix_bts.`tbl_orders_ops_ref` 
+		                           WHERE category ='sewing'";
+		            $category_result=mysqli_query($link, $get_category)or exit("category_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		            while($sql_row=mysqli_fetch_array($category_result))
+		            {
+		                $sw_category=$sql_row['op_codes'];
+		            } 
+                   
+                   // die();
 					if($choice==0)
 					{
 
-						 $sql="select sum(recevied_qty) as output,assigned_module from brandix_bts.bundle_creation_data_temp where assigned_module in ($sec_db) and operation_id='$operation_code' and date(date_time) between '$sdate' and '$edate' GROUP BY assigned_module" ;
+						 $sql="select operation_id,sum(if(operation_id = 130,recevied_qty,0)) as output,assigned_module from brandix_bts.bundle_creation_data_temp where assigned_module in ($sec_db) and operation_id in ($sw_category) and date(date_time) between '$sdate' and '$edate' GROUP BY assigned_module" ;
 					}
 
 					if($choice==1)
 					{
 
-						$sql="select sum(recevied_qty) as output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color, style from brandix_bts.bundle_creation_data_temp where operation_id='$operation_code' and date(date_time) between '$sdate' and '$edate' group by style order by style";
+						$sql="select operation_id,sum(if(operation_id = 130,recevied_qty,0)) as output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color, style from brandix_bts.bundle_creation_data_temp where operation_id in($sw_category) and date(date_time) between '$sdate' and '$edate' group by style order by style";
 					}
 
 					if($choice==2)
 					{
 
-						$sql="select sum(recevied_qty) as output, assigned_module, shift from brandix_bts.bundle_creation_data_temp where assigned_module in ($sec_db) and operation_id='$operation_code' and date(date_time) between '$sdate' and '$edate' group by assigned_module,shift order by assigned_module,shift";
+						$sql="select operation_id,sum(if(operation_id = 130,recevied_qty,0)) as output, assigned_module, shift from brandix_bts.bundle_creation_data_temp where assigned_module in ($sec_db) and operation_id in ($sw_category) and date(date_time) between '$sdate' and '$edate' group by assigned_module,shift order by assigned_module,shift";
 					}
 
 					if($choice==3)
 					{
 
-						$sql="select sum(recevied_qty) as output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color, style,assigned_module,shift from $brandix_bts.bundle_creation_data_temp where assigned_module in ($sec_db) and operation_id='$operation_code' and date(date_time) between '$sdate' and '$edate' group by style,assigned_module,shift order by assigned_module,shift";
+						$sql="select operation_id,sum(if(operation_id = 130,recevied_qty,0)) as output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color, style,assigned_module,shift from $brandix_bts.bundle_creation_data_temp where assigned_module in ($sec_db) and operation_id in ($sw_category) and date(date_time) between '$sdate' and '$edate' 
+						    group by style,assigned_module,shift order by assigned_module,shift";
 					}
 					$grand_vals=array();
 					//echo $sql;
@@ -201,7 +213,7 @@ background-position:center middle;
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
-					
+					$op = $sql_row['operation_id'];
 					$mod=$sql_row['assigned_module'];
 					$shif=$sql_row['shift'];
 					$schedule=$sql_row['schedule'];
@@ -212,7 +224,14 @@ background-position:center middle;
 					echo "<td>".$sql_row['schedule']."</td>";
 					echo "<td>".$sql_row['color']."</td>";
 					
-					$sw_out=$sql_row['output'];
+					if($op == $sewing_out_op)
+					{
+					    $sw_out=$sql_row['output'];
+					}
+					else
+					{
+						$sw_out = 0;
+					}
 
 					//echo $sw_out;
 					
