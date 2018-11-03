@@ -301,15 +301,7 @@ function verify_date()
 				exit();
 			}
 
-			 // To get sewing output operation
-			$application='IMS_OUT';
-            $scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
-            //echo $scanning_query;
-            $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-            while($sql_row=mysqli_fetch_array($scanning_result))
-            {
-                $sewing_out_op=$sql_row['operation_code'];
-            } 
+			
 
 			if($choice==1)
 			{
@@ -334,14 +326,9 @@ function verify_date()
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
 				$op = $sql_row1['operation_id'];
-			    if($op == $sewing_out_op)
-			    {
+			   
 				 $sw_out=$sql_row1['qty'];
-				}
-				else
-				{
-                  $sw_out = 0;
-				}	
+				
 				$sch_db=$sql_row1['schedule'];
 				$size=$sql_row1['size_title'];
 				$size1=$sql_row1['size_id'];
