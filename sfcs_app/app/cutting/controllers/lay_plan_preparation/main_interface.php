@@ -742,7 +742,7 @@ if ($sql_result) {
 					<th class=\" \"><center>Category</th>
 					<th class=\" \"><center>CAT YY</th>
 					<th class=\"word-wrap \"><center>Color Code</th>
-					<th class=\" \"><center>Fabric Code</th>
+					<th class=\"word-wrap\"><center>Fabric Code</th>
 					<th class=\"word-wrap\"><center>Fabric Description</th>
 					<th class=\"word-wrap\"><center>Pur Width</th>
 					<th class=\"word-wrap\"><center>Binding Consumption</th>
@@ -1152,7 +1152,7 @@ echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">
 			<th class=\"column-title\"><center>Category</center></th><th class=\"column-title\"><center>Cuttable</center></th>
 			<th class=\"column-title\"><center>Allocated</center></center></th><th class=\"column-title\"><center>Excess /Shortage </center></th>
 			
-			<th class=\"column-title\"><center>Controls</center></th><th>Action</th></tr></thead>";
+			<th class=\"column-title\"><center>Controls</center></th><th><center>Action</center></th></tr></thead>";
 foreach($cats_ids as $key=>$value)
 {
 $sql="select * from $bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\" and cat_id=$value order by tid";
@@ -1238,14 +1238,19 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$cat_id_new=$sql_row['cat_id'];
 	
 	$sql2="select * from $bai_pro3.cat_stat_log where tid=$cat_id order by catyy DESC";
-	//echo $sql2;
+	// echo $sql2;
 	// mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// $sql_num_check3=mysqli_num_rows($sql_result2);
+
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
 		$category_new=$sql_row2['category'];
 	}
-	
+
+	$sql6="select * from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" order by catyy DESC";	
+	$sql_result6=mysqli_query($link, $sql6) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check3=mysqli_num_rows($sql_result6);
 	echo "<td class=\"  \"><center>".$category_new."</center></td>";
 	echo "<td class=\"  \"><center>".$cuttable_sum."</center></td>";
 	echo "<td class=\"  \"><center>".$total_allocated."</center></td>";
@@ -1278,7 +1283,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<td class=\"b1\"><a href=\"dumindu/order_allocation_form2.php?tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id\"  onclick='".'alert("Cuttable Quantity Fullfilled")'."'>Update</a></td>";
 	} */
 	echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty\">Add Ratios</a></center></td>";
-	echo "<td class=\"  \"><center><a class='btn btn-info btn-xs'  href=\"".getFullURL($_GET['r'], "save_categories.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty\">Copy to Other</a></center></td>";
+	if($sql_num_check3>1) {
+		echo "<td class=\"  \"><center><a class='btn btn-info btn-xs'  href=\"".getFullURL($_GET['r'], "save_categories.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty\">Copy to Other</a></center></td>";
+	}
+	else {
+		echo "<td class=\"  \"><center><a class='btn btn-info btn-xs' disabled>Copy to Other</a></center></td>";
+	}
 	echo "</tr>";
 }
 }
