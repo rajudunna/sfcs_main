@@ -1,10 +1,19 @@
 <head>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
+
 <?php
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 	$has_permission=haspermission($_GET['r']);
+
+	if(in_array($authorized,$has_permission)) { 
+		$value = 'authorized';
+	} else {
+		$value = 'not_authorized';
+	}
+	echo '<input type="hidden" name="user_permission" id="user_permission" value="'.$value.'">';
+
 	if ($_GET['operation_id'])
 	{
 		$input_job_no_random_ref=$_GET['input_job_no_random_ref'];
@@ -274,9 +283,16 @@ $(document).ready(function()
 			{
 				if(respose == 1)
 				{
-					var module_flag = 1;
+					var authorize_check = $('#user_permission').val();
+					if (authorize_check == 'authorized')
+					{
+						var module_flag = 0;
+					}
+					else
+					{
+						var module_flag = 1;
+					}
 				}
-
 			}
 		});
 		if(module_flag == 0)
@@ -433,7 +449,7 @@ $(document).ready(function()
 										var hidden_class='hidden';
 									}
 								}
-							//	console.log(hidden_class);
+								// console.log(hidden_class);
 							
 
 								// var markup1 = "<tr><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td>0</td><td><input class='form-control input-md' id='"+i+"reporting' name='reporting_qty[]' onchange = 'validate_reporting("+i+") '></td><td><input class='form-control input-md' id='"+i+"rejections' name='rejection_qty[]' onchange = 'rejections_capture("+i+")'></td><td id='"+i+"balance'>"+data[i].balance_to_report+"</td><td class='hide'><input type='hidden' name='qty_data["+data[i].tid+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+data[i].tid+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td><td class='hide'><input type='hidden' name='doc_no[]' id='"+i+"doc_no' value='"+data[i].doc_no+"'></td><td class='hide'><input type='hidden' name='colors[]' id='"+i+"colors' value='"+data[i].order_col_des+"'></td><td class='hide'><input type='hidden' name='sizes[]' id='"+i+"sizes' value='"+data[i].size_code+"'></td><td class='hide'><input type='hidden' name='job_qty[]' id='"+i+"job_qty' value='"+data[i].carton_act_qty+"'></td><td class='hide'><input type='hidden' name='tid[]' id='"+i+"tid' value='"+data[i].tid+"'></td><input type='hidden' name='inp_job_ref[]' id='"+i+"inp_job_no' value='"+data[i].input_job_no+"'></td><input type='hidden' name='a_cut_no[]' id='"+i+"a_cut_no' value='"+data[i].acutno+"'></td></tr>";
@@ -467,7 +483,6 @@ $(document).ready(function()
 										$('#flag_validation').val(0);
 										validating_remarks_qty(val,remarks);
 									}
-								
 								}
 							}
 							var markup99 = "</tbody></table></div></div></div>";
@@ -478,15 +493,17 @@ $(document).ready(function()
 						$('#loading-image').hide();
 					}			    
 				});
+		}
+		else
+		{
+			sweetAlert('You are Not Autorized to report more than Block Priorities','','error');
+		}
 				
 			<?php if ($_POST['operation_name']) {?>
 			});
-		}
+			<?php }?>
+		
 		//alert(current)
-		
-	<?php }?>
-		
-	
 });
 function rejections_capture(val)
 {
@@ -552,31 +569,30 @@ $("#reason").change(function(){
 	}
 	
 });
+
 function validating_cumulative(e,t)
 {
-		var result = 0;
-		$('input[name="quantity[]"]').each(function(){
-			if(isNaN($(this).val()))
-			{
-				$(this).val('');
-			}
-			else
-			{
-				result += Number($(this).val());
-			}
-		});
-		var  tot = $('#changed_rej').val();
-		if(Number(tot) == Number(result))
+	var result = 0;
+	$('input[name="quantity[]"]').each(function(){
+		if(isNaN($(this).val()))
 		{
-			$('#footer').show();
+			$(this).val('');
 		}
 		else
 		{
-			// sweetAlert('','Please Check Rejection Quantity','error');
-			$('#footer').hide();
+			result += Number($(this).val());
 		}
-		
-	
+	});
+	var  tot = $('#changed_rej').val();
+	if(Number(tot) == Number(result))
+	{
+		$('#footer').show();
+	}
+	else
+	{
+		// sweetAlert('','Please Check Rejection Quantity','error');
+		$('#footer').hide();
+	}
 }
 
 function validating_remarks_qty(val,remarks)
@@ -684,7 +700,7 @@ function validate_reporting_report(val)
 //{
 			// var remarks_var = val+"sampling";
 			// var bundle_number_var = val+"tid";
-			// var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
+			// var function_text = "<?php //echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
 			//var remarks_var = '#'+"";
 			// var bundle_number = document.getElementById(bundle_number_var).value;
 			// console.log(bundle_number);
@@ -857,7 +873,7 @@ function validating()
 
 </script>
 <style>
-.hidden_class,hidden_class_for_remarks{
+.hidden_class,.hidden_class_for_remarks{
 	display:none;
 }
 
