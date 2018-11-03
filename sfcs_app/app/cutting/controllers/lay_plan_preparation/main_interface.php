@@ -1283,7 +1283,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<td class=\"b1\"><a href=\"dumindu/order_allocation_form2.php?tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id\"  onclick='".'alert("Cuttable Quantity Fullfilled")'."'>Update</a></td>";
 	} */
 	echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty\">Add Ratios</a></center></td>";
-	if($sql_num_check3>1) {
+	$sql15="select * from bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\"";
+	$sql_result25=mysqli_query($link, $sql15) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$cut_count = mysqli_num_rows($sql_result25);
+	if($cut_count>1) {
 		echo "<td class=\"  \"><center><a class='btn btn-info btn-xs'  href=\"".getFullURL($_GET['r'], "save_categories.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty\">Copy to Other</a></center></td>";
 	}
 	else {
