@@ -767,7 +767,7 @@ if ($sql_result) {
 			echo "<td class=\"  \"><center>".$sql_row['category']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['catyy']."</center></td>";
 			echo "<td class=\"word-wrap\"><center>".$sql_row['col_des']."</center></td>";
-			echo "<td class=\"  \"><center>".$sql_row['compo_no']."</center></td>";
+			echo "<td class=\"word-wrap\"><center>".$sql_row['compo_no']."</center></td>";
 			echo "<td class=\"word-wrap\"><center>".$sql_row['fab_des']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['purwidth']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['binding_con']."</center></td>";
