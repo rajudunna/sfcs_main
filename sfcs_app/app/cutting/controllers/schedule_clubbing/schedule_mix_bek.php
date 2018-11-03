@@ -452,7 +452,7 @@ if(isset($_POST['fix']))
     $orginal_size_array1=array(); 
     $schedule_array=array(); 
 	$schedule_array=explode(",",implode(",",$selected));
-	$sql62="select * from $bai_pro3.orders_club_schedule where order_col_des=\"$color\" and order_del_no in (".implode(",",$selected).") limit 1";
+	$sql62="select * from $bai_pro3.orders_club_schedule where order_del_no=\"$schedule\" and order_col_des in (".implode(",",$selected).") limit 1";
 	$result62=mysqli_query($link, $sql62) or die("Error3 = ".$sql62.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row62=mysqli_fetch_array($result62))
 	{				
