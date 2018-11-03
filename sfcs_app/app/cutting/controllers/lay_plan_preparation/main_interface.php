@@ -1399,6 +1399,13 @@ else
 	<th class=\"column-title\"><center>Ratio Total</center></th><th class=\"column-title\"><center>Controls</center></th><th class=\"column-title\"><center>Current Status</center></th><th class=\"column-title\"><center>Remarks</center></th></tr></thead>";
 }
 $used_fabric =0;
+foreach($cats_ids as $key=>$value)
+{
+	$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$value order by tid";
+	//echo $sql;
+	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$mk_status=$sql_row['mk_status'];
@@ -1502,6 +1509,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$used_fabric+=$sql_row2['mklength'] * $sql_row['plies'];	
 	}
 
+}
 }
 echo "<tr><td colspan=3> Total Planned Quantity</center><td>";
 for($s=0;$s<sizeof($s_tit);$s++)
@@ -1663,8 +1671,9 @@ else{
 echo "<div><table class=\"table table-bordered\">";
 //<th class=\"column-title \"><center>Ratio</center></th>
 echo "<thead><tr><th class=\"column-title \"><center>Category</center></th><th class=\"column-title \"><center>Total Cut</center></th><th class=\"column-title \"><center>Ratio Ref</center></th><th class=\"column-title \"><center>MO Status</center></th><th class=\"column-title \"><center>Control</center></th><th class=\"column-title \"><center>Ratio wise Savings%</center></th><th class=\"column-title \"><center>Proceed</center></th><th class=\"column-title \"><center>Remarks</center></th></tr></thead>";
-
-$sql="select * from $bai_pro3.maker_stat_log where order_tid=\"$tran_order_tid\" and allocate_ref > 0 order by allocate_ref";
+foreach($cats_ids as $key=>$value)
+{
+$sql="select * from $bai_pro3.maker_stat_log where order_tid=\"$tran_order_tid\" and allocate_ref > 0 and cat_ref=$value order by allocate_ref";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -1755,7 +1764,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td class=\"  \"><center>".$remarks."</center></td>";
 	echo "</tr>";
 }
-echo "</table></div>				</div>
+}
+echo "</table></div></div>
 </div>
 </div>
 </div>";
@@ -1815,11 +1825,13 @@ else{
 	}
 	//echo "<th class=\"column-title\"><center>Docket Print</center></th>";
 	echo "</tr></thead>";
-
-	$sql="select * from $bai_pro3.cat_stat_log where order_tid='".$tran_order_tid."' order by lastup";
+foreach($cats_ids as $key=>$value)
+{
+	$sql="select * from $bai_pro3.cat_stat_log where order_tid='".$tran_order_tid."' and tid=$value order by lastup";
 	//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
+
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$cat_tid_new=$sql_row['tid'];
@@ -1983,6 +1995,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 //	echo "View Cut Plan <a href=\"new_doc_gen/Book2.php?order_tid=$tran_order_tid&cat_ref=$cat_tid\">Download</a>";
 //	echo "View DOCS <a href=\"dumindu/doc_view_form.php?order_tid=$tran_order_tid&cat_ref=$cat_tid\">Download</a><br/>";
 
+}
 }
 	echo "</table></div></div>
 	</div>
