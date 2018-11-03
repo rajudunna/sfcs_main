@@ -2,7 +2,7 @@ DROP VIEW `bai_pro3`.`cut_tbl_dash_doc_summ`;
 
 DELIMITER $$
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `bai_pro3`.`cut_tbl_dash_doc_summ` AS (
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `bai_pro3`.`cut_tbl_dash_doc_summ` AS (
 SELECT
   `cut_tbl_dash_summ`.`print_status`         AS `print_status`,
   `cut_tbl_dash_summ`.`plan_lot_ref`         AS `plan_lot_ref`,
@@ -105,7 +105,7 @@ DROP VIEW `bai_pro3`.`cut_tbl_dash_summ`;
 
 DELIMITER $$
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `bai_pro3`.`cut_tbl_dash_summ` AS (
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `bai_pro3`.`cut_tbl_dash_summ` AS (
 SELECT
   `bai_pro3`.`cutting_table_plan`.`doc_no`                 AS `doc_no`,
   `bai_pro3`.`cutting_table_plan`.`cutting_tbl_id`         AS `cutting_tbl_id`,
