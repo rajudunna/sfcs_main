@@ -1178,7 +1178,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
 
     $fab_pop_details = getFullURLLevel($_GET['r'],'cps/fab_pop_details.php',1,'R');
-	  $fab_pop_details1 = getFullURLLevel($_GET['r'],'cps/fab_pop_alert.php',1,'R');
+    $fab_pop_details1 = getFullURLLevel($_GET['r'],'cps/fab_pop_alert.php',1,'R');
   if($check_num_rows>0 && $ord_style==$sel_sty)
   {
 
@@ -1243,10 +1243,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           // edited by ram kumar
           // echo "fabric req :".$fabric_required."</br>";
           // echo "total req :".$total_req_qty."</br>";
-		   
-		  /*For testing logic changed*/ 
+       
+      /*For testing logic changed*/ 
           if($fabric_required<=$total_req_qty){
-			  // if($fabric_required>$total_req_qty){
+        // if($fabric_required>$total_req_qty){
               //$id='blue';
               //echo "<blink>blue2 : ".$req_date_time[array_search($doc_no,$doc_no_ref)]."-".date("Y-m-d H:i:s")."</blink></br>";
               //allowed
@@ -1262,7 +1262,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           }else{
               $id='orange';
               //Not Allowed
-            if($username=='sfcsproject1'){
+            if(in_array($authorized,$has_permission)){
 
               //echo "orange : ".$req_date_time[array_search($doc_no,$doc_no_ref)]."-".date("Y-m-d H:i:s")."</br>";
               if($req_date_time[array_search($doc_no,$doc_no_ref)]<date("Y-m-d H:i:s"))
