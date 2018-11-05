@@ -38,6 +38,13 @@ $sfsp_serverName=$conf->get('sf_sp_servername');
 $sfsp_m3_databasename=$conf->get('sf_sp_dbname');
 $sfsp_uid=$conf->get('sf_sp_username');
 $sfsp_pwd=$conf->get('sf_sp_pwd');
+//HRMS DATABASE CONNECTIONS
+$hrms_server_name=$conf->get('hrms-server-name');
+$hrms_server_port=$conf->get('hrms-port');
+$hrms_host=$hrms_server_name.":".$hrms_server_port;
+$hrms_user=$conf->get('hrms-user-name');
+$hrms_pass = $conf->get('hrms-password');
+$link_hrms= ($GLOBALS["___mysqli_ston"] = mysqli_connect($hrms_host, $hrms_user, $hrms_pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 // Production Status Connections
 $prod_status_server_name=$conf->get('prod-status-server-name');
