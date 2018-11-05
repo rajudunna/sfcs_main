@@ -16,16 +16,18 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
 {
 
     $mo_num=$sql_row['mo_num'];
-    $FG_code=$sql_row['product_sku'];
+    $FG_code=rawurlencode($sql_row['product_sku']);
 
     //getting all work center id in sfcs
     $qry_getworkcenters="SELECT * FROM brandix_bts.tbl_orders_ops_ref";
     $result_qry_getworkcenters=mysqli_query($link, $qry_getworkcenters) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     $result_allcenters=mysqli_fetch_all($result_qry_getworkcenters,MYSQLI_ASSOC);
     $workcenters_array=array_column($result_allcenters,'parent_work_center_id');
+    var_dump($workcenters_array);
     
     $url=$api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelOperations?CONO=".$company_no."&FACI=".$facility_code."&MFNO=".$mo_num."&PRNO=".$FG_code;
-    $url = str_replace(' ', '%20', $url);
+    //$url = str_replace(' ', '%20', $url);
+    echo "</br>".$url."</br>";
 
     $result = $obj->getCurlAuthRequest($url);
     $decoded = json_decode($result,true);
@@ -58,6 +60,7 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
         //validating m3 workcenter with sfcs
         if (!in_array($WorkCenterId_parent,$workcenters_array)) {
             $workcenter_status_valid=false;
+            echo "</br>M3 API validation failed</br>";
             break;
         }
 
@@ -85,7 +88,8 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
     }
 
     if($workcenter_status_valid){
-       //var_dump($values);
+       echo "</br>".$sql1."</br>";
+       var_dump($values);
         //insertion query for schedule_oprations_master table
        $sql_result1=mysqli_query($link, $sql1 . implode(', ', $values)) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
        if($sql_result1){
