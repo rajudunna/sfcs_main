@@ -701,7 +701,7 @@ if($enable_allocate_button==1)
 echo "</form>";
 //NEW Implementation for Docket generation from RMS
 
-$sql1="SELECT fabric_status from $bai_pro3.plan_dashboard where doc_no=$doc_no";
+$sql1="SELECT fabric_status from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
 //mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result1);
