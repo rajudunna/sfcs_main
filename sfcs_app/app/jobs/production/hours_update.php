@@ -13,7 +13,7 @@ while($row_shift=mysqli_fetch_array($result_shift))
 {
 	 $shift_ex=$row_shift["remarks"];
 }
-
+// var_dump( $shift_ex);
 if($count1==0){
 
 }
@@ -34,27 +34,29 @@ else
         $shift_start_time=$time_name[0];
         $shift_end_time=$time_namex[0];
 
-            $sql="select * from $bai_pro.pro_atten_hours where date='$date' and shift='$shift'";
-            // echo $sql."<br>";
-            $sql_res=mysqli_query($link, $sql) or exit("Sql Error88 $sql11".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $count=mysqli_num_rows($sql_res);
-            if($count == 0)
-            {
-                $sql1="insert ignore INTO $bai_pro.pro_atten_hours (date,shift,start_time,end_time) VALUES ('".$date."','".$shift."','".$shift_start_time."','".$shift_end_time."')";
-            // echo $sql1."<br>";
+        $sql="select * from $bai_pro.pro_atten_hours where date='$date' and shift='$shift'";
+        // echo $sql."<br>";
+        $sql_res=mysqli_query($link, $sql) or exit("Sql Error88 $sql11".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $count=mysqli_num_rows($sql_res);
+        if($count == 0)
+        {
+            $sql1="insert ignore INTO $bai_pro.pro_atten_hours (date,shift,start_time,end_time) VALUES ('".$date."','".$shift."','".$shift_start_time."','".$shift_end_time."')";
+        // echo $sql1."<br>";
 
-                mysqli_query($link, $sql1) or exit("Sql Error88 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-            }
-            else
-            {
-                $sql2="update $bai_pro.pro_atten_hours set start_time='".$shift_start_time."',end_time='".$shift_end_time."' where date='".$date."' and shift='".$shift."' ";
-            // echo $sql2."<br>";
+            mysqli_query($link, $sql1) or exit("Sql Error88 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+        }
+        else
+        {
+            $sql2="update $bai_pro.pro_atten_hours set start_time='".$shift_start_time."',end_time='".$shift_end_time."' where date='".$date."' and shift='".$shift."' ";
+        // echo $sql2."<br>";
 
-                mysqli_query($link, $sql2) or exit("Sql Error88 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-            }
+            mysqli_query($link, $sql2) or exit("Sql Error88 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+        }
     }
 }
-
+$end_timestamp = microtime(true);
+$duration = $end_timestamp - $start_timestamp;
+print("Execution took ".$duration." milliseconds.")."\n";
 
 ?>
 

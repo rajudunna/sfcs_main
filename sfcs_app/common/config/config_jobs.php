@@ -28,9 +28,11 @@ $m3_databasename=$conf->get('m3database');
 $driver_name=$conf->get('driver_name');
 
 //HRMS DATABASE CONNECTIONS
-$hrms_host="192.168.0.110:3308";
-$hrms_user="baiall";
-$hrms_pass="baiall";
+$hrms_server_name=$conf->get('hrms-server-name');
+$hrms_server_port=$conf->get('hrms-port');
+$hrms_host=$hrms_server_name.":".$hrms_server_port;
+$hrms_user=$conf->get('hrms-user-name');
+$hrms_pass = $conf->get('hrms-password');
 $link_hrms= ($GLOBALS["___mysqli_ston"] = mysqli_connect($hrms_host, $hrms_user, $hrms_pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 // Production Status Connections
