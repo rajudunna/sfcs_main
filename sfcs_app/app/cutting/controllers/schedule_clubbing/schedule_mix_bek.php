@@ -396,9 +396,9 @@ if(isset($_POST['submit']))
                         }             
                     } 
                     echo "</tr>"; 
-					$order_joinss=substr($sql_row452["order_col_des"],-1);
+					$order_joinss="J".substr($sql_row452["order_col_des"],-1);
                     echo "<tr><td>".$sql_row452["order_style_no"]."</td><td>".$sql_row452["order_del_no"]."</td><td>".$sql_row452["order_col_des"]."</td>"; 
-                    $sql453="select order_col_des as org_col  from $bai_pro3.bai_orders_db_confirm where order_joins='".$order_joinss."' and order_del_no=\"".$schedule."\""; 
+                    $sql453="select order_col_des as org_col from $bai_pro3.bai_orders_db_confirm where order_joins='".$order_joinss."' and order_del_no=\"".$schedule."\""; 
 					//echo $sql453."<br>";
 					$old_colors = array();
                     $sql_result453=mysqli_query($link, $sql453) or die("Error6.7".$sql452.mysqli_error($GLOBALS["___mysqli_ston"])); 
