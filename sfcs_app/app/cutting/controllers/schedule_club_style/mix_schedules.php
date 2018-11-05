@@ -44,16 +44,11 @@
 
 <?php
 	$style=$_GET['style'];
-	$schedule=$_GET['schedule']; 
 	$color=$_GET['color'];
-	$po=$_GET['po'];
-
 	if(isset($_POST['submit']))
 	{
 		$style=$_POST['style'];
-		$schedule=$_POST['schedule']; 
 		$color=$_POST['color'];
-		$po=$_POST['po'];
 	}
 
 //echo $style.$schedule.$color;
@@ -90,7 +85,7 @@
 <?php
 	echo "<div class='col-sm-3'>";
 	echo "<label for='color'>Select Color</label>
-	<select  class='form-control' name='color' onchange='thirdbox();' required>";
+	<select  class='form-control' name='color' required>";
 
 	$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error 2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -123,13 +118,15 @@ echo "</div>";
 
 
 <?php
-if(isset($_POST['submit']))
+if(isset($_POST['submit']) || $_GET['color']<>'')
 {
 	$style=$_POST['style'];
 	$color=$_POST['color'];
-	
-	$exfact=$_POST['schedule'];
-	$style_input=$_POST['style'];
+	if($_GET['color']<>'')
+	{
+		$style=$_GET['style']; 
+		$color=$_GET['color']; 
+	}
 	$size_array=array();
 	$orginal_size_array=array();
 	for($q=0;$q<sizeof($sizes_array);$q++)
@@ -233,7 +230,7 @@ if(isset($_POST['submit']))
 				}
 				else
 				{
-					echo "<td>Already Planned-".substr($order_joins,1)."</td>";
+					echo "<td>Lay Plan Prepared</td>";
 				}
 				
 			}
@@ -343,7 +340,7 @@ if(isset($_POST['submit']))
 		}		
 		echo '</form>';
 		}else{
-			echo "<script>swal('Warning!','This style doesnt have more than 1 schedule so it cannot be clubbed','warning')</script>";
+			echo "<script>swal('Warning!','This style doesn't have more than 1 schedule so it cannot be clubbed','warning')</script>";
 			exit();
 		}
 	}
@@ -522,8 +519,8 @@ if(isset($_POST['fix']))
 			}
 			$sql451="insert ignore into $bai_pro3.bai_orders_db_club_confirm select * from $bai_pro3.bai_orders_db_confirm where order_del_no in (".implode(",",$schedule_array).") and order_col_des=\"".$color."\"";
 			$sql451=mysqli_query($link, $sql451) or die("Error".$sql451.mysqli_error($GLOBALS["___mysqli_ston"]));
-					
 			
+					
 			echo "<h2>New Style: $style</h2>";
 			echo "<h2>New Schedule: $new_sch</h2>";
 			echo "<h2>New Color: $color</h2>";
@@ -560,17 +557,22 @@ if(isset($_POST['fix']))
 					echo "</table>";
 					echo "<br>";
 				}
+				echo "<script>swal('Clubbing Completed Successfully.','','success');</script>";
+				echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");				
 			}
+			
 			
 		}																								
 		else
 		{
 			echo "<script>swal('Please upload order status for selected schedules.','','warning');</script>";
+			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");
 		}
 	}
 	else
 	{
 		echo "<script>swal('Please select more than one schedule for clubbing.','','warning');";
+		echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");
 	}
 	
 }
