@@ -1760,7 +1760,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		//echo $sql_row2['count']."===".$mo_status."--".$cutcount."--".$totalplies."<br>";
 		if($sql_row2['count']==0 && $mo_status=="Y" && $cutcount>0 && $totalplies>0)
 		{
-			echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-primary\" href=\"".getFullURL($_GET['r'], "doc_gen_form.php", "N")."&tran_order_tid=$tran_order_tid&mkref=$mkref&allocate_ref=$allocate_ref&cat_ref=$cat_ref\" onclick='clickAndDisable(this);'>Generate</a></center></td>";
+			echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-primary\" href=\"".getFullURL($_GET['r'], "doc_gen_form.php", "N")."&tran_order_tid=$tran_order_tid&mkref=$mkref&allocate_ref=$allocate_ref&cat_ref=$cat_ref&color=$color&schedule=$schedule\" onclick='clickAndDisable(this);'>Generate</a></center></td>";
 		}
 		else
 		{
