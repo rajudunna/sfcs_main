@@ -80,37 +80,19 @@ else
 </form>	
 
 <?php
-// $start_timestamp = microtime(true);
-//include($include_path.'\sfcs_app\common\config\config_jobs.php');
 $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
-// $url1 = getFullURLLevel($_GET['r'],'common/config/config_jobs.php',3,'R');
 include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-// include($_SERVER['DOCUMENT_ROOT'].'/'.$url1);  
 if(isset($_POST['download'])) 
 {	
-	// echo "Cluster : ".$cluster_code;
-	// echo "comp_no : ".$comp_no;
-	// echo "central_wh_code : ".$central_wh_code;
-	// echo "plant_wh_code : ".$plant_wh_code;
-	// exit;
 	set_time_limit(6000000);
-	// echo "con string : ".$conn_string;
-	// echo "User : ".$user_ms;
-	// echo "password : ".$password_ms;
-	// exit;
-	// $password_ms="lan@col3";
-	// $m3_db="BAISFCS";
-	// $host_ms="10.227.38.36";
-	// $conn_string = "DRIVER={iSeries Access ODBC Driver};System=".$host_ms.";Uid=".$user_ms.";Pwd=".$password_ms.";";
-	
 	$conn = odbc_connect($conn_string,$user_ms,$password_ms);
 	$dateval=$_POST['dateval'];
 	$date_val=str_replace('-','',$dateval);
 	$mode=$_POST['mode'];
 	if($conn)
 	{
-		$query_text = "CALL  $m3_db.RPT_APL_SFCS_M3_INTEGRATION('BEL',200,'BAL','E57',$date_val,$date_val,0,'%','%','$mode')";
-		//$query_text = "CALL  BAISFCS.RPT_APL_SFCS_M3_INTEGRATION('".$cluster_code."','".$comp_no."','".$central_wh_code."','".$plant_wh_code."','".$date_val."','".$date_val."',0,'%','%','$mode')";
+		// $query_text = "CALL BAISFCS..RPT_APL_SFCS_M3_INTEGRATION('BEL',200,'BAL','E57',$date_val,$date_val,0,'%','%','$mode')";
+		$query_text = "CALL $m3_db.RPT_APL_SFCS_M3_INTEGRATION('".$cluster_code."','".$comp_no."','".$central_wh_code."','".$plant_wh_code."','".$date_val."','".$date_val."',0,'%','%','$mode')";
 		$result = odbc_exec($conn, $query_text);
 		//print_r(odbc_result_all($result));
 		$i =0;
