@@ -23,6 +23,7 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
     $result_qry_getworkcenters=mysqli_query($link, $qry_getworkcenters) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     $result_allcenters=mysqli_fetch_all($result_qry_getworkcenters,MYSQLI_ASSOC);
     $workcenters_array=array_column($result_allcenters,'parent_work_center_id');
+    var_dump($workcenters_array);
     
     $url=$api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelOperations?CONO=".$company_no."&FACI=".$facility_code."&MFNO=".$mo_num."&PRNO=".$FG_code;
     //$url = str_replace(' ', '%20', $url);
@@ -59,6 +60,7 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
         //validating m3 workcenter with sfcs
         if (!in_array($WorkCenterId_parent,$workcenters_array)) {
             $workcenter_status_valid=false;
+            echo "</br>M3 API validation failed</br>";
             break;
         }
 
