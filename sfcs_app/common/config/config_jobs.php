@@ -27,6 +27,11 @@ $pwd = $conf->get('mssql-password');
 $m3_databasename=$conf->get('m3database');
 $driver_name=$conf->get('driver_name');
 
+//HRMS DATABASE CONNECTIONS
+$hrms_host="192.168.0.110:3308";
+$hrms_user="baiall";
+$hrms_pass="baiall";
+$link_hrms= ($GLOBALS["___mysqli_ston"] = mysqli_connect($hrms_host, $hrms_user, $hrms_pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 // Production Status Connections
 $prod_status_server_name=$conf->get('prod-status-server-name');
