@@ -27,7 +27,6 @@ $pwd = $conf->get('mssql-password');
 $m3_databasename=$conf->get('m3database');
 $driver_name=$conf->get('driver_name');
 
-
 $host_ms = $conf->get('m3_system_id');
 $user_ms = $conf->get('m3_user_name');
 $password_ms = $conf->get('m3_password');
