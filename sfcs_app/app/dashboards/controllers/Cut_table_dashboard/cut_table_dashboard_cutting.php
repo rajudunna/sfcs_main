@@ -278,7 +278,7 @@ height: 25px;
   background-color: #ff0000;
 }
 
-.green {
+.lgreen {
   max-width:130px; min-width:20px;
   height:20px;
   background-color: #00ff00;
@@ -293,7 +293,7 @@ height: 25px;
 
 }
 
-.green a {
+.lgreen a {
   display:block;
    color: black;
   float: left;
@@ -302,13 +302,13 @@ height: 25px;
   text-decoration:none;
 }
 
-.green a:hover {
+.lgreen a:hover {
   text-decoration:none;
    color: black;
   background-color: #00ff00;
 }
 
-.lgreen {
+.green {
   max-width:130px; min-width:20px;
    color: white;
   height:20px;
@@ -323,7 +323,7 @@ height: 25px;
  
  }
 
-.lgreen a {
+.green a {
   display:block;
    color: white;
   float: left;
@@ -333,7 +333,7 @@ height: 25px;
  
 }
 
-.lgreen a:hover {
+.green a:hover {
   text-decoration:none;
    color: white;
   background-color: #339900;
@@ -1175,12 +1175,12 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       if($rep_status!=''){
        if(in_array($authorized,$has_permission) and ($final_cols=="yellow" || $final_cols=="orange")){
             echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='".$get_cut_qty."&doc_no=$doc_no' onclick='Popup=window.open('get_cut_qty.php?doc_no=$doc_no','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
-        }else if($final_cols=="yash"){
+        }else if($final_cols=="yash" || $final_cols=="red" || $final_cols=="lgreen"){
           echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='#'
              onclick=\"window.open('$href','yourWindowName','width=800,height=600')\"
             >$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
         }else{
-          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title'>".$req_time[array_search($doc_no,$doc_no_ref)]."</div></div><br/>";
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:white' title='$title'>".$req_time[array_search($doc_no,$doc_no_ref)]."</div></div><br/>";
         }
       }
     }
