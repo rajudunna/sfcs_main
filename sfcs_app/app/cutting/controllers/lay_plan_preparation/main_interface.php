@@ -730,7 +730,7 @@ if ($sql_result) {
 				echo "<table class=\"table table-bordered\"><thead><tr class=\"\">
 					<th class=\" \"><center>Date</th>
 					<th class=\" \"><center>Category</th>
-					<th class=\" \"><center>CAT YY</th>
+					<th class=\"word-wrap\"><center>CAT YY</th>
 					<th class=\"word-wrap \"><center>Color Code</th>
 					<th class=\"word-wrap\"><center>Fabric Code</th>
 					<th class=\"word-wrap\"><center>Fabric Description</th>
@@ -1273,10 +1273,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<td class=\"b1\"><a href=\"dumindu/order_allocation_form2.php?tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id\"  onclick='".'alert("Cuttable Quantity Fullfilled")'."'>Update</a></td>";
 	} */
 	echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty\">Add Ratios</a></center></td>";
-	$sql15="select * from bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\"";
+	$sql15="select * from bai_pro3.allocate_stat_log where cat_ref=$cat_id";
+	// echo $sql15;
 	$sql_result25=mysqli_query($link, $sql15) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$cut_count = mysqli_num_rows($sql_result25);
-	if($cut_count>1) {
+
+	$sql16="select * from bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\"";
+	$sql_result16=mysqli_query($link, $sql16) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$cut_count1 = mysqli_num_rows($sql_result16);
+
+	if($cut_count>=1 && cut_count1>1) {
 		echo "<td class=\"  \"><center><a class='btn btn-info btn-xs'  href=\"".getFullURL($_GET['r'], "save_categories.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty\">Copy to Other</a></center></td>";
 	}
 	else {
