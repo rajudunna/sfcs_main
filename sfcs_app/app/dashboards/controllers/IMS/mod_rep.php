@@ -43,7 +43,7 @@
 ?> 
 
 <head>
-    <title>POP - IMS Track Panel</title>
+    <title>Module Transfer Panel</title>
     <script language=\"javascript\" type=\"text/javascript\" src=".getFullURL($_GET['r'],'common/js/dropdowntabs.js',4,'R')."></script>
 
     <link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
@@ -57,6 +57,7 @@
 </head> 
 
 <body>
+    <br>
     <div class="container-fluid">
         <div class="panel panel-primary">
             <div class="panel-heading">Module - <?php echo $module; ?> Summary</div>
@@ -83,7 +84,7 @@
                         <?php
                             $toggle=0; 
                             $sql="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref,pac_tid,tid from $bai_pro3.ims_log where ims_mod_no=$module and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by tid";
-                            $sql_result=mysqli_query($link, $sql) or exit("Sql Error2.1"); 
+                            $sql_result=mysqli_query($link, $sql) or exit("Sql Error2.1");
                             while($sql_row=mysqli_fetch_array($sql_result)) 
                             { 
                                 $rand_track=$sql_row['rand_track'];
@@ -118,7 +119,7 @@
                                 //     $req_date=$sql_row12['req_date']; 
                                 // } 
                                  
-                                $sql12="select * from $bai_pro3.ims_log where ims_mod_no='$module' and tid='$tid' and ims_status<>\"DONE\" and ims_remarks='$ims_remarks' and ims_size='$ims_size'  order by ims_schedule, ims_size DESC";            
+                                $sql12="select * from $bai_pro3.ims_log where ims_mod_no='$module' and tid='$tid' and ims_status<>\"DONE\" and ims_remarks='$ims_remarks' and ims_size='$ims_size'  order by ims_schedule, ims_size DESC";
                                 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2.3".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row12=mysqli_fetch_array($sql_result12)) 
                                 { 
