@@ -363,7 +363,6 @@ $a_s50=$sql_row['a_s50'];
 }
 $sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
 // echo $sql2;
-mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
 $sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
 
 while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -2128,7 +2127,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td colspan=3 >Cutting Department</td>
   <td class=xl654118></td>
- </tr>
+  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
@@ -3034,7 +3033,7 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
- </tr> 
+ </tr>
  </table>
 
  <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:parent'>

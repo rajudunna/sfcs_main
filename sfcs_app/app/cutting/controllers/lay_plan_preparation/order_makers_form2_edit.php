@@ -1,5 +1,48 @@
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); ?>
+<?php 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+?>
+
+<script type="text/javascript">
+	function validateFloatKeyPress(el, evt)
+	{
+		var charCode = (evt.which) ? evt.which : event.keyCode;
+		var number = el.value.split('.');
+		if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
+		{
+			return false;
+		}
+		//just one dot
+		if(number.length>1 && charCode == 46)
+		{
+			return false;
+		}
+		//get the carat position
+		var caratPos = getSelectionStart(el);
+		var dotPos = el.value.indexOf(".");
+		if( caratPos > dotPos && dotPos>-1 && (number[1].length > 1))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	function getSelectionStart(o)
+	{
+		if (o.createTextRange)
+		{
+			var r = document.selection.createRange().duplicate()
+			r.moveEnd('character', o.value.length)
+			if (r.text == '') return o.value.length
+			return o.value.lastIndexOf(r.text)
+		}
+		else
+		{
+			return o.selectionStart
+		}
+	}
+</script>
+
 <div class="panel panel-primary">
 <div class="panel-heading">Marker Edit Form</div>
 <div class="panel-body">
@@ -7,7 +50,8 @@
 <FORM method="post" name="input" action="<?php echo getFullURL($_GET['r'], "order_maker_process_edit.php", "N"); ?>">
 <div class="info">
   <!-- <p><b><font color='#ff0000'> Note:</font></b> add marker with endallovans</p> -->
-</div>	
+</div>
+
 <?php
 
 
@@ -33,69 +77,66 @@ echo "<div class=\"col-md-8\">
 //echo "<br/>";
 
 $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	
-/*echo "<td>";
-Echo "<table><tr><td>Order Ref</td><td>:</td><td>".$tran_order_tid."</td></tr><tr><td>Date</td><td>:</td><td>".$sql_row['order_date']."</td></tr>";
+	/*echo "<td>";
+	Echo "<table><tr><td>Order Ref</td><td>:</td><td>".$tran_order_tid."</td></tr><tr><td>Date</td><td>:</td><td>".$sql_row['order_date']."</td></tr>";
 
-echo "<tr>";
-echo "<td>Division</td><td>:</td><td>".$sql_row['order_div']."</td></tr>";
+	echo "<tr>";
+	echo "<td>Division</td><td>:</td><td>".$sql_row['order_div']."</td></tr>";
 
-echo "<tr>";
-echo "<td>Stye</td><td>:</td><td>".$sql_row['order_style_no']."</td></tr>";
+	echo "<tr>";
+	echo "<td>Stye</td><td>:</td><td>".$sql_row['order_style_no']."</td></tr>";
 
-echo "<tr><td>Delivery No</td><td>:</td><td>".$sql_row['order_del_no']."</td></tr>";
+	echo "<tr><td>Delivery No</td><td>:</td><td>".$sql_row['order_del_no']."</td></tr>";
 
-echo "<tr><td>Color</td><td>:</td><td> ".$sql_row['order_col_code']."</td></tr>";
-
-
-echo "<tr><td>Color Description</td><td>:</td><td>".$sql_row['order_col_des']."</td></tr>";
-
-echo "<tr><td>Order YY</td><td>:</td><td> ".$sql_row['order_yy']."</td></tr>";
-echo "</table>";
-echo "</td><td>";
-echo "<table border=1>";
-
-echo "<tr align=center bgcolor=yellow><td>Sizes</td><td>XS</td><td>S</td><td>M</td><td>L</td><td>XL</td><td>XXL</td><td>XXXl</td><td>Total</td></tr>";
-
-echo "<tr><td bgcolor=#CCFF66>Quantity</td>";
-echo "<td>".$sql_row['order_s_xs']."</td>";
-
-echo "<td>".$sql_row['order_s_s']."</td>";
-
-echo "<td>".$sql_row['order_s_m']."</td>";
-
-echo "<td>".$sql_row['order_s_l']."</td>";
-
-echo "<td>".$sql_row['order_s_xl']."</td>";
-
-echo "<td>".$sql_row['order_s_xxl']."</td>";
-
-echo "<td>".$sql_row['order_s_xxxl']."</td>";
-
-echo "<td>".($sql_row['order_s_xs']+$sql_row['order_s_s']+$sql_row['order_s_m']+$sql_row['order_s_l']+$sql_row['order_s_xl']+$sql_row['order_s_xxl']+$sql_row['order_s_xxxl'])."</td></tr>";
+	echo "<tr><td>Color</td><td>:</td><td> ".$sql_row['order_col_code']."</td></tr>";
 
 
-echo "<tr>
-<td bgcolor=#CCFF66>Remarks</td>
-<td colspan=\"11\">".$sql_row['Order_remarks']."</td>
-</tr>";
+	echo "<tr><td>Color Description</td><td>:</td><td>".$sql_row['order_col_des']."</td></tr>";
 
-echo "</table>"; */
+	echo "<tr><td>Order YY</td><td>:</td><td> ".$sql_row['order_yy']."</td></tr>";
+	echo "</table>";
+	echo "</td><td>";
+	echo "<table border=1>";
+
+	echo "<tr align=center bgcolor=yellow><td>Sizes</td><td>XS</td><td>S</td><td>M</td><td>L</td><td>XL</td><td>XXL</td><td>XXXl</td><td>Total</td></tr>";
+
+	echo "<tr><td bgcolor=#CCFF66>Quantity</td>";
+	echo "<td>".$sql_row['order_s_xs']."</td>";
+
+	echo "<td>".$sql_row['order_s_s']."</td>";
+
+	echo "<td>".$sql_row['order_s_m']."</td>";
+
+	echo "<td>".$sql_row['order_s_l']."</td>";
+
+	echo "<td>".$sql_row['order_s_xl']."</td>";
+
+	echo "<td>".$sql_row['order_s_xxl']."</td>";
+
+	echo "<td>".$sql_row['order_s_xxxl']."</td>";
+
+	echo "<td>".($sql_row['order_s_xs']+$sql_row['order_s_s']+$sql_row['order_s_m']+$sql_row['order_s_l']+$sql_row['order_s_xl']+$sql_row['order_s_xxl']+$sql_row['order_s_xxxl'])."</td></tr>";
+
+
+	echo "<tr>
+	<td bgcolor=#CCFF66>Remarks</td>
+	<td colspan=\"11\">".$sql_row['Order_remarks']."</td>
+	</tr>";
+
+	echo "</table>"; */
 
 }
 
 /* NEW */
 
 $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	
@@ -165,56 +206,55 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$buyer_code=substr($sql_row['order_style_no'],0,1);
 
 }
-echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"><<<<< Click here to Go Back</a></div></br>";
+echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a></div></br>";
 $sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" and tid=$cat_ref";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 //echo "<table border=1><tr><td>TID</td><td>Date</td><td>Category</td><td>PurWidth</td><td>gmtway</td><td>STATUS</td><td>remarks</td></tr>";
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	
-$pur_width=$sql_row['purwidth'];
+	$pur_width=$sql_row['purwidth'];
 
-$strip_match=$sql_row['strip_match'];
-$gmtway=$sql_row['gmtway'];
+	$strip_match=$sql_row['strip_match'];
+	$gmtway=$sql_row['gmtway'];
 
-$category=$sql_row['category'];
+	$category=$sql_row['category'];
 
-$check=0;
-$sql2="select sum(cuttable_s_xs) as \"cxs\", sum(cuttable_s_s) as \"cs\", sum(cuttable_s_m) as \"cm\", sum(cuttable_s_l) as \"cl\", sum(cuttable_s_xl) as \"cxl\", sum(cuttable_s_xxl) as \"cxxl\", sum(cuttable_s_xxxl) as \"cxxxl\" from $bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\" and cat_id=".$sql_row['tid'];
-$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$check=0;
+	$sql2="select sum(cuttable_s_xs) as \"cxs\", sum(cuttable_s_s) as \"cs\", sum(cuttable_s_m) as \"cm\", sum(cuttable_s_l) as \"cl\", sum(cuttable_s_xl) as \"cxl\", sum(cuttable_s_xxl) as \"cxxl\", sum(cuttable_s_xxxl) as \"cxxxl\" from $bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\" and cat_id=".$sql_row['tid'];
+	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-while($sql_row2=mysqli_fetch_array($sql_result2))
-{
-	$cxs=$sql_row2['cxs'];
-	$cs=$sql_row2['cs'];
-	$cm=$sql_row2['cm'];
-	$cl=$sql_row2['cl'];
-	$cxl=$sql_row2['cxl'];
-	$cxxl=$sql_row2['cxxl'];
-	$cxxxl=$sql_row2['cxxxl'];
+	while($sql_row2=mysqli_fetch_array($sql_result2))
+	{
+		$cxs=$sql_row2['cxs'];
+		$cs=$sql_row2['cs'];
+		$cm=$sql_row2['cm'];
+		$cl=$sql_row2['cl'];
+		$cxl=$sql_row2['cxl'];
+		$cxxl=$sql_row2['cxxl'];
+		$cxxxl=$sql_row2['cxxxl'];
 
-	if($cxs<$order_xs){$check=1;}
-	if($cs<$order_s){$check=1;}
-	if($cm<$order_m){$check=1;}
-	if($cl<$order_l){$check=1;}
-	if($cxl<$order_xl){$check=1;}
-	if($cxxl<$order_xxl){$check=1;}
-	if($cxxxl<$order_xxxl){$check=1;}
-	
-}
+		if($cxs<$order_xs){$check=1;}
+		if($cs<$order_s){$check=1;}
+		if($cm<$order_m){$check=1;}
+		if($cl<$order_l){$check=1;}
+		if($cxl<$order_xl){$check=1;}
+		if($cxxl<$order_xxl){$check=1;}
+		if($cxxxl<$order_xxxl){$check=1;}
+		
+	}
 
-$color="GREEN";
+	$color="GREEN";
 
-if($check==1)
-{
-	$color="RED";
-}
-	
+	if($check==1)
+	{
+		$color="RED";
+	}
+		
 
 	/* $check_id=$sql_row['tid'];*/
 
-/*	echo "<tr>";
+	/*	echo "<tr>";
 	echo "<td>".$sql_row['tid']."</td>";
 	echo "<td>".$sql_row['date']."</td>";
 	echo "<td>".$sql_row['category']."</td>";
@@ -229,70 +269,50 @@ if($check==1)
 //echo "</table>";
 
 
-
-
-/* NEW */
-
-
-
-//echo "</div>";
-//echo "<div class=block>";
-
-/* update */
-
-
 $sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and tid=$allocate_ref";
-mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 while($sql_row2=mysqli_fetch_array($sql_result2))
 {
+	/*echo "</table>";
+	echo "</td><td>";
+	echo "<table border=1>";
 
+	echo "<tr align=center bgcolor=yellow><td>Sizes</td><td>XS</td><td>S</td><td>M</td><td>L</td><td>XL</td><td>XXL</td><td>XXXl</td><td>Total</td><td>ration</td><td>cuts</td><td>plies</td><td>Max Plies / Cut</td></tr>";
 
-/*echo "</table>";
-echo "</td><td>";
-echo "<table border=1>";
+	echo "<tr><td bgcolor=#CCFF66>Quantity</td>";
 
-echo "<tr align=center bgcolor=yellow><td>Sizes</td><td>XS</td><td>S</td><td>M</td><td>L</td><td>XL</td><td>XXL</td><td>XXXl</td><td>Total</td><td>ration</td><td>cuts</td><td>plies</td><td>Max Plies / Cut</td></tr>";
+	echo "<td>".$sql_row2['allocate_xs']."</td>";
 
-echo "<tr><td bgcolor=#CCFF66>Quantity</td>";
+	echo "<td>".$sql_row2['allocate_s']."</td>";
 
-echo "<td>".$sql_row2['allocate_xs']."</td>";
+	echo "<td>".$sql_row2['allocate_m']."</td>";
 
-echo "<td>".$sql_row2['allocate_s']."</td>";
+	echo "<td>".$sql_row2['allocate_l']."</td>";
 
-echo "<td>".$sql_row2['allocate_m']."</td>";
+	echo "<td>".$sql_row2['allocate_xl']."</td>";
 
-echo "<td>".$sql_row2['allocate_l']."</td>";
+	echo "<td>".$sql_row2['allocate_xxl']."</td>";
 
-echo "<td>".$sql_row2['allocate_xl']."</td>";
+	echo "<td>".$sql_row2['allocate_xxxl']."</td>";
 
-echo "<td>".$sql_row2['allocate_xxl']."</td>";
+	echo "<td>".($sql_row2['allocate_xs']+$sql_row2['allocate_s']+$sql_row2['allocate_m']+$sql_row2['allocate_l']+$sql_row2['allocate_xl']+$sql_row2['allocate_xxl']+$sql_row2['allocate_xxxl'])."</td>";
 
-echo "<td>".$sql_row2['allocate_xxxl']."</td>";
+	echo "<td>".$sql_row2['ratio']."</td>";
+	echo "<td>".$sql_row2['cut_count']."</td>";
+	echo "<td>".$sql_row2['plies']."</td>";
+	echo "<td>".$sql_row2['pliespercut']."</td></tr>";
+	echo "<tr>
+	<td bgcolor=#CCFF66>Remarks</td>
+	<td colspan=12>".$sql_row2['remarks']."</td>
+	</tr>";
 
-echo "<td>".($sql_row2['allocate_xs']+$sql_row2['allocate_s']+$sql_row2['allocate_m']+$sql_row2['allocate_l']+$sql_row2['allocate_xl']+$sql_row2['allocate_xxl']+$sql_row2['allocate_xxxl'])."</td>";
-
-echo "<td>".$sql_row2['ratio']."</td>";
-echo "<td>".$sql_row2['cut_count']."</td>";
-echo "<td>".$sql_row2['plies']."</td>";
-echo "<td>".$sql_row2['pliespercut']."</td></tr>";
-echo "<tr>
-<td bgcolor=#CCFF66>Remarks</td>
-<td colspan=12>".$sql_row2['remarks']."</td>
-</tr>";
-
-echo "</table>"; */
-
-
+	echo "</table>"; */
 }
 
 if($mk_ref!=0)
 {
-
 	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
-
-	mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -304,9 +324,9 @@ if($mk_ref!=0)
 }
 else
 {
-		$mklength=0;
-		$mkeff=0;
-		$mkremarks="NIL";			
+	$mklength=0;
+	$mkeff=0;
+	$mkremarks="NIL";			
 }
 
 
@@ -320,7 +340,6 @@ echo "<div class=\"col-md-12\"><table class=\"table table-bordered\">";
 
 $sql22="select * from $bai_pro3.marker_ref_matrix where marker_ref=$mk_ref";
 //echo $sql22;
-mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $i=0;
 while($sql_row22=mysqli_fetch_array($sql_result22))
@@ -328,30 +347,30 @@ while($sql_row22=mysqli_fetch_array($sql_result22))
 
 if($i==0)
 {
-	echo "<tr><td>Marker LENGTH</td><td>:</td><td><div class=\"col-sm-1\">".$sql_row22['marker_width']."</div> &nbsp;&nbsp;<input type=\"hidden\" name=\"in_pwidth[]\" value=\"".$sql_row22['marker_width']."\"> <div class=\"col-sm-4\"> <INPUT class=\"form-control float\" required type=\"text\" id='d1' name=\"in_mklength[]\" value=\"".$sql_row22['marker_length']."\" size=\"10\"></td></tr>";	
+	echo "<tr><td>Marker Length</td><td>:</td><td><div class=\"col-sm-1\">".$sql_row22['marker_width']."</div> &nbsp;&nbsp;<input type=\"hidden\" name=\"in_pwidth[]\" value=\"".$sql_row22['marker_width']."\"> <div class=\"col-sm-4\"> <INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' required type=\"text\" id='d1' name=\"in_mklength[]\" value=\"".$sql_row22['marker_length']."\" size=\"10\"></td></tr>";	
 }
 else
 {
-	echo "<tr><td>Marker LENGTH 2</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" type=\"text\"  id='d2' name=\"in_pwidth[]\" value=\"".$sql_row22['marker_width']."\"></div> <div class=\"col-sm-4\"><INPUT type=\"text\"  class=\"form-control float\" title='Please enter numbers and decimals' id='d3'  name=\"in_mklength[]\" value=\"".$sql_row22['marker_length']."\" size=\"10\" ></div></td></tr>";
+	echo "<tr><td>Marker Length 2</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' type=\"text\"  id='d2' name=\"in_pwidth[]\" value=\"".$sql_row22['marker_width']."\"></div> <div class=\"col-sm-4\"><INPUT type=\"text\"  class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' title='Please enter numbers and decimals' id='d3'  name=\"in_mklength[]\" value=\"".$sql_row22['marker_length']."\" size=\"10\" ></div></td></tr>";
 }
 $i++;
 
 }
 if(mysqli_num_rows($sql_result22)==0)
 {
-	echo "<tr><div class=\"col-md-4\"><td>Marker LENGTH</td><td>:</td></div><td><div class=\"col-sm-1\">".$pur_width."</div> &nbsp;&nbsp;<input type=\"hidden\" name=\"in_pwidth[]\" value=\"".$pur_width."\"> <div class=\"col-sm-4\"><INPUT type=\"text\" pattern='^[0-9]+\.?[0-9]*$'  name=\"in_mklength[]\" value=\"".$mklength."\" size=\"10\" ></div></td></tr>";
-	echo "<tr><td>Marker LENGTH 2</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" type=\"text\" id='d4' name=\"in_pwidth[]\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control\" type=\"text\" name=\"in_mklength[]\" value=\"0\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  size=\"10\" ></div></td></tr>";
-	echo "<tr><td>Marker LENGTH 3</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" title='Please enter numbers and decimals'  type=\"text\"   id='d5' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\"  type=\"text\"  id='d9' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
-	echo "<tr><td>Marker LENGTH 4</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" title='Please enter numbers and decimals'  type=\"text\"   id='d6' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\"  type=\"text\"  id='d10' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
-	echo "<tr><td>Marker LENGTH 5</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" title='Please enter numbers and decimals'  type=\"text\"  id='d7' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\"  type=\"text\"  id='d11' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
-	echo "<tr><td>Marker LENGTH 6</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" title='Please enter numbers and decimals'  type=\"text\"  id='d8' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\"  type=\"text\" id='d12' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
+	echo "<tr><div class=\"col-md-4\"><td>Marker Length</td><td>:</td></div><td><div class=\"col-sm-1\">".$pur_width."</div> &nbsp;&nbsp;<input type=\"hidden\" name=\"in_pwidth[]\" value=\"".$pur_width."\"> <div class=\"col-sm-4\"><INPUT type=\"text\" pattern='^[0-9]+\.?[0-9]*$'  name=\"in_mklength[]\" value=\"".$mklength."\" size=\"10\" ></div></td></tr>";
+	echo "<tr><td>Marker Length 2</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' type=\"text\" id='d4' name=\"in_pwidth[]\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control\" type=\"text\" name=\"in_mklength[]\" value=\"0\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  size=\"10\" ></div></td></tr>";
+	echo "<tr><td>Marker Length 3</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' title='Please enter numbers and decimals'  type=\"text\"   id='d5' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);'  type=\"text\"  id='d9' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
+	echo "<tr><td>Marker Length 4</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' title='Please enter numbers and decimals'  type=\"text\"   id='d6' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);'  type=\"text\"  id='d10' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
+	echo "<tr><td>Marker Length 5</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' title='Please enter numbers and decimals'  type=\"text\"  id='d7' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);'  type=\"text\"  id='d11' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
+	echo "<tr><td>Marker Length 6</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' title='Please enter numbers and decimals'  type=\"text\"  id='d8' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);'  type=\"text\" id='d12' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
 	
 }
 else
 {
 	for(;$i<6;$i++)
 	{
-		echo "<tr><td>Marker LENGTH ".($i+1)."</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" type=\"text\"   title='Please enter numbers and decimals'  id='dd$i' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\" title='Please enter numbers and decimals'  type=\"text\" id='de$i' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
+		echo "<tr><td>Marker Length ".($i+1)."</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' type=\"text\"   title='Please enter numbers and decimals'  id='dd$i' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' title='Please enter numbers and decimals'  type=\"text\" id='de$i' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
 	}
 }
 

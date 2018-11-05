@@ -1,11 +1,11 @@
 <?php
-	// $url = getFullURLLevel($_GET['r'],'config/config.php',1,'');
-	include("../../config/config.php");
-	include("../../config/functions.php");
-	require_once 'vendor/autoload.php';
-	// echo __DIR__ . '\vendor\autoload.php';
-	// die();
-	$mpdf = new \Mpdf\Mpdf([
+    // $url = getFullURLLevel($_GET['r'],'config/config.php',1,'');
+    include("../../config/config.php");
+    include("../../config/functions.php");
+    require_once 'vendor/autoload.php';
+    // echo __DIR__ . '\vendor\autoload.php';
+    // die();
+    $mpdf = new \Mpdf\Mpdf([
         'mode' => 'utf-8', 
         'format' => [50, 100], 
         'orientation' => 'L'
@@ -22,23 +22,23 @@ $html ='
 <style>
 
 body {
-	font-family: arial;
-	font-size: 10px;
+    font-family: arial;
+    font-size: 10px;
 }
 
 b {
-	font-size:15px;
+    font-size:15px;
 }
 
 table {
-	margin-left:0px;
-	margin-right:0px;
-	margin-top:0px;
-	margin-bottom:0px;
+    margin-left:0px;
+    margin-right:0px;
+    margin-top:0px;
+    margin-bottom:0px;
 }
 
 td {
-	overflow: hidden;
+    overflow: hidden;
 }
 
 @page {
@@ -58,23 +58,23 @@ $sql="select * from $bai_rm_pj1.sticker_report where lot_no like \"%".trim($lot_
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$product_group=$sql_row['product_group'];
-	$item=$sql_row['item'];
-	$item_name=str_replace("?","",utf8_decode($sql_row['item_name']));
-	$item_desc=str_replace("?","",utf8_decode($sql_row['item_desc']));
-	$inv_no=$sql_row['inv_no'];
-	$po_no=$sql_row['po_no'];
-	$rec_no=$sql_row['rec_no'];
-	$rec_qty=$sql_row['rec_qty'];
-	$batch_no=$sql_row['batch_no'];
-	$buyer=$sql_row['buyer'];
-	$pkg_no=$sql_row['pkg_no'];
-	$grn_date=$sql_row['grn_date'];
-	$uom_ref=$sql_row['uom'];
+    $product_group=$sql_row['product_group'];
+    $item=$sql_row['item'];
+    $item_name=str_replace("?","",utf8_decode($sql_row['item_name']));
+    $item_desc=str_replace("?","",utf8_decode($sql_row['item_desc']));
+    $inv_no=$sql_row['inv_no'];
+    $po_no=$sql_row['po_no'];
+    $rec_no=$sql_row['rec_no'];
+    $rec_qty=$sql_row['rec_qty'];
+    $batch_no=$sql_row['batch_no'];
+    $buyer=$sql_row['buyer'];
+    $pkg_no=$sql_row['pkg_no'];
+    $grn_date=$sql_row['grn_date'];
+    $uom_ref=$sql_row['uom'];
 }
 if($uom_ref=='MTR')
 {
-	$uom_ref='YRD';
+    $uom_ref='YRD';
 }
 
 $child_lots="";
@@ -83,11 +83,10 @@ $sql="select group_concat(right(lot_no,4) SEPARATOR \" /\") as child_lots from $
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$child_lots=$sql_row['child_lots'];
+    $child_lots=$sql_row['child_lots'];
 }
 
 $sql="select * from $bai_rm_pj1.store_in where lot_no like \"%".trim($lot_no)."%\"";
-
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $tot_labels=mysqli_num_rows($sql_result);

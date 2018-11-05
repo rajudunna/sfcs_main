@@ -1,5 +1,6 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 ?>
 
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.min.js',3,'R'); ?>"></script>
@@ -57,7 +58,9 @@ $msg="<table border='1px' class=\"table table-bordered\" id=\"table1\"><tr><th>S
 while($row=mysqli_fetch_array($result))
 	{
 		$tid=$row["qms_tid"];
-		$msg.="<tr><td>".$row["qms_style"]."</td><td>".$row["qms_schedule"]."</td><td>".$row["qms_color"]."</td><td>".$row["log_date"]."</td><td>".$row["qms_size"]."</td><td>".$row["qms_qty"]."</td></tr>";	
+		$order_tid = '';	
+		$qms_size_title = ims_sizes($order_tid,$row["qms_schedule"],$row["qms_style"],$row["qms_color"],$row["qms_size"],$link);
+		$msg.="<tr><td>".$row["qms_style"]."</td><td>".$row["qms_schedule"]."</td><td>".$row["qms_color"]."</td><td>".$row["log_date"]."</td><td>".$qms_size_title."</td><td>".$row["qms_qty"]."</td></tr>";	
 	}
 	$msg.="</table>";
 echo $msg;

@@ -184,7 +184,7 @@ echo "Select Style: <select name=\"style\" class=\"form-control\" onchange=\"fir
 //$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 //{
-	$sql="select distinct order_style_no from $bai_pro3.plan_doc_summ ";	
+	$sql="select distinct order_style_no from $bai_pro3.plan_doc_summ order by order_style_no";	
 	echo $sql;
 //}
 // mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -211,16 +211,7 @@ echo "</select>";
 ?>
 
 <?php
-
-
-
-//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
-//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
-//{
-	//$sql="select distinct order_del_no from plan_doc_summ_input";	
-	//$sql="select distinct order_del_no from bai_orders_db where order_joins IN ('0','1','2') order by order_joins*1";
-	$sql="select distinct order_del_no from $bai_pro3.plan_doc_summ where order_style_no=\"$style\"";	
-//}
+$sql="select distinct order_del_no from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" order by order_del_no*1";	
 echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" id='schedule'>";
 // mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -250,13 +241,10 @@ echo "</select>";
 
 <?php
 
-$sql="select distinct order_col_des from $bai_pro3.plan_doc_summ where order_del_no=\"$schedule\"";	
-//}
+$sql="select distinct order_col_des from $bai_pro3.plan_doc_summ where order_del_no=\"$schedule\" order by order_col_des";	
 echo "Select Color: <select name=\"color\" class=\"form-control\" onchange=\"thirdbox();\" id='color'>";
-// mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
 
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 echo "<option value=\"NIL\" selected>NIL</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -285,20 +273,7 @@ echo "Select CutNo: <select name=\"cutno\" class=\"form-control\" onchange=\"fou
 
 $sql="select distinct pcutno as pcutno from $bai_pro3.order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" order by pcutno";	
 
-//For Color Clubbing
-/*
-if($clubbing>0)
-{
-	$sql="select distinct order_col_des from plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" group by clubbing,order_col_des";		
-}
-*/
-//echo $sql;
-
-//}
-// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-
 echo "<option value=\"NIL\" selected>NIL</option>";
 if($color!='')
 {
