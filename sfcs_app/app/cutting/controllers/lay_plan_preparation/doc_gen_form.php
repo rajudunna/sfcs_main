@@ -6,11 +6,18 @@ $tran_order_tid=$_GET['tran_order_tid'];
 $mk_ref=$_GET['mkref'];
 $allocate_ref=$_GET['allocate_ref'];
 $cat_ref2=$_GET['cat_ref'];
+$color=$_GET['color'];
+$schedule=$_GET['schedule'];
 
 $sql4="select * from $bai_pro3.plandoc_stat_log where order_tid='$tran_order_tid' and cat_ref='$cat_ref2' and allocate_ref='$allocate_ref' and mk_ref='$mk_ref'";
-    $sql_result1=mysqli_query($link, $sql4) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
-    $sql_result1_res=mysqli_num_rows($sql_result1);
-if($sql_result1_res==0){
+$sql_result1=mysqli_query($link, $sql4) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result1_res=mysqli_num_rows($sql_result1);
+
+$sql5="select COUNT(*) FROM mo_details WHERE SCHEDULE='$schedule' AND color='$color'";
+$sql_result5=mysqli_query($link, $sql5) or exit($sql."Sql Error-echo_2<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result5_res=mysqli_num_rows($sql_result5);
+
+if($sql_result1_res==0 && $sql_result5_res>0){
 
 function get_val($table_name,$field,$compare,$key,$link)
 {
