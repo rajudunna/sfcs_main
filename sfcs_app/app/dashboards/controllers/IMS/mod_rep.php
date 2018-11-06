@@ -43,7 +43,7 @@
 ?> 
 
 <head>
-    <title>POP - IMS Track Panel</title>
+    <title>Module Transfer Panel</title>
     <script language=\"javascript\" type=\"text/javascript\" src=".getFullURL($_GET['r'],'common/js/dropdowntabs.js',4,'R')."></script>
 
     <link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
@@ -57,6 +57,7 @@
 </head> 
 
 <body>
+    <br>
     <div class="container-fluid">
         <div class="panel panel-primary">
             <div class="panel-heading">Module - <?php echo $module; ?> Summary</div>
@@ -66,24 +67,24 @@
                         <tr class="info">
                             <th>Select</th>
                             <th>Barcode</th>
-                            <th>Input Date</th>
-                            <th>Exp. to Comp.</th>
+                            <th style="max-width: 80px">Input Date</th>
+                            <!-- <th>Exp. to Comp.</th> -->
                             <th>Style</th>
                             <th>Schedule</th>
-                            <th>Color</th>
-                            <th>Input Job No No</th>
-                            <th>Cut No</th>
+                            <th style="min-width: 150px">Color</th>
+                            <th style="max-width: 65px">Sewing Job No</th>
+                            <th style="max-width: 30px">Cut No</th>
                             <th>Size</th>
                             <th>Input</th>
                             <th>Output</th>
                             <th>Rejected</th>
                             <th>Balance</th>
-                            <th>Input Remarks</th>
+                            <th style="max-width: 30px;">Input Remarks</th>
                         </tr>
                         <?php
                             $toggle=0; 
                             $sql="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref,pac_tid,tid from $bai_pro3.ims_log where ims_mod_no=$module and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by tid";
-                            $sql_result=mysqli_query($link, $sql) or exit("Sql Error2.1"); 
+                            $sql_result=mysqli_query($link, $sql) or exit("Sql Error2.1");
                             while($sql_row=mysqli_fetch_array($sql_result)) 
                             { 
                                 $rand_track=$sql_row['rand_track'];
@@ -110,15 +111,15 @@
                                     $toggle=0; 
                                 } 
                                  
-                                $req_date=""; 
-                                $sql12="select req_date from $bai_pro3.ims_exceptions where ims_rand_track=$rand_track"; 
-                                $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2.2".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                while($sql_row12=mysqli_fetch_array($sql_result12)) 
-                                { 
-                                    $req_date=$sql_row12['req_date']; 
-                                } 
+                                // $req_date=""; 
+                                // $sql12="select req_date from $bai_pro3.ims_exceptions where ims_rand_track=$rand_track"; 
+                                // $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2.2".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                // while($sql_row12=mysqli_fetch_array($sql_result12)) 
+                                // { 
+                                //     $req_date=$sql_row12['req_date']; 
+                                // } 
                                  
-                                $sql12="select * from $bai_pro3.ims_log where ims_mod_no='$module' and tid='$tid' and ims_status<>\"DONE\" and ims_remarks='$ims_remarks' and ims_size='$ims_size'  order by ims_schedule, ims_size DESC";            
+                                $sql12="select * from $bai_pro3.ims_log where ims_mod_no='$module' and tid='$tid' and ims_status<>\"DONE\" and ims_remarks='$ims_remarks' and ims_size='$ims_size'  order by ims_schedule, ims_size DESC";
                                 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2.3".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row12=mysqli_fetch_array($sql_result12)) 
                                 { 
@@ -129,12 +130,14 @@
                                     $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
                                     // $inputjobno=$sql_row12['input_job_no_ref'];
                                                     
-                                    $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$ims_doc_no and a_plies>0"; 
+                                    $sql22="SELECT plandoc_stat_log.order_tid, plandoc_stat_log.acutno, bai_orders_db_confirm.color_code FROM bai_pro3.plandoc_stat_log LEFT JOIN bai_pro3.bai_orders_db_confirm ON plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid where doc_no=$ims_doc_no and a_plies>0";
+                                    // echo $sql22.'<br>';
                                     $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error2.4".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row22=mysqli_fetch_array($sql_result22)) 
                                     { 
                                         $order_tid=$sql_row22['order_tid']; 
                                         $cutno=$sql_row22['acutno']; 
+                                        $color_code=$sql_row22['color_code']; 
                                     } 
                          
                                     $size_value=ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link);
@@ -211,9 +214,9 @@
                                          
                                             echo "</td>
                                                 <td>".$pac_tid."</td>
-                                                <td>".$sql_row12['ims_date']."</td>
-                                                <td>$req_date</td>
-                                                <td>".$sql_row12['ims_style']."</td>
+                                                <td>".$sql_row12['ims_date']."</td>";
+                                            // <td>$req_date</td>
+                                            echo "<td>".$sql_row12['ims_style']."</td>
                                                 <td>".$sql_row12['ims_schedule']."</td>
                                                 <td>".$sql_row12['ims_color']."</td>
                                                 <td>".$display_prefix1."</td>
@@ -298,28 +301,30 @@
             
             $allowable_jobs = $ims_boxes_count-sizeof($input_job_array);
 
-            if(sizeof($input_job_array) < $ims_boxes_count)
-            {
-                if (sizeof($tid) > $allowable_jobs)
-                {
-                    echo "<script>sweetAlert('Selected more than Allowable Sewing Jobs','Please select any $allowable_jobs Jobs to transfer to module $module_ref','warning');</script>";
-                    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",5000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
-                }
-                else
-                {
-                    $flag=1;
-                }
-            }
-            else
-            {
-                echo "<script>sweetAlert('Module Full','','warning');</script>";
-                echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
-            }    
-            
             if(in_array($authorized,$has_permission))
             { 
                 $flag = 1;
             }
+            else
+            {
+                if(sizeof($input_job_array) < $ims_boxes_count)
+                {
+                    if (sizeof($tid) > $allowable_jobs)
+                    {
+                        echo "<script>sweetAlert('Selected more than Allowable Sewing Jobs','Please select any $allowable_jobs Jobs to transfer to module $module_ref','warning');</script>";
+                        echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",5000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
+                    }
+                    else
+                    {
+                        $flag=1;
+                    }
+                }
+                else
+                {
+                    echo "<script>sweetAlert('Module Full','','warning');</script>";
+                    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
+                }
+            }            
 
             if ($flag == 1)
             {
