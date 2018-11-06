@@ -463,18 +463,20 @@ $print_validation=0;
 $print_status=1;
 while($sql_row1=mysqli_fetch_array($sql_result1))
 {	
-	if($style_flag==0){
+	if($style_flag==0)
+	{
 			$docno_lot=$sql_row1['doc_no'];
 			$componentno_lot=$sql_row1['compo_no'];
 			
 			$clubbing=$sql_row1['clubbing'];
+			//echo $docno_lot."--".$clubbing."<br>";
 			if($clubbing>0)
 			{
-				$path="../../../cutting/controllers/lay_plan_preparation/color_club_docket_print.php";
+				$path="color_club_docket_print.php";
 			}
 			else
 			{
-				$path="../../../cutting/controllers/lay_plan_preparation/Book3_print.php";
+				$path='Book3_print1.php';
 			}
 			
 			// echo "<br>DocNo: ".$docno_lot.'Component No: '.$componentno_lot;
@@ -544,15 +546,22 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$allc_doc++;
 		//echo $sql_row1['category']."</br>";
 		//echo var_dump($comp_printed)."</br>";
-		if(!in_array($sql_row1['category'],$comp_printed))
+		if($clubbing>0)
 		{
-			echo "<td><a href=\"$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
-			$comp_printed[]=$sql_row1['category'];
+			if(!in_array($sql_row1['category'],$comp_printed))
+			{
+				echo "<td><a href=\"$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+				$comp_printed[]=$sql_row1['category'];
+			}
+			else
+			{
+				echo "<td>Clubbed</td>";
+			}
 		}
 		else
 		{
-			echo "<td>Clubbed</td>";
-		}
+			echo "<td><a href=\"$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+		}	
 		$Disable_allocate_flag=$Disable_allocate_flag+1;
 		
 	}
@@ -664,7 +673,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$enable_allocate_button=1;
 	} 
 	
-	//echo "Print Staus".$sql_row1['print_status']."</br>";	
+//echo "Print Status==".$sql_row1['print_status']."</br>";	
 if($sql_row1['print_status']>0)
 {
 	echo "<td><img src=\"correct.png\"></td>";
@@ -673,12 +682,16 @@ if($sql_row1['print_status']>0)
 }
 else
 {
-	if($clubbing>0){
-		echo "<td><img src=\"correct.png\"></td>";
-		$print_validation=$print_validation+1;
-	}else{
-		echo "<td></td>";
-	}
+	// echo "Club Status==".$clubbing."</br>";
+	// if($clubbing>0)
+	// {
+		// echo "<td><img src=\"correct.png\"></td>";
+		// $print_validation=$print_validation+1;
+	// }
+	// else
+	// {
+		echo "<td><img src=\"Wrong.png\"></td>";
+	//}
 }
 echo "<td>";	
 	getDetails("D",$sql_row1['doc_no']);
