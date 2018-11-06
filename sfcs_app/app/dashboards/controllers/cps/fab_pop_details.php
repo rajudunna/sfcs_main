@@ -461,6 +461,7 @@ $style_flag=0;
 $Disable_allocate_flag=0;
 $print_validation=0;
 $print_status=1;
+
 while($sql_row1=mysqli_fetch_array($sql_result1))
 {	
 	if($style_flag==0)
