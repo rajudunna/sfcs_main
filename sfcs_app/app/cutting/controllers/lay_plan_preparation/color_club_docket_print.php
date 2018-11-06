@@ -25,7 +25,7 @@ Chnaged the Data type from int to decimal for Capturing Actual Width in points m
 $order_tid=$_GET['order_tid'];
 $cat_ref=$_GET['cat_ref'];
 $doc_id=$_GET['doc_id'];
-
+$print=$_GET['print_status'];
 $cat_title=$_GET['cat_title'];
 $cut_no=$_GET['cut_no'];
 $clubbing=$_GET['clubbing'];
@@ -4013,12 +4013,15 @@ echo "</tbody></table>";
 </html>
 
 <?php
+if($print==1)
+{
 	$idocs_2 = "'" . implode ( "', '", $docs ) . "'";
 	if($print_status=="0000-00-00" || $print_status == "")
 	{	
 		$sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\" where doc_no in ($idocs_2)";
-		//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
+}	
 ?>
 
 <style>
