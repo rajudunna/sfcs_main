@@ -16,7 +16,13 @@
 function check_hrs(){
 	var shift_start=$('#shift_start').val();
 	var shift_end=$('#shift_end').val();
+	var team=$('#team').val();
+
 	console.log(shift_start+'---'+shift_end);
+	if(team=='' || shift_start=='' || shift_end=='' ){
+		swal('Please Fill All Details','','warning');
+		return false;
+	}
 	if(Number(shift_end) <= Number(shift_start))
 	{
 		swal('Please select Shift End Time more than Shift Start Time','','warning');
@@ -46,7 +52,7 @@ $username=strtolower($username_list[1]);
 			</div>
 			<div class='col-md-3 col-sm-3 col-xs-12'>
 				Select Team : 
-				<select name="team" class="select2_single form-control" required>
+				<select name="team" id="team" class="select2_single form-control" required>
 					<option value=''>Please Select</option>
 					<?php 
 					for ($i=0; $i < sizeof($shifts_array); $i++)
