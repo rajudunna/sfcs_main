@@ -232,7 +232,7 @@ else
 		}
 
 
-		$insert_query="delete from bai_pro3.sections_db WHERE sec_head='$sections'";
+		$insert_query="delete from bai_pro3.sections_db WHERE sec_id='$sections'";
 		if (mysqli_query($conn, $insert_query))
 		{
 
