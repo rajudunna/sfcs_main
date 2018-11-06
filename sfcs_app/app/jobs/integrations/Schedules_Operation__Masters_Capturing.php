@@ -9,7 +9,7 @@ set_time_limit(1000000);
 
 //getting mo numbers from mo_details table
 $qry_modetails="SELECT mo_no AS mo_num,item_code,style,SCHEDULE,color,size,zfeature,product_sku  FROM $bai_pro3.mo_details WHERE ops_master_status='0' group by mo_num,product_sku";
-echo $qry_modetails."<br>";
+echo "</br>".$qry_modetails."<br>";
 $result_qry_modetails=mysqli_query($link, $qry_modetails) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 print("job started\n");
 while($sql_row=mysqli_fetch_array($result_qry_modetails))
@@ -88,20 +88,21 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
     }
 
     if($workcenter_status_valid){
-       echo "</br>".$sql1."</br>";
-       var_dump($values);
+        echo "</br>".$sql1."</br>";
+        var_dump($values);
         //insertion query for schedule_oprations_master table
-       $sql_result1=mysqli_query($link, $sql1 . implode(', ', $values)) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-       if($sql_result1){
-            print("Inserted successfully")."\n";
+        $sql_result1=mysqli_query($link, $sql1 . implode(', ', $values)) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        if($sql_result1){
+                echo "</br>successfully Inserted".$mo_num."</br>";
+                //Update status for updated mo's and FG_codes
+            $update_mo_details="UPDATE $bai_pro3.mo_details SET ops_master_status=1 WHERE mo_no='$mo_num'";
+            $result = mysqli_query($link, $update_mo_details)or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+       }else{
+
+            echo "</br>Failed Insertion".$mo_num."</br>";
 
        }
-
-        
-        //Update status for updated mo's and FG_codes
-        $update_mo_details="UPDATE $bai_pro3.mo_details SET ops_master_status=1 WHERE mo_no='$mo_num'";
-        $result = mysqli_query($link, $update_mo_details)or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-
     }  
     
 }
