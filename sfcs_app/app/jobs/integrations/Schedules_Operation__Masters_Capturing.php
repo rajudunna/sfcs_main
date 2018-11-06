@@ -91,16 +91,18 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
         echo "</br>".$sql1."</br>";
         var_dump($values);
         //insertion query for schedule_oprations_master table
-        $sql_result1=mysqli_query($link, $sql1 . implode(', ', $values)) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $sql_result1=mysqli_query($link, $sql1 . implode(', ', $values));
         if($sql_result1){
-                echo "</br>successfully Inserted".$mo_num."</br>";
-                //Update status for updated mo's and FG_codes
+            
+            echo "</br>successfully Inserted : ".$mo_num."</br>";
+            
+            //Update status for updated mo's and FG_codes
             $update_mo_details="UPDATE $bai_pro3.mo_details SET ops_master_status=1 WHERE mo_no='$mo_num'";
-            $result = mysqli_query($link, $update_mo_details)or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $result = mysqli_query($link, $update_mo_details);
 
        }else{
 
-            echo "</br>Failed Insertion".$mo_num."</br>";
+            echo "</br>Failed to Insert : ".$mo_num."</br>";
 
        }
     }  
