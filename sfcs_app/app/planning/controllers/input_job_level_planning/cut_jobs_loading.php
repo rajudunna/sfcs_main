@@ -341,7 +341,7 @@ if($sql_num_check>0)
 {
 	if($sql_num_check12>0)
 	{	
-		echo "Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
+		echo "Cut Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
 		echo "Sewing Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
 		echo "<input type=\"hidden\" name=\"code\" value=\"$code\">";
 		echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
@@ -349,13 +349,14 @@ if($sql_num_check>0)
 	}
 	else
 	{
-		echo "Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
+		echo "Cut Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
 		echo "Sewing Jobs Available :"."<span class='label label-danger'>No</span>&nbsp;&nbsp;";
 	}
 }
 else
 {
-	echo "Docket Available  :"."<span class='label label-danger'>No</span>&nbsp;&nbsp;";
+	echo "Cut Jobs Available:"."<span class='label label-danger'>No</span>&nbsp;&nbsp;";
+	echo "Sewing Jobs Available :"."<span class='label label-danger'>No</span>&nbsp;&nbsp;";
 	/*echo "<input type=\"hidden\" name=\"code\" value=\"$code\">";
 	echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
 	echo "<input type=\"submit\" value=\"submit\" name=\"submit\">";*/
