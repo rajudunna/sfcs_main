@@ -357,14 +357,7 @@ echo "<th>Color</th>";
 echo "<th>Job No</th>";
 echo "</tr>";
 
-$check_sql = "SELECT * from $bai_pro3.cutting_table_plan where doc_no=$doc_no";
-$check_sql_res=mysqli_query($link, $check_sql) or exit("check_sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-$check_sql_res_check=mysqli_num_rows($check_sql_res);
-if($check_sql_res_check >0){
-	$sql1="SELECT order_style_no,order_del_no,order_col_des,color_code,total,acutno,order_tid,order_style_no,order_del_no,xs,s,m,l,xl,xxl,xxxl,s06,s08,s10,s12,s14,s16,s18,s20,s22,s24,s26,s28,s30,clubbing from $bai_pro3.cut_tbl_dash_doc_summ where doc_no=$doc_no";
-}else{
-	$sql1="SELECT order_style_no,order_del_no,order_col_des,color_code,total,acutno,order_tid,order_style_no,order_del_no,xs,s,m,l,xl,xxl,xxxl,s06,s08,s10,s12,s14,s16,s18,s20,s22,s24,s26,s28,s30,clubbing from $bai_pro3.plan_dash_doc_summ where doc_no=$doc_no";
-}
+$sql1="SELECT order_style_no,order_del_no,order_col_des,color_code,total,acutno,order_tid,order_style_no,order_del_no,xs,s,m,l,xl,xxl,xxxl,s06,s08,s10,s12,s14,s16,s18,s20,s22,s24,s26,s28,s30,clubbing from $bai_pro3.plan_dash_doc_summ where doc_no=$doc_no";
 //echo "Geeting cut ref no : ".$sql1;
 //mysql_query($sql1,$link) or exit("Sql Error1".mysql_error());
 //echo $sql1;
@@ -451,7 +444,7 @@ if($clubbing>0)
 	$sql1="SELECT order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing as clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,$bai_pro3.fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix_v2 as order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid in (select distinct order_tid from $bai_pro3.plan_doc_summ where order_style_no=\"$style_ref\" and order_del_no=\"$del_ref\" and clubbing=$clubbing) and order_cat_doc_mk_mix.acutno=$cut_no_ref";
 }
 
-//echo $sql1;
+
 //echo "getting req qty : ".$sql1."</br>";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result1);
@@ -467,6 +460,7 @@ $total=0;$allc_doc=0;
 $style_flag=0;
 $Disable_allocate_flag=0;
 $print_validation=0;
+$print_status=1;
 while($sql_row1=mysqli_fetch_array($sql_result1))
 {	
 	if($style_flag==0)
@@ -556,11 +550,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			if(!in_array($sql_row1['category'],$comp_printed))
 			{
-<<<<<<< HEAD
-				echo "<td><a href=\"$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
-=======
 				echo "<td><a href=\"$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
->>>>>>> 1094-binding-quantity-not-shown-in-docket
 				$comp_printed[]=$sql_row1['category'];
 			}
 			else
@@ -570,11 +560,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		}
 		else
 		{
-<<<<<<< HEAD
-			echo "<td><a href=\"$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
-=======
 			echo "<td><a href=\"$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
->>>>>>> 1094-binding-quantity-not-shown-in-docket
 		}	
 		$Disable_allocate_flag=$Disable_allocate_flag+1;
 		
@@ -729,7 +715,7 @@ if($enable_allocate_button==1)
 echo "</form>";
 //NEW Implementation for Docket generation from RMS
 
-$sql1="SELECT fabric_status from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
+$sql1="SELECT fabric_status from $bai_pro3.plan_dashboard where doc_no=$doc_no";
 //mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result1);
@@ -847,7 +833,6 @@ if(isset($_POST['submit']))
 	// echo sizeof($group_docs)."<br>";
 	//echo "Alloc_docketd--".$alloc_docket."--total allocted--".$doc_tot."--issue_status--".$issue_status."--total_docket--".$group_docs."--reasno---".$reason."--style--".$style."--scheudle--".$schedule."<br>";
 	$doc_num=explode(",",$group_docs);
-	//var_dump($doc_num);
 	for($i=0;$i<sizeof($doc_num);$i++)
 	{	
 		$sql2="update $bai_pro3.plandoc_stat_log set fabric_status=$issue_status where doc_no='".$doc_num[$i]."'";
@@ -897,15 +882,13 @@ if(isset($_POST['submit']))
 				//echo "BAl:".$condi1."</br>";
 				if((($qty_rec-($qty_iss+$qty_issued))+$qty_ret)>=0 && $qty_iss > 0)
 				{
+					//echo "2";
+					//$sql1="update store_in set qty_issued=".(($qty_rec-$qty_issued)+($qty_ret+$qty_issued+$qty_iss)).", status=2, allotment_status=2 where tid=\"$code\"";
+					$sql22="update $bai_rm_pj1.store_in set qty_issued=".($qty_issued+$qty_iss).", status=$status, allotment_status=$status where tid=\"$code\"";
+					//Uncheck this
+					mysqli_query($link, $sql22) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if($issue_status==5)
-					{	
-						//echo "2";
-						//$sql1="update store_in set qty_issued=".(($qty_rec-$qty_issued)+($qty_ret+$qty_issued+$qty_iss)).", status=2, allotment_status=2 where tid=\"$code\"";
-						$sql22="update $bai_rm_pj1.store_in set qty_issued=".($qty_issued+$qty_iss).", status=$status, allotment_status=$status where tid=\"$code\"";
-						//echo "</br>".$sql22."</br>";
-						//Uncheck this
-						mysqli_query($link, $sql22) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
-
+					{
 						$sql211="select * from $bai_rm_pj1.store_out where tran_tid='".$code."' and qty_issued='".$qty_iss."' and Style='".$style."' and Schedule='".$schedule."' and cutno='".$doc_no_loc."' and date='".date("Y-m-d")."' and updated_by='".$username."' and remarks='".$reason."' and log_stamp='".date("Y-m-d H:i:s")."' ";
 						//echo $sql211."<br>"; 
 						$sql_result211=mysqli_query($link, $sql211) or exit("Sql Error--211: $sql211".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -918,13 +901,10 @@ if(isset($_POST['submit']))
 							//Uncheck this
 							mysqli_query($link, $sql23) or exit("Sql Error----4".mysqli_error($GLOBALS["___mysqli_ston"]));
 						}
-
-						$sql24="update $bai_rm_pj1.fabric_cad_allocation set status=2 where tran_pin=\"$tran_pin\"";
-						//echo "</br>".$sql24."</br>";
-						//Uncheck this
-						mysqli_query($link, $sql24) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
-					
+					$sql24="update $bai_rm_pj1.fabric_cad_allocation set status=2 where tran_pin=\"$tran_pin\"";
+					//Uncheck this
+					mysqli_query($link, $sql24) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
 					//echo "<h3>Status: <font color=green>Success!</font> $code</h3>";
 					//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"out.php?location=$location\"; }</script>";
