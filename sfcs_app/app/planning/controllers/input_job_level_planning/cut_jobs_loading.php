@@ -333,15 +333,25 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$cat_ref=$sql_row['cat_ref'];
 }
 
-
-
+$sql12="select * from $bai_pro3.packing_summary_input where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des='$color'";
+$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check12=mysqli_num_rows($sql_result12);
 
 if($sql_num_check>0)
 {
-	echo "Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
-	echo "<input type=\"hidden\" name=\"code\" value=\"$code\">";
-	echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
-	echo "<input type=\"submit\" value=\"Submit\" name=\"submit\" id='sub' disabled class='btn btn-success'>";	
+	if($sql_num_check12>0)
+	{	
+		echo "Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
+		echo "Sewing Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
+		echo "<input type=\"hidden\" name=\"code\" value=\"$code\">";
+		echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
+		echo "<input type=\"submit\" value=\"Submit\" name=\"submit\" id='sub' disabled class='btn btn-success'>";
+	}
+	else
+	{
+		echo "Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
+		echo "Sewing Jobs Available :"."<span class='label label-danger'>No</span>&nbsp;&nbsp;";
+	}
 }
 else
 {
