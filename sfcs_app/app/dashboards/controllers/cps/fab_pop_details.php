@@ -478,11 +478,11 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 			//echo $docno_lot."--".$clubbing."<br>";
 			if($clubbing>0)
 			{
-				$path="../../../cutting/controllers/lay_plan_preparation/color_club_docket_print.php";
+				$path="color_club_docket_print.php";
 			}
 			else
 			{
-				$path="../../../cutting/controllers/lay_plan_preparation/Book3_print.php";
+				$path='Book3_print1.php';
 			}
 			
 			// echo "<br>DocNo: ".$docno_lot.'Component No: '.$componentno_lot;
@@ -556,7 +556,11 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			if(!in_array($sql_row1['category'],$comp_printed))
 			{
+<<<<<<< HEAD
 				echo "<td><a href=\"$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+=======
+				echo "<td><a href=\"$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+>>>>>>> 1094-binding-quantity-not-shown-in-docket
 				$comp_printed[]=$sql_row1['category'];
 			}
 			else
@@ -566,7 +570,11 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		}
 		else
 		{
+<<<<<<< HEAD
 			echo "<td><a href=\"$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+=======
+			echo "<td><a href=\"$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+>>>>>>> 1094-binding-quantity-not-shown-in-docket
 		}	
 		$Disable_allocate_flag=$Disable_allocate_flag+1;
 		
