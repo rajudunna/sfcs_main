@@ -747,7 +747,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     $doc_no_ref[]=0;
     $req_time[]=0;
     $req_date_time[]=0;
-    $sql2="select * from $bai_pro3.cutting_table_plan where cutting_tbl_id in (".$section_mods.") order by log_time,cutting_tbl_id";
+    $sql2="select * from $bai_pro3.cutting_table_plan where cutting_tbl_id in (".$section_mods.") group by doc_no_ref order by log_time,cutting_tbl_id";
     $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row2=mysqli_fetch_array($result2))
     {
@@ -1012,7 +1012,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             $fab_status = 5;
         }
                 
-        $fab_issue2_query="select * from $bai_pro3.plan_dashboard where fabric_status='1' and doc_no IN (".implode(",",$club_docs).")";
+        $fab_issue2_query="select * from $bai_pro3.plandoc_stat_log where fabric_status='1' and doc_no IN (".implode(",",$club_docs).")";
         $fab_isuue2_result=mysqli_query($link, $fab_issue2_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
         if(mysqli_num_rows($fab_isuue2_result)>0)
         {
@@ -1031,62 +1031,64 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
                 $final_cols = 'yellow';
                 $rem="Fabric issued";
             }
-        }else if($fab_status==1)
+        }
+    else if($fab_status==1)
         {
          $final_cols = 'pink';
          $rem="Ready To issue";
-        }elseif (mysqli_num_rows($fab_request_result)>0)
-          {
-              $final_cols = 'lgreen';
-              $rem="Fabric Available but not Requested";
-          }
-          elseif ($fabric_status < 5)
-          {
-              switch ($ft_status)
-              {
-              case "1":
-              {
-                  $final_cols="green";                    
-                  $rem="Fabric requested";
-                  break;
-              }
-              case "0":
-              {                                   
-                  $final_cols="red";
-                  $rem="Fabric Not Available";
-                  break;
-              }
-              case "2":
-              {
-                  $final_cols="red";
-                  $rem="Fabric In House Issue";
-                  break;
-              }
-              case "3":
-              {
-                  $final_cols="red";
-                  $rem="GRN issue";
-                  break;
-              }
-              case "4":
-              {
-                  $final_cols="red";
-                  $rem="Put Away Issue";
-                  break;
-              }
-              default:
-              {
-                  $final_cols="yash";
-                  $rem="No Status";
-                  break;
-              }
-          }
         }
-        else
+    elseif (mysqli_num_rows($fab_request_result)>0)
+    {
+      $final_cols = 'green';
+      $rem="Fabric Requested";
+    }
+    elseif ($fabric_status < 5)
+    {
+      switch ($ft_status)
+      {
+        case "1":
         {
-            $final_cols='yash';
-            $rem="No status";
+          $final_cols="lgreen";                    
+          $rem="Fabric Available but not Requested";
+          break;
         }
+        case "0":
+        {                                   
+          $final_cols="red";
+          $rem="Fabric Not Available";
+          break;
+        }
+        case "2":
+        {
+          $final_cols="red";
+          $rem="Fabric In House Issue";
+          break;
+        }
+        case "3":
+        {
+          $final_cols="red";
+          $rem="GRN issue";
+          break;
+        }
+        case "4":
+        {
+          $final_cols="red";
+          $rem="Put Away Issue";
+          break;
+        }
+        default:
+        {
+          $final_cols="yash";
+          $rem="No Status";
+          break;
+        }
+      }
+    }
+    else
+    {
+      $final_cols='yash';
+      $rem="No status";
+    }
             
       $title=str_pad("Style:".trim($style),80)."\n".str_pad("CO:".trim($co_no),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),50)."\n".str_pad("Job_No:".implode(", ",$club_c_code),80)."\n".str_pad("Docket No:".implode(", ",$club_docs),80)."\n".str_pad("Total_Qty:".$total_qty,80)."\n".str_pad("Plan_Time:".$log_time,50)."\n".str_pad("Lay_Req_Time:".$lay_time[array_search($doc_no,$doc_no_ref)],80)."\n".str_pad("Fab_Loc.:".$fabric_location."Bundle_Loc.:".$bundle_location,80);
       
