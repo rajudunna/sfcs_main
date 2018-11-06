@@ -58,162 +58,199 @@ else
 	{
 		$modulestatus = 'Active';
 	}
-	if($id>0)
+
+	$plan_dashboard11="select * from $bai_pro3.plan_dashboard where module='$module'";
+	$result11= mysqli_query($conn, $plan_dashboard11);
+	$rowcount11=mysqli_num_rows($result11);
+
+
+	$plan_dashboard_input12="select * from $bai_pro3.plan_dashboard_input where input_module='$module'";
+	$result12= mysqli_query($conn, $plan_dashboard_input12);
+	$rowcount12=mysqli_num_rows($result12);
+
+
+	$fabric_priorities="select * from $bai_pro3.fabric_priorities where module='$module'";
+	$fabric_priorities1= mysqli_query($conn, $fabric_priorities);
+	$rowcount13=mysqli_num_rows($fabric_priorities1);
+
+	if ($status == 2 and ($rowcount11>0 or $rowcount12>0 or $rowcount13>0))
 	{
-		//update
-		
-		$sql = "update $bai_pro3.module_master set module_name='$module',date_time='$datetime',mapped_cut_table='$mapped_cut_table',module_description='$description', block_priorities='$block_priorities', section='$sections',status='$modulestatus',color='$module_color', label='$module_label' where id=$id";
-		// echo $sql;die();
-		if (mysqli_query($conn, $sql)) {
-		} else {
-			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-		}
+		$url=getFullURL($_GET['r'],'add_module.php','N');
 
-		$update_plan_modules="update $bai_pro3.plan_modules set section_id='$sections' where module_id=trim($module)";
-		if (mysqli_query($conn, $update_plan_modules)) {
-		}else {
-			echo "Error: " . $update_plan_modules . "<br>" . mysqli_error($conn);
-		}
-		
-		$sections_query2="SELECT GROUP_CONCAT(module_id)as module_concat FROM bai_pro3.`plan_modules` WHERE section_id='$sec1'";
-		$result4 = mysqli_query($conn, $sections_query2);
-		$row1 = mysqli_fetch_assoc($result4);
-		$total_modules1=$row1['module_concat'];
-
-		$sql5 = "update $bai_pro3.sections_db set sec_id='$sec1',sec_head='$sec1',sec_mods='$total_modules1' where sec_head='$sec1'";
-		if (mysqli_query($conn, $sql5)) {
-		}else {
-			echo "Error: " . $sql5 . "<br>" . mysqli_error($conn);
-		}
-
-
-			// $sections_query1="SELECT GROUP_CONCAT(module_id)as module_concat FROM $bai_pro3.`plan_modules` WHERE section_id='$sections'";
-			// $result3 = mysqli_query($conn, $sections_query1);
-			// $row = mysqli_fetch_assoc($result3);
-			// $total_modules=$row['module_concat'];
-
-
-
-
-			// $sql1 = "update $bai_pro3.sections_db set sec_id='$sections',sec_head='$sections',sec_mods='$total_modules' where sec_head='$sections'";
-				
-		if (mysqli_query($conn, $sql5))
-		{
-			$url=getFullURL($_GET['r'],'add_module.php','N');
-			//echo $url;
-			//echo "Record updated successfully";
-			echo"<script>setTimeout(function () { 
-					swal({
-						title: 'Record updated successfully',
-						type: 'success',
-						confirmButtonText: 'OK'
-					},
-					function(isConfirm){
-						if (isConfirm) {
-							window.location.href = \"$url\";
-						}
-					}); 
-				}, 100);</script>";
-		} else {
-			echo "Error: " . $sql1 . "<br>" . mysqli_error($conn);
-		}
+		echo"<script>setTimeout(function () { 
+				swal({
+					title: 'Module Already in Production',
+					text: 'Cant Change to In-Active',
+					type: 'warning',
+					confirmButtonText: 'OK'
+				},
+				function(isConfirm){
+					if (isConfirm) {
+						window.location.href = \"$url\";
+					}
+				}); 
+			}, 100);
+		</script>";
 	}
 	else
 	{
-		$query="select module_name from $bai_pro3.module_master where module_name='$module'";
-		$sql_result=mysqli_query($conn, $query);
-		if(mysqli_num_rows($sql_result)>0)
+		if($id>0)
 		{
-			$url=getFullURL($_GET['r'],'add_module.php','N');
-			echo"<script>setTimeout(function () { 
-				swal({
-				  title: 'Module Already Existed!',
-				  text: 'Message!',
-				  type: 'warning',
-				  confirmButtonText: 'OK'
-				},
-				function(isConfirm){
-				  if (isConfirm) {
-					window.location.href = \"$url\";
-				  }
-				}); }, 100);</script>";
+			//update
+			
+			$sql = "update $bai_pro3.module_master set module_name='$module',date_time='$datetime',mapped_cut_table='$mapped_cut_table',module_description='$description', block_priorities='$block_priorities', section='$sections',status='$modulestatus',color='$module_color', label='$module_label' where id=$id";
+			// echo $sql;die();
+			if (mysqli_query($conn, $sql)) {
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
 
+			$update_plan_modules="update $bai_pro3.plan_modules set section_id='$sections' where module_id=trim($module)";
+			if (mysqli_query($conn, $update_plan_modules)) {
+			}else {
+				echo "Error: " . $update_plan_modules . "<br>" . mysqli_error($conn);
+			}
+			
+			$sections_query2="SELECT GROUP_CONCAT(module_id)as module_concat FROM bai_pro3.`plan_modules` WHERE section_id='$sec1'";
+			$result4 = mysqli_query($conn, $sections_query2);
+			$row1 = mysqli_fetch_assoc($result4);
+			$total_modules1=$row1['module_concat'];
+
+			$sql5 = "update $bai_pro3.sections_db set sec_id='$sec1',sec_head='$sec1',sec_mods='$total_modules1' where sec_head='$sec1'";
+			if (mysqli_query($conn, $sql5)) {
+			}else {
+				echo "Error: " . $sql5 . "<br>" . mysqli_error($conn);
+			}
+
+
+				// $sections_query1="SELECT GROUP_CONCAT(module_id)as module_concat FROM $bai_pro3.`plan_modules` WHERE section_id='$sections'";
+				// $result3 = mysqli_query($conn, $sections_query1);
+				// $row = mysqli_fetch_assoc($result3);
+				// $total_modules=$row['module_concat'];
+
+
+
+
+				// $sql1 = "update $bai_pro3.sections_db set sec_id='$sections',sec_head='$sections',sec_mods='$total_modules' where sec_head='$sections'";
+					
+			if (mysqli_query($conn, $sql5))
+			{
+				$url=getFullURL($_GET['r'],'add_module.php','N');
+				//echo $url;
+				//echo "Record updated successfully";
+				echo"<script>setTimeout(function () { 
+						swal({
+							title: 'Record updated successfully',
+							type: 'success',
+							confirmButtonText: 'OK'
+						},
+						function(isConfirm){
+							if (isConfirm) {
+								window.location.href = \"$url\";
+							}
+						}); 
+					}, 100);</script>";
+			} else {
+				echo "Error: " . $sql1 . "<br>" . mysqli_error($conn);
+			}
 		}
 		else
 		{
- 
-			$plan_modules="select * from $bai_pro3.plan_modules where module_id='$module'";
-			$plan_modules_result= mysqli_query($conn, $plan_modules);
-			$row_count=mysqli_num_rows($plan_modules_result);
-			if($row_count==0)
+			$query="select module_name from $bai_pro3.module_master where module_name='$module'";
+			$sql_result=mysqli_query($conn, $query);
+			if(mysqli_num_rows($sql_result)>0)
 			{
-				$sql9 = "INSERT INTO $bai_pro3.module_master (module_name,date_time,module_description,status,section,color,label,mapped_cut_table,block_priorities)
-					VALUES ('$module','$datetime','$description','$modulestatus','$sections','$module_color','$module_label','$mapped_cut_table','$block_priorities')";
+				$url=getFullURL($_GET['r'],'add_module.php','N');
+				echo"<script>setTimeout(function () { 
+					swal({
+					  title: 'Module Already Existed!',
+					  text: 'Message!',
+					  type: 'warning',
+					  confirmButtonText: 'OK'
+					},
+					function(isConfirm){
+					  if (isConfirm) {
+						window.location.href = \"$url\";
+					  }
+					}); }, 100);</script>";
 
-				if (mysqli_query($conn, $sql9))
-				{
-					$url=getFullURL($_GET['r'],'add_module.php','N');
-					echo"<script>setTimeout(function () { 
-						swal({
-						  title: 'New record created successfully',
-						  type: 'success',
-						  confirmButtonText: 'OK'
-						},
-						function(isConfirm){
-						  if (isConfirm) {
-							window.location.href = \"$url\";
-						  }
-						}); }, 100);</script>";
-				}
-				else
-				{
-					echo "Error: " .$sql9. "<br>" . mysqli_error($conn);
-				} 
-			
-			 	$sql7 = "INSERT INTO $bai_pro3.plan_modules (module_id,section_id,power_user) VALUES ('$module','$sections','$username')";
-				if (mysqli_query($conn, $sql7)) {
-					
-				} else {
-					echo "Error: " . $sql7 . "<br>" . mysqli_error($conn);
-				} 
 			}
 			else
 			{
-				$url=getFullURL($_GET['r'],'add_module.php','N');
-					echo"<script>setTimeout(function () { 
-						swal({
-						  title: 'Module Already Existed in Plan Modules Table',
-						  type: 'warning',
-						  confirmButtonText: 'OK'
-						},
-						function(isConfirm){
-						  if (isConfirm) {
-							window.location.href = \"$url\";
-						  }
-						}); }, 100);</script>";
+	 
+				$plan_modules="select * from $bai_pro3.plan_modules where module_id='$module'";
+				$plan_modules_result= mysqli_query($conn, $plan_modules);
+				$row_count=mysqli_num_rows($plan_modules_result);
+				if($row_count==0)
+				{
+					$sql9 = "INSERT INTO $bai_pro3.module_master (module_name,date_time,module_description,status,section,color,label,mapped_cut_table,block_priorities)
+						VALUES ('$module','$datetime','$description','$modulestatus','$sections','$module_color','$module_label','$mapped_cut_table','$block_priorities')";
+
+					if (mysqli_query($conn, $sql9))
+					{
+						$url=getFullURL($_GET['r'],'add_module.php','N');
+						echo"<script>setTimeout(function () { 
+							swal({
+							  title: 'New record created successfully',
+							  type: 'success',
+							  confirmButtonText: 'OK'
+							},
+							function(isConfirm){
+							  if (isConfirm) {
+								window.location.href = \"$url\";
+							  }
+							}); }, 100);</script>";
+					}
+					else
+					{
+						echo "Error: " .$sql9. "<br>" . mysqli_error($conn);
+					} 
+				
+				 	$sql7 = "INSERT INTO $bai_pro3.plan_modules (module_id,section_id,power_user) VALUES ('$module','$sections','$username')";
+					if (mysqli_query($conn, $sql7)) {
+						
+					} else {
+						echo "Error: " . $sql7 . "<br>" . mysqli_error($conn);
+					} 
+				}
+				else
+				{
+					$url=getFullURL($_GET['r'],'add_module.php','N');
+						echo"<script>setTimeout(function () { 
+							swal({
+							  title: 'Module Already Existed in Plan Modules Table',
+							  type: 'warning',
+							  confirmButtonText: 'OK'
+							},
+							function(isConfirm){
+							  if (isConfirm) {
+								window.location.href = \"$url\";
+							  }
+							}); }, 100);</script>";
+				}
 			}
 		}
-	}
 
 
-	$insert_query="delete from bai_pro3.sections_db WHERE sec_head='$sections'";
-	if (mysqli_query($conn, $insert_query))
-	{
+		$insert_query="delete from bai_pro3.sections_db WHERE sec_head='$sections'";
+		if (mysqli_query($conn, $insert_query))
+		{
 
-	} 
-	else
-	{
-		echo "Error: " . $insert_query . "<br>" . mysqli_error($conn);
-	}
+		} 
+		else
+		{
+			echo "Error: " . $insert_query . "<br>" . mysqli_error($conn);
+		}
 
-	$sections_query="SELECT GROUP_CONCAT(module_id)as module_concat FROM bai_pro3.`plan_modules` WHERE section_id='$sections'";
-	$result3 = mysqli_query($conn, $sections_query);
-	$row = mysqli_fetch_assoc($result3);
-	$total_modules=$row['module_concat'];
-	$sql123 = "INSERT INTO $bai_pro3.sections_db (sec_id,sec_head,sec_mods) VALUES ('$sections','$sections','$total_modules')";
-	if (mysqli_query($conn, $sql123)) {
-	} else {
-		echo "Error: " . $sql123 . "<br>" . mysqli_error($conn);
+		$sections_query="SELECT GROUP_CONCAT(module_id)as module_concat FROM bai_pro3.`plan_modules` WHERE section_id='$sections'";
+		$result3 = mysqli_query($conn, $sections_query);
+		$row = mysqli_fetch_assoc($result3);
+		$total_modules=$row['module_concat'];
+		$sql123 = "INSERT INTO $bai_pro3.sections_db (sec_id,sec_head,sec_mods) VALUES ('$sections','$sections','$total_modules')";
+		if (mysqli_query($conn, $sql123)) {
+		} else {
+			echo "Error: " . $sql123 . "<br>" . mysqli_error($conn);
+		}
 	}	
 }
 
