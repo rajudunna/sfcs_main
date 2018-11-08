@@ -3255,7 +3255,7 @@ tags will be replaced.-->
  
   //echo "<th $style_css>$fab_uom</th>";
   echo "</tr>";
- 
+  $fab_lay_sum =0;
 	for($j=0;$j<sizeof($color_codes);$j++)
 	{
 		echo "<tr style='height:40px'>";
@@ -3273,12 +3273,13 @@ tags will be replaced.-->
 		echo "<td $style_css>".$a_ratio_tot."</td>";
 		echo "<td $style_css>".round( $plies[$j] , 2 )."</td>";
 		echo "<th $style_css>".($a_ratio_tot)*($plies[$j])."</th>";
-		echo "<td $style_css>".round( $mk_length_ref[$j] , 2 )."</td>";
+		echo "<td $style_css>".round($mk_length_ref[$j] , 2 )."</td>";
 		echo "<td $style_css>".round($met_req[$j],2)."</td>";
 		echo "<td $style_css>".$binding_con1[$j]."</td>";
 		echo "<td $style_css>".round(((float)$binding_con1[$j]*(int)$plies[$j]*(float)$a_ratio_tot),2)."</td>";
 		$bind_sum=$bind_sum+((float)$binding_con1[$j]*(int)$plies[$j]*(float)$a_ratio_tot);
 		$fab_bind =((float)$binding_con1[$j]*(int)$plies[$j]*(float)$a_ratio_tot);//Caliculation for Bind/Rib
+		$fab_lay_sum =$fab_lay_sum + (float)$mk_length_ref[$j]*((float)$cuttable_wastage)*(int)$plies[$j];
 		$total_yds=$met_req[$j]+$fab_bind;
 		$sum+=  $total_yds; 
 		echo "<td $style_css>".round($total_yds,2)."</td>";
@@ -3390,11 +3391,11 @@ echo "<tr>";
   <!--<td rowspan=2 colspan=1 class=xl8917319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'><?php echo $binding_con; ?></td>-->
   <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'><?php $fab_lay = (float)$purlength*((float)$cuttable_wastage)*(int)array_sum($plies); echo round($fab_lay,2);echo '<br/>('.$fab_uom.')'; ?></td>
+  width:48pt'><?php echo round($fab_lay_sum,2);echo '<br/>('.$fab_uom.')'; ?></td>
   <td rowspan=2 colspan=2  class=xl8917319 style='border-bottom:.5pt solid black;
   width:48pt'><?php $fab_bind = round($bind_sum,2); echo round($bind_sum,2);echo '<br/>('.$fab_uom.')'; ?></td>
   <td rowspan=2 colspan=2  class=xl8917319 width=64 style='border-bottom:.5pt solid black;'>
-  <?php echo round($fab_bind+array_sum($met_req),2);echo '<br/>('.$fab_uom.')'; ?></td>
+  <?php echo round($fab_bind+$fab_lay_sum+array_sum($met_req),2);echo '<br/>('.$fab_uom.')'; ?></td>
   <td rowspan=2 colspan=2  class=xl10017319 style='border-bottom:.5pt solid black;
   border-top:none;'><?php echo $act_mk_length; ?></td>
   <td colspan=2  rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
