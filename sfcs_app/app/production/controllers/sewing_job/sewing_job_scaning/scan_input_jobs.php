@@ -281,7 +281,12 @@ $(document).ready(function()
 			dataType: "json",
 			success: function (response) 
 			{
-				if (response == 2)
+				if (response == 3)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'No Valid Block Priorities';
+				}
+				else if (response == 2)
 				{
 					var authorize_check = $('#user_permission').val();
 					if (authorize_check == 'authorized')

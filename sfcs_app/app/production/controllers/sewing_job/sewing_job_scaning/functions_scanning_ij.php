@@ -1695,31 +1695,39 @@ function validating_with_module($pre_array_module)
 		$block_priorities = $sql_row['block_priorities'];
 	}
 
-	if(!in_array($job_no,$input_job_array))
+	if ($block_priorities == '' || $block_priorities == null || $block_priorities == 0 || $block_priorities == '0')
 	{
-		// job not in module (adding new job to module)
-		if(sizeof($input_job_array) < $ims_boxes_count)
-	    {
-	        if (sizeof($input_job_array) < $block_priorities)
-	        {
-	            $response_flag = 0; // allow
-	        }
-	        else
-	        {
-	            $response_flag = 2; // check for user acces (block priorities)
-	        }
-	    }
-	    else
-	    {
-	        $response_flag = 1; // block
-	    }
+		$response_flag = 3;
 	}
 	else
 	{
-		// job already in module
-		$response_flag = 0;	// allow
+		if(!in_array($job_no,$input_job_array))
+		{
+			// job not in module (adding new job to module)
+			if(sizeof($input_job_array) < $ims_boxes_count)
+		    {
+		        if (sizeof($input_job_array) < $block_priorities)
+		        {
+		            $response_flag = 0; // allow
+		        }
+		        else
+		        {
+		            $response_flag = 2; // check for user acces (block priorities)
+		        }
+		    }
+		    else
+		    {
+		        $response_flag = 1; // block
+		    }
+		}
+		else
+		{
+			// job already in module
+			$response_flag = 0;	// allow
+		}
 	}
-	// 2 = check for user access (block priorities), 1 = ims boxes full, 0 = allow for scanning
+			
+	// 3 = No valid Block Priotities,2 = check for user access (block priorities), 1 = ims boxes full, 0 = allow for scanning
 	echo $response_flag;
 }
 
