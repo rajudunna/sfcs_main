@@ -90,8 +90,8 @@ echo "<div class='row'>";
 echo "<div class='col-sm-3'><label>Select Style: </label><select name=\"style\" onchange=\"firstbox();\" class='form-control' >";
 $sql="SELECT DISTINCT order_style_no FROM $bai_pro3.plan_doc_summ 
 WHERE CONCAT(TRIM(order_style_no),TRIM(order_col_des)) IN (SELECT DISTINCT CONCAT(TRIM(style),TRIM(color)) 
-FROM brandix_bts.tbl_style_ops_master 
-WHERE operation_code IN (SELECT DISTINCT operation_code FROM brandix_bts.tbl_orders_ops_ref WHERE category IN 
+FROM $brandix_bts.tbl_style_ops_master 
+WHERE operation_code IN (SELECT DISTINCT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE category IN 
 ('Send PF','Receive PF')))";
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
 $sql_num_check=mysqli_num_rows($sql_result);
