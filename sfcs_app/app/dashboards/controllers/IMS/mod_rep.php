@@ -45,7 +45,7 @@
 <head>
     <title>Module Transfer Panel</title>
     <script language=\"javascript\" type=\"text/javascript\" src=".getFullURL($_GET['r'],'common/js/dropdowntabs.js',4,'R')."></script>
-
+    <script type="text/javascript" src="../../common/js/tablefilter_1.js"></script>
     <link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
     <script src="../../../../common/js/sweetalert.min.js"></script>
 
@@ -63,7 +63,7 @@
             <div class="panel-heading">Module - <?php echo $module; ?> Summary</div>
             <div class="panel-body">
                 <form name="test" action="mod_rep.php" class="form-inline" method="post">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped" id="table1">
                         <tr class="info">
                             <th>Select</th>
                             <th>Barcode</th>
@@ -282,11 +282,19 @@
 <?php
     if(isset($_POST['submit']))
     {
-        $tid=array();
+        $tid=array();   $selected_sewing_jobs = array();
         $tid=$_POST['log_tid'];
 
         if (sizeof($tid) > 0)
         {
+            $implode_tids = implode(",",$tid);
+            $get_ip_jobs_selected_tids = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE tid in ($implode_tids)";
+            $slected_ij_result = $link->query($get_ip_jobs_selected_tids);
+            while($row1 = $slected_ij_result->fetch_assoc()) 
+            {
+                $selected_sewing_jobs[] = $row1['input_job_rand_no_ref'];
+            }
+
             $module= $_POST['module'];
             $tid1=array();
             $tid1=$_POST['pac_tid'];
@@ -309,7 +317,7 @@
             {
                 if(sizeof($input_job_array) < $ims_boxes_count)
                 {
-                    if (sizeof($tid) > $allowable_jobs)
+                    if (sizeof($selected_sewing_jobs) > $allowable_jobs)
                     {
                         echo "<script>sweetAlert('Selected more than Allowable Sewing Jobs','Please select any $allowable_jobs Jobs to transfer to module $module_ref','warning');</script>";
                         echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",5000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
@@ -375,3 +383,27 @@
         }   
     }
 ?>
+
+<script language="javascript" type="text/javascript">
+
+var table2_Props =  {            
+        display_all_text: "All",
+        col_0: "none",
+        col_1: "none",
+        col_2: "none",
+        col_3: "select",
+        col_4: "select", 
+        col_5: "select",
+        col_6: "select",
+        col_7: "select",
+        col_8: "select",
+        col_9: "none",
+        col_10: "none",
+        col_11: "none",
+        col_12: "none",
+        col_13: "none",
+        sort_select: true
+    };
+    setFilterGrid( "table1", table2_Props);
+
+</script>
