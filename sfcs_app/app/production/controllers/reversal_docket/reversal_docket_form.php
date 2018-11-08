@@ -6,37 +6,37 @@
     include(getFullURLLevel($_GET['r'],'functions.php',0,'R'));
 ?>
 <style>
-			/* #loading-image {
-			  border: 16px solid #f3f3f3;
-			  border-radius: 50%;
-			  border-top: 16px solid #3498db;
-			  width: 120px;
-			  height: 120px;
-			  margin-left: 40%;
-			  -webkit-animation: spin 2s linear infinite; /* Safari */
-			  animation: spin 2s linear infinite;
-			}
+            /* #loading-image {
+              border: 16px solid #f3f3f3;
+              border-radius: 50%;
+              border-top: 16px solid #3498db;
+              width: 120px;
+              height: 120px;
+              margin-left: 40%;
+              -webkit-animation: spin 2s linear infinite; /* Safari */
+              animation: spin 2s linear infinite;
+            }
 
-			/* Safari */
-			@-webkit-keyframes spin {
-			  0% { -webkit-transform: rotate(0deg); }
-			  100% { -webkit-transform: rotate(360deg); }
-			}
+            /* Safari */
+            @-webkit-keyframes spin {
+              0% { -webkit-transform: rotate(0deg); }
+              100% { -webkit-transform: rotate(360deg); }
+            }
 
-			@keyframes spin {
-			  0% { transform: rotate(0deg); }
-			  100% { transform: rotate(360deg); }
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
             }
             #delete_reversal_docket{
                 margin-top:3pt;
             } */
-		</style>
+        </style>
 <body>
 
 
 <div class="panel panel-primary"> 
-	<div class="panel-heading">Cutting Reversal</div>
-		<div class='panel-body'>
+    <div class="panel-heading">Cutting Reversal</div>
+        <div class='panel-body'>
             <form method="post" name="form1" action="?r=<?php echo $_GET['r']; ?>">
                 <div class="row">
                     <div class="col-md-3">
@@ -50,7 +50,7 @@
                     <div class="col-md-3">
                         <input type="submit" id="delete_reversal_docket" class="btn btn-danger" name="formSubmit" value="Delete">
                     </div>
-                	<img id="loading-image" class=""/>  
+                    <img id="loading-image" class=""/>  
                 </div>
             </form>
         </div>
@@ -126,12 +126,14 @@ if(isset($_POST['formSubmit']))
                 while($row_result_selecting_cps_qry = $result_selecting_cps_qry->fetch_assoc()) 
                 {
                     $rem_qty  = $row_result_selecting_cps_qry['remaining_qty'];
+                    // echo $rem_qty.'--'.$value;
                     if($rem_qty < $value)
                     {
                         $validate_check_flag_rem = 0;
                     }
                 }
             }
+            // die();
             if($validate_check_flag_rem == 1)
             {
                 foreach ($cut_done_qty as $key => $value)
@@ -142,21 +144,27 @@ if(isset($_POST['formSubmit']))
                     {
     
                         $rem_id  = $row_result_selecting_cps_qry['id'];
-                        $update_qty_rem = "update $bai_pro3.cps_log set remaining_qty = remaining_qty-$value where id = $rem_id";
+                        $remaining_qty1  = $row_result_selecting_cps_qry['remaining_qty'];
+                        if($remaining_qty1>$value){
+                            $status='P';
+                        }else {
+                            $status='';
+                        }
+                        $update_qty_rem = "update $bai_pro3.cps_log set remaining_qty = remaining_qty-$value,reported_status='".$status."' where id = $rem_id";
                         // echo $update_qty_rem.'<br/>';
-                        $update_qty_rem_result = mysqli_query($link,$update_qty_rem) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                        $update_qty_rem_result = mysqli_query($link,$update_qty_rem) or exit(" Error50".mysqli_error ($GLOBALS["___mysqli_ston"]));
                         
                     }
                     $bundle_creation_data_qry1 = "SELECT id,bundle_number FROM $brandix_bts.bundle_creation_data WHERE docket_number=$docket_number_post AND operation_id = '15' AND size_id='$key'";
                     // echo $bundle_creation_data_qry1.'<br/>';
-                    $bundle_creation_data_qry_result1 = mysqli_query($link,$bundle_creation_data_qry1) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                    $bundle_creation_data_qry_result1 = mysqli_query($link,$bundle_creation_data_qry1) or exit(" Error49".mysqli_error ($GLOBALS["___mysqli_ston"]));
                     while($row_result_selecting_qry = $bundle_creation_data_qry_result1->fetch_assoc()) 
                     {
                         $bcd_id = $row_result_selecting_qry['id'];
                         $ref_no = $row_result_selecting_qry['bundle_number'];
                         $update_qry_bcd = "update $brandix_bts.bundle_creation_data set recevied_qty = recevied_qty-$value where id = $bcd_id";
                         // echo $update_qry_bcd.'<br/>';
-                        $update_qry_bcd_result = mysqli_query($link,$update_qry_bcd) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                        $update_qry_bcd_result = mysqli_query($link,$update_qry_bcd) or exit(" Error48".mysqli_error ($GLOBALS["___mysqli_ston"]));
                         $update_plan_doc_stat_flag = 1;
                         $updation_m3 = updateM3TransactionsReversal($ref_no,$value,$pre_ops_code);
                     }
@@ -164,13 +172,13 @@ if(isset($_POST['formSubmit']))
                     {
                         $bundle_creation_data_qry1 = "SELECT id FROM $brandix_bts.bundle_creation_data WHERE docket_number=$docket_number_post AND operation_id = '$pre_ops_code' AND size_id='$key'";
                         // echo $bundle_creation_data_qry1.'<br/>';
-                        $bundle_creation_data_qry_result1 = mysqli_query($link,$bundle_creation_data_qry1) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                        $bundle_creation_data_qry_result1 = mysqli_query($link,$bundle_creation_data_qry1) or exit(" Error47".mysqli_error ($GLOBALS["___mysqli_ston"]));
                         while($row_result_selecting_qry = $bundle_creation_data_qry_result1->fetch_assoc()) 
                         {
                             $bcd_id_pre = $row_result_selecting_qry['id'];
                             $update_qry_bcd_pre = "update $brandix_bts.bundle_creation_data set send_qty = send_qty-$value where id = $bcd_id_pre";
                             // echo $update_qry_bcd_pre.'<br/>';
-                            $update_qry_bcd_pre_result = mysqli_query($link,$update_qry_bcd_pre) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                            $update_qry_bcd_pre_result = mysqli_query($link,$update_qry_bcd_pre) or exit(" Error46".mysqli_error ($GLOBALS["___mysqli_ston"]));
                         }
                     }
                     $docket_log= "insert into $brandix_bts.reversal_docket_log(docket_number,bundle_number,operation_id,size_title,cutting_reversal,act_cut_status)values(".$docket_number_post.",".$ref_no.",".$pre_ops_code.",'".$key."',".$value.",'Reversal')";
@@ -179,20 +187,20 @@ if(isset($_POST['formSubmit']))
                 }
                 if($update_plan_doc_stat_flag==1){
                     $cut_status_qry = "SELECT * from $bai_pro3.plandoc_stat_log where doc_no=$docket_number_post";
-                    $cut_status_qry_result = mysqli_query($link,$cut_status_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                    $cut_status_qry_result = mysqli_query($link,$cut_status_qry) or exit(" Error45".mysqli_error ($GLOBALS["___mysqli_ston"]));
                     while($sql_row = $cut_status_qry_result->fetch_assoc()){
                         $a_plies_old = $sql_row['a_plies'];
                         $p_plies_old = $sql_row['p_plies'];
                         if($a_plies_old==$plies_post) {
-                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=$p_plies,act_cut_status='' WHERE doc_no=$docket_number_post";
+                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post,act_cut_status='' WHERE doc_no=$docket_number_post";
                             // echo $update_plies_qry.'<br/><br/>';
-                            $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                            $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error41".mysqli_error ($GLOBALS["___mysqli_ston"]));
                             echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');</script>";
                         }
                         else {
                             $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post,act_cut_status='DONE' WHERE doc_no=$docket_number_post";
                             // echo $update_plies_qry.'<br/><br/>';
-                            $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                            $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error42".mysqli_error ($GLOBALS["___mysqli_ston"]));
                             echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');</script>";
                         }
                     }
