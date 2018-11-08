@@ -86,8 +86,9 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
 		{
 			$update_qry_post = "update $brandix_bts.bundle_creation_data set send_qty = send_qty+$value WHERE docket_number = '$doc_no_ref' AND size_id = '$key' AND operation_id = '$post_ops_code'";
 			$updating_post_ops = mysqli_query($link,$update_qry_post) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$updation_m3 = updateM3Transactions($ref_no,$op_code,$value);
+			
 		}
+		$updation_m3 = updateM3Transactions($ref_no,$op_code,$value);
 	}
 }
 echo "<div class=\"alert alert-success\">
@@ -107,7 +108,7 @@ else if ($go_back_to == 'doc_track_panel_withrolls_recut')
 }
 else if ($go_back_to == 'doc_track_panel_without_recut')
 {
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel.php',1,'N')."'; }</script>";
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel.php',0,'N')."'; }</script>";
 }
 
 

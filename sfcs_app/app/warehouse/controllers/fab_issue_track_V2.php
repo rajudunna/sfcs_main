@@ -270,7 +270,7 @@ if(isset($_POST["submit"]) or $flag==1)
 			//echo "<tr><th>Docet No</th><th>Label ID</th><th>Roll Width</th><th>Docet Type</th><th>Allocated Qty</th><th>Control</th></tr>";
 			echo '<form method="POST" name="form" action="'.getFullURL($_GET['r'],'fab_issue_track_V2.php','N').'">';
 			echo "<tr><td><input type='hidden' name='doc_no'  value='".$docket."' size=4>".$docket."</td>";
-			echo "<td><input type='text' name='roll_id2'  id='label_id' value='' size=4 class='form-control integer'  required/></td>";
+			echo "<td><input type='text' name='roll_id2'  id='label_id' value='' size=4 class='form-control'  required/></td>";
 			//echo "<td><input type='text' name='roll_width' value='' size=6 class='input'></td>"; 
 			echo '<td><select name="cat" class="form-control">';
 			if($cat=='D')
@@ -641,7 +641,7 @@ if(isset($_POST['new_entry']))
 			$temp_status = 1;
 		}
 	}
-	$sql="select * from $bai_rm_pj1.store_in where tid='".$roll_id."'"; 
+	$sql="select * from $bai_rm_pj1.store_in where barcode_number='".$roll_id."'"; 
 	// echo $sql;
 	$result1=mysqli_query($link, $sql) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$label_rows = mysqli_num_rows($result1);
@@ -716,7 +716,7 @@ if(isset($_POST['new_entry']))
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_result)>0)
 					{
-						$sql="select qty_rec,qty_issued,qty_ret,partial_appr_qty from $bai_rm_pj1.store_in where roll_status in (0,2) and tid=\"$roll_id\"";
+						$sql="select qty_rec,qty_issued,qty_ret,partial_appr_qty from $bai_rm_pj1.store_in where roll_status in (0,2) and barcode_number=\"$roll_id\"";
 
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($sql_result))
@@ -743,14 +743,15 @@ if(isset($_POST['new_entry']))
 
 							$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,doc_type,allocated_qty,status) values (\"$doc_no\",\"$roll_id\",\"$doc_type\",\"$alloc_qty\",'1')";
 							mysqli_query($link, $sql) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$sql1="update $bai_rm_pj1.store_in set qty_allocated=(qty_allocated+\"$alloc_qty\"),allotment_status='1' where tid=\"$roll_id\" ";
+							$sql1="update $bai_rm_pj1.store_in set qty_allocated=(qty_allocated+\"$alloc_qty\"),allotment_status='1' where barcode_number=\"$roll_id\" ";
 							mysqli_query($link, $sql1) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$sql="select ref3,ref6 from $bai_rm_pj1.store_in where tid=$roll_id";
+							$sql="select ref3,ref6 from $bai_rm_pj1.store_in where barcode_number='$roll_id'";
 							$result1=mysqli_query($link, $sql) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($row1=mysqli_fetch_array($result1))
 							{
 								$ctx_width=$row1["ref3"];
 								$act_width=$row1["ref6"];
+								$tid_new=$row1["tid"];
 							}
 
 							if($ctx_width == 0)
@@ -761,21 +762,21 @@ if(isset($_POST['new_entry']))
 							$sql="update $bai_rm_pj1.fabric_cad_allocation set roll_width=\"$ctx_width\" where roll_id=\"$roll_id\"";
 							mysqli_query($link, $sql) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 									
-							$sql1="update $bai_rm_pj1.store_in set qty_issued=".($qty_issued+$alloc_qty).", status='2', allotment_status='2' where tid=\"$roll_id\"";
+							$sql1="update $bai_rm_pj1.store_in set qty_issued=".($qty_issued+$alloc_qty).", status='2', allotment_status='2' where barcode_number=\"$roll_id\"";
 							$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							
-							$sql1="insert into $bai_rm_pj1.store_out (tran_tid,qty_issued,cutno,date,updated_by,log_stamp,Style,Schedule) values (\"$roll_id\", ".($alloc_qty).", '".$cat.$doc_no."',\"".date("Y-m-d")."\",'".$username."','".date("Y-m-d H:i:s")."',\"$order_style\",\"$order_schedule\")";
+							$sql1="insert into $bai_rm_pj1.store_out (tran_tid,qty_issued,cutno,date,updated_by,log_stamp,Style,Schedule) values (\"$tid_new\", ".($alloc_qty).", '".$cat.$doc_no."',\"".date("Y-m-d")."\",'".$username."','".date("Y-m-d H:i:s")."',\"$order_style\",\"$order_schedule\")";
 							$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							//roll splitting
 							$current_date=date("Y-m-d");
 							$splitted_qty=($balance-$alloc_qty);
 							if($splitted_qty >0)
 							{
-								$qry_rolldetails="SELECT lot_no,ref1,ref2,ref3,remarks,log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason FROM $bai_rm_pj1.store_in WHERE tid=\"$roll_id\"";
+								$qry_rolldetails="SELECT tid,lot_no,ref1,ref2,ref3,remarks,log_user,barcode_number,ref_tid, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason FROM $bai_rm_pj1.store_in WHERE barcode_number=\"$roll_id\"";
 									$result__rolldetials=mysqli_query($link, $qry_rolldetails);
 									$row_rolldetials=mysqli_fetch_assoc($result__rolldetials);
 									
-									$qry_newroll="insert into $bai_rm_pj1.store_in(lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll) values('".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$splitted_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$row_rolldetials["log_user"]."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".$row_rolldetials["ref5"]."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$roll_id."')";
+									$qry_newroll="insert into $bai_rm_pj1.store_in(lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll,barcode_number,ref_tid) values('".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$splitted_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$row_rolldetials["log_user"]."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".$row_rolldetials["ref5"]."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$row_rolldetials["tid"]."','".$row_rolldetials["barcode_number"]."','".$row_rolldetials["ref_tid"]."')";
 									// echo $qry_newroll;
 									mysqli_query($link, $qry_newroll) or exit("Sql Error3: $qry_newroll".mysqli_error($GLOBALS["___mysqli_ston"]));
 

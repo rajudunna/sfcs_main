@@ -18,11 +18,11 @@
     $qtys=$_POST['qty']; 
     $input_job_no_random=$_POST['input_job_no_random']; 
     $input_job_no=$_POST['input_job_no'];
-
+    $ninput_job_no_random = '';
     //temp values to insert to mo_quantites table    
     $temp_input_job_no_random = $input_job_no_random;
     $temp_input_job_no = $input_job_no;
-   
+
     $getlastrec="SELECT input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random = '$input_job_no_random' and input_job_no = '$input_job_no' ORDER BY tid DESC LIMIT 0,1"; 
     // echo $getlastrec;die();
     $res_last_rec=mysqli_query($link,$getlastrec);
@@ -72,6 +72,9 @@
             $destination=$row['destination']; 
             $packing_mode=$row['packing_mode']; 
             $old_size=$row['old_size']; 
+            $jobs_array[] = $input_job_no;
+            $sref_id=$row['sref_id']; 
+            $pac_seq_no=$row['pac_seq_no']; 
 
             $url_s = getFullURLLevel($_GET['r'],'split_jobs.php',0,'N');
 
@@ -82,7 +85,7 @@
                 $schedule=$rowx['order_del_no']; 
             }
 
-            $query_check = "SELECT COUNT(id) FROM $brandix_bts.`bundle_creation_data` WHERE input_job_no_random_ref='$input_job_no_random'";
+            $query_check = "SELECT COUNT(id) as cnt FROM $brandix_bts.`bundle_creation_data_temp` WHERE input_job_no_random_ref='$input_job_no_random'";
             $res_query_check=mysqli_query($link,$query_check);
             while($result = mysqli_fetch_array($res_query_check))
             {
@@ -108,7 +111,7 @@
                         $nqty=$carton_act_qty-$qty;
                         if($nqty>0)
                         {
-                            $sql1="INSERT into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,status,doc_no_ref,input_job_no,input_job_no_random,destination,packing_mode,old_size,type_of_sewing) VALUES ('$doc_no','$size_code','$qty','$status','".$doc_no_ref."','".$ninput_job_no."','".$ninput_job_no_random."','$destination','$packing_mode','$old_size','$type_of_sewing')";
+                            $sql1="INSERT into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,status,doc_no_ref,input_job_no,input_job_no_random,destination,packing_mode,old_size,type_of_sewing,pac_seq_no,sref_id) VALUES ('$doc_no','$size_code','$qty','$status','".$doc_no_ref."','".$ninput_job_no."','".$ninput_job_no_random."','$destination','$packing_mode','$old_size','$type_of_sewing','$pac_seq_no','$sref_id')";
                             // echo $sql1.'<br>';
                             mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"])); 
                             $inserted_tid = mysqli_insert_id($link);
@@ -172,6 +175,11 @@
         }
     }
     $url = getFullURLLevel($_GET['r'],'split_jobs.php','0','N');
+    $jobs_array = array_unique($jobs_array);
+    foreach($jobs_array as $job){
+        $updated = update_barcode_sequences($job);
+    }
+    $updated = update_barcode_sequences($ninput_job_no_random);
     echo "<script>sweetAlert('Success','Successfully Splitted your job.','success');</script>";
     echo "<script> 
                     setTimeout('Redirect()',3000); 
@@ -182,3 +190,25 @@
 ?> 
 </div></div>
 </body> 
+
+
+<?php
+function update_barcode_sequences($input_job_random){
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    $query = "select group_concat(tid order by tid DESC) as tid from $bai_pro3.pac_stat_log_input_job 
+             where input_job_no_random = '$input_job_random' ";
+    $result = mysqli_query($link,$query);
+    while($row = mysqli_fetch_array($result)){
+        $tids = $row['tid'];
+        $tid = explode(',',$tids);
+        $counter = sizeof($tid);
+        foreach($tid as $id){
+            $update_query = "Update bai_pro3.pac_stat_log_input_job set barcode_sequence = $counter where tid='$id'";
+            mysqli_query($link,$update_query) or exit('Unable to update');
+            $counter--;
+        }
+	}
+	return true;
+}  
+
+?>

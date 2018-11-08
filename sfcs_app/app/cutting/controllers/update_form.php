@@ -416,7 +416,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 
 	echo "<td>".$item_desc."</td>";
-	echo "<td>".$reason_code_db[array_search($sql_row['reason_code'],$reason_id_db)]."</td>";
+	// echo "<td>".$reason_code_db[array_search($sql_row['reason_code'],$reason_id_db)]."</td>";
+	$reason_code = $sql_row['reason_code'];
+	$sql_reason = "SELECT * FROM $bai_rm_pj2.mrn_reason_db WHERE reason_tid = \"$reason_code\"";
+	$result_reason = mysqli_query($link,$sql_reason);
+	$reason_row = mysqli_fetch_assoc($result_reason);
+	echo "<td>".$reason_row['reason_code']."-".$reason_row['reason_desc']."</td>";
 	switch($level)
 	{
 		case 2:
@@ -469,17 +474,17 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		case 1:
 			{
-				echo "<td><input type=\"text\" class='form-control' name=\"ins_rem\" value=\"0\"></td>";
+				echo "<td><input type=\"text\"  name=\"ins_rem\" value=\"0\"></td>";
 	   			break;
 			}
 		case 2:
 		{
-			echo "<td><input type=\"text\" class='form-control' name=\"ins_rem\" value=\"0\"></td>";
+			echo "<td><input type=\"text\"  name=\"ins_rem\" value=\"0\"></td>";
    			break;
 		}
 		case 3:
 		{
-			echo "<td><input type=\"text\" class='form-control' name=\"ins_rem\" value=\"0\"></td>";
+			echo "<td><input type=\"text\"  name=\"ins_rem\" value=\"0\"></td>";
    			break;
 		}
 	}	

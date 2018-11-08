@@ -1,24 +1,20 @@
-<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
+<script src="/sfcs_app/common/js/jquery-1.11.1.min.js"></script>
+<script src="/sfcs_app/common/js/sweetalert-dev.js"></script>
+<link rel="stylesheet" href="/sfcs_app/common/css/sweetalert.css">
 <?php
 $id=$_REQUEST['id'];
 $module=$_REQUEST['module'];
 $description =$_REQUEST['description'];
 $status =$_REQUEST['table_status'];
 $sections =$_REQUEST['sections'];
+$sec1 =$_REQUEST['sec1'];
 $module_color =$_REQUEST['module_color'];
 $module_label =$_REQUEST['module_label'];
+$mapped_cut_table =$_REQUEST['mapped_cut_table'];
 $datetime =$_REQUEST['datetimepicker11'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $username=getrbac_user()['uname'];
 $conn=$link;
-// echo 
-
-
-
-
-
 if (empty($module)||empty($sections)) {
 	$url=getFullURL($_GET['r'],'add_module.php','N');
 	echo"<script>setTimeout(function () { 
@@ -48,7 +44,7 @@ if (empty($module)||empty($sections)) {
 		
 		//update
 		
-		$sql = "update $bai_pro3.module_master set module_name='$module',date_time='$datetime',module_description='$description', section='$sections',status='$modulestatus',color='$module_color', label='$module_label' where id=$id";
+		$sql = "update $bai_pro3.module_master set module_name='$module',date_time='$datetime',mapped_cut_table='$mapped_cut_table',module_description='$description', section='$sections',status='$modulestatus',color='$module_color', label='$module_label' where id=$id";
 		// echo $sql;die();
 		if (mysqli_query($conn, $sql)) {
 			} else {
@@ -73,17 +69,17 @@ if (empty($module)||empty($sections)) {
 			}
 
 
-			$sections_query1="SELECT GROUP_CONCAT(module_id)as module_concat FROM bai_pro3.`plan_modules` WHERE section_id='$sections'";
-			$result3 = mysqli_query($conn, $sections_query1);
-			$row = mysqli_fetch_assoc($result3);
-			$total_modules=$row['module_concat'];
+			// $sections_query1="SELECT GROUP_CONCAT(module_id)as module_concat FROM $bai_pro3.`plan_modules` WHERE section_id='$sections'";
+			// $result3 = mysqli_query($conn, $sections_query1);
+			// $row = mysqli_fetch_assoc($result3);
+			// $total_modules=$row['module_concat'];
 
 
 
 
-			$sql1 = "update $bai_pro3.sections_db set sec_id='$sections',sec_head='$sections',sec_mods='$total_modules' where sec_head='$sections'";
+			// $sql1 = "update $bai_pro3.sections_db set sec_id='$sections',sec_head='$sections',sec_mods='$total_modules' where sec_head='$sections'";
 				
-			 if (mysqli_query($conn, $sql1)) {
+			 if (mysqli_query($conn, $sql5)) {
 				$url=getFullURL($_GET['r'],'add_module.php','N');
 				//echo $url;
 				//echo "Record updated successfully";
@@ -130,8 +126,8 @@ if (empty($module)||empty($sections)) {
 			$plan_modules_result= mysqli_query($conn, $plan_modules);
 			$row_count=mysqli_num_rows($plan_modules_result);
 			if($row_count==0){
-		$sql9 = "INSERT INTO $bai_pro3.module_master (module_name,date_time,module_description,status,section,color,label)
-		VALUES ('$module','$datetime','$description','$modulestatus','$sections','$module_color','$module_label')";
+		$sql9 = "INSERT INTO $bai_pro3.module_master (module_name,date_time,module_description,status,section,color,label,mapped_cut_table)
+		VALUES ('$module','$datetime','$description','$modulestatus','$sections','$module_color','$module_label','$mapped_cut_table')";
         
 		if (mysqli_query($conn, $sql9)) {
 			$url=getFullURL($_GET['r'],'add_module.php','N');
@@ -187,11 +183,11 @@ if (empty($module)||empty($sections)) {
 	  $result3 = mysqli_query($conn, $sections_query);
     $row = mysqli_fetch_assoc($result3);
 		$total_modules=$row['module_concat'];
-		$sql1 = "INSERT INTO $bai_pro3.sections_db (sec_id,sec_head,sec_mods)
+		$sql123 = "INSERT INTO $bai_pro3.sections_db (sec_id,sec_head,sec_mods)
 			VALUES ('$sections','$sections','$total_modules')";
-	   if (mysqli_query($conn, $sql1)) {
+	   if (mysqli_query($conn, $sql123)) {
 							 	} else {
-										 echo "Error: " . $sql1 . "<br>" . mysqli_error($conn);
+										 echo "Error: " . $sql123 . "<br>" . mysqli_error($conn);
 					    	}
 
 	

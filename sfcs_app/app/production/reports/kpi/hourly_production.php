@@ -305,13 +305,41 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 							else if ($row < round($pcsphr))
 							{
 								if ($row == 0)
-								{									
+								{
+									$reasons = array();
+									$break_resons = array(20,21,22);
+
+									$sql6_2x="SELECT distinct(reason_id) FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+									$res6_12x=mysqli_query($link,$sql6_2x);
+									$k = 0;
+									while ($rows = mysqli_fetch_array($res6_12x))
+									{
+										$reasons[$k] = $rows['reason_id'];
+										$k++;
+									}
+									
+									$only_others = sizeof(array_intersect($master_resons, $reasons));
+									$only_breaks = sizeof(array_intersect($break_resons, $reasons));
+
+									if($only_breaks > 0 && $only_others > 0 )
+									{
+										$color = '#D4AC0D';
+									}
+									else if($only_breaks > 0 && $only_others == 0)
+									{
+										$color = '#D40D86';
+									}
+									else
+									{
+										$color = '#DD3636';
+									}
+
 									$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
 									// echo $sql6_2.'<br><br>';
 									$res6_12=mysqli_query($link,$sql6_2);
 									if (mysqli_num_rows($res6_12) > 0)
 									{
-										echo "<td><center> 0 </center></td>";
+										echo "<td style='background-color:$color; color:white;'><center> 0 </center></td>";
 									}
 									else
 									{

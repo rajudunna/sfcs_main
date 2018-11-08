@@ -1,3 +1,4 @@
+
 <?php
 include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',5,'R')); 
@@ -9,8 +10,11 @@ $company_num = $company_no;
 $host= $api_hostname;
 $port= $api_port_no;
 $current_date = date('Y-m-d h:i:s');
+$shift=$_GET['shift'];
+  
 if(isset($_POST['id']))
 {
+	
 	//echo "<script>document.getElementById('main').hidden = true</script>";
 	echo "<h1 style='color:red;'>Please Wait a while !!!</h1>";
 	//echo "<script>document.getElementById('message').innerHTML='<b>Please wait a while</b>'</script>";
@@ -45,6 +49,7 @@ if(isset($_POST['id']))
 	<div class='panel panel-primary'>
 			<div class='panel-heading'>Job Data</div>
 			<form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
+				<input type='hidden' value='<?= $shift ?>' id='shift_val' name='shift_val'>
 				<div class='panel-body' id="dynamic_table_panel">	
 						<div id ="dynamic_table1">
 				</div>
@@ -209,6 +214,8 @@ if(isset($_POST['formSubmit']))
 	$input_job_no_random = $_POST['input_job_no_random'];
 	$mapped_color = $_POST['mapped_color'];
 	$b_module = $_POST['module'];
+	$b_shift  = $_POST['shift_val'];
+
 	//var_dump($ops_dep);
 	if($_POST['post_ops'])
 	{
@@ -221,7 +228,7 @@ if(isset($_POST['formSubmit']))
 		$module_cum = $b_module[$key];
 		//select bundle_number,send_qty,recevied_qty,rejected_qty,color,size_title,size_id,original_qty,cut_number,docket_number,input_job_no FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = $b_job_no AND operation_id = '$b_op_id' AND assigned_module = '$b_module[$key]' order by bundle_number ASC
 		//select *  FROM $bai_pro3.packing_summary_input where order_col_des = '$color[$key]' and size_code = '$size[$key]' and input_job_no_random = $input_job_no_random order by tid DESC
-		$query_to_fetch_individual_bundles = "select * FROM $brandix_bts.bundle_creation_data where color = '$color[$key]' and size_title = '$size[$key]' and input_job_no_random_ref = '$input_job_no_random' AND operation_id = '$operation_id' AND assigned_module = '$module_cum' order by bundle_number DESC";
+		$query_to_fetch_individual_bundles = "select * FROM $brandix_bts.bundle_creation_data where color = '$color[$key]' and size_title = '$size[$key]' and input_job_no_random_ref = '$input_job_no_random' AND operation_id = '$operation_id' AND assigned_module = '$module_cum' order by barcode_sequence";
 		$cumulative_reversal_qty = $reversalval[$key];
 		// echo $query_to_fetch_individual_bundles;
 		$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -241,7 +248,14 @@ if(isset($_POST['formSubmit']))
 			$bundle_individual_number = $nop_qry_row['bundle_number'];
 			// $bundle_individual_number = $nop_qry_row['tid'];
 			$actual_bundles[] = $nop_qry_row['bundle_number'];
-			$query_to_fetch_individual_bundle_details = "select recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$operation_id'";
+			if($post_code[0] != '0')
+			{
+				$query_to_fetch_individual_bundle_details = "select (send_qty-recevied_qty)as recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$post_code[0]'";
+			}
+			else
+			{
+				$query_to_fetch_individual_bundle_details = "select recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$operation_id'";
+			}
 			// echo $query_to_fetch_individual_bundle_details;
 			// echo "<br/><br/>";
 			$result_query_to_fetch_individual_bundle_details=mysqli_query($link,$query_to_fetch_individual_bundle_details) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -251,8 +265,8 @@ if(isset($_POST['formSubmit']))
 			}
 			while($row_result_query_to_fetch_individual_bundle_details=mysqli_fetch_array($result_query_to_fetch_individual_bundle_details))
 			{
-					
-				$rec_qty = $nop_qry_row['recevied_qty'];
+
+				$rec_qty = $row_result_query_to_fetch_individual_bundle_details['recevied_qty'];
 				// echo $bundle_individual_number.'-'.$rec_qty.'-'.$cumulative_reversal_qty.'</br>';
 				if($rec_qty > 0)
 				{
@@ -294,6 +308,17 @@ if(isset($_POST['formSubmit']))
 	$concurrent_flag = 0;
 	$reversalval = $actual_reversal_val_array;
 	$b_module = $b_module1;
+
+	//getting sfcs_smv
+	$smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' 
+				  and operation_code = $operation_id";
+	$result_smv_query = $link->query($smv_query);
+	while($row_ops = $result_smv_query->fetch_assoc()) 
+	{
+		$sfcs_smv = $row_ops['smv'];
+	}
+
+
 // echo "post code".$post_code;
 $ops_seq_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and operation_code='$operation_id'";
 $result_ops_seq_check = $link->query($ops_seq_check);
@@ -318,7 +343,7 @@ foreach ($bundle_no as $key=>$value)
 	$act_reciving_qty = $reversalval[$key];
 	//echo "rep_qty_rep".$rep_qty[$key]."</br>";
 	//	echo "rep_qty".$act_reciving_qty."</br>";
-	$select_send_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $operation_id and remarks='$remarks' and bundle_number='$bundle_no[$key]' group by bundle_number order by bundle_number";
+	$select_send_qty = "select (SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $operation_id and remarks='$remarks' and bundle_number='$bundle_no[$key]' group by bundle_number order by bundle_number";
 	$result_select_send_qty = $link->query($select_send_qty);
 	while($row = $result_select_send_qty->fetch_assoc()) 
 	{
@@ -328,7 +353,7 @@ foreach ($bundle_no as $key=>$value)
 	}
 	if($post_ops_code)
 	{
-		$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $post_ops_code and remarks='$remarks' and bundle_number='$bundle_no[$key]' group by bundle_number order by bundle_number";
+		$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $post_ops_code and remarks='$remarks' and bundle_number='$bundle_no[$key]' group by bundle_number order by bundle_number";
 			//echo $post_ops_qry_to_find_rec_qty;
 			$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
 			if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
@@ -347,7 +372,7 @@ foreach ($bundle_no as $key=>$value)
 	}
 	else if($ops_dependency)
 	{
-		$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $ops_dep and remarks='$remarks' and bundle_number='$bundle_no[$key]' group by bundle_number order by bundle_number";
+		$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $ops_dep and remarks='$remarks' and bundle_number='$bundle_no[$key]' group by bundle_number order by bundle_number";
 			//echo $post_ops_qry_to_find_rec_qty;
 			$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
 			if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
@@ -439,8 +464,8 @@ else if($concurrent_flag == 0)
 			$b_op_id = $row['operation_id'];
 			$b_job_no =  $row['input_job_no_random_ref'];
 			// $b_module = $row['assigned_module'];
-			$b_shift = $row['shift'];
-			$sfcs_smv = $row['sfcs_smv'];
+			//$b_shift = $row['shift'];
+			//$sfcs_smv = $row['sfcs_smv'];
 			$b_inp_job_ref = $row['input_job_no'];
 			$size_id = $row['size_id'];
 			$b_in_job_qty = $row['original_qty'];
@@ -566,7 +591,7 @@ else if($concurrent_flag == 0)
 			// }
 			// else
 			// {
-				$input_ops_code = 100;
+				$input_ops_code =100;
 			// }
 		
 			//echo "PAC TID = $b_tid + $value";
@@ -592,9 +617,9 @@ else if($concurrent_flag == 0)
 				else
 				{
 					//if it was not there in ims log am checking that in ims log backup and updating the qty and reverting that into the ims log because ims_qty and ims_pro_qty not equal
-					$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log_backup WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module'  AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
+					$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log_backup WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module[$key]'  AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
 					$result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
-					//echo '<br/>'.$searching_query_in_imslog;
+					// echo '<br/>'.$searching_query_in_imslog;
 					if($result_searching_query_in_imslog->num_rows > 0)
 					{
 						while($row = $result_searching_query_in_imslog->fetch_assoc()) 
@@ -604,18 +629,22 @@ else if($concurrent_flag == 0)
 							$act_ims_input_qty = $row['ims_qty'];
 						}
 						$act_ims_qty = $pre_ims_qty - $reversalval[$key];
-						//updating the ims_qty when it was there in ims_log
-						$update_query = "update $bai_pro3.ims_log_backup set ims_pro_qty = $act_ims_qty where tid = $updatable_id";
-						$ims_pro_qty_updating = mysqli_query($link,$update_query) or exit("While updating ims_pro_qty in ims_log_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
-						if($ims_pro_qty_updating)
+						//updating the ims_qty when it was there in 
+						if($reversalval[$key] > 0)
 						{
-							$update_status_query = "update $bai_pro3.ims_log_backup set ims_status = '' where tid = $updatable_id";
-							mysqli_query($link,$update_status_query) or exit("While updating status in ims_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$ims_backup="insert ignore into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
-							mysqli_query($link,$ims_backup) or exit("Error while inserting into ims log".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
-							mysqli_query($link,$ims_delete) or exit("While Deleting ims log backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$update_query = "update $bai_pro3.ims_log_backup set ims_pro_qty = $act_ims_qty where tid = $updatable_id";
+							$ims_pro_qty_updating = mysqli_query($link,$update_query) or exit("While updating ims_pro_qty in ims_log_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+							if($ims_pro_qty_updating)
+							{
+								$update_status_query = "update $bai_pro3.ims_log_backup set ims_status = '' where tid = $updatable_id";
+								mysqli_query($link,$update_status_query) or exit("While updating status in ims_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$ims_backup="insert ignore into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
+								mysqli_query($link,$ims_backup) or exit("Error while inserting into ims log".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
+								mysqli_query($link,$ims_delete) or exit("While Deleting ims log backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+							}
 						}
+						
 					}
 					
 				}
@@ -626,8 +655,9 @@ else if($concurrent_flag == 0)
 		//exit('force quitting');
 		//inserting into bai_log and bai_log buff
 			$sizevalue="size_".$size_id;
-			$sections_qry="select sec_id,sec_head FROM $bai_pro3.sections_db WHERE sec_id>0 AND  sec_mods LIKE '%,".$b_module[$key].",%' OR  sec_mods LIKE '".$b_module[$key].",%' LIMIT 0,1";
+			//$sections_qry="select sec_id,sec_head FROM $bai_pro3.sections_db WHERE sec_id>0 AND  sec_mods LIKE '%,".$b_module[$key].",%' OR  sec_mods LIKE '%,".$b_module[$key]."' OR  sec_mods LIKE '".$b_module[$key].",%' LIMIT 0,1";
 			//echo $sections_qry;
+			$sections_qry="SELECT section AS sec_id FROM `bai_pro3`.`module_master` WHERE module_name = '$b_module[$key]'";
 			$sections_qry_result=mysqli_query($link,$sections_qry) or exit("Bundles Query Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($buyer_qry_row=mysqli_fetch_array($sections_qry_result)){
 					$sec_head=$buyer_qry_row['sec_id'];
@@ -657,7 +687,7 @@ else if($concurrent_flag == 0)
 				}
 			$b_rep_qty_ins = '-'.$reversalval[$key];
 			$bundle_op_id=$b_tid."-".$b_op_id."-".$b_inp_job_ref;
-			$appilication_out = 'Down_Time';
+			$appilication_out = 'IMS_OUT';
 			$checking_output_ops_code_out = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication_out'";
 		    //echo $checking_output_ops_code;
 			$result_checking_output_ops_code_out = $link->query($checking_output_ops_code_out);
@@ -670,13 +700,13 @@ else if($concurrent_flag == 0)
 			}
 			else
 			{
-		    $output_ops_code_out = 130;
+		   	 $output_ops_code_out = 130;
 			}
 			if($b_op_id == $output_ops_code_out)
 			{
 				$insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
 				bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
-				) values ('".$b_module[$key]."','".$sec_head."','".$b_rep_qty_ins."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty_ins."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref."')";
+				) values ('".$b_module[$key]."','".$sec_head."','".$b_rep_qty_ins."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors."',USER(),'".$b_doc_num."','".$sfcs_smv."','".$b_rep_qty_ins."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref."')";
 				//echo "Bai log : ".$insert_bailog."</br>";
 				if($reversalval[$key] > 0)
 				{
@@ -688,7 +718,7 @@ else if($concurrent_flag == 0)
 					/*Insert same data into bai_pro.bai_log_buf table*/
 					$insert_bailog_buf="insert into $bai_pro.bai_log_buf (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
 					bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
-					) values ('".$b_module[$key]."','".$sec_head."','".$b_rep_qty_ins."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty_ins."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref."')";
+					) values ('".$b_module[$key]."','".$sec_head."','".$b_rep_qty_ins."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors."',USER(),'".$b_doc_num."','".$sfcs_smv."','".$b_rep_qty_ins."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref."')";
 					//echo "Bai log Buff: ".$insert_bailog."</br>";
 					if($reversalval[$key] > 0)
 					{
@@ -727,15 +757,16 @@ else if($concurrent_flag == 0)
 					// echo $update_query;
 					mysqli_query($link,$update_query) or exit("Some problem while updating cps log");
 				}	
-			}	
+			}
 			$updating = updateM3TransactionsReversal($bundle_no[$key],$reversalval[$key],$operation_id);		
 		}
 		
 	}
-	
+
 	// die();
-	$url = '?r='.$_GET['r'];
+	$url = '?r='.$_GET['r']."&shift=$b_shift";
 	echo "<script>window.location = '".$url."'</script>";
+	// die();
  }
 
 ?>
