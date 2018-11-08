@@ -552,7 +552,7 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 			
 
 			$sql11x="select * from $bai_pro3.fabric_priorities where doc_ref in (".$doc_no_ref_input.")";
-			echo $sql11x."<br>";
+			//echo $sql11x."<br>";
 			$sql_result11x=mysqli_query($link, $sql11x) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result11x)==$num_docs)
 			{
