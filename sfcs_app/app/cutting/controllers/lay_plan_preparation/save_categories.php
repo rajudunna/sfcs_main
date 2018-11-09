@@ -3,6 +3,8 @@
 $cat_id = $_GET['cat_id'];
 $check_id=$_GET['check_id'];
 $tran_order_tid=$_GET['tran_order_tid'];
+$total_allocated=$_GET['total_allocated'];
+
 
 $sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -126,9 +128,16 @@ if($ii >0 && $temp1==1){
     			sweetAlert('Copied Successfully','','success');	 
    			 location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
 }else{
-    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
- 				sweetAlert('Already Allocated ','','error');	 
-                  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+    if($total_allocated==0){
+        echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
+            sweetAlert('can\'t copy','','warning');	 
+             location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+    }
+    else {
+        echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
+            sweetAlert('Already Allocated ','','error');	 
+             location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+    }
 }
                   
 ?>

@@ -2184,7 +2184,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status=='0000-00-00' || $print_status == "") {echo "COPY"; } else {echo "COPY";}?></strong></td>
+  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status=='0000-00-00' || $print_status == "") {echo "Original"; } else {echo "Duplicate";}?></strong></td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -2280,7 +2280,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- <tr class=xl654118 height=11 style='mso-height-source:userset;height:8.25pt'>
+ <!-- <tr class=xl654118 height=11 style='mso-height-source:userset;height:8.25pt'>
   <td height=11 class=xl654118 style='height:8.25pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2298,7 +2298,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
- </tr>
+ </tr> -->
  </table>
  <table border=0 cellpadding=0 cellspacing=0 align=left style='border-collapse: collapse;'>
  <?php
@@ -2449,7 +2449,7 @@ tags will be replaced.-->
 			{
 				//if($s_tit[$sizes_code[$s]]<>'' && $a_s[$sizes_code[$s]] > 0)
 				//{
-					echo  "<td class=xl734118>".$s_tit[$sizes_code[$s]]."</td>";
+					echo  "<td class=xl694118>".$s_tit[$sizes_code[$s]]."</td>";
 				//}
 			}
 		}
@@ -2568,7 +2568,8 @@ tags will be replaced.-->
 	  <td class=xl654118></td>
 	  <td class=xl654118></td>
 	 </tr>
-	  <tr>
+	 
+	  <!-- <tr> -->
 	  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
 	  <td height=20 class=xl654118 style='height:15.0pt'></td>
 	  <td class=xl654118>Size</td>
@@ -2703,7 +2704,7 @@ tags will be replaced.-->
 	  <td class=xl654118></td>
 	 </tr>
 	 
-	  <tr>
+	  <!-- <tr> -->
 	  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
 	  <td height=20 class=xl654118 style='height:15.0pt'></td>
 	  <td class=xl654118>Size</td>
@@ -2927,7 +2928,7 @@ tags will be replaced.-->
 	}
 	
  ?>
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <!-- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2945,7 +2946,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
- </tr>
+ </tr> -->
 
 <?php
 if (mysqli_num_rows($child_dockets_result)>0)
@@ -2967,7 +2968,8 @@ if (mysqli_num_rows($child_dockets_result)>0)
 		}
 		if($flag == 1)
 		{
-			?> <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'></tr>
+			?>
+			<tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'></tr>
 			<tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
 				<td height=20 class=xl654118 style='height:15.0pt'></td>
 				<td class=xl654118>Child Docket: </td>
@@ -3015,29 +3017,11 @@ if (mysqli_num_rows($child_dockets_result)>0)
 }
 ?>
 
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td height=20 class=xl654118 style='height:15.0pt'></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
- </tr>
+ 
  </table>
 
- <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:parent'>
- <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;'>
+ <tr>
   <td rowspan=2 class=xl764118 style='border-bottom:1px solid black'>Rpt No</td>
   <td rowspan=2 class=xl774118  width=64 style='border-bottom:.5pt solid black;  width:48pt'>Pattern Version</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:70pt'>No of Plies</td>
@@ -3117,7 +3101,7 @@ if (mysqli_num_rows($child_dockets_result)>0)
  
  
  
- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+ <!-- <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -3133,13 +3117,13 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118 colspan="3"><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
- </tr>
+ </tr> -->
 <table>
 
 <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
  <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
-  <td rowspan="2" colspan="16" class=xl764118 style='border-bottom:.5pt solid black;' >Inspection Comments:
+  <td rowspan="2" colspan="11" class=xl764118 style='border-bottom:.5pt solid black;' >Inspection Comments:
   
   <?php
   $sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='normal'  group by roll_id";
@@ -3187,7 +3171,9 @@ $item_name[] = $sql_row['item'];
 
 ?>
   </td>
-
+  	<td class=xl654118>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  	<td class=xl654118>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	<td class=xl654118 colspan="3"><u><strong>Quality Authorisation</strong></u></td>
  </tr>
 <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'></tr>
  <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -3213,6 +3199,8 @@ $item_name[] = $sql_row['item'];
   <td class=xl764118 colspan=3 style='border-bottom:.5pt solid black;'>Shade Wise Total Fab (Yds)</td>
   <td class=xl764118 colspan=3 style='border-bottom:.5pt solid black;'>No of Plies from Shade</td>
   <td class=xl764118 colspan=4 style='border-bottom:.5pt solid black;'>Fabric from shade for Binding (Yds)</td>
+  <td class=xl654118>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	<td class=xl654118 colspan="3"><u><strong>Cutting Supervisor Authorization</strong></u></td>
 </tr>
 
  <?php
