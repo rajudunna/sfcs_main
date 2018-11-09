@@ -16,6 +16,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
     // Schedule Clubbing with in the schedule
     if($club_status=='1')
     {
+		//color clubbing
 		$filename='schsplit';	
     	$order_join=substr($color,-1);
     	// $order_tid_new[]=array();
@@ -27,6 +28,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
     // Schedule Clubbing with in the Style
     else if($club_status=='2')
 	{
+		//schedule clubbing
 		$filename='mixjobs';
 		$order_join=$schedule;
 		// $order_tid_new[]=array();
@@ -43,7 +45,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		$order_tid_schs[]=$ss["order_del_no"];	
 	}
 	$impdata = implode(',',$order_tid_new);
-
+	
 	for($kk=0;$kk<sizeof($order_tid_new);$kk++)
 	{
 		$sql="SELECT * FROM $bai_pro3.bai_orders_db_confirm as bai_orders_db_confirm LEFT JOIN $bai_pro3.plandoc_stat_log as plandoc_stat_log ON plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid WHERE bai_orders_db_confirm.order_joins not in ('1','2') AND bai_orders_db_confirm.order_tid='".$order_tid_new[$kk]."' and bai_orders_db_confirm.order_del_no='".$order_tid_schs[$kk]."' and bai_orders_db_confirm.order_col_des='".$order_tid_cols[$kk]."' GROUP BY bai_orders_db_confirm.order_col_des";
@@ -182,8 +184,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		}
 	}
 	foreach($dockets as $docket){
-		$insert = doc_size_wise_bundle_insertion($docket);
+		$insert = doc_size_wise_bundle_insertion($docket,1);
 	}
+
 	/*
 	$inserted = insertMoQuantitiesClub($impdata);
 	if($inserted){
@@ -200,9 +203,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	// 		</script>";
 	
     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-		function Redirect() {
-			sweetAlert('Splitting Completed','','success');
-			location.href = \"".$url_back."&color=$color&style=$style&schedule=$schedule\";
+			function Redirect() {
+				sweetAlert('Splitting Completed','','success');
+				location.href = \"".$url_back."&color=$color&style=$style&schedule=$schedule\";
 			}
 		</script>";	
 ?>
