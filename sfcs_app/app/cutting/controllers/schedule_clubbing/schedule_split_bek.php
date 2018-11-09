@@ -712,7 +712,18 @@ if(isset($_POST['submit']))
 					{ 
 						$docn=$sql_rowx1["doc_n"];
 					}
-					$sqlx351="insert into $bai_pro3.plandoc_stat_log (date,cat_ref,cuttable_ref,allocate_ref,mk_ref,order_tid,pcutno,acutno,p_plies,a_plies,destination,org_doc_no,org_plies,ratio,remarks,pcutdocid,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50,doc_no) select date,cat_ref,cuttable_ref,allocate_ref,mk_ref,'".$sql_row1x['order_tid']."','".$sql_row1x['cutno']."','".$sql_row1x['cutno']."',1,1,'".$sql_row1x['destination']."','".$sql_row1x['doc_no']."','".$sql_row1x['plies']."',ratio,remarks,pcutdocid,0,0,0,0,0,0,0,0,0,0,0,0, 
+					$sqlx12="select max(pcutno)+1 as cut from $bai_pro3.plandoc_stat_log where order_tid='".$sql_row1x['order_tid']."' and cat_ref='".$sql_row1x['cat_ref']."'"; 
+					$sql_resultx12=mysqli_query($link, $sqlx12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					while($sql_rowx12=mysqli_fetch_array($sql_resultx12)) 
+					{ 
+						$cutno=$sql_rowx12["cut"];
+						if($cutno==0)
+						{
+							$cutno=1;
+						}
+					}
+					
+					$sqlx351="insert into $bai_pro3.plandoc_stat_log (date,cat_ref,cuttable_ref,allocate_ref,mk_ref,order_tid,pcutno,acutno,p_plies,a_plies,destination,org_doc_no,org_plies,ratio,remarks,pcutdocid,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50,doc_no) select date,cat_ref,cuttable_ref,allocate_ref,mk_ref,'".$sql_row1x['order_tid']."','".$cutno."','".$cutno."',1,1,'".$sql_row1x['destination']."','".$sql_row1x['doc_no']."','".$sql_row1x['plies']."',ratio,remarks,pcutdocid,0,0,0,0,0,0,0,0,0,0,0,0, 
 					0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,$docn 
 					from $bai_pro3.plandoc_stat_log where cat_ref='$cat_ref' and order_tid='".$order_tid."' and doc_no='".$sql_row1x['doc_no']."'";
 					//echo $sqlx351."<br>";
@@ -749,7 +760,17 @@ if(isset($_POST['submit']))
 					{ 
 						$docn=$sql_rowx1["doc_n"];
 					}
-					$sqlx351="insert into $bai_pro3.plandoc_stat_log (date,cat_ref,cuttable_ref,allocate_ref,mk_ref,order_tid,pcutno,acutno,p_plies,a_plies,destination,org_doc_no,org_plies,ratio,remarks,pcutdocid,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50,doc_no) select date,cat_ref,cuttable_ref,allocate_ref,mk_ref,'".$sql_row1['order_tid']."','".$sql_row1['cutno']."','".$sql_row1['cutno']."',1,1,'".$sql_row1['destination']."','".$sql_row1['doc_no']."','".$sql_row1['plies']."',ratio,remarks,pcutdocid,0,0,0,0,0,0,0,0,0,0,0,0, 
+					$sqlx12="select max(pcutno)+1 as cut from $bai_pro3.plandoc_stat_log where order_tid='".$sql_row1['order_tid']."' and cat_ref='".$sql_row1['cat_ref']."'"; 
+					$sql_resultx12=mysqli_query($link, $sqlx12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					while($sql_rowx12=mysqli_fetch_array($sql_resultx12)) 
+					{ 
+						$cutno=$sql_rowx12["cut"];
+						if($cutno==0)
+						{
+							$cutno=1;
+						}
+					}
+					$sqlx351="insert into $bai_pro3.plandoc_stat_log (date,cat_ref,cuttable_ref,allocate_ref,mk_ref,order_tid,pcutno,acutno,p_plies,a_plies,destination,org_doc_no,org_plies,ratio,remarks,pcutdocid,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50,doc_no) select date,cat_ref,cuttable_ref,allocate_ref,mk_ref,'".$sql_row1['order_tid']."','".$cutno."','".$cutno."',1,1,'".$sql_row1['destination']."','".$sql_row1['doc_no']."','".$sql_row1['plies']."',ratio,remarks,pcutdocid,0,0,0,0,0,0,0,0,0,0,0,0, 
 					0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,$docn 
 					from $bai_pro3.plandoc_stat_log where cat_ref='$cat_ref' and order_tid='".$order_tid."' and doc_no='".$sql_row1['doc_no']."'";
 					//echo $$sqlx351."<br>";

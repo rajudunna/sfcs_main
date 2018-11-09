@@ -201,11 +201,15 @@ echo "</select></div></br>";
 
 
 <?php 
-if(isset($_POST['submit'])) 
+if(isset($_POST['submit']) || $_GET['schedule']>0) 
 { 
     $style=$_POST['style']; 
     $schedule=$_POST['schedule']; 
-    
+    if($_GET['schedule']>0)
+	{
+		$style=$_GET['style']; 
+		$schedule=$_GET['schedule']; 
+	}	
     if ($style=='NIL' or $schedule=='NIL') 
 	{
         echo "Please Fill All Details";
@@ -396,9 +400,9 @@ if(isset($_POST['submit']))
                         }             
                     } 
                     echo "</tr>"; 
-					$order_joinss=substr($sql_row452["order_col_des"],-1);
+					$order_joinss="J".substr($sql_row452["order_col_des"],-1);
                     echo "<tr><td>".$sql_row452["order_style_no"]."</td><td>".$sql_row452["order_del_no"]."</td><td>".$sql_row452["order_col_des"]."</td>"; 
-                    $sql453="select order_col_des as org_col  from $bai_pro3.bai_orders_db_confirm where order_joins='".$order_joinss."' and order_del_no=\"".$schedule."\""; 
+                    $sql453="select order_col_des as org_col from $bai_pro3.bai_orders_db_confirm where order_joins='".$order_joinss."' and order_del_no=\"".$schedule."\""; 
 					//echo $sql453."<br>";
 					$old_colors = array();
                     $sql_result453=mysqli_query($link, $sql453) or die("Error6.7".$sql452.mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -452,7 +456,7 @@ if(isset($_POST['fix']))
     $orginal_size_array1=array(); 
     $schedule_array=array(); 
 	$schedule_array=explode(",",implode(",",$selected));
-	$sql62="select * from $bai_pro3.orders_club_schedule where order_del_no=\"$schedule\" and order_col_des in (".implode(",",$selected).") limit 1";
+	$sql62="select * from $bai_pro3.orders_club_schedule where order_del_no=\"$schedule\" and order_col_des in ('".implode("','",$selected)."') limit 1";
 	$result62=mysqli_query($link, $sql62) or die("Error3 = ".$sql62.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row62=mysqli_fetch_array($result62))
 	{				
@@ -581,7 +585,7 @@ if(isset($_POST['fix']))
 						sweetAlert('Clubbing Successfully Done','','success');
 					</script>";	
             // echo "<h2>Successfully Completed.</h2>";     
-             
+            /* 
             $sql451="select * from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."' and order_col_des=\"".$cols."\""; 
             $sql_result451=mysqli_query($link, $sql451) or die("Error963".$sql451.mysqli_error($GLOBALS["___mysqli_ston"])); 
             if(mysqli_num_rows($sql_result451)>0) 
@@ -611,6 +615,7 @@ if(isset($_POST['fix']))
                     for ($i=0; $i < sizeof($old_colors1); $i++) { 
                     	echo $old_colors1[$i].'<br>';
                     }
+					unset($old_colors1);
                     echo "</td>"; 
                     for($kkk=0;$kkk<sizeof($sizes_code_tmp);$kkk++) 
                     { 
@@ -621,7 +626,8 @@ if(isset($_POST['fix']))
                     echo "<br>"; 
                 } 
             } 
-             
+            */
+			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N')."&style=$style&schedule=$schedule';</script>");
         }                                                                                                 
         else 
         { 
@@ -629,6 +635,7 @@ if(isset($_POST['fix']))
             echo "<script type=\"text/javascript\"> 
                         sweetAlert('Please upload order status for selected schedules.','','error');
                     </script>"; 
+			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N')."&style=$style&schedule=$schedule';</script>");		
         }
 
         $sql45="select * from $bai_pro3.orders_club_schedule where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\""; 
@@ -667,6 +674,7 @@ if(isset($_POST['fix']))
         echo "<script type=\"text/javascript\"> 
                         sweetAlert('You cannot proceed Schedule Clubbing with One Colour.','','warning');
                     </script>"; 
+		echo("<script>location.href = '".getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N')."&style=$style&schedule=$schedule';</script>");			
     }      
      
 } 
