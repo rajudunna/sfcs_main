@@ -677,12 +677,13 @@
 	}
 	
 	//tested
-	function doc_size_wise_bundle_insertion($doc_no_ref)
+	function doc_size_wise_bundle_insertion($doc_no_ref,$club_flag=0)
 	{
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 		$category=['cutting','Send PF','Receive PF'];
 		$operation_codes = array();
 		
+
 		foreach($category as $key => $value)
 		{
 			$fetching_ops_with_category = "SELECT operation_code,short_cut_code FROM brandix_bts.tbl_orders_ops_ref 
@@ -703,14 +704,27 @@
 		// echo $qry_cut_qty_check_qry;
 		while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
 		{
+			$org_doc = $row['org_doc_no'];
 			$order_tid = $row['order_tid'];
-			for ($i=0; $i < sizeof($sizes_array); $i++)
-			{ 
-				if ($row['a_'.$sizes_array[$i]] > 0)
-				{
-					$cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $row['a_plies'];
+			//this block only works for filling while schedule clubbing
+			if($club_flag == 1){
+				for ($i=0; $i < sizeof($sizes_array); $i++)
+				{ 
+					if ($row['p_'.$sizes_array[$i]] > 0)
+					{
+						$cut_done_qty[$sizes_array[$i]] = $row['p_'.$sizes_array[$i]];
+					}
+				}
+			}else{
+				for ($i=0; $i < sizeof($sizes_array); $i++)
+				{ 
+					if ($row['a_'.$sizes_array[$i]] > 0)
+					{
+						$cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $row['a_plies'];
+					}
 				}
 			}
+			
 		}
 		foreach($cut_done_qty as $key => $value)
 		{
