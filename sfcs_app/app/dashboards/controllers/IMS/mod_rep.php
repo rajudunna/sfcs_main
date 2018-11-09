@@ -296,11 +296,11 @@
             }
 
             $module= $_POST['module'];
-            $tid1=array();
-            $tid1=$_POST['pac_tid'];
-            $module_ref= $_POST['module_ref'];
+            // $tid1=array();
+            // $tid1=$_POST['pac_tid'];
+            $to_module= $_POST['module_ref'];
 
-            $validating_qry = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE ims_mod_no = '$module_ref'";
+            $validating_qry = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE ims_mod_no = '$to_module'";
             $result_validating_qry = $link->query($validating_qry);
             while($row = $result_validating_qry->fetch_assoc()) 
             {
@@ -319,7 +319,7 @@
                 {
                     if (sizeof($selected_sewing_jobs) > $allowable_jobs)
                     {
-                        echo "<script>sweetAlert('Selected more than Allowable Sewing Jobs','Please select any $allowable_jobs Jobs to transfer to module $module_ref','warning');</script>";
+                        echo "<script>sweetAlert('Selected more than Allowable Sewing Jobs','Please select any $allowable_jobs Jobs to transfer to module $to_module','warning');</script>";
                         echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",5000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
                     }
                     else
@@ -336,12 +336,12 @@
 
             if ($flag == 1)
             {
-                $transfer_query="insert into $brandix_bts.input_transfer(user,input_module,transfer_module,bundles) values (USER(),".$module.",".$module_ref.",".sizeof($tid).")";
+                $transfer_query="insert into $brandix_bts.input_transfer(user,input_module,transfer_module,bundles) values (USER(),".$module.",".$to_module.",".sizeof($tid).")";
                 $sql_result0=mysqli_query($link, $transfer_query) or exit("Sql Error5.0".mysqli_error($GLOBALS["___mysqli_ston"])); 
                 $insert_id=mysqli_insert_id($link);
                 foreach($tid as $selected)
                 {
-                    $sql33="update $bai_pro3.ims_log set ims_mod_no = '$module_ref' where tid= '$selected'";
+                    $sql33="update $bai_pro3.ims_log set ims_mod_no = '$to_module' where tid= '$selected'";
                     //echo $sql33;
                     $sql_result=mysqli_query($link, $sql33) or exit("Sql Error5123".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -353,10 +353,10 @@
                         $pac_tid=$sql_rowx['pac_tid'];
                     }
 
-                    $bund_update="update $brandix_bts.bundle_creation_data set assigned_module ='$module_ref' where bundle_number='$pac_tid'";
+                    $bund_update="update $brandix_bts.bundle_creation_data set assigned_module ='$to_module' where bundle_number='$pac_tid'";
                     $sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
-                    $bund_update="update $brandix_bts.bundle_creation_data_temp set assigned_module ='$module_ref' where bundle_number='$pac_tid'";
+                    $bund_update="update $brandix_bts.bundle_creation_data_temp set assigned_module ='$to_module' where bundle_number='$pac_tid'";
                     $sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
                     $sql="select  ims_mod_no, ims_qty,input_job_no_ref,pac_tid from $bai_pro3.ims_log where tid='$selected'"; 
@@ -365,7 +365,7 @@
                     $sql_result=mysqli_query($link, $sql) or exit("Sql Error455".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     while($sql_row=mysqli_fetch_array($sql_result)) 
                     { 
-                        $sql331="insert into $brandix_bts.module_bundle_track (ref_no,bundle_number,module,quantity,job_no) values (".$insert_id.",\"".$sql_row['pac_tid']."\",". $module_ref.",  \"".$sql_row['ims_qty']."\",\"".$sql_row['input_job_no_ref']."\" )";
+                        $sql331="insert into $brandix_bts.module_bundle_track (ref_no,bundle_number,module,quantity,job_no) values (".$insert_id.",\"".$sql_row['pac_tid']."\",". $to_module.",  \"".$sql_row['ims_qty']."\",\"".$sql_row['input_job_no_ref']."\" )";
                         //echo $sql331;
 
                         mysqli_query($link, $sql331) or exit("Sql Error_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
