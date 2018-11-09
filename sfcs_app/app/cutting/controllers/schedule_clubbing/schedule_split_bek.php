@@ -428,10 +428,10 @@ if(isset($_POST['submit']))
 
 
 					$cut_exs_query = "SELECT excess_cut_qty from $bai_pro3.excess_cuts_log
-				  						where schedule='$order_del_no' and color='$color' ";
-					$cut_exs_result = mysqli_query($link,$cut_exs_query);	
-					$row_exs = mysqli_fetch_array($cut_exs_result);			
+				  						where schedule_no='$order_del_no' and color='$color' ";
+					$cut_exs_result = mysqli_query($link,$cut_exs_query);				
 					if(mysqli_num_rows($cut_exs_result) > 0){
+						$row_exs = mysqli_fetch_array($cut_exs_result);
 						if($row_exs['excess_cut_qty'] == 1)
 							$sql6="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=\"$cat_ref\" and remarks=\"Normal\" order by acutno";
 						else
