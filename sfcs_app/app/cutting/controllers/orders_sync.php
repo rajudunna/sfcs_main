@@ -200,9 +200,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	// 		</script>";
 	
     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-		function Redirect() {
-			sweetAlert('Splitting Completed','','success');
-			location.href = \"".$url_back."&color=$color&style=$style&schedule=$schedule\";
+			function Redirect() {
+				sweetAlert('Splitting Completed','','success');
+				location.href = \"".$url_back."&color=$color&style=$style&schedule=$schedule\";
 			}
 		</script>";	
 ?>

@@ -425,7 +425,21 @@ if(isset($_POST['submit']))
 					}
 					
 					$tot_qty=array(); 
-					$sql6="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=\"$cat_ref\" and remarks=\"Normal\" order by acutno";
+
+
+					$cut_exs_query = "SELECT excess_cut_qty from $bai_pro3.excess_cuts_log
+				  						where schedule='$order_del_no' and color='$color' ";
+					$cut_exs_result = mysqli_query($link,$cut_exs_query);	
+					$row_exs = mysqli_fetch_array($cut_exs_result);			
+					if(mysqli_num_rows($row_exs) > 0){
+						if($row_exs['excess_cut_qty'] == 1)
+							$sql6="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=\"$cat_ref\" and remarks=\"Normal\" order by acutno";
+						else
+							$sql6="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=\"$cat_ref\" and remarks=\"Normal\" order by acutno DESC";
+					}else{
+						$sql6="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=\"$cat_ref\" and remarks=\"Normal\" order by acutno";
+					}
+
 					$sql_result16=mysqli_query($link, $sql6) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					while($sql_row1=mysqli_fetch_array($sql_result16)) 
 					{ 
