@@ -72,14 +72,14 @@
                             <th>Style</th>
                             <th>Schedule</th>
                             <th style="min-width: 150px">Color</th>
-                            <th style="max-width: 65px">Sewing Job No</th>
+                            <th>Sewing<br>Job No</th>
                             <th style="max-width: 30px">Cut No</th>
                             <th>Size</th>
                             <th>Input</th>
                             <th>Output</th>
                             <th>Rejected</th>
                             <th>Balance</th>
-                            <th style="max-width: 30px;">Input Remarks</th>
+                            <th>Input<br>Remarks</th>
                         </tr>
                         <?php
                             $toggle=0; 
@@ -385,8 +385,7 @@
 ?>
 
 <script language="javascript" type="text/javascript">
-
-var table2_Props =  {            
+    var table2_Props =  {            
         display_all_text: "All",
         col_0: "none",
         col_1: "none",
@@ -402,8 +401,15 @@ var table2_Props =  {
         col_11: "none",
         col_12: "none",
         col_13: "none",
-        sort_select: true
+        sort_select: true,
+        paging: true,  
+        paging_length: 100, 
+        rows_counter: true,  
+        rows_counter_text: "Displaying Rows:",  
+        btn_reset: true,
+        btn_reset_text: 'Reset Filter', 
+        loader: true,  
+        loader_text: "Filtering data..."
     };
     setFilterGrid( "table1", table2_Props);
-
 </script>
