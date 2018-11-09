@@ -431,7 +431,7 @@ if(isset($_POST['submit']))
 				  						where schedule='$order_del_no' and color='$color' ";
 					$cut_exs_result = mysqli_query($link,$cut_exs_query);	
 					$row_exs = mysqli_fetch_array($cut_exs_result);			
-					if(mysqli_num_rows($row_exs) > 0){
+					if(mysqli_num_rows($cut_exs_result) > 0){
 						if($row_exs['excess_cut_qty'] == 1)
 							$sql6="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=\"$cat_ref\" and remarks=\"Normal\" order by acutno";
 						else
