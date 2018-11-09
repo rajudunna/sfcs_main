@@ -285,7 +285,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						$rem="Not Update";
 					}
 					// echo $id;
-					$sqly="SELECT group_concat(doc_no) as doc_no,sum(carton_act_qty) as carton_qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
+					$sqly="SELECT group_concat(distinct doc_no) as doc_no,sum(carton_act_qty) as carton_qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
 					//echo $sqly."<br>";
 					$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_rowy=mysqli_fetch_array($resulty))

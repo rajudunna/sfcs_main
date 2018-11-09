@@ -296,7 +296,7 @@ $(document).ready(function()
 					else
 					{
 						module_flag = 1; // block
-						restrict_msg = 'You are Not Autorized to report more than Block Priorities';
+						restrict_msg = 'You are Not Authorized to report more than Block Priorities';
 					}
 				}
 				else if (response == 1)
