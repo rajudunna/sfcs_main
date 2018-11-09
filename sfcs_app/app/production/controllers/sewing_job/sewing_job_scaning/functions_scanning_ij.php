@@ -1682,53 +1682,71 @@ function validating_with_module($pre_array_module)
 	$input_job_array = array();
 	$response_flag = 0;
 	include("../../../../../common/config/config_ajax.php");
-	$validating_qry = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE ims_mod_no = '$module'";
-	$result_validating_qry = $link->query($validating_qry);
-	while($row = $result_validating_qry->fetch_assoc()) 
+	
+	if ($module == 0)
 	{
-		$input_job_array[] = $row['input_job_rand_no_ref'];
-	}
-
-	$block_prio_qry = "SELECT block_priorities FROM $bai_pro3.`module_master` WHERE module_name='$module'";
-	$result_block_prio = $link->query($block_prio_qry);
-	while($sql_row = $result_block_prio->fetch_assoc()) 
-	{
-		$block_priorities = $sql_row['block_priorities'];
-	}
-
-	if ($block_priorities == '' || $block_priorities == null || $block_priorities == 0 || $block_priorities == '0')
-	{
-		$response_flag = 3;
-	}
-	else
-	{
-		if(!in_array($job_no,$input_job_array))
+		$get_module_no = "SELECT input_module FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$job_no'";
+		$module_rsult = $link->query($get_module_no);
+		while($sql_row11 = $module_rsult->fetch_assoc()) 
 		{
-			// job not in module (adding new job to module)
-			if(sizeof($input_job_array) < $ims_boxes_count)
-		    {
-		        if (sizeof($input_job_array) < $block_priorities)
-		        {
-		            $response_flag = 0; // allow
-		        }
-		        else
-		        {
-		            $response_flag = 2; // check for user acces (block priorities)
-		        }
-		    }
-		    else
-		    {
-		        $response_flag = 1; // block
-		    }
+			$module = $sql_row11['input_module'];
+		}
+	}
+
+	if ($module != '' || $module != null || $module > 0)
+	{
+		$validating_qry = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE ims_mod_no = '$module'";
+		$result_validating_qry = $link->query($validating_qry);
+		while($row = $result_validating_qry->fetch_assoc()) 
+		{
+			$input_job_array[] = $row['input_job_rand_no_ref'];
+		}
+
+		$block_prio_qry = "SELECT block_priorities FROM $bai_pro3.`module_master` WHERE module_name='$module'";
+		$result_block_prio = $link->query($block_prio_qry);
+		while($sql_row = $result_block_prio->fetch_assoc()) 
+		{
+			$block_priorities = $sql_row['block_priorities'];
+		}
+
+		if ($block_priorities == '' || $block_priorities == null || $block_priorities == 0 || $block_priorities == '0')
+		{
+			$response_flag = 3;
 		}
 		else
 		{
-			// job already in module
-			$response_flag = 0;	// allow
+			if(!in_array($job_no,$input_job_array))
+			{
+				// job not in module (adding new job to module)
+				if(sizeof($input_job_array) < $ims_boxes_count)
+			    {
+			        if (sizeof($input_job_array) < $block_priorities)
+			        {
+			            $response_flag = 0; // allow
+			        }
+			        else
+			        {
+			            $response_flag = 2; // check for user acces (block priorities)
+			        }
+			    }
+			    else
+			    {
+			        $response_flag = 1; // block
+			    }
+			}
+			else
+			{
+				// job already in module
+				$response_flag = 0;	// allow
+			}
 		}
 	}
-			
-	// 3 = No valid Block Priotities,2 = check for user access (block priorities), 1 = ims boxes full, 0 = allow for scanning
+	else
+	{
+		$response_flag = 4;
+	}
+	
+	// 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 1 = ims boxes full, 0 = allow for scanning
 	echo $response_flag;
 }
 

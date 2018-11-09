@@ -281,7 +281,12 @@ $(document).ready(function()
 			dataType: "json",
 			success: function (response) 
 			{
-				if (response == 3)
+				if (response == 4)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'No Module Assigned';
+				}
+				else if (response == 3)
 				{
 					module_flag = 1; // block
 					restrict_msg = 'No Valid Block Priorities';
