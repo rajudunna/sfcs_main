@@ -36,11 +36,11 @@
                 $schedule=$sql_row['order_del_no'];
             }
         }
-        $back_url = getFullURLLevel($_GET['r'],'create_sewing_job_packlist.php',0,'N');
-        echo "<a class='btn btn-primary' href='$back_url&schedule=$schedule&style=$style'>Go Back</a>";
+        //$back_url = getFullURLLevel($_GET['r'],'create_sewing_job_packlist.php',0,'N');
+        //echo "<a class='btn btn-primary' href='$back_url&schedule=$schedule&style=$style'>Go Back</a>";
 
-        $url1 = getFullURLLevel($_GET['r'],'print_input_sheet.php',0,'R');
-        $url2 = getFullURLLevel($_GET['r'],'print_input_sheet_mm.php',0,'R');
+        //$url1 = getFullURLLevel($_GET['r'],'print_input_sheet.php',0,'R');
+        //$url2 = getFullURLLevel($_GET['r'],'print_input_sheet_mm.php',0,'R');
 
         echo '<br>
             <div class="panel panel-primary">
@@ -66,6 +66,7 @@
                                 echo "
                                     <table class='table table-bordered'>";
                                         echo "<tr class='info'>";
+                                        echo "<th>Sewing Job No</th>";
                                         echo "<th>Schedule</th>";
                                         echo "<th>Color Set</th>";
                                         echo "<th>Cut Job#</th>";
@@ -138,6 +139,7 @@
                                             }
 
                                             echo "<tr style='background-color:$bg_color;'>";
+                                            echo "<td>".$sql_row['input_job_no_random']."</td>";
                                             echo "<td>".$sql_row['order_del_no']."</td>";
                                             echo "<td>".$sql_row['order_col_des']."</td>";
                                             echo "<td>".$cut_jobs_new."</td>";
@@ -211,8 +213,8 @@
             $combo[]=$sql_row['combo_no'];
             $no_of_cartons[]=$sql_row['no_of_cartons'];
         }
-        $url1 = getFullURLLevel($_GET['r'],'print_input_sheet.php',0,'R');
-        $url2 = getFullURLLevel($_GET['r'],'print_input_sheet_mm.php',0,'R');
+        //$url1 = getFullURLLevel($_GET['r'],'print_input_sheet.php',0,'R');
+        //$url2 = getFullURLLevel($_GET['r'],'print_input_sheet_mm.php',0,'R');
 
         echo '<br>
             <div class="panel panel-primary panel-body">
@@ -236,6 +238,7 @@
                             echo "<div class='row'>
                                 <table class='table table-bordered'>";
                                     echo "<tr>";
+                                    echo "<th>Sewing Job No</th>";
                                     echo "<th>Schedule</th>";
                                     echo "<th>Color Set</th>";
                                     echo "<th>Cut Job#</th>";
@@ -314,7 +317,7 @@
                                         }
 
                                         echo "<tr style='background-color:$bg_color;'>";
-
+                                        echo "<td>".$sql_row['input_job_no_random']."</td>";
                                         echo "<td>".$sql_row['order_del_no']."</td>";
                                         echo "<td>".$sql_row['order_col_des']."</td>";
                                         echo "<td>".$cut_jobs_new."</td>";
@@ -349,3 +352,9 @@
 
     
 ?>
+
+<script>
+$('.btnSubmit').attr("disabled", false);	
+or
+$('#btnSubmit').removeAttr("disabled");
+</script>
