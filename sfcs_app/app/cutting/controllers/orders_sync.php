@@ -20,8 +20,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		$filename='schsplit';	
     	$order_join=substr($color,-1);
     	// $order_tid_new[]=array();
-		$order_tid_cols[]=array();
-		$order_tid_schs[]=array();
+		// $order_tid_cols[]=array();
+		// $order_tid_schs[]=array();
 		$url_back = getFullURLLevel($_GET['r'], "schedule_clubbing/schedule_split_bek.php", "0", "N");
 		$sql1="SELECT * FROM $bai_pro3.bai_orders_db_confirm where order_joins='J$order_join' and order_del_no='$schedule'";
     }	
@@ -31,9 +31,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		//schedule clubbing
 		$filename='mixjobs';
 		$order_join=$schedule;
-		// $order_tid_new[]=array();
-		$order_tid_cols[]=array();
-		$order_tid_schs[]=array();
+		// $order_tid_new[]=affrray();
+		// $order_tid_cols[]=array();
+		// $order_tid_schs[]=array();
 		$url_back = getFullURLLevel($_GET['r'], "schedule_club_style/mix_jobs.php", "0", "N");
 		$sql1="SELECT * FROM $bai_pro3.bai_orders_db_confirm where order_joins='J$order_join'";
 	}		
