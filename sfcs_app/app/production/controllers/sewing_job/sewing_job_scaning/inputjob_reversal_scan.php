@@ -149,14 +149,17 @@ $(document).ready(function()
 					$("#dynamic_table1").append(btn);
 					for(var i=0;i<data.length;i++)
 					{
-						console.log(data[i].reported_qty);
+							// console.log('reported = '+data[i].reported_qty);
 							if(check_flag == 0)
 							{
 								var post_rec_qtys = data[i].reported_qty;
 							}
-							else{
+							else
+							{
 								var post_rec_qtys = Number(data[i].reported_qty) - Number(post_rec_qtys_array[i]);
+								// console.log('rec_qtys = '+post_rec_qtys_array[i]);
 							}
+							// console.log('post_rec_qtys = '+post_rec_qtys);
 							s_no++;
 							var markup1 = "<tr><input type='hidden' name='doc_no[]' value='"+data[i].doc_no+"'><input type='hidden' name='operation_id' value='"+data[i].operation_id+"'><input type='hidden' name='remarks' value='"+data[i].remarks+"'><input type='hidden' name='mapped_color' value='"+data[i].mapped_color+"'><input type='hidden' name='size[]' value='"+data[i].size_code+"'><input type='hidden' name='size_id[]' value='"+data[i].size_id+"'><input type='hidden' name='input_job_no_random' value='"+data[i].input_job_no_random+"'><input type='hidden' name='bundle_no[]' value='"+data[i].tid+"'><input type='hidden' name='style' value='"+data[i].style+"'><input type='hidden' name='color[]' value='"+data[i].order_col_des+"'><input type='hidden' name='module[]' value='"+data[i].assigned_module+"'><input type='hidden' name='rep_qty[]' value='"+data[i].reported_qty+"'><input type='hidden' name='id[]' value="+data[i].id+"><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].assigned_module+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td>"+data[i].reported_qty+"</td><td id='"+i+"repor'>"+post_rec_qtys+"</td><td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
 							$("#dynamic_table").append(markup1);
