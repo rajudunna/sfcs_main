@@ -108,7 +108,7 @@
 				padding-right:3px;
 				background-color:#317082;
 				margin-top:2px;
-				width:1290px;
+				//width:1290px;
 			}
 			#footer form{
 				margin:0px;
@@ -122,7 +122,7 @@
 			}
 			
 			#dhtmlgoodies_dragDropContainer{	/* Main container for this script */
-				width:1290px;
+				//width:1290px;
 				height:0px;
 				/* border:1px solid #317082; */
 				background-color:#FFF;
@@ -197,7 +197,7 @@
 			/* Start main container CSS */
 			
 			div#dhtmlgoodies_mainContainer{	/* Right column DIV */
-				width:1200px; 
+				//width:1200px; 
 				float:left;	
 			}
 			#dhtmlgoodies_mainContainer div{	/* Parent <div> of small boxes */
@@ -734,12 +734,11 @@
 
 						</div>	
 
-						<div id="dhtmlgoodies_mainContainer" style="padding-left: 200px;">
+						<div id="dhtmlgoodies_mainContainer" style="padding-left: 200px; float : left">
 							
 							<!-- Data2 -->
 
 							<?php
-								
 								
 								$sqlx="select * from $bai_pro3.tbl_cutting_table where tbl_id>0 and status='active'";
 								$sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error5".mysql_error());
@@ -892,7 +891,6 @@
 										}
 									echo "</div>";
 								}
-								
 							?>
 						
 						</div>
