@@ -27,10 +27,19 @@ $pwd = $conf->get('mssql-password');
 $m3_databasename=$conf->get('m3database');
 $driver_name=$conf->get('driver_name');
 
-//ms-sql jobs 
-$user_ms = "BAISFCS";
-$password_ms = "fcs@m3pr";
-$conn_string = "DRIVER={iSeries Access ODBC Driver};System=10.227.40.10;Uid=".$user_ms.";Pwd=".$password_ms.";";
+$host_ms = $conf->get('m3_system_id');
+$user_ms = $conf->get('m3_user_name');
+$password_ms = $conf->get('m3_password');
+$m3_db = $conf->get('m3_db');
+$conn_string = "DRIVER={iSeries Access ODBC Driver};System=".$host_ms.";Uid=".$user_ms.";Pwd=".$password_ms.";";
+
+// Production Status Connections
+$prod_status_server_name=$conf->get('prod-status-server-name');
+$prod_status_username=$conf->get('prod-status-user-name');
+$prod_status_password = $conf->get('prod-status-password');
+$prod_status_database=$conf->get('prod-status-db');
+$prod_status_driver_name=$conf->get('prod-status-driver-name');
+
 
 //material requirement in week_del_mail_v2
 $server="GD-RPTSQL";
@@ -98,8 +107,8 @@ $bai_ict="bai_ict";
 $path=$include_path."/sfcs_app/app";
 // $mail_to_test=$mail_alert[2];
 $smtp_user=$conf->get('smtp-user-name');
-$header_name="BEKSFCS Alert";
-$header_mail="bek_sfcs@brandix.com";
+$header_name=$smtp_user." Alert";
+$header_mail=$conf->get('smtp_mail_from');
  $header_from= 'From: BEKSFCS Alert <bek_sfcs@brandix.com>';
 // $header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
 $order_summary_report=$conf->get('order_summary_mail');

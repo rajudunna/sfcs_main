@@ -43,7 +43,6 @@ Service Request #525434/ kirang/ 2014-01-10: Add the ordercut details in RTS das
 
 <!-- <script type="text/javascript" src="jquery.js"></script> -->
 
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.js',4,'R'); ?>"></script>
 <?php
 
 	$username_list=explode('\\',$_SERVER['REMOTE_USER']);

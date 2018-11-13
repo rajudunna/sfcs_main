@@ -4,6 +4,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 $has_permission = haspermission($_GET['r']);
 
+
 // include ('../'.getFullURL($_GET['r'],"dbconf.php",'R'));
 
 $view_access=user_acl("SFCS_0237",$username,1,$group_id_sfcs); 
@@ -87,18 +88,22 @@ table{
 if(isset($_GET['exec']))
 {
 	$status=$_GET['status'];
+	$verified_by=$_GET['verified_by'];
+	$confirmed_by=$_GET['confirmed_by'];
 	$yer_mon=$_GET['yer_mon'];
 	
 	if($status==1)
 	{
-		$sql="update $bai_pro.tbl_freez_plan_track set track_status=$status,verified_on='".date("Y-m-d H:i:s")."', verified_by='$username' where yer_mon='$yer_mon' and track_status=".($status-1);
+		$sql="update $bai_pro.tbl_freez_plan_track set track_status=$status,verified_by='".$verified_by."',verified_on='".date("Y-m-d H:i:s")."' where yer_mon='$yer_mon' and track_status=".($status-1);
+		// echo $sql.'<br/>';
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));	
 	}
 	
 	
 	if($status==2)
 	{
-		$sql="update $bai_pro.tbl_freez_plan_track set track_status=$status,confirmed_on='".date("Y-m-d H:i:s")."', confirmed_by='$username' where yer_mon='$yer_mon' and track_status=".($status-1);
+		$sql="update $bai_pro.tbl_freez_plan_track set track_status=$status,verified_by=$verified_by,confirmed_on='".date("Y-m-d H:i:s")."', confirmed_by=$confirmed_by where yer_mon='$yer_mon' and track_status=".($status-1);
+		
 		mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));	
 		
 		$sql="insert ignore into $bai_pro.tbl_freez_plan_log select * from $bai_pro.tbl_freez_plan_tmp where left(date,7)=left('$yer_mon',7)";
@@ -171,7 +176,7 @@ echo "<thead><tr><th>Date</th><th>Verified By</th><th>Verified On</th><th>Confir
 
 $sql="select * from $bai_pro.tbl_freez_plan_track where track_status<>2";
 // echo $sql."<br>";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	
@@ -212,11 +217,18 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				{
 					$sql2="select * from $bai_pro.tbl_freez_plan_tmp where date='$yer_mon'";
 					// echo $sql2."<br>";
-					$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					
+					$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+					$sql3="select * from $bai_pro.tbl_freez_plan_track where yer_mon='$yer_mon'";
+					// echo $sql3."<br>";
+					$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row3=mysqli_fetch_array($sql_result3))
+					{
+						$verified_by = $sql_row3['verified_by'];
+					}
 					if(mysqli_num_rows($sql_result2)>0)
 					{
-						echo "<a href=\"".getFullURL($_GET['r'], "review_log.php", "N")."&exec=1&status=1&yer_mon=$yer_mon\"><button class='btn btn-info'>Verify</button></a>";
+						echo "<a href=\"".getFullURL($_GET['r'], "review_log.php", "N")."&exec=1&status=1&verified_by=$verified_by&yer_mon=$yer_mon\"><button class='btn btn-info'>Verify</button></a>";
 					}
 					else
 					{
@@ -231,8 +243,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				if(in_array($approve,$has_permission))
 				{
-
-					echo "<a href=\"".getFullURL($_GET['r'], "review_log.php", "N")."&exec=1&status=2&yer_mon=$yer_mon\"><button class='btn btn-success'>Confirm</button></a>";
+					$confirmed_by=getrbac_user()['uname'];
+					echo "<a href=\"".getFullURL($_GET['r'], "review_log.php", "N")."&exec=1&status=2&verified_by='".$verified_by."'&confirmed_by='".$confirmed_by."'&yer_mon=$yer_mon\"><button class='btn btn-success'>Confirm</button></a>";
 				}
 				break;
 			}

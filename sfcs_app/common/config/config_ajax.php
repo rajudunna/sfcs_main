@@ -22,7 +22,7 @@ $enable_api_call = $conf1->get('enable-api-call');
 //         return $conf->get($config_id);
 //     }
 // }
-
+$global_facility_code=$conf1->get('plantcode');
 //get_config_values('getmysqldb');
 $mysql_details = $conf1->getDBConfig();
 //SFCS Db Configurations
