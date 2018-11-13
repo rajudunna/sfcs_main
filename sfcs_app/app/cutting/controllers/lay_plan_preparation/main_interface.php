@@ -91,6 +91,16 @@ foreach($colors_array as $key=>$color_value )
 		$array2[] = $row['OperationNumber'];
 	}
 
+	if(sizeof($array1) == 0 || sizeof($array2) == 0){
+		echo "<script>swal('Operations Doesnt exist','Please Check the backend Job','danger');</script>";
+		$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
+		echo "<script>setTimeout(function(){
+					location.href='$url' 
+				},3000);
+			  </script>";
+		exit();
+	}
+
 	$compare = array_diff($array1,$array2);
 
 	if(sizeof($compare) > 0)

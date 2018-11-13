@@ -82,7 +82,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$mk_length_ref[]=$sql_row['mklength'];
 	//if(substr($style,0,1)=="M") 
 	$savings=$sql_row['savings'];
-{ $extra=round((($sql_row['material_req'])*$savings),2); } 
+	$extra=round((($sql_row['material_req'])*$savings),2);
 	$met_req[]=$sql_row['material_req']+$extra;
 	$plies[]=$sql_row['p_plies'];
 	$docs[]=$sql_row['doc_no'];
@@ -220,16 +220,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 						 $a_s30+$a_s31+$a_s32+$a_s33+$a_s34+$a_s35+$a_s36+$a_s37+$a_s38+$a_s39+$a_s40+$a_s41+$a_s42+$a_s43+$a_s44+
 						 $a_s45+$a_s46+$a_s47+$a_s48+$a_s49+$a_s50;
 	}
+	
 	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
 
-mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
-$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
+	$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
 
-while($sql_row2=mysqli_fetch_array($sql_result2))
-{
-	$mklength=$sql_row2['mklength'];
-	$mk_remarks=$sql_row2['remarks'];
-}
+	while($sql_row2=mysqli_fetch_array($sql_result2))
+	{
+		$mklength=$sql_row2['mklength'];
+		$mk_remarks=$sql_row2['remarks'];
+	}
 	//echo ' total '.$a_ratio_tot;
 //echo implode(",",$docs);
 
@@ -3237,33 +3237,33 @@ tags will be replaced.-->
   //echo "<th $style_css>$fab_uom</th>";
   echo "</tr>";
  
-  for($j=0;$j<sizeof($color_codes);$j++)
-  {
-  	echo "<tr style='height:40px'>";
-	echo "<td $style_css>".'<div id="bcTarget'.$j.'" style="width:auto;"></div><script>$("#bcTarget'.$j.'").barcode("D'.$docs[$j].'", "code39",{barWidth:2,barHeight:15,moduleSize:5,fontSize:0});</script>'."</td>";
-	  echo "<td $style_css>".$color_codes[$j]."</td>";
-	  echo "<td $style_css>".chr($cc_code[$j]).leading_zeros($cut_no, 3)."</td>";
-	  echo "<td $style_css>".$docs[$j]."</td>";
-	  $fab_bind = (float)$binding_con*(int)$plies*(float)$a_ratio_tot;//Caliculation for Bind/Rib
-  $total_yds=$met_req[$j]+$fab_bind;
-  $sum+=  $total_yds; 
-	  for($i=0;$i<sizeof($sizes_tit);$i++)
-	  {
-	  	// if($qty[$i]>0)
+	for($j=0;$j<sizeof($color_codes);$j++)
+	{
+		echo "<tr style='height:40px'>";
+		echo "<td $style_css>".'<div id="bcTarget'.$j.'" style="width:auto;"></div><script>$("#bcTarget'.$j.'").barcode("D'.$docs[$j].'", "code39",{barWidth:2,barHeight:15,moduleSize:5,fontSize:0});</script>'."</td>";
+		echo "<td $style_css>".$color_codes[$j]."</td>";
+		echo "<td $style_css>".chr($cc_code[$j]).leading_zeros($cut_no, 3)."</td>";
+		echo "<td $style_css>".$docs[$j]."</td>";
+		$fab_bind = (float)$binding_con*(int)$plies[$j]*(float)$a_ratio_tot;//Caliculation for Bind/Rib
+		$total_yds=$met_req[$j]+$fab_bind;
+		$sum+=  $total_yds; 
+		for($i=0;$i<sizeof($sizes_tit);$i++)
 		{
-			echo "<td $style_css>".$qty[$i]."</td>";
+			// if($qty[$i]>0)
+			{
+				echo "<td $style_css>".$qty[$i]."</td>";
+			}
 		}
-	  }
-	  echo "<td $style_css>".$a_ratio_tot."</td>";
-	  echo "<td $style_css>".round( $plies[$j] , 2 )."</td>";
-	  echo "<th $style_css>".($a_ratio_tot)*($plies[$j])."</th>";
-	  echo "<td $style_css>".round( $mk_length_ref[$j] , 2 )."</td>";
-	  echo "<td $style_css>".$met_req[$j]."</td>";
-	  echo "<td $style_css>".$fab_bind."</td>";
-	  echo "<td $style_css>".$total_yds."</td>";
-	  $fab_total+=$fab_bind;
-	  echo "</tr>";
-  }
+		echo "<td $style_css>".$a_ratio_tot."</td>";
+		echo "<td $style_css>".round( $plies[$j] , 2 )."</td>";
+		echo "<th $style_css>".($a_ratio_tot)*($plies[$j])."</th>";
+		echo "<td $style_css>".round( $mk_length_ref[$j] , 2 )."</td>";
+		echo "<td $style_css>".$met_req[$j]."</td>";
+		echo "<td $style_css>".$fab_bind."</td>";
+		echo "<td $style_css>".$total_yds."</td>";
+		$fab_total+=$fab_bind;
+		echo "</tr>";
+	}
   
 echo "<tr>";
 

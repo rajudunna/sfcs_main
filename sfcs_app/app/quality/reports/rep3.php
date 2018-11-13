@@ -272,7 +272,7 @@ function verify_date()
 		else
 		{
 			$sql="select group_concat(distinct schedule_no) as schedules from $bai_pro4.week_delivery_plan_ref where ex_factory_date_new between '$sdate' and '$edate'";
-			// echo $sql;
+			 //echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -301,46 +301,54 @@ function verify_date()
 				exit();
 			}
 
+			
+
 			if($choice==1)
 			{
 				if(sizeof(explode(",",$sch_db_grand))==1)
 				{
-					$sql1="select sum(bac_Qty) as qty,delivery,size,bac_no,color from $bai_pro.bai_log_view where length(size)>0 and delivery in ($sch_db_grand) and color=\"$sch_color\" and length(size)>0 group by delivery,color,size";
+					// $sql1="select sum(bac_Qty) as qty,delivery,size,bac_no,color from $bai_pro.bai_log_view where length(size)>0 and delivery in ($sch_db_grand) and color=\"$sch_color\" and length(size)>0 group by delivery,color,size";
+					$sql1="select sum(if(operation_id = 130,recevied_qty,0)) as qty,operation_id,schedule,size_title,size_id,assigned_module,color from $brandix_bts.bundle_creation_data where length(size_id)>0 and schedule in ($sch_db_grand) and color = '$sch_color' and assigned_module > 0 group by schedule,color,size_title,size_id";
 				}
 				else
 				{
-					$sql1="select sum(bac_Qty) as qty,delivery,size,bac_no,color from $bai_pro.bai_log_view where length(size)>0 and delivery in ($sch_db_grand) and length(size)>0 group by delivery,color,size";
+					// $sql1="select sum(bac_Qty) as qty,delivery,size,bac_no,color from $bai_pro.bai_log_view where length(size)>0 and delivery in ($sch_db_grand) and length(size)>0 group by delivery,color,size";
+					$sql1="select sum(if(operation_id = 130,recevied_qty,0)) as qty,operation_id,schedule,size_title,size_id,assigned_module,color from $brandix_bts.bundle_creation_data where length(size_id)>0 and schedule in ($sch_db_grand) and assigned_module > 0 group by schedule,color,size_title,size_id";
 				}
 				//echo $sql1;
 			}
 			if($choice==2)
 			{
-				$sql1="select sum(bac_Qty) as qty,delivery,size,bac_no,color from $bai_pro.bai_log_view where delivery in ($sch_db_grand) and color=\"$sch_color\" and length(size)>0 group by delivery,color,size,bac_no";
+				// $sql1="select sum(bac_Qty) as qty,delivery,size,bac_no,color from $bai_pro.bai_log_view where delivery in ($sch_db_grand) and color=\"$sch_color\" and length(size)>0 group by delivery,color,size,bac_no";
+				$sql1="select sum(if(operation_id = 130,recevied_qty,0)) as qty,operation_id,schedule,size_title,size_id,assigned_module,color from $brandix_bts.bundle_creation_data where schedule in ($sch_db_grand) and color = '$sch_color' and length(size_id)>0 and assigned_module > 0 group by schedule,color,size_title,assigned_module,size_id";
 			}
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
+				$op = $sql_row1['operation_id'];
+			   
+				 $sw_out=$sql_row1['qty'];
 				
-				$sw_out=$sql_row1['qty'];	
-				$sch_db=$sql_row1['delivery'];
-				$size=$sql_row1['size'];
-				$mod=$sql_row1['bac_no'];	
+				$sch_db=$sql_row1['schedule'];
+				$size=$sql_row1['size_title'];
+				$size1=$sql_row1['size_id'];
+				$mod=$sql_row1['assigned_module'];	
 				$color=$sql_row1['color'];
 				$qms_qty=0;
 				$ref1="";
 				
 				if($choice==1)
 				{
-					$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",log_date,group_concat(ref1,\"$\") as \"ref1\",coalesce(sum(qms_qty),0) as \"qms_qty\" from $bai_pro3.bai_qms_db where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\") $query_add and qms_size=\"$size\" and qms_tran_type=3 and qms_schedule in ($sch_db) group by qms_style,qms_schedule,qms_color,qms_size order by qms_style,qms_schedule,qms_color,qms_size";
+					$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",log_date,group_concat(ref1,\"$\") as \"ref1\",coalesce(sum(qms_qty),0) as \"qms_qty\" from $bai_pro3.bai_qms_db where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\") $query_add and qms_size=\"$size1\" and qms_tran_type=3 and qms_schedule in ($sch_db) group by qms_style,qms_schedule,qms_color,qms_size order by qms_style,qms_schedule,qms_color,qms_size";
 				}
 
 				if($choice==2)
 				{
-					$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(remarks,\"-\",1) as \"module\",substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",log_date,group_concat(ref1,\"$\") as \"ref1\",coalesce(sum(qms_qty),0) as \"qms_qty\" from $bai_pro3.bai_qms_db where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\") $query_add and qms_tran_type=3 and qms_schedule in ($sch_db) and substring_index(remarks,\"-\",1)=\"$mod\" and qms_size=\"$size\" group by qms_style,qms_schedule,qms_color,qms_size,substring_index(remarks,\"-\",1) order by qms_style,qms_schedule,qms_color,qms_size,substring_index(remarks,\"-\",1)";
+					$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(remarks,\"-\",1) as \"module\",substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",log_date,group_concat(ref1,\"$\") as \"ref1\",coalesce(sum(qms_qty),0) as \"qms_qty\" from $bai_pro3.bai_qms_db where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\") $query_add and qms_tran_type=3 and qms_schedule in ($sch_db) and substring_index(remarks,\"-\",1)=\"$mod\" and qms_size=\"$size1\" group by qms_style,qms_schedule,qms_color,qms_size,substring_index(remarks,\"-\",1) order by qms_style,qms_schedule,qms_color,qms_size,substring_index(remarks,\"-\",1)";
 				}
 
 				//echo $sql."<br>";
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
 
@@ -353,9 +361,9 @@ function verify_date()
 				//echo $ref1;
 				//if($choice==1)	
 				//{
-				$sql11="select order_s_".$size." as qty, order_style_no,order_del_no,order_col_des from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$sch_db."\" and order_col_des=\"".$color."\"";
-				// echo $sql11;
-				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql11="select order_s_".$size1." as qty, order_style_no,order_del_no,order_col_des from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$sch_db."\" and order_col_des=\"".$color."\"";
+				 //echo $sql11;
+				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				while($sql_row11=mysqli_fetch_array($sql_result11))
 				{
@@ -381,6 +389,7 @@ function verify_date()
 				echo "<td>".$or_qty."</td>";
 				echo "<td>".$mod."</td>";
 				echo "<td>".$sw_out."</td>";
+		     	
 				echo "<td class=\"BG\">$span1".$qms_qty."$span3$span2"; if($sw_out>0) { echo round(($qms_qty/$sw_out)*100,1)."%"; } echo "$span3</td>";
 
 			$vals=array();
