@@ -22,11 +22,12 @@ if(is_array($_POST) && !empty($_POST))
     $permissions = $_POST['id'];
     $menucount = sizeof($menu_id);
     $checkquery = "SELECT group_concat(`role_menu_id` separator ',') as role_menuid from $central_administration_sfcs.rbac_role_menu WHERE roll_id =".$role_id;
+    //echo $checkquery;
     $query_result3 = mysqli_query($link, $checkquery) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
     $row = mysqli_fetch_assoc($query_result3);
     $role_menuid=$row['role_menuid'];
     $value = implode(",", $row);
-    if($value != '')
+    if($value != '' && $menucount>1)
     {
     $qry_delrolemenuper="DELETE from $central_administration_sfcs.rbac_role_menu_per WHERE 
     role_menu_id in ($role_menuid)";
@@ -51,9 +52,8 @@ if(is_array($_POST) && !empty($_POST))
 
             foreach ($permissions as $key => $permission) {
                 $sql_insert_query = "insert into $central_administration_sfcs.rbac_role_menu_per (role_menu_id,permission_id) values ('$role_menu_id','$permission')";
-                // echo $sql_insert_query;
-                $query_result2 = mysqli_query($link, $sql_insert_query) or exit("Sql Error6=".mysqli_error($GLOBALS["___mysqli_ston"]));
-               
+                 $query_result2 = mysqli_query($link, $sql_insert_query) or exit("Sql Error6=".mysqli_error($GLOBALS["___mysqli_ston"]));
+               // echo $sql_insert_query;
                 
             }
         $_SESSION["msg"]='Role Menu and Permissions created successfully';
