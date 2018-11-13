@@ -1,5 +1,7 @@
+
 <?php 
-     include("../../../../common/config/config.php");
+ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+     //include("../../../../common/config/config.php");
      $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 	 $username=strtolower($username_list[1]);
      
@@ -13,11 +15,13 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
     $style=$_GET['style'];
     $color=$_GET['color'];
     $doc_no=$_GET['doc_no'];
+    $seq_no=$_GET['seq_no'];
+  
     
                 $sql="SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' and order_style_no='$style' and order_col_des='$color' and input_job_no_random='$doc_no'";
                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $rowcount=mysqli_num_rows($sql_result);
-                $tid=array();
+               // $tid=array();
                 while($sql_row=mysqli_fetch_array($sql_result))
                 {
 
@@ -53,24 +57,52 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
 
                 }
             
-                // $get_modetails="SELECT * FROM $bai_pro3.mo_details WHERE style='$style' and schedule='$schedule' and color='$color' and size ='$size_code'";
-                // $get_modetails_result=mysqli_query($link, $get_modetails) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-                // while($sql_row4=mysqli_fetch_array($get_modetails_result))
-                // {
-                //     $mo_no=$sql_row4['mo_no'];
-
-                // }
-
+              
 
 
 
                 $insert_query="insert into $bai_pro3.m3_transactions (quantity,log_user,mo_no,op_code, op_des,ref_no, workstation_id,m3_ops_code) values ('$bundle_quantity', '$username','$mo_no', '$op_code', '$op_desc','$id','$workcenter_id','$op_code')";
                 $insert_query_result=mysqli_query($link, $insert_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $sql_num_check1=mysqli_num_rows($insert_query_result);
+               
                 
                 }
     //echo "<h1 style=\"color:green;font-size:26px\">Confirmed</h1>";
             }
-            echo "<h1 style=\"color:green;font-size:26px\">Confirmed</h1>";
+    
+        $sql="select * from $brandix_bts.tbl_orders_style_ref where product_style='$style'";
+        $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $sql_num_check=mysqli_num_rows($sql_result);
+        while($sql_row10=mysqli_fetch_array($sql_result))
+        {
+            $id=$sql_row10['id'];
+        }
+        $sql8="select * from $brandix_bts.tbl_orders_master where product_schedule='$schedule'";
+        $sql_result8=mysqli_query($link, $sql8) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $sql_num_check=mysqli_num_rows($sql_result8);
+        while($sql_row11=mysqli_fetch_array($sql_result8))
+        {
+            $schedule_id=$sql_row11['id'];
+        }
+        // if (mysqli_query($link, $insert_query)){
+           // echo "<h1 style=\"color:green;font-size:26px\">Confirmed</h1>";
+           echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+		function Redirect() {
+            sweetAlert('Confirmed','','success');
+            location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
             
+			}
+		</script>";
+		
+        // }else{
+
+        //     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+        //     function Redirect() {
+        //         sweetAlert('No Records for Mo Operation Quantites Table','','warning');
+        //         location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+                
+        //         }
+        //     </script>"; 
+        // }     
  }
 ?>

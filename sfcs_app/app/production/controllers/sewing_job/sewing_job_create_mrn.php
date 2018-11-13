@@ -1,3 +1,19 @@
+<style>
+#loading-image{
+	position:fixed;
+	top:0px;
+	right:0px;
+	width:100%;
+	height:100%;
+	background-color:#666;
+	/* background-image:url('ajax-loader.gif'); */
+	background-repeat:no-repeat;
+	background-position:center;
+	z-index:10000000;
+	opacity: 0.4;
+	filter: alpha(opacity=40); /* For IE8 and earlier */
+}
+</style>
 <script language="javascript" type="text/javascript">
 	
 	var url1 = '<?= getFullURL($_GET['r'],'sewing_job_create_mrn.php','N'); ?>';
@@ -11,6 +27,8 @@
 	function check_val()
 	{
 		//alert('dfsds');
+		$("#loading-image").show();
+
 		var style=document.getElementById("style").value;
 		var schedule=document.getElementById("schedule").value;
 		
@@ -31,6 +49,13 @@
 				event.preventDefault();
 				submit_form($(this));
 			}
+
+			// $(".generate_btn").click(function()
+			// {
+			// 	alert('hi');
+			// 	$("#loading-image").show();
+			// });
+
 		});
 
 		function submit_form(submit_btn)
@@ -135,7 +160,9 @@
 		$schedule=$_GET['schedule'];
 	}
 ?>
-
+<div class="ajax-loader" id="loading-image" style="display: none">
+    <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+</div>
 <div class="panel panel-primary">
 	<div class="panel-heading"><b>MRN Integration</b></div>
 	<div class="panel-body">
@@ -187,7 +214,7 @@
 					echo "</select>";
 				?>
 				&nbsp;&nbsp;
-				<input type="submit" name="submit" id="submit" class="btn btn-success " onclick="return check_val();" value="Submit">
+				<input type="submit" name="submit" id="submit" class="btn btn-success generate_btn" onclick="return check_val();" value="Submit">
 			</form>
 		</div>
 
@@ -211,7 +238,7 @@
 					}
 					else
 					{
-						// echo "Style= ".$style_id."<br>Schedule= ".$sch_id.'<br>';
+						 //echo "Style= ".$style_id."<br>Schedule= ".$sch_id.'<br>';
 						$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style_id,$link);
 						$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$sch_id,$link);
 						
@@ -253,7 +280,8 @@
 							$val=sizeof($order_colors);
 							$val1=sizeof($planned_colors);
 							// echo '<h4>Pack Method: <span class="label label-info">'.$operation[$pack_method].'</span></h4>';
-								// echo "carton props added, You can proce							
+								// echo "carton props added, You can proce			
+								//echo $bundle;				
 								if($bundle > 0)
 								{									
 									include("input_job_mix_ch_report_mrn.php");
