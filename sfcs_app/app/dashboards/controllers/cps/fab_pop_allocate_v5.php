@@ -46,16 +46,29 @@
 
 <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 <?php 
-
+$dash=0;
+if(isset($_POST['allocate']))
+{
+	$dash=$_POST['dashboard'];
+}
+if($dash==1){
 $php_self = explode('/',$_SERVER['PHP_SELF']);
-array_pop($php_self);
-$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
-$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+$ctd =array_slice($php_self, 0, -2);
+$url_rr=base64_encode(implode('/',$ctd)."/cut_table_dashboard/cut_table_dashboard.php");
+$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_rr;
+}
+else{
+	$php_self = explode('/',$_SERVER['PHP_SELF']);
+	array_pop($php_self);
+	$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+	$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+}
+
 ?>
 <br/>
 <div class='row'>
 	<div class='col-md-2 pull-left'>
-		<a class='btn btn-primary' href = '<?= $url ?>'> << Back</a>
+		<a class='btn btn-primary' href = '<?= $url1 ?>'> << Back</a>
 	</div>
 </div>
 <br/>
@@ -559,6 +572,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 if(isset($_POST['allocate_new']))
 {
 	$doc_ref=$_POST['doc_ref']; //array
+	$dash=$_POST['dashboard']; //array
+
 	$min_width=$_POST['min_width'];	//array
 	$lot_db=$_POST['lot_db']; //array
 	$process_cat=$_POST['process_cat'];
@@ -756,17 +771,26 @@ if(isset($_POST['allocate_new']))
 		}
 		
 	}
+	// echo "<h2>Successfully Updated.</h2>";
 	
 	//Exit Code
-	
-	echo "<h2>Successfully Updated.</h2>";
+	$dash=$_POST['dashboard'];
+	if($dash==1){
+ 	$php_self = explode('/',$_SERVER['PHP_SELF']);
+	$ctd =array_slice($php_self, 0, -2);
+	$url_rr=base64_encode(implode('/',$ctd)."/cut_table_dashboard/cut_table_dashboard.php");
+	$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_rr;
+	}
+	else{
+		$php_self = explode('/',$_SERVER['PHP_SELF']);
+		array_pop($php_self);
+		$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+		$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+	}
 	//this is for after allocating article redirect to cps dashboard.removed sfcsui
-	$php_self = explode('/',$_SERVER['PHP_SELF']);
-	array_pop($php_self);
-	$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
-	$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+
 	echo"<script>swal('Successfully Updated.','','success')</script>";
-	echo"<script>location.href = '".$url."';</script>"; 
+	echo"<script>location.href = '".$url1."';</script>"; 
 
 	// if($process_cat==1)
 	// {
@@ -787,6 +811,8 @@ if(isset($_POST['allocate']))
 {
 	echo "<form name='input' method='post' action='fab_pop_allocate_v5.php' onkeypress='return event.keyCode != 13'>";
 	$doc=$_POST['doc'];
+	$dash=$_POST['dashboard'];
+
 	//$lot_db_2 = $_POST["pms$doc[0]"];
 	//var_dump($doc);
 	// echo "DOC : ".sizeof($doc);exit;
@@ -1157,6 +1183,8 @@ if(isset($_POST['allocate']))
 		
 		//Table to show all list of available items
 		echo "<input type='hidden' value='$doc_ref' id='doc_chk'><br/>";
+		echo "<input type='hidden' value='$dash' id='dashboard' name='dashboard'><br/>";
+
 	}
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\" onclick=\"check_qty(".sizeof($doc).")\">";
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\">";

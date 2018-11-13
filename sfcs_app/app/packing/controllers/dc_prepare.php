@@ -271,7 +271,7 @@ if(isset($_POST['submit']))
 	$jump_url1 = getFullURL($_GET['r'],'dispatch_db.php','N');
 	if($seal!='' && $vehicle!='')
 	{
-		$sql="insert into $bai_pro3.disp_db set create_date=\"$date\", party=$party, vehicle_no=\"$vehicle\", mode=$mode, status=1, seal_no=\"$seal\", remarks=\"$remarks\", prepared_by=USER(), prepared_time=NOW()";
+		$sql="insert into $bai_pro3.disp_db set create_date=\"$date\", party=\"$party\", vehicle_no=\"$vehicle\", mode=\"$mode\", status=1, seal_no=\"$seal\", remarks=\"$remarks\", prepared_by=USER(), prepared_time=NOW()";
 		mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$iLastID=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 		

@@ -12,51 +12,17 @@ body
     font-family: Calibri;
     font-size: 11px;
 }
-@media print{
-    @page { margin: 0;}
-    body{
-        font-size:22px;
-    }
-    .visible-print  { display: inherit !important; }
-    .hidden-print   { display: none !important; }
-    /* div.divFooter {
-        width:100%;
-        position: fixed;
-        bottom: 0;
-        align-content: center;
-        page-break-after: always;
-        margin-bottom:2%;
-        display:none;
-    }
-    .panel-primary{
-        border-color: white;
-    } */
-}
-
-/* .footertable{
-    border: 1px none black;
-} */
-
-/* hr{
-border: 1px solid black;
-}
-.dotted {border: 1.5px dotted black; border-style: none none dotted;}
-.space{
-    margin-bottom: 5px;
-}
-@media screen {
-  div.divFooter {
-    display: none;
-  }
-} */
-
 </style>
 <script>
 function printPreview(){
-    var printid = document.getElementById("printid");
-    printid.style.visibility = 'hidden';
-    window.print();
-    printid.style.visibility = 'visible';
+    var style = document.getElementById('style').value;
+    var schedule = document.getElementById('schedule').value;
+    var input_job = document.getElementById('input_job_no').value;
+    
+    var url = 'bom_sheet_print.php?schedule='+schedule+'&style='+style+'&input_job='+input_job;
+    newwindow=window.open(url,'Job Wise Sewing and Packing Trim Requirement Report','height=500,width=800');
+    if (window.focus) {newwindow.focus()}
+    return false;
 }
 </script>
 <?php
@@ -65,7 +31,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 ?>
 
 <div class="panel panel-primary">
-    <div class="panel-heading"><center><button onclick="printPreview()" id="printid" style="float:left;color:blue;">Print</button><strong>Job Wise Sewing and Packing Trim Requirement Report - <?= $plant_name ?></strong></center></div>
+    <div class="panel-heading"><center><button onclick="return printPreview()" id="printid" style="float:left;color:blue;">Print</button><strong>Job Wise Sewing and Packing Trim Requirement Report - <?= $plant_name ?></strong></center></div>
     <div class="panel-body">
 <?php
 //error_reporting(0);
@@ -75,6 +41,10 @@ $company_num = $company_no;
 $schedule=$_GET['schedule'];
 $style=$_GET['style'];
 $input_job_no=$_GET['input_job'];
+
+echo "<input type='hidden' id='style' value='".$_GET['style']."'>
+<input type='hidden' id='schedule' value='".$_GET['schedule']."'>
+<input type='hidden' id='input_job_no' value='".$_GET['input_job']."'>";
 
 $colors=[];
 $sql="select order_col_des from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' group by order_col_des";	
@@ -317,27 +287,5 @@ if(count($colors)>0){
 }
 
 ?>
-<!-- <div class="divFooter">
-<hr>
-<table class='footertable' style="width:100%;">
-<tbody>
-	<tr class='footertable'>
-      <td class='footertable'><hr width=195 class='space'><center><strong>Prepared By(Name/EPF No)</strong><center></td>
-      <td class='footertable' style="padding-left:50px;"><hr width=160 class='space'><center><strong>Issuer/EPF No</strong></center></td>
-      <td class='footertable' style="padding-left:50px;"><hr width=180 class='space'><center><strong>Receiver Name/EPF No</strong></center></td>
-    </tr>
-</tbody>
-</table>
-<br/>
-<table class='footertable' style="width:100%;">
-<tbody >
-	<tr class='footertable'>
-      <td class='footertable'><hr width=195 class='dotted space'><center><strong>Signature & Date</strong><center></td>
-      <td class='footertable' style="padding-left:50px;"><hr width=170 class='dotted space'><center><strong>Signature & Date</strong></center></td>
-      <td class='footertable' style="padding-left:50px;"><hr width=180 class='dotted space'><center><strong>Signature & Date</strong></center></td>
-    </tr>
-    </tbody>
-</table>
-<div> -->
 </div>
 </div>

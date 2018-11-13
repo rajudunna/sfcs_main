@@ -674,7 +674,7 @@
 			for($kk=0;$kk<sizeof($cols_tot_tmp);$kk++)
 			{
 				$cols_tot=explode(",",$cols_tot_tmp[$kk]);
-				$sql129="SELECT cut_num as cut,group_concat(DISTINCT docket_number ORDER BY docket_number) as doc FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref='".$carton_id."' and mini_order_num=1 and color in ('".implode("','",$cols_tot)."') group by cut_num order by size*1";
+				$sql129="SELECT cut_num as cut,group_concat(DISTINCT docket_number ORDER BY docket_number) as doc FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref='".$carton_id."' and mini_order_num=1 and color in ('".implode("','",$cols_tot)."') group by cut_num order by cut_num*1";
 				$result1219=mysqli_query($link, $sql129) or die ("Error1.1=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 				$temp_val='';
 				while($row1219=mysqli_fetch_array($result1219))

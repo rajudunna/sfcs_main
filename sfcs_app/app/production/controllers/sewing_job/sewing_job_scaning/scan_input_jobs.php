@@ -48,10 +48,10 @@
 
 $url = getFullURL($_GET['r'],'pre_input_job_scanning.php','N');
 // echo $operation_code;
-$form = 'G';
-if($operation_code >=130 && $operation_code < 300)
+$form = 'P';
+if($operation_code >=130)
 {
-	$form = 'P';
+	$form = 'G';
 }
 $qery_rejection_resons = "select * from $bai_pro3.bai_qms_rejection_reason where form_type = '$form'";
 //echo $qery_rejection_resons;
@@ -248,7 +248,8 @@ $(document).ready(function()
 {
 	//$('#rejec_reasons').select2();
 	// $('#reason_drop').select2();
-	
+	var display_reporting_qty = document.getElementById('display_reporting_qty').value;	
+	var operation_code_routing = document.getElementById('operation_code_routing').value;
 	$('#job_number').focus();
 	$('#loading-image').hide();
 	<?php if ($_POST['operation_name']) {?>

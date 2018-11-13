@@ -191,27 +191,27 @@ function button_disable() {
     }
 }
 
-function check_box_no() {
-    var box = 0;
-    var qty = 0;
-    var count = 0;
-    var txt_msg = document.getElementById('label').value;
-    for (i = 0; i < 100; i++) {
-        box = document.test["ref2[" + i + "]"].value;
-        qty = document.test["qty[" + i + "]"].value;
-        if (Number(qty) > 0) {
-            if (box.length == 0) {
-                count++;
-            }
-        }
-    }
-    console.log(count);
-    if (Number(count) > 0) {
-        sweetAlert('Please fill all ' + txt_msg + "'s", '', 'warning');
-        return false;
-    }
-    return true;
-}
+// function check_box_no() {
+//     var box = 0;
+//     var qty = 0;
+//     var count = 0;
+//     var txt_msg = document.getElementById('label').value;
+//     for (i = 0; i < 100; i++) {
+//         box = document.test["ref2[" + i + "]"].value;
+//         qty = document.test["qty[" + i + "]"].value;
+//         if (Number(qty) > 0) {
+//             if (box.length == 0) {
+//                 count++;
+//             }
+//         }
+//     }
+//     console.log(count);
+//     if (Number(count) > 0) {
+//         sweetAlert('Please fill all ' + txt_msg + "'s", '', 'warning');
+//         return false;
+//     }
+//     return true;
+// }
 
 
 

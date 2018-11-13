@@ -24,7 +24,7 @@ else
 	<form name="input" method="post" action="<?php $_SERVER['PHP_SELF']; ?>" enctype="multipart/form data">
 		<?php
 			
-			$query="SELECT * FROM $bai_pro3.plant_details";
+			$query="SELECT * FROM $bai_pro3.plant_details where plant_code !='$facility_code'";
 			$query_result=mysqli_query($link, $query) or exit("Error getting Plant Details");
 			echo "<tr>
 					<td>Sender Plant Name</td><td>:</td></br>
@@ -177,33 +177,100 @@ else
 									//echo $qry_insert_sticker_report1_data."<br/>";
 									
 									$qry_insert_sticker_report1_data1 = $link->query($qry_insert_sticker_report1_data);
-									
-								}
-								else
-								{
-									echo "<h3>Status: <font color=Red>Sorry!! This Label ID Scanning is Already Completed..</font></h3>";
 
 									
+									//echo $qry_insert_update_rmwh_data."<br/>";
+									//$res_insert_update_rmwh_data = $conn1->query($qry_insert_update_rmwh_data);
+									//=============== insert store_out & update store_in in cwh======================
+														
+									$qry_ins_stockout = "INSERT INTO $bai_rm_pj1.`store_out`(tran_tid,qty_issued,date,updated_by,remarks) VALUES (".$tid_new.",".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_name."')";
+									// echo $qry_ins_stockout."<br/>";
+									$res_ins_stockout = $link_new->query($qry_ins_stockout);
+									if($database_type=='new'){
+									$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=".$actual_quentity_present." where barcode_number='".$bar_code_new."'";
+									}else{
+										$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=".$actual_quentity_present." where tid='".$bar_code_new."'";
+		
+									}
+									//echo $update_qty_store_in."<br/>";
+									$res_update_qty_store_in = $link_new->query($update_qty_store_in);
+									echo "<h3>Status: <font color=Green>Quantity ".$actual_quentity_present." Transferred successfully for Item ID : ".$bar_code_new." and Lot Number : ".$barcode_data['lot_no']."</font></h3>";
+									//=====================================================================
 									
 								}
-								
-								//echo $qry_insert_update_rmwh_data."<br/>";
-								//$res_insert_update_rmwh_data = $conn1->query($qry_insert_update_rmwh_data);
-								//=============== insert store_out & update store_in in cwh======================
-													
-								$qry_ins_stockout = "INSERT INTO $bai_rm_pj1.`store_out`(tran_tid,qty_issued,date,updated_by,remarks) VALUES (".$tid_new.",".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_name."')";
-								// echo $qry_ins_stockout."<br/>";
-								$res_ins_stockout = $link_new->query($qry_ins_stockout);
-								if($database_type=='new'){
-								$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=".$actual_quentity_present." where barcode_number='".$bar_code_new."'";
-								}else{
-									$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=".$actual_quentity_present." where tid='".$bar_code_new."'";
+								else {
+									// echo $res_check_rm_db->num_rows.'aaaaa';
+									//=============== Insert Data in rmwh ==========================
+									// $qry_insert_update_rmwh_data = "INSERT INTO $bai_rm_pj1.`store_in`(`lot_no`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `remarks`, `log_stamp`, `status`,`ref2`,`ref3`,`ref4`,`ref5`,`ref6`,`log_user`,`barcode_number`,`ref_tid`) VALUES ('".$barcode_data['lot_no']."','".$actual_quentity_present."','0','0','".date('Y-m-d')."','Directly came from ".$plant_name1."','".date('Y-m-d H:i:s')."','".$barcode_data['status']."','".$barcode_data['ref2']."','".$barcode_data['ref3']."','".$barcode_data['ref4']."','".$barcode_data['ref5']."','".$barcode_data['ref6']."','".$username."^".date('Y-m-d H:i:s')."','".$bar_code_new."','".$tid_new."')";	
+									// // echo $qry_insert_update_rmwh_data."<br/>";
 	
+									// $res_insert_update_rmwh_data = $link->query($qry_insert_update_rmwh_data);
+									$qry_insert_update_rmwh_data1 = "update $bai_rm_pj1.`store_in` set qty_issued=0,remarks='Directly came from ".$plant_name1."',log_user='".$username."^".date('Y-m-d H:i:s')."' where barcode_number='$bar_code_new'";	
+									
+										$res_insert_update_rmwh_data1 = $link->query($qry_insert_update_rmwh_data1);
+									
+									$sticker_report = "select * from $bai_rm_pj1.`sticker_report` where lot_no=".$barcode_data['lot_no']."";
+									//echo $sticker_report."<br/>";
+									$res_sticker_report_cwh = $link_new->query($sticker_report);
+									while($row1 = $res_sticker_report_cwh->fetch_assoc()) 
+									{
+										$sticker_data = $row1;
+										break;
+									}
+									
+									$sticker_report1 = "select * from $bai_rm_pj1.`sticker_report` where lot_no=".$barcode_data['lot_no']."";
+									//echo $sticker_report1."<br/>";
+									$res_sticker_report_cwh1 = $link->query($sticker_report1);
+									while($row12 = $res_sticker_report_cwh1->fetch_assoc()) 
+									{
+										$sticker_data1 = $row12;
+										break;
+									}
+									
+									$qry_check_rm_db1 = "select * from $bai_rm_pj1.store_in where barcode_number='".$bar_code_new."'";
+									$res_check_rm_db1 = $link->query($qry_check_rm_db1);
+									
+									
+									
+									while($row1 = $res_check_rm_db1->fetch_assoc()) 
+									{
+										$tid_old=$row1['tid'];
+										$delete_qry= "delete from $bai_rm_pj1.store_out where tran_tid=$tid_old";
+										$delete_qry_result = $link->query($delete_qry);
+									}
+									
+									//echo "<br/>No of rows:".$row12."<br/>";
+									//echo "<br/>result:".count($sticker_data1)."<br/>";
+									if(count($sticker_data1)==0)
+									{
+										$qry_insert_sticker_report_data = "INSERT INTO $bai_rm_pj1.`sticker_report` (`item`,`item_name`,`item_desc`,`inv_no`,`po_no`,`rec_no`,`lot_no`,`batch_no`,`buyer`,`product_group`,`doe`,`pkg_no`,`grn_date`,`allocated_qty`,`backup_status`,`supplier`,`uom`,`grn_location`) VALUES ('".$sticker_data['item']."','".$sticker_data['item_name']."','".$sticker_data['item_desc']."','".$sticker_data['inv_no']."','".$sticker_data['po_no']."','".$sticker_data['rec_no']."','".$sticker_data['lot_no']."','".$sticker_data['batch_no']."','".$sticker_data['buyer']."','".$sticker_data['product_group']."','".$sticker_data['doe']."','".$sticker_data['pkg_no']."','".$sticker_data['grn_date']."','".$sticker_data['allocated_qty']."','".$sticker_data['backup_status']."','".$sticker_data['supplier']."','".$sticker_data['uom']."','".$sticker_data['grn_location']."')";
+										//echo $qry_insert_sticker_report_data."<br/>";
+										$qry_insert_sticker_report_data1 = $link->query($qry_insert_sticker_report_data);
+									}
+									
+									$qty_rec_store_report = "select sum(qty_rec)as qty_rec from $bai_rm_pj1.`store_in` where lot_no=".$barcode_data['lot_no']."";
+									//echo $qty_rec_store_report."<br/>";
+									$qty_rec_store_report1 = $link->query($qty_rec_store_report);
+									while($row2 = $qty_rec_store_report1->fetch_assoc()) 
+									{
+										$rec_qty = $row2;
+										break;
+									}
+									
+									$qry_ins_stockout = "INSERT INTO $bai_rm_pj1.`store_out`(tran_tid,qty_issued,date,updated_by,remarks) VALUES (".$tid_new.",".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_name."')";
+									// echo $qry_ins_stockout."<br/>";
+									$res_ins_stockout = $link_new->query($qry_ins_stockout);
+									if($database_type=='new'){
+									$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=".$actual_quentity_present." where barcode_number='".$bar_code_new."'";
+									}else{
+										$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=".$actual_quentity_present." where tid='".$bar_code_new."'";
+		
+									}
+									//echo $update_qty_store_in."<br/>";
+									$res_update_qty_store_in = $link_new->query($update_qty_store_in);
+									echo "<h3>Status: <font color=Green>Quantity ".$actual_quentity_present." Transferred successfully for Item ID : ".$bar_code_new." and Lot Number : ".$barcode_data['lot_no']."</font></h3>";
+									//=====================================================================
 								}
-								//echo $update_qty_store_in."<br/>";
-								$res_update_qty_store_in = $link_new->query($update_qty_store_in);
-								echo "<h3>Status: <font color=Green>Quantity ".$actual_quentity_present." Transferred successfully for Item ID : ".$bar_code_new." and Lot Number : ".$barcode_data['lot_no']."</font></h3>";
-								//=====================================================================
 							
 						}
 						else

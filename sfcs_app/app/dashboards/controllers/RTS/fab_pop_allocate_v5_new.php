@@ -398,12 +398,13 @@ function check_qty2(x,m,n,doc)
 		var mat_req=document.input["mat_req["+i+"]"].value;
 		var no_ele=document.input["chk"+doc_ref+"[]"];
 		no_ele=(parseInt(no_ele.length));
+		//alert(no_ele);
 		var selc=0;
 		var widt=0;
 		var issued_qty=0;
 		var round_val=0;
 		var alloc_qty=0;
-		for(j=0;j<no_ele;j++)
+		for(j=0;j<10;j++)
 		{
 			
 			var tx="chk"+doc_ref+j;
@@ -413,8 +414,11 @@ function check_qty2(x,m,n,doc)
 			{
 				
 				issued_qty=document.input["val"+doc_ref+"["+j+"]"].value;
+				width=document.input["width"+doc_ref+"["+j+"]"].value
+				alert(width);
 				if(widt<=parseFloat((document.input["width"+doc_ref+"["+j+"]"].value)))
 				{	
+					alert(issued_qty);
 					selc=selc+parseFloat((document.input["val"+doc_ref+"["+j+"]"].value));
 					widt=parseFloat((document.input["width"+doc_ref+"["+j+"]"].value));
 					document.input["min_width["+i+"]"].value=widt;
