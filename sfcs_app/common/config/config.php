@@ -25,10 +25,12 @@ $ms_sql_odbc_pass = $conf1->get('mssql-password');
 //MY SQL host
 $ms_sql_odbc_host = $conf1->get('mysql-odbc');
 //ms-sql sticker_report
-$host_ms = "10.227.221.25";
-$user_ms = "BAISFCS";
-$password_ms = "fcs@m3pr";
-$conn_string = "DRIVER={iSeries Access ODBC Driver};System=10.227.40.10;Uid=".$user_ms.";Pwd=".$password_ms.";";
+$host_ms = $conf1->get('m3_system_id');
+$user_ms = $conf1->get('m3_user_name');
+$password_ms = $conf1->get('m3_password');
+$m3_db = $conf1->get('m3_db');
+$conn_string = "DRIVER={iSeries Access ODBC Driver};System=".$host_ms.";Uid=".$user_ms.";Pwd=".$password_ms.";";
+//echo $conn_string;
 //M3 MSSQL DB Configurations
 $m3_mssql_odbc_name="bcimovsms01_bai";
 $m3_mssql_username="brandix_india_user1";
@@ -48,6 +50,11 @@ $message_sent_via=$conf1->get('msg-sent-via');  //msg-sent-via
 $rms_request_time = $conf1->get('rms_request_time');
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
+
+//get plant details and adress
+$plant_head=$conf1->get('plant_head');
+$plant_address=$conf1->get('plant_address');
+$plant_location=$conf1->get('plant_location');
 
 //M3 Rest API Calls Details
 $company_no = $conf1->get('companey-number');
