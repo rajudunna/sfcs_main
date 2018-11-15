@@ -756,7 +756,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     while($row2=mysqli_fetch_array($result2))
     {
       $doc_no_ref[]=$row2['doc_no'];
-      $req_time[]=$row2['cutting_tbl_id'].") ".date("M-d H:i",strtotime($row2['log_time']));
+      $req_time[]=date("M-d H:i",strtotime($row2['log_time']));
       // $lay_time[]=$row2['log_time'];
       $req_date_time[]=$row2['log_time'];
 
