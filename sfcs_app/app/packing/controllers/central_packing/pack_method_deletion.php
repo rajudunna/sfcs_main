@@ -142,7 +142,7 @@
 						echo '<input type="hidden" name="style" id="style" value="'.$style.'">
                           <input type="hidden" name="schedule" id="schedule" value="'.$schedule.'">';
 				
-						if($check_status=='' || $check_status==NULL || $check_status==0 || $check_sewing_job=='' || $check_sewing_job==NULL || $check_sewing_job==0)
+						if(($check_status=='' || $check_status==NULL || $check_status==0) && ($check_sewing_job=='' || $check_sewing_job==NULL || $check_sewing_job==0))
 						{
 							?>
 							<span class="label label-info">To Clear all Packing Method at a time please click Delete All </span> &nbsp;&nbsp;
@@ -185,18 +185,18 @@
 									$url=getFullURL($_GET['r'],'pack_method_deletion.php','N');
 									if($seq_scan_count > 0)
 									{
-										echo "<td class='btn btn-success'>Already Scanned</td>";
+										echo"<td><h4><span class='label label-success'>Already Scanned</span></h4></td>";
 									}
 									else
 									{
 										$check_sewing_job_for_pack = echo_title("$bai_pro3.pac_stat_input","count(*)","no_of_cartons>0 and mix_jobs>0 and pac_seq_no='".$new_result1['seq_no']."' and schedule",$schedule,$link);
 										if($check_sewing_job_for_pack=='' || $check_sewing_job_for_pack==NULL || $check_sewing_job_for_pack==0)
 										{		
-											echo "<td><a id='delete' class='btn btn-danger'  onclick='return confirm_delete(event,this)' href='	$url&schedule=".$schedule."&seq_no=".$new_result1['seq_no']."&option=delete'>Delete</td>";
+											echo "<td><a id='delete' class='btn btn-danger'  onclick='return confirm_delete(event,this)' href='	$url&schedule=".$schedule."&seq_no=".$new_result1['seq_no']."&option=delete'>Delete</a></td>";
 										}
 										else
 										{
-											echo "<td>Sewing Job Generated</td>";
+											echo"<td><h4><span class='label label-success'>Sewing Job Generated</span></h4></td>";
 										}	
 									}
 									echo "<tr>";
