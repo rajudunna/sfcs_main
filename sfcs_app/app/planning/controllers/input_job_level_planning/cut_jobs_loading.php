@@ -125,9 +125,10 @@ $(document).ready(function() {
 	$('#sub').on('click',function(e){
 		style = $('#style').val();
 		schedule = $('#schedule').val();
+		color = $('#color').val();
 		cutno = $('#cutno').val();
-		if(style === 'NIL' && schedule === 'NIL' && cutno === 'NIL'){
-			sweetAlert('Please Select Style, Schedule and CutNo','','warning');
+		if(style === 'NIL' && schedule === 'NIL' && color === 'NIL' && cutno === 'NIL'){
+			sweetAlert('Please Select Style, Schedule, Color and CutNo','','warning');
 		}
 		else if(style === 'NIL' && schedule === 'NIL'){
 			sweetAlert('Please Select Style and Schedule','','warning');
@@ -143,6 +144,10 @@ $(document).ready(function() {
 		}
 		else if(schedule === 'NIL'){
 			sweetAlert('Please Select Schedule','','warning');
+		}
+		else if(color === 'NIL'){
+			e.preventDefault();
+			sweetAlert('Please Select Color','','warning');
 		}
 		else if(cutno === 'NIL'){
 			e.preventDefault();
@@ -318,7 +323,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$cat_ref=$sql_row['cat_ref'];
 }
 
-$sql="select cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" order by doc_no";
+$sql="select cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des='$color' order by doc_no";
 // mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -328,38 +333,30 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$cat_ref=$sql_row['cat_ref'];
 }
 
-
-
+$sql12="select * from $bai_pro3.packing_summary_input where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des='$color'";
+$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check12=mysqli_num_rows($sql_result12);
 
 if($sql_num_check>0)
 {
-	// $sql1="select group_concat(sec_mods) as mods from bai_pro3.sections_db";
-	// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// while($sql_row1=mysqli_fetch_array($sql_result1))
-	// {
-	// 	$modules=$sql_row1["mods"];
-	// }	
-	// $modules_array=explode(",",$modules);
-	
-	// if(strlen($color)>0)
-	// {
-	// 	echo "Select Modules: <select name=\"modules\" class=\"form-control\" id='modules'>";
-	// 	for($i1=0;$i1<sizeof($modules_array);$i1++)
-	// 	{
-	// 		echo "<option value=\"".$modules_array[$i1]."\">".$modules_array[$i1]."</option>";
-	// 	}
-	// 	echo "</select>&nbsp;&nbsp;";
-	// }
-	
-	echo "Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
-	echo "<input type=\"hidden\" name=\"code\" value=\"$code\">";
-	echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
-	echo "<input type=\"submit\" value=\"Submit\" name=\"submit\" id='sub' disabled class='btn btn-success'>";	
+	if($sql_num_check12>0)
+	{	
+		echo "Cut Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
+		echo "Sewing Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
+		echo "<input type=\"hidden\" name=\"code\" value=\"$code\">";
+		echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
+		echo "<input type=\"submit\" value=\"Submit\" name=\"submit\" id='sub' disabled class='btn btn-success'>";
+	}
+	else
+	{
+		echo "Cut Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
+		echo "Sewing Jobs Available :"."<span class='label label-danger'>No</span>&nbsp;&nbsp;";
+	}
 }
 else
 {
-	echo "Docket Available  :"."<span class='label label-danger'>No</span>&nbsp;&nbsp;";
+	echo "Cut Jobs Available:"."<span class='label label-danger'>No</span>&nbsp;&nbsp;";
+	echo "Sewing Jobs Available :"."<span class='label label-danger'>No</span>&nbsp;&nbsp;";
 	/*echo "<input type=\"hidden\" name=\"code\" value=\"$code\">";
 	echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
 	echo "<input type=\"submit\" value=\"submit\" name=\"submit\">";*/
