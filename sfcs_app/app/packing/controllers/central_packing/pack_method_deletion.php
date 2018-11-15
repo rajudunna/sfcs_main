@@ -189,7 +189,7 @@
 									}
 									else
 									{
-										$check_sewing_job_for_pack = echo_title("$bai_pro3.pac_stat_input","count(*)","no_of_cartons>0 and mix_jobs>0 and pac_sew_no='".$new_result1['seq_no']."' and schedule",$schedule,$link);
+										$check_sewing_job_for_pack = echo_title("$bai_pro3.pac_stat_input","count(*)","no_of_cartons>0 and mix_jobs>0 and pac_seq_no='".$new_result1['seq_no']."' and schedule",$schedule,$link);
 										if($check_sewing_job_for_pack=='' || $check_sewing_job_for_pack==NULL || $check_sewing_job_for_pack==0)
 										{		
 											echo "<td><a id='delete' class='btn btn-danger'  onclick='return confirm_delete(event,this)' href='	$url&schedule=".$schedule."&seq_no=".$new_result1['seq_no']."&option=delete'>Delete</td>";
