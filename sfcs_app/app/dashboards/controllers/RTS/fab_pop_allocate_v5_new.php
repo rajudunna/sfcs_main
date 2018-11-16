@@ -415,10 +415,10 @@ function check_qty2(x,m,n,doc)
 				
 				issued_qty=document.input["val"+doc_ref+"["+j+"]"].value;
 				width=document.input["width"+doc_ref+"["+j+"]"].value
-				alert(width);
+				// alert(width);
 				if(widt<=parseFloat((document.input["width"+doc_ref+"["+j+"]"].value)))
 				{	
-					alert(issued_qty);
+					// alert(issued_qty);
 					selc=selc+parseFloat((document.input["val"+doc_ref+"["+j+"]"].value));
 					widt=parseFloat((document.input["width"+doc_ref+"["+j+"]"].value));
 					document.input["min_width["+i+"]"].value=widt;
@@ -452,7 +452,8 @@ function check_qty2(x,m,n,doc)
 						
 					}
 				}else{
-					// console.log('test');
+					sweetAlert("Width is not updated for this row in Inspection"," ","warning");
+                    document.getElementById("chk"+doc_ref+j).checked = false;
 					console.log(widt+"<="+parseFloat((document.input["width"+doc_ref+"["+j+"]"].value))+" J = "+j);
 				}
 			}else{
