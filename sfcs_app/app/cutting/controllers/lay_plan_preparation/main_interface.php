@@ -1574,7 +1574,7 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 						<input type="hidden" id="color" name="color" value="<?=$color;?>"/>
 						<input type="hidden" id="user" name="user" value="<?=$user;?>"/>
 					<div class="col-md-1"><br/>
-						<input type="submit" name="submit" class="btn btn-info" id="submit" value="submit" disabled/>
+						<input type="submit" name="submit" class="btn btn-info" id="submit" value="Submit" disabled/>
 					</div>
 				</div>
 			</form>
@@ -1603,7 +1603,7 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 				//check whether sewing job created or not
 				if($check=='1'){
 				} else {
-					echo "<input type='submit' name='submit' class='btn btn-warning btn-sm editor_edit'>";
+					echo "<input type='submit' name='submit' value='Update' class='btn btn-warning btn-sm editor_edit'>";
 				}
 				echo "</form>";
 				// echo "<div class='col-md-2'><b>".$val."</b></div>";
@@ -1644,10 +1644,11 @@ else{
 echo "<div><table class=\"table table-bordered\">";
 //<th class=\"column-title \"><center>Ratio</center></th>
 echo "<thead><tr><th class=\"column-title \"><center>Category</center></th><th class=\"column-title \"><center>Total Cut</center></th><th class=\"column-title \"><center>Ratio Ref</center></th><th class=\"column-title \"><center>MO Status</center></th><th class=\"column-title \"><center>Control</center></th><th class=\"column-title \"><center>Ratio wise Savings%</center></th><th class=\"column-title \"><center>Proceed</center></th><th class=\"column-title \"><center>Remarks</center></th></tr></thead>";
-foreach($cats_ids as $key=>$value)
-{
-$sql="select * from $bai_pro3.maker_stat_log where order_tid=\"$tran_order_tid\" and allocate_ref > 0 and cat_ref=$value order by allocate_ref";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+$check_for_excess_cut="select excess_cut_qty from $bai_pro3.excess_cuts_log where schedule_no = '$schedule' and color = '$color'";
+$excess_cut_details=mysqli_query($link, $check_for_excess_cut) or exit("Error while fetching excess cut details");
+
+$sql="select * from $bai_pro3.maker_stat_log where order_tid=\"$tran_order_tid\" and allocate_ref > 0 order by allocate_ref";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1661,7 +1662,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$cat_ref=$sql_row['cat_ref'];
 	
 	$sql2="select * from $bai_pro3.cat_stat_log where tid=$cat_ref order by catyy DESC";
-	mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -1673,7 +1673,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td class=\"  \"><center>".$category."</center></td>";
 	
 	$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and tid=$allocate_ref";
-	mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -1704,23 +1703,27 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";
 	}
 	
-	
-	$sql2="select count(pcutdocid) as \"count\" from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid\" and allocate_ref=$allocate_ref ";
-	//echo $sql2;
-	mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row2=mysqli_fetch_array($sql_result2))
+	if (mysqli_num_rows($excess_cut_details) > 0)
 	{
-		//echo $sql_row2['count']."===".$mo_status."--".$cutcount."--".$totalplies."<br>";
-		if($sql_row2['count']==0 && $mo_status=="Y" && $cutcount>0 && $totalplies>0)
+		$sql2="select count(pcutdocid) as \"count\" from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid\" and allocate_ref=$allocate_ref ";
+		//echo $sql2;
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{
-			echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-primary\" href=\"".getFullURL($_GET['r'], "doc_gen_form.php", "N")."&tran_order_tid=$tran_order_tid&mkref=$mkref&allocate_ref=$allocate_ref&cat_ref=$cat_ref\" onclick='clickAndDisable(this);'>Generate</a></center></td>";
+			//echo $sql_row2['count']."===".$mo_status."--".$cutcount."--".$totalplies."<br>";
+			if($sql_row2['count']==0 && $mo_status=="Y" && $cutcount>0 && $totalplies>0)
+			{
+				echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-primary\" href=\"".getFullURL($_GET['r'], "doc_gen_form.php", "N")."&tran_order_tid=$tran_order_tid&mkref=$mkref&allocate_ref=$allocate_ref&cat_ref=$cat_ref\">Generate</a></center></td>";
+			}
+			else
+			{
+				echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "doc_view_admin.php", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_ref\">View</a></center></td>";	
+			}
 		}
-		else
-		{
-			echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "doc_view_admin.php", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_ref\">View</a></center></td>";	
-		}
-
+	}
+	else
+	{
+		echo "<td><center><span class='label label-danger'><i class=\"fa fa-times-circle\"></i>&nbsp;&nbsp; Update Excess Cut</span></center></td>";
 	}
 	
 	$cad_consumption = $mklength/$ratiotot;
@@ -1737,7 +1740,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td class=\"  \"><center>".$remarks."</center></td>";
 	echo "</tr>";
 }
-}
+
 echo "</table></div></div>
 </div>
 </div>
@@ -1820,7 +1823,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//echo $cat_tid_new;
 		
 	$sql2="select sum(order_s_s01+order_s_s02+order_s_s03+order_s_s04+order_s_s05+order_s_s06+order_s_s07+order_s_s08+order_s_s09+order_s_s10+order_s_s11+order_s_s12+order_s_s13+order_s_s14+order_s_s15+order_s_s16+order_s_s17+order_s_s18+order_s_s19+order_s_s20+order_s_s21+order_s_s22+order_s_s23+order_s_s24+order_s_s25+order_s_s26+order_s_s27+order_s_s28+order_s_s29+order_s_s30+order_s_s31+order_s_s32+order_s_s33+order_s_s34+order_s_s35+order_s_s36+order_s_s37+order_s_s38+order_s_s39+order_s_s40+order_s_s41+order_s_s42+order_s_s43+order_s_s44+order_s_s45+order_s_s46+order_s_s47+order_s_s48+order_s_s49+order_s_s50) as \"order_qty_new\" from $ord_tbl_name where order_tid=\"$tran_order_tid\"";
-	mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -1829,7 +1831,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	
 	$sql2="select sum(cuttable_s_s01+cuttable_s_s02+cuttable_s_s03+cuttable_s_s04+cuttable_s_s05+cuttable_s_s06+cuttable_s_s07+cuttable_s_s08+cuttable_s_s09+cuttable_s_s10+cuttable_s_s11+cuttable_s_s12+cuttable_s_s13+cuttable_s_s14+cuttable_s_s15+cuttable_s_s16+cuttable_s_s17+cuttable_s_s18+cuttable_s_s19+cuttable_s_s20+cuttable_s_s21+cuttable_s_s22+cuttable_s_s23+cuttable_s_s24+cuttable_s_s25+cuttable_s_s26+cuttable_s_s27+cuttable_s_s28+cuttable_s_s29+cuttable_s_s30+cuttable_s_s31+cuttable_s_s32+cuttable_s_s33+cuttable_s_s34+cuttable_s_s35+cuttable_s_s36+cuttable_s_s37+cuttable_s_s38+cuttable_s_s39+cuttable_s_s40+cuttable_s_s41+cuttable_s_s42+cuttable_s_s43+cuttable_s_s44+cuttable_s_s45+cuttable_s_s46+cuttable_s_s47+cuttable_s_s48+cuttable_s_s49+cuttable_s_s50) as \"cuttable_qty_new\"from $bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\" and cat_id=$cat_tid_new";
-	mysqli_query($link, $sql2) or exit("Sql Error3: $sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error3: $sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -1838,8 +1839,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 		
 	$sql2="select sum((allocate_s01+allocate_s02+allocate_s03+allocate_s04+allocate_s05+allocate_s06+allocate_s07+allocate_s08+allocate_s09+allocate_s10+allocate_s11+allocate_s12+allocate_s13+allocate_s14+allocate_s15+allocate_s16+allocate_s17+allocate_s18+allocate_s19+allocate_s20+allocate_s21+allocate_s22+allocate_s23+allocate_s24+allocate_s25+allocate_s26+allocate_s27+allocate_s28+allocate_s29+allocate_s30+allocate_s31+allocate_s32+allocate_s33+allocate_s34+allocate_s35+allocate_s36+allocate_s37+allocate_s38+allocate_s39+allocate_s40+allocate_s41+allocate_s42+allocate_s43+allocate_s44+allocate_s45+allocate_s46+allocate_s47+allocate_s48+allocate_s49+allocate_s50)*plies) as \"total\" from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$cat_tid_new";
-
-	mysqli_query($link, $sql2) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -1849,7 +1848,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 	$sql2="select count(tid) as \"count\" from $bai_pro3.maker_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$cat_tid_new";
 	//echo $sql2;
-	mysqli_query($link, $sql2) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -1859,17 +1857,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	$sql2="select sum((a_s01+a_s02+a_s03+a_s04+a_s05+a_s06+a_s07+a_s08+a_s09+a_s10+a_s11+a_s12+a_s13+a_s14+a_s15+a_s16+a_s17+a_s18+a_s19+a_s20+a_s21+a_s22+a_s23+a_s24+a_s25+a_s26+a_s27+a_s28+a_s29+a_s30+a_s31+a_s32+a_s33+a_s34+a_s35+a_s36+a_s37+a_s38+a_s39+a_s40+a_s41+a_s42+a_s43+a_s44+a_s45+a_s46+a_s47+a_s48+a_s49+a_s50)*p_plies) as \"doc_sum\" from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$cat_tid_new"; //20110911
 	//echo $sql2;
-	mysqli_query($link, $sql2) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
 		$doc_sum=$sql_row2['doc_sum'];
 	}
 	
-//echo $cat_tid_new;
+	//echo $cat_tid_new;
 	$sql2="select count(*) as \"ratio_sum\" from $bai_pro3.allocate_stat_log where cat_ref=$cat_tid_new";
 	//echo $sql2;
-	mysqli_query($link, $sql2) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -1887,14 +1883,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$check_new1=1;
 	}
 	
-//	echo $cuttable_qty_new."-".$order_qty_new."<br/>";
+	//	echo $cuttable_qty_new."-".$order_qty_new."<br/>";
 	
 	if($allocation_qty_new>=$order_qty_new) // changed on 2010-12-02 on dumindu request
 	{
 		$check_new2=1;
 	}
 	
-//	echo $allocation_qty_new."-".$order_qty_new."<br/>";
+	//	echo $allocation_qty_new."-".$order_qty_new."<br/>";
 	if($mk_count>=$ratio_sum_new && $mk_count!=0)
 	{
 		$check_new3=1;
@@ -1910,7 +1906,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<tr class=\"  \">";
 	echo "<td class=\"  \"><center>".$category_new."</center></td>";
 	
-/*	echo "<td"; if($check_new1==1){echo " bgcolor=\"GREEN\" ";} else {echo " bgcolor=\"RED\" ";} echo "></td>";
+	/*	echo "<td"; if($check_new1==1){echo " bgcolor=\"GREEN\" ";} else {echo " bgcolor=\"RED\" ";} echo "></td>";
 	echo "<td"; if($check_new2==1){echo " bgcolor=\"GREEN\" ";} else {echo " bgcolor=\"RED\" ";} echo "></td>";
 	echo "<td"; if($check_new3==1){echo " bgcolor=\"GREEN\" ";} else {echo " bgcolor=\"RED\" ";} echo "></td>";
 	echo "<td"; if($check_new4==1){echo " bgcolor=\"GREEN\" ";} else {echo " bgcolor=\"RED\" ";} echo "></td>"; */
