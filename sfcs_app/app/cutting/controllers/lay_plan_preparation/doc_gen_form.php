@@ -118,6 +118,18 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$temp=$plies;
 	// New Change 2010-05-18 (on testing)
 
+	//BLocking for the clubbing dockets
+	$oj_query = "SELECT order_joins FROM bai_pro3.bai_orders_db WHERE order_tid = '$tran_order_tid'";
+	$oj_result = mysqli_query($link,$oj_query);
+	while($row=mysqli_fetch_array($oj_result)){
+		$oj = $row['order_joins'];
+	}
+
+	if($oj == 1)
+		$call_flag = 0;
+	else
+		$call_flag = 1;
+
 	//while($temp>=$pliespercut)
 	while($temp>=$pliespercut)
 	{
@@ -130,14 +142,18 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		//echo "</br>temp>=pliescut :".$sql2."</br>";
 		$temp=$temp-$pliespercut;
 
-		
 		$docket_no = mysqli_insert_id($link);
-		if($docket_no > 0){
-			$insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
-			if($insert_bundle_creation_data){
-				//Data inserted successfully
+		//checking for body/front categories
+		$cat_query = "SELECT category from $bai_pro3.cat_stat_log where tid='$cat_ref' and category in ($in_categories)";
+		$cat_result = mysqli_query($link,$cat_query);
+		if(mysqli_num_rows($cat_result) > 0){
+			if($docket_no > 0 && $call_flag > 0){
+				$insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
+				if($insert_bundle_creation_data){
+					//Data inserted successfully
+				}
+				$docket_no = '';
 			}
-			$docket_no = '';
 		}
 
 	
@@ -156,12 +172,18 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 		//getting docket number
 		$docket_no = mysqli_insert_id($link);
-		if($docket_no > 0){
-			$insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
-			if($insert_bundle_creation_data){
-				//Data inserted successfully
+		//checking for body/front categories
+		$cat_query = "SELECT category from $bai_pro3.cat_stat_log where tid='$cat_ref' and category in ($in_categories)";
+		$cat_result = mysqli_query($link,$cat_query);
+	
+		if(mysqli_num_rows($cat_result) > 0){
+			if($docket_no > 0  && $call_flag > 0){
+				$insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
+				if($insert_bundle_creation_data){
+					//Data inserted successfully
+				}
+				$docket_no = '';
 			}
-			$docket_no = '';
 		}
 	}
 

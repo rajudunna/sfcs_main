@@ -907,6 +907,7 @@
 	// echo "</table>";	
 
 	//Deleting the entry from sewing jobs ref if no input job was created  --  Updating the bundle quantity after the jobs are inserted
+	/*
 	if($job_counter == 1){
 		$delete_query = "Delete from $bai_pro3.sewing_jobs_ref where id = '$inserted_id'";
 		$delete_result = mysqli_query($link,$delete_query) or exit("Problem while deleting from sewing jos ref");
@@ -920,7 +921,10 @@
 			//Updated Successfully
 		}
 	}
-
+	*/
+	$update_query = "Update $bai_pro3.sewing_jobs_ref set bundles_count = $job_counter where id = '$inserted_id' ";
+	$update_result = mysqli_query($link,$update_query) or exit("Problem while inserting to sewing jos ref");
+	
 	//----------MO FILL Function Calling  -----
 	$inserted = insertMOQuantitiesSewing($schedule,$inserted_id);
 	if($inserted){

@@ -288,7 +288,7 @@ if(isset($_POST['submit']))
 	}
 	//echo "Ststtua---".$status."----Rows1--".$rows1."----Rows--".$rows."<br>";
 	if($status==0)
-	{	
+	{
 		$order_tids=array();
 		$sql4533="select * from $bai_pro3.bai_orders_db_confirm where order_joins='$order_joins' and order_del_no='".$schedule."'";
 		//echo $sql4533."<br>";
@@ -357,7 +357,57 @@ if(isset($_POST['submit']))
 		$sql452="delete from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."' and order_col_des=\"".$color."\" ";
 		// echo $sql452."<br>";
 		$sql_result452=mysqli_query($link, $sql452) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	
+		//Deleting from cps_log,bcd,moq
+		$category="'cutting','Send PF','Receive PF'";
+		$op_codes_query = "SELECT group_concat(operation_code) as op_codes from $brandix_bts.tbl_orders_ops_ref 
+						where category IN ($category) ";
+		$op_codes_result = mysqli_query($link,$op_codes_query);
+		$row = mysqli_fetch_array($op_codes_result);
+		$op_codes = $row['op_codes'];
+
+		$dockets_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log psl
+					LEFT JOIN $bai_pro3.bai_orders_db od ON od.order_tid = psl.order_tid
+					where order_del_no = '$schedule' and order_style_no='$style' and order_joins NOT IN ('0') ";
+		$dockets_result = mysqli_query($link,$dockets_query);
+		//echo $dockets_query.'<br/>';
+		while($row = mysqli_fetch_array($dockets_result)){
+			$dockets[] = $row['doc_no'];
+		}			
+		$docs = implode(',',$dockets);
+
+		if($docs){
+			$bundle_ids_query  = "SELECT id from $bai_pro3.cps_log where doc_no IN ($docs) ";
+			$bundle_ids_result = mysqli_query($link,$bundle_ids_query);
+			while($row = mysqli_fetch_array($bundle_ids_result)){
+				$bundle_ids[] = $row['id'];
+			}
+			$bundle_ids = implode(',',$bundle_ids);
+			mysqli_begin_transaction($link);
+			$delete_cps_query = "DELETE from $bai_pro3.cps_log where doc_no IN ($docs)";
+			$delete_bcd_query = "DELETE from $brandix_bts.bundle_creation_data where docket_number IN ($docs)";
+			$delete_moq_query = "DELETE from $bai_pro3.mo_operation_quantites where ref_no in ($bundle_ids) 
+								and op_code in ($op_codes)";
+
+			// echo $delete_cps_query.'<br/>';
+			// echo $delete_bcd_query.'<br/>';
+			// echo $delete_moq_query.'<br/>';
+
+			$delete_cps_result = mysqli_query($link,$delete_cps_query);
+			$delete_bcd_result = mysqli_query($link,$delete_bcd_query);
+			$delete_moq_result = mysqli_query($link,$delete_moq_query);
+			if($delete_cps_result && $delete_bcd_result && $delete_moq_result)
+				mysqli_commit($link);
+			else	
+				mysqli_rollback($link);
+			
+			mysqli_close($link);
+		}
 		
+		//Deleting logic ends
+		
+
+
 		// echo "<h2> Mixing Colour has been removed, Please Re-mix the schedule Colours again.</h2>";
 		echo "<script type=\"text/javascript\"> 
 						sweetAlert('Successfully Removed the Mixing Colour','','success');
@@ -368,6 +418,9 @@ if(isset($_POST['submit']))
 		echo "<h2> Already Sewing Orders are prepared, Can you please delete the sewing orders and try Again.</h2>";	
 	}	
 } 
+
+
+
 ?> 
 
 </div></div></div>
