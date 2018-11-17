@@ -296,6 +296,8 @@ if(isset($_POST['update']))
 			}
 
 		}
+		//explicitly assigning to array
+		$input_doc_nos = $input_doc_no;
 	}
 	else if($club_status=='1')
 	{
@@ -359,7 +361,8 @@ if(isset($_POST['update']))
 		$sql_result2=mysqli_query($link, $sql3) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{
-			
+			//for clubbing dockets getting category
+			$club_docs[$sql_row2['doc_no']] = $sql_row2['cat_ref'];
 			$sql4="UPDATE $bai_pro3.plandoc_stat_log SET `act_cut_status` = 'DONE' , `fabric_status` = '5' , `plan_lot_ref` = '\'STOCK\'' WHERE `doc_no` = '".$sql_row2['doc_no']."'";
 			$sql_result3=mysqli_query($link, $sql4) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			//echo $sql4."<br>";
@@ -478,17 +481,28 @@ if(isset($_POST['update']))
 			$sql_result=mysqli_query($link, $sql14) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		
+		//echo "going inside loop";
+		foreach($club_docs as $docket=>$cat_ref){
+			$cat_query = "SELECT category from $bai_pro3.cat_stat_log where tid='$cat_ref' and 
+						  category in ($in_categories)";
+			$cat_result = mysqli_query($link,$cat_query);
+			if(mysqli_num_rows($cat_result) > 0){
+				//$insert = doc_size_wise_bundle_insertion($docket);
+				$input_doc_nos[] = $docket;
+			}
+		}
+		//var_dump($input_doc_nos);
+		$input_doc_nos = implode(',',$input_doc_nos);
+		
 	}
 	if ($failed == 1) 
 	{
-	
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel_cut.php',0,'N')."'; }</script>";
 	}
 	else
 	{
-	
 		$go_back = 'doc_track_panel_cut';
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'trail.php',0,'N')."&doc_no_ref=$input_doc_no&plies=$plies&go_back_to=$go_back'; }</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'trail.php',0,'N')."&doc_no_ref=$input_doc_nos&plies=$plies&go_back_to=$go_back'; }</script>";
 	}
 	
 }

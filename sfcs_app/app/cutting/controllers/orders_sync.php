@@ -176,16 +176,24 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	
 	//----------------Logic to insert into  bundle creation data and mo operation quantities
 	//Getting all the dockets for order tid
+	unset($dockets);
 	foreach($order_tid_new as $order_tid){
-		$docs_query = "Select distinct(doc_no) as doc_no from $bai_pro3.plandoc_stat_log where order_tid = '$order_tid' ";
+		$docs_query = "Select doc_no,cat_ref from $bai_pro3.plandoc_stat_log where order_tid = '$order_tid' ";
 		$docs_result = mysqli_query($link,$docs_query);
 		while($row = mysqli_fetch_array($docs_result)){
-			$dockets[] = $row['doc_no']; 
+			//echo "in";
+			$dockets[$row['doc_no']] =  $row['cat_ref'];
 		}
 	}
-	foreach($dockets as $docket){
-		$insert = doc_size_wise_bundle_insertion($docket,1);
+	foreach($dockets as $docket=>$cat_ref){
+		$cat_query = "SELECT category from $bai_pro3.cat_stat_log where tid='$cat_ref' and 
+					category in ($in_categories)";			
+		$cat_result = mysqli_query($link,$cat_query);
+		if(mysqli_num_rows($cat_result) > 0){
+			$insert = doc_size_wise_bundle_insertion($docket,1);
+		}
 	}
+	//exit();
 
 	/*
 	$inserted = insertMoQuantitiesClub($impdata);

@@ -293,15 +293,16 @@
 										$tot_balance = 0;
 										foreach ($sizes_array as $key => $value)
 										{
-											$plannedQty_query = "SELECT SUM(p_plies*p_$sizes_array[$key]) AS plannedQty FROM $bai_pro3.plandoc_stat_log WHERE cat_ref IN (SELECT tid FROM $bai_pro3.cat_stat_log WHERE category IN ($in_categories) AND order_tid IN  (SELECT order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule))";
-											// echo $plannedQty_query.'<br>';
+											$plannedQty_query = "SELECT SUM(p_plies*p_$sizes_array[$key]) AS plannedQty FROM $bai_pro3.plandoc_stat_log WHERE cat_ref IN (SELECT tid FROM $bai_pro3.cat_stat_log WHERE category IN ($in_categories) AND order_tid IN  (SELECT order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule  AND order_joins NOT IN ('1','2') ))";
+											//echo $plannedQty_query.'<br>';
 											$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
 											while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
 											{
 												$planned_qty[] = $planneQTYDetails['plannedQty'];
 											}
 
-											$orderQty_query = "SELECT SUM(order_s_$sizes_array[$key]) AS orderedQty FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule";
+											$orderQty_query = "SELECT SUM(order_s_$sizes_array[$key]) AS orderedQty FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule
+											AND order_joins NOT IN ('1','2')";
 											// echo $orderQty_query.'<br>';
 											$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error2");
 											while($orderQty_details=mysqli_fetch_array($Order_qty_resut))
