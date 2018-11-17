@@ -1772,7 +1772,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$pkg_no=$sql_row['pkg_no'];
 	$grn_date=$sql_row['grn_date'];
 	// $lot_ref_batch=rtrim($sql_row['lot_ref_batch'],'R');
-	$lot_ref_batch="'" .implode("','", $sql_row['lot_ref_batch']) . "'";
+	if($sql_row['lot_ref_batch']!=''){
+		$lot_ref_batch=$sql_row['lot_ref_batch'];
+	}else{
+		$lot_ref_batch='';
+	}
+	
 	$lot_count=$sql_row['lot_count'];
 	$buyer_code=$sql_row['buyer_code'];
 	$supplier_ref_name=$sql_row['supplier'];
@@ -1822,7 +1827,6 @@ $scount_temp=array();
 $ctex_sum=0;
 $avg_t_width=0;
 $avg_c_width=0;
-
 $sql="select * from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch) order by ref2+0";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errorc".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);

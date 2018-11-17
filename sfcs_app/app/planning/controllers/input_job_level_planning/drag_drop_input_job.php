@@ -510,11 +510,11 @@ $module_limit=14;
 			for(var no2=0;no2<lis.length;no2++)
 			{
 				var res=lis[no2].id;
-				if(sch==res.substring(0, 6))
-				{
+				// if(sch==res.substring(0, 6))
+				// {
 					if(saveString.length>0)saveString = saveString + ";";
 					saveString = saveString + uls[no].id + '|' + lis[no2].id;
-				}
+				//}
 			}	
 		}		
 		
@@ -624,11 +624,15 @@ $module_limit=14;
 
 	if($cutno!='All')
 	{
-		$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select type_of_sewing,order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from plan_doc_summ_input where order_del_no in ($schedule_list) and acutno=$cutno and input_job_no_random not in (select input_job_no_random_ref from plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
+		$input_jobs = echo_title("$bai_pro3.packing_summary_input","group_concat(distinct input_job_no)","order_col_des='$color' and acutno='$cutno' and order_del_no",$schedule_list,$link);
+		
+		$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select type_of_sewing,order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from plan_doc_summ_input where input_job_no in ($input_jobs) and order_del_no='$schedule_list' and acutno='$cutno' and input_job_no_random not in (select input_job_no_random_ref from plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
 	}
 	else
 	{
-		$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select type_of_sewing,order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from plan_doc_summ_input where order_del_no in ($schedule_list) and input_job_no_random not in (select input_job_no_random_ref from plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
+		$input_jobs = echo_title("$bai_pro3.packing_summary_input","group_concat(distinct input_job_no)","order_col_des='$color' and  order_del_no",$schedule_list,$link);
+		
+		$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select type_of_sewing,order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from plan_doc_summ_input where input_job_no in ($input_jobs) and order_del_no='$schedule_list' and input_job_no_random not in (select input_job_no_random_ref from plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
 	}
 	// echo $sql."<br/>";
 	mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -688,7 +692,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 <br>
 <div id="dhtmlgoodies_dragDropContainer">
 	<div id="dhtmlgoodies_listOfItems">
-		<div style="position: fixed;width: 150px;height:300px;overflow:scroll;margin-top: 30px;">
+		<div id='scrollable_block' style="position: fixed;width: 150px;height:300px;overflow:scroll;margin-top: 30px;">
 			<p>Jobs</p>		
 		<ul id="allItems">		
 		<?php
@@ -707,7 +711,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 					$font_color = 'white';
 				}
 
-				echo "<li id=\"".$code_db_new[0]."|".$code_db_new[4]."\" data-color='blue' style=\" background-color:$check; border-color:#b8daff; color:#f6f6f6;\">
+				echo "<li class='apply-remove' id=\"".$code_db_new[0]."|".$code_db_new[4]."\" data-color='blue' style=\" background-color:$check; border-color:#b8daff; color:#f6f6f6;\">
 							<strong><font color='$font_color'>".$code_db_new[1]."-".$code_db_new[5]."-".$code_db_new[3]."</font></strong>
 						</li>";
 			}
@@ -804,7 +808,8 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 					$get_fab_req_details="SELECT * FROM $bai_pro3.fabric_priorities WHERE doc_ref_club=\"$doc_no_ref\" ";
 					$get_fab_req_result=mysqli_query($link, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$resulted_rows = mysqli_num_rows($get_fab_req_result);
-
+					//echo $get_fab_req_details;
+					//die();
 					$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
 					$bg_color1 = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
 
@@ -891,6 +896,15 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 </body>
 
 </html>
-<script src="../../common/js/jquery-1.3.2.js"></script>
+
+<script>
+    $(document).ready(function(){
+        $('.apply-remove').css({'min-width':'134px'});
+        $('#scrollable_block').scroll(function(){
+            $('.apply-remove').css({'border':'1px solid black'});
+            $('.apply-remove').css({'display':'inline-block'});
+        });
+    });
+</script>
 
 

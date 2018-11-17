@@ -11,12 +11,10 @@ Task: Lay Plan Delettion Validation (added IMS and Cut Completion Status)
 
 <?php    
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));
 $layplanmail = $conf1->get('layplanmail'); 
 //var_dump($layplanmail);
-// include("header.php"); 
-?> 
-<?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
-<?php 
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 
 
 function echo_title($table_name,$field,$compare,$key,$link) 
 { 
@@ -102,13 +100,11 @@ function myfunction ()
     { 
         $schedule=$_POST['schedule'];  
         $color=$_POST['color']; 
-        
     } 
     else 
     { 
-    $schedule='';  
-    $color=''; 
-
+        $schedule='';  
+        $color=''; 
     } 
     
 
@@ -181,6 +177,10 @@ if(isset($_POST["submit"]))
     $order_det_suc=array(); 
     //echo $schedule."---".$color."<br>"; 
     //Ticket# 365867/Date:2014-01-22/Task: LayPlan Deletion Validation Enhancement/Action:Taken the Order Tid instead of Schedule No for validate the query. 
+	
+			
+	
+	
     if($color!='0' || $color!='0') 
     {   
         $sql73="select *,order_tid as otid from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" and order_col_des=\"$color\" and order_joins='0'"; 
@@ -207,43 +207,18 @@ if(isset($_POST["submit"]))
         $check_oc+=echo_title("bai_orders_db_confirm","count(*)","order_tid",$order_tid[$i],$link); 
     } 
      
-    $mini_orders=0; 
-    $schedule_id=0; 
-	$sql_s="select id from $brandix_bts.tbl_orders_master where product_schedule=".$schedule." limit 1"; 
-	$result_s=mysqli_query($link, $sql_s) or die("Error=s".mysqli_error($GLOBALS["___mysqli_ston"])); 
-	if(mysqli_num_rows($result_s) > 0) 
-	{ 
-		while($roww1=mysqli_fetch_array($result_s)) 
-		{ 
-			$schedule_id=$roww1['id']; 
-		} 
-		$sql_sid="select id from $brandix_bts.tbl_min_ord_ref where ref_crt_schedule=".$schedule_id.""; 
-		$result_sid=mysqli_query($link, $sql_sid) or die("Error=s".mysqli_error($GLOBALS["___mysqli_ston"])); 
-		if(mysqli_num_rows($result_sid) > 0) 
-		{ 
-			while($roww2=mysqli_fetch_array($result_sid)) 
-			{ 
-				$m_ref_id=$roww2['id']; 
-			} 
-			$sql_mid="select * from $brandix_bts.tbl_miniorder_data where mini_order_ref=".$m_ref_id.""; 
-			$result_mid=mysqli_query($link, $sql_mid) or die("Error=s".mysqli_error($GLOBALS["___mysqli_ston"])); 
-			$mini_orders=mysqli_num_rows($result_mid); 
-		} 
-		else 
-		{ 
-			$mini_orders=0; 
-		}         
-	} 
-	else 
-	{ 
-		$mini_orders=0; 
-		$schedule_id=0; 
-	}
+
+    $schedule_id=0;
+    $schedule_id=echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
+    
+    $sql_s="select * from $bai_pro3.packing_summary_input where order_del_no ='$schedule'";
+    $result_s=mysqli_query($link, $sql_s) or die("Error=s".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    $mini_orders = mysqli_num_rows($result_s);
     if($mini_orders>0) 
     { 
         echo "<h2>Already Sewing Orders Generated ...!</h2>"; 
 		echo "<h2>Please delete Sewing Orders and try again...!</h2>"; 
-    } 
+    }
     else 
     { 
 		if($check>0 || $check_a>0 || $check_c>0 || $check_m>0 || $check_oc>0) 
@@ -251,7 +226,7 @@ if(isset($_POST["submit"]))
             for($i=0;$i<sizeof($order_tid);$i++) 
             { 
                 //echo $order_tid."<br>";
-                $sql71="SELECT * from $bai_pro3.pac_stat_log where status=\"DONE\" and doc_no in (select doc_no from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid[$i]."\")"; 
+                $sql71="SELECT * from $bai_pro3.pac_stat_log where status=\"DONE\" AND schedule='$schedule'"; 
                 //echo $sql71."<br>"; 
                 $result71=mysqli_query($link, $sql71) or die("Error=71".mysqli_error($GLOBALS["___mysqli_ston"])); 
                 $row71=mysqli_num_rows($result71); 
@@ -285,8 +260,9 @@ if(isset($_POST["submit"]))
                         //M3 Reversal 
                         //M3 Bulk operation reversal 
                         //To update M3 Bulk Upload Tool (To pass negative entry) 
-                        $sql2m3="insert into $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_log_user,sfcs_status,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref) select NOW(),sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,(sfcs_qty*-1),sfcs_reason,USER(),0,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no=".$sql_row33['doc_no']." AND m3_op_des='LAY' and sfcs_reason='' and left(sfcs_job_no,1)<>'R' and sfcs_qty>0"; 
-                        mysqli_query($link, $sql2m3) or die("Sql error".$sql2m3.mysqli_errno($GLOBALS["___mysqli_ston"]));     
+                        //COMMENTED FOR #759
+                        // $sql2m3="insert into $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_log_user,sfcs_status,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref) select NOW(),sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,(sfcs_qty*-1),sfcs_reason,USER(),0,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no=".$sql_row33['doc_no']." AND m3_op_des='LAY' and sfcs_reason='' and left(sfcs_job_no,1)<>'R' and sfcs_qty>0"; 
+                        // mysqli_query($link, $sql2m3) or die("Sql error".$sql2m3.mysqli_errno($GLOBALS["___mysqli_ston"]));     
                     } 
                     $sql1="update bai_orders_db set order_no=0 where order_tid=\"".$order_tid[$i]."\""; 
                     mysqli_query($link, $sql1) or die("Error=11".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -337,10 +313,15 @@ if(isset($_POST["submit"]))
                     mysqli_query($link, $sql5) or die("Error=5".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     // echo $sql5."<br>"; 
                      
-                    $sql7="update $bai_pro3.cat_stat_log set clubbing=0,category='',purwidth=0,gmtway='',patt_ver='' where order_tid=\"".$order_tid[$i]."\""; 
+                    $sql7="update $bai_pro3.cat_stat_log set clubbing=0,category='',purwidth=0,gmtway='',binding_consumption=0,patt_ver='' where order_tid=\"".$order_tid[$i]."\""; 
                     mysqli_query($link, $sql7) or die("Error=7".mysqli_error($GLOBALS["___mysqli_ston"]));  
                     // echo $sql7."<br>"; 
+
+                    $sql3="delete from $bai_pro3.excess_cuts_log where schedule_no='$schedule' and color='$color'";
+                    mysqli_query($link, $sql3) or die("Error=8".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                    // echo $sql3."<br>"; 
                      
+                    // deleting sewing job tables
                     if($schedule_id!=0) 
                     { 
                        // $docket_t=array();
@@ -371,10 +352,8 @@ if(isset($_POST["submit"]))
                             $sql101="delete from $brandix_bts.tbl_orders_sizes_master where parent_id=".$schedule_id." and order_col_des='".$col_desc[$i]."'"; 
                             // echo $sql101."<br>"; 
                             mysqli_query($link, $sql101) or die("Error=121".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                            
-                        }     
-                                         
-                    } 
+                        }
+                    }
                     //echo gethostname."<br>"; 
                      
                     $sql6="delete from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid[$i]."\""; 
@@ -450,12 +429,38 @@ if(isset($_POST["submit"]))
                 } 
                  
             } 
+            
+            /*  OLD LOGIC TO DELETE mo operation quantites  
+            $op_codes = "SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
+                         WHERE default_operation='Yes' and category='cutting' group by category order by category*1"; 
+            $op_codes_result = mysqli_query($link, $op_codes);
+            while($row = mysqli_fetch_array($op_codes_result)){
+                $op_codes = $row['codes'];
+            }
+
+			$getmonos="select mo_no from $bai_pro3.mo_details where schedule='$schedule' and color='$color'";
+			$moresult=mysqli_query($link, $getmonos) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			while($rowmo=mysqli_fetch_array($moresult)) 
+			{
+				$mos[]=$rowmo['mo_no'];
+			}
+			$mos=implode(',',$mos);
+			$deletefrommoquantitys="delete from $bai_pro3.mo_operation_quantites where mo_no in ($mos) and op_code in ($op_codes)";
+            //echo $deletefrommoquantitys;
+            mysqli_query($link, $deletefrommoquantitys) or die("Error while deleting mo nos from mo operation quantities".mysqli_error($GLOBALS["___mysqli_ston"])); 
+            */
+            $deleted = deleteMOQuantitiesCut($schedule,$color);
+            if($deleted){
+                //Successfully Deleted From Mo Operation Quantites
+            }
         } 
         else 
         { 
             echo "<div class=\"col-sm-12\" style=\"color: #ff0000\"><h2>Selected color not exists in the data. Please select another color.</h2></div>"; 
         } 
-    }     
+    } 
+    include("CMS_order_Schedule_Level.php");
+    include("CMS_shipment_Schedule_Level.php");    
 }     
 
 ?> 

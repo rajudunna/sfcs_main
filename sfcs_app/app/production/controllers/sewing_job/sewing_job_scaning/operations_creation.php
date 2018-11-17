@@ -29,10 +29,22 @@
 -->     
 <?php 
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
     $has_permission=haspermission($_GET['r']);
     $qry_short_codes = "SELECT * from $brandix_bts.ops_short_cuts";
     $result_oper = $link->query($qry_short_codes);
+    //$qry_work_center_id = "SELECT * from $brandix_bts.parent_work_center_id";
+    //$result_work_center_id = $link->query($qry_work_center_id);
+    $url=$api_hostname.":".$api_port_no."/m3api-rest/execute/PDS010MI/Select?CONO=".$company_no."&FFAC=".$facility_code."&TFAC=".$facility_code."&PLTP=1";
+   //$url = str_replace(' ', '%20', $url);
+    //echo "Api :".$url."<br>";
+    $result = $obj->getCurlAuthRequest($url);
+    $decoded = json_decode($result,true);
+     // var_dump($decoded);
+    
+    $vals = (conctruct_array($decoded['MIRecord']));
+    
 ?>
 <div class="container">
     <?php 
@@ -92,21 +104,52 @@
                                     ?>
                                 </select>
 
-								</div>
-								<div class="col-sm-3">
-									<b>Work Center</b><input type="text" class="form-control" id="work_center_id" name="work_center_id">
-								</div>
-								<div class="col-sm-3">
-									<b>Category</b>
-									<select class="form-control"id='category' name='category' title="It's Mandatory field" required>
-									<option value="">Please Select</option>
-									<option value='cutting'>Cutting</option>
-                                    <option value='embellishment'>Embellishment</option>
-									<option value='sewing'>Sewing</option>
-									<option value='packing'>Packing</option>
+                                </div>
+                                <div class = "col-sm-3">
+                                <b>Parent Work Center Id<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b>            
+                                    <select id="parent_work_center_id" style="width:100%;" name="parent_work_center_id" class="form-control" required>
+                                    <option value=''>Select Parent Work Center Id</option>
+                                    <?php   
+                                    if($vals>0){
+                                     foreach ($vals as $value) 
+                                            {
+                                                //echo "Oper Desc: ".$value['OPDS']."MO No:".$value['MFNO']."Work Station Id :".$value['PLG1']."SMV :".$value['PITI']."Operation :".$value['OPNO']."</br>";
+                                                
+                                                //getting values from api call
+                                                $PLGR=$value['PLGR'];
+                                                $PLNM=$value['PLNM'];
+                                        echo "<option value='". $PLGR."'>".$PLGR."-".$PLNM."</option>";
+
+                                            }
+                                        }else{
+                                            echo "<option value=''>No Data Found..</option>"; 
+                                        }
+                                        // if ($result_work_center_id->num_rows > 0) {
+                                        //     while($row = $result_work_center_id->fetch_assoc()) {
+                                        //     $row_value = $row['work_center_id_name'];
+                                        //         echo "<option value='".$row['work_center_id_name']."'>".strtoupper($row_value)."</option>";
+                                        //     }
+                                        // } else {
+                                        //     echo "<option value=''>No Data Found..</option>";
+                                        // }
+                                    ?>
+                                </select>
+                                </div>
+                                <div class="col-sm-3">
+                                    <b>Work Center</b><input type="text" class="form-control" id="work_center_id" name="work_center_id">
+                                </div>
+                                <div class="col-sm-3">
+                                    <b>Category</b>
+                                    <select class="form-control"id='category' name='category' title="It's Mandatory field" required>
+                                    <option value="">Please Select</option>
+                                    <option value='cutting'>Cutting</option>
+                                    <option value='Send PF'>Embellishment Send</option>
+                                    <option value='Receive PF'>Embellishment Received</option>
+                                    <option value='sewing'>Sewing</option>
+                                    <option value='packing'>Packing</option>
                                     
-									</select>
-								</div>
+                                    </select>
+                                </div>
                                 <div class="col-sm-2">
                                     <button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
                                 </div>
@@ -122,9 +165,9 @@
     $operation_name = "";
     $default_operation = "";
     $operation_code = "";
-	$sw_cod="";
-	$work_center="";
-	$category="";
+    $sw_cod="";
+    $work_center="";
+    $category="";
 
     if(isset($_POST["opn"])){
         $operation_name= $_POST["opn"];
@@ -143,13 +186,16 @@
     }
     if(isset($_POST["short_key_code"])){
         $short_key_code = $_POST["short_key_code"];
-	}
-	if(isset($_POST["work_center_id"])){
-		$work_center_id = $_POST["work_center_id"];
-	}
-	if(isset($_POST["category"])){
-		$category = $_POST["category"];
-	}
+    }
+    if(isset($_POST["work_center_id"])){
+        $work_center_id = $_POST["work_center_id"];
+    }
+    if(isset($_POST["category"])){
+        $category = $_POST["category"];
+    }
+    if(isset($_POST["parent_work_center_id"])){
+        $parent_work_center_id = $_POST["parent_work_center_id"];
+    }
     
     /* $servername = "localhost";
     $username = "root";
@@ -168,8 +214,8 @@
         while($res_res_checking_qry = mysqli_fetch_array($res_checking_qry))
         {
             $cnt = $res_res_checking_qry['cnt'];
-		}
-		$work_center = "select count(*)as cnt from $brandix_bts.tbl_orders_ops_ref where work_center_id = $work_center_id";
+        }
+        $work_center = "select count(*)as cnt from $brandix_bts.tbl_orders_ops_ref where work_center_id = $work_center_id";
         $work_center_qry = mysqli_query($link,$work_center);
         while($res_work_center_qry = mysqli_fetch_array($work_center_qry))
         {
@@ -180,23 +226,23 @@
         while($res_res_res_short_key_code_check_qry = mysqli_fetch_array($res_short_key_code_check_qry))
         {
             $cnt_short = $res_res_res_short_key_code_check_qry['cnt'];
-		}
-		
+        }
+        
         if($cnt == 0 && $cnt_short == 0 && $cnt_work == 0)
         {
-            $qry_insert = "INSERT INTO $brandix_bts.tbl_orders_ops_ref ( operation_name, default_operation,operation_code, type, operation_description,short_cut_code,work_center_id,category)VALUES('$operation_name','$default_operation','$operation_code', '$type', '$sw_cod','$short_key_code','$work_center_id','$category')";
+            $qry_insert = "INSERT INTO $brandix_bts.tbl_orders_ops_ref ( operation_name, default_operation,operation_code, type, operation_description,short_cut_code,work_center_id,category,parent_work_center_id)VALUES('$operation_name','$default_operation','$operation_code', '$type', '$sw_cod','$short_key_code','$work_center_id','$category','$parent_work_center_id')";
             $res_do_num = mysqli_query($link,$qry_insert);
             echo "<script>sweetAlert('Saved Successfully','','success')</script>";
-		}
-		else if($cnt != 0)
+        }
+        else if($cnt != 0)
         {
             $sql_message = 'Operation Code Already in use. Please give other.';
             echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
-		}
-		
+        }
+        
         else if($cnt_work != 0)
         {
-			
+            
             $sql_message = 'Work Center Already in use. Please give other.';
             echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
         }
@@ -209,13 +255,13 @@
         {
             $sql_message = 'Short Key Code and Operation Code Already in use. Please give other.';
             echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
-		}
-		else if($cnt_work != 0 && $cnt != 0)
+        }
+        else if($cnt_work != 0 && $cnt != 0)
         {
             $sql_message = 'Work Center and Operation Code Already in use. Please give other.';
             echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
-		}
-		else if($cnt_work != 0 && $cnt_short != 0)
+        }
+        else if($cnt_work != 0 && $cnt_short != 0)
         {
             $sql_message = 'Work Center and Short Key Code Already in use. Please give other.';
             echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
@@ -225,7 +271,7 @@
     $res_do_num=mysqli_query($link,$query_select);
     echo "<div class='container'><div class='panel panel-primary'><div class='panel-heading'>Operations List</div><div class='panel-body'>";
     echo "<div class='table-responsive'><table class='table table-bordered' id='table_one'>";
-    echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>Report To ERP</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>Form</th><th>Short Key Code</th><th style='text-align:  center;'>Work Center</th><th style='text-align:  center;'>Category</th><th style='text-align:  center;'>Action</th></tr></thead><tbody>";
+    echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>Report To ERP</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>Form</th><th>Short Key Code</th><th style='text-align:  center;'>Work Center</th><th style='text-align:  center;'>Category</th><th style='text-align:  center;'>Parent Work Center Id</th><th style='text-align:  center;'>Action</th></tr></thead><tbody>";
     $i=1;
     while($res_result = mysqli_fetch_array($res_do_num))
     {
@@ -252,9 +298,10 @@
             <td>".$res_result['default_operation']."</td>
             <td>".$res_result['operation_code']."</td>
             <td>".$res_result['type']."</td>
-			<td>".strtoupper($res_result['short_cut_code'])."</td>
-			<td>".$res_result['work_center_id']."</td>
-			<td>".$res_result['category']."</td>";
+            <td>".strtoupper($res_result['short_cut_code'])."</td>
+            <td>".$res_result['work_center_id']."</td>
+            <td>".$res_result['category']."</td>
+            <td>".$res_result['parent_work_center_id']."</td>";
             if($flag == 1)
             {
                 $eurl = getFullURLLevel($_GET['r'],'operations_master_edit.php',0,'N');
@@ -271,6 +318,18 @@
         echo "</tr>";
     }
     echo "</tbody></table></div></div></div></div>";
+
+    function conctruct_array($req){
+        $return_ar = [];
+        foreach($req as $ar1){
+            $temp = [];
+            foreach($ar1['NameValue'] as $ar2){
+                $temp[$ar2['Name']] = $ar2['Value'];
+            }
+            $return_ar[] = $temp;
+        }
+        return $return_ar;
+    }
 ?>
 </body>
 </div>

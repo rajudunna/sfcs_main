@@ -4,11 +4,17 @@ Change Log:
 kirang/ 2015-02-25/ Service Request #244611 :  Add Remarks Tab in Cut plan (for Sample pieces)
 kirang/2016-12-27/ CR: 536: Adding MPO Number in Cut Plan
 -->
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+$url1 = getFullURL($_GET['r'],'excess_cut.php','N');
+?>
 <div class="panel panel-primary">
 <div class="panel-heading">Cut Plan</div>
 <div class="panel-body">
 <?php
+
+if($_GET['excess_cut'] !=''){
+	$excess_cut = $_GET['excess_cut'];
+}
 if(isset($_POST['style']))
 {
 	$style=$_POST['style'];
@@ -36,12 +42,141 @@ else
 	$color=$_GET['color'];
 }
 
-	 
+$excess_cut = $_GET['excess_cut'];
+$query = "SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' AND order_col_des='$color'";
+$result = mysqli_query($link,$query) or exit("Packing summary Input");
+if(mysqli_num_rows($result) > 0) {
+	$check=1;
+}
+
+
+
+//Validation for the schedule operation matchings
+$sql_colors="select distinct(order_col_des) from bai_orders_db where order_del_no = '$schedule' 
+and order_style_no = '$style'";
+$result3 = mysqli_query($link,$sql_colors) or exit("Unable to get the color codes");
+while($row = mysqli_fetch_array($result3))
+{
+	$colors_array[] = $row['order_col_des'];
+}
+
+$sql_colors="select excess_cut_qty from $bai_pro3.excess_cuts_log where schedule_no = '$schedule' 
+and color = '$color'";
+$result3 = mysqli_query($link,$sql_colors) or exit("Unable to get the color codes");
+while($row = mysqli_fetch_array($result3))
+{
+	$excess_cut = $row['excess_cut_qty'];
+}
+
+//var_dump($colors_array);
+//die();
+foreach($colors_array as $key=>$color_value )
+{
+	$ops_master_sql = "select operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master where style='$style' and color='$color_value' and default_operration='yes'";
+	// echo $ops_master_sql;
+	$result2_ops_master_sql = mysqli_query($link,$ops_master_sql)
+						or exit("Error Occured : Unable to get the Operation Codes");
+	while($row_result2_ops_master_sql = mysqli_fetch_array($result2_ops_master_sql))
+	{
+		$array1[] = $row_result2_ops_master_sql['operation_code'];
+	}
+	//var_dump ($array1);
+	$sql1 = "select   OperationNumber FROM bai_pro3.schedule_oprations_master where Style='$style' and Description ='$color_value' and ScheduleNumber='$schedule'";
+	$result1 = mysqli_query($link,$sql1)  
+		or exit("Error Occured : Unable to get the Operation Codes");;
+	// echo $sql1;
+	//echo mysqli_num_rows($result1).'---';
+	while($row = mysqli_fetch_array($result1))
+	{
+		$array2[] = $row['OperationNumber'];
+	}
+
+	if(sizeof($array1) == 0 || sizeof($array2) == 0){
+		echo "<script>swal('Operations Doesnt exist','Please Check the backend Job','danger');</script>";
+		$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
+		echo "<script>setTimeout(function(){
+					location.href='$url' 
+				},3000);
+			  </script>";
+		exit();
+	}
+
+	$compare = array_diff($array1,$array2);
+
+	if(sizeof($compare) > 0)
+	{
+		echo "<script>swal('Opration codes does not match','','warning');</script>";
+		$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
+		echo "<script>setTimeout(function(){
+					location.href='$url' 
+				},3000);
+			  </script>";
+		//header("location : $url");
+		//echo $url;
+		exit();
+	}
+}
+
+//Validation ends..
+
+
+//Validation for the schedule operation matchings
+$sql_colors="select distinct(order_col_des) from bai_orders_db where order_del_no = '$schedule' 
+and order_style_no = '$style'";
+$result3 = mysqli_query($link,$sql_colors) or exit("Unable to get the color codes");
+while($row = mysqli_fetch_array($result3))
+{
+	$colors_array[] = $row['order_col_des'];
+}
+//var_dump($colors_array);
+//die();
+foreach($colors_array as $key=>$color_value )
+{
+	$ops_master_sql = "select operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master where style='$style' and color='$color_value' and default_operration='yes'";
+	// echo $ops_master_sql;
+	$result2_ops_master_sql = mysqli_query($link,$ops_master_sql)
+						or exit("Error Occured : Unable to get the Operation Codes");
+	while($row_result2_ops_master_sql = mysqli_fetch_array($result2_ops_master_sql))
+	{
+		$array1[] = $row_result2_ops_master_sql['operation_code'];
+	}
+	//var_dump ($array1);
+	$sql1 = "select   OperationNumber FROM bai_pro3.schedule_oprations_master where Style='$style' and Description ='$color_value' and ScheduleNumber='$schedule'";
+	$result1 = mysqli_query($link,$sql1)  
+		or exit("Error Occured : Unable to get the Operation Codes");;
+	// echo $sql1;
+	//echo mysqli_num_rows($result1).'---';
+	while($row = mysqli_fetch_array($result1))
+	{
+		$array2[] = $row['OperationNumber'];
+	}
+
+	$compare = array_diff($array1,$array2);
+
+	if(sizeof($compare) > 0)
+	{
+		echo "<script>swal('Opration codes does not match','','warning');</script>";
+		$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
+		echo "<script>setTimeout(function(){
+					location.href='$url' 
+				},3000);
+			  </script>";
+		//header("location : $url");
+		//echo $url;
+		exit();
+	}
+}
+
+//Validation ends..
 
 ?>
 
 
- <script language="javascript">
+
+
+
+
+<script language="javascript">
 
 
 var state = 'none';
@@ -573,7 +708,7 @@ echo "</div></div></div></div>";
 		</div>
 		<div id="Category" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 			<div class="panel-body">
-			<div class="table-responsive">
+			<div>
 <?php
 
 /*
@@ -585,7 +720,7 @@ Change log:
 */
 //echo $tran_order_tid;
 //$tran_order_tid1=str_replace(' ', '', $tran_order_tid);
-$sql="select *,COALESCE(binding_consumption,0) AS binding_con from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" order by catyy DESC";
+$sql="select *,COALESCE(binding_consumption,0) AS binding_con from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" ORDER BY lastup";
 //echo $sql."</br>test";
 
 //$sql="select * from cat_stat_log where order_tid like \"% ".$schedule."%\" order by catyy DESC";
@@ -603,17 +738,17 @@ if ($sql_result) {
 		//			<th class=\"column-title\"><center>Gusset Seperation</th>
 		//			<th class=\"column-title\"><center>One GMT One Way</th>
 				echo "<table class=\"table table-bordered\"><thead><tr class=\"\">
-					<th class=\"column-title\"><center>Date</th>
-					<th class=\"column-title\"><center>Category</th>
-					<th class=\"column-title\"><center>CAT YY</th>
-					<th class=\"column-title\"><center>Color Code</th>
-					<th class=\"column-title\"><center>Fabric Code</th>
-					<th class=\"column-title\" style='word-wrap: break-word;'><center>Fabric Description</th>
-					<th class=\"column-title\"><center>Pur Width</th>
-					<th class=\"column-title\"><center>Binding Consumption</th>
-					<th class=\"column-title\"><center>Pattern Version</th>
-					<th class=\"column-title\"><center>MO status</th>
-					<th class=\"column-title\"><center>Controls</th>
+					<th class=\" \"><center>Date</th>
+					<th class=\" \"><center>Category</th>
+					<th class=\" \"><center>CAT YY</th>
+					<th class=\"word-wrap \"><center>Color Code</th>
+					<th class=\" \"><center>Fabric Code</th>
+					<th class=\"word-wrap\"><center>Fabric Description</th>
+					<th class=\"word-wrap\"><center>Pur Width</th>
+					<th class=\"word-wrap\"><center>Binding Consumption</th>
+					<th class=\"word-wrap\"><center>Pattern Version</th>
+					<th class=\"word-wrap\"><center>MO status</th>
+					<th class=\" \"><center>Controls</th>
 				</tr></thead>";
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -626,9 +761,9 @@ if ($sql_result) {
 			echo "<td class=\"  \"><center>".$date_cat."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['category']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['catyy']."</center></td>";
-			echo "<td class=\"  \"><center>".$sql_row['col_des']."</center></td>";
+			echo "<td class=\"word-wrap\"><center>".$sql_row['col_des']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['compo_no']."</center></td>";
-			echo "<td class=\"  \" style='word-wrap: break-word;'><center>".$sql_row['fab_des']."</center></td>";
+			echo "<td class=\"word-wrap\"><center>".$sql_row['fab_des']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['purwidth']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['binding_con']."</center></td>";
 
@@ -751,6 +886,7 @@ else
 }
 
 $sql="select * from $ord_tbl_name where order_tid=\"$tran_order_tid\"";
+//echo $sql;
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -809,7 +945,7 @@ $order_s50=$sql_row['order_s_s50'];
 
 	
 }
-$sql="select * from $bai_pro3.cat_stat_log where order_tid=trim('$tran_order_tid') order by catyy DESC";
+$sql="select * from $bai_pro3.cat_stat_log where order_tid=trim('$tran_order_tid') ORDER BY lastup";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -999,7 +1135,7 @@ echo "</table></div>
 
 /* NEW */
 
-$sql="select * from $bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\"";
+$sql="select * from $bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\" order by tid";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
@@ -1090,6 +1226,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$cat_id_new=$sql_row['cat_id'];
 	
 	$sql2="select * from $bai_pro3.cat_stat_log where tid=$cat_id order by catyy DESC";
+	//echo $sql2;
 	// mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -1429,11 +1566,68 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 </div>
 
 
-<?php
-
-
-?>
-
+<div class="col-sm-12 row">
+	<div class = "panel panel-info">
+		<div class="panel-heading" style="text-align:center;">
+			<a data-toggle="collapse" href="#excess_cut"><strong><b>Excess Cut</b></strong></a>
+		</div>
+		<div id="excess_cut" class="panel-collapse collapse-in collapse in" aria-expanded="true">
+			<div class="panel-body">
+			<?php if($excess_cut == ''){ ?>
+				<form name="myForm" action="<?= $url1;?>" method="POST">
+				<div class="row">
+					<div class="col-md-3">
+					<label>Excess Cut</label>
+						<select class="form-control" name="excess_cut" id="excess_cut">
+							<option value="0" disabled selected>Please Select</option>
+							<option value="1">First Cut</option>
+							<option value="2">Last Cut</option>
+						</select>
+					</div>
+						<input type="hidden" id="style" name="style" value="<?=$style;?>"/>
+						<input type="hidden" id="schedule" name="schedule" value="<?=$schedule;?>"/>
+						<input type="hidden" id="color" name="color" value="<?=$color;?>"/>
+						<input type="hidden" id="user" name="user" value="<?=$user;?>"/>
+					<div class="col-md-1"><br/>
+						<input type="submit" name="submit" class="btn btn-info" id="submit" value="submit" disabled/>
+					</div>
+				</div>
+			</form>
+			<?php
+			} 
+			else {
+				if($excess_cut==1){
+					$val = "First Cut";
+					echo "<form name='myForm1' action=$url1 method='POST'><div class='col-md-2'>
+						<select class='form-control' name='cut1' id='cut1'>
+							<option value='0' disabled>Please Select</option>
+							<option value='1' selected>First Cut</option>
+							<option value='2'>Last Cut</option>
+						</select></div>";
+				}
+				else {
+					$val = "Last Cut";
+					echo "<form name='myForm1' action=$url1 method='POST'><div class='col-md-2'>
+					<select class='form-control' name='cut1' id='cut1'>
+							<option value='0' disabled>Please Select</option>
+							<option value='1'>First Cut</option>
+							<option value='2' selected>Last Cut</option>
+						</select></div>";
+				}
+				echo "<input type='hidden' id='style' name='style' value=$style><input type='hidden' id='schedule' name='schedule' value=$schedule><input type='hidden' id='color' name='color' value='$color'><input type='hidden' id='user' name='user' value=$user/>";
+				//check whether sewing job created or not
+				if($check=='1'){
+				} else {
+					echo "<input type='submit' name='submit' class='btn btn-warning btn-sm editor_edit'>";
+				}
+				echo "</form>";
+				// echo "<div class='col-md-2'><b>".$val."</b></div>";
+			}
+			?>			
+			</div>
+		</div>
+	</div>
+</div>
 <!-- <p><a href="#" >Docket Creation / Edit</a></p> -->
 <!--<div id="div6" style="display: none;">
 <?php //include("main_interface_6.php"); ?>
@@ -1462,7 +1656,7 @@ else{
 }
 
 
-echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">";
+echo "<div><table class=\"table table-bordered\">";
 //<th class=\"column-title \"><center>Ratio</center></th>
 echo "<thead><tr><th class=\"column-title \"><center>Category</center></th><th class=\"column-title \"><center>Total Cut</center></th><th class=\"column-title \"><center>Ratio Ref</center></th><th class=\"column-title \"><center>MO Status</center></th><th class=\"column-title \"><center>Control</center></th><th class=\"column-title \"><center>Ratio wise Savings%</center></th><th class=\"column-title \"><center>Proceed</center></th><th class=\"column-title \"><center>Remarks</center></th></tr></thead>";
 
@@ -1618,7 +1812,7 @@ else{
 	//echo "<th class=\"column-title\"><center>Docket Print</center></th>";
 	echo "</tr></thead>";
 
-	$sql="select * from $bai_pro3.cat_stat_log where order_tid='".$tran_order_tid."' order by catyy DESC";
+	$sql="select * from $bai_pro3.cat_stat_log where order_tid='".$tran_order_tid."' order by lastup";
 	//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -1738,7 +1932,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td class=\"  \"><center>"; if($check_new3==1){echo $correct_icon;} else {echo $wrong_icon;} echo "</center></td>";
 	echo "<td class=\"  \"><center>"; if($check_new4==1){echo $correct_icon;} else {echo $wrong_icon;} echo "</center></td>";
 	
-	 $path="".getFullURL($_GET['r'], "Book1_print.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+	 $path="".getFullURL($_GET['r'], "Book1_print.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&excess_cut=$excess_cut";
 	//$path="http://localhost/sfcs/projects/Beta/cut_plan_new_ms/new_doc_gen/Book1_print.php";
 
 	$path3="".getFullURL($_GET['r'], "Book2_pdf.php", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&color=$color&schedule=$schedule&style=$style";
@@ -1747,9 +1941,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		// $path="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 		// $path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		
+		//from firstcut
+		if($excess_cut==1){
+			$path= getFullURLLevel($_GET['r'], "color_club_layplan_print_first.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 
-		$path= getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
-		$path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		}else {
+			//last_cut
+			$path= getFullURLLevel($_GET['r'], "color_club_layplan_print_last.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
+		}
+		$path1="".getFullURLLevel($_GET['r'], "color_club_layplan_print_last.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 	}
 	
 		//echo "<td class=\"  \"><center>";if($check_new1==1 && $check_new2==1 && $check_new3==1 && $check_new4==1){echo "<a class=\"btn btn-xs btn-warning\" href=\"$path\" onclick=\"return popitup("."'".$path."'".")\">Print Cut Plan</a>";} else {echo $wrong_icon;} "</center></td>";
@@ -1830,3 +2031,31 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 </div>
 </div>
+<style>
+.word-wrap {
+		word-wrap: break-word; 
+		white-space: normal !important; 
+    }
+    .no-wrap {
+        white-space: nowrap;
+    }
+    .fixed {
+        table-layout: fixed;
+    }
+</style>
+<script>
+$(document).ready(function(){
+	$('#excess_cut').on('change',function(){
+		var cut_val = $("#excess_cut option:selected").val();;
+		if(cut_val!=0){
+			document.getElementById("submit").disabled = false;
+		}
+		else{
+			document.getElementById('submit').disabled = true;
+		}
+	});
+	$('#submit').on('click',function(){
+		document.getElementById("cut1").disabled = false;
+	});
+})
+</script>
