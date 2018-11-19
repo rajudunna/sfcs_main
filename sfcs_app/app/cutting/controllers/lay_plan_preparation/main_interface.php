@@ -49,7 +49,7 @@ if(mysqli_num_rows($result) > 0) {
 	$check=1;
 }
 
-if(sizeof($schedule) > 8){
+if(strlen($schedule) > 8){
 	$scheudles_query = "SELECT distinct(order_del_no) as schedule from $bai_pro3.bai_orders_db where 
 					    order_joins='J$schedule'";
 	$schedules_result = mysqli_query($link,$schedule);
@@ -113,6 +113,17 @@ foreach($val_schedules as $schedule){
 	}
 }
 //Validation ends..
+
+
+//re assigning the schedule through GET/POST
+if(isset($_POST['schedule']))
+{
+	$schedule=$_POST['schedule'];
+}
+else
+{
+	$schedule=$_GET['schedule'];
+}
 
 ?>
 

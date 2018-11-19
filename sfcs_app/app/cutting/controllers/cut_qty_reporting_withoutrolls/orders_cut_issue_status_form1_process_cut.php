@@ -492,7 +492,7 @@ if(isset($_POST['update']))
 			}
 		}
 		//var_dump($input_doc_nos);
-		$input_doc_nos = explode(',',$input_doc_nos);
+		$input_doc_nos = implode(',',$input_doc_nos);
 	}
 	if ($failed == 1) 
 	{
