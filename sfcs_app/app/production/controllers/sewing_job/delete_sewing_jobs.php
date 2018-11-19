@@ -295,7 +295,6 @@
                     echo "<script>sweetAlert('Please Generate Sewing Jobs Before Deleting!!','','error')</script>";
                 } 
             }
-
             echo "</div></div>"; 
         } 
     }
@@ -307,67 +306,84 @@
         $reason = $_GET['reason'];
         // echo $reason;
 
-        $get_seq_details = "SELECT GROUP_CONCAT(tid) as tids, GROUP_CONCAT(DISTINCT doc_no) as doc_nos FROM bai_pro3.`packing_summary_input` WHERE pac_seq_no = $seqno and order_del_no='$schedule'";
+        $tid = array(); $docket_no = array();
+
+        $get_seq_details = "SELECT tid, doc_no FROM bai_pro3.`packing_summary_input` WHERE pac_seq_no = $seqno and order_del_no='$schedule'";
         $details_seq=mysqli_query($link, $get_seq_details) or exit("error while fetching sequence details for this schedule"); 
         while($row=mysqli_fetch_array($details_seq))
         {
-            $get_tids=$row['tids'];
-            $get_docs=$row['doc_nos'];
+            $tid[] = $row['tid'];
+            $docket_no[] = $row['doc_no'];
         }
 
-        $delete_tbl_docket_qty="DELETE FROM bai_pro3.`tbl_docket_qty` WHERE pac_stat_input_id IN (SELECT id FROM $bai_pro3.`pac_stat_input` WHERE SCHEDULE=$schedule AND pac_seq_no=$seqno)"; 
-        // echo $delete_tbl_docket_qty."<br>"; 
-        mysqli_query($link, $delete_tbl_docket_qty) or exit("while Deleting tbl_docket_qty"); 
+        $get_tids = implode(',', $tid);
+        $get_docs = implode(",", array_unique($docket_no));
 
-        $delete_plan_dashbrd_qry="DELETE FROM $bai_pro3.plan_dashboard WHERE doc_no in($get_docs)"; 
-        // echo $delete_plan_dashboard_qry."<br>"; 
-        mysqli_query($link, $delete_plan_dashbrd_qry) or exit("Sql Error delete_plan_dashbrd_qry"); 
-         
-        $delete_plan_input_qry="DELETE FROM bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref IN (SELECT input_job_no_random FROM $bai_pro3.`pac_stat_log_input_job` WHERE tid IN ($get_tids))"; 
-        // echo $delete_plan_input_qry."<br>"; 
-        mysqli_query($link, $delete_plan_input_qry) or exit("Sql Error delete_plan_input_qry"); 
+        if (count($tid) > 0)
+        {
+            $delete_tbl_docket_qty="DELETE FROM bai_pro3.`tbl_docket_qty` WHERE pac_stat_input_id IN (SELECT id FROM $bai_pro3.`pac_stat_input` WHERE SCHEDULE=$schedule AND pac_seq_no=$seqno)"; 
+            // echo $delete_tbl_docket_qty."<br>"; 
+            mysqli_query($link, $delete_tbl_docket_qty) or exit("while Deleting tbl_docket_qty"); 
 
-        $delete_pac_stat_input="DELETE FROM $bai_pro3.`pac_stat_input` WHERE SCHEDULE=$schedule AND pac_seq_no=$seqno"; 
-        // echo $delete_pac_stat_input."<br>"; 
-        mysqli_query($link, $delete_pac_stat_input) or exit("while Deleting pac_stat_input"); 
+            $delete_plan_dashbrd_qry="DELETE FROM $bai_pro3.plan_dashboard WHERE doc_no in($get_docs)"; 
+            // echo $delete_plan_dashboard_qry."<br>"; 
+            mysqli_query($link, $delete_plan_dashbrd_qry) or exit("Sql Error delete_plan_dashbrd_qry"); 
+             
+            $delete_plan_input_qry="DELETE FROM bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref IN (SELECT input_job_no_random FROM $bai_pro3.`pac_stat_log_input_job` WHERE tid IN ($get_tids))"; 
+            // echo $delete_plan_input_qry."<br>"; 
+            mysqli_query($link, $delete_plan_input_qry) or exit("Sql Error delete_plan_input_qry"); 
 
-        $delete_pac_stat_log_ij="DELETE FROM $bai_pro3.pac_stat_log_input_job WHERE tid IN ($get_tids)"; 
-        // echo $delete_pac_stat_log_ij."<br>"; 
-        mysqli_query($link, $delete_pac_stat_log_ij) or exit("while Deleting pac_stat_log_input_job"); 
-        
-        $insert_log="INSERT INTO $bai_pro3.inputjob_delete_log (user_name,date_time,reason,SCHEDULE) VALUES (USER(),now(),'$reason','$schedule')"; 
-        // echo $insert_log."</br>"; 
-        mysqli_query($link, $insert_log) or exit("Sql Error insert_log");
+            $delete_pac_stat_input="DELETE FROM $bai_pro3.`pac_stat_input` WHERE SCHEDULE=$schedule AND pac_seq_no=$seqno"; 
+            // echo $delete_pac_stat_input."<br>"; 
+            mysqli_query($link, $delete_pac_stat_input) or exit("while Deleting pac_stat_input"); 
 
-        // MO Deletion start
-            $sewing_cat = 'sewing';
-            $op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
-                              WHERE trim(category) = '$sewing_cat' ";
-            $op_code_result = mysqli_query($link, $op_code_query) or exit("No Operations Found for Sewing");
-            while($row=mysqli_fetch_array($op_code_result)) 
-            {
-                $op_codes  = $row['codes']; 
-            }
+            $delete_pac_stat_log_ij="DELETE FROM $bai_pro3.pac_stat_log_input_job WHERE tid IN ($get_tids)"; 
+            // echo $delete_pac_stat_log_ij."<br>"; 
+            mysqli_query($link, $delete_pac_stat_log_ij) or exit("while Deleting pac_stat_log_input_job"); 
+            
+            $insert_log="INSERT INTO $bai_pro3.inputjob_delete_log (user_name,date_time,reason,SCHEDULE) VALUES (USER(),now(),'$reason','$schedule')"; 
+            // echo $insert_log."</br>"; 
+            mysqli_query($link, $insert_log) or exit("Sql Error insert_log");
 
-            $mo_query  = "SELECT GROUP_CONCAT(mo_no) as mos from $bai_pro3.mo_details where schedule = '$schedule'";
-            $mo_result = mysqli_query($link,$mo_query);
-            while($row = mysqli_fetch_array($mo_result))
-            {
-                $mos = $row['mos'];
-            }
+            // MO Deletion start
+                $sewing_cat = 'sewing';
+                $op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
+                                  WHERE trim(category) = '$sewing_cat' ";
+                $op_code_result = mysqli_query($link, $op_code_query) or exit("No Operations Found for Sewing");
+                while($row=mysqli_fetch_array($op_code_result)) 
+                {
+                    $op_codes  = $row['codes']; 
+                }
 
-            $delete_query = "DELETE from $bai_pro3.mo_operation_quantites where ref_no in ($get_tids) and op_code in ($op_codes) ";
-            $delete_result = mysqli_query($link,$delete_query);
-            if($delete_result > 0)
-            {
-                echo "<script>sweetAlert('Sewing Jobs Successfully Deleted','','success')</script>";
-                echo("<script>
-                        window.setTimeout(function(){
-                            window.location.href = '".getFullURLLevel($_GET['r'],'delete_sewing_jobs.php',0,'N')."';
-                        }, 1500);
-                    </script>");
-            }
-        // MO Deletion end
+                $mo_query  = "SELECT GROUP_CONCAT(mo_no) as mos from $bai_pro3.mo_details where schedule = '$schedule'";
+                $mo_result = mysqli_query($link,$mo_query);
+                while($row = mysqli_fetch_array($mo_result))
+                {
+                    $mos = $row['mos'];
+                }
+
+                $delete_query = "DELETE from $bai_pro3.mo_operation_quantites where ref_no in ($get_tids) and op_code in ($op_codes) ";
+                $delete_result = mysqli_query($link,$delete_query);
+                if($delete_result > 0)
+                {
+                    echo "<script>sweetAlert('Sewing Jobs Successfully Deleted','','success')</script>";
+                    echo("<script>
+                            window.setTimeout(function(){
+                                window.location.href = '".getFullURLLevel($_GET['r'],'delete_sewing_jobs.php',0,'N')."';
+                            }, 1500);
+                        </script>");
+                }
+            // MO Deletion end
+        }
+        else
+        {
+            echo "<script>sweetAlert('Please Generate Sewing Jobs for Sequence - $seqno','','success')</script>";
+            echo("<script>
+                    window.setTimeout(function(){
+                        window.location.href = '".getFullURLLevel($_GET['r'],'delete_sewing_jobs.php',0,'N')."';
+                    }, 1500);
+                </script>");
+        }
     }
 ?> 
 </div> 
