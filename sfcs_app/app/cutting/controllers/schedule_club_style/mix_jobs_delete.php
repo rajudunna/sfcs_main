@@ -139,7 +139,7 @@ if(isset($_POST['clear']))
 			$docs[]=$sql_row457["doc_no"];
 			$docs_new[] = $sql_row457["doc_no"];
 		}
-		$sql4533="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='".$order_del_no."' and order_col_des=\"".$color."\"";
+		$sql4533="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='".$order_joins."' and order_col_des=\"".$color."\"";
 		$sql_result4533=mysqli_query($link, $sql4533) or die("Error 2".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row4533=mysqli_fetch_array($sql_result4533))
 		{
@@ -173,7 +173,7 @@ if(isset($_POST['clear']))
 			$sql45331="update $bai_pro3.bai_orders_db_confirm set order_joins='1' where order_del_no='".$order_del_no."' and order_col_des=\"".$color."\"";
 			$sql_result45313=mysqli_query($link, $sql45331) or die("Erro 5r".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
 
-			echo "<script>swal('Sewing Jobs are Deleted.Please split Jobs again','','warning');</script>";
+			echo "<script>swal('Schedule Split Jobs are Deleted.Please split Jobs again','','warning');</script>";
 			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 			function Redirect() {
 				location.href = \"".getFullURLLevel($_GET['r'], 'mix_jobs_delete.php',0,'N')."\";
@@ -188,7 +188,7 @@ if(isset($_POST['clear']))
 	}
 
 	//Deleting logic from BCD and MO operation Quantites
-	$dockets = implode(",",$docs_new);
+	//$dockets = implode(",",$docs_new);
 	foreach($order_tids as $order_tid){
 		$details_query = "Select order_del_no,order_col_des from $bai_pro3.bai_orders_db_confirm 
 						  where order_tid = '$order_tid'";
