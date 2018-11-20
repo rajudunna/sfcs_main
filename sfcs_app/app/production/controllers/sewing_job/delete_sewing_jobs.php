@@ -329,7 +329,7 @@
 			}
 			if($op_codes_details==0)
 			{
-				$delete_tbl_docket_qty="DELETE FROM $bai_pro3.`tbl_docket_qty` WHERE pac_stat_input_id IN (SELECT id FROM $bai_pro3.`pac_stat_input` WHERE SCHEDULE=$schedule AND pac_seq_no=$seqno)"; 
+				$delete_tbl_docket_qty="DELETE FROM $bai_pro3.`tbl_docket_qty` WHERE pac_stat_input_id IN (SELECT id FROM $bai_pro3.`pac_stat_input` WHERE SCHEDULE=$schedule)"; 
 				// echo $delete_tbl_docket_qty."<br>"; 
 				mysqli_query($link, $delete_tbl_docket_qty) or exit("while Deleting tbl_docket_qty"); 
 			}
