@@ -3351,7 +3351,7 @@ tags will be replaced.-->
   <td colspan=27 rowspan=5 class=xl8217319> -->
   <?php
 	$style_css="style='font-size:24px; border:.5pt solid black; padding-left: 10px; padding-right:10px; border-collapse: collapse;'";
-	echo "<table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;'>";
+	echo "<table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;' class='width1' width=1500px>";
 	echo "<tr style='mso-height-source:userset;'>";
 	$sum=0;
 	$divide=14;
@@ -3398,7 +3398,7 @@ tags will be replaced.-->
 				}
 				echo "</tr>";
 			}
-			echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;'>";
+			echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;' class='width1' width=1500px>";
 			$temp = 1;
 			$temp_len1=$temp_len;
 
@@ -3418,7 +3418,7 @@ tags will be replaced.-->
 						}
 						echo "<td style='border:.5pt solid black;'>".$a_ratio_tot."</td></tr>";
 					}
-					echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;'>";
+					echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;' class='width1'>";
 					echo "<th style='border:.5pt solid black;'>Plies</th>";
 					echo "<th style='border:.5pt solid black;'>Quantity </br>(Total Garments)</th>";
 					echo "<th style='border:.5pt solid black;'>MK Length</th>";
@@ -3452,7 +3452,7 @@ tags will be replaced.-->
 						echo "<td style='border:.5pt solid black;'>".$a_ratio_tot."</td>";
 						echo "<td style='border:.5pt solid black;'>".round( $plies[$j] , 2 )."</td></tr>";
 					}
-					echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;'>";
+					echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;'  class='width1'>";
 					echo "<th style='border:.5pt solid black;'>Quantity </br>(Total Garments)</th>";
 					echo "<th style='border:.5pt solid black;'>MK Length</th>";
 					echo "<th style='border:.5pt solid black;'>$category $fab_uom</th>";
@@ -3487,7 +3487,7 @@ tags will be replaced.-->
 							echo "<td style='border:.5pt solid black;'>".round( $plies[$j] , 2 )."</td>";
 							echo "<th style='border:.5pt solid black;'>".($a_ratio_tot)*($plies[$j])."</th></tr>";
 						}
-						echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;'>";
+						echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;'  class='width1'>";
 						echo "<th style='border:.5pt solid black;'>MK Length</th>";
 						echo "<th style='border:.5pt solid black;'>$category $fab_uom</th>";
 						echo "<th style='border:.5pt solid black;'>(Bind/Rib) $fab_uom</th>";
@@ -3522,7 +3522,7 @@ tags will be replaced.-->
 							echo "<th style='border:.5pt solid black;'>".($a_ratio_tot)*($plies[$j])."</th>";
 							echo "<td style='border:.5pt solid black;'>".round( $mk_length_ref[$j] , 2 )."</td></tr>";
 						}
-						echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;'>";
+						echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;' class='width1'>";
 						echo "<th style='border:.5pt solid black;'>$category $fab_uom</th>";
 						echo "<th style='border:.5pt solid black;'>(Bind/Rib) $fab_uom</th>";
 						echo "<th style='border:.5pt solid black;'>Total</th></tr>";
@@ -4051,133 +4051,6 @@ else {
 	}
  }
 echo "</tbody></table>";	
-
-// for($i=0;$i<sizeof($roll_det);$i++)
-// {
-// 	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$roll_det[$i]."</td>";
-// }
-// echo "</tr>";
-
-
-// //2012-06-12 New implementation to get fabric detail based on invoce/batch
-// echo "<tr><td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Lot No</td>";
-// //echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>Label ID</td>";
-
-// for($i=0;$i<sizeof($roll_det);$i++)
-// {
-// 	//2012-06-12 New implementation to get fabric detail based on invoce/batch
-// 	echo "<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'>".$lot_det[$i]."</td>";
-// 	//echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$roll_id[$i]."</td>";
-// }
-// echo "</tr>";
-
-// //2012-06-12 New implementation to get fabric detail based on invoce/batch
-// //echo "<tr><td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Lot No</td>";
-// echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>Label ID</td>";
-
-// for($i=0;$i<sizeof($roll_det);$i++)
-// {
-// 	//2012-06-12 New implementation to get fabric detail based on invoce/batch
-// 	//echo "<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'>".$lot_det[$i]."</td>";
-// 	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$roll_id[$i]."</td>";
-// }
-// echo "</tr>";
-
-
-
-
-
-// echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Width</td>";
-
-// for($i=0;$i<sizeof($roll_det);$i++)
-// {
-// 	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$width_det[$i]."</td>";
-// }
-// echo "</tr>";
-
-// echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>Allocated Length</td>";
-
-// for($i=0;$i<sizeof($roll_det);$i++)
-// {
-// 	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$leng_det[$i]."</td>";
-// }
-// echo "</tr>";
-
-// echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Batch</td>";
-
-// for($i=0;$i<sizeof($roll_det);$i++)
-// {
-// 	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$batch_det[$i]."</td>";
-// }
-// echo "</tr>";
-
-// echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Shade</td>";
-
-// for($i=0;$i<sizeof($roll_det);$i++)
-// {
-// 	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$shade_det[$i]."</td>";
-// }
-// echo "</tr>";
-
-
-// echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Location</td>";
-
-// for($i=0;$i<sizeof($roll_det);$i++)
-// {
-// 	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$locan_det[$i]."</td>";
-// }
-// echo "</tr>";
-
-// echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> C-Tex Length</td>";
-
-// for($i=0;$i<sizeof($roll_det);$i++)
-// {
-// 	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_len[$i]."</td>";
-// }
-// echo "</tr>";
-
-// echo "<tr><td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Ticket Length</td>";
-
-// for($i=0;$i<sizeof($roll_det);$i++)
-// {
-// 	echo "<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_len[$i]."</td>";
-// }
-// echo "</tr>";
-
-
-// echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Length Variation</td>";
-
-// for($i=0;$i<sizeof($roll_det);$i++)
-// {
-// 	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_len[$i]-$tkt_len[$i]),2)."</td>";
-// }
-// echo "</tr>";
-
-// echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> C-Tex Width</td>";
-
-// for($i=0;$i<sizeof($roll_det);$i++)
-// {
-// 	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".$ctex_width[$i]."</td>";
-// }
-// echo "</tr>";
-
-// echo "<tr><td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'> Ticket Width</td>";
-
-// for($i=0;$i<sizeof($roll_det);$i++)
-// {
-// 	echo "<td style='font-size:12px; border:.5pt solid black; border-collapse: collapse;'>".$tkt_width[$i]."</td>";
-// }
-// echo "</tr>";
-
-// echo "<tr><td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'> Width Variation</td>";
-
-// for($i=0;$i<sizeof($roll_det);$i++)
-// {
-// 	echo "<td style='font-size:14px; border:.5pt solid black; border-collapse: collapse;'>".round(($ctex_width[$i]-$tkt_width[$i]),2)."</td>";
-// }
-// echo "</tr>";
-
-// echo "</table>";	
   ?>
   </td>
   <td class=xl6417319></td>
@@ -4204,10 +4077,6 @@ echo "</tbody></table>";
  </tr>
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
-<!-- <td class=xl824118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td> -->
   <td class=xl6417319></td>
  </tr>
 
@@ -4219,14 +4088,11 @@ echo "</tbody></table>";
   <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl821731ff9 style='height:15.75pt'></td>
   </tr>
-
- 
-
- 
+  </table>
+  <table class=lasttable width=1200px>
  <tr height=30 style='height:15.75pt'>
  </tr>
-
- <tr height=30 style='height:30pt'>
+ <tr height=30 style='height:30pt' >
   <td height=30 class=xl6417319 style='height:30pt'></td>
   <td colspan=2 ></td>
   <td colspan=2 class=xl7017319>Docket</td>
@@ -4237,8 +4103,9 @@ echo "</tbody></table>";
   <td colspan=2 class=xl8017319>Return</td>
   <td colspan=2 class=xl8017319>Bundling</td>
   <td colspan=3 class=xl8017319>Dispatch</td>
+  <td colspan=6 ></td>
   <td colspan=2 class=xl6417319>Act Con</td>
-  <td colspan=5 style='border-bottom:1px solid black'></td>
+  <td colspan=3>_____________________________________</td>
  </tr>
  <tr height=30 style='height:30pt'>
   <td height=30 class=xl6417319 style='height:30pt'></td>
@@ -4251,10 +4118,9 @@ echo "</tbody></table>";
   <td colspan=2 class=xl7517319>&nbsp;</td>
   <td colspan=2 class=xl7517319>&nbsp;</td>
   <td colspan=3 class=xl7517319>&nbsp;</td>
+  <td colspan=6 ></td>
   <td colspan=2 class=xl6417319>Saving %</td>
-  <td colspan=2 class=xl8117319>&nbsp;</td>
-  <td colspan=2 class=xl8117319>&nbsp;</td>
-  <td colspan=2 class=xl8117319>&nbsp;</td>
+  <td colspan=3>_____________________________________</td>
   <td colspan=2 class=xl6417319></td>
   <td colspan=2 class=xl6417319></td>
   <td colspan=2 class=xl6417319></td>
@@ -4270,10 +4136,9 @@ echo "</tbody></table>";
   <td colspan=2 class=xl7517319>&nbsp;</td>
   <td colspan=2 class=xl7517319>&nbsp;</td>
   <td colspan=3 class=xl7517319>&nbsp;</td>
+  <td colspan=6 ></td>
   <td colspan=2 class=xl6417319>Reason</td>
-  <td colspan=2 class=xl8117319>&nbsp;</td>
-  <td colspan=2 class=xl8117319>&nbsp;</td>
-  <td colspan=2 class=xl8117319>&nbsp;</td>
+  <td colspan=3>_____________________________________</td>
   <td colspan=2 class=xl6417319></td>
   <td colspan=2 class=xl6417319></td>
   <td colspan=2 class=xl6417319></td>
@@ -4289,10 +4154,9 @@ echo "</tbody></table>";
   <td colspan=2 class=xl7517319>&nbsp;</td>
   <td colspan=2 class=xl7517319>&nbsp;</td>
   <td colspan=3 class=xl7517319>&nbsp;</td>
+  <td colspan=6 ></td>
   <td colspan=2 class=xl6417319>Approved</td>
-  <td colspan=2 class=xl8117319>&nbsp;</td>
-  <td colspan=2 class=xl8117319>&nbsp;</td>
-  <td colspan=2 class=xl8117319>&nbsp;</td>
+  <td colspan=3>_____________________________________</td>
   <td colspan=2 class=xl6417319></td>
   <td colspan=2 class=xl6417319></td>
   <td colspan=2 class=xl6417319></td>
@@ -4435,15 +4299,19 @@ table{
 	margin-right: auto;
     margin-left: 0px;
 }
+.width1 {
+	min-width:800px;
+}
 .xl8917319,.xl10117319,.xl6817319,.xl9617319,.xl11317319,.xl11517319,.xl9817319,.xl10017319,.xl6617319,.xl7617319,.xl11317319,.xl9117319,.xl764118,.xl814118,.xl744118,.xl774118,.xl1144118,.xl1064118,.xl684118{
     font-size: 24px;
 	font-weight: bold;
 }
-table { page-break-after:auto,page-break-inside:avoid; }
+/* table { page-break-after:auto;}
   tr    { page-break-inside:avoid; page-break-after:auto }
   td    { page-break-inside:avoid; }
   thead { display:table-header-group }
-  tfoot { display:table-footer-group }
+  tfoot { display:table-footer-group } */
+  .lasttable{page-break-inside:avoid;}
 </style>
 
 <script>
