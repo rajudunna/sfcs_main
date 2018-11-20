@@ -39,7 +39,7 @@ $has_permission=haspermission($url_r);
 	else
 	{	
 		// echo $_GET['r'];
-		header("Location:sfcs_app/app/dashboards/controllers/rms/restrict.php?group_docs=".$_GET['group_docs']);
+		header("Location:sfcs_app/app/dashboards/controllers/Cut_table_dashboard/restrict.php?group_docs=".$_GET['group_docs']);
 		// header($_GET['r'],'restrict.php','N');
 	}
 
@@ -436,9 +436,9 @@ if(isset($_POST["submit"]))
 	$doc_nos_split=explode(",",$group_docs);
 	$host_name=str_replace(".brandixlk.org","",gethostbyaddr($_SERVER['REMOTE_ADDR']));
 	$note=date("Y-m-d H:i:s")."_".$username."_".$host_name."<br/>";
-	$status=1;
-	for($i=0;$i<sizeof($doc_nos_split);$i++)
-	//for($i=0;$i<1;$i++)
+	
+	//for($i=0;$i<sizeof($doc_nos_split);$i++)
+	for($i=0;$i<1;$i++)
 	{
 		$sql1="select * from $bai_pro3.fabric_priorities where doc_ref=\"".$doc_nos_split[$i]."\"";
 		$result=mysqli_query($link, $sql1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -460,11 +460,7 @@ if(isset($_POST["submit"]))
 				} 
 				else
 				{
-					if($status==1)
-					{
-						echo "<h2 style=\"color:red;\">Request Sent Successfully...</h2>";
-						$status=0;
-					}
+					echo "<h2 style=\"color:red;\">Request Sent Successfully...</h2>";
 				}
 				
 				//Date:2013-08-27
@@ -542,6 +538,20 @@ while($row2=mysqli_fetch_array($result2))
 }
 echo "</table></div>";
 
+?>
+<?php
+if(isset($_GET['sidemenu'])){
+
+	echo "<style>
+          .left_col,.top_nav{
+          	display:none !important;
+          }
+          .right_col{
+          	width: 100% !important;
+    margin-left: 0 !important;
+          }
+	</style>";
+}
 ?>
 </div>
 </div>
