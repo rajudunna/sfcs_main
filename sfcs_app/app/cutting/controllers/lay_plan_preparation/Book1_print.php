@@ -2986,6 +2986,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
     td,th {
         /* min-width:5pt; */
         text-align:center;
+        font-weight:bold;
     }
 table { page-break-after:auto,page-break-inside:avoid; }
   tr    { page-break-inside:avoid; page-break-after:auto }
