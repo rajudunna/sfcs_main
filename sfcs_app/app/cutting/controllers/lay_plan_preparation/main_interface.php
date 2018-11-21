@@ -7,6 +7,9 @@ kirang/2016-12-27/ CR: 536: Adding MPO Number in Cut Plan
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 $url1 = getFullURL($_GET['r'],'excess_cut.php','N');
 ?>
+<div class="ajax-loader" id="loading-image" style="display: none">
+    <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+</div>
 <div class="panel panel-primary">
 <div class="panel-heading">Cut Plan</div>
 <div class="panel-body">
@@ -701,7 +704,7 @@ if ($sql_result) {
 				echo "<table class=\"table table-bordered\"><thead><tr class=\"\">
 					<th class=\" \"><center>Date</th>
 					<th class=\" \"><center>Category</th>
-					<th class=\" \"><center>CAT YY</th>
+					<th class=\"word-wrap\"><center>CAT YY</th>
 					<th class=\"word-wrap \"><center>Color Code</th>
 					<th class=\"word-wrap\"><center>Fabric Code</th>
 					<th class=\"word-wrap\"><center>Fabric Description</th>
@@ -1244,11 +1247,17 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<td class=\"b1\"><a href=\"dumindu/order_allocation_form2.php?tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id\"  onclick='".'alert("Cuttable Quantity Fullfilled")'."'>Update</a></td>";
 	} */
 	echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty\">Add Ratios</a></center></td>";
-	$sql15="select * from bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\"";
+	$sql15="select * from bai_pro3.allocate_stat_log where cat_ref=$cat_id";
+	// echo $sql15;
 	$sql_result25=mysqli_query($link, $sql15) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$cut_count = mysqli_num_rows($sql_result25);
-	if($cut_count>1) {
-		echo "<td class=\"  \"><center><a class='btn btn-info btn-xs'  href=\"".getFullURL($_GET['r'], "save_categories.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty\">Copy to Other</a></center></td>";
+
+	$sql16="select * from bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\"";
+	$sql_result16=mysqli_query($link, $sql16) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$cut_count1 = mysqli_num_rows($sql_result16);
+
+	if($cut_count>=1 && cut_count1>1) {
+		echo "<td class=\"  \"><center><a class='btn btn-info btn-xs'  href=\"".getFullURL($_GET['r'], "save_categories.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&total_allocated=$total_allocated\">Copy to Other</a></center></td>";
 	}
 	else {
 		echo "<td class=\"  \"><center><a class='btn btn-info btn-xs' disabled>Copy to Other</a></center></td>";
@@ -1724,7 +1733,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			//echo $sql_row2['count']."===".$mo_status."--".$cutcount."--".$totalplies."<br>";
 			if($sql_row2['count']==0 && $mo_status=="Y" && $cutcount>0 && $totalplies>0)
 			{
-				echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-primary\" href=\"".getFullURL($_GET['r'], "doc_gen_form.php", "N")."&tran_order_tid=$tran_order_tid&mkref=$mkref&allocate_ref=$allocate_ref&cat_ref=$cat_ref\">Generate</a></center></td>";
+				echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-primary\" href=\"".getFullURL($_GET['r'], "doc_gen_form.php", "N")."&tran_order_tid=$tran_order_tid&mkref=$mkref&allocate_ref=$allocate_ref&cat_ref=$cat_ref&color=$color&schedule=$schedule\">Generate</a></center></td>";
 			}
 			else
 			{
@@ -2039,6 +2048,20 @@ while($sql_row=mysqli_fetch_array($sql_result))
     .fixed {
         table-layout: fixed;
     }
+	#loading-image{
+	position:fixed;
+	top:0px;
+	right:0px;
+	width:100%;
+	height:100%;
+	background-color:#666;
+	/* background-image:url('ajax-loader.gif'); */
+	background-repeat:no-repeat;
+	background-position:center;
+	z-index:10000000;
+	opacity: 0.4;
+	filter: alpha(opacity=40); /* For IE8 and earlier */
+}
 </style>
 <script>
 $(document).ready(function(){
@@ -2053,6 +2076,10 @@ $(document).ready(function(){
 	});
 	$('#submit').on('click',function(){
 		document.getElementById("cut1").disabled = false;
+	});
+	$(".generate_btn").click(function()
+	{
+		$("#loading-image").show();
 	});
 })
 </script>

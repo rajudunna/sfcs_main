@@ -6,10 +6,36 @@ $tran_order_tid=$_GET['tran_order_tid'];
 $mk_ref=$_GET['mkref'];
 $allocate_ref=$_GET['allocate_ref'];
 $cat_ref2=$_GET['cat_ref'];
+$color=$_GET['color'];
+$schedule=$_GET['schedule'];
 
 $sql4="select * from $bai_pro3.plandoc_stat_log where order_tid='$tran_order_tid' and cat_ref='$cat_ref2' and allocate_ref='$allocate_ref' and mk_ref='$mk_ref'";
-    $sql_result1=mysqli_query($link, $sql4) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
-    $sql_result1_res=mysqli_num_rows($sql_result1);
+$sql_result1=mysqli_query($link, $sql4) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result1_res=mysqli_num_rows($sql_result1);
+
+$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
+mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check=mysqli_num_rows($sql_result);
+
+while($sql_row=mysqli_fetch_array($sql_result))
+{
+	$style=$sql_row['order_style_no'];
+}
+
+$sql5="select * FROM $bai_pro3.mo_details WHERE SCHEDULE='$schedule' AND color='$color'";
+$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check=mysqli_num_rows($sql_result5);
+if($sql_num_check == 0){
+	
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect1()\",0);
+		function Redirect1() {
+			sweetAlert('No MO Details Found','','warning');
+			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+			}
+		</script>";
+}
+else {
 if($sql_result1_res==0){
 
 function get_val($table_name,$field,$compare,$key,$link)
@@ -390,27 +416,27 @@ if ($order_joins>'0' or $order_joins>0) {
 }
 else{
     $sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
+	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
 
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-    $color=$sql_row['order_col_des'];
-    $style=$sql_row['order_style_no'];
-    $schedule=$sql_row['order_del_no'];
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$color=$sql_row['order_col_des'];
+		$style=$sql_row['order_style_no'];
+		$schedule=$sql_row['order_del_no'];
 
+
+	}
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+		function Redirect() {
+			sweetAlert('Dockets Already Generated','','warning');
+			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+			}
+		</script>";
 
 }
-    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-        function Redirect() {
-            sweetAlert('Dockets Already Generated','','warning');
-            location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
-            }
-        </script>";
-
 }
-    
 //echo "<a href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "1", "N")."&color=$color&style=$style&schedule=$schedule\" class='btn btn-warning btn-sm'>Click here to Go Back</a>";
 
 // echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
