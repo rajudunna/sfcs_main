@@ -2752,7 +2752,7 @@ tags will be replaced.-->
                     <td class=xl6513019></td> 
                     <td class=xl6513019></td> 
                     </tr>
-                    <tr height=21 style='height:115.75pt'>
+                    <tr height=21 style='height:85.75pt'>
                     <td colspan=18 style='text-align:right'><u><strong>Quality Authorisation</strong></u></td>
                     </tr>
                     <tr height=21 style='height:15.75pt'>
