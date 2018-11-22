@@ -1368,7 +1368,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
             #non-printable { display: none; }
             #printable { display: block; }
             #logo { display: block; }
-            body { zoom:63%;}
+            body { zoom:55%;}
             #ad{ display:none;}
             #leftbar{ display:none;}
             #CUT_PLAN_NEW_13019{ width:57%; margin-left:20px;}
@@ -1416,7 +1416,7 @@ tags will be replaced.-->
 <div id="CUT_PLAN_NEW_13019" align=center x:publishsource="Excel">
 
 <table border=0 cellpadding=0 cellspacing=0 width=1757 style="border-collapse: collapse;width:1000px"> 
- <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/logo.png" width="200" height="60"></td>
+<td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="<?= $logo ?>" width="200" height="60"></td>
   <td class=xl6432599></td>
   <td class=xl6432599></td>
   <td class=xl6432599></td>
@@ -1523,7 +1523,7 @@ tags will be replaced.-->
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
  </tr> 
- <tr class=xl6513019 height=9 style='mso-height-source:userset;height:6.75pt'> 
+ <!-- <tr class=xl6513019 height=9 style='mso-height-source:userset;height:6.75pt'> 
   <td height=9 class=xl6513019 style='height:6.75pt'></td> 
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
@@ -1558,7 +1558,7 @@ tags will be replaced.-->
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
- </tr> 
+ </tr>  -->
  <tr class=xl6513019 height=33 style='mso-height-source:userset;height:24.75pt'> 
   <td height=33 class=xl6513019 style='height:24.75pt'></td> 
   <td colspan=27 class=xl9513019 style='font-size:28px'>Cut Distributions Plan/Production 
@@ -1566,7 +1566,7 @@ tags will be replaced.-->
   <td class=xl6513019></td> 
  </tr> 
 
- <tr height=60></tr>
+ <!-- <tr height=60></tr> -->
 
 
  <tr class=xl6513019 height=20 style='mso-height-source:userset;height:10.0pt'> 
@@ -1631,7 +1631,7 @@ tags will be replaced.-->
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
  </tr> 
-<tr height=40></tr>
+<tr height=10></tr>
 <tr class=xl6513019 height=11 style='mso-height-source:userset;height:8.25pt'> 
   <td height=11 class=xl6513019 style='height:8.25pt'></td> 
   <?php for($i=0;$i<32;$i++) echo "<td class=xl6613019></td>"; ?> 
@@ -2293,7 +2293,7 @@ tags will be replaced.-->
                                     if($size[$s]<>'') 
                                     { 
                                         $s_count=$s_count+1; 
-                                        echo "<td class=xl8413019>".$size[$s]."-".$s."</td>"; 
+                                        echo "<td class=xl8413019>".$size[$s]."</td>"; 
                                     } 
                                     if(($s+1) % $divide == 0){
                                         $temp_len = $s+1;
@@ -2604,7 +2604,7 @@ tags will be replaced.-->
                                                 for($i=$temp_len1+1;$i<=$total_size;$i++) {
                                                     $num_padded = sprintf("%02d", $i);
                                                     $var1=$sql_row['a_s'.$num_padded];
-                                                    echo "<td class=xl8713019>".$var1.'-'.$i."</td>"; 
+                                                    echo "<td class=xl8713019>".$var1."</td>"; 
                                                 }
                                                 echo "<td height=20 class=xl8613019 style='height:10.0pt'></td>";
                                                 echo "<td height=20 class=xl8613019 style='height:10.0pt'></td>";
@@ -2752,10 +2752,10 @@ tags will be replaced.-->
                     <td class=xl6513019></td> 
                     <td class=xl6513019></td> 
                     </tr>
-                    <tr height=21 style='height:85.75pt'>
+                    <tr height=21 style='height:5.75pt'>
                     <td colspan=18 style='text-align:right'><u><strong>Quality Authorisation</strong></u></td>
                     </tr>
-                    <tr height=21 style='height:15.75pt'>
+                    <tr height=21 style='height:60.75pt'>
                     <td colspan=18 style='text-align:right'><u><strong>Cutting Supervisor Authorization</strong></u></td>
                     </tr>
                     <tr height=21 style='height:15.75pt'> 
