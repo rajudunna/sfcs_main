@@ -11,23 +11,16 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 function round_or_not($x,$y,$z)
 {
-	if($x>0 && $y>0 && $z>0)
+	//$z 1-Yes, 0-No
+	
+	if($z==1)
 	{
-		if($z==1)
-		{
-			return round(($x/$y),0);
-		}
-		else
-		{
-			return $x/$y;
-		}	
+		return round(($x/$y),0);
 	}
 	else
 	{
-		return 0;
-	}
-	
-	
+		return $x/$y;
+	}	
 }
 ?>
 
@@ -53,6 +46,10 @@ mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_
 
 $sql="truncate table $bai_pro.tbl_freez_plan_tmp";
 mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+$sql="truncate table $bai_pro.tbl_freez_plan_log";
+
+mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $handle=fopen($filepath,"r");
 fgetcsv($handle);
@@ -196,15 +193,44 @@ for($i=1;$i<=31;$i++)
 		
 	}
 }
-$sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_track (yer_mon) values ('".$date."')";
+$month_year=substr($date,0,8);
 
-mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql1="select * from $bai_pro.tbl_freez_plan_track where CONCAT(YEAR(yer_mon),'-',MONTH(yer_mon))='".date("Y-m")."'";
+$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+if(mysqli_num_rows($sql_result1)>0)
+{
+	while($sql_row1=mysqli_fetch_array($sql_result1))
+	{	
+		$sql="DELETE FROM $bai_pro.tbl_freez_plan_track WHERE yer_mon=\"".$sql_row1["yer_mon"]."\"";
 
-$username = getrbac_user()['uname']; 
+		mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
+		$sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_track (yer_mon) values ('".$date."')";
 
-$sql="update $bai_pro.tbl_freez_plan_track set verified_on='".date("Y-m-d H:i:s")."', verified_by='".$username."' where yer_mon='".$date."'";
+		mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
+		$username = getrbac_user()['uname']; 
+		
+		$sql="update $bai_pro.tbl_freez_plan_track set verified_on='".date("Y-m-d H:i:s")."', verified_by='".$username."' where yer_mon='".$date."'";
+		
+		mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
 
-mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+}
+else
+{
+	$sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_track (yer_mon) values ('".$date."')";
+
+	mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+	
+	$username = getrbac_user()['uname']; 
+	
+	$sql="update $bai_pro.tbl_freez_plan_track set verified_on='".date("Y-m-d H:i:s")."', verified_by='".$username."' where yer_mon='".$date."'";
+	
+	mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+}
+
+
 
 
 header("Location:".getFullURLLevel($_GET['r'],'log.php',0,'N')."&sdate=$date");

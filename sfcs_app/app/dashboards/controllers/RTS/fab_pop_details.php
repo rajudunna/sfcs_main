@@ -360,31 +360,13 @@ echo "</table>";
 
 echo "<h2>Cut Docket Print</h2>";
 
-$path="getFullURLLevel($_GET['r'],'Book3_print_recut.php',0,'N')";
-if(substr($style_ref,0,1)!="P" or substr($style_ref,0,1)!="K" or substr($style_ref,0,1)!="L" or substr($style_ref,0,1)!="O")
-{
-	if($mns_status>0)
-	{
-		$path="getFullURLLevel($_GET['r'],'Book3_print_recut.php',0,'N')";  // For M&S Men Briefs
-	}
-	else
-	{
-		$path="getFullURLLevel($_GET['r'],'Book3_print_recut1.php',0,'N')"; // FOR M&S Ladies Briefs
-	}
-	
-}
-else
-{
-	if(substr($style_ref,0,1)=="Y")
-	{
-		$path="getFullURLLevel($_GET['r'],'Book3_print_recut1.php',0,'N')"; // FOR M&S Ladies Briefs	
-	}
-}
+$path=getFullURLLevel($_GET['r'],'cutting/controllers/lay_plan_preparation/recut_print.php',3,'R');
 
 //for clubbing docket track
 if($clubbing>0)
 {
-	$path="getFullURLLevel($_GET['r'],'color_club_docket_print.php',0,'N')";
+	// $path="getFullURLLevel($_GET['r'],'color_club_docket_print.php',0,'N')";
+	$path="../../../cutting/controllers/lay_plan_preparation/color_club_docket_print.php";
 }
 
 echo "<form name=\"ins\" method=\"post\" action=\"fab_pop_allocate_v5.php\">"; //new_Version
