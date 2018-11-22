@@ -57,6 +57,7 @@
 						}
 						//var_dump($order_array);
 						echo "<br><div class='col-md-12'>
+						<div class='table-responsive'>
 							<table class=\"table table-bordered\">
 								<tr>
 									<th>Details</th>
@@ -153,7 +154,7 @@
 									$counter3++;
 								}
 
-						echo "</table></div>";
+						echo "</table></div></div>";
 					}
 					// Order Details Display End
 				}
