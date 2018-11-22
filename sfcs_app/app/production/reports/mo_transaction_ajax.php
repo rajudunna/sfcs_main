@@ -17,7 +17,7 @@ if(isset($_GET['submit']))
 	{
 		$mo_details[]= $row2['mo_no'];
 		$mo_qty[]= $row2['mo_quantity'];
-		//$color[]= $row2['color'];
+		$color1[]= $row2['color'];
 		$size[]= $row2['size'];
 	}
   // var_dump($mo_details);
@@ -52,7 +52,7 @@ if(isset($_GET['submit']))
    foreach ($mo_details as $key => $mos)
    {
    	    $counter++;
-   	    $table_data .= "<tr><td>$counter</td><td>$size[$key]</td><td>$color[$key]</td><td>$mos</td><td>$mo_qty[$key]</td>";
+   	    $table_data .= "<tr><td>$counter</td><td>$size[$key]</td><td>$color1[$key]</td><td>$mos</td><td>$mo_qty[$key]</td>";
 	   	foreach ($operation_code as $key_op => $value)
 	    {
 	       $good_qty = 0;
