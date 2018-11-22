@@ -1311,13 +1311,10 @@
 								$ref_size_name = $get_ref_size_deatils['ref_size_name'];
 							}						
 
-							if ($NoOf_Cartons[$j] > 0)
-							{
-								$insert_tbl_carton_size_ref="insert ignore into $bai_pro3.tbl_pack_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, size_title, seq_no, cartons_per_pack_job, pack_job_per_pack_method, pack_method, pack_description) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart[$j]."','".$GarPerCart[$i][$j]."','".$original_size[$j]."','".$seqnew."','".$noofcartons_packjob."','".$NoOf_Cartons[$j]."','".$pack_method."','".$descr."')";
-								$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
-								// echo $insert_tbl_carton_size_ref.'<br>';
-								$statuscode=1;
-							}
+							$insert_tbl_carton_size_ref="insert ignore into $bai_pro3.tbl_pack_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, size_title, seq_no, cartons_per_pack_job, pack_job_per_pack_method, pack_method, pack_description) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart[$j]."','".$GarPerCart[$i][$j]."','".$original_size[$j]."','".$seqnew."','".$noofcartons_packjob."','".$NoOf_Cartons[$j]."','".$pack_method."','".$descr."')";
+							$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
+							// echo $insert_tbl_carton_size_ref.'<br>';
+							$statuscode=1;
 						}
 					}
 				}
@@ -1422,14 +1419,10 @@
 							{
 								$ref_size_name = $get_ref_size_deatils['ref_size_name'];
 							}
-
-							if ($NoOf_Cartons > 0)
-							{
-								$insert_tbl_carton_size_ref="insert ignore into $bai_pro3.tbl_pack_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, size_title, seq_no, cartons_per_pack_job, pack_job_per_pack_method, pack_method, pack_description) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart."','".$GarPerCart[$i][$j]."','".$original_size[$j]."','".$seqnew."','".$noofcartons_packjob."','".$NoOf_Cartons."','".$pack_method."','".$descr."')";
-								$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
-								// echo $insert_tbl_carton_size_ref.'<br>';
-								$statuscode=1;
-							}							
+							$insert_tbl_carton_size_ref="insert ignore into $bai_pro3.tbl_pack_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, size_title, seq_no, cartons_per_pack_job, pack_job_per_pack_method, pack_method, pack_description) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart."','".$GarPerCart[$i][$j]."','".$original_size[$j]."','".$seqnew."','".$noofcartons_packjob."','".$NoOf_Cartons."','".$pack_method."','".$descr."')";
+							$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
+							// echo $insert_tbl_carton_size_ref.'<br>';
+							$statuscode=1;
 						}
 					}
 				}
