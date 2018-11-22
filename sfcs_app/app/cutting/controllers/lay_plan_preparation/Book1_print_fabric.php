@@ -2477,12 +2477,16 @@ tags will be replaced.-->
                                         echo "<tr class=xl6613019 height=20 ; style='mso-height-source:userset;height:10.0pt' > <td></td>
                                         ";
                                         echo "<td class=xl8613019 style='width: 77px; text-align: center; margin:0; padding:0; height:100%;'>".chr($color_code)."000"."</td>"; 
-                                        echo"<td class=xl8613019 style='text-align: center;'>Ratio<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div></td>";
+										echo"<td class=xl8613019 style='text-align: center;'>Ratio";
+										// echo "<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div>";
+										echo "</td>";
                                         $total=0; 
                                         for($j=$temp_len1;$j<$temp_len;$j++) 
                                         {    
                                             $array_val=${'ex_'.$sizes_array[$j]}; 
-                                            echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>0</div><div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;margin-top:10pt;'>$array_val</div></td>"; 
+											echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>0</div>";
+											// echo "<div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;margin-top:10pt;'>$array_val</div>";
+											echo "</td>"; 
                                             $total+=$array_val; 
                                         }
                                         echo "</tr>";
@@ -2493,11 +2497,15 @@ tags will be replaced.-->
                                             error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
                                             echo "<tr class=xl6613019 height=20 style='mso-height-source:userset;height:10.0pt'><td height=20 class=xl6613019 style='height:10.0pt'></td>"; 
                                             echo "<td class=xl8613019 style='width: 77px; text-align: center; margin:0; padding:0; height:100%;'>".chr($color_code).leading_zeros($cuts[$k], 3)."</td>"; 
-                                            echo"<td class=xl8613019 style='text-align: center;'>Ratio<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div></td>"; 
+											echo"<td class=xl8613019 style='text-align: center;'>Ratio";
+											// echo "<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div>";
+											echo "</td>"; 
                                             for($n=$temp_len1;$n<$temp_len;$n++) 
                                             {    
-                                                echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>".$ratio[$cuts[$k]][$sizes_array[$n]]."</div><div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;border-top: 1px solid black;margin-top:10pt;'>".$qty[$cuts[$k]][$sizes_array[$n]]."";     
-                                                echo "</div></td>"; 
+												echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>".$ratio[$cuts[$k]][$sizes_array[$n]]."</div>";
+												// echo "<div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;border-top: 1px solid black;margin-top:10pt;'>".$qty[$cuts[$k]][$sizes_array[$n]]."";     
+												// echo "</div>";
+												echo "</td>"; 
                                                 $total_ratio1=$total_ratio1+$ratio[$cuts[$k]][$sizes_array[$n]]; 
                                                 $temp_sum=$temp_sum+$qty[$cuts[$k]][$sizes_array[$n]]; 
                                                 $total_temp_values=$total_temp_values+$qty[$cuts[$k]][$sizes_array[$n]];                 
@@ -2623,15 +2631,21 @@ tags will be replaced.-->
                                                     echo "<tr class=xl6613019 height=20 ; style='mso-height-source:userset;height:10.0pt' > 
                                                             <td height=20 class=xl6613019 style='height:10.0pt'></td>"; 
                                                     echo "<td class=xl8613019 style='width: 77px; text-align: center; margin:0; padding:0; height:100%;'>".chr($color_code)."000"."</td>"; 
-                                                    echo"<td class=xl8613019 style='text-align: center;'>Ratio<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div></td>"; 
+													echo"<td class=xl8613019 style='text-align: center;'>Ratio";
+													// echo "<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div>";
+													echo "</td>"; 
                                                         for($i=$temp_len1;$i<$total_size;$i++) 
                                                         {    
                                                             $array_val=${'ex_'.$sizes_array[$s]}; 
-                                                            echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>0</div><div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;border-top: 1px solid black;margin-top:10pt'>$array_val</div></td>"; 
+															echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>0</div>";
+															// echo "<div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;border-top: 1px solid black;margin-top:10pt'>$array_val</div>";
+															echo "</td>"; 
                                                             $total+=$array_val; 
                                                         } 
                                                     echo "<td class=xl8713019>0</td>"; 
-                                                    echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>0</div><div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;border-top: 1px solid black;margin-top:10pt;'>$total</div></td>"; 
+													echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>0</div>";
+													// echo "<div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;border-top: 1px solid black;margin-top:10pt;'>$total</div>";
+													echo "</td>"; 
 
                                                     echo "<td class=xl8713019></td>"; 
                                                     echo "<td class=xl8713019></td>"; 
@@ -2645,16 +2659,21 @@ tags will be replaced.-->
                                                     error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
                                                     echo "<tr class=xl6613019 height=20 style='mso-height-source:userset;height:10.0pt'><td height=20 class=xl6613019 style='height:10.0pt'></td>"; 
                                                     echo "<td class=xl8613019 style='width: 116px; text-align: center; margin:0; padding:0; height:100%;'>".chr($color_code).leading_zeros($cuts[$k], 3)."</td>"; 
-                                                    echo"<td class=xl8613019 style='text-align: center;'>Ratio<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div></td>"; 
+													echo"<td class=xl8613019 style='text-align: center;'>Ratio";
+													// echo "<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>Input</div>";
+													echo "</td>"; 
                                                     for($i=$temp_len1;$i<$total_size;$i++) 
                                                     {    
-                                                        echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>".$ratio[$cuts[$k]][$sizes_array[$s]]."</div><div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;border-top: 1px solid black;margin-top:10pt;'>".$qty[$cuts[$k]][$sizes_array[$s]]."";     
+														echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>".$ratio[$cuts[$k]][$sizes_array[$s]]."</div>";
+														// echo "<div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;border-top: 1px solid black;margin-top:10pt;'>".$qty[$cuts[$k]][$sizes_array[$s]]."";     
                                                         echo "</div></td>"; 
                                                         $total_ratio1=$total_ratio1+$ratio[$cuts[$k]][$sizes_array[$s]]; 
                                                         $temp_sum=$temp_sum+$qty[$cuts[$k]][$sizes_array[$s]]; 
                                                     }						
                                                     echo "<td class=xl8713019>".$pliess[$cuts[$k]]."</td>"; 
-                                                    echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>".$total_ratio1."</div><div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;border-top: 1px solid black;margin-top:10pt;'>".$temp_sum."</div></td>"; 
+													echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>".$total_ratio1."</div>";
+													// echo "<div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;border-top: 1px solid black;margin-top:10pt;'>".$temp_sum."</div>";
+													echo "</td>"; 
                                                     echo "<td class=xl8713019></td>"; 
                                                     echo "<td class=xl8713019></td>"; 
                                                     echo "<td class=xl8713019></td>"; 
