@@ -105,6 +105,26 @@ var left = (screen.width/2)-(w/2);
 var top = (screen.height/2)-(h/2);
 var targetWin = window.open (pageURL, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
 } 
+
+function PopupCenterSection(pageURL, title,w,h) {
+    
+//     var shift= $('#shift').val();
+//     console.log(shift);
+//     if(shift==''){
+// swal('Please Select Shift First','','error');
+// return false;
+//     }
+ 
+var left = (screen.width/2)-(w/2);
+var top = (screen.height/2)-(h/2);
+var targetWin = window.open (pageURL, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+} 
+    function blink_new3(x)
+    {
+        $("div[id='S"+x+"']").each(function() {
+            $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+        });
+    }
 </script>
 <!-- POP up window -  End  -->
 
@@ -436,30 +456,33 @@ while($sql_row=mysqli_fetch_array($sql_result))
   <span style="font-size:12px;color:#CCC;">Last Update at: <?PHP echo $sql_row['lastup']; ?></span>
 <?php
 } 
-$shifts = $_GET['shift'];
 
-//$shifts_array = ['A','B','C','G'];
 ?>
   </div>
   <div class="panel-body">
-  <div class="row">
-  <div class="col-md-2">
+  <div class="form-inline">
+ <div class="form-group">
       
-    <label>Shift </label><select class="form-control" id="shift" name="shift" onchange="firstbox();">
+    Shift <select class="form-control" id="shift" name="shift">
     <option value="">Select</option>
      <?php
-          foreach($shifts_array as $shift){
-            if($shift == $shifts){
-              echo "<option value='$shift' selected>$shift</option>";
-            }else{
-               echo "<option value='$shift'>$shift</option>";
-            }
-           
+         $shifts = (isset($_GET['shift']))?$_GET['shift']:'';
+        foreach($shifts_array as $shift){
+          if($shifts == $shift){
+            echo "<option value='$shift' selected>$shift</option>";
+          }else{
+            echo "<option value='$shift' >$shift</option>";
           }
+        }
 
      ?>
   </select>   
-  </div>  
+  </div> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  <div class="form-group">
+      <?php
+          echo 'Schedule Track: <input type="text" name="schedule" id="schedule"  class="form-control" onkeyup="blink_new3(this.value)" size="10">';
+      ?>
+  </div>
   </div>  
 
     <div style="padding-top:15px;">
@@ -487,7 +510,7 @@ $shifts = $_GET['shift'];
     ?>
     <div class="section_main_box">
           <div class="sections_heading1">
-            <a href="javascript:void(0);" onclick="PopupCenter('<?= getFullURL($_GET['r'],'sec_rep.php','R');?>?section=<?php echo $section; ?>', 'myPop1',800,600);" >Section <?php echo $section; ?><br />
+            <a href="javascript:void(0);" onclick="PopupCenterSection('<?= getFullURL($_GET['r'],'sec_rep.php','R');?>?section=<?php echo $section; ?>', 'myPop1',800,600);" >Section <?php echo $section; ?><br />
           <!-- <span style="font-size:12px;color:#C0F"><?php echo $section_head; ?></span> -->
       </a>
             </div>
@@ -655,12 +678,12 @@ $shifts = $_GET['shift'];
                //$shift='G';
                //$barcode_generation='1';
                $sidemenu=true;
-              $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N');
+             $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$inputjobnorand&style=$style_no&schedule=$schedul_no&operation_id=$operation_code&sidemenu=$sidemenu&shift=$shift";
               //$ui_url1= getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/pre_input_job_scanning.php',3,'N');
 
           ?>
                   
-                  <a href="javascript:void(0);" onclick="PopupCenter('<?= $ui_url1;?>&module=<?php echo $module; ?>&input_job_no_random_ref=<?php echo $inputjobnorand; ?>&style=<?php echo $style_no; ?>&schedule=<?php echo $schedul_no; ?>&operation_id=<?php echo $operation_code; ?>&shift=<?php echo $shifts; ?>&sidemenu=<?= $sidemenu ?>', 'myPop1',800,600);"  title="
+                  <a href="javascript:void(0);" onclick="PopupCenter('<?= $ui_url1;?>', 'myPop1',800,600);"  title="
                   Style No : <?php echo $style_no."<br/>"; ?>
                   Schedul No :<?php echo $schedul_no."<br/>"; ?>
                   Color : <?php echo $color_name."<br/>"; ?>
@@ -676,7 +699,7 @@ $shifts = $_GET['shift'];
                    // echo "Balance :".(int)$input_qty - (int)$output_qty."";
                   ?>
                     Remarks: <?php echo $ims_remarks."<br/>"; ?>
-                  " rel="tooltip"><div class="blue_box"  >
+                  " rel="tooltip"><?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" >";?>
                   
                   </div></a>
                   <?php 
@@ -807,3 +830,28 @@ $(document).ready(function(){
   }
 
 ?>
+
+<script>
+function loadpopup(url){ 
+  var shift = document.getElementById('shift').value;
+  if(shift){
+    url = url+'&shift='+shift;
+    window.open(url,'Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;
+  }else{
+        swal({
+                title: "Warning!",
+                text: "Please select shift",
+                type: "warning"
+            }).then(function() {
+                window.close();
+            });
+  }
+}
+setTimeout(function(){
+   var shift = document.getElementById('shift').value; 
+   var url = window.location.href+'&shift='+shift;
+    if(shift){
+      window.location.href = url;    
+    }
+   }, 120000);
+</script>

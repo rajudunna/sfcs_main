@@ -88,7 +88,11 @@ $color=$_GET['color'];
 
 echo "<div class='row'>";
 echo "<div class='col-sm-3'><label>Select Style: </label><select name=\"style\" onchange=\"firstbox();\" class='form-control' >";
-$sql="select distinct order_style_no from $bai_pro3.plan_doc_summ where CONCAT(TRIM(order_style_no),TRIM(order_col_des)) IN (SELECT DISTINCT CONCAT(TRIM(style),TRIM(color)) FROM brandix_bts.tbl_style_ops_master WHERE operation_code IN (SELECT GROUP_CONCAT(operation_code) FROM brandix_bts.tbl_orders_ops_ref WHERE category IN ('Send PF','Receive PF')))";
+$sql="SELECT DISTINCT order_style_no FROM $bai_pro3.plan_doc_summ 
+WHERE CONCAT(TRIM(order_style_no),TRIM(order_col_des)) IN (SELECT DISTINCT CONCAT(TRIM(style),TRIM(color)) 
+FROM $brandix_bts.tbl_style_ops_master 
+WHERE operation_code IN (SELECT DISTINCT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE category IN 
+('Send PF','Receive PF')))";
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
 $sql_num_check=mysqli_num_rows($sql_result);
 echo "<option value=\"NIL\" selected>NIL</option>";

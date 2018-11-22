@@ -5,6 +5,14 @@ $divide = 15;
 $order_tid=$_GET['order_tid'];
 $cat_ref=$_GET['cat_ref'];	
 $doc_id=$_GET['doc_id'];
+if($_GET['print_status']<>'')
+{
+    $print=$_GET['print_status'];
+}
+else
+{
+	$print=2;
+}
 $sql12="select MIN(mini_order_num) as min_no,MAX(mini_order_num) as max_no from $brandix_bts.tbl_miniorder_data where docket_number='".$doc_id."'";
 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_result12)>0)
@@ -2915,15 +2923,16 @@ $tot_bind_len=0;
 
 </html>
 <?php 
-
-if($print_status=="0000-00-00" || $print_status == "")
+if($print==1)
 {
-	$sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
- 	//echo $sql;
-	//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if($print_status=="0000-00-00" || $print_status == "")
+    {
+	    $sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
+ 	    //echo $sql;
+	    mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
+    }
 }
-
 
 //Refresh Parent Page After this Print Out 
 echo"<script>
