@@ -492,7 +492,7 @@
 
 	
 <div class="panel panel-primary">
-	<div class="panel-heading"><strong>Add Packing Ratio</strong> <?php echo "<a class='btn btn-warning btn-xs pull-right' href='$url2&style=$style&schedule=$schedule' >Go Back</a>";  ?></div>
+	<div class="panel-heading"><strong>Add Packing Ratio</strong> <?php echo "<a class='btn btn-warning	pull-right btn-xs' href='$url2&style=$style&schedule=$schedule' >Go Back</a>";  ?></div>
 	<div class="panel-body">
 		<div class="col-md-12">
 			<form method="POST" class="form-inline" name="decentralized_packing_ratio">
@@ -516,7 +516,7 @@
 				?>
 				&nbsp;&nbsp;
 				<input type="submit" name="submit" id="submit" class="btn btn-success" onclick="return check_val();" value="Submit">
-			</form>
+				</form>
 		</div>
 		
 		</br>
@@ -603,7 +603,7 @@
 									
 									echo "<label>Description :</label>
 											<input type='text' name='description' id='description' size='60' maxlength='60' class='form-control' required>
-										&nbsp;&nbsp;&nbsp;
+										&nbsp;&nbsp;
 										<label>No of Cartons per Pack Job :</label>
 											<input type='text' name='noofcartons_packjob' id='noofcartons_packjob'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=0>";
 									/* echo"<div class='col-md-3 col-sm-3 col-xs-12'>
@@ -936,12 +936,11 @@
 								echo "<div class='panel panel-primary'>";
 									echo "<div class='panel-heading'>$title</div>";
 									echo "<div class='panel-body'>";
-									
 									echo "<label>Description :</label>
 											<input type='text' name='description' id='description' size='60' maxlength='60' class='form-control' required>
-										&nbsp;&nbsp;&nbsp;
+										&nbsp;&nbsp;
 										<label>No of Cartons per Pack Job :</label>
-										<input type='text' name='noofcartons_packjob' id='noofcartons_packjob'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=0>";
+											<input type='text' name='noofcartons_packjob' id='noofcartons_packjob'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=0>";
 									/* echo"<div class='col-md-3 col-sm-3 col-xs-12'>
 									<label>No of Cartons  :</label>
 									<input type='text' name='noofpackjobs_packmethod' id='noofpackjobs_packmethod'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=0>
@@ -1311,10 +1310,13 @@
 								$ref_size_name = $get_ref_size_deatils['ref_size_name'];
 							}						
 
-							$insert_tbl_carton_size_ref="insert ignore into $bai_pro3.tbl_pack_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, size_title, seq_no, cartons_per_pack_job, pack_job_per_pack_method, pack_method, pack_description) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart[$j]."','".$GarPerCart[$i][$j]."','".$original_size[$j]."','".$seqnew."','".$noofcartons_packjob."','".$NoOf_Cartons[$j]."','".$pack_method."','".$descr."')";
-							$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
-							// echo $insert_tbl_carton_size_ref.'<br>';
-							$statuscode=1;
+							if ($NoOf_Cartons[$j] > 0)
+							{
+								$insert_tbl_carton_size_ref="insert ignore into $bai_pro3.tbl_pack_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, size_title, seq_no, cartons_per_pack_job, pack_job_per_pack_method, pack_method, pack_description) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart[$j]."','".$GarPerCart[$i][$j]."','".$original_size[$j]."','".$seqnew."','".$noofcartons_packjob."','".$NoOf_Cartons[$j]."','".$pack_method."','".$descr."')";
+								$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
+								// echo $insert_tbl_carton_size_ref.'<br>';
+								$statuscode=1;
+							}
 						}
 					}
 				}
@@ -1419,10 +1421,14 @@
 							{
 								$ref_size_name = $get_ref_size_deatils['ref_size_name'];
 							}
-							$insert_tbl_carton_size_ref="insert ignore into $bai_pro3.tbl_pack_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, size_title, seq_no, cartons_per_pack_job, pack_job_per_pack_method, pack_method, pack_description) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart."','".$GarPerCart[$i][$j]."','".$original_size[$j]."','".$seqnew."','".$noofcartons_packjob."','".$NoOf_Cartons."','".$pack_method."','".$descr."')";
-							$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
-							// echo $insert_tbl_carton_size_ref.'<br>';
-							$statuscode=1;
+
+							if ($NoOf_Cartons > 0)
+							{
+								$insert_tbl_carton_size_ref="insert ignore into $bai_pro3.tbl_pack_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, size_title, seq_no, cartons_per_pack_job, pack_job_per_pack_method, pack_method, pack_description) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart."','".$GarPerCart[$i][$j]."','".$original_size[$j]."','".$seqnew."','".$noofcartons_packjob."','".$NoOf_Cartons."','".$pack_method."','".$descr."')";
+								$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
+								// echo $insert_tbl_carton_size_ref.'<br>';
+								$statuscode=1;
+							}							
 						}
 					}
 				}
