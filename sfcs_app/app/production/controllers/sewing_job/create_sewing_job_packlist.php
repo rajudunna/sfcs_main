@@ -354,6 +354,7 @@
 												$no_of_cartons_sew = echo_title("$bai_pro3.pac_stat_input","no_of_cartons","schedule='$schedule' and pac_seq_no",$seq_no,$link);
 												// echo $get_sew_method;
 											}
+											$check_pack_list = echo_title("$bai_pro3.packing_summary","count(*)","order_del_no='$schedule' and seq_no",$seq_no,$link);
 											$max_crton = $pack_result1['min_carton'];
 											$parent_id=$pack_result1['parent_id'];
 											$pack_method=$pack_result1['pack_method'];
@@ -399,7 +400,11 @@
 												<td colspan=3>".$pack_result1['color']."</td>
 												<td>".$pack_result1['size']."</td>";
 											
-											if ($max_crton > 0)
+											if ($check_pack_list=='' || $check_pack_list==0 || $check_pack_list==null)
+											{
+												echo"<td><h4><span class='label label-danger'>Packing List not yet Generated</span></h4></td>";
+											}
+											else
 											{
 												if($check_status==0)
 												{
@@ -416,10 +421,6 @@
 															<a class='btn btn-info' href='$url&schedule=$schedule&seq_no=$seq_no&style=$style'>Print Job Sheets</a>
 														</td>";
 												}
-											}
-											else
-											{
-												echo"<td><h4><span class='label label-danger'>Packing List not yet Generated</span></h4></td>";
 											}
 											echo "<tr>
 										</form>";
