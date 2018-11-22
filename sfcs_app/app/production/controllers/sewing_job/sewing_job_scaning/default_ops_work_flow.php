@@ -295,6 +295,7 @@ $(document).ready(function(){
 	var s_no = 1;
 	
 	  $("#add-row1").click(function(){
+		$("#add-row1").hide();
 		var flag = 1;
 		if($("#oper_name").val() == 0)
 		{
@@ -772,6 +773,7 @@ $('#proceed').click(function()
 });
 function value_edition(btn,id_of_main)
 {	
+	$("#add-row1").show();
     if(id_of_main != 0)
     {
         var table = document.getElementById("dynamic_table1");
