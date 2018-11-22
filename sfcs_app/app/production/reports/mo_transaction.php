@@ -4,7 +4,7 @@
 	<script type="text/javascript" src="../<?= getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R') ?>" ></script>
 	<title>Mo Transaction Report</title>
 	<?php
-		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 		$url = getFullURLLevel($_GET['r'],'mo_transaction_ajax.php',0,'R');
 	?>
@@ -16,6 +16,7 @@
 		{
 			document.getElementById("style").focus();
 			document.getElementById("schedule").focus();
+			document.getElementById("color").focus();
 		}
 
 
@@ -38,8 +39,13 @@
 						<select  name="schedule" class="form-control"  id="schedule" ">
 	                     	<option value="">Select Schedule</option>
 						</select>
+
+						<label><font size="2">Color: </font></label>
+						<select  name="color" class="form-control"  id="color" ">
+	                     	<option value="">Select color</option>
+						</select>
 	               
-					<input type="button"  class="btn btn-success" value="Submit" onclick="getdata()"> 
+					<input type="button"  class="btn btn-success" value="Submit" name="submit" value="1" onclick="getdata()"> 
 					</div>
 				</div>
 				<br><br>
@@ -74,15 +80,38 @@
 			success: function (response) {		
 				console.log(response);
 					$.each(response.style, function(key,value) {
-							$('select[name="style"]').append('<option value="'+ value +'">'+value+'</option>');
+						$('select[name="style"]').append('<option value="'+ value +'">'+value+'</option>');
 					});
+					   					
+			},
+			error: function(response){
+				$('#loading-image').hide();	
+				// alert('failure');
+				// console.log(response);
+				swal('Error in getting style');
+			}				    
+		});
+
+    });
+
+
+
+    $('#style').change(function(){
+        $('#schedule option').remove();
+        $('#color option').remove();
+        var style = $(this).val();
+	    $.ajax({
+			type: "POST",
+			url: '<?= $url ?>?style='+style,
+			dataType: "json",
+			success: function (response) {	
+                $('select[name="schedule"]').append('<option value=all>ALL</option>'); 
+                $('select[name="color"]').append('<option value=all>ALL</option>'); 
+				console.log(response);
 					$.each(response.schedule, function(key,value) {
 							$('select[name="schedule"]').append('<option value="'+ value +'">'+value+'</option>');
 					});
-					// $('#operation option[value=<?= $operation_code ?>]').prop('selected', true);
-					// $('#operation').prop('disabled', true);		    					
-				
-															  
+					   					
 			},
 			error: function(response){
 				$('#loading-image').hide();	
@@ -94,12 +123,39 @@
 
     });
 
+    $('#schedule').change(function(){
+        var schedule = $('#schedule').val();
+        var style = $('#style').val();
+	    $.ajax({
+			type: "POST",
+			url: '<?= $url ?>?style='+style+'&schedule='+schedule,
+			dataType: "json",
+			success: function (response) {		
+				console.log(response);
+					$.each(response.color, function(key,value) {
+							$('select[name="color"]').append('<option value="'+ value +'">'+value+'</option>');
+					});
+					   					
+			},
+			error: function(response){
+				$('#loading-image').hide();	
+				// alert('failure');
+				// console.log(response);
+				swal('Error in getting color');
+			}				    
+		});
+
+    });
+
+
       function getdata(){
 	      var style = $("#style").val();
 	      var schedule = $("#schedule").val();	
+	      var color = $("#color").val();
+	      var submit = $('#submit').val();
 	      $.ajax({
 				type: "GET",
-				url: '<?= $url ?>?style='+style +'&schedule='+schedule,
+				url: '<?= $url ?>?style='+style +'&schedule='+schedule +'&color='+color +'&submit='+submit,
 				success: function(response) 
 				{
 					$('#excel_form').css({'display':'block'});
