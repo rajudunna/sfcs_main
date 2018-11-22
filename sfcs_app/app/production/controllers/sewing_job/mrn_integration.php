@@ -4,7 +4,7 @@
      //include("../../../../common/config/config.php");
      $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 	 $username=strtolower($username_list[1]);
-     
+    
 ?>
 
 <?php
@@ -19,6 +19,8 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
   
     
                 $sql="SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' and order_style_no='$style' and order_col_des='$color' and input_job_no_random='$doc_no'";
+               
+               
                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $rowcount=mysqli_num_rows($sql_result);
                // $tid=array();
@@ -29,9 +31,24 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
                             $carton_act_qty=$sql_row['carton_act_qty'];
                             $size_code=$sql_row['m3_size_code'];
                             $tid=$sql_row['tid'];
-                            
+                            $input_job_no=$sql_row['input_job_no'];
+                            $order_del_no=$sql_row['order_del_no'];
+                            $date=date('Ymd');
 
 
+                            $sql14="SELECT * FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule' and order_style_no='$style' and order_col_des='$color'";
+                           
+                           
+                            $sql_result14=mysqli_query($link, $sql14) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            while($sql_row14=mysqli_fetch_array($sql_result14))
+                            {
+                                $co_no=$sql_row14['co_no'];
+                            }
+                 
+
+                  $employee_no=$order_del_no."-".$input_job_no."</br>";
+                  $remarks=$order_del_no."-".$date."</br>";
+                  die();
                 
                 //$tid1=implode(",",array_unique($tid)); 
                 // var_dump($size_code);die(); 
@@ -58,8 +75,9 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
                 }
             
               
-
-
+                $mssql_insert_query="insert into [MRN_V2].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status) values ('$company_no', '$facility_code','$mo_no', '$op_code', '$bundle_quantity','$employee_no','$remarks','$co_no','$order_del_no','')";
+                $mssql_insert_query_result=mysqli_query($link, $mssql_insert_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $sql_num_check5=mysqli_num_rows($mssql_insert_query_result);
 
                 $insert_query="insert into $bai_pro3.m3_transactions (quantity,log_user,mo_no,op_code, op_des,ref_no, workstation_id,m3_ops_code) values ('$bundle_quantity', '$username','$mo_no', '$op_code', '$op_desc','$id','$workcenter_id','$op_code')";
                 $insert_query_result=mysqli_query($link, $insert_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
