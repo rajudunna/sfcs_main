@@ -7,6 +7,8 @@
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 		$url = getFullURLLevel($_GET['r'],'mo_transaction_ajax.php',0,'R');
+        $url1 = getFullURLLevel($_GET['r'],'mo_transaction_main.php',0,'R');
+		
 	?>
 	<link rel="stylesheet" type="text/css" href="../../common/css/bootstrap.css">
 	<script src="../../common/js/jquery.min.js"></script>
@@ -36,12 +38,12 @@
 						</select>
 						
 						<label><font size="2">Schedule: </font></label>
-						<select  name="schedule" class="form-control"  id="schedule" ">
+						<select  name="schedule" class="form-control"  id="schedule" >
 	                     	<option value="">Select Schedule</option>
 						</select>
 
 						<label><font size="2">Color: </font></label>
-						<select  name="color" class="form-control"  id="color" ">
+						<select  name="color" class="form-control"  id="color" >
 	                     	<option value="">Select color</option>
 						</select>
 	               
@@ -75,7 +77,7 @@
 
         $.ajax({
 			type: "POST",
-			url: '<?= $url ?>',
+			url: '<?= $url1 ?>',
 			dataType: "json",
 			success: function (response) {		
 				console.log(response);
@@ -102,11 +104,11 @@
         var style = $(this).val();
 	    $.ajax({
 			type: "POST",
-			url: '<?= $url ?>?style='+style,
+			url: '<?= $url1 ?>?style='+style,
 			dataType: "json",
 			success: function (response) {	
-                $('select[name="schedule"]').append('<option value=all>ALL</option>'); 
-                $('select[name="color"]').append('<option value=all>ALL</option>'); 
+                $('select[name="schedule"]').append('<option value=all>Select Schedule</option>'); 
+                $('select[name="color"]').append('<option value=all>Select Color</option>'); 
 				console.log(response);
 					$.each(response.schedule, function(key,value) {
 							$('select[name="schedule"]').append('<option value="'+ value +'">'+value+'</option>');
@@ -124,13 +126,15 @@
     });
 
     $('#schedule').change(function(){
+        $('#color option').remove();
         var schedule = $('#schedule').val();
         var style = $('#style').val();
 	    $.ajax({
 			type: "POST",
-			url: '<?= $url ?>?style='+style+'&schedule='+schedule,
+			url: '<?= $url1 ?>?style='+style+'&schedule='+schedule,
 			dataType: "json",
 			success: function (response) {		
+				 $('select[name="color"]').append('<option value=all>Select Color</option>'); 
 				console.log(response);
 					$.each(response.color, function(key,value) {
 							$('select[name="color"]').append('<option value="'+ value +'">'+value+'</option>');
