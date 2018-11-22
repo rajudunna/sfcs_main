@@ -5,7 +5,7 @@ error_reporting(0);
 
 if(isset($_GET['submit']))
 {
-
+  $row_count = 0;
   $counter = 0;
     $style = $_GET['style'];
     $schedule = $_GET['schedule'];
@@ -15,6 +15,7 @@ if(isset($_GET['submit']))
 	$result1 = $link->query($get_mo_details);
 	while($row2 = $result1->fetch_assoc())
 	{
+    $row_count++;
 		$mo_details[]= $row2['mo_no'];
 		$mo_qty[]= $row2['mo_quantity'];
 		$color1[]= $row2['color'];
@@ -39,6 +40,13 @@ if(isset($_GET['submit']))
 	  $ops_get_code[$row3['operation_code']] = $row3['operation_name'];
   }
    // var_dump($ops_get_code);
+
+  if($row_count == 0)
+  {
+      echo "<div><font color='red' size='5'>No Data Found</font></div>";
+  }
+  else
+  {  
    $table_data = "<table id='excel_table' class = 'col-sm-12 table-bordered table-striped table-condensed cf'>
    <thead class='cf'>
    <tr><th>S.NO</th><th>Size</th>
@@ -73,53 +81,10 @@ if(isset($_GET['submit']))
 
    }
     echo $table_data."</tbody></table>";
- 
+
+    
+ }
     
 }
-
-
-// if( isset($_GET['style']) && isset($_GET['schedule']) )
-// {
-//   $style1 = $_GET['style'];
-//   $schedule1 = $_GET['schedule'];
-//   $get_color="select distinct(color) from $bai_pro3.mo_details where style ='$style1' and schedule='$schedule1'";
-//   $result1 = $link->query($get_color);
-//   while($row1 = $result1->fetch_assoc())
-//   {
-//       $color[] = $row1['color'];
-//   }
-//   $json['color'] =$color;
-//   echo json_encode($json);
-
-  
-// }
-// else if(isset($_GET['style']))
-// {
-//   $style1 = $_GET['style'];
-//   $get_schedule="select distinct(schedule) from $bai_pro3.mo_details where style ='$style1' ";
-//   //echo $get_schedule;
-//   $result2 = $link->query($get_schedule);
-//   while($row1 = $result2->fetch_assoc())
-//   {
-//       $schedule[] = $row1['schedule'];
-//   }
-//   $json['schedule'] =$schedule; 
-//   echo json_encode($json);
-// }
-// else
-// {
-//     $get_style="select distinct(style) from $bai_pro3.mo_details";
-//     $result3 = $link->query($get_style);
-//     while($row1 = $result3->fetch_assoc())
-//     {
-//         $style[] = $row1['style'];
-//     }
-
-//    $json['style'] = $style;
-//    echo json_encode($json);
-// }
-
-
-
 
 ?>

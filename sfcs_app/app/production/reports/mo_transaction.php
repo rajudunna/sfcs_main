@@ -47,7 +47,7 @@
 	                     	<option value="">Select color</option>
 						</select>
 	               
-					<input type="button"  class="btn btn-success" value="Submit" name="submit" value="1" onclick="getdata()"> 
+					<input type="button"  class="btn btn-success" value="Submit" name="submit" id="submit" value="1" onclick="getdata()"> 
 					</div>
 				</div>
 				<br><br>

@@ -26,7 +26,16 @@ else
     }
   $schedules = implode(',',$schedule);
 
+  if(isset($_GET['style']) && isset($_GET['schedule']))
+  {
+    $style1=$_GET['style'];
+    $schedule1=$_GET['schedule'];
+    $get_color="select order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no='$style1' and order_del_no='$schedule1'";
+  }
+  else
+  {
   $get_color="select order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no IN ($styles) and order_del_no IN ($schedules) ";
+  }
   $result3 = $link->query($get_color);
   while($row1 = $result3->fetch_assoc())
     {
