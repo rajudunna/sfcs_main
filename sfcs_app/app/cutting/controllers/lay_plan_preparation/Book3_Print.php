@@ -669,10 +669,10 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-ignore:padding;
 	color:windowtext;
 	font-size:10.0pt;
-	font-weight:700;
+	/* font-weight:700; */
 	font-style:normal;
 	text-decoration:none;
-	font-family:"Trebuchet MS", sans-serif;
+	font-family:Calibri, sans-serif;
 	mso-font-charset:0;
 	mso-number-format:General;
 	text-align:center;
@@ -716,7 +716,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	font-weight:700;
 	font-style:normal;
 	text-decoration:none;
-	font-family:"Trebuchet MS", sans-serif;
+	font-family:Calibri, sans-serif;
 	mso-font-charset:0;
 	mso-number-format:General;
 	text-align:center;
@@ -1535,10 +1535,10 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-ignore:padding;
 	color:windowtext;
 	font-size:10.0pt;
-	font-weight:700;
+	/* font-weight:700; */
 	font-style:normal;
 	text-decoration:none;
-	font-family:"Trebuchet MS", sans-serif;
+	font-family:Calibri, sans-serif;
 	mso-font-charset:0;
 	mso-number-format:General;
 	text-align:center;
@@ -1663,10 +1663,10 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-ignore:padding;
 	color:windowtext;
 	font-size:10.0pt;
-	font-weight:700;
+	/* font-weight:700; */
 	font-style:normal;
 	text-decoration:none;
-	font-family:"Trebuchet MS", sans-serif;
+	font-family:Calibri, sans-serif;
 	mso-font-charset:0;
 	mso-number-format:General;
 	text-align:center;
@@ -2103,10 +2103,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td colspan=3 >Cutting Department</td>
+  <td colspan=2 >Cutting Department</td>
   <td class=xl654118></td>
   </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>

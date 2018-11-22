@@ -1454,7 +1454,7 @@ tags will be replaced.-->
  <td class=xl6432599></td>
  <td class=xl1532599></td>
  </tr>
- <tr height=21 style='height:15.75pt'>
+ <!-- <tr height=21 style='height:15.75pt'>
  <td height=21 class=xl1532599 style='height:15.75pt'></td>
  <td class=xl6432599></td>
  <td class=xl6432599></td>
@@ -1490,34 +1490,52 @@ tags will be replaced.-->
  <td class=xl7832599></td>
  <td class=xl6432599></td>
  <td class=xl1532599></td>
- </tr>
+ </tr> -->
  <tr height=21 style='height:15.75pt'>
  <td height=21 class=xl1532599 style='height:15.75pt'></td>
  <td class=xl6932599 width=86 style='width:65pt'></td>
- <td colspan=15 rowspan=3 class=xl9732599>
+ <td colspan=5 rowspan=3 class=xl9732599>
  
  </td>
  <td colspan=3 class=xl6532599><?php echo $cat_title; ?></td>
- 
+ <td></td>
  <td colspan=3 class=xl7732599 style='border-right:.5pt solid black'>Savings %</td>
  <td colspan=3 class=xl6832599><?php echo $savings_new; ?>%</td>
- 
+ <td></td>
  <td colspan=3 class=xl7732599 style='border-right:.5pt solid black'>One Gmt
  One Way</td>
  <td colspan=3 class=xl8032599><?php echo $gmtway; ?></td>
- <td class=xl8132599></td>
- <td class=xl1532599></td>
+ <!-- <td class=xl8132599></td>
+ <td class=xl1532599></td> -->
+ <?php
+//  $bind_con = 0.12;
+
+ if(strlen($remarks_x)>0)
+ {
+ 	echo "<td colspan=4 style='font-size:20px;border:1px solid black'><strong>Remarks : $remarks_x</strong></td>";
+ }
+ else
+ {
+ 	echo "<td colspan=2></td>";
+ }
+  if(strlen($binding_con)>0)
+  {
+    echo "<td colspan=6 style='font-size:20px;border:1px solid black'><strong>Binding Consumption : $binding_con</strong></td>";
+  }else{
+    echo "<td colspan=3></td>";
+  }
+ 
+ ?>
  </tr>
  <tr height=21 style='height:15.75pt'>
  <td height=21 class=xl1532599 style='height:15.75pt'></td>
- <td colspan=16 class=xl7732599 style='border-right:.5pt solid black'>Consumption</td>
+ <td colspan=6 class=xl7732599 style='border-right:.5pt solid black'>Consumption</td>
  <td colspan=3 class=xl6632599><?php echo $body_yy; ?></td>
- 
+ <td></td>
  <td colspan=3 class=xl7732599 style='border-right:.5pt solid black'>CAD
  Consumption</td>
- 
  <td colspan=3 class=xl6632599><?php echo round($newyy2,4); ?></td>
- 
+ <td></td>
  <td colspan=3 class=xl7732599 style='border-right:.5pt solid black'>Strip
  Matching</td>
  <td colspan=3 class=xl6632599><?php echo $strip_match; ?></td>
@@ -1526,8 +1544,7 @@ tags will be replaced.-->
  </tr>
  <tr height=21 style='height:15.75pt'>
  <td height=21 class=xl1532599 style='height:15.75pt'></td>
- 
- <td colspan=16.5 class=xl7732599 style='border-right:.5pt solid black'>Material
+ <td colspan=6.5 class=xl7732599 style='border-right:.5pt solid black'>Material
  Allowed</td>
  <td colspan=3 class=xl7032599 >
  <?php 
@@ -1540,6 +1557,7 @@ tags will be replaced.-->
 	?>
 			
 </td>
+<td></td>
  <td colspan=3 class=xl7732599 style='border-right:.5pt solid black'>Used
  <?php $fab_uom ?></td>
  <td colspan=3 class=xl7032599>
@@ -1553,6 +1571,7 @@ tags will be replaced.-->
 	?>
 		
 </td>
+<td></td>
 <td colspan=3 class=xl7732599 style='border-right:.5pt solid black'>Gusset
  Sep</td>
  <td colspan=3 class=xl7032599><?php echo $gusset_sep; ?></td>
@@ -1566,8 +1585,10 @@ tags will be replaced.-->
  <td class=xl7732599></td>
  <td class=xl7732599></td>
  <td class=xl7132599></td>
- <td class=xl7932599 colspan=16></td>
+ <td class=xl7932599 colspan=6></td>
  <td class=xl7932599></td>
+ <td class=xl7732599></td>
+ <td class=xl7732599></td>
  <td class=xl7732599></td>
  <td class=xl7732599></td>
  <td class=xl7732599></td>
@@ -1582,25 +1603,7 @@ tags will be replaced.-->
 	 <td colspan=12 class=xl7732599></td>
  
  
- <?php
-//  $bind_con = 0.12;
 
- if(strlen($remarks_x)>0)
- {
- 	echo "<td colspan=4 style='font-size:20px;border:1px solid black'><strong>Remarks : $remarks_x</strong></td>";
- }
- else
- {
- 	echo "<td colspan=4></td>";
- }
-  if(strlen($binding_con)>0)
-  {
-    echo "<td colspan=4 style='font-size:20px;border:1px solid black'><strong>Binding Consumption : $binding_con</strong></td>";
-  }else{
-    echo "<td colspan=5></td>";
-  }
- 
- ?>
  </tr>
  </table>
  <?php
