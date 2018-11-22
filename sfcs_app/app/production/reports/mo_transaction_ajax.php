@@ -78,46 +78,46 @@ if(isset($_GET['submit']))
 }
 
 
-if( isset($_GET['style']) && isset($_GET['schedule']) )
-{
-  $style1 = $_GET['style'];
-  $schedule1 = $_GET['schedule'];
-  $get_color="select distinct(color) from $bai_pro3.mo_details where style ='$style1' and schedule='$schedule1'";
-  $result1 = $link->query($get_color);
-  while($row1 = $result1->fetch_assoc())
-  {
-      $color[] = $row1['color'];
-  }
-  $json['color'] =$color;
-  echo json_encode($json);
+// if( isset($_GET['style']) && isset($_GET['schedule']) )
+// {
+//   $style1 = $_GET['style'];
+//   $schedule1 = $_GET['schedule'];
+//   $get_color="select distinct(color) from $bai_pro3.mo_details where style ='$style1' and schedule='$schedule1'";
+//   $result1 = $link->query($get_color);
+//   while($row1 = $result1->fetch_assoc())
+//   {
+//       $color[] = $row1['color'];
+//   }
+//   $json['color'] =$color;
+//   echo json_encode($json);
 
   
-}
-else if(isset($_GET['style']))
-{
-  $style1 = $_GET['style'];
-  $get_schedule="select distinct(schedule) from $bai_pro3.mo_details where style ='$style1' ";
-  //echo $get_schedule;
-  $result2 = $link->query($get_schedule);
-  while($row1 = $result2->fetch_assoc())
-  {
-      $schedule[] = $row1['schedule'];
-  }
-  $json['schedule'] =$schedule; 
-  echo json_encode($json);
-}
-else
-{
-    $get_style="select distinct(style) from $bai_pro3.mo_details";
-    $result3 = $link->query($get_style);
-    while($row1 = $result3->fetch_assoc())
-    {
-        $style[] = $row1['style'];
-    }
+// }
+// else if(isset($_GET['style']))
+// {
+//   $style1 = $_GET['style'];
+//   $get_schedule="select distinct(schedule) from $bai_pro3.mo_details where style ='$style1' ";
+//   //echo $get_schedule;
+//   $result2 = $link->query($get_schedule);
+//   while($row1 = $result2->fetch_assoc())
+//   {
+//       $schedule[] = $row1['schedule'];
+//   }
+//   $json['schedule'] =$schedule; 
+//   echo json_encode($json);
+// }
+// else
+// {
+//     $get_style="select distinct(style) from $bai_pro3.mo_details";
+//     $result3 = $link->query($get_style);
+//     while($row1 = $result3->fetch_assoc())
+//     {
+//         $style[] = $row1['style'];
+//     }
 
-   $json['style'] = $style;
-   echo json_encode($json);
-}
+//    $json['style'] = $style;
+//    echo json_encode($json);
+// }
 
 
 
