@@ -89,7 +89,7 @@
 				$('#loading-image').hide();	
 				// alert('failure');
 				// console.log(response);
-				swal('Error in getting schedule');
+				swal('Error in getting style');
 			}				    
 		});
 
@@ -106,8 +106,8 @@
 			url: '<?= $url ?>?style='+style,
 			dataType: "json",
 			success: function (response) {	
-                $('select[name="schedule"]').append('<option value=all>ALL</option>'); 
-                $('select[name="color"]').append('<option value=all>ALL</option>'); 
+                $('select[name="schedule"]').append('<option value=all>Select Schedule</option>'); 
+                $('select[name="color"]').append('<option value=all>Select Color</option>'); 
 				console.log(response);
 					$.each(response.schedule, function(key,value) {
 							$('select[name="schedule"]').append('<option value="'+ value +'">'+value+'</option>');
@@ -125,6 +125,7 @@
     });
 
     $('#schedule').change(function(){
+        $('#color option').remove();
         var schedule = $('#schedule').val();
         var style = $('#style').val();
 	    $.ajax({
@@ -132,6 +133,7 @@
 			url: '<?= $url ?>?style='+style+'&schedule='+schedule,
 			dataType: "json",
 			success: function (response) {		
+				 $('select[name="color"]').append('<option value=all>Select Color</option>'); 
 				console.log(response);
 					$.each(response.color, function(key,value) {
 							$('select[name="color"]').append('<option value="'+ value +'">'+value+'</option>');

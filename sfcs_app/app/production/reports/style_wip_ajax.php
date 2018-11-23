@@ -156,6 +156,18 @@ else
 		    $bcd_rec[$row3['operation_id']] = $row3['recevied'];
 	    }
 
+
+
+	    $to_get_cpk="select sum(carton_act_qty) as  carton_qty from $bai_pro3.pac_stat_log where style='$style' and schedule='$schedule' and color='$color'";
+	    //echo $to_get_cpk;
+	    $to_get_cpk_result= $link->query($to_get_cpk);
+	    while ($row3 = $to_get_cpk_result->fetch_assoc())
+	    {
+	    	$cpk_qty = $row3['carton_qty'];
+	    }
+	    $bcd_rec[200] = $cpk_qty;
+	    //echo $cpk_qty;
+
 	    $counter++;
 	    $table_data .= "<tr><td>$counter</td><td>$schedule</td><td>$color</td>";
         if($size_get != '')
@@ -177,6 +189,7 @@ else
 	    {
 	    	// if($value == 10)
 	    	// 	continue;
+
 	    	if($value == 15)
 	    	{
                 $wip[$value] = $order_qty - $bcd_rec[$value];
@@ -198,8 +211,15 @@ else
                 //echo $post_ops_check.'<br/>';
 				$row = mysqli_fetch_array($result_post_ops_check);
                 $pre_op_code = $row['operation_code'];
-                $diff= $bcd_rec[$pre_op_code] - $bcd_rec[$value];
 
+                if($value == 200)
+                {
+                	echo $pre_op_code;
+                	$diff= $bcd_rec[$pre_op_code] - $bcd_rec[$value];
+                }else
+                {
+                  $diff= $bcd_rec[$pre_op_code] - $bcd_rec[$value];
+                }
                 if($diff < 0)
                 	$diff = 0;
 
