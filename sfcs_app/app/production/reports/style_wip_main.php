@@ -34,18 +34,18 @@
 
 						<label><font size="2">Style: </font></label>
 						<select  name="style" class="form-control" id="style">
-							<option value="">Select Style</option>
+							<option value="" disabled selected>Select Style</option>
 						</select>
 						
 						<label><font size="2">Schedule: </font></label>
 						<select  name="schedule" class="form-control"  id="schedule" ">
-	                     	<option value="">Select Schedule</option>
+	                     	<option value="" disabled selected>Select Schedule</option>
 	                     	<option value="1">ALL</option>
 						</select>
 
 						<label><font size="2">Color: </font></label>
 						<select  name="color" class="form-control"  id="color" ">
-	                     	<option value="">Select color</option>
+	                     	<option value="" disabled selected>Select color</option>
 	                     	<option value="">ALL</option>
 						</select>
 
@@ -106,8 +106,8 @@
 			url: '<?= $url ?>?style='+style,
 			dataType: "json",
 			success: function (response) {	
-                $('select[name="schedule"]').append('<option value=all>Select Schedule</option>'); 
-                $('select[name="color"]').append('<option value=all>Select Color</option>'); 
+                $('select[name="schedule"]').append('<option value=all>ALL</option>'); 
+                $('select[name="color"]').append('<option value=all>ALL</option>'); 
 				console.log(response);
 					$.each(response.schedule, function(key,value) {
 							$('select[name="schedule"]').append('<option value="'+ value +'">'+value+'</option>');
@@ -133,7 +133,7 @@
 			url: '<?= $url ?>?style='+style+'&schedule='+schedule,
 			dataType: "json",
 			success: function (response) {		
-				 $('select[name="color"]').append('<option value=all>Select Color</option>'); 
+				 $('select[name="color"]').append('<option value=all>ALL</option>'); 
 				console.log(response);
 					$.each(response.color, function(key,value) {
 							$('select[name="color"]').append('<option value="'+ value +'">'+value+'</option>');
@@ -162,6 +162,12 @@
 	      }else{
 	      	    var size = '';
 	      }
+
+	      if(style == null || schedule == null || color == null)
+          {
+	          sweetAlert('Please Select  Style,Schedule,color','','warning');
+	          return false;
+          }
 	      $.ajax({
 				type: "GET",
 				url: '<?= $url1 ?>?style='+style +'&schedule='+schedule +'&color='+color +'&size='+size,

@@ -86,8 +86,8 @@ else
 
     $table_data .="
 	   <th rowspan=2>Order Qty</th>
-	   <th colspan = $col_span>Operation Reported Qty</th>
-	   <th colspan = $col_span>Wip</th>
+	   <th colspan = $col_span style=text-align:center>Operation Reported Qty</th>
+	   <th colspan = $col_span style=text-align:center>Wip</th>
 	</tr>
 	<tr>";
 			
@@ -135,11 +135,14 @@ else
        // echo $get_order_qty;
         if($_GET['size'] != '')
 	    {
+
 	   	   $bcd_data_query .= " and size_title='$size' group by operation_id";
-	   	   $get_order_qty.= " and title_size_$size_code = '$size'";
+	   	   //$get_order_qty.= " and title_size_$size_code = '$size'";
+	   	    $get_order_qty="select (order_s_$size_code) as order_qty from $bai_pro3.bai_orders_db_confirm where order_style_no='$style' and order_del_no='$schedule' and order_col_des='$color' ";
 	    }else{
 	   	   
 	       $bcd_data_query .= " group by operation_id";
+
 	    }
        // echo "$get_order_qty";
 
@@ -214,7 +217,7 @@ else
 
                 if($value == 200)
                 {
-                	echo $pre_op_code;
+                	//echo $pre_op_code;
                 	$diff= $bcd_rec[$pre_op_code] - $bcd_rec[$value];
                 }else
                 {
