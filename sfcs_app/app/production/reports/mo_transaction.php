@@ -2,6 +2,7 @@
 <html>
 <head>
 	<script type="text/javascript" src="../<?= getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R') ?>" ></script>
+	
 	<title>Mo Transaction Report</title>
 	<?php
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
@@ -33,18 +34,18 @@
 					<div class="form-inline col-sm-10">
 
 						<label><font size="2">Style: </font></label>
-						<select  name="style" class="form-control" id="style">
-							<option value="">Select Style</option>
+						<select  name="style" class="form-control" id="style" required>
+							<option value="" disabled selected>Select Style</option>
 						</select>
 						
 						<label><font size="2">Schedule: </font></label>
-						<select  name="schedule" class="form-control"  id="schedule" >
-	                     	<option value="">Select Schedule</option>
+						<select  name="schedule" class="form-control"  id="schedule" required>
+	                     	<option value="" disabled selected>Select Schedule</option>
 						</select>
 
 						<label><font size="2">Color: </font></label>
-						<select  name="color" class="form-control"  id="color" >
-	                     	<option value="">Select color</option>
+						<select  name="color" class="form-control"  id="color" required>
+	                     	<option value="" disabled selected>Select color</option>
 						</select>
 	               
 					<input type="button"  class="btn btn-success" value="Submit" name="submit" id="submit" value="1" onclick="getdata()"> 
@@ -107,8 +108,8 @@
 			url: '<?= $url1 ?>?style='+style,
 			dataType: "json",
 			success: function (response) {	
-                $('select[name="schedule"]').append('<option value=all>Select Schedule</option>'); 
-                $('select[name="color"]').append('<option value=all>Select Color</option>'); 
+                $('select[name="schedule"]').append('<option value="" selected disabled>Select Schedule</option>'); 
+                $('select[name="color"]').append('<option value="" selected disabled>Select Color</option>'); 
 				console.log(response);
 					$.each(response.schedule, function(key,value) {
 							$('select[name="schedule"]').append('<option value="'+ value +'">'+value+'</option>');
@@ -134,7 +135,7 @@
 			url: '<?= $url1 ?>?style='+style+'&schedule='+schedule,
 			dataType: "json",
 			success: function (response) {		
-				 $('select[name="color"]').append('<option value=all>Select Color</option>'); 
+				 $('select[name="color"]').append('<option value="" selected disabled>Select Color</option>'); 
 				console.log(response);
 					$.each(response.color, function(key,value) {
 							$('select[name="color"]').append('<option value="'+ value +'">'+value+'</option>');
@@ -157,6 +158,13 @@
 	      var schedule = $("#schedule").val();	
 	      var color = $("#color").val();
 	      var submit = $('#submit').val();
+
+	      if(style == null || schedule == null || color == null)
+	      {
+	      	sweetAlert('Please Select  Style,Schedule and color','','warning');
+	      	return false;
+	      }
+
 	      $.ajax({
 				type: "GET",
 				url: '<?= $url ?>?style='+style +'&schedule='+schedule +'&color='+color +'&submit='+submit,
@@ -181,4 +189,5 @@ function getexcel(){
  $("#csv_text").val(csv_value);	
 }
 </script>
+
 </html>
