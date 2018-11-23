@@ -184,4 +184,26 @@
 	
 </script>
 
+<script language="javascript">
+
+function getexcel(){
+ var csv_value=$('#excel_table').table2CSV({delivery:'value'});
+ $("#csv_text").val(csv_value); 
+}
+</script>
+
+<script language="javascript" type="text/javascript">
+  var table3Filters = {
+      col_1: "select",
+      sort_select: true,
+      alternate_rows: true,
+      loader_text: "Filtering data...",
+      loader: true,
+      rows_counter: true,
+      display_all_text: "Display all"
+    //col_width: ["15px","135px","80px","70px","80px","135px","150px","90px","40px",null];
+  }
+  setFilterGrid("dynamic_table1",table3Filters);
+</script> 
+
 </html>

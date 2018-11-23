@@ -169,7 +169,7 @@ else
 	    	$cpk_qty = $row3['carton_qty'];
 	    }
 	    $bcd_rec[200] = $cpk_qty;
-	    echo $cpk_qty;
+	    //echo $cpk_qty;
 
 	    $counter++;
 	    $table_data .= "<tr><td>$counter</td><td>$schedule</td><td>$color</td>";
@@ -193,12 +193,12 @@ else
 	    	// if($value == 10)
 	    	// 	continue;
 
-	    	// if($value == 15)
-	    	// {
-      //           $wip[$value] = $order_qty - $bcd_rec[$value];
-	    	// }
-	    	// else
-	    	// {	
+	    	if($value == 15)
+	    	{
+                $wip[$value] = $order_qty - $bcd_rec[$value];
+	    	}
+	    	else
+	    	{	
                 $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master 
                                 where style='$style' and color = '$color' and operation_code='$value'";
                 //echo $ops_seq_check;
@@ -209,27 +209,25 @@ else
 					$seq_id = $row['id'];
 					$ops_order = $row['operation_order'];
 				}
-				$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order' AND operation_code not in (10) ORDER BY operation_order ASC LIMIT 1";
+				$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) < '$ops_order' AND operation_code not in (10) ORDER BY operation_order DESC LIMIT 1";
 				$result_post_ops_check = $link->query($post_ops_check);
-               // echo $post_ops_check.'<br/>';
+                //echo $post_ops_check.'<br/>';
 				$row = mysqli_fetch_array($result_post_ops_check);
                 $pre_op_code = $row['operation_code'];
 
-                // if($value == 200)
-                // {
-                // 	echo $pre_op_code;
-                // 	$diff= $bcd_rec[$pre_op_code] - $bcd_rec[$value];
-                // }else
+                if($value == 200)
                 {
                 	//echo $pre_op_code;
-                  $diff= $bcd_rec[$value] - $bcd_rec[$pre_op_code] ;
+                	$diff= $bcd_rec[$pre_op_code] - $bcd_rec[$value];
+                }else
+                {
+                  $diff= $bcd_rec[$pre_op_code] - $bcd_rec[$value];
                 }
-
                 if($diff < 0)
                 	$diff = 0;
 
 				$wip[$value] = $diff;
-			// }
+			}
 
 			$table_data .= "<td>".$wip[$value]."</td>";
 		} 
