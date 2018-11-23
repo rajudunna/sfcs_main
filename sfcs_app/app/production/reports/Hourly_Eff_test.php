@@ -723,7 +723,7 @@ white-space:nowrap;
                                     
                                     if($team=="'A'") 
                                     { 
-                                        $sql_nop="select (present+jumper) as avail,absent from $bai_pro.pro_attendance where date=\"$date\" and module=\"$mod\" and shift='".$team."'"; 
+                                        $sql_nop="select (present+jumper) as avail,absent from $bai_pro.pro_attendance where date=\"$date\" and module=\"$mod\" and shift=$team"; 
                                         $sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         if(mysqli_num_rows($sql_result_nop) > 0) 
                                         { 
@@ -742,7 +742,7 @@ white-space:nowrap;
                                      
                                     if($team=="'B'") 
                                     { 
-                                        $sql_nop="select (present+jumper) as avail,absent from $bai_pro.pro_attendance where date=\"$date\" and module=\"$mod\" and shift='".$team."'"; 
+                                        $sql_nop="select (present+jumper) as avail,absent from $bai_pro.pro_attendance where date=\"$date\" and module=\"$mod\" and shift=$team"; 
                                         $sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         if(mysqli_num_rows($sql_result_nop) > 0) 
                                         { 
