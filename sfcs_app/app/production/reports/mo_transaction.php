@@ -19,7 +19,7 @@
 		{
 			document.getElementById("style").focus();
 			document.getElementById("schedule").focus();
-			document.getElementById("color").focus();
+			//document.getElementById("color").focus();
 		}
 
 
@@ -43,10 +43,10 @@
 	                     	<option value="" disabled selected>Select Schedule</option>
 						</select>
 
-						<label><font size="2">Color: </font></label>
+						<!-- <label><font size="2">Color: </font></label>
 						<select  name="color" class="form-control"  id="color" required>
 	                     	<option value="" disabled selected>Select color</option>
-						</select>
+						</select> -->
 	               
 					<input type="button"  class="btn btn-success" value="Submit" name="submit" id="submit" value="1" onclick="getdata()"> 
 					</div>
@@ -101,7 +101,7 @@
 
     $('#style').change(function(){
         $('#schedule option').remove();
-        $('#color option').remove();
+        //$('#color option').remove();
         var style = $(this).val();
 	    $.ajax({
 			type: "POST",
@@ -109,7 +109,7 @@
 			dataType: "json",
 			success: function (response) {	
                 $('select[name="schedule"]').append('<option value="" selected disabled>Select Schedule</option>'); 
-                $('select[name="color"]').append('<option value="" selected disabled>Select Color</option>'); 
+                //$('select[name="color"]').append('<option value="" selected disabled>Select Color</option>'); 
 				console.log(response);
 					$.each(response.schedule, function(key,value) {
 							$('select[name="schedule"]').append('<option value="'+ value +'">'+value+'</option>');
@@ -126,48 +126,48 @@
 
     });
 
-    $('#schedule').change(function(){
-        $('#color option').remove();
-        var schedule = $('#schedule').val();
-        var style = $('#style').val();
-	    $.ajax({
-			type: "POST",
-			url: '<?= $url1 ?>?style='+style+'&schedule='+schedule,
-			dataType: "json",
-			success: function (response) {		
-				 $('select[name="color"]').append('<option value="" selected disabled>Select Color</option>'); 
-				console.log(response);
-					$.each(response.color, function(key,value) {
-							$('select[name="color"]').append('<option value="'+ value +'">'+value+'</option>');
-					});
+  //   $('#schedule').change(function(){
+  //       $('#color option').remove();
+  //       var schedule = $('#schedule').val();
+  //       var style = $('#style').val();
+	 //    $.ajax({
+		// 	type: "POST",
+		// 	url: '<?= $url1 ?>?style='+style+'&schedule='+schedule,
+		// 	dataType: "json",
+		// 	success: function (response) {		
+		// 		 $('select[name="color"]').append('<option value="" selected disabled>Select Color</option>'); 
+		// 		console.log(response);
+		// 			$.each(response.color, function(key,value) {
+		// 					$('select[name="color"]').append('<option value="'+ value +'">'+value+'</option>');
+		// 			});
 					   					
-			},
-			error: function(response){
-				$('#loading-image').hide();	
-				// alert('failure');
-				// console.log(response);
-				swal('Error in getting color');
-			}				    
-		});
+		// 	},
+		// 	error: function(response){
+		// 		$('#loading-image').hide();	
+		// 		// alert('failure');
+		// 		// console.log(response);
+		// 		swal('Error in getting color');
+		// 	}				    
+		// });
 
-    });
+  //   });
 
 
       function getdata(){
 	      var style = $("#style").val();
 	      var schedule = $("#schedule").val();	
-	      var color = $("#color").val();
+	     // var color = $("#color").val();
 	      var submit = $('#submit').val();
 
-	      if(style == null || schedule == null || color == null)
+	      if(style == null || schedule == null)
 	      {
-	      	sweetAlert('Please Select  Style,Schedule and color','','warning');
+	      	sweetAlert('Please Select  Style,Schedule','','warning');
 	      	return false;
 	      }
 
 	      $.ajax({
 				type: "GET",
-				url: '<?= $url ?>?style='+style +'&schedule='+schedule +'&color='+color +'&submit='+submit,
+				url: '<?= $url ?>?style='+style +'&schedule='+schedule  +'&submit='+submit,
 				success: function(response) 
 				{
 					$('#excel_form').css({'display':'block'});

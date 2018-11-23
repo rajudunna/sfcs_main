@@ -9,8 +9,8 @@ if(isset($_GET['submit']))
   $counter = 0;
     $style = $_GET['style'];
     $schedule = $_GET['schedule'];
-    $color = $_GET['color'];
-	$get_mo_details="select * from bai_pro3.mo_details where style='".$style."' and schedule='". $schedule."' and color='".$color."'";
+    //$color = $_GET['color'];
+	$get_mo_details="select * from bai_pro3.mo_details where style='".$style."' and schedule='". $schedule."'";
 	//echo $get_mo_details;
 	$result1 = $link->query($get_mo_details);
 	while($row2 = $result1->fetch_assoc())
@@ -19,11 +19,14 @@ if(isset($_GET['submit']))
 		$mo_details[]= $row2['mo_no'];
 		$mo_qty[]= $row2['mo_quantity'];
 		$color1[]= $row2['color'];
+    $colors[]= $row2['color'];
 		$size[]= $row2['size'];
 	}
   // var_dump($mo_details);
-
-  $get_operations= "select DISTINCT(operation_code) from $brandix_bts.tbl_style_ops_master where style='$style' and color='$color'";
+   $color = implode('","',$color1);
+   $color = '"'.$color.'"';
+   //echo $color;
+  $get_operations= "select DISTINCT(operation_code) from $brandix_bts.tbl_style_ops_master where style='$style' and color IN ($color)";
   //echo $get_operations;
   $result2 = $link->query($get_operations);
   while($row2 = $result2->fetch_assoc())
@@ -60,7 +63,7 @@ if(isset($_GET['submit']))
    foreach ($mo_details as $key => $mos)
    {
    	    $counter++;
-   	    $table_data .= "<tr><td>$counter</td><td>$size[$key]</td><td>$color1[$key]</td><td>$mos</td><td>$mo_qty[$key]</td>";
+   	    $table_data .= "<tr><td>$counter</td><td>$size[$key]</td><td>$colors[$key]</td><td>$mos</td><td>$mo_qty[$key]</td>";
 	   	foreach ($operation_code as $key_op => $value)
 	    {
 	       $good_qty = 0;
