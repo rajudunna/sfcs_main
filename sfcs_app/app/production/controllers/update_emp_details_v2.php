@@ -116,7 +116,8 @@ if(isset($_POST['submit']))
 	$shift_start_time=$_POST['shift_start'];
 	$shift_end_time=$_POST['shift_end'];
 	
-	$sql1="Select atten_id,date,avail_$shift as avail,absent_$shift as absent,module from $bai_pro.pro_atten where date=\"$date\" and (avail_$shift>0 or absent_$shift>0) order by module*1";
+	$sql1="Select * from $bai_pro.pro_attendance where date=\"$date\" and  shift='".$shift."' and (present >0 or absent >0) order by module*1";
+
 	echo "
 	<table border=1 class='table table-bordered'>
 		<tr class='info'>
@@ -133,9 +134,10 @@ if(isset($_POST['submit']))
 				{
 					$atten_id=$sql_row1['atten_id'];
 					$date=$sql_row1['date'];
-					$avail_av=$sql_row1['avail'];
+					$avail_av=$sql_row1['present'];
 					$absent_ab=$sql_row1['absent'];
 					$module=$sql_row1['module'];
+					$k=$module-1;
 					echo "<tr>
 							<td>".$module."</td>"; 
 							if(in_array($authorized,$has_permission))
@@ -154,8 +156,8 @@ if(isset($_POST['submit']))
 							}
 						?>
 							
-							<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $i; ?>"></td>
-							<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $absent_ab; ?>" name="aba<?php echo $i; ?>"></td>
+							<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>"></td>
+							<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $absent_ab; ?>" name="aba<?php echo $k; ?>"></td>
 							<?php
 							echo "<td>".($avail_av-$absent_ab)."</td>
 						</tr>";
