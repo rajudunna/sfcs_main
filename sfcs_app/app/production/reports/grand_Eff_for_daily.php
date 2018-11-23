@@ -234,8 +234,9 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 			$act_clh=$pln_clh;
 			 
 			//New 2013-07-27 for actula clock hours calculation
-			$act_nop=0;			
-			$sql2="SELECT (CAST(avail_$shift as SIGNED)-CAST(absent_$shift AS SIGNED)) as nop FROM $bai_pro.pro_atten WHERE DATE='$date' AND module=\"$module\"";
+			$act_nop=0;	
+			  		
+			$sql2="select ((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance where date='".$date."' and module=$module and shift='".$shift."'";
 			$note.=$sql2."<br/>";
 			//echo $sql2."<br>"; 
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"]));

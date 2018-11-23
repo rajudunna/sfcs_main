@@ -3,20 +3,6 @@
 <head>
 
 <script language="javascript" type="text/javascript" src="datetimepicker_css.js"></script>
-<script type="text/javascript">
- 
- function validateForm()
-{
-var x=document.getElementById('qty_value').value;
-if (x==null || x=="" || x=="Enter Cartoned Qty")
-  {
-  alert("First name must be filled out");
-  return false;
-  }
-}
-     
- }
- </script>
 <?php //include("header_scripts.php"); 
 $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=strtolower($username_list[1]);
@@ -68,12 +54,12 @@ if(isset($_POST['submit']))
 	$shift=$_POST['team'];
 	$date=$_POST['dat'];
 
-	$sql112="Select * from $bai_pro.pro_atten_jumper where date=\"$date\" and (avail_$shift>0 or absent_$shift>0)";
+	$sql112="Select * from $bai_pro.pro_attendance where date=\"$date\" and  shift='".$shift."' and (present >0 or absent >0) order by module*1";
 	$sql_result112=mysqli_query($link, $sql112) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check112=mysqli_num_rows($sql_result112);
 	if($sql_num_check112>0)
 	{
-		$sql1="Select atten_id,date,avail_$shift as avail,absent_$shift as absent,jumper_$shift as jumper,module from $bai_pro.pro_atten_jumper where date=\"$date\" and (jumper_$shift>0) order by module*1";
+		$sql1="Select * from $bai_pro.pro_attendance where date=\"$date\" and jumper>0 and shift='".$shift."'  order by module*1";
 		$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result1);
 		if($sql_num_check>0)
@@ -81,12 +67,13 @@ if(isset($_POST['submit']))
 			echo "<table border=1 class='table table-bordered'><tr style='background-color:#29759C; color: white;'><th>Module</th><th>Team - $shift Available Emp</th><th>Team - $shift Absent Emp</th><th>Team - $shift Jumper</th><th>Total</th></tr>";
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
-			$atten_id=$sql_row1['atten_id'];
+			// $atten_id=$sql_row1['atten_id'];
 			$date=$sql_row1['date'];
-			$avail_A=$sql_row1['avail'];
+			$avail_A=$sql_row1['present'];
 			$absent_A=$sql_row1['absent'];
 			$jumper_A=$sql_row1['jumper'];
 			$module=$sql_row1['module'];
+			$k=$module-1;
 			echo "<tr>
 					<td>".$module."</td>
 					<td>".$avail_A."</td>
@@ -108,7 +95,7 @@ if(isset($_POST['submit']))
 							// <td>".$jumper_A."</td>
 						?>
 							
-							<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $jumper_A; ?>" name="jpa<?php echo $i; ?>"></td>
+							<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $jumper_A; ?>" name="jpa<?php echo $k; ?>"></td>
 							<?php
 							echo "<td>".(($avail_A+$jumper_A)-$absent_A)."</td>";
 				
@@ -121,7 +108,6 @@ if(isset($_POST['submit']))
 				</tr> <?php
 			}	
 		}
-
 		else
 		{
 			echo "<table border=1 class='table table-bordered'><tr style='background-color:#29759C; color: white;'><th>Module</th><th>Team - $shift Jumper</th></tr>";
@@ -154,7 +140,7 @@ if(isset($_POST['submit']))
 
 ?>
 
-				</div>
-				</div>
+	</div>
+	</div>
 </body>
 </html>
