@@ -120,10 +120,10 @@ function uncheckall()
 	
 //NEW
 
-$cpo_code="";
+$cpo_code='';
 	for($i=0;$i<sizeof($cpo);$i++)
 	{
-		$cpo_code="'".$cpo[$i]."'".", ".$cpo_code;	
+		$cpo_code='"'.$cpo[$i].'"'.', '.$cpo_code;	
 	}
 	
 	
@@ -184,7 +184,7 @@ $cpo_code="";
 	
 	if(strlen($cpo_code)>2)
 	{
-		$criteria=$criteria." and CPO in (".substr($cpo_code,0,-2).")";
+		$criteria=$criteria.' and CPO in ('.substr($cpo_code,0,-2).')';
 	}
 	
 	if(strlen($buyer_div_code)>2)
@@ -218,7 +218,6 @@ $cpo_code="";
 	echo '<div class="scroll">';
 
 	$sql="select distinct CPO from $bai_pro2.order_status_buffer $criteria order by CPO";
-	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count = mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -455,10 +454,10 @@ if(isset($_POST['submit1']))
 	// 	echo "Something";
 	// }
 	
-	$cpo_code="";
+	$cpo_code='';
 	for($i=0;$i<sizeof($cpo);$i++)
 	{
-		$cpo_code="'".$cpo[$i]."'".", ".$cpo_code;	
+		$cpo_code='"'.$cpo[$i].'"'.', '.$cpo_code;	
 	}
 	//echo " and style in (".substr($style_code,0,-2).")";
 	
@@ -521,7 +520,7 @@ if(isset($_POST['submit1']))
 	
 	if(strlen($cpo_code)>2)
 	{
-		$criteria=$criteria." and CPO in (".substr($cpo_code,0,-2).")";
+		$criteria=$criteria.' and CPO in ('.substr($cpo_code,0,-2).')';
 	}
 	
 	if(strlen($buyer_div_code)>2)
@@ -561,7 +560,6 @@ if(isset($_POST['submit1']))
 	{
 		$sql='';
 		$sql="select distinct ssc_code from $bai_pro2.order_status_buffer where ".substr($criteria,4);
-		//echo $sql.'<br/>'.$newwww ;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
