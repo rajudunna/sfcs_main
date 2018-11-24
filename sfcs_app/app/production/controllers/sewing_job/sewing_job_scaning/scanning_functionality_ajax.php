@@ -300,7 +300,7 @@ if($barcode_generation == 1)
 											$reason_remaining_qty[$remain_qty_key] = 0;
 											$actual_rejection_reason_array[$bundle_individual_number] += 0;
 										}
-										$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where m3_reason_code= '$r_reasons[$reason_key]'";
+										$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where m3_reason_code= '$remain_qty_key'";
 									$result_rejection_code_fetech_qry = $link->query($rejection_code_fetech_qry);
 									while($rowresult_rejection_code_fetech_qry = $result_rejection_code_fetech_qry->fetch_assoc()) 
 									{
@@ -658,7 +658,7 @@ if($barcode_generation == 1)
 											$reason_remaining_qty[$remain_qty_key] = 0;
 											$actual_rejection_reason_array[$bundle_individual_number] += 0;
 										}
-										$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where m3_reason_code= '$r_reasons[$reason_key]'";
+										$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where m3_reason_code= '$remain_qty_key'";
 									$result_rejection_code_fetech_qry = $link->query($rejection_code_fetech_qry);
 									while($rowresult_rejection_code_fetech_qry = $result_rejection_code_fetech_qry->fetch_assoc()) 
 									{
@@ -765,7 +765,7 @@ if($barcode_generation == 1)
 		$b_module = $b_module1;
 
 	}
-	// die();
+	die();
 	//rejections updation in qms_db
 	// var_dump($actual_rejection_reason_array_string);
 	//echo $bulk_insert_rej;
@@ -777,7 +777,7 @@ if($barcode_generation == 1)
 	// 	//$b_rej_qty[] = $actual_rej_quantities[$value];
 
 	// }
-	
+
 	if(sizeof($actual_rejection_reason_array_string)>0)
 	{
 		if(substr($bulk_insert_rej, -1) == ',')
