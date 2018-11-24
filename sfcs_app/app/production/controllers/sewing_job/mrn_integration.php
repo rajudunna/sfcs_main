@@ -1,9 +1,15 @@
 
 <?php 
- include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-     //include("../../../../common/config/config.php");
-     $username_list=explode('\\',$_SERVER['REMOTE_USER']);
-	 $username=strtolower($username_list[1]);
+ //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+  
+$start_timestamp = microtime(true);
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
+set_time_limit(6000000);
+	// include('mssql_conn.php');
+    $conn = odbc_connect($serverName,$uid,$pwd);
+    $username_list=explode('\\',$_SERVER['REMOTE_USER']);
+    $username=strtolower($username_list[1]);
     
 ?>
 
@@ -48,7 +54,6 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
 
                   $employee_no=$order_del_no."-".$input_job_no."</br>";
                   $remarks=$order_del_no."-".$date."</br>";
-                  die();
                 
                 //$tid1=implode(",",array_unique($tid)); 
                 // var_dump($size_code);die(); 
@@ -75,14 +80,63 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
                 }
             
               
-                $mssql_insert_query="insert into [MRN_V2].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status) values ('$company_no', '$facility_code','$mo_no', '$op_code', '$bundle_quantity','$employee_no','$remarks','$co_no','$order_del_no','')";
-                $mssql_insert_query_result=mysqli_query($link, $mssql_insert_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-                $sql_num_check5=mysqli_num_rows($mssql_insert_query_result);
-
                 $insert_query="insert into $bai_pro3.m3_transactions (quantity,log_user,mo_no,op_code, op_des,ref_no, workstation_id,m3_ops_code) values ('$bundle_quantity', '$username','$mo_no', '$op_code', '$op_desc','$id','$workcenter_id','$op_code')";
                 $insert_query_result=mysqli_query($link, $insert_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $last_inserted_id =  mysqli_insert_id($link); 
                 $sql_num_check1=mysqli_num_rows($insert_query_result);
-               
+
+               if($insert_query_result){
+                $mssql_insert_query="insert into [MRN_V2].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status) values ('$company_no', '$facility_code','$mo_no', '$op_code', '$bundle_quantity','$employee_no','$remarks','$co_no','$order_del_no','')";
+                $mssql_insert_query_result = odbc_exec($conn, $mssql_insert_query);
+                $sql_num_check5=mysqli_num_rows($mssql_insert_query_result);
+                    if($mssql_insert_query_result){
+                        $pass_update="update $bai_pro3.m3_transactions set response_status='pass' where id='$last_inserted_id'";
+                        $pass_update_result=mysqli_query($link, $pass_update) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        // $query7="select * from $bai_pro3.m3_transactions where id='$last_inserted_id'";
+                        // $query7_result=mysqli_query($link, $query7) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        // while($query7_result7=mysqli_fetch_array($query7_result))
+                        // {
+                        //     $rollback_ref_num=$query7_result7['ref_no'];
+        
+                        // }
+                        $query8="select * from $bai_pro3.mo_operation_quantites where id='$id'";
+                        $query8_result=mysqli_query($link, $query8) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($query8_result8=mysqli_fetch_array($query8_result))
+                        {
+                            $mo_ref_num=$query5_result8['ref_no'];
+        
+                        }
+                        $pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='1' where tid='$mo_ref_num'";
+                        $pass_update1_result=mysqli_query($link, $pass_update1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
+                    }else{
+                        $fail_update="update $bai_pro3.m3_transactions set response_status='fail' where id='$last_inserted_id'";
+                        $fail_update_result=mysqli_query($link, $fail_update) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        
+                    }
+               }
+               else{
+
+                // $query5="select * from $bai_pro3.m3_transactions where id='$last_inserted_id'";
+                // $query5_result=mysqli_query($link, $query5) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+                // while($query5_result5=mysqli_fetch_array($query5_result))
+                // {
+                //     $rollback_ref_no=$query5_result5['ref_no'];
+
+                // }
+                $query8="select * from $bai_pro3.mo_operation_quantites where id='$id'";
+                $query8_result=mysqli_query($link, $query8) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($query8_result8=mysqli_fetch_array($query8_result))
+                {
+                    $mo_ref_num=$query8_result8['ref_no'];
+
+                }
+                $fail_update="update $bai_pro3.pac_stat_log_input_job set mrn_status='0' where tid='$mo_ref_num'";
+                $fail_update_result=mysqli_query($link, $fail_update) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+               }
+                
+
                 
                 }
     //echo "<h1 style=\"color:green;font-size:26px\">Confirmed</h1>";
