@@ -1,7 +1,7 @@
 
 <html>
 <head>
-	<script type="text/javascript" src="../<?= getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R') ?>" ></script>
+	<script type="text/javascript" src="sfcs_app/common/js/tablefilter.js" ></script>
 	<title>Style WIP Report</title>
 	<?php
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
@@ -175,7 +175,8 @@
 				{
 					$('#dynamic_table1').show();
 					document.getElementById('dynamic_table').innerHTML = response;
-					getexcel();
+                    //setFilterGrid("dynamic_table1",table3Filters);
+					//getexcel();
 					// $('#dynamic_table').innerHTML = response ;
 				}
 
@@ -184,17 +185,11 @@
 	
 </script>
 
-<script language="javascript">
 
-function getexcel(){
- var csv_value=$('#excel_table').table2CSV({delivery:'value'});
- $("#csv_text").val(csv_value); 
-}
-</script>
-
-<script language="javascript" type="text/javascript">
+<!-- <script language="javascript" type="text/javascript">
   var table3Filters = {
       col_1: "select",
+      col_2: "select",
       sort_select: true,
       alternate_rows: true,
       loader_text: "Filtering data...",
@@ -203,7 +198,7 @@ function getexcel(){
       display_all_text: "Display all"
     //col_width: ["15px","135px","80px","70px","80px","135px","150px","90px","40px",null];
   }
-  setFilterGrid("dynamic_table1",table3Filters);
-</script> 
+ 
+</script>  -->
 
 </html>
