@@ -68,6 +68,7 @@ else
 	$ops_query_result=$link->query($get_ops_query);
 	while ($row1 = $ops_query_result->fetch_assoc())
 	{
+	
 	  $ops_get_code[$row1['operation_code']] = $row1['operation_name'];
 	}
 
@@ -93,12 +94,14 @@ else
 			
 		foreach ($operation_code as $op_code) 
 		{
-			$table_data .= "<th>$ops_get_code[$op_code]</th>";
+			if(strlen($ops_get_code[$op_code]) > 0)
+				$table_data .= "<th>$ops_get_code[$op_code]</th>";
 		}
 		
 	    foreach ($operation_code as $op_code) 
 	    {
-	   	    $table_data .= "<th>$ops_get_code[$op_code]</th>";
+	    	if(strlen($ops_get_code[$op_code]) > 0)
+		   	    $table_data .= "<th>$ops_get_code[$op_code]</th>";
 	    }
 
     $table_data .= "</tr></thead><tbody>";
@@ -182,10 +185,12 @@ else
 
 	    foreach ($operation_code as $key => $value) 
 	    {
-	    	if($bcd_rec[$value] == '')
-	    		$table_data .= "<td>0</td>";
-	    	else	
-			   $table_data .= "<td>".$bcd_rec[$value]."</td>";
+	    	if(strlen($ops_get_code[$value]) > 0){
+		    	if($bcd_rec[$value] == '')
+		    		$table_data .= "<td>0</td>";
+		    	else	
+				   $table_data .= "<td>".$bcd_rec[$value]."</td>";
+			}
 		} 
         
 		foreach ($operation_code as $key => $value) 
@@ -228,8 +233,8 @@ else
 
 				$wip[$value] = $diff;
 			}
-
-			$table_data .= "<td>".$wip[$value]."</td>";
+            if(strlen($ops_get_code[$value]) > 0)
+				$table_data .= "<td>".$wip[$value]."</td>";
 		} 
 
 	   	$table_data .= "</tr>";
