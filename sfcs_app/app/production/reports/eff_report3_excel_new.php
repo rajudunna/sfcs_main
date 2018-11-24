@@ -2976,7 +2976,7 @@ if(isset($_POST['submit']))
 
 	mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$grand_rep="grand_rep_temp";
+	$grand_rep="$bai_pro.grand_rep_temp";
 
 //to fasten system
 	$total_nop=0;
@@ -3185,8 +3185,12 @@ if(isset($_POST['submit']))
 					//$total_nop=$total_nop+$nop;
 				}		
 				$styledb=$sql_row2['styles'];
+
 				$styledb_no=$sql_row2['style_no'];
-				//echo $styledb;
+				// echo $styledb_no."<br>";
+				$styledb_no_explode=explode(",",$styledb_no);
+				$styledb_no=$styledb_no_explode[0];
+				// echo $styledb_no."<br>";
 				$buyerdb=$sql_row2['buyer'];
 				$age=$sql_row2['days'];
 			}
@@ -3233,7 +3237,7 @@ if(isset($_POST['submit']))
 				{
 					//$chk_date=date("Y-m-d",strtotime("-2 day",strtotime($chk_date)));	
 					$sql2="SELECT MAX(bac_date) as max_date FROM $bai_pro.bai_log_buf WHERE bac_qty > 0 AND bac_date <= \"".$chk_date."\"";
-					//echo $sql2."<br>";
+					// echo $sql2."<br>";
 					$sql_result2=mysqli_query($link, $sql2) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2=mysqli_fetch_array($sql_result2))
 					{
@@ -3242,7 +3246,7 @@ if(isset($_POST['submit']))
 				}
 			
 				$sql21="select * from $bai_pro.bai_log_buf where bac_style=\"".$styledb_no."\" and bac_no=\"".$mod."\" and bac_date=\"$chk_date\"";
-				//echo $sql21."<br>";
+				// echo $sql21."<br>";
 				mysqli_query($link, $sql21) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$rowsx=mysqli_num_rows($sql_result21);
@@ -3255,19 +3259,49 @@ if(isset($_POST['submit']))
 
 			}while($rowsx !=0);
 
-				$total_nop=$total_nop+$nop;
-				$grand_total_nop=$grand_total_nop+$nop;
-				$table_temp="<tr height=21 style='mso-height-source:userset;height:15.75pt'>
-				<td height=21 class=xl8326424 style='height:15.75pt'>
-				<a href='".$final_rep9."&module=".$mod."&date=".$date."'>$mod</a>
-				</td>
-				<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$buyerdb</td>
-				<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$styledb</td>
-				<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$smv</td>
-				<td class=xl8526424 style='width:100px;word-wrap:break-word;'>$age_days</td>
-				<td class=xl8626424 style='width:100px;word-wrap:break-word;'>".$nop."</td>";
-				//$total_nop=$total_nop+$nop;
-				$age_days=0;
+			$total_nop=$total_nop+$nop;
+			$grand_total_nop=$grand_total_nop+$nop;
+			$table_temp="<tr height=21 style='mso-height-source:userset;height:15.75pt'>
+			<td height=21 class=xl8326424 style='height:15.75pt'>
+			<a href='".$final_rep9."&module=".$mod."&date=".$date."'>$mod</a>
+			</td>
+			<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$buyerdb</td>
+			<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$styledb</td>
+			<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$smv</td>
+			<td class=xl8526424 style='width:100px;word-wrap:break-word;'>".$age_days."</td>
+			<td class=xl8626424 style='width:100px;word-wrap:break-word;'>".$nop."</td>";
+			//$total_nop=$total_nop+$nop;
+			$age_days=0;
+			echo $table_temp;
+			$table.=$table_temp;
+
+
+			$operatorssum=$operatorssum+$nop;
+
+			$date_range=array();
+			$sql2="select distinct date from $bai_pro.grand_rep where date between \"$date\" and \"$edate\"";
+			mysqli_query($link, $sql2) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row2=mysqli_fetch_array($sql_result2))
+			{
+				$date_range[]=$sql_row2['date'];
+			}
+
+			$sql2="select sum(avail_A) as \"avail_A\", sum(avail_B) as \"avail_B\", sum(absent_A) as \"absent_A\", sum(absent_B) as \"absent_B\" from $bai_pro.pro_atten where module=$mod and date in (\"".implode('","',$date_range)."\")";
+			if($sec=="8")
+			{
+				$link_f=$link;
+			}
+			else
+			{
+				$link_f=$link;
+			}
+			mysqli_query($link_f, $sql2) or exit("Sql Error19".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result2=mysqli_query($link_f, $sql2) or exit("Sql Error19".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row2=mysqli_fetch_array($sql_result2))
+			{
+				$table_temp="<td class=xl8726424>".($sql_row2['avail_A']-$sql_row2['absent_A'])."</td>";
+
 				echo $table_temp;
 				$table.=$table_temp;
 
@@ -3958,10 +3992,14 @@ if(isset($_POST['submit']))
 
 
 			// Ticket #516359 /modify the Actual efficiency % (average) based on running shifts.
-			if( $totalmodules== '' || $act_hrsa+$act_hrsb == '' || $totalmodules== 0 || $act_hrsa+$act_hrsb == 0) 
-				$table_temp="<td colspan=2 class=xl16726424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>".round((($rew_A/$totalmodules+$rew_B/$totalmodules)/(($act_hrsa+$act_hrsb)/7.5)),0)."%</td>";
+			if($totalmodules> 0 && ($act_hrsa+$act_hrsb) > 0) 
+			{
+				$table_temp="<td colspan=2 class=xl16726424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>".round((($rew_A/$totalmodules)+($rew_B/$totalmodules)/(($act_hrsa+$act_hrsb)/7.5)),0)."%</td>";
+			}
 			else
+			{
 				$table_temp="<td colspan=2 class=xl16726424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>0%</td>";
+			}
 
 			echo $table_temp;
 			$table.=$table_temp;
