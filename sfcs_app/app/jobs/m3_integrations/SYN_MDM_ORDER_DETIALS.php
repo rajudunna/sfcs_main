@@ -8,14 +8,16 @@ set_time_limit(6000000);
 	error_reporting(E_ALL & ~E_NOTICE);
     if($conn)
     {
-     
 		$from = date("Ymd", strtotime('-1 months'));
 		$to = date("Ymd", strtotime('+5 months'));
 		//$query_text2 = "CALL BAISFCS.RPT_APL_ORDER_DETAILS('BEL','EKG',NULL,NULL,'".$from."','".$to."','2')";
-		$query_text2 = "CALL M3BRNPRD.RPT_APL_ORDER_DETAILS('BEL','EKG',NULL,NULL,'".$from."','".$to."','2')";
+		$query_text2 = "CALL $m3_db.RPT_APL_ORDER_DETAILS('".$cluster_code."','".$plant_prod_code."',NULL,NULL,'".$from."','".$to."','2')";
 		$result2 = odbc_exec($conn, $query_text2);
 
-		$trunc_order = "TRUNCATE TABLE $m3_inputs.order_details";
+		$sql13="insert into $m3_inputs.order_details_temp select * from $m3_inputs.order_details_original";
+		mysqli_query($link, $sql13) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+		$trunc_order = "TRUNCATE TABLE $m3_inputs.order_details_original";
 		$sql_trunc_order = mysqli_query($link, $trunc_order);
 		$j=0;
 		while($row = odbc_fetch_array($result2))
@@ -79,7 +81,7 @@ set_time_limit(6000000);
 			$mo_num = str_replace('"', '\"', $row['MO_NUMBER']);
 			$seq_num = str_replace('"', '\"', $row['SEQ_NUMBER']);
 			
-			$sql_insert_order = "INSERT INTO $m3_inputs.order_details(Facility, Customer_Style_No, CPO_NO,  VPO_NO, CO_no, Style, Schedule, Manufacturing_Schedule_no, MO_Split_Method, MO_Released_Status_Y_N, GMT_Color, GMT_Size, GMT_Z_Feature, Graphic_Number, CO_Qty, MO_Qty, PCD, Plan_Delivery_Date, Destination, Packing_Method, Item_Code, Item_Description, RM_Color_Description, Order_YY_WO_Wastage, Wastage, Required_Qty, UOM, A15NEXT, A15, A20, A30, A40, A50, A60, A70, A75, A80, A90, A100, A110, A115, A120, A125, A130, A140, A143, A144, A147, A148, A150, A160, A170, A175, A180, A190, A200, MO_NUMBER, SEQ_NUMBER) VALUES (\"".$facility."\", \"".$cust_style_no."\", \"".$cpo_no."\", \"".$vpo_no."\", \"".$co_no."\", \"".$style."\", \"".$schedule."\", \"".$mnf_sch_no."\", \"".$mo_split_method."\", \"".$mo_rel_stat."\", \"".$gmt_clr."\", \"".$gmt_size."\", \"".$gmt_z_fet."\", \"".$graphic_no."\", \"".$co_qty."\", \"".$mo_qty."\", \"".$pcd."\", \"".$plan_del_dt."\", \"".$dest."\", \"".$pack_method."\", \"".$item_code."\", \"".$item_desc."\", \"".$rm_clr_desc."\", \"".$order_yy."\", \"".$wastage."\", \"".$req_qty."\", \"".$uom."\", \"".$a15_nxt."\", \"".$a15."\", \"".$a20."\", \"".$a30."\", \"".$a40."\", \"".$a50."\", \"".$a60."\", \"".$a70."\", \"".$a75."\", \"".$a80."\", \"".$a90."\", \"".$a100."\", \"".$a110."\", \"".$a115."\", \"".$a120."\", \"".$a125."\", \"".$a130."\", \"".$a140."\", \"".$a143."\", \"".$a144."\", \"".$a147."\", \"".$a148."\", \"".$a150."\", \"".$a160."\", \"".$a170."\", \"".$a175."\", \"".$a180."\", \"".$a190."\", \"".$a200."\", \"".$mo_num."\", \"".$seq_num."\");";
+			$sql_insert_order = "INSERT INTO $m3_inputs.order_details_original(Facility, Customer_Style_No, CPO_NO,  VPO_NO, CO_no, Style, Schedule, Manufacturing_Schedule_no, MO_Split_Method, MO_Released_Status_Y_N, GMT_Color, GMT_Size, GMT_Z_Feature, Graphic_Number, CO_Qty, MO_Qty, PCD, Plan_Delivery_Date, Destination, Packing_Method, Item_Code, Item_Description, RM_Color_Description, Order_YY_WO_Wastage, Wastage, Required_Qty, UOM, A15NEXT, A15, A20, A30, A40, A50, A60, A70, A75, A80, A90, A100, A110, A115, A120, A125, A130, A140, A143, A144, A147, A148, A150, A160, A170, A175, A180, A190, A200, MO_NUMBER, SEQ_NUMBER) VALUES (\"".$facility."\", \"".$cust_style_no."\", \"".$cpo_no."\", \"".$vpo_no."\", \"".$co_no."\", \"".$style."\", \"".$schedule."\", \"".$mnf_sch_no."\", \"".$mo_split_method."\", \"".$mo_rel_stat."\", \"".$gmt_clr."\", \"".$gmt_size."\", \"".$gmt_z_fet."\", \"".$graphic_no."\", \"".$co_qty."\", \"".$mo_qty."\", \"".$pcd."\", \"".$plan_del_dt."\", \"".$dest."\", \"".$pack_method."\", \"".$item_code."\", \"".$item_desc."\", \"".$rm_clr_desc."\", \"".$order_yy."\", \"".$wastage."\", \"".$req_qty."\", \"".$uom."\", \"".$a15_nxt."\", \"".$a15."\", \"".$a20."\", \"".$a30."\", \"".$a40."\", \"".$a50."\", \"".$a60."\", \"".$a70."\", \"".$a75."\", \"".$a80."\", \"".$a90."\", \"".$a100."\", \"".$a110."\", \"".$a115."\", \"".$a120."\", \"".$a125."\", \"".$a130."\", \"".$a140."\", \"".$a143."\", \"".$a144."\", \"".$a147."\", \"".$a148."\", \"".$a150."\", \"".$a160."\", \"".$a170."\", \"".$a175."\", \"".$a180."\", \"".$a190."\", \"".$a200."\", \"".$mo_num."\", \"".$seq_num."\");";
 			$result_insert_order = mysqli_query($link, $sql_insert_order);
 			if($result_insert_order )
 			{
@@ -91,6 +93,33 @@ set_time_limit(6000000);
 			print("Inserted $j Records in Order Details  Successfully ")."\n";
 
 		}
+		// $k=0;
+		// $sql1="SELECT MO_NUMBER,MO_Qty,Style,SCHEDULE,GMT_Color,GMT_Size,Destination,GMT_Z_Feature,Item_Code FROM $m3_inputs.order_details WHERE MO_Released_Status_Y_N='Y' AND mo_number > 0 GROUP BY MO_NUMBER,Style,SCHEDULE,GMT_Color,GMT_Size,Destination,GMT_Z_Feature,Item_Code ORDER BY MO_NUMBER*1,MO_Qty,Style,SCHEDULE,GMT_Color,GMT_Size,Destination,GMT_Z_Feature,Item_Code";
+		// $sql_result=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($sql_row=mysqli_fetch_array($sql_result))
+		// {
+		// 	$MO_NUMBER=$sql_row['MO_NUMBER'];
+		// 	$MO_Qty=$sql_row['MO_Qty'];
+		// 	$Style=$sql_row['Style'];
+		// 	$SCHEDULE=$sql_row['SCHEDULE'];
+		// 	$GMT_Color=$sql_row['GMT_Color'];
+		// 	$GMT_Size=$sql_row['GMT_Size'];
+		// 	$Destination=$sql_row['Destination'];
+		// 	$GMT_Z_Feature=$sql_row['GMT_Z_Feature'];
+		// 	$Item_Code=$sql_row['Item_Code'];
+			
+		// 	$insert_mos="insert ignore into $bai_pro3.mo_details(date_time,mo_no,mo_quantity,style,schedule,color,size,destination,zfeature,item_code) values('".date("Y-m-d H:i:s")."','".$MO_NUMBER."','".$MO_Qty."','".$Style."','".$SCHEDULE."','".$GMT_Color."','".$GMT_Size."','".$Destination."','".$GMT_Z_Feature."','".$Item_Code."')";
+		// 	$insert_mo_details=mysqli_query($link, $insert_mos) or exit("insert_mos=$insert_mos".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 	if($insert_mo_details)
+		// 	{
+		// 		$k++;
+		// 	}
+		// }
+		// if($k>0)
+		// {
+		// 	print("Inserted $j Records in MO Details  Successfully ")."\n";
+
+		// }
 	}
 	else
 	{

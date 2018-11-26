@@ -1,5 +1,7 @@
 
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));?> 
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));
+?> 
 <?php  
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 	  
@@ -135,6 +137,7 @@ if(isset($_POST['clear']))
 		while($sql_row457=mysqli_fetch_array($sql_result451))
 		{		
 			$docs[]=$sql_row457["doc_no"];
+			$docs_new[] = $sql_row457["doc_no"];
 		}
 		$sql4533="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='".$order_del_no."' and order_col_des=\"".$color."\"";
 		$sql_result4533=mysqli_query($link, $sql4533) or die("Error 2".$sql4533.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -180,8 +183,22 @@ if(isset($_POST['clear']))
 		}
 		else
 		{
-			echo "<script>swal('Sewing Jobs are preapred please delete and try again.','','warning');</script>";
+			echo "<script>swal('Sewing Jobs are prepared please delete and try again.','','warning');</script>";
 		}
+	}
+
+	//Deleting logic from BCD and MO operation Quantites
+	$dockets = implode(",",$docs_new);
+	foreach($order_tids as $order_tid){
+		$details_query = "Select order_del_no,order_col_des from $bai_pro3.bai_orders_db_confirm 
+						  where order_tid = '$order_tid'";
+		$details_result = mysqli_query($link,$details_query) or exit("Problem occured while getting details to remove BCD/MO");
+		while($row = mysqli_fetch_array($details_result)){
+			$color    = $row['order_col_des'];
+			$schedule = $row['order_del_no'];
+			$deleted  = deleteMOQuantitiesCut($schedule,$color);
+		}				  
+
 	}
 }
 ?>

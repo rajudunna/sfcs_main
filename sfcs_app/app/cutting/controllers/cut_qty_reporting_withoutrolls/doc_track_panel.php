@@ -86,17 +86,18 @@ if(isset($_POST['submit']))
 		$cat_ref=$sql_row['cat_ref'];
 		$order_tid=$sql_row['order_tid'];
 		$catgory=$sql_row['category'];
-		if($sql_row['category']=="Body" or $sql_row['category']=="Front")
-		{
-			$fabric_status=$sql_row['fabric_status'];
-			$sql1="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no=$docket_id and m3_op_des='LAY'"; 
-			$result=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$val_check=mysqli_num_rows($result);
-		}
-		else
-		{
+		//commented for #759 CR
+		// if($sql_row['category']=="Body" or $sql_row['category']=="Front")
+		// {	
+		// 	$fabric_status=$sql_row['fabric_status'];
+		// 	$sql1="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no=$docket_id and m3_op_des='LAY'"; 
+		// 	$result=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 	$val_check=mysqli_num_rows($result);
+		// }
+		// else
+		// {
 			$fabric_status=5;
-		}
+		//}
 	}
 	
 	if($cat_ref>0 and $fabric_status==5)
@@ -138,6 +139,7 @@ echo "</tr>";
 $a_s=array();
 //$sql="select * from plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_id order by doc_no";
 $sql="select * from $bai_pro3.recut_v2 where order_tid=\"$order_tid\" and cat_ref=$cat_id and doc_no=$docket_id order by doc_no"; //NEW 2011
+// echo $sql;
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -151,6 +153,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	for($s=0;$s<sizeof($sizes_code);$s++)
 	{
+		// echo $sql_row["a_s".$sizes_code[$s].""]*;
 		$a_s[$sizes_code[$s]]=$sql_row["a_s".$sizes_code[$s].""]*$a_plies;
 	}
 	

@@ -4,27 +4,6 @@
 	$include_path=getenv('config_job_path');
 	include($include_path.'\sfcs_app\common\config\config_jobs.php');	
 	
-	// function leading_zeros($value, $places){
-	//     if(is_numeric($value)){
-	//         for($x = 1; $x <= $places; $x++){
-	//             $ceiling = pow(10, $x);
-	//             if($value < $ceiling){
-	//                 $zeros = $places - $x;
-	//                 for($y = 1; $y <= $zeros; $y++){
-	//                     $leading .= "0";
-	//                 }
-	//             $x = $places + 1;
-	//             }
-	//         }
-	//         $output = $leading . $value;
-	//     }
-	//     else{
-	//         $output = $value;
-	//     }
-	//     return $output;
-	// }
-	
-	
 	//NEW to reset all pending cartons
 	//$sql="update pac_stat_log set disp_carton_no=NULL";
 	$sql="update $bai_pro3.pac_stat_log set disp_carton_no=NULL where status='DONE' and disp_carton_no=1";
@@ -51,7 +30,7 @@
 	$sql4="insert into $bai_pro3.packing_summary_tmp_v1 select * from bai_pro3.packing_summary where 
 	order_del_no in (select order_del_no from bai_pro3.packing_pending_schedules)";
 	// echo $sql4;
-	$res2=mysqli_query($link, $sql4) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$res2=mysqli_query($link, $sql4) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($res2)
 	{
 		print("Updated packing_summary_tmp_v1 Table Successfully")."\n";
@@ -83,9 +62,9 @@
 	{
 		$sch_to_process[]=$sql_row6['ims_schedule'];
 	}
-	
-	//$sch_to_process=array("138915","138922","141082","141082","142873","141097","132275","128618","138943","126111","138952");
+	// var_dump($sch_to_process);
 	//Schedules to process
+
 if(sizeof($sch_to_process)>0)
 {
 
@@ -95,12 +74,12 @@ if(sizeof($sch_to_process)>0)
 	$sizes=array();
 	$disp_carton_no=array();
 	//$sql1="SELECT DISTINCT doc_no_ref,order_style_no,order_del_no,size_code,disp_carton_no FROM packing_summary_tmp_v1 WHERE disp_carton_no is NULL and (STATUS IS null or left(status,1)=\"E\") and order_del_no=42834";
-$sql1="SELECT DISTINCT doc_no_ref,order_style_no,order_del_no,size_code,disp_carton_no FROM $bai_pro3.packing_summary_tmp_v1 WHERE order_del_no in (".implode(",",$sch_to_process).") and disp_carton_no is NULL and (STATUS IS null or left(status,1)=\"E\")";
-
-	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql1="SELECT DISTINCT doc_no,order_style_no,order_del_no,size_code,disp_carton_no FROM $bai_pro3.packing_summary_tmp_v1 WHERE order_del_no in (".implode(",",array_filter($sch_to_process)).") and disp_carton_no is NULL and (STATUS IS null or left(status,1)=\"E\")";
+	// echo $sql1."<br>";
+	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
-		$doc_refs[]=$sql_row1['doc_no_ref'];
+		$doc_refs[]=$sql_row1['doc_no'];
 		$styles[]=$sql_row1['order_style_no'];
 		$schedules[]=$sql_row1['order_del_no'];
 		$sizes[]=$sql_row1['size_code'];
@@ -109,27 +88,32 @@ $sql1="SELECT DISTINCT doc_no_ref,order_style_no,order_del_no,size_code,disp_car
 	
 	for($j=0;$j<sizeof($doc_refs);$j++)
 	{
-		$temp=array();
-		$temp=explode(",",$doc_refs[$j]);
-		$temp1=array();
-		for($i=0;$i<sizeof($temp);$i++)
-		{
-			$temp_x=array();
-			$temp_x=explode("-",$temp[$i]);
-			$temp1[]=$temp_x[0];
-		}
+		// $temp=array();
+		// $temp1=array();
+		// $temp1=explode(",",$doc_refs[$j]);
+		// $temp=explode(",",$doc_nos[$j]);
+		// $temp1=array();
+		// for($i=0;$i<sizeof($temp);$i++)
+		// {
+		// 	$temp_x=array();
+		// 	$temp_x=explode("-",$temp[$i]);
+		// 	$temp1[]=$temp_x[0];
+		// }
 		
 		$qty_breakup=array();
 		$color_group=array();
-		$sql="select sum(carton_act_qty) as \"carton_act_qty\",order_col_des from $bai_pro3.packing_summary_tmp_v1 where doc_no_ref=\"".$doc_refs[$j]."\" and size_code=\"".$sizes[$j]."\" group by order_col_des";
+		$sql="select sum(carton_act_qty) as \"carton_act_qty\",order_col_des,doc_no from $bai_pro3.packing_summary_tmp_v1 where doc_no=\"".$doc_refs[$j]."\" and size_code=\"".$sizes[$j]."\" group by order_col_des,size_code";
+		// echo $sql."<br>";
  		//$sql="select sum(carton_act_qty) as \"carton_act_qty\",order_col_des from packing_summary_tmp_v1 where doc_no_ref=\"".$doc_refs[$j]."\" group by order_col_des"; //20111213
 		// echo $sql."<br/>";
+		$doc_no = [];
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$range_count=mysqli_num_rows($sql_result);
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$qty_breakup[]=$sql_row['carton_act_qty'];
 			$color_group[]=$sql_row['order_col_des'];
+			$doc_no[]=$sql_row['doc_no'];
 		}
 		
 		$test=1; //false
@@ -139,8 +123,10 @@ $sql1="SELECT DISTINCT doc_no_ref,order_style_no,order_del_no,size_code,disp_car
 			$carton_qty_completed=0;
 			$received_qty=0;
 
-	$sql="select coalesce(ims_pro_qty_cumm,0) as \"completed\" from $bai_pro3.ims_log_packing where ims_style=\"".$styles[$j]."\" and ims_schedule=".$schedules[$j]." and ims_color=\"".$color_group[$i]."\" and ims_size=\"a_".$sizes[$j]."\" and ims_doc_no in (".implode(",",$temp1).")";
-			// echo $sql."<br/>";
+	$sql="select coalesce(ims_pro_qty_cumm,0) as \"completed\" from $bai_pro3.ims_log_packing where ims_style=\"".$styles[$j]."\" and ims_schedule=".$schedules[$j]." and ims_color=\"".$color_group[$i]."\" and ims_size=\"a_".$sizes[$j]."\" and ims_doc_no in (".implode(",",$doc_no).")";
+
+	// echo $doc_refs[$j]."<br>";
+	// 		echo $sql."<br/>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -148,7 +134,7 @@ $sql1="SELECT DISTINCT doc_no_ref,order_style_no,order_del_no,size_code,disp_car
 			}
 			
 
-	$sql="select coalesce(sum(ims_pro_qty),0) as \"completed\" from $bai_pro3.ims_log where ims_style=\"".$styles[$j]."\" and ims_schedule=".$schedules[$j]." and ims_color=\"".$color_group[$i]."\" and ims_size=\"a_".$sizes[$j]."\" and ims_doc_no in (".implode(",",$temp1).")";
+	$sql="select coalesce(sum(ims_pro_qty),0) as \"completed\" from $bai_pro3.ims_log where ims_style=\"".$styles[$j]."\" and ims_schedule=".$schedules[$j]." and ims_color=\"".$color_group[$i]."\" and ims_size=\"a_".$sizes[$j]."\" and ims_doc_no in (".implode(",",$doc_no).")";
 			// echo $sql."<br/>";
 			
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -158,7 +144,7 @@ $sql1="SELECT DISTINCT doc_no_ref,order_style_no,order_del_no,size_code,disp_car
 			}
 			
 
-			$sql="select coalesce(sum(carton_act_qty),0) as \"received\" from $bai_pro3.packing_summary_tmp_v1 where order_style_no=\"".$styles[$j]."\" and order_del_no=".$schedules[$j]." and order_col_des=\"".$color_group[$i]."\" and (status=\"DONE\" or disp_carton_no=1) and size_code=\"".$sizes[$j]."\" and doc_no in (".implode(",",$temp1).")";
+			$sql="select coalesce(sum(carton_act_qty),0) as \"received\" from $bai_pro3.packing_summary_tmp_v1 where order_style_no=\"".$styles[$j]."\" and order_del_no=".$schedules[$j]." and order_col_des=\"".$color_group[$i]."\" and (status=\"DONE\" or disp_carton_no=1) and size_code=\"".$sizes[$j]."\" and doc_no in (".implode(",",$doc_no).")";
  			// echo $sql."<br/>";
 		
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -185,10 +171,17 @@ $sql1="SELECT DISTINCT doc_no_ref,order_style_no,order_del_no,size_code,disp_car
 				$test=1;
 				break;
 			}
+
 		}
-		if($test==0)
+		// echo $carton_qty_completed."carton_qty_completed<br>";
+		// echo $qty_breakup[$i]."qty_breakup<br>";
+		// echo $received_qty."received_qty<br>";
+
+
+		// echo $test."<br>";
+		if($test == 0)
 		{
-			
+			echo "entered<br>";
 			/*$sql="SELECT ims_mod_no, MAX(ims_log_date) AS ims_log_date FROM 
 (SELECT ims_mod_no,ims_log_date FROM ims_log_backup_t2 WHERE ims_doc_no IN (".implode(",",$temp1).") UNION SELECT ims_mod_no,ims_log_date FROM ims_log_backup_t1 WHERE ims_doc_no IN (".implode(",",$temp1).")) AS t";
  			echo $sql;
@@ -224,20 +217,19 @@ $sql1="SELECT DISTINCT doc_no_ref,order_style_no,order_del_no,size_code,disp_car
 echo $sql;
 			mysql_query($sql,$link) or exit("Sql Error".mysql_error()); */
 			
-			$sql="update $bai_pro3.pac_stat_log set disp_carton_no=1 where doc_no_ref=\"".$doc_refs[$j]."\" and size_code=\"".$sizes[$j]."\"";
+			$sql="update $bai_pro3.pac_stat_log set disp_carton_no=1 where doc_no=\"".$doc_refs[$j]."\" and size_code=\"".$sizes[$j]."\"";
 			//$sql="update pac_stat_log set disp_carton_no=1 where doc_no_ref=\"".$doc_refs[$j]."\""; //20111213
 			$res3=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			if($res3)
 			{
-				print("Updated pac_stat_log table Successfully")."\n";
+				print("Updated main  pac_stat_log table Successfully")."\n";
 			}
-			$sql="update $bai_pro3.packing_summary_tmp_v1 set disp_carton_no=1 where doc_no_ref=\"".$doc_refs[$j]."\"  and size_code=\"".$sizes[$j]."\"";
+			$sql="update $bai_pro3.packing_summary_tmp_v1 set disp_carton_no=1 where doc_no=\"".$doc_refs[$j]."\"  and size_code=\"".$sizes[$j]."\"";
 			//$sql="update packing_summary_tmp_v1 set disp_carton_no=1 where doc_no_ref=\"".$doc_refs[$j]."\""; //20111213
-
 			$res4=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			if($res4)
 			{
-				print("Updated packing_summary_tmp_v1 table Successfully")."\n";
+				print("Updated main packing_summary_tmp_v1 table Successfully")."\n";
 			}
 		}
 		else
@@ -266,12 +258,12 @@ echo $sql;
 	$res6=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($res6)
 	{
-		print("Updated pac_stat_log table Successfully")."\n";
+		print("Updated packing_dashboard_temp table Successfully")."\n";
 	}
 	//NEW ADD 2011-07-14
 	
-	
-	
+
+
 	//SPEED DEL UPDATES
 	$sql="select speed_schedule from $bai_pro3.speed_del_dashboard";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

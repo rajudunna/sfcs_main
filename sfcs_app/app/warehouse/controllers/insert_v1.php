@@ -178,13 +178,15 @@ $url = getFullURL($_GET['r'],'quick_search.php','N');
 if ($inv_no=='') {
 	$inv='<font color=red>No Invoice Number for this Lot</font>';
 } else {
-	$inv="<a href=\"$url&ref=$inv_no\" class=\"btn btn-info btn-xs\">$inv_no</a>";
+	//$inv="<a href=\"$url&ref=$inv_no\" class=\"btn btn-info btn-xs\">$inv_no</a>";
+	$inv="<a href=\"$url&ref=$inv_no\">$inv_no</a>";
 }
 
 if ($po_no=='') {
 	$po='<font color=red>No PO Number for this Lot</font>';
 } else {
-	$po="<a href=\"$url&ref=$po_no\" class=\"btn btn-info btn-xs\">$po_no</a>";
+	//$po="<a href=\"$url&ref=$po_no\" class=\"btn btn-info btn-xs\">$po_no</a>";
+	$po="<a href=\"$url&ref=$po_no\">$po_no</a>";
 }
 
 if ($batch_no=='') {
@@ -501,7 +503,7 @@ for($i=0; $i<sizeof($labels);$i++)
 		}
 		else
 		{
-			echo "<th style='text-align:center'>".$labels[$i]."<b style='color:red'>*</b></th>";	
+			echo "<th style='text-align:center'>".$labels[$i]."<b style='color:red'></b></th>";	
 		}
 		echo "<input type='hidden' value='$labels[$i]' id='label'>";
 	}
@@ -542,7 +544,7 @@ for($j=0;$j<100;$j++)
 				// echo '<td><input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']" value=""  onkeypress="return validate2(event)"></td>';	
 				echo '<td><div class="col-md-6 col-md-offset-3">
 				<input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']"  
-				value="" class="form-control alpha" onChange="verify_dup_box_no(this)"/>
+				value="" class="form-control" onChange="verify_dup_box_no(this)"/>
 				</div></td>';	
 			}
 		}

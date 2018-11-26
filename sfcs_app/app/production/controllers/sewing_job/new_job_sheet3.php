@@ -3,12 +3,15 @@ xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:x="urn:schemas-microsoft-com:office:excel" 
 xmlns="http://www.w3.org/TR/REC-html40"> 
 
+
 <head> 
 <title>Sewing Job Sheet</title>
 <style type="text/css"> 
       #barcode {font-weight: normal; font-style: normal; line-height:normal; sans-serif; font-size: 8pt} 
+      table {
+        table-layout:fixed;
+      }
     </style> 
-
 <script src="../../common/js/jquery-1.3.2.js"></script> 
 <script src="../../common/js/jquery-barcode-2.0.1.js"></script> 
 
@@ -79,7 +82,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
         $schedule=$_POST["schedule"]; 
         $jobno=$_POST["jobno"]; 
         $module_no=$_POST["moduleno"]; 
-        $color=$_POST["color"]; 
+        $color=$_POST["color"];
         //echo $doc."<br>"; 
     } 
     else 
@@ -89,12 +92,12 @@ xmlns="http://www.w3.org/TR/REC-html40">
         $schedule=$_GET["schedule"]; 
         $jobno=$_GET["jobno"]; 
         $module_no=$_GET["moduleno"]; 
-        $color=$_GET["color"]; 
+        $color=$_GET["color"];
         //echo $doc."<br>"; 
     } 
 
     $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$jobno,$link);
-    $ssql12="SELECT COUNT( DISTINCT order_col_des) AS color_count,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY input_job_no_random"; 
+    $ssql12="SELECT COUNT( DISTINCT order_col_des) AS color_count,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'  GROUP BY input_job_no_random"; 
     $result12=mysqli_query($link, $ssql12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row12=mysqli_fetch_array($result12)) 
     { 
@@ -132,7 +135,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
  
     $job1_qty=array(); 
     $job1_color=array(); 
-    $ssql12="SELECT order_col_des as job_color,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY order_col_des,input_job_no_random"; 
+    $ssql12="SELECT order_col_des as job_color,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'  GROUP BY order_col_des,input_job_no_random"; 
     $result12=mysqli_query($link, $ssql12) or exit("Sql Error12.2".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row12=mysqli_fetch_array($result12)) 
     { 
@@ -143,7 +146,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
     } 
 
     $destination_list=""; 
-    $ssql13="SELECT DISTINCT destination FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='$doc' GROUP BY input_job_no_random,destination"; 
+    $ssql13="SELECT DISTINCT destination FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='$doc'  GROUP BY input_job_no_random,destination"; 
     //echo $ssql13; 
     $result13=mysqli_query($link, $ssql13) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row13=mysqli_fetch_array($result13)) 
@@ -151,7 +154,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
         $destination_list.=$row13["destination"].","; 
     } 
      
-    $ssql14="SELECT GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno FROM $bai_pro3.packing_summary_input WHERE order_del_no = $schedule AND input_job_no_random='$doc'"; 
+    $ssql14="SELECT GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno FROM $bai_pro3.packing_summary_input WHERE order_del_no = $schedule AND input_job_no_random='$doc' "; 
     // echo $ssql14;
     $result14=mysqli_query($link, $ssql14) or exit("Error while getting Cut Numbers"); 
     while($row14=mysqli_fetch_array($result14)) 
@@ -5227,6 +5230,14 @@ function printdiv(printpage) {
     return false;
 }
 </script>
+<?php
+    $hourly_sewing_out_count = "SELECT *,count(*) as count1 FROM $bai_pro3.`tbl_plant_timings`";
+    $hourly_sewing_out_count_result=mysqli_query($link, $hourly_sewing_out_count) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    while($sql_row11=mysqli_fetch_array($hourly_sewing_out_count_result)) 
+    { 
+        $count_tot =$sql_row11['count1'];
+    } 
+?>
 <body>
 <div id="print_this" align=center x:publishsource="Excel"> 
 
@@ -5286,12 +5297,15 @@ function printdiv(printpage) {
  <tr class=xl13432351 height=36 style='mso-height-source:userset;height:27.0pt'> 
     <td colspan=4 height=36 width=209 style='border-right:1.0pt solid black;height:27.0pt;width:157pt' align=left valign=top>
         <span style='mso-ignore:vglayout; position:absolute;z-index:1;margin-left:6px;margin-top:2px;width:100px; height:30px'>
-            <img width=200% height=100% src="../../common/images/Book1_29570_image003_v2.png" alt="Brandix Logo" v:shapes="Picture_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x0020_1">
+            
         </span>
         <span style='mso-ignore:vglayout2'> 
             <table cellpadding=0 cellspacing=0> 
                 <tr> 
-                    <td colspan=4 height=36 class=xl24132351 width=209 style='border-right:1.0pt solid black;height:27.0pt;width:157pt'>&nbsp;</td> 
+
+                    
+                    <td colspan=4 height=36 class=xl24132351 width=209 style='border-right:1.0pt solid black;height:43pt;width:157pt'><img width=100% height=100% src="<?= $logo ?>" alt="Brandix Logo" v:shapes="Picture_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x005f_x0020_1"></td> 
+
                 </tr> 
             </table> 
         </span>
@@ -5327,7 +5341,7 @@ function printdiv(printpage) {
   <td colspan=3 class=xl28032351 width=132 style='border-right:1.0pt solid black;   border-left:none;width:99pt'><?php echo date("Y-m-d"); ?></td> 
  </tr> 
  <tr class=xl13432351 height=30 style='mso-height-source:userset;height:22.5pt'> 
-  <td colspan=4 height=30 class=xl23232351 style='border-right:1.0pt solid black;   height:22.5pt'><?php echo $plant_name; ?></td> 
+  <td colspan=4 height=30 class=xl23232351 style='border-right:1.0pt solid black;   height:35.5pt'><?php echo $plant_name; ?></td> 
   <?php  date_default_timezone_set("Asia/Colombo");  ?> 
   <td class=xl13632351 colspan=2 style='border-top:none;border-left:none'><center>Issued Date: </center></td> 
   <td colspan=3 class=xl28332351 style='border-right:1.0pt solid black'> 
@@ -5390,31 +5404,70 @@ function printdiv(printpage) {
   <td colspan=2 class=xl23632351 width=103 style='border-right:1.0pt solid black; border-left:none;width:78pt'>Garment per Packs</td> 
   <td colspan=3 class=xl28632351 width=132 style='border-right:1.0pt solid black; border-left:none;width:99pt'><?php echo $packing_method; ?></td> 
  </tr> 
+ </table>
+ <table border=0 cellpadding=0 cellspacing=0 width=1390 class=xl6532351  style='border-collapse:collapse;table-layout:fixed;width:1046pt'> 
  <tr height=28 style='mso-height-source:userset;height:21.0pt'> 
   <td height=28 class=xl12732351 style='height:21.0pt'>Cutting</td> 
-  <td class=xl12632351>&nbsp;</td> 
-  <td colspan=13 class=xl22932351 style='border-right:1.0pt solid black'>Sewing</td> 
-  <td class=xl12532351>&nbsp;</td> 
+  <!-- <td class=xl12632351>&nbsp;</td>  -->
+  <td colspan=<?php echo $count_tot+3; ?> class=xl22932351 style='border-right:1.0pt solid black'>Sewing</td> 
+  <!-- <td class=xl12532351>&nbsp;</td>  -->
   <td class=xl12432351>Quality</td> 
-  <td class=xl12332351>&nbsp;</td> 
+  <!-- <td class=xl12332351>&nbsp;</td>  -->
   <td colspan=12 class=xl22532351 style='border-right:1.0pt solid black'>Packing</td> 
  </tr> 
  <tr height=28 style='mso-height-source:userset;height:21.0pt'> 
   <td rowspan=2 height=101 class=xl20932351 width=89 style='border-bottom:1.0pt solid black; height:75.75pt;width:67pt'>Color -<br> (<b>Cut No</b>)</td> 
-  <td class=xl12232351 width=2 style='width:2pt'>&nbsp;</td> 
-  <td colspan=2 class=xl21132351 width=118 style='border-right:1.0pt solid black; border-left:none;width:88pt'>Sewing In<span style='mso-spacerun:yes'> </span></td> 
-  <td colspan=10 class=xl21232351>Hourly Sewing Out</td> 
+  <!-- <td class=xl12232351 width=2 style='width:2pt'>&nbsp;</td>  -->
+  <td colspan=2 class=xl21132351 width=118 style='border-right:1.0pt solid black; width:88pt'>Sewing In<span style='mso-spacerun:yes'> </span></td> 
+  <td colspan=<?php echo $count_tot; ?> class=xl21232351>Hourly Sewing Out</td> 
   <td rowspan=2 class=xl21532351 style='border-top:none'>Total</td> 
-  <td class=xl12132351 style='border-left:none'>&nbsp;</td> 
+  <!-- <td class=xl12132351 style='border-left:none'>&nbsp;</td>  -->
   <td rowspan=2 class=xl21732351>Reject</td> 
-  <td class=xl12032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
+  <!-- <td class=xl12032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td>  -->
   <td colspan=12 class=xl20332351 width=574 style='border-right:1.0pt solid black; width:431pt'>Carton Packing</td> 
  </tr> 
  <tr height=73 style='mso-height-source:userset;height:54.75pt'> 
-  <td height=73 class=xl11932351 width=2 style='height:54.75pt;width:2pt'>&nbsp;</td> 
+  <!-- <td height=73 class=xl11932351 width=2 style='height:54.75pt;width:2pt'>&nbsp;</td>  -->
   <td class=xl11832351 style='border-top:none'>Size</td> 
-  <td class=xl11732351 style='border-top:none;border-left:none'>Quantity</td> 
-  <td class=xl11632351 style='border-top:none'>1</td> 
+  <td class=xl11732351 style='border-top:none;border-left:none'>Qty</td> 
+  <?php 
+//   time_display
+$i = 0;
+$hourly_sewing_out_count = "SELECT * FROM $bai_pro3.`tbl_plant_timings`";
+    $hourly_sewing_out_count_result=mysqli_query($link, $hourly_sewing_out_count) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+  while($sql_row11=mysqli_fetch_array($hourly_sewing_out_count_result)) 
+    { 
+        // $count_tot=$sql_row11["count1"];
+        
+        if($i == ($count_tot-1)){ ?>
+            <td class=xl11532351 style='border-top:none;border-left:none; white-space: -o-pre-wrap;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        white-space: -moz-pre-wrap;
+        white-space: -pre-wrap;'><?php echo $sql_row11['time_display'].'<br/>('.$sql_row11['day_part'].')'; ?></td> <?php
+        }
+        elseif($i == 1) { ?>
+            <td class=xl11632351 style='border-top:none; white-space: -o-pre-wrap;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        white-space: -moz-pre-wrap;
+        white-space: -pre-wrap;'><?php echo $sql_row11['time_display'].'<br/>('.$sql_row11['day_part'].')'; ?></td> <?php
+        }
+        else { ?>
+            <td class=xl11632351 style='border-top:none;border-left:none; white-space: -o-pre-wrap;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        white-space: -moz-pre-wrap;
+        white-space: -pre-wrap;'><?php echo $sql_row11['time_display'].'<br/>('.$sql_row11['day_part'].')'; ?></td> <?php
+        }
+        $i++;
+    } 
+    // for($i=1;$i<=$count_tot;$i++){
+        
+        
+    // }
+    ?>
+  <!-- <td class=xl11632351 style='border-top:none'>1</td> 
   <td class=xl11632351 style='border-top:none;border-left:none'>2</td> 
   <td class=xl11632351 style='border-top:none;border-left:none'>3</td> 
   <td class=xl11632351 style='border-top:none;border-left:none'>4</td> 
@@ -5423,9 +5476,9 @@ function printdiv(printpage) {
   <td class=xl11632351 style='border-top:none;border-left:none'>7</td> 
   <td class=xl11632351 style='border-top:none;border-left:none'>8</td> 
   <td class=xl11632351 style='border-top:none;border-left:none'>9</td> 
-  <td class=xl11532351 style='border-top:none;border-left:none'>10</td> 
-  <td class=xl11432351 style='border-left:none'>&nbsp;</td> 
-  <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
+  <td class=xl11532351 style='border-top:none;border-left:none'>10</td>  -->
+  <!-- <td class=xl11432351 style='border-left:none'>&nbsp;</td>  -->
+  <!-- <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td>  -->
   <td class=xl11232351 width=51 style='border-top:none;width:38pt'>Ctn <br>Number</td> 
   <td class=xl11132351 width=44 style='border-top:none;border-left:none; width:33pt'>Size</td> 
   <td class=xl11132351 width=44 style='border-top:none;border-left:none; width:33pt'>Qty</td> 
@@ -5441,7 +5494,7 @@ function printdiv(printpage) {
  </tr> 
   <?php  
     // $ssqlxs="SELECT * FROM packing_summary_input WHERE input_job_no_random=\"".$doc."\" order BY order_col_des,input_job_no_random,size_code"; 
-    $ssqlxs="SELECT *, SUM(carton_act_qty) AS cum_qty FROM packing_summary_input WHERE input_job_no_random=\"".$doc."\" GROUP BY doc_no,order_col_des,size_code ORDER BY input_job_no_random"; 
+    $ssqlxs="SELECT *, SUM(carton_act_qty) AS cum_qty FROM packing_summary_input WHERE input_job_no_random=\"".$doc."\"  GROUP BY doc_no,order_col_des,size_code ORDER BY input_job_no_random"; 
     // echo $ssqlxs; 
     $resultxs=mysqli_query($link, $ssqlxs) or exit("Sql Errorxs".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($rowxs=mysqli_fetch_array($resultxs)) 
@@ -5458,25 +5511,32 @@ function printdiv(printpage) {
          echo "<tr class=xl10632351 height=48 style='mso-height-source:userset;height:36.0pt'> 
           <td rowspan=2 height=96 class=xl17132351 width=89 
           style='border-bottom:1.0pt solid black;height:72.0pt;border-top:none;width:67pt;word-wrap:break-word;'>".$rowxs["order_col_des"]."-(<b>".$cut_new."</b>)</td> 
-          <td class=xl9532351 style='border-left:none'>&nbsp;</td> 
           <td rowspan=2 class=xl18232351 style='border-bottom:1.0pt solid black'>".strtoupper($rowxs["size_code"])."</td> 
           <td rowspan=2 class=xl18432351 width=59 style='border-bottom:1.0pt solid black; 
-          width:44pt'>".$rowxs["cum_qty"]."</td> 
-          <td class=xl10932351>&nbsp;</td> 
-          <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
-          <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
-          <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
-          <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
-          <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
-          <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
-          <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
-          <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
-          <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
-          <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; 
+          width:44pt'>".$rowxs["cum_qty"]."</td>"; 
+            for($i=1;$i<=$count_tot;$i++){
+               
+                if($i == 1) { ?>
+                    <td class=xl10932351>&nbsp;</td> <?php
+                }
+                else { ?>
+                    <td class=xl10932351 style='border-left:none'>&nbsp;</td> <?php
+                }
+            }
+        //   <td class=xl10932351>&nbsp;</td> 
+        //   <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
+        //   <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
+        //   <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
+        //   <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
+        //   <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
+        //   <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
+        //   <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
+        //   <td class=xl10932351 style='border-left:none'>&nbsp;</td> 
+        //   <td class=xl10932351 style='border-left:none'>&nbsp;</td>
+        echo "
+        <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; 
           border-top:none'>&nbsp;</td> 
-          <td class=xl10832351 style='border-top:none;border-left:none'>&nbsp;</td> 
           <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black'>&nbsp;</td> 
-          <td class=xl10732351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
           <td class=xl10232351>1</td> 
           <td class=xl10432351 style='border-left:none'>&nbsp;</td> 
           <td class=xl10432351 style='border-left:none'>&nbsp;</td> 
@@ -5491,19 +5551,27 @@ function printdiv(printpage) {
           <td class=xl10532351 style='border-left:none'>&nbsp;</td> 
          </tr> 
          <tr height=48 style='mso-height-source:userset;height:36.0pt'> 
-          <td height=48 class=xl9532351 style='height:36.0pt;border-left:none'>&nbsp;</td> 
-          <td class=xl7932351 style='border-top:none'>&nbsp;</td> 
-          <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
-          <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
-          <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
-          <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
-          <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
-          <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
-          <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
-          <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
-          <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
-          <td class=xl9432351 style='border-left:none'>&nbsp;</td> 
-          <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
+          ";
+            for($i=1;$i<=$count_tot;$i++){
+                
+                if($i == 1) { ?>
+                    <td class=xl7932351 style='border-top:none'>&nbsp;</td> <?php
+                }
+                else { ?>
+                    <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> <?php
+                }
+            }
+        //   <td class=xl7932351 style='border-top:none'>&nbsp;</td> 
+        //   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
+        //   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
+        //   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
+        //   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
+        //   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
+        //   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
+        //   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
+        //   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
+        //   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
+          echo "
           <td class=xl10232351 style='border-top:none'>&nbsp;</td> 
           <td class=xl10432351 style='border-top:none;border-left:none'>&nbsp;</td> 
           <td class=xl10432351 style='border-top:none;border-left:none'>&nbsp;</td> 
@@ -5523,10 +5591,20 @@ function printdiv(printpage) {
   
  <tr height=48 style='mso-height-source:userset;height:36.0pt'> 
   <td rowspan=2 height=96 class=xl17132351 width=89 style='border-bottom:1.0pt solid black; height:72.0pt;border-top:none;width:67pt'>&nbsp;</td> 
-  <td class=xl9532351 style='border-left:none'>&nbsp;</td> 
+  <!-- <td class=xl9532351 style='border-left:none'>&nbsp;</td>  -->
   <td rowspan=2 class=xl18232351 style='border-bottom:1.0pt solid black; border-top:none'>&nbsp;</td> 
   <td rowspan=2 class=xl18432351 width=59 style='border-bottom:1.0pt solid black; border-top:none;width:44pt'>&nbsp;</td> 
-  <td class=xl8732351 style='border-top:none'>&nbsp;</td> 
+  <?php 
+    for($i=1;$i<=$count_tot;$i++){
+        if($i == 1) { ?>
+            <td class=xl8732351 style='border-top:none'>&nbsp;</td> <?php
+        }
+        else { ?>
+            <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> <?php
+        }
+    }
+    ?>
+  <!-- <td class=xl8732351 style='border-top:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
@@ -5535,16 +5613,26 @@ function printdiv(printpage) {
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
+  <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td>  -->
   <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; border-top:none'>&nbsp;</td> 
-  <td class=xl9232351 style='border-top:none;border-left:none'>&nbsp;</td> 
+  <!-- <td class=xl9232351 style='border-top:none;border-left:none'>&nbsp;</td>  -->
   <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; border-top:none'>&nbsp;</td> 
-  <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
+  <!-- <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td>  -->
   <td colspan=12 class=xl29532351 style='border-right:1.0pt solid black'>&nbsp;</td> 
  </tr> 
  <tr height=48 style='mso-height-source:userset;height:36.0pt'> 
-  <td height=48 class=xl9532351 style='height:36.0pt;border-left:none'>&nbsp;</td> 
-  <td class=xl7932351 style='border-top:none'>&nbsp;</td> 
+  <!-- <td height=48 class=xl9532351 style='height:36.0pt;border-left:none'>&nbsp;</td>  -->
+  <?php 
+    for($i=1;$i<=$count_tot;$i++){
+        if($i == 1) { ?>
+            <td class=xl7932351 style='border-top:none'>&nbsp;</td> <?php
+        }
+        else { ?>
+            <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> <?php
+        }
+    }
+    ?>
+  <!-- <td class=xl7932351 style='border-top:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
@@ -5553,9 +5641,9 @@ function printdiv(printpage) {
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td class=xl9432351 style='border-left:none'>&nbsp;</td> 
-  <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
+  <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td>  -->
+  <!-- <td class=xl9432351 style='border-left:none'>&nbsp;</td>  -->
+  <!-- <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td>  -->
   <td colspan=2 rowspan=2 class=xl29832351 width=95 style='border-right:1.0pt solid black; border-bottom:1.0pt solid black;width:71pt'>&nbsp;</td> 
   <td rowspan=2 class=xl27032351 width=44 style='border-bottom:.5pt solid black; width:33pt'><span 
   style='mso-spacerun:yes'></span></td> 
@@ -5568,10 +5656,20 @@ function printdiv(printpage) {
  </tr> 
  <tr height=33 style='mso-height-source:userset;height:24.95pt'> 
   <td rowspan=2 height=81 class=xl17132351 width=89 style='border-bottom:1.0pt solid black; height:60.95pt;border-top:none;width:67pt'>&nbsp;</td> 
-  <td class=xl9332351>&nbsp;</td> 
+  <!-- <td class=xl9332351>&nbsp;</td>  -->
   <td rowspan=2 class=xl18232351 style='border-top:none'>&nbsp;</td> 
   <td rowspan=2 class=xl18432351 width=59 style='border-top:none;width:44pt'>&nbsp;</td> 
-  <td class=xl8732351 style='border-top:none'>&nbsp;</td> 
+  <?php
+    for($i=1;$i<=$count_tot;$i++){
+        if($i == 1) { ?>
+            <td class=xl8732351 style='border-top:none'>&nbsp;</td> <?php
+        }
+        else { ?>
+            <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> <?php
+        }
+    }
+  ?>
+  <!-- <td class=xl8732351 style='border-top:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
@@ -5580,15 +5678,25 @@ function printdiv(printpage) {
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
+  <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td>  -->
   <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; border-top:none'>&nbsp;</td> 
-  <td class=xl9232351 style='border-top:none;border-left:none'>&nbsp;</td> 
+  <!-- <td class=xl9232351 style='border-top:none;border-left:none'>&nbsp;</td>  -->
   <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; border-top:none'>&nbsp;</td> 
-  <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
+  <!-- <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td>  -->
  </tr> 
  <tr height=48 style='mso-height-source:userset;height:36.0pt'> 
-  <td height=48 class=xl9132351 style='height:36.0pt'>&nbsp;</td> 
-  <td class=xl7932351 style='border-top:none'>&nbsp;</td> 
+  <!-- <td height=48 class=xl9132351 style='height:36.0pt'>&nbsp;</td>  -->
+  <?php
+    for($i=1;$i<=$count_tot;$i++){
+        if($i == 1) { ?>
+            <td class=xl7932351 style='border-top:none'>&nbsp;</td> <?php
+        }
+        else { ?>
+            <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> <?php
+        }
+    }
+  ?>
+  <!-- <td class=xl7932351 style='border-top:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
@@ -5597,9 +5705,9 @@ function printdiv(printpage) {
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td class=xl8432351 style='border-left:none'>&nbsp;</td> 
-  <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
+  <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td>  -->
+  <!-- <td class=xl8432351 style='border-left:none'>&nbsp;</td>  -->
+  <!-- <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td>  -->
   <td colspan=2 class=xl29332351 style='border-right:.5pt solid black'>&nbsp;</td> 
   <td class=xl8932351 width=44 style='border-top:none;border-left:none; width:33pt'>&nbsp;</td> 
   <td class=xl8932351 width=44 style='border-top:none;border-left:none; width:33pt'>&nbsp;</td> 
@@ -5611,10 +5719,20 @@ function printdiv(printpage) {
  </tr> 
  <tr height=33 style='mso-height-source:userset;height:24.95pt'> 
   <td rowspan=2 height=66 class=xl17132351 width=89 style='border-bottom:1.0pt solid black; height:49.9pt;border-top:none;width:67pt'>&nbsp;</td> 
-  <td class=xl8132351>&nbsp;</td> 
+  <!-- <td class=xl8132351>&nbsp;</td>  -->
   <td rowspan=2 class=xl17332351 style='border-bottom:1.0pt solid black'>&nbsp;</td> 
   <td rowspan=2 class=xl17532351 width=59 style='border-bottom:1.0pt solid black; width:44pt'>&nbsp;</td> 
-  <td class=xl8832351 style='border-top:none'>&nbsp;</td> 
+  <?php
+    for($i=1;$i<=$count_tot;$i++){
+        if($i == 1) { ?>
+            <td class=xl8732351 style='border-top:none'>&nbsp;</td> <?php
+        }
+        else { ?>
+            <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> <?php
+        }
+    }
+  ?>
+  <!-- <td class=xl8832351 style='border-top:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
@@ -5623,11 +5741,11 @@ function printdiv(printpage) {
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
+  <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td>  -->
   <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; border-top:none'>&nbsp;</td> 
-  <td class=xl8432351 style='border-left:none'>&nbsp;</td> 
+  <!-- <td class=xl8432351 style='border-left:none'>&nbsp;</td>  -->
   <td rowspan=2 class=xl17732351 style='border-bottom:.5pt solid black; border-top:none'>&nbsp;</td> 
-  <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
+  <!-- <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td>  -->
   <td colspan=2 class=xl29332351 style='border-right:.5pt solid black'>&nbsp;</td> 
   <td class=xl8932351 width=44 style='border-top:none;border-left:none; width:33pt'>&nbsp;</td> 
   <td class=xl8932351 width=44 style='border-top:none;border-left:none; width:33pt'>&nbsp;</td> 
@@ -5638,8 +5756,18 @@ function printdiv(printpage) {
   <td colspan=3 class=xl28932351 width=132 style='border-right:1.0pt solid black; border-left:none;width:99pt'>&nbsp;</td> 
  </tr> 
  <tr height=33 style='mso-height-source:userset;height:24.95pt'> 
-  <td height=33 class=xl8132351 style='height:24.95pt'>&nbsp;</td> 
-  <td class=xl8032351 style='border-top:none'>&nbsp;</td> 
+  <!-- <td height=33 class=xl8132351 style='height:24.95pt'>&nbsp;</td>  -->
+  <?php
+  for($i=1;$i<=$count_tot;$i++){
+        if($i == 1) { ?>
+            <td class=xl8032351 style='border-top:none'>&nbsp;</td> <?php
+        }
+        else { ?>
+            <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> <?php
+        }
+    }
+    ?>
+  <!-- <td class=xl8032351 style='border-top:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
@@ -5648,9 +5776,9 @@ function printdiv(printpage) {
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td class=xl8432351 style='border-left:none'>&nbsp;</td> 
-  <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td> 
+  <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td>  -->
+  <!-- <td class=xl8432351 style='border-left:none'>&nbsp;</td>  -->
+  <!-- <td class=xl9032351 width=4 style='border-left:none;width:3pt'>&nbsp;</td>  -->
   <td colspan=2 class=xl29332351 style='border-right:.5pt solid black'>&nbsp;</td> 
   <td class=xl8932351 width=44 style='border-top:none;border-left:none; width:33pt'>&nbsp;</td> 
   <td class=xl8932351 width=44 style='border-top:none;border-left:none; width:33pt'>&nbsp;</td> 
@@ -5662,10 +5790,20 @@ function printdiv(printpage) {
  </tr> 
  <tr class=xl7432351 height=33 style='mso-height-source:userset;height:24.95pt'> 
   <td rowspan=2 height=66 class=xl19032351 style='border-bottom:1.0pt solid black; height:49.9pt;border-top:none'>&nbsp;</td> 
-  <td class=xl8132351>&nbsp;</td> 
+  <!-- <td class=xl8132351>&nbsp;</td>  -->
   <td rowspan=2 class=xl18632351 width=59 style='border-bottom:1.0pt solid black; border-top:none;width:44pt'>&nbsp;</td> 
   <td rowspan=2 class=xl18832351 width=59 style='border-bottom:1.0pt solid black; border-top:none;width:44pt'>&nbsp;</td> 
-  <td class=xl8832351 style='border-top:none'>&nbsp;</td> 
+  <?php
+   for($i=1;$i<=$count_tot;$i++){
+        if($i == 1) { ?>
+            <td class=xl8832351 style='border-top:none'>&nbsp;</td> <?php
+        }
+        else { ?>
+            <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> <?php
+        }
+    }
+  ?>
+  <!-- <td class=xl8832351 style='border-top:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
@@ -5674,11 +5812,11 @@ function printdiv(printpage) {
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8732351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td class=xl8632351 style='border-top:none;border-left:none'>&nbsp;</td> 
+  <td class=xl8632351 style='border-top:none;border-left:none'>&nbsp;</td>  -->
   <td class=xl8532351 width=62 style='width:47pt'>&nbsp;</td> 
-  <td class=xl8432351 style='border-left:none'>&nbsp;</td> 
+  <!-- <td class=xl8432351 style='border-left:none'>&nbsp;</td>  -->
   <td class=xl8332351 width=82 style='border-left:none;width:62pt'>&nbsp;</td> 
-  <td rowspan=2 class=xl20632351 width=4 style='border-bottom:1.0pt solid black; width:3pt'>&nbsp;</td> 
+  <!-- <td rowspan=2 class=xl20632351 width=4 style='border-bottom:1.0pt solid black; width:3pt'>&nbsp;</td>  -->
   <td colspan=2 class=xl29332351 style='border-right:.5pt solid black'>&nbsp;</td> 
   <td class=xl8232351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl8232351 style='border-top:none;border-left:none'>&nbsp;</td> 
@@ -5689,8 +5827,21 @@ function printdiv(printpage) {
   <td colspan=3 class=xl28932351 width=132 style='border-right:1.0pt solid black; width:99pt'></td> 
  </tr> 
  <tr class=xl7432351 height=33 style='mso-height-source:userset;height:24.95pt'> 
-  <td height=33 class=xl8132351 style='height:24.95pt'>&nbsp;</td> 
-  <td class=xl8032351 style='border-top:none'>&nbsp;</td> 
+  <!-- <td height=33 class=xl8132351 style='height:24.95pt'>&nbsp;</td>  -->
+  <?php
+    for($i=1;$i<=$count_tot;$i++){
+        if($i == 1) { ?>
+            <td class=xl8032351 style='border-top:none'>&nbsp;</td> <?php
+        }
+        elseif($i == $count_tot) { ?>
+            <td class=xl7832351 style='border-top:none;border-left:none'>&nbsp;</td> <?php
+        }
+        else { ?>
+            <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> <?php
+        }
+    }
+  ?>
+  <!-- <td class=xl8032351 style='border-top:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
@@ -5699,9 +5850,9 @@ function printdiv(printpage) {
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td class=xl7932351 style='border-top:none;border-left:none'>&nbsp;</td> 
-  <td class=xl7832351 style='border-top:none;border-left:none'>&nbsp;</td> 
+  <td class=xl7832351 style='border-top:none;border-left:none'>&nbsp;</td>  -->
   <td class=xl7632351 width=62 style='border-top:none;width:47pt'>&nbsp;</td> 
-  <td class=xl7732351 style='border-left:none'>&nbsp;</td> 
+  <!-- <td class=xl7732351 style='border-left:none'>&nbsp;</td>  -->
   <td class=xl7632351 width=82 style='border-left:none;width:62pt'>&nbsp;</td> 
   <td colspan=2 class=xl30232351 style='border-right:.5pt solid black'>&nbsp;</td> 
   <td class=xl7532351 style='border-top:none;border-left:none'>&nbsp;</td> 
@@ -5711,7 +5862,9 @@ function printdiv(printpage) {
   <td class=xl7532351 style='border-top:none;border-left:none'>&nbsp;</td> 
   <td colspan=5 class=xl30432351 style='border-right:.5pt solid black;'></td> 
  </tr> 
- <tr class=xl6532351 height=33 style='mso-height-source:userset;height:24.95pt'> 
+ </table>
+<table border=0 cellpadding=0 cellspacing=0 width=1390 class=xl6532351  style='border-collapse:collapse;table-layout:fixed;width:1046pt'> 
+<tr class=xl6532351 height=33 style='mso-height-source:userset;height:24.95pt'> 
   <td colspan=12 rowspan=2 height=66 class=xl30632351 style='height:49.9pt'>Comments:</td> 
   <td colspan=2 rowspan=2 class=xl31032351 width=97 style='border-right:1.0pt solid black; width:73pt'>______________<br> 
     Recoder</td> 

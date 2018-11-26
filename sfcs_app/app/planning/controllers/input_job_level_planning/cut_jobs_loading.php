@@ -125,9 +125,10 @@ $(document).ready(function() {
 	$('#sub').on('click',function(e){
 		style = $('#style').val();
 		schedule = $('#schedule').val();
+		color = $('#color').val();
 		cutno = $('#cutno').val();
-		if(style === 'NIL' && schedule === 'NIL' && cutno === 'NIL'){
-			sweetAlert('Please Select Style, Schedule and CutNo','','warning');
+		if(style === 'NIL' && schedule === 'NIL' && color === 'NIL' && cutno === 'NIL'){
+			sweetAlert('Please Select Style, Schedule, Color and CutNo','','warning');
 		}
 		else if(style === 'NIL' && schedule === 'NIL'){
 			sweetAlert('Please Select Style and Schedule','','warning');
@@ -143,6 +144,10 @@ $(document).ready(function() {
 		}
 		else if(schedule === 'NIL'){
 			sweetAlert('Please Select Schedule','','warning');
+		}
+		else if(color === 'NIL'){
+			e.preventDefault();
+			sweetAlert('Please Select Color','','warning');
 		}
 		else if(cutno === 'NIL'){
 			e.preventDefault();
@@ -170,7 +175,7 @@ $cutno=$_GET['cutno'];
 //echo $style.$schedule.$color;
 ?>
 <div class="panel panel-primary">
-<div class="panel-heading"><strong>Job Level Planning</strong></div>
+<div class="panel-heading"><strong>Job Level Planning</strong><a href="<?= getFullURL($_GET['r'],'input_job_seq_move.php','N');?>" class="btn btn-success btn-xs pull-right" target="_blank">Input Job Sequence Move</a></div>
 <div class="panel-body">
 <div class="form-inline">
 <div class="form-group">
@@ -184,7 +189,7 @@ echo "Select Style: <select name=\"style\" class=\"form-control\" onchange=\"fir
 //$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 //{
-	$sql="select distinct order_style_no from $bai_pro3.plan_doc_summ ";	
+	$sql="select distinct order_style_no from $bai_pro3.plan_doc_summ order by order_style_no";	
 	echo $sql;
 //}
 // mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -211,16 +216,7 @@ echo "</select>";
 ?>
 
 <?php
-
-
-
-//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
-//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
-//{
-	//$sql="select distinct order_del_no from plan_doc_summ_input";	
-	//$sql="select distinct order_del_no from bai_orders_db where order_joins IN ('0','1','2') order by order_joins*1";
-	$sql="select distinct order_del_no from $bai_pro3.plan_doc_summ where order_style_no=\"$style\"";	
-//}
+$sql="select distinct order_del_no from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" order by order_del_no*1";	
 echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" id='schedule'>";
 // mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -250,13 +246,10 @@ echo "</select>";
 
 <?php
 
-$sql="select distinct order_col_des from $bai_pro3.plan_doc_summ where order_del_no=\"$schedule\"";	
-//}
+$sql="select distinct order_col_des from $bai_pro3.plan_doc_summ where order_del_no=\"$schedule\" order by order_col_des";	
 echo "Select Color: <select name=\"color\" class=\"form-control\" onchange=\"thirdbox();\" id='color'>";
-// mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
 
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 echo "<option value=\"NIL\" selected>NIL</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -285,20 +278,7 @@ echo "Select CutNo: <select name=\"cutno\" class=\"form-control\" onchange=\"fou
 
 $sql="select distinct pcutno as pcutno from $bai_pro3.order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" order by pcutno";	
 
-//For Color Clubbing
-/*
-if($clubbing>0)
-{
-	$sql="select distinct order_col_des from plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" group by clubbing,order_col_des";		
-}
-*/
-//echo $sql;
-
-//}
-// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-
 echo "<option value=\"NIL\" selected>NIL</option>";
 if($color!='')
 {
@@ -343,7 +323,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$cat_ref=$sql_row['cat_ref'];
 }
 
-$sql="select cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" order by doc_no";
+$sql="select cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des='$color' order by doc_no";
 // mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -353,38 +333,30 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$cat_ref=$sql_row['cat_ref'];
 }
 
-
-
+$sql12="select * from $bai_pro3.packing_summary_input where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des='$color'";
+$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check12=mysqli_num_rows($sql_result12);
 
 if($sql_num_check>0)
 {
-	// $sql1="select group_concat(sec_mods) as mods from bai_pro3.sections_db";
-	// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// while($sql_row1=mysqli_fetch_array($sql_result1))
-	// {
-	// 	$modules=$sql_row1["mods"];
-	// }	
-	// $modules_array=explode(",",$modules);
-	
-	// if(strlen($color)>0)
-	// {
-	// 	echo "Select Modules: <select name=\"modules\" class=\"form-control\" id='modules'>";
-	// 	for($i1=0;$i1<sizeof($modules_array);$i1++)
-	// 	{
-	// 		echo "<option value=\"".$modules_array[$i1]."\">".$modules_array[$i1]."</option>";
-	// 	}
-	// 	echo "</select>&nbsp;&nbsp;";
-	// }
-	
-	echo "Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
-	echo "<input type=\"hidden\" name=\"code\" value=\"$code\">";
-	echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
-	echo "<input type=\"submit\" value=\"Submit\" name=\"submit\" id='sub' disabled class='btn btn-success'>";	
+	if($sql_num_check12>0)
+	{	
+		echo "Cut Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
+		echo "Sewing Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
+		echo "<input type=\"hidden\" name=\"code\" value=\"$code\">";
+		echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
+		echo "<input type=\"submit\" value=\"Submit\" name=\"submit\" id='sub' disabled class='btn btn-success'>";
+	}
+	else
+	{
+		echo "Cut Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
+		echo "Sewing Jobs Available :"."<span class='label label-danger'>No</span>&nbsp;&nbsp;";
+	}
 }
 else
 {
-	echo "Docket Available  :"."<span class='label label-danger'>No</span>&nbsp;&nbsp;";
+	echo "Cut Jobs Available:"."<span class='label label-danger'>No</span>&nbsp;&nbsp;";
+	echo "Sewing Jobs Available :"."<span class='label label-danger'>No</span>&nbsp;&nbsp;";
 	/*echo "<input type=\"hidden\" name=\"code\" value=\"$code\">";
 	echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
 	echo "<input type=\"submit\" value=\"submit\" name=\"submit\">";*/

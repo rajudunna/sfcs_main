@@ -177,7 +177,6 @@ for($i=0;$i<sizeof($cat_db);$i++)
 	{
 		$sql2="select (order_s_s01+order_s_s02+order_s_s03+order_s_s04+order_s_s05+order_s_s06+order_s_s07+order_s_s08+order_s_s09+order_s_s10+order_s_s11+order_s_s12+order_s_s13+order_s_s14+order_s_s15+order_s_s16+order_s_s17+order_s_s18+order_s_s19+order_s_s20+order_s_s21+order_s_s22+order_s_s23+order_s_s24+order_s_s25+order_s_s26+order_s_s27+order_s_s28+order_s_s29+order_s_s30+order_s_s31+order_s_s32+order_s_s33+order_s_s34+order_s_s35+order_s_s36+order_s_s37+order_s_s38+order_s_s39+order_s_s40+order_s_s41+order_s_s42+order_s_s43+order_s_s44+order_s_s45+order_s_s46+order_s_s47+order_s_s48+order_s_s49+order_s_s50) as \"sum\" from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\"";
 	}
-	mysqli_query($link,$sql2) or exit("Sql Error9".mysqli_error());
 	$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error9".mysqli_error());
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -190,20 +189,17 @@ for($i=0;$i<sizeof($cat_db);$i++)
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$remarks_x=$sql_row['remarks'];
-		$binding_con = $sql_row['bindning_con'];
-		
 	}
 
 	//Binding Consumption / YY Calculation
-	
-	$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
-	$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error10".mysqli_error());
+	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+	$sql_result2=mysqli_query($link,$sql) or exit("Sql Error10".mysqli_error());
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
-		$bind_con=$sql_row2['binding_con'];
+		$binding_con=$sql_row2['binding_consumption'];
 	}
 	
-	$newyy+=($new_order_qty*$bind_con);
+	$newyy+=($new_order_qty*$binding_con);
 	
 	//Binding Consumption / YY Calculation
 	
@@ -1074,7 +1070,7 @@ tags will be replaced.-->
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl1532599 style='height:15.75pt'></td>
   <td class=xl6432599></td>
-  <td colspan=8 rowspan=3 class=xl9832599><img src="../../common/images/bai_logo.jpg" width="120" height="60"></td>
+<td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
   <td class=xl6432599></td>
   <td class=xl6432599></td>
   <td class=xl6432599></td>
@@ -1597,7 +1593,7 @@ tags will be replaced.-->
   
   
   <?php
-  $binding_con = 0.12;
+//   $bind_con = 0.12;
   if(strlen($remarks_x)>0)
   {
   	echo "<td colspan=5 style='font-size:20px;border:1px solid black'><strong>Remarks : $remarks_x</strong></td>";

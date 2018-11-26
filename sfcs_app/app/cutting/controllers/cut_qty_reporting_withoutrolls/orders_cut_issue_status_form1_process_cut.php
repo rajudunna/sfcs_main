@@ -1,8 +1,18 @@
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/config.php", 4, 'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/functions.php", 4, 'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',4,'R')); 
+//API related data
+$plant_code = $global_facility_code;
+$company_num = $company_no;
+$host= $api_hostname;
+$port= $api_port_no;
+$current_date = date('Y-m-d h:i:s');
 
 //KiranG - 2015-09-02 : passing link as parameter in update_m3_or function to avoid missing user name.
+
+$op_code = 15;
+$b_op_id = 15;
 ?>
 
 
@@ -135,44 +145,44 @@ function update_m3_or($doc_no,$plies,$operation,$old_plies,$link)
 	$check=0;
 	
 	$query_array=array();
-
-	if($other_docs>0 and $dcheck==0)
-	{
-		for($i=0;$i<sizeof($size_code_db);$i++)
-		{
+//commented because of #759
+	// if($other_docs>0 and $dcheck==0)
+	// {
+	// 	for($i=0;$i<sizeof($size_code_db);$i++)
+	// 	{
 			
 			
 			
-			//validation to report previous operation. //kirang 2015-10-14
-			$sql111="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_style='$style' and sfcs_schedule='$schedule' and sfcs_color='$color' and sfcs_size='".$size_code_db[$i]."' and sfcs_doc_no='$doc_no' and m3_op_des='LAY' and sfcs_status<>90";
-			$sql_result1112=mysqli_query($link, $sql111) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// 		//validation to report previous operation. //kirang 2015-10-14
+	// 		$sql111="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_style='$style' and sfcs_schedule='$schedule' and sfcs_color='$color' and sfcs_size='".$size_code_db[$i]."' and sfcs_doc_no='$doc_no' and m3_op_des='LAY' and sfcs_status<>90";
+	// 		$sql_result1112=mysqli_query($link, $sql111) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			
-			//Validation to avoid duplicates
-			$sql111="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_style='$style' and sfcs_schedule='$schedule' and sfcs_color='$color' and sfcs_size='".$size_code_db[$i]."' and sfcs_doc_no='$doc_no' and sfcs_qty=".$size_qty[$i]." and sfcs_log_user=USER() and LEFT(sfcs_log_time,13)='".date("Y-m-d H")."' and m3_op_des='$operation' and sfcs_status<>90";
-			$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// 		//Validation to avoid duplicates
+	// 		$sql111="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_style='$style' and sfcs_schedule='$schedule' and sfcs_color='$color' and sfcs_size='".$size_code_db[$i]."' and sfcs_doc_no='$doc_no' and sfcs_qty=".$size_qty[$i]." and sfcs_log_user=USER() and LEFT(sfcs_log_time,13)='".date("Y-m-d H")."' and m3_op_des='$operation' and sfcs_status<>90";
+	// 		$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			//validation to report previous operation. //kirang 2015-10-14
-			//if($size_qty[$i]>0 and mysql_num_rows($sql_result111)==0 and mysql_num_rows($sql_result1112)>0)
-			if($size_qty[$i]>0 and mysqli_num_rows($sql_result111)==0)
-			{
-				//Changed the way of executing queries.
-				//$sql1="INSERT INTO m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_job_no) values (NOW(),'$style','$schedule','$color','".$size_code_db[$i]."',$doc_no,".$size_qty[$i].",USER(),'$operation',$doc_no,0,'','$job')"; 
+	// 		//validation to report previous operation. //kirang 2015-10-14
+	// 		//if($size_qty[$i]>0 and mysql_num_rows($sql_result111)==0 and mysql_num_rows($sql_result1112)>0)
+	// 		if($size_qty[$i]>0 and mysqli_num_rows($sql_result111)==0)
+	// 		{
+	// 			//Changed the way of executing queries.
+	// 			//$sql1="INSERT INTO m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_job_no) values (NOW(),'$style','$schedule','$color','".$size_code_db[$i]."',$doc_no,".$size_qty[$i].",USER(),'$operation',$doc_no,0,'','$job')"; 
 			
-				//echo $sql."<br/>";
-				//mysql_query($sql1,$link) or exit("Sql Error6$sql1".mysql_error());
+	// 			//echo $sql."<br/>";
+	// 			//mysql_query($sql1,$link) or exit("Sql Error6$sql1".mysql_error());
 				
-				$query_array[]="(NOW(),'$style','$schedule','$color','".$size_code_db[$i]."',$doc_no,".$size_qty[$i].",USER(),'$operation',$doc_no,0,'','$job')";
+	// 			$query_array[]="(NOW(),'$style','$schedule','$color','".$size_code_db[$i]."',$doc_no,".$size_qty[$i].",USER(),'$operation',$doc_no,0,'','$job')";
 				
-				if($check==0)
-				{
-					$check=1;
-				}
-			}
-		}
+	// 			if($check==0)
+	// 			{
+	// 				$check=1;
+	// 			}
+	// 		}
+	// 	}
 		
 	
-	}
+	// }
 	
 	
 	//KiranG - 20160128 changed the sequence of the below query from prior to after passing the m3 bulk operation log.
@@ -181,27 +191,27 @@ function update_m3_or($doc_no,$plies,$operation,$old_plies,$link)
 		//mysql_query($sql1,$link) or exit("Sql Error3$sql1".mysql_error());
 		
 	
-	
+	// commented for #759
 	//if(($check==1 OR $other_docs==0) and mysql_affected_rows($link)>0)
-	if($check==1 OR $other_docs==0)
-	{
+	// if($check==1 OR $other_docs==0)
+	// {
 		
-		for($j=0;$j<sizeof($query_array);$j++)
-		{
-			$sql1="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_job_no) values ".$query_array[$j]; 
+	// 	for($j=0;$j<sizeof($query_array);$j++)
+	// 	{
+	// 		$sql1="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_job_no) values ".$query_array[$j]; 
 			
-				//echo $sql."<br/>";
-			mysqli_query($link, $sql1) or exit("Sql Error6$sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		}
+	// 			//echo $sql."<br/>";
+	// 		mysqli_query($link, $sql1) or exit("Sql Error6$sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// 	}
 		
 		
 		
 		return "TRUE";
-	}
-	else
-	{
-		return "FALSE";
-	}
+	// }
+	// else
+	// {
+	// 	return "FALSE";
+	// }
 	
 }
 
@@ -211,6 +221,7 @@ function update_m3_or($doc_no,$plies,$operation,$old_plies,$link)
 
 if(isset($_POST['update']))
 {
+
 	// echo "<script>alert('into update condition')</script>";
 	$club_status=$_POST['club_status'];
 	$a_plies=$_POST["a_plies_qty"];
@@ -239,6 +250,7 @@ if(isset($_POST['update']))
 	// echo "<script>alert('till club status=1')</script>";
 	if($club_status=='0')
 	{
+	
 		// echo "<script>alert('into club status = 1')</script>";
 		if(strlen($_POST['remarks'])>0)
 		{
@@ -440,8 +452,9 @@ if(isset($_POST['update']))
 					//echo "Quantity--".$sub_doc_size_qty."<br>";
 					if($sub_doc_size_qty > 0)
 					{
-						$sql5="insert into $m3_bulk_ops_rep_db.m3_sfcs_tran_log(sfcs_date,sfcs_size,sfcs_doc_no,sfcs_style,sfcs_schedule,sfcs_color,sfcs_qty,sfcs_log_user,sfcs_status,sfcs_tid_ref,m3_op_des) values(NOW(),'".$sizes_array[$i4]."','".$doc_no_ref2[$jj]."','".$order_style_no."','".$order_del_no."','".$order_col_des."','".$sub_doc_size_qty."','".$username."',0,'".$doc_no_ref."','CUT')";
-						mysqli_query($link, $sql5) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+						//commented for #759
+						// $sql5="insert into $m3_bulk_ops_rep_db.m3_sfcs_tran_log(sfcs_date,sfcs_size,sfcs_doc_no,sfcs_style,sfcs_schedule,sfcs_color,sfcs_qty,sfcs_log_user,sfcs_status,sfcs_tid_ref,m3_op_des) values(NOW(),'".$sizes_array[$i4]."','".$doc_no_ref2[$jj]."','".$order_style_no."','".$order_del_no."','".$order_col_des."','".$sub_doc_size_qty."','".$username."',0,'".$doc_no_ref."','CUT')";
+						// mysqli_query($link, $sql5) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 						//echo $sql5."<br>";
 						$sql61="update $bai_pro3.plandoc_stat_log set a_".$sizes_array[$i4]."='".$sub_doc_size_qty."' where doc_no='".$doc_no_ref2[$jj]."'";
 						mysqli_query($link, $sql61) or exit("Sql Error61".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -468,21 +481,23 @@ if(isset($_POST['update']))
 	}
 	if ($failed == 1) 
 	{
+	
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel_cut.php',0,'N')."'; }</script>";
 	}
 	else
 	{
-		$go_back = 'doc_track_panel_cut';
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",10); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'trail.php',0,'N')."&doc_no_ref=$input_doc_no&plies=$plies&go_back_to=$go_back'; }</script>";
-	}
 	
+		$go_back = 'doc_track_panel_cut';
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'trail.php',0,'N')."&doc_no_ref=$input_doc_no&plies=$plies&go_back_to=$go_back'; }</script>";
+	}
 	
 }
 
-// echo "<div class=\"alert alert-success\">
-// <strong>Successfully Cutting Reported.</strong>
-// </div>";
-//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel_cut.php',0,'N')."'; }</script>";
+//Logic Ends Here
+echo "<div class=\"alert alert-success\">
+<strong>Successfully Cutting Reported.</strong>
+</div>";
 
+//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel_cut.php',0,'N')."'; }</script>";
 ?>
 

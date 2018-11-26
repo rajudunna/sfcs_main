@@ -7,6 +7,16 @@ Kirang/20150418 added validation to avoid additional rejections.
 <?php
 //CR# 375 / RameshK - 2014-12-22 / To add supplier names against to the schedule
 // Service Request #440767 / DharaniD / Clear the issue of replace quantity , display module no and shift for replace quantity in remarks column.
+//API related data
+$plant_code = $global_facility_code;
+$company_num = $company_no;
+$host= $api_hostname;
+$port= $api_port_no;
+$current_date = date('Y-m-d h:i:s');
+
+
+$op_code = '15';
+$b_op_id = '15';
 ?>
 <script>
  function button_disable()
@@ -18,7 +28,7 @@ Kirang/20150418 added validation to avoid additional rejections.
 function dodisable()
 {
 //enableButton();
-document.getElementById('process_message').style.visibility="hidden"; 
+	document.getElementById('process_message').style.visibility="hidden"; 
 }
 
 function check1(x,y) 
@@ -99,6 +109,7 @@ th
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3_bulk_or_proc.php',4,'R'));
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/app/quality/common/php/m3_bulk_or_proc.php"); 
@@ -158,7 +169,7 @@ if(isset($_POST['Update']))
 	$test=$_POST['test'];
 	$job=$_POST['job'];
 	$form=$_POST['form'];
-
+    // var_dump($ref);
 	$sum = 0;
 	foreach ($ref as $key => $value) {
 		$sum += array_sum($value);
@@ -171,16 +182,16 @@ if(isset($_POST['Update']))
 	$ilast_codes=array();
 	
 	//Added by KiranG 20150418
-	$usr_msg="The following entries are failed to update due to M3 system validations:<br/><table><tr><th>Module</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th></tr>";
+	$usr_msg="<br/><br/><table><tr><th>Module</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th></tr>";
 	if($sum > 0){
 		for($x=0;$x<sizeof($qty);$x++)
 		{
 			$iLastid=0;
 			if($qty[$x]>=0 and $qty[$x]!="")
 			{
-				
+				$r_qty = array();
+				$r_reasons = array();
 				$check_proceed=0; //0-OK, 1- NOK
-				$m3_op_qty_chk_ary=array();
 				
 				//Validation Check Start
 				if($qty[$x]>0 and $qty[$x]!="" and $test[$x]==1 and strlen($style[$x])>0 and strlen($schedule[$x])>0 and strlen($color[$x])>0 and strlen($size[$x])>0)
@@ -200,20 +211,20 @@ if(isset($_POST['Update']))
 								$m3_reason_code='';
 								$m3_operation_code='';
 								
-								$sql_sup="select m3_reason_code,m3_operation_code from $m3_bulk_ops_rep_db.rejection_report_matrix where interface='REJREP' and ref1='".$form[$x]."' and ref2='".(is_numeric($module[$x])?'0':$module[$x])."' and ref3=$j";
+								$sql_sup="SELECT m3_reason_code FROM $bai_pro3.bai_qms_rejection_reason WHERE form_type = 'P' AND reason_code = '$ref[$x]'";
 								$sql_result_sup=mysqli_query($link, $sql_sup) or exit("Sql Error1 $sql_sup".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row_sup=mysqli_fetch_array($sql_result_sup))
 								{
 									$m3_reason_code=$sql_row_sup['m3_reason_code'];
-									$m3_operation_code=$sql_row_sup['m3_operation_code'];
+									//$m3_operation_code=$sql_row_sup['m3_operation_code'];
 								}
 								
-								$m3_op_qty_chk_ary[$m3_operation_code]=$m3_op_qty_chk_ary[$m3_operation_code]+$ref[$x][$j];
+								//$m3_op_qty_chk_ary[$m3_operation_code]=$m3_op_qty_chk_ary[$m3_operation_code]+$ref[$x][$j];
 								
-								if($check_proceed==0 and rejection_validation_m3($m3_operation_code,$schedule[$x],$color[$x],$size[$x],$ref[$x][$j],0,$username)=="FALSE")
-								{
-									$check_proceed=1;
-								}
+								// if($check_proceed==0 and rejection_validation_m3($m3_operation_code,$schedule[$x],$color[$x],$size[$x],$ref[$x][$j],0,$username)=="FALSE")
+								// {
+								// 	$check_proceed=1;
+								// }
 							//M3 Bulk Operation Reporting
 							
 							if($j==33)
@@ -227,27 +238,7 @@ if(isset($_POST['Update']))
 				{
 					$check_proceed=1;
 				}
-				
-				//Additional Validation
-				if(sizeof($m3_op_qty_chk_ary)>0)
-				{
-					foreach ($m3_op_qty_chk_ary as $key => $value)
-					{
-						if($check_proceed==0 and rejection_validation_m3($key,$schedule[$x],$color[$x],$size[$x],$value,0,$username)=="FALSE")
-						{
-							$check_proceed=1;
-						}
-					}
-					
-				}
-				else
-				{
-					$check_proceed=1;
-				}
-				unset($m3_op_qty_chk_ary);
-				
-				//Validation Check End
-				
+								
 				//validation
 				$check_proceed=0;
 				if($check_proceed==0)
@@ -269,21 +260,26 @@ if(isset($_POST['Update']))
 									$m3_reason_code='';
 									$m3_operation_code='';
 									
-									$sql_sup="select m3_reason_code,m3_operation_code from $m3_bulk_ops_rep_db.rejection_report_matrix where interface='REJREP' and ref1='".$form[$x]."' and ref2='".(is_numeric($module[$x])?'0':$module[$x])."' and ref3=$j";
+									$sql_sup="SELECT m3_reason_code FROM bai_pro3.bai_qms_rejection_reason WHERE form_type = 'P' AND reason_code = '$ref[$x]'";
 									$sql_result_sup=mysqli_query($link, $sql_sup) or exit("Sql Error2 $sql_sup".mysqli_error($GLOBALS["___mysqli_ston"]));
+									// echo $sql_sup;
 									while($sql_row_sup=mysqli_fetch_array($sql_result_sup))
 									{
 										$m3_reason_code=$sql_row_sup['m3_reason_code'];
-										$m3_operation_code=$sql_row_sup['m3_operation_code'];
+										//$m3_operation_code=$sql_row_sup['m3_operation_code'];
 									}
+									//commenting for #759 CR 
+									// $sql_sup="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_reason) values(NOW(),'".$style[$x]."','".$schedule[$x]."','".$color[$x]."','".$size[$x]."','".substr($job[$x],1)."',".$ref[$x][$j].",USER(),'$m3_operation_code',$iLastid,'".(is_numeric($module[$x])?$module[$x]:'0')."','".$team[$x]."','".$m3_reason_code."')"; 
+									$r_qty[] = $ref[$x][$j];
+									$r_reasons[] = $m3_reason_code;
+									// //echo $sql."<br/>";
+									// mysqli_query($link, $sql_sup) or exit("Sql Error3 $sql_sup".mysqli_error($GLOBALS["___mysqli_ston"]));
 									
-									$sql_sup="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_reason) values(NOW(),'".$style[$x]."','".$schedule[$x]."','".$color[$x]."','".$size[$x]."','".substr($job[$x],1)."',".$ref[$x][$j].",USER(),'$m3_operation_code',$iLastid,'".(is_numeric($module[$x])?$module[$x]:'0')."','".$team[$x]."','".$m3_reason_code."')"; 
-								
-									//echo $sql."<br/>";
-									mysqli_query($link, $sql_sup) or exit("Sql Error3 $sql_sup".mysqli_error($GLOBALS["___mysqli_ston"]));
-									
-									$ilast_codes[]=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+									// $ilast_codes[]=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 								//M3 Bulk Operation Reporting
+								//Logic for M3_TRANSACTIONS AND MO FILLING #759 CR CODE STARTING
+								// LOGIC TO INSERT TRANSACTIONS IN M3_TRANSACTIONS TABLE
+		
 								
 								if($j==33)
 								{
@@ -300,6 +296,7 @@ if(isset($_POST['Update']))
 							$input_job=$job[$x];
 							$doc=$job[$x];
 						}
+						//$size_value1=ims_sizes($order_tid,$schedule[$x],$style[$x],$color[$x],$size[$x],$link);
 						$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,ref1,remarks,log_date,doc_no,log_user,input_job_no) values (\"".$style[$x]."\",\"".$schedule[$x]."\",\"".$color[$x]."\",\"".$size[$x]."\",".$qty[$x].",\"".$qms_tran_type."\",\"".implode("$",$ref_code)."\",\"".$module[$x]."-".$team[$x]."-".$form[$x]."\",\"".date("Y-m-d")."\",\"".$doc."\",'$username',\"".$input_job."\")";
 						//echo $sql."<br>";
 						mysqli_query($link, $sql) or exit("Sql Error4 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -307,12 +304,13 @@ if(isset($_POST['Update']))
 						
 						
 						//M3 Bulk upload tool
-						$sql_sup="update $m3_bulk_ops_rep_db.m3_sfcs_tran_log set sfcs_tid_ref=$iLastid where sfcs_tid in (".implode(",",$ilast_codes).")"; 
-						//echo $sql."<br/>";
-						mysqli_query($link, $sql_sup) or exit("Sql Error5 $sql_sup".mysqli_error($GLOBALS["___mysqli_ston"]));
-						//M3 Bulk upload tool
+						//COMMENTING FOR #759 CR 
+						// $sql_sup="update $m3_bulk_ops_rep_db.m3_sfcs_tran_log set sfcs_tid_ref=$iLastid where sfcs_tid in (".implode(",",$ilast_codes).")"; 
+						// //echo $sql."<br/>";
+						// mysqli_query($link, $sql_sup) or exit("Sql Error5 $sql_sup".mysqli_error($GLOBALS["___mysqli_ston"]));
+						// //M3 Bulk upload tool
 						
-						unset($ilast_codes);
+						// unset($ilast_codes);
 						
 						for($j=0;$j<sizeof($ref[$x]);$j++)
 						{
@@ -354,7 +352,7 @@ if(isset($_POST['Update']))
 						//$replace_ref[]=$style[$x]."$".$schedule[$x]."$".$color[$x]."$".$size[$x]."$".$module;	
 					}
 							
-					$replace_ref[]=$style[$x]."$".$schedule[$x]."$".$color[$x]."$".$size[$x]."$".$module[$x]."$".$team[$x]."$".$iLastid;	
+					$replace_ref[]=$style[$x]."$".$schedule[$x]."$".$color[$x]."$".$size_value1."$".$module[$x]."$".$team[$x]."$".$iLastid;	
 					//to track min and max insert ids
 					$maxilastid=$iLastid;
 					if($minilastid==0)
@@ -364,16 +362,72 @@ if(isset($_POST['Update']))
 				}
 				else
 				{
-					$usr_msg.="<tr><td>".$module[$x]."</td><td>".$schedule[$x]."</td><td>".$color[$x]."</td><td>".$size[$x]."</td><td>".$qty[$x]."</td></tr>";
-				}	
+					$usr_msg.="<tr><td>".$module[$x]."</td><td>".$schedule[$x]."</td><td>".$color[$x]."</td><td>".$size_value1."</td><td>".$qty[$x]."</td></tr>";
+				}
+				//Logic for M3_TRANSACTIONS AND MO FILLING #759 CR CODE STARTING
+				$doc_no_ref = substr($job[$x],1);
+				$op_code = '15';
+				$b_op_id = '15';
+				$b_tid = array();
+				$b_module = (is_numeric($module[$x])?$module[$x]:'0');
+				$b_shift = $team[$x];
+				$key_size = $size[$x];
+				$array_rej = array_sum($r_qty);
+				$selecting_qry = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE docket_number = '$doc_no_ref' AND size_id = '$key_size' AND operation_id = '$op_code'";
+				$result_selecting_qry = $link->query($selecting_qry);
+				while($row_result_selecting_qry = $result_selecting_qry->fetch_assoc()) 
+				{
+					$id_to_update = $row_result_selecting_qry['id'];
+					$ref_no = $row_result_selecting_qry['bundle_number'];
+					$mapped_color = $row_result_selecting_qry['mapped_color'];
+					$b_style = $row_result_selecting_qry['style'];
+				}
+				//$update_qry = "update $brandix_bts.bundle_creation_data set rejected_qty = rejected_qty+$array_rej,recevied_qty=recevied_qty-$array_rej where id = $id_to_update";
+				$update_qry = "update $brandix_bts.bundle_creation_data set rejected_qty = rejected_qty+$array_rej where id = $id_to_update";
+				$updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty-$array_rej where id = $ref_no";
+				//$updating_cps = mysqli_query($link,$update_qry_cps) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$updated = updateM3TransactionsRejections($ref_no,$b_op_id,$r_qty,$r_reasons);
+				if($updated == true){
+				}
+				$ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code='$op_code'";
+				$result_ops_seq_check = $link->query($ops_seq_check);
+				while($row = $result_ops_seq_check->fetch_assoc()) 
+				{
+					$ops_seq = $row['ops_sequence'];
+					$seq_id = $row['id'];
+					$ops_order = $row['operation_order'];
+				}
+				$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order' AND operation_code not in (10,200) ORDER BY operation_order ASC LIMIT 1";
+				$result_post_ops_check = $link->query($post_ops_check);
+				if($result_post_ops_check->num_rows > 0)
+				{
+					while($row = $result_post_ops_check->fetch_assoc()) 
+					{
+						$post_ops_code = $row['operation_code'];
+					}
+				}
+				$category=['cutting','Send PF','Receive PF'];
+				$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $post_ops_code";
+				//echo $checking_qry;
+				$result_checking_qry = $link->query($checking_qry);
+				while($row_cat = $result_checking_qry->fetch_assoc()) 
+				{
+					$category_act = $row_cat['category'];
+				}
+				if(in_array($category_act,$category))
+				{
+					$emb_cut_check_flag = 1;
+				}
+				if($emb_cut_check_flag)
+				{
+					$update_qry_post = "update $brandix_bts.bundle_creation_data set send_qty = send_qty-$array_rej WHERE docket_number = '$doc_no_ref' AND size_id = '$key_size' AND operation_id = '$post_ops_code'";
+					//$updating_post_ops = mysqli_query($link,$update_qry_post) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+				}
 			}
 		}
 		$usr_msg.="</table>";
-		
-		
-		//Validations
-		//echo $usr_msg;
-		
 		$replace_ref=array_unique($replace_ref);
 		echo "<div class='panel panel-primary'><div class='panel-heading'>Rejection Replacement Update Panel</div><div class='panel-body'>";
 		echo "<form name=\"input\" method=\"post\" action=\"?r=".$_GET['r']."\">";
@@ -396,7 +450,6 @@ if(isset($_POST['Update']))
 			sum(if(qms_tran_type=3 and qms_tid>=$minilastid and qms_tid<".$temp[6].",qms_qty,0)) as \"prev_cumm_rejected\",
 			sum(if(qms_tran_type=3 and qms_tid>=$minilastid and qms_tid<=".$temp[6].",qms_qty,0)) as \"cumm_rejected\",
 			sum(if(qms_tran_type=10,qms_qty,0)) as \"tran_sent\", sum(if(qms_tran_type=12,qms_qty,0)) as \"res_panel_destroy\" from $bai_pro3.bai_qms_db where qms_style=\"".$temp[0]."\" and  qms_schedule=\"".$temp[1]."\" and qms_color=\"".$temp[2]."\" and qms_size=\"".$temp[3]."\"";
-			//echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error10 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -457,7 +510,6 @@ if(isset($_POST['Update']))
 		echo "<script>sweetAlert('Form Validation failed.').then((value) => { window.location.href = '$url'});</script>";
 	}
 }
-
 ?>
 
 </body>
@@ -492,23 +544,7 @@ if(isset($_POST['update1']))
 			//echo "<br/> query= ".$sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error11 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			//FOR M3 Upload
-			if($temp[4]=="ENP")
-			{
-				
-			}
-			else
-			{
-				$sql="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_style='".$temp[0]."' and sfcs_schedule='".$temp[1]."' and sfcs_color='".$temp[2]."' and sfcs_job_no='REPLACE' and sfcs_tid_ref=".$temp[6];
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error12 $sql".mysqli_error($GLOBALS["___mysqli_ston"])); 	
-				
-				if(mysqli_num_rows($sql_result)==0)
-				{
-					$sql="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_job_no,sfcs_tid_ref,sfcs_mod_no,sfcs_shift) values(NOW(),'".$temp[0]."','".$temp[1]."','".$temp[2]."','".$temp[3]."',0,".$replace[$i].",USER(),'SIN','REPLACE',".$temp[6].",'".$temp[4]."','".$temp[5]."')";
-					mysqli_query($link, $sql) or exit("Sql Error13 $sql".mysqli_error($GLOBALS["___mysqli_ston"])); 
-				}
-					
-			}
+	
 		}
 	}
 	echo "<h2>Successfully Updated.</h2>";

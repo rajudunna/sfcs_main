@@ -14,6 +14,14 @@ This amendement was done based on the confirmation to issue excess (1%) material
 $order_tid=$_GET['order_tid'];
 $cat_ref=$_GET['cat_ref'];	
 $doc_id=$_GET['doc_id'];
+if($_GET['print_status']<>'')
+{
+    $print=$_GET['print_status'];
+}
+else
+{
+	$print=2;
+}
 $sql12="select MIN(mini_order_num) as min_no,MAX(mini_order_num) as max_no from $brandix_bts.tbl_miniorder_data where docket_number='".$doc_id."'";
 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_result12)>0)
@@ -42,9 +50,6 @@ $cut_table=array("0","T1","T1","T2","T2","T3","T3","T4","T4","T5","T5","T6","T6"
 <?php
 
 $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
-
-// mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($link));
-
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -190,8 +195,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 	
 $sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
-//echo $sql;
-// mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -368,7 +371,6 @@ $a_s50=$sql_row['a_s50'];
 }
 $sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
 // echo $sql2;
-mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
 $sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
 
 while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -419,32 +421,26 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 	
 	//Binding Consumption / YY Calculation
 	
-	if($category=='Body' || $category=='Front')
+	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
+	if($sql_num_check > 0)
 	{
-		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
-		// echo $sql2;
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$rows=mysqli_num_rows($sql_result2);
-		if($rows > 0)
+		while($sql_row2=mysqli_fetch_array($sql_result))
 		{
-			while($sql_row2=mysqli_fetch_array($sql_result2))
-			{
-				$binding_con = $sql_row2['binding_con'];
-				$bind_con= $binding_con *($a_ratio_tot*$plies);
-			}
-		}
-		else
-		{
-			$bind_con=0;
+			$binding_con = $sql_row2['binding_consumption'];
+			$bind_con= $binding_con *($a_ratio_tot*$plies);
+
+
 		}
 	}
 	else
 	{
+		$binding_con=0;
 		$bind_con=0;
-		
+
 	}
 	
-	//Binding Consumption / YY Calculation
 //chr($color_code).leading_zeros($cutno, 3)	
 
 
@@ -2125,7 +2121,7 @@ tags will be replaced.-->
  </tr>
 
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td colspan=3 rowspan=3 class=xl674118><img src='/sfcs_app/common/images/BEK_image1.png' width="200" height="60"></td>
+ <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2139,7 +2135,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td colspan=3 >Cutting Department</td>
   <td class=xl654118></td>
- </tr>
+  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
@@ -3045,7 +3041,7 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
- </tr> 
+ </tr>
  </table>
 
  <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:parent'>
@@ -3144,11 +3140,8 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan="3"><br/><br/><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
+  <td class=xl654118 colspan="3"><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
  </tr>
- <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
-  <td height=20 class=xl674118 style='height:15.0pt'></td>
-</tr>
 <table>
 
 <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
@@ -3168,6 +3161,7 @@ $width_det[]=round($sql_row['roll_width'],2);
 $leng_det[]=$sql_row['allocated_qty'];
 $batch_det[]=trim($sql_row['batch_no']);
 $shade_det[]=$sql_row['ref4'];
+$location_det[]=$sql_row['ref1'];
 $invoice_no[]=$sql_row['inv_no'];
 $locan_det[]=$sql_row['ref1'];
 $lot_det[]=$sql_row['lot_no'];
@@ -3259,9 +3253,6 @@ $item_name[] = $sql_row['item'];
 <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
 </tr>
-<tr >
-  <td height=20 class=xl674118 style='height:15.0pt'></td>
-</tr>
 
 <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:auto'>
 <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -3271,6 +3262,7 @@ $item_name[] = $sql_row['item'];
   <td class=xl764118>Lot No</td>
   
   <td class=xl764118>Shade</td>
+  <td class=xl764118>Location</td>
   <td class=xl7742018>Roll</br>No</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Ticket Length</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>C-tex<br/>Length</td>
@@ -3294,7 +3286,8 @@ $item_name[] = $sql_row['item'];
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
-  <td class=xl744118>Excess</td>
+  <td class=xl744118><b>Excess</b></td>
+  <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>+</td>
@@ -3327,6 +3320,7 @@ $tot_bind_len=0;
 	  <td class=xl814118 style='font-size: 100%;'><?php echo $lot_det[$i]; ?></td>
 	
 	  <td class=xl814118><?php echo $shade_det[$i]; ?></td>
+	  <td class=xl814118><?php echo $location_det[$i]; ?></td>
 	  <td class=xl814118><?php echo $roll_det[$i]; ?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $tkt_len[$i]; $tot_tick_len=$tot_tick_len+$tkt_len[$i];?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_len[$i]; $tot_ctex_len=$tot_ctex_len+$ctex_len[$i];?></td>
@@ -3356,6 +3350,7 @@ $tot_bind_len=0;
 	  <td class=xl804118></td>
 	  <td class=xl814118 style='font-size: 100%;'></td>
 	
+	  <td class=xl814118></td>
 	  <td class=xl814118></td>
 	  <td class=xl814118></td>
 	  <td class=xl814118></td>
@@ -3408,6 +3403,7 @@ $tot_bind_len=0;
 	  <td class=xl804118></td>
 	  <td class=xl814118 style='font-size: 100%;'></td>
 	  
+	  <td class=xl814118></td>
 	  <td class=xl814118></td>
 	  <td class=xl814118></td>
 	  <td class=xl814118></td>
@@ -3639,15 +3635,16 @@ $tot_bind_len=0;
 
 </html>
 <?php 
-
-if($print_status=="0000-00-00" || $print_status == "")
+if($print==1)
 {
-	$sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
- 	//echo $sql;
-	//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if($print_status=="0000-00-00" || $print_status == "")
+    {
+	    $sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
+ 	    //echo $sql;
+	    mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
+    }
 }
-
 
 //Refresh Parent Page After this Print Out 
 echo"<script>

@@ -18,6 +18,29 @@ function get_sewing_job_prefix($field,$prefix_table,$pack_summ_input,$schedule,$
 	$sql="SELECT $field as result FROM $prefix_table WHERE type_of_sewing IN (SELECT DISTINCT type_of_sewing FROM $pack_summ_input WHERE order_del_no='$schedule' AND input_job_no='$sewing_job_no')";
 	//echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+	
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$prefix = $sql_row['result'];
+	}
+	if ($prefix == '')
+	{
+		$prefix='J';
+	}
+	if ($field == 'prefix') {
+		return $prefix.leading_zeros($sewing_job_no,3);
+	} else {
+		return $prefix;
+	}
+	((mysqli_free_result($sql_result) || (is_object($sql_result) && (get_class($sql_result) == "mysqli_result"))) ? true : false);
+}
+
+function get_sewing_job_prefix_inp($field,$prefix_table,$sewing_job_no,$sewing_job_random_id,$link)
+{
+    $sql="SELECT $field as result FROM $prefix_table WHERE type_of_sewing IN (SELECT DISTINCT type_of_sewing FROM bai_pro3.pac_stat_log_input_job WHERE input_job_no_random = '$sewing_job_random_id')";
+    //echo $sql."";
+    $sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$prefix = $sql_row['result'];
@@ -51,6 +74,7 @@ function echo_title_1($table_name,$field,$compare,$key,$link)
 function leading_zeros($value, $places)
 {
 	$leading='';
+	
 	if(is_numeric($value))
 	{
 	    for($x = 1; $x <= $places; $x++)
@@ -71,12 +95,13 @@ function leading_zeros($value, $places)
 	else{
 	    $output = $value;
 	}
+	
 	return $output;
 }
 
 function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link)
 {
-	include('config.php');
+	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	$ims = substr($ims_size2,1);
 
 	if($ims>=01 && $ims<=50)

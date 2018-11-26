@@ -8,6 +8,13 @@ $time_diff=(int)date("YmdH")-$log_time;
 
 set_time_limit(6000000);
 
+$insert_shipment_plan="INSERT INTO $m3_inputs.shipment_plan SELECT * FROM $m3_inputs.shipment_plan_original WHERE CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) NOT IN (SELECT CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) FROM $m3_inputs.shipment_plan) AND CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) IN (SELECT CONCAT(TRIM(Style),TRIM(SCHEDULE),TRIM(GMT_Color)) FROM $m3_inputs.order_details_original WHERE MO_Released_Status_Y_N='Y') ORDER BY TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)";
+echo $insert_shipment_plan."<br><br>";
+$res=mysqli_query($link, $insert_shipment_plan) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
+if($res)
+{
+	print("Data Inserted into shipment_plan from shipment_plan_original ")."\n";
+}
 function check_style($string)
 {
 	global $link;
@@ -54,17 +61,15 @@ function isNumber($c)
 
 
 <?php
-	$sql3="truncate $bai_pro3.shipment_plan";
-	mysqli_query($link, $sql3) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql3="insert into $bai_pro3.shipment_plan (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination) 
-	select TRIM(BOTH FROM Style_No), TRIM(BOTH FROM Schedule_No), TRIM(BOTH FROM Colour), Order_Qty, Ex_Factory, Customer_Order_No, Buyer_Division, Size, Packing_Method,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H,Destination from $m3_inputs.shipment_plan";
-	// echo $sql3."<br>";
-	$res=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if($res)
+	$sql39="truncate $bai_pro3.shipment_plan";
+	mysqli_query($link, $sql39) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql23="insert into $bai_pro3.shipment_plan (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination) SELECT TRIM(BOTH FROM Style_No), TRIM(BOTH FROM Schedule_No), TRIM(BOTH FROM Colour), Order_Qty, Ex_Factory, Customer_Order_No, Buyer_Division, Size, Packing_Method,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H,Destination FROM m3_inputs.shipment_plan WHERE CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) NOT IN (SELECT CONCAT(TRIM(order_style_no),TRIM(order_del_no),TRIM(order_col_des)) FROM bai_pro3.bai_orders_db) ORDER BY TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)";
+	echo $sql23."<br>";
+	$result23=mysqli_query($link, $sql23) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if($result23)
 	{
 		print("M3 to SFCS Sync Successfully Completed")."\n";
 	}
-
 	$sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_SP_1\")";
 	$res1=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($res1)
@@ -75,7 +80,7 @@ function isNumber($c)
 	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"ssc_plan_process.php\"; }</script>";
 ?>
 <?php
-$username="ber_databasesvc";
+	$username="ber_databasesvc";
 	$username_val="orderdetail_plan_".$username.date("YmdHis");
 	$sql="CREATE TEMPORARY TABLE temp_pool_db.$username_val ENGINE=MyISAM select DISTINCT MO_NUMBER,TRIM(BOTH FROM Style) as Style,TRIM(BOTH FROM SCHEDULE) as SCHEDULE,TRIM(BOTH FROM GMT_Color) as GMT_Color,GMT_Size,MO_Qty FROM $m3_inputs.order_details WHERE MO_Released_Status_Y_N='Y'";
 	// echo $sql."<br>";
@@ -108,6 +113,7 @@ $username="ber_databasesvc";
 			{
 				$color=str_pad($sql_row2['color'],"30"," ");
 				$ssc_code=$style.$sch_no.$color;
+				// echo $ssc_code."<br>";
 				$style_id=check_style($style);
 				// echo "<br><br>".$style." Len=".strlen($style_id)."<br><br>";
 				if(strlen($style_id)==0)
@@ -297,9 +303,12 @@ $username="ber_databasesvc";
 					// if($order_qty>=0)
 					{
 						$sql3="insert ignore into $bai_pro3.bai_orders_db (order_tid) values (\"$ssc_code\")";
+						echo $sql3."<br><br>";
+
 						mysqli_query($link, $sql3) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 						
 						$sql3="update $bai_pro3.bai_orders_db set order_embl_a=$order_embl_a,order_embl_b=$order_embl_b,order_embl_c=$order_embl_c,order_embl_d=$order_embl_d,order_embl_e=$order_embl_e,order_embl_f=$order_embl_f,order_embl_g=$order_embl_g,order_embl_h=$order_embl_h where order_tid=\"$ssc_code\" and (order_embl_a+order_embl_b+order_embl_c+order_embl_d+order_embl_e+order_embl_f+order_embl_g+order_embl_h)=0";
+						echo $sql3."<br><br>";
 						mysqli_query($link, $sql3) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if($flag==1)
 						{	
@@ -312,7 +321,7 @@ $username="ber_databasesvc";
 								$vpo=$sql_row3['VPO_NO'];
 							}
 							$sql31="update $bai_pro3.bai_orders_db set vpo=\"$vpo\", packing_method=\"$packing_method\",destination=\"$destination\", zfeature=\"$zfeature\", style_id=\"$style_id\",  order_style_no=\"$style\", order_del_no=\"$sch_no\", order_col_des=\"$color\", order_s_".$size[$size_ref]."=$order_qty,title_size_".$size[$size_ref]."=\"".trim($size_code)."\",order_date=\"$exfact_date\",title_flag=\"$flag\", order_po_no=\"$cpo\",co_no=\"$cpo\", order_div=\"$buyer_div\" where order_tid=\"$ssc_code\"";//co_no added on 2017-12-23
-							// echo $sql31."<br>";
+							echo $sql31."<br><br>";
 							mysqli_query($link, $sql31) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$size_ref=$size_ref+1;
 						}
@@ -322,8 +331,8 @@ $username="ber_databasesvc";
 			}
 		}
 	}
-	$sql3="delete from $bai_pro3.shipment_plan";
-	mysqli_query($link,$sql3) or exit("Sql Error".mysql_error());
+	// $sql3="delete from $bai_pro3.shipment_plan";
+	// mysqli_query($link,$sql3) or exit("Sql Error".mysql_error());
 
 	$sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_SP_2\")";
 	mysqli_query($link, $sql3) or exit("Sql Error27".mysqli_error($GLOBALS["___mysqli_ston"]));

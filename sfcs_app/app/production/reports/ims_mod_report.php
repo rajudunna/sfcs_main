@@ -73,46 +73,33 @@ while($row=mysqli_fetch_array($result))
 	
 
 
-	$sql1="select ims_style,ims_schedule,ims_color,ims_doc_no,ims_size from $bai_pro3.ims_log where pac_tid='$bundle_number'";
-
-	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql1="SELECT order_style_no,order_del_no,order_col_des,size_code FROM bai_pro3.`packing_summary_input` WHERE tid='$bundle_number' AND input_job_no='$job_no'";		
+    $result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
-		$ims_style=$row1['ims_style'];
-		$ims_schedule=$row1['ims_schedule'];
-		$ims_color=$row1['ims_color'];
-		$docket_no=$row1['ims_doc_no'];
-        $ims_size=$row1['ims_size'];
-        $ims_size2=substr($ims_size,2);
+		$style=$row1['order_style_no'];
+		$schedule=$row1['order_del_no'];
+		$color=$row1['order_col_des'];
+        $size=$row1['size_code'];
+     
 	
-
-	 $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no='$docket_no' and a_plies>0";
-      //echo $sql22;
-      $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1222".mysqli_error($GLOBALS["___mysqli_ston"]));      
-      while($sql_row22=mysqli_fetch_array($sql_result22))
-      {
-        $order_tid=$sql_row22['order_tid'];
-      } 
-      
-      
-      $size_value=ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link);
 
 	$x++;
 	
 
-	$print_sheet=getFullURLLevel($_GET["r"],"ims_barcode.php",0,"R");
+	//$print_sheet=getFullURLLevel($_GET["r"],"ims_barcode.php",0,"R");
 
 	echo "<tr>";
 	echo "<td>".$x."</td>";
 	echo "<td>".$bundle_number."</td>";
-	echo "<td>".$ims_style."</td>";
-	echo "<td>".$ims_schedule."</td>";
+	echo "<td>".$style."</td>";
+	echo "<td>".$schedule."</td>";
 	echo "<td>".$job_no."</td>";
 
-	echo "<td>".$ims_color."</td>";
+	echo "<td>".$color."</td>";
 	echo "<td>".$module."</td>";
 	echo "<td>".$bundle_number."</td>";
-	echo "<td>".$size_value."</td>";
+	echo "<td>".$size."</td>";
 	echo "<td>".$quantity."</td>";
 	// echo "<td>" ."<a href='javascript:void(0);' onClick='printPage(printsection.innerHTML)' class='btn btn-warning'>Print</a>".
 	// "</td>";

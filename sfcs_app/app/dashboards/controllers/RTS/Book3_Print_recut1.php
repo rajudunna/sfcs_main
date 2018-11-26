@@ -333,30 +333,21 @@ if($print_status==NULL)
 	}
 }
 */
-if($category=='Body' || $category=='Front')
+	$binding_con=0;
+	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
+	if($sql_num_check > 0)
 	{
-		$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
-		// echo $sql2;
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$rows=mysqli_num_rows($sql_result2);
-		if($rows > 0)
+		while($sql_row2=mysqli_fetch_array($sql_result))
 		{
-			while($sql_row2=mysqli_fetch_array($sql_result2))
-			{
-				$binding_con = $sql_row2['binding_con'];
-				$bind_con= $binding_con *($a_ratio_tot*$plies);
-				//$bind_con = $sql_row2['binding_con'];
-			}
-		}
-		else
-		{
-			$bind_con=0;
+			$binding_con = $sql_row2['binding_consumption'];
+			$bind_con= $binding_con *($a_ratio_tot*$plies);
 		}
 	}
 	else
 	{
 		$bind_con=0;
-		
 	}
 //To allocate Lot Number for RM Issuing
 ?>
@@ -1987,7 +1978,7 @@ tags will be replaced.-->
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
-  <td colspan=6 rowspan=3 class=xl674118></td>
+  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2495,6 +2486,7 @@ $tot_plies=0;  $tot_ctex=0;  $tot_tick_len=0;  $tot_length = 0;  $tot_width = 0;
 		<td class=x0008 style="width: 80px;"  rowspan="2">Lot No</td>
 		<td class=x0008 rowspan="2">Label</td>
 		<td class=x0008 rowspan="2">Shade</td>
+		<td class=x0008 rowspan="2">Location</td>
 		<td class=x0008 rowspan="2">Roll<br>No</td>
 		<td class=x0008 rowspan="2">Ticket<br>Length</td>
 		<td class=x0008 rowspan="2">C-Tex<br>Length</td>
@@ -2526,6 +2518,7 @@ $tot_plies=0;  $tot_ctex=0;  $tot_tick_len=0;  $tot_length = 0;  $tot_width = 0;
 					<td class=x0008>".$lot_det[$i]."</td>
 					<td class=x0008>".$roll_id[$i]."</td>
 					<td class=x0008>".$shade_det[$i]."</td>
+					<td class=x0008>".$locan_det[$i]."</td>
 					<td class=x0008>".$roll_det[$i]."</td>
 					<td class=x0008>".$tkt_len[$i]."</td>
 					<td class=x0008>".$ctex_len[$i]."</td>
@@ -2572,13 +2565,14 @@ $tot_plies=0;  $tot_ctex=0;  $tot_tick_len=0;  $tot_length = 0;  $tot_width = 0;
 					<td class=x0008></td>
 					<td class=x0008></td>
 					<td class=x0008></td>
+					<td class=x0008></td>
 				</tr>";
 		}
 		?>
 	</tr>
 	<tr>
 		<td height=20 class=xl674118 style='height:15.0pt'></td>
-		<td colspan=6 class=x0008>Total </td>
+		<td colspan=7 class=x0008>Total </td>
 		<?php
 			echo "
 				<td class=x0008>".$tot_tick_len."</td>
@@ -2727,6 +2721,7 @@ echo "</tr>";
   <td class=xl654118></td>
   <td class=xl6315551 colspan="3"><u><strong>Quality Authorisation</strong></u></td>
  </tr>
+ <br/>
  <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
   <td class=xl764118>Group</td>

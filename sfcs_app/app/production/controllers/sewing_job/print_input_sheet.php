@@ -15,7 +15,11 @@
 <?php
     include("../../../../common/config/config.php");
     include("../../../../common/config/functions.php");
-    $schedule=$_GET["schedule"]; 
+    $schedule=$_GET["schedule"];
+    if (isset($_GET['seq_no']))
+    {
+    	$seq_no = $_GET['seq_no'];
+    }
     // $schedule_split=explode(",",$schedule); 
     //echo $schedule;
     error_reporting(0);
@@ -43,7 +47,7 @@
 				<div class="panel-heading"><b>Ratio Sheet (Sewing Job wise)</b></div>
 				<div class="panel-body">	
 					<div id="upperbody">				
-						<div style="float:right"><img src="../../common/images/Book1_29570_image003_v2.png" width="250px"/></div>
+						<div style="float:right"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></div>
 						<?php
 							$sql="select distinct order_del_no as sch,order_tid from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
 							// echo $sql."<br>";
@@ -54,7 +58,8 @@
 								$order_tid = $row["order_tid"];
 							}
 
-							$sql2="select distinct packing_mode as mode from $bai_pro3.packing_summary_input where order_del_no in (".$schedule.") ";
+							$sql2="select distinct packing_mode as mode from $bai_pro3.packing_summary_input where order_del_no in (".$schedule.") and pac_seq_no=$seq_no";
+
 							$result2=mysqli_query($link, $sql2) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($row2=mysqli_fetch_array($result2))
 							{
@@ -79,7 +84,7 @@
 							<tr><th>Style </th><td>:</td> <td><?php echo $disStyle;?></td></tr>
 							<tr><th>Schedule </th> <td>:</td> <td><?php echo $joinSch;?></td></tr>
 							<tr><th>Color </th> <td>:</td> <td><?php echo $disColor;?></td></tr>
-							<tr><th>Input Job Model </th> <td>:</td> <td><b><?php echo $operation[$packing_mode];?></b></td></tr>
+							<tr><th>Sewing Job Model </th> <td>:</td> <td><b><?php echo $operation[$packing_mode];?></b></td></tr>
 							</table>
 						</div>
 					</div><br><br><br><br><br><br><br><br>
@@ -124,12 +129,14 @@
 							$flg = 0;
 							for($ss=0;$ss<sizeof($samples_size_arry);$ss++)
 							{
-								if($size_code == $samples_size_arry[$ss]){
+								if($size_code == $samples_size_arry[$ss])
+								{
 									echo "<td class=\"sizes\">".$samples_input_qty_arry[$ss]."</td>";
 									$flg = 1;
 								}			
 							}	
-							if($flg == 0){
+							if($flg == 0)
+							{
 								echo "<td class=\"sizes\"><strong>-</strong></td>";
 							}
 						}		
@@ -187,7 +194,7 @@
 						echo "<th>Color</th>";
 						echo "<th>Cut Job#</th>";
 						echo "<th>Delivery Date</th>";
-						echo "<th>Input Job#</th>";
+						echo "<th>Sewing Job#</th>";
 						for($i=0;$i<sizeof($size_array);$i++)
 						{
 							echo "<th align=\"center\">".$orginal_size_array[$i]."</th>";
@@ -195,13 +202,13 @@
 						echo "<th>Total</th>";
 						echo "</thead></tr>";
 
-						$sql="select distinct input_job_no as job, type_of_sewing from $bai_pro3.packing_summary_input where order_del_no in ($schedule) order by input_job_no*1";
+						$sql="select distinct input_job_no as job, type_of_sewing from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and pac_seq_no=$seq_no order by input_job_no*1";
 						// echo $sql."<br>";
 						$result=mysqli_query($link, $sql) or die("Error8-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($result))
 						{
 							$type_of_sewing = $sql_row["type_of_sewing"];
-							$sql1="select GROUP_CONCAT(DISTINCT acutno) AS acutno,group_concat(distinct order_del_no) as del_no,group_concat(distinct doc_no) as doc_nos from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and input_job_no='".$sql_row["job"]."' ";
+							$sql1="select GROUP_CONCAT(DISTINCT acutno) AS acutno,group_concat(distinct order_del_no) as del_no,group_concat(distinct doc_no) as doc_nos from $bai_pro3.packing_summary_input where pac_seq_no=$seq_no and order_del_no in ($schedule) and input_job_no='".$sql_row["job"]."' ";
 							// echo $sql1."<br>";
 							$result1=mysqli_query($link, $sql1) or die("Error88-".$sql1."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row1=mysqli_fetch_array($result1))
@@ -210,7 +217,7 @@
 								$acutno_ref=$sql_row1["acutno"];
 
 								//$sql2d="select group_concat(distinct destination) as dest from plandoc_stat_log where doc_no in (".$doc_nos_des.") and acutno='".$acutno_ref."'";
-								$sql2d="select group_concat(distinct destination) as dest from $bai_pro3.pac_stat_log_input_job where doc_no in (".$doc_nos_des.")";
+								$sql2d="select group_concat(distinct destination) as dest from $bai_pro3.pac_stat_log_input_job where doc_no in (".$doc_nos_des.") and pac_seq_no=$seq_no";
 								$result2d=mysqli_query($link, $sql2d) or die("Error888-".$sql2d."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row2d=mysqli_fetch_array($result2d))
 								{
@@ -230,7 +237,7 @@
 									$vpo=$sql_row2["vpo"];
 								}
 
-								$sql_cut="select GROUP_CONCAT(DISTINCT order_col_des) AS color, GROUP_CONCAT(DISTINCT acutno) AS cut, SUM(carton_act_qty) AS totqty from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and input_job_no='".$sql_row["job"]."'";
+								$sql_cut="select GROUP_CONCAT(DISTINCT order_col_des) AS color, GROUP_CONCAT(DISTINCT acutno) AS cut, SUM(carton_act_qty) AS totqty from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and pac_seq_no=$seq_no and input_job_no='".$sql_row["job"]."'";
 								// echo $sql_cut.'<br>';
 								$result_cut=mysqli_query($link, $sql_cut) or die("Error9-".$sql_cut."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row_cut=mysqli_fetch_array($result_cut))
@@ -240,7 +247,7 @@
 									$color=$sql_row_cut["color"];
 								}
 
-								$get_cut_no="SELECT GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno from $bai_pro3.packing_summary_input WHERE order_del_no = '$schedule' and input_job_no='".$sql_row["job"]."' ";
+								$get_cut_no="SELECT GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno from $bai_pro3.packing_summary_input WHERE pac_seq_no=$seq_no and order_del_no = '$schedule' and input_job_no='".$sql_row["job"]."' ";
 								// echo $get_cut_no.'<br>';
 								$result_cut_no=mysqli_query($link, $get_cut_no) or die("Error92-".$get_cut_no."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row_cut_no=mysqli_fetch_array($result_cut_no))
@@ -302,13 +309,13 @@
 								echo "<td height=20 style='height:15.0pt'>".$display."</td>";
 								for($i=0;$i<sizeof($size_array);$i++)
 								{
-									$sql7="SELECT * FROM $bai_pro3.packing_summary_input where order_del_no in (".$sql_row1["del_no"].")  and size_code='".$orginal_size_array[$i]."' and input_job_no='".$sql_row["job"]."' and acutno in (".$acutno_ref.")";
+									$sql7="SELECT * FROM $bai_pro3.packing_summary_input where order_del_no in (".$sql_row1["del_no"].")  and size_code='".$orginal_size_array[$i]."' and pac_seq_no=$seq_no and input_job_no='".$sql_row["job"]."' and acutno in (".$acutno_ref.")";
 									// echo $sql7."<br>";
 									$result7=mysqli_query($link, $sql7) or die("Error7-".$sql7."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 									$rows_count=mysqli_num_rows($result7);
 									if($rows_count > 0)
 									{
-										$sql5="SELECT round(sum(carton_act_qty),0) as qty FROM $bai_pro3.packing_summary_input where size_code='".$orginal_size_array[$i]."' and order_del_no in (".$sql_row1["del_no"].") and input_job_no='".$sql_row["job"]."' and acutno in (".$acutno_ref.")";
+										$sql5="SELECT round(sum(carton_act_qty),0) as qty FROM $bai_pro3.packing_summary_input where size_code='".$orginal_size_array[$i]."' and order_del_no in (".$sql_row1["del_no"].") and pac_seq_no=$seq_no and input_job_no='".$sql_row["job"]."' and acutno in (".$acutno_ref.")";
 										// echo $sql5."<br>";
 										$result5=mysqli_query($link, $sql5) or die("Error969-".$sql5."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 										while($sql_row5=mysqli_fetch_array($result5))
@@ -331,16 +338,20 @@
 						$o_total=0;
 						echo "<tr>";
 						echo "<th colspan=9  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;font-size:14px;\"> Total</th>";
-						$sql1="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE  order_del_no IN ($joinSch) GROUP BY old_size";
-						//echo $sql1;
-						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error996".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($sql_row1=mysqli_fetch_array($sql_result1))
-						{
-							$o_s=$sql_row1['qty'];
-							if ($o_s!=0) {	echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s."</th>"; }
-							$o_total=$o_s+$o_total;
-							//echo $o_total;
+						for ($i=0; $i < sizeof($size_array); $i++)
+						{ 
+							$sql1="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE  order_del_no IN ($joinSch) and size_code='$orginal_size_array[$i]'";
+							//echo $sql1;
+							$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error996".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row1=mysqli_fetch_array($sql_result1))
+							{
+								$o_s=$sql_row1['qty'];
+								if ($o_s!=0) {	echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s."</th>"; }
+								$o_total=$o_s+$o_total;
+								//echo $o_total;
+							}
 						}
+							
 						echo "<th  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">$o_total</th>";
 						echo "</tr>";
 

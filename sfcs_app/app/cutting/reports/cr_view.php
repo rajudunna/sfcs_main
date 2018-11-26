@@ -311,7 +311,6 @@ if(isset($_POST['submit']))
 	
 	
 	$sql="select tid from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category=\"$category\"";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -437,12 +436,13 @@ if(isset($_POST['submit']))
 		$doc_req=$mk_length*$a_plies;
 		
 		
-		$sql11="select * from $bai_pro3.cat_stat_log where tid=$cat_id";
-		mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql11="select catyy,COALESCE(binding_consumption,0) AS binding_consumption from $bai_pro3.cat_stat_log where tid=$cat_id";
 		$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row11=mysqli_fetch_array($sql_result11))
 		{
 			$cat_yy=$sql_row11['catyy'];
+			$binding_consumption=$sql_row11['binding_consumption'];
+
 		}	
 	
 		$net_util=$fab_rec-$fab_ret-$damages-$shortages;
@@ -464,7 +464,6 @@ if(isset($_POST['submit']))
 	$new_order_qty=0;
 	$sql2="select * from $bai_pro3.maker_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_id";
 
-	mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -472,7 +471,6 @@ if(isset($_POST['submit']))
 		$new_allocate_ref=$sql_row2['allocate_ref'];
 		
 		$sql22="select * from $bai_pro3.allocate_stat_log where tid=$new_allocate_ref";
-		mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row22=mysqli_fetch_array($sql_result22))
 		{
@@ -482,7 +480,6 @@ if(isset($_POST['submit']))
 	}
 	
 	$sql2="select (order_s_s01+order_s_s02+order_s_s03+order_s_s04+order_s_s05+order_s_s06+order_s_s07+order_s_s08+order_s_s09+order_s_s10+order_s_s11+order_s_s12+order_s_s13+order_s_s14+order_s_s15+order_s_s16+order_s_s17+order_s_s18+order_s_s19+order_s_s20+order_s_s21+order_s_s22+order_s_s23+order_s_s24+order_s_s25+order_s_s26+order_s_s27+order_s_s28+order_s_s29+order_s_s30+order_s_s31+order_s_s32+order_s_s33+order_s_s34+order_s_s35+order_s_s36+order_s_s37+order_s_s38+order_s_s39+order_s_s40+order_s_s41+order_s_s42+order_s_s43+order_s_s44+order_s_s45+order_s_s46+order_s_s47+order_s_s48+order_s_s49+order_s_s50) as \"sum\" from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
-	mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -491,14 +488,7 @@ if(isset($_POST['submit']))
 	
 	//Binding Consumption / YY Calculation
 	
-	$sql2="select COALESCE(binding_con,0) as \"binding_con\" from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row2=mysqli_fetch_array($sql_result2))
-	{
-		$bind_con=$sql_row2['binding_con'];
-	}
-	
-	$newyy+=($new_order_qty*$bind_con);
+	$newyy+=($new_order_qty*$binding_consumption);
 	
 	//Binding Consumption / YY Calculation
 	$newyy2=0;
