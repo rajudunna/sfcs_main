@@ -19,8 +19,13 @@
 	
     <script src="assets/js/base64.min.js"></script>
     <script src="assets/js/angular.min.js"></script>
-	    <script src="assets/vendors/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="assets/css/jquery-ui.css"  />
+    <link rel="stylesheet" href="assets/css/jquery.multiselect.css" />
+    <script src="assets/vendors/jquery/dist/jquery.min.js"></script>
+    <script src="assets/js/jquery-1.12.4.js"></script>
+    <script src="assets/js/jquery-ui.js"></script>
 	<script src="assets/js/jquery.dataTables.js"></script>
+    <script src="assets/js/jquery.multiselect.js"></script>
     <script src="assets/js/app.js"></script>
 
     <script src="assets/vendors/select2/dist/js/select2.min.js"></script>
