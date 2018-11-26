@@ -6,7 +6,7 @@ $doc_no = $_GET['doc_no'];
 $response_data = array();
 $op_code = 15;
 
-$doc_status_query  = "SELECT a_plies,p_plies,acutno,act_cut_status from $bai_pro3.plandoc_stat_log 
+$doc_status_query  = "SELECT a_plies,p_plies,acutno,act_cut_status,order_tid from $bai_pro3.plandoc_stat_log 
                     where doc_no = '$doc_no'";
 $doc_status_result = mysqli_query($link,$doc_status_query);
 if(mysqli_num_rows($doc_status_result)>0){
@@ -26,7 +26,7 @@ if(mysqli_num_rows($doc_status_result)>0){
 }
 
 //Validation for fabric status
-/*
+
 $validation_query = "SELECT cat_ref,fabric_status,category from $bai_pro3.order_cat_doc_mk_mix 
                     where doc_no=$doc_no";
 $validation_result = mysqli_query($link,$validation_query);
@@ -48,10 +48,11 @@ if(mysqli_num_rows($validation_result)>0){
     echo json_encode($response_data);
     exit();
 }
-*/
+
 //getting the target doc type 
-$target_query  = "SELECT order_del_no,order_joins from $bai_pro3.bai_orders_db where order_tid = '$order_tid' where                      order_joins IN (1,2) limit 1";
-$target_result = mysqli_query($link,$tqrget_query);
+$target_query  = "SELECT order_del_no,order_joins from $bai_pro3.bai_orders_db_confirm 
+                where order_tid = '$order_tid' and order_joins IN (1,2) limit 1";               
+$target_result = mysqli_query($link,$target_query);
 if(mysqli_num_rows($target_result) > 0){
     $row = mysqli_fetch_array($target_result);
     $schedule = $row['order_del_no'];
@@ -63,10 +64,18 @@ if(mysqli_num_rows($target_result) > 0){
     $target_doc_type = 'normal';
 }
 
+//if clubbed docket then getting all child dockets
+$child_docs_query = "SELECT GROUP_CONCAT(doc_no) as doc_no 
+                from $bai_pro3.plandoc_stat_log where org_doc_no = '$doc_no' ";
+$child_docs_result = mysqli_query($link,$child_docs_query);
+while($row = mysqli_fetch_array($child_docs_result)){
+    $doc_no = $row['doc_no'];
+}
+
 $doc_details_query = "SELECT SUM(send_qty) as send,SUM(recevied_qty) as good,SUM(rejected_qty) as rej,
                     style,schedule,mapped_color 
                     from $brandix_bts.bundle_creation_data 
-                    where docket_number = '$doc_no' and operation_id = $op_code";
+                    where docket_number IN ($doc_no) and operation_id = $op_code";
 $doc_details_result = mysqli_query($link,$doc_details_query);
 //echo $doc_details_query;
 if(mysqli_num_rows($doc_details_result)>0){
@@ -104,13 +113,13 @@ if($a_plies == $p_plies && $act_cut_status == 'DONE'){
 }else{
     $response_data['cut_done'] = 0;
     $response_data['avl_plies'] = $p_plies;
+   
 }
 
-if($a_plies != $p_plies && $act_cut_status == 'DONE')
+if($a_plies != $p_plies && $act_cut_status == 'DONE'){
     $response_data['avl_plies'] = $p_plies - $a_plies;
-
-if($a_plies != $p_plies && $act_cut_status == 'DONE')
     $response_data['partial'] = 1;
+}
 
 $response_data['doc_no'] = $doc_no;
 $response_data['doc_qty'] = $doc_no;

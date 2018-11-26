@@ -249,8 +249,8 @@ while($row = mysqli_fetch_array($location_result))
             <table class='table table-bordered' id='reported_table'>
                 <tr class='danger'>
                     <td>Docket</td>
-                    <td>Act Cut Status</td>
-                    <td>Cut Issue Status</td>
+                    <td>Total Docket Quantity</td>
+                    <td>Total Reported Quantity</td>
                     <td>Good Pieces</td>
                     <td>Rejected Pieces</td>
                     <td>Date</td>
@@ -452,7 +452,10 @@ while($row = mysqli_fetch_array($location_result))
         var color    = $('#post_color').val();
 
         //Screen Validations
-        
+        if(c_plies == 0){
+            swal('Error','Please Enter Reporting Plies','error');
+            return false;
+        }
         if(c_plies > avl_plies){
             swal('Warning','The Reporting Plies are more than, that are to be Reported','error');
             return false;
@@ -465,10 +468,7 @@ while($row = mysqli_fetch_array($location_result))
             swal('Warning','Please Select Shift , Cut Table , Team Leader ,Bundle Location','warning');
             return false;
         }
-        if(c_plies == 0){
-            swal('Error','Please Enter Reporting Plies','error');
-            return false;
-        }
+       
         if(ret > 0){
             if(returned_to == null){
                 swal('Select Fabric Returned to Cutting / RM','','warning');
@@ -532,7 +532,7 @@ while($row = mysqli_fetch_array($location_result))
             avl_plies = Number(data.avl_plies);
             console.log(data);
             console.log(data.avl_plies);
-            /*
+            
             if(data.can_report == '0'){
                 swal('Error','You Cannot Report This Docket','error');
                 return false;
@@ -541,13 +541,11 @@ while($row = mysqli_fetch_array($location_result))
                 swal('Error','Fabric is not yet issued for this Docket','error');
                 return false;
             }
-            */
+            
             if(data.error == '1'){
                 swal('Error','Docket Doesnt Exist','error');
                 return false;
             }
-
-            if(data.doc_target_type == 'normal')
 
             if(data.partial == '1'){
                 $('#hide_details_reported').css({'display':'block'});
