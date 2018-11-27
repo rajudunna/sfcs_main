@@ -724,48 +724,48 @@ $table.=$table_temp;
 // $table_temp="</table>";
 
 
-$table_temp="<tr height=21 style='mso-height-source:userset;height:15.75pt'>
-  <td height=21 class=xl955896 style='height:15.75pt'></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  <td class=xl955896></td>
-  </tr>";
-  echo $table_temp;
-	$table.=$table_temp;
+// $table_temp="<tr height=21 style='mso-height-source:userset;height:15.75pt'>
+//   <td height=21 class=xl955896 style='height:15.75pt'></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   <td class=xl955896></td>
+//   </tr>";
+//   echo $table_temp;
+// 	$table.=$table_temp;
   $grand_total_nop_x=0; 
 }
 /* }  NEW */
