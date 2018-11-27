@@ -359,5 +359,294 @@ function ReplaceProcess($replace_id_edit)
     }
         echo $html;
 }
+if(isset($_GET['recut_doc_id']))
+{
+	$recut_doc_id = $_GET['recut_doc_id'];
+	if($recut_doc_id != '')
+	{
+		getDocketDetails($recut_doc_id);
+	}
+}
+function getDocketDetails($recut_doc_id)
+{
+    include("../../../../common/config/config_ajax.php");
+    $get_details_qry = "SELECT DISTINCT category FROM `bai_pro3`.`recut_v2_child` rc LEFT JOIN `brandix_bts`.`tbl_orders_ops_ref` ops
+    ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_doc_id order by category";
+    $result_get_details_qry = $link->query($get_details_qry);
+    while($row = $result_get_details_qry->fetch_assoc()) 
+    {
+        // var_dump($row);\
+        $cat = $row['category'];
+        $category=['cutting','Send PF','Receive PF'];
+        if(in_array($cat,$category))
+        {
+            $getting_full_cut_details = "SELECT SUM(`recut_reported_qty`) AS recut_reported_qty,size_title,rejc.`doc_no`,SUM(rc.recut_qty)AS recut_qty,SUM(rc.rejected_qty)AS rejected_qty,SUM(rc.issued_qty)AS issued_qty,rc.parent_id, 
+            size_title,size_id,assigned_module FROM `bai_pro3`.`recut_v2_child` rc 
+            LEFT JOIN `brandix_bts`.`tbl_orders_ops_ref` ops ON ops.operation_code = rc.`operation_id` 
+            LEFT JOIN `bai_pro3`.`rejection_log_child` rejc ON rejc.`bcd_id`=rc.`bcd_id` 
+            WHERE rc.parent_id = '$recut_doc_id' AND category = '$cat' GROUP BY doc_no,size_title";
+          $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Recut Qty</th><th>Recut Reported Qty</th><th>Issued Qty</th><th>Remaining Qty</th></tr></thead><tbody>";
+        }
+        else
+        {
+            $getting_full_cut_details = "SELECT SUM(`recut_reported_qty`) AS recut_reported_qty,input_job_no_random_ref,assigned_module,size_title,SUM(rc.recut_qty)AS recut_qty,SUM(rc.rejected_qty)AS rejected_qty,SUM(rc.issued_qty)AS issued_qty,rc.parent_id, 
+            size_title,size_id,assigned_module FROM `bai_pro3`.`recut_v2_child` rc 
+            LEFT JOIN `brandix_bts`.`tbl_orders_ops_ref` ops ON ops.operation_code = rc.`operation_id`
+            LEFT JOIN `bai_pro3`.`rejection_log_child` rejc ON rejc.`bcd_id`=rc.`bcd_id` 
+            WHERE rc.parent_id = '$recut_doc_id' AND category = '$cat' GROUP BY input_job_no_random_ref,assigned_module,size_title";
+           $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Recut Qty</th><th>Recut Reported Qty</th><th>Issued Qty</th><th>Remaining Qty</th></tr></thead><tbody>";
+        }
+        // $getting_full_cut_details.'</br>';
+        $result_getting_full_cut_details = $link->query($getting_full_cut_details);
+        $html .= '<div class="panel-group">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">'.$row['category'].'</div>
+                        <div class="panel-body">';
+        while($row_cat = $result_getting_full_cut_details->fetch_assoc()) 
+        {
+            if(in_array($cat,$category))
+            {
+                $table_data .= "<tr><td>".$row_cat['doc_no']."</td>";
+                $table_data .= "<td>".$row_cat['size_title']."</td>";
+            }
+            else
+            {
+                $table_data .= "<tr><td>".$row_cat['input_job_no_random_ref']."</td>";
+                $table_data .= "<td>".$row_cat['assigned_module']."</td>";
+                $table_data .= "<td>".$row_cat['size_title']."</td>";
+            }
+            $rej_qty = $row_cat['rejected_qty'];
+            $recut_qty = $row_cat['recut_qty'];
+            $issued_qty = $row_cat['issued_qty'];
+            $remaining_qty =  $rej_qty- ($recut_qty + $issued_qty);
+            $table_data .= "<td>".$row_cat['rejected_qty']."</td>";
+            $table_data .= "<td>".$row_cat['recut_qty']."</td>";
+            $table_data .= "<td>".$row_cat['recut_reported_qty']."</td>";
+            $table_data .= "<td>".$row_cat['issued_qty']."</td>";
+            $table_data .= "<td>".$remaining_qty."</td>";
+            // $table_data .= "<td>".$row_cat['issued_qty']."</td>";
+        }
+        $table_data .= "</tr></tbody></table>";
+        $html .= $table_data;
+        // $html .= $table_data;
+        $html .= '</div></div></div>';
+    }
+    echo $html;
+}
 
+if(isset($_GET['markers_update_doc_id']))
+{
+	$markers_update_doc_id = $_GET['markers_update_doc_id'];
+	if($markers_update_doc_id != '')
+	{
+		updatemarkers($markers_update_doc_id);
+	}
+}
+function updatemarkers($markers_update_doc_id)
+{
+    include("../../../../common/config/config_ajax.php");
+    $html = '';
+    $qry_cut_qty_check_qry = "SELECT *,bd.`order_style_no`,bd.`order_col_des`,bd.`order_del_no` FROM bai_pro3.recut_v2 rv LEFT JOIN bai_pro3.`bai_orders_db` bd ON bd.`order_tid` = rv.`order_tid`  WHERE doc_no = '$markers_update_doc_id' ";
+    // echo $qry_cut_qty_check_qry;
+	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
+	while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
+	{
+        // $doc_array[$row['doc_no']] = $row['act_cut_status'];
+        $style = $row['order_style_no'];
+        $schedule = $row['order_del_no'];
+        $color = $row['order_col_des'];
+        $a_plies = $row['a_plies'];
+        $order_tid = $row['order_tid'];
+        $remarks = $row['remarks'];
+		for ($i=0; $i < sizeof($sizes_array); $i++)
+		{ 
+			if ($row['a_'.$sizes_array[$i]] > 0)
+			{
+				$cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]];
+			}
+		}
+    }
+    $html .= '<div class="panel-group">
+                <div class="panel panel-success">
+                    <div class="panel-heading">Update Markers</div>
+                    <div class="panel-body">';
+    $html .= "<div class='row'>
+                <div class='col-md-4'>Style:$style</div>
+                <div class='col-md-4'>Schedule:$schedule</div>
+                <div class='col-md-4'>Color:$color</div>
+            </div>";
+    $html .= '</br></br>';
+    $html .= "<div class='row'>
+                <div class='col-md-3'></div>
+                <div class='col-md-3'><b>Marker Length</b>:<input class='form-control integer' name='mklen' value='0' required></td></div>
+                <div class='col-md-3'><b>Plies </b>:<input class='form-control integer' name='plies' value='$a_plies' required></td></div>
+                <div class='col-md-3'></div>
+            </div>";
+    $html .= '</br></br>';
+    $table_data .= "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Size</th><th>Quantity</th><th style='width: 29%;'>Ratio</th></tr></thead><tbody>";
+    foreach($cut_done_qty as $key=>$value)
+    {
+        $table_data .= "<input type='hidden' name ='size[]' value ='$key'>";
+        $quantity = $value*$a_plies;
+        $table_data .= "<tr><td>$key</td><td>$quantity</td><td><input class='form-control integer' name='ratioval[$key][]' value='$value' required></td></tr>";
+    }
+    //$qry_to_get = "SELECT * FROM  `bai_pro3`.`cat_stat_log` WHERE  order_tid = \"$order_tid\" and category = 'Body'";
+    $qry_to_get = "SELECT * FROM  `bai_pro3`.`cat_stat_log` WHERE  order_tid = 'CA3428F8       540734415 5GXBlue Granite           ' and category = 'Body'";
+    $res_qry_to_get = $link->query($qry_to_get);
+    while($row_cat_ref = $res_qry_to_get->fetch_assoc()) 
+    {
+        $cat_ref =$row_cat_ref['tid'];
+
+    }
+    $table_data .= "<input type='hidden' name ='style' value ='$style'>";
+    $table_data .= "<input type='hidden' name ='schedule' value ='$schedule'>";
+    $table_data .= "<input type='hidden' name ='color' value ='$color'>";
+    $table_data .= "<input type='hidden' name ='cat' value ='$cat_ref'>";
+    $table_data .= "<input type='hidden' name ='order_tid' value ='$order_tid'>";
+    $table_data .= "<input type='hidden' name ='module' value ='0'>";
+    $table_data .= "<input type='hidden' name ='cat_name' value ='$remarks'>";
+    $table_data .= "<input type='hidden' name ='doc_no_ref' value ='$markers_update_doc_id'>";
+
+
+    $table_data .= "</tbody></table>";
+    $html .= $table_data;
+    $html .= '</div></div></div>';
+    echo $html;
+}
+if(isset($_GET['markers_view_docket']))
+{
+	$markers_view_docket = $_GET['markers_view_docket'];
+	if($markers_view_docket != '')
+	{
+		Markersview($markers_view_docket);
+	}
+}
+function Markersview($markers_view_docket)
+{
+    $markers_view_docket_ary = explode(",",$markers_view_docket);
+    $markers_view_docket =$markers_view_docket_ary[0];
+    $flag =$markers_view_docket_ary[1];
+    include("../../../../common/config/config_ajax.php");
+    //getting order tid 
+    $qry_cut_qty_check_qry = "SELECT *,bd.`order_style_no`,bd.`order_col_des`,bd.`order_del_no` FROM bai_pro3.recut_v2 rv 
+    LEFT JOIN bai_pro3.`bai_orders_db_confirm` bd ON bd.`order_tid` = rv.`order_tid`
+    LEFT JOIN bai_pro3.maker_stat_log m ON m.tid = rv.`mk_ref`
+    WHERE doc_no =  '$markers_view_docket'";
+    // echo $qry_cut_qty_check_qry;
+	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
+	while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
+	{
+        // $doc_array[$row['doc_no']] = $row['act_cut_status'];
+        $style = $row['order_style_no'];
+        $schedule = $row['order_del_no'];
+        $color = $row['order_col_des'];
+        $a_plies = $row['a_plies'];
+        $order_tid = $row['order_tid'];
+        $mk_length = $row['mklength'];
+        $rm = $mk_length * $a_plies;
+        for ($i=0; $i < sizeof($sizes_array); $i++)
+		{ 
+			if ($row['a_'.$sizes_array[$i]] > 0)
+			{
+				$cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]];
+			}
+		}
+    }
+    $html .= '<div class="panel-group">
+                <div class="panel panel-success">
+                    <div class="panel-heading">Update Markers</div>
+                    <div class="panel-body">';
+    $html .= "<div class='row'>
+                <div class='col-md-4'>Style:$style</div>
+                <div class='col-md-4'>Schedule:$schedule</div>
+                <div class='col-md-4'>Color:$color</div>
+            </div>";
+    $html .= '</br></br>';
+    $html .= "<div class='row'>
+                <div class='col-md-4'><b>Marker Length</b>:$mk_length</td></div>
+                <div class='col-md-4'><b>Plies </b>:$a_plies</td></div>
+                <div class='col-md-4'><b>Required Materials </b>:$rm</td></div>
+            </div>";
+    $html .= '</br></br>';
+    $table_data .= "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Size</th><th>Quantity</th><th style='width: 29%;'>Ratio</th></tr></thead><tbody>";
+    foreach($cut_done_qty as $key=>$value)
+    {
+        $table_data .= "<input type='hidden' name ='size[]' value ='$key'>";
+        $quantity = $value*$a_plies;
+        $table_data .= "<tr><td>$key</td><td>$quantity</td><td>$value</td></tr>";
+    }
+    //$qry_to_get = "SELECT * FROM  `bai_pro3`.`cat_stat_log` WHERE  order_tid = \"$order_tid\" and category = 'Body'";
+    $qry_to_get = "SELECT * FROM  `bai_pro3`.`cat_stat_log` WHERE  order_tid = 'CA3428F8       540734415 5GXBlue Granite           ' and category = 'Body'";
+    $res_qry_to_get = $link->query($qry_to_get);
+    while($row_cat_ref = $res_qry_to_get->fetch_assoc()) 
+    {
+        $cat_ref =$row_cat_ref['tid'];
+
+    }
+    $table_data .= "<input type='hidden' name ='style' value ='$style'>";
+    $table_data .= "<input type='hidden' name ='schedule' value ='$schedule'>";
+    $table_data .= "<input type='hidden' name ='color' value ='$color'>";
+    $table_data .= "<input type='hidden' name ='cat' value ='$cat_ref'>";
+    $table_data .= "<input type='hidden' name ='order_tid' value ='$order_tid'>";
+    $table_data .= "<input type='hidden' name ='module' value ='0'>";
+    $table_data .= "<input type='hidden' name ='cat_name' value ='$remarks'>";
+    $table_data .= "<input type='hidden' name ='doc_no_ref' value ='$markers_update_doc_id'>";
+    $table_data .= "</tbody></table>";
+    $html .= $table_data;
+    $shifts_array = ["Available","Not Available"];
+    $html .= "<div class='row'><div class='col-md-3'></div><div class='col-md-3'></div><div class='col-md-3'>";
+    $drp_down = '<label>Required Materials: <span style="color:red">*</span></label>
+                    <select class="form-control shift"  name="shift" id="shift" style="width:100%;" required><option value="" required>Select Availability</option>';
+                    for ($i=0; $i < sizeof($shifts_array); $i++) 
+                    {
+                        $drp_down .= '<option value='.$shifts_array[$i].'>'.$shifts_array[$i].'</option>';
+                    }
+    $drop_down .= "</div></div>";
+    $html .= $drp_down; 
+    $html .= '</div></div></div>';
+    echo $html;
+    // if($order_status=="")
+    // {
+    //     // echo "working";
+    //     $sql1="SELECT v.mk_ref,v.a_plies,v.remarks,m.mklength 
+    //     FROM $bai_pro3.recut_v2 v LEFT JOIN $bai_pro3.maker_stat_log m ON v.mk_ref=m.tid 
+    //     WHERE  v.doc_no = $markers_view_docket";
+    //     $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    //     while($sql_row1=mysqli_fetch_array($sql_result1))
+    //     {
+    //         echo "<h2>".$sql_row1['remarks']."- ".($sql_row1['a_plies']*$sql_row1['mklength'])."</h2>";
+    //     }
+        
+        
+    //     echo "<form method=\"post\" name=\"test\" action=\""."$path4"."\">";
+    //     echo "<input type=\"hidden\" name=\"order_tid\" value=\"$order_tid\">";
+    //     echo "<input type=\"hidden\" name=\"cut_no_ref\" value=\"$cut_no_ref\">";
+    //     echo "<input type=\"hidden\" name=\"doc_no_ref\" value=\"$doc_no\">";
+    //     echo "<input type=\"hidden\" name=\"code_no_ref\" value=\"$code\">";
+        
+    //     echo "RM Fabric Status:<select name=\"status\">";
+    //     $status=array("","Available","Not Available");
+    //     for($i=1;$i<=2;$i++)
+    //     {
+    //         if($fab_status==$i)
+    //         {
+    //             echo "<option value=\"$i\" selected>".$status[$i]."</option>";
+    //         }
+    //         else
+    //         {
+    //             echo "<option value=\"$i\">".$status[$i]."</option>";
+    //         }
+    //     }
+    //     echo "</select>";
+        
+    //     echo "<input type=\"submit\" name=\"update\" value=\"Update\">";
+    //     echo "</form>";
+            
+    // }
+    // else
+    // {
+    //     echo "<h2 style='color:red;'> Order Status has closed for this schedule: <h2/>".$schedule."<br/>";
+    //     echo "<h2> Please check with the Planning Team <h2/>";
+    // }
+}
 ?>
