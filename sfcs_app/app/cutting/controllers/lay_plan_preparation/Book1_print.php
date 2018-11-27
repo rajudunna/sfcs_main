@@ -22,82 +22,82 @@
     $divide = 15;
 
     $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$style=$sql_row['order_style_no']; //Style
-	$color=$sql_row['order_col_des']; //color
-	$division=$sql_row['order_div'];
-	$delivery=$sql_row['order_del_no']; //Schedule
-	$pono=$sql_row['order_po_no']; //po
-	$color_code=$sql_row['color_code']; //Color Code
-	$orderno=$sql_row['order_no']; 
-	$o_s01=$sql_row['order_s_s01'];
-	$o_s02=$sql_row['order_s_s02'];
-	$o_s03=$sql_row['order_s_s03'];
-	$o_s04=$sql_row['order_s_s04'];
-	$o_s05=$sql_row['order_s_s05'];
-	$o_s06=$sql_row['order_s_s06'];
-	$o_s07=$sql_row['order_s_s07'];
-	$o_s08=$sql_row['order_s_s08'];
-	$o_s09=$sql_row['order_s_s09'];
-	$o_s10=$sql_row['order_s_s10'];
-	$o_s11=$sql_row['order_s_s11'];
-	$o_s12=$sql_row['order_s_s12'];
-	$o_s13=$sql_row['order_s_s13'];
-	$o_s14=$sql_row['order_s_s14'];
-	$o_s15=$sql_row['order_s_s15'];
-	$o_s16=$sql_row['order_s_s16'];
-	$o_s17=$sql_row['order_s_s17'];
-	$o_s18=$sql_row['order_s_s18'];
-	$o_s19=$sql_row['order_s_s19'];
-	$o_s20=$sql_row['order_s_s20'];
-	$o_s21=$sql_row['order_s_s21'];
-	$o_s22=$sql_row['order_s_s22'];
-	$o_s23=$sql_row['order_s_s23'];
-	$o_s24=$sql_row['order_s_s24'];
-	$o_s25=$sql_row['order_s_s25'];
-	$o_s26=$sql_row['order_s_s26'];
-	$o_s27=$sql_row['order_s_s27'];
-	$o_s28=$sql_row['order_s_s28'];
-	$o_s29=$sql_row['order_s_s29'];
-	$o_s30=$sql_row['order_s_s30'];
-	$o_s31=$sql_row['order_s_s31'];
-	$o_s32=$sql_row['order_s_s32'];
-	$o_s33=$sql_row['order_s_s33'];
-	$o_s34=$sql_row['order_s_s34'];
-	$o_s35=$sql_row['order_s_s35'];
-	$o_s36=$sql_row['order_s_s36'];
-	$o_s37=$sql_row['order_s_s37'];
-	$o_s38=$sql_row['order_s_s38'];
-	$o_s39=$sql_row['order_s_s39'];
-	$o_s40=$sql_row['order_s_s40'];
-	$o_s41=$sql_row['order_s_s41'];
-	$o_s42=$sql_row['order_s_s42'];
-	$o_s43=$sql_row['order_s_s43'];
-	$o_s44=$sql_row['order_s_s44'];
-	$o_s45=$sql_row['order_s_s45'];
-	$o_s46=$sql_row['order_s_s46'];
-	$o_s47=$sql_row['order_s_s47'];
-	$o_s48=$sql_row['order_s_s48'];
-	$o_s49=$sql_row['order_s_s49'];
-	$o_s50=$sql_row['order_s_s50'];
+    $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $sql_num_check=mysqli_num_rows($sql_result);
+    while($sql_row=mysqli_fetch_array($sql_result))
+    {
+        $style=$sql_row['order_style_no']; //Style
+        $color=$sql_row['order_col_des']; //color
+        $division=$sql_row['order_div'];
+        $delivery=$sql_row['order_del_no']; //Schedule
+        $pono=$sql_row['order_po_no']; //po
+        $color_code=$sql_row['color_code']; //Color Code
+        $orderno=$sql_row['order_no']; 
+        $o_s01=$sql_row['order_s_s01'];
+        $o_s02=$sql_row['order_s_s02'];
+        $o_s03=$sql_row['order_s_s03'];
+        $o_s04=$sql_row['order_s_s04'];
+        $o_s05=$sql_row['order_s_s05'];
+        $o_s06=$sql_row['order_s_s06'];
+        $o_s07=$sql_row['order_s_s07'];
+        $o_s08=$sql_row['order_s_s08'];
+        $o_s09=$sql_row['order_s_s09'];
+        $o_s10=$sql_row['order_s_s10'];
+        $o_s11=$sql_row['order_s_s11'];
+        $o_s12=$sql_row['order_s_s12'];
+        $o_s13=$sql_row['order_s_s13'];
+        $o_s14=$sql_row['order_s_s14'];
+        $o_s15=$sql_row['order_s_s15'];
+        $o_s16=$sql_row['order_s_s16'];
+        $o_s17=$sql_row['order_s_s17'];
+        $o_s18=$sql_row['order_s_s18'];
+        $o_s19=$sql_row['order_s_s19'];
+        $o_s20=$sql_row['order_s_s20'];
+        $o_s21=$sql_row['order_s_s21'];
+        $o_s22=$sql_row['order_s_s22'];
+        $o_s23=$sql_row['order_s_s23'];
+        $o_s24=$sql_row['order_s_s24'];
+        $o_s25=$sql_row['order_s_s25'];
+        $o_s26=$sql_row['order_s_s26'];
+        $o_s27=$sql_row['order_s_s27'];
+        $o_s28=$sql_row['order_s_s28'];
+        $o_s29=$sql_row['order_s_s29'];
+        $o_s30=$sql_row['order_s_s30'];
+        $o_s31=$sql_row['order_s_s31'];
+        $o_s32=$sql_row['order_s_s32'];
+        $o_s33=$sql_row['order_s_s33'];
+        $o_s34=$sql_row['order_s_s34'];
+        $o_s35=$sql_row['order_s_s35'];
+        $o_s36=$sql_row['order_s_s36'];
+        $o_s37=$sql_row['order_s_s37'];
+        $o_s38=$sql_row['order_s_s38'];
+        $o_s39=$sql_row['order_s_s39'];
+        $o_s40=$sql_row['order_s_s40'];
+        $o_s41=$sql_row['order_s_s41'];
+        $o_s42=$sql_row['order_s_s42'];
+        $o_s43=$sql_row['order_s_s43'];
+        $o_s44=$sql_row['order_s_s44'];
+        $o_s45=$sql_row['order_s_s45'];
+        $o_s46=$sql_row['order_s_s46'];
+        $o_s47=$sql_row['order_s_s47'];
+        $o_s48=$sql_row['order_s_s48'];
+        $o_s49=$sql_row['order_s_s49'];
+        $o_s50=$sql_row['order_s_s50'];
 
-	$order_total=$o_s01+$o_s02+$o_s03+$o_s04+$o_s05+$o_s06+$o_s07+$o_s08+$o_s09+$o_s10+$o_s11+$o_s12+$o_s13+$o_s14+$o_s15+$o_s16+$o_s17+$o_s18+$o_s19+$o_s20+$o_s21+$o_s22+$o_s23+$o_s24+$o_s25+$o_s26+$o_s27+$o_s28+$o_s29+$o_s30+$o_s31+$o_s32+$o_s33+$o_s34+$o_s35+$o_s36+$o_s37+$o_s38+$o_s39+$o_s40+$o_s41+$o_s42+$o_s43+$o_s44+$o_s45+$o_s46+$o_s47+$o_s48+$o_s49+$o_s50;
+        $order_total=$o_s01+$o_s02+$o_s03+$o_s04+$o_s05+$o_s06+$o_s07+$o_s08+$o_s09+$o_s10+$o_s11+$o_s12+$o_s13+$o_s14+$o_s15+$o_s16+$o_s17+$o_s18+$o_s19+$o_s20+$o_s21+$o_s22+$o_s23+$o_s24+$o_s25+$o_s26+$o_s27+$o_s28+$o_s29+$o_s30+$o_s31+$o_s32+$o_s33+$o_s34+$o_s35+$o_s36+$o_s37+$o_s38+$o_s39+$o_s40+$o_s41+$o_s42+$o_s43+$o_s44+$o_s45+$o_s46+$o_s47+$o_s48+$o_s49+$o_s50;
 
-		for($s=0;$s<sizeof($sizes_code);$s++)
-		{
-			$o_s[$sizes_code[$s]]=$sql_row["order_s_s".$sizes_code[$s].""];
-		}
-		for($s=0;$s<sizeof($sizes_code);$s++)
-		{
-			if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
-			{
-				$s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
-			}
+            for($s=0;$s<sizeof($sizes_code);$s++)
+            {
+                $o_s[$sizes_code[$s]]=$sql_row["order_s_s".$sizes_code[$s].""];
+            }
+            for($s=0;$s<sizeof($sizes_code);$s++)
+            {
+                if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
+                {
+                    $s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
+                }
+            }
         }
-    }
 ?> 
 
 <?php 
@@ -186,7 +186,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
         { 
         if($sql_row["title_size_".$sizes_array[$s].""]<>'') 
         { 
-            $size[$s]=$sql_row["title_size_".$sizes_array[$s].""]; 
+            $s_tit[$sizes_code[$s]]=$sql_row["title_size_".$sizes_array[$s].""]; 
         } 
         }     
 
@@ -1822,7 +1822,7 @@ tags will be replaced.-->
                                 
                                     for($s=0;$s<sizeof($s_tit);$s++) 
                                     { 
-                                        echo "<td class=xl6813019>".$size[$s]."</td>"; 
+                                        echo "<td class=xl6813019>".$s_tit[$sizes_code[$s]]."</td>"; 
                                     } 
                                     
                                 ?> 
@@ -2379,7 +2379,7 @@ tags will be replaced.-->
                             { 
                                 for($s=0;$s<$total_size;$s++) 
                                 { 
-                                    // if($size[$s]<>'') 
+                                    // if($s_tit[$sizes_code[$s]]<>'') 
                                     { 
                                         $s_count=$s_count+1; 
                                         echo "<td class=xl8413019>".$s_tit[$sizes_code[$s]]."</td>"; 
@@ -2785,11 +2785,11 @@ tags will be replaced.-->
                                 $s_count=0; 
                                 for($s=0;$s<sizeof($s_tit);$s++) 
                                 { 
-                                    if($size[$s]<>'') 
+                                    if($s_tit[$sizes_code[$s]]<>'') 
                                     { 
                                         $s_count=$s_count+1; 
                         
-                                        echo "<td class=xl8413019>".$size[$s]."</td>"; 
+                                        echo "<td class=xl8413019>".$s_tit[$sizes_code[$s]]."</td>"; 
                                     } 
                             
                                 } 
