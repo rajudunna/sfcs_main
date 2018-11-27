@@ -4069,6 +4069,29 @@ else {
 		<td class=xl654118></td>
 		</tr>"; 
 	}
+	?>
+	<tr>
+	<td colspan=7 class=xl684118>Total </td>
+	<?php
+	// for($i=0;$i<sizeof($roll_det);$i++)
+	// {
+		echo "<td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_tick_len."</td>
+			  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_ctex_len."</td>
+			  <td class=xl814118></td>
+			  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_alloc_qty."</td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_bind_len."</td>
+			  <td class=xl814118></td>";
+	// }
+	?>
+	</tr>
+	<?php
  }
 echo "</tbody></table>";	
   ?>
