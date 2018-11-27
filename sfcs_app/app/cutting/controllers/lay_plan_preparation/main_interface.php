@@ -1295,7 +1295,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$sql_result16=mysqli_query($link, $sql16) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$cut_count1 = mysqli_num_rows($sql_result16);
 
-	if($cut_count>=1 && cut_count1>1) {
+	if($cut_count>=1 || cut_count1>1) {
 		echo "<td class=\"  \"><center><a class='btn btn-info btn-xs'  href=\"".getFullURL($_GET['r'], "save_categories.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&total_allocated=$total_allocated\">Copy to Other</a></center></td>";
 	}
 	else {
