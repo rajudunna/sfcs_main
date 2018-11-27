@@ -23,19 +23,46 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$style=$sql_row['order_style_no'];
 }
 
-$sql5="select * FROM $bai_pro3.mo_details WHERE SCHEDULE='$schedule' AND color='$color'";
-$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result5);
-if($sql_num_check == 0){
-	
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect1()\",0);
-		function Redirect1() {
-			sweetAlert('No MO Details Found','','warning');
-			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
-			}
-		</script>";
+
+// Validating mo details
+if(strlen($schedule) > 8){
+	$scheudles_query = "SELECT distinct(order_del_no) as schedule from $bai_pro3.bai_orders_db where 
+					    order_joins='J$schedule'";
+	$schedules_result = mysqli_query($link,$schedule);
+	while($row = mysqli_fetch_array($schedules_result)){
+		$val_schedules[] = $row['schedule'];
+	}		
+}else{
+	$val_schedules[] = $schedule;
 }
-else {
+
+foreach($val_schedules as $schedule){
+	$sql_colors="select distinct(order_col_des) from $bai_pro3.bai_orders_db where order_del_no = '$schedule' 
+	and order_style_no = '$style'";
+	$result3 = mysqli_query($link,$sql_colors) or exit("Unable to get the color codes");
+	while($row = mysqli_fetch_array($result3))
+	{
+		$colors_array[] = $row['order_col_des'];
+	}
+
+	foreach($colors_array as $key=>$color )
+	{
+        $sql5="select * FROM $bai_pro3.mo_details WHERE SCHEDULE='$schedule' AND color='$color'";
+        $sql_result5=mysqli_query($link, $sql5) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $sql_num_check=mysqli_num_rows($sql_result5);
+        if($sql_num_check == 0){
+            echo "<script type=\"text/javascript\"> setTimeout(\"Redirect1()\",0);
+                function Redirect1() {
+                    sweetAlert('No MO Details Found','','warning');
+                    location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+                    }
+                </script>";
+                exit();
+        }
+    }
+}
+
+{
 if($sql_result1_res==0){
 
 function get_val($table_name,$field,$compare,$key,$link)
