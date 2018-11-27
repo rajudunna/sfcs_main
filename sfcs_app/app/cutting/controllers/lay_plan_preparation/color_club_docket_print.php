@@ -1185,10 +1185,10 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-ignore:padding;
 	color:windowtext;
 	font-size:10.0pt;
-	font-weight:700;
+	/* font-weight:700; */
 	font-style:normal;
 	text-decoration:none;
-	font-family:"Trebuchet MS", sans-serif;
+	font-family:Calibri, sans-serif;
 	mso-font-charset:0;
 	mso-number-format:General;
 	text-align:left;
@@ -1291,10 +1291,10 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-ignore:padding;
 	color:windowtext;
 	font-size:10.0pt;
-	font-weight:700;
+	/* font-weight:700; */
 	font-style:normal;
 	text-decoration:none;
-	font-family:"Trebuchet MS", sans-serif;
+	font-family:Calibri, sans-serif;
 	mso-font-charset:0;
 	mso-number-format:General;
 	text-align:center;
@@ -1575,10 +1575,10 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-ignore:padding;
 	color:windowtext;
 	font-size:10.0pt;
-	font-weight:700;
+	/* font-weight:700; */
 	font-style:normal;
 	text-decoration:none;
-	font-family:"Trebuchet MS", sans-serif;
+	font-family:Calibri, sans-serif;
 	mso-font-charset:0;
 	mso-number-format:"dd\/mmm";
 	text-align:left;
@@ -1986,10 +1986,10 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-ignore:padding;
 	color:windowtext;
 	font-size:10.0pt;
-	font-weight:400;
+	/* font-weight:400; */
 	font-style:normal;
 	text-decoration:none;
-	font-family:"Trebuchet MS", sans-serif;
+	font-family:Calibri, sans-serif;
 	mso-font-charset:0;
 	mso-number-format:General;
 	text-align:general;
@@ -4308,10 +4308,10 @@ if($print==1)
 }
 .xl8917319{
 	font-size:17px;
-	font-weight:bold;
+	/* font-weight:bold; */
 	vertical-align : top;
 }
-.xl9117319,.xl10017319,.xl9817319,.xl7017319,.xl7117319,xl8217319,.xl7317319,.xl7217319,
+.xl9117319,.xl10017319,.xl9817319,.xl7017319,.xl7117319,.xl8217319,.xl7317319,.xl7217319,
  .xl7917319,.xl8017319,.xl6417319,.xl8117319,.xl7417319,.xl7517319,.xl6417319,.xl9117319,.xl10117319
 	{
 		font-size:18px;
@@ -4321,7 +4321,7 @@ if($print==1)
 .xl9617319,.xl6817319,.xl11517319,.xl1517319
 	{
 		font-size:15px;
-		font-weight:bold;
+		/* font-weight:bold; */
 	}
 .manual_height{
 	height : 30px;
@@ -4348,7 +4348,11 @@ table{
 .width1 {
 	min-width:800px;
 }
-.xl8917319,.xl10117319,.xl6817319,.xl9617319,.xl11317319,.xl11517319,.xl9817319,.xl10017319,.xl6617319,.xl7617319,.xl11317319,.xl9117319,.xl764118,.xl814118,.xl744118,.xl774118,.xl1144118,.xl1064118,.xl684118{
+.xl8917319,.xl10117319,.xl6417319,.xl7017319,.xl8017319{
+	font-weight: bold;
+
+}
+.xl8917319,.xl10117319,.xl9817319,.xl10017319,.xl6617319,.xl7617319,.xl9117319,.xl764118,.xl814118,.xl744118,.xl774118,.xl1144118,.xl1064118,.xl684118{
     font-size: 24px;
 	/* font-weight: bold; */
 }
