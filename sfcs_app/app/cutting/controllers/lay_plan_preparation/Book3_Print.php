@@ -2272,11 +2272,13 @@ tags will be replaced.-->
 	  <?php
 		if($flag == 1)
 		{
+			
 			//number of sizes-which excludes null
 			$total_size = sizeof($s_tit);
 			// $total_size = 50;
 			for($s=0;$s<$total_size;$s++)
 			{
+				
 				if($temp == 0){
 					echo "<td class=xl654118>Size</td>";
 					$temp = 1;
@@ -2708,7 +2710,30 @@ $tot_bind_len=0;
 	  <td class=xl654118></td>
 	  </tr>
 	<?php
-	 }	
+	 }
+	 ?>
+	 <tr>
+	<td colspan=7 class=xl684118>Total </td>
+	<?php
+	// for($i=0;$i<sizeof($roll_det);$i++)
+	// {
+		echo "<td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_tick_len."</td>
+			  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_ctex_len."</td>
+			  <td class=xl814118></td>
+			  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_alloc_qty."</td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_bind_len."</td>
+			  <td class=xl814118></td>";
+	// }
+	?>
+	</tr>
+	 <?php	
  }
 ?>
 
@@ -2940,15 +2965,15 @@ function refreshParent() {
 </script>"; 
 ?>
 <style>
-.xl744118,.xl694118,.xl774118,.xl684118,.xl704118,.xl724118,.xl1064118,.xl764118,.xl7742018,.xl814118,.xl804118,.xl674118,.xl654118,.xl1124118,.xl1144118,.xl714118{
+.xl744118,.xl694118,.xl774118,.xl684118,.xl704118,.xl724118,.xl1064118,.xl764118,.xl7742018,.xl804118,.xl674118,.xl654118,.xl1144118,.xl714118{
 	font-size : 22px;
 	font-weight : bold;
 }
-.xl754118,.xl914118,.xl694118,.xl734118,.xl734118,.xl934118,.xl1104118,.xl1194118,.xl1214118,.xl924118,.xl944118,.xl654118,.xl904118,.xl954118,.xl904118x,.xl904118,.xl1144118,.xl774118,.xl1184118{
+.xl754118,.xl914118,.xl694118,.xl734118,.xl734118,.xl934118,.xl1104118,.xl1194118,.xl1214118,.xl924118,.xl944118,.xl654118,.xl904118,.xl954118,.xl904118x,.xl904118,.xl1144118,.xl774118{
 	font-size : 22px;
 	font-weight : bold;
 }
-.xl804118,.xl814118,.xl684118,.xl764118,.xl7742018,.xl774118,.xl1064118,.xl704118,.xl654118,.xl1024118{
+.xl804118,.xl684118,.xl764118,.xl7742018,.xl774118,.xl1064118,.xl704118,.xl654118,.xl1024118{
 	font-size : 22px;
 	font-weight : bold;
 }
