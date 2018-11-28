@@ -117,9 +117,9 @@
                             $counter++;
                             echo "<tr>";
                                 echo "<td>$counter</td>"; 
-                                echo "<td>J$job_no</td>";
                                 echo "<td>$style</td>"; 
-                                echo "<td>J$schedule</td>";
+                                echo "<td>$schedule</td>";
+                                echo "<td>J$job_no</td>";                   
                                 echo "<td>$org_qty</td>";
                                 echo "<td>$module</td>";
                                 echo "<td>$doc_str</td>";
