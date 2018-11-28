@@ -342,13 +342,20 @@
 						echo "<th colspan=9  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;font-size:14px;\"> Total</th>";
 						for ($i=0; $i < sizeof($size_array); $i++)
 						{ 
-							$sql1="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE  order_del_no IN ($joinSch) and size_code='$orginal_size_array[$i]'";
+							$sql1="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE  order_del_no IN ($joinSch) and size_code='$orginal_size_array[$i]' and pac_seq_no=$seq_no";
 							//echo $sql1;
 							$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error996".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row1=mysqli_fetch_array($sql_result1))
 							{
 								$o_s=$sql_row1['qty'];
-								if ($o_s!=0) {	echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s."</th>"; }
+								if ($o_s!=0)
+								{
+									echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s."</th>";
+								}
+								else
+								{
+									echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">0</th>";
+								}
 								$o_total=$o_s+$o_total;
 								//echo $o_total;
 							}
