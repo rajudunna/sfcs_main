@@ -34,6 +34,8 @@
             <thead>
                 <tr class='info'>
                     <th>Sno</th>
+                    <th>Style</th>
+                    <th>Schedule</th>
                     <th>Job No</th>
                     <th>Original Qty</th>
                     <th>Module</th>
@@ -116,6 +118,8 @@
                             echo "<tr>";
                                 echo "<td>$counter</td>"; 
                                 echo "<td>J$job_no</td>";
+                                echo "<td>$style</td>"; 
+                                echo "<td>J$schedule</td>";
                                 echo "<td>$org_qty</td>";
                                 echo "<td>$module</td>";
                                 echo "<td>$doc_str</td>";
@@ -126,7 +130,7 @@
                         }
                     }
                     if($counter == 0){
-                        echo "<tr><td colspan=7><div class='alert alert-danger'>No Data Found</div></td></tr>";
+                        echo "<tr><td colspan=9><div class='alert alert-danger'>No Data Found</div></td></tr>";
                     }
                 ?>
             </tbody>
