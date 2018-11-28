@@ -2814,11 +2814,9 @@ $tot_bind_len=0;
 
 if($print_status=="0000-00-00" || $print_status == "")
 {
-	
 	$sql12="update $bai_pro3.recut_v2 set print_status=\"".date("Y-m-d")."\" where doc_no=$docketno";
 	//echo $sql;
 	mysqli_query($link,$sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
 }
 
 
