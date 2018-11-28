@@ -32,7 +32,7 @@ function savingdata($saving)
    {
 	    //var_dump($saving);
 		$saving_sub_oper_data_qry = "insert into $brandix_bts.default_operation_workflow (operation_name,operation_code,operation_order,default_operration,ops_sequence,ops_dependency,component,barcode) values ($saving)";
-		//echo $saving_sub_oper_data_qry;
+		// echo $saving_sub_oper_data_qry;
 		$spdr = $link->query($saving_sub_oper_data_qry);
 		//echo $saving_sub_oper_data_qry;
 		$last_id = mysqli_insert_id($link);
@@ -58,7 +58,7 @@ function savingdata($saving)
 					// echo $ops_order;
 						$act_ops_order_str = (string)$ops_order.'1';
 					// echo $act_ops_order_str;
-						$act_ops_order = (float)$act_ops_order_str;
+						$act_ops_order = $act_ops_order_str;
 						$updating_qry = "update $brandix_bts.default_operation_workflow set operation_order = $act_ops_order where id = $updating_id";
 						$array_changed_order_ids_values[$updating_id]=$act_ops_order;
 					// echo $updating_qry;
@@ -86,7 +86,7 @@ function savingdata($saving)
 						{
 							$act_digit = $integer_digit_explode[0] + 1;
 							$actual_ops_order = $act_digit.'.'."$integer_digit_explode[1]";
-							$update_qry= "update $brandix_bts.default_operation_workflow set operation_order = $actual_ops_order where id = $id";
+							$update_qry= "update $brandix_bts.default_operation_workflow set operation_order ='$actual_ops_order' where id = $id";
 							$array_changed_order_ids_values[$id]=$actual_ops_order;
 							//$link->query($update_qry);
 

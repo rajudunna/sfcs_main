@@ -2979,7 +2979,7 @@ if(isset($_POST['submit']))
 
 	mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$grand_rep="grand_rep_temp";
+	$grand_rep="$bai_pro.grand_rep_temp";
 
 //to fasten system
 	$total_nop=0;
@@ -3188,8 +3188,12 @@ if(isset($_POST['submit']))
 					//$total_nop=$total_nop+$nop;
 				}		
 				$styledb=$sql_row2['styles'];
+
 				$styledb_no=$sql_row2['style_no'];
-				//echo $styledb;
+				// echo $styledb_no."<br>";
+				$styledb_no_explode=explode(",",$styledb_no);
+				$styledb_no=$styledb_no_explode[0];
+				// echo $styledb_no."<br>";
 				$buyerdb=$sql_row2['buyer'];
 				$age=$sql_row2['days'];
 			}
@@ -3236,7 +3240,7 @@ if(isset($_POST['submit']))
 				{
 					//$chk_date=date("Y-m-d",strtotime("-2 day",strtotime($chk_date)));	
 					$sql2="SELECT MAX(bac_date) as max_date FROM $bai_pro.bai_log_buf WHERE bac_qty > 0 AND bac_date <= \"".$chk_date."\"";
-					//echo $sql2."<br>";
+					// echo $sql2."<br>";
 					$sql_result2=mysqli_query($link, $sql2) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2=mysqli_fetch_array($sql_result2))
 					{
@@ -3245,7 +3249,7 @@ if(isset($_POST['submit']))
 				}
 			
 				$sql21="select * from $bai_pro.bai_log_buf where bac_style=\"".$styledb_no."\" and bac_no=\"".$mod."\" and bac_date=\"$chk_date\"";
-				//echo $sql21."<br>";
+				// echo $sql21."<br>";
 				mysqli_query($link, $sql21) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$rowsx=mysqli_num_rows($sql_result21);
@@ -3267,7 +3271,7 @@ if(isset($_POST['submit']))
 			<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$buyerdb</td>
 			<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$styledb</td>
 			<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$smv</td>
-			<td class=xl8526424 style='width:100px;word-wrap:break-word;'>$age_days</td>
+			<td class=xl8526424 style='width:100px;word-wrap:break-word;'>".$age_days."</td>
 			<td class=xl8626424 style='width:100px;word-wrap:break-word;'>".$nop."</td>";
 			//$total_nop=$total_nop+$nop;
 			$age_days=0;
@@ -3967,10 +3971,14 @@ if(isset($_POST['submit']))
 
 
 			// Ticket #516359 /modify the Actual efficiency % (average) based on running shifts.
-			if( $totalmodules== '' || $act_hrsa+$act_hrsb == '' || $totalmodules== 0 || $act_hrsa+$act_hrsb == 0) 
-				$table_temp="<td colspan=2 class=xl16726424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>".round((($rew_A/$totalmodules+$rew_B/$totalmodules)/(($act_hrsa+$act_hrsb)/7.5)),0)."%</td>";
+			if($totalmodules> 0 && ($act_hrsa+$act_hrsb) > 0) 
+			{
+				$table_temp="<td colspan=2 class=xl16726424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>".round((($rew_A/$totalmodules)+($rew_B/$totalmodules)/(($act_hrsa+$act_hrsb)/7.5)),0)."%</td>";
+			}
 			else
+			{
 				$table_temp="<td colspan=2 class=xl16726424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>0%</td>";
+			}
 
 			echo $table_temp;
 			$table.=$table_temp;
