@@ -47,7 +47,9 @@
 				<div class="panel-heading"><b>Ratio Sheet (Sewing Job wise)</b></div>
 				<div class="panel-body">	
 					<div id="upperbody">				
-						<div style="float:right"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></div>
+
+						<div style="float:right"><img src="<?= $logo ?>" width="200" height="60"></div>
+
 						<?php
 							$sql="select distinct order_del_no as sch,order_tid from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
 							// echo $sql."<br>";
@@ -202,7 +204,7 @@
 						echo "<th>Total</th>";
 						echo "</thead></tr>";
 
-						$sql="select distinct input_job_no as job, type_of_sewing from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and pac_seq_no=$seq_no order by input_job_no*1";
+						$sql="select distinct input_job_no as job, type_of_sewing from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and pac_seq_no=$seq_no order by  acutno*1,input_job_no*1";
 						// echo $sql."<br>";
 						$result=mysqli_query($link, $sql) or die("Error8-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($result))
