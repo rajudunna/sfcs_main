@@ -1064,21 +1064,18 @@
                     while($buyer_qry_row=mysqli_fetch_array($buyer_qry_result)){
                             $buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
                         }
-                    $qry_nop="select avail_A,avail_B FROM $bai_pro.pro_atten WHERE module='".$b_module[$i]."' AND date='$bac_dat'";
-                        $qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        while($nop_qry_row=mysqli_fetch_array($qry_nop_result)){
-                                $avail_A=$nop_qry_row['avail_A'];
-                                $avail_B=$nop_qry_row['avail_B'];
-                        }
-                        if(mysqli_num_rows($qry_nop_result)>0){
-                            if($row['shift']=='A'){
-                                $nop=$avail_A;
-                            }else{
-                                $nop=$avail_B;
-                            }
-                        }else{
-                            $nop=0;
-                        }
+                    $qry_nop="select ((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance where module='".$b_module[$i]."' and date='".$bac_dat."' and shift='".$shift."'";
+                    $qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
+                    {
+                                $avail=$nop_qry_row['nop'];
+                    }
+
+                    if(mysqli_num_rows($qry_nop_result)>0){
+                        $nop=$avail;
+                    }else{
+                        $nop=0;
+                    }
                     $bundle_op_id=$b_tid[$i]."-".$b_op_id."-".$b_inp_job_ref[$i];
                     $appilication_out = "IMS_OUT";
                     $checking_output_ops_code_out = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication_out'";

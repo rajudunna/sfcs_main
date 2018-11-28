@@ -14,10 +14,10 @@ Ticket #516359.
 //service request #474467 /2014-12-24 / kirang / Modification on efficiency report for M&S styles (put MS instead of M&S)
  -->
  <?php 
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-	$view_access=user_acl("SFCS_0059",$username,1,$group_id_sfcs);
-	$final_rep9 = getFullURL($_GET["r"],"final_rep9.php","N");
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+$view_access=user_acl("SFCS_0059",$username,1,$group_id_sfcs);
+$final_rep9 = getFullURL($_GET["r"],"final_rep9.php","N");
 
 ?>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/FileSaver.js',1,'R');?>"></script>
@@ -25,14 +25,14 @@ Ticket #516359.
 </style>
 
 <script>
-	function verify(){
-		var from = document.getElementById('demo1').value;
-		var to = document.getElementById('demo2').value;
-		if( from > to){
-			sweetAlert('Start Date should be less than End Date','','warning');
-			return false;
-		}
+function verify(){
+	var from = document.getElementById('demo1').value;
+	var to = document.getElementById('demo2').value;
+	if( from > to){
+		sweetAlert('Start Date should be less than End Date','','warning');
+		return false;
 	}
+}
 </script>
 <div class="panel panel-primary">
 	<div class="panel-heading">Daily Efficiency Report</div>	
@@ -118,7 +118,6 @@ if(isset($_POST['submit']))
 	$edat=$_POST['edat'];
 	$section=$_POST['section'];
 	$buyer=$_POST['buyer'];
-
 
 	$sql2="select unit_id from $bai_pro.unit_db where unit_members=\"".$_POST['section']."\"";
 	//echo $sql2;
@@ -2932,7 +2931,6 @@ if(isset($_POST['submit']))
 	$decimal_factor=2;
 	echo $table_temp;
 	$table.=$table_temp;
-
 	$x_sec=0;
 	$sec_temp=$_POST['section'];
 	// echo $sec_temp;
@@ -2969,7 +2967,6 @@ if(isset($_POST['submit']))
 
 // For Grand Eff Calculation
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'grand_Eff_for_daily.php',0,'R'));
-
 //to fasten system
 
 	$sql="truncate $bai_pro.grand_rep_temp";
@@ -3258,72 +3255,67 @@ if(isset($_POST['submit']))
 					$age_days=$age_days+1;
 				}
 
-		//echo $sql21."-".$styledb_no."-".$style_chk."<br>";
+				//echo $sql21."-".$styledb_no."-".$style_chk."<br>";
 
 			}while($rowsx !=0);
 
-			$total_nop=$total_nop+$nop;
-			$grand_total_nop=$grand_total_nop+$nop;
-			$table_temp="<tr height=21 style='mso-height-source:userset;height:15.75pt'>
-			<td height=21 class=xl8326424 style='height:15.75pt'>
-			<a href='".$final_rep9."&module=".$mod."&date=".$date."'>$mod</a>
-			</td>
-			<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$buyerdb</td>
-			<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$styledb</td>
-			<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$smv</td>
-			<td class=xl8526424 style='width:100px;word-wrap:break-word;'>".$age_days."</td>
-			<td class=xl8626424 style='width:100px;word-wrap:break-word;'>".$nop."</td>";
-			//$total_nop=$total_nop+$nop;
-			$age_days=0;
-			echo $table_temp;
-			$table.=$table_temp;
-
-
-			$operatorssum=$operatorssum+$nop;
-
-			$date_range=array();
-			$sql2="select distinct date from $bai_pro.grand_rep where date between \"$date\" and \"$edate\"";
-			mysqli_query($link, $sql2) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row2=mysqli_fetch_array($sql_result2))
-			{
-				$date_range[]=$sql_row2['date'];
-			}
-
-			$sql2="select sum(avail_A) as \"avail_A\", sum(avail_B) as \"avail_B\", sum(absent_A) as \"absent_A\", sum(absent_B) as \"absent_B\" from $bai_pro.pro_atten where module=$mod and date in (\"".implode('","',$date_range)."\")";
-			if($sec=="8")
-			{
-				$link_f=$link;
-			}
-			else
-			{
-				$link_f=$link;
-			}
-			mysqli_query($link_f, $sql2) or exit("Sql Error19".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result2=mysqli_query($link_f, $sql2) or exit("Sql Error19".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row2=mysqli_fetch_array($sql_result2))
-			{
-				$table_temp="<td class=xl8726424>".($sql_row2['avail_A']-$sql_row2['absent_A'])."</td>";
-
+				$total_nop=$total_nop+$nop;
+				$grand_total_nop=$grand_total_nop+$nop;
+				$table_temp="<tr height=21 style='mso-height-source:userset;height:15.75pt'>
+				<td height=21 class=xl8326424 style='height:15.75pt'>
+				<a href='".$final_rep9."&module=".$mod."&date=".$date."'>$mod</a>
+				</td>
+				<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$buyerdb</td>
+				<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$styledb</td>
+				<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$smv</td>
+				<td class=xl8526424 style='width:100px;word-wrap:break-word;'>$age_days</td>
+				<td class=xl8626424 style='width:100px;word-wrap:break-word;'>".$nop."</td>";
+				//$total_nop=$total_nop+$nop;
+				$age_days=0;
 				echo $table_temp;
 				$table.=$table_temp;
 
-				$table_temp="<td class=xl8726424>".($sql_row2['avail_B']-$sql_row2['absent_B'])."</td>";
 
-				echo $table_temp;
-				$table.=$table_temp;
+				$operatorssum=$operatorssum+$nop;
 
-				$avail_A_fix=$sql_row2['avail_A'];
-				$avail_B_fix=$sql_row2['avail_B'];
+				$date_range=array();
+				$sql2="select distinct date from $bai_pro.grand_rep where date between \"$date\" and \"$edate\"";
+				mysqli_query($link, $sql2) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row2=mysqli_fetch_array($sql_result2))
+				{
+					$date_range[]=$sql_row2['date'];
+				}
+				$sqlA="select sum(present+jumper) as \"avail_A\",sum(absent) as \"absent_A\" from $bai_pro.pro_attendance where module=$mod and shift=\"A\" and  date in (\"".implode('","',$date_range)."\")";
+				$sql_resultA=mysqli_query($link, $sqlA) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_rowA=mysqli_fetch_array($sql_resultA))
+				{
+					$table_temp="<td class=xl8726424>".($sql_rowA['avail_A']-$sql_rowA['absent_A'])."</td>";
 
-				$avail_A=$avail_A+$sql_row2['avail_A'];
-				$avail_B=$avail_B+$sql_row2['avail_B'];
+					echo $table_temp;
+					$table.=$table_temp;
 
-				$absent_A_fix=$sql_row2['absent_A'];
-				$absent_B_fix=$sql_row2['absent_B'];
+					$avail_A=$avail_A+$sql_rowA['avail_A'];
+					$avail_A_fix=$sql_rowA['avail_A'];
+					$absent_A=$absent_A+$sql_rowA['absent_A'];
+					$absent_A_fix=$sql_rowA['absent_A'];
+				}
 
-				$absent_A=$absent_A+$sql_row2['absent_A'];
-				$absent_B=$absent_B+$sql_row2['absent_B'];
+				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $bai_pro.pro_attendance where module=$mod and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
+				$sql_resultB=mysqli_query($link, $sqlB) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_rowB=mysqli_fetch_array($sql_resultB))
+				{
+					
+					$table_temp="<td class=xl8726424>".($sql_rowB['avail_B']-$sql_rowB['absent_B'])."</td>";
+
+					echo $table_temp;
+					$table.=$table_temp;
+
+					$avail_B=$avail_B+$sql_rowB['avail_B'];
+					$avail_B_fix=$sql_rowB['avail_B'];
+					$absent_B=$absent_B+$sql_rowB['absent_B'];
+					$absent_B_fix=$sql_rowB['absent_B'];
+				}
 
 
 				$sql132="select act_hours as hrs from $bai_pro.pro_plan where mod_no=$mod and shift=\"A\" and date between \"$date\" and \"$edate\" ";
@@ -3532,7 +3524,7 @@ if(isset($_POST['submit']))
 					$affb=0;
 				}
 
-			//$table_temp="<td class=xl9326424>".round(($affb*100),0)."%--aa</td>";
+				//$table_temp="<td class=xl9326424>".round(($affb*100),0)."%--aa</td>";
 				$table_temp="<td class=xl9326424>".round(($sthb/$clhb)*100,0)."%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
@@ -3607,8 +3599,8 @@ if(isset($_POST['submit']))
 					echo $table_temp;
 					$table.=$table_temp;
 				}
-			// Ticket #516359 /modify the Actual efficiency % (average) based on running shifts.
-			// Actual Eff % taken from Actual Clock hours.   
+				// Ticket #516359 /modify the Actual efficiency % (average) based on running shifts.
+				// Actual Eff % taken from Actual Clock hours.   
 				if(($clha+$clhb)>0)
 				{
 					if($act_hrsa+$act_hrsb != 0 && $avail_A_fix-$absent_A_fix != 0 && $avail_B_fix-$absent_B_fix != 0)
@@ -3639,7 +3631,6 @@ if(isset($_POST['submit']))
 
 				$totalmodules=$totalmodules+1;
 
-			}
 		}
 			/*****************************************************************************************************************/
 
