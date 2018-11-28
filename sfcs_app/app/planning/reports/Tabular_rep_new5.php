@@ -570,7 +570,7 @@ if(isset($_POST['submit1']))
 
 	echo '<form action="'."../".getFullURL($_GET['r'],"export_excel1.php",'R').'" method ="post" > 
 	<input type="hidden" name="csv_123" id="csv_123">
-	<input class="pull-right btn btn-info" type="submit" value="Export to Excel" onclick="getCSVData()">
+	<input class="pull-right btn btn-info" type="submit" id="excel" value="Export to Excel" onclick="getCSVData()">
 	</form>';
 			
 			
@@ -688,6 +688,7 @@ if(isset($_POST['submit1']))
 			$sql1="select Cust_order,CPO,buyer_div,style,schedule,color,exf_date,order_qty,style_id from $bai_pro2.order_status_buffer  where ssc_code=\"$ssc_code\"";
 			// echo $sql1;
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result1_count=mysqli_num_rows($sql_result1);
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
 				
@@ -778,10 +779,18 @@ if(isset($_POST['submit1']))
 
 			echo "</tr>";
 		}
+    
+
+
 	}
 	echo "</tbody></table></div>"; 
+	if($sql_result1_count==0){
+		echo"<style>#table1{display:none;}</style>";
+		echo"<style>#excel{display:none;}</style>";
+	}
 	
 }
+
 ?>	
 
 <script language="javascript">
