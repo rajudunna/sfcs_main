@@ -6,8 +6,8 @@ $doc_no = $_GET['doc_no'];
 $response_data = array();
 $op_code = 15;
 
-$doc_status_query  = "SELECT a_plies,p_plies,acutno,act_cut_status,order_tid from $bai_pro3.plandoc_stat_log 
-                    where doc_no = '$doc_no'";
+$doc_status_query  = "SELECT a_plies,p_plies,acutno,act_cut_status,order_tid,org_doc_no 
+                    from $bai_pro3.plandoc_stat_log where doc_no = '$doc_no'";
 $doc_status_result = mysqli_query($link,$doc_status_query);
 if(mysqli_num_rows($doc_status_result)>0){
     $row = mysqli_fetch_array($doc_status_result);
@@ -17,6 +17,7 @@ if(mysqli_num_rows($doc_status_result)>0){
     $acutno = $row['acutno'];
     $fabric_status = $row['fabric_status'];
     $order_tid = $row['order_tid'];
+    $org_doc_no = $row['org_doc_no'];
     if($fabric_status == 5)
         $fabric_status = 'Issued To Cutting';
 }else{
@@ -24,9 +25,15 @@ if(mysqli_num_rows($doc_status_result)>0){
     echo json_encode($response_data);
     exit();
 }
+//IF this is a child docket restrict Cut Reporting
+if($org_doc_no > 1 ){
+    $response_data['child_docket'] = '1';
+    echo json_encode($response_data);
+    exit();
+}
 
 //Validation for fabric status
-
+/*
 $validation_query = "SELECT cat_ref,fabric_status,category from $bai_pro3.order_cat_doc_mk_mix 
                     where doc_no=$doc_no";
 $validation_result = mysqli_query($link,$validation_query);
@@ -48,7 +55,7 @@ if(mysqli_num_rows($validation_result)>0){
     echo json_encode($response_data);
     exit();
 }
-
+*/
 //getting the target doc type 
 $target_query  = "SELECT order_del_no,order_joins from $bai_pro3.bai_orders_db_confirm 
                 where order_tid = '$order_tid' and order_joins IN (1,2) limit 1";               
@@ -73,7 +80,8 @@ while($row = mysqli_fetch_array($child_docs_result)){
 }
 
 $doc_details_query = "SELECT SUM(send_qty) as send,SUM(recevied_qty) as good,SUM(rejected_qty) as rej,
-                    style,schedule,mapped_color 
+                    style,GROUP_CONCAT(distinct schedule) as schedule,
+                    GROUP_CONCAT(distinct mapped_color) as mapped_color 
                     from $brandix_bts.bundle_creation_data 
                     where docket_number IN ($doc_no) and operation_id = $op_code";
 $doc_details_result = mysqli_query($link,$doc_details_query);
@@ -87,6 +95,7 @@ if(mysqli_num_rows($doc_details_result)>0){
     $response_data['rej_pieces']  = $row['rej'];
 }
 
+$doc_no = $_GET['doc_no'];
 if($act_cut_status == 'DONE'){
     $fab_details_query = "SELECT * from $bai_pro3.act_cut_status where doc_no=$doc_no";
     $fab_details_result = mysqli_query($link,$fab_details_query);
@@ -108,22 +117,25 @@ $good_rej_query = "SELECT SUM(recevied_qty) as good,SUM(rejected_qty) as rej
 
 
 if($a_plies == $p_plies && $act_cut_status == 'DONE'){
-    $response_data['cut_done'] = 1;
+    $response_data['cut_done']  = 1;
     $response_data['avl_plies'] = 0;
+    $response_data['a_plies']  = $p_plies;
 }else{
     $response_data['cut_done'] = 0;
-    $response_data['avl_plies'] = $p_plies;
-   
+    $response_data['avl_plies']= $p_plies;
+    $response_data['a_plies']  = 0;
 }
 
 if($a_plies != $p_plies && $act_cut_status == 'DONE'){
     $response_data['avl_plies'] = $p_plies - $a_plies;
     $response_data['partial'] = 1;
+    $response_data['a_plies']  = $a_plies;
 }
+
 
 $response_data['doc_no'] = $doc_no;
 $response_data['doc_qty'] = $doc_no;
-$response_data['a_plies'] = $a_plies;
+
 $response_data['p_plies'] = $p_plies;
 $response_data['act_cut_status'] = $act_cut_status;
 $response_data['acut_no'] = $acutno;

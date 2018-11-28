@@ -214,185 +214,6 @@ while($row = mysqli_fetch_array($location_result))
     </div>
 </div>
 
-<!-- REjections Code -->
-<div class='panel panel-primary rej_tab'>
-    <div class='panel-heading'>
-        <b>Cut Rejections Screen</b>
-    </div>
-    <div class='panel-body'>  
-        <div class='col-sm-12 user_msg'>
-            <span class='notification'>NOTE : </span>
-            <span id='user_msg'></span>
-        </div>
-        <br/><br/>
-        <div class='row'>       
-            <div class='col-sm-6'>
-                <table class='table table-bordered'>
-                    <tr><td>Style</td>   <td id='d_style'></td>    </tr>
-                    <tr><td>Schedule</td><td id='d_schedule'></td> </tr>
-                    <tr><td>Color</td>   <td id='d_color'></td>    </tr>
-                    <tr><td>Docket Type</td><td id='d_doc_type'></td></tr>
-                </table>
-            </div>
-        </div>
-        <div class='row'>
-            <div class='col-sm-2'>
-                <b>Enter Docket Number</b>
-                <input type='text' class='form-control integer' value='' name='doc_no' id='doc_no'> 
-            </div>
-        </div>
-
-        <!-- partial or already reported docket details -->
-        <div class='row' id='hide_details_reported'>
-            <div class='col-sm-12'>
-            <hr> 
-            <table class='table table-bordered' id='reported_table'>
-                <tr class='danger'>
-                    <td>Docket</td>
-                    <td>Total Docket Quantity</td>
-                    <td>Total Reported Quantity</td>
-                    <td>Good Pieces</td>
-                    <td>Rejected Pieces</td>
-                    <td>Date</td>
-                    <td>Section</td>
-                    <td>Module</td>
-                    <td>Shift</td>
-                    <td>Fab Received</td>
-                    <td>Fab Returned</td>
-                    <td>Fab Damages</td>
-                    <td>Fab Shortages</td>
-                </tr>
-                <tr>
-                    <td id='d_doc_no'></td>
-                    <td id='d_cut_status'></td>
-                    <td id='d_cut_issue_status'></td>
-                    <td id='d_good_pieces'></td>
-                    <td id='d_rej_pieces'></td>
-                    <td id='d_date'></td>
-                    <td id='d_section'></td>
-                    <td id='d_module'></td>
-                    <td id='d_shift'></td>
-                    <td id='d_fab_rec'></td>
-                    <td id='d_fab_ret'></td>
-                    <td id='d_damages'></td>
-                    <td id='d_shortages'></td>
-                </tr>
-                
-            </table>
-            </div>
-            <hr>
-        </div><br/><br/>
-
-        <div class='row' id='hide_details_reporting'>
-            <div class='col-sm-2'>
-                <label for='shift'>Shift</label>
-                <select class='form-control' name='shift' id='shift'>
-                    <option value='' disabled selected>Select Shift</option>
-                <?php
-                foreach($shifts_array as $shift){
-                    echo "<option value='$shift'>$shift</option>";
-                }
-                ?>
-                </select>
-            </div>
-            <div class='col-sm-2'>
-               <label for='cut_table'>Cutting Table</label>
-               <select class='form-control' id='cut_table'>
-                    <option value='' disabled selected>Select Table</option>
-                <?php
-                    foreach($cut_tables as $id => $cut_table){
-                        echo "<option value='$id'>$cut_table</option>";
-                    }
-                ?>
-               </select>
-            </div>
-            <div class='col-sm-2'>
-                <label for='cut_table'>Team Leader</label>
-                <select class='form-control' id='team_leader'>
-                    <option value='' disabled selected>Select Leader</option>
-                <?php
-                    foreach($team_leaders as $id => $leader_name){
-                        echo "<option value='$id'>$leader_name</option>";
-                    }
-                ?>
-                </select>
-            </div>
-            <div class='col-sm-2'>
-               <label for='bundle_location'>Bundle Location</label>
-               <select class='form-control' id='bundle_location'>
-                    <option value='' disabled selected>Select Location</option>
-                <?php
-                    foreach($locations as $location){
-                        echo "<option value='$location'>$location</option>";
-                    }
-                ?>
-               </select>
-            </div>
-
-            <div class='col-sm-12'>
-            <br/><br/>    
-                <table class='table table-bordered' id='reporting_table'>
-                    <thead>
-                        <tr class='info'>
-                            <th>Docket</th>
-                            <th>Quantity</th>
-                            <th>Cut Status</th>
-                            <th>Planned Plies</th>
-                            <th>Reported Plies</th>
-                            <th>Reporting Plies</th>
-                            <th>Fabric Received</th>
-                            <th>Fabric Returned</th>
-                            <th>Damages</th>
-                            <th>Shortages</th>
-                            <th>Action</th>
-                            <th>Rejections</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td id='r_doc_no'></td>
-                            <td id='r_doc_qty'></td>
-                            <td id='r_cut_status'></td>
-                            <td id='r_plan_plies'></td>
-                            <td id='r_reported_plies'></td>
-                            <!-- add validation for ret + rec + dam + short = c_plies -->
-                            <td><input type='text' class='form-control integer' value='0' id='c_plies'></td>
-                            <td><input type='text' class='form-control integer' value='0' id='fab_received'></td>
-                            <td><input type='text' class='form-control integer' value='0' id='fab_returned'>
-                                <br><br>
-                                <span id='returend_to_parent'>
-                                    <select class='form-control' id='returned_to'>
-                                        <option value='' disabled selected>Select</option>
-                                        <option value='cut'>Cutting</option>
-                                        <option value='rm'>RM</option>
-                                </select>
-                                </span>
-                            </td>
-                            <td><input type='text' class='form-control integer' value='0' id='damages'></td>
-                            <td><input type='text' class='form-control integer' value='0' id='shortages'></td>
-                            <td><input type='button' class='btn btn-sm btn-warning' value='Rejection' id='reject'></td>
-                            <td><input type='button' class='btn btn-sm btn-success' value='Submit' id='submit'></td>
-                        </tr>
-                    </tbody>
-                </table> 
-                <input type='hidden' value='' id='p_plies'> 
-                <input type='hidden' value='' id='post_doc_no'>  
-                <input type='hidden' value='' id='doc_target_type'> 
-                <input type='hidden' value='' id='post_schedule'>
-                <input type='hidden' value='' id='post_style'>
-                <input type='hidden' value='' id='post_color'>
-
-
-                <table>
-                </table> 
-            </div>
-        </div>
-                    
-        <div class='col-sm-12'>
-           
-        </div>
-    </div>
-</div>
 
 
 <?php 
@@ -447,9 +268,9 @@ while($row = mysqli_fetch_array($location_result))
         var post_doc_no = $('#post_doc_no').val();
         var doc_target_type = $('#doc_target_type').val();
         
-        var schedule = $('#post_style').val();
-        var style    = $('#post_schedule').val();
-        var color    = $('#post_color').val();
+        var style       = $('#post_style').val();
+        var schedule    = $('#post_schedule').val();
+        var color       = $('#post_color').val();
 
         //Screen Validations
         if(c_plies == 0){
@@ -490,7 +311,6 @@ while($row = mysqli_fetch_array($location_result))
             url  : '<?= $post_url ?>?target='+doc_target_type,
             type : 'POST',
             data : form_data
-            
         }).done(function(res){
             console.log(res);
             var data = $.parseJSON(res);
@@ -532,7 +352,10 @@ while($row = mysqli_fetch_array($location_result))
             avl_plies = Number(data.avl_plies);
             console.log(data);
             console.log(data.avl_plies);
-            
+            if(data.child_docket == '1'){
+                swal('Error','Child Docket Cannot be Reported','error');
+                return false;
+            }
             if(data.can_report == '0'){
                 swal('Error','You Cannot Report This Docket','error');
                 return false;
@@ -591,6 +414,10 @@ while($row = mysqli_fetch_array($location_result))
             $('#d_style').html(data.styles);
             $('#d_schedule').html(data.schedules);
             $('#d_color').html(data.colors);
+
+            $('#post_style').val(data.styles);
+            $('#post_schedule').val(data.schedules);
+            $('#post_color').val(data.colors);
         }).fail(function(){
             swal('Network Error while getting Details','','error');
             return;
