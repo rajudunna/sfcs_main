@@ -61,7 +61,7 @@ echo ' <form name="upload" enctype="multipart/form-data" method="POST" action="i
 <label>Choose File: </label> <input type="file" name="file" class="form-control" size="25" value="" accept=".csv" required> (Only CSV files and file name without spaces. Example: Plan_2016_Nov.csv)
 </div></br><div class="col-sm-4"><input type="submit" class="btn btn-primary" name="upload" value="Upload" ';
 echo " id=\"add\" onclick=\"hide()\"";
-echo '> </div></br><div style="color:red" class="col-sm-4"><b>NOTE : Please remove headers in CSV file if any</b></div></div>
+echo '> </div></br><div style="color:red" class="col-sm-4"><b>NOTE : Please remove headers in CSV file if any and NO non numerics in daywise values<br/></b></div></div>
 </form> '; 
 } 
 else { 
