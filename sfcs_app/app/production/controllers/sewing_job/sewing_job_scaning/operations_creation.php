@@ -194,7 +194,7 @@
         $category = $_POST["category"];
     }
     if(isset($_POST["parent_work_center_id"])){
-        $parent_work_center_id = $_POST["parent_work_center_id"];
+        $parent_work_center_id = trim($_POST["parent_work_center_id"],' ');
     }
     
     /* $servername = "localhost";
