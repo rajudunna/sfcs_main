@@ -84,6 +84,9 @@
         echo "<br><div class='alert alert-danger'>You are Not Authorized to Delete Sewing Jobs</div>";
     }
     
+  
+
+
     if(isset($_POST['submit'])) 
     { 
         $schedule=$_POST['schedule'];
@@ -101,6 +104,17 @@
         } 
         else 
         {
+
+                $sql="SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' and mrn_status='1'";  
+                $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $rowcount1=mysqli_num_rows($sql_result);
+              if($rowcount1>0)
+              {
+                 echo "<script>sweetAlert('MRN Confirmed for this Schedule','','warning')</script>";
+              }
+              else
+              {
+
             $pac_stat_input_check = echo_title("$bai_pro3.pac_stat_input","count(*)","schedule",$schedule,$link);
             
             if ($pac_stat_input_check > 0)
@@ -296,6 +310,8 @@
                 } 
             }
 
+        }
+
             echo "</div></div>"; 
         } 
     }
@@ -306,7 +322,15 @@
         $seqno = $_GET['seq_no'];
         $reason = $_GET['reason'];
         // echo $reason;
-
+        $sql="SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' and mrn_status='1'";  
+        $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $rowcount2=mysqli_num_rows($sql_result);
+        if($rowcount2>0)
+        {
+            echo "<script>sweetAlert('MRN Confirmed for this Schedule','','warning')</script>";
+        }
+        else
+        {
         $get_seq_details = "SELECT GROUP_CONCAT(tid) as tids, GROUP_CONCAT(DISTINCT doc_no) as doc_nos FROM bai_pro3.`packing_summary_input` WHERE pac_seq_no = $seqno and order_del_no='$schedule'";
         $details_seq=mysqli_query($link, $get_seq_details) or exit("error while fetching sequence details for this schedule"); 
         while($row=mysqli_fetch_array($details_seq))
@@ -368,6 +392,7 @@
                     </script>");
             }
         // MO Deletion end
+        }
     }
 ?> 
 </div> 
