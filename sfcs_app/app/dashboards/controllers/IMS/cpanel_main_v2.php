@@ -16,6 +16,35 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'/common/css/bootstrap-colorpicker.min.css',4,'R');?>" type="text/css" media="all" />
 <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'/common/css/bootstrap-colorpicker-plus.min.css',4,'R');?>" type="text/css" media="all" />
 
+<script>
+    function loadpopup(url)
+    { 
+        var shift = document.getElementById('shift').value;
+        if(shift)
+        {
+            url = url+'&shift='+shift;
+            window.open(url,'Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;
+        }
+        else
+        {
+            swal({
+                title: "Warning!",
+                text: "Please select shift",
+                type: "warning"
+            }).then(function() {
+                window.close();
+            });
+        }
+    }
+    setTimeout(function()
+    {
+        var shift = document.getElementById('shift').value; 
+        var url = window.location.href+'&shift='+shift;
+        if(shift){
+            window.location.href = url;    
+        }
+    }, 120000);
+</script>
 
 <title>IMS</title>
 <script>
@@ -831,27 +860,3 @@ $(document).ready(function(){
 
 ?>
 
-<script>
-function loadpopup(url){ 
-  var shift = document.getElementById('shift').value;
-  if(shift){
-    url = url+'&shift='+shift;
-    window.open(url,'Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;
-  }else{
-        swal({
-                title: "Warning!",
-                text: "Please select shift",
-                type: "warning"
-            }).then(function() {
-                window.close();
-            });
-  }
-}
-setTimeout(function(){
-   var shift = document.getElementById('shift').value; 
-   var url = window.location.href+'&shift='+shift;
-    if(shift){
-      window.location.href = url;    
-    }
-   }, 120000);
-</script>
