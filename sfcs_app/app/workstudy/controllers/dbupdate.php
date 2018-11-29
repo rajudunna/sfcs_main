@@ -8,23 +8,22 @@ Changes Log:
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
-
-function round_or_not($x,$y,$z)
-{	
-	if (is_numeric($y)){
-			if($z==1)
-			{
-				return round(($x/$y),0);
+	function round_or_not($x,$y,$z)
+	{	
+		if(is_numeric($x)){
+				if($z==1)
+				{
+					return round(($x/$y),0);
+				}
+				else
+				{
+					return ($x/$y);
+				}
+			}else{
+				return 0;
 			}
-			else
-			{
-				return $x/$y;
-			}
-		}else{
-			return 0;
-		}
-		
-}
+			
+	}
 ?>
 
 
