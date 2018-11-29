@@ -938,11 +938,22 @@ function getreversalscanningdetails($job_number)
 	{
 		$post_ops_code = 0;
 	}
-
 	$result_array['post_ops'][] = $post_ops_code;
 	//echo $post_ops_code;
 	if($post_ops_code != 0)
 	{
+		// $pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number FROM  $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref =$job_number[1] AND operation_id = $post_ops_code group by bundle_number order by bundle_number";
+		// // echo $pre_ops_validation;
+		// $result_pre_ops_validation = $link->query($pre_ops_validation);
+		// while($row = $result_pre_ops_validation->fetch_assoc()) 
+		// {
+		// 	$b_number =  $row['bundle_number'];
+		// 	$sizes[] =  $row['size_title'];
+		// 	$post_id = $row['id'];
+		// 	$send_qty = $row['send_qty'];
+		// 	$result_array['send_qty'][] = $send_qty;
+
+		// }
 		$pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number,color,assigned_module FROM  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by bundle_number";
 		//echo $pre_ops_validation;
 		$result_pre_ops_validation = $link->query($pre_ops_validation);
@@ -953,55 +964,13 @@ function getreversalscanningdetails($job_number)
 			$size_code = $row['size_title'];
 			$color = $row['color'];
 			$module = $row['assigned_module'];
-			// $post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $post_ops_code and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$module' GROUP BY size_title,color,assigned_module order by bundle_number";
-			$post_ops_qry_to_find_rec_qty = "SELECT group_concat(DISTINCT bundle_number) as bundles,(SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $post_ops_code and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$module' GROUP BY size_title,color,assigned_module order by bundle_number";
+			$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $post_ops_code and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$module' GROUP BY size_title,color,assigned_module order by bundle_number";
 			// echo $post_ops_qry_to_find_rec_qty;
 			$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
 			if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
 			{
-				// while($row3 = $result_post_ops_qry_to_find_rec_qty->fetch_assoc()) 
-				// {	
-				// 	$eligible_qty =array();
-				// 	$remaining_qty=0;
-				// 	$eligible=0;
-				// 	$mo_no_qty=array();
-				// 	$mo_no=array();
-				// 	$bundle_ids=array();
-				// 	$bundle_ids=$row3['bundles'];
-				// 	$recevied_qty=$row3['recevied_qty'];
-
-				// 	$bundle_mo = "SELECT mo_no,bundle_quantity from $bai_pro3.mo_operation_quantites WHERE ref_no in ($bundle_ids) AND op_code = $post_ops_code group by mo_no order by mo_no*1";
-				// 	// echo $bundle_mo.'<br>';
-				// 	$result_bundle_mo = $link->query($bundle_mo);
-				// 	while($row1 = $result_bundle_mo->fetch_assoc()) 
-				// 	{
-				// 		$mo_no[]=$row1['mo_no'];
-				// 	}
-
-				// 	$check_ops = "SELECT * from $bai_pro3.tbl_carton_ready WHERE mo_no in (".implode(",",$mo_no).") AND operation_id = $post_ops_code group by mo_no order by mo_no*1";
-				// 	// echo $check_ops.'<br>';
-				// 	$result_check_ops = $link->query($check_ops);
-				// 	if($result_check_ops->num_rows > 0)
-				// 	{
-				// 		while($row2 = $result_check_ops->fetch_assoc()) 
-				// 		{
-				// 			$remaining_qty=$row2['remaining_qty'];
-				// 			$mo_no_carton_ready=$row2['mo_no'];
-				// 			// echo 'Received = '.$recevied_qty.', remain = '.$remaining_qty."<br>";
-				// 			$eligible_qty[$mo_no_carton_ready] = $remaining_qty;
-				// 		}
-				// 		// $result_array['rec_qtys'][] = $eligible;
-				// 		// var_dump($eligible_qty);
-				// 	}
-				// 	else
-				// 	{
-				// 		$result_array['rec_qtys'][] = $recevied_qty;
-				// 	}	  
-				// }
-
-				// Old Version
 				while($row = $result_post_ops_qry_to_find_rec_qty->fetch_assoc()) 
-				{
+				{	
 					$result_array['rec_qtys'][] = $row['recevied_qty'];
 				}
 			}
@@ -1018,56 +987,20 @@ function getreversalscanningdetails($job_number)
 		$result_pre_ops_validation = $link->query($pre_ops_validation);
 		while($row = $result_pre_ops_validation->fetch_assoc()) 
 		{
-			// if($checking_flag == 1)
+			$b_number =  $row['bundle_number'];
+			$size_code = $row['size_title'];
+			$color = $row['color'];
+			$assigned_module = $row['assigned_module'];
+			if($checking_flag == 1)
 			{
-				$b_number =  $row['bundle_number'];
-				$sizes[] =  $row['size_title'];
-				$size_code = $row['size_title'];
-				$color = $row['color'];
-				$module = $row['assigned_module'];
-				$post_ops_qry_to_find_rec_qty = "SELECT group_concat(DISTINCT bundle_number) as bundles,(SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $job_number[0] and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$module' GROUP BY size_title,color,assigned_module order by bundle_number";
+				$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $ops_dependency and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$assigned_module' GROUP BY size_title,color,assigned_module order by bundle_number";
 				// echo $post_ops_qry_to_find_rec_qty;
 				$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
 				if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
 				{
-					while($row3 = $result_post_ops_qry_to_find_rec_qty->fetch_assoc()) 
+					while($row = $result_post_ops_qry_to_find_rec_qty->fetch_assoc()) 
 					{	
-						$eligible_qty =array();
-						$remaining_qty=0;
-						$eligible=0;
-						$mo_no_qty=array();
-						$mo_no=array();
-						$bundle_ids=array();
-						$bundle_ids=$row3['bundles'];
-						$recevied_qty=$row3['recevied_qty'];
-
-						$bundle_mo = "SELECT mo_no,bundle_quantity from $bai_pro3.mo_operation_quantites WHERE ref_no in ($bundle_ids) AND op_code = $job_number[0] group by mo_no order by mo_no*1";
-						// echo $bundle_mo.'<br>';
-						$result_bundle_mo = $link->query($bundle_mo);
-						while($row1 = $result_bundle_mo->fetch_assoc()) 
-						{
-							$mo_no[]=$row1['mo_no'];
-						}
-
-						$check_ops = "SELECT * from $bai_pro3.tbl_carton_ready WHERE mo_no in (".implode(",",$mo_no).") AND operation_id = $job_number[0] group by mo_no order by mo_no*1";
-						// echo $check_ops.'<br>';
-						$result_check_ops = $link->query($check_ops);
-						if($result_check_ops->num_rows > 0)
-						{
-							while($row2 = $result_check_ops->fetch_assoc()) 
-							{
-								$remaining_qty=$row2['remaining_qty'];
-								$mo_no_carton_ready=$row2['mo_no'];
-								// echo 'Received = '.$recevied_qty.', remain = '.$remaining_qty."<br>";
-								$eligible_qty[$mo_no_carton_ready] = $remaining_qty;
-							}
-							// $result_array['rec_qtys'][] = $eligible;
-							// var_dump($eligible_qty);
-						}
-						else
-						{
-							$result_array['rec_qtys'][] = $recevied_qty;
-						}
+						$result_array['rec_qtys'][] = $row['recevied_qty'];
 					}
 				}
 				else
@@ -1075,33 +1008,10 @@ function getreversalscanningdetails($job_number)
 					$result_array['rec_qtys'][] = 0;
 				}
 			}
-
-			// Old Version
-			// $b_number =  $row['bundle_number'];
-			// $size_code = $row['size_title'];
-			// $color = $row['color'];
-			// $assigned_module = $row['assigned_module'];
-			// if($checking_flag == 1)
-			// {
-			// 	$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $ops_dependency and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$assigned_module' GROUP BY size_title,color,assigned_module order by bundle_number";
-			// 	//echo $post_ops_qry_to_find_rec_qty;
-			// 	$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
-			// 	if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
-			// 	{
-			// 		while($row = $result_post_ops_qry_to_find_rec_qty->fetch_assoc()) 
-			// 		{	
-			// 			$result_array['rec_qtys'][] = $row['recevied_qty'];
-			// 		}
-			// 	}
-			// 	else
-			// 	{
-			// 		$result_array['rec_qtys'][] = 0;
-			// 	}
-			// }
-		}		
+		}
+		
 	}
 
-	$bundle_tiddds = array();	$mo_no1 = array();
 	$job_details_qry = "SELECT id,style,`color` AS order_col_des,`size_title` AS size_code,`bundle_number` AS tid,`original_qty` AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(rejected_qty) AS rejected_qty,(SUM(send_qty)-SUM(recevied_qty)) AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id,assigned_module FROM $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref = '$job_number[1]' AND operation_id = '$job_number[0]' AND remarks = '$job_number[2]' GROUP BY size_title,color,assigned_module order by bundle_number";
 	// echo $job_details_qry;
 	$job_details_qry = $link->query($job_details_qry);
@@ -1110,15 +1020,6 @@ function getreversalscanningdetails($job_number)
 	{
 		while($row = $job_details_qry->fetch_assoc()) 
 		{
-			$tid = $row['tid'];
-			$bundle_mo = "SELECT mo_no from $bai_pro3.mo_operation_quantites WHERE ref_no in (".$tid.") AND op_code = '$job_number[0]' group by mo_no order by mo_no*1";
-			// echo $bundle_mo.'<br>';
-			$result_bundle_mo = $link->query($bundle_mo);
-			while($row11203 = $result_bundle_mo->fetch_assoc()) 
-			{
-				$mo_no1=$row11203['mo_no'];
-			}
-			$bundle_tiddds[$mo_no1] = $row['reported_qty'];
 			$size_code = $row['size_code'];
 			$color = $row['order_col_des'];
 			$module = $row['assigned_module'];
@@ -1132,25 +1033,10 @@ function getreversalscanningdetails($job_number)
 			}
 			$result_array['table_data'][] = $row;
 		}
-		// var_dump($bundle_tiddds);
 	}
 	else
 	{
 		$result_array['status'] = 'Invalid Operation';
-	}
-
-	// var_dump($bundle_tiddds).' <==> '.var_dump($eligible_qty);
-	foreach ($bundle_tiddds as $key => $value)
-	{
-		if ($bundle_tiddds[$key] > $eligible_qty[$key])
-		{
-			$result_array['final_display_qty'][] = $eligible_qty[$key];
-		}
-		
-		if ($eligible_qty[$key] > $bundle_tiddds[$key])
-		{
-			$result_array['final_display_qty'][] = $bundle_tiddds[$key];
-		}
 	}
 	echo json_encode($result_array);
 }
