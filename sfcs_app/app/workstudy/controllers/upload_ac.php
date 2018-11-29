@@ -61,7 +61,7 @@ echo ' <form name="upload" enctype="multipart/form-data" method="POST" action="i
 <label>Choose File: </label> <input type="file" name="file" class="form-control" size="25" value="" accept=".csv" required> (Only CSV files and file name without spaces. Example: Plan_2016_Nov.csv)
 </div></br><div class="col-sm-4"><input type="submit" class="btn btn-primary" name="upload" value="Upload" ';
 echo " id=\"add\" onclick=\"hide()\"";
-echo ' > </div></div>
+echo '> </div></br><div style="color:red" class="col-sm-4"><b>NOTE : Please remove headers in CSV file if any</b></div></div>
 </form> '; 
 } 
 else { 
@@ -88,7 +88,8 @@ move_uploaded_file($tmpname_file, "$uploaddir/$filename");
 
 if(strlen($filename)>0)
 {
-	echo "<br/>File Upload is Successful.<br />"; 
+	echo "<br/><div style='color:green'><b>File Loaded Successfully , Please Update plan</b></div><br/>";
+	echo "<br/><br/>" ;
 	$redirect = explode('?r=',$action_var);
 	echo ' <form name="update" method="GET" action="index.php"> 
 	<input type="hidden" name="r" value='.$redirect[1].'>
