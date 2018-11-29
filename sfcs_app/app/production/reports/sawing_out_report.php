@@ -119,7 +119,8 @@ function verify_date()
 	     name='sch' width=30  onchange="return pop_check()"></div>
 	<div class="col-md-2"><br/><input type="submit" id='btn'  class="btn btn-primary" value="View" name="submit" id='sub'></div>
 </div>	
-</form><br/><hr/><br/>
+</form>
+<br>
 <?php
 	if(isset($_POST['submit']))
 	{
@@ -129,17 +130,14 @@ function verify_date()
 
 		if($sch=="")
 		{
-			$sch=='';
-			$sql="SELECT * FROM $bai_pro3.pac_stat_log where status=\"DONE\" AND scan_date BETWEEN '$dat1' AND '$dat2'";
-			// echo $sql;
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql="SELECT style, schedule, pac_stat_id, scan_date, sum(carton_act_qty) as qty, group_concat(distinct color) as col, group_concat(distinct size_tit) as siz FROM $bai_pro3.pac_stat_log where status=\"DONE\" AND date(scan_date) BETWEEN '$dat1' AND '$dat2' group by pac_stat_id";
 		}
 		else if($sch !="")
 		{
-			$sql="SELECT * FROM $bai_pro3.pac_stat_log where status=\"DONE\" AND schedule='$sch' AND scan_date BETWEEN '$dat1' AND '$dat2'";
-			// echo $sql;
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));		
+			$sql="SELECT style, schedule, pac_stat_id, scan_date, sum(carton_act_qty) as qty, group_concat(distinct color) as col, group_concat(distinct size_tit) as siz FROM $bai_pro3.pac_stat_log where status=\"DONE\" AND schedule='$sch' AND date(scan_date) BETWEEN '$dat1' AND '$dat2' group by pac_stat_id";
 		}
+		// echo $sql;
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 		if(mysqli_num_rows($sql_result)> 0)
 		{
@@ -164,20 +162,10 @@ function verify_date()
 
 						$style=$rows['style'];
 						$schedule=$rows['schedule'];
-						$color=$rows['color'];
+						$color=$rows['col'];
 
-						$size=$rows['size_code'];
-						$qty=$rows['carton_act_qty'];
-						$size_tit=$rows['size_tit'];
-						
-						$sql="SELECT title_size_".$size." as size FROM $bai_pro3.bai_orders_db WHERE order_del_no=\"$schedule\" AND order_col_des=\"$color\"";
-						// echo $sql;
-						$sql_result1=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($title_size = mysqli_fetch_array($sql_result1))
-						{	
-							// echo "size".$title_size["size"];
-							$title_size_ref=$title_size["size"];
-						}
+						$size=$rows['siz'];
+						$qty=$rows['qty'];
 						?>
 						<tr>
 							<td><?= $bid; ?></td>
@@ -185,7 +173,7 @@ function verify_date()
 							<td><?= $style; ?></td>
 							<td><?= $schedule; ?></td>
 							<td><?= $color; ?></td>
-							<td><?= $title_size_ref; ?></td>
+							<td><?= $size; ?></td>
 							<td><?= $qty; ?></td>
 						</tr>
 						<?php
@@ -205,7 +193,7 @@ function verify_date()
 
 var table3Filters = {
 		btn: true,
-		
+		display_all_text: "All",
 		col_2: "select",
 		col_3: "select",
 		col_4: "select",
