@@ -160,6 +160,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				$old_plies=0;
 			}
 
+			$material=0;
+			$sql35="SELECT ((plandoc_stat_log.a_xs+plandoc_stat_log.a_s+plandoc_stat_log.a_m+plandoc_stat_log.a_l+plandoc_stat_log.a_xl+plandoc_stat_log.a_xxl+plandoc_stat_log.a_xxxl+plandoc_stat_log.a_s01+plandoc_stat_log.a_s02+plandoc_stat_log.a_s03+plandoc_stat_log.a_s04+plandoc_stat_log.a_s05+plandoc_stat_log.a_s06+plandoc_stat_log.a_s07+plandoc_stat_log.a_s08+plandoc_stat_log.a_s09+plandoc_stat_log.a_s10+plandoc_stat_log.a_s11+plandoc_stat_log.a_s12+plandoc_stat_log.a_s13+plandoc_stat_log.a_s14+plandoc_stat_log.a_s15+plandoc_stat_log.a_s16+plandoc_stat_log.a_s17+plandoc_stat_log.a_s18+plandoc_stat_log.a_s19+plandoc_stat_log.a_s20+plandoc_stat_log.a_s21+plandoc_stat_log.a_s22+plandoc_stat_log.a_s23+plandoc_stat_log.a_s24+plandoc_stat_log.a_s25+plandoc_stat_log.a_s26+plandoc_stat_log.a_s27+plandoc_stat_log.a_s28+plandoc_stat_log.a_s29+plandoc_stat_log.a_s30+plandoc_stat_log.a_s31+plandoc_stat_log.a_s32+plandoc_stat_log.a_s33+plandoc_stat_log.a_s34+plandoc_stat_log.a_s35+plandoc_stat_log.a_s36+plandoc_stat_log.a_s37+plandoc_stat_log.a_s38+plandoc_stat_log.a_s39+plandoc_stat_log.a_s40+plandoc_stat_log.a_s41+plandoc_stat_log.a_s42+plandoc_stat_log.a_s43+plandoc_stat_log.a_s44+plandoc_stat_log.a_s45+plandoc_stat_log.a_s46+plandoc_stat_log.a_s47+plandoc_stat_log.a_s48+plandoc_stat_log.a_s49+plandoc_stat_log.a_s50)*".$plies_check.")*fn_know_binding_con('".$tran_order_tid."') AS req FROM plandoc_stat_log WHERE doc_no='".$doc_no."'";
+			$sql_result35=mysqli_query($link, $sql35) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row35=mysqli_fetch_array($sql_result35))
+			{
+				$material=$sql_row35["req"]+($mklength*$plies_check);
+			}
+
 			//Adding to verify schedule club or not
 			$sql2123="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"".$tran_order_tid."\" and order_joins='1'";
 			$sql_result123=mysqli_query($link, $sql2123) or exit("Sql Error0".mysqli_error($GLOBALS["___mysqli_ston"]));
