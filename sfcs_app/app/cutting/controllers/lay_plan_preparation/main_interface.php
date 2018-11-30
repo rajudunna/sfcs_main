@@ -63,10 +63,18 @@ if(strlen($schedule) > 8){
 	$val_schedules[] = $schedule;
 }
 
+$sql_colors="select excess_cut_qty from $bai_pro3.excess_cuts_log where schedule_no = '$schedule' 
+	and color = '$color'";
+$result3 = mysqli_query($link,$sql_colors) or exit("Unable to get the color codes");
+while($row = mysqli_fetch_array($result3))
+{
+	$excess_cut = $row['excess_cut_qty'];
+}
+
 //Validation for the schedule operation matchings
 foreach($val_schedules as $schedule){
 	$sql_colors="select distinct(order_col_des) from $bai_pro3.bai_orders_db where order_del_no = '$schedule' 
-	and order_style_no = '$style'";
+	and order_style_no = '$style' and order_joins NOT IN  (1,2)";
 	$result3 = mysqli_query($link,$sql_colors) or exit("Unable to get the color codes");
 	while($row = mysqli_fetch_array($result3))
 	{
@@ -122,6 +130,19 @@ foreach($val_schedules as $schedule){
 				</script>";
 			exit();
 		}
+
+		$mo_query = "SELECT * from $bai_pro3.mo_details where scheudle='$scheudle' and 
+					color='$color'  and style='$style' limit 1";
+		$mo_result = mysqli_query($link,$mo_query);	
+		if(!mysqli_num_rows($mo_result) > 0){
+			echo "<script>swal('MO Details Doesn't Exist,'','warning');</script>";
+			$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
+			echo "<script>setTimeout(function(){
+						location.href='$url' 
+					},3000);
+				</script>";
+			exit();
+		}		
 	}
 }
 //Validation ends..
