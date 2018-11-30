@@ -765,7 +765,8 @@ if($barcode_generation == 1)
 		$b_module = $b_module1;
 
 	}
-	die();
+	
+	// die();
 	//rejections updation in qms_db
 	// var_dump($actual_rejection_reason_array_string);
 	//echo $bulk_insert_rej;

@@ -56,7 +56,153 @@ if(isset($_POST['formSubmit']))
     // 	//Inserted Successfully
     // }
 }
+if(isset($_POST['formIssue']))
+{
+    $issueval = $_POST['issueval'];
+    $bcd_id = $_POST['bcd_id'];
+    $doc_no_ref = $_POST['doc_no_ref'];
+    foreach($issueval as $key=>$value)
+    {
+        //retreaving remaining_qty from recut_v2_child
+        $act_id = $bcd_id[$key];
+        $recut_allowing_qty = $issueval[$key];
+        $retreaving_bcd_data = "SELECT * FROM `brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
+        $retreaving_bcd_data_res = $link->query($retreaving_bcd_data);
+        while($row_bcd = $retreaving_bcd_data_res->fetch_assoc()) 
+        {
+            $bcd_individual = $row_bcd['bundle_number'];
+            $bundle_number = $row_bcd['id'];
+            $operation_id = $row_bcd['operation_id'];
+            $retreaving_rej_qty = "SELECT * FROM `bai_pro3`.`recut_v2_child` where bcd_id = $bundle_number and parent_id = '$doc_no_ref'";
+            // echo $retreaving_rej_qty;
+            $retreaving_rej_qty_res = $link->query($retreaving_rej_qty);
+            while($child_details = $retreaving_rej_qty_res->fetch_assoc()) 
+            {
+                $actual_allowing_to_recut = $child_details['recut_reported_qty']-$child_details['issued_qty'];
+            }
+            if($actual_allowing_to_recut < $recut_allowing_qty)
+            {
+                $to_add = $actual_allowing_to_recut;
+                $recut_allowing_qty = $recut_allowing_qty - $actual_allowing_to_recut;
+            }
+            else
+            {
+                $to_add = $recut_allowing_qty;
+                $recut_allowing_qty = 0;
+            }
+            
+            if($to_add > 0)
+            {
+                //updating recut_v2_child
+                $update_recut_v2_child = "update $bai_pro3.recut_v2_child set issued_qty = issued_qty+$to_add where bcd_id = $bundle_number and parent_id = $doc_no_ref";
+               // mysqli_query($link, $update_recut_v2_child) or exit("update_recut_v2_child".mysqli_error($GLOBALS["___mysqli_ston"]));
+                //updating rejection_log_child
+                $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set issued_qty=issued_qty+$to_add where bcd_id = $bundle_number";
+               // mysqli_query($link, $updating_rejection_log_child) or exit("updating_rejection_log_child".mysqli_error($GLOBALS["___mysqli_ston"]));
+                issued_to_module($bundle_number,$to_add,2);
+
+            }
+        }
+    }
+    $url = '?r='.$_GET['r'];
+    echo "<script>sweetAlert('Successfully Approved','','success');window.location = '".$url."'</script>";
+}
+function issued_to_module($bcd_id,$qty,$ref)
+{
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+    $bcd_colum_ref = "replace_in";
+    if($ref == 2)
+    {
+        $bcd_colum_ref = "recut_in";
+    }
+    $bcd_qry = "select style,mapped_color,docket_number,assigned_module,input_job_no_random_ref,operation_id,bundle_number from brandix_bts.bundle_creation_data where id = $bcd_id";
+    $result_bcd_qry = $link->query($bcd_qry);
+    while($row = $result_bcd_qry->fetch_assoc()) 
+    {
+        $style = $row['style'];
+        $mapped_color = $row['mapped_color'];
+        $docket_no = $row['docket_number'];
+        $input_job_no_random_ref = $row['input_job_no_random_ref'];
+        $ops_code = $row['operation_id'];
+        $bundle_number = $row['bundle_number'];
+    }
+    //updating cps log and bts
+    $update_qry_cps = "update bai_pro3.cps_log set remaining_qty = remaining_qty+$qty where doc_no = $docket_no and operation_code = 15";
+    mysqli_query($link, $update_qry_cps) or exit("update_qry_cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $update_qry_bcd = "update brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and operation_id = 15";
+     mysqli_query($link, $update_qry_bcd) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
+    //retreaving emblishment operations from operatoin master
+    $ops_master_qry = "select operation_code from brandix_bts.tbl_orders_ops_ref where category in ('Send PF')"; 
+    $result_ops_master_qry = $link->query($ops_master_qry);
+    while($row_ops = $result_ops_master_qry->fetch_assoc()) 
+    {
+       $emb_ops[] = $row_ops['operation_code'];
+    }
+
+    $qry_ops_mapping = "select operation_code from brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and  operation_code in (".implode(',',$emb_ops).")";
+    $result_qry_ops_mapping = $link->query($qry_ops_mapping);
+    if(mysqli_num_rows($result_qry_ops_mapping) > 0)
+    {
+        while($row_emb = $result_qry_ops_mapping->fetch_assoc()) 
+        {
+            $emb_input_ops_code = $row_emb['operation_code'];
+
+            //updating bcd for emblishment in operation 
+            $update_bcd_for_emb_qry = "update brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref + $qty where docket_number = $docket_no and operation_id = $emb_input_ops_code";
+            mysqli_query($link, $update_bcd_for_emb_qry) or exit("update_bcd_for_emb_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+            //updating embellishment_plan_dashboard
+            $update_plan_dashboard_qry = "UPDATE `bai_pro3`.`embellishment_plan_dashboard` SET send_qty = send_qty+$qty WHERE doc_no = $docket_no AND send_op_code = $emb_input_ops_code";
+            mysqli_query($link, $update_plan_dashboard_qry) or exit("update_plan_dashboard_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+        }
+    }
+    else
+    {
+        $emb_cut_check_flag = 0;
+        //checking the ips having that input job or not
+        $category=['cutting','Send PF','Receive PF'];
+        $checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $ops_code";
+        // echo $checking_qry;
+        $result_checking_qry = $link->query($checking_qry);
+        while($row_cat = $result_checking_qry->fetch_assoc()) 
+        {
+            $category_act = $row_cat['category'];
+        }
+        if(in_array($category_act,$category))
+        {
+            $emb_cut_check_flag = 1;
+        }
+        if($emb_cut_check_flag == 0)
+        {
+            $checking_qry_plan_dashboard = "SELECT * FROM `bai_pro3`.`plan_dashboard_input` WHERE input_job_no_random_ref = '$input_job_no_random_ref'";
+            $result_checking_qry_plan_dashboard = $link->query($checking_qry_plan_dashboard);
+            if(mysqli_num_rows($result_checking_qry_plan_dashboard) == 0)
+            {   
+                $insert_qry_ips = "INSERT IGNORE INTO `bai_pro3`.`plan_dashboard_input` 
+                SELECT * FROM `bai_pro3`.`plan_dashboard_input_backup`
+                WHERE input_job_no_random_ref = '$input_job_no_random_ref'";
+                mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
+            }
+            $input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);
+            $update_qry_bcd_input = "update brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref=$bcd_colum_ref+$qty where bundle_number = $bundle_number and operation_id = $input_ops_code";
+            mysqli_query($link, $update_qry_bcd_input) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
+        }   
+    }
+}
+$shifts_array = ["IssueToModule","AlreadyIssued","WaitingForApproval","UpdateMarkers"];
+$drp_down = '<div class="row"><div class="col-md-3"><label>Filter:</label>
+<select class="form-control rm"  name="status" id="rm" style="width:100%;" onchange="myFunction()" required>';
+for ($i=0; $i <= 3; $i++) 
+{
+    $drp_down .= '<option value='.$shifts_array[$i].'>'.$shifts_array[$i].'</option>';
+}
+$drp_down .= "</select></div></div>";
+echo $drp_down;
 ?>
+</br></br>
 <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog" style="width: 80%;">
         <div class="modal-content">
@@ -85,13 +231,30 @@ if(isset($_POST['formSubmit']))
         </div>
     </div>
 </div>
+<div class="modal fade" id="myModal2" role="dialog">
+    <div class="modal-dialog" style="width: 80%;  height: 100%;">
+        <div class="modal-content">
+            <div class="modal-header">Issuing to Module Form
+                <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
+                    <div class='panel-body' id="dynamic_table_panel">	
+                            <div id ="dynamic_table2"></div>
+                    </div>
+                    <div class="pull-right"><input type="submit" class="btn btn-primary" value="Submit" name="formIssue"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <div class='row'>
     <div class='panel panel-primary'>
         <div class='panel-heading'>
             <b>Re Cut Issue Dashboard - View</b>
         </div>
         <div class='panel-body'>
-           <table class = 'col-sm-12 table-bordered table-striped table-condensed'><thead><th>S.No</th><th>Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Allowed Quantity</th><th>Replaced Quantity</th><th>Eligibility to allow recut</th><th>View</th><th>Recut</th>
+           <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Allowed Quantity</th><th>Recut Reported Quantity</th><th>Issued Quantity</th><th>Remaining Quantity</th><th>View</th><th>Issue</th>
             </thead>
             <?php  
             $s_no = 1;
@@ -104,17 +267,26 @@ if(isset($_POST['formSubmit']))
             while($row = mysqli_fetch_array($blocks_result))
             {
                 $id = $row['doc_no'];
-                if($row['mk_ref'] == '0')
+                $rem_qty = $row['recut_reported_qty'] - $row['issued_qty'];
+                if($rem_qty == 0)
+                {
+                    $button_html = "<b style='color:red;'>Already issued</b>";
+                    $html_hiding = "AlreadyIssued";
+                }
+                else if($row['mk_ref'] == '0' && $rem_qty <> 0)
                 {
                     $button_html = "<button type='button'class='btn btn-danger' onclick='editmarkers(".$id.")'>Update Markers</button>";
+                    $html_hiding = "UpdateMarkers";
                 }
                 else if($row['approval_status'] == '0')
                 {
                     $button_html = "Markers updated and Waiting for Approval";
+                    $html_hiding = "WaitingForApproval";
                 }
                 else
                 {
                     $button_html = "<button type='button'class='btn btn-danger' onclick='issuemodule(".$id.")'>Issue To Module</button>";
+                    $html_hiding = "IssueToModule";
                 }
                 echo "<tr><td>$s_no</td>";
                 echo "<td>".$row['doc_no']."</td>";
@@ -125,17 +297,27 @@ if(isset($_POST['formSubmit']))
                 echo "<td>".$row['recut_qty']."</td>";
                 echo "<td>".$row['recut_reported_qty']."</td>";
                 echo "<td>".$row['issued_qty']."</td>";
+                echo "<td>".$rem_qty."</td>";
                 echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
+                echo "<td style='display:none'>$html_hiding</td>"; 
                 echo "<td>$button_html</td>"; 
                 echo "</tr>";
                 $s_no++;
             }
             ?>
              </table>
+             <div id='myTable1'>
+                <b style='color:red'>No Records Found</b>
+             </div>
         </div>
     </div>
 </div>
 <script>
+$(document).ready(function() 
+{
+    $('#myTable1').hide();
+    myFunction();
+});
 function viewrecutdetails(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
@@ -169,5 +351,70 @@ function editmarkers(id)
 
     });
 
+}
+function issuemodule(id)
+{
+    var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
+    $.ajax({
+
+			type: "POST",
+			url: function_text+"?issued_to_module_process="+id,
+			//dataType: "json",
+			success: function (response) 
+			{
+                document.getElementById('dynamic_table2').innerHTML = response;
+                $('#myModal2').modal('toggle');
+            }
+
+    });
+}
+function validatingremaining(sno)
+{
+    var remaining_qty_var = sno+"rem";
+    var rem_qty = Number(document.getElementById(remaining_qty_var).innerHTML);
+    var issuing_qty = Number(document.getElementById(sno).value);
+    if(Number(rem_qty) < Number(issuing_qty))
+    {
+        swal('You are Issuing More than remaining quantity.','','error');
+        document.getElementById(sno).value = 0;
+    }
+}
+function myFunction() 
+{
+    var input, filter, table, tr, td, i;
+    input = document.getElementById("rm").value;
+    filter = input.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    var count = 0;
+    if(tr.length > 1)
+    {
+        for (i = 1; i < tr.length; i++) 
+        {
+            td = tr[i].getElementsByTagName("td")[11];
+            if(td) 
+            {
+                if(td.innerHTML.toUpperCase() == filter)
+                {
+                    tr[i].style.display = "";
+                } 
+                else 
+                {
+                    count++;
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+    if(count == 1)
+    {
+        $('#myTable').hide();
+        $('#myTable1').show();
+    }
+    else
+    {
+        $('#myTable').show();
+        $('#myTable1').hide();
+    }
 }
 </script>
