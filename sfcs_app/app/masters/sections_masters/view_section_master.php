@@ -19,7 +19,9 @@
 		<thead>
 		<tr>
 		<th>S.No</th>
+		<th>Section ID</th>
 		<th>Section Name</th>
+		<th>Section Head</th>
 		<th>IMS Priority Boxs</th>
 		<th> Edit </th>
 		</tr>
@@ -30,12 +32,16 @@
 			$rowid=$row["sec_id"];
 			$sec_name=$row["sec_name"];
 			$ims_priority_boxs=$row["ims_priority_boxs"];
+			$section_display_name=$row["section_display_name"];
+			$section_head=$row["section_head"];
 			
 			echo "<tr>
 			<td>".$sno++."</td>
 			<td>".$row["sec_name"]."</td>
+			<td>".$row["section_display_name"]."</td>
+			<td>".$row["section_head"]."</td>
 			<td>".$row["ims_priority_boxs"]."</td>
-			<td><a href='$url&rowid=$rowid&sec_name=$sec_name&ims_priority_boxs=$ims_priority_boxs' class='btn btn-warning btn-xs editor_edit'>Edit</a></td>
+			<td><a href='$url&rowid=$rowid&sec_name=$sec_name&ims_priority_boxs=$ims_priority_boxs&section_display_name=$section_display_name&section_head=$section_head' class='btn btn-warning btn-xs editor_edit'>Edit</a></td>
 			</tr>";
 		}
 
