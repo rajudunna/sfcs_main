@@ -390,6 +390,10 @@ $(document).ready(function()
 								status = '<font color="red">Already Scanned</font>';
 							}
 						}
+						else
+						{
+							status = '<font color="red">No Operation Reported</font>';
+						}							
 						var temp_var_bal1 = 0;
 						if(data[i].flag == 'packing_summary_input' || emb_ops != undefined)
 						{

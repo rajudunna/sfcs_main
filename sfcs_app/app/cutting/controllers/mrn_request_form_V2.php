@@ -7,7 +7,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 ?>
 
 <?php
-
+$flag==0;
 //echo $_SERVER['SERVER_NAME'];
 
 $validation_ref_select="";
@@ -56,18 +56,22 @@ if($flag==0)
     function checkqty(rows)
     {
         var trows=document.getElementById("trows").value;
-        //alert(trows);
+        // alert(trows);
         var avl_qty=document.getElementById("avl_qty").value;
         var tot=0;
         for(var row=1;row<=trows;row++)
         {
             var code=document.getElementById("resaon_"+row).value;
-            if(document.getElementById("product_"+row).value == "FAB ")
+            // alert(document.getElementById("product_"+row).value);
+            // alert(code);
+            if(document.getElementById("product_"+row).value.trim() == "FAB")
             {
+                // alert(code);
                 if(code==25 || code==29 || code==32 || code==31)
                 {
+                    
                     tot=tot+parseFloat(document.getElementById("qty_"+row).value);
-                    //alert(tot+"-"+avl_qty+"-"+document.getElementById("qty_"+row).value);
+                    alert(tot+"-"+avl_qty+"-"+document.getElementById("qty_"+row).value);
                     if(parseFloat(avl_qty) < parseFloat(tot))
                     {
                         alert("Requested Quantity Is Exceeding The Available Quantity");
@@ -210,7 +214,7 @@ function enableButton()
             var desc = document.getElementById('item_desc'+i).value;
             var code = document.getElementById('item_code'+i).value;
             var rem = document.getElementById('remarks'+i).value;
-            if( clr=='' || desc =='' || code =='' || rem==''){
+            if( desc =='' || code =='' || rem==''){
                 swal('Fill all the Fields','','warning');
                 document.getElementById('update').disabled=true;
                 return false;
@@ -731,25 +735,21 @@ function button_disable()
                 echo "<input type=\"hidden\" name=\"price[]\" value=\"0\">";
                 echo "<tr bgcolor='$bgcolor'>";
                 
-                //echo "<td>$proc_grp</td>";
-                //echo "<td>$material_item</td>";
-                //echo "<td>$item_description</td>";
-                
                 //When M3 offline uncomment this
                 $opno = (int)$finalrecords[$x]['OPNO'];
                 // echo "<td><select name=\"product[]\"><option value='STRIM' selected>STRIM</option><option value='PRTIM'>PTRIM</option><option value='FAB'>FAB</option></select></td>";
                 if($opno === 15){
-                    echo "<td><input type=\"hidden\" name=\"product[]\" value=\"FAB\">FAB</td>";
+                    echo "<td><input type=\"hidden\" id=\"product_$z1\" name=\"product[]\" value=\"FAB\">FAB</td>";
                 }
                 if($opno > 15 && $opno < 100){
-                    echo "<td><input type=\"hidden\" name=\"product[]\" value=\"ETRIM\">ETRIM</td>";
+                    echo "<td><input type=\"hidden\" id=\"product_$z1\" name=\"product[]\" value=\"ETRIM\">ETRIM</td>";
                 }
                 if($opno === 200){
-                    echo "<td><input type=\"hidden\" name=\"product[]\" value=\"PTRIM\">PTRIM</td>";
+                    echo "<td><input type=\"hidden\" id=\"product_$z1\" name=\"product[]\" value=\"PTRIM\">PTRIM</td>";
                 }
 
                 if($opno >= 100 && $opno < 200){
-                    echo "<td><input type=\"hidden\" name=\"product[]\" value=\"STRIM\">STRIM</td>";
+                    echo "<td><input type=\"hidden\" id=\"product_$z1\" name=\"product[]\" value=\"STRIM\">STRIM</td>";
                 }
                 
 
@@ -787,43 +787,8 @@ function button_disable()
                 //echo "<td>".round($req_qty,2)."</td>";
                 //echo "<td>".round($iss_qty,2)."</td>";
                 echo "<td><input style=\"background-color:#66FFCC;\" class='integer quantities' type=\"text\" size=\"5\" value=\"0\" onchange=\"if(this.value<0) { this.value=0; alert('Please enter correct value.'); }\" ".$validation_ref_text." id=\"qty_$z1\" onfocus=\"this.focus();this.select();\" name=\"qty[]\"></td>";
-            
-            //When M3 offline comment this (Key word: When M3)
-                /* echo "<input type=\"hidden\" id=\"product_$z1\" name=\"product[]\" value=\"$proc_grp\">
-                <input type=\"hidden\" name=\"item_code[]\" value=\"$material_item\">
-                <input type=\"hidden\" name=\"item_desc[]\" value=\"$item_description\">
-                <input type=\"hidden\" name=\"uom[]\" value=\"$uom\">
-                <input type=\"hidden\" name=\"co[]\" value=\"$co\">"; */
-                
-                //When M3 offline comment this (Key word: When M3)
                 $uom = $finalrecords[$x]['PEUN'];
                 echo "<td><input type=\"hidden\" name=\"uom[]\" value=\"$uom\">".$uom."</td>";
-                // echo "<td><select name=\"uom[]\" disabled='true'>
-                //      <option value='PCS' ";
-                //      if($uom == 'PCS'){
-                //          echo 'selected';
-                //      }
-                //      echo ">PCS</option>
-                //      <option value='$fab_uom' ";
-                //      if($uom == 'YRD'){
-                //          echo 'selected';
-                //      }
-                //      echo ">$fab_uom</option>
-                //      </select>
-                //  </td>";
-
-                    
-                //echo "<td>$uom</td>";
-                // $reason_id_db = array();
-                // $reason_code_db = array();
-                // $sql_reason="select * from $bai_rm_pj2.mrn_reason_db where status=0 order by reason_order";
-                // $sql_result=mysqli_query($link, $sql_reason) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                // while($sql_row=mysqli_fetch_array($sql_result))
-                // {
-                //  $reason_id_db[]=$sql_row['reason_tid'];
-                //  $reason_code_db[]=$sql_row['reason_code']."-".$sql_row['reason_desc'];
-                // }
-
                 echo "<td><select name=\"reason[]\" id=\"resaon_$z1\" ".$validation_ref_select." >";
                 for($i=0;$i<sizeof($reason_code_db);$i++)
                 {
@@ -836,7 +801,7 @@ function button_disable()
         }
         if(count($finalrecords) == 0){
             
-            for($x=0;$x<10;$x++)
+            for($x=0;$x<2;$x++)
             {
             
                 $z1=$z1+1;  
@@ -844,12 +809,8 @@ function button_disable()
                 echo "<input type=\"hidden\" name=\"price[]\" value=\"0\">";
                 echo "<tr bgcolor='$bgcolor'>";
                 
-                //echo "<td>$proc_grp</td>";
-                //echo "<td>$material_item</td>";
-                //echo "<td>$item_description</td>";
-                
                 //When M3 offline uncomment this
-                echo "<td><select name=\"product[]\"><option value='STRIM' selected>STRIM</option><option value='PRTIM'>PTRIM</option><option value='FAB'>FAB</option></select></td>";
+                echo "<td><select id=\"product_$z1\" name=\"product[]\"><option value='STRIM' selected>STRIM</option><option value='PRTIM'>PTRIM</option><option value='FAB'>FAB</option></select></td>";
                 echo "<td><input type=\"text\" name=\"item_code[]\" id='item_code$x' value=\"\" style=\"background-color:#66FFCC;\" ></td>";
                 echo "<td><input type=\"text\" name=\"item_desc[]\" id='item_desc$x' value=\"\" style=\"background-color:#66FFCC;\" ></td>";
                 echo "<td><input type=\"text\" name=\"co[]\" id='item_color$x' value=\"\" style=\"background-color:#66FFCC;\"></td>"; 
@@ -860,15 +821,6 @@ function button_disable()
                 //echo "<td>".round($req_qty,2)."</td>";
                 //echo "<td>".round($iss_qty,2)."</td>";
                 echo "<td><input style=\"background-color:#66FFCC;\" class='integer quantities' type=\"text\" size=\"5\" value=\"0\" onchange=\"if(this.value<0) { this.value=0; alert('Please enter correct value.'); }\" ".$validation_ref_text." id=\"qty_$z1\" onfocus=\"this.focus();this.select();\" name=\"qty[]\"></td>";
-            
-            //When M3 offline comment this (Key word: When M3)
-                /* echo "<input type=\"hidden\" id=\"product_$z1\" name=\"product[]\" value=\"$proc_grp\">
-                <input type=\"hidden\" name=\"item_code[]\" value=\"$material_item\">
-                <input type=\"hidden\" name=\"item_desc[]\" value=\"$item_description\">
-                <input type=\"hidden\" name=\"uom[]\" value=\"$uom\">
-                <input type=\"hidden\" name=\"co[]\" value=\"$co\">"; */
-                
-                //When M3 offline comment this (Key word: When M3)
                 $uom = $finalrecords[$x]['PEUN'];
                 echo "<td><select name=\"uom[]\" >
                         <option value='PCS'>PCS</option>
@@ -877,7 +829,7 @@ function button_disable()
                     </td>";
                 //echo "<td>$uom</td>";
                 
-                echo "<td><select name=\"reason[]\" id=\"resaon_$z1\" ".$validation_ref_select." >";
+                echo "<td><select name=\"reason[]\" id=\"resaon_$z1\" onchange=\"checkqty($z1)\" >";
                 for($i=0;$i<sizeof($reason_code_db);$i++)
                 {
                     echo "<option value=\"".$reason_id_db[$i]."\">".$reason_code_db[$i]."</option>";
@@ -924,11 +876,6 @@ function button_disable()
                     //col_0:'select'
                 }
                 setFilterGrid( "table1", MyTableFilter );
-                // $(document).ready(function(){
-                //  $('#flt0_table1').append('<option value="STRIM">STRIM</option>');
-                //  $('#flt0_table1').append('<option value="PTRIM">TRIM</option>');
-                //  $('#flt0_table1').append('<option value="FAB">TRIM</option>');
-                // });
             </script>
             </div>
         </div>
