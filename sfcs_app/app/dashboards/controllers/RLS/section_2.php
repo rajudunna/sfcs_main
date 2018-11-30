@@ -17,7 +17,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <?php
 //$dt="2012-01-28";
 $dt=date("Y-m-d");
-$sql=mysqli_query($GLOBALS["___mysqli_ston"], "select sec_id,sec_head,sec_mods from $bai_pro3.sections_db where sec_id=2");
+$sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` where section=$sec_id_main GROUP BY section ORDER BY section + 0");
 while($result=mysqli_fetch_array($sql))
 {
 	$mods=$result["sec_mods"];
@@ -25,7 +25,7 @@ while($result=mysqli_fetch_array($sql))
 	$head=$result["sec_head"];
 }
 
-echo "<table align=center><tr><th colspan=5><H2 style=\"color:#0000ff;\"  align=\"left\">Section - ".$sec_id."(".$head.")</H2></th></tr><tr><th>Modules\Hours</th>";
+echo "<table align=center><tr><th colspan=5><H2 style=\"color:#0000ff;\"  align=\"left\"> ".$sec_id."</H2></th></tr><tr><th>Modules\Hours</th>";
 
 
 for($i=1;$i<=16;$i++)

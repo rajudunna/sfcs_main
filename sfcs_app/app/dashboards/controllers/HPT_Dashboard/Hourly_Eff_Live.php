@@ -320,23 +320,14 @@ for ($j=0;$j<sizeof($sections);$j++)
 {
 /*new 20100320 */
  /*new 20100320 */       $sec=$sections[$j];
+ $sqlx1="SELECT * FROM $bai_pro3.sections_master WHERE sec_id=$sec";
+ // echo $sqlx1;
+ $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+ while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+ {
+   $section1=$sql_rowx1['sec_name'];
+ }
 
-/*new 20100320 */		// $sec=$_POST['section'];
-
-
-
-/* $date=date("Y-m-d", mktime(0,0,0,date("m") ,date("d"),date("Y")));  */
-
-/* $sec=5; */
-
-/* $date=date("Y-m-d", mktime(0,0,0,date("m") ,date("d"),date("Y"))); */
-
- /* $date = date("Y-m-d", $sdate);
-echo $sdate; */
-
-/* $h1=array(1,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21);
-$h2=array(6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,24); */
-$h1=array();
 $h2=array();
 $headers=array();
 $i=0;
@@ -363,12 +354,12 @@ $i=0;
 	    $sec_head=$sql_row['sec_head'];
 	}
 	$sql="select mod_style, mod_no from $pro_mod where mod_sec=$sec and mod_date=\"$date\" order by mod_no*1";
-	
+	// echo $sql;	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($option1==1){  echo "<table id=\"info\" class=\"table table-bordered\">"; }
 
 
-if($option1==1){    echo "<tr><td colspan=4 style='background-color:#29759C; color: white;'>Section -".$sec." (".$sec_head.")</td></tr>"; } 
+if($option1==1){    echo "<tr><td colspan=4 style='background-color:#29759C; color: white;'>".$section1."</td></tr>"; } 
 if($option1==1){	echo "<tr><th style='background-color:#29759C;'>M#</th><th style='background-color:#29759C;'>NOP</th><th style='background-color:#29759C;'>Style DB</th><th style='background-color:#29759C;'>Del DB</th>"; }
 
 for($i=0;$i<sizeof($headers);$i++)

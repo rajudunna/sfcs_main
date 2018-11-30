@@ -68,17 +68,19 @@
    $conn=$link;
 		echo "<select id='sections' class='form-control' data-role='select'  name='sections'  data-parsley-errors-container='#errId2' required>";
         echo "<option value='Please Select'  disabled selected>Please Select</option><br/>\r\n";
-		$query = "SELECT sec_id,sec_name FROM $bai_pro3.sections_master";
+		$query = "SELECT * FROM $bai_pro3.sections_master";
 		$result = $conn->query($query);
 		while($row = $result->fetch_assoc()) 
 		{
 			$operation_id=$row['id'];
-			$sec_name=$row['sec_name'];
+            $sec_name=$row['sec_name'];
+            
+			$section_display_name=$row['section_display_name'];
             if($section == $sec_name){
-                echo "<option value='".$sec_name."' selected>$sec_name</option>";
+                echo "<option value='".$sec_name."' selected>$section_display_name</option>";
 
             }else{
-                echo "<option value='".$sec_name."'>$sec_name</option>";
+                echo "<option value='".$sec_name."'>$section_display_name</option>";
 
             }
 

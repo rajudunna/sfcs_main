@@ -89,21 +89,29 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 
-$sqlx="select * from $bai_pro3.sections_db where sec_id>0 order by sec_id*1";
+$sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` GROUP BY section ORDER BY section + 0";
+// echo $sqlx.'<br/>';
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error$sqlx".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
 	$section=$sql_rowx['sec_id'];
 	$section_head=$sql_rowx['sec_head'];
 	$section_mods=$sql_rowx['sec_mods'];
-	$priority_limit=$sql_rowx['ims_priority_boxes'];
-
+  $priority_limit=$sql_rowx['ims_priority_boxes'];
+  
+  $sqlx1="SELECT * FROM $bai_pro3.sections_master WHERE sec_id=$section";
+  // echo $sqlx1;
+  $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+  while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+  {
+    $section1=$sql_rowx1['sec_name'];
+  }
 //echo '<div style="border: 3px coral solid; width: 200px; height: 1200px; float: left; margin: 10px; padding: 10px; overflow: scroll;">';
 echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 30px;">';
 echo "<p>";
 	
 $jump_section2 = getFullURLLevel($_GET['r'],'IMS/sec_rep.php',1,'R');  
-echo "<a href='".$jump_section2."?section=$section' onclick=\"Popup=window.open('".$jump_section2."?section=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"font-size:24px;color:#000000;\"><b>SECTION - $section</b></a>";
+echo "<a href='".$jump_section2."?section=$section' onclick=\"Popup=window.open('".$jump_section2."?section=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"font-size:24px;color:#000000;\"><b>$section1</b></a>";
 //echo "<br/><div id=\"progressBar\" class=\"progressBar$section\"><div></div></div>";
 echo "<table>";
 

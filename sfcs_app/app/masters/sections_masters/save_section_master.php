@@ -5,6 +5,8 @@
 $id=$_REQUEST['id'];
 $section=$_REQUEST['section_name'];
 $ims_priority_boxs =$_REQUEST['ims_priority'];
+$section_display_name =$_REQUEST['section_display_name'];
+$section_head =$_REQUEST['section_head'];
 $datetime =$_REQUEST['datetimepicker11'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
@@ -30,7 +32,7 @@ if (empty($section)) {
 		
 		//update
 		
-		$sql = "update $bai_pro3.sections_master set sec_name='$section',date_time='$datetime',ims_priority_boxs='$ims_priority_boxs' where sec_id=$id";
+		$sql = "update $bai_pro3.sections_master set sec_name='$section',date_time='$datetime',ims_priority_boxs='$ims_priority_boxs',section_display_name='$section_display_name',section_head='$section_head' where sec_id=$id";
 		// echo $sql;die();
 		if (mysqli_query($conn, $sql)) {
 
@@ -83,8 +85,8 @@ if (empty($section)) {
 		}else{
 
 		//insert 
-		$sql = "INSERT INTO $bai_pro3.sections_master (date_time,sec_name,ims_priority_boxs)
-			VALUES ('$datetime','$section','$ims_priority_boxs')";
+		$sql = "INSERT INTO $bai_pro3.sections_master (date_time,sec_name,ims_priority_boxs,section_display_name,section_head)
+			VALUES ('$datetime','$section','$ims_priority_boxs','$section_name_new','$section_head')";
 
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'add_section_master.php','N');

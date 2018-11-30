@@ -331,7 +331,7 @@ document.oncontextmenu=new Function("alert(message);return false")
 //echo '<strong><table class="new"><tr class="new" valign="middle"><td><div id="green"></div> RM Ready</td><td><div id="yellow"></div> Partial Input</td><td><div id="orange"></div> CUT Pending/RM N/A</td><td><div id="blue"></div> Cut Completed</td><td><div id="pink"></div> RM Ready CUT Pending</td><td><div id="red"></div> RM Pending</td><td><div id="yash"></div> All Pending</td><td><div id="white"></div> Slot Available</td><td><div id="black"></div> Partial Input/RM N/U</td></tr></table></strong>';
 //echo '</div>';
 
-$sqlx="select * from $bai_pro3.sections_db where sec_id=$sec_x";
+$sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` where section = $sec_x GROUP BY section ORDER BY section + 0";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {

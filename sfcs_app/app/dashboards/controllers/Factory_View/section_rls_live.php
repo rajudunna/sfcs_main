@@ -33,7 +33,8 @@ include ("../../../../common/config/functions.php");
 //$dt="2011-09-28";
 $dt=date("Y-m-d");
 $sec_x=$_GET['sec_x'];
-$sql=mysqli_query($link, "select sec_id,sec_head,sec_mods from $bai_pro3.sections_db where sec_id=$sec_x");
+// $sql=mysqli_query($link, "select sec_id,sec_head,sec_mods from $bai_pro3.sections_db where sec_id=$sec_x");yy
+$sql=mysqli_query($link, "SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` where section = '".$sec_x."' GROUP BY section ORDER BY section + 0");
 while($result=mysqli_fetch_array($sql))
 {
 	$mods=$result["sec_mods"];
