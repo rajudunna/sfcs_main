@@ -124,18 +124,20 @@ $has_permission=haspermission($_GET['r']);
                                         echo "<td>".strtoupper($size_codes)."</td>";
                                         echo "<td>".$sql_row['carton_act_qty']."</td>";
 
-                                        $query1="select * from $bai_pro3.packing_summary_input where order_del_no=\"".$schedule."\" and input_job_no='".$sql_row['input_job_no']."' and mrn_status='1'";
+                                        $query1="select * from $bai_pro3.packing_summary_input where order_del_no=\"".$schedule."\" and input_job_no='".$sql_row['input_job_no']."' and mrn_status='0'";
                                         $query1_result=mysqli_query($link, $query1) or exit("Sql Error44 $query1_result".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         $query1_count=mysqli_num_rows($query1_result);
                                         if($query1_count>0){
+                                            echo "<td><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "mrn_integration.php", "N")."&jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."&seq_no=$seq_no\" onclick=\"clickAndDisable(this);\">Confirm</a></center></td>";
+                                            echo"</tr>"; 
+                                                                                
+                                        }else{
                                             echo "<td><center>Confirmed</center></td>";
                                             if(in_array($authorized,$has_permission))
                                             { 
-                                                echo "<td><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "mrn_integration_reversal.php", "N")."&jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."&seq_no=$seq_no\">Return</a></center></td>";
+                                                echo "<td><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "mrn_integration_reversal.php", "N")."&jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."&seq_no=$seq_no\" onclick=\"clickAndDisable(this);\">Return</a></center></td>";
                                             }
-                                                                                
-                                        }else{
-                                            echo "<td><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "mrn_integration.php", "N")."&jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."&seq_no=$seq_no\">Confirm</a></center></td>";
+                                        
                                         echo"</tr>";
                                         }
                                     }
@@ -150,4 +152,12 @@ $has_permission=haspermission($_GET['r']);
 
     
 ?>
+<script> 
+   function clickAndDisable(link) {
+     // disable subsequent clicks
+     link.onclick = function(event) {
+        event.preventDefault();
+     }
+   }   
+</script>
 
