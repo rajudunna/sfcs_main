@@ -89,7 +89,15 @@ display_loading_screen();
 <!-- Loading End -->
 
 <?php
-echo "<h2>Carton Pending List - Section - $section_no</h2>";
+$sqlx1="SELECT * FROM $bai_pro3.sections_master WHERE sec_id=$section_no";
+// echo $sqlx1;
+$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+{
+  $section1=$sql_rowx1['sec_name'];
+}
+
+echo "<h2>Carton Pending List - $section1</h2>";
 echo "<table>";
 echo "<tr><th>Module</th><th>Style</th><th>Schedule</th><th>Color</th><th>Job</th><th>Carton ID</th><th>Size</th><th>Carton Qty</th><th>Completed on</th><th>Executed Modules</th></tr>";
 
@@ -108,7 +116,7 @@ $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBAL
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
 	$section=$sql_rowx['sec_id'];
-	$section_head=$sql_rowx['sec_head'];
+	// $section_head=$sql_rowx['sec_head'];
 	$section_mods=$sql_rowx['sec_mods'];
 	
 	$mods=array();
