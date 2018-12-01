@@ -24,6 +24,25 @@ if(isset($_POST['id']))
 	<div class="panel panel-primary"> 
 		<div class="panel-heading">Sewing Jobs Reversal Scanning</div>
 		<div class='panel-body'>
+			<style>
+				#loading-image{
+					position:fixed;
+					top:0px;
+					right:0px;
+					width:100%;
+					height:100%;
+					background-color:#666;
+					/* background-image:url('ajax-loader.gif'); */
+					background-repeat:no-repeat;
+					background-position:center;
+					z-index:10000000;
+					opacity: 0.4;
+					filter: alpha(opacity=40); /* For IE8 and earlier */
+				}
+			</style>
+			<div class="ajax-loader" id="loading-image" style="display: none">
+				<center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',3,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+			</div>
 			<div class="alert alert-success" style="display:none;">
 				<a href="#" class="close" data-dismiss="alert">&times;</a>
 				<strong>Info! </strong><span class="sql_message"></span>
@@ -75,9 +94,11 @@ if(isset($_POST['id']))
 $(document).ready(function() 
 {
 	$('#job_number').focus();
+	$('#loading-image').hide();
 	var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
 	$("#job_number").change(function()
 	{
+		$('#loading-image').show();
 		var job_rev_no = $("#job_number").val();
 		$('#operation').empty();
 		$('select[name="operation"]').append('<option value="0">Select Operation</option>');
@@ -90,6 +111,7 @@ $(document).ready(function()
 			dataType: 'Json',
 			success: function (response) 
 			{
+				$('#loading-image').hide();
 				if(response['status'])
 				{
 					sweetAlert('',response['status'],'error');
@@ -106,6 +128,7 @@ $(document).ready(function()
 	});
 	$('#operation').change(function()
 	{
+		$('#loading-image').show();
 		var ops = $('#operation').val();
 		var job_no = $('#job_number').val();
 		var remarks = $('#sampling option:selected').text();
@@ -117,6 +140,7 @@ $(document).ready(function()
 			dataType: "json",
 			success: function (response) 
 			{
+				$('#loading-image').hide();
 				$('#dynamic_table1').html('');
 				console.log(response);
 				var data = response['table_data'];
@@ -801,7 +825,7 @@ else if($concurrent_flag == 0)
  }
 
 ?>
-	
+
 <script type="text/javascript">
 		function validateQty(e,t) 
 		{

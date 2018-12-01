@@ -986,8 +986,11 @@ function getreversalscanningdetails($job_number)
 							{
 								if($qty>=$remaining_qty)
 								{
-									$eligible=$eligible+$remaining_qty;
-									$qty=$qty-$remaining_qty;
+									if ($remaining_qty > 0)
+									{
+										$eligible=$eligible+$remaining_qty;
+										$qty=$qty-$remaining_qty;
+									}
 								}
 								else
 								{
@@ -1059,8 +1062,11 @@ function getreversalscanningdetails($job_number)
 								{
 									if($qty>=$remaining_qty)
 									{
-										$eligible=$eligible+$remaining_qty;
-										$qty=$qty-$remaining_qty;
+										if ($remaining_qty > 0)
+										{
+											$eligible=$eligible+$remaining_qty;
+											$qty=$qty-$remaining_qty;
+										}											
 									}
 									else
 									{
