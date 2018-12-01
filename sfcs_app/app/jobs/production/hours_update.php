@@ -3,6 +3,8 @@ $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
+$link_hrms= ($GLOBALS["___mysqli_ston"] = mysqli_connect($hrms_host, $hrms_user, $hrms_pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 $date=date("Y-m-d");
 $y=date("yy",strtotime($date));
 $sql_shift="select remarks from bai_hr_tna_em_$y.calendar where date=\"".$date."\" and day_type not in ('O','H')";

@@ -3,6 +3,7 @@ $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
+$link_hrms= ($GLOBALS["___mysqli_ston"] = mysqli_connect($hrms_host, $hrms_user, $hrms_pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 //today
 $date=date("Y-m-d"); 
 $database="bai_hr_database"; 

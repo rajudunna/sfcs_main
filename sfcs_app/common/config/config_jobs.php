@@ -1,6 +1,5 @@
 <?php 
 
-
 $include_path=getenv('config_job_path');
 include($include_path.'\configuration\API\confr.php');
 $conf = new confr($include_path.'\configuration\API\saved_fields\fields.json');
@@ -44,7 +43,6 @@ $hrms_server_port=$conf->get('hrms-port');
 $hrms_host=$hrms_server_name.":".$hrms_server_port;
 $hrms_user=$conf->get('hrms-user-name');
 $hrms_pass = $conf->get('hrms-password');
-$link_hrms= ($GLOBALS["___mysqli_ston"] = mysqli_connect($hrms_host, $hrms_user, $hrms_pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 // Production Status Connections
 $prod_status_server_name=$conf->get('prod-status-server-name');
