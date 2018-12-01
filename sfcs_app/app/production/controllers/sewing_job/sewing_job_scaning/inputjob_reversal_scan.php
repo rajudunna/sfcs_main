@@ -125,11 +125,19 @@ $(document).ready(function()
 				{
 					var post_ops_data = response['post_ops'];
 					//var send_qty = response['send_qty'];
-					if(response['rec_qtys'])
+					if (response['carton_ready_qty'])
 					{
-						var post_rec_qtys_array = response['rec_qtys'];
-						var check_flag = 1;
+						var post_rec_qtys_array123 = response['carton_ready_qty'];
+						var check_flag = 2;
 					}
+					else
+					{
+						if(response['rec_qtys'])
+						{
+							var post_rec_qtys_array = response['rec_qtys'];
+							var check_flag = 1;
+						}
+					}						
 				  
 					for(var ops=0;ops<post_ops_data.length;ops++)
 					{
@@ -161,17 +169,28 @@ $(document).ready(function()
 					$("#dynamic_table1").append(btn);
 					for(var i=0;i<data.length;i++)
 					{
-						console.log(data[i].reported_qty);
+						// console.log(data[i].reported_qty);
+						if (check_flag == 2)
+						{
+							console.log('carton_array > 0');
+							var post_rec_qtys = Number(post_rec_qtys_array123[i]);
+							console.log('in carton_array = '+post_rec_qtys);
+						}
+						else
+						{
 							if(check_flag == 0)
 							{
 								var post_rec_qtys = data[i].reported_qty;
 							}
-							else{
+							else
+							{
 								var post_rec_qtys = Number(data[i].reported_qty) - Number(post_rec_qtys_array[i]);
 							}
-							s_no++;
-							var markup1 = "<tr><input type='hidden' name='doc_no[]' value='"+data[i].doc_no+"'><input type='hidden' name='operation_id' value='"+data[i].operation_id+"'><input type='hidden' name='remarks' value='"+data[i].remarks+"'><input type='hidden' name='mapped_color' value='"+data[i].mapped_color+"'><input type='hidden' name='size[]' value='"+data[i].size_code+"'><input type='hidden' name='size_id[]' value='"+data[i].size_id+"'><input type='hidden' name='input_job_no_random' value='"+data[i].input_job_no_random+"'><input type='hidden' name='bundle_no[]' value='"+data[i].tid+"'><input type='hidden' name='style' value='"+data[i].style+"'><input type='hidden' name='color[]' value='"+data[i].order_col_des+"'><input type='hidden' name='module[]' value='"+data[i].assigned_module+"'><input type='hidden' name='rep_qty[]' value='"+data[i].reported_qty+"'><input type='hidden' name='id[]' value="+data[i].id+"><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].assigned_module+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td>"+data[i].reported_qty+"</td><td id='"+i+"repor'>"+post_rec_qtys+"</td><td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
-							$("#dynamic_table").append(markup1);
+						}
+							
+						s_no++;
+						var markup1 = "<tr><input type='hidden' name='doc_no[]' value='"+data[i].doc_no+"'><input type='hidden' name='operation_id' value='"+data[i].operation_id+"'><input type='hidden' name='remarks' value='"+data[i].remarks+"'><input type='hidden' name='mapped_color' value='"+data[i].mapped_color+"'><input type='hidden' name='size[]' value='"+data[i].size_code+"'><input type='hidden' name='size_id[]' value='"+data[i].size_id+"'><input type='hidden' name='input_job_no_random' value='"+data[i].input_job_no_random+"'><input type='hidden' name='bundle_no[]' value='"+data[i].tid+"'><input type='hidden' name='style' value='"+data[i].style+"'><input type='hidden' name='color[]' value='"+data[i].order_col_des+"'><input type='hidden' name='module[]' value='"+data[i].assigned_module+"'><input type='hidden' name='rep_qty[]' value='"+data[i].reported_qty+"'><input type='hidden' name='id[]' value="+data[i].id+"><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].assigned_module+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td>"+data[i].reported_qty+"</td><td id='"+i+"repor'>"+post_rec_qtys+"</td><td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
+						$("#dynamic_table").append(markup1);
 					}
 				}
 				
