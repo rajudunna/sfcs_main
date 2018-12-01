@@ -14,7 +14,9 @@ $port= $api_port_no;
 $current_date = date('Y-m-d h:i:s');
 
 //getting failure transactions from m3_transactions
-$transctions = "SELECT id FROM bai_pro3.m3_transactions LEFT JOIN brandix_bts.transactions_log ON brandix_bts.transactions_log.transaction_id=bai_pro3.m3_transactions.id WHERE response_status='fail' GROUP BY transaction_id";
+$transctions = "SELECT id FROM $bai_pro3.m3_transactions 
+                LEFT JOIN $brandix_bts.transactions_log ON $brandix_bts.transactions_log.transaction_id=$bai_pro3.m3_transactions.id 
+                WHERE response_status='fail' GROUP BY transaction_id";
 $transaction_result = mysqli_query($link, $transctions) or exit("Error at getting transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($records=mysqli_fetch_array($transaction_result))
 {
@@ -41,7 +43,7 @@ while($records=mysqli_fetch_array($transaction_result))
         if(strlen($reason)>0){
             //api for rejection quantities
             //M3 Rest API Call
-            $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&OPNO=$op_code&DPLG=$workstation_id&MAQA=''&SCQA=$quantity&SCRE='$reason'&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+            $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&OPNO=$op_code&DPLG=$workstation_id&SCQA=$quantity&SCRE=$reason&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
             $api_data = $obj->getCurlAuthRequest($api_url);
             $decoded = json_decode($api_data,true);
             $type=$decoded['@type'];
@@ -56,14 +58,14 @@ while($records=mysqli_fetch_array($transaction_result))
 
             }else{          
                 //insert transactions details into transactions_log
-                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$transaction_id',$message,$log_user,$current_date)"; 
+                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$transaction_id','$message','$log_user','$current_date')"; 
                 mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
 
         }else{
             //api for good quantities        
             //M3 Rest API Call
-            $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&OPNO=$op_code&DPLG=$workstation_id&MAQA=$quantity&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+            $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&OPNO=$op_code&DPLG=$workstation_id&MAQA=$quantity&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
             $api_data = $obj->getCurlAuthRequest($api_url);
             $decoded = json_decode($api_data,true);
             $type=$decoded['@type'];
@@ -78,7 +80,7 @@ while($records=mysqli_fetch_array($transaction_result))
 
             }else{          
                 //insert transactions details into transactions_log
-                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$transaction_id',$message,$log_user,$current_date)"; 
+                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$transaction_id','$message','$log_user','$current_date')"; 
                 mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
         }
