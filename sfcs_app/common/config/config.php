@@ -19,6 +19,7 @@ $pass=$mysql_details['db_pass'];
 
 //MSSql Configurations
 $ms_sql_odbc_host = $conf1->get('mssql-odbc');
+$ms_sql_odbc_server = $conf1->get('mssql-server-name');
 $ms_sql_odbc_user = $conf1->get('mssql-user-name');
 $ms_sql_odbc_pass = $conf1->get('mssql-password');
 
