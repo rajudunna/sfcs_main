@@ -135,7 +135,7 @@ foreach($val_schedules as $schedule){
 					color='$color'  and style='$style' limit 1";
 		$mo_result = mysqli_query($link,$mo_query);	
 		if(!mysqli_num_rows($mo_result) > 0){
-			echo "<script>swal('MO Details Doesn't Exist,'','warning');</script>";
+			echo "<script>swal('MO Details Does not Exist','','warning');</script>";
 			$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
 			echo "<script>setTimeout(function(){
 						location.href='$url' 

@@ -563,6 +563,7 @@ if(isset($_POST['update']))
 								where doc_no = '$docket' ";
 				$update_result = mysqli_query($link,$update_query);
 			}
+			unset($child_docs);
 			//getting all child dockets fro m3 reporting
 			$child_docs_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log psl  
 						LEFT JOIN $bai_pro3.cat_stat_log csl ON csl.tid = psl.cat_ref
