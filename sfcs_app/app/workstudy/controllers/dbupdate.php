@@ -1,32 +1,14 @@
-<!--
-Code Module:M3 to SFS data upload
-
-Description:uploading converted text file to database and then root the process flow to nwxt level.
-
-Changes Log:
--->
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
-	function round_or_not($x,$y)
-	{	
-		return round(($x/$y),0);				
-	}
-?>
-
-
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
-
-<?php 
+function round_or_not($x,$y)
+{	
+	return round(($x/$y),0);				
+}
 error_reporting(E_ALL ^ E_NOTICE);
-?>
 
-<?php
-// Name of the file
-//$filename = 'core_sql.txt';
 $filename = $_GET['id'];
-//echo $filename."<br>";
-//die();
+
 $date=$_GET['date'];
 
 $uploaddir = $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'uploads',0,'R'); 
@@ -184,7 +166,7 @@ while(($data=fgetcsv($handle,1000,","))!==FALSE)
 
 for($i=1;$i<=31;$i++)
 {
-	$sql="select module,shift,sum(if(value_type='PP_PCS',d_$i,0)) as pcs,sum(if(value_type='SAH_HRS',d_$i,0)) as sah,max(if(value_type='PEF_PER',d_$i,0)) as eff,section_id from $bai_pro.tbl_freez_plan_upload left join $bai_pro.tbl_freez_plan_upload left join $bai_pro3.plan_modules on module=module_id group by concat(module,shift) group by concat(module_id,shift) ";
+	$sql="select module,shift,sum(if(value_type='PP_PCS',d_$i,0)) as pcs,sum(if(value_type='SAH_HRS',d_$i,0)) as sah,max(if(value_type='PEF_PER',d_$i,0)) as eff,section_id from $bai_pro.tbl_freez_plan_upload left join $bai_pro3.plan_modules on module=module_id group by concat(module,shift)";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));	
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{	
