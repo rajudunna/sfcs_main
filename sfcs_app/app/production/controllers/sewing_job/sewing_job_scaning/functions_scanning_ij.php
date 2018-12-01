@@ -336,7 +336,10 @@ function getjobdetails($job_number)
 					$schedule =  $job_number[2];
 					$color = $row['order_col_des'];
 					$size = $row['old_size'];
-					$assign = $row['assigned_module'];
+					if($flag == 'bundle_creation_data')
+					{
+					 $assign = $row['assigned_module'];
+					}
 					if($flag == 'packing_summary_input')
 					{
 						$job_number_reference = $row['type_of_sewing'];
