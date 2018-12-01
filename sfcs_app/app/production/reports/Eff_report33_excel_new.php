@@ -99,11 +99,35 @@ $auf_B=0;
         $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_row2=mysqli_fetch_array($sql_result2)) 
         { 
-            $avail_A=$avail_A+$sql_row2['avail_A']; 
-            $avail_B=$avail_B+$sql_row2['avail_B']; 
-            $absent_A=$absent_A+$sql_row2['absent_A']; 
-            $absent_B=$absent_B+$sql_row2['absent_B']; 
+            $avail_A=$avail_A+$sql_row2['avail_A'];
+			$avail_A_clk=$sql_row2['avail_A'];
+			$avail_B=$avail_B+$sql_row2['avail_B'];
+			$avail_B_clk=$sql_row2['avail_B'];
+			$absent_A=$absent_A+$sql_row2['absent_A'];
+			$absent_A_clk=$sql_row2['absent_A'];
+			$absent_B=$absent_B+$sql_row2['absent_B'];
+			$absent_B_clk=$sql_row2['absent_B'];
         } 
+
+        $sql132="select act_hours as hrs from $bai_pro.pro_plan where mod_no=$mod and shift=\"A\" and date between \"$date\" and \"$edate\" ";
+		//echo $sql132."<br>";
+		$result132=mysqli_query($link, $sql132) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row132=mysqli_fetch_array($result132))
+		{
+			$act_hrsa1=$sql_row132["hrs"];
+			//echo $act_hrsa."-".($sql_row2['avail_A']-$sql_row2['absent_A'])."<br>";	
+		}
+
+		$sql133="select act_hours as hrs from $bai_pro.pro_plan where mod_no=$mod and shift=\"B\" and date between \"$date\" and \"$edate\" ";
+		//echo $sql133."<br>";
+		$result133=mysqli_query($link, $sql133) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row133=mysqli_fetch_array($result133))
+		{
+			$act_hrsb1=$sql_row133["hrs"];	
+			//echo $act_hrsb."<br>";
+		}
+					
+		$act_clock_hrs1=$act_clock_hrs1+($act_hrsa1*($avail_A_clk-$absent_A_clk))+($act_hrsb1*($avail_B_clk-$absent_B_clk));
 
 $sql_num_check=mysqli_num_rows($sql_result2); 
 
@@ -552,9 +576,15 @@ echo $table_temp;
     $table_temp="<td colspan=2 class=xl15326424 style='border-right:1.0pt solid black;  border-left:none'>".($auf_A+$auf_B)."</td>"; 
     echo $table_temp; 
     $table.=$table_temp; 
-  $table_temp="<td colspan=2 class=xl15326424 style='border-right:1.0pt solid black;  border-left:none'>".round(($pclha_total+$pclhb_total),0)."</td>"; 
+//   $table_temp="<td colspan=2 class=xl15326424 style='border-right:1.0pt solid black;  border-left:none'>".round(($pclha_total+$pclhb_total),0)."</td>"; 
   echo $table_temp; 
     $table.=$table_temp; 
+    $table_temp="<td colspan=1 class=xl9726424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;  border-left:none'>A=".round($act_clock_hrs1,$decimal_factor)."</td>";
+    echo $table_temp;
+      $table.=$table_temp;
+    $table_temp="<td colspan=1 class=xl9726424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;  border-left:none'>P=".round(($pclha_total+$pclhb_total),$decimal_factor)."</td>";
+    echo $table_temp;
+      $table.=$table_temp;
   $table_temp="<td colspan=2 class=xl15326424 style='border-right:1.0pt solid black;  border-left:none'>".($atotal+$btotal)."</td>"; 
   echo $table_temp; 
     $table.=$table_temp; 
