@@ -1,5 +1,6 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/mo_filling.php');
 ?>
 <?php
 if(isset($_POST['formSubmit']))
@@ -18,7 +19,6 @@ if(isset($_POST['formSubmit']))
     $ratioval =$_POST['ratioval'];
 	$codes='2';
     $docket_no = '';
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));
     $query="SELECT* FROM $bai_pro3.`cuttable_stat_log` WHERE order_tid='$order_tid'";
     $sql_result111=mysqli_query($link, $query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row111=mysqli_fetch_array($sql_result111))
@@ -34,10 +34,23 @@ if(isset($_POST['formSubmit']))
     // echo $sql1;
     mysqli_query($link, $sql1) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-
+    //retreaving actual quantity to recut
+    $qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.recut_v2 WHERE doc_no = '$doc_nos' ";
+	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
+	while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
+	{
+		for ($i=0; $i < sizeof($sizes_array); $i++)
+		{ 
+			if ($row['a_'.$sizes_array[$i]] > 0)
+			{
+				$cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $row['a_plies'];
+			}
+		}
+	}
     for($j=0;$j<sizeof($size);$j++)
     {
         $qty_act = array_sum($ratioval[$size[$j]])*$plies;
+        $buffer_qty[$size[$j]] = $qty_act - $cut_done_qty[$size[$j]] ;
         $qty_ind_ratio  =  array_sum($ratioval[$size[$j]]);
         $a_string = 'a_'.$size[$j];
         $p_string = 'p_'.$size[$j];
@@ -45,16 +58,82 @@ if(isset($_POST['formSubmit']))
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
         $update_qry = "update  $bai_pro3.recut_v2 set $a_string=$qty_ind_ratio,$p_string=$qty_ind_ratio where doc_no = $doc_nos";
         mysqli_query($link, $update_qry) or exit("while updating into recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $update_qry_plan = "update  $bai_pro3.plandoc_stat_log set $a_string=$qty_ind_ratio,$p_string=$qty_ind_ratio where doc_no = $doc_nos";
+        mysqli_query($link, $update_qry_plan) or exit("while updating into recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
     }
+    $i=1;
+    foreach($buffer_qty as $size => $excess_qty)
+    {
+        if($excess_qty > 0)
+        {
+            $retriving_size = "SELECT size_title FROM `bai_pro3`.`recut_v2_child` rc 
+            LEFT JOIN `bai_pro3`.`recut_v2` r ON r.`doc_no` = rc.`parent_id`
+            LEFT JOIN `bai_pro3`.`rejection_log_child` rejc ON rejc.`bcd_id` = rc.`bcd_id`
+            WHERE rc.parent_id = $doc_nos AND rejc.`size_id` = '$size'";
+            // echo $retriving_size;
+            // die();
+            $res_retriving_size = $link->query($retriving_size);
+            while($row_size = $res_retriving_size->fetch_assoc()) 
+            {
+                $size_title_ind = $row_size['size_title'];
+            }
+            //retreaving max input job and adding +1 to create new sewing job
+        //  $retreaving_last_sewing_job_qry = "SELECT MAX(input_job_no_random)as input_job_no_random,input_job_no,destination,packing_mode,sref_id FROM `bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$schedule' AND order_col_des = '$color'";
+        $retreaving_last_sewing_job_qry = "SELECT * FROM `bai_pro3`.`packing_summary_input` WHERE order_style_no = 'JJP174F8' AND order_del_no = '528110' AND order_col_des = '69-NAVY-FLANNELBOTTOM'";
+            $res_retreaving_last_sewing_job_qry = $link->query($retreaving_last_sewing_job_qry);
+            while($row_sj = $res_retreaving_last_sewing_job_qry->fetch_assoc()) 
+            {   
+                $input_job_no = $row_sj['input_job_no'];
+                $input_job_no_random = $row_sj['input_job_no_random'];
+                $destination = $row_sj['destination'];
+                $packing_mode = $row_sj['packing_mode'];
+                // $sref_id = $row_sj['sref_id'];
+                $sref_id = '1';
+            }
+            $act_input_job_no = $input_job_no+1;
+            $act_input_job_no_random = $input_job_no_random+1;
+            $insert_qry = "INSERT INTO `bai_pro3`.`pac_stat_log_input_job` (`doc_no`,`size_code`,`carton_act_qty`,`input_job_no`,`input_job_no_random`,`destination`,`packing_mode`,`old_size`,`doc_type`,`type_of_sewing`,`sref_id`,`pac_seq_no`,`barcode_sequence`)
+            VALUES ($doc_nos,'$size_title_ind',$excess_qty,$act_input_job_no,'$act_input_job_no_random','$destination',$packing_mode,'$size','R',2,$sref_id,0,$i)";
+            // echo $insert_qry;
+            mysqli_query($link, $insert_qry) or exit("while Generating sewing job ".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $i++;
+            //inserting into mo operation quantities
+            $bundle_number=mysqli_insert_id($link);
+            //retreaving rejected mos and filling the rejection 
+            $sql121="SELECT MAX(mo_no)as mo_no FROM $bai_pro3.mo_details WHERE TRIM(size)='$size_title_ind' and 
+                            TRIM(schedule)='".trim($schedule)."' and TRIM(color)='".trim($color)."' 
+                            order by mo_no*1"; 
+            $result121=mysqli_query($link, $sql121) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($row1210=mysqli_fetch_array($result121)) 
+            {
+                $max_mo_no = $row1210['mo_no'];
+            }
+            //retreaving operations from operation mapping for style and color
+            $operation_mapping_qry = "SELECT tm.operation_code,tr.operation_name FROM `brandix_bts`.`tbl_style_ops_master` tm 
+            LEFT JOIN `brandix_bts`.`tbl_orders_ops_ref` tr ON tr.operation_code = tm.`operation_code`
+            WHERE style = '$style' AND color = '$color'
+            AND category = 'sewing'";
+            $result_operation_mapping_qry=mysqli_query($link, $operation_mapping_qry) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($ops_row=mysqli_fetch_array($result_operation_mapping_qry)) 
+            {
+                $ops = $ops_row['operation_code'];
+                $ops_name = $ops_row['operation_name'];
+                $mo_operations_insertion="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$max_mo_no."', '".$bundle_number."','".$excess_qty."', '".$ops."', '".$ops_name."')";
+                // echo $mo_operations_insertion.'<br/>';
+                $result1=mysqli_query($link, $mo_operations_insertion) or die("Error while mo_operations_insertion".mysqli_error($GLOBALS["___mysqli_ston"]));
+            }
 
+        }
+    }
     $sql="insert into $bai_pro3.recut_track(doc_no,username,sys_name,log_time,level,status) values(\"".$doc_nos."\",\"".$username."\",\"".$hostname[0]."\",\"".date("Y-m-d H:i:s")."\",\"".$codes."\",\"".$status."\")";
     mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-        
-    //calling the function to insert to bundle craetion data and cps log
-    // $inserted = doc_size_wise_bundle_insertion_recut($docno[$i]);
-    // if($inserted){
-    // 	//Inserted Successfully
-    // }
+    // calling the function to insert to bundle craetion data and cps log
+    $inserted = doc_size_wise_bundle_insertion($doc_nos);
+    if($inserted){
+    	//Inserted Successfully
+    }
+    $url = '?r='.$_GET['r'];
+    echo "<script>sweetAlert('Successfully Markers updated','','success');window.location = '".$url."'</script>";
 }
 if(isset($_POST['formIssue']))
 {
@@ -95,15 +174,16 @@ if(isset($_POST['formIssue']))
             {
                 //updating recut_v2_child
                 $update_recut_v2_child = "update $bai_pro3.recut_v2_child set issued_qty = issued_qty+$to_add where bcd_id = $bundle_number and parent_id = $doc_no_ref";
-               // mysqli_query($link, $update_recut_v2_child) or exit("update_recut_v2_child".mysqli_error($GLOBALS["___mysqli_ston"]));
+               mysqli_query($link, $update_recut_v2_child) or exit("update_recut_v2_child".mysqli_error($GLOBALS["___mysqli_ston"]));
                 //updating rejection_log_child
                 $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set issued_qty=issued_qty+$to_add where bcd_id = $bundle_number";
-               // mysqli_query($link, $updating_rejection_log_child) or exit("updating_rejection_log_child".mysqli_error($GLOBALS["___mysqli_ston"]));
+               mysqli_query($link, $updating_rejection_log_child) or exit("updating_rejection_log_child".mysqli_error($GLOBALS["___mysqli_ston"]));
                 issued_to_module($bundle_number,$to_add,2);
 
             }
         }
     }
+    // die();
     $url = '?r='.$_GET['r'];
     echo "<script>sweetAlert('Successfully Approved','','success');window.location = '".$url."'</script>";
 }
@@ -225,6 +305,7 @@ echo $drp_down;
                     <div class='panel-body' id="dynamic_table_panel">	
                             <div id ="dynamic_table1"></div>
                     </div>
+                    <p style='color:red;'>Note:The excess quantity will create as excess sewing job for respective style,schedule and color.</p>
                     <div class="pull-right"><input type="submit" class="btn btn-primary" value="Submit" name="formSubmit"></div>
                 </form>
             </div>

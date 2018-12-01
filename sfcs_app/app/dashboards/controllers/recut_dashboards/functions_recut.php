@@ -576,7 +576,7 @@ function Markersview($markers_view_docket)
         $retriving_size = "SELECT size_title FROM `bai_pro3`.`recut_v2_child` rc 
         LEFT JOIN `bai_pro3`.`recut_v2` r ON r.`doc_no` = rc.`parent_id`
         LEFT JOIN `bai_pro3`.`rejection_log_child` rejc ON rejc.`bcd_id` = rc.`bcd_id`
-        WHERE rc.parent_id = '$markers_view_docket' AND rejc.`size_id` = '$key'";
+        WHERE rc.parent_id = $markers_view_docket AND rejc.`size_id` = '$key'";
         // echo $retriving_size;
          $res_retriving_size = $link->query($retriving_size);
          while($row_size = $res_retriving_size->fetch_assoc()) 
