@@ -1,15 +1,7 @@
 
 <?php 
- //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-  
-$start_timestamp = microtime(true);
-$include_path=getenv('config_job_path');
-include($include_path.'\sfcs_app\common\config\config_jobs.php');
-set_time_limit(6000000);
-	// include('mssql_conn.php');
-    $conn = odbc_connect($serverName,$uid,$pwd);
-    $username_list=explode('\\',$_SERVER['REMOTE_USER']);
-    $username=strtolower($username_list[1]);
+  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config_jobs.php',4,'R')); 
+  $conn =odbc_connect("$driver_name;Server=$serverName;Database=MRN_V2;", $uid,$pwd);   
     
 ?>
 
@@ -68,20 +60,14 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
                                     $op_code=$sql_row5['op_code'];
                                     $op_desc=$sql_row5['op_desc'];
 
-                                    $operation_master_query="SELECT * FROM $brandix_bts.tbl_orders_ops_ref WHERE operation_code='1'";
-                                    $sql_result1=mysqli_query($link, $operation_master_query) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                    while($sql_row1=mysqli_fetch_array($sql_result1))
-                                    {
-                                        $workcenter_id=$sql_row1['work_center_id'];
-
-                                    }
+                                  
                                     $mssql_insert_query="insert into [MRN_V2].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status) values ('$company_no', '$facility_code','$mo_no', '$op_code', '$bundle_quantity','$employee_no','$remarks','$co_no','$order_del_no','')";
                                     $mssql_insert_query_result = odbc_exec($conn, $mssql_insert_query);
-                                    $sql_num_check5=mysqli_num_rows($mssql_insert_query_result);
+                                    $sql_num_check5=odbc_num_rows($mssql_insert_query_result);
                                     if($sql_num_check5>0)
                                     {
 
-                                        $mo_query="select * from $bai_pro3.mo_operation_quantites where mo_no='$mo_no' and op_code='1'";
+                                        $mo_query="select * from $bai_pro3.mo_operation_quantites where mo_no='$mo_no' and op_code=1";
                                         $mo_query_result=mysqli_query($link, $mo_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         while($sql_row16=mysqli_fetch_array($mo_query_result))
                                         {

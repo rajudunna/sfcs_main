@@ -340,7 +340,10 @@ function getjobdetails($job_number)
 					$schedule =  $job_number[2];
 					$color = $row['order_col_des'];
 					$size = $row['old_size'];
-					$assign = $row['assigned_module'];
+					if($flag == 'bundle_creation_data')
+					{
+					 $assign = $row['assigned_module'];
+					}
 					if($flag == 'packing_summary_input')
 					{
 						$job_number_reference = $row['type_of_sewing'];
@@ -1684,10 +1687,22 @@ function validating_with_module($pre_array_module)
 	{
 		$get_module_no = "SELECT input_module FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$job_no'";
 		$module_rsult = $link->query($get_module_no);
-		while($sql_row11 = $module_rsult->fetch_assoc()) 
+		if (mysqli_num_rows($module_rsult) > 0)
 		{
-			$module = $sql_row11['input_module'];
+			while($sql_row11 = $module_rsult->fetch_assoc()) 
+			{
+				$module = $sql_row11['input_module'];
+			}
 		}
+		else
+		{
+			$get_module_no_backup = "SELECT input_module FROM $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref = '$job_no'";
+			$module_rsult_backup = $link->query($get_module_no_backup);
+			while($sql_row11_backup = $module_rsult_backup->fetch_assoc()) 
+			{
+				$module = $sql_row11_backup['input_module'];
+			}
+		}	
 	}
 
 	if ($module != '' || $module != null || $module > 0)
