@@ -184,7 +184,7 @@ while(($data=fgetcsv($handle,1000,","))!==FALSE)
 
 for($i=1;$i<=31;$i++)
 {
-	$sql="select module,shift,sum(if(value_type='PP_PCS',d_$i,0)) as pcs,sum(if(value_type='SAH_HRS',d_$i,0)) as sah,max(if(value_type='PEF_PER',d_$i,0)) as eff,section_id from $bai_pro.tbl_freez_plan_upload left join $bai_pro.tbl_freez_plan_upload left join $bai_pro3.plan_modules on module=module_id group by concat(module,shift) group by concat(module_id,shift) ";
+	$sql="select module,shift,sum(if(value_type='PP_PCS',d_$i,0)) as pcs,sum(if(value_type='SAH_HRS',d_$i,0)) as sah,max(if(value_type='PEF_PER',d_$i,0)) as eff,section_id from $bai_pro.tbl_freez_plan_upload left join $bai_pro3.plan_modules on module=module_id group by concat(module,shift)";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));	
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{	
