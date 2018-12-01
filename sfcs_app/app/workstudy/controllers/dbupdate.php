@@ -1,32 +1,14 @@
-<!--
-Code Module:M3 to SFS data upload
-
-Description:uploading converted text file to database and then root the process flow to nwxt level.
-
-Changes Log:
--->
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
-	function round_or_not($x,$y)
-	{	
-		return round(($x/$y),0);				
-	}
-?>
-
-
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
-
-<?php 
+function round_or_not($x,$y)
+{	
+	return round(($x/$y),0);				
+}
 error_reporting(E_ALL ^ E_NOTICE);
-?>
 
-<?php
-// Name of the file
-//$filename = 'core_sql.txt';
 $filename = $_GET['id'];
-//echo $filename."<br>";
-//die();
+
 $date=$_GET['date'];
 
 $uploaddir = $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'uploads',0,'R'); 
