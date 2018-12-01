@@ -362,7 +362,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	<div class="panel-body">
     <div style="padding-top:15px;">
     <div class="table-responsive">
-   <?php $sqlx="select * from sections_db where sec_id>0";
+   <?php $sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM bai_pro3.`module_master` LEFT JOIN bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section>0 GROUP BY section ORDER BY section + 0";
   mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
   $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
   
@@ -371,6 +371,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
     $section=$sql_rowx['sec_id'];
     $section_head=$sql_rowx['sec_head'];
     $section_mods=$sql_rowx['sec_mods']; 
+		$section_display_name=$sql_rowx['section_display_name'];
     
     $mods=array();
     $mods=explode(",",$section_mods);
@@ -378,7 +379,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
     <div class="section_main_box">
         
           <div class="sections_heading1">
-            <a href="javascript:void(0);" onclick="PopupCenter('<?= getFullURLLevel($_GET['r'],'/alpha/anu/ims/sec_rep.php',4,'R');?>?section=<?php echo $section; ?>', 'myPop1',800,600);" >Section <?php echo $section; ?><br />
+            <a href="javascript:void(0);" onclick="PopupCenter('<?= getFullURLLevel($_GET['r'],'/alpha/anu/ims/sec_rep.php',4,'R');?>?section=<?php echo $section; ?>', 'myPop1',800,600);" ><?php echo $section_display_name; ?><br />
           <!-- <span style="font-size:12px;color:#C0F"><?php echo $section_head; ?></span> -->
       </a>
             </div>
