@@ -41,7 +41,7 @@ while($records=mysqli_fetch_array($transaction_result))
         if(strlen($reason)>0){
             //api for rejection quantities
             //M3 Rest API Call
-            $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&OPNO=$op_code&DPLG=$workstation_id&MAQA=''&SCQA=$quantity&SCRE='$reason'&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+            $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&OPNO=$op_code&DPLG=$workstation_id&SCQA=$quantity&SCRE=$reason&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
             $api_data = $obj->getCurlAuthRequest($api_url);
             $decoded = json_decode($api_data,true);
             $type=$decoded['@type'];
@@ -63,7 +63,7 @@ while($records=mysqli_fetch_array($transaction_result))
         }else{
             //api for good quantities        
             //M3 Rest API Call
-            $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&OPNO=$op_code&DPLG=$workstation_id&MAQA=$quantity&SCQA=''&SCRE=''&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+            $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&OPNO=$op_code&DPLG=$workstation_id&MAQA=$quantity&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
             $api_data = $obj->getCurlAuthRequest($api_url);
             $decoded = json_decode($api_data,true);
             $type=$decoded['@type'];
