@@ -112,7 +112,7 @@ foreach($val_schedules as $schedule){
 		}
 
 		$mo_query = "SELECT * from $bai_pro3.mo_details where schedule='$schedule' and 
-					color='$color'  and style='$style' limit 1";
+					color='$color_value'  and style='$style' limit 1";
 		$mo_result = mysqli_query($link,$mo_query);	
 		if(!mysqli_num_rows($mo_result) > 0){
 			echo "<script>swal('MO Details Does not Exist','','warning');</script>";
