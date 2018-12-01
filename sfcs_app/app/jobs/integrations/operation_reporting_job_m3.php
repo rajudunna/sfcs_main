@@ -14,7 +14,9 @@ $port= $api_port_no;
 $current_date = date('Y-m-d h:i:s');
 
 //getting failure transactions from m3_transactions
-$transctions = "SELECT id FROM bai_pro3.m3_transactions LEFT JOIN brandix_bts.transactions_log ON brandix_bts.transactions_log.transaction_id=bai_pro3.m3_transactions.id WHERE response_status='fail' GROUP BY transaction_id";
+$transctions = "SELECT id FROM $bai_pro3.m3_transactions 
+                LEFT JOIN $brandix_bts.transactions_log ON $brandix_bts.transactions_log.transaction_id=$bai_pro3.m3_transactions.id 
+                WHERE response_status='fail' GROUP BY transaction_id";
 $transaction_result = mysqli_query($link, $transctions) or exit("Error at getting transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($records=mysqli_fetch_array($transaction_result))
 {
@@ -56,7 +58,7 @@ while($records=mysqli_fetch_array($transaction_result))
 
             }else{          
                 //insert transactions details into transactions_log
-                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$transaction_id',$message,$log_user,$current_date)"; 
+                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$transaction_id','$message','$log_user','$current_date')"; 
                 mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
 
@@ -78,7 +80,7 @@ while($records=mysqli_fetch_array($transaction_result))
 
             }else{          
                 //insert transactions details into transactions_log
-                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$transaction_id',$message,$log_user,$current_date)"; 
+                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$transaction_id','$message','$log_user','$current_date')"; 
                 mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
         }
