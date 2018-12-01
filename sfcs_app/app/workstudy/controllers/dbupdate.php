@@ -47,7 +47,7 @@ $handle=fopen($filepath,"r");
 fgetcsv($handle);
 
 $teams=$shifts_array;
-$teams=str_replace('general','G',$teams);
+//$teams=str_replace('general','G',$teams);
 $teamcount=count($shifts_array);
 while(($data=fgetcsv($handle,1000,","))!==FALSE)
 {				
