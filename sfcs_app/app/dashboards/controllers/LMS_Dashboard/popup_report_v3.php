@@ -85,12 +85,12 @@ display_loading_screen();
 
 <?php 
 
-$sqlx1="SELECT * FROM $bai_pro3.sections_master WHERE sec_id=$section_no";
+$sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section_no";
 // echo $sqlx1;
 $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 {
-	$sec_name=$sql_rowx1['sec_name'];
+	$sec_name=$sql_rowx1['section_display_name'];
 }
 				
 
