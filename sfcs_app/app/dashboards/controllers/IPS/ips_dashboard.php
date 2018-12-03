@@ -132,7 +132,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				//FOR SCHEDULE CLUBBING ensuring for parent docket
 				if($doc_no_ref != ''){
 					$parent_doc_query = "SELECT GROUP_CONCAT(org_doc_no) as docs from $bai_pro3.plandoc_stat_log  
-										where doc_no IN ($doc_no_ref) and org_doc_no > 0";
+										where doc_no IN ($doc_no_ref) and org_doc_no > 1";
 					$parent_doc_result = mysqli_query($link,$parent_doc_query);
 					if($org_row = mysqli_fetch_array($parent_doc_result))
 						$doc_no_ref = $org_row['docs'];
