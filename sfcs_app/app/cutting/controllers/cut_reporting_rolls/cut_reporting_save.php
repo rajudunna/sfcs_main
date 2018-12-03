@@ -370,7 +370,26 @@ if($target == 'style_clubbed'){
     }
 
     //need to write for the fulfill_qtys
+    foreach($left_over as $size=>$qty){
+        $docs = $docs_count[$size];
+        $splitted = $qty;
+        do{
+            if(ceil($splitted % $docs) > 0)
+                $splitted--;
+        }while($splitted % $docs > 0);
+        $rem = $qty - $splitted;
+        $splitted = $splitted/$docs;
 
+        foreach($planned[$size] as $doc => $ignore){
+            if($rem > 0){
+                $rem--;
+                $splitted += 1;
+            }
+            $reported[$docket][$size] += $splitted;
+        }
+    }
+
+    //Equal Filling Logic for all child dockets 
     foreach($planned as $size => $plan){
         do{
             $fulfill_qty = $fulfill_size_quantity[$size];
@@ -415,7 +434,7 @@ if($target == 'style_clubbed'){
             unset($left_over[$size]);
         }while($fulfill_qty > 0);
     }
-
+    //ALL Excess Qty left out to be filled equally 
     foreach($left_over as $size=>$qty){
         $docs = $docs_count[$size];
         $splitted = $qty;
@@ -424,9 +443,10 @@ if($target == 'style_clubbed'){
                 $splitted--;
         }while($splitted % $docs > 0);
         $rem = $qty - $splitted;
+
         $splitted = $splitted/$docs;
 
-        foreach($planned[$size] as $doc => $ignore){
+        foreach($planned[$size] as $docket => $ignore){
             if($rem > 0){
                 $rem--;
                 $splitted += 1;
@@ -435,7 +455,7 @@ if($target == 'style_clubbed'){
         }
     }
 
-    foreach($reported as $docket => $plan){
+    foreach($reported as $child_doc => $plan){
         $size_update_string = '';
         foreach($plan as $size => $qty){
             $size_update_string = "a_$size = $qty ,";
@@ -443,7 +463,8 @@ if($target == 'style_clubbed'){
         if(strlen($size_update_string) > 0){
             $update_childs_query = "UPDATE $bai_pro3.plandoc_stat_log set $size_update_string act_cut_status = 'DONE'
                                     where doc_no ='$child_doc' ";
-            $update_childs_result = mysqli_query($link,$update_childs_query) or exit('Child Docket Update Error');
+            $update_childs_result = mysqli_query($link,$update_childs_query) 
+                                or exit('Child Docket Update Error Style Clubbing');
         }
     }
     //Updating plandoc_stat_log for child dockets
@@ -600,6 +621,7 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color){
     $counter = 0;
     $update_flag = 0;
     $op_code = 15;
+    //NEED TO DEVELOP VERIFICATION FOR THE STYLE CLUBBED DOCKETS
     $emb_cut_check_flag = get_me_emb_check_flag($style,$color,$op_code,$link,$brandix_bts);
 
     foreach($reported as $doc_no=>$size_qty){
