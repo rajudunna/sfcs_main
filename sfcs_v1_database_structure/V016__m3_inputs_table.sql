@@ -13,13 +13,13 @@ MySQL - 10.3.8-MariaDB : Database - m3_inputs
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`m3_inputs` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `m3_inputs`;
+/*USE `m3_inputs`;*/
 
 /*Table structure for table `order_details` */
 
-DROP TABLE IF EXISTS `order_details`;
+DROP TABLE IF EXISTS `m3_inputs`.`order_details`;
 
-CREATE TABLE `order_details` (
+CREATE TABLE `m3_inputs`.`order_details` (
   `sno` bigint(20) NOT NULL AUTO_INCREMENT,
   `Facility` longtext DEFAULT NULL,
   `Customer_Style_No` longtext DEFAULT NULL,
@@ -85,9 +85,9 @@ CREATE TABLE `order_details` (
 
 /*Table structure for table `shipment_plan` */
 
-DROP TABLE IF EXISTS `shipment_plan`;
+DROP TABLE IF EXISTS `m3_inputs`.`shipment_plan`;
 
-CREATE TABLE `shipment_plan` (
+CREATE TABLE `m3_inputs`.`shipment_plan` (
   `sno` bigint(20) NOT NULL AUTO_INCREMENT,
   `Customer_Order_No` longtext DEFAULT NULL,
   `CO_Line_Status` longtext DEFAULT NULL,

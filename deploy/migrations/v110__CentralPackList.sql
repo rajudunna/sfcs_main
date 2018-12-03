@@ -1,7 +1,7 @@
 
-USE `bai_pro3`;
+/*USE `bai_pro3`;*/
 
-CREATE TABLE `pac_stat` (
+CREATE TABLE `bai_pro3`.`pac_stat` (
   `id` int(15) NOT NULL AUTO_INCREMENT,
   `style` varchar(30) NOT NULL,
   `schedule` varchar(10) NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE `pac_stat` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
-CREATE TABLE `pac_stat_input` (
+CREATE TABLE `bai_pro3`.`pac_stat_input` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `style` varchar(255) DEFAULT NULL,
   `schedule` int(11) DEFAULT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE `pac_stat_input` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 
-CREATE TABLE `tbl_carton_ready` (
+CREATE TABLE `bai_pro3`.`tbl_carton_ready` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `operation_id` int(11) NOT NULL,
   `mo_no` int(11) NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE `tbl_carton_ready` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
-CREATE TABLE `tbl_docket_qty` (
+CREATE TABLE `bai_pro3`.`tbl_docket_qty` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cut_no` int(11) DEFAULT NULL,
   `doc_no` int(11) DEFAULT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE `tbl_docket_qty` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
-CREATE TABLE `tbl_pack_ref` (
+CREATE TABLE `bai_pro3`.`tbl_pack_ref` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `style` varchar(255) DEFAULT NULL,
   `schedule` varchar(255) DEFAULT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE `tbl_pack_ref` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 
-CREATE TABLE `tbl_pack_size_ref` (
+CREATE TABLE `bai_pro3`.`tbl_pack_size_ref` (
   `id` int(6) NOT NULL AUTO_INCREMENT,
   `parent_id` int(6) DEFAULT NULL,
   `color` varchar(765) DEFAULT NULL,
@@ -79,7 +79,7 @@ ALTER TABLE pac_stat_log
  ADD COLUMN pac_stat_id INT(11) NULL COMMENT 'id from pac_stat table' AFTER size_tit;
  
 
-ALTER VIEW `packing_summary` AS (
+ALTER VIEW `bai_pro3`.`packing_summary` AS (
 select
   `pac_stat_log`.`doc_no`         AS `doc_no`,
   `pac_stat_log`.`doc_no_ref`     AS `doc_no_ref`,
@@ -111,26 +111,26 @@ from (((`pac_stat_log`
 
 	 
 	 
-USE central_administration_sfcs;
+/*USE central_administration_sfcs;*/
 	
-INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1596', 'SFCS_0363', '8', '2', '143', '0', '1', '', 'Centralized Packing List', '1', ''); 
-INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1597', 'SFCS_0364', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/order_qty_vs_packed_qty.php', 'Add Packing List', '1', ''); 
-INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1598', 'SFCS_0365', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/pack_method_loading.php', 'Pack Method Loading', '2', ''); 
-INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1599', 'SFCS_0366', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/carton_club_drag_drop.php', 'Carton Club', '3', ''); 
-INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1600', 'SFCS_0367', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/carton_split.php', 'Carton Split', '4', ''); 
-INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1601', 'SFCS_0368', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/carton_scan_select_user.php', 'Carton Scanning', '5', ''); 
-INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1602', 'SFCS_0369', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/pack_method_deletion.php', 'Delete Packing List', '6', ''); 
-INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1603', 'SFCS_0370', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/carton_reversal.php', 'Carton Reversal', '7', ''); 
-INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1604', 'SFCS_0371', '8', '2', '39', '1', '1', '/sfcs_app/app/packing/reports/central_packing/eligible_cartons_report.php', 'Carton Eligible Report', '', ''); 
-INSERT INTO `tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1605', 'SFCS_0372', '8', '2', '39', '1', '1', '/sfcs_app/app/packing/reports/central_packing/cut_job_packing_report.php', 'Central Pack Report', '', ''); 
+INSERT INTO `central_administration_sfcs`.`tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1596', 'SFCS_0363', '8', '2', '143', '0', '1', '', 'Centralized Packing List', '1', ''); 
+INSERT INTO `central_administration_sfcs`.`tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1597', 'SFCS_0364', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/order_qty_vs_packed_qty.php', 'Add Packing List', '1', ''); 
+INSERT INTO `central_administration_sfcs`.`tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1598', 'SFCS_0365', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/pack_method_loading.php', 'Pack Method Loading', '2', ''); 
+INSERT INTO `central_administration_sfcs`.`tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1599', 'SFCS_0366', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/carton_club_drag_drop.php', 'Carton Club', '3', ''); 
+INSERT INTO `central_administration_sfcs`.`tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1600', 'SFCS_0367', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/carton_split.php', 'Carton Split', '4', ''); 
+INSERT INTO `central_administration_sfcs`.`tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1601', 'SFCS_0368', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/carton_scan_select_user.php', 'Carton Scanning', '5', ''); 
+INSERT INTO `central_administration_sfcs`.`tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1602', 'SFCS_0369', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/pack_method_deletion.php', 'Delete Packing List', '6', ''); 
+INSERT INTO `central_administration_sfcs`.`tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1603', 'SFCS_0370', '8', '2', '1596', '1', '1', '/sfcs_app/app/packing/controllers/central_packing/carton_reversal.php', 'Carton Reversal', '7', ''); 
+INSERT INTO `central_administration_sfcs`.`tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1604', 'SFCS_0371', '8', '2', '39', '1', '1', '/sfcs_app/app/packing/reports/central_packing/eligible_cartons_report.php', 'Carton Eligible Report', '', ''); 
+INSERT INTO `central_administration_sfcs`.`tbl_menu_list` (`menu_pid`, `page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES ('1605', 'SFCS_0372', '8', '2', '39', '1', '1', '/sfcs_app/app/packing/reports/central_packing/cut_job_packing_report.php', 'Central Pack Report', '', ''); 
 
 
-INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1597', 'Add Packing List', '1'); 
-INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1598', 'Pack Method Loading', '1'); 
-INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1599', 'Carton Club', '1'); 
-INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1600', 'Carton Split', '1'); 
-INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1601', 'Carton Scanning', '1'); 
-INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1602', 'Delete Packing List', '1'); 
-INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1603', 'Carton Reversal', '1'); 
-INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1604', 'Carton Eligible Report', '1'); 
-INSERT INTO `rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1605', 'Carton Pack Report', '1'); 
+INSERT INTO `central_administration_sfcs`.`rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1597', 'Add Packing List', '1'); 
+INSERT INTO `central_administration_sfcs`.`rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1598', 'Pack Method Loading', '1'); 
+INSERT INTO `central_administration_sfcs`.`rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1599', 'Carton Club', '1'); 
+INSERT INTO `central_administration_sfcs`.`rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1600', 'Carton Split', '1'); 
+INSERT INTO `central_administration_sfcs`.`rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1601', 'Carton Scanning', '1'); 
+INSERT INTO `central_administration_sfcs`.`rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1602', 'Delete Packing List', '1'); 
+INSERT INTO `central_administration_sfcs`.`rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1603', 'Carton Reversal', '1'); 
+INSERT INTO `central_administration_sfcs`.`rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1604', 'Carton Eligible Report', '1'); 
+INSERT INTO `central_administration_sfcs`.`rbac_role_menu` (`menu_pid`, `menu_description`, `roll_id`) VALUES ('1605', 'Carton Pack Report', '1'); 

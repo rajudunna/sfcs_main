@@ -13,13 +13,13 @@ MySQL - 10.3.8-MariaDB : Database - bai_pack
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`bai_pack` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `bai_pack`;
+/*USE `bai_pack`;*/
 
 /*Table structure for table `upload` */
 
-DROP TABLE IF EXISTS `upload`;
+DROP TABLE IF EXISTS `bai_pack`.`upload`;
 
-CREATE TABLE `upload` (
+CREATE TABLE `bai_pack`.`upload` (
   `name` varchar(270) DEFAULT NULL COMMENT 'empty contianer photo name',
   `type` varchar(270) DEFAULT NULL COMMENT 'image type',
   `size` double DEFAULT NULL COMMENT 'image size',
@@ -51,9 +51,9 @@ CREATE TABLE `upload` (
 
 /*Table structure for table `upload_archive` */
 
-DROP TABLE IF EXISTS `upload_archive`;
+DROP TABLE IF EXISTS `bai_pack`.`upload_archive`;
 
-CREATE TABLE `upload_archive` (
+CREATE TABLE `bai_pack`.`upload_archive` (
   `name` varchar(270) DEFAULT NULL COMMENT 'empty contianer photo name',
   `type` varchar(270) DEFAULT NULL COMMENT 'image type',
   `size` double DEFAULT NULL COMMENT 'image size',
@@ -85,9 +85,9 @@ CREATE TABLE `upload_archive` (
 
 /*Table structure for table `upload_dest` */
 
-DROP TABLE IF EXISTS `upload_dest`;
+DROP TABLE IF EXISTS `bai_pack`.`upload_dest`;
 
-CREATE TABLE `upload_dest` (
+CREATE TABLE `bai_pack`.`upload_dest` (
   `name` varchar(810) DEFAULT NULL COMMENT 'Stacked Cartons Image Name',
   `type` varchar(810) DEFAULT NULL COMMENT 'Stacked Cartons Image Size',
   `size` double DEFAULT NULL COMMENT 'Stacked Cartons Type',
@@ -123,9 +123,9 @@ CREATE TABLE `upload_dest` (
 
 /*Table structure for table `upload_dest_summary` */
 
-DROP TABLE IF EXISTS `upload_dest_summary`;
+DROP TABLE IF EXISTS `bai_pack`.`upload_dest_summary`;
 
-CREATE TABLE `upload_dest_summary` (
+CREATE TABLE `bai_pack`.`upload_dest_summary` (
   `tid` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Transaction ID',
   `name` varchar(2430) DEFAULT NULL COMMENT 'Prior to Destruction Image Name',
   `type` varchar(2430) DEFAULT NULL COMMENT 'Prior to Destruction Image Type',
@@ -145,9 +145,9 @@ CREATE TABLE `upload_dest_summary` (
 
 /*Table structure for table `uploads` */
 
-DROP TABLE IF EXISTS `uploads`;
+DROP TABLE IF EXISTS `bai_pack`.`uploads`;
 
-CREATE TABLE `uploads` (
+CREATE TABLE `bai_pack`.`uploads` (
   `id` double NOT NULL AUTO_INCREMENT,
   `name` varchar(270) DEFAULT NULL,
   `type` varchar(270) DEFAULT NULL,

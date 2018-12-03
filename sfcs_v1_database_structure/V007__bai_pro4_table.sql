@@ -13,13 +13,13 @@ MySQL - 10.3.8-MariaDB : Database - bai_pro4
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`bai_pro4` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `bai_pro4`;
+/*USE `bai_pro4`;*/
 
 /*Table structure for table `fastreact_plan` */
 
-DROP TABLE IF EXISTS `fastreact_plan`;
+DROP TABLE IF EXISTS `bai_pro4`.`fastreact_plan`;
 
-CREATE TABLE `fastreact_plan` (
+CREATE TABLE `bai_pro4`.`fastreact_plan` (
   `group_code` varchar(20) NOT NULL COMMENT 'Style Name',
   `module` varchar(8) NOT NULL COMMENT 'Module No\r\n',
   `style` varchar(130) NOT NULL COMMENT 'Style Id\r\n',
@@ -39,9 +39,9 @@ CREATE TABLE `fastreact_plan` (
 
 /*Table structure for table `job_shipment_plan_man_up` */
 
-DROP TABLE IF EXISTS `job_shipment_plan_man_up`;
+DROP TABLE IF EXISTS `bai_pro4`.`job_shipment_plan_man_up`;
 
-CREATE TABLE `job_shipment_plan_man_up` (
+CREATE TABLE `bai_pro4`.`job_shipment_plan_man_up` (
   `DELIVERY_NO` varchar(30) NOT NULL,
   `SCHEDULE_NO` varchar(30) NOT NULL,
   `ORD_QTY` varchar(30) NOT NULL,
@@ -74,9 +74,9 @@ CREATE TABLE `job_shipment_plan_man_up` (
 
 /*Table structure for table `members` */
 
-DROP TABLE IF EXISTS `members`;
+DROP TABLE IF EXISTS `bai_pro4`.`members`;
 
-CREATE TABLE `members` (
+CREATE TABLE `bai_pro4`.`members` (
   `member_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `firstname` varchar(100) DEFAULT NULL,
   `lastname` varchar(100) DEFAULT NULL,
@@ -88,9 +88,9 @@ CREATE TABLE `members` (
 
 /*Table structure for table `query_edit_log` */
 
-DROP TABLE IF EXISTS `query_edit_log`;
+DROP TABLE IF EXISTS `bai_pro4`.`query_edit_log`;
 
-CREATE TABLE `query_edit_log` (
+CREATE TABLE `bai_pro4`.`query_edit_log` (
   `log_id` int(6) NOT NULL AUTO_INCREMENT,
   `log_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `query_executed` text NOT NULL,
@@ -102,9 +102,9 @@ CREATE TABLE `query_edit_log` (
 
 /*Table structure for table `shipfast_sum` */
 
-DROP TABLE IF EXISTS `shipfast_sum`;
+DROP TABLE IF EXISTS `bai_pro4`.`shipfast_sum`;
 
-CREATE TABLE `shipfast_sum` (
+CREATE TABLE `bai_pro4`.`shipfast_sum` (
   `shipment_plan_id` int(11) NOT NULL,
   `fastreact_plan_id` int(11) NOT NULL,
   `size_xs` int(11) NOT NULL,
@@ -249,9 +249,9 @@ CREATE TABLE `shipfast_sum` (
 
 /*Table structure for table `shipment_plan` */
 
-DROP TABLE IF EXISTS `shipment_plan`;
+DROP TABLE IF EXISTS `bai_pro4`.`shipment_plan`;
 
-CREATE TABLE `shipment_plan` (
+CREATE TABLE `bai_pro4`.`shipment_plan` (
   `order_no` varchar(10) NOT NULL,
   `delivery_no` varchar(10) NOT NULL,
   `del_status` varchar(2) NOT NULL,
@@ -298,9 +298,9 @@ CREATE TABLE `shipment_plan` (
 
 /*Table structure for table `shipment_plan_archive` */
 
-DROP TABLE IF EXISTS `shipment_plan_archive`;
+DROP TABLE IF EXISTS `bai_pro4`.`shipment_plan_archive`;
 
-CREATE TABLE `shipment_plan_archive` (
+CREATE TABLE `bai_pro4`.`shipment_plan_archive` (
   `order_no` varchar(10) NOT NULL,
   `delivery_no` varchar(10) NOT NULL,
   `del_status` varchar(2) NOT NULL,
@@ -343,9 +343,9 @@ CREATE TABLE `shipment_plan_archive` (
 
 /*Table structure for table `shipment_plan_ref_view` */
 
-DROP TABLE IF EXISTS `shipment_plan_ref_view`;
+DROP TABLE IF EXISTS `bai_pro4`.`shipment_plan_ref_view`;
 
-CREATE TABLE `shipment_plan_ref_view` (
+CREATE TABLE `bai_pro4`.`shipment_plan_ref_view` (
   `order_no` varchar(30) DEFAULT NULL,
   `delivery_no` varchar(30) DEFAULT NULL,
   `del_status` varchar(6) DEFAULT NULL,
@@ -388,9 +388,9 @@ CREATE TABLE `shipment_plan_ref_view` (
 
 /*Table structure for table `week_del_log` */
 
-DROP TABLE IF EXISTS `week_del_log`;
+DROP TABLE IF EXISTS `bai_pro4`.`week_del_log`;
 
-CREATE TABLE `week_del_log` (
+CREATE TABLE `bai_pro4`.`week_del_log` (
   `ex_fact` date NOT NULL,
   `log_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `ship_tid` int(11) NOT NULL,
@@ -400,9 +400,9 @@ CREATE TABLE `week_del_log` (
 
 /*Table structure for table `week_delivery_plan` */
 
-DROP TABLE IF EXISTS `week_delivery_plan`;
+DROP TABLE IF EXISTS `bai_pro4`.`week_delivery_plan`;
 
-CREATE TABLE `week_delivery_plan` (
+CREATE TABLE `bai_pro4`.`week_delivery_plan` (
   `shipment_plan_id` int(11) NOT NULL,
   `fastreact_plan_id` int(11) NOT NULL,
   `size_code` varchar(50) DEFAULT NULL,
@@ -577,9 +577,9 @@ CREATE TABLE `week_delivery_plan` (
 
 /*Table structure for table `week_delivery_plan_archive` */
 
-DROP TABLE IF EXISTS `week_delivery_plan_archive`;
+DROP TABLE IF EXISTS `bai_pro4`.`week_delivery_plan_archive`;
 
-CREATE TABLE `week_delivery_plan_archive` (
+CREATE TABLE `bai_pro4`.`week_delivery_plan_archive` (
   `shipment_plan_id` int(11) NOT NULL,
   `fastreact_plan_id` int(11) NOT NULL,
   `size_xs` mediumint(9) NOT NULL,
@@ -740,9 +740,9 @@ CREATE TABLE `week_delivery_plan_archive` (
 
 /*Table structure for table `week_delivery_plan_ref_temp` */
 
-DROP TABLE IF EXISTS `week_delivery_plan_ref_temp`;
+DROP TABLE IF EXISTS `bai_pro4`.`week_delivery_plan_ref_temp`;
 
-CREATE TABLE `week_delivery_plan_ref_temp` (
+CREATE TABLE `bai_pro4`.`week_delivery_plan_ref_temp` (
   `ship_tid` double DEFAULT NULL,
   `tid` int(11) DEFAULT NULL,
   `buyer_division` varchar(120) DEFAULT NULL,
@@ -773,9 +773,9 @@ CREATE TABLE `week_delivery_plan_ref_temp` (
 
 /*Table structure for table `week_delivery_plan_temp` */
 
-DROP TABLE IF EXISTS `week_delivery_plan_temp`;
+DROP TABLE IF EXISTS `bai_pro4`.`week_delivery_plan_temp`;
 
-CREATE TABLE `week_delivery_plan_temp` (
+CREATE TABLE `bai_pro4`.`week_delivery_plan_temp` (
   `shipment_plan_id` int(11) NOT NULL,
   `fastreact_plan_id` int(11) NOT NULL,
   `size_code` varchar(50) DEFAULT NULL,
@@ -937,9 +937,9 @@ CREATE TABLE `week_delivery_plan_temp` (
 
 /*Table structure for table `weekly_cap_reasons` */
 
-DROP TABLE IF EXISTS `weekly_cap_reasons`;
+DROP TABLE IF EXISTS `bai_pro4`.`weekly_cap_reasons`;
 
-CREATE TABLE `weekly_cap_reasons` (
+CREATE TABLE `bai_pro4`.`weekly_cap_reasons` (
   `sno` int(11) NOT NULL AUTO_INCREMENT COMMENT 'primary key',
   `reason` varchar(50) NOT NULL COMMENT 'Planning Remarks',
   `color_code` varchar(10) NOT NULL COMMENT 'Color Identification Of Reason',
@@ -951,9 +951,9 @@ CREATE TABLE `weekly_cap_reasons` (
 
 /*Table structure for table `weekly_delivery_plan_remarks` */
 
-DROP TABLE IF EXISTS `weekly_delivery_plan_remarks`;
+DROP TABLE IF EXISTS `bai_pro4`.`weekly_delivery_plan_remarks`;
 
-CREATE TABLE `weekly_delivery_plan_remarks` (
+CREATE TABLE `bai_pro4`.`weekly_delivery_plan_remarks` (
   `tid` bigint(20) NOT NULL AUTO_INCREMENT,
   `schedule_no` varchar(25) DEFAULT NULL,
   `color_des` varchar(50) DEFAULT NULL,
@@ -970,9 +970,9 @@ CREATE TABLE `weekly_delivery_plan_remarks` (
 
 /*Table structure for table `weekly_delivery_status_finishing` */
 
-DROP TABLE IF EXISTS `weekly_delivery_status_finishing`;
+DROP TABLE IF EXISTS `bai_pro4`.`weekly_delivery_status_finishing`;
 
-CREATE TABLE `weekly_delivery_status_finishing` (
+CREATE TABLE `bai_pro4`.`weekly_delivery_status_finishing` (
   `tid` double NOT NULL,
   `tran_tid` double NOT NULL,
   `buyer` varchar(50) NOT NULL,

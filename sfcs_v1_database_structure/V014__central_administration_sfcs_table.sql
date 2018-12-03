@@ -13,13 +13,13 @@ MySQL - 10.3.8-MariaDB : Database - central_administration_sfcs
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`central_administration_sfcs` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `central_administration_sfcs`;
+/*USE `central_administration_sfcs`;*/
 
 /*Table structure for table `employees` */
 
-DROP TABLE IF EXISTS `employees`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`employees`;
 
-CREATE TABLE `employees` (
+CREATE TABLE `central_administration_sfcs`.`employees` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `first_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `last_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -31,9 +31,9 @@ CREATE TABLE `employees` (
 
 /*Table structure for table `login_info` */
 
-DROP TABLE IF EXISTS `login_info`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`login_info`;
 
-CREATE TABLE `login_info` (
+CREATE TABLE `central_administration_sfcs`.`login_info` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `employee_id` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `login` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -44,9 +44,9 @@ CREATE TABLE `login_info` (
 
 /*Table structure for table `mate_columns` */
 
-DROP TABLE IF EXISTS `mate_columns`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`mate_columns`;
 
-CREATE TABLE `mate_columns` (
+CREATE TABLE `central_administration_sfcs`.`mate_columns` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `mate_user_id` varchar(225) NOT NULL,
   `mate_var_prefix` varchar(300) NOT NULL,
@@ -59,9 +59,9 @@ CREATE TABLE `mate_columns` (
 
 /*Table structure for table `rbac_permission` */
 
-DROP TABLE IF EXISTS `rbac_permission`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`rbac_permission`;
 
-CREATE TABLE `rbac_permission` (
+CREATE TABLE `central_administration_sfcs`.`rbac_permission` (
   `permission_id` int(11) NOT NULL AUTO_INCREMENT,
   `permission_des` varchar(240) DEFAULT NULL,
   `permission_name` varchar(240) DEFAULT NULL,
@@ -71,9 +71,9 @@ CREATE TABLE `rbac_permission` (
 
 /*Table structure for table `rbac_role_menu` */
 
-DROP TABLE IF EXISTS `rbac_role_menu`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`rbac_role_menu`;
 
-CREATE TABLE `rbac_role_menu` (
+CREATE TABLE `central_administration_sfcs`.`rbac_role_menu` (
   `role_menu_id` int(11) NOT NULL AUTO_INCREMENT,
   `menu_pid` int(11) DEFAULT NULL,
   `menu_description` varchar(240) DEFAULT NULL,
@@ -83,9 +83,9 @@ CREATE TABLE `rbac_role_menu` (
 
 /*Table structure for table `rbac_role_menu_copy` */
 
-DROP TABLE IF EXISTS `rbac_role_menu_copy`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`rbac_role_menu_copy`;
 
-CREATE TABLE `rbac_role_menu_copy` (
+CREATE TABLE `central_administration_sfcs`.`rbac_role_menu_copy` (
   `role_menu_id` int(11) NOT NULL AUTO_INCREMENT,
   `menu_pid` int(11) DEFAULT NULL,
   `menu_description` varchar(240) DEFAULT NULL,
@@ -95,9 +95,9 @@ CREATE TABLE `rbac_role_menu_copy` (
 
 /*Table structure for table `rbac_role_menu_per` */
 
-DROP TABLE IF EXISTS `rbac_role_menu_per`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`rbac_role_menu_per`;
 
-CREATE TABLE `rbac_role_menu_per` (
+CREATE TABLE `central_administration_sfcs`.`rbac_role_menu_per` (
   `role_menu_per_id` int(11) NOT NULL AUTO_INCREMENT,
   `role_menu_id` int(11) DEFAULT NULL,
   `permission_id` int(11) DEFAULT NULL,
@@ -106,9 +106,9 @@ CREATE TABLE `rbac_role_menu_per` (
 
 /*Table structure for table `rbac_role_menu_per_copy` */
 
-DROP TABLE IF EXISTS `rbac_role_menu_per_copy`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`rbac_role_menu_per_copy`;
 
-CREATE TABLE `rbac_role_menu_per_copy` (
+CREATE TABLE `central_administration_sfcs`.`rbac_role_menu_per_copy` (
   `role_menu_per_id` int(11) NOT NULL AUTO_INCREMENT,
   `role_menu_id` int(11) DEFAULT NULL,
   `permission_id` int(11) DEFAULT NULL,
@@ -117,9 +117,9 @@ CREATE TABLE `rbac_role_menu_per_copy` (
 
 /*Table structure for table `rbac_roles` */
 
-DROP TABLE IF EXISTS `rbac_roles`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`rbac_roles`;
 
-CREATE TABLE `rbac_roles` (
+CREATE TABLE `central_administration_sfcs`.`rbac_roles` (
   `role_id` int(11) NOT NULL AUTO_INCREMENT,
   `role_name` varchar(240) DEFAULT NULL,
   PRIMARY KEY (`role_id`)
@@ -127,9 +127,9 @@ CREATE TABLE `rbac_roles` (
 
 /*Table structure for table `rbac_users` */
 
-DROP TABLE IF EXISTS `rbac_users`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`rbac_users`;
 
-CREATE TABLE `rbac_users` (
+CREATE TABLE `central_administration_sfcs`.`rbac_users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `role_id` int(11) DEFAULT NULL,
   `user_name` varchar(80) DEFAULT NULL,
@@ -138,9 +138,9 @@ CREATE TABLE `rbac_users` (
 
 /*Table structure for table `tbl_application_list` */
 
-DROP TABLE IF EXISTS `tbl_application_list`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`tbl_application_list`;
 
-CREATE TABLE `tbl_application_list` (
+CREATE TABLE `central_administration_sfcs`.`tbl_application_list` (
   `app_id` int(11) NOT NULL AUTO_INCREMENT,
   `app_name` varchar(45) NOT NULL,
   `app_description` varchar(45) NOT NULL,
@@ -156,9 +156,9 @@ CREATE TABLE `tbl_application_list` (
 
 /*Table structure for table `tbl_function_list` */
 
-DROP TABLE IF EXISTS `tbl_function_list`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`tbl_function_list`;
 
-CREATE TABLE `tbl_function_list` (
+CREATE TABLE `central_administration_sfcs`.`tbl_function_list` (
   `fn_id` int(11) NOT NULL AUTO_INCREMENT,
   `fn_name` varchar(45) NOT NULL,
   `fn_purpose` varchar(150) DEFAULT NULL,
@@ -169,9 +169,9 @@ CREATE TABLE `tbl_function_list` (
 
 /*Table structure for table `tbl_group_list` */
 
-DROP TABLE IF EXISTS `tbl_group_list`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`tbl_group_list`;
 
-CREATE TABLE `tbl_group_list` (
+CREATE TABLE `central_administration_sfcs`.`tbl_group_list` (
   `group_id` int(11) NOT NULL AUTO_INCREMENT,
   `group_status` varchar(4) NOT NULL,
   `group_purpose` varchar(100) DEFAULT NULL,
@@ -180,9 +180,9 @@ CREATE TABLE `tbl_group_list` (
 
 /*Table structure for table `tbl_menu_list` */
 
-DROP TABLE IF EXISTS `tbl_menu_list`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`tbl_menu_list`;
 
-CREATE TABLE `tbl_menu_list` (
+CREATE TABLE `central_administration_sfcs`.`tbl_menu_list` (
   `menu_pid` int(11) NOT NULL AUTO_INCREMENT,
   `page_id` varchar(11) NOT NULL,
   `fk_group_id` varchar(45) NOT NULL,
@@ -200,9 +200,9 @@ CREATE TABLE `tbl_menu_list` (
 
 /*Table structure for table `tbl_menu_list_copy` */
 
-DROP TABLE IF EXISTS `tbl_menu_list_copy`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`tbl_menu_list_copy`;
 
-CREATE TABLE `tbl_menu_list_copy` (
+CREATE TABLE `central_administration_sfcs`.`tbl_menu_list_copy` (
   `menu_pid` int(11) NOT NULL AUTO_INCREMENT,
   `page_id` varchar(11) NOT NULL,
   `fk_group_id` varchar(45) NOT NULL,
@@ -220,9 +220,9 @@ CREATE TABLE `tbl_menu_list_copy` (
 
 /*Table structure for table `tbl_menu_matrix` */
 
-DROP TABLE IF EXISTS `tbl_menu_matrix`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`tbl_menu_matrix`;
 
-CREATE TABLE `tbl_menu_matrix` (
+CREATE TABLE `central_administration_sfcs`.`tbl_menu_matrix` (
   `matrix_pid` int(11) NOT NULL AUTO_INCREMENT,
   `fk_menu_pid` varchar(5) NOT NULL,
   `fk_fn_id` varchar(5) NOT NULL,
@@ -234,9 +234,9 @@ CREATE TABLE `tbl_menu_matrix` (
 
 /*Table structure for table `tbl_role_list` */
 
-DROP TABLE IF EXISTS `tbl_role_list`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`tbl_role_list`;
 
-CREATE TABLE `tbl_role_list` (
+CREATE TABLE `central_administration_sfcs`.`tbl_role_list` (
   `role_id` int(11) NOT NULL AUTO_INCREMENT,
   `role_desc` varchar(200) NOT NULL,
   `role_status` tinyint(4) NOT NULL,
@@ -246,9 +246,9 @@ CREATE TABLE `tbl_role_list` (
 
 /*Table structure for table `tbl_role_matrix` */
 
-DROP TABLE IF EXISTS `tbl_role_matrix`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`tbl_role_matrix`;
 
-CREATE TABLE `tbl_role_matrix` (
+CREATE TABLE `central_administration_sfcs`.`tbl_role_matrix` (
   `role_matrix_id` int(11) NOT NULL AUTO_INCREMENT,
   `fk_role_id` varchar(45) NOT NULL,
   `fk_menu_matrix_id` varchar(45) NOT NULL,
@@ -259,9 +259,9 @@ CREATE TABLE `tbl_role_matrix` (
 
 /*Table structure for table `tbl_user_acl_list` */
 
-DROP TABLE IF EXISTS `tbl_user_acl_list`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`tbl_user_acl_list`;
 
-CREATE TABLE `tbl_user_acl_list` (
+CREATE TABLE `central_administration_sfcs`.`tbl_user_acl_list` (
   `acl_id` int(11) NOT NULL AUTO_INCREMENT,
   `fk_matrix_pid` varchar(45) NOT NULL,
   `fk_user_id` varchar(45) NOT NULL,
@@ -272,9 +272,9 @@ CREATE TABLE `tbl_user_acl_list` (
 
 /*Table structure for table `tbl_user_acl_list_role` */
 
-DROP TABLE IF EXISTS `tbl_user_acl_list_role`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`tbl_user_acl_list_role`;
 
-CREATE TABLE `tbl_user_acl_list_role` (
+CREATE TABLE `central_administration_sfcs`.`tbl_user_acl_list_role` (
   `acl_id` int(11) NOT NULL AUTO_INCREMENT,
   `fk_role_pid` varchar(45) NOT NULL,
   `fk_user_id` varchar(45) NOT NULL,
@@ -284,9 +284,9 @@ CREATE TABLE `tbl_user_acl_list_role` (
 
 /*Table structure for table `tbl_user_list` */
 
-DROP TABLE IF EXISTS `tbl_user_list`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`tbl_user_list`;
 
-CREATE TABLE `tbl_user_list` (
+CREATE TABLE `central_administration_sfcs`.`tbl_user_list` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(45) NOT NULL,
   `user_status` varchar(5) NOT NULL COMMENT 'active - 0 ; inactive - 1',
@@ -296,9 +296,9 @@ CREATE TABLE `tbl_user_list` (
 
 /*Table structure for table `tbl_view_view_menu` */
 
-DROP TABLE IF EXISTS `tbl_view_view_menu`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`tbl_view_view_menu`;
 
-CREATE TABLE `tbl_view_view_menu` (
+CREATE TABLE `central_administration_sfcs`.`tbl_view_view_menu` (
   `user_id` int(11) NOT NULL DEFAULT 0,
   `user_name` varchar(45) NOT NULL,
   `user_status` varchar(5) NOT NULL COMMENT 'active - 0 ; inactive - 1',
@@ -347,9 +347,9 @@ CREATE TABLE `tbl_view_view_menu` (
 
 /*Table structure for table `user_list` */
 
-DROP TABLE IF EXISTS `user_list`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`user_list`;
 
-CREATE TABLE `user_list` (
+CREATE TABLE `central_administration_sfcs`.`user_list` (
   `uid` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(45) NOT NULL,
   `status` int(5) NOT NULL,
