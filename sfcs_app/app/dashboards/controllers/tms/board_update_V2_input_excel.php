@@ -20,6 +20,13 @@
  if(isset($_POST['export_excel'])){
         $section=$_POST["section"];
 
+        $sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
+		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+		{
+			$section_display_name=$sql_rowx1['section_display_name'];
+        }
+
         $report_data_ary = array();
         $sql2x="select module_id from $bai_pro3.plan_modules where section_id=$section";
         $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -99,7 +106,7 @@
         }else{
             $url = "board_update_V2_input.php?section_no=".$section;
             echo"<script>
-                alert('No Data to Download for selected Section:".$section."');
+                alert('No Data to Download for selected Section:".$section_display_name."');
                 window.location = '".$url."';
             </script>";
         }
