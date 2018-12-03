@@ -2846,8 +2846,7 @@ if(isset($_POST['submit']))
 	border-top:none'>SMV</td>
 	<td rowspan=3 class=xl6626424 width=64 style='border-bottom:1.0pt solid black;
 	border-top:none;width:48pt'>NO Of Days</td>
-	<td class=xl6626424 width=64 style='border-top:none;border-left:none;
-	width:48pt'></td>
+	<td rowspan=3 class=xl6626424 width=64 style='border-bottom:1.0pt solid black;border-top:none;width:48pt'>Fix Oprs</td>
 	<td colspan=2 class=xl11526424 style='border-right:1.0pt solid black;
 	border-left:none'>Operators</td>
 	<td colspan=2 rowspan=2 class=xl11726424 style='border-right:1.0pt solid black;
@@ -2880,8 +2879,6 @@ if(isset($_POST['submit']))
 	border-bottom:1.0pt solid black'>Remarks</td>
 	</tr>
 	<tr height=22 style='mso-height-source:userset;height:16.5pt'>
-	<td height=22 class=xl6726424 width=64 style='height:16.5pt;border-left:none;
-	width:48pt'></td>
 	<td colspan=2 class=xl11526424 style='border-right:1.0pt solid black;
 	border-left:none'>Present</td>
 	<td class=xl7126424 width=64 style='width:48pt'>Std. Hrs.</td>
@@ -2893,8 +2890,6 @@ if(isset($_POST['submit']))
 	border-left:none'>Shift B</td>
 	</tr>
 	<tr height=41 style='mso-height-source:userset;height:30.75pt'>
-	<td height=41 class=xl6826424 width=64 style='height:30.75pt;border-left:
-	none;width:48pt'>Fix Oprs</td>
 	<td class=xl7326424 width=64 style='width:48pt'>Oper (A)</td>
 	<td class=xl7326424 width=64 style='width:48pt'>Oper (B)</td>
 	<td class=xl7526424 width=64 style='width:48pt'>Shift A</td>
