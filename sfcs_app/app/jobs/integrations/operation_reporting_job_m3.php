@@ -6,8 +6,10 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 include($include_path.'\sfcs_app\common\config\rest_api_calls.php');
 set_time_limit(1000000);
 
+
 //details from config tool
-$facility_id = $global_facility_code;
+//$facility_id = $global_facility_code;
+$plant_code = $global_facility_code;
 $company_num = $company_no;
 $host= $api_hostname;
 $port= $api_port_no;
@@ -33,6 +35,7 @@ while($records=mysqli_fetch_array($transaction_result))
         $reason = $row['reason'];
         $log_user = $row['log_user'];
     }
+
     //getting transactions from m3 transaction table which are not 
     $transactions_log_details = "SELECT transaction_id FROM $brandix_bts.transactions_log where transaction_id=".$transaction_id;
     $transactions_log_details_result = mysqli_query($link, $transactions_log_details) or exit("Error at getting transaction logs".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -90,3 +93,4 @@ $end_timestamp = microtime(true);
 $duration = $end_timestamp - $start_timestamp;
 print("Execution took ".$duration." seconds.");
 ?>
+
