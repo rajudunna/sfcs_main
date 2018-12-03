@@ -1,7 +1,8 @@
 
 <?php 
- include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
- $conn = odbc_connect($ms_sql_odbc_server,$ms_sql_odbc_user,$ms_sql_odbc_pass);   
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+$m3_db = 'MRN_V2';
+$conn = odbc_connect("$ms_sql_driver_name;Server=$host_ms;Database=$m3_db;", $user_ms,$password_ms);  
 ?>
 
 <?php

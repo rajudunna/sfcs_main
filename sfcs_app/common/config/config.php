@@ -30,6 +30,7 @@ $host_ms = $conf1->get('m3_system_id');
 $user_ms = $conf1->get('m3_user_name');
 $password_ms = $conf1->get('m3_password');
 $m3_db = $conf1->get('m3_db');
+$ms_sql_driver_name = $conf1->get('driver_name');
 $conn_string = "DRIVER={iSeries Access ODBC Driver};System=".$host_ms.";Uid=".$user_ms.";Pwd=".$password_ms.";";
 //echo $conn_string;
 //M3 MSSQL DB Configurations
