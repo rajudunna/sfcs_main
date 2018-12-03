@@ -127,7 +127,7 @@ CREATE TABLE `bai_pro`.`bai_log` (
   KEY `bac_no2` (`bac_no`,`bac_sec`,`bac_lastup`),
   KEY `ims_doc_no` (`ims_doc_no`),
   KEY `orders` (`delivery`)
-) ENGINE=MyISAM AUTO_INCREMENT=42919 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `bai_log_backup` */
 
@@ -315,7 +315,7 @@ CREATE TABLE `bai_pro`.`bai_log_buf` (
   KEY `bac_no` (`bac_no`,`bac_sec`,`bac_lastup`,`bac_date`,`bac_shift`,`bac_style`),
   KEY `ims_doc_no` (`ims_doc_no`),
   KEY `bcip_sch_attain` (`bac_date`,`bac_no`,`delivery`,`color`(300))
-) ENGINE=MyISAM AUTO_INCREMENT=42920 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `bai_log_buf_new_v1` */
 
@@ -755,7 +755,7 @@ CREATE TABLE `bai_pro`.`down_deps` (
   `dep_id` int(11) NOT NULL AUTO_INCREMENT,
   `dep_name` varchar(200) NOT NULL,
   PRIMARY KEY (`dep_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `down_log` */
 
@@ -863,7 +863,7 @@ CREATE TABLE `bai_pro`.`down_reason` (
   `down_problem` varchar(75) NOT NULL,
   `down_reason` varchar(75) NOT NULL,
   PRIMARY KEY (`sno`)
-) ENGINE=InnoDB AUTO_INCREMENT=410 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `grand_rep` */
 

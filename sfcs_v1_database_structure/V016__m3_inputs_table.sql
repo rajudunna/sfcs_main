@@ -81,7 +81,7 @@ CREATE TABLE `m3_inputs`.`order_details` (
   `SEQ_NUMBER` longtext DEFAULT NULL,
   `time_stamp` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`sno`)
-) ENGINE=InnoDB AUTO_INCREMENT=6773 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `shipment_plan` */
 
@@ -125,7 +125,7 @@ CREATE TABLE `m3_inputs`.`shipment_plan` (
   `BTS_vs_FG_Qty` longtext DEFAULT NULL,
   `time_stamp` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`sno`)
-) ENGINE=InnoDB AUTO_INCREMENT=8250 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

@@ -73,7 +73,7 @@ CREATE TABLE `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log` (
   `m3_error_code` varchar(255) NOT NULL COMMENT 'Error Code Description',
   PRIMARY KEY (`sfcs_tid`),
   KEY `primary_index` (`sfcs_status`,`m3_op_des`)
-) ENGINE=InnoDB AUTO_INCREMENT=89034 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `m3_sfcs_tran_log_backup` */
 
@@ -176,7 +176,7 @@ CREATE TABLE `m3_bulk_ops_rep_db`.`sfcs_to_m3_batch_log` (
   `scrap_records_ids` varchar(255) DEFAULT NULL,
   `type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `sfcs_to_m3_response_log` */
 

@@ -13,7 +13,7 @@ MySQL - 10.3.8-MariaDB : Database - bai_pro3
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`bai_pro3` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-/*USE `bai_pro3`;*/
+USE `bai_pro3`;
 
 /*Table structure for table `act_cut_issue_status` */
 
@@ -230,7 +230,7 @@ CREATE TABLE `bai_pro3`.`allocate_stat_log` (
   `extra_plies` int(11) DEFAULT NULL COMMENT 'Extra Plies Of the Cut',
   PRIMARY KEY (`tid`),
   UNIQUE KEY `Unique` (`cat_ref`,`cuttable_ref`,`order_tid`,`ratio`)
-) ENGINE=InnoDB AUTO_INCREMENT=3437 DEFAULT CHARSET=latin1 COMMENT='To track ration detail of cut job';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COMMENT='To track ration detail of cut job';
 
 /*Table structure for table `allocate_stat_log_archive` */
 
@@ -2984,7 +2984,7 @@ CREATE TABLE `bai_pro3`.`bai_qms_rejection_reason` (
   `form_type` varchar(5) DEFAULT NULL,
   `m3_reason_code` varchar(5) DEFAULT NULL,
   PRIMARY KEY (`sno`)
-) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `bai_qms_transfers_log` */
 
@@ -3351,7 +3351,7 @@ CREATE TABLE `bai_pro3`.`cat_stat_log` (
   UNIQUE KEY `tid` (`tid`,`order_tid`,`category`),
   KEY `clubbing` (`clubbing`),
   KEY `category` (`category`)
-) ENGINE=InnoDB AUTO_INCREMENT=12233256 DEFAULT CHARSET=latin1 COMMENT='To maintain order details (categories) to prepare Lay Plan';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COMMENT='To maintain order details (categories) to prepare Lay Plan';
 
 /*Table structure for table `cat_stat_log_archive` */
 
@@ -3468,7 +3468,7 @@ CREATE TABLE `bai_pro3`.`cuttable_stat_log` (
   `cuttable_wastage` varchar(11) NOT NULL COMMENT 'cuttable wastage',
   PRIMARY KEY (`tid`),
   UNIQUE KEY `order_tid` (`order_tid`,`cat_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1239 DEFAULT CHARSET=latin1 COMMENT='To track actual cuttable % on order quantities';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COMMENT='To track actual cuttable % on order quantities';
 
 /*Table structure for table `cuttable_stat_log_archive` */
 
@@ -3720,7 +3720,7 @@ CREATE TABLE `bai_pro3`.`fabric_priorities` (
   `tran_id` bigint(20) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`tran_id`),
   KEY `doc_ref` (`doc_ref`)
-) ENGINE=InnoDB AUTO_INCREMENT=1729 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `fabric_priorities_archive` */
 
@@ -3897,7 +3897,7 @@ CREATE TABLE `bai_pro3`.`ims_log` (
   KEY `ims_size` (`ims_size`,`ims_style`,`ims_schedule`,`ims_color`),
   KEY `ims_schedule` (`ims_schedule`,`ims_color`,`ims_size`),
   KEY `input_job` (`input_job_rand_no_ref`,`input_job_no_ref`)
-) ENGINE=InnoDB AUTO_INCREMENT=43306 DEFAULT CHARSET=latin1 COMMENT='Table to track IMS';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COMMENT='Table to track IMS';
 
 /*Table structure for table `ims_log_backup` */
 
@@ -4022,7 +4022,7 @@ CREATE TABLE `bai_pro3`.`ims_log_bc` (
   `rand_track` int(11) NOT NULL,
   `team_comm` varchar(250) NOT NULL COMMENT 'For updating Team Comments in Production',
   PRIMARY KEY (`tid_ref`)
-) ENGINE=MyISAM AUTO_INCREMENT=69 DEFAULT CHARSET=latin1 COMMENT='Clone of IMS_log for deleted entries.';
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COMMENT='Clone of IMS_log for deleted entries.';
 
 /*Table structure for table `ims_log_copy` */
 
@@ -4286,7 +4286,7 @@ CREATE TABLE `bai_pro3`.`inputjob_delete_log` (
   `reason` varchar(765) DEFAULT NULL,
   `schedule` varchar(75) DEFAULT NULL,
   PRIMARY KEY (`tid`)
-) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `job_shipment_plan_man_up` */
 
@@ -4338,7 +4338,7 @@ CREATE TABLE `bai_pro3`.`jobs_movement_track` (
   `username` varchar(255) DEFAULT NULL,
   `log_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=793 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `jobsheet_users` */
 
@@ -4410,7 +4410,7 @@ CREATE TABLE `bai_pro3`.`line_reason` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `reason_name` varchar(500) DEFAULT NULL COMMENT 'Reason',
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `locations` */
 
@@ -4505,7 +4505,7 @@ CREATE TABLE `bai_pro3`.`maker_stat_log` (
   PRIMARY KEY (`tid`),
   UNIQUE KEY `unique_key` (`cat_ref`,`cuttable_ref`,`allocate_ref`,`order_tid`),
   KEY `allocate_ref` (`allocate_ref`)
-) ENGINE=InnoDB AUTO_INCREMENT=3339 DEFAULT CHARSET=latin1 COMMENT='To track marker details';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COMMENT='To track marker details';
 
 /*Table structure for table `maker_stat_log_archive` */
 
@@ -5152,7 +5152,7 @@ CREATE TABLE `bai_pro3`.`pac_stat_log_input_job` (
   PRIMARY KEY (`tid`),
   KEY `doc_no` (`doc_no`),
   KEY `inputjob_no` (`input_job_no`,`input_job_no_random`)
-) ENGINE=MyISAM AUTO_INCREMENT=77435 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `pac_stat_log_new` */
 
@@ -5516,7 +5516,7 @@ CREATE TABLE `bai_pro3`.`plan_dashboard` (
   UNIQUE KEY `track_id` (`track_id`),
   KEY `module` (`module`),
   KEY `doc_no` (`doc_no`)
-) ENGINE=MyISAM AUTO_INCREMENT=3193 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `plan_dashboard_change_log` */
 
@@ -5565,7 +5565,7 @@ CREATE TABLE `bai_pro3`.`plan_dashboard_input` (
   UNIQUE KEY `unique_key` (`input_job_no_random_ref`),
   KEY `track_id` (`track_id`),
   KEY `input_module` (`input_module`,`input_priority`)
-) ENGINE=InnoDB AUTO_INCREMENT=59191 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `plan_dashboard_input1` */
 
@@ -5619,7 +5619,7 @@ CREATE TABLE `bai_pro3`.`plan_dashboard_input_backup` (
   `input_trims_request_time` datetime DEFAULT NULL COMMENT 'Request Time ',
   KEY `track_id` (`track_id`),
   KEY `input_module` (`input_module`,`input_priority`)
-) ENGINE=MyISAM AUTO_INCREMENT=58444 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `plan_dashboard_input_copy` */
 
@@ -5693,7 +5693,7 @@ CREATE TABLE `bai_pro3`.`plan_modules` (
   `table_tid` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`table_tid`),
   KEY `NewIndex1` (`module_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `plandoc_stat_log` */
 
@@ -5852,7 +5852,7 @@ CREATE TABLE `bai_pro3`.`plandoc_stat_log` (
   KEY `act_cut_status` (`act_cut_status`,`act_cut_issue_status`),
   KEY `doc_no` (`cat_ref`,`order_tid`,`doc_no`),
   KEY `doc_no_ref` (`doc_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=3800 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `plandoc_stat_log_archive` */
 
@@ -6323,7 +6323,7 @@ CREATE TABLE `bai_pro3`.`printed_job_sheet` (
   `printed_time` datetime DEFAULT NULL,
   PRIMARY KEY (`pid`),
   KEY `doc_no` (`doc_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=664 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `pro_stat_log` */
 
@@ -6878,7 +6878,7 @@ CREATE TABLE `bai_pro3`.`schedule_oprations_master` (
   PRIMARY KEY (`tid`),
   UNIQUE KEY `unique_key` (`MONumber`,`OperationNumber`),
   KEY `style_size` (`Style`,`ScheduleNumber`,`Description`,`SizeId`)
-) ENGINE=InnoDB AUTO_INCREMENT=47081 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `schedule_oprations_master_backup` */
 
@@ -6925,7 +6925,7 @@ CREATE TABLE `bai_pro3`.`sections_db` (
   `ie_res_b` varchar(25) NOT NULL,
   PRIMARY KEY (`sec_id`),
   KEY `sec_mods` (`sec_mods`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `ship_stat_log` */
 
@@ -7039,7 +7039,7 @@ CREATE TABLE `bai_pro3`.`shipment_plan` (
   KEY `style_no_2` (`style_no`),
   KEY `schedule_no_2` (`schedule_no`),
   KEY `color_2` (`color`)
-) ENGINE=InnoDB AUTO_INCREMENT=16384 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `short_names_for_fabrication` */
 
@@ -7186,7 +7186,7 @@ CREATE TABLE `bai_pro3`.`tbl_category` (
   `cat_selection` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_key` (`cat_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_cif` */
 
@@ -7252,7 +7252,7 @@ CREATE TABLE `bai_pro3`.`tbl_cutting_table` (
   `status` enum('active','inactive') DEFAULT 'active',
   PRIMARY KEY (`tbl_id`),
   UNIQUE KEY `unique_key` (`tbl_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_dispatch` */
 
@@ -7289,7 +7289,7 @@ CREATE TABLE `bai_pro3`.`tbl_fabric_request_time` (
   `date_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `modified_by` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_fabric_request_time_log` */
 
@@ -7301,7 +7301,7 @@ CREATE TABLE `bai_pro3`.`tbl_fabric_request_time_log` (
   `date_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `modified_by` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_fca` */
 
@@ -7377,7 +7377,7 @@ CREATE TABLE `bai_pro3`.`tbl_leader_name` (
   `emp_id` varchar(30) NOT NULL,
   `emp_name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_plant_timings` */
 
@@ -7391,7 +7391,7 @@ CREATE TABLE `bai_pro3`.`tbl_plant_timings` (
   `start_time` time DEFAULT NULL,
   `end_time` time DEFAULT NULL,
   PRIMARY KEY (`time_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_product_master` */
 
@@ -7565,7 +7565,7 @@ CREATE TABLE `bai_pro3`.`temp_line_input_log` (
   `date_n_time` datetime DEFAULT NULL,
   `page_name` varchar(150) DEFAULT NULL,
   PRIMARY KEY (`log_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1876 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `temp_line_input_log_archive` */
 

@@ -74,7 +74,7 @@ CREATE TABLE `bai_pro3`.`tbl_pack_size_ref` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 
-ALTER TABLE pac_stat_log
+ALTER TABLE bai_pro3.pac_stat_log
  ADD COLUMN size_tit VARCHAR(255) NULL COMMENT 'actual size' AFTER color,
  ADD COLUMN pac_stat_id INT(11) NULL COMMENT 'id from pac_stat table' AFTER size_tit;
  

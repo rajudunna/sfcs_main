@@ -47,7 +47,7 @@ CREATE TABLE `bai_pack`.`upload` (
   `type5` varchar(450) DEFAULT NULL COMMENT 'New Image Type',
   `size5` double DEFAULT NULL COMMENT 'New Image Double',
   UNIQUE KEY `tid` (`tid`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `upload_archive` */
 

@@ -294,7 +294,7 @@ CREATE TABLE `bai_pro4`.`shipment_plan` (
   KEY `NewIndex3` (`style`,`schedule_no`,`color`),
   KEY `NewIndex4` (`ssc_code`,`ship_tid`),
   KEY `NewIndex5` (`schedule_no`)
-) ENGINE=MyISAM AUTO_INCREMENT=11601 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `shipment_plan_archive` */
 
@@ -573,7 +573,7 @@ CREATE TABLE `bai_pro4`.`week_delivery_plan` (
   KEY `shipment_plan_id` (`shipment_plan_id`,`fastreact_plan_id`,`tid`,`ref_id`),
   KEY `new` (`shipment_plan_id`,`fastreact_plan_id`,`rev_exfactory`),
   KEY `NewIndex1` (`shipment_plan_id`,`fastreact_plan_id`,`size_code`)
-) ENGINE=MyISAM AUTO_INCREMENT=11601 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `week_delivery_plan_archive` */
 

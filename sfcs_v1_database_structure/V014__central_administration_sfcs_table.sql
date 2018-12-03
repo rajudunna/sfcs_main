@@ -27,7 +27,7 @@ CREATE TABLE `central_administration_sfcs`.`employees` (
   `department` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `hire_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `login_info` */
 
@@ -40,7 +40,7 @@ CREATE TABLE `central_administration_sfcs`.`login_info` (
   `password` varchar(250) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `account_type` varchar(25) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'User',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `mate_columns` */
 
@@ -55,7 +55,7 @@ CREATE TABLE `central_administration_sfcs`.`mate_columns` (
   `order_num` int(11) unsigned NOT NULL,
   `date_updated` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `rbac_permission` */
 
@@ -67,7 +67,7 @@ CREATE TABLE `central_administration_sfcs`.`rbac_permission` (
   `permission_name` varchar(240) DEFAULT NULL,
   `status` enum('active','inactive') DEFAULT NULL,
   PRIMARY KEY (`permission_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `rbac_role_menu` */
 
@@ -79,7 +79,7 @@ CREATE TABLE `central_administration_sfcs`.`rbac_role_menu` (
   `menu_description` varchar(240) DEFAULT NULL,
   `roll_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`role_menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=557 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `rbac_role_menu_copy` */
 
@@ -91,7 +91,7 @@ CREATE TABLE `central_administration_sfcs`.`rbac_role_menu_copy` (
   `menu_description` varchar(240) DEFAULT NULL,
   `roll_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`role_menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=438 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `rbac_role_menu_per` */
 
@@ -102,7 +102,7 @@ CREATE TABLE `central_administration_sfcs`.`rbac_role_menu_per` (
   `role_menu_id` int(11) DEFAULT NULL,
   `permission_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`role_menu_per_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5457 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `rbac_role_menu_per_copy` */
 
@@ -113,7 +113,7 @@ CREATE TABLE `central_administration_sfcs`.`rbac_role_menu_per_copy` (
   `role_menu_id` int(11) DEFAULT NULL,
   `permission_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`role_menu_per_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5000 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `rbac_roles` */
 
@@ -123,7 +123,7 @@ CREATE TABLE `central_administration_sfcs`.`rbac_roles` (
   `role_id` int(11) NOT NULL AUTO_INCREMENT,
   `role_name` varchar(240) DEFAULT NULL,
   PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `rbac_users` */
 
@@ -134,7 +134,7 @@ CREATE TABLE `central_administration_sfcs`.`rbac_users` (
   `role_id` int(11) DEFAULT NULL,
   `user_name` varchar(80) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_application_list` */
 
@@ -152,7 +152,7 @@ CREATE TABLE `central_administration_sfcs`.`tbl_application_list` (
   `app_last_revision` varchar(45) NOT NULL,
   `app_remarks` varchar(45) NOT NULL,
   PRIMARY KEY (`app_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_function_list` */
 
@@ -165,7 +165,7 @@ CREATE TABLE `central_administration_sfcs`.`tbl_function_list` (
   `fn_status` varchar(4) NOT NULL COMMENT 'active - 0 ; inactive - 1',
   `fn_remarks` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`fn_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=81 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_group_list` */
 
@@ -176,7 +176,7 @@ CREATE TABLE `central_administration_sfcs`.`tbl_group_list` (
   `group_status` varchar(4) NOT NULL,
   `group_purpose` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`group_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_menu_list` */
 
@@ -196,7 +196,7 @@ CREATE TABLE `central_administration_sfcs`.`tbl_menu_list` (
   `link_tool_tip` varchar(45) NOT NULL COMMENT 'to show the screens in a sequence',
   `link_cmd` varchar(45) NOT NULL,
   PRIMARY KEY (`menu_pid`)
-) ENGINE=MyISAM AUTO_INCREMENT=1579 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_menu_list_copy` */
 
@@ -216,7 +216,7 @@ CREATE TABLE `central_administration_sfcs`.`tbl_menu_list_copy` (
   `link_tool_tip` varchar(45) NOT NULL COMMENT 'to show the screens in a sequence',
   `link_cmd` varchar(45) NOT NULL,
   PRIMARY KEY (`menu_pid`)
-) ENGINE=MyISAM AUTO_INCREMENT=1566 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_menu_matrix` */
 
@@ -230,7 +230,7 @@ CREATE TABLE `central_administration_sfcs`.`tbl_menu_matrix` (
   `matrix_purpose` varchar(100) NOT NULL,
   `matrix_remarks` varchar(100) NOT NULL,
   PRIMARY KEY (`matrix_pid`)
-) ENGINE=MyISAM AUTO_INCREMENT=1385 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_role_list` */
 
@@ -268,7 +268,7 @@ CREATE TABLE `central_administration_sfcs`.`tbl_user_acl_list` (
   `acl_status` varchar(45) NOT NULL DEFAULT '1' COMMENT 'active - 1 ; inactive - 0',
   PRIMARY KEY (`acl_id`),
   UNIQUE KEY `uk_matrix_id_user_id` (`fk_matrix_pid`,`fk_user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=88395 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_user_acl_list_role` */
 
@@ -292,7 +292,7 @@ CREATE TABLE `central_administration_sfcs`.`tbl_user_list` (
   `user_status` varchar(5) NOT NULL COMMENT 'active - 0 ; inactive - 1',
   `user_location` varchar(10) NOT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=933 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_view_view_menu` */
 
@@ -355,7 +355,7 @@ CREATE TABLE `central_administration_sfcs`.`user_list` (
   `status` int(5) NOT NULL,
   `location` int(5) NOT NULL,
   PRIMARY KEY (`uid`)
-) ENGINE=MyISAM AUTO_INCREMENT=629 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

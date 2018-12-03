@@ -91,7 +91,7 @@ CREATE TABLE `brandix_bts`.`bundle_creation_data` (
   `mapped_color` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Bundle` (`bundle_number`,`operation_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=148407 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `bundle_creation_data_temp` */
 
@@ -136,7 +136,7 @@ CREATE TABLE `brandix_bts`.`bundle_creation_data_temp` (
   KEY `input_job` (`id`,`input_job_no`,`input_job_no_random_ref`),
   KEY `style_schedule` (`style`,`schedule`,`color`,`size_id`,`size_title`),
   KEY `bundle` (`bundle_number`,`input_job_no_random_ref`,`input_job_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=142629 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `bundle_transactions` */
 
@@ -258,7 +258,7 @@ CREATE TABLE `brandix_bts`.`input_transfer` (
   `transfer_module` int(11) DEFAULT NULL,
   `bundles` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `module_bundle_track` */
 
@@ -273,7 +273,7 @@ CREATE TABLE `brandix_bts`.`module_bundle_track` (
   `job_no` int(20) DEFAULT NULL,
   `ref_no` int(10) DEFAULT NULL,
   PRIMARY KEY (`tran_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1320 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `re_print_table` */
 
@@ -326,7 +326,7 @@ CREATE TABLE `brandix_bts`.`tbl_carton_ref` (
   `exces_from` int(5) DEFAULT NULL COMMENT '1. first , 2. Last',
   `merge_status` int(5) DEFAULT NULL COMMENT '1. Mix Cut Jobs , 2. No mix cut jobs',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=551 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_carton_ref_archive` */
 
@@ -360,7 +360,7 @@ CREATE TABLE `brandix_bts`.`tbl_carton_size_ref` (
   PRIMARY KEY (`id`),
   KEY `parent_id` (`parent_id`),
   KEY `color_qnty` (`color`,`size_title`,`quantity`)
-) ENGINE=InnoDB AUTO_INCREMENT=4297 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_carton_size_ref_archive` */
 
@@ -399,7 +399,7 @@ CREATE TABLE `brandix_bts`.`tbl_cut_master` (
   `col_code` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `doc_num` (`doc_num`)
-) ENGINE=InnoDB AUTO_INCREMENT=3660 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_cut_master_archive` */
 
@@ -438,7 +438,7 @@ CREATE TABLE `brandix_bts`.`tbl_cut_size_master` (
   `color` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `parent_id` (`parent_id`,`ref_size_name`,`quantity`,`color`)
-) ENGINE=InnoDB AUTO_INCREMENT=5561 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_cut_size_master_archive` */
 
@@ -504,7 +504,7 @@ CREATE TABLE `brandix_bts`.`tbl_ims_ops` (
   `operation_code` varchar(255) DEFAULT NULL,
   `appilication` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_min_ord_ref` */
 
@@ -567,7 +567,7 @@ CREATE TABLE `brandix_bts`.`tbl_miniorder_data` (
   KEY `scanned_qty` (`mini_order_num`,`color`),
   KEY `mini_order_ref` (`mini_order_ref`),
   KEY `doc_qnty` (`cut_num`,`quantity`,`docket_number`,`size_tit`)
-) ENGINE=MyISAM AUTO_INCREMENT=6619 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_miniorder_data_archive` */
 
@@ -661,7 +661,7 @@ CREATE TABLE `brandix_bts`.`tbl_orders_master` (
   `log` varchar(55) DEFAULT NULL COMMENT 'log details',
   PRIMARY KEY (`id`),
   UNIQUE KEY `Unique identification` (`ref_product_style`,`product_schedule`) COMMENT 'To do not allow duplicate'
-) ENGINE=InnoDB AUTO_INCREMENT=495 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_orders_master_archive` */
 
@@ -691,7 +691,7 @@ CREATE TABLE `brandix_bts`.`tbl_orders_ops_ref` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_op_name` (`operation_name`),
   UNIQUE KEY `unique_op_code` (`operation_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_orders_size_ref` */
 
@@ -702,7 +702,7 @@ CREATE TABLE `brandix_bts`.`tbl_orders_size_ref` (
   `size_name` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_key` (`size_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_orders_sizes_master` */
 
@@ -718,7 +718,7 @@ CREATE TABLE `brandix_bts`.`tbl_orders_sizes_master` (
   `order_col_des` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `parent_id` (`parent_id`,`ref_size_name`,`order_col_des`)
-) ENGINE=InnoDB AUTO_INCREMENT=13607 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_orders_sizes_master_archive` */
 
@@ -744,7 +744,7 @@ CREATE TABLE `brandix_bts`.`tbl_orders_style_ref` (
   `product_style` varchar(70) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique` (`product_style`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_orders_style_ref_archive` */
 
@@ -809,7 +809,7 @@ CREATE TABLE `brandix_bts`.`tbl_style_ops_master` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique` (`operation_code`,`style`,`color`),
   KEY `style_color` (`style`,`color`)
-) ENGINE=InnoDB AUTO_INCREMENT=1468 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_suppliers_master` */
 
@@ -847,7 +847,7 @@ CREATE TABLE `brandix_bts`.`users` (
   `exp_date` varchar(15) DEFAULT NULL,
   `exp_time` varchar(5) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `view_set_1_snap` */
 

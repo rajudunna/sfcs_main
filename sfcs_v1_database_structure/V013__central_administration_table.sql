@@ -27,7 +27,7 @@ CREATE TABLE `central_administration`.`employees` (
   `department` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `hire_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `login_info` */
 
@@ -40,7 +40,7 @@ CREATE TABLE `central_administration`.`login_info` (
   `password` varchar(250) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `account_type` varchar(25) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'User',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `mate_columns` */
 
@@ -55,7 +55,7 @@ CREATE TABLE `central_administration`.`mate_columns` (
   `order_num` int(11) unsigned NOT NULL,
   `date_updated` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_application_list` */
 
@@ -73,7 +73,7 @@ CREATE TABLE `central_administration`.`tbl_application_list` (
   `app_last_revision` varchar(45) NOT NULL,
   `app_remarks` varchar(45) NOT NULL,
   PRIMARY KEY (`app_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_function_list` */
 
@@ -86,7 +86,7 @@ CREATE TABLE `central_administration`.`tbl_function_list` (
   `fn_status` varchar(4) NOT NULL COMMENT 'active - 0 ; inactive - 1',
   `fn_remarks` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`fn_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_group_list` */
 
@@ -97,7 +97,7 @@ CREATE TABLE `central_administration`.`tbl_group_list` (
   `group_status` varchar(4) NOT NULL,
   `group_purpose` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`group_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_menu_list` */
 
@@ -117,7 +117,7 @@ CREATE TABLE `central_administration`.`tbl_menu_list` (
   `link_tool_tip` varchar(45) NOT NULL,
   `link_cmd` varchar(45) NOT NULL,
   PRIMARY KEY (`menu_pid`)
-) ENGINE=MyISAM AUTO_INCREMENT=849 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_menu_matrix` */
 
@@ -131,7 +131,7 @@ CREATE TABLE `central_administration`.`tbl_menu_matrix` (
   `matrix_purpose` varchar(100) NOT NULL,
   `matrix_remarks` varchar(100) NOT NULL,
   PRIMARY KEY (`matrix_pid`)
-) ENGINE=MyISAM AUTO_INCREMENT=974 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_role_list` */
 
@@ -169,7 +169,7 @@ CREATE TABLE `central_administration`.`tbl_user_acl_list` (
   `fk_user_id` varchar(45) NOT NULL,
   `acl_status` varchar(45) NOT NULL COMMENT 'active - 0 ; inactive - 1',
   PRIMARY KEY (`acl_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10765 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_user_acl_list_role` */
 
@@ -194,7 +194,7 @@ CREATE TABLE `central_administration`.`tbl_user_list` (
   `user_status` varchar(4) NOT NULL COMMENT 'active - 0 ; inactive - 1',
   `user_location` varchar(10) NOT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=508 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_view_view_menu` */
 

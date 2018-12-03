@@ -26,7 +26,7 @@ CREATE TABLE `bai_ict`.`bai_ict_services` (
   `service_status` tinyint(1) NOT NULL,
   `status` tinyint(1) NOT NULL,
   PRIMARY KEY (`service_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=137 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `bai_login_db` */
 
@@ -46,7 +46,7 @@ CREATE TABLE `bai_ict`.`bai_login_db` (
   UNIQUE KEY `slno` (`slno`),
   KEY `user_login` (`user_login`),
   KEY `user_login_2` (`user_login`,`status`)
-) ENGINE=MyISAM AUTO_INCREMENT=268 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `cctv_approval` */
 

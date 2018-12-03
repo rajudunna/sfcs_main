@@ -311,7 +311,7 @@ CREATE TABLE `bai_rm_pj1`.`inspection_db` (
   `consumption` float NOT NULL,
   PRIMARY KEY (`batch_ref`),
   UNIQUE KEY `track_id` (`track_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `inspection_supplier_db` */
 
@@ -342,7 +342,7 @@ CREATE TABLE `bai_rm_pj1`.`location_db` (
   `category` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`sno`),
   KEY `location_id` (`location_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `location_trnsf` */
 
@@ -426,7 +426,7 @@ CREATE TABLE `bai_rm_pj1`.`reject_reasons` (
   `reject_desc` varchar(100) DEFAULT NULL,
   UNIQUE KEY `tid` (`tid`),
   UNIQUE KEY `reject_code` (`reject_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=169 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `sheet1$` */
 
@@ -545,7 +545,7 @@ CREATE TABLE `bai_rm_pj1`.`store_in` (
   KEY `lot_no` (`lot_no`),
   KEY `ref1` (`ref1`),
   KEY `NewIndex1` (`lot_no`,`qty_rec`,`qty_issued`,`qty_ret`)
-) ENGINE=InnoDB AUTO_INCREMENT=307 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `store_in_backup` */
 
@@ -614,7 +614,7 @@ CREATE TABLE `bai_rm_pj1`.`store_in_deleted` (
   PRIMARY KEY (`tid`),
   KEY `lot_no` (`lot_no`),
   KEY `ref1` (`ref1`)
-) ENGINE=InnoDB AUTO_INCREMENT=297 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `store_in_insp_audit_log_temp` */
 

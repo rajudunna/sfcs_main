@@ -35,7 +35,7 @@ CREATE TABLE `bai_pro2`.`buyer_codes` (
   `status` int(2) DEFAULT 1 COMMENT '0-inactive, 1- active',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_key` (`buyer_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `db_update_log` */
 
@@ -71,7 +71,7 @@ CREATE TABLE `bai_pro2`.`downtime_reason` (
   `rdept` varchar(65) DEFAULT NULL,
   `reason` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `fca_status` */
 
@@ -101,7 +101,7 @@ CREATE TABLE `bai_pro2`.`fr_data` (
   PRIMARY KEY (`fr_id`),
   KEY `fr_date` (`frdate`),
   KEY `style_schedule` (`style`,`schedule`)
-) ENGINE=InnoDB AUTO_INCREMENT=4260 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `fr_data_copy` */
 
@@ -134,7 +134,7 @@ CREATE TABLE `bai_pro2`.`hourly_downtime` (
   `dhour` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `date` (`date`)
-) ENGINE=InnoDB AUTO_INCREMENT=3002 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `hout` */
 
@@ -152,7 +152,7 @@ CREATE TABLE `bai_pro2`.`hout` (
   `rep_end_time` time DEFAULT NULL,
   `time_parent_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4616 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `members` */
 
@@ -282,7 +282,7 @@ CREATE TABLE `bai_pro2`.`shipment_plan` (
   KEY `color` (`color`),
   KEY `week_code` (`week_code`),
   KEY `ssc_code` (`ssc_code`)
-) ENGINE=MyISAM AUTO_INCREMENT=401766 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `shipment_plan_summ` */
 
@@ -463,7 +463,7 @@ CREATE TABLE `bai_pro2`.`tbl_mini_plant_master` (
   `plant_name` varchar(255) DEFAULT NULL,
   `plant_modules` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`plant_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `trim_cards_db` */
 
