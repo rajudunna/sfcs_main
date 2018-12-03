@@ -52,10 +52,11 @@ if(mysqli_num_rows($result) > 0) {
 	$check=1;
 }
 
+
 if(strlen($schedule) > 8){
 	$scheudles_query = "SELECT distinct(order_del_no) as schedule from $bai_pro3.bai_orders_db where 
 					    order_joins='J$schedule'";
-	$schedules_result = mysqli_query($link,$scheudles_query);
+	$schedules_result = mysqli_query($link,$schedule);
 	while($row = mysqli_fetch_array($schedules_result)){
 		$val_schedules[] = $row['schedule'];
 	}		
