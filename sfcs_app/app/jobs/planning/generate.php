@@ -66,7 +66,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 else
 {
-	$sql="delete from $bai_pro.pro_mod where mod_date>=\"".date("Y-m-d")."\"";
+	$sql="delete from $bai_pro.pro_mod where mod_date>=\"".$date."\"";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	$sql="select * from $bai_pro.pro_mod where mod_date=(select max(mod_date) from bai_pro.pro_mod)";
@@ -156,7 +156,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 else
 {
-	$sql="delete from $bai_pro.pro_style where date>=\"".date("Y-m-d")."\"";
+	$sql="delete from $bai_pro.pro_style where date>=\"".$date."\"";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	$sql="select * from $bai_pro.pro_style where date=(select max(date) from bai_pro.pro_style)";
@@ -207,7 +207,6 @@ else
 if(mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "select * from $bai_pro.pro_plan where date=\"$date\""))==0)
 {
 $sql="select * from $bai_pro.tbl_freez_plan_log where date='".$date."'";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -225,19 +224,38 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	$plan_eff_ex=0;
 
-
+	$act_hrs=0;
 	$ref_code=$date."-".$mod_no."-".$shift;
+	$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$shift."'";
+	// echo $sql_hr."<br>";
+	$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	if(mysqli_num_rows($sql_result_hr) >0)
+	{
+		while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+		{ 
+			$start_time=$sql_row_hr['start_time'];
+			$end_time=$sql_row_hr['end_time'];
+			$diff_time=$end_time-$start_time;
+			$act_hrs=$diff_time-0.5;
+		}
+	}else{
+		$act_hrs=7.5;
+	}
+
 
 	$sql="insert ignore into $bai_pro.pro_plan (plan_tag) values (\"$ref_code\")";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql="update $bai_pro.pro_plan set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift=\"$shift\", plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=7.5, couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag=\"$ref_code\"";
+	$sql="update $bai_pro.pro_plan set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift=\"$shift\", plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=\"$act_hrs\", couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag=\"$ref_code\"";
+	echo $sql."<br>";
 	mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	//NEW2011
 	$sql="insert ignore into $bai_pro.pro_plan_today (plan_tag) values (\"$ref_code\")";
 	mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql="update $bai_pro.pro_plan_today set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift=\"$shift\", plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=7.5, couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag=\"$ref_code\"";
+	$sql="update $bai_pro.pro_plan_today set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift=\"$shift\", plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=\"$act_hrs\", couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag=\"$ref_code\"";
+	echo $sql."<br>";
+
 	mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 	//NEW2011
 	
@@ -246,7 +264,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 else
 {
-	$sql="delete from $bai_pro.pro_plan where date>=\"".date("Y-m-d")."\"";
+	$sql="delete from $bai_pro.pro_plan where date>=\"".$date."\"";
 	$res9=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($res9)
 	{
@@ -257,6 +275,7 @@ else
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$mod_no=$sql_row['mod_no'];
+		$dat=$sql_row['date'];
 		$shift=$sql_row['shift'];
 		$plan_eff=$sql_row['plan_eff'];
 		$plan_pro=$sql_row['plan_pro'];
@@ -270,7 +289,21 @@ else
 		
 		$plan_eff_ex=$sql_row['plan_eff_ex'];
 	
-	
+		$sql_hr="select * from $bai_pro.pro_atten_hours where date='$dat' and shift='".$shift."'";
+		// echo $sql_hr."<br>";
+		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		if(mysqli_num_rows($sql_result_hr) >0)
+		{
+			while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+			{ 
+				$start_time=$sql_row_hr['start_time'];
+				$end_time=$sql_row_hr['end_time'];
+				$diff_time=$end_time-$start_time;
+				$act_hrs=$diff_time-0.5;
+			}
+		}else{
+			$act_hrs=7.5;
+		}
 		$ref_code=$date."-".$mod_no."-".$shift;
 	
 		$sql="insert ignore into $bai_pro.pro_plan (plan_tag) values (\"$ref_code\")";
@@ -279,7 +312,9 @@ else
 		{
 			print("inserted into pro_plan table successfully")."\n";
 		}
-		$sql="update $bai_pro.pro_plan set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift=\"$shift\", plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=7.5, couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag=\"$ref_code\"";
+		$sql="update $bai_pro.pro_plan set mod_no=$mod_no, date=\"$date\",remarks=\"$remarks\", shift=\"$shift\", plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=\"$act_hrs\" couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag=\"$ref_code\"";
+		echo $sql."<br>";
+
 		$res7=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if($res7)
 		{
@@ -292,7 +327,9 @@ else
 		{
 			print("updated pro_plan_today table successfully")."\n";
 		}
-		$sql="update $bai_pro.pro_plan_today set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift=\"$shift\", plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=7.5, couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag=\"$ref_code\"";
+		$sql="update $bai_pro.pro_plan_today set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift=\"$shift\", plan_eff=$plan_eff,plan_pro=$plan_pro, sec_no=$sec_no, act_hours=\"$act_hrs\", couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag=\"$ref_code\"";
+		echo $sql."<br>";
+
 		$res5=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if($res5)
 		{
@@ -326,13 +363,13 @@ if(mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "select * from $bai_
 	
 		
 		
-		$sql="update $bai_pro.pro_plan set mod_no=$mod_no, date=\"$date\",  shift=\"$shift\", plan_eff=$plan_eff, plan_pro=$plan_pro,  plan_clh=$plan_clh,plan_sah=$plan_sah where plan_tag=\"$ref_code\"";
+		$sql="update $bai_pro.pro_plan set mod_no=$mod_no, date=\"$date\",shift=\"$shift\", plan_eff=$plan_eff,plan_pro=$plan_pro,plan_clh=$plan_clh,plan_sah=$plan_sah where plan_tag=\"$ref_code\"";
 		$res4=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if($res4)
 		{
 			print("updated pro_plan table successfully")."\n";
 		}
-		$sql="update $bai_pro.pro_plan_today set mod_no=$mod_no, date=\"$date\",  shift=\"$shift\", plan_eff=$plan_eff, plan_pro=$plan_pro,  plan_clh=$plan_clh,plan_sah=$plan_sah where plan_tag=\"$ref_code\"";
+		$sql="update $bai_pro.pro_plan_today set mod_no=$mod_no,date=\"$date\",shift=\"$shift\", plan_eff=$plan_eff, plan_pro=$plan_pro,plan_clh=$plan_clh,plan_sah=$plan_sah where plan_tag=\"$ref_code\"";
 		$res3=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if($res3)
 		{
@@ -349,14 +386,14 @@ if(mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "select * from $bai_
 	{
  		$ref_code=$sql_row['ref_code'];
 		
-		$sql="update $bai_pro.pro_plan_today set plan_eff=0, plan_pro=0,  plan_clh=0,plan_sah=0 where plan_tag=\"$ref_code\"";
+		$sql="update $bai_pro.pro_plan_today set plan_eff=0,plan_pro=0,plan_clh=0,plan_sah=0 where plan_tag=\"$ref_code\"";
 		$res2=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if($res2)
 		{
 			print("updated pro_plan_today table successfully")."\n";
 		}
 		
-		$sql="update $bai_pro.pro_plan set plan_eff=0, plan_pro=0,  plan_clh=0,plan_sah=0 where plan_tag=\"$ref_code\"";
+		$sql="update $bai_pro.pro_plan set plan_eff=0,plan_pro=0,plan_clh=0,plan_sah=0 where plan_tag=\"$ref_code\"";
 		$res1=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if($res1)
 		{
