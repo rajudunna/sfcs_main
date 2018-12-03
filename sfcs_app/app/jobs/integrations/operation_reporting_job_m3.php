@@ -7,6 +7,7 @@ include($include_path.'\sfcs_app\common\config\rest_api_calls.php');
 set_time_limit(1000000);
 
 
+
 //details from config tool
 //$facility_id = $global_facility_code;
 $plant_code = $global_facility_code;
@@ -16,8 +17,8 @@ $port= $api_port_no;
 $current_date = date('Y-m-d h:i:s');
 
 //getting failure transactions from m3_transactions
-$transctions = "SELECT id FROM $bai_pro3.m3_transactions 
-                LEFT JOIN $brandix_bts.transactions_log ON $brandix_bts.transactions_log.transaction_id=$bai_pro3.m3_transactions.id 
+$transctions = "SELECT id FROM $brandix_bts.transactions_log tl
+                LEFT JOIN $bai_pro3.m3_transactions m3 ON m3.id = tl.transaction_id 
                 WHERE response_status='fail' GROUP BY transaction_id";
 $transaction_result = mysqli_query($link, $transctions) or exit("Error at getting transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($records=mysqli_fetch_array($transaction_result))
