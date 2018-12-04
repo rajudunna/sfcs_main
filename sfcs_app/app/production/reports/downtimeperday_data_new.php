@@ -89,8 +89,14 @@ echo "<hr><div class='table-responsive'><table class='table table-bordered'>
 	 */
 	 for($i=0;$i<sizeof($sec);$i++)
 	 {
-	 	echo "<tr>";
-		echo "<th colspan=\"26\"> Section - ".$sec[$i]."<br>  Sec Head - ".$sec_head[$i]."</th>";
+		 echo "<tr>";
+		$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=".$sec[$i];
+		$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row12=mysqli_fetch_array($result12))
+		{
+			$section_display_name=$sql_row12["section_display_name"];
+		}
+		echo "<th colspan=\"26\"> ".$section_display_name."<br>  Sec Head - ".$sec_head[$i]."</th>";
 		echo "</tr>";
 		$sql2="select distinct module from $bai_pro.grand_rep where section=\"$sec[$i]\" and shift in ($shift) and date between \"$start\" and \"$end\" order by module+0";
 		//echo $sql2;

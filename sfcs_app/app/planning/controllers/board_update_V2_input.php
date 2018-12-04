@@ -312,9 +312,15 @@ echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"blue\">Please wai
 	ob_end_flush();
 	flush();
 	usleep(1);
-
+	
+	$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section_no";
+	$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row12=mysqli_fetch_array($result12))
+	{
+		$section_display_name=$sql_row12["section_display_name"];
+	}
 echo "<table>";
-echo "<tr><th style='background-color:#29759C;' colspan=10 >Production Plan for Section - $section_no</th><th style='background-color:#29759C;' colspan=20 style='text-align:left;'>Date : ".date("Y-m-d H:i")."</th></tr>";
+echo "<tr><th style='background-color:#29759C;' colspan=10 >Production Plan for $section_display_name</th><th style='background-color:#29759C;' colspan=20 style='text-align:left;'>Date : ".date("Y-m-d H:i")."</th></tr>";
 //echo "<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th>Remarks</th><th>Priority 2</th><th>Remarks</th><th>Priority 3</th><th>Remarks</th><th>Priority 4</th><th>Remarks</th><th>Priority 5</th><th>Remarks</th><th>Priority 6</th><th>Remarks</th><th>Priority 7</th><th>Remarks</th><th>Priority 8</th><th>Remarks</th><th>Priority 9</th><th>Remarks</th><th>Priority 10</th><th>Remarks</th><th>Priority 11</th><th>Remarks</th><th>Priority 12</th><th>Remarks</th><th>Priority 13</th><th>Remarks</th><th>Priority 14</th><th>Remarks</th></tr>";
 echo "<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th></th><th>Priority 2</th><th></th><th>Priority 3</th><th></th><th>Priority 4</th><th></th><th>Priority 5</th><th></th><th>Priority 6</th><th></th><th>Priority 7</th><th></th><th>Priority 8</th><th></th><th>Priority 9</th><th></th><th>Priority 10</th><th></th><th>Priority 11</th><th></th><th>Priority 12</th><th></th><th>Priority 13</th><th></th><th>Priority 14</th><th></th></tr>";
 $newtempname="plan_doc_summ_input_".$username;

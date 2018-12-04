@@ -1320,7 +1320,13 @@ $result_sec=mysqli_query($link, $sql_sec) or die("Error=".$sql_sec."-".mysqli_er
 while($row_sec=mysqli_fetch_array($result_sec))
 {
 	$sec_array[]=$row_sec["sec_id"];
-	$sec_list[]="Section - ".$row_sec["sec_id"];
+	$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=".$row_sec["sec_id"];
+	$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row12=mysqli_fetch_array($result12))
+	{
+		$section_display_name=$sql_row12["section_display_name"];
+	}
+	$sec_list[]=$section_display_name;
 	$lable[]=$row_sec["sec_head"];
 	$pro_res_a[]=$row_sec["pro_res_a"];
 	$pro_res_b[]=$row_sec["pro_res_b"];

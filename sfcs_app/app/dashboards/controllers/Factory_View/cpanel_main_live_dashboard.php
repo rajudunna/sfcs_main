@@ -839,7 +839,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;">';
 	echo "<p>";
 		
-	//echo "<a href=\"bundle_details.php?section=$section&ops=3\" onclick=\"Popup=window.open('bundle_details.php?section=$section&ops=3"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><b>SECTION - $section</b><br><font style=\"font-size:16px;font-color:#000000;\">($section_head)</font></font></a>";
+	
 	echo "<div style=\"text-align:center;>
 	<font style=\"font-size:24px;color:#000000;\"><centre><b>IMS</b></centre></font></div>";
 	echo "<table>";
