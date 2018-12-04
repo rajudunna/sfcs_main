@@ -44,7 +44,7 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
 
                             $mssql_insert_query="insert into [MRN_V2].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status) values";
                             $values = array();
-                            $ref_no1 = array();
+                            $ref_no = array();
                             $sql_result5=mysqli_query($link, $mo_operation_quantites_query) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 while($sql_row5=mysqli_fetch_array($sql_result5))
                                 {
@@ -53,11 +53,11 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
                                     $bundle_quantity=$sql_row5['bundle_quantity']*-1;
                                     $op_code=$sql_row5['op_code'];
                                     $op_desc=$sql_row5['op_desc'];
-                                    $ref_no1=implode(',', $sql_row5['ref_no']);
+                                    $ref_no[]=$sql_row5['ref_no'];
                                     array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_no . "','" . $op_code . "','" . $bundle_quantity . "','".$employee_no."','".$remarks."','".$co_no."','".$order_del_no."','')"); 
                
                                 }
-
+                                $ref_no1=implode(",",$ref_no);
                                 $mssql_insert_query_result=odbc_exec($conn, $mssql_insert_query . implode(', ', $values));
 			                    $sql_num_check5=odbc_num_rows($mssql_insert_query_result);
                                 $sql="select * from $brandix_bts.tbl_orders_style_ref where product_style='$style'";
