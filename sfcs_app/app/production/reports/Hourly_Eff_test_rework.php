@@ -531,34 +531,6 @@ white-space:nowrap;
                             }
                             // echo $hoursa_shift."<br>";
 
-                            /* 
-                            // NEW BUFFER Table Selection 
-                            $table_name="bai_log"; 
-                            $sql="select count(bac_date) as \"row_count\" from bai_log_buf where bac_date=\"$date\""; 
-
-                            $sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error()); 
-                            while($sql_row=mysql_fetch_array($sql_result)) 
-                            { 
-                            $row_count=$sql_row['row_count']; 
-                            } 
-
-                            if($row_count>1 or $date==date("Y-m-d")) 
-                            { 
-                            $table_name="bai_log_buf"; 
-                            //$table_name="bai_log"; 
-                            } 
-
-                            if($table_name=="bai_log") 
-                            { 
-                            $sql="truncate bai_log_buf_temp"; 
-                            mysql_query($sql,$link) or exit("Sql Error".mysql_error()); 
-
-                            $sql="insert into bai_log_buf_temp select * from bai_log where bac_date=\"$date\""; 
-                            mysql_query($sql,$link) or exit("Sql Error".mysql_error()); 
-
-                            $table_name="bai_log_buf_temp"; 
-                            } 
-                            */ 
 
                             //Table namespace 
                             $pro_mod="temp_pool_db.".$username.date("YmdHis")."_"."pro_mod"; 
@@ -892,15 +864,20 @@ white-space:nowrap;
                                             $nop=$sql_row2['nop']; 
                                         } 
                                     } 
-                                    $nop_shift=0;
                                     $nop=0; 
-                                    $clha=0; 
+                                    $clha_shift=0; 
                                     $hoursa=0; 
-
-  
-                                   for($k=0;$k<sizeof($teams);$k++)
-                                   {
+                                    $nop_shift=0;
+                                    $hoursa_shift=0;
+                                    $diff_time=0;
+                                    $current_date=date("Y-m-d");
+                                    // date_default_timezone_set("Asia/Calcutta");
+                                    $current_hr=date('H');
+                                    // echo $current_hr."<br>";
+                                    for($k=0;$k<sizeof($teams);$k++)
+                                    {
                                         $shift=$teams[$k];
+                                        
                                         $sql_nop="select (present+jumper) as avail,absent from $bai_pro.pro_attendance where date=\"$date\" and module=\"$mod\" and shift=\"$shift\""; 
                                         // echo $sql_nop."<br>";
                                         $sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -914,13 +891,87 @@ white-space:nowrap;
                                         } 
                                         else 
                                         { 
-                                            $nop_shift=$nop_shift+0; 
+                                            $nop=0; 
+                                            $nop_shift=$nop_shift+$nop; 
                                         } 
-                                        
-                                   }
-                                   $clha_shift=$nop_shift*$hoursa_shift; 
-                                    // echo $clha_shift."cha<br>"; 
-                                    // echo $nop_shift."nop<br>"; 
+                                        if($current_date == $date)
+                                        {
+                                            $sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$shift."' and  $current_hr between start_time and end_time";
+                                            // echo $sql_hr."<br>";
+                                            $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                            if(mysqli_num_rows($sql_result_hr) >0)
+                                            {
+                                                while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+                                                { 
+                                                    $start_time=$sql_row_hr['start_time'];
+                                                    $end_time=$sql_row_hr['end_time'];
+                                                    $diff_time=$current_hr-$start_time;
+                                                    if($diff_time>3)
+                                                    {
+                                                        $diff_time=$diff_time-0.5;
+                                                    }
+                                                    $hoursa_shift=$hoursa_shift+$diff_time;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                $sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$shift."' and $current_hr > end_time";
+                                                // echo $sql_hr."<br>";
+                                                $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                                while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+                                                { 
+                                                    $start_time=$sql_row_hr['start_time'];
+                                                    $end_time=$sql_row_hr['end_time'];
+                                                    if($end_time > $start_time){
+                                                        $diff_time=$end_time-$start_time;
+                                                    }
+                                                    else
+                                                    {
+                                                        $start=24-$start_time;
+                                                        $diff_time=$start+$end_time;
+                                                    }
+                                                    if($diff_time>3){
+                                                        $diff_time=$diff_time-0.5;
+                                                    }
+                                                    $hoursa_shift=$hoursa_shift+$diff_time;
+                                                }
+                                            }
+                                        }else{
+                                            $work_hrs=0;
+                                            $sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift ='".$shift."'";
+                                            // echo $sql_hr."<br>";
+                                            $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                            if(mysqli_num_rows($sql_result_hr) >0)
+                                            {
+                                                while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+                                                { 
+                                                    $start_time=$sql_row_hr['start_time'];
+                                                    $end_time=$sql_row_hr['end_time'];
+                                                    if($end_time > $start_time){
+                                                        $diff_time=$end_time-$start_time;
+                                                    }
+                                                    else
+                                                    {
+                                                        $start=24-$start_time;
+                                                        $diff_time=$start+$end_time;
+                                                    }
+                                                    if($diff_time>3){
+                                                        $diff_time=$diff_time-0.5;
+                                                    }
+                                                    $hoursa_shift=$hoursa_shift+$diff_time;
+                                                }
+                                            }          
+                                        }
+                                        // echo $nop."<br>";
+                                        // echo $diff_time."ds<br>";
+
+                                        $aaa=$nop*$diff_time;
+                                        $clha_shift=$clha_shift+$aaa;
+                                    }
+                                     //     echo $hoursa_shift."hrs<br>"; 
+                                     // //    $clha_shift=$nop_shift*$hoursa_shift; 
+                                    //     echo $clha_shift."cha<br>"; 
+                                     //     echo $nop_shift."nop<br>"; 
                                   
 
                                     //NEW 
