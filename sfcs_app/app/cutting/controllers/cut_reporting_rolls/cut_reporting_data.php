@@ -2,11 +2,27 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 error_reporting(0);
 
-$doc_no = $_GET['doc_no'];
+
 $response_data = array();
 $op_code = 15;
 
-$doc_status_query  = "SELECT a_plies,p_plies,acutno,act_cut_status,order_tid,org_doc_no 
+foreach($sizes_array as $size){
+    $a_sizes_sum .= 'a_'.$size.'+';
+    $a_sizes_str .= 'a_'.$size.',';
+}
+$a_sizes_sum = rtrim($a_sizes_sum,'+');
+$a_sizes_str = rtrim($a_sizes_str,',');
+
+
+if($_GET['rejection_docket']!=''){
+    getRejectionDetails($_GET['rejection_docket']);
+    exit();
+}else{
+    $doc_no = $_GET['doc_no'];
+}
+
+
+$doc_status_query  = "SELECT a_plies,p_plies,acutno,act_cut_status,order_tid,org_doc_no,($a_sizes_sum) as ratio 
                     from $bai_pro3.plandoc_stat_log where doc_no = '$doc_no'";
 $doc_status_result = mysqli_query($link,$doc_status_query);
 if(mysqli_num_rows($doc_status_result)>0){
@@ -18,6 +34,7 @@ if(mysqli_num_rows($doc_status_result)>0){
     $fabric_status = $row['fabric_status'];
     $order_tid = $row['order_tid'];
     $org_doc_no = $row['org_doc_no'];
+    $ratio = $row['ratio'];
     if($fabric_status == 5)
         $fabric_status = 'Issued To Cutting';
 }else{
@@ -135,7 +152,7 @@ if($a_plies != $p_plies && $act_cut_status == 'DONE'){
 
 $response_data['doc_no'] = $doc_no;
 $response_data['doc_qty'] = $doc_no;
-
+$response_data['ratio']      = $ratio;
 $response_data['p_plies'] = $p_plies;
 $response_data['act_cut_status'] = $act_cut_status;
 $response_data['acut_no'] = $acutno;
@@ -150,5 +167,36 @@ $response_data['date']      = $date;
 $response_data['doc_target_type']      = $target_doc_type;
 
 echo json_encode($response_data);
+
+
+function getRejectionDetails($doc_no){
+    global $link;
+    global $bai_pro3;
+    global $sizes_array;
+    global $a_sizes_str;
+
+    $sizes_ratio = array();
+    $ratio_query = "SELECT $a_sizes_str from $bai_pro3.plandoc_stat_log where doc_no = $doc_no ";
+    $ratio_result = mysqli_query($link,$ratio_query) or exit('Problem in getting rejections');
+    while($row = mysqli_fetch_array($ratio_result)){
+        foreach($sizes_array as $size){
+            if($row["a_$size"] > 0)
+                $old_sizes_ratio[$size] = $row["a_$size"];
+        }
+    }
+
+    $get_sizes = "SELECT size_code,size_title from $bai_pro3.cps_log where doc_no = $doc_no 
+            and operation_code = 15";
+    $get_sizes_result = mysqli_query($link,$get_sizes) or exit('Problem in getting ol - new sizes map');
+    while($row = mysqli_fetch_array($get_sizes_result)){
+        $old_new_sizes[$row['size_code']] = $row['size_title'];
+    }        
+
+    $response_data['old_size_ratio'] = $old_sizes_ratio;
+    $response_data['old_new_size']  = $old_new_sizes;
+    
+    echo json_encode($response_data);
+    exit();
+}
 
 ?>
