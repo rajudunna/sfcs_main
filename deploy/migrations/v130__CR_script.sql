@@ -18,10 +18,10 @@ CREATE TABLE bai_pro.pro_attendance (
   date date NOT NULL,
   module varchar(10) NOT NULL,
   shift varchar(13) NOT NULL,
-  present int(10) unsigned NOT NULL,s
+  present int(10) unsigned NOT NULL,
   absent int(10) unsigned NOT NULL,
   jumper int(10) unsigned NOT NULL
-)
+);
 
 /* #1136 USE bai_pro3;*/
 

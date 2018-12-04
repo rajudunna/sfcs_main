@@ -13,7 +13,7 @@ MySQL - 10.3.8-MariaDB : Database - bai_pro2
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`bai_pro2` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `bai_pro2`;
+/*USE `bai_pro2`;*/
 
 /*!50106 set global event_scheduler = 1*/;
 
@@ -34,7 +34,7 @@ DELIMITER ;
 
 /*Table structure for table `hourly_downtime_reason` */
 
-DROP TABLE IF EXISTS `hourly_downtime_reason`;
+DROP TABLE IF EXISTS `bai_pro2`.`hourly_downtime_reason`;
 
 /*!50001 DROP VIEW IF EXISTS `hourly_downtime_reason` */;
 /*!50001 DROP TABLE IF EXISTS `hourly_downtime_reason` */;
@@ -49,7 +49,7 @@ DROP TABLE IF EXISTS `hourly_downtime_reason`;
 
 /*Table structure for table `style_status_summ_live` */
 
-DROP TABLE IF EXISTS `style_status_summ_live`;
+DROP TABLE IF EXISTS `bai_pro2`.`style_status_summ_live`;
 
 /*!50001 DROP VIEW IF EXISTS `style_status_summ_live` */;
 /*!50001 DROP TABLE IF EXISTS `style_status_summ_live` */;
