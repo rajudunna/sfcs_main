@@ -5,7 +5,7 @@ Ticket #815663
 
 //Change Request#145/kirang/2014-08-13/Round up the values up to 2 decimals in efficiency, SAH and Grand efficiency report//service request #466334/ 2014-08-18 / kirang / Actual Eff % taken from Actual Clock hours.  
  -->
-<?php
+ <?php
 //echo "DB name : ".$bai_pro."</br>";
 $sql="select * from $bai_pro.unit_db where unit_id='Factory'";
 mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -384,16 +384,16 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 	$table_temp="<tr height=22 style='mso-height-source:userset;height:16.5pt'>";
 	echo $table_temp;
 	$table.=$table_temp;
-	$table_temp="<td colspan=3 rowspan=2 height=44 class=xl15326424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;   border-bottom:1.0pt solid black;height:33.0pt'>$buyer_sel</td>";
+	$table_temp="<td colspan=5 rowspan=2 height=44 class=xl15326424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;   border-bottom:1.0pt solid black;height:33.0pt'>$buyer_sel</td>";
 	echo $table_temp;
 	$table.=$table_temp;
-	$table_temp="<td rowspan=2 height=44 class=xl15326424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;   border-bottom:1.0pt solid black;height:33.0pt'></td>";
-	echo $table_temp;
-	$table.=$table_temp;
+	// $table_temp="<td rowspan=2 height=44 class=xl15326424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;   border-bottom:1.0pt solid black;height:33.0pt'></td>";
+	// echo $table_temp;
+	// $table.=$table_temp;
 
-	$table_temp="<td height=44 class=xl15326424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;   border-bottom:1.0pt solid black;height:16.5pt'></td>";
-	echo $table_temp;
-	$table.=$table_temp;
+	// $table_temp="<td height=44 class=xl15326424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;   border-bottom:1.0pt solid black;height:16.5pt'></td>";
+	// echo $table_temp;
+	// $table.=$table_temp;
 	//if($i2 == 6)
 	//{
 	$x_sec_divs=$x_sec_divs+1;
@@ -444,13 +444,24 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 	echo $table_temp;
 	$table.=$table_temp;
 	}*/
-
-	$table_temp="<td class=xl16726424 style='background-color:#5A5A5A'>".round($rew_A/$totalmodules,0)."%</td>";
-	echo $table_temp;
-	$table.=$table_temp;
-	$table_temp="<td class=xl16726424 style='background-color:#5A5A5A'>".round($rew_B/$totalmodules,0)."%</td>";
-	echo $table_temp;
-	$table.=$table_temp;
+	if($totalmodules > 0)
+	{
+		$table_temp="<td class=xl16726424 style='background-color:#5A5A5A'>".round($rew_A/$totalmodules,0)."%</td>";
+		echo $table_temp;
+		$table.=$table_temp;
+		$table_temp="<td class=xl16726424 style='background-color:#5A5A5A'>".round($rew_B/$totalmodules,0)."%</td>";
+		echo $table_temp;
+		$table.=$table_temp;
+	}
+	else
+	{
+		$table_temp="<td class=xl16726424 style='background-color:#5A5A5A'>0%</td>";
+		echo $table_temp;
+		$table.=$table_temp;
+		$table_temp="<td class=xl16726424 style='background-color:#5A5A5A'>0%</td>";
+		echo $table_temp;
+		$table.=$table_temp;
+	}
 	$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".$auf_A."</td>";
 	echo $table_temp;
 	$table.=$table_temp;
@@ -595,9 +606,9 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 	$table_temp="<tr height=22 style='mso-height-source:userset;height:16.5pt'>";
 	echo $table_temp;
 	$table.=$table_temp;
-	$table_temp="<td height=44 class=xl15326424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;   border-bottom:1.0pt solid black;height:16.5pt'></td>";
-	echo $table_temp;
-	$table.=$table_temp;
+	// $table_temp="<td height=44 class=xl15326424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;   border-bottom:1.0pt solid black;height:16.5pt'></td>";
+	// echo $table_temp;
+	// $table.=$table_temp;
 
 	$table_temp="<td height=22 class=xl9726424 style='background-color:#5A5A5A' style='height:16.5pt'>".round($grand_total_nop_x,0)."</td>";
 	echo $table_temp;
@@ -625,10 +636,19 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 	$table.=$table_temp;
 	}
 	*/
-
+	if($totalmodules > 0)
+	{
 	$table_temp="<td colspan=2 class=xl16726424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;  border-left:none'>".round((($rew_A/$totalmodules+$rew_B/$totalmodules)/2),0)."%</td>";
 	echo $table_temp;
 	$table.=$table_temp;
+	}
+	else
+	{
+		$table_temp="<td colspan=2 class=xl16726424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;  border-left:none'>0%</td>";
+		echo $table_temp;
+		$table.=$table_temp;
+	}
+
 	$table_temp="<td colspan=2 class=xl9726424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;  border-left:none'>".($auf_A+$auf_B)."</td>";
 	echo $table_temp;
 	$table.=$table_temp;
@@ -682,6 +702,58 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 
 
 	//$table.=$table_temp;
+	$table_temp="</tr>";
+	echo $table_temp;
+	$table.=$table_temp;
+	/* NEW END 20100223 */
+
+
+	// $table_temp="</table>";
+
+
+	$table_temp="<tr height=21 style='mso-height-source:userset;height:15.75pt'>
+	<td height=21 class=xl955896 style='height:15.75pt'></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	<td class=xl955896></td>
+	</tr>";
+	echo $table_temp;
+	$table.=$table_temp;
+	$grand_total_nop_x=0; 
  $table_temp="</tr>";
  echo $table_temp;
 	$table.=$table_temp;
