@@ -28,11 +28,11 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
                     {
                         
                             $tid=$sql_row01['tid'];
-                            $input_job_no=$sql_row['input_job_no'];
-                            $order_del_no=$sql_row['order_del_no'];
+                            $input_job_no=$sql_row01['input_job_no'];
+                            $order_del_no=$sql_row01['order_del_no'];
                             $date=date('Ymd');
-                            $employee_no=$order_del_no."-".$input_job_no."</br>";
-                            $remarks=$order_del_no."-".$date."</br>";
+                            $employee_no=$order_del_no."-".$input_job_no;
+                            $remarks=$order_del_no."-".$date;
                             $mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid) and op_code=1 group by mo_no";
                             $sql_result5=mysqli_query($link, $mo_operation_quantites_query) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
                             try
