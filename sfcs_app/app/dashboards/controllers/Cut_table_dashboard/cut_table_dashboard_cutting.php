@@ -824,7 +824,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $doc_no_ref1 = $doc_no;
       //FOR SCHEDULE CLUBBING ensuring for parent docket
       if($doc_no != ''){
-        $parent_doc_query = "SELECT GROUP_CONCAT(org_doc_no) as docs 
+        $parent_doc_query = "SELECT GROUP_CONCAT(doc_no) as docs 
                         from $bai_pro3.plandoc_stat_log  psl
                         left join $bai_pro3.cat_stat_log  csl ON csl.tid = psl.cat_ref
                         where org_doc_no = $doc_no and category IN ($in_categories) and org_doc_no > 0";
