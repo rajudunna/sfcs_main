@@ -24,7 +24,7 @@
 					// alert(GarPerCart+' == 8 '+GarPerBag);
 					// console.log(GarPerCart);
 					var new_temp = Number(order_size_wise)/Number(GarPerCart);
-					console.log('temp value = '+new_temp);
+					// console.log('temp value = '+new_temp);
 					if(isNaN(new_temp))
 					{
 						new_temp=0;
@@ -79,7 +79,7 @@
 			}	
 		}
 		var no_of_sizes = document.getElementById('size_size1').value;
-		console.log('array1 = '+min_cart_array);
+		// console.log('array1 = '+min_cart_array);
 		
 		for (var color = 0; color < sizeOfColors; color++)
 		{
@@ -163,25 +163,29 @@
 		}		
 	}
 
-	function ss_ms_cart_func(size,no_of_cols)
+	function ss_ms_cart_func(no_of_cols, tot_no_of_sizes)
 	{
 		for (var col = 0; col < no_of_cols; col++)
 		{
 			var ss_ms_pac_genTotal = 0;
-			GarPerCart = document.getElementById('GarPerCart_'+col+'_'+size).value;
-			var ss_ms_no_of_cart = document.getElementById('NoOf_Cartons_'+size).value;
-			
-			if (ss_ms_no_of_cart == 0)
+			for (var z = 0; z < tot_no_of_sizes; z++)
 			{
-				document.getElementById('ss_ms_pac_gen_'+col+'_'+size).innerHTML = 0;
+				GarPerCart = document.getElementById('GarPerCart_'+col+'_'+z).value;
+				var ss_ms_no_of_cart = document.getElementById('NoOf_Cartons_'+z).value;
+
+				if (ss_ms_no_of_cart == 0)
+				{
+					document.getElementById('ss_ms_pac_gen_'+col+'_'+z).innerHTML = 0;
+				}
+				else
+				{
+					var temppp = ss_ms_no_of_cart * GarPerCart;
+					document.getElementById('ss_ms_pac_gen_'+col+'_'+z).innerHTML = temppp;
+					ss_ms_pac_genTotal = ss_ms_pac_genTotal + temppp;
+				}
 			}
-			else
-			{
-				var temppp = ss_ms_no_of_cart * GarPerCart;
-				document.getElementById('ss_ms_pac_gen_'+col+'_'+size).innerHTML = temppp;
-				ss_ms_pac_genTotal = ss_ms_pac_genTotal + temppp;
-			}
-			document.getElementById('ss_ms_pac_gen_total_'+col).innerHTML = ss_ms_pac_genTotal;
+			// console.log('tot = '+ss_ms_pac_genTotal);
+			document.getElementById('ss_ms_pac_gen_total_'+col).innerHTML = ss_ms_pac_genTotal;	
 		}
 	}
 
@@ -288,7 +292,7 @@
 					{
 						var no_carts = Number(document.getElementById('NoOf_Cartons_'+siz).value);
 						var max_cartons = Number(document.getElementById('NoOf_Cartons_'+siz).max);
-						console.log('entered cartons = '+no_carts+', max cartons = '+max_cartons);
+						// console.log('entered cartons = '+no_carts+', max cartons = '+max_cartons);
 						if (no_carts > max_cartons)
 						{
 							sweetAlert('No of Cartons Exceeding Max Cratons','','warning');
@@ -318,7 +322,7 @@
 							// no_of_cartons_size_wise.push(document.getElementById('NoOf_Cartons_'+i).value);
 							// carton_temp = carton_temp + document.getElementById('NoOf_Cartons_'+i).value;
 						}
-						console.log(no_of_cartons_size_wise);
+						// console.log(no_of_cartons_size_wise);
 						if (carton_temp > 0)
 						{
 							var min_no = Math.min.apply(null, no_of_cartons_size_wise);
@@ -392,7 +396,7 @@
 			{
 				var no_carts = Number(document.getElementById('NoOf_Cartons1').value);
 				var max_cartons = Number(document.getElementById('NoOf_Cartons1').max);
-				console.log('entered cartons = '+no_carts+', max cartons = '+max_cartons);
+				// console.log('entered cartons = '+no_carts+', max cartons = '+max_cartons);
 				if (no_carts > max_cartons)
 				{
 					sweetAlert('No of Cartons Exceeding Max Cratons','','warning');
@@ -488,7 +492,7 @@
 
 	
 <div class="panel panel-primary">
-	<div class="panel-heading"><strong>Add Packing Ratio</strong> <?php echo "<a class='btn btn-warning	pull-right' style='padding-top: 0px;' href='$url2&style=$style&schedule=$schedule' >Go Back</a>";  ?></div>
+	<div class="panel-heading"><strong>Add Packing Ratio</strong> <?php echo "<a class='btn btn-warning	pull-right btn-sm' href='$url2&style=$style&schedule=$schedule' >Go Back</a>";  ?></div>
 	<div class="panel-body">
 		<div class="col-md-12">
 			<form method="POST" class="form-inline" name="decentralized_packing_ratio">
@@ -597,14 +601,11 @@
 									echo "<div class='panel-heading'>$title</div>";
 									echo "<div class='panel-body'>";
 									
-									echo "<div class='col-md-6 col-sm-6 col-xs-12'>
-									<label>Description :</label>
-									<input type='text' name='description' id='description' size='60' maxlength='60' class='form-control' required>
-									</div>";
-									echo"<div class=''>
-									<label>No of Cartons per Pack Job :</label>
-									<input type='text' name='noofcartons_packjob' id='noofcartons_packjob'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=0>
-									</div>";
+									echo "<label>Description :</label>
+											<input type='text' name='description' id='description' size='60' maxlength='60' class='form-control' required>
+										&nbsp;&nbsp;
+										<label>No of Cartons per Pack Job :</label>
+											<input type='text' name='noofcartons_packjob' id='noofcartons_packjob'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=0>";
 									/* echo"<div class='col-md-3 col-sm-3 col-xs-12'>
 									<label>No of Cartons  :</label>
 									<input type='text' name='noofpackjobs_packmethod' id='noofpackjobs_packmethod'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=0>
@@ -647,7 +648,7 @@
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' onkeyup=calculateqty($size_count,$size_of_ordered_colors); onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'></td>";
+																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' oninput=calculateqty($size_count,$size_of_ordered_colors); onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'></td>";
 																				}
 																			}
 																			else
@@ -680,7 +681,7 @@
 															echo "<tr>";
 																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																{
-																	echo "<td><input type='text' size='6' maxlength='5' required name='BagPerCart[]' id='BagPerCart_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' class='form-control integer' onkeyup=calculateqty($size_count,$size_of_ordered_colors);></td>";
+																	echo "<td><input type='text' size='6' maxlength='5' required name='BagPerCart[]' id='BagPerCart_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' class='form-control integer' oninput=calculateqty($size_count,$size_of_ordered_colors);></td>";
 																}
 															echo "</tr>
 														</table>
@@ -752,7 +753,7 @@
 															echo "<tr>";
 																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																{
-																	echo "<td><input type='number' size='6' maxlength='5' required name='NoOf_Cartons[]' onkeyup=ss_ms_cart_func($size_count,$size_of_ordered_colors);  id='NoOf_Cartons_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' min='0' max='0' class='form-control integer'></td>";
+																	echo "<td><input type='number' size='6' maxlength='5' required name='NoOf_Cartons[]' oninput=ss_ms_cart_func($size_of_ordered_colors,".sizeof($size1).");  id='NoOf_Cartons_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' min='0' max='0' class='form-control integer'></td>";
 																}
 															echo "</tr>
 														</table>
@@ -935,14 +936,11 @@
 								echo "<div class='panel panel-primary'>";
 									echo "<div class='panel-heading'>$title</div>";
 									echo "<div class='panel-body'>";
-									echo "<div class='col-md-6 col-sm-6 col-xs-12'>
-									<label>Description :</label>
-									<input type='text' name='description' id='description' size='60' maxlength='60' class='form-control' required>
-									</div>";
-									echo"<div class=''>
-									<label>No of Cartons per Pack Job :</label>
-									<input type='text' name='noofcartons_packjob' id='noofcartons_packjob'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=0>
-									</div>";
+									echo "<label>Description :</label>
+											<input type='text' name='description' id='description' size='60' maxlength='60' class='form-control' required>
+										&nbsp;&nbsp;
+										<label>No of Cartons per Pack Job :</label>
+											<input type='text' name='noofcartons_packjob' id='noofcartons_packjob'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=0>";
 									/* echo"<div class='col-md-3 col-sm-3 col-xs-12'>
 									<label>No of Cartons  :</label>
 									<input type='text' name='noofpackjobs_packmethod' id='noofpackjobs_packmethod'  class='form-control integer' required onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=0>
@@ -986,7 +984,7 @@
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' onkeyup=calculateqty1($sizeofsizes,$size_of_ordered_colors); onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'></td>";
+																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' oninput=calculateqty1($sizeofsizes,$size_of_ordered_colors); onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'></td>";
 																				}
 																			}
 																			else
@@ -1006,7 +1004,7 @@
 										echo "<div class='panel panel-primary'>";
 												echo "<div class='panel-heading'>Poly Bags Per Carton</div>";
 												echo "<div class='panel-body'>";
-												echo "<div class='col-xs-12'>Number of Poly Bags Per Carton : <input type='text' required name='BagPerCart' id='BagPerCart' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' onkeyup=calculateqty1($sizeofsizes,$size_of_ordered_colors);></div>";
+												echo "<div class='col-xs-12'>Number of Poly Bags Per Carton : <input type='text' required name='BagPerCart' id='BagPerCart' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' oninput=calculateqty1($sizeofsizes,$size_of_ordered_colors);></div>";
 													
 												echo "</div>
 											</div>";
@@ -1063,7 +1061,7 @@
 										echo "<div class='panel panel-primary'>";
 												echo "<div class='panel-heading'>No of Cartons</div>";
 												echo "<div class='panel-body'>";
-												echo "<div class='col-xs-12'>Number of Cartons : <input type='number' required name='NoOf_Cartons1' id='NoOf_Cartons1' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} onkeyup=mm_sm_cart_func($sizeofsizes,$size_of_ordered_colors); min='0' max='0' value='0' ></div>";
+												echo "<div class='col-xs-12'>Number of Cartons : <input type='number' required name='NoOf_Cartons1' id='NoOf_Cartons1' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} oninput=mm_sm_cart_func($sizeofsizes,$size_of_ordered_colors); min='0' max='0' value='0' ></div>";
 												echo "</div>
 											</div>";
 
@@ -1312,10 +1310,13 @@
 								$ref_size_name = $get_ref_size_deatils['ref_size_name'];
 							}						
 
-							$insert_tbl_carton_size_ref="insert ignore into $bai_pro3.tbl_pack_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, size_title, seq_no, cartons_per_pack_job, pack_job_per_pack_method, pack_method, pack_description) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart[$j]."','".$GarPerCart[$i][$j]."','".$original_size[$j]."','".$seqnew."','".$noofcartons_packjob."','".$NoOf_Cartons[$j]."','".$pack_method."','".$descr."')";
-							$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
-							// echo $insert_tbl_carton_size_ref.'<br>';
-							$statuscode=1;
+							if ($NoOf_Cartons[$j] > 0)
+							{
+								$insert_tbl_carton_size_ref="insert ignore into $bai_pro3.tbl_pack_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, size_title, seq_no, cartons_per_pack_job, pack_job_per_pack_method, pack_method, pack_description) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart[$j]."','".$GarPerCart[$i][$j]."','".$original_size[$j]."','".$seqnew."','".$noofcartons_packjob."','".$NoOf_Cartons[$j]."','".$pack_method."','".$descr."')";
+								$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
+								// echo $insert_tbl_carton_size_ref.'<br>';
+								$statuscode=1;
+							}
 						}
 					}
 				}
@@ -1420,10 +1421,14 @@
 							{
 								$ref_size_name = $get_ref_size_deatils['ref_size_name'];
 							}
-							$insert_tbl_carton_size_ref="insert ignore into $bai_pro3.tbl_pack_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, size_title, seq_no, cartons_per_pack_job, pack_job_per_pack_method, pack_method, pack_description) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart."','".$GarPerCart[$i][$j]."','".$original_size[$j]."','".$seqnew."','".$noofcartons_packjob."','".$NoOf_Cartons."','".$pack_method."','".$descr."')";
-							$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
-							// echo $insert_tbl_carton_size_ref.'<br>';
-							$statuscode=1;
+
+							if ($NoOf_Cartons > 0)
+							{
+								$insert_tbl_carton_size_ref="insert ignore into $bai_pro3.tbl_pack_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, size_title, seq_no, cartons_per_pack_job, pack_job_per_pack_method, pack_method, pack_description) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart."','".$GarPerCart[$i][$j]."','".$original_size[$j]."','".$seqnew."','".$noofcartons_packjob."','".$NoOf_Cartons."','".$pack_method."','".$descr."')";
+								$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
+								// echo $insert_tbl_carton_size_ref.'<br>';
+								$statuscode=1;
+							}							
 						}
 					}
 				}

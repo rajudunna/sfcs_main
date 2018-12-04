@@ -13,7 +13,7 @@ MySQL - 10.3.8-MariaDB : Database - bai3_finishing
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`bai3_finishing` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `bai3_finishing`;
+/*USE `bai3_finishing`;*/
 
 /* Procedure structure for procedure `sync_fg_to_m3` */
 

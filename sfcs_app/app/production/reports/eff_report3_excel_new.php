@@ -14,24 +14,25 @@ Ticket #516359.
 //service request #474467 /2014-12-24 / kirang / Modification on efficiency report for M&S styles (put MS instead of M&S)
  -->
  <?php 
-          include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-	$view_access=user_acl("SFCS_0059",$username,1,$group_id_sfcs);
-	$final_rep9 = getFullURL($_GET["r"],"final_rep9.php","N");
-?>
+$view_access=user_acl("SFCS_0059",$username,1,$group_id_sfcs);
+$final_rep9 = getFullURL($_GET["r"],"final_rep9.php","N");
 
+?>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/FileSaver.js',1,'R');?>"></script>
 <style id="Daily_Efficiency_Report_26424_Styles">
 </style>
 
 <script>
-	function verify(){
-		var from = document.getElementById('demo1').value;
-		var to = document.getElementById('demo2').value;
-		if( from > to){
-			sweetAlert('Start Date should be less than End Date','','warning');
-			return false;
-		}
+function verify(){
+	var from = document.getElementById('demo1').value;
+	var to = document.getElementById('demo2').value;
+	if( from > to){
+		sweetAlert('Start Date should be less than End Date','','warning');
+		return false;
 	}
+}
 </script>
 <div class="panel panel-primary">
 	<div class="panel-heading">Daily Efficiency Report</div>	
@@ -104,7 +105,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 						<br/><input type="submit" name="submit" onclick='return verify()' value="Show" class="btn btn-primary">
 					</div>
 					<div class='col-sm-1'>
-						<br/><button class="btn btn-success" onclick='return verify()'><?php echo "<a href=\"Eff_Report.xls\">Export to Excel</a>"; ?></button>
+						<br/><input type="button" class="btn btn-success" id='excel1' value="Export to Excel">
 					</div>
 				</div>	
 			</form>
@@ -117,7 +118,6 @@ if(isset($_POST['submit']))
 	$edat=$_POST['edat'];
 	$section=$_POST['section'];
 	$buyer=$_POST['buyer'];
-
 
 	$sql2="select unit_id from $bai_pro.unit_db where unit_members=\"".$_POST['section']."\"";
 	//echo $sql2;
@@ -2818,9 +2818,9 @@ if(isset($_POST['submit']))
 	</style>';
 	$table_temp.="<div id=\"Daily_Efficiency_Report_26424\" align=center x:publishsource=\"Excel\">
 
-	<div u1:publishsource=Excel  class='table-responsive'>
+	<div u1:publishsource=Excel  class='table-responsive' id='print_content'>
 
-	<table border=0 cellpadding=0 cellspacing=0 width=2823 style='border-collapse:collapse;table-layout:fixed;width:2200pt' class='table'>
+	<table border=1 cellpadding=0 cellspacing=0 width=2823 style='border-collapse:collapse;table-layout:fixed;width:2200pt' class='table'>
 	<col width=66 style='mso-width-source:userset;mso-width-alt:2413;width:50pt'>
 	<col width=64 span=17 style='mso-width-source:userset;mso-width-alt:2340; width:48pt'>
 	<col width=72 style='mso-width-source:userset;mso-width-alt:2633;width:54pt'>
@@ -2828,7 +2828,7 @@ if(isset($_POST['submit']))
 	<col width=63 style='mso-width-source:userset;mso-width-alt:2304;width:47pt'>
 	<col width=64 span=13 style='mso-width-source:userset;mso-width-alt:2340; width:48pt'>
 	<col width=63 span=2 style='mso-width-source:userset;mso-width-alt:2304; width:47pt'>
-
+	<br/>
 	<tr height=22 style='mso-height-source:userset;height:16.5pt'>
 	<td colspan=25 height=22 class=xl10226424 width=1865 style='border-right:1.0pt solid black;height:16.5pt;width:1399pt'>DAILY EFFICIENCY REPORT ($report_heading)</td>
 	<td colspan=13 class=xl10626424 width=958 style='border-right:1.0pt solid black;
@@ -2845,8 +2845,7 @@ if(isset($_POST['submit']))
 	border-top:none'>SMV</td>
 	<td rowspan=3 class=xl6626424 width=64 style='border-bottom:1.0pt solid black;
 	border-top:none;width:48pt'>NO Of Days</td>
-	<td class=xl6626424 width=64 style='border-top:none;border-left:none;
-	width:48pt'></td>
+	<td rowspan=3 class=xl6626424 width=64 style='border-bottom:1.0pt solid black;border-top:none;width:48pt'>Fix Oprs</td>
 	<td colspan=2 class=xl11526424 style='border-right:1.0pt solid black;
 	border-left:none'>Operators</td>
 	<td colspan=2 rowspan=2 class=xl11726424 style='border-right:1.0pt solid black;
@@ -2879,8 +2878,6 @@ if(isset($_POST['submit']))
 	border-bottom:1.0pt solid black'>Remarks</td>
 	</tr>
 	<tr height=22 style='mso-height-source:userset;height:16.5pt'>
-	<td height=22 class=xl6726424 width=64 style='height:16.5pt;border-left:none;
-	width:48pt'></td>
 	<td colspan=2 class=xl11526424 style='border-right:1.0pt solid black;
 	border-left:none'>Present</td>
 	<td class=xl7126424 width=64 style='width:48pt'>Std. Hrs.</td>
@@ -2892,8 +2889,6 @@ if(isset($_POST['submit']))
 	border-left:none'>Shift B</td>
 	</tr>
 	<tr height=41 style='mso-height-source:userset;height:30.75pt'>
-	<td height=41 class=xl6826424 width=64 style='height:30.75pt;border-left:
-	none;width:48pt'>Fix Oprs</td>
 	<td class=xl7326424 width=64 style='width:48pt'>Oper (A)</td>
 	<td class=xl7326424 width=64 style='width:48pt'>Oper (B)</td>
 	<td class=xl7526424 width=64 style='width:48pt'>Shift A</td>
@@ -2931,7 +2926,6 @@ if(isset($_POST['submit']))
 	$decimal_factor=2;
 	echo $table_temp;
 	$table.=$table_temp;
-
 	$x_sec=0;
 	$sec_temp=$_POST['section'];
 	// echo $sec_temp;
@@ -2968,7 +2962,6 @@ if(isset($_POST['submit']))
 
 // For Grand Eff Calculation
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'grand_Eff_for_daily.php',0,'R'));
-
 //to fasten system
 
 	$sql="truncate $bai_pro.grand_rep_temp";
@@ -2978,7 +2971,7 @@ if(isset($_POST['submit']))
 
 	mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$grand_rep="grand_rep_temp";
+	$grand_rep="$bai_pro.grand_rep_temp";
 
 //to fasten system
 	$total_nop=0;
@@ -3187,8 +3180,12 @@ if(isset($_POST['submit']))
 					//$total_nop=$total_nop+$nop;
 				}		
 				$styledb=$sql_row2['styles'];
+
 				$styledb_no=$sql_row2['style_no'];
-				//echo $styledb;
+				// echo $styledb_no."<br>";
+				$styledb_no_explode=explode(",",$styledb_no);
+				$styledb_no=$styledb_no_explode[0];
+				// echo $styledb_no."<br>";
 				$buyerdb=$sql_row2['buyer'];
 				$age=$sql_row2['days'];
 			}
@@ -3235,7 +3232,7 @@ if(isset($_POST['submit']))
 				{
 					//$chk_date=date("Y-m-d",strtotime("-2 day",strtotime($chk_date)));	
 					$sql2="SELECT MAX(bac_date) as max_date FROM $bai_pro.bai_log_buf WHERE bac_qty > 0 AND bac_date <= \"".$chk_date."\"";
-					//echo $sql2."<br>";
+					// echo $sql2."<br>";
 					$sql_result2=mysqli_query($link, $sql2) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2=mysqli_fetch_array($sql_result2))
 					{
@@ -3244,7 +3241,7 @@ if(isset($_POST['submit']))
 				}
 			
 				$sql21="select * from $bai_pro.bai_log_buf where bac_style=\"".$styledb_no."\" and bac_no=\"".$mod."\" and bac_date=\"$chk_date\"";
-				//echo $sql21."<br>";
+				// echo $sql21."<br>";
 				mysqli_query($link, $sql21) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$rowsx=mysqli_num_rows($sql_result21);
@@ -3253,70 +3250,67 @@ if(isset($_POST['submit']))
 					$age_days=$age_days+1;
 				}
 
-		//echo $sql21."-".$styledb_no."-".$style_chk."<br>";
+				//echo $sql21."-".$styledb_no."-".$style_chk."<br>";
 
 			}while($rowsx !=0);
 
-			$total_nop=$total_nop+$nop;
-			$grand_total_nop=$grand_total_nop+$nop;
-			$table_temp="<tr height=21 style='mso-height-source:userset;height:15.75pt'>
-			<td height=21 class=xl8326424 style='height:15.75pt'><a href='".$final_rep9."&module=".$mod."&date=".$date."'>$mod</a></td>
-			<td class=xl8426424 >$buyerdb</td>
-			<td class=xl8426424 >$styledb</td>
-			<td class=xl8426424 >$smv</td>
-			<td class=xl8526424 >$age_days</td>
-			<td class=xl8626424 >".$nop."</td>";
-			//$total_nop=$total_nop+$nop;
-			$age_days=0;
-			echo $table_temp;
-			$table.=$table_temp;
-
-
-			$operatorssum=$operatorssum+$nop;
-
-			$date_range=array();
-			$sql2="select distinct date from $bai_pro.grand_rep where date between \"$date\" and \"$edate\"";
-			mysqli_query($link, $sql2) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row2=mysqli_fetch_array($sql_result2))
-			{
-				$date_range[]=$sql_row2['date'];
-			}
-
-			$sql2="select sum(avail_A) as \"avail_A\", sum(avail_B) as \"avail_B\", sum(absent_A) as \"absent_A\", sum(absent_B) as \"absent_B\" from $bai_pro.pro_atten where module=$mod and date in (\"".implode('","',$date_range)."\")";
-			if($sec=="8")
-			{
-				$link_f=$link;
-			}
-			else
-			{
-				$link_f=$link;
-			}
-			mysqli_query($link_f, $sql2) or exit("Sql Error19".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result2=mysqli_query($link_f, $sql2) or exit("Sql Error19".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row2=mysqli_fetch_array($sql_result2))
-			{
-				$table_temp="<td class=xl8726424>".($sql_row2['avail_A']-$sql_row2['absent_A'])."</td>";
-
+				$total_nop=$total_nop+$nop;
+				$grand_total_nop=$grand_total_nop+$nop;
+				$table_temp="<tr height=21 style='mso-height-source:userset;height:15.75pt'>
+				<td height=21 class=xl8326424 style='height:15.75pt'>
+				<a href='".$final_rep9."&module=".$mod."&date=".$date."'>$mod</a>
+				</td>
+				<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$buyerdb</td>
+				<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$styledb</td>
+				<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$smv</td>
+				<td class=xl8526424 style='width:100px;word-wrap:break-word;'>$age_days</td>
+				<td class=xl8626424 style='width:100px;word-wrap:break-word;'>".$nop."</td>";
+				//$total_nop=$total_nop+$nop;
+				$age_days=0;
 				echo $table_temp;
 				$table.=$table_temp;
 
-				$table_temp="<td class=xl8726424>".($sql_row2['avail_B']-$sql_row2['absent_B'])."</td>";
 
-				echo $table_temp;
-				$table.=$table_temp;
+				$operatorssum=$operatorssum+$nop;
 
-				$avail_A_fix=$sql_row2['avail_A'];
-				$avail_B_fix=$sql_row2['avail_B'];
+				$date_range=array();
+				$sql2="select distinct date from $bai_pro.grand_rep where date between \"$date\" and \"$edate\"";
+				mysqli_query($link, $sql2) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row2=mysqli_fetch_array($sql_result2))
+				{
+					$date_range[]=$sql_row2['date'];
+				}
+				$sqlA="select sum(present+jumper) as \"avail_A\",sum(absent) as \"absent_A\" from $bai_pro.pro_attendance where module=$mod and shift=\"A\" and  date in (\"".implode('","',$date_range)."\")";
+				$sql_resultA=mysqli_query($link, $sqlA) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_rowA=mysqli_fetch_array($sql_resultA))
+				{
+					$table_temp="<td class=xl8726424>".($sql_rowA['avail_A']-$sql_rowA['absent_A'])."</td>";
 
-				$avail_A=$avail_A+$sql_row2['avail_A'];
-				$avail_B=$avail_B+$sql_row2['avail_B'];
+					echo $table_temp;
+					$table.=$table_temp;
 
-				$absent_A_fix=$sql_row2['absent_A'];
-				$absent_B_fix=$sql_row2['absent_B'];
+					$avail_A=$avail_A+$sql_rowA['avail_A'];
+					$avail_A_fix=$sql_rowA['avail_A'];
+					$absent_A=$absent_A+$sql_rowA['absent_A'];
+					$absent_A_fix=$sql_rowA['absent_A'];
+				}
 
-				$absent_A=$absent_A+$sql_row2['absent_A'];
-				$absent_B=$absent_B+$sql_row2['absent_B'];
+				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $bai_pro.pro_attendance where module=$mod and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
+				$sql_resultB=mysqli_query($link, $sqlB) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_rowB=mysqli_fetch_array($sql_resultB))
+				{
+					
+					$table_temp="<td class=xl8726424>".($sql_rowB['avail_B']-$sql_rowB['absent_B'])."</td>";
+
+					echo $table_temp;
+					$table.=$table_temp;
+
+					$avail_B=$avail_B+$sql_rowB['avail_B'];
+					$avail_B_fix=$sql_rowB['avail_B'];
+					$absent_B=$absent_B+$sql_rowB['absent_B'];
+					$absent_B_fix=$sql_rowB['absent_B'];
+				}
 
 
 				$sql132="select act_hours as hrs from $bai_pro.pro_plan where mod_no=$mod and shift=\"A\" and date between \"$date\" and \"$edate\" ";
@@ -3525,7 +3519,7 @@ if(isset($_POST['submit']))
 					$affb=0;
 				}
 
-			//$table_temp="<td class=xl9326424>".round(($affb*100),0)."%--aa</td>";
+				//$table_temp="<td class=xl9326424>".round(($affb*100),0)."%--aa</td>";
 				$table_temp="<td class=xl9326424>".round(($sthb/$clhb)*100,0)."%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
@@ -3600,8 +3594,8 @@ if(isset($_POST['submit']))
 					echo $table_temp;
 					$table.=$table_temp;
 				}
-			// Ticket #516359 /modify the Actual efficiency % (average) based on running shifts.
-			// Actual Eff % taken from Actual Clock hours.   
+				// Ticket #516359 /modify the Actual efficiency % (average) based on running shifts.
+				// Actual Eff % taken from Actual Clock hours.   
 				if(($clha+$clhb)>0)
 				{
 					if($act_hrsa+$act_hrsb != 0 && $avail_A_fix-$absent_A_fix != 0 && $avail_B_fix-$absent_B_fix != 0)
@@ -3632,7 +3626,6 @@ if(isset($_POST['submit']))
 
 				$totalmodules=$totalmodules+1;
 
-			}
 		}
 			/*****************************************************************************************************************/
 
@@ -3738,82 +3731,82 @@ if(isset($_POST['submit']))
 				$head_name=$sql_row2['sec_head'];
 			}
 
-			$table_temp="<tr height=22 style='mso-height-source:userset;height:16.5pt'>";
+			$table_temp="<tr height=22 style='mso-height-source:userset;height:16.5pt;'>";
 			echo $table_temp;
 			$table.=$table_temp;
 
-			$table_temp="<td colspan=5 rowspan=2 height=44 class=xl15326424 style='border-right:1.0pt solid black;border-bottom:1.0pt solid black;height:33.0pt'>".$head_name."</td>";
+			$table_temp="<td colspan=5 rowspan=2 height=44 class=xl15326424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-bottom:1.0pt solid black;height:33.0pt;'>".$head_name."</td>";
 			echo $table_temp;
 
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".$operatorssum."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".$operatorssum."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".($avail_A-$absent_A)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".($avail_A-$absent_A)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".($avail_B-$absent_B)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".($avail_B-$absent_B)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
 
 			if($totalmodules>0)
 			{
-				$table_temp="<td class=xl9826424>".round($rew_A/$totalmodules,0)."%</td>";
+				$table_temp="<td class=xl9826424 style='background-color:#5A5A5A'>".round($rew_A/$totalmodules,0)."%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
-				$table_temp="<td class=xl9826424>".round($rew_B/$totalmodules,0)."%</td>";
+				$table_temp="<td class=xl9826424 style='background-color:#5A5A5A'>".round($rew_B/$totalmodules,0)."%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
 			}
 			else
 			{
-				$table_temp="<td class=xl9826424>0%</td>";
+				$table_temp="<td class=xl9826424 style='background-color:#5A5A5A'>0%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
-				$table_temp="<td class=xl9826424>0%</td>";
+				$table_temp="<td class=xl9826424 style='background-color:#5A5A5A'>0%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
 			}
 
-			$table_temp="<td class=xl9726424>".$auf_A."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".$auf_A."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".$auf_B."</td>";
-			echo $table_temp;
-			$table.=$table_temp;
-
-			$table_temp="<td class=xl9726424>".round($pclha_total,$decimal_factor)."</td>";
-			echo $table_temp;
-			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".round($pclhb_total,$decimal_factor)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".$auf_B."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
-			$table_temp="<td rowspan=2 class=xl15926424 style='border-bottom:1.0pt solid black'>".round(($ppro_a_total+$ppro_b_total),0)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".round($pclha_total,$decimal_factor)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".$atotal."</td>";
-			echo $table_temp;
-			$table.=$table_temp;
-
-			$table_temp="<td class=xl9726424>".$btotal."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".round($pclhb_total,$decimal_factor)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
-			$table_temp="<td rowspan=2 class=xl15926424 style='border-bottom:1.0pt solid black'>".($pstha_mod_total+$psthb_mod_total)."</td>";
+			$table_temp="<td rowspan=2 class=xl15926424 style='background-color:#5A5A5A' style='border-bottom:1.0pt solid black'>".round(($ppro_a_total+$ppro_b_total),0)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".($pstha_mod_total)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".$atotal."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".round($stha_total,$decimal_factor)."</td>";
+
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".$btotal."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".($psthb_mod_total)."</td>";
+
+			$table_temp="<td rowspan=2 class=xl15926424 style='background-color:#5A5A5A' style='border-bottom:1.0pt solid black'>".($pstha_mod_total+$psthb_mod_total)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9726424>".round($sthb_total,$decimal_factor)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".($pstha_mod_total)."</td>";
+			echo $table_temp;
+			$table.=$table_temp;
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".round($stha_total,$decimal_factor)."</td>";
+			echo $table_temp;
+			$table.=$table_temp;
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".($psthb_mod_total)."</td>";
+			echo $table_temp;
+			$table.=$table_temp;
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".round($sthb_total,$decimal_factor)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
@@ -3833,15 +3826,15 @@ if(isset($_POST['submit']))
 
 			if(($pclha_total+$pclhb_total)>0)
 			{
-				$table_temp="<td rowspan=2 class=xl16126424 style='border-bottom:1.0pt solid black'>".round((($pstha_total+$psthb_total)/($pclha_total+$pclhb_total))*100,0)."%</td>";
-				//$table_temp="<td rowspan=2 class=xl16126424 style='border-bottom:1.0pt solid black'>".round($eff_grand/$i3,0)."%</td>";
-				//$table_temp="<td rowspan=2 class=xl16126424 style='border-bottom:1.0pt solid black'>".round($eff_grand/$i3,0)."%xx</td>";
+				$table_temp="<td rowspan=2 class=xl16126424 style='background-color:#5A5A5A' style='border-bottom:1.0pt solid black'>".round((($pstha_total+$psthb_total)/($pclha_total+$pclhb_total))*100,0)."%</td>";
+				//$table_temp="<td rowspan=2 class=xl16126424 style='background-color:#5A5A5A' style='border-bottom:1.0pt solid black'>".round($eff_grand/$i3,0)."%</td>";
+				//$table_temp="<td rowspan=2 class=xl16126424 style='background-color:#5A5A5A' style='border-bottom:1.0pt solid black'>".round($eff_grand/$i3,0)."%xx</td>";
 				echo $table_temp;
 				$table.=$table_temp;
 			}
 			else
 			{
-				$table_temp="<td rowspan=2 class=xl16126424 style='border-bottom:1.0pt solid black'>0%</td>";
+				$table_temp="<td rowspan=2 class=xl16126424 style='background-color:#5A5A5A' style='border-bottom:1.0pt solid black'>0%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
 			}
@@ -3869,40 +3862,40 @@ if(isset($_POST['submit']))
 				$xb_actual=round(($sthb_total/($pclhb_total-($offsthb_sum/60)))*100,0);
 			}
 
-			$table_temp="<td class=xl9726424>".round($ppro_a_total,0)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".round($ppro_a_total,0)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td  class=xl9826424>".round($peffresulta,0)."%</td>";
+			$table_temp="<td  class=xl9826424 style='background-color:#5A5A5A'>".round($peffresulta,0)."%</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 			/*$table_temp="<td class=xl9826424>".round($xa,0)."%</td>";
 			echo $table_temp;
 			$table.=$table_temp;*/
 			//$table_temp="<td class=xl9826424>".$xa_actual."%</td>";
-			$table_temp="<td class=xl9826424>".round(($stha_total/(($avail_A-$absent_A)*7.5))*100,0)."%</td>";
+			$table_temp="<td class=xl9826424 style='background-color:#5A5A5A'>".round(($stha_total/(($avail_A-$absent_A)*7.5))*100,0)."%</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 			/*$table_temp="<td class=xl9726424>".($clha-round(($offstha_sum/60),2))."</td>";
 			echo $table_temp;
 			$table.=$table_temp;*/
-			$table_temp="<td class=xl9726424>".round($ppro_b_total,0)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".round($ppro_b_total,0)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9826424>".round($peffresultb,0)."%</td>";
+			$table_temp="<td class=xl9826424 style='background-color:#5A5A5A'>".round($peffresultb,0)."%</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 			/*$table_temp="<td class=xl9826424>".round($xb,0)."%</td>";
 			echo $table_temp;
 			$table.=$table_temp;*/
 			//$table_temp="<td class=xl9826424>".$xb_actual."%</td>";
-			$table_temp="<td class=xl9826424>".round(($sthb_total/(($avail_B-$absent_B)*7.5))*100,0)."%</td>";
+			$table_temp="<td class=xl9826424 style='background-color:#5A5A5A'>".round(($sthb_total/(($avail_B-$absent_B)*7.5))*100,0)."%</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
-			$table_temp="<td class=xl9726424>".round(($offstha_sum/60),2)."</td>";
+			$table_temp="<td class=xl9726424 style='background-color:#5A5A5A'>".round(($offstha_sum/60),2)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl10026424>".round(($offsthb_sum/60),2)."</td>";
+			$table_temp="<td class=xl10026424 style='background-color:#5A5A5A'>".round(($offsthb_sum/60),2)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
@@ -3927,22 +3920,22 @@ if(isset($_POST['submit']))
 			$sah_pro_unit_b_array[]=$sah_prod_b;
 
 			$sah_dtime_sec=$sah_dtime_a+$sah_dtime_b;
-			$table_temp="<td class=xl18926424>".$sah_dtime_a."</td>";
+			$table_temp="<td class=xl18926424 style='background-color:#5A5A5A'>".$sah_dtime_a."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 			//$sah_dtime_a=0;
-			$table_temp="<td class=xl18926424>".$sah_dtime_b."</td>";		
+			$table_temp="<td class=xl18926424 style='background-color:#5A5A5A'>".$sah_dtime_b."</td>";		
 			echo $table_temp;
 			$table.=$table_temp;
 			//$sah_dtime_b=0;
 
 			$sah_prod_sec=$sah_prod_a+$sah_prod_b;
-			$table_temp="<td class=xl18926424>".$sah_prod_a."</td>";
+			$table_temp="<td class=xl18926424 style='background-color:#5A5A5A'>".$sah_prod_a."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 			$sah_prod_a=0;
 
-			$table_temp="<td class=xl18926424>".$sah_prod_b."</td>";
+			$table_temp="<td class=xl18926424 style='background-color:#5A5A5A'>".$sah_prod_b."</td>";
 			echo $table_temp;
 			$table.=$table_temp;	
 			$sah_prod_b=0;	
@@ -3954,65 +3947,69 @@ if(isset($_POST['submit']))
 			$table_temp="<tr height=22 style='mso-height-source:userset;height:16.5pt'>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td height=22 class=xl9926424 style='height:16.5pt'>".$operatorssum."</td>";
+			$table_temp="<td height=22 class=xl9926424 style='background-color:#5A5A5A' style='height:16.5pt'>".$operatorssum."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
-			$table_temp="<td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>".($avail_A+$avail_B-$absent_A-$absent_B)."</td>";
+			$table_temp="<td colspan=2 class=xl9926424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>".($avail_A+$avail_B-$absent_A-$absent_B)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
 
 			// Ticket #516359 /modify the Actual efficiency % (average) based on running shifts.
-			if( $totalmodules== '' || $act_hrsa+$act_hrsb == '' || $totalmodules== 0 || $act_hrsa+$act_hrsb == 0) 
-				$table_temp="<td colspan=2 class=xl16726424 style='border-right:1.0pt solid black;border-left:none'>".round((($rew_A/$totalmodules+$rew_B/$totalmodules)/(($act_hrsa+$act_hrsb)/7.5)),0)."%</td>";
+			if($totalmodules> 0 && ($act_hrsa+$act_hrsb) > 0) 
+			{
+				$table_temp="<td colspan=2 class=xl16726424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>".round((($rew_A/$totalmodules)+($rew_B/$totalmodules)/(($act_hrsa+$act_hrsb)/7.5)),0)."%</td>";
+			}
 			else
-				$table_temp="<td colspan=2 class=xl16726424 style='border-right:1.0pt solid black;border-left:none'>0%</td>";
+			{
+				$table_temp="<td colspan=2 class=xl16726424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>0%</td>";
+			}
 
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>".($auf_A+$auf_B)."</td>";
+			$table_temp="<td colspan=2 class=xl9926424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>".($auf_A+$auf_B)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td colspan=2 class=xl9926424 style='border-right:1.0pt solid black;border-left:none'>".round(($pclha_total+$pclhb_total),$decimal_factor)."</td>";
+			$table_temp="<td colspan=2 class=xl9926424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>".round(($pclha_total+$pclhb_total),$decimal_factor)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td colspan=2 class=xl16326424 style='border-right:1.0pt solid black;border-left:none'>".($atotal+$btotal)."</td>";
+			$table_temp="<td colspan=2 class=xl16326424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>".($atotal+$btotal)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td colspan=3 class=xl16326424 style='border-right:1.0pt solid black;border-left:none'>Actual std hrs =</td>";
+			$table_temp="<td colspan=3 class=xl16326424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>Actual std hrs =</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td class=xl9926424>".round(($stha_total+$sthb_total),$decimal_factor)."</td>";
+			$table_temp="<td class=xl9926424 style='background-color:#5A5A5A'>".round(($stha_total+$sthb_total),$decimal_factor)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td colspan=2 class=xl17226424 style='border-right:1.0pt solid black;border-left:none'>Act EFF % =</td>";
+			$table_temp="<td colspan=2 class=xl17226424 style='background-color:#5A5A5A' style='border-right:1.0pt solid black;border-left:none'>Act EFF % =</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 			
 			if(($clha_total+$clhb_total)>0)
 			{
 
-				$table_temp="<td colspan=4 class=xl17326424 style='border-right:1.0pt solid black'>".round((($stha_total+$sthb_total)/($clha_total+$clhb_total))*100,0)."%</td>";
+				$table_temp="<td colspan=4 class=xl17326424 style='border-right:1.0pt solid black;background-color:#C00000'>".round((($stha_total+$sthb_total)/($clha_total+$clhb_total))*100,0)."%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
 			}
 			else
 			{
-				$table_temp="<td colspan=4 class=xl17326424 style='border-right:1.0pt solid black'>0%</td>";
+				$table_temp="<td colspan=4 class=xl17326424 style='border-right:1.0pt solid black;background-color:#C00000'>0%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
 			}
 
 
-			$table_temp="<td colspan=2 class=xl18926424 style='border-left:none'>".round(($offstha_sum+$offsthb_sum)/60,2)."</td>";
+			$table_temp="<td colspan=2 class=xl18926424 style='background-color:#5A5A5A' style='border-left:none'>".round(($offstha_sum+$offsthb_sum)/60,2)."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
-			$table_temp="<td colspan=2 class=xl18926424 style='border-left:none'>".$sah_dtime_sec."</td>";
+			$table_temp="<td colspan=2 class=xl18926424 style='background-color:#5A5A5A' style='border-left:none'>".$sah_dtime_sec."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
-			$table_temp="<td colspan=2 class=xl18926424 style='border-left:none'>".$sah_prod_sec."</td>";
+			$table_temp="<td colspan=2 class=xl18926424 style='background-color:#5A5A5A' style='border-left:none'>".$sah_prod_sec."</td>";
 			echo $table_temp;
 			$table.=$table_temp;
 
@@ -4034,16 +4031,16 @@ if(isset($_POST['submit']))
 
 			if($x_sec==sizeof($section_array))
 			{
-				//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'eff_report33_excel_new.php',0,'R'));
-				
+				include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'eff_report33_excel_new.php',0,'R'));
+
 				if(sizeof($section_array) > 1)
 				{	
 					
 					include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'Eff_report33_excel_new_buyer.php',0,'R'));
 					
-				}
+				}	
 				
-			}
+			} 
 		}
 	echo "</table></div></div>";
 }
@@ -4059,12 +4056,12 @@ td{
 td { word-wrap:break-word;}
 </style>
 <?php
-unlink("Eff_Report.xls");
-$myFile1 = "Eff_Report.xls";
-$fh1 = fopen($myFile1, 'w') or die("can't open file");
-$stringData1=$table;
-fwrite($fh1, $stringData1);
-fclose($fh1);
+// unlink("Eff_Report.xls");
+// $myFile1 = "Eff_Report.xls";
+// $fh1 = fopen($myFile1, 'w') or die("can't open file");
+// $stringData1=$table;
+// fwrite($fh1, $stringData1);
+// fclose($fh1);
 
 ?>
 
@@ -4072,4 +4069,15 @@ fclose($fh1);
 </div>
 
 
-
+ 
+<script>
+	$('#excel1').click(function(){
+        var blob = new Blob([document.getElementById('print_content').innerHTML], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+		});
+		console.log('one');
+		saveAs(blob,"Eff_Report.xls");
+		console.log('hi');
+		return;
+    })
+</script>

@@ -13,7 +13,7 @@ MySQL - 10.3.8-MariaDB : Database - brandix_bts
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`brandix_bts` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `brandix_bts`;
+/*USE `brandix_bts`;*/
 
 /* Trigger structure for table `bundle_transactions_20_repeat` */
 
@@ -683,7 +683,7 @@ DELIMITER ;
 
 /*Table structure for table `view_bund_tran_master` */
 
-DROP TABLE IF EXISTS `view_bund_tran_master`;
+DROP TABLE IF EXISTS `brandix_bts`.`view_bund_tran_master`;
 
 /*!50001 DROP VIEW IF EXISTS `view_bund_tran_master` */;
 /*!50001 DROP TABLE IF EXISTS `view_bund_tran_master` */;
@@ -705,7 +705,7 @@ DROP TABLE IF EXISTS `view_bund_tran_master`;
 
 /*Table structure for table `view_extra_cut` */
 
-DROP TABLE IF EXISTS `view_extra_cut`;
+DROP TABLE IF EXISTS `brandix_bts`.`view_extra_cut`;
 
 /*!50001 DROP VIEW IF EXISTS `view_extra_cut` */;
 /*!50001 DROP TABLE IF EXISTS `view_extra_cut` */;
@@ -868,7 +868,7 @@ DROP TABLE IF EXISTS `view_extra_cut`;
 
 /*Table structure for table `view_extra_recut` */
 
-DROP TABLE IF EXISTS `view_extra_recut`;
+DROP TABLE IF EXISTS `brandix_bts`.`view_extra_recut`;
 
 /*!50001 DROP VIEW IF EXISTS `view_extra_recut` */;
 /*!50001 DROP TABLE IF EXISTS `view_extra_recut` */;
@@ -1020,7 +1020,7 @@ DROP TABLE IF EXISTS `view_extra_recut`;
 
 /*Table structure for table `view_set_1` */
 
-DROP TABLE IF EXISTS `view_set_1`;
+DROP TABLE IF EXISTS `brandix_bts`.`view_set_1`;
 
 /*!50001 DROP VIEW IF EXISTS `view_set_1` */;
 /*!50001 DROP TABLE IF EXISTS `view_set_1` */;
@@ -1052,7 +1052,7 @@ DROP TABLE IF EXISTS `view_set_1`;
 
 /*Table structure for table `view_set_1_virtual` */
 
-DROP TABLE IF EXISTS `view_set_1_virtual`;
+DROP TABLE IF EXISTS `brandix_bts`.`view_set_1_virtual`;
 
 /*!50001 DROP VIEW IF EXISTS `view_set_1_virtual` */;
 /*!50001 DROP TABLE IF EXISTS `view_set_1_virtual` */;
@@ -1084,7 +1084,7 @@ DROP TABLE IF EXISTS `view_set_1_virtual`;
 
 /*Table structure for table `view_set_4` */
 
-DROP TABLE IF EXISTS `view_set_4`;
+DROP TABLE IF EXISTS `brandix_bts`.`view_set_4`;
 
 /*!50001 DROP VIEW IF EXISTS `view_set_4` */;
 /*!50001 DROP TABLE IF EXISTS `view_set_4` */;
@@ -1099,7 +1099,7 @@ DROP TABLE IF EXISTS `view_set_4`;
 
 /*Table structure for table `view_set_5` */
 
-DROP TABLE IF EXISTS `view_set_5`;
+DROP TABLE IF EXISTS `brandix_bts`.`view_set_5`;
 
 /*!50001 DROP VIEW IF EXISTS `view_set_5` */;
 /*!50001 DROP TABLE IF EXISTS `view_set_5` */;
@@ -1113,7 +1113,7 @@ DROP TABLE IF EXISTS `view_set_5`;
 
 /*Table structure for table `view_set_6` */
 
-DROP TABLE IF EXISTS `view_set_6`;
+DROP TABLE IF EXISTS `brandix_bts`.`view_set_6`;
 
 /*!50001 DROP VIEW IF EXISTS `view_set_6` */;
 /*!50001 DROP TABLE IF EXISTS `view_set_6` */;
@@ -1132,7 +1132,7 @@ DROP TABLE IF EXISTS `view_set_6`;
 
 /*Table structure for table `view_set_snap_1` */
 
-DROP TABLE IF EXISTS `view_set_snap_1`;
+DROP TABLE IF EXISTS `brandix_bts`.`view_set_snap_1`;
 
 /*!50001 DROP VIEW IF EXISTS `view_set_snap_1` */;
 /*!50001 DROP TABLE IF EXISTS `view_set_snap_1` */;

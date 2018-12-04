@@ -47,7 +47,9 @@
 				<div class="panel-heading"><b>Ratio Sheet (Sewing Job wise)</b></div>
 				<div class="panel-body">	
 					<div id="upperbody">				
-						<div style="float:right"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></div>
+
+						<div style="float:right"><img src="<?= $logo ?>" width="200" height="60"></div>
+
 						<?php
 							$sql="select distinct order_del_no as sch,order_tid from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
 							// echo $sql."<br>";
@@ -202,7 +204,7 @@
 						echo "<th>Total</th>";
 						echo "</thead></tr>";
 
-						$sql="select distinct input_job_no as job, type_of_sewing from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and pac_seq_no=$seq_no order by input_job_no*1";
+						$sql="select distinct input_job_no as job, type_of_sewing from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and pac_seq_no=$seq_no order by  acutno*1,input_job_no*1";
 						// echo $sql."<br>";
 						$result=mysqli_query($link, $sql) or die("Error8-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($result))
@@ -340,13 +342,20 @@
 						echo "<th colspan=9  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;font-size:14px;\"> Total</th>";
 						for ($i=0; $i < sizeof($size_array); $i++)
 						{ 
-							$sql1="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE  order_del_no IN ($joinSch) and size_code='$orginal_size_array[$i]'";
+							$sql1="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE  order_del_no IN ($joinSch) and size_code='$orginal_size_array[$i]' and pac_seq_no=$seq_no";
 							//echo $sql1;
 							$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error996".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row1=mysqli_fetch_array($sql_result1))
 							{
 								$o_s=$sql_row1['qty'];
-								if ($o_s!=0) {	echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s."</th>"; }
+								if ($o_s!=0)
+								{
+									echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s."</th>";
+								}
+								else
+								{
+									echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">0</th>";
+								}
 								$o_total=$o_s+$o_total;
 								//echo $o_total;
 							}

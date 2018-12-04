@@ -102,7 +102,7 @@ foreach($val_schedules as $schedule){
 
 		if(sizeof($compare) > 0)
 		{
-			echo "<script>swal('Opration codes does not match','','warning');</script>";
+			echo "<script>swal('Operation codes does not match','','warning');</script>";
 			$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
 			echo "<script>setTimeout(function(){
 						location.href='$url' 

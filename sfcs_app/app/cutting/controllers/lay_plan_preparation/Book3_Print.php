@@ -14,6 +14,14 @@ This amendement was done based on the confirmation to issue excess (1%) material
 $order_tid=$_GET['order_tid'];
 $cat_ref=$_GET['cat_ref'];	
 $doc_id=$_GET['doc_id'];
+if($_GET['print_status']<>'')
+{
+    $print=$_GET['print_status'];
+}
+else
+{
+	$print=2;
+}
 $sql12="select MIN(mini_order_num) as min_no,MAX(mini_order_num) as max_no from $brandix_bts.tbl_miniorder_data where docket_number='".$doc_id."'";
 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_result12)>0)
@@ -363,7 +371,6 @@ $a_s50=$sql_row['a_s50'];
 }
 $sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
 // echo $sql2;
-mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
 $sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
 
 while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -2128,7 +2135,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td colspan=3 >Cutting Department</td>
   <td class=xl654118></td>
- </tr>
+  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
@@ -3034,7 +3041,7 @@ if (mysqli_num_rows($child_dockets_result)>0)
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
- </tr> 
+ </tr>
  </table>
 
  <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;width:parent'>
@@ -3628,15 +3635,16 @@ $tot_bind_len=0;
 
 </html>
 <?php 
-
-if($print_status=="0000-00-00" || $print_status == "")
+if($print==1)
 {
-	$sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
- 	//echo $sql;
-	//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if($print_status=="0000-00-00" || $print_status == "")
+    {
+	    $sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
+ 	    //echo $sql;
+	    mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
+    }
 }
-
 
 //Refresh Parent Page After this Print Out 
 echo"<script>

@@ -13,11 +13,11 @@ MySQL - 10.3.8-MariaDB : Database - bai_pro
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`bai_pro` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `bai_pro`;
+/*USE `bai_pro`;*/
 
 /*Table structure for table `bai_log_view` */
 
-DROP TABLE IF EXISTS `bai_log_view`;
+DROP TABLE IF EXISTS `bai_pro`.`bai_log_view`;
 
 /*!50001 DROP VIEW IF EXISTS `bai_log_view` */;
 /*!50001 DROP TABLE IF EXISTS `bai_log_view` */;

@@ -13,7 +13,7 @@ MySQL - 10.3.8-MariaDB : Database - bai_rm_pj1
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`bai_rm_pj1` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `bai_rm_pj1`;
+/*USE `bai_rm_pj1`;*/
 
 /* Function  structure for function  `fn_roll_id_fab_scan_status` */
 
@@ -44,7 +44,7 @@ DELIMITER ;
 
 /*Table structure for table `docket_ref` */
 
-DROP TABLE IF EXISTS `docket_ref`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`docket_ref`;
 
 /*!50001 DROP VIEW IF EXISTS `docket_ref` */;
 /*!50001 DROP TABLE IF EXISTS `docket_ref` */;
@@ -83,7 +83,7 @@ DROP TABLE IF EXISTS `docket_ref`;
 
 /*Table structure for table `fabric_status` */
 
-DROP TABLE IF EXISTS `fabric_status`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`fabric_status`;
 
 /*!50001 DROP VIEW IF EXISTS `fabric_status` */;
 /*!50001 DROP TABLE IF EXISTS `fabric_status` */;
@@ -113,7 +113,7 @@ DROP TABLE IF EXISTS `fabric_status`;
 
 /*Table structure for table `fabric_status_v1` */
 
-DROP TABLE IF EXISTS `fabric_status_v1`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`fabric_status_v1`;
 
 /*!50001 DROP VIEW IF EXISTS `fabric_status_v1` */;
 /*!50001 DROP TABLE IF EXISTS `fabric_status_v1` */;
@@ -145,7 +145,7 @@ DROP TABLE IF EXISTS `fabric_status_v1`;
 
 /*Table structure for table `fabric_status_v2` */
 
-DROP TABLE IF EXISTS `fabric_status_v2`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`fabric_status_v2`;
 
 /*!50001 DROP VIEW IF EXISTS `fabric_status_v2` */;
 /*!50001 DROP TABLE IF EXISTS `fabric_status_v2` */;
@@ -181,7 +181,7 @@ DROP TABLE IF EXISTS `fabric_status_v2`;
 
 /*Table structure for table `fabric_status_v3` */
 
-DROP TABLE IF EXISTS `fabric_status_v3`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`fabric_status_v3`;
 
 /*!50001 DROP VIEW IF EXISTS `fabric_status_v3` */;
 /*!50001 DROP TABLE IF EXISTS `fabric_status_v3` */;
@@ -224,7 +224,7 @@ DROP TABLE IF EXISTS `fabric_status_v3`;
 
 /*Table structure for table `grn_track_pendings` */
 
-DROP TABLE IF EXISTS `grn_track_pendings`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`grn_track_pendings`;
 
 /*!50001 DROP VIEW IF EXISTS `grn_track_pendings` */;
 /*!50001 DROP TABLE IF EXISTS `grn_track_pendings` */;
@@ -246,7 +246,7 @@ DROP TABLE IF EXISTS `grn_track_pendings`;
 
 /*Table structure for table `sticker_ref` */
 
-DROP TABLE IF EXISTS `sticker_ref`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`sticker_ref`;
 
 /*!50001 DROP VIEW IF EXISTS `sticker_ref` */;
 /*!50001 DROP TABLE IF EXISTS `sticker_ref` */;
@@ -276,7 +276,7 @@ DROP TABLE IF EXISTS `sticker_ref`;
 
 /*Table structure for table `stock_report` */
 
-DROP TABLE IF EXISTS `stock_report`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`stock_report`;
 
 /*!50001 DROP VIEW IF EXISTS `stock_report` */;
 /*!50001 DROP TABLE IF EXISTS `stock_report` */;
@@ -306,7 +306,7 @@ DROP TABLE IF EXISTS `stock_report`;
 
 /*Table structure for table `store_in_weekly_backup` */
 
-DROP TABLE IF EXISTS `store_in_weekly_backup`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`store_in_weekly_backup`;
 
 /*!50001 DROP VIEW IF EXISTS `store_in_weekly_backup` */;
 /*!50001 DROP TABLE IF EXISTS `store_in_weekly_backup` */;

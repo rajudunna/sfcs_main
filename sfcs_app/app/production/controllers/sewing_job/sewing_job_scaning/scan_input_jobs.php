@@ -49,7 +49,7 @@
 $url = getFullURL($_GET['r'],'pre_input_job_scanning.php','N');
 // echo $operation_code;
 $form = 'P';
-if($operation_code >=130 && $operation_code < 300)
+if($operation_code >=130)
 {
 	$form = 'G';
 }
@@ -390,6 +390,10 @@ $(document).ready(function()
 								status = '<font color="red">Already Scanned</font>';
 							}
 						}
+						else
+						{
+							status = '<font color="red">No Operation Reported</font>';
+						}							
 						var temp_var_bal1 = 0;
 						if(data[i].flag == 'packing_summary_input' || emb_ops != undefined)
 						{

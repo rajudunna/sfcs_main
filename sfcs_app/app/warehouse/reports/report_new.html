@@ -1,9 +1,13 @@
-
+<?php
+$url = getFullURLLevel($_GET['r'],'jobs/rm_warehouse/stock_report_source.php',2,'R');
+//echo $url;
+include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
+?>
 
  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
   
   
-  <title>BEK RM Stock Report</title>
+  <title>RM Stock Report</title>
   
 <style>
 /* body
@@ -62,31 +66,13 @@ th
 <script type="text/javascript" src="/sfcs_app/common/js/jquery.min.js" ></script>
 
 <script type="text/javascript" src="/sfcs_app/common/js/table2CSV.js" ></script>
-
-<script>
-	function downloadFile(fileName, urlData) {
-	    var aLink = document.createElement('a');
-	    aLink.download = fileName;
-	    aLink.href = urlData;
-	    var event = new MouseEvent('click');
-	    aLink.dispatchEvent(event);
-	   }
-	function getCSVData() {
-		var data = $('#table1').table2CSV({delivery: 'value',filename: 'stock_report.csv'});
-        downloadFile('stock_report.csv', 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data));
-
-	}
-</script>
  
 </head>
 <body>
 
 <div class="panel panel-primary">
-<div class="panel-heading">Stock Report</div>
+<div class="panel-heading">RM Stock Report</div>
 <div class="panel-body">
-<h3><span class='label label-primary'>LU:2018-07-18 01-00-00</span></h3><form action='report_new_excel_v2.php' method ='post' > 
-		<input type='hidden' id='csv_text' ><br/><br/>
-      <input class='btn btn-xs btn-primary' value='Export to excel' type='button' onclick='getCSVData()'><br/>
-<div class="table-responsive"><table align="left" class="table table-bordered"><table id="table1" class="table table-bordered"><tr><th style="text-align:  center;">Location</th><th style="text-align:  center;">Lot No</th><th style="text-align:  center;">Batch No</th><th style="text-align:  center;">SKU</th><th style="text-align:  center;">Item Description</th><th style="text-align:  center;">Item Name</th><th style="text-align:  center;">Box/Roll No</th><th style="text-align:  center;">Measured Width</th>
-<th style="text-align:  center;">Received Qty</th><th style="text-align:  center;">Issued Qty</th><th style="text-align:  center;">Return Qty</th>
-<th style="text-align:  center;">Balance Qty</th><th style="text-align:  center;">Shade</th><th style="text-align:  center;">Invoice</th><th style="text-align:  center;">Status</th><th style="text-align:  center;">GRN Date</th><th style="text-align:  center;">Remarks</th><th style="text-align:  center;">Label Id</th><th style="text-align:  center;">Product Group</th><th style="text-align:  center;">Buyer</th><th style="text-align:  center;">Supplier</th></tr><tr><td></td><td>1807100668</td><td>A-18ZT0701H</td><td>JP316FW8FB4 001</td><td>OISEAU-VAR-ROSE-CLAIR_01_18FW /</td><td>RY56%CT44%172G146cmPNT*3143#</td><td>1</td><td></td><td>678.81</td><td>0.00</td><td>0.00</td><td>678.81</td><td></td><td>18ZT0701H</td><td>0</td><td>20180710</td><td></td><td>1</td><td>Fabric</td><td>BEL_UNIQLO_WOMENS_WN_CTN_TPS_BTM</td><td>SUNTEX CO LTD</td></tr><tr><td></td><td>1807100670</td><td>B-18ZT0701H</td><td>JP316FW8FB4 001</td><td>OISEAU-VAR-ROSE-CLAIR_01_18FW /</td><td>RY56%CT44%172G146cmPNT*3143#</td><td>1</td><td></td><td>4321.19</td><td>0.00</td><td>0.00</td><td>4321.19</td><td></td><td>18ZT0701H</td><td>0</td><td>20180710</td><td></td><td>2</td><td>Fabric</td><td>BEL_UNIQLO_WOMENS_WN_CTN_TPS_BTM</td><td>SUNTEX CO LTD</td></tr></table>
+<h3><span class='label label-primary'><?php echo $data;?></span></h3><BR>
+<a class='btn btn-xs btn-primary' type='button' href="<?php echo getFullURLLevel($_GET['r'],'jobs/rm_warehouse/stock_report.csv',2,'R'); ?>">Export to excel</a>
+
