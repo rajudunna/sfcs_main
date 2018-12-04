@@ -41,7 +41,7 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
 			
 			$mssql_insert_query="insert into [MRN_V2].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status) values";
 			$values = array();
-			
+			$ref_no1 = array();
 			while($sql_row5=mysqli_fetch_array($sql_result5))
 			{
 				$id=$sql_row5['id'];
@@ -49,8 +49,7 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
 				$bundle_quantity=$sql_row5['bundle_quantity'];
 				$op_code=$sql_row5['op_code'];
 				$op_desc=$sql_row5['op_desc'];
-				$ref_no=$sql_row5['ref_no'];
-				
+				$ref_no1=implode(',', $sql_row5['ref_no']);
 				array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_no . "','" . $op_code . "','" . $bundle_quantity . "','".$employee_no."','".$remarks."','".$co_no."','".$order_del_no."','')");
 			}
 			
@@ -74,7 +73,7 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
 						$schedule_id=$sql_row11['id'];
 					}
                     if($sql_num_check5>0){
-						$pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='1' where tid='$ref_no'";
+						$pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='1' where tid in ($ref_no1)";
 						$pass_update1_result=mysqli_query($link, $pass_update1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
