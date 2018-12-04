@@ -821,6 +821,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         $operation_code = $row['operation_code'];
       }
 
+      
       $doc_no_ref1 = $doc_no;
       //FOR SCHEDULE CLUBBING ensuring for parent docket
       if($doc_no != ''){
@@ -834,8 +835,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       }
       if($doc_no == '')
         $doc_no = $doc_no_ref1;
+      //schedule club docket validation end.JUST FOR CPS LOG WE ARE GETTING CHILD DOCKETS
 
-     
       $rep_status ='';
       $sql44="SELECT * FROM $bai_pro3.cps_log WHERE doc_no IN ($doc_no)  AND operation_code=".$operation_code;
       $sql_result12=mysqli_query($link, $sql44) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -854,7 +855,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           }
         }
       }
-      $doc_no =  $doc_no_ref1;
+      //assigning main docket again to $doc after schedule club docket validaiton
+      $doc_no = $doc_no_ref1;
 
         if($fabric_status==null or $fabric_status==0){          
           $ft_status=$sql_row1['ft_status'];
