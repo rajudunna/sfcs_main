@@ -1,7 +1,7 @@
 
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-$conn = odbc_connect("$ms_sql_driver_name;Server=$ms_sql_odbc_server;Database=$m3_db;", $ms_sql_odbc_user,$ms_sql_odbc_pass);
+$conn = odbc_connect("$ms_sql_driver_name;Server=$ms_sql_odbc_server;Database=$mssql_db;", $ms_sql_odbc_user,$ms_sql_odbc_pass);
 ?>
 
 <?php
