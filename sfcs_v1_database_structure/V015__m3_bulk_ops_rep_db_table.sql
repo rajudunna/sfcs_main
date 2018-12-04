@@ -13,13 +13,13 @@ MySQL - 10.3.8-MariaDB : Database - m3_bulk_ops_rep_db
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`m3_bulk_ops_rep_db` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `m3_bulk_ops_rep_db`;
+/*USE `m3_bulk_ops_rep_db`;*/
 
 /*Table structure for table `file_process_log` */
 
-DROP TABLE IF EXISTS `file_process_log`;
+DROP TABLE IF EXISTS `m3_bulk_ops_rep_db`.`file_process_log`;
 
-CREATE TABLE `file_process_log` (
+CREATE TABLE `m3_bulk_ops_rep_db`.`file_process_log` (
   `file_tran_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'File Transaction ID',
   `file_process_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Time Stamp',
   `file_name` varchar(300) NOT NULL COMMENT 'File Name',
@@ -29,9 +29,9 @@ CREATE TABLE `file_process_log` (
 
 /*Table structure for table `m3_sfcs_mrn_log` */
 
-DROP TABLE IF EXISTS `m3_sfcs_mrn_log`;
+DROP TABLE IF EXISTS `m3_bulk_ops_rep_db`.`m3_sfcs_mrn_log`;
 
-CREATE TABLE `m3_sfcs_mrn_log` (
+CREATE TABLE `m3_bulk_ops_rep_db`.`m3_sfcs_mrn_log` (
   `mrn_tid` bigint(20) NOT NULL AUTO_INCREMENT,
   `sfcs_style` varchar(300) DEFAULT NULL,
   `sfcs_schedule` varchar(300) DEFAULT NULL,
@@ -45,9 +45,9 @@ CREATE TABLE `m3_sfcs_mrn_log` (
 
 /*Table structure for table `m3_sfcs_tran_log` */
 
-DROP TABLE IF EXISTS `m3_sfcs_tran_log`;
+DROP TABLE IF EXISTS `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log`;
 
-CREATE TABLE `m3_sfcs_tran_log` (
+CREATE TABLE `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log` (
   `sfcs_tid` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Transaction ID',
   `sfcs_date` date NOT NULL COMMENT 'Reporting Date',
   `sfcs_style` varchar(300) NOT NULL COMMENT 'style',
@@ -73,13 +73,13 @@ CREATE TABLE `m3_sfcs_tran_log` (
   `m3_error_code` varchar(255) NOT NULL COMMENT 'Error Code Description',
   PRIMARY KEY (`sfcs_tid`),
   KEY `primary_index` (`sfcs_status`,`m3_op_des`)
-) ENGINE=InnoDB AUTO_INCREMENT=89034 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `m3_sfcs_tran_log_backup` */
 
-DROP TABLE IF EXISTS `m3_sfcs_tran_log_backup`;
+DROP TABLE IF EXISTS `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log_backup`;
 
-CREATE TABLE `m3_sfcs_tran_log_backup` (
+CREATE TABLE `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log_backup` (
   `sfcs_tid` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Transaction ID',
   `sfcs_date` date NOT NULL COMMENT 'Reporting Date',
   `sfcs_style` varchar(300) NOT NULL COMMENT 'style',
@@ -108,7 +108,7 @@ CREATE TABLE `m3_sfcs_tran_log_backup` (
 
 /*Table structure for table `m3_sfcs_tran_log_v2` */
 
-DROP TABLE IF EXISTS `m3_sfcs_tran_log_v2`;
+DROP TABLE IF EXISTS `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log_v2`;
 
 CREATE TABLE `m3_sfcs_tran_log_v2` (
   `sfcs_tid` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Transaction ID',
@@ -141,9 +141,9 @@ CREATE TABLE `m3_sfcs_tran_log_v2` (
 
 /*Table structure for table `order_status_tbl` */
 
-DROP TABLE IF EXISTS `order_status_tbl`;
+DROP TABLE IF EXISTS `m3_bulk_ops_rep_db`.`order_status_tbl`;
 
-CREATE TABLE `order_status_tbl` (
+CREATE TABLE `m3_bulk_ops_rep_db`.`order_status_tbl` (
   `order_del_no` varchar(60) DEFAULT NULL,
   `order_col_des` varchar(150) DEFAULT NULL,
   `order_size` varchar(15) DEFAULT NULL,
@@ -153,9 +153,9 @@ CREATE TABLE `order_status_tbl` (
 
 /*Table structure for table `rejection_report_matrix` */
 
-DROP TABLE IF EXISTS `rejection_report_matrix`;
+DROP TABLE IF EXISTS `m3_bulk_ops_rep_db`.`rejection_report_matrix`;
 
-CREATE TABLE `rejection_report_matrix` (
+CREATE TABLE `m3_bulk_ops_rep_db`.`rejection_report_matrix` (
   `interface` varchar(30) NOT NULL COMMENT 'Interface Type',
   `ref1` varchar(30) NOT NULL COMMENT 'Reason Source (Good Garments or G or P)',
   `ref2` varchar(10) NOT NULL COMMENT 'Source (CNP, PCK, CUT)',
@@ -166,9 +166,9 @@ CREATE TABLE `rejection_report_matrix` (
 
 /*Table structure for table `sfcs_to_m3_batch_log` */
 
-DROP TABLE IF EXISTS `sfcs_to_m3_batch_log`;
+DROP TABLE IF EXISTS `m3_bulk_ops_rep_db`.`sfcs_to_m3_batch_log`;
 
-CREATE TABLE `sfcs_to_m3_batch_log` (
+CREATE TABLE `m3_bulk_ops_rep_db`.`sfcs_to_m3_batch_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `no_of_records` int(11) DEFAULT NULL,
@@ -176,13 +176,13 @@ CREATE TABLE `sfcs_to_m3_batch_log` (
   `scrap_records_ids` varchar(255) DEFAULT NULL,
   `type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `sfcs_to_m3_response_log` */
 
-DROP TABLE IF EXISTS `sfcs_to_m3_response_log`;
+DROP TABLE IF EXISTS `m3_bulk_ops_rep_db`.`sfcs_to_m3_response_log`;
 
-CREATE TABLE `sfcs_to_m3_response_log` (
+CREATE TABLE `m3_bulk_ops_rep_db`.`sfcs_to_m3_response_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `error_message` varchar(255) DEFAULT NULL,

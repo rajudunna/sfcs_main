@@ -1550,22 +1550,18 @@ if($barcode_generation == 1)
 					while($buyer_qry_row=mysqli_fetch_array($buyer_qry_result)){
 							$buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
 						}
-					$qry_nop="select avail_A,avail_B FROM $bai_pro.pro_atten WHERE module=".$b_module[$i]." AND date='$bac_dat'";
+					$qry_nop="select ((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance where module=".$b_module[$i]." and date='".$bac_dat."' and shift='".$b_shift."'";
 					// echo $qry_nop;
-						$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($nop_qry_row=mysqli_fetch_array($qry_nop_result)){
-								$avail_A=$nop_qry_row['avail_A'];
-								$avail_B=$nop_qry_row['avail_B'];
-						}
-						if(mysqli_num_rows($qry_nop_result)>0){
-							if($row['shift']=='A'){
-								$nop=$avail_A;
-							}else{
-								$nop=$avail_B;
-							}
-						}else{
-							$nop=0;
-						}
+					$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
+					{
+							$avail=$nop_qry_row['nop'];
+					}
+					if(mysqli_num_rows($qry_nop_result)>0){
+						$nop=$avail;
+					}else{
+						$nop=0;
+					}
 					$bundle_op_id=$b_tid[$i]."-".$b_op_id."-".$b_inp_job_ref[$i];
 					$insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
 					bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno

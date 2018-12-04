@@ -1,6 +1,6 @@
-use brandix_bts;
+/*use brandix_bts;*/
 
-create table transactions_log( 
+create table brandix_bts.transactions_log( 
    sno int(11) NOT NULL AUTO_INCREMENT , 
    transaction_id int(11) , 
    response_message varchar(300) , 

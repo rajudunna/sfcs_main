@@ -1,6 +1,5 @@
 <?php 
 
-
 $include_path=getenv('config_job_path');
 include($include_path.'\configuration\API\confr.php');
 $conf = new confr($include_path.'\configuration\API\saved_fields\fields.json');
@@ -26,6 +25,13 @@ $uid=$conf->get('mssql-user-name');
 $pwd = $conf->get('mssql-password');
 $m3_databasename=$conf->get('m3database');
 $driver_name=$conf->get('driver_name');
+
+//HRMS DATABASE CONNECTIONS
+$hrms_server_name=$conf->get('hrms-server-name');
+$hrms_server_port=$conf->get('hrms-port');
+$hrms_host=$hrms_server_name.":".$hrms_server_port;
+$hrms_user=$conf->get('hrms-user-name');
+$hrms_pass = $conf->get('hrms-password');
 
 $host_ms = $conf->get('m3_system_id');
 $user_ms = $conf->get('m3_user_name');
