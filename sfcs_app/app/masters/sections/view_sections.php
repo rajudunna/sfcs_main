@@ -12,8 +12,8 @@
 	if ($conn->connect_error) {
 		die("Connection failed: " . $conn->connect_error);
 	} 
-
-	$sql = "SELECT * FROM $bai_pro3.`sections_db`";
+	$temp=1;
+	$sql = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section>0 GROUP BY section ORDER BY section + 0";
 	$result = $conn->query($sql);
 	$url=getFullURL($_GET['r'],'add_section.php','N');
 	$url1=getFullURL($_GET['r'],'delete.php','N');
@@ -24,11 +24,13 @@
 			$rowid=$row["sec_id"];
 			$sec_head=$row["sec_head"];
 			$sec_mods=$row["sec_mods"];
-			$ims_priority_boxes=$row["ims_priority_boxes"];
+			$section_display_name=$row["section_display_name"];
+			$ims_priority_boxs=$row["ims_priority_boxs"];
 			if($sec_head!='Admin'){
-			echo "<tr><td>".$row["sec_id"]."</td><td>".$row["sec_head"]." </td><td>".$row["sec_mods"]."</td><td>".$row["ims_priority_boxes"]."</td>";
+			echo "<tr><td>".$temp."</td><td>".$row["section_display_name"]." </td><td>".$row["sec_mods"]."</td><td>".$row["ims_priority_boxs"]."</td>";
 			//echo"<td><a href='$url&rowid=$rowid&sec_head=$sec_head&sec_mods=$sec_mods&ims_priority_boxes=$ims_priority_boxes' class='btn btn-warning btn-xs editor_edit'>Edit</a> / 
 			//<a href='$url1&rowid=$rowid&sec_head=$sec_head&sec_mods=$sec_mods&ims_priority_boxes=$ims_priority_boxes' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
+			$temp++;
 			}
 		}
 		echo "</table></div>";

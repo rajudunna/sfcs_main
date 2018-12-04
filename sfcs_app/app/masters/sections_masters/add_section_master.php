@@ -82,7 +82,7 @@
 			</div>
             <div class="col-md-4">
 				<div class="form-group">
-                    <label class="control-label control-label-left col-sm-5" for="ims_priority">IMS Priority Boxs<span class="req"> *</span></label>
+                    <label class="control-label control-label-left col-sm-5" for="ims_priority">IMS Priority Boxes<span class="req"> *</span></label>
                         <div class="controls col-sm-7">
                             <input id="ims_priority" type="text" class="form-control k-textbox" data-role="text" placeholder="IMS Priority Box" name="ims_priority" value="<?php echo $ims_priority_boxs; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
                         </div>

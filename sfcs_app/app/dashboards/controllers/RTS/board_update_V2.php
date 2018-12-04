@@ -13,40 +13,8 @@ $section_no=$_GET['section_no'];
 ?>
 
 
-<?php
-
-//New Implementation to restrict as per time lines to update Planning Board 20111211
-	/* $hour=date("H");
-	$restricted_hours=array(7,8,9,15,16);
-	if(in_array($hour,$restricted_hours))
-	{
-		header("Location:time_out.php?msg=2");
-	} */
-	
-	$hour=date("H.i");
-		
-	//if(($hour>=7.45 and $hour<=10.00) or ($hour>=15.15 and $hour<=16.45)) //OLD
-	if(($hour>=7.45 and $hour<=9.45) or ($hour>=12.30 and $hour<=14.00) or ($hour>=16.00 and $hour<=17.30))
-	//if(($hour>=7.15 and $hour<=9.45) or ($hour>=15.15 and $hour<=17.15))
-	{
-		//header("Location:time_out.php?msg=2");
-	}
-	else
-	{
-		
-	}
-	
-?>
-
-
-<!-- <link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/css/page_style.css',2,'R'); ?>" /> -->
 
 <style>
-body
-{
-	/* font-family: Century Gothic;
-	font-size: 10px; */
-}
 table{
 	font-size:10px;
 }
@@ -65,20 +33,19 @@ echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"red\">Please wait
 	ob_end_flush();
 	flush();
 	usleep(2);
-$sqlx1="SELECT * FROM $bai_pro3.sections_master WHERE sec_id=$section_no";
-$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
-{
-	$section=$sql_rowx1['sec_name'];
-}
+	$sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section_no";
+	$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+	{
+		$section_display_name=$sql_rowx1['section_display_name'];
+	}
 echo "<div class='table-responsive'>";
 echo "<table table class='table table-bordered'>";
-echo "<tr><th colspan=10>Production Plan for $section</th><th colspan=20 style='text-align:left;'>Date : ".date("Y-m-d H:i")."</th></tr>";
+echo "<tr><th colspan=10>Production Plan for $section_display_name</th><th colspan=20 style='text-align:left;'>Date : ".date("Y-m-d H:i")."</th></tr>";
 echo "<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th>Remarks</th><th>Priority 2</th><th>Remarks</th><th>Priority 3</th><th>Remarks</th><th>Priority 4</th><th>Remarks</th><th>Priority 5</th><th>Remarks</th><th>Priority 6</th><th>Remarks</th><th>Priority 7</th><th>Remarks</th><th>Priority 8</th><th>Remarks</th><th>Priority 9</th><th>Remarks</th><th>Priority 10</th><th>Remarks</th><th>Priority 11</th><th>Remarks</th><th>Priority 12</th><th>Remarks</th><th>Priority 13</th><th>Remarks</th><th>Priority 14</th><th>Remarks</th></tr>";
 
-$sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` WHERE section=$section_no GROUP BY section ORDER BY section + 0";
-mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sqlx="SELECT section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$section_no GROUP BY section ORDER BY section + 0";
+$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
 	$section=$sql_rowx['sec_id'];
@@ -98,7 +65,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		$sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and order_tid is not null ORDER BY priority LIMIT 14";
 		//echo $sql1."<br/>";
 		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result1);
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -145,12 +112,12 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				
 				//To get the status of join orders
 				$sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" and order_joins=2";
-				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				if(mysqli_num_rows($sql_result11)>0)
 				{
 					$sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_joins=\"J$schedule\"";
-					$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row11=mysqli_fetch_array($sql_result11))
 					{
 						$join_ft_status=$sql_row11['ft_status'];
@@ -207,7 +174,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				case "5":
 				{
 					$sql1x1="select doc_ref from $bai_pro3.fabric_priorities where doc_ref=$doc_no and hour(issued_time)+minute(issued_time)>0";
-					$sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_result1x1)>0)
 					{
 						$id="yellow";
@@ -240,7 +207,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$total_qty=0;
 				$sql11="select order_col_des,color_code,(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where category in ('".implode("','",$in_categories)."') and order_del_no=$schedule and clubbing=".$sql_row1['clubbing']." and acutno=".$sql_row1['acutno'];
 				//echo $sql11."<br/>";
-				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row11=mysqli_fetch_array($sql_result11))
 				{
 					$club_c_code[]=chr($sql_row11['color_code']).leading_zeros($sql_row1['acutno'],3);
@@ -259,7 +226,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$ex_factory="NIP";
 			$sql11="select order_date as ex_factory_date_new from $bai_pro3.bai_orders_db where order_del_no=$schedule";
 			//echo $sql11."<br/>";
-			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row11=mysqli_fetch_array($sql_result11))
 			{
 				$ex_factory=date("M/d",strtotime($sql_row11['ex_factory_date_new']));

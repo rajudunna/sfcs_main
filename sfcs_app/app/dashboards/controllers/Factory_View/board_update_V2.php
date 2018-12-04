@@ -65,12 +65,12 @@ echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"red\">Please wait
 	ob_end_flush();
 	flush();
 	usleep(2);
-	$sqlx1="SELECT * FROM $bai_pro3.sections_master WHERE sec_id=$section_no";
+	$sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section_no";
 	// echo $sqlx1;
 	$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 	{
-		$section1=$sql_rowx1['sec_name'];
+		$section1=$sql_rowx1['section_display_name'];
 	}
 
 echo "<div class='table-responsive'>";
@@ -78,7 +78,6 @@ echo "<table table class='table table-bordered'>";
 echo "<tr><th colspan=10>Production Plan for $section1</th><th colspan=20 style='text-align:left;'>Date : ".date("Y-m-d H:i")."</th></tr>";
 echo "<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th>Remarks</th><th>Priority 2</th><th>Remarks</th><th>Priority 3</th><th>Remarks</th><th>Priority 4</th><th>Remarks</th><th>Priority 5</th><th>Remarks</th><th>Priority 6</th><th>Remarks</th><th>Priority 7</th><th>Remarks</th><th>Priority 8</th><th>Remarks</th><th>Priority 9</th><th>Remarks</th><th>Priority 10</th><th>Remarks</th><th>Priority 11</th><th>Remarks</th><th>Priority 12</th><th>Remarks</th><th>Priority 13</th><th>Remarks</th><th>Priority 14</th><th>Remarks</th></tr>";
 
-// $sqlx="select * from $bai_pro3.sections_db where sec_id>0 and sec_id=$section_no";
 $sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` where section = $section_no GROUP BY section ORDER BY section + 0";
 // echo $sqlx.'<br/>';
 // mysqli_query($link, $sqlx) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));

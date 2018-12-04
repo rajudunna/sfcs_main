@@ -60,17 +60,17 @@ table{
 <body>
 <?php
 
-$sqlx1="SELECT * FROM $bai_pro3.sections_master WHERE sec_id=$section_no";
-$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section_no";
+$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 {
-	$section=$sql_rowx1['sec_name'];
+	$section_display_name=$sql_rowx1['section_display_name'];
 }
 echo "<table>";
-echo "<tr><th colspan=10>Production Plan for Section - $section</th><th colspan=6>".date("Y-m-d H:i")."</th></tr>";
+echo "<tr><th colspan=10>Production Plan for $section_display_name</th><th colspan=6>".date("Y-m-d H:i")."</th></tr>";
 echo "<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th>Remarks</th><th>Priority 2</th><th>Remarks</th><th>Priority 3</th><th>Remarks</th><th>Priority 4</th><th>Remarks</th><th>Priority 5</th><th>Remarks</th><th>Priority 6</th><th>Remarks</th><th>Priority 7</th><th>Remarks</th></tr>";
 
-$sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` WHERE section=$section_no GROUP BY section ORDER BY section + 0";
+$sqlx="SELECT section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$section_no GROUP BY section ORDER BY section + 0";
 mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))

@@ -345,7 +345,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	echo "<font size=5><a href=\"#\">Absenteeism</a></font>";
 	echo "<table>";
 	echo '<tr><td></td><td>Fixed</td><td>| Avail.</td></tr>';
-	//echo "<tr><th colspan=2><h2><a href=\"board_update.php?section_no=$section\" onclick=\"Popup=window.open('board_update.php?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
+
 
 	$mods=array();
 	$mods=explode(",",$section_mods);

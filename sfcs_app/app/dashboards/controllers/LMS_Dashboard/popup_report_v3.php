@@ -85,12 +85,12 @@ display_loading_screen();
 
 <?php 
 
-$sqlx1="SELECT * FROM $bai_pro3.sections_master WHERE sec_id=$section_no";
+$sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section_no";
 // echo $sqlx1;
 $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 {
-	$sec_name=$sql_rowx1['sec_name'];
+	$sec_name=$sql_rowx1['section_display_name'];
 }
 				
 
@@ -109,7 +109,6 @@ $sql1="insert into $bai_pro3.packing_dashboard_temp SELECT tid,doc_no,size_code,
 mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 //NEW ADD 2013-04-17 
 
-// $sqlx="select * from $bai_pro3.sections_db where sec_id>=0 and sec_id in ($section_no)"; 
 $sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` where section in ($section_no) GROUP BY section ORDER BY section + 0";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_rowx=mysqli_fetch_array($sql_resultx)) 

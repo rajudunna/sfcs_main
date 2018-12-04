@@ -86,7 +86,7 @@ if (empty($section)) {
 
 		//insert 
 		$sql = "INSERT INTO $bai_pro3.sections_master (date_time,sec_name,ims_priority_boxs,section_display_name,section_head)
-			VALUES ('$datetime','$section','$ims_priority_boxs','$section_name_new','$section_head')";
+			VALUES ('$datetime','$section','$ims_priority_boxs','$section_display_name','$section_head')";
 
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'add_section_master.php','N');

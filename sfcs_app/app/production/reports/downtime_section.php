@@ -32,14 +32,6 @@ $username=strtolower($username_list[1]);
  <col width=86 style='mso-width-source:userset;mso-width-alt:3145;width:65pt'>
  <tr height=40 style='height:30.0pt'>
   <td height=40 class=xl637326 width=103 style='height:30.0pt;width:77pt; '>Deprtment Name</td>
-  <!--<td class=xl647326 width=86 style='border-left:none;width:65pt'>Section - 1</td>
-  <td class=xl647326 width=86 style='border-left:none;width:65pt'>Section - 2</td>
-  <td class=xl647326 width=86 style='border-left:none;width:65pt'>Section - 3</td>
-  <td class=xl647326 width=86 style='border-left:none;width:65pt'>Section - 4</td>
-  <td class=xl647326 width=86 style='border-left:none;width:65pt'>Section - 5</td>
-  <td class=xl647326 width=86 style='border-left:none;width:65pt'>Section - 6</td>
-  <td class=xl647326 width=86 style='border-left:none;width:65pt'>Section - 7</td>
-  <td class=xl647326 width=86 style='border-left:none;width:65pt'>Section - 8</td>-->
   <?php
         $sec_id=array();
 		$sql="SELECT sec_id as sec_id FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
@@ -52,7 +44,14 @@ $username=strtolower($username_list[1]);
 		}
 		for($i=0;$i<sizeof($sec_id);$i++)
 		{
-			echo "<td class=xl647326 width=86 style='border-left:none;width:65pt;'>Section -".$sec_id[$i]."</td>";
+			$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=".$sec_id[$i];
+			$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row12=mysqli_fetch_array($result12))
+			{
+				$section_display_name=$sql_row12["section_display_name"];
+			}
+
+			echo "<td class=xl647326 width=86 style='border-left:none;width:65pt;'>".$section_display_name."</td>";
 		}
 		
   echo "<td class=xl637326 width=66 style='border-left:none;width:50pt;'>Today Total</td>";
