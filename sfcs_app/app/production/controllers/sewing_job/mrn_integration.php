@@ -58,12 +58,11 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
                                             // $mo_query="select ref_no from $bai_pro3.mo_operation_quantites where mo_no='$mo_no' and op_code=1";
                                             // $mo_query_result=mysqli_query($link, $mo_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                                            while($sql_row16=mysqli_fetch_array($mo_query_result))
-                                            {
+                                            
                                                 //$mo_ref_no=$sql_row16['ref_no'];
                                                 $pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='1' where tid='$ref_no'";
                                                 $pass_update1_result=mysqli_query($link, $pass_update1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                            }
+                                            
 										$sql="select * from $brandix_bts.tbl_orders_style_ref where product_style='$style'";
 										$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 										$sql_num_check=mysqli_num_rows($sql_result);
