@@ -22,6 +22,7 @@ $ms_sql_odbc_host = $conf1->get('mssql-odbc');
 $ms_sql_odbc_server = $conf1->get('mssql-server-name');
 $ms_sql_odbc_user = $conf1->get('mssql-user-name');
 $ms_sql_odbc_pass = $conf1->get('mssql-password');
+$m3_db = $conf1->get('m3database');
 $ms_sql_driver_name = $conf1->get('driver_name');
 
 //MY SQL host

@@ -1,8 +1,6 @@
 
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-$m3_db = 'MRN_V2';
-echo $ms_sql_driver_name."</br>";echo $ms_sql_odbc_server."</br>";echo $m3_db."</br>";echo $ms_sql_odbc_user."</br>";echo $ms_sql_odbc_pass."</br>";
 $conn = odbc_connect("$ms_sql_driver_name;Server=$ms_sql_odbc_server;Database=$m3_db;", $ms_sql_odbc_user,$ms_sql_odbc_pass);
 ?>
 
@@ -35,7 +33,7 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
                             $date=date('Ymd');
                             $employee_no=$order_del_no."-".$input_job_no."</br>";
                             $remarks=$order_del_no."-".$date."</br>";
-                            $mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid) and op_code=1 group by mo_no";
+                            $mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid) and op_code=1 group by mo_no";
                             $sql_result5=mysqli_query($link, $mo_operation_quantites_query) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
                             try
                             {
@@ -47,6 +45,7 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
                                 $bundle_quantity=$sql_row5['bundle_quantity'];
                                 $op_code=$sql_row5['op_code'];
                                 $op_desc=$sql_row5['op_desc'];
+                                $ref_no=$sql_row5['ref_no'];
 
               
                                 $mssql_insert_query="insert into [MRN_V2].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status) values ('$company_no', '$facility_code','$mo_no', '$op_code', '$bundle_quantity','$employee_no','$remarks','$co_no','$order_del_no','')";
@@ -56,13 +55,13 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
                 
                                 if($sql_num_check5>0){
 
-                                            $mo_query="select ref_no from $bai_pro3.mo_operation_quantites where mo_no='$mo_no' and op_code=1";
-                                            $mo_query_result=mysqli_query($link, $mo_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                            // $mo_query="select ref_no from $bai_pro3.mo_operation_quantites where mo_no='$mo_no' and op_code=1";
+                                            // $mo_query_result=mysqli_query($link, $mo_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                                             while($sql_row16=mysqli_fetch_array($mo_query_result))
                                             {
-                                                $mo_ref_no=$sql_row16['ref_no'];
-                                                $pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='1' where tid='$mo_ref_no'";
+                                                //$mo_ref_no=$sql_row16['ref_no'];
+                                                $pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='1' where tid='$ref_no'";
                                                 $pass_update1_result=mysqli_query($link, $pass_update1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
                                             }
 										$sql="select * from $brandix_bts.tbl_orders_style_ref where product_style='$style'";
