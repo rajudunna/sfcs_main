@@ -826,7 +826,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//echo "Last Update at: ".$sql_row['lastup']."<br/>";
 }
 
-// $sqlx="select * from $bai_pro3.sections_db where sec_id='".$_GET['sec_x']."'";
 $sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` where section = '".$_GET['sec_x']."' GROUP BY section ORDER BY section + 0";
 //echo "</br>".$sqlx;
 mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -359,13 +359,7 @@ echo "<div class='panel panel-primary'><div class='panel-heading'>Cartons Work i
                 $section_mods=$sql_rowx['sec_mods'];
                 $section_display_name=$sql_rowx['section_display_name'];
 
-                // $sqlx1="SELECT * FROM $bai_pro3.sections_master WHERE sec_id=$section";
-                // // echo $sqlx1;
-                // $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-                // while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
-                // {
-                //     $sec_name=$sql_rowx1['sec_name'];
-                // }
+           
 
                 echo '<div style="width:270px; background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;">'; 
                 echo "<p>"; 

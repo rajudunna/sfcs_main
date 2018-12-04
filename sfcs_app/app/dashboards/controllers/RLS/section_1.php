@@ -21,15 +21,6 @@ while($result22=mysqli_fetch_array($sql22))
 {
 	$sec_id_main=$result22["sec_id"];
 	
-	// // $sql=mysqli_query($GLOBALS["___mysqli_ston"], "select sec_id,sec_head,sec_mods from $bai_pro3.sections_db where sec_id=$sec_id_main");
-	// $sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` where sec_id=$sec_id_main GROUP BY section ORDER BY section + 0");
-	// //echo $sql;
-	// while($result=mysqli_fetch_array($sql))
-	// {
-	// 	$mods=$result["sec_mods"];
-	// 	$sec_id=$result["sec_id"];
-	// 	$head=$result["sec_head"];
-	// }
 	$sqlx1="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$sec_id_main GROUP BY section ORDER BY section + 0";
 	// echo $sqlx1;
 	$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -89,12 +89,12 @@ display_loading_screen();
 <!-- Loading End -->
 
 <?php
-$sqlx1="SELECT * FROM $bai_pro3.sections_master WHERE sec_id=$section_no";
+$sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section_no";
 // echo $sqlx1;
 $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 {
-  $section1=$sql_rowx1['sec_name'];
+  $section1=$sql_rowx1['section_display_name'];
 }
 
 echo "<h2>Carton Pending List - $section1</h2>";
@@ -110,7 +110,8 @@ $sql1="insert into packing_dashboard_temp SELECT tid,doc_no,size_code,carton_no,
 mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 //NEW ADD 2013-04-17
 
-$sqlx="select * from sections_db where sec_id>=0 and sec_id in ($section_no)";
+$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name where section=$section_no GROUP BY section ORDER BY section + 0";
+
 mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))

@@ -292,7 +292,6 @@ echo "<td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3
     echo "<div class='row'>";
                   echo "<div class='col-sm-2'><label>Select Module:</label> 
                   <select class='form-control' name=\"module_ref\"  id='module_ref'>";
-                //   $sqlx="select * from $bai_pro3.sections_db where sec_id>0 ";
                   $sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` GROUP BY section ORDER BY section + 0";
                   $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                   $break_counter = 0;

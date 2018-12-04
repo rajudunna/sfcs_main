@@ -100,13 +100,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
   $priority_limit=$sql_rowx['ims_priority_boxes'];
   $section_display_name=$sql_rowx['section_display_name'];
   
-  // $sqlx1="SELECT * FROM $bai_pro3.sections_master WHERE sec_id=$section";
-  // // echo $sqlx1;
-  // $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-  // while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
-  // {
-  //   $section1=$sql_rowx1['sec_name'];
-  // }
+
 //echo '<div style="border: 3px coral solid; width: 200px; height: 1200px; float: left; margin: 10px; padding: 10px; overflow: scroll;">';
 echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 30px;">';
 echo "<p>";
