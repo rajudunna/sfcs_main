@@ -22,12 +22,12 @@ if(isset($_GET['style']) && isset($_GET['schedule']))
                         {
 
                             $tid=$sql_row01['tid'];
-                            $input_job_no=$sql_row['input_job_no'];
-                            $order_del_no=$sql_row['order_del_no'];
+                            $input_job_no=$sql_row01['input_job_no'];
+                            $order_del_no=$sql_row01['order_del_no'];
                             $date=date('Ymd');
 
-                            $employee_no=$order_del_no."-".$input_job_no."</br>";
-                            $remarks=$order_del_no."-".$date."</br>";
+                            $employee_no=$order_del_no."-".$input_job_no;
+                            $remarks=$order_del_no."-".$date;
                 
                            // $tid1=implode(",",array_unique($tid)); 
                             // var_dump($size_code);die(); 
