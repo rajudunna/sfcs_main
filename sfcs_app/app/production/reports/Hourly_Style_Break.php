@@ -441,39 +441,6 @@ zoom:75%;
 						$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$section_count=mysqli_num_rows($sql_result2); 
 						//echo $module_count;
-						
-						//NEW
-						
-						// $sql11="select distinct(Hour(bac_lastup)) as \"time\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_sec=$section and bac_shift in ($team)";
-						// //mysql_query($sql11,$link) or exit("Sql Error".mysql_error());
-						// $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-						// $hoursa=mysqli_num_rows($sql_result11);
-
-						// if($hoursa==4 && ($section==3 || $section==4) )
-						// {
-						// 	$hoursa=$hoursa;	
-						// }
-						// else
-						// {
-						// 	if($hoursa>3)
-						// 	{
-						// 		$hoursa=$hoursa+0.5-1;	
-						// 	}
-						// }
-						// if($hoursa==11.5 && ($section==3 || $section==4) )
-						// {
-						// 	$hoursa=$hoursa;
-						// }	
-						// else
-						// {
-						// 	if($hoursa>7.5)
-						// 	{
-						// 		$hoursa=$hoursa+0.5-1;
-						// 	}
-						// }
-						//NEW
-						
-
 
 						$section_check=0;
 						while($sql_row2=mysqli_fetch_array($sql_result2))
