@@ -52,7 +52,6 @@ if(mysqli_num_rows($result) > 0) {
 	$check=1;
 }
 
-
 if(strlen($schedule) > 8){
 	$scheudles_query = "SELECT distinct(order_del_no) as schedule from $bai_pro3.bai_orders_db where 
 					    order_joins='J$schedule'";
@@ -123,7 +122,7 @@ foreach($val_schedules as $schedule){
 		$compare = array_diff($array1,$array2);
 		if(sizeof($compare) > 0)
 		{
-			echo "<script>swal('Opration codes does not match','','warning');</script>";
+			echo "<script>swal('Operation codes does not match','','warning');</script>";
 			$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
 			echo "<script>setTimeout(function(){
 						location.href='$url' 
