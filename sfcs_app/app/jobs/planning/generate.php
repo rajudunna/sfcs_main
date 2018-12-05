@@ -153,7 +153,7 @@ $sql1="select * from $bai_pro.tbl_freez_plan_log where date='".$date."'";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_result1))
 {
-	while($sql_row=mysqli_fetch_array($sql_result))
+	while($sql_row=mysqli_fetch_array($sql_result1))
 	{
 		$mod_no=$sql_row['mod_no'];
 		$shift=$sql_row['shift'];
@@ -185,7 +185,8 @@ if(mysqli_num_rows($sql_result1))
 else
 {
 	$sql1="select * from $bai_pro.tbl_freez_plan_log where date=(select max(date) from $bai_pro.tbl_freez_plan_log)";
-	while($sql_row=mysqli_fetch_array($sql_result))
+	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row=mysqli_fetch_array($sql_result1))
 	{
 		$mod_no=$sql_row['mod_no'];
 		$shift=$sql_row['shift'];
