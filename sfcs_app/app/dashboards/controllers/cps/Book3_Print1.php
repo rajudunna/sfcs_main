@@ -2121,13 +2121,7 @@ tags will be replaced.-->
 <!-- Changes done by ram;05122018 logo variable added -->
 
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
-<<<<<<< HEAD
-
   <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="<?= $logo ?>" width="200" height="60"></td>
-
-=======
-  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="<?= $logo ?>" width="200" height="60"></td>
->>>>>>> 1268-brandix-logo-not-displaying-in-docket
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
   <td class=xl654118></td>

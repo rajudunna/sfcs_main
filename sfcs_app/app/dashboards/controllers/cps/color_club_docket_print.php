@@ -3024,13 +3024,7 @@ tags will be replaced.-->
  <!-- Changes done by ram;05122018 logo variable added -->
  <tr height=25 style='height:18.75pt'>
   <td height=25 class=xl6417319 style='height:18.75pt'></td>
-<<<<<<< HEAD
-
   <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="<?= $logo ?>" width="200" height="60"></td>
-
-=======
-  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="<?= $logo ?>" width="200" height="60"></td>
->>>>>>> 1268-brandix-logo-not-displaying-in-docket
   <td class=xl6417319></td>
   <td class=xl6417319></td>
   <!-- <td colspan=3 class=xl6617319>Cutting Docket</td> -->
