@@ -35,10 +35,9 @@ $username=strtolower($username_list[1]);
         $key=$_POST['key']; 
          
          
-        $sql="select * from $bai_pro3.sections_db where sec_id=$section and password=\"$key\""; 
+        $sql="select * from $bai_pro3.sections_db where sec_id=$section and password='$key'"; 
         //echo $sql; 
         //$sql="select * from members where login=\"$password\""; 
-        mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
         $sql_num_check=mysqli_num_rows($sql_result); 
         while($sql_row=mysqli_fetch_array($sql_result)) 
@@ -136,7 +135,7 @@ table
         echo "<th>Cut No</th><th>Input Job No</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th></tr>"; 
              
         $toggle=0; 
-        $sql="select distinct rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref order by tid";
+        $sql="select distinct rand_track from $bai_pro3.ims_log where ims_mod_no='$module_ref' order by tid";
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_row=mysqli_fetch_array($sql_result)) 
         { 
@@ -154,14 +153,14 @@ table
             } 
              
             $req_date=""; 
-            $sql12="select req_date from $bai_pro3.ims_exceptions where ims_rand_track=$rand_track";  
+            $sql12="select req_date from $bai_pro3.ims_exceptions where ims_rand_track='$rand_track'";  
             $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_row12=mysqli_fetch_array($sql_result12)) 
             { 
                 $req_date=$sql_row12['req_date']; 
             } 
             $input_job_no=0; 
-            $sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track and ims_status<>\"DONE\" order by ims_schedule, ims_size DESC"; 
+            $sql12="select * from $bai_pro3.ims_log where ims_mod_no='$module_ref' and rand_track=$rand_track and ims_status<>'DONE' order by ims_schedule, ims_size DESC"; 
             // echo $sql12.'<br>'; 
             $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_row12=mysqli_fetch_array($sql_result12)) 
@@ -177,7 +176,7 @@ table
                 { 
                     $order_tid=$sql_row22['order_tid']; 
                      
-                    $sql33="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\""; 
+                    $sql33="select * from $bai_pro3.bai_orders_db where order_tid='$order_tid'"; 
                     $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     while($sql_row33=mysqli_fetch_array($sql_result33)) 
                     { 
