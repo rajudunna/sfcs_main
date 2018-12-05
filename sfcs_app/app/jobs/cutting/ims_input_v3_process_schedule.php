@@ -375,7 +375,7 @@ if($log_time==0 or $time_diff>1)
                             $sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift ='".$shift."'";
                             // echo $sql_hr."<br>";
                             $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                            if(mysqli_num_rows($sql_result_hr >0))
+                            if(mysqli_num_rows($sql_result_hr) >0)
                             {
                                 while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
                                 { 
