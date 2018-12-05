@@ -323,6 +323,58 @@ $(document).ready(function()
 							url: function_text+"?job_number="+array,
 							dataType: "json",
 							success: function (response) 
+						var remarks_check_flag = 0;
+						// console.log(data[i].input_job_no);
+						if(data[i].input_job_no != 0)
+						{
+							var sampling_drop = "<select class='form-control sampling' name='sampling[]' id='"+i+"sampling' style='width:100%;' required onchange='validate_reporting("+i+")'><option value='Normal' selected>Normal</option></select>";
+							var sampling = sampling_drop;
+							var hidden_class_for_remarks = 'hidden';
+							var remarks_check_flag = 1;
+						}
+						else
+						{
+							var sampling_drop = "<select class='form-control sampling' name='sampling[]' id='"+i+"sampling' style='width:100%;' required onchange='validate_reporting("+i+")'><option value='Sample'>Sample</option><option value='Shipment_Sample'>Shipment_Sample</option></select>";
+								var sampling = sampling_drop;
+						
+						}
+						if(i==0)
+						{
+							var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>S.No</th><th>Status</th><th class='none'>Doc.No</th><th>Color</th><th>Module</th><th>Size</th><th>Input Job Qty</th>"+op_codes_str+"<th>Cumulative Reported Quantity</th><th>Eligibility To Report</th><th>Reporting Quantity</th><th class="+hidden_class_for_remarks+">Remarks</th><th class='"+hidden_class_sewing_in+"'>Rejected Qty.</th><th class='"+hidden_class_sewing_in+"'>Rejection quantity</th></tr></thead><tbody>";
+							var flagelem = "<input type='hidden' name='flag' id='flag' value='"+flag+"'>";
+							$("#dynamic_table1").append(markup);
+							$("#dynamic_table1").append(btn);
+							$("#dynamic_table1").append(flagelem);
+						}
+						var readonly ='';
+						var temp_var_bal = 0;
+						if(Number(data[i].reported_qty) > 0)
+						{
+							status = '<font color="green">Partially Scanned</font>';
+						}
+						if(data[i].send_qty != 0 && Number(data[i].reported_qty) == 0)
+						{
+							status = '<font color="green">Scanning Pending</font>';
+						}
+						if(response['emb_cut_check_flag'] && data[i].balance_to_report == 0)
+						{
+							status = '<font color="red">Cut Quantity not done</font>';
+						}
+						if(data[i].send_qty != 0)
+						{
+							if(Number(data[i].reported_qty) == data[i].send_qty)
+							{
+								status = '<font color="red">Already Scanned</font>';
+							}
+						}
+						else
+						{
+							status = '<font color="red">No Operation Reported</font>';
+						}							
+						var temp_var_bal1 = 0;
+						if(data[i].flag == 'packing_summary_input' || emb_ops != undefined)
+						{
+							if (operation_id == operation_code_routing)
 							{
 								var sewing_rejection = document.getElementById('sewing_rejection').value;
 								console.log(response);

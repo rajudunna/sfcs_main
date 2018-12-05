@@ -300,7 +300,7 @@ if($barcode_generation == 1)
 											$reason_remaining_qty[$remain_qty_key] = 0;
 											$actual_rejection_reason_array[$bundle_individual_number] += 0;
 										}
-										$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where m3_reason_code= '$r_reasons[$reason_key]'";
+										$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where m3_reason_code= '$remain_qty_key'";
 									$result_rejection_code_fetech_qry = $link->query($rejection_code_fetech_qry);
 									while($rowresult_rejection_code_fetech_qry = $result_rejection_code_fetech_qry->fetch_assoc()) 
 									{
@@ -658,7 +658,7 @@ if($barcode_generation == 1)
 											$reason_remaining_qty[$remain_qty_key] = 0;
 											$actual_rejection_reason_array[$bundle_individual_number] += 0;
 										}
-										$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where m3_reason_code= '$r_reasons[$reason_key]'";
+										$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where m3_reason_code= '$remain_qty_key'";
 									$result_rejection_code_fetech_qry = $link->query($rejection_code_fetech_qry);
 									while($rowresult_rejection_code_fetech_qry = $result_rejection_code_fetech_qry->fetch_assoc()) 
 									{
@@ -828,8 +828,8 @@ if($barcode_generation == 1)
 				$send_qty = $row['send_qty'];
 				$pre_recieved_qty = $row['recevied_qty'];
 				$rejected_qty = $row['rejected_qty'];
-				$act_reciving_qty = $b_rep_qty[$key]+$b_rej_qty[$key];
-				$total_rec_qty = $pre_recieved_qty + $act_reciving_qty+$rejected_qty;
+				$act_reciving_qty = $b_rep_qty[$key];
+				$total_rec_qty = $pre_recieved_qty + $act_reciving_qty;
 			//	echo $pre_recieved_qty.'+'.$act_reciving_qty.'+'.$rejected_qty.'</br>';
 				//echo "bcd=".$total_rec_qty."-".$send_qty."</br>";
 				if($total_rec_qty > $send_qty)
@@ -838,13 +838,13 @@ if($barcode_generation == 1)
 				}
 				else
 				{
-					$rec_qty_from_temp = "select (sum(recevied_qty)+sum(rejected_qty))as recevied_qty FROM $brandix_bts.bundle_creation_data_temp WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
+					$rec_qty_from_temp = "select (sum(recevied_qty))as recevied_qty FROM $brandix_bts.bundle_creation_data_temp WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
 				//	echo $rec_qty_from_temp;
 					$result_rec_qty_from_temp = $link->query($rec_qty_from_temp);
 					while($row_temp = $result_rec_qty_from_temp->fetch_assoc()) 
 					{
 						$pre_recieved_qty_temp = $row_temp['recevied_qty'];
-						$act_reciving_qty_temp = $b_rep_qty[$key]+$b_rej_qty[$key];
+						$act_reciving_qty_temp = $b_rep_qty[$key];
 					//	echo "bcdtemp=".$act_reciving_qty_temp."-".$send_qty."</br>";
 						if($act_reciving_qty_temp > $send_qty)
 						{
