@@ -892,11 +892,13 @@ if($barcode_generation == 1)
 		{
 			$ops_dep = $row['ops_dependency'];
 		}
-		$dep_ops_array_qry_raw = "select operation_code from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and ops_dependency=$ops_dep";
-		$result_dep_ops_array_qry_raw = $link->query($dep_ops_array_qry_raw);
-		while($row = $result_dep_ops_array_qry_raw->fetch_assoc()) 
-		{
-			$dep_ops_codes[] = $row['operation_code'];	
+		if($ops_dep){
+			$dep_ops_array_qry_raw = "select operation_code from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and ops_dependency=$ops_dep";
+			$result_dep_ops_array_qry_raw = $link->query($dep_ops_array_qry_raw);
+			while($row = $result_dep_ops_array_qry_raw->fetch_assoc()) 
+			{
+				$dep_ops_codes[] = $row['operation_code'];	
+			}
 		}
 		$ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code=$b_op_id";
 		$result_ops_seq_check = $link->query($ops_seq_check);
