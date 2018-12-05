@@ -14,7 +14,7 @@
         $bcd = $bcd_id[0];
         //retreaving style,schedule,color and size wise cumulative quantities to store in plan_doc_stat_log and recut_v2
         $qry_details = "SELECT style,SCHEDULE,color FROM `bai_pro3`.`rejections_log` r LEFT JOIN `bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
-        WHERE rc.`bcd_id` = $bcd";
+        WHERE rc.`bcd_id` in ($bcd)";
         $qry_details_res = $link->query($qry_details);
         while($row_row = $qry_details_res->fetch_assoc()) 
         {
@@ -24,13 +24,11 @@
         }
         //getting order tid
         $qry_order_tid = "SELECT order_tid FROM `bai_pro3`.`bai_orders_db` WHERE order_style_no = '$style' AND order_del_no ='$scheule' AND order_col_des = '$color'";
-        // echo $qry_order_tid;
         $res_qry_order_tid = $link->query($qry_order_tid);
         while($row_row_row = $res_qry_order_tid->fetch_assoc()) 
         {
             $order_tid = $row_row_row['order_tid'];
         }
-        // echo 'Hi'.$order_tid;
         $recutval_sizes = array();
         foreach($recutval as $key=>$value)
         {
@@ -58,8 +56,8 @@
         $date=date("Y-m-d", mktime(0,0,0,date("m") ,date("d"),date("Y")));
         foreach($cat as $key=>$value)
         {
-            //$qry_to_get = "SELECT * FROM  `bai_pro3`.`cat_stat_log` WHERE  order_tid = \"$order_tid\" and category = '$value'";
-            $qry_to_get = "SELECT * FROM  `bai_pro3`.`cat_stat_log` WHERE  order_tid = 'CA3428F8       540734415 5GXBlue Granite           ' and category = 'Body'";
+            $qry_to_get = "SELECT * FROM  `bai_pro3`.`cat_stat_log` WHERE  order_tid = \"$order_tid\" and category = '$value'";
+            // echo $qry_to_get.'</br>';
             $res_qry_to_get = $link->query($qry_to_get);
             while($row_cat_ref = $res_qry_to_get->fetch_assoc()) 
             {
@@ -79,9 +77,7 @@
             {
                 $count=0;
             }
-            //$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and mk_status!=9 ORDER BY tid DESC LIMIT 0,1";
-            $sql="select * from $bai_pro3.allocate_stat_log where order_tid= 'CA3428F8       540734415 5GXBlue Granite           ' and cat_ref=$cat_ref and mk_status!=9 ORDER BY tid DESC LIMIT 0,1";
-            // echo $sql."<br>";
+            $sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and mk_status!=9 ORDER BY tid DESC LIMIT 0,1";
             $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
             // var_dump($sql_result);
             while($sql_row=mysqli_fetch_array($sql_result))
@@ -96,28 +92,25 @@
             $remarks = 'Recut';
             $pcutdocid=$order_tid."/".$allocate_ref."/".$count;
             $sql_plandoc="insert into $bai_pro3.plandoc_stat_log(pcutdocid, date, cat_ref, cuttable_ref, allocate_ref, mk_ref, order_tid, pcutno, ratio,a_plies,p_plies,remarks,$sizes_p,$sizes_a)values  (\"$pcutdocid\", \"$date\", $cat_ref, $cuttable_ref, $allocate_ref, $mk_ref, \"$order_tid\", $count, $ratio,$pliespercut,$pliespercut,\"$remarks\",$values,$values)";
-            //mysqli_query($link,$sql_plandoc) or exit("While inserting into the plan doc stat log".mysqli_error($GLOBALS["___mysqli_ston"]));
-           // $insert_id=mysqli_insert_id($link);
-            $sql_recut_v2="insert into $bai_pro3.recut_v2 (date,cat_ref,order_tid,pcutno,acutno,remarks,$sizes_p,$sizes_a,a_plies,p_plies,doc_no) values (\"".date("Y-m-d")."\",".$cat_ref.",\"$order_tid\",$count,$count,\"".$remarks."\",$values,$values,$pliespercut,$pliespercut,$insert_id)";
-            //mysqli_query($link,$sql_recut_v2) or exit("While inserting into the recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
+            // echo $sql_plandoc;
+            mysqli_query($link,$sql_plandoc) or exit("While inserting into the plan doc stat log".mysqli_error($GLOBALS["___mysqli_ston"]));
+           $insert_id=mysqli_insert_id($link);
+            $sql_recut_v2="insert into $bai_pro3.recut_v2 (date,cat_ref,order_tid,pcutno,acutno,remarks,$sizes_p,$sizes_a,a_plies,p_plies,doc_no) values (\"".date("Y-m-d")."\",".$cat_ref.",\"$order_tid\",$count,$count,\"".$value."\",$values,$values,$pliespercut,$pliespercut,$insert_id)";
+            mysqli_query($link,$sql_recut_v2) or exit("While inserting into the recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
         }
-        // var_dump($size);
         foreach($bcd_id as $key=>$act_id)
         {
             $recut_allowing_qty = $recutval[$key];
             if($recut_allowing_qty > 0)
             {
                 $retreaving_bcd_data = "SELECT * FROM `brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
-                // echo $retreaving_bcd_data;
                 $retreaving_bcd_data_res = $link->query($retreaving_bcd_data);
                 while($row_bcd = $retreaving_bcd_data_res->fetch_assoc()) 
                 {
                     $bcd_act_id = $row_bcd['id'];
                     $bundle_number = $row_bcd['bundle_number'];
                     $operation_id = $row_bcd['operation_id'];
-                   // $child_id = $ids[$bcd_act_id];
                     $retreaving_rej_qty = "SELECT * FROM `bai_pro3`.`rejection_log_child` where bcd_id = $bcd_act_id";
-                    // echo $retreaving_rej_qty.'</br>';
                     $retreaving_rej_qty_res = $link->query($retreaving_rej_qty);
                     while($child_details = $retreaving_rej_qty_res->fetch_assoc()) 
                     {
@@ -133,20 +126,24 @@
                         $to_add = $recut_allowing_qty;
                         $recut_allowing_qty = 0;
                     }
-                    // echo $bundle_number .'-'.$to_add.'</br>';
-                    $inserting_into_recut_v2_child = "INSERT INTO `bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`bundle_number`,`opertion_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`)
-                    VALUES($insert_id,$bcd_act_id,$bundle_number,$operation_id,$actual_allowing_to_recut,$to_add,0,0)";
-                    //mysqli_query($link,$inserting_into_recut_v2_child) or exit("While inserting into the recut v2 childe".mysqli_error($GLOBALS["___mysqli_ston"]));
-    
-                    $update_rejection_log_child = "update $bai_pro3.rejection_log_child set recut_qty = recut_qty+$to_add where bcd_id = $bcd_act_id";
-                    //mysqli_query($link,$update_rejection_log_child) or exit("While updating rejection log child".mysqli_error($GLOBALS["___mysqli_ston"]));
-    
-                    $update_rejection_log = "update $bai_pro3.rejection_log set recut_qty = recut_qty+$to_add,remaining_qty = remaining_qty - $to_add where style = '$style' and schedule = '$scheule' and color = '$color'";
-                    //mysqli_query($link,$update_rejection_log) or exit("While updating rejection log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if($to_add > 0)
+                    {
+                        $inserting_into_recut_v2_child = "INSERT INTO `bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`)
+                        VALUES($insert_id,$bcd_act_id,$operation_id,$actual_allowing_to_recut,$to_add,0,0)";
+                        mysqli_query($link,$inserting_into_recut_v2_child) or exit("While inserting into the recut v2 childe".mysqli_error($GLOBALS["___mysqli_ston"]));
+        
+                        $update_rejection_log_child = "update $bai_pro3.rejection_log_child set recut_qty = recut_qty+$to_add where bcd_id = $bcd_act_id";
+                        mysqli_query($link,$update_rejection_log_child) or exit("While updating rejection log child".mysqli_error($GLOBALS["___mysqli_ston"]));
+        
+                        $update_rejection_log = "update $bai_pro3.rejections_log set recut_qty = recut_qty+$to_add,remaining_qty = remaining_qty - $to_add where style = '$style' and schedule = '$scheule' and color = '$color'";
+                        mysqli_query($link,$update_rejection_log) or exit("While updating rejection log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    }
                 }
 
             }
-        }    
+        }
+        $url = '?r='.$_GET['r'];
+        echo "<script>sweetAlert('Recut Successfully Raised','','success');window.location = '".$url."'</script>";   
     }
     if(isset($_POST['formSubmit1']))
     {
@@ -291,7 +288,18 @@
             
         }
     }
+    $shifts_array = ["IssueDone","RecutPending"];
+    $drp_down = '<div class="row"><div class="col-md-3"><label>Filter:</label>
+    <select class="form-control rm"  name="status" id="rm" style="width:100%;" onchange="myFunction()" required>';
+    for ($i=0; $i <= 1; $i++) 
+    {
+        $drp_down .= '<option value='.$shifts_array[$i].'>'.$shifts_array[$i].'</option>';
+    }
+    $drp_down .= "</select></div></div>";
+    echo $drp_down;
+    
 ?>
+</br></br></br>
 <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog" style="width: 80%;">
         <div class="modal-content">
@@ -314,7 +322,7 @@
                     <div class='panel-body' id="dynamic_table_panel">	
                             <div id ="dynamic_table1"></div>
                     </div>
-                    <div class="pull-right"><input type="submit" class="btn btn-primary" value="Submit" name="formSubmit"></div>
+                    <div class="pull-right"><input type="submit" id='recut' class="btn btn-primary" value="Submit" name="formSubmit"></div>
                 </form>
             </div>
         </div>
@@ -329,9 +337,8 @@
             <div class="modal-body">
                 <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartformreplace" method="post" id="smartform1" onsubmit='return validationreplace();'>
                     <div class='panel-body' id="dynamic_table_panel">	
-                            <div id ="dynamic_table2"></div>
+                        <div id ="dynamic_table2"></div>
                     </div>
-                    <div class="pull-right"><input type="submit" class="btn btn-primary" value="Submit" name="formSubmit1"></div>
                 </form>
             </div>
         </div>
@@ -343,33 +350,55 @@
             <b>RECUT DASHBOARD - View</b>
         </div>
         <div class='panel-body'>
-           <table class = 'col-sm-12 table-bordered table-striped table-condensed'><thead><th>S.No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Allowed Quantity</th><th>Replaced Quantity</th><th>Eligibility to allow recut</th><th>View</th><th>Recut</th><th>Replace</th>
+           <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Allowed Quantity</th><th>Replaced Quantity</th><th>Eligibility to allow recut</th><th>View</th><th>Recut</th><th>Replace</th>
             </thead>
             <?php  
             $s_no = 1;
-            $blocks_query  = "SELECT id,style,schedule,color,rejected_qty,recut_qty,remaining_qty,replaced_qty FROM $bai_pro3.rejections_log WHERE remaining_qty <> 0 and rejected_qty > 0";
+            $blocks_query  = "SELECT id,style,schedule,color,rejected_qty,recut_qty,remaining_qty,replaced_qty FROM $bai_pro3.rejections_log";
             // echo $blocks_query;
-            $blocks_result = mysqli_query($link,$blocks_query) or exit('Rejections Log Data Retreival Error');        
-            while($row = mysqli_fetch_array($blocks_result))
-            {  
-
-                echo "<tr><td>$s_no</td>";
-                $id = $row['id'];
-                echo "<td>".$row['style']."</td>";
-                echo "<td>".$row['schedule']."</td>";
-                echo "<td>".$row['color']."</td>";
-                echo "<td>".$row['rejected_qty']."</td>";
-                echo "<td>".$row['recut_qty']."</td>";
-                echo "<td>".$row['replaced_qty']."</td>";
-                echo "<td>".$row['remaining_qty']."</td>";
-                echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
-                echo "<td><button type='button'class='btn btn-danger' onclick='editrecutdetails(".$id.")'>Recut</button></td>"; 
-                echo "<td><button type='button'class='btn btn-success' onclick='editreplacedetails(".$id.")'>Replace</button></td>"; 
-                echo "</tr>";
-                $s_no++;
+            $blocks_result = mysqli_query($link,$blocks_query) or exit('Rejections Log Data Retreival Error');
+            if($blocks_result->num_rows > 0)
+            {
+                while($row = mysqli_fetch_array($blocks_result))
+                {
+                    $id = $row['id'];
+                    if($row['remaining_qty'] == 0)
+                    {
+                        $button_html_recut = "<b style='color:red;'>Issue Done!!!</b>";
+                        $button_html_replace = "<b style='color:red;'>Issue Done!!!</b>";
+                        $html_hiding = "IssueDone";
+                    }
+                    else if($row['remaining_qty'] != 0 && $row['rejected_qty'] > 0)
+                    {
+                        $button_html_recut = "<button type='button'class='btn btn-danger' onclick='editrecutdetails(".$id.")'>Recut</button>";
+                        $button_html_replace = "<button type='button'class='btn btn-success' onclick='editreplacedetails(".$id.")'>Replace</button>";
+                        $html_hiding = "RecutPending";
+                    }
+                    echo "<tr><td>$s_no</td>";
+                    echo "<td>".$row['style']."</td>";
+                    echo "<td>".$row['schedule']."</td>";
+                    echo "<td>".$row['color']."</td>";
+                    echo "<td>".$row['rejected_qty']."</td>";
+                    echo "<td>".$row['recut_qty']."</td>";
+                    echo "<td>".$row['replaced_qty']."</td>";
+                    echo "<td>".$row['remaining_qty']."</td>";
+                    echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
+                    echo "<td>$button_html_recut</td>";
+                    echo "<td style='display:none'>$html_hiding</td>"; 
+                    echo "<td>$button_html_replace</td>"; 
+                    echo "</tr>";
+                    $s_no++;
+                }                
             }
-            ?>
+            else
+            {
+                echo "<tr><td colspan='12' style='color:red;text-align: center;'><b>No Details Found!!!</b></td></tr>";
+            }
+            ?> 
              </table>
+             <div id='myTable1'>
+                <b style='color:red'>No Records Found</b>
+             </div>
         </div>
     </div>
 </div>
@@ -542,6 +571,7 @@ function validationreplace()
     {
         sizes_value[sizes[i]] = Number(sizes_value[sizes[i]])+Number(values[i]);
     }
+    console.log(sizes_value);
     $.each(sizes_value, function( key, value )
     {
         var id = key;
@@ -591,10 +621,91 @@ function validationrecutindividual(id)
     var present_rep = Number(document.getElementById(id).value);
     if(max_rem < present_rep)
     {
-        swal('You are replacing more than elegible to replace quantity.','','error');
+        swal('You are Re Cutting  more than elegible to Recut quantity.','','error');
         document.getElementById(id).value = 0;
     } 
 }
+function setfunction()
+{
+    var noofrows = $('#total_rows').val();
+    // alert(document.getElementById('setreset').innerHTML);
+    if(document.getElementById('setreset').innerHTML == 'Set')
+    {
+        for(var i=1; i<=Number(noofrows); i++)
+        {
+            var rem_var = i+'rems';
+            var remaining_qty = document.getElementById(rem_var).innerHTML;
+            document.getElementById(i).value = remaining_qty; 
+        }
+        document.getElementById('setreset').innerHTML = 'ReSet';
+    }
+    else
+    {
+        for(var i=1; i<=Number(noofrows); i++)
+        {
+            document.getElementById(i).value = 0; 
+        }
+        document.getElementById('setreset').innerHTML = 'Set';
+
+    }
+    
+}
+function myFunction() 
+{
+    var input, filter, table, tr, td, i;
+    input = document.getElementById("rm").value;
+    filter = input.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    var count = 0;
+    if(tr.length > 1)
+    {
+        for (i = 1; i < tr.length; i++) 
+        {
+            td = tr[i].getElementsByTagName("td")[10];
+            if(td) 
+            {
+                console.log(td.innerHTML.toUpperCase());
+                console.log(filter);
+                if(td.innerHTML.toUpperCase() == filter)
+                {
+                    console.log(tr[i]);
+                    tr[i].style.display = "";
+                } 
+                else 
+                {
+                    count++;
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+    // console.log(count);
+    // if(count == 0)
+    // {
+    //     $('#myTable').hide();
+    //     $('#myTable1').show();
+    // }
+    // else
+    // {
+    //     $('#myTable').show();
+    //     $('#myTable1').hide();
+    // }
+}
+</script>
+
+<script>
+$(document).ready(function() 
+{
+    $('#myTable1').hide();
+    myFunction();
+    $('#recut').on('click', function(){
+        $('#recut').hide();
+    });
+    $('#replace').on('click', function(){
+        $('#replace').hide();
+    });
+});
 </script>
 <style>
 .modal-body {
