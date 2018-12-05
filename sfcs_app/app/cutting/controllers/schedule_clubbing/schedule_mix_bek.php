@@ -112,7 +112,7 @@ function check_sch_sty()
 
 <body> 
 <div class="panel panel-primary">
-<div class="panel-heading">Schedule Clubbing Panel - Ratio Pack</div>
+<div class="panel-heading">Schedule Clubbing (Color Level)</div>
 <div class="panel-body">
 <div>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/menu_content.php',4,'R')); ?>

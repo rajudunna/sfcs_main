@@ -27,7 +27,7 @@
 
 
 <div class="panel panel-primary">
-	<div class="panel-heading">Schedule Segregation Panel</div>
+	<div class="panel-heading">Schedule Club Splitting (Schedule Level)</div>
 	<div class="panel-body">
 	<form name="test" method="post" action="<?php getFullURLLevel($_GET['r'],'mix_jobs.php',0,'R') ?>">
 	<?php
@@ -346,7 +346,7 @@ if(isset($_POST['submit']))
 					
 					for($i=0;$i<sizeof($o_s_t);$i++) 
 					{ 
-						$sql92="select order_tid, order_del_no, order_col_des, order_s_".$sizes_array[$i]." as ord_qty,destination,order_style_no from $bai_pro3.bai_orders_db_club_confirm where order_joins=\"$orders_join\" and order_s_".$sizes_array[$i].">0 order by order_s_".$sizes_array[$i];
+						$sql92="select order_tid, order_del_no, order_col_des, order_s_".$sizes_array[$i]." as ord_qty,destination,order_style_no from $bai_pro3.bai_orders_db_club_confirm where order_joins=\"$orders_join\" and order_s_".$sizes_array[$i].">0 order by order_date*1";
 						//echo $sql92."<br>";
 						$sql_result192=mysqli_query( $link, $sql92) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						while($sql_row192=mysqli_fetch_array($sql_result192)) 
@@ -662,7 +662,7 @@ if(isset($_POST['submit']))
 						//echo $sqly."<br/>";
 						mysqli_query($link, $sqly) or exit("Sql Error9890".mysqli_error($GLOBALS["___mysqli_ston"]));
 						
-						$sqly="update $bai_pro3.cat_stat_log set category='".$sql_rowx['category']."',purwidth='".$sql_rowx['purwidth']."',gmtway='".$sql_rowx['gmtway']."',date='".$sql_rowx['date']."',lastup='".$sql_rowx['lastup']."',strip_match='".$sql_rowx['strip_match']."',gusset_sep='".$sql_rowx['gusset_sep']."',patt_ver='".$sql_rowx['patt_ver']."' where tid='$tid' and order_tid2='".$tid_new_n."'";
+						$sqly="update $bai_pro3.cat_stat_log set category='".$sql_rowx['category']."',purwidth='".$sql_rowx['purwidth']."',gmtway='".$sql_rowx['gmtway']."',date='".$sql_rowx['date']."',lastup='".$sql_rowx['lastup']."',strip_match='".$sql_rowx['strip_match']."',gusset_sep='".$sql_rowx['gusset_sep']."',patt_ver='".$sql_rowx['patt_ver']."',binding_consumption='".$sql_rowx['binding_consumption']."' where tid='$tid' and order_tid2='".$tid_new_n."'";
 						//echo $sqly."<br/>";
 						mysqli_query($link, $sqly) or exit("Sql Error75230".mysqli_error($GLOBALS["___mysqli_ston"])); 			   
 					}
