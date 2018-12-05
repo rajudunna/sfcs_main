@@ -13,13 +13,13 @@ MySQL - 10.3.8-MariaDB : Database - bai3_finishing
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`bai3_finishing` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `bai3_finishing`;
+/*USE `bai3_finishing`;*/
 
 /*Table structure for table `barcode_mapping` */
 
-DROP TABLE IF EXISTS `barcode_mapping`;
+DROP TABLE IF EXISTS `bai3_finishing`.`barcode_mapping`;
 
-CREATE TABLE `barcode_mapping` (
+CREATE TABLE `bai3_finishing`.`barcode_mapping` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `style` varchar(60) NOT NULL,
   `schedule` varchar(60) NOT NULL,
@@ -45,9 +45,9 @@ CREATE TABLE `barcode_mapping` (
 
 /*Table structure for table `barcode_mapping_archive` */
 
-DROP TABLE IF EXISTS `barcode_mapping_archive`;
+DROP TABLE IF EXISTS `bai3_finishing`.`barcode_mapping_archive`;
 
-CREATE TABLE `barcode_mapping_archive` (
+CREATE TABLE `bai3_finishing`.`barcode_mapping_archive` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `style` varchar(60) NOT NULL,
   `schedule` varchar(60) NOT NULL,
@@ -71,9 +71,9 @@ CREATE TABLE `barcode_mapping_archive` (
 
 /*Table structure for table `barcode_mapping_tmp` */
 
-DROP TABLE IF EXISTS `barcode_mapping_tmp`;
+DROP TABLE IF EXISTS `bai3_finishing`.`barcode_mapping_tmp`;
 
-CREATE TABLE `barcode_mapping_tmp` (
+CREATE TABLE `bai3_finishing`.`barcode_mapping_tmp` (
   `tid` int(11) DEFAULT NULL,
   `style` varchar(180) DEFAULT NULL,
   `schedule` varchar(180) DEFAULT NULL,
@@ -96,9 +96,9 @@ CREATE TABLE `barcode_mapping_tmp` (
 
 /*Table structure for table `barcode_update` */
 
-DROP TABLE IF EXISTS `barcode_update`;
+DROP TABLE IF EXISTS `bai3_finishing`.`barcode_update`;
 
-CREATE TABLE `barcode_update` (
+CREATE TABLE `bai3_finishing`.`barcode_update` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `style` varchar(60) DEFAULT NULL,
   `schedule` varchar(60) DEFAULT NULL,
@@ -115,9 +115,9 @@ CREATE TABLE `barcode_update` (
 
 /*Table structure for table `barcode_update_archive` */
 
-DROP TABLE IF EXISTS `barcode_update_archive`;
+DROP TABLE IF EXISTS `bai3_finishing`.`barcode_update_archive`;
 
-CREATE TABLE `barcode_update_archive` (
+CREATE TABLE `bai3_finishing`.`barcode_update_archive` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `style` varchar(60) DEFAULT NULL,
   `schedule` varchar(60) DEFAULT NULL,
@@ -134,9 +134,9 @@ CREATE TABLE `barcode_update_archive` (
 
 /*Table structure for table `input_update` */
 
-DROP TABLE IF EXISTS `input_update`;
+DROP TABLE IF EXISTS `bai3_finishing`.`input_update`;
 
-CREATE TABLE `input_update` (
+CREATE TABLE `bai3_finishing`.`input_update` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `style` varchar(60) DEFAULT NULL,
   `schedule` varchar(60) DEFAULT NULL,
@@ -152,9 +152,9 @@ CREATE TABLE `input_update` (
 
 /*Table structure for table `input_update_archive` */
 
-DROP TABLE IF EXISTS `input_update_archive`;
+DROP TABLE IF EXISTS `bai3_finishing`.`input_update_archive`;
 
-CREATE TABLE `input_update_archive` (
+CREATE TABLE `bai3_finishing`.`input_update_archive` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `style` varchar(60) DEFAULT NULL,
   `schedule` varchar(60) DEFAULT NULL,
@@ -169,9 +169,9 @@ CREATE TABLE `input_update_archive` (
 
 /*Table structure for table `order_db` */
 
-DROP TABLE IF EXISTS `order_db`;
+DROP TABLE IF EXISTS `bai3_finishing`.`order_db`;
 
-CREATE TABLE `order_db` (
+CREATE TABLE`bai3_finishing`.`order_db` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `style_no` varchar(60) DEFAULT NULL,
   `schedule_no` varchar(60) DEFAULT NULL,
@@ -192,9 +192,9 @@ CREATE TABLE `order_db` (
 
 /*Table structure for table `order_db_archive` */
 
-DROP TABLE IF EXISTS `order_db_archive`;
+DROP TABLE IF EXISTS `bai3_finishing`.`order_db_archive`;
 
-CREATE TABLE `order_db_archive` (
+CREATE TABLE `bai3_finishing`.`order_db_archive` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `style_no` varchar(60) DEFAULT NULL,
   `schedule_no` varchar(60) DEFAULT NULL,
@@ -215,9 +215,9 @@ CREATE TABLE `order_db_archive` (
 
 /*Table structure for table `station_db` */
 
-DROP TABLE IF EXISTS `station_db`;
+DROP TABLE IF EXISTS `bai3_finishing`.`station_db`;
 
-CREATE TABLE `station_db` (
+CREATE TABLE `bai3_finishing`.`station_db` (
   `station_id` varchar(20) NOT NULL COMMENT 'Station Barcode ID',
   `remarks` varchar(100) NOT NULL,
   PRIMARY KEY (`station_id`)

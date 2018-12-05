@@ -50,73 +50,92 @@ if(mysqli_num_rows($result) > 0) {
 }
 
 
-
-//Validation for the schedule operation matchings
-$sql_colors="select distinct(order_col_des) from bai_orders_db where order_del_no = '$schedule' 
-and order_style_no = '$style'";
-$result3 = mysqli_query($link,$sql_colors) or exit("Unable to get the color codes");
-while($row = mysqli_fetch_array($result3))
-{
-	$colors_array[] = $row['order_col_des'];
+if(strlen($schedule) > 8){
+	$scheudles_query = "SELECT distinct(order_del_no) as schedule from $bai_pro3.bai_orders_db where 
+					    order_joins='J$schedule'";
+	$schedules_result = mysqli_query($link,$schedule);
+	while($row = mysqli_fetch_array($schedules_result)){
+		$val_schedules[] = $row['schedule'];
+	}		
+}else{
+	$val_schedules[] = $schedule;
 }
 
 $sql_colors="select excess_cut_qty from $bai_pro3.excess_cuts_log where schedule_no = '$schedule' 
-and color = '$color'";
+	and color = '$color'";
 $result3 = mysqli_query($link,$sql_colors) or exit("Unable to get the color codes");
 while($row = mysqli_fetch_array($result3))
 {
 	$excess_cut = $row['excess_cut_qty'];
 }
 
-//var_dump($colors_array);
-//die();
-foreach($colors_array as $key=>$color_value )
-{
-	$ops_master_sql = "select operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master where style='$style' and color='$color_value' and default_operration='yes'";
-	// echo $ops_master_sql;
-	$result2_ops_master_sql = mysqli_query($link,$ops_master_sql)
-						or exit("Error Occured : Unable to get the Operation Codes");
-	while($row_result2_ops_master_sql = mysqli_fetch_array($result2_ops_master_sql))
+//Validation for the schedule operation matchings
+foreach($val_schedules as $schedule){
+	$sql_colors="select distinct(order_col_des) from $bai_pro3.bai_orders_db where order_del_no = '$schedule' 
+	and order_style_no = '$style' and order_joins NOT IN  (1,2)";
+	$result3 = mysqli_query($link,$sql_colors) or exit("Unable to get the color codes");
+	while($row = mysqli_fetch_array($result3))
 	{
-		$array1[] = $row_result2_ops_master_sql['operation_code'];
-	}
-	//var_dump ($array1);
-	$sql1 = "select   OperationNumber FROM bai_pro3.schedule_oprations_master where Style='$style' and Description ='$color_value' and ScheduleNumber='$schedule'";
-	$result1 = mysqli_query($link,$sql1)  
-		or exit("Error Occured : Unable to get the Operation Codes");;
-	// echo $sql1;
-	//echo mysqli_num_rows($result1).'---';
-	while($row = mysqli_fetch_array($result1))
-	{
-		$array2[] = $row['OperationNumber'];
+		$colors_array[] = $row['order_col_des'];
 	}
 
-	if(sizeof($array1) == 0 || sizeof($array2) == 0){
-		echo "<script>swal('Operations Doesnt exist','Please Check the backend Job','danger');</script>";
-		$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
-		echo "<script>setTimeout(function(){
-					location.href='$url' 
-				},3000);
-			  </script>";
-		exit();
-	}
-
-	$compare = array_diff($array1,$array2);
-
-	if(sizeof($compare) > 0)
+	foreach($colors_array as $key=>$color_value )
 	{
-		echo "<script>swal('Opration codes does not match','','warning');</script>";
-		$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
-		echo "<script>setTimeout(function(){
-					location.href='$url' 
-				},3000);
-			  </script>";
-		//header("location : $url");
-		//echo $url;
-		exit();
+		$ops_master_sql = "select operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master where style='$style' and color='$color_value' and default_operration='yes'";
+		// echo $ops_master_sql;
+		$result2_ops_master_sql = mysqli_query($link,$ops_master_sql)
+							or exit("Error Occured : Unable to get the Operation Codes");
+		while($row_result2_ops_master_sql = mysqli_fetch_array($result2_ops_master_sql))
+		{
+			$array1[] = $row_result2_ops_master_sql['operation_code'];
+		}
+		
+		$sql1 = "select   OperationNumber FROM $bai_pro3.schedule_oprations_master where Style='$style' and Description ='$color_value' and ScheduleNumber='$schedule'";
+		$result1 = mysqli_query($link,$sql1)  
+			or exit("Error Occured : Unable to get the Operation Codes");;
+	
+		while($row = mysqli_fetch_array($result1))
+		{
+			$array2[] = $row['OperationNumber'];
+		}
+
+		if(sizeof($array1) == 0 || sizeof($array2)==0 )
+		{
+			echo "<script>swal('Operation codes does not Exist','','warning');</script>";
+			$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
+			echo "<script>setTimeout(function(){
+						location.href='$url' 
+					},3000);
+				</script>";
+			exit();
+		}
+		$compare = array_diff($array1,$array2);
+
+		if(sizeof($compare) > 0)
+		{
+			echo "<script>swal('Operation codes does not match','','warning');</script>";
+			$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
+			echo "<script>setTimeout(function(){
+						location.href='$url' 
+					},3000);
+				</script>";
+			exit();
+		}
+
+		$mo_query = "SELECT * from $bai_pro3.mo_details where schedule='$schedule' and 
+					color='$color_value'  and style='$style' limit 1";
+		$mo_result = mysqli_query($link,$mo_query);	
+		if(!mysqli_num_rows($mo_result) > 0){
+			echo "<script>swal('MO Details Does not Exist','','warning');</script>";
+			$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
+			echo "<script>setTimeout(function(){
+						location.href='$url' 
+					},3000);
+				</script>";
+			exit();
+		}		
 	}
 }
-
 //Validation ends..
 
 
