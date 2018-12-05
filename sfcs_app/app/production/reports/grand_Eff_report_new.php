@@ -275,8 +275,8 @@
 							            $act_clh=$pln_clh; 
 							             
 							            //New 2013-07-27 for actula clock hours calculation 
-										$act_nop=0;             
-										$sql2="SELECT (avail_$shift-absent_$shift) as nop FROM $bai_pro.pro_atten WHERE DATE='$date' AND module=$module"; 
+										$act_nop=0;  
+										$sql2="select ((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance where date='".$date."' and module=$module and shift='".$shift."'";            
 										$note.=$sql2."<br/>"; 
 							            $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error40".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							            while($sql_row2=mysqli_fetch_array($sql_result2)) 

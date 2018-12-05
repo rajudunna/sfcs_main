@@ -272,7 +272,7 @@ if($barcode_generation == 1)
 							//$m3_bulk_bundle_insert_0 .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$qms[$bundle_individual_number]['order_col_des'].'","'. $qms[$bundle_individual_number]['old_size'].'","'. $qms[$bundle_individual_number]['size_code'].'","'.$qms[$bundle_individual_number]['doc_no'].'","'.$insertable_qty_rej.'","'.$r_reasons[$reason_key].'","'.$qms[$bundle_individual_number]['remarks'].'",USER(),"'. $b_op_id.'","'.$b_job_no.'","'.$b_module[$key].'","'.$b_shift.'","'.$b_op_name.'","'.$bundle_individual_number.'",""),';
 							//updating this to cps log
 							$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = '$emb_cut_check_flag'";
-							//$update_qry_cps_log_res = $link->query($update_qry_cps_log);
+							$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 							$pre_insertion_qty = 0;
 							$max_insertion_qty_rej = $max_insertion_qty;
 							$actual_rejection_reason_array[$bundle_individual_number] = 0;
@@ -627,7 +627,7 @@ if($barcode_generation == 1)
 							$actual_rej_quantities[$bundle_individual_number]=0;
 						}
 						$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = '$emb_cut_check_flag'";
-						//$update_qry_cps_log_res = $link->query($update_qry_cps_log);
+						$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 						//rejection resons
 							$pre_insertion_qty = 0;
 							// $max_insertion_qty_rej = $max_insertion_qty;
@@ -1536,11 +1536,11 @@ if($barcode_generation == 1)
 				if($b_op_id == $output_ops_code_out)
 				{
 					$sizevalue="size_".$b_size_code[$i];
-					$sections_qry="select sec_id,sec_head FROM $bai_pro3.sections_db WHERE sec_id>0 AND  sec_mods LIKE '%,".$b_module[$i].",%' OR  sec_mods LIKE '".$b_module[$i].",%' LIMIT 0,1";
+					$sections_qry="select section FROM $bai_pro3.module_master WHERE module_name='".$b_module[$i]."'";
 					//echo $sections_qry;
 					$sections_qry_result=mysqli_query($link,$sections_qry) or exit("Bundles Query Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($buyer_qry_row=mysqli_fetch_array($sections_qry_result)){
-							$sec_head=$buyer_qry_row['sec_id'];
+							$sec_head=$buyer_qry_row['section'];
 					}
 					$ims_log_date=date("Y-m-d");
 					$bac_dat=$ims_log_date;
@@ -1550,22 +1550,18 @@ if($barcode_generation == 1)
 					while($buyer_qry_row=mysqli_fetch_array($buyer_qry_result)){
 							$buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
 						}
-					$qry_nop="select avail_A,avail_B FROM $bai_pro.pro_atten WHERE module=".$b_module[$i]." AND date='$bac_dat'";
+					$qry_nop="select ((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance where module=".$b_module[$i]." and date='".$bac_dat."' and shift='".$b_shift."'";
 					// echo $qry_nop;
-						$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($nop_qry_row=mysqli_fetch_array($qry_nop_result)){
-								$avail_A=$nop_qry_row['avail_A'];
-								$avail_B=$nop_qry_row['avail_B'];
-						}
-						if(mysqli_num_rows($qry_nop_result)>0){
-							if($row['shift']=='A'){
-								$nop=$avail_A;
-							}else{
-								$nop=$avail_B;
-							}
-						}else{
-							$nop=0;
-						}
+					$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
+					{
+							$avail=$nop_qry_row['nop'];
+					}
+					if(mysqli_num_rows($qry_nop_result)>0){
+						$nop=$avail;
+					}else{
+						$nop=0;
+					}
 					$bundle_op_id=$b_tid[$i]."-".$b_op_id."-".$b_inp_job_ref[$i];
 					$insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
 					bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno

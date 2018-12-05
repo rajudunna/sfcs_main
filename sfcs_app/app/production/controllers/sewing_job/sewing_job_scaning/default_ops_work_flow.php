@@ -295,6 +295,7 @@ $(document).ready(function(){
 	var s_no = 1;
 	
 	  $("#add-row1").click(function(){
+		$("#add-row1").hide();
 		var flag = 1;
 		if($("#oper_name").val() == 0)
 		{
@@ -344,10 +345,10 @@ $(document).ready(function(){
 			var component1 =  "'"+component+"'";
 			var s = $('#oper_code1').val();
 			//logic implimentation for operation_order
-		    var pre_ops_order = Number($('#rowId').val());
-			var first_ops_order = Number($('#first_ops_id').val());
+		    var pre_ops_order = $('#rowId').val();
+			var first_ops_order = $('#first_ops_id').val();
 			//var pre_ops_order = 10.111;
-			console.log(first_ops_order);
+			console.log('Hii'+first_ops_order);
             if(first_ops_order == 0)
             {
                 var pre_ops_order_string = "'"+pre_ops_order+"'";
@@ -364,17 +365,18 @@ $(document).ready(function(){
                         if(Math.floor(this.valueOf()) === this.valueOf()) return 0;
                         return this.toString().split(".")[1].length || 0; 
                     }
-                    var no_of_decimals = pre_ops_order.countDecimals();
+                    var no_of_decimals = Number(pre_ops_order).countDecimals();
                     console.log(pre_ops_order_string);
                     pre_ops_order_string += '1';
-                    var actual_ops_order = Number(pre_ops_order_string);
+					console.log('Hello'+pre_ops_order_string);
+                    var actual_ops_order = pre_ops_order_string;
                 }
             }
             else
             {
                 var actual_ops_order = pre_ops_order;
 			}
-			//alert(vactual_ops_order);
+			// alert('hello1'+actual_ops_order);
 			var saving_data = [oper_name_id,s,actual_ops_order,oper_def1,oper_seq,oper_dep,component1,barcode1];
 			//console.log(saving_data);
 			  $.ajax
@@ -396,7 +398,10 @@ $(document).ready(function(){
 							}
 							else
 							{
-
+								if(oper_dep == 0)
+								{
+									oper_dep = '';
+								}
 								var data = jQuery.parseJSON(response);
 								var response = data['last_id'];
 								var changing = data['changed_ids'];
@@ -768,6 +773,7 @@ $('#proceed').click(function()
 });
 function value_edition(btn,id_of_main)
 {	
+	$("#add-row1").show();
     if(id_of_main != 0)
     {
         var table = document.getElementById("dynamic_table1");

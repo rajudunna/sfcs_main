@@ -55,7 +55,7 @@ else
 		<input type='text' name='barcode1' placeholder="Label Id" size=13><br/>
 		<br/>
 		<!-- <input type='text' name='barcode'  onkeypress='return numbersOnly(event)'> -->
-		<input type="submit" name="check2" value="Check Out" >
+		<input type="submit" name="check2" onclick="clickAndDisable(this);" value="Check Out" >
 	</form></br>
 
 
@@ -84,9 +84,9 @@ else
 				}
 			$host_new=$ip_address.":".$port_number;
 			if($database_type=='new'){
-					$link_new= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host_new, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));	 
+					$link_new= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host_new, $user, $pass)) or die("Please Check Plant Details: ".mysqli_error($GLOBALS["___mysqli_ston"]));	 
 			}else{	
-				$link_new= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host_new, $user_name, $password)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$link_new= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host_new, $user_name, $password)) or die("Please Check Plant Details:".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 
 			
@@ -319,3 +319,11 @@ else
 		}
 		</script>
 </html>
+<script> 
+   function clickAndDisable(link) {
+     // disable subsequent clicks
+     link.onclick = function(event) {
+        event.preventDefault();
+     }
+   }   
+</script>

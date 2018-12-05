@@ -32,13 +32,12 @@ for($i=0;$i<sizeof($sections_db);$i++)
 			$teams[]=$sql_row2['bac_shift'];
 		}
 		
-		$avail_criteria='sum(avail_'.implode('+avail_',$teams).')';
-		$absen_criteria='sum(absent_'.implode('+absent_',$teams).')';
-		
+		// $avail_criteria='sum(avail_'.implode('+avail_',$teams).')';
+		// $absen_criteria='sum(absent_'.implode('+absent_',$teams).')';
+		$date=date("Y-m-d");
 		if(sizeof($teams)>0) // ERROR CORRECTION
 		{
-		
-			$sql2="select $avail_criteria as \"avail\", $absen_criteria as \"absent\" from $bai_pro.pro_atten where module in ($section_mods) and date=\"".date("Y-m-d")."\"";
+			$sql2="select sum(present+jumper) as \"avail\", sum(absent) as \"absent\" from $bai_pro.pro_attendance where module in ($section_mods) and date='".$date."'";
 			//secho $sql2;
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error4569".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
