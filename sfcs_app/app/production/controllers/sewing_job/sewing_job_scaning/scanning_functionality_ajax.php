@@ -492,7 +492,7 @@ if($barcode_generation == 1)
 					//echo $doc_value.'-'.$bundle_individual_number.'-'.$cumulative_qty.'</br>';
 					if($cumulative_qty > 0)
 					{
-						$bundle_pending_qty =  $nop_qry_row['send_qty'] - ($nop_qry_row['recevied_qty']+ $nop_qry_row['rejected_qty']);
+						$bundle_pending_qty =  $nop_qry_row['send_qty'] - $nop_qry_row['recevied_qty'];
 						if($bundle_pending_qty > 0 && $cumulative_qty > 0)
 						{
 							if($bundle_pending_qty <= $cumulative_qty)
@@ -588,7 +588,7 @@ if($barcode_generation == 1)
 						//echo $bundle_individual_number.'-'.$cumulative_rej_qty.'</br>';
 						if($cumulative_rej_qty > 0)
 						{
-							$bundle_pending_qty_rej =  $nop_qry_row['send_qty'] - ( $nop_qry_row['recevied_qty']+$rec_qtys_array[$bundle_individual_number]+$nop_qry_row['rejected_qty']);
+							$bundle_pending_qty_rej =  $nop_qry_row['send_qty'] - ( $nop_qry_row['recevied_qty']+$rec_qtys_array[$bundle_individual_number]);
 							//echo $bundle_individual_number.'-';
 							if($bundle_pending_qty_rej != 0)
 							{
