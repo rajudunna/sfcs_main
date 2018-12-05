@@ -1310,17 +1310,27 @@ while($sql_row=mysqli_fetch_array($sql_result))
     $sql_result27=mysqli_query($link, $sql17) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$cut_count_new = mysqli_num_rows($sql_result27);
 	
+	$pliespercut=0;
 	$sql15="select * from bai_pro3.allocate_stat_log where cat_ref=$cat_id";
 	// echo $sql15;
 	$sql_result25=mysqli_query($link, $sql15) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$cut_count = mysqli_num_rows($sql_result25);
+	while($sql_row25=mysqli_fetch_array($sql_result25))
+	{
+		$pliespercut+=$sql_row25['pliespercut'];
+	}
 
 	$sql16="select * from bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\"";
 	$sql_result16=mysqli_query($link, $sql16) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$cut_count1 = mysqli_num_rows($sql_result16);
 
-	if(($cut_count>=1 && $cut_count1>1)&& $cut_count1!=$cut_count_new) {
-		echo "<td class=\"  \"><center><a class='btn btn-info btn-xs'  href=\"".getFullURL($_GET['r'], "save_categories.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&total_allocated=$total_allocated\">Copy to Other</a></center></td>";
+	if(($cut_count>=1 && $cut_count1>1)) {
+		if(($cut_count==$cut_count1)&&($cut_count<0)&&($cuttable_sum>$pliespercut)){
+			echo "<td class=\"  \"><center><a class='btn btn-info btn-xs' disabled>Copy to Other</a></center></td>";
+		}
+		else {
+			echo "<td class=\"  \"><center><a class='btn btn-info btn-xs'  href=\"".getFullURL($_GET['r'], "save_categories.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&total_allocated=$total_allocated\">Copy to Other</a></center></td>";
+		}
 	}
 	else {
 		echo "<td class=\"  \"><center><a class='btn btn-info btn-xs' disabled>Copy to Other</a></center></td>";
