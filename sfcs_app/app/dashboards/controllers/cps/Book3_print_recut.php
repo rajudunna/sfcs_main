@@ -1340,6 +1340,9 @@ ZHJzL2Rvd25yZXYueG1sUEsBAi0ACgAAAAAAAAAhADhzEd/zBQAA8wUAABUAAAAAAAAAAAAAAAAA
     <x:AutoPict/>
    </x:ClientData>
   </v:shape><![endif]-->
+
+  <!-- Changes done by ram;05122018 logo variable added -->
+  
   <span style='mso-ignore:vglayout;
   position:absolute;z-index:5;margin-left:11px;margin-top:1px;width:327px;
   height:68px'><img width=327 height=68

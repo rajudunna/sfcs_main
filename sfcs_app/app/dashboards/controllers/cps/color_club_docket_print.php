@@ -3020,6 +3020,8 @@ tags will be replaced.-->
   <td class=xl1517319 width=64 style='width:48pt'></td>
   <td class=xl1517319 width=19 style='width:14pt'></td>
  </tr>
+
+ <!-- Changes done by ram;05122018 logo variable added -->
  <tr height=25 style='height:18.75pt'>
   <td height=25 class=xl6417319 style='height:18.75pt'></td>
   <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="<?= $logo ?>" width="200" height="60"></td>

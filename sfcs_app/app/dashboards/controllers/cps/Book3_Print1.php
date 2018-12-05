@@ -2118,7 +2118,7 @@ tags will be replaced.-->
  </tr> -->
 
 
-
+<!-- Changes done by ram;05122018 logo variable added -->
 
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="<?= $logo ?>" width="200" height="60"></td>
