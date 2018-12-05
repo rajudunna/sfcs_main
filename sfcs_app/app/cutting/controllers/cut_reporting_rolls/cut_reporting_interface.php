@@ -4,6 +4,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $cut_tables   = array();
 $team_leaders = array();
 $locations = array();
+$rejection_reasons = array();
 
 $cut_table_query = "SELECT * from $bai_pro3.tbl_cutting_table";
 $cut_table_result = mysqli_query($link,$cut_table_query);
@@ -25,8 +26,14 @@ while($row = mysqli_fetch_array($location_result))
     $locations[] = $row['loc_name'];
 }
 
+$rejection_reason_query = "SELECT * from $bai_pro3.bai_qms_rejection_reason where form_type = 'P' ";
+$rejection_reason_result = mysqli_query($link,$rejection_reason_query); 
+while($row = mysqli_fetch_array($rejection_reason_result)){
+    $rejection_reasons[$row['reason_code']] = $row['reason_desc'];
+}
 
 ?>
+
 <div class="container">
   <ul class="nav nav-tabs">
     <li class="info active" id='cut_tab_li'><a href="#"  id='cut_tab'>Cut Qty Reporting</a></li>
@@ -164,8 +171,8 @@ while($row = mysqli_fetch_array($location_result))
                             <th>Fabric Returned</th>
                             <th>Damages</th>
                             <th>Shortages</th>
-                            <th>Action</th>
                             <th>Rejections</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -190,12 +197,13 @@ while($row = mysqli_fetch_array($location_result))
                             </td>
                             <td><input type='text' class='form-control integer' value='0' id='damages'></td>
                             <td><input type='text' class='form-control integer' value='0' id='shortages'></td>
-                            <td><input type='button' class='btn btn-sm btn-warning' value='Rejection' id='reject'></td>
+                            <td><input type='text' class='form-control integer' place-holder='Rejections' id='rejection_pieces' name='rejection_pieces' readonly></td>
                             <td><input type='button' class='btn btn-sm btn-success' value='Submit' id='submit'></td>
                         </tr>
                     </tbody>
                 </table> 
                 <input type='hidden' value='' id='p_plies'> 
+                <input type='hidden' value='' id='ratio'>
                 <input type='hidden' value='' id='post_doc_no'>  
                 <input type='hidden' value='' id='doc_target_type'> 
                 <input type='hidden' value='' id='post_schedule'>
@@ -215,6 +223,74 @@ while($row = mysqli_fetch_array($location_result))
 </div>
 
 
+<div class="modal fade" id="rejections_modal" role="dialog">
+    <div class="modal-dialog" style="width: 80%;  height: 100%;">
+        <div class="modal-content">
+            <div class="modal-header">Cut Pieces Rejections Form
+                <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class='panel panel-primary'>
+                    <div class='panel-heading'>
+                        Size Wise Rejection Panel
+                    </div>
+                    <div class='panel-body'>
+                        <div class='col-sm-12'>
+                            <span class='title'>
+                                Total Rejectable Pieces Size Wise  : <span class='size-rej-pieces'></span>
+                            </span>   
+                            <br/> <br/>
+                        </div> <br/>
+                        <div class='col-sm-12'>
+                            <div class='col-sm-2'>
+                                <label for='rejection_size'>Size</label> 
+                                <select class='form-control' name='rejection_size' id='rejection_size'>
+                                    <option value='' selected disabled>Please Select</option>
+                                </select>
+                            </div>
+                            <div class='col-sm-3'>
+                                <label for='rejection_size'>Rejection Reason</label> 
+                                <select class='form-control' name='rejection_reason' id='rejection_reason'>
+                                    <option value='' selected disabled>Please Select</option>
+                                <?php 
+                                    foreach($rejection_reasons as $reason_code => $reason_desc)
+                                        echo "<option value='$reason_code'>$reason_desc</option>";
+                                ?>
+                                </select>
+                            </div>
+                            <div class='col-sm-2'>
+                                <label for='rejection_qty'>Rejected Qty</label> 
+                                <input type='text' class='form-control integer' name='rejection_qty' id='rejection_qty'>
+                            </div>
+                            <div class='col-sm-2'>
+                                <label for='save_rejection'>&nbsp;</label><br/>
+                                <input type='button' class='btn btn-warning' value='+' name='save_rejection' id='save_rejection'>
+                            </div>
+                        </div>
+                        <div class='col-sm-12'><hr/></div>
+                        <div class='col-sm-offset-2 col-sm-8'>
+                            <table class='table table-bordered rejections_table'>
+                                <thead>
+                                    <tr class='danger'>
+                                        <th>Size</th><th>Reason</th><th>Quantity</th><th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id='rejections_table_body'>
+                                    
+                                </tbody>
+                            </table>
+                        </div>  
+
+                    </div>
+                </div>
+                    
+                
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 <?php 
     $get_url = getFullURLLevel($_GET['r'],'cut_reporting_data.php','R');
@@ -224,6 +300,11 @@ while($row = mysqli_fetch_array($location_result))
 
 <script>
     var avl_plies = 0;
+    var doc_no = 0;
+    var c_plies = 0;
+    var pieces = {};
+    var dataR;
+    var global_serial_id = 0;
 
     $('#cut_tab').on('click',function(){
         $('.cut_tab').css({'display':'block'});
@@ -247,7 +328,7 @@ while($row = mysqli_fetch_array($location_result))
     });
 
     $('#doc_no').on('change',function(){
-        var doc_no = $('#doc_no').val();
+        doc_no = $('#doc_no').val();
         $('.user_msg').css({'display':'none'});
         $('#hide_details_reported').css({'display':'none'});
         $('#hide_details_reporting').css({'display':'none'});
@@ -255,7 +336,7 @@ while($row = mysqli_fetch_array($location_result))
     });
 
     $('#submit').on('click',function(){
-        var c_plies = Number($('#c_plies').val());
+        c_plies = Number($('#c_plies').val());
         var ret     = Number($('#fab_returned').val());
         var rec     = Number($('#fab_received').val());
         var returned_to = $('#returned_to').val();
@@ -344,6 +425,113 @@ while($row = mysqli_fetch_array($location_result))
             $('#returend_to_parent').css({'display':'none'});
     });
 
+    $('#c_plies').on('change',function(){
+        if($(this).val() > 0){
+            $('#rejection_pieces').attr('readonly',false);
+        }else{
+            $('#rejection_pieces').attr('readonly',true);
+        }
+        return false;
+    });
+
+    //Loading the rejections sizes ratio data
+    $('#rejection_pieces').on('change',function(){
+        c_plies = Number($('#c_plies').val());
+        var ret     = Number($('#rejection_pieces').val());
+        var ratio   = Number($('#ratio').val());
+        var size_rej_qty_string = '';
+        if(c_plies == 0){
+            return swal('Please Enter Reporting Plies','','error');
+        }
+
+        if(ret > 0){
+            $('#c_plies').attr('readonly',true);
+            if( ret > c_plies * ratio  )
+                return swal('You are Returning more than reported Pieces','','error');
+            else{
+                $('#rejections_panel').css({'display':'block'});
+                $('#rejections_modal').modal('toggle');
+                $.ajax({
+                    url : '<?= $get_url ?>?rejection_docket='+doc_no
+                }).done(function(res){
+                   console.log(res);
+                    dataR = $.parseJSON(res);
+                    $.each(dataR.old_new_size,function(key,value){
+                        pieces[key] = Number(dataR.old_size_ratio[key]) * c_plies;
+                        size_rej_qty_string += value+' : '+pieces[key]+' &nbsp;&nbsp;'; 
+                        $('#rejection_size').append('<option value='+key+'>'+value+'</option>');
+                    });
+                    $('.size-rej-pieces').html('<b>'+size_rej_qty_string+'</b>');
+                }).fail(function(){
+                    alert('fail');
+                });
+            }
+        }
+        else{
+            $('#c_plies').attr('readonly',false);
+        }
+    });
+
+    //action performing on adding new rejection
+    $('#save_rejection').on('click',function(){
+        global_serial_id++;
+        var rej_qty = Number($('#rejection_qty').val());
+        var size = $('#rejection_size').val();
+        var reason = $('#rejection_reason').val();
+
+        var size_str = dataR.old_new_size[size];
+        var reason_str = $('#rejection_reason option:selected').text();
+        
+        console.log(pieces[size]+' rej '+rej_qty);
+        if(rej_qty > 0){
+            pieces[size] = pieces[size] - rej_qty;
+            if(pieces[size] >= 0){
+                console.log('Top : '+pieces[size]+' rej '+rej_qty);
+                var str = '<tr id="row_'+global_serial_id+'"><td>'+size_str+'</td><td>'+reason_str+'</td>\
+                <td>'+rej_qty+'</td><td>\
+                <input type="button" value="X" onclick="delete_rej(this)" \
+                class="btn btn-sm btn-danger" id="'+global_serial_id+'">\
+                <input type="hidden" value="'+rej_qty+'" id="rej_qty_'+global_serial_id+'">\
+                <input type="hidden" value="'+size+'" id="size_'+global_serial_id+'"></td></tr>';
+                
+                $('#rejections_table_body').append(str);
+                console.log(pieces);
+                $('#rejection_qty').val(0);
+            }else{
+                swal('You Already Rejected Full Quantity','','error');
+                pieces[size] = pieces[size] + rej_qty;
+                $('#rejection_qty').val(0);
+                console.log('Bottom : '+pieces[size]+' rej '+rej_qty);
+                return false;
+            }   
+        }else{
+            swal('Please Enter Rejected Quantity','','warning');
+            return false;
+        }
+    });
+
+    function delete_rej(t){
+        var id = t.id;
+        alert(id);
+        var size = $('#size_'+id).val();
+        var rej_qty = Number($('#rej_qty_'+id).val());
+        pieces[size] = pieces[size] + rej_qty; 
+        console.log('IN Function : '+pieces[size]+' rej '+rej_qty);
+        $('#row_'+id).remove();
+        return true;
+    }
+
+    $('.delete_rej').click(function(){
+        var id = $(this).id;
+        alert(id);
+        // var size = $('#size_'+id).val();
+        // var rej_qty = Number($('#rej_qty_'+id).val());
+        // pieces[size] = pieces[size] + rej_qty; 
+        // console.log('IN Function : '+pieces[size]+' rej '+rej_qty);
+        // $('#row_'+id).remove();
+        return true;
+    });
+
     function load_details(doc_no){
         $.ajax({
             url : '<?= $get_url ?>?doc_no='+doc_no
@@ -379,13 +567,14 @@ while($row = mysqli_fetch_array($location_result))
             }else{
                 $('#hide_details_reported').css({'display':'none'});
                 $('#hide_details_reporting').css({'display':'block'});
-                alert();
+                //alert();
             }
             $('.d_doc_type').css({'display':'block'});
             //storing doc,plies in hidden fields for post refference
             $('#post_doc_no').val(data.doc_no);
             $('#p_plies').val(data.p_plies);
             $('#doc_target_type').val(data.doc_target_type);
+            $('#ratio').val(data.ratio);
 
             //doc type
             $('#d_doc_type').html(data.doc_target_type+' Docket');
@@ -421,7 +610,7 @@ while($row = mysqli_fetch_array($location_result))
         }).fail(function(){
             swal('Network Error while getting Details','','error');
             return;
-        })
+        });
     }
 </script>
 
@@ -439,5 +628,11 @@ while($row = mysqli_fetch_array($location_result))
         color : #fff;
         font-size : 12px;
         opacity : 1;
+    }
+
+    .title{
+        color : #ff0000; 
+        font-size : 14px;
+
     }
 </style>
