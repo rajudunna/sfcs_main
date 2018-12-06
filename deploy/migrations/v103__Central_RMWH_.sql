@@ -15,9 +15,9 @@ ALTER TABLE bai_rm_pj1.store_in_deleted
 
 /*USE central_administration_sfcs;*/
 
-insert into central_administration_sfcs.tbl_menu_list (page_id, fk_group_id, fk_app_id, parent_id, link_type, link_status, link_visibility,  link_location, link_description, link_tool_tip, link_cmd) values('SFCS_9021','8','10','179','1','1','1','/sfcs_app/app/warehouse/controllers/scanV2.php','RM Warehouse Material Receive','','');
+/* insert into central_administration_sfcs.tbl_menu_list (page_id, fk_group_id, fk_app_id, parent_id, link_type, link_status, link_visibility,  link_location, link_description, link_tool_tip, link_cmd) values('SFCS_9021','8','10','179','1','1','1','/sfcs_app/app/warehouse/controllers/scanV2.php','RM Warehouse Material Receive','','');
 
-insert into central_administration_sfcs.rbac_role_menu (menu_pid, menu_description, roll_id) values('1594','RM Warehouse Material Receive','1');
+insert into central_administration_sfcs.rbac_role_menu (menu_pid, menu_description, roll_id) values('1594','RM Warehouse Material Receive','1'); */
 
 
 
