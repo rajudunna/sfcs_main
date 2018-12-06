@@ -1,4 +1,5 @@
 <?php
+
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
 function round_or_not($x,$y)
@@ -47,13 +48,42 @@ while(($data=fgetcsv($handle,1000,","))!==FALSE)
 				{
 					for($i=0;$i<$teamcount;$i++)
 					{
-						$sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_upload 						(module,shift,value_type,d_1,d_2,d_3,d_4,d_5,d_6,d_7,d_8,d_9,d_10,d_11,d_12,d_13,d_14,d_15,d_16,d_17,d_18,d_19,d_20,d_21,d_22,d_23,d_24,d_25,d_26,d_27,d_28,d_29,d_30,d_31	)VALUES	('".$data[0]."','".$teams[$i]."','".$data[2]."','".$data[3]."','".$data[4]."','".$data[5]."','".$data[6]."','".$data[7]."','".$data[8]."','".$data[9]."','".$data[10]."','".$data[11]."','".$data[12]."','".$data[13]."','".$data[14]."','".$data[15]."','".$data[16]."','".$data[17]."','".$data[18]."','".$data[19]."','".$data[20]."','".$data[21]."','".$data[22]."','".$data[23]."','".$data[24]."','".$data[25]."','".$data[26]."','".$data[27]."','".$data[28]."','".$data[29]."','".$data[30]."','".$data[31]."','".$data[32]."','".$data[33]."')";
+						if($data[1]>0)
+						{
+							$nop=$data[1];
+						}
+						else
+						{
+							$nop=0;
+						}
+						for($k=3;$k<=33;$k++)
+						{
+							if($data[$k]>0)
+							{
+								
+							}
+							else
+							{
+								$data[$k]=0;
+							}								
+						}
+						$sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_upload 						(module,nop,shift,value_type,d_1,d_2,d_3,d_4,d_5,d_6,d_7,d_8,d_9,d_10,d_11,d_12,d_13,d_14,d_15,d_16,d_17,d_18,d_19,d_20,d_21,d_22,d_23,d_24,d_25,d_26,d_27,d_28,d_29,d_30,d_31	)VALUES	('".$data[0]."',".$nop.",'".$teams[$i]."','".$data[2]."','".$data[3]."','".$data[4]."','".$data[5]."','".$data[6]."','".$data[7]."','".$data[8]."','".$data[9]."','".$data[10]."','".$data[11]."','".$data[12]."','".$data[13]."','".$data[14]."','".$data[15]."','".$data[16]."','".$data[17]."','".$data[18]."','".$data[19]."','".$data[20]."','".$data[21]."','".$data[22]."','".$data[23]."','".$data[24]."','".$data[25]."','".$data[26]."','".$data[27]."','".$data[28]."','".$data[29]."','".$data[30]."','".$data[31]."','".$data[32]."','".$data[33]."')";
 						mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+						echo $sql."<br>";
 					}
 					break;
 				}
 				case "SAH_HRS":
 				{
+					$nop=0;
+					if($data[1]>0)
+					{
+						$nop=$data[1];
+					}
+					else
+					{
+						$nop=0;
+					}
 					$sag_val=array();
 					$temp_val=array();
 					for($k=3;$k<=33;$k++)
@@ -98,9 +128,9 @@ while(($data=fgetcsv($handle,1000,","))!==FALSE)
 								$j++;
 							}
 						}						
-						$sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_upload 						(module,shift,value_type,d_1,d_2,d_3,d_4,d_5,d_6,d_7,d_8,d_9,d_10,d_11,d_12,d_13,d_14,d_15,d_16,d_17,d_18,d_19,d_20,d_21,d_22,d_23,d_24,d_25,d_26,d_27,d_28,d_29,d_30,d_31	)VALUES	('".$data[0]."','".$teams[$i]."','".$data[2]."','$val_1','$val_2','$val_3','$val_4','$val_5','$val_6','$val_7','$val_8','$val_9','$val_10','$val_11','$val_12','$val_13','$val_14','$val_15','$val_16','$val_17','$val_18','$val_19','$val_20','$val_21','$val_22','$val_23','$val_24','$val_25','$val_26','$val_27','$val_28','$val_29','$val_30','$val_31')";
+						$sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_upload 						(module,nop,shift,value_type,d_1,d_2,d_3,d_4,d_5,d_6,d_7,d_8,d_9,d_10,d_11,d_12,d_13,d_14,d_15,d_16,d_17,d_18,d_19,d_20,d_21,d_22,d_23,d_24,d_25,d_26,d_27,d_28,d_29,d_30,d_31	)VALUES	('".$data[0]."',".$nop.",'".$teams[$i]."','".$data[2]."','$val_1','$val_2','$val_3','$val_4','$val_5','$val_6','$val_7','$val_8','$val_9','$val_10','$val_11','$val_12','$val_13','$val_14','$val_15','$val_16','$val_17','$val_18','$val_19','$val_20','$val_21','$val_22','$val_23','$val_24','$val_25','$val_26','$val_27','$val_28','$val_29','$val_30','$val_31')";
 						mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-						//echo $sql."<br>";
+						echo $sql."<br>";
 					}
 					unset($temp_val);
 					unset($sag_val);
@@ -109,6 +139,15 @@ while(($data=fgetcsv($handle,1000,","))!==FALSE)
 				}
 				case "PP_PCS":
 				{
+					$nop=0;
+					if($data[1]>0)
+					{
+						$nop=$data[1];
+					}
+					else
+					{
+						$nop=0;
+					}
 					$sag_val=array();
 					$temp_val=array();
 					for($k=3;$k<=33;$k++)
@@ -153,9 +192,9 @@ while(($data=fgetcsv($handle,1000,","))!==FALSE)
 								$j++;
 							}
 						}						
-						$sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_upload 						(module,shift,value_type,d_1,d_2,d_3,d_4,d_5,d_6,d_7,d_8,d_9,d_10,d_11,d_12,d_13,d_14,d_15,d_16,d_17,d_18,d_19,d_20,d_21,d_22,d_23,d_24,d_25,d_26,d_27,d_28,d_29,d_30,d_31	)VALUES	('".$data[0]."','".$teams[$i]."','".$data[2]."','$val_1','$val_2','$val_3','$val_4','$val_5','$val_6','$val_7','$val_8','$val_9','$val_10','$val_11','$val_12','$val_13','$val_14','$val_15','$val_16','$val_17','$val_18','$val_19','$val_20','$val_21','$val_22','$val_23','$val_24','$val_25','$val_26','$val_27','$val_28','$val_29','$val_30','$val_31')";
+						$sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_upload 						(module,nop,shift,value_type,d_1,d_2,d_3,d_4,d_5,d_6,d_7,d_8,d_9,d_10,d_11,d_12,d_13,d_14,d_15,d_16,d_17,d_18,d_19,d_20,d_21,d_22,d_23,d_24,d_25,d_26,d_27,d_28,d_29,d_30,d_31	)VALUES	('".$data[0]."',".$nop.",'".$teams[$i]."','".$data[2]."','$val_1','$val_2','$val_3','$val_4','$val_5','$val_6','$val_7','$val_8','$val_9','$val_10','$val_11','$val_12','$val_13','$val_14','$val_15','$val_16','$val_17','$val_18','$val_19','$val_20','$val_21','$val_22','$val_23','$val_24','$val_25','$val_26','$val_27','$val_28','$val_29','$val_30','$val_31')";
 						mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-						//echo $sql."<br>";
+						echo $sql."<br>";
 					}
 					unset($temp_val);
 					unset($sag_val);
@@ -163,15 +202,15 @@ while(($data=fgetcsv($handle,1000,","))!==FALSE)
 				}
 			}
 }
-
 for($i=1;$i<=31;$i++)
 {
-	$sql="select module,shift,sum(if(value_type='PP_PCS',d_$i,0)) as pcs,sum(if(value_type='SAH_HRS',d_$i,0)) as sah,max(if(value_type='PEF_PER',d_$i,0)) as eff,section_id from $bai_pro.tbl_freez_plan_upload left join $bai_pro3.plan_modules on module=module_id group by concat(module,shift)";
+	$sql="select nop, module,shift,sum(if(value_type='PP_PCS',d_$i,0)) as pcs,sum(if(value_type='SAH_HRS',d_$i,0)) as sah,max(if(value_type='PEF_PER',d_$i,0)) as eff,section from $bai_pro.tbl_freez_plan_upload left join $bai_pro3.module_master on module=module_name group by concat(module,shift)";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));	
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{	
 		$module=$sql_row['module'];
 		$shift=$sql_row['shift'];
+		$nop=$sql_row['nop'];
 		$pcs=$sql_row['pcs'];
 		$sah=$sql_row['sah'];
 		$eff=$sql_row['eff'];
@@ -185,12 +224,12 @@ for($i=1;$i<=31;$i++)
 			$clh=0;
 		}
 		
-		$section=$sql_row['section_id'];
+		$section=$sql_row['section'];
 		
 		$date_new=substr($date,0,8).$i;
 		$ref_code=$date_new."-".$module."-".$shift;
 		
-		$sql="insert into $bai_pro.tbl_freez_plan_tmp (plan_tag,date,mod_no,shift,plan_eff,plan_pro,sec_no,plan_clh,plan_sah) values ('$ref_code','$date_new','$module','$shift','$eff','$pcs','$section','$clh','$sah')";
+		$sql="insert into $bai_pro.tbl_freez_plan_tmp (plan_tag,date,mod_no,shift,plan_eff,plan_pro,sec_no,plan_clh,plan_sah,nop) values ('$ref_code','$date_new','$module','$shift','$eff','$pcs','$section','$clh','$sah',$nop)";
 		
 		 mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
