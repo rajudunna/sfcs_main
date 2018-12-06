@@ -34,6 +34,7 @@
 		
 		if(style == 'NIL' || schedule == 'NIL')
 		{
+			$("#loading-image").hide();
 			sweetAlert('Please select the values','','warning');
 			// document.getElementById('submit').style.display=''
 			// document.getElementById('msg').style.display='none';
@@ -41,6 +42,7 @@
 		}
 		return true;	
 	}
+	
 
 	$(document).ready(function(){
 		$('#generate').on('click',function(event, redirect=true)
@@ -71,6 +73,7 @@
 		$style=$_GET['style'];
 		$schedule=$_GET['schedule'];
 	}
+	
 ?>
 <div class="ajax-loader" id="loading-image" style="display: none">
     <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
@@ -173,7 +176,7 @@
 							echo "<th>Total Sewing Job Quantity</th>";
 							echo "<th colspan=2><center>Action</center></th>";
 							echo "</tr>";
-							$sql="SELECT type_of_sewing,input_job_no_random,input_job_no,GROUP_CONCAT(DISTINCT doc_no_ref ORDER BY doc_no) AS doc_no_ref,GROUP_CONCAT(DISTINCT m3_size_code order by m3_size_code) AS size_code,group_concat(distinct order_col_des order by order_col_des) as order_col_des,doc_no,,GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno,SUM(carton_act_qty) AS carton_act_qty ,sum(mrn_status) as mrn_status FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' GROUP BY input_job_no_random ORDER BY acutno*1, input_job_no*1";
+							$sql="SELECT type_of_sewing,input_job_no_random,input_job_no,GROUP_CONCAT(DISTINCT doc_no_ref ORDER BY doc_no) AS doc_no_ref,GROUP_CONCAT(DISTINCT m3_size_code order by m3_size_code) AS size_code,group_concat(distinct order_col_des order by order_col_des) as order_col_des,doc_no,GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno,SUM(carton_act_qty) AS carton_act_qty ,sum(mrn_status) as mrn_status FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' GROUP BY input_job_no_random ORDER BY acutno*1, input_job_no*1";
 							// echo $sql."<br>";
 							$temp=0;
 							$job_no=0;
@@ -197,10 +200,10 @@
 								}
 								echo "<tr style='background-color:$bg_color;'>";
 								echo "<td>".$sql_row['input_job_no']."</td>";
-								echo "<td>".$sql_row['order_del_no']."</td>";
+								echo "<td>".$schedule."</td>";
 								echo "<td>".$sql_row['order_col_des']."</td>";
 								echo "<td>".$cut_jobs_new."</td>";
-								echo "<td>".strtoupper($sql_row['size_code'];)."</td>";
+								echo "<td>".strtoupper($sql_row['size_code'])."</td>";
 								echo "<td>".$sql_row['carton_act_qty']."</td>";
 								$mrn_status=$sql_row['mrn_status']; 
 								if($mrn_status>0)
@@ -208,13 +211,13 @@
 									echo "<td><center>Confirmed</center></td>";
 									if(in_array($authorized,$has_permission))
 									{ 
-										echo "<td><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&inputjobno=".$sql_row['input_job_no_random']."&style=$style&schedule=".$sql_row['order_del_no']."&var1=1\" onclick=\"clickAndDisable(this);\" name=\"return\">Return</a></center></td>";
+										echo "<td><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&inputjobno=".$sql_row['input_job_no_random']."&style=$style&schedule=".$schedule."&var1=1\" onclick=\"clickAndDisable(this);\" name=\"return\">Return</a></center></td>";
 									}
 									echo"</tr>";																			
 								}
 								else
 								{
-									echo "<td ><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&style=$style&schedule=".$sql_row['order_del_no']."&inputjobno=".$sql_row['input_job_no_random']."&var1=2\" onclick=\"clickAndDisable(this);\">Confirm</a></center></td>";
+									echo "<td ><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&style=$style&schedule=".$schedule."&inputjobno=".$sql_row['input_job_no_random']."&var1=2\" onclick=\"clickAndDisable(this);\">Confirm</a></center></td>";
 									echo "<td></td>";
 									echo"</tr>"; 
 								}
@@ -224,6 +227,13 @@
 							echo"</div>";
 							echo"</div>";
 							echo"</div>";
+						}
+						else
+						{
+							echo "<script type=\"text/javascript\">;
+							sweetAlert('Sewing JObs not Generated.','','warning')
+							</script>";
+							
 						}
 					}
 				}
@@ -235,13 +245,13 @@ if($_GET['var1']==1)
 	$style=$_GET['style'];
 	$inputjobno=$_GET['inputjobno'];
 	$op_code=1;
-	$sql14="SELECT co_no FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule' and order_style_no='$style' and order_col_des='$color'";					
+	$sql14="SELECT co_no FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule' and order_style_no='$style'";					
 	$sql_result14=mysqli_query($link, $sql14) or exit("Sql Error71".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row14=mysqli_fetch_array($sql_result14))
 	{
 		$co_no=$sql_row14['co_no'];
 	}
-	$sql55="SELECT tid,input_job_no,order_del_no  FROM $bai_pro3.packing_summary_input WHERE  input_job_no_random='$inputjobno'";
+	$sql55="SELECT tid,input_job_no,order_del_no  FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$inputjobno'";
 	$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 	// $tid=array();
 	while($sql_row01=mysqli_fetch_array($sql_result01))
@@ -290,7 +300,6 @@ if($_GET['var1']==1)
 	{
 		$pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='0' where input_job_no_random='$inputjobno'";
 		$pass_update1_result=mysqli_query($link, $pass_update1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 		function Redirect() {
 		sweetAlert('MRN Reversal successfully Completed','','success');
@@ -316,7 +325,7 @@ elseif($_GET['var1']==2)
 	$style=$_GET['style'];
 	$inputjobno=$_GET['inputjobno'];
 	$op_code=1;
-	$sql14="SELECT co_no FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule' and order_style_no='$style' and order_col_des='$color'";					
+	$sql14="SELECT co_no FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule' and order_style_no='$style'";					
 	$sql_result14=mysqli_query($link, $sql14) or exit("Sql Error71".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row14=mysqli_fetch_array($sql_result14))
 	{
@@ -337,6 +346,8 @@ elseif($_GET['var1']==2)
 	}
 	$tid1=implode(",",$tid);
 	$mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid1) and op_code='$op_code' group by mo_no";
+	//echo $mo_operation_quantites_query."<br>";
+	//die();
 	$mssql_insert_query="insert into [MRN_V2].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status) values";
 	$values = array();
 	$ref_no = array();
@@ -350,7 +361,6 @@ elseif($_GET['var1']==2)
 		$op_desc=$sql_row5['op_desc'];
 		$ref_no[]=$sql_row5['ref_no'];
 		array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_no . "','" . $op_code . "','" . $bundle_quantity . "','".$employee_no."','".$remarks."','".$co_no."','".$order_del_no."','')"); 
-
 	}
 	$ref_no1=implode(",",$ref_no);
 	$mssql_insert_query_result=odbc_exec($conn, $mssql_insert_query . implode(', ', $values));
@@ -370,10 +380,10 @@ elseif($_GET['var1']==2)
 	}
 	if($sql_num_check5>0)
 	{
-		$pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='0' where input_job_no_random='$inputjobno'";
+		$pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='1' where input_job_no_random='$inputjobno'";
 		$pass_update1_result=mysqli_query($link, $pass_update1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+		$('#loading-image').hide();
 		function Redirect() {
 		sweetAlert('MRN Confirmed Successfully','','success');
 		location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
@@ -384,6 +394,7 @@ elseif($_GET['var1']==2)
 	else
 	{
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+		$('#loading-image').hide();
 		function Redirect() {
 		sweetAlert('MRN Confirmed Failed','','warning');
 		location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
@@ -399,6 +410,7 @@ elseif($_GET['var1']==2)
 
 <script> 
    function clickAndDisable(link) {
+	$("#loading-image").show();
      // disable subsequent clicks
      link.onclick = function(event) {
         event.preventDefault();
