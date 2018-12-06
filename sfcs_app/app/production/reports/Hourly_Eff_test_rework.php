@@ -1026,7 +1026,7 @@ white-space:nowrap;
 
                                     if($option1==1)
                                     {        //echo "<td>".$style_col."</td>";  
-                                        echo "<td>".$nop."</td>";  
+                                        echo "<td>".$nop_shift."</td>";  
                                         echo "<td>".$styledb."</td>";  
                                         echo "<td>".$deldb."</td>"; 
                                     } 
