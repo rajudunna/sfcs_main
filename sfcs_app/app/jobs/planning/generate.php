@@ -167,17 +167,32 @@ if(mysqli_num_rows($sql_result1))
 		$plan_sah=$sql_row['plan_sah'];	
 		$plan_eff_ex=0;
 		$ref_code=$date."-".$mod_no."-".$shift;
-
+		$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$shift."'";
+		// echo $sql_hr."<br>";
+		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		if(mysqli_num_rows($sql_result_hr) >0)
+		{
+			while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+			{ 
+				$start_time=$sql_row_hr['start_time'];
+				$end_time=$sql_row_hr['end_time'];
+				$diff_time=$end_time-$start_time;
+				$act_hrs=$diff_time-0.5;
+			}
+		}else{
+			$act_hrs=7.5;
+		}
 		$sql="insert ignore into $bai_pro.pro_plan (plan_tag) values (\"$ref_code\")";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql="update $bai_pro.pro_plan set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift='$shift', plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=7.5, couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag='$ref_code'";
+		$sql="update $bai_pro.pro_plan set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift='$shift', plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no,act_hours=\"$act_hrs\",  couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag='$ref_code'";
+		echo $sql."<br>";
 		mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		//NEW2011
 		$sql="insert ignore into $bai_pro.pro_plan_today (plan_tag) values (\"$ref_code\")";
 		mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql="update $bai_pro.pro_plan_today set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift='$shift', plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=7.5, couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag='$ref_code'";
+		$sql="update $bai_pro.pro_plan_today set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift='$shift', plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=\"$act_hrs\", couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag='$ref_code'";
 		mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		//NEW2011		
 	}
