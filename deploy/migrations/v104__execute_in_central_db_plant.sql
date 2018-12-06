@@ -1,6 +1,6 @@
-USE bai_rm_pj1;
+/*USE bai_rm_pj1;*/
 
-ALTER TABLE store_in  
+ALTER TABLE bai_rm_pj1.store_in  
 
 ADD COLUMN upload_file VARCHAR(200) NULL AFTER partial_appr_qty,
 

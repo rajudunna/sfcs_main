@@ -298,11 +298,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
 {
-	echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."&nbsp; &nbsp; - ".$sql_row['col_des']."</option>";
+	echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."</option>";
 }
 else
 {
-	echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."&nbsp; &nbsp; - ".$sql_row['col_des']."</option>";
+	echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</option>";
 }
 
 }
@@ -371,11 +371,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 ?>
 
 <?php
-
-$buyer_cat=substr($buyer_cat,0,((strlen($buyer_cat)-2)*-1));
 echo "<input type=\"hidden\" name=\"order_tid\" value=\"$order_tid\">";
 echo "<input type=\"hidden\" id=\"buyer_cat\" name=\"buyer_cat\" value=\"$buyer_cat\">";
-if($buyer_cat != "LB" && $module!="TOP")
+if($module!="TOP")
 {
 	if(in_array($username,$auth_users))
 	{

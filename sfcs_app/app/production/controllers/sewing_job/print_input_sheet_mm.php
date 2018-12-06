@@ -16,7 +16,11 @@
 <?php 
     include("../../../../common/config/config.php");
     include("../../../../common/config/functions.php");
-    $schedule=$_GET["schedule"]; 
+    $schedule=$_GET["schedule"];
+    if (isset($_GET['seq_no']))
+    {
+        $seq_no = $_GET['seq_no'];
+    }
     $schedule_split=explode(",",$schedule); 
     //echo $schedule;
     error_reporting(0);
@@ -42,7 +46,9 @@
             <div class="panel panel-primary"> 
                 <div class="panel-heading"><b>Ratio Sheet (Split wise)</b></div>
                 <div class="panel-body">
-                    <div style="float:right"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></div> 
+
+                    <div style="float:right"><img src="<?= $logo ?>" width="200" height="60"></div> 
+
                     <?php 
                         $sql="select distinct order_del_no as sch,order_tid from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") "; 
                         $result=mysqli_query($link, $sql) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -52,7 +58,7 @@
                             $order_tid = $row["order_tid"]; 
                         }
                         
-                        $sql2="select distinct packing_mode as mode from $bai_pro3.packing_summary_input where order_del_no in (".$schedule.") "; 
+                        $sql2="select distinct packing_mode as mode from $bai_pro3.packing_summary_input where order_del_no in (".$schedule.") and pac_seq_no=$seq_no "; 
                         $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"])); 
                         while($row2=mysqli_fetch_array($result2)) 
                         { 
@@ -77,63 +83,64 @@
                         <tr><th>Style </th><td>:</td> <td><?php echo $disStyle;?></td></tr> 
                         <tr><th>Schedule </th> <td>:</td> <td><?php echo $joinSch;?></td></tr> 
                         <tr><th>Color </th> <td>:</td> <td><?php echo $disColor;?></td></tr> 
-                        <tr><th>Input Job Model </th> <td>:</td> <td><b><?php echo $operation[$packing_mode];?></b></td></tr> 
+                        <tr><th>Sewing Job Model </th> <td>:</td> <td><b><?php echo $operation[$packing_mode];?></b></td></tr> 
                         </table>        
                     </div><br><br><br><br><br><br><br><br>
                     <?php 
-        					//Getting sample details here  By SK-07-07-2018 == Start
-        					$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$disStyle\" and order_del_no=\"$joinSch\" and order_col_des=\"$disColor\"";
-        					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-        					while($sql_row=mysqli_fetch_array($sql_result))
-        					{
-        						for($s=0;$s<sizeof($sizes_code);$s++)
-        						{
-        							if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
-        							{
-        								$s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
-        							}	
-        						}
-        					}
-        					$samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$order_tid' order by sizes_ref";
-        					$samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
-        					$num_rows_samples = mysqli_num_rows($samples_qry_result);
-        					if($num_rows_samples >0){
-        						$samples_total = 0;	
-        						echo "<span><strong><u>Sample Quantites size wise:</u><strong></span><div class='row'>";
-        						echo "<div class='col-md-2'>";
-        						echo "<div class='table-responsive'>";						
-        						echo "<table class='table table-bordered'>"; 
-        						echo "<tr><thead>";						
-        						for($i=0;$i<sizeof($s_tit);$i++){
-        							echo "<th align=\"center\">".$s_tit[$sizes_code[$i]]."</th>";
-        						}
-        						echo "<th align=\"center\">Total</th></thead></tr><tr>";
-        						while($samples_data=mysqli_fetch_array($samples_qry_result))
-        						{
-        							$samples_total+=$samples_data['input_qty'];
-        							$samples_size_arry[] =$samples_data['sizes_ref'];
-        							$samples_input_qty_arry[] =$samples_data['input_qty'];
-        						}	
-        						for($s=0;$s<sizeof($s_tit);$s++)
-        						{
-        							$size_code = 's'.$sizes_code[$s];
-        							$flg = 0;
-        							for($ss=0;$ss<sizeof($samples_size_arry);$ss++)
-        							{
-        								if($size_code == $samples_size_arry[$ss]){
-        									echo "<td class=\"sizes\">".$samples_input_qty_arry[$ss]."</td>";
-        									$flg = 1;
-        								}			
-        							}	
-        							if($flg == 0){
-        								echo "<td class=\"sizes\"><strong>-</strong></td>";
-        							}
-        						}		
-        						echo "<td class=\"sizes\">".$samples_total."</td></tr></table></div></div></div>";
+                            //Getting sample details here  By SK-07-07-2018 == Start
+                            $sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$disStyle\" and order_del_no=\"$joinSch\" and order_col_des=\"$disColor\"";
+                            $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            while($sql_row=mysqli_fetch_array($sql_result))
+                            {
+                                for($s=0;$s<sizeof($sizes_code);$s++)
+                                {
+                                    if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
+                                    {
+                                        $s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
+                                    }   
+                                }
+                            }
+                            $samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$order_tid' order by sizes_ref";
+                            $samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            $num_rows_samples = mysqli_num_rows($samples_qry_result);
+                            if($num_rows_samples >0){
+                                $samples_total = 0; 
+                                echo "<span><strong><u>Sample Quantites size wise:</u><strong></span><div class='row'>";
+                                echo "<div class='col-md-2'>";
+                                echo "<div class='table-responsive'>";                      
+                                echo "<table class='table table-bordered'>"; 
+                                echo "<tr><thead>";                     
+                                for($i=0;$i<sizeof($s_tit);$i++){
+                                    echo "<th align=\"center\">".$s_tit[$sizes_code[$i]]."</th>";
+                                }
+                                echo "<th align=\"center\">Total</th></thead></tr><tr>";
+                                while($samples_data=mysqli_fetch_array($samples_qry_result))
+                                {
+                                    $samples_total+=$samples_data['input_qty'];
+                                    $samples_size_arry[] =$samples_data['sizes_ref'];
+                                    $samples_input_qty_arry[] =$samples_data['input_qty'];
+                                }   
+                                for($s=0;$s<sizeof($s_tit);$s++)
+                                {
+                                    $size_code = 's'.$sizes_code[$s];
+                                    $flg = 0;
+                                    for($ss=0;$ss<sizeof($samples_size_arry);$ss++)
+                                    {
+                                        if($size_code == $samples_size_arry[$ss])
+                                        {
+                                            echo "<td class=\"sizes\">".$samples_input_qty_arry[$ss]."</td>";
+                                            $flg = 1;
+                                        }           
+                                    }   
+                                    if($flg == 0)
+                                    {
+                                        echo "<td class=\"sizes\"><strong>-</strong></td>";
+                                    }
+                                }       
+                                echo "<td class=\"sizes\">".$samples_total."</td></tr></table></div></div></div>";
+                            }
 
-        					}
-
-        					?>
+                            ?>
 
                     <?php 
                     // // Display Sample QTY - 05-11-2014 - ChathurangaD 
@@ -292,8 +299,6 @@
                         //$size_db=array($xs,$s,$m,$l,$xxl,$xxxl,$s06,$s08,$s10,$s12,$s14,$s16,$s18,$s20,$s22,$s24,$s26,$s28,$s30);  // implemented by chathuranga 
                     } 
 
-
-
                     $size_array=array(); 
 
                     for($p=0;$p<sizeof($schs_array);$p++) 
@@ -318,7 +323,7 @@
                     echo "<br>";
                     echo "<div class='row'>";
                     echo "<div  class='col-md-12' >";
-            		echo "<div class='table-responsive'>";
+                    echo "<div class='table-responsive'>";
                     echo "<table class=\"gridtable\">"; 
                     echo "<table class=\"table table-bordered\">";
                     echo "<tr>"; 
@@ -330,7 +335,7 @@
                     echo "<th>Color</th>"; 
                     echo "<th>Cut Job#</th>"; 
                     echo "<th>Delivery Date</th>"; 
-                    echo "<th>Input Job#</th>"; 
+                    echo "<th>Sewing Job#</th>"; 
                     for($i=0;$i<sizeof($size_array);$i++) 
                     { 
                         echo "<th align=\"center\">".$orginal_size_array[$i]."</th>"; 
@@ -338,12 +343,12 @@
                     echo "<th>Total</th>"; 
                     echo "</tr>"; 
 
-                    $sql="select distinct input_job_no as job, type_of_sewing from $bai_pro3.packing_summary_input where order_del_no in ($schedule) group by input_job_no_random order by input_job_no*1"; 
+                    $sql="select distinct input_job_no as job, type_of_sewing from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and pac_seq_no=$seq_no group by input_job_no_random order by  acutno*1,input_job_no*1"; 
                     // echo $sql;
                     $result=mysqli_query($link, $sql) or die("Error-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));             
                     while($sql_row=mysqli_fetch_array($result)) 
                     {             
-                        $sql1="select acutno,group_concat(distinct order_del_no) as del_no,group_concat(distinct order_col_des) as color_des,group_concat(distinct doc_no) as doc_nos,input_job_no_random from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and input_job_no='".$sql_row["job"]."' group by order_del_no,order_col_des,acutno*1,input_job_no_random"; 
+                        $sql1="select acutno,group_concat(distinct order_del_no) as del_no,group_concat(distinct order_col_des) as color_des,group_concat(distinct doc_no) as doc_nos,input_job_no_random from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and pac_seq_no=$seq_no and input_job_no='".$sql_row["job"]."' group by order_del_no,order_col_des,acutno*1,input_job_no_random"; 
                         //echo $sql1."<br>"; 
                         $result1=mysqli_query($link, $sql1) or die("Error-".$sql1."-".mysqli_error($GLOBALS["___mysqli_ston"]));             
                         while($sql_row1=mysqli_fetch_array($result1)) 
@@ -375,7 +380,7 @@
                                 $vpo=$sql_row2["vpo"]; 
                             }                 
 
-                            $sql_cut="select group_concat(distinct acutno) as cut, sum(carton_act_qty) as totqty, destination from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and order_col_des=\"".$color."\" and input_job_no='".$sql_row["job"]."' and acutno='".$acutno_ref."'"; 
+                            $sql_cut="select group_concat(distinct acutno) as cut, sum(carton_act_qty) as totqty, destination from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and order_col_des=\"".$color."\" and input_job_no='".$sql_row["job"]."' and pac_seq_no=$seq_no and acutno='".$acutno_ref."'"; 
                             // echo $sql_cut.'<br>'; 
                             $result_cut=mysqli_query($link, $sql_cut) or die("Error-".$sql2."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
                             while($sql_row_cut=mysqli_fetch_array($result_cut)) 
@@ -412,13 +417,13 @@
                             echo "<td height=20 style='height:15.0pt'>".$display."</td>"; 
                             for($i=0;$i<sizeof($size_array);$i++) 
                             {     
-                                $sql7="SELECT * FROM $bai_pro3.packing_summary_input where size_code='".$orginal_size_array[$i]."' and order_del_no in (".$sql_row1["del_no"].") and order_col_des=\"".$color."\" and input_job_no='".$sql_row["job"]."' and acutno='".$acutno_ref."' and input_job_no_random='".$input_job_no_random_ref."'"; 
+                                $sql7="SELECT * FROM $bai_pro3.packing_summary_input where size_code='".$orginal_size_array[$i]."' and order_del_no in (".$sql_row1["del_no"].") and order_col_des=\"".$color."\" and input_job_no='".$sql_row["job"]."' and pac_seq_no=$seq_no and acutno='".$acutno_ref."' and input_job_no_random='".$input_job_no_random_ref."'"; 
                                 //echo $sql7."<br>"; 
                                 $result7=mysqli_query($link, $sql7) or die("Error7-".$sql7."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 $rows_count=mysqli_num_rows($result7); 
                                 if($rows_count > 0) 
                                 { 
-                                    $sql5="SELECT round(sum(carton_act_qty),0) as qty FROM $bai_pro3.packing_summary_input where size_code='".$orginal_size_array[$i]."' and order_del_no in (".$sql_row1["del_no"].") and order_col_des=\"".$color."\" and input_job_no='".$sql_row["job"]."' and acutno='".$acutno_ref."' and input_job_no_random='".$input_job_no_random_ref."'"; 
+                                    $sql5="SELECT round(sum(carton_act_qty),0) as qty FROM $bai_pro3.packing_summary_input where size_code='".$orginal_size_array[$i]."' and order_del_no in (".$sql_row1["del_no"].") and order_col_des=\"".$color."\" and input_job_no='".$sql_row["job"]."' and pac_seq_no=$seq_no and acutno='".$acutno_ref."' and input_job_no_random='".$input_job_no_random_ref."'"; 
                                     //echo $sql5."<br>"; 
                                     $result5=mysqli_query($link, $sql5) or die("Error-".$sql5."-".mysqli_error($GLOBALS["___mysqli_ston"]));             
                                     while($sql_row5=mysqli_fetch_array($result5)) 
@@ -441,16 +446,27 @@
                     echo "<tr>"; 
                     echo "<th colspan=9  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;font-size:14px;\"> Total</th>"; 
                         
-                        $sql1="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE  order_del_no IN ($joinSch) GROUP BY old_size";
-                        //echo $sql1;
-                        $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error996".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        while($sql_row1=mysqli_fetch_array($sql_result1))
-                        {
-                            $o_s=$sql_row1['qty'];
-                            if ($o_s!=0) {  echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s."</th>"; }
-                            $o_total=$o_s+$o_total;
-                            //echo $o_total;
+                        for ($i=0; $i < sizeof($size_array); $i++)
+                        { 
+                            $sql1="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE  order_del_no IN ($joinSch) and size_code='$orginal_size_array[$i]' and pac_seq_no=$seq_no";
+                            //echo $sql1;
+                            $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error996".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            while($sql_row1=mysqli_fetch_array($sql_result1))
+                            {
+                                $o_s=$sql_row1['qty'];
+                                if ($o_s!=0)
+                                {
+                                    echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s."</th>";
+                                }
+                                else
+                                {
+                                    echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">0</th>";
+                                }
+                                $o_total=$o_s+$o_total;
+                                //echo $o_total;
+                            }
                         }
+                        
                         echo "<th  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">$o_total</th>";
                         echo "</tr>"; 
                         echo "</table></div></div></div></div><br>"; 

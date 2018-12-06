@@ -65,10 +65,11 @@ if($valnew==0)
 			$category=$sql_row['category'];
 			if($sql_row['category']=="Body" or $sql_row['category']=="Front")
 			{
-				$fabric_status=$sql_row['fabric_status'];
-				$sql1="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no=$docket_id and m3_op_des='LAY'"; 
-				$result=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$val_check=mysqli_num_rows($result);
+				//commented for #759 CR
+				// $fabric_status=$sql_row['fabric_status'];
+				// $sql1="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no=$docket_id and m3_op_des='LAY'"; 
+				// $result=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// $val_check=mysqli_num_rows($result);
 			}
 			else
 			{
@@ -160,8 +161,9 @@ if($valnew==0)
 
 			if($category=='Body' or $category=="Front")
 			{
-				if($val_check>0)
-				{
+				//COMMENTED FOR #759
+				// if($val_check>0)
+				// {
 					if($act_cut_status=="DONE" and $plies==$a_plies)
 					{
 						echo "<td> - </td>";
@@ -171,13 +173,14 @@ if($valnew==0)
 						$create_url_1 = getFullURLLevel($_GET['r'],'orders_cut_issue_status_form_v2.php',0,'N');
 						echo "<td><a class='btn btn-primary btn-sm' href=".$create_url_1."&doc_no=$doc_no>Create</a></td>";
 					}
-				}
-				else
-				{
-					//echo "<td>Lay report Pending.</td>";
-					$create_url_11 = getFullURLLevel($_GET['r'],'orders_cut_issue_status_form_v2.php',0,'N');
-					echo "<td><a  class='btn btn-primary btn-sm' href=".$create_url_11."&doc_no=$doc_no>Create</a></td>";
-				}
+					//COMMENTED FOR #759
+				// }
+				// else
+				// {
+				// 	//echo "<td>Lay report Pending.</td>";
+				// 	$create_url_11 = getFullURLLevel($_GET['r'],'orders_cut_issue_status_form_v2.php',0,'N');
+				// 	echo "<td><a  class='btn btn-primary btn-sm' href=".$create_url_11."&doc_no=$doc_no>Create</a></td>";
+				// }
 			}
 			else
 			{

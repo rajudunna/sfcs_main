@@ -171,7 +171,7 @@ if($cat!=''){
 			{
 				$order_tid=$row11["order_tid"];
 				$cut_nos=$row11["acutno"];
-				$total_cut_qty=($row11["a_xs"]+$row11["a_s"]+$row11["a_m"]+$row11["a_l"]+$row11["a_xl"]+$row11["a_xxl"]+$row11["a_xxxl"]+$row11["a_s06"]+$row11["a_s08"]+$row11["a_s10"]+$row11["a_s12"]+$row11["a_s14"]+$row11["a_s16"]+$row11["a_s18"]+$row11["a_s20"]+$row11["a_s22"]+$row11["a_s24"]+$row11["a_s26"]+$row11["a_s28"]+$row11["a_s30"])*($row11["p_plies"]);
+				$total_cut_qty=($row11["a_s01"]+$row11["a_s02"]+$row11["a_s03"]+$row11["a_s04"]+$row11["a_s05"]+$row11["a_s06"]+$row11["a_s07"]+$row11["a_s08"]+$row11["a_s09"]+$row11["a_s11"]+$row11["a_s12"]+$row11["a_s13"]+$row11["a_s14"]+$row11["a_s15"]+$row11["a_s16"]+$row11["a_s17"]+$row11["a_s18"]+$row11["a_s19"]+$row11["a_s21"]+$row11["a_s22"]+$row11["a_s23"]+$row11["a_s24"]+$row11["a_s25"]+$row11["a_s26"]+$row11["a_s27"]+$row11["a_s28"]+$row11["a_s29"]+$row11["a_s31"]+$row11["a_s32"]+$row11["a_s33"]+$row11["a_s34"]+$row11["a_s35"]+$row11["a_s36"]+$row11["a_s37"]+$row11["a_s38"]+$row11["a_s39"]+$row11["a_s41"]+$row11["a_s42"]+$row11["a_s43"]+$row11["a_s44"]+$row11["a_s45"]+$row11["a_s46"]+$row11["a_s47"]+$row11["a_s48"]+$row11["a_s49"]+$row11["a_s50"])*($row11["p_plies"]);
 			}
 			
 			$sql21="select order_style_no,order_del_no,order_col_des,order_div,color_code from bai_pro3.bai_orders_db where order_tid='".$order_tid."'";
@@ -254,7 +254,7 @@ if($cat!=''){
 		{
 			$order_tid1=$row11x["order_tid"];
 			$cut_nos1=$row11x["acutno"];
-			$total_cut_qty1=($row11x["a_xs"]+$row11x["a_s"]+$row11x["a_m"]+$row11x["a_l"]+$row11x["a_xl"]+$row11x["a_xxl"]+$row11x["a_xxxl"]+$row11x["a_s06"]+$row11x["a_s08"]+$row11x["a_s10"]+$row11x["a_s12"]+$row11x["a_s14"]+$row11x["a_s16"]+$row11x["a_s18"]+$row11x["a_s20"]+$row11x["a_s22"]+$row11x["a_s24"]+$row11x["a_s26"]+$row11x["a_s28"]+$row11x["a_s30"])*($row11x["p_plies"]);
+			$total_cut_qty1=($row11x["a_s01"]+$row11x["a_s02"]+$row11x["a_s03"]+$row11x["a_s04"]+$row11x["a_s05"]+$row11x["a_s06"]+$row11x["a_s07"]+$row11x["a_s08"]+$row11x["a_s09"]+$row11x["a_s11"]+$row11x["a_s12"]+$row11x["a_s13"]+$row11x["a_s14"]+$row11x["a_s15"]+$row11x["a_s16"]+$row11x["a_s17"]+$row11x["a_s18"]+$row11x["a_s19"]+$row11x["a_s21"]+$row11x["a_s22"]+$row11x["a_s23"]+$row11x["a_s24"]+$row11x["a_s25"]+$row11x["a_s26"]+$row11x["a_s27"]+$row11x["a_s28"]+$row11x["a_s29"]+$row11x["a_s31"]+$row11x["a_s32"]+$row11x["a_s33"]+$row11x["a_s34"]+$row11x["a_s35"]+$row11x["a_s36"]+$row11x["a_s37"]+$row11x["a_s38"]+$row11x["a_s39"]+$row11x["a_s41"]+$row11x["a_s42"]+$row11x["a_s43"]+$row11x["a_s44"]+$row11x["a_s45"]+$row11x["a_s46"]+$row11x["a_s47"]+$row11x["a_s48"]+$row11x["a_s49"]+$row11x["a_s50"])*($row11x["p_plies"]);
 		}
 		
 		$sql21x="select order_style_no,order_del_no,order_col_des,order_div,color_code from bai_pro3.bai_orders_db where order_tid='".$order_tid1."'";

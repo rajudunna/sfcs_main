@@ -121,7 +121,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$order_date=$sql_row['Ex_Factory'];
 
 	$order_no=$sql_row['A'];
-	$cpo=$sql_row['CPO'];
+	$cpo=str_replace('"',"'",$sql_row['CPO']);
 	$mpo=$sql_row['MPO'];
 	$division=$sql_row['Buyer_Division'];
 

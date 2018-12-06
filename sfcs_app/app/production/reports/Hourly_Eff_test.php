@@ -8,12 +8,103 @@ CR# 194 / 2014-09-24 / kirang: Modify the color code for Act eff% .
 CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count through HRMS 
 
 --> 
-        <title>Hourly Efficiency Report</title>
+<title>Hourly Efficiency Report</title>
         <meta http-equiv="X-UA-Compatible" content="IE=8,IE=edge,chrome=1" /> 
         <script language="javascript" type="text/javascript" src="../common/js/datetimepicker_css.js"></script> 
         <link rel="stylesheet" href="style.css" type="text/css" media="all" /> 
         <link rel="stylesheet" href="../../../common/css/styles/bootstrap.min.css">
-        <style> 
+        <style>
+		body
+{
+	background-color: WHITE;
+	font-size: 8pt;
+	color: BLACK;
+	line-height: 15pt;
+	font-style: normal;
+	font-family: "calibri", Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none;
+}
+
+table#filter td
+{
+	
+	padding:10px;
+}
+
+table#info
+{
+	border-collapse:collapse;
+
+}
+
+table#info tr
+{
+	border: 1px solid black;
+	text-align: right;
+white-space:nowrap; 
+}
+
+table#info2 td
+{
+	border: 1px solid black;
+	text-align: right;
+	vertical-align:top;
+white-space:nowrap; 
+}
+
+table#info td
+{
+	border: 1px solid black;
+	text-align: right;
+white-space:nowrap; 
+}
+
+table#info th
+{
+	border: 1px solid black;
+	text-align: center;
+    	background-color: BLUE;
+	color: WHITE;
+white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+
+table#info tr.total
+{
+	border: 1px solid black;
+    	background-color: GREEN;
+	color: WHITE;
+	text-align: right;
+white-space:nowrap; 
+}
+
+table#info td.head
+{
+	border: 1px solid black;
+    	background-color: GREEN;
+	color: WHITE;
+	text-align: right;
+white-space:nowrap; 
+}
+
+table#info tr.total_grand
+{
+	border: 1px solid black;
+    	background-color: ORANGE;
+	color: WHITE;
+	text-align: right;
+white-space:nowrap; 
+}
+
+        table{
+            width:100%;
+        } 
+            td,th {
+                border-collapse: separate;
+                border: 1px solid black;
+            }
             @media print { 
                 @page narrow {size: 11in 9in} 
                 @page rotated {size: landscape} 
@@ -112,15 +203,17 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                     <!--<h3 style="background-color: #29759c; color: WHITE;  font-size:15px; ">Hourly Efficiency Report</h3>--> 
                     <?php  
                         include("../../../common/config/config.php");
-                        error_reporting(0);
+                        // error_reporting(0);
                         $secstyles=$_POST['secstyles']; 
                         $sections_string=$_POST['section']; 
                         $date=$_POST['dat']; 
                         $option1=$_POST['option1']; 
                         $team=$_POST['team']; 
                         $hour_filter=$_POST['hour_filter']; 
-                        //echo "secstylesds".$sections_string; 
-                        //echo "secstyles".$secstyles; 
+                        $total_hours = $plant_end_time - $plant_start_time;
+                        list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
+                        $hour_start = $hour + 1;
+                        
                     ?> 
 
 
@@ -128,31 +221,43 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                         <div class="row">
                             <div class="col-md-2">
 									<label for="demo1">Select Date: </label>
-                                	<input id="demo1" readonly type="text" class="form-control" size="6" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>     <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="../common/images/cal.gif" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
+                                	<input id="demo1" readonly type="text" class="form-control" size="8" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>     <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="../common/images/cal.gif" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
                             </div>
                             <div class="col-md-2">
                                 <label for="section">Select Unit: </label>
                                 <?php
                                     echo "<select name=\"section\" id='section' class=\"form-control\" >"; 
-                                    $sql2="select * from $bai_pro.unit_db order by sno"; 
+                                    $sql2="select * from $bai_pro3.sections_master order by sec_id"; 
+									
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
-                                        if($sections_string==$sql_row2['unit_members']) 
+                                        if($sections_string==$sql_row2['sec_name']) 
                                         { 
-                                            echo "<option value=\"".$sql_row2['unit_members']."\" selected>".$sql_row2['unit_id']; 
+                                            echo "<option value=\"".$sql_row2['sec_name']."\" selected>Unit-".$sql_row2['sec_name']."</option>"; 
+											$sections_list[]=$sql_row2['sec_name'];
                                         } 
                                         else 
                                         { 
-                                            echo "<option value=\"".$sql_row2['unit_members']."\">".$sql_row2['unit_id']; 
+                                            echo "<option value=\"".$sql_row2['sec_name']."\">Unit-".$sql_row2['sec_name']."</option>"; 
+											$sections_list[]=$sql_row2['sec_name'];
                                         } 
                                     } 
+									if($sections_string==implode(",",$sections_list)) 
+									{
+										echo "<option value=\"".implode(",",$sections_list)."\" selected>Factory</option>"; 
+									}
+									else
+									{
+										echo "<option value=\"".implode(",",$sections_list)."\">Factory</option>"; 
+									}
                                     echo "</select>"; 
                                 ?>
                             </div>
                             <div class="col-md-2">
                                 <label for="team">Select Team: </label>
                                 <select name="team" id="team" class="form-control"> 
+								<option value=<?php echo implode(",",$shifts_array); ?>>All</option>
                                     <?php 
                                         for ($i=0; $i < sizeof($shifts_array); $i++) {?>
                                             <option  <?php echo 'value="'.$shifts_array[$i].'"'; if($team==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
@@ -164,29 +269,58 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                <label for="hour_filter" valign="top">Select Hour: </label>
                                 <select name="hour_filter[]" id="hour_filter" class="form-control" multiple> 
                                     <?php 
-                                        if($hour_filter[0]!="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" and sizeof($hour_filter)!=0) 
-                                        { 
-                                            echo '<option value="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21">All</option>'; 
-                                            for($i=6;$i<=21;$i++) 
-                                            { 
-                                                if($i==$hour_filter[$i-6]) 
-                                                { 
-                                                    echo '<option value="'.$i.'" selected>'.$i.'</option>'; 
-                                                } 
-                                                else 
-                                                { 
-                                                    echo '<option value="'.$i.'" >'.$i.'</option>'; 
-                                                } 
-                                            } 
-                                        } 
-                                        else 
-                                        { 
-                                            echo '<option value="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" selected>All</option>'; 
-                                            for($i=6;$i<=21;$i++) 
-                                            { 
-                                                echo '<option value="'.$i.'">'.$i.'</option>'; 
-                                            } 
-                                        } 
+                                         $hour_filter1 = array();
+                                         for ($i=0; $i <= $total_hours; $i++)
+                                         {
+                                             $hour2=$hour;
+                                             $to_hour = "'".$hour2.":".$minutes."'";
+                                             $hour_filter1[]=$to_hour;
+                                             $hour++;
+                                         }
+                                         echo '<option value="'.(implode(',',$hour_filter1)).'">All</option>'; 
+                                         list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
+                                         for ($i=0; $i <= $total_hours; $i++)
+                                         {
+                                             $hour1=$hour;
+                                             // $to_hour = $hour1.":".$minutes;
+											 if($hour1 > 12)
+											 {
+												$to_hour = $hour1-12;
+											 }
+											 else
+											 {
+												$to_hour = $hour1;
+											 }
+                                             echo '<option value="\''.$to_hour.'\'">'.$to_hour.'</option>';
+                                             // echo '<br/>'.$to_hour;
+                                             $hour++;
+                 
+                                         }
+                                     	// $query='';
+                                       
+                                        // if($hour_filter[0]!="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" and sizeof($hour_filter)!=0) 
+                                        // { 
+                                        //     echo '<option value="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21">All</option>'; 
+                                        //     for($i=6;$i<=21;$i++) 
+                                        //     { 
+                                        //         if($i==$hour_filter[$i-6]) 
+                                        //         { 
+                                        //             echo '<option value="'.$i.'" selected>'.$i.'</option>'; 
+                                        //         } 
+                                        //         else 
+                                        //         { 
+                                        //             echo '<option value="'.$i.'" >'.$i.'</option>'; 
+                                        //         } 
+                                        //     } 
+                                        // } 
+                                        // else 
+                                        // { 
+                                        //     echo '<option value="6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" selected>All</option>'; 
+                                        //     for($i=6;$i<=21;$i++) 
+                                        //     { 
+                                        //         echo '<option value="'.$i.'">'.$i.'</option>'; 
+                                        //     } 
+                                        // } 
                                     ?> 
                                 </select>
                             </div> 
@@ -287,9 +421,10 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                             
                             //Time filter 
                             $hour_filter=$_POST['hour_filter']; 
-                            if(in_array("6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21",$hour_filter)) 
+                            
+                            if($hour_filter=='') 
                             { 
-                                   $time_query=" AND HOUR(bac_lastup) in (6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21) "; 
+                                   $time_query=""; 
                             } 
                             else 
                             { 
@@ -305,9 +440,11 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                             $option1=$_POST['option1']; 
                             $date=$_POST['dat']; 
                             $team=$_POST['team'];
-                            $team = "'".$team."'"; 
-                             
-                            if($team=='"A", "B"') 
+							// echo $team."<br>";
+							$teams=explode(",",$team);
+                            $team = "'".str_replace(",","','",$team)."'"; 
+                             // echo $team."<br>";
+                            if(sizeof($teams) > 1) 
                             { 
                                 $work_hours=15; 
                             } 
@@ -348,7 +485,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                 $i=0; 
                                 $j=0;
                                 $sql='SELECT DISTINCT(HOUR(bac_lastup)) AS "time" FROM '.$table_name.' WHERE bac_date="'.$date.'" AND bac_shift IN ('.$team.') '.$time_query.' ORDER BY HOUR(bac_lastup)';
-                                //echo $sql.'<br>';
+                                // echo $sql.'<br>';
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
@@ -360,15 +497,16 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                     $headers[$i]=$time; 
                                     $i=$i+1;
                                 }
+                                echo "<hr/>";
                                 echo "<table id=\"info\">"; 
-                                echo "<tr><th style='background-color:#29759C; color: white;'>Section</th><th style='background-color:#29759C;'>Head</th>"; 
+                                echo "<tr><th style='background-color:#29759C;'>Section</th><th style='background-color:#29759C;'>Head</th>"; 
 
                                 for($i=0;$i<sizeof($headers);$i++) 
                                 { 
                                     echo "<th style='background-color:#29759C;'>".$headers[$i]."-".($headers[$i]+1)."</th>";  
                                 } 
 
-                                echo "<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Hours12</th> 
+                                echo "<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Hours</th> 
                                 <th style='background-color:#29759C;'>Plan EFF%</th> 
                                 <th style='background-color:#29759C;'>Plan Pro.</th> 
 
@@ -435,13 +573,13 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                 if($option1==1)
                                 {  
                                     echo "<table id=\"info\">";
-                                    echo "<tr><td colspan=4 style='background-color:#29759C; color: white;'>Section - ".$sec." (".$sec_head.")</td></tr>"; 
+                                    echo "<tr><td colspan=4 style='background-color:#29759C; color: white;'>Section - ".$sec."</td></tr>"; 
                                     echo "<tr><th style='background-color:#29759C;'>M#</th><th style='background-color:#29759C;'>NOP</th><th style='background-color:#29759C;'>Style DB</th><th style='background-color:#29759C;'>Del DB</th>";              
                                     for($i=0;$i<sizeof($headers);$i++) 
                                     { 
                                         echo "<th style='background-color:#29759C;'>".$headers[$i]."-".($headers[$i]+1)."</th>";
                                     } 
-                                    echo "<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Hours11</th> 
+                                    echo "<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Hours</th> 
                                         <th style='background-color:#29759C;'>Plan EFF%</th> 
                                         <th style='background-color:#29759C;'>Plan Pro.</th> 
                                         <th style='background-color:#29759C;'>CLH</th> 
@@ -582,10 +720,10 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                     } 
                                      
                                     //echo $hoursa."<br>"; 
-                                     
-                                    if($team=="\"A\"") 
+                                    
+                                    if($team=="'A'") 
                                     { 
-                                        $sql_nop="select avail_a as avail,absent_a as absent from $bai_pro.pro_atten where date=\"$date\" and module=\"$mod\""; 
+                                        $sql_nop="select (present+jumper) as avail,absent from $bai_pro.pro_attendance where date=\"$date\" and module=\"$mod\" and shift=$team"; 
                                         $sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         if(mysqli_num_rows($sql_result_nop) > 0) 
                                         { 
@@ -602,9 +740,9 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                         //echo $sql_nop."-".mysql_num_rows($sql_result_nop)."-".$nop."<br>"; 
                                     } 
                                      
-                                    if($team=="\"B\"") 
+                                    if($team=="'B'") 
                                     { 
-                                        $sql_nop="select avail_b as avail,absent_b as absent from $bai_pro.pro_atten where date=\"$date\" and module=\"$mod\""; 
+                                        $sql_nop="select (present+jumper) as avail,absent from $bai_pro.pro_attendance where date=\"$date\" and module=\"$mod\" and shift=$team"; 
                                         $sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         if(mysqli_num_rows($sql_result_nop) > 0) 
                                         { 
@@ -621,10 +759,10 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                         //echo $sql_nop."-".mysql_num_rows($sql_result_nop)."-".$nop."<br>"; 
                                     } 
                                      
-                                    if($team=="\"A\", \"B\"") 
+                                    if(sizeof($teams) > 1) 
                                     { 
                                         //echo "\"A\",\"B\"<br>"; 
-                                        $sql_nop="select avail_a as avail,absent_a as absent from $bai_pro.pro_atten where date=\"$date\" and module=\"$mod\""; 
+                                        $sql_nop="select (present+jumper) as avail,absent from $bai_pro.pro_attendance where date=\"$date\" and module=\"$mod\" and shift='A'"; 
                                         $sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         if(mysqli_num_rows($sql_result_nop) > 0) 
                                         { 
@@ -660,7 +798,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
 
                                         //echo "A2=".$clhaa."-A1=".$hoursaa."<br>";     
                                              
-                                        $sql_nop1="select avail_b as avail,absent_b as absent from $bai_pro.pro_atten where date=\"$date\" and module=\"$mod\""; 
+                                        $sql_nop1="select (present+jumper) as avail,absent from $bai_pro.pro_attendance where date=\"$date\" and module=\"$mod\" and shift='B'";  
                                         $sql_result_nop1=mysqli_query($link, $sql_nop1) or exit("Sql Error-<br>".$sql_nop1."<br>".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         if(mysqli_num_rows($sql_result_nop1) > 0) 
                                         { 
@@ -1286,6 +1424,8 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
 
                                     //$sql="select distinct bac_style,smv,nop from $table_name where bac_date=\"$date\" and bac_sec=$sec and bac_shift in ($team)"; 
                                     $sql="select distinct bac_style,smv from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and bac_shift in ($team)";
+									// echo $sql."<br>";
+									// echo $sql."<br>";
                                     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row=mysqli_fetch_array($sql_result)) 
                                     { 
@@ -1886,7 +2026,7 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
 
                                 /* STH */ 
 
-                                echo "<tr class=\"total\"><td>HOURLY SAH</td>"; 
+                                echo "<tr class=\"total\" style=\"bgcolor><td>HOURLY SAH</td>"; 
                                 for($i=0; $i<sizeof($h1); $i++) 
                                 { 
 
@@ -2034,20 +2174,44 @@ CR# 217 /2014-11-06/ kirang: Take the operators count and clock hours count thro
                                 $exp_pcs_hr2_sum=0; 
 
                                 //$sql="select distinct bac_style,smv,nop from $table_name where bac_date=\"$date\" and bac_sec in ($sections_group) and bac_shift in ($team)"; 
-                                $sql="select distinct bac_style,smv from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and bac_shift in ($team)";      
+                                $sql="select distinct bac_style,smv from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and bac_shift in ($team)";   
+								// echo $sql."<br>";								
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
                                     $mod_style=$sql_row['bac_style']; 
                                     echo "<tr><td>".$mod_style."</td>"; 
-                                    $sql2="select nop,smv from $pro_style where style=\"$mod_style\" and date=\"$date\"";                              
+                                    $sql2="select * from $pro_style where style=\"$mod_style\" and date=\"$date\"";                              
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                    { 
-                                        //echo "<td>".$sql_row2['smv']."</td>"; 
-                                        echo "<td>".$sql_row['smv']."</td>"; //Modified by KiranG 20150814 to show smv based on m3 integration from system. 
-                                        echo "<td>".$sql_row2['nop']."</td>"; 
-                                    } 
+									if(mysqli_num_rows($sql_result2)>0)
+									{
+										while($sql_row2=mysqli_fetch_array($sql_result2)) 
+										{ 
+											//echo "<td>".$sql_row2['smv']."</td>"; 
+											echo "<td>".$sql_row['smv']."</td>"; //Modified by KiranG 20150814 to show smv based on m3 integration from system. 
+											echo "<td>".$sql_row2['nop']."</td>"; 
+										} 
+									}
+									else
+									{
+										
+										$sql2="select smv,nop from $table_name where bac_date=\"$date\" and bac_style=\"$mod_style\" limit 1"; 
+										//echo $sql2;         
+										$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+										if(mysqli_num_rows($sql_result2)>0)
+										{
+											while($sql_row2=mysqli_fetch_array($sql_result2)) 
+											{ 
+												echo "<td>".$sql_row['smv']."</td>"; //Modified by KiranG 20150814 to show smv based on m3 integration from system. 
+												echo "<td>".$sql_row2['nop']."</td>"; 
+											} 
+										}
+										else
+										{										
+											echo "<td>0</td>"; 
+											echo "<td>0</td>"; 
+										}
+									}
                                      
                                     //SMV and NOP from direct table 
                                         //echo "<td>".$sql_row['smv']."</td>"; 

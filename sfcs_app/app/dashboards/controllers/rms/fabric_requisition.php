@@ -436,9 +436,9 @@ if(isset($_POST["submit"]))
 	$doc_nos_split=explode(",",$group_docs);
 	$host_name=str_replace(".brandixlk.org","",gethostbyaddr($_SERVER['REMOTE_ADDR']));
 	$note=date("Y-m-d H:i:s")."_".$username."_".$host_name."<br/>";
-	
-	//for($i=0;$i<sizeof($doc_nos_split);$i++)
-	for($i=0;$i<1;$i++)
+	$status=1;
+	for($i=0;$i<sizeof($doc_nos_split);$i++)
+	//for($i=0;$i<1;$i++)
 	{
 		$sql1="select * from $bai_pro3.fabric_priorities where doc_ref=\"".$doc_nos_split[$i]."\"";
 		$result=mysqli_query($link, $sql1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -460,7 +460,11 @@ if(isset($_POST["submit"]))
 				} 
 				else
 				{
-					echo "<h2 style=\"color:red;\">Request Sent Successfully...</h2>";
+					if($status==1)
+					{
+						echo "<h2 style=\"color:red;\">Request Sent Successfully...</h2>";
+						$status=0;
+					}
 				}
 				
 				//Date:2013-08-27

@@ -25,6 +25,7 @@ if(isset($_POST) && isset($_POST['date_y'])){
     foreach($_POST['main_data'] as $iv){
         $reason = explode('(',$iv['reasons'])[0];
         $qty = $iv['hours'];
+        $res_id = $iv['reason_id'];
         $ins_qry = "
         INSERT INTO `bai_pro2`.`hourly_downtime` 
             (
@@ -33,7 +34,8 @@ if(isset($_POST) && isset($_POST['date_y'])){
             `team`, 
             `dreason`, 
             `output_qty`, 
-            `dhour`
+            `dhour`,
+            `reason_id`
             )
             VALUES
             ( 
@@ -42,7 +44,8 @@ if(isset($_POST) && isset($_POST['date_y'])){
             '".$team."', 
             '".$reason."', 
             '".$qty."', 
-            '".$dhour_value."'
+            '".$dhour_value."',
+            '".$res_id."'
             );
         ";
        // echo $ins_qry;
@@ -128,6 +131,19 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                 //echo $forcast_qry;
                 $forcast_res = mysqli_query($link, $forcast_qry) or exit("Sql Error fr".mysqli_error($GLOBALS["___mysqli_ston"]));
                
+                $get_breaks = "SELECT id,code,reason FROM $bai_pro2.downtime_reason WHERE id IN (SELECT reason_id FROM $bai_pro2.hourly_downtime WHERE DATE = '".$_GET['mdate']."' AND reason_id IN (20,21,22) AND team = '".$_GET['module']."')";
+                $brks = '';
+                
+                $result_breaks = mysqli_query($link, $get_breaks) or exit("SQL Error_x:".$get_breaks);
+                if(mysqli_num_rows($result_breaks) > 0)
+                {
+                    echo "<div class = 'label label-warning'>";
+                    while($breaks = mysqli_fetch_array($result_breaks))
+                    {
+                        $brks .= "<strong>".$breaks['reason']."</strong>&nbsp;";
+                    }
+                    echo $brks."breaks has already been taken</div><br/>";
+                }
 
                 $tab = "<table class='table table-bordered'><thead><tr><th>Time</th><th>Plan</th><th>Forcast</th><th>Actual</th><th>Actions</th></tr></thead>
                 <tbody>";
@@ -149,7 +165,9 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
 
                     if($actual_qty<$forcast_qty){
                         $hours = $forcast_qty - $actual_qty;
-                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND time(TIME) = time('".$r['start_time']."') AND team = '".$_GET['module']."'";
+                        $t = str_pad(explode(":",$r['start_time'])[0],2,"0",STR_PAD_LEFT);
+                        $tmm = $t.":30:00";
+                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND time(TIME) = time('".$tmm."') AND team = '".$_GET['module']."'";
                         $hourly_down_time_res = mysqli_query($link, $hourly_down_time_qry) or exit("Sql Error hourly down time".mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($hourly_down_time_res)==0){
                             $btn="<button class='btn btn-danger pull right' onclick='assignhour(".explode(":",$r['start_time'])[0].",".$hours.")' data-toggle='modal' data-target='#myModal'><i class='fas fa-clock'></i> Update Down Time (".$hours." Quantity)</button>";
@@ -159,7 +177,10 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                         }
                     }elseif($actual_qty<$plan_qty && $forcast_qty==0){
                         $hours = $plan_qty - $actual_qty;
-                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND time(TIME) = time('".$r['start_time']."') AND team = '".$_GET['module']."'";
+                        $t = str_pad(explode(":",$r['start_time'])[0],2,"0",STR_PAD_LEFT);
+                        $tmm = $t.":30:00";
+                        
+                        $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND time(TIME) = time('".$tmm."') AND team = '".$_GET['module']."'";
                         $hourly_down_time_res = mysqli_query($link, $hourly_down_time_qry) or exit("Sql Error hourly down time".mysqli_error($GLOBALS["___mysqli_ston"]));
                         //echo $hourly_down_time_qry."<br/>" ;
                         if(mysqli_num_rows($hourly_down_time_res)==0){
@@ -179,7 +200,8 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                 $tab.="</tbody>
                 </table>";
 
-                $resons_data_sql = "SELECT code,reason FROM $bai_pro2.downtime_reason";
+                $resons_data_sql = "SELECT id,code,reason FROM $bai_pro2.downtime_reason WHERE id NOT IN (SELECT reason_id FROM $bai_pro2.hourly_downtime WHERE DATE = '".$_GET['mdate']."' AND reason_id IN (20,21,22) AND team = '".$_GET['module']."')";
+
                 $resons_data_result = mysqli_query($link, $resons_data_sql) or exit("Sql Error resons".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
@@ -198,7 +220,7 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                     echo "<div class='col-sm-12'><div class='col-sm-4'><select ng-model='reasons' id='reson' name='reson' class='form-control'>";
                         echo "<option value=''>Select Reason</option>";
                         while($row1 = mysqli_fetch_array($resons_data_result)){
-                            echo "<option value='".$row1['code']."(".$row1['reason'].")'>".$row1['code']."(".$row1['reason'].")</option>";
+                            echo "<option value='".$row1['id']."#".$row1['code']."(".$row1['reason'].")'>".$row1['code']."(".$row1['reason'].")</option>";
                         }
                     echo "</select></div>";
                     echo "<div class='col-sm-4'><div class='col-sm-3'>Quantity</div><div class='col-sm-9'><input type='number' place-holder='Quantity' name='hours' ng-model='hours' id='hours' class='form-control'></div></div>";
@@ -261,6 +283,8 @@ app.controller('downtimecontroller', function($scope, $http) {
     $scope.time = 0;
     $scope.team = <?= isset($_GET['module']) ? $_GET['module'] : 0  ?>;
     $scope.act_hrs = 0;
+    $scope.reason = 0;
+
     $scope.removeData = function(reson){
         for(var i=0;i<$scope.downtimeData.length;i++){
             if($scope.downtimeData[i].reasons==reson){
@@ -274,7 +298,6 @@ app.controller('downtimecontroller', function($scope, $http) {
     };
 
 $scope.sendData = function(){
-    
     var url_serv = '<?= base64_decode($_GET['r']) ?>';
     var rv = {};
     for (var i = 0; i < $scope.downtimeData.length; ++i)
@@ -293,7 +316,7 @@ $scope.sendData = function(){
             data: params
         })
             .then(function successCallback(response) {
-                console.log(response.data);
+                
                 if(response.data.message=='success'){
                     swal('downtime updated successfully.');
                     location.reload();
@@ -311,16 +334,20 @@ $scope.sendData = function(){
 
 
     $scope.addData = function(){
-        //console.log($scope.dtimehrs);
+        
         $scope.test = {};
         var check = false;
         var h = Math.floor($scope.hours);
         for(var i=0;i<$scope.downtimeData.length;i++){
+            
             if($scope.downtimeData[i].reasons==$scope.reasons)
                 check = true;
         }
+        
         if($scope.hours>0 && !check && $scope.reasons!='' && ($scope.act_hrs+$scope.hours)<=$scope.dtimehrs && $scope.hours==h){
-            $scope.test.reasons = $scope.reasons;
+            id_code = $scope.reasons.split('#');
+            $scope.test.reason_id = id_code[0];
+            $scope.test.reasons = id_code[1];
             $scope.test.hours = $scope.hours;
             $scope.reasons = "";
             $scope.hours = 0;
@@ -329,6 +356,7 @@ $scope.sendData = function(){
             $scope.alert_class = 'success';
             $scope.alert = 'Reason Added Successfully..';
             $scope.act_hrs+=$scope.test.hours;
+            
         }else{
             $scope.alert_info = true;
             $scope.alert_class = 'danger';

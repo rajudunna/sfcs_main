@@ -697,8 +697,8 @@ if($_GET['view']==3)
 echo "</font>";
 
 echo '<div class="panel panel-primary">';
-
-echo "<div class='panel-heading'><span style='float'><strong><a href=".$url.">CPS Dashboard</a></strong></a>
+//target blank added for report
+echo "<div class='panel-heading'><span style='float'><strong><a href=".$url." target='_blank'>CPS Dashboard</a></strong></a>
 </span><span style='float: right; margin-top: 0px'><b>
 <a href='javascript:void(0)' onclick='Popup=window.open('cps.htm"."','Popup',
 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); 
@@ -839,7 +839,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     //$sql2="select doc_ref,req_time,module,log_time from bai_pro3.fabric_priorities where issued_time='0000-00-00 00:00:00' and section=$section order by section,req_time";
     
     //Changed on 2013-10-03 to facilitate module change requirements. - KiranG
-    $sql2="select doc_ref,req_time,module,log_time from $bai_pro3.fabric_priorities where issued_time='0000-00-00 00:00:00' and module in ($section_mods) order by req_time,module";
+    $sql2="select doc_ref,req_time,module,log_time from $bai_pro3.fabric_priorities where issued_time='0000-00-00 00:00:00' and module in ($section_mods) group by doc_ref_club order by req_time,module";
     //echo $sql2;
     $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row2=mysqli_fetch_array($result2))
