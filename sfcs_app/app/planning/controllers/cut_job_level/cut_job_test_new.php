@@ -104,7 +104,7 @@ echo "<div class='row'>";
 	}
 	echo "</select></div>"; 
 
-	$check_status = echo_title('bai_pro3.bai_orders_db_confirm', 'order_joins', "order_style_no=$style and order_del_no=$schedule and order_col_des", $color, $link); 
+	$check_status = echo_title('bai_pro3.bai_orders_db_confirm', 'order_joins', "order_style_no='$style' and order_del_no='$schedule' and order_col_des", $color, $link); 
 	if ($check_status < 3 )
 	{
 		$code=""; 
