@@ -74,7 +74,7 @@
             </div>
             <div class="col-md-4">
 				<div class="form-group">
-                    <label class="control-label control-label-left col-sm-5" for="section_head">Section Head<span class="req"> *</span></label>
+                    <label class="control-label control-label-left col-sm-5" for="section_head">Section Head</label>
                         <div class="controls col-sm-7">
                             <input id="section_head" type="text" class="form-control k-textbox" data-role="text" placeholder="Section Head" name="section_head" value="<?php echo $section_head; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
                         </div>
@@ -82,8 +82,8 @@
 			</div>
             <div class="col-md-4">
 				<div class="form-group">
-                    <label class="control-label control-label-left col-sm-5" for="ims_priority">IMS Priority Boxes<span class="req"> *</span></label>
-                        <div class="controls col-sm-7">
+                    <label class="col-sm-4" for="ims_priority">IMS Priority Boxes</label>
+                        <div class="controls col-sm-8">
                             <input id="ims_priority" type="text" class="form-control k-textbox" data-role="text" placeholder="IMS Priority Box" name="ims_priority" value="<?php echo $ims_priority_boxs; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
                         </div>
 				</div>
