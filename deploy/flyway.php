@@ -94,6 +94,7 @@ class Flyway {
                 $success = 1;
             } else {
                 $this->output( "Script unsuccessful executed"); 
+				$this->output( 'Wrong SQLFile  Error: ' . $connection->errno . ' ' . $connection->error); 
                 $success = 0;
                 trigger_error('Wrong SQLFile  Error: ' . $connection->errno . ' ' . $connection->error, E_USER_ERROR);
             }
