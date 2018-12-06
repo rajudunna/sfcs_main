@@ -30,7 +30,7 @@ if (empty($reason_cat) || empty($reason_desc) || empty($reason_code) || empty($r
 		  }
 		}); }, 100);</script>";
 }else{
-	if($tid>0){
+	if($sno>0){
 		//update
 		$sql = "update $bai_pro3.bai_qms_rejection_reason set reason_cat='$reason_cat',reason_desc='$reason_desc',reason_code='$reason_code',reason_order='$reason_order',form_type='$form_type',m3_reason_code='$m3_reason_code' where sno=$sno";
 		//echo $sql;exit;
