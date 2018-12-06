@@ -301,6 +301,7 @@ if($_GET['var1']==1)
 		$pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='0' where input_job_no_random='$inputjobno'";
 		$pass_update1_result=mysqli_query($link, $pass_update1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+		$('#loading-image').hide();
 		function Redirect() {
 		sweetAlert('MRN Reversal successfully Completed','','success');
 		location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
@@ -310,6 +311,7 @@ if($_GET['var1']==1)
 	else
 	{
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+		$('#loading-image').hide();
 		function Redirect() {
 		sweetAlert('Reversal Failed','','success');
 		location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
