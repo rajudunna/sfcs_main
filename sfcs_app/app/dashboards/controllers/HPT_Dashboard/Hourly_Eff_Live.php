@@ -354,6 +354,13 @@ for ($i=0; $i <= $total_hours; $i++)
 	for ($j=0;$j<sizeof($sections);$j++)
 	{
 		$sec=$sections[$j];
+		$sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$sec";
+		// echo $sqlx1;
+		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+		{
+			$section1=$sql_rowx1['section_display_name'];
+		}
 		$h1=array();
 		$h2=array();
 		$headers=array();
@@ -391,7 +398,7 @@ for ($i=0; $i <= $total_hours; $i++)
 
 		if($option1==1)
 		{    
-			echo "<tr><td colspan=4 style='background-color:#29759C; color: white;'>Section -".$sec." (".$sec_head.")</td></tr>";
+			echo "<tr><td colspan=4 style='background-color:#29759C; color: white;'>".$section1."</td></tr>";
 		} 
 		if($option1==1)
 		{
