@@ -171,7 +171,7 @@ table{
 <body> 
 <!--<div id="page_heading"><span style="float"><h3>Mixed Schedule : Job Segregation Panel (PO Level)</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div> -->
 <div class="panel panel-primary">
-<div class="panel-heading">Schedule Club Splitting Panel - Ratio Pack</div>
+<div class="panel-heading">Schedule Club Splitting (Color Level)</div>
 <div class="panel-body">
 
 <form name="test" method="post" action="#"> 
@@ -862,7 +862,7 @@ if(isset($_POST['submit']))
 							//echo $sqly."<br>";
 							mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							 
-							$sqly1="update $bai_pro3.cat_stat_log set category='".$sql_rowx65['category']."',purwidth='".$sql_rowx65['purwidth']."',gmtway='".$sql_rowx65['gmtway']."',date='".$sql_rowx65['date']."',lastup='".$sql_rowx65['lastup']."',strip_match='".$sql_rowx65['strip_match']."',gusset_sep='".$sql_rowx65['gusset_sep']."',patt_ver='".$sql_rowx65['patt_ver']."' where tid='$tid_c' and order_tid2='".$tid_new_n."' and order_tid='".$order_tid_sub."'"; 
+							$sqly1="update $bai_pro3.cat_stat_log set category='".$sql_rowx65['category']."',purwidth='".$sql_rowx65['purwidth']."',gmtway='".$sql_rowx65['gmtway']."',date='".$sql_rowx65['date']."',lastup='".$sql_rowx65['lastup']."',strip_match='".$sql_rowx65['strip_match']."',gusset_sep='".$sql_rowx65['gusset_sep']."',patt_ver='".$sql_rowx65['patt_ver']."',binding_consumption='".$sql_rowx65['binding_consumption']."' where tid='$tid_c' and order_tid2='".$tid_new_n."' and order_tid='".$order_tid_sub."'"; 
 							//$sqly1="update cat_stat_log set category='".$sql_rowx65['category']."',purwidth='".$sql_rowx65['purwidth']."',gmtway='".$sql_rowx65['gmtway']."',date='".$sql_rowx65['date']."',lastup='".$sql_rowx65['lastup']."',strip_match='".$sql_rowx65['strip_match']."',gusset_sep='".$sql_rowx65['gusset_sep']."',patt_ver='".$sql_rowx65['patt_ver']."' where tid='$tid_c' and order_tid='".$order_tid_sub."'"; 
 							//echo $sqly1."<br>";
 							mysqli_query($link, $sqly1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
