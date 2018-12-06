@@ -1810,21 +1810,14 @@ function validating_with_module($pre_array_module)
 			if(!in_array($job_no,$input_job_array))
 			{
 				// job not in module (adding new job to module)
-				if(sizeof($input_job_array) < $ims_boxes_count)
-			    {
-			        if (sizeof($input_job_array) < $block_priorities)
-			        {
-			            $response_flag = 0; // allow
-			        }
-			        else
-			        {
-			            $response_flag = 2; // check for user acces (block priorities)
-			        }
-			    }
-			    else
-			    {
-			        $response_flag = 1; // block
-			    }
+				if (sizeof($input_job_array) < $block_priorities)
+				{
+					$response_flag = 0; // allow
+				}
+				else
+				{
+					$response_flag = 2; // check for user acces (block priorities)
+				}
 			}
 			else
 			{
@@ -1838,7 +1831,7 @@ function validating_with_module($pre_array_module)
 		$response_flag = 4;
 	}
 	
-	// 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 1 = ims boxes full, 0 = allow for scanning
+	// 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
 	echo $response_flag;
 }
 
