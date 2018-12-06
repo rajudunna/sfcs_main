@@ -149,7 +149,6 @@ else
 }
 
 $sql1="select * from $bai_pro.tbl_freez_plan_log where date='".$date."'";
-echo $sql1."<br>";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_result1))
 {
