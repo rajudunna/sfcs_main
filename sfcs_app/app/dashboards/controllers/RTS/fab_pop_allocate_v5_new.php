@@ -575,7 +575,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 if(isset($_POST['allocate_new']))
 {
 	$doc_ref=$_POST['doc_ref']; //array
-	$dash=$_POST['dashboard']; //array
 
 	$min_width=$_POST['min_width'];	//array
 	$lot_db=$_POST['lot_db']; //array
@@ -722,7 +721,6 @@ if(isset($_POST['allocate_new']))
 				//To update Allocated Qty
 				// $sql="update $bai_rm_pj1.store_in set qty_allocated=".$issued_ref[$j]." where tid=".$tid_ref[$j];
 				$sql="update bai_rm_pj1.store_in set qty_rec=".$issued_ref[$j].",qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
-				echo $sql."<br>";
 				//Uncheck this
 				mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -786,23 +784,13 @@ if(isset($_POST['allocate_new']))
 	// echo "<h2>Successfully Updated.</h2>";
 	
 	//Exit Code
-	$dash=$_POST['dashboard'];
-	if($dash==1){
- 	$php_self = explode('/',$_SERVER['PHP_SELF']);
-	$ctd =array_slice($php_self, 0, -2);
-	$url_rr=base64_encode(implode('/',$ctd)."/cut_table_dashboard/cut_table_dashboard.php");
-	$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_rr;
-	}
-	else{
-		$php_self = explode('/',$_SERVER['PHP_SELF']);
-		array_pop($php_self);
-		$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
-		$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
-	}
-	//this is for after allocating article redirect to cps dashboard.removed sfcsui
-
-	// echo"<script>swal('Successfully Updated.','','success')</script>";
-	// echo"<script>location.href =  '".$url1."';</script>"; 
+	echo "<h2>Successfully Updated.</h2>";
+	$php_self = explode('/',$_SERVER['PHP_SELF']);
+	array_pop($php_self);
+	$url_r = base64_encode(implode('/',$php_self)."/fab_pps_recut_dashboard_v4.php");
+	$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+	echo"<script>swal('Successfully Updated.','','success')</script>";
+	echo"<script>location.href = '".$url."';</script>"; 
 
 	// if($process_cat==1)
 	// {
@@ -811,7 +799,7 @@ if(isset($_POST['allocate_new']))
 	// else
 	// {
 	// 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"fab_pop_details_recut_v2.php?doc_no=".$doc_ref[0]."\"; }</script>";
-	// }	
+	// }
 }
 
 ?>
