@@ -1,6 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
+include('cut_rejections_save.php');
 error_reporting(0);
 
 /*
@@ -109,11 +110,12 @@ $schedule= $data['schedule'];
 $color   = $data['color'];
 $date      = date('Y-m-d');
 $date_time = date('Y-m-d H:i:s'); 
-
-// for schedule clubbing we all grabbing all colors and picking one randomly
+$rejections_flag = $data['rejections_flag'];
+$rejection_details = $data['rejections'];
+// for schedule clubbing we are grabbing all colors and picking one randomly
 $colors = explode(',',$color);
 $color = $colors[0];
-//for schedule clubbing we all grabbing all schedules
+//for schedule clubbing we are grabbing all schedules
 $schedules = explode(',',$schedule);
 $schedule = $schedules[0];
 
@@ -142,6 +144,10 @@ if($target == 'recut'){
 //Normal Docket Saving
 if($target == 'normal'){
     //inserting to act_cutstatus
+    if($rejections_flag == 1){
+        return save_rejections($doc_no,$rejection_details,$style,$schedule,$color);
+    }
+    exit();
     $remarks = "$date^$cut_table^$shift^$f_rec^$f_ret^$damages^$shortages^$returned_to^$plies";
     $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, 
                     damages,shortages,remarks,log_date,bundle_loc,leader_name) 
@@ -153,7 +159,7 @@ if($target == 'normal'){
 
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log set a_plies = a_plies + $plies,act_cut_status='DONE',
                     fabric_status=5 where doc_no = $doc_no ";
-    $insert_result = mysqli_query($link,$insert_query) or exit('Query Error Cut 1');   
+    //$insert_result = mysqli_query($link,$insert_query) or exit('Query Error Cut 1');   
     
     mysqli_begin_transaction($link);
     if($insert_result > 0){
@@ -170,7 +176,7 @@ if($target == 'normal'){
     }
     mysqli_close($link);
 
-    $status = update_cps_bcd($doc_no,$plies,$style,$schedule,$color);
+    //$status = update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color);
     if($status == 'fail'){
         $response_data['pass'] = 0;
         echo json_encode($response_data);
@@ -182,11 +188,11 @@ if($target == 'normal'){
         exit();
     } 
 }
-
 // $target = 'schedule_club';
 // $plies = 50;
 // $doc_no = 524879; 
 //Schedule Clubbing Docket Saving
+
 if($target == 'schedule_clubbed'){
     $remarks = "$date^$cut_table^$shift^$f_rec^$f_ret^$damages^$shortages^$returned_to^$plies";
     $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, 
@@ -284,8 +290,6 @@ if($target == 'schedule_clubbed'){
     } 
 }
 
-
-
 //Style clubbing docket saving
 if($target == 'style_clubbed'){
     $remarks = "$date^$cut_table^$shift^$f_rec^$f_ret^$damages^$shortages^$returned_to^$plies";
@@ -339,7 +343,7 @@ if($target == 'style_clubbed'){
     while($row = mysqli_fetch_array($doc_qty_result)){
         foreach($sizes_array as $size){
             if($row['p_'.$size] > 0)
-                $reporting[$size] = ($row['p_'.$size] * $plies)/$schedules_count;
+                $reporting[$size] = ($row['p_'.$size] * $plies);
         }
     }
 
@@ -352,7 +356,6 @@ if($target == 'style_clubbed'){
         $child_docs[] = $row['doc_no'];
     }
 
-
     //for each child docket calculating a_s01,a_s02,..
     foreach($child_docs as $child_doc){
         $size_qty_query = "SELECT $p_sizes_str,$p_sizes_str from $bai_pro3.plandoc_stat_log 
@@ -361,16 +364,18 @@ if($target == 'style_clubbed'){
         while($row = mysqli_fetch_array($sizes_qty_result)){
             //getting all the planned sizes for child dockets
             foreach($sizes_array as $size){
-                if($row['p_'.$size] - $row['a_'.$size] > 0)
+                if($row['p_'.$size] - $row['a_'.$size] > 0){
                     $planned[$child_doc][$size]    = $row['p_'.$size] - $row['a_'.$size];
                     $remaining[$child_doc][$size]  = $reporting[$size];
-                    //$remaining[$size][$child_doc]  = $reporting[$size];
+                    $dockets[$docket][$size] += 1;
+                }
             }
         }
     }
 
+
     //need to write for the fulfill_qtys
-    foreach($left_over as $size=>$qty){
+    foreach($reporting as $size=>$qty){
         $docs = $docs_count[$size];
         $splitted = $qty;
         do{
@@ -530,7 +535,7 @@ function get_me_emb_check_flag($style,$color,$op_code,$link,$brandix_bts){
     //emb checking ends
 }
 
-function update_cps_bcd($doc_no,$plies,$style,$schedule,$color){
+function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     error_reporting(0);
     $update_counter = 0;
