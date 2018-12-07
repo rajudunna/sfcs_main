@@ -121,14 +121,7 @@ function myfunction ()
 
     echo "<div class=\"col-sm-3\">Select Color: <select class=\"form-control\" name=\"color\" onclick='verify_sch()' onchange=\"secondbox();\" >"; 
     echo "<option value='' selected disabled>Select Color</option>"; 
-
-    //$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log) and order_style_no=\"$style\" and order_del_no=\"$schedule\""; 
-    //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != ''))  
-    //{ 
-        $sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" and order_joins='0'";
-		//echo $sql;
-    //} 
-    mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    $sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" and order_joins='0'";
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     $sql_num_check=mysqli_num_rows($sql_result); 
 

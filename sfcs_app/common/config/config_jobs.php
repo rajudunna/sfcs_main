@@ -85,6 +85,8 @@ $sizes_title=array('S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','
 $plant_name = $conf->get('plantname');
 $fab_uom = $conf->get('uom');
 
+$shifts_array = $conf->get('shifts');
+$teams_array = $conf->get('teams');
 
 //M3 Rest API Calls Details
 $company_no = $conf->get('companey-number');

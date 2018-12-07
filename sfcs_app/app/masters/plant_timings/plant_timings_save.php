@@ -93,6 +93,11 @@ else
 								}else{
 									$start_time = "$sh:".($sm+2).":59";
 								}
+								if($day_part=='PM'){
+									$start1+=12;
+									$end1+=12;
+									$sh+=12;
+								}
 								
 								$sql = "INSERT INTO $bai_pro3.tbl_plant_timings (time_value,time_display,start_time,end_time,day_part)
 								VALUES ('$sh','$start1-$end1','$end_time','$start_time','$day_part')";

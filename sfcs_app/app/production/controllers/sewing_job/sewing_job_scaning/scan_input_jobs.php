@@ -304,12 +304,7 @@ $(document).ready(function()
 						restrict_msg = 'You are Not Authorized to report more than Block Priorities';
 					}
 				}
-				else if (response == 1)
-				{
-					module_flag = 1; // block
-					restrict_msg = 'Module Full due to IMS Box Priority';
-				}
-				else  if (response == 0)
+				else if (response == 0)
 				{
 					module_flag = 0; // allow
 				}

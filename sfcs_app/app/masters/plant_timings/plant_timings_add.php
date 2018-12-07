@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,14 +61,14 @@
 			    <label class="control-label control-label-left col-sm-3" value="" for="department">Start Time</label>
 			    <div class="controls col-sm-9">
                 <div class="dropdown">
-                <SELECT name="time_display" id="start" value="<?php echo $start_time ; ?>" onchange="calculate()" class="form-control">
+                <SELECT name="time_display" id="start" value="<?php echo $start_time ; ?>" class="form-control">
 
                 <?php 
                 for($hours=1; $hours<13; $hours++)
                 {
                     for($mins=0; $mins<60; $mins+=60)
                     { 
-                        $h = str_pad($hours,1,'0',STR_PAD_LEFT);
+                        $h = str_pad($hours,2,'0',STR_PAD_LEFT);
                         $m = str_pad($mins,2,'0',STR_PAD_LEFT);
                         $time = "$h:$m";
                         if($time==$st)
@@ -89,14 +88,14 @@
 			    <div class="controls col-sm-9">
 				<div class="dropdown">
                  
-                <SELECT name="time_display1" id="start1" value="<?php echo $end_time; ?>" onchange="calculate()" class="form-control">
+                <SELECT name="time_display1" id="start1" value="<?php echo $end_time; ?>" class="form-control">
 
                 <?php 
                     for($hours=1; $hours<13; $hours++)
                     {
                         for($mins=0; $mins<60; $mins+=60)
                         { 
-                            $h = str_pad($hours,1,'0',STR_PAD_LEFT);
+                            $h = str_pad($hours,2,'0',STR_PAD_LEFT);
                             $m = str_pad($mins,2,'0',STR_PAD_LEFT);
                             $time = "$h:$m";
                             if($time==$et)
@@ -117,7 +116,8 @@
 			    <label class="control-label control-label-left col-sm-3" id="code"  value="" required="required" for="code">Day Part<span class="req"> </span></label>
 			    <div class="controls col-sm-9">
                 <div class="dropdown">
-                    <select name="day_part" >
+                    <select name="day_part" id='day_part' onchange="calculate()">
+                    <option value='' selected>Please Select</option>
                     <?php
                         if($day_part!=''){ 
                             if($day_part == 'AM'){
@@ -159,14 +159,22 @@
     function calculate(){
         var v1 = document.getElementById("start").value;
         var v2 = document.getElementById("start1").value;
+  
+       var day_time = document.getElementById("day_part").value;
+       if(day_time=='AM'){
+      
+        var sh = v1.substr(0,2);
+
+        var sm = v1.substr(0,2);
+           var new1 = sh;
+           
+        document.getElementById("department").value = new1;
+       } else {
         var sh = v1.substr(0,2);
         var sm = v1.substr(2,4);
-        var eh = v2.substr(0,2);
-        var em = v2.substr(2,4);
-        console.log(sh+':'+sm);
-        console.log(eh+':'+em-1);
-       // console.log(em-1);
-       document.getElementById("department").value = sh;
+        var new1 = parseInt(sh)+12;
+        document.getElementById("department").value = new1;
+       }
 
     }
     

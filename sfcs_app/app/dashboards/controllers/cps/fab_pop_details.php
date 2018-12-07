@@ -479,12 +479,14 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 			//echo $docno_lot."--".$clubbing."<br>";
 			if($clubbing>0)
 			{
-				$path="color_club_docket_print.php";
+				$path="../../../cutting/controllers/lay_plan_preparation/color_club_docket_print.php";
 			}
 			else
 			{
-				$path='Book3_print1.php';
+				$path="../../../cutting/controllers/lay_plan_preparation/Book3_print.php";
 			}
+
+
 			
 			// echo "<br>DocNo: ".$docno_lot.'Component No: '.$componentno_lot;
 			//getting lot numbers with reference style code and component no
