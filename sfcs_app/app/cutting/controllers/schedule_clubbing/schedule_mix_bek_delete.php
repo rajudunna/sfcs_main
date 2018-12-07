@@ -291,7 +291,7 @@ if(isset($_POST['clear']))
     } 
     else 
     { 
-        echo '<br><div class="alert alert-danger"><strong>Sewing Jobs are Prepared, Delete the Sewing Jobs and Try Again.</strong></div>';     
+        echo '<br><br><br><br><div class="alert alert-danger"><strong>Sewing Jobs are Prepared, Delete the Sewing Jobs and Try Again.</strong></div>';     
     } 
 } 
 ?>

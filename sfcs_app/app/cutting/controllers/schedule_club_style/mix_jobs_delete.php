@@ -253,8 +253,8 @@ if(isset($_POST['clear']))
         $sql451="DELETE from $bai_pro3.bai_orders_db where order_del_no='".$schedule."' and order_col_des=\"".$color."\" "; 
         // echo $sql451."<br>"; 
         $sql_result451=mysqli_query($link, $sql451) or exit("Sql Error126".mysqli_error($GLOBALS["___mysqli_ston"])); 
-         
-        $sql4521="DELETE from $bai_pro3.bai_orders_db_club_confirm where order_del_no in (".implode(",",$order_del_no)." and order_col_des=\"".$color."\" "; 
+        
+        $sql4521="DELETE from $bai_pro3.bai_orders_db_club_confirm where order_tid in ('".implode("','",$order_tids)."')";
         // echo $sql451."<br>"; 
         $sql_result451=mysqli_query($link, $sql4521) or exit("Sql Error127".mysqli_error($GLOBALS["___mysqli_ston"])); 
                      
@@ -268,7 +268,7 @@ if(isset($_POST['clear']))
     } 
     else 
     { 
-        echo '<br><div class="alert alert-danger"><strong>Sewing Jobs are Prepared, Delete the Sewing Jobs and Try Again.</strong></div>';     
+        echo '<br><br><br><br><div class="alert alert-danger"><strong>Sewing Jobs are Prepared, Delete the Sewing Jobs and Try Again.</strong></div>';
     }
 } 
 ?>
