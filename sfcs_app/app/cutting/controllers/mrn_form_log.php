@@ -157,7 +157,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 							echo "".$reasonsdb_array[$sql_row['status']].":&nbsp;<a href='$link1&date=$date&status_filter=".$sql_row['status']."'><span class='btn btn-sm btn-danger'> ".$sql_row['count']."</span></a>";
 							$total+=$sql_row['count'];
 						}
-						echo "&nbsp; &nbsp; Show All: <a href='$link1&date=$date&status_filter=0'><span class='btn btn-md btn-danger'>".$total."</span></a></b>";
+						echo "<br> Show All: <a href='$link1&date=$date&status_filter=0'><span class='btn btn-md btn-danger'>".$total."</span></a></b>";
 
 						echo "</div>";
 

@@ -1,6 +1,6 @@
-USE bai_pro3;
+/*USE bai_pro3;*/
 
-CREATE TABLE cutting_table_plan (
+CREATE TABLE bai_pro3.cutting_table_plan (
   track_id int(11) NOT NULL AUTO_INCREMENT,
   doc_no varchar(50) NOT NULL,
   priority int(11) DEFAULT NULL,

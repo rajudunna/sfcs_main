@@ -13,13 +13,13 @@ MySQL - 10.3.8-MariaDB : Database - brandix_bts_uat
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`brandix_bts_uat` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `brandix_bts_uat`;
+/*USE `brandix_bts_uat`;*/
 
 /*Table structure for table `bundle_transactions_20_repeat_virtual_snap_ini_bundles` */
 
-DROP TABLE IF EXISTS `bundle_transactions_20_repeat_virtual_snap_ini_bundles`;
+DROP TABLE IF EXISTS `brandix_bts_uat`.`bundle_transactions_20_repeat_virtual_snap_ini_bundles`;
 
-CREATE TABLE `bundle_transactions_20_repeat_virtual_snap_ini_bundles` (
+CREATE TABLE `brandix_bts_uat`.`bundle_transactions_20_repeat_virtual_snap_ini_bundles` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `parent_id` bigint(11) DEFAULT NULL,
   `bundle_barcode` varchar(150) NOT NULL,
@@ -35,9 +35,9 @@ CREATE TABLE `bundle_transactions_20_repeat_virtual_snap_ini_bundles` (
 
 /*Table structure for table `snap_session_track` */
 
-DROP TABLE IF EXISTS `snap_session_track`;
+DROP TABLE IF EXISTS `brandix_bts_uat`.`snap_session_track`;
 
-CREATE TABLE `snap_session_track` (
+CREATE TABLE `brandix_bts_uat`.`snap_session_track` (
   `session_status` varchar(5) DEFAULT NULL,
   `session_id` int(11) NOT NULL,
   `time_stamp` varchar(20) DEFAULT NULL,
@@ -56,9 +56,9 @@ CREATE TABLE `snap_session_track` (
 
 /*Table structure for table `view_set_1_snap` */
 
-DROP TABLE IF EXISTS `view_set_1_snap`;
+DROP TABLE IF EXISTS `brandix_bts_uat`.`view_set_1_snap`;
 
-CREATE TABLE `view_set_1_snap` (
+CREATE TABLE `brandix_bts_uat`.`view_set_1_snap` (
   `bundle_transactions_20_repeat_id` bigint(11) DEFAULT 0,
   `bundle_transactions_20_repeat_parent_id` bigint(11) DEFAULT NULL,
   `bundle_transactions_20_repeat_bundle_barcode` varchar(50) CHARACTER SET utf8 NOT NULL,
@@ -87,9 +87,9 @@ CREATE TABLE `view_set_1_snap` (
 
 /*Table structure for table `view_set_2_snap` */
 
-DROP TABLE IF EXISTS `view_set_2_snap`;
+DROP TABLE IF EXISTS `brandix_bts_uat`.`view_set_2_snap`;
 
-CREATE TABLE `view_set_2_snap` (
+CREATE TABLE `brandix_bts_uat`.`view_set_2_snap` (
   `tbl_orders_size_ref_id` int(11) DEFAULT NULL,
   `tbl_orders_size_ref_size_name` varchar(150) DEFAULT NULL,
   `tbl_orders_sizes_master_id` int(6) DEFAULT NULL,
@@ -114,9 +114,9 @@ CREATE TABLE `view_set_2_snap` (
 
 /*Table structure for table `view_set_3_snap` */
 
-DROP TABLE IF EXISTS `view_set_3_snap`;
+DROP TABLE IF EXISTS `brandix_bts_uat`.`view_set_3_snap`;
 
-CREATE TABLE `view_set_3_snap` (
+CREATE TABLE `brandix_bts_uat`.`view_set_3_snap` (
   `tbl_min_ord_ref_id` int(11) DEFAULT 0,
   `tbl_min_ord_ref_ref_product_style` int(11) DEFAULT NULL,
   `tbl_min_ord_ref_ref_crt_schedule` int(11) DEFAULT NULL,
@@ -153,9 +153,9 @@ CREATE TABLE `view_set_3_snap` (
 
 /*Table structure for table `view_set_4_snap` */
 
-DROP TABLE IF EXISTS `view_set_4_snap`;
+DROP TABLE IF EXISTS `brandix_bts_uat`.`view_set_4_snap`;
 
-CREATE TABLE `view_set_4_snap` (
+CREATE TABLE `brandix_bts_uat`.`view_set_4_snap` (
   `DATE` date NOT NULL,
   `style` varchar(60) NOT NULL,
   `SCHEDULE` varchar(60) NOT NULL,
@@ -167,9 +167,9 @@ CREATE TABLE `view_set_4_snap` (
 
 /*Table structure for table `view_set_5_snap` */
 
-DROP TABLE IF EXISTS `view_set_5_snap`;
+DROP TABLE IF EXISTS `brandix_bts_uat`.`view_set_5_snap`;
 
-CREATE TABLE `view_set_5_snap` (
+CREATE TABLE `brandix_bts_uat`.`view_set_5_snap` (
   `log_date` date DEFAULT NULL,
   `qms_style` varchar(90) DEFAULT NULL,
   `qms_schedule` varchar(60) DEFAULT NULL,
@@ -178,9 +178,9 @@ CREATE TABLE `view_set_5_snap` (
 
 /*Table structure for table `view_set_6_snap` */
 
-DROP TABLE IF EXISTS `view_set_6_snap`;
+DROP TABLE IF EXISTS `brandix_bts_uat`.`view_set_6_snap`;
 
-CREATE TABLE `view_set_6_snap` (
+CREATE TABLE `brandix_bts_uat`.`view_set_6_snap` (
   `DATE` date NOT NULL,
   `style` varchar(60) NOT NULL,
   `SCHEDULE` varchar(60) NOT NULL,
@@ -197,9 +197,9 @@ CREATE TABLE `view_set_6_snap` (
 
 /*Table structure for table `view_set_snap_1_tbl` */
 
-DROP TABLE IF EXISTS `view_set_snap_1_tbl`;
+DROP TABLE IF EXISTS `brandix_bts_uat`.`view_set_snap_1_tbl`;
 
-CREATE TABLE `view_set_snap_1_tbl` (
+CREATE TABLE `brandix_bts_uat`.`view_set_snap_1_tbl` (
   `bundle_transactions_20_repeat_id` bigint(11) DEFAULT 0,
   `bundle_transactions_20_repeat_quantity` bigint(11) DEFAULT NULL,
   `bundle_transactions_20_repeat_operation_id` varchar(15) CHARACTER SET utf8 DEFAULT NULL,

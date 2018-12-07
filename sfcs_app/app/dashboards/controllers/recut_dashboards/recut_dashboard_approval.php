@@ -184,15 +184,15 @@ function myFunction()
             }
         }
     }
-    if(count == 1)
-    {
-        $('#myTable').hide();
-        $('#myTable1').show();
-    }
-    else
-    {
-        $('#myTable').show();
+    // if(count == 1)
+    // {
+    //     $('#myTable').hide();
+        // $('#myTable1').show();
+    // }
+    // else
+    // {
+    //     $('#myTable').show();
         $('#myTable1').hide();
-    }
+    // }
 }
 </script>

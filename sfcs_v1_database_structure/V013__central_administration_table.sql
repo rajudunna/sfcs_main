@@ -13,13 +13,13 @@ MySQL - 10.3.8-MariaDB : Database - central_administration
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`central_administration` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `central_administration`;
+/*USE `central_administration`;*/
 
 /*Table structure for table `employees` */
 
-DROP TABLE IF EXISTS `employees`;
+DROP TABLE IF EXISTS `central_administration`.`employees`;
 
-CREATE TABLE `employees` (
+CREATE TABLE `central_administration`.`employees` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `first_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `last_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -27,26 +27,26 @@ CREATE TABLE `employees` (
   `department` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `hire_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `login_info` */
 
-DROP TABLE IF EXISTS `login_info`;
+DROP TABLE IF EXISTS `central_administration`.`login_info`;
 
-CREATE TABLE `login_info` (
+CREATE TABLE `central_administration`.`login_info` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `employee_id` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `login` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `password` varchar(250) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `account_type` varchar(25) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'User',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `mate_columns` */
 
-DROP TABLE IF EXISTS `mate_columns`;
+DROP TABLE IF EXISTS `central_administration`.`mate_columns`;
 
-CREATE TABLE `mate_columns` (
+CREATE TABLE `central_administration`.`mate_columns` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `mate_user_id` varchar(225) NOT NULL,
   `mate_var_prefix` varchar(300) NOT NULL,
@@ -55,13 +55,13 @@ CREATE TABLE `mate_columns` (
   `order_num` int(11) unsigned NOT NULL,
   `date_updated` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_application_list` */
 
-DROP TABLE IF EXISTS `tbl_application_list`;
+DROP TABLE IF EXISTS `central_administration`.`tbl_application_list`;
 
-CREATE TABLE `tbl_application_list` (
+CREATE TABLE `central_administration`.`tbl_application_list` (
   `app_id` int(11) NOT NULL AUTO_INCREMENT,
   `app_name` varchar(45) NOT NULL,
   `app_description` varchar(45) NOT NULL,
@@ -73,37 +73,37 @@ CREATE TABLE `tbl_application_list` (
   `app_last_revision` varchar(45) NOT NULL,
   `app_remarks` varchar(45) NOT NULL,
   PRIMARY KEY (`app_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_function_list` */
 
-DROP TABLE IF EXISTS `tbl_function_list`;
+DROP TABLE IF EXISTS `central_administration`.`tbl_function_list`;
 
-CREATE TABLE `tbl_function_list` (
+CREATE TABLE `central_administration`.`tbl_function_list` (
   `fn_id` int(11) NOT NULL AUTO_INCREMENT,
   `fn_name` varchar(45) NOT NULL,
   `fn_purpose` varchar(150) DEFAULT NULL,
   `fn_status` varchar(4) NOT NULL COMMENT 'active - 0 ; inactive - 1',
   `fn_remarks` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`fn_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_group_list` */
 
-DROP TABLE IF EXISTS `tbl_group_list`;
+DROP TABLE IF EXISTS `central_administration`.`tbl_group_list`;
 
-CREATE TABLE `tbl_group_list` (
+CREATE TABLE `central_administration`.`tbl_group_list` (
   `group_id` int(11) NOT NULL AUTO_INCREMENT,
   `group_status` varchar(4) NOT NULL,
   `group_purpose` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`group_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_menu_list` */
 
-DROP TABLE IF EXISTS `tbl_menu_list`;
+DROP TABLE IF EXISTS `central_administration`.`tbl_menu_list`;
 
-CREATE TABLE `tbl_menu_list` (
+CREATE TABLE `central_administration`.`tbl_menu_list` (
   `menu_pid` int(11) NOT NULL AUTO_INCREMENT,
   `page_id` varchar(11) NOT NULL,
   `fk_group_id` varchar(45) NOT NULL,
@@ -117,13 +117,13 @@ CREATE TABLE `tbl_menu_list` (
   `link_tool_tip` varchar(45) NOT NULL,
   `link_cmd` varchar(45) NOT NULL,
   PRIMARY KEY (`menu_pid`)
-) ENGINE=MyISAM AUTO_INCREMENT=849 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_menu_matrix` */
 
-DROP TABLE IF EXISTS `tbl_menu_matrix`;
+DROP TABLE IF EXISTS `central_administration`.`tbl_menu_matrix`;
 
-CREATE TABLE `tbl_menu_matrix` (
+CREATE TABLE `central_administration`.`tbl_menu_matrix` (
   `matrix_pid` int(11) NOT NULL AUTO_INCREMENT,
   `fk_menu_pid` varchar(5) NOT NULL,
   `fk_fn_id` varchar(5) NOT NULL,
@@ -131,13 +131,13 @@ CREATE TABLE `tbl_menu_matrix` (
   `matrix_purpose` varchar(100) NOT NULL,
   `matrix_remarks` varchar(100) NOT NULL,
   PRIMARY KEY (`matrix_pid`)
-) ENGINE=MyISAM AUTO_INCREMENT=974 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_role_list` */
 
-DROP TABLE IF EXISTS `tbl_role_list`;
+DROP TABLE IF EXISTS `central_administration`.`tbl_role_list`;
 
-CREATE TABLE `tbl_role_list` (
+CREATE TABLE `central_administration`.`tbl_role_list` (
   `role_id` int(11) NOT NULL AUTO_INCREMENT,
   `role_desc` varchar(200) NOT NULL,
   `role_status` tinyint(4) NOT NULL,
@@ -147,9 +147,9 @@ CREATE TABLE `tbl_role_list` (
 
 /*Table structure for table `tbl_role_matrix` */
 
-DROP TABLE IF EXISTS `tbl_role_matrix`;
+DROP TABLE IF EXISTS `central_administration`.`tbl_role_matrix`;
 
-CREATE TABLE `tbl_role_matrix` (
+CREATE TABLE `central_administration`.`central_administration`.`tbl_role_matrix` (
   `role_matrix_id` int(11) NOT NULL AUTO_INCREMENT,
   `fk_role_id` varchar(45) NOT NULL,
   `fk_menu_matrix_id` varchar(45) NOT NULL,
@@ -161,21 +161,21 @@ CREATE TABLE `tbl_role_matrix` (
 
 /*Table structure for table `tbl_user_acl_list` */
 
-DROP TABLE IF EXISTS `tbl_user_acl_list`;
+DROP TABLE IF EXISTS `central_administration`.`tbl_user_acl_list`;
 
-CREATE TABLE `tbl_user_acl_list` (
+CREATE TABLE `central_administration`.`tbl_user_acl_list` (
   `acl_id` int(11) NOT NULL AUTO_INCREMENT,
   `fk_matrix_pid` varchar(45) NOT NULL,
   `fk_user_id` varchar(45) NOT NULL,
   `acl_status` varchar(45) NOT NULL COMMENT 'active - 0 ; inactive - 1',
   PRIMARY KEY (`acl_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10765 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_user_acl_list_role` */
 
-DROP TABLE IF EXISTS `tbl_user_acl_list_role`;
+DROP TABLE IF EXISTS `central_administration`.`tbl_user_acl_list_role`;
 
-CREATE TABLE `tbl_user_acl_list_role` (
+CREATE TABLE `central_administration`.`tbl_user_acl_list_role` (
   `acl_id` int(11) NOT NULL AUTO_INCREMENT,
   `fk_role_pid` varchar(45) NOT NULL,
   `fk_user_id` varchar(45) NOT NULL,
@@ -186,21 +186,21 @@ CREATE TABLE `tbl_user_acl_list_role` (
 
 /*Table structure for table `tbl_user_list` */
 
-DROP TABLE IF EXISTS `tbl_user_list`;
+DROP TABLE IF EXISTS `central_administration`.`tbl_user_list`;
 
-CREATE TABLE `tbl_user_list` (
+CREATE TABLE `central_administration`.`tbl_user_list` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(45) NOT NULL,
   `user_status` varchar(4) NOT NULL COMMENT 'active - 0 ; inactive - 1',
   `user_location` varchar(10) NOT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=508 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `tbl_view_view_menu` */
 
-DROP TABLE IF EXISTS `tbl_view_view_menu`;
+DROP TABLE IF EXISTS `central_administration`.`tbl_view_view_menu`;
 
-CREATE TABLE `tbl_view_view_menu` (
+CREATE TABLE `central_administration`.`tbl_view_view_menu` (
   `user_id` int(11) NOT NULL DEFAULT 0,
   `user_name` varchar(45) NOT NULL,
   `user_status` varchar(4) NOT NULL COMMENT 'active - 0 ; inactive - 1',
