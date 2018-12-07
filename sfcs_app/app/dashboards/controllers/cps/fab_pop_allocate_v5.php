@@ -722,7 +722,6 @@ if(isset($_POST['allocate_new']))
 					$new_tid=mysqli_insert_id($link);
 
 					$sql22="update bai_rm_pj1.store_in set barcode_number='".$facility_code."-".$new_tid."' where tid=".$new_tid;
-					echo $sql22."<br>";
 					//Uncheck this
 					mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -731,7 +730,6 @@ if(isset($_POST['allocate_new']))
 				//To update Allocated Qty
 				// $sql="update $bai_rm_pj1.store_in set qty_allocated=".$issued_ref[$j]." where tid=".$tid_ref[$j];
 				$sql="update bai_rm_pj1.store_in set qty_rec=".$issued_ref[$j].",qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
-				echo $sql."<br>";
 				//Uncheck this
 				mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -810,8 +808,8 @@ if(isset($_POST['allocate_new']))
 	}
 	//this is for after allocating article redirect to cps dashboard.removed sfcsui
 
-	// echo"<script>swal('Successfully Updated.','','success')</script>";
-	// echo"<script>location.href =  '".$url1."';</script>"; 
+	echo"<script>swal('Successfully Updated.','','success')</script>";
+	echo"<script>location.href =  '".$url1."';</script>"; 
 
 	// if($process_cat==1)
 	// {
