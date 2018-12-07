@@ -185,7 +185,7 @@ $order_joins_in_full="order_joins in ('0','1','2')";
 
 $order_joins_in_2 ="order_joins='2'";
 
-$order_joins_in_2 ="order_joins='1'";
+$order_joins_in_1 ="order_joins='1'";
     
 $sql_query = "select * from $central_administration_sfcs.rbac_permission where status='active'";
 $res_query = mysqli_query($link, $sql_query);
