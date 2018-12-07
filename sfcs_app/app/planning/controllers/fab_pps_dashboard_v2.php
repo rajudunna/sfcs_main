@@ -882,7 +882,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$fabric_status=$sql_row1['ft_status'];
 				//echo "2=".$fabric_status."-".$sql1."<br>";
 				//To get the status of join orders
-				$sql11="select ft_status from bai_orders_db_confirm where order_del_no=\"$schedule\" and order_joins=2";
+				$sql11="select ft_status from bai_orders_db_confirm where order_del_no=\"$schedule\" and $order_joins_in_2";
 				//echo $sql11."<br>";
 				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				

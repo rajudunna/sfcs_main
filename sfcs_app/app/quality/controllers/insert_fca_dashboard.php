@@ -181,18 +181,18 @@ xmlhttp.send();
 				<table width="900px" border="0" style="margin-top:150px;">
 					<?php
 
-			//$sql_schedule="SELECT b.order_style_no,b.order_del_no, SUM(b.`order_s_xs`+ b.`order_s_s`+ b.`order_s_m`+b.`order_s_l`+b. `order_s_xl`+ b.`order_s_xxl`+ b.`order_s_xxxl`+ b.`order_s_s06`+ 	b.`order_s_s08`+ b.`order_s_s10`+ b.`order_s_s12`+b.`order_s_s14`+b.`order_s_s16`+b.`order_s_s18`+b.`order_s_s20`+b.`order_s_s22`+ b.`order_s_s24`+ b.`order_s_s26`+ b.`order_s_s28`+ b.`order_s_s30` ) AS QTY , SUM(b.`old_order_s_xs`+ b.`old_order_s_s`+ b.`old_order_s_m`+b.`old_order_s_l`+b. `old_order_s_xl`+ b.`old_order_s_xxl`+ b.`old_order_s_xxxl`+ b.`old_order_s_s06`+ 	b.`old_order_s_s08`+ b.`old_order_s_s10`+ b.`old_order_s_s12`+b.`old_order_s_s14`+b.`old_order_s_s16`+b.`old_order_s_s18`+b.`old_order_s_s20`+b.`old_order_s_s22`+ b.`old_order_s_s24`+ b.`old_order_s_s26`+ b.`old_order_s_s28`+ b.`old_order_s_s30` ) AS QTY_old ,b.order_date	FROM 	`bai_pro3`.`bai_orders_db` b 	WHERE   order_date BETWEEN \"2013-02-07\" and \"2013-02-14\" and order_del_no NOT IN (\"0\",\"\") and order_joins NOT IN (\"1\",\"2\")	GROUP BY order_date ,order_del_no ORDER BY order_date ASC	";
+			//$sql_schedule="SELECT b.order_style_no,b.order_del_no, SUM(b.`order_s_xs`+ b.`order_s_s`+ b.`order_s_m`+b.`order_s_l`+b. `order_s_xl`+ b.`order_s_xxl`+ b.`order_s_xxxl`+ b.`order_s_s06`+ 	b.`order_s_s08`+ b.`order_s_s10`+ b.`order_s_s12`+b.`order_s_s14`+b.`order_s_s16`+b.`order_s_s18`+b.`order_s_s20`+b.`order_s_s22`+ b.`order_s_s24`+ b.`order_s_s26`+ b.`order_s_s28`+ b.`order_s_s30` ) AS QTY , SUM(b.`old_order_s_xs`+ b.`old_order_s_s`+ b.`old_order_s_m`+b.`old_order_s_l`+b. `old_order_s_xl`+ b.`old_order_s_xxl`+ b.`old_order_s_xxxl`+ b.`old_order_s_s06`+ 	b.`old_order_s_s08`+ b.`old_order_s_s10`+ b.`old_order_s_s12`+b.`old_order_s_s14`+b.`old_order_s_s16`+b.`old_order_s_s18`+b.`old_order_s_s20`+b.`old_order_s_s22`+ b.`old_order_s_s24`+ b.`old_order_s_s26`+ b.`old_order_s_s28`+ b.`old_order_s_s30` ) AS QTY_old ,b.order_date	FROM 	`bai_pro3`.`bai_orders_db` b 	WHERE   order_date BETWEEN \"2013-02-07\" and \"2013-02-14\" and order_del_no NOT IN (\"0\",\"\") and $order_joins_not_in	GROUP BY order_date ,order_del_no ORDER BY order_date ASC	";
 			if(isset($_POST['from'])){
 				$from=$_POST['from'];
 				$to=$_POST['to'];
-			//$sql_schedule="SELECT b.order_style_no,b.order_del_no, b.order_date,b.order_po_no	FROM 	`bai_pro3`.`bai_orders_db` b,`bai_pro3`.`tbl_carton` c 	WHERE   order_date BETWEEN \"$from\" and \"$to\" and order_del_no NOT IN (\"0\",\"\") and order_joins NOT IN (\"1\",\"2\") AND order_del_no=cr_schedule		GROUP BY order_date ,order_del_no ORDER BY order_date ASC	";
+			//$sql_schedule="SELECT b.order_style_no,b.order_del_no, b.order_date,b.order_po_no	FROM 	`bai_pro3`.`bai_orders_db` b,`bai_pro3`.`tbl_carton` c 	WHERE   order_date BETWEEN \"$from\" and \"$to\" and order_del_no NOT IN (\"0\",\"\") and $order_joins_not_in AND order_del_no=cr_schedule		GROUP BY order_date ,order_del_no ORDER BY order_date ASC	";
 
 			$sql_schedule="SELECT b.order_style_no,b.order_del_no, b.order_date,b.order_po_no	FROM 	`bai_pro3`.`bai_orders_db` b WHERE  order_date BETWEEN \"$from\" and \"$to\" and order_del_no NOT IN (\"0\",\"\") GROUP BY order_date ,order_del_no ORDER BY order_date ASC	";
 
 			}
 			else
 			{
-			//	$sql_schedule="SELECT b.order_style_no,b.order_del_no, b.order_date,b.order_po_no	FROM 	`bai_pro3`.`bai_orders_db` b ,`bai_pro3`.`tbl_carton` c	WHERE   order_date BETWEEN \"$today\" and \"$today\" and order_del_no NOT IN (\"0\",\"\") and order_joins NOT IN (\"1\",\"2\") AND order_del_no=cr_schedule		GROUP BY order_date ,order_del_no ORDER BY order_date ASC	";
+			//	$sql_schedule="SELECT b.order_style_no,b.order_del_no, b.order_date,b.order_po_no	FROM 	`bai_pro3`.`bai_orders_db` b ,`bai_pro3`.`tbl_carton` c	WHERE   order_date BETWEEN \"$today\" and \"$today\" and order_del_no NOT IN (\"0\",\"\") and $order_joins_not_in AND order_del_no=cr_schedule		GROUP BY order_date ,order_del_no ORDER BY order_date ASC	";
 
 				$sql_schedule="SELECT b.order_style_no,b.order_del_no, b.order_date,b.order_po_no	FROM 	`bai_pro3`.`bai_orders_db` b WHERE   order_date BETWEEN \"$today\" and \"$today\" and order_del_no NOT IN (\"0\",\"\") 	GROUP BY order_date ,order_del_no ORDER BY order_date ASC	";
 

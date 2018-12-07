@@ -106,7 +106,7 @@
 					echo "<th>$key</th>";
 				}
 				echo "<th >Total</th></tr>";
-				$sql2="select * from bai_orders_db_confirm where $filter_joins order_del_no=\"$schedule\"";
+				$sql2="select * from bai_orders_db_confirm where $order_joins_not_in and order_del_no=\"$schedule\"";
 				$sql_result2=mysqli_query($link,$sql2) or exit("Sql Errord".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{
@@ -182,7 +182,7 @@ if(isset($_POST['submit']))
 	// }
 
 	//$sql4="select order_col_des from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" and order_col_des=\"".$color_ref."\"";
-	$sql4="select order_col_des from $bai_pro3.bai_orders_db_confirm where $filter_joins order_del_no=\"$schedule\"";
+	$sql4="select order_col_des from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_del_no=\"$schedule\"";
 	//echo $sql4."<br>";
 	$sql_result4=mysqli_query($link, $sql4) or exit("Sql Errord".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($rowsy=mysqli_fetch_array($sql_result4))

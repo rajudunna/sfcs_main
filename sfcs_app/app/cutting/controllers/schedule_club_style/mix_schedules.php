@@ -183,7 +183,7 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 		}	
 		echo "<th>Total</th>";
 		echo "</tr>";
-		$sql="select * from $bai_pro3.bai_orders_db where order_joins not in (\"1\",\"2\") and order_style_no=\"$style\" and order_col_des=\"$color\" and order_del_no>0 order by order_style_no";		
+		$sql="select * from $bai_pro3.bai_orders_db where $order_joins_not_in and order_style_no=\"$style\" and order_col_des=\"$color\" and order_del_no>0 order by order_style_no";		
 		$test_count=0;
 		$sql_result=mysqli_query($link,$sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$num_rows = mysqli_num_rows($sql_result);
@@ -293,7 +293,7 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 		$row_count=0;
 		echo "<br>";
 		
-		$sql452="select * from $bai_pro3.bai_orders_db_confirm where order_style_no='".$style."' and order_col_des=\"".$color."\" and order_joins in (1,2)";
+		$sql452="select * from $bai_pro3.bai_orders_db_confirm where order_style_no='".$style."' and order_col_des=\"".$color."\" and $order_joins_in";
 		//echo $sql452."<br>";
 		$sql_result452=mysqli_query($link, $sql452) or die("Error".$sql452.mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result452)>0)
@@ -391,7 +391,7 @@ if(isset($_POST['fix']))
 	$unique_orginal_sizes_explode1=explode(",",$unique_orginal_sizes1);
 	$unique_sizes_explode1=explode(",",$unique_sizes1);
 	$po_code=substr($exfact,-2);
-	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_joins in (1,2) and order_col_des=\"$color\"";
+	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where $order_joins_in and order_col_des=\"$color\"";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$tot_ext_count=mysqli_num_rows($sql_result);
 	$tot_ext_count++;

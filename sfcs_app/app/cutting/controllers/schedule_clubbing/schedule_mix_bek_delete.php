@@ -37,7 +37,7 @@
         } 
         echo "<div class='row'><div class='col-md-3'>"; 
         echo "Select Style: <select class=\"form-control\" name=\"style\" onchange=\"firstbox();\" required>"; 
-        $sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm where order_joins in (1,2) order by order_style_no";     
+        $sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm where $order_joins_in order by order_style_no";     
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error style"); 
         echo "<option value=''>Please Select</option>"; 
         while($sql_row=mysqli_fetch_array($sql_result)) 
@@ -58,7 +58,7 @@
         echo"<div class='col-md-3'>"; 
         echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" required>"; 
 
-        $sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_joins in (1,2)  order by order_date";     
+        $sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and $order_joins_in  order by order_date";     
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error schedule"); 
         echo "<option value=''>Please Select</option>"; 
         while($sql_row=mysqli_fetch_array($sql_result)) 
@@ -76,7 +76,7 @@
         echo"<div class='col-md-3'>"; 
 
         echo "Select Color: <select class=\"form-control\" name=\"color\" onchange=\"thirdbox();\" required>"; 
-        $sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_joins in (1,2) "; 
+        $sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and $order_joins_in"; 
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error color"); 
         echo "<option value=''>Please Select</option>"; 
         while($sql_row=mysqli_fetch_array($sql_result)) 
