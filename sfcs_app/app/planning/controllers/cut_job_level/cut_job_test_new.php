@@ -5,8 +5,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"> 
 <head> 
-<title>Plan Dashboard</title> 
-<META HTTP-EQUIV="refresh" content="900; URL=pps_dashboard.php"> 
+<title>Plan Dashboard</title>
 <style> 
 body 
 { 
@@ -85,23 +84,24 @@ echo "<div class='row'>";
 	} 
 	echo "</select></div>";
 
-
-	echo "<div class='col-sm-3'><label>Select Color: </label><select name=\"color\" onchange=\"thirdbox();\" class='form-control' >"; 
-	$sql="select GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,max(plan_module),order_col_des from order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing>0 group by clubbing union select DISTINCT order_col_des,plan_module,order_col_des AS disp from $bai_pro3.order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing=0 group by clubbing,order_col_des";
+	echo "<div class='col-sm-3'><label>Select Color: </label>"; 
+	// $sql="select GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,max(plan_module),order_col_des from order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing>0 group by clubbing union select DISTINCT order_col_des,plan_module,order_col_des AS disp from $bai_pro3.order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing=0 group by clubbing,order_col_des";
+	$sql="SELECT GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,order_col_des FROM bai_pro3.`bai_orders_db_confirm` LEFT JOIN bai_pro3.`plandoc_stat_log` ON bai_orders_db_confirm.`order_tid`=plandoc_stat_log.`order_tid` WHERE order_style_no=\"$style\" AND order_del_no=\"$schedule\" AND order_joins IN ('0','1','2') group by order_col_des";
 	// echo $sql;
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-	echo "<option value=\"NIL\" selected>NIL</option>"; 
-	while($sql_row=mysqli_fetch_array($sql_result)) 
-	{ 
-	    if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color)) 
-	    { 
-	        echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['disp']."</option>"; 
-	    } 
-	    else 
-	    { 
-	        echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['disp']."</option>"; 
-	    } 
-	}
+	echo "<select name=\"color\" onchange=\"thirdbox();\" class='form-control' >
+			<option value=\"NIL\" selected>NIL</option>"; 
+				while($sql_row=mysqli_fetch_array($sql_result)) 
+				{ 
+					if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color)) 
+					{ 
+						echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['disp']."</option>"; 
+					} 
+					else 
+					{ 
+						echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['disp']."</option>"; 
+					} 
+				}
 	echo "</select></div>"; 
 
 	$check_status = echo_title('bai_pro3.bai_orders_db_confirm', 'order_joins', "order_style_no='$style' and order_del_no='$schedule' and order_col_des", $color, $link); 
