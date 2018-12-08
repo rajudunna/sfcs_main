@@ -174,7 +174,7 @@ table{
 <div class="panel-heading">Schedule Club Splitting (Color Level)</div>
 <div class="panel-body">
 
-<form name="test" method="post" action="#"> 
+<form name="test" method="post"  action="<?php getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'R') ?>">
 
 <?php 
 
