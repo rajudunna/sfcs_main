@@ -74,7 +74,7 @@ while($row = mysqli_fetch_array($result3))
 //Validation for the schedule operation matchings
 foreach($val_schedules as $schedule){
 	$sql_colors="select distinct(order_col_des) from $bai_pro3.bai_orders_db where order_del_no = '$schedule' 
-	and order_style_no = '$style' and order_joins NOT IN  (1,2)";
+	and order_style_no = '$style' and $order_joins_not_in";
 	$result3 = mysqli_query($link,$sql_colors) or exit("Unable to get the color codes");
 	while($row = mysqli_fetch_array($result3))
 	{

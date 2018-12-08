@@ -49,7 +49,7 @@
 		//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
 		//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 		//{
-			$sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm where order_joins=\"1\" order by order_style_no";	
+			$sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm where $order_joins_in_1 order by order_style_no";	
 		//}
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
@@ -77,7 +77,7 @@
 		//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
 		//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 		//{
-			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_joins=\"1\" order by order_date";	
+			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and $order_joins_in_1 order by order_date";	
 		//}
 		// echo "working".$sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -98,7 +98,7 @@
 
 		echo"<div class='col-md-3'>";
 		echo "Select Color: <select name=\"color\" class=\"form-control\" onchange=\"thirdbox();\" required>";
-		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_joins=\"1\"";
+		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and $order_joins_in_1";
 		//}
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
@@ -670,11 +670,11 @@ if(isset($_POST['submit']))
 				//echo sizeof($cat_id_ref)."--".(sizeof($ready_cat_ref)+sizeof($pending_cat_ref)+sizeof($pend_order_ref))."<br>";
 				if(sizeof($cat_id_ref)==sizeof($ready_cat_ref))
 				{				
-					$sqlx="update $bai_pro3.bai_orders_db set order_joins=\"2\" where order_del_no=$order_sch and order_col_des=\"$color\""; 
+					$sqlx="update $bai_pro3.bai_orders_db set order_joins='2' where order_del_no=$order_sch and order_col_des=\"$color\""; 
 					//echo $sqlx."<br>";
 					mysqli_query( $link, $sqlx) or exit("Sql Error1.3".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					 
-					$sqlx="update $bai_pro3.bai_orders_db_confirm set order_joins=\"2\" where order_del_no=$order_sch and order_col_des=\"$color\""; 
+					$sqlx="update $bai_pro3.bai_orders_db_confirm set order_joins='2' where order_del_no=$order_sch and order_col_des=\"$color\""; 
 					//echo $sqlx."<br>";
 					mysqli_query( $link, $sqlx) or exit("Sql Error1.69".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				}

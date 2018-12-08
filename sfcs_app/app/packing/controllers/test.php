@@ -499,12 +499,12 @@ if(isset($_POST['submit']))
 
 if($color_x=='0')
 {
-$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\"";	
+$sql="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\"";	
 }	
 
 else
 {
-$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\" and order_col_des=\"$color_x\"";	
+$sql="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\" and order_col_des=\"$color_x\"";	
 }
 	mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));

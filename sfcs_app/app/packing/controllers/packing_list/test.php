@@ -120,7 +120,7 @@
 	?>
 
 	<?php
-		$sql1="select count(order_col_des) as col_cnt from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\"";		
+		$sql1="select count(order_col_des) as col_cnt from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_style_no=\"$style\" and order_del_no=\"$schedule\"";		
 		mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result1);
@@ -140,7 +140,7 @@
 			  <select name=\"color\" id=\"color\" onchange=\"thirdbox();\" onclick=\"return check_style_sch();\" 
 			  class=\"form-control\">";
 
-		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and 
+		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_style_no=\"$style\" and 
 			  order_del_no=\"$schedule\"";
 
 		mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -171,10 +171,10 @@
 		echo "<input type=\"hidden\" name=\"sel_color\" value=\"".$sel_color."\" />";
 		if($color=='0')
 		{
-			$sql="select order_tid from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\"";
+			$sql="select order_tid from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_style_no=\"$style\" and order_del_no=\"$schedule\"";
 			
 		}else{
-			$sql="select order_tid from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+			$sql="select order_tid from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
 		}
 		mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -215,7 +215,7 @@
 	{
 		if($schedule>0)
 		{
-			$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins  order_del_no=\"$schedule\"";
+			$sql="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and  order_del_no=\"$schedule\"";
 			mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -329,7 +329,7 @@
 	}else{
 		if($schedule>0)
 		{	
-			$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_del_no=\"$schedule\" and order_col_des=\"$sel_color\"";
+			$sql="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_del_no=\"$schedule\" and order_col_des=\"$sel_color\"";
 			mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -450,11 +450,11 @@ if(isset($_POST['submit']))
 	
 	if($sel_color=='0')
 	{
-		$sql="select order_div,count(order_col_des) as color_count from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\"";
+		$sql="select order_div,count(order_col_des) as color_count from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_style_no=\"$style\" and order_del_no=\"$schedule\"";
 	}
 	else
 	{
-		$sql="select order_div,count(order_col_des) as color_count from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des='$color'";
+		$sql="select order_div,count(order_col_des) as color_count from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des='$color'";
 	}
 	//echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));

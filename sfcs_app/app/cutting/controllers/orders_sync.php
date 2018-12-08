@@ -48,7 +48,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	
 	for($kk=0;$kk<sizeof($order_tid_new);$kk++)
 	{
-		$sql="SELECT * FROM $bai_pro3.bai_orders_db_confirm as bai_orders_db_confirm LEFT JOIN $bai_pro3.plandoc_stat_log as plandoc_stat_log ON plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid WHERE bai_orders_db_confirm.order_joins not in ('1','2') AND bai_orders_db_confirm.order_tid='".$order_tid_new[$kk]."' and bai_orders_db_confirm.order_del_no='".$order_tid_schs[$kk]."' and bai_orders_db_confirm.order_col_des='".$order_tid_cols[$kk]."' GROUP BY bai_orders_db_confirm.order_col_des";
+		$sql="SELECT * FROM $bai_pro3.bai_orders_db_confirm as bai_orders_db_confirm LEFT JOIN $bai_pro3.plandoc_stat_log as plandoc_stat_log ON plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid WHERE bai_orders_db_confirm.$order_joins_not_in AND bai_orders_db_confirm.order_tid='".$order_tid_new[$kk]."' and bai_orders_db_confirm.order_del_no='".$order_tid_schs[$kk]."' and bai_orders_db_confirm.order_col_des='".$order_tid_cols[$kk]."' GROUP BY bai_orders_db_confirm.order_col_des";
 		//HAVING plan_quantity>=confirm_order_quantity"; //this will validate whether layplan has > order quantity or not
 		$result=mysqli_query($link, $sql) or ("Sql error777".mysqli_error($GLOBALS["___mysqli_ston"]));
 		//echo $result_3."ads";

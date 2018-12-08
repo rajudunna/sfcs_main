@@ -278,7 +278,7 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
             echo "<th>Total</th>"; 
             echo "</tr>"; 
 			
-            $sql="select * from $bai_pro3.bai_orders_db where order_joins not in (1,2) and order_style_no=\"$style\" and order_del_no=\"$schedule\" order by order_col_des"; 
+            $sql="select * from $bai_pro3.bai_orders_db where $order_joins_not_in and order_style_no=\"$style\" and order_del_no=\"$schedule\" order by order_col_des"; 
 			//echo $sql."<br>";
             $test_count=0; 
             $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -383,7 +383,7 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
             echo "<br>"; 
             echo "<br>"; 
                      
-            $sql452="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_joins in (1,2)";
+            $sql452="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and $order_joins_in";
             $sql_result452=mysqli_query($link, $sql452) or die("Error".$sql452.mysqli_error($GLOBALS["___mysqli_ston"])); 
             if(mysqli_num_rows($sql_result452)>0) 
             { 
