@@ -1,14 +1,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"> 
 <head> 
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));?> 
-<?php  
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 	  
-$view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs); 
-?> 
-<?php 
-// include("header_scripts.php");  
-?> 
+<?php
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+?>
 
 <script> 
 
@@ -16,14 +10,6 @@ function firstbox()
 { 
     window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N'); ?>&style="+document.test.style.value 
 } 
-
-</script> 
-<!--<link href="style.css" rel="stylesheet" type="text/css" /> -->
-<?php 
-// echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?> 
- 
-
-<SCRIPT> 
 
 function SetAllCheckBoxes(FormName, FieldName, CheckValue) 
 { 
@@ -115,28 +101,24 @@ function check_sch_sty()
 <div class="panel-heading">Schedule Clubbing (Color Level)</div>
 <div class="panel-body">
 <div>
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/menu_content.php',4,'R')); ?>
 <?php 
-error_reporting(E_ERROR | E_PARSE);
+    error_reporting(E_ERROR | E_PARSE);
 
-$style=$_GET['style']; 
-$schedule=$_GET['schedule'];  
-//$color=$_GET['color']; 
-//$po=$_GET['po']; 
+    $style=$_GET['style']; 
+    $schedule=$_GET['schedule'];  
+    //$color=$_GET['color']; 
+    //$po=$_GET['po']; 
 
-if(isset($_POST['submit'])) 
-{ 
-    $style=$_POST['style']; 
-    $schedule=$_POST['schedule'];  
-   // $color=$_POST['color']; 
-    //$po=$_POST['po']; 
-} 
-
-//echo $style.$schedule.$color; 
+    if(isset($_POST['submit'])) 
+    { 
+        $style=$_POST['style']; 
+        $schedule=$_POST['schedule'];  
+       // $color=$_POST['color']; 
+        //$po=$_POST['po']; 
+    }
 ?> 
-<!--<div id="page_heading"><span style="float"><h3>Schedule Mix Panel (PO Level)</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div> -->
 
-<form name="test" action="#" method="post"> 
+<form name="test" method="post" action="<?php getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'R') ?>">
 <?php 
 
 echo "<div class=\"row\"><div class=\"col-sm-3\"><label>Select Style: </label><select name=\"style\" id=\"style\" class=\"form-control\" onchange=\"firstbox();\" >"; 
