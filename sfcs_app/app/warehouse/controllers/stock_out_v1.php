@@ -191,13 +191,13 @@ switch (trim($product_group))
 if($sql_num_check1>0)
 {
 	//$sql="select * from store_in where lot_no=\"".trim($lot_no)."\" and status in (0,1) and roll_status in (0,2) order by lot_no";	
-	$sql="select * from $bai_rm_pj1.store_in where lot_no in ('".trim($lot_no)."') and status in (0,1) and roll_status in (0,2)  order by lot_no";	
+	$sql="select * from $bai_rm_pj1.store_in where qty_issued<=0 and lot_no in ('".trim($lot_no)."') and status in (0,1) and roll_status in (0,2)  order by lot_no";	
 	//
 }
 else
 {
 	//$sql="select * from store_in where ref1=\"".trim($lot_no)."\" and status in (0,1) and roll_status in (0,2) order by lot_no";
-	$sql="select * from $bai_rm_pj1.store_in where ref1 in ('".trim($lot_no)."') and status in (0,1) and roll_status in (0,2) order by lot_no";
+	$sql="select * from $bai_rm_pj1.store_in where qty_issued<=0 and ref1 in ('".trim($lot_no)."') and status in (0,1) and roll_status in (0,2) order by lot_no";
 //echo $sql;
 }
 
