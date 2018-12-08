@@ -914,7 +914,6 @@ if(isset($_POST['submit']))
 						}
 
 						$sql24="update $bai_rm_pj1.fabric_cad_allocation set status=2 where tran_pin=\"$tran_pin\"";
-						//echo "</br>".$sql24."</br>";
 						//Uncheck this
 						mysqli_query($link, $sql24) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
