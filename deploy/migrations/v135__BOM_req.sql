@@ -1,6 +1,7 @@
-USE m3_inputs;
+/*#1034 sql script
+USE m3_inputs;*/
 
-CREATE TABLE bom_details (
+CREATE TABLE m3_inputs.bom_details (
   id int(11) NOT NULL AUTO_INCREMENT,
   date_time datetime DEFAULT NULL,
   mo_no varchar(255) DEFAULT NULL,
