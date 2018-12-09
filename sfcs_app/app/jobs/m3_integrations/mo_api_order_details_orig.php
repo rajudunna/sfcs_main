@@ -68,7 +68,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                     $res_save_bom = mysqli_query($link, $qry_save_bom) or exit("Sql Error Insert bom Details".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(in_array(trim($response['response']['OPNO']),$res_chk_op)){
                         //================================================
-                        $get_m3_trans_mo = "SELECT * FROM $m3_inputs.mo_details WHERE MONUMBER='".$mo_no."'";
+                        $get_m3_trans_mo = "SELECT * FROM $m3_inputs.mo_details WHERE MONUMBER=$mo_no";
                         $res_m3_trans_mo = mysqli_query($link, $get_m3_trans_mo) or exit("Sql Error select m3_transcation.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
                         $res_m3_trans_mo = mysqli_fetch_array($res_m3_trans_mo);
                         //================ insert order_details_original =========================
@@ -83,7 +83,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
     }
     if($res_order_details){
         //=============== update mo_details status =========================
-        $up_qry = "UPDATE $bai_pro3.mo_details SET material_master_status=1 WHERE id='".$result_data['id']."'";
+        $up_qry = "UPDATE $bai_pro3.mo_details SET material_master_status=1 WHERE id=$result_data['id']";
         $up_res = mysqli_query($link, $up_qry) or exit("Error : update query".mysqli_error($GLOBALS["___mysqli_ston"]));
         $i++;
     }
