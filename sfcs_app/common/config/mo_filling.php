@@ -309,7 +309,7 @@
 				{
 					$mo_no[]= $row1210['mo_no'];
 					$moq[]  = $row1210['mo_quantity'];
-					$sql1212="SELECT OperationNumber,OperationDescription FROM $bai_pro3.schedule_oprations_master WHERE OperationNumber in ($op_codes) and MONumber=$row1210['mo_no'] order by OperationNumber*1"; 
+					$sql1212="SELECT OperationNumber,OperationDescription FROM $bai_pro3.schedule_oprations_master WHERE OperationNumber in ($op_codes) and MONumber=".$row1210['mo_no']." order by OperationNumber*1"; 
 					$result1212=mysqli_query($link, $sql1212) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row1212=mysqli_fetch_array($result1212)) 
 					{
@@ -507,7 +507,7 @@
 						{
 							$mo_no[]= $row1210['mo_no'];
 							$moq[]  = $row1210['mo_quantity'];
-							$sql1212="SELECT OperationNumber,OperationDescription FROM $bai_pro3.schedule_oprations_master WHERE OperationNumber in ($op_codes) and MONumber=$row1210['mo_no'] order by OperationNumber*1";
+							$sql1212="SELECT OperationNumber,OperationDescription FROM $bai_pro3.schedule_oprations_master WHERE OperationNumber in ($op_codes) and MONumber=".$row1210['mo_no']." order by OperationNumber*1";
 							$result1212=mysqli_query($link, $sql1212) or die("error while fetching Mo Details from schedule_oprations_master.");
 							while($row1212=mysqli_fetch_array($result1212))
 							{
@@ -611,7 +611,7 @@
 										{     
 											if($ops_m_id[$last_mo][$ops[$l]]>0)
 											{  
-												$sql = "Update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity + $qty where mo_no =$last_mo and	ref_no=$row1234['tid'] and op_code = $ops_m_id[$last_mo][$ops[$l]]";
+												$sql = "Update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity + $qty where mo_no =$last_mo and	ref_no=".$row1234['tid']." and op_code =".$ops_m_id[$last_mo][$ops[$l]];
 												$result1=mysqli_query($link, $sql) or exit('Error Encountered');
 												$res=1;
 											}

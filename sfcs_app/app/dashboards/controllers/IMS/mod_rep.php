@@ -304,16 +304,81 @@
 
             if(in_array($authorized,$has_permission))
             { 
-                $flag = 1;
-            }
-            else
-            {
-                if(sizeof($input_job_array) < $ims_boxes_count)
-                {
-                    if (sizeof($selected_sewing_jobs) > $allowable_jobs)
-                    {
-                        echo "<script>sweetAlert('Selected more than Allowable Sewing Jobs','Please select any $allowable_jobs Jobs to transfer to module $to_module','warning');</script>";
-                        echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",5000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
+                $flag++;
+                $ims_doc_no=$sql_row12['ims_doc_no']; 
+                $ims_size=$sql_row12['ims_size'];
+                $ims_size2=substr($ims_size,2);
+                $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
+                $sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$ims_doc_no and a_plies>0"; 
+                $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error2.4".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                 
+                while($sql_row22=mysqli_fetch_array($sql_result22)) 
+                { 
+                    $order_tid=$sql_row22['order_tid']; 
+                    $cutno=$sql_row22['acutno']; 
+                } 
+     
+                 $size_value=ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link);
+
+    
+                 $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where qms_schedule=$ims_schedule and qms_color='$ims_color' and input_job_no='$input_job_rand_no_ref' and qms_style='$ims_style' and qms_remarks='".$sql_row['ims_remarks']."' and qms_size='".strtoupper($size_value)."' and operation_id=130 and bundle_no=".$sql_row12['pac_tid'];  
+                 //echo $sql33;  
+                  $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error888".mysqli_error($GLOBALS["___mysqli_ston"]));
+                  while($sql_row33=mysqli_fetch_array($sql_result33))
+                  {
+                    $rejected=0;
+                    $rejected=$sql_row33['rejected']; 
+                  }
+
+                  //To get Operation from Operation Routing For IPS
+                  $application='IPS';
+                  $scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
+                  //echo $scanning_query;
+                  $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                  while($sql_row=mysqli_fetch_array($scanning_result))
+                  {
+                    $operation_name=$sql_row['operation_name'];
+                    $operation_code=$sql_row['operation_code'];
+                  } 
+
+                   $bundle_check_qty="select * from $brandix_bts.bundle_creation_data where bundle_number=$pac_tid and operation_id=".$operation_code;
+                   $sql_result56=mysqli_query($link, $bundle_check_qty) or exit("Sql bundle_check_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+                      while($sql_row=mysqli_fetch_array($sql_result56))
+                      {
+                        $original_qty=$sql_row['original_qty'];
+                        $recevied_qty=$sql_row['recevied_qty'];
+                      }
+
+
+                      //To get Operation from Operation Routing For Line Out
+                      $application_out='IMS';
+                      $scanning_query_ims=" select * from $brandix_bts.tbl_ims_ops where appilication='$application_out'";
+                      //echo $scanning_query;
+                      $scanning_result=mysqli_query($link, $scanning_query_ims)or exit("scanning_error123".mysqli_error($GLOBALS["___mysqli_ston"]));
+                      while($sql_row123=mysqli_fetch_array($scanning_result))
+                      {
+                        $operation_name1=$sql_row123['operation_name'];
+                        $operation_code1=$sql_row123['operation_code'];
+                      } 
+
+                       $bundle_qty="select * from $brandix_bts.bundle_creation_data where bundle_number=$pac_tid and operation_id=".$operation_code1;
+                       // echo $bundle_qty;
+                       $sql_result561=mysqli_query($link, $bundle_qty) or exit("Sql bundle_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+                          while($sql_row1=mysqli_fetch_array($sql_result561))
+                          {
+                            $original_qty1=$sql_row1['original_qty'];
+                            $recevied_qty1=$sql_row1['recevied_qty'];
+                          }
+                         // echo $recevied_qty1;
+                 
+                 
+                echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>"; 
+                 
+                if($original_qty == $recevied_qty and $sql_row12['ims_pro_qty']==0 )   
+                { 
+                    if($recevied_qty1 == 0)
+                    {    
+                      echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$sql_row12['tid']."\">"; 
                     }
                     else
                     {
