@@ -14,3 +14,7 @@ ALTER TABLE bai_pro3.mo_details
   ADD COLUMN `buyer_id` VARCHAR(50) NULL AFTER `cpo`,
   ADD COLUMN `material_master_status` INT(11) DEFAULT 0 NOT NULL AFTER `buyer_id`, 
   ADD COLUMN `shipment_master_status` INT(11) DEFAULT 0 NOT NULL AFTER `material_master_status`; 
+  
+  ALTER TABLE `bai_pro3`.`mo_details` 
+ADD INDEX `mo_details_master_status` (`material_master_status`), 
+ADD INDEX `mo_details_shipment_status` (`shipment_master_status`); 
