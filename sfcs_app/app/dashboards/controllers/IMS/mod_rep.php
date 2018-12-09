@@ -76,7 +76,7 @@
                             </tr>
                             <?php
                                 $toggle=0; 
-                                $sql="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref,pac_tid,tid from $bai_pro3.ims_log where ims_mod_no=$module and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by tid";
+                                $sql="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref,pac_tid,tid from $bai_pro3.ims_log where ims_mod_no='$module' and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by tid";
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2.1");
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
@@ -112,7 +112,7 @@
                                     //     $req_date=$sql_row12['req_date']; 
                                     // } 
                                      
-                                    $sql12="select * from $bai_pro3.ims_log where ims_mod_no='$module' and tid='$tid' and ims_status<>\"DONE\" and ims_remarks='$ims_remarks' and ims_size='$ims_size'  order by ims_schedule, ims_size DESC";
+                                    $sql12="select * from $bai_pro3.ims_log where ims_mod_no='$module' and tid=$tid and ims_status<>\"DONE\" and ims_remarks='$ims_remarks' and ims_size='$ims_size'  order by ims_schedule, ims_size DESC";
                                     $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2.3".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row12=mysqli_fetch_array($sql_result12)) 
                                     { 
@@ -136,7 +136,7 @@
                                         $size_value=ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link);
 
                             
-                                        $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where qms_schedule=".$ims_schedule." and qms_color=\"".$ims_color."\" and input_job_no=\"".$input_job_rand_no_ref."\" and qms_style=\"".$ims_style."\" and qms_remarks=\"".$sql_row['ims_remarks']."\" and qms_size=\"".strtoupper($size_value)."\" and operation_id='130' and bundle_no=\"".$sql_row12['pac_tid']."\"";  
+                                        $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where qms_schedule=".$ims_schedule." and qms_color=\"".$ims_color."\" and input_job_no='$input_job_rand_no_ref' and qms_style=\"".$ims_style."\" and qms_remarks=\"".$sql_row['ims_remarks']."\" and qms_size=\"".strtoupper($size_value)."\" and operation_id=130 and bundle_no=$sql_row12['pac_tid']";  
                                         //echo $sql33;  
                                         $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error888".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         while($sql_row33=mysqli_fetch_array($sql_result33))
@@ -156,7 +156,7 @@
                                             $operation_code=$sql_row['operation_code'];
                                         } 
 
-                                        $bundle_check_qty="select * from $brandix_bts.bundle_creation_data where bundle_number=".$pac_tid." and operation_id=".$operation_code."";
+                                        $bundle_check_qty="select * from $brandix_bts.bundle_creation_data where bundle_number=$pac_tid and operation_id=$operation_code";
                                         $sql_result56=mysqli_query($link, $bundle_check_qty) or exit("Sql bundle_check_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         while($sql_row=mysqli_fetch_array($sql_result56))
                                         {
@@ -175,7 +175,7 @@
                                             $operation_code1=$sql_row123['operation_code'];
                                         } 
 
-                                        $bundle_qty="select * from $brandix_bts.bundle_creation_data where bundle_number=".$pac_tid." and operation_id=".$operation_code1."";
+                                        $bundle_qty="select * from $brandix_bts.bundle_creation_data where bundle_number=$pac_tid and operation_id=$operation_code1";
                                         // echo $bundle_qty;
                                         $sql_result561=mysqli_query($link, $bundle_qty) or exit("Sql bundle_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         while($sql_row1=mysqli_fetch_array($sql_result561))

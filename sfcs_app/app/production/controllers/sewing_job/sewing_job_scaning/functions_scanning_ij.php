@@ -158,8 +158,6 @@ function getjobdetails($job_number)
 			die();
 		}
 
-		// $get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where category='sewing'";
-
 		$get_ops_query = "SELECT DISTINCT tm.operation_code FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.id=tm.operation_name WHERE tm.style ='$job_number[1]' AND tm.color='$maped_color' AND tr.category = 'sewing' ORDER BY operation_order";
 
 		$ops_query_result=mysqli_query($link,$get_ops_query);
@@ -639,7 +637,7 @@ if(isset($_GET['job_rev_no']))
 }
 function getjobreversaldetails($job_rev_no)
 {
-	include("../../../../../common/config/config_ajax.php");
+	include("../../../../../common/config/config_ajax.php");	
 	$operations_qty = "SELECT operation_name,operation_id FROM $brandix_bts.bundle_creation_data bc LEFT JOIN $brandix_bts.tbl_orders_ops_ref os ON os.operation_code=bc.operation_id WHERE input_job_no_random_ref='$job_rev_no' GROUP BY operation_id";
 	$result_operations_qty = $link->query($operations_qty);
 	if($result_operations_qty->num_rows > 0)
@@ -868,6 +866,10 @@ function getreversalscanningdetails($job_number)
 	}
 
 	$job_details_qry = "SELECT id,style,`color` AS order_col_des,`size_title` AS size_code,`bundle_number` AS tid,`original_qty` AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(rejected_qty) AS rejected_qty,(SUM(send_qty)-SUM(recevied_qty)) AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id,assigned_module FROM $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref = '$job_number[1]' AND operation_id = $job_number[0] AND remarks = '$job_number[2]' GROUP BY size_title,color,assigned_module order by bundle_number";
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1239-ims-dashboard-out-put-reporting-slowness
 	$job_details_qry = $link->query($job_details_qry);
 	if($job_details_qry->num_rows > 0)
 	{
