@@ -13,13 +13,13 @@ MySQL - 10.3.8-MariaDB : Database - brandix_bts
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`brandix_bts` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `brandix_bts`;
+/*USE `brandix_bts`;*/
 
 /*Table structure for table `bts_to_sfcs_sync` */
 
-DROP TABLE IF EXISTS `bts_to_sfcs_sync`;
+DROP TABLE IF EXISTS `brandix_bts`.`bts_to_sfcs_sync`;
 
-CREATE TABLE `bts_to_sfcs_sync` (
+CREATE TABLE `brandix_bts`.`bts_to_sfcs_sync` (
   `bts_tran_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sync_bundle_id` bigint(20) NOT NULL,
   `sync_operation_id` int(11) NOT NULL,
@@ -35,9 +35,9 @@ CREATE TABLE `bts_to_sfcs_sync` (
 
 /*Table structure for table `bts_to_sfcs_sync_archive` */
 
-DROP TABLE IF EXISTS `bts_to_sfcs_sync_archive`;
+DROP TABLE IF EXISTS `brandix_bts`.`bts_to_sfcs_sync_archive`;
 
-CREATE TABLE `bts_to_sfcs_sync_archive` (
+CREATE TABLE `brandix_bts`.`bts_to_sfcs_sync_archive` (
   `bts_tran_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sync_bundle_id` bigint(20) NOT NULL,
   `sync_operation_id` int(11) NOT NULL,
@@ -51,9 +51,9 @@ CREATE TABLE `bts_to_sfcs_sync_archive` (
 
 /*Table structure for table `bundle_creation_data` */
 
-DROP TABLE IF EXISTS `bundle_creation_data`;
+DROP TABLE IF EXISTS `brandix_bts`.`bundle_creation_data`;
 
-CREATE TABLE `bundle_creation_data` (
+CREATE TABLE `brandix_bts`.`bundle_creation_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date_time` timestamp NOT NULL DEFAULT current_timestamp(),
   `cut_number` int(11) DEFAULT NULL,
@@ -91,13 +91,13 @@ CREATE TABLE `bundle_creation_data` (
   `mapped_color` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Bundle` (`bundle_number`,`operation_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=148407 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `bundle_creation_data_temp` */
 
-DROP TABLE IF EXISTS `bundle_creation_data_temp`;
+DROP TABLE IF EXISTS `brandix_bts`.`bundle_creation_data_temp`;
 
-CREATE TABLE `bundle_creation_data_temp` (
+CREATE TABLE `brandix_bts`.`bundle_creation_data_temp` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date_time` timestamp NOT NULL DEFAULT current_timestamp(),
   `cut_number` int(11) DEFAULT NULL,
@@ -136,13 +136,13 @@ CREATE TABLE `bundle_creation_data_temp` (
   KEY `input_job` (`id`,`input_job_no`,`input_job_no_random_ref`),
   KEY `style_schedule` (`style`,`schedule`,`color`,`size_id`,`size_title`),
   KEY `bundle` (`bundle_number`,`input_job_no_random_ref`,`input_job_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=142629 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `bundle_transactions` */
 
-DROP TABLE IF EXISTS `bundle_transactions`;
+DROP TABLE IF EXISTS `brandix_bts`.`bundle_transactions`;
 
-CREATE TABLE `bundle_transactions` (
+CREATE TABLE `brandix_bts`.`bundle_transactions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date_time` datetime DEFAULT NULL,
   `operation_time` datetime DEFAULT NULL,
@@ -156,9 +156,9 @@ CREATE TABLE `bundle_transactions` (
 
 /*Table structure for table `bundle_transactions_20_repeat` */
 
-DROP TABLE IF EXISTS `bundle_transactions_20_repeat`;
+DROP TABLE IF EXISTS `brandix_bts`.`bundle_transactions_20_repeat`;
 
-CREATE TABLE `bundle_transactions_20_repeat` (
+CREATE TABLE `brandix_bts`.`bundle_transactions_20_repeat` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `parent_id` bigint(11) DEFAULT NULL,
   `bundle_barcode` varchar(50) NOT NULL,
@@ -176,9 +176,9 @@ CREATE TABLE `bundle_transactions_20_repeat` (
 
 /*Table structure for table `bundle_transactions_20_repeat_archive` */
 
-DROP TABLE IF EXISTS `bundle_transactions_20_repeat_archive`;
+DROP TABLE IF EXISTS `brandix_bts`.`bundle_transactions_20_repeat_archive`;
 
-CREATE TABLE `bundle_transactions_20_repeat_archive` (
+CREATE TABLE `brandix_bts`.`bundle_transactions_20_repeat_archive` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `parent_id` bigint(11) DEFAULT NULL,
   `bundle_barcode` varchar(50) NOT NULL,
@@ -196,9 +196,9 @@ CREATE TABLE `bundle_transactions_20_repeat_archive` (
 
 /*Table structure for table `bundle_transactions_20_repeat_delete` */
 
-DROP TABLE IF EXISTS `bundle_transactions_20_repeat_delete`;
+DROP TABLE IF EXISTS `brandix_bts`.`bundle_transactions_20_repeat_delete`;
 
-CREATE TABLE `bundle_transactions_20_repeat_delete` (
+CREATE TABLE `brandix_bts`.`bundle_transactions_20_repeat_delete` (
   `id` bigint(11) NOT NULL DEFAULT 0,
   `parent_id` bigint(11) DEFAULT NULL,
   `bundle_barcode` varchar(50) NOT NULL,
@@ -217,9 +217,9 @@ CREATE TABLE `bundle_transactions_20_repeat_delete` (
 
 /*Table structure for table `bundle_transactions_20_repeat_virtual_snap_ini_bundles` */
 
-DROP TABLE IF EXISTS `bundle_transactions_20_repeat_virtual_snap_ini_bundles`;
+DROP TABLE IF EXISTS `brandix_bts`.`bundle_transactions_20_repeat_virtual_snap_ini_bundles`;
 
-CREATE TABLE `bundle_transactions_20_repeat_virtual_snap_ini_bundles` (
+CREATE TABLE `brandix_bts`.`bundle_transactions_20_repeat_virtual_snap_ini_bundles` (
   `id` bigint(11) DEFAULT NULL,
   `parent_id` bigint(11) DEFAULT NULL,
   `bundle_barcode` varchar(150) DEFAULT NULL,
@@ -234,9 +234,9 @@ CREATE TABLE `bundle_transactions_20_repeat_virtual_snap_ini_bundles` (
 
 /*Table structure for table `bundle_transactions_archive` */
 
-DROP TABLE IF EXISTS `bundle_transactions_archive`;
+DROP TABLE IF EXISTS `brandix_bts`.`bundle_transactions_archive`;
 
-CREATE TABLE `bundle_transactions_archive` (
+CREATE TABLE `brandix_bts`.`bundle_transactions_archive` (
   `id` int(11) NOT NULL DEFAULT 0,
   `date_time` datetime DEFAULT NULL,
   `operation_time` datetime DEFAULT NULL,
@@ -248,9 +248,9 @@ CREATE TABLE `bundle_transactions_archive` (
 
 /*Table structure for table `input_transfer` */
 
-DROP TABLE IF EXISTS `input_transfer`;
+DROP TABLE IF EXISTS `brandix_bts`.`input_transfer`;
 
-CREATE TABLE `input_transfer` (
+CREATE TABLE `brandix_bts`.`input_transfer` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `user` varchar(20) NOT NULL,
@@ -258,13 +258,13 @@ CREATE TABLE `input_transfer` (
   `transfer_module` int(11) DEFAULT NULL,
   `bundles` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `module_bundle_track` */
 
-DROP TABLE IF EXISTS `module_bundle_track`;
+DROP TABLE IF EXISTS `brandix_bts`.`module_bundle_track`;
 
-CREATE TABLE `module_bundle_track` (
+CREATE TABLE `brandix_bts`.`module_bundle_track` (
   `tran_id` int(11) NOT NULL AUTO_INCREMENT,
   `date-time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `bundle_number` int(11) DEFAULT NULL,
@@ -273,13 +273,13 @@ CREATE TABLE `module_bundle_track` (
   `job_no` int(20) DEFAULT NULL,
   `ref_no` int(10) DEFAULT NULL,
   PRIMARY KEY (`tran_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1320 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `re_print_table` */
 
-DROP TABLE IF EXISTS `re_print_table`;
+DROP TABLE IF EXISTS `brandix_bts`.`re_print_table`;
 
-CREATE TABLE `re_print_table` (
+CREATE TABLE `brandix_bts`.`re_print_table` (
   `id` int(5) NOT NULL AUTO_INCREMENT,
   `bundle_id` varchar(10) NOT NULL,
   `date_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -293,9 +293,9 @@ CREATE TABLE `re_print_table` (
 
 /*Table structure for table `snap_session_track` */
 
-DROP TABLE IF EXISTS `snap_session_track`;
+DROP TABLE IF EXISTS `brandix_bts`.`snap_session_track`;
 
-CREATE TABLE `snap_session_track` (
+CREATE TABLE `brandix_bts`.`snap_session_track` (
   `session_status` varchar(5) DEFAULT NULL,
   `session_id` int(11) NOT NULL,
   `time_stamp` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
@@ -314,9 +314,9 @@ CREATE TABLE `snap_session_track` (
 
 /*Table structure for table `tbl_carton_ref` */
 
-DROP TABLE IF EXISTS `tbl_carton_ref`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_carton_ref`;
 
-CREATE TABLE `tbl_carton_ref` (
+CREATE TABLE `brandix_bts`.`tbl_carton_ref` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `carton_barcode` varchar(40) NOT NULL,
   `carton_tot_quantity` int(11) NOT NULL,
@@ -326,13 +326,13 @@ CREATE TABLE `tbl_carton_ref` (
   `exces_from` int(5) DEFAULT NULL COMMENT '1. first , 2. Last',
   `merge_status` int(5) DEFAULT NULL COMMENT '1. Mix Cut Jobs , 2. No mix cut jobs',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=551 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_carton_ref_archive` */
 
-DROP TABLE IF EXISTS `tbl_carton_ref_archive`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_carton_ref_archive`;
 
-CREATE TABLE `tbl_carton_ref_archive` (
+CREATE TABLE `brandix_bts`.`tbl_carton_ref_archive` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `carton_barcode` varchar(40) NOT NULL,
   `carton_tot_quantity` int(11) NOT NULL,
@@ -343,9 +343,9 @@ CREATE TABLE `tbl_carton_ref_archive` (
 
 /*Table structure for table `tbl_carton_size_ref` */
 
-DROP TABLE IF EXISTS `tbl_carton_size_ref`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_carton_size_ref`;
 
-CREATE TABLE `tbl_carton_size_ref` (
+CREATE TABLE `brandix_bts`.`tbl_carton_size_ref` (
   `id` int(6) NOT NULL AUTO_INCREMENT,
   `parent_id` int(6) DEFAULT NULL,
   `color` varchar(255) DEFAULT NULL,
@@ -360,13 +360,13 @@ CREATE TABLE `tbl_carton_size_ref` (
   PRIMARY KEY (`id`),
   KEY `parent_id` (`parent_id`),
   KEY `color_qnty` (`color`,`size_title`,`quantity`)
-) ENGINE=InnoDB AUTO_INCREMENT=4297 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_carton_size_ref_archive` */
 
-DROP TABLE IF EXISTS `tbl_carton_size_ref_archive`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_carton_size_ref_archive`;
 
-CREATE TABLE `tbl_carton_size_ref_archive` (
+CREATE TABLE `brandix_bts`.`tbl_carton_size_ref_archive` (
   `id` int(6) NOT NULL AUTO_INCREMENT,
   `parent_id` int(6) DEFAULT NULL,
   `color` varchar(255) DEFAULT NULL,
@@ -377,9 +377,9 @@ CREATE TABLE `tbl_carton_size_ref_archive` (
 
 /*Table structure for table `tbl_cut_master` */
 
-DROP TABLE IF EXISTS `tbl_cut_master`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_cut_master`;
 
-CREATE TABLE `tbl_cut_master` (
+CREATE TABLE `brandix_bts`.`tbl_cut_master` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `doc_num` varchar(50) NOT NULL,
   `ref_order_num` int(11) NOT NULL,
@@ -399,13 +399,13 @@ CREATE TABLE `tbl_cut_master` (
   `col_code` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `doc_num` (`doc_num`)
-) ENGINE=InnoDB AUTO_INCREMENT=3660 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_cut_master_archive` */
 
-DROP TABLE IF EXISTS `tbl_cut_master_archive`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_cut_master_archive`;
 
-CREATE TABLE `tbl_cut_master_archive` (
+CREATE TABLE `brandix_bts`.`tbl_cut_master_archive` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `doc_num` varchar(50) NOT NULL,
   `ref_order_num` int(11) NOT NULL,
@@ -428,9 +428,9 @@ CREATE TABLE `tbl_cut_master_archive` (
 
 /*Table structure for table `tbl_cut_size_master` */
 
-DROP TABLE IF EXISTS `tbl_cut_size_master`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_cut_size_master`;
 
-CREATE TABLE `tbl_cut_size_master` (
+CREATE TABLE `brandix_bts`.`tbl_cut_size_master` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) NOT NULL,
   `ref_size_name` int(11) NOT NULL,
@@ -438,13 +438,13 @@ CREATE TABLE `tbl_cut_size_master` (
   `color` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `parent_id` (`parent_id`,`ref_size_name`,`quantity`,`color`)
-) ENGINE=InnoDB AUTO_INCREMENT=5561 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_cut_size_master_archive` */
 
-DROP TABLE IF EXISTS `tbl_cut_size_master_archive`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_cut_size_master_archive`;
 
-CREATE TABLE `tbl_cut_size_master_archive` (
+CREATE TABLE `brandix_bts`.`tbl_cut_size_master_archive` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) NOT NULL,
   `ref_size_name` int(11) NOT NULL,
@@ -455,9 +455,9 @@ CREATE TABLE `tbl_cut_size_master_archive` (
 
 /*Table structure for table `tbl_garment_ops_rej_track` */
 
-DROP TABLE IF EXISTS `tbl_garment_ops_rej_track`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_garment_ops_rej_track`;
 
-CREATE TABLE `tbl_garment_ops_rej_track` (
+CREATE TABLE `brandix_bts`.`tbl_garment_ops_rej_track` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) DEFAULT NULL,
   `no_of_reasons` int(11) NOT NULL,
@@ -475,9 +475,9 @@ CREATE TABLE `tbl_garment_ops_rej_track` (
 
 /*Table structure for table `tbl_garmet_ops_track` */
 
-DROP TABLE IF EXISTS `tbl_garmet_ops_track`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_garmet_ops_track`;
 
-CREATE TABLE `tbl_garmet_ops_track` (
+CREATE TABLE `brandix_bts`.`tbl_garmet_ops_track` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `style` varchar(250) NOT NULL,
   `schedule` varchar(250) NOT NULL,
@@ -496,21 +496,21 @@ CREATE TABLE `tbl_garmet_ops_track` (
 
 /*Table structure for table `tbl_ims_ops` */
 
-DROP TABLE IF EXISTS `tbl_ims_ops`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_ims_ops`;
 
-CREATE TABLE `tbl_ims_ops` (
+CREATE TABLE `brandix_bts`.`tbl_ims_ops` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `operation_name` varchar(50) NOT NULL,
   `operation_code` varchar(255) DEFAULT NULL,
   `appilication` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_min_ord_ref` */
 
-DROP TABLE IF EXISTS `tbl_min_ord_ref`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_min_ord_ref`;
 
-CREATE TABLE `tbl_min_ord_ref` (
+CREATE TABLE `brandix_bts`.`tbl_min_ord_ref` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ref_product_style` int(11) DEFAULT NULL,
   `ref_crt_schedule` int(11) NOT NULL,
@@ -528,9 +528,9 @@ CREATE TABLE `tbl_min_ord_ref` (
 
 /*Table structure for table `tbl_min_ord_ref_archive` */
 
-DROP TABLE IF EXISTS `tbl_min_ord_ref_archive`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_min_ord_ref_archive`;
 
-CREATE TABLE `tbl_min_ord_ref_archive` (
+CREATE TABLE `brandix_bts`.`tbl_min_ord_ref_archive` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ref_product_style` int(11) DEFAULT NULL,
   `ref_crt_schedule` int(11) NOT NULL,
@@ -546,9 +546,9 @@ CREATE TABLE `tbl_min_ord_ref_archive` (
 
 /*Table structure for table `tbl_miniorder_data` */
 
-DROP TABLE IF EXISTS `tbl_miniorder_data`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_miniorder_data`;
 
-CREATE TABLE `tbl_miniorder_data` (
+CREATE TABLE `brandix_bts`.`tbl_miniorder_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date_time` datetime DEFAULT NULL,
   `mini_order_ref` int(11) NOT NULL,
@@ -567,13 +567,13 @@ CREATE TABLE `tbl_miniorder_data` (
   KEY `scanned_qty` (`mini_order_num`,`color`),
   KEY `mini_order_ref` (`mini_order_ref`),
   KEY `doc_qnty` (`cut_num`,`quantity`,`docket_number`,`size_tit`)
-) ENGINE=MyISAM AUTO_INCREMENT=6619 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_miniorder_data_archive` */
 
-DROP TABLE IF EXISTS `tbl_miniorder_data_archive`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_miniorder_data_archive`;
 
-CREATE TABLE `tbl_miniorder_data_archive` (
+CREATE TABLE `brandix_bts`.`brandix_bts`.`tbl_miniorder_data_archive` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date_time` datetime DEFAULT NULL,
   `mini_order_ref` int(11) NOT NULL,
@@ -599,9 +599,9 @@ CREATE TABLE `tbl_miniorder_data_archive` (
 
 /*Table structure for table `tbl_miniorder_data_deleted` */
 
-DROP TABLE IF EXISTS `tbl_miniorder_data_deleted`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_miniorder_data_deleted`;
 
-CREATE TABLE `tbl_miniorder_data_deleted` (
+CREATE TABLE `brandix_bts`.`tbl_miniorder_data_deleted` (
   `id` int(11) DEFAULT NULL,
   `date_time` datetime DEFAULT NULL,
   `mini_order_ref` int(11) DEFAULT NULL,
@@ -625,9 +625,9 @@ CREATE TABLE `tbl_miniorder_data_deleted` (
 
 /*Table structure for table `tbl_miniorder_data_qty_split_log` */
 
-DROP TABLE IF EXISTS `tbl_miniorder_data_qty_split_log`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_miniorder_data_qty_split_log`;
 
-CREATE TABLE `tbl_miniorder_data_qty_split_log` (
+CREATE TABLE `brandix_bts`.`tbl_miniorder_data_qty_split_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `user_name` varchar(150) DEFAULT NULL,
@@ -639,9 +639,9 @@ CREATE TABLE `tbl_miniorder_data_qty_split_log` (
 
 /*Table structure for table `tbl_module_ref` */
 
-DROP TABLE IF EXISTS `tbl_module_ref`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_module_ref`;
 
-CREATE TABLE `tbl_module_ref` (
+CREATE TABLE `brandix_bts`.`tbl_module_ref` (
   `id` varchar(11) NOT NULL,
   `module_name` varchar(50) NOT NULL,
   `module_section` varchar(10) NOT NULL,
@@ -650,9 +650,9 @@ CREATE TABLE `tbl_module_ref` (
 
 /*Table structure for table `tbl_orders_master` */
 
-DROP TABLE IF EXISTS `tbl_orders_master`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_orders_master`;
 
-CREATE TABLE `tbl_orders_master` (
+CREATE TABLE `brandix_bts`.`tbl_orders_master` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ref_product_style` int(11) NOT NULL,
   `product_schedule` varchar(50) NOT NULL,
@@ -661,13 +661,13 @@ CREATE TABLE `tbl_orders_master` (
   `log` varchar(55) DEFAULT NULL COMMENT 'log details',
   PRIMARY KEY (`id`),
   UNIQUE KEY `Unique identification` (`ref_product_style`,`product_schedule`) COMMENT 'To do not allow duplicate'
-) ENGINE=InnoDB AUTO_INCREMENT=495 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_orders_master_archive` */
 
-DROP TABLE IF EXISTS `tbl_orders_master_archive`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_orders_master_archive`;
 
-CREATE TABLE `tbl_orders_master_archive` (
+CREATE TABLE `brandix_bts`.`tbl_orders_master_archive` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ref_product_style` int(11) NOT NULL,
   `product_schedule` varchar(50) NOT NULL,
@@ -677,9 +677,9 @@ CREATE TABLE `tbl_orders_master_archive` (
 
 /*Table structure for table `tbl_orders_ops_ref` */
 
-DROP TABLE IF EXISTS `tbl_orders_ops_ref`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_orders_ops_ref`;
 
-CREATE TABLE `tbl_orders_ops_ref` (
+CREATE TABLE `brandix_bts`.`tbl_orders_ops_ref` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `operation_name` varchar(50) NOT NULL,
   `default_operation` text DEFAULT NULL,
@@ -691,24 +691,24 @@ CREATE TABLE `tbl_orders_ops_ref` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_op_name` (`operation_name`),
   UNIQUE KEY `unique_op_code` (`operation_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_orders_size_ref` */
 
-DROP TABLE IF EXISTS `tbl_orders_size_ref`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_orders_size_ref`;
 
-CREATE TABLE `tbl_orders_size_ref` (
+CREATE TABLE `brandix_bts`.`tbl_orders_size_ref` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `size_name` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_key` (`size_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_orders_sizes_master` */
 
-DROP TABLE IF EXISTS `tbl_orders_sizes_master`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_orders_sizes_master`;
 
-CREATE TABLE `tbl_orders_sizes_master` (
+CREATE TABLE `brandix_bts`.`tbl_orders_sizes_master` (
   `id` int(6) NOT NULL AUTO_INCREMENT,
   `parent_id` int(6) DEFAULT NULL,
   `ref_size_name` int(11) DEFAULT NULL,
@@ -718,13 +718,13 @@ CREATE TABLE `tbl_orders_sizes_master` (
   `order_col_des` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `parent_id` (`parent_id`,`ref_size_name`,`order_col_des`)
-) ENGINE=InnoDB AUTO_INCREMENT=13607 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_orders_sizes_master_archive` */
 
-DROP TABLE IF EXISTS `tbl_orders_sizes_master_archive`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_orders_sizes_master_archive`;
 
-CREATE TABLE `tbl_orders_sizes_master_archive` (
+CREATE TABLE `brandix_bts`.`tbl_orders_sizes_master_archive` (
   `id` int(6) NOT NULL AUTO_INCREMENT,
   `parent_id` int(6) DEFAULT NULL,
   `ref_size_name` int(11) DEFAULT NULL,
@@ -737,20 +737,20 @@ CREATE TABLE `tbl_orders_sizes_master_archive` (
 
 /*Table structure for table `tbl_orders_style_ref` */
 
-DROP TABLE IF EXISTS `tbl_orders_style_ref`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_orders_style_ref`;
 
-CREATE TABLE `tbl_orders_style_ref` (
+CREATE TABLE `brandix_bts`.`tbl_orders_style_ref` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `product_style` varchar(70) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique` (`product_style`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_orders_style_ref_archive` */
 
-DROP TABLE IF EXISTS `tbl_orders_style_ref_archive`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_orders_style_ref_archive`;
 
-CREATE TABLE `tbl_orders_style_ref_archive` (
+CREATE TABLE `brandix_bts`.`tbl_orders_style_ref_archive` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `product_style` varchar(70) NOT NULL,
   PRIMARY KEY (`id`)
@@ -758,9 +758,9 @@ CREATE TABLE `tbl_orders_style_ref_archive` (
 
 /*Table structure for table `tbl_sewing_job_prefix` */
 
-DROP TABLE IF EXISTS `tbl_sewing_job_prefix`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_sewing_job_prefix`;
 
-CREATE TABLE `tbl_sewing_job_prefix` (
+CREATE TABLE `brandix_bts`.`tbl_sewing_job_prefix` (
   `id` int(11) DEFAULT NULL,
   `prefix_name` varchar(765) DEFAULT NULL,
   `prefix` varchar(765) DEFAULT NULL,
@@ -770,9 +770,9 @@ CREATE TABLE `tbl_sewing_job_prefix` (
 
 /*Table structure for table `tbl_shifts_master` */
 
-DROP TABLE IF EXISTS `tbl_shifts_master`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_shifts_master`;
 
-CREATE TABLE `tbl_shifts_master` (
+CREATE TABLE `brandix_bts`.`tbl_shifts_master` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date_time` datetime DEFAULT NULL,
   `shift_name` varchar(255) DEFAULT NULL,
@@ -781,9 +781,9 @@ CREATE TABLE `tbl_shifts_master` (
 
 /*Table structure for table `tbl_style_ops_master` */
 
-DROP TABLE IF EXISTS `tbl_style_ops_master`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_style_ops_master`;
 
-CREATE TABLE `tbl_style_ops_master` (
+CREATE TABLE `brandix_bts`.`tbl_style_ops_master` (
   `id` int(6) NOT NULL AUTO_INCREMENT,
   `parent_id` int(6) DEFAULT NULL,
   `operation_name` int(11) DEFAULT NULL,
@@ -809,13 +809,13 @@ CREATE TABLE `tbl_style_ops_master` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique` (`operation_code`,`style`,`color`),
   KEY `style_color` (`style`,`color`)
-) ENGINE=InnoDB AUTO_INCREMENT=1468 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tbl_suppliers_master` */
 
-DROP TABLE IF EXISTS `tbl_suppliers_master`;
+DROP TABLE IF EXISTS `brandix_bts`.`tbl_suppliers_master`;
 
-CREATE TABLE `tbl_suppliers_master` (
+CREATE TABLE `brandix_bts`.`tbl_suppliers_master` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `supplier_name` varchar(250) NOT NULL,
   `supplier_code` varchar(250) NOT NULL,
@@ -824,9 +824,9 @@ CREATE TABLE `tbl_suppliers_master` (
 
 /*Table structure for table `user_access` */
 
-DROP TABLE IF EXISTS `user_access`;
+DROP TABLE IF EXISTS `brandix_bts`.`user_access`;
 
-CREATE TABLE `user_access` (
+CREATE TABLE `brandix_bts`.`user_access` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `branch_id` int(11) NOT NULL,
@@ -840,18 +840,18 @@ CREATE TABLE `user_access` (
 
 /*Table structure for table `users` */
 
-DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `brandix_bts`.`users`;
 
-CREATE TABLE `users` (
+CREATE TABLE `brandix_bts`.`users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `exp_date` varchar(15) DEFAULT NULL,
   `exp_time` varchar(5) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `view_set_1_snap` */
 
-DROP TABLE IF EXISTS `view_set_1_snap`;
+DROP TABLE IF EXISTS `brandix_bts`.`view_set_1_snap`;
 
 CREATE TABLE `view_set_1_snap` (
   `bundle_transactions_20_repeat_id` bigint(11) DEFAULT 0,
@@ -882,9 +882,9 @@ CREATE TABLE `view_set_1_snap` (
 
 /*Table structure for table `view_set_2_snap` */
 
-DROP TABLE IF EXISTS `view_set_2_snap`;
+DROP TABLE IF EXISTS `brandix_bts`.`view_set_2_snap`;
 
-CREATE TABLE `view_set_2_snap` (
+CREATE TABLE `brandix_bts`.`view_set_2_snap` (
   `tbl_orders_size_ref_id` int(11) NOT NULL,
   `tbl_orders_size_ref_size_name` varchar(50) CHARACTER SET utf8 NOT NULL,
   `tbl_orders_sizes_master_id` int(6) NOT NULL DEFAULT 0,
@@ -910,9 +910,9 @@ CREATE TABLE `view_set_2_snap` (
 
 /*Table structure for table `view_set_3_snap` */
 
-DROP TABLE IF EXISTS `view_set_3_snap`;
+DROP TABLE IF EXISTS `brandix_bts`.`view_set_3_snap`;
 
-CREATE TABLE `view_set_3_snap` (
+CREATE TABLE `brandix_bts`.`view_set_3_snap` (
   `tbl_min_ord_ref_id` int(11) DEFAULT 0,
   `tbl_min_ord_ref_ref_product_style` int(11) DEFAULT NULL,
   `tbl_min_ord_ref_ref_crt_schedule` int(11) DEFAULT NULL,
@@ -949,9 +949,9 @@ CREATE TABLE `view_set_3_snap` (
 
 /*Table structure for table `view_set_4_snap` */
 
-DROP TABLE IF EXISTS `view_set_4_snap`;
+DROP TABLE IF EXISTS `brandix_bts`.`view_set_4_snap`;
 
-CREATE TABLE `view_set_4_snap` (
+CREATE TABLE `brandix_bts`.`view_set_4_snap` (
   `DATE` date NOT NULL,
   `style` varchar(60) NOT NULL,
   `SCHEDULE` varchar(60) NOT NULL,
@@ -963,9 +963,9 @@ CREATE TABLE `view_set_4_snap` (
 
 /*Table structure for table `view_set_6_snap` */
 
-DROP TABLE IF EXISTS `view_set_6_snap`;
+DROP TABLE IF EXISTS `brandix_bts`.`view_set_6_snap`;
 
-CREATE TABLE `view_set_6_snap` (
+CREATE TABLE `brandix_bts`.`view_set_6_snap` (
   `DATE` date NOT NULL,
   `style` varchar(60) NOT NULL,
   `SCHEDULE` varchar(60) NOT NULL,
@@ -982,9 +982,9 @@ CREATE TABLE `view_set_6_snap` (
 
 /*Table structure for table `view_set_snap_1_tbl` */
 
-DROP TABLE IF EXISTS `view_set_snap_1_tbl`;
+DROP TABLE IF EXISTS `brandix_bts`.`view_set_snap_1_tbl`;
 
-CREATE TABLE `view_set_snap_1_tbl` (
+CREATE TABLE `brandix_bts`.`view_set_snap_1_tbl` (
   `bundle_transactions_20_repeat_id` bigint(11) DEFAULT 0,
   `bundle_transactions_20_repeat_quantity` bigint(11) DEFAULT NULL,
   `bundle_transactions_20_repeat_operation_id` varchar(15) CHARACTER SET utf8 DEFAULT NULL,

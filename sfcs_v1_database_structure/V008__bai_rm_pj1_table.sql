@@ -13,13 +13,13 @@ MySQL - 10.3.8-MariaDB : Database - bai_rm_pj1
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`bai_rm_pj1` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `bai_rm_pj1`;
+/*USE `bai_rm_pj1`;*/
 
 /*Table structure for table `cwh_to_rmwh` */
 
-DROP TABLE IF EXISTS `cwh_to_rmwh`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`cwh_to_rmwh`;
 
-CREATE TABLE `cwh_to_rmwh` (
+CREATE TABLE `bai_rm_pj1`.`cwh_to_rmwh` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date_time` datetime NOT NULL,
   `do_number` varchar(40) NOT NULL,
@@ -55,9 +55,9 @@ CREATE TABLE `cwh_to_rmwh` (
 
 /*Table structure for table `cwh_to_rmwh_temp` */
 
-DROP TABLE IF EXISTS `cwh_to_rmwh_temp`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`cwh_to_rmwh_temp`;
 
-CREATE TABLE `cwh_to_rmwh_temp` (
+CREATE TABLE `bai_rm_pj1`.`cwh_to_rmwh_temp` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date_time` datetime NOT NULL,
   `do_number` varchar(40) NOT NULL,
@@ -92,9 +92,9 @@ CREATE TABLE `cwh_to_rmwh_temp` (
 
 /*Table structure for table `cwh_to_rmwh_temp_v2` */
 
-DROP TABLE IF EXISTS `cwh_to_rmwh_temp_v2`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`cwh_to_rmwh_temp_v2`;
 
-CREATE TABLE `cwh_to_rmwh_temp_v2` (
+CREATE TABLE `bai_rm_pj1`.`cwh_to_rmwh_temp_v2` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date_time` datetime NOT NULL,
   `do_number` varchar(40) NOT NULL,
@@ -129,9 +129,9 @@ CREATE TABLE `cwh_to_rmwh_temp_v2` (
 
 /*Table structure for table `fabric_cad_allocation` */
 
-DROP TABLE IF EXISTS `fabric_cad_allocation`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`fabric_cad_allocation`;
 
-CREATE TABLE `fabric_cad_allocation` (
+CREATE TABLE `bai_rm_pj1`.`fabric_cad_allocation` (
   `tran_pin` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Transaction Track',
   `doc_no` int(11) DEFAULT NULL COMMENT 'Cut Docket No',
   `roll_id` int(11) DEFAULT NULL COMMENT 'Roll Sticker No',
@@ -151,9 +151,9 @@ CREATE TABLE `fabric_cad_allocation` (
 
 /*Table structure for table `fabric_cad_allocation_deleted` */
 
-DROP TABLE IF EXISTS `fabric_cad_allocation_deleted`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`fabric_cad_allocation_deleted`;
 
-CREATE TABLE `fabric_cad_allocation_deleted` (
+CREATE TABLE `bai_rm_pj1`.`fabric_cad_allocation_deleted` (
   `tran_pin` double NOT NULL AUTO_INCREMENT,
   `doc_no` double DEFAULT NULL,
   `roll_id` double DEFAULT NULL,
@@ -171,9 +171,9 @@ CREATE TABLE `fabric_cad_allocation_deleted` (
 
 /*Table structure for table `inspection_complaint_db` */
 
-DROP TABLE IF EXISTS `inspection_complaint_db`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`inspection_complaint_db`;
 
-CREATE TABLE `inspection_complaint_db` (
+CREATE TABLE `bai_rm_pj1`.`inspection_complaint_db` (
   `complaint_no` double DEFAULT NULL,
   `ref_no` varchar(450) DEFAULT NULL,
   `product_categoy` varchar(450) DEFAULT NULL,
@@ -216,9 +216,9 @@ CREATE TABLE `inspection_complaint_db` (
 
 /*Table structure for table `inspection_complaint_db_delete_log` */
 
-DROP TABLE IF EXISTS `inspection_complaint_db_delete_log`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`inspection_complaint_db_delete_log`;
 
-CREATE TABLE `inspection_complaint_db_delete_log` (
+CREATE TABLE `bai_rm_pj1`.`inspection_complaint_db_delete_log` (
   `complaint_no` double DEFAULT NULL,
   `ref_no` varchar(450) DEFAULT NULL,
   `product_categoy` varchar(450) DEFAULT NULL,
@@ -261,9 +261,9 @@ CREATE TABLE `inspection_complaint_db_delete_log` (
 
 /*Table structure for table `inspection_complaint_db_log` */
 
-DROP TABLE IF EXISTS `inspection_complaint_db_log`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`inspection_complaint_db_log`;
 
-CREATE TABLE `inspection_complaint_db_log` (
+CREATE TABLE `bai_rm_pj1`.`inspection_complaint_db_log` (
   `complaint_track_id` double DEFAULT NULL,
   `complaint_reason` varchar(450) DEFAULT NULL,
   `complaint_rej_qty` decimal(22,2) DEFAULT NULL,
@@ -274,9 +274,9 @@ CREATE TABLE `inspection_complaint_db_log` (
 
 /*Table structure for table `inspection_complaint_reasons` */
 
-DROP TABLE IF EXISTS `inspection_complaint_reasons`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`inspection_complaint_reasons`;
 
-CREATE TABLE `inspection_complaint_reasons` (
+CREATE TABLE `bai_rm_pj1`.`inspection_complaint_reasons` (
   `sno` double DEFAULT NULL,
   `complaint_reason` varchar(1350) DEFAULT NULL,
   `Complaint_clasification` varchar(2700) DEFAULT NULL,
@@ -286,9 +286,9 @@ CREATE TABLE `inspection_complaint_reasons` (
 
 /*Table structure for table `inspection_db` */
 
-DROP TABLE IF EXISTS `inspection_db`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`inspection_db`;
 
-CREATE TABLE `inspection_db` (
+CREATE TABLE `bai_rm_pj1`.`inspection_db` (
   `batch_ref` varchar(50) NOT NULL COMMENT 'Batch Reference1',
   `act_gsm` float NOT NULL COMMENT 'Actual GSM',
   `pur_width` float NOT NULL COMMENT 'Purchase Width',
@@ -311,13 +311,13 @@ CREATE TABLE `inspection_db` (
   `consumption` float NOT NULL,
   PRIMARY KEY (`batch_ref`),
   UNIQUE KEY `track_id` (`track_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `inspection_supplier_db` */
 
-DROP TABLE IF EXISTS `inspection_supplier_db`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`inspection_supplier_db`;
 
-CREATE TABLE `inspection_supplier_db` (
+CREATE TABLE `bai_rm_pj1`.`inspection_supplier_db` (
   `product_code` varchar(90) NOT NULL COMMENT 'Product Code Name',
   `supplier_code` varchar(90) NOT NULL COMMENT 'Supplier Name',
   `complaint_no` double NOT NULL COMMENT 'Comaplint Number',
@@ -332,9 +332,9 @@ CREATE TABLE `inspection_supplier_db` (
 
 /*Table structure for table `location_db` */
 
-DROP TABLE IF EXISTS `location_db`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`location_db`;
 
-CREATE TABLE `location_db` (
+CREATE TABLE `bai_rm_pj1`.`location_db` (
   `location_id` varchar(50) NOT NULL,
   `product` varchar(50) NOT NULL,
   `status` int(11) NOT NULL,
@@ -342,13 +342,13 @@ CREATE TABLE `location_db` (
   `category` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`sno`),
   KEY `location_id` (`location_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `location_trnsf` */
 
-DROP TABLE IF EXISTS `location_trnsf`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`location_trnsf`;
 
-CREATE TABLE `location_trnsf` (
+CREATE TABLE `bai_rm_pj1`.`location_trnsf` (
   `date` date DEFAULT NULL,
   `source_location` varchar(50) DEFAULT NULL,
   `new_location` varchar(50) DEFAULT NULL,
@@ -366,9 +366,9 @@ CREATE TABLE `location_trnsf` (
 
 /*Table structure for table `m3_fab_issue_track` */
 
-DROP TABLE IF EXISTS `m3_fab_issue_track`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`m3_fab_issue_track`;
 
-CREATE TABLE `m3_fab_issue_track` (
+CREATE TABLE `bai_rm_pj1`.`m3_fab_issue_track` (
   `tran_id` int(11) NOT NULL AUTO_INCREMENT,
   `doc_ref` varchar(30) NOT NULL,
   `log_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -386,9 +386,9 @@ CREATE TABLE `m3_fab_issue_track` (
 
 /*Table structure for table `members` */
 
-DROP TABLE IF EXISTS `members`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`members`;
 
-CREATE TABLE `members` (
+CREATE TABLE `bai_rm_pj1`.`members` (
   `member_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `firstname` varchar(100) DEFAULT NULL,
   `lastname` varchar(100) DEFAULT NULL,
@@ -400,9 +400,9 @@ CREATE TABLE `members` (
 
 /*Table structure for table `reconcile_db` */
 
-DROP TABLE IF EXISTS `reconcile_db`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`reconcile_db`;
 
-CREATE TABLE `reconcile_db` (
+CREATE TABLE `bai_rm_pj1`.`reconcile_db` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `lastup` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `lot_no` varchar(100) NOT NULL,
@@ -418,30 +418,30 @@ CREATE TABLE `reconcile_db` (
 
 /*Table structure for table `reject_reasons` */
 
-DROP TABLE IF EXISTS `reject_reasons`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`reject_reasons`;
 
-CREATE TABLE `reject_reasons` (
+CREATE TABLE `bai_rm_pj1`.`reject_reasons` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `reject_code` varchar(50) DEFAULT NULL,
   `reject_desc` varchar(100) DEFAULT NULL,
   UNIQUE KEY `tid` (`tid`),
   UNIQUE KEY `reject_code` (`reject_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=169 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `sheet1$` */
 
-DROP TABLE IF EXISTS `sheet1$`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`sheet1$`;
 
-CREATE TABLE `sheet1$` (
+CREATE TABLE `bai_rm_pj1`.`sheet1$` (
   `01` varchar(255) DEFAULT NULL,
   `Off shandes` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `sticker_report` */
 
-DROP TABLE IF EXISTS `sticker_report`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`sticker_report`;
 
-CREATE TABLE `sticker_report` (
+CREATE TABLE `bai_rm_pj1`.`sticker_report` (
   `item` varchar(200) NOT NULL,
   `item_name` varchar(200) NOT NULL,
   `item_desc` varchar(200) NOT NULL,
@@ -475,9 +475,9 @@ CREATE TABLE `sticker_report` (
 
 /*Table structure for table `sticker_report_deleted` */
 
-DROP TABLE IF EXISTS `sticker_report_deleted`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`sticker_report_deleted`;
 
-CREATE TABLE `sticker_report_deleted` (
+CREATE TABLE `bai_rm_pj1`.`sticker_report_deleted` (
   `item` varchar(200) NOT NULL,
   `item_name` varchar(200) NOT NULL,
   `item_desc` varchar(200) NOT NULL,
@@ -509,9 +509,9 @@ CREATE TABLE `sticker_report_deleted` (
 
 /*Table structure for table `store_in` */
 
-DROP TABLE IF EXISTS `store_in`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`store_in`;
 
-CREATE TABLE `store_in` (
+CREATE TABLE `bai_rm_pj1`.`store_in` (
   `tid` bigint(20) NOT NULL AUTO_INCREMENT,
   `lot_no` varchar(150) NOT NULL,
   `ref1` varchar(50) NOT NULL COMMENT 'Location No',
@@ -545,13 +545,13 @@ CREATE TABLE `store_in` (
   KEY `lot_no` (`lot_no`),
   KEY `ref1` (`ref1`),
   KEY `NewIndex1` (`lot_no`,`qty_rec`,`qty_issued`,`qty_ret`)
-) ENGINE=InnoDB AUTO_INCREMENT=307 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `store_in_backup` */
 
-DROP TABLE IF EXISTS `store_in_backup`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`store_in_backup`;
 
-CREATE TABLE `store_in_backup` (
+CREATE TABLE `bai_rm_pj1`.`store_in_backup` (
   `tid` bigint(20) NOT NULL AUTO_INCREMENT,
   `lot_no` varchar(150) NOT NULL,
   `ref1` varchar(50) NOT NULL COMMENT 'Location No',
@@ -579,9 +579,9 @@ CREATE TABLE `store_in_backup` (
 
 /*Table structure for table `store_in_deleted` */
 
-DROP TABLE IF EXISTS `store_in_deleted`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`store_in_deleted`;
 
-CREATE TABLE `store_in_deleted` (
+CREATE TABLE `bai_rm_pj1`.`store_in_deleted` (
   `tid` bigint(20) NOT NULL AUTO_INCREMENT,
   `lot_no` varchar(150) NOT NULL,
   `ref1` varchar(50) NOT NULL COMMENT 'Location No',
@@ -614,13 +614,13 @@ CREATE TABLE `store_in_deleted` (
   PRIMARY KEY (`tid`),
   KEY `lot_no` (`lot_no`),
   KEY `ref1` (`ref1`)
-) ENGINE=InnoDB AUTO_INCREMENT=297 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `store_in_insp_audit_log_temp` */
 
-DROP TABLE IF EXISTS `store_in_insp_audit_log_temp`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`store_in_insp_audit_log_temp`;
 
-CREATE TABLE `store_in_insp_audit_log_temp` (
+CREATE TABLE `bai_rm_pj1`.`store_in_insp_audit_log_temp` (
   `tid` bigint(20) NOT NULL,
   `lot_no` varchar(150) NOT NULL,
   `ref1` varchar(50) NOT NULL COMMENT 'Location No',
@@ -651,9 +651,9 @@ CREATE TABLE `store_in_insp_audit_log_temp` (
 
 /*Table structure for table `store_in_insp_temp` */
 
-DROP TABLE IF EXISTS `store_in_insp_temp`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`store_in_insp_temp`;
 
-CREATE TABLE `store_in_insp_temp` (
+CREATE TABLE `bai_rm_pj1`.`store_in_insp_temp` (
   `tid` bigint(20) NOT NULL AUTO_INCREMENT,
   `lot_no` varchar(150) NOT NULL,
   `ref1` varchar(50) NOT NULL COMMENT 'Location No',
@@ -690,9 +690,9 @@ CREATE TABLE `store_in_insp_temp` (
 
 /*Table structure for table `store_out` */
 
-DROP TABLE IF EXISTS `store_out`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`store_out`;
 
-CREATE TABLE `store_out` (
+CREATE TABLE `bai_rm_pj1`.`store_out` (
   `tid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `tran_tid` bigint(20) unsigned NOT NULL,
   `qty_issued` float NOT NULL,
@@ -711,9 +711,9 @@ CREATE TABLE `store_out` (
 
 /*Table structure for table `store_out_backup` */
 
-DROP TABLE IF EXISTS `store_out_backup`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`store_out_backup`;
 
-CREATE TABLE `store_out_backup` (
+CREATE TABLE `bai_rm_pj1`.`store_out_backup` (
   `tid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `tran_tid` bigint(20) unsigned NOT NULL,
   `qty_issued` float NOT NULL,
@@ -729,9 +729,9 @@ CREATE TABLE `store_out_backup` (
 
 /*Table structure for table `store_returns` */
 
-DROP TABLE IF EXISTS `store_returns`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`store_returns`;
 
-CREATE TABLE `store_returns` (
+CREATE TABLE `bai_rm_pj1`.`store_returns` (
   `tid` bigint(20) NOT NULL AUTO_INCREMENT,
   `tran_tid` bigint(20) NOT NULL,
   `qty_returned` double NOT NULL,
@@ -745,9 +745,9 @@ CREATE TABLE `store_returns` (
 
 /*Table structure for table `supplier_performance_track` */
 
-DROP TABLE IF EXISTS `supplier_performance_track`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`supplier_performance_track`;
 
-CREATE TABLE `supplier_performance_track` (
+CREATE TABLE `bai_rm_pj1`.`supplier_performance_track` (
   `tid` varchar(50) NOT NULL,
   `bai1_rec` int(11) DEFAULT NULL,
   `weekno` int(11) DEFAULT NULL,
@@ -824,9 +824,9 @@ CREATE TABLE `supplier_performance_track` (
 
 /*Table structure for table `supplier_performance_track_log` */
 
-DROP TABLE IF EXISTS `supplier_performance_track_log`;
+DROP TABLE IF EXISTS `bai_rm_pj1`.`supplier_performance_track_log`;
 
-CREATE TABLE `supplier_performance_track_log` (
+CREATE TABLE `bai_rm_pj1`.`supplier_performance_track_log` (
   `t_tid` int(11) NOT NULL AUTO_INCREMENT,
   `tid` varchar(150) NOT NULL,
   `bai1_rec` double NOT NULL,

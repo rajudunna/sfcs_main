@@ -38,18 +38,15 @@
 <div class="panel panel-primary">
 <div class="panel-heading">Hourly Production Report- Section Wise <?php  echo $frdate;  ?></div>
 <div class="panel-body">
-	<form action='index.php' method='GET'>
-		<input type='hidden' name='r' value='<?= $_GET["r"]; ?>'>
-		<br>
-		<div class="col-sm-3">
-		<label>Date :</label>
-		<input type='text' data-toggle="datepicker" class="form-control" value='<?php echo $frdate;  ?>' name='pro_date' id='pro_date' readonly>
-		</div><br/>
-		<div class="col-sm-1">
-		<input type='submit' class="btn btn-primary" value='Filter' name='submit'>
+	<form  action="index.php"  method='GET' class="form-inline">
+		<div class='row'>
+			<input type="hidden" value="<?= $_GET['r']; ?>" name="r" >
+			<label>Date : </label>
+			<input type='text' data-toggle="datepicker" value='<?php echo $frdate;  ?>' name='pro_date' class='form-control' readonly>
+			<input type='submit' value='Filter' class='btn btn-primary' name='submit'>
 		</div>
 	</form>
-  <hr>
+	<hr>
    
    <?php
 if(isset($_GET['submit']))
@@ -254,7 +251,7 @@ if(isset($_GET['submit']))
 									</center></td>
 									<td style="background-color:#e1bee7;"><center>
 										<?php  
-											$pcsphr=$forecastqty/10;
+											$pcsphr=$forecastqty/$hours;
 											echo round($pcsphr);
 										?>
 									</center></td>

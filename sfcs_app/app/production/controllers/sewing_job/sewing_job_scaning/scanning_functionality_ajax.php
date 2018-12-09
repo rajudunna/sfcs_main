@@ -300,7 +300,7 @@ if($barcode_generation == 1)
 											$reason_remaining_qty[$remain_qty_key] = 0;
 											$actual_rejection_reason_array[$bundle_individual_number] += 0;
 										}
-										$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where m3_reason_code= '$r_reasons[$reason_key]'";
+										$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where m3_reason_code= '$remain_qty_key'";
 									$result_rejection_code_fetech_qry = $link->query($rejection_code_fetech_qry);
 									while($rowresult_rejection_code_fetech_qry = $result_rejection_code_fetech_qry->fetch_assoc()) 
 									{
@@ -492,7 +492,7 @@ if($barcode_generation == 1)
 					//echo $doc_value.'-'.$bundle_individual_number.'-'.$cumulative_qty.'</br>';
 					if($cumulative_qty > 0)
 					{
-						$bundle_pending_qty =  $nop_qry_row['send_qty'] - ($nop_qry_row['recevied_qty']+ $nop_qry_row['rejected_qty']);
+						$bundle_pending_qty =  $nop_qry_row['send_qty'] - $nop_qry_row['recevied_qty'];
 						if($bundle_pending_qty > 0 && $cumulative_qty > 0)
 						{
 							if($bundle_pending_qty <= $cumulative_qty)
@@ -588,7 +588,7 @@ if($barcode_generation == 1)
 						//echo $bundle_individual_number.'-'.$cumulative_rej_qty.'</br>';
 						if($cumulative_rej_qty > 0)
 						{
-							$bundle_pending_qty_rej =  $nop_qry_row['send_qty'] - ( $nop_qry_row['recevied_qty']+$rec_qtys_array[$bundle_individual_number]+$nop_qry_row['rejected_qty']);
+							$bundle_pending_qty_rej =  $nop_qry_row['send_qty'] - ( $nop_qry_row['recevied_qty']+$rec_qtys_array[$bundle_individual_number]);
 							//echo $bundle_individual_number.'-';
 							if($bundle_pending_qty_rej != 0)
 							{
@@ -658,7 +658,7 @@ if($barcode_generation == 1)
 											$reason_remaining_qty[$remain_qty_key] = 0;
 											$actual_rejection_reason_array[$bundle_individual_number] += 0;
 										}
-										$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where m3_reason_code= '$r_reasons[$reason_key]'";
+										$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where m3_reason_code= '$remain_qty_key'";
 									$result_rejection_code_fetech_qry = $link->query($rejection_code_fetech_qry);
 									while($rowresult_rejection_code_fetech_qry = $result_rejection_code_fetech_qry->fetch_assoc()) 
 									{
@@ -828,8 +828,8 @@ if($barcode_generation == 1)
 				$send_qty = $row['send_qty'];
 				$pre_recieved_qty = $row['recevied_qty'];
 				$rejected_qty = $row['rejected_qty'];
-				$act_reciving_qty = $b_rep_qty[$key]+$b_rej_qty[$key];
-				$total_rec_qty = $pre_recieved_qty + $act_reciving_qty+$rejected_qty;
+				$act_reciving_qty = $b_rep_qty[$key];
+				$total_rec_qty = $pre_recieved_qty + $act_reciving_qty;
 			//	echo $pre_recieved_qty.'+'.$act_reciving_qty.'+'.$rejected_qty.'</br>';
 				//echo "bcd=".$total_rec_qty."-".$send_qty."</br>";
 				if($total_rec_qty > $send_qty)
@@ -838,13 +838,13 @@ if($barcode_generation == 1)
 				}
 				else
 				{
-					$rec_qty_from_temp = "select (sum(recevied_qty)+sum(rejected_qty))as recevied_qty FROM $brandix_bts.bundle_creation_data_temp WHERE bundle_number = $b_tid[$key] AND operation_id = $b_op_id";
+					$rec_qty_from_temp = "select (sum(recevied_qty))as recevied_qty FROM $brandix_bts.bundle_creation_data_temp WHERE bundle_number = $b_tid[$key] AND operation_id = $b_op_id";
 				//	echo $rec_qty_from_temp;
 					$result_rec_qty_from_temp = $link->query($rec_qty_from_temp);
 					while($row_temp = $result_rec_qty_from_temp->fetch_assoc()) 
 					{
 						$pre_recieved_qty_temp = $row_temp['recevied_qty'];
-						$act_reciving_qty_temp = $b_rep_qty[$key]+$b_rej_qty[$key];
+						$act_reciving_qty_temp = $b_rep_qty[$key];
 					//	echo "bcdtemp=".$act_reciving_qty_temp."-".$send_qty."</br>";
 						if($act_reciving_qty_temp > $send_qty)
 						{
@@ -1552,22 +1552,18 @@ if($barcode_generation == 1)
 					while($buyer_qry_row=mysqli_fetch_array($buyer_qry_result)){
 							$buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
 						}
-					$qry_nop="select avail_A,avail_B FROM $bai_pro.pro_atten WHERE module='$b_module[$i]' AND date='$bac_dat'";
+					$qry_nop="select ((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance where module='".$b_module[$i]."' and date='".$bac_dat."' and shift='".$b_shift."'";
 					// echo $qry_nop;
-						$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($nop_qry_row=mysqli_fetch_array($qry_nop_result)){
-								$avail_A=$nop_qry_row['avail_A'];
-								$avail_B=$nop_qry_row['avail_B'];
-						}
-						if(mysqli_num_rows($qry_nop_result)>0){
-							if($row['shift']=='A'){
-								$nop=$avail_A;
-							}else{
-								$nop=$avail_B;
-							}
-						}else{
-							$nop=0;
-						}
+					$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
+					{
+							$avail=$nop_qry_row['nop'];
+					}
+					if(mysqli_num_rows($qry_nop_result)>0){
+						$nop=$avail;
+					}else{
+						$nop=0;
+					}
 					$bundle_op_id=$b_tid[$i]."-".$b_op_id."-".$b_inp_job_ref[$i];
 					$insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
 					bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno

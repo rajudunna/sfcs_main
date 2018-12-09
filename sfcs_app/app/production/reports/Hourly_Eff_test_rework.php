@@ -1,17 +1,3 @@
-<!-- 
-
-\\baitestsrv01\wserver$$\wamp\www\Projects\Alpha\anu\new_int_v5\Hourly_Eff_test_rework.php 
-
-Ticket#:783632/RameshK/Getting Table Alignment Issue in Hourly Efficiency Report 
-Ticket #892171/Date: 2014-06-16 / Task : Getting Wrong Values at Factory level In Hourly Efficiency Report 
-
-CR# 123 / 2014-09-05 / KiranG: Added color code indicators for more visibility. 
-
-CR# 217 /2014-11-06/ RameshK: Take the operators count and clock hours count through HRMS 
-
-CR# 916 /2015-03-10/ RameshK/ Need to add module,section & factory level rework details.  
-
---> 
 <html> 
     <head> 
         <title>Hourly Efficiency Rework</title> 
@@ -280,29 +266,40 @@ white-space:nowrap;
                                 <label for="hour_filter" valign="top">Select Hour: </label>
                                 <select name="hour_filter[]" id="hour_filter" class="form-control" multiple> 
                                     <?php 
-                                       $hour_filter1 = array();
+                                         $hour_filter1 = array();
                                          for ($i=0; $i <= $total_hours; $i++)
                                          {
                                              $hour2=$hour;
-                                             // $to_hour = "'".$hour2.":".$minutes."'";
-											 $to_hour = "'".$hour2."'";
-                                             $hour_filter1[]=$to_hour;
-                                             $hour++;
+                                            if($minutes >0)
+                                            {
+                                                 $to_hour = "'".$hour2.":".$minutes."'";
+                                            }
+                                            else
+                                            {
+                                                 $to_hour = "'".$hour2."'";
+                                            }
+                                            $hour_filter1[]=$to_hour;
+                                            $hour++;
                                          }
                                          echo '<option value="'.(implode(',',$hour_filter1)).'">All</option>'; 
                                          list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
                                          for ($i=0; $i <= $total_hours; $i++)
                                          {
                                              $hour1=$hour;
-                                             // $to_hour = $hour1.":".$minutes;
-											 if($hour1 > 12)
-											 {
-												$to_hour = $hour1-12;
-											 }
-											 else
-											 {
-												$to_hour = $hour1;
-											 }
+                                             if($minutes >0){
+                                                $to_hour = $hour1.":".$minutes;
+                                             }
+                                             else{
+                                                 $to_hour = $hour1;
+                                             }
+											//  if($hour1 > 12)
+											//  {
+											// 	$to_hour = $hour1-12;
+											//  }
+											//  else
+											//  {
+											// 	$to_hour = $hour1;
+											//  }
                                              echo '<option value="\''.$to_hour.'\'">'.$to_hour.'</option>';
                                              // echo '<br/>'.$to_hour;
                                              $hour++;
@@ -411,17 +408,17 @@ white-space:nowrap;
                                 return $RetStr; 
                             } 
 
-                            //Time filter 
+                         //Time filter 
                             $hour_filter=$_POST['hour_filter']; 
-                            if(in_array("6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21",$hour_filter)) 
+                            
+                            if($hour_filter=='') 
                             { 
-                                $time_query=" and hour(bac_lastup) in (6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21) "; 
+                                   $time_query=""; 
                             } 
                             else 
                             { 
-                                $time_query=" and hour(bac_lastup) in (".implode(",",$hour_filter).") "; 
-                            } 
-
+                                   $time_query=" AND HOUR(bac_lastup) in (".implode(",",$hour_filter).") "; 
+                            }
 
 
 
@@ -438,47 +435,102 @@ white-space:nowrap;
                             $ftt_ut_chk=$_POST['ftt_ut_chk']; 
                             $date=$_POST['dat']; 
                             $team=$_POST['team'];
-                            
 							$teams=explode(",",$team);
                             $team = "'".str_replace(",","','",$team)."'"; 
 
-                            if(sizeof($teams) > 1) 
-                            { 
-                                $work_hours=15; 
-                            } 
-                            else 
-                            { 
-                                $work_hours=7.5; 
-                            } 
+                            $work_hrs=0;
+                            $sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift in ($team)";
+                            // echo $sql_hr."<br>";
+                            $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                            if(mysqli_num_rows($sql_result_hr) >0)
+                            {
+                                while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+                                { 
+                                    $work_hrs=$work_hrs+($sql_row_hr['end_time']-$sql_row_hr['start_time']);
 
-                            /* 
-                            // NEW BUFFER Table Selection 
-                            $table_name="bai_log"; 
-                            $sql="select count(bac_date) as \"row_count\" from bai_log_buf where bac_date=\"$date\""; 
+                                }
+                                $break_time=sizeof($teams)*0.5;
+                                $work_hours=$work_hrs-$break_time;
+                            }else{
+                                    if(sizeof($teams) > 1) 
+                                    { 
+                                        $work_hours=15; 
+                                    } 
+                                    else 
+                                    { 
+                                        $work_hours=7.5; 
+                                    } 
+                            }
+                            
+                            // echo $work_hours."<br>";
+                            // date_default_timezone_set("Asia/Calcutta");
+                            $current_hr=date('H');
+                            // echo $current_hr."<br>";
 
-                            $sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error()); 
-                            while($sql_row=mysql_fetch_array($sql_result)) 
-                            { 
-                            $row_count=$sql_row['row_count']; 
-                            } 
+                            // $current_date="2018-09-15";
+                            $current_date=date('Y-m-d');
 
-                            if($row_count>1 or $date==date("Y-m-d")) 
-                            { 
-                            $table_name="bai_log_buf"; 
-                            //$table_name="bai_log"; 
-                            } 
+                            if($current_date==$date)
+                            {
+                                $hour_dur=0;
+                                for($i=0;$i<sizeof($teams);$i++)
+                                {
+                                    $sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
+                                    // echo $sql_hr."<br>";
+                                    $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    if(mysqli_num_rows($sql_result_hr) >0)
+                                    {
+                                        while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+                                        { 
+                                            $start_time=$sql_row_hr['start_time'];
+                                            $end_time=$sql_row_hr['end_time'];
+                                            $diff_time=$current_hr-$start_time;
+                                            if($diff_time>3){
+                                                 $diff_time=$diff_time-0.5;
+                                            }
 
-                            if($table_name=="bai_log") 
-                            { 
-                            $sql="truncate bai_log_buf_temp"; 
-                            mysql_query($sql,$link) or exit("Sql Error".mysql_error()); 
+                                            $hour_dur=$hour_dur+$diff_time;
 
-                            $sql="insert into bai_log_buf_temp select * from bai_log where bac_date=\"$date\""; 
-                            mysql_query($sql,$link) or exit("Sql Error".mysql_error()); 
+                                        }
+                                    }
+                                    else
+                                    {
+                                        $sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$teams[$i]."' and $current_hr > end_time";
+                                        // echo $sql_hr."<br>";
+                                        $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        // $hour_dur=$hour_dur+0;
+                                        while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+                                        { 
+                                            $start_time=$sql_row_hr['start_time'];
+                                            $end_time=$sql_row_hr['end_time'];
+                                            if($end_time > $start_time){
+                                                $diff_time=$end_time-$start_time;
+                                            }
+                                            else
+                                            {
+                                                $start=24-$start_time;
+                                                $diff_time=$start+$end_time;
+                                            }
+                                            if($diff_time>3){
+                                                 $diff_time=$diff_time-0.5;
+                                            }
+                                            $hour_dur=$hour_dur+$diff_time;
+                                        }
+                                    }
+                                    
+                                }
+                            
+                                // if($hour_dur >3){
+                                //     $hour_dur=$hour_dur-0.5;
+                                // }
+                                $hoursa_shift=$hour_dur;
+                            }
+                            else
+                            {
+                                $hoursa_shift=$work_hours;
+                            }
+                            // echo $hoursa_shift."<br>";
 
-                            $table_name="bai_log_buf_temp"; 
-                            } 
-                            */ 
 
                             //Table namespace 
                             $pro_mod="temp_pool_db.".$username.date("YmdHis")."_"."pro_mod"; 
@@ -629,7 +681,7 @@ white-space:nowrap;
                                 } 
                                 else 
                                 { 
-                                    $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) and bac_sec in ($sections_group) $time_query order by hour(bac_lastup)"; 
+                                    $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) $time_query order by hour(bac_lastup)"; 
                                 } 
                                  
                                 // echo $sql."<br>"; 
@@ -812,169 +864,115 @@ white-space:nowrap;
                                             $nop=$sql_row2['nop']; 
                                         } 
                                     } 
-
                                     $nop=0; 
-                                    $clha=0; 
+                                    $clha_shift=0; 
                                     $hoursa=0; 
-
-                                    $sql2="select count(distinct hour(bac_lastup)) as \"hoursa\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) and bac_no=$mod $time_query"; 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                    { 
-                                        $hoursa=$sql_row2['hoursa']; 
-                                    } 
-
-                                    if($sec==1 || $sec==2 || $sec==3) 
-                                    { 
-                                        if($hoursa>3){ 
-                                            $hoursa=$hoursa+0.5-1;     
-                                        } 
-
-                                        if($hoursa>7.5){ 
-                                            $hoursa=$hoursa+0.5-1; 
-                                        } 
-                                    } 
-
-                                    if($sec==4) 
-                                    { 
-                                        if($hoursa==4)    { 
-                                            $hoursa=$hoursa;     
-                                        } 
-                                        else{ 
-                                            if($hoursa>3){ 
-                                                $hoursa=$hoursa+0.5-1;     
-                                            } 
-                                        } 
-
-                                        if($hoursa==11.5){ 
-                                            $hoursa=$hoursa;     
-                                           } 
-                                        else{ 
-                                            if($hoursa>7.5){ 
-                                                $hoursa=$hoursa+0.5-1; 
-                                            } 
-                                        } 
-                                    } 
-
-                                    //echo $hoursa."<br>"; 
-
-                                    if($team=="'A'") 
-                                    { 
-                                        $sql_nop="select avail_a as avail,absent_a as absent from $bai_pro.pro_atten where date=\"$date\" and module=\"$mod\""; 
-                                        $sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $nop_shift=0;
+                                    $hoursa_shift=0;
+                                    $diff_time=0;
+                                    $current_date=date("Y-m-d");
+                                    // date_default_timezone_set("Asia/Calcutta");
+                                    $current_hr=date('H');
+                                    // echo $current_hr."<br>";
+                                    for($k=0;$k<sizeof($teams);$k++)
+                                    {
+                                        $shift=$teams[$k];
+                                        
+                                        $sql_nop="select (present+jumper) as avail,absent from $bai_pro.pro_attendance where date=\"$date\" and module=\"$mod\" and shift=\"$shift\""; 
+                                        // echo $sql_nop."<br>";
+                                        $sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         if(mysqli_num_rows($sql_result_nop) > 0) 
                                         { 
                                             while($sql_row_nop=mysqli_fetch_array($sql_result_nop)) 
                                             { 
-                                                $nop=$sql_row_nop["avail"]-$sql_row_nop["absent"]; 
+                                                $nop=$sql_row_nop["avail"]-$sql_row_nop["absent"];
+                                                $nop_shift=$nop_shift+$nop; 
                                             } 
                                         } 
                                         else 
                                         { 
                                             $nop=0; 
+                                            $nop_shift=$nop_shift+$nop; 
                                         } 
-                                        $clha=$nop*$hoursa; 
-                                        //echo $sql_nop."-".mysql_num_rows($sql_result_nop)."-".$nop."<br>"; 
-                                    } 
+                                        if($current_date == $date)
+                                        {
+                                            $sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$shift."' and  $current_hr between start_time and end_time";
+                                            // echo $sql_hr."<br>";
+                                            $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                            if(mysqli_num_rows($sql_result_hr) >0)
+                                            {
+                                                while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+                                                { 
+                                                    $start_time=$sql_row_hr['start_time'];
+                                                    $end_time=$sql_row_hr['end_time'];
+                                                    $diff_time=$current_hr-$start_time;
+                                                    if($diff_time>3)
+                                                    {
+                                                        $diff_time=$diff_time-0.5;
+                                                    }
+                                                    $hoursa_shift=$hoursa_shift+$diff_time;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                $sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$shift."' and $current_hr > end_time";
+                                                // echo $sql_hr."<br>";
+                                                $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                                while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+                                                { 
+                                                    $start_time=$sql_row_hr['start_time'];
+                                                    $end_time=$sql_row_hr['end_time'];
+                                                    if($end_time > $start_time){
+                                                        $diff_time=$end_time-$start_time;
+                                                    }
+                                                    else
+                                                    {
+                                                        $start=24-$start_time;
+                                                        $diff_time=$start+$end_time;
+                                                    }
+                                                    if($diff_time>3){
+                                                        $diff_time=$diff_time-0.5;
+                                                    }
+                                                    $hoursa_shift=$hoursa_shift+$diff_time;
+                                                }
+                                            }
+                                        }else{
+                                            $work_hrs=0;
+                                            $sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift ='".$shift."'";
+                                            // echo $sql_hr."<br>";
+                                            $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                            if(mysqli_num_rows($sql_result_hr) >0)
+                                            {
+                                                while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+                                                { 
+                                                    $start_time=$sql_row_hr['start_time'];
+                                                    $end_time=$sql_row_hr['end_time'];
+                                                    if($end_time > $start_time){
+                                                        $diff_time=$end_time-$start_time;
+                                                    }
+                                                    else
+                                                    {
+                                                        $start=24-$start_time;
+                                                        $diff_time=$start+$end_time;
+                                                    }
+                                                    if($diff_time>3){
+                                                        $diff_time=$diff_time-0.5;
+                                                    }
+                                                    $hoursa_shift=$hoursa_shift+$diff_time;
+                                                }
+                                            }          
+                                        }
+                                        // echo $nop."<br>";
+                                        // echo $diff_time."ds<br>";
 
-                                    if($team=="'B'") 
-                                    { 
-                                        $sql_nop="select avail_b as avail,absent_b as absent from $bai_pro.pro_atten where date=\"$date\" and module=\"$mod\""; 
-                                        $sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"])); 
-
-                                        if(mysqli_num_rows($sql_result_nop) > 0) 
-                                        { 
-                                            while($sql_row_nop=mysqli_fetch_array($sql_result_nop)) 
-                                            { 
-                                                $nop=$sql_row_nop["avail"]-$sql_row_nop["absent"]; 
-                                            } 
-                                        } 
-                                        else 
-                                        { 
-                                            $nop=0; 
-                                        } 
-                                        $clha=$nop*$hoursa; 
-                                        //echo $sql_nop."-".mysql_num_rows($sql_result_nop)."-".$nop."<br>"; 
-                                    } 
-
-                                    if(sizeof($teams) > 1) 
-                                    { 
-                                        //echo "\"A\",\"B\"<br>"; 
-                                        $sql_nop="select avail_a as avail,absent_a as absent from $bai_pro.pro_atten where date=\"$date\" and module=\"$mod\""; 
-                                        $sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                        if(mysqli_num_rows($sql_result_nop) > 0) 
-                                        { 
-                                            while($sql_row_nop=mysqli_fetch_array($sql_result_nop)) 
-                                            { 
-                                                $nop1=$sql_row_nop["avail"]-$sql_row_nop["absent"]; 
-                                            } 
-                                        } 
-                                        else 
-                                        { 
-                                            $nop1=0; 
-                                        } 
-
-                                        $hoursaa=0; 
-
-                                        $sql2a="select count(distinct hour(bac_lastup)) as \"hoursa\" from $table_name where bac_date=\"$date\" and bac_shift in (\"A\") and bac_no=$mod $time_query"; 
-                                        $sql_result2a=mysqli_query($link, $sql2a) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                        while($sql_row2a=mysqli_fetch_array($sql_result2a)) 
-                                        { 
-                                            $hoursaa=$sql_row2a['hoursa']; 
-                                        } 
-                                        //echo "A=".$hoursaa."<br>"; 
-                                        if($hoursaa==4 && ($sec==4) )    { 
-                                            $hoursaa=$hoursaa;     
-                                        } 
-                                        else{ 
-                                            if($hoursaa>3){ 
-                                                $hoursaa=$hoursaa+0.5-1;     
-                                            } 
-                                        } 
-
-                                        $clhaa=$nop1*$hoursaa; 
-
-                                        //echo "A2=".$clhaa."-A1=".$hoursaa."<br>";
-                                        $sql_nop1="select avail_b as avail,absent_b as absent from $bai_pro.pro_atten where date=\"$date\" and module=\"$mod\""; 
-                                        $sql_result_nop1=mysqli_query($link, $sql_nop1) or exit("Sql Error-<br>".$sql_nop1."<br>".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                        if(mysqli_num_rows($sql_result_nop1) > 0) 
-                                        { 
-                                            while($sql_row_nop1=mysqli_fetch_array($sql_result_nop1)) 
-                                            { 
-                                                $nop2=$sql_row_nop1["avail"]-$sql_row_nop1["absent"]; 
-                                            } 
-                                        } 
-                                        else 
-                                        { 
-                                            $nop2=0; 
-                                        } 
-
-                                        $hoursab=0; 
-
-                                        $sql2b="select count(distinct hour(bac_lastup)) as \"hoursa\" from $table_name where bac_date=\"$date\" and bac_shift in (\"B\") and bac_no=$mod $time_query"; 
-                                        $sql_result2b=mysqli_query($link, $sql2b) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                        while($sql_row2b=mysqli_fetch_array($sql_result2b)) 
-                                        { 
-                                            $hoursab=$sql_row2b['hoursa']; 
-                                        } 
-
-                                        if($hoursab==4 && ($sec==4) )    { 
-                                            $hoursab=$hoursab;     
-                                        } 
-                                        else 
-                                        { 
-                                            if($hoursab>3){ 
-                                                $hoursab=$hoursab+0.5-1;     
-                                            } 
-                                        } 
-
-                                        $clhab=$nop2*$hoursab; 
-                                        //echo "B2=".$clhab."-B1=".$hoursab."<br>";  
-                                        $hoursa=$hoursaa+$hoursab; 
-                                        $clha=$clhaa+$clhab; 
-                                        $nop=$nop1+$nop2; 
-                                        //echo $sql_nop."-".mysql_num_rows($sql_result_nop)."-".$nop1."<br>".$sql_nop1."-".mysql_num_rows($sql_result_nop1)."-".$nop2."<br>Total=".$nop."<br>";             
-                                    } 
+                                        $aaa=$nop*$diff_time;
+                                        $clha_shift=$clha_shift+$aaa;
+                                    }
+                                     //     echo $hoursa_shift."hrs<br>"; 
+                                     // //    $clha_shift=$nop_shift*$hoursa_shift; 
+                                    //     echo $clha_shift."cha<br>"; 
+                                     //     echo $nop_shift."nop<br>"; 
+                                  
 
                                     //NEW 
                                     $sqlx="select * from $pro_plan where mod_no=$mod and date=\"$date\""; 
@@ -1028,7 +1026,7 @@ white-space:nowrap;
 
                                     if($option1==1)
                                     {        //echo "<td>".$style_col."</td>";  
-                                        echo "<td>".$nop."</td>";  
+                                        echo "<td>".$nop_shift."</td>";  
                                         echo "<td>".$styledb."</td>";  
                                         echo "<td>".$deldb."</td>"; 
                                     } 
@@ -1300,9 +1298,9 @@ white-space:nowrap;
                                         } 
                                     } 
                                     //$clha=$nop*$hoursa; 
-                                    if($clha>0) 
+                                    if($clha_shift>0) 
                                     { 
-                                        $effa=$stha/$clha; 
+                                        $effa=$stha/$clha_shift; 
                                     } 
 
                                     /* PLAN EFF, PRO */ 
@@ -1320,10 +1318,10 @@ white-space:nowrap;
                                     } 
                                     if($option1==1)
                                     { 
-                                        echo "<td>".$hoursa."</td>"; 
+                                        echo "<td>".$hoursa_shift."</td>"; 
                                         echo "<td>".round($peff_a,2)."%</td>"; 
                                     } 
-                                    $plan_sah_hr=round(($psth*$hoursa/$work_hours),0); 
+                                    $plan_sah_hr=round(($psth*$hoursa_shift/$work_hours),0); 
                                     $sah_per=round(($stha*100/$plan_sah_hr),0); 
                                     $plan_sah_hr_total=$plan_sah_hr_total+$plan_sah_hr; 
                                     if($sah_per < 90) 
@@ -1344,8 +1342,8 @@ white-space:nowrap;
                                     if($option1==1){    echo "<td>".round($ppro_a,0)."</td>"; } 
                                     $ppro_a_total=$ppro_a_total+$ppro_a; 
                                     $ppro_g_total=$ppro_a_total; 
-                                    if($option1==1){    echo "<td>".round($clha,0)."</td>"; } 
-                                    $clha_total=$clha_total+$clha; 
+                                    if($option1==1){    echo "<td>".round($clha_shift,0)."</td>"; } 
+                                    $clha_total=$clha_total+$clha_shift; 
                                     $clhg_total=$clha_total; 
                                     if(isset($_POST['colorind']) && $_POST['colorind'] == '1')  
                                     { 
@@ -1381,9 +1379,9 @@ white-space:nowrap;
                                     $effa_total=$effa_total+round(($effa*100),2); 
                                     $effg_total=$effa_total; 
                                     if($option1==1){        echo "<td>".round(($atotal-$ppro_a),0)."</td>"; } 
-                                    if($hoursa>0) 
+                                    if($hoursa_shift>0) 
                                     { 
-                                        $avgperhour=$atotal/$hoursa; 
+                                        $avgperhour=$atotal/$hoursa_shift; 
                                     } 
                                     else 
                                     { 
@@ -1393,9 +1391,9 @@ white-space:nowrap;
                                     if($option1==1){ echo "<td>".round($avgperhour,0)."</td>"; } 
 
                                     /* NEW 20100318 */ 
-                                    if((7.5-$hoursa)>0) 
+                                    if((7.5-$hoursa_shift)>0) 
                                     { 
-                                        $exp_pcs_hr=(round($ppro_a,0)-(($avgperhour*$hoursa)))/(7.5-$hoursa); 
+                                        $exp_pcs_hr=(round($ppro_a,0)-(($avgperhour*$hoursa_shift)))/(7.5-$hoursa_shift); 
                                     } 
                                     else 
                                     { 
@@ -1582,38 +1580,6 @@ white-space:nowrap;
                                 } 
 
 
-                                $sql2="select count(distinct hour(bac_lastup)) as \"hoursa\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) and bac_sec=$sec $time_query"; 
-                                //echO $sql2; 
-                                $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error27".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                { 
-                                    $hoursa=$sql_row2['hoursa']; 
-                                } 
-                                if($hoursa==4 && ($sec==4) ) 
-                                { 
-                                    $hoursa=$hoursa;  
-                                } 
-                                else 
-                                { 
-                                    if($hoursa>3) 
-                                    { 
-                                        $hoursa=$hoursa+0.5-1; 
-                                        //echo $hoursa; 
-                                    } 
-                                } 
-
-                                if($hoursa==11.5 && ($sec==4) ) 
-                                { 
-                                    $hoursa=$hoursa;     
-                                } 
-                                else 
-                                { 
-                                    if($hoursa>7.5) 
-                                    { 
-                                        $hoursa=$hoursa+0.5-1; 
-                                        //echo "Hurs =".$hoursa; 
-                                    } 
-                                } 
 
                                 /* 20100226 */ 
                                 echo "<td rowspan=4>".$atotal."</td>"; 
@@ -1682,7 +1648,7 @@ white-space:nowrap;
 
                                 if($option1==1){ echo "<td rowspan=4>".round($arej_qty*100/($sum+$arej_qty),0)."</td>"; } 
                                 // echo "<td></td>"; 
-                                echo "<td rowspan=4>".$hoursa."</td>"; 
+                                echo "<td rowspan=4>".$hoursa_shift."</td>"; 
                                 $sum_rw1_tot=0; 
                                 $sum_ut1_tot=0; 
                                 $peffresulta=0; 
@@ -1751,7 +1717,7 @@ white-space:nowrap;
 
                                 /* 20100318 */ 
 
-                                if((7.5-$hoursa)>0) 
+                                if((7.5-$hoursa_shift)>0) 
                                 { 
                                     echo "<td  rowspan=4>".round($hourlytargettotal,0)."</td>"; 
                                 } 
@@ -2113,11 +2079,11 @@ white-space:nowrap;
                                         $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error40".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
-                                            if(($hoursa+$hoursb)>0) 
+                                            if($hoursa_shift>0) 
                                             { 
                                                 ///        $avgperhour=round(($sql_row2['sum']/$sql_row2['count']/($hoursa)),0); 
-                                                $avgperhour2=round(($sql_row2['sum']/$sql_row2['count']/($hoursa)),0); 
-                                                $avgperhour=round(($sql_row2['sum']/($hoursa)),0); 
+                                                $avgperhour2=round(($sql_row2['sum']/$sql_row2['count']/($hoursa_shift)),0); 
+                                                $avgperhour=round(($sql_row2['sum']/($hoursa_shift)),0); 
                                                 $count2=$sql_row2['count']; 
                                                 echo "<td>".$avgperhour."</td>"; 
                                             } 
@@ -2130,11 +2096,11 @@ white-space:nowrap;
                                         $exp_pcs_hr=0; 
                                         $exp_pcs_hr2=0; 
 
-                                        if((7.5-$hoursa)>0) 
+                                        if((7.5-$hoursa_shift)>0) 
                                         { 
                                             //        $exp_pcs_hr=(($plan_pcs)-(($avgperhour*$hoursa)*$count))/(7.5-$hoursa); 
-                                            $exp_pcs_hr=($plan_pcs-$total)/(7.5-$hoursa); 
-                                            $exp_pcs_hr2=(($plan_pcs-$total)/(7.5-$hoursa))/$count2; 
+                                            $exp_pcs_hr=($plan_pcs-$total)/(7.5-$hoursa_shift); 
+                                            $exp_pcs_hr2=(($plan_pcs-$total)/(7.5-$hoursa_shift))/$count2; 
                                         } 
                                         else 
                                         { 
@@ -2427,37 +2393,7 @@ white-space:nowrap;
                                     $effa=0; 
                                     $hoursa=0; 
 
-                                    $sql2="select count(distinct hour(bac_lastup)) as \"hoursa\" from $table_name where bac_date=\"$date\" $time_query and bac_shift in ($team) and bac_no=$mod"; 
-                                    /* NEWC     $sql2="select count(distinct hour(bac_lastup)) as \"hoursa\" from bai_log_buf where bac_date=\"$date\" and bac_shift in ($team) and bac_no=$mod and hour(bac_lastup) in (14,15,16,17,18,19,20,21)"; 
-                                    */ 
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error51".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                    { 
-                                        $hoursa=$sql_row2['hoursa']; 
-                                    } 
-                                    if($hoursa==4 && ($sec==4) ) 
-                                    { 
-                                        $hoursa=$hoursa;     
-                                    } 
-                                    else 
-                                    { 
-                                        if($hoursa>3) 
-                                        { 
-                                            $hoursa=$hoursa+0.5-1; 
-                                        } 
-                                    } 
-
-                                    if($hoursa==11.5 && ($sec==4) ) 
-                                    { 
-                                        $hoursa=$hoursa;     
-                                    } 
-                                    else 
-                                    { 
-                                        if($hoursa>7.5) 
-                                        { 
-                                            $hoursa=$hoursa+0.5-1; 
-                                        } 
-                                    } 
+                                   
 
                                     $sql2="select sum(bac_Qty) as \"total\", sum((bac_qty*smv)/60) as \"stha\" from $table_name where bac_date=\"$date\" $time_query and bac_shift in ($team) and bac_no=$mod group by bac_no"; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error52".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -2484,7 +2420,7 @@ white-space:nowrap;
                                         } 
                                     } 
 
-                                    $clha=$nop*    $hoursa; 
+                                    $clha=$nop*$hoursa_shift; 
                                     if($clha>0) 
                                     { 
                                         $effa=$stha/$clha; 
@@ -2512,9 +2448,9 @@ white-space:nowrap;
                                     $effa_total=$effa_total+round(($effa*100),2); 
                                     $effg_total=$effa_total; 
 
-                                    if($hoursa>0) 
+                                    if($hoursa_shift>0) 
                                     { 
-                                        $avgperhour=$atotal/$hoursa; 
+                                        $avgperhour=$atotal/$hoursa_shift; 
                                     } 
                                     else 
                                     { 
@@ -2523,9 +2459,9 @@ white-space:nowrap;
 
 
                                     /* NEW 20100318 */ 
-                                    if((7.5-$hoursa)>0) 
+                                    if((7.5-$hoursa_shift)>0) 
                                     { 
-                                        $exp_pcs_hr=(round($ppro_a,0)-(($avgperhour*$hoursa)))/(7.5-$hoursa); 
+                                        $exp_pcs_hr=(round($ppro_a,0)-(($avgperhour*$hoursa_shift)))/(7.5-$hoursa_shift); 
                                     } 
                                     else 
                                     { 
@@ -2698,38 +2634,6 @@ white-space:nowrap;
                                 } 
 
 
-                                $sql2="select count(distinct hour(bac_lastup)) as \"hoursa\" from $table_name where bac_date=\"$date\" $time_query and bac_shift in ($team) and bac_sec in ($sections_group)"; 
-                                $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1116".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                { 
-                                    $hoursa=$sql_row2['hoursa']; 
-                                } 
-
-                                if($hoursa==4 && ($sec==3 || $sec==4) ) 
-                                { 
-                                    $hoursa=$hoursa; 
-                                } 
-                                else 
-                                { 
-                                    if($hoursa>3) 
-                                    { 
-                                        $hoursa=$hoursa+0.5-1; 
-                                    } 
-                                } 
-
-                                if($hoursa==11.5 && ($sec==3 || $sec==4) ) 
-                                { 
-                                    $hoursa=$hoursa;     
-                                } 
-                                else 
-                                { 
-                                    if($hoursa>7.5) 
-                                    { 
-                                        $hoursa=$hoursa+0.5-1; 
-                                    } 
-                                } 
-
-
                                 /* 20100226 */ 
                                 echo "<td rowspan=4>".$atotal."</td>"; 
                                 if($rw_chk == 1){echo "<td rowspan=4>".$atotal_rw_tot."</td>";} 
@@ -2780,7 +2684,7 @@ white-space:nowrap;
                                     if($ut_chk == 1){echo "<td rowspan=4>0%</td>";} 
                                 } 
 
-                                echo "<td rowspan=4>".$hoursa."</td>"; 
+                                echo "<td rowspan=4>".$hoursa_shift."</td>"; 
 
                                 $peffresulta=0; 
                                 if($ppro_a_total>0 && $pclha>0) 
@@ -2847,7 +2751,7 @@ white-space:nowrap;
                                 echo "<td  rowspan=4>".round($avgpcstotal,0)."</td>"; 
                                 /* 20100318 */ 
 
-                                if((7.5-$hoursa)>0) 
+                                if((7.5-$hoursa_shift)>0) 
                                 { 
                                     echo "<td  rowspan=4>".round($hourlytargettotal,0)."</td>"; 
                                 } 
@@ -3191,11 +3095,11 @@ white-space:nowrap;
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error9884".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
-                                        if(($hoursa+$hoursb)>0) 
+                                        if($hoursa_shift>0) 
                                         { 
                                             ///        $avgperhour=round(($sql_row2['sum']/$sql_row2['count']/($hoursa)),0); 
-                                            $avgperhour2=round(($sql_row2['sum']/$sql_row2['count']/($hoursa)),0); 
-                                            $avgperhour=round(($sql_row2['sum']/($hoursa)),0); 
+                                            $avgperhour2=round(($sql_row2['sum']/$sql_row2['count']/($hoursa_shift)),0); 
+                                            $avgperhour=round(($sql_row2['sum']/($hoursa_shift)),0); 
                                             $count2=$sql_row2['count']; 
                                             echo "<td>".$avgperhour."</td>"; 
                                         } 
@@ -3208,11 +3112,11 @@ white-space:nowrap;
                                     $exp_pcs_hr=0; 
                                     $exp_pcs_hr2=0; 
 
-                                    if((7.5-$hoursa)>0) 
+                                    if((7.5-$hoursa_shift)>0) 
                                     { 
                                         //        $exp_pcs_hr=(($plan_pcs)-(($avgperhour*$hoursa)*$count))/(7.5-$hoursa); 
-                                        $exp_pcs_hr=($plan_pcs-$total)/(7.5-$hoursa); 
-                                        $exp_pcs_hr2=(($plan_pcs-$total)/(7.5-$hoursa))/$count2; 
+                                        $exp_pcs_hr=($plan_pcs-$total)/(7.5-$hoursa_shift); 
+                                        $exp_pcs_hr2=(($plan_pcs-$total)/(7.5-$hoursa_shift))/$count2; 
                                     } 
                                     else 
                                     { 

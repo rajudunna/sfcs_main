@@ -3,13 +3,14 @@
         Report : M3 Transcations Report
         By : Chandu
         Created at : 17-09-2018
-        Updated at : 12-10-2018
+        Updated at : 07-12-2018
         Input : date and transcation status
         Output : 
                 -->Display the report with following field: Style, Schedule, Color, Size, Mo Number, Operation Code, Workstation Id, Quantity
                 -->Download Excel 
         update v0.1 : query changes and new fields added
         update v0.2: changes based on 1048
+        update v0.3: add Module Number, Rejection Reason based on 1270
     ================================================== */
     include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
     if(!isset($_GET['excel'])){
@@ -77,7 +78,7 @@
             $resp_stat[] = $_GET['schedule'] ? 'schedule="'.$_GET["schedule"].'"' : '';
             $resp_stat[] = ($_GET['tdate'] && $_GET['fdate']) ? 'DATE(m3_transactions.date_time) between  "'.$_GET["fdate"].'" and "'.$_GET["tdate"].'"' : '';
             $ar_nw = array_filter($resp_stat);
-            $qry_m3_trans = "SELECT style,schedule,color,size,m3_transactions.date_time as dt,m3_transactions.mo_no,op_code,quantity,response_status,m3_transactions.id,m3_transactions.log_user,m3_transactions.ref_no
+            $qry_m3_trans = "SELECT style,schedule,color,size,m3_transactions.date_time as dt,m3_transactions.mo_no,op_code,quantity,response_status,m3_transactions.id,m3_transactions.log_user,m3_transactions.ref_no,m3_transactions.reason,m3_transactions.module_no
             FROM bai_pro3.`m3_transactions`  
             LEFT JOIN bai_pro3.`mo_details` ON m3_transactions.mo_no=mo_details.mo_no WHERE ".implode(' and ',$ar_nw);
             $result_m3_trans = mysqli_query($link_ui, $qry_m3_trans);
@@ -92,7 +93,7 @@
 ?>
                 
                 <table class=<?= $_GET['excel'] ?? "table" ?> id='table2'>
-                    <thead><tr><th>Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Mo Number</th><th>Job Number</th><th>Operation Code</th><th>Operation Name</th><th>Workstation Id</th><th>User</th><th>Quantity</th><th>Status</th></tr></thead>
+                    <thead><tr><th>Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Mo Number</th><th>Job Number</th><th>Module</th><th>Operation Code</th><th>Operation Name</th><th>Workstation Id</th><th>Rejection Reason</th><th>User</th><th>Quantity</th><th>Status</th></tr></thead>
                     
 <?php
                 $i=1;
@@ -116,9 +117,11 @@
                         <td><?= $res['size'] ?></td>
                         <td><?= $res['mo_no'] ?></td>
                         <td><?= $job['input_job_no'] ?></td>
+                        <td><?= $res['module_no'] ?></td>
                         <td><?= $res['op_code'] ?></td>
                         <td><?= $get_op_name['operation_name'] ?></td>
                         <td><?= $res['workstation_id'] ?></td>
+                        <td><?= $res['reason'] ?></td>
                         <td><?= $res['log_user'] ?></td>
                         <td><?= $res['quantity'] ?></td>
                         <td><?= $reason ?></td>

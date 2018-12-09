@@ -376,7 +376,7 @@ $(document).ready(function()
 						}
 						if(data[i].send_qty != 0)
 						{
-							if(Number(data[i].reported_qty)+Number(data[i].rejected_qty) == data[i].send_qty)
+							if(Number(data[i].reported_qty) == data[i].send_qty)
 							{
 								status = '<font color="red">Already Scanned</font>';
 							}
