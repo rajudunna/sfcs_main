@@ -637,7 +637,7 @@ if(isset($_GET['job_rev_no']))
 }
 function getjobreversaldetails($job_rev_no)
 {
-	include("../../../../../common/config/config_ajax.php");
+	include("../../../../../common/config/config_ajax.php");	
 	$operations_qty = "SELECT operation_name,operation_id FROM $brandix_bts.bundle_creation_data bc LEFT JOIN $brandix_bts.tbl_orders_ops_ref os ON os.operation_code=bc.operation_id WHERE input_job_no_random_ref='$job_rev_no' GROUP BY operation_id";
 	$result_operations_qty = $link->query($operations_qty);
 	if($result_operations_qty->num_rows > 0)
@@ -800,9 +800,9 @@ function getreversalscanningdetails($job_number)
 			$size_code = $row['size_title'];
 			$color = $row['color'];
 			$assigned_module = $row['assigned_module'];
-			if($checking_flag == 1)
+			// if($checking_flag == 1)
 			{
-				$post_ops_qry_to_find_rec_qty = "select group_concat(bundle_number) as bundles,(SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $ops_dependency and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$assigned_module' GROUP BY size_title,color,assigned_module order by bundle_number";
+				$post_ops_qry_to_find_rec_qty = "select group_concat(bundle_number) as bundles,(SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $job_number[0] and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$assigned_module' GROUP BY size_title,color,assigned_module order by bundle_number";
 				$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
 				if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
 				{
@@ -813,9 +813,9 @@ function getreversalscanningdetails($job_number)
 						$mo_no_qty=array();
 						$mo_no=array();
 						$bundle_ids=array();
-						$bundle_ids=$row3['bundles'];
-						$qty=$row3['recevied_qty'];
-						$bundle_mo = "SELECT mo_no from $bai_pro3.mo_operation_quantites WHERE ref_no in (".$bundle_ids.") AND op_code = $post_ops_code group by mo_no order by mo_no*1";
+						$bundle_ids=$row['bundles'];
+						$qty=$row['recevied_qty'];
+						$bundle_mo = "SELECT mo_no from $bai_pro3.mo_operation_quantites WHERE ref_no in (".$bundle_ids.") AND op_code = $job_number[0] group by mo_no order by mo_no*1";
 						// echo $bundle_mo.'<br>';
 						$result_bundle_mo = $link->query($bundle_mo);
 						while($row1 = $result_bundle_mo->fetch_assoc()) 
@@ -1464,10 +1464,22 @@ function validating_with_module($pre_array_module)
 	{
 		$get_module_no = "SELECT input_module FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$job_no'";
 		$module_rsult = $link->query($get_module_no);
-		while($sql_row11 = $module_rsult->fetch_assoc()) 
+		if (mysqli_num_rows($module_rsult) > 0)
 		{
-			$module = $sql_row11['input_module'];
+			while($sql_row11 = $module_rsult->fetch_assoc()) 
+			{
+				$module = $sql_row11['input_module'];
+			}
 		}
+		else
+		{
+			$get_module_no_backup = "SELECT input_module FROM $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref = '$job_no'";
+			$module_rsult_backup = $link->query($get_module_no_backup);
+			while($sql_row11_backup = $module_rsult_backup->fetch_assoc()) 
+			{
+				$module = $sql_row11_backup['input_module'];
+			}
+		}	
 	}
 
 	if ($module != '' || $module != null || $module > 0)
@@ -1495,21 +1507,14 @@ function validating_with_module($pre_array_module)
 			if(!in_array($job_no,$input_job_array))
 			{
 				// job not in module (adding new job to module)
-				if(sizeof($input_job_array) < $ims_boxes_count)
-			    {
-			        if (sizeof($input_job_array) < $block_priorities)
-			        {
-			            $response_flag = 0; // allow
-			        }
-			        else
-			        {
-			            $response_flag = 2; // check for user acces (block priorities)
-			        }
-			    }
-			    else
-			    {
-			        $response_flag = 1; // block
-			    }
+				if (sizeof($input_job_array) < $block_priorities)
+				{
+					$response_flag = 0; // allow
+				}
+				else
+				{
+					$response_flag = 2; // check for user acces (block priorities)
+				}
 			}
 			else
 			{
@@ -1523,7 +1528,7 @@ function validating_with_module($pre_array_module)
 		$response_flag = 4;
 	}
 	
-	// 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 1 = ims boxes full, 0 = allow for scanning
+	// 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
 	echo $response_flag;
 }
 
