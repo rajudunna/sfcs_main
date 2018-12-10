@@ -1,8 +1,8 @@
-USE bai_pro3;
-ALTER TABLE pac_stat_log_input_job
+/*USE bai_pro3;*/
+ALTER TABLE bai_pro3.pac_stat_log_input_job
   CHANGE pac_seq_no pac_seq_no INT(11) DEFAULT 0 NOT NULL;
   
-ALTER VIEW `packing_summary` AS (
+ALTER VIEW bai_pro3.packing_summary AS (
 SELECT
   `pac_stat_log`.`doc_no`         AS `doc_no`,
   `pac_stat_log`.`doc_no_ref`     AS `doc_no_ref`,

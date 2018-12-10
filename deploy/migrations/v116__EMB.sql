@@ -1,7 +1,7 @@
-USE `bai_pro3`;
+/*USE `bai_pro3`;*/
 
 
-CREATE VIEW `cut_tbl_dash_summ` AS (
+CREATE VIEW `bai_pro3`.`cut_tbl_dash_summ` AS (
 SELECT
   `cutting_table_plan`.`doc_no`                 AS `doc_no`,
   `cutting_table_plan`.`cutting_tbl_id`         AS `cutting_tbl_id`,
@@ -83,7 +83,7 @@ FROM (`cutting_table_plan`
 WHERE (`plandoc_stat_log`.`order_tid` IS NOT NULL)
 ORDER BY `cutting_table_plan`.`priority`);
 
-CREATE VIEW `cut_tbl_dash_doc_summ` AS (
+CREATE VIEW `bai_pro3`.`cut_tbl_dash_doc_summ` AS (
 SELECT
   `cut_tbl_dash_summ`.`print_status`         AS `print_status`,
   `cut_tbl_dash_summ`.`plan_lot_ref`         AS `plan_lot_ref`,
