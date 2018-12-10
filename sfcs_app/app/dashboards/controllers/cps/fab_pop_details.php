@@ -895,6 +895,7 @@ if(isset($_POST['submit']))
 					{	
 						//echo "2";
 						//$sql1="update store_in set qty_issued=".(($qty_rec-$qty_issued)+($qty_ret+$qty_issued+$qty_iss)).", status=2, allotment_status=2 where tid=\"$code\"";
+						//quantity should be issued after stockout
 						$sql22="update $bai_rm_pj1.store_in set qty_issued=".($qty_issued+$qty_iss).", status=$status, allotment_status=$status where tid=\"$code\"";
 						//echo "</br>".$sql22."</br>";
 						//Uncheck this
