@@ -135,7 +135,7 @@ if(isset($_POST['formSubmit']))
     $sql="insert into $bai_pro3.recut_track(doc_no,username,sys_name,log_time,level,status) values(\"".$doc_nos."\",\"".$username."\",\"".$hostname[0]."\",\"".date("Y-m-d H:i:s")."\",\"".$codes."\",\"".$status."\")";
     mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     // calling the function to insert to bundle craetion data and cps log
-    $inserted = doc_size_wise_bundle_insertion($doc_nos);
+    $inserted = doc_size_wise_bundle_insertion($doc_nos,1);
     if($inserted){
     	//Inserted Successfully
     }
@@ -273,23 +273,23 @@ function issued_to_module($bcd_id,$qty,$ref)
                 WHERE input_job_no_random_ref = '$input_job_no_random_ref'";
                 mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
-            // $input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);
-            $qry_ops_mapping_after = "SELECT of.operation_code FROM `$brandix_bts`.`tbl_style_ops_master` tm 
-            LEFT JOIN brandix_bts.`tbl_orders_ops_ref` of ON of.`operation_code`=tm.`operation_code`
-            WHERE tm.`style` ='$style' AND tm.`color` = '$mapped_color'
-            AND category = 'sewing'";
-            echo $qry_ops_mapping_after;
-            $result_qry_ops_mapping_after = $link->query($qry_ops_mapping_after);
-            if(mysqli_num_rows($result_qry_ops_mapping_after) > 0)
-            {
-                while($ops_post = $result_qry_ops_mapping_after->fetch_assoc()) 
-                {
-                    $input_ops_code = $ops_post['operation_code'];
+            $input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);
+            // $qry_ops_mapping_after = "SELECT of.operation_code FROM `$brandix_bts`.`tbl_style_ops_master` tm 
+            // LEFT JOIN brandix_bts.`tbl_orders_ops_ref` of ON of.`operation_code`=tm.`operation_code`
+            // WHERE tm.`style` ='$style' AND tm.`color` = '$mapped_color'
+            // AND category = 'sewing'";
+            // // echo $qry_ops_mapping_after;
+            // $result_qry_ops_mapping_after = $link->query($qry_ops_mapping_after);
+            // if(mysqli_num_rows($result_qry_ops_mapping_after) > 0)
+            // {
+            //     while($ops_post = $result_qry_ops_mapping_after->fetch_assoc()) 
+            //     {
+            //         $input_ops_code = $ops_post['operation_code'];
                     $update_qry_bcd_input = "update brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where bundle_number = $bundle_number and operation_id = $input_ops_code";
                     // echo $update_qry_bcd_input;
                     mysqli_query($link, $update_qry_bcd_input) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
-                }
-            }
+            //     }
+            // }
         }   
     }
     return;
@@ -323,13 +323,20 @@ echo $drp_down;
                 <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
-                    <div class='panel-body' id="dynamic_table_panel">	
-                            <div id ="dynamic_table1"></div>
+                <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform" onsubmit='return validationfunction();'>
+                    <div id='pre'>
+                        <div class='panel-body' id="dynamic_table_panel">	
+                                <div id ="dynamic_table1"></div>
+                        </div>
+                        <p style='color:red;'>Note:The excess quantity will create as excess sewing job for respective style,schedule and color.</p>
+                        <div class="pull-right"><input type="submit" id='markers' class="btn btn-primary" value="Submit" name="formSubmit"></div>
                     </div>
-                    <p style='color:red;'>Note:The excess quantity will create as excess sewing job for respective style,schedule and color.</p>
-                    <div class="pull-right"><input type="submit" class="btn btn-primary" value="Submit" name="formSubmit"></div>
                 </form>
+                <div id='post'>
+                        <div class='panel-body'>	
+                             <b style='color:red'>Please wait while Updating Markers!!!</b>
+                        </div>
+                </div>
             </div>
         </div>
     </div>
@@ -341,11 +348,18 @@ echo $drp_down;
                 <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
-                    <div class='panel-body' id="dynamic_table_panel">	
-                            <div id ="dynamic_table2"></div>
+                <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform" onsubmit='return validationfunctionissue();'>
+                    <div id='pre_pre'>
+                        <div class='panel-body' id="dynamic_table_panel">	
+                                <div id ="dynamic_table2"></div>
+                        </div>
+                        <div class="pull-right"><input type="submit" class="btn btn-primary" value="Submit" name="formIssue"></div>
                     </div>
-                    <div class="pull-right"><input type="submit" class="btn btn-primary" value="Submit" name="formIssue"></div>
+                    <div id='post_post'>
+                        <div class='panel-body'>	
+                             <b style='color:red'>Please wait while Issuing To Module!!!</b>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -372,17 +386,7 @@ echo $drp_down;
             {
                 $id = $row['doc_no'];
                 $rem_qty = $row['recut_reported_qty'] - $row['issued_qty'];
-                if($row['recut_reported_qty'] <= 0)
-                {
-                    $button_html = "<b style='color:red;'>Report Pending!!!</b>";
-                    $html_hiding = "ReportPending";
-                }
-                else if($rem_qty == 0)
-                {
-                    $button_html = "<b style='color:red;'>Already issued</b>";
-                    $html_hiding = "AlreadyIssued";
-                }
-                else if($row['mk_ref'] == '0' && $rem_qty <> 0)
+                if($row['mk_ref'] == '0')
                 {
                     $button_html = "<button type='button'class='btn btn-danger' onclick='editmarkers(".$id.")'>Update Markers</button>";
                     $html_hiding = "UpdateMarkers";
@@ -391,6 +395,16 @@ echo $drp_down;
                 {
                     $button_html = "Markers updated and Waiting for Approval";
                     $html_hiding = "WaitingForApproval";
+                }
+                else if($row['recut_reported_qty'] <= 0)
+                {
+                    $button_html = "<b style='color:red;'>Report Pending!!!</b>";
+                    $html_hiding = "ReportPending";
+                }
+                else if($rem_qty == 0)
+                {
+                    $button_html = "<b style='color:red;'>Already issued</b>";
+                    $html_hiding = "AlreadyIssued";
                 }
                 else
                 {
@@ -425,6 +439,8 @@ echo $drp_down;
 $(document).ready(function() 
 {
     $('#myTable1').hide();
+    $('#post').hide();
+    $('#post_post').hide();
     myFunction();
 });
 function viewrecutdetails(id)
@@ -447,6 +463,9 @@ function viewrecutdetails(id)
 function editmarkers(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
+    $('#myModal1').modal('toggle');
+    document.getElementById('dynamic_table1').innerHTML = '';
+    document.getElementById('dynamic_table2').innerHTML = '';
     $.ajax({
 
 			type: "POST",
@@ -455,7 +474,6 @@ function editmarkers(id)
 			success: function (response) 
 			{
                 document.getElementById('dynamic_table1').innerHTML = response;
-                $('#myModal1').modal('toggle');
             }
 
     });
@@ -464,6 +482,11 @@ function editmarkers(id)
 function issuemodule(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
+    $('#myModal2').modal('toggle');
+    $('#pre_pre').show();
+    $('#post_post').hide();
+    document.getElementById('dynamic_table1').innerHTML = '';
+    document.getElementById('dynamic_table2').innerHTML = '';
     $.ajax({
 
 			type: "POST",
@@ -472,14 +495,14 @@ function issuemodule(id)
 			success: function (response) 
 			{
                 document.getElementById('dynamic_table2').innerHTML = response;
-                $('#myModal2').modal('toggle');
+
             }
 
     });
 }
 function validatingremaining(sno)
 {
-    var remaining_qty_var = sno+"rem";
+    var remaining_qty_var = sno+"rems";
     var rem_qty = Number(document.getElementById(remaining_qty_var).innerHTML);
     var issuing_qty = Number(document.getElementById(sno).value);
     if(Number(rem_qty) < Number(issuing_qty))
@@ -525,5 +548,144 @@ function myFunction()
     //     $('#myTable').show();
     //     $('#myTable1').hide();
     // }
+}
+function isintegervalidation() 
+{
+    var data = document.getElementById('a_plies').value;
+    if(isInteger(data))
+    {
+
+    }
+    else
+    {  
+        document.getElementById('a_plies').value = 0;
+    }
+}
+function isInteger(value) 
+{
+    if ((undefined === value) || (null === value))
+    {
+        return false;
+    }
+    return value % 1 == 0;
+}
+function isintegervallidation(id)
+{
+    var data = document.getElementById(id).value;
+    if(isInteger(data))
+    {
+
+    }
+    else
+    {  
+        document.getElementById(id).value = 0;
+    }
+}
+function validationfunction()
+{
+    var flag = 0;
+    var value = 0;
+    var mklen = document.getElementById('mklen').value;
+    var a_plies =  document.getElementById('a_plies').value;
+    var total_rows = document.getElementById('no_of_rows').value;
+    if(mklen == '' || mklen == 0)
+    {
+        swal('Please enter marker length.','','error');
+        flag = 1;
+    }
+    else if(a_plies == '' || a_plies == 0)
+    {
+        swal('Please enter actual plies.','','error');
+        flag = 1;
+    }
+    else
+    {
+        for(var i=1; i<=total_rows;i++)
+        {
+            value = value + Number(document.getElementById(i).value);
+        }
+        if(value == 0)
+        {
+            swal('Atlease one ratio should be there.','','error');
+            flag = 1;
+        }
+    }
+    if(flag == 0)
+    {
+        $('#markers').hide();
+        $('#pre').hide();
+        $('#post').show();
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+function setfunction()
+{
+    var noofrows = $('#no_of_rows').val();
+    if(document.getElementById('setreset').innerHTML == 'Set')
+    {
+        for(var i=1; i<=Number(noofrows); i++)
+        {
+            var rem_var = i+'rems';
+            console.log(rem_var);
+            var remaining_qty = document.getElementById(rem_var).innerHTML;
+            document.getElementById(i).value = remaining_qty; 
+        }
+        document.getElementById('setreset').innerHTML = 'ReSet';
+    }
+    else
+    {
+        for(var i=1; i<=Number(noofrows); i++)
+        {
+            document.getElementById(i).value = 0; 
+        }
+        document.getElementById('setreset').innerHTML = 'Set';
+
+    }
+    
+}
+function validationfunctionissue()
+{
+    var flag = 0;
+    var value = 0;
+    var total_rows = document.getElementById('no_of_rows').value;
+    for(var i=1; i<=total_rows;i++)
+    {
+        value = value + Number(document.getElementById(i).value);
+    }
+    if(value == 0)
+    {
+        swal('Atlease one size quantity should be there.','','error');
+        flag = 1;
+    }
+    if(flag == 0)
+    {
+        $('#pre_pre').hide();
+        $('#post_post').show();
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+function focus_validate(id)
+{
+    var data = document.getElementById(id).value;
+    if(data == 0)
+    {
+        document.getElementById(id).value = '';
+    }
+}
+function focus_out_validation(id)
+{
+    var data = document.getElementById(id).value;
+    if(data == '')
+    {
+        document.getElementById(id).value = 0;
+    }
 }
 </script>
