@@ -36,6 +36,7 @@ if(mysqli_num_rows($doc_status_result)>0){
     $org_doc_no = $row['org_doc_no'];
     $ratio = $row['ratio'];
     $remarks = $row['remarks'];
+    $doc_qty =  $p_plies * $ratio;
     if($fabric_status == 5)
         $fabric_status = 'Issued To Cutting';
 }else{
@@ -51,7 +52,7 @@ if($org_doc_no > 1 ){
 }
 
 //Validation for fabric status
-/*
+
 $validation_query = "SELECT cat_ref,fabric_status,category from $bai_pro3.order_cat_doc_mk_mix 
                     where doc_no=$doc_no";
 $validation_result = mysqli_query($link,$validation_query);
@@ -72,7 +73,7 @@ if(mysqli_num_rows($validation_result)>0){
     
     echo json_encode($response_data);
     exit();
-}*/
+}
 
 //getting the target doc type 
 $target_query  = "SELECT order_del_no,order_joins from $bai_pro3.bai_orders_db_confirm 
@@ -155,7 +156,7 @@ if($a_plies != $p_plies && $act_cut_status == 'DONE'){
 }
 
 $response_data['doc_no'] = $doc_no;
-$response_data['doc_qty'] = $doc_no;
+$response_data['doc_qty'] = $doc_qty;
 $response_data['ratio']      = $ratio;
 $response_data['size_ratio'] = $size_ratio;
 $response_data['p_plies'] = $p_plies;
