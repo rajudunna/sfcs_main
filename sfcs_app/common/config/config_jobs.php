@@ -95,6 +95,8 @@ $api_password = $conf->get('api-password');
 $api_hostname = $conf->get('api-host-name');
 $api_port_no = $conf->get('api-port');
 
+//Mo SOAP CALL
+$mo_soap_api = $conf->get('mo_soap_api');
 
 //Central Administraion Group ID's
 $group_id_sfcs=8;
