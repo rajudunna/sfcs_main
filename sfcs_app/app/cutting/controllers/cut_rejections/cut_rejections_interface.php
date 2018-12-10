@@ -90,6 +90,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 <label for='shift'>Shift</label>
                 <select class='form-control' name='shift' id='shift'>
                     <option value='' disabled selected>Select Shift</option>
+                    <option value='A'>A</option>
                     <?php
                     foreach($shifts_array as $shift){
                         echo "<option value='$shift'>$shift</option>";
@@ -229,10 +230,12 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var color       = $('#post_color').val();
         var shift       = $('#shift').val();
         //Screen Validations
-
-        //Screen Validations End
         if(shift == null)
             return swal('Please Select Shift','','warning');
+        if(ret <= 0)
+            return swal('Please Fill Rejection Pieces','','error'); 
+        //Screen Validations End
+
         //Rejections Validation
         if(rejections_flag == 1){
             if(total_rejected_pieces == ret){
@@ -331,7 +334,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         if(c_plies == 0){
             return swal('Please Enter Reporting Plies','','error');
         }
-
+        
         if(ret > 0){
             if( ret > avl_to_reject ){
                 $('#rejection_pieces').val(0);

@@ -54,8 +54,9 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
         $qms_ref1[$size] = $reason_qty_string; //qms ref1 sie wise into an array 
         $rejected[$size] = $total_sum;//total size wise qty sum into an array
     }
-    var_dump($rejected);
+
     foreach($rejected as $size => $qty){
+        $size_count++;
         //var_dump($rejection_details[$size]);
         $bcd_data_query = "SELECT id,bundle_number,assigned_module,size_title from $brandix_bts.bundle_creation_data 
                     where docket_number = $doc_no and  size_id = '$size' and operation_id = $op_code ";
@@ -94,7 +95,7 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
              '$ref1',$doc_no,'','',$op_code)";
             mysqli_query($link,$qms_insert_query);  
             
-            if($update_cps_result && $update_bcd_result)
+            if($update_cps_result > 0 && $update_bcd_result > 0)
                 $update_counter++;
         }
     }
@@ -111,9 +112,9 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
     $rejection_log_uquery = "UPDATE $bai_pro3.rejections_log set rejected_qty = $total_rej,rejected_qty = $total_rej 
                         where id=$parent_id";
     $rejection_log_uresult = mysqli_query($link,$rejection_log_uquery);
-    if($sent == $confirmed && $size == $update_counter)
+    if($sent == $confirmed && $size_count == $update_counter)
         $response_data['saved'] = 1;
-    else  if($size == $update_counter)  
+    else  if($size_count == $update_counter)  
         $response_data['saved'] = 2;
     else    
         $response_data['saved'] = 3;  

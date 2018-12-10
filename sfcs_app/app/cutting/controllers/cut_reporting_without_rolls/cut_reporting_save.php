@@ -149,7 +149,6 @@ if($target == 'recut'){
         }
     }
 
-    //$recut_v2_id_query = "SELECT doc_no from "
     $bcd_data_query = "SELECT id,size_id from $brandix_bts.bundle_creation_data where docket_number=$doc_no 
                 and operation_id = $op_code";   
     $bcd_data_result = mysqli_query($link,$bcd_data_query);               
@@ -157,7 +156,7 @@ if($target == 'recut'){
         $size = $row['size_id'];
         $bno  = $row['id'];
         $qty  = $ratio[$size] * $plies; 
-        $update_query = "UPDATE $bai_pro3.recut_v2_child set recut_reported_qty = $qty where bcd_id=$bno";
+        $update_query = "UPDATE $bai_pro3.recut_v2_child set recut_reported_qty = $qty where parent_id=$doc_no and size_id = $size";
         // echo $update_query;
         $update_result = mysqli_query($link,$update_query);
     }
