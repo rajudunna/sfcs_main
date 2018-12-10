@@ -1,3 +1,4 @@
+
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/functions.php',4,'R')); ?>
 <?php
@@ -200,7 +201,6 @@ echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">";
 $qtys=array();
 $sql="select * from $bai_pro3.recut_v2 where order_tid=\"$tran_order_tid\" order by remarks";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
 if(mysqli_num_rows($sql_result) > 0){
 	echo "<thead><tr>";
 	echo "<th class=\"column-title\"><center>Docket ID</center></th>";
@@ -224,7 +224,12 @@ if(mysqli_num_rows($sql_result) > 0){
 }else{
 	echo "<h5 style='color:#ff0000;text-align:center'>No data Found</h5>";
 }
+foreach($cats_ids as $key=>$value)
+{
+	
 
+$sql="select * from $bai_pro3.recut_v2 where order_tid=\"$tran_order_tid\" and cat_ref=$value order by remarks";
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -416,6 +421,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	echo "</tr>";
 	
+}
 }
 	echo "</table></div>";
 

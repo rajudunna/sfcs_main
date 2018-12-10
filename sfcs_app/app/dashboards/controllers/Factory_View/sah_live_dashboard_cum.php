@@ -56,7 +56,98 @@ $act_sah_mtd=0;
 $plan_cla_mtd=0;
 $act_cla_mtd=0;
 $date=date("Y-m-d");
-//$date="2013-06-10";
+$teams=$shifts_array;
+$team_array=implode(",",$shifts_array);
+$team = "'".str_replace(",","','",$team_array)."'"; 	
+$work_hrs=0;
+$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift in ($team)";
+// echo $sql_hr."<br>";
+$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+if(mysqli_num_rows($sql_result_hr) >0)
+{
+	while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+	{ 
+		$work_hrs=$work_hrs+($sql_row_hr['end_time']-$sql_row_hr['start_time']);
+
+	}
+	$break_time=sizeof($teams)*0.5;
+	$work_hours=$work_hrs-$break_time;
+}else{
+	if(sizeof($teams) > 1) 
+	{ 
+		$work_hours=15;
+	} 
+	else 
+	{ 
+		$work_hours=7.5; 
+
+	}
+}                           
+
+$current_hr=date('H');
+$current_date=date("Y-m-d");
+
+if($current_date==$date)
+{
+	$time_def_total=0;
+	$hour_dur=0;
+	for($i=0;$i<sizeof($teams);$i++)
+	{
+		$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
+		// echo $sql_hr."<br>";
+		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		if(mysqli_num_rows($sql_result_hr) >0)
+		{
+			while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+			{ 
+				$start_time=$sql_row_hr['start_time'];
+				$end_time=$sql_row_hr['end_time'];
+				$diff_time=$current_hr-$start_time;
+				if($diff_time>3)
+				{
+					$time_def=0.5;
+					$diff_time=$diff_time-0.5;
+				}
+				$hour_dur=$hour_dur+$diff_time;
+				$time_def_total=$time_def_total+$time_def;
+			}
+		}
+		else
+		{
+			$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$teams[$i]."' and $current_hr > end_time";
+			// echo $sql_hr."<br>";
+			$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			// $hour_dur=$hour_dur+0;
+			while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+			{ 
+				$start_time=$sql_row_hr['start_time'];
+				$end_time=$sql_row_hr['end_time'];
+				if($end_time > $start_time){
+					$diff_time=$end_time-$start_time;
+				}
+				else
+				{
+					$start=24-$start_time;
+					$diff_time=$start+$end_time;
+				}
+				if($diff_time>3){
+					$time_def=0.5;
+					$diff_time=$diff_time-0.5;
+				}
+				$hour_dur=$hour_dur+$diff_time;
+				$time_def_total=$time_def_total+$time_def;
+
+			}
+		}
+		
+	}
+	$hoursa_shift=$hour_dur;
+}
+else
+{
+	$time_def_total=$break_time;
+	$hoursa_shift=$work_hours;
+}
 
 $sqlx="select sum(plan_sth) as plan_sth,sum(act_sth) as act_sth,sum(plan_clh) as plan_clh,sum(act_clh) as act_clh from $bai_pro.grand_rep where section=$sec_x and date between \"".date("Y-m-01")."\" and \"".$date."\"";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error1---".$sqlx.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -78,51 +169,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	$act_cla=round($sql_rowx['act_clh'],0);
 }
 
-$hrs_count=0;
-$shifts=0;
-$sqlz="select count(distinct bac_lastup) as hrs, count(distinct bac_shift) as shifts  from $bai_pro.bai_log where bac_date=\"".$date."\" and bac_sec=$sec_x";
-$sql_resultz=mysqli_query($link, $sqlz) or die("Errorz".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_rowz=mysqli_fetch_array($sql_resultz))
-{
-	$hrs_count=$sql_rowz["hrs"];
-	$shifts=$sql_rowz["shifts"];
-}
-
-if($shifts==0)
-{
-	$shifts=1;
-}
 
 $eff=0;
 $k=0;
 
-$br_time=date("H");
-$time_def=0;
-
-if($sec_x==1 || $sec_x==2 || $sec_x==5 || $sec_x==6)
-{
-	if($br_time>=9 && $br_time<=17)
-	{
-		$time_def=0.5;
-	}
-	if($br_time>17 && $br_time<=23)
-	{
-		$time_def=1;
-	}
-}
-
-if($sec_x == 4 || $sec_x == 3)
-{
-	if($br_time>=10 && $br_time<=18)
-	{
-		$time_def=0.5;
-	}
-	if($br_time>18 && $br_time<=23)
-	{
-		$time_def=1;
-	}
-}
-//$time_def=1;
+$time_def=$time_def_total;
 $sqly="SELECT bac_no,bac_style AS style, couple,nop,smv, SUM(bac_qty) AS qty,COUNT(DISTINCT bac_lastup)-$time_def AS hrs,ROUND(smv*SUM(bac_qty)/60) AS sth,(COUNT(DISTINCT bac_lastup)-$time_def)*nop AS clh FROM $bai_pro.bai_log_buf WHERE bac_sec=$sec_x AND bac_date=\"".$date."\" GROUP BY bac_no+0";
 //$sqly="SELECT bac_no,bac_style AS style, couple,nop,smv, SUM(bac_qty) AS qty,COUNT(DISTINCT bac_lastup)-0.5 AS hrs,ROUND(smv*SUM(bac_qty)/60) AS sth,(COUNT(DISTINCT bac_lastup)-0.5)*nop AS clh FROM bai_pro.bai_log_buf WHERE bac_sec=$sec_x AND bac_date=\"".date("Y-m-d")."\" GROUP BY bac_no+0";
 //echo $sqly;
@@ -217,7 +268,7 @@ if($eff < 10)
 
 echo "<table>";
 echo "<tr>";
-echo "<th>Plan</th><th></th><th>".round(($plan_sah/(7.5*$shifts))*($hrs_count-$time_def),0)."</th><th></th><th>$plan_sah_mtd</th><th></th><th style=\"font-size=150px;\" bgcolor=\"$color2\" rowspan=2>".$eff."%</th>";
+echo "<th>Plan</th><th></th><th>".round(($plan_sah/$work_hours)*($hoursa_shift),0)."</th><th></th><th>$plan_sah_mtd</th><th></th><th style=\"font-size=150px;\" bgcolor=\"$color2\" rowspan=2>".$eff."%</th>";
 echo "</tr>";
 
 echo "<tr>";
