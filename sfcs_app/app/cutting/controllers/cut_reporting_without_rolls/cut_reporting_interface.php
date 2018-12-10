@@ -389,10 +389,10 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             return false;
         }
 
-        // if(shift == null || cut_table == null || team_leader == null || bundle_location == null ){
-        //     swal('Warning','Please Select Shift , Cut Table , Team Leader ,Bundle Location','warning');
-        //     return false;
-        // }
+        if(shift == null || cut_table == null || team_leader == null || bundle_location == null ){
+            swal('Warning','Please Select Shift , Cut Table , Team Leader ,Bundle Location','warning');
+            return false;
+        }
        
         if(ret_to > 0){
             if(returned_to == null){
@@ -417,11 +417,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
         var user_msg = '';
         var form_data = {
-                         doc_no:post_doc_no,c_plies:c_plies,fab_returned:ret,
-                         fab_received:rec,returned_to:returned_to,damages:damages,
-                         shortages:shortages,bundle_location:bundle_location,shift:shift,
-                         cut_table:cut_table,team_leader:team_leader,doc_target_type:doc_target_type,
-                         style:style,color:color,schedule:schedule,rejections_flag:rejections_flag,rejections:rejections_post
+                        doc_no:post_doc_no,c_plies:c_plies,fab_returned:ret,
+                        fab_received:rec,returned_to:returned_to,damages:damages,
+                        shortages:shortages,bundle_location:bundle_location,shift:shift,
+                        cut_table:cut_table,team_leader:team_leader,doc_target_type:doc_target_type,
+                        style:style,color:color,schedule:schedule,rejections_flag:rejections_flag,rejections:rejections_post
                         };
         //AJAX Call
         console.log(form_data);
@@ -457,12 +457,16 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     $('.user_msg').css({'display':'block'});
                 }
                 load_details(post_doc_no);
+                clear_all();
+                clear_form_data();
             }else{
                 swal('Error Occured While Reporting','Please Report again','error');
             }
         }).fail(function(res){
             swal('Error Reporting Docket','','error');
             load_details(post_doc_no);
+            clear_all();
+            clear_form_data();
             console.log(res);
         });
     });
@@ -515,7 +519,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $('#cut_table').val('');
         $('#shift').val('');
     }
-//Rejection Panel Code
+    //Rejection Panel Code
     //Clearing all the rejections 
     $('#clear_rejection').on('click',function(){
         if(total_rejected_pieces > 0){
@@ -670,7 +674,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#rejections_modal').modal('toggle');
         }    
     });
-//Rejection Panel Code Ends
+    //Rejection Panel Code Ends
 
     function load_details(doc_no){
         $.ajax({
@@ -732,6 +736,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#d_fab_ret').html(data.fab_returned);
             $('#d_damages').html(data.damages);
             $('#d_shortages').html(data.shortages);
+            $('#r_doc_qty').html(data.doc_qty);
 
             //setting values for reporting table
             $('#r_doc_no').html(doc_no);
