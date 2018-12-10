@@ -105,7 +105,7 @@ function uncheckall()
 
 </head>
 
-<div class='panel panel-primary'><div class='panel-heading'>Order Status Report</div><div class='panel-body'>
+<div class='panel panel-primary' style='height: 434px;'><div class='panel-heading'>Order Status Report</div><div class='panel-body'>
 <form method="POST" name="test" action="?r=<?php echo $_GET['r'];?>">
 <?php
 	$style=$_POST['style'];
@@ -575,7 +575,7 @@ if(isset($_POST['submit1']))
 			
 			
 
-	echo "<div class='table-responsive'><table id=\"table1\"  class=\" table table-bordered\"><thead>";
+	echo "<div class='table-responsive' style=\"visibility:hidden;\"><table id=\"table1\"  class=\" table table-bordered\"><thead>";
 	echo "<tr class='info'>";
 	echo "<th>Customer Order</th>";
 	echo "<th>MPO</th>";	
