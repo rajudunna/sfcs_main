@@ -1,15 +1,7 @@
 <?php
 	$url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-	// require_once('phplogin/auth.php');
 	ob_start();
-	// require_once "ajax-autocomplete/config.php";
-	// $url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
-	// include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-	// $url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
-	// include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
-	// $view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
-
 	$has_permission = haspermission($_GET['r']);
 ?>
 
@@ -20,39 +12,6 @@
  <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/filtergrid.css',3,'R'); ?>" type="text/css" media="all" />
 
 <meta http-equiv="cache-control" content="no-cache">
-<!---<style type="text/css" media="screen">
-/*====================================================
-	- HTML Table Filter stylesheet
-=====================================================*/
-@import "TableFilter_EN/filtergrid.css";
-
-/*====================================================
-	- General html elements
-=====================================================*/
-body{
-	margin:15px; padding:15px; border:1px solid #666;
-	font-family:Trebuchet MS, sans-serif; font-size:88%;
-}
-h2{ margin-top: 50px; }
-caption{ margin:10px 0 0 5px; padding:10px; text-align:left; }
-pre{ font-size:13px; margin:5px; padding:5px; background-color:#f4f4f4; border:1px solid #ccc;  }
-.mytable{
-	width:100%; font-size:12px;
-	border:1px solid #ccc;
-	overflow:scroll;
-}
-div.tools{ margin:5px; }
-div.tools input{ background-color:#f4f4f4; border:2px outset #f4f4f4; margin:2px; }
-th{ background-color:#003366; color:#FFF; padding:2px; border:1px solid #ccc; }
-td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
-table{
-	white-space:nowrap; 
-	border-collapse:collapse;
-	font-size:12px;
-	background-color: white;
-}
-</style>--->
-
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter.js',3,'R'); ?>"></script>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R'); ?>"></script>
 
@@ -88,16 +47,12 @@ window.print();
 
 <?php
 	
-	
-	//if($username=="SenthooranS" or $username=="KiranG" or $username=="baiworkstudy" or $username=="kirang")
 	{
 $url=getFullURL($_GET['r'],'manual_form_log.php','N');
 $urlform=getFullURL($_GET['r'],'test.php','N');
 if(isset($_GET['date']))
 {
 	$date=$_GET['date'];
-
-	// echo "<div id='page_heading'><span style='float: left'><h3>Item Allocation Log : ".date("M-Y",strtotime($date))."</h3></span><span style='float: right'><b>?</b>&nbsp;</span></div>";
 	echo '<a href='.$url.'&date='.date("Y-m-d",strtotime("-1 month", strtotime($date))).'> Last Month</a>  |  ';
 	echo '<a href='.$url.'&date='.date("Y-m-d",strtotime("+1 month", strtotime($date))).'> Next Month</a>  |  ';
 	echo '<a href='.$urlform.'>Manual Item Allocation Form</a>';
@@ -106,12 +61,10 @@ if(isset($_GET['date']))
 else
 {
 	$date=date("Y-m-d");
-	// echo "<div id='page_heading'><span style='float: left'><h3>Item Allocation Log : ".date("M-Y",strtotime($date))."</h3></span><span style='float: right'><b>?</b>&nbsp;</span></div>";
 	echo '<a href='.$url.'&date='.date("Y-m-d",strtotime("-1 month")).'> Last Month</a>  |  ';
 	echo '<a href='.$urlform.'>Manual Item Allocation Form</a>';
 }
 
-//echo $_GET['date'];
 
 echo '<div style=\"overflow:scroll;\">
 <table id="table1" class="table table-bordered">';
@@ -153,26 +106,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$team=$fab_team;
 	}
 	$tmp_username=strtolower($username)."@brandix.com";
-	// echo $tmp_username;
-	// if(substr($style,0,1)=="P" or substr($style,0,1)=="K")
-	// {
-	// 	$team2=$pink_team;
-	// }
-	// if(substr($style,0,1)=="L" or substr($style,0,1)=="O")
-	// {
-	// 	$team2=$logo_team;
-	// }
-	// if(substr($style,0,1)=="D" or substr($style,0,1)=="M")
-	// {
-	// 	$team2=$dms_team;
-	// }
 		$team2=array_merge($pink_team,$logo_team,$dms_team);
 	
 	switch($sql_row['status'])
 	{
 		case 1:
 		{
-			// echo "<td>10 Applied</td>";
 			echo "<td>Applied</td>";
 			break;
 		}
@@ -181,12 +120,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 			if(in_array($view,$has_permission))
 			{
-				// echo "<td><a href=\"update_status.php?tid=$tid&check=2\">20 Approved</a></td>";
 				echo "<td><a href=\"update_status.php?tid=$tid&check=2\">Approved</a></td>";
 			}
 			else
 			{
-				// echo "<td>20 Approved</td>";
 				echo "<td>Approved</td>";
 			}
 			break;
@@ -194,7 +131,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		case 3:
 		{
 			echo "<td>00 Rejected</td>";
-			// echo "<td>Rejected</td>";
 			break;
 		}
 		
@@ -202,13 +138,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			if(in_array($view,$has_permission))
 			{
-				// echo "<td><a href=\"update_status.php?tid=$tid&check=4\">40 Manually Issued</a></td>";
 				echo "<td><a href=\"update_status.php?tid=$tid&check=4\">Manually Issued</a></td>";
 			}
 			else
 			{
 				echo "<td>Manually Issued</td>";
-				// echo "<td>40 Manually Issued</td>";
 			}
 			break;
 		}
@@ -216,20 +150,17 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			if(in_array($view,$has_permission))
 			{
-				// echo "<td><a href=\"update_status.php?tid=$tid&check=5\">50 Sourcing Cleared </a></td>";
 				echo "<td><a href=\"update_status.php?tid=$tid&check=5\">Sourcing Cleared </a></td>";
 			}
 			else
 			{
 				echo "<td>Sourcing Cleared </td>";
-				// echo "<td>50 Sourcing Cleared </td>";
 			}
 			break;
 		}
 		case 6:
 		{
 			echo "<td>Closed </td>";
-			// echo "<td>60 Closed </td>";
 			break;
 		}
 	}
@@ -279,11 +210,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 echo "</table>";
 
 }
-	
-	/*else
-	{
-		echo "<h2><font color=red>You are not authorised to use this interface.</font></h2>";
-	} */
 ?>
 
 </div>

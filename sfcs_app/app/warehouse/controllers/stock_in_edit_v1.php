@@ -3,14 +3,10 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
-//$view_access=user_acl("SFCS_0156",$username,1,$group_id_sfcs); 
-?>
-<?php
-//	require_once('phplogin/auth.php');
 ?>
 
+
 <?php
-	// echo "upadte : ".isset($_POST['updat']);
 	if(isset($_POST['updat']))
 	{	
 		$ref1=$_POST['ref1'];
@@ -20,13 +16,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		$tid=$_POST['tid'];
 		$lot_no_new=$_POST['lot_no'];
 		$user_name=$_SESSION['SESS_MEMBER_ID'];
-		// echo sizeof($ref1);
-		// die();
 		for($i=0; $i<sizeof($ref1); $i++)
 		{
-				//Changed to update only locations.	
 				$sql="update $bai_rm_pj1.store_in set ref1=\"".$ref1[$i]."\" where tid=".$tid[$i];
-				// echo $sql.' eleven<br>';
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error-g".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			
@@ -36,28 +28,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	}
 
 ?>
-<?php  
 
-// $auth_members=array();
-// $sql="select auth_members from $bai_pro3.menu_index where list_id=165";
-// //echo $sql;
-// $sql_result=mysqli_query($link, $sql) or exit("Sql Error-a".mysqli_error($GLOBALS["___mysqli_ston"]));
-// while($sql_row=mysqli_fetch_array($sql_result))
-// {
-// 	$auth_members=explode(",",$sql_row['auth_members']);
-// }
-
-// if(in_array($authorized,$has_permission))
-// {
-		
-// }
-// else
-// {
-// 	$url=getFullURLLevel($_GET['r'],'controllers/restrict.php',1,'N');
-// 	header("Location: $url");
-// }
-
-?>
 <?php include("functions.php"); ?>
 
 
@@ -141,7 +112,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			if(strlen($lot_no)>0)
 			{
 
-			$sql="select * from $bai_rm_pj1.sticker_report where lot_no=\"".trim($lot_no)."\"";
+			$sql="select item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,lot_no,batch_no,buyer,product_group,pkg_no,grn_date,uom,style_no from $bai_rm_pj1.sticker_report where lot_no=\"".trim($lot_no)."\"";
 			// echo $sql.'  one<br/>';
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error-b".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
@@ -206,7 +177,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			$shades=array("","A","B","C","D","E","F","G");
 
 
-			$sql="select * from $bai_rm_pj1.store_in where lot_no=\"".trim($lot_no)."\"";
+			$sql="select tid,ref1,ref2,qty_rec,status,qty_issued,qty_ret,ref4,ref3,ref5 from $bai_rm_pj1.store_in where lot_no=\"".trim($lot_no)."\"";
 			// echo $sql.'  three<br/>';
 			// echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error-c".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -234,7 +205,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 					if($location=="")
 					{
 						echo '<td><select name="ref1[]">';
-						$sql1="select * from $bai_rm_pj1.location_db where status=1 order by sno";
+						$sql1="select location_id from $bai_rm_pj1.location_db where status=1 order by sno";
 						// echo $sql1.'  four<br/>';
 						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error-d".mysqli_error($GLOBALS["___mysqli_ston"]));
 						echo "<option value=\"\" selected></option>";
@@ -440,10 +411,5 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			
 
 
-<!-- <script>
-$(function() {
-  $('#course').on('keydown',function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||(/65|67|86|88/.test(e.keyCode)&&(e.ctrlKey===true||e.metaKey===true))&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
-})
-</script> -->
 
 

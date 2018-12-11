@@ -1,8 +1,6 @@
 <?php 
-//include("security1.php");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
-//$view_access=user_acl("SFCS_0153",$username,1,$group_id_sfcs); 
 ?>
 
 <link href="table_style.css" rel="stylesheet" type="text/css" />
@@ -11,7 +9,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <script type="text/javascript">
 	function check_all(e)
 	{
-		//alert(e);
 		var style=document.getElementById('style').value;
 		var schedule=document.getElementById('schedule').value;
 		var color=document.getElementById('color').value;
@@ -64,8 +61,6 @@ function thirdbox()
 
 
 </script>
-<!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->	
-
 <div class="panel panel-primary">
 <div class="panel-heading">Manual Item Allocation Form</div>
 <div class="panel-body">

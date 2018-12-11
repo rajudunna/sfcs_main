@@ -29,14 +29,10 @@ if($_POST['put'])
 	$qty_rec=$_POST['qty_rec'];
 	$username=getrbac_user()['uname'];	
 	
-	//echo sizeof($qty_issued);
 	
 	for($i=0; $i<sizeof($qty_issued); $i++)
 	{
-		//echo $qty_issued[$i]."<br/>";
-		//echo $n_location[$i]."<br/>";
-		//echo $s_location[$i]."<br/>";
-		//echo strcasecmp($n_location[$i],$s_location[$i])."<br/>";
+		
 		
 		if($qty_issued[$i]>0 and (strcasecmp($n_location[$i],$s_location[$i])!=0) and $n_location[$i]!="0")
 		{
@@ -53,11 +49,11 @@ if($_POST['put'])
 			}
 			else
 			{
-				$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, ref3, qty_rec, date, remarks,log_user,barcode_number,ref_tid) select lot_no,\"".$n_location[$i]."\",ref2,ref3,".$qty_issued[$i].",\"$date\",\"Transfer-".$remarks[$i]."\",\"$username\",\"".$barcode_number[$i]."\",\"".$ref_tid[$i]."\" from $bai_rm_pj1.store_in where barcode_number='$barcode_number[$i]'";
+				$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, ref3, qty_rec, date, remarks,log_user,barcode_number,ref_tid) select lot_no,\"".$n_location[$i]."\",ref2,ref3,".$qty_issued[$i].",\"$date\",\"Transfer-".$remarks[$i]."\",\"$username\",\"".$barcode_number[$i]."\",\"".$ref_tid[$i]."\" from $bai_rm_pj1.store_in where barcode_number=\"$barcode_number[$i]\"";
 //echo $sql;
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
-				$sql="update $bai_rm_pj1.store_in set qty_rec=".($qty_rec[$i]-$qty_issued[$i])." where barcode_number='$barcode_number[$i]'";
+				$sql="update $bai_rm_pj1.store_in set qty_rec=".($qty_rec[$i]-$qty_issued[$i])." where barcode_number=\"$barcode_number[$i]\"";
 				//echo $sql;
 				$sql_result2=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 				

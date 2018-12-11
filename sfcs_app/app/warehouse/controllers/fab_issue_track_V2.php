@@ -1,18 +1,12 @@
 <?php 
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
 $has_permission = haspermission($_GET['r']);
-// $username="sfcsproject1";
-// $authorized_to_change=array("sfcsproject1");
-// $authorized_docket_change=array("sfcsproject1");
-// $authorized_recut_docket_change=array("sfcsproject1");
 ?>
 <script>
 	function edit(c)
 	{
 		if (window.XMLHttpRequest)
-	    {// code for IE7+, Firefox, Chrome, Opera, Safari
+	    {
 	  		xmlhttp=new XMLHttpRequest();
 	  	}
 		else
@@ -70,7 +64,7 @@ if(isset($_GET['delete']))
 		$tran_pin=$_GET['tran_pin'];
 		$sql1="insert into $bai_rm_pj1.fabric_cad_allocation_deleted select * from $bai_rm_pj1.fabric_cad_allocation where tran_pin=$tran_pin";
 		mysqli_query($link, $sql1) or exit("Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql12="select * from $bai_rm_pj1.fabric_cad_allocation where tran_pin=$tran_pin";
+		$sql12="select roll_id,allocated_qty,doc_no,doc_type from $bai_rm_pj1.fabric_cad_allocation where tran_pin=$tran_pin";
 		$result12=mysqli_query($link, $sql12) or die("Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 	    while($row12=mysqli_fetch_array($result12))
 		{
@@ -250,7 +244,7 @@ if(isset($_POST["submit"]) or $flag==1)
 				}
 			}
 			
-			$sqlw="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no=\"".$docket."\"";
+			$sqlw="select allocated_qty from $bai_rm_pj1.fabric_cad_allocation where doc_no=\"".$docket."\"";
 			$result1w=mysqli_query($link, $sqlw) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$rowsw=mysqli_num_rows($result1w);
 			$allocated_qty_fab=0;
@@ -494,7 +488,7 @@ if(isset($_POST["submit"]) or $flag==1)
 			echo "<table class='table table-bordered table-striped'>";
 			echo "<tr><th>Section</th><th>Picking List</th><th>Delivery</th><th>Issued By</th><th>M3 Update</th> <th>Manual Tran</th></tr>";
 		
-			$sql1="select * from $bai_rm_pj1.m3_fab_issue_track where doc_ref='".$cat.$docket."'";
+			$sql1="select section,picking_list,delivery_no,issued_by,movex_update,manual_issue from $bai_rm_pj1.m3_fab_issue_track where doc_ref='".$cat.$docket."'";
 			//echo $sql1."<br>";
 			$result1=mysqli_query($link, $sql1) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row1=mysqli_fetch_array($result1))
@@ -531,13 +525,6 @@ if(isset($_POST["submit"]) or $flag==1)
 			echo "<div class='panel-body'>";
 			echo "<form name='update' id='delete_form' method='post' action='".getURL(getBASE($_GET['r'])['path'])['url']."'>";
 			echo "<table class='table table-bordered table-striped'>";
-			// echo "<tr><th>Section</th>
-			// 	<td><select name='section' class='form-control' required>
-			// 	<option value='1'>Section-1</option>
-			// 	<option value='2'>Section-2</option>
-			// 	<option value='3'>Section-3</option>
-			// 	</select>
-			// 	</td></tr>";
 			 	echo "<tr><th>Section</th> <td><select name='section' class='form-control' required >";
 			    $section_query="select sec_id,sec_head FROM $bai_pro3.sections_db";
 			   $result4=mysqli_query($link, $section_query) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -641,7 +628,7 @@ if(isset($_POST['new_entry']))
 			$temp_status = 1;
 		}
 	}
-	$sql="select * from $bai_rm_pj1.store_in where barcode_number='".$roll_id."'"; 
+	$sql="select qty_rec,qty_ret,qty_issued,partial_appr_qty,barcode_number from $bai_rm_pj1.store_in where barcode_number='".$roll_id."'"; 
 	// echo $sql;
 	$result1=mysqli_query($link, $sql) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$label_rows = mysqli_num_rows($result1);
@@ -653,10 +640,7 @@ if(isset($_POST['new_entry']))
 			{				
 				$balance=$row12['qty_rec']+$row12['qty_ret']-($row12['qty_issued']+$row12['partial_appr_qty']);
 			}
-			// else
-			// {
-			// 	$balance=$row12['qty_rec']+$row12['qty_ret']-($row12['qty_issued']+$row12['partial_appr_qty']+$row12['qty_allocated']);
-			// }
+			
 			
 		}
 	

@@ -1,20 +1,14 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));  ?>
 <?php
-	//require_once('phplogin/auth.php');
+
 	if(date("Y-m-d") >= "2012-11-16")
 	{
-		//$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-		//$username=strtolower($username_list[1]);
+	
 	}
 	else
 	{
 		$user_name="baiadmn";
 	}	
-// $auth_to_modify=array("kirang","ravipu","sarojiniv","kirang","baiadmn","sfcsproject1");
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
-//$view_access=user_acl("SFCS_0159",$username,1,$group_id_sfcs); 
-//$auth_to_modify=user_acl("SFCS_0159",$username,2,$group_id_sfcs);
 $has_permission = haspermission($_GET['r']);
 ?>
 
@@ -27,19 +21,6 @@ $has_permission = haspermission($_GET['r']);
 <link rel="stylesheet" type="text/css" href="<?= getFullURL($_GET['r'],'ajax-autocomplete/jquery.autocomplete.css','R'); ?>" /> -->
 
 <script type="text/javascript">
-// $().ready(function() {
-// 	$("#course").autocomplete("ajax-autocomplete/get_course_list.php", {
-// 		width: 260,
-// 		matchContains: true,
-// 		//mustMatch: true,
-// 		//minChars: 0,
-// 		//multiple: true,
-// 		//highlight: false,
-// 		//multipleSeparator: ",",
-// 		selectFirst: false
-// 	});
-// });
-
 function validateQty(event) 
 {
 	event = (event) ? event : window.event;
@@ -74,9 +55,7 @@ function isNumberKey(evt,issued_qty)
 
 <body onload="dodisable();">
 <?php 
-// echo '<!---<div id="page_heading"><span style="float: left"><h3>Update RM Returns </h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>--->';
-// include("menu_content.php"); 
-	// include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'menu_content.php','R'));
+
 ?>
 
 
@@ -95,7 +74,6 @@ function isNumberKey(evt,issued_qty)
 if(isset($_POST['submit']))
 {
 	$lot_no=$_POST['lot_no'];
-	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"insert.php?lot_no=$lot_no_new\"; }</script>";
 }
 else
 {
@@ -110,7 +88,7 @@ else
 if(strlen($lot_no)>0)
 {
 
-$sql="select * from $bai_rm_pj1.sticker_report where lot_no=\"".trim($lot_no)."\"";
+$sql="select item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,lot_no,batch_no,buyer,product_group,pkg_no,grn_date,allocated_qty from $bai_rm_pj1.sticker_report where lot_no=\"".trim($lot_no)."\"";
 // echo $sql."<br>";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -160,6 +138,7 @@ if($flag!=0){
 	echo "<tr><th>Location</th><th>Box/Roll No</th><th>Available Qty</th><th>Issued Qty</th><th>Date</th>";
 
 switch (trim($product_group))
+
 {
 	case "Elastic":
 	{
@@ -208,7 +187,7 @@ switch (trim($product_group))
 	}
 }
 
-$sql="select * from $bai_rm_pj1.store_in where lot_no=\"".trim($lot_no)."\"";
+$sql="select tid,ref1,lot_no,ref2,qty_rec,qty_issued,qty_ret,status from $bai_rm_pj1.store_in where lot_no=\"".trim($lot_no)."\"";
 // echo $sql."<br>";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -240,7 +219,6 @@ echo '<div style="padding-left:10px;"><input type="hidden" name="lot_no" value="
 echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable <input type="submit" class="btn btn-success" value="Submit" name="put" id="put" onclick="javascript:button_disable();"/></div></form>';
 
 echo "<script>sweetAlert('Note','RM Return will happen only when Return Material Less than or Equal to the Issued Material..','success')</script>";
-// echo " Note: RM Return will happen only when Return Material Lessthan or Equal to the Issued Material.. </h2>";
 }else{
 	echo "<script>sweetAlert('Please select valid lot no','','warning');</script>";
 }
@@ -257,7 +235,7 @@ if(isset($_POST['put']))
 	$tid=$_POST['tid'];
 	$status=$_POST['status'];
 	$lot_no_new=$_POST['lot_no'];
-	//$user_name=$_SESSION['SESS_MEMBER_ID'];
+	
 	
 	for($i=0; $i<sizeof($qty_return); $i++)
 	{	

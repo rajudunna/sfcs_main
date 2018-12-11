@@ -1,7 +1,6 @@
 <?php $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url); ?>
 <?php
-	// require_once('phplogin/auth.php');
 	if(date("Y-m-d") >= "2012-11-16")
 	{
 		$username_list=explode('\\',$_SERVER['REMOTE_USER']);
@@ -11,17 +10,7 @@
 	{
 		$user_name="baiadmn";
 	}	
-//	$auth_to_modify=array("kirang","ravipu","sarojiniv","kirang","baiadmn","kirang");
-// $url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
-// include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-// $url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
-// include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-// $view_access=user_acl("SFCS_0150",$username,1,$group_id_sfcs); 
-// $auth_to_modify=user_acl("SFCS_0150",$username,2,$group_id_sfcs); 	
 
-	//0 for 
-	//1 for lock
-	//2 for completed
 	$has_permission = haspermission($_GET['r']);
 ?>
 
@@ -126,7 +115,7 @@
 if(isset($_POST['submit']))
 {
 	$lot_no=$_POST['lot_no'];
-	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"insert.php?lot_no=$lot_no_new\"; }</script>";
+
 }
 else
 {
@@ -140,7 +129,7 @@ else
 if(strlen($lot_no)>0)
 {
 
-$sql="select * from $bai_rm_pj1.sticker_report where lot_no like \"%".trim($lot_no)."%\"";
+$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date from $bai_rm_pj1.sticker_report where lot_no like \"%".trim($lot_no)."%\"";
 // echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -242,7 +231,7 @@ if($sql_num_check>0)
 		}
 	}
 
-	$sql="select * from $bai_rm_pj1.store_in where lot_no like \"%".trim($lot_no)."%\" and status in (0,1) and ref1<>''";
+	$sql="select tid,barcode_number,ref_tid,ref1,ref2,qty_rec,status,qty_issued,qty_ret from $bai_rm_pj1.store_in where lot_no like \"%".trim($lot_no)."%\" and status in (0,1) and ref1<>''";
 	// echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
@@ -266,7 +255,7 @@ if($sql_num_check>0)
 				
 				echo '<td><select name="n_location[]" class="select2_single form-control">';
 				echo "<option value=\"0\">Select Location</option>";
-				$sql1="select * from $bai_rm_pj1.location_db where status=1 and location_id NOT IN ('".$location."') order by location_id,sno";
+				$sql1="select location_id from $bai_rm_pj1.location_db where status=1 and location_id NOT IN ('".$location."') order by location_id,sno";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))
 				{
@@ -287,7 +276,7 @@ if($sql_num_check>0)
 
 		echo "<table class='table table-bordered'>";
 		echo "<tr class='tblheading'><th>Date</th><th>Previous Location</th><th>New Location</th><th>Old Qty</th><th>New Qty</th><th>Remarks</th><th>User</th></tr>";
-		$sql="select * from $bai_rm_pj1.location_trnsf where lot_no like \"%".trim($lot_no)."%\" order by date";
+		$sql="select date,source_location,new_location,old_qty,new_qty,remarks,log_user from $bai_rm_pj1.location_trnsf where lot_no like \"%".trim($lot_no)."%\" order by date";
 		// echo $sql."<br>";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))

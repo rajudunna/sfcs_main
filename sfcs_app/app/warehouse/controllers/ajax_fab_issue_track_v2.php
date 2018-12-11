@@ -33,7 +33,7 @@ $tran_pin=$_GET["s"];
 			$roll_width=$row1['roll_width'];
 			$shade=$row1["shade"];
 			$qty=$row1["qty"];
-			$sql="select * from $bai_rm_pj1.store_in where tid='".$roll_id."'";
+			$sql="select qty_rec,qty_ret,qty_issued,partial_appr_qty from $bai_rm_pj1.store_in where tid='".$roll_id."'";
 			$result1=mysqli_query($link, $sql) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row12=mysqli_fetch_array($result1))
 			{
