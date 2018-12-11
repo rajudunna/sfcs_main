@@ -74,11 +74,9 @@ echo '</table></div></div></body>';
 		var result=st.split("&"); 
 		var x=result[0];	
 		var dep_id=result[1];
-		//document.getElementById('dep_id').value;
 		var row_id=document.getElementById('row_id').value;
 		if(parseInt(x)>0)
 		{
-			//alert(parseInt(x));
 			var myVal=row_id+'$'+x+'$'+dep_id;
 		 	window.opener.GetValueFromChild(myVal);
 	        window.close();
