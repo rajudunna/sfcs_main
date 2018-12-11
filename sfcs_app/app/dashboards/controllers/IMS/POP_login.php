@@ -21,7 +21,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	$option_val1=$_POST['option'];
 	
 			
-	$sql="select * from $bai_pro3.sections_db where sec_id='$section_ids'";
+	$sql="select * from $bai_pro3.sections_db where sec_id=".$section_ids;
 	//$sql="select * from members where login=\"$password\"";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
@@ -39,7 +39,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 		$sql_num_check=0;
 	}
 
-	$sql="select * from $bai_pro3.sections_db where sec_head=\"Admin\"";
+	$sql="select * from $bai_pro3.sections_db where sec_head='Admin'";
 	//$sql="select * from members where login=\"$password\"";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$admin_check=mysqli_num_rows($sql_result);
@@ -47,7 +47,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	if($admin_check>0 and $option_val1=="input_remove" )
 	{
 	
-		$sql="update $bai_pro3.ims_log set ims_status=\"DONE\" where tid='$tid'";
+		$sql="update $bai_pro3.ims_log set ims_status='DONE' where tid=".$tid;
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		echo "<script type=\"text/javascript\"> window.close(); </script>";
 

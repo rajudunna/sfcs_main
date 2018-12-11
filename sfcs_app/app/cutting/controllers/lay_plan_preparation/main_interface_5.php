@@ -20,8 +20,7 @@ else
 }
 $tran_order_tid1=$tran_order_tid;
 
-$get_cat_ref_query="SELECT cat_ref FROM $bai_pro3.allocate_stat_log WHERE order_tid=\"$tran_order_tid1\" group by cat_ref ORDER BY tid";
-$cat_ref_result=mysqli_query($link, $get_cat_ref_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 
 echo "<div>
 		<table class=\"table table-bordered\">
@@ -44,6 +43,10 @@ echo "<div>
 					<th class=\"word-wrap\"><center>Current Status</center></th><th class=\"column-title\"><center>Remarks</center></th>
 				</tr>
 			</thead>";
+			foreach($cats_ids as $key=>$value)
+			{
+				$get_cat_ref_query="SELECT cat_ref FROM $bai_pro3.allocate_stat_log WHERE order_tid=\"$tran_order_tid1\" and cat_ref=$value group by cat_ref ORDER BY tid";
+				$cat_ref_result=mysqli_query($link, $get_cat_ref_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($cat_row=mysqli_fetch_array($cat_ref_result))
 				{
 					$grand_tot_used_fab = 0;
@@ -206,6 +209,7 @@ echo "<div>
 					}
 					echo "<tr style='background-color: yellow;'><td colspan=9><center><b>Total ($category1) </b></center></td><td><center><b>$grand_tot_used_fab</b></center></td><td><center><b>$grand_tot_used_binding</b></center></td><td colspan=2></td></tr>";
 				}
+			}
 	echo "
 		</table>
 	</div>";

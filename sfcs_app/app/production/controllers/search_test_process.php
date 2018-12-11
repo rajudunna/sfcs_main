@@ -489,7 +489,7 @@ if(isset($_POST['search']))
 		for($i=0;$i<sizeof($qms_size);$i++)
 		{
 			$sql="select qms_size,SUM(IF((qms_tran_type = 2),qms_qty,0)) AS \"replaced\",  SUM(IF((qms_tran_type = 3),qms_qty,0)) AS \"rejected\",  SUM(IF((qms_tran_type = 6),qms_qty,0)) AS \"recut_raised\",doc_no,operation_id from $bai_pro3.bai_qms_db where qms_style=\"$style\" and qms_schedule=\"$schedule\" and qms_color=\"$color\" and SUBSTRING_INDEX(remarks,\"-\",1)=\"$module\" and qms_size=\"".$qms_size[$i]."\" group by qms_size";
-//echo $sql;
+// echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -517,7 +517,7 @@ if(isset($_POST['search']))
 		$qms_doc = array();
 		$qms_ops = array();
 		$sql="select qms_size,SUM(IF((qms_tran_type = 2),qms_qty,0)) AS \"replaced\",  SUM(IF((qms_tran_type = 3),qms_qty,0)) AS \"rejected\",  SUM(IF((qms_tran_type = 6),qms_qty,0)) AS \"recut_raised\",doc_no,operation_id from $bai_pro3.bai_qms_db where qms_style=\"$style\" and qms_schedule=\"$schedule\" and qms_color=\"$color\" and SUBSTRING_INDEX(remarks,\"-\",1)=\"$module\" group by qms_size";
-		// echo $sql;
+		 // echo $sql;
 		//echo "Hello";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -668,19 +668,23 @@ if(isset($_POST['search']))
 		$table="<table class='table table-bordered'><tr><th>Docket</th><th>Size</th><th>Recut Quantity</th></tr>";
 		for($i=0;$i<sizeof($qms_size);$i++)
 		{
-			$table.= "<tr><input type='hidden' name='doc_no[]' value=".$qms_doc[$i].">
-			<input type='hidden' name='ops_code[]' value=".$qms_ops[$i]."><input type='hidden' name='old_size[]' value=".$qms_size[$i]."><td>".$qms_doc[$i]."</td><td><input type=\"hidden\" name=\"size[]\" value=\"p_".$qms_size[$i]."\">".$qms_sizes[$i]."</td>";
+			if($qms_qty[$i] > 0)
+			{
+				$table.= "<tr><input type='hidden' name='doc_no[]' value=".$qms_doc[$i].">
+				<input type='hidden' name='ops_code[]' value=".$qms_ops[$i]."><input type='hidden' name='old_size[]' value=".$qms_size[$i]."><td>".$qms_doc[$i]."</td><td><input type=\"hidden\" name=\"size[]\" value=\"p_".$qms_size[$i]."\">".$qms_sizes[$i]."</td>";
+				
+				if($open_access==$chk || $module=="TOP" )
+				{
+					$validate_1="onchange=\"check2(this.value,".$qms_qty[$i].")\"";
+				}
+				else
+				{
+					$validate_1="onchange=\"if(check1(this.value,".$qms_qty[$i].")==1010) { this.value=".$qms_qty[$i]."; }\"";
+				}
+				$table.= "<td style 'text-align:center'><div class='row'><div class='col-md-3'><input type=\"text\" readonly class='form-control' name=\"qty[p_$qms_size[$i]][]\" id='qty_$i' value =\"".$qms_qty[$i]."\" size=\"5\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" autocomplete=\"off\" onkeypress=\"return isNum(event)\" $validate_1></div></td></tr>";
+				$x1 = $x1+1;
+			}
 			
-			if($open_access==$chk || $module=="TOP" )
-			{
-				$validate_1="onchange=\"check2(this.value,".$qms_qty[$i].")\"";
-			}
-			else
-			{
-				$validate_1="onchange=\"if(check1(this.value,".$qms_qty[$i].")==1010) { this.value=".$qms_qty[$i]."; }\"";
-			}
-			$table.= "<td style 'text-align:center'><div class='row'><div class='col-md-3'><input type=\"text\" readonly class='form-control' name=\"qty[p_$qms_size[$i]][]\" id='qty_$i' value =\"".$qms_qty[$i]."\" size=\"5\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" autocomplete=\"off\" onkeypress=\"return isNum(event)\" $validate_1></div></td></tr>";
-			$x1 = $x1+1;
 		}
 		$table.="</table><div id=\"button1\">
 		<input type='hidden' id='count' value='$x1'>
