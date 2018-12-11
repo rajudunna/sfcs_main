@@ -66,7 +66,8 @@
 			$cutno=$barcode_rslt['acutno'];
 			$quantity=$barcode_rslt['carton_act_qty'];
             $size=$barcode_rslt['size_code'];
-            $input_job = $barcode_rslt['input_job_no'];
+			$input_job = $barcode_rslt['input_job_no'];
+			$sewing_job_random_id = $barcode_rslt['input_job_no_random'];
 			$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color."' and order_del_no",$schedule,$link);
 			
 			//sequence number logic based on size and colors

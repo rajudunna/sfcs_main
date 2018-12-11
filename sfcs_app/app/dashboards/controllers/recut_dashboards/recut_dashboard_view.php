@@ -276,13 +276,15 @@
         echo "<script>sweetAlert('Replacement Done Successfully!!!','','success');window.location = '".$url."'</script>"; 
     }
     $shifts_array = ["IssueDone","RecutPending"];
-    $drp_down = '<div class="row"><div class="col-md-3"><label>Filter:</label>
+    $drp_down = '<div class="row"><div class="col-md-3"><label>Status Filter:</label>
     <select class="form-control rm"  name="status" id="rm" style="width:100%;" onchange="myFunction()" required>';
     for ($i=0; $i <= 1; $i++) 
     {
         $drp_down .= '<option value='.$shifts_array[$i].'>'.$shifts_array[$i].'</option>';
     }
-    $drp_down .= "</select></div></div>";
+    $drp_down .= "</select></div>";
+    $drp_down .= "<div class='col-md-3'><label>Schedule Filter:</label>
+                  <input class='form-control integer' placeholder='Enter Schedule here' onchange='myfunctionsearch()' id='schedule_id'></input></div></div>";
     echo $drp_down;
     
 ?>
@@ -316,7 +318,7 @@
             </div>
             <div id='post_post'>
                 <div class='panel-body'>	
-                        <b style='color:red'>Please wait while Issuing To Module!!!</b>
+                        <h2 style='color:red'>Please wait while Raising the Recut!!!</h2>
                 </div>
             </div>
         </div>
@@ -342,7 +344,7 @@
             </div>
             <div id='post'>
                 <div class='panel-body'>	
-                        <b style='color:red'>Please wait while Issuing To Module!!!</b>
+                        <h2 style='color:red'>Please wait while Replacing!!!</h2>
                 </div>
             </div>
         </div>
@@ -624,16 +626,18 @@ function validationreplace()
             flag = 1;
 
         }
-        else
-        {
-            document.getElementById('replace').style.display = "none";
-            flag = 1;
-        }
     }
+    console.log(flag);
     if(flag == 0)
     {
+        console.log("working");
         $('#pre').hide();
         $('#post').show();
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
 function validationreplaceindividual(id)
@@ -765,6 +769,7 @@ function validationfunction()
    {
        $('#pre_pre').hide();
        $('#post_post').show();
+       return true;
    }
 }
 function isInteger(value) 
@@ -790,6 +795,48 @@ function focus_out_validation(id)
     {
         document.getElementById(id).value = 0;
     }
+}
+function myfunctionsearch() 
+{
+    var input, filter, table, tr, td, i;
+    input = document.getElementById("schedule_id").value;
+    filter = input.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    var count = 0;
+    if(tr.length > 1)
+    {
+        for (i = 1; i < tr.length; i++) 
+        {
+            td = tr[i].getElementsByTagName("td")[2];
+            if(td) 
+            {
+                console.log(td.innerHTML.toUpperCase());
+                console.log(filter);
+                if(td.innerHTML.toUpperCase() == filter)
+                {
+                    console.log(tr[i]);
+                    tr[i].style.display = "";
+                } 
+                else 
+                {
+                    count++;
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+    // console.log(count);
+    // if(count == 0)
+    // {
+    //     $('#myTable').hide();
+    //     $('#myTable1').show();
+    // }
+    // else
+    // {
+    //     $('#myTable').show();
+    //     $('#myTable1').hide();
+    // }
 }
 </script>
 <script>

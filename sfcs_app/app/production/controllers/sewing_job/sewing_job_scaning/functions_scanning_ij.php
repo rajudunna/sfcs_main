@@ -142,6 +142,7 @@ function getjobdetails($job_number)
 	}
 	$flags=0;		
 	$ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and operation_code=$job_number[4]";
+	// echo $ops_seq_check;
 	$result_ops_seq_check = $link->query($ops_seq_check);
 	if($result_ops_seq_check->num_rows > 0)
 	{
