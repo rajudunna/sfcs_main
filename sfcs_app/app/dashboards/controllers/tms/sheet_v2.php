@@ -136,7 +136,6 @@ if(count($colors)>0){
                         $size_qty = $row['carton_act_qty'];
                 
                         $mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."'";
-                        //echo $mo_sql."<br/>";
                         $mo_sql_result=mysqli_query($link, $mo_sql) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 						$mo_numrows=mysqli_num_rows($mo_sql_result);
 						
@@ -147,8 +146,8 @@ if(count($colors)>0){
 
                                 //getting data from bom_details in m3inputs
 
-                                $bom_details="select * from $m3_inputs.bom_details where plant_code='ERK' and mo_no=".$mo_no;
-                                
+                                $bom_details="select * from $m3_inputs.bom_details where plant_code='".$plant_code."' and mo_no=".$mo_no;
+                                echo $bom_details."<br/>";
                                 $bom_details_result=mysqli_query($link, $bom_details) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 
                                 $bom_numrows=mysqli_num_rows($bom_details_result);
