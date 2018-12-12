@@ -17,7 +17,6 @@
 ?>
 </head>
 <body>
-<!--<div id="page_heading"><span style="float: "><h3>Embellishment Garment WIP</h3></span><span style="float: right">&nbsp;</span></div>-->
 <style>
 th{
 	background-color:#29759c;
@@ -33,10 +32,8 @@ th{
 
 <?php
     set_time_limit(6000000);
-	//$msg="<table border='1px' class='mytable' id='table1'><tr><th>Schedule No</th><th>Doc No</th><th>Cut No</th><th>Scanned Qty</th><th>Unscanned Qty</th><th>Input</th><th>Output</th></tr>";
 	$msg="<table id='table1' class='table table-bordered'><tr><th>Buyer Division</th><th>Style</th><th>CO</th><th>Schedule</th><th>Color</th><th>EMB GARMENT WIP</th><th>EX-Factory</th></tr>";
-    $sql="select order_style_no,order_col_des,order_del_no,doc_no,acutno,size_code,if(status ='DONE',sum(carton_act_qty),0) as carton,if(status='EGR',sum(carton_act_qty),0) as carton1,if(status='EGS',sum(carton_act_qty),0) as carton2 from $bai_pro3.packing_summary WHERE date(lastup) >= \"2015-01-01\" and STATUS IN (\"EGR\",\"EGS\") group by order_del_no order by order_del_no, doc_no,size_code";
-	//echo $sql."<br>";
+	$sql="select order_style_no,order_col_des,order_del_no,doc_no,size_code,if(status ='DONE',sum(carton_act_qty),0) as carton,if(status='EGR',sum(carton_act_qty),0) as carton1,if(status='EGS',sum(carton_act_qty),0) as carton2 from $bai_pro3.packing_summary WHERE date(lastup) >= '2015-01-01' and STATUS IN ('EGR','EGS') group by order_del_no order by order_del_no, doc_no,size_code";
 	$result=mysqli_query($link, $sql) or die("Sql error--1".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	if(mysqli_fetch_array($result)>0){
 		while($row=mysqli_fetch_array($result))
@@ -54,7 +51,7 @@ th{
 			}	
 
 			$sql1="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des=\"".$color_ref."\"";
-			//echo $sql1;
+
 			$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($result1)==0)
 			{
@@ -88,7 +85,7 @@ th{
 			$packing_wip=$egr_qty+$egs_qty;
 			if($packing_wip > 0)
 			{	 
-				//$msg.="<tr><td>".$row['order_del_no']."</td><td>".$row['doc_no']."</td><td>".$row['acutno']."</td><td>".$row['carton']."</td><td>".$row['carton1']."</td><td>".$input."</td><td>".$output."</td></tr>";
+			
 				$msg.="<tr><td>".$buyer."</td><td>".$order_style_no."</td><td>".$co_no."</td><td>".$order_del_no."</td><td>".$order_col_des."</td><td>".$packing_wip."</td><td>".$order_date."</td></tr>";
 			}	 
 		}

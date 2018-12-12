@@ -1,7 +1,4 @@
 <?php
-//     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
@@ -12,8 +9,6 @@
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',4,'R'); ?>"></script>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',4,'R'); ?>"></script>
 
-		<!-- <script type="text/javascript" src="../../../common/js/TableFilter_EN/actb.js"></script>	
-		<script type="text/javascript" language="javascript" src="../../../common/js/TableFilter_EN/tablefilter.js"></script>  -->
 <style>
 table {	
 	text-align:center;
@@ -36,8 +31,7 @@ th{
 
 echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Buyer Division</th><th>Style</th><th>CO</th><th>Schedule</th><th>Color</th><th>Cutting Wip</th><th>EX-Factory</th></tr><thead>";
 
-$sql="select order_tid,group_concat(doc_no) as doc_no,SUM((a_xs+a_s+a_m+a_l+a_xl+a_xxl+a_xxxl+a_s01+a_s02+a_s03+a_s04+a_s05+a_s06+a_s07+a_s08+a_s09+a_s10+a_s11+a_s12+a_s13+a_s14+a_s15+a_s16+a_s17+a_s18+a_s19+a_s20+a_s21+a_s22+a_s23+a_s24+a_s25+a_s26+a_s27+a_s28+a_s29+a_s30+a_s31+a_s32+a_s33+a_s34+a_s35+a_s36+a_s37+a_s38+a_s39+a_s40+a_s41+a_s42+a_s43+a_s44+a_s45+a_s46+a_s47+a_s48+a_s49+a_s50)*a_plies) AS pcs from $bai_pro3.order_cat_doc_mk_mix where act_cut_status=\"DONE\" and date >= \"2015-01-01\" and act_cut_issue_status!=\"DONE\" and category in (\"Body\",\"Front\") group by order_tid order by doc_no";
-//echo $sql."<br>";
+$sql="select order_tid,group_concat(doc_no) as doc_no,SUM((a_xs+a_s+a_m+a_l+a_xl+a_xxl+a_xxxl+a_s01+a_s02+a_s03+a_s04+a_s05+a_s06+a_s07+a_s08+a_s09+a_s10+a_s11+a_s12+a_s13+a_s14+a_s15+a_s16+a_s17+a_s18+a_s19+a_s20+a_s21+a_s22+a_s23+a_s24+a_s25+a_s26+a_s27+a_s28+a_s29+a_s30+a_s31+a_s32+a_s33+a_s34+a_s35+a_s36+a_s37+a_s38+a_s39+a_s40+a_s41+a_s42+a_s43+a_s44+a_s45+a_s46+a_s47+a_s48+a_s49+a_s50)*a_plies) AS pcs from $bai_pro3.order_cat_doc_mk_mix where act_cut_status='DONE'and date >= '2015-01-01' and act_cut_issue_status!='DONE' and category in ('Body','Front') group by order_tid order by doc_no";
 $result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($result))
 {
@@ -86,15 +80,12 @@ while($row=mysqli_fetch_array($result))
 	
 	$sql2="select * from $bai_pro3.ims_log_backup where ims_doc_no in (".$dockets.")";
 	$result2=mysqli_query($link, $sql2) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
-	//echo $order_del_no."-".mysql_num_rows($result2)."<br>";
 	if(mysqli_num_rows($result2) > 0)
 	{	
 		$sql22="select sum(ims_qty) as input2 from $bai_pro3.ims_log_backup where ims_doc_no in (".$dockets.")";
-		//echo $sql22."<br>";
 		$result22=mysqli_query($link, $sql22) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row22=mysqli_fetch_array($result22))
 		{
-			//echo "Output=".$row22["input2"]."<br>";
 			$input2=$row22["input2"];
 		}
 	}
@@ -111,8 +102,6 @@ while($row=mysqli_fetch_array($result))
 	echo "<td>".$co_no."</td>";
 	echo "<td>".$order_del_no."</td>";
 	echo "<td>".$order_col_des."</td>";
-	//echo "<td>".$total3."</td>";
-	//echo "<td>".($input1+$input2)."</td>";
 	echo "<td>".($total3-($input1+$input2))."</td>";
 	echo "<td>".$order_date."</td>";
 	echo "</tr>";
