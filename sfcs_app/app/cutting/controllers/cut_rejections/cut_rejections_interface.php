@@ -1,8 +1,8 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 
-$get_url = getFullURLLevel($_GET['r'],'cut_rejections_data.php','R');
-$rej_url = getFullURLLevel($_GET['r'],'cut_rejections_save.php','R');
+$get_url = getFullURLLevel($_GET['r'],'cut_rejections_data.php',0,'R');
+$rej_url = getFullURLLevel($_GET['r'],'cut_rejections_save.php',0,'R');
 $rejection_reasons = array();
 
 $rejection_reason_query = "SELECT reason_code,reason_desc,m3_reason_code from $bai_pro3.bai_qms_rejection_reason 
