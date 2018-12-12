@@ -461,8 +461,6 @@ if(isset($_POST['fix']))
 	}
 	$unique_orginal_sizes_explode1=explode(",",$unique_orginal_sizes1);
 	$unique_sizes_explode1=explode(",",$unique_sizes1);
-	echo sizeof($selected)."<br>";
-	echo var_dump($selected)."<br>";
 	if(sizeof($selected)>1) 
 	{ 
 		// Validate Components are equal then only club the schedules
