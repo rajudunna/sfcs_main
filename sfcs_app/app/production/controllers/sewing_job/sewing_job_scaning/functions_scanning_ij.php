@@ -246,7 +246,7 @@ function getjobdetails($job_number)
 	}
 	else
 	{
-		// echo $schedule_query;
+		echo $schedule_query;
 		$result_style_data = $link->query($schedule_query);
 		while($row = $result_style_data->fetch_assoc()) 
 		{
