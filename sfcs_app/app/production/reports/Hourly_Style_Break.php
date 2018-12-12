@@ -168,16 +168,19 @@ zoom:75%;
 							// }
 							echo "</select>";
 						echo "</div>";
-
+ 
 						echo "<div class='col-md-3'>";
-							echo "Select Team: <select name=\"team\" class='form-control'>
-							<option value='".'"A","B"'."'>All</option>
-							<option value='".'"A"'."'>A</option>
-							<option value='".'"B"'."'>B</option>
-							</select>";
+							echo "Select Team: <select name=\"team\" class='form-control'>";
+							?>
+						<option value=<?php echo implode(",",$shifts_array); ?>>All</option>
+                                    <?php 
+                                        for ($i=0; $i < sizeof($shifts_array); $i++) {?>
+                                            <option  <?php echo 'value="'.$shifts_array[$i].'"'; if($team==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
+                                        <?php }
+									?>
+									<?php
+							echo "</select>";
 						echo "</div>";
-
-
 					?>
 
 				</div>
@@ -213,7 +216,12 @@ zoom:75%;
 				$styles=$_POST['styles'];
 				$date=$_POST['date'];
 				$date1=$_POST['date1'];
+				// $date="2018-09-17";
+				// $date1="2018-09-17";
+
 				$team=$_POST['team'];
+				$teams=explode(",",$team);
+				$team = "'".str_replace(",","','",$team)."'"; 
 				$row_count = 0;
 
 				echo "<hr/><span class='label label-warning'><b>Report Period: </b>".$date." to $date1 And <b>Team: </b>".str_replace('"',"",$team).'</span>';
@@ -262,10 +270,99 @@ zoom:75%;
 				
 				/* Function END */
 				// $sections=array(1,2,3,4,5,6);
+				$work_hrs=0;
+				$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift in ($team)";
+				// echo $sql_hr."<br>";
+				$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				if(mysqli_num_rows($sql_result_hr) >0)
+				{
+					while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+					{ 
+						$work_hrs=$work_hrs+($sql_row_hr['end_time']-$sql_row_hr['start_time']);
+
+					}
+					$break_time=sizeof($teams)*0.5;
+					$work_hours=$work_hrs-$break_time;
+				}else{
+						if(sizeof($teams) > 1) 
+						{ 
+							$work_hours=15; 
+						} 
+						else 
+						{ 
+							$work_hours=7.5; 
+						} 
+				}
+				
+				// echo $work_hours."<br>";
+				// date_default_timezone_set("Asia/Calcutta");
+				$current_hr=date('H');
+				// echo $current_hr."<br>";
+
+				// $current_date="2018-09-17";
+				$current_date=date('Y-m-d');
+
+				if($current_date==$date && $current_date==$date1)
+				{
+					$hour_dur=0;
+					for($i=0;$i<sizeof($teams);$i++)
+					{
+						$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
+						// echo $sql_hr."<br>";
+						$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+						if(mysqli_num_rows($sql_result_hr) >0)
+						{
+							while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+							{ 
+								$start_time=$sql_row_hr['start_time'];
+								$end_time=$sql_row_hr['end_time'];
+								$diff_time=$current_hr-$start_time;
+								if($diff_time>3){
+									$diff_time=$diff_time-0.5;
+								}
+
+								$hour_dur=$hour_dur+$diff_time;
+							}
+						}
+						else
+						{
+							$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$teams[$i]."' and $current_hr > end_time";
+							// echo $sql_hr."<br>";
+							$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+							// $hour_dur=$hour_dur+0;
+							while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+							{ 
+								$start_time=$sql_row_hr['start_time'];
+								$end_time=$sql_row_hr['end_time'];
+								if($end_time > $start_time){
+									$diff_time=$end_time-$start_time;
+								}
+								else
+								{
+									$start=24-$start_time;
+									$diff_time=$start+$end_time;
+								}
+								if($diff_time>3){
+										$diff_time=$diff_time-0.5;
+								}
+								$hour_dur=$hour_dur+$diff_time;
+							}
+						}
+						
+					}
+			
+					$hoursa_shift=$hour_dur;
+				}
+				else
+				{
+					$hoursa_shift=$work_hours;
+				}
+				// echo $hoursa_shift."<br>";
 
 				$i=0;
 				$h=array();
 				$sql="select distinct(Hour(bac_lastup)) as \"time\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_shift in ($team) order by hour(bac_lastup)*1";
+				// echo $sql."<br>";
 				//mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$hoursa=mysqli_num_rows($sql_result);
@@ -299,7 +396,7 @@ zoom:75%;
 
 
 				// Style Break Start
-					$row_bg_col=1;
+				$row_bg_col=1;
 
 				for ($i=0;$i<sizeof($styles);$i++)
 				{
@@ -344,39 +441,6 @@ zoom:75%;
 						$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$section_count=mysqli_num_rows($sql_result2); 
 						//echo $module_count;
-						
-						//NEW
-						
-						$sql11="select distinct(Hour(bac_lastup)) as \"time\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_sec=$section and bac_shift in ($team)";
-						//mysql_query($sql11,$link) or exit("Sql Error".mysql_error());
-						$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$hoursa=mysqli_num_rows($sql_result11);
-
-						if($hoursa==4 && ($section==3 || $section==4) )
-						{
-							$hoursa=$hoursa;	
-						}
-						else
-						{
-							if($hoursa>3)
-							{
-								$hoursa=$hoursa+0.5-1;	
-							}
-						}
-						if($hoursa==11.5 && ($section==3 || $section==4) )
-						{
-							$hoursa=$hoursa;
-						}	
-						else
-						{
-						if($hoursa>7.5)
-						{
-							$hoursa=$hoursa+0.5-1;
-						}
-						}
-						//NEW
-						
-
 
 						$section_check=0;
 						while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -421,8 +485,8 @@ zoom:75%;
 									$module_sum=$module_sum+$qty;			
 								}
 							}
-							echo "<td>$module_sum</td>";
-							echo "<td>".round(($module_sum/$hoursa),0)."</td>";
+							echo "<td>".$module_sum."</td>";
+							echo "<td>".round(($module_sum/$hoursa_shift),0)."</td>";
 							
 							//NEW
 								$sec_qty=0;
@@ -436,7 +500,7 @@ zoom:75%;
 								
 								if($section_check==1)
 								{
-									echo "<td rowspan=$section_count>".round((($sec_qty/$section_count)/$hoursa),0)."</td>";
+									echo "<td rowspan=$section_count>".round((($sec_qty/$section_count)/$hoursa_shift),0)."</td>";
 									$section_check=2;
 								}
 								
@@ -454,7 +518,7 @@ zoom:75%;
 								
 								if($style_check==1)
 								{
-									echo "<td rowspan=$module_count>".round((($style_qty/$module_count)/$hoursa),0)."</td>";
+									echo "<td rowspan=$module_count>".round((($style_qty/$module_count)/$hoursa_shift),0)."</td>";
 									echo "<td rowspan=$module_count>".$style_qty."</td>";
 									$style_check=2;
 								}
