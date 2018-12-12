@@ -45,6 +45,7 @@ $brandix_bts_uat="brandix_bts_uat";
 $m3_inputs="m3_inputs";
 $m3_bulk_ops_rep_db="m3_bulk_ops_rep_db";
 $temp_pool_db="temp_pool_db";
+$fabric_categories_array = $conf1->get('category-display-dashboard');
 $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
 $shifts_array = $conf1->get('shifts');
 
