@@ -7,6 +7,8 @@
     2 - if m3 upating is failed and others went good
     3 - Rejections Completely updated with Errors
 */    
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+
 function save_rejections($doc_no,$rejection_details,$style,$schedule,$color){
     $op_code = 15;
     global $link;
@@ -17,13 +19,21 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color){
     $time = date('H:i:s');
     $update_counter = 0;
     
-    $rejection_log_query = "INSERT into $bai_pro3.rejections_log 
+    $verify_query = "SELECT * from $bai_pro3.rejections_log where style='$style' and schedule='$schedule' 
+                    and color='$color'";
+    $result = mysqli_query($link,$verify_query);  
+    while($row = mysqli_fetch_array($result))   
+           $id = $row['id'];
+    
+    if($id > 0)
+        $parent_id = $id;
+    else{
+        $rejection_log_query = "INSERT into $bai_pro3.rejections_log 
             (style,SCHEDULE,color,rejected_qty,replaced_qty,recut_qty,remaining_qty,status) 
-            values ('$style','$schedule','$color',0,0,0,0,'P')";
-    echo $rejection_log_query;        
-    var_dump($link);
-    $rejection_log_result = mysqli_query($link,$rejection_log_query);
-    $parent_id = mysqli_insert_id($link);
+            values ('$style','$schedule','$color',0,0,0,0,'P')";    
+        $rejection_log_result = mysqli_query($link,$rejection_log_query);
+        $parent_id = mysqli_insert_id($link);
+    }
     foreach($rejection_details as $size => $reason_wise){
         $total_sum = 0;
         $reason_qty_string = '';
@@ -44,16 +54,15 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color){
     }
     
     foreach($rejected as $size => $qty){
-        var_dump($rejection_details[$size]);
-        $bcd_data_query = "SELECT id,bundle_number,assigned_module,size_title from $brandix_bts.bundle_creation_data 
-                    where docket_number = $doc_no and  size_id = '$size' and operation_id = $op_code ";
-        $bcd_data_reuslt = mysqli_query($link,$bcd_data);
+        $bcd_data_query = "SELECT id,bundle_number,assigned_module,size_title from $brandix_bts.bundle_creation_data where docket_number = $doc_no and  size_id = '$size' and operation_id = $op_code ";
+        $bcd_data_reuslt = mysqli_query($link,$bcd_data) or exit('BCD Error 1');
         if(mysqli_num_rows($bcd_data_reuslt) > 0){
             $row = mysqli_fetch_array($bcd_data_reuslt);
             $id = $row['id'];
             $bno = $row['bundle_number'];
             $assigned_module = $row['assigned_module'];
-            $size_title = $row['size_title'];    
+            $size_title = $row['size_title'];  
+            $module = $row['assigned_module'];  
             $bundle_numbers[$size] = $bno; 
             $rejection_log_child_query  =  "INSERT INTO $bai_pro3.rejection_log_child (parent_id,bcd_id,doc_no,size_id,size_title,assigned_module,rejected_qty,recut_qty,replaced_qty,issued_qty,operation_id)
             values
@@ -75,10 +84,11 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color){
                 // $reasons_array[] = $m3_code;
             //}
             $ref1 = $qms_ref1[$size];
+            $remarks = $assigned_module.'-'.$shift.'-P';
             $qms_insert_query = "INSERT INTO $bai_pro3.bai_qms_db 
             (qms_style,qms_schedule,qms_color,qms_remarks,bundle_no,log_user,log_date,log_time,issued_by,qms_size,qms_qty,qms_tran_type,remarks,ref1,doc_no,location_id,input_job_no,operation_id)
             values
-            ('$style','$schedule','$color','remarks',$bno,$username,$date,$time,$username,$size,$qty,3,'remarks',
+            ('$style','$schedule','$color','remarks',$bno,$username,$date,$time,$username,$size,$qty,3,'$remarks',
              '$ref1',$doc_no,'','',$op_code)";
             mysqli_query($link,$qms_insert_query);  
             
@@ -96,8 +106,8 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color){
     }
     //Again Seperating M3 Updations from basic operation flow to maintain consistency
 
-    $rejection_log_uquery = "UPDATE $bai_pro3.rejections_log set rejected_qty = $total_rej,rejected_qty = $total_rej 
-                        where id=$parent_id";
+    $rejection_log_uquery = "UPDATE $bai_pro3.rejections_log set rejected_qty = $total_rej,
+                        rejected_qty = rejected_qty + $total_rej where id=$parent_id";
     $rejection_log_uresult = mysqli_query($link,$rejection_log_uquery);
     if($sent == $confirmed && $size == $update_counter)
         return 1;
