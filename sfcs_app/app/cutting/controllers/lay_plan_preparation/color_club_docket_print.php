@@ -438,6 +438,9 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <meta name=Generator content="Microsoft Excel 14">
 <link rel=File-List href="doc_designs_files/filelist.xml">
 <style id="doc_designs_17319_Styles">
+td,th {
+	text-align:center;
+}
 <!--table
 	{mso-displayed-decimal-separator:"\.";
 	mso-displayed-thousand-separator:"\,";}
@@ -3367,7 +3370,7 @@ tags will be replaced.-->
   <td colspan=27 rowspan=5 class=xl8217319> -->
   <?php
 	$style_css="style='font-size:24px; border:.5pt solid black; padding-left: 10px; padding-right:10px; border-collapse: collapse;'";
-	echo "<table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;' class='width1' width=1500px>";
+	echo "<table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;' class='width1' width=1300px>";
 	echo "<tr style='mso-height-source:userset;'>";
 	$sum=0;
 	$divide=14;
@@ -3381,7 +3384,7 @@ tags will be replaced.-->
 	echo "<th style='border:.5pt solid black;'>Doc.ID</th>";
 	$total_size = sizeof($s_tit);
 	// echo $total_size;
-	$total_size = 50;
+	// $total_size = 50;
 	for($s=0;$s<$total_size;$s++)
 	{
 		echo "<th style='border:.5pt solid black;white-space:nowrap;'>".$sizes_tit[$s]."</th>";
@@ -3394,7 +3397,6 @@ tags will be replaced.-->
 			$divide=$divide1;
 			$t=$s+5;//starting 4 plus one
 		}
-	
 		if(($t) % $divide == 0){
 			$temp_len = $s+1;
 			echo "</tr><tr style='height:40px'>";
@@ -3428,6 +3430,12 @@ tags will be replaced.-->
 					for($j=0;$j<sizeof($color_codes);$j++)
 					{
 						echo "<tr>";
+						if($temp==0){
+							echo "<td style='border:.5pt solid black;'>".'<div id="bcTarget'.$j.'" style="width:auto;"></div><script>$("#bcTarget'.$j.'").barcode("D'.$docs[$j].'", "code39",{barWidth:2,barHeight:15,moduleSize:5,fontSize:0});</script>'."</td>";
+							echo "<td style='border:.5pt solid black;'>".$color_codes[$j]."</td>";
+							echo "<td style='border:.5pt solid black;'>".chr($cc_code[$j]).leading_zeros($cut_no, 3)."</td>";
+							echo "<td style='border:.5pt solid black;'>".$docs[$j]."</td>";
+						}
 						for($k=$temp_len1;$k<$total_size;$k++)
 						{
 							echo "<td style='border:.5pt solid black;'>".$qty[$k]."</td>";
@@ -3461,6 +3469,12 @@ tags will be replaced.-->
 					for($j=0;$j<sizeof($color_codes);$j++)
 					{
 						echo "<tr>";
+						if($temp==0){
+							echo "<td style='border:.5pt solid black;'>".'<div id="bcTarget'.$j.'" style="width:auto;"></div><script>$("#bcTarget'.$j.'").barcode("D'.$docs[$j].'", "code39",{barWidth:2,barHeight:15,moduleSize:5,fontSize:0});</script>'."</td>";
+							echo "<td style='border:.5pt solid black;'>".$color_codes[$j]."</td>";
+							echo "<td style='border:.5pt solid black;'>".chr($cc_code[$j]).leading_zeros($cut_no, 3)."</td>";
+							echo "<td style='border:.5pt solid black;'>".$docs[$j]."</td>";
+						}
 						for($k=$temp_len1;$k<$total_size;$k++)
 						{
 							echo "<td style='border:.5pt solid black;'>".$qty[$k]."</td>";
@@ -3495,6 +3509,12 @@ tags will be replaced.-->
 						for($j=0;$j<sizeof($color_codes);$j++)
 						{
 							echo "<tr>";
+							if($temp==0){
+								echo "<td style='border:.5pt solid black;'>".'<div id="bcTarget'.$j.'" style="width:auto;"></div><script>$("#bcTarget'.$j.'").barcode("D'.$docs[$j].'", "code39",{barWidth:2,barHeight:15,moduleSize:5,fontSize:0});</script>'."</td>";
+								echo "<td style='border:.5pt solid black;'>".$color_codes[$j]."</td>";
+								echo "<td style='border:.5pt solid black;'>".chr($cc_code[$j]).leading_zeros($cut_no, 3)."</td>";
+								echo "<td style='border:.5pt solid black;'>".$docs[$j]."</td>";
+							}
 							for($k=$temp_len1;$k<$total_size;$k++)
 							{
 								echo "<td style='border:.5pt solid black;'>".$qty[$k]."</td>";
@@ -3529,6 +3549,12 @@ tags will be replaced.-->
 						for($j=0;$j<sizeof($color_codes);$j++)
 						{
 							echo "<tr>";
+							if($temp==0){
+								echo "<td style='border:.5pt solid black;'>".'<div id="bcTarget'.$j.'" style="width:auto;"></div><script>$("#bcTarget'.$j.'").barcode("D'.$docs[$j].'", "code39",{barWidth:2,barHeight:15,moduleSize:5,fontSize:0});</script>'."</td>";
+								echo "<td style='border:.5pt solid black;'>".$color_codes[$j]."</td>";
+								echo "<td style='border:.5pt solid black;'>".chr($cc_code[$j]).leading_zeros($cut_no, 3)."</td>";
+								echo "<td style='border:.5pt solid black;'>".$docs[$j]."</td>";
+							}
 							for($k=$temp_len1;$k<$total_size;$k++)
 							{
 								echo "<td style='border:.5pt solid black;'>".$qty[$k]."</td>";
@@ -3563,6 +3589,12 @@ tags will be replaced.-->
 						for($j=0;$j<sizeof($color_codes);$j++)
 						{
 							echo "<tr>";
+							if($temp==0){
+								echo "<td style='border:.5pt solid black;'>".'<div id="bcTarget'.$j.'" style="width:auto;"></div><script>$("#bcTarget'.$j.'").barcode("D'.$docs[$j].'", "code39",{barWidth:2,barHeight:15,moduleSize:5,fontSize:0});</script>'."</td>";
+								echo "<td style='border:.5pt solid black;'>".$color_codes[$j]."</td>";
+								echo "<td style='border:.5pt solid black;'>".chr($cc_code[$j]).leading_zeros($cut_no, 3)."</td>";
+								echo "<td style='border:.5pt solid black;'>".$docs[$j]."</td>";
+							}
 							for($k=$temp_len1;$k<$total_size;$k++)
 							{
 								echo "<td style='border:.5pt solid black;'>".$qty[$k]."</td>";
@@ -3597,6 +3629,12 @@ tags will be replaced.-->
 						for($j=0;$j<sizeof($color_codes);$j++)
 						{
 							echo "<tr>";
+							if($temp==0){
+								echo "<td style='border:.5pt solid black;'>".'<div id="bcTarget'.$j.'" style="width:auto;"></div><script>$("#bcTarget'.$j.'").barcode("D'.$docs[$j].'", "code39",{barWidth:2,barHeight:15,moduleSize:5,fontSize:0});</script>'."</td>";
+								echo "<td style='border:.5pt solid black;'>".$color_codes[$j]."</td>";
+								echo "<td style='border:.5pt solid black;'>".chr($cc_code[$j]).leading_zeros($cut_no, 3)."</td>";
+								echo "<td style='border:.5pt solid black;'>".$docs[$j]."</td>";
+							}
 							for($k=$temp_len1;$k<$total_size;$k++)
 							{
 								echo "<td style='border:.5pt solid black;'>".$qty[$k]."</td>";
@@ -3629,7 +3667,14 @@ tags will be replaced.-->
 					echo "<th style='border:.5pt solid black;'>Total</th>";
 					for($j=0;$j<sizeof($color_codes);$j++)
 					{
-						echo "</tr><tr style='height:40px'>";
+						echo "</tr>";
+						if($temp==0){
+							echo "<td style='border:.5pt solid black;'>".'<div id="bcTarget'.$j.'" style="width:auto;"></div><script>$("#bcTarget'.$j.'").barcode("D'.$docs[$j].'", "code39",{barWidth:2,barHeight:15,moduleSize:5,fontSize:0});</script>'."</td>";
+							echo "<td style='border:.5pt solid black;'>".$color_codes[$j]."</td>";
+							echo "<td style='border:.5pt solid black;'>".chr($cc_code[$j]).leading_zeros($cut_no, 3)."</td>";
+							echo "<td style='border:.5pt solid black;'>".$docs[$j]."</td>";
+						}
+						echo "<tr style='height:40px'>";
 						for($k=$temp_len1;$k<$total_size;$k++)
 						{
 							echo "<td style='border:.5pt solid black;'>".$qty[$k]."</td>";
