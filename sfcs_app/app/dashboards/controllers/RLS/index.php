@@ -29,10 +29,7 @@ body
 <div class="panel panel-primary">
 <div class="panel-heading">Rework Live Status<a href="<?= getFullURL($_GET['r'],'rls.htm','R');?>" target="_blank" class="btn btn-warning btn-xs pull-right">? </a></div>
 <div class="panel-body">
-<!-- <table align="center">
-<tr><th><h4><img src="1.jpg"></img>Need To update</h4></th><th></th><th></th><th></th><th></th><th><h4><img src="2.png"></img>0 Output</h4></th><th></th><th></th><th></th><th></th><th><h4><img src="3.png"></img>Idle Line</h4></th><th></th><th></th><th></th><th></th><th><h4><img src="4.jpg"></img>Rework > 2%</h4></th><th></th><th></th><th></th><th></th><th><h4><img src="5.jpg"></img> 0% < Rework < 2%</h4></th><th></th><th></th><th></th><th></th><th><h4><img src="6.png"></img>Rework = 0%</h4></th></tr>
-</table>
-<hr> -->
+
 <table align="center">
 <tr>
 </tr>
@@ -40,19 +37,6 @@ body
 
 include"section_1.php";
 
-// include"section_2.php";
-
-// include"section_3.php";
-
-//include"section_4.php";
-
-//include"section_5.php";
-
-//include"section_6.php";
-
-//include"section_7.php";
-
-//include"section_8.php";
 ?>
 </table>
 

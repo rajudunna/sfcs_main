@@ -608,7 +608,16 @@ border: 1px solid black;
                                 if($option1==1)
                                 {  
                                     echo "<table id=\"info\">";
-                                    echo "<tr><td colspan=4 style='background-color:#29759C; color: white;'>Section - ".$sec."</td></tr>"; 
+                                    $sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$sec GROUP BY section ORDER BY section + 0";
+                                    // mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    while($sql_rowx=mysqli_fetch_array($sql_resultx))
+                                    {
+                                        $section_display_name=$sql_rowx['section_display_name'];
+                                        $section_head=$sql_rowx['sec_head'];
+
+                                    }
+                                    echo "<tr><td colspan=4 style='background-color:#29759C; color: white;'>".$section_display_name." (".$section_head.")</td></tr>"; 
                                     echo "<tr><th style='background-color:#29759C;'>M#</th><th style='background-color:#29759C;'>NOP</th><th style='background-color:#29759C;'>Style DB</th><th style='background-color:#29759C;'>Del DB</th>";              
                                     for($i=0;$i<sizeof($headers);$i++) 
                                     { 

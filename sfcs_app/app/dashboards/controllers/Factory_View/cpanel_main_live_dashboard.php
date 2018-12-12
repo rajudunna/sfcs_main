@@ -826,7 +826,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//echo "Last Update at: ".$sql_row['lastup']."<br/>";
 }
 
-$sqlx="select * from $bai_pro3.sections_db where sec_id='".$_GET['sec_x']."'";
+$sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` where section = '".$_GET['sec_x']."' GROUP BY section ORDER BY section + 0";
 //echo "</br>".$sqlx;
 mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -839,10 +839,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;">';
 	echo "<p>";
 		
-	//echo "<a href=\"bundle_details.php?section=$section&ops=3\" onclick=\"Popup=window.open('bundle_details.php?section=$section&ops=3"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><b>SECTION - $section</b><br><font style=\"font-size:16px;font-color:#000000;\">($section_head)</font></font></a>";
+	
 	echo "<div style=\"text-align:center;>
-	<a href=\"bundle_details.php?sec=$section&ops=3&type=$cust_view\" onclick=\"Popup=window.open('bundle_details.php?sec=$section&ops=3&type=$cust_view"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">
-	<font style=\"font-size:24px;color:#000000;\"><centre><b>IMS</b></centre></font></a></div>";
+	<font style=\"font-size:24px;color:#000000;\"><centre><b>IMS</b></centre></font></div>";
 	echo "<table>";
 
 	$mods=array();
@@ -857,9 +856,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		
 		echo "<tr class=\"bottom\">";
 		echo "<td class=\"bottom\" style=\"width=15px\"><font class=\"fontnn\" color=white >
-		<a href=\"bundle_details.php?module=$module&ops=2&type=$cust_view\" onclick=\"Popup=window.open('bundle_details.php?module=$module&ops=2&type=$cust_view"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">
-		$module</a></font></td>";
-		
+		<a>$module</a></font></td>";
 		echo "<td class=\"bottom\"></td>";
 		echo "<td class=\"bottom\" style=\"width=200\">";
 		
@@ -1014,9 +1011,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				<div id=\"S$style_no\" class=\"$id\" style=\"font-size:14px; text-align:center;  width: 40px; height: 7px; color:$id\" title=\"$title\" >
 				<div id=\"S$schedule_no\" style=\"font-size:14px; text-align:center;  width: 40px; height: 7px;\" title=\"$title\" >
 				<div id=\"M$min\" style=\"font-size:14px; text-align:center;  width: 40px; height: 7px;\" title=\"$title\" >
-				<a style=\"color:black\" href=\"bundle_details.php?mini_order=$mini_order_num&mini_order_ref=$mini_order_ref&module=$module&wip=$wip_qty&ops=1&type=$cust_view\" 
-				onclick=\"Popup=window.open('bundle_details.php?mini_order=$mini_order_num&mini_order_ref=$mini_order_ref&module=$module&wip=$wip_qty&ops=1&type=$cust_view"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">
-				".$mini_order_num."</a></div></div></div>"; 
+				".$mini_order_num."</div></div></div>"; 
 				$jj=0;
 			}
 			else
@@ -1024,9 +1019,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				echo "<div id=\"S$style_no\" class=\"$id\" style=\"font-size:14px; text-align:center;  width: 40px; height: 7px; color:$id\" title=\"$title\"  >
 				<div id=\"S$schedule_no\" style=\"font-size:14px; text-align:center;  width: 40px; height: 7px;\" title=\"$title\"  >
 				<div id=\"M$min\" style=\"font-size:14px; text-align:center; width: 40px; height: 7px;\" title=\"$title\" >
-				<a style=\"color:black\" href=\"bundle_details.php?mini_order=$mini_order_num&mini_order_ref=$mini_order_ref&module=$module&wip=$wip_qty&ops=1&type=$cust_view\" 
-				onclick=\"Popup=window.open('bundle_details.php?mini_order=$mini_order_num&mini_order_ref=$mini_order_ref&module=$module&wip=$wip_qty&ops=1&type=$cust_view"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">
-				".$mini_order_num."</a></div></div></div>"; 
+				".$mini_order_num."</div></div></div>"; 
 				$jj++;
 			}
 			

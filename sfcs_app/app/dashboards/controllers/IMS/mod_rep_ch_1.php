@@ -25,11 +25,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 		$reason=$_POST['reason'];
 		$section=$_POST['section'];
 		$key=$_POST['key'];
-		
-		
-		$sql="select * from $bai_pro3.sections_db where sec_id=$section and password=\"$key\"";
-		//echo $sql;
-		//$sql="select * from members where login=\"$password\"";
+		$sql = "SELECT *,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` where sec_id=$section GROUP BY section ORDER BY section + 0";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
 		while($sql_row=mysqli_fetch_array($sql_result))

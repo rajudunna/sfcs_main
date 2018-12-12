@@ -425,39 +425,71 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
     <div style="padding-top:15px;">
     <div class="table-responsiv">
       <div class='col-sm-12'>
-      <?php 
-        $sqlx="select sec_id,sec_head,sec_mods from $bai_pro3.sections_db where sec_id>0 order by sec_id";
-        $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-        $break_counter = 0;
-        while($sql_rowx=mysqli_fetch_array($sql_resultx))     //section Loop -start
-        {
-          $break_counter++;    
-          $section=$sql_rowx['sec_id'];
-          $section_head=$sql_rowx['sec_head'];
-          $section_mods=$sql_rowx['sec_mods'];
-          $ims_priority_boxes=echo_title("$bai_pro3.sections_master","ims_priority_boxs","sec_name",$section,$link);
-    
-          $mods=array();
-          $mods=explode(",",$section_mods);
+   <?php
+      $sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name GROUP BY section ORDER BY section + 0";
+      $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+      $break_counter = 0;
+      while($sql_rowx=mysqli_fetch_array($sql_resultx))     //section Loop -start
+      {
+            
+          $break_counter++;
+            
+            $section=$sql_rowx['sec_id'];
+            $section_head=$sql_rowx['sec_head'];
+            $section_mods=$sql_rowx['sec_mods'];
+            $section_display_name=$sql_rowx['section_display_name'];
 
-          if($break_counter == 5){
-              $break_counter = 1;
-              echo "</div><span style='height:50px'></span><div class='col-sm-12'>";
-          }
-        ?>
-        <div class="section_main_box">
+            $ims_priority_boxes=echo_title("$bai_pro3.sections_master","ims_priority_boxs","sec_name",$section,$link);;
+            
+            $mods=array();
+            $mods=explode(",",$section_mods);
+
+            // $sqlx1="SELECT * FROM $bai_pro3.sections_master WHERE sec_id=$section";
+            // // echo $sqlx1;
+            // $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+            // while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+            // {
+            //   $sec_name=$sql_rowx1['sec_name'];
+            // }
+            if($break_counter == 5){
+                $break_counter = 1;
+                echo "</div><span style='height:50px'></span><div class='col-sm-12'>";
+      }
+    ?>
+    <div class="section_main_box">
           <div class="sections_heading1">
-            <a href="javascript:void(0);" onclick="PopupCenterSection('<?= getFullURL($_GET['r'],'sec_rep.php','R');?>?section=<?php echo $section; ?>', 'myPop1',800,600);" >Section <?php echo $section; ?><br/> </a>
-          </div>
-          <?php    // modules Loop -Start
-            for($x=0;$x<sizeof($mods);$x++)
-            {
-              $module=$mods[$x];
-              $data[] = $mods[$x];
-              $module_sql = "SELECT color,label FROM $bai_pro3.module_master WHERE module_name='$module'";
-              $module_sql_result = mysqli_query($link,$module_sql);
-              $module_col_lab = mysqli_fetch_array($module_sql_result);
-          ?>
+            <a href="javascript:void(0);" onclick="PopupCenterSection('<?= getFullURL($_GET['r'],'sec_rep.php','R');?>?section=<?php echo $section; ?>', 'myPop1',800,600);" ><?php echo $section_display_name; ?><br />
+      </a>
+            </div>
+            
+           <?php    // modules Loop -Start
+       for($x=0;$x<sizeof($mods);$x++)
+      {
+      
+      $module=$mods[$x];
+      $data[] = $mods[$x];
+
+      $module_sql = "SELECT * FROM $bai_pro3.module_master WHERE module_name=\"$module\"";
+      $module_sql_result = mysqli_query($link,$module_sql);
+      $module_col_lab = mysqli_fetch_array($module_sql_result);
+      // print_r($module_col_lab['color']);
+      //include("mod_rep_recon.php");
+  
+      ?>
+
+      <?php
+      /*
+       $rev_qty=0;
+       $rev_query="select sum(qms_qty) as rej_qty from $bai_pro3.bai_qms_db where remarks like '$module-%'";
+       //echo $rev_query;
+       $result=mysqli_query($link, $rev_query) or exit("Sql Error rev qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+      // echo $rev_query;
+       while($row=mysqli_fetch_array($result))
+       {
+         $rev_qty=$row['rej_qty'];
+       }
+          */
+      ?>
             <div class="line_main"  style="background:<?= $module_col_lab['color']; ?>">
             <h5 align="center" style="margin-bottom: 0px;margin-top: 0px;" ><b><?= $module_col_lab['label']; ?></b></h5>
             <!-- module number DIV start -->  
