@@ -357,7 +357,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
 function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
 {
     $obj = new rest_api_calls();
-    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     $current_date = date("Y-m-d H:i:s");
 
     $host = $api_hostname;
@@ -376,6 +376,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
     }
     //getting main operation_code from operation mapping
     //$bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
+    $main_ops_code = $op_code;
     $bundle_creation_data_check = "SELECT DISTINCT Main_OperationNumber FROM $bai_pro3.schedule_oprations_master WHERE style ='$style' AND description ='$color'  AND SMV > 0";
     // echo $bundle_creation_data_check;
 	$bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -451,7 +452,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                     //echo $update_qry.'</br>';
                     // echo $r_reasons[$key];
                 
-                    $dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and operation_code='$op_code'";
+                    $dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and operation_code='$main_ops_code'";
                     $result_dep_ops_array_qry = $link->query($dep_ops_array_qry);
                     while($row = $result_dep_ops_array_qry->fetch_assoc()) 
                     {
