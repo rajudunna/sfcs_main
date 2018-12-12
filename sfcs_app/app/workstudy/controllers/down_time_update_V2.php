@@ -200,7 +200,6 @@ for($i=0;$i<=10;$i++)
 
 	<select name=\"sec[$i]\" id=\"sec_$i\" name=\"sec_$i\" class=\"form-control\">";
 	$sql="SELECT sec_id FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
-	//echo $sql;
 	$result7=mysqli_query($link, $sql) or exit("Sql Erro1r".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($result7))
 	{
@@ -442,7 +441,7 @@ if(isset($_POST["submit"]))
 			}
 			else if($style[$i]!='')
 			{
-				$sql_buyer="SELECT distinct(buyer_id) as buyer  FROM $bai_pro2.movex_styles where style_id='".$style[$i]."' and buyer_id!=''";
+				$sql_buyer="SELECT distinct(buyer_id) as buyer FROM $bai_pro2.movex_styles where style_id='".$style[$i]."' and buyer_id!=''";
 				
 				$sql_result=mysqli_query($link, $sql_buyer) or exit($sql_buyer."Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))

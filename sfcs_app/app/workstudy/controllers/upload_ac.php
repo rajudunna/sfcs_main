@@ -20,12 +20,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
   width:100%;
   height:100%;
   background-color:#666;
-  /* background-image:url('ajax-loader.gif'); */
   background-repeat:no-repeat;
   background-position:center;
   z-index:10000000;
   opacity: 0.4;
-  filter: alpha(opacity=40); /* For IE8 and earlier */
+  filter: alpha(opacity=40);
 }
 </style>
 <div class="ajax-loader" id="loading-image" style="display: none">
@@ -52,7 +51,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 {	
 	$date=$sql_row['yer_mon'];
 }
-//echo $date."<br>";
 if($date=='')
 {
 	$date=date("Y-m-d");
@@ -84,8 +82,6 @@ echo '> </div></br><div style="color:red" class="col-sm-4"><b>NOTE : Please remo
 } 
 else { 
 
-// $yourdomain = 'localhost'; 
-// echo getFullURL($_GET['r'],'dbupdate.php','R');
 $action_var = getFullURL($_GET['r'],'dbupdate.php','N');
 
 $uploaddir = $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'uploads',0,'R'); 
@@ -93,8 +89,6 @@ $filename = $_FILES['file']['name'];
 $filesize = $_FILES['file']['size']; 
 
 $file_ext = pathinfo($filename, PATHINFO_EXTENSION);
-// echo $file_ext;
-// die();
 if($file_ext == 'csv'){
 	
 $tmpname_file = $_FILES['file']['tmp_name']; 
@@ -124,9 +118,6 @@ else
  
 
 }
-
-
-	//echo '<span id="msg" style="display:none;"><h2>Please Wait data uploading...</h2></span>';
 
 }else{
 	echo "<script>sweetAlert('Uploaded File should be in CSV format');</script>";

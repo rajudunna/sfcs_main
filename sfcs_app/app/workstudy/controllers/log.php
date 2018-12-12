@@ -1,83 +1,27 @@
 
 <?php
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
-// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
-$view_access=user_acl("SFCS_0238",$username,1,$group_id_sfcs);
-
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
+	$view_access=user_acl("SFCS_0238",$username,1,$group_id_sfcs);
 ?>
 
 <title>Freez Plan Log</title>
 <style type="text/css" media="screen">
-/* @import "../TableFilter_EN/filtergrid.css"; */
 </style>
 <link href="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/filtergrid.css',3,'R'); ?>" rel="stylesheet" type="text/css" />
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
-
-<style>
- /* body
-{
-	font-family:calibri;
-	font-size:12px;
-}
-
-table tr
-{
-	border: 1px solid black;
-	text-align: right;
-	white-space:nowrap; 
-}
-
-table td
-{
-	border: 1px solid black;
-	text-align: right;
-white-space:nowrap; 
-}
-
-table th
-{
-	border: 1px solid black;
-	text-align: center;
-    	background-color: #29759c;
-	color: WHITE;
-white-space:nowrap; 
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-table{
-	white-space:nowrap; 
-	border-collapse:collapse;
-	font-size:12px;
-}
-
-
-}
-
-} */
-</style>
-
-<!-- <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?> -->
-
 </head>
-
-
 <body>
 
-
-<!-- <div id="page_heading"><span style="float"><h3>Freez Plan Log</h3></span><span style="float: right; margin-top: -20px"><b>?</b>&nbsp;</span></div> -->
 <?php
 	$sdate=$_REQUEST['sdate'];
-	// echo $sdate;
 	
 	if($sdate==null)
 	{
 		$sdate=date("Y-m-d");
 	}
 ?>
-
 
 <div class="panel panel-primary">
 <div class="panel-heading">Freez Plan Log <?= date("Y-M",strtotime($sdate)); ?></div>
@@ -88,12 +32,7 @@ echo "<a class='btn btn-primary' href=".getFullURLLevel($_GET['r'],'log.php',0,'
 
 <?php
 
-
-{
-// echo "<h2>".date("Y-M",strtotime($sdate))."</h2>";
-
-$sql="select * from $bai_pro.tbl_freez_plan_log where left(date,7)=left('$sdate',7)  order by date, mod_no,shift";
-//echo $sql."<br>";
+$sql="select * from $bai_pro.tbl_freez_plan_log where left(date,7)=left('$sdate',7) order by date, mod_no,shift";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_result)==0)
 {
@@ -150,11 +89,9 @@ echo '<tr><td colspan=4>Total:</td><td id="table1Tot1" style="background-color:#
 <td></td></tr>';
 
 echo "</table>";
-}
 ?>
 
 <script language="javascript" type="text/javascript">
-//<![CDATA[
 	var fnsFilters = {
 	col_0: "select",
 	col_1: "select",
@@ -185,7 +122,6 @@ echo "</table>";
 	
 	 setFilterGrid("table1",fnsFilters);
 	
-//]]>
 </script>
 </div></div>
 

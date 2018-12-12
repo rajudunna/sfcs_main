@@ -33,10 +33,7 @@ var update_val = document.getElementById('update');
 option.onchange = function() {
   update_val.disabled = !!this.checked;
 };
-// function dodisablenew()
-// {
-// 	document.getElementById('update').disabled='true';
-// }
+
 
 
 function enableButton(x) 
@@ -126,11 +123,7 @@ function markchange(x)
 	
 	check[x].value=1;
 	
-	//CR: 131
-	//pro_a[x].value=Math.round((eff_a[x].value*hrs_a[x].value*60*fix_nop_a[x].value)/(smv[x].value*100));
-	//pro_b[x].value=Math.round((eff_b[x].value*hrs_b[x].value*60*fix_nop_b[x].value)/(smv1[x].value*100));
 	
-	//alert(smv[x].value);
 	pro_a[x].style.backgroundColor="white";
 	pro_b[x].style.backgroundColor="white";
 }
@@ -139,7 +132,6 @@ function check_date(x,yy,xx) //form date, allowed date, today date
 {
 	var d = new Date();
 	var curr_hour = d.getHours();
-	//alert(curr_hour);
 	if (x<yy)
 	{ 
 		alert("Pleae enter correct date");
@@ -162,29 +154,7 @@ function check_date(x,yy,xx) //form date, allowed date, today date
 	}
 	
 }
-// function chk(code)
-// {
-// 	var cd = code;
-// 	alert(cd);
-// 	var chk = [96,97,98,99,100,101,102,103,104,105,48,49,50,51,52,53,54,55,56,57,110,190];
-// 	for(var i = 0; i < 22; i++)
-// 	{
-// 		if(cd == chk[i])
-// 		{
-// 			alert(chk[i]);
-// 			return true;
-// 			break;
-// 		}
-// 	}
-// 	alert();
-// 	return false;
-// }
-// function isNum(evt)
-// {
-//     // evt = (evt) ? evt : window.event;
-//     var charCode = evt.which;	
-// 	return chk(charCode);
-// }
+
 function only_num(e)
 {
 	if(e.keyCode == 189 || e.keyCode== 187 || e.keyCode== 45 || e.keyCode== 69 || e.keyCode== 107 || e.keyCode== 109  || e.keyCode== 187 || e.keyCode == 110 || e.keyCode == 190 )
@@ -325,23 +295,19 @@ $date=date("Y-m-d");
 
 if(mysqli_num_rows(mysqli_query($link, "select * from $bai_ict.report_alert_track where date(date)=\"".date("Y-m-d")."\" and report='PRO_NEW_DB'"))==0)
 {
-	//header("Location: Error_Codes.php?ecode=1");
 }
 
 ?>
 
 <?php 
 $sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
-// echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$max_allowed_date=$sql_row['bac_date'];
 }
 
-//Request #136480
 $max_allowed_date=date("Y-m-d");
-//$max_allowed_date='2014-10-01';
 ?>
 
 	<form action="<?php echo getFullURL($_GET['r'], "plan_update_v2.php", "N"); ?>" method="post" name="input">
@@ -349,19 +315,14 @@ $max_allowed_date=date("Y-m-d");
 	<?php
 	
 	
-	// if(in_array($username,$auth_users)) 
 	if(in_array($authorized,$has_permission)) 
 	{
 
 	echo '<p align=right><strong><a class="btn btn-primary btn-xs" href="'.getFullURL($_GET['r'], "plan_update_view.php", "N").'">Plan Review >><strong></a></p>';
 	
-	//if($username=="kirang" or $username=="kirang")
-	//{
 		echo '<div class="table-responsive"><table class="table table-bordered">
 	<tr><td colspan=6><b>Change Date</b></td><td colspan=3><div class="col-md-10"><input type="text" data-toggle="datepicker" name="date_change" value="'.date("Y-m-d").'" class="form-control" size=15';
 	
-	//Date:12-10-2015/kirang/Task: added user validation to avoid warning message on selection of back date
-	// if(!(in_array($username,$super_user)) )
 	if(!(in_array($authorized,$has_permission)) )
 	{
 		echo ' onchange="check_date(this.value,\''.$max_allowed_date.'\',\''.date("Y-m-d").'\');"';
@@ -380,7 +341,6 @@ $max_allowed_date=date("Y-m-d");
 	
 	
 	$sql="select max(date) as date from $bai_pro.pro_plan";
-	//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -389,7 +349,6 @@ $max_allowed_date=date("Y-m-d");
 
 	$x=0;
 	$sql="select * from $bai_pro.pro_plan where date='$max_date' order by mod_no*1, shift";
-	//echo $sql;
 	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -407,9 +366,7 @@ $max_allowed_date=date("Y-m-d");
 		$plan_sah=$sql_row['plan_sah'];
 		$plan_eff_ex=$sql_row['plan_eff_ex'];
 		
-		$sql1="select distinct bac_style as bac_style,smv,nop from $bai_pro.bai_log_buf where bac_date='$max_date' and bac_no=$module and smv>0 and nop>0 order by bac_no";
-		//$sql1="select distinct bac_style as bac_style,smv,nop from bai_log_buf where bac_date=\"2012-11-06\" and bac_no=$module and smv>0 and nop>0 order by bac_no";
-		//echo $sql1."<br/>";
+		$sql1="select distinct bac_style as bac_style,smv,nop from $bai_pro.bai_log_buf where bac_date='$max_date' and bac_no='$module' and smv>0 and nop>0 order by bac_no";
 		
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -417,7 +374,6 @@ $max_allowed_date=date("Y-m-d");
 			$smv=$sql_row1['smv'];
 			$nop=$sql_row1['nop'];
 			$bac_style=$sql_row1['bac_style'];
-			//echo $bac_style;
 		}
 		
 		$bgcolor_tag=" style=\"background-color: white\"";
@@ -435,7 +391,6 @@ $max_allowed_date=date("Y-m-d");
 		
 		if($shift=="A")
 		{
-			//Taking default Couple Number as 1 incase couple is 0
 			if($couple == 0)
 			{
 				$couple=1;
@@ -462,7 +417,6 @@ $max_allowed_date=date("Y-m-d");
 		
 		if($shift=="B")
 		{
-			//Taking default Couple Number as 1 incase couple is 0
 			if($couple == 0)
 			{
 				$couple=1;
@@ -543,14 +497,14 @@ if(isset($_POST['update']))
 			$sql1="insert ignore into $bai_pro.pro_plan (plan_tag) values (\"$plan_tag\")";
 			mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 						
-			$sql1="update $bai_pro.pro_plan set sec_no=".$section[$i].", date=\"$date\", mod_no=".$module[$i].", shift=\"A\", plan_eff=".($eff_a[$i]+$plan_eff_ex[$i]).",  plan_pro=".$pro_a[$i].", remarks=\"".$remarks[$i]."\", act_hours=".$hrs_a[$i].", couple=".$couple_a[$i].", fix_nop=".$fix_nop_a[$i].", plan_clh=".$clh_a[$i].",plan_sah=".$sah_a[$i].",plan_eff_ex=".$plan_eff_ex[$i]." where plan_tag=\"".$plan_tag."\"";
+			$sql1="update $bai_pro.pro_plan set sec_no=".$section[$i].", date=\"$date\", mod_no='".$module[$i]."', shift=\"A\", plan_eff=".($eff_a[$i]+$plan_eff_ex[$i]).",  plan_pro=".$pro_a[$i].", remarks=\"".$remarks[$i]."\", act_hours=".$hrs_a[$i].", couple=".$couple_a[$i].", fix_nop=".$fix_nop_a[$i].", plan_clh=".$clh_a[$i].",plan_sah=".$sah_a[$i].",plan_eff_ex=".$plan_eff_ex[$i]." where plan_tag=\"".$plan_tag."\"";
 			$note.=$sql1."<br/>";
 			mysqli_query($link, $sql1) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$sql1="insert ignore into $bai_pro.pro_plan_today (plan_tag) values (\"$plan_tag\")";
 			mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			$sql1="update $bai_pro.pro_plan_today set sec_no=".$section[$i].", date=\"$date\", mod_no=".$module[$i].", shift=\"A\", plan_eff=".($eff_a[$i]+$plan_eff_ex[$i]).",  plan_pro=".$pro_a[$i].", remarks=\"".$remarks[$i]."\", act_hours=".$hrs_a[$i].", couple=".$couple_a[$i].", fix_nop=".$fix_nop_a[$i].", plan_clh=".$clh_a[$i].",plan_sah=".$sah_a[$i].",plan_eff_ex=".$plan_eff_ex[$i]." where plan_tag=\"".$plan_tag."\"";
+			$sql1="update $bai_pro.pro_plan_today set sec_no=".$section[$i].", date=\"$date\", mod_no='".$module[$i]."', shift=\"A\", plan_eff=".($eff_a[$i]+$plan_eff_ex[$i]).",  plan_pro=".$pro_a[$i].", remarks=\"".$remarks[$i]."\", act_hours=".$hrs_a[$i].", couple=".$couple_a[$i].", fix_nop=".$fix_nop_a[$i].", plan_clh=".$clh_a[$i].",plan_sah=".$sah_a[$i].",plan_eff_ex=".$plan_eff_ex[$i]." where plan_tag=\"".$plan_tag."\"";
 			$note.=$sql1."<br/>";
 			mysqli_query($link, $sql1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
@@ -578,9 +532,6 @@ if(isset($_POST['update']))
 	$fh = fopen($myFile, 'a') or die("<span style='color:red;'><center>can't open file</center></span>");
 	$stringData = $note;
 	fwrite($fh, $stringData);
-	//Writing file
-	
-	// echo "<h2><font color=\"green\">Successfully Updated.</font></h2>";
 	echo "<script>swal('Successfully Updated','','success');</script>";
 	$url=getFullURL($_GET['r'],'plan_update_v2.php','N');
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"$url\"; }</script>";

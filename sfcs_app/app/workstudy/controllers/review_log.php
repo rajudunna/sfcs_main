@@ -7,10 +7,8 @@ $has_permission = haspermission($_GET['r']);
 <head>
 <title>Review Log</title>
 <style type="text/css" media="screen">
-/*@import "../TableFilter_EN/filtergrid.css";*/
 </style>
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script>
+
 </head>
 
 <body>
@@ -31,7 +29,6 @@ if(isset($_GET['exec']))
 	if($status==1)
 	{
 		$sql="update $bai_pro.tbl_freez_plan_track set track_status=$status,verified_by='".$verified_by."',verified_on='".date("Y-m-d H:i:s")."' where yer_mon='$yer_mon' and track_status=".($status-1);
-		// echo $sql.'<br/>';
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));	
 	}	
 	if($status==2)
@@ -50,7 +47,6 @@ if(isset($_GET['exec']))
 		$all_dates1=array();
 		$half_all_dates1=array();
 		$dat_mo=substr($yer_mon,0,7);
-		//echo $dat_mo."<br>";
 		$plan_fac=0;$vs_value=0;$ms_value=0;$fac_sah=0;$plan_sah_mod=array();
 		$sql1="SELECT DATE,SUM(plan_sah) AS sah,RIGHT(DATE,2)AS daten FROM $bai_pro.`tbl_freez_plan_log` WHERE left(date,7)='$dat_mo' GROUP BY DATE*1";
 		$sql_result=mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -100,7 +96,6 @@ echo "<table id=\"table_one\" border=1 class='table table-bordered '>";
 echo "<thead><tr><th>Date</th><th>Verified By</th><th>Verified On</th><th>Confirmed By</th><th>Confirmed On</th><th>Control</th></tr></thead>";
 
 $sql="select * from $bai_pro.tbl_freez_plan_track where track_status<>2";
-// echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {	
@@ -131,11 +126,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				if(in_array($authorized,$has_permission))
 				{
 					$sql2="select * from $bai_pro.tbl_freez_plan_tmp where date='$yer_mon'";
-					// echo $sql2."<br>";
 					$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 					$sql3="select * from $bai_pro.tbl_freez_plan_track where yer_mon='$yer_mon'";
-					// echo $sql3."<br>";
 					$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row3=mysqli_fetch_array($sql_result3))
 					{

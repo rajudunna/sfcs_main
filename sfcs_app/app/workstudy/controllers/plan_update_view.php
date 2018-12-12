@@ -40,8 +40,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	$x=0;
 	$sql="select * from $bai_pro.pro_plan where date=\"$date\"";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// $sql_count="select count(*) from bai_pro.pro_plan where date=\"$date\"";
-	// $sql_result_count=mysqli_query($link, $sql_count) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_result)>0)
 	{
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -57,8 +55,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			$plan_clh=$sql_row['plan_clh'];
 			$plan_sah=$sql_row['plan_sah'];
 			
-			$sql1="select bac_style,smv,nop from $bai_pro.bai_log_buf where bac_date=\"$date\" and bac_no=$module and smv>0 and nop>0 order by bac_no";
-			//echo $sql1."<br/>";		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql1="select bac_style,smv,nop from $bai_pro.bai_log_buf where bac_date=\"$date\" and bac_no='$module' and smv>0 and nop>0 order by bac_no";
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
 				$smv=$sql_row1['smv'];

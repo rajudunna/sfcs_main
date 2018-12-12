@@ -30,15 +30,12 @@ $handle=fopen($filepath,"r");
 fgetcsv($handle);
 
 $teams=$shifts_array;
-//$teams=str_replace('general','G',$teams);
 $teamcount=count($shifts_array);
 while(($data=fgetcsv($handle,1000,","))!==FALSE)
 {				
 		for($i=0;$i<sizeof($data);$i++){
-				// echo $data[$i];
 				if($data[$i]=='-'){
 					$data[$i]=0;
-					// echo 'hi'.$data[$i];
 				}
 
 			}	
@@ -67,7 +64,7 @@ while(($data=fgetcsv($handle,1000,","))!==FALSE)
 								$data[$k]=0;
 							}								
 						}
-						$sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_upload 						(module,nop,shift,value_type,d_1,d_2,d_3,d_4,d_5,d_6,d_7,d_8,d_9,d_10,d_11,d_12,d_13,d_14,d_15,d_16,d_17,d_18,d_19,d_20,d_21,d_22,d_23,d_24,d_25,d_26,d_27,d_28,d_29,d_30,d_31	)VALUES	('".$data[0]."',".$nop.",'".$teams[$i]."','".$data[2]."','".$data[3]."','".$data[4]."','".$data[5]."','".$data[6]."','".$data[7]."','".$data[8]."','".$data[9]."','".$data[10]."','".$data[11]."','".$data[12]."','".$data[13]."','".$data[14]."','".$data[15]."','".$data[16]."','".$data[17]."','".$data[18]."','".$data[19]."','".$data[20]."','".$data[21]."','".$data[22]."','".$data[23]."','".$data[24]."','".$data[25]."','".$data[26]."','".$data[27]."','".$data[28]."','".$data[29]."','".$data[30]."','".$data[31]."','".$data[32]."','".$data[33]."')";
+						$sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_upload(module,nop,shift,value_type,d_1,d_2,d_3,d_4,d_5,d_6,d_7,d_8,d_9,d_10,d_11,d_12,d_13,d_14,d_15,d_16,d_17,d_18,d_19,d_20,d_21,d_22,d_23,d_24,d_25,d_26,d_27,d_28,d_29,d_30,d_31	)VALUES	('".$data[0]."',".$nop.",'".$teams[$i]."','".$data[2]."','".$data[3]."','".$data[4]."','".$data[5]."','".$data[6]."','".$data[7]."','".$data[8]."','".$data[9]."','".$data[10]."','".$data[11]."','".$data[12]."','".$data[13]."','".$data[14]."','".$data[15]."','".$data[16]."','".$data[17]."','".$data[18]."','".$data[19]."','".$data[20]."','".$data[21]."','".$data[22]."','".$data[23]."','".$data[24]."','".$data[25]."','".$data[26]."','".$data[27]."','".$data[28]."','".$data[29]."','".$data[30]."','".$data[31]."','".$data[32]."','".$data[33]."')";
 						mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 						echo $sql."<br>";
 					}
@@ -128,7 +125,7 @@ while(($data=fgetcsv($handle,1000,","))!==FALSE)
 								$j++;
 							}
 						}						
-						$sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_upload 						(module,nop,shift,value_type,d_1,d_2,d_3,d_4,d_5,d_6,d_7,d_8,d_9,d_10,d_11,d_12,d_13,d_14,d_15,d_16,d_17,d_18,d_19,d_20,d_21,d_22,d_23,d_24,d_25,d_26,d_27,d_28,d_29,d_30,d_31	)VALUES	('".$data[0]."',".$nop.",'".$teams[$i]."','".$data[2]."','$val_1','$val_2','$val_3','$val_4','$val_5','$val_6','$val_7','$val_8','$val_9','$val_10','$val_11','$val_12','$val_13','$val_14','$val_15','$val_16','$val_17','$val_18','$val_19','$val_20','$val_21','$val_22','$val_23','$val_24','$val_25','$val_26','$val_27','$val_28','$val_29','$val_30','$val_31')";
+						$sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_upload(module,nop,shift,value_type,d_1,d_2,d_3,d_4,d_5,d_6,d_7,d_8,d_9,d_10,d_11,d_12,d_13,d_14,d_15,d_16,d_17,d_18,d_19,d_20,d_21,d_22,d_23,d_24,d_25,d_26,d_27,d_28,d_29,d_30,d_31	)VALUES	('".$data[0]."',".$nop.",'".$teams[$i]."','".$data[2]."','$val_1','$val_2','$val_3','$val_4','$val_5','$val_6','$val_7','$val_8','$val_9','$val_10','$val_11','$val_12','$val_13','$val_14','$val_15','$val_16','$val_17','$val_18','$val_19','$val_20','$val_21','$val_22','$val_23','$val_24','$val_25','$val_26','$val_27','$val_28','$val_29','$val_30','$val_31')";
 						mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 						echo $sql."<br>";
 					}
@@ -192,7 +189,7 @@ while(($data=fgetcsv($handle,1000,","))!==FALSE)
 								$j++;
 							}
 						}						
-						$sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_upload 						(module,nop,shift,value_type,d_1,d_2,d_3,d_4,d_5,d_6,d_7,d_8,d_9,d_10,d_11,d_12,d_13,d_14,d_15,d_16,d_17,d_18,d_19,d_20,d_21,d_22,d_23,d_24,d_25,d_26,d_27,d_28,d_29,d_30,d_31	)VALUES	('".$data[0]."',".$nop.",'".$teams[$i]."','".$data[2]."','$val_1','$val_2','$val_3','$val_4','$val_5','$val_6','$val_7','$val_8','$val_9','$val_10','$val_11','$val_12','$val_13','$val_14','$val_15','$val_16','$val_17','$val_18','$val_19','$val_20','$val_21','$val_22','$val_23','$val_24','$val_25','$val_26','$val_27','$val_28','$val_29','$val_30','$val_31')";
+						$sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_upload (module,nop,shift,value_type,d_1,d_2,d_3,d_4,d_5,d_6,d_7,d_8,d_9,d_10,d_11,d_12,d_13,d_14,d_15,d_16,d_17,d_18,d_19,d_20,d_21,d_22,d_23,d_24,d_25,d_26,d_27,d_28,d_29,d_30,d_31	)VALUES	('".$data[0]."',".$nop.",'".$teams[$i]."','".$data[2]."','$val_1','$val_2','$val_3','$val_4','$val_5','$val_6','$val_7','$val_8','$val_9','$val_10','$val_11','$val_12','$val_13','$val_14','$val_15','$val_16','$val_17','$val_18','$val_19','$val_20','$val_21','$val_22','$val_23','$val_24','$val_25','$val_26','$val_27','$val_28','$val_29','$val_30','$val_31')";
 						mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 						echo $sql."<br>";
 					}

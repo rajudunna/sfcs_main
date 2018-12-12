@@ -209,17 +209,14 @@ $has_permission = haspermission($_GET['r']);
 		<?php 		
 		
 		$sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC";
-		// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$max_allowed_date=$sql_row['bac_date'];
 		}
 		
-		//#136480 Time based restrictions
 		$max_allowed_date=date("Y-m-d");
 		
-		// if(in_array($username,$auth_users))
 		if(in_array($authorized,$has_permission))
 		{
 			echo '<div class="x_content">';
@@ -258,13 +255,11 @@ $has_permission = haspermission($_GET['r']);
 				<select name="module" id="module" class="form-control col-md-7 col-xs-12" >';
 					echo '<option value="" selected	>Please Select</option>';
 				$sql="SELECT GROUP_CONCAT(sec_mods) as mods FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
-				//echo $sql;
 				$result7=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($result7))
 				{
 					$sql_mod=$sql_row["mods"];
 				}
-				// $module=1;
 				$sql_mods=explode(",",$sql_mod);
 				for($i=0;$i<sizeof($sql_mods);$i++)
 				{
@@ -334,7 +329,6 @@ $has_permission = haspermission($_GET['r']);
 
 	?>
 	</div>
-	<!-- </div> -->
 	<?php
 		if(isset($_POST['submit']))
 		{
@@ -353,12 +347,10 @@ $has_permission = haspermission($_GET['r']);
 				$link->autocommit(FALSE);
 				$flag = true;
 				$sql2="update $bai_pro.bai_log set smv=$smv, nop=$nop where bac_no in ($module) and bac_shift in ('".$shift."') and bac_style=\"$style\" and bac_date between \"$date\" and \"$edate\"";
-				// echo $sql2;
 				$run_sql2 = mysqli_query($link, $sql2);
 
 				if(mysqli_affected_rows($link) != NULL) {
 					$sql2="update $bai_pro.bai_log_buf set smv=$smv, nop=$nop where bac_no in ($module) and bac_shift in ('".$shift."') and bac_style=\"$style\" and bac_date between \"$date\" and \"$edate\"";
-					// echo $sql2;
 					$run_sql3 = mysqli_query($link, $sql2);
 
 					if(mysqli_affected_rows($link) == NULL) {
@@ -388,7 +380,6 @@ $has_permission = haspermission($_GET['r']);
 					
 					
 					
-					//MAIL Communication	
 					$message= '<html><head><style type="text/css">
 					
 					body
@@ -425,32 +416,12 @@ $has_permission = haspermission($_GET['r']);
 					
 					$message.=$message2;
 						
-					//echo $message;
-					// $message.="</table>";
-					// $message .='<br/>Message Sent Via: '.$dns_adr1.'';
-					// $message.="</body></html>";
 					
-					// $to  = 'BAI2ProductionTeam@brandix.com';
-					
-					//$to  = 'brandixalerts@schemaxtech.com';
-					// $subject = 'Style SMV/NOP Amendments';
-					
-					//To send HTML mail, the Content-type header must be set
-					// $headers  = 'MIME-Version: 1.0' . "\r\n";
-					// $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-					
-					// Additional headers
-					// $headers .= 'To: <BAI2ProductionTeam@brandix.com>;'. "\r\n";
-					//$headers .= 'To: <brandixalerts@schemaxtech.com>'. "\r\n";
-					// $headers .= 'From: Shop Floor System Alert <ictsysalert@brandix.com>'. "\r\n";
-					
-					//Mail Communication
 					echo "<h2><font color=Green>Please run daily efficiency report to apply changes!</font></h2>";
 				}else {
 					mysqli_rollback($link);
 					$sql_message = "Style, you entered is not in records. Please try again with new style.";
 					
-					// $sql_message = "Error in updating data, Please try after some time or contact IT team";
 				}
 			} else {
 			

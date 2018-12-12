@@ -2,8 +2,6 @@
 <?php 
   
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-   // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'header_scripts.php',0,'R'));
-   // $edit_emp_data = getFullURL($_GET['r'],'edit_emp_data.php','N'); 
 	$edit_emp_data = getFullURLLevel($_GET['r'],'edit_emp_data.php',0,'N');	
 
 ?>
@@ -35,14 +33,7 @@
 <div class="panel-body">
     <?php $dat = $_GET['date'];?>
     <div style="float: right;"><b><a href="<?= $edit_emp_data.'&date='.$dat;  ?>" class='btn btn-primary'>Update Attendance >></a></b></div>
-        <!-- <form method="GET" action="<?= '?r='.$_GET['r']; ?>" >
-            <div class="row">
-                <div class="col-md-2"><label>Select Date : </label>
-                <input type="date" name="date" class="form-control" value="<?php echo $dat; ?>">
-                </div><br/>
-                <div class="col-md-1" ><input type="submit" name="submit" class="btn btn-primary" value="Search"></div>
-            </div>
-        </form> -->
+       
         <br/><hr/><br/>
         <h2>You are viewing attendance for the date: <?php echo $dat; ?></h2>
         <div class="row">
@@ -68,13 +59,11 @@
                     }
                     for ($i = 0; $i <sizeof($modules); $i++) 
                     {
-                        // $mod = $modules[$i];
 
-                        $sql = "SELECT * FROM $bai_pro.pro_atten WHERE date='$dat' AND module='$modules[$i]'";
+                        $sql = "SELECT avail_A,absent_A,absent_B,jumpers FROM $bai_pro.pro_atten WHERE date='$dat' AND module='$modules[$i]'";
                         $result = mysqli_query($link, $sql) or exit("Sql Error4" . mysqli_error($GLOBALS["___mysqli_ston"]));
                         $sql_row = mysqli_fetch_array($result);
                         $avail = $sql_row['avail_A'];
-                        
                         $absentf = $sql_row['absent_A'];
                         $absentnf = $sql_row['absent_B'];
                         $jumpers = $sql_row['jumpers']; 

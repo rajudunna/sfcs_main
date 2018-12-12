@@ -6,20 +6,6 @@
 		
 ?>
 	<style>
-	/* th
-	{
-		background-color: #003366;
-		color: WHITE;
-		border-bottom: 5px solid white;
-		border-top: 5px solid white;
-		padding: 5px;
-		white-space:nowrap;
-		border-collapse:collapse;
-		text-align:center;
-		font-family:Calibri;
-		font-size:110%;
-
-	} */
 	th,td {
 		text-align:center;
 	}
