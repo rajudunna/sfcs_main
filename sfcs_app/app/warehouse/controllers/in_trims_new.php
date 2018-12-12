@@ -18,13 +18,8 @@ body
 }
 
 </style>
-<?php 
-// echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; 
-?>
 </head>
 <body onload="focus_box()">
-<!-- <div id="page_heading"><span style="float: left"><h3>Online Barcode Scanning </h3></span></div> -->
-
 <?php
 
 
@@ -42,8 +37,6 @@ if(isset($_GET['location']))
 		echo "<h3>Location: <font color=red>Unknown Scan Location!</font></h3>";
 		$location="";
 	}
-	
-	// die();
 }
 else
 {
@@ -56,7 +49,6 @@ else
 
 <!-- <h2><font color="green">IN</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <?php echo "<a href=\"in_trims_new.php\">In</a>   |   <a href=\"out.php\">Out</a></h2>"; ?> -->
 <form name="input" method="post" action="<?php $_SERVER['PHP_SELF']; ?>" enctype="multipart/form data">
-<!-- <input type="text" value="" name="cartonid"> -->
 <textarea name="cartonid" id='cartonid' rows="2" cols="15" onkeydown="document.input.submit();" value=""></textarea>
 <br/>Enter Lable ID:<br/><input type="text" size="19" value="" name="cartonid2"><br/><input type="submit" name="check2" value="Check In">
 <input type="hidden" name="location" value="<?php echo $location; ?>">
@@ -64,14 +56,10 @@ else
 </form>
 
 <?php
-
-//Normal Process
 if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 {
 	$code=$_POST['cartonid'];
 	$location=$_POST['location'];
-	//echo "Location :".$code;
-	//if(is_numeric(substr($code,0,1)))
 		$sql="select * from $bai_rm_pj1.location_db where location_id=\"$code\" and sno>0";
 		$sql_result=mysqli_query($link,$sql) or exit("Sql Error3".mysqli_error());
 		if(mysqli_num_rows($sql_result)<=0)
@@ -100,7 +88,6 @@ if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 	
 }
 
-//Manual Lable Entry
 if(isset($_POST['check2']))
 {
 	$code=$_POST['cartonid2'];
@@ -146,8 +133,6 @@ if(isset($_POST['check2']))
 
 							}
 						}
-						// echo "<h2>Status: <span class='label label-warning'>Failed (or) already updated</span> $code</h2>";
-						//echo "<button id='back' onclick='back()' class='btn btn-warning'><< Go back</button>";
 						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code\"; }</script>";
 						
 					}

@@ -1,12 +1,9 @@
 
 <?php
 	set_time_limit(50000);
-	//require_once('phplogin/auth.php');
     $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-	// require_once('phplogin/auth.php');
 	ob_start();
-	// require_once "ajax-autocomplete/config.php";
 	$url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 	$url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
@@ -14,50 +11,12 @@
 	$view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
 ?>
 
-
-<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html  xmlns="http://www.w3.org/1999/xhtml">
-<head>
-
-  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" /> -->
-  
-  
   <title>Report</title>
   
   <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
   <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
   
-<!-- <style type="text/css" media="screen">
-/*====================================================
-	- HTML Table Filter stylesheet
-=====================================================*/
-@import "TableFilter_EN/filtergrid.css";
 
-/*====================================================
-	- General html elements
-=====================================================*/
-body{ 
-	margin:15px; padding:15px; border:1px solid #666;
-	font-family:Arial, Helvetica, sans-serif; font-size:88%; 
-}
-h2{ margin-top: 50px; }
-caption{ margin:10px 0 0 5px; padding:10px; text-align:left; }
-pre{ font-size:13px; margin:5px; padding:5px; background-color:#f4f4f4; border:1px solid #ccc;  }
-.mytable{
-	width:100%; font-size:12px;
-	border:1px solid #ccc;
-}
-div.tools{ margin:5px; }
-div.tools input{ background-color:#f4f4f4; border:2px outset #f4f4f4; margin:2px; }
-th{ background-color:#003366; color:#FFF; padding:2px; border:1px solid #ccc; }
-td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
-table{
-	white-space:nowrap; 
-	border-collapse:collapse;
-	font-size:12px;
-	background-color: white;
-}
-</style> -->
 
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter.js',3,'R'); ?>"></script>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R'); ?>"></script><!-- External script -->
@@ -138,12 +97,7 @@ var table2_Props = 	{
 		btn_reset_text: "Reset Table Filters",				
 		display_all_text: " [ Show all ] ",
 		sort_select: true,
-		// col_operation: { 
-		// 			id: ["table1Tot1"],
-		// 			col: [6],
-		// 			operation: ["sum"],
-		// 			write_method: ["innerHTML","setValue"] 
-		// 			},
+		
 rows_always_visible: [grabTag(grabEBI('table1'),"tr").length]
 				};
 

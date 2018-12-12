@@ -7,25 +7,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 
 
 <?php
-/* $sql="select * from cuttable_stat_log where order_tid=\"$tran_order_tid\"";
-mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-$sql_num_check=mysql_num_rows($sql_result); */
-
-// $database="bai_rm_pj1";
-// $user=$host_adr_un;
-// $password=$host_adr_pw;
-// $host=$host_adr;
-//$database="bainet33";
-//$user="bainet";
-//$password="bainet";
-//$host="localhost";
 error_reporting(0);
-// $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $password)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
-//  mysqli_select_db($link, $database) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));
-
- 
-//NOTE: MAKE SURE YOU DO YOUR OWN APPROPRIATE SERVERSIDE ERROR CHECKING HERE!!!
 if(!empty($_POST['put']) && isset($_POST['put']))
 {
 	$lot_no=$_POST['lot_no'];
@@ -150,9 +132,9 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 						  
 						  	
 							fclose($handle);
-							// echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color='red'>Stock Updated Successfully.... Please Wait</font></h1></center></div>";
+						
 							  
-							$ext = $filename[1]; // get the extension of the file
+							$ext = $filename[1]; 
 							$newname = "$upload_file"."."."$ext";
 							$path_new=$_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],"Upload_files/$newname","R");
 							 //echo $path_new;
@@ -160,7 +142,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							
 				
 			}  
-						//	echo "<script>sweetAlert('Stock Updated Successfully...','Please Wait','success')</script>";
+						
 						echo "<script>
 							swal({
 								title: 'Stock Updated Successfully',
@@ -171,7 +153,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							</script>";
 	
 							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&lot_no=$lot_no\"; }</script>";
-							// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"insert_v1.php?lot_no=$lot_no\"; }</script>";
+							
 						
 
 
@@ -223,8 +205,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 
 		if($total_qty>$available)
 		{
-			//echo $total_qty;
-			//echo "<font color=red>input qty :".$total_qty." more than available</font>";
+			
 			echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color='red'>input qty(".$total_qty.") more than available</font></h1></center></div>";
 			$url = getFullURL($_GET['r'],'insert_v1.php','N');
 			echo "<a href='$url&lot_no=$lot_no'><center><br/><br/><br/><h3><font color='blue'>Back to Stock In Screen</font></h3></center></a>";
@@ -260,14 +241,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 
 				}
 
-				// if(!$sql_result)
-				// {
-				// 	echo "Failed to insert record<br/>";
-				// }
-				// else
-				// {
-				// 	echo "Record inserted successfully<br/>";
-				// } 
+				 
 			}
 			if($qty_count > 0){
 				echo "<script>
@@ -278,11 +252,9 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							buttons:false,
 						  })
 						</script>";
-				//echo "<script>sweetAlert('Stock Updated Successfully....','Please Wait','success');</script>";
 			}else{
 				echo "<script>sweetAlert('Please fill atleast one roll','','error');</script>";
 			}
-			//echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color='green'>Stock Updated Successfully.... Please Wait</font></h1></center></div>";
 			$url = getFullURL($_GET['r'],'insert_v1.php','N');
 			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() { location.href = \"$url&lot_no=$lot_no\"; }</script>";
 		}	

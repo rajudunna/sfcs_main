@@ -1,16 +1,3 @@
-<!--
-Change log:
-
-2014-03-20/ kirang / Ticket #482209 : Add demudun user in $authorized array.
-
-2016-05-17/kirang/SR#10750119/Task: authorised user can delete lot numbers though transactions are availble for the lot number. but issued and returned quantity should be matached. then it will allow authorised user to delete the lot number
-
--->
-
-<?php
-	// require_once('phplogin/auth.php');
-?>
-
 <?php 	
     $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
@@ -22,26 +9,6 @@ Change log:
 
 <?php
 $has_permission = haspermission($_GET['r']);
-// $url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
-// include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-// $url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
-// include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
-// $view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
-// $authorised_user=user_acl("SFCS_0147",$username,7,$group_id_sfcs);
-/*
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=$username_list[1];
-
-$sql="select * from menu_index where list_id=164";
-	$result=mysql_query($sql,$link1) or mysql_error("Error=".mysql_error());
-	while($row=mysql_fetch_array($result))
-	{
-		$users=$row["auth_members"];
-	}
-
-	$auth_users=explode(",",$users);
-//$authorized=array("kirang","herambaj","ravipu","demudun","apparaoo","kirang","narasingaraon","ramprasadk","kirang");
-*/
 if(!(in_array($view,$has_permission)))
 {
 	header("Location:restrict.php");
@@ -105,7 +72,7 @@ if(isset($_POST['submit']))
 			$lot_no=$sql_row['lot_no'];
 		}
 	
-		$sql="select * from $bai_rm_pj1.sticker_report where lot_no=\"$lot_no\"";
+		$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date from $bai_rm_pj1.sticker_report where lot_no=\"$lot_no\"";
 		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -153,7 +120,7 @@ if(isset($_POST['submit']))
 	}
 	else
 	{
-		//echo "<table class='table table-bordered'><tr class='danger'><td>Details not available, please enter label id.</td></tr></table>";
+		
 		echo "<script>sweetAlert('please enter valid label id.','','warning')</script>";
 		$url = getFullURL($_GET['r'],'entry_delete.php','N');
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
@@ -190,7 +157,7 @@ if(isset($_POST['delete']))
 		
 		$id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 		//echo $id;
-		$sql3="update $bai_rm_pj1.store_in_deleted set log_user='".$username."$".$reason."' where barcode_number=".$id;
+		$sql3="update $bai_rm_pj1.store_in_deleted set log_user='".$username."$".$reason."' where barcode_number='$id'";
 		// echo  "<br/>".$sql3;	 
 		$sql_result3=mysqli_query($link, $sql3) or exit($sql3."<br/>Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$num3=mysqli_affected_rows($link);
@@ -220,11 +187,7 @@ if(isset($_POST['delete']))
 		{
 			$rec_qty=$sql_row_sticker['rec_qty'];
 		}
-		
-		//echo "<br/>store in qty recived".round($qty_rec,2);
-		
-		//echo "<br/> stikcer recived qty".round($rec_qty,2);
-		
+			
 		if(round($qty_rec,2)==round($rec_qty,2))
 		{
 			$sql6="insert into $bai_rm_pj1.sticker_report_deleted select * from $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
@@ -241,7 +204,7 @@ if(isset($_POST['delete']))
 			$sql1="delete from $bai_rm_pj1.store_in where barcode_number=\"$lid\"";
 			$sql_result1=mysqli_query($link, $sql1) or exit($sql1."<br/>Sql Error 1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		// echo "<table class='table table-bordered'><tr class='success'><td>Label Id Successfully Deleted</td></tr></table>";
+		
 		echo "<script>sweetAlert('Label id Successfully Deleted','','success');</script>";
 		$url = getFullURL($_GET['r'],'entry_delete.php','N');
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
@@ -253,7 +216,7 @@ if(isset($_POST['submit2']))
 {
 	$lot_no=$_POST['lot_no_ref'];
 
-	$sql="select * from $bai_rm_pj1.sticker_report where lot_no=\"".trim($lot_no)."\"";
+	$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date from $bai_rm_pj1.sticker_report where lot_no=\"".trim($lot_no)."\"";
     $sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	if(mysqli_num_rows($sql_result)>0)
@@ -319,7 +282,7 @@ if(isset($_POST['submit2']))
 			</div>';
 			echo '<input type="hidden" value="'.$lot_no.'" name="lot_no"><input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable<input type="submit" value="Delete" name="put" id="put" onclick="return check_reason();"
 			 class="btn btn-danger btn-sm confirm-submit" />';
-			//  onclick="javascript:button_disable();"
+			
 
 			echo "</td></tr>";
 			echo '</form>';
@@ -329,12 +292,7 @@ if(isset($_POST['submit2']))
 	else
 	{
 
-		// echo "<table class='table table-bordered'><tr class='danger'><td>Details not available, please enter lot no.</td></tr></table>";
-		// echo "<script>sweetAlert('Details not available, please enter lot no.','','info');</script>";
-		// $url = getFullURL($_GET['r'],'entry_delete.php','N');
-		// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"$url\"; }</script>";
-
-		//echo "<table class='table table-bordered'><tr class='danger'><td>Details not available, please enter lot no.</td></tr></table>";
+		
 		echo "<script>sweetAlert('please enter valid lot no','','warning')</script>";
         $url = getFullURL($_GET['r'],'entry_delete.php','N');
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
@@ -343,14 +301,14 @@ if(isset($_POST['submit2']))
 
 }
 
-//TO delete lot number for wrong grns
+
 if(isset($_POST['put']))
 {
 	
 	$lot_no=$_POST['lot_no'];
 	$reason=$_POST['reason'];
 	
-	//$sql="select * from store_in where lot_no=".$lot_no;
+	
 	
 	$sql="SELECT sum(qty_issued) as total_issued,sum(qty_ret) as total_returned FROM $bai_rm_pj1.store_in where lot_no='$lot_no' group by lot_no";
 	
@@ -427,11 +385,11 @@ if(isset($_POST['put']))
 				
 			}						
 		
-				 //echo "<br/>Sticker report ".$count1;
+
 		
 			if($check==1 and $num7>0)
 			{
-				//echo "<h2><font color=green>Lot number deleted successfully</font></h2>";
+				
 				echo "<script>sweetAlert('Lot Number Deleted Successfully','','success')</script>";
 				$url = getFullURL($_GET['r'],'entry_delete.php','N');
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
@@ -439,7 +397,6 @@ if(isset($_POST['put']))
 			else
 			{
 				echo "<script>sweetAlert('Unable To Delete','Please Cross Check Details','error')</script>";
-				//echo "<h2><font color=red>Transaction un-successful, please cross check the details.</font></h2>";
 				$url = getFullURL($_GET['r'],'entry_delete.php','N');
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",3000); function Redirect() {  location.href = \"$url\"; }</script>";
 			}		
@@ -453,10 +410,7 @@ if(isset($_POST['put']))
 			}
 			else
 			{
-			/*
-			$sql="delete from sticker_report where lot_no=\"$lid\"";
-			$sql_result=mysql_query($sql,$link) or exit($sql."<br/>Sql Error2=".mysql_error());
-			*/
+			
 			
 			$sql1="SELECT * FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
 			$sql_result1=mysqli_query($link, $sql1) or exit($sql1."<br/>Sql Error at count".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -498,7 +452,7 @@ if(isset($_POST['put']))
 		echo "<script>sweetAlert('Deletion Cant Possible',' Because total issued quantity and total returned quantity is not equal for this lot number','error');</script>";
 		$url = getFullURL($_GET['r'],'entry_delete.php','N');
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",5000); function Redirect() {  location.href = \"$url\"; }</script>";
-		//echo "<table class='table table-bordered'><tr class='danger'><td style='text-align:center;'>Deletion Can't Possible. Because total issued quantity and total returned quantity is not equal for this lot number</td></tr></table>";
+		
 	}
 	
 }

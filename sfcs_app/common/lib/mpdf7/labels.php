@@ -1,10 +1,7 @@
 <?php
-    // $url = getFullURLLevel($_GET['r'],'config/config.php',1,'');
     include("../../config/config.php");
     include("../../config/functions.php");
     require_once 'vendor/autoload.php';
-    // echo __DIR__ . '\vendor\autoload.php';
-    // die();
     $mpdf = new \Mpdf\Mpdf([
         'mode' => 'utf-8', 
         'format' => [50, 100], 
@@ -54,7 +51,7 @@ margin-right: 10px;
 <body>';
 
 
-$sql="select * from $bai_rm_pj1.sticker_report where lot_no like \"%".trim($lot_no)."%\"";
+$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date,uom from $bai_rm_pj1.sticker_report where lot_no like \"%".trim($lot_no)."%\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -78,8 +75,8 @@ if($uom_ref=='MTR')
 }
 
 $child_lots="";
-
-$sql="select group_concat(right(lot_no,4) SEPARATOR \" /\") as child_lots from $bai_rm_pj1.sticker_report where batch_no=\"$batch_no\" and inv_no=\"$inv_no\" and item=\"$item\" and lot_no not in ($lot_no)";
+//$sql="select group_concat(right(lot_no,4) SEPARATOR \" /\") as child_lots from $bai_rm_pj1.sticker_report where batch_no=\"$batch_no\" and inv_no=\"$inv_no\" and item=\"$item\" and lot_no not in ($lot_no)";
+$sql="select group_concat(right(lot_no,4) SEPARATOR \" /\") as child_lots from $bai_rm_pj1.sticker_report where batch_no=\"$batch_no\" and inv_no=\"$inv_no\" and item=\"$item\" and lot_no != '$lot_no'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {

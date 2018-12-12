@@ -1,16 +1,12 @@
 <body style="overflow-x:scroll;">
 <?php
-//for testing dev master
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
-//echo "DB : ".$bai_rm_pj1;exit;
-	//getting Location name
 	if(isset($_GET['loc_id'])){
 		echo "<script>
 		$('#form').show();
 		</script>";
 		$qry_getloc="SELECT location_id FROM $bai_rm_pj1.location_db WHERE sno=".$_GET['loc_id'];
-		//echo $qry_getloc;
 		$sql_result=mysqli_query($link, $qry_getloc);
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -23,29 +19,20 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		}
 
 
-		//insetred or updated records
-
 		if(isset($_POST['formsbmt'])){
 				
-			// echo "Location :".$_POST['loc_name']."</br>";
-			// echo "Status :".$_POST['loc_status']."</br>";
-			// echo "Flag Status :".$_POST['flag_status']."</br>";
 			$location_name=$_POST['loc_name'];
 			$location_status=$_POST['loc_status'];
 			$product=$_POST['product'];
 			if($_POST['flag_status']!=0){
-					//validation for existing record
 					$qry_valid="SELECT * FROM $bai_rm_pj1.location_db WHERE location_id='$location_name' and status='$location_status'";
-					//echo "</br>".$qry_valid."</br>";exit
 					$update_qry_valid=mysqli_query($link, $qry_valid);
 					$rowcount=mysqli_num_rows($update_qry_valid);
 					
 					if($rowcount>0){
-						//Alert Message for fail
 						echo "<script>sweetAlert('Warning','Location Already Existed..','error')</script>";
 					}else{
 						
-						//validating inactive action 
 						$qry_validateaction="SELECT SUM(qty_rec) as qty_rec,SUM(qty_issued) as qty_issue,SUM(qty_ret) as qty_ret FROM store_in where ref1='$location_name'";
 						$qry_valid_result=mysqli_query($link, $qry_validateaction);
 						while($qry_valid_row=mysqli_fetch_array($qry_valid_result))
@@ -54,7 +41,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 							$qty_iss=$qry_valid_row['qty_issue'];
 							$qty_ret=$qry_valid_row['qty_ret'];
 						}
-						//qty validatiion for record editing
 						$tot_qty=($qty_rec+$qty_ret-$qty_iss);
 						if($tot_qty!='0'){
 						
@@ -62,12 +48,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 						}else{
 
-							//update qry here
 							$sno=$_POST['flag_status'];
 							$qry_updateloc="UPDATE $bai_rm_pj1.location_db SET location_id=\"$location_name\",status=\"$location_status\",product=\"$product\" WHERE sno=".$sno;
 							$update_locations=mysqli_query($link, $qry_updateloc) or exit("update_buyer_code_qry Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							// $url = getFullURL($_GET['r'],'add_newlocation.php','N');
-							// header("Location: ".$url);
 							echo "<script>sweetAlert('UPDATE','Location Updated Successfully..','success')</script>";
 								
 						}
@@ -76,20 +59,15 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 					
 			}else{
 				
-				//validation for existing record
 				$qry_valid="SELECT * FROM $bai_rm_pj1.location_db WHERE location_id='$location_name'";
 				$update_qry_valid=mysqli_query($link, $qry_valid) or exit("update_buyer_code_qry Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$rowcount=mysqli_num_rows($update_qry_valid);
 				
 				if($rowcount>0){
-					//Alert Message for fail
 					echo "<script>sweetAlert('Warning','Location Already Existed..','error')</script>";
 				}else{
-					//insert qry here
 					$qry_insertloc="INSERT INTO $bai_rm_pj1.location_db (location_id,STATUS,product) VALUES ('$location_name','$location_status','$product')";
 					$update_locations=mysqli_query($link, $qry_insertloc) or exit("update_buyer_code_qry Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					//$url = getFullURL($_GET['r'],'add_newlocation.php','N');
-					//header("Location: ".$url);
 					echo "<script>sweetAlert('Success','Location Inserted Successfully..','success')
 						$('#table').show();
 						$('#form').hide();
@@ -168,10 +146,7 @@ $url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/locationlables.php',3,'R');
 						echo"</thead>";
 						echo"<tbody>";
 						
-						//getting data from locaytion_db in bai rm pj1
 						$qry_locations=" select * from $bai_rm_pj1.location_db";
-						//echo $qry_locations;
-						//mysqli_query($link11, $qry_locations) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result=mysqli_query($link, $qry_locations);
 
 						while($sql_row=mysqli_fetch_array($sql_result))

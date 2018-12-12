@@ -1,8 +1,6 @@
 <?php 
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 $url = '/sfcs_app/app/warehouse/controllers/in_trims.php';
 $out_trims_scanner = '/sfcs_app/app/warehouse/controllers/out_trims_scanner.php';
 ?>
@@ -34,7 +32,6 @@ body
 <body onload="focus_box()">
 <div class='panel panel-primary'>
 	<div class='panel-body'>
-		<!--<div class=' text-left'><h4><span class="label label-success">In</span></h4></div>-->
 		<?php
 
 		if(isset($_GET['location']))
@@ -134,8 +131,7 @@ echo "<br><div>
 
 							}
 						}
-						// echo "<h2>Status: <span class='label label-warning'>Failed (or) already updated</span> $code</h2>";
-						//echo "<button id='back' onclick='back()' class='btn btn-warning'><< Go back</button>";
+					
 						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"in_trims.php?location=$location&code=$code\"; }</script>";
 						
 					}
@@ -198,8 +194,7 @@ echo "<br><div>
 
 							}
 						}
-						// echo "<h2>Status  : <span class='label label-warning'>Failed (or) already updated</span> $code</h2>";
-						// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"".getFullURL($_GET['r'],'return.php','N')."&location=$location&code=$code\"; }</script>";
+						
 						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"in_trims.php?location=$location&code=$code\"; }</script>";
 					}
 					
@@ -215,7 +210,7 @@ echo "<br><div>
 			}
 		}
 
-		//echo "<div class='pull-right text-right'><div ><h2><font color=\"green\">In</font></h2><br/><h2><a href='$url'><button class='btn btn-primary'>In</button></a> <Br/><a href='".getFullURL($_GET['r'],'out.php','N')."'><button class='btn btn-primary'>F-Out</button></a><Br/><a href='".getFullURL($_GET['r'],'out_trims_scanner.php','N')."'><button class='btn btn-primary'>T-Out</button></a> </h2></div></div>";
+		
 		?>
 	</div>
 </div>

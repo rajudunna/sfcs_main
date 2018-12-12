@@ -1,6 +1,5 @@
 <?php
 	set_time_limit(50000);
-	// require_once('phplogin/auth.php');
 	$url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 ?>
@@ -68,25 +67,8 @@ echo '</td>';
 $url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/labels_v2.php',3,'R');
 echo "<td><a href=\"$url?lot_no=$ref\" onclick=\"Popup=window.open('$url?lot_no=$ref"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><h2>Print Labels</h2></a></td>";
 
-			//echo'<td><label>Date:</label>&nbsp;&nbsp;</td><td> <input type="text" name="date" value="'.date("Y-m-d").'" class="form-control"></td>';
-			//echo '<td>&nbsp;&nbsp;Locaton:</td><td><select name="ref1" class="form-control">';
-			//echo "<option value=\"\"></option>";
-			//$sql="select * from location_db where status=1 order by sno";
-			//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			//$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			//$sql_num_check=mysqli_num_rows($sql_result);
-			//while($sql_row=mysqli_fetch_array($sql_result))
-			//{
-				//echo "<option value=\"".$sql_row['location_id']."\">".$sql_row['location_id']."</option>";
-			//}
-			//echo '</select></td>';
-			//echo '<td>&nbsp;&nbsp;<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();"><b>Enable</b>&nbsp;&nbsp;<input type="submit" value="Submit" name="put" id="put" onclick="javascript:button_disable();" class="btn btn-primary btn-sm"/>';
-			//echo '</td>';
-			//$url=  getFullURL($_GET['r'],'mpdf50/examples/labels_v2.php','N');
-			//echo "<td><a href=\"$url&lot_no=$ref\" onclick=\"Popup=window.open('$url&lot_no=$ref"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\" class=\"btn btn-info btn-sm\"><i class=\"fa fa-print\"></i>  Print Labels</a></td>";
 		echo '</tr>';
 		echo "</table>";
-		//echo '<div id="process_message"><h2><font color="red">Please wait!!</font></h2></div>';
 		echo "<input type=\"hidden\" size=\"5\" name=\"ref\" value=\"".$ref."\">";
 
 
@@ -99,10 +81,6 @@ echo "<td><a href=\"$url?lot_no=$ref\" onclick=\"Popup=window.open('$url?lot_no=
 					 <th>Batch #</th><th>Product</th><th>PKG No</th><th>GRN Date</th>
 				 </tr></thead><tbody>';
 				 $i=0;
-		//echo '<hr><div class="table-responsive"><table id="table1" class="table table-bordered"><tr><th>Receiving #</th><th>Item</th><th>Item Name</th><th>Item Description</th><th>Invoice #</th><th>PO #</th><th>Qty</th><th>Labeled</th><th>IN Qty</th><th>Box #</th><th>REF#</th><th>Lot#</th><th>Batch #</th><th>Product</th><th>PKG No</th><th>GRN Date</th></tr>';
-
-		// $sql1="select * from sticker_report where inv_no=\"".$ref."\" or po_no=\"".$ref."\" or batch_no=\"".$ref."\"";
-		// $sql_result1=mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
 		while($sql_row1=mysqli_fetch_array($main_result))
 		{
 			
@@ -117,7 +95,7 @@ echo "<td><a href=\"$url?lot_no=$ref\" onclick=\"Popup=window.open('$url?lot_no=
 			echo "<tr><td><a href=\"$url&lot_no=".$sql_row1['lot_no']."\" class=\"btn btn-info btn-xs\">".$sql_row1['rec_no']."</a></td><td>".$sql_row1['item']."</td><td>".$sql_row1['item_name']."</td>
 				  <td>".rtrim($sql_row1['item_desc'],'/ ')."</td><td>".$sql_row1['inv_no']."</td><td>".$sql_row1['po_no']."</td><td>".(float)$sql_row1['rec_qty']."</td><td>$in</td><td><input type=\"text\" size=\"5\" name=\"qty[$i]\" id=\"qty[$i]\" value=\"".$balance_qty."\" onchange='return check_qty($i);'></td>";
 			echo "<td><input type=\"text\" size=\"5\" name=\"box[]\"><td><input type=\"text\" size=\"5\" name=\"rmks[]\"><input type=\"hidden\" size=\"5\" name=\"lot_no[]\" value=\"".$sql_row1['lot_no']."\"><input type=\"hidden\" size=\"5\" name=\"balance_qty[$i]\"  id=\"balance_qty[$i]\" value=\"".$balance_qty."\"></td>";
-			//echo "<td><input type=\"text\" size=\"5\" name=\"qty[]\" onchange=\"if(check(this.value,".($sql_row1['rec_qty']-$in).")==1010) { this.value=0; }\" readonly></td><td><input type=\"text\" size=\"5\" name=\"box[]\"><td><input type=\"text\" size=\"5\" name=\"rmks[]\"><input type=\"hidden\" size=\"5\" name=\"lot_no[]\" value=\"".$sql_row1['lot_no']."\"></td>";
+		
 			echo "<td>".$sql_row1['lot_no']."</td><td>".$sql_row1['batch_no']."</td><td>".$sql_row1['product_group']."</td><td>".$sql_row1['pkg_no']."</td><td>".$sql_row1['grn_date']."</td>";
 			echo "</tr>";
 			$i++;
@@ -135,7 +113,7 @@ echo "<td><a href=\"$url?lot_no=$ref\" onclick=\"Popup=window.open('$url?lot_no=
 	}
 	else
 	{
-		// echo "<table class='table table-bordered'><tr class='danger'><td align='center'>No Records Found </td></tr></table>";
+		
 		echo "<script>sweetAlert('No Records Found','','warning');</script>";
 	}
 }
@@ -145,11 +123,9 @@ echo "</div></div></div>";
 <script language="javascript" type="text/javascript">
 //<![CDATA[
 var table2_Props = { 
-						// btn_reset: true,  
-						// btn_reset_text: "Reset Table Filters",
+						
 						display_all_text: " [ Show all ] ",
 						sort_select: true,
-						// btn_reset : true,
 						col_operation: { 
 									id: ["table1Tot1"],
 									col: [6],
@@ -157,7 +133,6 @@ var table2_Props = {
 									write_method: ["innerHTML","setValue"] 
 								},
 						
-						//rows_always_visible: [grabTag(grabEBI('table1'),"tr").length],
 				};
 
 	setFilterGrid( "table1", table2_Props);
@@ -182,7 +157,7 @@ function check_qty(id) {
 
 if(!empty($_POST['put']) && isset($_POST['put']))
 {
-	//make variables safe to insert
+	
 
   
   $date=$_POST['date'];

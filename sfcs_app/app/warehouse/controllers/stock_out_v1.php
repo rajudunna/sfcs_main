@@ -1,18 +1,8 @@
-<!--
-
-Ticket #: #684040-kirang/2014-05-26 : To raise compalint for rejected RM material
-
-CR# 213 / kirang / 2014-10-21 : Stock out option for Multiple Lots And Locations
-
--->
-
 
 <?php 
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-// require_once('phplogin/auth.php');
 ob_start();
-// require_once "ajax-autocomplete/config.php";
 $url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
 include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 $url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
@@ -25,21 +15,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 <html  xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-
-<!--<script type="text/javascript" src="ajax-autocomplete/jquery.js"></script>
-<script type='text/javascript' src='ajax-autocomplete/jquery.autocomplete.js'></script>
-<link rel="stylesheet" type="text/css" href="ajax-autocomplete/jquery.autocomplete.css" />-->
-
 <script type="text/javascript">
 $().ready(function() {
   $("#course").autocomplete("ajax-autocomplete/get_course_list.php", {
 	  width: 260,
 	  matchContains: true,
-	  //mustMatch: true,
-	  //minChars: 0,
-	  //multiple: true,
-	  //highlight: false,
-	  //multipleSeparator: ",",
 	  selectFirst: false
   });
 });
@@ -61,7 +41,7 @@ $().ready(function() {
 
 <div style="float:right;">
 <FORM method="post" name="input2" action="?r=<?= $_GET['r'] ?>">
-<div id="seract_lot">Search Lot No/Location: <!--<input type="text" id="course" name="lot_no">-->
+<div id="seract_lot">Search Lot No/Location: 
 <textarea id="course" name="lot_no" cols=12 rows=10 style="height: 107px;"></textarea>
 <input type="submit" name="submit" value="Search" class="btn btn-success"></div>
 </form>
@@ -72,15 +52,12 @@ if(isset($_POST['submit']))
 {
   $lot_nos=$_POST['lot_no'];
   $lot_nos_explode=explode(",",$lot_nos);
-  //Added the single quotes for multiple level of stock searching
   $lot_no=implode(",",$lot_nos_explode);
-  //echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"insert.php?lot_no=$lot_no_new\"; }</script>";
 }
 else
 {
   $lot_nos=$_GET['lot_no'];
   $lot_nos_explode=explode(",",$lot_nos);
-  //Added the single quotes for multiple level of stock searching
   $lot_no=implode(",",$lot_nos_explode);
 }
 
@@ -102,9 +79,7 @@ if(strlen($lot_no)>2)
 	  echo"<style>#back1{display:none;}</style>";
 	 }
 
-//$sql="select * from sticker_report where lot_no=\"".trim($lot_no)."\"";
-$sql5="select * from $bai_rm_pj1.sticker_report where lot_no in ('".trim($lot_no)."')";
-//mysqli_query($sql,$link) or exit("Sql Error2".mysqli_error());
+$sql5="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date from $bai_rm_pj1.sticker_report where lot_no in ('".trim($lot_no)."')";
 $sql_result5=mysqli_query($link, $sql5) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check1=mysqli_num_rows($sql_result5);
 while($sql_row=mysqli_fetch_array($sql_result5))
@@ -125,7 +100,6 @@ while($sql_row=mysqli_fetch_array($sql_result5))
 }
 
 $sql="select sum(qty_rec) as \"qty_rec\" from $bai_rm_pj1.store_in where lot_no in ('".trim($lot_no)."')";
-//mysqli_query($sql,$link) or exit("Sql Error3".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error3".mysqli_error());
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -137,7 +111,6 @@ $diff=$rec_qty-$qty;
 
 if($sql_num_check1>0)
 {
-  // echo"<input type='button' name='back' value='Back' class='btn btn-success' style='margin-left:2px;'></div>";
 
   echo "<div class='table-responsive'>";
   echo "<table class='table table-bordered' style='width:70%'>";
@@ -187,21 +160,20 @@ switch (trim($product_group))
   }
 }
 
-//To list details based on the Location / Lot Number
+
 if($sql_num_check1>0)
 {
-  //$sql="select * from store_in where lot_no=\"".trim($lot_no)."\" and status in (0,1) and roll_status in (0,2) order by lot_no";	
-  $sql="select * from $bai_rm_pj1.store_in where lot_no in ('".trim($lot_no)."') and status in (0,1) and roll_status in (0,2)  order by lot_no";	
+ 
+  $sql="select tid,ref1,ref2,qty_rec,barcode_number,status,qty_issued,qty_ret,partial_appr_qty,ref5,lot_no from $bai_rm_pj1.store_in where lot_no in ('".trim($lot_no)."') and status in (0,1) and roll_status in (0,2)  order by lot_no";	
   //
 }
 else
 {
-  //$sql="select * from store_in where ref1=\"".trim($lot_no)."\" and status in (0,1) and roll_status in (0,2) order by lot_no";
-  $sql="select * from $bai_rm_pj1.store_in where ref1 in ('".trim($lot_no)."') and status in (0,1) and roll_status in (0,2) order by lot_no";
-//echo $sql;
+  
+  $sql="select tid,ref1,ref2,qty_rec,barcode_number,status,qty_issued,qty_ret,partial_appr_qty,ref5,lot_no from $bai_rm_pj1.store_in where ref1 in ('".trim($lot_no)."') and status in (0,1) and roll_status in (0,2) order by lot_no";
+
 }
 
-//mysqli_query($sql,$link) or exit("Sql Error1".mysql_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error1".mysqli_error());
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -255,23 +227,20 @@ echo "</table>";
 echo "</div>";
 echo '<input type="hidden" name="lot_no" value="'.$lot_no.'">';
 
-//echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable<input type="submit" value="Submit" onclick="return button_disable();" class="btn btn-success"  name="put"/ disabled></form>';
 echo'<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();"  style="margin-top:33px;">Enable
 <input type="submit" value="Submit" name="put" id="put" class="btn btn-success style="margin-top:33px;"/>';
-// onclick="return button_disable();
 echo "<h2>Transaction Log:</h2>";
 
 echo "<div class='table-responsive'>";
 echo "<table class='table table-bordered'>";
 echo "<tr style='background-color:white;'><th>date</th><th>Label Id</th><th>Roll No</th><th>Qty</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Remarks</th><th>User</th></tr>";
 if($sql_num_check1>0){
-$sql="select * from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where lot_no in ('".trim($lot_no)."')) order by date";
+$sql="select date,qty_issued,Style,Schedule,tran_tid,cutno,remarks,updated_by from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where lot_no in ('".trim($lot_no)."')) order by date";
 }
 else{
-  $sql="select * from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where ref1 in ('".trim($lot_no)."')) order by date";
+  $sql="select date,qty_issued,Style,Schedule,tran_tid,cutno,remarks,updated_by from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where ref1 in ('".trim($lot_no)."')) order by date";
 }
-//echo $sql;
-//mysqli_query($link,$sql) or exit("Sql Error5".mysqli_error());
+
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error5".mysqli_error());
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -292,7 +261,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			  $result3=mysqli_query($link,$sql3) or die("Error = ".mysqli_error());
 			  while($row3=mysqli_fetch_array($result3))
 			  {
-				  //$lot_no1=$row3["lot_no"];
+				  
 				  $ref2=$row3["ref2"];
 				  $barcode_number=$row3["barcode_number"];
 			  }
@@ -328,10 +297,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	  echo "<tr style='background-color:white;'><td>$date</td><td>$barcode_number</td><td>$ref2</td><td>$qty</td><td>$style</td><td>$schedule</td><td>$cutno</td><td>$remarks</td><td>$user</td></tr>";
   }
   
-  /*$remarks=$sql_row['remarks'];
-  $user=$sql_row['updated_by'];
-  
-  echo "<tr><td>$date</td><td>$qty</td><td>$style</td><td>$schedule</td><td>$cutno</td><td>$remarks</td><td>$user</td></tr>";*/
 }
 
 echo "</table>";
@@ -373,7 +338,6 @@ if(isset($_POST['put']))
 		  $qty_issued_new=0;
 		  
 		  $sql5="select qty_issued from $bai_rm_pj1.store_in where tid=".$tid[$i];
-		  //mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 		  $sql_result=mysqli_query($link,$sql5) or exit("Sql Error".mysqli_error());
 		  $sql_num_check=mysqli_num_rows($sql_result);
 		  while($sql_row=mysqli_fetch_array($sql_result))
@@ -381,8 +345,6 @@ if(isset($_POST['put']))
 			  $qty_issued_new=$sql_row['qty_issued'];
 		  }
 		  $qty_issued_new=$qty_issued_new+$qty_issued[$i];
-
-		  //this is for new roll splitting logic
 
 		  if($qty_issued[$i]<$available[$i]){
 				  
@@ -427,8 +389,6 @@ if(isset($_POST['put']))
 		  }
 	  }
   }
-  // $url2=getFullURL($_GET['r'],'stock_out_v1.php','N');
-  // echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"index.php?r=$url2&lot_no=$lot_no_new\"; }</script>";
   echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
   echo("<script>location.href = '".getFullURLLevel($_GET['r'],'stock_out_v1.php',0,'N')."&lot_no=$lot_no_new';</script>");
 }

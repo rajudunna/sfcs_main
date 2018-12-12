@@ -1,7 +1,5 @@
 
 <?php 
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
 list($domain,$username) = explode('[\]',$_SERVER['AUTH_USER'],2);
@@ -64,10 +62,7 @@ body
 </style>
 <body onload="focus_box()">
 <div class='panel panel-primary'>
-<!--<div class='panel-heading'>Online Barcode Scanning</div>-->
 <div class='panel-body'>
-<!--<div class=' text-left '><h4><span class="label label-success">T-OUT</span></h4></div>-->
-
 <?php
 if(isset($_GET['location']))
 {
@@ -99,11 +94,8 @@ else
 if(isset($_POST['cartonid']))
 {
 	$code=$_POST['cartonid'];
-	// echo "Code =".$code;
 	$location=$_POST['location'];
-	// echo "<br>Location=".$location;
 	$qty_iss=$_POST["qty"];	
-	// echo "<br>Qty = ".$qty_iss;
 	
 	if(is_numeric(substr($code,0,1)))
 	{
@@ -145,10 +137,8 @@ if(isset($_POST['cartonid']))
 				$status=0;
 			}
 			
-			// echo "<br>Rec =".$qty_rec."<br>Iss = ".$qty_issued."<br> Ret= ".$qty_ret;
 			if((($qty_rec-($qty_iss+$qty_issued))+$qty_ret)>=0 && $qty_iss > 0)
 			{
-				//$sql1="update store_in set qty_issued=".(($qty_rec-$qty_issued)+($qty_ret+$qty_issued+$qty_iss)).", status=2, allotment_status=2 where tid=\"$code\"";
 				$sql1="update $bai_rm_pj1.store_in set qty_issued=".($qty_issued+$qty_iss).", status=$status, allotment_status=$status where tid=\"$code\"";
 				// echo "<BR>".$sql1;
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -157,7 +147,7 @@ if(isset($_POST['cartonid']))
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				echo "<h4>Status  : <span class='label label-success'>Success!</span> $code</h4>";
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"out_trims_scanner.php?location=$location\"; }</script>";
-				//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"".r=$_GET['r']&."location=$location&code=$code&bal=$balance\"; }</script>";
+				
 			}
 			else
 			{
@@ -197,10 +187,8 @@ if(isset($_POST['check2']))
 		$location=$_GET['location'];
 	}
 	
-	// echo $code."---".$location;
 	
 	$qty_iss=$_POST["qty"];	
-	// echo "<br>Qty = ".$qty_iss;
 	
 	if(is_numeric(substr($code,0,1)))
 	{
@@ -243,10 +231,9 @@ if(isset($_POST['check2']))
 				$status=0;
 			}
 			
-			// echo "<br>Rec =".$qty_rec."<br>Iss = ".$qty_issued."<br> Ret= ".$qty_ret;
 			if((($qty_rec-($qty_iss+$qty_issued))+$qty_ret)>=0 && $qty_iss > 0)
 			{
-				//$sql1="update store_in set qty_issued=".(($qty_rec-$qty_issued)+($qty_ret+$qty_issued+$qty_iss)).", status=2, allotment_status=2 where tid=\"$code\"";
+			
 				$sql1="update $bai_rm_pj1.store_in set qty_issued=".($qty_issued+$qty_iss).", status=$status, allotment_status=$status where tid=\"$code\"";
 				// echo "<BR>".$sql1;
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -255,7 +242,7 @@ if(isset($_POST['check2']))
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				echo "<h4>Status  : <span class='label label-success'>Success!</span> $code</h4>";
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"out_trims_scanner.php?location=$location\"; }</script>";
-				//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"out_trims_scanner.php?location=$location&code=$code&bal=$balance\"; }</script>";
+				
 			}
 			else
 			{
@@ -280,11 +267,8 @@ if(isset($_POST['check2']))
 
 <form name="input" method="post" action="?r=<?= $_GET['r']; ?>" enctype="multipart/form data">
 <div class="row">
-<!-- <input type="text" value="" name="cartonid">onkeydown="document.input.submit();" -->
-<!--<textarea name="cartonid" rows="2" cols="15" onkeydown="document.input.submit();" ></textarea>-->
 <div class='form-group col-md-3'>
 <input type="text" name="cartonid" class='form-control integer'  onkeyup="document.input.submit();" value="" id='docket'>
-<!--<input type="text" size="19" value="" onkeydown="document.input.submit();"  name="cartonid"><br/>-->
 </div>
 </div>
 <div class="row" id='manual'>
@@ -304,14 +288,11 @@ if($_GET["bal"] > 0)
 <input type="submit" name="check2" id="check_in" value="Check Out" onclick='check_docket(event)' class="btn btn-primary">
 <br/><br/><input type="hidden" name="location" value="<?php echo $location; ?>">
 <br/><br/><input type="hidden" id="bal" name="bal" value="<?php echo $_GET['bal']; ?>">
-<!--<input type="hidden" name="check" value="check">-->
 </div>
 </form>
 
 <?php
 
-
-//echo "<div class='pull-right'><h2><font color=\"red\">T-Out</font></h2><br/><h2><a href='".getFullURL($_GET['r'],'index.php','N')."'><button class='btn btn-primary'>In</button></a> <Br/><a href='".getFullURL($_GET['r'],'out.php','N')."'><button class='btn btn-primary'>F-Out</button></a><Br/><a href='$out_trims_scanner'><button class='btn btn-primary'>T-Out</button></a> </h2></div>";
 echo "<br><div class='pull-right'>
 				<div><h3>
 					<a href='$url'>
