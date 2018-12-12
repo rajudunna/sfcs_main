@@ -3,7 +3,8 @@
 <?php 
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
     $url = getFullURLLevel($_GET['r'],'wpt_dashboard_data.php',0,'R');
-    $sections_query = "Select sec_id from $bai_pro3.sections_db where sec_id > 0";
+    // $sections_query = "Select sec_id from $bai_pro3.sections_db where sec_id > 0";
+    $sections_query = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section>0 GROUP BY section ORDER BY section + 0";
     $sections_result = mysqli_query($link,$sections_query);
     while($row = mysqli_fetch_array($sections_result)){
         $sections[] = $row['sec_id'];
@@ -43,11 +44,18 @@
             {
                 $id1 = "sec-load-$section";
                 $id2 = "sec-$section";
+
+                $sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
+                $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+                {
+                    $section_display_name=$sql_rowx1['section_display_name'];
+                }
         ?>    
                 <div class='section_div' style='width:25vw;float:left;padding:5px'>
                     <div class='panel panel-success'>
                         <div class='panel-body sec-box'>
-                            <center><span class='section-heading'><b>SECTION - <?= $section ?></b></span></center>
+                            <center><span class='section-heading'><b><?= $section_display_name; ?></b></span></center>
                             <span style='height:50px'>&nbsp;</span>
                             <div class='loading-block' id='<?= $id1 ?>' style='display:block'></div>
                             <div id='<?= $id2 ?>'>

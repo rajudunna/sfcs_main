@@ -719,7 +719,13 @@ white-space:nowrap;
                                 if($option1==1)
                                 {  
                                     echo "<table id=\"info\">"; 
-                                    echo "<tr><td colspan=4 style='background-color:#29759C; color:white;'>Section -".$sec."</td></tr> <tr><th rowspan=2 style='background-color:#29759C;'>M#</th> <th rowspan=2 style='background-color:#29759C;'>NOP</th> <th  rowspan=2 style='background-color:#29759C;'>Style DB</th> <th rowspan=2 style='background-color:#29759C;'>Del DB</th>"; 
+                                    $sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$sec";
+                                    $result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    while($sql_row12=mysqli_fetch_array($result12))
+                                    {
+                                        $section_display_name=$sql_row12["section_display_name"];
+                                    }
+                                    echo "<tr><td colspan=4 style='background-color:#29759C; color:white;'>".$section_display_name."</td></tr> <tr><th rowspan=2 style='background-color:#29759C;'>M#</th> <th rowspan=2 style='background-color:#29759C;'>NOP</th> <th  rowspan=2 style='background-color:#29759C;'>Style DB</th> <th rowspan=2 style='background-color:#29759C;'>Del DB</th>"; 
                                 } 
 
                                 $set_colspan = $ftt_chk + $rw_chk + $ut_chk;  

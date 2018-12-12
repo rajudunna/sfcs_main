@@ -628,7 +628,7 @@ $code_db=explode("*",$code);
 		
 			
 		$sections_ref=array();
-		$sqlx1="select * from $bai_pro3.sections_db where sec_id>0";
+		$sqlx1="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name where section=$section_no GROUP BY section ORDER BY section + 0";
 		//echo "<br> SQLx1 :".$sqlx1."</br>";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
@@ -644,7 +644,7 @@ $code_db=explode("*",$code);
 			}
 		}		
 			
-		$sqlx="select * from $bai_pro3.sections_db where sec_id in (".implode(",",$sections_ref).")";
+		$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name where section=(".implode(",",$sections_ref).") GROUP BY section ORDER BY section + 0";
 		// echo "<br> SQLx :".$sqlx."</br>";
 		$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error31".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx=mysqli_fetch_array($sql_resultx))
@@ -652,8 +652,9 @@ $code_db=explode("*",$code);
 			$section=$sql_rowx['sec_id'];
 			$section_head=$sql_rowx['sec_head'];
 			$section_mods=$sql_rowx['sec_mods'];
+			$section_display_name=$sql_rowx['section_display_name'];
 		
-			echo "<div style=\"width:135px;height:500px;\" align=\"center\" class=\"table table-responsive\"><h4>SEC - $section</h4>";
+			echo "<div style=\"width:135px;height:500px;\" align=\"center\" class=\"table table-responsive\"><h4>SEC - $section_display_name</h4>";
 		
 			$mods=array();
 			$mods=explode(",",$section_mods);
