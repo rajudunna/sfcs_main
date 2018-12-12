@@ -677,7 +677,7 @@
 	}
 	
 	//tested
-	function doc_size_wise_bundle_insertion($doc_no_ref)
+	function doc_size_wise_bundle_insertion($doc_no_ref,$recut=0)
 	{
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 		$category=['cutting','Send PF','Receive PF'];
@@ -755,7 +755,14 @@
 				$b_query[$op_code] = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`) VALUES";
 				$b_query[$op_code] .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'.$b_size_code.'","'. $b_sizes.'","'. $sfcs_smv.'","'.$last_id.'","'.$b_in_job_qty.'","'.$send_qty.'","'.$rec_qty.'","'.$rej_qty.'","'.$left_over_qty.'","'. $op_code.'","'.$b_doc_num.'","'.date('Y-m-d').'","'.$b_a_cut_no.'","'.$b_inp_job_ref.'","'.$b_job_no.'","'.$b_shift.'","'.$b_module.'","'.$b_remarks.'","'.$mapped_color.'")';
 				$bundle_creation_result_001 = $link->query($b_query[$op_code]);
-				$inserting_mo = insertMOQuantitiesCut($last_id,$op_code,$b_in_job_qty);
+				if($recut == 1)
+				{
+					$inserting_mo = insertMOQuantitiesRecut($last_id,$op_code,$b_in_job_qty);
+				}
+				else
+				{
+					$inserting_mo = insertMOQuantitiesCut($last_id,$op_code,$b_in_job_qty);
+				}
 				//insertion_into_cps_log 
 			}
 		}

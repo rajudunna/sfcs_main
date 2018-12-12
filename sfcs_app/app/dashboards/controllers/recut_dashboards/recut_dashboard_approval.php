@@ -25,13 +25,15 @@ if(isset($_POST['formSubmit']))
 ?>
 <?php
 $shifts_array = ["NotApproved","Approved"];
-$drp_down = '<div class="row"><div class="col-md-3"><label>Filter:</label>
+$drp_down = '<div class="row"><div class="col-md-3"><label>Status Filter:</label>
 <select class="form-control rm"  name="status" id="rm" style="width:100%;" onchange="myFunction()" required>';
 for ($i=0; $i <= 1; $i++) 
 {
     $drp_down .= '<option value='.$shifts_array[$i].'>'.$shifts_array[$i].'</option>';
 }
-$drp_down .= "</select></div></div>";
+$drp_down .= "</select></div>";
+$drp_down .= "<div class='col-md-3'><label>Schedule Filter:</label>
+              <input class='form-control integer' placeholder='Enter Schedule here' onchange='myfunctionsearch()' id='schedule_id'></input></div></div>";
 echo $drp_down;
 ?>
 </br></br>
@@ -193,6 +195,48 @@ function myFunction()
     // {
     //     $('#myTable').show();
         $('#myTable1').hide();
+    // }
+}
+function myfunctionsearch() 
+{
+    var input, filter, table, tr, td, i;
+    input = document.getElementById("schedule_id").value;
+    filter = input.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    var count = 0;
+    if(tr.length > 1)
+    {
+        for (i = 1; i < tr.length; i++) 
+        {
+            td = tr[i].getElementsByTagName("td")[3];
+            if(td) 
+            {
+                console.log(td.innerHTML.toUpperCase());
+                console.log(filter);
+                if(td.innerHTML.toUpperCase() == filter)
+                {
+                    console.log(tr[i]);
+                    tr[i].style.display = "";
+                } 
+                else 
+                {
+                    count++;
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+    // console.log(count);
+    // if(count == 0)
+    // {
+    //     $('#myTable').hide();
+    //     $('#myTable1').show();
+    // }
+    // else
+    // {
+    //     $('#myTable').show();
+    //     $('#myTable1').hide();
     // }
 }
 </script>

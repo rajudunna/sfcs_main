@@ -477,7 +477,7 @@ if($barcode_generation == 1)
 					//echo $doc_value.'-'.$bundle_individual_number.'-'.$cumulative_qty.'</br>';
 					if($cumulative_qty > 0)
 					{
-						$bundle_pending_qty =  $nop_qry_row['send_qty'] - ($nop_qry_row['recevied_qty']+ $nop_qry_row['rejected_qty']);
+						$bundle_pending_qty =  $nop_qry_row['send_qty'] - $nop_qry_row['recevied_qty'];
 						if($bundle_pending_qty > 0 && $cumulative_qty > 0)
 						{
 							if($bundle_pending_qty <= $cumulative_qty)
@@ -573,7 +573,7 @@ if($barcode_generation == 1)
 						//echo $bundle_individual_number.'-'.$cumulative_rej_qty.'</br>';
 						if($cumulative_rej_qty > 0)
 						{
-							$bundle_pending_qty_rej =  $nop_qry_row['send_qty'] - ( $nop_qry_row['recevied_qty']+$rec_qtys_array[$bundle_individual_number]+$nop_qry_row['rejected_qty']);
+							$bundle_pending_qty_rej =  $nop_qry_row['send_qty'] - ( $nop_qry_row['recevied_qty']+$rec_qtys_array[$bundle_individual_number]);
 							//echo $bundle_individual_number.'-';
 							if($bundle_pending_qty_rej != 0)
 							{
@@ -818,7 +818,34 @@ foreach ($b_tid as $key=>$value)
 			$total_rec_qty = $pre_recieved_qty+$act_reciving_qty+$rejected_qty;
 			if($total_rec_qty > $send_qty)
 			{
-				$concurrent_flag = 1;
+				$send_qty = $row['send_qty'];
+				$pre_recieved_qty = $row['recevied_qty'];
+				$rejected_qty = $row['rejected_qty'];
+				$act_reciving_qty = $b_rep_qty[$key];
+				$total_rec_qty = $pre_recieved_qty + $act_reciving_qty;
+			//	echo $pre_recieved_qty.'+'.$act_reciving_qty.'+'.$rejected_qty.'</br>';
+				//echo "bcd=".$total_rec_qty."-".$send_qty."</br>";
+				if($total_rec_qty > $send_qty)
+				{
+					$concurrent_flag = 1;
+				}
+				else
+				{
+					$rec_qty_from_temp = "select (sum(recevied_qty))as recevied_qty FROM $brandix_bts.bundle_creation_data_temp WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
+				//	echo $rec_qty_from_temp;
+					$result_rec_qty_from_temp = $link->query($rec_qty_from_temp);
+					while($row_temp = $result_rec_qty_from_temp->fetch_assoc()) 
+					{
+						$pre_recieved_qty_temp = $row_temp['recevied_qty'];
+						$act_reciving_qty_temp = $b_rep_qty[$key];
+					//	echo "bcdtemp=".$act_reciving_qty_temp."-".$send_qty."</br>";
+						if($act_reciving_qty_temp > $send_qty)
+						{
+							$concurrent_flag = 1;
+						}
+					}
+
+				}
 			}
 		}
 	}

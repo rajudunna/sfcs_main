@@ -110,6 +110,7 @@
                     $bcd_act_id = $row_bcd['id'];
                     $bundle_number = $row_bcd['bundle_number'];
                     $operation_id = $row_bcd['operation_id'];
+                    $size_id = $row_bcd['size_id'];
                     $retreaving_rej_qty = "SELECT * FROM `bai_pro3`.`rejection_log_child` where bcd_id = $bcd_act_id";
                     $retreaving_rej_qty_res = $link->query($retreaving_rej_qty);
                     while($child_details = $retreaving_rej_qty_res->fetch_assoc()) 
@@ -128,8 +129,8 @@
                     }
                     if($to_add > 0)
                     {
-                        $inserting_into_recut_v2_child = "INSERT INTO `bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`)
-                        VALUES($insert_id,$bcd_act_id,$operation_id,$actual_allowing_to_recut,$to_add,0,0)";
+                        $inserting_into_recut_v2_child = "INSERT INTO `bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`,`size_id`)
+                        VALUES($insert_id,$bcd_act_id,$operation_id,$actual_allowing_to_recut,$to_add,0,0,'$size_id')";
                         mysqli_query($link,$inserting_into_recut_v2_child) or exit("While inserting into the recut v2 childe".mysqli_error($GLOBALS["___mysqli_ston"]));
         
                         $update_rejection_log_child = "update $bai_pro3.rejection_log_child set recut_qty = recut_qty+$to_add where bcd_id = $bcd_act_id";
@@ -147,6 +148,7 @@
     }
     if(isset($_POST['formSubmit1']))
     {
+        include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/app/dashboards/controllers/recut_dashboards/recut_dashboard_issue.php');
         $replace_val = $_POST['replaceval'];
         $input_job_no_random_ref_replace = $_POST['input_job_no_random_ref_replace'];
         $bcd_id = $_POST['bcd_ids'];
@@ -155,7 +157,7 @@
         $operation_id = $_POST['operation_id'];
         $bcd = $bcd_id[0];
         $qry_details = "SELECT style,SCHEDULE,color FROM `bai_pro3`.`rejections_log` r LEFT JOIN `bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
-        WHERE rc.`bcd_id` = $bcd";
+        WHERE rc.`bcd_id` in ($bcd)";
         $qry_details_res = $link->query($qry_details);
         while($row_row = $qry_details_res->fetch_assoc()) 
         {
@@ -169,13 +171,14 @@
             $act_id = $bcd_id[$key];
             if($replaced_qty[$key] > 0)
             {
-                $retreaving_bcd_data = "SELECT * FROM `brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
+                $retreaving_bcd_data = "SELECT bundle_number,id,operation_id,size_title FROM `brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
                 $retreaving_bcd_data_res = $link->query($retreaving_bcd_data);
                 while($row_bcd = $retreaving_bcd_data_res->fetch_assoc()) 
                 {
                     $bcd_individual = $row_bcd['bundle_number'];
                     $bundle_number = $row_bcd['id'];
                     $operation_id = $row_bcd['operation_id'];
+                    $size_title = $row_bcd['size_title'];
                     $retreaving_rej_qty = "SELECT * FROM `bai_pro3`.`rejection_log_child` where bcd_id = $bundle_number";
                     $retreaving_rej_qty_res = $link->query($retreaving_rej_qty);
                     while($child_details = $retreaving_rej_qty_res->fetch_assoc()) 
@@ -192,7 +195,6 @@
                         $to_add = $recut_allowing_qty;
                         $recut_allowing_qty = 0;
                     }
-                    // echo $bcd_individual.'-'.$to_add.'</br>';
                     if($to_add > 0)
                     {
                         //retreaving input jobs which are related to this size 
@@ -200,7 +202,7 @@
                         $input_job_expo_after = explode(',',$input_job_expo);
                         foreach($input_job_expo_after as $sj)
                         {
-                            $excess_job_qry = "SELECT input_job_no_random AS input_job_no_random_ref,SUM(carton_act_qty)as excess_qty FROM `bai_pro3`.`packing_summary_input` WHERE input_job_no_random='$sj' and size_code = '$size[$key]' AND type_of_sewing = '2'";
+                            $excess_job_qry = "SELECT input_job_no_random AS input_job_no_random_ref,SUM(carton_act_qty)as excess_qty FROM `bai_pro3`.`packing_summary_input` WHERE input_job_no_random='$sj' and size_code = '$size[$key]' AND type_of_sewing = 2";
                             $result_excess_job_qry = $link->query($excess_job_qry);
                             if($result_excess_job_qry->num_rows > 0)
                             {
@@ -213,7 +215,7 @@
                                 //checking that inputjob already scanned or not
                                 $rec_qty = 0;
                                 $already_replaced_qty = 0;
-                                $bcd_checking_qry = "select sum(recevied_qty)as rec_qty from $brandix_bts.bundle_creation_data_temp where input_job_no_random_ref in ($input_job_no_excess) and operation_id = '$input_ops_code'";
+                                $bcd_checking_qry = "select sum(recevied_qty)as rec_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref in ($input_job_no_excess) and size_id = '$size[$key]' and operation_id = '$input_ops_code'";
                                 $result_bcd_checking_qry = $link->query($bcd_checking_qry);
                                 if($result_bcd_checking_qry->num_rows > 0)
                                 {
@@ -236,7 +238,6 @@
                                 $already_replaced_with_sj = array_sum($replacing_input_job_with_qty[$sj]);
                                 $exces_qty = $exces_qty - ($rec_qty + $already_replaced_qty+$already_replaced_with_sj);
                             }
-                            // echo $exces_qty.'</br>';
                             if($exces_qty > 0)
                             {
                                 if($to_add > $exces_qty)
@@ -253,49 +254,37 @@
                                 }
                                 if($to_add_sj > 0)
                                 {
-                                    $insertion_qry = "INSERT INTO `$bai_pro3`.`replacment_allocation_log` (`bcd_id`,`input_job_no_random_ref`,`replaced_qty`) values ($bcd_individual,$sj,$to_add_sj)";
-                                    echo $insertion_qry.'</br>';
-                                    //updating rejection log child 
-                
-                                    $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set replaced_qty = replaced_qty+$to_add_sj where bcd_id = $bcd_individual";
-                                    
-                
+                                    $insertion_qry = "INSERT INTO `$bai_pro3`.`replacment_allocation_log` (`bcd_id`,`input_job_no_random_ref`,`replaced_qty`,`size_title`) values ($act_id,$sj,$to_add_sj,'$size_title')";
+                                    mysqli_query($link, $insertion_qry) or exit("insertion_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                                    $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set replaced_qty = replaced_qty+$to_add_sj where bcd_id = $act_id";
+                                    mysqli_query($link, $updating_rejection_log_child) or exit("updating_rejection_log_child".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     //updating rejection log 
-                                    $updating_rejection_log = "update $bai_pro3.rejection_log set replaced_qty = replaced_qty+$to_add_sj where style = '$style' and schedule = '$scheule' and color = '$color' ";
-                                    
-                                    //updating cps_log and  bcd
-                                    //retreaving docket and size from bundle creation data 
-                
-                                    $bcd_qry = "SELECT docket_number,size_title FROM `brandix_bts`.`bundle_creation_data` WHERE bundle_number = '$bcd_individual' and operation_id = '$operation_id[$key]'";
-                                    $qry_bcd_qry = $link->query($bcd_qry);
-                                    while($bcd = $qry_bcd_qry->fetch_assoc()) 
-                                    {
-                                        $docket_number = $bcd['docket_number'];
-                                        $size_title = $bcd['size_title'];
-                                    }
-                                    $update_cps_log_qry = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$to_add_sj where doc_no = '$docket_number' and size_title = '$size_title'";
-                                    //    echo $update_cps_log_qry;
-                
-                                    //have to discuss with satish about abmishment.
+                                    $updating_rejection_log = "update $bai_pro3.rejections_log set replaced_qty = replaced_qty+$to_add_sj,remaining_qty = remaining_qty-$to_add_sj where style = '$style' and schedule = '$scheule' and color = '$color' ";
+                                    mysqli_query($link, $updating_rejection_log) or exit("updating_rejection_log".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                                    $issued_to_module = issued_to_module($act_id,$to_add_sj,1);
                                 }
                             }
-                            //inserting into replacment_allocation_log to track which input job quantity replaced with rejection
                         }
                     }
                 }
                
             }
-            
         }
+        $url = '?r='.$_GET['r'];
+        echo "<script>sweetAlert('Replacement Done Successfully!!!','','success');window.location = '".$url."'</script>"; 
     }
     $shifts_array = ["IssueDone","RecutPending"];
-    $drp_down = '<div class="row"><div class="col-md-3"><label>Filter:</label>
+    $drp_down = '<div class="row"><div class="col-md-3"><label>Status Filter:</label>
     <select class="form-control rm"  name="status" id="rm" style="width:100%;" onchange="myFunction()" required>';
     for ($i=0; $i <= 1; $i++) 
     {
         $drp_down .= '<option value='.$shifts_array[$i].'>'.$shifts_array[$i].'</option>';
     }
-    $drp_down .= "</select></div></div>";
+    $drp_down .= "</select></div>";
+    $drp_down .= "<div class='col-md-3'><label>Schedule Filter:</label>
+                  <input class='form-control integer' placeholder='Enter Schedule here' onchange='myfunctionsearch()' id='schedule_id'></input></div></div>";
     echo $drp_down;
     
 ?>
@@ -317,13 +306,20 @@
             <div class="modal-header">Recut Raise form
                 <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
             </div>
-            <div class="modal-body">
-                <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
-                    <div class='panel-body' id="dynamic_table_panel">	
-                            <div id ="dynamic_table1"></div>
-                    </div>
-                    <div class="pull-right"><input type="submit" id='recut' class="btn btn-primary" value="Submit" name="formSubmit"></div>
-                </form>
+            <div id='pre_pre'>
+                <div class="modal-body">
+                    <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform" onsubmit='return validationfunction();'>
+                        <div class='panel-body' id="dynamic_table_panel">	
+                                <div id ="dynamic_table1"></div>
+                        </div>
+                        <div class="pull-right"><input type="submit" id='recut' class="btn btn-primary" value="Submit" name="formSubmit"></div>
+                    </form>
+                </div>
+            </div>
+            <div id='post_post'>
+                <div class='panel-body'>	
+                        <h2 style='color:red'>Please wait while Raising the Recut!!!</h2>
+                </div>
             </div>
         </div>
     </div>
@@ -334,12 +330,22 @@
             <div class="modal-header">Rejection Replace form
                 <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
             </div>
-            <div class="modal-body">
-                <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartformreplace" method="post" id="smartform1" onsubmit='return validationreplace();'>
-                    <div class='panel-body' id="dynamic_table_panel">	
-                        <div id ="dynamic_table2"></div>
+            <div id='pre'>
+                <div class="modal-body">
+                    <div class="ajax-loader" id="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;">
+                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
                     </div>
-                </form>
+                    <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartformreplace" method="post" id="smartform1" onsubmit='return validationreplace();'>
+                        <div class='panel-body' id="dynamic_table_panel">	
+                            <div id ="dynamic_table2"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id='post'>
+                <div class='panel-body'>	
+                        <h2 style='color:red'>Please wait while Replacing!!!</h2>
+                </div>
             </div>
         </div>
     </div>
@@ -354,8 +360,9 @@
             </thead>
             <?php  
             $s_no = 1;
-            $blocks_query  = "SELECT id,style,schedule,color,rejected_qty,recut_qty,remaining_qty,replaced_qty FROM $bai_pro3.rejections_log";
-            // echo $blocks_query;
+            $blocks_query  = "SELECT r.id,style,SCHEDULE,color,r.rejected_qty,r.recut_qty,r.remaining_qty,r.replaced_qty,GROUP_CONCAT(DISTINCT bcd_id)as bcd_ids FROM bai_pro3.rejections_log r
+            LEFT JOIN `bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id`
+            GROUP BY r.`style`,r.`schedule`,r.`color`";
             $blocks_result = mysqli_query($link,$blocks_query) or exit('Rejections Log Data Retreival Error');
             if($blocks_result->num_rows > 0)
             {
@@ -365,7 +372,12 @@
                     if($row['remaining_qty'] == 0)
                     {
                         $button_html_recut = "<b style='color:red;'>Issue Done!!!</b>";
-                        $button_html_replace = "<b style='color:red;'>Issue Done!!!</b>";
+                        $url6 = getFullURLLevel($_GET['r'],'replace_recut_bundle_print.php',0,'R');
+                        $url7 = getFullURLLevel($_GET['r'],'barcode_with_operations.php',0,'R');
+                        $ij = $row['bcd_ids'];
+                        $schedule =$row['SCHEDULE'];
+                        $button_html_replace = "<a class='btn btn-info btn-sm' href='$url6?input_job=".$ij."&schedule=".$schedule."' onclick=\"return popitup2('$url6?input_job=".$ij."&schedule=".$schedule."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Bundle Barcode</a>";
+                        $button_html_replace .= "<a class='btn btn-info btn-sm' href='$url7?input_job=".$ij."&schedule=".$schedule."' onclick=\"return popitup2('$url7?input_job=".$ij."&schedule=".$schedule."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Bundle Barcode with operations</a>";
                         $html_hiding = "IssueDone";
                     }
                     else if($row['remaining_qty'] != 0 && $row['rejected_qty'] > 0)
@@ -376,7 +388,7 @@
                     }
                     echo "<tr><td>$s_no</td>";
                     echo "<td>".$row['style']."</td>";
-                    echo "<td>".$row['schedule']."</td>";
+                    echo "<td>".$row['SCHEDULE']."</td>";
                     echo "<td>".$row['color']."</td>";
                     echo "<td>".$row['rejected_qty']."</td>";
                     echo "<td>".$row['recut_qty']."</td>";
@@ -504,6 +516,8 @@
 function viewrecutdetails(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
+    $('#myModal').modal('toggle');
+    $('#loading-image').show();
     $.ajax({
 
 			type: "POST",
@@ -512,7 +526,7 @@ function viewrecutdetails(id)
 			success: function (response) 
 			{
                 document.getElementById('main-content').innerHTML = response;
-                $('#myModal').modal('toggle');
+                $('#loading-image').hide();
             }
 
     });
@@ -520,6 +534,12 @@ function viewrecutdetails(id)
 function editrecutdetails(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
+    $('#myModal1').modal('toggle');
+    document.getElementById('dynamic_table2').innerHTML = '';
+    document.getElementById('dynamic_table1').innerHTML = '';
+    $('#post_post').hide();
+    $('#pre_pre').show();
+    $('#loading-image').show();
     $.ajax({
 
 			type: "POST",
@@ -528,7 +548,7 @@ function editrecutdetails(id)
 			success: function (response) 
 			{
                 document.getElementById('dynamic_table1').innerHTML = response;
-                $('#myModal1').modal('toggle');
+                $('#loading-image').hide();
             }
 
     });
@@ -536,6 +556,12 @@ function editrecutdetails(id)
 function editreplacedetails(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
+    $('#myModal2').modal('toggle');
+    $('#loading-image').show();
+    $('#post').hide();
+    $('#pre').show();
+    document.getElementById('dynamic_table2').innerHTML = '';
+    document.getElementById('dynamic_table1').innerHTML = '';
     $.ajax({
 
 			type: "POST",
@@ -544,86 +570,114 @@ function editreplacedetails(id)
 			success: function (response) 
 			{
                 document.getElementById('dynamic_table2').innerHTML = response;
-                $('#myModal2').modal('toggle');
+                $('#loading-image').hide();
             }
 
     });
 }
 function validationreplace()
 {
-    var total_rows = $('#no_of_rows').val();
-    var sizes = [];
-    var values =[];
-    var sizes_value = {};
-    var validate_variable = 0;
+    var total_rows = $('#total_rows').val();
+    var value = 0;
+    var flag = 0;
     for(var i=1; i<=total_rows;i++)
     {
-        var size_id = i+"size";
-        sizes.push(document.getElementById(size_id).innerHTML);
-        values.push(Number(document.getElementById(i).value)); 
+        value = value + Number(document.getElementById(i).value);
     }
-    for (var i = 0; i < sizes.length; i++)
+    if(value == 0)
     {
-        sizes_value[sizes[i]] = 0;
-        // console.log(sizes_value);
-    }
-    for (var i = 0; i < sizes.length; i++)
-    {
-        sizes_value[sizes[i]] = Number(sizes_value[sizes[i]])+Number(values[i]);
-    }
-    console.log(sizes_value);
-    $.each(sizes_value, function( key, value )
-    {
-        var id = key;
-        var max_replacable_qty = document.getElementById(id).innerHTML;
-        if(max_replacable_qty < value)
-        {
-           // alert("work");
-           validate_variable = 1;
-           return false;
-          
-        }
-        else
-        {
-          //  alert("notwork");
-        }
-        // break;
-    });
-    if(validate_variable == 1)
-    {
-        swal('You are replacing more than Excess Quantity available','','error');
-        return false;
-
+        swal('At Least one size should have the replace value.','','error');
+        flag = 1;
     }
     else
     {
-        // $('#smartform1').submit();
-        // document.getElementById("smartform1").submit();
-        return true;
+        var sizes = [];
+        var values =[];
+        var sizes_value = {};
+        var validate_variable = 0;
+        for(var i=1; i<=total_rows;i++)
+        {
+            var size_id = i+"size";
+            sizes.push(document.getElementById(size_id).innerHTML);
+            values.push(Number(document.getElementById(i).value)); 
+        }
+        for (var i = 0; i < sizes.length; i++)
+        {
+            sizes_value[sizes[i]] = 0;
+            // console.log(sizes_value);
+        }
+        for (var i = 0; i < sizes.length; i++)
+        {
+            sizes_value[sizes[i]] = Number(sizes_value[sizes[i]])+Number(values[i]);
+        }
+        console.log(sizes_value);
+        $.each(sizes_value, function( key, value )
+        {
+            var id = key;
+            var max_replacable_qty = document.getElementById(id).innerHTML;
+            if(max_replacable_qty < value)
+            {
+                validate_variable = 1;
+            }
+        });
+        if(validate_variable == 1)
+        {
+            swal('You are replacing more than Excess Quantity available','','error');
+            flag = 1;
 
+        }
+    }
+    console.log(flag);
+    if(flag == 0)
+    {
+        console.log("working");
+        $('#pre').hide();
+        $('#post').show();
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
 function validationreplaceindividual(id)
 {
-    var size_id = id+"rem";
-    var max_rem = Number(document.getElementById(size_id).innerHTML);
-    var present_rep = Number(document.getElementById(id).value);
-    if(max_rem < present_rep)
+    var data = document.getElementById(id).value;
+    if(isInteger(data))
     {
-        swal('You are replacing more than elegible to replace quantity.','','error');
+        var size_id = id+"rems";
+        var max_rem = Number(document.getElementById(size_id).innerHTML);
+        var present_rep = Number(document.getElementById(id).value);
+        if(max_rem < present_rep)
+        {
+            swal('You are replacing more than elegible to replace quantity.','','error');
+            document.getElementById(id).value = 0;
+        } 
+    }
+    else
+    {
         document.getElementById(id).value = 0;
-    } 
+    }
+   
 }
 function validationrecutindividual(id)
 {
-    var size_id = id+"rems";
-    var max_rem = Number(document.getElementById(size_id).innerHTML);
-    var present_rep = Number(document.getElementById(id).value);
-    if(max_rem < present_rep)
+    var data = document.getElementById(id).value;
+    if(isInteger(data))
     {
-        swal('You are Re Cutting  more than elegible to Recut quantity.','','error');
+        var size_id = id+"rems";
+        var max_rem = Number(document.getElementById(size_id).innerHTML);
+        var present_rep = Number(document.getElementById(id).value);
+        if(max_rem < present_rep)
+        {
+            swal('You are Re Cutting  more than elegible to Recut quantity.','','error');
+            document.getElementById(id).value = 0;
+        } 
+    }
+    else
+    {
         document.getElementById(id).value = 0;
-    } 
+    }
 }
 function setfunction()
 {
@@ -634,6 +688,7 @@ function setfunction()
         for(var i=1; i<=Number(noofrows); i++)
         {
             var rem_var = i+'rems';
+            console.log(rem_var);
             var remaining_qty = document.getElementById(rem_var).innerHTML;
             document.getElementById(i).value = remaining_qty; 
         }
@@ -692,19 +747,109 @@ function myFunction()
     //     $('#myTable1').hide();
     // }
 }
+function validationfunction()
+{
+    var flag = 0;
+    var total_rows = document.getElementById('total_rows').value;
+    var value = 0;
+    for(var i=1; i<=total_rows;i++)
+    {
+        value = value + Number(document.getElementById(i).value);
+    }
+    if(value == 0)
+    {
+        swal('At Least one size should have the recut value.','','error');
+        flag = 1;
+    }
+   if(flag == 1)
+   {
+       return false;
+   }
+   else
+   {
+       $('#pre_pre').hide();
+       $('#post_post').show();
+       return true;
+   }
+}
+function isInteger(value) 
+{
+    if ((undefined === value) || (null === value))
+    {
+        return false;
+    }
+    return value % 1 == 0;
+}
+function focus_validate(id)
+{
+    var data = document.getElementById(id).value;
+    if(data == 0)
+    {
+        document.getElementById(id).value = '';
+    }
+}
+function focus_out_validation(id)
+{
+    var data = document.getElementById(id).value;
+    if(data == '')
+    {
+        document.getElementById(id).value = 0;
+    }
+}
+function myfunctionsearch() 
+{
+    var input, filter, table, tr, td, i;
+    input = document.getElementById("schedule_id").value;
+    filter = input.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    var count = 0;
+    if(tr.length > 1)
+    {
+        for (i = 1; i < tr.length; i++) 
+        {
+            td = tr[i].getElementsByTagName("td")[2];
+            if(td) 
+            {
+                console.log(td.innerHTML.toUpperCase());
+                console.log(filter);
+                if(td.innerHTML.toUpperCase() == filter)
+                {
+                    console.log(tr[i]);
+                    tr[i].style.display = "";
+                } 
+                else 
+                {
+                    count++;
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+    // console.log(count);
+    // if(count == 0)
+    // {
+    //     $('#myTable').hide();
+    //     $('#myTable1').show();
+    // }
+    // else
+    // {
+    //     $('#myTable').show();
+    //     $('#myTable1').hide();
+    // }
+}
 </script>
-
 <script>
 $(document).ready(function() 
 {
     $('#myTable1').hide();
     myFunction();
-    $('#recut').on('click', function(){
-        $('#recut').hide();
-    });
-    $('#replace').on('click', function(){
-        $('#replace').hide();
-    });
+    // $('#recut').on('click', function(){
+    //     $('#recut').hide();
+    // });
+    // $('#replace').on('click', function(){
+    //     $('#replace').hide();
+    // });
 });
 </script>
 <style>

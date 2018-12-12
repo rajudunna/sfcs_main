@@ -92,6 +92,9 @@ $line_in = $conf1->get('line-in');
 // }
 //LDAP CODE ENDS***
 
+//For Logo Path
+$logo = '/sfcs_app/common/images/logo.png';
+
 //Auto Close Exempted Pages
 $autoclose_page_exempted=array("baiadmn","baisysadmin","baiictadmin","baischtasksvc","sfcsproject1");
 $autoclose_period=1800000;
