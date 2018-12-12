@@ -404,8 +404,14 @@ for ($i=0; $i <= $total_hours; $i++)
 		if($option1==1){  echo "<table id=\"info\" class=\"table table-bordered\">"; }
 
 
-		if($option1==1){    echo "<tr><td colspan=4 style='background-color:#29759C; color: white;'>".$section1."</td></tr>"; } 
-		if($option1==1){	echo "<tr><th style='background-color:#29759C;'>M#</th><th style='background-color:#29759C;'>NOP</th><th style='background-color:#29759C;'>Style DB</th><th style='background-color:#29759C;'>Del DB</th>"; }
+		if($option1==1)
+		{    
+			echo "<tr><td colspan=4 style='background-color:#29759C; color: white;'>".$section1."</td></tr>";
+		} 
+		if($option1==1)
+		{
+			echo "<tr><th style='background-color:#29759C;'>M#</th><th style='background-color:#29759C;'>NOP</th><th style='background-color:#29759C;'>Style DB</th><th style='background-color:#29759C;'>Del DB</th>"; 
+		}
 
 		for($i=0;$i<sizeof($headers);$i++)
 		{

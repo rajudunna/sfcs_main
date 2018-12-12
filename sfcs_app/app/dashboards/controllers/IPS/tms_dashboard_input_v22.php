@@ -12,7 +12,7 @@
     array_pop($v_r);
     $url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/ips_dashboard.php";
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    $sec_result = mysqli_query($link, "SELECT DISTINCT sec_name FROM $bai_pro3.sections_master WHERE sec_name>0") or exit("Sec qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $sec_result = mysqli_query($link, "SELECT DISTINCT sec_name FROM $bai_pro3.sections_master WHERE sec_name>0 order by sec_name") or exit("Sec qry".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sections = mysqli_fetch_all($sec_result,MYSQLI_ASSOC);
     echo "<script>var sec_ids = '".implode(',',array_column($sections, 'sec_name'))."';</script>";
     echo "<div class='panel panel-primary'>
