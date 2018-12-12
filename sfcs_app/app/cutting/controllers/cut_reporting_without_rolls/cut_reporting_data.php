@@ -63,11 +63,11 @@ if(mysqli_num_rows($validation_result)>0){
    
     if(in_array($category,$fabric_categories_array) && $cat_ref > 0)
         $response_data['can_report']   = 1;
-    else    
+    else{    
         $response_data['can_report']   = 2;
-    
-    echo json_encode($response_data);
-    exit();
+        echo json_encode($response_data);
+        exit();
+    }
 }else{
     $response_data['can_report']   = 0;
     
