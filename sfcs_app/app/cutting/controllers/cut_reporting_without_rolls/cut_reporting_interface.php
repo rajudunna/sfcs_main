@@ -309,9 +309,9 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
 
 <?php 
-    $get_url = getFullURLLevel($_GET['r'],'cut_reporting_data.php','R');
-    $post_url = getFullURLLevel($_GET['r'],'cut_reporting_save.php','R');
-    $rej_url = getFullURLLevel($_GET['r'],'cut_rejections_save.php','R');
+    $get_url = getFullURLLevel($_GET['r'],'cut_reporting_data.php',0,'R');
+    $post_url = getFullURLLevel($_GET['r'],'cut_reporting_save.php',0,'R');
+    $rej_url = getFullURLLevel($_GET['r'],'cut_rejections_save.php',0,'R');
 ?>
 
 <script>
