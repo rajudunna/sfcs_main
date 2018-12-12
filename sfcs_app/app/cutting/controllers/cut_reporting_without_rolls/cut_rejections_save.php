@@ -55,7 +55,7 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color){
     
     foreach($rejected as $size => $qty){
         $bcd_data_query = "SELECT id,bundle_number,assigned_module,size_title from $brandix_bts.bundle_creation_data where docket_number = $doc_no and  size_id = '$size' and operation_id = $op_code ";
-        $bcd_data_reuslt = mysqli_query($link,$bcd_data) or exit('BCD Error 1');
+        $bcd_data_reuslt = mysqli_query($link,$bcd_data_query) or exit('BCD Error 1');
         if(mysqli_num_rows($bcd_data_reuslt) > 0){
             $row = mysqli_fetch_array($bcd_data_reuslt);
             $id = $row['id'];
