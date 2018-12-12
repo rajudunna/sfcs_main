@@ -390,7 +390,7 @@ if(isset($_POST['fix']))
 		exit();
 	}
 	$schedule_array=explode(",",implode(",",$selected));
-	$sql62="select * from $bai_pro3.orders_club_schedule where order_col_des=\"$color\" and order_del_no in (".implode(",",$selected).") limit 1";
+	$sql62="select * from $bai_pro3.orders_club_schedule where order_col_des='$color' and order_del_no in (".implode(",",$selected).") limit 1";
 	$result62=mysqli_query($link, $sql62) or die("Error3 = ".$sql62.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row62=mysqli_fetch_array($result62))
 	{				
@@ -411,8 +411,8 @@ if(isset($_POST['fix']))
 		}
 		
 		// Validate Components are equal then only club the schedules
-		$sql17="SELECT order_tid,COUNT(*) AS cnt FROM $bai_pro3.cat_stat_log WHERE order_tid IN (SELECT order_tid FROM bai_orders_db WHERE order_col_des IN 
-		('".implode("','",$selected)."') AND order_del_no='$schedule') GROUP BY order_tid ORDER BY cnt DESC LIMIT 1"; 
+		$sql17="SELECT order_tid,COUNT(*) AS cnt FROM $bai_pro3.cat_stat_log WHERE order_tid IN (SELECT order_tid FROM bai_orders_db WHERE order_del_no IN 
+		('".implode("','",$selected)."') AND  order_col_des='$color') GROUP BY order_tid ORDER BY cnt DESC LIMIT 1"; 
 		$sql_result17=mysqli_query($link, $sql17) or exit("Sql Error C".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row17=mysqli_fetch_array($sql_result17)) 
 		{ 
@@ -436,7 +436,7 @@ if(isset($_POST['fix']))
 			$status=0;
 			for($kl=0;$kl<sizeof($selected);$kl++)
 			{
-				$sql12="SELECT COUNT(*) AS cnt FROM $bai_pro3.cat_stat_log WHERE order_tid IN (SELECT order_tid FROM bai_orders_db WHERE order_col_des='".$selected[$kl]."' AND order_del_no='$schedule') and compo_no in ('".implode("','",$compo_no)."')"; 
+				$sql12="SELECT COUNT(*) AS cnt FROM $bai_pro3.cat_stat_log WHERE order_tid IN (SELECT order_tid FROM bai_orders_db WHERE order_del_no='".$selected[$kl]."' AND  order_col_des='$color') and compo_no in ('".implode("','",$compo_no)."')"; 
 				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row12=mysqli_fetch_array($sql_result12)) 
 				{
