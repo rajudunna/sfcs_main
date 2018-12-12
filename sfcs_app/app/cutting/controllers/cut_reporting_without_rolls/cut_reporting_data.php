@@ -34,7 +34,7 @@ if(mysqli_num_rows($doc_status_result)>0){
     $fabric_status = $row['fabric_status'];
     $order_tid = $row['order_tid'];
     $org_doc_no = $row['org_doc_no'];
-    $ratio = $row['ratio'];
+    $ratio   = $row['ratio'];
     $remarks = $row['remarks'];
     $doc_qty =  $p_plies * $ratio;
     if($fabric_status == 5)
@@ -63,17 +63,19 @@ if(mysqli_num_rows($validation_result)>0){
    
     if(in_array($category,$fabric_categories_array) && $cat_ref > 0)
         $response_data['can_report']   = 1;
-    else    
+    else{    
         $response_data['can_report']   = 2;
-    
-    echo json_encode($response_data);
-    exit();
+        echo json_encode($response_data);
+        exit();
+    }
 }else{
     $response_data['can_report']   = 0;
     
     echo json_encode($response_data);
     exit();
 }
+
+
 
 //getting the target doc type 
 $target_query  = "SELECT order_del_no,order_joins from $bai_pro3.bai_orders_db_confirm 
