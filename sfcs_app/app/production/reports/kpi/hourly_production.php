@@ -1,15 +1,13 @@
 <?php ini_set('max_execution_time', 360); 
-// error_reporting(0);
 ?>
 <!DOCTYPE html>
 <?php
 //load the database configuration file
-//include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 
 $master_resons = array();
-$sql_mstr_resns = "SELECT id FROM $bai_pro2.downtime_reason WHERE id NOT IN (20,21,22) ";
+$sql_mstr_resns = "SELECT id FROM $bai_pro2.downtime_reason WHERE id NOT IN (20,21,22)";
 $res_mstr = mysqli_query($link, $sql_mstr_resns) or exit('SQL Error:'.$sql_mstr_resns);
 $z = 0;
 while ($row_mstr = mysqli_fetch_array($res_mstr))
@@ -21,10 +19,6 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 <html lang="en">
 <head>
   <title>Hourly Production Report</title>
-  <!-- <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="120" /> -->
-  
   </head>
 <body>
 
@@ -54,13 +48,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 						$plant_modules[] = explode(',', $row['plant_modules']);
 					}
 
-					// for ($i=0; $i < sizeof($plant_name); $i++)
-					// { 
-					// 	echo $plant_name[$i].' == ';
-					// 	var_dump($plant_modules[$i]);
-					// 	echo '<br><br>';
-					// }
-					// die();
+					
 				?>
 <div class="panel panel-primary">
 	<div class="panel-heading">Hourly Production Report</div>
@@ -78,8 +66,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 <?php
 		if(isset($_GET['submit']))
 		{
-			$plant_timings_query="SELECT * FROM $bai_pro3.tbl_plant_timings";
-			// echo $plant_timings_query;
+			$plant_timings_query="SELECT start_time,end_time,time_display,day_part FROM $bai_pro3.tbl_plant_timings";
 			$plant_timings_result=mysqli_query($link,$plant_timings_query);
 			while ($row = mysqli_fetch_array($plant_timings_result))
 			{
@@ -88,12 +75,9 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				$time_display[] = $row['time_display'].'<br>'.$row['day_part'];
 			}
 			
-			// $total_hours = $plant_end_time - $plant_start_time;
-			// list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
-			// $minutes_29 = $minutes-1;
+		
 
 			$sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
-			// echo $sql.'<br>';
 			$res=mysqli_query($link,$sql);
 	
 			$i=0; ?>
@@ -147,13 +131,9 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 
 				$total_qty = 0;
 
-				// echo $frdate;
 				$date=$row['frdate'];
-				//echo $date;
 				$newDate = date("Y-m-d", strtotime($date));
-				//echo $newDate.'<br>';
 				$team=$row['team'];
-				// echo $team;
 				//get styles which run in lines
 				$sql1="SELECT distinct style FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
 				$res1=mysqli_query($link,$sql1);
@@ -170,15 +150,8 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				$sql5="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
 				$res5=mysqli_query($link,$sql5);
 
-				// $sql6="SELECT out_time,qty,status FROM $bai_pro2.hout where out_date='$frdate' AND team='$team'";
-				// $res6=mysqli_query($link,$sql6);
-				
-				// $sql6="SELECT $query remarks FROM $bai_pro2.hout where out_date='$frdate' AND team='$team'";
-				// echo $sql6.'<br><br>';
-				// $res6=mysqli_query($link,$sql6);
 
 				$sqlsc="SELECT SUM(bac_Qty) AS sumqty FROM $bai_pro.bai_log where bac_no='$team' AND bac_date='$frdate'";
-				// echo $sqlsc;
 				$resc=mysqli_query($link,$sqlsc);
 				if($rowc=mysqli_fetch_array($resc))
 				{
@@ -269,7 +242,6 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 					<?php
 						for ($i=0; $i < sizeof($time_display); $i++)
 						{
-							// $row=echo_title("$bai_pro2.hout","SUM(qty)","team='$team' AND (TIME(out_time) BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."')) and out_date",$frdate,$link);
 							$row=echo_title("$bai_pro2.hout","SUM(qty)","out_date='$frdate' AND rep_start_time = TIME('".$start_time[$i]."') AND rep_end_time = TIME('".$end_time[$i]."') and team",$team,$link);
 
 							if ($row == '' || $row == NULL )
@@ -293,7 +265,6 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 								$total_qty = $total_qty + $row;
 								for ($k=0; $k < sizeof($plant_name); $k++) 
 								{
-								// echo $total_qty.'-'.$i.'- '.$k.'- '.$row.'<br/>';
 									if (in_array($team, $plant_modules[$k]))
 									{
 										$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row;
@@ -335,7 +306,6 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 									}
 
 									$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
-									// echo $sql6_2.'<br><br>';
 									$res6_12=mysqli_query($link,$sql6_2);
 									if (mysqli_num_rows($res6_12) > 0)
 									{
@@ -385,7 +355,6 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 									}
 									
 									$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
-									// echo $sql6_2.'<br><br>';
 									$res6_12=mysqli_query($link,$sql6_2);
 									if (mysqli_num_rows($res6_12) > 0)
 									{
@@ -398,7 +367,6 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 											}
 										}												
 										echo "<td style='background-color:$color; color:white;'><center>".$row."</center></td>";
-										// echo "<td style='background-color:#dd3636; color:white;'><center>".$row."</center></td>";
 									}
 									else
 									{

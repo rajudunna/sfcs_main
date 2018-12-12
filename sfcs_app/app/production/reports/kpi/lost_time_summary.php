@@ -6,49 +6,10 @@
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 
 ?>
-<!-- <html lang="en"> -->
-<!-- <head> -->
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
-  <!-- <script src="js/bootstrap.min.js"></script> -->
-  <!-- <script src="js/jquery.js"></script> -->
   
-  <!-- <style>
-	tr th{
-	max-width:100px !important;
-	width:100px !important;
-	
-	
-	}
-	tr td {
-       border-bottom:2px solid #00e5ff !important;
-	   padding: 1px !important;
-	   
-    }
-	tr {
-      max-height: 35px !important;
-      height: 35px !important;
-    }
-	
-  </style> -->
-  <!-- <style>
-.table1 th{
- background-color:#d8d8d8;
-}
-.table1 tr{
-	   max-height: 20px !important;
-      height: 20px !important;
-
-}
-.table1, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-	margin:0 0 0 0px;
-	height:40% !important;
-}
-</style> -->
-<!-- </head> -->
 <body>
 				<?php   
 				   //Starting get process for hourly efficiency report through FR Plan.
@@ -94,7 +55,6 @@ echo $frdate.' - '.$frdate1;
    
    <?php
    $sql="SELECT * FROM $bai_pro2.fr_data where frdate BETWEEN '$frdate' AND '$frdate1' GROUP BY team ORDER BY team*1";
-    //echo $sql;
 	$res=mysqli_query($link,$sql); 
 	$i=0; 
 	
@@ -152,11 +112,8 @@ echo $frdate.' - '.$frdate1;
     <tbody>
 	<?php  while($row=mysqli_fetch_array($res)){ 
 		
-	 // echo $frdate;
     $date=$row['frdate'];
-	//echo $date;
 	$newDate = date("Y-m-d", strtotime($date));
-	//echo $newDate.'<br>';
 	
 	$team=$row['team'];
 	
@@ -167,9 +124,6 @@ echo $frdate.' - '.$frdate1;
 	$sql4="SELECT SUM(qty) AS qty FROM $bai_pro3.line_forecast where date BETWEEN '$frdate' AND '$frdate1' AND module='$team'";
 	$res4=mysqli_query($link,$sql4);
 	$res5=mysqli_query($link,$sql4);
-	
-	
-	
 	
 	?>
 	<?php
@@ -203,19 +157,9 @@ echo $frdate.' - '.$frdate1;
 				}
 			}
 			
-	
 	?>
-	
-	
 	</tr>
-	
-	
-	
-	
-	
 	<?php    
-	
-	
 	} ?>
       
     </tbody>
@@ -229,8 +173,7 @@ echo $frdate.' - '.$frdate1;
   <?php  while($row=mysqli_fetch_array($resultx)){
 	$dept=$row['rdept'];
 
-	$query="SELECT SUM(output_qty) AS sout FROM $bai_pro2.hourly_downtime_reason WHERE rdept='$dept' AND date BETWEEN '$frdate' AND '$frdate1'";
-	// echo $query;
+	$query="select SUM(output_qty) AS sout FROM $bai_pro2.hourly_downtime_reason WHERE rdept='$dept' AND date BETWEEN '$frdate' AND '$frdate1'";
 	$res=mysqli_query($link,$query);
 	$rout=mysqli_fetch_array($res);
 	$sout=$rout['sout'];

@@ -6,9 +6,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
  $view_access=user_acl("SFCS_0026",$username,1,$group_id_sfcs);
  ?>
 
-<!-- <LINK href="../style.css" rel="stylesheet" type="text/css"> -->
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',2,'R'); ?>"></script>
-<!-- <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?> -->
 
 
 <div class="panel panel-primary">
@@ -40,7 +38,6 @@ if(isset($_POST['submit']))
 	
 	
 	$sql="select rep_date,sum(if(parameter='A1001',value,0)) as pink, sum(if(parameter='A1002',value,0)) as logo, sum(if(parameter='A1003',value,0)) as ms from $bai_kpi.kpi_tracking where rep_date between \"$fdate\" and \"$tdate\" group by rep_date";
-	// echo $sql;
 
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
@@ -75,8 +72,7 @@ function verify_date()
 {
 	var val1 = $('#demo1').val();
 	var val2 = $('#demo2').val();
-	// d1 = new Date(val1);
-	// d2 = new Date(val2);
+
 	if(val1 > val2){
 		sweetAlert('Start Date Should  be less than End Date','','warning');
 		return false;
@@ -90,9 +86,7 @@ function verify_date()
 // <script language="javascript" type="text/javascript">
 //<![CDATA[	
 	var table2_Props = 	{					
-					// col_1: "select",
-					// col_2: "select",
-					// col_3: "select",
+				
 					display_all_text: " [ Show all ] ",
 					btn_reset: true,
 					bnt_reset_text: "Clear all ",

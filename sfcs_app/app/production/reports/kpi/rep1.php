@@ -7,9 +7,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 ?>
 
 
-<!-- <LINK href="../style.css" rel="stylesheet" type="text/css"> -->
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',2,'R'); ?>"></script>
-<!-- <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?> -->
 
 <div class="panel panel-primary">
 <div class="panel-heading">Sewing Performance Report</div>
@@ -46,10 +44,8 @@ if(isset($_POST['submit']))
 	$fdate=$_POST['fdate'];
 	$tdate=$_POST['tdate'];
 	$section=$_POST['sec'];
-	//echo $section."<br>";
 	
 	$sections=explode(",",$section);
-	//echo "Size = ".sizeof($sections);
 	
 	echo "<hr/><table class=\"table table-bordered\">";
 	echo "<tr style='background-color:#6995d6;color:white'>";
@@ -66,7 +62,6 @@ if(isset($_POST['submit']))
 	for($i=0;$i<sizeof($sections);$i++)
 	{
 		$sql="select SUM(IF(parameter=\"A4001\",VALUE,0)) as plan_sah,SUM(IF(parameter=\"A3001\",VALUE,0)) as plan_clh from $bai_kpi.kpi_tracking where title in (".$sections[$i].") and rep_date between \"".$fdate."\" and \"".$tdate."\" ";
-		//echo $sql;
 		$result=mysqli_query($link, $sql) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row=mysqli_fetch_array($result))
 		{
@@ -90,7 +85,6 @@ if(isset($_POST['submit']))
 	for($i=0;$i<sizeof($sections);$i++)
 	{
 		$sql="select SUM(IF(parameter=\"A4002\",VALUE,0)) as act_sah,SUM(IF(parameter=\"A3002\",VALUE,0)) as act_clh,SUM(IF(parameter=\"A3001\",VALUE,0)) as plan_clh from $bai_kpi.kpi_tracking where title in (".$sections[$i].") and rep_date between \"".$fdate."\" and \"".$tdate."\" ";
-		//echo $sql;
 		$result=mysqli_query($link, $sql) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row=mysqli_fetch_array($result))
 		{
@@ -113,7 +107,6 @@ if(isset($_POST['submit']))
 	for($i=0;$i<sizeof($sections);$i++)
 	{
 		$sql="select SUM(IF(parameter=\"A4001\",VALUE,0)) as plan_sah,SUM(IF(parameter=\"A3001\",VALUE,0)) as plan_clh,SUM(IF(parameter=\"A4002\",VALUE,0)) as act_sah,SUM(IF(parameter=\"A3002\",VALUE,0)) as act_clh from $bai_kpi.kpi_tracking where title in (".$sections[$i].") and rep_date between \"".$fdate."\" and \"".$tdate."\" ";
-		//echo $sql;
 		$result=mysqli_query($link, $sql) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row=mysqli_fetch_array($result))
 		{
@@ -155,7 +148,6 @@ if(isset($_POST['submit']))
 	for($i=0;$i<sizeof($sections);$i++)
 	{
 		$sql="select SUM(IF(parameter=\"A4001\",VALUE,0)) as plan_sah from $bai_kpi.kpi_tracking where title in (".$sections[$i].") and rep_date between \"".$fdate."\" and \"".$tdate."\" ";
-		//echo $sql;
 		$result=mysqli_query($link, $sql) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row=mysqli_fetch_array($result))
 		{
@@ -170,7 +162,6 @@ if(isset($_POST['submit']))
 	for($i=0;$i<sizeof($sections);$i++)
 	{
 		$sql="select SUM(IF(parameter=\"A4002\",VALUE,0)) as act_sah from $bai_kpi.kpi_tracking where title in (".$sections[$i].") and rep_date between \"".$fdate."\" and \"".$tdate."\" ";
-		//echo $sql;
 		$result=mysqli_query($link, $sql) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row=mysqli_fetch_array($result))
 		{
@@ -186,7 +177,6 @@ if(isset($_POST['submit']))
 	for($i=0;$i<sizeof($sections);$i++)
 	{
 		$sql="select SUM(IF(parameter=\"A4001\",VALUE,0)) as plan_sah,SUM(IF(parameter=\"A4002\",VALUE,0)) as act_sah from $bai_kpi.kpi_tracking where title in (".$sections[$i].") and rep_date between \"".$fdate."\" and \"".$tdate."\" ";
-		//echo $sql;
 		$result=mysqli_query($link, $sql) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row=mysqli_fetch_array($result))
 		{
@@ -211,7 +201,6 @@ if(isset($_POST['submit']))
 	for($i=0;$i<sizeof($sections);$i++)
 	{
 		$sql="select SUM(IF(parameter=\"A5001\",VALUE,0)) as rework from $bai_kpi.kpi_tracking where title in (".$sections[$i].") and rep_date between \"".$fdate."\" and \"".$tdate."\" ";
-		//echo $sql;
 		$result=mysqli_query($link, $sql) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row=mysqli_fetch_array($result))
 		{
@@ -220,7 +209,6 @@ if(isset($_POST['submit']))
 		
 		$output[$i]=0;
 		$sql1="select SUM(act_out) as output from $bai_pro.grand_rep where section in (".$sections[$i].") and date between \"".$fdate."\" and \"".$tdate."\" ";
-		//echo $sql;
 		$result1=mysqli_query($link, $sql1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row1=mysqli_fetch_array($result1))
 		{
@@ -335,7 +323,6 @@ if(isset($_POST['submit']))
 	for($i=0;$i<sizeof($sections);$i++)
 	{
 		$sql="select SUM(IF(parameter=\"A6002\",VALUE,0)) as fall,SUM(IF(parameter=\"A4002\",VALUE,0)) as act_sah from $bai_kpi.kpi_tracking where title in (".$sections[$i].") and rep_date between \"".$fdate."\" and \"".$tdate."\" ";
-		//echo $sql;
 		$result=mysqli_query($link, $sql) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row=mysqli_fetch_array($result))
 		{
@@ -365,8 +352,6 @@ function verify_date()
 {
 	var val1 = $('#demo1').val();
 	var val2 = $('#demo2').val();
-	// d1 = new Date(val1);
-	// d2 = new Date(val2);
 	if(val1 > val2){
 		sweetAlert('Start Date Should  be less than End Date','','warning');
 		return false;
@@ -380,9 +365,7 @@ function verify_date()
 // <script language="javascript" type="text/javascript">
 //<![CDATA[	
 	var table2_Props = 	{					
-					// col_1: "select",
-					// col_2: "select",
-					// col_3: "select",
+				
 					display_all_text: " [ Show all ] ",
 					btn_reset: true,
 					bnt_reset_text: "Clear all ",

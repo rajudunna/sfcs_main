@@ -1,9 +1,7 @@
 <?php ini_set('max_execution_time', 360); 
-// error_reporting(E_WARNING);
 ?>
 <!DOCTYPE html>
 <?php
-	//load the database configuration file
 	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 ?>
@@ -51,8 +49,7 @@
    <?php
 if(isset($_GET['submit']))
 {
-	$plant_timings_query="SELECT * FROM $bai_pro3.tbl_plant_timings";
-	// echo $plant_timings_query;
+	$plant_timings_query="SELECT start_time,end_time,time_display,day_part FROM $bai_pro3.tbl_plant_timings";
 	$plant_timings_result=mysqli_query($link,$plant_timings_query);
 	while ($row = mysqli_fetch_array($plant_timings_result))
 	{
@@ -61,12 +58,7 @@ if(isset($_GET['submit']))
 		$time_display[] = $row['time_display'].'<br>'.$row['day_part'];
 	}
 
-	// $total_hours = $plant_end_time - $plant_start_time;
-	// list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
-	// $minutes_29 = $minutes-1;
-   	// $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
-	// // echo $sql;
-	// $res=mysqli_query($link,$sql);	
+
    	?>
  
     <div class="table-area">
@@ -115,10 +107,6 @@ if(isset($_GET['submit']))
 				$tot_plan_eff_plantWise=array(); $tot_act_eff_plantWise=array(); $tot_balance_plantWise=array();
 				$tot_hit_rate_plantWise=array();	$grand_tot_qty_time_array1 = array();
 
-				// $grand_tot_qty_time_array = array(); $grand_tot_plan_sah=0;
-				// $grand_tot_fr_qty = 0; $grand_tot_forecast_qty=0; $grand_tot_total_qty=0; $grand_tot_scanned_qty=0; 
-				// $grand_tot_scanned_sah=0; $grand_tot_forecast_sah=0; $grand_tot_act_sah=0; $grand_tot_sah_diff=0;
-				// $grand_tot_plan_eff=0; $grand_tot_act_eff=0; $grand_tot_hitrate=0; $grand_tot_required=0; 
 				$section_count=0;
 				$section_wise_total = 0;
 				while($Sec=mysqli_fetch_array($section_result))
@@ -131,9 +119,7 @@ if(isset($_GET['submit']))
 					$sec_tot_scanned_sah=0; $sec_tot_forecast_sah=0; $sec_tot_act_sah=0; $sec_tot_sah_diff=0;
 					$sec_tot_plan_eff=0; $sec_tot_act_eff=0; $sec_tot_hitrate=0; $sec_tot_required=0; $module_count=0;
 					$section = $Sec['section_id'];  $sec_tot_qty_array = array(); $sec_tot_balance=0;
-					// $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
 					$sql="SELECT fr_data.*, plan_modules.section_id FROM $bai_pro2.fr_data  LEFT JOIN $bai_pro3.`plan_modules` ON fr_data.`team` = plan_modules. module_id WHERE fr_data.frdate='$frdate' AND plan_modules.section_id='$section' GROUP BY fr_data.team ORDER BY fr_data.team*1;";
-					// echo $sql.'<br>';
 					$res=mysqli_query($link,$sql);
 					if (mysqli_num_rows($res) > 0) 
 					{
@@ -142,11 +128,8 @@ if(isset($_GET['submit']))
 							$total_qty = 0;
 						
 							$module_count++;
-							// echo $frdate;
 						    $date=$row['frdate'];
-							// echo $date;
 							$newDate = date("Y-m-d", strtotime($date));
-							// echo $newDate.'<br>';
 							$team=$row['team'];
 							
 							//get styles which run in lines
@@ -166,7 +149,6 @@ if(isset($_GET['submit']))
 							$res5=mysqli_query($link,$sql5);
 
 							$sqlsc="SELECT SUM(bac_Qty) AS sumqty FROM $bai_pro.bai_log where bac_no='$team' AND bac_date='$frdate'";
-							// echo $sqlsc;
 							$resc=mysqli_query($link,$sqlsc);
 							if($rowc=mysqli_fetch_array($resc))
 							{
@@ -259,7 +241,6 @@ if(isset($_GET['submit']))
 										for ($i=0; $i < sizeof($time_display); $i++)
 										{
 											$row=echo_title("$bai_pro2.hout","SUM(qty)","out_date='$frdate' AND rep_start_time = TIME('".$start_time[$i]."') AND rep_end_time = TIME('".$end_time[$i]."') and team",$team,$link);
-											// $row=echo_title("$bai_pro2.hout","SUM(qty)","team='$team' AND (TIME(out_time) BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."')) and out_date",$frdate,$link);
 											
 											if ($row == '' || $row == NULL )
 											{
@@ -284,21 +265,18 @@ if(isset($_GET['submit']))
 												{
 													if (in_array($team, $plant_modules[$k]))
 													{
-														// echo $plant_modules[$k][];
 														$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row;
 													}
 													
 												}											
 												echo "<td><center>".$row."</center></td>";
 												$dummy[$section_wise_total][$i] = $dummy[$section_wise_total][$i] + $row;
-												//$grand_tot_qty_time_array_section[$section_wise_total][$i] = $total_qty;
 											} 
 											else if ($row < round($pcsphr))
 											{
 												if ($row == 0)
 												{									
 													$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
-													// echo $sql6_2.'<br><br>';
 													$res6_12=mysqli_query($link,$sql6_2);
 													if (mysqli_num_rows($res6_12) > 0)
 													{
@@ -319,7 +297,6 @@ if(isset($_GET['submit']))
 												else
 												{
 													$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
-													// echo $sql6_2.'<br><br>';
 													$res6_12=mysqli_query($link,$sql6_2);
 													if (mysqli_num_rows($res6_12) > 0)
 													{
@@ -465,7 +442,6 @@ if(isset($_GET['submit']))
 											{
 												$act_eff=0;
 											}
-											// $act_eff=round((($total_qty*$smv)/($nop*$hours*60))*100);
 											echo $act_eff.'%';
 											$sec_tot_act_eff = $sec_tot_act_eff + $act_eff;
 										?>
@@ -543,7 +519,6 @@ if(isset($_GET['submit']))
 										}
 										
 									}
-									//unset($dummy[$section_wise_total]);
 								?>
 								<td><center>
 									<?php 

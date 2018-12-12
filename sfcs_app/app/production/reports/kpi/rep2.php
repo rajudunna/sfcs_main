@@ -7,8 +7,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
  $view_access=user_acl("SFCS_0025",$username,1,$group_id_sfcs); 
  ?>
 <LINK href="<?= getFullURLLevel($_GET['r'],'style.css',1,'R'); ?>" rel="stylesheet" type="text/css">
-<!-- <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',2,'R'); ?>"></script> -->
-<!-- <link href="<?= getFullURLLevel($_GET['r'],'styles/sfcs_styles.css',4,'R'); ?>" rel="stylesheet" type="text/css" /></head> -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',4,'R'); ?>"></script><!-- External script -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter.js',4,'R'); ?>"></script>
 
@@ -18,7 +16,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <div class="panel panel-primary">
 <div class="panel-heading">COD Report</div>
 <div class="panel-body">
-<!--<div id="page_heading"><span style="float"><h3>COD Report</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>-->
 
 <form name="test" method="post" action="index.php?r=<?php echo $_GET['r']; ?>">
 <div class="col-sm-3">
@@ -59,17 +56,7 @@ Buyer Division: <select name="view_div" id="view_div" class="form-control">
 </select>
 </div>
 
-
-
-
-
-<!-- echo 'Buyer Division: <select name="view_div" id="view_div" >';
-if($_POST['view_div']=="ALL") { echo "<option value=\"ALL\" selected>All</option>"; } else { echo "<option value=\"ALL\">All</option>"; }
-if($_POST['view_div']=="'P','K'") { echo "<option value=\"'P','K'\" selected>Pink</option>"; } else { echo "<option value=\"'P','K'\">Pink</option>"; }
-if($_POST['view_div']=="'L','O','G'") { echo "<option value=\"'L','O','G'\" selected>Logo</option>"; } else { echo "<option value=\"'L','O','G'\">Logo</option>"; }
-if($_POST['view_div']=="'M'") { echo "<option value=\"'M'\" selected>M&S</option>"; } else { echo "<option value=\"'M'\">M&S</option>"; }
-echo '</select>'; -->
-</br>
+<br>
 <div class="col-sm-3">
 <input type="submit" name="submit" value="Show" onclick='return verify_date()' class="btn btn-primary"></div>
 </form>
@@ -80,17 +67,10 @@ if(isset($_POST['submit']))
 {
 	$fdate=$_POST['fdate'];
 	$tdate=$_POST['tdate'];
-	
-	// $buyer_div="";
-	// if($_POST['view_div']!="ALL")
-	// {
-	// 	$buyer_div=" and left(style,1) in (\"".$_POST['view_div']."\")";
-	// }
+
 	if($_POST["view_div"]!='ALL' && $_POST["view_div"]!='')
 	{
-		//echo "Buyer=".urldecode($_GET["view_div"])."<br>";
 		$buyer_division=urldecode($_POST["view_div"]);
-		//echo '"'.str_replace(",",'","',$buyer_division).'"'."<br>";
 		$buyer_division_ref='"'.str_replace(",",'","',$buyer_division).'"';
 		$buyer_div="and schedule in (select order_del_no from $bai_pro3.bai_orders_db where order_div in (".$buyer_division_ref."))";
 	}
@@ -99,7 +79,6 @@ if(isset($_POST['submit']))
 	}
 	
 	$sql="select * from $bai_kpi.delivery_delays_track where ex_fact between \"$fdate\" and \"$tdate\" $buyer_div";
-	// echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count_res = mysqli_num_rows($sql_result);
 	if($count_res >0){
@@ -159,7 +138,6 @@ if(isset($_POST['submit']))
 		$ref_id=$sql_row['track_id'];
 		
 		$sql1="select actu_sec1, actu_sec2, actu_sec3, actu_sec4, actu_sec5, actu_sec6,act_cut,act_in from $bai_pro4.week_delivery_plan where ref_id=$ref_id";
-		// echo $sql1;
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -210,8 +188,6 @@ function verify_date()
 {
 	var val1 = $('#demo1').val();
 	var val2 = $('#demo2').val();
-	// d1 = new Date(val1);
-	// d2 = new Date(val2);
 	if(val1 > val2){
 		sweetAlert('Start Date Should  be less than End Date','','warning');
 		return false;
@@ -223,9 +199,7 @@ function verify_date()
 }
 
 var table2_Props = 	{					
-					// col_1: "select",
-					// col_2: "select",
-					// col_3: "select",
+					
 					display_all_text: " [ Show all ] ",
 					btn_reset: true,
 					bnt_reset_text: "Clear all ",

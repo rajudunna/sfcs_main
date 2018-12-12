@@ -5,18 +5,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
  $view_access=user_acl("SFCS_0024",$username,1,$group_id_sfcs); 
 ?>
-<?php 
-// include("../dbconf.php"); 
-?>
+
 <LINK href="<?= getFullURLLevel($_GET['r'],'style.css',1,'R'); ?>" rel="stylesheet" type="text/css">
-<!-- <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',2,'R');?>"></script> -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',4,'R'); ?>"></script><!-- External script -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter.js',4,'R'); ?>"></script>
 <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 
 <div class="panel panel-primary">
 <div class="panel-heading">Carton WIP</div>
-<!--<div id="page_heading"><span style="float"><h3>Carton WIP</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>-->
 <div class="panel-body">
 <form name="test" method="post" action="index.php?r=<?php echo $_GET['r']; ?>">
 <div class="col-sm-3">
@@ -84,8 +80,7 @@ function verify_date()
 {
 	var val1 = $('#demo1').val();
 	var val2 = $('#demo2').val();
-	// d1 = new Date(val1);
-	// d2 = new Date(val2);
+	
 	if(val1 > val2){
 		sweetAlert('Start Date Should  be less than End Date','','warning');
 		return false;
