@@ -29,7 +29,7 @@ else
 
 
 
-$sql="select sum(plan_out) as plan_out,sum(act_out) as act_out,nop,styles from $bai_pro.grand_rep where date=CURDATE() and module=$module";
+$sql="select sum(plan_out) as plan_out,sum(act_out) as act_out,nop,styles from $bai_pro.grand_rep where date=CURDATE() and module='$module'";
 //$sql="select sum(plan_out) as plan_out,sum(act_out) as act_out,nop,styles from bai_pro.grand_rep where date='2017-11-08' and module=$module";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -44,13 +44,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 if($plan_out==0 or $act_out==0)
 {
 
-$sql="select sum(plan_pro) as plan_out from $bai_pro.pro_plan_today where date=CURDATE() and mod_no=$module";
+$sql="select sum(plan_pro) as plan_out from $bai_pro.pro_plan_today where date=CURDATE() and mod_no='$module'";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$plan_out=$sql_row['plan_out'];
 	}
-	$sql="select sum(bac_Qty) as act_out,max(nop) as nop,group_concat(distinct bac_style) as styles from $bai_pro.bai_log_buf where bac_date=CURDATE() and bac_no=$module";
+	$sql="select sum(bac_Qty) as act_out,max(nop) as nop,group_concat(distinct bac_style) as styles from $bai_pro.bai_log_buf where bac_date=CURDATE() and bac_no='$module'";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -112,7 +112,7 @@ $sql="select sum(plan_pro) as plan_out from $bai_pro.pro_plan_today where date=C
 
 $plan_out=array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 
-$sql="select * from $bai_pro.pro_plan_today where date=CURDATE() and mod_no=$module";
+$sql="select * from $bai_pro.pro_plan_today where date=CURDATE() and mod_no='$module'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -148,7 +148,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 $act_out=array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 
-$sql="SELECT HOUR(bac_lastup) AS hr, SUM(bac_qty) as outp FROM $bai_pro.bai_log_buf WHERE bac_date=CURDATE() AND bac_no=$module GROUP BY HOUR(bac_lastup)";
+$sql="SELECT HOUR(bac_lastup) AS hr, SUM(bac_qty) as outp FROM $bai_pro.bai_log_buf WHERE bac_date=CURDATE() AND bac_no='$module' GROUP BY HOUR(bac_lastup)";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
