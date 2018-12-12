@@ -438,7 +438,10 @@ if(isset($_POST['fix']))
 			{
 				$sql12="SELECT COUNT(*) AS cnt FROM $bai_pro3.cat_stat_log WHERE order_tid IN (SELECT order_tid FROM bai_orders_db WHERE order_col_des='".$selected[$kl]."' AND order_del_no='$schedule') and compo_no in ('".implode("','",$compo_no)."')"; 
 				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$cnt=mysqli_num_rows($sql_result12);
+				while($sql_row12=mysqli_fetch_array($sql_result12)) 
+				{
+					$cnt=$sql_row12['cnt'];
+				}
 				if($cnt<>sizeof($compo_no))
 				{
 					$status=1;

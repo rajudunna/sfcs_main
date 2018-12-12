@@ -320,7 +320,7 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
 				$sql_result543=mysqli_query($link, $sql543) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row543=mysqli_fetch_array($sql_result543)) 
 				{ 
-					echo "<tr><td>".$sql_row543['compo_no']."</td><tr>";
+					echo "<tr><td>".$sql_row543['compo_no']."</td></tr>";
 				}
 				echo "</table>";
 				echo "</td>";
@@ -461,12 +461,13 @@ if(isset($_POST['fix']))
 	}
 	$unique_orginal_sizes_explode1=explode(",",$unique_orginal_sizes1);
 	$unique_sizes_explode1=explode(",",$unique_sizes1);
+	echo sizeof($selected)."<br>";
+	echo var_dump($selected)."<br>";
 	if(sizeof($selected)>1) 
 	{ 
 		// Validate Components are equal then only club the schedules
 		$sql17="SELECT order_tid,COUNT(*) AS cnt FROM $bai_pro3.cat_stat_log WHERE order_tid IN (SELECT order_tid FROM bai_orders_db WHERE order_col_des IN 
 		('".implode("','",$selected)."') AND order_del_no='$schedule') GROUP BY order_tid ORDER BY cnt DESC LIMIT 1"; 
-		//echo $sql17."<br>";
 		$sql_result17=mysqli_query($link, $sql17) or exit("Sql Error C".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row17=mysqli_fetch_array($sql_result17)) 
 		{ 
@@ -482,7 +483,6 @@ if(isset($_POST['fix']))
 		if($order_tid<>'')
 		{
 			$sql="select * from $bai_pro3.cat_stat_log where order_tid='".$order_tid."'"; 
-			//echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result)) 
 			{ 
@@ -493,8 +493,10 @@ if(isset($_POST['fix']))
 			{
 				$sql12="SELECT COUNT(*) AS cnt FROM $bai_pro3.cat_stat_log WHERE order_tid IN (SELECT order_tid FROM bai_orders_db WHERE order_col_des='".$selected[$kl]."' AND order_del_no='$schedule') and compo_no in ('".implode("','",$compo_no)."')"; 
 				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
-				//echo $sql12."<br>";
-				$cnt=mysqli_num_rows($sql_result12);
+				while($sql_row12=mysqli_fetch_array($sql_result12)) 
+				{
+					$cnt=$sql_row12['cnt'];
+				}
 				if($cnt<>sizeof($compo_no))
 				{
 					$status=1;
@@ -627,12 +629,11 @@ if(isset($_POST['fix']))
 		}                                                                                                 
 		else
 		{ 
-			// echo "<h2>Please upload order status for selected schedules.</h2>";
 			echo "<script type=\"text/javascript\"> 
 						sweetAlert('You cannot proceed Schedule Clubbing.','Some of Item Code are equal fro selected Items.','warning');
 					</script>"; 
 			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N')."&style=$style&schedule=$schedule';</script>");		
-		}			
+		}
 	} 
 	else 
 	{ 
