@@ -53,8 +53,8 @@ if(mysqli_num_rows($result) > 0) {
 }
 
 if(strlen($schedule) > 8){
-	$scheudles_query = "SELECT distinct(order_del_no) as schedule from $bai_pro3.bai_orders_db where 
-					    order_joins='J$schedule'";
+	$scheudles_query = "SELECT order_del_no as schedule from $bai_pro3.bai_orders_db where 
+					    order_joins='J$schedule' group by order_del_no";
 	$schedules_result = mysqli_query($link,$schedule);
 	while($row = mysqli_fetch_array($schedules_result)){
 		$val_schedules[] = $row['schedule'];
@@ -73,8 +73,8 @@ while($row = mysqli_fetch_array($result3))
 
 //Validation for the schedule operation matchings
 foreach($val_schedules as $schedule){
-	$sql_colors="select distinct(order_col_des) from $bai_pro3.bai_orders_db where order_del_no = '$schedule' 
-	and order_style_no = '$style' and $order_joins_not_in";
+	$sql_colors="select order_col_des from $bai_pro3.bai_orders_db where order_del_no = '$schedule' 
+	and order_style_no = '$style' and order_col_des= '$color' and $order_joins_not_in";
 	$result3 = mysqli_query($link,$sql_colors) or exit("Unable to get the color codes");
 	while($row = mysqli_fetch_array($result3))
 	{
@@ -91,7 +91,7 @@ foreach($val_schedules as $schedule){
 			$excess_cut = $row['excess_cut_qty'];
 		}
 
-		$ops_master_sql = "select operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master where style='$style' and color='$color_value' and default_operration='yes'";
+		$ops_master_sql = "select operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master where style='$style' and color='$color_value' and default_operration='yes' group by operation_code";
 		// echo $ops_master_sql;
 		$result2_ops_master_sql = mysqli_query($link,$ops_master_sql)
 							or exit("Error Occured : Unable to get the Operation Codes");
@@ -100,7 +100,7 @@ foreach($val_schedules as $schedule){
 			$array1[] = $row_result2_ops_master_sql['operation_code'];
 		}
 		
-		$sql1 = "select   OperationNumber FROM $bai_pro3.schedule_oprations_master where Style='$style' and Description ='$color_value' and ScheduleNumber='$schedule'";
+		$sql1 = "select OperationNumber FROM $bai_pro3.schedule_oprations_master where Style='$style' and Description ='$color_value' and ScheduleNumber='$schedule' group by OperationNumber";
 		$result1 = mysqli_query($link,$sql1)  
 			or exit("Error Occured : Unable to get the Operation Codes");;
 	
