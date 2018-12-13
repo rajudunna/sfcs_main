@@ -168,7 +168,7 @@
                             {
                                 $to_add_mo = $multiple_mos_tot_qty;
                                 $array_mos[$max_mo_no]  = $multiple_mos_tot_qty;
-                                $to_add_mo = 0;
+                                $multiple_mos_tot_qty = 0;
                             }
                             echo $to_add_mo.'</br>';
                             if($to_add_mo > 0)
