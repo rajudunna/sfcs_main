@@ -132,7 +132,7 @@ if(isset($_REQUEST['filter']) or isset($_GET['doc_no']))
 	
 	if($schedule>0)
 	{
-		$sql.=" and qms_schedule=$schedule";
+		$sql.=" and qms_schedule='$schedule'";
 	}
 	$sql .= " and raised > 0";
 	$sql.=" order by log_date,module";
@@ -180,7 +180,7 @@ if(isset($_REQUEST['filter']) or isset($_GET['doc_no']))
 			echo "<td>".ims_sizes('',$sql_row['qms_schedule'],$sql_row['qms_style'],$sql_row['qms_color'],$sql_row['qms_size'],$link)."</td>";
 			echo "<td>".$sql_row['raised']."</td>";
 			
-			$sql="select * from $bai_pro3.recut_track where doc_no=$recut_doc_no and level=2";
+			$sql="select status,username from $bai_pro3.recut_track where doc_no=$recut_doc_no and level=2";
 			$result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$count=mysqli_num_rows($result);
 			while($row=mysqli_fetch_array($result))

@@ -3,51 +3,6 @@ $excel_form_action = getFullURL($_GET['r'],'export_excel.php','R');
 $table_csv = getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
 
 ?>
-
-
-<!-- <style>
-body
-{
-	font-family:arial;
-	font-size:12px;
-}
-
-table tr
-{
-	border: 1px solid black;
-	text-align: right;
-	white-space:nowrap; 
-}
-
-table td
-{
-	border: 1px solid black;
-	text-align: right;
-white-space:nowrap; 
-}
-
-table th
-{
-	border: 1px solid black;
-	text-align: center;
-    	background-color: BLUE;
-	color: WHITE;
-white-space:nowrap; 
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-table{
-	white-space:nowrap; 
-	border-collapse:collapse;
-	font-size:12px;
-}
-
-
-}
-
-}
-</style> -->
 <style>
 th
 {
@@ -74,54 +29,38 @@ th
 	
 </script>
 <script type="text/javascript" src="<?php echo $table_csv ?>" ></script>	
-
-	<div class="panel panel-primary">
-
-		<?php 
-		
-		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
-
-		<?php
-			$sdate=$_POST['sdate'];
-			$edate=$_POST['edate'];
-			$shift=$_POST['shift'];
-			$module=$_POST['module'];
-		?>
-
-
-		<div class="panel-heading">Docket Summary - Report</div>
+<div class="panel panel-primary">
+	<?php 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
+	<?php
+	$sdate=$_POST['sdate'];
+	$edate=$_POST['edate'];
+	$shift=$_POST['shift'];
+	$module=$_POST['module'];
+	?>
+	<div class="panel-heading">Docket Summary - Report</div>
 		<div class="panel-body">
 			<form name="text" method="post" action="<?php echo getFullURL($_GET['r'], "docket_summary_v1.php", "N"); ?>">
-
-			<div class="row">
-			<div class="col-md-3">
-			<label>Start Date:</label> 
-			<input type="text" data-toggle="datepicker" class="form-control"  name="sdate" id="sdate" value="<?php  if($sdate==""){ echo date("Y-m-d"); } else { echo $sdate; } ?>" size="10">
-			</div>
-			<div class="col-md-3"><label>End Date:</label>
-	
-			<input type="text" data-toggle="datepicker" class="form-control"  name="edate" id="edate" onchange='return verify_date()' value="<?php  if($edate==""){ echo date("Y-m-d"); } else { echo $edate; } ?>" size="10">
-			</div>
-			<input type="submit" class="btn btn-primary btn-sm" value="Submit" onclick='return verify_date()' name="submit" style="margin-top:25px;">
-			</div>
-
+				<div class="row">
+					<div class="col-md-3">
+						<label>Start Date:</label> 
+						<input type="text" data-toggle="datepicker" class="form-control"  name="sdate" id="sdate" value="<?php  if($sdate==""){ echo date("Y-m-d"); } else { echo $sdate; } ?>" size="10">
+					</div>
+					<div class="col-md-3"><label>End Date:</label>
+						<input type="text" data-toggle="datepicker" class="form-control"  name="edate" id="edate" onchange='return verify_date()' value="<?php  if($edate==""){ echo date("Y-m-d"); } else { echo $edate; } ?>" size="10">
+					</div>
+					<input type="submit" class="btn btn-primary btn-sm" value="Submit" onclick='return verify_date()' name="submit" style="margin-top:25px;">
+				</div>
 			</form>
+		<?php
 
-			<?php
-
-			if(isset($_POST['submit']))
-			{
-				echo "<hr/>";
-				$sdate=$_POST['sdate'];
-				$edate=$_POST['edate'];
-				//$shift=$_POST['shift'];
-				//$module=$_POST['module'];
-				
-				/*if($module=="All")
-				{
-					$module="1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80";
-				}
-				*/
+		if(isset($_POST['submit']))
+		{
+			echo "<hr/>";
+			$sdate=$_POST['sdate'];
+			$edate=$_POST['edate'];
+			//$shift=$_POST['shift'];
+			//$module=$_POST['module'];
 
 			//echo "<h2>Docket summary</h2>";
 			
@@ -146,8 +85,7 @@ th
 			<form action="'.$excel_form_action.'" method ="post" > 
 				<input type="hidden" name="csv_123" id="csv_123">
 				<input class="btn btn-info btn-sm" type="submit" value="Export to Excel" onclick="getCSVData()">
-			</form></span>
-		';
+			</form></span>';
 			
 			echo "<table class=\"table table-bordered\" id=\"table_one\" >";
 			echo "<thead><tr class=\"info\"><th>Style</th><th>Schedule</th><th>Color</th><th>Docket#</th><th>Cut#</th><th>Fabric requested user</th>
@@ -157,12 +95,11 @@ th
 			{
 				$order_tid=$sql_row['order_tid'];
 				$sql33="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
-					mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row33=mysqli_fetch_array($sql_result33))
-					{
-						$color_code=$sql_row33['color_code']; //Color Code
-					}
+				$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row33=mysqli_fetch_array($sql_result33))
+				{
+					$color_code=$sql_row33['color_code']; //Color Code
+				}
 			
 				$order_style_no=$sql_row['order_style_no'];
 				$order_del_no=$sql_row['order_del_no'];
@@ -220,11 +157,6 @@ th
 					echo "<td>$docket_printed_person</td>";					
 					echo "<td>$act_cut_status</td>";
 					// echo "<td></td>";
-					
-					
-
-					
-
 					echo "</tr>";
 			}
 
@@ -234,44 +166,44 @@ th
 			}
 			
 
-			}
-			?>
-			<script language="javascript" type="text/javascript">
-			$('#reset_table_one').addClass('btn btn-warning');
+		}
+		?>
+		<script language="javascript" type="text/javascript">
+		$('#reset_table_one').addClass('btn btn-warning');
 
-			var MyTableFilter = 
-			{  
-				exact_match: false,
-				alternate_rows: true,
-				// display_all_text: "Show All",
-				// col_0: "select",
-				// col_1: "select",
-				rows_counter: true,
-				rows_counter_text: "Total rows: ",
-				btn_reset: true,
+		var MyTableFilter = 
+		{  
+			exact_match: false,
+			alternate_rows: true,
+			// display_all_text: "Show All",
+			// col_0: "select",
+			// col_1: "select",
+			rows_counter: true,
+			rows_counter_text: "Total rows: ",
+			btn_reset: true,
 
-				bnt_reset_text: "Clear all "
+			bnt_reset_text: "Clear all "
+		}
+		setFilterGrid( "table_one", MyTableFilter );
+		$(document).ready(function(){
+			$('#reset_table_one').addClass('btn btn-warning btn-xs');
+		});
+		</script>
+		<script>
+			function getCSVData(){
+			var csv_value=$('#table_one').table2CSV({delivery:'value'});
+			$("#csv_123").val(csv_value);	
 			}
-			setFilterGrid( "table_one", MyTableFilter );
-			$(document).ready(function(){
-				$('#reset_table_one').addClass('btn btn-warning btn-xs');
-			});
-			</script>
-			<script>
-				function getCSVData(){
-				var csv_value=$('#table_one').table2CSV({delivery:'value'});
-				$("#csv_123").val(csv_value);	
-				}
-			</script>
-			<style>
-			#reset_table_one{
-				width : 80px;
-				color : #fff;
-				margin : 10px;
-			}
-			th,td{
-				 text-align: center;
-			}
-			</style>
-		</div>
+		</script>
+		<style>
+		#reset_table_one{
+			width : 80px;
+			color : #fff;
+			margin : 10px;
+		}
+		th,td{
+				text-align: center;
+		}
+		</style>
 	</div>
+</div>

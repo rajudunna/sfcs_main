@@ -379,8 +379,6 @@ $sdat=$_POST["sdat"];
 $edat=$_POST["edat"];
 
 $sch_nos=array();
-//$sql_sch="select distinct ship_schedule as sch from bai_pro3.ship_stat_log where disp_note_no in (".implode(",",$aod_nos).")";
-//$sql_sch="select distinct schedule_no as sch from bai_pro4.shipment_plan_ref where ex_factory_date between \"$sdat\" and \"$edat\"";
 $sql_sch="select distinct order_del_no as sch from $bai_pro3.bai_orders_db_confirm where order_style_no='$style' and order_date between '$sdat' and '$edat'";
 // echo $sql_sch;
 $result_sch=mysqli_query($link, $sql_sch) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -430,7 +428,7 @@ echo "
 		</tr>";
 
 
-	$sql3="select order_del_no as sch,order_col_des as col from $bai_pro3.bai_orders_db where order_del_no in (".implode(",",$sch_nos).")";
+	$sql3="select order_del_no as sch,order_col_des as col,order_tid from $bai_pro3.bai_orders_db where order_del_no in (".implode(",",$sch_nos).")";
 	// echo $sql3."<br>";
 	$result3=mysqli_query($link, $sql3) or exit("Sql Error12x".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row3=mysqli_fetch_array($result3))
@@ -438,8 +436,10 @@ echo "
 
 	$schedule=$row3["sch"];
 	$color=$row3["col"];
+	$order_tid=$row3["order_tid"];
 
-	$sql4="select category from $bai_pro3.cat_stat_log where order_tid like \"% $schedule$color%\" and category!=\"\"";
+
+	$sql4="select category from $bai_pro3.cat_stat_log where order_tid=\"".$order_tid."\" and category!=\"\"";
 	// echo $sql4;
 	$result4=mysqli_query($link, $sql4) or exit("Sql Error1x".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row4=mysqli_fetch_array($result4))
@@ -471,7 +471,7 @@ echo "
 	{
 		$old_order_total=$order_total_qty;
 	}
-	$sql="select * from $bai_pro3.cat_stat_log where order_tid like '% $schedule$color%' and category='$category'";
+	$sql="select * from $bai_pro3.cat_stat_log where order_tid=\"".$order_tid."\" and category='$category'";
 	$result=mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($result))
 	{
@@ -491,15 +491,8 @@ echo "
 		$gmt_type="AGO";
 	}
 
-	/*$sql="select * from bai_pro3.cuttable_stat_log where order_tid like \"% $schedule$color%\" and cat_id=\"$cat_ref\"";
-	echo $sql;
-	$result=mysql_query($sql,$link) or exit("Sql Error1".mysql_error());
-	while($row=mysql_fetch_array($result))
-	{
-		$cut_total_qty=$row["cuttable_s_xs"]+$row["cuttable_s_s"]+$row["cuttable_s_m"]+$row["cuttable_s_l"]+$row["cuttable_s_xl"]+$row["cuttable_s_xxl"]+$row["cuttable_s_xxxl"]+$row["cuttable_s_s06"]+$row["cuttable_s_s08"]+$row["cuttable_s_s10"]+$row["cuttable_s_s12"]+$row["cuttable_s_s14"]+$row["cuttable_s_s16"]+$row["cuttable_s_s18"]+$row["cuttable_s_s20"]+$row["cuttable_s_s22"]+$row["cuttable_s_s24"]+$row["cuttable_s_s26"]+$row["cuttable_s_s28"]+$row["cuttable_s_s30"];
-	}*/
 
-	$sql="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\" GROUP BY doc_no";
+	$sql="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid=\"".$order_tid."\" and cat_ref=\"$cat_ref\" GROUP BY doc_no";
 	//echo $sql."<br>";
 	$result=mysqli_query($link, $sql) or exit("Sql Error1t".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($result))
@@ -508,7 +501,7 @@ echo "
 	}
 
 
-	$sql="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\" and fabric_status=\"5\" GROUP BY doc_no";
+	$sql="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid=\"".$order_tid."\" and cat_ref=\"$cat_ref\" and fabric_status=\"5\" GROUP BY doc_no";
 	//echo $sql."<br>";
 	$result=mysqli_query($link, $sql) or exit("Sql Error1u".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($result))
@@ -517,19 +510,19 @@ echo "
 	}
 
 
-	$sql="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\" and act_cut_status=\"DONE\" GROUP BY doc_no";
+	$sql="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid=\"".$order_tid."\" and cat_ref=\"$cat_ref\" and act_cut_status=\"DONE\" GROUP BY doc_no";
 	$result=mysqli_query($link, $sql) or exit("Sql Error1a".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($result))
 	{
 		$cut_comp_iss_qty=$cut_comp_iss_qty+$row["doc_qty"];
 	}
 
-	$sql="select * from $bai_pro3.plandoc_stat_log where order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\"";
+	$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid."\" and cat_ref=\"$cat_ref\"";
 	$result=mysqli_query($link, $sql) or exit("Sql Error1b".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$ratios_no_count=mysqli_num_rows($result);
 	$docketnos[]=-1;
 	$docketno[]=-1;
-	$sql="select * from $bai_pro3.plandoc_stat_log where order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\" and fabric_status=\"5\"";
+	$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid."\" and cat_ref=\"$cat_ref\" and fabric_status=\"5\"";
 	$result=mysqli_query($link, $sql) or exit("Sql Error1c".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$cut_no_count=mysqli_num_rows($result);
 	while($row=mysqli_fetch_array($result))
@@ -540,7 +533,7 @@ echo "
 
 	$recut_docketnos[]=-1;
 	$recut_docketno[]=-1;
-	$sql="select * from $bai_pro3.recut_v2 where order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\"";
+	$sql="select * from $bai_pro3.recut_v2 where order_tid=\"".$order_tid."\" and cat_ref=\"$cat_ref\"";
 	$result=mysqli_query($link, $sql) or exit("Sql Error1d".mysqli_error($GLOBALS["___mysqli_ston"]));
 	//$cut_no_count=mysql_num_rows($result);
 	while($row=mysqli_fetch_array($result))
@@ -561,7 +554,7 @@ echo "
 
 	$newyy=0;
 	$new_order_qty=0;
-	$sql2="select mk_ref,p_plies,cat_ref,allocate_ref from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and allocate_ref>0"; 
+	$sql2="select mk_ref,p_plies,cat_ref,allocate_ref from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid."\" and cat_ref=$cat_ref and allocate_ref>0"; 
 	mysqli_query($link, $sql2) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error223".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))

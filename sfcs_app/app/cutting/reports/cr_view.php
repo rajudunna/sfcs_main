@@ -158,7 +158,6 @@ if(isset($_POST['category']))
 				<?php
 				echo "<select class='form-control' name=\"schedule\" onchange=\"secondbox();\" id='schedule'>";
 				echo "<option value=\"NIL\" selected>Select</option>";	
-				//$sql="select distinct order_del_no from bai_orders_db where order_style_no=\"$style\"";
 				$sql="SELECT DISTINCT order_del_no FROM $bai_pro3.bai_orders_db bd JOIN cat_stat_log cl ON bd.order_tid=cl.order_tid and cl.category<>\"\" and bd.order_style_no=\"$style\"";
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -179,7 +178,6 @@ if(isset($_POST['category']))
 				<label for='color'>Select Color</label>
 				<?php
 				echo "<select class='form-control' name=\"color\" onchange=\"thirdbox();\" id='color'>";
-				//$sql="select distinct order_col_des from bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
 				$sql="SELECT DISTINCT order_col_des FROM $bai_pro3.bai_orders_db bd JOIN cat_stat_log cl ON bd.order_tid=cl.order_tid and cl.category<>\"\" and bd.order_style_no=\"$style\" and bd.order_del_no=\"$schedule\"";
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -215,7 +213,7 @@ if(isset($_POST['category']))
 			<label for='category'>Select Category</label>
 			<?php
 			echo "<select class='form-control' name=\"category\" onchange='fourthbox();' id='category'>";
-			$sql="select distinct category from cat_stat_log where order_tid=\"$order_tid\" and category<> '' ";
+			$sql="select distinct category from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category<> '' ";
 	
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
@@ -277,7 +275,6 @@ if(isset($_POST['submit']))
     
 
 	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-	// mysqli_query($link, $sql) or exit("Sql Error testing".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -319,7 +316,6 @@ if(isset($_POST['submit']))
 	}
 	
 	$sql="select sum(allocate_s01*plies) as \"a_s_s01\", sum(allocate_s02*plies) as \"a_s_s02\", sum(allocate_s03*plies) as \"a_s_s03\", sum(allocate_s04*plies) as \"a_s_s04\", sum(allocate_s05*plies) as \"a_s_s05\", sum(allocate_s06*plies) as \"a_s_s06\", sum(allocate_s07*plies) as \"a_s_s07\", sum(allocate_s08*plies) as \"a_s_s08\", sum(allocate_s09*plies) as \"a_s_s09\", sum(allocate_s10*plies) as \"a_s_s10\", sum(allocate_s11*plies) as \"a_s_s11\", sum(allocate_s12*plies) as \"a_s_s12\", sum(allocate_s13*plies) as \"a_s_s13\", sum(allocate_s14*plies) as \"a_s_s14\", sum(allocate_s15*plies) as \"a_s_s15\", sum(allocate_s16*plies) as \"a_s_s16\", sum(allocate_s17*plies) as \"a_s_s17\", sum(allocate_s18*plies) as \"a_s_s18\", sum(allocate_s19*plies) as \"a_s_s19\", sum(allocate_s20*plies) as \"a_s_s20\", sum(allocate_s21*plies) as \"a_s_s21\", sum(allocate_s22*plies) as \"a_s_s22\", sum(allocate_s23*plies) as \"a_s_s23\", sum(allocate_s24*plies) as \"a_s_s24\", sum(allocate_s25*plies) as \"a_s_s25\", sum(allocate_s26*plies) as \"a_s_s26\", sum(allocate_s27*plies) as \"a_s_s27\", sum(allocate_s28*plies) as \"a_s_s28\", sum(allocate_s29*plies) as \"a_s_s29\", sum(allocate_s30*plies) as \"a_s_s30\", sum(allocate_s31*plies) as \"a_s_s31\", sum(allocate_s32*plies) as \"a_s_s32\", sum(allocate_s33*plies) as \"a_s_s33\", sum(allocate_s34*plies) as \"a_s_s34\", sum(allocate_s35*plies) as \"a_s_s35\", sum(allocate_s36*plies) as \"a_s_s36\", sum(allocate_s37*plies) as \"a_s_s37\", sum(allocate_s38*plies) as \"a_s_s38\", sum(allocate_s39*plies) as \"a_s_s39\", sum(allocate_s40*plies) as \"a_s_s40\", sum(allocate_s41*plies) as \"a_s_s41\", sum(allocate_s42*plies) as \"a_s_s42\", sum(allocate_s43*plies) as \"a_s_s43\", sum(allocate_s44*plies) as \"a_s_s44\", sum(allocate_s45*plies) as \"a_s_s45\", sum(allocate_s46*plies) as \"a_s_s46\", sum(allocate_s47*plies) as \"a_s_s47\", sum(allocate_s48*plies) as \"a_s_s48\", sum(allocate_s49*plies) as \"a_s_s49\", sum(allocate_s50*plies) as \"a_s_s50\" from $bai_pro3.allocate_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_id";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -346,7 +342,6 @@ if(isset($_POST['submit']))
 	$act_s=array();
 	$sql1="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_id";
 	//echo $sql1."<br>";
-	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
@@ -363,8 +358,6 @@ if(isset($_POST['submit']))
 		
 
 		$act_total=array_sum($act_s);
-		//$act_s01+$act_s02+$act_s03+$act_s04+$act_s05+$act_s06+$act_s07+$act_s08+$act_s09+$act_s10+$act_s11+$act_s12+$act_s13+$act_s14+$act_s15+$act_s16+$act_s17+$act_s18+$act_s19+$act_s20+$act_s21+$act_s22+$act_s23+$act_s24+$act_s25+$act_s26+$act_s27+$act_s28+$act_s29+$act_s30+$act_s31+$act_s32+$act_s33+$act_s34+$act_s35+$act_s36+$act_s37+$act_s38+$act_s39+$act_s40+$act_s41+$act_s42+$act_s43+$act_s44+$act_s45+$act_s46+$act_s47+$act_s48+$act_s49+$act_s50;
-		//$act_total=$act_s01+$act_s02+$act_s03+$act_s04+$act_s05+$act_s06+$act_s07+$act_s08+$act_s09+$act_s10+$act_s11+$act_s12+$act_s13+$act_s14+$act_s15+$act_s16+$act_s17+$act_s18+$act_s19+$act_s20+$act_s21+$act_s22+$act_s23+$act_s24+$act_s25+$act_s26+$act_s27+$act_s28+$act_s29+$act_s30+$act_s31+$act_s32+$act_s33+$act_s34+$act_s35+$act_s36+$act_s37+$act_s38+$act_s39+$act_s40+$act_s41+$act_s42+$act_s43+$act_s44+$act_s45+$act_s46+$act_s47+$act_s48+$act_s49+$act_s50;
 		$cut_status=$sql_row1['act_cut_status'];
 		$input_status=$sql_row1['act_cut_issue_status'];
 		$doc_date=$sql_row1['date'];
@@ -374,8 +367,7 @@ if(isset($_POST['submit']))
 			$cut_section="";
 			$cut_shift="";
 		
-		$sql="select * from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql="select date,section,shift from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -390,8 +382,7 @@ if(isset($_POST['submit']))
 			$input_module="";
 			$input_shift="";
 		
-		$sql="select * from $bai_pro3.act_cut_issue_status where doc_no=$act_doc_no";
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql="select date,mod_no,shift from $bai_pro3.act_cut_issue_status where doc_no=$act_doc_no";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -403,8 +394,7 @@ if(isset($_POST['submit']))
 	
 		/* NEW */		
 		
-	$sql="select * from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql="select fab_received,fab_returned,damages,shortages from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 
@@ -462,7 +452,7 @@ if(isset($_POST['submit']))
 	
 	$newyy=0;
 	$new_order_qty=0;
-	$sql2="select * from $bai_pro3.maker_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_id";
+	$sql2="select mklength,allocate_ref from $bai_pro3.maker_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_id";
 
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -518,42 +508,7 @@ if(isset($_POST['submit']))
 	
 // }
 	?>
-	<!--
-	<div class="col-sm-12">
-		<div class="col-sm-5">
-			<div class="row">
-				<div class="col-sm-3">Style : </div>
-				<div class="col-sm-2"><?php echo $style; ?></div>
-			</div>
-			<div class="row">
-				<div class="col-sm-3">Schedule : </div>
-				<div class="col-sm-2"><?php echo $schedule; ?></div>
-			</div>
-			<div class="row">
-				<div class="col-sm-3">Color : </div>
-				<div class="col-sm-2"><?php echo $color; ?></div>
-			</div>
-			<div class="row">
-				<div class="col-sm-3">Category : </div>
-				<div class="col-sm-2"><?php echo $category ?></div>
-			</div>
-		</div>
-		<div class="col-sm-5">
-			<div class="row">
-				<div class="col-sm-3">Order Consumption : </div>
-				<div class="col-sm-2"><?php echo $cat_yy; ?> Saving </div>
-			</div>
-			<div class="row">
-				<div class="col-sm-3">CAD Consumption : </div>
-				<div class="col-sm-2"><?php echo round($newyy2,4); ?> <?php echo $savings_new; ?>%</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-3">Actual Consumption : </div>
-				<div class="col-sm-2"><?php echo round($act_con_summ,4); ?><?php echo $act_con_summ_sav; ?>%</div>
-			</div>
-		</div>
-	</div>
-	-->
+	
 
 <table class="table table-bordered table-responsive">
 	<tr>

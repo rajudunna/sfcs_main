@@ -4,8 +4,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/menu_content.php',1,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/header_scripts.php',1,'R')); 
-//include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'header_scripts.php','R'));
-// $view_access=user_acl("SFCS_0007",$username,1,$group_id_sfcs); 
 $table_csv = '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
 $excel_form_action = '../'.getFullURLLevel($_GET['r'],'common/php/export_excel.php',1,'R');
 
@@ -21,14 +19,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <meta name=ProgId content=Excel.Sheet>
 <meta name=Generator content="Microsoft Excel 12">
 <link rel=File-List href="../common/filelist.xml">
-<!--[if !mso]>
-<style>
-v\:* {behavior:url(#default#VML);}
-o\:* {behavior:url(#default#VML);}
-x\:* {behavior:url(#default#VML);}
-.shape {behavior:url(#default#VML);}
-</style>
-<![endif]-->
+
 <style id="Book2_18241_Styles">
 .black{
 	color : #000;
@@ -82,7 +73,7 @@ $cat=$_POST['cat'];
 				<input class='form-control' type="text" data-toggle="datepicker" id="edate" onchange="return verify_date();" name="to_date" size="8" value="<?php  if(isset($_POST['to_date'])) { echo $_POST['to_date']; } else { echo date("Y-m-d"); } ?>" />
 			</div>
 			<?php
-				$table_q="SELECT * FROM $bai_pro3.`tbl_cutting_table` WHERE STATUS='active'";
+				$table_q="SELECT tbl_name,tbl_id FROM $bai_pro3.`tbl_cutting_table` WHERE STATUS='active'";
 				
 				$table_result=mysqli_query($link, $table_q) or exit("Error getting Table Details");
 				while($tables=mysqli_fetch_array($table_result))
@@ -210,7 +201,6 @@ if(isset($_POST['submit']))
 
 <?php
 $reptype = $_POST['reptype'];
-//echo 'rep type = '.$reptype;
 if(isset($_POST['submit']) && $reptype == 1)
 {
 
@@ -226,8 +216,6 @@ if(isset($_POST['submit']) && $reptype == 1)
 			
 			
 			$sql="select * from $bai_pro3.plandoc_stat_log where doc_no=\"$doc_ref_no\"";
-			
-			
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error b".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -236,7 +224,6 @@ if(isset($_POST['submit']) && $reptype == 1)
 
 			$sql="select * from $bai_pro3.cat_stat_log where category in ($cat) and tid=\"$cat_ref_new\"";
 			//echo $sql;
-			//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error c".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 			
@@ -261,7 +248,6 @@ if(isset($_POST['submit']) && $reptype == 1)
 
 	$sql="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\" ".$query;
 	//echo $sql;
-	//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error d".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 
@@ -388,7 +374,6 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$act_total=$act_xs+$act_s+$act_m+$act_l+$act_xl+$act_xxl+$act_xxxl+$act_s01+$act_s02+$act_s03+$act_s04+$act_s05+$act_s06+$act_s07+$act_s08+$act_s09+$act_s10+$act_s11+$act_s12+$act_s13+$act_s14+$act_s15+$act_s16+$act_s17+$act_s18+$act_s19+$act_s20+$act_s21+$act_s22+$act_s23+$act_s24+$act_s25+$act_s26+$act_s27+$act_s28+$act_s29+$act_s30+$act_s31+$act_s32+$act_s33+$act_s34+$act_s35+$act_s36+$act_s37+$act_s38+$act_s39+$act_s40+$act_s41+$act_s42+$act_s43+$act_s44+$act_s45+$act_s46+$act_s47+$act_s48+$act_s49+$act_s50;
 			
 			$sql2="select mklength from $bai_pro3.maker_stat_log where tid='$mk_ref'";
-		//	mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error f".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
@@ -411,8 +396,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 			
 		}
 		
-		$sql1="select * from $bai_pro3.cat_stat_log where tid='$cat_ref'";
-		//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql1="select category,order_tid,catyy from $bai_pro3.cat_stat_log where tid='$cat_ref'";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -421,9 +405,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$cat_yy=$sql_row1['catyy'];
 		}	
 		
-		$sql1="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
-		//echo $sql1;
-		//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql1="select order_style_no,order_del_no,color_code,order_col_des from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error i".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -530,8 +512,6 @@ if(isset($_POST['submit']) && $reptype==2)
 //NEW Enhancement for category breakup	
    
 $sql="select distinct section from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and shift in ($shift) and section in ($section) ".$query. "order by section";
-
-//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
@@ -556,7 +536,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$section_new=$sql_row['section'];
 	
 	$sql11="select distinct shift from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and section in ($section_new) and shift in ($shift) ".$query. "order by shift";
-	//mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 6".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row11=mysqli_fetch_array($sql_result11))
 	{
@@ -565,7 +544,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$doc_list="";
 		
 		$sql2="select doc_no from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and section in ($section_new) and shift=\"$shift_new\" ".$query;
-		//mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{
@@ -578,8 +556,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$shortages=0;
 	
 		$sql3="select sum((a_xs+a_s+a_m+a_l+a_xl+a_xxl+a_xxxl)*a_plies) as \"cut_qty\" from $bai_pro3.plandoc_stat_log where doc_no in ($doc_list)";
-		//echo $sql3;
-		//mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row3=mysqli_fetch_array($sql_result3))
 		{
@@ -587,17 +563,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}
 		
 		$sql3="select sum(damages) as \"damages\", sum(shortages) as \"shortages\" from $bai_pro3.act_cut_status where doc_no in ($doc_list)";
-		//echo $sql3;
-		//mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error 9".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row3=mysqli_fetch_array($sql_result3))
 		{
 			$damages=round($sql_row3['damages'],2);
 			$shortages=round($sql_row3['shortages'],2);
 		}
-		
-
-		
 		
 		/* NEW */
 		
@@ -622,7 +593,6 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	$date=$sql_row33['date'];
 	$act_shift=$sql_row33['shift'];
 	$act_section=$sql_row33['section'];
-	
 	$fab_rec=$sql_row33['fab_received'];
 	$fab_ret=$sql_row33['fab_returned'];
 	$damages_new=$sql_row33['damages'];
@@ -647,62 +617,61 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		$act_xl=$sql_row1['a_xl']*$sql_row1['a_plies'];
 		$act_xxl=$sql_row1['a_xxl']*$sql_row1['a_plies'];
 		$act_xxxl=$sql_row1['a_xxxl']*$sql_row1['a_plies'];
-		
-			$act_s01=$sql_row1['a_s01']*$sql_row1['a_plies'];
-			$act_s02=$sql_row1['a_s02']*$sql_row1['a_plies'];
-			$act_s03=$sql_row1['a_s03']*$sql_row1['a_plies'];
-			$act_s04=$sql_row1['a_s04']*$sql_row1['a_plies'];
-			$act_s05=$sql_row1['a_s05']*$sql_row1['a_plies'];
-			$act_s06=$sql_row1['a_s06']*$sql_row1['a_plies'];
-			$act_s07=$sql_row1['a_s07']*$sql_row1['a_plies'];
-			$act_s08=$sql_row1['a_s08']*$sql_row1['a_plies'];
-			$act_s09=$sql_row1['a_s09']*$sql_row1['a_plies'];
-			$act_s10=$sql_row1['a_s10']*$sql_row1['a_plies'];
-			$act_s11=$sql_row1['a_s11']*$sql_row1['a_plies'];
-			$act_s12=$sql_row1['a_s12']*$sql_row1['a_plies'];
-			$act_s13=$sql_row1['a_s13']*$sql_row1['a_plies'];
-			$act_s14=$sql_row1['a_s14']*$sql_row1['a_plies'];
-			$act_s15=$sql_row1['a_s15']*$sql_row1['a_plies'];
-			$act_s16=$sql_row1['a_s16']*$sql_row1['a_plies'];
-			$act_s17=$sql_row1['a_s17']*$sql_row1['a_plies'];
-			$act_s18=$sql_row1['a_s18']*$sql_row1['a_plies'];
-			$act_s19=$sql_row1['a_s19']*$sql_row1['a_plies'];
-			$act_s20=$sql_row1['a_s20']*$sql_row1['a_plies'];
-			$act_s21=$sql_row1['a_s21']*$sql_row1['a_plies'];
-			$act_s22=$sql_row1['a_s22']*$sql_row1['a_plies'];
-			$act_s23=$sql_row1['a_s23']*$sql_row1['a_plies'];
-			$act_s24=$sql_row1['a_s24']*$sql_row1['a_plies'];
-			$act_s25=$sql_row1['a_s25']*$sql_row1['a_plies'];
-			$act_s26=$sql_row1['a_s26']*$sql_row1['a_plies'];
-			$act_s27=$sql_row1['a_s27']*$sql_row1['a_plies'];
-			$act_s28=$sql_row1['a_s28']*$sql_row1['a_plies'];
-			$act_s29=$sql_row1['a_s29']*$sql_row1['a_plies'];
-			$act_s30=$sql_row1['a_s30']*$sql_row1['a_plies'];
-			$act_s31=$sql_row1['a_s31']*$sql_row1['a_plies'];
-			$act_s32=$sql_row1['a_s32']*$sql_row1['a_plies'];
-			$act_s33=$sql_row1['a_s33']*$sql_row1['a_plies'];
-			$act_s34=$sql_row1['a_s34']*$sql_row1['a_plies'];
-			$act_s35=$sql_row1['a_s35']*$sql_row1['a_plies'];
-			$act_s36=$sql_row1['a_s36']*$sql_row1['a_plies'];
-			$act_s37=$sql_row1['a_s37']*$sql_row1['a_plies'];
-			$act_s38=$sql_row1['a_s38']*$sql_row1['a_plies'];
-			$act_s39=$sql_row1['a_s39']*$sql_row1['a_plies'];
-			$act_s40=$sql_row1['a_s40']*$sql_row1['a_plies'];
-			$act_s41=$sql_row1['a_s41']*$sql_row1['a_plies'];
-			$act_s42=$sql_row1['a_s42']*$sql_row1['a_plies'];
-			$act_s43=$sql_row1['a_s43']*$sql_row1['a_plies'];
-			$act_s44=$sql_row1['a_s44']*$sql_row1['a_plies'];
-			$act_s45=$sql_row1['a_s45']*$sql_row1['a_plies'];
-			$act_s46=$sql_row1['a_s46']*$sql_row1['a_plies'];
-			$act_s47=$sql_row1['a_s47']*$sql_row1['a_plies'];
-			$act_s48=$sql_row1['a_s48']*$sql_row1['a_plies'];
-			$act_s49=$sql_row1['a_s49']*$sql_row1['a_plies'];
-			$act_s50=$sql_row1['a_s50']*$sql_row1['a_plies'];
+	
+		$act_s01=$sql_row1['a_s01']*$sql_row1['a_plies'];
+		$act_s02=$sql_row1['a_s02']*$sql_row1['a_plies'];
+		$act_s03=$sql_row1['a_s03']*$sql_row1['a_plies'];
+		$act_s04=$sql_row1['a_s04']*$sql_row1['a_plies'];
+		$act_s05=$sql_row1['a_s05']*$sql_row1['a_plies'];
+		$act_s06=$sql_row1['a_s06']*$sql_row1['a_plies'];
+		$act_s07=$sql_row1['a_s07']*$sql_row1['a_plies'];
+		$act_s08=$sql_row1['a_s08']*$sql_row1['a_plies'];
+		$act_s09=$sql_row1['a_s09']*$sql_row1['a_plies'];
+		$act_s10=$sql_row1['a_s10']*$sql_row1['a_plies'];
+		$act_s11=$sql_row1['a_s11']*$sql_row1['a_plies'];
+		$act_s12=$sql_row1['a_s12']*$sql_row1['a_plies'];
+		$act_s13=$sql_row1['a_s13']*$sql_row1['a_plies'];
+		$act_s14=$sql_row1['a_s14']*$sql_row1['a_plies'];
+		$act_s15=$sql_row1['a_s15']*$sql_row1['a_plies'];
+		$act_s16=$sql_row1['a_s16']*$sql_row1['a_plies'];
+		$act_s17=$sql_row1['a_s17']*$sql_row1['a_plies'];
+		$act_s18=$sql_row1['a_s18']*$sql_row1['a_plies'];
+		$act_s19=$sql_row1['a_s19']*$sql_row1['a_plies'];
+		$act_s20=$sql_row1['a_s20']*$sql_row1['a_plies'];
+		$act_s21=$sql_row1['a_s21']*$sql_row1['a_plies'];
+		$act_s22=$sql_row1['a_s22']*$sql_row1['a_plies'];
+		$act_s23=$sql_row1['a_s23']*$sql_row1['a_plies'];
+		$act_s24=$sql_row1['a_s24']*$sql_row1['a_plies'];
+		$act_s25=$sql_row1['a_s25']*$sql_row1['a_plies'];
+		$act_s26=$sql_row1['a_s26']*$sql_row1['a_plies'];
+		$act_s27=$sql_row1['a_s27']*$sql_row1['a_plies'];
+		$act_s28=$sql_row1['a_s28']*$sql_row1['a_plies'];
+		$act_s29=$sql_row1['a_s29']*$sql_row1['a_plies'];
+		$act_s30=$sql_row1['a_s30']*$sql_row1['a_plies'];
+		$act_s31=$sql_row1['a_s31']*$sql_row1['a_plies'];
+		$act_s32=$sql_row1['a_s32']*$sql_row1['a_plies'];
+		$act_s33=$sql_row1['a_s33']*$sql_row1['a_plies'];
+		$act_s34=$sql_row1['a_s34']*$sql_row1['a_plies'];
+		$act_s35=$sql_row1['a_s35']*$sql_row1['a_plies'];
+		$act_s36=$sql_row1['a_s36']*$sql_row1['a_plies'];
+		$act_s37=$sql_row1['a_s37']*$sql_row1['a_plies'];
+		$act_s38=$sql_row1['a_s38']*$sql_row1['a_plies'];
+		$act_s39=$sql_row1['a_s39']*$sql_row1['a_plies'];
+		$act_s40=$sql_row1['a_s40']*$sql_row1['a_plies'];
+		$act_s41=$sql_row1['a_s41']*$sql_row1['a_plies'];
+		$act_s42=$sql_row1['a_s42']*$sql_row1['a_plies'];
+		$act_s43=$sql_row1['a_s43']*$sql_row1['a_plies'];
+		$act_s44=$sql_row1['a_s44']*$sql_row1['a_plies'];
+		$act_s45=$sql_row1['a_s45']*$sql_row1['a_plies'];
+		$act_s46=$sql_row1['a_s46']*$sql_row1['a_plies'];
+		$act_s47=$sql_row1['a_s47']*$sql_row1['a_plies'];
+		$act_s48=$sql_row1['a_s48']*$sql_row1['a_plies'];
+		$act_s49=$sql_row1['a_s49']*$sql_row1['a_plies'];
+		$act_s50=$sql_row1['a_s50']*$sql_row1['a_plies'];
 
 		$act_total=$act_xs+$act_s+$act_m+$act_l+$act_xl+$act_xxl+$act_xxxl+$act_s01+$act_s02+$act_s03+$act_s04+$act_s05+$act_s06+$act_s07+$act_s08+$act_s09+$act_s10+$act_s11+$act_s12+$act_s13+$act_s14+$act_s15+$act_s16+$act_s17+$act_s18+$act_s19+$act_s20+$act_s21+$act_s22+$act_s23+$act_s24+$act_s25+$act_s26+$act_s27+$act_s28+$act_s29+$act_s30+$act_s31+$act_s32+$act_s33+$act_s34+$act_s35+$act_s36+$act_s37+$act_s38+$act_s39+$act_s40+$act_s41+$act_s42+$act_s43+$act_s44+$act_s45+$act_s46+$act_s47+$act_s48+$act_s49+$act_s50;
 		
 		$sql2="select mklength from $bai_pro3.maker_stat_log where tid='$mk_ref'";
-		//mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{
@@ -723,9 +692,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		$doc_req+=$act_total*$binding_consumption;
 	}
 	
-	$sql1="select * from $bai_pro3.cat_stat_log where tid='$cat_ref'";
-	//echo $sql1."<br>";
-	//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql1="select category,order_tid,catyy from $bai_pro3.cat_stat_log where tid='$cat_ref'";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 14".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
@@ -734,8 +701,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		$cat_yy=$sql_row1['catyy'];
 	}	
 	
-	$sql1="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
-	//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql1="select order_style_no,order_del_no,color_code,order_col_des from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 15".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
@@ -752,17 +718,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	$net_con=round($net_util/$act_total,4);
 	$act_saving=round(($cat_yy*$act_total)-($act_con*$act_total),1);
 	
-	//New code for avoiding division error
-	/*if($cat_yy != 0)
-	{
-		$act_saving_pct=round((($cat_yy-$act_con)/$cat_yy)*100,1);
-		$net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,1);
-	}
-	else
-	{
-		$act_saving_pct=0;
-		$net_saving_pct=0;
-	}*/
+	
 	
 	$act_saving_pct=round((($cat_yy-$act_con)/$cat_yy)*100,1);
 	$net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,1);

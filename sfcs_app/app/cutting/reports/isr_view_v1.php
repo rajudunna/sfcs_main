@@ -115,7 +115,7 @@ echo "<div class='col-sm-12' style='overflow-y:scroll;max-height:600px;'>";
 		echo "<td>".$sql_row['ims_doc_no']."</td>";
 		
 		$display_prefix1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$sql_row['input_job_no_ref'],$sql_row['input_job_rand_no_ref'],$link);
-		$sql111="select order_div from $bai_pro3.bai_orders_db where order_del_no=".$sql_row['ims_schedule'];
+		$sql111="select order_div from $bai_pro3.bai_orders_db where order_del_no=\"".$sql_row['ims_schedule']."\"";
 		//echo $sql1;
 	 	$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error Buyer Divisionsss".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row111=mysqli_fetch_array($sql_result111))
@@ -138,8 +138,7 @@ echo "<div class='col-sm-12' style='overflow-y:scroll;max-height:600px;'>";
 		{
 			echo "<td></td>";
 		}
-		//echo $sql_row['ims_size'];
-		//echo sizeof($size_db_base);
+	
 		$scode= str_replace("a_","",$sql_row['ims_size']);
 		
 		

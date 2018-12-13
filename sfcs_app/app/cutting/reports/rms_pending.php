@@ -142,7 +142,7 @@ if(isset($_POST['show']))
 		$rms_pen=array();
 		$cut_com1='';$rms_req1='';
 		$rms_pen1='';$val1='';$val2='';$val3='';
-		$sql11="select * from $bai_pro3.bai_orders_db where order_tid='$order_tid[$ii]'";
+		$sql11="select color_code,order_style_no,order_del_no,order_col_des from $bai_pro3.bai_orders_db where order_tid='$order_tid[$ii]'";
 		$result11=mysqli_query($link, $sql11) or exit("Sql Error--11".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row11=mysqli_fetch_array($result11))
 		{

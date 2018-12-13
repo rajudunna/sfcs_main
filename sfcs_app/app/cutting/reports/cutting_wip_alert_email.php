@@ -63,8 +63,6 @@ if(!isset($_GET['alertfilter']))
 	echo "<script>alert();</script>";	
 }
 
-
-
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
@@ -101,8 +99,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		$total15=0;
 		$total16=0;
 		$clubbing=0;
-		$sql1="SELECT group_concat(order_style_no SEPARATOR '<br/>') as style, group_concat(order_del_no SEPARATOR ',') as schedule, group_concat(order_col_des SEPARATOR '<br/>') as color, group_concat(concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs, sum(total) as total,group_concat(doc_no SEPARATOR ',') as doc_no,acutno FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='DONE' group by module";
-		// echo $sql1."<br>";
+		$sql1="SELECT group_concat(order_style_no SEPARATOR '<br/>') as style, group_concat(order_del_no SEPARATOR ',') as schedule, group_concat(order_col_des SEPARATOR '<br/>') as color, group_concat(concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs, sum(total) as total,group_concat(doc_no SEPARATOR ',') as doc_no,acutno FROM $bai_pro3.plan_dash_doc_summ WHERE module=\"".$module."\" and cut_inp_temp is null and act_cut_status='DONE' group by module";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result1)>0)
 		{
@@ -114,7 +111,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$club_docs=array();
 				
 				//echo  $clubbing."<br/>";
-				$sql123="SELECT group_concat(order_style_no SEPARATOR '<br/>') as style, group_concat(order_del_no SEPARATOR ',') as schedule, group_concat(order_col_des SEPARATOR '<br/>') as color, group_concat(concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs, sum(total) as total,clubbing,group_concat(doc_no SEPARATOR ',') as doc_no,acutno FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='DONE' and clubbing=0 group by module";
+				$sql123="SELECT group_concat(order_style_no SEPARATOR '<br/>') as style, group_concat(order_del_no SEPARATOR ',') as schedule, group_concat(order_col_des SEPARATOR '<br/>') as color, group_concat(concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs, sum(total) as total,clubbing,group_concat(doc_no SEPARATOR ',') as doc_no,acutno FROM $bai_pro3.plan_dash_doc_summ WHERE module=\"".$module."\"  and cut_inp_temp is null and act_cut_status='DONE' and clubbing=0 group by module";
 				//echo $sql12."<br>";
 				$sql_result123=mysqli_query($link, $sql123) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row123=mysqli_fetch_array($sql_result123))
@@ -125,7 +122,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				
 				//echo "total11=". $total11."<br/>";
 				
-				$sql12="SELECT group_concat(order_style_no SEPARATOR '<br/>') as style, group_concat(order_del_no SEPARATOR ',') as schedule, group_concat(order_col_des SEPARATOR '<br/>') as color, group_concat(concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs, sum(total) as total,clubbing,group_concat(doc_no SEPARATOR ',') as doc_no,acutno FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='DONE' and clubbing!=0 group by module";
+				$sql12="SELECT group_concat(order_style_no SEPARATOR '<br/>') as style, group_concat(order_del_no SEPARATOR ',') as schedule, group_concat(order_col_des SEPARATOR '<br/>') as color, group_concat(concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs, sum(total) as total,clubbing,group_concat(doc_no SEPARATOR ',') as doc_no,acutno FROM $bai_pro3.plan_dash_doc_summ WHERE module=\"".$module."\"  and cut_inp_temp is null and act_cut_status='DONE' and clubbing!=0 group by module";
 				//echo $sql12."<br>";
 				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row12=mysqli_fetch_array($sql_result12))
@@ -162,7 +159,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				//echo "total13=". $total11."--".$total12."--".$total."<br/>";
 				$total=$total11+$total12;
 				
-				$sql11="select (sum(plan_pro)/15) as plan_pro from $bai_pro.pro_plan_today where mod_no=$module and date='$date2'";
+				$sql11="select (sum(plan_pro)/15) as plan_pro from $bai_pro.pro_plan_today where mod_no=\"".$module."\"  and date='$date2'";
 				//echo $sqll;
 				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row11=mysqli_fetch_array($sql_result11))
@@ -170,7 +167,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$plan_tgt=round(($sql_row11['plan_pro']*1.1),0);
 				}
 				
-				$sql11="select sum(ims_qty-ims_pro_qty) as wip from $bai_pro3.ims_log where ims_mod_no=$module";
+				$sql11="select sum(ims_qty-ims_pro_qty) as wip from $bai_pro3.ims_log where ims_mod_no=\"".$module."\" ";
 				//echo $sqll;
 				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row11=mysqli_fetch_array($sql_result11))
@@ -190,7 +187,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				//echo $c_doc_no."-".sizeof($c_doc_no)."<br/>";
 				//echo $sql2."<br/>";
 				//echo $clubbing."<br/>";
-				$sql212="SELECT  sum(total) as total,group_concat(doc_no separator ',') as doc_no  FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='' and fabric_status=5 and clubbing!=0 group by module";
+				$sql212="SELECT  sum(total) as total,group_concat(doc_no separator ',') as doc_no  FROM $bai_pro3.plan_dash_doc_summ WHERE module=\"".$module."\" and cut_inp_temp is null and act_cut_status='' and fabric_status=5 and clubbing!=0 group by module";
 					$sql_result212=mysqli_query($link, $sql212) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row212=mysqli_fetch_array($sql_result212))
 					{
@@ -234,25 +231,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				{
 					$add=0;
 				}
-				/* if(date("H",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))<=6 and date("H",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))>0 and date("Y-m-d",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))!=date("Y-m-d"))
-				{
-					$add=2+date("H",strtotime($date)+(60*60*round(($total/$plan_tgt),0)));
-				}
-				else
-				{
-					if((date("H",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))>=22  or date("H",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))==0) and date("Y-m-d",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))==date("Y-m-d"))
-					{
-						$add=6+(24-date("H",strtotime($date)+(60*60*round(($total/$plan_tgt),0))));
-					}
-					else
-					{
-						if(date("Y-m-d",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))!=date("Y-m-d") and date("H",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))>6)
-						{
-							$add=(date("H",strtotime($date)+(60*60*round(($total/$plan_tgt),0)-6)));
-						}
-					}
-				}
-				echo $module."-".$add."<br/>"; */
+				
 				$res=$wip/div_by_zero1($plan_tgt);
 				$wip1=round(($res),0);
 				
@@ -269,7 +248,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		else
 		{
 			$clubbing=0;
-			$sql131="SELECT group_concat(order_style_no SEPARATOR '<br/>') as style, group_concat(order_del_no SEPARATOR ',') as schedule, group_concat(order_col_des SEPARATOR '<br/>') as color, group_concat(concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs,clubbing FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='' group by module";
+			$sql131="SELECT group_concat(order_style_no SEPARATOR '<br/>') as style, group_concat(order_del_no SEPARATOR ',') as schedule, group_concat(order_col_des SEPARATOR '<br/>') as color, group_concat(concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs,clubbing FROM $bai_pro3.plan_dash_doc_summ WHERE module=\"".$module."\" and cut_inp_temp is null and act_cut_status='' group by module";
 		
 			//echo $sql131."<br>";
 			$sql_result131=mysqli_query($link, $sql131) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -277,7 +256,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			{
 				$clubbing=$sql_row131['clubbing'];
 			}
-			$sql11="select sum(ims_qty-ims_pro_qty) as wip from $bai_pro3.ims_log where ims_mod_no=$module";
+			$sql11="select sum(ims_qty-ims_pro_qty) as wip from $bai_pro3.ims_log where ims_mod_no=\"".$module."\" ";
 			//echo $sqll;
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row11=mysqli_fetch_array($sql_result11))
@@ -285,7 +264,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$wip=$sql_row11['wip'];
 			}
 			
-			$sql11="select (sum(plan_pro)/15) as plan_pro from $bai_pro.pro_plan_today where mod_no=$module  and date='$date2'";
+			$sql11="select (sum(plan_pro)/15) as plan_pro from $bai_pro.pro_plan_today where mod_no=\"".$module."\"  and date='$date2'";
 			//echo $sqll;
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row11=mysqli_fetch_array($sql_result11))
@@ -293,7 +272,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$plan_tgt=round(($sql_row11['plan_pro']*1.1),0);
 			}
 			$c_doc_no=0;
-			$sql23="SELECT  sum(total) as total,group_concat(doc_no separator ',') as doc_no FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='' and fabric_status=5 and clubbing=0 group by module";
+			$sql23="SELECT  sum(total) as total,group_concat(doc_no separator ',') as doc_no FROM $bai_pro3.plan_dash_doc_summ WHERE module=\"".$module."\"  and cut_inp_temp is null and act_cut_status='' and fabric_status=5 and clubbing=0 group by module";
 			//echo $sql23."<br/>";
 			$sql_result2=mysqli_query($link, $sql23) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row1=mysqli_fetch_array($sql_result2))
@@ -301,7 +280,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$total15=$row1['total'];
 			}
 			
-			$sql232="SELECT  sum(total) as total,group_concat(doc_no separator ',') as doc_no FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='' and fabric_status=5 and clubbing!=0 group by module";
+			$sql232="SELECT  sum(total) as total,group_concat(doc_no separator ',') as doc_no FROM $bai_pro3.plan_dash_doc_summ WHERE module=\"".$module."\"  and cut_inp_temp is null and act_cut_status='' and fabric_status=5 and clubbing!=0 group by module";
 			//echo $sql23."<br/>";
 			$sql_result232=mysqli_query($link, $sql232) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row232=mysqli_fetch_array($sql_result232))

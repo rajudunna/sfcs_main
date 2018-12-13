@@ -65,11 +65,6 @@ $url3 = $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/hea
 include("$url3"); 
 ?>
 
-<?php 
-// $url4 =  $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'menu_content.php',2,'R');
-// include("$url4"); 
-?>
-
 <?php
 $style=$_GET['style'];
 $schedule=$_GET['schedule']; 
@@ -109,7 +104,7 @@ if(isset($_POST['category']))
 				<?php
 					echo "<option value=\"NIL\" selected>NIL</option>";
 					//$sql="select distinct order_style_no from bai_orders_db";
-					$sql="SELECT DISTINCT order_style_no FROM $bai_pro3.bai_orders_db JOIN $bai_pro3.cat_stat_log ON bai_orders_db.order_tid=cat_stat_log.order_tid and cat_stat_log.category<>\"\" order by bai_orders_db.order_style_no";
+					$sql="select DISTINCT order_style_no FROM $bai_pro3.bai_orders_db JOIN $bai_pro3.cat_stat_log ON bai_orders_db.order_tid=cat_stat_log.order_tid and cat_stat_log.category<>\"\" order by bai_orders_db.order_style_no";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 
@@ -132,8 +127,7 @@ if(isset($_POST['category']))
 				<select class='form-control' name='schedule' id='schedule' onclick='show_pop1()' onchange='secondbox();' >
 				<?php
 					echo "<option value=\"NIL\" selected>NIL</option>";	
-					//$sql="select distinct order_del_no from bai_orders_db where order_style_no=\"$style\"";
-					$sql="SELECT DISTINCT order_del_no FROM $bai_pro3.bai_orders_db JOIN $bai_pro3.cat_stat_log ON bai_orders_db.order_tid=cat_stat_log.order_tid and cat_stat_log.category<>\"\" and bai_orders_db.order_style_no=\"$style\"";
+					$sql="select DISTINCT order_del_no FROM $bai_pro3.bai_orders_db JOIN $bai_pro3.cat_stat_log ON bai_orders_db.order_tid=cat_stat_log.order_tid and cat_stat_log.category<>\"\" and bai_orders_db.order_style_no=\"$style\"";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 
@@ -156,7 +150,7 @@ if(isset($_POST['category']))
 				<select class='form-control' name='color' id='color' onclick='show_pop2()' onchange='thirdbox();' >
 				<?php
 					//$sql="select distinct order_col_des from bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
-					$sql="SELECT DISTINCT order_col_des FROM $bai_pro3.bai_orders_db JOIN $bai_pro3.cat_stat_log ON bai_orders_db.order_tid=cat_stat_log.order_tid and cat_stat_log.category<>\"\" and bai_orders_db.order_style_no=\"$style\" and bai_orders_db.order_del_no=\"$schedule\"";
+					$sql="select DISTINCT order_col_des FROM $bai_pro3.bai_orders_db JOIN $bai_pro3.cat_stat_log ON bai_orders_db.order_tid=cat_stat_log.order_tid and cat_stat_log.category<>\"\" and bai_orders_db.order_style_no=\"$style\" and bai_orders_db.order_del_no=\"$schedule\"";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 					echo "<option value=\"NIL\" selected>NIL</option>";
@@ -244,8 +238,6 @@ if(isset($_POST['submit']))
 	{
 	
 		$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-		// echo $sql;
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -276,14 +268,11 @@ if(isset($_POST['submit']))
 			$order_tid=$sql_row['order_tid'];
 			$color_code=$sql_row['color_code'];
 			$customer=$sql_row['order_div'];
-			
-			
 		}	
 		
 		$customer=substr($customer,0,((strlen($customer)-2)*-1));
 		
 		$sql="select tid from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category=\"$category\"";
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -330,7 +319,7 @@ if(isset($_POST['submit']))
 				$cut_section="";
 				$cut_shift="";
 			
-			$sql="select * from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
+			$sql="select date,section,shift from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -349,7 +338,7 @@ if(isset($_POST['submit']))
 				$input_module="";
 				$input_shift="";
 			
-			$sql="select * from $bai_pro3.act_cut_issue_status where doc_no=$act_doc_no";
+			$sql="select date,mod_no,shift from $bai_pro3.act_cut_issue_status where doc_no=$act_doc_no";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -501,8 +490,7 @@ if(isset($_POST['submit']))
 							$cut_section="";
 							$cut_shift="";
 						
-						$sql="select * from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
-						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql="select date,section,shift from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_num_check=mysqli_num_rows($sql_result);
 						while($sql_row=mysqli_fetch_array($sql_result))
@@ -521,9 +509,7 @@ if(isset($_POST['submit']))
 							$input_module="";
 							$input_shift="";
 						
-						$sql="select * from $bai_pro3.act_cut_issue_status where doc_no=$act_doc_no";
-						
-						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql="select date,mod_no,shift from $bai_pro3.act_cut_issue_status where doc_no=$act_doc_no";
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_num_check=mysqli_num_rows($sql_result);
 						while($sql_row=mysqli_fetch_array($sql_result))
