@@ -156,9 +156,31 @@ if($target == 'recut'){
         $size = $row['size_id'];
         $bno  = $row['id'];
         $qty  = $ratio[$size] * $plies; 
-        $update_query = "UPDATE $bai_pro3.recut_v2_child set recut_reported_qty = $qty where parent_id=$doc_no and size_id = $size";
-        // echo $update_query;
-        $update_result = mysqli_query($link,$update_query);
+
+        $records_query  = "SELECT id,recut_qty,recut_reported_qty from $bai_pro3.recut_v2_child 
+                            where parent_id=$doc_no and size_id = '$size' order by id ASC";
+        $records_result = mysqli_query($link,$records_query);
+        while($row1 = mysqli_fetch_array($records_result)){
+            $recut_qty     = $row1['recut_qty'];
+            $reported_qty  = $row1['recut_reported_qty'];
+            $id = $row1['id'];
+            if($qty > 0){
+                if($reported_qty <  $recut_qty){
+                    $reporting_qty = $recut_qty - $reported_qty;
+                    if($qty > $reporting_qty){
+                        $qty -= $reporting_qty;
+                        $update_query = " UPDATE $bai_pro3.recut_v2_child set recut_reported_qty = $reporting_qty 
+                                    where parent_id=$doc_no and size_id = '$size' and id=$id";
+                        $update_result = mysqli_query($link,$update_query);
+                    }else{
+                        $update_query = " UPDATE $bai_pro3.recut_v2_child set recut_reported_qty = $qty 
+                                    where parent_id=$doc_no and size_id = '$size' and id=$id";
+                        $update_result = mysqli_query($link,$update_query);
+                    }
+                }
+            }
+        }
+       
     }
    $target = 'normal';
 }

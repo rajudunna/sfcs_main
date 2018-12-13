@@ -34,12 +34,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
 ?>
 
-<div class="container">
-  <ul class="nav nav-tabs">
-    <li class="info active" id='cut_tab_li'><a href="#"  id='cut_tab'>Cut Qty Reporting</a></li>
-    <li class="info" id='rej_tab_li'><a href="#" id='rej_tab'>Rejections Form</a></li>
-  </ul>
-</div>
 
 <!-- Cut Reporting Code -->
 <div class='panel panel-primary cut_tab'>
@@ -396,7 +390,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             return false;
         }
 
-        if(shift == null || cut_table == null || team_leader == null || bundle_location == null ){
+        if(shift == null || cut_table == null || team_leader == null){
             swal('Warning','Please Select Shift , Cut Table , Team Leader ,Bundle Location','warning');
             return false;
         }
@@ -564,7 +558,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         if(c_plies == 0){
             return swal('Please Enter Reporting Plies','','error');
         }
-
+        $('#rejection_size').empty();
         if(ret > 0){
             $('#c_plies').attr('readonly',true);
             if( ret > c_plies * ratio  )
