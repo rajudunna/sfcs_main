@@ -255,7 +255,7 @@
                                 if($to_add_sj > 0)
                                 {
                                     $insertion_qry = "INSERT INTO `$bai_pro3`.`replacment_allocation_log` (`bcd_id`,`input_job_no_random_ref`,`replaced_qty`,`size_title`) values ($bundle_number,$sj,$to_add_sj,'$size_title')";
-                                    echo $insertion_qry.'</br>';
+                                    // echo $insertion_qry.'</br>';
                                     mysqli_query($link, $insertion_qry) or exit("insertion_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                                     $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set replaced_qty = replaced_qty+$to_add_sj where bcd_id = $bundle_number";
@@ -578,7 +578,7 @@ function editreplacedetails(id)
 }
 function validationreplace()
 {
-    var total_rows_replace = document.getElementById("total_rows_replace").value;
+    var total_rows_replace = document.getElementById("total_rows_replace").innerHTML;
     var value = 0;
     var flag = 0;
     console.log(total_rows_replace);
@@ -757,9 +757,9 @@ function myFunction()
 function validationfunction()
 {
     var flag = 0;
-    var total_rows = document.getElementById('total_rows').value;
+    var total_rows = document.getElementById('total_rows_recut').innerHTML;
     var value = 0;
-    for(var i=1; i<=total_rows;i++)
+    for(var i=1; i<=Number(total_rows);i++)
     {
         value = value + Number(document.getElementById(i).value);
     }
