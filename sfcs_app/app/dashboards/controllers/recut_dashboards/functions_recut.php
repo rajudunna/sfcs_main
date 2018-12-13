@@ -539,6 +539,8 @@ function Markersview($markers_view_docket)
     $markers_view_docket_ary = explode(",",$markers_view_docket);
     $markers_view_docket =$markers_view_docket_ary[0];
     $flag =$markers_view_docket_ary[1];
+    $html = '';
+    $table_data = '';
     include("../../../../common/config/config_ajax.php");
     //getting order tid 
     $qry_cut_qty_check_qry = "SELECT *,bd.`order_style_no`,bd.`order_col_des`,bd.`order_del_no` FROM bai_pro3.recut_v2 rv 
