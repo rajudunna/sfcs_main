@@ -449,6 +449,7 @@ function updatemarkers($markers_update_doc_id)
 {
     include("../../../../common/config/config_ajax.php");
     $html = '';
+    $table_data = '';
     $qry_cut_qty_check_qry = "SELECT *,bd.`order_style_no`,bd.`order_col_des`,bd.`order_del_no` FROM bai_pro3.recut_v2 rv LEFT JOIN bai_pro3.`bai_orders_db` bd ON bd.`order_tid` = rv.`order_tid`  WHERE doc_no = '$markers_update_doc_id' ";
     // echo $qry_cut_qty_check_qry;
 	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
@@ -713,3 +714,4 @@ function IssuedtoModuleProcess($issued_to_module_process)
 
 }
 ?>
+
