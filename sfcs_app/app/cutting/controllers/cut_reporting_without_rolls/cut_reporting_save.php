@@ -156,7 +156,8 @@ if($target == 'recut'){
         $size = $row['size_id'];
         $bno  = $row['id'];
         $qty  = $ratio[$size] * $plies; 
-        $update_query = "UPDATE $bai_pro3.recut_v2_child set recut_reported_qty = $qty where parent_id=$doc_no and size_id = $size";
+        $update_query = "UPDATE $bai_pro3.recut_v2_child set recut_reported_qty = $qty where parent_id=$doc_no 
+        and size_id = '$size'";
         // echo $update_query;
         $update_result = mysqli_query($link,$update_query);
     }

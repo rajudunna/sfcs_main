@@ -172,7 +172,8 @@ function RecutProcess($recut_id_edit)
             $table_data .= "<input type='hidden' name='size[]' value='$size'>";
             $table_data .= "<input type='hidden' name='bcd_ids[]' value='$bcd_id'>";
         }
-        $table_data .= "<input type='hidden' id='total_rows' value='$s_no'>";
+        //$table_data .= "<input type='hidden' id='total_rows' value='$s_no'>";
+        $table_data .= "<td style='display:none' id='total_rows_recut'>$s_no</td>";
         $table_data .= "</tr></tbody></table>";
         $html .= $table_data;
         $html .= '</div></div></div>';
@@ -346,7 +347,7 @@ function ReplaceProcess($replace_id_edit)
                 $table_data .= "<input type='hidden' name='operation_id[]' value='$operation_id'>";
                 $table_data .= "<input type='hidden' name='bcd_ids[]' value='$bcd_id'>";
             }
-            $table_data .= "<input type='hidden' id='total_rows_replace' value='$s_no'>";
+            $table_data .= "<td style='display:none;' id='total_rows_replace'>$s_no</td>";
             $table_data .= "</tr></tbody></table>";
             $html .= $table_data;
             $html .= '</div></div></div>';
@@ -448,6 +449,7 @@ function updatemarkers($markers_update_doc_id)
 {
     include("../../../../common/config/config_ajax.php");
     $html = '';
+    $table_data = '';
     $qry_cut_qty_check_qry = "SELECT *,bd.`order_style_no`,bd.`order_col_des`,bd.`order_del_no` FROM bai_pro3.recut_v2 rv LEFT JOIN bai_pro3.`bai_orders_db` bd ON bd.`order_tid` = rv.`order_tid`  WHERE doc_no = '$markers_update_doc_id' ";
     // echo $qry_cut_qty_check_qry;
 	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
@@ -712,3 +714,4 @@ function IssuedtoModuleProcess($issued_to_module_process)
 
 }
 ?>
+
