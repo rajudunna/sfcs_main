@@ -242,12 +242,12 @@ function issued_to_module($bcd_id,$qty,$ref)
 
             //updating bcd for emblishment in operation 
             $update_bcd_for_emb_qry = "update brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref + $qty where docket_number = $docket_no and operation_id = $emb_input_ops_code";
-            echo $update_bcd_for_emb_qry;
+            // echo $update_bcd_for_emb_qry;
             mysqli_query($link, $update_bcd_for_emb_qry) or exit("update_bcd_for_emb_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
             //updating embellishment_plan_dashboard
             $update_plan_dashboard_qry = "UPDATE `bai_pro3`.`embellishment_plan_dashboard` SET send_qty = send_qty+$qty WHERE doc_no = $docket_no AND send_op_code = $emb_input_ops_code";
-            echo $update_plan_dashboard_qry;
+            // echo $update_plan_dashboard_qry;
             mysqli_query($link, $update_plan_dashboard_qry) or exit("update_plan_dashboard_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         }
     }
@@ -297,7 +297,7 @@ function issued_to_module($bcd_id,$qty,$ref)
             // }
         }   
     }
-    die();
+    // die();
     return;
 }
 $shifts_array = ["IssueToModule","AlreadyIssued","WaitingForApproval","UpdateMarkers","ReportPending"];
