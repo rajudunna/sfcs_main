@@ -151,9 +151,11 @@
                         // die();
                         $moq_qry_res = $link->query($moq_qry);
                         $multiple_mos_tot_qty = $to_add;
+                        $array_mos = array();
                         while($row_moq = $moq_qry_res->fetch_assoc()) 
                         {
                             $max_mo_no = $row_moq['mo_no'];
+                            echo $row_moq['rejected_qty'].'-'.$array_mos[$max_mo_no].'</br>';
                             $bundle_quantity_mo = $row_moq['rejected_qty'] - $array_mos[$max_mo_no];
                             echo $bundle_quantity_mo.'-'.$multiple_mos_tot_qty.'</br>';
                             if($bundle_quantity_mo < $multiple_mos_tot_qty)
