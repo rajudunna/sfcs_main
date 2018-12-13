@@ -486,7 +486,7 @@ if(isset($_POST['submit']))
 					 
 					for($i=0;$i<sizeof($o_s_t);$i++) 
 					{ 
-						$sql9="select order_tid, order_col_des, order_s_".$sizes_array[$i]." as ord_qty,destination from $table_tag where order_del_no=$order_del_no and order_joins=\"$orders_join\" and order_s_".$sizes_array[$i].">0 group by order_col_des order by order_date,order_s_".$sizes_array[$i];
+						$sql9="select order_tid, order_col_des, order_s_".$sizes_array[$i]." as ord_qty,destination from $table_tag where order_del_no=\"$order_del_no\" and order_joins=\"$orders_join\" and order_s_".$sizes_array[$i].">0 group by order_col_des order by order_date,order_s_".$sizes_array[$i];
 						$sql_result19=mysqli_query($link, $sql9) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						$tot_col=mysqli_num_rows($sql_result19);
 						$colrs=array();
@@ -620,7 +620,7 @@ if(isset($_POST['submit']))
 					$qty_fill=array();
 					for($i=0;$i<sizeof($o_s_t);$i++) 
 					{ 
-						$sql9="select order_tid, order_col_des, order_s_".$sizes_array[$i]." as ord_qty,destination from $table_tag where order_del_no=$order_del_no and order_joins=\"$orders_join\" and order_s_".$sizes_array[$i].">0 group by order_col_des order by order_date,order_s_".$sizes_array[$i];
+						$sql9="select order_tid, order_col_des, order_s_".$sizes_array[$i]." as ord_qty,destination from $table_tag where order_del_no=\"$order_del_no\" and order_joins=\"$orders_join\" and order_s_".$sizes_array[$i].">0 group by order_col_des order by order_date,order_s_".$sizes_array[$i];
 						$sql_result19=mysqli_query($link, $sql9) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						$tot_col=mysqli_num_rows($sql_result19);
 						$colrs=array();
@@ -838,11 +838,11 @@ if(isset($_POST['submit']))
 				//echo sizeof($cat_id_ref)."--".(sizeof($ready_cat_ref)+sizeof($pending_cat_ref)+sizeof($pend_order_ref))."<br>";
 				if(sizeof($cat_id_ref)==sizeof($ready_cat_ref))
 				{				
-					$sqlx="update $bai_pro3.bai_orders_db set order_joins=\"2\" where order_del_no=$order_del_no and order_col_des=\"$color\""; 
+					$sqlx="update $bai_pro3.bai_orders_db set order_joins=\"2\" where order_del_no=\"$order_del_no\" and order_col_des=\"$color\""; 
 					//echo $sqlx."<br>";
 					mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					 
-					$sqlx="update $bai_pro3.bai_orders_db_confirm set order_joins=\"2\" where order_del_no=$order_del_no and order_col_des=\"$color\""; 
+					$sqlx="update $bai_pro3.bai_orders_db_confirm set order_joins=\"2\" where order_del_no=\"$order_del_no\" and order_col_des=\"$color\""; 
 					//echo $sqlx."<br>";
 					mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				}

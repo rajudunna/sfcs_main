@@ -636,11 +636,11 @@ if(isset($_POST['submit']))
 				//echo sizeof($cat_id_ref)."--".(sizeof($ready_cat_ref)+sizeof($pending_cat_ref)+sizeof($pend_order_ref))."<br>";
 				if(sizeof($cat_id_ref)==sizeof($ready_cat_ref))
 				{				
-					$sqlx="update $bai_pro3.bai_orders_db set order_joins=\"2\" where order_del_no=$order_sch and order_col_des=\"$color\""; 
+					$sqlx="update $bai_pro3.bai_orders_db set order_joins=\"2\" where order_del_no=\"$order_sch\" and order_col_des=\"$color\""; 
 					//echo $sqlx."<br>";
 					mysqli_query( $link, $sqlx) or exit("Sql Error1.3".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					 
-					$sqlx="update $bai_pro3.bai_orders_db_confirm set order_joins=\"2\" where order_del_no=$order_sch and order_col_des=\"$color\""; 
+					$sqlx="update $bai_pro3.bai_orders_db_confirm set order_joins=\"2\" where order_del_no=\"$order_sch\" and order_col_des=\"$color\""; 
 					//echo $sqlx."<br>";
 					mysqli_query( $link, $sqlx) or exit("Sql Error1.69".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				}
