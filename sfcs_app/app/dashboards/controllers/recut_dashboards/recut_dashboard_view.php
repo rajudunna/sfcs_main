@@ -92,7 +92,7 @@
             $pliespercut = 1;
             $remarks = 'Recut';
             $pcutdocid=$order_tid."/".$allocate_ref."/".$count;
-            $sql_plandoc="insert into $bai_pro3.plandoc_stat_log(pcutdocid, date, cat_ref, cuttable_ref, allocate_ref, mk_ref, order_tid, pcutno, ratio,a_plies,p_plies,remarks,$sizes_p,$sizes_a)values  (\"$pcutdocid\", \"$date\", $cat_ref, $cuttable_ref, $allocate_ref, $mk_ref, \"$order_tid\", $count, $ratio,$pliespercut,$pliespercut,\"$remarks\",$values,$values)";
+            $sql_plandoc="insert into $bai_pro3.plandoc_stat_log(pcutdocid, date, cat_ref, cuttable_ref, allocate_ref, mk_ref, order_tid, pcutno,pcutno,ratio,a_plies,p_plies,remarks,$sizes_p,$sizes_a)values  (\"$pcutdocid\", \"$date\", $cat_ref, $cuttable_ref, $allocate_ref, $mk_ref, \"$order_tid\", $count,$count, $ratio,$pliespercut,$pliespercut,\"$remarks\",$values,$values)";
             // echo $sql_plandoc;
             mysqli_query($link,$sql_plandoc) or exit("While inserting into the plan doc stat log".mysqli_error($GLOBALS["___mysqli_ston"]));
            $insert_id=mysqli_insert_id($link);
