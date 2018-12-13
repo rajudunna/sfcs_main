@@ -346,7 +346,7 @@ function ReplaceProcess($replace_id_edit)
                 $table_data .= "<input type='hidden' name='operation_id[]' value='$operation_id'>";
                 $table_data .= "<input type='hidden' name='bcd_ids[]' value='$bcd_id'>";
             }
-            $table_data .= "<input type='hidden' id='total_rows' value='$s_no'>";
+            $table_data .= "<input type='hidden' id='total_rows_replace' value='$s_no'>";
             $table_data .= "</tr></tbody></table>";
             $html .= $table_data;
             $html .= '</div></div></div>';
