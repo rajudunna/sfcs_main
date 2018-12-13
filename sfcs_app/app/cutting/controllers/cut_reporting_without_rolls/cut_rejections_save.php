@@ -7,7 +7,7 @@
     2 - if m3 upating is failed and others went good
     3 - Rejections Completely updated with Errors
 */    
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
 
 function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shift){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
