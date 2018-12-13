@@ -729,7 +729,7 @@
 				$bundle_creation_result_001 = $link->query($b_query[$op_code]);
 				if($recut == 1)
 				{
-					$inserting_mo = insertMOQuantitiesRecut($last_id,$op_code,$b_in_job_qty);
+					//$inserting_mo = insertMOQuantitiesRecut($last_id,$op_code,$b_in_job_qty);
 				}
 				else
 				{
