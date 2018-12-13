@@ -241,11 +241,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                                 Total Rejectable Pieces Size Wise  : <span class='size-rej-pieces'></span>
                             </span>   
                             <br/> <br/>
-                            <span class='col-sm-2'>
+                            <span class='col-sm-3'>
                                 Total Rejections : 
                                 <input type='button' class='btn btn-success' id='total_pieces'>
                             </span>
-                            <span class='col-sm-3'>
+                            <span class='col-sm-4'>
                                 Available For Rejection : 
                                 <input type='button' class='btn btn-danger' id='avl_pieces'>
                             </span>  
@@ -272,11 +272,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                                 <label for='rejection_qty'>Rejected Qty</label> 
                                 <input type='text' class='form-control integer' name='rejection_qty' id='rejection_qty'>
                             </div>
-                            <div class='col-sm-2'>
+                            <div class='col-sm-1'>
                                 <label for='add_rejection'>&nbsp;</label><br/>
                                 <input type='button' class='btn btn-warning' value='+' name='add_rejection' id='add_rejection'>
                             </div>
-                            <div class='col-sm-offset-1 col-sm-2'>
+                            <div class='col-sm-offset-1 col-sm-3'>
                                 <label for='save_rejection'>&nbsp;</label><br/>
                                 <input type='button' class='btn btn-primary confirm-submit' value='Save' name='save_rejection' id='save_rejection'>&nbsp;
                                 <input type='button' class='btn btn-danger' value='clear' name='clear_rejection' id='clear_rejection'>
