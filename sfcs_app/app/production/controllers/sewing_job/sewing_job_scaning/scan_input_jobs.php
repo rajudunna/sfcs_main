@@ -7,10 +7,20 @@
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 	$has_permission=haspermission($_GET['r']);
 
-	if(in_array($authorized,$has_permission)) { 
+	if(in_array($authorized,$has_permission))
+	{ 
 		$value = 'authorized';
-	} else {
-		$value = 'not_authorized';
+	}
+	else
+	{
+		if (in_array($override_sewing_limitation,$has_permission))
+		{
+			$value = 'authorized';
+		}
+		else
+		{
+			$value = 'not_authorized';
+		}
 	}
 	echo '<input type="hidden" name="user_permission" id="user_permission" value="'.$value.'">';
 
