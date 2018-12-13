@@ -638,12 +638,13 @@ function validationreplace()
         console.log("working");
         $('#pre').hide();
         $('#post').show();
-        return true;
+        
     }
-    else
-    {
-        return false;
-    }
+    return true;
+    // else
+    // {
+    //     return false;
+    // }
 }
 function validationreplaceindividual(id)
 {
