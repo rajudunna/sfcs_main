@@ -28,6 +28,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     <tr><td>Schedule</td><td id='d_schedule'></td> </tr>
                     <tr><td>Color</td>   <td id='d_color'></td>    </tr>
                     <tr><td>Docket Type</td><td id='d_doc_type'></td></tr>
+                    <tr><td>Cut No</td><td id='d_cut_no'></td></tr>
                 </table>
             </div>
         </div>
@@ -292,6 +293,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $('#d_schedule').html('');
         $('#d_color').html('');
         $('#d_doc_type').html('');
+        $('#d_cut_no').html('');
         $('#rejection_size').html('');
         $('#rejections_table_body').empty();
         $('#size_details').hide();
@@ -516,6 +518,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#d_doc_type').html(data.doc_target_type+' Docket');
             //setting values for display table    
             $('#d_doc_no').html(doc_no);
+            $('#d_cut_no').html(data.acut_no);
             $('#d_cut_status').html(data.act_cut_status);
             $('#d_cut_issue_status').html(data.fab_status);
             $('#d_good_pieces').html(data.good_pieces);
