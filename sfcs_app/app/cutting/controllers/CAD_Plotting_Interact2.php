@@ -255,9 +255,8 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 		<div class="panel-body">
 			<?php
 				$doc_refs=array();
-				$date_yest=date("Y-m-d",mktime(0, 0, 0, date("m")  , date("d")-2, date("Y")));
 				$doc_refs[]=0;
-				$sql2="select distinct doc_ref as doc_ref from $bai_pro3.fabric_priorities where date(issued_time)=\"0000-00-00\" or date(issued_time) > \"".$date_yest."\" group by doc_ref_club";
+				$sql2="select distinct doc_ref as doc_ref from $bai_pro3.fabric_priorities where date(issued_time)=\"0000-00-00\" group by doc_ref_club";
 				//echo $sql2."<br/>";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -265,7 +264,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 					$doc_refs[]=$sql_row2["doc_ref"];	
 				}
 
-				$sql1="select acutno,order_tid,print_status,cat_ref,allocate_ref,mk_ref,doc_no, plan_lot_ref,cat_ref,order_tid,p_xs as xs,p_s as s,p_m as m,p_l as l,p_xl as xl,p_xxl as xxl,p_xxxl as xxxl from $bai_pro3.plandoc_stat_log where length(plan_lot_ref)>0 and lastup=\"0000-00-00 00:00:00\" and act_cut_status<>\"DONE\" and fabric_status=5 and doc_no in (".implode(",",$doc_refs).") and print_status>'2013-01-01'";
+				$sql1="select acutno,order_tid,print_status,cat_ref,allocate_ref,mk_ref,doc_no, plan_lot_ref,cat_ref,order_tid,p_xs as xs,p_s as s,p_m as m,p_l as l,p_xl as xl,p_xxl as xxl,p_xxxl as xxxl from $bai_pro3.plandoc_stat_log where doc_no in (".implode(",",$doc_refs).") and fabric_status in (1,5) and length(plan_lot_ref)>0 and lastup=\"0000-00-00 00:00:00\" and act_cut_status<>\"DONE\" ";
 				// echo $sql1;
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
