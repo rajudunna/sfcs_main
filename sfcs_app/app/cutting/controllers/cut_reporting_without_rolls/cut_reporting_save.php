@@ -197,7 +197,7 @@ if($target == 'normal'){
 
     $m3_status  = update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color);
     if($rejections_flag == 1){
-        $rej_status = save_rejections($doc_no,$rejection_details,$style,$schedule,$color);
+        $rej_status = save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shift);
         $response_data['rejections_response'] = $rej_status;
     } 
     if($m3_status == 'fail'){

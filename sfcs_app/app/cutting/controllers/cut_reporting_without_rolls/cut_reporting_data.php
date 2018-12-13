@@ -73,7 +73,7 @@ if(mysqli_num_rows($validation_result)>0){
     echo json_encode($response_data);
     exit();
 }
-
+*/
 
 $acut_no = 'A00'.$cut_no;
 //getting the target doc type 
