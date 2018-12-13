@@ -554,10 +554,13 @@ function get_me_emb_check_flag($style,$color,$op_code,$link,$brandix_bts){
     {
         $category_act = $row['category'];
     }
-    if(in_array($category_act,$category))
-        return 1;
-    else
-        return 0;
+    
+    if($post_ops_code > 0){
+        if(in_array($category_act,$category))
+            return $post_ops_code;
+        else
+            return 0;
+    }
     
     return 0;
     //emb checking ends
@@ -603,12 +606,12 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color){
                             where docket_number = $doc_no and size_id = '$size' and operation_id = $op_code";
             $update_bcd_result = mysqli_query($link,$update_bcd_query) or exit('Query Error 6');
 
-            if($emb_cut_check_flag)
+            if($emb_cut_check_flag > 0)
             {
                 $update_bcd_query2 = "UPDATE $brandix_bts.bundle_creation_data set send_qty = send_qty+$qty,
                                     reported_status = '$reported_status' 
-                                    WHERE docket_number = '$doc_no' AND size_id = '$size' 
-                                    AND operation_id = '$post_ops_code' ";
+                                    WHERE docket_number = $doc_no AND size_id = '$size' 
+                                    AND operation_id = $emb_cut_check_flag ";
                 $update_bcd_result2 = mysqli_query($link,$update_bcd_query2) or exit('Query Error 7');
             }   
 
@@ -683,12 +686,12 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color){
                             where docket_number = $doc_no and size_id = '$size' and operation_id = $op_code";
             $update_bcd_result = mysqli_query($link,$update_bcd_query) or exit('BCD Error CLUB');
             // echo $update_bcd_query.'<br/>';
-            if($emb_cut_check_flag)
+            if($emb_cut_check_flag > 0)
             {
                 $update_bcd_query2 = "UPDATE $brandix_bts.bundle_creation_data set send_qty = send_qty+$qty,
                                 reported_status = '$reported_status'
-                                WHERE docket_number = '$doc_no' AND size_id = '$size' 
-                                AND operation_id = '$post_ops_code'";
+                                WHERE docket_number = $doc_no AND size_id = '$size' 
+                                AND operation_id = $emb_cut_check_flag";
                 $update_bcd_result2 = mysqli_query($link,$update_bcd_query2) or exit('BCD Error CLUB EMB');
             }   
             if($update_cps_result && $update_bcd_result)

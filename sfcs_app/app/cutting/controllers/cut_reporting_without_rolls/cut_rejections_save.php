@@ -17,7 +17,7 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
     $time = date('H:i:s');
     $update_counter = 0;
     $remarks = 'CUT-'.$shift.'-P';
-
+    $total_rej = 0;
     $verify_query = "SELECT * from $bai_pro3.rejections_log where style='$style' and schedule='$schedule' 
                     and color='$color'";                
     $result = mysqli_query($link,$verify_query) or exit('Rejections Log Error 1');  
@@ -42,8 +42,8 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
             $qms_code = $qms_m3_code[0];
             $m3_code  = $qms_m3_code[1]; 
 
-            $m3_reasons[$size] = $m3_code; //THE $m3_reasons,$m3_qtys are for passing to m3 updations function
-            $m3_qtys[$size] = $qty;
+            $m3_reasons[$size][] = $m3_code; //THE $m3_reasons,$m3_qtys are for passing to m3 updations function
+            $m3_qtys[$size][] = $qty;
 
             $reason_qty_string = $reason_qty_string.''.$qms_code.'-'.$qty.'$';
         }
@@ -105,7 +105,7 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
     }
     //Again Seperating M3 Updations from basic operation flow to maintain consistency
 
-    $rejection_log_uquery = "UPDATE $bai_pro3.rejections_log set rejected_qty = rejected_qty+$total_rej
+    $rejection_log_uquery = "UPDATE $bai_pro3.rejections_log set rejected_qty = rejected_qty+$total_rej,remaining_qty = remaining_qty + $total_rej
                          where id=$parent_id";
     $rejection_log_uresult = mysqli_query($link,$rejection_log_uquery) or exit('Rejection Log Error 3');
     if($sent == $confirmed && $sent == $update_counter)
