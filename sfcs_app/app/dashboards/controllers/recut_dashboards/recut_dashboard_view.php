@@ -2,7 +2,7 @@
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     if(isset($_POST['formSubmit']))
     {
-        include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
+        include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/mo_filling.php');
         $ids=$_POST['ids'];
         $recutval = $_POST['recutval'];
         $cat = $_POST['cat'];
