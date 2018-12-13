@@ -355,8 +355,8 @@ foreach($b_tid as $key => $value)
                         $inserting_into_rejection_log_child_qry = "INSERT INTO `bai_pro3`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`) values($parent_id,$bcd_id,$doc_no,$input_job_random_ref,'$size_id','$size_title',$assigned_module,$implode_next[2],$b_op_id)";
                         $insert_qry_rej_child = $link->query($inserting_into_rejection_log_child_qry);
                     }
-                    echo $bundle_number.','.$b_op_id.','.$r_qty_array.','.$r_reasons_array.'</br>';
-                    updateM3TransactionsRejections($b_tid[$key],$b_op_id,$r_qty_array,$r_reasons_array);
+                    // echo $bundle_number.','.$b_op_id.','.$r_qty_array.','.$r_reasons_array.'</br>';
+                    updateM3TransactionsRejections($bundle_number,$b_op_id,$r_qty_array,$r_reasons_array);
                 }
             }           
         }

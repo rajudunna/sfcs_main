@@ -332,9 +332,9 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
     $company_num = $company_no;
     $plant_code = $global_facility_code;
     var_dump($r_reasons).'-';
-    var_dump($r_qty).'</br>';
+    // var_dump($r_qty).'</br>';
     $details_query = "Select shift,assigned_module,style,mapped_color from $brandix_bts.bundle_creation_data where bundle_number = $ref_id and operation_id = $op_code";
-    echo $details_query.'</br>';
+    // echo $details_query.'</br>';
     $details_result = mysqli_query($link,$details_query) or exit("Problem in getting details from the BCD");
     while($row = mysqli_fetch_array($details_result)){
         $input_shift = $row['shift'];
