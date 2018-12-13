@@ -155,6 +155,7 @@
                         {
                             $max_mo_no = $row_moq['mo_no'];
                             $bundle_quantity_mo = $row_moq['rejected_qty'] - $array_mos[$max_mo_no];
+                            echo $bundle_quantity_mo.'-'.$multiple_mos_tot_qty.'</br>';
                             if($bundle_quantity_mo < $multiple_mos_tot_qty)
                             {
                                 $multiple_mos_tot_qty = $multiple_mos_tot_qty - $bundle_quantity_mo;
@@ -167,6 +168,7 @@
                                 $array_mos[$max_mo_no]  = $multiple_mos_tot_qty;
                                 $to_add_mo = 0;
                             }
+                            echo $to_add_mo.'</br>';
                             if($to_add_mo > 0)
                             {
                                 $checking_moq_qry = "select id from $bai_pro3.mo_operation_quantities where ref_no = $bundle_number_recut and operation_id = 15";
