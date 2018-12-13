@@ -149,15 +149,15 @@
                         $array_mos = array();
                         //retreaving mo_number which is related to that bcd_act_id
                         $moq_qry = "SELECT mo_no,bundle_quantity,`rejected_quantity` FROM bai_pro3.`mo_operation_quantites` WHERE ref_no=$bundle_number AND op_code=$operation_id AND `rejected_quantity`>0 ORDER BY mo_no";
-                        echo $moq_qry.'</br>';
+                        // echo $moq_qry.'</br>';
                         // die();
                         $moq_qry_res = $link->query($moq_qry);
                         while($row_moq = $moq_qry_res->fetch_assoc()) 
                         {
                             $max_mo_no = $row_moq['mo_no'];
-                            echo $row_moq['rejected_quantity'].'-'.$array_mos[$max_mo_no].'</br>';
+                            // echo $row_moq['rejected_quantity'].'-'.$array_mos[$max_mo_no].'</br>';
                             $bundle_quantity_mo = $row_moq['rejected_quantity'] - $array_mos[$max_mo_no];
-                            echo $bundle_quantity_mo.'-'.$multiple_mos_tot_qty.'</br>';
+                            // echo $bundle_quantity_mo.'-'.$multiple_mos_tot_qty.'</br>';
                             if($bundle_quantity_mo < $multiple_mos_tot_qty)
                             {
                                 $multiple_mos_tot_qty = $multiple_mos_tot_qty - $bundle_quantity_mo;
@@ -170,11 +170,11 @@
                                 $array_mos[$max_mo_no]  = $multiple_mos_tot_qty;
                                 $multiple_mos_tot_qty = 0;
                             }
-                            echo $to_add_mo.'</br>';
+                            // echo $to_add_mo.'</br>';
                             if($to_add_mo > 0)
                             {
-                                $checking_moq_qry = "select id from $bai_pro3.mo_operation_quantities where ref_no = $bundle_number_recut and operation_id = 15";
-                                echo $checking_moq_qry.'</br>';
+                                $checking_moq_qry = "SELECT * FROM bai_pro3.mo_operation_quantites WHERE ref_no = $bundle_number_recut AND op_code = 15";
+                                // echo $checking_moq_qry.'</br>';
                                 $checking_moq_qry_res = $link->query($checking_moq_qry);
                                 if(mysqli_num_rows($checking_moq_qry_res) > 0)
                                 {
@@ -183,14 +183,14 @@
                                     {
                                         $id_moq = $row_moq_bcd['id'];
                                     }
-                                    $updae_moq_qry = "update $bai_pro3.mo_operation_quantities set bundle_quantity = bundle_quantity+$to_add_mo where id=$id_moq";
+                                    $updae_moq_qry = "update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity+$to_add_mo where id=$id_moq";
                                 }
                                 else
                                 {
                                     //insert qry
                                     $updae_moq_qry="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$max_mo_no."', '".$bundle_number_recut."','".$to_add_mo."', '15', 'Cutting')";
                                 }
-                                echo $updae_moq_qry.'</br>';
+                                // echo $updae_moq_qry.'</br>';
                                 mysqli_query($link,$updae_moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
                             }
                         }
@@ -204,7 +204,6 @@
 
             }
         }
-        die();
         $url = '?r='.$_GET['r'];
         echo "<script>sweetAlert('Recut Successfully Raised','','success');window.location = '".$url."'</script>";   
     }
