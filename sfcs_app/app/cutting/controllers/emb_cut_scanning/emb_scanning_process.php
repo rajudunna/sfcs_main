@@ -279,7 +279,8 @@ foreach($b_tid as $key => $value)
                     $reported_status = 'P';
                 }
                 //update remaining quantity in cps_log table
-                $cps_log_qry = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty+$tot_report_qty,`reported_status`='$reported_status' where id =$b_tid[$key] and operation_code='$b_op_id'"; 
+                $cps_log_qry = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty+$tot_report_qty,`reported_status`='$reported_status' where id =$b_tid[$key] and operation_code='$b_op_id'";
+                echo $cps_log_qry;
                 $cps_log_result = $link->query($cps_log_qry) or exit('CPS LOG query error');
 
             }         
@@ -289,12 +290,12 @@ foreach($b_tid as $key => $value)
 
             //To send rejections qunatities and reasons array to M3 API Function
             if($r_qtys[$value] != null && $r_reason[$value] != null){
-                $r_qty = array();
-                $r_reasons = array();
                 $r_qty_array = explode(',',$r_qtys[$value]);
                 $r_reasons_array = explode(',',$r_reason[$value]);
                 foreach($r_qty_array as $qty_key => $qty_value)
                 {
+                    $r_qty = array();
+                    $r_reasons = array();
                     $r_qty[] = $r_qty_array[$qty_key];
                     $r_reasons[] = $r_reasons_array[$qty_key];
                     $b_tid = $b_tid[$key];
