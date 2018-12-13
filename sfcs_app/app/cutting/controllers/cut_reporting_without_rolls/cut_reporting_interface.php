@@ -323,6 +323,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     var avl_plies = 0;
     var doc_no = 0;
     var c_plies = 0;
+    var fab_req = 0;
     var pieces = {};
     var dataR;
     var global_serial_id = 0;
@@ -502,6 +503,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         total_rejected_pieces = 0;
         ret = 0; 
         rejections_flag = 0;
+        $('#rejection_size').empty();
         $('#save_rejection').css({'display':'block'});
         $('#d_style').html('');
         $('#d_schedule').html('');
@@ -695,6 +697,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         }).done(function(res){
             var data = $.parseJSON(res);
             avl_plies = Number(data.avl_plies);
+            fab_req = Number(data.fab_required);
             console.log(data);
             console.log(data.avl_plies);
             if(data.child_docket == '1'){
@@ -732,7 +735,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#p_plies').val(data.p_plies);
             $('#doc_target_type').val(data.doc_target_type);
             $('#ratio').val(data.ratio);
-
+            
             $('#fab_required').val(data.fab_required);
             $('#r_fab_required').html(data.fab_required);
 
@@ -746,7 +749,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#d_cut_issue_status').html(data.fab_status);
             $('#d_good_pieces').html(data.good_pieces);
             $('#d_rej_pieces').html(data.rej_pieces);
-            $('#d_date').html();
+            $('#d_date').html(data.date);
             $('#d_section').html(data.section);
             $('#d_module').html(data.module);
             $('#d_shift').html(data.shift);
@@ -765,6 +768,9 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#d_style').html(data.styles);
             $('#d_schedule').html(data.schedules);
             $('#d_color').html(data.colors);
+
+            $('#c_plies').val(avl_plies);
+            $('#fab_received').val(fab_req);
 
             $('#post_style').val(data.styles);
             $('#post_schedule').val(data.schedules);

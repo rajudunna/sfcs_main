@@ -15,7 +15,8 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
     $time = date('H:i:s');
     $update_counter = 0;
     $remarks = 'CUT-'.$shift.'-P';
-
+    $total_rej = 0;
+    
     $verify_query = "SELECT * from $bai_pro3.rejections_log where style='$style' and schedule='$schedule' 
                     and color='$color'";                
     $result = mysqli_query($link,$verify_query) or exit('Rejections Log Error 1');  
