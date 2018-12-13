@@ -61,7 +61,8 @@ else
 
 		
 
-		$query1="select transport_mode from $bai_pro3.transport_modes where sno='$dr_id' ";
+		$query1="select transport_mode from $bai_pro3.transport_modes where transport_mode='$code' ";
+		// echo $query1;
 		$sql_result1=mysqli_query($conn, $query1);
 		
 		if(mysqli_num_rows($sql_result1)>0){
