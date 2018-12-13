@@ -298,11 +298,11 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 
 					if($clubbing>0)
 					{
-						$path="lay_plan_preparation/color_club_docket_print.php";
+						$path="sfcs_app/app/cutting/controllers/lay_plan_preparation/color_club_docket_print.php";
 					}
 					else
 					{
-						$path="lay_plan_preparation/Book3_print.php";
+						$path="sfcs_app/app/cutting/controllers/lay_plan_preparation/Book3_print.php";
 					}
 					
 					$tab= "<tr><td class=\"  \"><center><a class=\"btn btn-sm btn-primary\" href=\"$path&order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=$category&clubbing=$clubbing&cut_no=1\" onclick=\"Popup1=window.open('$path&order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">".$sql_row1['doc_no']."</a>";
