@@ -130,7 +130,7 @@ if(isset($_POST['formSubmit']))
                 $result1=mysqli_query($link, $mo_operations_insertion) or die("Error while mo_operations_insertion".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
             //updating bcd and cps log
-            $update_cps_qry = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$excess_qty where doc_no = $doc_nos and operation_code=15 and size_id='$size'";
+            $update_cps_qry = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$excess_qty where doc_no = $doc_nos and operation_code=15 and size_code='$size'";
             mysqli_query($link, $update_cps_qry) or die("Error while update_cps_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
             $update_bcd_qry = "update $brandix_bts.bundle_creation_data set recevied_qty=recevied_qty+$excess_qty where docket_number = $doc_nos and size_id = '$size' and operation_id = 15";
             mysqli_query($link, $update_bcd_qry) or die("Error while update_bcd_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
