@@ -577,10 +577,10 @@ function editreplacedetails(id)
 }
 function validationreplace()
 {
-    var total_rows = document.getElementById("total_rows_replace").value;
+    var total_rows_replace = document.getElementById("total_rows_replace").value;
     var value = 0;
     var flag = 0;
-    console.log(total_rows);
+    console.log(total_rows_replace);
     for(var i=1; i<=Number(total_rows);i++)
     {
         console.log(value);
