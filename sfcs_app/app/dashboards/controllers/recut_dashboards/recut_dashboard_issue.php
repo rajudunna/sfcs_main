@@ -232,7 +232,7 @@ function issued_to_module($bcd_id,$qty,$ref)
     }
 
     $qry_ops_mapping = "select operation_code from brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and  operation_code in (".implode(',',$emb_ops).")";
-    echo $qry_ops_mapping;
+    // echo $qry_ops_mapping;
     $result_qry_ops_mapping = $link->query($qry_ops_mapping);
     if(mysqli_num_rows($result_qry_ops_mapping) > 0)
     {
