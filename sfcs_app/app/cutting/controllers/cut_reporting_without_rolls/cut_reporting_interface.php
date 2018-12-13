@@ -34,12 +34,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
 ?>
 
-<div class="container">
-  <ul class="nav nav-tabs">
-    <li class="info active" id='cut_tab_li'><a href="#"  id='cut_tab'>Cut Qty Reporting</a></li>
-    <li class="info" id='rej_tab_li'><a href="#" id='rej_tab'>Rejections Form</a></li>
-  </ul>
-</div>
 
 <!-- Cut Reporting Code -->
 <div class='panel panel-primary cut_tab'>
@@ -247,11 +241,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                                 Total Rejectable Pieces Size Wise  : <span class='size-rej-pieces'></span>
                             </span>   
                             <br/> <br/>
-                            <span class='col-sm-2'>
+                            <span class='col-sm-3'>
                                 Total Rejections : 
                                 <input type='button' class='btn btn-success' id='total_pieces'>
                             </span>
-                            <span class='col-sm-3'>
+                            <span class='col-sm-4'>
                                 Available For Rejection : 
                                 <input type='button' class='btn btn-danger' id='avl_pieces'>
                             </span>  
@@ -278,11 +272,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                                 <label for='rejection_qty'>Rejected Qty</label> 
                                 <input type='text' class='form-control integer' name='rejection_qty' id='rejection_qty'>
                             </div>
-                            <div class='col-sm-2'>
+                            <div class='col-sm-1'>
                                 <label for='add_rejection'>&nbsp;</label><br/>
                                 <input type='button' class='btn btn-warning' value='+' name='add_rejection' id='add_rejection'>
                             </div>
-                            <div class='col-sm-offset-1 col-sm-2'>
+                            <div class='col-sm-offset-1 col-sm-3'>
                                 <label for='save_rejection'>&nbsp;</label><br/>
                                 <input type='button' class='btn btn-primary confirm-submit' value='Save' name='save_rejection' id='save_rejection'>&nbsp;
                                 <input type='button' class='btn btn-danger' value='clear' name='clear_rejection' id='clear_rejection'>
@@ -396,7 +390,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             return false;
         }
 
-        if(shift == null || cut_table == null || team_leader == null || bundle_location == null ){
+        if(shift == null || cut_table == null || team_leader == null){
             swal('Warning','Please Select Shift , Cut Table , Team Leader ,Bundle Location','warning');
             return false;
         }
@@ -564,7 +558,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         if(c_plies == 0){
             return swal('Please Enter Reporting Plies','','error');
         }
-
+        $('#rejection_size').empty();
         if(ret > 0){
             $('#c_plies').attr('readonly',true);
             if( ret > c_plies * ratio  )
