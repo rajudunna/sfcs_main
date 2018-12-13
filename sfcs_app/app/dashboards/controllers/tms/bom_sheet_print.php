@@ -154,7 +154,7 @@ if(count($colors)>0){
                            if($bom_numrows > 0){
                                while($bom_row=mysqli_fetch_array($bom_details_result))
                                {                                        
-                                   $final_data[] = ['COLOR'=>$bom_row['color'],'SIZE_QTY'=>$size_qty,'MTNO'=>$bom_row['item_code'],'ITDS'=>$bom_row['item_description'],'CNQT'=>$bom_row['per_piece_consumption'],'MSEQ'=>$bom_row['material_sequence'],'PRNO'=>$bom_row['product_no'],'OPNO'=>$bom_row['operation_code'],'COL_DESC'=>$bom_row['color_description'],'SIZE_DESC'=>$bom_row['size'],'Z_DESC'=>$bom_row['z_code'],'WASTAGE'=>$bom_row['wastage'],'UOM'=>$bom_row['uom']];
+                                   $final_data[] = ['MAIN_COLOR'=>$color,'COLOR'=>$bom_row['color'],'SIZE_QTY'=>$size_qty,'MTNO'=>$bom_row['item_code'],'ITDS'=>$bom_row['item_description'],'CNQT'=>$bom_row['per_piece_consumption'],'MSEQ'=>$bom_row['material_sequence'],'PRNO'=>$bom_row['product_no'],'OPNO'=>$bom_row['operation_code'],'COL_DESC'=>$bom_row['color_description'],'SIZE_DESC'=>$bom_row['size'],'Z_DESC'=>$bom_row['z_code'],'WASTAGE'=>$bom_row['wastage'],'UOM'=>$bom_row['uom']];
                                }
                            }
                         }      
@@ -181,7 +181,7 @@ if(count($colors)>0){
                     $checkingitemcode_strim = [];
                     $checkingitemcode_ptrim = [];
                     foreach ($final_data as $key1 => $value1) {
-                        $op_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and description = '".$value1['COLOR']."' and Main_OperationNumber = '".$value1['OPNO']."' and SMV > 0";
+                        $op_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and description = '".$value1['MAIN_COLOR']."' and Main_OperationNumber = '".$value1['OPNO']."' and SMV > 0";
                         
                         $op_sql_result = mysqli_query($link, $op_query) or die("Error".$op_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($op_sql_result) > 0){
@@ -199,7 +199,7 @@ if(count($colors)>0){
                             }
                         }
                        
-                        $op_ptrim_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and description = '".$value1['COLOR']."' and Main_OperationNumber = '".$value1['OPNO']."' and Main_OperationNumber = 200";
+                        $op_ptrim_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and description = '".$value1['MAIN_COLOR']."' and Main_OperationNumber = '".$value1['OPNO']."' and Main_OperationNumber = 200";
                         $op_ptrim_sql_result = mysqli_query($link, $op_ptrim_query) or die("Error".$op_ptrim_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($op_ptrim_sql_result) > 0){
                             $value1['trim_type'] = 'PTRIM';                               
