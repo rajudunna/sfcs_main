@@ -580,7 +580,8 @@ function validationreplace()
     var total_rows = $('#total_rows').val();
     var value = 0;
     var flag = 0;
-    for(var i=1; i<=total_rows;i++)
+    console.log(total_rows);
+    for(var i=1; i<=Number(total_rows);i++)
     {
         console.log(value);
         console.log(i);
