@@ -770,14 +770,14 @@ function validationfunction()
     }
    if(flag == 1)
    {
-       return false;
+       //return false;
    }
-   else
-   {
+//    else
+//    {
        $('#pre_pre').hide();
        $('#post_post').show();
        return true;
-   }
+  // }
 }
 function isInteger(value) 
 {
