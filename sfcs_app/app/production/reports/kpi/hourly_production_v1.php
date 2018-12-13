@@ -493,10 +493,15 @@ if(isset($_GET['submit']))
 								</tr>
 									<?php
 						}
-					
+							$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
+							$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row12=mysqli_fetch_array($result12))
+							{
+								$section_display_name=$sql_row12["section_display_name"];
+							}
 							?>
 							<tr style="background-color:lightgreen;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;">
-								<td>Section - <?php  echo $section; ?></center></td>
+								<td><?php  echo $section_display_name; ?></center></td>
 								<td></td>
 								<td></td>
 								<td><center><?php  echo $sec_tot_fr_qty; $grand_tot_fr_qty = $grand_tot_fr_qty + $sec_tot_fr_qty; ?></center></td>
