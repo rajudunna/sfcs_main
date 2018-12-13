@@ -581,7 +581,7 @@ function validationreplace()
     var value = 0;
     var flag = 0;
     console.log(total_rows_replace);
-    for(var i=1; i<=Number(total_rows);i++)
+    for(var i=1; i<=Number(total_rows_replace);i++)
     {
         console.log(value);
         console.log(i);
