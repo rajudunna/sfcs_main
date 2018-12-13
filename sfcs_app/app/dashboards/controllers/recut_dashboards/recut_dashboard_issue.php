@@ -214,6 +214,7 @@ function issued_to_module($bcd_id,$qty,$ref)
         $input_job_no_random_ref = $row['input_job_no_random_ref'];
         $ops_code = $row['operation_id'];
         $bundle_number = $row['bundle_number'];
+        $size_id = $row['size_id'];
     }
     //updating cps log and bts
     $update_qry_cps = "update bai_pro3.cps_log set remaining_qty = remaining_qty+$qty where doc_no = $docket_no and operation_code = 15";
@@ -241,7 +242,7 @@ function issued_to_module($bcd_id,$qty,$ref)
             $emb_input_ops_code = $row_emb['operation_code'];
 
             //updating bcd for emblishment in operation 
-            $update_bcd_for_emb_qry = "update brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref + $qty where docket_number = $docket_no and operation_id = $emb_input_ops_code";
+            $update_bcd_for_emb_qry = "update brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref + $qty where docket_number = $docket_no and operation_id = $emb_input_ops_code and size_id = '$size_id'";
             // echo $update_bcd_for_emb_qry;
             mysqli_query($link, $update_bcd_for_emb_qry) or exit("update_bcd_for_emb_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
