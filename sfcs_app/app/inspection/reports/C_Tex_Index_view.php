@@ -122,7 +122,6 @@ if(isset($_POST['put']))
 	$lot_no=$_POST['lot_no'];
 	if($_POST['lot_ref'])
 	{
-	// $lot_ref="'".implode(",",$_POST['lot_ref'])."'";
 	$lot_ref="'" .implode("','", $_POST['lot_ref']) . "'";
 	
 

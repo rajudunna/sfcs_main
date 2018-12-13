@@ -40,7 +40,6 @@ From Date: <input type="text" data-toggle='datepicker' class="form-control" name
 <?php
 // due to buyer division issue ,we ara taking buyers from sticker report
 $sql="SELECT DISTINCT buyer FROM $bai_rm_pj1.sticker_report ";
-// $sql="select GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -96,7 +95,6 @@ if(isset($_POST['submit']))
 	{
 		$sqlx="select * from $bai_rm_pj1.inspection_db where date(log_date) between \"$sdate\" and \"$edate\"";
 	}
-	// echo $sqlx;
 	$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	$no_of_rows = mysqli_num_rows($sql_resultx);
@@ -146,7 +144,6 @@ if(isset($_POST['submit']))
 		echo "<th>Width Shortage</th>";
 		echo "</tr></thead><tbody>";
 
-		//var_dump(mysqli_fetch_array($sql_resultx));
 		while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		{
 
@@ -173,8 +170,7 @@ if(isset($_POST['submit']))
 			if($lot_no!=NULL)
 			{
 			
-				$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item  SEPARATOR ', ') as \"item_batch\",group_concat(distinct pkg_no) as \"pkg_no_batch\",group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no  SEPARATOR ', ') as \"lot_ref_batch\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\" from $bai_rm_pj1.sticker_report where batch_no=\"".trim($lot_no)."\" and right(trim(both from lot_no),1)<>'R' and grn_date<=".date("Ymd",strtotime($log_date));
-				// echo $sql.'<br>';
+				$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item  SEPARATOR ', ') as \"item_batch\",group_concat(distinct pkg_no) as \"pkg_no_batch\",group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no  SEPARATOR ', ') as \"lot_ref_batch\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\" from $bai_rm_pj1.sticker_report where batch_no=\"".trim($lot_no)."\" and right(trim(both from lot_no),1)<>'R' and grn_date<=\"".date("Ymd",strtotime($log_date))."\"";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
@@ -219,9 +215,7 @@ if(isset($_POST['submit']))
 				if($lot_ref_batch!=NULL or $new_ref_date!="--")
 				{
 					$rec_qty=0;
-					//$sql="select *, if((length(ref5)<=1 or ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\", qty_rec  from store_in where lot_no in ($lot_ref_batch) order by ref2+0";
 					$sql="select *, if((length(ref5)<0 or length(ref6)<0 or length(ref3)<0),1,0) as \"print_check\", qty_rec  from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch) order by ref2+0";
-					// echo $sql."<br>";
 					$sql_result=mysqli_query($link, $sql);
 					$num_rows=mysqli_num_rows($sql_result);
 					while($sql_row=mysqli_fetch_array($sql_result))
@@ -234,13 +228,7 @@ if(isset($_POST['submit']))
 						$avg_t_width+=$sql_row['ref6'];
 						$avg_c_width+=$sql_row['ref3'];
 							
-						/* if($print_check==1)
-						{
-							if($sql_row['print_check']==0)
-							{
-								$print_check=$sql_row['print_check'];
-							}
-						} */
+					
 						if($sql_row['print_check']==1)
 						{
 							$print_check=1;
@@ -251,7 +239,6 @@ if(isset($_POST['submit']))
 					if($print_check==0 and $num_rows>0 and in_array($buyer,$selected_buyer))
 					{
 						$flag = true;
-						// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/supplier_db.php',1,'R')); 
 
 						sort($scount_temp); //to sort shade groups
 						if($num_rows>0)
@@ -271,9 +258,7 @@ if(isset($_POST['submit']))
 						//Configuration 
 						
 					
-						//$sql="select count(*) as \"count\" from store_in where lot_no in ($lot_ref_batch)";
 						$sql="select  COUNT(DISTINCT REPLACE(ref2,\"*\",\"\"))  as \"count\" from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch)";
-						// echo $sql."<br>";
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{

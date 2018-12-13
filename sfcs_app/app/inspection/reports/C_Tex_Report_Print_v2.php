@@ -1879,7 +1879,6 @@ $shade_count=sizeof($scount_temp2);
 //Configuration 
 
 
-//$sql="select count(*) as \"count\" from store_in where lot_no in ($lot_ref_batch)";
 $sql="select  COUNT(DISTINCT REPLACE(ref2,\"*\",\"\"))  as \"count\" from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch)";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1969,17 +1968,6 @@ tags will be replaced.-->
   <td colspan=2 class=xl9324082 dir=LTR width=272 style='border-right:1.0pt solid black;
   border-left:none;width:204pt'>
   <?php
- 
- /* for($i=0;$i<sizeof($suppliers);$i++)
-  {
-  	$x=array();
-	$x=explode("$",$suppliers[$i]);
-	if($supplier==$x[1])
-	{
-		echo $x[0];
-	}
-	
-  }*/
   echo $supplier_ref_name;
   ?>
   

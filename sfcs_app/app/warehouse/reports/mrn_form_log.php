@@ -1,13 +1,9 @@
 
 <?php 
-//include("security1.php");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
-//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 $has_permission=haspermission($_GET['r']);
-//$view_access=user_acl("SFCS_0073",$username,1,$group_id_sfcs);
-//$duplicate_print_users=user_acl("SFCS_0073",$username,7,$group_id_sfcs);
-//$duplicate_print_users=array("santhoshbo","kishorek","sarojiniv","chirikis","kirang");
+
 ?>
 
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R');?>"></script>
@@ -96,9 +92,6 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 
 </script>
 
-
-<!-- <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
-	 -->
 <body onload="dodisable();">
 	<div class="panel panel-primary">
 	<div class="panel-heading"><b>Additional Material Requisition Log</b></div>
@@ -106,27 +99,20 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 
 			<?php 
 				include("menu_include.php");?>
-			<?php //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);?>
 
 			<div class="panel panel-primary panel-body">
 				<div class="col-md-12">
 					<?php
 					include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
-						//include("dbconf.php"); 	
 						$link1 = getFullURL($_GET['r'],'mrn_form_log.php','N');
-						// var_dump($link1);
-						// die();
 						if(isset($_GET['date']))
 						{
 							echo "<div class='row'>";
 							$date=$_GET['date'];
 							echo '<div ><span style="float: left"><h3>Additional Material Requisition Log : '.date("M-Y",strtotime($date)).'</h3></span></div>';
-							//echo '<h2><a name="tbl1" id="tbl1"></a>Additional Material Requisition Log : '.date("M-Y",strtotime($date)).'</h2>';
 							echo "</div>";
 							echo "<div class='row'>";
 							echo "<strong>Filter:</strong>";
-							//echo '<a href="mrn_form_log.php?date='.date("Y-m-d",strtotime("-1 year", strtotime($date))).'"> Last Year</a>  |  ';
-							//echo '<a href="mrn_form_log.php?date='.date("Y-m-d",strtotime("+1 year", strtotime($date))).'"> Next Year</a>  |  ';
 							echo '&nbsp;<a href="'.$link1.'&status_filter='.$_GET['status_filter'].'&date='.date("Y-m-d",strtotime("-1 month", strtotime($date))).'"><button class="btn btn-sm btn-primary"> Last Month</button></a>  |  ';
 							echo '&nbsp;<a href="'.$link1.'&status_filter='.$_GET['status_filter'].'&date='.date("Y-m-d",strtotime("+1 month", strtotime($date))).'"> <button class="btn btn-sm btn-primary"> Next Month</button></a>  |  ';
 							
@@ -136,20 +122,16 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 							echo "<div class='row'>";
 							$date=date("Y-m-d");
 							echo '<div><span style="float: left"><h3>Additional Material Requisition Log : '.date("M-Y",strtotime($date)).'</h3></span></div>';
-							//echo '<h2><a name="tbl1" id="tbl1"></a>Additional Material Requisition Log : '.date("M-Y",strtotime($date)).'</h2>';
 							echo "</div>";
 							echo "<div class='row'>";
 							echo "<strong>Filter:</strong>";
 							echo '&nbsp;<a href="'.$link1.'&date='.date("Y-m-d",strtotime("-1 month")).'"> <button class="btn btn-sm btn-primary">Last Month</button></a>  |  ';
-							//echo '<a href="mrn_form_log.php?date='.date("Y-m-d",strtotime("-1 year")).'"> Last Year</a>  |  ';
 							
 						}
 
 						$reasonsdb_array=array("ALL","1-Requested","2-Approved","3-Rejected","4-Informed/On Progress","5-RM Approved","6-Canceled","7-Doc Printed ","8-Doc Issued","9-Doc Closed");
-						//$sql="select * from bai_rm_pj2.mrn_track where year(req_date)=year(\"$date\") and status=1 group by rand_track_id";
 						$total=0;
 						$sql="select status,count(rand_track_id) as count from $bai_rm_pj2.mrn_track where month(req_date)=month(\"$date\") and year(req_date)=year(\"$date\") group by status";
-						//echo $sql;
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						echo "<br><b>Status wise Pending List:";
 						echo "</div><br>";
@@ -205,7 +187,6 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 						$sql="select * from $bai_rm_pj2.mrn_track where month(req_date)=month(\"$date\") and year(req_date)=year(\"$date\") and status=".$_GET['status_filter']." order by status,req_date desc";
 
 						}
-						//echo $sql;
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
@@ -234,7 +215,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 							//Add the new column as other remarks as a popup to display the all the remarks in each level.
 							$link_remarks=getFullURL($_GET['r'],'remarks_log.php','N');
 							echo "<td><a class='btn btn-info btn-xs' href=\"$link_remarks&ref_tid=$ref_tid\" onclick=\"return popituprem('$link_remarks&ref_tid=$ref_tid')\">Remarks</a></td>";
-								$sql_ref_tid="select * from $bai_rm_pj2.remarks_log where tid=\"$ref_tid\" and level=\"updated\"";
+								$sql_ref_tid="select * from $bai_rm_pj2.remarks_log where tid=\"$ref_tid\" and level='updated'";
 								$sql_result_ref_tid=mysqli_query($link, $sql_ref_tid) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$row1=mysqli_num_rows($sql_result_ref_tid);
 								$rem='';
@@ -250,7 +231,6 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 										{
 											$rem.=$sql_row_ref['remarks'];
 										}	
-									//$rem.=$sql_row_ref['remarks']."-".$sql_row_ref['level']." $ ";
 									}
 
 								}
@@ -358,7 +338,6 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 								// Add the pop up for Controls App/rej, update, allocate and issue.
 								case 1:
 								{
-									//echo "<td><a href=\"update_form.php?ref=$tid&level=1&product=$product&reason_code=$reason_code&ref_tid=$ref_tid\">App./Rej.</a></td>";
 									
 									echo "<td><a href='$link2&ref=$tid&level=1&product=$product&reason_code=$reason_code&ref_tid=$ref_tid' onclick=\"return popitupnew('$link2&ref=$tid&level=1&product=$product&reason_code=$reason_code&ref_tid=$ref_tid')\"><button class='btn btn-success btn-xs'>App./Rej.</button></a></td>";
 									break;
@@ -366,19 +345,16 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 								case 2:
 								{
 									echo "<td><a href=\"$link2&ref=$tid&level=2&product=$product&reason_code=$reason_code&ref_tid=$ref_tid\" onclick=\"return popitupnew('$link2&ref=$tid&level=2&product=$product&reason_code=$reason_code&ref_tid=$ref_tid')\"><button class='btn btn-success btn-xs'>Update</button></a></td>";
-									//echo "<td><a href=\"update_form.php?ref=$tid&level=2&product=$product&reason_code=$reason_code&ref_tid=$ref_tid\">Update</a></td>";
 									break;
 								}
 								case 4:
 								{
 										echo "<td><a href=\"$link2&ref=$tid&level=2&product=$product&reason_code=$reason_code&ref_tid=$ref_tid\" onclick=\"return popitupnew('$link2&ref=$tid&level=2&product=$product&reason_code=$reason_code&ref_tid=$ref_tid')\"><button class='btn btn-success btn-xs'>Update</button></a></td>";
-								//	echo "<td><a href=\"update_form.php?ref=$tid&level=2&product=$product&reason_code=$reason_code&ref_tid=$ref_tid\">Update</a></td>";
 									break;
 								}
 								case 5:
 								{
 									echo "<td><a href=\"$link2&ref=$tid&level=3&product=$product&reason_code=$reason_code&ref_tid=$ref_tid\" onclick=\"return popitupnew('$link2&ref=$tid&level=3&product=$product&reason_code=$reason_code&ref_tid=$ref_tid')\"><button class='btn btn-success btn-xs'>Allocate</button></a></td>";
-									//echo "<td><a href=\"update_form.php?ref=$tid&level=3&product=$product&reason_code=$reason_code&ref_tid=$ref_tid\">Allocate</a></td>";
 									break;
 								}
 								case 7:
@@ -389,12 +365,10 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 								case 8:
 								{
 									echo "<td><a href=\"$link2&ref=$tid&level=8&product=$product&reason_code=$reason_code&ref_tid=$ref_tid\" onclick=\"return popitupnew('$link2&ref=$tid&level=8&product=$product&reason_code=$reason_code&ref_tid=$ref_tid')\"><button class='btn btn-success btn-xs'>Issue</button></a></td>";
-								//	echo "<td><a href=\"update_form.php?ref=$tid&level=8&product=$product&reason_code=$reason_code&ref_tid=$ref_tid\">Issue</a></td>";
 									break;
 								}
 								case 9:
 								{
-									//echo "<td>Closed</td>";
 									if(in_array($authorized,$has_permission))
 									{
 										echo "<td><a href=\"$link3&tid=$ref_tid&print_status=1\" onclick=\"return popitup('$link3&tid=$ref_tid&print_status=1')\"><button class='btn btn-success btn-xs'>Closed</button></a></td>";
