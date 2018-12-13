@@ -34,7 +34,14 @@ Chnaged the Data type from int to decimal for Capturing Actual Width in points m
 		}
 	}	
 $order_tid=$_GET['order_tid'];
-
+if($_GET['print_status']<>'')
+{
+    $print=$_GET['print_status'];
+}
+else
+{
+	$print=2;
+}
 $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -167,7 +174,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 $cat_ref=$_GET['cat_ref'];
 $doc_id=$_GET['doc_id'];
-$print=$_GET['print_status'];
+
 $cat_title=$_GET['cat_title'];
 $cut_no=$_GET['cut_no'];
 $clubbing=$_GET['clubbing'];
@@ -242,6 +249,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		while($sql_row21=mysqli_fetch_array($sql_result1))
 		{
+			//echo $sql_row21['binding_consumption']."<br>";
 			$binding_con1[] = $sql_row21['binding_consumption'];
 		}
 	}
@@ -279,22 +287,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$patt_ver=$sql_row['patt_ver'];
 	$col_des=$sql_row['col_des'];
 }
-//binding consumption
-	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check=mysqli_num_rows($sql_result);
-	if($sql_num_check > 0)
-	{
-		while($sql_row2=mysqli_fetch_array($sql_result))
-		{
-			$binding_con = $sql_row2['binding_consumption'];
-		}
-	}
-	else
-	{
-		$binding_con=0;
-	}
-	//echo 'binding '.$binding_con;
 
 //cuttable wastage
 	$sql="select cuttable_wastage from $bai_pro3.cuttable_stat_log where order_tid=\"$order_tid\" and cat_id=$cat_ref";
@@ -406,7 +398,7 @@ $sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation whe
 	$actwidth=$system_width;
 
 $sql22="select * from $bai_pro3.marker_ref_matrix where cat_ref=\"".$cat_ref."\" and allocate_ref=\"$allocate_ref\" and marker_width=$system_width";
-//echo $sql22;
+//echo $sql22."<bR>";
 $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row22=mysqli_fetch_array($sql_result22))
 {
@@ -3206,7 +3198,16 @@ tags will be replaced.-->
   <td class=xl6417319></td>
   <td class=xl6417319></td>
   <td colspan=21 class=xl6617319 height="25pt" style='text-align:center'><u>Cutting Docket</u></td> 
-  <td colspan=1 class=xl7617319><strong style='font-size:16px'><?php if($print_status=='0000-00-00' || $print_status == "") {echo "COPY"; } else {echo "COPY";}?></strong></td>
+  <td colspan=1 class=xl7617319><strong style='font-size:16px'><?php
+	if($print==1)
+	{
+		if($print_status=='0000-00-00' || $print_status == "") {echo "ORIGINAL"; } else {echo "DUPLICATE";}
+	}
+	else
+	{	
+		{echo "CUTTING"; }
+	}
+  ?></strong></td>
  </tr>
  <!-- <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
@@ -3369,8 +3370,8 @@ tags will be replaced.-->
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td colspan=27 rowspan=5 class=xl8217319> -->
   <?php
-	$style_css="style='font-size:24px; border:.5pt solid black; padding-left: 10px; padding-right:10px; border-collapse: collapse;'";
-	echo "<table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;' class='width1' width=1300px>";
+	$style_css="style='font-size:24px; font-family: Trebuchet MS, sans-serif; border:.5pt solid black; padding-left: 10px; padding-right:10px; border-collapse: collapse;'";
+	echo "<table style='font-size:24px; font-family: Trebuchet MS, sans-serif; border:.5pt solid black; border-collapse: collapse;' class='width1' width=1300px>";
 	echo "<tr style='mso-height-source:userset;'>";
 	$sum=0;
 	$divide=14;
@@ -3397,34 +3398,48 @@ tags will be replaced.-->
 			$divide=$divide1;
 			$t=$s+5;//starting 4 plus one
 		}
-		if(($t) % $divide == 0){
+		//echo $t."---".$divide."<br>"; 
+		if(($t) % $divide == 0)
+		{
 			$temp_len = $s+1;
 			echo "</tr><tr style='height:40px'>";
-			for($i=0;$i<sizeof($color_codes);$i++) {
+			for($i=0;$i<sizeof($color_codes);$i++) 
+			{
 				if($temp==0){
 					echo "<td style='border:.5pt solid black;'>".'<div id="bcTarget'.$i.'" style="width:auto;"></div><script>$("#bcTarget'.$i.'").barcode("D'.$docs[$i].'", "code39",{barWidth:2,barHeight:15,moduleSize:5,fontSize:0});</script>'."</td>";
 					echo "<td style='border:.5pt solid black;'>".$color_codes[$i]."</td>";
 					echo "<td style='border:.5pt solid black;'>".chr($cc_code[$i]).leading_zeros($cut_no, 3)."</td>";
 					echo "<td style='border:.5pt solid black;'>".$docs[$i]."</td>";
 				}
-				$fab_bind = (float)$binding_con*(int)$plies[$i]*(float)$a_ratio_tot;//Caliculation for Bind/Rib
-				$total_yds=$met_req[$i]+$fab_bind;
-				$sum+=  $total_yds;
+				$fab_bind[$i] = (float)$binding_con1[$i]*(int)$plies[$i]*(float)$a_ratio_tot;//Caliculation for Bind/Rib
+				$total_yds[$i]=$met_req[$i]+$fab_bind[$i];
+				$sum+=  $total_yds[$i];
 				for($j=$temp_len1;$j<$temp_len;$j++)
 				{
 					echo "<td style='border:.5pt solid black;'>".$qty[$j]."</td>";
 				}
 				echo "</tr>";
 			}
-			echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;' class='width1' width=1500px>";
+			echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;font-family: Trebuchet MS, sans-serif;border:.5pt solid black; border-collapse: collapse;' class='width1' width=1500px>";
 			$temp = 1;
 			$temp_len1=$temp_len;
-
 		}
-		if($s+1==$total_size) {
+		if($temp<>1)
+		{
+			for($i=0;$i<sizeof($color_codes);$i++) 
+			{
+				$fab_bind[$i] = (float)$binding_con1[$i]*(int)$plies[$i]*(float)$a_ratio_tot;//Caliculation for Bind/Rib
+				$total_yds[$i]=$met_req[$i]+$fab_bind[$i];
+				$sum+=  $total_yds[$i];
+			}
+		}
+		if($s+1==$total_size) 
+		{
 			$m = $s+5;
-			if(($m % $divide)!= 0) {
-				if((($m+1) % $divide) == 0) {
+			if(($m % $divide)!= 0) 
+			{
+				if((($m+1) % $divide) == 0) 
+				{
 					echo "<th style='border:.5pt solid black;'>Ratio</th>";
 					echo "</tr>";
 					for($j=0;$j<sizeof($color_codes);$j++)
@@ -3442,7 +3457,7 @@ tags will be replaced.-->
 						}
 						echo "<td style='border:.5pt solid black;'>".$a_ratio_tot."</td></tr>";
 					}
-					echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;' class='width1'>";
+					echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;font-family: Trebuchet MS, sans-serif;border:.5pt solid black; border-collapse: collapse;' class='width1'>";
 					echo "<th style='border:.5pt solid black;'>Plies</th>";
 					echo "<th style='border:.5pt solid black;'>Quantity </br>(Total Garments)</th>";
 					echo "<th style='border:.5pt solid black;'>MK Length</th>";
@@ -3456,13 +3471,15 @@ tags will be replaced.-->
 						echo "<td style='border:.5pt solid black;'>".($a_ratio_tot)*($plies[$j])."</td>";
 						echo "<td style='border:.5pt solid black;'>".round( $mk_length_ref[$j] , 2 )."</td>";
 						echo "<td style='border:.5pt solid black;'>".$met_req[$j]."</td>";
-						echo "<td style='border:.5pt solid black;'>".$fab_bind."</td>";
-						echo "<td style='border:.5pt solid black;'>".$total_yds."</td>";
-						$fab_total+=$fab_bind;
+						echo "<td style='border:.5pt solid black;'>".$fab_bind[$j]."</td>";
+						echo "<td style='border:.5pt solid black;'>".$total_yds[$j]."</td>";
+						$fab_total+=$fab_bind[$j];
 						echo "</tr>";
 					}
 					echo "</table>";
-				} elseif((($m+2) % $divide) == 0) {
+				}
+				elseif((($m+2) % $divide) == 0) 
+				{
 					echo "<th style='border:.5pt solid black;'>Ratio</th>";
 					echo "<th style='border:.5pt solid black;'>Plies</th>";
 					echo "</tr>";
@@ -3482,7 +3499,7 @@ tags will be replaced.-->
 						echo "<td style='border:.5pt solid black;'>".$a_ratio_tot."</td>";
 						echo "<td style='border:.5pt solid black;'>".round( $plies[$j] , 2 )."</td></tr>";
 					}
-					echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;'  class='width1'>";
+					echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;font-family: Trebuchet MS, sans-serif;border:.5pt solid black; border-collapse: collapse;'  class='width1'>";
 					echo "<th style='border:.5pt solid black;'>Quantity </br>(Total Garments)</th>";
 					echo "<th style='border:.5pt solid black;'>MK Length</th>";
 					echo "<th style='border:.5pt solid black;'>$category $fab_uom</th>";
@@ -3494,14 +3511,15 @@ tags will be replaced.-->
 						echo "<td style='border:.5pt solid black;'>".($a_ratio_tot)*($plies[$j])."</td>";
 						echo "<td style='border:.5pt solid black;'>".round( $mk_length_ref[$j] , 2 )."</td>";
 						echo "<td style='border:.5pt solid black;'>".$met_req[$j]."</td>";
-						echo "<td style='border:.5pt solid black;'>".$fab_bind."</td>";
-						echo "<td style='border:.5pt solid black;'>".$total_yds."</td>";
-						$fab_total+=$fab_bind;
+						echo "<td style='border:.5pt solid black;'>".$fab_bind[$j]."</td>";
+						echo "<td style='border:.5pt solid black;'>".$total_yds[$j]."</td>";
+						$fab_total+=$fab_bind[$j];
 						echo "</tr>";
 					}
 					echo "</table>";
 				}
-				elseif((($m+3) % $divide) == 0) {
+				elseif((($m+3) % $divide) == 0) 
+				{
 					echo "<th style='border:.5pt solid black;'>Ratio</th>";
 					echo "<th style='border:.5pt solid black;'>Plies</th>";
 					echo "<th style='border:.5pt solid black;'>Quantity </br>(Total Garments)</th>";
@@ -3523,7 +3541,7 @@ tags will be replaced.-->
 							echo "<td style='border:.5pt solid black;'>".round( $plies[$j] , 2 )."</td>";
 							echo "<th style='border:.5pt solid black;'>".($a_ratio_tot)*($plies[$j])."</th></tr>";
 						}
-						echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;'  class='width1'>";
+						echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;font-family: Trebuchet MS, sans-serif;border:.5pt solid black; border-collapse: collapse;'  class='width1'>";
 						echo "<th style='border:.5pt solid black;'>MK Length</th>";
 						echo "<th style='border:.5pt solid black;'>$category $fab_uom</th>";
 						echo "<th style='border:.5pt solid black;'>(Bind/Rib) $fab_uom</th>";
@@ -3533,14 +3551,15 @@ tags will be replaced.-->
 							echo "<tr>";
 							echo "<td style='border:.5pt solid black;'>".round( $mk_length_ref[$j] , 2 )."</td>";
 							echo "<td style='border:.5pt solid black;'>".$met_req[$j]."</td>";
-							echo "<td style='border:.5pt solid black;'>".$fab_bind."</td>";
-							echo "<td style='border:.5pt solid black;'>".$total_yds."</td>";
-							$fab_total+=$fab_bind;
+							echo "<td style='border:.5pt solid black;'>".$fab_bind[$j]."</td>";
+							echo "<td style='border:.5pt solid black;'>".$total_yds[$j]."</td>";
+							$fab_total+=$fab_bind[$j];
 							echo "</tr>";
 						}
 						echo "</table>";
 				}
-				elseif((($m+4) % $divide) == 0) {
+				elseif((($m+4) % $divide) == 0) 
+				{
 					echo "<th style='border:.5pt solid black;'>Ratio</th>";
 					echo "<th style='border:.5pt solid black;'>Plies</th>";
 					echo "<th style='border:.5pt solid black;'>Quantity </br>(Total Garments)</th>";
@@ -3564,7 +3583,7 @@ tags will be replaced.-->
 							echo "<th style='border:.5pt solid black;'>".($a_ratio_tot)*($plies[$j])."</th>";
 							echo "<td style='border:.5pt solid black;'>".round( $mk_length_ref[$j] , 2 )."</td></tr>";
 						}
-						echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;' class='width1'>";
+						echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;font-family: Trebuchet MS, sans-serif;border:.5pt solid black; border-collapse: collapse;' class='width1'>";
 						echo "<th style='border:.5pt solid black;'>$category $fab_uom</th>";
 						echo "<th style='border:.5pt solid black;'>(Bind/Rib) $fab_uom</th>";
 						echo "<th style='border:.5pt solid black;'>Total</th></tr>";
@@ -3572,14 +3591,15 @@ tags will be replaced.-->
 						{
 							echo "<tr>";
 							echo "<td style='border:.5pt solid black;'>".$met_req[$j]."</td>";
-							echo "<td style='border:.5pt solid black;'>".$fab_bind."</td>";
-							echo "<td style='border:.5pt solid black;'>".$total_yds."</td>";
-							$fab_total+=$fab_bind;
+							echo "<td style='border:.5pt solid black;'>".$fab_bind[$j]."</td>";
+							echo "<td style='border:.5pt solid black;'>".$total_yds[$j]."</td>";
+							$fab_total+=$fab_bind[$j];
 							echo "</tr>";
 						}
 						echo "</table>";
 				}
-				elseif((($m+5) % $divide) == 0) {
+				elseif((($m+5) % $divide) == 0) 
+				{
 					echo "<th style='border:.5pt solid black;'>Ratio</th>";
 					echo "<th style='border:.5pt solid black;'>Plies</th>";
 					echo "<th style='border:.5pt solid black;'>Quantity </br>(Total Garments)</th>";
@@ -3605,20 +3625,21 @@ tags will be replaced.-->
 							echo "<td style='border:.5pt solid black;'>".round( $mk_length_ref[$j] , 2 )."</td>";
 							echo "<td style='border:.5pt solid black;'>".$met_req[$j]."</td></tr>";
 						}
-						echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;'>";
+						echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;font-family: Trebuchet MS, sans-serif;border:.5pt solid black; border-collapse: collapse;'>";
 						echo "<th style='border:.5pt solid black;'>(Bind/Rib) $fab_uom</th>";
 						echo "<th style='border:.5pt solid black;'>Total</th></tr>";
 						for($j=0;$j<sizeof($color_codes);$j++)
 						{
 							echo "<tr>";
-							echo "<td style='border:.5pt solid black;'>".$fab_bind."</td>";
-							echo "<td style='border:.5pt solid black;'>".$total_yds."</td>";
+							echo "<td style='border:.5pt solid black;'>".$fab_bind[$j]."</td>";
+							echo "<td style='border:.5pt solid black;'>".$total_yds[$j]."</td>";
 							$fab_total+=$fab_bind;
 							echo "</tr>";
 						}
 						echo "</table>";
 				}
-				elseif((($m+6) % $divide) == 0) {
+				elseif((($m+6) % $divide) == 0) 
+				{
 					echo "<th style='border:.5pt solid black;'>Ratio</th>";
 					echo "<th style='border:.5pt solid black;'>Plies</th>";
 					echo "<th style='border:.5pt solid black;'>Quantity </br>(Total Garments)</th>";
@@ -3644,20 +3665,21 @@ tags will be replaced.-->
 							echo "<th style='border:.5pt solid black;'>".($a_ratio_tot)*($plies[$j])."</th>";
 							echo "<td style='border:.5pt solid black;'>".round( $mk_length_ref[$j] , 2 )."</td>";
 							echo "<td style='border:.5pt solid black;'>".$met_req[$j]."</td>";
-							echo "<td style='border:.5pt solid black;'>".$fab_bind."</td></tr>";
+							echo "<td style='border:.5pt solid black;'>".$fab_bind[$j]."</td></tr>";
 						}
-						echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;border:.5pt solid black; border-collapse: collapse;'>";
+						echo "<tr height=10 style='height:15.75pt'></tr></table><table style='font-size:24px;font-family: Trebuchet MS, sans-serif;border:.5pt solid black; border-collapse: collapse;'>";
 						echo "<th style='border:.5pt solid black;'>Total</th></tr>";
 						for($j=0;$j<sizeof($color_codes);$j++)
 						{
 							echo "<tr>";
-							echo "<td style='border:.5pt solid black;'>".$total_yds."</td>";
-							$fab_total+=$fab_bind;
+							echo "<td style='border:.5pt solid black;'>".$total_yds[$j]."</td>";
+							$fab_total+=$fab_bind[$j];
 							echo "</tr>";
 						}
 						echo "</table>";
 				}
-				else {
+				else 
+				{
 					echo "<th style='border:.5pt solid black;'>Ratio</th>";
 					echo "<th style='border:.5pt solid black;'>Plies</th>";
 					echo "<th style='border:.5pt solid black;'>Quantity </br>(Total Garments)</th>";
@@ -3685,14 +3707,15 @@ tags will be replaced.-->
 						echo "<th style='border:.5pt solid black;'>".($a_ratio_tot)*($plies[$j])."</th>";
 						echo "<td style='border:.5pt solid black;'>".round( $mk_length_ref[$j] , 2 )."</td>";
 						echo "<td style='border:.5pt solid black;'>".$met_req[$j]."</td>";
-						echo "<td style='border:.5pt solid black;'>".$fab_bind."</td>";
-						echo "<td style='border:.5pt solid black;'>".$total_yds."</td>";
-						$fab_total+=$fab_bind;
+						echo "<td style='border:.5pt solid black;'>".$fab_bind[$j]."</td>";
+						echo "<td style='border:.5pt solid black;'>".$total_yds[$j]."</td>";
+						$fab_total+=$fab_bind[$j];
 						echo "</tr>";
 					}
 				}
 			}
-			else {
+			else 
+			{
 				echo "<th style='border:.5pt solid black;'>Ratio</th>";
 				echo "<th style='border:.5pt solid black;'>Plies</th>";
 				echo "<th style='border:.5pt solid black;'>Quantity </br>(Total Garments)</th>";
@@ -3713,9 +3736,9 @@ tags will be replaced.-->
 					echo "<th style='border:.5pt solid black;'>".($a_ratio_tot)*($plies[$j])."</th>";
 					echo "<td style='border:.5pt solid black;'>".round( $mk_length_ref[$j] , 2 )."</td>";
 					echo "<td style='border:.5pt solid black;'>".$met_req[$j]."</td>";
-					echo "<td style='border:.5pt solid black;'>".$fab_bind."</td>";
-					echo "<td style='border:.5pt solid black;'>".$total_yds."</td>";
-					$fab_total+=$fab_bind;
+					echo "<td style='border:.5pt solid black;'>".$fab_bind[$j]."</td>";
+					echo "<td style='border:.5pt solid black;'>".$total_yds[$j]."</td>";
+					$fab_total+=$fab_bind[$j];
 					echo "</tr>";
 				}
 			}
@@ -3728,7 +3751,7 @@ tags will be replaced.-->
   ?>
   
 
-  <table border=0 cellpadding=0 cellspacing=0 style='border-collapse: collapse;width:100%'>
+  <table border=0 cellpadding=0 cellspacing=0 style='border-collapse: collapse;width:100%; font-family: Trebuchet MS, sans-serif;'>
   <tr height=10 style='height:5pt'>
   <td height=10 class=xl6417319 style='height:15.75pt'></td>
   <td class=xl6417319></td>
@@ -3781,24 +3804,23 @@ tags will be replaced.-->
   <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php echo $purwidth; ?></td>
   <td rowspan=2 class=xl9817319 width=64 style='border-bottom:.5pt solid black;
-  border-top:none;width:48pt'><?php echo $purlength; ?></td>
+  border-top:none;width:48pt'><?php echo round(array_sum($met_req),2); ?></td>
   <td rowspan=2 colspan=1 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
-  border-top:none;'><?php echo round(array_sum($met_req),2); ?></td>
+  border-top:none;'><?php echo $actwidth; ?></td>
   <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
-  border-top:none;width:48pt'><?php echo $actwidth; ?></td>
-  <td rowspan=2 colspan=1 class=xl10017319 width=70 style='border-bottom:.5pt solid black;'><?php echo $cuttable_wastage*100;?></td>
-  <td rowspan=2 colspan=1 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'><?php echo $binding_con; ?></td>
+  border-top:none;width:48pt'><?php echo $cuttable_wastage*100; ?></td>	
+  <td rowspan=2 colspan=1 class=xl10017319 width=70 style='border-bottom:.5pt solid black;'><?php  ?></td>
+  <td rowspan=2 colspan=1 class=xl10017319 width=64 style='border-bottom:.5pt solid black;width:48pt'><?php echo $fab_uom; ?></td>
   <td rowspan=2 colspan=2  class=xl10017319 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'><?php echo round($fab_lay_sum,2);echo '<br/>('.$fab_uom.')'; ?></td>
+  width:48pt'><?php $fab_bind = round($fab_total,2); echo round($fab_total,2);echo '<br/>('.$fab_uom.')'; ?></td>
   <td rowspan=2 colspan=2  class=xl10017319 style='border-bottom:.5pt solid black;
-  width:48pt'><?php $fab_bind = round($bind_sum,2); echo round($bind_sum,2);echo '<br/>('.$fab_uom.')'; ?></td>
+  width:48pt'><?php echo round($fab_bind+$fab_lay_sum+array_sum($met_req),2);echo '<br/>('.$fab_uom.')'; ?></td>
   <td rowspan=2 colspan=2  class=xl10017319 width=64 style='border-bottom:.5pt solid black;'>
-  <?php echo round($fab_bind+$fab_lay_sum+array_sum($met_req),2);echo '<br/>('.$fab_uom.')'; ?></td>
+  <?php echo $act_mk_length; ?></td>
   <td rowspan=2 colspan=2  class=xl10017319 style='border-bottom:.5pt solid black;
-  border-top:none;'><?php echo $act_mk_length; ?></td>
+  border-top:none;'><?php echo round($fab_bind+$fab_lay_sum+array_sum($met_req),2);?></td>
   <td colspan=2  rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
-  border-top:none;'><?php if($act_mk_length>0) {echo array_sum($met_req); } ?></td>
+  border-top:none;'>&nbsp;</td>
   <td colspan=1  rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;'>&nbsp;</td>
   <!-- <td colspan=2  rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
