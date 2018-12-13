@@ -612,17 +612,17 @@ function validationfunction()
             flag = 1;
         }
     }
-    if(flag == 0)
-    {
+    // if(flag == 0)
+    // {
         $('#markers').hide();
         $('#pre').hide();
         $('#post').show();
         return true;
-    }
-    else
-    {
-        return false;
-    }
+   // }
+    // else
+    // {
+    //     return false;
+    // }
 }
 function setfunction()
 {
