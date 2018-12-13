@@ -718,7 +718,7 @@ function validationreplaceindividual(id)
         var present_rep = Number(document.getElementById(id).value);
         if(max_rem < present_rep)
         {
-            swal('You are replacing more than elegible to replace quantity.','','error');
+            swal('You are replacing more than eligible to replace quantity.','','error');
             document.getElementById(id).value = 0;
         } 
     }
@@ -738,7 +738,7 @@ function validationrecutindividual(id)
         var present_rep = Number(document.getElementById(id).value);
         if(max_rem < present_rep)
         {
-            swal('You are Re Cutting  more than elegible to Recut quantity.','','error');
+            swal('You are Re Cutting  more than eligible to Recut quantity.','','error');
             document.getElementById(id).value = 0;
         } 
     }

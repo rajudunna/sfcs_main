@@ -124,13 +124,13 @@ function RecutProcess($recut_id_edit)
             $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id  FROM `bai_pro3`.`rejection_log_child` rc LEFT JOIN `brandix_bts`.`tbl_orders_ops_ref` ops
             ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id and category = '$cat' group by doc_no,size_title";
             // echo $getting_full_cut_details;
-           $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Recut Allowed Qty</th><th>Replaced Qty</th><th>Elegible to recut Qty</th><th>Recut Qty</th></tr></thead><tbody>";
+           $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Recut Allowed Qty</th><th>Replaced Qty</th><th>Eligible to recut Qty</th><th>Recut Qty</th></tr></thead><tbody>";
         }
         else
         {
             $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id FROM `bai_pro3`.`rejection_log_child` rc LEFT JOIN `brandix_bts`.`tbl_orders_ops_ref` ops
             ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id and category = '$cat' group by input_job_no_random_ref,assigned_module,size_title";
-            $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Recut Allowed Qty</th><th>Replaced Qty</th><th>Elegible to recut Qty</th><th>Recut Qty</th></tr></thead><tbody>";
+            $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Recut Allowed Qty</th><th>Replaced Qty</th><th>Eligible to recut Qty</th><th>Recut Qty</th></tr></thead><tbody>";
         }
         // echo $getting_full_cut_details.'</br>';
         //set and reset processs
@@ -295,13 +295,13 @@ function ReplaceProcess($replace_id_edit)
                 $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id,operation_id  FROM `bai_pro3`.`rejection_log_child` rc LEFT JOIN `brandix_bts`.`tbl_orders_ops_ref` ops
                 ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $replace_id_edit and category = '$cat' group by doc_no,size_title";
                 // echo $getting_full_cut_details;
-                $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Recut Allowed Qty</th><th>Replaced Qty</th><th>Elegible to Replace</th><th>Replace Qty</th></tr></thead><tbody>";
+                $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Recut Allowed Qty</th><th>Replaced Qty</th><th>Eligible to Replace</th><th>Replace Qty</th></tr></thead><tbody>";
             }
             else
             {
                 $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id,operation_id FROM `bai_pro3`.`rejection_log_child` rc LEFT JOIN `brandix_bts`.`tbl_orders_ops_ref` ops
                 ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $replace_id_edit and category = '$cat' group by input_job_no_random_ref,assigned_module,size_title";
-                $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Recut Allowed Qty</th><th>Replaced Qty</th><th>Elegible to Replace</th><th>Replace Qty</th></tr></thead><tbody>";
+                $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Recut Allowed Qty</th><th>Replaced Qty</th><th>Eligible to Replace</th><th>Replace Qty</th></tr></thead><tbody>";
             }
             // echo $getting_full_cut_details.'</br>';
             $result_getting_full_cut_details = $link->query($getting_full_cut_details);
