@@ -21,7 +21,15 @@ if(isset($_POST['formSubmit']))
    //echo $sql;
    mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
    $url = '?r='.$_GET['r'];
-   echo "<script>sweetAlert('Successfully Approved','','success');window.location = '".$url."'</script>";
+   if($status == 1)
+   {
+        echo "<script>sweetAlert('Successfully Approved','','success');window.location = '".$url."'</script>";
+   }
+   else
+   {
+    echo "<script>sweetAlert('Material Not Available to Approve','','error');window.location = '".$url."'</script>";
+   }
+  
 }
 ?>
 <?php
