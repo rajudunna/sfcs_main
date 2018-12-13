@@ -445,9 +445,9 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 }
                     
                 if(rejections_flag){
-                    if(data.rejections_response == 1)
+                    if(data.rejections_response == '1')
                         user_msg += 'Rejections Saved Successfully';
-                    else if(data.rejections_response == 2)
+                    else if(data.rejections_response == '2')
                         user_msg += 'Rejections Saved.M3 Reporting Failed.';
                     else    
                         user_msg += 'Rejections Reporting Failed ';    

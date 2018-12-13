@@ -52,7 +52,7 @@ if($org_doc_no > 1 ){
 }
 
 //Validation for fabric status
-
+/*
 $validation_query = "SELECT cat_ref,fabric_status,category from $bai_pro3.order_cat_doc_mk_mix 
                     where doc_no=$doc_no";
 $validation_result = mysqli_query($link,$validation_query);
@@ -74,7 +74,7 @@ if(mysqli_num_rows($validation_result)>0){
     echo json_encode($response_data);
     exit();
 }
-
+*/
 
 
 //getting the target doc type 
