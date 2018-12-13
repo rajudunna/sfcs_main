@@ -4,11 +4,13 @@
 <?php
 
 $dr_id=$_POST['dr_id'];
-// echo $dr_id;die();
 $code=$_POST['time_value'];
-$start_time=$_POST['time_display'];
-$end_time=$_POST['time_display1'];
 $day_part=$_POST['day_part'];
+$start_time=$_POST['time_display'];
+if($day_part=='PM'){
+	$start_time1=$start_time+12;
+}
+$end_time=$_POST['time_display1'];
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
@@ -60,14 +62,14 @@ else
 				}
 		}else
 		{
-				$query1="select * from $bai_pro3.tbl_plant_timings  where start_time='$reason' and (time_display='$department' or day_part='$day_part')";
+				$query1="select * from $bai_pro3.tbl_plant_timings where time_value='$start_time1' and (time_display='$department' or day_part='$day_part')";
 				$sql_result1=mysqli_query($conn, $query1);
 				
 				if(mysqli_num_rows($sql_result1)>0){
 						$url=getFullURL($_GET['r'],'plant_timings_add.php','N');
 						echo"<script>setTimeout(function () { 
 							swal({
-								title: 'Reason Already Existed for this Department',
+								title: 'Plant Timings already exists',
 								text: 'Message!',
 								type: 'warning',
 								confirmButtonText: 'OK'
