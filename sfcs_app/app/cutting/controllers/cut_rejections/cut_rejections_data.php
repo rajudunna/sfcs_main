@@ -25,7 +25,7 @@ if($_GET['roll_status'] == 1){
     exit();
 }
 
-$doc_status_query  = "SELECT a_plies,p_plies,act_cut_status,org_doc_no
+$doc_status_query  = "SELECT a_plies,p_plies,act_cut_status,acutno,org_doc_no
                     from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
 $doc_status_result = mysqli_query($link,$doc_status_query);
 if(mysqli_num_rows($doc_status_result)>0){
@@ -34,6 +34,7 @@ if(mysqli_num_rows($doc_status_result)>0){
     $p_plies = $row['p_plies'];
     $act_cut_status = $row['act_cut_status'];
     $org_doc_no = $row['org_doc_no'];
+    $cut_no = $row['acutno'];
 }else{
     $response_data['error'] = '1';
     echo json_encode($response_data);
@@ -46,6 +47,7 @@ if($org_doc_no > 1 ){
     exit();
 }
 
+$acut_no = 'A00'.$cut_no;
 //getting the target doc type 
 $target_query  = "SELECT order_del_no,order_joins from $bai_pro3.bai_orders_db_confirm 
                 where order_tid = '$order_tid' and order_joins IN (1,2) limit 1";               
@@ -60,8 +62,10 @@ if(mysqli_num_rows($target_result) > 0){
 }else{
     $target_doc_type = 'normal';
 }
-if(strtolower($remarks) == 'recut')
+if(strtolower($remarks) == 'recut'){
     $target_doc_type = 'recut'; 
+    $acut_no = 'R00'.$cut_no;
+}
 
 
 
@@ -136,7 +140,7 @@ $response_data['ratio']      = $ratio;
 $response_data['size_ratio'] = $size_ratio;
 $response_data['p_plies'] = $p_plies;
 $response_data['act_cut_status'] = $act_cut_status;
-$response_data['acut_no'] = $acutno;
+$response_data['acut_no'] = $acut_no;
 $response_data['fab_status']  = $fabric_status;
 $response_data['fab_received'] = $fab_rec;
 $response_data['fab_returned'] = $fab_ret;

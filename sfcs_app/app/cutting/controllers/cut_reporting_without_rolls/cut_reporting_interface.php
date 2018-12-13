@@ -76,6 +76,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             <table class='table table-bordered' id='reported_table'>
                 <tr class='danger'>
                     <td>Docket</td>
+                    <th>Cut No</td>
                     <td>Act Cut Status</td>
                     <td>Cut Issue Status</td>
                     <td>Good Pieces</td>
@@ -91,6 +92,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 </tr>
                 <tr>
                     <td id='d_doc_no'></td>
+                    <td id='d_cut_no'></td>
                     <td id='d_cut_status'></td>
                     <td id='d_cut_issue_status'></td>
                     <td id='d_good_pieces'></td>
@@ -164,6 +166,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <th>Docket</th>
                             <th>Quantity</th>
                             <th>Cut Status</th>
+                            <th>Fab Required</th>
                             <th>Planned Plies</th>
                             <th>Reported Plies</th>
                             <th>Reporting Plies</th>
@@ -180,6 +183,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <td id='r_doc_no'></td>
                             <td id='r_doc_qty'></td>
                             <td id='r_cut_status'></td>
+                            <td id='r_fab_required'></td>
                             <td id='r_plan_plies'></td>
                             <td id='r_reported_plies'></td>
                             <!-- add validation for ret + rec + dam + short = c_plies -->
@@ -211,6 +215,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 <input type='hidden' value='' id='post_schedule'>
                 <input type='hidden' value='' id='post_style'>
                 <input type='hidden' value='' id='post_color'>
+                <input type='hidden' value='' id='fab_required'>
 
 
                 <table>
@@ -349,6 +354,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
     $('#doc_no').on('change',function(){
         doc_no = $('#doc_no').val();
+        $('#submit').css({'display':'block'});
         $('.user_msg').css({'display':'none'});
         $('#hide_details_reported').css({'display':'none'});
         $('#hide_details_reporting').css({'display':'none'});
@@ -374,7 +380,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var style       = $('#post_style').val();
         var schedule    = $('#post_schedule').val();
         var color       = $('#post_color').val();
-        
+        var fab_req     = Number($('#fab_required').val());
         //Screen Validations
         if(c_plies == 0){
             swal('Error','Please Enter Reporting Plies','error');
@@ -384,8 +390,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             swal('Warning','The Reporting Plies are more than, that are to be Reported','error');
             return false;
         }
-        if(c_plies != ret_to+rec+damages+shortages){
-            swal('Warning','The Reporting Plies doesnt equal to fabric received + fabric returned + shortages + damages','error');
+        if(fab_req != ret_to+rec+damages+shortages){
+            swal('Warning','The Reporting Fabric must not be greater than received + fabric returned + shortages + damages','error');
             return false;
         }
 
@@ -414,7 +420,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 return swal('Please Fill Rejections','','error');
         }
         //Rejections Validation End
-
+        $('#submit').css({'display':'none'});
         var user_msg = '';
         var form_data = {
                         doc_no:post_doc_no,c_plies:c_plies,fab_returned:ret,
@@ -496,6 +502,12 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         total_rejected_pieces = 0;
         ret = 0; 
         rejections_flag = 0;
+        $('#save_rejection').css({'display':'block'});
+        $('#d_style').html('');
+        $('#d_schedule').html('');
+        $('#d_color').html('');
+        $('#d_doc_type').html('');
+        $('#d_cut_no').html('');
         $('#rejections_table_body').empty();
         $('#rejection_pieces').attr({'readonly':false});
         $('#c_plies').attr({'readonly':false});
@@ -671,7 +683,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         else{
             rejections_flag = 1;
             swal('Ok! Saved Temporarily','','success');
-            $('#rejections_modal').modal('toggle');
+            //$('#rejections_modal').modal('toggle');
+            $('#save_rejection').css({'display':'none'});
         }    
     });
     //Rejection Panel Code Ends
@@ -720,10 +733,15 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#doc_target_type').val(data.doc_target_type);
             $('#ratio').val(data.ratio);
 
+            $('#fab_required').val(data.fab_required);
+            $('#r_fab_required').html(data.fab_required);
+
+
             //doc type
             $('#d_doc_type').html(data.doc_target_type+' Docket');
             //setting values for display table    
             $('#d_doc_no').html(doc_no);
+            $('#d_cut_no').html(data.acut_no);
             $('#d_cut_status').html(data.act_cut_status);
             $('#d_cut_issue_status').html(data.fab_status);
             $('#d_good_pieces').html(data.good_pieces);
@@ -737,13 +755,12 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#d_damages').html(data.damages);
             $('#d_shortages').html(data.shortages);
             $('#r_doc_qty').html(data.doc_qty);
-
             //setting values for reporting table
             $('#r_doc_no').html(doc_no);
             $('#r_cut_status').html(data.act_cut_status);
             $('#r_plan_plies').html(data.p_plies);
             $('#r_reported_plies').html(data.a_plies);
-            
+           
             //setting value to style,schedule,color
             $('#d_style').html(data.styles);
             $('#d_schedule').html(data.schedules);
@@ -752,6 +769,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#post_style').val(data.styles);
             $('#post_schedule').val(data.schedules);
             $('#post_color').val(data.colors);
+            
         }).fail(function(){
             swal('Network Error while getting Details','','error');
             return;

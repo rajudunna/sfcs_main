@@ -2,7 +2,6 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 error_reporting(0);
 
-
 $response_data = array();
 $op_code = 15;
 
@@ -30,12 +29,12 @@ if(mysqli_num_rows($doc_status_result)>0){
     $a_plies = $row['a_plies'];
     $p_plies = $row['p_plies'];
     $act_cut_status = $row['act_cut_status'];
-    $acutno = $row['acutno'];
     $fabric_status = $row['fabric_status'];
     $order_tid = $row['order_tid'];
     $org_doc_no = $row['org_doc_no'];
     $ratio   = $row['ratio'];
     $remarks = $row['remarks'];
+    $cut_no  = $row['acutno'];
     $doc_qty =  $p_plies * $ratio;
     if($fabric_status == 5)
         $fabric_status = 'Issued To Cutting';
@@ -53,14 +52,14 @@ if($org_doc_no > 1 ){
 
 //Validation for fabric status
 
-$validation_query = "SELECT cat_ref,fabric_status,category from $bai_pro3.order_cat_doc_mk_mix 
+$validation_query = "SELECT cat_ref,fabric_status,category,material_req from $bai_pro3.order_cat_doc_mk_mix 
                     where doc_no=$doc_no";
 $validation_result = mysqli_query($link,$validation_query);
 if(mysqli_num_rows($validation_result)>0){
     $row = mysqli_fetch_array($validation_result);
     $cat_ref  = $row['cat_ref'];
     $category = strtolower($row['category']);
-   
+    $fab_required = $row['material_req'];
     if(in_array($category,$fabric_categories_array) && $cat_ref > 0)
         $response_data['can_report']   = 1;
     else{    
@@ -76,7 +75,7 @@ if(mysqli_num_rows($validation_result)>0){
 }
 
 
-
+$acut_no = 'A00'.$cut_no;
 //getting the target doc type 
 $target_query  = "SELECT order_del_no,order_joins from $bai_pro3.bai_orders_db_confirm 
                 where order_tid = '$order_tid' and order_joins IN (1,2) limit 1";               
@@ -91,8 +90,10 @@ if(mysqli_num_rows($target_result) > 0){
 }else{
     $target_doc_type = 'normal';
 }
-if(strtolower($remarks) == 'recut')
+if(strtolower($remarks) == 'recut'){
     $target_doc_type = 'recut'; 
+    $acut_no = 'R00'.$cut_no;
+}
 
 //if clubbed docket then getting all child dockets
 $child_docs_query = "SELECT GROUP_CONCAT(doc_no) as doc_no 
@@ -158,12 +159,13 @@ if($a_plies != $p_plies && $act_cut_status == 'DONE'){
 }
 
 $response_data['doc_no'] = $doc_no;
+$response_data['fab_required'] = $fab_required; 
 $response_data['doc_qty'] = $doc_qty;
 $response_data['ratio']      = $ratio;
 $response_data['size_ratio'] = $size_ratio;
 $response_data['p_plies'] = $p_plies;
 $response_data['act_cut_status'] = $act_cut_status;
-$response_data['acut_no'] = $acutno;
+$response_data['acut_no'] = $acut_no;
 $response_data['fab_status']  = $fabric_status;
 $response_data['fab_received'] = $fab_rec;
 $response_data['fab_returned'] = $fab_ret;
@@ -172,7 +174,8 @@ $response_data['damages']   = $damages;
 $response_data['shift']     = $shift;
 $response_data['section']   = $section;
 $response_data['date']      = $date;
-$response_data['doc_target_type']      = $target_doc_type;
+$response_data['doc_target_type'] = $target_doc_type;
+
 
 echo json_encode($response_data);
 

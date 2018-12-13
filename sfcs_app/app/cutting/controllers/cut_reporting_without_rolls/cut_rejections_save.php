@@ -16,7 +16,7 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color){
     $date_time = date('Y-m-d H:i:s');
     $time = date('H:i:s');
     $update_counter = 0;
-    
+    $remarks = 'CUT-'.$shift.'-P';
     $rejection_log_query = "INSERT into $bai_pro3.rejections_log 
             (style,SCHEDULE,color,rejected_qty,replaced_qty,recut_qty,remaining_qty,status) 
             values ('$style','$schedule','$color',0,0,0,0,'P')";
@@ -36,7 +36,7 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color){
             $m3_reasons[$size] = $m3_code; //THE $m3_reasons,$m3_qtys are for passing to m3 updations function
             $m3_qtys[$size] = $qty;
 
-            $reason_qty_string = $qms_code.'-'.$qty.'$';
+            $reason_qty_string = $reason_qty_string.''.$qms_code.'-'.$qty.'$';
         }
         $total_rej += $total_sum;
         $qms_ref1[$size] = $reason_qty_string; //qms ref1 sie wise into an array 
@@ -78,7 +78,7 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color){
             $qms_insert_query = "INSERT INTO $bai_pro3.bai_qms_db 
             (qms_style,qms_schedule,qms_color,qms_remarks,bundle_no,log_user,log_date,log_time,issued_by,qms_size,qms_qty,qms_tran_type,remarks,ref1,doc_no,location_id,input_job_no,operation_id)
             values
-            ('$style','$schedule','$color','remarks',$bno,$username,$date,$time,$username,$size,$qty,3,'remarks',
+            ('$style','$schedule','$color','remarks',$bno,'$username','$date','$time','$username','$size',$qty,3,'$remarks',
              '$ref1',$doc_no,'','',$op_code)";
             mysqli_query($link,$qms_insert_query);  
             
