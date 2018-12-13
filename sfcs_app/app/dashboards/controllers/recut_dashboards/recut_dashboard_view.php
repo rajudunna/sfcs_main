@@ -146,9 +146,9 @@
                             $bundle_number_recut = $row_bcd_recut['bundle_number'];
                         }
                         //retreaving mo_number which is related to that bcd_act_id
-                        $moq_qry = "select mo_no,bundle_quantity,rejected_qty from $bai_pro3.mo_operation_quantities where ref_no=$bundle_number and op_code=$operation_id and rejected_qty>0 order by mo_no";
+                        $moq_qry = "SELECT mo_no,bundle_quantity,`rejected_quantity` FROM bai_pro3.`mo_operation_quantites` WHERE ref_no=$bundle_number AND op_code=$operation_id AND `rejected_quantity`>0 ORDER BY mo_no";
                         echo $moq_qry.'</br>';
-                        die();
+                        // die();
                         $moq_qry_res = $link->query($moq_qry);
                         $multiple_mos_tot_qty = $to_add;
                         while($row_moq = $moq_qry_res->fetch_assoc()) 
