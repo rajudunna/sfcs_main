@@ -372,6 +372,7 @@ if(isset($_GET['recut_doc_id']))
 function getDocketDetails($recut_doc_id)
 {
     include("../../../../common/config/config_ajax.php");
+    $html = '';
     $get_details_qry = "SELECT DISTINCT category FROM `bai_pro3`.`recut_v2_child` rc LEFT JOIN `brandix_bts`.`tbl_orders_ops_ref` ops
     ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_doc_id order by category";
     $result_get_details_qry = $link->query($get_details_qry);
