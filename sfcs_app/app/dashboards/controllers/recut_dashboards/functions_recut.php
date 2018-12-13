@@ -350,9 +350,9 @@ function ReplaceProcess($replace_id_edit)
             $table_data .= "</tr></tbody></table>";
             $html .= $table_data;
             $html .= '</div></div></div>';
-            $html .= '
-            <div class="pull-right"><input type="submit" id="replace" class="btn btn-primary" value="Submit" name="formSubmit1"></div>';
         }
+        $html .= '
+        <div class="pull-right"><input type="submit" id="replace" class="btn btn-primary" value="Submit" name="formSubmit1"></div>';
     }
     else
     {

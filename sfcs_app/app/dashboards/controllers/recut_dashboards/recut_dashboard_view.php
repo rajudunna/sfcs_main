@@ -582,8 +582,11 @@ function validationreplace()
     var flag = 0;
     for(var i=1; i<=total_rows;i++)
     {
+        console.log(value);
+        console.log(document.getElementById(i).value);
         value = value + Number(document.getElementById(i).value);
     }
+    console.log("Hi"+value);
     if(value == 0)
     {
         swal('At Least one size should have the replace value.','','error');
