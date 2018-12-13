@@ -226,8 +226,8 @@ if($target == 'schedule_clubbed'){
                     remarks=CONCAT(remarks,'$','$remarks'),
                     log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader' ";
     
-    $update_query = "UPDATE $bai_pro3.plandoc_stat_log set a_plies = a_plies + $plies,act_cut_status='DONE',
-                    fabric_status=5 where doc_no = $doc_no ";
+    $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
+                    act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
     $insert_result = mysqli_query($link,$insert_query) or exit('Query Error Cut 1');   
     
     mysqli_begin_transaction($link);
@@ -324,8 +324,8 @@ if($target == 'style_clubbed'){
                     remarks=CONCAT(remarks,'$','$remarks'),
                     log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader' ";
 
-    $update_query = "UPDATE $bai_pro3.plandoc_stat_log set a_plies = a_plies + $plies,act_cut_status='DONE',
-                    fabric_status=5 where doc_no = $doc_no ";
+    $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
+                    act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
     $insert_result = mysqli_query($link,$insert_query) or exit('Query Error Cut 1');   
 
     mysqli_begin_transaction($link);
@@ -371,14 +371,6 @@ if($target == 'style_clubbed'){
         }
     }
 
-    //getting all child dockets
-    $child_docs_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log psl  
-                        LEFT JOIN $bai_pro3.cat_stat_log csl ON csl.tid = psl.cat_ref
-                        where org_doc_no = '$doc_no' and category IN ($in_categories)";
-    $child_docs_result = mysqli_query($link,$child_docs_query);
-    while($row = mysqli_fetch_array($child_docs_result)){
-        $child_docs[] = $row['doc_no'];
-    }
 
     //for each child docket calculating a_s01,a_s02,..
     foreach($child_docs as $child_doc){
@@ -397,13 +389,21 @@ if($target == 'style_clubbed'){
         }
     }
 
-
     //Initial Equal distribution for all dockets
+    $rem = 0;
+   
     foreach($planned as $size => $docket){
         $qty = $reporting[$size];
         $docs = $dockets[$size];
         $splitted = $qty;
+        $quit_counter = 0;
         do{
+            $quit_counter++;
+            if($quit_counter > 50){
+                $response_data['pass'] = 0;
+                exit();
+            }
+                
             if(ceil($splitted % $docs) > 0)
                 $splitted--;
         }while($splitted % $docs > 0);
@@ -424,7 +424,13 @@ if($target == 'style_clubbed'){
 
     //Equal Filling Logic for all child dockets 
     foreach($planned as $size => $plan){
+        $quit_counter = 0;
         do{
+            $quit_counter++;
+            if($quit_counter > 50){
+                $response_data['pass'] = 0;
+                exit();
+            }
             $fulfill_qty = $reporting[$size];
             $counter = 0;
             foreach($plan as $docket => $qty){
@@ -471,7 +477,13 @@ if($target == 'style_clubbed'){
     foreach($left_over as $size=>$qty){
         $docs = $docs_count[$size];
         $splitted = $qty;
+        $quit_counter = 0;
         do{
+            $quit_counter++;
+            if($quit_counter > 50){
+                $response_data['pass'] = 0;
+                exit();
+            }
             if(ceil($splitted % $docs) > 0)
                 $splitted--;
         }while($splitted % $docs > 0);
