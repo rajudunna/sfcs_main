@@ -1,5 +1,6 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+error_reporting(0);
 if(isset($_POST['formSubmit']))
 {
    $order_tid=$_POST['order_tid'];
@@ -126,6 +127,7 @@ $(document).ready(function()
 function viewrecutdetails(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
+    $('#myModal').modal('toggle');
     $.ajax({
 
 			type: "POST",
@@ -134,7 +136,6 @@ function viewrecutdetails(id)
 			success: function (response) 
 			{
                 document.getElementById('main-content').innerHTML = response;
-                $('#myModal').modal('toggle');
             }
 
     });
