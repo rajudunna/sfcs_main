@@ -332,7 +332,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$path="sfcs_app/app/cutting/controllers/lay_plan_preparation/Book3_print.php";
 	
 
-	$tab= "<tr><td><a href=\"$path&order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."\" onclick=\"Popup1=window.open('$path&order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class=\"btn btn-warning btn-xs\"><i class='fa fa-print'></i>".$sql_row1['doc_no']."</td>";
+	$tab= "<tr><td><a href=\"$path?order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."\" onclick=\"Popup1=window.open('$path?order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class=\"btn btn-warning btn-xs\"><i class='fa fa-print'></i>".$sql_row1['doc_no']."</td>";
 	
 	$tab.= "<td>$buyer_code</td>";
 	$tab.= "<td>$print_date</td>";
