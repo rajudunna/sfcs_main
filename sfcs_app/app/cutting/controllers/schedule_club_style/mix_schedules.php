@@ -577,7 +577,7 @@ if(isset($_POST['fix']))
 		}																								
 		else
 		{
-			echo "<script>swal('You cannot proceed Schedule Clubbing.','Some of components are equal fro selected Items.','warning');</script>";
+			echo "<script>swal('You cannot proceed Schedule Clubbing.','Some of the Item codes are not equal for selected Schedules.','warning');</script>";
 			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");
 		}
 	}

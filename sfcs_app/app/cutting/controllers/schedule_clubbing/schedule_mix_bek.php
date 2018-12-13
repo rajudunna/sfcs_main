@@ -628,7 +628,7 @@ if(isset($_POST['fix']))
 		else
 		{ 
 			echo "<script type=\"text/javascript\"> 
-						sweetAlert('You cannot proceed Schedule Clubbing.','Some of Item Code are equal fro selected Items.','warning');
+						sweetAlert('You cannot proceed Schedule Clubbing.','Some of the Item Codes are not equal for selected colors.','warning');
 					</script>"; 
 			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N')."&style=$style&schedule=$schedule';</script>");		
 		}
