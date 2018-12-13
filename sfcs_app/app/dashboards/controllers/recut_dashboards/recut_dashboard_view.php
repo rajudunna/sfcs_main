@@ -148,6 +148,7 @@
                         //retreaving mo_number which is related to that bcd_act_id
                         $moq_qry = "select mo_no,bundle_quantity,rejected_qty from $bai_pro3.mo_operation_quantities where ref_no=$bundle_number and op_code=$operation_id and rejected_qty>0 order by mo_no";
                         echo $moq_qry.'</br>';
+                        die();
                         $moq_qry_res = $link->query($moq_qry);
                         $multiple_mos_tot_qty = $to_add;
                         while($row_moq = $moq_qry_res->fetch_assoc()) 
