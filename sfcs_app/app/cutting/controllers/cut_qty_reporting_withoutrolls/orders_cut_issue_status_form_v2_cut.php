@@ -33,7 +33,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			echo "<tr class='danger'>";
 			echo "<th>Doc ID</th><th>Cut No</th>";
 			$sql="select * from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 
@@ -43,7 +42,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				$doc_acutno=$sql_row['acutno'];
 				$a_plies=$sql_row['p_plies'];
 				$sql34="SELECT material_req FROM $bai_pro3.order_cat_doc_mk_mix WHERE doc_no='".$doc_no."'";
-				//mysql_query($sql33,$link) or exit("Sql Error".mysql_error());
 				$sql_result34=mysqli_query($link, $sql34) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row34=mysqli_fetch_array($sql_result34))
 				{
@@ -58,8 +56,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				$print_status=$sql_row['print_status'];
 				$plies=$sql_row['a_plies'];
 				
-				$sql33="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
-				mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql33="select color_code from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
 				$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row33=mysqli_fetch_array($sql_result33))
 				{
@@ -113,7 +110,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			echo "</table></div>";
 
 			$sql="select mklength from $bai_pro3.maker_stat_log where tid=$maker_ref";
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 

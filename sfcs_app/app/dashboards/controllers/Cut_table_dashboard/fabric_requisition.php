@@ -1,17 +1,6 @@
-<!--
-Changes Log:
-
-2014-07-09/ Dharanid /service request #159184 / Add the balasubramanyams,lakshmik,ramalingeswararaoa user names at $users array
-2014-09-06 / dharnid/ service request #800666 : baisec1 user access to kanakalakshmi(baicutsec1).
-
-2014-12-22 / RameshK / Service Request# 354829 / Changed the logic for calculating the difference between two times.
--->
 
 <?php
-// include($_SERVER['DOCUMENT_ROOT']."server/user_acl_v1.php");
-// include($_SERVER['DOCUMENT_ROOT']."server/group_def.php");
-// $view_access=user_acl("SFCS_0208",$username,1,$group_id_sfcs);
-// $users=user_acl("SFCS_0208",$username,43,$group_id_sfcs);
+
 include($_SERVER['DOCUMENT_ROOT'].'template/helper.php');
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
@@ -24,9 +13,6 @@ $has_permission=haspermission($url_r);
 ?>
 <?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-	// $username="sfcsproject1";
-	// $users=array("sfcsproject1","rameshk","kirang","duminduw","rajanaa","chandrasekhard","prabathsa","baiadmn","naleenn","priyankat","balasubramanyams","lakshmik","ramalingeswararaoa","baicutsec1","tharangam");
-	//$mods=array();
 	$query = "select * from $bai_pro3.tbl_fabric_request_time";
 	$update_request_time=mysqli_query($link, $query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($update_request_time)){

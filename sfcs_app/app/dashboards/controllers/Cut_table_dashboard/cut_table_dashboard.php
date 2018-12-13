@@ -861,7 +861,6 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       
       
       $sql11="select sum(ims_pro_qty) as 'bac_qty', sum(emb) as 'emb_sum' from (SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as 'emb' FROM $bai_pro3.ims_log where ims_log.ims_doc_no=$doc_no UNION ALL SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as 'emb' FROM $bai_pro3.ims_log_backup WHERE ims_log_backup.ims_mod_no<>0 and ims_log_backup.ims_doc_no=$doc_no) as t";
-      mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
       
       $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
       $input_count=mysqli_num_rows($sql_result11);
@@ -1095,7 +1094,6 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       
     //getting allocated qty;
       $sql_fabcadallow="SELECT COALESCE(SUM(allocated_qty),0) as allocated_qty FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no=$doc_no";
-      mysqli_query($link, $sql_fabcadallow) or exit("Sql Error fab cad".mysqli_error($GLOBALS["___mysqli_ston"]));
       $sql_fabcadallow_result=mysqli_query($link, $sql_fabcadallow) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
       $sql_num_check=mysqli_num_rows($sql_fabcadallow_result);
       while($sql_fabcadallow_row=mysqli_fetch_array($sql_fabcadallow_result))

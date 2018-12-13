@@ -151,7 +151,6 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     */
     $dockets_cqty_result        = mysqli_query($link,$dockets_cqty_query);
     $dockets_qty_job_qty_result = mysqli_query($link,$dockets_qty_job_qty_query);
-   
     //$partial_dockets_result = mysqli_query($link,$partial_dockets_query) or exit($data.='Problem in c-partial docs');
     //$nfull_dockets_result   = mysqli_query($link,$nfull_dockets_query)   or exit($data.='Problem in empty dockets');
 
@@ -164,7 +163,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             $break_me_at = 10; 
         else 
             $break_me_at = 6;       
-    $jobs = array();
+
         while($row = mysqli_fetch_assoc($dockets_result)){     
             $style   = $row['style']; 
             $schedule= $row['schedule'];
@@ -193,9 +192,8 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             $job_qty_result = mysqli_query($link,$job_qty_query);
             $jrow = mysqli_fetch_array($job_qty_result);
             */
-            $jobs1 = implode(',',$jobs);
             $job_qty_query = "SELECT SUM(carton_act_qty) as job_qty from $bai_pro3.pac_stat_log_input_job 
-                            where input_job_no_random IN ($jobs1)";              
+                            where input_job_no_random IN ($jobs)";              
             $job_qty_result = mysqli_query($link,$job_qty_query);  
             
             $cut_qty_query = "SELECT SUM(cut_quantity) as cut_qty,SUM(remaining_qty) as rem_qty from $bai_pro3.cps_log 
