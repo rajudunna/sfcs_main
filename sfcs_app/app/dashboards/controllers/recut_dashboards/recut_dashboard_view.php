@@ -2,6 +2,7 @@
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     if(isset($_POST['formSubmit']))
     {
+        include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
         $ids=$_POST['ids'];
         $recutval = $_POST['recutval'];
         $cat = $_POST['cat'];
@@ -686,18 +687,18 @@ function validationreplace()
         }
     }
     console.log(flag);
-    if(flag == 0)
-    {
+    // if(flag == 0)
+    // {
         console.log("working");
         $('#pre').hide();
         $('#post').show();
         
-    }
+   // }
     return true;
-    // else
-    // {
-    //     return false;
-    // }
+    // // else
+    // // {
+    // //     return false;
+    // // }
 }
 function validationreplaceindividual(id)
 {
@@ -824,8 +825,8 @@ function validationfunction()
    {
        //return false;
    }
-//    else
-//    {
+    //    else
+    //    {
        $('#pre_pre').hide();
        $('#post_post').show();
        return true;
