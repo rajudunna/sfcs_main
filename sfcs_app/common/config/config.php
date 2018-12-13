@@ -25,10 +25,12 @@ $ms_sql_odbc_pass = $conf1->get('mssql-password');
 //MY SQL host
 $ms_sql_odbc_host = $conf1->get('mysql-odbc');
 //ms-sql sticker_report
-$host_ms = "10.227.221.25";
-$user_ms = "BAISFCS";
-$password_ms = "fcs@m3pr";
-$conn_string = "DRIVER={iSeries Access ODBC Driver};System=10.227.40.10;Uid=".$user_ms.";Pwd=".$password_ms.";";
+$host_ms = $conf1->get('m3_system_id');
+$user_ms = $conf1->get('m3_user_name');
+$password_ms = $conf1->get('m3_password');
+$m3_db = $conf1->get('m3_db');
+$conn_string = "DRIVER={iSeries Access ODBC Driver};System=".$host_ms.";Uid=".$user_ms.";Pwd=".$password_ms.";";
+//echo $conn_string;
 //M3 MSSQL DB Configurations
 $m3_mssql_odbc_name="bcimovsms01_bai";
 $m3_mssql_username="brandix_india_user1";
@@ -91,6 +93,9 @@ $ims_boxes_count =  $conf1->get('ims_boxes');
 // 	//$_SESSION['intra_user_name']=$username;
 // }
 //LDAP CODE ENDS***
+
+//For Logo Path
+$logo = '/sfcs_app/common/images/logo.png';
 
 //Auto Close Exempted Pages
 $autoclose_page_exempted=array("baiadmn","baisysadmin","baiictadmin","baischtasksvc","sfcsproject1");

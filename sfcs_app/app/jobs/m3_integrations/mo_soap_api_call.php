@@ -2,7 +2,7 @@
 /*
 	=========== Create By Chandu =============
 	Created at : 08-09-2018
-	Updated at : 10-09-2018
+	Updated at : 11-09-2018
 	Input : Call SOAP URL.
 	Output : Save the response in mo_details,order_details&shipment_plan tables in m3_inputs database.
 */
@@ -16,7 +16,7 @@ set_time_limit(6000000);
 	//var_dump($link);
 	$headerbody = array("user"=>$api_username,"password"=>$api_password,"company"=>$company_no);
 	$header = new SOAPHeader("http://lawson.com/ws/credentials", "lws", $headerbody);
-	$soap_client = new SoapClient( $api_hostname.":".$api_port_no."/lws-ws/lwsprd/SFCS?wsdl",array("login" => $api_username,"password" => $api_password));
+	$soap_client = new SoapClient( $api_hostname.":".$api_port_no."/lws-ws/".$mo_soap_api."/SFCS?wsdl",array("login" => $api_username,"password" => $api_password));
 	$soap_client->__setSoapHeaders($header);
 	try{
 		$to = date('Ymd',  strtotime('+3 month'));
@@ -52,14 +52,27 @@ set_time_limit(6000000);
 			// 	echo "<td>".$value->COPLANDELDATE."</td>";
 			// 	echo "<td>".$value->COREQUESTEDDELDATE."</td>";
 			// echo "</tr>";
-			$ins_qry = "
-			INSERT IGNORE INTO $m3_inputs.mo_details
-            (`MONUMBER`, `MOQTY`, `STARTDATE`, `VPO`, `COLORNAME`, `COLOURDESC`, `SIZENAME`, `SIZEDESC`, `ZNAME`, `ZDESC`, `SCHEDULE`, `STYLE`, `PRODUCT`, `PRDNAME`, `PRDDESC`, `REFERENCEORDER`, `REFORDLINE`, `MOSTS`, `MAXOPERATIONSTS`, `COPLANDELDATE`, `COREQUESTEDDELDATE`) VALUES ('".$value->MONUMBER."','".$value->MOQTY."','".date('Y-m-d',strtotime($value->STARTDATE))."','".$value->VPO."','".$value->COLORNAME."','".$value->COLOURDESC."','".$value->SIZENAME."','".$value->SIZEDESC."','".$value->ZNAME."','".$value->ZDESC."','".$value->SCHEDULE."','".$value->STYLE."','".$value->PRODUCT."','".$value->PRDNAME."','".$value->PRDDESC."','".$value->REFERENCEORDER."','".$value->REFORDLINE."','".$value->MOSTS."','".$value->MAXOPERATIONSTS."','".date('Y-m-d',strtotime($value->COPLANDELDATE))."','".date('Y-m-d',strtotime($value->COREQUESTEDDELDATE))."')";
-			$ins_qry1 = "INSERT IGNORE INTO $bai_pro3.mo_details(`date_time`, `mo_no`, `mo_quantity`, `style`, `schedule`, `color`, `size`, `destination`, `zfeature`, `item_code`, `ops_master_status`, `product_sku`) VALUES ('".date('Y-m-d H:i:s')."','".$value->MONUMBER."','".$value->MOQTY."','".$value->STYLE."','".$value->SCHEDULE."','".$value->COLOURDESC."','".$value->SIZENAME."','','".$value->ZNAME."','','','".$value->PRODUCT."')";
-			$result = mysqli_query($link, $ins_qry) or exit("Sql Error Insert m3_inputs.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$result1 = mysqli_query($link, $ins_qry1) or exit("Sql Error Insert bai_pro3.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if($result){
-				//$new_ids[] = mysqli_insert_id($link);
+			$basic_auth = base64_encode($api_username.':'.$api_password);
+			$rest_call = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO='.$company_no.'&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE,$basic_auth);
+			
+            if($rest_call['status'] && isset($rest_call['response']['ITNO']) && $rest_call['response']['ITNO']!=''){
+				$get_buyer_details = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$company_no.'&ITNO='.urlencode($rest_call['response']['ITNO']),$basic_auth);
+				$last_buyer_details = ['status'=>false];
+				if($get_buyer_details['status'] && isset($get_buyer_details['response']['BUAR']) && $get_buyer_details['response']['BUAR']!=''){
+					$last_buyer_details = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/CRS036MI/LstBusinessArea?CONO='.$company_no.'&FRBU='.$get_buyer_details['response']['BUAR'].'&TOBU='.$get_buyer_details['response']['BUAR'],$basic_auth);
+				}
+				if($last_buyer_details['status'] && isset($last_buyer_details['response']['TX40']) && $last_buyer_details['response']['TX40']!=''){
+					$ins_qry = "
+					INSERT IGNORE INTO `m3_inputs`.`mo_details` 
+					(`MONUMBER`, `MOQTY`, `STARTDATE`, `VPO`, `COLORNAME`, `COLOURDESC`, `SIZENAME`, `SIZEDESC`, `ZNAME`, `ZDESC`, `SCHEDULE`, `STYLE`, `PRODUCT`, `PRDNAME`, `PRDDESC`, `REFERENCEORDER`, `REFORDLINE`, `MOSTS`, `MAXOPERATIONSTS`, `COPLANDELDATE`, `COREQUESTEDDELDATE`,`packing_method`,`destination`,`cpo`,`buyer_id`) VALUES ('".$value->MONUMBER."','".$value->MOQTY."','".date('Y-m-d',strtotime($value->STARTDATE))."','".$value->VPO."','".$value->COLORNAME."','".$value->COLOURDESC."','".$value->SIZENAME."','".$value->SIZEDESC."','".$value->ZNAME."','".$value->ZDESC."','".$value->SCHEDULE."','".$value->STYLE."','".$value->PRODUCT."','".$value->PRDNAME."','".$value->PRDDESC."','".$value->REFERENCEORDER."','".$value->REFORDLINE."','".$value->MOSTS."','".$value->MAXOPERATIONSTS."','".date('Y-m-d',strtotime($value->COPLANDELDATE))."','".date('Y-m-d',strtotime($value->COREQUESTEDDELDATE))."','".$rest_call['response']['TEPA']."','".$rest_call['response']['ADID']."','".$rest_call['response']['CUOR']."','".$last_buyer_details['response']['TX40']."')";
+					
+					$ins_qry1 = "INSERT IGNORE INTO bai_pro3.`mo_details`(`date_time`, `mo_no`, `mo_quantity`, `style`, `schedule`, `color`, `size`, `destination`, `zfeature`, `item_code`, `ops_master_status`, `product_sku`,packing_method,cpo,buyer_id,material_master_status,shipment_master_status) VALUES ('".date('Y-m-d H:i:s')."','".$value->MONUMBER."','".$value->MOQTY."','".$value->STYLE."','".$value->SCHEDULE."','".$value->COLOURDESC."','".$value->SIZENAME."','".$rest_call['response']['ADID']."','".$value->ZNAME."','','','".$value->PRODUCT."','".$rest_call['response']['TEPA']."','".$rest_call['response']['CUOR']."','".$last_buyer_details['response']['TX40']."',0,0)";
+					$result = mysqli_query($link, $ins_qry) or exit("Sql Error Insert m3_inputs.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$result1 = mysqli_query($link, $ins_qry1) or exit("Sql Error Insert bai_pro3.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+					if($result){
+						//$new_ids[] = mysqli_insert_id($link);
+					}
+				}
 			}
 		}
 		echo "</table>";
@@ -79,6 +92,29 @@ set_time_limit(6000000);
 	}
 	catch(Exception $e){
 		var_dump($e->getMessage());
+	}
+
+	function getCurlAuthRequestLocal($url,$basic_auth){
+		$include_path=getenv('config_job_path');
+		include_once($include_path.'\sfcs_app\common\config\rest_api_calls.php'); 
+		$obj1 = new rest_api_calls();
+		try{ 
+			$val = $obj1->getCurlAuthRequest($url);  
+			$response = json_decode($val,true);
+			$res = [];
+			if(count($response)>0 && isset($response['MIRecord'][0]['NameValue']) && count($response['MIRecord'][0]['NameValue'])>0){
+				foreach($response['MIRecord'][0]['NameValue'] as $fields){
+					$res[$fields['Name']] = $fields['Value'];
+				}
+				return ['status'=>true,'response'=>$res];
+			}else{
+				return ['status'=>false,'response'=>'No data found.'];
+			}
+			
+		}catch(Exception $err){
+			return ['status'=>false,'response'=>'Error: '.$err];
+		}
+		
 	}
 ?>
 

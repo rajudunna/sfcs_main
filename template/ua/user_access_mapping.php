@@ -42,7 +42,7 @@ include('../dbconf.php');
                     <div class="col-md-5">
                         
                         <label>Menu Name:</label>
-                        <select class="form-control" name='menu' id='menu'>
+                        <select class="form-control" name='menu[]' id='menu'>
 
                             <option value="">Select Menu Name</option>
 

@@ -667,8 +667,9 @@ else if($concurrent_flag == 0)
 		//exit('force quitting');
 		//inserting into bai_log and bai_log buff
 			$sizevalue="size_".$size_id;
-			$sections_qry="select sec_id,sec_head FROM $bai_pro3.sections_db WHERE sec_id>0 AND  sec_mods LIKE '%,".$b_module[$key].",%' OR  sec_mods LIKE '%,".$b_module[$key]."' OR  sec_mods LIKE '".$b_module[$key].",%' LIMIT 0,1";
+			//$sections_qry="select sec_id,sec_head FROM $bai_pro3.sections_db WHERE sec_id>0 AND  sec_mods LIKE '%,".$b_module[$key].",%' OR  sec_mods LIKE '%,".$b_module[$key]."' OR  sec_mods LIKE '".$b_module[$key].",%' LIMIT 0,1";
 			//echo $sections_qry;
+			$sections_qry="SELECT section AS sec_id FROM `bai_pro3`.`module_master` WHERE module_name = '$b_module[$key]'";
 			$sections_qry_result=mysqli_query($link,$sections_qry) or exit("Bundles Query Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($buyer_qry_row=mysqli_fetch_array($sections_qry_result)){
 					$sec_head=$buyer_qry_row['sec_id'];
@@ -681,21 +682,20 @@ else if($concurrent_flag == 0)
 			while($buyer_qry_row=mysqli_fetch_array($buyer_qry_result)){
 					$buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
 				}
-			$qry_nop="select avail_A,avail_B FROM $bai_pro.pro_atten WHERE module=".$b_module[$key]." AND date='$bac_dat'";
-				$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($nop_qry_row=mysqli_fetch_array($qry_nop_result)){
-						$avail_A=$nop_qry_row['avail_A'];
-						$avail_B=$nop_qry_row['avail_B'];
-				}
-				if(mysqli_num_rows($qry_nop_result)>0){
-					if($row['shift']=='A'){
-						$nop=$avail_A;
-					}else{
-						$nop=$avail_B;
-					}
-				}else{
-					$nop=0;
-				}
+			$qry_nop="select((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance WHERE module=".$b_module[$key]." and date='".$bac_dat."' and shift='".$b_shift."'";
+			$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
+			{
+				$avail=$nop_qry_row['nop'];
+			}
+			if(mysqli_num_rows($qry_nop_result)>0)
+			{
+				$nop=$avail;
+			}
+			else
+			{
+				$nop=0;
+			}
 			$b_rep_qty_ins = '-'.$reversalval[$key];
 			$bundle_op_id=$b_tid."-".$b_op_id."-".$b_inp_job_ref;
 			$appilication_out = 'IMS_OUT';

@@ -1,4 +1,4 @@
-z<?php 
+<?php 
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
@@ -27,35 +27,43 @@ while($sql_row=mysqli_fetch_array($result))
 			//getting m3_smv from schedule_oprations_master
 			$ops_code = $select_default_operations_row['operation_code'];
 			$is_m3 = $select_default_operations_row['default_operration'];
-			if($is_m3 == 'Yes')
+			$qty_to_fetch_m3 = "SELECT * FROM `$bai_pro3`.`schedule_oprations_master` WHERE style = '$style' AND Description='$color'";
+			$select_qty_to_fetch_m3=mysqli_query($link, $qty_to_fetch_m3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($select_qty_to_fetch_m3)==0)
 			{
-				$qty_to_fetch_m3_smv = "SELECT * FROM `$bai_pro3`.`schedule_oprations_master` WHERE style = '$style' AND Description='$color' AND OperationNumber = '$ops_code' LIMIT 0,1";
-				$select_qty_to_fetch_m3_smv=mysqli_query($link, $qty_to_fetch_m3_smv) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if(mysqli_num_rows($select_qty_to_fetch_m3_smv)==0)
-				{
-					//$m3_smv = '0.00';
-				}
-				else
-				{
-					while($select_qty_to_fetch_m3_smv_row=mysqli_fetch_array($select_qty_to_fetch_m3_smv))
-					{
-						$m3_smv = $select_qty_to_fetch_m3_smv_row['SMV'];
-						$main_ops_code = $select_qty_to_fetch_m3_smv_row['Main_OperationNumber'];
-					}
-					$tbl_style_ops_master_insert="insert ignore $brandix_bts.tbl_style_ops_master(parent_id,operation_name,operation_order,style,color, operation_code,default_operration,ops_sequence,barcode,ops_dependency,smv,m3_smv,main_operationnumber) values('".$select_default_operations_row['id']."','".$select_default_operations_row['operation_name']."','".$select_default_operations_row['operation_order']."','".$style."','".$color."','".$select_default_operations_row['operation_code']."','".$select_default_operations_row['default_operration']."','".$select_default_operations_row['ops_sequence']."','".$select_default_operations_row['barcode']."','".$select_default_operations_row['ops_dependency']."','".$m3_smv."','".$m3_smv."','".$main_ops_code."')";
-					echo "1=".$tbl_style_ops_master_insert."<br>";
-					mysqli_query($link, $tbl_style_ops_master_insert) or exit("Sql Error tbl_style_ops_master_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
-				}
+				
 			}
 			else
 			{
-				$m3_smv = '0.00';
-				$tbl_style_ops_master_insert="insert ignore $brandix_bts.tbl_style_ops_master(parent_id,operation_name,operation_order,style,color, operation_code,default_operration,ops_sequence,barcode,ops_dependency,smv,m3_smv) values('".$select_default_operations_row['id']."','".$select_default_operations_row['operation_name']."','".$select_default_operations_row['operation_order']."','".$style."','".$color."','".$select_default_operations_row['operation_code']."','".$select_default_operations_row['default_operration']."','".$select_default_operations_row['ops_sequence']."','".$select_default_operations_row['barcode']."','".$select_default_operations_row['ops_dependency']."','".$m3_smv."','".$m3_smv."')";
-				echo "1=".$tbl_style_ops_master_insert."<br>";
-				mysqli_query($link, $tbl_style_ops_master_insert) or exit("Sql Error tbl_style_ops_master_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if($is_m3 == 'Yes' || $is_m3 == 'yes' || $is_m3 == 'YES' )
+				{
+					$qty_to_fetch_m3_smv = "SELECT * FROM `$bai_pro3`.`schedule_oprations_master` WHERE style = '$style' AND Description='$color' AND OperationNumber = '$ops_code' LIMIT 0,1";
+					$select_qty_to_fetch_m3_smv=mysqli_query($link, $qty_to_fetch_m3_smv) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					if(mysqli_num_rows($select_qty_to_fetch_m3_smv)==0)
+					{
+						//$m3_smv = '0.00';
+					}
+					else
+					{
+						while($select_qty_to_fetch_m3_smv_row=mysqli_fetch_array($select_qty_to_fetch_m3_smv))
+						{
+							$m3_smv = $select_qty_to_fetch_m3_smv_row['SMV'];
+							$main_ops_code = $select_qty_to_fetch_m3_smv_row['Main_OperationNumber'];
+						}
+						$tbl_style_ops_master_insert="insert ignore $brandix_bts.tbl_style_ops_master(parent_id,operation_name,operation_order,style,color, operation_code,default_operration,ops_sequence,barcode,ops_dependency,smv,m3_smv,main_operationnumber) values('".$select_default_operations_row['id']."','".$select_default_operations_row['operation_name']."','".$select_default_operations_row['operation_order']."','".$style."','".$color."','".$select_default_operations_row['operation_code']."','".$select_default_operations_row['default_operration']."','".$select_default_operations_row['ops_sequence']."','".$select_default_operations_row['barcode']."','".$select_default_operations_row['ops_dependency']."','".$m3_smv."','".$m3_smv."','".$main_ops_code."')";
+						echo "1=".$tbl_style_ops_master_insert."<br>";
+						mysqli_query($link, $tbl_style_ops_master_insert) or exit("Sql Error tbl_style_ops_master_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
+					}
+				}
+				else
+				{
+					$m3_smv = '0.00';
+					$tbl_style_ops_master_insert="insert ignore $brandix_bts.tbl_style_ops_master(parent_id,operation_name,operation_order,style,color, operation_code,default_operration,ops_sequence,barcode,ops_dependency,smv,m3_smv) values('".$select_default_operations_row['id']."','".$select_default_operations_row['operation_name']."','".$select_default_operations_row['operation_order']."','".$style."','".$color."','".$select_default_operations_row['operation_code']."','".$select_default_operations_row['default_operration']."','".$select_default_operations_row['ops_sequence']."','".$select_default_operations_row['barcode']."','".$select_default_operations_row['ops_dependency']."','".$m3_smv."','".$m3_smv."')";
+					echo "1=".$tbl_style_ops_master_insert."<br>";
+					mysqli_query($link, $tbl_style_ops_master_insert) or exit("Sql Error tbl_style_ops_master_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-			}
-			
+				}
+			}	
 		}
 	}
 }
@@ -69,5 +77,3 @@ $duration = $end_timestamp - $start_timestamp;
 print("Execution took ".$duration." milliseconds.");
 
 ?>
-
-

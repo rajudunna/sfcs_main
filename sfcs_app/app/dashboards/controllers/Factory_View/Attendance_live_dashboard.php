@@ -331,7 +331,7 @@ document.oncontextmenu=new Function("alert(message);return false")
 //echo '<strong><table class="new"><tr class="new" valign="middle"><td><div id="green"></div> RM Ready</td><td><div id="yellow"></div> Partial Input</td><td><div id="orange"></div> CUT Pending/RM N/A</td><td><div id="blue"></div> Cut Completed</td><td><div id="pink"></div> RM Ready CUT Pending</td><td><div id="red"></div> RM Pending</td><td><div id="yash"></div> All Pending</td><td><div id="white"></div> Slot Available</td><td><div id="black"></div> Partial Input/RM N/U</td></tr></table></strong>';
 //echo '</div>';
 
-$sqlx="select * from $bai_pro3.sections_db where sec_id=$sec_x";
+$sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` where section = $sec_x GROUP BY section ORDER BY section + 0";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
@@ -345,105 +345,87 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	echo "<font size=5><a href=\"#\">Absenteeism</a></font>";
 	echo "<table>";
 	echo '<tr><td></td><td>Fixed</td><td>| Avail.</td></tr>';
-	//echo "<tr><th colspan=2><h2><a href=\"board_update.php?section_no=$section\" onclick=\"Popup=window.open('board_update.php?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
+
 
 	$mods=array();
 	$mods=explode(",",$section_mods);
-
-		$teams=array();
-		$sql2="SELECT  DISTINCT bac_shift FROM $bai_pro.bai_log_buf WHERE bac_date=\"".date("Y-m-d")."\"";
-    // echo '<br>'.$sql2.'<br>';
-		$sql_result2=mysqli_query($link, $sql2) or exit("Error While getting Shift Details");
-		while($sql_row2=mysqli_fetch_array($sql_result2))
-		{
-			$teams[]=$sql_row2['bac_shift'];
-		}
-		
-		$avail_criteria='sum(avail_'.implode('+avail_',$teams).')';
-		$absen_criteria='sum(absent_'.implode('+absent_',$teams).')';
-		
-
-
-
-
+  $teams=array();
+  $sql2="SELECT  DISTINCT bac_shift FROM $bai_pro.bai_log_buf WHERE bac_date=\"".date("Y-m-d")."\"";
+  // echo '<br>'.$sql2.'<br>';
+  $sql_result2=mysqli_query($link, $sql2) or exit("Error While getting Shift Details");
+  while($sql_row2=mysqli_fetch_array($sql_result2))
+  {
+    $teams[]=$sql_row2['bac_shift'];
+  }
+  // $avail_criteria='sum(avail_'.implode('+avail_',$teams).')';
+  // $absen_criteria='sum(absent_'.implode('+absent_',$teams).')';
+  $date=date("Y-m-d");
 	for($x=0;$x<sizeof($mods);$x++)
 	{
+    $module=$mods[$x];
+    $id_new="green";
+    $sql2="select sum(present+jumper) as \"avail\", sum(absent) as \"absent\" from $bai_pro.pro_attendance where module=$module and date='".$date."'";
+    // echo $sql2;
+    $sql_result2=mysqli_query($link, $sql2) or exit("Error While getting Attendance Details");
+    while($sql_row2=mysqli_fetch_array($sql_result2))
+    {
+      $avail=$sql_row2['avail'];
+      $absent=$sql_row2['absent'];		
+    }
+    $sql2="select sum(nop) as fix_nop from $bai_pro.grand_rep where module =$module and date=\"".date("Y-m-d")."\"";
+    //secho $sql2;
+    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error7896".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_row2=mysqli_fetch_array($sql_result2))
+    {
+      $fixed=$sql_row2['fix_nop'];
+      
+    }
 
-		$module=$mods[$x];
-		$id_new="green";
+    if($avail>0) // ERROR CORRECTION
+    {
+      if($fixed > 0)
+      {
+        $percent=round(((($avail-$absent)/$fixed))*100,0);
+      }
+      else
+      {
+        $percent=0;
+      }
+      
+    }
+    else // ERROR CORRECTION
+    {
+      $percent=10;
+    }
 
-
-			$sql2="select $avail_criteria as \"avail\", $absen_criteria as \"absent\" from $bai_pro.pro_atten where module =$module and date=\"".date("Y-m-d")."\"";
-			// echo $sql2;
-			$sql_result2=mysqli_query($link, $sql2) or exit("Error While getting Attendance Details");
-			while($sql_row2=mysqli_fetch_array($sql_result2))
-			{
-				$avail=$sql_row2['avail'];
-				$absent=$sql_row2['absent'];		
-			}
-			
-			$sql2="select sum(nop) as fix_nop from $bai_pro.grand_rep where module =$module and date=\"".date("Y-m-d")."\"";
-			//secho $sql2;
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error7896".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row2=mysqli_fetch_array($sql_result2))
-			{
-				$fixed=$sql_row2['fix_nop'];
-				
-			}
-
-	if($avail>0) // ERROR CORRECTION
-	{
-		if($fixed > 0)
-		{
-			$percent=round(((($avail-$absent)/$fixed))*100,0);
-		}
-		else
-		{
-			$percent=0;
-		}
-		
-	}
-	else // ERROR CORRECTION
-	{
-		$percent=10;
-	}
-
-	if($percent>=4)
-	{
-		$id_new="red";
-	}
-	else
-	{
-		if($percent<=2)
-		{
-			$id_new="green";
-		}
-		else
-		{
-			$id_new="yellow";
-		}
-	}
-
-
-
+    if($percent>=4)
+    {
+      $id_new="red";
+    }
+    else
+    {
+      if($percent<=2)
+      {
+        $id_new="green";
+      }
+      else
+      {
+        $id_new="yellow";
+      }
+    }
 		echo "<tr class=\"bottom\">";
 		echo "<td class=\"bottom\"><strong><font class=\"fontnn\" color=black >$module</font></strong></td><td>";
 
 		$title=str_pad("Absents:".$absent,80).str_pad("Available:".$avail,80);
-
 		//echo "<div id=\"$id_new\"><a href=\"#\" title=\"$title\" onclick=\"Popup=window.open('$dna_adr3/projects/alpha/attendance/daily_attendance/pop_cadre_report.php?date=".date("Y-m-d")."&module=$module&days=5&team=".implode(",",$teams)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\" ></a></div>$fixed/".($avail-$absent)."</td>";
 		echo "&nbsp;$fixed</td><td>".($avail-$absent)."</td>";
 		echo "</tr>";
 
 	}
-
 	echo "</table>";
 	echo "</p>";
 	echo '</div>';
-
 }
-
-
 ?>
 <div style="clear: both;"> </div>
 </body>

@@ -278,11 +278,11 @@ height: 25px;
   background-color: #ff0000;
 }
 
-.green {
+.lgreen {
   max-width:130px; min-width:20px;
   height:20px;
   background-color: #00ff00;
-  color: black;
+  color: white;
   display:block;
   float: left;
   margin: 2px;
@@ -293,7 +293,7 @@ height: 25px;
 
 }
 
-.green a {
+.lgreen a {
   display:block;
    color: black;
   float: left;
@@ -302,13 +302,13 @@ height: 25px;
   text-decoration:none;
 }
 
-.green a:hover {
+.lgreen a:hover {
   text-decoration:none;
    color: black;
   background-color: #00ff00;
 }
 
-.lgreen {
+.green {
   max-width:130px; min-width:20px;
    color: white;
   height:20px;
@@ -323,7 +323,7 @@ height: 25px;
  
  }
 
-.lgreen a {
+.green a {
   display:block;
    color: white;
   float: left;
@@ -333,7 +333,7 @@ height: 25px;
  
 }
 
-.lgreen a:hover {
+.green a:hover {
   text-decoration:none;
    color: white;
   background-color: #339900;
@@ -717,17 +717,13 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
   echo "<table>";
   // $url=getFullURLLevel($_GET['r'],'board_update.php',0,'R');
     echo "<tr><th colspan=2'><center><h2><b>$emb_tbl_name</b></h2></center></th></tr>";
- 
-  //$mods=array();
-  //$mods=explode(",",$section_mods);
+
   
   //For Section level blinking
   $blink_minimum=0;
-        $flag=0;
+
   
 
-  //for($x=0;$x<sizeof($mods);$x++)
-  // {
     $module=$mods[$x];
     $blink_check=0;
     
@@ -738,7 +734,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     $fab_wip=0;
     $pop_restriction=0;
     
-    //$sql1="SELECT * from plan_dash_doc_summ where module=$module order by priority limit 4"; New to correct
+    //$sql1="SELECT * from cut_tbl_dash_doc_summ where module=$module order by priority limit 4"; New to correct
     //Filter view to avoid Cut Completed and Fabric Issued Modules
     unset($doc_no_ref);
     unset($req_time);
@@ -751,20 +747,19 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     $doc_no_ref[]=0;
     $req_time[]=0;
     $req_date_time[]=0;
-   $color_ind=0;
-    $sql2="select * from $bai_pro3.cutting_table_plan where cutting_tbl_id in (".$section_mods.") order by log_time,cutting_tbl_id";
+    $sql2="select * from $bai_pro3.cutting_table_plan where cutting_tbl_id in (".$section_mods.") group by doc_no order by log_time,cutting_tbl_id";
     $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row2=mysqli_fetch_array($result2))
     {
+      $table_id=$row2['cutting_tbl_id'];
       $doc_no_ref[]=$row2['doc_no'];
-      $req_time[]=$row2['cutting_tbl_id'].") ".date("M-d H:i",strtotime($row2['log_time']));
+      $req_time[]=date("M-d H:i",strtotime($row2['log_time']));
       // $lay_time[]=$row2['log_time'];
       $req_date_time[]=$row2['log_time'];
 
     }
   
-    $sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref).")";
-      //echo $_GET["view_div"];
+    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).")  order by field(doc_no,".implode(",",$doc_no_ref).")";
       if($_GET["view_div"] == 'M')
       {
         $_GET["view_div"] = "M&S";
@@ -773,7 +768,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     
        if($_GET["view_div"]=="ALL" or $_GET["view_div"]=="")
       {
-        $sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).")  order by field(doc_no,".implode(",",$doc_no_ref).")";
+        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref).")";
       }
       else
       {
@@ -788,18 +783,20 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $buyer_identity = $row_res['buyer_name'];
         }
           
-        $sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref).")"; 
+        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref).")"; 
       }
+
+      
+
   // close style wise display 
     //NEw check
     $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     // echo $sql1."<br>";
-    $flag=0;
+   
     $sql_num_check=mysqli_num_rows($sql_result1);
     if($sql_num_check>0){
     while($sql_row1=mysqli_fetch_array($sql_result1))
     {
-      
       $cut_new=$sql_row1['act_cut_status'];
       $cut_input_new=$sql_row1['act_cut_issue_status'];
       $rm_new=strtolower(chop($sql_row1['rm_date']));
@@ -811,40 +808,47 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $ord_style=$sql_row1['order_style_no'];
       //$fabric_status=$sql_row1['fabric_status'];
       $plan_lot_ref_v1=$sql_row1['plan_lot_ref'];
-      $a_plies=$sql_row1['p_plies'];
-      $plies=$sql_row1['a_plies'];
+      $p_plies=$sql_row1['p_plies'];
+      $a_plies=$sql_row1['a_plies'];
       $fabric_status=$sql_row1['fabric_status_new']; //NEW due to plan dashboard clearing regularly and to stop issuing issued fabric.
   // start style wise display by dharani 10-26-2013 
-      $sql44="SELECT * FROM $bai_pro3.cps_log WHERE doc_no=$doc_no  AND operation_code='15'";
+
+
+      $cut_master="select operation_code from $brandix_bts.tbl_orders_ops_ref where operation_name ='cutting'";
+      $sql_result3=mysqli_query($link,$cut_master) or exit("Sql Error_cut_master".mysqli_error());
+      while($row=mysqli_fetch_array($sql_result3))
+      {
+        $operation_code = $row['operation_code'];
+      }
+
+      $rep_status ='';
+      $sql44="SELECT * FROM $bai_pro3.cps_log WHERE doc_no='$doc_no'  AND operation_code=".$operation_code;
       $sql_result12=mysqli_query($link, $sql44) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
       if(mysqli_num_rows($sql_result12)>0)
       {
         while($row_res1 = mysqli_fetch_array($sql_result12))
         {
-          if($row_res1['reported_status']=='P' or $row_res1['reported_status']=='' ){
-            $flag++;
-          }else{
-            $flag=0;
-          }
-          if($row_res1['reported_status']=='P'){
-            $color_ind=1;
+          if($row_res1['reported_status'] != 'F'){
+            if($row_res1['reported_status']=='P' || $row_res1['remaining_qty']!=0){
+             $rep_status = 'orange';
+            }else if($row_res1['reported_status']=='' || $row_res1['remaining_qty']==0){
+             $rep_status = 'yellow';
+            }
+          }else if($row_res1['reported_status'] == 'F'){
+            $rep_status = '';
           }
         }
-        if($flag ==0){
-          continue;
-        }
-        
-        if($fabric_status==null or $fabric_status==0){
-          
-          // $fabric_status=$sql_row1['ft_status'];
-          $ft_status=$sql_row1['ft_status'];
+      }
 
+        if($fabric_status==null or $fabric_status==0){          
+          $ft_status=$sql_row1['ft_status'];
           if($ft_status==5)
           {
             $fabric_status=4;
           }
           
         }
+
         
         $print_status=$sql_row1['print_status'];
         
@@ -932,41 +936,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
                 break;
               }
             }
-            
-            // $fabric_status=$join_ft_status;
             $ft_status=$join_ft_status;
-
-          }
-          //To get the status of join orders
-        }
-        // echo $a_plies."<br>";
-        // echo $plies."<br>";
-        // echo $fabric_status."<br>";
-        // echo $color_ind."<br>";
-        // if($fabric_status==5){
-        //   $id="yellow";
-        //   echo "hello";
-        // }
-        if($fabric_status < 5 or $fabric_status=''){
-          $id="yash";
-        }
-        else 
-        {
-          // if($a_plies == $plies){
-          //  $id="yellow";
-
-          // }else{
-          //    $id="orange";
-
-          // }
-          if($color_ind==1){
-            $id="orange";
-          }else{
-          $id="yellow";
-
           }
         }
-
         //For Color Clubbing
         unset($club_c_code);
         unset($club_docs);
@@ -1027,6 +999,96 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         {
           $fab_wip+=$total_qty;
         }
+        $fab_status="";
+        $fab_issue_query="select * from $bai_pro3.plandoc_stat_log where fabric_status!=5 and doc_no IN (".implode(",",$club_docs).")";
+        // echo "Fab Issue Query : ".$fab_issue_query."<br>";
+        $fab_issue_result=mysqli_query($link, $fab_issue_query) or exit("error while getting fab issue details");
+        if (mysqli_num_rows($fab_issue_result)>0)
+        {
+            $fab_status = 0;
+        }
+        else
+        {
+            $fab_status = 5;
+        }
+                
+        $fab_issue2_query="select * from $bai_pro3.plandoc_stat_log where fabric_status='1' and doc_no IN (".implode(",",$club_docs).")";
+        $fab_isuue2_result=mysqli_query($link, $fab_issue2_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+        if(mysqli_num_rows($fab_isuue2_result)>0)
+        {
+          $fab_status="1";
+        }
+
+        $fab_request_query="select * from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$club_docs).")";
+        $fab_request_result=mysqli_query($link, $fab_request_query) or exit("error while getting fab Requested details");
+
+        if($fabric_status ==5)
+        {
+            if($rep_status=='orange'){
+                $final_cols = 'orange';
+                $rem="Cutting Partially Done";
+            }else if($rep_status=='yellow'){
+                $final_cols = 'yellow';
+                $rem="Fabric issued";
+            }
+        }
+    else if($fab_status==1)
+        {
+         $final_cols = 'pink';
+         $rem="Ready To issue";
+        }
+    elseif (mysqli_num_rows($fab_request_result)>0)
+    {
+      $final_cols = 'green';
+      $rem="Fabric Requested";
+    }
+    elseif ($fabric_status < 5)
+    {
+      switch ($ft_status)
+      {
+        case "1":
+        {
+          $final_cols="lgreen";                    
+          $rem="Fabric Available but not Requested";
+          break;
+        }
+        case "0":
+        {                                   
+          $final_cols="red";
+          $rem="Fabric Not Available";
+          break;
+        }
+        case "2":
+        {
+          $final_cols="red";
+          $rem="Fabric In House Issue";
+          break;
+        }
+        case "3":
+        {
+          $final_cols="red";
+          $rem="GRN issue";
+          break;
+        }
+        case "4":
+        {
+          $final_cols="red";
+          $rem="Put Away Issue";
+          break;
+        }
+        default:
+        {
+          $final_cols="yash";
+          $rem="No Status";
+          break;
+        }
+      }
+    }
+    else
+    {
+      $final_cols='yash';
+      $rem="No status";
+    }
             
       $title=str_pad("Style:".trim($style),80)."\n".str_pad("CO:".trim($co_no),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),50)."\n".str_pad("Job_No:".implode(", ",$club_c_code),80)."\n".str_pad("Docket No:".implode(", ",$club_docs),80)."\n".str_pad("Total_Qty:".$total_qty,80)."\n".str_pad("Plan_Time:".$log_time,50)."\n".str_pad("Lay_Req_Time:".$lay_time[array_search($doc_no,$doc_no_ref)],80)."\n".str_pad("Fab_Loc.:".$fabric_location."Bundle_Loc.:".$bundle_location,80);
       
@@ -1105,15 +1167,24 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             }
           }
         }
-        $fab_pop_details = getFullURLLevel($_GET['r'],'cutting/controllers/cut_qty_reporting_withoutrolls/orders_cut_issue_status_form_v2_cut.php',3,'N');
-        if($id=="yash"){
-          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='#'><span class=''>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
+        $get_cut_qty = getFullURLLevel($_GET['r'],'cutting/controllers/cut_qty_reporting_withoutrolls/orders_cut_issue_status_form_v2_cut.php',3,'N');
+
+        $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
+        $sidemenu=true;
+      $href="$get_fabric_requisition&doc_no=$doc_no&module=$table_id&section=$table_id&sidemenu=$sidemenu&group_docs=".implode(",",$club_docs);
+  
+        //if(in_array($authorized,$has_permission) and $final_cols!="yellow" and $final_cols!="green")
+      if($rep_status!=''){
+       if(in_array($authorized,$has_permission) and ($final_cols=="yellow" || $final_cols=="orange")){
+            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='".$get_cut_qty."&doc_no=$doc_no' onclick='Popup=window.open('get_cut_qty.php?doc_no=$doc_no','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
+        }else if($final_cols=="yash" || $final_cols=="red" || $final_cols=="lgreen"){
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='#'
+             onclick=\"window.open('$href','yourWindowName','width=800,height=600')\"
+            >$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
+        }else{
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:white' title='$title'>".$req_time[array_search($doc_no,$doc_no_ref)]."</div></div><br/>";
         }
-        else
-        {
-            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."&doc_no=$doc_no' onclick='Popup=window.open('fab_pop_details.php?doc_no=$doc_no','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
-        }
-    }
+      }
     }
   }
     

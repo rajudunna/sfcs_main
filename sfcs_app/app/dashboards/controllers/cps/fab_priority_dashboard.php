@@ -750,8 +750,7 @@ echo '<br><br>';
 //For blinking priorties as per the section module wips
 $bindex=0;
 $blink_docs=array();
-
-$sqlx="select * from $bai_pro3.sections_db where sec_id>0 order by sec_id";
+$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name GROUP BY section ORDER BY section + 0";
 mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
@@ -759,6 +758,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
   $section=$sql_rowx['sec_id'];
   $section_head=$sql_rowx['sec_head'];
   $section_mods=$sql_rowx['sec_mods'];
+  $section_display_name=$sql_rowx['section_display_name'];
 
   if($_GET["view_div"]!='ALL' && $_GET["view_div"]!='')
   {
@@ -800,7 +800,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
   echo "<p>";
   echo "<table>";
   $url=getFullURLLevel($_GET['r'],'board_update.php',0,'R');
-  echo "<tr><th colspan=2'><h2><a href='$url?section_no=$section' onclick='Popup=window.open('$url?section_no=$section', target='_blank' Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><font style='font-size:24px;color:#000000;'><b>SECTION - $section</b></font></a></h2></th></th></tr>";
+  echo "<tr><th colspan=2'><h2><a href='$url?section_no=$section' onclick='Popup=window.open('$url?section_no=$section', target='_blank' Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><font style='font-size:24px;color:#000000;'><b>$section_display_name</b></font></a></h2></th></th></tr>";
  
   //$mods=array();
   //$mods=explode(",",$section_mods);
@@ -839,7 +839,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     //$sql2="select doc_ref,req_time,module,log_time from bai_pro3.fabric_priorities where issued_time='0000-00-00 00:00:00' and section=$section order by section,req_time";
     
     //Changed on 2013-10-03 to facilitate module change requirements. - KiranG
-    $sql2="select doc_ref,req_time,module,log_time from $bai_pro3.fabric_priorities where issued_time='0000-00-00 00:00:00' and module in ($section_mods) order by req_time,module";
+    $sql2="select doc_ref,req_time,module,log_time from $bai_pro3.fabric_priorities where issued_time='0000-00-00 00:00:00' and module in ($section_mods) group by doc_ref_club order by req_time,module";
     //echo $sql2;
     $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row2=mysqli_fetch_array($result2))

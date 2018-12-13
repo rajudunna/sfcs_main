@@ -33,11 +33,21 @@
 		</thead>
 		<tbody>";
 		// output data of each row
+		$section_display_name='';
 		while($row = $result->fetch_assoc()) {
 			$rowid=$row["id"];
 			$module_name=$row["module_name"];
 			$status=$row["status"];
-            $section=$row["section"];
+			$section=$row["section"];
+			$sql1 = "SELECT * FROM $bai_pro3.`sections_master` where sec_name=$section";
+			// echo $sql1;
+			$result1 = $conn->query($sql1);
+			while($row1 = $result1->fetch_assoc()) {
+				$section_display_name=$row1["section_display_name"];
+			}
+			// if($section_display_name==''){
+			// 	$section_display_name=$row1["section"];
+			// }
             $color= urlencode($row["color"]);
             $label=$row["label"];
 			$module_description=$row["module_description"];
@@ -53,8 +63,7 @@
 			<td>".$row["module_name"]."</td>
             <td>".$row["color"]."</td>
             <td>".$row["label"]."</td>
-			<td>".$row["section"]."</td>
-			<td>".$row["block_priorities"]."</td>
+			<td>".$section_display_name."</td>
 			<td>".$row["module_description"]."</td>
 			<td>".$mapped_cut_table."</td>
 			<td>".$row["status"]." </td>

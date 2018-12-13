@@ -737,7 +737,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     $fab_wip=0;
     $pop_restriction=0;
     
-    //$sql1="SELECT * from plan_dash_doc_summ where module=$module order by priority limit 4"; New to correct
+    //$sql1="SELECT * from cut_tbl_dash_doc_summ where module=$module order by priority limit 4"; New to correct
     //Filter view to avoid Cut Completed and Fabric Issued Modules
     unset($doc_no_ref);
     unset($req_time);
@@ -751,20 +751,22 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     $req_time[]=0;
     $req_date_time[]=0;
    
-    $sql2="select * from $bai_pro3.cutting_table_plan where cutting_tbl_id in (".$section_mods.") order by log_time,cutting_tbl_id";
+    $sql2="select * from $bai_pro3.cutting_table_plan where cutting_tbl_id in (".$section_mods.") group by doc_no order by log_time,cutting_tbl_id";
     $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row2=mysqli_fetch_array($result2))
     {
       $doc_no_ref[]=$row2['doc_no'];
-      $req_time[]=$row2['cutting_tbl_id'].") ".date("M-d H:i",strtotime($row2['log_time']));
+      $req_time[]=date("M-d H:i",strtotime($row2['log_time']));
       // $lay_time[]=$row2['log_time'];
       $req_date_time[]=$row2['log_time'];
 
     }
+
     
   // start style wise display by dharani 10-26-2013 
   
-    $sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).") and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")";
+    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).")) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")";
+  
       //echo $_GET["view_div"];
       if($_GET["view_div"] == 'M')
       {
@@ -774,7 +776,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     
        if($_GET["view_div"]=="ALL" or $_GET["view_div"]=="")
       {
-        $sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).") and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")";
+        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).")) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")";
       }
       else
       {
@@ -789,9 +791,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $buyer_identity = $row_res['buyer_name'];
         }
           
-        $sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and doc_no in (".implode(",",$doc_no_ref).") and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")"; 
+        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).")) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")"; 
         
       }
+      
   // close style wise display 
     //NEw check
     $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1161,7 +1164,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       //Embellishment Tracking
     //unset($sel_sty);
   //Ticket #177328 add the Blinking Option for Exceeding Fabric Request Dockets and IU module show "IU" in that boxes and if it is emblishment display "IX"
-    $sqlt="SELECT * from $bai_pro3.plan_dash_doc_summ where  doc_no in ($doc_no) and act_cut_issue_status<>'DONE' and (order_style_no like 'L%Y%' or order_style_no like 'L%Z%' or order_style_no like 'O%Y%' or order_style_no like 'O%Z%') order by field(doc_no,$doc_no) " ;
+    $sqlt="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where  doc_no in ($doc_no) and act_cut_issue_status<>'DONE' and (order_style_no like 'L%Y%' or order_style_no like 'L%Z%' or order_style_no like 'O%Y%' or order_style_no like 'O%Z%') order by field(doc_no,$doc_no) " ;
     //echo "query=".$sqlt;
     mysqli_query($link, $sqlt) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sql_result12=mysqli_query($link, $sqlt) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1175,7 +1178,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
 
     $fab_pop_details = getFullURLLevel($_GET['r'],'cps/fab_pop_details.php',1,'R');
-	  $fab_pop_details1 = getFullURLLevel($_GET['r'],'cps/fab_pop_alert.php',1,'R');
+    $fab_pop_details1 = getFullURLLevel($_GET['r'],'cps/fab_pop_alert.php',1,'R');
   if($check_num_rows>0 && $ord_style==$sel_sty)
   {
 
@@ -1240,10 +1243,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           // edited by ram kumar
           // echo "fabric req :".$fabric_required."</br>";
           // echo "total req :".$total_req_qty."</br>";
-		   
-		  /*For testing logic changed*/ 
+       
+      /*For testing logic changed*/ 
           if($fabric_required<=$total_req_qty){
-			  // if($fabric_required>$total_req_qty){
+        // if($fabric_required>$total_req_qty){
               //$id='blue';
               //echo "<blink>blue2 : ".$req_date_time[array_search($doc_no,$doc_no_ref)]."-".date("Y-m-d H:i:s")."</blink></br>";
               //allowed
@@ -1259,7 +1262,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           }else{
               $id='orange';
               //Not Allowed
-            if($username=='sfcsproject1'){
+            if(in_array($authorized,$has_permission)){
 
               //echo "orange : ".$req_date_time[array_search($doc_no,$doc_no_ref)]."-".date("Y-m-d H:i:s")."</br>";
               if($req_date_time[array_search($doc_no,$doc_no_ref)]<date("Y-m-d H:i:s"))

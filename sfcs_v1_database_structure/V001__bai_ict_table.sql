@@ -13,26 +13,26 @@ MySQL - 10.3.8-MariaDB : Database - bai_ict
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`bai_ict` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `bai_ict`;
+/*USE `bai_ict`;*/
 
 /*Table structure for table `bai_ict_services` */
 
-DROP TABLE IF EXISTS `bai_ict_services`;
+DROP TABLE IF EXISTS `bai_ict`.`bai_ict_services`;
 
-CREATE TABLE `bai_ict_services` (
+CREATE TABLE `bai_ict`.`bai_ict_services` (
   `service_id` smallint(6) NOT NULL AUTO_INCREMENT,
   `service_title` varchar(200) NOT NULL,
   `service_ip` varchar(100) NOT NULL,
   `service_status` tinyint(1) NOT NULL,
   `status` tinyint(1) NOT NULL,
   PRIMARY KEY (`service_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=137 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `bai_login_db` */
 
-DROP TABLE IF EXISTS `bai_login_db`;
+DROP TABLE IF EXISTS `bai_ict`.`bai_login_db`;
 
-CREATE TABLE `bai_login_db` (
+CREATE TABLE `bai_ict`.`bai_login_db` (
   `user_login` varchar(30) NOT NULL,
   `status` int(11) DEFAULT NULL,
   `feedback` int(11) DEFAULT NULL,
@@ -46,13 +46,13 @@ CREATE TABLE `bai_login_db` (
   UNIQUE KEY `slno` (`slno`),
   KEY `user_login` (`user_login`),
   KEY `user_login_2` (`user_login`,`status`)
-) ENGINE=MyISAM AUTO_INCREMENT=268 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `cctv_approval` */
 
-DROP TABLE IF EXISTS `cctv_approval`;
+DROP TABLE IF EXISTS `bai_ict`.`cctv_approval`;
 
-CREATE TABLE `cctv_approval` (
+CREATE TABLE `bai_ict`.`cctv_approval` (
   `year` int(11) NOT NULL COMMENT 'Year Number',
   `week` int(11) NOT NULL COMMENT 'Week Number',
   `month` int(11) NOT NULL COMMENT 'Month number',
@@ -70,9 +70,9 @@ CREATE TABLE `cctv_approval` (
 
 /*Table structure for table `cctv_check_list` */
 
-DROP TABLE IF EXISTS `cctv_check_list`;
+DROP TABLE IF EXISTS `bai_ict`.`cctv_check_list`;
 
-CREATE TABLE `cctv_check_list` (
+CREATE TABLE `bai_ict`.`cctv_check_list` (
   `tid` varchar(100) NOT NULL,
   `location_id` int(11) NOT NULL,
   `year_id` int(11) NOT NULL,
@@ -94,9 +94,9 @@ CREATE TABLE `cctv_check_list` (
 
 /*Table structure for table `cctv_mod_list` */
 
-DROP TABLE IF EXISTS `cctv_mod_list`;
+DROP TABLE IF EXISTS `bai_ict`.`cctv_mod_list`;
 
-CREATE TABLE `cctv_mod_list` (
+CREATE TABLE `bai_ict`.`cctv_mod_list` (
   `mod_id` int(11) NOT NULL AUTO_INCREMENT,
   `mod_name` varchar(100) NOT NULL,
   `mod_location` varchar(100) NOT NULL,
@@ -108,9 +108,9 @@ CREATE TABLE `cctv_mod_list` (
 
 /*Table structure for table `comments_db` */
 
-DROP TABLE IF EXISTS `comments_db`;
+DROP TABLE IF EXISTS `bai_ict`.`comments_db`;
 
-CREATE TABLE `comments_db` (
+CREATE TABLE `bai_ict`.`comments_db` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `comment` text NOT NULL,
   `plan_db_tid` int(11) NOT NULL,
@@ -121,7 +121,7 @@ CREATE TABLE `comments_db` (
 
 DROP TABLE IF EXISTS `contacts`;
 
-CREATE TABLE `contacts` (
+CREATE TABLE `bai_ict`.`contacts` (
   `Sno` int(11) NOT NULL AUTO_INCREMENT,
   `Date` date NOT NULL,
   `Name` varchar(100) NOT NULL,
@@ -134,9 +134,9 @@ CREATE TABLE `contacts` (
 
 /*Table structure for table `feedback_db` */
 
-DROP TABLE IF EXISTS `feedback_db`;
+DROP TABLE IF EXISTS `bai_ict`.`feedback_db`;
 
-CREATE TABLE `feedback_db` (
+CREATE TABLE `bai_ict`.`feedback_db` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `plan_db_tid` int(11) NOT NULL,
   `sample_id` int(11) NOT NULL,
@@ -147,9 +147,9 @@ CREATE TABLE `feedback_db` (
 
 /*Table structure for table `ict_preven_maint_check_list` */
 
-DROP TABLE IF EXISTS `ict_preven_maint_check_list`;
+DROP TABLE IF EXISTS `bai_ict`.`ict_preven_maint_check_list`;
 
-CREATE TABLE `ict_preven_maint_check_list` (
+CREATE TABLE `bai_ict`.`ict_preven_maint_check_list` (
   `srl_no` int(8) NOT NULL AUTO_INCREMENT,
   `machine_type` varchar(50) DEFAULT NULL,
   `model_no` varchar(50) DEFAULT NULL,
@@ -170,9 +170,9 @@ CREATE TABLE `ict_preven_maint_check_list` (
 
 /*Table structure for table `menu_index` */
 
-DROP TABLE IF EXISTS `menu_index`;
+DROP TABLE IF EXISTS `bai_ict`.`menu_index`;
 
-CREATE TABLE `menu_index` (
+CREATE TABLE `bai_ict`.`menu_index` (
   `list_id` smallint(6) NOT NULL AUTO_INCREMENT,
   `parent_list_id` int(11) DEFAULT NULL,
   `list_title` varchar(300) NOT NULL,
@@ -188,9 +188,9 @@ CREATE TABLE `menu_index` (
 
 /*Table structure for table `mobile_bill_track_1313` */
 
-DROP TABLE IF EXISTS `mobile_bill_track_1313`;
+DROP TABLE IF EXISTS `bai_ict`.`mobile_bill_track_1313`;
 
-CREATE TABLE `mobile_bill_track_1313` (
+CREATE TABLE `bai_ict`.`mobile_bill_track_1313` (
   `tid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `phn_no` varchar(30) DEFAULT NULL,
   `bill_val` float DEFAULT NULL,
@@ -205,9 +205,9 @@ CREATE TABLE `mobile_bill_track_1313` (
 
 /*Table structure for table `mobile_current_user_list` */
 
-DROP TABLE IF EXISTS `mobile_current_user_list`;
+DROP TABLE IF EXISTS `bai_ict`.`mobile_current_user_list`;
 
-CREATE TABLE `mobile_current_user_list` (
+CREATE TABLE `bai_ict`.`mobile_current_user_list` (
   `m_id` int(5) NOT NULL AUTO_INCREMENT,
   `mobile_no` varchar(15) NOT NULL,
   `sim_no` varchar(20) DEFAULT NULL,
@@ -219,9 +219,9 @@ CREATE TABLE `mobile_current_user_list` (
 
 /*Table structure for table `mobile_issue_track` */
 
-DROP TABLE IF EXISTS `mobile_issue_track`;
+DROP TABLE IF EXISTS `bai_ict`.`mobile_issue_track`;
 
-CREATE TABLE `mobile_issue_track` (
+CREATE TABLE `bai_ict`.`mobile_issue_track` (
   `tid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `mobile_no` varchar(10) DEFAULT NULL,
   `call_name` varchar(100) DEFAULT NULL,
@@ -249,9 +249,9 @@ CREATE TABLE `mobile_issue_track` (
 
 /*Table structure for table `plan_db` */
 
-DROP TABLE IF EXISTS `plan_db`;
+DROP TABLE IF EXISTS `bai_ict`.`plan_db`;
 
-CREATE TABLE `plan_db` (
+CREATE TABLE `bai_ict`.`plan_db` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `plan_date` date NOT NULL,
   `allocated_to` varchar(50) NOT NULL,
@@ -264,7 +264,7 @@ CREATE TABLE `plan_db` (
 
 DROP TABLE IF EXISTS `printer_user_log`;
 
-CREATE TABLE `printer_user_log` (
+CREATE TABLE `bai_ict`.`printer_user_log` (
   `dept_name` varchar(100) NOT NULL,
   `dept_id` varchar(10) NOT NULL,
   `old_pwd` varchar(10) NOT NULL,
@@ -275,9 +275,9 @@ CREATE TABLE `printer_user_log` (
 
 /*Table structure for table `report_alert_track` */
 
-DROP TABLE IF EXISTS `report_alert_track`;
+DROP TABLE IF EXISTS `bai_ict`.`report_alert_track`;
 
-CREATE TABLE `report_alert_track` (
+CREATE TABLE `bai_ict`.`report_alert_track` (
   `report` varchar(100) NOT NULL,
   `date` datetime NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
