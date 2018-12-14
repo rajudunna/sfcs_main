@@ -52,7 +52,7 @@ if($org_doc_no > 1 ){
 
 //Validation for fabric status
 
-$validation_query = "SELECT cat_ref,fabric_status,category,material_req from $bai_pro3.order_cat_doc_mk_mix 
+$validation_query = "SELECT cat_ref,fabric_status,category,material_req,plan_module from $bai_pro3.order_cat_doc_mk_mix 
                     where doc_no=$doc_no";
 $validation_result = mysqli_query($link,$validation_query);
 if(mysqli_num_rows($validation_result)>0){
@@ -60,6 +60,7 @@ if(mysqli_num_rows($validation_result)>0){
     $cat_ref  = $row['cat_ref'];
     $category = strtolower($row['category']);
     $fab_required = $row['material_req'];
+    $module = $row['plan_module'];
     if(in_array($category,$fabric_categories_array) && $cat_ref > 0)
         $response_data['can_report']   = 1;
     else{    
@@ -166,6 +167,7 @@ $response_data['size_ratio'] = $size_ratio;
 $response_data['p_plies'] = $p_plies;
 $response_data['act_cut_status'] = $act_cut_status;
 $response_data['acut_no'] = $acut_no;
+$response_data['module'] = $module;
 $response_data['fab_status']  = $fabric_status;
 $response_data['fab_received'] = $fab_rec;
 $response_data['fab_returned'] = $fab_ret;
