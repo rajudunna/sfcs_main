@@ -2,6 +2,7 @@
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     if(isset($_POST['formSubmit']))
     {
+        include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/mo_filling.php');
         $ids=$_POST['ids'];
         $recutval = $_POST['recutval'];
         $cat = $_POST['cat'];
@@ -91,12 +92,17 @@
             $pliespercut = 1;
             $remarks = 'Recut';
             $pcutdocid=$order_tid."/".$allocate_ref."/".$count;
-            $sql_plandoc="insert into $bai_pro3.plandoc_stat_log(pcutdocid, date, cat_ref, cuttable_ref, allocate_ref, mk_ref, order_tid, pcutno, ratio,a_plies,p_plies,remarks,$sizes_p,$sizes_a)values  (\"$pcutdocid\", \"$date\", $cat_ref, $cuttable_ref, $allocate_ref, $mk_ref, \"$order_tid\", $count, $ratio,$pliespercut,$pliespercut,\"$remarks\",$values,$values)";
+            $sql_plandoc="insert into $bai_pro3.plandoc_stat_log(pcutdocid, date, cat_ref, cuttable_ref, allocate_ref, mk_ref, order_tid, pcutno,acutno,ratio,a_plies,p_plies,remarks,$sizes_p,$sizes_a)values  (\"$pcutdocid\", \"$date\", $cat_ref, $cuttable_ref, $allocate_ref, $mk_ref, \"$order_tid\", $count,$count, $ratio,$pliespercut,$pliespercut,\"$remarks\",$values,$values)";
             // echo $sql_plandoc;
             mysqli_query($link,$sql_plandoc) or exit("While inserting into the plan doc stat log".mysqli_error($GLOBALS["___mysqli_ston"]));
            $insert_id=mysqli_insert_id($link);
             $sql_recut_v2="insert into $bai_pro3.recut_v2 (date,cat_ref,order_tid,pcutno,acutno,remarks,$sizes_p,$sizes_a,a_plies,p_plies,doc_no) values (\"".date("Y-m-d")."\",".$cat_ref.",\"$order_tid\",$count,$count,\"".$value."\",$values,$values,$pliespercut,$pliespercut,$insert_id)";
             mysqli_query($link,$sql_recut_v2) or exit("While inserting into the recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
+             // calling the function to insert to bundle craetion data and cps log
+            $inserted = doc_size_wise_bundle_insertion($insert_id,1);
+            if($inserted){
+                //Inserted Successfully
+            }
         }
         foreach($bcd_id as $key=>$act_id)
         {
@@ -131,8 +137,63 @@
                     {
                         $inserting_into_recut_v2_child = "INSERT INTO `bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`,`size_id`)
                         VALUES($insert_id,$bcd_act_id,$operation_id,$actual_allowing_to_recut,$to_add,0,0,'$size_id')";
-                        mysqli_query($link,$inserting_into_recut_v2_child) or exit("While inserting into the recut v2 childe".mysqli_error($GLOBALS["___mysqli_ston"]));
-        
+                        mysqli_query($link,$inserting_into_recut_v2_child) or exit("While inserting into the recut v2 child".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        //retreaving bundle_number of recut docket from bcd and inserting into moq
+                        $retreaving_qry="select bundle_number from $brandix_bts.bundle_creation_data where docket_number='$insert_id' and operation_id ='15'";
+                        $retreaving_qry_res = $link->query($retreaving_qry);
+                        while($row_bcd_recut = $retreaving_qry_res->fetch_assoc()) 
+                        {
+                            $bundle_number_recut = $row_bcd_recut['bundle_number'];
+                        }
+                        $multiple_mos_tot_qty = $to_add;
+                        $array_mos = array();
+                        //retreaving mo_number which is related to that bcd_act_id
+                        $moq_qry = "SELECT mo_no,bundle_quantity,`rejected_quantity` FROM bai_pro3.`mo_operation_quantites` WHERE ref_no=$bundle_number AND op_code=$operation_id AND `rejected_quantity`>0 ORDER BY mo_no";
+                        // echo $moq_qry.'</br>';
+                        // die();
+                        $moq_qry_res = $link->query($moq_qry);
+                        while($row_moq = $moq_qry_res->fetch_assoc()) 
+                        {
+                            $max_mo_no = $row_moq['mo_no'];
+                            // echo $row_moq['rejected_quantity'].'-'.$array_mos[$max_mo_no].'</br>';
+                            $bundle_quantity_mo = $row_moq['rejected_quantity'] - $array_mos[$max_mo_no];
+                            // echo $bundle_quantity_mo.'-'.$multiple_mos_tot_qty.'</br>';
+                            if($bundle_quantity_mo < $multiple_mos_tot_qty)
+                            {
+                                $multiple_mos_tot_qty = $multiple_mos_tot_qty - $bundle_quantity_mo;
+                                $to_add_mo = $bundle_quantity_mo;
+                                $array_mos[$max_mo_no]  = $bundle_quantity_mo;
+                            }
+                            else
+                            {
+                                $to_add_mo = $multiple_mos_tot_qty;
+                                $array_mos[$max_mo_no]  = $multiple_mos_tot_qty;
+                                $multiple_mos_tot_qty = 0;
+                            }
+                            // echo $to_add_mo.'</br>';
+                            if($to_add_mo > 0)
+                            {
+                                $checking_moq_qry = "SELECT * FROM bai_pro3.mo_operation_quantites WHERE ref_no = $bundle_number_recut AND op_code = 15";
+                                // echo $checking_moq_qry.'</br>';
+                                $checking_moq_qry_res = $link->query($checking_moq_qry);
+                                if(mysqli_num_rows($checking_moq_qry_res) > 0)
+                                {
+                                    //update qry
+                                    while($row_moq_bcd = $checking_moq_qry_res->fetch_assoc()) 
+                                    {
+                                        $id_moq = $row_moq_bcd['id'];
+                                    }
+                                    $updae_moq_qry = "update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity+$to_add_mo where id=$id_moq";
+                                }
+                                else
+                                {
+                                    //insert qry
+                                    $updae_moq_qry="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$max_mo_no."', '".$bundle_number_recut."','".$to_add_mo."', '15', 'Cutting')";
+                                }
+                                // echo $updae_moq_qry.'</br>';
+                                mysqli_query($link,$updae_moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            }
+                        }
                         $update_rejection_log_child = "update $bai_pro3.rejection_log_child set recut_qty = recut_qty+$to_add where bcd_id = $bcd_act_id";
                         mysqli_query($link,$update_rejection_log_child) or exit("While updating rejection log child".mysqli_error($GLOBALS["___mysqli_ston"]));
         
@@ -254,16 +315,17 @@
                                 }
                                 if($to_add_sj > 0)
                                 {
-                                    $insertion_qry = "INSERT INTO `$bai_pro3`.`replacment_allocation_log` (`bcd_id`,`input_job_no_random_ref`,`replaced_qty`,`size_title`) values ($act_id,$sj,$to_add_sj,'$size_title')";
+                                    $insertion_qry = "INSERT INTO `$bai_pro3`.`replacment_allocation_log` (`bcd_id`,`input_job_no_random_ref`,`replaced_qty`,`size_title`) values ($bundle_number,$sj,$to_add_sj,'$size_title')";
+                                    // echo $insertion_qry.'</br>';
                                     mysqli_query($link, $insertion_qry) or exit("insertion_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                                    $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set replaced_qty = replaced_qty+$to_add_sj where bcd_id = $act_id";
+                                    $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set replaced_qty = replaced_qty+$to_add_sj where bcd_id = $bundle_number";
                                     mysqli_query($link, $updating_rejection_log_child) or exit("updating_rejection_log_child".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     //updating rejection log 
                                     $updating_rejection_log = "update $bai_pro3.rejections_log set replaced_qty = replaced_qty+$to_add_sj,remaining_qty = remaining_qty-$to_add_sj where style = '$style' and schedule = '$scheule' and color = '$color' ";
                                     mysqli_query($link, $updating_rejection_log) or exit("updating_rejection_log".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                                    $issued_to_module = issued_to_module($act_id,$to_add_sj,1);
+                                    $issued_to_module = issued_to_module($bundle_number,$to_add_sj,1);
                                 }
                             }
                         }
@@ -287,15 +349,20 @@
                   <input class='form-control integer' placeholder='Enter Schedule here' onchange='myfunctionsearch()' id='schedule_id'></input></div></div>";
     echo $drp_down;
     
+    
 ?>
 </br></br></br>
 <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog" style="width: 80%;">
         <div class="modal-content">
+            
             <div class="modal-header">Recut Detailed View
                 <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" id='main-content'>
+            <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;" >
+                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
+                    </div>
             </div>
         </div>
     </div>
@@ -308,6 +375,9 @@
             </div>
             <div id='pre_pre'>
                 <div class="modal-body">
+                <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
+                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
+                    </div>
                     <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform" onsubmit='return validationfunction();'>
                         <div class='panel-body' id="dynamic_table_panel">	
                                 <div id ="dynamic_table1"></div>
@@ -332,7 +402,7 @@
             </div>
             <div id='pre'>
                 <div class="modal-body">
-                    <div class="ajax-loader" id="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;">
+                    <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
                                 <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
                     </div>
                     <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartformreplace" method="post" id="smartform1" onsubmit='return validationreplace();'>
@@ -517,7 +587,7 @@ function viewrecutdetails(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
     $('#myModal').modal('toggle');
-    $('#loading-image').show();
+    $('.loading-image').show();
     $.ajax({
 
 			type: "POST",
@@ -526,7 +596,7 @@ function viewrecutdetails(id)
 			success: function (response) 
 			{
                 document.getElementById('main-content').innerHTML = response;
-                $('#loading-image').hide();
+                $('.loading-image').hide();
             }
 
     });
@@ -539,7 +609,7 @@ function editrecutdetails(id)
     document.getElementById('dynamic_table1').innerHTML = '';
     $('#post_post').hide();
     $('#pre_pre').show();
-    $('#loading-image').show();
+    $('.loading-image').show();
     $.ajax({
 
 			type: "POST",
@@ -548,7 +618,7 @@ function editrecutdetails(id)
 			success: function (response) 
 			{
                 document.getElementById('dynamic_table1').innerHTML = response;
-                $('#loading-image').hide();
+                $('.loading-image').hide();
             }
 
     });
@@ -557,7 +627,7 @@ function editreplacedetails(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
     $('#myModal2').modal('toggle');
-    $('#loading-image').show();
+    $('.loading-image').show();
     $('#post').hide();
     $('#pre').show();
     document.getElementById('dynamic_table2').innerHTML = '';
@@ -570,20 +640,25 @@ function editreplacedetails(id)
 			success: function (response) 
 			{
                 document.getElementById('dynamic_table2').innerHTML = response;
-                $('#loading-image').hide();
+                // $('.loading-image').hide();
             }
 
     });
 }
 function validationreplace()
 {
-    var total_rows = $('#total_rows').val();
+    var total_rows = document.getElementById("total_rows").value;
     var value = 0;
     var flag = 0;
-    for(var i=1; i<=total_rows;i++)
+    console.log(total_rows);
+    for(var i=1; i<=Number(total_rows);i++)
     {
-        value = value + Number(document.getElementById(i).value);
+        console.log(value);
+        console.log(i);
+        console.log(document.getElementById(i).value);
+        value = Number(value) + Number(document.getElementById(i).value);
     }
+    console.log("Hi"+value);
     if(value == 0)
     {
         swal('At Least one size should have the replace value.','','error');
@@ -634,7 +709,7 @@ function validationreplace()
         $('#pre').hide();
         $('#post').show();
         return true;
-    }
+   }
     else
     {
         return false;
@@ -650,7 +725,7 @@ function validationreplaceindividual(id)
         var present_rep = Number(document.getElementById(id).value);
         if(max_rem < present_rep)
         {
-            swal('You are replacing more than elegible to replace quantity.','','error');
+            swal('You are replacing more than eligible to replace quantity.','','error');
             document.getElementById(id).value = 0;
         } 
     }
@@ -670,7 +745,7 @@ function validationrecutindividual(id)
         var present_rep = Number(document.getElementById(id).value);
         if(max_rem < present_rep)
         {
-            swal('You are Re Cutting  more than elegible to Recut quantity.','','error');
+            swal('You are Re Cutting  more than eligible to Recut quantity.','','error');
             document.getElementById(id).value = 0;
         } 
     }
@@ -681,8 +756,7 @@ function validationrecutindividual(id)
 }
 function setfunction()
 {
-    var noofrows = $('#total_rows').val();
-    // alert(document.getElementById('setreset').innerHTML);
+    var noofrows = document.getElementById('total_rows').value;
     if(document.getElementById('setreset').innerHTML == 'Set')
     {
         for(var i=1; i<=Number(noofrows); i++)
@@ -752,7 +826,7 @@ function validationfunction()
     var flag = 0;
     var total_rows = document.getElementById('total_rows').value;
     var value = 0;
-    for(var i=1; i<=total_rows;i++)
+    for(var i=1; i<=Number(total_rows);i++)
     {
         value = value + Number(document.getElementById(i).value);
     }
@@ -765,12 +839,12 @@ function validationfunction()
    {
        return false;
    }
-   else
-   {
+    else
+    {
        $('#pre_pre').hide();
        $('#post_post').show();
        return true;
-   }
+    } 
 }
 function isInteger(value) 
 {
@@ -838,11 +912,20 @@ function myfunctionsearch()
     //     $('#myTable1').hide();
     // }
 }
+function isNumber(t)
+{
+    if(t.value == 'e' || t.value == 'E' || t.value < 0 )
+    {
+        t.value = '';
+        return false;
+    }
+}
 </script>
 <script>
 $(document).ready(function() 
 {
     $('#myTable1').hide();
+    // $('.loading-image').hide();
     myFunction();
     // $('#recut').on('click', function(){
     //     $('#recut').hide();

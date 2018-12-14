@@ -1,5 +1,6 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+error_reporting(0);
 if(isset($_POST['formSubmit']))
 {
    $order_tid=$_POST['order_tid'];
@@ -20,7 +21,15 @@ if(isset($_POST['formSubmit']))
    //echo $sql;
    mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
    $url = '?r='.$_GET['r'];
-   echo "<script>sweetAlert('Successfully Approved','','success');window.location = '".$url."'</script>";
+   if($status == 1)
+   {
+        echo "<script>sweetAlert('Successfully Approved','','success');window.location = '".$url."'</script>";
+   }
+   else
+   {
+    echo "<script>sweetAlert('Material Not Available to Approve','','error');window.location = '".$url."'</script>";
+   }
+  
 }
 ?>
 <?php
@@ -44,6 +53,9 @@ echo $drp_down;
                 <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" id='main-content'>
+            <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
+                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
+                    </div>
             </div>
         </div>
     </div>
@@ -56,7 +68,10 @@ echo $drp_down;
             </div>
             <div class="modal-body">
                 <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
-                    <div class='panel-body' id="dynamic_table_panel">	
+                    <div class='panel-body' id="dynamic_table_panel">
+                    <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
+                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
+                    </div>
                             <div id ="dynamic_table1"></div>
                     </div>
                 </form>
@@ -126,6 +141,8 @@ $(document).ready(function()
 function viewrecutdetails(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
+    $('#myModal').modal('toggle');
+    $('.loading-image').show();
     $.ajax({
 
 			type: "POST",
@@ -134,7 +151,7 @@ function viewrecutdetails(id)
 			success: function (response) 
 			{
                 document.getElementById('main-content').innerHTML = response;
-                $('#myModal').modal('toggle');
+                $('.loading-image').hide();
             }
 
     });
@@ -145,6 +162,7 @@ function viewmarkerdetails(id,flag)
     $('#myModal1').modal('toggle');
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
     var id_array = [id,flag];
+    $('.loading-image').show();
     $.ajax({
 
 			type: "POST",
@@ -153,6 +171,7 @@ function viewmarkerdetails(id,flag)
 			success: function (response) 
 			{
                 document.getElementById('dynamic_table1').innerHTML = response;
+                $('.loading-image').hide();
                
             }
 
