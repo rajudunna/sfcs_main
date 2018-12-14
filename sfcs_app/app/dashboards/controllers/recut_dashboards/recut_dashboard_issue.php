@@ -218,7 +218,7 @@ function issued_to_module($bcd_id,$qty,$ref)
     }
     //updating cps log and bts
     $update_qry_cps = "update bai_pro3.cps_log set remaining_qty = remaining_qty+$qty where doc_no = $docket_no and operation_code = 15 and size_code ='$size_id'";
-    echo $update_qry_cps.'</br>';
+    // echo $update_qry_cps.'</br>';
     mysqli_query($link, $update_qry_cps) or exit("update_qry_cps".mysqli_error($GLOBALS["___mysqli_ston"]));
     $update_qry_bcd = "update brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and operation_id = 15";
      mysqli_query($link, $update_qry_bcd) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -292,11 +292,39 @@ function issued_to_module($bcd_id,$qty,$ref)
             //     {
             //         $input_ops_code = $ops_post['operation_code'];
                     $update_qry_bcd_input = "update brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where bundle_number = $bundle_number and operation_id = $input_ops_code";
-                    echo $update_qry_bcd_input;
+                    // echo $update_qry_bcd_input;
                     mysqli_query($link, $update_qry_bcd_input) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
             //     }
             // }
-        }   
+        }
+        else
+        {
+            //retreaving rejected bundles and updating
+            $bcd_rej_qry = "select bundle_number,rejected_qty from $brandix_bts.bundle_creation_data where docket_number =$docket_no and size_id = $size_id and rejected_qty > 0";
+            echo $bcd_rej_qry;
+            $result_bcd_rej_qry = $link->query($bcd_rej_qry);
+            $result_result_bcd_rej_qry = $link->query($result_bcd_rej_qry);
+            $max_qty_rej = $qty;
+            while($bcd_row = $result_result_bcd_rej_qry->fetch_assoc()) 
+            {
+                $rejected_qty = $bcd_row['rejected_qty'];
+                $rej_bundle_number = $bcd_row['bundle_number'];
+                if($rejected_qty < $max_qty_rej)
+                {
+                    $to_update = $rejected_qty;
+                    $max_qty_rej = $max_qty_rej - $rejected_qty;
+                }
+                else
+                {
+                    $to_update = $max_qty_rej;
+                    $max_qty_rej = 0;
+                }
+                $input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);
+                $update_qry_bcd_input = "update brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where bundle_number = $rej_bundle_number and operation_id = $input_ops_code";
+                echo $update_qry_bcd_input;
+                mysqli_query($link, $update_qry_bcd_input) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
+            }
+        }  
     }
     return;
 }
