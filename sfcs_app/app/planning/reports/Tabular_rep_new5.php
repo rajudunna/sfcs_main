@@ -1,9 +1,6 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'order_status_buffer.php',0,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
-// $view_access=user_acl("SFCS_0043",$username,1,$group_id_sfcs); 
 ?>
 <?php
 error_reporting(0);
@@ -11,75 +8,106 @@ set_time_limit(6000000);
 ?>
 <html>
 <head>
-
-<style type="text/css">
-#reset_example1{
-	width : 50px;
-	color : #ec971f;
-	margin-top : 10px;
-	margin-left : 0px;
-	margin-bottom:15pt;
-}
-div.scroll {
-height: 75px;
-width: auto;
-overflow: auto;
-border: 0px solid #666;
-background-color:white;
-color:black;
-padding-left: 5px;
-padding-right: 5px;
-}
-</style>
-
-
-<SCRIPT>
-
-function SetAllCheckBoxes(FormName, FieldName, CheckValue)
-{
-	if(!document.forms[FormName])
-		return;
-	var objCheckBoxes = document.forms[FormName].elements[FieldName];
-	if(!objCheckBoxes)
-		return;
-	var countCheckBoxes = objCheckBoxes.length;
-	if(!countCheckBoxes)
-		objCheckBoxes.checked = CheckValue;
-	else
-		// set the check value for all check boxes
-		for(var i = 0; i < countCheckBoxes; i++)
-			objCheckBoxes[i].checked = CheckValue;
-}
-</SCRIPT>
-
-<script>
-
-function checkall()
-{
-	SetAllCheckBoxes('test', 'cpo[]', true);
-	SetAllCheckBoxes('test', 'buyer_div[]', true);
-	SetAllCheckBoxes('test', 'style[]', true);
-	SetAllCheckBoxes('test', 'style_id[]', true);
-	SetAllCheckBoxes('test', 'schedule[]', true);
-	SetAllCheckBoxes('test', 'color[]', true);
-}
-
-function uncheckall()
-{
-	SetAllCheckBoxes('test', 'cpo[]', false);
-	SetAllCheckBoxes('test', 'buyer_div[]', false);
-	SetAllCheckBoxes('test', 'style[]', false);
-	SetAllCheckBoxes('test', 'style_id[]', false);
-	SetAllCheckBoxes('test', 'schedule[]', false);
-	SetAllCheckBoxes('test', 'color[]', false);	
-}
-
-</script>
 <!--<link rel="stylesheet" type="text/css" media="all" href="<?= getFullURLLevel($_GET['r'],'common/js/jsdatepick-calendar/jsDatePick_ltr.min.css',1,'R'); ?>" />
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'reports/jsdatepick-calendar/jsDatePick.min.1.3.js',0,'R'); ?>"></script>-->
+<script>
+
+//<form name="test" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>" method="post">
+
+function firstbox()
+{
+	var cpo_value=document.test.cpo.value;
+	if(cpo_value!='all'){
+		window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&cpo="+cpo_value;
+		
+	}else{
+		window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&cpo="+'all';
+	}
+	
+}
+
+function secondbox()
+{
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value;
+	window.location.href = uriVal;
+}
+
+function thirdbox()
+{
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value;
+	window.location.href = uriVal;
+}
+function fourthbox()
+{
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&style_id="+document.test.style_id.value;
+	window.location.href = uriVal;
+}
+function fifthbox()
+{
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&style_id="+document.test.style_id.value+"&schedule="+document.test.schedule.value;
+	window.location.href = uriVal;
+}
+function sixthbox()
+{
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&style_id="+document.test.style_id.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value);
+	window.location.href = uriVal;
+}
+$(document).ready(function() {
+	$('#buyer_div').on('click',function(e){
+		var style = $('#cpo').val();
+		if(style == null){
+			sweetAlert('Please Select CPO','','warning');
+		}
+		
+	});
+	$('#style').on('click',function(e){
+		var cpo = $('#cpo').val();
+		var buyer_div = $('#buyer_div').val();
+		if(cpo == null && buyer_div == null){
+			sweetAlert('Please Select CPO and Buyer Division','','warning');
+		}
+		else if(buyer_div == null){
+			sweetAlert('Please Select Buyer Division','','warning');
+			document.getElementById("submit").disabled = true;
+		}
+		else {
+			document.getElementById("submit").disabled = false;
+		}
+	});
+
+	$('#style_id').on('click',function(e){
+		var cpo = $('#cpo').val();
+		var buyer_div = $('#buyer_div').val();
+		var style = $('#style').val();
+		if(cpo == null && buyer_div == null && style == null){
+			sweetAlert('Please Select CPO,Buyer Division and Style','','warning');
+		}
+	});
+	$('#schedule').on('click',function(e){
+		var cpo = $('#cpo').val();
+		var buyer_div = $('#buyer_div').val();
+		var style = $('#style').val();
+		var style_id = $('#style_id').val();
+		if(cpo == null && buyer_div == null && style == null && style_id == null){
+			sweetAlert('Please Select CPO,Buyer Division Style and User Style ID','','warning');
+		}
+	});
+	$('#color').on('click',function(e){
+		var cpo = $('#cpo').val();
+		var buyer_div = $('#buyer_div').val();
+		var style = $('#style').val();
+		var style_id = $('#style_id').val();
+		var schedule = $('#schedule').val();
+		if(cpo == null && buyer_div == null && style == null && style_id == null && schedule == null){
+			sweetAlert('Please Select CPO,Buyer Division Style,User Style ID and Schedule','','warning');
+		}
+	});
+});
+</script>
 <script type="text/javascript">
 	window.onload = function()
 	{
+		
 		new JsDatePick({
 			useMode:2,
 			target:"demo1",
@@ -105,334 +133,10 @@ function uncheckall()
 
 </head>
 
-<div class='panel panel-primary' style='height: 434px;'><div class='panel-heading'>Order Status Report</div><div class='panel-body'>
+<div class='panel panel-primary'><div class='panel-heading'>Order Status Report</div><div class='panel-body'>
 <form method="POST" name="test" action="?r=<?php echo $_GET['r'];?>">
-<?php
-	$style=$_POST['style'];
-	$schedule=$_POST['schedule'];
-	$color=$_POST['color'];
-	$cpo=$_POST['cpo'];
-	$buyer_div=$_POST['buyer_div'];
-	$style_id=$_POST['style_id'];
-	$date_filter=$_POST['date_filter'];
-	$from_date=$_POST['from_date'];
-	$to_date=$_POST['to_date'];
-	
-//NEW
-
-$cpo_code='';
-	for($i=0;$i<sizeof($cpo);$i++)
-	{
-		$cpo_code='"'.$cpo[$i].'"'.', '.$cpo_code;	
-	}
-	
-	
-	$buyer_div_code="";
-	for($i=0;$i<sizeof($buyer_div);$i++)
-	{
-		$buyer_div_code='"'.$buyer_div[$i].'"'.", ".$buyer_div_code;	
-		
-	}
-
-	$style_code="";
-	for($i=0;$i<sizeof($style);$i++)
-	{
-		$style_code="'".$style[$i]."'".", ".$style_code;	
-	}
-	
-	$style_id_code="";
-	for($i=0;$i<sizeof($style_id);$i++)
-	{
-		$style_id_code="'".$style_id[$i]."'".", ".$style_id_code;	
-	}
-	
-	
-	$schedule_code="";
-	for($i=0;$i<sizeof($schedule);$i++)
-	{
-		$schedule_code="'".$schedule[$i]."'".", ".$schedule_code;
-	}
-	
-	$color_code="";
-	for($i=0;$i<sizeof($color);$i++)
-	{
-		$color_code="'".$color[$i]."'".", ".$color_code;
-	}
-
-	
-	$criteria="";
-	
-	if(strlen($style_code)>2)
-	{
-		$criteria=$criteria." and style in (".substr($style_code,0,-2).")";
-	}
-	
-	if(strlen($schedule_code)>2)
-	{
-		$criteria=$criteria." and schedule in (".substr($schedule_code,0,-2).")";
-	}
-	
-	if(strlen($color_code)>2)
-	{
-		$criteria=$criteria." and color in (".substr($color_code,0,-2).")";
-	}
-	
-	if(strlen($style_id_code)>2)
-	{
-		$criteria=$criteria." and style_id in (".substr($style_id_code,0,-2).")";
-	}
-	
-	if(strlen($cpo_code)>2)
-	{
-		$criteria=$criteria.' and CPO in ('.substr($cpo_code,0,-2).')';
-	}
-	
-	if(strlen($buyer_div_code)>2)
-	{
-		$criteria=$criteria." and buyer_div in (".substr($buyer_div_code,0,-2).")";
-	}
-	
-	if(strlen(substr($criteria,4))>2)
-	{
-		$criteria=" where ".substr($criteria,4)." ";
-	}
-
-//NEW
-
-
-
-	
-	echo "<div class='table-responsive' id='main_content'><table class='table table-bordered table-striped'>";
-	echo "<tr class='tblheading'>";
-	echo "<td bgcolor=\"#CCFFFF\">CPO (".sizeof($cpo).")</td>";
-	echo "<td bgcolor=\"#CCFFFF\">Buyer Division (".sizeof($buyer_div).")</td>";
-	echo "<td bgcolor=\"#CCFFFF\">Style (".sizeof($style).")</td>";
-	echo "<td bgcolor=\"#CCFFFF\">User Style ID (".sizeof($style_id).")</td>";
-	echo "<td bgcolor=\"#CCFFFF\">Schedule (".sizeof($schedule).")</td>";
-	echo "<td bgcolor=\"#CCFFFF\">Color (".sizeof($color).")</td>";
-	echo "<td bgcolor=\"#CCFFFF\">ExFactory Filter</td>";
-	echo "</tr>";
-	
-	echo "<tr>";
-		echo "<td>";
-	echo '<div class="scroll">';
-
-	$sql="select distinct CPO from $bai_pro2.order_status_buffer $criteria order by CPO";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$count = mysqli_num_rows($sql_result);
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		$check=0;
-		for($i=0;$i<sizeof($cpo);$i++)
-		{
-			if(!(strcmp(trim($sql_row['CPO']),trim($cpo[$i]))))
-			{
-				echo '<input type="checkbox" name="cpo[]" value="'.$sql_row['CPO'].'" checked >'.$sql_row['CPO'].'<br>';
-				$check=1;
-			}
-		}
-		if($check==0)
-		{
-			echo '<input type="checkbox" name="cpo[]" value="'.$sql_row['CPO'].'">'.$sql_row['CPO'].'<br>';
-		}
-	}
-
-	echo "</div>";
-	echo "</td>";
-	
-	echo "<td>";
-	echo '<div  class="scroll">';
-	
-	
-	$sql="select distinct buyer_div from $bai_pro2.order_status_buffer $criteria order by buyer_div";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		$check=0;
-		for($i=0;$i<sizeof($buyer_div);$i++)
-		{
-			if(!(strcmp(trim($sql_row['buyer_div']),trim($buyer_div[$i]))))
-			{
-				echo '<input type="checkbox" name="buyer_div[]" value="'.$sql_row['buyer_div'].'"  checked>'.$sql_row['buyer_div'].'<br>';
-				$check=1;
-			}
-		}
-		if($check==0)
-		{
-			echo '<input type="checkbox" name="buyer_div[]" value="'.$sql_row['buyer_div'].'" >'.$sql_row['buyer_div'].'<br>';
-		}
-	
-	}
-	echo "</div>";
-	echo "</td>";
-	
-	echo "<td>";
-	echo '<div  class="scroll">';
-	$sql="select distinct style from $bai_pro2.order_status_buffer $criteria order by style";
-	
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		$check=0;
-		for($i=0;$i<sizeof($style);$i++)
-		{
-			if(!(strcmp(trim($sql_row['style']),trim($style[$i]))))
-			{
-				echo '<input type="checkbox" name="style[]" value="'.$sql_row['style'].'" checked>'.$sql_row['style'].'<br>';
-				$check=1;
-			}
-		}
-		if($check==0)
-		{
-			echo '<input type="checkbox" name="style[]" value="'.$sql_row['style'].'" >'.$sql_row['style'].'<br>';
-		}
-	}
-	echo "</div>";
-	echo "</td>";
-	
-	
-	echo "<td>";
-	echo '<div  class="scroll">';
-	$sql="select distinct style_id from $bai_pro2.order_status_buffer $criteria order by style_id";
-	
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		$check=0;
-		for($i=0;$i<sizeof($style_id);$i++)
-		{
-			if(!(strcmp(trim($sql_row['style_id']),trim($style_id[$i]))))
-			{
-				echo '<input type="checkbox" name="style_id[]" value="'.$sql_row['style_id'].'"  checked>'.$sql_row['style_id'].'<br>';
-				$check=1;
-			}
-		}
-		if($check==0)
-		{
-			echo '<input type="checkbox" name="style_id[]" value="'.$sql_row['style_id'].'" >'.$sql_row['style_id'].'<br>';
-		}
-	}
-	echo "</div>";
-	echo "</td>";
-	
-	
-		echo "<td>";
-	echo '<div  class="scroll">';
-	$sql="select distinct (schedule*1) as sch_no from $bai_pro2.order_status_buffer $criteria order by schedule";
-	
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		$check=0;
-		for($i=0;$i<sizeof($schedule);$i++)
-		{
-			if(!(strcmp(trim($sql_row['sch_no']),trim($schedule[$i]))))
-			{
-				echo '<input type="checkbox" name="schedule[]" value="'.$sql_row['sch_no'].'"  checked>'.$sql_row['sch_no'].'<br>';
-				$check=1;
-			}
-		}
-		if($check==0)
-		{
-			echo '<input type="checkbox" name="schedule[]" value="'.$sql_row['sch_no'].'" >'.$sql_row['sch_no'].'<br>';
-		}
-	}
-	echo "</div>";
-	echo "</td>";
-	
-		
-	
-	echo "<td>";
-	echo '<div  class="scroll">';
-	$sql="select distinct color from $bai_pro2.order_status_buffer $criteria order by color";
-	
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		$check=0;
-		for($i=0;$i<sizeof($color);$i++)
-		{
-			if(!(strcmp(trim($sql_row['color']),trim($color[$i]))))
-			{
-				echo '<input type="checkbox" name="color[]" value="'.$sql_row['color'].'"  checked>'.$sql_row['color'].'<br>';
-				$check=1;
-			}
-		}
-		if($check==0)
-		{
-			echo '<input type="checkbox" name="color[]" value="'.$sql_row['color'].'" >'.$sql_row['color'].'<br>';
-		}
-	}
-	echo "</div>";
-	echo "</td>";
-	
-	echo "<td>";
-		echo 'From: <input type="text" data-toggle="datepicker" name="from_date" value="';if($from_date==""){ echo date("Y-m-d"); } else { echo $from_date; } echo '"><br/>';
-		echo 'To: <input type="text" data-toggle="datepicker" name="to_date" value="';if($to_date==""){ echo date("Y-m-d"); } else { echo $to_date; } echo '"><br/>';
-	echo "</td>";
-	echo "</tr>";
-	
-	
-	
-	echo "<tr>";
-	echo "<td>";
-	echo '<a href="#" onclick="SetAllCheckBoxes(\'test\', \'cpo[]\', true);">ON</a> | ';
-	echo '<a href="#" onclick="SetAllCheckBoxes(\'test\', \'cpo[]\', false);">OFF</a>';
-	echo "</td>";
-	
-	echo "<td>";
-	echo '<a href="#" onclick="SetAllCheckBoxes(\'test\', \'buyer_div[]\', true);">ON</a> | ';
-	echo '<a href="#" onclick="SetAllCheckBoxes(\'test\', \'buyer_div[]\', false);">OFF</a>';
-	echo "</td>";
-	
-	
-	echo "<td>";
-	echo '<a href="#" onclick="SetAllCheckBoxes(\'test\', \'style[]\', true);">ON</a> | ';
-	echo '<a href="#" onclick="SetAllCheckBoxes(\'test\', \'style[]\', false);">OFF</a>';
-	echo "</td>";
-	
-	echo "<td>";
-	echo '<a href="#" onclick="SetAllCheckBoxes(\'test\', \'style_id[]\', true);">ON</a> | ';
-	echo '<a href="#" onclick="SetAllCheckBoxes(\'test\', \'style_id[]\', false);">OFF</a>';
-	echo "</td>";
-	
-	echo "<td>";
-	echo '<a href="#" onclick="SetAllCheckBoxes(\'test\', \'schedule[]\', true);">ON</a> | ';
-	echo '<a href="#" onclick="SetAllCheckBoxes(\'test\', \'schedule[]\', false);">OFF</a>';
-	echo "</td>";
-	
-	echo "<td>";
-	echo '<a href="#" onclick="SetAllCheckBoxes(\'test\', \'color[]\', true);">ON</a> | ';
-	echo '<a href="#" onclick="SetAllCheckBoxes(\'test\', \'color[]\', false);">OFF</a>';
-	echo "</td>";
-	
-	if($date_filter==1)
-	{
-		echo '<td>Ex. Fact. Filter:<input type="checkbox" name="date_filter" value="1" checked></td>';
-	}
-	else
-	{
-		echo '<td>Ex. Fact. Filter:<input type="checkbox" name="date_filter" value="1"></td>';
-	}
-	
-	echo "</tr>";
-	
-	echo "</table></div><br>";
-	echo '<span id="msg" style="display:none;"><b><font color="red">Please Wait...</font></b></span>';
-	echo "<input type=submit id=\"submit1\" name=\"submit1\" class='btn btn-primary' value=\"Filter\" onclick=\"document.getElementById('submit1').style.display='none'; document.getElementById('msg').style.display='';\">"; 
-	echo '<div class="pull-right"><a href="#" onclick="checkall();">Check All</a> | ';
-	echo '<a href="#" onclick="uncheckall();">Uncheck All</a> | ';
-	echo "<a href='?r=".$_GET['r']."'>Clear Filter</a></div>";
-?>
-
-</form>
 
 <?php
-
-	if($count == 0){
-			echo "<div class=' col-sm-12'><p class='alert alert-danger'>No Data Found</p></div><script>$('#main_content').hide();</script>";
-		}
-
 if(isset($_POST['submit1']))
 {
 	$style=$_POST['style'];
@@ -443,96 +147,184 @@ if(isset($_POST['submit1']))
 	$style_id=$_POST['style_id'];
 	$date_filter=$_POST['date_filter'];
 	$from_date=$_POST['from_date'];
-	// $from_date= date("Y-m-d", strtotime($_POST['from_date']));
 	$to_date=$_POST['to_date'];
-	// $to_date=date("Y-m-d", strtotime($_POST['to_date']));
-	// if (empty($style) or empty($schedule) or empty($color) or empty($cpo) or empty($buyer_div) or empty($style_id)) {
-	// 	echo '<div class="alert alert-danger">
-	// 		  <strong>Warning!</strong> Please Select atleast one Category
-	// 		</div>';
-	// } else {
-	// 	echo "Something";
-	// }
 	
-	$cpo_code='';
-	for($i=0;$i<sizeof($cpo);$i++)
-	{
-		$cpo_code='"'.$cpo[$i].'"'.', '.$cpo_code;	
+}else{
+	$style=$_GET['style'];
+	$schedule=$_GET['schedule'];
+	$color=$_GET['color'];
+	$cpo=$_GET['cpo'];
+	$buyer_div=$_GET['buyer_div'];
+	$buyer_div1=$_POST['buyer_div'];
+	$style_id=$_GET['style_id'];
+	$from_date=$_GET['from_date'];
+	$to_date=$_GET['to_date'];
+}
+?>
+<form name="test" action="<?php echo getFullURLLevel($_GET['r'],'Tabular_rep_new5.php','0','N'); ?>" method="post">
+<?php
+$sql="select distinct CPO from $bai_pro2.order_status_buffer order by CPO";	
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check=mysqli_num_rows($sql_result);
+echo "<div class=\"row\"><div class=\"col-sm-2\"><label>Select CPO:</label><select class='form-control' name=\"cpo\"  id=\"cpo\" onchange=\"firstbox();\">";
+echo "<option value='' disabled selected>Please Select</option>";
+if($cpo=="all") {
+	echo "<option value='all' selected>All</option>";
+}else{
+echo "<option value='all'>All</option>";
+}
+while($sql_row=mysqli_fetch_array($sql_result))
+{
+	
+	if(str_replace(" ","",$sql_row['CPO'])==str_replace(" ","",$cpo))
+    {
+		echo "<option value=\"".$sql_row['CPO']."\" selected>".$sql_row['CPO']."</option>";	
 	}
-	//echo " and style in (".substr($style_code,0,-2).")";
-	
-	$buyer_div_code="";
-	for($i=0;$i<sizeof($buyer_div);$i++)
-	{
-		//$buyer_div_code="'".$buyer_div[$i]."'".", ".$buyer_div_code;
-		$buyer_div_code='"'.$buyer_div[$i].'"'.", ".$buyer_div_code; //2011-08-04 issue	
-	}
-
-	
-	$style_code="";
-	for($i=0;$i<sizeof($style);$i++)
-	{
-		$style_code="'".$style[$i]."'".", ".$style_code;	
-	}
-	
-	$style_id_code="";
-	for($i=0;$i<sizeof($style_id);$i++)
-	{
-		$style_id_code="'".$style_id[$i]."'".", ".$style_id_code;	
-	}
-	
-	
-	$schedule_code="";
-	for($i=0;$i<sizeof($schedule);$i++)
-	{
-		$schedule_code="'".$schedule[$i]."'".", ".$schedule_code;
+	else{
+		echo "<option value=\"".$sql_row['CPO']."\" >".$sql_row['CPO']."</option>";
 	}
 
+}
+
+    echo "  </select>
+	</div>";
+
+	$sql_buyer="select distinct buyer_div from $bai_pro2.order_status_buffer where cpo='$cpo' order by buyer_div";
+	$sql_result1=mysqli_query($link, $sql_buyer) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check1=mysqli_num_rows($sql_result1);
+	echo "<div class=\"col-sm-3\"><label>Select Buyer Division:</label><select class='form-control' name=\"buyer_div\"  id=\"buyer_div\" onchange=\"secondbox();\">";
 	
-	$color_code="";
-	for($i=0;$i<sizeof($color);$i++)
+	echo "<option value='' disabled selected>Please Select</option>";
+	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
-		$color_code="'".$color[$i]."'".", ".$color_code;
+		
+		if(str_replace(" ","",$sql_row1['buyer_div'])==str_replace(" ","",$buyer_div))
+		 {
+			echo "<option value=\"".$sql_row1['buyer_div']."\" selected>".$sql_row1['buyer_div']."</option>";
+		}
+	
+		elseif(str_replace(" ","",$sql_row1['buyer_div'])==str_replace(" ","",$buyer_div1)){
+			echo "<option value=\"".$sql_row1['buyer_div']."\" selected>".$sql_row1['buyer_div']."</option>";
+		}
+		else{
+			echo "<option value=\"".$sql_row1['buyer_div']."\">".$sql_row1['buyer_div']."</option>";
+		}
 	}
+	echo "  </select>
+	</div>";
+	
+	$sql_style="select distinct style from $bai_pro2.order_status_buffer where cpo='$cpo' and  buyer_div='$buyer_div' order by style";
+	$sql_result2=mysqli_query($link, $sql_style) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	echo "<div class=\"col-sm-2\"><label>Select Style:</label><select class='form-control' name=\"style\"  id=\"style\" onchange=\"thirdbox();\">";
+	echo "<option value='' disabled selected>Please Select</option>";
+	while($sql_row2=mysqli_fetch_array($sql_result2))
+	{
+		
+		if(str_replace(" ","",$sql_row2['style'])==str_replace(" ","",$style)){
+			echo "<option value=\"".$sql_row2['style']."\" selected>".$sql_row2['style']."</option>";
+
+		}else{
+			echo "<option value=\"".$sql_row2['style']."\">".$sql_row2['style']."</option>";
+
+		}
+			
+	
+	}
+	echo "  </select>
+    </div>";
+    $sql_query="select distinct style_id from $bai_pro2.order_status_buffer where cpo='$cpo' and  buyer_div='$buyer_div' and style='$style' order by style_id";
+	$sql_result3=mysqli_query($link, $sql_query) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check3=mysqli_num_rows($sql_result3);
+	echo "<div class=\"col-sm-2\"><label>Select User Style ID:</label><select class='form-control' name=\"style_id\"  id=\"style_id\" onchange=\"fourthbox();\">";
+	
+	echo "<option value='' disabled selected>Please Select</option>";
+	while($sql_row3=mysqli_fetch_array($sql_result3))
+	{
+		
+		if(str_replace(" ","",$sql_row3['style_id'])==str_replace(" ","",$style_id))
+		{
+		echo "<option value=\"".$sql_row3['style_id']."\" selected>".$sql_row3['style_id']."</option>";
+		}
+		else
+		{
+	    echo "<option value=\"".$sql_row3['style_id']."\">".$sql_row3['style_id']."</option>";
+		}
+	
+	
+	}
+	echo "  </select>
+	</div>";
+	$sql_schedule="select distinct schedule from $bai_pro2.order_status_buffer where cpo='$cpo' and  buyer_div='$buyer_div' and style='$style' and style_id='$style_id' order by schedule";
+	$sql_result4=mysqli_query($link, $sql_schedule) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check4=mysqli_num_rows($sql_result4);
+	echo "<div class=\"col-sm-2\"><label>Select Schedule:</label><select class='form-control' name=\"schedule\"  id=\"schedule\" onchange=\"fifthbox();\">";
+	
+	echo "<option value='' disabled selected>Please Select</option>";
+	while($sql_row4=mysqli_fetch_array($sql_result4))
+	{
+		$schedule1=$sql_row4['schedule'];
+		//if(($_GET["schedule"])=="$schedule1")
+		if(str_replace(" ","",$sql_row4['schedule'])==str_replace(" ","",$schedule))
+		{
+			echo "<option value=\"".$sql_row4['schedule']."\" selected>".$sql_row4['schedule']."</option>";
+
+		}
+	    else{
+			echo "<option value=\"".$sql_row4['schedule']."\">".$sql_row4['schedule']."</option>";
+		}
+	
+	}
+	echo "  </select>
+	</div>";
+	
+    $sql2="select distinct color from $bai_pro2.order_status_buffer where cpo='$cpo' and  buyer_div='$buyer_div' and style='$style' and style_id='$style_id' and schedule='$schedule' order by color";
+	$sql_result5=mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check5=mysqli_num_rows($sql_result5);
+	echo "<div class=\"col-sm-3\"><label>Select Color:</label><select class='form-control' name=\"color\"  id=\"color\" onchange=\"sixthbox();\">";
+	
+	echo "<option value='' disabled selected>Please Select</option>";
+	while($sql_row5=mysqli_fetch_array($sql_result5))
+	{
+		$color1=$sql_row5['color'];
+		//if(($_GET["color"])=="$color1")
+		if(str_replace(" ","",$sql_row5['color'])==str_replace(" ","",$color))
+		{
+			echo "<option value=\"".$sql_row5['color']."\" selected>".$sql_row5['color']."</option>";
+	
+		}else{
+			echo "<option value=\"".$sql_row5['color']."\">".$sql_row5['color']."</option>";
+		}
+	
+	}
+	echo "  </select>
+	</div>";
 
 	
-	$criteria="";
+	echo "<div class=\"col-sm-3\"><label> Exfactory From:</label>";
 	
-	if(strlen($style_code)>2)
-	{
-		$criteria=$criteria." and style in (".substr($style_code,0,-2).")";
-	}
+	echo'<input type="text" data-toggle="datepicker" class="form-control"  name="from_date" value="';if($from_date==""){ echo date("Y-m-d"); } else { echo $from_date; } echo '">';
+	echo"</div>";
+	echo "<div class=\"col-sm-3\"><label> Exfactory To:</label>";
 	
-	if(strlen($schedule_code)>2)
-	{
-		$criteria=$criteria." and schedule in (".substr($schedule_code,0,-2).")";
-	}
+	echo'<input type="text" data-toggle="datepicker" class="form-control"  name="to_date" value="';if($to_date==""){ echo date("Y-m-d"); } else { echo $to_date; }  echo '">';
+	echo"</div>";
+
+	echo"</div>";
+
+
+
+       
+?>
+<input type="submit" name="submit1" value="Submit" class="btn btn-success" style="margin-top: 22px;">
+</form>
+
+<?php
+
+
+if(isset($_POST['submit1']))
+{
 	
-	if(strlen($color_code)>2)
-	{
-		$criteria=$criteria." and color in (".substr($color_code,0,-2).")";
-	}
-	
-	if(strlen($style_id_code)>2)
-	{
-		$criteria=$criteria." and style_id in (".substr($style_id_code,0,-2).")";
-	}
-	
-	if(strlen($cpo_code)>2)
-	{
-		$criteria=$criteria.' and CPO in ('.substr($cpo_code,0,-2).')';
-	}
-	
-	if(strlen($buyer_div_code)>2)
-	{
-		$criteria=$criteria." and buyer_div in (".substr($buyer_div_code,0,-2).")";
-	}
-	
-	if($date_filter==1)
-	{
-		$criteria.=" and exf_date between \"$from_date\" and \"$to_date\"";
-	}
-	
+
 	$order_status_buffer="temp_pool_db.".$username.date("YmdHis")."_"."order_status_buffer";
 	
 	$sql="create TEMPORARY table $order_status_buffer ENGINE = MyISAM select * from $bai_pro2.order_status_buffer";
@@ -553,20 +345,42 @@ if(isset($_POST['submit1']))
 	
 	$sql="delete from  $bai_pro2.ssc_code_filter";
 	mysqli_query($link, $sql) or exit("Sql Error5z".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
-	
-		
-	if(strlen(substr($criteria,4))>2)
-	{
-		$sql='';
-		$sql="select distinct ssc_code from $bai_pro2.order_status_buffer where ".substr($criteria,4);
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$sql1="insert ignore into  $bai_pro2.ssc_code_filter(ssc_code) values(\"".$sql_row['ssc_code']."\")";
-			mysqli_query($link, $sql1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$style=$_POST['style'];
+	$schedule=$_POST['schedule'];
+	$color=$_POST['color'];
+	$cpo=$_POST['cpo'];
+	$buyer_div=$_POST['buyer_div'];
+	$style_id=$_POST['style_id'];
+	$date_filter=$_POST['date_filter'];
+	$from_date=$_POST['from_date'];
+	$to_date=$_POST['to_date'];
+	if($cpo=='all'){
+		$sql11="select * from  $bai_pro2.order_status_buffer where exf_date between \"$from_date\" and \"$to_date\"";
+		$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
+	else{
+		$sql11="select * from  $bai_pro2.order_status_buffer where exf_date between \"$from_date\" and \"$to_date\"";
+		if($cpo!=''){
+			$sql11.="and cpo='$cpo'";
+		}
+		if($buyer_div!=''){
+			$sql11.="and buyer_div='$buyer_div'";
+		}
+		if($style!=''){
+			$sql11.="and style='$style'";
+		}
+		if($style_id!=''){
+			$sql11.="and style_id='$style_id'";
+		}
+		if($schedule!=''){
+			$sql11.="and schedule='$schedule'";
+		}
+		if($color!=''){
+			$sql11.="and color='$color'";
 		}
 	}
+	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result11_count=mysqli_num_rows($sql_result11);
 
 	echo '<form action="'."../".getFullURL($_GET['r'],"export_excel1.php",'R').'" method ="post" > 
 	<input type="hidden" name="csv_123" id="csv_123">
@@ -575,7 +389,7 @@ if(isset($_POST['submit1']))
 			
 			
 
-	echo "<div class='table-responsive' style=\"visibility:hidden;\"><table id=\"table1\"  class=\" table table-bordered\"><thead>";
+	echo "<div class='table-responsive'><table id=\"table1\"  class=\" table table-bordered\"><thead>";
 	echo "<tr class='info'>";
 	echo "<th>Customer Order</th>";
 	echo "<th>MPO</th>";	
@@ -598,10 +412,7 @@ if(isset($_POST['submit1']))
 	echo "<th>Ship Qty</th>";
 	echo "<th>%</th>";
 	echo "</tr></thead><tbody>";
-
-	$sql11="select distinct ssc_code from  $bai_pro2.ssc_code_filter";
-	// echo $sql11;
-	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$count=0;
 	while($sql_row11=mysqli_fetch_array($sql_result11))
 	{
 	
@@ -610,16 +421,12 @@ if(isset($_POST['submit1']))
 		$sewing_out=0;
 		$pack_qty=0;
 		$ship_qty=0;
-		
-		
 		$ssc_code=$sql_row11['ssc_code'];
-		
 		$cut_qty_today=0;
 		$sewing_in_today=0;
 		$sewing_out_today=0;
 		$pack_qty_today=0;
 		$ship_qty_today=0;
-
 		$cust_order="";
 		$cpo="";
 		$mpo="";
@@ -629,21 +436,10 @@ if(isset($_POST['submit1']))
 		$color="";
 		$exfact_date="";
 		$order_qty=0;
-		
 		$style_id="";
-
-	
-	
-		$sql="select * from $bai_pro2.style_status_summ where ssc_code=\"$ssc_code\"";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error11aa".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-		} 
-		
-		$sql1="select act_cut,act_in,output,act_fg,act_ship from $bai_pro3.bai_orders_db_confirm where order_tid=\"$ssc_code\"";
-		// echo $sql1."<br>";
-
+        $sql1="select act_cut,act_in,output,act_fg,act_ship from $bai_pro3.bai_orders_db_confirm where order_tid=\"$ssc_code\"";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$cut_qty=$sql_row1['act_cut'];
@@ -651,40 +447,6 @@ if(isset($_POST['submit1']))
 			$sewing_out=$sql_row1['output'];
 			$pack_qty=$sql_row1['act_fg'];
 			$ship_qty=$sql_row1['act_ship'];
-		
-			
-			//Taking from live
-			
-			//TO Extract Old Data
-			if($cut_qty==0)
-			{
-				$cut_qty=$sql_row['cut_qty'];
-			}
-			if($sewing_in==0)
-			{
-				$sewing_in=$sql_row['sewing_in'];
-			}
-			if($sewing_out==0)
-			{
-				$sewing_out=$sql_row['sewing_out'];
-			}
-			if($pack_qty==0)
-			{
-				$pack_qty=$sql_row['pack_qty'];
-			}
-			if($ship_qty==0)
-			{
-				$ship_qty=$sql_row['ship_qty'];
-			}
-			//To Extract Old Data
-		
-			
-			
-			$style_no=$sql_row['style'];
-			$schedule_no=$sql_row['sch_no'];
-			$color=$sql_row['color'];
-			
-
 			$sql1="select Cust_order,CPO,buyer_div,style,schedule,color,exf_date,order_qty,style_id from $bai_pro2.order_status_buffer  where ssc_code=\"$ssc_code\"";
 			// echo $sql1;
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -708,11 +470,7 @@ if(isset($_POST['submit1']))
 			
 			
 			}
-			
-			
-			
 			echo "<tr>";
-			
 			echo "<td>$cust_order</td>";
 			echo "<td>$mpo</td>";
 			echo "<td>$cpo</td>";
@@ -778,15 +536,16 @@ if(isset($_POST['submit1']))
 			}
 
 			echo "</tr>";
+			$count++;	
 		}
-    
-
-
 	}
 	echo "</tbody></table></div>"; 
 	if($sql_result1_count==0){
 		echo"<style>#table1{display:none;}</style>";
 		echo"<style>#excel{display:none;}</style>";
+	}
+	if($count==0 or $sql_result11_count == 0){
+		echo "<div class=' col-sm-12'><p class='alert alert-danger'>No Data Found</p></div><script>$('#main_content').hide();</script>";
 	}
 	
 }
