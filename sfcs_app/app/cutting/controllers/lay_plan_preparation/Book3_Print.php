@@ -378,7 +378,7 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 		$mklength=$sql_row2['mklength'];
 		$mk_file=$sql_row2['remarks'];
 		
-		$sql22="select * from $bai_pro3.marker_ref_matrix where cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=$system_width";
+		$sql22="select * from $bai_pro3.marker_ref_matrix where cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=\"$system_width\"";
 		$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row22=mysqli_fetch_array($sql_result22))
 		{

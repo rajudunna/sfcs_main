@@ -252,7 +252,7 @@ if(isset($_POST['submit']))
 			$docket_tmp[]=$row881['doc_no']; 
 		} 
 		$docket_t=implode(",", $docket_tmp); 
-		$sql882="select * from $bai_pro3.plandoc_stat_log where org_doc_no in (".$docket_t.")"; 
+		$sql882="select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no in (".$docket_t.")"; 
 		//echo $sql882."<br>";
 		$result882=mysqli_query($link, $sql882) or die("Error=8".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		if(mysqli_num_rows($result882)>0)
@@ -261,7 +261,7 @@ if(isset($_POST['submit']))
 			{ 
 				$docket_t_cmp[]=$row882['doc_no']; 
 			} 
-			$docket_t_c=implode(",", $docket_t_cmp); 
+			$docket_t_c = '"'.implode('","', $docket_t_cmp).'"';; 
 			$sql8831="select * from $brandix_bts.tbl_cut_master where doc_num in (".$docket_t_c.")"; 
 			//echo $sql8831."<br>";
 			$result8831=mysqli_query($link, $sql8831) or die("Error=8".mysqli_error($GLOBALS["___mysqli_ston"])); 

@@ -233,7 +233,6 @@ for($i=0;$i<sizeof($cat_db);$i++)
 	{
 		$newyy=0;
 		$sql2="select mk_ref,p_plies,cat_ref,allocate_ref from $bai_pro3.plandoc_stat_log where order_tid like \"%$schedule%\" and cat_ref=\"$cat_db[$i]\"and allocate_ref>0";
-		//mysqli_query($sql2,$link) or exit("Sql Error6".mysqli_error());
 		$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error6".mysqli_error());
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{
@@ -241,7 +240,7 @@ for($i=0;$i<sizeof($cat_db);$i++)
 			$new_plies=$sql_row2['p_plies'];
 			$mk_ref=$sql_row2['mk_ref'];
 			//$sql22="select mklength from maker_stat_log where tid=$mk_ref";
-			$sql22="select marker_length as mklength from $bai_pro3.marker_ref_matrix where marker_width=$purwidths[$i] and cat_ref=".$sql_row2['cat_ref']." and allocate_ref=".$sql_row2['allocate_ref'];
+			$sql22="select marker_length as mklength from $bai_pro3.marker_ref_matrix where marker_width='".$purwidths[$i]."' and cat_ref=".$sql_row2['cat_ref']." and allocate_ref=".$sql_row2['allocate_ref'];
 			//mysqli_query($sql22,$link) or exit("Sql Error".mysqli_error());
 			$sql_result22=mysqli_query($link,$sql22) or exit("Sql Error7".mysqli_error());
 			while($sql_row22=mysqli_fetch_array($sql_result22))
