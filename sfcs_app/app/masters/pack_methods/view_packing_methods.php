@@ -19,7 +19,9 @@
 	if ($result->num_rows > 0) {
 		echo "<table id='tbl_packing_method' class='table'><thead><tr><th>S.No</th><th>Packing Method</th><th>Status</th><th> Edit / Delete </th></tr></thead><tbody>";
 		// output data of each row
+		$i=0;
 		while($row = $result->fetch_assoc()) {
+			$i++;
 			$rowid=$row["pack_id"];
 			$pack_method_name=$row["pack_method_name"];
 			$status=$row["status"];
@@ -28,7 +30,7 @@
 			}else{
 				$status="In-Active";
 			}
-			echo "<tr><td>".$row["pack_id"]."</td><td>".$row["pack_method_name"]." </td><td>".$status."</td><td><a href='$url&rowid=$rowid&pack_method_name=$pack_method_name&status=$status' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1==&rowid=$rowid&pack_method_name=$pack_method_name&status=$status' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
+			echo "<tr><td>".$i."</td><td>".$row["pack_method_name"]." </td><td>".$status."</td><td><a href='$url&rowid=$rowid&pack_method_name=$pack_method_name&status=$status' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1==&rowid=$rowid&pack_method_name=$pack_method_name&status=$status' class='btn btn-danger btn-xs editor_remove' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
 		}
 		echo "</tbody></table>";
 	} else {
@@ -41,7 +43,26 @@
 <script>
 $(document).ready(function() {
     $('#tbl_packing_method').DataTable();
-} );
+});
+function confirm_delete(e,t)
+    {
+        e.preventDefault();
+        var v = sweetAlert({
+        title: "Are you sure to Delete the Record?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+        }).then(function(isConfirm){
+        if (isConfirm) {
+        window.location = $(t).attr('href');
+        return true;
+        } else {
+        sweetAlert("Request Cancelled",'','error');
+        return false;
+        }
+        });
+    }
 </script>
 <style>
 table th
