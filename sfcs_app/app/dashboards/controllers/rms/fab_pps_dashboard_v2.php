@@ -629,9 +629,11 @@
                     {
                         $order_div_ref='';
                     }   
-                        
+                     
+                   $sections = "'".str_replace(",","','",$section_mods)."'"; 
+                   
                     // Ticket #976613 change the buyer division display based on the pink,logo,IU as per plan_modules
-                    $sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1";
+                    $sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$sections.") order by module_id*1";
                     //echo $sql1d."<br>";
                     $qty_view_status=$_GET["view_qty"];
                     $sql_num_checkd=0;
@@ -664,7 +666,7 @@
                             $module=$mods[$x];
                             $blink_check=0;
                             
-                            $sql11="select sum(ims_qty-ims_pro_qty) as \"wip\" from $bai_pro3.ims_log where ims_mod_no=$module";
+                            $sql11="select sum(ims_qty-ims_pro_qty) as \"wip\" from $bai_pro3.ims_log where ims_mod_no='$module'";
                             $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 11".mysqli_error($GLOBALS["___mysqli_ston"]));
                             while($sql_row11=mysqli_fetch_array($sql_result11))
                             {
@@ -709,8 +711,8 @@
 
                             //Filter view to avoid Cut Completed and Fabric Issued Modules
 
-                            $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status = 'DONE') OR (a_plies = p_plies AND act_cut_status != 'DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
-                            SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status = 'DONE') OR (a_plies = p_plies AND act_cut_status != 'DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
+                            $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module='$module'  AND ((a_plies != p_plies AND act_cut_status = 'DONE') OR (a_plies = p_plies AND act_cut_status != 'DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
+                            SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module='$module'  AND ((a_plies != p_plies AND act_cut_status = 'DONE') OR (a_plies = p_plies AND act_cut_status != 'DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
 
                             // var_dump($sql1);
                             
@@ -718,15 +720,15 @@
                             //Filter view to avoid Cut Completed and Fabric Issued Modules
                             if($_GET['view']==1)
                             {
-                                $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND fabric_status_new='5' AND ((a_plies != p_plies AND act_cut_status!='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
-                                SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND fabric_status_new='5' AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by log_time limit $priority_limit";
+                                $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module='$module' AND fabric_status_new='5' AND ((a_plies != p_plies AND act_cut_status!='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
+                                SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module='$module' AND fabric_status_new='5' AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by log_time limit $priority_limit";
                                 $view_count=0;
                             }       
                             //filter to show only cut completed
                             if($_GET['view']==3)
                             {
-                                $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND ((a_plies != p_plies AND act_cut_status!='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
-                                SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
+                                $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module='$module' AND ((a_plies != p_plies AND act_cut_status!='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
+                                SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module='$module' AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
                                 $view_count=0;
                             }
                            
@@ -785,8 +787,8 @@
                                 if($sql_row1['clubbing']>0)
                                 {
                                     $tids=array();
-									$total_qty=0;
-                                    $sql11="select order_tid,order_col_des,color_code,doc_no,(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where UPPER(category) in (".$in_categories.") and order_del_no=$schedule and clubbing=".$sql_row1['clubbing']." and acutno='".$cut_no."'";
+                  $total_qty=0;
+                                    $sql11="select order_tid,order_col_des,color_code,doc_no,(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where UPPER(category) in (".$in_categories.") and order_del_no='$schedule' and clubbing=".$sql_row1['clubbing']." and acutno='".$cut_no."'";
                                     //echo "</br>RMS tool Tip:".$sql11."</br>";
                                     $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 22".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     while($sql_row11=mysqli_fetch_array($sql_result11))
@@ -795,15 +797,15 @@
                                         $club_docs[]=$sql_row11['doc_no'];
                                         $total_qty+=$sql_row11['total'];
                                         $colors_db[]=trim($sql_row11['order_col_des']);
-										$tids[]=$sql_row11['order_tid'];
+                    $tids[]=$sql_row11['order_tid'];
                                     }
-									$sql111="select min(st_status) as s_status,min(ft_status) as f_status from $bai_pro3.bai_orders_db_confirm where order_tid in ('".implode("','",$tids)."')";
-									$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error 18".mysqli_error($GLOBALS["___mysqli_ston"]));
-									while($sql_row112=mysqli_fetch_array($sql_result111))
-									{
-										$ft_status=$sql_row112['f_status'];
-									}									
-									// $sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" and order_joins=2";
+                  $sql111="select min(st_status) as s_status,min(ft_status) as f_status from $bai_pro3.bai_orders_db_confirm where order_tid in ('".implode("','",$tids)."')";
+                  $sql_result111=mysqli_query($link, $sql111) or exit("Sql Error 18".mysqli_error($GLOBALS["___mysqli_ston"]));
+                  while($sql_row112=mysqli_fetch_array($sql_result111))
+                  {
+                    $ft_status=$sql_row112['f_status'];
+                  }                 
+                  // $sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" and order_joins=2";
                                     // $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 18".mysqli_error($GLOBALS["___mysqli_ston"]));                                    
                                     // if(mysqli_num_rows($sql_result11)>0)
                                     // {
@@ -817,7 +819,7 @@
                                                 // break;
                                             // }
                                         // }
-										// $ft_status=$join_ft_status;
+                    // $ft_status=$join_ft_status;
                                     // }
                                 }
                                 else
@@ -825,23 +827,23 @@
                                     $colors_db[]=$color;
                                     $club_c_code[]=chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3);
                                     $club_docs[]=$doc_no;
-									$tids=array();
-									//NEW FSP if it has schedule Clubbing 
-									$sql11="select * from $bai_pro3.plandoc_stat_log where org_doc_no='".$doc_no."'";
+                  $tids=array();
+                  //NEW FSP if it has schedule Clubbing 
+                  $sql11="select * from $bai_pro3.plandoc_stat_log where org_doc_no='".$doc_no."'";
                                     $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 18".mysqli_error($GLOBALS["___mysqli_ston"]));                                    
                                     if(mysqli_num_rows($sql_result11)>0)
                                     {
                                         while($sql_row11=mysqli_fetch_array($sql_result11))
                                         {
-											$tids[]=$sql_row11['order_tid'];
+                      $tids[]=$sql_row11['order_tid'];
                                         }
-										$sql111="select min(st_status) as s_status,min(ft_status) as f_status from $bai_pro3.bai_orders_db_confirm where order_tid in ('".implode("','",$tids)."')";
-										$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error 18".mysqli_error($GLOBALS["___mysqli_ston"]));
-										while($sql_row112=mysqli_fetch_array($sql_result11))
+                    $sql111="select min(st_status) as s_status,min(ft_status) as f_status from $bai_pro3.bai_orders_db_confirm where order_tid in ('".implode("','",$tids)."')";
+                    $sql_result111=mysqli_query($link, $sql111) or exit("Sql Error 18".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($sql_row112=mysqli_fetch_array($sql_result11))
                                         {
-											$ft_status=$sql_row112['f_status'];
-										}
-									}
+                      $ft_status=$sql_row112['f_status'];
+                    }
+                  }
                                 }
                                 unset($tids);
                                 $colors_db=array_unique($colors_db);
@@ -859,17 +861,17 @@
                                 {
                                     $fab_status = 5;
                                 }
-								
-								$fab_issue2_query="select * from $bai_pro3.plan_dashboard where fabric_status='1' and doc_no IN (".implode(",",$club_docs).")";
-								// echo $fab_issue2_query."<br>";
-								
-								$fab_isuue2_result=mysqli_query($link, $fab_issue2_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-								if(mysqli_num_rows($fab_isuue2_result)>0)
-								{
-									$fab_status="1";
+                
+                $fab_issue2_query="select * from $bai_pro3.plan_dashboard where fabric_status='1' and doc_no IN (".implode(",",$club_docs).")";
+                // echo $fab_issue2_query."<br>";
+                
+                $fab_isuue2_result=mysqli_query($link, $fab_issue2_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+                if(mysqli_num_rows($fab_isuue2_result)>0)
+                {
+                  $fab_status="1";
                                 }
                                 // echo "Fab=".$fab_status."<br>";
-							$fab_request_query="select * from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$club_docs).")";
+              $fab_request_query="select * from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$club_docs).")";
                                 $fab_request_result=mysqli_query($link, $fab_request_query) or exit("error while getting fab Requested details");
 
                                 if ($fab_status==5)
@@ -883,10 +885,10 @@
                                         $rem="Fabric issued";
                                     }
                                 }
-								elseif($fab_status==1){
-									$final_cols = 'pink';
+                elseif($fab_status==1){
+                  $final_cols = 'pink';
                                     $rem="Ready To issue";
-								}
+                }
                                 elseif (mysqli_num_rows($fab_request_result)>0)
                                 {
                                     $final_cols = 'green';
@@ -950,7 +952,7 @@
                                 
 
                                 // Ticket #688771 Display IU modues Priorit boxes with "IU" Symbol.
-                                $sqlt="SELECT * from $bai_pro3.plan_dash_doc_summ where module=$module and doc_no=$doc_no and act_cut_issue_status<>\"DONE\"" ;
+                                $sqlt="SELECT * from $bai_pro3.plan_dash_doc_summ where module='$module' and doc_no=$doc_no and act_cut_issue_status<>\"DONE\"" ;
                                     // echo $sqlt;
                                 $sql_result12=mysqli_query($link, $sqlt) or exit("Sql Error 23".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 $check_num_rows=mysqli_num_rows($sql_result12);     
@@ -1006,7 +1008,7 @@
                                 // }
                             }
                             //Ticket #663887 dispaly the buyer name of module at the end of boxes
-                            $sqly="select buyer_div from $bai_pro3.plan_modules where module_id=$module";
+                            $sqly="select buyer_div from $bai_pro3.plan_modules where module_id='$module'";
                             //echo $sqly."<br>";
                             $sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error 24".mysqli_error($GLOBALS["___mysqli_ston"]));
                             while($sql_rowy=mysqli_fetch_array($sql_resulty))
