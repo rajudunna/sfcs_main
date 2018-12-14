@@ -163,11 +163,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                                 <label for='rejection_qty'>Rejected Qty</label> 
                                 <input type='text' class='form-control integer' name='rejection_qty' id='rejection_qty'>
                             </div>
-                            <div class='col-sm-2'>
+                            <div class='col-sm-1'>
                                 <label for='add_rejection'>&nbsp;</label><br/>
                                 <input type='button' class='btn btn-warning' value='+' name='add_rejection' id='add_rejection'>
                             </div>
-                            <div class='col-sm-offset-1 col-sm-2'>
+                            <div class='col-sm-offset-1 col-sm-3'>
                                 <label for='save_rejection'>&nbsp;</label><br/>
                                 <input type='button' class='btn btn-primary confirm-submit' value='Save' name='save_rejection' id='save_rejection'>&nbsp;
                                 <input type='button' class='btn btn-danger' value='clear' name='clear_rejection' id='clear_rejection'>
@@ -220,6 +220,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $('.user_msg').css({'display':'none'});
         $('#hide_details_reported').css({'display':'none'});
         clear_all();
+        $('#save_rejection').css({'display':'block'});
         load_details(doc_no);
     });
 
@@ -525,7 +526,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#d_cut_issue_status').html(data.fab_status);
             $('#d_good_pieces').html(data.good_pieces);
             $('#d_rej_pieces').html(data.rej_pieces);
-            $('#d_date').html();
+            $('#d_date').html(data.date);
             $('#d_section').html(data.section);
             $('#d_module').html(data.module);
             $('#d_shift').html(data.shift);
