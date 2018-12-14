@@ -180,8 +180,25 @@ if(isset($_GET['tid']))
 	}
 	
 	// echo "<br>Form=".$form."<br><br>";
+	$reason = array();	$r_reasons = array();	$reason_qty = array();
 	$rejections_ref_explode=explode("$",$rejections_ref);
-	
+	for ($i=0; $i < sizeof($rejections_ref_explode); $i++)
+	{ 
+		$rejections_ref_explode_ref=explode("-",$rejections_ref_explode[$i]);
+		$reason[] = $rejections_ref_explode_ref[0];
+		$reason_qty[] = $rejections_ref_explode_ref[1];
+	}
+
+	for ($z=0; $z < sizeof($reason); $z++)
+	{ 
+		$rej_code="select m3_reason_code from $bai_pro3.bai_qms_rejection_reason where form_type='".$form."' and reason_code='".$r_reasons_code[$z]."'";
+		$rej_code_sql_result=mysqli_query($link,$rej_code) or exit("m3_reason_code Error".$ops_dependency.mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($rej_code_row = mysqli_fetch_array($rej_code_sql_result))
+		{
+			$r_reasons[]=$rej_code_row["m3_reason_code"];
+		}
+	}
+	// die();
 	$bts_update="update $brandix_bts.bundle_creation_data set rejected_qty=rejected_qty-".$qms_qty." where bundle_number='".$bundle_no_ref."' and input_job_no_random_ref='".$input_job_no."' and operation_id='".$operation_id."' and assigned_module='".$module_ref."' and size_title='".$qms_size."'";
 	// echo $bts_update."<br>";
 	mysqli_query($link, $bts_update) or die("Sql error".$bts_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
@@ -190,6 +207,8 @@ if(isset($_GET['tid']))
 	// echo $bts_insert;
 	mysqli_query($link,$bts_insert) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	
+	$updated = updateM3TransactionsRejectionsReversal($bundle_no_ref,$operation_id,$reason_qty,$r_reasons);
+
 	//Insert selected row into table deleted table
 	$sql1="insert ignore into $bai_pro3.bai_qms_db_deleted select * from bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
 	// echo $sql1."<br>";
@@ -207,23 +226,23 @@ if(isset($_GET['tid']))
 	
 	//To update M3 Bulk Upload Tool (To pass negative entry)
 	
-	for($i=0;$i<sizeof($rejections_ref_explode);$i++)
-	{	
+	// for($i=0;$i<sizeof($rejections_ref_explode);$i++)
+	// {	
 		// echo $rejections_ref_explode[$i]."<br><br>";
 		
-		$rejections_ref_explode_ref=explode("-",$rejections_ref_explode[$i]);	
+		// $rejections_ref_explode_ref=explode("-",$rejections_ref_explode[$i]);	
 
-		$rej_code="select m3_reason_code from $bai_pro3.bai_qms_rejection_reason where form_type='".$form."' and reason_code='".$rejections_ref_explode_ref[0]."'";
-		$rej_code_sql_result=mysqli_query($link,$rej_code) or exit("m3_reason_code Error".$ops_dependency.mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($rej_code_row = mysqli_fetch_array($rej_code_sql_result))
-		{
-			$m3_reason_code=$rej_code_row["m3_reason_code"];
-		}
+		// $rej_code="select m3_reason_code from $bai_pro3.bai_qms_rejection_reason where form_type='".$form."' and reason_code='".$rejections_ref_explode_ref[0]."'";
+		// $rej_code_sql_result=mysqli_query($link,$rej_code) or exit("m3_reason_code Error".$ops_dependency.mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($rej_code_row = mysqli_fetch_array($rej_code_sql_result))
+		// {
+		// 	$m3_reason_code=$rej_code_row["m3_reason_code"];
+		// }
 		
-		$sql2="insert into $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_log_user,sfcs_status,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref,sfcs_remarks) select NOW(),sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,".($rejections_ref_explode_ref[1]*-1).",'".$m3_reason_code."',USER(),0,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift, m3_op_des,sfcs_tid_ref,sfcs_remarks from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_job_no='".$input_job_no."' and m3_op_code='".$operation_id."' and m3_size='".$qms_size."' and length(sfcs_reason)!=0 limit 1 ";
+		// $sql2="insert into $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_log_user,sfcs_status,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref,sfcs_remarks) select NOW(),sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,".($rejections_ref_explode_ref[1]*-1).",'".$m3_reason_code."',USER(),0,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift, m3_op_des,sfcs_tid_ref,sfcs_remarks from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_job_no='".$input_job_no."' and m3_op_code='".$operation_id."' and m3_size='".$qms_size."' and length(sfcs_reason)!=0 limit 1 ";
 		// echo $sql2."<br>";
-		mysqli_query($link, $sql2) or die("Sql error".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
-	}
+		// mysqli_query($link, $sql2) or die("Sql error".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
+	// }
 	
 	echo "<div id=\"fade1\" >";
 	echo "<script>sweetAlert('Record Deleted Successfully','','success')</script>";
