@@ -321,12 +321,11 @@ function issued_to_module($bcd_id,$qty,$ref)
                 }
                 $input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);
                 $update_qry_bcd_input = "update brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where bundle_number = $rej_bundle_number and operation_id = $input_ops_code";
-                echo $update_qry_bcd_input;
+                // echo $update_qry_bcd_input;
                 mysqli_query($link, $update_qry_bcd_input) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
         }  
     }
-    die();
     return;
 }
 $shifts_array = ["IssueToModule","AlreadyIssued","WaitingForApproval","UpdateMarkers","ReportPending"];

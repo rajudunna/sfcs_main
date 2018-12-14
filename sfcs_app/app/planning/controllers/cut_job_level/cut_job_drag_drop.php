@@ -878,7 +878,7 @@
 														{
                                                            $doc_no2 = $sql_row12['doc_no'];
 
-                                                           $delete_docs = "delete * from $bai_pro3.cutting_table_plan where doc_no_ref='$doc_no2'";
+                                                           $delete_docs = "delete from $bai_pro3.cutting_table_plan where doc_no_ref='$doc_no2'";
 
                                                            mysqli_query($link, $delete_docs) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
                                                         }

@@ -3398,7 +3398,7 @@ tags will be replaced.-->
 			$divide=$divide1;
 			$t=$s+5;//starting 4 plus one
 		}
-		//echo $t."---".$divide."<br>"; 
+		//echo $temp."--".$t."---".$divide."<br>"; 
 		if(($t) % $divide == 0)
 		{
 			$temp_len = $s+1;
@@ -3440,6 +3440,7 @@ tags will be replaced.-->
 			{
 				if((($m+1) % $divide) == 0) 
 				{
+					
 					echo "<th style='border:.5pt solid black;'>Ratio</th>";
 					echo "</tr>";
 					for($j=0;$j<sizeof($color_codes);$j++)
@@ -3633,7 +3634,7 @@ tags will be replaced.-->
 							echo "<tr>";
 							echo "<td style='border:.5pt solid black;'>".$fab_bind[$j]."</td>";
 							echo "<td style='border:.5pt solid black;'>".$total_yds[$j]."</td>";
-							$fab_total+=$fab_bind;
+							$fab_total+=$fab_bind[$j];
 							echo "</tr>";
 						}
 						echo "</table>";
@@ -3726,11 +3727,17 @@ tags will be replaced.-->
 				for($j=0;$j<sizeof($color_codes);$j++)
 				{
 					echo "</tr><tr style='height:40px'>";
+					if($temp==0){
+					echo "<td style='border:.5pt solid black;'>".'<div id="bcTarget'.$j.'" style="width:auto;"></div><script>$("#bcTarget'.$j.'").barcode("D'.$docs[$j].'", "code39",{barWidth:2,barHeight:15,moduleSize:5,fontSize:0});</script>'."</td>";
+					echo "<td style='border:.5pt solid black;'>".$color_codes[$j]."</td>";
+					echo "<td style='border:.5pt solid black;'>".chr($cc_code[$j]).leading_zeros($cut_no, 3)."</td>";
+					echo "<td style='border:.5pt solid black;'>".$docs[$j]."</td>";
+					}
 					for($k=$temp_len1;$k<$total_size;$k++)
 					{
 						echo "<td style='border:.5pt solid black;'>".$qty[$k]."</td>";
 					}
-					echo $j.'$j';
+					//echo $j.'$j';
 					echo "<td style='border:.5pt solid black;'>".$a_ratio_tot."</td>";
 					echo "<td style='border:.5pt solid black;'>".round( $plies[$j] , 2 )."</td>";
 					echo "<th style='border:.5pt solid black;'>".($a_ratio_tot)*($plies[$j])."</th>";

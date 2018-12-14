@@ -806,6 +806,7 @@ foreach ($b_tid as $key=>$value)
 	$result_select_send_qty = $link->query($select_send_qty);
 	if($result_select_send_qty->num_rows >0)
 	{
+		// echo "bundle".$b_tid[$key].'-';
 		$table_name = 'bundle_creation_data';
 		while($row = $result_select_send_qty->fetch_assoc()) 
 		{
@@ -815,7 +816,9 @@ foreach ($b_tid as $key=>$value)
 			$recut_in = $row['recut_in'];
 			$replace_in = $row['replace_in'];
 			$act_reciving_qty = $b_rep_qty[$key]+$b_rej_qty[$key];
+			// echo $pre_recieved_qty.'-'.$act_reciving_qty.'-'.$rejected_qty.'</br>';
 			$total_rec_qty = $pre_recieved_qty+$act_reciving_qty+$rejected_qty;
+			// echo $total_rec_qty.'-'.$send_qty.'</br>';
 			if($total_rec_qty > $send_qty)
 			{
 				$concurrent_flag = 1;
