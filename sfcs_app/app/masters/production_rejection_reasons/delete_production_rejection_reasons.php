@@ -11,12 +11,19 @@ $conn=$link;
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
-$url=getFullURL($_GET['r'],'save_production_rejection_reasons','N');
+$url=getFullURL($_GET['r'],'save_production_rejection_reasons.php','N');
 	
 $delete="delete from $bai_pro3.bai_qms_rejection_reason where sno='$sno'";
-// echo $delete;
-$sql_result=mysqli_query($link, $delete) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-    echo "<script>window.location = '".$url."'</script>";
+
+// $sql_result=mysqli_query($link, $delete) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+//     echo "<script>window.location = '".$url."'</script>";
+
+if (mysqli_query($conn, $delete)) {
+echo "<script>window.location.href = \"$url\"</script>";
+    
+} else {
+    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+}
 
 //header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2Rvd250aW1lcmVhc29uL2Rvd25fdGltZV9yZWFzb25fYWRkLnBocA==');
 ?>

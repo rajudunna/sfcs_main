@@ -61,7 +61,7 @@
 			    <label class="control-label control-label-left col-sm-3" value="" for="department">Start Time</label>
 			    <div class="controls col-sm-9">
                 <div class="dropdown">
-                <SELECT name="time_display" id="start" value="<?php echo $start_time ; ?>" class="form-control">
+                <SELECT name="time_display" id="start" value="<?php echo $start_time ; ?>" class="form-control" onchange="calculate()">
 
                 <?php 
                 for($hours=1; $hours<13; $hours++)
@@ -156,12 +156,15 @@
 <?php include('view_plant_timings.php'); ?>
 </body>
 <script>
+$(document).ready(function() {
+    document.getElementById("department").value = '01';
+});
     function calculate(){
         var v1 = document.getElementById("start").value;
         var v2 = document.getElementById("start1").value;
   
        var day_time = document.getElementById("day_part").value;
-       if(day_time=='AM'){
+       if(day_time=='AM' || day_time==''){
       
         var sh = v1.substr(0,2);
 
@@ -169,7 +172,7 @@
            var new1 = sh;
            
         document.getElementById("department").value = new1;
-       } else {
+       } else if(day_time=='PM') {
         var sh = v1.substr(0,2);
         var sm = v1.substr(2,4);
         var new1 = parseInt(sh)+12;

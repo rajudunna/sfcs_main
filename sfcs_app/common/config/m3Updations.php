@@ -69,7 +69,7 @@ function updateM3Transactions($ref_id,$op_code,$qty)
             $mo_number = $nop_qry_row['mo_no'];
             $mo_quantity = $nop_qry_row['bundle_quantity'];
             $good_quantity_past = $nop_qry_row['good_quantity'];
-            $rejected_quantity_past = $nop_qry_row['rejected_quantity'];
+            $rejected_quantity_past = 0;
             $id = $nop_qry_row['mq_id'];
             $ops_des = $nop_qry_row ['op_desc'];
             $balance_max_updatable_qty = $mo_quantity - ($good_quantity_past + $rejected_quantity_past);
@@ -355,7 +355,9 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
             $main_ops_code = $row_bundle_creation_data_check_result['Main_OperationNumber'];
         }
     }
-    
+    if($op_code == 15)
+        $main_ops_code = $op_code;
+        
     $b_shift  = $input_shift;
     $b_module = $plan_module;
 

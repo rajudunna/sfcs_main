@@ -163,11 +163,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                                 <label for='rejection_qty'>Rejected Qty</label> 
                                 <input type='text' class='form-control integer' name='rejection_qty' id='rejection_qty'>
                             </div>
-                            <div class='col-sm-2'>
+                            <div class='col-sm-1'>
                                 <label for='add_rejection'>&nbsp;</label><br/>
                                 <input type='button' class='btn btn-warning' value='+' name='add_rejection' id='add_rejection'>
                             </div>
-                            <div class='col-sm-offset-1 col-sm-2'>
+                            <div class='col-sm-offset-1 col-sm-3'>
                                 <label for='save_rejection'>&nbsp;</label><br/>
                                 <input type='button' class='btn btn-primary confirm-submit' value='Save' name='save_rejection' id='save_rejection'>&nbsp;
                                 <input type='button' class='btn btn-danger' value='clear' name='clear_rejection' id='clear_rejection'>
@@ -220,6 +220,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $('.user_msg').css({'display':'none'});
         $('#hide_details_reported').css({'display':'none'});
         clear_all();
+        $('#save_rejection').css({'display':'block'});
         load_details(doc_no);
     });
 
@@ -249,7 +250,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 return swal('Please Fill Rejections','','error');
         }
         //Rejections Validation End
-
+        $('#submit').css({'display':'none'});
         var user_msg = '';
         var form_data = {
                          doc_no:post_doc_no,doc_target_type:doc_target_type,shift:shift,
@@ -294,7 +295,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $('#d_color').html('');
         $('#d_doc_type').html('');
         $('#d_cut_no').html('');
-        $('#rejection_size').html('');
+        $('#rejection_size').empty();
         $('#rejections_table_body').empty();
         $('#size_details').hide();
         $('#size_details_body').empty();
@@ -309,6 +310,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     $('#clear_rejection').on('click',function(){
         if(total_rejected_pieces > 0){
             clear_all();
+            $('#save_rejection').css({'display':'block'});
             $('#rejections_modal').modal('toggle');
         }else{
             swal('Nothing To Clear');
@@ -336,7 +338,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         if(c_plies == 0){
             return swal('Please Enter Reporting Plies','','error');
         }
-        
+        $('#rejection_size').empty();
         if(ret > 0){
             if( ret > avl_to_reject ){
                 $('#rejection_pieces').val(0);
@@ -458,6 +460,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             rejections_flag = 1;
             swal('Ok! Saved Temporarily','','success');
             $('#rejections_modal').modal('toggle');
+            $('#save_rejection').css({'display':'none'});
         }    
     });
 
@@ -523,7 +526,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#d_cut_issue_status').html(data.fab_status);
             $('#d_good_pieces').html(data.good_pieces);
             $('#d_rej_pieces').html(data.rej_pieces);
-            $('#d_date').html();
+            $('#d_date').html(data.date);
             $('#d_section').html(data.section);
             $('#d_module').html(data.module);
             $('#d_shift').html(data.shift);

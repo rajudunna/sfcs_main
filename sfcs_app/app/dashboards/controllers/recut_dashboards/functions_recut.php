@@ -124,13 +124,13 @@ function RecutProcess($recut_id_edit)
             $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id  FROM `bai_pro3`.`rejection_log_child` rc LEFT JOIN `brandix_bts`.`tbl_orders_ops_ref` ops
             ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id and category = '$cat' group by doc_no,size_title";
             // echo $getting_full_cut_details;
-           $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Recut Allowed Qty</th><th>Replaced Qty</th><th>Elegible to recut Qty</th><th>Recut Qty</th></tr></thead><tbody>";
+           $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Recut Allowed Qty</th><th>Replaced Qty</th><th>Eligible to recut Qty</th><th>Recut Qty</th></tr></thead><tbody>";
         }
         else
         {
             $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id FROM `bai_pro3`.`rejection_log_child` rc LEFT JOIN `brandix_bts`.`tbl_orders_ops_ref` ops
             ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id and category = '$cat' group by input_job_no_random_ref,assigned_module,size_title";
-            $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Recut Allowed Qty</th><th>Replaced Qty</th><th>Elegible to recut Qty</th><th>Recut Qty</th></tr></thead><tbody>";
+            $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Recut Allowed Qty</th><th>Replaced Qty</th><th>Eligible to recut Qty</th><th>Recut Qty</th></tr></thead><tbody>";
         }
         // echo $getting_full_cut_details.'</br>';
         //set and reset processs
@@ -167,18 +167,19 @@ function RecutProcess($recut_id_edit)
             $table_data .= "<td>".$row_cat['replaced_qty']."</td>";
             $rem_string = $s_no.'rems';
             $table_data .= "<td id='$rem_string'>".$remaining_qty."</td>";
-            $table_data .= "<td><input class='form-control integer' type = 'Number' name='recutval[]' value='0' id='$s_no' onchange='validationrecutindividual($s_no)' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)'></td>";
+            $table_data .= "<td><input class='form-control integer' type = 'Number' name='recutval[]' value='0' id='$s_no' onchange='validationrecutindividual($s_no)' onkeyup='return  isInt(this);' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)'></td>";
             $table_data .= "<input type='hidden' name='ids[$bcd_id]' value='$ids'>";
             $table_data .= "<input type='hidden' name='size[]' value='$size'>";
             $table_data .= "<input type='hidden' name='bcd_ids[]' value='$bcd_id'>";
         }
         //$table_data .= "<input type='hidden' id='total_rows' value='$s_no'>";
-        $table_data .= "<td style='display:none' id='total_rows_recut'>$s_no</td>";
+       // $table_data .= "<td style='display:none' id='total_rows'>$s_no</td>";
         $table_data .= "</tr></tbody></table>";
         $html .= $table_data;
         $html .= '</div></div></div>';
         
     }
+    $html .= "<input type='hidden' id='total_rows' value='$s_no'>";
     echo $html;
 
 }
@@ -295,13 +296,13 @@ function ReplaceProcess($replace_id_edit)
                 $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id,operation_id  FROM `bai_pro3`.`rejection_log_child` rc LEFT JOIN `brandix_bts`.`tbl_orders_ops_ref` ops
                 ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $replace_id_edit and category = '$cat' group by doc_no,size_title";
                 // echo $getting_full_cut_details;
-                $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Recut Allowed Qty</th><th>Replaced Qty</th><th>Elegible to Replace</th><th>Replace Qty</th></tr></thead><tbody>";
+                $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Recut Allowed Qty</th><th>Replaced Qty</th><th>Eligible to Replace</th><th>Replace Qty</th></tr></thead><tbody>";
             }
             else
             {
                 $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id,operation_id FROM `bai_pro3`.`rejection_log_child` rc LEFT JOIN `brandix_bts`.`tbl_orders_ops_ref` ops
                 ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $replace_id_edit and category = '$cat' group by input_job_no_random_ref,assigned_module,size_title";
-                $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Recut Allowed Qty</th><th>Replaced Qty</th><th>Elegible to Replace</th><th>Replace Qty</th></tr></thead><tbody>";
+                $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Recut Allowed Qty</th><th>Replaced Qty</th><th>Eligible to Replace</th><th>Replace Qty</th></tr></thead><tbody>";
             }
             // echo $getting_full_cut_details.'</br>';
             $result_getting_full_cut_details = $link->query($getting_full_cut_details);
@@ -340,14 +341,13 @@ function ReplaceProcess($replace_id_edit)
                 $table_data .= "<td>".$row_cat['replaced_qty']."</td>";
                 $rem_string = $s_no.'rems';
                 $table_data .= "<td id='$rem_string'>".$remaining_qty."</td>";
-                $table_data .= "<td><input class='form-control integer' type='Number' id='$s_no' name='replaceval[]' value='0' onchange='validationreplaceindividual($s_no)' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)'></td>";
+                $table_data .= "<td><input class='form-control integer' type='Number' id='$s_no' name='replaceval[]' value='0' onchange='validationreplaceindividual($s_no)' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)' onkeyup='return  isInt(this);></td>";
                 $table_data .= "<input type='hidden' id = '$s_no' value='$remaining_qty'>";
                 $table_data .= "<input type='hidden' name='ids[$bcd_id]' value='$ids'>";
                 $table_data .= "<input type='hidden' name='size[]' value='$size_title'>";
                 $table_data .= "<input type='hidden' name='operation_id[]' value='$operation_id'>";
                 $table_data .= "<input type='hidden' name='bcd_ids[]' value='$bcd_id'>";
             }
-            $table_data .= "<td style='display:none;' id='total_rows_replace'>$s_no</td>";
             $table_data .= "</tr></tbody></table>";
             $html .= $table_data;
             $html .= '</div></div></div>';
@@ -359,6 +359,7 @@ function ReplaceProcess($replace_id_edit)
     {
         $html = "<h2 style='color:red'>There is no excess sewing jobs for the particular style,schedule and color</h2>";
     }
+        $html .= "<input type='hidden' id='total_rows' value='$s_no'>";
         echo $html;
 }
 if(isset($_GET['recut_doc_id']))
@@ -372,6 +373,7 @@ if(isset($_GET['recut_doc_id']))
 function getDocketDetails($recut_doc_id)
 {
     include("../../../../common/config/config_ajax.php");
+    $html = '';
     $get_details_qry = "SELECT DISTINCT category FROM `bai_pro3`.`recut_v2_child` rc LEFT JOIN `brandix_bts`.`tbl_orders_ops_ref` ops
     ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_doc_id order by category";
     $result_get_details_qry = $link->query($get_details_qry);
@@ -482,7 +484,7 @@ function updatemarkers($markers_update_doc_id)
     $html .= "<div class='row'>
                 <div class='col-md-3'></div>
                 <div class='col-md-3'><b>Marker Length</b>:<input class='form-control integer' name='mklen' id='mklen' type='float' ></td></div>
-                <div class='col-md-3'><b>Plies </b>:<input class='form-control integer' name='plies' value='$a_plies' type='Number' id='a_plies' onchange='isintegervalidation();'></td></div>
+                <div class='col-md-3'><b>Plies </b>:<input class='form-control integer' name='plies' value='$a_plies' type='Number' id='a_plies' onchange='isintegervalidation();' onkeyup='return  isInt(this);></td></div>
                 <div class='col-md-3'></div>
             </div>";
     $html .= '</br></br>';
@@ -503,7 +505,7 @@ function updatemarkers($markers_update_doc_id)
          }
         $table_data .= "<input type='hidden' name ='size[]' value ='$key'>";
         $quantity = $value*$a_plies;
-        $table_data .= "<tr><td>$size_title_ind</td><td>$quantity</td><td><input class='form-control integer' id='$s_no' name='ratioval[$key][]' value='$value' type='Number' onchange='isintegervallidation($s_no);'></td></tr>";
+        $table_data .= "<tr><td>$size_title_ind</td><td>$quantity</td><td><input class='form-control integer' id='$s_no' name='ratioval[$key][]' value='$value' type='Number' onchange='isintegervallidation($s_no);' onkeyup='return  isInt(this);></td></tr>";
     }
     $table_data .= "<input type='hidden' value='$s_no' id='no_of_rows'>";
     $qry_to_get = "SELECT * FROM  `bai_pro3`.`cat_stat_log` WHERE  order_tid = \"$order_tid\" and category = 'Body'";
@@ -539,6 +541,8 @@ function Markersview($markers_view_docket)
     $markers_view_docket_ary = explode(",",$markers_view_docket);
     $markers_view_docket =$markers_view_docket_ary[0];
     $flag =$markers_view_docket_ary[1];
+    $html = '';
+    $table_data = '';
     include("../../../../common/config/config_ajax.php");
     //getting order tid 
     $qry_cut_qty_check_qry = "SELECT *,bd.`order_style_no`,bd.`order_col_des`,bd.`order_del_no` FROM bai_pro3.recut_v2 rv 
@@ -702,14 +706,15 @@ function IssuedtoModuleProcess($issued_to_module_process)
             $bcd_id = $row_cat['bcd_id'];
             $table_data .= "<input type='hidden' name='doc_no_ref' value='$issued_to_module_process'>";
             $table_data .= "<input type='hidden' name='bcd_id[]' value='$bcd_id'>";
-            $table_data .= "<td><input class='form-control integer' name='issueval[]' value='0' id='$s_no' onchange='validatingremaining($s_no)' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)' type='Number' required></td>";
+            $table_data .= "<td><input class='form-control integer' name='issueval[]' value='0' id='$s_no' onchange='validatingremaining($s_no)' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)' type='Number' onkeyup='return isInt(this);' required></td>";
         }
-        $table_data .= "<input type='hidden' id='no_of_rows' value='$s_no'>";
+        //$table_data .= "<input type='hidden' id='no_of_rows' value='$s_no'>";
         $table_data .= "</tr></tbody></table>";
         $html .= $table_data;
         // $html .= $table_data;
         $html .= '</div></div></div>';
     }
+    $html .= "<input type='hidden' id='no_of_rows' value='$s_no'>";
     echo $html;
 
 }

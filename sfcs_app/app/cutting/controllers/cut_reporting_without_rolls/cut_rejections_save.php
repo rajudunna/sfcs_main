@@ -7,6 +7,7 @@
     2 - if m3 upating is failed and others went good
     3 - Rejections Completely updated with Errors
 */    
+// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
 
 function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shift){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
@@ -37,15 +38,17 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
         $total_sum = 0;
         $reason_qty_string = '';
         foreach($reason_wise as $reason_code => $qty){
-            $total_sum   += $qty;
-            $qms_m3_code =  explode('-',$reason_code);
-            $qms_code = $qms_m3_code[0];
-            $m3_code  = $qms_m3_code[1]; 
+            if($qty > 0){
+                $total_sum   += $qty;
+                $qms_m3_code =  explode('-',$reason_code);
+                $qms_code = $qms_m3_code[0];
+                $m3_code  = $qms_m3_code[1]; 
 
-            $m3_reasons[$size][] = $m3_code; //THE $m3_reasons,$m3_qtys are for passing to m3 updations function
-            $m3_qtys[$size][] = $qty;
+                $m3_reasons[$size][] = $m3_code; //THE $m3_reasons,$m3_qtys are for passing to m3 updations function
+                $m3_qtys[$size][] = $qty;
 
-            $reason_qty_string = $reason_qty_string.''.$qms_code.'-'.$qty.'$';
+                $reason_qty_string = $reason_qty_string.''.$qms_code.'-'.$qty.'$';
+            }
         }
         $total_rej += $total_sum;
         $qms_ref1[$size] = $reason_qty_string; //qms ref1 sie wise into an array 
@@ -76,6 +79,10 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
             $update_bcd_query = "UPDATE $brandix_bts.bundle_creation_data set rejected_qty = rejected_qty + $qty 
                                 where docket_number = $doc_no and size_id='$size' and operation_id = $op_code ";
             $update_bcd_result = mysqli_query($link,$update_bcd_query);
+
+            $update_moq_query = "UPDATE $bai_pro3.mo_operation_quantites set good_quantity = good_quantity-$qty where ref_no = $bno 
+                                and op_code = $op_code";                 
+            $update_moq_result = mysqli_query($link,$update_moq_query) or exit('MOQ Error 1');
             //foreach($rejection_details[$size] as $reasons => $qtys){
                 //$qty_array[]     = $qtys;
                 // $qms_m3_code =  explode('-',$reasons);

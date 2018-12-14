@@ -130,12 +130,15 @@ if(isset($_POST['formSubmit']))
                 $result1=mysqli_query($link, $mo_operations_insertion) or die("Error while mo_operations_insertion".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
             //updating bcd and cps log
-            $update_cps_qry = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$excess_qty where doc_no = $doc_nos and operation_code=15 and size_id='$size'";
+            $update_cps_qry = "update $bai_pro3.cps_log set cut_quantity = cut_quantity+$excess_qty where doc_no = $doc_nos and operation_code=15 and size_code='$size'";
+            // echo $update_cps_qry;
             mysqli_query($link, $update_cps_qry) or die("Error while update_cps_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $update_bcd_qry = "update $brandix_bts.bundle_creation_data set recevied_qty=recevied_qty+$excess_qty where docket_number = $doc_nos and size_id = '$size' and operation_id = 15";
+            $update_bcd_qry = "update $brandix_bts.bundle_creation_data set original_qty=original_qty+$excess_qty where docket_number = $doc_nos and size_id = '$size' and operation_id = 15";
+            // echo $update_bcd_qry;
             mysqli_query($link, $update_bcd_qry) or die("Error while update_bcd_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         }   
     }
+    // die();
     $sql="insert into $bai_pro3.recut_track(doc_no,username,sys_name,log_time,level,status) values(\"".$doc_nos."\",\"".$username."\",\"".$hostname[0]."\",\"".date("Y-m-d H:i:s")."\",\"".$codes."\",\"".$status."\")";
     mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     $url = '?r='.$_GET['r'];
@@ -190,7 +193,7 @@ if(isset($_POST['formIssue']))
         }
     }
     $url = '?r='.$_GET['r'];
-    echo "<script>sweetAlert('Successfully Approved','','success');window.location = '".$url."'</script>";
+    echo "<script>sweetAlert('Successfully Issued','','success');window.location = '".$url."'</script>";
 }
 function issued_to_module($bcd_id,$qty,$ref)
 {
@@ -200,7 +203,7 @@ function issued_to_module($bcd_id,$qty,$ref)
     {
         $bcd_colum_ref = "recut_in";
     }
-    $bcd_qry = "select style,mapped_color,docket_number,assigned_module,input_job_no_random_ref,operation_id,bundle_number from brandix_bts.bundle_creation_data where id = $bcd_id";
+    $bcd_qry = "select style,mapped_color,docket_number,assigned_module,input_job_no_random_ref,operation_id,bundle_number,size_id from brandix_bts.bundle_creation_data where id = $bcd_id";
     // echo $bcd_qry;
     $result_bcd_qry = $link->query($bcd_qry);
     while($row = $result_bcd_qry->fetch_assoc()) 
@@ -211,9 +214,10 @@ function issued_to_module($bcd_id,$qty,$ref)
         $input_job_no_random_ref = $row['input_job_no_random_ref'];
         $ops_code = $row['operation_id'];
         $bundle_number = $row['bundle_number'];
+        $size_id = $row['size_id'];
     }
     //updating cps log and bts
-    $update_qry_cps = "update bai_pro3.cps_log set remaining_qty = remaining_qty+$qty where doc_no = $docket_no and operation_code = 15";
+    $update_qry_cps = "update bai_pro3.cps_log set remaining_qty = remaining_qty+$qty where doc_no = $docket_no and operation_code = 15 and size_code ='$size_id'";
     // echo $update_qry_cps.'</br>';
     mysqli_query($link, $update_qry_cps) or exit("update_qry_cps".mysqli_error($GLOBALS["___mysqli_ston"]));
     $update_qry_bcd = "update brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and operation_id = 15";
@@ -229,6 +233,7 @@ function issued_to_module($bcd_id,$qty,$ref)
     }
 
     $qry_ops_mapping = "select operation_code from brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and  operation_code in (".implode(',',$emb_ops).")";
+    // echo $qry_ops_mapping;
     $result_qry_ops_mapping = $link->query($qry_ops_mapping);
     if(mysqli_num_rows($result_qry_ops_mapping) > 0)
     {
@@ -237,11 +242,13 @@ function issued_to_module($bcd_id,$qty,$ref)
             $emb_input_ops_code = $row_emb['operation_code'];
 
             //updating bcd for emblishment in operation 
-            $update_bcd_for_emb_qry = "update brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref + $qty where docket_number = $docket_no and operation_id = $emb_input_ops_code";
+            $update_bcd_for_emb_qry = "update brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref + $qty where docket_number = $docket_no and operation_id = $emb_input_ops_code and size_id = '$size_id'";
+            // echo $update_bcd_for_emb_qry;
             mysqli_query($link, $update_bcd_for_emb_qry) or exit("update_bcd_for_emb_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
             //updating embellishment_plan_dashboard
             $update_plan_dashboard_qry = "UPDATE `bai_pro3`.`embellishment_plan_dashboard` SET send_qty = send_qty+$qty WHERE doc_no = $docket_no AND send_op_code = $emb_input_ops_code";
+            // echo $update_plan_dashboard_qry;
             mysqli_query($link, $update_plan_dashboard_qry) or exit("update_plan_dashboard_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         }
     }
@@ -289,8 +296,37 @@ function issued_to_module($bcd_id,$qty,$ref)
                     mysqli_query($link, $update_qry_bcd_input) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
             //     }
             // }
-        }   
+        }
+        else
+        {
+            //retreaving rejected bundles and updating
+            $bcd_rej_qry = "select bundle_number,rejected_qty from $brandix_bts.bundle_creation_data where docket_number =$docket_no and size_id = $size_id and rejected_qty > 0";
+            echo $bcd_rej_qry;
+            $result_bcd_rej_qry = $link->query($bcd_rej_qry);
+            $result_result_bcd_rej_qry = $link->query($result_bcd_rej_qry);
+            $max_qty_rej = $qty;
+            while($bcd_row = $result_result_bcd_rej_qry->fetch_assoc()) 
+            {
+                $rejected_qty = $bcd_row['rejected_qty'];
+                $rej_bundle_number = $bcd_row['bundle_number'];
+                if($rejected_qty < $max_qty_rej)
+                {
+                    $to_update = $rejected_qty;
+                    $max_qty_rej = $max_qty_rej - $rejected_qty;
+                }
+                else
+                {
+                    $to_update = $max_qty_rej;
+                    $max_qty_rej = 0;
+                }
+                $input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);
+                $update_qry_bcd_input = "update brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where bundle_number = $rej_bundle_number and operation_id = $input_ops_code";
+                echo $update_qry_bcd_input;
+                mysqli_query($link, $update_qry_bcd_input) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
+            }
+        }  
     }
+    die();
     return;
 }
 $shifts_array = ["IssueToModule","AlreadyIssued","WaitingForApproval","UpdateMarkers","ReportPending"];
@@ -313,6 +349,9 @@ echo $drp_down;
                 <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" id='main-content'>
+                <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
+                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
+                </div>
             </div>
         </div>
     </div>
@@ -326,7 +365,10 @@ echo $drp_down;
             <div class="modal-body">
                 <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform" onsubmit='return validationfunction();'>
                     <div id='pre'>
-                        <div class='panel-body' id="dynamic_table_panel">	
+                        <div class='panel-body' id="dynamic_table_panel">
+                            <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
+                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
+                            </div>	
                                 <div id ="dynamic_table1"></div>
                         </div>
                         <p style='color:red;'>Note:The excess quantity will create as excess sewing job for respective style,schedule and color.</p>
@@ -351,7 +393,10 @@ echo $drp_down;
             <div class="modal-body">
                 <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform" onsubmit='return validationfunctionissue();'>
                     <div id='pre_pre'>
-                        <div class='panel-body' id="dynamic_table_panel">	
+                        <div class='panel-body' id="dynamic_table_panel">
+                            <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
+                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
+                            </div>	
                                 <div id ="dynamic_table2"></div>
                         </div>
                         <div class="pull-right"><input type="submit" class="btn btn-primary" value="Submit" name="formIssue"></div>
@@ -447,6 +492,8 @@ $(document).ready(function()
 function viewrecutdetails(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
+    $('.loading-image').show();
+    $('#myModal').modal('toggle');
     $.ajax({
 
 			type: "POST",
@@ -455,7 +502,7 @@ function viewrecutdetails(id)
 			success: function (response) 
 			{
                 document.getElementById('main-content').innerHTML = response;
-                $('#myModal').modal('toggle');
+                $('.loading-image').hide();
             }
 
     });
@@ -465,6 +512,7 @@ function editmarkers(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
     $('#myModal1').modal('toggle');
+    $('.loading-image').show();
     document.getElementById('dynamic_table1').innerHTML = '';
     document.getElementById('dynamic_table2').innerHTML = '';
     $.ajax({
@@ -475,6 +523,7 @@ function editmarkers(id)
 			success: function (response) 
 			{
                 document.getElementById('dynamic_table1').innerHTML = response;
+                $('.loading-image').hide();
             }
 
     });
@@ -486,6 +535,7 @@ function issuemodule(id)
     $('#myModal2').modal('toggle');
     $('#pre_pre').show();
     $('#post_post').hide();
+    $('.loading-image').show();
     document.getElementById('dynamic_table1').innerHTML = '';
     document.getElementById('dynamic_table2').innerHTML = '';
     $.ajax({
@@ -496,6 +546,7 @@ function issuemodule(id)
 			success: function (response) 
 			{
                 document.getElementById('dynamic_table2').innerHTML = response;
+                $('.loading-image').hide();
 
             }
 
@@ -611,17 +662,25 @@ function validationfunction()
             flag = 1;
         }
     }
-    // if(flag == 0)
-    // {
+    if(flag == 0)
+    {
         $('#markers').hide();
         $('#pre').hide();
         $('#post').show();
         return true;
-   // }
-    // else
-    // {
-    //     return false;
-    // }
+   }
+    else
+    {
+        return false;
+    }
+}
+function isInteger(value) 
+{
+    if ((undefined === value) || (null === value))
+    {
+        return false;
+    }
+    return value % 1 == 0;
 }
 function setfunction()
 {
@@ -730,5 +789,13 @@ function myfunctionsearch()
     //     $('#myTable').show();
     //     $('#myTable1').hide();
     // }
+}
+function isInt(t)
+{
+    // alert();
+    if(t.value < 0 || t.value =='e' || t.value == 'E')
+    { 
+        return false; 
+    }
 }
 </script>
