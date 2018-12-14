@@ -1104,7 +1104,6 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     
       //getting requested qty 
       $sql_req_qty="SELECT material_req FROM $bai_pro3.order_cat_doc_mk_mix WHERE order_cat_doc_mk_mix.doc_no=$doc_no";
-      // mysql_query($sql_req_qty,$link) or exit("Sql Error req qty".mysql_error());
       $sql_req_qty_result=mysqli_query($link, $sql_req_qty) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
       $sql_num_check=mysqli_num_rows($sql_req_qty_result);
       while($sql_req_qty_row=mysqli_fetch_array($sql_req_qty_result))
@@ -1164,7 +1163,6 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
   //Ticket #177328 add the Blinking Option for Exceeding Fabric Request Dockets and IU module show "IU" in that boxes and if it is emblishment display "IX"
     $sqlt="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where  doc_no in ($doc_no) and act_cut_issue_status<>'DONE' and (order_style_no like 'L%Y%' or order_style_no like 'L%Z%' or order_style_no like 'O%Y%' or order_style_no like 'O%Z%') order by field(doc_no,$doc_no) " ;
     //echo "query=".$sqlt;
-    mysqli_query($link, $sqlt) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sql_result12=mysqli_query($link, $sqlt) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     $check_num_rows=mysqli_num_rows($sql_result12);   
      
