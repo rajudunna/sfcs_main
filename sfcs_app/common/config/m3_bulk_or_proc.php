@@ -76,7 +76,7 @@ function mssql_mdm_value_sfcs_mo($sfcs_schedule,$m3_color_code,$m3_size_code,$qu
 	
 	$retval=0;
 
-	$sql="select m3_mo_no from m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_schedule=$sfcs_schedule and sfcs_color='$m3_color_code' and sfcs_size='$m3_size_code' and m3_mo_no>0 and m3_op_des<>'MRN_RE01' limit 1";
+	$sql="select m3_mo_no from m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_schedule='$sfcs_schedule' and sfcs_color='$m3_color_code' and sfcs_size='$m3_size_code' and m3_mo_no>0 and m3_op_des<>'MRN_RE01' limit 1";
 	$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -86,7 +86,7 @@ function mssql_mdm_value_sfcs_mo($sfcs_schedule,$m3_color_code,$m3_size_code,$qu
 	
 	if($retval==0)
 	{
-		$sql1="select order_mo_no from m3_bulk_ops_rep_db.order_status_tbl where order_del_no=$sfcs_schedule and order_col_des='$m3_color_code' and order_size='".know_m3_size_code($sfcs_schedule,$m3_size_code,$m3_color_code)."' and order_mo_no>0 limit 1";
+		$sql1="select order_mo_no from m3_bulk_ops_rep_db.order_status_tbl where order_del_no='$sfcs_schedule' and order_col_des='$m3_color_code' and order_size='".know_m3_size_code($sfcs_schedule,$m3_size_code,$m3_color_code)."' and order_mo_no>0 limit 1";
 		$sql_result1=mysqli_query($link_secure_m3or, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -198,7 +198,7 @@ function know_m3_size_code($schedule,$sfcs_size,$sfcs_color)
 	$link_secure_m3or=construct_connection();
 	
 	
-	$sql="SELECT order_div,title_flag,title_size_$sfcs_size as sizecode FROM bai_pro3.bai_orders_db_confirm WHERE order_del_no=$schedule and order_col_des='$sfcs_color' and order_s_$sfcs_size>0 LIMIT 1";
+	$sql="SELECT order_div,title_flag,title_size_$sfcs_size as sizecode FROM bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule' and order_col_des='$sfcs_color' and order_s_$sfcs_size>0 LIMIT 1";
 	$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error2a $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -309,7 +309,7 @@ function output_validation_old($operation,$schedule,$color,$size,$reported_qty,$
 	*/
 	//Output
 	$output=0;
-	$sql="select sum(size_$size) as output from bai_pro.bai_log_buf where delivery=$schedule and color='$color'";
+	$sql="select sum(size_$size) as output from bai_pro.bai_log_buf where delivery='$schedule' and color='$color'";
 	$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error5a".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -320,14 +320,14 @@ function output_validation_old($operation,$schedule,$color,$size,$reported_qty,$
 	//Module Input
 	$module_input=0;
 	$total_input=0;
-	$sql="select sum(if(ims_mod_no>0 and ims_remarks not in ('EXCESS','EMB','SAMPLE','SHIPMENT_SAMPLE'),ims_qty,0)) as module_input, sum(ims_qty) as total_input from bai_pro3.ims_log where ims_schedule=$schedule and ims_color='$color' and ims_size='a_$size'";
+	$sql="select sum(if(ims_mod_no>0 and ims_remarks not in ('EXCESS','EMB','SAMPLE','SHIPMENT_SAMPLE'),ims_qty,0)) as module_input, sum(ims_qty) as total_input from bai_pro3.ims_log where ims_schedule='$schedule' and ims_color='$color' and ims_size='a_$size'";
 	$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error6a".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$module_input=$sql_row['module_input'];
 		$total_input=$sql_row['total_input'];
 	}
-	$sql="select  sum(if(ims_mod_no>0 and ims_remarks not in ('EXCESS','EMB','SAMPLE','SHIPMENT_SAMPLE'),ims_qty,0)) as module_input, sum(ims_qty) as total_input from bai_pro3.ims_log_backup where ims_schedule=$schedule and ims_color='$color' and ims_size='a_$size'";
+	$sql="select  sum(if(ims_mod_no>0 and ims_remarks not in ('EXCESS','EMB','SAMPLE','SHIPMENT_SAMPLE'),ims_qty,0)) as module_input, sum(ims_qty) as total_input from bai_pro3.ims_log_backup where ims_schedule='$schedule' and ims_color='$color' and ims_size='a_$size'";
 	$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error7a".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -341,7 +341,7 @@ function output_validation_old($operation,$schedule,$color,$size,$reported_qty,$
 	$good_garments=0;
 	$replaced=0;
 	
-	$sql="select sum(if(qms_tran_type=3,qms_qty,0)) as rejected, sum(if(qms_tran_type=4,qms_qty,0)) as sample, sum(if(qms_tran_type=5,qms_qty,0)) as good_garments, sum(if(qms_tran_type=2,qms_qty,0)) as replaced from bai_pro3.bai_qms_db where qms_schedule=$schedule and qms_color='$color' and qms_size='$size'";
+	$sql="select sum(if(qms_tran_type=3,qms_qty,0)) as rejected, sum(if(qms_tran_type=4,qms_qty,0)) as sample, sum(if(qms_tran_type=5,qms_qty,0)) as good_garments, sum(if(qms_tran_type=2,qms_qty,0)) as replaced from bai_pro3.bai_qms_db where qms_schedule='$schedule' and qms_color='$color' and qms_size='$size'";
 	$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error8a".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -351,7 +351,7 @@ function output_validation_old($operation,$schedule,$color,$size,$reported_qty,$
 		$replaced=$sql_row['replaced'];
 	}
 	
-	$sql="select sum(if(qms_tran_type=3,qms_qty,0)) as rejected, sum(if(qms_tran_type=4,qms_qty,0)) as sample, sum(if(qms_tran_type=5,qms_qty,0)) as good_garments, sum(if(qms_tran_type=2,qms_qty,0)) as replaced from bai_pro3.bai_qms_db_archive where qms_schedule=$schedule and qms_color='$color' and qms_size='$size'";
+	$sql="select sum(if(qms_tran_type=3,qms_qty,0)) as rejected, sum(if(qms_tran_type=4,qms_qty,0)) as sample, sum(if(qms_tran_type=5,qms_qty,0)) as good_garments, sum(if(qms_tran_type=2,qms_qty,0)) as replaced from bai_pro3.bai_qms_db_archive where qms_schedule='$schedule' and qms_color='$color' and qms_size='$size'";
 	$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error9a".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -375,7 +375,7 @@ function output_validation_old($operation,$schedule,$color,$size,$reported_qty,$
 	
 	$line_input=0;
 	$line_output=0;
-	$sql="select ims_qty,ims_pro_qty from bai_pro3.ims_log where ims_schedule=$schedule and ims_color='$color' and ims_size='a_$size' and tid=$tid_ref";
+	$sql="select ims_qty,ims_pro_qty from bai_pro3.ims_log where ims_schedule='$schedule' and ims_color='$color' and ims_size='a_$size' and tid=$tid_ref";
 	//echo $sql;
 	$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error11a".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -403,7 +403,7 @@ function output_validation_old($operation,$schedule,$color,$size,$reported_qty,$
 	echo "Line Output:".$line_output."<br/>";
 	*/
 	
-	$sql="select sum(order_embl_a+order_embl_b) as emb_panel from bai_pro3.bai_orders_db where order_del_no=$schedule";
+	$sql="select sum(order_embl_a+order_embl_b) as emb_panel from bai_pro3.bai_orders_db where order_del_no='$schedule'";
 	//echo $sql;
 	$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error12a".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -524,7 +524,7 @@ function output_validation($operation,$schedule,$color,$size,$reported_qty,$tid_
 	
 	$replaced=0;
 	//Replaced Qty
-	$sql="select COALESCE(sum(if(qms_tran_type=2,qms_qty,0)),0) as replaced from bai_pro3.bai_qms_db where qms_schedule=$schedule and qms_color='$color' and qms_size='$size'";
+	$sql="select COALESCE(sum(if(qms_tran_type=2,qms_qty,0)),0) as replaced from bai_pro3.bai_qms_db where qms_schedule='$schedule' and qms_color='$color' and qms_size='$size'";
 	$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -737,7 +737,7 @@ function rejection_validation_m3($operation,$schedule,$color,$size,$reported_qty
 	$module_input=0;
 	$total_input=0;
 	//Disabled due to eliminate excess input from total input -kk 20150602 $sql="select sum(if(ims_mod_no>0 and ims_remarks not in ('EXCESS','EMB','SAMPLE','SHIPMENT_SAMPLE'),ims_qty,0)) as module_input, sum(ims_qty) as total_input from bai_pro3.ims_log where ims_schedule=$schedule and ims_color='$color' and ims_size='a_$size'";
-	$sql="select sum(if(ims_mod_no>0 and ims_remarks not in ('EXCESS','EMB','SAMPLE','SHIPMENT_SAMPLE'),ims_qty,0)) as module_input, sum(if(ims_mod_no=0,0,ims_qty)) as total_input from bai_pro3.ims_log where ims_schedule=$schedule and ims_color='$color' and ims_size='a_$size'";
+	$sql="select sum(if(ims_mod_no>0 and ims_remarks not in ('EXCESS','EMB','SAMPLE','SHIPMENT_SAMPLE'),ims_qty,0)) as module_input, sum(if(ims_mod_no=0,0,ims_qty)) as total_input from bai_pro3.ims_log where ims_schedule='$schedule' and ims_color='$color' and ims_size='a_$size'";
 	$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -745,7 +745,7 @@ function rejection_validation_m3($operation,$schedule,$color,$size,$reported_qty
 		$total_input=$sql_row['total_input'];
 	}
 	//Disabled due to eliminate excess input from total input -kk 20150602 $sql="select  sum(if(ims_mod_no>0 and ims_remarks not in ('EXCESS','EMB','SAMPLE','SHIPMENT_SAMPLE'),ims_qty,0)) as module_input, sum(ims_qty) as total_input from bai_pro3.ims_log_backup where ims_schedule=$schedule and ims_color='$color' and ims_size='a_$size'";
-	$sql="select  sum(if(ims_mod_no>0 and ims_remarks not in ('EXCESS','EMB','SAMPLE','SHIPMENT_SAMPLE'),ims_qty,0)) as module_input, sum(if(ims_mod_no=0,0,ims_qty)) as total_input from bai_pro3.ims_log_backup where ims_schedule=$schedule and ims_color='$color' and ims_size='a_$size'";
+	$sql="select  sum(if(ims_mod_no>0 and ims_remarks not in ('EXCESS','EMB','SAMPLE','SHIPMENT_SAMPLE'),ims_qty,0)) as module_input, sum(if(ims_mod_no=0,0,ims_qty)) as total_input from bai_pro3.ims_log_backup where ims_schedule='$schedule' and ims_color='$color' and ims_size='a_$size'";
 	$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -791,7 +791,7 @@ function rejection_validation_m3($operation,$schedule,$color,$size,$reported_qty
 	
 	//Output
 	$output=0;
-	$sql="select sum(size_$size) as output from bai_pro.bai_log_buf where delivery=$schedule and color='$color'";
+	$sql="select sum(size_$size) as output from bai_pro.bai_log_buf where delivery='$schedule' and color='$color'";
 	$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -800,7 +800,7 @@ function rejection_validation_m3($operation,$schedule,$color,$size,$reported_qty
 	
 	$replaced=0;
 	//Replaced Qty
-	$sql="select COALESCE(sum(if(qms_tran_type=2,qms_qty,0)),0) as replaced from bai_pro3.bai_qms_db where qms_schedule=$schedule and qms_color='$color' and qms_size='$size'";
+	$sql="select COALESCE(sum(if(qms_tran_type=2,qms_qty,0)),0) as replaced from bai_pro3.bai_qms_db where qms_schedule='$schedule' and qms_color='$color' and qms_size='$size'";
 	$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -1023,7 +1023,7 @@ function rejection_validation($operation,$schedule,$color,$size,$reported_qty,$t
 		
 		//Output
 		$output=0;
-		$sql="select COALESCE(sum(size_$size),0) as output from bai_pro.bai_log_buf where delivery=$schedule and color='$color'";
+		$sql="select COALESCE(sum(size_$size),0) as output from bai_pro.bai_log_buf where delivery='$schedule' and color='$color'";
 		$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -1036,7 +1036,7 @@ function rejection_validation($operation,$schedule,$color,$size,$reported_qty,$t
 		$good_garments=0;
 		$replaced=0;
 		
-		$sql="select sum(if(qms_tran_type=3,qms_qty,0)) as rejected, sum(if(qms_tran_type=4,qms_qty,0)) as sample, sum(if(qms_tran_type=5,qms_qty,0)) as good_garments, sum(if(qms_tran_type=2,qms_qty,0)) as replaced from bai_pro3.bai_qms_db where qms_schedule=$schedule and qms_color='$color' and qms_size='$size'";
+		$sql="select sum(if(qms_tran_type=3,qms_qty,0)) as rejected, sum(if(qms_tran_type=4,qms_qty,0)) as sample, sum(if(qms_tran_type=5,qms_qty,0)) as good_garments, sum(if(qms_tran_type=2,qms_qty,0)) as replaced from bai_pro3.bai_qms_db where qms_schedule='$schedule' and qms_color='$color' and qms_size='$size'";
 		$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -1046,7 +1046,7 @@ function rejection_validation($operation,$schedule,$color,$size,$reported_qty,$t
 			$replaced=$sql_row['replaced'];
 		}
 		
-		$sql="select sum(if(qms_tran_type=3,qms_qty,0)) as rejected, sum(if(qms_tran_type=4,qms_qty,0)) as sample, sum(if(qms_tran_type=5,qms_qty,0)) as good_garments, sum(if(qms_tran_type=2,qms_qty,0)) as replaced from bai_pro3.bai_qms_db_archive where qms_schedule=$schedule and qms_color='$color' and qms_size='$size'";
+		$sql="select sum(if(qms_tran_type=3,qms_qty,0)) as rejected, sum(if(qms_tran_type=4,qms_qty,0)) as sample, sum(if(qms_tran_type=5,qms_qty,0)) as good_garments, sum(if(qms_tran_type=2,qms_qty,0)) as replaced from bai_pro3.bai_qms_db_archive where qms_schedule='$schedule' and qms_color='$color' and qms_size='$size'";
 		$sql_result=mysqli_query($link_secure_m3or, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
