@@ -93,6 +93,15 @@ if(mysqli_num_rows($target_result) > 0){
 }
 if(strtolower($remarks) == 'recut'){
     $target_doc_type = 'recut'; 
+    if($fabric_status == 1 && $act_cut_status != 'DONE'){
+
+    }else{
+        if($act_cut_status != 'DONE'){
+            $response_data['can_report'] = 3;
+            echo json_encode($response_data);
+            exit();
+        }
+    }
     $acut_no = 'R00'.$cut_no;
 }
 

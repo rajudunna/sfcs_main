@@ -706,6 +706,10 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 swal('Error','Fabric is not yet issued for this Docket','error');
                 return false;
             }
+            if(data.can_report == '3'){
+                swal('Error','Recut Docket is not yet Approved','error');
+                return false;
+            }
             
             if(data.error == '1'){
                 swal('Error','Docket Doesnt Exist','error');
