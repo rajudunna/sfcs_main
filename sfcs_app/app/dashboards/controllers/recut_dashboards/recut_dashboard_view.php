@@ -912,12 +912,12 @@ function myfunctionsearch()
     //     $('#myTable1').hide();
     // }
 }
-function isNumber(t)
+function isInt(t)
 {
-    if(t.value == 'e' || t.value == 'E' || t.value < 0 )
-    {
-        t.value = '';
-        return false;
+    // alert();
+    if(t.value < 0 || t.value =='e' || t.value == 'E')
+    { 
+        return false; 
     }
 }
 </script>

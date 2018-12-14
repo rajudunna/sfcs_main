@@ -203,7 +203,7 @@ function issued_to_module($bcd_id,$qty,$ref)
     {
         $bcd_colum_ref = "recut_in";
     }
-    $bcd_qry = "select style,mapped_color,docket_number,assigned_module,input_job_no_random_ref,operation_id,bundle_number from brandix_bts.bundle_creation_data where id = $bcd_id";
+    $bcd_qry = "select style,mapped_color,docket_number,assigned_module,input_job_no_random_ref,operation_id,bundle_number,size_id from brandix_bts.bundle_creation_data where id = $bcd_id";
     // echo $bcd_qry;
     $result_bcd_qry = $link->query($bcd_qry);
     while($row = $result_bcd_qry->fetch_assoc()) 
@@ -217,7 +217,7 @@ function issued_to_module($bcd_id,$qty,$ref)
         $size_id = $row['size_id'];
     }
     //updating cps log and bts
-    $update_qry_cps = "update bai_pro3.cps_log set remaining_qty = remaining_qty+$qty where doc_no = $docket_no and operation_code = 15";
+    $update_qry_cps = "update bai_pro3.cps_log set remaining_qty = remaining_qty+$qty where doc_no = $docket_no and operation_code = 15 and size_code ='$size_id'";
     // echo $update_qry_cps.'</br>';
     mysqli_query($link, $update_qry_cps) or exit("update_qry_cps".mysqli_error($GLOBALS["___mysqli_ston"]));
     $update_qry_bcd = "update brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and operation_id = 15";
@@ -646,6 +646,14 @@ function validationfunction()
         return false;
     }
 }
+function isInteger(value) 
+{
+    if ((undefined === value) || (null === value))
+    {
+        return false;
+    }
+    return value % 1 == 0;
+}
 function setfunction()
 {
     var noofrows = $('#no_of_rows').val();
@@ -753,5 +761,13 @@ function myfunctionsearch()
     //     $('#myTable').show();
     //     $('#myTable1').hide();
     // }
+}
+function isInt(t)
+{
+    // alert();
+    if(t.value < 0 || t.value =='e' || t.value == 'E')
+    { 
+        return false; 
+    }
 }
 </script>
