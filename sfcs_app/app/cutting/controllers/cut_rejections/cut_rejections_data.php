@@ -67,7 +67,12 @@ if(strtolower($remarks) == 'recut'){
     $acut_no = 'R00'.$cut_no;
 }
 
-
+$module_query = "SELECT plan_module from $bai_pro3.order_cat_doc_mk_mix 
+                    where doc_no=$doc_no";
+$module_result = mysqli_query($link,$module_query);
+if(mysqli_num_rows($module_result)>0)
+    $row = mysqli_fetch_array($module_result);
+    $module = $row['plan_module'];
 
 $doc_details_query = "SELECT SUM(send_qty) as send,SUM(recevied_qty) as good,SUM(rejected_qty) as rej,
                     style,GROUP_CONCAT(distinct schedule) as schedule,
@@ -141,7 +146,8 @@ $response_data['size_ratio'] = $size_ratio;
 $response_data['p_plies'] = $p_plies;
 $response_data['act_cut_status'] = $act_cut_status;
 $response_data['acut_no'] = $acut_no;
-$response_data['fab_status']  = $fabric_status;
+$response_data['module']  = $module;
+$response_data['fab_status']   = $fabric_status;
 $response_data['fab_received'] = $fab_rec;
 $response_data['fab_returned'] = $fab_ret;
 $response_data['shortages'] = $shortages;

@@ -5,6 +5,18 @@
     2 - if m3 upating is failed and others went good
     3 - Rejections Completely updated with Errors
 */    
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
+error_reporting(0);
+$data = $_POST;
+$doc_no  = $data['doc_no'];
+$style   = $data['style'];
+$schedule= $data['schedule'];
+$color   = $data['color'];
+$shift   = $data['shift'];
+$rejections_flag = $data['rejections_flag'];
+$rejection_details = $data['rejections'];
+
+save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shift);
 
 function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shift){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
@@ -76,6 +88,10 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
             $update_bcd_query = "UPDATE $brandix_bts.bundle_creation_data set rejected_qty = rejected_qty + $qty 
                                 where docket_number = $doc_no and size_id='$size' and operation_id = $op_code ";
             $update_bcd_result = mysqli_query($link,$update_bcd_query);
+
+            $update_moq_query = "UPDATE $bai_pro3.mo_operation_quantites set good_quantity = good_quantity-$qty where ref_no = $bno 
+                                and op_code = $op_code";                 
+            $update_moq_result = mysqli_query($link,$update_moq_query) or exit('MOQ Error 1');
             //foreach($rejection_details[$size] as $reasons => $qtys){
                 //$qty_array[]     = $qtys;
                 // $qms_m3_code =  explode('-',$reasons);
@@ -109,11 +125,13 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
                          where id=$parent_id";
     $rejection_log_uresult = mysqli_query($link,$rejection_log_uquery) or exit('Rejection Log Error 3');
     if($sent == $confirmed && $sent == $update_counter)
-        return 1;
+        $response_data['saved'] = 1;
     else  if($sent == $update_counter)  
-        return 2;
+        $response_data['saved'] = 2;
     else    
-        return 3;    
+        $response_data['saved'] = 3;  
+        
+    echo json_encode($response_data);    
 }
 
 ?>
