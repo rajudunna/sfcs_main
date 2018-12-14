@@ -34,12 +34,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
 ?>
 
-<div class="container">
-  <ul class="nav nav-tabs">
-    <li class="info active" id='cut_tab_li'><a href="#"  id='cut_tab'>Cut Qty Reporting</a></li>
-    <li class="info" id='rej_tab_li'><a href="#" id='rej_tab'>Rejections Form</a></li>
-  </ul>
-</div>
 
 <!-- Cut Reporting Code -->
 <div class='panel panel-primary cut_tab'>
@@ -76,6 +70,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             <table class='table table-bordered' id='reported_table'>
                 <tr class='danger'>
                     <td>Docket</td>
+                    <th>Cut No</td>
                     <td>Act Cut Status</td>
                     <td>Cut Issue Status</td>
                     <td>Good Pieces</td>
@@ -91,6 +86,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 </tr>
                 <tr>
                     <td id='d_doc_no'></td>
+                    <td id='d_cut_no'></td>
                     <td id='d_cut_status'></td>
                     <td id='d_cut_issue_status'></td>
                     <td id='d_good_pieces'></td>
@@ -164,6 +160,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <th>Docket</th>
                             <th>Quantity</th>
                             <th>Cut Status</th>
+                            <th>Fab Required</th>
                             <th>Planned Plies</th>
                             <th>Reported Plies</th>
                             <th>Reporting Plies</th>
@@ -180,6 +177,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <td id='r_doc_no'></td>
                             <td id='r_doc_qty'></td>
                             <td id='r_cut_status'></td>
+                            <td id='r_fab_required'></td>
                             <td id='r_plan_plies'></td>
                             <td id='r_reported_plies'></td>
                             <!-- add validation for ret + rec + dam + short = c_plies -->
@@ -211,6 +209,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 <input type='hidden' value='' id='post_schedule'>
                 <input type='hidden' value='' id='post_style'>
                 <input type='hidden' value='' id='post_color'>
+                <input type='hidden' value='' id='fab_required'>
 
 
                 <table>
@@ -242,11 +241,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                                 Total Rejectable Pieces Size Wise  : <span class='size-rej-pieces'></span>
                             </span>   
                             <br/> <br/>
-                            <span class='col-sm-2'>
+                            <span class='col-sm-3'>
                                 Total Rejections : 
                                 <input type='button' class='btn btn-success' id='total_pieces'>
                             </span>
-                            <span class='col-sm-3'>
+                            <span class='col-sm-4'>
                                 Available For Rejection : 
                                 <input type='button' class='btn btn-danger' id='avl_pieces'>
                             </span>  
@@ -273,11 +272,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                                 <label for='rejection_qty'>Rejected Qty</label> 
                                 <input type='text' class='form-control integer' name='rejection_qty' id='rejection_qty'>
                             </div>
-                            <div class='col-sm-2'>
+                            <div class='col-sm-1'>
                                 <label for='add_rejection'>&nbsp;</label><br/>
                                 <input type='button' class='btn btn-warning' value='+' name='add_rejection' id='add_rejection'>
                             </div>
-                            <div class='col-sm-offset-1 col-sm-2'>
+                            <div class='col-sm-offset-1 col-sm-3'>
                                 <label for='save_rejection'>&nbsp;</label><br/>
                                 <input type='button' class='btn btn-primary confirm-submit' value='Save' name='save_rejection' id='save_rejection'>&nbsp;
                                 <input type='button' class='btn btn-danger' value='clear' name='clear_rejection' id='clear_rejection'>
@@ -318,6 +317,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     var avl_plies = 0;
     var doc_no = 0;
     var c_plies = 0;
+    var fab_req = 0;
     var pieces = {};
     var dataR;
     var global_serial_id = 0;
@@ -349,6 +349,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
     $('#doc_no').on('change',function(){
         doc_no = $('#doc_no').val();
+        $('#submit').css({'display':'block'});
         $('.user_msg').css({'display':'none'});
         $('#hide_details_reported').css({'display':'none'});
         $('#hide_details_reporting').css({'display':'none'});
@@ -374,7 +375,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var style       = $('#post_style').val();
         var schedule    = $('#post_schedule').val();
         var color       = $('#post_color').val();
-        
+        var fab_req     = Number($('#fab_required').val());
         //Screen Validations
         if(c_plies == 0){
             swal('Error','Please Enter Reporting Plies','error');
@@ -384,12 +385,12 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             swal('Warning','The Reporting Plies are more than, that are to be Reported','error');
             return false;
         }
-        if(c_plies != ret_to+rec+damages+shortages){
-            swal('Warning','The Reporting Plies doesnt equal to fabric received + fabric returned + shortages + damages','error');
+        if(fab_req != ret_to+rec+damages+shortages){
+            swal('Warning','The Reporting Fabric must not be greater than received + fabric returned + shortages + damages','error');
             return false;
         }
 
-        if(shift == null || cut_table == null || team_leader == null || bundle_location == null ){
+        if(shift == null || cut_table == null || team_leader == null){
             swal('Warning','Please Select Shift , Cut Table , Team Leader ,Bundle Location','warning');
             return false;
         }
@@ -414,7 +415,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 return swal('Please Fill Rejections','','error');
         }
         //Rejections Validation End
-
+        $('#submit').css({'display':'none'});
         var user_msg = '';
         var form_data = {
                         doc_no:post_doc_no,c_plies:c_plies,fab_returned:ret,
@@ -496,6 +497,13 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         total_rejected_pieces = 0;
         ret = 0; 
         rejections_flag = 0;
+        $('#rejection_size').empty();
+        $('#save_rejection').css({'display':'block'});
+        $('#d_style').html('');
+        $('#d_schedule').html('');
+        $('#d_color').html('');
+        $('#d_doc_type').html('');
+        $('#d_cut_no').html('');
         $('#rejections_table_body').empty();
         $('#rejection_pieces').attr({'readonly':false});
         $('#c_plies').attr({'readonly':false});
@@ -550,7 +558,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         if(c_plies == 0){
             return swal('Please Enter Reporting Plies','','error');
         }
-
+        $('#rejection_size').empty();
         if(ret > 0){
             $('#c_plies').attr('readonly',true);
             if( ret > c_plies * ratio  )
@@ -671,7 +679,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         else{
             rejections_flag = 1;
             swal('Ok! Saved Temporarily','','success');
-            $('#rejections_modal').modal('toggle');
+            //$('#rejections_modal').modal('toggle');
+            $('#save_rejection').css({'display':'none'});
         }    
     });
     //Rejection Panel Code Ends
@@ -682,6 +691,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         }).done(function(res){
             var data = $.parseJSON(res);
             avl_plies = Number(data.avl_plies);
+            fab_req = Number(data.fab_required);
             console.log(data);
             console.log(data.avl_plies);
             if(data.child_docket == '1'){
@@ -719,16 +729,21 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#p_plies').val(data.p_plies);
             $('#doc_target_type').val(data.doc_target_type);
             $('#ratio').val(data.ratio);
+            
+            $('#fab_required').val(data.fab_required);
+            $('#r_fab_required').html(data.fab_required);
+
 
             //doc type
             $('#d_doc_type').html(data.doc_target_type+' Docket');
             //setting values for display table    
             $('#d_doc_no').html(doc_no);
+            $('#d_cut_no').html(data.acut_no);
             $('#d_cut_status').html(data.act_cut_status);
             $('#d_cut_issue_status').html(data.fab_status);
             $('#d_good_pieces').html(data.good_pieces);
             $('#d_rej_pieces').html(data.rej_pieces);
-            $('#d_date').html();
+            $('#d_date').html(data.date);
             $('#d_section').html(data.section);
             $('#d_module').html(data.module);
             $('#d_shift').html(data.shift);
@@ -737,21 +752,24 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#d_damages').html(data.damages);
             $('#d_shortages').html(data.shortages);
             $('#r_doc_qty').html(data.doc_qty);
-
             //setting values for reporting table
             $('#r_doc_no').html(doc_no);
             $('#r_cut_status').html(data.act_cut_status);
             $('#r_plan_plies').html(data.p_plies);
             $('#r_reported_plies').html(data.a_plies);
-            
+           
             //setting value to style,schedule,color
             $('#d_style').html(data.styles);
             $('#d_schedule').html(data.schedules);
             $('#d_color').html(data.colors);
 
+            $('#c_plies').val(avl_plies);
+            $('#fab_received').val(fab_req);
+
             $('#post_style').val(data.styles);
             $('#post_schedule').val(data.schedules);
             $('#post_color').val(data.colors);
+            
         }).fail(function(){
             swal('Network Error while getting Details','','error');
             return;

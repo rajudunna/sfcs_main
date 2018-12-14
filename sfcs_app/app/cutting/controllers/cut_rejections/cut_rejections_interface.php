@@ -28,6 +28,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     <tr><td>Schedule</td><td id='d_schedule'></td> </tr>
                     <tr><td>Color</td>   <td id='d_color'></td>    </tr>
                     <tr><td>Docket Type</td><td id='d_doc_type'></td></tr>
+                    <tr><td>Cut No</td><td id='d_cut_no'></td></tr>
                 </table>
             </div>
         </div>
@@ -248,7 +249,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 return swal('Please Fill Rejections','','error');
         }
         //Rejections Validation End
-
+        $('#submit').css({'display':'none'});
         var user_msg = '';
         var form_data = {
                          doc_no:post_doc_no,doc_target_type:doc_target_type,shift:shift,
@@ -292,7 +293,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $('#d_schedule').html('');
         $('#d_color').html('');
         $('#d_doc_type').html('');
-        $('#rejection_size').html('');
+        $('#d_cut_no').html('');
+        $('#rejection_size').empty();
         $('#rejections_table_body').empty();
         $('#size_details').hide();
         $('#size_details_body').empty();
@@ -307,6 +309,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     $('#clear_rejection').on('click',function(){
         if(total_rejected_pieces > 0){
             clear_all();
+            $('#save_rejection').css({'display':'block'});
             $('#rejections_modal').modal('toggle');
         }else{
             swal('Nothing To Clear');
@@ -334,7 +337,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         if(c_plies == 0){
             return swal('Please Enter Reporting Plies','','error');
         }
-        
+        $('#rejection_size').empty();
         if(ret > 0){
             if( ret > avl_to_reject ){
                 $('#rejection_pieces').val(0);
@@ -456,6 +459,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             rejections_flag = 1;
             swal('Ok! Saved Temporarily','','success');
             $('#rejections_modal').modal('toggle');
+            $('#save_rejection').css({'display':'none'});
         }    
     });
 
@@ -516,6 +520,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#d_doc_type').html(data.doc_target_type+' Docket');
             //setting values for display table    
             $('#d_doc_no').html(doc_no);
+            $('#d_cut_no').html(data.acut_no);
             $('#d_cut_status').html(data.act_cut_status);
             $('#d_cut_issue_status').html(data.fab_status);
             $('#d_good_pieces').html(data.good_pieces);
