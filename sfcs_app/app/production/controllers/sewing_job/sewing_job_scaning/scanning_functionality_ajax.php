@@ -430,7 +430,7 @@ if($barcode_generation == 1)
 				// echo 'cum'.$cumulative_qty;
 				//echo $doc_value.'up'.$to_add_doc_val.'</br>';
 				$cumulative_qty = $to_add_doc_val + $cumulative_qty;
-				$query_to_fetch_individual_bundles = "select bundle_number,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,recevied_qty,rejected_qty,color,size_title,size_id,original_qty,cut_number,docket_number,input_job_no FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = '$b_job_no' AND operation_id = $b_op_id and docket_number = $doc_value and assigned_module='$module_cum' order by barcode_sequence";
+				$query_to_fetch_individual_bundles = "select bundle_number,(send_qty+recut_in+replace_in)as send_qty,recevied_qty,rejected_qty,color,size_title,size_id,original_qty,cut_number,docket_number,input_job_no FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = '$b_job_no' AND operation_id = $b_op_id and docket_number = $doc_value and assigned_module='$module_cum' order by barcode_sequence";
 				$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$remaining_qty_rec = 0;
 				if($emb_cut_check_flag != 0)
@@ -543,7 +543,7 @@ if($barcode_generation == 1)
 					//$fillup_qty[$doc_value][$b_sizes[$key]] = 0;
 					$cumulative_rej_qty = $to_add_doc_val + $cumulative_rej_qty;
 					$remaining_qty_rej = $cumulative_rej_qty;
-					$query_to_fetch_individual_bundles = "select bundle_number,send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = '$b_job_no' AND operation_id = $b_op_id AND docket_number = $doc_value AND assigned_module = '$module_cum' order by barcode_sequence DESC";
+					$query_to_fetch_individual_bundles = "select bundle_number,(send_qty+recut_in+replace_in)as send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = '$b_job_no' AND operation_id = $b_op_id AND docket_number = $doc_value AND assigned_module = '$module_cum' order by barcode_sequence DESC";
 					// echo $query_to_fetch_individual_bundles.'-';
 					$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if($emb_cut_check_flag != 0)
@@ -818,34 +818,24 @@ foreach ($b_tid as $key=>$value)
 			$total_rec_qty = $pre_recieved_qty+$act_reciving_qty+$rejected_qty;
 			if($total_rec_qty > $send_qty)
 			{
-				$send_qty = $row['send_qty'];
-				$pre_recieved_qty = $row['recevied_qty'];
-				$rejected_qty = $row['rejected_qty'];
-				$act_reciving_qty = $b_rep_qty[$key];
-				$total_rec_qty = $pre_recieved_qty + $act_reciving_qty;
-			//	echo $pre_recieved_qty.'+'.$act_reciving_qty.'+'.$rejected_qty.'</br>';
-				//echo "bcd=".$total_rec_qty."-".$send_qty."</br>";
-				if($total_rec_qty > $send_qty)
+				$concurrent_flag = 1;
+			}
+			else
+			{
+				$rec_qty_from_temp = "select (sum(recevied_qty))as recevied_qty FROM $brandix_bts.bundle_creation_data_temp WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
+			//	echo $rec_qty_from_temp;
+				$result_rec_qty_from_temp = $link->query($rec_qty_from_temp);
+				while($row_temp = $result_rec_qty_from_temp->fetch_assoc()) 
 				{
-					$concurrent_flag = 1;
-				}
-				else
-				{
-					$rec_qty_from_temp = "select (sum(recevied_qty))as recevied_qty FROM $brandix_bts.bundle_creation_data_temp WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
-				//	echo $rec_qty_from_temp;
-					$result_rec_qty_from_temp = $link->query($rec_qty_from_temp);
-					while($row_temp = $result_rec_qty_from_temp->fetch_assoc()) 
+					$pre_recieved_qty_temp = $row_temp['recevied_qty'];
+					$act_reciving_qty_temp = $b_rep_qty[$key];
+				//	echo "bcdtemp=".$act_reciving_qty_temp."-".$send_qty."</br>";
+					if($act_reciving_qty_temp > $send_qty)
 					{
-						$pre_recieved_qty_temp = $row_temp['recevied_qty'];
-						$act_reciving_qty_temp = $b_rep_qty[$key];
-					//	echo "bcdtemp=".$act_reciving_qty_temp."-".$send_qty."</br>";
-						if($act_reciving_qty_temp > $send_qty)
-						{
-							$concurrent_flag = 1;
-						}
+						// $concurrent_flag = 1;
 					}
-
 				}
+
 			}
 		}
 	}
