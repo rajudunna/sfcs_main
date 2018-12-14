@@ -289,18 +289,18 @@ foreach($b_tid as $key => $value)
 
             //To send rejections qunatities and reasons array to M3 API Function
             if($r_qtys[$value] != null && $r_reason[$value] != null){
-                $r_qty = array();
-                $r_reasons = array();
                 $r_qty_array = explode(',',$r_qtys[$value]);
                 $r_reasons_array = explode(',',$r_reason[$value]);
-                foreach($r_qty_array as $qty_key => $qty_value)
-                {
-                    $r_qty[] = $r_qty_array[$qty_key];
-                    $r_reasons[] = $r_reasons_array[$qty_key];
+                // foreach($r_qty_array as $qty_key => $qty_value)
+                // {
+                    $r_qty = array();
+                    $r_reasons = array();
+                    $r_qty[] = $r_qty_array;
+                    $r_reasons[] = $r_reasons_array;
                     $b_tid = $b_tid[$key];
-                    $implode_next[2] = $r_qty_array[$qty_key];
+                    $implode_next[2] = array_sum($r_qty_array);
                     //retreving bcd id from bundle_ceration_data and inserting into the rejection_log table and rejection_log_child
-                    $bcd_id_qry = "select id,style,schedule,color,docket_number,size_title,size_id,assigned_module,input_job_no_random_ref from $brandix_bts.bundle_creation_data where bundle_number=$b_tid and operation_id = $b_op_id";
+                    $bcd_id_qry = "select id,style,schedule,color,docket_number,size_title,size_id,assigned_module,input_job_no_random_ref,bundle_number from $brandix_bts.bundle_creation_data where bundle_number=$b_tid and operation_id = $b_op_id";
                     $bcd_id_qry_result=mysqli_query($link,$bcd_id_qry) or exit("Bcd id qry".mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($bcd_id_row=mysqli_fetch_array($bcd_id_qry_result))
                     {
@@ -313,6 +313,7 @@ foreach($b_tid as $key => $value)
                         $size_id = $bcd_id_row['size_id'];
                         $assigned_module = $bcd_id_row['assigned_module'];
                         $input_job_random_ref = $bcd_id_row['input_job_no_random_ref'];
+                        $bundle_number = $bcd_id_row['bundle_number'];
                     }
                     //searching the bcd_id in rejection log child or not
                     $bcd_id_searching_qry = "select id from $bai_pro3.rejection_log_child where bcd_id = $bcd_id";
@@ -353,9 +354,10 @@ foreach($b_tid as $key => $value)
                         $inserting_into_rejection_log_child_qry = "INSERT INTO `bai_pro3`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`) values($parent_id,$bcd_id,$doc_no,$input_job_random_ref,'$size_id','$size_title',$assigned_module,$implode_next[2],$b_op_id)";
                         $insert_qry_rej_child = $link->query($inserting_into_rejection_log_child_qry);
                     }
-                    updateM3TransactionsRejections($b_tid[$key],$b_op_id,$r_qty_array,$r_reasons_array);
-                }
-            }           
+                    // echo $bundle_number.','.$b_op_id.','.$r_qty_array.','.$r_reasons_array.'</br>';
+                    updateM3TransactionsRejections($bundle_number,$b_op_id,$r_qty_array,$r_reasons_array);
+                // }
+            }            
         }
                
         if($result_query)
