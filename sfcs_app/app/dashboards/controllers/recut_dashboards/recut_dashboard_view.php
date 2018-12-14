@@ -349,15 +349,20 @@
                   <input class='form-control integer' placeholder='Enter Schedule here' onchange='myfunctionsearch()' id='schedule_id'></input></div></div>";
     echo $drp_down;
     
+    
 ?>
 </br></br></br>
 <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog" style="width: 80%;">
         <div class="modal-content">
+            
             <div class="modal-header">Recut Detailed View
                 <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" id='main-content'>
+            <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;" >
+                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
+                    </div>
             </div>
         </div>
     </div>
@@ -370,6 +375,9 @@
             </div>
             <div id='pre_pre'>
                 <div class="modal-body">
+                <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
+                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
+                    </div>
                     <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform" onsubmit='return validationfunction();'>
                         <div class='panel-body' id="dynamic_table_panel">	
                                 <div id ="dynamic_table1"></div>
@@ -394,7 +402,7 @@
             </div>
             <div id='pre'>
                 <div class="modal-body">
-                    <div class="ajax-loader" id="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;">
+                    <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
                                 <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
                     </div>
                     <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartformreplace" method="post" id="smartform1" onsubmit='return validationreplace();'>
@@ -579,7 +587,7 @@ function viewrecutdetails(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
     $('#myModal').modal('toggle');
-    $('#loading-image').show();
+    $('.loading-image').show();
     $.ajax({
 
 			type: "POST",
@@ -588,7 +596,7 @@ function viewrecutdetails(id)
 			success: function (response) 
 			{
                 document.getElementById('main-content').innerHTML = response;
-                $('#loading-image').hide();
+                $('.loading-image').hide();
             }
 
     });
@@ -601,7 +609,7 @@ function editrecutdetails(id)
     document.getElementById('dynamic_table1').innerHTML = '';
     $('#post_post').hide();
     $('#pre_pre').show();
-    $('#loading-image').show();
+    $('.loading-image').show();
     $.ajax({
 
 			type: "POST",
@@ -610,7 +618,7 @@ function editrecutdetails(id)
 			success: function (response) 
 			{
                 document.getElementById('dynamic_table1').innerHTML = response;
-                $('#loading-image').hide();
+                $('.loading-image').hide();
             }
 
     });
@@ -619,7 +627,7 @@ function editreplacedetails(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
     $('#myModal2').modal('toggle');
-    $('#loading-image').show();
+    $('.loading-image').show();
     $('#post').hide();
     $('#pre').show();
     document.getElementById('dynamic_table2').innerHTML = '';
@@ -632,18 +640,18 @@ function editreplacedetails(id)
 			success: function (response) 
 			{
                 document.getElementById('dynamic_table2').innerHTML = response;
-                $('#loading-image').hide();
+                // $('.loading-image').hide();
             }
 
     });
 }
 function validationreplace()
 {
-    var total_rows_replace = document.getElementById("total_rows_replace").innerHTML;
+    var total_rows = document.getElementById("total_rows").value;
     var value = 0;
     var flag = 0;
-    console.log(total_rows_replace);
-    for(var i=1; i<=Number(total_rows_replace);i++)
+    console.log(total_rows);
+    for(var i=1; i<=Number(total_rows);i++)
     {
         console.log(value);
         console.log(i);
@@ -695,18 +703,17 @@ function validationreplace()
         }
     }
     console.log(flag);
-    // if(flag == 0)
-    // {
+    if(flag == 0)
+    {
         console.log("working");
         $('#pre').hide();
         $('#post').show();
-        
-   // }
-    return true;
-    // // else
-    // // {
-    // //     return false;
-    // // }
+        return true;
+   }
+    else
+    {
+        return false;
+    }
 }
 function validationreplaceindividual(id)
 {
@@ -749,8 +756,7 @@ function validationrecutindividual(id)
 }
 function setfunction()
 {
-    var noofrows = $('#total_rows').val();
-    // alert(document.getElementById('setreset').innerHTML);
+    var noofrows = document.getElementById('total_rows').value;
     if(document.getElementById('setreset').innerHTML == 'Set')
     {
         for(var i=1; i<=Number(noofrows); i++)
@@ -831,14 +837,14 @@ function validationfunction()
     }
    if(flag == 1)
    {
-       //return false;
+       return false;
    }
-    //    else
-    //    {
+    else
+    {
        $('#pre_pre').hide();
        $('#post_post').show();
        return true;
-  // }
+    } 
 }
 function isInteger(value) 
 {
@@ -919,6 +925,7 @@ function isNumber(t)
 $(document).ready(function() 
 {
     $('#myTable1').hide();
+    // $('.loading-image').hide();
     myFunction();
     // $('#recut').on('click', function(){
     //     $('#recut').hide();

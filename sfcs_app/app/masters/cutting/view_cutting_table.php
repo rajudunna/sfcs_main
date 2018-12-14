@@ -31,7 +31,7 @@
 			}else{
 				$cat_status = "In-Active";
 			}
-			echo "<tr><td>".$sno++."</td><td>".$row["tbl_name"]." </td><td>".$cat_status."</td><td><a href='$url&rowid=$rowid&tbl_name=$tbl_name&status=$status' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid=$rowid' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
+			echo "<tr><td>".$sno++."</td><td>".$row["tbl_name"]." </td><td>".$cat_status."</td><td><a href='$url&rowid=$rowid&tbl_name=$tbl_name&status=$status' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid=$rowid' class='btn btn-danger btn-xs editor_remove' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
 		}
 		echo "</tbody></table>";
 	} else {
@@ -45,6 +45,26 @@
 $(document).ready(function() {
     $('#tbl_cutting_table').DataTable();
 } );
+
+function confirm_delete(e,t)
+    {
+        e.preventDefault();
+        var v = sweetAlert({
+        title: "Are you sure to Delete the Record?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+        }).then(function(isConfirm){
+        if (isConfirm) {
+        window.location = $(t).attr('href');
+        return true;
+        } else {
+        sweetAlert("Request Cancelled",'','error');
+        return false;
+        }
+        });
+    }
 </script>
 <style>
 table th
