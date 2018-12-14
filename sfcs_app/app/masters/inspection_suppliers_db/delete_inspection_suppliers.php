@@ -19,7 +19,17 @@ $url=getFullURL($_GET['r'],'save_inspection_suppliers.php','N');
 
 $delete="delete from bai_rm_pj1.`inspection_supplier_db` where tid='$rid'";
 if (mysqli_query($conn, $delete)) {
-	echo "<script>window.location.href = \"$url\"</script>";
+	echo"<script>setTimeout(function () { 
+		swal({
+			title: 'Deleted successfully.',
+			type: 'success',
+			confirmButtonText: 'OK'
+		},
+		function(isConfirm){
+			if (isConfirm) {
+			window.location.href = \"$url\";
+			}
+		}); }, 100);</script>";
 			// header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2luc3BlY3Rpb25fc3VwcGxpZXJzX2RiL3NhdmVfaW5zcGVjdGlvbl9zdXBwbGllcnMucGhw==');
 		} else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);

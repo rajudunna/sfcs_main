@@ -32,6 +32,17 @@ $url=getFullURL($_GET['r'],'add_packing_method.php','N');
 // 	}); }, 100);</script>";
 $delete="delete from $bai_pro3.`pack_methods` where pack_id='$rid'";
 if (mysqli_query($conn, $delete)) {
+	echo"<script>setTimeout(function () { 
+		swal({
+			title: 'Deleted successfully.',
+			type: 'success',
+			confirmButtonText: 'OK'
+		},
+		function(isConfirm){
+			if (isConfirm) {
+			window.location.href = \"$url\";
+			}
+		}); }, 100);</script>";
 	echo "<script>window.location.href = \"$url\"</script>";
 
 		} else {

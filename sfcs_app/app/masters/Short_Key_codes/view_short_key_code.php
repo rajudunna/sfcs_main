@@ -26,7 +26,7 @@
 		while($row = $result->fetch_assoc()) {
 			$rowid=$row["id"];
 			$short_key_code=$row["short_key_code"];
-			echo "<tr><td>".$sno++."</td><td>".$row["short_key_code"]."</td><td><a href='$url&rowid=$rowid&short_key_code=$short_key_code' class='editor_edit btn btn-warning btn-xs'>Edit</a><a href='$url1&rowid1=$rowid' class='confirm-submit editor_remove btn btn-danger btn-xs' id='del$rowid'>Delete</a></td></tr>";
+			echo "<tr><td>".$sno++."</td><td>".$row["short_key_code"]."</td><td><a href='$url&rowid=$rowid&short_key_code=$short_key_code' class='editor_edit btn btn-warning btn-xs'>Edit</a><a href='$url1&rowid1=$rowid' class='confirm-submit editor_remove btn btn-danger btn-xs' id='del' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
 		}
 
 		echo "</tbody></table>";
@@ -41,6 +41,25 @@
 $(document).ready(function() {
     $('#downtime_reason').DataTable();
 } );
+function confirm_delete(e,t)
+    {
+        e.preventDefault();
+        var v = sweetAlert({
+        title: "Are you sure to Delete the Record?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+        }).then(function(isConfirm){
+        if (isConfirm) {
+        window.location = $(t).attr('href');
+        return true;
+        } else {
+        sweetAlert("Request Cancelled",'','error');
+        return false;
+        }
+        });
+    }
 </script>
 <style>
 table th

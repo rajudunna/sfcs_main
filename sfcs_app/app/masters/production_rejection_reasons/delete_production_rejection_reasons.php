@@ -19,7 +19,17 @@ $delete="delete from $bai_pro3.bai_qms_rejection_reason where sno='$sno'";
 //     echo "<script>window.location = '".$url."'</script>";
 
 if (mysqli_query($conn, $delete)) {
-echo "<script>window.location.href = \"$url\"</script>";
+    echo"<script>setTimeout(function () { 
+		swal({
+			title: 'Deleted successfully.',
+			type: 'success',
+			confirmButtonText: 'OK'
+		},
+		function(isConfirm){
+			if (isConfirm) {
+			window.location.href = \"$url\";
+			}
+		}); }, 100);</script>";
     
 } else {
     echo "Error: " . $sql . "<br>" . mysqli_error($conn);

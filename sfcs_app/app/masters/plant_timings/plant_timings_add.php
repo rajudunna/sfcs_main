@@ -72,7 +72,7 @@
                         $m = str_pad($mins,2,'0',STR_PAD_LEFT);
                         $time = "$h:$m";
                         if($time==$st)
-                            echo "<option value='$h:$m' selected >$time</option>";
+                            echo "<option value='$h:$m' selected>$time</option>";
                         else
                             echo "<option value='$h:$m'>$time</option>";    
                     }

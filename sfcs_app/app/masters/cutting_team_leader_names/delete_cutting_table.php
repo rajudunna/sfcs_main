@@ -13,8 +13,20 @@ if (!$conn) {
 	$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
 	
 $delete="delete from $bai_pro3.`tbl_leader_name` where id='$tbl_id'";
-$sql_result=mysqli_query($link, $delete) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-    echo "<script>window.location = '".$url."'</script>";
+if (mysqli_query($link, $delete)) {
+    echo"<script>setTimeout(function () { 
+        swal({
+            title: 'Deleted successfully.',
+            type: 'success',
+            confirmButtonText: 'OK'
+        },
+        function(isConfirm){
+            if (isConfirm) {
+            window.location.href = \"$url\";
+            }
+        }); }, 100);</script>";
+    echo "<script>window.location.href = \"$url\"</script>";
+}
 
 //header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2N1dHRpbmcvY3V0dGluZ190YWJsZV9hZGQucGhw');
 ?>
