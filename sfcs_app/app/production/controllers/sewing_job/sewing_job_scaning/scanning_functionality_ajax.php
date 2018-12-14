@@ -430,7 +430,7 @@ if($barcode_generation == 1)
 				// echo 'cum'.$cumulative_qty;
 				//echo $doc_value.'up'.$to_add_doc_val.'</br>';
 				$cumulative_qty = $to_add_doc_val + $cumulative_qty;
-				$query_to_fetch_individual_bundles = "select bundle_number,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,recevied_qty,rejected_qty,color,size_title,size_id,original_qty,cut_number,docket_number,input_job_no FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = '$b_job_no' AND operation_id = $b_op_id and docket_number = $doc_value and assigned_module='$module_cum' order by barcode_sequence";
+				$query_to_fetch_individual_bundles = "select bundle_number,(send_qty+recut_in+replace_in)as send_qty,recevied_qty,rejected_qty,color,size_title,size_id,original_qty,cut_number,docket_number,input_job_no FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = '$b_job_no' AND operation_id = $b_op_id and docket_number = $doc_value and assigned_module='$module_cum' order by barcode_sequence";
 				$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$remaining_qty_rec = 0;
 				if($emb_cut_check_flag != 0)
