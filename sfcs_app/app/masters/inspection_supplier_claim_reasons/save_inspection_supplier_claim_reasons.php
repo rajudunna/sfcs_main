@@ -67,7 +67,7 @@
                 <label class="control-label control-label-left col-sm-3"  for="complaint_reason">Complaint Reason:</label>
                 <div class="controls col-sm-9">
                     
-                <input id="complaint_reason" type="text" class="form-control k-textbox alpha" data-role="text" required="required"  name="complaint_reason" value="<?php echo $complaint_reason; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
+                <input id="complaint_reason" type="text" class="form-control" data-role="text" required="required"  name="complaint_reason" value="<?php echo $complaint_reason; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
                 
         </div></div>
             <div class="col-md-4"><div class="form-group">

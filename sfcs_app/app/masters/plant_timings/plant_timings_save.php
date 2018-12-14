@@ -6,9 +6,11 @@
 $dr_id=$_POST['dr_id'];
 $code=$_POST['time_value'];
 $day_part=$_POST['day_part'];
-$start_time=$_POST['time_display'];
+$start_time1=$_POST['time_display'];
 if($day_part=='PM'){
-	$start_time1=$start_time+12;
+	$start_time=$start_time1+12;
+} else {
+	$start_time=$start_time1;
 }
 $end_time=$_POST['time_display1'];
 
@@ -62,7 +64,7 @@ else
 				}
 		}else
 		{
-				$query1="select * from $bai_pro3.tbl_plant_timings where time_value='$start_time1' and (time_display='$department' or day_part='$day_part')";
+				$query1="select * from $bai_pro3.tbl_plant_timings where time_value='$code' and (time_display='$department' or day_part='$day_part')";
 				$sql_result1=mysqli_query($conn, $query1);
 				
 				if(mysqli_num_rows($sql_result1)>0){

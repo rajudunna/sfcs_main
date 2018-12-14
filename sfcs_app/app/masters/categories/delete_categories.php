@@ -19,22 +19,12 @@ if (!$conn) {
 }
 if($rid!=''){
 	$url=getFullURL($_GET['r'],'add_categories.php','N');
-	echo"<script>setTimeout(function () { 
-		swal({
-		  title: 'Are you sure?',
-		  text: 'Your will not be able to recover this Record!',
-		  type: 'warning',
-		  confirmButtonText: 'OK'
-		},
-		function(isConfirm){
-		  if (isConfirm) {
-			window.location.href = \"$url\";
-		  }
-		}); }, 100);</script>";
+
 $delete="delete from bai_pro3.tbl_category where id='$rid'";
 if (mysqli_query($conn, $delete)) {
-			//header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw');
-		} else {
+	echo "<script>window.location.href = \"$url\"</script>";
+
+} else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
 	}
