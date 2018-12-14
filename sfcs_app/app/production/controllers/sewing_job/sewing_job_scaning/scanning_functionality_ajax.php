@@ -832,7 +832,7 @@ foreach ($b_tid as $key=>$value)
 				//	echo "bcdtemp=".$act_reciving_qty_temp."-".$send_qty."</br>";
 					if($act_reciving_qty_temp > $send_qty)
 					{
-						$concurrent_flag = 1;
+						// $concurrent_flag = 1;
 					}
 				}
 
