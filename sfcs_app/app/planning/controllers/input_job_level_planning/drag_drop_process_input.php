@@ -137,7 +137,6 @@ $userName = getrbac_user()['uname'];
 			$msc = microtime(true);			
 			$dockets_ref=array();
 			$sqly="SELECT GROUP_CONCAT(DISTINCT doc_no) AS doc,GROUP_CONCAT(DISTINCT acutno) AS cut,input_job_no_random as job_ref FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$items[1]."' ORDER BY acutno";
-			//echo $sqly."<br>";
 			$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$msc = microtime(true) - $msc;
 			while($sql_rowy=mysqli_fetch_array($resulty))
@@ -145,8 +144,8 @@ $userName = getrbac_user()['uname'];
 				$input_job_no_random_ref1=$sql_rowy["job_ref"];
 				$dockets_ref=explode(",",$sql_rowy["doc"]);
 				$cut_ref=explode(",",$sql_rowy["cut"]);
-				$sql123="select GROUP_CONCAT(DISTINCT doc_no) AS doc,GROUP_CONCAT(DISTINCT acutno) AS cut from $bai_pro3.plandoc_stat_log where doc_no in (".$sql_rowy["doc"].") and org_doc_no>1";
-				$resultr1=mysqli_query($link, $sql123) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql123="select GROUP_CONCAT(DISTINCT org_doc_no) AS doc,GROUP_CONCAT(DISTINCT acutno) AS cut from $bai_pro3.plandoc_stat_log where doc_no in (".$sql_rowy["doc"].") and org_doc_no>1";
+				$resultr1123=mysqli_query($link, $sql123) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowr1123=mysqli_fetch_array($resultr1123))
 				{
 					if($sql_rowr1123["doc"]<>'' && $sql_rowr1123["cut"]<>'')
@@ -159,6 +158,7 @@ $userName = getrbac_user()['uname'];
 				}
 			}
 			$sql12="select order_del_no,clubbing from $bai_pro3.order_cat_doc_mk_mix where doc_no in (".implode(",",$dockets_ref).") and clubbing>0 and category in ('Body','Front') group by clubbing";
+			
 			$resultr112=mysqli_query($link, $sql12) or exit("Sql Error5 == ".$sql12.' == '.mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($resultr112)>0)
 			{
@@ -173,26 +173,9 @@ $userName = getrbac_user()['uname'];
 						$dockets_ref[]=$sql_rowr1121['doc_no'];
 					}	
 				}
-			}			
+			}
 			for($d=0;$d<sizeof($dockets_ref);$d++)
 			{
-				$org=0;
-				// $sql="select * from $bai_pro3.plandoc_stat_log where doc_no='$dockets_ref[$d]'";
-				// $resultr1=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-				// while($sql_rowr1=mysqli_fetch_array($resultr1))
-				// {
-					// if($sql_rowr1["org_doc_no"]>1)
-					// {
-						// $org_doc_no=$sql_rowr1["org_doc_no"];
-						//echo "Org--doc_no".$org_doc_no."<br>";
-					// }
-					// else
-					// {
-						// $org_doc_no=$dockets_ref[$d];
-						//echo "M--doc_no".$org_doc_no."<br>";
-					// }
-					// $org=$sql_rowr1["org_doc_no"];				
-				// }
 				$sql12="select * from $bai_pro3.cutting_table_plan where doc_no='".$dockets_ref[$d]."'";
 				$resultr112=mysqli_query($link, $sql12) or exit("Sql Error5 == ".$sql12.' == '.mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($resultr112)==0)
@@ -228,7 +211,7 @@ $userName = getrbac_user()['uname'];
 				
 				$sql43="select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no='$dockets_ref[$d]'";
 				$resultr43=mysqli_query($link, $sql43) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if((mysqli_num_rows($resultr43)>0)
+				if(mysqli_num_rows($resultr43)>0)
 				{
 					while($sql_rowr43=mysqli_fetch_array($resultr43))
 					{						
@@ -265,7 +248,7 @@ $userName = getrbac_user()['uname'];
 		mysqli_query($link, $sqlx) or exit("Sql Error11.2");
 	}
 	echo '<div class="alert alert-success"><h2>Sucessfully Updated... <br/> Please wait while we redirect to IPS Dashboard....</h2></div>';
-	// echo "<h2>Sucessfully Updated... <br/> Please wait while redirect to IPS Dashboard....</h2>";
+	//echo "<h2>Sucessfully Updated... <br/> Please wait while redirect to IPS Dashboard....</h2>";
 	$url =getFullURLLevel($_GET['r'],'dashboards/controllers/IPS/tms_dashboard_input_v22.php',3,'N');
 	echo"<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1); 
 	function Redirect() {  
