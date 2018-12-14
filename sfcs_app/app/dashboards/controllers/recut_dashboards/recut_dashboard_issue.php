@@ -298,7 +298,6 @@ function issued_to_module($bcd_id,$qty,$ref)
             // }
         }   
     }
-    die();
     return;
 }
 $shifts_array = ["IssueToModule","AlreadyIssued","WaitingForApproval","UpdateMarkers","ReportPending"];
