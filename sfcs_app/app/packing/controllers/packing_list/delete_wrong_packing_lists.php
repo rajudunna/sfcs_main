@@ -61,8 +61,6 @@
 			$schedule=$_POST['schedule'];
 			$count = 0;
 			$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\"";
-			//echo $sql;
-			mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 			$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqlii_error());
 			//$resultant_array = [];
 			$$total_order_qtys = 0;
@@ -73,43 +71,10 @@
 					$order = 'order_s_'.$sizes_array[$key];
 					$total_order_qtys += $sql_row[$order];
 				} 
-				// $o_xs+=$sql_row['order_s_xs'];
-				// $o_s+=$sql_row['order_s_s'];
-				// $o_m+=$sql_row['order_s_m'];
-				// $o_l+=$sql_row['order_s_l'];
-				// $o_xl+=$sql_row['order_s_xl'];
-				// $o_xxl+=$sql_row['order_s_xxl'];
-				// $o_xxxl+=$sql_row['order_s_xxxl'];
-				//$o_s_s06+=$sql_row['order_s_s06'];
-				// $o_s_s06+=$sql_row['order_s_s06'];
-				// $o_s_s08+=$sql_row['order_s_s08'];
-				// $o_s_s10+=$sql_row['order_s_s10'];
-				// $o_s_s12+=$sql_row['order_s_s12'];
-				// $o_s_s14+=$sql_row['order_s_s14'];
-				// $o_s_s16+=$sql_row['order_s_s16'];
-				// $o_s_s18+=$sql_row['order_s_s18'];
-				// $o_s_s20+=$sql_row['order_s_s20'];
-				// $o_s_s22+=$sql_row['order_s_s22'];
-				// $o_s_s24+=$sql_row['order_s_s24'];
-				// $o_s_s26+=$sql_row['order_s_s26'];
-				// $o_s_s28+=$sql_row['order_s_s28'];
-				// $o_s_s30+=$sql_row['order_s_s30'];
-				// $o_s_s32+=$sql_row['order_s_s32'];
-				// $o_s_s34+=$sql_row['order_s_s34'];
-				// $o_s_s36+=$sql_row['order_s_s36'];
-				// $o_s_s38+=$sql_row['order_s_s38'];
-				// $o_s_s40+=$sql_row['order_s_s40'];
-				// $o_s_s42+=$sql_row['order_s_s42'];
-				// $o_s_s44+=$sql_row['order_s_s44'];
-				// $o_s_s46+=$sql_row['order_s_s46'];
-				// $o_s_s48+=$sql_row['order_s_s48'];
-				// $o_s_s50+=$sql_row['order_s_s50'];
+				
 
 			}
-			//$total_order_qtys=($o_xs+$o_s+$o_m+$o_l+$o_xl+$o_xxl+$o_xxxl+$o_s_s06+$o_s_s08+$o_s_s10+$o_s_s12+$o_s_s14+$o_s_s16+$o_s_s18+$o_s_s20+$o_s_s22+$o_s_s24+$o_s_s26+$o_s_s28+$o_s_s30+$o_s_s32+$o_s_s34+$o_s_s36+$o_s_s38+$o_s_s40+$o_s_s42+$o_s_s44+$o_s_s46+$o_s_s48+$o_s_s50);
-
-
-			
+						
 			$sql="select tid as \"tid_db\", coalesce(carton_act_qty,0) as \"tot_carton_qty\" from $bai_pro3.packing_summary where order_del_no in ($schedule)";
 			$tid_db=array();
 			$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());

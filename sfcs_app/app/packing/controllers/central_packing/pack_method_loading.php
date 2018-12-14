@@ -99,7 +99,7 @@
 				$style1=$_POST['style'];
 				$schedule=$_POST['schedule'];
 				
-				$check="select * from $bai_pro3.pac_stat where schedule='".$schedule."'";
+				$check="select * from $bai_pro3.pac_stat where schedule=$schedule";
 				$check_resu=mysqli_query($link, $check) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$row1 = mysqli_fetch_row($check_resu);
 				if($row1>0)
@@ -109,7 +109,7 @@
 				
 								
 					//end logic
-					$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where schedule=$schedule AND style='$style'"; 
+					$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where schedule='$schedule' AND style='$style'"; 
 					$get_pack_id_res=mysqli_query($link, $get_pack_id) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$row = mysqli_fetch_row($get_pack_id_res);
 					$pack_id=$row[0];
@@ -142,7 +142,7 @@
 
 					<?php
 
-					$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id ='$schedule_id'";
+					$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id =$schedule_id";
 					// echo $sewing_jobratio_sizes_query.'<br>';
 					$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
 					while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
@@ -167,7 +167,7 @@
 							$plannedQty_query = "SELECT SUM(quantity*planned_plies) AS plan_qty FROM $brandix_bts.tbl_cut_size_master 
 							LEFT JOIN $brandix_bts.tbl_cut_master ON tbl_cut_size_master.parent_id=tbl_cut_master.id 
 							LEFT JOIN $brandix_bts.tbl_orders_sizes_master ON tbl_orders_sizes_master.parent_id=tbl_cut_master.ref_order_num
-							WHERE tbl_cut_master.ref_order_num='$schedule_id' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND tbl_cut_size_master.ref_size_name=tbl_orders_sizes_master.ref_size_name AND tbl_cut_size_master.color=tbl_orders_sizes_master.order_col_des";
+							WHERE tbl_cut_master.ref_order_num=$schedule_id AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND tbl_cut_size_master.ref_size_name=tbl_orders_sizes_master.ref_size_name AND tbl_cut_size_master.color=tbl_orders_sizes_master.order_col_des";
 							//echo $plannedQty_query.'<br>';
 							$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error22");
 							while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
@@ -176,7 +176,7 @@
 								//echo $planned_qty[$size_main[$kk]]."---Testing<br>";
 							}
 							$orderQty_query = "SELECT SUM(order_act_quantity) AS orderedQty FROM $brandix_bts.tbl_orders_sizes_master 
-							WHERE parent_id='$schedule_id' AND tbl_orders_sizes_master.size_title='$size_main[$kk]'";
+							WHERE parent_id=$schedule_id AND tbl_orders_sizes_master.size_title='$size_main[$kk]'";
 							//echo $orderQty_query.'<br>';
 							$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error23");
 							while($orderQty_details=mysqli_fetch_array($Order_qty_resut))

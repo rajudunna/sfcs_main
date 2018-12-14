@@ -1,19 +1,9 @@
 <?php
 
-/*list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
-$authorized=array("muralim","duminduw","rajanaa","kranthic","kirang");*/
-$permission = haspermission($_GET['r']);
-// if(!(in_array($authorized,$permission)))
-// {
-// 	header("Location:restrict.php");
-// }
-
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
-// $view_access=user_acl("SFCS_0122",$username,1,$group_id_sfcs); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/functions.php", 3, "R"));
-// include(getFullURL($_GET['r'],'header_script.php','R')); 
 
 ?>
 
@@ -66,8 +56,6 @@ $color=$_GET['color'];
 				<select class='form-control' name='style' onchange='firstbox();'>
 					<?php				
 					$sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm where left(order_style_no,1) in ('Q','W','E','R','T','Y','U','I','O','P','A','S','D','F','G','H','J','K','L','Z','X','C','V','B','N','M') order by order_style_no";	
-					echo $sql;
-					mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 					echo "<option value=\"NIL\" selected>NIL</option>";
@@ -87,11 +75,6 @@ $color=$_GET['color'];
 				<select class='form-control' name='schedule' onchange='secondbox();'>
 					<?php
 					$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" order by order_del_no";
-					//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
-					//{
-						//$sql="select distinct order_del_no from plan_doc_summ where order_style_no=\"$style\"";	
-					//}
-					mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 					echo "<option value=\"NIL\" selected>NIL</option>";
@@ -109,9 +92,7 @@ $color=$_GET['color'];
 				</select>
 			</div>	
 			<?php
-				$sql1="select count(order_col_des) as col_cnt from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
-				//	echo "query=".$sql1;
-				mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql1="select count(order_col_des) as col_cnt from $bai_pro3.bai_orders_db_confirm where order_style_no=\"".$style."\" and order_del_no=\"".$schedule."\"";
 					$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result1);
 					while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -123,9 +104,7 @@ $color=$_GET['color'];
 				<label for="color">Select Color:</label>
 				<select class='form-control' name='color' onchange='thirdbox();'>
 					<?php
-						$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
-						//}
-						mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"".$style"\" and order_del_no=\"".$schedule."\"";
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_num_check=mysqli_num_rows($sql_result);
 
@@ -161,73 +140,13 @@ $color=$_GET['color'];
 			</div>
 		</form>
 <?php
-
-// $ship_xs=0;
-// $ship_s=0;
-// $ship_m=0;
-// $ship_l=0;
-// $ship_xl=0;
-// $ship_xxl=0;
-// $ship_xxxl=0;
-// $ship_s01=0;
-// $ship_s02=0;
-// $ship_s03=0;
-// $ship_s04=0;
-// $ship_s05=0;
-// $ship_s06=0;
-// $ship_s07=0;
-// $ship_s08=0;
-// $ship_s09=0;
-// $ship_s10=0;
-// $ship_s11=0;
-// $ship_s12=0;
-// $ship_s13=0;
-// $ship_s14=0;
-// $ship_s15=0;
-// $ship_s16=0;
-// $ship_s17=0;
-// $ship_s18=0;
-// $ship_s19=0;
-// $ship_s20=0;
-// $ship_s21=0;
-// $ship_s22=0;
-// $ship_s23=0;
-// $ship_s24=0;
-// $ship_s25=0;
-// $ship_s26=0;
-// $ship_s27=0;
-// $ship_s28=0;
-// $ship_s29=0;
-// $ship_s30=0;
-// $ship_s31=0;
-// $ship_s32=0;
-// $ship_s33=0;
-// $ship_s34=0;
-// $ship_s35=0;
-// $ship_s36=0;
-// $ship_s37=0;
-// $ship_s38=0;
-// $ship_s39=0;
-// $ship_s40=0;
-// $ship_s41=0;
-// $ship_s42=0;
-// $ship_s43=0;
-// $ship_s44=0;
-// $ship_s45=0;
-// $ship_s46=0;
-// $ship_s47=0;
-// $ship_s48=0;
-// $ship_s49=0;
-// $ship_s50=0;
 for($i=1;$i<=50;$i++){
 	$ship_s[$i] = 0;
 }
 $x=0;
 $sql="select * from $bai_pro3.ship_stat_log where ship_status=1 order by ship_schedule";
-mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-$count = mysqli_num_rows(mysqli_query($link, $sql));
-
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+$count = mysqli_num_rows($sql_result);
 if($count){
 $form_submit1 = getFullURL($_GET['r'],'dc_prepare.php','N');
 echo "<div class='col-sm-12' id='tdiv'>";
@@ -236,22 +155,11 @@ echo "<form name='prepare' method='post' action=$form_submit1 >";
 echo "<div class='row' style='max-height:600px;overflow-x:scroll;overflow-y:scroll' >";
 echo "<table class='table table-bordered table-responsive'>
 		<tr class='danger'>
-			<th>Select</th><th>Style</th><th>Schedule</th><th>Color</th><th>Total Pcs </th><th>Total Cartons</th><th>Remarks</th><th>Controls</th><th>Size</th>";
-			//echo "<th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>XXL</th><th>XXXL</th>";
-// for($i=1;$i<=50;$i++){
-// 	echo "<th>s$i</th>";
-// }
+			<th>Select</th><th>Style</th><th>Schedule</th><th>Color</th><th>Total Pcs </th><th>Total Cartons</th><th>Remarks</th><th>Controls</th><th>Size</th>";			
 echo "</tr>";
 
 	while($sql_row=mysqli_fetch_array($sql_result))
 {
-	// $ship_xs=$sql_row['ship_s_xs'];
-	// $ship_s=$sql_row['ship_s_s'];
-	// $ship_m=$sql_row['ship_s_m'];
-	// $ship_l=$sql_row['ship_s_l'];
-	// $ship_xl=$sql_row['ship_s_xl'];
-	// $ship_xxl=$sql_row['ship_s_xxl'];
-	// $ship_xxxl=$sql_row['ship_s_xxxl'];
 
 	for($i=1;$i<=count($ship_s);$i++){
 		if($i<=9){
@@ -260,58 +168,7 @@ echo "</tr>";
 			$ship_s[$i] = $sql_row['ship_s_s'.$i];
 		}		
 	}
-	//var_dump($ship_s);
-	// $ship_s01=$sql_row['ship_s_s01'];
-	// $ship_s02=$sql_row['ship_s_s02'];
-	// $ship_s03=$sql_row['ship_s_s03'];
-	// $ship_s04=$sql_row['ship_s_s04'];
-	// $ship_s05=$sql_row['ship_s_s05'];
-	// $ship_s06=$sql_row['ship_s_s06'];
-	// $ship_s07=$sql_row['ship_s_s07'];
-	// $ship_s08=$sql_row['ship_s_s08'];
-	// $ship_s09=$sql_row['ship_s_s09'];
-	// $ship_s10=$sql_row['ship_s_s10'];
-	// $ship_s11=$sql_row['ship_s_s11'];
-	// $ship_s12=$sql_row['ship_s_s12'];
-	// $ship_s13=$sql_row['ship_s_s13'];
-	// $ship_s14=$sql_row['ship_s_s14'];
-	// $ship_s15=$sql_row['ship_s_s15'];
-	// $ship_s16=$sql_row['ship_s_s16'];
-	// $ship_s17=$sql_row['ship_s_s17'];
-	// $ship_s18=$sql_row['ship_s_s18'];
-	// $ship_s19=$sql_row['ship_s_s19'];
-	// $ship_s20=$sql_row['ship_s_s20'];
-	// $ship_s21=$sql_row['ship_s_s21'];
-	// $ship_s22=$sql_row['ship_s_s22'];
-	// $ship_s23=$sql_row['ship_s_s23'];
-	// $ship_s24=$sql_row['ship_s_s24'];
-	// $ship_s25=$sql_row['ship_s_s25'];
-	// $ship_s26=$sql_row['ship_s_s26'];
-	// $ship_s27=$sql_row['ship_s_s27'];
-	// $ship_s28=$sql_row['ship_s_s28'];
-	// $ship_s29=$sql_row['ship_s_s29'];
-	// $ship_s30=$sql_row['ship_s_s30'];
-	// $ship_s31=$sql_row['ship_s_s31'];
-	// $ship_s32=$sql_row['ship_s_s32'];
-	// $ship_s33=$sql_row['ship_s_s33'];
-	// $ship_s34=$sql_row['ship_s_s34'];
-	// $ship_s35=$sql_row['ship_s_s35'];
-	// $ship_s36=$sql_row['ship_s_s36'];
-	// $ship_s37=$sql_row['ship_s_s37'];
-	// $ship_s38=$sql_row['ship_s_s38'];
-	// $ship_s39=$sql_row['ship_s_s39'];
-	// $ship_s40=$sql_row['ship_s_s40'];
-	// $ship_s41=$sql_row['ship_s_s41'];
-	// $ship_s42=$sql_row['ship_s_s42'];
-	// $ship_s43=$sql_row['ship_s_s43'];
-	// $ship_s44=$sql_row['ship_s_s44'];
-	// $ship_s45=$sql_row['ship_s_s45'];
-	// $ship_s46=$sql_row['ship_s_s46'];
-	// $ship_s47=$sql_row['ship_s_s47'];
-	// $ship_s48=$sql_row['ship_s_s48'];
-	// $ship_s49=$sql_row['ship_s_s49'];
-	// $ship_s50=$sql_row['ship_s_s50'];
-
+	
 	
 	$ship_style=$sql_row['ship_style'];
 	$ship_schedule=$sql_row['ship_schedule'];
@@ -325,11 +182,7 @@ echo "</tr>";
 			$total_pcs+=$ship_s[$i];
 		}
 	}
-	// echo $total_pcs;
-	// die();
-	//$total_pcs=$ship_xs+$ship_s+$ship_m+$ship_l+$ship_xl+$ship_xxl+$ship_xxxl+$ship_s01+$ship_s02+$ship_s03+$ship_s04+$ship_s05+$ship_s06+$ship_s07+$ship_s08+$ship_s09+$ship_s10+$ship_s11+$ship_s12+$ship_s13+$ship_s14+$ship_s15+$ship_s16+$ship_s17+$ship_s18+$ship_s19+$ship_s20+$ship_s21+$ship_s22+$ship_s23+$ship_s24+$ship_s25+$ship_s26+$ship_s27+$ship_s28+$ship_s29+$ship_s30+$ship_s31+$ship_s32+$ship_s33+$ship_s34+$ship_s35+$ship_s36+$ship_s37+$ship_s38+$ship_s39+$ship_s40+$ship_s41+$ship_s42+$ship_s43+$ship_s44+$ship_s45+$ship_s46+$ship_s47+$ship_s48+$ship_s49+$ship_s50;
-
-	//echo "<tr><td><input type=\"checkbox\" value=\"1\" name=\"sel[$x]\"><input type=\"hidden\" name=\"ship_id[$x]\" value=\"".$sql_row['ship_tid']."\"></td>";
+	
 	echo "<tr><td><input type=\"checkbox\" value=\"".$sql_row['ship_tid']."\" id='chk' onchange='check_clicked()' name=\"sel[$x]\"></td>";
 	echo "<td>$ship_style</td>";
 	echo "<td>$ship_schedule</td>";
@@ -338,7 +191,7 @@ echo "</tr>";
 	echo "<td>$ship_cartons</td>";
 	echo "<td>$ship_remarks</td>";
 	$unset_url = getFullURL($_GET['r'],'unset.php','N').'&ship_tid='.$sql_row['ship_tid'];
-	//$unset_url = 'index.php?r='.$_GET['r'].'&ship_tid='.$sql_row['ship_tid'];
+	
 	echo "<td><a class='btn btn-xs btn-info' href='$unset_url'>Un-Set</a></td>";
 	for($i=1;$i<=count($ship_s);$i++){
 		if($ship_s[$i] !=0){
@@ -355,57 +208,6 @@ echo "</tr>";
 			echo "<td>".$ship_s[$i]."<b>(".$sizek.")<br/></td>";
 		}
 	}
-// 	echo "<td>$ship_xs</td><td>$ship_s</td><td>$ship_m</td><td>$ship_l</td><td>$ship_xl</td><td>$ship_xxl</td><td>$ship_xxxl</td><td>$ship_s01</td>
-// <td>$ship_s02</td>
-// <td>$ship_s03</td>
-// <td>$ship_s04</td>
-// <td>$ship_s05</td>
-// <td>$ship_s06</td>
-// <td>$ship_s07</td>
-// <td>$ship_s08</td>
-// <td>$ship_s09</td>
-// <td>$ship_s10</td>
-// <td>$ship_s11</td>
-// <td>$ship_s12</td>
-// <td>$ship_s13</td>
-// <td>$ship_s14</td>
-// <td>$ship_s15</td>
-// <td>$ship_s16</td>
-// <td>$ship_s17</td>
-// <td>$ship_s18</td>
-// <td>$ship_s19</td>
-// <td>$ship_s20</td>
-// <td>$ship_s21</td>
-// <td>$ship_s22</td>
-// <td>$ship_s23</td>
-// <td>$ship_s24</td>
-// <td>$ship_s25</td>
-// <td>$ship_s26</td>
-// <td>$ship_s27</td>
-// <td>$ship_s28</td>
-// <td>$ship_s29</td>
-// <td>$ship_s30</td>
-// <td>$ship_s31</td>
-// <td>$ship_s32</td>
-// <td>$ship_s33</td>
-// <td>$ship_s34</td>
-// <td>$ship_s35</td>
-// <td>$ship_s36</td>
-// <td>$ship_s37</td>
-// <td>$ship_s38</td>
-// <td>$ship_s39</td>
-// <td>$ship_s40</td>
-// <td>$ship_s41</td>
-// <td>$ship_s42</td>
-// <td>$ship_s43</td>
-// <td>$ship_s44</td>
-// <td>$ship_s45</td>
-// <td>$ship_s46</td>
-// <td>$ship_s47</td>
-// <td>$ship_s48</td>
-// <td>$ship_s49</td>
-// <td>$ship_s50</td>
-// ";
 
 	echo "</tr>";
 	$x++;
@@ -416,9 +218,6 @@ echo "<br><input class='btn btn-primary btn-sm' id='prepare' type='submit' name=
 }else{
 	//echo "<div class='alert alert-danger'>No Data Found</div>";
 }
-// if(mysqli_num_rows($sql_result) < 1 )
-	// echo "<div class='text-danger'><h3>No Data Found</h3></div>";
-
 
 echo "</form></div></div>";
 
@@ -499,14 +298,13 @@ if(isset($_POST['submit']))
 
 if($color_x=='0')
 {
-$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\"";	
+$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"".$style_x."\" and order_del_no=\"".$schedule_x."\"";	
 }	
 
 else
 {
-$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\" and order_col_des=\"$color_x\"";	
+$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"".$style_x."\" and order_del_no=\"".$schedule_x."\" and order_col_des=\"".$color_x."\"";	
 }
-	mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -654,7 +452,7 @@ if($color_x=='0')
 , SUM(IF(size_code=\"s40\",carton_act_qty,0)) AS \"s40\", SUM(IF(size_code=\"s41\",carton_act_qty,0)) AS \"s41\", SUM(IF(size_code=\"s42\",carton_act_qty,0)) AS \"s42\"
 , SUM(IF(size_code=\"s43\",carton_act_qty,0)) AS \"s43\", SUM(IF(size_code=\"s44\",carton_act_qty,0)) AS \"s44\", SUM(IF(size_code=\"s45\",carton_act_qty,0)) AS \"s45\"
 , SUM(IF(size_code=\"s46\",carton_act_qty,0)) AS \"s46\", SUM(IF(size_code=\"s47\",carton_act_qty,0)) AS \"s47\", SUM(IF(size_code=\"s48\",carton_act_qty,0)) AS \"s48\"
-, SUM(IF(size_code=\"s49\",carton_act_qty,0)) AS \"s49\", SUM(IF(size_code=\"s50\",carton_act_qty,0)) AS \"s50\" from $bai_pro3.packing_summary where order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\" and status=\"DONE\"";
+, SUM(IF(size_code=\"s49\",carton_act_qty,0)) AS \"s49\", SUM(IF(size_code=\"s50\",carton_act_qty,0)) AS \"s50\" from $bai_pro3.packing_summary where order_style_no=\"".$style_x."\" and order_del_no=\"".$schedule_x."\" and status=\"DONE\"";
 }
 else
 {
@@ -675,10 +473,8 @@ else
 , SUM(IF(size_code=\"s43\",carton_act_qty,0)) AS \"s43\", SUM(IF(size_code=\"s44\",carton_act_qty,0)) AS \"s44\", SUM(IF(size_code=\"s45\",carton_act_qty,0)) AS \"s45\"
 , SUM(IF(size_code=\"s46\",carton_act_qty,0)) AS \"s46\", SUM(IF(size_code=\"s47\",carton_act_qty,0)) AS \"s47\", SUM(IF(size_code=\"s48\",carton_act_qty,0)) AS \"s48\"
 , SUM(IF(size_code=\"s49\",carton_act_qty,0)) AS \"s49\", SUM(IF(size_code=\"s50\",carton_act_qty,0)) AS \"s50\"
- from $bai_pro3.packing_summary where order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\" and order_col_des=\"$color_x\" and status=\"DONE\"";
+ from $bai_pro3.packing_summary where order_style_no=\"".$style_x."\" and order_del_no=\"".$schedule_x."\" and order_col_des=\"".$color_x."\" and status=\"DONE\"";
 }
-//echo $sql;
-	mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -860,8 +656,7 @@ else
 	$fail_s50=0;
 
 
-	//$sql="select  SUM(IF(size=\"xs\" and tran_type=1,pcs,0)) as \"pass_xs\", SUM(IF(size=\"s\" and tran_type=1,pcs,0)) as \"pass_s\", SUM(IF(size=\"m\" and tran_type=1,pcs,0)) as \"pass_m\", SUM(IF(size=\"l\" and tran_type=1,pcs,0)) as \"pass_l\", SUM(IF(size=\"xl\" and tran_type=1,pcs,0)) as \"pass_xl\", SUM(IF(size=\"xxl\" and tran_type=1,pcs,0)) as \"pass_xxl\", SUM(IF(size=\"xxxl\" and tran_type=1,pcs,0)) as \"pass_xxxl\", SUM(IF(size=\"s06\" and tran_type=1,pcs,0)) as \"pass_s06\", SUM(IF(size=\"s08\" and tran_type=1,pcs,0)) as \"pass_s08\", SUM(IF(size=\"s10\" and tran_type=1,pcs,0)) as \"pass_s10\", SUM(IF(size=\"s12\" and tran_type=1,pcs,0)) as \"pass_s12\", SUM(IF(size=\"s14\" and tran_type=1,pcs,0)) as \"pass_s14\", SUM(IF(size=\"s16\" and tran_type=1,pcs,0)) as \"pass_s16\", SUM(IF(size=\"s18\" and tran_type=1,pcs,0)) as \"pass_s18\", SUM(IF(size=\"s20\" and tran_type=1,pcs,0)) as \"pass_s20\", SUM(IF(size=\"s22\" and tran_type=1,pcs,0)) as \"pass_s22\", SUM(IF(size=\"s24\" and tran_type=1,pcs,0)) as \"pass_s24\", SUM(IF(size=\"s26\" and tran_type=1,pcs,0)) as \"pass_s26\", SUM(IF(size=\"s28\" and tran_type=1,pcs,0)) as \"pass_s28\", SUM(IF(size=\"s30\" and tran_type=1,pcs,0)) as \"pass_s30\", SUM(IF(size=\"xs\" and tran_type=2,pcs,0)) as \"fail_xs\", SUM(IF(size=\"s\" and tran_type=2,pcs,0)) as \"fail_s\", SUM(IF(size=\"m\" and tran_type=2,pcs,0)) as \"fail_m\", SUM(IF(size=\"l\" and tran_type=2,pcs,0)) as \"fail_l\", SUM(IF(size=\"xl\" and tran_type=2,pcs,0)) as \"fail_xl\", SUM(IF(size=\"xxl\" and tran_type=2,pcs,0)) as \"fail_xxl\", SUM(IF(size=\"xxxl\" and tran_type=2,pcs,0)) as \"fail_xxxl\", SUM(IF(size=\"s06\" and tran_type=2,pcs,0)) as \"fail_s06\", SUM(IF(size=\"s08\" and tran_type=2,pcs,0)) as \"fail_s08\", SUM(IF(size=\"s10\" and tran_type=2,pcs,0)) as \"fail_s10\", SUM(IF(size=\"s12\" and tran_type=2,pcs,0)) as \"fail_s12\", SUM(IF(size=\"s14\" and tran_type=2,pcs,0)) as \"fail_s14\", SUM(IF(size=\"s16\" and tran_type=2,pcs,0)) as \"fail_s16\", SUM(IF(size=\"s18\" and tran_type=2,pcs,0)) as \"fail_s18\", SUM(IF(size=\"s20\" and tran_type=2,pcs,0)) as \"fail_s20\", SUM(IF(size=\"s22\" and tran_type=2,pcs,0)) as \"fail_s22\", SUM(IF(size=\"s24\" and tran_type=2,pcs,0)) as \"fail_s24\", SUM(IF(size=\"s26\" and tran_type=2,pcs,0)) as \"fail_s26\", SUM(IF(size=\"s28\" and tran_type=2,pcs,0)) as \"fail_s28\", SUM(IF(size=\"s30\" and tran_type=2,pcs,0)) as \"fail_s30\" from audit_fail_db where style=\"$style_x\" and schedule=\"$schedule_x\"";
-
+	
 //New query to allocate orders after FCA and insted of MCA
 if($color_x=='0')
 {
@@ -882,7 +677,7 @@ $sql="select  SUM(IF(size=\"xs\" and tran_type=1,pcs,0)) as \"pass_xs\", SUM(IF(
 , SUM(IF(size=\"s34\" and tran_type=2,pcs,0)) as \"fail_s34\", SUM(IF(size=\"s35\" and tran_type=2,pcs,0)) as \"fail_s35\", SUM(IF(size=\"s36\" and tran_type=2,pcs,0)) as \"fail_s36\", SUM(IF(size=\"s37\" and tran_type=2,pcs,0)) as \"fail_s37\", SUM(IF(size=\"s38\" and tran_type=2,pcs,0)) as \"fail_s38\"
 , SUM(IF(size=\"s39\" and tran_type=2,pcs,0)) as \"fail_s39\", SUM(IF(size=\"s40\" and tran_type=2,pcs,0)) as \"fail_s40\", SUM(IF(size=\"s41\" and tran_type=2,pcs,0)) as \"fail_s41\", SUM(IF(size=\"s42\" and tran_type=2,pcs,0)) as \"fail_s42\", SUM(IF(size=\"s43\" and tran_type=2,pcs,0)) as \"fail_s43\"
 , SUM(IF(size=\"s44\" and tran_type=2,pcs,0)) as \"fail_s44\", SUM(IF(size=\"s45\" and tran_type=2,pcs,0)) as \"fail_s45\", SUM(IF(size=\"s46\" and tran_type=2,pcs,0)) as \"fail_s46\", SUM(IF(size=\"s47\" and tran_type=2,pcs,0)) as \"fail_s47\", SUM(IF(size=\"s48\" and tran_type=2,pcs,0)) as \"fail_s48\"
-, SUM(IF(size=\"s49\" and tran_type=2,pcs,0)) as \"fail_s49\", SUM(IF(size=\"s50\" and tran_type=2,pcs,0)) as \"fail_s50\" from $bai_pro3.fca_audit_fail_db where style=\"$style_x\" and schedule=\"$schedule_x\"";
+, SUM(IF(size=\"s49\" and tran_type=2,pcs,0)) as \"fail_s49\", SUM(IF(size=\"s50\" and tran_type=2,pcs,0)) as \"fail_s50\" from $bai_pro3.fca_audit_fail_db where style=\"".$style_x."\" and schedule=\"".$schedule_x."\"";
 }
 else
 {
@@ -902,7 +697,7 @@ else
 , SUM(IF(size=\"s34\" and tran_type=2,pcs,0)) as \"fail_s34\", SUM(IF(size=\"s35\" and tran_type=2,pcs,0)) as \"fail_s35\", SUM(IF(size=\"s36\" and tran_type=2,pcs,0)) as \"fail_s36\", SUM(IF(size=\"s37\" and tran_type=2,pcs,0)) as \"fail_s37\", SUM(IF(size=\"s38\" and tran_type=2,pcs,0)) as \"fail_s38\"
 , SUM(IF(size=\"s39\" and tran_type=2,pcs,0)) as \"fail_s39\", SUM(IF(size=\"s40\" and tran_type=2,pcs,0)) as \"fail_s40\", SUM(IF(size=\"s41\" and tran_type=2,pcs,0)) as \"fail_s41\", SUM(IF(size=\"s42\" and tran_type=2,pcs,0)) as \"fail_s42\", SUM(IF(size=\"s43\" and tran_type=2,pcs,0)) as \"fail_s43\"
 , SUM(IF(size=\"s44\" and tran_type=2,pcs,0)) as \"fail_s44\", SUM(IF(size=\"s45\" and tran_type=2,pcs,0)) as \"fail_s45\", SUM(IF(size=\"s46\" and tran_type=2,pcs,0)) as \"fail_s46\", SUM(IF(size=\"s47\" and tran_type=2,pcs,0)) as \"fail_s47\", SUM(IF(size=\"s48\" and tran_type=2,pcs,0)) as \"fail_s48\"
-, SUM(IF(size=\"s49\" and tran_type=2,pcs,0)) as \"fail_s49\", SUM(IF(size=\"s50\" and tran_type=2,pcs,0)) as \"fail_s50\" from $bai_pro3.fca_audit_fail_db where style=\"$style_x\" and schedule=\"$schedule_x\" and color=\"$color_x\"";
+, SUM(IF(size=\"s49\" and tran_type=2,pcs,0)) as \"fail_s49\", SUM(IF(size=\"s50\" and tran_type=2,pcs,0)) as \"fail_s50\" from $bai_pro3.fca_audit_fail_db where style=\"".$style_x."\" and schedule=\"".$schedule_x."\" and color=\"".$color_x."\"";
 }
 
 	
@@ -1090,12 +885,11 @@ else
 
 
 	if($color_x=='0'){
-		$sql="select * from $bai_pro3.ship_stat_log where ship_style=\"$style_x\" and ship_schedule=\"$schedule_x\"";
+		$sql="select * from $bai_pro3.ship_stat_log where ship_style=\"".$style_x."\" and ship_schedule=\"".$schedule_x."\"";
 	}
 	else{
-		$sql="select * from $bai_pro3.ship_stat_log where ship_style=\"$style_x\" and ship_schedule=\"$schedule_x\" and ship_color=\"$color_x\"";
+		$sql="select * from $bai_pro3.ship_stat_log where ship_style=\"".$style_x."\" and ship_schedule=\"".$schedule_x."\" and ship_color=\"".$color_x."\"";
 	}
-	mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -1239,11 +1033,11 @@ if($x>0)
 {
 	if($color_x=='0')
     {
-	$sql="select container,group_concat(tid) as \"label_id\", count(*) as \"count\" from $bai_pro3.packing_summary where order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\" group by container";
+	$sql="select container,group_concat(tid) as \"label_id\", count(*) as \"count\" from $bai_pro3.packing_summary where order_style_no=\"".$style_x."\" and order_del_no=\"".$schedule_x."\" group by container";
 	}
 	else
 	{
-	$sql="select container,group_concat(tid) as \"label_id\", count(*) as \"count\" from $bai_pro3.packing_summary where order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\" and order_col_des=\"$color_x\" group by container";
+	$sql="select container,group_concat(tid) as \"label_id\", count(*) as \"count\" from $bai_pro3.packing_summary where order_style_no=\"".$style_x."\" and order_del_no=\"".$schedule_x."\" and order_col_des=\"".$color_x."\" group by container";
 	}
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$total=0;

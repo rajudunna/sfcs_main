@@ -159,7 +159,7 @@
                            <input type="hidden" name="packmethod" id="packmethod" value="'.$packmethod.'">';
 
                         $carton_no = array();   $status = array();  $carton_mode=array();   $doc_no_ref = array();  $colors = array();  $sizes = array();  $carton_qty = array();
-                        $get_cartons = "SELECT carton_no, status, carton_mode, pac_stat_id, GROUP_CONCAT(DISTINCT TRIM(size_tit)) AS size ,GROUP_CONCAT(DISTINCT TRIM(order_col_des)) AS color,sum(carton_act_qty) as qty FROM bai_pro3.packing_summary WHERE order_del_no=$schedule and seq_no=$seq group by carton_no*1";
+                        $get_cartons = "SELECT carton_no, status, carton_mode, pac_stat_id, GROUP_CONCAT(DISTINCT TRIM(size_tit)) AS size ,GROUP_CONCAT(DISTINCT TRIM(order_col_des)) AS color,sum(carton_act_qty) as qty FROM bai_pro3.packing_summary WHERE order_del_no='$schedule' and seq_no=$seq group by carton_no*1";
 						$carton_result=mysqli_query($link, $get_cartons) or die("Error"); 
                         while($row=mysqli_fetch_array($carton_result)) 
                         {
@@ -277,7 +277,7 @@
                         }
                     }
                     $carton=implode(",",$wout_min);
-                    $updatedetails="update $bai_pro3.pac_stat_log set pac_stat_id='$mincart' where pac_stat_id in ($carton)";
+                    $updatedetails="update $bai_pro3.pac_stat_log set pac_stat_id=$mincart where pac_stat_id in ($carton)";
                     $result12=mysqli_query($link, $updatedetails) or die("Error while updating carton details".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$delete="delete from $bai_pro3.pac_stat where id in ($carton)";
                     $result12=mysqli_query($link, $delete) or die("Error while updating carton details".mysqli_error($GLOBALS["___mysqli_ston"]));

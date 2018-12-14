@@ -230,7 +230,7 @@
 								$plannedQty_query = "SELECT SUM(quantity*planned_plies) AS plannedQty FROM $brandix_bts.tbl_cut_size_master 
 								LEFT JOIN $brandix_bts.tbl_cut_master ON tbl_cut_size_master.parent_id=tbl_cut_master.id 
 								LEFT JOIN $brandix_bts.tbl_orders_sizes_master ON tbl_orders_sizes_master.parent_id=tbl_cut_master.ref_order_num
-								WHERE tbl_cut_master.ref_order_num='$schedule_id' AND tbl_orders_sizes_master.order_col_des='$col_array[$j]' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND tbl_cut_size_master.ref_size_name=tbl_orders_sizes_master.ref_size_name AND tbl_cut_size_master.color=tbl_orders_sizes_master.order_col_des";
+								WHERE tbl_cut_master.ref_order_num=$schedule_id AND tbl_orders_sizes_master.order_col_des='$col_array[$j]' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND tbl_cut_size_master.ref_size_name=tbl_orders_sizes_master.ref_size_name AND tbl_cut_size_master.color=tbl_orders_sizes_master.order_col_des";
 								//echo $plannedQty_query.'<br>';
 								$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
 								while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
@@ -245,7 +245,7 @@
 									}
 								}
 								$orderQty_query = "SELECT SUM(order_act_quantity) AS orderedQty FROM $brandix_bts.tbl_orders_sizes_master 
-								WHERE parent_id='$schedule_id' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND order_col_des = '$col_array[$j]'";
+								WHERE parent_id=$schedule_id AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND order_col_des = '$col_array[$j]'";
 								//echo $orderQty_query.'<br>';
 								$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error2");
 								while($orderQty_details=mysqli_fetch_array($Order_qty_resut))
@@ -354,14 +354,14 @@
 				$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
 				$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
 					
-				$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where schedule=$schedule AND style='".$style."'"; 
+				$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where schedule='".$schedule"' AND style='".$style."'"; 
 				// echo $get_pack_id;
 				$get_pack_id_res=mysqli_query($link, $get_pack_id) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$row = mysqli_fetch_row($get_pack_id_res);
 				$pack_id=$row[0];
 				// echo $pack_id;
 				// die();
-				$pack_meth_qry="SELECT *,parent_id,sum(garments_per_carton*pack_job_per_pack_method) as qnty,GROUP_CONCAT(size_title SEPARATOR '<br>') as size ,GROUP_CONCAT(color SEPARATOR '<br>') as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id='$pack_id' GROUP BY seq_no order by seq_no";
+				$pack_meth_qry="SELECT *,parent_id,sum(garments_per_carton*pack_job_per_pack_method) as qnty,GROUP_CONCAT(size_title SEPARATOR '<br>') as size ,GROUP_CONCAT(color SEPARATOR '<br>') as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id=$pack_id GROUP BY seq_no order by seq_no";
 				// echo $pack_meth_qry;
 				// $sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
 				$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -429,7 +429,7 @@
 				$style=$_GET['style1'];
 				$schedule=$_GET['schedule1'];
 
-				$delete_pack_method="DELETE FROM bai_pro3.`tbl_pack_size_ref` WHERE parent_id='$parent_id' AND seq_no='$seq_no';";
+				$delete_pack_method="DELETE FROM bai_pro3.`tbl_pack_size_ref` WHERE parent_id=$parent_id AND seq_no=$seq_no;";
 				$delete_result=mysqli_query($link, $delete_pack_method) or exit("Error while deleting pack method");
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 				function Redirect() {

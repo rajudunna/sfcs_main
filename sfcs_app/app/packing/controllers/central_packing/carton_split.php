@@ -92,7 +92,7 @@ if(isset($_POST['submit']) || ($_GET['style'] && $_GET['schedule']))
 			echo "<div class='panel panel-primary'>
 					<div class='panel-heading'>".$operation[$pack_method[$i]]."---".$pack_description[$i]."</div>
 					<div class='panel-body'>";
-						$getcartonnos="SELECT * from $bai_pro3.packing_summary where order_del_no='$schedule' and seq_no='".$seq_no[$i]."' group by carton_no order by carton_no*1";
+						$getcartonnos="SELECT * from $bai_pro3.packing_summary where order_del_no='$schedule' and seq_no=$seq_no[$i] group by carton_no order by carton_no*1";
 						$sql_result=mysqli_query($link, $getcartonnos) or exit("Error while getting carton details");
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{

@@ -39,17 +39,16 @@
 	}
 	else
 	{	
-		$maxcartno="SELECT MAX(carton_no)+1 AS cartno FROM $bai_pro3.`pac_stat` WHERE schedule='$schedule' AND pac_seq_no='$seq_no'";
+		$maxcartno="SELECT MAX(carton_no)+1 AS cartno FROM $bai_pro3.`pac_stat` WHERE schedule='$schedule' AND pac_seq_no=$seq_no";
 		$maxcartrslt=mysqli_query($link,$maxcartno);
 		if($row=mysqli_fetch_array($maxcartrslt))
 		{
 			$maxcartonno=$row['cartno'];
 		}
 		$sql1q="INSERT INTO `$bai_pro3`.`pac_stat` (`style`, `schedule`, `pac_seq_no`, `carton_no`, `carton_mode`, `carton_qty`) VALUES ('$style', '$schedule', '$seq_no', '$maxcartonno', 'P', '".array_sum($qtys)."')";
-		//echo $sql1q."<br>";
 		mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$parent_id=mysqli_insert_id($link);
-		$sql1q1="update `$bai_pro3`.`pac_stat` set `carton_mode`= 'P',carton_qty=(carton_qty-".array_sum($qtys).") where id='$pac_stat_id'";
+		$sql1q1="update `$bai_pro3`.`pac_stat` set `carton_mode`= 'P',carton_qty=(carton_qty-".array_sum($qtys).") where id=$pac_stat_id";
 		mysqli_query($link, $sql1q1) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		//echo $sql1q1."<br>";
 		$ops_id=array();
@@ -67,7 +66,7 @@
 			$tid=$tids[$ii]; 
 			$qty=$qtys[$ii]; 
 		
-			$sql="SELECT * FROM $bai_pro3.pac_stat_log where tid = '$tid'"; 
+			$sql="SELECT * FROM $bai_pro3.pac_stat_log where tid = $tid"; 
 			// echo $sql.'<br>';
 			$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($row=mysqli_fetch_array($result))
@@ -93,7 +92,7 @@
 				{
 					if ($carton_act_qty == $qty) 
 					{
-						$sql2="UPDATE $bai_pro3.pac_stat_log SET pac_stat_id='$parent_id' WHERE tid='$tid'"; 
+						$sql2="UPDATE $bai_pro3.pac_stat_log SET pac_stat_id=$parent_id WHERE tid=$tid"; 
 						mysqli_query($link, $sql2) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 						//echo $sql2."<br>";
 					}
@@ -110,13 +109,13 @@
 							$date_rev=date("Y-m-d H:i:s");
 							for($i=0;$i<sizeof($ops_id);$i++)
 							{
-								$sql23="SELECT * FROM $bai_pro3.mo_operation_quantites where ref_no = '$tid' and op_code='$ops_id[$i]'";
+								$sql23="SELECT * FROM $bai_pro3.mo_operation_quantites where ref_no = $tid and op_code=$ops_id[$i]";
 								$result23=mysqli_query($link, $sql23) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"])); 
 								if(mysqli_num_rows($result23)==1)
 								{
 									while($row23=mysqli_fetch_array($result23))
 									{ 
-										$sql22="UPDATE $bai_pro3.mo_operation_quantites SET bundle_quantity='$nqty' WHERE ref_no='$tid' and op_code='$ops_id[$i]'";
+										$sql22="UPDATE $bai_pro3.mo_operation_quantites SET bundle_quantity=$nqty WHERE ref_no=$tid and op_code=$ops_id[$i]";
 										//echo $sql22.'<br>'; 
 										mysqli_query($link, $sql22) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 										
@@ -135,7 +134,7 @@
 											if($qty<$row23['bundle_quantity'])
 											{
 												$qty_tm=$row23['bundle_quantity']-$qty;
-												$sql221="UPDATE $bai_pro3.mo_operation_quantites SET bundle_quantity='$qty_tm' WHERE ref_no='$tid' and op_code='$ops_id[$i]'";
+												$sql221="UPDATE $bai_pro3.mo_operation_quantites SET bundle_quantity=$qty_tm WHERE ref_no=$tid and op_code=$ops_id[$i]";
 												//echo $sql221.'<br>'; 
 												mysqli_query($link, $sql221) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 												
@@ -146,7 +145,7 @@
 											}
 											else
 											{
-												$sql223="UPDATE $bai_pro3.mo_operation_quantites SET ref_no='$new_ref_id' WHERE ref_no='$tid' and op_code='$ops_id[$i]'";
+												$sql223="UPDATE $bai_pro3.mo_operation_quantites SET ref_no=$new_ref_id WHERE ref_no=$tid and op_code=$ops_id[$i]";
 												//echo $sql223.'<br>'; 
 												mysqli_query($link, $sql223) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 												$qty=$qty-$row23['bundle_quantity'];
@@ -155,7 +154,7 @@
 									}
 								}	
 							}	
-							$sql2="UPDATE $bai_pro3.pac_stat_log SET carton_act_qty='$nqty' WHERE tid='$tid'";
+							$sql2="UPDATE $bai_pro3.pac_stat_log SET carton_act_qty=$nqty WHERE tid=$tid";
 							//echo $sql2.'<br>'; 
 							mysqli_query($link, $sql2) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 						}

@@ -120,11 +120,11 @@ $o_xs=0;$o_s=0;$o_m=0;$o_l=0;$o_xl=0;$o_xxl=0;$o_xxxl=0;
 ?>
 
 <?php
-$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no='$schedule'";
+$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error k".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_confirm=mysqli_num_rows($sql_result);
 
-$old = "select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no='$schedule'";
+$old = "select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
 $old_result=mysqli_query($link, $old) or exit("Sql Error l".mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($old_row=mysqli_fetch_array($old_result)) {
 		$old_s_s01+=$old_row['old_order_s_s01'];
@@ -193,14 +193,12 @@ while ($old_row=mysqli_fetch_array($old_result)) {
 
 if($sql_num_confirm>0)
 {
-	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no='$schedule'";
+	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
 }
 else
 {
-	$sql="select * from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no='$schedule'";
+	$sql="select * from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
 }
-//echo "query =".$sql."<br>";
-// mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error m".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -384,9 +382,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$carton_id=$sql_row['carton_id'];
 }
 
-$sql="select * from $bai_pro3.carton_qty_chart where id='$carton_id'";
-//echo $sql;
-//mysqli_query($link, $sql) or exit("Sql Error n".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select * from $bai_pro3.carton_qty_chart where id=$carton_id";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error n".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -459,22 +455,19 @@ $carton_qtys=array($carton_xs,$carton_s,$carton_m,$carton_l,$carton_xl,$carton_x
 
 //ERROR CHECK POINT
 
-$sql="select sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where order_del_no='$delivery'";
-//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where order_del_no=\"$delivery\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error o".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	if(array_sum($order_qtys)!=$sql_row['carton_act_qty'])
 	{
 		$url = 'error.php';
-		// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url\"; }</script>";
 	}
 }
 
 //ERROR CHECK POINT
 
 $sql="select * from $bai_pro2.shipment_plan_summ where ssc_code=\"$order_tid\"";
-//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error p".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -483,8 +476,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$cust_ord=$sql_row['Cust_order'];
 } 
 
-$sql="select ims_mod_no from $bai_pro3.ims_log where ims_cid='$cat_ref' and ims_date=(select min(ims_date) from $bai_pro3.ims_log where ims_cid='$cat_ref')";
-//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select ims_mod_no from $bai_pro3.ims_log where ims_cid=$cat_ref and ims_date=(select min(ims_date) from $bai_pro3.ims_log where ims_cid=$cat_ref)";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error q".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -1513,111 +1505,13 @@ tags will be replaced.-->
  </tr>
  </thead>
 
-<?php
-
- /*<!-- Example -->
- 
- <tr class=xl6553519400 height=20 style='height:15.0pt'>
-  <td height=20 class=xl8019400 style='height:15.0pt'>XS</td>
-  <td class=xl8419400>&nbsp;</td>
-  <td class=xl8419400 style='border-left:none'>&nbsp;</td>
-  <td class=xl8419400 style='border-left:none'>&nbsp;</td>
-  <td class=xl8419400 style='border-left:none'>&nbsp;</td>
-  <td class=xl7919400></td>
-  <td class=xl8419400>&nbsp;</td>
-  <td class=xl8419400 style='border-left:none'>&nbsp;</td>
-  <td class=xl8419400 style='border-left:none'>&nbsp;</td>
-  <td class=xl8419400 style='border-left:none'>&nbsp;</td>
-  <td class=xl7919400></td>
-  <td class=xl8419400>&nbsp;</td>
-  <td class=xl8419400 style='border-left:none'>&nbsp;</td>
-  <td class=xl8419400 style='border-left:none'>&nbsp;</td>
-  <td class=xl8419400 style='border-left:none'>&nbsp;</td>
-  <td class=xl7919400></td>
-  <td class=xl8419400>&nbsp;</td>
-  <td class=xl8419400 style='border-left:none'>&nbsp;</td>
-  <td class=xl8419400 style='border-left:none'>&nbsp;</td>
-  <td class=xl8419400 style='border-left:none'>&nbsp;</td>
-  <td class=xl7919400></td>
-  <td class=xl6553519400></td>
-  <td class=xl6553519400></td>
-  <td class=xl6553519400></td>
- </tr>
- 
- 
- <tr class=xl6553519400 height=8 style='mso-height-source:userset;height:6.0pt'>
-  <td height=8 class=xl8019400 style='height:6.0pt'></td>
-  <td class=xl8519400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8519400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8519400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8519400 style='border-top:none'>&nbsp;</td>
-  <td class=xl7919400></td>
-  <td class=xl8519400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8519400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8519400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8519400 style='border-top:none'>&nbsp;</td>
-  <td class=xl7919400></td>
-  <td class=xl8519400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8519400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8519400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8519400 style='border-top:none'>&nbsp;</td>
-  <td class=xl7919400></td>
-  <td class=xl8519400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8519400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8519400 style='border-top:none'>&nbsp;</td>
-  <td class=xl8519400 style='border-top:none'>&nbsp;</td>
-  <td class=xl7919400></td>
-  <td class=xl6553519400></td>
-  <td class=xl6553519400></td>
-  <td class=xl6553519400></td>
- </tr>
- 
-  <!-- Example -->
- 
- 
-  <!-- Example - Break -->
-  
- <tr class=xl6553519400 height=21 style='height:15.75pt'>
-  <td height=21 class=xl8619400 style='height:15.75pt'>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl8219400>&nbsp;</td>
-  <td class=xl6553519400></td>
-  <td class=xl6553519400></td>
-  <td class=xl6553519400></td>
- </tr>
- 
- 
- <!-- Example - Break-->
- --> */
- ?>
- 
  <?php
  
 	$docs_db=array();
 	$cutno_db=array();
 	$docs_db[]=-1;
 	$cutno_db[]=-1;
-	$sql="select * from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no='$schedule'";
-	//echo $sql;
-	//mysqli_query($link, $sql) or exit("Sql Error a".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql="select * from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error a".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -1634,8 +1528,6 @@ tags will be replaced.-->
 			$carton_nodes=array();
 			$x=1;
 			$sql="select status,min(tid) as \"tid\",doc_no,sum(carton_act_qty) as \"carton_act_qty\",input_job_number from $bai_pro3.pac_stat_log where doc_no in (".implode(",",$docs_db).") and size_code=\"".strtolower($size_titles_qry[$i])."\" group by doc_no_ref order by doc_no,carton_mode,carton_act_qty desc";
-			// echo $sql;
-			//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error b".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -1749,133 +1641,12 @@ tags will be replaced.-->
 			  <td class=xl6553519400></td>
 			  <td class=xl6553519400></td>
 			 </tr>";
-			
- 			/* echo "<tr class=xl6553519400 height=21 style='height:1.75pt'>
-			  <td height=21 class=xl8619400 style='height:1.75pt'>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl8219400>&nbsp;</td>
-			  <td class=xl6553519400></td>
-			  <td class=xl6553519400></td>
-			  <td class=xl6553519400></td>
-			 </tr>";
-			echo " <tr class=xl6553519400 height=20 style='height:6.0pt'>
-			  <td height=20 class=xl8019400 style='height:6.0pt'></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl7919400></td>
-			  <td class=xl6553519400></td>
-			  <td class=xl6553519400></td>
-			  <td class=xl6553519400></td>
-			 </tr>"; */
+			 			
 		}
 	}
 	 
  ?>
- 
- <?php
- /*
- <tr class=xl6553519400 height=20 style='height:15.0pt'>
-  <td height=20 class=xl8019400 style='height:15.0pt'></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl6553519400></td>
-  <td class=xl6553519400></td>
-  <td class=xl6553519400></td>
- </tr> */
- 
- ?>
- <!-- <tr class=xl6553519400 height=20 style='height:15.0pt'>
-  <td height=20 class=xl7919400 style='height:15.0pt'></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl7919400></td>
-  <td class=xl6553519400></td>
-  <td class=xl6553519400></td>
-  <td class=xl6553519400></td>
- </tr>
- <tr class=xl6553519400 height=20 style='height:15.0pt'>
-  <td colspan=2 height=20 class=xl8719400 style='height:15.0pt'>Prepared By :</td>
-  <td colspan=4 class=xl8819400>&nbsp;</td>
-  <td class=xl7219400></td>
-  <td colspan=3 class=xl8719400>Order Completed By :</td>
-  <td colspan=4 class=xl8819400>&nbsp;</td>
-  <td class=xl7919400></td>
-  <td colspan=2 class=xl8719400>Approved By :</td>
-  <td colspan=4 class=xl8919400>&nbsp;</td>
-  <td class=xl6553519400></td>
-  <td class=xl6553519400></td>
-  <td class=xl6553519400></td>
- </tr> -->
+   
  <tr class=xl6553519400 height=20 style='height:15.0pt'>
   <td height=20 class=xl7919400 style='height:15.0pt'></td>
   <td class=xl7919400></td>
@@ -1913,8 +1684,6 @@ $max_size_qty=0;
 $max_size_code="";
 $count=0;
 $sql="select packing_summary.*, sum(carton_act_qty) as \"carton_qty\" from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" and container is null group by doc_no_ref";
-//echo $sql;
-//mysqli_query($link, $sql) or exit("Sql Error c".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error c".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -1938,64 +1707,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 if(sizeof($temp_doc_ref)>0)
 {
 	$sql="update $bai_pro3.pac_stat_log set container=1 where doc_no_ref in (\"".implode('","',$temp_doc_ref)."\")";
-	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error d".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
-
-/*
-$max_carton_qty=$carton_qtys[array_search($max_size_code,$size_titles)];
-//echo $count."<br/>";;
-//echo $max_carton_qty;
-
-$container=2;
-if($count>0)
-{
-	do
-	{
-		$temp=$max_carton_qty;
-		$temp_doc_ref=array();
-		$completed=array();
-		$completed[]="0";
-		do
-		{
-			$sql="select * from (select packing_summary.*, sum(carton_act_qty) as \"carton_qty\" from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" and container is null and doc_no_ref not in (\"".implode('","',$completed)."\") group by doc_no_ref) as t where carton_qty<=$temp order by carton_qty DESC";
-//echo $sql;
-			//mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-			$sql_result=mysql_query($sql,$link) or exit("Sql Error e".mysql_error());
-			$check=mysql_num_rows($sql_result);
-			
-			while($sql_row=mysql_fetch_array($sql_result))
-			{
-				$x=$sql_row['carton_qty'];
-				$y=$sql_row['doc_no_ref'];
-				
-			}
-			
-			if($check>0)
-			{
-				$temp-=$x;
-				$count--;
-				$temp_doc_ref[]=$y;
-				$completed[]=$y;
-			}
-			else
-			{
-				$temp=0;
-			}
-			
-		}while($temp>0 and $count>0);
-		
-		if(sizeof($temp_doc_ref)>0)
-		{
-			$sql="update pac_stat_log set container=$container where doc_no_ref in (\"".implode('","',$temp_doc_ref)."\")";
-			//echo $sql;
-			mysql_query($sql,$link) or exit("Sql Error f".mysql_error());
-			$container++;
-		}
-		
-	}while($count>0);
-}*/
-
 
 
 //No partial Cartons for DIM/M&S and VSD 
@@ -2009,15 +1722,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$x++;
 }
 
-//No partial Cartons for DIM/M&S and VSD 
-
-/*$sql="select packing_summary.*, sum(carton_act_qty) as \"carton_qty\", group_concat(tid) as \"label_id\", count(*) as \"count\" from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" group by container";
-mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-while($sql_row=mysql_fetch_array($sql_result))
-{
-	//echo $sql_row['container']."-".$sql_row['count']."-".$sql_row['label_id']."<br/>";
-}*/
 
 
 $temp_1=array();
@@ -2025,41 +1729,7 @@ $temp_1=explode("*",$remarks);
 $temp_2=array();
 $temp_2=explode("$",$temp_1[0]);
 $assort=array_sum($temp_2);
-/*
 ?>
-
-
-<table class="new">
-	  <tr class=new><th class=new>Cartons</th><th class=new>Label IDs (ALPHA VERSION V1)</th></tr>
-	  <?php
-	  	$total=0;
-		$sql1="select container,group_concat(tid) as \"label_id\", count(*) as \"count\" from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" group by container";
-		//mysql_query($sql1,$link) or exit("Sql Error ".mysql_error());
-		$sql_result1=mysql_query($sql1,$link) or exit("Sql Error g".mysql_error());
-		while($sql_row1=mysql_fetch_array($sql_result1))
-		{
-	    	$container=$sql_row1['container'];
-		$sql="select container,group_concat(label_id) as \"label_id\", count(*) as \"count\" from (select container,min(tid) as \"label_id\", count(*) as \"count\" from $bai_pro3.packing_summary where order_style_no=\"$style\" and order_del_no=\"$schedule\" and container=$container group by doc_no_ref) as t group by container";
-		//mysql_query($sql,$link) or exit("Sql Error h".mysql_error());
-		$sql_result=mysql_query($sql,$link) or exit("Sql Error h".mysql_error());
-		while($sql_row=mysql_fetch_array($sql_result))
-		{
-			//echo "<tr><td>".$sql_row['container']."</td><td>".$sql_row['count']."</td><td>".$sql_row['label_id']."</td></tr>";
-			$count=$sql_row['count'];
-			if($sql_row['container']!=1)
-			{
-				$count=1;
-			}
-			$description = str_replace(",",", ",$sql_row['label_id']);
-			echo '<tr class=new><td class=new>'.$count."</td><td class=new>".wordwrap($description, 145, "<br>\n")."</td></tr>";
-			$total+=$count;
-		}
-		}
-		echo "<tr class=new><th colspan=2 class=new align=left>Total Cartons: $total</th></tr>";
-	  ?>
-</table>
-<?php
-*/?>
   
   </td>
 

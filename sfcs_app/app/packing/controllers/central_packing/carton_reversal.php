@@ -23,18 +23,12 @@
 				{
 					$carton_id = $_POST['carton_id'];
 					$carton_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id = $carton_id";
-					// echo $carton_query;
 					$carton_details=mysqli_query($link, $carton_query) or exit("Error while getting Carton Details");
 					
 					if (mysqli_num_rows($carton_details) > 0)
 					{
-						// while($row=mysqli_fetch_array($carton_details)) 
-						// {
-							// $status = $row['status'];
-							// $doc_no_ref=$row['doc_no_ref'];
-						// }
 						$b_tid = array();
-						$get_all_tid = "SELECT group_concat(tid) as tid,min(status) as status FROM bai_pro3.`pac_stat_log` WHERE pac_stat_id = '".$carton_id."'";
+						$get_all_tid = "SELECT group_concat(tid) as tid,min(status) as status FROM $bai_pro3.`pac_stat_log` WHERE pac_stat_id = $carton_id";
 						$tid_result = mysqli_query($link,$get_all_tid);
 						while($row12=mysqli_fetch_array($tid_result))
 						{
@@ -42,7 +36,7 @@
 							$status = $row12['status'];		
 						}
 
-						$b_op_id_query = "SELECT operation_code,work_center_id,short_cut_code FROM brandix_bts.`tbl_orders_ops_ref` WHERE category='packing' AND default_operation='Yes';";
+						$b_op_id_query = "SELECT operation_code,work_center_id,short_cut_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE category='packing' AND default_operation='Yes'";
 						$sql_result=mysqli_query($link, $b_op_id_query) or exit("Error while fetching operation code");
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
@@ -50,23 +44,13 @@
 							$work_station_id = $sql_row['work_center_id'];
 							$short_key_code = $sql_row['short_cut_code'];
 						}
-
-						// $qry_to_get_work_station_id = "SELECT work_center_id,short_cut_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE operation_code = '$b_op_id'";
-						// $result_qry_to_get_work_station_id=mysqli_query($link,$qry_to_get_work_station_id) or exit("Error while getting workstation  id");
-						// while($row=mysqli_fetch_array($result_qry_to_get_work_station_id))
-						// {
-						// 	$work_station_id = $row['work_center_id'];
-						// 	$short_key_code = $row['short_cut_code'];
-						// }
-
-						// $b_op_id=200;
 						if ($status == NULL || $status == '(NULL)')
 						{
 							echo "<script>sweetAlert('Carton Not Scanned','Reversal Not Possible','warning')</script>";
 						}
 						else
 						{
-							$update_pac_stat_log = "UPDATE $bai_pro3.pac_stat_log SET status=NULL,scan_user='',scan_date='' WHERE pac_stat_id = '".$carton_id."'";
+							$update_pac_stat_log = "UPDATE $bai_pro3.pac_stat_log SET status=NULL,scan_user='',scan_date='' WHERE pac_stat_id = $carton_id";
 							mysqli_query($link, $update_pac_stat_log) or exit("Error while updating pac_stat_log");
 							//759 CR additions Started
 							$qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where ref_no in (".implode(",",$b_tid).") and op_code = $b_op_id";
@@ -80,14 +64,12 @@
 								$negative_qty = $good_quantity_past * -1;
 
 								$insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $good_quantity_past where mo_no= $mo_number";
-								// echo $insert_update_tbl_carton_ready;
 								mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating tbl_carton_ready");
 
 								$update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = '0' where id= $id";
 								$updating_mo_oprn_qty = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites");
 
 								$inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`) VALUES ('".date('Y-m-d h:i:s')."','$mo_number','$negative_qty','','cpk_reversal',USER(),'$b_op_id','$short_key_code','$id','$work_station_id','','$b_op_id')";
-								// echo $inserting_into_m3_tran_log;
 								mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog");
 
 								//getting the last inserted record

@@ -35,7 +35,6 @@
 					
 						$input_job_no=$rows['input_job_no'];
 						$tid=$rows['tid'];
-						//	$module=$rows['module'];
 						$color=$rows['color'];
 						$size=$rows['size_code'];
 						$qty=$rows['qty'];

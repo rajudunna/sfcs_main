@@ -50,7 +50,7 @@ if(isset($_POST['submit']))
 		<?php
 			// Poly Bag Ratio Details Start
 			{
-				$sewing_jobratio_sizes_query = "SELECT parent_id,GROUP_CONCAT(DISTINCT color) AS color, GROUP_CONCAT(DISTINCT ref_size_name) AS size FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id IN (SELECT id FROM $brandix_bts.tbl_carton_ref WHERE ref_order_num=$sch_id AND style_code=$style_id)";
+				$sewing_jobratio_sizes_query = "SELECT parent_id,GROUP_CONCAT(DISTINCT color) AS color, GROUP_CONCAT(DISTINCT ref_size_name) AS size FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id IN (SELECT id FROM $brandix_bts.tbl_carton_ref WHERE ref_order_num='$sch_id' AND style_code=$style_id)";
 				$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
 				echo "<br><div class='col-md-12'><b>Garments Per Poly Bag: </b>
 					<table class=\"table table-bordered\">
@@ -151,8 +151,7 @@ if(isset($_POST['submit']))
 			// Poly Bags per Carton end
 
 
-			$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size, GROUP_CONCAT(DISTINCT order_col_des) AS color FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id='$sch_id'";
-			//echo $sewing_jobratio_sizes_query.'<br>';
+			$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size, GROUP_CONCAT(DISTINCT order_col_des) AS color FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id=$sch_id";
 			$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
 			while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
 			{
@@ -160,7 +159,6 @@ if(isset($_POST['submit']))
 				$ref_size = $sewing_jobratio_color_details['size'];
 				$color1 = explode(",",$color);
 				$size1 = explode(",",$ref_size);
-				// var_dump($size);
 			}
 			echo "<div class='col-md-12'><b>Garments Per Carton: </b>";
 			
@@ -182,7 +180,7 @@ if(isset($_POST['submit']))
 								<td>$color1[$j]</td>";
 								for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 								{
-									$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id='$sch_id' AND order_col_des='".$color1[$j]."'  AND size_title='".$size1[$size_count]."'";
+									$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id=$sch_id AND order_col_des='".$color1[$j]."'  AND size_title='".$size1[$size_count]."'";
 									// echo $individual_sizes_query.'<br>';
 									$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
 									while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
@@ -191,7 +189,6 @@ if(isset($_POST['submit']))
 									}
 
 									$qty_query = "SELECT garments_per_carton FROM $brandix_bts.`tbl_carton_size_ref` WHERE size_title='$size1[$size_count]' AND parent_id=$c_ref AND color='".$color1[$j]."'";
-									// echo '<br>'.$qty_query.'<br>';
 									$qty_query_result=mysqli_query($link, $qty_query) or exit("Error while getting Qty Details");
 									while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
 									{
@@ -234,7 +231,7 @@ if(isset($_POST['generate']))
 {	
 	$carton_id=$_POST['c_ref'];
 	$sql123="SELECT carton_method,style_code,ref_order_num,GROUP_CONCAT(DISTINCT COLOR) AS cols FROM brandix_bts.tbl_carton_ref 
-	LEFT JOIN brandix_bts.tbl_carton_size_ref ON tbl_carton_size_ref.parent_id=tbl_carton_ref.id WHERE COMBO_NO>0 and tbl_carton_ref.id='".$carton_id."' GROUP BY COMBO_NO";
+	LEFT JOIN brandix_bts.tbl_carton_size_ref ON tbl_carton_size_ref.parent_id=tbl_carton_ref.id WHERE COMBO_NO>0 and tbl_carton_ref.id=$carton_id GROUP BY COMBO_NO";
 	$cols_tot_tmp=array();
 	$result123=mysqli_query($link, $sql123) or die ("Error1.1=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row123=mysqli_fetch_array($result123))
@@ -256,8 +253,6 @@ if(isset($_POST['generate']))
 	}
 	if($pac_status=='' || $pac_status==0)
 	{
-		// echo "<table class='table table-striped table-bordered'>";
-		// echo "<thead><th>Input Number</th><th>Docket Number</th><th>Color</th><th>Size</th><th>Size Title</th><th>Carton Number</th><th>Carton Rand No </th><th>Quantity</th></thead>";
 		//packing List Generation
 		if($carton_method==1 or $carton_method==2)
 		{
@@ -316,7 +311,6 @@ if(isset($_POST['generate']))
 											$qty=$qty-$qty_new;
 											$sql1q="INSERT INTO `bai_pro3`.`pac_stat_log` (`doc_no`, `size_code`, `carton_no`, `carton_mode`, `carton_act_qty`, `status`, `lastup`, `remarks`, `doc_no_ref`, `container`, `disp_carton_no`, `disp_id`, `audit_status`, `scan_date`, `scan_user`, `input_job_random`, `input_job_number`, `order_tid`, `module`, `style`, `schedule`, `color`) VALUES ('".$docket_number."', '".$old_size."', '".$carton_job_no."', 'F', '".$qty_new."', NULL, NULL, NULL, '".$rand."', '1', NULL, NULL, NULL, NULL, NULL, '".$row125["input_job_no_random"]."', '".$row125["input_job_no"]."', '".$row125["order_style_no"].$row125["order_del_no"].$row125["order_col_des"]."', '', '".$row125["order_style_no"]."', '".$row125["order_del_no"]."', '".$row125["order_col_des"]."')";
 											mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
-											// echo "<tr><td>".$row125['input_job_no']."</td><td>".$docket_number."</td><td>".$color_code."</td><td>".$old_size."</td><td>".$size_tit."</td><td>".$carton_job_no."</td><td>".$rand."</td><td>".$qty_new."</td></tr>";
 											$qty_new=0;
 											$carton_job_no++;
 											$rand=$schedule.date("ymd").$carton_job_no;
@@ -327,7 +321,6 @@ if(isset($_POST['generate']))
 											$carton_job_quantiy_tmp+=$qty;
 											$sql1q="INSERT INTO `bai_pro3`.`pac_stat_log` (`doc_no`, `size_code`, `carton_no`, `carton_mode`, `carton_act_qty`, `status`, `lastup`, `remarks`, `doc_no_ref`, `container`, `disp_carton_no`, `disp_id`, `audit_status`, `scan_date`, `scan_user`, `input_job_random`, `input_job_number`, `order_tid`, `module`, `style`, `schedule`, `color`) VALUES ('".$docket_number."', '".$old_size."', '".$carton_job_no."', 'F', '".$qty."', NULL, NULL, NULL, '".$rand."', '1', NULL, NULL, NULL, NULL, NULL, '".$row125["input_job_no_random"]."', '".$row125["input_job_no"]."', '".$row125["order_style_no"].$row125["order_del_no"].$row125["order_col_des"]."', '', '".$row125["order_style_no"]."', '".$row125["order_del_no"]."', '".$row125["order_col_des"]."')";
 											 mysqli_query($link, $sql1q) or die("Error---2".mysqli_error($GLOBALS["___mysqli_ston"])); 
-											// echo "<tr><td>".$row125['input_job_no']."</td><td>".$docket_number."</td><td>".$color_code."</td><td>".$old_size."</td><td>".$size_tit."</td><td>".$carton_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 											$qty=0;
 										} 
 										
@@ -386,7 +379,6 @@ if(isset($_POST['generate']))
 										$qty=$qty-$qty_new;
 										$sql1q="INSERT INTO `bai_pro3`.`pac_stat_log` (`doc_no`, `size_code`, `carton_no`, `carton_mode`, `carton_act_qty`, `status`, `lastup`, `remarks`, `doc_no_ref`, `container`, `disp_carton_no`, `disp_id`, `audit_status`, `scan_date`, `scan_user`, `input_job_random`, `input_job_number`, `order_tid`, `module`, `style`, `schedule`, `color`) VALUES ('".$docket_number."', '".$old_size."', '".$carton_job_no."', 'F', '".$qty_new."', NULL, NULL, NULL, '".$rand."', '1', NULL, NULL, NULL, NULL, NULL, '".$row125["input_job_no_random"]."', '".$row125["input_job_no"]."', '".$row125["order_style_no"].$row125["order_del_no"].$row125["order_col_des"]."', '', '".$row125["order_style_no"]."', '".$row125["order_del_no"]."', '".$row125["order_col_des"]."')";
 										mysqli_query($link, $sql1q) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"])); 
-										// echo "<tr><td>".$row125['input_job_no']."</td><td>".$docket_number."</td><td>".$color_code."</td><td>".$old_size."</td><td>".$size_tit."</td><td>".$carton_job_no."</td><td>".$rand."</td><td>".$qty_new."</td></tr>";
 										$qty_new=0;
 										$carton_job_no++;
 										$rand=$schedule.date("ymd").$carton_job_no;
@@ -397,7 +389,6 @@ if(isset($_POST['generate']))
 										$carton_job_quantiy_tmp+=$qty;
 										$sql1q="INSERT INTO `bai_pro3`.`pac_stat_log` (`doc_no`, `size_code`, `carton_no`, `carton_mode`, `carton_act_qty`, `status`, `lastup`, `remarks`, `doc_no_ref`, `container`, `disp_carton_no`, `disp_id`, `audit_status`, `scan_date`, `scan_user`, `input_job_random`, `input_job_number`, `order_tid`, `module`, `style`, `schedule`, `color`) VALUES ('".$docket_number."', '".$old_size."', '".$carton_job_no."', 'F', '".$qty."', NULL, NULL, NULL, '".$rand."', '1', NULL, NULL, NULL, NULL, NULL, '".$row125["input_job_no_random"]."', '".$row125["input_job_no"]."', '".$row125["order_style_no"].$row125["order_del_no"].$row125["order_col_des"]."', '', '".$row125["order_style_no"]."', '".$row125["order_del_no"]."', '".$row125["order_col_des"]."')";
 										 mysqli_query($link, $sql1q) or die("Error---2".mysqli_error($GLOBALS["___mysqli_ston"])); 
-										// echo "<tr><td>".$row125['input_job_no']."</td><td>".$docket_number."</td><td>".$color_code."</td><td>".$old_size."</td><td>".$size_tit."</td><td>".$carton_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
 										$qty=0;
 									} 
 									

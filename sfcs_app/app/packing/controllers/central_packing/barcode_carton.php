@@ -43,7 +43,7 @@
 		$filter="";$filter1="";
 		if(isset($_GET['seq_no'])>0)
 		{
-			$filter=" and seq_no='".$_GET['seq_no']."'";
+			$filter=" and seq_no=$_GET['seq_no']";
 		}
 		if(isset($_GET['carton_no'])>0)
 		{
@@ -54,7 +54,7 @@
 		while($barcode_rslt1 = mysqli_fetch_array($sql_barcode1))
 		{	
 			$tot_cart=$barcode_rslt1['cart'];
-			$barcode_qry="SELECT pac_stat_id,carton_no,order_style_no, order_del_no, GROUP_CONCAT(DISTINCT TRIM(order_col_des) SEPARATOR ',') AS colors, GROUP_CONCAT(DISTINCT TRIM(size_tit) SEPARATOR ',') AS sizes, SUM(carton_act_qty) AS carton_qty FROM $bai_pro3.`packing_summary` WHERE order_del_no='".$schedule."' and seq_no='".$barcode_rslt1['seq_no']."' $filter1 group by pac_stat_id";
+			$barcode_qry="SELECT pac_stat_id,carton_no,order_style_no, order_del_no, GROUP_CONCAT(DISTINCT TRIM(order_col_des) SEPARATOR ',') AS colors, GROUP_CONCAT(DISTINCT TRIM(size_tit) SEPARATOR ',') AS sizes, SUM(carton_act_qty) AS carton_qty FROM $bai_pro3.`packing_summary` WHERE order_del_no='".$schedule."' and seq_no=$barcode_rslt1['seq_no'] $filter1 group by pac_stat_id";
 			$printrslt=mysqli_query($link, $barcode_qry) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($rowss=mysqli_fetch_array($printrslt))
 			{

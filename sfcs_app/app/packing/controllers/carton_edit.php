@@ -1,7 +1,5 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
-<?php //include('..'.getFullURLLevel($_GET['r'],'header_scripts.php',1,'R')); ?>
-<?php //include('..'.getFullURLLevel($_GET['r'],'menu_content.php',1,'R'));?>
 
 <?php 
 	$id = $_GET['id'];
@@ -16,8 +14,7 @@
 		<form name="input" method="post" action="?r=<?php echo $_GET['r']; ?>">
 
 		<?php
-		$sql="select * from $bai_pro3.carton_qty_chart where id='$id'";
-		mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql="select * from $bai_pro3.carton_qty_chart where id=$id";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -89,7 +86,6 @@
 			$status=$sql_row['status'];
 			$srp_qty=$sql_row['srp_qty'];
 			$sql2="select * from $bai_pro3.bai_orders_db where order_del_no='".$schedule."' and style_id='".$style."' order by order_del_no desc limit 0,1";
-		   	mysqli_query($link, $sql2) or exit("Sql Error sizes".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error sizes".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check2=mysqli_num_rows($sql_result2);
 			if($sql_num_check2 > 0 )
@@ -136,7 +132,6 @@
 		echo "<option value=\"\"></option>";
 		//Changed on 2013-06-17 8:43 PM - Kirang
 		$sql="select distinct style_id from $bai_pro3.bai_orders_db_confirm  order by style_id";
-		mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -153,98 +148,6 @@
 		echo "</select></td>";
 		echo "<td>" .$schedule. "</td>";
 
-// switch($buyer)
-// {
-// 	case "O":
-// 	{
-// 		$buyer_title="VSD Logo";
-// 		break;
-// 	}
-// 	case "S":
-// 	{
-// 		$buyer_title="VSS Logo-S";
-// 		break;
-// 	}
-// 	case "U":
-// 	{
-// 		$buyer_title="VSS Logo-U";
-// 		break;
-// 	}
-// 	case "M-T14":
-// 	{
-// 		$buyer_title="M&S-T14";
-// 		break;
-// 	}
-// 	case "M-T61":
-// 	{
-// 		$buyer_title="M&S-T61";
-// 		break;
-// 	}
-// 	case "CK":
-// 	{
-// 		$buyer_title="CK";
-// 		break;
-// 	}
-// 	case "L":
-// 	{
-// 		$buyer_title="VSS Logo";
-// 		break;
-// 	}
-// 	case "P":
-// 	{
-// 		$buyer_title="VSS Pink";
-// 		break;
-// 	}
-// 	case "K":
-// 	{
-// 		$buyer_title="VSD Pink";
-// 		break;
-// 	}
-// 	case "M":
-// 	{
-// 		$buyer_title="M&S";
-// 		break;
-// 	}
-// 	case "D":
-// 	{
-// 		$buyer_title="Dim";
-// 		break;
-// 	}
-// 	case "N":
-// 	{
-// 		$buyer_title="Nayomi";
-// 		break;
-// 	}
-	
-// 	case "U":
-// 	{
-// 		$buyer_title="Loungerie";
-// 		break;
-// 	}
-
-// 	default:
-// 	{
-// 		$buyer_title="";
-// 		break;
-// 	}
-// }
-//echo "<td>";
-// echo $buyer_title."<select name=\"buyer\" value='$buyer_title'>";
-// echo "<option value=\"0\">Please Select</option>";
-// $sql="SELECT * FROM bai_pro2.buyer_codes";
-// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-// $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-// while($sql_row=mysqli_fetch_array($sql_result))
-// { 
-// 	if($sql_row['buyer_code'] == $buyer){
-// 		echo "<option value=\"".$sql_row['buyer_code']."\" selected>".$sql_row['buyer_name']."</option>";
-// 	}else{
-// 		echo "<option value=\"".$sql_row['buyer_code']."\">".$sql_row['buyer_name']."</option>";
-// 	}
-	
-// }
-// echo "</select></td>";
-		// var_dump($pack_methods);
 		echo "<td>";
 		echo "<input type=\"text\" class='integer' size=\"10\" value=\"$pack\" class=\"alpha\" name=\"pack\"> </td>";
 		echo "<td><select name=\"pack_methods\" id=\"pack_methods\" class='form-control'>";
@@ -254,8 +157,7 @@
 		}
 		echo "</select></td>";
 
-//echo "<input type=\"hidden\" size=3  name=\"s01\" value=\"$s01\"><input type=\"hidden\" size=3  name=\"s02\" value=\"$s02\"><input type=\"hidden\" size=3  name=\"s03\" value=\"$s03\"><input type=\"hidden\" size=3  name=\"s04\" value=\"$s04\"><input type=\"hidden\" size=3  name=\"s05\" value=\"$s05\"><input type=\"hidden\" size=3  name=\"s06\" value=\"$s06\"><input type=\"hidden\" size=3  name=\"s07\" value=\"$s07\"><input type=\"hidden\" size=3  name=\"s08\" value=\"$s08\"><input type=\"hidden\" size=3  name=\"s09\" value=\"$s09\"><input type=\"hidden\" size=3  name=\"s10\" value=\"$s10\"><input type=\"hidden\" size=3  name=\"s11\" value=\"$s11\"><input type=\"hidden\" size=3  name=\"s12\" value=\"$s12\"><input type=\"hidden\" size=3  name=\"s13\" value=\"$s13\"><input type=\"hidden\" size=3  name=\"s14\" value=\"$s14\"><input type=\"hidden\" size=3  name=\"s15\" value=\"$s15\"><input type=\"hidden\" size=3  name=\"s16\" value=\"$s16\"><input type=\"hidden\" size=3  name=\"s17\" value=\"$s17\"><input type=\"hidden\" size=3  name=\"s18\" value=\"$s18\"><input type=\"hidden\" size=3  name=\"s19\" value=\"$s19\"><input type=\"hidden\" size=3  name=\"s20\" value=\"$s20\"><input type=\"hidden\" size=3  name=\"s21\" value=\"$s21\"><input type=\"hidden\" size=3  name=\"s22\" value=\"$s22\"><input type=\"hidden\" size=3  name=\"s23\" value=\"$s23\"><input type=\"hidden\" size=3  name=\"s24\" value=\"$s24\"><input type=\"hidden\" size=3  name=\"s25\" value=\"$s25\"><input type=\"hidden\" size=3  name=\"s26\" value=\"$s26\"><input type=\"hidden\" size=3  name=\"s27\" value=\"$s27\"><input type=\"hidden\" size=3  name=\"s28\" value=\"$s28\"><input type=\"hidden\" size=3  name=\"s29\" value=\"$s29\"><input type=\"hidden\" size=3  name=\"s30\" value=\"$s30\"><input type=\"hidden\" size=3  name=\"s31\" value=\"$s31\"><input type=\"hidden\" size=3  name=\"s32\" value=\"$s32\"><input type=\"hidden\" size=3  name=\"s33\" value=\"$s33\"><input type=\"hidden\" size=3  name=\"s34\" value=\"$s34\"><input type=\"hidden\" size=3  name=\"s35\" value=\"$s35\"><input type=\"hidden\" size=3  name=\"s36\" value=\"$s36\"><input type=\"hidden\" size=3  name=\"s37\" value=\"$s37\"><input type=\"hidden\" size=3  name=\"s38\" value=\"$s38\"><input type=\"hidden\" size=3  name=\"s39\" value=\"$s39\"><input type=\"hidden\" size=3  name=\"s40\" value=\"$s40\"><input type=\"hidden\" size=3  name=\"s41\" value=\"$s41\"><input type=\"hidden\" size=3  name=\"s42\" value=\"$s42\"><input type=\"hidden\" size=3  name=\"s43\" value=\"$s43\"><input type=\"hidden\" size=3  name=\"s44\" value=\"$s44\"><input type=\"hidden\" size=3  name=\"s45\" value=\"$s45\"><input type=\"hidden\" size=3  name=\"s46\" value=\"$s46\"><input type=\"hidden\" size=3  name=\"s47\" value=\"$s47\"><input type=\"hidden\" size=3  name=\"s48\" value=\"$s48\"><input type=\"hidden\" size=3  name=\"s49\" value=\"$s49\"><input type=\"hidden\" size=3  name=\"s50\" value=\"$s50\">";
-//var_dump($size);
+
 		for($i=0;$i<50;$i++)
 		{	
 			if($in_size != ''){
@@ -271,7 +173,6 @@
 			}
 			
 		}
-//echo "<td><input  type=\"text\" size=3  name=\"s01\" value=\"$s01\"></td><td><input  type=\"text\" size=3  name=\"s02\" value=\"$s02\"></td><td><input  type=\"text\" size=3  name=\"s03\" value=\"$s03\"></td><td><input  type=\"text\" size=3  name=\"s04\" value=\"$s04\"></td><td><input  type=\"text\" size=3  name=\"s05\" value=\"$s05\"></td><td><input  type=\"text\" size=3  name=\"s06\" value=\"$s06\"></td><td><input  type=\"text\" size=3  name=\"s07\" value=\"$s07\"></td><td><input  type=\"text\" size=3  name=\"s08\" value=\"$s08\"></td><td><input  type=\"text\" size=3  name=\"s09\" value=\"$s09\"></td><td><input  type=\"text\" size=3  name=\"s10\" value=\"$s10\"></td><td><input  type=\"text\" size=3  name=\"s11\" value=\"$s11\"></td><td><input  type=\"text\" size=3  name=\"s12\" value=\"$s12\"></td><td><input  type=\"text\" size=3  name=\"s13\" value=\"$s13\"></td><td><input  type=\"text\" size=3  name=\"s14\" value=\"$s14\"></td><td><input  type=\"text\" size=3  name=\"s15\" value=\"$s15\"></td><td><input  type=\"text\" size=3  name=\"s16\" value=\"$s16\"></td><td><input  type=\"text\" size=3  name=\"s17\" value=\"$s17\"></td><td><input  type=\"text\" size=3  name=\"s18\" value=\"$s18\"></td><td><input  type=\"text\" size=3  name=\"s19\" value=\"$s19\"></td><td><input  type=\"text\" size=3  name=\"s20\" value=\"$s20\"></td><td><input  type=\"text\" size=3  name=\"s21\" value=\"$s21\"></td><td><input  type=\"text\" size=3  name=\"s22\" value=\"$s22\"></td><td><input  type=\"text\" size=3  name=\"s23\" value=\"$s23\"></td><td><input  type=\"text\" size=3  name=\"s24\" value=\"$s24\"></td><td><input  type=\"text\" size=3  name=\"s25\" value=\"$s25\"></td><td><input  type=\"text\" size=3  name=\"s26\" value=\"$s26\"></td><td><input  type=\"text\" size=3  name=\"s27\" value=\"$s27\"></td><td><input  type=\"text\" size=3  name=\"s28\" value=\"$s28\"></td><td><input  type=\"text\" size=3  name=\"s29\" value=\"$s29\"></td><td><input  type=\"text\" size=3  name=\"s30\" value=\"$s30\"></td><td><input  type=\"text\" size=3  name=\"s31\" value=\"$s31\"></td><td><input  type=\"text\" size=3  name=\"s32\" value=\"$s32\"></td><td><input  type=\"text\" size=3  name=\"s33\" value=\"$s33\"></td><td><input  type=\"text\" size=3  name=\"s34\" value=\"$s34\"></td><td><input  type=\"text\" size=3  name=\"s35\" value=\"$s35\"></td><td><input  type=\"text\" size=3  name=\"s36\" value=\"$s36\"></td><td><input  type=\"text\" size=3  name=\"s37\" value=\"$s37\"></td><td><input  type=\"text\" size=3  name=\"s38\" value=\"$s38\"></td><td><input  type=\"text\" size=3  name=\"s39\" value=\"$s39\"></td><td><input  type=\"text\" size=3  name=\"s40\" value=\"$s40\"></td><td><input  type=\"text\" size=3  name=\"s41\" value=\"$s41\"></td><td><input  type=\"text\" size=3  name=\"s42\" value=\"$s42\"></td><td><input  type=\"text\" size=3  name=\"s43\" value=\"$s43\"></td><td><input  type=\"text\" size=3  name=\"s44\" value=\"$s44\"></td><td><input  type=\"text\" size=3  name=\"s45\" value=\"$s45\"></td><td><input  type=\"text\" size=3  name=\"s46\" value=\"$s46\"></td><td><input  type=\"text\" size=3  name=\"s47\" value=\"$s47\"></td><td><input  type=\"text\" size=3  name=\"s48\" value=\"$s48\"></td><td><input  type=\"text\" size=3  name=\"s49\" value=\"$s49\"></td><td><input  type=\"text\" size=3  name=\"s50\" value=\"$s50\"></td>";
 
 		echo "<td>";
 		echo "<select name=\"status\">";
@@ -308,7 +209,7 @@ if(isset($_POST['submit']))
 	$xl=0;
 	$xxl=0;
 	$xxxl=0;
-	$sql="select * from $bai_pro3.carton_qty_chart where id='$id'";
+	$sql="select * from $bai_pro3.carton_qty_chart where id=$id";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -368,82 +269,9 @@ if(isset($_POST['submit']))
 
 	$track_qty=$_POST['track_qty'];
 	$srp_qty=$_POST['srp_qty'];
-	
-	// switch($buyer)
-	// {
-	// 	case "O":
-	// 	{
-	// 		$buyer_name="VSD Logo";
-	// 		break;
-	// 	}
-	// 	case "S":
-	// 	{
-	// 		$buyer_name="VSS Logo-S";
-	// 		break;
-	// 	}
 		
-	// 	case "L":
-	// 	{
-	// 		$buyer_name="Lidil-L";
-	// 		break;
-	// 	}
-	// 	case "M-T14":
-	// 	{
-	// 		$buyer_name="M&S-T14";
-	// 		break;
-	// 	}
-	// 	case "M-T61":
-	// 	{
-	// 		$buyer_name="M&S-T61";
-	// 		break;
-	// 	}
-		
-		
-	// 	case "P":
-	// 	{
-	// 		$buyer_name="VSS Pink";
-	// 		break;
-	// 	}
-	// 	case "K":
-	// 	{
-	// 		$buyer_name="VSD Pink";
-	// 		break;
-	// 	}
-	// 	case "M":
-	// 	{
-	// 		$buyer_name="M&S";
-	// 		break;
-	// 	}
-	// 	case "D":
-	// 	{
-	// 		$buyer_name="Dim";
-	// 		break;
-	// 	}
-	// 	case "CK":
-	// 	{
-	// 		$buyer_name="CK";
-	// 		break;
-	// 	}
-		
-	// 	case "N":
-	// 	{
-	// 		$buyer_name="Nayomi";
-	// 		break;
-	// 	}
-	// 	case "U":
-	// 	{
-	// 		$buyer_name="Loungerie";
-	// 		break;
-	// 	}
-	// 	default:
-	// 	{
-	// 		$buyer_name="";
-	// 		break;
-	// 	}
-	// }
 	
 	$date=date("Y-m-d");
-	//buyer=\"$buyer_name\"	
 	$sql="update carton_qty_chart set user_style=\"$style\",buyer_identity=\"$buyer\",packing_method=\"$pack\",pack_methods=\"$pack_methods\",xs=$xs,s=$s,m=$m,l=$l,xl=$xl,xxl=$xxl,xxxl=$xxxl,s01='$s01',s02='$s02',s03='$s03',s04='$s04',s05='$s05',s06='$s06',s07='$s07',s08='$s08',s09='$s09',s10='$s10',s11='$s11',s12='$s12',s13='$s13',s14='$s14',s15='$s15',s16='$s16',s17='$s17',s18='$s18',s19='$s19',s20='$s20',s21='$s21',s22='$s22',s23='$s23',s24='$s24',s25='$s25',s26='$s26',s27='$s27',s28='$s28',s29='$s29',s30='$s30',s31='$s31',s32='$s32',s33='$s33',s34='$s34',s35='$s35',s36='$s36',s37='$s37',s38='$s38',s39='$s39',s40='$s40',s41='$s41',s42='$s42',s43='$s43',s44='$s44',s45='$s45',s46='$s46',s47='$s47',s48='$s48',s49='$s49',s50='$s50',date=\"$date\",status=$status,track_qty=$track_qty,srp_qty=$srp_qty where id=$id";
 	
 	mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));

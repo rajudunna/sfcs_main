@@ -38,7 +38,6 @@
 		echo "<table class='table table-bordered'>";
 		echo "<tr class='info'><th>Dispatch No</th><th>Date</th><th>Party</th><th>Vehicle Details</th><th>Status</th><th>Exit Time</th></tr>";
 		$sql="select * from $bai_pro3.disp_db left join party_db on disp_db.party=party_db.pid where month(disp_db.create_date)=month(\"$date\") and year(disp_db.create_date)=year(\"$date\") order by disp_db.disp_note_no DESC";
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$num_sch=mysqli_num_rows($sql_result);
 		$pre_count=0;
@@ -62,7 +61,6 @@
 					\">$disp_note_no</a>
 				</td>";
 			
-			//<a href=\"dispatch_note.php?disp_id=".$sql_row['disp_note_no']."\" target=\"_blank\">".$sql_row['disp_note_no']."</a></td>";
 			echo "<td>".$sql_row['create_date']."</td>";
 			echo "<td>".$sql_row['party_name']."</td>";
 			echo "<td>".$sql_row['vehicle_no']."</td>";

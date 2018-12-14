@@ -21,7 +21,7 @@
 		$emp_id = $_GET['emp_id'];
 		$team_id = $_GET['team_id'];
 		$carton_id = $_GET['carton_id'];
-		$count_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id='".$carton_id."';";
+		$count_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id=$carton_id";
 		$count_result = mysqli_query($link,$count_query);
 		if(mysqli_num_rows($count_result)>0)
 		{
@@ -32,7 +32,7 @@
 			}
 
 			$b_tid = array();
-			$get_all_tid = "SELECT group_concat(tid) as tid,min(status) as status FROM bai_pro3.`pac_stat_log` WHERE pac_stat_id = '".$carton_id."'";
+			$get_all_tid = "SELECT group_concat(tid) as tid,min(status) as status FROM bai_pro3.`pac_stat_log` WHERE pac_stat_id = $carton_id";
 			$tid_result = mysqli_query($link,$get_all_tid);
 			while($row12=mysqli_fetch_array($tid_result))
 			{
@@ -41,7 +41,7 @@
 			}
 
 
-			$final_details = "SELECT carton_no,order_style_no, order_del_no, GROUP_CONCAT(DISTINCT TRIM(order_col_des) SEPARATOR '<br>') AS colors, GROUP_CONCAT(DISTINCT size_tit) AS sizes, SUM(carton_act_qty) AS carton_qty FROM $bai_pro3.`packing_summary` WHERE pac_stat_id = '".$carton_id."'";
+			$final_details = "SELECT carton_no,order_style_no, order_del_no, GROUP_CONCAT(DISTINCT TRIM(order_col_des) SEPARATOR '<br>') AS colors, GROUP_CONCAT(DISTINCT size_tit) AS sizes, SUM(carton_act_qty) AS carton_qty FROM $bai_pro3.`packing_summary` WHERE pac_stat_id = $carton_id";
 			$final_result = mysqli_query($link,$final_details);
 			while($row=mysqli_fetch_array($final_result))
 			{
@@ -59,7 +59,7 @@
 			}
 			else
 			{
-				$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",scan_date=\"".date("Y-m-d H:i:s")."\",scan_user=user() where pac_stat_id = '".$carton_id."'";
+				$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",scan_date=\"".date("Y-m-d H:i:s")."\",scan_user=user() where pac_stat_id = $carton_id";
 				// echo $sql;
 				$pac_stat_log_result = mysqli_query($link, $sql) or exit("Error while updating pac_stat_log");
 

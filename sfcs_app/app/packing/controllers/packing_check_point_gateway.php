@@ -58,11 +58,11 @@ if(isset($_POST['clearsession']))
 			
 			
 			
-			$sql="CREATE  TABLE $temp_pool_db.ims_log_packing_v3_$username ENGINE = MYISAM SELECT * FROM $bai_pro3.packing_dashboard_new2";
+			$sql="CREATE  TABLE $temp_pool_db.ims_log_packing_v3_$username SELECT * FROM $bai_pro3.packing_dashboard_new2";
 			//echo $sql."<br/>";
 			mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			$sql="CREATE  TABLE $temp_pool_db.packing_summary_tmp_v3_$username ENGINE = MYISAM SELECT * FROM $bai_pro3.packing_summary where order_del_no in (select order_del_no from $bai_pro3.packing_pending_schedules)";
+			$sql="CREATE  TABLE $temp_pool_db.packing_summary_tmp_v3_$username SELECT * FROM $bai_pro3.packing_summary where order_del_no in (select order_del_no from $bai_pro3.packing_pending_schedules)";
 			//echo $sql."<br/>";
 			mysqli_query($link, $sql) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
@@ -138,11 +138,9 @@ else
 {
 	$url = getFullURL($_GET['r'],'packing_check_point_handover_select.php','N');
 	echo "<div class='alert alert-success' role='alert'>$username  Session Cleared Successfully</div>";
-	// echo "<script type=\"text/javascript\"> function Redirect() {  ('packing_check_point_handover_select.php'); }</script>";
-	// <a href="javascript:window.open('','_self').close();">close</a>?>
 	<button onclick="location.href = '<?php echo $url;?>'; return false;" class="btn btn-warning">Click here to go Back</button>
 <?php	
-	//echo '</center>';
+
 }
 
 //Exemption Handling
@@ -159,31 +157,12 @@ if(isset($_POST['clearsession']) or strlen($current_session_user)==0)
 	$stringData = "<?php $"."current_session_user='$username'; ?>";
 	fwrite($fh, $stringData);
 	fclose($fh);
-	//echo "<center><br/><br/><br/><h1><font color=\"blue\">Please wait while preparing database...</font></h1></center>";
+	
 	
 	ob_end_flush();
 	flush();
 	usleep(10);
-/*
-		$sql="truncate ims_log_packing_v3";
-		//echo $sql."<br/>";
-		mysql_query($sql,$link) or exit("Sql Error112".mysql_error());
-		
-		$sql="insert into ims_log_packing_v3 select * from packing_dashboard_new2";
-		//echo $sql."<br/>";
-		mysql_query($sql,$link) or exit("Sql Error211".mysql_error());
-		
-		//NEW2011
-		$sql="truncate packing_summary_tmp_v3";
-		//echo $sql."<br/>";
-		mysql_query($sql,$link) or exit("Sql Error310".mysql_error());
-		
-		$sql="insert into packing_summary_tmp_v3 select * from packing_summary where order_del_no in (select order_del_no from packing_pending_schedules)";
-		//echo $sql."<br/>";
-		mysql_query($sql,$link) or exit("Sql Error49".mysql_error());
-		//NEW2011
-		
-		*/
+
 		//New Code
 		//  for multiuser session enable
 			$sql="SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
@@ -200,11 +179,11 @@ if(isset($_POST['clearsession']) or strlen($current_session_user)==0)
 			
 			
 			
-			$sql="CREATE  TABLE $temp_pool_db.ims_log_packing_v3_$username ENGINE = MYISAM SELECT * FROM $bai_pro3.packing_dashboard_new2";
+			$sql="CREATE  TABLE $temp_pool_db.ims_log_packing_v3_$username SELECT * FROM $bai_pro3.packing_dashboard_new2";
 			//echo $sql."<br/>";
 			mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			$sql="CREATE  TABLE $temp_pool_db.packing_summary_tmp_v3_$username ENGINE = MYISAM SELECT * FROM $bai_pro3.packing_summary where order_del_no in (select order_del_no from $bai_pro3.packing_pending_schedules)";
+			$sql="CREATE  TABLE $temp_pool_db.packing_summary_tmp_v3_$username SELECT * FROM $bai_pro3.packing_summary where order_del_no in (select order_del_no from $bai_pro3.packing_pending_schedules)";
 			//echo $sql."<br/>";
 			mysqli_query($link, $sql) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
@@ -237,26 +216,7 @@ if(isset($_POST['clearsession']) or strlen($current_session_user)==0)
 
 	echo '<div class="alert alert-success" role="alert">Successfully Updated.</div>';
 	
-	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",30); function Redirect() {  location.href = \"packing_check_point_v1.php\"; }</script>";
-	
-	//to prevent missing updates in pac_stat_log where its updated in m3 log -kirang 2015-08-19
-	$sql="SELECT sfcs_qty,sfcs_tid_ref FROM $m3_bulk_ops_rep_db.m3_sfcs_tran_log LEFT JOIN  $bai_pro3.pac_stat_log ON sfcs_tid_ref=tid WHERE sfcs_date>\"2015-08-01\" AND m3_op_des='CPK' AND sfcs_reason='' AND (bai_pro3.pac_stat_log.status<>'DONE' OR bai_pro3.pac_stat_log.status IS NULL)";
-	//echo $sql."<br>";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error18$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		
-			if($sql_row['sfcs_qty']>0)
-			{
-				$sql="update $bai_pro3.pac_stat_log set status='DONE' where tid=".$sql_row['sfcs_tid_ref'];
-			}
-			else
-			{
-				$sql="update $bai_pro3.pac_stat_log set status='' where tid=".$sql_row['sfcs_tid_ref'];
-			}
-			//echo $sql."<br/>";
-			mysqli_query($link, $sql) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"]));
-	}
+
 	
 	$url = getFullURL($_GET['r'],'packing_check_point_v1.php','N');
 	//echo $url;

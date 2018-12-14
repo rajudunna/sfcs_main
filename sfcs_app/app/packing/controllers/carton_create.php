@@ -1,8 +1,5 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
-<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',1,'R')); This file is included but not at all used?>
-<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'menu_content.php',1,'R')); This file is included but not at all used?>
-
 <div class="panel panel-primary">
 	<div class="panel-heading"><b>Carton Qty Create</b></div>
 	<div class="panel-body">
@@ -17,14 +14,11 @@
 						//echo $_GET['style']."--<br>";
 						//Changed on 2013-06-17 8:43 PM - Kirang
 						$sql="select order_style_no,style_id from $bai_pro3.bai_orders_db group by order_style_no ";
-						//$sql="select distinct style_id from bai_pro2.movex_styles order by style_id";
-						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_num_check=mysqli_num_rows($sql_result);
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
 							if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","", $_GET['style']))
-							//if($sql_row['order_style_no']==$_GET['order_style_no'])
 								echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
 							else
 								echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
@@ -35,8 +29,6 @@
 					<?php
 						if(isset($_GET['style']) && $_GET['style']){
 							$sql1="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no='".$_GET['style']."' order by order_del_no";
-							//echo $sql1;die();
-							mysqli_query($link, $sql1) or exit("Sql Error schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$sql_num_check1=mysqli_num_rows($sql_result1);
 							$schedule_apd = '';
@@ -65,7 +57,6 @@
 			if(isset($_GET['schedule']) && isset($_GET['style']) && $_GET['schedule']!='' && $_GET['style']!=''){
 				
 				$sql1="select count(*) as cnt,id from $bai_pro3.carton_qty_chart where user_style = '".$_GET['style']."' and user_schedule = '".$_GET['schedule']."'";
-			//mysql_query($sql1,$link) or exit("Sql Error1".mysql_error());
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check1=mysqli_num_rows($sql_result1);
 			
@@ -82,14 +73,11 @@
 				}
 				
 				$sql2="select * from $bai_pro3.bai_orders_db where order_del_no='".$_GET['schedule']."' and order_style_no='".$_GET['style']."' order by order_del_no desc limit 0,1";
-				//echo $sql2;
-				//mysqli_query($link, $sql2) or exit("Sql Error sizes".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error sizes".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_num_check2=mysqli_num_rows($sql_result2);
 				echo "<div class='table-responsive'  style='overflow-y:scroll;max-height:600px;'>";
 				echo '<br><table class="table table-hover table-bordered integer">';
 				echo "<tr><thead><th>Pack Quantity</th><th>Pack Method</th>";
-			/*echo "<th>s01</th><th>s02</th><th>s03</th><th>s04</th><th>s05</th><th>s06</th><th>s07</th><th>s08</th><th>s09</th><th>s10</th><th>s11</th><th>s12</th><th>s13</th><th>s14</th><th>s15</th><th>s16</th><th>s17</th><th>s18</th><th>s19</th><th>s20</th><th>s21</th><th>s22</th><th>s23</th><th>s24</th><th>s25</th><th>s26</th><th>s27</th><th>s28</th><th>s29</th><th>s30</th><th>s31</th><th>s32</th><th>s33</th><th>s34</th><th>s35</th><th>s36</th><th>s37</th><th>s38</th><th>s39</th><th>s40</th><th>s41</th><th>s42</th><th>s43</th><th>s44</th><th>s45</th><th>s46</th><th>s47</th><th>s48</th><th>s49</th><th>s50</th>";*/ 
 				$sizes = array();
 				$sizes_qty = array();
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -100,8 +88,6 @@
 						$sizes[] = $sql_row2['title_size_s'.$hds];
 					}
 				}
-				//var_dump($sizes_qty);
-				//var_dump($sizes);
 				foreach($sizes as $val){
 					if($val!=''){
 						echo "<th>".$val."</th>";
@@ -111,42 +97,7 @@
 			echo "</thead></tr>";
 
 			echo "<tr>";
-			/*echo "<td>";
-			echo "<select name=\"style\">";
-			echo "<option value=\"0\"></option>";
-
-			//Changed on 2013-06-17 8:43 PM - Kirang
-			$sql="select distinct style_id from bai_orders_db order by style_id";
-			//$sql="select distinct style_id from bai_pro2.movex_styles order by style_id";
-			mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-			$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-			$sql_num_check=mysql_num_rows($sql_result);
-			while($sql_row=mysql_fetch_array($sql_result))
-			{
-				echo "<option value=\"".$sql_row['style_id']."\">".$sql_row['style_id']."</option>";
-			}
-			echo "</select></td>";*/
-
-			//echo "<td>";
-			// echo "<select name=\"buyer\">";
-			// echo "<option value=\"0\">Please Select</option>";
-			// $sql="SELECT * FROM bai_pro2.buyer_codes";
-			// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			// $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			// while($sql_row=mysqli_fetch_array($sql_result))
-			// {
-			// 	echo "<option value=\"".$sql_row['buyer_code']."\">".$sql_row['buyer_name']."</option>";
-			// }
-			// echo "<option value=\"Y\">Lidil</option>";
-			// echo "<option value=\"M-T14\">M&S-T14</option>";
-			// echo "<option value=\"M-T61\">M&S-T61</option>";
-			// echo "<option value=\"M-T32\">M&S-T32</option>";
-			// echo "<option value=\"H&M\">H&M</option>";
-			// echo "<option value=\"S\">VS</option>";
-			// echo "<option value=\"N\">Nayomi</option>";
-			// echo "<option value=\"U\">Loungerie</option>";
-			// echo "<option value=\"Q\">PVH</option>";
-			//echo "</select></td>";
+			
 
 			echo "<td>";
 			echo "<input type=\"text\"  class='form-control alpha' size=\"10\" value=\"\" name=\"pack\" id='pack'></td>";
@@ -157,9 +108,8 @@
 			}
 			echo "</select></td>";
 
-			/*echo "<td><input type=\"text\" size=3 name=\"s01\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s02\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s03\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s04\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s05\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s06\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s07\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s08\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s09\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s10\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s11\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s12\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s13\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s14\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s15\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s16\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s17\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s18\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s19\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s20\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s21\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s22\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s23\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s24\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s25\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s26\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s27\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s28\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s29\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s30\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s31\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s32\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s33\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s34\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s35\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s36\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s37\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s38\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s39\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s40\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s41\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s42\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s43\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s44\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s45\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s46\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s47\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s48\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s49\" value=\"0\"></td><td><input type=\"text\" size=3 name=\"s50\" value=\"0\"></td>";*/
+			
 			$j=0;
-			//$count = 0;
 					for($i=0;$i<=50;$i++){
 						$hds = 's'.str_pad($i, 2, "0", STR_PAD_LEFT);						
 						$sz_qty = $sizes_qty[$j];				
@@ -269,62 +219,7 @@
 
 		$track_qty=$_POST['track_qty'];
 		$srp_qty=$_POST['srp_qty'];
-			// switch($buyer)
-			// {
-			// 	case "Y":
-			// 	{
-			// 		$buyer_name="Lidil";
-			// 		break;
-			// 	}
-			// 	case "S":
-			// 	{
-			// 		$buyer_name="VS";
-			// 		break;
-			// 	}
-				
-			// 	case "M-T14":
-			// 	{
-			// 		$buyer_name="M&S-T14";
-			// 		break;
-			// 	}
-			// 	case "M-T61":
-			// 	{
-			// 		$buyer_name="M&S-T61";
-			// 		break;
-			// 	}
-			// 	case "M-T32":
-			// 	{
-			// 		$buyer_name="M&S-T32";
-			// 		break;
-			// 	}
-			// 	case "CK":
-			// 	{
-			// 		$buyer_name="CK";
-			// 		break;
-			// 	}
-			// 	case "H&M":
-			// 	{
-			// 		$buyer_name="H&M";
-			// 		break;
-			// 	}
-			// 	case "N":
-			// 	{
-			// 		$buyer_name="Nayomi";
-			// 		break;
-			// 	}
-			// 	case "U":
-			// 	{
-			// 		$buyer_name="Loungerie";
-			// 		break;
-			// 	}
-				
-			// 	default:
-			// 	{
-			// 		$buyer_name="";
-			// 		break;
-			// 	}
-			// }
-			
+						
 			$date=date("y-m-d");
 			$sql="select * from $bai_pro3.bai_orders_db where order_del_no='".$schedule."' and order_style_no='".$style."'";
 			$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -332,7 +227,6 @@
 			{
 				$style_id=$row['style_id'];
 			}
-			//\"$buyer_name\",\"$buyer\"
 			$sql="insert into carton_qty_chart(user_schedule,user_style,packing_method,pack_methods,s01,s02,s03,s04,s05,s06,s07,s08,s09,s10,s11,s12,s13,s14,s15,s16,s17,s18,s19,s20,s21,s22,s23,s24,s25,s26,s27,s28,s29,s30,s31,s32,s33,s34,s35,s36,s37,s38,s39,s40,s41,s42,s43,s44,s45,s46,s47,s48,s49,s50,date,status,track_qty,srp_qty) 
 				  values 
 				  (\"$schedule\",\"$style_id\",\"$pack\",\"$pack_methods\",'$s00','$s01','$s02','$s03','$s04','$s05','$s06','$s07','$s08','$s09','$s10','$s11','$s12','$s13','$s14','$s15','$s16','$s17','$s18','$s19','$s20','$s21','$s22','$s23','$s24','$s25','$s26','$s27','$s28','$s29','$s30','$s31','$s32','$s33','$s34','$s35','$s36','$s37','$s38','$s39','$s40','$s41','$s42','$s43','$s44','$s45','$s46','$s47','$s48','$s49',\"$date\",$status,$track_qty,$srp_qty)";
@@ -439,21 +333,4 @@
 			return true;
 		}
 	}
-	// function validating_mul(id)
-	// {
-	// 	var pre = 'size'+id;
-	// 	var pre_element = document.getElementById(pre).value;
-	// 	var pack_method = document.getElementById('pack').value;
-	// 	if(pack_method == '')
-	// 	{
-	// 		sweetAlert("","Please enter pack method First.","warning");
-	// 		document.getElementById(pre).value = 0;
-	// 	}
-	// 	var reminder = Number(pack_method) % Number(pre_element);
-	// 	if(reminder != 0)
-	// 	{
-	// 		sweetAlert("","Quantity should be multiples of Pack Method.","warning");
-	// 		document.getElementById(pre).value = 0;
-	// 	}
-	// }
 </script>

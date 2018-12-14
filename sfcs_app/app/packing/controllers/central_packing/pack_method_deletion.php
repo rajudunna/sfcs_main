@@ -167,7 +167,7 @@
 							{
 								$carton_qty_pac_stat=echo_title("$bai_pro3.pac_stat","sum(carton_qty)","schedule='".$schedule."' and pac_seq_no",$new_result1['seq_no'],$link);
 
-								$to_get_scanned_count = "SELECT COUNT(*) AS scanned_count FROM bai_pro3.`pac_stat_log` LEFT JOIN bai_pro3.`pac_stat` ON pac_stat.`id`= pac_stat_log.`pac_stat_id` WHERE pac_stat.schedule='$schedule' AND pac_stat.`pac_seq_no`='".$new_result1['seq_no']."' AND pac_stat_log.status='DONE';";
+								$to_get_scanned_count = "SELECT COUNT(*) AS scanned_count FROM bai_pro3.`pac_stat_log` LEFT JOIN bai_pro3.`pac_stat` ON pac_stat.`id`= pac_stat_log.`pac_stat_id` WHERE pac_stat.schedule='$schedule' AND pac_stat.`pac_seq_no`=$new_result1['seq_no'] AND pac_stat_log.status='DONE';";
 								$scanned_count_result = mysqli_query($link, $to_get_scanned_count) or exit("Sql Error366");
 								while ($rowscnt=mysqli_fetch_array($scanned_count_result))
 								{
@@ -189,7 +189,7 @@
 								}
 								else
 								{
-									$check_sewing_job_for_pack = echo_title("$bai_pro3.pac_stat_input","count(*)","no_of_cartons>0 and mix_jobs>0 and pac_seq_no='".$new_result1['seq_no']."' and schedule",$schedule,$link);
+									$check_sewing_job_for_pack = echo_title("$bai_pro3.pac_stat_input","count(*)","no_of_cartons>0 and mix_jobs>0 and pac_seq_no=$new_result1['seq_no'] and schedule",$schedule,$link);
 									if($check_sewing_job_for_pack=='' || $check_sewing_job_for_pack==NULL || $check_sewing_job_for_pack==0)
 									{		
 										echo "<td><a id='delete' class='btn btn-danger'  onclick='return confirm_delete(event,this)' href='	$url&schedule=".$schedule."&seq_no=".$new_result1['seq_no']."&option=delete'>Delete</a></td>";
@@ -217,7 +217,7 @@
 				$pac_id=array();
 				$pa_tids=array();
 
-				$check_sewing_job_for_pack = echo_title("$bai_pro3.pac_stat_input","count(*)","pac_seq_no='".$seqno."' and schedule",$schedule,$link);
+				$check_sewing_job_for_pack = echo_title("$bai_pro3.pac_stat_input","count(*)","pac_seq_no=$seqno and schedule",$schedule,$link);
 
 				if($check_sewing_job_for_pack=='' || $check_sewing_job_for_pack==NULL || $check_sewing_job_for_pack==0)
 				{

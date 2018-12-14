@@ -40,22 +40,22 @@
 	if($carton_method==1)
 	{
 		$sql123="SELECT pack_method,style,schedule,GROUP_CONCAT(DISTINCT COLOR) AS cols,GROUP_CONCAT(DISTINCT size_title order by ref_size_name*1) AS size_tit FROM $bai_pro3.tbl_pack_ref 
-		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no='".$seq_no."' and tbl_pack_ref.id='".$carton_id."' group by COLOR,size_title order by ref_size_name";
+		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no=$seq_no and tbl_pack_ref.id=$carton_id group by COLOR,size_title order by ref_size_name";
 	}
 	elseif($carton_method==2)
 	{
 		$sql123="SELECT pack_method,style,schedule,GROUP_CONCAT(DISTINCT COLOR) AS cols,GROUP_CONCAT(DISTINCT size_title order by ref_size_name*1) AS size_tit FROM $bai_pro3.tbl_pack_ref 
-		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no='".$seq_no."' and tbl_pack_ref.id='".$carton_id."' group by size_title order by ref_size_name";
+		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no=$seq_no and tbl_pack_ref.id=$carton_id group by size_title order by ref_size_name";
 	}
 	elseif($carton_method==3)
 	{
 		$sql123="SELECT pack_method,style,schedule,GROUP_CONCAT(DISTINCT COLOR) AS cols,GROUP_CONCAT(DISTINCT size_title order by ref_size_name*1) AS size_tit FROM $bai_pro3.tbl_pack_ref 
-		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no='".$seq_no."' and tbl_pack_ref.id='".$carton_id."'";
+		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no=$seq_no and tbl_pack_ref.id=$carton_id";
 	}
 	elseif($carton_method==4)
 	{
 		$sql123="SELECT pack_method,style,schedule,color as cols,GROUP_CONCAT(DISTINCT size_title order by ref_size_name*1) AS size_tit FROM $bai_pro3.tbl_pack_ref 
-		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no='".$seq_no."' and tbl_pack_ref.id='".$carton_id."' group by color";
+		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no=$seq_no and tbl_pack_ref.id=$carton_id group by color";
 	}
 	$result123=mysqli_query($link, $sql123) or die ("Error1.11=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row123=mysqli_fetch_array($result123))
@@ -67,7 +67,7 @@
 	}
 	$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
 	$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule_id,$link);
-	$sql123="SELECT * FROM $bai_pro3.tbl_pack_ref LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE $bai_pro3.tbl_pack_size_ref.pack_method='".$carton_method."' AND tbl_pack_size_ref.seq_no='".$seq_no."' and tbl_pack_size_ref.parent_id='".$carton_id."'";
+	$sql123="SELECT * FROM $bai_pro3.tbl_pack_ref LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE $bai_pro3.tbl_pack_size_ref.pack_method=$carton_method AND tbl_pack_size_ref.seq_no=$seq_no and tbl_pack_size_ref.parent_id=$carton_id";
 	$result123=mysqli_query($link, $sql123) or die ("Error1.2=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row123=mysqli_fetch_array($result123))
 	{
@@ -150,7 +150,7 @@
 				}
 				// Find Max of the carton no with in the schedule and pack Method
 				$tmp_cart=0;
-				$sql1235="select MAX(carton_no)+1 as cart_no from $bai_pro3.pac_stat where pac_seq_no='".$seq_no."' and schedule='".$schedule."'";
+				$sql1235="select MAX(carton_no)+1 as cart_no from $bai_pro3.pac_stat where pac_seq_no=$seq_no and schedule='".$schedule."'";
 				$result1235=mysqli_query($link, $sql1235) or die ("Error1.2=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row1235=mysqli_fetch_array($result1235))
 				{
@@ -273,7 +273,7 @@
 			}
 			// Find Max of the carton no with in the schedule and pack Method
 			$tmp_cart=0;
-			$sql1235="select MAX(carton_no)+1 as cart_no from $bai_pro3.pac_stat where pac_seq_no='".$seq_no."' and schedule='".$schedule."'";
+			$sql1235="select MAX(carton_no)+1 as cart_no from $bai_pro3.pac_stat where pac_seq_no=$seq_no and schedule='".$schedule."'";
 			$result1235=mysqli_query($link, $sql1235) or die ("Error1.2=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row1235=mysqli_fetch_array($result1235))
 			{

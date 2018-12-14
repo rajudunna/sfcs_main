@@ -129,7 +129,6 @@
 		var url001 = url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
 	}
 </script>
-<?php //echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 
 
 
@@ -201,8 +200,6 @@ echo "<div class='col-md-3'><label>Select Schedule: </label><select name=\"sched
 
 
 $sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and LENGTH(style_id)>0 order by order_del_no";	
-
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
@@ -222,8 +219,6 @@ else
 }
 
 $sql11="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm_archive where order_style_no=\"$style\" and LENGTH(style_id)>0 order by order_del_no";	
-
-mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check11=mysqli_num_rows($sql_result11);
 
@@ -250,12 +245,8 @@ echo "</select></div>";
 
 echo "<div class='col-md-3'><label>Select Color: </label><select name=\"color\" id=\"color\" onclick=\"check_sch_sty();\" onchange=\"thirdbox();\" class='form-control'>";
 
-//$sql="select distinct order_style_no from bai_orders_db_confirm where order_tid in (select order_tid from plandoc_stat_log) and order_style_no=\"$style\" and order_del_no=\"$schedule\"";
-//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
-//{
+
 	$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and LENGTH(style_id)>0";
-//}
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
@@ -276,7 +267,6 @@ else
 }
 
 $sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm_archive where order_style_no=\"$style\" and order_del_no=\"$schedule\" and LENGTH(style_id)>0";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
@@ -300,9 +290,9 @@ echo "<div class='col-md-3'><input type=\"submit\" value=\"Show\" name=\"submit\
 if($schedule>0)
 {
 	//$sql="SELECT GROUP_CONCAT(sec_mods) as mods FROM sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
-	$sql="select distinct ims_mod_no as mods from (select ims_mod_no from $bai_pro3.ims_log where ims_mod_no>0 and ims_schedule=$schedule and ims_color='$color'
+	$sql="select distinct ims_mod_no as mods from (select ims_mod_no from $bai_pro3.ims_log where ims_mod_no>0 and ims_schedule='$schedule' and ims_color='$color'
 	union
-	select ims_mod_no from $bai_pro3.ims_log_backup where ims_mod_no>0  and ims_schedule=$schedule and ims_color='$color') t";
+	select ims_mod_no from $bai_pro3.ims_log_backup where ims_mod_no>0  and ims_schedule='$schedule' and ims_color='$color') t";
 	//echo $sql;
 	$result7=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($result7))
@@ -463,7 +453,7 @@ if(isset($_POST['submit']))
 		echo "<div class='col-md-8'>";
 		echo "<table class='table table-bordered'>";
 		
-		$sql_del="select order_date from $bai_pro3.$table_name where order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+		$sql_del="select order_date from $bai_pro3.$table_name where order_del_no=\"".$schedule."\" and order_col_des=\"".$color."\"";
 		$sql_result5=mysqli_query($link, $sql_del) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row5=mysqli_fetch_array($sql_result5))
 		{
@@ -477,7 +467,7 @@ if(isset($_POST['submit']))
 		}
 		
 		//Capturing the Docket no of selected Style,Schedule and Color with cat reference
-		$sql_cat="select acutno,doc_no from $bai_pro3.plandoc_stat_log where cat_ref=\"".$cat_ref_id."\"";
+		$sql_cat="select acutno,doc_no from $bai_pro3.plandoc_stat_log where cat_ref=\"$cat_ref_id\"";
 		$sql_result_cat=mysqli_query($link, $sql_cat) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row_cat=mysqli_fetch_array($sql_result_cat))
 		{
@@ -486,7 +476,7 @@ if(isset($_POST['submit']))
 		}
 		
 		//Capturing the Recut Docket no of selected Style,Schedule and Color with cat reference
-		$sql_cat="select acutno,doc_no from $bai_pro3.recut_v2 where cat_ref=\"".$cat_ref_id."\"";
+		$sql_cat="select acutno,doc_no from $bai_pro3.recut_v2 where cat_ref=\"$cat_ref_id\"";
 		// echo $sql_cat."<br>";
 		$sql_result_cat=mysqli_query($link, $sql_cat) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row_cat=mysqli_fetch_array($sql_result_cat))
@@ -540,6 +530,8 @@ if(isset($_POST['submit']))
 			echo "<option value=\"".$sql_mods[$i]."\">".$sql_mods[$i]."</option>";
 			}	
 		}
+		//echo "<option value=\"2\">Cut Section - 2</option>";
+		//echo "<option value=\"3\">Cut Section - 3</option>"; 
 		echo "</select></div></div></td></tr><br>";
 
 		
@@ -589,42 +581,19 @@ if(isset($_POST['update']))
 		//M3 Bulk Operation Reporting
 		//Extract Operation Code and Reason Code
 		//ref1=form factor (G/P), ref2=Source, ref3=reason refe
-		$sql_sup="select m3_reason_code,m3_operation_code from $m3_bulk_ops_rep_db.rejection_report_matrix where interface='ORREP' and ref1='".$_POST['gtype']."' and ref2='".(is_numeric($_POST['source'])?'0':$_POST['source'])."' and ref3='0'";
-		$sql_result_sup=mysqli_query($link, $sql_sup) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row_sup=mysqli_fetch_array($sql_result_sup))
-		{
-			$m3_reason_code=$sql_row_sup['m3_reason_code'];
-			$m3_operation_code=$sql_row_sup['m3_operation_code'];
-		}
-	
+
 	for($i=0;$i<sizeof($sizes_db);$i++)
 	{
-		//
-		// if($qty[$i]>0 and rejection_validation_m3($m3_operation_code,$schedule,$color,$sizes_db[$i],$qty[$i],0,$username)=='TRUE')
-		// {
+	
 			//Changed Query for capturing the docket number
 			$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,remarks,log_date,ref1,doc_no) values (\"".$style."\",\"".$schedule."\",\"".$color."\",\"".$sizes_db[$i]."\",".$qty[$i].",$temp,\"".$source."\",\"".date("Y-m-d")."\",\"$gtype\",\"$doc_no_id\")";
 			//echo $sql."<br>";
 			//die();
 			
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+			$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);			
 			
-				//M3 Bulk Operation Reporting
-				//Extract Operation Code and Reason Code
-				//ref1=form factor (G/P), ref2=Source, ref3=reason refe
-				
-				$sql_sup="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_reason) values(NOW(),'".$style."','".$schedule."','".$color."','".$sizes_db[$i]."','".substr($doc_no_id,1)."',".$qty[$i].",USER(),'$m3_operation_code',$iLastid,'".(is_numeric($_POST['source'])?$_POST['source']:'0')."','','".$m3_reason_code."')"; 
-			
-				//echo $sql_sup."<br/>";
-				//die();
-				mysqli_query($link, $sql_sup) or exit("Sql Error6$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-				//M3 Bulk Operation Reporting
-		// }
-		// else
-		// {
-		// 	$usr_msg.="<tr><td>".$schedule."</td><td>".$color."</td><td>".$sizes_db[$i]."</td><td>".$qty[$i]."</td></tr>";
-		// }
+		
 	}
 	$usr_msg.="</table></div></div>";
 	

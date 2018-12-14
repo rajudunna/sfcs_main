@@ -77,9 +77,7 @@ if(isset($_POST['cartonid']))
 {
 	$cartonid=$_POST['cartonid'];
 	
-	$sql="select * from $bai_pro3.packing_summary where tid='$cartonid'";
-	// echo $sql;
-	// mysqli_query($link,$sql) or exit("Sql Error8".mysqli_error());
+	$sql="select * from $bai_pro3.packing_summary where tid=$cartonid";
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error11".mysqli_error());
 	$count=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -93,7 +91,7 @@ if(isset($_POST['cartonid']))
 		$schedule=$sql_row['order_del_no'];
 	}
 	
-	$sql2="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\"";
+	$sql2="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\"";
 	$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error12".mysqli_error());
 	$color_count=mysqli_num_rows($sql_result2);
 		
@@ -103,7 +101,7 @@ if(isset($_POST['cartonid']))
 	}
 	else
 	{
-		$sql="update $bai_pro3.bai_orders_db_confirm set carton_print_status=NULL where order_del_no=$schedule";
+		$sql="update $bai_pro3.bai_orders_db_confirm set carton_print_status=NULL where order_del_no=\"$schedule\"";
 		mysqli_query($link,$sql) or exit("Sql Error7 $sql".mysqli_error());	
 	}
 	$check_control=0;
@@ -137,19 +135,6 @@ if(isset($_POST['cartonid']))
 	}
 	
 	$buyer_div=substr($style,0,1);
-	//echo $buyer_div;
-	
-	// echo '<hr><div class="col-md-6"><form name="input" method="post" action="'.getFullURL($_GET['r'],'partial_breakup_process.php','N').'">
-	// 	<input type="hidden" value="'.$cartonid.'" name="cartonid">
-	// 	<input type="hidden" value="'.$doc_no.'" name="doc_no">
-	// 	<input type="hidden" value="'.$doc_no_ref.'" name="doc_no_ref">
-	// 	<input type="hidden" value="'.$carton_act_qty.'" name="act_qty">
-	// 	<input type="hidden" value="'.$size_code.'" name="size_code">
-	// 	<label>Availabe Qty  : </label>&nbsp;&nbsp;<span class="label label-success">'.$carton_act_qty.'</span><br/>
-	// 	<div class="row"><div class="col-md-6"><label>Enter  Partial Qty :</label><input type="text" name="part" size=10 onkeyup="if(checkx(this.value,'.$total_packs.')==1010) {this.value=0;}" class="form-control" required/></div>
-	// <div class="col-md-3"><input type="submit" name="update" value="update" id="submit" class="btn btn-primary" style="margin-top:22px;"></div></div>
-		
-	// 	</form></div>';
 	
 	//ADDED GLAMOUR BUYER ON 2012-03-29
 	//REASON: BUYER NOT ASSIGNED HERE FOR GLAMOUR
@@ -172,8 +157,6 @@ if(isset($_POST['cartonid']))
 	{
 	
 		$sql="select group_concat(tid) as \"tid\", remarks, sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where doc_no_ref=\"$doc_no_ref\"";
-		//echo $sql;
-		mysqli_query($link,$sql) or exit("Sql Error9".mysqli_error());
 		$sql_result=mysqli_query($link,$sql) or exit("Sql Error10".mysqli_error());
 		$count=mysqli_num_rows($sql_result);
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -220,13 +203,7 @@ if(isset($_POST['update']))
 	$size_code_x=$_POST['size_code'];
 	$part=$_POST['part'];
 	
-	$sql1="SELECT sfcs_tid_ref FROM $m3_bulk_ops_rep_db.m3_sfcs_tran_log WHERE  m3_op_des='CPK' and sfcs_remarks='' and sfcs_tid_ref in (".$cartonid_x.")";
-	// echo $sql1;
-	$sql1_res=mysqli_query($link,$sql1) or exit("M3 Error5: Carton was already scanned!".mysqli_error());
-	$m3_val_chk=mysqli_num_rows($sql1_res);	
 	$sql="select group_concat(tid) as \"tid\", remarks, sum(carton_act_qty) as \"carton_act_qty\", status from $bai_pro3.pac_stat_log where tid=$cartonid_x";
-	// echo $sql;
-	// die();
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error10".mysqli_error());
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -298,11 +275,6 @@ if(isset($_POST['update1']))
 	{
 		$tid_ref_array[]=$sql_row1['tid'];
 	}
-	
-	$sql1="SELECT sfcs_tid_ref FROM $m3_bulk_ops_rep_db.m3_sfcs_tran_log WHERE m3_op_des='CPK' and sfcs_remarks='' and sfcs_tid_ref in (".implode(",",$tid_ref_array).")";
-	//echo $sql1;
-	$sql1_res=mysqli_query($link,$sql1) or exit("M3 Error7: Carton was already scanned!".mysqli_error());
-	$m3_val_chk=mysqli_num_rows($sql1_res);
 	
 	$sql="select group_concat(tid) as \"tid\", remarks, sum(carton_act_qty) as \"carton_act_qty\", status from $bai_pro3.pac_stat_log where doc_no_ref=\"$doc_no_ref\"";
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error10".mysqli_error());

@@ -27,13 +27,12 @@ if(isset($_POST['hold']))
 	{
 		if($color_new=='0')
 		{
-			$sql="insert into $bai_pro3.ship_stat_log set ship_style=\"$style_new\",ship_schedule=\"$schedule_new\",ship_status=\"1\",ship_remarks=\"$rmks\",ship_cartons=".abs($crts).",".implode(",",$query);
+			$sql="insert into $bai_pro3.ship_stat_log set ship_style=\"".$style_new."\",ship_schedule=\"".$schedule_new."\",ship_status=\"1\",ship_remarks=\"".$rmks."\",ship_cartons=".abs($crts).",".implode(",",$query);
 		}
 		else
 		{
-			$sql="insert into $bai_pro3.ship_stat_log set ship_style=\"$style_new\",ship_schedule=\"$schedule_new\",ship_color=\"$color_new\",ship_status=\"1\",ship_remarks=\"$rmks\",ship_cartons=".abs($crts).",".implode(",",$query);
-		}
-		//echo "<br/> query=".$sql;;
+			$sql="insert into $bai_pro3.ship_stat_log set ship_style=\"".$style_new."\",ship_schedule=\"".$schedule_new."\",ship_color=\"".$color_new"\",ship_status=\"1\",ship_remarks=\"".$rmks."\",ship_cartons=".abs($crts).",".implode(",",$query);
+	}
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	$url = getFullURL($_GET['r'],'test.php','N');

@@ -638,7 +638,7 @@
 																		<input type='hidden' name=color[] value='".$color1[$j]."'>";
 																		for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																		{
-																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color1[$j]."' AND size_title='".$size1[$size_count]."'";
+																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule='$schedule') AND order_col_des='".$color1[$j]."' AND size_title='".$size1[$size_count]."'";
 																			// echo $individual_sizes_query.'<br>';
 																			$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
 																			while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
@@ -709,7 +709,7 @@
 																		echo "<td>$color1[$j]</td>";
 																		for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																		{
-																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color1[$j]."' AND size_title='".$size1[$size_count]."'";
+																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule='$schedule') AND order_col_des='".$color1[$j]."' AND size_title='".$size1[$size_count]."'";
 																			// echo $individual_sizes_query.'<br>';
 																			$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
 																			while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
@@ -767,7 +767,7 @@
 												echo "<div class='panel-heading'>Details</div>
 												<div class='panel-body'>";
 											$col_array = array();
-											$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and order_joins not in (1,2)";
+											$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no='".$schedule."' AND order_style_no='".$style."' and order_joins not in (1,2)";
 											//echo $sizes_query;die();
 											$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
 											$row_count = mysqli_num_rows($sizes_result);
@@ -816,7 +816,7 @@
 																$plannedQty_query = "SELECT SUM(quantity*planned_plies) AS plannedQty FROM $brandix_bts.tbl_cut_size_master 
 																LEFT JOIN $brandix_bts.tbl_cut_master ON tbl_cut_size_master.parent_id=tbl_cut_master.id 
 																LEFT JOIN $brandix_bts.tbl_orders_sizes_master ON tbl_orders_sizes_master.parent_id=tbl_cut_master.ref_order_num
-																WHERE tbl_cut_master.ref_order_num='$schedule_id' AND tbl_orders_sizes_master.order_col_des='$col_array[$j]' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND tbl_cut_size_master.ref_size_name=tbl_orders_sizes_master.ref_size_name AND tbl_cut_size_master.color=tbl_orders_sizes_master.order_col_des";
+																WHERE tbl_cut_master.ref_order_num=$schedule_id AND tbl_orders_sizes_master.order_col_des='$col_array[$j]' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND tbl_cut_size_master.ref_size_name=tbl_orders_sizes_master.ref_size_name AND tbl_cut_size_master.color=tbl_orders_sizes_master.order_col_des";
 																//echo $plannedQty_query.'<br>';
 																$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
 																while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
@@ -831,7 +831,7 @@
 																	}
 																}
 																$orderQty_query = "SELECT SUM(order_act_quantity) AS orderedQty FROM $brandix_bts.tbl_orders_sizes_master 
-																WHERE parent_id='$schedule_id' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND order_col_des = '$col_array[$j]'";
+																WHERE parent_id=$schedule_id AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND order_col_des = '$col_array[$j]'";
 																//echo $orderQty_query.'<br>';
 																$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error2");
 																while($orderQty_details=mysqli_fetch_array($Order_qty_resut))
@@ -974,7 +974,7 @@
 																		<input type='hidden' name=color[] value='".$color1[$j]."'>";
 																		for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																		{
-																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color1[$j]."'  AND size_title='".$size1[$size_count]."'";
+																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule='$schedule') AND order_col_des='".$color1[$j]."'  AND size_title='".$size1[$size_count]."'";
 																				// echo $individual_sizes_query.'<br>';
 																			$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
 																			while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
@@ -1030,7 +1030,7 @@
 																		echo "<td>$color1[$j]</td>";
 																		for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																		{
-																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color1[$j]."' AND size_title='".$size1[$size_count]."'";
+																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule='$schedule') AND order_col_des='".$color1[$j]."' AND size_title='".$size1[$size_count]."'";
 																			// echo $individual_sizes_query.'<br>';
 																			$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
 																			while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
@@ -1071,7 +1071,7 @@
 												echo "<div class='panel-heading'>Details</div>
 												<div class='panel-body'>";
 											$col_array = array();
-											$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and order_joins not in (1,2)";
+											$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no='".$schedule."' AND order_style_no='".$style."' and order_joins not in (1,2)";
 											//echo $sizes_query;die();
 											$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
 											$row_count = mysqli_num_rows($sizes_result);
@@ -1119,7 +1119,7 @@
 																$plannedQty_query = "SELECT SUM(quantity*planned_plies) AS plannedQty FROM $brandix_bts.tbl_cut_size_master 
 																LEFT JOIN $brandix_bts.tbl_cut_master ON tbl_cut_size_master.parent_id=tbl_cut_master.id 
 																LEFT JOIN $brandix_bts.tbl_orders_sizes_master ON tbl_orders_sizes_master.parent_id=tbl_cut_master.ref_order_num
-																WHERE tbl_cut_master.ref_order_num='$schedule_id' AND tbl_orders_sizes_master.order_col_des='$col_array[$j]' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND tbl_cut_size_master.ref_size_name=tbl_orders_sizes_master.ref_size_name AND tbl_cut_size_master.color=tbl_orders_sizes_master.order_col_des";
+																WHERE tbl_cut_master.ref_order_num=$schedule_id AND tbl_orders_sizes_master.order_col_des='$col_array[$j]' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND tbl_cut_size_master.ref_size_name=tbl_orders_sizes_master.ref_size_name AND tbl_cut_size_master.color=tbl_orders_sizes_master.order_col_des";
 																//echo $plannedQty_query.'<br>';
 																$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
 																while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
@@ -1134,7 +1134,7 @@
 																	}
 																}
 																$orderQty_query = "SELECT SUM(order_act_quantity) AS orderedQty FROM $brandix_bts.tbl_orders_sizes_master 
-																WHERE parent_id='$schedule_id' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND order_col_des = '$col_array[$j]'";
+																WHERE parent_id=$schedule_id AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND order_col_des = '$col_array[$j]'";
 																//echo $orderQty_query.'<br>';
 																$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error2");
 																while($orderQty_details=mysqli_fetch_array($Order_qty_resut))
@@ -1302,7 +1302,7 @@
 					{
 						if ($GarPerCart[$i][$j]>0 && $GarPerBag[$i][$j]>0)
 						{
-							$get_ref_size_query = "SELECT ref_size_name FROM $brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM $brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color[$i]."' AND size_title='".$original_size[$j]."'";
+							$get_ref_size_query = "SELECT ref_size_name FROM $brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM $brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule='$schedule') AND order_col_des='".$color[$i]."' AND size_title='".$original_size[$j]."'";
 							$get_ref_size_result=mysqli_query($link, $get_ref_size_query) or exit("Error while ref_size_name details");
 							// echo $get_ref_size_query.'<br>';
 							while ($get_ref_size_deatils=mysqli_fetch_array($get_ref_size_result))
@@ -1414,7 +1414,7 @@
 					{
 						if ($GarPerCart[$i][$j]>0 && $GarPerBag[$i][$j]>0)
 						{
-							$get_ref_size_query = "SELECT ref_size_name FROM $brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM $brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color[$i]."' AND size_title='".$original_size[$j]."'";
+							$get_ref_size_query = "SELECT ref_size_name FROM $brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM $brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule='$schedule') AND order_col_des='".$color[$i]."' AND size_title='".$original_size[$j]."'";
 							$get_ref_size_result=mysqli_query($link, $get_ref_size_query) or exit("Error while saving child details");
 							// echo $get_ref_size_query.'<br>';
 							while ($get_ref_size_deatils=mysqli_fetch_array($get_ref_size_result))

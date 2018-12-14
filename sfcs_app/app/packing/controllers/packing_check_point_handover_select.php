@@ -28,12 +28,9 @@ if(isset($_GET['select']))
 	{
 		$team_id=$_GET['team_id'];
 		$emp_id=$_GET['emp_id'];
-		$sql_schedule="update tbl_fg_crt_handover_team_list set selected_user=USER(), lastup='".date("Y-m-d H:i:s")."' where team_id=$team_id and emp_id='$emp_id'";
-		// echo $sql_schedule;
+		$sql_schedule="update $bai_pro3.tbl_fg_crt_handover_team_list set selected_user=USER(), lastup='".date("Y-m-d H:i:s")."' where team_id=$team_id and emp_id='$emp_id'";
 		mysqli_query($link, $sql_schedule) or exit("Sql Error_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$url = getFullURL($_GET['r'],'packing_check_point_gateway.php','N');
-		//echo $url;
-		// header("Location: ".$url);
 		echo '<script>
 				window.location.href="'.$url.'";
 		</script>';
@@ -42,8 +39,6 @@ if(isset($_GET['select']))
 	else
 	{
 		$url = getFullURL($_GET['r'],'packing_check_point_gateway.php','N');
-		//echo $sql;
-		// header('Location:'.$sql);
 		echo '<script>
 				window.location.href="'.$url.'";
 		</script>';
@@ -55,15 +50,9 @@ if(isset($_GET['select']))
 
 
 <?php
-//if(strlen($current_session_user)>0 and $current_session_user!="stop")
-//{
-	//echo "<h2>This session is currently operating by $current_session_user, Please contact user to unlock his session.</h2>";
-	
-//}else
-{
 	echo "<div class='col-md-12 table-responsive' style='max-height:900px;overflow-y:scroll;'><table class='table table-bordered'>";
 	echo "<tr><th>EMP ID</th><th>Call Name</th><th>Control</th></tr>";
-	$sql_schedule="select * from tbl_fg_crt_handover_team_list where emp_status=0 order by 1*emp_id";
+	$sql_schedule="select * from $bai_pro3.tbl_fg_crt_handover_team_list where emp_status=0 order by 1*emp_id";
 	$sql_result_schedule=mysqli_query($link, $sql_schedule) or exit("Sql Error_schedule$sql_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row_schedule=mysqli_fetch_array($sql_result_schedule))
 	{
@@ -73,9 +62,7 @@ if(isset($_GET['select']))
 		</td></tr>";
 	}
 	echo "</table></div>";
-	
-	//echo "<h4><a href=\"packing_check_point_handover_select.php?select=0\">Skip</a>   </h4>";
-}
+
 ?>
 
 </div>

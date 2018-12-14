@@ -24,9 +24,7 @@
             echo '<h4><b>Schedule : <a class="btn btn-success">'.$schedule.'</a></b></h4>'; 
             echo '<a href="'.$url_s.'&schedule='.$schedule.'&style='.$style.'" class="btn btn-primary pull-right"><i class="fa fa-arrow-left" aria-hidden="true"></i> &nbsp;&nbsp;Click here to go Back</a>'; 
 			
-            $sql2="SELECT carton_qty FROM $bai_pro3.pac_stat WHERE schedule='$schedule' AND carton_no = '$carton_no' AND pac_seq_no = '$seq_no'";
-            // echo $sql2.'<br>';
-			// $sql2="SELECT carton_act_qty FROM $bai_pro3.pac_stat_log where schedule='$schedule' AND carton_no='$carton_no' AND style='$style' AND pack_method='$packmethod'"; 
+            $sql2="SELECT carton_qty FROM $bai_pro3.pac_stat WHERE schedule='$schedule' AND carton_no = $carton_no AND pac_seq_no = $seq_no";
             $result2=mysqli_query($link, $sql2) or exit("Sql Error1 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if($cartqty=mysqli_fetch_array($result2))
 			{
@@ -37,11 +35,9 @@
 			{				
 				echo '<h4><b>Carton No : <a class="btn btn-warning">'.$carton_no.'</a></b></h4>';
 				echo '<h4><b>Pack Method : <a class="btn btn-warning">'.$operation[$packmethod].'</a></b></h4><hr>';
-                // $sql="SELECT tid,style,schedule,color,size_tit,carton_no,carton_act_qty,pac_seq_no FROM bai_pro3.`pac_stat_log` WHERE schedule='$schedule' AND carton_no='$carton_no' AND style='$style' AND pack_method='$packmethod'";
 				$sql="SELECT psl.tid,ps.style,ps.schedule,psl.color,psl.size_tit,ps.carton_no,psl.carton_act_qty 
                         FROM $bai_pro3.`pac_stat_log` psl LEFT JOIN $bai_pro3.`pac_stat` ps ON ps.`id`=psl.`pac_stat_id`
-                        WHERE ps.schedule='$schedule' AND ps.pac_seq_no='$seq_no' AND ps.carton_no='$carton_no'";
-                // echo $sql;
+                        WHERE ps.schedule='$schedule' AND ps.pac_seq_no=$seq_no AND ps.carton_no=$carton_no";
 				$result=mysqli_query($link, $sql) or exit("Sql Error2 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				echo '<form action='.getFullURLLevel($_GET['r'],'split_success.php',0,'N').' method="post" onsubmit="return verify_qty()">'; 
@@ -57,9 +53,6 @@
                     $qty=$row['carton_act_qty']; 
 					$seqno=$row['pac_seq_no']; 
 					$tid=$row['tid'];
-                    // $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$job_no,$link);
-
-                    //echo '<form action='.getFullURLLevel($_GET['r'],'split_success.php',0,'N').' method="post">'; 
                     echo "<input type='hidden' name='tid[]' value='$tid'>";
 					echo "<input type='hidden' name='style' value='$style'>";
 					echo "<input type='hidden' name='schedule' value='$schedule'>";

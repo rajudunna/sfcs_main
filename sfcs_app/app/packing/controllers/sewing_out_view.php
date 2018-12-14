@@ -19,21 +19,6 @@
 					</div>
 				</form>
 			</div>
-			<!-- <div class="col-md-6">
-				<h2><b>For Other Schedules</b></h2>
-				<form name="test" action="<?php echo '?r='.$_GET['r']; ?>" method="post">
-					<div class="row">
-						<div class="col-sm-6">
-							<label>Enter Schedule : </label>
-							<input type='text' id='schedule' name='schedule' width=30 class="form-control" >
-						</div>
-						<div class="col-sm-3">
-							<input type="submit" value="View" name="submit2" id='sub' class="btn btn-info" style='margin-top:22px;'
-						     onclick="return check_sch();">
-						</div>
-					</div>
-				</form>
-			</div> -->
 		</div>
 	</div>
 </div>
@@ -42,10 +27,8 @@
 if(isset($_POST['submit']))
 {
 	echo "<hr>";
-	$schedule=$_POST['schedule'];
-	
+	$schedule=$_POST['schedule'];	
 	$quer="SELECT * FROM $bai_pro3.pac_stat_log WHERE schedule='$schedule'";
-	// echo $quer;
 	$quer_result=mysqli_query($link, $quer) or exit("Sql Error98 $quer".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$rowq=mysqli_fetch_array($quer_result);
 	
@@ -65,16 +48,12 @@ if(isset($_POST['submit2']))
 {
 	echo "<hr>";
 	$schedule=$_POST['schedule'];
-	//echo $schedule;
-
 	$quer="SELECT * FROM $bai_pro3.pac_stat_log WHERE schedule='$schedule'";
-	//echo $quer;
 	$quer_result=mysqli_query($link, $quer) or exit("Sql Error98 $quer".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$rowq=mysqli_fetch_array($quer_result);
 
 	if($rowq){
 		$url = getFullURL($_GET['r'],'sawing_out_list_1.php','N');
-		//echo $url;
 		echo '<script type="text/javascript">
 				window.location = "'.$url.'&schedule='.$schedule.'"
 		  	  </script>'; 

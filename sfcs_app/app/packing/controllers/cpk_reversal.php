@@ -22,7 +22,6 @@ if($session_login_fg_carton_scan==1)
 
 ?>
 
-<?php //echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') ); ?>
 	<script>
 	function checkx(x,y)
@@ -67,8 +66,6 @@ if($session_login_fg_carton_scan==1)
 	}
 </script>
 <body>
-<?php //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'menu_content.php','R') );  ?>
-
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R')); ?>
 
 <div class="panel panel-primary">
@@ -91,7 +88,6 @@ if(isset($_POST['cartonid']))
 	$cartonid=$_POST['cartonid'];
 	echo "<hr>";
 	$sql="select * from $bai_pro3.packing_summary where tid=$cartonid";
-	// echo $sql;
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error11".mysqli_error());
 	$count=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -105,18 +101,15 @@ if(isset($_POST['cartonid']))
 		$schedule=$sql_row['order_del_no'];
 	}
 	
-	// echo $schedule;
 	if(strlen($schedule)==0)
 	{
-		// echo '<div class="alert alert-danger" role="alert">No data available to process this label.</div>';
 		echo "<script>sweetAlert('No data available to process this label','','warning')</script>";
 
 		exit();
-		//echo "<table class='table table-bordered'><tr class='danger'><td align='center'>No data available to process this label.</td></tr></table>";
 	}
 	else
 	{
-		$sql="update $bai_pro3.bai_orders_db_confirm set carton_print_status=NULL where order_del_no=$schedule";
+		$sql="update $bai_pro3.bai_orders_db_confirm set carton_print_status=NULL where order_del_no=\"$schedule\"";
 		mysqli_query($link,$sql) or exit("Sql Error7 $sql".mysqli_error());	
 	}
 	
@@ -124,7 +117,6 @@ if(isset($_POST['cartonid']))
 	$check_control=0;
 	if($count==0)
 	{
-		// echo '<div class="alert alert-warning" role="alert">Carton label doesnt exist with this ID, Please destroy the lable</div>';
 		echo "<script>sweetAlert('Carton label doesnt exist with this ID ','Please destroy the label','warning')</script>";
 
 
@@ -148,7 +140,6 @@ if(isset($_POST['cartonid']))
 	
 	if($status!="DONE" or $check_control==1)
 	{
-		// echo '<div class="alert alert-danger" role="alert">Carton is not eligible for reversal.</div>';
 		echo "<script>sweetAlert('Carton is not eligible for reversal','','warning')</script>";
 
 		$check_control=1;
@@ -210,124 +201,6 @@ if(isset($_POST['cartonid']))
 
 }
 
-?>
-
-<?php
-/*
-if(isset($_POST['update']))
-{
-	$cartonid_x=$_POST['cartonid'];
-	$doc_no_x=$_POST['doc_no'];
-	$act_qty_x=$_POST['act_qty'];
-	$size_code_x=$_POST['size_code'];
-	$part=$_POST['part'];
-	
-	if($part>0 and $part<$act_qty_x)
-	{
-		$sql="insert into pac_stat_log (doc_no,size_code,carton_no,carton_mode,carton_act_qty) values (\"$doc_no_x\",\"$size_code_x\",1,\"P\",$part)";
-		mysqli_query($link,$sql) or exit("Sql Error1".mysqli_error());
-		$ilastid=mysqli_insert_id($link);
-		$sql="update pac_stat_log set doc_no_ref=\"$doc_no_x-$ilastid\", disp_id=NULL, disp_carton_no=NULL, status=NULL where tid=$ilastid";
-		mysqli_query($link,$sql) or exit("Sql Error2".mysqli_error());
-		
-		$sql="insert into pac_stat_log (doc_no,size_code,carton_no,carton_mode,carton_act_qty) values (\"$doc_no_x\",\"$size_code_x\",2,\"P\",".($act_qty_x-$part).")";
-		mysqli_query($link,$sql) or exit("Sql Error3".mysqli_error());
-		$ilastid=mysqli_insert_id($link);
-		$sql="update pac_stat_log set doc_no_ref=\"$doc_no_x-$ilastid\", disp_id=NULL, disp_carton_no=NULL, status=NULL where tid=$ilastid";
-		mysqli_query($link,$sql) or exit("Sql Error4".mysqli_error());
-		
-		$sql="insert into pac_stat_log_deleted select * from pac_stat_log where tid=$cartonid_x";
-		mysqli_query($link,$sql) or exit("Sql Error5".mysqli_error());
-		$sql="delete from pac_stat_log where tid=$cartonid_x";
-		mysqli_query($link,$sql) or exit("Sql Error6".mysqli_error());
-		echo '<h2><font color="green">Successfully Completed</h2>';
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",30); function Redirect() {  location.href = \"partial_breakup.php\"; }</script>";
-	}
-	else
-	{
-		echo "<h2>Enter Correct Qty</h2>";
-	}
-	
-
-}
-
-*/
-?>
-
-<?php
-/*
-if(isset($_POST['update1']))
-{
-	$cartonid_x=$_POST['cartonid'];
-	$doc_no_x=$_POST['doc_no'];
-	$act_qty_x=$_POST['act_qty'];
-	$size_code_x=$_POST['size_code'];
-	$part=$_POST['part'];
-	$tid_x=$_POST['tid'];
-	$remarks_x=$_POST['remarks'];
-	
-	if($part>0 and $part<$act_qty_x)
-	{
-		$temp=array();
-		$temp=explode("*",$remarks_x);
-		$assortment=array();
-		$assortment=explode("$",$temp[0]);
-		$assort_color=array();
-		$assort_color=explode("$",$temp[1]);
-		
-		$pcs_deduct=array();
-		for($i=0;$i<sizeof($assortment);$i++)
-		{
-			$pcs_deduct[]=$assortment[$i]*($act_qty_x-$part);
-		}
-		
-		$new_tids=array();
-		$new_tids_ref=array();
-		$new_tids_p1=array();
-		$new_tids_p1_ref=array();
-		for($i=0;$i<sizeof($pcs_deduct);$i++)
-		{
-			$sql="select * from packing_summary where tid in ($tid_x) and order_col_des=\"$assort_color[$i]\" and carton_act_qty>=".$pcs_deduct[$i]." limit 1";
-			mysqli_query($link,$sql) or exit("Sql Error12".mysqli_error());
-			$sql_result=mysqli_query($link,$sql) or exit("Sql Error13".mysqli_error());
-			while($sql_row=mysqli_fetch_array($sql_result))
-			{
-				$tid_new=$sql_row['tid'];
-				$doc_no_new=$sql_row['doc_no'];
-				$existing_cart_qty=$sql_row['carton_act_qty'];
-				
-				$sql="insert into pac_stat_log (doc_no,size_code,carton_no,carton_mode,carton_act_qty) values (\"$doc_no_new\",\"$size_code_x\",1,\"P\",$pcs_deduct[$i])";
-				mysqli_query($link,$sql) or exit("Sql Error14".mysqli_error());
-				$new_tids[]=mysqli_insert_id($link);
-				$new_tids_ref[]=$doc_no_new."-".mysqli_insert_id($link);
-				
-				$sql="insert into pac_stat_log (doc_no,size_code,carton_no,carton_mode,carton_act_qty) values (\"$doc_no_new\",\"$size_code_x\",2,\"P\",".($existing_cart_qty-$pcs_deduct[$i]).")";
-				mysqli_query($link,$sql) or exit("Sql Error15".mysqli_error());
-				$new_tids_p1[]=mysqli_insert_id($link);
-				$new_tids_p1_ref[]=$doc_no_new."-".mysqli_insert_id($link);
-			}
-		}
-		
-		$sql="update pac_stat_log set doc_no_ref=\"".implode(",",$new_tids_ref)."\", remarks=\"$remarks_x\", disp_id=NULL, disp_carton_no=NULL, status=NULL where tid in (".implode(",",$new_tids).")";
-		mysqli_query($link,$sql) or exit("Sql Error16".mysqli_error());
-		
-		$sql="update pac_stat_log set doc_no_ref=\"".implode(",",$new_tids_p1_ref)."\", remarks=\"$remarks_x\", disp_id=NULL, disp_carton_no=NULL, status=NULL where tid in (".implode(",",$new_tids_p1).")";
-		mysqli_query($link,$sql) or exit("Sql Error17".mysqli_error());
-		
-		$sql="insert into pac_stat_log_deleted select * from pac_stat_log where tid in ($tid_x)";
-		mysqli_query($link,$sql) or exit("Sql Error18".mysqli_error());
-		$sql="delete from pac_stat_log where tid in ($tid_x)";
-		mysqli_query($link,$sql) or exit("Sql Error19".mysqli_error());
-		
-		echo '<h2><font color="green">Successfully Completed</h2>';
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",30); function Redirect() {  location.href = \"partial_breakup.php\"; }</script>";
-	}
-	else
-	{
-		echo "<h2>Enter Correct Qty</h2>";
-	}
-}
-*/	
 ?>
 </div>
 </div>

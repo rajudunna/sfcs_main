@@ -2,8 +2,6 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));	?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));	?>
-<?php // include('..'.getFullURLLevel($_GET['r'],'menu_content.php',1,'R')); This file is not used here?>
-<?php // include('..'.getFullURLLevel($_GET['r'],'functions.php',1,'R')); This file is not used here?>
 
 <script language="javascript" type="text/javascript" src='sfcs_app/common/js/TableFilter_EN/tablefilter.js'></script>
 
@@ -40,7 +38,6 @@
 				 <th>Style</th><th>Schedule</th><th>Pack Quantity</th><th>Pack Method</th><th>Size</th><th>Quantity</th>
 				 <th>Status</th><th>Track Label Qty</th><th>SRP Qty</th><th>Control</th></tr>";
 
-		//$sql="select * from carton_qty_chart";
 		if(strtolower($username)=="amulyap" OR strtolower($username)=="kirang")
 		{
 			$sql="select * from $bai_pro3.carton_qty_chart where status=0";
@@ -49,7 +46,6 @@
 		{
 			$sql="select * from $bai_pro3.carton_qty_chart";
 		}
-		//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
 		 
@@ -74,7 +70,6 @@
 					echo "<td>".$sql_row['user_style']."</td>";
 					$schedule = $sql_row['user_schedule'];
 					echo "<td>".$schedule."</td>";
-					// echo "<td>".$sql_row['buyer']."</td>";
 					echo "<td>".$sql_row['packing_method']."</td>";	
 					echo "<td>".ucwords($sql_row['pack_methods'])."</td>";	
 					$get_color = "SELECT title_size_".$key1." FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='".$sql_row['user_schedule']."' LIMIT 1";			
@@ -94,7 +89,6 @@
 					echo "</tr>";
 				}
 			}
-			//echo "<td>".$sql_row['xs']."</td><td>".$sql_row['s']."</td><td>".$sql_row['m']."</td><td>".$sql_row['l']."</td><td>".$sql_row['xl']."</td><td>".$sql_row['xxl']."</td><td>".$sql_row['xxxl']."</td>";
 		}
 		echo "</table></div>";
 		?>

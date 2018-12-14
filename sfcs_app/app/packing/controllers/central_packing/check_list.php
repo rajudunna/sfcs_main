@@ -941,7 +941,7 @@ tags will be replaced.-->
 	<?php
 		$carton_nodes=array();
 		$x=1;
-		$sql="select carton_no,MIN(STATUS) as status,min(pac_stat_id) as \"tid\",sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where order_del_no='$schedule' and seq_no = '".$seq_no[$i]."' group by carton_no order by carton_no*1";
+		$sql="select carton_no,MIN(STATUS) as status,min(pac_stat_id) as \"tid\",sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where order_del_no='$schedule' and seq_no = $seq_no[$i] group by carton_no order by carton_no*1";
 		$sql_result4=mysqli_query($link, $sql) or exit("Sql Error b44--".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row4=mysqli_fetch_array($sql_result4))
 		{
