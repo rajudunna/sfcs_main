@@ -218,6 +218,7 @@ if($target == 'normal'){
     mysqli_close($link);
 
     $m3_status  = update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color);
+   
     if($rejections_flag == 1){
         $rej_status = save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shift);
         $response_data['rejections_response'] = $rej_status;
@@ -555,8 +556,10 @@ if($target == 'style_clubbed'){
 }
 
 //for style or schdule club dockets a random color is picked 
-function get_me_emb_check_flag($style,$color,$op_code,$link,$brandix_bts){
+function get_me_emb_check_flag($style,$color,$op_code){
     //getting post operation code
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    $category=['cutting','Send PF','Receive PF'];
     $ops_seq_query = "SELECT id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master 
                     where style='$style' and color = '$color' and operation_code='$op_code'";
     $ops_seq_result = mysqli_query($link,$ops_seq_query) or exit('Query Error 1');
@@ -607,7 +610,8 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color){
     $category=['cutting','Send PF','Receive PF'];
     $op_code = 15;
 
-    $emb_cut_check_flag = get_me_emb_check_flag($style,$color,$op_code,$link,$brandix_bts);
+    $emb_cut_check_flag = get_me_emb_check_flag($style,$color,$op_code);
+
 
     //Updaitng to cps,bcd,moq,m3_transactions
     $doc_details_query = "SELECT * from $bai_pro3.plandoc_stat_log where doc_no = '$doc_no' ";
@@ -619,7 +623,7 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color){
             $reported_status = 'F';
         else    
             $reported_status = 'P' ;
-        
+    
         //Updating CPS log
         foreach($sizes_array as $size)
         {
@@ -642,16 +646,17 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color){
 
             if($emb_cut_check_flag > 0)
             {
-                $update_bcd_query2 = "UPDATE $brandix_bts.bundle_creation_data set send_qty = send_qty+$qty,
-                                    reported_status = '$reported_status' 
+                $update_bcd_query2 = "UPDATE $brandix_bts.bundle_creation_data set send_qty = send_qty+$qty
                                     WHERE docket_number = $doc_no AND size_id = '$size' 
                                     AND operation_id = $emb_cut_check_flag ";
                 $update_bcd_result2 = mysqli_query($link,$update_bcd_query2) or exit('Query Error 7');
+
             }   
 
             if($update_cps_result && $update_bcd_result)
                 $counter++;
         }
+
         if($counter == sizeof($cut_qty) && $counter > 0)
             mysqli_commit($link);
         else{    
