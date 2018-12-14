@@ -21,8 +21,22 @@ $url=getFullURL($_GET['r'],'surplus_table.php','N');
 
 $delete="delete from $bai_pro3.bai_qms_location_db where q_id='$q_id'";
 $sql_result=mysqli_query($link, $delete) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-echo "<script>window.location = '".$url."'</script>";
+if (mysqli_query($conn, $delete)) {
+  echo"<script>setTimeout(function () { 
+      swal({
+          title: 'Deleted successfully.',
+          type: 'success',
+          confirmButtonText: 'OK'
+      },
+      function(isConfirm){
+          if (isConfirm) {
+          window.location.href = \"$url\";
+          }
+      }); }, 100);</script>";
+  echo "<script>window.location.href = \"$url\"</script>";
+      } else {
+          echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+      }
 
 //header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2Rvd250aW1lcmVhc29uL2Rvd25fdGltZV9yZWFzb25fYWRkLnBocA==');
 ?>

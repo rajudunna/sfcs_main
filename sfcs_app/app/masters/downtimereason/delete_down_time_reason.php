@@ -33,6 +33,17 @@ $url=getFullURL($_GET['r'],'down_time_reason_add.php','N');
 $delete="delete from $bai_pro2.`downtime_reason` where id='$dr_id'";
 // echo $delete;
 if (mysqli_query($conn, $delete)) {
+	echo"<script>setTimeout(function () { 
+		swal({
+			title: 'Deleted successfully.',
+			type: 'success',
+			confirmButtonText: 'OK'
+		},
+		function(isConfirm){
+			if (isConfirm) {
+			window.location.href = \"$url\";
+			}
+		}); }, 100);</script>";
 	echo "<script>window.location.href = \"$url\"</script>";
 			
 		} else {

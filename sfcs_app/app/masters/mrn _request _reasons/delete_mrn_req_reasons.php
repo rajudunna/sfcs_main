@@ -14,8 +14,23 @@ if (!$conn) {
 $url=getFullURL($_GET['r'],'save_mrn_req_reasons.php','N');
   
 $delete="delete from bai_rm_pj2.mrn_reason_db where reason_tid='$rid'";
-$sql_result=mysqli_query($link, $delete) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-    echo "<script>window.location = '".$url."'</script>";
+if (mysqli_query($conn, $delete)) {
+	echo"<script>setTimeout(function () { 
+		swal({
+			title: 'Deleted successfully.',
+			type: 'success',
+			confirmButtonText: 'OK'
+		},
+		function(isConfirm){
+			if (isConfirm) {
+			window.location.href = \"$url\";
+			}
+		}); }, 100);</script>";
+	echo "<script>window.location.href = \"$url\"</script>";
+
+		} else {
+			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+		}
 
 //header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2Rvd250aW1lcmVhc29uL2Rvd25fdGltZV9yZWFzb25fYWRkLnBocA==');
 ?>
