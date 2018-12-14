@@ -135,15 +135,31 @@ $(document).ready(function() {
 
 <div class='panel panel-primary'><div class='panel-heading'>Order Status Report</div><div class='panel-body'>
 <form method="POST" name="test" action="?r=<?php echo $_GET['r'];?>">
+
 <?php
+if(isset($_POST['submit1']))
+{
+	$style=$_POST['style'];
+	$schedule=$_POST['schedule'];
+	$color=$_POST['color'];
+	$cpo=$_POST['cpo'];
+	$buyer_div=$_POST['buyer_div'];
+	$style_id=$_POST['style_id'];
+	$date_filter=$_POST['date_filter'];
+	$from_date=$_POST['from_date'];
+	$to_date=$_POST['to_date'];
+	
+}else{
 	$style=$_GET['style'];
 	$schedule=$_GET['schedule'];
 	$color=$_GET['color'];
 	$cpo=$_GET['cpo'];
 	$buyer_div=$_GET['buyer_div'];
+	$buyer_div1=$_POST['buyer_div'];
 	$style_id=$_GET['style_id'];
 	$from_date=$_GET['from_date'];
 	$to_date=$_GET['to_date'];
+}
 ?>
 <form name="test" action="<?php echo getFullURLLevel($_GET['r'],'Tabular_rep_new5.php','0','N'); ?>" method="post">
 <?php
@@ -152,15 +168,15 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 $sql_num_check=mysqli_num_rows($sql_result);
 echo "<div class=\"row\"><div class=\"col-sm-2\"><label>Select CPO:</label><select class='form-control' name=\"cpo\"  id=\"cpo\" onchange=\"firstbox();\">";
 echo "<option value='' disabled selected>Please Select</option>";
-if(($_GET["cpo"])=="all") {
+if($cpo=="all") {
 	echo "<option value='all' selected>All</option>";
 }else{
 echo "<option value='all'>All</option>";
 }
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$cpo1=$sql_row['CPO'];
-	if(($_GET["cpo"])=="$cpo1") 
+	
+	if(str_replace(" ","",$sql_row['CPO'])==str_replace(" ","",$cpo))
     {
 		echo "<option value=\"".$sql_row['CPO']."\" selected>".$sql_row['CPO']."</option>";	
 	}
@@ -181,10 +197,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<option value='' disabled selected>Please Select</option>";
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
-		$buyer_div1=$sql_row1['buyer_div'];
-		if(($_GET["buyer_div"])=="$buyer_div1") {
+		
+		if(str_replace(" ","",$sql_row1['buyer_div'])==str_replace(" ","",$buyer_div))
+		 {
 			echo "<option value=\"".$sql_row1['buyer_div']."\" selected>".$sql_row1['buyer_div']."</option>";
-		}else{
+		}
+	
+		elseif(str_replace(" ","",$sql_row1['buyer_div'])==str_replace(" ","",$buyer_div1)){
+			echo "<option value=\"".$sql_row1['buyer_div']."\" selected>".$sql_row1['buyer_div']."</option>";
+		}
+		else{
 			echo "<option value=\"".$sql_row1['buyer_div']."\">".$sql_row1['buyer_div']."</option>";
 		}
 	}
@@ -241,7 +263,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	while($sql_row4=mysqli_fetch_array($sql_result4))
 	{
 		$schedule1=$sql_row4['schedule'];
-		if(($_GET["schedule"])=="$schedule1"){
+		//if(($_GET["schedule"])=="$schedule1")
+		if(str_replace(" ","",$sql_row4['schedule'])==str_replace(" ","",$schedule))
+		{
 			echo "<option value=\"".$sql_row4['schedule']."\" selected>".$sql_row4['schedule']."</option>";
 
 		}
@@ -262,7 +286,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	while($sql_row5=mysqli_fetch_array($sql_result5))
 	{
 		$color1=$sql_row5['color'];
-		if(($_GET["color"])=="$color1"){
+		//if(($_GET["color"])=="$color1")
+		if(str_replace(" ","",$sql_row5['color'])==str_replace(" ","",$color))
+		{
 			echo "<option value=\"".$sql_row5['color']."\" selected>".$sql_row5['color']."</option>";
 	
 		}else{
@@ -297,15 +323,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 if(isset($_POST['submit1']))
 {
-	$style=$_POST['style'];
-	$schedule=$_POST['schedule'];
-	$color=$_POST['color'];
-	$cpo=$_POST['cpo'];
-	$buyer_div=$_POST['buyer_div'];
-	$style_id=$_POST['style_id'];
-	$date_filter=$_POST['date_filter'];
-	$from_date=$_POST['from_date'];
-	$to_date=$_POST['to_date'];
+	
 
 	$order_status_buffer="temp_pool_db.".$username.date("YmdHis")."_"."order_status_buffer";
 	
@@ -327,27 +345,43 @@ if(isset($_POST['submit1']))
 	
 	$sql="delete from  $bai_pro2.ssc_code_filter";
 	mysqli_query($link, $sql) or exit("Sql Error5z".mysqli_error($GLOBALS["___mysqli_ston"]));
-
 	$style=$_POST['style'];
 	$schedule=$_POST['schedule'];
 	$color=$_POST['color'];
 	$cpo=$_POST['cpo'];
 	$buyer_div=$_POST['buyer_div'];
 	$style_id=$_POST['style_id'];
+	$date_filter=$_POST['date_filter'];
 	$from_date=$_POST['from_date'];
 	$to_date=$_POST['to_date'];
-	if($cpo='all'){
-		$sql11="select * from  $bai_pro2.order_status_buffer";
+	if($cpo=='all'){
+		$sql11="select * from  $bai_pro2.order_status_buffer where exf_date between \"$from_date\" and \"$to_date\"";
 		$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	else{
-	$sql11="select * from  $bai_pro2.order_status_buffer where cpo='$cpo' and buyer_div='$buyer_div' and style='$style' and style_id='$style_id' and schedule='$schedule' and color='$color' and exf_date between \"$from_date\" and \"$to_date\"";
+		$sql11="select * from  $bai_pro2.order_status_buffer where exf_date between \"$from_date\" and \"$to_date\"";
+		if($cpo!=''){
+			$sql11.="and cpo='$cpo'";
+		}
+		if($buyer_div!=''){
+			$sql11.="and buyer_div='$buyer_div'";
+		}
+		if($style!=''){
+			$sql11.="and style='$style'";
+		}
+		if($style_id!=''){
+			$sql11.="and style_id='$style_id'";
+		}
+		if($schedule!=''){
+			$sql11.="and schedule='$schedule'";
+		}
+		if($color!=''){
+			$sql11.="and color='$color'";
+		}
+	}
 	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
-	}
 	$sql_result11_count=mysqli_num_rows($sql_result11);
-	if($sql_result11_count == 0){
-		echo "<div class=' col-sm-12'><p class='alert alert-danger'>No Data Found</p></div><script>$('#main_content').hide();</script>";
-	}
+
 	echo '<form action="'."../".getFullURL($_GET['r'],"export_excel1.php",'R').'" method ="post" > 
 	<input type="hidden" name="csv_123" id="csv_123">
 	<input class="pull-right btn btn-info" type="submit" id="excel" value="Export to Excel" onclick="getCSVData()">
@@ -378,6 +412,7 @@ if(isset($_POST['submit1']))
 	echo "<th>Ship Qty</th>";
 	echo "<th>%</th>";
 	echo "</tr></thead><tbody>";
+	$count=0;
 	while($sql_row11=mysqli_fetch_array($sql_result11))
 	{
 	
@@ -404,6 +439,7 @@ if(isset($_POST['submit1']))
 		$style_id="";
         $sql1="select act_cut,act_in,output,act_fg,act_ship from $bai_pro3.bai_orders_db_confirm where order_tid=\"$ssc_code\"";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$cut_qty=$sql_row1['act_cut'];
@@ -411,35 +447,6 @@ if(isset($_POST['submit1']))
 			$sewing_out=$sql_row1['output'];
 			$pack_qty=$sql_row1['act_fg'];
 			$ship_qty=$sql_row1['act_ship'];
-			if($cut_qty==0)
-			{
-				$cut_qty=$sql_row['cut_qty'];
-			}
-			if($sewing_in==0)
-			{
-				$sewing_in=$sql_row['sewing_in'];
-			}
-			if($sewing_out==0)
-			{
-				$sewing_out=$sql_row['sewing_out'];
-			}
-			if($pack_qty==0)
-			{
-				$pack_qty=$sql_row['pack_qty'];
-			}
-			if($ship_qty==0)
-			{
-				$ship_qty=$sql_row['ship_qty'];
-			}
-			//To Extract Old Data
-		
-			
-			
-			$style_no=$sql_row['style'];
-			$schedule_no=$sql_row['sch_no'];
-			$color=$sql_row['color'];
-			
-
 			$sql1="select Cust_order,CPO,buyer_div,style,schedule,color,exf_date,order_qty,style_id from $bai_pro2.order_status_buffer  where ssc_code=\"$ssc_code\"";
 			// echo $sql1;
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -463,11 +470,7 @@ if(isset($_POST['submit1']))
 			
 			
 			}
-			
-			
-			
 			echo "<tr>";
-			
 			echo "<td>$cust_order</td>";
 			echo "<td>$mpo</td>";
 			echo "<td>$cpo</td>";
@@ -533,16 +536,16 @@ if(isset($_POST['submit1']))
 			}
 
 			echo "</tr>";
+			$count++;	
 		}
-    
-
-
 	}
-	
 	echo "</tbody></table></div>"; 
 	if($sql_result1_count==0){
 		echo"<style>#table1{display:none;}</style>";
 		echo"<style>#excel{display:none;}</style>";
+	}
+	if($count==0 or $sql_result11_count == 0){
+		echo "<div class=' col-sm-12'><p class='alert alert-danger'>No Data Found</p></div><script>$('#main_content').hide();</script>";
 	}
 	
 }
