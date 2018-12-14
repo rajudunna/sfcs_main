@@ -193,7 +193,7 @@ if(isset($_POST['formIssue']))
         }
     }
     $url = '?r='.$_GET['r'];
-    echo "<script>sweetAlert('Successfully Approved','','success');window.location = '".$url."'</script>";
+    echo "<script>sweetAlert('Successfully Issued','','success');window.location = '".$url."'</script>";
 }
 function issued_to_module($bcd_id,$qty,$ref)
 {
@@ -321,6 +321,9 @@ echo $drp_down;
                 <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" id='main-content'>
+                <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
+                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
+                </div>
             </div>
         </div>
     </div>
@@ -334,7 +337,10 @@ echo $drp_down;
             <div class="modal-body">
                 <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform" onsubmit='return validationfunction();'>
                     <div id='pre'>
-                        <div class='panel-body' id="dynamic_table_panel">	
+                        <div class='panel-body' id="dynamic_table_panel">
+                            <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
+                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
+                            </div>	
                                 <div id ="dynamic_table1"></div>
                         </div>
                         <p style='color:red;'>Note:The excess quantity will create as excess sewing job for respective style,schedule and color.</p>
@@ -359,7 +365,10 @@ echo $drp_down;
             <div class="modal-body">
                 <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform" onsubmit='return validationfunctionissue();'>
                     <div id='pre_pre'>
-                        <div class='panel-body' id="dynamic_table_panel">	
+                        <div class='panel-body' id="dynamic_table_panel">
+                            <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
+                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
+                            </div>	
                                 <div id ="dynamic_table2"></div>
                         </div>
                         <div class="pull-right"><input type="submit" class="btn btn-primary" value="Submit" name="formIssue"></div>
@@ -455,6 +464,8 @@ $(document).ready(function()
 function viewrecutdetails(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
+    $('.loading-image').show();
+    $('#myModal').modal('toggle');
     $.ajax({
 
 			type: "POST",
@@ -463,7 +474,7 @@ function viewrecutdetails(id)
 			success: function (response) 
 			{
                 document.getElementById('main-content').innerHTML = response;
-                $('#myModal').modal('toggle');
+                $('.loading-image').hide();
             }
 
     });
@@ -473,6 +484,7 @@ function editmarkers(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
     $('#myModal1').modal('toggle');
+    $('.loading-image').show();
     document.getElementById('dynamic_table1').innerHTML = '';
     document.getElementById('dynamic_table2').innerHTML = '';
     $.ajax({
@@ -483,6 +495,7 @@ function editmarkers(id)
 			success: function (response) 
 			{
                 document.getElementById('dynamic_table1').innerHTML = response;
+                $('.loading-image').hide();
             }
 
     });
@@ -494,6 +507,7 @@ function issuemodule(id)
     $('#myModal2').modal('toggle');
     $('#pre_pre').show();
     $('#post_post').hide();
+    $('.loading-image').show();
     document.getElementById('dynamic_table1').innerHTML = '';
     document.getElementById('dynamic_table2').innerHTML = '';
     $.ajax({
@@ -504,6 +518,7 @@ function issuemodule(id)
 			success: function (response) 
 			{
                 document.getElementById('dynamic_table2').innerHTML = response;
+                $('.loading-image').hide();
 
             }
 
@@ -619,17 +634,17 @@ function validationfunction()
             flag = 1;
         }
     }
-    // if(flag == 0)
-    // {
+    if(flag == 0)
+    {
         $('#markers').hide();
         $('#pre').hide();
         $('#post').show();
         return true;
-   // }
-    // else
-    // {
-    //     return false;
-    // }
+   }
+    else
+    {
+        return false;
+    }
 }
 function setfunction()
 {

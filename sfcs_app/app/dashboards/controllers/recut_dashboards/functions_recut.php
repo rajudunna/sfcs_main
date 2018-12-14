@@ -173,12 +173,13 @@ function RecutProcess($recut_id_edit)
             $table_data .= "<input type='hidden' name='bcd_ids[]' value='$bcd_id'>";
         }
         //$table_data .= "<input type='hidden' id='total_rows' value='$s_no'>";
-        $table_data .= "<td style='display:none' id='total_rows_recut'>$s_no</td>";
+       // $table_data .= "<td style='display:none' id='total_rows'>$s_no</td>";
         $table_data .= "</tr></tbody></table>";
         $html .= $table_data;
         $html .= '</div></div></div>';
         
     }
+    $html .= "<input type='hidden' id='total_rows' value='$s_no'>";
     echo $html;
 
 }
@@ -347,7 +348,6 @@ function ReplaceProcess($replace_id_edit)
                 $table_data .= "<input type='hidden' name='operation_id[]' value='$operation_id'>";
                 $table_data .= "<input type='hidden' name='bcd_ids[]' value='$bcd_id'>";
             }
-            $table_data .= "<td style='display:none;' id='total_rows_replace'>$s_no</td>";
             $table_data .= "</tr></tbody></table>";
             $html .= $table_data;
             $html .= '</div></div></div>';
@@ -359,6 +359,7 @@ function ReplaceProcess($replace_id_edit)
     {
         $html = "<h2 style='color:red'>There is no excess sewing jobs for the particular style,schedule and color</h2>";
     }
+        $html .= "<input type='hidden' id='total_rows' value='$s_no'>";
         echo $html;
 }
 if(isset($_GET['recut_doc_id']))
@@ -707,12 +708,13 @@ function IssuedtoModuleProcess($issued_to_module_process)
             $table_data .= "<input type='hidden' name='bcd_id[]' value='$bcd_id'>";
             $table_data .= "<td><input class='form-control integer' name='issueval[]' value='0' id='$s_no' onchange='validatingremaining($s_no)' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)' type='Number' required></td>";
         }
-        $table_data .= "<input type='hidden' id='no_of_rows' value='$s_no'>";
+        //$table_data .= "<input type='hidden' id='no_of_rows' value='$s_no'>";
         $table_data .= "</tr></tbody></table>";
         $html .= $table_data;
         // $html .= $table_data;
         $html .= '</div></div></div>';
     }
+    $html .= "<input type='hidden' id='no_of_rows' value='$s_no'>";
     echo $html;
 
 }

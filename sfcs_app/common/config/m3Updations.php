@@ -355,7 +355,9 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
             $main_ops_code = $row_bundle_creation_data_check_result['Main_OperationNumber'];
         }
     }
-    
+    if($op_code == 15)
+        $main_ops_code = $op_code;
+        
     $b_shift  = $input_shift;
     $b_module = $plan_module;
 

@@ -358,7 +358,7 @@ foreach($b_tid as $key => $value)
                     // echo $bundle_number.','.$b_op_id.','.$r_qty_array.','.$r_reasons_array.'</br>';
                     updateM3TransactionsRejections($bundle_number,$b_op_id,$r_qty_array,$r_reasons_array);
                 // }
-            }           
+            }            
         }
                
         if($result_query)
