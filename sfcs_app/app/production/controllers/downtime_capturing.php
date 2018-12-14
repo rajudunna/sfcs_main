@@ -119,7 +119,7 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
                 if(date('Y-m-d',strtotime($_GET['mdate'])) == date('Y-m-d')){
                     $apend = " where end_time < time('".date('Y-m-d H:i:s')."')";
                 }elseif(strtotime($_GET['mdate'])>strtotime(date('Y-m-d'))){
-                    $apend = " where time_value = 0";
+                    $apend = " where time_value = '0'";
                 }else{
                     $apend = '';
                 }
