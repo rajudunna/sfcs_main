@@ -638,7 +638,7 @@
 	}
 	
 	//tested
-	function doc_size_wise_bundle_insertion($doc_no_ref,$recut=0,$club_flag=0)
+	function doc_size_wise_bundle_insertion($doc_no_ref,$club_flag=0,$recut=0)
 	{
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 		$category=['cutting','Send PF','Receive PF'];
