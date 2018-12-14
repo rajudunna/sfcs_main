@@ -67,7 +67,6 @@ function closepopup()
 
 function DataCheck()
 {
-var product_code=document.getElementById('product_code').value;
 var chks = document.getElementsByName('issqty[]');  
 var chks1 = document.getElementsByName('lotbal[]'); 
 var tot=0;       
