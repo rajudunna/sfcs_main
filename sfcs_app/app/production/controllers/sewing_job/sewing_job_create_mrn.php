@@ -177,13 +177,22 @@
 							echo "<th colspan=2><center>Action</center></th>";
 							echo "</tr>";
 							$sql="SELECT type_of_sewing,input_job_no_random,input_job_no,GROUP_CONCAT(DISTINCT doc_no_ref ORDER BY doc_no) AS doc_no_ref,GROUP_CONCAT(DISTINCT m3_size_code order by m3_size_code) AS size_code,group_concat(distinct order_col_des order by order_col_des) as order_col_des,doc_no,GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno,SUM(carton_act_qty) AS carton_act_qty ,sum(mrn_status) as mrn_status FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' GROUP BY input_job_no_random ORDER BY acutno*1, input_job_no*1";
-							// echo $sql."<br>";
+							 echo $sql."<br>";
 							$temp=0;
 							$job_no=0;
 							$color="";
 							$sql_result=mysqli_query($link, $sql) or exit("Sql Error90 = $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row=mysqli_fetch_array($sql_result))
 							{
+
+								$sql88="select type_of_sewing,prefix,bg_color from $brandix_bts.tbl_sewing_job_prefix where type_of_sewing=".$sql_row['type_of_sewing']."";
+								$sql_result88=mysqli_query($link, $sql88) or exit("Sql Error44b $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
+									while($sql_row88=mysqli_fetch_array($sql_result88))
+									{
+										$bg_color=$sql_row88["bg_color"];
+										$prefix=$sql_row88["prefix"];
+									}
+
 								$total_cuts=explode(",",$sql_row['acutno']);
 								$cut_jobs_new='';
 								for($ii=0;$ii<sizeof($total_cuts);$ii++)
@@ -199,7 +208,7 @@
 									unset($arr);
 								}
 								echo "<tr style='background-color:$bg_color;'>";
-								echo "<td>".$sql_row['input_job_no']."</td>";
+								echo "<td>$prefix"."00".$sql_row['input_job_no']."</td>";
 								echo "<td>".$schedule."</td>";
 								echo "<td>".$sql_row['order_col_des']."</td>";
 								echo "<td>".$cut_jobs_new."</td>";
@@ -213,12 +222,23 @@
 									{ 
 										echo "<td><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&inputjobno=".$sql_row['input_job_no_random']."&style=$style&schedule=".$schedule."&var1=1\" onclick=\"clickAndDisable(this);\" name=\"return\">Return</a></center></td>";
 									}
+									else{
+										echo "<td></td>";
+									}
 									echo"</tr>";																			
 								}
 								else
 								{
+									$sql66="SELECT input_job_no_random_ref FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref=".$sql_row['input_job_no_random']."";
+									$sql_result012=mysqli_query($link, $sql66) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
+									$sql_num_check_count=mysqli_num_rows($sql_result012);
+									if($sql_num_check_count>0){
 									echo "<td ><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&style=$style&schedule=".$schedule."&inputjobno=".$sql_row['input_job_no_random']."&var1=2\" onclick=\"clickAndDisable(this);\">Confirm</a></center></td>";
 									echo "<td></td>";
+									}else{
+										echo"<td><center>Plan Not Done</center></td>";
+										echo "<td></td>";	
+									}
 									echo"</tr>"; 
 								}
 							}
@@ -231,7 +251,7 @@
 						else
 						{
 							echo "<script type=\"text/javascript\">;
-							sweetAlert('Sewing JObs not Generated.','','warning')
+							sweetAlert('Sewing Jobs not Generated.','','warning')
 							</script>";
 							
 						}
@@ -251,6 +271,12 @@ if($_GET['var1']==1)
 	{
 		$co_no=$sql_row14['co_no'];
 	}
+	$sql76="SELECT input_module  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno'";
+	$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row76=mysqli_fetch_array($sql_result76))
+	{
+		$input_module=$sql_row76['input_module'];
+	}
 	$sql55="SELECT tid,input_job_no,order_del_no  FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$inputjobno'";
 	$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 	// $tid=array();
@@ -262,11 +288,11 @@ if($_GET['var1']==1)
 		$order_del_no=$sql_row01['order_del_no'];
 		$date=date('Ymd');
 		$employee_no=$order_del_no."-".$input_job_no;
-		$remarks=$order_del_no."-".$date;
+		$remarks="Team"."-".$input_module."::".$date;
 	}
 	$tid1=implode(",",$tid);
 	$mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid1) and op_code='$op_code' group by mo_no";
-	$mssql_insert_query="insert into [MRN_V2].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status) values";
+	$mssql_insert_query="insert into [MRN_V2].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status,DSP1,DSP2,DSP3,DSP4) values";
 	$values = array();
 	$ref_no = array();
 	$sql_result5=mysqli_query($link, $mo_operation_quantites_query) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -278,7 +304,7 @@ if($_GET['var1']==1)
 		$op_code=$sql_row5['op_code'];
 		$op_desc=$sql_row5['op_desc'];
 		$ref_no[]=$sql_row5['ref_no'];
-		array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_no . "','" . $op_code . "','" . $bundle_quantity . "','".$employee_no."','".$remarks."','".$co_no."','".$order_del_no."','')"); 
+		array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_no . "','" . $op_code . "','" . $bundle_quantity . "','".$employee_no."','".$remarks."','".$co_no."','".$order_del_no."','','1','1','1','1')"); 
 
 	}
 	$ref_no1=implode(",",$ref_no);
@@ -333,6 +359,12 @@ elseif($_GET['var1']==2)
 	{
 		$co_no=$sql_row14['co_no'];
 	}
+	$sql76="SELECT input_module  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno'";
+	$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row76=mysqli_fetch_array($sql_result76))
+	{
+		$input_module=$sql_row76['input_module'];
+	}
 	$sql55="SELECT tid,input_job_no,order_del_no  FROM $bai_pro3.packing_summary_input WHERE  input_job_no_random='$inputjobno'";
 	$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 	// $tid=array();
@@ -344,13 +376,13 @@ elseif($_GET['var1']==2)
 		$order_del_no=$sql_row01['order_del_no'];
 		$date=date('Ymd');
 		$employee_no=$order_del_no."-".$input_job_no;
-		$remarks=$order_del_no."-".$date;
+		$remarks="Team"."-".$input_module."::".$date;
 	}
 	$tid1=implode(",",$tid);
 	$mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid1) and op_code='$op_code' group by mo_no";
 	//echo $mo_operation_quantites_query."<br>";
 	//die();
-	$mssql_insert_query="insert into [MRN_V2].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status) values";
+	$mssql_insert_query="insert into [MRN_V2].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status,DSP1,DSP2,DSP3,DSP4) values";
 	$values = array();
 	$ref_no = array();
 	$sql_result5=mysqli_query($link, $mo_operation_quantites_query) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -362,7 +394,7 @@ elseif($_GET['var1']==2)
 		$op_code=$sql_row5['op_code'];
 		$op_desc=$sql_row5['op_desc'];
 		$ref_no[]=$sql_row5['ref_no'];
-		array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_no . "','" . $op_code . "','" . $bundle_quantity . "','".$employee_no."','".$remarks."','".$co_no."','".$order_del_no."','')"); 
+		array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_no . "','" . $op_code . "','" . $bundle_quantity . "','".$employee_no."','".$remarks."','".$co_no."','".$order_del_no."','','1','1','1','1')"); 
 	}
 	$ref_no1=implode(",",$ref_no);
 	$mssql_insert_query_result=odbc_exec($conn, $mssql_insert_query . implode(', ', $values));
