@@ -6,17 +6,49 @@
 $dr_id=$_POST['dr_id'];
 $code=$_POST['time_value'];
 $day_part=$_POST['day_part'];
-$start_time1=$_POST['time_display'];
-if($day_part=='PM'){
-	$start_time=$start_time1+12;
-} else {
-	$start_time=$start_time1;
-}
-$end_time=$_POST['time_display1'];
+$start1 = $_POST['time_display']; 
+$end1   = $_POST['time_display1'];
+$tval = $_POST['time_value'];						
+$start = explode(':',$start1);
+$end = explode(':',$end1);	
+$sh = $start[0];
+$sm = $start[1];
+$eh = $end[0];
+$em = $end[1];	
+	if($day_part=='PM')	{
+									$sh=$sh+12;
+									$eh=$eh+12;
+								}
+
+								if($sh >=24)	{
+									$sh=$sh-24;
+								}
+								if($eh >=24){
+									$eh=$eh-24;
+								}
+										
+								if($em==0){
+									$em=59;
+								}else{
+									$em=$em-1;
+								$eh=$eh-1;
+								}
+								// $end_time = "$eh:30:00";
+								// if($sm == 0){
+								// 	$start_time = ($sh+2).':29:59';
+								// 	if($sh >=23)	{
+										$start_time = "$sh:"."$sm:"."00";
+										$end_time = "$sh:"."$em:"."59";
+
+								// 	}
+								// 	$start_time = ($sh+2).':29:59';
+								// }else{
+								// 	$start_time = "$sh:".($sm+2).":59";
+								// }
+
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
-
 
 
 	if (empty($code) || empty($start_time) || empty($end_time) ||  empty($day_part) ) 
@@ -41,8 +73,7 @@ else
 		{
 			//update
 			$sql = "update $bai_pro3.tbl_plant_timings set time_value='$code',
-			start_time='$start_time',end_time='$end_time',day_part='$day_part' where time_id=$dr_id";
-
+			start_time='$start_time',end_time='$end_time',day_part='$day_part',time_display='$start1-$end1' where time_id=$dr_id";
 				if (mysqli_query($conn, $sql)) {
 					$url=getFullURL($_GET['r'],'plant_timings_add.php','N');
 					//echo $url;
@@ -90,22 +121,40 @@ else
 								$sh = $start[0];
 								$sm = $start[1];
 								$eh = $end[0];
-								$em = $end[1];								
-								$end_time = "$eh:30:00";
-								if($sm == 0){
-									$start_time = ($sh+2).':29:59';
+								$em = $end[1];	
+								if($day_part=='PM')	{
+									$sh=$sh+12;
+									$eh=$eh+12;
+								}
+
+								if($sh >=24)	{
+									$sh=$sh-24;
+								}
+								if($eh >=24){
+									$eh=$eh-24;
+								}
+								
+								if($em==0){
+									$em=59;
 								}else{
-									$start_time = "$sh:".($sm+2).":59";
+									$em=$em-1;
+								$eh=$eh-1;
 								}
-								if($day_part=='PM'){
-									$start1+=12;
-									$end1+=12;
-									$sh+=12;
-								}
-								
+								// $end_time = "$eh:30:00";
+								// if($sm == 0){
+								// 	$start_time = ($sh+2).':29:59';
+								// 	if($sh >=23)	{
+										$start_time = "$sh:"."$sm:"."00";
+										$end_time = "$sh:"."$em:"."59";
+
+								// 	}
+								// 	$start_time = ($sh+2).':29:59';
+								// }else{
+								// 	$start_time = "$sh:".($sm+2).":59";
+								// }
 								$sql = "INSERT INTO $bai_pro3.tbl_plant_timings (time_value,time_display,start_time,end_time,day_part)
-								VALUES ('$sh','$start1-$end1','$end_time','$start_time','$day_part')";
-								
+								VALUES ('$tval','$start1-$end1','$start_time','$end_time','$day_part')";
+
 								if (mysqli_query($conn, $sql)) 
 								{
 									$url=getFullURL($_GET['r'],'plant_timings_add.php','N');

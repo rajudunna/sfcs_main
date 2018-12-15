@@ -23,8 +23,20 @@
         $code=$_GET['time_value'];
         $time=$_GET['time_display'];
         $times = explode('-',$time);
-        $st = $times[0];
-        $et = $times[1];
+
+        // $st = $times[0];
+        $xx = explode(':',$times[0]);
+        $x1=$xx[0];
+        $x2=$xx[1];
+        $h1 = str_pad($x1,2,'0',STR_PAD_LEFT);
+        $m1 = str_pad($x2,2,'0',STR_PAD_LEFT);
+        $st="$h1:$m1";
+        $yy = explode(':',$times[1]);
+        $y1=$yy[0];
+        $y2=$yy[1];
+        $h2 = str_pad($y1,2,'0',STR_PAD_LEFT);
+        $m2 = str_pad($y2,2,'0',STR_PAD_LEFT);
+        $et="$h2:$m2";
         $day_part=$_GET['day_part'];
     }else
     {
@@ -56,12 +68,15 @@
                 <input id="department" type="text" class="form-control k-textbox" data-role="text"  name="time_value" value="<?php echo $code; ?>"  data-parsley-errors-container="#errId1" readonly><span id="errId1" class="error"></span>
 
 </div>
-				</div></div>
+                </div></div>
+                
 		<div class="col-md-3"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" value="" for="department">Start Time</label>
 			    <div class="controls col-sm-9">
                 <div class="dropdown">
+                    <!-- <input placeholder="Selected time" type="time" id="start" class="form-control timepicker" onchange="calculate()"> -->
                 <SELECT name="time_display" id="start" value="<?php echo $start_time ; ?>" class="form-control" onchange="calculate()">
+                <option value='' selected>Please Select</option>
 
                 <?php 
                 for($hours=1; $hours<13; $hours++)
@@ -87,9 +102,10 @@
 			    <label class="control-label control-label-left col-sm-3" value="" for="department">End Time</label>
 			    <div class="controls col-sm-9">
 				<div class="dropdown">
-                 
+                 <!-- <input placeholder="Selected time" type="time" id="start1" class="form-control timepicker" onchange="calculate()"> -->
                 <SELECT name="time_display1" id="start1" value="<?php echo $end_time; ?>" class="form-control">
-
+                <option value='' selected>Please Select</option>
+                
                 <?php 
                     for($hours=1; $hours<13; $hours++)
                     {
@@ -156,9 +172,10 @@
 <?php include('view_plant_timings.php'); ?>
 </body>
 <script>
-$(document).ready(function() {
-    document.getElementById("department").value = '01';
-});
+// $(document).ready(function() {
+//     $('#input_starttime').pickatime({});
+// });
+
     function calculate(){
         var v1 = document.getElementById("start").value;
         var v2 = document.getElementById("start1").value;
