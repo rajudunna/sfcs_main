@@ -177,7 +177,7 @@
 							echo "<th colspan=2><center>Action</center></th>";
 							echo "</tr>";
 							$sql="SELECT type_of_sewing,input_job_no_random,input_job_no,GROUP_CONCAT(DISTINCT doc_no_ref ORDER BY doc_no) AS doc_no_ref,GROUP_CONCAT(DISTINCT m3_size_code order by m3_size_code) AS size_code,group_concat(distinct order_col_des order by order_col_des) as order_col_des,doc_no,GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno,SUM(carton_act_qty) AS carton_act_qty ,sum(mrn_status) as mrn_status FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' GROUP BY input_job_no_random ORDER BY acutno*1, input_job_no*1";
-							 echo $sql."<br>";
+							// echo $sql."<br>";
 							$temp=0;
 							$job_no=0;
 							$color="";
