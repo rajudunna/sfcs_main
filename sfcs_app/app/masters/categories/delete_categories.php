@@ -22,9 +22,20 @@ if($rid!=''){
 
 $delete="delete from bai_pro3.tbl_category where id='$rid'";
 if (mysqli_query($conn, $delete)) {
+	echo"<script>setTimeout(function () { 
+		swal({
+			title: 'Deleted successfully.',
+			type: 'success',
+			confirmButtonText: 'OK'
+		},
+		function(isConfirm){
+			if (isConfirm) {
+			window.location.href = \"$url\";
+			}
+		}); }, 100);</script>";
 	echo "<script>window.location.href = \"$url\"</script>";
 
-} else {
+		} else {  
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
 	}

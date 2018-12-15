@@ -19,21 +19,20 @@ if (!$conn) {
 }
 if($rid!=''){
 	$url=getFullURL($_GET['r'],'create_leader_names.php','N');
-	echo"<script>setTimeout(function () { 
-		swal({
-		  title: 'Are you sure?',
-		  text: 'Your will not be able to recover this Record!',
-		  type: 'warning',
-		  confirmButtonText: 'OK'
-		},
-		function(isConfirm){
-		  if (isConfirm) {
-			window.location.href = \"$url\";
-		  }
-		}); }, 100);</script>";
 $delete="delete from bai_pro3.tbl_leader_name where id='$rid'";
 if (mysqli_query($conn, $delete)) {
-			header("location: $url");
+	echo"<script>setTimeout(function () { 
+		swal({
+			title: 'Deleted successfully.',
+			type: 'success',
+			confirmButtonText: 'OK'
+		},
+		function(isConfirm){
+			if (isConfirm) {
+			window.location.href = \"$url\";
+			}
+		}); }, 100);</script>";
+	echo "<script>window.location.href = \"$url\"</script>";
 		} else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
