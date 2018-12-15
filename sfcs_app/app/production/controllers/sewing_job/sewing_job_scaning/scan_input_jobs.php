@@ -278,8 +278,7 @@ $(document).ready(function()
 		var assign_module = $('#module').val();
 		var current = "<?php echo $operation_name; ?>";
 		var module_flag = null;	var restrict_msg = '';
-		var pre_array_module = [assign_module,job_number];
-		//alert(current)
+		var pre_array_module = [assign_module,job_number,operation_id];
 		$.ajax({
 			type: "POST",
 			url: function_text+"?pre_array_module="+pre_array_module,

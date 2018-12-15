@@ -1,48 +1,35 @@
 
 <?php
-include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',5,'R')); 
+	include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',5,'R')); 
 
-$has_permission=haspermission($_GET['r']);
-//API related data
-$plant_code = $global_facility_code;
-$company_num = $company_no;
-$host= $api_hostname;
-$port= $api_port_no;
-$current_date = date('Y-m-d h:i:s');
-$shift=$_GET['shift'];
-  
-if(isset($_POST['id']))
-{
-	
-	//echo "<script>document.getElementById('main').hidden = true</script>";
-	echo "<h1 style='color:red;'>Please Wait a while !!!</h1>";
-	//echo "<script>document.getElementById('message').innerHTML='<b>Please wait a while</b>'</script>";
-}
+	$has_permission=haspermission($_GET['r']);
+	if (in_array($override_sewing_limitation,$has_permission))
+	{
+		$value = 'authorized';
+	}
+	else
+	{
+		$value = 'not_authorized';
+	}
+	echo '<input type="hidden" name="user_permission" id="user_permission" value="'.$value.'">';
+	//API related data
+	$plant_code = $global_facility_code;
+	$company_num = $company_no;
+	$host= $api_hostname;
+	$port= $api_port_no;
+	$current_date = date('Y-m-d h:i:s');
+	$shift=$_GET['shift'];
+	  
+	if(isset($_POST['id']))
+	{
+		echo "<h1 style='color:red;'>Please Wait a while !!!</h1>";
+	}
 ?>
 <body id='main'> 
 	<div class="panel panel-primary"> 
 		<div class="panel-heading">Sewing Jobs Reversal Scanning</div>
 		<div class='panel-body'>
-			<style>
-				#loading-image{
-					position:fixed;
-					top:0px;
-					right:0px;
-					width:100%;
-					height:100%;
-					background-color:#666;
-					/* background-image:url('ajax-loader.gif'); */
-					background-repeat:no-repeat;
-					background-position:center;
-					z-index:10000000;
-					opacity: 0.4;
-					filter: alpha(opacity=40); /* For IE8 and earlier */
-				}
-			</style>
-			<div class="ajax-loader" id="loading-image" style="display: none">
-				<center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',3,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
-			</div>
 			<div class="alert alert-success" style="display:none;">
 				<a href="#" class="close" data-dismiss="alert">&times;</a>
 				<strong>Info! </strong><span class="sql_message"></span>
@@ -91,141 +78,186 @@ if(isset($_POST['id']))
 		}
 		return true;
 	}
-
-	$(document).ready(function() 
+$(document).ready(function() 
+{
+	$('#job_number').focus();
+	var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
+	$("#job_number").change(function()
 	{
-		$('#job_number').focus();
-		$('#loading-image').hide();
-		var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
-		$("#job_number").change(function()
-		{
-			$('#loading-image').show();
-			var job_rev_no = $("#job_number").val();
-			$('#operation').empty();
-			$('select[name="operation"]').append('<option value="0">Select Operation</option>');
-			$('#dynamic_table1').html('');
-			//var job_rev_no = [job_rev_no,remarks];
-			$.ajax
-			({
-				type: "POST",
-				url: function_text+"?job_rev_no="+job_rev_no,
-				dataType: 'Json',
-				success: function (response) 
+		var job_rev_no = $("#job_number").val();
+		$('#operation').empty();
+		$('select[name="operation"]').append('<option value="0">Select Operation</option>');
+		$('#dynamic_table1').html('');
+		//var job_rev_no = [job_rev_no,remarks];
+		$.ajax
+		({
+			type: "POST",
+			url: function_text+"?job_rev_no="+job_rev_no,
+			dataType: 'Json',
+			success: function (response) 
+			{
+				if(response['status'])
 				{
-					$('#loading-image').hide();
-					if(response['status'])
+					sweetAlert('',response['status'],'error');
+				}
+				else
+				{
+					$.each(response, function(key, value) {
+						$('select[name="operation"]').append('<option value="'+ key +'">'+ value +'</option>');
+					});
+				}				
+			}
+			
+		});
+	});
+	$('#operation').change(function()
+	{
+		var ops = $('#operation').val();
+		var job_no = $('#job_number').val();
+		var remarks = $('#sampling option:selected').text();
+		var module_flag = null;	var restrict_msg = '';
+		var pre_array_module = [0,job_no,ops];
+		$.ajax({
+			type: "POST",
+			url: function_text+"?pre_array_module="+pre_array_module,
+			dataType: "json",
+			success: function (response) 
+			{
+				if (response == 4)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'No Module Assigned';
+				}
+				else if (response == 3)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'No Valid Block Priorities';
+				}
+				else if (response == 2)
+				{
+					var authorize_check = $('#user_permission').val();
+					if (authorize_check == 'authorized')
 					{
-						sweetAlert('',response['status'],'error');
+						module_flag = 0; // allow
 					}
 					else
 					{
-						$.each(response, function(key, value) {
-						$('select[name="operation"]').append('<option value="'+ key +'">'+ value +'</option>');
-						});
-					}				
+						module_flag = 1; // block
+						restrict_msg = 'You are Not Authorized to report more than Block Priorities';
+					}
 				}
-				
-			});
-		});
-		$('#operation').change(function()
-		{
-			$('#loading-image').show();
-			var ops = $('#operation').val();
-			var job_no = $('#job_number').val();
-			var remarks = $('#sampling option:selected').text();
-			var data_rev = [ops,job_no,remarks];
-			$.ajax
-			({
-				type: "POST",
-				url: function_text+"?data_rev="+data_rev,
-				dataType: "json",
-				success: function (response) 
+				else if (response == 0)
 				{
-					$('#loading-image').hide();
-					$('#dynamic_table1').html('');
-					console.log(response);
-					var data = response['table_data'];
-					var check_flag = 0;
-					if(response['post_ops'])
-					{
-						var post_ops_data = response['post_ops'];
-						//var send_qty = response['send_qty'];
-						if (response['carton_ready_qty'])
+					module_flag = 0; // allow
+				}
+
+				//////////////////////////////////////////////////////
+				if(module_flag == 0)
+				{
+					var data_rev = [ops,job_no,remarks];
+					$.ajax({
+						type: "POST",
+						url: function_text+"?data_rev="+data_rev,
+						dataType: "json",
+						success: function (response) 
 						{
-							var post_rec_qtys_array123 = response['carton_ready_qty'];
-							var check_flag = 2;
-						}
-						else
-						{
-							if(response['rec_qtys'])
+							$('#loading-image').hide();
+							$('#dynamic_table1').html('');
+							console.log(response);
+							var data = response['table_data'];
+							var check_flag = 0;
+							if(response['post_ops'])
 							{
-								var post_rec_qtys_array = response['rec_qtys'];
-								var check_flag = 1;
-							}
-						}						
-					  
-						for(var ops=0;ops<post_ops_data.length;ops++)
-						{
-							var mark1 = "<input type='hidden' name='post_ops[]' value='"+response['post_ops'][ops]+"'>";
-							$("#dynamic_table1").append(mark1);
-						}
-					}
-					if(response['ops_dep'])
-					{
-						var mark3="<input type='hidden' name='ops_dep' value='"+response['ops_dep']+"'>";
-						$("#dynamic_table1").append(mark3);
-					}
-					var send_qty = response['send_qty'];
-					if(response['status'])
-					{
-						sweetAlert('',response['status'],'error');
-						$('#dynamic_table1').html('No Data Found');
-					}
-					else if(data)
-					{
-						var s_no=0;
-						var btn = '<div class="pull-right"><input type="submit" class="btn btn-primary disable-btn smartbtn submission" value="Submit" name="formSubmit" id="smartbtn" onclick="validating();"></div>';
-						$("#dynamic_table1").append(btn);
-						var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr><th>S.No</th><th class='none'>Doc.No</th><th>Color</th><th>Module</th><th>Size</th><th>Sewing Job Qty</th><th>Reported Quantity</th><th>Eligible to reverse</th><th>Reversing Quantity</th></tr></thead><tbody>";
-						$("#dynamic_table1").append(markup);
-						$("#dynamic_table1").append(btn);
-						for(var i=0;i<data.length;i++)
-						{
-							if (check_flag == 2)
-							{
-								var post_rec_qtys = Number(post_rec_qtys_array123[i]);
-								// console.log('in carton_array = '+post_rec_qtys);
-							}
-							else
-							{
-								if(check_flag == 0)
+								var post_ops_data = response['post_ops'];
+								//var send_qty = response['send_qty'];
+								if (response['carton_ready_qty'])
 								{
-									var post_rec_qtys = data[i].reported_qty;
+									var post_rec_qtys_array123 = response['carton_ready_qty'];
+									var check_flag = 2;
 								}
 								else
 								{
-									var post_rec_qtys = Number(data[i].reported_qty) - Number(post_rec_qtys_array[i]);
+									if(response['rec_qtys'])
+									{
+										var post_rec_qtys_array = response['rec_qtys'];
+										var check_flag = 1;
+									}
+								}						
+							  
+								for(var ops=0;ops<post_ops_data.length;ops++)
+								{
+									var mark1 = "<input type='hidden' name='post_ops[]' value='"+response['post_ops'][ops]+"'>";
+									$("#dynamic_table1").append(mark1);
 								}
 							}
-								
-							s_no++;
-							var markup1 = "<tr><input type='hidden' name='doc_no[]' value='"+data[i].doc_no+"'><input type='hidden' name='operation_id' value='"+data[i].operation_id+"'><input type='hidden' name='remarks' value='"+data[i].remarks+"'><input type='hidden' name='mapped_color' value='"+data[i].mapped_color+"'><input type='hidden' name='size[]' value='"+data[i].size_code+"'><input type='hidden' name='size_id[]' value='"+data[i].size_id+"'><input type='hidden' name='input_job_no_random' value='"+data[i].input_job_no_random+"'><input type='hidden' name='bundle_no[]' value='"+data[i].tid+"'><input type='hidden' name='style' value='"+data[i].style+"'><input type='hidden' name='color[]' value='"+data[i].order_col_des+"'><input type='hidden' name='module[]' value='"+data[i].assigned_module+"'><input type='hidden' name='rep_qty[]' value='"+data[i].reported_qty+"'><input type='hidden' name='id[]' value="+data[i].id+"><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].assigned_module+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td>"+data[i].reported_qty+"</td><td id='"+i+"repor'>"+post_rec_qtys+"</td><td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
-							$("#dynamic_table").append(markup1);
+							if(response['ops_dep'])
+							{
+								var mark3="<input type='hidden' name='ops_dep' value='"+response['ops_dep']+"'>";
+								$("#dynamic_table1").append(mark3);
+							}
+							var send_qty = response['send_qty'];
+							if(response['status'])
+							{
+								sweetAlert('',response['status'],'error');
+								$('#dynamic_table1').html('No Data Found');
+							}
+							else if(data)
+							{
+								var s_no=0;
+								var btn = '<div class="pull-right"><input type="submit" class="btn btn-primary disable-btn smartbtn submission" value="Submit" name="formSubmit" id="smartbtn" onclick="validating();"></div>';
+								$("#dynamic_table1").append(btn);
+								var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr><th>S.No</th><th class='none'>Doc.No</th><th>Color</th><th>Module</th><th>Size</th><th>Sewing Job Qty</th><th>Reported Quantity</th><th>Eligible to reverse</th><th>Reversing Quantity</th></tr></thead><tbody>";
+								$("#dynamic_table1").append(markup);
+								$("#dynamic_table1").append(btn);
+								for(var i=0;i<data.length;i++)
+								{
+									if (check_flag == 2)
+									{
+										var post_rec_qtys = Number(post_rec_qtys_array123[i]);
+										// console.log('in carton_array = '+post_rec_qtys);
+									}
+									else
+									{
+										if(check_flag == 0)
+										{
+											var post_rec_qtys = data[i].reported_qty;
+										}
+										else
+										{
+											var post_rec_qtys = Number(data[i].reported_qty) - Number(post_rec_qtys_array[i]);
+										}
+									}
+										
+									s_no++;
+									var markup1 = "<tr><input type='hidden' name='doc_no[]' value='"+data[i].doc_no+"'><input type='hidden' name='operation_id' value='"+data[i].operation_id+"'><input type='hidden' name='remarks' value='"+data[i].remarks+"'><input type='hidden' name='mapped_color' value='"+data[i].mapped_color+"'><input type='hidden' name='size[]' value='"+data[i].size_code+"'><input type='hidden' name='size_id[]' value='"+data[i].size_id+"'><input type='hidden' name='input_job_no_random' value='"+data[i].input_job_no_random+"'><input type='hidden' name='bundle_no[]' value='"+data[i].tid+"'><input type='hidden' name='style' value='"+data[i].style+"'><input type='hidden' name='color[]' value='"+data[i].order_col_des+"'><input type='hidden' name='module[]' value='"+data[i].assigned_module+"'><input type='hidden' name='rep_qty[]' value='"+data[i].reported_qty+"'><input type='hidden' name='id[]' value="+data[i].id+"><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].assigned_module+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td>"+data[i].reported_qty+"</td><td id='"+i+"repor'>"+post_rec_qtys+"</td><td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
+									$("#dynamic_table").append(markup1);
+								}
+							}
 						}
-					}
+					});
 				}
-			});
+				else
+				{
+					sweetAlert(restrict_msg,'','error');
+					$('#loading-image').hide();
+				}
+				//////////////////////////////////////////////////////
+			}
 		});
 	});
+});
 
-	$('#sampling').change(function()
-	{
-		$('#dynamic_table1').html('');
-		$('#dynamic_table1').html('No Data Found');
-		$('#operation').val(0);
-	});
+$('#sampling').change(function()
+{
+	$('#dynamic_table1').html('');
+	$('#dynamic_table1').html('No Data Found');
+	$('#operation').val(0);
+})
+</script>
 
-	function validation(id)
+<script>
+
+function validation(id)
 	{
 		var rep = id+'repor';
 		var rev = id+"rever";
@@ -239,7 +271,6 @@ if(isset($_POST['id']))
 		}
 	}
 </script>
-
 <?php
 	if(isset($_POST['formSubmit']))
 	{
@@ -662,26 +693,33 @@ if(isset($_POST['id']))
 				{
 					$buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
 				}
-				$qry_nop="select((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance WHERE module=".$b_module[$key]." and date='".$bac_dat."' and shift='".$b_shift."'";
+				$qry_nop="select avail_A,avail_B FROM $bai_pro.pro_atten WHERE module=".$b_module[$key]." AND date='$bac_dat'";
 				$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
 				{
-					$avail=$nop_qry_row['nop'];
+						$avail_A=$nop_qry_row['avail_A'];
+						$avail_B=$nop_qry_row['avail_B'];
 				}
 				if(mysqli_num_rows($qry_nop_result)>0)
 				{
-					$nop=$avail;
+					if($row['shift']=='A')
+					{
+						$nop=$avail_A;
+					}
+					else
+					{
+						$nop=$avail_B;
+					}
 				}
 				else
 				{
 					$nop=0;
 				}
-				
 				$b_rep_qty_ins = '-'.$reversalval[$key];
 				$bundle_op_id=$b_tid."-".$b_op_id."-".$b_inp_job_ref;
 				$appilication_out = 'IMS_OUT';
 				$checking_output_ops_code_out = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication_out'";
-				//echo $checking_output_ops_code;
+			    //echo $checking_output_ops_code;
 				$result_checking_output_ops_code_out = $link->query($checking_output_ops_code_out);
 				if($result_checking_output_ops_code_out->num_rows > 0)
 				{
@@ -769,7 +807,7 @@ if(isset($_POST['id']))
 		echo "<script>window.location = '".$url."'</script>";
 	}
 ?>
-
+	
 <script type="text/javascript">
 	function validateQty(e,t) 
 	{
@@ -779,8 +817,7 @@ if(isset($_POST['id']))
 		var c = /^[0-9]+$/;
 		var v = document.getElementById(t.id);
 
-		if( !(v.value.match(c)) && v.value!=null )
-		{
+		if( !(v.value.match(c)) && v.value!=null ){
 			v.value = '';
 			return false;
 		}
@@ -790,6 +827,8 @@ if(isset($_POST['id']))
 	function validating()
 	{
 		console.log("working");
+		//document.getElementByClassName('submission').style.visibility = 'hidden';
 		$('.submission').hide();
 	}
+
 </script>
