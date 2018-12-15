@@ -13,21 +13,18 @@
 		$value = 'not_authorized';
 	}
 	echo '<input type="hidden" name="user_permission" id="user_permission" value="'.$value.'">';
-//API related data
-$plant_code = $global_facility_code;
-$company_num = $company_no;
-$host= $api_hostname;
-$port= $api_port_no;
-$current_date = date('Y-m-d h:i:s');
-$shift=$_GET['shift'];
-  
-if(isset($_POST['id']))
-{
-	
-	//echo "<script>document.getElementById('main').hidden = true</script>";
-	echo "<h1 style='color:red;'>Please Wait a while !!!</h1>";
-	//echo "<script>document.getElementById('message').innerHTML='<b>Please wait a while</b>'</script>";
-}
+	//API related data
+	$plant_code = $global_facility_code;
+	$company_num = $company_no;
+	$host= $api_hostname;
+	$port= $api_port_no;
+	$current_date = date('Y-m-d h:i:s');
+	$shift=$_GET['shift'];
+	  
+	if(isset($_POST['id']))
+	{
+		echo "<h1 style='color:red;'>Please Wait a while !!!</h1>";
+	}
 ?>
 <body id='main'> 
 	<div class="panel panel-primary"> 
@@ -158,8 +155,7 @@ $(document).ready(function()
 				if(module_flag == 0)
 				{
 					var data_rev = [ops,job_no,remarks];
-					$.ajax
-					({
+					$.ajax({
 						type: "POST",
 						url: function_text+"?data_rev="+data_rev,
 						dataType: "json",
@@ -233,11 +229,7 @@ $(document).ready(function()
 				//////////////////////////////////////////////////////
 			}
 		});
-
-		
-		
 	});
-	
 });
 
 $('#sampling').change(function()
@@ -840,20 +832,20 @@ else if($concurrent_flag == 0)
 ?>
 	
 <script type="text/javascript">
-		function validateQty(e,t) 
-		{
-			if(e.keyCode == 13)
-				return;
-			var p = String.fromCharCode(e.which);
-			var c = /^[0-9]+$/;
-			var v = document.getElementById(t.id);
+	function validateQty(e,t) 
+	{
+		if(e.keyCode == 13)
+			return;
+		var p = String.fromCharCode(e.which);
+		var c = /^[0-9]+$/;
+		var v = document.getElementById(t.id);
 
-			if( !(v.value.match(c)) && v.value!=null ){
-				v.value = '';
-				return false;
-			}
-			return true;
+		if( !(v.value.match(c)) && v.value!=null ){
+			v.value = '';
+			return false;
 		}
+		return true;
+	}
 		
 	function validating()
 	{
@@ -862,7 +854,4 @@ else if($concurrent_flag == 0)
 		$('.submission').hide();
 	}
 
-    </script>
-	
-	
-	
+</script>
