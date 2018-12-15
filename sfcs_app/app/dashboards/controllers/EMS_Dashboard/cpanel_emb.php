@@ -611,7 +611,7 @@ echo "<p>";
 
 echo "<table><tr><td>IMS:</td></tr></table>";
 	
-//echo "<a href=\"$dns_adr/projects/alpha/anu/ims/sec_rep.php?section=$section\" onclick=\"Popup=window.open('$dns_adr/projects/alpha/anu/ims/sec_rep.php?section=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><h2>SECTION - $section <br/>($section_head)</h2></a>";
+
 echo "<table>";
 
 $mods=array();

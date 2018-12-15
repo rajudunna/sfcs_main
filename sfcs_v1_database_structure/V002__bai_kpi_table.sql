@@ -13,13 +13,13 @@ MySQL - 10.3.8-MariaDB : Database - bai_kpi
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`bai_kpi` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `bai_kpi`;
+/*USE `bai_kpi`;*/
 
 /*Table structure for table `delivery_delays_track` */
 
-DROP TABLE IF EXISTS `delivery_delays_track`;
+DROP TABLE IF EXISTS `bai_kpi`.`delivery_delays_track`;
 
-CREATE TABLE `delivery_delays_track` (
+CREATE TABLE `bai_kpi`.`delivery_delays_track` (
   `tran_id` int(11) NOT NULL AUTO_INCREMENT,
   `status` tinyint(4) NOT NULL,
   `style` varchar(30) NOT NULL,
@@ -49,9 +49,9 @@ CREATE TABLE `delivery_delays_track` (
 
 /*Table structure for table `kpi_tracking` */
 
-DROP TABLE IF EXISTS `kpi_tracking`;
+DROP TABLE IF EXISTS `bai_kpi`.`kpi_tracking`;
 
-CREATE TABLE `kpi_tracking` (
+CREATE TABLE `bai_kpi`.`kpi_tracking` (
   `tran_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Transaction ID',
   `rep_date` date NOT NULL COMMENT 'Report Date',
   `parameter` varchar(100) NOT NULL,

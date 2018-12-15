@@ -400,11 +400,16 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	$section=$sql_rowx['sec_id'];
 	$section_head=$sql_rowx['sec_head'];
 	$section_mods=$sql_rowx['sec_mods'];
-
+	$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
+	$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row12=mysqli_fetch_array($result12))
+	{
+		$section_display_name=$sql_row12["section_display_name"];
+	}
 	echo '<div style="border: 3px coral solid; width: 170px; height: 650px; float: left; margin: 10px; padding: 10px; overflow: hidden;">';
 	echo "<p>";
 	echo "<table>";
-	echo "<tr><th colspan=2><h2><a href=\"board_update.php?section_no=$section\" onclick=\"Popup=window.open('board_update.php?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
+	echo "<tr><th colspan=2><h2><a href=\"board_update.php?section_no=$section\" onclick=\"Popup=window.open('board_update.php?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$section_display_name</a></h2></th></th></tr>";
 
 	$mods=array();
 	$mods=explode(",",$section_mods);

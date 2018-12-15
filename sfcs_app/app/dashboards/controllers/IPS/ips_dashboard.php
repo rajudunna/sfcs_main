@@ -29,11 +29,11 @@ function leading_zeros($value, $places)
 	
 	return $output;
 }
-$newtempname="$bai_pro3.plan_dash_doc_summ_input";
+$newtempname="$bai_pro3.plan_dashboard_input";
 
 $bindex=0;
 $blink_docs=array();
-$table_name="$bai_pro3.plan_dash_doc_summ_input";
+$table_name="$bai_pro3.plan_dashboard_input";
 
 // Remove Docs
 $remove_docs=array();
@@ -54,15 +54,14 @@ if(sizeof($remove_docs)>0)
 
 $sec_id=$_GET["sec"];
 
-$sqlx="select * from $bai_pro3.sections_db where sec_id=$sec_id";
+$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$sec_id GROUP BY section ORDER BY section + 0";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
 	$section=$sql_rowx['sec_id'];
 	$section_head=$sql_rowx['sec_head'];
 	$section_mods=$sql_rowx['sec_mods'];
-	$order_div_ref='';
-	$shifts='G';
+	$section_display_name=$sql_rowx['section_display_name'];
 	// Ticket #424781 change the buyer division display based on the pink,logo,IU as per plan_modules
 	$sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1";
 	$sql_num_checkd=0;
@@ -82,7 +81,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		$ips_data='<div style="margin-left:15%">';
 		$ips_data.="<p>";
 		$ips_data.="<table>";
-		$ips_data.="<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$popup_url?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
+		$ips_data.="<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$popup_url?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$section_display_name</a></h2></th></th></tr>";
 		//For Section level blinking
 		$blink_minimum=0;		
 		for($x=0;$x<sizeof($mods);$x++)
@@ -105,24 +104,40 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$id="yash";
 			$y=0;
 		
-			$sql="SELECT input_job_no_random_ref,input_trims_status,type_of_sewing,MIN(st_status) AS st_status,MIN(ft_status) AS ft_status,order_style_no,GROUP_CONCAT(DISTINCT order_del_no) AS order_del_no,GROUP_CONCAT(DISTINCT order_col_des) AS order_col_des,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and input_module=$module and date(log_time) >=\"2013-01-09\" ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc limit ".$_GET['priority_limit'];	
+			$sql="SELECT input_job_no_random_ref,input_trims_status FROM $table_name WHERE input_module=$module and (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and date(log_time) >=\"2013-01-09\" GROUP BY input_job_no_random_ref order by input_priority asc limit ".$_GET['priority_limit'];	
 			// echo $sql."<br>";
 			$result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row=mysqli_fetch_array($result))
-			{
-							
+			{							
 				$input_job_no_random_ref=$row["input_job_no_random_ref"];
 				$input_trims_status=$row["input_trims_status"];
 				$add_css="behavior: url(border-radius-ie8.htc);  border-radius: 10px;";
-				$trims_status=$row['st_status'];
-				$style=$row['order_style_no'];
-				$schedule=$row['order_del_no'];
-				$order_col=$row['order_col_des'];
-				$input_job_no=$row['input_job_no'];
-				$doc_no_ref=$row["doc_no"];
-				$schedule_no=$row['order_del_no'];
-				$ft_status=$row['ft_status'];
-				$type_of_sewing=$row['type_of_sewing'];
+				
+				
+				// echo $id;
+				$sqly="SELECT type_of_sewing,order_style_no,order_del_no,GROUP_CONCAT(DISTINCT order_col_des) AS order_col_des,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no,sum(carton_act_qty) as carton_qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
+				//echo $sqly."<br>";
+				$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_rowy=mysqli_fetch_array($resulty))
+				{
+					$doc_no_ref=$sql_rowy["doc_no"];	
+					$doc_no_ref_input=$sql_rowy["doc_no"];
+					$carton_qty=$sql_rowy["carton_qty"];
+					$style=$sql_rowy['order_style_no'];
+					$schedule=$sql_rowy['order_del_no'];
+					$order_col=$sql_rowy['order_col_des'];
+					$input_job_no=$sql_rowy['input_job_no'];
+					$schedule_no=$sql_rowy['order_del_no'];
+					$type_of_sewing=$sql_rowy['type_of_sewing'];
+				}			
+				$sql33x112="SELECT MIN(st_status) AS st_status,MIN(ft_status) AS ft_status FROM $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' and order_col_des in ('".implode("','",explode(",",$order_col))."')";
+				$sql_result33x112=mysqli_query($link, $sql33x112) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row33x112=mysqli_fetch_array($sql_result33x112))
+				{
+					$ft_status=$sql_row33x112['ft_status'];
+					$trims_status=$sql_row33x112['st_status'];
+				}
+				
 				if($input_trims_status>1)
 				{
 					$add_css="";
@@ -151,7 +166,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				// $display_prefix1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$input_job_no,$input_job_no_random_ref,$link);
 				// $display_prefix1='J';
 				$prefix="";
-				$sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing IN (SELECT DISTINCT type_of_sewing FROM bai_pro3.pac_stat_log_input_job WHERE `input_job_no_random` = '$input_job_no_random_ref')";
+				$sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing='$type_of_sewing'";
 				// echo $sql."<br>";
 				$sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
@@ -283,16 +298,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					{
 						$id="yash";
 						$rem="Not Update";
-					}
-					// echo $id;
-					$sqly="SELECT group_concat(doc_no) as doc_no,sum(carton_act_qty) as carton_qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
-					//echo $sqly."<br>";
-					$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_rowy=mysqli_fetch_array($resulty))
-					{
-						$doc_no_ref_input=$sql_rowy["doc_no"];
-						$carton_qty=$sql_rowy["carton_qty"];
-					}					
+					}							
 					
 					$club_c_code=array();
 					$sql33x1="SELECT * FROM $bai_pro3.plan_dash_doc_summ where doc_no in (".$doc_no_ref_input.") order by doc_no*1";
