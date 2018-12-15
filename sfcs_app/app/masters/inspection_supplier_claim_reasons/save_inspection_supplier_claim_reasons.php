@@ -74,7 +74,7 @@
 			    <label class="control-label control-label-left col-sm-3" for="complaint_clasification" >Complaint Classification:</label>
 			    <div class="controls col-sm-9">
                     
-                <input id="complaint_clasification" type="text" class="form-control k-textbox alpha" data-role="text" required="required" name="complaint_clasification" value="<?php echo $complaint_clasification; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
+                <input id="complaint_clasification" type="text" class="form-control k-textbox" data-role="text" required="required" name="complaint_clasification" value="<?php echo $complaint_clasification; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
                 
 		</div></div>
         <div class="col-md-4"><div class="form-group">
