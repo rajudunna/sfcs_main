@@ -64,6 +64,7 @@
             <td>".$row["color"]."</td>
             <td>".$row["label"]."</td>
 			<td>".$section_display_name."</td>
+			<td>".$block_priorities."</td>
 			<td>".$row["module_description"]."</td>
 			<td>".$mapped_cut_table."</td>
 			<td>".$row["status"]." </td>
