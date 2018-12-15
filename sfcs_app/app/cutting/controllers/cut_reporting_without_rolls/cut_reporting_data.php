@@ -21,7 +21,7 @@ if($_GET['rejection_docket']!=''){
 }
 
 
-$doc_status_query  = "SELECT a_plies,p_plies,acutno,act_cut_status,order_tid,org_doc_no,remarks,($a_sizes_sum) as ratio 
+$doc_status_query  = "SELECT a_plies,p_plies,acutno,fabric_status,act_cut_status,order_tid,org_doc_no,remarks,($a_sizes_sum) as ratio 
                     from $bai_pro3.plandoc_stat_log where doc_no = '$doc_no'";
 $doc_status_result = mysqli_query($link,$doc_status_query);
 if(mysqli_num_rows($doc_status_result)>0){
