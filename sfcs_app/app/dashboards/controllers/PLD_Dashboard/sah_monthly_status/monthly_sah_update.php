@@ -195,7 +195,13 @@ include '..'.getFullURL($_GET['r'],"header.php",'R');
   while($row_hods=mysqli_fetch_array($sql_result_hod))
   {
 		$section_array[]=$row_hods["sec_id"];
-		$calendar2.='<tr><th class=xl636519>Section - '.$row_hods["sec_id"].'</th><th>:</th><td><input type="textbox" name="section_'.$row_hods["sec_id"].'" style="border=1px solid #999999;" onkeypress="return IsNumeric(event);" size="8" value="'.$plan_sah_mod[($row_hods["sec_id"]-1)].'"/></td></tr>';
+		$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=".$row_hods["sec_id"];
+		$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row12=mysqli_fetch_array($result12))
+		{
+			$section_display_name=$sql_row12["section_display_name"];
+		}
+		$calendar2.='<tr><th class=xl636519>'.$section_display_name.'</th><th>:</th><td><input type="textbox" name="section_'.$row_hods["sec_id"].'" style="border=1px solid #999999;" onkeypress="return IsNumeric(event);" size="8" value="'.$plan_sah_mod[($row_hods["sec_id"]-1)].'"/></td></tr>';
   } 
   $calendar2.= '<br/></table><table><tr><td><br/><input type="submit" value="Save" name="submit" class="btn btn-primary"></td></tr></table>';
 

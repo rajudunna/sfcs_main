@@ -316,6 +316,7 @@
 
 										echo "<br>
 										<div class='col-md-12'><b>Order Details: </b>
+										<div class='table-responsive'>
 											<table class=\"table table-bordered\">
 												<tr>
 													<th>Details</th>";
@@ -371,7 +372,7 @@
 														}
 														echo "<td style='color:".$color."; font-weight:bold'>$tot_balance</td>
 													</tr>";
-											echo "</table>
+											echo "</table></div>
 										</div>";
 									}
 									// Order Details Display End
@@ -380,7 +381,8 @@
 									{
 										$sewing_jobratio_sizes_query = "SELECT parent_id,GROUP_CONCAT(DISTINCT color) AS color, GROUP_CONCAT(DISTINCT ref_size_name) AS size FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id IN (SELECT id FROM $brandix_bts.tbl_carton_ref WHERE ref_order_num=$sch_id AND style_code=$style_id)";
 										$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
-										echo "<br><div class='col-md-12'><b>Garments Per Poly Bag: </b>
+										echo "<br><div class='col-md-12'><b><br/>Garments Per Poly Bag: </b>
+										<div class='table-responsive'>
 											<table class=\"table table-bordered\">
 												<tr>
 													<th>Color</th>";
@@ -425,7 +427,7 @@
 													}
 											echo "</tr>";
 										}
-										echo "</table></div>";
+										echo "</table></div></div>";
 									}
 									// Poly Bag Ratio Details End
 
@@ -438,7 +440,7 @@
 											$poly_bags_per_carton_result=mysqli_query($link, $poly_bags_per_carton_query) or exit("Error while getting poly_bags_per_carton Details");
 											while($poly_bags_per_carton_details=mysqli_fetch_array($poly_bags_per_carton_result)) 
 											{
-												echo "<br><div class='col-md-4'>
+												echo "<br/><div class='col-md-4'>
 															<table class=\"table table-bordered\">
 																<tr><th>Number of Poly Bags Per Carton:</th><th>".$poly_bags_per_carton_details['poly_bags_per_carton']."</th>
 																</tr>
@@ -589,7 +591,7 @@
 											echo  "<input type=\"hidden\" value=\"$val\" id=\"size_of_colors\" name=\"size_of_colors\">";
 											// Combo wise no of cartons start
 											{
-												echo "<div class='col-md-12'>
+												echo "<br/><br/><div class='col-md-12'>
 													<table class='table table-bordered'>
 														<tr>
 															<th>Combo</th>
@@ -649,6 +651,7 @@
 											{
 												echo "<br>
 													<div class='col-md-12'><b>Sewing Job Qty: </b>
+													<div class='table-responsive'>
 														<table class=\"table table-bordered\">
 															<tr>
 																<th>Color</th>
@@ -712,13 +715,14 @@
 																echo "</tr>";
 																$row_count++;
 															}
-														echo "</table>
+														echo "</table></div>
 													</div>
 												";
 											}
+											echo "<br/>";
 											// Sewing Job Qty End
 											// var_dump($combo);
-											echo "<div class='col-md-2'>
+											echo "<br/><br/><div class='col-md-2'>
 												<table class='table table-bordered'>
 													<tr>
 														<th style='display: none;'><center>Mix Cut Jobs</center></th>

@@ -2,23 +2,50 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/mo_filling.php',4,'R'));?>
 <?php
+$tran_order_tid=$_GET['tran_order_tid'];
+$mk_ref=$_GET['mkref'];
+$allocate_ref=$_GET['allocate_ref'];
+$cat_ref2=$_GET['cat_ref'];
+$color=$_GET['color'];
+$schedule=$_GET['schedule'];
+
+$sql4="select * from $bai_pro3.plandoc_stat_log where order_tid='$tran_order_tid' and cat_ref='$cat_ref2' and allocate_ref='$allocate_ref' and mk_ref='$mk_ref'";
+$sql_result1=mysqli_query($link, $sql4) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result1_res=mysqli_num_rows($sql_result1);
+
+$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
+mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check=mysqli_num_rows($sql_result);
+
+while($sql_row=mysqli_fetch_array($sql_result))
+{
+	$style=$sql_row['order_style_no'];
+}
+
+
+
+
+{
+if($sql_result1_res==0){
+
 function get_val($table_name,$field,$compare,$key,$link)
 {
-	$sql="select $field as result from $table_name where $compare='$key'";
-	$sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		return $sql_row['result'];
-	}
-	((mysqli_free_result($sql_result) || (is_object($sql_result) && (get_class($sql_result) == "mysqli_result"))) ? true : false);
+    $sql="select $field as result from $table_name where $compare='$key'";
+    $sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_row=mysqli_fetch_array($sql_result))
+    {
+        return $sql_row['result'];
+    }
+    ((mysqli_free_result($sql_result) || (is_object($sql_result) && (get_class($sql_result) == "mysqli_result"))) ? true : false);
 }
 ?>
 
 <script type="text/javascript">
 function popitup(url) {
-	newwindow=window.open(url,'name','scrollbars=1,menubar=1,resizable=1,location=0,toolbar=0');
-	if (window.focus) {newwindow.focus()}
-	return false;
+    newwindow=window.open(url,'name','scrollbars=1,menubar=1,resizable=1,location=0,toolbar=0');
+    if (window.focus) {newwindow.focus()}
+    return false;
 }
 </script>
 
@@ -197,9 +224,9 @@ $sql_num_check=mysqli_num_rows($sql_result);
 
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$color=$sql_row['order_col_des'];
-	$style=$sql_row['order_style_no'];
-	$schedule=$sql_row['order_del_no'];
+    $color=$sql_row['order_col_des'];
+    $style=$sql_row['order_style_no'];
+    $schedule=$sql_row['order_del_no'];
 
 
 }
@@ -217,168 +244,190 @@ $sql_num_check=mysqli_num_rows($sql_result);
 
 if($sql_num_check==0)
 {
-	$sql="insert ignore into $bai_pro3.bai_orders_db_confirm select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	//$sql_num_confirm=mysql_num_rows($sql_result);
+    $sql="insert ignore into $bai_pro3.bai_orders_db_confirm select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
+    $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    //$sql_num_confirm=mysql_num_rows($sql_result);
 }
 
-	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"../main_interface.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+    //echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() { location.href = \"../main_interface.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
 
 
 $sql23="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=\"$cat_ref\" order by acutno";
 $sql_result23=mysqli_query($link, $sql23) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row23=mysqli_fetch_array($sql_result23))
 {
-	$doc_no=$sql_row23['doc_no'];
-	$cut_no=$sql_row23['acutno'];
+    $doc_no=$sql_row23['doc_no'];
+    $cut_no=$sql_row23['acutno'];
 }
 
-//  Mo club details
+// Mo club details
 // Operation wise MO wise data details dumping
 // $schedule_no=array();
 // $color_no=array();
 
-// $connect =  odbc_connect($serverName, $uid, $pwd);
+// $connect = odbc_connect($serverName, $uid, $pwd);
 // $sch_check="J".$schedule;
 // $check_club = get_val("bai_pro3.bai_orders_db_confirm","count(*)","order_joins",$sch_check,$link);
 // if($check_club>0)
 // {
-// 	$sql="select * from bai_orders_db_confirm where order_joins=\"$sch_check\"";
-// 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-// 	while($sql_row=mysqli_fetch_array($sql_result))
-// 	{
-// 		$color_no[]=$sql_row['order_col_des'];
-// 		$schedule_no[]=$sql_row['order_del_no'];
-// 	}
+//  $sql="select * from bai_orders_db_confirm where order_joins=\"$sch_check\"";
+//  $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+//  while($sql_row=mysqli_fetch_array($sql_result))
+//  {
+//      $color_no[]=$sql_row['order_col_des'];
+//      $schedule_no[]=$sql_row['order_del_no'];
+//  }
 // }
 // else
 // {
-// 	$sql="select * from bai_orders_db_confirm where order_tid=\"$tran_order_tid\" group by order_del_no,order_col_des";
-// 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-// 	while($sql_row=mysqli_fetch_array($sql_result))
-// 	{
-// 		$color_no[]=$sql_row['order_col_des'];
-// 		$schedule_no[]=$sql_row['order_del_no'];
-// 	}
+//  $sql="select * from bai_orders_db_confirm where order_tid=\"$tran_order_tid\" group by order_del_no,order_col_des";
+//  $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+//  while($sql_row=mysqli_fetch_array($sql_result))
+//  {
+//      $color_no[]=$sql_row['order_col_des'];
+//      $schedule_no[]=$sql_row['order_del_no'];
+//  }
 // }
 // //echo sizeof($color_no)."--".sizeof($schedule_no)."<br>";
 
 // for($k=0;$k<sizeof($schedule_no);$k++)
 // {
-// 	$sql112="select * from bai_pro3.bai_orders_db_confirm_mo where order_del_no='".$schedule_no[$k]."' and order_col_des='".$color_no[$k]."'";
-// 	//	echo $sql112."<br>";
-// 	$sql_result112=mysqli_query($link, $sql112) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
-// 	if(mysqli_num_rows($sql_result112)==0)
-// 	{
-// 		$tsql="SELECT
-// 		[BELMasterUAT].[m3].[MO].Style,
-// 		[BELMasterUAT].[m3].[MOOperation].ScheduleNumber,
-// 		[BELMasterUAT].[m3].[StyleMaster].ColorId,
-// 		[BELMasterUAT].[m3].[ColorMaster].Description,
-// 		[BELMasterUAT].[m3].[StyleMaster].SizeId,
-// 		[BELMasterUAT].[m3].[StyleMaster].ZFeature,
-// 		[BELMasterUAT].[m3].[StyleMaster].ZFeatureId,
-// 		[BELMasterUAT].[m3].[MOOperation].MONumber,
-// 		[BELMasterUAT].[m3].[MOOperation].SMV,
-// 		[BELMasterUAT].[m3].[MOOperation].OperationDescription,
-// 		[BELMasterUAT].[m3].[MOOperation].OperationNumber,
-// 		[BELMasterUAT].[m3].[StyleMaster].SequenceNoForSorting,
-// 		[BELMasterUAT].[m3].[MO].OrderQty,
-// 		[BELMasterUAT].[m3].[MO].COId,
-// 		[BELMasterUAT].[m3].[StyleMaster].Description
-// 		FROM [BELMasterUAT].[m3].[MOOperation]
-// 		INNER JOIN [BELMasterUAT].[m3].[MO] ON [BELMasterUAT].[m3].[MO].MONumber=[BELMasterUAT].[m3].[MOOperation].MONumber
-// 		INNER JOIN [BELMasterUAT].[m3].[StyleMaster] ON [BELMasterUAT].[m3].[StyleMaster].SKU=[BELMasterUAT].[m3].[MOOperation].SKU
-// 		INNER JOIN [BELMasterUAT].[m3].[ColorMaster] ON [BELMasterUAT].[m3].[ColorMaster].ColorId=[BELMasterUAT].[m3].[StyleMaster].ColorId
-// 		WHERE ScheduleNumber=".$schedule_no[$k]." and [BELMasterUAT].[m3].[ColorMaster].Description='".$color_no[$k]."'
-// 		ORDER BY [BELMasterUAT].[m3].[StyleMaster].SequenceNoForSorting,[BELMasterUAT].[m3].[StyleMaster].ZFeatureId,
-// 		[BELMasterUAT].[m3].[MOOperation].MONumber,[BELMasterUAT].[m3].[MOOperation].OperationNumber*1";
-// 		//	echo $tsql."<br>";
-// 		$ii=1;$temp_size='';$old_Mo_tmp=0;$i=1;
-// 		$result = odbc_exec($connect, $tsql);
-// 		while(odbc_fetch_row($result))
-// 		{
-// 			$Style=odbc_result($result,1);
-// 			$ScheduleNumber=odbc_result($result,2);
-// 			$ColorId=str_replace('"',"",odbc_result($result,4));
-// 			$Description=odbc_result($result,4);
-// 			$sizeidold=odbc_result($result,5);
-// 			$ZFeature=odbc_result($result,6);
-// 			$ZFeatureId=odbc_result($result,7);
-// 			$MONumber=odbc_result($result,8);
-// 			$SMV=odbc_result($result,9);
-// 			$OperationDescription=odbc_result($result,10);
-// 			$OperationNumber=odbc_result($result,11);
-// 			$SequenceNoForSorting=odbc_result($result,12);
-// 			$mo_qty=odbc_result($result,13);
-// 			$co_no=odbc_result($result,14);
-// 			$SizeId=odbc_result($result,15);
-// 			$desti_n=odbc_result($result,6);
-// 			$sfcs_size_code='';
-// 			$sql2="select * from bai_pro3.bai_orders_db_confirm where order_del_no='".$ScheduleNumber."' and order_col_des='".$ColorId."'";
-// 			//echo $sql."<br>";
-// 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
-// 			while($sql_row=mysqli_fetch_array($sql_result2))
-// 			{
-// 				for($j=0;$j<sizeof($sizes_array);$j++)
-// 				{
-// 					if(trim($sql_row["title_size_".$sizes_array[$j].""]) == trim($SizeId))
-// 					{
-// 						$sfcs_size_code=$sizes_array[$j];
-// 					}
-// 				}
-// 			}
-// 			$sfcs_ops=get_val("m3_bulk_ops_rep_db.m3_operation_master","sfcsm3operation","m3operationid",$OperationNumber,$link);
+//  $sql112="select * from bai_pro3.bai_orders_db_confirm_mo where order_del_no='".$schedule_no[$k]."' and order_col_des='".$color_no[$k]."'";
+//  //  echo $sql112."<br>";
+//  $sql_result112=mysqli_query($link, $sql112) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
+//  if(mysqli_num_rows($sql_result112)==0)
+//  {
+//      $tsql="SELECT
+//      [BELMasterUAT].[m3].[MO].Style,
+//      [BELMasterUAT].[m3].[MOOperation].ScheduleNumber,
+//      [BELMasterUAT].[m3].[StyleMaster].ColorId,
+//      [BELMasterUAT].[m3].[ColorMaster].Description,
+//      [BELMasterUAT].[m3].[StyleMaster].SizeId,
+//      [BELMasterUAT].[m3].[StyleMaster].ZFeature,
+//      [BELMasterUAT].[m3].[StyleMaster].ZFeatureId,
+//      [BELMasterUAT].[m3].[MOOperation].MONumber,
+//      [BELMasterUAT].[m3].[MOOperation].SMV,
+//      [BELMasterUAT].[m3].[MOOperation].OperationDescription,
+//      [BELMasterUAT].[m3].[MOOperation].OperationNumber,
+//      [BELMasterUAT].[m3].[StyleMaster].SequenceNoForSorting,
+//      [BELMasterUAT].[m3].[MO].OrderQty,
+//      [BELMasterUAT].[m3].[MO].COId,
+//      [BELMasterUAT].[m3].[StyleMaster].Description
+//      FROM [BELMasterUAT].[m3].[MOOperation]
+//      INNER JOIN [BELMasterUAT].[m3].[MO] ON [BELMasterUAT].[m3].[MO].MONumber=[BELMasterUAT].[m3].[MOOperation].MONumber
+//      INNER JOIN [BELMasterUAT].[m3].[StyleMaster] ON [BELMasterUAT].[m3].[StyleMaster].SKU=[BELMasterUAT].[m3].[MOOperation].SKU
+//      INNER JOIN [BELMasterUAT].[m3].[ColorMaster] ON [BELMasterUAT].[m3].[ColorMaster].ColorId=[BELMasterUAT].[m3].[StyleMaster].ColorId
+//      WHERE ScheduleNumber=".$schedule_no[$k]." and [BELMasterUAT].[m3].[ColorMaster].Description='".$color_no[$k]."'
+//      ORDER BY [BELMasterUAT].[m3].[StyleMaster].SequenceNoForSorting,[BELMasterUAT].[m3].[StyleMaster].ZFeatureId,
+//      [BELMasterUAT].[m3].[MOOperation].MONumber,[BELMasterUAT].[m3].[MOOperation].OperationNumber*1";
+//      //  echo $tsql."<br>";
+//      $ii=1;$temp_size='';$old_Mo_tmp=0;$i=1;
+//      $result = odbc_exec($connect, $tsql);
+//      while(odbc_fetch_row($result))
+//      {
+//          $Style=odbc_result($result,1);
+//          $ScheduleNumber=odbc_result($result,2);
+//          $ColorId=str_replace('"',"",odbc_result($result,4));
+//          $Description=odbc_result($result,4);
+//          $sizeidold=odbc_result($result,5);
+//          $ZFeature=odbc_result($result,6);
+//          $ZFeatureId=odbc_result($result,7);
+//          $MONumber=odbc_result($result,8);
+//          $SMV=odbc_result($result,9);
+//          $OperationDescription=odbc_result($result,10);
+//          $OperationNumber=odbc_result($result,11);
+//          $SequenceNoForSorting=odbc_result($result,12);
+//          $mo_qty=odbc_result($result,13);
+//          $co_no=odbc_result($result,14);
+//          $SizeId=odbc_result($result,15);
+//          $desti_n=odbc_result($result,6);
+//          $sfcs_size_code='';
+//          $sql2="select * from bai_pro3.bai_orders_db_confirm where order_del_no='".$ScheduleNumber."' and order_col_des='".$ColorId."'";
+//          //echo $sql."<br>";
+//          $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
+//          while($sql_row=mysqli_fetch_array($sql_result2))
+//          {
+//              for($j=0;$j<sizeof($sizes_array);$j++)
+//              {
+//                  if(trim($sql_row["title_size_".$sizes_array[$j].""]) == trim($SizeId))
+//                  {
+//                      $sfcs_size_code=$sizes_array[$j];
+//                  }
+//              }
+//          }
+//          $sfcs_ops=get_val("m3_bulk_ops_rep_db.m3_operation_master","sfcsm3operation","m3operationid",$OperationNumber,$link);
 
-// 			$sql12="INSERT INTO `bai_pro3`.`bai_orders_db_confirm_mo` (`order_style_no`, `order_del_no`, `order_col_des`, `sfcs_size`, `m_size`, `mo_qty`, `sfcs_ops`, `m_ops`, `zfeature_desc`, `mo_number`, `destination`, `zfeature`, `co_no`)
-// 			VALUES('".$Style."','".$ScheduleNumber."','".$ColorId."','".$sfcs_size_code."','".$SizeId."','".$mo_qty."','".$sfcs_ops."','".$OperationNumber."','".$ZFeature."','".$MONumber."','".$desti_n."','".$ZFeatureId."','".$co_no."')";
-// 			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
-// 			if($old_Mo_tmp<>$MONumber && $ii==2)
-// 			{
-// 				$sql13="update bai_pro3.bai_orders_db_confirm_mo set order_no='".$i."' where mo_number='".$old_Mo_tmp."'";
-// 				$sql_result13=mysqli_query($link, $sql13) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
-// 				$i++;
-// 			}
-// 			$ii=2;
-// 			$temp_size=$SizeId;
-// 			$old_Mo_tmp=$MONumber;
-// 		}
-// 		$sql21="update bai_pro3.bai_orders_db_confirm_mo set order_no='".$i."' where mo_number='".$MONumber."'";
-// 		$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
+//          $sql12="INSERT INTO `bai_pro3`.`bai_orders_db_confirm_mo` (`order_style_no`, `order_del_no`, `order_col_des`, `sfcs_size`, `m_size`, `mo_qty`, `sfcs_ops`, `m_ops`, `zfeature_desc`, `mo_number`, `destination`, `zfeature`, `co_no`)
+//          VALUES('".$Style."','".$ScheduleNumber."','".$ColorId."','".$sfcs_size_code."','".$SizeId."','".$mo_qty."','".$sfcs_ops."','".$OperationNumber."','".$ZFeature."','".$MONumber."','".$desti_n."','".$ZFeatureId."','".$co_no."')";
+//          $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
+//          if($old_Mo_tmp<>$MONumber && $ii==2)
+//          {
+//              $sql13="update bai_pro3.bai_orders_db_confirm_mo set order_no='".$i."' where mo_number='".$old_Mo_tmp."'";
+//              $sql_result13=mysqli_query($link, $sql13) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
+//              $i++;
+//          }
+//          $ii=2;
+//          $temp_size=$SizeId;
+//          $old_Mo_tmp=$MONumber;
+//      }
+//      $sql21="update bai_pro3.bai_orders_db_confirm_mo set order_no='".$i."' where mo_number='".$MONumber."'";
+//      $sql_result21=mysqli_query($link, $sql21) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
-// 	}
+//  }
 // }
 //echo "<div class='panel panel-primary'><div class='panel-body'>";
 $order_joins_check="SELECT order_joins FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_tid='".$tran_order_tid."'";
 $order_joins_result=mysqli_query($link, $order_joins_check) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($order_joins_result))
 {
-	$order_joins=$sql_row['order_joins'];
+    $order_joins=$sql_row['order_joins'];
 }
 if ($order_joins>'0' or $order_joins>0) {
-  echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+ echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+        function Redirect() {
+            sweetAlert('Successfully Generated','','success');
+            location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+            }
+        </script>";
+        
+    // echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+            // function Redirect() {
+                // location.href = \"".getFullURLLevel($_GET['r'], 'production/controllers/sewing_job/sewing_job_mo_fill.php',3,'N')."&order_tid=$tran_order_tid&process_name=cutting&filename=layplan\";
+                // }
+            // </script>";      
+} else {
+    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+            function Redirect() {
+                location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&order_tid=$tran_order_tid&color=$color&style=$style&schedule=$schedule\";
+                }
+            </script>";
+}
+
+}
+else{
+    $sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
+	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
+
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$color=$sql_row['order_col_des'];
+		$style=$sql_row['order_style_no'];
+		$schedule=$sql_row['order_del_no'];
+
+
+	}
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 		function Redirect() {
-			sweetAlert('Successfully Generated','','success');
+			sweetAlert('Dockets Already Generated','','warning');
 			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
 			}
 		</script>";
-		
-	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-			// function Redirect() {
-				// location.href = \"".getFullURLLevel($_GET['r'], 'production/controllers/sewing_job/sewing_job_mo_fill.php',3,'N')."&order_tid=$tran_order_tid&process_name=cutting&filename=layplan\";
-				// }
-			// </script>";		
-} else {
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-			function Redirect() {
-				location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&order_tid=$tran_order_tid&color=$color&style=$style&schedule=$schedule\";
-				}
-			</script>";
+
 }
-
-
-	
+}
 //echo "<a href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "1", "N")."&color=$color&style=$style&schedule=$schedule\" class='btn btn-warning btn-sm'>Click here to Go Back</a>";
 
 // echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";

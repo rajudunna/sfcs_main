@@ -165,6 +165,7 @@
 					$sewing_jobratio_sizes_query = "SELECT parent_id,GROUP_CONCAT(DISTINCT color) AS color, GROUP_CONCAT(DISTINCT ref_size_name) AS size FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id IN (SELECT id FROM $brandix_bts.tbl_carton_ref WHERE ref_order_num=$schedule AND style_code=$style_code)";
 					$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
 					echo "<br><div class='col-md-12'><b>Garments Per Poly Bag: </b>
+					<div class='table-responsive'>
 						<table class=\"table table-bordered\">
 							<tr>
 								<th>Color</th>";
@@ -212,7 +213,7 @@
 									}
 							echo "</tr>";
 						}
-						echo "</table></div>";
+						echo "</table></div></div>";
 					}
 					// GArments per Poly Bag Details End
 
@@ -248,6 +249,7 @@
 							}
 
 							echo "<br><div class='col-md-12'><b>Number of Poly Bags Per Carton: </b>
+							<div class='table-responsive'>
 							<table class=\"table table-bordered\">
 								<tr>";
 								for ($i=0; $i < sizeof($size_title); $i++)
@@ -260,7 +262,7 @@
 									echo "<td>$poly_bags_per_carton[$i]</td>";
 								}
 								echo "</tr>
-							</table></div>";
+							</table></div></div>";
 						}				
 					}
 					// Poly Bags per Carton end

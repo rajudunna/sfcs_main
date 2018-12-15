@@ -63,7 +63,7 @@
                                 echo '<input type="hidden" name="mix_colors" value="'.$mix_colors.'">';
                                 echo '<input type="hidden" name="job_qty" value="'.$job_qty.'">';
 
-                                echo "
+                                echo "<div class='table-responsive'>
                                     <table class='table table-bordered'>";
                                         echo "<tr class='info'>";
                                         echo "<th>Schedule</th>";
@@ -160,7 +160,7 @@
                                             echo"</tr>";
                                         }
                                         
-                                   echo ' </table>
+                                   echo ' </table></div>
                             </form>
                 </div>
             </div>';
@@ -233,7 +233,7 @@
                             echo '<input type="hidden" name="mix_colors" value="'.$mix_colors.'">';
                             echo '<input type="hidden" name="job_qty" value="'.$job_qty.'">';
 
-                            echo "<div class='row'>
+                            echo "<div class='table table-responsive'><div class='row'>
                                 <table class='table table-bordered'>";
                                     echo "<tr>";
                                     echo "<th>Schedule</th>";
@@ -337,6 +337,7 @@
                                     }
                                     ?>
                                 </table>
+                </div>
                         </form>
                 </div>
              </div>

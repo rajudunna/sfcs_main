@@ -622,8 +622,6 @@ if(isset($_POST['submit']))
 		echo "<option value=\"".$sql_mods[$i]."\">".$sql_mods[$i]."</option>";
 		}	
 	}
-	//echo "<option value=\"2\">Cut Section - 2</option>";
-	//echo "<option value=\"3\">Cut Section - 3</option>"; 
 	echo "</select></div></td></tr>";
 
 	//echo "<tr><td colspan='2'><input type=\"submit\" name=\"update\" value=\"Update\"></td></tr>";

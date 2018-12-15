@@ -19,8 +19,10 @@
 		<thead>
 		<tr>
 		<th>S.No</th>
+		<th>Section ID</th>
 		<th>Section Name</th>
-		<th>IMS Priority Boxs</th>
+		<th>Section Head</th>
+		<th>IMS Priority Boxes</th>
 		<th> Edit </th>
 		</tr>
 		</thead>
@@ -30,27 +32,28 @@
 			$rowid=$row["sec_id"];
 			$sec_name=$row["sec_name"];
 			$ims_priority_boxs=$row["ims_priority_boxs"];
-			
+			$section_display_name=$row["section_display_name"];
+			$section_head=$row["section_head"];
 			echo "<tr>
 			<td>".$sno++."</td>
 			<td>".$row["sec_name"]."</td>
+			<td>".$row["section_display_name"]."</td>
+			<td>".$row["section_head"]."</td>
 			<td>".$row["ims_priority_boxs"]."</td>
-			<td><a href='$url&rowid=$rowid&sec_name=$sec_name&ims_priority_boxs=$ims_priority_boxs' class='btn btn-warning btn-xs editor_edit'>Edit</a></td>
+			<td><a href='$url&rowid=$rowid&sec_name=$sec_name&ims_priority_boxs=$ims_priority_boxs&section_display_name=$section_display_name&section_head=$section_head' class='btn btn-warning btn-xs editor_edit'>Edit</a></td>
 			</tr>";
 		}
-
 		echo "</tbody></table>";
 	} else {
 		echo "0 results";
 	}
 	$conn->close();
 	?>
-<!-- /index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw -->
 
 <script>
-$(document).ready(function() {
-    $('#section_master').DataTable();
-} );
+	$(document).ready(function() {
+		$('#section_master').DataTable();
+	});
 </script>
 <style>
 table th

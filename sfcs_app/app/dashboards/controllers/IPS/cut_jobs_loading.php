@@ -311,25 +311,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 if($sql_num_check>0)
 {
-	// $sql1="select group_concat(sec_mods) as mods from bai_pro3.sections_db";
-	// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// while($sql_row1=mysqli_fetch_array($sql_result1))
-	// {
-	// 	$modules=$sql_row1["mods"];
-	// }	
-	// $modules_array=explode(",",$modules);
-	
-	// if(strlen($color)>0)
-	// {
-	// 	echo "Select Modules: <select name=\"modules\" class=\"form-control\" id='modules'>";
-	// 	for($i1=0;$i1<sizeof($modules_array);$i1++)
-	// 	{
-	// 		echo "<option value=\"".$modules_array[$i1]."\">".$modules_array[$i1]."</option>";
-	// 	}
-	// 	echo "</select>&nbsp;&nbsp;";
-	// }
-	
 	echo "Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
 	echo "<input type=\"hidden\" name=\"code\" value=\"$code\">";
 	echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
