@@ -7,9 +7,9 @@ if(isset($_GET['get_data'])){
     get_details($module);
     exit();
 }else if(isset($_GET['save_data'])){
-	$module = $_GET['to_module'];
-	$module1 = $_GET['module'];
-	$data = $_POST;
+    $module = $_GET['to_module'];
+    $module1 = $_GET['module'];
+    $data = $_POST;
     $res = save_details($data,$module,$module1);
     $json['saved'] = $res;
     echo json_encode($json);
@@ -19,8 +19,8 @@ if(isset($_GET['get_data'])){
 
 
 function get_details($module){
-	    $counter = 0;
-	    include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+        $counter = 0;
+        include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 
     $html_out = "<div class='panel panel-primary'>";
      $html_out.= "<div class='panel-heading'><h3>Module -$module</h3></div>";
@@ -35,15 +35,25 @@ function get_details($module){
                      </tr>
                  </thead>
                  <tbody>";
-	$check_module="Select input_module,input_job_no_random_ref From $bai_pro3.plan_dashboard_input where input_module='$module'";
-	//echo $check_module;
-	$result1 = mysqli_query($link, $check_module)or exit("Module missing".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $check_module="Select input_module,input_job_no_random_ref From $bai_pro3.plan_dashboard_input where input_module='$module'";
+    //echo $check_module;
+    $result1 = mysqli_query($link, $check_module)or exit("Module missing".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row1 = mysqli_fetch_array($result1))
     {
-		$input_job=$row1['input_job_no_random_ref'];
-		$module=$row1['input_module'];
+        $input_job=$row1['input_job_no_random_ref'];
+        $module=$row1['input_module'];
         
         // echo "<b>Module:</b> $module | <b>input_job:</b> $input_job"; 
+        //To get style and schedule
+        $get_details="select order_style_no,order_del_no from $bai_pro3.packing_summary_input where input_job_no_random='$input_job'";
+        //echo $get_details;
+        $get_details_result=mysqli_query($link, $get_details)or exit("details_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($row2=mysqli_fetch_array($get_details_result))
+        {
+            $style=$row2['order_style_no'];
+            $schedule=$row2['order_del_no'];
+        }
+
      
 
 
@@ -58,29 +68,44 @@ function get_details($module){
             $operation_code=$sql_row1['operation_code'];
         }
 
-        $bcd_query="select sum(recevied_qty) as rec,style,schedule,color From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$input_job' and operation_id = $operation_code group by input_job_no_random_ref";
+        $bcd_query="select sum(recevied_qty) as rec From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$input_job' and operation_id = $operation_code group by input_job_no_random_ref";
         //echo $bcd_query;
         $bcd_result=mysqli_query($link, $bcd_query)or exit("recevied qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
-        while($sql_row2=mysqli_fetch_array($bcd_result))
+        $sql_num_check=mysqli_num_rows($bcd_result);
+        if($sql_num_check >0)
         {
-            $rec_qty=$sql_row2['rec'];
-            // $code.=$input_job."-".$sql_row2['style']."-".$sql_row2['schedule']."-".$sql_row2['color'];
-            if ($rec_qty == 0)
+            while($sql_row2=mysqli_fetch_array($bcd_result))
             {
-            	$counter++;
-            	$html_out.= "<tr>";
-            	$html_out.= "<td>
-                <input type='hidden' value='$input_job' id='job_$counter'>
-            	<input type='checkbox' class='custom-control-input boxes' id='$counter' onchange='checkedMe(this)'></td>
-				<td>$input_job</td>
-				<td>".$sql_row2['style']."</td>
-				<td>".$sql_row2['schedule']."</td>";
-				$html_out.= "</tr>";
+                $rec_qty=$sql_row2['rec'];
+                // $code.=$input_job."-".$sql_row2['style']."-".$sql_row2['schedule']."-".$sql_row2['color'];
+                if ($rec_qty == 0)
+                {
+                    $counter++;
+                    $html_out.= "<tr>";
+                    $html_out.= "<td>
+                    <input type='hidden' value='$input_job' id='job_$counter'>
+                    <input type='checkbox' class='custom-control-input boxes' id='$counter' onchange='checkedMe(this)'></td>
+                    <td>$input_job</td>
+                    <td>$style</td>
+                    <td>$schedule</td>";
+                    $html_out.= "</tr>";
+                }
+                 
             }
-             
+        }else
+        {
+                    $counter++;
+                    $html_out.= "<tr>";
+                    $html_out.= "<td>
+                    <input type='hidden' value='$input_job' id='job_$counter'>
+                    <input type='checkbox' class='custom-control-input boxes' id='$counter' onchange='checkedMe(this)'></td>
+                    <td>$input_job</td>
+                    <td>$style</td>
+                    <td>$schedule</td>";
+                    $html_out.= "</tr>";
         }
        
-    } 	
+    }   
     if($counter == 0){
         $json['records'] = 0;
         echo json_encode($json);    
@@ -94,19 +119,19 @@ function get_details($module){
 }
 
 function save_details($data,$module,$module1){
-	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+    include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
     $counter = 0;
     foreach($data['jobs'] as $job){
 
         $plan_query="UPDATE $bai_pro3.plan_dashboard_input SET input_module = '$module' where input_job_no_random_ref = '$job'";
-    	mysqli_query($link, $plan_query)or exit("plan_update qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        mysqli_query($link, $plan_query)or exit("plan_update qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
-    	$bcd_update_query="UPDATE $brandix_bts.bundle_creation_data SET assigned_module='$module' where input_job_no_random_ref = '$job'";
-    	mysqli_query($link, $bcd_update_query)or exit("update qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $bcd_update_query="UPDATE $brandix_bts.bundle_creation_data SET assigned_module='$module' where input_job_no_random_ref = '$job'";
+        mysqli_query($link, $bcd_update_query)or exit("update qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
         $insert_qry="insert into bai_pro3.ips_job_transfer (job_no,module,transfered_module,user) values (".$job.",".$module1.",".$module.",'".$username."')";
-    	mysqli_query($link, $insert_qry)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        mysqli_query($link, $insert_qry)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $counter++;
     }
     return 1;
