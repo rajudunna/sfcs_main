@@ -120,7 +120,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowy=mysqli_fetch_array($resulty))
 				{
-					$doc_no_ref=$sql_rowy["doc_no"];	
+					$doc_no_ref = $sql_rowy["doc_no"];
+					$doc_no_ref1 = $sql_rowy["doc_no"];
 					$doc_no_ref_input=$sql_rowy["doc_no"];
 					$carton_qty=$sql_rowy["carton_qty"];
 					$style=$sql_rowy['order_style_no'];
@@ -130,6 +131,17 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$schedule_no=$sql_rowy['order_del_no'];
 					$type_of_sewing=$sql_rowy['type_of_sewing'];
 				}			
+				//FOR SCHEDULE CLUBBING ensuring for parent docket
+				if($doc_no_ref != ''){
+					$parent_doc_query = "SELECT GROUP_CONCAT(org_doc_no) as docs from $bai_pro3.plandoc_stat_log  
+										where doc_no IN ($doc_no_ref) and org_doc_no > 0";
+					$parent_doc_result = mysqli_query($link,$parent_doc_query);
+					if($org_row = mysqli_fetch_array($parent_doc_result))
+						$doc_no_ref = $org_row['docs'];
+				}
+				if($doc_no_ref == '')
+					$doc_no_ref = $doc_no_ref1;
+
 				$sql33x112="SELECT MIN(st_status) AS st_status,MIN(ft_status) AS ft_status FROM $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' and order_col_des in ('".implode("','",explode(",",$order_col))."')";
 				$sql_result33x112=mysqli_query($link, $sql33x112) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row33x112=mysqli_fetch_array($sql_result33x112))

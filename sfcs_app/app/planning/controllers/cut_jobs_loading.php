@@ -213,7 +213,7 @@ echo "</select>";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 //{
 	//$sql="select distinct order_del_no from plan_doc_summ_input";	
-	//$sql="select distinct order_del_no from bai_orders_db where order_joins IN ('0','1','2') order by order_joins*1";
+	//$sql="select distinct order_del_no from bai_orders_db where $order_joins_in_full order by order_joins*1";
 	$sql="select distinct order_del_no from $bai_pro3.plan_doc_summ where order_style_no=\"$style\"";	
 //}
 echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" id='schedule'>";
