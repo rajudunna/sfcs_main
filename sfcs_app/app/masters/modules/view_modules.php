@@ -16,7 +16,7 @@
 	$url=getFullURL($_GET['r'],'add_module.php','N');
 	$url1=getFullURL($_GET['r'],'delete_module.php','N');
 	if ($result->num_rows > 0) {
-		echo "<div style='overflow-x:auto;'><table id='module_master' class='table'>
+		echo "<table id='module_master' class='table'>
 		<thead>
 		<tr>
 		<th>S.No</th>
@@ -24,7 +24,6 @@
         <th>Module Color</th>
         <th>Module Label</th>
 		<th>Section Name</th>
-		<th>Block Priorities</th>		
 		<th>Module Description</th>		
 		<th>Mapped Cut Table</th>
 		<th>Status</th>
@@ -52,7 +51,6 @@
             $label=$row["label"];
 			$module_description=$row["module_description"];
 			$mapped_cut_table=$row["mapped_cut_table"];
-			$block_priorities=$row["block_priorities"];
 			if ($mapped_cut_table == '' or $mapped_cut_table == NULL)
 			{
 				$mapped_cut_table = ' - ';
@@ -64,15 +62,14 @@
             <td>".$row["color"]."</td>
             <td>".$row["label"]."</td>
 			<td>".$section_display_name."</td>
-			<td>".$block_priorities."</td>
 			<td>".$row["module_description"]."</td>
 			<td>".$mapped_cut_table."</td>
 			<td>".$row["status"]." </td>
-			<td><a href='$url&rowid=$rowid&module_name=$module_name&section=$section&status=$status&module_description=$module_description&block_priorities=$block_priorities&mapped_cut_table=$mapped_cut_table&module_color=$color&module_label=$label' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid&module_name=$module_name&section=$section' class='btn btn-danger btn-xs editor_remove'>Delete</a></td>
+			<td><a href='$url&rowid=$rowid&module_name=$module_name&section=$section&status=$status&module_description=$module_description&mapped_cut_table=$mapped_cut_table&module_color=$color&module_label=$label' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid&&module_name=$module_name&section=$section' class='btn btn-danger btn-xs editor_remove'>Delete</a></td>
 			</tr>";
 		}
 
-		echo "</tbody></table></div>";
+		echo "</tbody></table>";
 	} else {
 		echo "0 results";
 	}
