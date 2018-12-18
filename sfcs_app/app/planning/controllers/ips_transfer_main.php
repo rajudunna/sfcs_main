@@ -55,12 +55,16 @@
                 if(data.records == '0'){
                     swal('No Jobs For Transfer','','warning');
                     document.getElementById('dynamic_table').innerHTML = '';
+                    document.getElementById('show_to_module').style.display = "none";
+
                 }
 
             }
         });
     }
-
+    function clear_data(){
+       getdata();
+    }
     function post_data(){
         to_module = $("#to_module").val();
         module = $("#module").val();
@@ -123,19 +127,22 @@
                 
                     </div>   
                     <div class='row' id='show_to_module' style='display:none'> 
-                        <div class="col-sm-2">
+                        <div class="col-sm-1">
                             <label>To Module:</label>
-                            <select  name="to_module" class="form-control" id="to_module">
-                                <option value="" disabled selected>Select Module</option>
-                                <?php
-                                    foreach($modules as $module)
-                                        echo "<option value='$module'>$module</option>"
-                                ?>
-                            </select>
                         </div>
-                        <div class="col-sm-1" id='submit_button' style='display:none'>   
+                        <div class="col-sm-2">                            
+                            <select  name="to_module" class="form-control" id="to_module">
+                            <option value="" disabled selected>Select Module</option>
+                            <?php
+                                foreach($modules as $module)
+                                    echo "<option value='$module'>$module</option>"
+                            ?>
+                        </select>
+                        </div>
+                        <div class="col-sm-3" id='submit_button' style='display:none'>   
                             <label><br/></label>
-                            <input type="button"  class="btn btn-success" value="Transfer" onclick="post_data()"> 
+                            <input type="button"  class="btn btn-success" value="Transfer" onclick="post_data()">
+                            <input type="button"  class="btn btn-success" value="Cancel" onclick="clear_data()"> 
                         </div>
                     </div>
                 </div>
