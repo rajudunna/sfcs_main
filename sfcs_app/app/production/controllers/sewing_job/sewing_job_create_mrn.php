@@ -148,7 +148,7 @@
 						$sch_id=$_POST['schedule'];	
 					}
 
-					
+					$op_code1=1;
 					if ($style_id =='NIL' or $sch_id =='NIL') 
 					{						
 						echo " ";
@@ -229,22 +229,44 @@
 								}
 								else
 								{
-								    $sql98="SELECT input_job_rand_no_ref FROM $bai_pro3.ims_log_backup WHERE input_job_rand_no_ref=".$sql_row['input_job_no_random']."";
-									$sql_result011=mysqli_query($link, $sql98) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
-									$ims_log_backup_count=mysqli_num_rows($sql_result011);
-									$sql66="SELECT input_job_no_random_ref FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref=".$sql_row['input_job_no_random']."";
-									$sql_result012=mysqli_query($link, $sql66) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
-									$sql_num_check_count=mysqli_num_rows($sql_result012);
-									if($sql_num_check_count>0 or $ims_log_backup_count>0){
-									echo "<td ><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&style=$style&schedule=".$schedule."&inputjobno=".$sql_row['input_job_no_random']."&var1=2\" onclick=\"clickAndDisable(this);\">Confirm</a></center></td>";
-									echo "<td></td>";
-									}else{
-										echo"<td><center>Plan Not Done</center></td>";
-										echo "<td></td>";	
-									}
-									echo"</tr>"; 
-								}
+									
+									$sql57="SELECT tid FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random=".$sql_row['input_job_no_random']."";
+									$sql_result02=mysqli_query($link, $sql57) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+										while($sql_row02=mysqli_fetch_array($sql_result02))
+										{
+				
+											$tid1[]=$sql_row02['tid'];
+										}
+									$op_code=1;
+									$tid2=implode(",",$tid1);
+									$mo_operation_quantites_query1="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid2) and op_code='$op_code' group by mo_no";
+									$sql_result50=mysqli_query($link, $mo_operation_quantites_query1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+									$mo_operation_count=mysqli_num_rows($sql_result50);
+									if($mo_operation_count>0){
+										$sql98="SELECT input_job_rand_no_ref FROM $bai_pro3.ims_log_backup WHERE input_job_rand_no_ref=".$sql_row['input_job_no_random']."";
+										$sql_result011=mysqli_query($link, $sql98) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
+										$ims_log_backup_count=mysqli_num_rows($sql_result011);
+										$sql66="SELECT input_job_no_random_ref FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref=".$sql_row['input_job_no_random']."";
+										$sql_result012=mysqli_query($link, $sql66) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
+										$sql_num_check_count=mysqli_num_rows($sql_result012);
+									
+										if($sql_num_check_count>0 or $ims_log_backup_count>0){
+										echo "<td ><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&style=$style&schedule=".$schedule."&inputjobno=".$sql_row['input_job_no_random']."&var1=2\" onclick=\"clickAndDisable(this);\">Confirm</a></center></td>";
+										echo "<td></td>";
+										}else{
+											echo"<td><center>Plan Not Done</center></td>";
+											echo "<td></td>";	
+										}
+									     echo"</tr>"; 
+									 }
+									 else{
+										echo"<td><center>NO MRN Operation</center></td>";
+										echo "<td></td>";
+
+									 }
 							}
+						}
 							echo"</table>";
 							echo"</form>";
 							echo"</div>";
@@ -282,7 +304,8 @@
 					$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check1=mysqli_num_rows($sql_result01);
 					// $tid=array();
-					
+					  if($sql_num_check1>0)
+					   {
 						while($sql_row01=mysqli_fetch_array($sql_result01))
 						{
 
@@ -293,8 +316,7 @@
 							$employee_no=$order_del_no."-".$input_job_no;
 							$remarks="Team"."-".$input_module."::".$date;
 						}
-						if($sql_num_check1>0)
-					   {
+						
 						$tid1=implode(",",$tid);
 						$mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid1) and op_code='$op_code' group by mo_no";
 						$mssql_insert_query="insert into [MRN_V2].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status,DSP1,DSP2,DSP3,DSP4) values";
@@ -377,8 +399,8 @@
 					// $tid=array();
 					$sql_num_check1=mysqli_num_rows($sql_result01);
 					// $tid=array();
-					
-					
+					   if($sql_num_check1>0)
+						{
 						while($sql_row01=mysqli_fetch_array($sql_result01))
 						{
 
@@ -389,8 +411,8 @@
 							$employee_no=$order_del_no."-".$input_job_no;
 							$remarks="Team"."-".$input_module."::".$date;
 						}
-						if($sql_num_check1>0)
-						{
+						
+					
 						$tid1=implode(",",$tid);
 						$mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid1) and op_code='$op_code' group by mo_no";
 						//echo $mo_operation_quantites_query."<br>";
