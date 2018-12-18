@@ -439,7 +439,7 @@ white-space:nowrap;
                             $team = "'".str_replace(",","','",$team)."'"; 
 
                             $work_hrs=0;
-                            $sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift in ($team)";
+                            $sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift in (\'$team\')";
                             // echo $sql_hr."<br>";
                             $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
                             if(mysqli_num_rows($sql_result_hr) >0)
@@ -567,7 +567,7 @@ white-space:nowrap;
                                 $headers=array(); 
                                 $i=0; 
 
-                                $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) $time_query order by hour(bac_lastup)"; 
+                                $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in (\"$team\") $time_query order by hour(bac_lastup)"; 
                                 // echo $sql; 
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
@@ -677,11 +677,11 @@ white-space:nowrap;
                                  
                                 if(sizeof($sections)==1) 
                                 { 
-                                    $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) $time_query order by hour(bac_lastup)"; 
+                                    $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in (\"$team\") $time_query order by hour(bac_lastup)"; 
                                 } 
                                 else 
                                 { 
-                                    $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) $time_query order by hour(bac_lastup)"; 
+                                    $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in (\"$team\") $time_query order by hour(bac_lastup)"; 
                                 } 
                                  
                                 // echo $sql."<br>"; 
@@ -815,7 +815,7 @@ white-space:nowrap;
                                     $style=$sql_row['mod_style']; 
                                     $delno=$sql_row['delivery']; 
                                     $deldb="";
-                                    $sql2="select distinct delivery from $table_name where bac_date=\"$date\" and bac_no=$mod $time_query"; 
+                                    $sql2="select distinct delivery from $table_name where bac_date=\"$date\" and bac_no=\"$mod\" $time_query"; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
@@ -826,7 +826,7 @@ white-space:nowrap;
                                     $styledb=""; 
                                     $stylecount=0; 
 
-                                    $sql2="select count(distinct bac_style) as \"count\" from $table_name where bac_date=\"$date\" and bac_no=$mod  $time_query"; 
+                                    $sql2="select count(distinct bac_style) as \"count\" from $table_name where bac_date=\"$date\" and bac_no=\"$mod\"  $time_query"; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
@@ -835,7 +835,7 @@ white-space:nowrap;
 
                                     if($stylecount>1) 
                                     { 
-                                        $sql2="select distinct bac_style from $table_name where bac_date=\"$date\" and bac_no=$mod  $time_query"; 
+                                        $sql2="select distinct bac_style from $table_name where bac_date=\"$date\" and bac_no=\"$mod\"  $time_query"; 
                                         $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
@@ -845,7 +845,7 @@ white-space:nowrap;
                                     } 
                                     else 
                                     { 
-                                        $sql2="select distinct bac_style from $table_name where bac_date=\"$date\" and bac_no=$mod  $time_query"; 
+                                        $sql2="select distinct bac_style from $table_name where bac_date=\"$date\" and bac_no=\"$mod\"  $time_query"; 
                                         $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
@@ -856,7 +856,7 @@ white-space:nowrap;
                                     if($option1==1){        echo "<tr><td>".$mod."</td>"; } 
 
                                     $max=0; 
-                                    $sql2="select bac_style, couple,smv,nop, sum(bac_qty) as \"qty\" from $table_name where bac_date=\"$date\" and bac_no=$mod and  bac_shift in ($team) $time_query group by bac_style"; 
+                                    $sql2="select bac_style, couple,smv,nop, sum(bac_qty) as \"qty\" from $table_name where bac_date=\"$date\" and bac_no=\"$mod\" and  bac_shift in ($team) $time_query group by bac_style"; 
                                     //echo $sql2; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -981,7 +981,7 @@ white-space:nowrap;
                                   
 
                                     //NEW 
-                                    $sqlx="select * from $pro_plan where mod_no=$mod and date=\"$date\""; 
+                                    $sqlx="select * from $pro_plan where mod_no=\"$mod\" and date=\"$date\""; 
                                     $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_rowx=mysqli_fetch_array($sql_resultx)) 
                                     { 
@@ -1001,7 +1001,7 @@ white-space:nowrap;
                                     //NOP 
 
                                     $max=0; 
-                                    $sql2="select smv,nop, styles, buyer, days, act_out from $bai_pro.grand_rep where module=$mod and date=\"".$date."\" "; 
+                                    $sql2="select smv,nop, styles, buyer, days, act_out from $bai_pro.grand_rep where module=\"$mod\" and date=\"".$date."\" "; 
                                     //echo $sql2;
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -1041,7 +1041,7 @@ white-space:nowrap;
                                     $gtotal_rw=0; 
                                     $psth=0; 
 
-                                    $sql_sth="select sum(plan_sth) as psth from $bai_pro.grand_rep where date=\"$date\" and module=$mod and shift in ($team)"; 
+                                    $sql_sth="select sum(plan_sth) as psth from $bai_pro.grand_rep where date=\"$date\" and module=\"$mod\" and shift in (\"$team\")"; 
                                     //echo $sql_sth."<br>"; 
                                     $sql_result_sth=mysqli_query($link, $sql_sth) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_rowx=mysqli_fetch_array($sql_result_sth)) 
@@ -1054,7 +1054,7 @@ white-space:nowrap;
 
                                     for($i=0; $i<sizeof($h1); $i++) 
                                     { 
-                                        $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_no=$mod  $time_query and  Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                        $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_no=\"$mod\"  $time_query and  Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
                                         $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
@@ -1071,7 +1071,7 @@ white-space:nowrap;
                                             } 
                                         } 
                                         { 
-                                            $sql_rw="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$date\" and bac_no=$mod  $time_query and  Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                            $sql_rw="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$date\" and bac_no=\"$mod\"  $time_query and  Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
 
                                             $sql_result_rw=mysqli_query($link, $sql_rw) or exit("Sql Error_rw1x=".$sql_rw.mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row_rw=mysqli_fetch_array($sql_result_rw)) 
@@ -1092,7 +1092,7 @@ white-space:nowrap;
                                         } 
                                         //echo "Host".$host."<br>"; 
                                         { 
-                                            $sql_ut="select sum(bac_qty) as \"sum\" from bai_pro.bai_trim_log where bac_date=\"$date\" and bac_no=$mod  $time_query and  Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                            $sql_ut="select sum(bac_qty) as \"sum\" from bai_pro.bai_trim_log where bac_date=\"$date\" and bac_no=\"$mod\"  $time_query and  Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
                                             $sql_result_ut=mysqli_query($link, $sql_ut) or exit("Sql Error_rw=".$sql_ut.mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row_ut=mysqli_fetch_array($sql_result_ut)) 
                                             { 
@@ -1148,7 +1148,7 @@ white-space:nowrap;
                                     } 
 
 
-                                    $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_no=$mod and  bac_shift in ($team) $time_query"; 
+                                    $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_no=\"$mod\" and  bac_shift in (\"$team\") $time_query"; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
@@ -1171,7 +1171,7 @@ white-space:nowrap;
                                         if($option1==1){ echo "<td>".$gtotal_ut."</td>"; } 
                                     } 
 
-                                    $rej_query = "SELECT ifnull(SUM(qms_qty),0) as \"rej_qty\" FROM `bai_pro3`.`bai_qms_db` WHERE log_date=\"$date\" AND qms_tran_type='3' AND SUBSTRING_INDEX(remarks,'-',1)=$mod AND SUBSTRING_INDEX(SUBSTRING_INDEX(remarks,'-',2),'-',-1) IN ($team)"; 
+                                    $rej_query = "SELECT ifnull(SUM(qms_qty),0) as \"rej_qty\" FROM `bai_pro3`.`bai_qms_db` WHERE log_date=\"$date\" AND qms_tran_type='3' AND SUBSTRING_INDEX(remarks,'-',1)=\"$mod\" AND SUBSTRING_INDEX(SUBSTRING_INDEX(remarks,'-',2),'-',-1) IN (\"$team\")"; 
                                     //echo $rej_query."-".$rej_qty."<br>"; 
                                     $rej_result2=mysqli_query($link, $rej_query) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($rej=mysqli_fetch_array($rej_result2)) 
@@ -1275,7 +1275,7 @@ white-space:nowrap;
                                     //$clha=0; 
                                     $effa=0; 
 
-                                    $sql2="select sum(bac_Qty) as \"total\",smv, sum((bac_qty*smv)/60) as \"stha\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) and bac_no=$mod $time_query group by bac_no"; 
+                                    $sql2="select sum(bac_Qty) as \"total\",smv, sum((bac_qty*smv)/60) as \"stha\" from $table_name where bac_date=\"$date\" and bac_shift in (\"$team\") and bac_no=\"$mod\" $time_query group by bac_no"; 
                                     //echo $sql2; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -1289,7 +1289,7 @@ white-space:nowrap;
                                     $check=0; 
                                     $total=0; 
                                     $max=0; 
-                                    $sql2="select bac_style, couple,nop,smv, sum(bac_qty) as \"qty\" from $table_name where bac_date=\"$date\" and bac_no=$mod and  bac_shift in ($team) $time_query group by bac_style"; 
+                                    $sql2="select bac_style, couple,nop,smv, sum(bac_qty) as \"qty\" from $table_name where bac_date=\"$date\" and bac_no=\"$mod\" and  bac_shift in (\"$team\") $time_query group by bac_style"; 
                                     //echo $sql2; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error19".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -1315,7 +1315,7 @@ white-space:nowrap;
                                     $ppro_a=0; 
                                     //Change 20110411 
 
-                                    $sql2="select avg(plan_eff) as \"plan_eff\", sum(plan_pro) as \"plan_pro\" from $pro_plan where date=\"$date\" and shift in ($team) and mod_no=$mod"; 
+                                    $sql2="select avg(plan_eff) as \"plan_eff\", sum(plan_pro) as \"plan_pro\" from $pro_plan where date=\"$date\" and shift in (\"$team\") and mod_no=\"$mod\""; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
@@ -1524,7 +1524,7 @@ white-space:nowrap;
                                         echo "<td>0</td>"; 
                                     } 
                                 } 
-                                $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_sec=$sec and  bac_shift in ($team) $time_query"; 
+                                $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_sec=$sec and  bac_shift in (\"$team\") $time_query"; 
                                 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                 { 
@@ -1548,7 +1548,7 @@ white-space:nowrap;
                                 { 
 
                                     $mod=$sql_row['mod_no']; 
-                                    $sql2="select act_hours from $pro_plan where date=\"$date\" and mod_no=$mod and shift in ($team)";
+                                    $sql2="select act_hours from $pro_plan where date=\"$date\" and mod_no=\"$mod\" and shift in (\"$team\")";
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error24".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
@@ -1557,7 +1557,7 @@ white-space:nowrap;
                                     //A-Plan 
 
                                     $max=0; 
-                                    $sql2="select bac_style, couple,nop,smv, sum(bac_qty) as \"qty\" from $table_name where bac_date=\"$date\" and bac_no=$mod and  bac_shift in ($team) $time_query group by bac_style"; 
+                                    $sql2="select bac_style, couple,nop,smv, sum(bac_qty) as \"qty\" from $table_name where bac_date=\"$date\" and bac_no=\"$mod\" and  bac_shift in (\"$team\") $time_query group by bac_style"; 
                                     //echo $sql2;
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -1572,7 +1572,7 @@ white-space:nowrap;
                                         } 
                                     } 
 
-                                    $sql2="select plan_pro,act_hours from $bai_pro.pro_plan where date=\"$date\" and mod_no=$mod and shift in ($team)"; 
+                                    $sql2="select plan_pro,act_hours from $bai_pro.pro_plan where date=\"$date\" and mod_no=\"$mod\" and shift in ($team)"; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error26".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
@@ -1898,7 +1898,7 @@ white-space:nowrap;
                                     $exp_pcs_hr2_sum=0; 
 
                                     //$sql="select distinct bac_style,smv,nop from $table_name where bac_date=\"$date\" and bac_sec=$sec and bac_shift in ($team)"; 
-                                    $sql="select bac_style,group_concat(distinct bac_no) as bac_no from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and bac_shift in ($team) group by bac_style"; 
+                                    $sql="select bac_style,group_concat(distinct bac_no) as bac_no from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and bac_shift in (\"$team\") group by bac_style"; 
                                     //echo $sql."<br>"; 
                                     $sql_result=mysqli_query($link, $sql) or exit("Sql Error33".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row=mysqli_fetch_array($sql_result)) 
@@ -1931,7 +1931,7 @@ white-space:nowrap;
                                         //SMV NOP directo from log         
 
                                         $count=0; 
-                                        $sql2="select count(distinct bac_no) as \"count\" from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and bac_style=\"$mod_style\" and bac_shift in ($team)";
+                                        $sql2="select count(distinct bac_no) as \"count\" from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and bac_style=\"$mod_style\" and bac_shift in (\"$team\")";
                                         $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error35".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
@@ -1943,7 +1943,7 @@ white-space:nowrap;
                                         $total_rw=0; 
                                         for($i=0; $i<sizeof($h1); $i++) 
                                         { 
-                                            $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
+                                            $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in (\"$team\")"; 
                                             $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error36".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                             { 
@@ -1961,7 +1961,7 @@ white-space:nowrap;
                                             } 
 
                                             { 
-                                                $sql2_rw="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
+                                                $sql2_rw="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in (\"$team\")"; 
                                                 $sql_result2_rw=mysqli_query($link, $sql2_rw) or exit("Sql Error37".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                                 while($sql_row2_rw=mysqli_fetch_array($sql_result2_rw)) 
                                                 { 
@@ -1981,7 +1981,7 @@ white-space:nowrap;
 
 
                                             { 
-                                                $sql2_ut="select sum(bac_qty) as \"sum\" from $bai_pro.bai_trim_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
+                                                $sql2_ut="select sum(bac_qty) as \"sum\" from $bai_pro.bai_trim_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in (\"$team\")"; 
                                                 $sql_result2_ut=mysqli_query($link, $sql2_ut) or exit("Sql Error_ut".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                                 while($sql_row2_ut=mysqli_fetch_array($sql_result2_ut)) 
                                                 { 
@@ -2019,7 +2019,7 @@ white-space:nowrap;
                                         if($rw_chk == 1){echo "<td>".$total_rw."</td>";} 
                                         if($ut_chk == 1){echo "<td>".$total_ut."</td>";} 
                                      
-                                        $rej_query1 = "SELECT ifnull(SUM(qms_qty),0) as \"rej_qty\" FROM `bai_pro3`.`bai_qms_db` WHERE log_date=\"$date\" AND qms_tran_type='3' and qms_style like '%$mod_style%' AND SUBSTRING_INDEX(remarks,'-',1) in ($mod_ref_nos) AND SUBSTRING_INDEX(SUBSTRING_INDEX(remarks,'-',2),'-',-1) IN ($team)"; 
+                                        $rej_query1 = "SELECT ifnull(SUM(qms_qty),0) as \"rej_qty\" FROM `bai_pro3`.`bai_qms_db` WHERE log_date=\"$date\" AND qms_tran_type='3' and qms_style like '%$mod_style%' AND SUBSTRING_INDEX(remarks,'-',1) in (\"$mod_ref_nos\") AND SUBSTRING_INDEX(SUBSTRING_INDEX(remarks,'-',2),'-',-1) IN (\"$team\")"; 
                                         //echo $rej_query1."<br>"; 
                                         $rej_result21=mysqli_query($link, $rej_query1) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($rej1=mysqli_fetch_array($rej_result21)) 
@@ -2066,7 +2066,7 @@ white-space:nowrap;
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
                                             $mod_no=$sql_row2['mod_no']; 
-                                            $sql22="select plan_pro from $pro_plan where date=\"$date\" and mod_no=$mod_no and shift in ($team)";
+                                            $sql22="select plan_pro from $pro_plan where date=\"$date\" and mod_no=\"$mod_no\" and shift in ($team)";
                                             $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error39".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row22=mysqli_fetch_array($sql_result22)) 
                                             { 
@@ -2081,7 +2081,7 @@ white-space:nowrap;
                                         $avgperhour=0; 
                                         $avgperhour2=0; 
                                         $count2=0; 
-                                        $sql2="select count(distinct bac_no) as \"count\", sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and bac_style=\"$mod_style\"  and bac_shift in ($team)"; 
+                                        $sql2="select count(distinct bac_no) as \"count\", sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and bac_style=\"$mod_style\"  and bac_shift in (\"$team\")"; 
                                         $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error40".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
@@ -2129,7 +2129,7 @@ white-space:nowrap;
                                     for($i=0; $i<sizeof($h1); $i++) 
                                     { 
 
-                                        $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
+                                        $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in (\"$team\")"; 
                                         $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
@@ -2147,7 +2147,7 @@ white-space:nowrap;
                                         } 
 
                                         { 
-                                            $sql2_rw5="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
+                                            $sql2_rw5="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in (\"$team\")"; 
                                             $sql_result2_rw5=mysqli_query($link, $sql2_rw5) or exit("Sql Error42".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row2_rw5=mysqli_fetch_array($sql_result2_rw5)) 
                                             { 
@@ -2167,7 +2167,7 @@ white-space:nowrap;
 
 
                                         { 
-                                            $sql2_ut5="select sum(bac_qty) as \"sum\" from $bai_pro.bai_trim_log where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)"; 
+                                            $sql2_ut5="select sum(bac_qty) as \"sum\" from $bai_pro.bai_trim_log where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in (\"$team\")"; 
                                             $sql_result2_ut5=mysqli_query($link, $sql2_ut5) or exit("Sql Error_ut".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row2_ut5=mysqli_fetch_array($sql_result2_ut5)) 
                                             { 
@@ -2273,7 +2273,7 @@ white-space:nowrap;
                                 $headers=array(); 
                                 $i=0; 
 
-                                $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) $time_query order by bac_lastup"; 
+                                $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in (\"$team\") $time_query order by bac_lastup"; 
                                 //echo $sql."<br>"; 
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error43".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
@@ -2315,14 +2315,14 @@ white-space:nowrap;
                                     $delno=$sql_row['delivery']; 
                                     $deldb=""; 
 
-                                    $sql2="select distinct delivery from $table_name where bac_date=\"$date\" and bac_no=$mod $time_query"; 
+                                    $sql2="select distinct delivery from $table_name where bac_date=\"$date\" and bac_no=\"$mod\" $time_query"; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $deldb=$deldb." ".$sql_row2['delivery']; 
                                     } 
                                     $styledb=""; 
-                                    $sql2="select distinct bac_style from $table_name where bac_date=\"$date\" and bac_no=$mod  $time_query"; 
+                                    $sql2="select distinct bac_style from $table_name where bac_date=\"$date\" and bac_no=\"$mod\"  $time_query"; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error46".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
@@ -2345,7 +2345,7 @@ white-space:nowrap;
 
                                     for($i=0; $i<sizeof($h1); $i++) 
                                     { 
-                                        $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_no=$mod $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                        $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_no=\"$mod\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
                                         $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error48".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
@@ -2359,7 +2359,7 @@ white-space:nowrap;
                                                 $gtotal=$gtotal+$sum; 
                                             } 
                                         } 
-                                        $sql2_rw1="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$date\" and bac_no=$mod $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                        $sql2_rw1="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$date\" and bac_no=\"$mod\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
                                         $sql_result2_rw1=mysqli_query($link, $sql2_rw1) or exit("Sql Error49".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2_rw1=mysqli_fetch_array($sql_result2_rw1)) 
                                         { 
@@ -2376,7 +2376,7 @@ white-space:nowrap;
                                     } 
 
 
-                                    $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_no=$mod  $time_query and bac_shift in ($team)"; 
+                                    $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_no=\"$mod\"  $time_query and bac_shift in (\"$team\")"; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error50".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
@@ -2401,7 +2401,7 @@ white-space:nowrap;
 
                                    
 
-                                    $sql2="select sum(bac_Qty) as \"total\", sum((bac_qty*smv)/60) as \"stha\" from $table_name where bac_date=\"$date\" $time_query and bac_shift in ($team) and bac_no=$mod group by bac_no"; 
+                                    $sql2="select sum(bac_Qty) as \"total\", sum((bac_qty*smv)/60) as \"stha\" from $table_name where bac_date=\"$date\" $time_query and bac_shift in (\"$team\") and bac_no=\"$mod\" group by bac_no"; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error52".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
@@ -2411,7 +2411,7 @@ white-space:nowrap;
                                     $check=0; 
                                     $total=0; 
                                     $max=0; 
-                                    $sql2="select bac_style, couple,smv,nop, sum(bac_qty) as \"qty\" from $table_name where bac_date=\"$date\" and bac_no=$mod $time_query and  bac_shift in ($team) group by bac_style"; 
+                                    $sql2="select bac_style, couple,smv,nop, sum(bac_qty) as \"qty\" from $table_name where bac_date=\"$date\" and bac_no=\"$mod\" $time_query and  bac_shift in (\"$team\") group by bac_style"; 
                                     //echo $sql2; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error53".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -2435,7 +2435,7 @@ white-space:nowrap;
                                     /* PLAN EFF, PRO */ 
                                     $peff_a=0; 
                                     $ppro_a=0; 
-                                    $sql2="select plan_eff, plan_pro from $bai_pro.pro_plan where date=\"$date\" and shift in ($team) and mod_no=$mod"; 
+                                    $sql2="select plan_eff, plan_pro from $bai_pro.pro_plan where date=\"$date\" and shift in ($team) and mod_no=\"$mod\""; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error54".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
@@ -2574,14 +2574,14 @@ white-space:nowrap;
                                     //$sum_total_ut2 = 0; 
                                 } 
 
-                                $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_sec in ($sections_group)  $time_query and bac_shift in ($team)"; 
+                                $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_sec in ($sections_group)  $time_query and bac_shift in (\"$team\")"; 
                                 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                 { 
                                     $sum=$sql_row2['sum']; 
                                     $atotal=$atotal+$sum; 
                                 } 
-                                $sql2_rw_tot="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$date\" and bac_sec in ($sections_group)  $time_query and bac_shift in ($team)"; 
+                                $sql2_rw_tot="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$date\" and bac_sec in ($sections_group)  $time_query and bac_shift in (\"$team\")"; 
                                 $sql_result2_rw_tot=mysqli_query($link, $sql2_rw_tot) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row2_rw_tot=mysqli_fetch_array($sql_result2_rw_tot)) 
                                 { 
@@ -2605,14 +2605,14 @@ white-space:nowrap;
                                 { 
                                     $mod=$sql_row['mod_no']; 
                                     //A-Plan 
-                                    $sql2="select act_hours from $bai_pro.pro_plan where date=\"$date\" and mod_no=$mod and shift in ($team)"; 
+                                    $sql2="select act_hours from $bai_pro.pro_plan where date=\"$date\" and mod_no=\"$mod\" and shift in ($team)"; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1113".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $phours=$sql_row2['act_hours']; 
                                     } 
                                     $max=0; 
-                                    $sql2="select bac_style, couple,smv,nop, sum(bac_qty) as \"qty\" from $table_name where bac_date=\"$date\" and bac_no=$mod $time_query and bac_shift in ($team) group by bac_style"; 
+                                    $sql2="select bac_style, couple,smv,nop, sum(bac_qty) as \"qty\" from $table_name where bac_date=\"$date\" and bac_no=\"$mod\" $time_query and bac_shift in (\"$team\") group by bac_style"; 
                                     //echo $sql2; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1114".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -2628,7 +2628,7 @@ white-space:nowrap;
                                     } 
 
 
-                                    $sql2="select plan_pro from $bai_pro.pro_plan where date=\"$date\" and mod_no=$mod and shift in ($team)"; 
+                                    $sql2="select plan_pro from $bai_pro.pro_plan where date=\"$date\" and mod_no=\"$mod\" and shift in ($team)"; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1115".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
@@ -2938,7 +2938,7 @@ white-space:nowrap;
                                 $exp_pcs_hr2_sum=0; 
 
                                 //$sql="select distinct bac_style,smv,nop from $table_name where bac_date=\"$date\" and bac_sec in ($sections_group) and bac_shift in ($team)"; 
-                                $sql="select distinct bac_style from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and bac_shift in ($team)"; 
+                                $sql="select distinct bac_style from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and bac_shift in (\"$team\")"; 
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error11129".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
@@ -2969,7 +2969,7 @@ white-space:nowrap;
                                     //echo "<td>".$sql_row['nop']."</td>"; 
 
                                     $count=0; 
-                                    $sql2="select count(distinct bac_no) as \"count\" from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and bac_style=\"$mod_style\" and bac_shift in ($team)"; 
+                                    $sql2="select count(distinct bac_no) as \"count\" from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and bac_style=\"$mod_style\" and bac_shift in (\"$team\")"; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error55455".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
@@ -2984,7 +2984,7 @@ white-space:nowrap;
                                     $total_ftt3 = 0; 
                                     for($i=0; $i<sizeof($h1); $i++) 
                                     { 
-                                        $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team)"; 
+                                        $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in (\"$team\")"; 
                                         $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error78445".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
@@ -3001,7 +3001,7 @@ white-space:nowrap;
                                             } 
                                         } 
 
-                                        $sql2_rw3="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team)"; 
+                                        $sql2_rw3="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in (\"$team\")"; 
                                         $sql_result2_rw3=mysqli_query($link, $sql2_rw3) or exit("Sql Error5648".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2_rw3=mysqli_fetch_array($sql_result2_rw3)) 
                                         { 
@@ -3018,7 +3018,7 @@ white-space:nowrap;
                                             } 
                                         } 
 
-                                        $sql2_ut3="select sum(bac_qty) as \"sum\" from $bai_pro.bai_trim_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team)"; 
+                                        $sql2_ut3="select sum(bac_qty) as \"sum\" from $bai_pro.bai_trim_log where bac_date=\"$sdate\" and bac_style=\"$mod_style\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in (\"$team\")"; 
                                         // echo $sql2_ut3; 
                                         $sql_result2_ut3=mysqli_query($link, $sql2_ut3) or exit("Sql Error7846".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2_ut3=mysqli_fetch_array($sql_result2_ut3)) 
@@ -3082,7 +3082,7 @@ white-space:nowrap;
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $mod_no=$sql_row2['mod_no']; 
-                                        $sql22="select plan_pro from $bai_pro.pro_plan where date=\"$date\" and mod_no=$mod_no and shift in ($team)"; 
+                                        $sql22="select plan_pro from $bai_pro.pro_plan where date=\"$date\" and mod_no=\"$mod_no\" and shift in ($team)"; 
                                         $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error4665".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row22=mysqli_fetch_array($sql_result22)) 
                                         { 
@@ -3097,7 +3097,7 @@ white-space:nowrap;
                                     $avgperhour=0; 
                                     $avgperhour2=0; 
                                     $count2=0; 
-                                    $sql2="select count(distinct bac_no) as \"count\", sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_sec in ($sections_group) and bac_style=\"$mod_style\"  and bac_shift in ($team) $time_query"; 
+                                    $sql2="select count(distinct bac_no) as \"count\", sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_sec in ($sections_group) and bac_style=\"$mod_style\"  and bac_shift in (\"$team\") $time_query"; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error9884".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
@@ -3144,7 +3144,7 @@ white-space:nowrap;
                                 $total=0; 
                                 for($i=0; $i<sizeof($h1); $i++) 
                                 { 
-                                    $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team) $time_query"; 
+                                    $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in (\"$team\") $time_query"; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error98785".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
@@ -3161,7 +3161,7 @@ white-space:nowrap;
                                         } 
                                     } 
 
-                                    $sql2_rw41="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$sdate\" and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team) $time_query"; 
+                                    $sql2_rw41="select sum(bac_qty) as \"sum\" from $bai_pro.bai_quality_log where bac_date=\"$sdate\" and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in (\"$team\") $time_query"; 
                                     $sql_result2_rw41=mysqli_query($link, $sql2_rw41) or exit("Sql Error89684586".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2_rw41=mysqli_fetch_array($sql_result2_rw41)) 
                                     { 
@@ -3178,7 +3178,7 @@ white-space:nowrap;
                                         } 
                                     } 
 
-                                    $sql2_ut41="select sum(bac_qty) as \"sum\" from $bai_pro.bai_trim_log where bac_date=\"$sdate\" and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team) $time_query"; 
+                                    $sql2_ut41="select sum(bac_qty) as \"sum\" from $bai_pro.bai_trim_log where bac_date=\"$sdate\" and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in (\"$team\") $time_query"; 
                                     $sql_result2_ut41=mysqli_query($link, $sql2_ut41) or exit("Sql Error9855".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2_ut41=mysqli_fetch_array($sql_result2_ut41)) 
                                     { 

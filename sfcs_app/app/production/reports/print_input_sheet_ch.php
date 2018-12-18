@@ -345,7 +345,7 @@
                             $vpo=$sql_row2["vpo"];
                         }
 
-                        $sql_cut="select GROUP_CONCAT(DISTINCT order_col_des) AS color, GROUP_CONCAT(DISTINCT acutno) AS cut, SUM(carton_act_qty) AS totqty from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and input_job_no='".$sql_row["job"]."'";
+                        $sql_cut="select GROUP_CONCAT(DISTINCT order_col_des) AS color, GROUP_CONCAT(DISTINCT acutno) AS cut, SUM(carton_act_qty) AS totqty from $bai_pro3.packing_summary_input where order_del_no in (\"$schedule\") and input_job_no='".$sql_row["job"]."'";
                         // echo $sql_cut.'<br>';
                         $result_cut=mysqli_query($link, $sql_cut) or die("Error9-".$sql_cut."-".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($sql_row_cut=mysqli_fetch_array($result_cut))
@@ -478,7 +478,7 @@
                         $temp_jobno=$sql_row["job"];
                         if ($temp_module=="0")
                         {
-                            $sql5555="SELECT input_module FROM  $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref IN (SELECT DISTINCT input_job_no_random FROM packing_summary_input WHERE order_del_no IN ($temp_schedule) AND input_job_no='$temp_jobno' )";
+                            $sql5555="SELECT input_module FROM  $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref IN (SELECT DISTINCT input_job_no_random FROM packing_summary_input WHERE order_del_no IN (\"$temp_schedule\") AND input_job_no='$temp_jobno' )";
                             //echo $sql5."<br>";
                             $result5555=mysqli_query($link, $sql5555) or die("Error-".$sql5555."-".mysqli_error($GLOBALS["___mysqli_ston"]));           
                             while($sql_row5555=mysqli_fetch_array($result5555))

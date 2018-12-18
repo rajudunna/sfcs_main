@@ -271,7 +271,7 @@ zoom:75%;
 				/* Function END */
 				// $sections=array(1,2,3,4,5,6);
 				$work_hrs=0;
-				$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift in ($team)";
+				$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift in (\"$team\")";
 				// echo $sql_hr."<br>";
 				$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				if(mysqli_num_rows($sql_result_hr) >0)
@@ -361,7 +361,7 @@ zoom:75%;
 
 				$i=0;
 				$h=array();
-				$sql="select distinct(Hour(bac_lastup)) as \"time\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_shift in ($team) order by hour(bac_lastup)*1";
+				$sql="select distinct(Hour(bac_lastup)) as \"time\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_shift in (\"$team\") order by hour(bac_lastup)*1";
 				// echo $sql."<br>";
 				//mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -402,7 +402,7 @@ zoom:75%;
 				{
 					$style=$styles[$i];
 					$module_count=0;
-					$sql2="select distinct(bac_no) as \"module\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_shift in ($team) order by bac_no";
+					$sql2="select distinct(bac_no) as \"module\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_shift in (\"$team\") order by bac_no";
 					//mysql_query($sql2,$link) or exit("Sql Error".mysql_error());
 					$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$module_count=mysqli_num_rows($sql_result2); 
@@ -428,7 +428,7 @@ zoom:75%;
 						$row_bg_col=1;	
 					}
 					
-					$sql="select distinct(bac_sec) as \"section\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_shift in ($team) order by bac_sec";
+					$sql="select distinct(bac_sec) as \"section\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_shift in (\"$team\") order by bac_sec";
 					//mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row=mysqli_fetch_array($sql_result))
@@ -436,7 +436,7 @@ zoom:75%;
 						$section=$sql_row['section'];
 						$row_count++;
 
-						$sql2="select distinct distinct(bac_no) as \"module\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_sec=\"$section\" and bac_shift in ($team) order by bac_no";
+						$sql2="select distinct distinct(bac_no) as \"module\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_sec=\"$section\" and bac_shift in (\"$team\") order by bac_no";
 						//mysql_query($sql2,$link) or exit("Sql Error".mysql_error());
 						$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$section_count=mysqli_num_rows($sql_result2); 
@@ -475,7 +475,7 @@ zoom:75%;
 							for ($j=0;$j<sizeof($headers);$j++)
 							{
 								$qty=0;
-								$sql3="select sum(bac_qty) as \"qty\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_sec=\"$section\" and bac_no=$module and bac_shift in ($team) and Hour(bac_lastup)=".$headers[$j];
+								$sql3="select sum(bac_qty) as \"qty\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_sec=\"$section\" and bac_no=$module and bac_shift in (\"$team\") and Hour(bac_lastup)=".$headers[$j];
 								//mysql_query($sql3,$link) or exit("Sql Error".mysql_error());
 								$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row3=mysqli_fetch_array($sql_result3))
@@ -490,7 +490,7 @@ zoom:75%;
 							
 							//NEW
 								$sec_qty=0;
-								$sql3="select sum(bac_qty) as \"sec_qty\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_sec=\"$section\" and bac_shift in ($team)";
+								$sql3="select sum(bac_qty) as \"sec_qty\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_sec=\"$section\" and bac_shift in (\"$team\")";
 								//mysql_query($sql3,$link) or exit("Sql Error".mysql_error());
 								$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row3=mysqli_fetch_array($sql_result3))
@@ -508,7 +508,7 @@ zoom:75%;
 							
 							//NEW
 								$style_qty=0;
-								$sql3="select sum(bac_qty) as \"style_qty\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_shift in ($team)";
+								$sql3="select sum(bac_qty) as \"style_qty\" from ".$bai_log_table_name." where bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_shift in (\"$team\")";
 								//mysql_query($sql3,$link) or exit("Sql Error".mysql_error());
 								$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row3=mysqli_fetch_array($sql_result3))

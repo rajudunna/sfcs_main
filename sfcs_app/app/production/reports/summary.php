@@ -33,7 +33,7 @@ $month=date("m", mktime(0,0,0,date("m") ,date("d"),date("Y")));
 
 	echo "<th>Total (Min)</th><th>Off Std. HRS</th></tr>";
 	
-	$sql="select distinct mod_no from $bai_pro.pro_mod where month(mod_date)=$month ORDER BY mod_no*1";
+	$sql="select distinct mod_no from $bai_pro.pro_mod where month(mod_date)=\"$month\" ORDER BY mod_no*1";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -46,7 +46,7 @@ $month=date("m", mktime(0,0,0,date("m") ,date("d"),date("Y")));
 $styledb="";
 		$stylecount=0;
 		
-		$sql2="select count(distinct style) as \"count\" from $bai_pro.down_log where mod_no=$mod and date=\"$date\"";
+		$sql2="select count(distinct style) as \"count\" from $bai_pro.down_log where mod_no=\"$mod\" and date=\"$date\"";
 		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -56,7 +56,7 @@ $styledb="";
 
 		if($stylecount>1)
 		{
-			$sql2="select distinct style from $bai_pro.down_log where mod_no=$mod and date=\"$date\"";
+			$sql2="select distinct style from $bai_pro.down_log where mod_no=\"$mod\" and date=\"$date\"";
 			mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -67,7 +67,7 @@ $styledb="";
 		}
 		else
 		{
-			$sql2="select distinct style from $bai_pro.down_log where mod_no=$mod and date=\"$date\"";
+			$sql2="select distinct style from $bai_pro.down_log where mod_no=\"$mod\" and date=\"$date\"";
 			mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -91,7 +91,7 @@ $styledb="";
 		{
 			$dep=$sql_row3['dep_id'];
 	
-			$sql2="select sum(dtime) as \"sum\" from $bai_pro.down_log where mod_no=$mod and date=\"$date\" and department=\"$dep\"";
+			$sql2="select sum(dtime) as \"sum\" from $bai_pro.down_log where mod_no=\"$mod\" and date=\"$date\" and department=\"$dep\"";
 			mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -115,7 +115,7 @@ $styledb="";
 $styledb="";
 		$stylecount=0;
 		
-		$sql2="select count(distinct style) as \"count\" from $bai_pro.down_log where mod_no=$mod and month(date)=$month";
+		$sql2="select count(distinct style) as \"count\" from $bai_pro.down_log where mod_no=\"$mod\" and month(date)=\"$month\"";
 		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -125,7 +125,7 @@ $styledb="";
 
 		if($stylecount>1)
 		{
-			$sql2="select distinct style from $bai_pro.down_log where mod_no=$mod and month(date)=$month";
+			$sql2="select distinct style from $bai_pro.down_log where mod_no=\"$mod\" and month(date)=\"$month\"";
 			mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -136,7 +136,7 @@ $styledb="";
 		}
 		else
 		{
-			$sql2="select distinct style from $bai_pro.down_log where mod_no=$mod and month(date)=$month";
+			$sql2="select distinct style from $bai_pro.down_log where mod_no=\"$mod\" and month(date)=\"$month\"";
 			mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -161,7 +161,7 @@ $styledb="";
 		{
 			$dep=$sql_row3['dep_id'];
 	
-			$sql2="select sum(dtime) as \"sum\" from $bai_pro.down_log where mod_no=$mod and month(date)=$month and department=\"$dep\"";
+			$sql2="select sum(dtime) as \"sum\" from $bai_pro.down_log where mod_no=\"$mod\" and month(date)=\"$month\" and department=\"$dep\"";
 			mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))

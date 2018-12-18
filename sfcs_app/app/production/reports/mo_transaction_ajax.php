@@ -26,7 +26,7 @@ if(isset($_GET['submit']))
    $color = implode('","',$color1);
    $color = '"'.$color.'"';
    //echo $color;
-  $get_operations= "select DISTINCT(operation_code) from $brandix_bts.tbl_style_ops_master where style='$style' and color IN ($color)";
+  $get_operations= "select DISTINCT(operation_code) from $brandix_bts.tbl_style_ops_master where style='$style' and color IN (\"$color\")";
   //echo $get_operations;
   $result2 = $link->query($get_operations);
   while($row2 = $result2->fetch_assoc())
@@ -35,7 +35,7 @@ if(isset($_GET['submit']))
   }
   $opertions = implode(',',$operation_code);
 
-  $get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions)";
+  $get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in (\"$opertions\")";
 	 //echo $get_ops_query;
 	$ops_query_result=$link->query($get_ops_query);
 	while ($row3 = $ops_query_result->fetch_assoc())

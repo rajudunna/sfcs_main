@@ -18,7 +18,7 @@ else
 }
 
  $styles = '"'.$styles.'"';
-  $get_schedule="SELECT DISTINCT(order_del_no) FROM $bai_pro3.bai_orders_db_confirm WHERE order_style_no IN ($styles)";
+  $get_schedule="SELECT DISTINCT(order_del_no) FROM $bai_pro3.bai_orders_db_confirm WHERE order_style_no IN (\"$styles\")";
   $result2 = $link->query($get_schedule);
   while($row1 = $result2->fetch_assoc())
     {
