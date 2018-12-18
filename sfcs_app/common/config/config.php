@@ -74,6 +74,8 @@ $display_reporting_qty = $conf1->get('reporting-quantity');
 $cut_qty_reporting_validation=$conf1->get('cut-qty-reporting-validation');
 $line_in = $conf1->get('line-in');
 
+$ims_boxes_count =  $conf1->get('ims_boxes');
+
 //LDAP CODE STARTS***
 // if(substr($server_soft,0,13)=="Apache/2.4.28")
 // {
