@@ -853,7 +853,7 @@ function getreversalscanningdetails($job_number)
 						}
 						else
 						{
-							$result_array['rec_qtys'][] = $qty;
+							$result_array['rec_qtys'][] = 0;
 						}	  
 					}
 				}
