@@ -63,6 +63,7 @@
 						if($status_check=='1')
 						{
 							$input_job_no=1;
+							$job_counter = 1;
 						}
 						else
 						{
@@ -463,17 +464,21 @@
 						{
 							if($status_sew==1)
 							{
-								$input_job_no=1;													
+								$input_job_no=1;
+								$job_counter = 1;								
 							}
 							else
 							{
 								$input_job_no_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_del_no",$schedule,$link);
 								$input_job_no=$input_job_no_tmp;
-								$input_job_no_tmpn= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(input_job_no AS DECIMAL))","size_code='".$row1y['size_title']."' and acutno='".$docs_cut[$iiii]."' and order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and order_del_no",$schedule,$link);
+								$job_counter_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(barcode_sequence AS DECIMAL))+1","order_del_no",$schedule,$link);
+								$job_counter=$job_counter_tmp;
+								$input_job_no_tmpn= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(barcode_sequence AS DECIMAL))","size_code='".$row1y['size_title']."' and acutno='".$docs_cut[$iiii]."' and order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and order_del_no",$schedule,$link);
+								$job_counter_tmp= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(barcode_sequence AS DECIMAL))","size_code='".$row1y['size_title']."' and acutno='".$docs_cut[$iiii]."' and order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and order_del_no",$schedule,$link);
 							
 								if($input_job_no_tmpn>0)
 								{
-									$job_counter = 1;
+									$job_counter = $job_counter_tmp;
 									$input_job_no=$input_job_no_tmpn;
 								}
 							}
@@ -708,16 +713,20 @@
 						{								
 							if($status_sew==1)
 							{
-								$input_job_no=1;													
+								$input_job_no=1;
+								$job_counter = 1;								
 							}
 							else
 							{
 								$input_job_no_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_del_no",$schedule,$link);
+								$job_counter_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(barcode_sequence AS DECIMAL))+1","order_del_no",$schedule,$link);
 								$input_job_no=$input_job_no_tmp;
-								$input_job_no_tmpn= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(input_job_no AS DECIMAL))","acutno='".$docs_cut[$iiii]."' and order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and order_del_no",$schedule,$link);						
+								$job_counter=$job_counter_tmp;
+								$input_job_no_tmpn= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(input_job_no AS DECIMAL))","acutno='".$docs_cut[$iiii]."' and order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and order_del_no",$schedule,$link);	
+								$job_counter_tmp= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(barcode_sequence AS DECIMAL))","acutno='".$docs_cut[$iiii]."' and order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and order_del_no",$schedule,$link);			
 								if($input_job_no_tmpn>0)
 								{
-									$job_counter = 1;
+									$job_counter = $job_counter_tmp;
 									$input_job_no=$input_job_no_tmpn;
 								}
 							}
