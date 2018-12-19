@@ -179,7 +179,7 @@
 					// Order Details Display Start
 					{
 						$col_array = array();
-						$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and order_joins not in (1,2)";
+						$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and $order_joins_not_in";
 						//echo $sizes_query;die();
 						$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
 						$row_count = mysqli_num_rows($sizes_result);

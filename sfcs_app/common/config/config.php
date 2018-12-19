@@ -180,8 +180,16 @@ mysqli_select_db($link, $bai_pro3) or die("Error in selecting the database:".mys
 
 $operation=array("Please Select","Single Colour & Single Size","Multi Colour & Single Size","Multi Colour & Multi Size","Single Colour & Multi Size");
 
-$filter_joins="order_joins not in (1,2) and ";
+$order_joins_not_in="order_joins not in ('1','2')";
 
+$order_joins_in="order_joins in ('1','2')";
+
+$order_joins_in_full="order_joins in ('0','1','2')";
+
+$order_joins_in_2 ="order_joins='2'";
+
+$order_joins_in_1 ="order_joins='1'";
+    
 $sql_query = "select * from $central_administration_sfcs.rbac_permission where status='active'";
 $res_query = mysqli_query($link, $sql_query);
 while($sql_row=mysqli_fetch_array($res_query))

@@ -49,7 +49,7 @@ if($sql_rows > 0)
 
 for($mm=0;$mm<sizeof($packpcs);$mm++)
 {
-	$sql_group="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"".$assortcolor[$mm]."\"";
+	$sql_group="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"".$assortcolor[$mm]."\"";
 	// echo $sql_group;
 	// mysqli_query($link, $sql_group) or exit("Sql Error12=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result_group=mysqli_query($link, $sql_group) or exit("Sql Error12=".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -68,18 +68,18 @@ for($mm=0;$mm<sizeof($packpcs);$mm++)
 			$cat_ref=$sql_row['tid'];
 		}
 
-		$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_tid=\"$order_tid\"";
+		$sql="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_tid=\"$order_tid\"";
 		//// echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_confirm=mysqli_num_rows($sql_result);
 
 		if($sql_num_confirm>0)
 		{
-			$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_tid=\"$order_tid\"";
+			$sql="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_tid=\"$order_tid\"";
 		}
 		else
 		{
-			$sql="select * from $bai_pro3.bai_orders_db where $filter_joins order_tid=\"$order_tid\"";
+			$sql="select * from $bai_pro3.bai_orders_db where $order_joins_not_in and order_tid=\"$order_tid\"";
 		}
 
 		// mysqli_query($link, $sql) or exit("Sql Error4=".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -291,7 +291,7 @@ for($mm=0;$mm<sizeof($packpcs);$mm++)
 			$newyy=$newyy+($mk_new_length*$new_plies);
 		}
 
-		$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_tid=\"$order_tid\"";
+		$sql="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_tid=\"$order_tid\"";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_confirm=mysqli_num_rows($sql_result);
 
@@ -7249,7 +7249,7 @@ for($mm=0;$mm<sizeof($packpcs);$mm++)
 	<?php
 
 
-	$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=$schedule";
+	$sql="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_style_no=\"$style\" and order_del_no=$schedule";
 	// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error101".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_=mysqli_num_rows($sql_result);
@@ -7326,7 +7326,7 @@ for($mm=0;$mm<sizeof($packpcs);$mm++)
 	$schedule=$_GET['schedule'];
 
 
-	$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=$schedule";
+	$sql="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_style_no=\"$style\" and order_del_no=$schedule";
 	// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error102".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_=mysqli_num_rows($sql_result);

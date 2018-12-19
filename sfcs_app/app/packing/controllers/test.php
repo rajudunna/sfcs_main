@@ -104,7 +104,7 @@ $color=$_GET['color'];
 				<label for="color">Select Color:</label>
 				<select class='form-control' name='color' onchange='thirdbox();'>
 					<?php
-						$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"".$style"\" and order_del_no=\"".$schedule."\"";
+						$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"".$style."\" and order_del_no=\"".$schedule."\"";
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_num_check=mysqli_num_rows($sql_result);
 
@@ -298,12 +298,12 @@ if(isset($_POST['submit']))
 
 if($color_x=='0')
 {
-$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"".$style_x."\" and order_del_no=\"".$schedule_x."\"";	
+$sql="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\"";	
 }	
 
 else
 {
-$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"".$style_x."\" and order_del_no=\"".$schedule_x."\" and order_col_des=\"".$color_x."\"";	
+$sql="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\" and order_col_des=\"$color_x\"";	
 }
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))

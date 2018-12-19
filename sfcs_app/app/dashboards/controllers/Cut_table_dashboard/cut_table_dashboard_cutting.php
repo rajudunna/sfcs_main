@@ -821,8 +821,24 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         $operation_code = $row['operation_code'];
       }
 
+      
+      $doc_no_ref1 = $doc_no;
+      //FOR SCHEDULE CLUBBING ensuring for parent docket
+      if($doc_no != ''){
+        $parent_doc_query = "SELECT GROUP_CONCAT(doc_no) as docs 
+                        from $bai_pro3.plandoc_stat_log  psl
+                        left join $bai_pro3.cat_stat_log  csl ON csl.tid = psl.cat_ref
+                        where org_doc_no = $doc_no and category IN ($in_categories) and org_doc_no > 0";
+        $parent_doc_result = mysqli_query($link,$parent_doc_query);
+        if($org_row = mysqli_fetch_array($parent_doc_result))
+            $doc_no = $org_row['docs'];
+      }
+      if($doc_no == '')
+        $doc_no = $doc_no_ref1;
+      //schedule club docket validation end.JUST FOR CPS LOG WE ARE GETTING CHILD DOCKETS
+
       $rep_status ='';
-      $sql44="SELECT * FROM $bai_pro3.cps_log WHERE doc_no='$doc_no'  AND operation_code=".$operation_code;
+      $sql44="SELECT * FROM $bai_pro3.cps_log WHERE doc_no IN ($doc_no)  AND operation_code=".$operation_code;
       $sql_result12=mysqli_query($link, $sql44) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
       if(mysqli_num_rows($sql_result12)>0)
       {
@@ -839,6 +855,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           }
         }
       }
+      //assigning main docket again to $doc after schedule club docket validaiton
+      $doc_no = $doc_no_ref1;
 
         if($fabric_status==null or $fabric_status==0){          
           $ft_status=$sql_row1['ft_status'];
@@ -920,7 +938,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         {
           //$fabric_status=$sql_row1['ft_status'];
           //To get the status of join orders
-          $sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' and order_joins=2";
+          $sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' and $order_joins_in_2";
           $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
           
           if(mysqli_num_rows($sql_result11)>0)
