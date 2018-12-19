@@ -2,7 +2,8 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 	$operation_codes = [15];
 	$sucess_array = array();
-	$selecting_qry = "SELECT docket_number,GROUP_CONCAT(DISTINCT operation_id)AS ops FROM $brandix_bts.`bundle_creation_data`  GROUP BY docket_number HAVING ops = '60,70' ORDER BY docket_number";
+	$selecting_qry = "SELECT DISTINCT doc_no AS docket_number FROM bai_pro3.cps_log WHERE id IN (SELECT bundle_number FROM brandix_bts.bundle_creation_data WHERE input_job_no_random_ref IN 
+	(5600151809035,5600151809031,5600261809031,5600261809037) AND operation_id = 15)";
 	$selecting_qryresult=mysqli_query($link, $selecting_qry)or exit("bcd_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($selecting_qryresult))
 	{
