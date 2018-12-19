@@ -1,4 +1,3 @@
-
 <?php
 $double_modules=array();
 include($_SERVER['DOCUMENT_ROOT'].'template/helper.php');
@@ -756,13 +755,22 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     while($row2=mysqli_fetch_array($result2))
     {
       $doc_no_ref[]=$row2['doc_no'];
-      $req_time[]=date("M-d H:i",strtotime($row2['log_time']));
+      $doc_no=$row2['doc_no'];
+      //$req_time[]=date("M-d H:i",strtotime($row2['log_time']));
       // $lay_time[]=$row2['log_time'];
-      $req_date_time[]=$row2['log_time'];
-
+    $sql10="select doc_ref,req_time from $bai_pro3.fabric_priorities where doc_ref ='$doc_no'";
+    $result21=mysqli_query($link, $sql10) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row21=mysqli_fetch_array($result21))
+    {
+      $req_time[]=date("M-d h:i:sa",strtotime($row21['req_time']));
+      $req_date_time[]=$row21['req_time'];
+      
     }
+      
+      
+  }
 
-    
+   
   // start style wise display by dharani 10-26-2013 
   
     $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).")) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")";
@@ -1253,7 +1261,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
               // Ticket #177328 / compare the req_time with current date and time for Blinking Option for Exceeding Fabric Request Dockets
             if($req_date_time[array_search($doc_no,$doc_no_ref)]<date("Y-m-d H:i:s"))
             { 
-              echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&dash=$dash&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open(".$fab_pop_details."'doc_no=$doc_no&dash=$dash&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><span class='blink'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
+              echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&dash=$dash&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open(".$fab_pop_details."'doc_no=$doc_no&dash=$dash&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><span>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
             }
             else
             {
