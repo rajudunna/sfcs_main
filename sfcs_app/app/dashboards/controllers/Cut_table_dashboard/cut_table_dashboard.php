@@ -751,7 +751,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     $req_time[]=0;
     $req_date_time[]=0;
    
-    $sql2="select * from $bai_pro3.cutting_table_plan where cutting_tbl_id in (".$section_mods.") group by doc_no_ref order by log_time,cutting_tbl_id";
+    $sql2="select * from $bai_pro3.cutting_table_plan where cutting_tbl_id in (".$section_mods.") group by doc_no order by log_time,cutting_tbl_id";
     $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row2=mysqli_fetch_array($result2))
     {
@@ -898,7 +898,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       {
         //$fabric_status=$sql_row1['ft_status'];
         //To get the status of join orders
-        $sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' and order_joins=2";
+        $sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' and $order_joins_in_2";
         $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         
         if(mysqli_num_rows($sql_result11)>0)

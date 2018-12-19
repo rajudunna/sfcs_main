@@ -20,7 +20,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	$option_val1=$_POST['option'];
 	
 			
-	$sql="select * from $bai_pro3.sections_db where sec_id='$section_ids'";
+	$sql="SELECT section_head AS sec_head,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section = $section_ids GROUP BY section ORDER BY section + 0";
 	//$sql="select * from members where login=\"$password\"";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -39,7 +39,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		$sql_num_check=0;
 	}
 
-	$sql="select * from $bai_pro3.sections_db where sec_head=\"Admin\"";
+	// $sql="select * from $bai_pro3.sections_db where sec_head=\"Admin\"";
+	$sql="SELECT section_head AS sec_head,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section_head = \"Admin\"";
 	//$sql="select * from members where login=\"$password\"";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

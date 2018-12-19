@@ -491,7 +491,7 @@
 								$garments_per_carton=$row1['garments_per_carton']*$row1['no_of_cartons'];
 								$destination=echo_title("$bai_pro3.bai_orders_db","UPPER(destination)","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link);
 								
-								$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref='".$carton_id."' AND mini_order_num=1 and color='".$color_code."' and size='".$size_ref."' and docket_number='".$docs_new[$iiii]."' group BY cut_num order by cut_num*1";
+								$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num=1 and color='".$color_code."' and size='".$size_ref."' and docket_number='".$docs_new[$iiii]."' group BY cut_num order by cut_num*1";
 								$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 								while($row12=mysqli_fetch_array($result12)) 
 								{ 
@@ -728,7 +728,7 @@
 							$color_code=$row1['color'];
 							$garments_per_carton=$row1['garments_per_carton']*$row1['no_of_cartons'];
 							$destination=echo_title("$bai_pro3.bai_orders_db","UPPER(destination)","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link); 
-							$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND color='".$color_code."' and size='".$size_ref."' and docket_number='".$docs_new[$iiii]."' group BY cut_num order by cut_num*1";
+							$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." and mini_order_num=1 AND color='".$color_code."' and size='".$size_ref."' and docket_number='".$docs_new[$iiii]."' group BY cut_num order by cut_num*1";
 							//echo $sql12."<br>";
 							$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							while($row12=mysqli_fetch_array($result12)) 
@@ -907,6 +907,7 @@
 	// echo "</table>";	
 
 	//Deleting the entry from sewing jobs ref if no input job was created  --  Updating the bundle quantity after the jobs are inserted
+	/*
 	if($job_counter == 1){
 		$delete_query = "Delete from $bai_pro3.sewing_jobs_ref where id = '$inserted_id'";
 		$delete_result = mysqli_query($link,$delete_query) or exit("Problem while deleting from sewing jos ref");
@@ -920,7 +921,10 @@
 			//Updated Successfully
 		}
 	}
-
+	*/
+	$update_query = "Update $bai_pro3.sewing_jobs_ref set bundles_count = $job_counter where id = '$inserted_id' ";
+	$update_result = mysqli_query($link,$update_query) or exit("Problem while inserting to sewing jos ref");
+	
 	//----------MO FILL Function Calling  -----
 	$inserted = insertMOQuantitiesSewing($schedule,$inserted_id);
 	if($inserted){

@@ -1,6 +1,6 @@
 /*#824*/
-USE brandix_bts;
-CREATE TABLE reversal_docket_log (
+/*USE brandix_bts;*/
+CREATE TABLE brandix_bts.reversal_docket_log (
   id int(11) NOT NULL AUTO_INCREMENT,
   docket_number int(11) DEFAULT NULL,
   bundle_number int(11) DEFAULT NULL,

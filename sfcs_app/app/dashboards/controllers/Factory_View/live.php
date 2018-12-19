@@ -1,29 +1,107 @@
-<!--
-Changes Log:
-
-1)2013-11-30/kirang/Ticket#668916
-Factory KPI Dashboard Changes
-"1) Individual section Plan SAH must come based on the Hours.
-2) Factory KPI dashboard SAH should be equal to today only.
-* Need to change Act SAH, CLH based on hours."
-
-SAH live  - achievement  90% to 99%  yellow 
-                     SAH achievement 100% and above Green
-                    SAH achievement less than 90% is Red.
-					
-2)2014-03-27/kirang/Ticket #439900/ To avoid the division by Zero error at SAH Generation in Factory view 
-
--->
 <?php
 // include("dbconf.php");
 include ("../../../../common/config/config.php");
 include ("../../../../common/config/functions.php");
 //$sec_x=$_GET['sec_x'];
-
+$date=date("Y-m-d");
 if(isset($_GET['sec_x']))
 {
 	$sections_db=array($_GET['sec_x']);
 }
+$teams=$shifts_array;
+$team_array=implode(",",$shifts_array);
+$team = "'".str_replace(",","','",$team_array)."'"; 	
+
+$work_hrs=0;
+$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift in ($team)";
+// echo $sql_hr."<br>";
+$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+if(mysqli_num_rows($sql_result_hr) >0)
+{
+	while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+	{ 
+		$work_hrs=$work_hrs+($sql_row_hr['end_time']-$sql_row_hr['start_time']);
+
+	}
+	$break_time=sizeof($teams)*0.5;
+	$work_hours=$work_hrs-$break_time;
+}else{
+	if(sizeof($teams) > 1) 
+	{ 
+		$work_hours=15;
+	} 
+	else 
+	{ 
+		$work_hours=7.5; 
+
+	}
+}                           
+
+$current_hr=date('H');
+$current_date=date("Y-m-d");
+
+if($current_date==$date)
+{
+	$time_def_total=0;
+	$hour_dur=0;
+	for($i=0;$i<sizeof($teams);$i++)
+	{
+		$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
+		// echo $sql_hr."<br>";
+		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		if(mysqli_num_rows($sql_result_hr) >0)
+		{
+			while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+			{ 
+				$start_time=$sql_row_hr['start_time'];
+				$end_time=$sql_row_hr['end_time'];
+				$diff_time=$current_hr-$start_time;
+				if($diff_time>3)
+				{
+					$time_def=0.5;
+					$diff_time=$diff_time-0.5;
+				}
+				$hour_dur=$hour_dur+$diff_time;
+				$time_def_total=$time_def_total+$time_def;
+			}
+		}
+		else
+		{
+			$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$teams[$i]."' and $current_hr > end_time";
+			// echo $sql_hr."<br>";
+			$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			// $hour_dur=$hour_dur+0;
+			while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+			{ 
+				$start_time=$sql_row_hr['start_time'];
+				$end_time=$sql_row_hr['end_time'];
+				if($end_time > $start_time){
+					$diff_time=$end_time-$start_time;
+				}
+				else
+				{
+					$start=24-$start_time;
+					$diff_time=$start+$end_time;
+				}
+				if($diff_time>3){
+					$time_def=0.5;
+					$diff_time=$diff_time-0.5;
+				}
+				$hour_dur=$hour_dur+$diff_time;
+				$time_def_total=$time_def_total+$time_def;
+
+			}
+		}
+		
+	}
+	$hoursa_shift=$hour_dur;
+}
+else
+{
+	$time_def_total=$break_time;
+	$hoursa_shift=$work_hours;
+}
+
 
 for($i=0;$i<sizeof($sections_db);$i++)
 {
@@ -66,50 +144,17 @@ for($i=0;$i<sizeof($sections_db);$i++)
 			$act_cla=round($sql_rowx['act_clh'],0);
 		}
 
-
-		$sqlz="select count(distinct bac_lastup) as hrs, count(distinct bac_shift) as shifts from $bai_pro.bai_log_buf where bac_date=\"".$date."\" and bac_sec=$sec_x";
-		$sql_resultz=mysqli_query($link, $sqlz) or die("Errorz".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_rowz=mysqli_fetch_array($sql_resultz))
-		{
-			$hrs_count=$sql_rowz["hrs"];
-			$shifts=$sql_rowz["shifts"];
-		}
-
 		$eff=0;
 		$k=0;
 
 		$br_time=date("H");
-		$time_def=0;
 
-		if($sec_x==1 || $sec_x==2 || $sec_x==5 || $sec_x==6)
-		{
-			if($br_time>=9 && $br_time<=17)
-			{
-				$time_def=0.5;
-			}
-			if($br_time>17 && $br_time<=23)
-			{
-				$time_def=1;
-			}
-		}
-
-		if($sec_x == 4 || $sec_x == 3)
-		{
-			if($br_time>=10 && $br_time<=18)
-			{
-				$time_def=0.5;
-			}
-			if($br_time>18 && $br_time<=23)
-			{
-				$time_def=1;
-			}
-		}
-		//$time_def=1;
+		$time_def=$time_def_total;
 		$sqly="SELECT bac_no,bac_style AS style, couple,nop,smv, SUM(bac_qty) AS qty,COUNT(DISTINCT bac_lastup)-$time_def AS hrs,ROUND(smv*SUM(bac_qty)/60) AS sth,(COUNT(DISTINCT bac_lastup)-$time_def)*nop AS clh FROM $bai_pro.bai_log_buf WHERE bac_sec=$sec_x AND bac_date=\"".$date."\" GROUP BY bac_no+0";
 		//$sqly="SELECT bac_no,bac_style AS style, couple,nop,smv, SUM(bac_qty) AS qty,COUNT(DISTINCT bac_lastup)-0.5 AS hrs,ROUND(smv*SUM(bac_qty)/60) AS sth,(COUNT(DISTINCT bac_lastup)-0.5)*nop AS clh FROM bai_pro.bai_log_buf WHERE bac_sec=$sec_x AND bac_date=\"".date("Y-m-d")."\" GROUP BY bac_no+0";
 		//echo $sqly;
 		$hrs[]=0;
-		//echo $sqly;
+		// echo $sqly;
 		$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowy=mysqli_fetch_array($sql_resulty))
 		{
@@ -123,25 +168,24 @@ for($i=0;$i<sizeof($sections_db);$i++)
 
 		
 		//echo $hrs_count."-".$time_def."<br>";
-		if((7.5*$shifts)> 0)
+		if($work_hours> 0)
 		{
-			$plan_val=round(($plan_sah/(7.5*$shifts))*($hrs_count-$time_def),0);	
+			$plan_val=round(($plan_sah/$work_hours)*($hoursa_shift),0);	
 		}
 		else
 		{
 			$plan_val=0;
 		}
 		$act_val=$act_sah; 
-//echo "<br/>";
-//echo "plan=".$plan_val;
-//echo "actval=".$act_val;
-//$complete_percent=round($act_sth_day/($act_clh_day)*100,2);	
-	if($plan_val>0)
-	{
-		$complete_percent=round($act_val/($plan_val)*100,2);	
-	}
+		//echo "<br/>";
+		//echo "plan=".$plan_val;
+		//echo "actval=".$act_val;
+		//$complete_percent=round($act_sth_day/($act_clh_day)*100,2);	
+		if($plan_val>0)
+		{
+			$complete_percent=round($act_val/($plan_val)*100,2);	
+		}
 
-//echo "percentage:".$complete_percent;	
 
 		
 		if($complete_percent>=100)
@@ -159,19 +203,8 @@ for($i=0;$i<sizeof($sections_db);$i++)
 				$id_new="red";
 			}
 		}
-		if($username=="kiran")
-		{
-			echo "<td><div id=\"$id_new\"><a href=\"#\">$complete_percent/$plan_val</a></div></td>";	
-		}
-		else
-		{
-			// $url_sah= getFullURLLevel($_GET['r'],'production_kpi/sah_live_dashboard_V2.php',1,'N');
-			// echo "<td><div id=\"$id_new\"><a href=\"$url_sah&sec_x=$section_id&rand=".rand()."\"></a></div></td>";	
-			echo "<td><div id=\"$id_new\"><a href=\"http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/controllers/Factory_View/sah_live_dashboard_V2.php?sec_x=$section_id&rand=".rand()."\" target='_blank'></a></div></td>";
-		}
-		
-
-	
+			
+		echo "<td><div id=\"$id_new\"><a href=\"http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/controllers/Factory_View/sah_live_dashboard_V2.php?sec_x=$section_id&rand=".rand()."\" target='_blank'></a></div></td>";
 }
 			
 

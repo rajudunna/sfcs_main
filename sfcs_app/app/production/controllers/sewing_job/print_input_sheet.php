@@ -70,7 +70,7 @@
 
 							$joinSch=$schedule; 
 							//$sql2="select * from $bai_pro3.bai_orders_db_confirm where order_del_no = \"$joinSch\" ";
-							$sql2="select order_style_no,GROUP_CONCAT(DISTINCT order_col_des) AS order_col_des from $bai_pro3.bai_orders_db_confirm where order_joins not in ('1','2') and order_del_no = \"$joinSch\" ";
+							$sql2="select order_style_no,GROUP_CONCAT(DISTINCT order_col_des) AS order_col_des from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_del_no = \"$joinSch\" ";
 
 							$result2=mysqli_query($link, $sql2) or die("Error22 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($row=mysqli_fetch_array($result2))
@@ -226,7 +226,7 @@
 									$destination=$sql_row2d["dest"];
 								}
 
-								$sql2="select group_concat(distinct trim(destination)) as dest,order_style_no as style,GROUP_CONCAT(DISTINCT order_col_des separator '<br/>') as color,order_po_no as cpo,order_date,vpo from $bai_pro3.bai_orders_db where order_joins not in ('1','2') and order_del_no in (".$sql_row1["del_no"].")";
+								$sql2="select group_concat(distinct trim(destination)) as dest,order_style_no as style,GROUP_CONCAT(DISTINCT order_col_des separator '<br/>') as color,order_po_no as cpo,order_date,vpo from $bai_pro3.bai_orders_db where $order_joins_not_in and order_del_no in (".$sql_row1["del_no"].")";
 								// echo $sql2;
 								$result2=mysqli_query($link, $sql2) or die("Error-".$sql2."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row2=mysqli_fetch_array($result2))

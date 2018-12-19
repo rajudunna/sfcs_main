@@ -13,7 +13,7 @@ MySQL - 10.3.8-MariaDB : Database - central_administration_sfcs
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`central_administration_sfcs` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `central_administration_sfcs`;
+/*USE `central_administration_sfcs`;*/
 
 /* Function  structure for function  `fun_emp_mod` */
 
@@ -108,7 +108,7 @@ DELIMITER ;
 
 /*Table structure for table `veiw_menu_matrix` */
 
-DROP TABLE IF EXISTS `veiw_menu_matrix`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`veiw_menu_matrix`;
 
 /*!50001 DROP VIEW IF EXISTS `veiw_menu_matrix` */;
 /*!50001 DROP TABLE IF EXISTS `veiw_menu_matrix` */;
@@ -154,7 +154,7 @@ DROP TABLE IF EXISTS `veiw_menu_matrix`;
 
 /*Table structure for table `view_menu` */
 
-DROP TABLE IF EXISTS `view_menu`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`view_menu`;
 
 /*!50001 DROP VIEW IF EXISTS `view_menu` */;
 /*!50001 DROP TABLE IF EXISTS `view_menu` */;
@@ -208,7 +208,7 @@ DROP TABLE IF EXISTS `view_menu`;
 
 /*Table structure for table `view_menu_role` */
 
-DROP TABLE IF EXISTS `view_menu_role`;
+DROP TABLE IF EXISTS `central_administration_sfcs`.`view_menu_role`;
 
 /*!50001 DROP VIEW IF EXISTS `view_menu_role` */;
 /*!50001 DROP TABLE IF EXISTS `view_menu_role` */;
