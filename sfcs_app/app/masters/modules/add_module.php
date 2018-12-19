@@ -127,7 +127,7 @@
 			    <label class="control-label control-label-left col-sm-3" for="description">Module Color</label>
 			    <div class="controls col-sm-9">
 				<div id="cp2" class="input-group colorpicker-component"> 
-                    <input type="text" value="<?= ($module_color)?$module_color: "#00AABB"; ?>" class="form-control" readonly="true" name="module_color"/> 
+                    <input type="text" value="<?= ($module_color)?$module_color: "#ffffff"; ?>" class="form-control" readonly="true" name="module_color"/> 
                     <span class="input-group-addon"><i></i></span>
                     </div>
 				</div>
