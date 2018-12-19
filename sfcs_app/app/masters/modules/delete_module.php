@@ -48,6 +48,7 @@ if($rowcount11>0 or 	$rowcount12>0 or 	$rowcount13>0){
 			echo"<script>setTimeout(function () { 
 				swal({
 				  title: 'Module Already in Production',
+				  text: 'Message!',
 				  type: 'warning',
 				  confirmButtonText: 'OK'
 				},

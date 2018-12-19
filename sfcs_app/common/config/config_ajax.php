@@ -8,8 +8,6 @@ $api_password = $conf1->get('api-password');
 $api_hostname = $conf1->get('api-host-name');
 $api_port_no  = $conf1->get('api-port');
 
-$ims_boxes_count =  $conf1->get('ims_boxes');
-
 $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=strtolower($username_list[1]);
 
