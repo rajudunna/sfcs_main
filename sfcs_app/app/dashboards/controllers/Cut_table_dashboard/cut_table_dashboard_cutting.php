@@ -1200,9 +1200,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
        if(in_array($authorized,$has_permission) and ($final_cols=="yellow" || $final_cols=="orange")){
             echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='".$get_cut_qty."&doc_no=$doc_no' onclick='Popup=window.open('get_cut_qty.php?doc_no=$doc_no','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>RT:".$req_time1."</span></a></div></div><br/>";
         }else if($final_cols=="red" || $final_cols=="lgreen" || $final_cols=="yash"){
-          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='#'
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:11px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='#'
              onclick=\"window.open('$href','yourWindowName','width=800,height=600')\"
-            >$emb_stat_title"."LT:  ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
+            >$emb_stat_title"."LT:".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
         }
         else if($final_cols=="pink"){
           echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:11px; float:left; color:white' title='$title'>RT:".$req_time1."</div></div><br/>";
