@@ -4,6 +4,14 @@
 $order_tid=$_GET['order_tid'];
 $cat_ref=$_GET['cat_ref'];	
 $doc_id=$_GET['doc_id'];
+if($_GET['print_status']<>'')
+{
+    $print=$_GET['print_status'];
+}
+else
+{
+	$print=2;
+}
 ?>
 <?php
 
@@ -2053,7 +2061,7 @@ document.oncontextmenu=new Function("alert(message);return false")
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status=='0000-00-00' || $print_status == "") {echo "Original"; } else {echo "Duplicate";}?></strong></td>
+  <td class=xl654118 colspan=2 align=center><strong><?php if($print==2) { echo 'Cutting Print';} else { if($print_status=='0000-00-00' || $print_status == "") {echo "Original"; } else {echo "Duplicate";} } ?></strong></td>
   <td class=xl654118></td>
  </tr>
  <!-- <tr class=xl654118 height=20 style='mso-height-source:userset;height:5.0pt'>

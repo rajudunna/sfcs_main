@@ -457,7 +457,15 @@ zoom:75%;
 							
 							if($section_check==0)
 							{
-								echo "<td rowspan=$section_count>$section</td>";
+
+								$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
+								$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($sql_row12=mysqli_fetch_array($result12))
+								{
+									$section_display_name=$sql_row12["section_display_name"];
+								}
+
+								echo "<td rowspan=$section_count>$section_display_name</td>";
 								$section_check=1;
 							}
 							

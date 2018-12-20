@@ -121,7 +121,7 @@ echo "<label>Select Color: </label><select name=\"color\" onchange=\"thirdbox();
 //$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log) and order_style_no=\"$style\" and order_del_no=\"$schedule\"";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 //{
-	$sql="SELECT DISTINCT order_col_des FROM $bai_pro3.bai_orders_db_confirm WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_joins<4";
+	$sql="SELECT DISTINCT order_col_des FROM $bai_pro3.bai_orders_db_confirm WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_joins<'4'";
 //}
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);

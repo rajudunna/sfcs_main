@@ -54,13 +54,14 @@ if(sizeof($remove_docs)>0)
 
 $sec_id=$_GET["sec"];
 
-$sqlx="select * from $bai_pro3.sections_db where sec_id=$sec_id";
+$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$sec_id GROUP BY section ORDER BY section + 0";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
 	$section=$sql_rowx['sec_id'];
 	$section_head=$sql_rowx['sec_head'];
 	$section_mods=$sql_rowx['sec_mods'];
+	$section_display_name=$sql_rowx['section_display_name'];
 	// Ticket #424781 change the buyer division display based on the pink,logo,IU as per plan_modules
 	$sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1";
 	$sql_num_checkd=0;
@@ -80,7 +81,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		$ips_data='<div style="margin-left:15%">';
 		$ips_data.="<p>";
 		$ips_data.="<table>";
-		$ips_data.="<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$popup_url?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
+		$ips_data.="<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$popup_url?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$section_display_name</a></h2></th></th></tr>";
 		//For Section level blinking
 		$blink_minimum=0;		
 		for($x=0;$x<sizeof($mods);$x++)
@@ -119,7 +120,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowy=mysqli_fetch_array($resulty))
 				{
-					$doc_no_ref=$sql_rowy["doc_no"];	
+					$doc_no_ref = $sql_rowy["doc_no"];
+					$doc_no_ref1 = $sql_rowy["doc_no"];
 					$doc_no_ref_input=$sql_rowy["doc_no"];
 					$carton_qty=$sql_rowy["carton_qty"];
 					$style=$sql_rowy['order_style_no'];
@@ -129,6 +131,17 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$schedule_no=$sql_rowy['order_del_no'];
 					$type_of_sewing=$sql_rowy['type_of_sewing'];
 				}			
+				//FOR SCHEDULE CLUBBING ensuring for parent docket
+				if($doc_no_ref != ''){
+					$parent_doc_query = "SELECT GROUP_CONCAT(org_doc_no) as docs from $bai_pro3.plandoc_stat_log  
+										where doc_no IN ($doc_no_ref) and org_doc_no > 0";
+					$parent_doc_result = mysqli_query($link,$parent_doc_query);
+					if($org_row = mysqli_fetch_array($parent_doc_result))
+						$doc_no_ref = $org_row['docs'];
+				}
+				if($doc_no_ref == '')
+					$doc_no_ref = $doc_no_ref1;
+
 				$sql33x112="SELECT MIN(st_status) AS st_status,MIN(ft_status) AS ft_status FROM $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' and order_col_des in ('".implode("','",explode(",",$order_col))."')";
 				$sql_result33x112=mysqli_query($link, $sql33x112) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row33x112=mysqli_fetch_array($sql_result33x112))

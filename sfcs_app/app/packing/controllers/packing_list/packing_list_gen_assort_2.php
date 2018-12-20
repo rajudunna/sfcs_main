@@ -75,12 +75,12 @@
 
 			if($sql_num_confirm>0)
 			{
-				$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_tid=\"$order_tid\" 
+				$sql="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_tid=\"$order_tid\" 
 				     and order_col_des=\"".$assortcolor."\"";
 			}
 			else
 			{
-				$sql="select * from $bai_pro3.bai_orders_db where $filter_joins  order_tid=\"$order_tid\" 
+				$sql="select * from $bai_pro3.bai_orders_db where $order_joins_not_in and  order_tid=\"$order_tid\" 
 					  and order_col_des=\"".$assortcolor."\"";
 			}
 

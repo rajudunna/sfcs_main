@@ -606,7 +606,7 @@
                 $bindex=0;
                 $blink_docs=array();
                 //Ticket #663887  display buyers like pink,logo and IU as per plan_modules table
-                $sqlx="select * from $bai_pro3.sections_db where sec_id>0 ORDER BY sec_id*1";
+                $sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section>0 GROUP BY section ORDER BY section + 0";
                 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $rows5=mysqli_num_rows($sql_resultx);   
                 while($sql_rowx=mysqli_fetch_array($sql_resultx))
@@ -614,6 +614,7 @@
                     $section=$sql_rowx['sec_id'];
                     $section_head=$sql_rowx['sec_head'];
                     $section_mods=$sql_rowx['sec_mods'];
+                    $section_display_name=$sql_rowx['section_display_name'];
                     
                     //echo "buyer=".$_GET["view_div"];
                     if($_GET["view_div"]!='ALL' && $_GET["view_div"]!='')
@@ -649,7 +650,7 @@
                         echo "<p>";
                         echo "<table>";
                         $url=getFullURL($_GET['r'],'board_update.php','N');
-                        echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$url&section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
+                        echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$url&section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$section_display_name</a></h2></th></th></tr>";
 
                         //$mods=explode(",",$section_mods);
                         
@@ -709,7 +710,7 @@
                             //Filter view to avoid Cut Completed and Fabric Issued Modules
 
                             $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status = 'DONE') OR (a_plies = p_plies AND act_cut_status != 'DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
-                            SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status = 'DONE') OR (a_plies = p_plies AND act_cut_status != 'DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
+                            SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status = 'DONE') OR (a_plies = p_plies AND act_cut_status != 'DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
 
                             // var_dump($sql1);
                             
@@ -718,14 +719,14 @@
                             if($_GET['view']==1)
                             {
                                 $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND fabric_status_new='5' AND ((a_plies != p_plies AND act_cut_status!='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
-                                SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND fabric_status_new='5' AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by log_time limit $priority_limit";
+                                SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND fabric_status_new='5' AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by log_time limit $priority_limit";
                                 $view_count=0;
                             }       
                             //filter to show only cut completed
                             if($_GET['view']==3)
                             {
                                 $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND ((a_plies != p_plies AND act_cut_status!='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
-                                SELECT * FROM bai_pro3.plan_dash_doc_summ WHERE module=$module AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
+                                SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
                                 $view_count=0;
                             }
                            

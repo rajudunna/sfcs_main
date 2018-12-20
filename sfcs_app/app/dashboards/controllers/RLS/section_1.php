@@ -15,22 +15,26 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 <?php
 $dt=date("Y-m-d");
-$sql22=mysqli_query($GLOBALS["___mysqli_ston"], "select sec_id from $bai_pro3.sections_db where sec_id>0");
+$sql22=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` GROUP BY section ORDER BY section + 0");
 //echo $sql;
 while($result22=mysqli_fetch_array($sql22))
 {
 	$sec_id_main=$result22["sec_id"];
-
-	$sql=mysqli_query($GLOBALS["___mysqli_ston"], "select sec_id,sec_head,sec_mods from $bai_pro3.sections_db where sec_id=$sec_id_main");
-	//echo $sql;
-	while($result=mysqli_fetch_array($sql))
+	
+	$sqlx1="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$sec_id_main GROUP BY section ORDER BY section + 0";
+	// echo $sqlx1;
+	$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 	{
-		$mods=$result["sec_mods"];
-		$sec_id=$result["sec_id"];
-		$head=$result["sec_head"];
+		$mods=$sql_rowx1["sec_mods"];
+		$sec_id=$sql_rowx1["sec_id"];
+		$head=$sql_rowx1["sec_head"];
+		$section_display_name=$sql_rowx1["section_display_name"];
+		
 	}
+	
 
-	echo "<table align=center><tr><th colspan=5><H2 style=\"color:#0000ff;\"  align=\"left\">Section - ".$sec_id."(".$head.")</H2></th></tr><tr><th>Modules\Hours</th>";
+	echo "<table align=center><tr><th colspan=5><H2 style=\"color:#0000ff;\"  align=\"left\">".$section_display_name."</H2></th></tr><tr><th>Modules\Hours</th>";
 
 
 	for($i=1;$i<=16;$i++)

@@ -104,12 +104,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 <option value="All" <?php  if($module=="All") { echo "selected"; }?>>All</option>
 <?php
 
-$sql="SELECT GROUP_CONCAT(sec_mods) as mods FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
+$sql="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section NOT IN (0,-1) GROUP BY section ORDER BY section + 0";
 //echo $sql;
 $result7=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($result7))
 {
-	$sql_mod=$sql_row["mods"];
+	$sql_mod=$sql_row["sec_mods"];
 }
 
 $sql_mods=explode(",",$sql_mod);
