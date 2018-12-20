@@ -5,7 +5,6 @@
 	<?php
 		include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 		include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-		include(getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',4,'R'));
 		include(getFullURLLevel($_GET['r'],'common/config/m3Updations.php',4,'R'));
 	?>
 </head>

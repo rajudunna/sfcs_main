@@ -1,8 +1,6 @@
 <?php
 	include('../../../../common/config/config_ajax.php');
-	include('../../../../common/config/rest_api_calls.php');
 	include("../../../../common/config/m3Updations.php");
-	error_reporting(0);
 	//API related data
 	$plant_code = $global_facility_code;
 	$company_num = $company_no;
