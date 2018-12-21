@@ -752,7 +752,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     {
       $table_id=$row2['cutting_tbl_id'];
       $doc_no_ref[]=$row2['doc_no'];
-      $req_time[]=date("M-d h:i:sa",strtotime($row2['log_time']));
+      $req_time[]=date("M-d h:ia",strtotime($row2['log_time']));
       // $lay_time[]=$row2['log_time'];
       $req_date_time[]=$row2['log_time'];
 
@@ -1147,7 +1147,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         $result21=mysqli_query($link, $sql10) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($row21=mysqli_fetch_array($result21))
         {
-          $req_time1=date("M-d h:i:sa",strtotime($row21['req_time'])); 
+          $req_time1=date("M-d h:ia",strtotime($row21['req_time'])); 
           $fabric_req_date=date("Y-M-d h:i:sa",strtotime($row21['req_time'])); 
         }
         if($lay_time[array_search($doc_no,$doc_no_ref)]<date("Y-m-d H:i:s"))
