@@ -860,7 +860,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		 
 		while($row21=mysqli_fetch_array($result21))
 		{
-		  $req_time=date("M-d h:i:sa",strtotime($row21['req_time']));
+		  $req_time=date("M-d h:ia",strtotime($row21['req_time']));
 		  $req_date_time=$row21['req_time'];
 		  
 		}

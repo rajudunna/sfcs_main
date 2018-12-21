@@ -723,7 +723,7 @@ if(isset($_POST['new_entry']))
 					if(mysqli_num_rows($sql_result)>0)
 					{
 						$sql="select tid,qty_rec,qty_issued,qty_ret,partial_appr_qty from $bai_rm_pj1.store_in where roll_status in (0,2) and barcode_number=\"$roll_id\"";
-						echo $sql."<br>";
+						// echo $sql."<br>";
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
@@ -749,7 +749,7 @@ if(isset($_POST['new_entry']))
 						{
 
 							$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,doc_type,allocated_qty,status) values (\"$doc_no\",\"".$primary_roll_id."\",\"$doc_type\",\"$alloc_qty\",'1')";
-							echo $sql."<br>";
+							// echo $sql."<br>";
 							mysqli_query($link, $sql) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							
 							$sql="select ref3,ref6 from $bai_rm_pj1.store_in where barcode_number='$roll_id'";
@@ -767,15 +767,15 @@ if(isset($_POST['new_entry']))
 							}
 							
 							$sql="update $bai_rm_pj1.fabric_cad_allocation set roll_width=\"$ctx_width\" where roll_id=\"$primary_roll_id\"";
-							echo $sql."<br>";
+							// echo $sql."<br>";
 							mysqli_query($link, $sql) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 									
 							$sql1="update $bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$alloc_qty.", status='2', allotment_status='2' where barcode_number=\"$roll_id\"";
-							echo $sql1."<br>";
+							// echo $sql1."<br>";
 							$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 							$sql11="update $bai_rm_pj1.store_in set qty_rec=qty_allocated where barcode_number=\"$roll_id\"";
-							echo $sql11."<br>";
+							// echo $sql11."<br>";
 							$sql_result1=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							
 							// $sql1="insert into $bai_rm_pj1.store_out (tran_tid,qty_issued,cutno,date,updated_by,log_stamp,Style,Schedule) values ('".$primary_roll_id."', ".$alloc_qty.", '".$cat.$doc_no."',\"".date("Y-m-d")."\",'".$username."','".date("Y-m-d H:i:s")."',\"$order_style\",\"$order_schedule\")";
@@ -787,12 +787,12 @@ if(isset($_POST['new_entry']))
 							if($splitted_qty >0)
 							{
 								$qry_rolldetails="SELECT tid,lot_no,ref1,ref2,ref3,remarks,log_user,barcode_number,ref_tid, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason FROM $bai_rm_pj1.store_in WHERE barcode_number=\"$roll_id\"";
-								echo $qry_rolldetails."<br>";
+								// echo $qry_rolldetails."<br>";
 									$result__rolldetials=mysqli_query($link, $qry_rolldetails);
 									$row_rolldetials=mysqli_fetch_assoc($result__rolldetials);
 									
 									$qry_newroll="insert into $bai_rm_pj1.store_in(lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll,ref_tid) values('".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$splitted_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$row_rolldetials["log_user"]."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".$row_rolldetials["ref5"]."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$row_rolldetials["tid"]."','".$row_rolldetials["ref_tid"]."')";
-									echo $qry_newroll."<br>";
+									// echo $qry_newroll."<br>";
 									mysqli_query($link, $qry_newroll) or exit("Sql Error3: $qry_newroll".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 									$new_tid=mysqli_insert_id($link);
@@ -828,7 +828,7 @@ if(isset($_POST['new_entry']))
 	}
 	$url=getFullURL($_GET['r'],'fab_issue_track_V2.php','N');
 	
-	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1200); function Redirect() {  location.href = \"$url&doc_no=$doc_no&doc_type=$doc_type\"; }</script>";
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1200); function Redirect() {  location.href = \"$url&doc_no=$doc_no&doc_type=$doc_type\"; }</script>";
 
 
 }
