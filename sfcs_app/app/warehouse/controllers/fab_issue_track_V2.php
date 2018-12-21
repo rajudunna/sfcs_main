@@ -672,7 +672,7 @@ if(isset($_POST['new_entry']))
 			{
 				if($doc_type=='normal')
 				{
-					$sql="select doc_no,material_req,order_tid,order_del_no from $bai_pro3.order_cat_doc_mk_mix where doc_no=\"".$doc_no."\"";
+					$sql="SELECT doc_no,material_req,order_tid,order_del_no FROM $bai_pro3.order_cat_doc_mk_mix_v2 WHERE DOC_NO=\"".$doc_no."\"";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row=mysqli_fetch_array($sql_result))
 					{
