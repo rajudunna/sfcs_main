@@ -92,6 +92,10 @@ select{
 	margin-right: 5px;
 }
 
+.panel-primary{
+	margin-right: -50px;
+}
+
 </style>
 
 <script type="text/javascript" src="../../../../common/js/jquery.js"></script> 
@@ -159,10 +163,26 @@ if(isset($_GET['val']))
 
 ?>
 
-<?php	    
+<?php	 
+		if(isset($_POST['submit']))
+		{
+			$input_selection=$_POST['input_selection'];
+			if($input_selection=='bundle_wise'){
+				$bundlenum_header="<th>Bundle No</th>";
+				$report_header="BundleWise";
+			}else{
+				$bundlenum_header="";
+				$report_header="Sewing Job Wise";
+			}
+			
+		}else{
+			$bundlenum_header="<th>Bundle No</th>";
+			$report_header="BundleWise";
+		}
+
 		$section=$_GET['section'];
 		echo "<div class='panel panel-primary'>";
-		echo "<div class='panel-heading'>Summary of <b>SECTION - $section</b></div>";
+		echo "<div class='panel-heading'>Summary of <b>SECTION -" .$section." ( ".$report_header." )</b></div>";
 		echo "</br>";
 		echo "<table>
 		<tr>
@@ -197,19 +217,9 @@ if(isset($_GET['val']))
 		
 		$modules=array();
 		$modules=explode(",",$sec_mods);
-		echo '<div style="max-height:600px;overflow-y:scroll;"><table style="color:black; border: 1px solid #337ab7;" class="table table-bordered">';
+		echo '<div><table style="color:black; border: 1px solid #337ab7;" class="table table-bordered">';
 		echo "<tr class=\"new\" style='background-color:#337ab7'><th>Module</th>";
-
-		if(isset($_POST['submit']))
-			{
-				$input_selection=$_POST['input_selection'];
-				if($input_selection=='bundle_wise'){
-					echo "<th>Bundle No</th>";
-				}
-				
-			}else{
-				echo "<th>Bundle No</th>";
-			}
+		echo $bundlenum_header;
 		//echo "<th>CID</th><th>DOC#</th>";
 		echo "<th>Style</th><th>Schedule</th><th>Color</th><th>Input Job No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Rejected</th><th>Balance</th><th>Input Remarks</th><th>Ex-Factory</th><th width='150'>Remarks</th><th>Age</th><th>WIP</th></tr>";
 		
@@ -307,7 +317,7 @@ if(isset($_GET['val']))
 				$ims_remarks=$sql_row12['ims_remarks'];
 				$pac_tid=$sql_row12['pac_tid'];
 				$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$ims_schedule,$ims_color,$inputjobno,$link);
-				echo "Hello".$display_prefix1;
+				//echo "Hello".$display_prefix1;
 				$sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$ims_doc_no and a_plies>0";
 				$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
