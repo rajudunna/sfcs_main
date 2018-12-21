@@ -667,24 +667,25 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                     $type_pms070mi=$decoded_pms070mi['@type'];
                     $code_pms070mi=$decoded_pms070mi['@code'];
                     $message_pms070mi=$decoded_pms070mi['Message'];
-                }
-                //validating response pass/fail and inserting log
-                if($type_pms070mi!='ServerReturnedNOK')
-                {
-                    //updating response status in m3_transactions
-                    $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id_pms070mi."";
-                    mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log");
-                }
-                else
-                {
-                    //updating response status in m3_transactions
-                    $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms070mi."";
-                    mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions");
 
-                    //insert transactions details into transactions_log
-                    $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id_pms070mi','$message_pms070mi','$username','$current_date')";
-                    mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log");
-                }
+                    //validating response pass/fail and inserting log
+                    if($type_pms070mi!='ServerReturnedNOK')
+                    {
+                        //updating response status in m3_transactions
+                        $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id_pms070mi."";
+                        mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log");
+                    }
+                    else
+                    {
+                        //updating response status in m3_transactions
+                        $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms070mi."";
+                        mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions");
+
+                        //insert transactions details into transactions_log
+                        $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id_pms070mi','$message_pms070mi','$username','$current_date')";
+                        mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log");
+                    }
+                }                    
             // 200 Operation End
 
             // FG start
@@ -701,24 +702,25 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                     $type_pms050mi=$decoded_pms050mi['@type'];
                     $code=$decoded_pms050mi['@code'];
                     $message_pms050mi=$decoded_pms050mi['Message'];
-                }
-                //validating response pass/fail and inserting log
-                if($type_pms050mi!='ServerReturnedNOK')
-                {
-                    //updating response status in m3_transactions
-                    $qry_m3_transactions_pms050mi="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id_pms050mi."";
-                    mysqli_query($link,$qry_m3_transactions_pms050mi) or exit("While updating into M3 transaction log");
-                }
-                else
-                {
-                    //updating response status in m3_transactions
-                    $qry_m3_transactions_pms050mi="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms050mi."";
-                    mysqli_query($link,$qry_m3_transactions_pms050mi) or exit("While updating into M3 Transactions");
 
-                    //insert transactions details into transactions_log
-                    $qry_transactionslog_pms050mi="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id_pms050mi','$message_pms050mi','$username','$current_date')";
-                    mysqli_query($link,$qry_transactionslog_pms050mi) or exit("While inserting into M3 transaction log");
-                }
+                    //validating response pass/fail and inserting log
+                    if($type_pms050mi!='ServerReturnedNOK')
+                    {
+                        //updating response status in m3_transactions
+                        $qry_m3_transactions_pms050mi="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id_pms050mi."";
+                        mysqli_query($link,$qry_m3_transactions_pms050mi) or exit("While updating into M3 transaction log");
+                    }
+                    else
+                    {
+                        //updating response status in m3_transactions
+                        $qry_m3_transactions_pms050mi="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms050mi."";
+                        mysqli_query($link,$qry_m3_transactions_pms050mi) or exit("While updating into M3 Transactions");
+
+                        //insert transactions details into transactions_log
+                        $qry_transactionslog_pms050mi="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id_pms050mi','$message_pms050mi','$username','$current_date')";
+                        mysqli_query($link,$qry_transactionslog_pms050mi) or exit("While inserting into M3 transaction log");
+                    }
+                }                    
             // FG End
         //M3 Rest API Call END
     }
@@ -775,7 +777,6 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
                     $type_pms070mi=$decoded_pms070mi['@type'];
                     $code_pms070mi=$decoded_pms070mi['@code'];
                     $message_pms070mi=$decoded_pms070mi['Message'];
-                }
                 //validating response pass/fail and inserting log
                 if($type_pms070mi!='ServerReturnedNOK')
                 {
@@ -793,6 +794,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
                     $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id_pms070mi','$message_pms070mi','$username','$current_date')";
                     mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log pms070mi");
                 }
+            }
             // 200 Operation End
 
             // FG start
@@ -809,8 +811,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
                     $type_pms050mi=$decoded_pms050mi['@type'];
                     $code=$decoded_pms050mi['@code'];
                     $message_pms050mi=$decoded_pms050mi['Message'];
-                }
-                //validating response pass/fail and inserting log
+                    //validating response pass/fail and inserting log
                 if($type_pms050mi!='ServerReturnedNOK')
                 {
                     //updating response status in m3_transactions
@@ -827,6 +828,8 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
                     $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id_pms050mi','$message_pms050mi','$username','$current_date')"; 
                     mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log pms050mi");
                 }
+                }
+                
             // FG End
         //M3 Rest API Call END
     }
