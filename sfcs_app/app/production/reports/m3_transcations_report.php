@@ -84,7 +84,7 @@
             $resp_stat[] = $_GET['schedule'] ? 'schedule="'.$_GET["schedule"].'"' : '';
             $resp_stat[] = ($_GET['tdate'] && $_GET['fdate']) ? 'DATE(m3_transactions.date_time) between  "'.$_GET["fdate"].'" and "'.$_GET["tdate"].'"' : '';
             $ar_nw = array_filter($resp_stat);
-            $qry_m3_trans = "SELECT style,schedule,color,size,m3_transactions.date_time as dt,m3_transactions.mo_no,op_code,quantity,response_status,m3_transactions.id,m3_transactions.log_user,m3_transactions.ref_no,m3_transactions.reason,m3_transactions.module_no
+            $qry_m3_trans = "SELECT style,schedule,color,size,m3_transactions.date_time as dt,m3_transactions.mo_no,op_code,quantity,response_status,m3_transactions.id,m3_transactions.log_user,m3_transactions.ref_no,m3_transactions.reason,m3_transactions.module_no,m3_transactions.api_type,m3_transactions.workstation_id
             FROM bai_pro3.`m3_transactions`  
             LEFT JOIN bai_pro3.`mo_details` ON m3_transactions.mo_no=mo_details.mo_no WHERE ".implode(' and ',$ar_nw);
             $result_m3_trans = mysqli_query($link_ui, $qry_m3_trans);
@@ -108,9 +108,9 @@
                     $reason = $res['response_status'];
                     
                     if ($res['api_type'] == 'fg') {
-                        $api_type = 'FG';
+                        $api_type = '<span class="badge progress-bar-warning">FG</span>';
                     } else {
-                        $api_type = 'Operation';
+                        $api_type = '<span class="badge progress-bar-info">Operation</span>';
                     }
                     
                     if($reason=='fail'){
