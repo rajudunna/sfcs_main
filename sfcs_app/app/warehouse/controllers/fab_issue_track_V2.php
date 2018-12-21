@@ -392,6 +392,7 @@ if(isset($_POST["submit"]) or $flag==1)
 				$qty=$row1["qty"];
 				$barcode_number=$row1["barcode_number"];
 				$total_qty=$total_qty+$qty;
+				
 				$sql121="select store_out.log_stamp,store_out.qty_issued,sticker_ref.inv_no,sticker_ref.batch_no,sticker_ref.ref2 as rollno,sticker_ref.ref4 as shade,store_out.updated_by from $bai_rm_pj1.store_out left join $bai_rm_pj1.sticker_ref on store_out.tran_tid=sticker_ref.tid where cutno='".$cat.$docket."' and sticker_ref.tid='".$roll_id."'";
 				// echo $sql121."<br>";
 				$result121=mysqli_query($link, $sql121) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -399,23 +400,23 @@ if(isset($_POST["submit"]) or $flag==1)
 				echo "<tr><td>$inv_no</td><td>$batch_no_no</td><td>$shade</td><td>$rollno</td><td>$barcode_number</td><td>$roll_width</td><td>$qty</td><td>".$row1['log_time']."</td>";
 				if((in_array($authorized,$has_permission)))
 				{
-					if(($tran_pin!="") and ($lastup=="0000-00-00 00:00:00") and ($fabric_status_ref!=1 or $fabric_status_ref!=5))
+					if(($tran_pin!="") and ($lastup=="0000-00-00 00:00:00") and ($fabric_status_ref!=1 and $fabric_status_ref!=5))
 					{
 						echo '<td><input type="hidden" value="'.$roll_id.'" name="roll_id" id="roll_id"><a class="btn btn-warning btn-xs href="#" value="'.$tran_pin.'" onclick="edit('.$tran_pin.')">Edit</a>';
 						$url=getFullURL($_GET['r'],'fab_issue_track_V2.php','N');
 						$path="$url&doc_no=".$docket."&doc_type=".$docket_type."&tran_pin=".$tran_pin."&delete=1";
 						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id='del_$tran_pin' class='btn btn-danger btn-xs confirm-submit'  href='$path'  value='".$tran_pin."'>Delete</a></td>";			
 					}
-					else if($tran_pin!="" and $lastup!="0000-00-00 00:00:00" and ($fabric_status_ref!=1 or $fabric_status_ref!=5))
+					else if($tran_pin!="" and $lastup!="0000-00-00 00:00:00" and ($fabric_status_ref!=1 and $fabric_status_ref!=5))
 					{
-						if($cat=='D' and (in_array($authorized,$has_permission)) and ($fabric_status_ref!=1 or $fabric_status_ref!=5))
+						if($cat=='D' and (in_array($authorized,$has_permission)) and ($fabric_status_ref!=1 and $fabric_status_ref!=5))
 						{
 							echo '<td><input type="hidden" value="'.$roll_id.'" name="roll_id" id="roll_id"><a class="btn btn-warning btn-xs" href="#" value="'.$tran_pin.'" onclick="edit('.$tran_pin.')">Edit</a>';
 							$url=getFullURL($_GET['r'],'fab_issue_track_V2.php','N');
 							$path="$url&doc_no=".$docket."&doc_type=".$docket_type."&tran_pin=".$tran_pin."&delete=1";
 							echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id='del_$tran_pin' class='btn btn-danger btn-xs confirm-submit'  href='$path'  value='".$tran_pin."'>Delete</a></td>";
 						}
-						else if($cat=='R'  and (in_array($authorized,$has_permission)) and ($fabric_status_ref!=1 or $fabric_status_ref!=5))
+						else if($cat=='R'  and (in_array($authorized,$has_permission)) and ($fabric_status_ref!=1 and $fabric_status_ref!=5))
 						{
 
 							echo '<td><input type="hidden" value="'.$roll_id.'"  name="roll_id" id="roll_id"><a class="btn btn-warning btn-xs href="#" value="'.$tran_pin.'" onclick="edit('.$tran_pin.')">Edit</a>';
