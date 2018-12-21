@@ -181,8 +181,15 @@ if(isset($_GET['val']))
 		}
 
 		$section=$_GET['section'];
+		//getting section name from section name from masters
+		$qry_section="SELECT section_display_name FROM sections_master WHERE sec_name=".$section;
+		$qry_section_result=mysqli_query($link, $qry_section) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($qry_section_row=mysqli_fetch_array($qry_section_result))
+		{
+			$section_name=$qry_section_row['section_display_name'];
+		}
 		echo "<div class='panel panel-primary'>";
-		echo "<div class='panel-heading'>Summary of <b>SECTION -" .$section." ( ".$report_header." )</b></div>";
+		echo "<div class='panel-heading'>Summary of <b>" .$section_name." ( ".$report_header." )</b></div>";
 		echo "</br>";
 		echo "<table>
 		<tr>
