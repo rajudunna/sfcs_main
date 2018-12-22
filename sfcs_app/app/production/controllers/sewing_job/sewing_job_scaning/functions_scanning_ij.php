@@ -240,6 +240,7 @@ function getjobdetails($job_number)
 			$flag = 'packing_summary_input';
 		}
 	}
+	$s_no = 0;
 	if($flags == 2)
 	{
 		$result_array['status'] = 'Previous operation not yet done for this job.';
@@ -249,6 +250,7 @@ function getjobdetails($job_number)
 		$result_style_data = $link->query($schedule_query);
 		while($row = $result_style_data->fetch_assoc()) 
 		{
+			$s_no++;
 			$style = $job_number[1];
 			$schedule =  $job_number[2];
 			$color = $row['order_col_des'];
@@ -355,7 +357,8 @@ function getjobdetails($job_number)
 			$result_array['table_data'][] = $row;
 		}
 		$result_array['flag'] = $flag;
-	}		
+	}
+	$result_array['no_of_rows'] = $s_no;
 	echo json_encode($result_array);	
 }
 if(isset($_GET['job_rev_no']))

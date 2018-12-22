@@ -196,7 +196,7 @@
                         }
                         $update_rejection_log_child = "update $bai_pro3.rejection_log_child set recut_qty = recut_qty+$to_add where bcd_id = $bcd_act_id";
                         mysqli_query($link,$update_rejection_log_child) or exit("While updating rejection log child".mysqli_error($GLOBALS["___mysqli_ston"]));
-        
+                        
                         $update_rejection_log = "update $bai_pro3.rejections_log set recut_qty = recut_qty+$to_add,remaining_qty = remaining_qty - $to_add where style = '$style' and schedule = '$scheule' and color = '$color'";
                         mysqli_query($link,$update_rejection_log) or exit("While updating rejection log".mysqli_error($GLOBALS["___mysqli_ston"]));
                     }
@@ -337,15 +337,15 @@
         $url = '?r='.$_GET['r'];
         echo "<script>sweetAlert('Replacement Done Successfully!!!','','success');window.location = '".$url."'</script>"; 
     }
-    $shifts_array = ["IssueDone","RecutPending"];
+    // $shifts_array = ["IssueDone","RecutPending"];
     $drp_down = '<div class="row"><div class="col-md-3"><label>Status Filter:</label>
     <select class="form-control rm"  name="status" id="rm" style="width:100%;" onchange="myFunction()" required>';
     for ($i=0; $i <= 1; $i++) 
     {
         $drp_down .= '<option value='.$shifts_array[$i].'>'.$shifts_array[$i].'</option>';
     }
-    $drp_down .= "</select></div>";
-    $drp_down .= "<div class='col-md-3'><label>Schedule Filter:</label>
+    // $drp_down .= "</select></div>";
+    $drp_down = "<div class='row'><div class='col-md-3'><label>Schedule Filter:</label>
                   <input class='form-control integer' placeholder='Enter Schedule here' onchange='myfunctionsearch()' id='schedule_id'></input></div></div>";
     echo $drp_down;
     
@@ -355,14 +355,12 @@
 <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog" style="width: 80%;">
         <div class="modal-content">
-            
             <div class="modal-header">Recut Detailed View
                 <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" id='main-content'>
-            <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;" >
-                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
-                    </div>
+                <div  class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;">
+                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" /></div>
             </div>
         </div>
     </div>
@@ -375,12 +373,10 @@
             </div>
             <div id='pre_pre'>
                 <div class="modal-body">
-                <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
-                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
-                    </div>
                     <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform" onsubmit='return validationfunction();'>
-                        <div class='panel-body' id="dynamic_table_panel">	
-                                <div id ="dynamic_table1"></div>
+                        <div id ="dynamic_table1">
+                            <div  class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;">
+                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" /></div>
                         </div>
                         <div class="pull-right"><input type="submit" id='recut' class="btn btn-primary" value="Submit" name="formSubmit"></div>
                     </form>
@@ -402,12 +398,13 @@
             </div>
             <div id='pre'>
                 <div class="modal-body">
-                    <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
-                                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
-                    </div>
                     <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartformreplace" method="post" id="smartform1" onsubmit='return validationreplace();'>
                         <div class='panel-body' id="dynamic_table_panel">	
-                            <div id ="dynamic_table2"></div>
+                            <div id ="dynamic_table2">
+                                <div  class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;">
+                                    <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -423,16 +420,16 @@
 <div class='row'>
     <div class='panel panel-primary'>
         <div class='panel-heading'>
-            <b>RECUT DASHBOARD - View</b>
+            <b>Rejections Dashboard</b>
         </div>
         <div class='panel-body'>
-           <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Allowed Quantity</th><th>Replaced Quantity</th><th>Eligibility to allow recut</th><th>View</th><th>Recut</th><th>Replace</th>
+           <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Raised Quantity</th><th>Replaced Quantity</th><th>Eligibility to allow recut</th><th>View</th><th>Recut</th><th>Replace</th>
             </thead>
             <?php  
             $s_no = 1;
             $blocks_query  = "SELECT r.id,style,SCHEDULE,color,r.rejected_qty,r.recut_qty,r.remaining_qty,r.replaced_qty,GROUP_CONCAT(DISTINCT bcd_id)as bcd_ids FROM bai_pro3.rejections_log r
             LEFT JOIN `bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id`
-            GROUP BY r.`style`,r.`schedule`,r.`color`";
+            GROUP BY r.`style`,r.`schedule`,r.`color` HAVING (rejected_qty-(recut_qty+replaced_qty)) > 0";
             $blocks_result = mysqli_query($link,$blocks_query) or exit('Rejections Log Data Retreival Error');
             if($blocks_result->num_rows > 0)
             {
@@ -587,7 +584,6 @@ function viewrecutdetails(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
     $('#myModal').modal('toggle');
-    $('.loading-image').show();
     $.ajax({
 
 			type: "POST",
@@ -596,7 +592,6 @@ function viewrecutdetails(id)
 			success: function (response) 
 			{
                 document.getElementById('main-content').innerHTML = response;
-                $('.loading-image').hide();
             }
 
     });
@@ -606,10 +601,8 @@ function editrecutdetails(id)
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
     $('#myModal1').modal('toggle');
     document.getElementById('dynamic_table2').innerHTML = '';
-    document.getElementById('dynamic_table1').innerHTML = '';
     $('#post_post').hide();
     $('#pre_pre').show();
-    $('.loading-image').show();
     $.ajax({
 
 			type: "POST",
@@ -618,7 +611,6 @@ function editrecutdetails(id)
 			success: function (response) 
 			{
                 document.getElementById('dynamic_table1').innerHTML = response;
-                $('.loading-image').hide();
             }
 
     });
@@ -627,10 +619,9 @@ function editreplacedetails(id)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
     $('#myModal2').modal('toggle');
-    $('.loading-image').show();
     $('#post').hide();
     $('#pre').show();
-    document.getElementById('dynamic_table2').innerHTML = '';
+    // document.getElementById('dynamic_table2').innerHTML = '';
     document.getElementById('dynamic_table1').innerHTML = '';
     $.ajax({
 
@@ -640,7 +631,6 @@ function editreplacedetails(id)
 			success: function (response) 
 			{
                 document.getElementById('dynamic_table2').innerHTML = response;
-                // $('.loading-image').hide();
             }
 
     });
@@ -926,7 +916,7 @@ $(document).ready(function()
 {
     $('#myTable1').hide();
     // $('.loading-image').hide();
-    myFunction();
+    // myFunction();
     // $('#recut').on('click', function(){
     //     $('#recut').hide();
     // });

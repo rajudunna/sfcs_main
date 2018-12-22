@@ -70,7 +70,7 @@ if(isset($_POST['formSubmit']))
     }
     $i=1;
     // var_dump($buffer_qty);
-    $retreaving_last_sewing_job_qry = "SELECT MAX(input_job_no_random)as input_job_no_random,input_job_no,destination,packing_mode,sref_id FROM `bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$schedule' AND order_col_des = '$color'";
+    $retreaving_last_sewing_job_qry = "SELECT MAX(input_job_no_random)as input_job_no_random,input_job_no,destination,packing_mode,sref_id FROM `bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$schedule'";
     $res_retreaving_last_sewing_job_qry = $link->query($retreaving_last_sewing_job_qry);
     while($row_sj = $res_retreaving_last_sewing_job_qry->fetch_assoc()) 
     {   
@@ -130,10 +130,13 @@ if(isset($_POST['formSubmit']))
                 $result1=mysqli_query($link, $mo_operations_insertion) or die("Error while mo_operations_insertion".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
             //updating bcd and cps log
-            $update_cps_qry = "update $bai_pro3.cps_log set cut_quantity = cut_quantity+$excess_qty where doc_no = $doc_nos and operation_code=15 and size_code='$size'";
+            $update_cps_qry = "update $bai_pro3.cps_log set cut_quantity = cut_quantity+$excess_qty where doc_no = $doc_nos  and size_code='$size'";
             // echo $update_cps_qry;
             mysqli_query($link, $update_cps_qry) or die("Error while update_cps_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $update_bcd_qry = "update $brandix_bts.bundle_creation_data set original_qty=original_qty+$excess_qty where docket_number = $doc_nos and size_id = '$size' and operation_id = 15";
+            $update_bcd_qry = "update $brandix_bts.bundle_creation_data set original_qty=original_qty+$excess_qty,send_qty=send_qty+$excess_qty where docket_number = $doc_nos and size_id = '$size' and operation_id = 15";
+            // echo $update_bcd_qry;
+            mysqli_query($link, $update_bcd_qry) or die("Error while update_bcd_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $update_bcd_qry = "update $brandix_bts.bundle_creation_data set original_qty=original_qty+$excess_qty where docket_number = $doc_nos and size_id = '$size' and operation_id <> 15";
             // echo $update_bcd_qry;
             mysqli_query($link, $update_bcd_qry) or die("Error while update_bcd_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         }   
@@ -336,7 +339,7 @@ for ($i=0; $i <= 4; $i++)
     $drp_down .= '<option value='.$shifts_array[$i].'>'.$shifts_array[$i].'</option>';
 }
 $drp_down .= "</select></div>";
-$drp_down .= "<div class='col-md-3'><label>Schedule Filter:</label>
+$drp_down = "<div class='row'><div class='col-md-3'><label>Schedule Filter:</label>
               <input class='form-control integer' placeholder='Enter Schedule here' onchange='myfunctionsearch()' id='schedule_id'></input></div></div>";
 echo $drp_down;
 ?>
@@ -413,10 +416,10 @@ echo $drp_down;
 <div class='row'>
     <div class='panel panel-primary'>
         <div class='panel-heading'>
-            <b>Re Cut Issue Dashboard - View</b>
+            <b>ReCut Dashboard</b>
         </div>
         <div class='panel-body'>
-           <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Allowed Quantity</th><th>Recut Reported Quantity</th><th>Issued Quantity</th><th>Remaining Quantity</th><th>View</th><th>Issue</th>
+           <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Recut Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Raised Quantity</th><th>Recut Reported Quantity</th><th>Issued Quantity</th><th>Remaining Quantity</th><th>View</th><th>Issue</th>
             </thead>
             <?php  
             $s_no = 1;
@@ -424,53 +427,61 @@ echo $drp_down;
             FROM `bai_pro3`.`recut_v2_child` rc 
             LEFT JOIN bai_pro3.`recut_v2` r ON r.doc_no = rc.`parent_id`
             LEFT JOIN bai_pro3.`bai_orders_db` b ON b.order_tid = r.`order_tid`
+            WHERE remarks in ($in_categories)
             GROUP BY parent_id";
             // echo $blocks_query;
-            $blocks_result = mysqli_query($link,$blocks_query) or exit('Rejections Log Data Retreival Error');        
-            while($row = mysqli_fetch_array($blocks_result))
+            $blocks_result = mysqli_query($link,$blocks_query) or exit('Rejections Log Data Retreival Error');
+            if($blocks_result->num_rows > 0)
             {
-                $id = $row['doc_no'];
-                $rem_qty = $row['recut_reported_qty'] - $row['issued_qty'];
-                if($row['mk_ref'] == '0')
+                while($row = mysqli_fetch_array($blocks_result))
                 {
-                    $button_html = "<button type='button'class='btn btn-danger' onclick='editmarkers(".$id.")'>Update Markers</button>";
-                    $html_hiding = "UpdateMarkers";
+                    $id = $row['doc_no'];
+                    $rem_qty = $row['recut_reported_qty'] - $row['issued_qty'];
+                    if($row['mk_ref'] == '0')
+                    {
+                        $button_html = "<button type='button'class='btn btn-danger' onclick='editmarkers(".$id.")'>Update Markers</button>";
+                        $html_hiding = "UpdateMarkers";
+                    }
+                    else if($row['fabric_status'] == '0')
+                    {
+                        $button_html = "Markers updated and Waiting for Approval";
+                        $html_hiding = "WaitingForApproval";
+                    }
+                    else if($row['recut_reported_qty'] <= 0)
+                    {
+                        $button_html = "<b style='color:red;'>Report Pending!!!</b>";
+                        $html_hiding = "ReportPending";
+                    }
+                    else if($rem_qty == 0)
+                    {
+                        $button_html = "<b style='color:red;'>Already issued</b>";
+                        $html_hiding = "AlreadyIssued";
+                    }
+                    else
+                    {
+                        $button_html = "<button type='button'class='btn btn-danger' onclick='issuemodule(".$id.")'>Issue To Module</button>";
+                        $html_hiding = "IssueToModule";
+                    }
+                    echo "<tr><td>$s_no</td>";
+                    echo "<td>".$row['doc_no']."</td>";
+                    echo "<td>".$row['style']."</td>";
+                    echo "<td>".$row['schedule']."</td>";
+                    echo "<td>".$row['color']."</td>";
+                    echo "<td>".$row['rejected_qty']."</td>";
+                    echo "<td>".$row['recut_qty']."</td>";
+                    echo "<td>".$row['recut_reported_qty']."</td>";
+                    echo "<td>".$row['issued_qty']."</td>";
+                    echo "<td>".$rem_qty."</td>";
+                    echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
+                    echo "<td style='display:none'>$html_hiding</td>"; 
+                    echo "<td>$button_html</td>"; 
+                    echo "</tr>";
+                    $s_no++;
                 }
-                else if($row['fabric_status'] == '0')
-                {
-                    $button_html = "Markers updated and Waiting for Approval";
-                    $html_hiding = "WaitingForApproval";
-                }
-                else if($row['recut_reported_qty'] <= 0)
-                {
-                    $button_html = "<b style='color:red;'>Report Pending!!!</b>";
-                    $html_hiding = "ReportPending";
-                }
-                else if($rem_qty == 0)
-                {
-                    $button_html = "<b style='color:red;'>Already issued</b>";
-                    $html_hiding = "AlreadyIssued";
-                }
-                else
-                {
-                    $button_html = "<button type='button'class='btn btn-danger' onclick='issuemodule(".$id.")'>Issue To Module</button>";
-                    $html_hiding = "IssueToModule";
-                }
-                echo "<tr><td>$s_no</td>";
-                echo "<td>".$row['doc_no']."</td>";
-                echo "<td>".$row['style']."</td>";
-                echo "<td>".$row['schedule']."</td>";
-                echo "<td>".$row['color']."</td>";
-                echo "<td>".$row['rejected_qty']."</td>";
-                echo "<td>".$row['recut_qty']."</td>";
-                echo "<td>".$row['recut_reported_qty']."</td>";
-                echo "<td>".$row['issued_qty']."</td>";
-                echo "<td>".$rem_qty."</td>";
-                echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
-                echo "<td style='display:none'>$html_hiding</td>"; 
-                echo "<td>$button_html</td>"; 
-                echo "</tr>";
-                $s_no++;
+            }
+            else
+            {
+                echo "<tr><td colspan='12' style='color:red;text-align: center;'><b>No Details Found!!!</b></td></tr>";
             }
             ?>
              </table>
@@ -486,7 +497,7 @@ $(document).ready(function()
     $('#myTable1').hide();
     $('#post').hide();
     $('#post_post').hide();
-    myFunction();
+    // myFunction();
 });
 function viewrecutdetails(id)
 {
@@ -762,6 +773,7 @@ function myfunctionsearch()
             td = tr[i].getElementsByTagName("td")[3];
             if(td) 
             {
+                console.log("input"+input);
                 console.log(td.innerHTML.toUpperCase());
                 console.log(filter);
                 if(td.innerHTML.toUpperCase() == filter)
@@ -769,7 +781,7 @@ function myfunctionsearch()
                     console.log(tr[i]);
                     tr[i].style.display = "";
                 } 
-                else 
+                else if(input != '')
                 {
                     count++;
                     tr[i].style.display = "none";
