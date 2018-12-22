@@ -304,6 +304,7 @@ $(document).ready(function()
 					if(response['emb_cut_check_flag'])
 					{
 						module_flag = 0; // allow
+					}
 					else
 					{
 						module_flag = 1; // block
@@ -811,6 +812,8 @@ function validating()
     }
     
 }
+
+
 <style>
 .hidden_class,hidden_class_for_remarks{
 	display:none;
