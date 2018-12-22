@@ -357,63 +357,65 @@
 				$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where schedule='".$schedule."' AND style='".$style."'"; 
 				// echo $get_pack_id;
 				$get_pack_id_res=mysqli_query($link, $get_pack_id) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$row = mysqli_fetch_row($get_pack_id_res);
-				$pack_id=$row[0];
-				// echo $pack_id;
-				// die();
-				$pack_meth_qry="SELECT *,parent_id,sum(garments_per_carton*pack_job_per_pack_method) as qnty,GROUP_CONCAT(size_title SEPARATOR '<br>') as size ,GROUP_CONCAT(color SEPARATOR '<br>') as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id=$pack_id GROUP BY seq_no order by seq_no";
-				// echo $pack_meth_qry;
-				// $sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
-				$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if (mysqli_num_rows($pack_meth_qty) > 0)
+				if (mysqli_num_rows($get_pack_id_res) > 0)
 				{
-					echo "<br><div class='col-md-12'>
-							<table class=\"table table-bordered\">
-								<tr class=\"info\">
-									<th>S.No</th>
-									<th>Packing Method</th>
-									<th>Description</th>
-									<th>Quantity</th>
-									<th>Colors</th>
-									<th>Sizes</th>
-									<th>Controls</th></tr>";
-								while($pack_result1=mysqli_fetch_array($pack_meth_qty))
-								{
-									// var_dump($operation);
-									$seq_no=$pack_result1['seq_no'];
-									$parent_id=$pack_result1['parent_id'];
-									$pack_method=$pack_result1['pack_method'];
-									// echo $pack_method;
-									// $col_array[]=$sizes_result1['order_col_des'];
-									echo "<tr><td>".$pack_result1['seq_no']."</td>";
-									echo"<td>".$operation[$pack_method]."</td>";
-									echo "<td>".$pack_result1['pack_description']."</td>";
-									echo "<td>".$pack_result1['qnty']."</td>";
-									echo "<td>".$pack_result1['color']."</td>";
-									echo "<td>".$pack_result1['size']."</td>";
-									$url=getFullURL($_GET['r'],'pack_jobs_generate.php','N');
-									$url1=getFullURL($_GET['r'],'order_qty_vs_packed_qty.php','N');
-									$url2=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
-									$statusqry="select * from $bai_pro3.pac_stat where schedule='$schedule' and pac_seq_no='$seq_no'";
-									//echo $statusqry;
-									$statusrslt=mysqli_query($link, $statusqry) or exit("Error while getting status".mysqli_error($GLOBALS["___mysqli_ston"]));
-									
-									if(mysqli_num_rows($statusrslt)==0)
+					$row = mysqli_fetch_row($get_pack_id_res);
+					$pack_id=$row[0];
+					// echo $pack_id;
+					// die();
+					$pack_meth_qry="SELECT *,parent_id,sum(garments_per_carton*pack_job_per_pack_method) as qnty,GROUP_CONCAT(size_title SEPARATOR '<br>') as size ,GROUP_CONCAT(color SEPARATOR '<br>') as color,seq_no,pack_method FROM $bai_pro3.tbl_pack_size_ref WHERE parent_id=$pack_id GROUP BY seq_no order by seq_no";
+					// echo $pack_meth_qry;
+					// $sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
+					$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+					if (mysqli_num_rows($pack_meth_qty) > 0)
+					{
+						echo "<br><div class='col-md-12'>
+								<table class=\"table table-bordered\">
+									<tr class=\"info\">
+										<th>S.No</th>
+										<th>Packing Method</th>
+										<th>Description</th>
+										<th>Quantity</th>
+										<th>Colors</th>
+										<th>Sizes</th>
+										<th>Controls</th></tr>";
+									while($pack_result1=mysqli_fetch_array($pack_meth_qty))
 									{
-										echo "<td>
-										<a class='btn btn-success generate_pack_job' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no'>Generate Pack Job</a>
-										<a class='btn btn-danger' onclick='return confirm_delete(event,this)' id='delete_single' href='$url1&option=delete&schedule1=$schedule&parent_id=$parent_id&seq_no=$seq_no&style1=$style'>Delete</a>
-										</td>";
-									}
-									else
-									{
-										echo"<td><h4><span class='label label-success'>Packing List Generated</span></h4></td>";
-									}
-									echo "<tr>";
-								}	
-							
-						echo "</table></div>";
-				}
+										// var_dump($operation);
+										$seq_no=$pack_result1['seq_no'];
+										$parent_id=$pack_result1['parent_id'];
+										$pack_method=$pack_result1['pack_method'];
+										// echo $pack_method;
+										// $col_array[]=$sizes_result1['order_col_des'];
+										echo "<tr><td>".$pack_result1['seq_no']."</td>";
+										echo"<td>".$operation[$pack_method]."</td>";
+										echo "<td>".$pack_result1['pack_description']."</td>";
+										echo "<td>".$pack_result1['qnty']."</td>";
+										echo "<td>".$pack_result1['color']."</td>";
+										echo "<td>".$pack_result1['size']."</td>";
+										$url=getFullURL($_GET['r'],'pack_jobs_generate.php','N');
+										$url1=getFullURL($_GET['r'],'order_qty_vs_packed_qty.php','N');
+										$url2=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
+										$statusqry="select * from $bai_pro3.pac_stat where schedule='$schedule' and pac_seq_no='$seq_no'";
+										//echo $statusqry;
+										$statusrslt=mysqli_query($link, $statusqry) or exit("Error while getting status".mysqli_error($GLOBALS["___mysqli_ston"]));
+										
+										if(mysqli_num_rows($statusrslt)==0)
+										{
+											echo "<td>
+											<a class='btn btn-success generate_pack_job' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no'>Generate Pack Job</a>
+											<a class='btn btn-danger' onclick='return confirm_delete(event,this)' id='delete_single' href='$url1&option=delete&schedule1=$schedule&parent_id=$parent_id&seq_no=$seq_no&style1=$style'>Delete</a>
+											</td>";
+										}
+										else
+										{
+											echo"<td><h4><span class='label label-success'>Packing List Generated</span></h4></td>";
+										}
+										echo "<tr>";
+									}								
+							echo "</table></div>";
+					}
+				}					
 				$pack_qnty = $_GET['order_total'];
 				$ordr_qnty = $_GET['ordr_qnty'];
 				$url2=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
