@@ -572,8 +572,7 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
                     }
                     if(strtolower($is_m3) == 'yes')
                     {
-                        $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.m3_transactions (date_time,mo_no,quantity,reason,remarks,log_user,tran_status_code,module_no,shift,op_code,op_des,ref_no,workstation_id,response_status,m3_ops_code) 
-                        SELECT NOW(), mo_no, $r_qty[$key]*-1,'$r_reasons[$key]','Rejection Reversal','$username','',module_no,shift,op_code,op_des,ref_no,workstation_id,response_status,m3_ops_code from $bai_pro3.`m3_transactions` where ref_no=$id and LENGTH(reason)<>0 limit 1";
+                        // $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`) SELECT NOW(), mo_no, ".$r_qty[$key]*-1.", '".$r_reasons[$key]."','Rejection Reversal','$username','',$b_module,'$b_shift',$op_code,'',$id,'$work_station_id','','$main_ops_code' where ref_no=".$id." and LENGTH(reason)<>0 limit 1";
                         //echo $inserting_into_m3_tran_log.'</br>';
                         mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into the m3_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
                     

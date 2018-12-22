@@ -2196,7 +2196,15 @@ tags will be replaced.-->
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl914118>Cut No :</td>
-  <td colspan=2 class=xl1214118><?php if($remarks=="Normal") { echo chr($color_code).leading_zeros($cutno, 3); } else {if($remarks=="Pilot") { echo "Pilot";}}?></td>
+  <td colspan=2 class=xl1214118><?php 
+  if($remarks=="Normal") { 
+	echo chr($color_code).leading_zeros($cutno, 3); 
+  }elseif(strtolower($remarks)=="recut"){ 
+	echo "R".leading_zeros($cutno, 3);
+  }elseif($remarks=="Pilot"){ 
+	echo "Pilot";
+  }
+  ?></td>
   <td class=xl924118>Date:</td>
   <td class=xl944118><?php echo $docketdate; ?></td>
   <td class=xl964118></td>

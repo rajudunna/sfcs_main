@@ -762,8 +762,6 @@
 													//<li id="node16">Student P</li>
 													
 													$module=$mods[$x];
-
-													
 													$sql="select doc_no from $bai_pro3.cutting_table_plan where cutting_tbl_id=$module";
 														//echo $sql;
 													$sql_result2=mysqli_query($link,$sql) or exit("Sql Error7.11".mysqli_error());
@@ -778,19 +776,18 @@
                                                     {
                                                      $doc_no= "''";
                                                     }
-
-
-
 												    
 													$sql1="select act_cut_status,act_cut_issue_status,doc_no,order_style_no,order_del_no,order_col_des,acutno,color_code from $bai_pro3.plan_doc_summ where doc_no  in ($doc_no) and act_cut_status<>\"DONE\""; 
 
-													 //echo $sql1;
-													 //die();
-													// mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
 													$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error7".mysql_error());
 													$sql_num_check=mysqli_num_rows($sql_result1);
 													while($sql_row1=mysqli_fetch_array($sql_result1))
 													{
+														$remarks = '';
+														$is_recut_query = "SELECT remarks from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
+														$is_recut_result = mysqli_query($link,$is_recut_result);
+														while($row_rem = mysqli_fetch_array($is_recut_result))
+															$remarks = $row_rem['remarks'];
 														
 														$doc_no=$sql_row1['doc_no'];
 														$style1=$sql_row1['order_style_no'];
@@ -800,24 +797,20 @@
 														$cut_no1=$sql_row1['acutno'];
 														$color_code1=$sql_row1['color_code'];
 														
-														$sql="select color_code,acutno,order_style_no,order_del_no,order_col_des from $bai_pro3.plan_doc_summ where doc_no=$doc_no";
-														// echo $sql."<br>";
-														// mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-														$sql_result=mysqli_query($link,$sql) or exit("Sql Error8".mysql_error());
-														$sql_num_check=mysqli_num_rows($sql_result);
+
+														$color_code=$sql_row['color_code'];
+														$act_cut_no=$sql_row['acutno'];
+														$style_new=$sql_row['order_style_no'];
+														$schedule_new=$sql_row['order_del_no'];
+														$color_new=$sql_row['order_col_des'];
+
+
+														if(strtolower($remarks) == 'recut')
+															$cut_str = 'R';
+														else
+															$cut_str = chr($color_code);
 														
-														//docketno-colorcode cutno-cut_status
-														while($sql_row=mysqli_fetch_array($sql_result))
-														{
-															$color_code=$sql_row['color_code'];
-															$act_cut_no=$sql_row['acutno'];
-															
-															$style_new=$sql_row['order_style_no'];
-															$schedule_new=$sql_row['order_del_no'];
-															$color_new=$sql_row['order_col_des'];
-														}
-														
-														
+
 														$id="#33AADD"; //default existing color
 																										
 														if($style==$style_new and $color==$color_new and $schedule==$schedule_new)
@@ -829,9 +822,8 @@
 															$id="#008080";
 														}
 
-                                                        
 														
-														 $title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Cut No:".chr($color_code1).leading_zeros($act_cut_no,3),50)."\n".str_pad("Doc No:".$doc_no,50)."\n".str_pad("Qty:".$total_qty1,50);
+														$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Cut No:".$cut_str.''.leading_zeros($act_cut_no,3),50)."\n".str_pad("Doc No:".$doc_no,50)."\n".str_pad("Qty:".$total_qty1,50);
 														
 														 // echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
 														//echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';	
@@ -846,17 +838,17 @@
 														{	
 															if($resulted_rows > 0)
 															{
-																echo '<li id="'.$doc_no.'" data-color="green" style="background-color:green;  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
+																echo '<li id="'.$doc_no.'" data-color="green" style="background-color:green;  color:white;" title="'.$title.'"><strong>'.$cut_str.''.leading_zeros($act_cut_no,3).'</strong></li>';
 															}	
 															else
 															{
-																echo '<li id="'.$doc_no.'" data-color="red" style="background-color:red;  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
+																echo '<li id="'.$doc_no.'" data-color="red" style="background-color:red;  color:white;" title="'.$title.'"><strong>'.$cut_str.''.leading_zeros($act_cut_no,3).'</strong></li>';
 															}
 
 														}
 														else
 														{
-															echo '<li id="'.$doc_no.'" data-color="white" style="background-color:white;  color:red;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
+															echo '<li id="'.$doc_no.'" data-color="white" style="background-color:white;  color:red;" title="'.$title.'"><strong>'.$cut_str.''.leading_zeros($act_cut_no,3).'</strong></li>';
 														}		
 
                                                         //To get cutting masters

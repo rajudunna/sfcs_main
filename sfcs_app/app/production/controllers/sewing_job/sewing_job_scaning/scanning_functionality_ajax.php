@@ -806,7 +806,6 @@ foreach ($b_tid as $key=>$value)
 	$result_select_send_qty = $link->query($select_send_qty);
 	if($result_select_send_qty->num_rows >0)
 	{
-		// echo "bundle".$b_tid[$key].'-';
 		$table_name = 'bundle_creation_data';
 		while($row = $result_select_send_qty->fetch_assoc()) 
 		{
