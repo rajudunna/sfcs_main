@@ -786,8 +786,6 @@ function validating()
 {
 	console.log("working");
 	//document.getElementByClassName('submission').style.visibility = 'hidden';
-	
-}
 	var noofrows = $('#no_of_rows').val();
     if(document.getElementById('setreset').innerHTML == 'Set')
     {
@@ -813,8 +811,6 @@ function validating()
     }
     
 }
-
-
 <style>
 .hidden_class,hidden_class_for_remarks{
 	display:none;
