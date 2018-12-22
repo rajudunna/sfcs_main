@@ -1,3 +1,6 @@
+<head>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
 <?php
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
@@ -49,7 +52,7 @@ if($operation_code >=130)
 {
 	$form = 'G';
 }
-$qery_rejection_resons = "select m3_reason_code,reason_desc from $bai_pro3.bai_qms_rejection_reason where form_type = '$form'";
+$qery_rejection_resons = "select * from $bai_pro3.bai_qms_rejection_reason where form_type = '$form'";
 $result_rejections = $link->query($qery_rejection_resons);
 if(isset($_POST['flag_validation']))
 {
@@ -57,6 +60,7 @@ if(isset($_POST['flag_validation']))
 }
 $configuration_bundle_print_array = ['0'=>'Bundle Number','1'=>'Sewing Job Number'];
 $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
+
 ?>
 <script type="text/javascript">
 	function validateQty(e,t) 
@@ -131,6 +135,10 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 								<h3><label class='label label-info label-xs' id='module_show'></span><h3>
 							</div>
 						</div>
+						</br>
+						<div class = "form-group col-lg-6 col-sm-12" id='setresetfun' hidden='true'>
+								<button type='button' class='btn btn-success' value='Set' style='float: right;' onclick='setfunction();' id='setreset'>Set</button>
+						</div>
 						<div class="form-group col-md-3">
 						</div>
 					</center>
@@ -168,6 +176,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 						<input type="hidden" name="barcode_generation" id='barcode_generation' value="<?php echo $barcode_generation;?>">
 						<input type="hidden" name="response_flag" id='response_flag'>
 						<input type="hidden" name="emb_cut_check_flag" id='emb_cut_check_flag' value='0'>
+						<input type="hidden" id="no_of_rows">
 						
 						<div id ="dynamic_table1">
 						</div>
@@ -210,7 +219,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 													<?php				    	
 														if ($result_rejections->num_rows > 0) {
 															while($row = $result_rejections->fetch_assoc()) {
-																echo "<option value='".$row['m3_reason_code']."'>".$row['reason_desc']."</option>";
+																echo "<option value='".$row['reason_code']."'>".$row['reason_desc']."</option>";
 															}
 														} else {
 															echo "<option value=''>No Data Found..</option>";
@@ -265,6 +274,7 @@ $(document).ready(function()
 			dataType: "json",
 			success: function (response) 
 			{
+				$('#setresetfun').show();
 				var sewing_rejection = document.getElementById('sewing_rejection').value;
 				console.log(response);
 				console.log(sewing_rejection);
@@ -282,6 +292,8 @@ $(document).ready(function()
 				}
 				else if(data)
 				{
+					var no_of_rows = response['no_of_rows'];
+					$('#no_of_rows').val(no_of_rows);
 					if(response['emb_cut_check_flag'])
 					{
 						$('#emb_cut_check_flag').val(emb_ops);
@@ -595,6 +607,7 @@ function validate_reporting_report(val)
 		$('#'+reporting_id).val(0);
 	}
 }
+
 function neglecting_function()
 {
 	var val = document.getElementById('changed_rej_id').value;
@@ -636,7 +649,6 @@ $('#rejec_reasons').on('click', function(){
 	console.log($('#'+id+'reason_data').val());
 	
 })
-
 $('input[type=submit]').click(function() {
     $(this).attr('disabled', 'disabled');
     $(this).parents('form').submit()
@@ -703,8 +715,44 @@ function check_pack()
 				}
 				
 			});
+		
+		//return true;
 	}
 }
+function validating()
+{
+	console.log("working");
+	//document.getElementByClassName('submission').style.visibility = 'hidden';
+	
+}
+function setfunction()
+{
+	var noofrows = $('#no_of_rows').val();
+    if(document.getElementById('setreset').innerHTML == 'Set')
+    {
+        for(var i=0; i<Number(noofrows); i++)
+        {
+            var rem_var = i+'remarks_validate_html';
+			var rem = i+'reporting';
+            console.log(rem_var);
+            var remaining_qty = document.getElementById(rem_var).innerHTML;
+            document.getElementById(rem).value = remaining_qty; 
+        }
+        document.getElementById('setreset').innerHTML = 'ReSet';
+    }
+    else
+    {
+        for(var i=0; i<Number(noofrows); i++)
+        {
+			var rem = i+'reporting';
+            document.getElementById(rem).value = 0; 
+        }
+        document.getElementById('setreset').innerHTML = 'Set';
+
+    }
+    
+}
+
 
 </script>
 <style>
@@ -716,6 +764,7 @@ function check_pack()
 	
 <?php
 if(isset($_GET['sidemenu'])){
+	//echo "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii";
 	echo "<style>
           .left_col,.top_nav{
           	display:none !important;

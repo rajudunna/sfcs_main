@@ -163,8 +163,6 @@ function updateM3Transactions($ref_id,$op_code,$qty)
     } 
     return true;
 }
-
-
 function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
     $obj = new rest_api_calls();
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
@@ -319,8 +317,6 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
     return true;
     
 }//Function ends
-
-
 function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
 {
     $obj = new rest_api_calls();
@@ -460,7 +456,6 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
     }
     return true;
 }
-
 function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reasons)
 {
     $obj = new rest_api_calls();
@@ -472,7 +467,7 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
     $company_num = $company_no;
     $plant_code = $global_facility_code;
     
-    $details_query = "Select shift,assigned_module,style,mapped_color from $brandix_bts.bundle_creation_data where bundle_number = '$ref_id' and operation_id = '$op_code'";
+    $details_query = "Select shift,assigned_module,style,mapped_color from $brandix_bts.bundle_creation_data where bundle_number = $ref_id and operation_id = $op_code";
     $details_result = mysqli_query($link,$details_query) or exit("Problem in getting details from the BCD");
     while($row = mysqli_fetch_array($details_result)){
         $input_shift = $row['shift'];
@@ -522,7 +517,7 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
 
     foreach($r_qty as $key=>$value)
     {
-        $qry_to_check_mo_numbers = "SELECT *,mq.id as mq_id FROM $bai_pro3.`mo_operation_quantites` mq where ref_no = '$ref_id' and op_code='$op_code' ";
+        $qry_to_check_mo_numbers = "SELECT *,mq.id as mq_id FROM $bai_pro3.`mo_operation_quantites` mq where ref_no = $ref_id and op_code=$op_code";
         //echo $qry_to_check_mo_numbers;
         $qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
         $total_bundle_rej_present_qty = $r_qty[$key];
@@ -535,7 +530,7 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
             $rejected_quantity_past = $nop_qry_row['rejected_quantity'];
             $id = $nop_qry_row['id'];
             //$mo_no = $nop_qry_row['id'];
-            $balance_max_updatable_qty = $good_quantity_past;
+            $balance_max_updatable_qty = $rejected_quantity_past;
             // echo $total_bundle_present_qty;
             if($total_bundle_present_qty > 0)
             {
@@ -568,8 +563,8 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
                     }
                     if(strtolower($is_m3) == 'yes')
                     {
-                        // $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`) SELECT NOW(), mo_no, ".$r_qty[$key]*-1.", '".$r_reasons[$key]."','Rejection Reversal','$username','',$b_module,'$b_shift',$op_code,'',$id,'$work_station_id','','$main_ops_code' where ref_no=".$id." and LENGTH(reason)<>0 limit 1";
-                        //echo $inserting_into_m3_tran_log.'</br>';
+                        $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`) 
+                        VALUES ('$current_date','$mo_number',($to_update_qty*-1),'$r_reasons[$key]','Normal','$username','',$b_module,'$b_shift',$op_code,'',$id,'$work_station_id','','$main_ops_code')";
                         mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into the m3_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
                     
                         //getting the last inserted record
