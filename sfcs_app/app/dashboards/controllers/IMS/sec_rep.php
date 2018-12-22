@@ -78,9 +78,6 @@ table
 
 </style>
 
-
-<script type="text/javascript" src="../../../../common/js/check.js"></script>
-
 <script type="text/javascript" src="../../../../common/js/jquery.js"></script> 
 
 <script>
@@ -147,14 +144,14 @@ if(isset($_GET['val']))
 ?>
 
 
-<?php
-	    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
+<?php	    
 		$section=$_GET['section'];
 		echo "<div class='panel panel-primary'>
-		<div class='panel-heading'>Section - $section Summary</div>
+		<div class='panel-heading'>$section Summary</div>
 		<div class='panel-body'>";
 		
-		$sql="select * from $bai_pro3.sections_db where sec_id=$section";
+		$sql="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` WHERE section=$section GROUP BY section ORDER BY section + 0";
+		// echo $sql;
 		//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -177,13 +174,9 @@ if(isset($_GET['val']))
 		{
 		
 		$module_ref=$modules[$i];
-		
-	
-		
-		
 		$rowcount_check=0;
 			
-			$sql12="select sum(ims_qty-ims_pro_qty) as balance, count(*) as count from $bai_pro3.ims_log where ims_mod_no=$module_ref and ims_status<>\"DONE\" and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log)";
+			$sql12="select sum(ims_qty-ims_pro_qty) as balance, count(*) as count from $bai_pro3.ims_log where ims_mod_no='$module_ref' and ims_status<>'DONE' and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log)";
 			//echo $sql12;
 			//mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -210,7 +203,7 @@ if(isset($_GET['val']))
 				$rowcount_check=1;
 			}
 		
-		$sql="select distinct input_job_rand_no_ref,rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref  and ims_status<>\"DONE\" and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by ims_doc_no";
+		$sql="select distinct input_job_rand_no_ref,rand_track from $bai_pro3.ims_log where ims_mod_no='$module_ref'  and ims_status<>'DONE' and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by ims_doc_no";
 		//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -218,7 +211,7 @@ if(isset($_GET['val']))
 			$rand_track=$sql_row['rand_track'];
 			$input_job_rand_no_ref=$sql_row['input_job_rand_no_ref'];
 			
-			$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and input_job_rand_no_ref=$input_job_rand_no_ref and rand_track=$rand_track  and ims_status<>\"DONE\" order by ims_schedule, ims_size DESC";
+			$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and input_job_rand_no_ref='$input_job_rand_no_ref' and rand_track=$rand_track  and ims_status<>'DONE' order by ims_schedule, ims_size DESC";
 			//echo $sql12;
 			
 			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -236,14 +229,13 @@ if(isset($_GET['val']))
 			    $pac_tid=$sql_row12['pac_tid'];
 				$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$ims_schedule,$ims_color,$inputjobno,$link);
 				$sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$ims_doc_no and a_plies>0";
-				//mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				while($sql_row22=mysqli_fetch_array($sql_result22))
 				{
 					$order_tid=$sql_row22['order_tid'];
 					
-					$sql33="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
+					$sql33="select color_code,order_date from $bai_pro3.bai_orders_db_confirm where order_tid='$order_tid'";
 					mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row33=mysqli_fetch_array($sql_result33))
@@ -255,32 +247,18 @@ if(isset($_GET['val']))
 				}
 	
 				$size_value=ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link);
-		/*		$sql33="select style from pro_style where movex_styles_db like \"%".$sql_row12['ims_style']."%\"";
-				mysql_query($sql33,$link) or exit("Sql Error".mysql_error());
-				$sql_result33=mysql_query($sql33,$link) or exit("Sql Error".mysql_error());
-				while($sql_row33=mysql_fetch_array($sql_result33))
-				{
-					$user_style=$sql_row33['style']; //Color Code
-				} */
-				
+
 				$sql33="select style_id from $bai_pro2.movex_styles where movex_style like \"%".$sql_row12['ims_style']."%\"";
-				//mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row33=mysqli_fetch_array($sql_result33))
 				{
 					$user_style=$sql_row33['style_id']; //Color Code
-				}
-				
-				// Ticket #770947 Add the buddhikarr name in $auth_to_modify for remarks column edit option
-				// $auth_to_modify=array("sandeepab","ranjang","lakshmanb","diland","pasanj","kapilarathnai","bhavanik","kirang","kirang","maheshkumary","kasunsi","nuwanan","channam","kirang","chandrasekhard","ajithmi","prabathsa");
-				
-				// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
-				// $username=strtolower($username_list[1]);
-				
+				}				
 				
 				$rejected=0;
 				$good_garments=0;
-				$sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected, COALESCE(SUM(IF(qms_tran_type=5,qms_qty,0)),0) AS good_garments from $bai_pro3.bai_qms_db where qms_schedule=".$sql_row12['ims_schedule']." and qms_color=\"".$sql_row12['ims_color']."\" and qms_size=\"".strtoupper($size_value)."\" and qms_style=\"".$sql_row12['ims_style']."\" and input_job_no=\"".$sql_row12['input_job_rand_no_ref']."\" and qms_remarks=\"".$sql_row12['ims_remarks']."\" and operation_id='130' and bundle_no=\"".$sql_row12['pac_tid']."\"";
+				$sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected, COALESCE(SUM(IF(qms_tran_type=5,qms_qty,0)),0) AS good_garments from $bai_pro3.bai_qms_db where qms_schedule='".$sql_row12['ims_schedule']."' and qms_color='".$sql_row12['ims_color']."' and qms_size='".strtoupper($size_value)."' and qms_style='".$sql_row12['ims_style']."' and input_job_no='".$sql_row12['input_job_rand_no_ref']."' and qms_remarks='".$sql_row12['ims_remarks']."'and operation_id=130 and bundle_no=".$sql_row12['pac_tid'];
+				
 				
 				//echo $sql33;
 				//mysqli_query($link, $sql33) or exit("Sql Error".$sql33.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -294,7 +272,7 @@ if(isset($_GET['val']))
 				
 				
 				//Ex-Factory
-				$sql33="select ex_factory_date_new as ex_factory from $bai_pro4.week_delivery_plan_ref where schedule_no=\"".$sql_row12['ims_schedule']."\"";
+				$sql33="select ex_factory from $m3_inputs.shipment_plan where schedule_no='".$sql_row12['ims_schedule']."'";
 				$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error2 =$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row33=mysqli_fetch_array($sql_result33))
 				{

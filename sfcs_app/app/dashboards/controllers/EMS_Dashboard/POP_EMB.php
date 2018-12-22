@@ -393,7 +393,7 @@ while($sql_row22=mysqli_fetch_array($sql_result22))
 		echo "<option value=\"0\">0</option>";
 		//Date 2013-09-19
 		//Dispaly Modules based on sections
-		$sql="SELECT GROUP_CONCAT(sec_mods) as mods FROM bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
+		$sql="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS mods FROM bai_pro3.module_master WHERE section NOT IN (0,-1) ORDER BY section";
 		//echo $sql;
 		$result7=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($result7))

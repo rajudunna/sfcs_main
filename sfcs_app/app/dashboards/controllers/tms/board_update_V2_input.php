@@ -57,18 +57,23 @@ $section_no=$_GET['section_no'];
 		ob_end_flush();
 		flush();
 		usleep(1);
-		
+		$sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section_no";
+		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+		{
+			$section_display_name=$sql_rowx1['section_display_name'];
+		}
 		?>
 		<div class="table table-responsive">
 		<table class="table table-bordered">
 			<tr>
-			<th colspan=10 >Production Plan for Section -<?= $section_no; ?></th>
+			<th colspan=10 >Production Plan for <?= $section_display_name; ?></th>
 			<th colspan=20 >Date :<?= date('Y-m-d H:i'); ?></th>
 			</tr>
 			<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th>Priority 2</th><th>Priority 3</th><th>Priority 4</th><th>Priority 5</th><th>Priority 6</th><th>Priority 7</th><th>Priority 8</th><th>Priority 9</th><th>Priority 10</th><th>Priority 11</th><th>Priority 12</th><th>Priority 13</th><th>Priority 14</th></tr>
 
 <?php
-$sqlx="select * from $bai_pro3.sections_db where sec_id>0 and sec_id=$section_no";
+$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$section_no GROUP BY section ORDER BY section + 0";
 $sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error1".mysqli_error());
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
@@ -146,7 +151,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$fabric_status=$sql_row1['ft_status'];
 				
 				//To get the status of join orders
-				$sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" and order_joins=2";
+				$sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" and $order_joins_in_2";
 				$sql_result11=mysqli_query($link,$sql11) or exit("Sql Error3".mysqli_error());
 				
 				if(mysqli_num_rows($sql_result11)>0)

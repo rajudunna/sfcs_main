@@ -2162,7 +2162,16 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
-  <td class=xl654118 colspan=3 align=center><strong><?php if($print_status=='0000-00-00' || $print_status == "") {echo "Original"; } else {echo "Duplicate";}?></strong></td>
+  <td class=xl654118 colspan=3 align=center><strong><?php 
+	if($print==1)
+	{
+		if($print_status=='0000-00-00' || $print_status == "") {echo "ORIGINAL"; } else {echo "DUPLICATE";}
+	}
+	else
+	{	
+		{echo "CUTTING"; }
+	}
+	?>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>

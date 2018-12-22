@@ -365,12 +365,12 @@ mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
 //TEMP Table
 
 
-$sqlx="select * from $bai_pro3.sections_db where sec_id=$sec_x";
+$sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` where section = '".$sec_x."' GROUP BY section ORDER BY section + 0";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
 	$section=$sql_rowx['sec_id'];
-	$section_head=$sql_rowx['sec_head'];
+	// $section_head=$sql_rowx['sec_head'];
 	$section_mods=$sql_rowx['sec_mods'];
 
 	echo '<div style="border: 3px coral solid; width: 160px; height: auto; float: left; margin: 0px; padding: 10px;">';

@@ -795,7 +795,13 @@
                         while($sql_row=mysqli_fetch_array($result17))
                         {
                             $sql_sec=$sql_row["secid"];
-                            echo "<option value=\"".$sql_sec."\">Section - ".$sql_sec."</option>";
+                            $sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$sql_sec";
+                            $result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            while($sql_row12=mysqli_fetch_array($result12))
+                            {
+                                $section_display_name=$sql_row12["section_display_name"];
+                            }
+                            echo "<option value=\"".$sql_sec."\">".$section_display_name."</option>";
                                 
                         }
                         echo "</select></div>";

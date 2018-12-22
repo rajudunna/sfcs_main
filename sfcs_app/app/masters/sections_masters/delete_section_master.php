@@ -31,7 +31,7 @@ if($rid!=''){
 			window.location.href = \"$url\";
 		  }
 		}); }, 100);</script>";
-$delete="delete from bai_pro3.sections_master where sec_id='$rid'";
+$delete="delete from $bai_pro3.sections_master where sec_id='$rid'";
 if (mysqli_query($conn, $delete)) {
 			//header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw');
 		} else {
