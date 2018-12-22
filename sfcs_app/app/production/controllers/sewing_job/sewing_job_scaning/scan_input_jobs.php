@@ -710,7 +710,6 @@ $('input[type=submit]').click(function() {
     $(this).parents('form').submit()
 })
 </script>	
-
 <script>
 function check_pack()
 {
@@ -812,8 +811,7 @@ function validating()
     }
     
 }
-
-
+</script>
 <style>
 .hidden_class,hidden_class_for_remarks{
 	display:none;
