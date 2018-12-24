@@ -717,11 +717,11 @@
 											$title=title_des($link,$code_db_new[0]);
 											// <li data-color="green" style="background-color:green; color:white;">
 											$real_docket = $code_db_new[1];
-											if($real_docket == 'R')
+											if($real_docket[0] == 'R')
 											{
 												$check = 'PINK';
 											}
-											echo "<li id=\"".$code_db_new[0]."\" style=\" background-color:'$check'; color:white;\"  
+											echo "<li id=\"".$code_db_new[0]."\" style=\" background-color:$check; color:white;\"  
 											data-color='$check'  class='apply-remove'><strong>".$code_db_new[1]."</strong></li>";
 										}
 									?>
