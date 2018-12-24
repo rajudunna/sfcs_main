@@ -717,7 +717,7 @@
 											$title=title_des($link,$code_db_new[0]);
 											// <li data-color="green" style="background-color:green; color:white;">
 											$real_docket = $code_db_new[1];
-											if($real_docket == 'R')
+											if($real_docket[0] == 'R')
 											{
 												$check = 'PINK';
 											}
