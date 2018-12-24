@@ -691,7 +691,7 @@ if($barcode_generation == 1)
 		$b_module = $b_module1;
 
 	}
-	var_dump($actual_rejection_reason_array_string);
+	// var_dump($actual_rejection_reason_array_string);
 	if(sizeof($actual_rejection_reason_array_string)>0)
 	{
 		if(substr($bulk_insert_rej, -1) == ',')
