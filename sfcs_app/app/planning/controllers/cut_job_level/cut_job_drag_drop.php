@@ -363,7 +363,7 @@
 					contentToBeDragged_next = this.nextSibling;
 					if(!this.tagName && contentToBeDragged_next.nextSibling)contentToBeDragged_next = contentToBeDragged_next.nextSibling;
 				}
-				if(col == 'blue' || col == 'red'){
+				if(col == 'blue' || col == 'red' || col=='PINK'){
 					timerDrag();
 					return false;
 				}else{
