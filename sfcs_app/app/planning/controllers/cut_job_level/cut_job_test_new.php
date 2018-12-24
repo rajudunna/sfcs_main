@@ -122,7 +122,7 @@ echo "<div class='row'>";
 			}
 			if(strtolower($remarks) == 'recut')
 			{
-				if($approve == 1)
+				if($approve == 99)
 				{
 					$code.=$sql_row['doc_no']."-R".leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
 					$cat_ref= $sql_row['cat_ref']; 

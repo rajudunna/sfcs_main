@@ -4,7 +4,7 @@ error_reporting(0);
 if(isset($_POST['approve']))
 {
    $order_tid=$_POST['order_tid'];
-   $status=1;
+   $status=99;
    $doc_nos=$_POST['doc_no_ref'];
    $codes=$_POST['code_no_ref'];
    $hostname=explode(".",gethostbyaddr($_SERVER['REMOTE_ADDR']));
@@ -135,7 +135,7 @@ echo $drp_down;
                 {
                     $id = $row['doc_no'];
                     echo "<input type='hidden' name='doc_no' value='$id'>";
-                    if($row['fabric_status'] == '1')
+                    if($row['fabric_status'] == '99')
                     {
                         $button_html = "<b style='color:red;'>Approved</b>";
                         $html_hiding = "Approved";
