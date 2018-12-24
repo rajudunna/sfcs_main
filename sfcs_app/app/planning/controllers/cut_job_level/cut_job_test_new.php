@@ -118,8 +118,9 @@ echo "<div class='row'>";
 			while($remarks_row=mysqli_fetch_array($remarks_query_result)) 
 			{
 				$remarks = $remarks_row['remarks'];
+				$approve = $remarks_row['fabric_status'];
 			}
-			if(strtolower($remarks) == 'recut')
+			if(strtolower($remarks) == 'recut' && $approve == 1)
 			{
 				$code.=$sql_row['doc_no']."-R".leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
 				$cat_ref= $sql_row['cat_ref']; 
