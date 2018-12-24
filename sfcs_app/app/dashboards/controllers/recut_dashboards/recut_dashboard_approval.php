@@ -33,7 +33,7 @@ if(isset($_POST['reject']))
     $a_sizes = '';
     $p_sizes = '';
     $ratio = '';
-    $qry_cut_qty_check_qry = "SELECT SUM(recut_qty)as recut_qty,size_id FROM bai_pro3.`recut_v2_child` WHERE parent_id = $doc_no";
+    $qry_cut_qty_check_qry = "SELECT SUM(recut_qty)as recut_qty,size_id FROM $bai_pro3.`recut_v2_child` WHERE parent_id = $doc_no";
 	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
 	while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
 	{
@@ -44,11 +44,11 @@ if(isset($_POST['reject']))
         $update_qry = "update $bai_pro3.plandoc_stat_log set a_$size_code=$act_ratio,p_$size_code=$act_ratio where doc_no = $doc_no";
         mysqli_query($link, $update_qry) or exit("Updating recut_v2 for rejected docket".mysqli_error($GLOBALS["___mysqli_ston"]));
         $cut_done_qty[$row['size_id']] = $act_ratio;
-        $update_cps_log_qry = "update bai_pro3.cps_log set cut_quantity = $act_ratio where doc_no = $doc_no and size_code = '$size_code'";
+        $update_cps_log_qry = "update $bai_pro3.cps_log set cut_quantity = $act_ratio where doc_no = $doc_no and size_code = '$size_code'";
         mysqli_query($link, $update_cps_log_qry) or exit("Updating recut_v2 for rejected docket".mysqli_error($GLOBALS["___mysqli_ston"]));
-        $update_bcd_qry="update brandix_bts.bundle_creation_data set original_qty = $act_ratio,send_qty=$act_ratio where docket_number = $doc_no and size_id = '$size_code' and operation_id = 15";
+        $update_bcd_qry="update $brandix_bts.bundle_creation_data set original_qty = $act_ratio,send_qty=$act_ratio where docket_number = $doc_no and size_id = '$size_code' and operation_id = 15";
         mysqli_query($link, $update_bcd_qry) or exit("Updating recut_v2 for rejected docket".mysqli_error($GLOBALS["___mysqli_ston"]));
-        $update_bcd_qry="update brandix_bts.bundle_creation_data set original_qty = $act_ratio where docket_number = $doc_no and size_id = '$size_code' and operation_id <> 15";
+        $update_bcd_qry="update $brandix_bts.bundle_creation_data set original_qty = $act_ratio where docket_number = $doc_no and size_id = '$size_code' and operation_id <> 15";
         mysqli_query($link, $update_bcd_qry) or exit("Updating recut_v2 for rejected docket".mysqli_error($GLOBALS["___mysqli_ston"]));
     }
     $update_qry = "update $bai_pro3.recut_v2 set mk_ref = '0',a_plies=1,p_plies=1 where doc_no = $doc_no";
@@ -56,7 +56,7 @@ if(isset($_POST['reject']))
     $update_qry = "update $bai_pro3.plandoc_stat_log set mk_ref = '0',a_plies=1,p_plies=1 where doc_no = $doc_no";
     mysqli_query($link, $update_qry) or exit("Updating recut_v2 for rejected docket".mysqli_error($GLOBALS["___mysqli_ston"]));
     //deleting moq
-    $delete_qry_moq = "DELETE FROM bai_pro3.`mo_operation_quantites` WHERE ref_no IN (SELECT tid FROM pac_stat_log_input_job WHERE doc_no = $doc_no)";
+    $delete_qry_moq = "DELETE FROM $bai_pro3.`mo_operation_quantites` WHERE ref_no IN (SELECT tid FROM pac_stat_log_input_job WHERE doc_no = $doc_no)";
     mysqli_query($link, $delete_qry_moq) or exit("deleting delete_qry_moq".mysqli_error($GLOBALS["___mysqli_ston"]));
     //deleting from cps
     $delete_qry = "delete from $bai_pro3.pac_stat_log_input_job where doc_no = $doc_no";
@@ -125,9 +125,9 @@ echo $drp_down;
                 <?php  
                 $s_no = 1;
                 $blocks_query  = "SELECT fabric_status,SUM(rejected_qty)as rejected_qty,parent_id as doc_no,SUM(recut_qty)as recut_qty,SUM(recut_reported_qty) as recut_reported_qty,SUM(issued_qty)as issued_qty,r.`mk_ref`,b.`style_id`AS style,b.`order_col_des` AS color,b.`order_del_no` as schedule
-                FROM `bai_pro3`.`recut_v2_child` rc 
-                LEFT JOIN bai_pro3.`recut_v2` r ON r.doc_no = rc.`parent_id`
-                LEFT JOIN bai_pro3.`bai_orders_db` b ON b.order_tid = r.`order_tid`
+                FROM `$bai_pro3`.`recut_v2_child` rc 
+                LEFT JOIN $bai_pro3.`recut_v2` r ON r.doc_no = rc.`parent_id`
+                LEFT JOIN $bai_pro3.`bai_orders_db` b ON b.order_tid = r.`order_tid`
                 WHERE r.mk_ref != '0'
                 GROUP BY parent_id";
                 $blocks_result = mysqli_query($link,$blocks_query) or exit('Rejections Log Data Retreival Error');        

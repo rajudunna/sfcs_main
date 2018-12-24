@@ -14,7 +14,7 @@
         $sizes_a = '';
         $bcd = $bcd_id[0];
         //retreaving style,schedule,color and size wise cumulative quantities to store in plan_doc_stat_log and recut_v2
-        $qry_details = "SELECT style,SCHEDULE,color FROM `bai_pro3`.`rejections_log` r LEFT JOIN `bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
+        $qry_details = "SELECT style,SCHEDULE,color FROM `$bai_pro3`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
         WHERE rc.`bcd_id` in ($bcd)";
         $qry_details_res = $link->query($qry_details);
         while($row_row = $qry_details_res->fetch_assoc()) 
@@ -24,7 +24,7 @@
             $color = $row_row['color'];
         }
         //getting order tid
-        $qry_order_tid = "SELECT order_tid FROM `bai_pro3`.`bai_orders_db` WHERE order_style_no = '$style' AND order_del_no ='$scheule' AND order_col_des = '$color'";
+        $qry_order_tid = "SELECT order_tid FROM `$bai_pro3`.`bai_orders_db` WHERE order_style_no = '$style' AND order_del_no ='$scheule' AND order_col_des = '$color'";
         $res_qry_order_tid = $link->query($qry_order_tid);
         while($row_row_row = $res_qry_order_tid->fetch_assoc()) 
         {
@@ -57,7 +57,7 @@
         $date=date("Y-m-d", mktime(0,0,0,date("m") ,date("d"),date("Y")));
         foreach($cat as $key=>$value)
         {
-            $qry_to_get = "SELECT * FROM  `bai_pro3`.`cat_stat_log` WHERE  order_tid = \"$order_tid\" and category = '$value'";
+            $qry_to_get = "SELECT * FROM  `$bai_pro3`.`cat_stat_log` WHERE  order_tid = \"$order_tid\" and category = '$value'";
             // echo $qry_to_get.'</br>';
             $res_qry_to_get = $link->query($qry_to_get);
             while($row_cat_ref = $res_qry_to_get->fetch_assoc()) 
@@ -109,7 +109,7 @@
             $recut_allowing_qty = $recutval[$key];
             if($recut_allowing_qty > 0)
             {
-                $retreaving_bcd_data = "SELECT * FROM `brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
+                $retreaving_bcd_data = "SELECT * FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
                 $retreaving_bcd_data_res = $link->query($retreaving_bcd_data);
                 while($row_bcd = $retreaving_bcd_data_res->fetch_assoc()) 
                 {
@@ -117,7 +117,7 @@
                     $bundle_number = $row_bcd['bundle_number'];
                     $operation_id = $row_bcd['operation_id'];
                     $size_id = $row_bcd['size_id'];
-                    $retreaving_rej_qty = "SELECT * FROM `bai_pro3`.`rejection_log_child` where bcd_id = $bcd_act_id";
+                    $retreaving_rej_qty = "SELECT * FROM `$bai_pro3`.`rejection_log_child` where bcd_id = $bcd_act_id";
                     $retreaving_rej_qty_res = $link->query($retreaving_rej_qty);
                     while($child_details = $retreaving_rej_qty_res->fetch_assoc()) 
                     {
@@ -135,7 +135,7 @@
                     }
                     if($to_add > 0)
                     {
-                        $inserting_into_recut_v2_child = "INSERT INTO `bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`,`size_id`)
+                        $inserting_into_recut_v2_child = "INSERT INTO `$bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`,`size_id`)
                         VALUES($insert_id,$bcd_act_id,$operation_id,$actual_allowing_to_recut,$to_add,0,0,'$size_id')";
                         mysqli_query($link,$inserting_into_recut_v2_child) or exit("While inserting into the recut v2 child".mysqli_error($GLOBALS["___mysqli_ston"]));
                         //retreaving bundle_number of recut docket from bcd and inserting into moq
@@ -148,7 +148,7 @@
                         $multiple_mos_tot_qty = $to_add;
                         $array_mos = array();
                         //retreaving mo_number which is related to that bcd_act_id
-                        $moq_qry = "SELECT mo_no,bundle_quantity,`rejected_quantity` FROM bai_pro3.`mo_operation_quantites` WHERE ref_no=$bundle_number AND op_code=$operation_id AND `rejected_quantity`>0 ORDER BY mo_no";
+                        $moq_qry = "SELECT mo_no,bundle_quantity,`rejected_quantity` FROM $bai_pro3.`mo_operation_quantites` WHERE ref_no=$bundle_number AND op_code=$operation_id AND `rejected_quantity`>0 ORDER BY mo_no";
                         // echo $moq_qry.'</br>';
                         // die();
                         $moq_qry_res = $link->query($moq_qry);
@@ -173,7 +173,7 @@
                             // echo $to_add_mo.'</br>';
                             if($to_add_mo > 0)
                             {
-                                $checking_moq_qry = "SELECT * FROM bai_pro3.mo_operation_quantites WHERE ref_no = $bundle_number_recut AND op_code = 15";
+                                $checking_moq_qry = "SELECT * FROM $bai_pro3.mo_operation_quantites WHERE ref_no = $bundle_number_recut AND op_code = 15";
                                 // echo $checking_moq_qry.'</br>';
                                 $checking_moq_qry_res = $link->query($checking_moq_qry);
                                 if(mysqli_num_rows($checking_moq_qry_res) > 0)
@@ -217,7 +217,7 @@
         $size = $_POST['size'];
         $operation_id = $_POST['operation_id'];
         $bcd = $bcd_id[0];
-        $qry_details = "SELECT style,SCHEDULE,color FROM `bai_pro3`.`rejections_log` r LEFT JOIN `bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
+        $qry_details = "SELECT style,SCHEDULE,color FROM `$bai_pro3`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
         WHERE rc.`bcd_id` in ($bcd)";
         $qry_details_res = $link->query($qry_details);
         while($row_row = $qry_details_res->fetch_assoc()) 
@@ -232,7 +232,7 @@
             $act_id = $bcd_id[$key];
             if($replaced_qty[$key] > 0)
             {
-                $retreaving_bcd_data = "SELECT bundle_number,id,operation_id,size_title FROM `brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
+                $retreaving_bcd_data = "SELECT bundle_number,id,operation_id,size_title FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
                 $retreaving_bcd_data_res = $link->query($retreaving_bcd_data);
                 while($row_bcd = $retreaving_bcd_data_res->fetch_assoc()) 
                 {
@@ -240,7 +240,7 @@
                     $bundle_number = $row_bcd['id'];
                     $operation_id = $row_bcd['operation_id'];
                     $size_title = $row_bcd['size_title'];
-                    $retreaving_rej_qty = "SELECT * FROM `bai_pro3`.`rejection_log_child` where bcd_id = $bundle_number";
+                    $retreaving_rej_qty = "SELECT * FROM `$bai_pro3`.`rejection_log_child` where bcd_id = $bundle_number";
                     $retreaving_rej_qty_res = $link->query($retreaving_rej_qty);
                     while($child_details = $retreaving_rej_qty_res->fetch_assoc()) 
                     {
@@ -263,7 +263,7 @@
                         $input_job_expo_after = explode(',',$input_job_expo);
                         foreach($input_job_expo_after as $sj)
                         {
-                            $excess_job_qry = "SELECT input_job_no_random AS input_job_no_random_ref,SUM(carton_act_qty)as excess_qty FROM `bai_pro3`.`packing_summary_input` WHERE input_job_no_random='$sj' and size_code = '$size[$key]' AND type_of_sewing = 2";
+                            $excess_job_qry = "SELECT input_job_no_random AS input_job_no_random_ref,SUM(carton_act_qty)as excess_qty FROM `$bai_pro3`.`packing_summary_input` WHERE input_job_no_random='$sj' and size_code = '$size[$key]' AND type_of_sewing = 2";
                             $result_excess_job_qry = $link->query($excess_job_qry);
                             if($result_excess_job_qry->num_rows > 0)
                             {
@@ -427,8 +427,8 @@
             </thead>
             <?php  
             $s_no = 1;
-            $blocks_query  = "SELECT r.id,style,SCHEDULE,color,r.rejected_qty,r.recut_qty,r.remaining_qty,r.replaced_qty,GROUP_CONCAT(DISTINCT bcd_id)as bcd_ids FROM bai_pro3.rejections_log r
-            LEFT JOIN `bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id`
+            $blocks_query  = "SELECT r.id,style,SCHEDULE,color,r.rejected_qty,r.recut_qty,r.remaining_qty,r.replaced_qty,GROUP_CONCAT(DISTINCT bcd_id)as bcd_ids FROM $bai_pro3.rejections_log r
+            LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id`
             GROUP BY r.`style`,r.`schedule`,r.`color` HAVING (rejected_qty-(recut_qty+replaced_qty)) > 0";
             $blocks_result = mysqli_query($link,$blocks_query) or exit('Rejections Log Data Retreival Error');
             if($blocks_result->num_rows > 0)
