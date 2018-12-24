@@ -114,6 +114,7 @@ echo "<div class='row'>";
 		{ 
 			$doc_no_for_recut = $sql_row['doc_no'];
 			$remarks_query = "select * from $bai_pro3.plandoc_stat_log where doc_no = $doc_no_for_recut";
+			echo "<script>console.log('$remarks_query');</script>";
 			$remarks_query_result=mysqli_query($link,$remarks_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($remarks_row=mysqli_fetch_array($remarks_query_result)) 
 			{
