@@ -139,6 +139,7 @@ echo $drp_down;
                     {
                         $button_html = "<b style='color:red;'>Approved</b>";
                         $html_hiding = "Approved";
+                        $button_html_rej = "";
                     }
                     else
                     {
