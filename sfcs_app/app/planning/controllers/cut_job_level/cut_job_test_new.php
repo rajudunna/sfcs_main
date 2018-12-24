@@ -120,12 +120,15 @@ echo "<div class='row'>";
 				$remarks = $remarks_row['remarks'];
 				$approve = $remarks_row['fabric_status'];
 			}
-			if(strtolower($remarks) == 'recut' && $approve == 1)
+			if(strtolower($remarks) == 'recut')
 			{
-				$code.=$sql_row['doc_no']."-R".leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
-				$cat_ref= $sql_row['cat_ref']; 
+				if($approve == 1)
+				{
+					$code.=$sql_row['doc_no']."-R".leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
+					$cat_ref= $sql_row['cat_ref']; 
+				}
 			}
-			else
+			else if(strtolower($remarks) != 'recut')
 			{
 				$code.=$sql_row['doc_no']."-".chr($sql_row['color_code']).leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
 				$cat_ref= $sql_row['cat_ref']; 
