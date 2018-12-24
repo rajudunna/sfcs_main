@@ -86,7 +86,7 @@ function getjobdetails($job_number)
 	}
 	$bg = $job_number[2];
 	$module_no = $job_number[3];
-	$selecting_style_schedule_color_qry = "select order_style_no,order_del_no,order_col_des,input_job_no_random from $bai_pro3.packing_summary_input WHERE $column_in_pack_summary = '$column_to_search' ORDER BY tid";
+	$selecting_style_schedule_color_qry = "select order_style_no,order_del_no,order_col_des,input_job_no_random,type_of_sewing from $bai_pro3.packing_summary_input WHERE $column_in_pack_summary = '$column_to_search' ORDER BY tid";
 	$result_selecting_style_schedule_color_qry = $link->query($selecting_style_schedule_color_qry);
 	if($result_selecting_style_schedule_color_qry->num_rows > 0)
 	{
@@ -97,6 +97,7 @@ function getjobdetails($job_number)
 			$job_number[3]= $row['order_col_des'];
 			$maped_color = $row['order_col_des'];
 			$actual_input_job_number = $row['input_job_no_random'];
+			$job_number_reference = $row['type_of_sewing'];
 			
 		}
 	}
