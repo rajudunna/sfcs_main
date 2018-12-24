@@ -721,8 +721,8 @@
 											{
 												$check = 'PINK';
 											}
-											echo "<li id=\"".$code_db_new[0]."\" style=\" background-color:$check; color:$check;\"  
-											data-color='blue'  class='apply-remove'><strong>".$code_db_new[1]."</strong></li>";
+											echo "<li id=\"".$code_db_new[0]."\" style=\" background-color:'$check'; color:white;\"  
+											data-color='$check'  class='apply-remove'><strong>".$code_db_new[1]."</strong></li>";
 										}
 									?>
 								
