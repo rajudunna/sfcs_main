@@ -613,7 +613,7 @@ if($barcode_generation == 1)
 						}
 						else
 						{
-							$r_reasons = array_filter($r_reasons);
+							// $r_reasons = array_filter($r_reasons);
 							foreach($r_reasons as $reason_key => $reason_value)
 							{
 								$reson_max_qty = $r_qty[$reason_key];

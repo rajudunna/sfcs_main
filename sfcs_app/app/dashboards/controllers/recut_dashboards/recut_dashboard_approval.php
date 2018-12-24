@@ -56,7 +56,7 @@ if(isset($_POST['reject']))
     $update_qry = "update $bai_pro3.plandoc_stat_log set mk_ref = '0',a_plies=1,p_plies=1 where doc_no = $doc_no";
     mysqli_query($link, $update_qry) or exit("Updating recut_v2 for rejected docket".mysqli_error($GLOBALS["___mysqli_ston"]));
     //deleting moq
-    $delete_qry_moq = "DELETE FROM $bai_pro3.`mo_operation_quantites` WHERE ref_no IN (SELECT tid FROM pac_stat_log_input_job WHERE doc_no = $doc_no)";
+    $delete_qry_moq = "DELETE FROM $bai_pro3.`mo_operation_quantites` WHERE ref_no IN (SELECT tid FROM $bai_pro3.pac_stat_log_input_job WHERE doc_no = $doc_no)";
     mysqli_query($link, $delete_qry_moq) or exit("deleting delete_qry_moq".mysqli_error($GLOBALS["___mysqli_ston"]));
     //deleting from cps
     $delete_qry = "delete from $bai_pro3.pac_stat_log_input_job where doc_no = $doc_no";
