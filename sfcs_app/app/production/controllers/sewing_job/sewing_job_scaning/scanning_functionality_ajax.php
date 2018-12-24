@@ -613,7 +613,7 @@ if($barcode_generation == 1)
 						}
 						else
 						{
-							$r_reasons = array_filter($r_reasons);
+							// $r_reasons = array_filter($r_reasons);
 							foreach($r_reasons as $reason_key => $reason_value)
 							{
 								$reson_max_qty = $r_qty[$reason_key];
@@ -1555,7 +1555,7 @@ else if($concurrent_flag == 0)
 				//inserting into rejections_reason_track'
 				if($implode_next[2] > 0)
 				{
-					$insert_into_rejections_reason_track = "INSERT INTO $bai_pro3.`rejections_reason_track` (`parent_id`,`date_time`,`bcd_id`,`rejected_qty`,`rejection_reason`,`username`,`form`) values ($parent_id,DATE_FORMAT(NOW(), '%Y-%m-%d %H'),$bcd_id,'$implode_next[2]','$implode_next[1]','$username','$form')";
+					$insert_into_rejections_reason_track = "INSERT INTO $bai_pro3.`rejections_reason_track` (`parent_id`,`date_time`,`bcd_id`,`rejected_qty`,`rejection_reason`,`username`,`form_type`) values ($parent_id,DATE_FORMAT(NOW(), '%Y-%m-%d %H'),$bcd_id,'$implode_next[2]','$implode_next[1]','$username','$form')";
 					$insert_into_rejections_reason_track_res =$link->query($insert_into_rejections_reason_track);
 				}
 				updateM3TransactionsRejections($b_tid,$b_op_id,$r_qty,$r_reasons);
