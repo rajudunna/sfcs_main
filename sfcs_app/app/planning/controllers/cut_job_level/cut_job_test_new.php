@@ -119,7 +119,7 @@ echo "<div class='row'>";
 			{
 				$remarks = $remarks_row['remarks'];
 			}
-			if(strtolower($remarks) == 'Recut')
+			if(strtolower($remarks) == 'recut')
 			{
 				$code.=$sql_row['doc_no']."-R".leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
 				$cat_ref= $sql_row['cat_ref']; 
