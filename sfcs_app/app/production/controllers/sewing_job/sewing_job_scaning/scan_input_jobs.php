@@ -1,3 +1,6 @@
+<head>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
 <?php
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
@@ -63,7 +66,6 @@ if($operation_code >=130)
 	$form = 'G';
 }
 $qery_rejection_resons = "select * from $bai_pro3.bai_qms_rejection_reason where form_type = '$form'";
-//echo $qery_rejection_resons;
 $result_rejections = $link->query($qery_rejection_resons);
 if(isset($_POST['flag_validation']))
 {
@@ -73,7 +75,6 @@ if(isset($_POST['flag_validation']))
 }
 $configuration_bundle_print_array = ['0'=>'Bundle Number','1'=>'Sewing Job Number'];
 $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
-// echo $label_name_to_show;
 
 ?>
 <script type="text/javascript">
@@ -149,6 +150,10 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 								<h3><label class='label label-info label-xs' id='module_show'></span><h3>
 							</div>
 						</div>
+						</br>
+						<div class = "form-group col-lg-6 col-sm-12" id='setresetfun' hidden='true'>
+								<button type='button' class='btn btn-success' value='Set' style='float: right;' onclick='setfunction();' id='setreset'>Set</button>
+						</div>
 						<div class="form-group col-md-3">
 						</div>
 					</center>
@@ -186,6 +191,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 						<input type="hidden" name="barcode_generation" id='barcode_generation' value="<?php echo $barcode_generation;?>">
 						<input type="hidden" name="response_flag" id='response_flag'>
 						<input type="hidden" name="emb_cut_check_flag" id='emb_cut_check_flag' value='0'>
+						<input type="hidden" id="no_of_rows">
 						
 						<div id ="dynamic_table1">
 						</div>
@@ -228,7 +234,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 													<?php				    	
 														if ($result_rejections->num_rows > 0) {
 															while($row = $result_rejections->fetch_assoc()) {
-																echo "<option value='".$row['m3_reason_code']."'>".$row['reason_desc']."</option>";
+																echo "<option value='".$row['reason_code']."'>".$row['reason_desc']."</option>";
 															}
 														} else {
 															echo "<option value=''>No Data Found..</option>";
@@ -282,20 +288,20 @@ $(document).ready(function()
 			dataType: "json",
 			success: function (response) 
 			{
-				if (response == 4)
+				console.log(response);
+				console.log(sewing_rejection);
+				s_no = 0;
+				var data = response['table_data'];
+				var flag = response['flag'];
+				var op_codes = response['ops_get_code'];
+				var emb_ops = response['emb_cut_check_flag'];
+				if(response['status'])
 				{
 					module_flag = 1; // block
-					restrict_msg = 'No Module Assigned';
 				}
 				else if (response == 3)
 				{
-					module_flag = 1; // block
-					restrict_msg = 'No Valid Block Priorities';
-				}
-				else if (response == 2)
-				{
-					var authorize_check = $('#user_permission').val();
-					if (authorize_check == 'authorized')
+					if(response['emb_cut_check_flag'])
 					{
 						module_flag = 0; // allow
 					}
@@ -658,30 +664,6 @@ function validate_reporting_report(val)
 		$('#'+reporting_id).val(0);
 	}
 }
-//function validate_reporting(val)
-//{
-			// var remarks_var = val+"sampling";
-			// var bundle_number_var = val+"tid";
-			// var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
-			//var remarks_var = '#'+"";
-			// var bundle_number = document.getElementById(bundle_number_var).value;
-			// console.log(bundle_number);
-			// var operation_id = document.getElementById('operation_id').value;
-			// var remarks = $('#'+val+'sampling option:selected').text();
-			// var input_job_number = $('#job_number').val();
-			// var array_remarks_params = [input_job_number,bundle_number,operation_id,remarks];
-			// console.log(array_remarks_params);
-			// $.ajax({
-			// type: "POST",
-			// url: function_text+"?validating_remarks="+array_remarks_params,
-			// dataType: "json",
-			// success: function (response) 
-			// {
-				
-			// }
-			// });
-	
-//}
 function neglecting_function()
 {
 	var val = document.getElementById('changed_rej_id').value;
@@ -723,36 +705,11 @@ $('#rejec_reasons').on('click', function(){
 	console.log($('#'+id+'reason_data').val());
 	
 })
-// function formsubmit(){
-// 	// alert();
-// 	// var index = 1;
-// 	// e.preventDefault();
-// 	var formbool = false;
-// 	$('.twotextboxes').each(function(){
-// 		if($(this).val() > 0){
-// 			console.log($(this).val());
-// 			formbool = true;
-// 			// $('#smartform').submit();
-// 			return false;
-// 		}else {
-// 			formbool = false;
-// 		}
-		
-// 	})
-// 	console.log(formbool);
-// 		if(formbool){
-// 			$('#smartform').submit();
-// 		} else{
-// 			sweetAlert('','Please Fill details in form','error');
-// 		}
-// 	// $('#smartform').submit();
-// }
 $('input[type=submit]').click(function() {
     $(this).attr('disabled', 'disabled');
     $(this).parents('form').submit()
 })
 </script>	
-
 <script>
 function check_pack()
 {
@@ -829,10 +786,31 @@ function validating()
 {
 	console.log("working");
 	//document.getElementByClassName('submission').style.visibility = 'hidden';
-	
+	var noofrows = $('#no_of_rows').val();
+    if(document.getElementById('setreset').innerHTML == 'Set')
+    {
+        for(var i=0; i<Number(noofrows); i++)
+        {
+            var rem_var = i+'remarks_validate_html';
+			var rem = i+'reporting';
+            console.log(rem_var);
+            var remaining_qty = document.getElementById(rem_var).innerHTML;
+            document.getElementById(rem).value = remaining_qty; 
+        }
+        document.getElementById('setreset').innerHTML = 'ReSet';
+    }
+    else
+    {
+        for(var i=0; i<Number(noofrows); i++)
+        {
+			var rem = i+'reporting';
+            document.getElementById(rem).value = 0; 
+        }
+        document.getElementById('setreset').innerHTML = 'Set';
+
+    }
+    
 }
-
-
 </script>
 <style>
 .hidden_class,hidden_class_for_remarks{

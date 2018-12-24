@@ -240,6 +240,7 @@ function getjobdetails($job_number)
 			$flag = 'packing_summary_input';
 		}
 	}
+	$s_no = 0;
 	if($flags == 2)
 	{
 		$result_array['status'] = 'Previous operation not yet done for this job.';
@@ -249,6 +250,7 @@ function getjobdetails($job_number)
 		$result_style_data = $link->query($schedule_query);
 		while($row = $result_style_data->fetch_assoc()) 
 		{
+			$s_no++;
 			$style = $job_number[1];
 			$schedule =  $job_number[2];
 			$color = $row['order_col_des'];
@@ -307,6 +309,7 @@ function getjobdetails($job_number)
 				$sum_balance = 0;
 				$doc_no = $row['doc_no'];
 				$size = $row['old_size'];
+				$size_title = $row['size_code'];
 				$min_val_doc_wise = array();
 				$row_bundle_wise_qty =0;
 				$bundle_tot_qty =0;
@@ -329,7 +332,20 @@ function getjobdetails($job_number)
 						$result_doc_wise_bundle_qty = $link->query($doc_wise_bundle_qty);
 						while($row_bundle = $result_doc_wise_bundle_qty->fetch_assoc()) 
 						{
-							$row_bundle_wise_qty = $row_bundle['carton_act_qty'];
+							$replaced_qty = 0;
+							if($job_number_reference == 2 && $flag == 'packing_summary_input')
+							{
+								$qry_for_replacment_allocation_log = "select sum(replaced_qty)as replaced_qty from $bai_pro3.replacment_allocation_log where $column_in_where_condition ='$column_to_search' and size_title ='$size_title'";
+								$result_qry_for_replacment_allocation_log = $link->query($qry_for_replacment_allocation_log);
+								if($result_qry_for_replacment_allocation_log->num_rows > 0)
+								{
+									while($row_replace = $result_qry_for_replacment_allocation_log->fetch_assoc()) 
+									{
+										$replaced_qty = $row_replace['replaced_qty'];
+									}
+								}
+							}
+							$row_bundle_wise_qty = $row_bundle['carton_act_qty'] - $replaced_qty;
 							$bundle_tot_qty += $row_bundle_wise_qty;
 						}
 						$sum_balance = $row_remaining['balance_to_report'];
@@ -355,7 +371,8 @@ function getjobdetails($job_number)
 			$result_array['table_data'][] = $row;
 		}
 		$result_array['flag'] = $flag;
-	}		
+	}
+	$result_array['no_of_rows'] = $s_no;
 	echo json_encode($result_array);	
 }
 if(isset($_GET['job_rev_no']))

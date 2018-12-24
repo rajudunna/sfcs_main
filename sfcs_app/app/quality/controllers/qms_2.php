@@ -2,6 +2,7 @@
 // include("dbconf.php");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',3,'R'));
 //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 
 //$has_perm=haspermission($_GET['r']);
@@ -105,6 +106,8 @@ if(isset($_GET['tid']))
 	$tid_ref=$_GET['tid'];
 	$locationid=$_GET['location'];
 	$qms_qty=$_GET['qms_qty1'];
+	$parent_id = $_GET['parent_id'];
+	$bcd_id = $_GET['bcd_id'];
 	
 	$sql1="select bundle_no,qms_style,qms_color,input_job_no,operation_id,qms_size,SUBSTRING_INDEX(remarks,'-',1) as module,ref1 from $bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
 	// echo $sql1."<br>";
@@ -120,64 +123,69 @@ if(isset($_GET['tid']))
 		$color=$sql_row["qms_color"];
 		$bundle_no_ref=$sql_row["bundle_no"];
 	}
+	$form = 'P';
+	if($operation_code >=130)
+	{
+		$form = 'G';
+	}
 	
-	$ops_sequence="SELECT ops_sequence FROM $brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND COLOR='".$color."' AND operation_code='".$operation_id."'";
-	$ops_sequence_sql_result=mysqli_query($link,$ops_sequence) or exit("ops_sequence Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($ops_sequence_row = mysqli_fetch_array($ops_sequence_sql_result))
-	{
-		$ops_sequence=$ops_sequence_row["ops_sequence"];
-	}
-	$form="P";
-	if($ops_sequence > 0)
-	{	
-		$max_ops="SELECT max(id) as operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND COLOR='".$color."' AND ops_sequence='".$ops_sequence."'";
-		$max_ops_sql_result=mysqli_query($link,$max_ops) or exit("max_ops Error".$max_ops.mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($max_ops_row = mysqli_fetch_array($max_ops_sql_result))
-		{
-			$max_ops_code=$max_ops_row["operation_code"];
-		}
+	// $ops_sequence="SELECT ops_sequence FROM $brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND COLOR='".$color."' AND operation_code='".$operation_id."'";
+	// $ops_sequence_sql_result=mysqli_query($link,$ops_sequence) or exit("ops_sequence Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($ops_sequence_row = mysqli_fetch_array($ops_sequence_sql_result))
+	// {
+	// 	$ops_sequence=$ops_sequence_row["ops_sequence"];
+	// }
+	// $form="P";
+	// if($ops_sequence > 0)
+	// {	
+	// 	$max_ops="SELECT max(id) as operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND COLOR='".$color."' AND ops_sequence='".$ops_sequence."'";
+	// 	$max_ops_sql_result=mysqli_query($link,$max_ops) or exit("max_ops Error".$max_ops.mysqli_error($GLOBALS["___mysqli_ston"]));
+	// 	while($max_ops_row = mysqli_fetch_array($max_ops_sql_result))
+	// 	{
+	// 		$max_ops_code=$max_ops_row["operation_code"];
+	// 	}
 		
-		$ops_dependency="SELECT ops_dependency FROM $brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND COLOR='".$color."' AND id='".$max_ops_code."'";
-		$ops_dependency_sql_result=mysqli_query($link,$ops_dependency) or exit("ops_dependency Error".$ops_dependency.mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($ops_dependency_row = mysqli_fetch_array($ops_dependency_sql_result))
-		{
-			$ops_dependency=$ops_dependency_row["ops_dependency"];
-		}
+	// 	$ops_dependency="SELECT ops_dependency FROM $brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND COLOR='".$color."' AND id='".$max_ops_code."'";
+	// 	$ops_dependency_sql_result=mysqli_query($link,$ops_dependency) or exit("ops_dependency Error".$ops_dependency.mysqli_error($GLOBALS["___mysqli_ston"]));
+	// 	while($ops_dependency_row = mysqli_fetch_array($ops_dependency_sql_result))
+	// 	{
+	// 		$ops_dependency=$ops_dependency_row["ops_dependency"];
+	// 	}
 		
-		if($ops_dependency > 0)
-		{
-			if($ops_dependency < 130)
-			{
-				$form="P";
-			}
-			else
-			{
-				$form="G";
-			}
-		}
-		else
-		{
-			if($operation_id < 130)
-			{
-				$form="P";
-			}
-			else
-			{
-				$form="G";
-			}
-		}
-	}
-	else
-	{
-		if($operation_id < 130)
-		{
-			$form="P";
-		}
-		else
-		{
-			$form="G";
-		}
-	}
+	// 	if($ops_dependency > 0)
+	// 	{
+	// 		if($ops_dependency < 130)
+	// 		{
+	// 			$form="P";
+	// 		}
+	// 		else
+	// 		{
+	// 			$form="G";
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		if($operation_id < 130)
+	// 		{
+	// 			$form="P";
+	// 		}
+	// 		else
+	// 		{
+	// 			$form="G";
+	// 		}
+	// 	}
+	// }
+	// else
+	// {
+	// 	if($operation_id < 130)
+	// 	{
+	// 		$form="P";
+	// 	}
+	// 	else
+	// 	{
+	// 		$form="G";
+	// 	}
+	// }
 	
 	// echo "<br>Form=".$form."<br><br>";
 	$reason = array();	$r_reasons = array();	$reason_qty = array();
@@ -199,11 +207,11 @@ if(isset($_GET['tid']))
 		}
 	}
 	// die();
-	$bts_update="update $brandix_bts.bundle_creation_data set rejected_qty=rejected_qty-".$qms_qty." where bundle_number='".$bundle_no_ref."' and input_job_no_random_ref='".$input_job_no."' and operation_id='".$operation_id."' and assigned_module='".$module_ref."' and size_title='".$qms_size."'";
+	$bts_update="update $brandix_bts.bundle_creation_data set rejected_qty=rejected_qty-".$qms_qty." where bundle_number='".$bundle_no_ref."' and input_job_no_random_ref='".$input_job_no."' and operation_id='".$operation_id."' and assigned_module='".$module_ref."' and size_id='".$qms_size."'";
 	// echo $bts_update."<br>";
 	mysqli_query($link, $bts_update) or die("Sql error".$bts_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
-	
-	$bts_insert="insert into $brandix_bts.bundle_creation_data_temp(cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,rejected_qty,docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id) select cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,'".(-1*$qms_qty)."',docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id from $brandix_bts.bundle_creation_data_temp where bundle_number='".$bundle_no_ref."' and input_job_no_random_ref='".$input_job_no."' and operation_id='".$operation_id."' and assigned_module='".$module_ref."' and size_title='".$qms_size."' limit 1";
+	echo $bts_update.'</br>';
+	$bts_insert="insert into $brandix_bts.bundle_creation_data_temp(cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,rejected_qty,docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id) select cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,'".(-1*$qms_qty)."',docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id from $brandix_bts.bundle_creation_data_temp where bundle_number='".$bundle_no_ref."' and input_job_no_random_ref='".$input_job_no."' and operation_id='".$operation_id."' and assigned_module='".$module_ref."' and size_id='".$qms_size."' limit 1";
 	// echo $bts_insert;
 	mysqli_query($link,$bts_insert) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	
@@ -224,6 +232,16 @@ if(isset($_GET['tid']))
 	// echo $sql2."<br>";
 	$result2=mysqli_query($link, $sql2) or die("Sql error".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	
+	//updating rejection_log_chile
+
+	$update_qry = "update $bai_pro3.rejection_log_child set rejected_qty = rejected_qty-$qms_qty where bcd_id = $bcd_id";
+	echo $update_qry.'</br>';
+	mysqli_query($link, $update_qry) or die("update_qry".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
+
+	$update_qry_rejections_log = "update $bai_pro3.rejections_log set rejected_qty = rejected_qty-$qms_qty where parent_id = $parent_id";
+	mysqli_query($link, $update_qry_rejections_log) or die("update_qry_rejections_log".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
+	echo $update_qry_rejections_log.'</br>';
+	//updating in moq and inserting into m3 transactions
 	//To update M3 Bulk Upload Tool (To pass negative entry)
 	
 	// for($i=0;$i<sizeof($rejections_ref_explode);$i++)
@@ -243,7 +261,6 @@ if(isset($_GET['tid']))
 		// echo $sql2."<br>";
 		// mysqli_query($link, $sql2) or die("Sql error".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	// }
-	
 	echo "<div id=\"fade1\" >";
 	echo "<script>sweetAlert('Record Deleted Successfully','','success')</script>";
 	echo "</div>";
@@ -259,7 +276,13 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 	}
 
 
-	$sql="select * from $bai_pro3.bai_qms_db where qms_tran_type in (3,5) and qms_schedule='".$schedule."'";
+	$sql="SELECT rej.`parent_id`,rej.`bcd_id`,qms.qms_tid AS qms_tid,qms.`bundle_no` AS bundle_no,qms.`qms_qty` AS qms_qty,rej.`recut_qty`,
+	ref1,location_id,qms_style,qms_schedule,qms_color,qms_size,qms_remarks,qms.operation_id,qms.input_job_no,qms.log_date,log_time 
+	FROM bai_pro3.bai_qms_db qms 
+	LEFT JOIN brandix_bts.`bundle_creation_data` bts ON bts.`bundle_number` = qms.`bundle_no` AND bts.`operation_id` = qms.`operation_id` 
+	LEFT JOIN bai_pro3.`rejection_log_child` rej ON rej.`bcd_id` = bts.`id` WHERE qms_tran_type=3 AND qms_schedule='$schedule' 
+	AND recut_qty = 0
+	";
 	// echo $sql."<br>";
 	$result=mysqli_query($link, $sql) or die("Sql error".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($result)>0)
@@ -270,12 +293,14 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 			$tid=$row["qms_tid"];
 			$location_id=$row["location_id"];
 			$qms_qty1=$row["qms_qty"];
+			$bcd_id = $row['bcd_id'];
+			$parent_id = $row['parent_id'];
 			
 			$url = '?r='.$_GET['r'];
 			$order_tid = '';
 			$qms_size_title = ims_sizes($order_tid,$row["qms_schedule"],$row["qms_style"],$row["qms_color"],$row["qms_size"],$link);
 			
-			$msg.="<tr><td>".$row["qms_style"]."</td><td>".$row["qms_schedule"]."</td><td>".$row["qms_color"]."</td><td>".$qms_size_title."</td><td>".$row["qms_remarks"]."</td><td>".$row["bundle_no"]."</td><td>".$row["operation_id"]."</td><td>".$row["input_job_no"]."</td><td>".$row["log_date"]."</td><td>".$row["qms_qty"]."</td><td><a href=\"$url&tid=$tid&schedule_id=$schedule&location=$location_id&qms_qty1=$qms_qty1\" class=\"btn btn-danger\">Delete</a></td></tr>";		
+			$msg.="<tr><td>".$row["qms_style"]."</td><td>".$row["qms_schedule"]."</td><td>".$row["qms_color"]."</td><td>".$qms_size_title."</td><td>".$row["qms_remarks"]."</td><td>".$row["bundle_no"]."</td><td>".$row["operation_id"]."</td><td>".$row["input_job_no"]."</td><td>".$row["log_date"]."</td><td>".$row["qms_qty"]."</td><td><a href=\"$url&tid=$tid&schedule_id=$schedule&location=$location_id&bcd_id=$bcd_id&parent_id=$parent_id&qms_qty1=$qms_qty1\" class=\"btn btn-danger\">Delete</a></td></tr>";		
 		}
 		$msg.="</table>";
 		echo $msg;

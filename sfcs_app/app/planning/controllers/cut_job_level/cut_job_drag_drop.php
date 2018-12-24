@@ -363,7 +363,7 @@
 					contentToBeDragged_next = this.nextSibling;
 					if(!this.tagName && contentToBeDragged_next.nextSibling)contentToBeDragged_next = contentToBeDragged_next.nextSibling;
 				}
-				if(col == 'blue' || col == 'red'){
+				if(col == 'blue' || col == 'red' || col == 'PINK'){
 					timerDrag();
 					return false;
 				}else{
@@ -716,8 +716,13 @@
 											
 											$title=title_des($link,$code_db_new[0]);
 											// <li data-color="green" style="background-color:green; color:white;">
+											$real_docket = $code_db_new[1];
+											if($real_docket[0] == 'R')
+											{
+												$check = 'PINK';
+											}
 											echo "<li id=\"".$code_db_new[0]."\" style=\" background-color:$check; color:white;\"  
-											data-color='blue'  class='apply-remove'><strong>".$code_db_new[1]."</strong></li>";
+											data-color='$check'  class='apply-remove'><strong>".$code_db_new[1]."</strong></li>";
 										}
 									?>
 								
