@@ -77,6 +77,8 @@ if(mysqli_num_rows($validation_result)>0){
         echo json_encode($response_data);
         exit();
     }
+    if($fabric_status == 5)
+        $fabric_status = 'Issued To Cutting';
 }else{
     $response_data['can_report']   = 0;
     echo json_encode($response_data);
