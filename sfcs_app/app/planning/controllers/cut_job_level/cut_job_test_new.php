@@ -114,13 +114,11 @@ echo "<div class='row'>";
 		{ 
 			$doc_no_for_recut = $sql_row['doc_no'];
 			$remarks_query = "select * from $bai_pro3.plandoc_stat_log where doc_no = $doc_no_for_recut";
-			echo "<script>console.log('$remarks_query');</script>";
 			$remarks_query_result=mysqli_query($link,$remarks_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($remarks_row=mysqli_fetch_array($remarks_query_result)) 
 			{
 				$remarks = $remarks_row['remarks'];
 			}
-			echo "<script>console.log('$remarks');</script>";
 			if(strtolower($remarks) == 'recut')
 			{
 				$code.=$sql_row['doc_no']."-R".leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
@@ -131,7 +129,6 @@ echo "<div class='row'>";
 				$code.=$sql_row['doc_no']."-".chr($sql_row['color_code']).leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
 				$cat_ref= $sql_row['cat_ref']; 
 			}
-			echo "<script>console.log('$code');</script>";
 		}	 
 
 		$sql= "select cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" order by doc_no"; 
