@@ -38,7 +38,7 @@ if(isset($_POST['formSubmit']))
     {
         $tid=$sql_row111['tid'];
     }
-    $qry_to_get = "SELECT * FROM  `bai_pro3`.`cat_stat_log` WHERE  order_tid = \"$order_tid\" and category = '$cat_name'";
+    $qry_to_get = "SELECT * FROM  `$bai_pro3`.`cat_stat_log` WHERE  order_tid = \"$order_tid\" and category = '$cat_name'";
     $res_qry_to_get = $link->query($qry_to_get);
     while($row_cat_ref = $res_qry_to_get->fetch_assoc()) 
     {
@@ -70,7 +70,7 @@ if(isset($_POST['formSubmit']))
     }
     $i=1;
     // var_dump($buffer_qty);
-    $retreaving_last_sewing_job_qry = "SELECT MAX(input_job_no_random)as input_job_no_random,input_job_no,destination,packing_mode,sref_id FROM `bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$schedule'";
+    $retreaving_last_sewing_job_qry = "SELECT MAX(input_job_no_random)as input_job_no_random,input_job_no,destination,packing_mode,sref_id FROM `$bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$schedule'";
     $res_retreaving_last_sewing_job_qry = $link->query($retreaving_last_sewing_job_qry);
     while($row_sj = $res_retreaving_last_sewing_job_qry->fetch_assoc()) 
     {   
@@ -86,9 +86,9 @@ if(isset($_POST['formSubmit']))
     {
         if($excess_qty > 0)
         {
-            $retriving_size = "SELECT size_title FROM `bai_pro3`.`recut_v2_child` rc 
-            LEFT JOIN `bai_pro3`.`recut_v2` r ON r.`doc_no` = rc.`parent_id`
-            LEFT JOIN `bai_pro3`.`rejection_log_child` rejc ON rejc.`bcd_id` = rc.`bcd_id`
+            $retriving_size = "SELECT size_title FROM `$bai_pro3`.`recut_v2_child` rc 
+            LEFT JOIN `$bai_pro3`.`recut_v2` r ON r.`doc_no` = rc.`parent_id`
+            LEFT JOIN `$bai_pro3`.`rejection_log_child` rejc ON rejc.`bcd_id` = rc.`bcd_id`
             WHERE rc.parent_id = $doc_nos AND rejc.`size_id` = '$size'";
             // echo $retriving_size;
             // die();
@@ -99,7 +99,7 @@ if(isset($_POST['formSubmit']))
             }
             //retreaving max input job and adding +1 to create new sewing job
             $act_input_job_no_random = $input_job_no_random+1;
-            $insert_qry = "INSERT INTO `bai_pro3`.`pac_stat_log_input_job` (`doc_no`,`size_code`,`carton_act_qty`,`input_job_no`,`input_job_no_random`,`destination`,`packing_mode`,`old_size`,`doc_type`,`type_of_sewing`,`sref_id`,`pac_seq_no`,`barcode_sequence`)
+            $insert_qry = "INSERT INTO `$bai_pro3`.`pac_stat_log_input_job` (`doc_no`,`size_code`,`carton_act_qty`,`input_job_no`,`input_job_no_random`,`destination`,`packing_mode`,`old_size`,`doc_type`,`type_of_sewing`,`sref_id`,`pac_seq_no`,`barcode_sequence`)
             VALUES ($doc_nos,'$size_title_ind',$excess_qty,$act_input_job_no,'$act_input_job_no_random','$destination',$packing_mode,'$size','R',2,$sref_id,0,$i)";
             // echo $insert_qry;
             mysqli_query($link, $insert_qry) or exit("while Generating sewing job ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -116,8 +116,8 @@ if(isset($_POST['formSubmit']))
                 $max_mo_no = $row1210['mo_no'];
             }
             //retreaving operations from operation mapping for style and color
-            $operation_mapping_qry = "SELECT tm.operation_code,tr.operation_name FROM `brandix_bts`.`tbl_style_ops_master` tm 
-            LEFT JOIN `brandix_bts`.`tbl_orders_ops_ref` tr ON tr.operation_code = tm.`operation_code`
+            $operation_mapping_qry = "SELECT tm.operation_code,tr.operation_name FROM `$brandix_bts`.`tbl_style_ops_master` tm 
+            LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` tr ON tr.operation_code = tm.`operation_code`
             WHERE style = '$style' AND color = '$color'
             AND category = 'sewing'";
             $result_operation_mapping_qry=mysqli_query($link, $operation_mapping_qry) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -157,14 +157,14 @@ if(isset($_POST['formIssue']))
         //retreaving remaining_qty from recut_v2_child
         $act_id = $bcd_id[$key];
         $recut_allowing_qty = $issueval[$key];
-        $retreaving_bcd_data = "SELECT * FROM `brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
+        $retreaving_bcd_data = "SELECT * FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
         $retreaving_bcd_data_res = $link->query($retreaving_bcd_data);
         while($row_bcd = $retreaving_bcd_data_res->fetch_assoc()) 
         {
             $bcd_individual = $row_bcd['bundle_number'];
             $bundle_number = $row_bcd['id'];
             $operation_id = $row_bcd['operation_id'];
-            $retreaving_rej_qty = "SELECT * FROM `bai_pro3`.`recut_v2_child` where bcd_id = $bundle_number and parent_id = '$doc_no_ref'";
+            $retreaving_rej_qty = "SELECT * FROM `$bai_pro3`.`recut_v2_child` where bcd_id = $bundle_number and parent_id = '$doc_no_ref'";
             // echo $retreaving_rej_qty;
             $retreaving_rej_qty_res = $link->query($retreaving_rej_qty);
             while($child_details = $retreaving_rej_qty_res->fetch_assoc()) 
@@ -206,7 +206,7 @@ function issued_to_module($bcd_id,$qty,$ref)
     {
         $bcd_colum_ref = "recut_in";
     }
-    $bcd_qry = "select style,mapped_color,docket_number,assigned_module,input_job_no_random_ref,operation_id,bundle_number,size_id from brandix_bts.bundle_creation_data where id = $bcd_id";
+    $bcd_qry = "select style,mapped_color,docket_number,assigned_module,input_job_no_random_ref,operation_id,bundle_number,size_id from $brandix_bts.bundle_creation_data where id = $bcd_id";
     // echo $bcd_qry;
     $result_bcd_qry = $link->query($bcd_qry);
     while($row = $result_bcd_qry->fetch_assoc()) 
@@ -220,22 +220,22 @@ function issued_to_module($bcd_id,$qty,$ref)
         $size_id = $row['size_id'];
     }
     //updating cps log and bts
-    $update_qry_cps = "update bai_pro3.cps_log set remaining_qty = remaining_qty+$qty where doc_no = $docket_no and operation_code = 15 and size_code ='$size_id'";
+    $update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$qty where doc_no = $docket_no and operation_code = 15 and size_code ='$size_id'";
     // echo $update_qry_cps.'</br>';
     mysqli_query($link, $update_qry_cps) or exit("update_qry_cps".mysqli_error($GLOBALS["___mysqli_ston"]));
-    $update_qry_bcd = "update brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and operation_id = 15";
+    $update_qry_bcd = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and operation_id = 15";
      mysqli_query($link, $update_qry_bcd) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
     //retreaving emblishment operations from operatoin master
-    $ops_master_qry = "select operation_code from brandix_bts.tbl_orders_ops_ref where category in ('Send PF')"; 
+    $ops_master_qry = "select operation_code from $brandix_bts.tbl_orders_ops_ref where category in ('Send PF')"; 
     $result_ops_master_qry = $link->query($ops_master_qry);
     while($row_ops = $result_ops_master_qry->fetch_assoc()) 
     {
        $emb_ops[] = $row_ops['operation_code'];
     }
 
-    $qry_ops_mapping = "select operation_code from brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and  operation_code in (".implode(',',$emb_ops).")";
+    $qry_ops_mapping = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and  operation_code in (".implode(',',$emb_ops).")";
     // echo $qry_ops_mapping;
     $result_qry_ops_mapping = $link->query($qry_ops_mapping);
     if(mysqli_num_rows($result_qry_ops_mapping) > 0)
@@ -245,12 +245,12 @@ function issued_to_module($bcd_id,$qty,$ref)
             $emb_input_ops_code = $row_emb['operation_code'];
 
             //updating bcd for emblishment in operation 
-            $update_bcd_for_emb_qry = "update brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref + $qty where docket_number = $docket_no and operation_id = $emb_input_ops_code and size_id = '$size_id'";
+            $update_bcd_for_emb_qry = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref + $qty where docket_number = $docket_no and operation_id = $emb_input_ops_code and size_id = '$size_id'";
             // echo $update_bcd_for_emb_qry;
             mysqli_query($link, $update_bcd_for_emb_qry) or exit("update_bcd_for_emb_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
             //updating embellishment_plan_dashboard
-            $update_plan_dashboard_qry = "UPDATE `bai_pro3`.`embellishment_plan_dashboard` SET send_qty = send_qty+$qty WHERE doc_no = $docket_no AND send_op_code = $emb_input_ops_code";
+            $update_plan_dashboard_qry = "UPDATE `$bai_pro3`.`embellishment_plan_dashboard` SET send_qty = send_qty+$qty WHERE doc_no = $docket_no AND send_op_code = $emb_input_ops_code";
             // echo $update_plan_dashboard_qry;
             mysqli_query($link, $update_plan_dashboard_qry) or exit("update_plan_dashboard_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         }
@@ -260,7 +260,7 @@ function issued_to_module($bcd_id,$qty,$ref)
         $emb_cut_check_flag = 0;
         //checking the ips having that input job or not
         $category=['cutting','Send PF','Receive PF'];
-        $checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $ops_code";
+        $checking_qry = "SELECT category FROM `$brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $ops_code";
         // echo $checking_qry;
         $result_checking_qry = $link->query($checking_qry);
         while($row_cat = $result_checking_qry->fetch_assoc()) 
@@ -273,12 +273,12 @@ function issued_to_module($bcd_id,$qty,$ref)
         }
         if($emb_cut_check_flag == 0)
         {
-            $checking_qry_plan_dashboard = "SELECT * FROM `bai_pro3`.`plan_dashboard_input` WHERE input_job_no_random_ref = '$input_job_no_random_ref'";
+            $checking_qry_plan_dashboard = "SELECT * FROM `$bai_pro3`.`plan_dashboard_input` WHERE input_job_no_random_ref = '$input_job_no_random_ref'";
             $result_checking_qry_plan_dashboard = $link->query($checking_qry_plan_dashboard);
             if(mysqli_num_rows($result_checking_qry_plan_dashboard) == 0)
             {   
-                $insert_qry_ips = "INSERT IGNORE INTO `bai_pro3`.`plan_dashboard_input` 
-                SELECT * FROM `bai_pro3`.`plan_dashboard_input_backup`
+                $insert_qry_ips = "INSERT IGNORE INTO `$bai_pro3`.`plan_dashboard_input` 
+                SELECT * FROM `$bai_pro3`.`plan_dashboard_input_backup`
                 WHERE input_job_no_random_ref = '$input_job_no_random_ref'";
                 mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
@@ -294,7 +294,7 @@ function issued_to_module($bcd_id,$qty,$ref)
             //     while($ops_post = $result_qry_ops_mapping_after->fetch_assoc()) 
             //     {
             //         $input_ops_code = $ops_post['operation_code'];
-                    $update_qry_bcd_input = "update brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where bundle_number = $bundle_number and operation_id = $input_ops_code";
+                    $update_qry_bcd_input = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where bundle_number = $bundle_number and operation_id = $input_ops_code";
                     // echo $update_qry_bcd_input;
                     mysqli_query($link, $update_qry_bcd_input) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
             //     }
@@ -397,9 +397,9 @@ echo $drp_down;
             <?php  
             $s_no = 1;
             $blocks_query  = "SELECT SUM(rejected_qty)as rejected_qty,parent_id as doc_no,SUM(recut_qty)as recut_qty,SUM(recut_reported_qty) as recut_reported_qty,SUM(issued_qty)as issued_qty,r.`mk_ref`,b.`style_id`AS style,b.`order_col_des` AS color,b.`order_del_no` as schedule,fabric_status
-            FROM `bai_pro3`.`recut_v2_child` rc 
-            LEFT JOIN bai_pro3.`recut_v2` r ON r.doc_no = rc.`parent_id`
-            LEFT JOIN bai_pro3.`bai_orders_db` b ON b.order_tid = r.`order_tid`
+            FROM `$bai_pro3`.`recut_v2_child` rc 
+            LEFT JOIN $bai_pro3.`recut_v2` r ON r.doc_no = rc.`parent_id`
+            LEFT JOIN $bai_pro3.`bai_orders_db` b ON b.order_tid = r.`order_tid`
             WHERE remarks in ($in_categories)
             GROUP BY parent_id";
             // echo $blocks_query;
