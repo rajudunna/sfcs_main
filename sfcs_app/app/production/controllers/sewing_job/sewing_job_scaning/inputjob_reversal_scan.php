@@ -153,10 +153,12 @@ $(document).ready(function()
 			$('#operation option').prop('selected', function() {
 				return this.defaultSelected;
 			});
+			$('#dynamic_table1').html('No Data Found');
 		}
 		else if (ops == 0)
 		{
 			sweetAlert('Please Select Valid Operation','','warning');
+			$('#dynamic_table1').html('No Data Found');
 		}
 		else
 		{
@@ -271,6 +273,7 @@ $(document).ready(function()
 					{
 						sweetAlert(restrict_msg,'','error');
 						$('#loading-image').hide();
+						$('#dynamic_table1').html('No Data Found');
 					}
 					//////////////////////////////////////////////////////
 				}
