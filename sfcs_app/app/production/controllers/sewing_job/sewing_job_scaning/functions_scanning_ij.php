@@ -310,7 +310,7 @@ function getjobdetails($job_number)
 				$sum_balance = 0;
 				$doc_no = $row['doc_no'];
 				$size = $row['old_size'];
-				$size_title = $row['size_title'];
+				$size_title = $row['size_code'];
 				$min_val_doc_wise = array();
 				$row_bundle_wise_qty =0;
 				$bundle_tot_qty =0;
