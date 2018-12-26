@@ -281,27 +281,27 @@ $(document).ready(function()
 		var assign_module = $('#module').val();
 		var current = "<?php echo $operation_name; ?>";
 		var module_flag = null;	var restrict_msg = '';
-		var pre_array_module = [assign_module,job_number,operation_id];
+		var pre_array_module = [assign_module,job_number,operation_id,'scan'];
 		$.ajax({
 			type: "POST",
 			url: function_text+"?pre_array_module="+pre_array_module,
 			dataType: "json",
 			success: function (response) 
-			{
-				console.log(response);
-				console.log(sewing_rejection);
-				s_no = 0;
-				var data = response['table_data'];
-				var flag = response['flag'];
-				var op_codes = response['ops_get_code'];
-				var emb_ops = response['emb_cut_check_flag'];
-				if(response['status'])
+			{				
+				if (response == 4)
 				{
 					module_flag = 1; // block
+					restrict_msg = 'No Module Assigned';
 				}
 				else if (response == 3)
 				{
-					if(response['emb_cut_check_flag'])
+					module_flag = 1; // block
+					restrict_msg = 'No Valid Block Priorities';
+				}
+				else if (response == 2)
+				{
+					var authorize_check = $('#user_permission').val();
+					if (authorize_check == 'authorized')
 					{
 						module_flag = 0; // allow
 					}

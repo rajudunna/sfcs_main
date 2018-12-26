@@ -68,15 +68,15 @@ if(mysqli_num_rows($validation_result)>0){
     $fab_required = $row['material_req'];
     $module = $row['plan_module'];
     $fabric_status = $row['fabric_status'];
-    if($fabric_status == 5)
-        $fabric_status = 'Issued To Cutting';
-    if(in_array($category,$fabric_categories_array) && $cat_ref > 0)
+    if(in_array($category,$fabric_categories_array) && $cat_ref > 0 && $fabric_status == 5)
         $response_data['can_report']   = 1;
     else{    
         $response_data['can_report']   = 2;
         echo json_encode($response_data);
         exit();
     }
+    if($fabric_status == 5)
+        $fabric_status = 'Issued To Cutting';
 }else{
     $response_data['can_report']   = 0;
     echo json_encode($response_data);

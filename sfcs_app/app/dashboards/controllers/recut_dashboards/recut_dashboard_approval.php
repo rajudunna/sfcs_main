@@ -4,7 +4,7 @@ error_reporting(0);
 if(isset($_POST['approve']))
 {
    $order_tid=$_POST['order_tid'];
-   $status=1;
+   $status=99;
    $doc_nos=$_POST['doc_no_ref'];
    $codes=$_POST['code_no_ref'];
    $hostname=explode(".",gethostbyaddr($_SERVER['REMOTE_ADDR']));
@@ -56,7 +56,7 @@ if(isset($_POST['reject']))
     $update_qry = "update $bai_pro3.plandoc_stat_log set mk_ref = '0',a_plies=1,p_plies=1 where doc_no = $doc_no";
     mysqli_query($link, $update_qry) or exit("Updating recut_v2 for rejected docket".mysqli_error($GLOBALS["___mysqli_ston"]));
     //deleting moq
-    $delete_qry_moq = "DELETE FROM $bai_pro3.`mo_operation_quantites` WHERE ref_no IN (SELECT tid FROM pac_stat_log_input_job WHERE doc_no = $doc_no)";
+    $delete_qry_moq = "DELETE FROM $bai_pro3.`mo_operation_quantites` WHERE ref_no IN (SELECT tid FROM $bai_pro3.pac_stat_log_input_job WHERE doc_no = $doc_no)";
     mysqli_query($link, $delete_qry_moq) or exit("deleting delete_qry_moq".mysqli_error($GLOBALS["___mysqli_ston"]));
     //deleting from cps
     $delete_qry = "delete from $bai_pro3.pac_stat_log_input_job where doc_no = $doc_no";
@@ -120,7 +120,7 @@ echo $drp_down;
                 <b>ReCut Approval Dashboard - View</b>
             </div>
             <div class='panel-body'>
-            <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Quantity</th><th>Recut Reported Quantity</th><th>Eligibility to Issue Quantity</th><th>View recut</th><th>Markers view</th><th>Approve</th><th>Reject</th>
+            <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Recut Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Quantity</th><th>Recut Reported Quantity</th><th>Eligibility to Issue Quantity</th><th>View recut</th><th>Markers view</th><th>Approve</th><th>Reject</th>
                 </thead>
                 <?php  
                 $s_no = 1;
@@ -135,10 +135,11 @@ echo $drp_down;
                 {
                     $id = $row['doc_no'];
                     echo "<input type='hidden' name='doc_no' value='$id'>";
-                    if($row['fabric_status'] == '1')
+                    if($row['fabric_status'] == '99')
                     {
                         $button_html = "<b style='color:red;'>Approved</b>";
                         $html_hiding = "Approved";
+                        $button_html_rej = "";
                     }
                     else
                     {

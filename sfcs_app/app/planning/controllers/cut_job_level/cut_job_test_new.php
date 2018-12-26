@@ -118,13 +118,17 @@ echo "<div class='row'>";
 			while($remarks_row=mysqli_fetch_array($remarks_query_result)) 
 			{
 				$remarks = $remarks_row['remarks'];
+				$approve = $remarks_row['fabric_status'];
 			}
 			if(strtolower($remarks) == 'recut')
 			{
-				$code.=$sql_row['doc_no']."-R".leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
-				$cat_ref= $sql_row['cat_ref']; 
+				if($approve == 99)
+				{
+					$code.=$sql_row['doc_no']."-R".leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
+					$cat_ref= $sql_row['cat_ref']; 
+				}
 			}
-			else
+			else if(strtolower($remarks) != 'recut')
 			{
 				$code.=$sql_row['doc_no']."-".chr($sql_row['color_code']).leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
 				$cat_ref= $sql_row['cat_ref']; 
