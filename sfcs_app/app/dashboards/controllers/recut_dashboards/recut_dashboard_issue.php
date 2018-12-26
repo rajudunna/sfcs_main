@@ -58,7 +58,7 @@ if(isset($_POST['formSubmit']))
     var_dump($size);
     var_dump($ratioval);
     // die();
-    for($j=0;$j<=sizeof($size);$j++)
+    for($j=0;$j<sizeof($size);$j++)
     {
         echo $size[$j].'</br>';
         $qty_act = array_sum($ratioval[$size[$j]])*$plies;
