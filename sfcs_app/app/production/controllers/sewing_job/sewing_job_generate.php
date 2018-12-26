@@ -484,12 +484,12 @@
 									$input_job_no=$input_job_no_tmpn;
 								}
 							}
-							echo $input_job_no."-----Input_job---".$job_counter."<br>";
-							echo $docs_newtmp[$iii]."-----Cut Docket---".$docs_cuttmp[$iii]."<br>";
+							//echo $input_job_no."-----Input_job---".$job_counter."<br>";
+							//echo $docs_newtmp[$iii]."-----Cut Docket---".$docs_cuttmp[$iii]."<br>";
 							$rand=$schedule.date("ymd").$input_job_no;
 							$sql1="SELECT * FROM $brandix_bts.tbl_carton_ref LEFT JOIN $brandix_bts.tbl_carton_size_ref ON tbl_carton_size_ref.parent_id=tbl_carton_ref.id where tbl_carton_ref.id='".$carton_id."' and color in ('".implode("','",$cols_tot)."') and size_title='".$row1y['size_title']."'";
 							$result1=mysqli_query($link, $sql1) or die ("Error1.1=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
-							echo $sql1."<br>"; 
+							//echo $sql1."<br>"; 
 							while($row1=mysqli_fetch_array($result1))
 							{
 								$input_job_quantiy_tmp=0;
@@ -501,7 +501,7 @@
 								$destination=echo_title("$bai_pro3.bai_orders_db","UPPER(destination)","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link);
 								
 								$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num=1 and color='".$color_code."' and size='".$size_ref."' and docket_number='".$docs_new[$iiii]."' group BY cut_num order by cut_num*1";
-								echo $sql12."<br>"; 
+								//echo $sql12."<br>"; 
 								$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 								while($row12=mysqli_fetch_array($result12)) 
 								{ 
