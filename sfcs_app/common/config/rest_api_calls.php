@@ -39,7 +39,8 @@ class rest_api_calls {
 		curl_close($curl);
 
         if ($err) {
-            return "cURL Error #:" . $err;
+			//return "cURL Error #:" . $err;
+			return "api_call_fail";
         }else{
             return $response;
         }
