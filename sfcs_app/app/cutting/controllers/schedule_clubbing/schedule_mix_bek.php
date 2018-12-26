@@ -475,7 +475,7 @@ if(isset($_POST['fix']))
 			while($sql_row11=mysqli_fetch_array($sql_result11)) 
 			{ 
 				$order_col_dess=$sql_row11['order_col_des'];
-				$new_color_code=$sql_row11['color_code'];
+				//$new_color_code=$sql_row11['color_code'];
 			}
 		}
 		if($order_tid<>'')
@@ -508,22 +508,23 @@ if(isset($_POST['fix']))
 		
 		if($status==0) 
 		{
-			$sql23="select max(order_joins) as maxorder from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" "; 
+			$sql23="select MAX(SUBSTR(order_joins,-1))+1  as maxorder from $bai_pro3.bai_orders_db where  LENGTH(order_joins)<'5' and order_del_no=\"$schedule\" and $order_joins_in"; 
 			$sql_result23=mysqli_query($link, $sql23) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row23=mysqli_fetch_array($sql_result23)) 
 			{ 
 				$maxorder=$sql_row23['maxorder']; 
 			}
-			if($maxorder==0)
+			if($maxorder==1)
 			{
-				$maxorder=4;		
-			}
-			else
-			{
-				$maxorder=$maxorder+1;			
-			}
+				$maxorder=3;		
+			}			
 			$cols="Color-".$maxorder."";
-			
+			$sql123412="select min(color_code) as new_color_code from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_col_des IN ('".implode("','",$selected)."') AND order_del_no='$schedule'";	
+			$sql_result23412=mysqli_query($link, $sql123412) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row23412=mysqli_fetch_array($sql_result23412))
+			{
+				$new_color_code=$sql_row23412['new_color_code'];
+			}
 			$sql121="SELECT * FROM $bai_pro3.cat_stat_log WHERE order_tid='".$order_tid."'"; 
 			$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row121=mysqli_fetch_array($sql_result121)) 
