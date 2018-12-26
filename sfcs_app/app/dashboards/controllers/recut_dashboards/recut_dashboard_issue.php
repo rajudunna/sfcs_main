@@ -54,7 +54,7 @@ if(isset($_POST['formSubmit']))
 
     //retreaving actual quantity to recut
     var_dump($size);
-    die();
+    // die();
     for($j=0;$j<=sizeof($size);$j++)
     {
         $qty_act = array_sum($ratioval[$size[$j]])*$plies;
@@ -70,7 +70,7 @@ if(isset($_POST['formSubmit']))
         mysqli_query($link, $update_qry_plan) or exit("while updating into recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
     }
     $i=1;
-    // var_dump($buffer_qty);
+    var_dump($buffer_qty);
     $retreaving_last_sewing_job_qry = "SELECT MAX(input_job_no_random)as input_job_no_random,MAX(CAST(input_job_no AS DECIMAL)) as input_job_no,destination,packing_mode,sref_id,pac_seq_no FROM `$bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$schedule'";
     $res_retreaving_last_sewing_job_qry = $link->query($retreaving_last_sewing_job_qry);
     while($row_sj = $res_retreaving_last_sewing_job_qry->fetch_assoc()) 
@@ -144,7 +144,7 @@ if(isset($_POST['formSubmit']))
             mysqli_query($link, $update_bcd_qry) or die("Error while update_bcd_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         }   
     }
-    // die();
+    die();
     $sql="insert into $bai_pro3.recut_track(doc_no,username,sys_name,log_time,level,status) values(\"".$doc_nos."\",\"".$username."\",\"".$hostname[0]."\",\"".date("Y-m-d H:i:s")."\",\"".$codes."\",\"".$status."\")";
     mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     $url = '?r='.$_GET['r'];
