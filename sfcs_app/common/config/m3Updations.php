@@ -137,6 +137,7 @@ function updateM3Transactions($ref_id,$op_code,$qty)
             
                         $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                         $api_data = $obj->getCurlAuthRequest($api_url);
+                        echo "-- ".$api_data." --";
                         if($api_data == 'api_call_fail')
                             echo "API IS FAILED <script>console.log($api_data);</script>";
                         $decoded = json_decode($api_data,true);
