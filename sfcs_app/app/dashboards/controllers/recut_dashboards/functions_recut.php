@@ -514,9 +514,9 @@ function updatemarkers($markers_update_doc_id)
          {
             $size_title_ind = $row_size['size_title'];
          }
-        $table_data .= "<input type='text' name ='size[]' value ='$key'>";
         $quantity = $value*$a_plies;
-        $table_data .= "<tr><td>$size_title_ind</td><td>$quantity</td><td><input class='form-control integer' id='$s_no' name='ratioval[$key][]' value='$value' type='Number' onchange='isintegervallidation($s_no);' onkeyup='return  isInt(this);></td></tr>";
+        $table_data .= "<tr><td>$size_title_ind</td><td>$quantity</td><td><input class='form-control integer' id='$s_no' name='ratioval[$key][]' value='$value' type='Number' onchange='isintegervallidation($s_no);' onkeyup='return  isInt(this);></td>";
+        $table_data .= "<td><input type='text' name ='size[]' value ='$key'></td></tr>";
     }
     $table_data .= "<input type='hidden' value='$s_no' id='no_of_rows'>";
     $qry_to_get = "SELECT * FROM  `$bai_pro3`.`cat_stat_log` WHERE  order_tid = \"$order_tid\" and category in ($in_categories)";
