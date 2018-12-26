@@ -790,7 +790,7 @@
 													{
 														$remarks = '';
 														$is_recut_query = "SELECT remarks from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
-														$is_recut_result = mysqli_query($link,$is_recut_result);
+														$is_recut_result = mysqli_query($link,$is_recut_query);
 														while($row_rem = mysqli_fetch_array($is_recut_result))
 															$remarks = $row_rem['remarks'];
 														
@@ -803,11 +803,11 @@
 														$color_code1=$sql_row1['color_code'];
 														
 
-														$color_code=$sql_row['color_code'];
-														$act_cut_no=$sql_row['acutno'];
-														$style_new=$sql_row['order_style_no'];
-														$schedule_new=$sql_row['order_del_no'];
-														$color_new=$sql_row['order_col_des'];
+														$color_code=$sql_row1['color_code'];
+														$act_cut_no=$sql_row1['acutno'];
+														$style_new=$sql_row1['order_style_no'];
+														$schedule_new=$sql_row1['order_del_no'];
+														$color_new=$sql_row1['order_col_des'];
 
 
 														if(strtolower($remarks) == 'recut')
@@ -875,7 +875,7 @@
 														{
                                                            $doc_no2 = $sql_row12['doc_no'];
 
-                                                           $delete_docs = "delete * from $bai_pro3.cutting_table_plan where doc_no_ref='$doc_no2'";
+                                                           $delete_docs = "delete from $bai_pro3.cutting_table_plan where doc_no_ref='$doc_no2'";
 
                                                            mysqli_query($link, $delete_docs) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
                                                         }
