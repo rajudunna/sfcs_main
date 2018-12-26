@@ -54,7 +54,7 @@ if(isset($_POST['formSubmit']))
 
     //retreaving actual quantity to recut
     
-    for($j=0;$j<sizeof($size);$j++)
+    for($j=0;$j<=sizeof($size);$j++)
     {
         $qty_act = array_sum($ratioval[$size[$j]])*$plies;
         $buffer_qty[$size[$j]] = $qty_act - $cut_done_qty[$size[$j]] ;
