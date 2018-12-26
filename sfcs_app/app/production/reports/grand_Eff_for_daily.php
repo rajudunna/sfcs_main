@@ -26,8 +26,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 		$sec=$sql_row222['bac_sec'];
 		for($k=0;$k<sizeof($teams);$k++)
 		{
-			$shift=$teams[$k];
-				        //Initial
+			$shift=$teams[$k]; //Initial
 			$mod_tot_pln_output=0;
 			$mod_tot_act_output=0;
 			$mod_tot_pln_clh=0;
@@ -35,7 +34,8 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 			$mod_tot_pln_sth=0;
 			$mod_tot_act_sth=0;
 			//Initial
-			$sql_new1="select distinct bac_no from $bai_pro.bai_log_buf where bac_date=\"$date\" and bac_sec=$sec  and bac_shift=\"$shift\"";
+			// $sql_new1="select distinct bac_no from $bai_pro.bai_log_buf where bac_date=\"$date\" and bac_sec=$sec  and bac_shift=\"$shift\"";
+			$sql_new1="select module_name as bac_no from $bai_pro3.module_master where section=$sec";
 			//echo $sql_new1;
 
 			$sql_result_new1=mysqli_query($link, $sql_new1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -256,9 +256,9 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 				//New 2013-07-27 for actula clock hours calculation
 				$act_nop=0;	
 
-				$sql2="select ((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance where date='".$date."' and module=$module and shift='".$shift."'";
+				$sql2="select COALESCE(SUM((present+jumper)-absent),0) AS nop FROM $bai_pro.pro_attendance where date='".$date."' and module=$module and shift='".$shift."'";
 				$note.=$sql2."<br/>";
-				//echo $sql2."<br>"; 
+				// echo $sql2."<br>"; 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{
@@ -270,13 +270,14 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 				$code=$date."-".$module."-".$shift;
 
 				$sql2="insert ignore into $bai_pro.grand_rep(tid) values (\"$code\")";
+				// echo $sql2."<br>";
 				mysqli_query($link, $sql2) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				//$sql2="update grand_rep set date=\"$date\", module=$module, shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv=$smv, nop=$nop, buyer=\"$buyer_db_new\", days=$days, max_style=\"$style_code_new\", max_out=$max where tid=\"$code\"";
 
 				//New code to extract values from existing
 
-				if(date("Y-m-d")>"2014-06-30")
+				// if(date("Y-m-d")>"2014-06-30")
 				{
 					$pln_output=0;
 					$pln_clh=0;
@@ -306,6 +307,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 				{
 					$sql2="update $bai_pro.grand_rep set date=\"$date\", module=\"$module\", shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv=$smv, nop=$nop, buyer=\"$max_buyer\", days=$days, max_style=\"$delivery^$style_code_new\", max_out=$max,rework_qty=$rework_qty where tid=\"$code\"";
 				}
+				// echo $sql2."<br>";
 				mysqli_query($link, $sql2) or exit("Sql Error50".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));			
 
 			} //Module		
