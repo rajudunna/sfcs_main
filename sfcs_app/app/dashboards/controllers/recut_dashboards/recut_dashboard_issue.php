@@ -16,8 +16,8 @@ if(isset($_POST['formSubmit']))
 	$module=$_POST['module'];
 	$cat_name=$_POST['cat_name'];
     $doc_nos=$_POST['doc_no_ref'];
-    $size = $_POST['size'];
-    $ratioval =$_POST['ratioval'];
+    // $size = $_POST['size'];
+    // $ratioval =$_POST['ratioval'];
 	$codes='2';
     $docket_no = '';
     $qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.recut_v2 WHERE doc_no = '$doc_nos' ";
@@ -28,7 +28,9 @@ if(isset($_POST['formSubmit']))
 		{ 
 			if ($row['a_'.$sizes_array[$i]] > 0)
 			{
-				$cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $row['a_plies'];
+                $cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $row['a_plies'];
+                $size[] = $sizes_array[$i];
+                $ratioval[$sizes_array[$i]][] = $row['a_'.$sizes_array[$i]];
 			}
 		}
     }
@@ -53,9 +55,9 @@ if(isset($_POST['formSubmit']))
     mysqli_query($link, $sql1) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
 
     //retreaving actual quantity to recut
-    
     for($j=0;$j<sizeof($size);$j++)
     {
+        // echo $size[$j].'</br>';
         $qty_act = array_sum($ratioval[$size[$j]])*$plies;
         $buffer_qty[$size[$j]] = $qty_act - $cut_done_qty[$size[$j]] ;
         $qty_ind_ratio  =  array_sum($ratioval[$size[$j]]);
@@ -64,12 +66,12 @@ if(isset($_POST['formSubmit']))
         $sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,log_date,qms_size,qms_qty,qms_tran_type,remarks) values (\"$style\",\"$schedule\",\"$color\",\"".date("Y-m-d")."\",\"".str_replace("a_","",$size[$j])."\",".($qty_act).",9,\"$module-".$doc_nos."\")";
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
         $update_qry = "update  $bai_pro3.recut_v2 set $a_string=$qty_ind_ratio,$p_string=$qty_ind_ratio where doc_no = $doc_nos";
+        // echo $update_qry;
         mysqli_query($link, $update_qry) or exit("while updating into recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
         $update_qry_plan = "update  $bai_pro3.plandoc_stat_log set $a_string=$qty_ind_ratio,$p_string=$qty_ind_ratio where doc_no = $doc_nos";
         mysqli_query($link, $update_qry_plan) or exit("while updating into recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
     }
     $i=1;
-    // var_dump($buffer_qty);
     $retreaving_last_sewing_job_qry = "SELECT MAX(input_job_no_random)as input_job_no_random,MAX(CAST(input_job_no AS DECIMAL)) as input_job_no,destination,packing_mode,sref_id,pac_seq_no FROM `$bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$schedule'";
     $res_retreaving_last_sewing_job_qry = $link->query($retreaving_last_sewing_job_qry);
     while($row_sj = $res_retreaving_last_sewing_job_qry->fetch_assoc()) 
@@ -83,7 +85,8 @@ if(isset($_POST['formSubmit']))
         $sref_id = '1';
     }
     $act_input_job_no = $input_job_no+1;
-    $act_input_job_no_random=$schedule.date("ymd").$act_input_job_no;    
+    $act_input_job_no_random=$schedule.date("ymd").$act_input_job_no;
+    // var_dump($buffer_qty);    
     foreach($buffer_qty as $size => $excess_qty)
     {
         if($excess_qty > 0)
@@ -142,7 +145,6 @@ if(isset($_POST['formSubmit']))
             mysqli_query($link, $update_bcd_qry) or die("Error while update_bcd_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         }   
     }
-    // die();
     $sql="insert into $bai_pro3.recut_track(doc_no,username,sys_name,log_time,level,status) values(\"".$doc_nos."\",\"".$username."\",\"".$hostname[0]."\",\"".date("Y-m-d H:i:s")."\",\"".$codes."\",\"".$status."\")";
     mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     $url = '?r='.$_GET['r'];

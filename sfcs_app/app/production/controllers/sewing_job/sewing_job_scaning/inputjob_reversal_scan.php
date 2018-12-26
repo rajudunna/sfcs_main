@@ -177,11 +177,18 @@ $(document).ready(function()
 				return this.defaultSelected;
 			});
 			$('#loading-image').hide();
+			$('#dynamic_table1').html('No Data Found');
+		}
+		else if (ops == 0)
+		{
+			sweetAlert('Please Select Valid Operation','','warning');
+			$('#loading-image').hide();
+			$('#dynamic_table1').html('No Data Found');
 		}
 		else
 		{
 			var module_flag = null;	var restrict_msg = '';
-			var pre_array_module = [module1,job_no,ops];
+			var pre_array_module = [module1,job_no,ops,'reversal'];
 			$.ajax({
 				type: "POST",
 				url: function_text+"?pre_array_module="+pre_array_module,
@@ -308,6 +315,7 @@ $(document).ready(function()
 					{
 						sweetAlert(restrict_msg,'','error');
 						$('#loading-image').hide();
+						$('#dynamic_table1').html('No Data Found');
 					}
 					//////////////////////////////////////////////////////
 				}
