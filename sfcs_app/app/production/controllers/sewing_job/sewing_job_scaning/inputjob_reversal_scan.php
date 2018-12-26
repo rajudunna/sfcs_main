@@ -154,6 +154,10 @@ $(document).ready(function()
 				return this.defaultSelected;
 			});
 		}
+		else if (ops == 0)
+		{
+			sweetAlert('Please Select Valid Operation','','warning');
+		}
 		else
 		{
 			var module_flag = null;	var restrict_msg = '';
