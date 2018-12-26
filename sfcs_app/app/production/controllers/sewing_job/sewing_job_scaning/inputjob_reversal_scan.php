@@ -177,11 +177,13 @@ $(document).ready(function()
 				return this.defaultSelected;
 			});
 			$('#loading-image').hide();
+			$('#dynamic_table1').html('No Data Found');
 		}
 		else if (ops == 0)
 		{
 			sweetAlert('Please Select Valid Operation','','warning');
 			$('#loading-image').hide();
+			$('#dynamic_table1').html('No Data Found');
 		}
 		else
 		{
@@ -313,6 +315,7 @@ $(document).ready(function()
 					{
 						sweetAlert(restrict_msg,'','error');
 						$('#loading-image').hide();
+						$('#dynamic_table1').html('No Data Found');
 					}
 					//////////////////////////////////////////////////////
 				}
