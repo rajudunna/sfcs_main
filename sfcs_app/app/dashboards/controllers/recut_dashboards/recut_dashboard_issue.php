@@ -70,18 +70,20 @@ if(isset($_POST['formSubmit']))
     }
     $i=1;
     // var_dump($buffer_qty);
-    $retreaving_last_sewing_job_qry = "SELECT MAX(input_job_no_random)as input_job_no_random,input_job_no,destination,packing_mode,sref_id FROM `$bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$schedule'";
+    $retreaving_last_sewing_job_qry = "SELECT MAX(input_job_no_random)as input_job_no_random,MAX(CAST(input_job_no AS DECIMAL)) as input_job_no,destination,packing_mode,sref_id,pac_seq_no FROM `$bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$schedule'";
     $res_retreaving_last_sewing_job_qry = $link->query($retreaving_last_sewing_job_qry);
     while($row_sj = $res_retreaving_last_sewing_job_qry->fetch_assoc()) 
     {   
         $input_job_no = $row_sj['input_job_no'];
-        $input_job_no_random = $row_sj['input_job_no_random'];
+       // $input_job_no_random = $row_sj['input_job_no_random'];
         $destination = $row_sj['destination'];
         $packing_mode = $row_sj['packing_mode'];
+        $pac_seq_no = $row_sj['pac_seq_no'];
         // $sref_id = $row_sj['sref_id'];
         $sref_id = '1';
     }
     $act_input_job_no = $input_job_no+1;
+    $act_input_job_no_random=$schedule.date("ymd").$act_input_job_no;    
     foreach($buffer_qty as $size => $excess_qty)
     {
         if($excess_qty > 0)
@@ -98,9 +100,8 @@ if(isset($_POST['formSubmit']))
                 $size_title_ind = $row_size['size_title'];
             }
             //retreaving max input job and adding +1 to create new sewing job
-            $act_input_job_no_random = $input_job_no_random+1;
             $insert_qry = "INSERT INTO `$bai_pro3`.`pac_stat_log_input_job` (`doc_no`,`size_code`,`carton_act_qty`,`input_job_no`,`input_job_no_random`,`destination`,`packing_mode`,`old_size`,`doc_type`,`type_of_sewing`,`sref_id`,`pac_seq_no`,`barcode_sequence`)
-            VALUES ($doc_nos,'$size_title_ind',$excess_qty,$act_input_job_no,'$act_input_job_no_random','$destination',$packing_mode,'$size','R',2,$sref_id,0,$i)";
+            VALUES ($doc_nos,'$size_title_ind',$excess_qty,$act_input_job_no,'$act_input_job_no_random','$destination',$packing_mode,'$size','R',2,$sref_id,$pac_seq_no,$i)";
             // echo $insert_qry;
             mysqli_query($link, $insert_qry) or exit("while Generating sewing job ".mysqli_error($GLOBALS["___mysqli_ston"]));
             $i++;
@@ -299,34 +300,6 @@ function issued_to_module($bcd_id,$qty,$ref)
                     mysqli_query($link, $update_qry_bcd_input) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
             //     }
             // }
-        }
-        else
-        {
-            //retreaving rejected bundles and updating
-            $bcd_rej_qry = "select bundle_number,rejected_qty from $brandix_bts.bundle_creation_data where docket_number =$docket_no and size_id = $size_id and rejected_qty > 0";
-            echo $bcd_rej_qry;
-            $result_bcd_rej_qry = $link->query($bcd_rej_qry);
-            $result_result_bcd_rej_qry = $link->query($result_bcd_rej_qry);
-            $max_qty_rej = $qty;
-            while($bcd_row = $result_result_bcd_rej_qry->fetch_assoc()) 
-            {
-                $rejected_qty = $bcd_row['rejected_qty'];
-                $rej_bundle_number = $bcd_row['bundle_number'];
-                if($rejected_qty < $max_qty_rej)
-                {
-                    $to_update = $rejected_qty;
-                    $max_qty_rej = $max_qty_rej - $rejected_qty;
-                }
-                else
-                {
-                    $to_update = $max_qty_rej;
-                    $max_qty_rej = 0;
-                }
-                $input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);
-                $update_qry_bcd_input = "update brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where bundle_number = $rej_bundle_number and operation_id = $input_ops_code";
-                // echo $update_qry_bcd_input;
-                mysqli_query($link, $update_qry_bcd_input) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
-            }
         }  
     }
     return;

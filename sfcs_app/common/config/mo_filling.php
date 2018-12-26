@@ -21,12 +21,14 @@
 
 		// ----Transaction begin---
 		mysqli_begin_transaction($link);
-		$delete_bcd_query = "Delete from $brandix_bts.bundle_creation_data where bundle_number in ($bundle_nos)";
+		$delete_bcd_query = "Delete from $brandix_bts.bundle_creation_data where bundle_number in ($bundle_nos)
+							and operation_id IN ($op_codes)";
 		$delete_bcd_data = mysqli_query($link,$delete_bcd_query) or exit('Problem While deleting Bundle cps Data');
 		$delete_cps_qry = "Delete from $bai_pro3.cps_log where id in ($bundle_nos)";
 		$deletedelete_cps_qry = mysqli_query($link,$delete_cps_qry) or exit('Problem While deleting Bundle Creation Data');
 		if($delete_bcd_data){
-			$delete_mos_query = "Delete from $bai_pro3.mo_operation_quantites where ref_no in ($bundle_nos)";
+			$delete_mos_query = "Delete from $bai_pro3.mo_operation_quantites where ref_no in ($bundle_nos) 
+								and op_code IN ($op_codes)";
 			$delete_mos_result = mysqli_query($link,$delete_mos_query) or 
 								exit('Problem While deleting Mo operation Quantities');
 			if($delete_mos_result){
