@@ -514,7 +514,7 @@ function updatemarkers($markers_update_doc_id)
          {
             $size_title_ind = $row_size['size_title'];
          }
-        $table_data .= "<input type='hidden' name ='size[]' value ='$key'>";
+        $table_data .= "<input type='text' name ='size[]' value ='$key'>";
         $quantity = $value*$a_plies;
         $table_data .= "<tr><td>$size_title_ind</td><td>$quantity</td><td><input class='form-control integer' id='$s_no' name='ratioval[$key][]' value='$value' type='Number' onchange='isintegervallidation($s_no);' onkeyup='return  isInt(this);></td></tr>";
     }
