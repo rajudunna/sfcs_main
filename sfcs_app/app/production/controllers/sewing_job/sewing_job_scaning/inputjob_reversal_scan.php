@@ -30,6 +30,25 @@
 	<div class="panel panel-primary"> 
 		<div class="panel-heading">Sewing Jobs Reversal Scanning</div>
 		<div class='panel-body'>
+			<style>
+				#loading-image{
+					position:fixed;
+					top:0px;
+					right:0px;
+					width:100%;
+					height:100%;
+					background-color:#666;
+					/* background-image:url('ajax-loader.gif'); */
+					background-repeat:no-repeat;
+					background-position:center;
+					z-index:10000000;
+					opacity: 0.4;
+					filter: alpha(opacity=40); /* For IE8 and earlier */
+				}
+			</style>
+			<div class="ajax-loader" id="loading-image" style="display: none">
+				<center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',3,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+			</div>
 			<div class="alert alert-success" style="display:none;">
 				<a href="#" class="close" data-dismiss="alert">&times;</a>
 				<strong>Info! </strong><span class="sql_message"></span>
@@ -44,10 +63,16 @@
 					<select class='form-control sampling' name='sampling' id='sampling' style='width:100%;' required><option value='Normal' selected>Normal</option><option value='sample'>Sample</option><option value='Shipment_Sample'>Shipment_Sample</option></select>
 				</div>
 				<div class="form-group col-md-3">
-						<label for="title">Select Operation:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
-							<select class="form-control select2" required name="operation" id="operation">
-								<option value="0">Select Operation</option>
-							</select>
+					<label for="title">Select Module:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
+					<select class="form-control select2" required name="module" id="module">
+						<option value="">Select Module</option>
+					</select>
+				</div>
+				<div class="form-group col-md-3">
+					<label for="title">Select Operation:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
+						<select class="form-control select2" required name="operation" id="operation">
+							<option value="0">Select Operation</option>
+						</select>
 				</div>
 			</div>
 		</div>
@@ -81,29 +106,57 @@
 $(document).ready(function() 
 {
 	$('#job_number').focus();
+	$('#loading-image').hide();
 	var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
 	$("#job_number").change(function()
 	{
+		$('#loading-image').show();
 		var job_rev_no = $("#job_number").val();
 		$('#operation').empty();
-		$('select[name="operation"]').append('<option value="0">Select Operation</option>');
+		$('#module').empty();
+		$('select[name="operation"]').append('<option value="0" selected="selected">Select Operation</option>');
+		$('select[name="module"]').append('<option value="0">Select Module</option>');
 		$('#dynamic_table1').html('');
 		//var job_rev_no = [job_rev_no,remarks];
-		$.ajax
-		({
+		$.ajax({
 			type: "POST",
 			url: function_text+"?job_rev_no="+job_rev_no,
 			dataType: 'Json',
 			success: function (response) 
 			{
+				$('#loading-image').hide();
 				if(response['status'])
 				{
-					sweetAlert('',response['status'],'error');
+					sweetAlert(response['status'],'','error');
+				}
+				else if(response['module_status'])
+				{
+					sweetAlert(response['module_status'],'','error');
 				}
 				else
 				{
-					$.each(response, function(key, value) {
-						$('select[name="operation"]').append('<option value="'+ key +'">'+ value +'</option>');
+					// console.log(response);
+					$.each(response, function(key, value)
+					{
+						if (key == 'assigned_module')
+						{
+							$.each(value, function (key1, value1)
+							{
+								if (value.length == 1)
+								{
+									selected_module = 'selected';
+								}
+								else
+								{
+									selected_module = '';
+								}
+								$('select[name="module"]').append('<option value="'+ value1 +'" '+selected_module+'>'+ value1 +'</option>');
+							});
+						}
+						else
+						{
+							$('select[name="operation"]').append('<option value="'+ key +'">'+ value +'</option>');
+						}
 					});
 				}				
 			}
@@ -112,138 +165,153 @@ $(document).ready(function()
 	});
 	$('#operation').change(function()
 	{
+		$('#loading-image').show();
 		var ops = $('#operation').val();
 		var job_no = $('#job_number').val();
 		var remarks = $('#sampling option:selected').text();
-		var module_flag = null;	var restrict_msg = '';
-		var pre_array_module = [0,job_no,ops];
-		$.ajax({
-			type: "POST",
-			url: function_text+"?pre_array_module="+pre_array_module,
-			dataType: "json",
-			success: function (response) 
-			{
-				if (response == 4)
+		var module1 = $('#module').val();
+		if (module1 == 0)
+		{
+			sweetAlert('Please Select Module','','warning');
+			$('#operation option').prop('selected', function() {
+				return this.defaultSelected;
+			});
+		}
+		else
+		{
+			var module_flag = null;	var restrict_msg = '';
+			var pre_array_module = [module1,job_no,ops];
+			$.ajax({
+				type: "POST",
+				url: function_text+"?pre_array_module="+pre_array_module,
+				dataType: "json",
+				success: function (response) 
 				{
-					module_flag = 1; // block
-					restrict_msg = 'No Module Assigned';
-				}
-				else if (response == 3)
-				{
-					module_flag = 1; // block
-					restrict_msg = 'No Valid Block Priorities';
-				}
-				else if (response == 2)
-				{
-					var authorize_check = $('#user_permission').val();
-					if (authorize_check == 'authorized')
+					if (response == 4)
+					{
+						module_flag = 1; // block
+						restrict_msg = 'No Module Assigned';
+					}
+					else if (response == 3)
+					{
+						module_flag = 1; // block
+						restrict_msg = 'No Valid Block Priorities';
+					}
+					else if (response == 2)
+					{
+						var authorize_check = $('#user_permission').val();
+						if (authorize_check == 'authorized')
+						{
+							module_flag = 0; // allow
+						}
+						else
+						{
+							module_flag = 1; // block
+							restrict_msg = 'You are Not Authorized to report more than Block Priorities';
+						}
+					}
+					else if (response == 0)
 					{
 						module_flag = 0; // allow
 					}
-					else
-					{
-						module_flag = 1; // block
-						restrict_msg = 'You are Not Authorized to report more than Block Priorities';
-					}
-				}
-				else if (response == 0)
-				{
-					module_flag = 0; // allow
-				}
 
-				//////////////////////////////////////////////////////
-				if(module_flag == 0)
-				{
-					var data_rev = [ops,job_no,remarks];
-					$.ajax({
-						type: "POST",
-						url: function_text+"?data_rev="+data_rev,
-						dataType: "json",
-						success: function (response) 
-						{
-							$('#loading-image').hide();
-							$('#dynamic_table1').html('');
-							console.log(response);
-							var data = response['table_data'];
-							var check_flag = 0;
-							if(response['post_ops'])
+					//////////////////////////////////////////////////////
+					if(module_flag == 0)
+					{
+						var data_rev = [ops,job_no,remarks,module1];
+						$.ajax({
+							type: "POST",
+							url: function_text+"?data_rev="+data_rev,
+							dataType: "json",
+							success: function (response) 
 							{
-								var post_ops_data = response['post_ops'];
-								//var send_qty = response['send_qty'];
-								if (response['carton_ready_qty'])
+								$('#loading-image').hide();
+								$('#dynamic_table1').html('');
+								// console.log(response);
+								var data = response['table_data'];
+								var check_flag = 0;
+								if(response['post_ops'])
 								{
-									var post_rec_qtys_array123 = response['carton_ready_qty'];
-									var check_flag = 2;
-								}
-								else
-								{
-									if(response['rec_qtys'])
+									var post_ops_data = response['post_ops'];
+									//var send_qty = response['send_qty'];
+									if (response['carton_ready_qty'])
 									{
-										var post_rec_qtys_array = response['rec_qtys'];
-										var check_flag = 1;
-									}
-								}						
-							  
-								for(var ops=0;ops<post_ops_data.length;ops++)
-								{
-									var mark1 = "<input type='hidden' name='post_ops[]' value='"+response['post_ops'][ops]+"'>";
-									$("#dynamic_table1").append(mark1);
-								}
-							}
-							if(response['ops_dep'])
-							{
-								var mark3="<input type='hidden' name='ops_dep' value='"+response['ops_dep']+"'>";
-								$("#dynamic_table1").append(mark3);
-							}
-							var send_qty = response['send_qty'];
-							if(response['status'])
-							{
-								sweetAlert('',response['status'],'error');
-								$('#dynamic_table1').html('No Data Found');
-							}
-							else if(data)
-							{
-								var s_no=0;
-								var btn = '<div class="pull-right"><input type="submit" class="btn btn-primary disable-btn smartbtn submission" value="Submit" name="formSubmit" id="smartbtn" onclick="validating();"></div>';
-								$("#dynamic_table1").append(btn);
-								var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr><th>S.No</th><th class='none'>Doc.No</th><th>Color</th><th>Module</th><th>Size</th><th>Sewing Job Qty</th><th>Reported Quantity</th><th>Eligible to reverse</th><th>Reversing Quantity</th></tr></thead><tbody>";
-								$("#dynamic_table1").append(markup);
-								$("#dynamic_table1").append(btn);
-								for(var i=0;i<data.length;i++)
-								{
-									if (check_flag == 2)
-									{
-										var post_rec_qtys = Number(post_rec_qtys_array123[i]);
-										// console.log('in carton_array = '+post_rec_qtys);
+										var post_rec_qtys_array123 = response['carton_ready_qty'];
+										var check_flag = 2;
 									}
 									else
 									{
-										if(check_flag == 0)
+										if(response['rec_qtys'])
 										{
-											var post_rec_qtys = data[i].reported_qty;
+											var post_rec_qtys_array = response['rec_qtys'];
+											var check_flag = 1;
+										}
+									}
+								  
+									for(var ops=0;ops<post_ops_data.length;ops++)
+									{
+										// console.log(response['post_ops'][ops]);
+										var mark1 = "<input type='hidden' name='post_ops[]' value='"+response['post_ops'][ops]+"'>";
+										//var mark2 = "<input type='hidden' name='send_qty[]' value='"+response['send_qty'][ops]+"'>";
+										$("#dynamic_table1").append(mark1);
+										//$("#dynamic_table1").append(mark2);
+									}
+								}
+								if(response['ops_dep'])
+								{
+									var mark3="<input type='hidden' name='ops_dep' value='"+response['ops_dep']+"'>";
+									$("#dynamic_table1").append(mark3);
+								}
+								var send_qty = response['send_qty'];
+								if(response['status'])
+								{
+									sweetAlert(response['status'],'','error');
+									$('#dynamic_table1').html('No Data Found');
+								}
+								else if(data)
+								{
+									var s_no=0;
+									var btn = '<div class="pull-right"><input type="submit" class="btn btn-primary disable-btn smartbtn submission" value="Submit" name="formSubmit" id="smartbtn" onclick="validating();"></div>';
+									$("#dynamic_table1").append(btn);
+									var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr><th>S.No</th><th class='none'>Doc.No</th><th>Color</th><th>Module</th><th>Size</th><th>Sewing Job Qty</th><th>Reported Quantity</th><th>Eligible to reverse</th><th>Reversing Quantity</th></tr></thead><tbody>";
+									$("#dynamic_table1").append(markup);
+									$("#dynamic_table1").append(btn);
+									for(var i=0;i<data.length;i++)
+									{
+										// console.log(data[i].reported_qty);
+										if (check_flag == 2)
+										{
+											var post_rec_qtys = Number(post_rec_qtys_array123[i]);
+											// console.log('in carton_array = '+post_rec_qtys);
 										}
 										else
 										{
-											var post_rec_qtys = Number(data[i].reported_qty) - Number(post_rec_qtys_array[i]);
+											if(check_flag == 0)
+											{
+												var post_rec_qtys = data[i].reported_qty;
+											}
+											else
+											{
+												var post_rec_qtys = Number(data[i].reported_qty) - Number(post_rec_qtys_array[i]);
+											}
 										}
+										s_no++;
+										var markup1 = "<tr><input type='hidden' name='doc_no[]' value='"+data[i].doc_no+"'><input type='hidden' name='operation_id' value='"+data[i].operation_id+"'><input type='hidden' name='remarks' value='"+data[i].remarks+"'><input type='hidden' name='mapped_color' value='"+data[i].mapped_color+"'><input type='hidden' name='size[]' value='"+data[i].size_code+"'><input type='hidden' name='size_id[]' value='"+data[i].size_id+"'><input type='hidden' name='input_job_no_random' value='"+data[i].input_job_no_random+"'><input type='hidden' name='bundle_no[]' value='"+data[i].tid+"'><input type='hidden' name='style' value='"+data[i].style+"'><input type='hidden' name='color[]' value='"+data[i].order_col_des+"'><input type='hidden' name='module[]' value='"+data[i].assigned_module+"'><input type='hidden' name='rep_qty[]' value='"+data[i].reported_qty+"'><input type='hidden' name='id[]' value="+data[i].id+"><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].assigned_module+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td>"+data[i].reported_qty+"</td><td id='"+i+"repor'>"+post_rec_qtys+"</td><td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
+										$("#dynamic_table").append(markup1);
 									}
-										
-									s_no++;
-									var markup1 = "<tr><input type='hidden' name='doc_no[]' value='"+data[i].doc_no+"'><input type='hidden' name='operation_id' value='"+data[i].operation_id+"'><input type='hidden' name='remarks' value='"+data[i].remarks+"'><input type='hidden' name='mapped_color' value='"+data[i].mapped_color+"'><input type='hidden' name='size[]' value='"+data[i].size_code+"'><input type='hidden' name='size_id[]' value='"+data[i].size_id+"'><input type='hidden' name='input_job_no_random' value='"+data[i].input_job_no_random+"'><input type='hidden' name='bundle_no[]' value='"+data[i].tid+"'><input type='hidden' name='style' value='"+data[i].style+"'><input type='hidden' name='color[]' value='"+data[i].order_col_des+"'><input type='hidden' name='module[]' value='"+data[i].assigned_module+"'><input type='hidden' name='rep_qty[]' value='"+data[i].reported_qty+"'><input type='hidden' name='id[]' value="+data[i].id+"><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].assigned_module+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td>"+data[i].reported_qty+"</td><td id='"+i+"repor'>"+post_rec_qtys+"</td><td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
-									$("#dynamic_table").append(markup1);
-								}
-							}
-						}
-					});
+								}				
+							}						
+						});
+					}
+					else
+					{
+						sweetAlert(restrict_msg,'','error');
+						$('#loading-image').hide();
+					}
+					//////////////////////////////////////////////////////
 				}
-				else
-				{
-					sweetAlert(restrict_msg,'','error');
-					$('#loading-image').hide();
-				}
-				//////////////////////////////////////////////////////
-			}
-		});
+			});
+		}
 	});
 });
 
@@ -351,13 +419,13 @@ function validation(id)
 						{
 							$actual_reversal_val_array [] = $rec_qty;
 							$cumulative_reversal_qty = $cumulative_reversal_qty - $rec_qty;
-						}					
+						}
 					}
 					else
 					{
 						$actual_reversal_val_array [] = $rec_qty;
 					}
-				}			
+				}
 			}
 		}
 		// echo "<br/>Actual Reversal Value Array<br/>";
@@ -410,13 +478,10 @@ function validation(id)
 		foreach ($bundle_no as $key=>$value)
 		{
 			$act_reciving_qty = $reversalval[$key];
-			//echo "rep_qty_rep".$rep_qty[$key]."</br>";
-			//	echo "rep_qty".$act_reciving_qty."</br>";
 			$select_send_qty = "select (SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $operation_id and remarks='$remarks' and bundle_number='$bundle_no[$key]' group by bundle_number order by bundle_number";
 			$result_select_send_qty = $link->query($select_send_qty);
 			while($row = $result_select_send_qty->fetch_assoc()) 
 			{
-				//$send_qty = $row['send_qty'];
 				$pre_recieved_qty = $row['recevied_qty'];
 				$total_rec_qty = $pre_recieved_qty - $act_reciving_qty;
 			}
@@ -430,6 +495,7 @@ function validation(id)
 					while($row = $result_post_ops_qry_to_find_rec_qty->fetch_assoc()) 
 					{	
 						$post_rec_qty = $row['recevied_qty'];
+
 						if(($pre_recieved_qty - $post_rec_qty) < $act_reciving_qty)
 						{
 							//$concurrent_flag = 1;
@@ -460,6 +526,7 @@ function validation(id)
 				$concurrent_flag = 1;
 			}
 		}
+
 
 		if($concurrent_flag == 1)
 		{
@@ -513,6 +580,7 @@ function validation(id)
 					$result_query = $link->query($query_post_dep) or exit('query error in updating6');
 				}
 			}
+
 			$b_tid = '';
 			foreach($bundle_no as $key=>$value)
 			{
@@ -549,8 +617,7 @@ function validation(id)
 				if($reversalval[$key] > 0)
 				{
 					$r_qty_array = '-'.$reversalval[$key];
-					$b_tid = $bundle_no[$key];
-						
+					$b_tid = $bundle_no[$key];						
 					$bulk_insert_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES";
 					$bulk_insert_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'.$size_id.'","'. $size_title.'","'. $sfcs_smv.'","'.$b_tid.'","'.$b_in_job_qty.'","'.$b_in_job_qty.'","'.$r_qty_array.'","0","0","'. $b_op_id.'","'.$b_doc_num.'","'.date('Y-m-d').'","'.$b_a_cut_no.'","'.$b_inp_job_ref.'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$remarks.'"),';
 					//echo $bulk_insert_temp;
@@ -616,9 +683,7 @@ function validation(id)
 						$ops_seq = $row['ops_sequence'];
 						$seq_id = $row['id'];
 					}
-
-					$input_ops_code =100;
-				
+					$input_ops_code =100;	
 					//echo "PAC TID = $b_tid + $value";
 					if($input_ops_code == 100 || $input_ops_code == 129)
 					{
@@ -637,7 +702,6 @@ function validation(id)
 							//updating ims_pro_qty in ims log table
 							$update_ims_pro_qty = "update $bai_pro3.ims_log set ims_pro_qty = $actual_ims_pro_qty where tid=$updatable_id";
 							$ims_pro_qty_updating = mysqli_query($link,$update_ims_pro_qty) or exit("While updating ims_pro_qty in ims_log_".mysqli_error($GLOBALS["___mysqli_ston"]));
-							
 						}
 						else
 						{
@@ -677,7 +741,6 @@ function validation(id)
 				//exit('force quitting');
 				//inserting into bai_log and bai_log buff
 				$sizevalue="size_".$size_id;
-
 				$sections_qry="SELECT section AS sec_id FROM `bai_pro3`.`module_master` WHERE module_name = '$b_module[$key]'";
 				$sections_qry_result=mysqli_query($link,$sections_qry) or exit("Bundles Query Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($buyer_qry_row=mysqli_fetch_array($sections_qry_result))
@@ -693,33 +756,26 @@ function validation(id)
 				{
 					$buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
 				}
-				$qry_nop="select avail_A,avail_B FROM $bai_pro.pro_atten WHERE module=".$b_module[$key]." AND date='$bac_dat'";
+				$qry_nop="select((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance WHERE module=".$b_module[$key]." and date='".$bac_dat."' and shift='".$b_shift."'";
 				$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
 				{
-						$avail_A=$nop_qry_row['avail_A'];
-						$avail_B=$nop_qry_row['avail_B'];
+					$avail=$nop_qry_row['nop'];
 				}
 				if(mysqli_num_rows($qry_nop_result)>0)
 				{
-					if($row['shift']=='A')
-					{
-						$nop=$avail_A;
-					}
-					else
-					{
-						$nop=$avail_B;
-					}
+					$nop=$avail;
 				}
 				else
 				{
 					$nop=0;
 				}
+				
 				$b_rep_qty_ins = '-'.$reversalval[$key];
 				$bundle_op_id=$b_tid."-".$b_op_id."-".$b_inp_job_ref;
 				$appilication_out = 'IMS_OUT';
 				$checking_output_ops_code_out = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication_out'";
-			    //echo $checking_output_ops_code;
+				//echo $checking_output_ops_code;
 				$result_checking_output_ops_code_out = $link->query($checking_output_ops_code_out);
 				if($result_checking_output_ops_code_out->num_rows > 0)
 				{
@@ -802,7 +858,6 @@ function validation(id)
 			$insert_qry_ips = "INSERT IGNORE INTO $bai_pro3.`plan_dashboard_input` SELECT * FROM $bai_pro3.`plan_dashboard_input_backup` WHERE input_job_no_random_ref = '$input_job_no_random'";
 			mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips");
 		}
-
 		$url = '?r='.$_GET['r']."&shift=$b_shift";
 		echo "<script>window.location = '".$url."'</script>";
 	}
@@ -817,7 +872,8 @@ function validation(id)
 		var c = /^[0-9]+$/;
 		var v = document.getElementById(t.id);
 
-		if( !(v.value.match(c)) && v.value!=null ){
+		if( !(v.value.match(c)) && v.value!=null )
+		{
 			v.value = '';
 			return false;
 		}

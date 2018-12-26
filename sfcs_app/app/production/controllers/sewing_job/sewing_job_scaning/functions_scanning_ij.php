@@ -401,6 +401,22 @@ function getjobreversaldetails($job_rev_no)
 	{
 		$json1['status'] = "No Operations Done for this job";
 	}
+
+	$get_module_no = "SELECT distinct assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$job_rev_no'";
+	$module_result = $link->query($get_module_no);
+	if($module_result->num_rows > 0)
+	{
+		while($module = $module_result->fetch_assoc()) 
+		{
+			
+			$json1['assigned_module'][] = $module['assigned_module'];
+		}
+	}
+	else
+	{
+		$json1['module_status'] = "No Module available for this job";
+	}
+
    echo json_encode($json1);
 }
 if(isset($_GET['data_rev']))
@@ -414,9 +430,10 @@ if(isset($_GET['data_rev']))
 function getreversalscanningdetails($job_number)
 {
 	$job_number = explode(",",$job_number);
+	$module1 = $job_number[3];
 	include("../../../../../common/config/config_ajax.php");
 	//verifing next operation done are not
-	$getting_style_qry ="select style,mapped_color as color from $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_number[1]' group by style";
+	$getting_style_qry ="select style,mapped_color as color from $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_number[1]' and assigned_module='$module1' group by style";
 	$result_getting_style_qry = $link->query($getting_style_qry);
 	while($row = $result_getting_style_qry->fetch_assoc()) 
 	{
@@ -470,7 +487,7 @@ function getreversalscanningdetails($job_number)
 	$result_array['post_ops'][] = $post_ops_code;
 	if($post_ops_code != 0)
 	{
-		$pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number,color,assigned_module FROM  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by bundle_number";
+		$pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number,color,assigned_module FROM  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' and assigned_module='$module1' AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by bundle_number";
 		$result_pre_ops_validation = $link->query($pre_ops_validation);
 		while($row = $result_pre_ops_validation->fetch_assoc()) 
 		{
@@ -541,7 +558,7 @@ function getreversalscanningdetails($job_number)
 	}
 	else
 	{
-		$pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number,color,assigned_module FROM  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by bundle_number";
+		$pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number,color,assigned_module FROM  $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]'  and assigned_module='$module1' AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by bundle_number";
 		$result_pre_ops_validation = $link->query($pre_ops_validation);
 		while($row = $result_pre_ops_validation->fetch_assoc()) 
 		{
@@ -614,7 +631,7 @@ function getreversalscanningdetails($job_number)
 		}		
 	}
 
-	$job_details_qry = "SELECT id,style,`color` AS order_col_des,`size_title` AS size_code,`bundle_number` AS tid,`original_qty` AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(rejected_qty) AS rejected_qty,(SUM(send_qty)-SUM(recevied_qty)) AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id,assigned_module FROM $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref = '$job_number[1]' AND operation_id = $job_number[0] AND remarks = '$job_number[2]' GROUP BY size_title,color,assigned_module order by bundle_number";
+	$job_details_qry = "SELECT id,style,`color` AS order_col_des,`size_title` AS size_code,`bundle_number` AS tid,`original_qty` AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(rejected_qty) AS rejected_qty,(SUM(send_qty)-SUM(recevied_qty)) AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id,assigned_module FROM $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref = '$job_number[1]'  and assigned_module='$module1' AND operation_id = $job_number[0] AND remarks = '$job_number[2]' GROUP BY size_title,color,assigned_module order by bundle_number";
 	$job_details_qry = $link->query($job_details_qry);
 	if($job_details_qry->num_rows > 0)
 	{
@@ -1223,24 +1240,12 @@ function validating_with_module($pre_array_module)
 		}
 		else
 		{
-			$get_module_no_backup = "SELECT input_module FROM $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref = '$job_no'";
-			$module_rsult_backup = $link->query($get_module_no_backup);
-			if (mysqli_num_rows($module_rsult_backup) > 0)
+			$get_module_no_bcd = "SELECT assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";
+			$module_rsult_bcd = $link->query($get_module_no_bcd);
+			while($sql_row11_bcd = $module_rsult_bcd->fetch_assoc()) 
 			{
-				while($sql_row11_backup = $module_rsult_backup->fetch_assoc()) 
-				{
-					$module = $sql_row11_backup['input_module'];
-				}
+				$module = $sql_row11_bcd['assigned_module'];
 			}
-			else
-			{
-				$get_module_no_bcd = "SELECT assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";
-				$module_rsult_bcd = $link->query($get_module_no_bcd);
-				while($sql_row11_bcd = $module_rsult_bcd->fetch_assoc()) 
-				{
-					$module = $sql_row11_bcd['assigned_module'];
-				}
-			}				
 		}
 	}
 
@@ -1255,7 +1260,7 @@ function validating_with_module($pre_array_module)
 
 		$block_prio_qry = "SELECT block_priorities FROM $bai_pro3.`module_master` WHERE module_name='$module'";
 		$result_block_prio = $link->query($block_prio_qry);
-		while($sql_row = $result_block_prio->fetch_assoc()) 
+		while($sql_row = $result_block_prio->fetch_assoc())
 		{
 			$block_priorities = $sql_row['block_priorities'];
 		}
