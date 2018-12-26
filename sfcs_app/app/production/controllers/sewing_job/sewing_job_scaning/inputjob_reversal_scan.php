@@ -181,6 +181,7 @@ $(document).ready(function()
 		else if (ops == 0)
 		{
 			sweetAlert('Please Select Valid Operation','','warning');
+			$('#loading-image').hide();
 		}
 		else
 		{
