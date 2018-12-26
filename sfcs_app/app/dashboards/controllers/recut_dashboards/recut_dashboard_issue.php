@@ -57,7 +57,7 @@ if(isset($_POST['formSubmit']))
     //retreaving actual quantity to recut
     for($j=0;$j<sizeof($size);$j++)
     {
-        echo $size[$j].'</br>';
+        // echo $size[$j].'</br>';
         $qty_act = array_sum($ratioval[$size[$j]])*$plies;
         $buffer_qty[$size[$j]] = $qty_act - $cut_done_qty[$size[$j]] ;
         $qty_ind_ratio  =  array_sum($ratioval[$size[$j]]);
@@ -66,7 +66,7 @@ if(isset($_POST['formSubmit']))
         $sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,log_date,qms_size,qms_qty,qms_tran_type,remarks) values (\"$style\",\"$schedule\",\"$color\",\"".date("Y-m-d")."\",\"".str_replace("a_","",$size[$j])."\",".($qty_act).",9,\"$module-".$doc_nos."\")";
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
         $update_qry = "update  $bai_pro3.recut_v2 set $a_string=$qty_ind_ratio,$p_string=$qty_ind_ratio where doc_no = $doc_nos";
-        echo $update_qry;
+        // echo $update_qry;
         mysqli_query($link, $update_qry) or exit("while updating into recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
         $update_qry_plan = "update  $bai_pro3.plandoc_stat_log set $a_string=$qty_ind_ratio,$p_string=$qty_ind_ratio where doc_no = $doc_nos";
         mysqli_query($link, $update_qry_plan) or exit("while updating into recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
