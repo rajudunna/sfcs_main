@@ -132,9 +132,7 @@ function updateM3Transactions($ref_id,$op_code,$qty)
                     mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $insert_id=mysqli_insert_id($link);
                     // //M3 Rest API Call
-                    $type = '';
                     if($enable_api_call == 'YES'){
-            
                         $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                         $api_data = $obj->getCurlAuthRequest($api_url);
                         $decoded = json_decode($api_data,true);
@@ -143,7 +141,7 @@ function updateM3Transactions($ref_id,$op_code,$qty)
                         $message=$decoded['Message'];
 
                         //validating response pass/fail and inserting log
-                        if($type!='ServerReturnedNOK' && $type != ''){
+                        if($type!='ServerReturnedNOK'){
                             //updating response status in m3_transactions
                             $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
                             mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -289,7 +287,6 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
                     $insert_id=mysqli_insert_id($link);
                    
                     // //M3 Rest API Call
-                    $type = '';
                     if($enable_api_call == 'YES'){
                         $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                         $api_data = $obj->getCurlAuthRequest($api_url);
@@ -300,7 +297,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code){
                     } 
 
                     //validating response pass/fail and inserting log
-                    if($type!='ServerReturnedNOK' && $type !=''){
+                    if($type!='ServerReturnedNOK'){
                         //updating response status in m3_transactions
                         $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
                         mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -426,7 +423,6 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                         $insert_id=mysqli_insert_id($link);
         
                         //M3 Rest API Call
-                        $type = '';
                         if($enable_api_call == 'YES'){
                             $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&SCQA=$to_update_qty&SCRE=".$r_reasons[$key]."&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                             $api_data = $obj->getCurlAuthRequest($api_url);
@@ -437,7 +433,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                         }
 
                         //validating response pass/fail and inserting log
-                        if($type!='ServerReturnedNOK' &&  $type != '')
+                        if($type!='ServerReturnedNOK')
                         {
                             //updating response status in m3_transactions
                             $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
