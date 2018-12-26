@@ -17,7 +17,7 @@ class rest_api_calls {
         $curl = curl_init();
         curl_setopt_array($curl, array(
 			CURLOPT_PORT => $api_port_no,
-			CURLOPT_URL => $ur,
+			CURLOPT_URL => $url,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => "",
 			CURLOPT_MAXREDIRS => 10,
