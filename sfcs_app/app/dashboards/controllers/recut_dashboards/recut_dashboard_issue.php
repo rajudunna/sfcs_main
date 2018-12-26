@@ -17,7 +17,7 @@ if(isset($_POST['formSubmit']))
 	$cat_name=$_POST['cat_name'];
     $doc_nos=$_POST['doc_no_ref'];
     // $size = $_POST['size'];
-    $ratioval =$_POST['ratioval'];
+    // $ratioval =$_POST['ratioval'];
 	$codes='2';
     $docket_no = '';
     $qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.recut_v2 WHERE doc_no = '$doc_nos' ";
@@ -30,6 +30,7 @@ if(isset($_POST['formSubmit']))
 			{
                 $cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $row['a_plies'];
                 $size[] = $sizes_array[$i];
+                $ratioval[$sizes_array[$i]][] = $row['a_'.$sizes_array[$i]];
 			}
 		}
     }
