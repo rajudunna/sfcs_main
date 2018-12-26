@@ -83,7 +83,8 @@ if(isset($_POST['formSubmit']))
         $sref_id = '1';
     }
     $act_input_job_no = $input_job_no+1;
-    $act_input_job_no_random=$schedule.date("ymd").$act_input_job_no;    
+    $act_input_job_no_random=$schedule.date("ymd").$act_input_job_no;
+    var_dump($buffer_qty);    
     foreach($buffer_qty as $size => $excess_qty)
     {
         if($excess_qty > 0)
@@ -142,7 +143,7 @@ if(isset($_POST['formSubmit']))
             mysqli_query($link, $update_bcd_qry) or die("Error while update_bcd_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         }   
     }
-    // die();
+    die();
     $sql="insert into $bai_pro3.recut_track(doc_no,username,sys_name,log_time,level,status) values(\"".$doc_nos."\",\"".$username."\",\"".$hostname[0]."\",\"".date("Y-m-d H:i:s")."\",\"".$codes."\",\"".$status."\")";
     mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     $url = '?r='.$_GET['r'];
