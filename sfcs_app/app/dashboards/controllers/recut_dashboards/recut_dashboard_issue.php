@@ -53,7 +53,8 @@ if(isset($_POST['formSubmit']))
     mysqli_query($link, $sql1) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
 
     //retreaving actual quantity to recut
-    
+    var_dump($size);
+    die();
     for($j=0;$j<=sizeof($size);$j++)
     {
         $qty_act = array_sum($ratioval[$size[$j]])*$plies;
