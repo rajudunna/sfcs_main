@@ -55,6 +55,7 @@ if(isset($_POST['formSubmit']))
 
     //retreaving actual quantity to recut
     var_dump($size);
+    var_dump($ratioval);
     // die();
     for($j=0;$j<=sizeof($size);$j++)
     {
