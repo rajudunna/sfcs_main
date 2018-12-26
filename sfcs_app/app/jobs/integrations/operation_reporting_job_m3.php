@@ -49,10 +49,8 @@ while($row=mysqli_fetch_array($transaction_result))
         $type=$decoded['@type'];
         $code=$decoded['@code'];
         $message=$decoded['Message'];
-
         //validating response pass/fail and inserting log
-        if($type!='ServerReturnedNOK')
-        {
+        if($type!='ServerReturnedNOK' &&  $type != ''){
             //updating response status in m3_transactions
             $qry_m3_transactions="UPDATE $bai_pro3.m3_transactions SET response_status='pass' WHERE id=".$transaction_id;
             mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -87,8 +85,7 @@ while($row=mysqli_fetch_array($transaction_result))
         $message=$decoded['Message'];
 
         //validating response pass/fail and inserting log
-        if($type!='ServerReturnedNOK')
-        {
+        if($type!='ServerReturnedNOK' &&  $type != ''){
             //updating response status in m3_transactions
             $qry_m3_transactions="UPDATE $bai_pro3.m3_transactions SET response_status='pass' WHERE id=".$transaction_id;
             mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
