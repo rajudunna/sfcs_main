@@ -514,11 +514,11 @@ function updatemarkers($markers_update_doc_id)
          {
             $size_title_ind = $row_size['size_title'];
          }
-       // $table_data .= "<input type='hidden' name ='size[]' value ='$key'>";
         $quantity = $value*$a_plies;
-        $table_data .= "<tr><input type='hidden' name ='size[]' value ='$key'><td>$size_title_ind</td><td>$quantity</td><td><input class='form-control integer' id='$s_no' name='ratioval[$key][]' value='$value' type='Number' onchange='isintegervallidation($s_no);' onkeyup='return  isInt(this);></td></tr>";
+        $table_data .= "<tr><td>$size_title_ind</td><td>$quantity</td><td><input class='form-control integer' id='$s_no' name='ratioval[$key][]' value='$value' type='Number' onchange='isintegervallidation($s_no);' onkeyup='return  isInt(this);></td>";
+        $table_data .= "<input type='hidden' name ='size[]' value ='$key'>";
     }
-    $table_data .= "<input type='hidden' value='$s_no' id='no_of_rows'>";
+    $table_data .= "<input type='hidden' value='$s_no' id='no_of_rows'></tr>";
     $qry_to_get = "SELECT * FROM  `$bai_pro3`.`cat_stat_log` WHERE  order_tid = \"$order_tid\" and category in ($in_categories)";
     $res_qry_to_get = $link->query($qry_to_get);
     while($row_cat_ref = $res_qry_to_get->fetch_assoc()) 
