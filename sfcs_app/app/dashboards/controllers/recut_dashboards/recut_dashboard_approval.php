@@ -120,7 +120,7 @@ echo $drp_down;
                 <b>ReCut Approval Dashboard - View</b>
             </div>
             <div class='panel-body'>
-            <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Quantity</th><th>Recut Reported Quantity</th><th>Eligibility to Issue Quantity</th><th>View recut</th><th>Markers view</th><th>Approve</th><th>Reject</th>
+            <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Recut Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Quantity</th><th>Recut Reported Quantity</th><th>Eligibility to Issue Quantity</th><th>View recut</th><th>Markers view</th><th>Approve</th><th>Reject</th>
                 </thead>
                 <?php  
                 $s_no = 1;
