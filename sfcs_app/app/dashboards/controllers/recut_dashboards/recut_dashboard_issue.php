@@ -60,6 +60,7 @@ if(isset($_POST['formSubmit']))
     // die();
     for($j=0;$j<=sizeof($size);$j++)
     {
+        echo $size[$j].'</br>';
         $qty_act = array_sum($ratioval[$size[$j]])*$plies;
         $buffer_qty[$size[$j]] = $qty_act - $cut_done_qty[$size[$j]] ;
         $qty_ind_ratio  =  array_sum($ratioval[$size[$j]]);
