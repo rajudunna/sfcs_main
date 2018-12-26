@@ -176,6 +176,7 @@ $(document).ready(function()
 			$('#operation option').prop('selected', function() {
 				return this.defaultSelected;
 			});
+			$('#loading-image').hide();
 		}
 		else
 		{
