@@ -1481,7 +1481,7 @@ else if($concurrent_flag == 0)
 			}
 			
 		}
-		// var_dump($actual_rejection_reason_array_string);
+		var_dump($actual_rejection_reason_array_string);
 		if(sizeof($actual_rejection_reason_array_string) > 0)
 		{
 			for($i=0;$i<sizeof($actual_rejection_reason_array_string);$i++)
