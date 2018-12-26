@@ -134,7 +134,7 @@ if($barcode_generation == 1)
 					$bundle_individual_number = $nop_qry_row['tid'];
 					//echo $bundle_individual_number.'</br>';
 					$actual_bundles[] = $nop_qry_row['tid'];
-					$barcode_seq[] $nop_qry_row['barcode_sequence'];
+					$barcode_seq[] = $nop_qry_row['barcode_sequence'];
 					$b_colors_1[] =  $nop_qry_row['order_col_des'];
 					$qms[$nop_qry_row['tid']]['order_col_des'] = $nop_qry_row['order_col_des'];
 					$qms[$nop_qry_row['tid']]['size_code'] = $nop_qry_row['size_code'];
@@ -481,7 +481,7 @@ if($barcode_generation == 1)
 					$qms[$nop_qry_row['bundle_number']]['bundle_no'] = $nop_qry_row['bundle_number'];
 					$qms[$nop_qry_row['bundle_number']]['remarks'] = $remarks;
 					$actual_bundles[] = $nop_qry_row['bundle_number'];
-					$barcode_seq[] $nop_qry_row['barcode_sequence'];
+					$barcode_seq[] = $nop_qry_row['barcode_sequence'];
 					$b_colors_1[] =  $nop_qry_row['color'];
 					$b_sizes_1[] =  $nop_qry_row['size_title'];
 					$b_size_code_1[] = $nop_qry_row['size_id'];
