@@ -50,7 +50,7 @@ while($row=mysqli_fetch_array($transaction_result))
         $code=$decoded['@code'];
         $message=$decoded['Message'];
         //validating response pass/fail and inserting log
-        if($type!='ServerReturnedNOK')
+        if($type!='ServerReturnedNOK' )
         {
             //updating response status in m3_transactions
             $qry_m3_transactions="UPDATE $bai_pro3.m3_transactions SET response_status='pass' WHERE id=".$transaction_id;
@@ -86,7 +86,7 @@ while($row=mysqli_fetch_array($transaction_result))
         $message=$decoded['Message'];
 
         //validating response pass/fail and inserting log
-        if($type!='ServerReturnedNOK')
+        if($type!='ServerReturnedNOK' )
         {
             //updating response status in m3_transactions
             $qry_m3_transactions="UPDATE $bai_pro3.m3_transactions SET response_status='pass' WHERE id=".$transaction_id;
