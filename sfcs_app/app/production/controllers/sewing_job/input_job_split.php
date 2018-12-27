@@ -35,9 +35,14 @@
         echo "<br><div class='alert alert-danger'>You are Not Authorized to Split Sewing Jobs</div>";
     }
 
-if(isset($_POST['submit']))
+if(isset($_POST['submit']) || isset($_GET['schedule']))
 {
-    $schedule=$_POST['schedule'];
+    if (isset($_GET['schedule'])) {
+        $schedule=$_GET['schedule'];
+    } else {
+        $schedule=$_POST['schedule'];
+    }
+    echo '<h4><b>Schedule : <a class="btn btn-success">'.$schedule.'</a></b></h4>';
     // $unconditional_remove=$_POST['unconditional_remove'];
     $sql="SELECT input_job_no,input_job_no_random, order_del_no, order_col_des FROM $bai_pro3.packing_summary_input WHERE input_job_no_random LIKE '$schedule%' group by input_job_no ORDER BY input_job_no*1 ";
     // echo $sql;
