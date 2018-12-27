@@ -225,7 +225,11 @@ else
 		$org_schs=$row333["org_schs"];
 		//echo "A";
 	}
-	$join_sch=substr($join_sch, 1);
+
+	/*This was changed due to #1334 ticket on 27-12-2018*/
+	//$join_sch=substr($join_sch, 1);
+	$join_sch=$schedule;
+	
 }
 
 // End - To take club schedule number and list of original schedules  -  11-11-2014 - Added by ChathurangaD
