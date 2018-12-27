@@ -109,7 +109,7 @@
 						{
 							$trims_status="Material Not Avaiable and Not preparing from W/H";
 						}
-				  }					
+				   }					
                     if($jobsresult["input_trims_request_time"] == "0000-00-00 00:00:00")
                     {
                         $trims_status="Need To Apply For Trims";
