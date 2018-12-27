@@ -5,7 +5,7 @@ $missing_schedules  = [554751=>19,554753=>5,561434=>43,561438=>44,561450=>42,561
 $schedules  = array(536711,554754,554755,554760,554762,554764,556672,558407,561441,561446,561882,564865,564866,564869,564870,564873,564875,564878,564880,564882,567947,567953,567969,56798);
 
 $delete_query = "DELETE from bai_pro3.mo_operation_quantites WHERE mo_no IN (
-4528071,4528072,4528073,4528074,4528077,4528078,4535256,4535257,4535260,4535261,4535264,4535265,4535268,4535269,4535270,4535271,4535272,4535273) AND op_code IN (100,130,900) ";
+4528071,4528072,4528073,4528074,4528077,4528078,4535256,4535257,4535260,4535261,4535264,4535265,4535268,4535269,4535270,4535271,4535272,4535273) AND op_code IN (100,130,900)";
 $result = mysqli_query($link,$delete_query);
 
 foreach($missing_schedules as $schedule=>$sref_id){
@@ -32,7 +32,7 @@ while($row = mysqli_fetch_array($bcd_result)){
 // Missing 900 operation
 for($i=0;$i<sizeof($schedules);$i++)
 {
-	$sql="select group_concat(distinct mo_no) from bai_pro3.mo_details where schedule= $schedules[$i]";
+	$update_qry="select group_concat(distinct mo_no) from bai_pro3.mo_details where schedule= $schedules[$i]";
 	$sql_result = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1 = mysqli_fetch_array($sql_result))
 	{				
