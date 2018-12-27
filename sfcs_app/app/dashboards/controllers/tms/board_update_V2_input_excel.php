@@ -90,7 +90,7 @@
             
             }
             $output = '';
-        if(sizeof($report_data_ary)>0){
+        if(sizeof($report_data_ary)>=0){
             
             $output.=' <body style="border: 1px solid #ccc"><table ><th colspan="8">Job Plan Details</th><tr><th>Style</th><th>Schedule</th><th>Color</th><th>Module</th><th>Docket Number</th><th>Job Number</th><th>Request Time</th><th>Issue Time</th><th>status</th>';
             foreach($report_data_ary as $report){
