@@ -49,7 +49,6 @@ while($row=mysqli_fetch_array($transaction_result))
         $type=$decoded['@type'];
         $code=$decoded['@code'];
         $message=$decoded['Message'];
-
         //validating response pass/fail and inserting log
         if($type!='ServerReturnedNOK')
         {
