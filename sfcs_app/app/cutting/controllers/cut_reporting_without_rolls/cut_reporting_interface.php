@@ -508,13 +508,15 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         //AJAX Call
         var terminate_flag = 0;
         console.log(form_data);
-        $.each(pieces,function(key,value){
-            if( Number(value) != Number(cumulative_size[key]) ){
-               swal('Reporting Pieces are less than the Rejected Pieces','Delete Some Rejections','error');
-               terminate_flag++;
-               return false;
-            }
-        });
+        if(total_rejected_pieces > 0){
+            $.each(pieces,function(key,value){
+                if( Number(value) != Number(cumulative_size[key]) ){
+                swal('Reporting Pieces are less than the Rejected Pieces','Delete Some Rejections','error');
+                terminate_flag++;
+                return false;
+                }
+            });
+        }
         if(Number(terminate_flag) > 0)
             return false;
 
