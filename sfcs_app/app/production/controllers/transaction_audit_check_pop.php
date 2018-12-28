@@ -46,7 +46,7 @@ return false;
 
 <form name="text" method="post" action="<?= getFullURLLevel($_GET['r'],'transaction_audit_check_pop.php',0,'N'); ?>" style="padding-top: 11px;">
 <div class="col-md-2">
-Select Schedule : <input type="text" class="form-control" name="schedule" value="<?php echo $_POST['schedule']; ?>" size="10"> 
+Select Schedule : <input type="text" class="form-control" name="schedule" required value="<?php echo $_POST['schedule']; ?>" size="10"> 
 </div>
 <input type="submit" value="submit" name="submit" class="btn btn-success" style="margin-top: 19px;">
 </form>
