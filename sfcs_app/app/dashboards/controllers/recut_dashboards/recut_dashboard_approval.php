@@ -217,7 +217,7 @@ echo $drp_down;
                         </div>
                     </div>
                 </div>
-                <div id='post' style='display:none'>
+                <div id='post' style='display:none;'>
                     <div class='panel-body'>	
                             <h2 style='color:red'>Please wait while Approving!!!</h2>
                     </div>
@@ -293,7 +293,7 @@ echo $drp_down;
 <script>
 $(document).ready(function() 
 {
-    myFunction();
+    // myFunction();
     $('#post').hide();
 });
 function validationfunction()
