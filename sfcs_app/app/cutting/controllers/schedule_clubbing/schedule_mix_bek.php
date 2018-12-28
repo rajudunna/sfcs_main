@@ -464,13 +464,15 @@ if(isset($_POST['fix']))
 	if(sizeof($selected)>1) 
 	{ 
 		// Validate Components are equal then only club the schedules
-		$sql17="SELECT order_tid,COUNT(*) AS cnt FROM $bai_pro3.cat_stat_log WHERE order_tid IN (SELECT order_tid FROM bai_orders_db WHERE order_col_des IN 
+		$sql17="SELECT order_tid,COUNT(*) AS cnt FROM $bai_pro3.cat_stat_log WHERE order_tid IN (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_col_des IN 
 		('".implode("','",$selected)."') AND order_del_no='$schedule') GROUP BY order_tid ORDER BY cnt DESC LIMIT 1"; 
 		$sql_result17=mysqli_query($link, $sql17) or exit("Sql Error C".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row17=mysqli_fetch_array($sql_result17)) 
 		{ 
 			$order_tid=$sql_row17['order_tid'];
-			$sql11="SELECT * from $bai_pro3.bai_orders_db where order_tid='$order_tid'"; 
+			$sql11="SELECT * from $bai_pro3.bai_orders_db where order_tid='$order_tid'";
+			echo $sql11;
+			die();
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error B".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row11=mysqli_fetch_array($sql_result11)) 
 			{ 
@@ -547,7 +549,6 @@ if(isset($_POST['fix']))
 			
 			
 			$sql1="insert ignore into $bai_pro3.bai_orders_db(order_tid,order_date,order_upload_date,order_last_mod_date,order_last_upload_date,order_div,order_style_no,order_del_no,order_col_des,order_col_code,order_cat_stat,order_cut_stat,order_ratio_stat,order_cad_stat,order_stat,Order_remarks,order_po_no,order_no,color_code,order_joins,packing_method,style_id,carton_id,carton_print_status,ft_status,st_status,pt_status,trim_cards,trim_status,fsp_time_line,fsp_last_up,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination,zfeature,co_no) select \"".$style.$schedule.$cols."\",order_date,order_upload_date,order_last_mod_date,order_last_upload_date,order_div,order_style_no,order_del_no,'$cols',order_col_code,order_cat_stat,order_cut_stat,order_ratio_stat,order_cad_stat,order_stat,Order_remarks,order_po_no,order_no,$new_color_code,'1',packing_method,style_id,carton_id,carton_print_status,ft_status,st_status,pt_status,trim_cards,trim_status,fsp_time_line,fsp_last_up,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination,zfeature,co_no from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\""; 
-			//echo $sql1."<br><br>"; 
 			mysqli_query($link, $sql1) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			$sql1="update $bai_pro3.bai_orders_db set order_joins='J".$maxorder."' where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\""; 
 			mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"])); 
