@@ -507,11 +507,13 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                         };
         //AJAX Call
         console.log(form_data);
-        $.each(pieces,function(key,value){
+        if(total_rejected_pieces>0)
+        {
+            $.each(pieces,function(key,value){
             if( Number(value) != Number(cumulative_size[key]) )
                 return swal('Reporting Pieces are less than the Rejected Pieces','Delete Some Rejections','error');
-        });
-        
+            });
+        }
         $('#wait_loader').css({'display':'block'});
         $.ajax({
             url  : '<?= $post_url ?>?target='+doc_target_type,
