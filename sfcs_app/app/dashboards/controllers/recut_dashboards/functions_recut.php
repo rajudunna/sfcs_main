@@ -81,7 +81,8 @@ function RecutProcess($recut_id_edit)
 { 
     include("../../../../common/config/config_ajax.php");
     $recut_id = $recut_id_edit;
-    $html = "<button type='button' class='btn btn-success' value='Set' style='float: right;' onclick='setfunction();' id='setreset'>Set</button></br></br>";
+    $html = "<button type='button' class='btn btn-success' value='Set' style='float: right;' onclick='setfunction();' id='setreset'>Select All</button>";
+    $html .= "<button type='button' class='btn btn-success' value='ReSet' style='float: right;' onclick='resetfunction();' id='setreset'>Re Set</button></br></br>";
     $qry_details = "SELECT style,SCHEDULE,color FROM `$bai_pro3`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
     WHERE rc.`parent_id` = $recut_id";
     $qry_details_res = $link->query($qry_details);
@@ -206,7 +207,8 @@ function ReplaceProcess($replace_id_edit)
 {
     $count = 0;
     include("../../../../common/config/config_ajax.php");
-    $html = "<button type='button' class='btn btn-success' value='Set' style='float: right;' onclick='setfunction();' id='setreset'>Set</button></br></br>";
+    $html = "<button type='button' class='btn btn-success' value='Set' style='float: right;' onclick='setfunction();' id='setreset'>Select All</button>";
+    $html .= "<button type='button' class='btn btn-success' value='ReSet' style='float: right;' onclick='resetfunction();' id='setreset'>Re Set</button></br></br>";
     $appilication = 'IPS';
     $checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication'";
     // echo $checking_output_ops_code;
@@ -463,7 +465,7 @@ function updatemarkers($markers_update_doc_id)
     include("../../../../common/config/config_ajax.php");
     $html = '';
     $table_data = '';
-    $qry_cut_qty_check_qry = "SELECT *,bd.`order_style_no`,bd.`order_col_des`,bd.`order_del_no` FROM $bai_pro3.recut_v2 rv LEFT JOIN $bai_pro3.`bai_orders_db` bd ON bd.`order_tid` = rv.`order_tid`  WHERE doc_no = '$markers_update_doc_id' ";
+    $qry_cut_qty_check_qry = "SELECT *,bd.`order_style_no`,bd.`order_col_des`,bd.`order_del_no` FROM $bai_pro3.recut_v2 rv LEFT JOIN $bai_pro3.`bai_orders_db` bd ON bd.`order_tid` = rv.`order_tid`  WHERE doc_no = $markers_update_doc_id";
     // echo $qry_cut_qty_check_qry;
 	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
 	while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
@@ -535,6 +537,7 @@ function updatemarkers($markers_update_doc_id)
     $table_data .= "<input type='hidden' name ='cat_name' value ='$remarks'>";
     $table_data .= "<input type='hidden' name ='doc_no_ref' value ='$markers_update_doc_id'>";
     $table_data .= "</tbody></table>";
+    $table_data .= "<input type='hidden' id='no_of_rows' value='$s_no'>";
     $html .= $table_data;
     $html .= '</div></div></div>';
     echo $html;
@@ -654,7 +657,8 @@ function IssuedtoModuleProcess($issued_to_module_process)
 {
     include("../../../../common/config/config_ajax.php");
     $recut_doc_id = $issued_to_module_process;
-    $html = "<button type='button' class='btn btn-success' value='Set' style='float: right;' onclick='setfunction();' id='setreset'>Set</button></br></br>";
+    $html = "<button type='button' class='btn btn-success' value='Set' style='float: right;' onclick='setfunction();' id='setreset'>Select All</button>";
+    $html .= "<button type='button' class='btn btn-success' value='ReSet' style='float: right;' onclick='resetfunction();' id='setreset'>Re Set</button></br></br>";
     $get_details_qry = "SELECT DISTINCT category FROM `$bai_pro3`.`recut_v2_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
     ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_doc_id order by category";
     $result_get_details_qry = $link->query($get_details_qry);
