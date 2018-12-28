@@ -37,9 +37,12 @@ class rest_api_calls {
 		$err = curl_error($curl);
 
 		curl_close($curl);
-
-        if ($err) {
-            return "cURL Error #:" . $err;
+		
+        if($err){
+			//return "cURL Error #:" . $err;
+			$reposnse1['@type'] 	= 'ServerReturnedNOK';
+			$reposnse1['Message']   = $err; 
+			return json_encode($reposnse1);
         }else{
             return $response;
         }
