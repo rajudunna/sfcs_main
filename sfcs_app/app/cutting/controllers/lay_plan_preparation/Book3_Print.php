@@ -269,7 +269,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 <?php
 
 $sql="select *,fn_savings_per_cal(DATE,cat_ref,'$delivery','$color') as savings from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and doc_no=$doc_id";
-//echo $sql."<br>";
+// echo $sql."<br>";
 // mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -350,7 +350,7 @@ $a_s50=$sql_row['a_s50'];
 	$savings=$sql_row['savings'];
 }
 $sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
-// echo $sql2;
+// echo $sql2."<br>";
 $sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
 
 while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -369,7 +369,7 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 	// $ctexlength=$sql_row1x['allocated_qty'];
 	
 	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
-	//echo $sql2;
+	// echo $sql2."<br>";
 	// mysqli_query($link, $sql2) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -378,7 +378,8 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 		$mklength=$sql_row2['mklength'];
 		$mk_file=$sql_row2['remarks'];
 		
-		$sql22="select * from $bai_pro3.marker_ref_matrix where cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=$system_width";
+		$sql22="select * from $bai_pro3.marker_ref_matrix where marker_ref=$mk_ref and cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=$system_width";
+		// echo $sql22."<br>";
 		$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row22=mysqli_fetch_array($sql_result22))
 		{
@@ -386,8 +387,8 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 			$act_mk_length=$sql_row22['marker_length'];
 		}
 		
-		$sql22="select * from $bai_pro3.marker_ref_matrix where cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=\"$purwidth\"";
-		//echo $sql22;
+		$sql22="select * from $bai_pro3.marker_ref_matrix where marker_ref=$mk_ref and cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=\"$purwidth\"";
+		// echo $sql22."<br>";
 		$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row22=mysqli_fetch_array($sql_result22))
 		{
@@ -398,7 +399,7 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 			$purlength=$mklength;
 		}
 	}
-	
+	// echo "Pur Length=".$purlength."<br>";
 	//Binding Consumption / YY Calculation
 	
 	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
@@ -2405,7 +2406,7 @@ tags will be replaced.-->
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo round($fab_bind+$fab_lay,2).'<br/>('.$fab_uom.')'; ?></td>
   <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $actwidth; ?></td> 
   <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $act_mk_length; ?></td>
-  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_revised_lay = $act_mk_length*(1+$cuttable_wastage)*$plies; echo round($fab_revised_lay+$fab_bind,2).'<br/>('.$fab_uom.')';?></td>
+  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php if($act_mk_length > 0){$fab_revised_lay = $act_mk_length*(1+$cuttable_wastage)*$plies; echo round($fab_revised_lay+$fab_bind,2).'<br/>('.$fab_uom.')';} else { echo "0";}?></td>
 <!--<td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php //if(substr($style,0,1)=="M") 
 { $extra=round((($act_mk_length*$plies)*$savings),2); }  echo round((($act_mk_length*$plies)+$extra+$bind_con),2); //Extra 1% added to avoid cad saving manual mrn claims. ?></td>-->
