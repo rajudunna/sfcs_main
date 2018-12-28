@@ -171,16 +171,16 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				}
 				//To get the status of join orders
 			}
-			//NEW FSP
+			//NEW FSP (commented for #1337 ticket)
 			
-			$sqlcheck="select * from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='$input_job_no_random_ref'";
-			$resultcheck=mysqli_query($link,$sqlcheck) or exit("Sql Error5".mysqli_error());
-			while($row4=mysqli_fetch_array($resultcheck))
-			{
-				$input_trims_status=$row4['input_trims_status'];
-			}
-			$sql2="SELECT min(st_status) as st_status,order_style_no,group_concat(distinct order_del_no) as order_del_no,group_concat(distinct input_job_no) as input_job_no,group_concat(distinct doc_no) as doc_no FROM $bai_pro3.plan_doc_summ_input WHERE input_job_no_random='$input_job_no_random_ref'";	
-			//$sql2="SELECT min(st_status) as st_status,order_style_no,group_concat(distinct order_del_no) as order_del_no,group_concat(distinct input_job_no) as input_job_no,group_concat(distinct doc_no) as doc_no FROM plan_doc_summ_input WHERE input_job_no_random='$input_job_no_random_ref'";	
+			// $sqlcheck="select * from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='$input_job_no_random_ref'";
+			// $resultcheck=mysqli_query($link,$sqlcheck) or exit("Sql Error5".mysqli_error());
+			// while($row4=mysqli_fetch_array($resultcheck))
+			// {
+			// 	$input_trims_status=$row4['input_trims_status'];
+			// }
+			// $sql2="SELECT min(st_status) as st_status,order_style_no,group_concat(distinct order_del_no) as order_del_no,group_concat(distinct input_job_no) as input_job_no,group_concat(distinct doc_no) as doc_no FROM $bai_pro3.plan_doc_summ_input WHERE input_job_no_random='$input_job_no_random_ref'";	
+			$sql2="SELECT min(st_status) as st_status,order_style_no,group_concat(distinct order_del_no) as order_del_no,group_concat(distinct input_job_no) as input_job_no,group_concat(distinct doc_no) as doc_no FROM $bai_pro3.plan_dash_doc_summ_input WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_job_no_random='$input_job_no_random_ref'";
 			//echo $sql2."<br>";
 			$result2=mysqli_query($link,$sql2) or exit("Sql Error6".mysqli_error());
 			while($row2=mysqli_fetch_array($result2))
@@ -191,6 +191,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$schedule=$row2['order_del_no'];
 				$input_job_no=$row2['input_job_no'];
 				$doc_no_ref=$row2['doc_no'];
+				$input_trims_status=$row2['input_trims_status'];
 			}
 
 			$doc_no_ref_input = implode("','",$doc_no_ref);
@@ -298,22 +299,55 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			} 
 			
 			
-			//For Trims
-			$trimid="Green";
-			if($input_trims_status == 1)
-			{
-				$trimid="Yellow";
-			}
+			//For Trims (commented for #1337 ticket)
+			// $trimid="Green";
+			// if($input_trims_status == 1)
+			// {
+			// 	$trimid="Yellow";
+			// }
 			
-			if($input_trims_status == 2 or $input_trims_status == 3)
-			{
-				$trimid="Blue"; 
-			}
+			// if($input_trims_status == 2 or $input_trims_status == 3)
+			// {
+			// 	$trimid="Blue"; 
+			// }
 				
+			// if($input_trims_status==4)
+			// {
+			// 	$trimid="Pink"; //Total Trim input issued to module
+			// 	//Circle if the total panel Input is issued to module
+			// }
+            
+            //Changed for #1337 ticket
 			if($input_trims_status==4)
 			{
-				$trimid="Pink"; //Total Trim input issued to module
-				//Circle if the total panel Input is issued to module
+				$trimid="PINK"; 
+			}
+			else if($input_trims_status == 2 or $input_trims_status == 3)
+			{
+				$trimid="BLUE"; 
+			}
+			else if($input_trims_status == 1)
+			{
+				$trimid="YELLOW";
+			}
+			else
+			{
+				if($trims_status=="NULL" || $trims_status=="" || $trims_status=="(NULL)")
+				{
+					$trimid="YASH";
+				}			
+				else if($trims_status == 0 || $trims_status == 9)
+				{
+					$trimid="RED";
+				}			
+				else if($trims_status == 1)
+				{
+					$trimid="L-Green";
+				}			
+				else
+				{
+					$trimid="RED";
+				}
 			}
 			
 			//For Color Clubbing
