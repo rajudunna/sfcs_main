@@ -356,7 +356,7 @@
     <div class="modal-dialog" style="width: 80%;">
         <div class="modal-content">
             <div class="modal-header">Recut Detailed View
-                <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
+            <button type="button" class="btn btn-danger" value="Close" id = "cancel" data-dismiss="modal" style="float: right;">Close</button>
             </div>
             <div class="modal-body" id='main-content'>
                 <div  class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;">
@@ -369,7 +369,7 @@
     <div class="modal-dialog" style="width: 80%;  height: 100%;">
         <div class="modal-content">
             <div class="modal-header">Recut Raise form
-                <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
+            <button type="button" class="btn btn-danger" value="Close" id = "cancel" data-dismiss="modal" style="float: right;">Close</button>
             </div>
             <div id='pre_pre'>
                 <div class="modal-body">
@@ -385,7 +385,7 @@
             <div id='post_post'>
                 <div class='panel-body'>	
                         <h2 style='color:red'>Please wait while Raising the Recut!!!</h2>
-                </div>
+            </div>
             </div>
         </div>
     </div>
@@ -394,7 +394,7 @@
     <div class="modal-dialog" style="width: 80%;  height: 100%;">
         <div class="modal-content">
             <div class="modal-header">Rejection Replace form
-                <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
+                <button type="button" class="btn btn-danger" value="Close" id = "cancel" data-dismiss="modal" style="float: right;">Close</button>
             </div>
             <div id='pre'>
                 <div class="modal-body">
@@ -746,8 +746,8 @@ function validationrecutindividual(id)
 }
 function setfunction()
 {
-    var noofrows = document.getElementById('total_rows').value;
-    if(document.getElementById('setreset').innerHTML == 'Set')
+    var noofrows = $('#total_rows').val();
+    if(document.getElementById('setreset').value == 'Set')
     {
         for(var i=1; i<=Number(noofrows); i++)
         {
@@ -756,18 +756,15 @@ function setfunction()
             var remaining_qty = document.getElementById(rem_var).innerHTML;
             document.getElementById(i).value = remaining_qty; 
         }
-        document.getElementById('setreset').innerHTML = 'ReSet';
     }
-    else
+}
+function resetfunction()
+{
+    var noofrows = $('#total_rows').val();
+    for(var i=1; i<=Number(noofrows); i++)
     {
-        for(var i=1; i<=Number(noofrows); i++)
-        {
-            document.getElementById(i).value = 0; 
-        }
-        document.getElementById('setreset').innerHTML = 'Set';
-
+        document.getElementById(i).value = 0; 
     }
-    
 }
 function myFunction() 
 {
