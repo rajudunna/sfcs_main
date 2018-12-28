@@ -487,7 +487,6 @@ if(isset($_POST['update']))
 			$sql_result=mysqli_query($link, $sql14) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		unset($input_doc_nos);
-		echo "going inside loop";
 		foreach($club_docs as $docket=>$cat_ref){
 			$cat_query = "SELECT category from $bai_pro3.cat_stat_log where tid='$cat_ref' and 
 						  category in ($in_categories)";
