@@ -510,7 +510,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         console.log(form_data);
         if(total_rejected_pieces > 0){
             $.each(pieces,function(key,value){
-                if( Number(value) != Number(cumulative_size[key]) ){
+                if(Number(cumulative_size[key]) >  Number(value)  ){
                 swal('Reporting Pieces are less than the Rejected Pieces','Delete Some Rejections','error');
                 terminate_flag++;
                 return false;
