@@ -180,8 +180,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			// 	$input_trims_status=$row4['input_trims_status'];
 			// }
 			// $sql2="SELECT min(st_status) as st_status,order_style_no,group_concat(distinct order_del_no) as order_del_no,group_concat(distinct input_job_no) as input_job_no,group_concat(distinct doc_no) as doc_no FROM $bai_pro3.plan_doc_summ_input WHERE input_job_no_random='$input_job_no_random_ref'";	
-			$sql2="SELECT min(st_status) as st_status,order_style_no,group_concat(distinct order_del_no) as order_del_no,group_concat(distinct input_job_no) as input_job_no,group_concat(distinct doc_no) as doc_no FROM $bai_pro3.plan_dash_doc_summ_input WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_job_no_random='$input_job_no_random_ref'";
-			//echo $sql2."<br>";
+			$sql2="SELECT min(st_status) as st_status,order_style_no,group_concat(distinct order_del_no) as order_del_no,group_concat(distinct input_job_no) as input_job_no,group_concat(distinct doc_no) as doc_no,input_trims_status FROM $bai_pro3.plan_dash_doc_summ_input WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_job_no_random='$input_job_no_random_ref'";
 			$result2=mysqli_query($link,$sql2) or exit("Sql Error6".mysqli_error());
 			while($row2=mysqli_fetch_array($result2))
 			{
@@ -318,6 +317,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			// }
             
             //Changed for #1337 ticket
+
+            //echo "</br>Input Trim : ".$input_trims_status;
 			if($input_trims_status==4)
 			{
 				$trimid="PINK"; 
