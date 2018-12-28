@@ -12,7 +12,7 @@ if(isset($_GET['doc_no'])){
         });
     </script>";
 }
-
+$cut_table_url = getFullURLLevel($_GET['r'],'dashboards/controllers/Cut_table_dashboard/cut_table_dashboard_cutting.php',3,'N');
 $cut_tables   = array();
 $team_leaders = array();
 $locations = array();
@@ -53,9 +53,16 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         <b>Cut Quantity Reporting Without Rolls</b>
     </div>
     <div class='panel-body'>  
-        <div class='col-sm-12 user_msg'>
+        <div class='col-sm-10 user_msg'>
             <span class='notification'>NOTE : </span>
             <span id='user_msg'></span>
+        </div>
+        <div class='col-sm-1 pull-right'>
+        
+        <?php  
+            if($cut_table != '')
+                echo "<a href='$cut_table_url' class='btn btn-xs btn-warning' > << Go Back </a>";
+        ?>
         </div>
         <br/><br/>
         <div class='row'>       
@@ -218,8 +225,9 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             </td>
                             <td><input type='text' class='form-control integer' value='0' id='damages'></td>
                             <td><input type='text' class='form-control integer' value='0' id='shortages'></td>
-                            <td><input type='text' class='form-control integer' place-holder='Rejections' id='rejection_pieces' name='rejection_pieces'><br><br>
-                            <input type='button' style='display : none' class='btn btn-sm btn-success' id='rejections_panel_btn' value='show rejections'>
+                            <!-- <td><input type='text' class='form-control integer' place-holder='Rejections' id='rejection_pieces' name='rejection_pieces'><br><br> -->
+                            <td>
+                            <input type='button' style='display : block' class='btn btn-sm btn-success' id='rejections_panel_btn' value='show rejections'>
                             </td>
                             <td><input type='button' class='btn btn-sm btn-success' value='Submit' id='submit'></td>
                         </tr>
@@ -423,7 +431,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var team_leader = $('#team_leader').val();
         var post_doc_no = $('#post_doc_no').val();
         var doc_target_type = $('#doc_target_type').val();
-        
+        ratio   = Number($('#ratio').val());
         var style       = $('#post_style').val();
         var schedule    = $('#post_schedule').val();
         var color       = $('#post_color').val();
@@ -486,6 +494,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                         };
         //AJAX Call
         console.log(form_data);
+    
         $('#wait_loader').css({'display':'block'});
         $.ajax({
             url  : '<?= $post_url ?>?target='+doc_target_type,
@@ -514,11 +523,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     
                 if(rejections_flag){
                     if(data.rejections_response == '1')
-                        user_msg += 'Rejections Saved Successfully';
+                        user_msg += 'Cut Reported Successfully , Rejections Saved Successfully';
                     else if(data.rejections_response == '2')
-                        user_msg += 'Rejections Saved.M3 Reporting Failed.';
+                        user_msg += 'Cut Reported Successfully , Rejections Saved BUT M3 Reporting Failed.';
                     else    
-                        user_msg += 'Rejections Reporting Failed ';    
+                        user_msg += 'Cut Reported Successfully BUT Rejections Reporting Failed ';    
                 }
                 if(user_msg.length != 0){
                     $('#user_msg').html(user_msg);
@@ -545,20 +554,53 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     });
 
     $('#fab_returned').on('change',function(){
-        var ret = Number($('#fab_returned').val());
-        if(ret > 0)
+        var fret = Number($('#fab_returned').val());
+        if(fret > 0)
             $('#returend_to_parent').css({'display':'block'});
         else
             $('#returend_to_parent').css({'display':'none'});
     });
 
+    function load_rejections(){
+        var size_rej_qty_string = '';
+        doc_no = $('#doc_no').val();
+        c_plies = Number($('#c_plies').val());
+        ratio   = Number($('#ratio').val());
+        ret = c_plies * ratio;
+        $('#rejection_size').empty();
+        $.ajax({
+                url : '<?= $get_url ?>?rejection_docket='+doc_no
+        }).done(function(res){
+            console.log(res);
+            dataR = $.parseJSON(res);
+            $.each(dataR.old_new_size,function(key,value){
+                pieces[key] = Number(dataR.old_size_ratio[key]) * c_plies;
+                size_rej_qty_string += value+' : '+pieces[key]+' &nbsp;&nbsp;'; 
+                $('#rejection_size').append('<option value='+key+'>'+value+'</option>');
+                rejections_post[key] = {};
+            });
+            $('.size-rej-pieces').html('<b>'+size_rej_qty_string+'</b>');
+            $('#total_pieces').val(ret);
+            $('#avl_pieces').val(ret);
+        }).fail(function(){
+            alert('fail');
+        });
+    }
+
     $('#c_plies').on('change',function(){
-        clearRejections();
+        if($(this).val > avl_plies){
+            return swal('Reporting Plies are more than Planned Plies');
+        }
         if($(this).val() > 0){
             $('#rejection_pieces').attr('readonly',false);
         }else{
             $('#rejection_pieces').attr('readonly',true);
         }
+
+        //ret = Number($('#rejection_pieces').val());
+        ret = c_plies * ratio;
+        console.log(ret);
+        load_rejections();
         return false;
     });
 
@@ -577,7 +619,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $('#rejection_pieces').val(0);
         $('#avl_pieces').val(0);
         $('#total_pieces').val(0);
-        $('#rejections_panel_btn').css({'display':'none'});
+        //$('#rejections_panel_btn').css({'display':'none'});
         $('#hide_details_reporting_ratios').html('');
         $('#hide_details_reporting_ratios').css({'display':'none'});
         document.getElementById('full_reported').checked = false;
@@ -611,7 +653,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $('#total_pieces').val(0);
         $('#rejection_size').empty();
         $('#rejection_pieces').val(0);
-        $('#rejections_panel_btn').css({'display':'none'});
+        //$('#rejections_panel_btn').css({'display':'none'});
         $('#d_total_rejections').css({'display':'none'});
         $('#rejections_table_body').empty();
     }
@@ -648,12 +690,12 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         }
         $('#rejection_size').empty();
         if(ret > 0){
-            $('#c_plies').attr('readonly',true);
+            //$('#c_plies').attr('readonly',true);
             if( ret > c_plies * ratio  )
                 return swal('You are Returning more than reported Pieces','','error');
             else{
                 //$('#rejections_panel').css({'display':'block'});
-                $('#rejections_panel_btn').css({'display':'block'});
+                //$('#rejections_panel_btn').css({'display':'block'});
                 $('#rejections_modal').modal('toggle');
                 $.ajax({
                     url : '<?= $get_url ?>?rejection_docket='+doc_no
@@ -760,6 +802,13 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         console.log('IN Function : '+pieces[size]+' rej '+rej_qty+' saved = '+total_rejected_pieces);
         console.log(rejections_post);
         $('#row_'+id).remove();
+        if(total_rejected_pieces > 0){
+            $('#d_total_rejections').css({'display':'block'});
+            $('#d_total_rejections').html('<b> Total Rejections : </b>'+total_rejected_pieces);
+        }else if(total_rejected_pieces <= 0){
+            total_rejected_pieces = 0;
+            $('#d_total_rejections').css({'display':'block'});
+        }
         return true;
     }
     /*
@@ -780,6 +829,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $.ajax({
             url : '<?= $get_url ?>?doc_no='+doc_no
         }).done(function(res){
+            
             var data = $.parseJSON(res);
             avl_plies = Number(data.avl_plies);
             fab_req = Number(data.fab_required);
@@ -879,7 +929,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
             //resetting the submmit button
             $('#submit').css({'display':'block'});
-            
+            load_rejections();
         }).fail(function(){
             swal('Network Error while getting Details','','error');
             return;
@@ -902,7 +952,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         color   : #fff;
     }
     .notification{
-        color : #fff;
+        color : #007FFF;
         font-size : 12px;
         opacity : 1;
     }
