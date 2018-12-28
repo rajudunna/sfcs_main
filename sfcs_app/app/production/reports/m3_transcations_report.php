@@ -109,8 +109,10 @@
                     
                     if ($res['api_type'] == 'fg') {
                         $api_type = '<span class="badge progress-bar-warning">FG</span>';
-                    } else {
+                    } else if ($res['api_type'] == 'opn') {
                         $api_type = '<span class="badge progress-bar-info">Operation</span>';
+                    } else {
+                        $api_type = '<span class="badge progress-bar-danger">No API Type Available for this Record</span>';
                     }
                     
                     if($reason=='fail'){
@@ -157,7 +159,7 @@
     </div>
     <?php 
     echo "<script>
-    var table6_Props = 	{
+    var table6_Props =  {
         rows_counter: true,
         btn_reset: true,
         btn_reset_text: 'Clear',
