@@ -380,6 +380,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     var full_reporting_flag = 0;
     var GLOBAL_CALL = 0;
     var SIZE_COUNT = 0;
+    var CLEAR_FLAG = 0;
   
     function reportingFull(t){
         if(t.checked == true)
@@ -495,7 +496,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         
         //Rejections Validation End
 
-        $('#submit').css({'display':'none'});
         var user_msg = '';
         var form_data = {
                         doc_no:post_doc_no,c_plies:c_plies,fab_returned:ret,
@@ -506,14 +506,21 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                         full_reporting_flag : full_reporting_flag
                         };
         //AJAX Call
+        var terminate_flag = 0;
         console.log(form_data);
-        if(total_rejected_pieces>0)
-        {
+        if(total_rejected_pieces > 0){
             $.each(pieces,function(key,value){
-            if( Number(value) != Number(cumulative_size[key]) )
-                return swal('Reporting Pieces are less than the Rejected Pieces','Delete Some Rejections','error');
+                if( Number(value) != Number(cumulative_size[key]) ){
+                swal('Reporting Pieces are less than the Rejected Pieces','Delete Some Rejections','error');
+                terminate_flag++;
+                return false;
+                }
             });
         }
+        if(Number(terminate_flag) > 0)
+            return false;
+
+        $('#submit').css({'display':'none'});
         $('#wait_loader').css({'display':'block'});
         $.ajax({
             url  : '<?= $post_url ?>?target='+doc_target_type,
@@ -598,7 +605,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 pieces[key] = Number(dataR.old_size_ratio[key]) * c_plies;
                 size_rej_qty_string += value+' : '+pieces[key]+' &nbsp;&nbsp;'; 
                 $('#rejection_size').append('<option value='+key+'>'+value+'</option>');
-                if(GLOBAL_CALL == 0)
+                if(GLOBAL_CALL == 0 || CLEAR_FLAG == 1)
                     rejections_post[key] = {};
             });
             GLOBAL_CALL++;
@@ -684,7 +691,10 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     //Clearing all the rejections 
     $('#clear_rejection').on('click',function(){
         if(total_rejected_pieces > 0){
+            CLEAR_FLAG = 1;
             clearRejections();
+            load_rejections();
+            CLEAR_FLAG = 0;
             $('#rejections_modal').modal('toggle');
         }else{
             swal('Nothing To Clear');
@@ -971,7 +981,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
 <style>
     .user_msg{
-        background : #FF0000;
+        background : #0055FF;
         border  : 1px solid #000;
         border-radius : 5px;
         opacity : 1;
@@ -986,7 +996,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     }
 
     .title{
-        color : #0055FF; 
+        color : #0000ff; 
         font-size : 14px;
 
     }
