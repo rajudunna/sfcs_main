@@ -33,15 +33,15 @@ while($row=mysqli_fetch_array($transaction_result))
     if(strlen($reason)>0){
         //api for rejection quantities
         //M3 Rest API Call
+        $type = '';
         $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&OPNO=$op_code&DPLG=$workstation_id&SCQA=$quantity&SCRE=$reason&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
         $api_data = $obj->getCurlAuthRequest($api_url);
         $decoded = json_decode($api_data,true);
         $type=$decoded['@type'];
         $code=$decoded['@code'];
         $message=$decoded['Message'];
-
         //validating response pass/fail and inserting log
-        if($type!='ServerReturnedNOK'){
+        if($type!='ServerReturnedNOK' &&  $type != ''){
             //updating response status in m3_transactions
             $qry_m3_transactions="UPDATE $bai_pro3.m3_transactions SET response_status='pass' WHERE id=".$transaction_id;
             mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -56,6 +56,7 @@ while($row=mysqli_fetch_array($transaction_result))
     }else{
         //api for good quantities        
         //M3 Rest API Call
+        $type = '';
         $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&OPNO=$op_code&DPLG=$workstation_id&MAQA=$quantity&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
         $api_data = $obj->getCurlAuthRequest($api_url);
         $decoded = json_decode($api_data,true);
@@ -64,7 +65,7 @@ while($row=mysqli_fetch_array($transaction_result))
         $message=$decoded['Message'];
 
         //validating response pass/fail and inserting log
-        if($type!='ServerReturnedNOK'){
+        if($type!='ServerReturnedNOK' &&  $type != ''){
             //updating response status in m3_transactions
             $qry_m3_transactions="UPDATE $bai_pro3.m3_transactions SET response_status='pass' WHERE id=".$transaction_id;
             mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
