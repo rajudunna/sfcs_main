@@ -354,7 +354,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 </div>
 
 <div class='col-sm-offset-4 col-sm-4'>
-    <span  id='wait_loader'  style='color:#ff0000;font-size:16px;display:none'>Please Wait....</span>
+    <span  id='wait_loader'  style='color:#ff0000;font-size:20px;display:none'>Please Wait....</span>
 </div>
 
 <?php 
@@ -374,9 +374,12 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     var total_rejected_pieces = 0;//this variable is for how many pieces he selected size and reason
     var ret = 0; //This variable is to store front end user given rejection pieces
     var rejections_post = {};
+    var cumulative_size = {};
     var rejections_flag = 0;
     var ratio = 0;
     var full_reporting_flag = 0;
+    var GLOBAL_CALL = 0;
+    var SIZE_COUNT = 0;
   
     function reportingFull(t){
         if(t.checked == true)
@@ -408,6 +411,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
     $('#doc_no').on('change',function(){
         doc_no = $('#doc_no').val();
+        GLOBAL_CALL = 0;
         $('#submit').css({'display':'block'});
         $('.user_msg').css({'display':'none'});
         $('#hide_details_reported').css({'display':'none'});
@@ -467,16 +471,25 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         //Screen Validations End
         
         //Rejections Validation
+        // if(ret > 0){
+        //     if(total_rejected_pieces > c_plies * ratio)
+        //         return swal('You are Returning More than Reporting Pieces','Please Remove some rejections','warning');
+        //     else if(total_rejected_pieces < ret)
+        //         return  swal('Please Fill the Rejections Completely','','warning');
+        //     else
+        //         rejections_flag = 1;
+        // }else{
+        //     if(total_rejected_pieces > ret)
+        //         return swal('You are Returning more than Specified','','error');
+        // }
         if(ret > 0){
             if(total_rejected_pieces > c_plies * ratio)
                 return swal('You are Returning More than Reporting Pieces','Please Remove some rejections','warning');
-            else if(total_rejected_pieces < ret)
-                return  swal('Please Fill the Rejections Completely','','warning');
-            else
+            else if(total_rejected_pieces > 0)
                 rejections_flag = 1;
         }else{
             if(total_rejected_pieces > ret)
-                return swal('You are Returning more than Specified','','error');
+                return swal('You are Rejecting more than Specified','','error');
         }
         console.log(ret+' - '+total_rejected_pieces+' -  '+full_reporting_flag);
         
@@ -494,7 +507,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                         };
         //AJAX Call
         console.log(form_data);
-    
+        $.each(pieces,function(key,value){
+            if( Number(value) != Number(cumulative_size[key]) )
+                return swal('Reporting Pieces are less than the Rejected Pieces','Delete Some Rejections','error');
+        });
+        
         $('#wait_loader').css({'display':'block'});
         $.ajax({
             url  : '<?= $post_url ?>?target='+doc_target_type,
@@ -523,7 +540,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     
                 if(rejections_flag){
                     if(data.rejections_response == '1')
-                        user_msg += 'Cut Reported Successfully , Rejections Saved Successfully';
+                        user_msg += 'Cut Reported Successfully';
                     else if(data.rejections_response == '2')
                         user_msg += 'Cut Reported Successfully , Rejections Saved BUT M3 Reporting Failed.';
                     else    
@@ -571,14 +588,18 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $.ajax({
                 url : '<?= $get_url ?>?rejection_docket='+doc_no
         }).done(function(res){
+            SIZE_COUNT = 0;
             console.log(res);
             dataR = $.parseJSON(res);
             $.each(dataR.old_new_size,function(key,value){
+                SIZE_COUNT++;
                 pieces[key] = Number(dataR.old_size_ratio[key]) * c_plies;
                 size_rej_qty_string += value+' : '+pieces[key]+' &nbsp;&nbsp;'; 
                 $('#rejection_size').append('<option value='+key+'>'+value+'</option>');
-                rejections_post[key] = {};
+                if(GLOBAL_CALL == 0)
+                    rejections_post[key] = {};
             });
+            GLOBAL_CALL++;
             $('.size-rej-pieces').html('<b>'+size_rej_qty_string+'</b>');
             $('#total_pieces').val(ret);
             $('#avl_pieces').val(ret);
@@ -758,10 +779,13 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 <input type="hidden" value="'+size+'" id="size_'+global_serial_id+'"></td></tr>';
                 
                 $('#rejections_table_body').append(str);
-                if(rejections_post[size][reason] > 0)
+                if(rejections_post[size][reason] > 0){
                     rejections_post[size][reason] = Number(rejections_post[size][reason]) + rej_qty;
-                else
+                    cumulative_size[size] = Number(cumulative_size[size]) + rej_qty;
+                }else{
                     rejections_post[size][reason] =  rej_qty;
+                    cumulative_size[size] = rej_qty;
+                }
                 console.log('Top : '+total_rejected_pieces);
                 $('#avl_pieces').val(ret - total_rejected_pieces);
                 $('#rejection_qty').val(0);
@@ -797,6 +821,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
         pieces[size] = pieces[size] + rej_qty; 
         rejections_post[size][reason] = Number(rejections_post[size][reason]) - rej_qty;
+        cumulative_size[size] = Number(cumulative_size[size]) - rej_qty;
         total_rejected_pieces = total_rejected_pieces - rej_qty;
         $('#avl_pieces').val(ret - total_rejected_pieces);
         console.log('IN Function : '+pieces[size]+' rej '+rej_qty+' saved = '+total_rejected_pieces);
@@ -808,6 +833,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         }else if(total_rejected_pieces <= 0){
             total_rejected_pieces = 0;
             $('#d_total_rejections').css({'display':'block'});
+            $('#d_total_rejections').html('<b> Total Rejections : </b>'+total_rejected_pieces);
         }
         return true;
     }
@@ -952,13 +978,13 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         color   : #fff;
     }
     .notification{
-        color : #007FFF;
+        color : #fff;
         font-size : 12px;
         opacity : 1;
     }
 
     .title{
-        color : #ff0000; 
+        color : #0055FF; 
         font-size : 14px;
 
     }
