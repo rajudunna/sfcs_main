@@ -275,7 +275,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     <div class="modal-dialog" style="width: 80%;  height: 100%;">
         <div class="modal-content">
             <div class="modal-header">Cut Pieces Rejections Form
-                <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
+                <button type="button" class="btn btn-danger" value="Close" id = "cancel" data-dismiss="modal" style="float: right;">Close</button>
             </div>
             <div class="modal-body">
                 <div class='panel panel-primary'>
@@ -441,7 +441,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var schedule    = $('#post_schedule').val();
         var color       = $('#post_color').val();
         var fab_req     = Number($('#fab_required').val());
-
+        
         //Screen Validations
         if(c_plies == 0){
             swal('Error','Please Enter Reporting Plies','error');
@@ -679,6 +679,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         console.log(rejections_post);
         global_serial_id = 0;
         total_rejected_pieces = 0;
+        rejections_post = {};
         ret = 0; 
         rejections_flag = 0;
         $('#avl_pieces').val(0);
@@ -697,7 +698,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             CLEAR_FLAG = 1;
             clearRejections();
             load_rejections();
-            CLEAR_FLAG = 0;
+            //CLEAR_FLAG = 0;
             $('#rejections_modal').modal('toggle');
         }else{
             swal('Nothing To Clear');
