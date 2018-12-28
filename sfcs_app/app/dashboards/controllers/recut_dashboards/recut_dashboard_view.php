@@ -429,7 +429,7 @@
             $s_no = 1;
             $blocks_query  = "SELECT r.id,style,SCHEDULE,color,r.rejected_qty,r.recut_qty,r.remaining_qty,r.replaced_qty,GROUP_CONCAT(DISTINCT bcd_id)as bcd_ids FROM $bai_pro3.rejections_log r
             LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id`
-            GROUP BY r.`style`,r.`schedule`,r.`color` HAVING (rejected_qty-(recut_qty+replaced_qty)) > 0";
+            GROUP BY r.`style`,r.`schedule`,r.`color` HAVING (rejected_qty-(recut_qty+replaced_qty)) > 0 order by r.id";
             $blocks_result = mysqli_query($link,$blocks_query) or exit('Rejections Log Data Retreival Error');
             if($blocks_result->num_rows > 0)
             {
