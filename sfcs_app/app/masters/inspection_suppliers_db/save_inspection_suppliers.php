@@ -100,7 +100,7 @@
 			    <label class="control-label control-label-left col-sm-3" for="seq_no">Sequence No<span class="req"> *</span></label>
 			    <div class="controls col-sm-9">
                     
-                <input id="seq_no" type="text" class="form-control k-textbox" data-role="text" placeholder="Sequence No" name="seq_no" required="required" value=<?php echo $seq_no; ?> ><span id="errId6" class="error"></span></div>
+                <input id="seq_no" type="number" class="form-control k-textbox integer" data-role="text" placeholder="Sequence No" name="seq_no" required="required" value=<?php echo $seq_no; ?>><span id="errId6" class="error"></span></div>
                 
 		</div></div></div><div class="row"><div class="col-md-12"><div class="form-group">
 			    
@@ -123,5 +123,10 @@
 include('view_inspection_suppliers.php');
 ?>
 </body>
-
+<script>
+// function calculate(){
+      
+// 		alert('');
+// }
+</script>
 </html>
