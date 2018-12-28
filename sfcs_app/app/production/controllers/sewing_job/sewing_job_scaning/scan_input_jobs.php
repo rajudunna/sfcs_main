@@ -136,9 +136,9 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 							</div>
 						</div>
 						</br>
-						<div class = "form-group col-lg-6 col-sm-12" id='setresetfun' hidden='true'>
+						<!-- <div class = "form-group col-lg-6 col-sm-12" id='setresetfun' hidden='true'>
 								<button type='button' class='btn btn-success' value='Set' style='float: right;' onclick='setfunction();' id='setreset'>Set</button>
-						</div>
+						</div> -->
 						<div class="form-group col-md-3">
 						</div>
 					</center>
@@ -274,7 +274,7 @@ $(document).ready(function()
 			dataType: "json",
 			success: function (response) 
 			{
-				$('#setresetfun').show();
+				// $('#setresetfun').show();
 				var sewing_rejection = document.getElementById('sewing_rejection').value;
 				console.log(response);
 				console.log(sewing_rejection);
@@ -725,33 +725,33 @@ function validating()
 	//document.getElementByClassName('submission').style.visibility = 'hidden';
 	
 }
-function setfunction()
-{
-	var noofrows = $('#no_of_rows').val();
-    if(document.getElementById('setreset').innerHTML == 'Set')
-    {
-        for(var i=0; i<Number(noofrows); i++)
-        {
-            var rem_var = i+'remarks_validate_html';
-			var rem = i+'reporting';
-            console.log(rem_var);
-            var remaining_qty = document.getElementById(rem_var).innerHTML;
-            document.getElementById(rem).value = remaining_qty; 
-        }
-        document.getElementById('setreset').innerHTML = 'ReSet';
-    }
-    else
-    {
-        for(var i=0; i<Number(noofrows); i++)
-        {
-			var rem = i+'reporting';
-            document.getElementById(rem).value = 0; 
-        }
-        document.getElementById('setreset').innerHTML = 'Set';
+// function setfunction()
+// {
+// 	var noofrows = $('#no_of_rows').val();
+//     if(document.getElementById('setreset').innerHTML == 'Set')
+//     {
+//         for(var i=0; i<Number(noofrows); i++)
+//         {
+//             var rem_var = i+'remarks_validate_html';
+// 			var rem = i+'reporting';
+//             console.log(rem_var);
+//             var remaining_qty = document.getElementById(rem_var).innerHTML;
+//             document.getElementById(rem).value = remaining_qty; 
+//         }
+//         document.getElementById('setreset').innerHTML = 'ReSet';
+//     }
+//     else
+//     {
+//         for(var i=0; i<Number(noofrows); i++)
+//         {
+// 			var rem = i+'reporting';
+//             document.getElementById(rem).value = 0; 
+//         }
+//         document.getElementById('setreset').innerHTML = 'Set';
 
-    }
+//     }
     
-}
+// }
 
 
 </script>
