@@ -44,6 +44,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <div class="panel panel-primary">
 	<div class="panel-heading">Fabric WIP</div>
 		<div class="panel-body">
+			<div style="overflow-x: auto;">
 				<table class='table table-bordered table-striped' id='table1'>
 					<thead>
 						<tr><th>Buyer Division</th><th>Style</th><th>CO</th><th>Schedule</th><th>Color</th><th>Fabric WIP Yards</th><th>Fabric WIP Pcs</th><th>EX-Factory</th></tr>
@@ -94,6 +95,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 					}
 					?>
 				</table>
+			</div>				
 		</div>
 </div>
 <script language="javascript" type="text/javascript">
