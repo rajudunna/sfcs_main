@@ -486,8 +486,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         if(ret > 0){
             if(total_rejected_pieces > c_plies * ratio)
                 return swal('You are Returning More than Reporting Pieces','Please Remove some rejections','warning');
-            else if(total_rejected_pieces > 0)
-                rejections_flag = 1;
         }else{
             if(total_rejected_pieces > ret)
                 return swal('You are Rejecting more than Specified','','error');
@@ -521,6 +519,9 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         }
         if(Number(terminate_flag) > 0)
             return false;
+        
+        if(total_rejected_pieces > 0)
+            rejections_flag = 1;
 
         $('#submit').css({'display':'none'});
         $('#wait_loader').css({'display':'block'});
