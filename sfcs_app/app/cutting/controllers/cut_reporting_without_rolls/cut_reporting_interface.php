@@ -369,6 +369,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     var c_plies = 0;
     var fab_req = 0;
     var pieces = {};
+    var pieces_actual = {};
     var dataR;
     var global_serial_id = 0;
     var total_rejected_pieces = 0;//this variable is for how many pieces he selected size and reason
@@ -495,19 +496,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         //Rejections Validation End
 
         var user_msg = '';
-        var form_data = {
-                        doc_no:post_doc_no,c_plies:c_plies,fab_returned:ret,
-                        fab_received:rec,returned_to:returned_to,damages:damages,
-                        shortages:shortages,bundle_location:bundle_location,shift:shift,
-                        cut_table:cut_table,team_leader:team_leader,doc_target_type:doc_target_type,
-                        style:style,color:color,schedule:schedule,rejections_flag:rejections_flag,rejections:rejections_post,
-                        full_reporting_flag : full_reporting_flag
-                        };
         //AJAX Call
         var terminate_flag = 0;
         console.log(form_data);
         if(total_rejected_pieces > 0){
-            $.each(pieces,function(key,value){
+            $.each(pieces_actual,function(key,value){
                 if(  Number(cumulative_size[key]) > Number(value) ){
                 swal('Reporting Pieces are less than the Rejected Pieces','Delete Some Rejections','error');
                 terminate_flag++;
@@ -520,6 +513,15 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         
         if(total_rejected_pieces > 0)
             rejections_flag = 1;
+
+        var form_data = {
+                        doc_no:post_doc_no,c_plies:c_plies,fab_returned:ret,
+                        fab_received:rec,returned_to:returned_to,damages:damages,
+                        shortages:shortages,bundle_location:bundle_location,shift:shift,
+                        cut_table:cut_table,team_leader:team_leader,doc_target_type:doc_target_type,
+                        style:style,color:color,schedule:schedule,rejections_flag:rejections_flag,rejections:rejections_post,
+                        full_reporting_flag : full_reporting_flag
+                    };    
 
         $('#submit').css({'display':'none'});
         $('#wait_loader').css({'display':'block'});
@@ -604,6 +606,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $.each(dataR.old_new_size,function(key,value){
                 SIZE_COUNT++;
                 pieces[key] = Number(dataR.old_size_ratio[key]) * c_plies;
+                pieces_actual[key] =  pieces[key];
                 size_rej_qty_string += value+' : '+pieces[key]+' &nbsp;&nbsp;'; 
                 $('#rejection_size').append('<option value='+key+'>'+value+'</option>');
                 if(GLOBAL_CALL == 0 || CLEAR_FLAG == 1)
@@ -674,6 +677,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
     function clearRejections(){
         delete pieces;
+        delete pieces_actual;
         delete rejections_post;
         global_serial_id = 0;
         total_rejected_pieces = 0;
@@ -739,6 +743,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     dataR = $.parseJSON(res);
                     $.each(dataR.old_new_size,function(key,value){
                         pieces[key] = Number(dataR.old_size_ratio[key]) * c_plies;
+                       
                         size_rej_qty_string += value+' : '+pieces[key]+' &nbsp;&nbsp;'; 
                         $('#rejection_size').append('<option value='+key+'>'+value+'</option>');
                         rejections_post[key] = {};
