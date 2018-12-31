@@ -289,7 +289,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             </span>   
                             <br/> <br/>
                             <span class='col-sm-3'>
-                                Total Rejections : 
+                                Total no of Pieces : 
                                 <input type='button' class='btn btn-success' id='total_pieces'>
                             </span>
                             <span class='col-sm-4'>
