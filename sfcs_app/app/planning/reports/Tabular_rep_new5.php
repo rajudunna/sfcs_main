@@ -189,8 +189,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
     echo "  </select>
 	</div>";
 
-	$sql_buyer="select distinct buyer_div from $bai_pro2.order_status_buffer where cpo='$cpo' order by buyer_div";
-	$sql_result1=mysqli_query($link, $sql_buyer) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_buyer="select distinct buyer_div from $bai_pro2.order_status_buffer where replace(cpo,\"'\",\"\")='".str_replace("'","",$cpo)."' order by buyer_div";
+	$sql_result1=mysqli_query($link, $sql_buyer) or exit("Sql Error1a".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check1=mysqli_num_rows($sql_result1);
 	echo "<div class=\"col-sm-3\"><label>Select Buyer Division:</label><select class='form-control' name=\"buyer_div\"  id=\"buyer_div\" onchange=\"secondbox();\">";
 	
@@ -213,7 +213,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "  </select>
 	</div>";
 	
-	$sql_style="select distinct style from $bai_pro2.order_status_buffer where cpo='$cpo' and  buyer_div='$buyer_div' order by style";
+	$sql_style="select distinct style from $bai_pro2.order_status_buffer where replace(cpo,\"'\",\"\")='".str_replace("'","",$cpo)."' and  buyer_div='$buyer_div' order by style";
 	$sql_result2=mysqli_query($link, $sql_style) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	echo "<div class=\"col-sm-2\"><label>Select Style:</label><select class='form-control' name=\"style\"  id=\"style\" onchange=\"thirdbox();\">";
 	echo "<option value='' disabled selected>Please Select</option>";
@@ -232,7 +232,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 	echo "  </select>
     </div>";
-    $sql_query="select distinct style_id from $bai_pro2.order_status_buffer where cpo='$cpo' and  buyer_div='$buyer_div' and style='$style' order by style_id";
+    $sql_query="select distinct style_id from $bai_pro2.order_status_buffer where replace(cpo,\"'\",\"\")='".str_replace("'","",$cpo)."' and  buyer_div='$buyer_div' and style='$style' order by style_id";
 	$sql_result3=mysqli_query($link, $sql_query) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check3=mysqli_num_rows($sql_result3);
 	echo "<div class=\"col-sm-2\"><label>Select User Style ID:</label><select class='form-control' name=\"style_id\"  id=\"style_id\" onchange=\"fourthbox();\">";
@@ -254,7 +254,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 	echo "  </select>
 	</div>";
-	$sql_schedule="select distinct schedule from $bai_pro2.order_status_buffer where cpo='$cpo' and  buyer_div='$buyer_div' and style='$style' and style_id='$style_id' order by schedule";
+	$sql_schedule="select distinct schedule from $bai_pro2.order_status_buffer where replace(cpo,\"'\",\"\")='".str_replace("'","",$cpo)."' and  buyer_div='$buyer_div' and style='$style' and style_id='$style_id' order by schedule";
 	$sql_result4=mysqli_query($link, $sql_schedule) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check4=mysqli_num_rows($sql_result4);
 	echo "<div class=\"col-sm-2\"><label>Select Schedule:</label><select class='form-control' name=\"schedule\"  id=\"schedule\" onchange=\"fifthbox();\">";
@@ -277,7 +277,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "  </select>
 	</div>";
 	
-    $sql2="select distinct color from $bai_pro2.order_status_buffer where cpo='$cpo' and  buyer_div='$buyer_div' and style='$style' and style_id='$style_id' and schedule='$schedule' order by color";
+    $sql2="select distinct color from $bai_pro2.order_status_buffer where replace(cpo,\"'\",\"\")='".str_replace("'","",$cpo)."' and  buyer_div='$buyer_div' and style='$style' and style_id='$style_id' and schedule='$schedule' order by color";
 	$sql_result5=mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check5=mysqli_num_rows($sql_result5);
 	echo "<div class=\"col-sm-3\"><label>Select Color:</label><select class='form-control' name=\"color\"  id=\"color\" onchange=\"sixthbox();\">";
@@ -361,7 +361,7 @@ if(isset($_POST['submit1']))
 	else{
 		$sql11="select * from  $bai_pro2.order_status_buffer where exf_date between \"$from_date\" and \"$to_date\"";
 		if($cpo!=''){
-			$sql11.="and cpo='$cpo'";
+			$sql11.="and replace(cpo,\"'\",\"\")='".str_replace("'","",$cpo)."'";
 		}
 		if($buyer_div!=''){
 			$sql11.="and buyer_div='$buyer_div'";
@@ -379,6 +379,7 @@ if(isset($_POST['submit1']))
 			$sql11.="and color='$color'";
 		}
 	}
+	//echo $sql11."<br>";
 	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result11_count=mysqli_num_rows($sql_result11);
 
