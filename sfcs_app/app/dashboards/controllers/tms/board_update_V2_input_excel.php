@@ -30,7 +30,7 @@
         }
 
         $report_data_ary = array();
-        $sql2x="select module_id from $bai_pro3.plan_modules where section_id=$section";
+        $sql2x="select module_id from $bai_pro3.plan_modules where section_id=$section order by module_id*1";
         $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
         $i=0;
         $mod_ary = array();$dmod_ary = array();
@@ -40,7 +40,7 @@
         }
         $mod = implode(", ",$mod_ary);
         $mod_qry = "SELECT input_job_no_random_ref as input_job_random FROM plan_dashboard_input WHERE 
-        input_module IN ($mod)";
+        input_module IN ($mod) order by input_module*1";
         $doc_result=mysqli_query($link, $mod_qry) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
             while($row2x=mysqli_fetch_array($doc_result))
             {
