@@ -32,20 +32,24 @@ class rest_api_calls {
 				// "Postman-Token: df10b2f5-8494-4d56-a7b0-d41c05016563"
 			),
 		));
-
 		$response = curl_exec($curl);
+		$httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 		$err = curl_error($curl);
 
 		curl_close($curl);
 		
-        if($err){
-			//return "cURL Error #:" . $err;
-			$reposnse1['@type'] 	= 'ServerReturnedNOK';
-			$reposnse1['Message']   = $err; 
-			return json_encode($reposnse1);
-        }else{
-            return $response;
-        }
+		if($httpcode >= 200 && $httpcode < 300){
+			if($err){
+				//return "cURL Error #:" . $err;
+				$reposnse1['@type'] 	= 'ServerReturnedNOK';
+				$reposnse1['Message']   = $err; 
+				return json_encode($reposnse1);
+			}else{
+				return $response;
+			}
+		}else{
+			return false;
+		}
 	}		
 }
 $obj = new rest_api_calls();	
