@@ -257,7 +257,7 @@ border: 1px solid black;
 .lgreen {
   width:20px;
   height:20px;
-  background-color: #339900;
+  background-color: #00ff00;
   display:block;
   float: left;
   margin: 2px;
@@ -276,7 +276,7 @@ border: 1px solid black;
 
 .lgreen a:hover {
   text-decoration:none;
-  background-color: #339900;
+  background-color: #00ff00;
   
 }
 
