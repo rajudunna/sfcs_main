@@ -272,7 +272,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 // echo "<a class='btn btn-info btn-sm' href=\"print_input_sheet.php?schedule=$org_schs\" onclick=\"return popitup_new('print_input_sheet.php?schedule=$org_schs')\">Print Input Job Sheet - Job Wise</a><br>";
 
 echo "<h4><u>Consumption Report</u> </h4>";
-echo "<a class='btn btn-info btn-sm' href=\"sheet_v2.php?schedule=$org_schs&style=$style&input_job=$jobno\" onclick=\"return popitup_new('sheet_v2.php?schedule=$org_schs&style=$style&input_job=$jobno')\"><button class='equal btn btn-success'>Job Wise Trim Requirement Sheet</button></a><br><br>";
+echo "<a class='btn btn-info btn-sm' href=\"sheet_v2.php?schedule=$join_sch&style=$style&input_job=$jobno\" onclick=\"return popitup_new('sheet_v2.php?schedule=$join_sch&style=$style&input_job=$jobno')\"><button class='equal btn btn-success'>Job Wise Trim Requirement Sheet</button></a><br><br>";
 
 $sql4="select input_trims_status as t_status from $table_name where input_job_no_random_ref='$doc'";
 //echo $sql4;
