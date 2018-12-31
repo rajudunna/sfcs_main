@@ -668,13 +668,19 @@ if(isset($_POST['allocate_new']))
 		{
 			if($tid_ref[$j]>0)
 			{
+				if($tid_ref[$j] == ''){
+					$tid_ref[$j]=0;
+				}
+				if($issued_ref[$j] == ''){
+					$issued_ref[$j]=0;
+				}
 				if($process_cat==1)
 				{
-					$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'normal',".$issued_ref[$j].",'1')";
+					$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",'".$tid_ref[$j]."',".$width_ref[$j].",'normal',".$issued_ref[$j].",'1')";
 				}
 				else
 				{
-					$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'recut',".$issued_ref[$j].",'1')";
+					$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",'".$tid_ref[$j]."',".$width_ref[$j].",'recut',".$issued_ref[$j].",'1')";
 				}
 				
 				//Uncheck this

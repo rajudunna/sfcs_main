@@ -85,13 +85,9 @@
                 $schedule=$rowx['order_del_no']; 
             }
 
-            $query_check = "SELECT COUNT(id) as cnt FROM $brandix_bts.`bundle_creation_data_temp` WHERE input_job_no_random_ref='$input_job_no_random'";
+            $query_check = "SELECT * FROM $brandix_bts.`bundle_creation_data_temp` WHERE input_job_no_random_ref='$input_job_no_random'";
             $res_query_check=mysqli_query($link,$query_check);
-            while($result = mysqli_fetch_array($res_query_check))
-            {
-                $count = $result['cnt'];
-            }
-            if ($count=='') 
+            if (mysqli_num_rows($res_query_check) == 0) 
             {
                 if ($qty == 0) 
                 {
