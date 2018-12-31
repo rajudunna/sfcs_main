@@ -171,7 +171,7 @@ if(isset($_POST['category']))
     <div class="modal-dialog" style="width: 80%;">
         <div class="modal-content">
             <div class="modal-header">Recut Detailed View
-                <button type="button" class="close"  id = "cancel" data-dismiss="modal">&times;</button>
+                <button type="button" class="btn btn-danger btn-sm pull-right"  id = "cancel" data-dismiss="modal">Close</button>
             </div>
             <div class="modal-body" id='main-content'>
                 <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
