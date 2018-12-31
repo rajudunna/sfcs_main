@@ -21,16 +21,22 @@ if(is_array($_POST) && !empty($_POST))
     $menu_name = $_POST['menu_name'];
     $permissions = $_POST['id'];
     $menucount = sizeof($menu_id);
-    $checkquery = "SELECT group_concat(`role_menu_id` separator ',') as role_menuid from $central_administration_sfcs.rbac_role_menu WHERE roll_id =".$role_id;
-    //echo $checkquery;
-    $query_result3 = mysqli_query($link, $checkquery) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
-    $row = mysqli_fetch_assoc($query_result3);
-    $role_menuid=$row['role_menuid'];
-    $value = implode(",", $row);
+    $checkquery = "SELECT role_menu_id from $central_administration_sfcs.rbac_role_menu WHERE roll_id =".$role_id;
+    $query_result = mysqli_query($link, $checkquery) or exit("Sql Error4=".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $role_menuid_array = array_column(mysqli_fetch_all($query_result,MYSQLI_ASSOC),'role_menu_id');
+    // while($row_checkquery = mysqli_fetch_array($query_result)){
+    //     $role_menuid_array[]=$row_checkquery['role_menu_id'];
+    // }
+    // var_dump($role_menuid_array);
+    // exit;
+    // $query_result3 = mysqli_query($link, $checkquery) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+    // $row = mysqli_fetch_assoc($query_result3);
+    // $role_menuid=$row['role_menuid'];
+    $value = implode(",", $role_menuid_array);
     if($value != '' && $menucount>1)
     {
     $qry_delrolemenuper="DELETE from $central_administration_sfcs.rbac_role_menu_per WHERE 
-    role_menu_id in ($role_menuid)";
+    role_menu_id in ($value)";
     $query_result4 = mysqli_query($link, $qry_delrolemenuper) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
     $qry_delrolemenu = "DELETE FROM central_administration_sfcs.rbac_role_menu WHERE roll_id =".$role_id;
     $query_result5 = mysqli_query($link, $qry_delrolemenu) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
