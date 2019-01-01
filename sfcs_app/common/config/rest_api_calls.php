@@ -48,7 +48,9 @@ class rest_api_calls {
 				return $response;
 			}
 		}else{
-			return false;
+			$reposnse1['@type'] 	= 'ServerReturnedNOK';
+			$reposnse1['Message']   = $err; 
+			return json_encode($reposnse1);
 		}
 	}		
 }
