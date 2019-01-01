@@ -36,7 +36,7 @@
     }
 
 
-    function getdata(){
+    function getdata(var flag=0){
       delete ijob_array;
       $('#loading-image').show();
       $('#submit_button').hide();
@@ -53,6 +53,7 @@
                 $('#show_to_module').show();
                 $('#loading-image').hide();
                 if(data.records == '0'){
+                    if(flag != '1')
                     swal('No Jobs For Transfer','','warning');
                     document.getElementById('dynamic_table').innerHTML = '';
                     document.getElementById('show_to_module').style.display = "none";
@@ -82,7 +83,7 @@
                     else
                         swal('Error In Module Transfer','','error');
 
-                    getdata();
+                    getdata(1);
                 }
             });
         }
