@@ -357,7 +357,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
     $b_module = $plan_module;
 
     //getting work_station_id
-    $qry_to_get_work_station_id = "SELECT work_center_id,short_cut_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE operation_code = '$op_code'";
+    $qry_to_get_work_station_id = "SELECT work_center_id,short_cut_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE operation_code = '$main_ops_code'";
     $result_qry_to_get_work_station_id=mysqli_query($link,$qry_to_get_work_station_id) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row=mysqli_fetch_array($result_qry_to_get_work_station_id))
     {
