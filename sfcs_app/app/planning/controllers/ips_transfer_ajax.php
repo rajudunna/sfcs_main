@@ -1,3 +1,4 @@
+
 <?php
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 error_reporting(0);
@@ -14,21 +15,50 @@ if(isset($_GET['get_data'])){
     $json['saved'] = $res;
     echo json_encode($json);
     exit();
-} 
+}
 
+function leading_zeros($value, $places)
+{
+    $leading='';
+    
+    if(is_numeric($value))
+    {
+        for($x = 1; $x <= $places; $x++)
+        {
+            $ceiling = pow(10, $x);
+            if($value < $ceiling)
+            {
+                $zeros = $places - $x;
+                for($y = 1; $y <= $zeros; $y++)
+                {
+                    $leading .= "0";
+                }
+            $x = $places + 1;
+            }
+        }
+        $output = $leading . $value;
+    }
+    else{
+        $output = $value;
+    }
+    
+    return $output;
+}
 
 
 function get_details($module){
         $counter = 0;
         include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+        
 
     $html_out = "<div class='panel panel-primary'>";
      $html_out.= "<div class='panel-heading'><h3>Module -$module</h3></div>";
        $html_out.= "<div class='panel-body'>";
+       $html_out.= "";
          $html_out.= "<table class='table table-bordered'>
                  <thead>
                      <tr>
-                         <td>Control</td>
+                         <td><input type='checkbox' class='btn btn-sm btn-warning' value='check all' onclick='toggle(this)'> Control</td>
                          <td>Sewing Job Number</td>
                          <td>Style</td>
                          <td>Schedule</td>
@@ -45,13 +75,16 @@ function get_details($module){
         
         // echo "<b>Module:</b> $module | <b>input_job:</b> $input_job"; 
         //To get style and schedule
-        $get_details="select order_style_no,order_del_no from $bai_pro3.packing_summary_input where input_job_no_random='$input_job'";
-        //echo $get_details;
+        $get_details="select order_style_no,order_del_no,order_col_des,type_of_sewing,input_job_no from $bai_pro3.packing_summary_input where input_job_no_random='$input_job'";
+       // echo $get_details;
         $get_details_result=mysqli_query($link, $get_details)or exit("details_error".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($row2=mysqli_fetch_array($get_details_result))
         {
             $style=$row2['order_style_no'];
             $schedule=$row2['order_del_no'];
+            $color=$row2['order_col_des'];
+            $type_name=$row2['type_of_sewing'];
+            $job=$row2['input_job_no'];
         }
 
      
@@ -68,9 +101,26 @@ function get_details($module){
             $operation_code=$sql_row1['operation_code'];
         }
 
+
+        // To get Prefix
+        $get_prefix="select * from  brandix_bts.tbl_sewing_job_prefix where type_of_sewing ='$type_name'";
+        //echo $get_prefix;
+        $get_result=mysqli_query($link, $get_prefix)or exit("prefix error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($row3=mysqli_fetch_array($get_result))
+        {
+          $prefix=$row3['prefix'];
+        }
+
+        
+        $display=$prefix.''.leading_zeros($job,3);
+        
+
         $bcd_query="select sum(recevied_qty) as rec From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$input_job' and operation_id = $operation_code group by input_job_no_random_ref";
         //echo $bcd_query;
         $bcd_result=mysqli_query($link, $bcd_query)or exit("recevied qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+        // $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color_name,$input_job,$link);
+
         $sql_num_check=mysqli_num_rows($bcd_result);
         if($sql_num_check >0)
         {
@@ -85,7 +135,7 @@ function get_details($module){
                     $html_out.= "<td>
                     <input type='hidden' value='$input_job' id='job_$counter'>
                     <input type='checkbox' class='custom-control-input boxes' id='$counter' onchange='checkedMe(this)'></td>
-                    <td>$input_job</td>
+                    <td>$display</td>
                     <td>$style</td>
                     <td>$schedule</td>";
                     $html_out.= "</tr>";
@@ -99,7 +149,7 @@ function get_details($module){
                     $html_out.= "<td>
                     <input type='hidden' value='$input_job' id='job_$counter'>
                     <input type='checkbox' class='custom-control-input boxes' id='$counter' onchange='checkedMe(this)'></td>
-                    <td>$input_job</td>
+                    <td>$display</td>
                     <td>$style</td>
                     <td>$schedule</td>";
                     $html_out.= "</tr>";
