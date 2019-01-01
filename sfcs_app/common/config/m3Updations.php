@@ -421,7 +421,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                         // $to_update_qty = '-'.$b_rep_qty;
                         $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`,`api_type`) 
                         VALUES ('$current_date','$mo_number',$to_update_qty,'$r_reasons[$key]','Normal','$username','',$b_module,'$b_shift',$op_code,'',$id,'$work_station_id','','$main_ops_code','opn')";
-                        echo $inserting_into_m3_tran_log.'</br>';
+                        // echo $inserting_into_m3_tran_log.'</br>';
                         mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
                         $insert_id=mysqli_insert_id($link);
         
