@@ -48,7 +48,7 @@
 
 		$barcode_qry="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job."' order by doc_no*1,barcode_sequence*1";			
 		$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$seq_num=1;
+		
 		while($barcode_rslt = mysqli_fetch_array($sql_barcode))
 		{				
 			$barcode=$barcode_rslt['tid'];
@@ -58,14 +58,8 @@
 			$quantity=$barcode_rslt['carton_act_qty'];
 			$size=$barcode_rslt['size_code'];
 			$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color."' and order_del_no",$schedule,$link);
+			$seq_num=$barcode_rslt['barcode_sequence'];
 			
-			//sequence number logic based on size and colors
-			if(($size_temp!='') AND ($color_temp!='')){	
-				if(($size_temp!=$barcode_rslt['size_code'] ) OR ($color_temp!=$barcode_rslt['order_col_des'])){
-					$seq_num=1;
-				}
-			}
-
             $get_destination="select destination from bai_pro3.bai_orders_db where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."' ";
 			
 			$destination_result=mysqli_query($link, $get_destination)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));

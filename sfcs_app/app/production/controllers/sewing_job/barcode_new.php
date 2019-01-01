@@ -50,7 +50,7 @@
 		//echo "Qry :".$barcode_qry."</br>";
 		$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-		$seq_num=1;
+	
 		while($barcode_rslt = mysqli_fetch_array($sql_barcode))
 		{
 			$sewing_job_random_id=$barcode_rslt['input_job_no_random'];
@@ -60,14 +60,9 @@
 			$cutno=$barcode_rslt['acutno'];
 			$quantity=$barcode_rslt['carton_act_qty'];
 			$size=$barcode_rslt['size_code'];
+			$seq_num=$barcode_rslt['barcode_sequence'];
 
-			//if(($size_temp!=$barcode_rslt['size_code']) OR ($color_temp!=$barcode_rslt['order_col_des']))
-			if(($size_temp!='') AND ($color_temp!='') AND ($cutno_temp != '')){	
-				if(($size_temp!=$barcode_rslt['size_code'] ) OR ($color_temp!=$barcode_rslt['order_col_des']) OR ($cutno_temp!=$barcode_rslt['acutno'])){
-					$seq_num=1;
-				}
-			}
-
+			
 
 			$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color."' and order_del_no",$schedule,$link);
 			//$display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
