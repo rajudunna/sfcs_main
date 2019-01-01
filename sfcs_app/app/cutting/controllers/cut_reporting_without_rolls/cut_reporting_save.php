@@ -504,21 +504,28 @@ if($target == 'style_clubbed'){
    
     foreach($planned as $size => $docket){
         $qty = $reporting[$size];
-        $docs = $dockets[$size];
-        $splitted = $qty;
-        $quit_counter = 0;
-        do{
-            if($quit_counter++ > $THRESHOLD){
-                $response_data['pass'] = 0;
-                echo json_encode($response_data);
-                exit();
+        if($qty > 0){
+            $docs = $dockets[$size];
+            $splitted = $qty;
+            $quit_counter = 0;
+            if($qty > $docs){
+                do{
+                    if($quit_counter++ > $THRESHOLD){
+                        $response_data['pass'] = 0;
+                        echo json_encode($response_data);
+                        exit();
+                    }
+                        
+                    if(ceil($splitted % $docs) > 0)
+                        $splitted--;
+                }while($splitted % $docs > 0);
+                $rem = $qty - $splitted;
+                $splitted = $splitted/$docs;
+            }else{
+                $rem = $qty;
+                $splitted = 0;
             }
-                
-            if(ceil($splitted % $docs) > 0)
-                $splitted--;
-        }while($splitted % $docs > 0);
-        $rem = $qty - $splitted;
-        $splitted = $splitted/$docs;
+        }
 
         foreach($docket as $child_doc => $qty){
             if($qty > 0){
@@ -589,19 +596,23 @@ if($target == 'style_clubbed'){
             $docs = $docs_count[$size];
             $splitted = $qty;
             $quit_counter = 0;
-            do{
-                $quit_counter++;
-                if($quit_counter > 50){
-                    $response_data['pass'] = 0;
-                    echo json_encode($response_data);
-                    exit();
-                }
-                if(ceil($splitted % $docs) > 0)
-                    $splitted--;
-            }while($splitted % $docs > 0);
-            $rem = $qty - $splitted;
-
-            $splitted = $splitted/$docs;
+            if($qty > $docs){
+                do{
+                    $quit_counter++;
+                    if($quit_counter > 50){
+                        $response_data['pass'] = 0;
+                        echo json_encode($response_data);
+                        exit();
+                    }
+                    if(ceil($splitted % $docs) > 0)
+                        $splitted--;
+                }while($splitted % $docs > 0);
+                $rem = $qty - $splitted;
+                $splitted = $splitted/$docs;
+            }else{
+                $rem = $qty;
+                $splitted = 0;
+            }
 
             foreach($planned[$size] as $docket => $ignore){
                 if($rem > 0){
