@@ -58,7 +58,7 @@ function get_details($module){
          $html_out.= "<table class='table table-bordered'>
                  <thead>
                      <tr>
-                         <td><input type='checkbox' class='btn btn-sm btn-warning' value='check all' onclick='toggle(this)'> Control</td>
+                         <td><input type='checkbox' class='btn btn-sm btn-warning' value='check all' onclick='toggle(this)'> Select All</td>
                          <td>Sewing Job Number</td>
                          <td>Style</td>
                          <td>Schedule</td>
