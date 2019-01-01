@@ -510,6 +510,7 @@ if($target == 'style_clubbed'){
         do{
             if($quit_counter++ > $THRESHOLD){
                 $response_data['pass'] = 0;
+                echo json_encode($response_data);
                 exit();
             }
                 
@@ -537,6 +538,7 @@ if($target == 'style_clubbed'){
         do{
             if($quit_counter++ > $THRESHOLD){
                 $response_data['pass'] = 0;
+                echo json_encode($response_data);
                 exit();
             }
             $fulfill_qty = $reporting[$size];
@@ -583,28 +585,31 @@ if($target == 'style_clubbed'){
     }
     //ALL Excess Qty left out to be filled equally 
     foreach($left_over as $size=>$qty){
-        $docs = $docs_count[$size];
-        $splitted = $qty;
-        $quit_counter = 0;
-        do{
-            $quit_counter++;
-            if($quit_counter > 50){
-                $response_data['pass'] = 0;
-                exit();
+        if($qty > 0){
+            $docs = $docs_count[$size];
+            $splitted = $qty;
+            $quit_counter = 0;
+            do{
+                $quit_counter++;
+                if($quit_counter > 50){
+                    $response_data['pass'] = 0;
+                    echo json_encode($response_data);
+                    exit();
+                }
+                if(ceil($splitted % $docs) > 0)
+                    $splitted--;
+            }while($splitted % $docs > 0);
+            $rem = $qty - $splitted;
+
+            $splitted = $splitted/$docs;
+
+            foreach($planned[$size] as $docket => $ignore){
+                if($rem > 0){
+                    $rem--;
+                    $reported[$docket][$size]  = $splitted + 1;
+                }else
+                    $reported[$docket][$size] += $splitted;
             }
-            if(ceil($splitted % $docs) > 0)
-                $splitted--;
-        }while($splitted % $docs > 0);
-        $rem = $qty - $splitted;
-
-        $splitted = $splitted/$docs;
-
-        foreach($planned[$size] as $docket => $ignore){
-            if($rem > 0){
-                $rem--;
-                $reported[$docket][$size]  = $splitted + 1;
-            }else
-                $reported[$docket][$size] += $splitted;
         }
     }
     //Array Cloning reported into reported2

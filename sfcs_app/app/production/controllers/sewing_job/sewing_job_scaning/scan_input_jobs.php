@@ -287,7 +287,11 @@ $(document).ready(function()
 			url: function_text+"?pre_array_module="+pre_array_module,
 			dataType: "json",
 			success: function (response) 
+<<<<<<< HEAD
 			{				
+=======
+			{
+>>>>>>> 1128_Resolve_Sewing_Job_Rejection_Issue_to_Module_New_screen_New
 				if (response == 4)
 				{
 					module_flag = 1; // block
@@ -315,7 +319,10 @@ $(document).ready(function()
 				{
 					module_flag = 0; // allow
 				}
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1128_Resolve_Sewing_Job_Rejection_Issue_to_Module_New_screen_New
 				if(module_flag == 0)
 				{
 					var array = [job_number,operation_id,barcode_generation,assign_module];
@@ -423,11 +430,19 @@ $(document).ready(function()
 										if(operation_id == operation_code_routing)
 										{
 											if (display_reporting_qty == 'yes')
+<<<<<<< HEAD
 											{
 												var temp_var_bal1 = data[i].balance_to_report;
 											}
 											else
 											{
+=======
+											{
+												var temp_var_bal1 = data[i].balance_to_report;
+											}
+											else
+											{
+>>>>>>> 1128_Resolve_Sewing_Job_Rejection_Issue_to_Module_New_screen_New
 												var temp_var_bal1 = 0;
 											}
 										}
@@ -450,6 +465,7 @@ $(document).ready(function()
 										$("#dynamic_table").hide();
 									}
 								}
+<<<<<<< HEAD
 									var markup99 = "</tbody></table></br></div></div></div>";
 									$("#dynamic_table").append(markup99);
 									$("#dynamic_table").show();
@@ -471,6 +487,27 @@ $(document).ready(function()
 	<?php }?>
 		
 	
+=======
+								var markup99 = "</tbody></table></br></div></div></div>";
+								$("#dynamic_table").append(markup99);
+								$("#dynamic_table").show();
+								$('#hid_job').val(job_number);
+								$('#loading-image').hide();
+								$('#loading-image').hide();
+							}		    
+						});
+			}
+			else
+			{
+				sweetAlert(restrict_msg,'','error');
+				$('#loading-image').hide();
+			}	
+		}		
+	});				
+	<?php if ($_POST['operation_name']) {?>
+	});
+	<?php }?>
+>>>>>>> 1128_Resolve_Sewing_Job_Rejection_Issue_to_Module_New_screen_New
 });
 function rejections_capture(val)
 {
