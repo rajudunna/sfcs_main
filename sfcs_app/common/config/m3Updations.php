@@ -409,19 +409,19 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                     }
                     $ims_pro_qty_updating = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites".mysqli_error($GLOBALS["___mysqli_ston"]));
                 
-                    $dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and operation_code='$main_ops_code'";
+                    $dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and operation_code='$op_code'";
                     $result_dep_ops_array_qry = $link->query($dep_ops_array_qry);
                     while($row = $result_dep_ops_array_qry->fetch_assoc()) 
                     {
                         $is_m3 = $row['default_operration'];
                     }
                    
-                    if($is_m3 == 'Yes' || $is_m3 == 'yes' || $is_m3 == 'YES')
+                    if(strtolower($is_m3) == 'yes')
                     {                    
-                        $to_update_qty = '-'.$b_rep_qty;
+                        // $to_update_qty = '-'.$b_rep_qty;
                         $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`,`api_type`) 
                         VALUES ('$current_date','$mo_number',$to_update_qty,'$r_reasons[$key]','Normal','$username','',$b_module,'$b_shift',$op_code,'',$id,'$work_station_id','','$main_ops_code','opn')";
-                        echo $inserting_into_m3_tran_log.'</br>';
+                        // echo $inserting_into_m3_tran_log.'</br>';
                         mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
                         $insert_id=mysqli_insert_id($link);
         
@@ -598,7 +598,7 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
                             mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                             //insert transactions details into transactions_log
-                            $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`,`updated_at`) VALUES ('$insert_id','$message','$username','$current_date')"; 
+                            $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id','$message','$username','$current_date')"; 
                             mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
                     }
