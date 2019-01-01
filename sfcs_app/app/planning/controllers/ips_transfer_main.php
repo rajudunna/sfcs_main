@@ -56,9 +56,7 @@
                     swal('No Jobs For Transfer','','warning');
                     document.getElementById('dynamic_table').innerHTML = '';
                     document.getElementById('show_to_module').style.display = "none";
-
                 }
-
             }
         });
     }
@@ -91,6 +89,14 @@
 
         console.log(data);
     }
+    
+    function toggle(source) {
+        checkboxes = document.getElementsByClassName('boxes');
+        for(var i=0, n=checkboxes.length;i<n;i++) {
+            checkboxes[i].checked = source.checked;
+            checkedMe(checkboxes[i]);
+        }
+    }
 </script>
 
 <html>
@@ -104,7 +110,7 @@
                 <div class="panel-body">
                     <div class='row'>
                         <div class="form-inline col-sm-10">
-
+                           
                             <label><font size="2">Module: </font></label>
                             <select  name="module" class="form-control" id="module">
                                 <option value="" disabled selected>Select Module</option>
