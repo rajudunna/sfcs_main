@@ -2,6 +2,27 @@
 <div class="panel panel-primary">
 <div class="panel-heading">Sewing Job Generation</div>
 <div class="panel-body">
+	<style>
+		#loading-image
+		{
+			position:fixed;
+			top:0px;
+			right:0px;
+			width:100%;
+			height:100%;
+			background-color:#666;
+			/* background-image:url('ajax-loader.gif'); */
+			background-repeat:no-repeat;
+			background-position:center;
+			z-index:10000000;
+			opacity: 0.4;
+			filter: alpha(opacity=40); /* For IE8 and earlier */
+		}
+	</style>
+
+	<div class="ajax-loader" id="loading-image">
+	    <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+	</div>
 <?php
 
 	set_time_limit(30000000); 
