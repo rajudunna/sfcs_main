@@ -116,7 +116,7 @@
                     }
                     
                     if($reason=='fail'){
-                        $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`transactions_log` WHERE transaction_id=".$res['id']))['response_message'] ?? 'fail with no reason.';
+                        $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`transactions_log` WHERE transaction_id=".$res['id']." order by sno desc limit 1"))['response_message'] ?? 'fail with no reason.';
                         $reason = '<label class="label label-danger">'.$ndr."</label>";
                     }else{
                         $reason = "<label class='label label-success'>".$reason."</label>";
