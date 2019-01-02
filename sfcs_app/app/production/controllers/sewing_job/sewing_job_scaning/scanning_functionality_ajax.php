@@ -930,7 +930,11 @@ else if($concurrent_flag == 0)
 						$dep_check_result = $link->query($dep_check_query) or exit('dep_check_query error');
 						if(mysqli_num_rows($dep_check_result) <= 0){
 						//change values here in query....
-							$send_qty = $b_rep_qty[$key];
+						    $send_qty =0;
+							if($op_code == $post_ops_code)
+							{
+								$send_qty = $b_rep_qty[$key];
+							}
 							$rec_qty = 0;
 							$rej_qty = 0;
 							$b_query[$op_code] .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$send_qty.'","'.$rec_qty.'","'.$rej_qty.'","'.$left_over_qty.'","'. $op_code.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$mapped_color.'","'.$barcode_sequence[$key].'","'.$b_tid[$key].'"),';
