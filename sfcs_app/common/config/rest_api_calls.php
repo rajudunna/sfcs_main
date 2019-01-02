@@ -49,7 +49,7 @@ class rest_api_calls {
 			}
 		}else{
 			$reposnse1['@type'] 	= 'ServerReturnedNOK';
-			$reposnse1['Message']   = $err; 
+			$reposnse1['Message']   = 'API Call failed due to '.$httpcode.' code';
 			return json_encode($reposnse1);
 		}
 	}		
