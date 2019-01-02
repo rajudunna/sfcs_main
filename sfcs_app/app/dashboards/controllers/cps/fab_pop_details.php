@@ -733,6 +733,16 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 {
 	$fabric_status=$sql_row1['fabric_status'];
 }
+
+if($sql_num_check == 0){
+	if($doc_no > 0){
+		$fab_status_query = "SELECT fabric_status from $bai_pro3.order_cat_doc_mk_mix where doc_no=$doc_no";
+		$fab_status_result = mysqli_query($link,$fab_status_query);
+		while($row = mysqli_fetch_array($fab_status_result)){
+			$fabric_status=$row['fabric_status'];
+		}
+	}
+}
 //echo "TEst"."<br>";
 //echo sizeof($docket_num)."<br>";
 if($fabric_status=="1")

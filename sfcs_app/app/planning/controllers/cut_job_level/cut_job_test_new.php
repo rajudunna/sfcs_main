@@ -112,8 +112,27 @@ echo "<div class='row'>";
 		$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row=mysqli_fetch_array($sql_result)) 
 		{ 
-		    $code.=$sql_row['doc_no']."-".chr($sql_row['color_code']).leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
-		    $cat_ref= $sql_row['cat_ref']; 
+			$doc_no_for_recut = $sql_row['doc_no'];
+			$remarks_query = "select * from $bai_pro3.plandoc_stat_log where doc_no = $doc_no_for_recut";
+			$remarks_query_result=mysqli_query($link,$remarks_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			while($remarks_row=mysqli_fetch_array($remarks_query_result)) 
+			{
+				$remarks = $remarks_row['remarks'];
+				$approve = $remarks_row['fabric_status'];
+			}
+			if(strtolower($remarks) == 'recut')
+			{
+				if($approve == 99)
+				{
+					$code.=$sql_row['doc_no']."-R".leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
+					$cat_ref= $sql_row['cat_ref']; 
+				}
+			}
+			else if(strtolower($remarks) != 'recut')
+			{
+				$code.=$sql_row['doc_no']."-".chr($sql_row['color_code']).leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
+				$cat_ref= $sql_row['cat_ref']; 
+			}
 		}	 
 
 		$sql= "select cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" order by doc_no"; 

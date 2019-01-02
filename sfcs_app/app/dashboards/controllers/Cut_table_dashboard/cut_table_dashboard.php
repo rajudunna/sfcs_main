@@ -1052,9 +1052,14 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       }
       else
       {
-        
+        if(strtolower($remarks) == 'recut'){
+          $cut_str = 'R';
+          $id = 'pink';
+        }else
+          $cut_str = chr($sql_row1['color_code']);
+
         $colors_db[]=$color;
-        $club_c_code[]=chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3);
+        $club_c_code[]=$cut_str.''.leading_zeros($sql_row1['acutno'],3);
         $club_docs[]=$doc_no;
       }
       
