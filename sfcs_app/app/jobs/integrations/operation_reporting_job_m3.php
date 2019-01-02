@@ -58,27 +58,25 @@ while($row=mysqli_fetch_array($transaction_result))
         {
             $api_data = $obj->getCurlAuthRequest($api_url);
             $decoded = json_decode($api_data,true);
-            if($decoded){
-                $type=$decoded['@type'];
-                $code=$decoded['@code'];
-                $message=$decoded['Message'];
+            $type=$decoded['@type'];
+            $code=$decoded['@code'];
+            $message=$decoded['Message'];
 
-                //validating response pass/fail and inserting log
-                if($type!='ServerReturnedNOK')
-                {
-                    //updating response status in m3_transactions
-                    $qry_m3_transactions="UPDATE $bai_pro3.m3_transactions SET response_status='pass' WHERE id=".$transaction_id;
-                    mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
-                }
-                else
-                {
-                    //incrementing the m3_trail_count in m3_transactions
-                    $update_query = "UPDATE $bai_pro3.m3_transactions set m3_trail_count = m3_trail_count + 1 where id=$transaction_id ";
-                    mysqli_query($link,$update_query) or exit('Theres an Error while Updaitng m3_trans');
-                    //insert transactions details into transactions_log
-                    $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$transaction_id','$message','$log_user','$current_date')"; 
-                    mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
-                }
+            //validating response pass/fail and inserting log
+            if($type!='ServerReturnedNOK')
+            {
+                //updating response status in m3_transactions
+                $qry_m3_transactions="UPDATE $bai_pro3.m3_transactions SET response_status='pass' WHERE id=".$transaction_id;
+                mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
+            }
+            else
+            {
+                //incrementing the m3_trail_count in m3_transactions
+                $update_query = "UPDATE $bai_pro3.m3_transactions set m3_trail_count = m3_trail_count + 1 where id=$transaction_id ";
+                mysqli_query($link,$update_query) or exit('Theres an Error while Updaitng m3_trans');
+                //insert transactions details into transactions_log
+                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$transaction_id','$message','$log_user','$current_date')"; 
+                mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
             
         }  
@@ -109,27 +107,25 @@ while($row=mysqli_fetch_array($transaction_result))
         {
             $api_data = $obj->getCurlAuthRequest($api_url);
             $decoded = json_decode($api_data,true);
-            if($decoded){
-                $type=$decoded['@type'];
-                $code=$decoded['@code'];
-                $message=$decoded['Message'];
+            $type=$decoded['@type'];
+            $code=$decoded['@code'];
+            $message=$decoded['Message'];
 
-                //validating response pass/fail and inserting log
-                if($type!='ServerReturnedNOK')
-                {
-                    //updating response status in m3_transactions
-                    $qry_m3_transactions="UPDATE $bai_pro3.m3_transactions SET response_status='pass' WHERE id=".$transaction_id;
-                    mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
-                }
-                else
-                {
-                    //incrementing the m3_trail_count in m3_transactions
-                    $update_query = "UPDATE $bai_pro3.m3_transactions set m3_trail_count = m3_trail_count + 1 where id=$transaction_id ";
-                    mysqli_query($link,$update_query) or exit('Theres an Error while Updaitng m3_trans');
-                    //insert transactions details into transactions_log
-                    $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$transaction_id','$message','$log_user','$current_date')"; 
-                    mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
-                }
+            //validating response pass/fail and inserting log
+            if($type!='ServerReturnedNOK')
+            {
+                //updating response status in m3_transactions
+                $qry_m3_transactions="UPDATE $bai_pro3.m3_transactions SET response_status='pass' WHERE id=".$transaction_id;
+                mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
+            }
+            else
+            {
+                //incrementing the m3_trail_count in m3_transactions
+                $update_query = "UPDATE $bai_pro3.m3_transactions set m3_trail_count = m3_trail_count + 1 where id=$transaction_id ";
+                mysqli_query($link,$update_query) or exit('Theres an Error while Updaitng m3_trans');
+                //insert transactions details into transactions_log
+                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$transaction_id','$message','$log_user','$current_date')"; 
+                mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
             
         } 

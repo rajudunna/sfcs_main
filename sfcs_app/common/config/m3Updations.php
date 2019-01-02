@@ -135,27 +135,25 @@
                             $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                             $api_data = $obj->getCurlAuthRequest($api_url);
                             $decoded = json_decode($api_data,true);
-                            if($decoded){
-                                $type=$decoded['@type'];
-                                $code=$decoded['@code'];
-                                $message=$decoded['Message'];
-    
-                                //validating response pass/fail and inserting log
-                                if($type!='ServerReturnedNOK'){
-                                    //updating response status in m3_transactions
-                                    $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
-                                    mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
-    
-                                }else{
-                                    //updating response status in m3_transactions
-                                    $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id;
-                                    mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
-    
-                                    //insert transactions details into transactions_log
-                                    $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log`(`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id','$message','$username','$current_date')"; 
-                                    mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                }
-                            }                  
+                            $type=$decoded['@type'];
+                            $code=$decoded['@code'];
+                            $message=$decoded['Message'];
+
+                            //validating response pass/fail and inserting log
+                            if($type!='ServerReturnedNOK'){
+                                //updating response status in m3_transactions
+                                $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
+                                mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                            }else{
+                                //updating response status in m3_transactions
+                                $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id;
+                                mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                                //insert transactions details into transactions_log
+                                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log`(`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id','$message','$username','$current_date')"; 
+                                mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            }                 
                         }
                     }                
                 }
@@ -296,22 +294,20 @@
                             $code=$decoded['@code'];
                             $message=$decoded['Message'];
                         } 
-                        if($decoded){
-                            //validating response pass/fail and inserting log
-                            if($type!='ServerReturnedNOK'){
-                                //updating response status in m3_transactions
-                                $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
-                                mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        //validating response pass/fail and inserting log
+                        if($type!='ServerReturnedNOK'){
+                            //updating response status in m3_transactions
+                            $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
+                            mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                            }else{
-                                //updating response status in m3_transactions
-                                $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id;
-                                mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        }else{
+                            //updating response status in m3_transactions
+                            $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id;
+                            mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                                //insert transactions details into transactions_log
-                                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id','$message','$username','$current_date')"; 
-                                mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            }
+                            //insert transactions details into transactions_log
+                            $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id','$message','$username','$current_date')"; 
+                            mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
                     }
                 }
@@ -433,25 +429,23 @@
                                 $code=$decoded['@code'];
                                 $message=$decoded['Message'];
                             }
-                            if($decoded){
-                                //validating response pass/fail and inserting log
-                                if($type!='ServerReturnedNOK')
-                                {
-                                    //updating response status in m3_transactions
-                                    $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
-                                    mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            //validating response pass/fail and inserting log
+                            if($type!='ServerReturnedNOK')
+                            {
+                                //updating response status in m3_transactions
+                                $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
+                                mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                                }
-                                else
-                                {
-                                    //updating response status in m3_transactions
-                                    $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id;
-                                    mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            }
+                            else
+                            {
+                                //updating response status in m3_transactions
+                                $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id;
+                                mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                                    //insert transactions details into transactions_log
-                                    $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`,`updated_at`) VALUES ('$insert_id','$message','$username','$current_date')"; 
-                                    mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                }
+                                //insert transactions details into transactions_log
+                                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`,`updated_at`) VALUES ('$insert_id','$message','$username','$current_date')"; 
+                                mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
                             }
                         }
                     }
@@ -513,24 +507,22 @@
                         $type_pms070mi=$decoded_pms070mi['@type'];
                         $code_pms070mi=$decoded_pms070mi['@code'];
                         $message_pms070mi=$decoded_pms070mi['Message'];
-                        if($decoded_pms070mi){
-                            //validating response pass/fail and inserting log
-                            if($type_pms070mi!='ServerReturnedNOK')
-                            {
-                                //updating response status in m3_transactions
-                                $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id_pms070mi."";
-                                mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log");
-                            }
-                            else
-                            {
-                                //updating response status in m3_transactions
-                                $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms070mi."";
-                                mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions");
+                        //validating response pass/fail and inserting log
+                        if($type_pms070mi!='ServerReturnedNOK')
+                        {
+                            //updating response status in m3_transactions
+                            $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id_pms070mi."";
+                            mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log");
+                        }
+                        else
+                        {
+                            //updating response status in m3_transactions
+                            $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms070mi."";
+                            mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions");
 
-                                //insert transactions details into transactions_log
-                                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id_pms070mi','$message_pms070mi','$username','$current_date')";
-                                mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log");
-                            }
+                            //insert transactions details into transactions_log
+                            $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id_pms070mi','$message_pms070mi','$username','$current_date')";
+                            mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log");
                         }
                     }                        
                 // 200 Operation End
@@ -549,24 +541,22 @@
                         $type_pms050mi=$decoded_pms050mi['@type'];
                         $code=$decoded_pms050mi['@code'];
                         $message_pms050mi=$decoded_pms050mi['Message'];
-                        if($decoded_pms050mi){
-                            //validating response pass/fail and inserting log
-                            if($type_pms050mi!='ServerReturnedNOK')
-                            {
-                                //updating response status in m3_transactions
-                                $qry_m3_transactions_pms050mi="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id_pms050mi."";
-                                mysqli_query($link,$qry_m3_transactions_pms050mi) or exit("While updating into M3 transaction log");
-                            }
-                            else
-                            {
-                                //updating response status in m3_transactions
-                                $qry_m3_transactions_pms050mi="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms050mi."";
-                                mysqli_query($link,$qry_m3_transactions_pms050mi) or exit("While updating into M3 Transactions");
+                        //validating response pass/fail and inserting log
+                        if($type_pms050mi!='ServerReturnedNOK')
+                        {
+                            //updating response status in m3_transactions
+                            $qry_m3_transactions_pms050mi="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id_pms050mi."";
+                            mysqli_query($link,$qry_m3_transactions_pms050mi) or exit("While updating into M3 transaction log");
+                        }
+                        else
+                        {
+                            //updating response status in m3_transactions
+                            $qry_m3_transactions_pms050mi="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms050mi."";
+                            mysqli_query($link,$qry_m3_transactions_pms050mi) or exit("While updating into M3 Transactions");
 
-                                //insert transactions details into transactions_log
-                                $qry_transactionslog_pms050mi="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id_pms050mi','$message_pms050mi','$username','$current_date')";
-                                mysqli_query($link,$qry_transactionslog_pms050mi) or exit("While inserting into M3 transaction log");
-                            }
+                            //insert transactions details into transactions_log
+                            $qry_transactionslog_pms050mi="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id_pms050mi','$message_pms050mi','$username','$current_date')";
+                            mysqli_query($link,$qry_transactionslog_pms050mi) or exit("While inserting into M3 transaction log");
                         }
                     }                        
                 // FG End
@@ -625,24 +615,22 @@
                         $type_pms070mi=$decoded_pms070mi['@type'];
                         $code_pms070mi=$decoded_pms070mi['@code'];
                         $message_pms070mi=$decoded_pms070mi['Message'];
-                        if($decoded_pms070mi){
-                            //validating response pass/fail and inserting log
-                            if($type_pms070mi!='ServerReturnedNOK')
-                            {
-                                //updating response status in m3_transactions
-                                $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id_pms070mi."";
-                                mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log pms070mi");
-                            }
-                            else
-                            {
-                                //updating response status in m3_transactions
-                                $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms070mi."";
-                                mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions pms070mi");
+                        //validating response pass/fail and inserting log
+                        if($type_pms070mi!='ServerReturnedNOK')
+                        {
+                            //updating response status in m3_transactions
+                            $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id_pms070mi."";
+                            mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log pms070mi");
+                        }
+                        else
+                        {
+                            //updating response status in m3_transactions
+                            $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms070mi."";
+                            mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions pms070mi");
 
-                                //insert transactions details into transactions_log
-                                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id_pms070mi','$message_pms070mi','$username','$current_date')";
-                                mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log pms070mi");
-                            }
+                            //insert transactions details into transactions_log
+                            $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id_pms070mi','$message_pms070mi','$username','$current_date')";
+                            mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log pms070mi");
                         }
                     }                        
                 // 200 Operation End
@@ -661,24 +649,22 @@
                         $type_pms050mi=$decoded_pms050mi['@type'];
                         $code=$decoded_pms050mi['@code'];
                         $message_pms050mi=$decoded_pms050mi['Message'];
-                        if($decoded_pms050mi){
-                            //validating response pass/fail and inserting log
-                            if($type_pms050mi!='ServerReturnedNOK')
-                            {
-                                //updating response status in m3_transactions
-                                $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id_pms050mi."";
-                                mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log pms050mi");
-                            }
-                            else
-                            {
-                                //updating response status in m3_transactions
-                                $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms050mi."";
-                                mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions pms050mi");
+                        //validating response pass/fail and inserting log
+                        if($type_pms050mi!='ServerReturnedNOK')
+                        {
+                            //updating response status in m3_transactions
+                            $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id_pms050mi."";
+                            mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log pms050mi");
+                        }
+                        else
+                        {
+                            //updating response status in m3_transactions
+                            $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms050mi."";
+                            mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions pms050mi");
 
-                                //insert transactions details into transactions_log
-                                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id_pms050mi','$message_pms050mi','$username','$current_date')"; 
-                                mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log pms050mi");
-                            }
+                            //insert transactions details into transactions_log
+                            $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id_pms050mi','$message_pms050mi','$username','$current_date')"; 
+                            mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log pms050mi");
                         }
                     }                        
                 // FG End
