@@ -18,40 +18,7 @@ set_time_limit(200000);
 <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 
 <?php
-
-//$rbac_username_list=explode('\\',$_SERVER['REMOTE_USER']);
-//$rbac_username=strtolower($rbac_username_list[1]);
 $rbac_username=getrbac_user()['uname'];
-// echo "User :".$rbac_username."</br>";
-
-//$special_users=array("sfcsproject1","cwradmn","kirang","buddhikam","chathurangad","minuram","buddhikam");
-//echo $rbac_username;
-if(!in_array($authorized,$has_permission))
-{
-	echo '<script>
-	var ctrlPressed = false;
-	$(document).keydown(function(evt) {
-	  if (evt.which == 17 || evt.which == 13) { // ctrl
-	    ctrlPressed = true;
-		alert("This key has been disabled.");
-	  }
-	}).keyup(function(evt) {
-	  if (evt.which == 17) { // ctrl
-	    ctrlPressed = false;
-	  }
-	});
-	
-	$(document).click(function() {
-	  if (ctrlPressed) {
-	    // do something
-		//alert("Test");
-	  } else {
-	    // do something else
-	  }
-	});
-	</script>';
-}
-
 ?>
 
 <script>
