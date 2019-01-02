@@ -48,8 +48,6 @@
     function getdata(flag){
        module = $("#module").val();
       to_module = $("#to_module").val();
-      if(module == to_module)
-        return swal('Selecting Same Module To Transfer','','error');
       ijob_array = [];
       $('#loading-image').show();
       $('#submit_button').hide();
