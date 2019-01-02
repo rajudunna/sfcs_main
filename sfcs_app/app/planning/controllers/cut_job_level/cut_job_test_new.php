@@ -67,8 +67,9 @@ echo "<div class='row'>";
 	} 
 	echo "</select></div>"; 
 
-	$sql="SELECT distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" 
-		and ($order_joins_in_full OR remarks='Recut' ) ";     
+	$sql="SELECT distinct order_del_no from $bai_pro3.bai_orders_db_confirm boc
+		left join $bai_pro3.plandoc_stat_log pl ON pl.order_tid = boc.order_tid
+		where order_style_no=\"$style\"  and ($order_joins_in_full OR remarks='Recut' ) ";     
 	echo "<div class='col-sm-3'><label>Select Schedule: </label><select name=\"schedule\" onchange=\"secondbox();\" class='form-control' required>"; 
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	echo "<option value=\"\" selected>NIL</option>"; 
