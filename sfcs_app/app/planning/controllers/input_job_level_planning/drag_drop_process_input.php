@@ -209,7 +209,7 @@ $userName = getrbac_user()['uname'];
 				$sqlx1="update $bai_pro3.plan_dashboard set priority=$x1, module=".$items[0].", log_time=\"".date("Y-m-d H:i:s")."\" where doc_no='".$dockets_ref[$d]."'";
 				mysqli_query($link, $sqlx1) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
-				$sql43="select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no='$dockets_ref[$d]'";
+				$sql43="select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no=".$dockets_ref[$d]."";
 				$resultr43=mysqli_query($link, $sql43) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($resultr43)>0)
 				{
@@ -223,7 +223,7 @@ $userName = getrbac_user()['uname'];
 				}
 				else
 				{
-					$sqlx12="update $bai_pro3.plandoc_stat_log set plan_module=".$items[0]." where doc_no='".$org_doc_no."'";
+					$sqlx12="update $bai_pro3.plandoc_stat_log set plan_module=".$items[0]." where doc_no='".$dockets_ref[$d]."'";
 					mysqli_query($link, $sqlx12) or exit("Sql Error62.3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}							
 				$x1++;
