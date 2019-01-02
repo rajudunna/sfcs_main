@@ -412,6 +412,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     });
 
     $('#doc_no').on('change',function(){
+        $('#wait_loader').hide();
         doc_no = $('#doc_no').val();
         GLOBAL_CALL = 0;
         $('#submit').css({'display':'block'});
@@ -550,6 +551,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 else{
                     swal('Cut Reporting Problem Error','','error');
                     user_msg = 'CUT Reported with Error.Please Do not Proceed to Scanning for this docket';
+                    //swal('Cut Qty Reported Successfully','','success');
+                    //user_msg += 'Cut Reported Successfully';
                 }
                     
                 if(rejections_flag){

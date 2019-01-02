@@ -83,14 +83,14 @@ if(mysqli_num_rows($validation_result)>0){
     exit();
 }
 
-
 $acut_no = '00'.$cut_no;
 //getting the target doc type 
-$target_query  = "SELECT order_del_no,order_joins from $bai_pro3.bai_orders_db_confirm 
+$target_query  = "SELECT color_code,order_del_no,order_joins from $bai_pro3.bai_orders_db_confirm 
                 where order_tid = '$order_tid' and order_joins IN (1,2) limit 1";               
 $target_result = mysqli_query($link,$target_query);
 if(mysqli_num_rows($target_result) > 0){
     $row = mysqli_fetch_array($target_result);
+    $acut_no = chr($row['color_code']).$acut_no;
     $schedule = $row['order_del_no'];
     if(strlen($schedule) > 7)
         $target_doc_type = 'style_clubbed';
@@ -184,7 +184,7 @@ $cps_full_status_query = "SELECT reported_status from $bai_pro3.cps_log where do
                     and operation_code = $op_code ";                                        
 $cps_full_status_result = mysqli_query($link,$cps_full_status_query);
 while($row=mysqli_fetch_array($cps_full_status_result)){
-    if($row['reported_status'] == 'P'){
+    if($row['reported_status'] == 'P' || $row['reported_status'] == ''){
         $response_data['cut_done'] = 0;
     }else if($row['reported_status'] == 'F'){
         $response_data['cut_done'] = 1;

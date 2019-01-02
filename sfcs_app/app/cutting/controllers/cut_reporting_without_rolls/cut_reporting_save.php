@@ -343,8 +343,7 @@ if($target == 'schedule_clubbed'){
         unset($size_update_string);
         unset($planned);
     }
-    mysqli_close($link);
-
+   
     //distributing  all rejected quantities among child dockets and getting them into an array
     //NOTE : If this loop quits ,then there will be no updation of cps_log,bcd for good reported quantities
     if($rejections_flag == 1){
@@ -407,8 +406,8 @@ if($target == 'schedule_clubbed'){
         }
         $response_data['rejections_response'] = $rej_status;
     } 
- 
-    iquit : if($status == 'fail'){
+    mysqli_close($link);
+    iquit : if($status === 'fail'){
         $response_data['pass'] = 0;
         echo json_encode($response_data);
         exit();
@@ -709,7 +708,7 @@ if($target == 'style_clubbed'){
         $response_data['rejections_response'] = $rej_status;
     } 
     mysqli_close($link);
-    iquit1 : if($status == 'fail'){
+    iquit1 : if($status === 'fail'){
         $response_data['pass'] = 0;
         echo json_encode($response_data);
         exit();
@@ -817,7 +816,9 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
             $update_cps_query = "UPDATE $bai_pro3.cps_log set remaining_qty = remaining_qty + $qty,
                             reported_status = '$reported_status' 
                             where doc_no = '$doc_no' and size_code='$size' and operation_code = $op_code ";
-            $update_cps_result = mysqli_query($link,$update_cps_query) or exit('Query Error 5');   
+            $update_cps_result = mysqli_query($link,$update_cps_query) or exit('Query Error 5'); 
+            
+           
             
             //Updating BCD
             $update_bcd_query = "UPDATE $brandix_bts.bundle_creation_data set recevied_qty = recevied_qty + $qty,
@@ -842,6 +843,7 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
             mysqli_commit($link);
         else{    
             mysqli_rollback($link);
+            mysqli_close($link);
             return 'fail';
         }
         $counter = 0;
@@ -905,7 +907,12 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
             $update_cps_query = "UPDATE $bai_pro3.cps_log set remaining_qty = remaining_qty + $qty,
                             reported_status = '$reported_status'
                             where doc_no = $doc_no and size_code='$size' and operation_code = $op_code ";
-            $update_cps_result = mysqli_query($link,$update_cps_query) or exit('CPS Error CLUB');   
+            $update_cps_result = mysqli_query($link,$update_cps_query) or exit('CPS Error CLUB');
+            //Updating CPS to Full Status
+            $update_cps_f_query = "UPDATE $bai_pro3.cps_log set reported_status = 'F' 
+                                    where doc_no = '$doc_no' and size_code='$size' and operation_code = $op_code 
+                                    and cut_quantity = remaining_qty";
+            $update_cps_f_result = mysqli_query($link,$update_cps_f_query) or exit('Query Error 5.1');    
             //Updating BCD
             $update_bcd_query = "UPDATE $brandix_bts.bundle_creation_data set recevied_qty = recevied_qty + $qty,
                             rejected_qty = rejected_qty + $rej where docket_number = $doc_no and size_id = '$size' 
@@ -929,12 +936,14 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
     if($counter == $update_flag && $counter > 0)
         mysqli_commit($link);
     else{    
-        mysqli_rollback($link);
+        //mysqli_rollback($link);
+        mysqli_close($link);
         return 'fail';
     }
 
     $counter = 0;
     $update_flag = 0;
+    $bundles_count = 0;
     //Maintaining seperate loop for reporting to moq,m3 inorder to prevail the cut qty reporting for cps,bcd
     foreach($reported as $doc_no=>$size_qty){
         foreach($size_qty as $size => $qty){
@@ -945,6 +954,7 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
             //echo $bundle_id_query;                
             $bundle_id_result = mysqli_query($link,$bundle_id_query) or exit('Query Error 8');
             if(mysqli_num_rows($bundle_id_result) > 0){
+                $bundles_count++;
                 $row = mysqli_fetch_array($bundle_id_result);
                 $bundle_number = $row['bundle_number'];
                 $update_flag++;
