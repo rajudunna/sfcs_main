@@ -80,6 +80,8 @@
     function post_data(){
         to_module = $("#to_module").val();
         module = $("#module").val();
+        if(module == to_module)
+        return swal('Selecting Same Module To Transfer','','error');
         if(to_module == null)
             return swal('select Module');
         else{
