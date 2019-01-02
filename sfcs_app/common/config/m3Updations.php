@@ -153,7 +153,7 @@
                                 //insert transactions details into transactions_log
                                 $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log`(`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id','$message','$username','$current_date')"; 
                                 mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            }
+                            }                 
                         }
                     }                
                 }
@@ -294,7 +294,6 @@
                             $code=$decoded['@code'];
                             $message=$decoded['Message'];
                         } 
-
                         //validating response pass/fail and inserting log
                         if($type!='ServerReturnedNOK'){
                             //updating response status in m3_transactions
@@ -430,7 +429,6 @@
                                 $code=$decoded['@code'];
                                 $message=$decoded['Message'];
                             }
-
                             //validating response pass/fail and inserting log
                             if($type!='ServerReturnedNOK')
                             {
@@ -509,7 +507,6 @@
                         $type_pms070mi=$decoded_pms070mi['@type'];
                         $code_pms070mi=$decoded_pms070mi['@code'];
                         $message_pms070mi=$decoded_pms070mi['Message'];
-
                         //validating response pass/fail and inserting log
                         if($type_pms070mi!='ServerReturnedNOK')
                         {
@@ -544,7 +541,6 @@
                         $type_pms050mi=$decoded_pms050mi['@type'];
                         $code=$decoded_pms050mi['@code'];
                         $message_pms050mi=$decoded_pms050mi['Message'];
-
                         //validating response pass/fail and inserting log
                         if($type_pms050mi!='ServerReturnedNOK')
                         {
@@ -619,7 +615,6 @@
                         $type_pms070mi=$decoded_pms070mi['@type'];
                         $code_pms070mi=$decoded_pms070mi['@code'];
                         $message_pms070mi=$decoded_pms070mi['Message'];
-
                         //validating response pass/fail and inserting log
                         if($type_pms070mi!='ServerReturnedNOK')
                         {
@@ -654,7 +649,6 @@
                         $type_pms050mi=$decoded_pms050mi['@type'];
                         $code=$decoded_pms050mi['@code'];
                         $message_pms050mi=$decoded_pms050mi['Message'];
-
                         //validating response pass/fail and inserting log
                         if($type_pms050mi!='ServerReturnedNOK')
                         {
