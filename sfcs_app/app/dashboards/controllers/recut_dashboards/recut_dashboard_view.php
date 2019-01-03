@@ -13,6 +13,18 @@
         $values = '';
         $sizes_a = '';
         $bcd = $bcd_id[0];
+        //getting main cat ref for clubbing dockets
+        $sql2="select org_doc_no from $bai_pro3.plandoc_stat_log where order_tid='$order_tid' ";
+        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($sql_row2=mysqli_fetch_array($sql_result2))
+        {
+            $org_doc=$sql_row2['org_doc_no'];
+        }
+        if($org_doc > 1){
+            $doc_no_org = $org_doc;
+        }else{
+            $doc_no_org = 0;
+        }
         //retreaving style,schedule,color and size wise cumulative quantities to store in plan_doc_stat_log and recut_v2
         $qry_details = "SELECT style,SCHEDULE,color FROM `$bai_pro3`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
         WHERE rc.`bcd_id` in ($bcd)";
@@ -57,7 +69,12 @@
         $date=date("Y-m-d", mktime(0,0,0,date("m") ,date("d"),date("Y")));
         foreach($cat as $key=>$value)
         {
-            $qry_to_get = "SELECT * FROM  `$bai_pro3`.`cat_stat_log` WHERE  order_tid = \"$order_tid\" and category = '$value'";
+            if($doc_no_org > 0){
+                $qry_to_get = "SELECT cat_ref as tid FROM  `$bai_pro3`.`plandoc_stat_log` WHERE  doc_no = '$doc_no_org'";
+            }else{
+                $qry_to_get = "SELECT * FROM  `$bai_pro3`.`cat_stat_log` WHERE  order_tid = \"$order_tid\" 
+                and category = '$value'";
+            }
             // echo $qry_to_get.'</br>';
             $res_qry_to_get = $link->query($qry_to_get);
             while($row_cat_ref = $res_qry_to_get->fetch_assoc()) 
