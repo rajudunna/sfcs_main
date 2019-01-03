@@ -5,8 +5,7 @@
     { 
        
         $cut1 = $_POST['cut1'];
-       
-        if($cut1 != ''){
+		  if($cut1 != ''){
             $excess_cut = $_POST['cut1'];
             $order_joins = $_POST['order_joins_no'];
             $schedule = $_POST['schedule'];
@@ -30,7 +29,7 @@
 				else
 				{
 					$orders_join='J'.substr($_POST["color"],-1);
-					$query_check1 = "select * from $bai_pro3.bai_orders_db_confirm where order_joins='J".$orders_join."'";
+					$query_check1 = "select * from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
 					$query_result_check1 = mysqli_query($link,$query_check1) or exit("schedule Clubbing check".mysqli_error ($GLOBALS["___mysqli_ston"]));
 					while($sql_rows1=mysqli_fetch_array($query_result_check1))
 					{
@@ -44,18 +43,15 @@
 				$order_del_no[]=$_POST['schedule'];
 				$order_col_des[]=$_POST['color'];
 			}
-            $query = "select * from $bai_pro3.excess_cuts_log where schedule_no='".$schedule."' and color='".$color."'";
+		    $query = "select * from $bai_pro3.excess_cuts_log where schedule_no='".$schedule."' and color='".$color."'";
             // echo $query;
             $query_result = mysqli_query($link,$query) or exit(" Error78".mysqli_error ($GLOBALS["___mysqli_ston"]));
             if(mysqli_num_rows($query_result)>0){
 				
 				for($i=0;$i<sizeof($order_col_des);$i++)
 				{
-					for($ii=0;$ii<sizeof($order_del_no);$ii++)
-					{
-						$query1 = "update $bai_pro3.excess_cuts_log set excess_cut_qty='".$_POST['cut1']."' where schedule_no='".$order_del_no[$ii]."' and color='".$order_col_des[$i]."'";
-						$query_result1 = mysqli_query($link,$query1) or exit(" Error7".mysqli_error ($GLOBALS["___mysqli_ston"]));
-					}
+					$query1 = "update $bai_pro3.excess_cuts_log set excess_cut_qty='".$_POST['cut1']."' where schedule_no='".$order_del_no[$i]."' and color='".$order_col_des[$i]."'";
+					$query_result1 = mysqli_query($link,$query1) or exit(" Error7".mysqli_error ($GLOBALS["___mysqli_ston"]));
 				}
                 echo "<script type=\"text/javascript\"> 
                 sweetAlert('Excess Cut Updated','','success');
@@ -73,6 +69,7 @@
             $color = $_POST['color'];
             $user = $_POST['user'];
 			$order_joins = $_POST['order_joins_no'];
+			
 			if($order_joins<>0)
 			{
 				$order_del_no[]=$_POST['schedule'];
@@ -90,7 +87,7 @@
 				else
 				{
 					$orders_join='J'.substr($_POST["color"],-1);
-					$query_check1 = "select * from $bai_pro3.bai_orders_db_confirm where order_joins='J".$orders_join."'";
+					$query_check1 = "select * from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
 					$query_result_check1 = mysqli_query($link,$query_check1) or exit("schedule Clubbing check".mysqli_error ($GLOBALS["___mysqli_ston"]));
 					while($sql_rows1=mysqli_fetch_array($query_result_check1))
 					{
@@ -103,14 +100,12 @@
 			{
 				$order_del_no[]=$_POST['schedule'];
 				$order_col_des[]=$_POST['color'];
-			}	
+			}
+	
 			for($i=0;$i<sizeof($order_col_des);$i++)
 			{
-				for($ii=0;$ii<sizeof($order_del_no);$ii++)
-				{
-					$excess_cut_log_qry = "insert into $bai_pro3.excess_cuts_log(schedule_no,color,excess_cut_qty,date,user) values('".$order_del_no[$ii]."','".$order_col_des[$i]."',".$excess_cut.",NOW(),'".$user."')";
-					$excess_cut_log_result = mysqli_query($link,$excess_cut_log_qry) or exit(" Error7".mysqli_error ($GLOBALS["___mysqli_ston"]));
-				}
+				$excess_cut_log_qry = "insert into $bai_pro3.excess_cuts_log(schedule_no,color,excess_cut_qty,date,user) values('".$order_del_no[$i]."','".$order_col_des[$i]."',".$excess_cut.",NOW(),'".$user."')";
+				$excess_cut_log_result = mysqli_query($link,$excess_cut_log_qry) or exit(" Error7".mysqli_error ($GLOBALS["___mysqli_ston"]));
 			}
                 echo "<script type=\"text/javascript\"> 
                 sweetAlert('Excess Cut Inserted','','success');

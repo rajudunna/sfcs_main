@@ -295,7 +295,7 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
                     { 
                         if($order_joins=="0") 
                         { 
-                            echo "<td><input type=\"checkbox\" name=\"col[]\" value=\"$color\" checked></td>"; 
+                            echo "<td><input type=\"checkbox\" name=\"col[]\" value=\"$color\" check></td>"; 
                             $test_count=$test_count+1; 
                         } 
                         else 
@@ -514,11 +514,12 @@ if(isset($_POST['fix']))
 			{ 
 				$maxorder=$sql_row23['maxorder']; 
 			}
-			if($maxorder==1)
+			if($maxorder==1 || $maxorder=='')
 			{
 				$maxorder=3;		
 			}			
 			$cols="Color-".$maxorder."";
+			
 			$sql123412="select min(color_code) as new_color_code from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_col_des IN ('".implode("','",$selected)."') AND order_del_no='$schedule'";	
 			$sql_result23412=mysqli_query($link, $sql123412) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row23412=mysqli_fetch_array($sql_result23412))
@@ -587,9 +588,12 @@ if(isset($_POST['fix']))
 							$falg1=1; 
 						}     
 					}                                         
-				} 
-				 
+				}				 
 			} 
+			
+			$sql451="insert ignore into $bai_pro3.bai_orders_db_club_confirm select * from $bai_pro3.bai_orders_db_confirm where order_col_des in ('".implode("','",$selected)."') and order_del_no='".$schedule."'";
+			$sql451=mysqli_query($link, $sql451) or die("Error".$sql451.mysqli_error($GLOBALS["___mysqli_ston"]));
+			
 			
 			$sql45="select * from $bai_pro3.orders_club_schedule where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\""; 
 			//echo $sql45."<br>"; 

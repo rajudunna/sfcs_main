@@ -1657,7 +1657,7 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 							<option value='2' selected>Last Cut</option>
 						</select></div>";
 				}
-				echo "<input type='hidden' id='style' name='style' value=$style><input type='hidden' id='schedule' name='schedule' value=$schedule><input type='hidden' id='color' name='color' value='$color'><input type='hidden' id='user' name='user' value=$user/>";
+				echo "<input type='hidden' id='style' name='style' value=$style><input type='hidden' id='schedule' name='schedule' value=$schedule><input type='hidden' id='order_joins_no' name='order_joins_no' value=$order_joins><input type='hidden' id='color' name='color' value='$color'><input type='hidden' id='user' name='user' value=$user/>";
 				//check whether sewing job created or not
 				if($check=='1'){
 				} else {
