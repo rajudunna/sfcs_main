@@ -403,11 +403,11 @@ if(isset($_POST['fix']))
 	if(sizeof($selected)>1)
 	{
 		//To find new color code 
-		$sql="select max(color_code) as new_color_code from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_col_des=\"$color\"";	
+		$sql="select min(color_code) as new_color_code from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_col_des=\"$color\" and order_del_no in (".implode(",",$selected).")";	
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
-			$new_color_code=($sql_row['new_color_code']);
+			$new_color_code=$sql_row['new_color_code'];
 		}
 		
 		// Validate Components are equal then only club the schedules
@@ -422,7 +422,7 @@ if(isset($_POST['fix']))
 			while($sql_row11=mysqli_fetch_array($sql_result11)) 
 			{ 
 				$order_col_dess=$sql_row11['order_col_des'];
-				$new_color_code=$sql_row11['color_code'];
+				//$new_color_code=$sql_row11['color_code'];
 			}
 		}
 		if($order_tid<>'')

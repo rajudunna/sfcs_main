@@ -56,14 +56,22 @@ if(isset($_POST) && isset($_POST['main_data'])){
         $doc_type = 'N';
         $packing_mode = 1;
         $status = '';
+		$i=1;
+		$barcode_seq=1;
         $doc_no_ref = '';
+		$temp_job=1;
         $old_jobs_cnt_qry = "SELECT COUNT(*) AS old_jobs FROM (SELECT COUNT(*) AS old_jobs FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".$docnos.") GROUP BY input_job_no) AS tab";
         //echo $old_jobs_cnt_qry;
         $old_jobs_cnt_res = mysqli_query($link_ui, $old_jobs_cnt_qry) or exit("Sql Error : old_jobs_cnt_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         $oldqty_jobcount = mysqli_fetch_array($old_jobs_cnt_res);
         // print_r($oldqty_jobcount)."<br/>";
         foreach ($details as $term ) {
-            $job = $oldqty_jobcount['old_jobs']+$term['job_id'];
+            $job = $oldqty_jobcount['old_jobs']+$term['job_id'];			
+			if(($job<>$temp_job) || $barcode_seq==1)
+			{
+				$i=1;
+				$barcode_seq=0;
+			}
             $rand=$schedule.date("ymd").$job;
             $carton_act_qty = $term['job_qty'];
             $size_code = $term['job_size'];
@@ -72,7 +80,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
             //echo $job."<br/>";
            $ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job` 
             (
-             doc_no, size_code, carton_act_qty,input_job_no, input_job_no_random,destination,packing_mode,old_size,doc_type,type_of_sewing,pac_seq_no
+             doc_no, size_code, carton_act_qty,input_job_no, input_job_no_random,destination,packing_mode,old_size,doc_type,type_of_sewing,pac_seq_no,barcode_sequence
             )
             VALUES
             ( 
@@ -86,9 +94,12 @@ if(isset($_POST) && isset($_POST['main_data'])){
             '".$old_size."',
             '".$doc_type."',
             '".$type_of_sewing."',
-            '-1'
+            '-1',
+			$i
             );
             ";
+			$temp_job=$job;
+			$i++;
             //echo  $ins_qry;
            // die();
            $result_time = mysqli_query($link_ui, $ins_qry) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -166,7 +177,7 @@ $schedule=$_GET['schedule'];
 $color  = $_GET['color'];
 
 echo '<div class = "panel-body">';
-$sql="select distinct order_style_no from bai_pro3.bai_orders_db";
+$sql="select distinct order_style_no from bai_pro3.bai_orders_db_confirm";
 $sql_result=mysqli_query($link_ui, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 echo "<div class=\"row\"><div class=\"col-sm-3\"><label>Select Style:</label>
@@ -196,7 +207,7 @@ echo "  </select>
 
    echo "<div class='col-sm-3'><label>Select Schedule:</label> 
    <select class='form-control' name=\"schedule\"  id='schedule'>";
-$sql="select distinct order_del_no from bai_pro3.bai_orders_db where order_style_no=\"$style\"";	
+$sql="select distinct order_del_no from bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_joins not in ('1','2')";	
 mysqli_query($link_ui, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link_ui, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -217,7 +228,7 @@ echo "	</select>";
 
 echo "<div class='col-sm-3'><label>Select Color:</label>
 <select class='form-control' name=\"color\"  id='color'>";
-$sql="select distinct order_col_des from bai_pro3.bai_orders_db where order_del_no= $schedule ";
+$sql="select distinct order_col_des from bai_pro3.bai_orders_db_confirm where order_del_no= $schedule and order_joins not in ('1','2')";
     //echo $sql;
 $sql_result=mysqli_query($link_ui, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -244,7 +255,8 @@ echo "</select>
 <?php
 if($schedule != "" && $color != "")
 {
-$ratio_query = "SELECT * FROM bai_pro3.bai_orders_db LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db.order_del_no='".$schedule."' AND TRIM(bai_orders_db.order_col_des) =trim('".$color."')";
+$ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db_confirm.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db_confirm.order_del_no='".$schedule."' AND TRIM(bai_orders_db_confirm.order_col_des) =trim('".$color."')";
+
 $doc_nos = [];
 $view_shows=[];
 $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_query".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -256,7 +268,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
     $max_cut = 0;
     $over_all_data = [];
     if(mysqli_num_rows($ratio_result)>0){
-        echo "<div class='col-sm-12' id='main-table'><table class='table'>";
+        echo "<div class='col-sm-12' id='main-table'><div class='table-responsive'><table class='table'>";
         while($row=mysqli_fetch_array($ratio_result))
         {
             $doc_nos[] = $row['doc_no'];
@@ -281,7 +293,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 //=====================================================================
                 echo "<thead>
                     <tr>
-                        <th>Ratio</th><th>Cut No</th><th>Plies</th>";
+                        <th>Ratio</th><th class='col-sm-2'>Cut No</th><th class='col-sm-2'>Plies</th>";
                         for($j=1;$j<=50;$j++){
                             $sno = str_pad($j,2,"0",STR_PAD_LEFT);
                             if($row['title_size_s'.$sno]!=''){
@@ -424,7 +436,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 echo "<td><h3 class='label label-warning'>Jobs Already Created with another source..</h3></td>";
             }
         echo "</tr>";
-        echo "</tbody></table></div>"; 
+        echo "</tbody></table></div></div>"; 
         if(count($view_shows)>0){
             foreach($view_shows as $view){
                 echo "<div id='view-".$view."' style='display:none'>";
