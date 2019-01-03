@@ -13,19 +13,8 @@
         $values = '';
         $sizes_a = '';
         $bcd = $bcd_id[0];
-        //getting main cat ref for clubbing dockets
-        $sql2="select org_doc_no from $bai_pro3.plandoc_stat_log where order_tid='$order_tid' ";
-        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-        while($sql_row2=mysqli_fetch_array($sql_result2))
-        {
-            $org_doc=$sql_row2['org_doc_no'];
-        }
-        if($org_doc > 1){
-            $doc_no_org = $org_doc;
-        }else{
-            $doc_no_org = 0;
-        }
-        //retreaving style,schedule,color and size wise cumulative quantities to store in plan_doc_stat_log and recut_v2
+       
+        //retrieving style,schedule,color and size wise cumulative quantities to store in plan_doc_stat_log and recut_v2
         $qry_details = "SELECT style,SCHEDULE,color FROM `$bai_pro3`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
         WHERE rc.`bcd_id` in ($bcd)";
         $qry_details_res = $link->query($qry_details);
@@ -43,6 +32,19 @@
             $order_tid = $row_row_row['order_tid'];
         }
         $recutval_sizes = array();
+        //getting main cat ref for clubbing dockets
+        $sql2="select org_doc_no from $bai_pro3.plandoc_stat_log where order_tid='$order_tid' and org_doc_no > 1 limit 1";
+        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($sql_row2=mysqli_fetch_array($sql_result2))
+        {
+            $org_doc=$sql_row2['org_doc_no'];
+        }
+        if($org_doc > 1){
+            $doc_no_org = $org_doc;
+        }else{
+            $doc_no_org = 0;
+        }
+
         foreach($recutval as $key=>$value)
         {
             $size_act = $size[$key];
