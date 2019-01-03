@@ -95,7 +95,7 @@
 					{
 						if($trims_status1=="NULL" || $trims_status1=="" || $trims_status1=="(NULL)")
 						{
-							$trims_status="Material Status Not Updated in FSP";
+							$trims_status="Material Status Not Updated";
 						}			
 						else if($trims_status1 == 0 || $trims_status1 == 9)
 						{
