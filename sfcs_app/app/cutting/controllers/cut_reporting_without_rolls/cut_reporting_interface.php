@@ -516,7 +516,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             rejections_flag = 1;
 
         var form_data = {
-                        doc_no:post_doc_no,c_plies:c_plies,fab_returned:ret,
+                        doc_no:post_doc_no,c_plies:c_plies,fab_returned:ret_to,
                         fab_received:rec,returned_to:returned_to,damages:damages,
                         shortages:shortages,bundle_location:bundle_location,shift:shift,
                         cut_table:cut_table,team_leader:team_leader,doc_target_type:doc_target_type,
