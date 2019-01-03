@@ -20,12 +20,8 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 ?>
 <html lang="en">
 <head>
-  <title>Hourly Production Report</title>
-  <!-- <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="120" /> -->
-  
-  </head>
+	<title>Hourly Production Report</title>  
+</head>
 <body>
 
 <div class="container">
@@ -46,21 +42,24 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 						$ntime=date('H');
 					}
 
-					$plant_details_query="SELECT * FROM $bai_pro2.tbl_mini_plant_master;";
+					$plant_details_query="SELECT GROUP_CONCAT(module_name) as plant_modules, mini_plant_name as plant_name FROM bai_pro3.`module_master` LEFT JOIN bai_pro3.`mini_plant_master` ON module_master.`mini_plant_id` = mini_plant_master.`id` GROUP BY mini_plant_id";
+					$plant_details_result=mysqli_query($link,$plant_details_query);
+					while ($row = mysqli_fetch_array($plant_details_result))
+					{
+						if ($row['plant_name'] != null || $row['plant_name'] != '')
+						{
+							$plant_name[] = $row['plant_name'];
+							$plant_modules[] = explode(',', $row['plant_modules']);
+						}						
+					}
+
+					$plant_details_query="SELECT GROUP_CONCAT(module_name) AS plant_modules, 'Factory' AS plant_name FROM bai_pro3.`module_master`;";
 					$plant_details_result=mysqli_query($link,$plant_details_query);
 					while ($row = mysqli_fetch_array($plant_details_result))
 					{
 						$plant_name[] = $row['plant_name'];
 						$plant_modules[] = explode(',', $row['plant_modules']);
 					}
-
-					// for ($i=0; $i < sizeof($plant_name); $i++)
-					// { 
-					// 	echo $plant_name[$i].' == ';
-					// 	var_dump($plant_modules[$i]);
-					// 	echo '<br><br>';
-					// }
-					// die();
 				?>
 <div class="panel panel-primary">
 	<div class="panel-heading">Hourly Production Report</div>
@@ -276,7 +275,6 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 					<?php
 						for ($i=0; $i < sizeof($time_display); $i++)
 						{
-							// $row=echo_title("$bai_pro2.hout","SUM(qty)","team='$team' AND (TIME(out_time) BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."')) and out_date",$frdate,$link);
 							$row=echo_title("$bai_pro2.hout","SUM(qty)","out_date='$frdate' AND rep_start_time = TIME('".$start_time[$i]."') AND rep_end_time = TIME('".$end_time[$i]."') and team",$team,$link);
 
 							if ($row == '' || $row == NULL )
