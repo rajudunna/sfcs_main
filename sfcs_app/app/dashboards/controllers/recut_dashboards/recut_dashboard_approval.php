@@ -7,6 +7,26 @@ if(isset($_POST['approve']))
    $order_tid=$_POST['order_tid'];
    $status=99;
    $doc_nos=$_POST['doc_no_ref'];
+   
+   //getting style and schedule 
+   $qry_cut_qty_check_qry = "SELECT bd.`order_style_no`,bd.`order_col_des`,bd.`order_del_no` FROM $bai_pro3.recut_v2 rv LEFT JOIN $bai_pro3.`bai_orders_db` bd ON bd.`order_tid` = rv.`order_tid`  WHERE doc_no = $doc_nos";
+   $result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
+   while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
+   {
+       $style = $row['order_style_no'];
+       $schedule = $row['order_del_no'];
+       $color = $row['order_col_des'];
+
+   }
+   if($schedule != ''){
+        $sewing_job_validation = "SELECT doc_no from $bai_pro3.packing_summary_input where order_del_no = '$schedule'";
+        if(mysqli_num_rows(mysqli_query($link,$sewing_job_validation)) == 0){
+                $url = '?r='.$_GET['r'];
+                echo "<script>sweetAlert('Please Prepare Sewing Jobs for this Schedule','','warning');window.location = '".$url."'</script>";
+                exit();
+        } 
+    }
+   
    $codes=$_POST['code_no_ref'];
    $hostname=explode(".",gethostbyaddr($_SERVER['REMOTE_ADDR']));
    $add_query=", lastup=\"".date("Y-m-d H:i:s")."\" ";
@@ -42,16 +62,7 @@ if(isset($_POST['approve']))
 			}
 		}
     }
-    //getting style and schedule 
-    $qry_cut_qty_check_qry = "SELECT bd.`order_style_no`,bd.`order_col_des`,bd.`order_del_no` FROM $bai_pro3.recut_v2 rv LEFT JOIN $bai_pro3.`bai_orders_db` bd ON bd.`order_tid` = rv.`order_tid`  WHERE doc_no = $doc_nos";
-	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
-	while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
-	{
-        $style = $row['order_style_no'];
-        $schedule = $row['order_del_no'];
-        $color = $row['order_col_des'];
-
-    }
+    
    $retreaving_last_sewing_job_qry = "SELECT MAX(input_job_no_random)as input_job_no_random,MAX(CAST(input_job_no AS DECIMAL)) as input_job_no,destination,packing_mode,sref_id,pac_seq_no FROM `$bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$schedule'";
     $res_retreaving_last_sewing_job_qry = $link->query($retreaving_last_sewing_job_qry);
     while($row_sj = $res_retreaving_last_sewing_job_qry->fetch_assoc()) 
