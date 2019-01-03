@@ -401,7 +401,7 @@ function validation(id)
 				{
 					$query_to_fetch_individual_bundle_details = "select recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$operation_id'";
 				}
-				// echo $query_to_fetch_individual_bundle_details;
+				echo $query_to_fetch_individual_bundle_details;
 				$result_query_to_fetch_individual_bundle_details=mysqli_query($link,$query_to_fetch_individual_bundle_details) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if($remaining_val_to_reverse > 0)
 				{
