@@ -376,7 +376,7 @@ function validation(id)
 			$query_to_fetch_individual_bundles = "select * FROM $brandix_bts.bundle_creation_data where color = '$color[$key]' and size_title = '$size[$key]' and input_job_no_random_ref = '$input_job_no_random' AND operation_id = '$operation_id' AND assigned_module = '$module_cum' order by barcode_sequence";
 			$cumulative_reversal_qty = $reversalval[$key];
 			// echo $query_to_fetch_individual_bundles;
-			$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error999".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$remaining_val_to_reverse = 0;
 			while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
 			{
@@ -761,7 +761,7 @@ function validation(id)
 				}
 				$qry_nop="select((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance WHERE module=".$b_module[$key]." and date='".$bac_dat."' and shift='".$b_shift."'";
 				echo $qry_nop."<br>";
-				$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error5455".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
 				{
 					$avail=$nop_qry_row['nop'];
