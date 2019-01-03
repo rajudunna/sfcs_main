@@ -722,14 +722,14 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
     //getting main operation_code from operation mapping
     //$bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
     $main_ops_code = $op_code;
-    $bundle_creation_data_check = "SELECT DISTINCT Main_OperationNumber FROM $bai_pro3.schedule_oprations_master WHERE style ='$style' AND description ='$color'  AND SMV > 0";
+    $bundle_creation_data_check = "SELECT DISTINCT OperationNumber FROM $bai_pro3.schedule_oprations_master WHERE style ='$style' AND description ='$color'  AND SMV > 0";
     // echo $bundle_creation_data_check;
     $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
     if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
     {
         while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
         {
-            $main_ops_code = $row_bundle_creation_data_check_result['Main_OperationNumber'];
+            $main_ops_code = $row_bundle_creation_data_check_result['OperationNumber'];
         }
     }
     if($op_code == 15)
@@ -803,8 +803,17 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
                     {
                         $is_m3 = $row['default_operration'];
                     }
-                    if(strtolower($is_m3) == 'yes')
-                    {
+					 $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = $mo_number AND OperationNumber = $main_ops_code";
+                        $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
+                        {
+                            while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
+                            {
+                                $main_ops_code = $row_bundle_creation_data_check_result['Main_OperationNumber'];
+                            }
+                        }
+                    // if(strtolower($is_m3) == 'yes')
+                    // {
                         $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`) 
                         VALUES ('$current_date','$mo_number',($to_update_qty*-1),'$r_reasons[$key]','Normal','$username','',$b_module,'$b_shift',$op_code,'',$id,'$work_station_id','','$main_ops_code')";
                         mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into the m3_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -839,7 +848,7 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
                             $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id','$message','$username','$current_date')"; 
                             mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
-                    }
+                    // }
                 }
             }
         }
