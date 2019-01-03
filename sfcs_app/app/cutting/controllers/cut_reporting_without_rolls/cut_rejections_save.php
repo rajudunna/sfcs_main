@@ -71,10 +71,23 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
             $size_title = $row['size_title'];  
             $module = $row['assigned_module'];  
             $bundle_numbers[$size] = $bno; 
-            $rejection_log_child_query  =  "INSERT INTO $bai_pro3.rejection_log_child (parent_id,bcd_id,doc_no,size_id,size_title,assigned_module,rejected_qty,recut_qty,replaced_qty,issued_qty,operation_id)
-            values
-            ($parent_id,$id,$doc_no,'$size','$size_title','$assigned_module',$qty,0,0,0,$op_code)";
-            $rejection_log_child_result =  mysqli_query($link,$rejection_log_child_query) or exit('Rejections Child Error');
+
+            
+            $bcd_id_qry = "SELECT bcd_id from $bai_pro3.rejection_log_child where bcd_id = $id";
+            $bcd_id_result=mysqli_query($link,$bcd_id_qry) or exit("bcd_id_searching_qry_result");
+            if($bcd_id_result->num_rows > 0)
+			{
+                if($qty == '')
+                    $qty = 0;
+                $update_rejection_log_child_qry = "UPDATE $bai_pro3.rejection_log_child set rejected_qty=rejected_qty+$qty 
+                            where bcd_id = $id";
+				mysqli_query($link,$update_rejection_log_child_qry) or exit('Updating Error 1');
+            }else{
+                $rejection_log_child_query  =  "INSERT INTO $bai_pro3.rejection_log_child (parent_id,bcd_id,doc_no,size_id,size_title,assigned_module,rejected_qty,recut_qty,replaced_qty,issued_qty,operation_id)
+                values
+                ($parent_id,$id,$doc_no,'$size','$size_title','$assigned_module',$qty,0,0,0,$op_code)";
+                $rejection_log_child_result =  mysqli_query($link,$rejection_log_child_query) or exit('Rejections Child Error');
+            }
 
             //inserting resaon wise into the new table - rejections_reason_track
             foreach($reason_codes[$size] as $key => $reason){

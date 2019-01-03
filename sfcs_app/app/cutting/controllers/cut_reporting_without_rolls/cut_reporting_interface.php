@@ -532,7 +532,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             data : form_data
         }).done(function(res){
             console.log(res);
-            var data = $.parseJSON(res);
+            try{
+                var data = $.parseJSON(res);
+            }catch(e){
+                swal('Cut Reporting Error','Data Problem','error');
+            }
             if(data.concurrent == '1'){
                 swal('Some Other user Already Reported for this Docket','Please Try now with updated one','info');
                 loadDetails(post_doc_no);
