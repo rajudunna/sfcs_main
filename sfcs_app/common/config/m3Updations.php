@@ -200,6 +200,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
             $work_station_id = $row['work_station_id'];
         } 
     }
+    $qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where ref_no = $bundle_no and op_code = $op_code order by mo_no";
     $qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
     $total_bundle_rec_present_qty = $b_rep_qty;
     while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
