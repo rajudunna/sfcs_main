@@ -253,6 +253,7 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
             echo "<tr>"; 
             echo "<th>Select</th>";
 			echo "<th>Item codes</th>";	
+			echo "<th>MO Status</th>";	
             echo "<th>Style</th>"; 
             echo "<th>Schedule</th>"; 
             echo "<th>Color</th>"; 
@@ -295,7 +296,27 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
                     { 
                         if($order_joins=="0") 
                         { 
-                            echo "<td><input type=\"checkbox\" name=\"col[]\" value=\"$color\" checked></td>"; 
+                            $sql543111="select * from $bai_pro3.cat_stat_log where order_tid='".$order_tid."'";
+							$result41111=mysqli_query($link, $sql543111) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"]));
+							$sql54311="select * from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' and mo_status='N'";
+							$result4111=mysqli_query($link, $sql54311) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"])); 
+							if(mysqli_num_rows($result4111)==0 && mysqli_num_rows($result41111)>0) 
+							{
+								echo "<td><input type=\"checkbox\" name=\"col[]\" value=\"$color\" check></td>";
+							}
+							else							
+							{
+								$sql543112="select * from $bai_pro3.cat_stat_log where order_tid='".$order_tid."'";
+								$result41112=mysqli_query($link, $sql543112) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"])); 
+								if(mysqli_num_rows($result41112)==0)
+								{
+									echo "<td>Items Not Available</td>";
+								}
+								else
+								{
+									echo "<td>N/A</td>";
+								}	
+							}
                             $test_count=$test_count+1; 
                         } 
                         else 
@@ -315,12 +336,23 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
 				$order_joins=0;
 				echo "<td>";				
 				echo "<table>";					
-				$sql543="select compo_no from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' group by compo_no";
+				$sql5431="select compo_no from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' group by compo_no";
+				//echo $sql543."<br>";		
+				$sql_result5431=mysqli_query($link, $sql5431) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row5431=mysqli_fetch_array($sql_result5431)) 
+				{ 
+					echo "<tr><td>".$sql_row5431['compo_no']."</td>";
+				}
+				echo "</table>";
+				echo "</td>";
+				echo "<td>";
+				echo "<table>";					
+				$sql543="select mo_status from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' group by compo_no";
 				//echo $sql543."<br>";		
 				$sql_result543=mysqli_query($link, $sql543) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row543=mysqli_fetch_array($sql_result543)) 
 				{ 
-					echo "<tr><td>".$sql_row543['compo_no']."</td></tr>";
+					echo "<tr><td>".$sql_row543['mo_status']."</td>";
 				}
 				echo "</table>";
 				echo "</td>";
@@ -475,7 +507,7 @@ if(isset($_POST['fix']))
 			while($sql_row11=mysqli_fetch_array($sql_result11)) 
 			{ 
 				$order_col_dess=$sql_row11['order_col_des'];
-				$new_color_code=$sql_row11['color_code'];
+				//$new_color_code=$sql_row11['color_code'];
 			}
 		}
 		if($order_tid<>'')
@@ -508,22 +540,24 @@ if(isset($_POST['fix']))
 		
 		if($status==0) 
 		{
-			$sql23="select max(order_joins) as maxorder from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" "; 
+			$sql23="select MAX(SUBSTR(order_joins,-1))+1  as maxorder from $bai_pro3.bai_orders_db where  LENGTH(order_joins)<'5' and order_del_no=\"$schedule\" and $order_joins_in"; 
 			$sql_result23=mysqli_query($link, $sql23) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row23=mysqli_fetch_array($sql_result23)) 
 			{ 
 				$maxorder=$sql_row23['maxorder']; 
 			}
-			if($maxorder==0)
+			if($maxorder==1 || $maxorder=='')
 			{
-				$maxorder=4;		
-			}
-			else
-			{
-				$maxorder=$maxorder+1;			
-			}
+				$maxorder=3;		
+			}			
 			$cols="Color-".$maxorder."";
 			
+			$sql123412="select min(color_code) as new_color_code from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_col_des IN ('".implode("','",$selected)."') AND order_del_no='$schedule'";	
+			$sql_result23412=mysqli_query($link, $sql123412) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row23412=mysqli_fetch_array($sql_result23412))
+			{
+				$new_color_code=$sql_row23412['new_color_code'];
+			}
 			$sql121="SELECT * FROM $bai_pro3.cat_stat_log WHERE order_tid='".$order_tid."'"; 
 			$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row121=mysqli_fetch_array($sql_result121)) 
@@ -586,9 +620,12 @@ if(isset($_POST['fix']))
 							$falg1=1; 
 						}     
 					}                                         
-				} 
-				 
+				}				 
 			} 
+			
+			$sql451="insert ignore into $bai_pro3.bai_orders_db_club_confirm select * from $bai_pro3.bai_orders_db_confirm where order_col_des in ('".implode("','",$selected)."') and order_del_no='".$schedule."'";
+			$sql451=mysqli_query($link, $sql451) or die("Error".$sql451.mysqli_error($GLOBALS["___mysqli_ston"]));
+			
 			
 			$sql45="select * from $bai_pro3.orders_club_schedule where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\""; 
 			//echo $sql45."<br>"; 
