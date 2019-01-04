@@ -763,7 +763,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
    
   // start style wise display by dharani 10-26-2013 
   
-    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).") order by req_time asc) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")";
+    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).")) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")";
   
       //echo $_GET["view_div"];
       if($_GET["view_div"] == 'M')
@@ -774,7 +774,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     
        if($_GET["view_div"]=="ALL" or $_GET["view_div"]=="")
       {
-        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).") order by req_time asc) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")";
+        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).")) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")";
       }
       else
       {
@@ -789,7 +789,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $buyer_identity = $row_res['buyer_name'];
         }
           
-        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).") order by req_time asc) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")"; 
+        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).")) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")"; 
         
       }
       
@@ -855,7 +855,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       {
         $cut_wip_control=7000;
       }
-       $sql10="select doc_ref,req_time from $bai_pro3.fabric_priorities where doc_ref ='$doc_no' order by req_time asc";
+       $sql10="select doc_ref,req_time from $bai_pro3.fabric_priorities where doc_ref ='$doc_no'";
 		$result21=mysqli_query($link, $sql10) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		 
 		while($row21=mysqli_fetch_array($result21))
