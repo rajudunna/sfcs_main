@@ -131,7 +131,7 @@ function updateM3Transactions($ref_id,$op_code,$qty)
                     // //M3 Rest API Call
                     if($enable_api_call == 'YES'){
             
-                        $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+                        $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&REMK=$insert_id&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                         $api_data = $obj->getCurlAuthRequest($api_url);
                         $decoded = json_decode($api_data,true);
                         $type=$decoded['@type'];
@@ -283,7 +283,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
                     
                     // //M3 Rest API Call
                     if($enable_api_call == 'YES'){
-                        $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+                        $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&REMK=$insert_id&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                         $api_data = $obj->getCurlAuthRequest($api_url);
                         $decoded = json_decode($api_data,true);
                         $type=$decoded['@type'];
@@ -291,7 +291,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
                         $message=$decoded['Message'];
                    
 
-                    //validating response pass/fail and inserting log
+                        //validating response pass/fail and inserting log
                         if($type!='ServerReturnedNOK'){
                             //updating response status in m3_transactions
                             $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='pass' WHERE id=".$insert_id;
@@ -526,7 +526,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
             // Given API => /m3api-rest/execute/PMS070MI/RptOperation?CONO=200&FACI=EKG&MFNO=7512415&OPNO=130&DPLG=Q01AL01&MAQA=1&SCQA=1&SCRE=""&DSP1=1&DSP2=1&DSP3=1&DSP4=1
             if($enable_api_call == 'YES')
             {
-                $api_url_pms070mi = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$carton_qty&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+                $api_url_pms070mi = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$carton_qty&REMK=$insert_id_pms070mi&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                 $api_data_pms070mi = $obj->getCurlAuthRequest($api_url_pms070mi);
                 $decoded_pms070mi = json_decode($api_data_pms070mi,true);
                 $type_pms070mi=$decoded_pms070mi['@type'];
@@ -561,7 +561,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
             // Given API => m3api-rest/execute/PMS050MI/RptReceipt?CONO=200&FACI=Q01&MFNO=7512409&RPQA=35&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1
             if($enable_api_call == 'YES')
             {
-                $api_url_pms050mi = $host.":".$port."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&RPQA=$carton_qty&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
+                $api_url_pms050mi = $host.":".$port."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&RPQA=$carton_qty&REMK=$insert_id_pms050mi&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
                 $api_data_pms050mi = $obj->getCurlAuthRequest($api_url_pms050mi);
                 $decoded_pms050mi = json_decode($api_data_pms050mi,true);
                 $type_pms050mi=$decoded_pms050mi['@type'];
@@ -644,7 +644,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
                 // Given API => /m3api-rest/execute/PMS070MI/RptOperation?CONO=200&FACI=EKG&MFNO=7512415&OPNO=130&DPLG=Q01AL01&MAQA=1&SCQA=1&SCRE=""&DSP1=1&DSP2=1&DSP3=1&DSP4=1
                 if($enable_api_call == 'YES')
                 {
-                    $api_url_pms070mi = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$negative_qty&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+                    $api_url_pms070mi = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$negative_qty&REMK=$insert_id_pms070mi&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                     $api_data_pms070mi = $obj->getCurlAuthRequest($api_url_pms070mi);
                     $decoded_pms070mi = json_decode($api_data_pms070mi,true);
                     $type_pms070mi=$decoded_pms070mi['@type'];
@@ -679,7 +679,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
                 // Given API => m3api-rest/execute/PMS050MI/RptReceipt?CONO=200&FACI=Q01&MFNO=7512409&RPQA=35&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1
                 if($enable_api_call == 'YES')
                 {
-                    $api_url_pms050mi = $host.":".$port."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&RPQA=$negative_qty&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
+                    $api_url_pms050mi = $host.":".$port."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&RPQA=$negative_qty&REMK=$insert_id_pms050mi&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
                     $api_data_pms050mi = $obj->getCurlAuthRequest($api_url_pms050mi);
                     $decoded_pms050mi = json_decode($api_data_pms050mi,true);
                     $type_pms050mi=$decoded_pms050mi['@type'];
@@ -698,7 +698,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
                         //updating response status in m3_transactions
                         $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms050mi."";
                         mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions pms050mi");
-
+                        
                         //insert transactions details into transactions_log
                         $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$insert_id_pms050mi','$message_pms050mi','$username','$current_date')"; 
                         mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log pms050mi");
@@ -840,7 +840,7 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
                             $message=$decoded['Message'];
                         
 
-                        //validating response pass/fail and inserting log
+                           //validating response pass/fail and inserting log
                             if($type!='ServerReturnedNOK')
                             {
                                 //updating response status in m3_transactions
