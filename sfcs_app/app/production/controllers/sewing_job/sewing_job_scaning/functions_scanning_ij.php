@@ -11,15 +11,20 @@ if(isset($_GET['variable']))
 function getscheduledata($variable)
 {
 	include("../../../../../common/config/config_ajax.php");
-
-	$query_get_schedule_data= "SELECT tm.operation_code,tm.operation_name FROM brandix_bts.tbl_style_ops_master tr LEFT JOIN brandix_bts.tbl_orders_ops_ref tm ON tm.id=tr.operation_name WHERE tr.operation_code NOT IN (10,200,15) GROUP BY tr.operation_code ORDER BY tm.operation_code";
+	$category="'Send PF','Receive PF'";
+	$query_get_schedule_data= "SELECT tm.operation_code,tm.operation_name FROM brandix_bts.tbl_style_ops_master tr 
+			LEFT JOIN brandix_bts.tbl_orders_ops_ref tm ON tm.id=tr.operation_name 
+			WHERE tr.operation_code NOT IN (10,200,15) 
+			AND category NOT IN ($category)
+			GROUP BY tr.operation_code ORDER BY tm.operation_code";
 	$result = $link->query($query_get_schedule_data);
-   while($row = $result->fetch_assoc()){
-        $json[$row['operation_code']] = $row['operation_name'];
-   }
+	while($row = $result->fetch_assoc()){
+		$json[$row['operation_code']] = $row['operation_name'];
+	}
    echo json_encode($json);
 	
 }
+
 if(isset($_GET['schedule']))
 {
 	$schedule = $_GET['schedule'];
@@ -180,6 +185,7 @@ function getjobdetails($job_number)
 			$pre_ops_code = $row['operation_code'];
 		}
 		$category=['cutting','Send PF','Receive PF'];
+		$emb_category = ['Send PF','Receive PF'];
 		$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$pre_ops_code'";
 		$result_checking_qry = $link->query($checking_qry);
 		while($row_cat = $result_checking_qry->fetch_assoc()) 
@@ -362,6 +368,13 @@ function getjobdetails($job_number)
 						$act_bal_to_report = $bundle_tot_qty;
 					}							
 					$result_array['emb_cut_check_flag'] = $pre_ops_code;
+					//checking if the style has emb and is not done				
+					$result_array['emb_cut_check_flag'] = $pre_ops_code;
+					if(in_array($category_act,$emb_category))
+						$result_array['is_emb_flag'] = 1;
+					else	
+						$result_array['is_emb_flag'] = 0;
+
 				}
 				else
 				{
