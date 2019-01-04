@@ -151,12 +151,20 @@ if(mysqli_num_rows($avl_plies_result) > 0){
     if($plies > $v_plies){
         $response_data['concurrent'] = 1;
         echo json_encode($response_data);
-        exit(0);
+        exit(0); 
     }
 }
 
 //Recut Docket Saving
 if($target == 'recut'){
+    $rejections_done = [];
+    foreach($rejection_details as $size => $reason_wise){
+        foreach($reason_wise as $reason => $rqty){
+            if($rqty > 0)
+                $rejections_done[$size]+= $rqty;
+        }
+    }
+
     $ratio_query = "SELECT $a_sizes_str from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
     $ratio_result = mysqli_query($link,$ratio_query);
     while($row = mysqli_fetch_array($ratio_result)){
@@ -173,7 +181,7 @@ if($target == 'recut'){
     while($row = mysqli_fetch_array($bcd_data_result)){
         $size = $row['size_id'];
         $bno  = $row['id'];
-        $qty  = $ratio[$size] * $plies; 
+        $qty  = ($ratio[$size] * $plies) - $rejections_done[$size]; 
 
         $records_query  = "SELECT id,recut_qty,recut_reported_qty from $bai_pro3.recut_v2_child 
                             where parent_id=$doc_no and size_id = '$size' order by id ASC";
@@ -187,12 +195,14 @@ if($target == 'recut'){
                     $reporting_qty = $recut_qty - $reported_qty;
                     if($qty > $reporting_qty){
                         $qty -= $reporting_qty;
-                        $update_query = " UPDATE $bai_pro3.recut_v2_child set recut_reported_qty = $reporting_qty 
-                                    where parent_id=$doc_no and size_id = '$size' and id=$id";
+                        $update_query = " UPDATE $bai_pro3.recut_v2_child 
+                            set recut_reported_qty = recut_reported_qty+$reporting_qty 
+                            where parent_id=$doc_no and size_id = '$size' and id=$id";
                         $update_result = mysqli_query($link,$update_query);
                     }else{
-                        $update_query = " UPDATE $bai_pro3.recut_v2_child set recut_reported_qty = $qty 
-                                    where parent_id=$doc_no and size_id = '$size' and id=$id";
+                        $update_query = " UPDATE $bai_pro3.recut_v2_child 
+                            set recut_reported_qty = recut_reported_qty+$qty 
+                            where parent_id=$doc_no and size_id = '$size' and id=$id";
                         $update_result = mysqli_query($link,$update_query);
                     }
                 }

@@ -576,10 +576,10 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     $('#user_msg').html(user_msg);
                     $('.user_msg').css({'display':'block'});
                 }
-                loadDetails(post_doc_no);
                 clearAll();
                 clearFormData();
                 clearRejections();
+                loadDetails(post_doc_no);
                 $('#wait_loader').css({'display':'none'});
             }else{
                 $('#wait_loader').css({'display':'none'});
@@ -588,10 +588,10 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         }).fail(function(res){
             $('#wait_loader').css({'display':'none'});
             swal('Error Reporting Docket','','error');
-            loadDetails(post_doc_no);
             clearAll();
             clearFormData();
             clearRejections();
+            loadDetails(post_doc_no);
             console.log(res);
         });
     });
