@@ -116,6 +116,7 @@
             $ratio = 1;
             $pliespercut = 1;
             $remarks = 'Recut';
+            $count = $count+1;
             $pcutdocid=$order_tid."/".$allocate_ref."/".$count;
             if($parent_cat_ref > 0)
                 $cat_ref = $parent_cat_ref;

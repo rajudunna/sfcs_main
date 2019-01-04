@@ -537,7 +537,12 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             try{
                 var data = $.parseJSON(res);
             }catch(e){
-                swal('Cut Reporting Error','Data Problem','error');
+                swal('Cut Reporting Problem','Data Problem or M3 Updations Failed','warning');
+                $('#wait_loader').css({'display':'none'});
+                clearAll();
+                clearFormData();
+                clearRejections();
+                loadDetails(post_doc_no);
             }
             if(data.concurrent == '1'){
                 swal('Some Other user Already Reported for this Docket','Please Try now with updated one','info');
