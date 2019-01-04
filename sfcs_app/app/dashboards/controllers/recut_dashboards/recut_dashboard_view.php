@@ -1,4 +1,5 @@
 <?php
+
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     if(isset($_POST['formSubmit']))
     {
@@ -304,6 +305,18 @@
                                 //checking that inputjob already scanned or not
                                 $rec_qty = 0;
                                 $already_replaced_qty = 0;
+                                $appilication = 'IPS';
+                                $checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication'";
+                                // echo $checking_output_ops_code;
+                                $result_checking_output_ops_code = $link->query($checking_output_ops_code);
+                                if($result_checking_output_ops_code->num_rows > 0)
+                                {
+                                    while($row_result_checking_output_ops_code = $result_checking_output_ops_code->fetch_assoc()) 
+                                    {
+                                        $input_ops_code = $row_result_checking_output_ops_code['operation_code'];
+                                    }
+                            
+                                }
                                 $bcd_checking_qry = "select sum(recevied_qty)as rec_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref in ($input_job_no_excess) and size_id = '$size[$key]' and operation_id = '$input_ops_code'";
                                 $result_bcd_checking_qry = $link->query($bcd_checking_qry);
                                 if($result_bcd_checking_qry->num_rows > 0)
@@ -314,8 +327,7 @@
                                     }
                                 }
                                 //checking the input job already replaced or not
-                                $checking_replaced_or_not = "SELECT SUM(`replaced_qty`) AS replaced_qty FROM `$bai_pro3`.`rejection_log_child` WHERE 
-                                replaced_sewing_job_no_random_ref IN ($input_job_no_excess)";
+                                $checking_replaced_or_not = "SELECT SUM(`replaced_qty`)AS replaced_qty FROM `$bai_pro3`.`replacment_allocation_log` WHERE `input_job_no_random_ref` IN($input_job_no_excess) and size_title='$size_title'";
                                 $result_checking_replaced_or_not = $link->query($checking_replaced_or_not);
                                 if($result_checking_replaced_or_not->num_rows > 0)
                                 {
@@ -324,20 +336,20 @@
                                         $already_replaced_qty = $row_replace_already['replaced_qty'];
                                     }
                                 }
-                                $already_replaced_with_sj = array_sum($replacing_input_job_with_qty[$sj]);
+                                $already_replaced_with_sj = array_sum($replacing_input_job_with_qty[$sj][$size_title]);
                                 $exces_qty = $exces_qty - ($rec_qty + $already_replaced_qty+$already_replaced_with_sj);
                             }
                             if($exces_qty > 0)
                             {
                                 if($to_add > $exces_qty)
                                 {
-                                    $replacing_input_job_with_qty[$sj][] = $exces_qty;
+                                    $replacing_input_job_with_qty[$sj][$size_title][] = $exces_qty;
                                     $to_add = $to_add - $exces_qty;
                                     $to_add_sj = $exces_qty;
                                 }
                                 else
                                 {
-                                    $replacing_input_job_with_qty[$sj][] = $to_add;
+                                    $replacing_input_job_with_qty[$sj][$size_title][] = $to_add;
                                     $to_add_sj = $to_add;
                                     $to_add = 0;   
                                 }
