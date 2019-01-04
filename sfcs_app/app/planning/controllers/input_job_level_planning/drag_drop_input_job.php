@@ -728,15 +728,26 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 </form>
 
 	</div>	
-		<div id="dhtmlgoodies_mainContainer" style="padding-left: 200px;">
+	
+
+	<div id="dhtmlgoodies_mainContainer" style="padding-left: 200px;">
+		<!-- ONE <UL> for each "room" -->
 		<?php
+		
+		/*Example: <div>
+			<p>Team a</p>
+			<ul id="box1">
+				<li id="node16">Student P</li>
+			</ul>
+		</div> */
 		
 		$temp_table_name="temp_pool_db.plan_doc_summ_input_".$username;
 		$sql="DROP TABLE IF EXISTS $temp_table_name";
 		mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql="CREATE  TABLE $temp_table_name ENGINE = MYISAM SELECT act_cut_status,doc_no,order_style_no,order_del_no,order_col_des,carton_act_qty as total,input_job_no as acutno,group_concat(distinct char(color_code)) as color_code,input_job_no,input_job_no_random_ref,input_module from $bai_pro3.plan_dash_doc_summ_input where (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) GROUP BY input_job_no_random_ref order by input_priority";
-		mysqli_query($link, $sql) or exit("$sql Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql="CREATE  TABLE $temp_table_name ENGINE = MYISAM SELECT act_cut_status,doc_no,order_style_no,order_del_no,order_col_des,carton_act_qty as total,input_job_no as acutno,group_concat(distinct char(color_code)) as color_code,input_job_no,input_job_no_random_ref,input_module from $bai_pro3.plan_dash_doc_summ_input where (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) GROUP BY input_job_no_random_ref order by input_priority";
+			mysqli_query($link, $sql) or exit("$sql Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
 			
 		$sections_ref=array();
 		$sqlx1="select * from $bai_pro3.sections_db where sec_id>0";
@@ -756,12 +767,14 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 		$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error31".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		{
+
 			$section=$sql_rowx['sec_id'];
 			$section_head=$sql_rowx['sec_head'];
 			$section_mods=$sql_rowx['sec_mods'];
 			echo "<div style=\"width:170px;\" align=\"center\"><h4>SEC - $section</h4>";
 			$mods=array();
 			$mods=explode(",",$section_mods);
+			$mods1 = $section_mods;
 			if(!(in_array($authorized,$has_perm)))
 			{
 				$mods=array();
@@ -770,11 +783,20 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 				while($sql_rowxy=mysqli_fetch_array($sql_resultxy))
 				{
 					$mods=explode(",",$sql_rowxy['module_id']);	
+					$mods1 = implode(',',$mods);
 				}				
 				if($mods[0]==NULL)
 				{
 					$mods=NULL;
 				}
+			}
+            unset($mods);
+			$work_station_module="select module from $bai_pro3.work_stations_mapping where module IN ($mods1)";
+			//echo $work_station_module;
+			$sql_result1=mysqli_query($link, $work_station_module) or exit("NO Modules availabel");
+			while ($row1=mysqli_fetch_array($sql_result1))
+			{
+			    $mods[]=$row1['module'];
 			}
 			
 			echo "<script>lis_limit('".sizeof($mods)."','".json_encode($mods)."')</script>";

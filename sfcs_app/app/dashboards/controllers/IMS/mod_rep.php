@@ -341,19 +341,32 @@
                                 $break_counter = 0;
                                 while($sql_rowx=mysqli_fetch_array($sql_resultx))
                                 {
+                                    //$section_mods = [] ;
                                     $break_counter++;
                                     $section=$sql_rowx['sec_id'];
                                     $section_head=$sql_rowx['sec_head'];
-                                    $section_mods=$sql_rowx['sec_mods']; 
+                                    $section_mods[]=$sql_rowx['sec_mods']; 
+                                    
+                            
+                                    $mods1 = implode(',',$section_mods);
 
-                                    $mods=array();
-                                    $mods=explode(",",$section_mods);
-
-                                    for($x=0;$x<sizeof($mods);$x++)
+                                    $work_station_module="select module from $bai_pro3.work_stations_mapping where module IN ($mods1)";
+                                    
+                                    $sql_result1=mysqli_query($link, $work_station_module) or exit("NO Modules availabel");
+                                    while ($row1=mysqli_fetch_array($sql_result1))
                                     {
-                                        echo "<option value=\"".$mods[$x]."\" >".$mods[$x]."</option>";
-                                        //$module=$mods[$x];
+                                        if (!in_array($row1['module'], $work_mod))
+                                        {
+                                            $work_mod[]=$row1['module'];
+                                        }
                                     }
+                                }
+                                // $final_mods = array_unique($work_mod);
+                                // echo($final_mods);
+                                for($x=0;$x<sizeof($work_mod);$x++)
+                                {
+                                  echo "<option value=\"".$work_mod[$x]."\" >".$work_mod[$x]."</option>";
+                                  //$module=$mods[$x];
                                 }
                             ?>
                     </select>
