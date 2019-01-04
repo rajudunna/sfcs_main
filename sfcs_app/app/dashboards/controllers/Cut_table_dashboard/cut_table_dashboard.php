@@ -855,7 +855,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       {
         $cut_wip_control=7000;
       }
-       $sql10="select doc_ref,req_time from $bai_pro3.fabric_priorities where doc_ref ='$doc_no'";
+       $sql10="select doc_ref,req_time from $bai_pro3.fabric_priorities where doc_ref ='$doc_no' order by req_time asc";
 		$result21=mysqli_query($link, $sql10) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		 
 		while($row21=mysqli_fetch_array($result21))
