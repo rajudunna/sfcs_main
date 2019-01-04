@@ -174,6 +174,7 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 		echo "<tr class='warning'>";
 		echo "<th>Select</th>";
 		echo "<th>Item Codes</th>";
+		echo "<th>MO Status</th>";
 		echo "<th>Style</th>";
 		echo "<th>Schedule</th>";
 		echo "<th>Color</th>";
@@ -220,7 +221,27 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 				{
 					if($order_joins=="0")
 					{
-						echo "<td><input type=\"checkbox\" name=\"sch[]\" value=\"$schedule\" checked></td>";
+						$sql543111="select * from $bai_pro3.cat_stat_log where order_tid='".$order_tid."'";
+						$result41111=mysqli_query($link, $sql543111) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql54311="select * from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' and mo_status='N'";
+						$result4111=mysqli_query($link, $sql54311) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"])); 
+						if(mysqli_num_rows($result4111)==0 && mysqli_num_rows($result41111)>0) 
+						{
+							echo "<td><input type=\"checkbox\" name=\"col[]\" value=\"$color\" check></td>";
+						}
+						else							
+						{
+							$sql543112="select * from $bai_pro3.cat_stat_log where order_tid='".$order_tid."'";
+							$result41112=mysqli_query($link, $sql543112) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"])); 
+							if(mysqli_num_rows($result41112)==0)
+							{
+								echo "<td>Items Not Available</td>";
+							}
+							else
+							{
+								echo "<td>N/A</td>";
+							}	
+						}
 						$test_count=$test_count+1;
 					}
 					else
@@ -240,12 +261,23 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 			}
 			echo "<td>";				
 			echo "<table>";					
-			$sql543="select compo_no from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' group by compo_no";
+			$sql5431="select compo_no from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' group by compo_no";
+			//echo $sql543."<br>";		
+			$sql_result5431=mysqli_query($link, $sql5431) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row5431=mysqli_fetch_array($sql_result5431)) 
+			{ 
+				echo "<tr><td>".$sql_row5431['compo_no']."</td>";
+			}
+			echo "</table>";
+			echo "</td>";
+			echo "<td>";
+			echo "<table>";					
+			$sql543="select mo_status from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' group by compo_no";
 			//echo $sql543."<br>";		
 			$sql_result543=mysqli_query($link, $sql543) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row543=mysqli_fetch_array($sql_result543)) 
 			{ 
-				echo "<tr><td>".$sql_row543['compo_no']."</td><tr>";
+				echo "<tr><td>".$sql_row543['mo_status']."</td>";
 			}
 			echo "</table>";
 			echo "</td>";
