@@ -19,7 +19,7 @@
 <div class="red" ></div> Material Not Available and Not Preparing from W/H
 </div>
 <div style="width:240px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
-<div class="yash" ></div> Material Status Not Updated in FSP
+<div class="yash" ></div> Material Status Not Updated 
 </div>
 <div style="width:170px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
 <div class="white" ></div> Empty Slot
