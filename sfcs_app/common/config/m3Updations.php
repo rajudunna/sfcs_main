@@ -291,7 +291,6 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
                         $code=$decoded['@code'];
                         $message=$decoded['Message'];
                    
-
                         //validating response pass/fail and inserting log
                         if($type!='ServerReturnedNOK'){
                             //updating response status in m3_transactions
@@ -444,7 +443,6 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                             $code=$decoded['@code'];
                             $message=$decoded['Message'];
                         
-
                             //validating response pass/fail and inserting log
                             if($type!='ServerReturnedNOK')
                             {
