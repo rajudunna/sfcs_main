@@ -111,8 +111,16 @@ if(isset($_POST['clear']))
     $docket_tmp=array(); 
     $docket_t_c=array(); 
     $docket_t=array(); 
-    $status=0;$rows1=0;$rows=0; 
-    $sql88="select doc_no from plandoc_stat_log where order_tid like \"%".$schedule."%\"";  
+    $status=0;$rows1=0;$rows=0;
+    $order_tid_query = "SELECT order_tid from $bai_pro3.bai_orders_db where order_del_no = $schedule 
+                        and order_style_no = '$style' and order_col_des='$color' ";
+    $order_tid_current = mysqli_fetch_array(mysqli_query($link,$order_tid_query))['order_tid'];
+    if($order_tid_current == ''){
+        echo "<script>swal('Error In deleting the Clubbing','','error');</script>";
+        exit();
+    }
+
+    $sql88="select doc_no from plandoc_stat_log where order_tid = '$order_tid_current' ";  
     $result88=mysqli_query($link, $sql88) or die("Error=81");  
     //echo $sql88."<br>";  
     if(mysqli_num_rows($result88)>0)  
