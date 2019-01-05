@@ -32,23 +32,15 @@ foreach($dockets as $doc){
 		}	
 		if($act_cut_status=='')
 			$reported_status = '';
-		if($org_doc_no > 1){
-			for ($i=0; $i < sizeof($sizes_array); $i++)
-			{ 
-				if ($row['p_'.$sizes_array[$i]] > 0)
-				{
-					$cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $row['a_plies'];
-				}
-			}
-		}else{
-			for ($i=0; $i < sizeof($sizes_array); $i++)
-			{ 
-				if ($row['a_'.$sizes_array[$i]] > 0)
-				{
-					$cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $row['a_plies'];
-				}
+
+		for ($i=0; $i < sizeof($sizes_array); $i++)
+		{ 
+			if ($row['a_'.$sizes_array[$i]] > 0)
+			{
+				$cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $row['a_plies'];
 			}
 		}
+		
 	}
 	foreach($cut_done_qty as $key => $value)
 	{
