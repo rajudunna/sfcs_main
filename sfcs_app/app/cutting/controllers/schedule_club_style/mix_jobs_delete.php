@@ -80,8 +80,14 @@ if(isset($_POST['clear']))
 { 
     $style=$_POST['style'];  
     $schedule=$_POST['schedule'];  
+    // 1812321254
     $color=echo_title('bai_pro3.bai_orders_db_confirm', 'order_col_des', 'order_del_no',$schedule, $link);
-    $order_joins="J".$schedule;     
+    $order_tid_current=echo_title('bai_pro3.bai_orders_db_confirm', 'order_tid',"order_style_no = '$style' AND order_del_no",$schedule, $link);
+    $order_joins="J".$schedule;  
+    if($order_tid_current == ''){
+        echo "<script>swal('Error In deleting the Clubbing','','error');</script>";
+        exit();
+    } 
     // echo "Style = $style, Schedule = $schedule, Color = $color <br>"; 
     // die(); 
     $docket_t_cmp=array(); 
@@ -89,7 +95,7 @@ if(isset($_POST['clear']))
     $docket_t_c=array(); 
     $docket_t=array(); 
     $status=0;$rows1=0;$rows=0; 
-    $sql88="select doc_no from plandoc_stat_log where order_tid like \"%".$schedule."%\"";  
+    $sql88="select doc_no from plandoc_stat_log where order_tid = '$order_tid_current' ";  
     $result88=mysqli_query($link, $sql88) or die("Error=81");  
     //echo $sql88."<br>";  
     if(mysqli_num_rows($result88)>0)  
