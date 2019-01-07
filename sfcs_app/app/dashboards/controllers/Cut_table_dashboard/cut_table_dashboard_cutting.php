@@ -758,7 +758,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
     }
   
-    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).")  order by field(doc_no,".implode(",",$doc_no_ref).")";
+    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).")  order by field(doc_no,".implode(",",$doc_no_ref)."),log_time asc";
       if($_GET["view_div"] == 'M')
       {
         $_GET["view_div"] = "M&S";
@@ -767,7 +767,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     
        if($_GET["view_div"]=="ALL" or $_GET["view_div"]=="")
       {
-        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref).")";
+        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref)."),log_time asc";
       }
       else
       {
@@ -782,7 +782,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $buyer_identity = $row_res['buyer_name'];
         }
           
-        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref).")"; 
+        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref)."),log_time asc"; 
       }
 
       
