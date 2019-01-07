@@ -773,6 +773,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 			$section_mods=$sql_rowx['sec_mods'];
 			echo "<div style=\"width:170px;\" align=\"center\"><h4>SEC - $section</h4>";
 			$mods=array();
+			$operation_code=array();
 			$mods=explode(",",$section_mods);
 			$mods1 = $section_mods;
 			if(!(in_array($authorized,$has_perm)))
@@ -791,110 +792,121 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 				}
 			}
             unset($mods);
-			$work_station_module="select module from $bai_pro3.work_stations_mapping where module IN ($mods1)";
-			//echo $work_station_module;
+			$work_station_module="select module,operation_code from $bai_pro3.work_stations_mapping where module IN ($mods1)";
+			// echo $work_station_module;
 			$sql_result1=mysqli_query($link, $work_station_module) or exit("NO Modules availabel");
 			while ($row1=mysqli_fetch_array($sql_result1))
 			{
 			    $mods[]=$row1['module'];
+			    $operation_code[]=$row1['operation_code'];
 			}
-			
 			echo "<script>lis_limit('".sizeof($mods)."','".json_encode($mods)."')</script>";
 			if (sizeof($mods) > 0) {
 				for($x=0;$x<sizeof($mods);$x++)
 				{
-					echo '<p>'.$mods[$x].'</p>
-					<ul id="'.$mods[$x].'" style="width:150px">';
-					$module=$mods[$x];
-					$sql1="SELECT * from $temp_table_name where input_module='$module'";
-					$sql_result1=mysqli_query($link, $sql1) or exit("$sql1 Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$sql_num_check=mysqli_num_rows($sql_result1);
-					while($sql_row1=mysqli_fetch_array($sql_result1))
+					if($operation_code[$x] == 'SOUT')
 					{
-						$type_of_sewing=$sql_row1['type_of_sewing'];
-						$doc_no_ref=$sql_row1['doc_no'];
-						$doc_no=$sql_row1["input_job_no_random_ref"];						
-						$style1=$sql_row1['order_style_no'];
-						$schedule1=$sql_row1['order_del_no'];
-						$color1=$sql_row1['order_col_des'];
-						$total_qty1=$sql_row1['total'];
-						$cut_no1=$sql_row1['acutno'];
-						$color_code1=$sql_row1['color_code'];
-						
-						$sql_style_id="SELECT DISTINCT style_id as sid FROM $bai_pro3.BAI_ORDERS_DB WHERE order_STYLE_NO=\"$style1\" and order_del_no=\"$schedule1\" LIMIT 1";
-						$sql_result_id=mysqli_query($link, $sql_style_id) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($sql_row_id=mysqli_fetch_array($sql_result_id))
+						echo '<p>'.$mods[$x].'</p>
+						<ul id="'.$mods[$x].'" style="width:150px">';
+						$module=$mods[$x];
+						$sql1="SELECT * from $temp_table_name where input_module='$module'";
+						$sql_result1=mysqli_query($link, $sql1) or exit("$sql1 Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_num_check=mysqli_num_rows($sql_result1);
+						while($sql_row1=mysqli_fetch_array($sql_result1))
 						{
-							$style_id_new=$sql_row_id["sid"];
-						}
+							$type_of_sewing=$sql_row1['type_of_sewing'];
+							$doc_no_ref=$sql_row1['doc_no'];
+							$doc_no=$sql_row1["input_job_no_random_ref"];						
+							$style1=$sql_row1['order_style_no'];
+							$schedule1=$sql_row1['order_del_no'];
+							$color1=$sql_row1['order_col_des'];
+							$total_qty1=$sql_row1['total'];
+							$cut_no1=$sql_row1['acutno'];
+							$color_code1=$sql_row1['color_code'];
 							
-						$get_fab_req_details="SELECT * FROM $bai_pro3.fabric_priorities WHERE doc_ref_club=\"$doc_no_ref\" ";
-						$get_fab_req_result=mysqli_query($link, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$resulted_rows = mysqli_num_rows($get_fab_req_result);
-						//echo $get_fab_req_details;
-						//die();
-						$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
-						$bg_color1 = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
-
-						$title=str_pad("Style:".$style1,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$display_prefix1,80)."\n".str_pad("Qty:".$total_qty1,90);
-						if($style1!=NULL)
-						{
-							if($style==$style1  and $schedule==$schedule1)
+							$sql_style_id="SELECT DISTINCT style_id as sid FROM $bai_pro3.BAI_ORDERS_DB WHERE order_STYLE_NO=\"$style1\" and order_del_no=\"$schedule1\" LIMIT 1";
+							$sql_result_id=mysqli_query($link, $sql_style_id) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row_id=mysqli_fetch_array($sql_result_id))
 							{
-								if($resulted_rows>0)
+								$style_id_new=$sql_row_id["sid"];
+							}
+								
+							$get_fab_req_details="SELECT * FROM $bai_pro3.fabric_priorities WHERE doc_ref_club=\"$doc_no_ref\" ";
+							$get_fab_req_result=mysqli_query($link, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$resulted_rows = mysqli_num_rows($get_fab_req_result);
+							//echo $get_fab_req_details;
+							//die();
+							$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
+							$bg_color1 = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
+
+							$title=str_pad("Style:".$style1,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$display_prefix1,80)."\n".str_pad("Qty:".$total_qty1,90);
+							if($style1!=NULL)
+							{
+								if($style==$style1  and $schedule==$schedule1)
 								{
-									if($bg_color1 == 'white')
+									if($resulted_rows>0)
 									{
-										echo '<li id="'.$doc_no.'"  style="background-color:green;" data-color="green" title="'.$title.'"><strong><font color="white">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										if($bg_color1 == 'white')
+										{
+											echo '<li id="'.$doc_no.'"  style="background-color:green;" data-color="green" title="'.$title.'"><strong><font color="white">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										}
+										else if($bg_color1 == 'yellow')
+										{
+											echo '<li id="'.$doc_no.'"  style="background-color:green;border: 4px solid yellow;" data-color="green" title="'.$title.'"><strong><font color="white">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										}
+										
 									}
-									else if($bg_color1 == 'yellow')
+									else
 									{
-										echo '<li id="'.$doc_no.'"  style="background-color:green;border: 4px solid yellow;" data-color="green" title="'.$title.'"><strong><font color="white">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										if($bg_color1 == 'white')
+										{
+											echo '<li id="'.$doc_no.'"  style="background-color:red;" data-color="red" title="'.$title.'"><strong><font color="black">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										}
+										else if($bg_color1 == 'yellow')
+										{
+											echo '<li id="'.$doc_no.'"  style="background-color:white;border: 4px solid yellow;" data-color="red" title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										}
 									}
 									
 								}
 								else
 								{
-									if($bg_color1 == 'white')
-									{
-										echo '<li id="'.$doc_no.'"  style="background-color:red;" data-color="red" title="'.$title.'"><strong><font color="black">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
-									}
-									else if($bg_color1 == 'yellow')
-									{
-										echo '<li id="'.$doc_no.'"  style="background-color:white;border: 4px solid yellow;" data-color="red" title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
-									}
+									echo '<li id="'.$doc_no.'"  style="background-color:'.$bg_color1.';" data-color = '.$bg_color1.' title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+								}
+							}				
+						}
+						if($code_db_new[6]==$module)
+						{
+							for($i=0;$i<sizeof($code_db)-1;$i++)
+							{
+								$code_db_new=array();
+								$code_db_new=explode("-",$code_db[$i]);
+								
+								if($code_db_new[2]=="DONE")
+								{
+									$check="#cce5ff";
+								}
+								else
+								{
+									$check="#cce5ff"; // red
 								}
 								
+								//echo "<li id=\"".$code_db_new[0]."|".$code_db_new[4]."\" style=\"background-color:$check;  color:white;\"><strong>".$code_db_new[1]."-".$code_db_new[5]."-".$code_db_new[3]."</strong></li>";
 							}
-							else
-							{
-								echo '<li id="'.$doc_no.'"  style="background-color:'.$bg_color1.';" data-color = '.$bg_color1.' title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
-							}
-						}				
-					}
-					if($code_db_new[6]==$module)
-					{
-						for($i=0;$i<sizeof($code_db)-1;$i++)
-						{
-							$code_db_new=array();
-							$code_db_new=explode("-",$code_db[$i]);
-							
-							if($code_db_new[2]=="DONE")
-							{
-								$check="#cce5ff";
-							}
-							else
-							{
-								$check="#cce5ff"; // red
-							}
-							
-							//echo "<li id=\"".$code_db_new[0]."|".$code_db_new[4]."\" style=\"background-color:$check;  color:white;\"><strong>".$code_db_new[1]."-".$code_db_new[5]."-".$code_db_new[3]."</strong></li>";
 						}
+						echo '</ul>';
 					}
-					echo '</ul>';			
+					else
+					{
+						echo '<p>'.$mods[$x].'</p>
+								<div class="alert alert-warning" style="margin-left: 24px;">
+									<strong>Work-Station Mapped is '.$operation_code[$x].'</strong>
+								</div><br><br><br><br><br><br>';
+					}
+								
 				}
 			} else {
-				echo '<center><div class="alert alert-danger"><strong>No Work-Station Mapped</strong><br>
+				echo '<center><div class="alert alert-danger" style="margin-left: 24px;"><strong>No Work-Station Mapped</strong><br>
 				</div></center>';
 			}
 			
