@@ -28,31 +28,31 @@
     $url_r = base64_encode(implode('/',$php_self)."/fab_pps_dashboard_v2.php");
     $has_permission=haspermission($url_r); 
 
-    if(!in_array($authorized,$has_permission))
-    {
-        echo '<script>
-        var ctrlPressed = false;
-        $(document).keydown(function(evt) {
-          if (evt.which == 17 || evt.which == 13) { // ctrl
-            ctrlPressed = true;
-            alert("This key has been disabled.");
-          }
-        }).keyup(function(evt) {
-          if (evt.which == 17) { // ctrl
-            ctrlPressed = false;
-          }
-        });
+    // if(!in_array($authorized,$has_permission))
+    // {
+    //     echo '<script>
+    //     var ctrlPressed = false;
+    //     $(document).keydown(function(evt) {
+    //       if (evt.which == 17 || evt.which == 13) { // ctrl
+    //         ctrlPressed = true;
+    //         alert("This key has been disabled.");
+    //       }
+    //     }).keyup(function(evt) {
+    //       if (evt.which == 17) { // ctrl
+    //         ctrlPressed = false;
+    //       }
+    //     });
         
-        $(document).click(function() {
-          if (ctrlPressed) {
-            // do something
-            //alert("Test");
-          } else {
-            // do something else
-          }
-        });
-        </script>';
-    }
+    //     $(document).click(function() {
+    //       if (ctrlPressed) {
+    //         // do something
+    //         //alert("Test");
+    //       } else {
+    //         // do something else
+    //       }
+    //     });
+    //     </script>';
+    // }
 ?>
 
 <script>

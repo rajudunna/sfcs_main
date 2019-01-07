@@ -47,32 +47,32 @@ Service Request #525434/ kirang/ 2014-01-10: Add the ordercut details in RTS das
 
 	$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 	$username=strtolower($username_list[1]);
-	$special_users=array("kirang","kirang","kirang","kirang");
-	if(!in_array($username,$special_users))
-	{
-		echo '<script>
-		var ctrlPressed = false;
-		$(document).keydown(function(evt) {
-		if (evt.which == 17 || evt.which == 13) { // ctrl
-			ctrlPressed = true;
-			alert("This key has been disabled.");
-		}
-		}).keyup(function(evt) {
-		if (evt.which == 17) { // ctrl
-			ctrlPressed = false;
-		}
-		});
+	// $special_users=array("kirang","kirang","kirang","kirang");
+	// if(!in_array($username,$special_users))
+	// {
+	// 	echo '<script>
+	// 	var ctrlPressed = false;
+	// 	$(document).keydown(function(evt) {
+	// 	if (evt.which == 17 || evt.which == 13) { // ctrl
+	// 		ctrlPressed = true;
+	// 		alert("This key has been disabled.");
+	// 	}
+	// 	}).keyup(function(evt) {
+	// 	if (evt.which == 17) { // ctrl
+	// 		ctrlPressed = false;
+	// 	}
+	// 	});
 		
-		$(document).click(function() {
-		if (ctrlPressed) {
-			// do something
-			//alert("Test");
-		} else {
-			// do something else
-		}
-		});
-		</script>';
-	}
+	// 	$(document).click(function() {
+	// 	if (ctrlPressed) {
+	// 		// do something
+	// 		//alert("Test");
+	// 	} else {
+	// 		// do something else
+	// 	}
+	// 	});
+	// 	</script>';
+	// }
 
 ?>
 

@@ -349,31 +349,31 @@ $has_permission = haspermission($_GET['r']);
 //$username=strtolower($username_list[1]);
 // $username="sfcsproject1";
 // $special_users=array("sfcsproject1","kirang","rameshk","chathurangad","indikades","minuram","sfcsproject1","buddhikam");
-if(!in_array($authorized,$has_permission))
-{
-	echo '<script>
-	var ctrlPressed = false;
-	$(document).keydown(function(evt) {
-	  if (evt.which == 17 || evt.which == 13) { // ctrl
-	    ctrlPressed = true;
-		sweetAlert("This key has been disabled.","","warning");
-	  }
-	}).keyup(function(evt) {
-	  if (evt.which == 17) { // ctrl
-	    ctrlPressed = false;
-	  }
-	});
+// if(!in_array($authorized,$has_permission))
+// {
+// 	echo '<script>
+// 	var ctrlPressed = false;
+// 	$(document).keydown(function(evt) {
+// 	  if (evt.which == 17 || evt.which == 13) { // ctrl
+// 	    ctrlPressed = true;
+// 		sweetAlert("This key has been disabled.","","warning");
+// 	  }
+// 	}).keyup(function(evt) {
+// 	  if (evt.which == 17) { // ctrl
+// 	    ctrlPressed = false;
+// 	  }
+// 	});
 	
-	$(document).click(function() {
-	  if (ctrlPressed) {
-	    // do something
-		//alert("Test");
-	  } else {
-	    // do something else
-	  }
-	});
-	</script>';
-}
+// 	$(document).click(function() {
+// 	  if (ctrlPressed) {
+// 	    // do something
+// 		//alert("Test");
+// 	  } else {
+// 	    // do something else
+// 	  }
+// 	});
+// 	</script>';
+// }
 
 ?>
 

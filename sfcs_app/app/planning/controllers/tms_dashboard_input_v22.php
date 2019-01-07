@@ -325,32 +325,32 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
 // $username="sfcsproject1";
-$special_users=array("sfcsproject1","kirang","rameshk","chathurangad","indikades","minuram","sfcsproject1","buddhikam");
-if(!in_array($username,$special_users))
-{
-	echo '<script>
-	var ctrlPressed = false;
-	$(document).keydown(function(evt) {
-	  if (evt.which == 17 || evt.which == 13) { // ctrl
-	    ctrlPressed = true;
-		sweetAlert("This key has been disabled.","","warning");
-	  }
-	}).keyup(function(evt) {
-	  if (evt.which == 17) { // ctrl
-	    ctrlPressed = false;
-	  }
-	});
+// $special_users=array("sfcsproject1","kirang","rameshk","chathurangad","indikades","minuram","sfcsproject1","buddhikam");
+// if(!in_array($username,$special_users))
+// {
+// 	echo '<script>
+// 	var ctrlPressed = false;
+// 	$(document).keydown(function(evt) {
+// 	  if (evt.which == 17 || evt.which == 13) { // ctrl
+// 	    ctrlPressed = true;
+// 		sweetAlert("This key has been disabled.","","warning");
+// 	  }
+// 	}).keyup(function(evt) {
+// 	  if (evt.which == 17) { // ctrl
+// 	    ctrlPressed = false;
+// 	  }
+// 	});
 	
-	$(document).click(function() {
-	  if (ctrlPressed) {
-	    // do something
-		//alert("Test");
-	  } else {
-	    // do something else
-	  }
-	});
-	</script>';
-}
+// 	$(document).click(function() {
+// 	  if (ctrlPressed) {
+// 	    // do something
+// 		//alert("Test");
+// 	  } else {
+// 	    // do something else
+// 	  }
+// 	});
+// 	</script>';
+// }
 
 ?>
 

@@ -36,32 +36,32 @@ $authorized1=array("kirang","sfcsproject1","kishorek","sarojiniv","ravipu","rama
 
 <?php
 
-$special_users=array("kirang","kirang","sfcsproject1");
-if(!in_array($username,$special_users))
-{
-	echo '<script>
-	var ctrlPressed = false;
-	$(document).keydown(function(evt) {
-	  if (evt.which == 17 || evt.which == 13) { // ctrl
-	    ctrlPressed = true;
-		alert("This key has been disabled.");
-	  }
-	}).keyup(function(evt) {
-	  if (evt.which == 17) { // ctrl
-	    ctrlPressed = false;
-	  }
-	});
+// $special_users=array("kirang","kirang","sfcsproject1");
+// if(!in_array($username,$special_users))
+// {
+// 	echo '<script>
+// 	var ctrlPressed = false;
+// 	$(document).keydown(function(evt) {
+// 	  if (evt.which == 17 || evt.which == 13) { // ctrl
+// 	    ctrlPressed = true;
+// 		alert("This key has been disabled.");
+// 	  }
+// 	}).keyup(function(evt) {
+// 	  if (evt.which == 17) { // ctrl
+// 	    ctrlPressed = false;
+// 	  }
+// 	});
 	
-	$(document).click(function() {
-	  if (ctrlPressed) {
-	    // do something
-		//alert("Test");
-	  } else {
-	    // do something else
-	  }
-	});
-	</script>';
-}
+// 	$(document).click(function() {
+// 	  if (ctrlPressed) {
+// 	    // do something
+// 		//alert("Test");
+// 	  } else {
+// 	    // do something else
+// 	  }
+// 	});
+// 	</script>';
+// }
 
 ?>
 
