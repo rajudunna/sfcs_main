@@ -244,9 +244,14 @@ if($rows_count_jobs == 0){
 								// echo $job_new;
 								$count_sch_qry="select * from brandix_bts.bundle_creation_data_temp where schedule='".$del_no_new."' and input_job_no='".$job_new."'";
 								// echo $count_sch_qry;
-								
 								$result9=mysqli_query($link, $count_sch_qry) or die("Error100-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$rows_count1=mysqli_num_rows($result9);
+
+								//Validation For sewing clubbing cant if jobs loaded
+								$count_plan_input="select * from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$job_new."'";
+								$result_plan_input=mysqli_query($link, $count_sccount_plan_inputh_qry) or die("Error100-".$count_plan_input."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$plan_dash_count=mysqli_num_rows($result_plan_input);
+
 								
 								// echo $rows_count1;
 								// die();
@@ -264,9 +269,9 @@ if($rows_count_jobs == 0){
                                
 
 								// echo "<td>Clubbed</td>";		
-								if($rows_count1 > 0){
+								if(($rows_count1 > 0) || ($plan_dash_count > 0)){
 									    
-                                 		echo "<td>Already Scanned</td>";			
+                                 		echo "<td>Already Jobs Loaded/ Scanned</td>";			
 								}
 								// else {
 									// echo "<td>hai</td>";
