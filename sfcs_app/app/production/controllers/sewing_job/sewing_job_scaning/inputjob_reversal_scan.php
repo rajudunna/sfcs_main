@@ -833,40 +833,41 @@ function validation(id)
 							}
 						}
 					}
-					//CODE FOR UPDATING CPS LOG
-					$category=['cutting','Send PF','Receive PF'];
-					$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $post_ops_code";
-					// echo $checking_qry;
-					$result_checking_qry = $link->query($checking_qry);
-					while($row_cat = $result_checking_qry->fetch_assoc()) 
-					{
-						$category_act = $row_cat['category'];
-					}
-					if(in_array($category_act,$category))
-					{
-						$emb_cut_check_flag = 1;
-					}
-					$b_no = $bundle_no[$key];
-					$reversal_value = $reversalval[$key];
-					if($emb_cut_check_flag == 1)
-					{
-						$doc_query = "Select docket_number,size_title from $brandix_bts.bundle_creation_data where bundle_number='$b_no' limit 1";
-						$doc_result = mysqli_query($link,$doc_query) or exit("Error in getting the docket for the bundle");
-						while($row  = mysqli_fetch_array($doc_result))
-						{
-							$docket_n =  $row['docket_number']; 
-							$up_size = $row['size_title'];
-						}
-						if($docket_n > 0)
-						{
-							$update_query = "Update $bai_pro3.cps_log set remaining_qty = remaining_qty + $reversal_value 
-							where doc_no = '$docket_n' and size_title = '$up_size' and operation_code = '$post_ops_code'";
-							// echo $update_query;
-							mysqli_query($link,$update_query) or exit("Some problem while updating cps log");
-						}	
-					}
-					$updating = updateM3TransactionsReversal($bundle_no[$key],$reversalval[$key],$operation_id);		
 				}
+					//CODE FOR UPDATING CPS LOG
+				$category=['cutting','Send PF','Receive PF'];
+				$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $post_ops_code";
+				// echo $checking_qry;
+				$result_checking_qry = $link->query($checking_qry);
+				while($row_cat = $result_checking_qry->fetch_assoc()) 
+				{
+					$category_act = $row_cat['category'];
+				}
+				if(in_array($category_act,$category))
+				{
+					$emb_cut_check_flag = 1;
+				}
+				$b_no = $bundle_no[$key];
+				$reversal_value = $reversalval[$key];
+				if($emb_cut_check_flag == 1)
+				{
+					$doc_query = "Select docket_number,size_title from $brandix_bts.bundle_creation_data where bundle_number='$b_no' limit 1";
+					$doc_result = mysqli_query($link,$doc_query) or exit("Error in getting the docket for the bundle");
+					while($row  = mysqli_fetch_array($doc_result))
+					{
+						$docket_n =  $row['docket_number']; 
+						$up_size = $row['size_title'];
+					}
+					if($docket_n > 0)
+					{
+						$update_query = "Update $bai_pro3.cps_log set remaining_qty = remaining_qty + $reversal_value 
+						where doc_no = '$docket_n' and size_title = '$up_size' and operation_code = '$post_ops_code'";
+						// echo $update_query;
+						mysqli_query($link,$update_query) or exit("Some problem while updating cps log");
+					}	
+				}
+				$updating = updateM3TransactionsReversal($bundle_no[$key],$reversalval[$key],$operation_id);		
+				
 			}
 
 			// Check for sewing job existance in plan_dashboard_input
