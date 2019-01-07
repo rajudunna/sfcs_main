@@ -77,7 +77,7 @@
 		//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
 		//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 		//{
-			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where length(order_del_no)>7 and order_style_no=\"$style\" and $order_joins_in_1 order by order_date";	
+			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_tid in (select order_tid from $bai_pro3.plandoc_stat_log) and length(order_del_no)>7 and order_style_no=\"$style\" and $order_joins_in_1 order by order_date";	
 		//}
 		// echo "working".$sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -98,7 +98,7 @@
 
 		echo"<div class='col-md-3'>";
 		echo "Select Color: <select name=\"color\" class=\"form-control\" onchange=\"thirdbox();\" required>";
-		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and $order_joins_in_1";
+		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_tid in (select order_tid from $bai_pro3.plandoc_stat_log) and order_style_no=\"$style\" and order_del_no=\"$schedule\" and $order_joins_in_1";
 		//}
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
@@ -153,6 +153,7 @@ if(isset($_POST['submit']))
 		$order_id_ref[]=$sql_row4["order_tid"];
 		$cat_type[]=$sql_row4["category"];
 	}
+	
 	$sql47="select * from  $bai_pro3.bai_orders_db_confirm where order_del_no='$order_sch' and order_col_des=\"".$color."\""; 
 	//echo $sql47."<br>";
 	$sql_result47=mysqli_query( $link, $sql47) or exit("Sql Error46".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -220,15 +221,13 @@ if(isset($_POST['submit']))
 			$pend_order_type[]=$cat_type[$ii];				
 		}
 	}
-	//echo sizeof($ready_cat_ref)."<br>";	
-	// exit();
-	//die();
+
 	if(sizeof($ready_cat_ref)>0) 	
 	{
-	    $sql2="truncate mix_temp_desti"; 
+	    $sql2="truncate $bai_pro3.mix_temp_desti"; 
         mysqli_query( $link, $sql2) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
-        $sql3="truncate mix_temp_source"; 
+        $sql3="truncate $bai_pro3.mix_temp_source"; 
         mysqli_query( $link, $sql3) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		for($l=0;$l<sizeof($ready_cat_ref);$l++)
 		{
@@ -726,5 +725,7 @@ if(isset($_POST['submit']))
 			echo "</div>";
 		}	
 	} 
+
+	
 }
 ?>
