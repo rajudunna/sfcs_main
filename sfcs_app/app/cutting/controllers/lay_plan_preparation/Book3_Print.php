@@ -357,6 +357,7 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 {
 	$mklength=$sql_row2['mklength'];
 	$mk_remarks=$sql_row2['remarks'];
+	$patt_ver=$sql_row2['mk_ver'];
 }
 	$sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_id." and doc_type=\"normal\"";
  //echo $sql;

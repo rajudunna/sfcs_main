@@ -379,6 +379,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$mklength=$sql_row2['mklength'];
 		$mk_remarks=$sql_row2['remarks'];
+		$patt_ver=$sql_row2['mk_ver'];
 	}
 	//echo ' total '.$a_ratio_tot;
 //echo implode(",",$docs);
