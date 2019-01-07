@@ -350,8 +350,14 @@
                             
                                     $mods1 = implode(',',$section_mods);
 
-                                    $work_station_module="select module from $bai_pro3.work_stations_mapping where module IN ($mods1) and operation_code = 'SOUT'";
-                                    
+                                    $get_operations="SELECT * FROM $brandix_bts.`tbl_orders_ops_ref` WHERE default_operation='yes' AND  (work_center_id IS NULL OR work_center_id='')";
+                                    $sql_res=mysqli_query($link, $get_operations) or exit("workstation id error");
+                                    while ($row2=mysqli_fetch_array($sql_res)) 
+                                    {
+                                        $short_key = $row2['short_cut_code'];
+                                    }
+
+                                    $work_station_module="select module from $bai_pro3.work_stations_mapping where module IN ($mods1) and operation_code = '$short_key'";
                                     $sql_result1=mysqli_query($link, $work_station_module) or exit("NO Modules availabel");
                                     while ($row1=mysqli_fetch_array($sql_result1))
                                     {
