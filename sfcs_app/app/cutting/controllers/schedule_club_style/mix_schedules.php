@@ -227,7 +227,7 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 						$result4111=mysqli_query($link, $sql54311) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"])); 
 						if(mysqli_num_rows($result4111)==0 && mysqli_num_rows($result41111)>0) 
 						{
-							echo "<td><input type=\"checkbox\" name=\"col[]\" value=\"$color\" check></td>";
+							echo "<td><input type=\"checkbox\" name=\"sch[]\" value=\"$schedule\" check></td>";
 						}
 						else							
 						{
