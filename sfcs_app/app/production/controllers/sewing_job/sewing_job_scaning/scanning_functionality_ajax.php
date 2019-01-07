@@ -58,7 +58,6 @@ if($barcode_generation == 1)
 	$actual_rec_quantities = array();
 	$actual_rejection_reason_array = array();
 	$actual_rejection_reason_array_string = array();
-	$barcode_seq = array();
 	//For positive quantities 
 	$send_qty_array = array();
 	$rec_qtys_array = array();
@@ -120,7 +119,6 @@ if($barcode_generation == 1)
 					$bundle_individual_number = $nop_qry_row['tid'];
 					//echo $bundle_individual_number.'</br>';
 					$actual_bundles[] = $nop_qry_row['tid'];
-					$barcode_seq[] = $nop_qry_row['barcode_sequence'];
 					$b_colors_1[] =  $nop_qry_row['order_col_des'];
 					$qms[$nop_qry_row['tid']]['order_col_des'] = $nop_qry_row['order_col_des'];
 					$qms[$nop_qry_row['tid']]['size_code'] = $nop_qry_row['size_code'];
@@ -391,7 +389,7 @@ if($barcode_generation == 1)
 				// echo 'cum'.$cumulative_qty;
 				//echo $doc_value.'up'.$to_add_doc_val.'</br>';
 				$cumulative_qty = $to_add_doc_val + $cumulative_qty;
-				$query_to_fetch_individual_bundles = "select bundle_number,send_qty,recevied_qty,rejected_qty,color,size_title,size_id,original_qty,cut_number,docket_number,input_job_no,barcode_sequence FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = '$b_job_no' AND operation_id = $b_op_id and docket_number = $doc_value and assigned_module='$module_cum' order by barcode_sequence";
+				$query_to_fetch_individual_bundles = "select bundle_number,(send_qty+recut_in+replace_in)as send_qty,recevied_qty,rejected_qty,color,size_title,size_id,original_qty,cut_number,docket_number,input_job_no,barcode_sequence FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = '$b_job_no' AND operation_id = $b_op_id and docket_number = $doc_value and assigned_module='$module_cum' order by barcode_sequence";
 				$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$remaining_qty_rec = 0;
 				if($emb_cut_check_flag != 0)
@@ -425,7 +423,6 @@ if($barcode_generation == 1)
 					$qms[$nop_qry_row['bundle_number']]['bundle_no'] = $nop_qry_row['bundle_number'];
 					$qms[$nop_qry_row['bundle_number']]['remarks'] = $remarks;
 					$actual_bundles[] = $nop_qry_row['bundle_number'];
-					$barcode_seq[] = $nop_qry_row['barcode_sequence'];
 					$barcode_sequence[] = $nop_qry_row['barcode_sequence'];
 					$b_colors_1[] =  $nop_qry_row['color'];
 					$b_sizes_1[] =  $nop_qry_row['size_title'];
@@ -695,7 +692,6 @@ if($barcode_generation == 1)
 		$b_module = $b_module1;
 
 	}
-	// var_dump($actual_rejection_reason_array_string);
 	if(sizeof($actual_rejection_reason_array_string)>0)
 	{
 		if(substr($bulk_insert_rej, -1) == ',')
@@ -735,9 +731,7 @@ foreach ($b_tid as $key=>$value)
 			$recut_in = $row['recut_in'];
 			$replace_in = $row['replace_in'];
 			$act_reciving_qty = $b_rep_qty[$key]+$b_rej_qty[$key];
-			// echo $pre_recieved_qty.'-'.$act_reciving_qty.'-'.$rejected_qty.'</br>';
 			$total_rec_qty = $pre_recieved_qty+$act_reciving_qty+$rejected_qty;
-			// echo $total_rec_qty.'-'.$send_qty.'</br>';
 			if($total_rec_qty > $send_qty)
 			{
 				$concurrent_flag = 1;
@@ -745,7 +739,6 @@ foreach ($b_tid as $key=>$value)
 		}
 	}
 }
-
 if($concurrent_flag == 1)
 {
 	echo "<h1 style='color:red;'>You are Scanning More than eligible quantity.</h1>";
@@ -1200,7 +1193,7 @@ else if($concurrent_flag == 0)
 	}
 	if($concurrent_flag == 0)
 	{
-		$table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Sequence No</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr></thead><tbody>";
+		$table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Remarks</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr></thead><tbody>";
 		// $checking_output_ops_code = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color='$mapped_color' AND ops_dependency >= 130 AND ops_dependency < 200";
 		$appilication = 'IMS_OUT';
 		$checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication'";
@@ -1432,7 +1425,7 @@ else if($concurrent_flag == 0)
 					while($buyer_qry_row=mysqli_fetch_array($buyer_qry_result)){
 							$buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
 						}
-					$qry_nop="select ((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance where module=".$b_module[$i]." and date='".$bac_dat."' and shift='".$b_shift."'";
+					$qry_nop="select ((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance where module='".$b_module[$i]."' and date='".$bac_dat."' and shift='".$b_shift."'";
 					// echo $qry_nop;
 					$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
