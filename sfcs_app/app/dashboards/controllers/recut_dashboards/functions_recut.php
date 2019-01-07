@@ -258,7 +258,7 @@ function ReplaceProcess($replace_id_edit)
                 $count++;
                 $rec_qty = 0;
                 $already_replaced_qty = 0;
-                $bcd_checking_qry = "select sum(recevied_qty)as rec_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref in ($input_job_no_excess) and size_title = '$excess_size_title' and operation_id = $input_ops_code";
+                $bcd_checking_qry = "select sum(recevied_qty)+sum(rejected_qty)as rec_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref in ($input_job_no_excess) and size_title = '$excess_size_title' and operation_id = $input_ops_code";
                 $result_bcd_checking_qry = $link->query($bcd_checking_qry);
                 if($result_bcd_checking_qry->num_rows > 0)
                 {
