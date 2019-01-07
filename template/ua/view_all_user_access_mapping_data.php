@@ -44,7 +44,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 $RolsMenusPermissionsMappingData = [];
 $role_name = getrbac_user()['role'];
-$sql_select_query = "SELECT group_concat(role_menu_per_id) as record_ids,role_name,rbac_role_menu_per.role_menu_id as role_menu_parent_id,menu_description,group_concat(permission_name) as permissions,group_concat(rbac_role_menu_per.permission_id) as permissions_parent_ids from rbac_roles right join rbac_role_menu on rbac_roles.role_id= rbac_role_menu.roll_id right join rbac_role_menu_per on rbac_role_menu.role_menu_id=rbac_role_menu_per.role_menu_id right join rbac_permission on rbac_role_menu_per.permission_id=rbac_permission.permission_id where rbac_roles.role_name <> '$role_name'  group by role_name,menu_description";
+$sql_select_query = "SELECT group_concat(role_menu_per_id) as record_ids,role_name,rbac_role_menu_per.role_menu_id as role_menu_parent_id,menu_description,group_concat(permission_name) as permissions,group_concat(rbac_role_menu_per.permission_id) as permissions_parent_ids from rbac_roles right join rbac_role_menu on rbac_roles.role_id= rbac_role_menu.roll_id right join rbac_role_menu_per on rbac_role_menu.role_menu_id=rbac_role_menu_per.role_menu_id right join rbac_permission on rbac_role_menu_per.permission_id=rbac_permission.permission_id where rbac_roles.role_name <> ''  group by role_name,menu_description";
 
 $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $i = 0;
