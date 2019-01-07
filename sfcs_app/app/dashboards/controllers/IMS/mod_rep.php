@@ -350,7 +350,7 @@
                             
                                     $mods1 = implode(',',$section_mods);
 
-                                    $work_station_module="select module from $bai_pro3.work_stations_mapping where module IN ($mods1)";
+                                    $work_station_module="select module from $bai_pro3.work_stations_mapping where module IN ($mods1) and operation_code = 'SOUT'";
                                     
                                     $sql_result1=mysqli_query($link, $work_station_module) or exit("NO Modules availabel");
                                     while ($row1=mysqli_fetch_array($sql_result1))

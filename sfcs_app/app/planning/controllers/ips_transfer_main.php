@@ -14,7 +14,7 @@
         $modules[]=$sql_rowx['module_name']; 
     }
     $mods = implode(',',$modules);
-    $work_station_module="select module from $bai_pro3.work_stations_mapping where module IN ($mods)";
+    $work_station_module="select module from $bai_pro3.work_stations_mapping where module IN ($mods) and operation_code = 'SOUT'";
     //echo  $work_station_module;
     $sql_result1=mysqli_query($link, $work_station_module) or exit("NO Modules availabel");
     while ($row1=mysqli_fetch_array($sql_result1))
