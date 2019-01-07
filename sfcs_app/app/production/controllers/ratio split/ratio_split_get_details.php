@@ -14,11 +14,13 @@ if(isset($_GET['fetch'])){
                 where doc_no = $doc_no";
             $row = mysqli_fetch_array(mysqli_query($link,$doc_details_query));
 
-            $a_plies = $row['a_plies'];
-            $style = $row['order_style_no'];
+            $a_plies  = $row['a_plies'];
+            $style    = $row['order_style_no'];
             $schedule = $row['order_del_no'];
 
-            $response_data['a_plies'] = $a_plies;
+            $response_data['a_plies']  = $a_plies;
+            $response_data['style']    = $style;
+            $response_data['schedule'] = $schedule;
         }else{
             $response_data['found'] = 0;
         }
