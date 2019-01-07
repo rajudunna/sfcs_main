@@ -625,13 +625,15 @@ $module_limit=14;
 	if($cutno!='All')
 	{
 		$input_jobs = echo_title("$bai_pro3.packing_summary_input","group_concat(distinct \"'\", input_job_no,\"'\")","order_col_des='$color' and acutno='$cutno' and order_del_no",$schedule_list,$link);
-		
+		if($input_jobs == '')
+			$input_jobs = "''";
 		$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select type_of_sewing,order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from $bai_pro3.plan_doc_summ_input where input_job_no in ($input_jobs) and order_del_no='$schedule_list' and acutno='$cutno' and input_job_no_random not in (select input_job_no_random_ref from $bai_pro3.plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
 	}
 	else
 	{
 		$input_jobs = echo_title("$bai_pro3.packing_summary_input","group_concat(distinct \"'\",input_job_no,\"'\")","order_col_des='$color' and  order_del_no",$schedule_list,$link);
-		
+		if($input_jobs == '')
+			$input_jobs = "''";
 		$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select type_of_sewing,order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from $bai_pro3.plan_doc_summ_input where input_job_no in ($input_jobs) and order_del_no='$schedule_list' and input_job_no_random not in (select input_job_no_random_ref from $bai_pro3.plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
 	}
 	// echo $sql."<br/>";
