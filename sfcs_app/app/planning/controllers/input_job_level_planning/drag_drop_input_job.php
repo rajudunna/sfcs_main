@@ -792,6 +792,13 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 				}
 			}
             unset($mods);
+            $get_operations="SELECT * FROM $brandix_bts.`tbl_orders_ops_ref` WHERE default_operation='yes' AND  (work_center_id IS NULL OR work_center_id='')";
+            $sql_res=mysqli_query($link, $get_operations) or exit("workstation id error");
+            while ($row2=mysqli_fetch_array($sql_res)) 
+            {
+            	$short_key = $row2['short_cut_code'];
+            }
+
 			$work_station_module="select module,operation_code from $bai_pro3.work_stations_mapping where module IN ($mods1)";
 			// echo $work_station_module;
 			$sql_result1=mysqli_query($link, $work_station_module) or exit("NO Modules availabel");
@@ -804,7 +811,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 			if (sizeof($mods) > 0) {
 				for($x=0;$x<sizeof($mods);$x++)
 				{
-					if($operation_code[$x] == 'SOUT')
+					if($operation_code[$x] == $short_key)
 					{
 						echo '<p>'.$mods[$x].'</p>
 						<ul id="'.$mods[$x].'" style="width:150px">';
