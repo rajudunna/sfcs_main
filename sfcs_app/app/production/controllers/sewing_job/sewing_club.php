@@ -204,7 +204,6 @@ if($rows_count_jobs == 0){
 						//echo $sql."<br>";
 						$sql = "SELECT type_of_sewing,input_job_no_random,sch_mix,input_job_no,GROUP_CONCAT(DISTINCT tid ORDER BY tid) AS tid,GROUP_CONCAT(DISTINCT doc_no_ref ORDER BY doc_no) AS doc_no_ref,GROUP_CONCAT(DISTINCT m3_size_code order by m3_size_code) AS size_code,group_concat(distinct order_col_des order by order_col_des) as order_col_des,doc_no,group_concat(distinct order_del_no) as order_del_no,GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno,SUM(carton_act_qty) AS carton_act_qty FROM (SELECT DISTINCT(SUBSTRING_INDEX(order_joins,'J',-1)) AS sch_mix,order_del_no,input_job_no,input_job_no_random,tid,doc_no,doc_no_ref,m3_size_code,order_col_des,acutno,SUM(carton_act_qty) AS carton_act_qty,type_of_sewing FROM bai_pro3.packing_summary_input WHERE order_del_no in ($schedule) GROUP BY order_col_des,order_del_no,input_job_no_random,
 						acutno,m3_size_code order by field(order_del_no,$schedule),field(m3_size_code,'s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','s14','s15','s16','s17','s18','s19','s20','s21','s22','s23','s24','s25','s26','s27','s28','s29','s30','s31','s32','s33','s34','s35','s36','s37','s38','s39','s40','s41','s42','s43','s44','s45','s46','s47','s48','s49','s50')) AS t GROUP BY input_job_no_random ORDER BY input_job_no*1,field(m3_size_code,'s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','s14','s15','s16','s17','s18','s19','s20','s21','s22','s23','s24','s25','s26','s27','s28','s29','s30','s31','s32','s33','s34','s35','s36','s37','s38','s39','s40','s41','s42','s43','s44','s45','s46','s47','s48','s49','s50')";
-						
 						$result=mysqli_query($link, $sql) or die("Error8-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($result))
 						{
@@ -212,6 +211,8 @@ if($rows_count_jobs == 0){
 							    $del_no_new=$sql_row["order_del_no"];
 								// echo $del_no_new;
 								$job_new=$sql_row["input_job_no"];
+
+								$input_job_no_random=$sql_row["input_job_no_random"];
 								
 								
 								//getting cut job numbers
@@ -240,16 +241,14 @@ if($rows_count_jobs == 0){
 								
 								
 								
-								
 								// echo $job_new;
 								$count_sch_qry="select * from brandix_bts.bundle_creation_data_temp where schedule='".$del_no_new."' and input_job_no='".$job_new."'";
-								// echo $count_sch_qry;
 								$result9=mysqli_query($link, $count_sch_qry) or die("Error100-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$rows_count1=mysqli_num_rows($result9);
 
 								//Validation For sewing clubbing cant if jobs loaded
-								$count_plan_input="select * from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$job_new."'";
-								$result_plan_input=mysqli_query($link, $count_sccount_plan_inputh_qry) or die("Error100-".$count_plan_input."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$count_plan_input="select * from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$input_job_no_random."'";
+								$result_plan_input=mysqli_query($link, $count_plan_input) or die("Error101-".$count_plan_input."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$plan_dash_count=mysqli_num_rows($result_plan_input);
 
 								
