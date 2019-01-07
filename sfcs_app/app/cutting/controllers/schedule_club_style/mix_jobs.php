@@ -674,13 +674,23 @@ if(isset($_POST['submit']))
 				// <strong>Success!</strong> Successfully Splitting Completed.
 				// </div>"; 
 				//echo "<h3>Try Again Later<h3>";
-				if(sizeof($pending_cat_order)>0)
-				{	
-					echo " <div class='alert alert-info alert-dismissible'>
-					<strong>Info!</strong> Please Complete Lay Plan for order Quantity fro below.<br>";
-					for($iii=0;$iii<sizeof($pending_cat_order);$iii++)
+				// echo "</div>";	
+				if(sizeof($pending_cat_ref)>0)
+				{
+					echo " <div class='alert alert-warning alert-dismissible'> Below categories need to complete Lay plan for Full Order.<br>";
+					for($iiij=0;$iiij<sizeof($pending_cat_ref);$iiij++)
 					{
-						echo "Order Id ===> ".$pending_cat_order[$iii]." / Category ===> ".$pending_cat_ref_type[$iii]."<br>";
+						echo "Order Id ===> ".$pending_cat_order[$iiij]." / Category ===> ".$pending_cat_ref_type[$iiij]."<br>";
+					}
+					echo "</div>";
+				}		
+				echo "<br><br>";
+				if(sizeof($pend_order)>0)
+				{
+					echo " <div class='alert alert-info alert-dismissible'> For Below categories still Lay plan not started.<br>";
+					for($iiik=0;$iiik<sizeof($pend_order);$iiik++)
+					{
+						echo "Order Id ===> ".$pend_order[$iiik]." / Category ===> ".$pend_order_type[$iiik]."<br>";
 					}
 					echo "</div>";
 				}
@@ -695,12 +705,26 @@ if(isset($_POST['submit']))
 	} 
 	else 
 	{ 		
-		echo " <div class='alert alert-info alert-dismissible'><strong>Info!</strong> Please Prepare Lay Plan for below categories.<br>";
-		for($iii=0;$iii<sizeof($pend_order);$iii++)
+		// echo "</div>";	
+		if(sizeof($pending_cat_ref)>0)
 		{
-			echo "Order Id ===> ".$pend_order[$iii]." / Category ===> ".$pend_order_type[$iii]."<br>";
-		}
-		echo "</div>";		
+			echo " <div class='alert alert-warning alert-dismissible'> Below categories need to complete Lay plan for Full Order.<br>";
+			for($iiij=0;$iiij<sizeof($pending_cat_ref);$iiij++)
+			{
+				echo "Order Id ===> ".$pending_cat_order[$iiij]." / Category ===> ".$pending_cat_ref_type[$iiij]."<br>";
+			}
+			echo "</div>";
+		}		
+		echo "<br><br>";
+		if(sizeof($pend_order)>0)
+		{
+			echo " <div class='alert alert-info alert-dismissible'> For Below categories still Lay plan not started.<br>";
+			for($iiik=0;$iiik<sizeof($pend_order);$iiik++)
+			{
+				echo "Order Id ===> ".$pend_order[$iiik]." / Category ===> ".$pend_order_type[$iiik]."<br>";
+			}
+			echo "</div>";
+		}	
 	} 
 }
 ?>
