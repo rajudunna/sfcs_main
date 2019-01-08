@@ -421,7 +421,9 @@ $(document).ready(function()
 													status = '<font color="red">Embelishment not done</font>';
 												else
 													status = '<font color="red">Cut Quantity not done</font>';
-											}else {
+											}else if(brep==0){
+												status = '<font color="red">Previous Operation Not Done</font>';
+											}else{
 												status = '<font color="green">Scanning Pending</font>';
 											}
 										}else if(er != 0 && (repq == 0 || repq == null)) {
