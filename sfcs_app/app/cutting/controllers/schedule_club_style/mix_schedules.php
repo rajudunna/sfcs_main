@@ -147,7 +147,28 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 		}
 	}
 	sort(array_unique($orginal_size_array));
-	sort(array_unique($size_array));
+	Sort(array_unique($size_array));
+	$rand_no=date("ymd").rand(1,1000);
+	$tabl="temp_pool_db.new_tbl".$rand_no."";
+	$sql76="CREATE TEMPORARY TABLE $tabl SELECT * FROM brandix_bts.`tbl_orders_size_ref` LIMIT 1";
+	mysqli_query($link,$sql76) or die("Error 1 = ".$sql76.mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql77="DELETE FROM $tabl";
+	mysqli_query($link,$sql77) or die("Error 2 = ".$sql77.mysqli_error($GLOBALS["___mysqli_ston"]));
+	for($qi=0;$qi<sizeof($orginal_size_array);$qi++)
+	{
+		$sql78="INSERT INTO $tabl (`size_name`) VALUES ('".$orginal_size_array[$qi]."')";
+		mysqli_query($link,$sql78) or die("Error 3 = ".$sql77.mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
+	$sql79="SELECT * FROM $tabl ORDER BY CONVERT(bai_pro3.stripSpeciaChars(size_name,0,1,0,0) USING utf8)*1,
+	FIELD(size_name,'xxs''xs','s','m','l','xl','xxl','xxxl','xxxxl')";
+	$result79=mysqli_query($link,$sql79) or die("Error 4 = ".$sql79.mysqli_error($GLOBALS["___mysqli_ston"]));
+	unset($orginal_size_array);
+	while($row79=mysqli_fetch_array($result79))
+	{
+		$orginal_size_array[]=$row79['size_name'];
+	}
+	$sql80="DROP TABLE $tabl";
+	mysqli_query($link,$sql80) or die("Error 3 = ".$sql80.mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(sizeof($orginal_size_array)<>sizeof($size_array))
 	{
 		for($qq=0;$qq<sizeof($sizes_array);$qq++)
