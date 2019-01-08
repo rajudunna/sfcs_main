@@ -410,9 +410,10 @@ $(document).ready(function()
 											else
 												status = '<font color="red">Cut Quantity not done</font>';
 										}
+
 										if(data[i].send_qty != 0)
 										{
-											if(Number(data[i].reported_qty) == data[i].send_qty)
+											if(Number(data[i].reported_qty) == Number(data[i].send_qty)+Number(data[i].recut_in)+Number(data[i].replace_in))
 											{
 												status = '<font color="red">Already Scanned</font>';
 											}
