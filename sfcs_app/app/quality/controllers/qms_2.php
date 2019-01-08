@@ -165,7 +165,7 @@ if(isset($_GET['tid']))
 	}
 	if($emb_cut_check_flag == 1)
 	{
-		$cps_update = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$qms_qty where doc_no = $doc_no and operation_code = $pre_ops_code";
+		$cps_update = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$qms_qty where doc_no = $doc_no and operation_code = $pre_ops_code and size_code = '$qms_size'";
 		mysqli_query($link, $cps_update) or die("Sql error".$cps_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	}
 	// $ops_sequence="SELECT ops_sequence FROM $brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND COLOR='".$color."' AND operation_code='".$operation_id."'";
