@@ -87,7 +87,7 @@ function updateM3Transactions($ref_id,$op_code,$qty)
 
                     if ($opn_routing_code == $op_code)
                     {
-                        $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no=$mo_number and operation_id=$op_code";
+                        $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no=$mo_number";
                         $count_result = $link->query($get_count);
                         while($row = $count_result->fetch_assoc()) 
                         {
@@ -240,7 +240,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
 
                     if ($opn_routing_code == $op_code)
                     {
-                        $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no=$mo_number and operation_id=$op_code";
+                        $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no=$mo_number";
                         $count_result = $link->query($get_count);
                         while($row = $count_result->fetch_assoc()) 
                         {
