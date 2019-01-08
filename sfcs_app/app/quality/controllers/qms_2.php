@@ -109,7 +109,7 @@ if(isset($_GET['tid']))
 	$parent_id = $_GET['parent_id'];
 	$bcd_id = $_GET['bcd_id'];
 	
-	$sql1="select bundle_no,qms_style,qms_color,input_job_no,operation_id,qms_size,SUBSTRING_INDEX(remarks,'-',1) as module,ref1,doc_no from $bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
+	$sql1="select bundle_no,qms_style,qms_color,input_job_no,operation_id,qms_size,SUBSTRING_INDEX(remarks,'-',1) as module,ref1,doc_no from,qms_schedule $bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
 	// echo $sql1."<br>";
 	$result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($result1))
@@ -123,6 +123,7 @@ if(isset($_GET['tid']))
 		$color=$sql_row["qms_color"];
 		$bundle_no_ref=$sql_row["bundle_no"];
 		$doc_no = $sql_row['doc_no'];
+		$schedule = $sql_row['qms_schedule'];
 	}
 	$form = 'P';
 	if($operation_code >=130)
@@ -276,8 +277,23 @@ if(isset($_GET['tid']))
 	// echo $update_qry.'</br>';
 	mysqli_query($link, $update_qry) or die("update_qry".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
 
-	$update_qry_rejections_log = "update $bai_pro3.rejections_log set rejected_qty = rejected_qty-$qms_qty where parent_id = $parent_id";
-	mysqli_query($link, $update_qry_rejections_log) or die("update_qry_rejections_log".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
+	$search_qry="SELECT id FROM $bai_pro3.rejections_log where style='$style' and schedule='$schedule' and color='$color'";
+					// echo $search_qry;
+	$result_search_qry = mysqli_query($link,$search_qry) or exit("rejections_log search query".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if($result_search_qry->num_rows > 0)
+	{
+		while($row_result_search_qry=mysqli_fetch_array($result_search_qry))
+		{
+
+			$rejection_log_id = $row_result_search_qry['id'];
+			$update_qry_rej_lg = "update $bai_pro3.rejections_log set rejected_qty = rejected_qty-$qms_qty,remaining_qty=remaining_qty-$qms_qty where id = $rejection_log_id";
+			// echo $update_qry_rej_lg;
+			$update_qry_rej_lg = $link->query($update_qry_rej_lg);
+			$parent_id = $rejection_log_id;
+
+		}
+
+	}
 	// echo $update_qry_rejections_log.'</br>';
 	//updating in moq and inserting into m3 transactions
 	//To update M3 Bulk Upload Tool (To pass negative entry)
@@ -299,9 +315,8 @@ if(isset($_GET['tid']))
 		// echo $sql2."<br>";
 		// mysqli_query($link, $sql2) or die("Sql error".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	// }
-	echo "<div id=\"fade1\" >";
-	echo "<script>sweetAlert('Record Deleted Successfully','','success')</script>";
-	echo "</div>";
+	$url = '?r='.$_GET['r'];
+	echo "<script>sweetAlert('Deleted Successfully!!!','','success');window.location = '".$url."'</script>"; 
 	
 }
 if(isset($_POST['search']) || $_GET['schedule_id'])
