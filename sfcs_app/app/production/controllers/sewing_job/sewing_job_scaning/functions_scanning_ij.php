@@ -334,7 +334,7 @@ function getjobdetails($job_number)
 						while($row_bundle = $result_doc_wise_bundle_qty->fetch_assoc()) 
 						{
 							$replaced_qty = 0;
-							if($job_number_reference == 2 && $flag == 'packing_summary_input')
+							if($job_number_reference == 2)
 							{
 								$qry_for_replacment_allocation_log = "select sum(replaced_qty)as replaced_qty from $bai_pro3.replacment_allocation_log where $column_in_where_condition ='$column_to_search' and size_title ='$size_title'";
 								$result_qry_for_replacment_allocation_log = $link->query($qry_for_replacment_allocation_log);
