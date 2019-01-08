@@ -396,6 +396,8 @@ $(document).ready(function()
 										var readonly ='';
 										var temp_var_bal = 0;
 										var er   = Number(data[i].send_qty);
+										if(data[i].send_qty == null)
+											er = 0;
 										var repq = Number(data[i].reported_qty)+Number(data[i].rejected_qty);
 										
 										if(er == 0){
@@ -408,7 +410,7 @@ $(document).ready(function()
 											}else{
 												status = '<font color="red">Previous Operation Not Done</font>';
 											}
-										}else if(data[i].send_qty != 0 && (repq == 0 || repq == null)) {
+										}else if(er > 0 && (repq == 0 || repq == null)) {
 											status = '<font color="green">Scanning Pending</font>';
 										}else if(er == repq){
 											status = '<font color="red">Already Scanned</font>';
