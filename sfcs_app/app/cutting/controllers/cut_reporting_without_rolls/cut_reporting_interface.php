@@ -627,7 +627,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             GLOBAL_CALL++;
             $('.size-rej-pieces').html('<b>'+size_rej_qty_string+'</b>');
             $('#total_pieces').val(ret);
-            $('#avl_pieces').val(ret);
+            $('#avl_pieces').val(ret - total_rejected_pieces);
         }).fail(function(){
             alert('fail');
         });
