@@ -398,7 +398,7 @@ $(document).ready(function()
 										var er = Number(data[i].send_qty);
 										var repq = Number(data[i].reported_qty)+Number(data[i].rejected_qty);
 										
-										if(er == 0){
+										if(er == 0 || er == null){
 											if(response['emb_cut_check_flag'] && data[i].balance_to_report == 0)
 											{
 												if(response['is_emb_flag'] == '1')
