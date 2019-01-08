@@ -404,7 +404,7 @@ $(document).ready(function()
 										{
 											status = '<font color="red">Cut Quantity not done</font>';
 										}
-										else if(data[i].send_qty != 0)
+										else if(data[i].send_qty != 0 && Number(data[i].balance_to_report) !=0)
 										{
 											if(Number(data[i].send_qty) == Number(data[i].reported_qty)+Number(data[i].recut_in)+Number(data[i].replace_in)+Number(data[i].balance_to_report))
 											{
