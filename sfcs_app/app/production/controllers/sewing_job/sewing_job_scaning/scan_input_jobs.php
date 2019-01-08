@@ -399,6 +399,8 @@ $(document).ready(function()
 										console.log(Number(data[i].balance_to_report));
 										console.log(Number(data[i].send_qty));
 										console.log(Number(data[i].reported_qty));
+										console.log(Number(data[i].recut_in));
+										console.log(Number(data[i].replace_in));
 										if(Number(data[i].reported_qty) > 0 && Number(data[i].balance_to_report) != 0)
 										{
 											status = '<font color="green">Partially Scanned</font>';
@@ -409,6 +411,7 @@ $(document).ready(function()
 										}
 										else if(data[i].send_qty != 0 && Number(data[i].balance_to_report) ==0)
 										{
+											console.log("coming");
 											if(Number(data[i].send_qty) == Number(data[i].reported_qty)+Number(data[i].recut_in)+Number(data[i].replace_in)+Number(data[i].balance_to_report))
 											{
 												status = '<font color="red">Already Scanned</font>';
