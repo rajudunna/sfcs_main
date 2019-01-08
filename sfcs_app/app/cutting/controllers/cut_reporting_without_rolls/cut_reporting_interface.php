@@ -227,7 +227,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <td><input type='text' class='form-control integer' value='0' id='shortages'></td>
                             <!-- <td><input type='text' class='form-control integer' place-holder='Rejections' id='rejection_pieces' name='rejection_pieces'><br><br> -->
                             <td>
-                            <input type='button' style='display : block' class='btn btn-sm btn-success' id='rejections_panel_btn' value='show rejections'>
+                            <input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn' value='Show Rejections'>
                             </td>
                             <td><input type='button' class='btn btn-sm btn-success' value='Submit' id='submit'></td>
                         </tr>
