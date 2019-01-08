@@ -120,6 +120,7 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
             //}
 
             $ref1 = $qms_ref1[$size];
+            $ref1 = rtrim($ref1,'$');
             $qms_insert_query = "INSERT INTO $bai_pro3.bai_qms_db 
             (qms_style,qms_schedule,qms_color,qms_remarks,bundle_no,log_user,log_date,log_time,issued_by,qms_size,qms_qty,qms_tran_type,remarks,ref1,doc_no,location_id,input_job_no,operation_id)
             values
