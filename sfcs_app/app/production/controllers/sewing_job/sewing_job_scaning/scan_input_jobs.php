@@ -408,7 +408,7 @@ $(document).ready(function()
 											}else{
 												status = '<font color="red">Previous Operation Not Done</font>';
 											}
-										}else if(er > 0 && (repq == 0 || repq == null) {
+										}else if(er > 0 && (repq == 0 || repq == null) ){
 											status = '<font color="green">Scanning Pending</font>';
 										}else if(er == repq){
 											status = '<font color="red">Fully Scanned</font>';
