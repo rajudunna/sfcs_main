@@ -395,7 +395,7 @@ $(document).ready(function()
 										}
 										var readonly ='';
 										var temp_var_bal = 0;
-										if(Number(data[i].reported_qty) > 0 && data[i].balance_to_report != 0)
+										if(Number(data[i].reported_qty) > 0 && Number(data[i].balance_to_report) != 0)
 										{
 											status = '<font color="green">Partially Scanned</font>';
 										}
@@ -403,9 +403,9 @@ $(document).ready(function()
 										{
 											status = '<font color="green">Scanning Pending</font>';
 										}
-										else if(data[i].send_qty != 0 && data[i].balance_to_report ==0)
+										else if(data[i].send_qty != 0 && Number(data[i].balance_to_report) ==0)
 										{
-											if(Number(data[i].send_qty) == Number(data[i].reported_qty)+Number(data[i].recut_in)+Number(data[i].replace_in)+data[i].balance_to_report)
+											if(Number(data[i].send_qty) == Number(data[i].reported_qty)+Number(data[i].recut_in)+Number(data[i].replace_in)+Number(data[i].balance_to_report))
 											{
 												status = '<font color="red">Already Scanned</font>';
 											}
