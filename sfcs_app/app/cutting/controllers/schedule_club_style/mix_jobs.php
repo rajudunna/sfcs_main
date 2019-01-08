@@ -77,7 +77,7 @@
 		//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
 		//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 		//{
-			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where length(order_del_no)>7 and order_style_no=\"$style\" and $order_joins_in_1 order by order_date";	
+			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_tid in (select order_tid from $bai_pro3.plandoc_stat_log) and length(order_del_no)>7 and order_style_no=\"$style\" and $order_joins_in_1 order by order_date";	
 		//}
 		// echo "working".$sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -98,7 +98,7 @@
 
 		echo"<div class='col-md-3'>";
 		echo "Select Color: <select name=\"color\" class=\"form-control\" onchange=\"thirdbox();\" required>";
-		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and $order_joins_in_1";
+		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_tid in (select order_tid from $bai_pro3.plandoc_stat_log) and order_style_no=\"$style\" and order_del_no=\"$schedule\" and $order_joins_in_1";
 		//}
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
@@ -144,8 +144,27 @@ if(isset($_POST['submit']))
 	$ready_cat_ref_type=array();
 	$o_s=array();	
 	$o_s_t=array();
+	
 	$table_tag=" $bai_pro3.bai_orders_db_club_confirm";
-	$sql4="select * from $bai_pro3.cat_stat_log where order_tid like \"%".$order_sch.$color."%\" and category<>''"; 
+	
+	$sql47="select * from  $bai_pro3.bai_orders_db_confirm where order_del_no='$order_sch' and order_col_des=\"".$color."\""; 
+	//echo $sql47."<br>";
+	$sql_result47=mysqli_query( $link, $sql47) or exit("Sql Error46".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	while($sql_row47=mysqli_fetch_array($sql_result47)) 
+	{ 
+		$ord_tid=$sql_row47['order_tid'];
+		for($s=0;$s<sizeof($sizes_array);$s++)
+		{
+			if($sql_row47["title_size_".$sizes_array[$s].""]<>'')
+			{
+				$o_s[$sizes_array[$s]]=$sql_row47["order_s_".$sizes_array[$s].""];
+				$o_s_t[$sizes_array[$s]]=$sql_row47["title_size_".$sizes_array[$s].""];
+				//echo $sql_row47["title_size_".$sizes_array[$s].""]."----".$sql_row47["order_s_".$sizes_array[$s].""]."<br>";
+			}
+		}	
+		
+	} 	
+	$sql4="select * from $bai_pro3.cat_stat_log where order_tid='".$ord_tid."' and category<>''"; 
 	$sql_result4=mysqli_query( $link, $sql4) or exit("Sql Error47".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row4=mysqli_fetch_array($sql_result4)) 
 	{
@@ -153,6 +172,7 @@ if(isset($_POST['submit']))
 		$order_id_ref[]=$sql_row4["order_tid"];
 		$cat_type[]=$sql_row4["category"];
 	}
+	
 	$sql47="select * from  $bai_pro3.bai_orders_db_confirm where order_del_no='$order_sch' and order_col_des=\"".$color."\""; 
 	//echo $sql47."<br>";
 	$sql_result47=mysqli_query( $link, $sql47) or exit("Sql Error46".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -220,15 +240,13 @@ if(isset($_POST['submit']))
 			$pend_order_type[]=$cat_type[$ii];				
 		}
 	}
-	//echo sizeof($ready_cat_ref)."<br>";	
-	// exit();
-	//die();
+
 	if(sizeof($ready_cat_ref)>0) 	
 	{
-	    $sql2="truncate mix_temp_desti"; 
+	    $sql2="truncate $bai_pro3.mix_temp_desti"; 
         mysqli_query( $link, $sql2) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
-        $sql3="truncate mix_temp_source"; 
+        $sql3="truncate $bai_pro3.mix_temp_source"; 
         mysqli_query( $link, $sql3) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		for($l=0;$l<sizeof($ready_cat_ref);$l++)
 		{
@@ -553,7 +571,7 @@ if(isset($_POST['submit']))
 						{
 							if($size_q[$j]>0)
 							{
-								$sql471="update $bai_pro3.plandoc_stat_log set ".$size_p[$j]."='".$size_q[$j]."' where doc_no='$docn'";
+								$sql471="update $bai_pro3.plandoc_stat_log set ".$size_p[$j]."=($size_p[$j]+$size_q[$j]) where doc_no='$docn'";
 								mysqli_query($link, $sql471) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"])); 
 								$sql4712="update $bai_pro3.mix_temp_desti set qty='0' where doc_no='".$sql_row1['doc_no']."' and size='".$size_p[$j]."' and order_tid='".$sql_row1['order_tid']."'"; 
 								//echo $sql4712."<br>"; 
@@ -674,13 +692,23 @@ if(isset($_POST['submit']))
 				// <strong>Success!</strong> Successfully Splitting Completed.
 				// </div>"; 
 				//echo "<h3>Try Again Later<h3>";
-				if(sizeof($pending_cat_order)>0)
-				{	
-					echo " <div class='alert alert-info alert-dismissible'>
-					<strong>Info!</strong> Please Complete Lay Plan for order Quantity fro below.<br>";
-					for($iii=0;$iii<sizeof($pending_cat_order);$iii++)
+				// echo "</div>";	
+				if(sizeof($pending_cat_ref)>0)
+				{
+					echo " <div class='alert alert-warning alert-dismissible'> Below categories need to complete Lay plan for Full Order.<br>";
+					for($iiij=0;$iiij<sizeof($pending_cat_ref);$iiij++)
 					{
-						echo "Order Id ===> ".$pending_cat_order[$iii]." / Category ===> ".$pending_cat_ref_type[$iii]."<br>";
+						echo "Order Id ===> ".$pending_cat_order[$iiij]." / Category ===> ".$pending_cat_ref_type[$iiij]."<br>";
+					}
+					echo "</div>";
+				}		
+				echo "<br><br>";
+				if(sizeof($pend_order)>0)
+				{
+					echo " <div class='alert alert-info alert-dismissible'> For Below categories still Lay plan not started.<br>";
+					for($iiik=0;$iiik<sizeof($pend_order);$iiik++)
+					{
+						echo "Order Id ===> ".$pend_order[$iiik]." / Category ===> ".$pend_order_type[$iiik]."<br>";
 					}
 					echo "</div>";
 				}
@@ -695,12 +723,28 @@ if(isset($_POST['submit']))
 	} 
 	else 
 	{ 		
-		echo " <div class='alert alert-info alert-dismissible'><strong>Info!</strong> Please Prepare Lay Plan for below categories.<br>";
-		for($iii=0;$iii<sizeof($pend_order);$iii++)
+		// echo "</div>";	
+		if(sizeof($pending_cat_ref)>0)
 		{
-			echo "Order Id ===> ".$pend_order[$iii]." / Category ===> ".$pend_order_type[$iii]."<br>";
-		}
-		echo "</div>";		
+			echo " <div class='alert alert-warning alert-dismissible'> Below categories need to complete Lay plan for Full Order.<br>";
+			for($iiij=0;$iiij<sizeof($pending_cat_ref);$iiij++)
+			{
+				echo "Order Id ===> ".$pending_cat_order[$iiij]." / Category ===> ".$pending_cat_ref_type[$iiij]."<br>";
+			}
+			echo "</div>";
+		}		
+		echo "<br><br>";
+		if(sizeof($pend_order)>0)
+		{
+			echo " <div class='alert alert-info alert-dismissible'> For Below categories still Lay plan not started.<br>";
+			for($iiik=0;$iiik<sizeof($pend_order);$iiik++)
+			{
+				echo "Order Id ===> ".$pend_order[$iiik]." / Category ===> ".$pend_order_type[$iiik]."<br>";
+			}
+			echo "</div>";
+		}	
 	} 
+
+	
 }
 ?>
