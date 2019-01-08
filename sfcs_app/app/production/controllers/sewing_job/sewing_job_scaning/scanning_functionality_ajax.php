@@ -1566,7 +1566,7 @@ else if($concurrent_flag == 0)
 					//updating this to cps log
 					if($emb_cut_check_flag)
 					{
-						$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$size_title' AND operation_code = $emb_cut_check_flag";
+						$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$implode_next[2] where doc_no = $doc_value and size_title='$size_title' AND operation_code = $emb_cut_check_flag";
 						$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 					}
 				}
