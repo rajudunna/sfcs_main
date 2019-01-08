@@ -395,12 +395,26 @@ $(document).ready(function()
 										}
 										var readonly ='';
 										var temp_var_bal = 0;
-										console.log(Number(data[i].reported_qty));
-										console.log(Number(data[i].balance_to_report));
-										console.log(Number(data[i].send_qty));
-										console.log(Number(data[i].reported_qty));
-										console.log(Number(data[i].recut_in));
-										console.log(Number(data[i].replace_in));
+										var er = Number(data[i].send_qty)+Number(data[i].recut_in)+Number(data[i].replace_in);
+										var repq = Number(data[i].reported_qty)+Number(data[i].rejected_qty);
+										
+										if(er == 0){
+											if(response['emb_cut_check_flag'] && data[i].balance_to_report == 0)
+											{
+												if(response['is_emb_flag'] == '1')
+													status = '<font color="red">Embelishment not done</font>';
+												else
+													status = '<font color="red">Cut Quantity not done</font>';
+											}else{
+												status = '<font color="red">Previous Operation Not Done</font>';
+											}
+										}else if(er == repq){
+											status = '<font color="red">Fully Scanned</font>';
+										}else if(er != 0 && repq != 0 && er!=repq){
+											status = '<font color="orange">Partially Scanned</font>';
+										}
+
+										/*	
 										if(Number(data[i].reported_qty) > 0 && Number(data[i].balance_to_report) != 0)
 										{
 											status = '<font color="green">Partially Scanned</font>';
@@ -428,6 +442,7 @@ $(document).ready(function()
 										{
 											status = '<font color="red">No Operation Reported</font>';
 										}
+										*/
 										var temp_var_bal1 = 0;				
 										if(operation_id == operation_code_routing)
 										{
