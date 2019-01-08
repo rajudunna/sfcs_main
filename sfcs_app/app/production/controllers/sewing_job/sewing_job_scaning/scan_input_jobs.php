@@ -411,6 +411,7 @@ $(document).ready(function()
 										}
 										else if(data[i].send_qty != 0 && Number(data[i].balance_to_report) ==0)
 										{
+											console.log("coming");
 											if(Number(data[i].send_qty) == Number(data[i].reported_qty)+Number(data[i].recut_in)+Number(data[i].replace_in)+Number(data[i].balance_to_report))
 											{
 												status = '<font color="red">Already Scanned</font>';
