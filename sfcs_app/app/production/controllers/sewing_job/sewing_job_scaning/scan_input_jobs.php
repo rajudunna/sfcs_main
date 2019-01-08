@@ -395,10 +395,10 @@ $(document).ready(function()
 										}
 										var readonly ='';
 										var temp_var_bal = 0;
-										var er = Number(data[i].send_qty);
+										var er   = Number(data[i].send_qty);
 										var repq = Number(data[i].reported_qty)+Number(data[i].rejected_qty);
 										
-										if(er == 0 || er == null){
+										if(er == 0){
 											if(response['emb_cut_check_flag'] && data[i].balance_to_report == 0)
 											{
 												if(response['is_emb_flag'] == '1')
@@ -408,10 +408,12 @@ $(document).ready(function()
 											}else{
 												status = '<font color="red">Previous Operation Not Done</font>';
 											}
+										}else if(er > 0 && (repq == 0 || repq == null) {
+											status = '<font color="green">Scanning Pending</font>';
 										}else if(er == repq){
 											status = '<font color="red">Fully Scanned</font>';
 										}else if( (er != 0 || repq != 0) && er!=repq){
-											status = '<font color="orange">Partially Scanned</font>';
+											status = '<font color="blue">Partially Scanned</font>';
 										}
 
 										/*	
