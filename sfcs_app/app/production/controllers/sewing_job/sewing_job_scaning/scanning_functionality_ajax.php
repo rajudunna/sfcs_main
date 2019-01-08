@@ -245,8 +245,8 @@ if($barcode_generation == 1)
 							$remarks_code = $reason_code.'-'.$insertable_qty_rej;
 							$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
 							//updating this to cps log
-							$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
-							$update_qry_cps_log_res = $link->query($update_qry_cps_log);
+							//$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+							//$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 							$pre_insertion_qty = 0;
 							$max_insertion_qty_rej = $max_insertion_qty;
 							$actual_rejection_reason_array[$bundle_individual_number] = 0;
@@ -559,8 +559,8 @@ if($barcode_generation == 1)
 							$to_add += 0;
 							$actual_rej_quantities[$bundle_individual_number]=0;
 						}
-						$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
-						$update_qry_cps_log_res = $link->query($update_qry_cps_log);
+						//$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+						//$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 						//rejection resons
 						$pre_insertion_qty = 0;
 						// $max_insertion_qty_rej = $max_insertion_qty;
@@ -1406,7 +1406,7 @@ else if($concurrent_flag == 0)
 				}
 				else
 				{
-				$output_ops_code_out = 130;
+					$output_ops_code_out = 130;
 				}
 				if($b_op_id == $output_ops_code_out)
 				{
@@ -1513,6 +1513,7 @@ else if($concurrent_flag == 0)
 					$size_id = $bcd_id_row['size_id'];
 					$assigned_module = $bcd_id_row['assigned_module'];
 					$input_job_random_ref = $bcd_id_row['input_job_no_random_ref'];
+					$doc_value = $bcd_id_row['docket_number'];
 				}
 				//searching the bcd_id in rejection log child or not
 				$bcd_id_searching_qry = "select id,parent_id from $bai_pro3.rejection_log_child where bcd_id = $bcd_id";
@@ -1562,6 +1563,12 @@ else if($concurrent_flag == 0)
 				{
 					$insert_into_rejections_reason_track = "INSERT INTO $bai_pro3.`rejections_reason_track` (`parent_id`,`date_time`,`bcd_id`,`rejected_qty`,`rejection_reason`,`username`,`form_type`) values ($parent_id,DATE_FORMAT(NOW(), '%Y-%m-%d %H'),$bcd_id,'$implode_next[2]','$implode_next[1]','$username','$form')";
 					$insert_into_rejections_reason_track_res =$link->query($insert_into_rejections_reason_track);
+					//updating this to cps log
+					if($emb_cut_check_flag)
+					{
+						$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$size_title' AND operation_code = $emb_cut_check_flag";
+						$update_qry_cps_log_res = $link->query($update_qry_cps_log);
+					}
 				}
 				updateM3TransactionsRejections($b_tid,$b_op_id,$r_qty,$r_reasons);
 			}
