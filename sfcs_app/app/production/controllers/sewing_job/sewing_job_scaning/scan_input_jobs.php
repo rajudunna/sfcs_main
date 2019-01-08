@@ -397,6 +397,8 @@ $(document).ready(function()
 										var temp_var_bal = 0;
 										console.log(Number(data[i].reported_qty));
 										console.log(Number(data[i].balance_to_report));
+										console.log(Number(data[i].send_qty));
+										console.log(Number(data[i].reported_qty));
 										if(Number(data[i].reported_qty) > 0 && Number(data[i].balance_to_report) != 0)
 										{
 											status = '<font color="green">Partially Scanned</font>';
