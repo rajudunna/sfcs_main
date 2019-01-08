@@ -407,7 +407,7 @@ $(document).ready(function()
 
 										if(data[i].send_qty != 0)
 										{
-											if(Number(data[i].reported_qty) == Number(data[i].send_qty)+Number(data[i].recut_in)+Number(data[i].replace_in))
+											if(Number(data[i].send_qty) == Number(data[i].reported_qty)+Number(data[i].recut_in)+Number(data[i].replace_in))
 											{
 												status = '<font color="red">Already Scanned</font>';
 											}
