@@ -3706,12 +3706,11 @@ tags will be replaced.-->
 							echo "<td style='border:.5pt solid black;'>".chr($cc_code[$j]).leading_zeros($cut_no, 3)."</td>";
 							echo "<td style='border:.5pt solid black;'>".$docs[$j]."</td>";
 						}
-						echo "<tr style='height:40px'>";
+						// echo "<tr style='height:40px'>";
 						for($k=$temp_len1;$k<$total_size;$k++)
 						{
 							echo "<td style='border:.5pt solid black;'>".$qty[$k]."</td>";
 						}
-						echo $j.'$j';
 						echo "<td style='border:.5pt solid black;'>".$a_ratio_tot."</td>";
 						echo "<td style='border:.5pt solid black;'>".round( $plies[$j] , 2 )."</td>";
 						echo "<th style='border:.5pt solid black;'>".($a_ratio_tot)*($plies[$j])."</th>";
