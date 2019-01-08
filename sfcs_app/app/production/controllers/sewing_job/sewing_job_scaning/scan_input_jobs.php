@@ -402,12 +402,12 @@ $(document).ready(function()
 											}else{
 												status = '<font color="red">Previous Operation Not Done</font>';
 											}
-										}else if(er > 0 && (repq == 0 || repq == null) {
+										}else if(data[i].send_qty != 0 && (repq == 0 || repq == null)) {
 											status = '<font color="green">Scanning Pending</font>';
 										}else if(er == repq){
-											status = '<font color="red">Fully Scanned</font>';
+											status = '<font color="red">Already Scanned</font>';
 										}else if( (er != 0 || repq != 0) && er!=repq){
-											status = '<font color="blue">Partially Scanned</font>';
+											status = '<font color="green">Partially Scanned</font>';
 										}
 
 										/*	
