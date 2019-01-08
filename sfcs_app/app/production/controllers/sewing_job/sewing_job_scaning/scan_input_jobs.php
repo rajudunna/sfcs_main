@@ -392,7 +392,7 @@ $(document).ready(function()
 										}
 										var readonly ='';
 										var temp_var_bal = 0;
-										if(Number(data[i].reported_qty) > 0)
+										if(Number(data[i].reported_qty) > 0 && Number(data[i].balance_to_report) <> 0)
 										{
 											status = '<font color="green">Partially Scanned</font>';
 										}
