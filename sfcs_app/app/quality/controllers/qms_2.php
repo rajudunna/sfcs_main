@@ -109,7 +109,7 @@ if(isset($_GET['tid']))
 	$parent_id = $_GET['parent_id'];
 	$bcd_id = $_GET['bcd_id'];
 	
-	$sql1="select bundle_no,qms_style,qms_color,input_job_no,operation_id,qms_size,SUBSTRING_INDEX(remarks,'-',1) as module,ref1,doc_no from,qms_schedule from $bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
+	$sql1="select bundle_no,qms_style,qms_color,input_job_no,operation_id,qms_size,SUBSTRING_INDEX(remarks,'-',1) as module,ref1,doc_no,qms_schedule from $bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
 	// echo $sql1."<br>";
 	$result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($result1))
