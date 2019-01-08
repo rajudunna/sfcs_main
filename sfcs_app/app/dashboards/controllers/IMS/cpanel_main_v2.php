@@ -626,14 +626,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                     closing while for red blocks
                   */
                   $rev_qty=0;
-                  $rev_query="select sum(qms_qty) as rej_qty from $bai_pro3.bai_qms_db where remarks like '$module-%'
-                              and input_job_no IN ('".implode("','",$ijrs)."')";
-                  $result=mysqli_query($link, $rev_query) or exit("Sql Error rev qty".mysqli_error($GLOBALS["___mysqli_ston"]));
-                  $ijrs = array();
-                  while($row=mysqli_fetch_array($result))
-                  {
-                    $rev_qty=$row['rej_qty'];
-                  }
+                  // $rev_query="select sum(qms_qty) as rej_qty from $bai_pro3.bai_qms_db where remarks like '$module-%'
+                  //             and input_job_no IN ('".implode("','",$ijrs)."')";
+                  // $result=mysqli_query($link, $rev_query) or exit("Sql Error rev qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+                  // $ijrs = array();
+                  // while($row=mysqli_fetch_array($result))
+                  // {
+                  //   $rev_qty=$row['rej_qty'];
+                  // }
                   if($wip!=0){
                   if($wip>=217 && $wip<=750) { 
                     $span_color = 'green'; 
@@ -643,7 +643,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                     $span_color = 'black';
                   }
                 ?>
-                <span class="<?= $span_color ?>_back">WIP :  <?php echo $wip - $rev_qty; $wip=0; ?></span>
+                <span class="<?= $span_color ?>_back">WIP :  <?php echo $wip; $wip=0; ?></span>
                 <?php }        
                   if(($total_qty-$total_out)>1000) {         //  WIP >3 000 then appear Yreen box
                     $redirect_url = getFullURL($_GET['r'],'mod_rep_ch.php','R')."?module=$module";
