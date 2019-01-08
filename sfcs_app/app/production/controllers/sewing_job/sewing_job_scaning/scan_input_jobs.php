@@ -395,7 +395,7 @@ $(document).ready(function()
 										}
 										var readonly ='';
 										var temp_var_bal = 0;
-										var er = Number(data[i].send_qty)+Number(data[i].recut_in)+Number(data[i].replace_in);
+										var er = Number(data[i].send_qty);
 										var repq = Number(data[i].reported_qty)+Number(data[i].rejected_qty);
 										
 										if(er == 0){
@@ -410,7 +410,7 @@ $(document).ready(function()
 											}
 										}else if(er == repq){
 											status = '<font color="red">Fully Scanned</font>';
-										}else if(er != 0 && repq != 0 && er!=repq){
+										}else if( (er != 0 || repq != 0) && er!=repq){
 											status = '<font color="orange">Partially Scanned</font>';
 										}
 
