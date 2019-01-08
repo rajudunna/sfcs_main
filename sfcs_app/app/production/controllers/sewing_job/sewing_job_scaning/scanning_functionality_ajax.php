@@ -1564,9 +1564,11 @@ else if($concurrent_flag == 0)
 					$insert_into_rejections_reason_track = "INSERT INTO $bai_pro3.`rejections_reason_track` (`parent_id`,`date_time`,`bcd_id`,`rejected_qty`,`rejection_reason`,`username`,`form_type`) values ($parent_id,DATE_FORMAT(NOW(), '%Y-%m-%d %H'),$bcd_id,'$implode_next[2]','$implode_next[1]','$username','$form')";
 					$insert_into_rejections_reason_track_res =$link->query($insert_into_rejections_reason_track);
 					//updating this to cps log
+					echo "emb".$emb_cut_check_flag;
 					if($emb_cut_check_flag)
 					{
 						$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$size_title' AND operation_code = $emb_cut_check_flag";
+						echo $update_qry_cps_log.'</br>';
 						$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 					}
 				}
