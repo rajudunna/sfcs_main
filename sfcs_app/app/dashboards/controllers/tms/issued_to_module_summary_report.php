@@ -27,16 +27,38 @@
         $srno=$start+1;
         while($row21x=mysqli_fetch_array($result2x))
         {
+
+
             $log_time=$row21x["log_time"];
             $input_job_no=$row21x["input_job_no"];
             $order_style_no=$row21x["order_style_no"];
             $order_del_no=$row21x["order_del_no"];
             $carton_act_qty=$row21x["carton_act_qty"];
             $input_job_no_random_ref=$row21x["input_job_no_random_ref"];
+
+
+            $query1="SELECT type_of_sewing FROM bai_pro3.packing_summary_input WHERE input_job_no_random=".$row21x["input_job_no_random_ref"]."";
+            $result3x=mysqli_query($link, $query1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($row31x=mysqli_fetch_array($result3x))
+            {
+                $type_of_sewing=$row31x["type_of_sewing"];
+
+                $sql88="select type_of_sewing,prefix,bg_color from $brandix_bts.tbl_sewing_job_prefix where type_of_sewing=".$row31x['type_of_sewing']."";
+								$sql_result88=mysqli_query($link, $sql88) or exit("Sql Error44b $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
+									while($sql_row88=mysqli_fetch_array($sql_result88))
+									{
+										$bg_color=$sql_row88["bg_color"];
+										$prefix=$sql_row88["prefix"];
+									}
+            }
+    
+
+
+
             echo "<td>".$srno++."</td>";
             echo "<td>".$order_style_no."</td>";
             echo "<td>".$order_del_no."</td>";
-            echo "<td>".$input_job_no."(".$input_job_no_random_ref.")"."</td>";
+            echo "<td>$prefix"."00".$input_job_no."(".$input_job_no_random_ref.")"."</td>";
             echo "<td>".$carton_act_qty."</td>";
             echo "<td>".$log_time."</td>";
         
