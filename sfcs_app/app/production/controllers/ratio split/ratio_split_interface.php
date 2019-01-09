@@ -50,9 +50,11 @@
 <script>
     var count = 0;
     var a_plies = 0;
+    var shades = 0;
+    var e_plies = 0;
     function load_shades(t){
         $('#shades_table').html('');
-        var shades = Number(t.value);
+        shades = Number(t.value);
         count = shades; 
         $('#shades_table').append("<tr class='danger'><td>Shade</td><td>Plies</td></tr>");
         while(shades-- > 0){
@@ -67,10 +69,20 @@
     }
 
     function submit_data(){
-        $('.shades').each(function(s){
-            console.log(s.value);
+        e_plies = 0;
+        $('.shades').each(function(key,e){
+            if(e.value == null || e.value == '')
+                return swal('Fill All the '+shades+' Shades','','warning');
         });
-
+        $('.plies').each(function(key,e){
+            if(e.value == null || e.value == '')
+                return swal('Fill All the '+shades+' Plies','','warning');
+            e_plies = e_plies + e.value;    
+        });
+        if(e_plies != a_plies)
+            return swal('Original Plies not equal to Entered Plies','','error');
+        
+        console.log('Fine');
     }
 
     function load_details(t){
@@ -109,5 +121,9 @@
         $('#details_block').hide();
         $('#d_doc_no').html('');
         $('#d_org_plies').html('');
+        e_plies = 0;
+        a_plies = 0;
+        shades  = 0;
+        count   = 0;
     }
 </script>
