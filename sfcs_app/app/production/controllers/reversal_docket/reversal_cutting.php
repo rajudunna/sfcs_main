@@ -1,6 +1,6 @@
 <?php
 include(getFullURLLevel($_GET['r'],'/common/config/config.php',4,'R'));
-include(getFullURLLevel($_GET['r'],'functions.php',0,'R'));
+include(getFullURLLevel($_GET['r'],'/common/config/m3Updations.php',4,'R'));
 $doc_no_ref = $_GET['doc_no_ref'];
 $plies_post = $_GET['plies'];
 // $go_back_to = $_GET['go_back_to'];

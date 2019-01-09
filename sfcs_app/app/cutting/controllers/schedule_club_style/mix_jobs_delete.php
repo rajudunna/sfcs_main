@@ -82,18 +82,12 @@ if(isset($_POST['clear']))
     $schedule=$_POST['schedule'];  
     // 1812321254
     $color=echo_title('bai_pro3.bai_orders_db_confirm', 'order_col_des', 'order_del_no',$schedule, $link);
-    
     $order_tid_current=echo_title('bai_pro3.bai_orders_db_confirm', 'order_tid',"order_style_no = '$style' AND order_del_no",$schedule, $link);
     $order_joins="J".$schedule;  
     if($order_tid_current == ''){
         echo "<script>swal('Error In deleting the Clubbing','','error');</script>";
         exit();
-    }
-	$check_cutting=echo_title('bai_pro3.plandoc_stat_log', 'count(*)', 'act_cut_status="DONE" and order_tid',$order_tid_current, $link);
-	if($check_cutting == ''){
-        echo "<script>swal('Cutting Operation already Performed.','You Can't delete the lay plan.','error');</script>";
-        exit();
-    }	
+    } 
     // echo "Style = $style, Schedule = $schedule, Color = $color <br>"; 
     // die(); 
     $docket_t_cmp=array(); 
