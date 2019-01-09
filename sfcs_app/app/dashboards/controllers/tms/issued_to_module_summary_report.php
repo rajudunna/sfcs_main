@@ -11,7 +11,7 @@ $username=strtolower($username_list[1]);
 $module=$_GET['module'];
 $order_div_ref=$_GET['order_div_ref'];
 $table_name="$temp_pool_db.plan_dash_doc_summ_input_$username";
-        $sql2x="SELECT sum(carton_act_qty) as carton_act_qty,order_del_no,order_style_no,input_job_no,log_time,input_trims_status,input_module,input_job_no_random_ref FROM $table_name  WHERE (input_trims_status=4 or input_trims_status !='NULL') and input_module=\"$module\" ".$order_div_ref." group by input_job_no_random_ref";
+        $sql2x="SELECT sum(carton_act_qty) as carton_act_qty,order_del_no,order_style_no,input_job_no,log_time,input_trims_status,input_module,input_job_no_random_ref FROM $table_name  WHERE (input_trims_status=4 and input_trims_status !='NULL') and input_module=\"$module\" ".$order_div_ref." group by input_job_no_random_ref";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
         $rows2=mysqli_num_rows($result2x);	
         echo"<div class='panel-body'>";
