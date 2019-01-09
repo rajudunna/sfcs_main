@@ -260,6 +260,39 @@
             $scheule = $row_row['SCHEDULE'];
             $color = $row_row['color'];
         }
+        $appilication = 'IPS';
+        $checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication'";
+        // echo $checking_output_ops_code;
+        $result_checking_output_ops_code = $link->query($checking_output_ops_code);
+        if($result_checking_output_ops_code->num_rows > 0)
+        {
+            while($row_result_checking_output_ops_code = $result_checking_output_ops_code->fetch_assoc()) 
+            {
+                $input_ops_code = $row_result_checking_output_ops_code['operation_code'];
+            }
+    
+        }
+        $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code=$input_ops_code";
+        // echo $ops_seq_check;
+        $result_ops_seq_check = $link->query($ops_seq_check);
+        if($result_ops_seq_check->num_rows > 0)
+        {
+            while($row = $result_ops_seq_check->fetch_assoc()) 
+            {
+                $ops_seq = $row['ops_sequence'];
+                $seq_id = $row['id'];
+                $ops_order = $row['operation_order'];
+            }
+        }
+        $pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
+        $result_pre_ops_check = $link->query($pre_ops_check);
+        if($result_pre_ops_check->num_rows > 0)
+        {
+            while($row = $result_pre_ops_check->fetch_assoc()) 
+            {
+                $pre_ops_code = $row['operation_code'];
+            }
+        }
         foreach($bcd_id as $key=>$value)
         {
             $recut_allowing_qty = $replaced_qty[$key];
@@ -310,18 +343,6 @@
                                 //checking that inputjob already scanned or not
                                 $rec_qty = 0;
                                 $already_replaced_qty = 0;
-                                $appilication = 'IPS';
-                                $checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication'";
-                                // echo $checking_output_ops_code;
-                                $result_checking_output_ops_code = $link->query($checking_output_ops_code);
-                                if($result_checking_output_ops_code->num_rows > 0)
-                                {
-                                    while($row_result_checking_output_ops_code = $result_checking_output_ops_code->fetch_assoc()) 
-                                    {
-                                        $input_ops_code = $row_result_checking_output_ops_code['operation_code'];
-                                    }
-                            
-                                }
                                 $bcd_checking_qry = "select sum(recevied_qty)as rec_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref in ($input_job_no_excess) and size_id = '$size[$key]' and operation_id = '$input_ops_code'";
                                 $result_bcd_checking_qry = $link->query($bcd_checking_qry);
                                 if($result_bcd_checking_qry->num_rows > 0)
@@ -363,6 +384,20 @@
                                     $insertion_qry = "INSERT INTO `$bai_pro3`.`replacment_allocation_log` (`bcd_id`,`input_job_no_random_ref`,`replaced_qty`,`size_title`) values ($bundle_number,$sj,$to_add_sj,'$size_title')";
                                     // echo $insertion_qry.'</br>';
                                     mysqli_query($link, $insertion_qry) or exit("insertion_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                                    //getting docket_number of replacement input_job
+                                    $cps_qry= "select doc_no from $bai_pro3.packing_summary_input where input_job_no_random='$sj'";
+                                    $result_cps_qry = $link->query($cps_qry);
+                                    if($result_cps_qry->num_rows > 0)
+                                    {
+                                        while($cps_row = $result_cps_qry->fetch_assoc()) 
+                                        {
+                                            $doc_no = $cps_row['doc_no'];
+                                        }
+                    
+                                    }
+                                    $update_cps_log_qry = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add_sj where doc_no=$doc_no and size_title='$size_title' and operation_code = $pre_ops_code";
+                                    mysqli_query($link, $update_cps_log_qry) or exit("update_cps_log_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                                     $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set replaced_qty = replaced_qty+$to_add_sj where bcd_id = $bundle_number";
                                     mysqli_query($link, $updating_rejection_log_child) or exit("updating_rejection_log_child".mysqli_error($GLOBALS["___mysqli_ston"]));
