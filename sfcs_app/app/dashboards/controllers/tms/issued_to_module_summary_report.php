@@ -9,10 +9,10 @@
         $username_list=explode('\\',$_SERVER['REMOTE_USER']);
         $username=strtolower($username_list[1]);
         $module=$_GET['module'];
-        $table_name="$temp_pool_db.plan_dash_doc_summ_input_sfcsproject1";
+        $table_name="$temp_pool_db.plan_dash_doc_summ_input_$username";
         
       
-            $sql2x="SELECT sum(carton_act_qty) as carton_act_qty,order_del_no,order_style_no,input_job_no,log_time,input_trims_status,input_module,input_job_no_random_ref FROM $table_name  WHERE (input_trims_status=4 and input_trims_status !='NULL') and input_module=\"$module\" group by input_job_no_random_ref";
+            $sql2x="SELECT sum(carton_act_qty) as carton_act_qty,order_del_no,order_style_no,input_job_no,log_time,input_trims_status,input_module,input_job_no_random_ref FROM $table_name  WHERE (input_trims_status=4 and input_trims_status !='NULL') and input_module='$module' group by input_job_no_random_ref";
 
         
         $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -34,7 +34,7 @@
             $input_job_no_random_ref=$row21x["input_job_no_random_ref"];
 
 
-            $query1="SELECT type_of_sewing FROM bai_pro3.packing_summary_input WHERE input_job_no_random=".$row21x["input_job_no_random_ref"]."";
+            $query1="SELECT type_of_sewing,input_job_no_random FROM $bai_pro3.packing_summary_input WHERE input_job_no_random=".$row21x["input_job_no_random_ref"]." group by input_job_no_random";
             $result3x=mysqli_query($link, $query1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
             while($row31x=mysqli_fetch_array($result3x))
             {
