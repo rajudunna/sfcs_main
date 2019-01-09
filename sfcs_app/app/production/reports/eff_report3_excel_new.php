@@ -3331,7 +3331,7 @@ if(isset($_POST['submit']))
 					//echo $act_hrsb."<br>";
 				}
 					
-				$act_clock_hrs=$act_clock_hrs+($act_hrsa*($sql_row2['avail_A']-$sql_row2['absent_A']))+($act_hrsb*($sql_row2['avail_B']-$sql_row2['absent_B']));
+				$act_clock_hrs=$act_clock_hrs+($act_hrsa*($avail_A_fix-$absent_A_fix))+($act_hrsb*($avail_B_fix-$avail_B_fix));
 
 				$sql_num_check=mysqli_num_rows($sql_result2);
 

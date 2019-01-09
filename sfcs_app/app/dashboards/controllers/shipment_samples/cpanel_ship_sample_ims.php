@@ -89,21 +89,24 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 
-$sqlx="select * from $bai_pro3.sections_db where sec_id>0 order by sec_id*1";
+$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name GROUP BY section ORDER BY section + 0";
+// echo $sqlx.'<br/>';
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error$sqlx".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
 	$section=$sql_rowx['sec_id'];
 	$section_head=$sql_rowx['sec_head'];
 	$section_mods=$sql_rowx['sec_mods'];
-	$priority_limit=$sql_rowx['ims_priority_boxes'];
+  $priority_limit=$sql_rowx['ims_priority_boxes'];
+  $section_display_name=$sql_rowx['section_display_name'];
+  
 
 //echo '<div style="border: 3px coral solid; width: 200px; height: 1200px; float: left; margin: 10px; padding: 10px; overflow: scroll;">';
 echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 30px;">';
 echo "<p>";
 	
 $jump_section2 = getFullURLLevel($_GET['r'],'IMS/sec_rep.php',1,'R');  
-echo "<a href='".$jump_section2."?section=$section' onclick=\"Popup=window.open('".$jump_section2."?section=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"font-size:24px;color:#000000;\"><b>SECTION - $section</b></a>";
+echo "<a href='".$jump_section2."?section=$section' onclick=\"Popup=window.open('".$jump_section2."?section=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"font-size:24px;color:#000000;\"><b>$section_display_name</b></a>";
 //echo "<br/><div id=\"progressBar\" class=\"progressBar$section\"><div></div></div>";
 echo "<table>";
 
@@ -317,32 +320,32 @@ window.onload = startBlink;
 
 <script language="JavaScript">
 <!--
-	var message="Function Disabled!";
-	function clickIE4(){
-		if (event.button==2){
-			alert(message);
-			return false;
-		}
-	}
+//	var message="Function Disabled!";
+// 	function clickIE4(){
+// 		if (event.button==2){
+// 			alert(message);
+// 			return false;
+// 		}
+// 	}
 
-function clickNS4(e){
-if (document.layers||document.getElementById&&!document.all){
-if (e.which==2||e.which==3){
-alert(message);
-return false;
-}
-}
-}
+// function clickNS4(e){
+// if (document.layers||document.getElementById&&!document.all){
+// if (e.which==2||e.which==3){
+// alert(message);
+// return false;
+// }
+// }
+// }
 
-if (document.layers){
-document.captureEvents(Event.MOUSEDOWN);
-document.onmousedown=clickNS4;
-}
-else if (document.all&&!document.getElementById){
-document.onmousedown=clickIE4;
-}
+// if (document.layers){
+// document.captureEvents(Event.MOUSEDOWN);
+// document.onmousedown=clickNS4;
+// }
+// else if (document.all&&!document.getElementById){
+// document.onmousedown=clickIE4;
+// }
 
-document.oncontextmenu=new Function("alert(message);return false")
+// document.oncontextmenu=new Function("alert(message);return false")
 
 </script>
 

@@ -11,6 +11,8 @@ $authorized_cad=user_acl("SFCS_0197",$username,74,$group_id_sfcs); // CAD Access
 $authorized_sour=user_acl("SFCS_0197",$username,75,$group_id_sfcs); // Sourcing//5
 $authorized_cut_iss=user_acl("SFCS_0197",$username,76,$group_id_sfcs); // issued to module update access to cutting team //6
 $authorized_samp_iss=user_acl("SFCS_0197",$username,77,$group_id_sfcs); // issued to module update access to Sample room //7
+$print_status = 1;
+
 ?>
 
 <?php
@@ -345,16 +347,19 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	if(strlen($sql_row1['plan_lot_ref'])>0)
 	{
 	
-		echo "<td><a href=\"$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."\" onclick=\"Popup1=window.open('$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+		echo "<td><a href=\"$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+	}
+	else {
+		echo "<td></td>";
 	}
 	if($sql_row1['print_status']>0)
-{
-	echo "<td><img src='".getFullURLLevel($_GET['r'],'common/images/Correct.png',2,'R')."'></td>";
-}
-else
-{
-	echo "<td></td>";
-}
+	{
+		echo "<td><img src='".getFullURLLevel($_GET['r'],'common/images/Correct.png',2,'R')."'></td>";
+	}
+	else
+	{
+		echo "<td></td>";
+	}
 echo "</tr>";
 }
 echo "</table>";

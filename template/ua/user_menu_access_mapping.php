@@ -50,7 +50,7 @@ include('../dbconf.php');
                         <select  name="menu[]" multiple="multiple" class="3col active">
                        <?php
 
-                                $sql_select_query = "SELECT b.menu_pid,b.link_location,b.link_description FROM tbl_menu_list AS a LEFT JOIN tbl_menu_list AS b ON a.menu_pid=b.parent_id WHERE b.link_location!='' AND a.link_status=1 AND b.link_status=1 AND a.link_visibility=1 AND b.link_visibility=1 AND a.fk_group_id=8 order by b.link_description";
+                                $sql_select_query = "select * from ((SELECT b.menu_pid,b.link_location,b.link_description FROM tbl_menu_list AS a LEFT JOIN tbl_menu_list AS b ON a.menu_pid=b.parent_id WHERE b.link_location!='' AND a.link_status=1 AND b.link_status=1 AND a.link_visibility=1 AND b.link_visibility=1 AND a.fk_group_id=8 order by b.link_description) UNION ALL (SELECT menu_pid,parent_id,link_description FROM tbl_menu_list WHERE link_description LIKE '%UA - %')) as tab";
                                 $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                                 if($query_result->num_rows > 0){

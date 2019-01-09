@@ -38,18 +38,15 @@
 <div class="panel panel-primary">
 <div class="panel-heading">Hourly Production Report- Section Wise <?php  echo $frdate;  ?></div>
 <div class="panel-body">
-	<form action='index.php' method='GET'>
-		<input type='hidden' name='r' value='<?= $_GET["r"]; ?>'>
-		<br>
-		<div class="col-sm-3">
-		<label>Date :</label>
-		<input type='text' data-toggle="datepicker" class="form-control" value='<?php echo $frdate;  ?>' name='pro_date' id='pro_date' readonly>
-		</div><br/>
-		<div class="col-sm-1">
-		<input type='submit' class="btn btn-primary" value='Filter' name='submit'>
+	<form  action="index.php"  method='GET' class="form-inline">
+		<div class='row'>
+			<input type="hidden" value="<?= $_GET['r']; ?>" name="r" >
+			<label>Date : </label>
+			<input type='text' data-toggle="datepicker" value='<?php echo $frdate;  ?>' name='pro_date' class='form-control' readonly>
+			<input type='submit' value='Filter' class='btn btn-primary' name='submit'>
 		</div>
 	</form>
-  <hr>
+	<hr>
    
    <?php
 if(isset($_GET['submit']))
@@ -254,7 +251,7 @@ if(isset($_GET['submit']))
 									</center></td>
 									<td style="background-color:#e1bee7;"><center>
 										<?php  
-											$pcsphr=$forecastqty/10;
+											$pcsphr=$forecastqty/$hours;
 											echo round($pcsphr);
 										?>
 									</center></td>
@@ -520,10 +517,15 @@ if(isset($_GET['submit']))
 								</tr>
 									<?php
 						}
-					
+							$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
+							$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row12=mysqli_fetch_array($result12))
+							{
+								$section_display_name=$sql_row12["section_display_name"];
+							}
 							?>
 							<tr style="background-color:lightgreen;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;">
-								<td>Section - <?php  echo $section; ?></center></td>
+								<td><?php  echo $section_display_name; ?></center></td>
 								<td></td>
 								<td></td>
 								<td><center><?php  echo $sec_tot_fr_qty; $grand_tot_fr_qty = $grand_tot_fr_qty + $sec_tot_fr_qty; ?></center></td>

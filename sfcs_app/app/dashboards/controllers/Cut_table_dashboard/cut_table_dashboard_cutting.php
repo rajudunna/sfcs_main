@@ -1,4 +1,3 @@
-
 <?php
 $double_modules=array();
 include($_SERVER['DOCUMENT_ROOT'].'template/helper.php');
@@ -579,34 +578,34 @@ window.onload = sivamtime;
 //By Maximus (maximus@nsimail.com) w/ mods by DynamicDrive
 //For full source code, visit http://www.dynamicdrive.com
 
-var message="Function Disabled!";
+//var message="Function Disabled!";
 
 ///////////////////////////////////
-function clickIE4(){
-if (event.button==2){
-sweetAlert("Info!", message, "warning");
-return false;
-}
-}
+// function clickIE4(){
+// if (event.button==2){
+// sweetAlert("Info!", message, "warning");
+// return false;
+// }
+// }
 
-function clickNS4(e){
-if (document.layers||document.getElementById&&!document.all){
-if (e.which==2||e.which==3){
-sweetAlert("Info!", message, "warning");
-return false;
-}
-}
-}
+// function clickNS4(e){
+// if (document.layers||document.getElementById&&!document.all){
+// if (e.which==2||e.which==3){
+// sweetAlert("Info!", message, "warning");
+// return false;
+// }
+// }
+// }
 
-if (document.layers){
-document.captureEvents(Event.MOUSEDOWN);
-document.onmousedown=clickNS4;
-}
-else if (document.all&&!document.getElementById){
-document.onmousedown=clickIE4;
-}
+// if (document.layers){
+// document.captureEvents(Event.MOUSEDOWN);
+// document.onmousedown=clickNS4;
+// }
+// else if (document.all&&!document.getElementById){
+// document.onmousedown=clickIE4;
+// }
 
-document.oncontextmenu=new Function("sweetAlert('Info!', message, 'warning');return false")
+// document.oncontextmenu=new Function("sweetAlert('Info!', message, 'warning');return false")
 
 // --> 
 </script>
@@ -753,13 +752,13 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     {
       $table_id=$row2['cutting_tbl_id'];
       $doc_no_ref[]=$row2['doc_no'];
-      $req_time[]=date("M-d H:i",strtotime($row2['log_time']));
+      $req_time[]=date("M-d h:ia",strtotime($row2['log_time']));
       // $lay_time[]=$row2['log_time'];
       $req_date_time[]=$row2['log_time'];
 
     }
   
-    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).")  order by field(doc_no,".implode(",",$doc_no_ref).")";
+    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).")  order by field(doc_no,".implode(",",$doc_no_ref)."),log_time asc";
       if($_GET["view_div"] == 'M')
       {
         $_GET["view_div"] = "M&S";
@@ -768,7 +767,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     
        if($_GET["view_div"]=="ALL" or $_GET["view_div"]=="")
       {
-        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref).")";
+        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref)."),log_time asc";
       }
       else
       {
@@ -783,7 +782,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $buyer_identity = $row_res['buyer_name'];
         }
           
-        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref).")"; 
+        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref)."),log_time asc"; 
       }
 
       
@@ -821,8 +820,24 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         $operation_code = $row['operation_code'];
       }
 
+      
+      $doc_no_ref1 = $doc_no;
+      //FOR SCHEDULE CLUBBING ensuring for parent docket
+      if($doc_no != ''){
+        $parent_doc_query = "SELECT GROUP_CONCAT(doc_no) as docs 
+                        from $bai_pro3.plandoc_stat_log  psl
+                        left join $bai_pro3.cat_stat_log  csl ON csl.tid = psl.cat_ref
+                        where org_doc_no = $doc_no and category IN ($in_categories) and org_doc_no > 0";
+        $parent_doc_result = mysqli_query($link,$parent_doc_query);
+        if($org_row = mysqli_fetch_array($parent_doc_result))
+            $doc_no = $org_row['docs'];
+      }
+      if($doc_no == '')
+        $doc_no = $doc_no_ref1;
+      //schedule club docket validation end.JUST FOR CPS LOG WE ARE GETTING CHILD DOCKETS
+
       $rep_status ='';
-      $sql44="SELECT * FROM $bai_pro3.cps_log WHERE doc_no='$doc_no'  AND operation_code=".$operation_code;
+      $sql44="SELECT * FROM $bai_pro3.cps_log WHERE doc_no IN ($doc_no)  AND operation_code=".$operation_code;
       $sql_result12=mysqli_query($link, $sql44) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
       if(mysqli_num_rows($sql_result12)>0)
       {
@@ -839,6 +854,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           }
         }
       }
+      //assigning main docket again to $doc after schedule club docket validaiton
+      $doc_no = $doc_no_ref1;
 
         if($fabric_status==null or $fabric_status==0){          
           $ft_status=$sql_row1['ft_status'];
@@ -921,7 +938,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         {
           //$fabric_status=$sql_row1['ft_status'];
           //To get the status of join orders
-          $sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' and order_joins=2";
+          $sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' and $order_joins_in_2";
           $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
           
           if(mysqli_num_rows($sql_result11)>0)
@@ -1126,8 +1143,13 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         $total_req_qty=$cat_yy*$order_total_qty;
 
         // echo "Tota Requested Qty : ".$total_req_qty."</br>";
-      
-
+        $sql10="select doc_ref,req_time from $bai_pro3.fabric_priorities where doc_ref ='$doc_no'";
+        $result21=mysqli_query($link, $sql10) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($row21=mysqli_fetch_array($result21))
+        {
+          $req_time1=date("M-d h:ia",strtotime($row21['req_time'])); 
+          $fabric_req_date=date("Y-M-d h:i:sa",strtotime($row21['req_time'])); 
+        }
         if($lay_time[array_search($doc_no,$doc_no_ref)]<date("Y-m-d H:i:s"))
         {
           $blink_docs[]=$doc_no;
@@ -1176,17 +1198,27 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         //if(in_array($authorized,$has_permission) and $final_cols!="yellow" and $final_cols!="green")
       if($rep_status!=''){
        if(in_array($authorized,$has_permission) and ($final_cols=="yellow" || $final_cols=="orange")){
-            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='".$get_cut_qty."&doc_no=$doc_no' onclick='Popup=window.open('get_cut_qty.php?doc_no=$doc_no','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
-        }else if($final_cols=="yash" || $final_cols=="red" || $final_cols=="lgreen"){
-          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='#'
+            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='".$get_cut_qty."&doc_no=$doc_no' onclick='Popup=window.open('get_cut_qty.php?doc_no=$doc_no','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>RT:".$req_time1."</span></a></div></div><br/>";
+        }else if($final_cols=="red" || $final_cols=="lgreen" || $final_cols=="yash"){
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:11px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='#'
              onclick=\"window.open('$href','yourWindowName','width=800,height=600')\"
-            >$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
-        }else{
-          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:white' title='$title'>".$req_time[array_search($doc_no,$doc_no_ref)]."</div></div><br/>";
+            >$emb_stat_title"."LT:".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
+        }
+        else if($final_cols=="pink"){
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:11px; float:left; color:white' title='$title'>RT:".$req_time1."</div></div><br/>";
+        }
+        else{
+          if($fabric_req_date<date("Y-M-d h:i:sa")){
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:white' title='$title'><span class='blink'>RT:".$req_time1."</span></div></div><br/>";
+          }
+          else{
+            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; float:left; color:white' title='$title'>RT:".$req_time1."</div></div><br/>";
+          }
         }
       }
     }
   }
+
     
     echo "</td>";
     echo "</tr>";

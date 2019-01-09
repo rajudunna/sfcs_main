@@ -21,7 +21,7 @@ $legend=getFullURLLevel($_GET['r'],'factory_view.htm',0,'R');
                       <table align="center" class="table table-bordered">
                      <?php
 					$sections_db=array();
-					$sqlx="select sec_id from $bai_pro3.sections_db where sec_id>0";
+					$sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` GROUP BY section ORDER BY section + 0";
 					$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					{

@@ -70,7 +70,7 @@ $dat1=$_POST["dat2"];
 </form>";
 
 $addon_headings="";
-$sql2="select * from $bai_pro3.sections_db where sec_id>0";
+$sql2="SELECT section as sec_id,GROUP_CONCAT(DISTINCT module_name ORDER BY module_name*1) AS sec_mods FROM $bai_pro3.module_master group by section";
 	// echo $sql2;
 	$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -443,7 +443,8 @@ if($count_rows > 0){
 			echo $total;
 			
 			$prod_balances=0;
-			$sql2="select * from $bai_pro3.sections_db where sec_id>0";
+			// $sql2="select * from $bai_pro3.sections_db where sec_id>0";
+			$sql2="SELECT GROUP_CONCAT(DISTINCT module_name ORDER BY module_name*1) AS sec_mods FROM $bai_pro3.module_master";
 			//echo $sql2;
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))

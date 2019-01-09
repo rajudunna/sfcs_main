@@ -328,10 +328,15 @@ background-position:center middle;
 					
 				} 
 				
-				
+				$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
+				$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row12=mysqli_fetch_array($result12))
+				{
+					$section_display_name=$sql_row12["section_display_name"];
+				}
 				
 				echo "<tr >";
-				echo "<td colspan=5 bgcolor=#f47f7f>Section - $section</td>";
+				echo "<td colspan=5 bgcolor=#f47f7f>$section_display_name</td>";
 				echo "<td>".$grand_output."</td>";
 				echo "<td class=\"BG\">$span1".$grand_rejections."$span3$span2"; if($grand_output>0) { echo round(($grand_rejections/$grand_output)*100,1)."%"; } echo "$span3</td>";
 				for($i=0;$i<33;$i++) {	
@@ -366,9 +371,15 @@ background-position:center middle;
 				}
 				echo "</tr>";
 				
-				
+				$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=".$sections[$i];
+				$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row12=mysqli_fetch_array($result12))
+				{
+					$section_display_name=$sql_row12["section_display_name"];
+				}
+
 				echo "<tr >";
-				echo "<td colspan=5 bgcolor=#f47f7f>Section - $section</td>";
+				echo "<td colspan=5 bgcolor=#f47f7f>$section_display_name</td>";
 				echo "<td>".$grand_output."</td>";
 				echo "<td class=\"BG\">$span1".$grand_rejections."$span3$span2"; if($grand_output>0) { echo round(($grand_rejections/$grand_output)*100,1)."%"; } echo "$span3</td>";
 

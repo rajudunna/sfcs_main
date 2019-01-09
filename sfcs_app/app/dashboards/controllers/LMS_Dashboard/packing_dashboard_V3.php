@@ -299,34 +299,34 @@ window.onload = startBlink;
 //By Maximus (maximus@nsimail.com) w/ mods by DynamicDrive 
 //For full source code, visit http://www.dynamicdrive.com 
 
-var message="Function Disabled!"; 
+//var message="Function Disabled!"; 
 
 /////////////////////////////////// 
-function clickIE4(){ 
-if (event.button==2){ 
-alert(message); 
-return false; 
-} 
-} 
+// function clickIE4(){ 
+// if (event.button==2){ 
+// alert(message); 
+// return false; 
+// } 
+// } 
 
-function clickNS4(e){ 
-if (document.layers||document.getElementById&&!document.all){ 
-if (e.which==2||e.which==3){ 
-alert(message); 
-return false; 
-} 
-} 
-} 
+// function clickNS4(e){ 
+// if (document.layers||document.getElementById&&!document.all){ 
+// if (e.which==2||e.which==3){ 
+// alert(message); 
+// return false; 
+// } 
+// } 
+// } 
 
-if (document.layers){ 
-document.captureEvents(Event.MOUSEDOWN); 
-document.onmousedown=clickNS4; 
-} 
-else if (document.all&&!document.getElementById){ 
-document.onmousedown=clickIE4; 
-} 
+// if (document.layers){ 
+// document.captureEvents(Event.MOUSEDOWN); 
+// document.onmousedown=clickNS4; 
+// } 
+// else if (document.all&&!document.getElementById){ 
+// document.onmousedown=clickIE4; 
+// } 
 
-document.oncontextmenu=new Function("alert(message);return false") 
+// document.oncontextmenu=new Function("alert(message);return false") 
 
 // -->  
 </script> 
@@ -350,18 +350,21 @@ while($sql_row=mysqli_fetch_array($sql_result))
 echo "<div class='panel panel-primary'><div class='panel-heading'>Cartons Work in Progress Dashboard (LMS)<span class='pull-right' style='color:white;'><a href='$pop_pending_list_v3' onclick=\"return popitup("."'$pop_pending_list_v3'".")\">Carton Issues</a></b>&nbsp;&nbsp;<b><a href='$image1' onclick=\"return popitup("."'$image1'".")\">?</a></span></div>
     <div class='panel-body'>";
 
-            $sqlx="select * from $bai_pro3.sections_db where sec_id>0"; 
-            $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+            $sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name GROUP BY section ORDER BY section + 0"; 
+            $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"])); 
             while($sql_rowx=mysqli_fetch_array($sql_resultx)) 
             { 
                 $section=$sql_rowx['sec_id']; 
                 $section_head=$sql_rowx['sec_head']; 
-                $section_mods=$sql_rowx['sec_mods']; 
+                $section_mods=$sql_rowx['sec_mods'];
+                $section_display_name=$sql_rowx['section_display_name'];
+
+           
 
                 echo '<div style="width:270px; background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;">'; 
                 echo "<p>"; 
                 echo "<table>"; 
-                echo "<tr><th colspan=2><a href='$popup_report_v3&section_no=$section' onclick=\"return popitup("."'$popup_report_v3&section_no=$section'".")\"><h2>Section - $section</h2></a></th></tr>"; 
+                echo "<tr><th colspan=2><a href='$popup_report_v3&section_no=$section' onclick=\"return popitup("."'$popup_report_v3&section_no=$section'".")\"><h2>$section_display_name</h2></a></th></tr>"; 
 
                 $mods=array(); 
                 $mods=explode(",",$section_mods); 

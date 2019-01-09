@@ -226,7 +226,7 @@ function check_qty(x)
 		var mat_req=document.input["mat_req["+i+"]"].value;
 		var no_ele=document.input["chk"+doc_ref+"[]"];
 		no_ele=(parseInt(no_ele.length));
-		
+		alert(no_ele);
 		var selc=0;
 		for(j=0;j<no_ele;j++)
 		{
@@ -302,10 +302,11 @@ var srgp1;
 var doc_count = 0;
 var verifier = 0;
 var doc_flag=0;
-function check_qty2(x,m,n,doc)
+function check_qty2(x,m,n,doc,row_count,doc_count_no)
 {	
 //PLEASE DO NOT MODIFY THE ORDER OF ANY OF THE BELOW STATEMENTS OF THIS FUNCTION
 	////  code for shrinkage validation
+	// alert(row_count+"="+x+"-"+doc);
 	if(doc_count==0){
 		old_doc = doc;
 		doc_count++;
@@ -407,16 +408,17 @@ function check_qty2(x,m,n,doc)
 	var alloc_disab=0;
 	for(i=0;i<x;i++)
 	{
-		var doc_ref=document.input["doc_ref["+i+"]"].value;
-		var mat_req=document.input["mat_req["+i+"]"].value;
+		var doc_ref=document.input["doc_ref["+doc_count_no+"]"].value;
+		var mat_req=document.input["mat_req["+doc_count_no+"]"].value;
 		var no_ele=document.input["chk"+doc_ref+"[]"];
+		// alert(no_ele);
 		no_ele=(parseInt(no_ele.length));
 		var selc=0;
 		var widt=0;
 		var issued_qty=0;
 		var round_val=0;
 		var alloc_qty=0;
-		for(j=0;j<no_ele;j++)
+		for(j=0;j<row_count;j++)
 		{
 			
 			var tx="chk"+doc_ref+j;
@@ -426,6 +428,7 @@ function check_qty2(x,m,n,doc)
 			{
 				
 				issued_qty=document.input["val"+doc_ref+"["+j+"]"].value;
+				// alert(doc_ref+"-"+j+"-"+issued_qty+"-"+row_count+"-"+doc_count_no);
 				if(widt<=parseFloat((document.input["width"+doc_ref+"["+j+"]"].value)))
 				{	
 					selc=selc+parseFloat((document.input["val"+doc_ref+"["+j+"]"].value));
@@ -689,7 +692,7 @@ if(isset($_POST['allocate_new']))
 				//Uncheck this
 				mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
-				
+				$new_tid=array();
 				//this is for new rolls allocation for remaing qty
 				if($val_ref[$j]>$issued_ref[$j]){
 					
@@ -706,15 +709,21 @@ if(isset($_POST['allocate_new']))
 					$qry_newroll="insert into bai_rm_pj1.store_in(lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll,ref_tid,barcode_number) values('".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$balance_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$row_rolldetials["log_user"]."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".$row_rolldetials["ref5"]."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$tid_ref[$j]."','".$row_rolldetials["ref_tid"]."','".$row_rolldetials["barcode_number"]."')";
 					mysqli_query($link, $qry_newroll) or exit("Sql Error3: $qry_newroll".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
-					
+					$new_tid=mysqli_insert_id($link);
+
+					$sql22="update bai_rm_pj1.store_in set barcode_number='".$facility_code."-".$new_tid."' where tid=".$new_tid;
+					//Uncheck this
+					mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				}
 
 				//To update Allocated Qty
-				$sql="update $bai_rm_pj1.store_in set qty_allocated=".$issued_ref[$j]." where tid=".$tid_ref[$j];
-				// $sql="update bai_rm_pj1.store_in set qty_rec=".$issued_ref[$j].",qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
+				// $sql="update $bai_rm_pj1.store_in set qty_allocated=".$issued_ref[$j]." where tid=".$tid_ref[$j];
+				$sql="update bai_rm_pj1.store_in set qty_rec=".$issued_ref[$j].",qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
 				//Uncheck this
 				mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+				
 				
 			}
 		}
@@ -790,7 +799,7 @@ if(isset($_POST['allocate_new']))
 	//this is for after allocating article redirect to cps dashboard.removed sfcsui
 
 	echo"<script>swal('Successfully Updated.','','success')</script>";
-	echo"<script>location.href = '".$url1."';</script>"; 
+	echo"<script>location.href =  '".$url1."';</script>"; 
 
 	// if($process_cat==1)
 	// {
@@ -947,10 +956,10 @@ if(isset($_POST['allocate']))
 		echo "<th>Ctx Width</th>";	
 		echo "<th>Tkt<br/></th>";	
 		echo "<th>Ctx<br/>Length</th>";		
-		// echo "<th id='col'>Allocated</th>";
+		echo "<th id='col'>Avail Qty</th>";
 		echo "<th>Issued Qty</th>";
 		echo "<th>Select</th>";
-		//echo "<th>Allocated Qnty</th>";
+		// echo "<th>Avail Qnty</th>";
 		echo "</tr></thead><tbody>";
 		
 		
@@ -984,7 +993,7 @@ if(isset($_POST['allocate']))
 			$temp_var='';
 			if($sql_row['allotment_status']==0 and strlen($sql_row['shade'])>0)
 			{
-				$temp_var.="<td><input type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref')\">";
+				$temp_var.="<td><input type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref',$row_count,'$i')\">";
 				$temp_var.="<input type=\"hidden\" name=\"val".$doc_ref."[$j]\" value=\"".$sql_row['balance']."\">";
 				$temp_var.="<input type=\"hidden\" name=\"width".$doc_ref."[$j]\" value=\"".$sql_row['width']."\">";
 				$temp_var.="<input type=\"hidden\" name=\"lable".$doc_ref."[$j]\" value=\"".$sql_row['tid']."\">";
@@ -1022,7 +1031,7 @@ if(isset($_POST['allocate']))
 				}
 				// $temp_var.=$tag.'---<br/>';
 				//To release for some time
-				$temp_var.="<input style='$valid_check' type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref')\">";
+				$temp_var.="<input style='$valid_check' type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref',$row_count,$i')\">";
 				//$temp_var.="<input type=\"hidden\" id=\"chk$doc_ref$j\" name=\"chk".$doc1_ref."[]\" value=\"0\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color')\">";
 				$temp_var.="<input type=\"hidden\" name=\"val".$doc_ref."[$j]\" value=\"".$sql_row['balance']."\">";
 				$temp_var.="<input type=\"hidden\" name=\"width".$doc_ref."[$j]\" value=\"".$sql_row['width']."\">";
@@ -1084,7 +1093,7 @@ if(isset($_POST['allocate']))
 			echo "<td>".$sql_row['ref3']."</td>";
 			echo "<td>".$sql_row['qty_rec']."</td>";
 			echo "<td>".$sql_row['ref5']."</td>";
-			// echo "<td>".$allocated_qty."</td>";
+			echo "<td>".($sql_row['qty_rec']-$sql_row['qty_issued']+$sql_row['qty_ret'])."</td>";
 			echo "<td><span id=\"issued".$doc_ref."[$j]\"></span></td>";
 			
 			//echo "</br>Allotment Status".$sql_row['allotment_status']."</br>";

@@ -1,0 +1,2 @@
+/*983*/
+ALTER TABLE bai_pro3.sections_master CHANGE sec_name sec_name INT(11) NULL, CHANGE ims_priority_boxs ims_priority_boxs INT(11) NULL, ADD COLUMN section_display_name VARCHAR(30) NULL AFTER ims_priority_boxs, ADD COLUMN section_head VARCHAR(30) NULL AFTER section_display_name;

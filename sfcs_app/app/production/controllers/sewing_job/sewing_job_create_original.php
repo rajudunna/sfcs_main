@@ -248,7 +248,7 @@
 							$carton_qty = echo_title("$brandix_bts.tbl_carton_size_ref","sum(quantity)","parent_id",$c_ref,$link);
 							$pack_method = echo_title("$brandix_bts.tbl_carton_ref","carton_method","carton_barcode",$schedule,$link);
 							$tbl_carton_ref_check = echo_title("$brandix_bts.tbl_carton_ref","count(*)","style_code='".$style_id."' AND ref_order_num",$sch_id,$link);
-							$o_colors = echo_title("$bai_pro3.bai_orders_db_confirm","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db_confirm.order_joins NOT IN ('1','2') AND order_del_no",$schedule,$link);	
+							$o_colors = echo_title("$bai_pro3.bai_orders_db_confirm","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db_confirm.$order_joins_not_in AND order_del_no",$schedule,$link);	
 							$p_colors = echo_title("$brandix_bts.tbl_orders_sizes_master","group_concat(distinct order_col_des order by order_col_des)","parent_id",$sch_id,$link);
 							$order_colors=explode(",",$o_colors);	
 							$planned_colors=explode(",",$p_colors);
@@ -293,15 +293,16 @@
 										$tot_balance = 0;
 										foreach ($sizes_array as $key => $value)
 										{
-											$plannedQty_query = "SELECT SUM(p_plies*p_$sizes_array[$key]) AS plannedQty FROM $bai_pro3.plandoc_stat_log WHERE cat_ref IN (SELECT tid FROM $bai_pro3.cat_stat_log WHERE category IN ($in_categories) AND order_tid IN  (SELECT order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule))";
-											// echo $plannedQty_query.'<br>';
+											$plannedQty_query = "SELECT SUM(p_plies*p_$sizes_array[$key]) AS plannedQty FROM $bai_pro3.plandoc_stat_log WHERE cat_ref IN (SELECT tid FROM $bai_pro3.cat_stat_log WHERE category IN ($in_categories) AND order_tid IN  (SELECT order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule  AND $order_joins_not_in))";
+											//echo $plannedQty_query.'<br>';
 											$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
 											while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
 											{
 												$planned_qty[] = $planneQTYDetails['plannedQty'];
 											}
 
-											$orderQty_query = "SELECT SUM(order_s_$sizes_array[$key]) AS orderedQty FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule";
+											$orderQty_query = "SELECT SUM(order_s_$sizes_array[$key]) AS orderedQty FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule
+											AND $order_joins_not_in";
 											// echo $orderQty_query.'<br>';
 											$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error2");
 											while($orderQty_details=mysqli_fetch_array($Order_qty_resut))
@@ -315,6 +316,7 @@
 
 										echo "<br>
 										<div class='col-md-12'><b>Order Details: </b>
+										<div class='table-responsive'>
 											<table class=\"table table-bordered\">
 												<tr>
 													<th>Details</th>";
@@ -370,7 +372,7 @@
 														}
 														echo "<td style='color:".$color."; font-weight:bold'>$tot_balance</td>
 													</tr>";
-											echo "</table>
+											echo "</table></div>
 										</div>";
 									}
 									// Order Details Display End
@@ -379,7 +381,8 @@
 									{
 										$sewing_jobratio_sizes_query = "SELECT parent_id,GROUP_CONCAT(DISTINCT color) AS color, GROUP_CONCAT(DISTINCT ref_size_name) AS size FROM $brandix_bts.tbl_carton_size_ref WHERE parent_id IN (SELECT id FROM $brandix_bts.tbl_carton_ref WHERE ref_order_num=$sch_id AND style_code=$style_id)";
 										$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
-										echo "<br><div class='col-md-12'><b>Garments Per Poly Bag: </b>
+										echo "<br><div class='col-md-12'><b><br/>Garments Per Poly Bag: </b>
+										<div class='table-responsive'>
 											<table class=\"table table-bordered\">
 												<tr>
 													<th>Color</th>";
@@ -424,7 +427,7 @@
 													}
 											echo "</tr>";
 										}
-										echo "</table></div>";
+										echo "</table></div></div>";
 									}
 									// Poly Bag Ratio Details End
 
@@ -437,7 +440,7 @@
 											$poly_bags_per_carton_result=mysqli_query($link, $poly_bags_per_carton_query) or exit("Error while getting poly_bags_per_carton Details");
 											while($poly_bags_per_carton_details=mysqli_fetch_array($poly_bags_per_carton_result)) 
 											{
-												echo "<br><div class='col-md-4'>
+												echo "<br/><div class='col-md-4'>
 															<table class=\"table table-bordered\">
 																<tr><th>Number of Poly Bags Per Carton:</th><th>".$poly_bags_per_carton_details['poly_bags_per_carton']."</th>
 																</tr>
@@ -588,7 +591,7 @@
 											echo  "<input type=\"hidden\" value=\"$val\" id=\"size_of_colors\" name=\"size_of_colors\">";
 											// Combo wise no of cartons start
 											{
-												echo "<div class='col-md-12'>
+												echo "<br/><br/><div class='col-md-12'>
 													<table class='table table-bordered'>
 														<tr>
 															<th>Combo</th>
@@ -648,6 +651,7 @@
 											{
 												echo "<br>
 													<div class='col-md-12'><b>Sewing Job Qty: </b>
+													<div class='table-responsive'>
 														<table class=\"table table-bordered\">
 															<tr>
 																<th>Color</th>
@@ -711,13 +715,14 @@
 																echo "</tr>";
 																$row_count++;
 															}
-														echo "</table>
+														echo "</table></div>
 													</div>
 												";
 											}
+											echo "<br/>";
 											// Sewing Job Qty End
 											// var_dump($combo);
-											echo "<div class='col-md-2'>
+											echo "<br/><br/><div class='col-md-2'>
 												<table class='table table-bordered'>
 													<tr>
 														<th style='display: none;'><center>Mix Cut Jobs</center></th>

@@ -3,13 +3,15 @@
         Report : M3 Transcations Report
         By : Chandu
         Created at : 17-09-2018
-        Updated at : 12-10-2018
+        Updated at : 21-12-2018
         Input : date and transcation status
         Output : 
                 -->Display the report with following field: Style, Schedule, Color, Size, Mo Number, Operation Code, Workstation Id, Quantity
                 -->Download Excel 
-        update v0.1 : query changes and new fields added
+        update v0.1: query changes and new fields added
         update v0.2: changes based on 1048
+        update v0.3: add Module Number, Rejection Reason based on 1270
+        update v0.4: added api type column based on 1298
     ================================================== */
     include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
     if(!isset($_GET['excel'])){
@@ -27,6 +29,11 @@
             }
         </script>";
 ?>
+    <style type="text/css">
+        table, th, td {
+            text-align: center;
+        }
+    </style>
     <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script>
     <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
     <div class='panel panel-primary'>
@@ -77,7 +84,7 @@
             $resp_stat[] = $_GET['schedule'] ? 'schedule="'.$_GET["schedule"].'"' : '';
             $resp_stat[] = ($_GET['tdate'] && $_GET['fdate']) ? 'DATE(m3_transactions.date_time) between  "'.$_GET["fdate"].'" and "'.$_GET["tdate"].'"' : '';
             $ar_nw = array_filter($resp_stat);
-            $qry_m3_trans = "SELECT style,schedule,color,size,m3_transactions.date_time as dt,m3_transactions.mo_no,op_code,quantity,response_status,m3_transactions.id,m3_transactions.log_user,m3_transactions.ref_no
+            $qry_m3_trans = "SELECT style,schedule,color,size,m3_transactions.date_time as dt,m3_transactions.mo_no,op_code,quantity,response_status,m3_transactions.id,m3_transactions.log_user,m3_transactions.ref_no,m3_transactions.reason,m3_transactions.module_no,m3_transactions.api_type,m3_transactions.workstation_id
             FROM bai_pro3.`m3_transactions`  
             LEFT JOIN bai_pro3.`mo_details` ON m3_transactions.mo_no=mo_details.mo_no WHERE ".implode(' and ',$ar_nw);
             $result_m3_trans = mysqli_query($link_ui, $qry_m3_trans);
@@ -91,16 +98,25 @@
                 }
 ?>
                 
-                <table class=<?= $_GET['excel'] ?? "table" ?> id='table2'>
-                    <thead><tr><th>Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Mo Number</th><th>Job Number</th><th>Operation Code</th><th>Operation Name</th><th>Workstation Id</th><th>User</th><th>Quantity</th><th>Status</th></tr></thead>
+                <table class="<?= $_GET['excel'] ?? "table table-bordered" ?>" id='table2'>
+                    <thead><tr class="info"><th>Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Mo Number</th><th>Job Number</th><th>Module</th><th>Operation Code</th><th>Operation Name</th><th>Workstation Id</th><th>Rejection Reason</th><th>User</th><th>Quantity</th><th>Status</th><th>API Type</th></tr></thead>
                     
 <?php
                 $i=1;
                 foreach($ary_res as $res){
                     $get_op_name = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`tbl_orders_ops_ref` WHERE operation_code='".$res['op_code']."'"));
                     $reason = $res['response_status'];
+                    
+                    if ($res['api_type'] == 'fg') {
+                        $api_type = '<span class="badge progress-bar-warning">FG</span>';
+                    } else if ($res['api_type'] == 'opn') {
+                        $api_type = '<span class="badge progress-bar-info">Operation</span>';
+                    } else {
+                        $api_type = '<span class="badge progress-bar-danger">No API Type Available for this Record</span>';
+                    }
+                    
                     if($reason=='fail'){
-                        $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`transactions_log` WHERE transaction_id=".$res['id']))['response_message'] ?? 'fail with no reason.';
+                        $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`transactions_log` WHERE transaction_id=".$res['id']." order by sno desc limit 1"))['response_message'] ?? 'fail with no reason.';
                         $reason = '<label class="label label-danger">'.$ndr."</label>";
                     }else{
                         $reason = "<label class='label label-success'>".$reason."</label>";
@@ -116,12 +132,15 @@
                         <td><?= $res['size'] ?></td>
                         <td><?= $res['mo_no'] ?></td>
                         <td><?= $job['input_job_no'] ?></td>
+                        <td><?= $res['module_no'] ?></td>
                         <td><?= $res['op_code'] ?></td>
                         <td><?= $get_op_name['operation_name'] ?></td>
                         <td><?= $res['workstation_id'] ?></td>
+                        <td><?= $res['reason'] ?></td>
                         <td><?= $res['log_user'] ?></td>
                         <td><?= $res['quantity'] ?></td>
                         <td><?= $reason ?></td>
+                        <td><?= $api_type ?></td>
                     </tr>
 <?php           }      ?>
                     
@@ -140,7 +159,7 @@
     </div>
     <?php 
     echo "<script>
-    var table6_Props = 	{
+    var table6_Props =  {
         rows_counter: true,
         btn_reset: true,
         btn_reset_text: 'Clear',

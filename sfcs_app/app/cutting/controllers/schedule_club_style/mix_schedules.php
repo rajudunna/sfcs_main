@@ -1,6 +1,4 @@
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',2,'R'));  ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
 
 <?php $self_url = 'index.php?r='.$_GET['r']; ?>
 <script>
@@ -44,22 +42,17 @@
 
 <?php
 	$style=$_GET['style'];
-	$schedule=$_GET['schedule']; 
 	$color=$_GET['color'];
-	$po=$_GET['po'];
-
 	if(isset($_POST['submit']))
 	{
 		$style=$_POST['style'];
-		$schedule=$_POST['schedule']; 
 		$color=$_POST['color'];
-		$po=$_POST['po'];
 	}
 
 //echo $style.$schedule.$color;
 ?>
 <div class='panel panel-primary'>
-	<div class='panel panel-heading'>Schedule Clubbing (Style)</div>
+	<div class='panel panel-heading'>Schedule Clubbing (Schedule Level)</div>
 	<div class='panel-body'>
 		<form name="test" action="index.php?r=<?= $_GET['r'] ?>" method="post">
 		<?php	
@@ -90,7 +83,7 @@
 <?php
 	echo "<div class='col-sm-3'>";
 	echo "<label for='color'>Select Color</label>
-	<select  class='form-control' name='color' onchange='thirdbox();' required>";
+	<select  class='form-control' name='color' required>";
 
 	$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error 2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -123,14 +116,15 @@ echo "</div>";
 
 
 <?php
-if(isset($_POST['submit']))
+if(isset($_POST['submit']) || $_GET['color']<>'')
 {
 	$style=$_POST['style'];
 	$color=$_POST['color'];
-	
-	$exfact=$_POST['schedule'];
-	$style_input=$_POST['style'];
-	//$size=array("s01","s02","s03","s04","s05","s06","s07","s08","s09","s10","s11","s12","s13","s14","s15","s16","s17","s18","s19","s20","s21","s22","s23","s24","s25","s26","s27","s28","s29","s30","s31","s32","s33","s34","s35","s36","s37","s38","s39","s40","s41","s42","s43","s44","s45","s46","s47","s48","s49","s50"); 
+	if($_GET['color']<>'')
+	{
+		$style=$_GET['style']; 
+		$color=$_GET['color']; 
+	}
 	$size_array=array();
 	$orginal_size_array=array();
 	for($q=0;$q<sizeof($sizes_array);$q++)
@@ -152,19 +146,34 @@ if(isset($_POST['submit']))
 			}
 		}
 	}
-	sort($orginal_size_array);
-	sort($size_array);
-	$unique_orginal_sizes=implode(",",array_unique($orginal_size_array));
-	$unique_sizes=implode(",",array_unique($size_array));
+	sort(array_unique($orginal_size_array));
+	sort(array_unique($size_array));
+	if(sizeof($orginal_size_array)<>sizeof($size_array))
+	{
+		for($qq=0;$qq<sizeof($sizes_array);$qq++)
+		{
+			if(sizeof($orginal_size_array)<>sizeof($size_array))
+			{
+				if(!in_array($sizes_array[$qq],$size_array))
+				{
+					$size_array[]=$sizes_array[$qq];
+				}
+			}
+		}	
+	}
+	$unique_orginal_sizes=implode(",",$orginal_size_array);
+	$unique_sizes=implode(",",$size_array);
 	$unique_orginal_sizes_explode=explode(",",$unique_orginal_sizes);
 	$unique_sizes_explode=explode(",",$unique_sizes);
 	$size_type=1;
+	echo "<h3><span class='label label-info' >Make sure selected items must be same Item Codes</span></h3><br>"; 
 	echo "<form name='testnew' action='index.php?r=".$_GET['r']."' method='post'>";
 	if(sizeof($size_array)>0)
 	{
 		echo "<table class='table table-bordered '>";
 		echo "<tr class='warning'>";
 		echo "<th>Select</th>";
+		echo "<th>Item Codes</th>";
 		echo "<th>Style</th>";
 		echo "<th>Schedule</th>";
 		echo "<th>Color</th>";
@@ -174,7 +183,7 @@ if(isset($_POST['submit']))
 		}	
 		echo "<th>Total</th>";
 		echo "</tr>";
-		$sql="select * from $bai_pro3.bai_orders_db where order_joins not in (\"1\",\"2\") and order_style_no=\"$style\" and order_col_des=\"$color\" and order_del_no>0 order by order_style_no";		
+		$sql="select * from $bai_pro3.bai_orders_db where $order_joins_not_in and order_style_no=\"$style\" and order_col_des=\"$color\" and order_del_no>0 order by order_style_no";		
 		$test_count=0;
 		$sql_result=mysqli_query($link,$sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$num_rows = mysqli_num_rows($sql_result);
@@ -221,7 +230,7 @@ if(isset($_POST['submit']))
 				}
 				else
 				{
-					echo "<td>Already Planned-".substr($order_joins,1)."</td>";
+					echo "<td>Lay Plan Prepared</td>";
 				}
 				
 			}
@@ -229,6 +238,17 @@ if(isset($_POST['submit']))
 			{
 				echo "<td></td>";
 			}
+			echo "<td>";				
+			echo "<table>";					
+			$sql543="select compo_no from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' group by compo_no";
+			//echo $sql543."<br>";		
+			$sql_result543=mysqli_query($link, $sql543) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row543=mysqli_fetch_array($sql_result543)) 
+			{ 
+				echo "<tr><td>".$sql_row543['compo_no']."</td><tr>";
+			}
+			echo "</table>";
+			echo "</td>";
 			echo "<td>$style</td>";
 			echo "<td>$schedule</td>";
 			echo "<td>$color</td>";
@@ -284,7 +304,7 @@ if(isset($_POST['submit']))
 		$row_count=0;
 		echo "<br>";
 		
-		$sql452="select * from $bai_pro3.bai_orders_db_confirm where order_style_no='".$style."' and order_col_des=\"".$color."\" and order_joins in (1,2)";
+		$sql452="select * from $bai_pro3.bai_orders_db_confirm where order_style_no='".$style."' and order_col_des=\"".$color."\" and $order_joins_in";
 		//echo $sql452."<br>";
 		$sql_result452=mysqli_query($link, $sql452) or die("Error".$sql452.mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result452)>0)
@@ -295,8 +315,8 @@ if(isset($_POST['submit']))
 				$row_count++;
 				echo "<table class='table table-responsive table-bordered'>
 						<tr class='info'>
-							<th>Style </th><th>Schedule No</th>
-							<th>Color</th><th>Orginal schedules</th>";
+						<th>Style </th><th>Schedule No</th>
+						<th>Color</th><th>Orginal schedules</th>";
 				for($kl=0;$kl<sizeof($size_array);$kl++)
 				{
 					if($sql_row452["title_size_".$size_array[$kl].""]<>'')
@@ -331,7 +351,7 @@ if(isset($_POST['submit']))
 		}		
 		echo '</form>';
 		}else{
-			echo "<script>swal('Warning!','This style doesnt have more than 1 schedule so it cannot be clubbed','warning')</script>";
+			echo "<script>swal('Warning!','This style doesn't have more than 1 schedule so it cannot be clubbed','warning')</script>";
 			exit();
 		}
 	}
@@ -357,77 +377,86 @@ if(isset($_POST['fix']))
 	$scheduleno_sql_result =mysqli_query($link, $scheduleno_sql);
 	$num_sql_rows = mysqli_num_rows($scheduleno_sql_result);
 	$new_sch=date("ymd").str_pad($num_sql_rows, 4, '0', STR_PAD_LEFT)+1;
-
-
 	
 	$size_array1=array();
 	$orginal_size_array1=array();
+	$compo_no=array();
 	$schedule_array=array();
 
-	if(sizeof($selected)<2){
+	if(sizeof($selected)<2)
+	{
 		echo "<script>swal('Warning!','Please select more than one schedule for clubbing.','warning');</script>"; 
 		//write redirection for the style and color here
 		exit();
 	}
-
-	for($q1=0;$q1<sizeof($sizes_array);$q1++)
-	{
-		for($x1=0;$x1<sizeof($selected);$x1++)
-		{
-			$sql62="select order_del_no,sum(order_s_".$sizes_array[$q1].") as order_qty,title_size_".$sizes_array[$q1]." as size from $bai_pro3.bai_orders_db where order_col_des=\"$color\" and order_del_no='".$selected[$x1]."' group by order_del_no order by order_style_no,order_del_no";
-			$result62=mysqli_query($link, $sql62) or die("Error3 = ".$sql62.mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($row62=mysqli_fetch_array($result62))
-			{	
-				$schedule_array[]=$selected[$x1];
-				if($row62["size"] <> '')
-				{
-					if(!in_array($sizes_array[$q1],$size_array1))
-					{
-						$size_array1[]=$sizes_array[$q1];
-					}	
-					if(!in_array($row62["size"],$orginal_size_array1))
-					{
-						$orginal_size_array1[]=$row62["size"];
-					}
-				}
-			}
-		}
+	$schedule_array=explode(",",implode(",",$selected));
+	$sql62="select * from $bai_pro3.orders_club_schedule where order_col_des='$color' and order_del_no in (".implode(",",$selected).") limit 1";
+	$result62=mysqli_query($link, $sql62) or die("Error3 = ".$sql62.mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row62=mysqli_fetch_array($result62))
+	{				
+		$unique_orginal_sizes1=$row62["size_code"];
+		$unique_sizes1=$row62["orginal_size_code"];
 	}
-	sort($orginal_size_array1);
-	sort($size_array1);
-	
-	$unique_orginal_sizes1=implode(",",array_unique($orginal_size_array1));
-	$unique_sizes1=implode(",",array_unique($size_array1));
-	//echo $unique_orginal_sizes1."---".$unique_sizes1."<br>";
 	$unique_orginal_sizes_explode1=explode(",",$unique_orginal_sizes1);
 	$unique_sizes_explode1=explode(",",$unique_sizes1);
-
-	$po_code=substr($exfact,-2);
-	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_joins in (1,2) and order_col_des=\"$color\"";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$tot_ext_count=mysqli_num_rows($sql_result);
-	$tot_ext_count++;
+	
 	if(sizeof($selected)>1)
 	{
 		//To find new color code 
-		$sql="select max(color_code) as new_color_code from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_col_des=\"$color\"";
-		//echo $sql."<bR>";
+		$sql="select min(color_code) as new_color_code from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_col_des=\"$color\" and order_del_no in (".implode(",",$selected).")";	
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
-			$new_color_code=($sql_row['new_color_code']);
+			$new_color_code=$sql_row['new_color_code'];
 		}
 		
-		//New to eliminate issues 2012
-		$sql17="SELECT order_tid,order_tid2,COUNT(*) AS cnt FROM $bai_pro3.cat_stat_log WHERE order_tid IN (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_del_no IN 
-		('".implode("','",$selected)."') AND order_col_des='$color') GROUP BY order_tid ORDER BY cnt DESC LIMIT 1"; 
-        //echo $sql17."<br>";
-	    $sql_result17=mysqli_query( $link, $sql17) or exit("Sql Error5666".mysqli_error($GLOBALS["___mysqli_ston"])); 
-        while($sql_row17=mysqli_fetch_array($sql_result17)) 
-        { 
+		// Validate Components are equal then only club the schedules
+		$sql17="SELECT order_tid,COUNT(*) AS cnt FROM $bai_pro3.cat_stat_log WHERE order_tid IN (SELECT order_tid FROM bai_orders_db WHERE order_del_no IN 
+		('".implode("','",$selected)."') AND  order_col_des='$color') GROUP BY order_tid ORDER BY cnt DESC LIMIT 1"; 
+		$sql_result17=mysqli_query($link, $sql17) or exit("Sql Error C".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		while($sql_row17=mysqli_fetch_array($sql_result17)) 
+		{ 
+			$order_tid=$sql_row17['order_tid'];
+			$sql11="SELECT * from $bai_pro3.bai_orders_db where order_tid='$order_tid'"; 
+			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error B".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			while($sql_row11=mysqli_fetch_array($sql_result11)) 
+			{ 
+				$order_col_dess=$sql_row11['order_col_des'];
+				//$new_color_code=$sql_row11['color_code'];
+			}
+		}
+		if($order_tid<>'')
+		{
+			$sql="select * from $bai_pro3.cat_stat_log where order_tid='".$order_tid."'"; 
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row=mysqli_fetch_array($sql_result)) 
+			{ 
+				$compo_no[]=$sql_row['compo_no'];
+			}
+			$status=0;
+			for($kl=0;$kl<sizeof($selected);$kl++)
+			{
+				$sql12="SELECT COUNT(*) AS cnt FROM $bai_pro3.cat_stat_log WHERE order_tid IN (SELECT order_tid FROM bai_orders_db WHERE order_del_no='".$selected[$kl]."' AND  order_col_des='$color') and compo_no in ('".implode("','",$compo_no)."')"; 
+				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row12=mysqli_fetch_array($sql_result12)) 
+				{
+					$cnt=$sql_row12['cnt'];
+				}
+				if($cnt<>sizeof($compo_no))
+				{
+					$status=1;
+				}
+			}	
+		}
+		else
+		{
+			$status=1;
+		}	
+		if($status==0) 
+		{			
 			$sql="select * from $bai_pro3.cat_stat_log csl
 					left join $bai_pro3.bai_orders_db bdb on bdb.order_tid = csl.order_tid 
-					where csl.order_tid='".$sql_row17["order_tid"]."'";
+					where csl.order_tid='".$order_tid."'";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Erro5777r".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -441,10 +470,7 @@ if(isset($_POST['fix']))
 				$sql1="insert ignore into $bai_pro3.cat_stat_log (order_tid,order_tid2,catyy,fab_des,col_des,mo_status,compo_no) values (\"".$tid."\",\"".$tid2."\",".$sql_row['catyy'].",\"".$sql_row['fab_des']."\",\"".$sql_row['col_des']."\",\"Y\",\"$com_no\")";
 				mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
-		}
-
-		if(mysqli_num_rows($sql_result17)>0)
-		{
+			
 			$sql1="delete from $bai_pro3.bai_orders_db_club where order_del_no in (".implode(",",$selected).") and order_col_des=\"$color\"";
 			//echo $sql1."<br>";
 			mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -470,31 +496,7 @@ if(isset($_POST['fix']))
 			//echo "2=".$sql1."<br><br>";
 			$sql1="update $bai_pro3.bai_orders_db_confirm set order_joins='J".$new_sch."' where order_del_no in (".implode(",",$selected).") and order_col_des=\"$color\"";
 			mysqli_query($link, $sql1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-			/*
-			for($q11=0;$q11<sizeof($unique_orginal_sizes_explode1);$q11++)
-			{	
-				$falg1=0;
-				$size_code_or1=$unique_orginal_sizes_explode1[$q11];
-				for($q21=0;$q21<sizeof($unique_sizes_explode1);$q21++)
-				{
-					$sql611="select sum(order_s_".$unique_sizes_explode1[$q21].") as order_qty,title_size_".$unique_sizes_explode1[$q21]." as size,
-					order_del_no from bai_orders_db where order_style_no=\"$style\" and order_col_des=\"$color\" and order_del_no in (".implode(",",$selected).") group by order_del_no";	
-					$result611=mysql_query($sql611,$link) or die("Error3 = ".$sql611.mysql_error());
-					while($row611=mysql_fetch_array($result611))
-					{	
-						$size_code1=$row611["size"];
-						if($size_code1 == $size_code_or1)
-						{
-							$sql12="update bai_orders_db set order_s_".$sizes_array[$q11]."=order_s_".$sizes_array[$q11]."+".$row611["order_qty"].",old_order_s_".$sizes_array[$q11]."=old_order_s_".$sizes_array[$q11]."+".$row611["order_qty"].",title_size_".$sizes_array[$q11]."=\"".$unique_orginal_sizes_explode1[$q11]."\",title_flag=1  where order_del_no=$new_sch";
-							mysql_query($sql12,$link) or die("Error112 = ".$sql12.mysql_error());
-							//echo "<br>S-1=".$sql12."<br>";	
-							$sql121="update bai_orders_db_confirm set order_s_".$sizes_array[$q11]."=order_s_".$sizes_array[$q11]."+".$row611["order_qty"].",old_order_s_".$sizes_array[$q11]."=old_order_s_".$sizes_array[$q11]."+".$row611["order_qty"].",title_size_".$sizes_array[$q11]."=\"".$unique_orginal_sizes_explode1[$q11]."\",title_flag=1  where order_del_no=$new_sch";
-						    mysql_query($sql121,$link) or die("Error112 = ".$sql121.mysql_error());
-						}	
-					}										
-				}				
-			}		
-			*/
+			
 			$sql45="select * from $bai_pro3.orders_club_schedule where order_del_no in (".implode(",",$selected).") and order_col_des=\"".$color."\"";
 			//echo $sql45."<br>";
 			$sql_result45=mysqli_query($link, $sql45) or die("Error".$sql45.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -531,8 +533,8 @@ if(isset($_POST['fix']))
 			}
 			$sql451="insert ignore into $bai_pro3.bai_orders_db_club_confirm select * from $bai_pro3.bai_orders_db_confirm where order_del_no in (".implode(",",$schedule_array).") and order_col_des=\"".$color."\"";
 			$sql451=mysqli_query($link, $sql451) or die("Error".$sql451.mysqli_error($GLOBALS["___mysqli_ston"]));
-					
 			
+					
 			echo "<h2>New Style: $style</h2>";
 			echo "<h2>New Schedule: $new_sch</h2>";
 			echo "<h2>New Color: $color</h2>";
@@ -569,17 +571,20 @@ if(isset($_POST['fix']))
 					echo "</table>";
 					echo "<br>";
 				}
-			}
-			
+				echo "<script>swal('Clubbing Completed Successfully.','','success');</script>";
+				echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");				
+			}			
 		}																								
 		else
 		{
-			echo "<script>swal('Please upload order status for selected schedules.','','warning');</script>";
+			echo "<script>swal('You cannot proceed Schedule Clubbing.','Some of the Item codes are not equal for selected Schedules.','warning');</script>";
+			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");
 		}
 	}
 	else
 	{
 		echo "<script>swal('Please select more than one schedule for clubbing.','','warning');";
+		echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");
 	}
 	
 }

@@ -81,8 +81,13 @@ if(isset($_GET['section']))
 	$edate=$_GET['edate'];
 	$team=str_replace("*","'",$_GET['team']);
 
-	
-	echo "<h3><u>Module Breakup of Section -".$_GET['section']."</u></h3>";
+	$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=".$_GET['section'];
+	$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row12=mysqli_fetch_array($result12))
+	{
+		$section_display_name=$sql_row12["section_display_name"];
+	}
+	echo "<h3><u>Module Breakup of ".$section_display_name."</u></h3>";
 	echo "<table class='tblheading'>";
 	echo "<tr>";
 	echo "<th>Module</th>";

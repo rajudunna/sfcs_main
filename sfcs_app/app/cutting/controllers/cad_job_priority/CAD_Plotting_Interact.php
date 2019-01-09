@@ -120,7 +120,7 @@ if(isset($_POST['submit']))
 	}
 	else
 	{
-		$mk_ref=$_POST['mk_ref'];
+	$mk_ref=$_POST['mk_ref'];
 	$doc_ref=$_POST['doc_ref'];
 	$p_width=$_POST['p_width'];
 	$cat_ref=$_POST['cat_ref'];
@@ -328,8 +328,11 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$print_date=$sql_row1['print_status'];
 	$fabric_status=$sql_row1['fabric_status'];
 	
-	$path = getFullURLLevel($_GET['r'],'Book3_print.php',0,'N');
-	$tab= "<tr><td><a href=\"$path&order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."\" onclick=\"Popup1=window.open('$path&order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class=\"btn btn-warning btn-xs\"><i class='fa fa-print'></i>".$sql_row1['doc_no']."</td>";
+	
+	$path="sfcs_app/app/cutting/controllers/lay_plan_preparation/Book3_print.php";
+	
+
+	$tab= "<tr><td><a href=\"$path?order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."\" onclick=\"Popup1=window.open('$path?order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class=\"btn btn-warning btn-xs\"><i class='fa fa-print'></i>".$sql_row1['doc_no']."</td>";
 	
 	$tab.= "<td>$buyer_code</td>";
 	$tab.= "<td>$print_date</td>";
@@ -404,7 +407,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		}
 		else
 		{
-			if($min_width!=$purwidth  and $fabric_status==5 and ($category!="Binding Secondary" and $category!="Body Binding" and $category!="Binding" and $category!="Gusset"))
+			if($min_width!=$purwidth  and ($fabric_status==1 or $fabric_status==5) and ($category!="Binding Secondary" and $category!="Body Binding" and $category!="Binding" and $category!="Gusset"))
 			{
 				echo $tab;
 				$url = getFullURL($_GET['r'],'cad_plotting_interact.php','N');
@@ -428,60 +431,6 @@ echo "</table></div>";
 </div>
 </div>
 <script language="javascript" type="text/javascript">
-// $(document).ready(function() 
-// {
-// 	//$("#flt2_table1").datepicker();
-//    var table3Filters = 
-//    {
-// 		btn: true,
-// 		exact_match: true,
-// 		alternate_rows: true,
-// 		loader: true,
-// 		loader_text: "Filtering data...",
-// 		loader: true,
-// 		btn_reset_text: "Clear",
-// 		display_all_text: "Display all rows",
-// 		btn_text: "Submit"
-// 	}
-// 	setFilterGrid("table1",table3Filters);
-	
-// 	$('#flt2_table1').on('keypress',function(e){
-// 	//alert();
-// 	var k = e.which;
-// 	console.log(k);
-// 	//if( (k < 65 && k > 91) || (k < 96 && k > 123) || (k < 45)){
-// 	if((k<58 && k>46) || k==45 || k==13)
-// 	{
-		
-// 	}
-// 	else
-// 	{
-// 			sweetAlert('Alphabets not allowed','','warning');
-// 			$('#flt2_table1').val('');
-// 	}
-	
-// 	})
-	
-// 	})
-// 	$('#flt1_table1').on('keypress',function(e){
-// 	//alert();
-// 	var k = e.which;
-// 	console.log(k);
-// 	//if( (k < 65 && k > 91) || (k < 96 && k > 123) || (k < 45)){
-// 	if((k>64 && k>91) || (k>96 && k<123) || k==13)
-// 	{
-		
-// 	// }
-// 	// else
-// 	// {
-// 	// 	sweetAlert('Alphabets not allowed','','warning');
-// 	// 	$('#flt1_table1').val('');
-// 	// }
-	
-// 	// })
-	
-// })
-
 setFilterGrid("table1");
 $('#flt0_table1,#flt3_table1').on('keypress',function(e){
 //alert();

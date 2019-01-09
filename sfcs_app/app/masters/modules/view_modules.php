@@ -67,6 +67,10 @@
             <td>".$mapped_cut_table."</td>
             <td>".$row["color"]."</td>
             <td>".$row["label"]."</td>
+			<td>".$section_display_name."</td>
+			<td>".$block_priorities."</td>
+			<td>".$row["module_description"]."</td>
+			<td>".$mapped_cut_table."</td>
 			<td>".$row["status"]." </td>
 			<td><a href='$url&rowid=$rowid&module_name=$module_name&section=$section&status=$status&module_description=$module_description&block_priorities=$block_priorities&mapped_cut_table=$mapped_cut_table&module_color=$color&module_label=$label' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid&module_name=$module_name&section=$section' class='btn btn-danger btn-xs editor_remove' onclick='return confirm_delete(event,this);'>Delete</a></td>
 			</tr>";
