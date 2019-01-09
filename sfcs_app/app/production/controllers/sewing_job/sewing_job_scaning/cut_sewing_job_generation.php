@@ -38,7 +38,8 @@ function assign_to_gets($ars,$data_samps){
 }
 
 if(isset($_POST) && isset($_POST['main_data'])){
-    include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/mo_filling.php');
     //$datt = $_POST['date_y']."-".$_POST['date_m']."-".$_POST['date_d'];
     //echo $datt;die();
     $main_data = $_POST['main_data'];
@@ -60,9 +61,14 @@ if(isset($_POST) && isset($_POST['main_data'])){
 		$barcode_seq=1;
         $doc_no_ref = '';
 		$temp_job=1;
+        
+        $ins_qry2 = "INSERT INTO `bai_pro3`.`sewing_jobs_ref` (style,schedule,bundles_count,log_time) VALUES ('".$style."','".$schedule."','0',NOW())";
+        $result_time2 = mysqli_query($link, $ins_qry2) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $inserted_id = mysqli_insert_id($link);
+
         $old_jobs_cnt_qry = "SELECT COUNT(*) AS old_jobs FROM (SELECT COUNT(*) AS old_jobs FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".$docnos.") GROUP BY input_job_no) AS tab";
         //echo $old_jobs_cnt_qry;
-        $old_jobs_cnt_res = mysqli_query($link_ui, $old_jobs_cnt_qry) or exit("Sql Error : old_jobs_cnt_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $old_jobs_cnt_res = mysqli_query($link, $old_jobs_cnt_qry) or exit("Sql Error : old_jobs_cnt_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         $oldqty_jobcount = mysqli_fetch_array($old_jobs_cnt_res);
         // print_r($oldqty_jobcount)."<br/>";
         foreach ($details as $term ) {
@@ -78,95 +84,142 @@ if(isset($_POST) && isset($_POST['main_data'])){
             $old_size = $term['job_size_key'];
             $type_of_sewing  = $term['type_of_sewing'];
             //echo $job."<br/>";
-           $ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job` 
+            $ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job` 
             (
-             doc_no, size_code, carton_act_qty,input_job_no, input_job_no_random,destination,packing_mode,old_size,doc_type,type_of_sewing,pac_seq_no,barcode_sequence
+                doc_no, size_code, carton_act_qty,input_job_no, input_job_no_random,destination,packing_mode,old_size,doc_type,type_of_sewing,pac_seq_no,barcode_sequence,sref_id
             )
             VALUES
             ( 
-            '".$dono."', 
-            '".$size_code."', 
-            '".$carton_act_qty."', 
-            '".$job."', 
-            '".$rand."',
-            '".$destination."',
-            '".$packing_mode."',
-            '".$old_size."',
-            '".$doc_type."',
-            '".$type_of_sewing."',
-            '-1',
-			$i
+                '".$dono."', 
+                '".$size_code."', 
+                '".$carton_act_qty."', 
+                '".$job."', 
+                '".$rand."',
+                '".$destination."',
+                '".$packing_mode."',
+                '".$old_size."',
+                '".$doc_type."',
+                '".$type_of_sewing."',
+                '-1',
+    			$i,
+                $inserted_id
             );
             ";
-			$temp_job=$job;
-			$i++;
+            $temp_job=$job;
+            $i++;
             //echo  $ins_qry;
-           // die();
-           $result_time = mysqli_query($link_ui, $ins_qry) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
-          $count++;
+            // die();
+            $result_time = mysqli_query($link, $ins_qry) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $count++;
         }
         //echo $count;
-        $ins_qry2 = "INSERT INTO `bai_pro3`.`sewing_jobs_ref`
-        (
-         style,schedule,bundles_count,log_time
-        )
-        VALUES
-        (
-            '".$style."',
-            '".$schedule."',
-            '".$count."',
-             NOW()
-        )";
-       // echo $ins_qry2;
-        //die();
-       $result_time2 = mysqli_query($link_ui, $ins_qry2) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = '$inserted_id' ";
+        $update_result = mysqli_query($link,$update_query) or exit("Problem while inserting to sewing jos ref");
 
-        
+        $schedule_send = $schedule.'=1';
+        insertMOQuantitiesSewing($schedule_send,$inserted_id);
     }
 
     echo json_encode(['message'=>'success']);
 
-}elseif(isset($_POST) && isset($_POST['del_recs'])){
-    include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
-    $qry = "DELETE FROM `bai_pro3`.`pac_stat_log_input_job` where doc_no IN (".$_POST['del_recs'].") and pac_seq_no='-1'";
-    $result_time2 = mysqli_query($link_ui, $qry) or exit("Deleate jobs.".mysqli_error($GLOBALS["___mysqli_ston"]));
-    echo 'success';
+}else if(isset($_POST) && isset($_POST['del_recs'])){
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    $doc_no = $_POST['del_recs'];
+    $validation_query="SELECT * FROM $bai_pro3.act_cut_status WHERE doc_no IN (".$doc_no.")"; 
+    $sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data"); 
+    $count= mysqli_num_rows($sql_result); 
+    if ($count>0) 
+    {
+        echo 'cutting_done';
+    } 
+    else 
+    {
+        $tid = array(); $docket_no = array();
+        $get_seq_details = "SELECT tid, doc_no,order_del_no FROM bai_pro3.`packing_summary_input` WHERE pac_seq_no = '-1' and doc_no in (".$doc_no.")";
+        $details_seq=mysqli_query($link, $get_seq_details) or exit("error while fetching sequence details for this schedule"); 
+        while($row=mysqli_fetch_array($details_seq))
+        {
+            $tid[] = $row['tid'];
+            $docket_no[] = $row['doc_no'];
+            $get_order_del_no = $row['order_del_no'];
+        }
+
+        $get_tids = implode(',', $tid);
+        $get_docs = implode(",", array_unique($docket_no));
+
+        $delete_plan_dashbrd_qry="DELETE FROM $bai_pro3.plan_dashboard WHERE doc_no in($get_docs)"; 
+        // echo $delete_plan_dashboard_qry."<br>"; 
+        mysqli_query($link, $delete_plan_dashbrd_qry) or exit("Sql Error delete_plan_dashbrd_qry"); 
+         
+        $delete_plan_input_qry="DELETE FROM bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref IN (SELECT input_job_no_random FROM $bai_pro3.`pac_stat_log_input_job` WHERE tid IN ($get_tids))"; 
+        // echo $delete_plan_input_qry."<br>"; 
+        mysqli_query($link, $delete_plan_input_qry) or exit("Sql Error delete_plan_input_qry");
+
+        $qry = "DELETE FROM `bai_pro3`.`pac_stat_log_input_job` where doc_no IN (".$doc_no.") and pac_seq_no='-1'";
+        $result_time2 = mysqli_query($link, $qry) or exit("Deleate jobs.".mysqli_error($GLOBALS["___mysqli_ston"]));
+        
+        $insert_log="INSERT INTO $bai_pro3.inputjob_delete_log (user_name,date_time,reason,SCHEDULE) VALUES (USER(),now(),'Cut job based','$get_order_del_no')"; 
+        // echo $insert_log."</br>"; 
+        mysqli_query($link, $insert_log) or exit("Sql Error insert_log");
+
+        // MO Deletion start
+            $sewing_cat = 'sewing';
+            $op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
+                              WHERE trim(category) = '$sewing_cat' ";
+            $op_code_result = mysqli_query($link, $op_code_query) or exit("No Operations Found for Sewing");
+            while($row=mysqli_fetch_array($op_code_result)) 
+            {
+                $op_codes  = $row['codes']; 
+            }
+
+            $mo_query  = "SELECT GROUP_CONCAT(mo_no) as mos from $bai_pro3.mo_details where schedule = '$get_order_del_no'";
+            $mo_result = mysqli_query($link,$mo_query);
+            while($row = mysqli_fetch_array($mo_result))
+            {
+                $mos = $row['mos'];
+            }
+
+            $delete_query = "DELETE from $bai_pro3.mo_operation_quantites where ref_no in ($get_tids) and op_code in ($op_codes) ";
+            $delete_result = mysqli_query($link,$delete_query);
+        // MO Deletion end
+        echo 'success';
+    }
 }else{
-?>
-<script>
-$(document).ready(function(){
-	var url1 = '?r=<?= $_GET['r'] ?>';
-    console.log(url1);
-    $("#style").change(function(){
-        //alert("The text has been changed.");
-		var optionSelected = $("option:selected", this);
-       var valueSelected = this.value;
-	  window.location.href =url1+"&style="+valueSelected
-    });
-    $("#schedule").change(function(){
-       // var input = $(this);
-       //var val = input.val();
-        // alert(val);
-     //window.location.href =url1+"&schedule="+val;
-     var optionSelected = $("option:selected", this);
-       var valueSelected2 = this.value;
-	   var style1 = $("#style").val();
-	   window.location.href =url1+"&style="+style1+"&schedule="+valueSelected2
-    });
+    ?>
+    <script>
+        $(document).ready(function(){
+        	var url1 = '?r=<?= $_GET['r'] ?>';
+            console.log(url1);
+            $("#style").change(function(){
+                //alert("The text has been changed.");
+        		var optionSelected = $("option:selected", this);
+               var valueSelected = this.value;
+        	  window.location.href =url1+"&style="+valueSelected
+            });
+            $("#schedule").change(function(){
+               // var input = $(this);
+               //var val = input.val();
+                // alert(val);
+             //window.location.href =url1+"&schedule="+val;
+             var optionSelected = $("option:selected", this);
+               var valueSelected2 = this.value;
+        	   var style1 = $("#style").val();
+        	   window.location.href =url1+"&style="+style1+"&schedule="+valueSelected2
+            });
 
-    $("#color").change(function(){
-        //alert("The text has been changed.");
-		var optionSelected = $("option:selected", this);
-       var valueSelected3 = this.value;
-       var style1 = $("#style").val();
-       var schedule = $("#schedule").val();
-       window.location.href =url1+"&style="+style1+"&schedule="+schedule+"&color="+valueSelected3
-       //alert(valueSelected2); 
-	 //window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
-    });
+            $("#color").change(function(){
+                //alert("The text has been changed.");
+        		var optionSelected = $("option:selected", this);
+               var valueSelected3 = this.value;
+               var style1 = $("#style").val();
+               var schedule = $("#schedule").val();
+               window.location.href =url1+"&style="+style1+"&schedule="+schedule+"&color="+valueSelected3
+               //alert(valueSelected2); 
+        	 //window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
+            });
 
-});
-</script>
+        });
+    </script>
 <div class = 'panel panel-primary'>
 <div class = 'panel-heading'>
 <b>Cut Sewing Job Generation</b>
@@ -175,10 +228,10 @@ $(document).ready(function(){
 $style=$_GET['style'];
 $schedule=$_GET['schedule']; 
 $color  = $_GET['color'];
-
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 echo '<div class = "panel-body">';
 $sql="select distinct order_style_no from bai_pro3.bai_orders_db_confirm";
-$sql_result=mysqli_query($link_ui, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 echo "<div class=\"row\"><div class=\"col-sm-3\"><label>Select Style:</label>
 <select class='form-control' name=\"style\"  id='style'>";
@@ -208,8 +261,8 @@ echo "  </select>
    echo "<div class='col-sm-3'><label>Select Schedule:</label> 
    <select class='form-control' name=\"schedule\"  id='schedule'>";
 $sql="select distinct order_del_no from bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_joins not in ('1','2')";	
-mysqli_query($link_ui, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link_ui, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
 echo "<option value='".$schedule."' disabled selected>Please Select</option>";
@@ -230,7 +283,7 @@ echo "<div class='col-sm-3'><label>Select Color:</label>
 <select class='form-control' name=\"color\"  id='color'>";
 $sql="select distinct order_col_des from bai_pro3.bai_orders_db_confirm where order_del_no= $schedule and order_joins not in ('1','2')";
     //echo $sql;
-$sql_result=mysqli_query($link_ui, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 echo "<option value='".$color."' disabled selected>Please Select</option>";
    while($sql_row=mysqli_fetch_array($sql_result))
@@ -255,11 +308,11 @@ echo "</select>
 <?php
 if($schedule != "" && $color != "")
 {
-$ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db_confirm.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db_confirm.order_del_no='".$schedule."' AND TRIM(bai_orders_db_confirm.order_col_des) =trim('".$color."')";
+    $ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db_confirm.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db_confirm.order_del_no='".$schedule."' AND TRIM(bai_orders_db_confirm.order_col_des) =trim('".$color."')";
 
-$doc_nos = [];
-$view_shows=[];
-$ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $doc_nos = [];
+    $view_shows=[];
+    $ratio_result = mysqli_query($link, $ratio_query) or exit("Sql Error : ratio_query".mysqli_error($GLOBALS["___mysqli_ston"]));
     $i=0;
     $max=0;
     $samples_qty = [];
@@ -276,19 +329,19 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
             if($i==0){
                 //============ find 1st are last cut =================
                 $qry_get_lrf_cut = "SELECT * FROM bai_pro3.`excess_cuts_log` WHERE schedule_no='".$schedule."' AND trim(color)=trim('".$color."')";
-                $res_get_lrf_cut = mysqli_query($link_ui, $qry_get_lrf_cut) or exit("Sql Error : cut data qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $res_get_lrf_cut = mysqli_query($link, $qry_get_lrf_cut) or exit("Sql Error : cut data qry".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $res_lrt_cut = mysqli_fetch_all($res_get_lrf_cut,MYSQLI_ASSOC);
                 $ex_cut_lrt = $res_lrt_cut[0]['excess_cut_qty'];
                 //================ get sample quantity ===================
                 $qry_get_sample_qty = "SELECT size,input_qty FROM bai_pro3.`sp_sample_order_db` WHERE order_tid='".$row['order_tid']."' GROUP BY size";
-                $res_get_sample_qty = mysqli_query($link_ui, $qry_get_sample_qty) or exit("Sql Error : sample qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $res_get_sample_qty = mysqli_query($link, $qry_get_sample_qty) or exit("Sql Error : sample qry".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $res_sample_qty = mysqli_fetch_all($res_get_sample_qty,MYSQLI_ASSOC);
                 foreach($res_sample_qty as $samp_view){
                     $samples_qty[$samp_view['size']] = $samp_view['input_qty'];
                 }
                 //============ get excess qty ============
                 $get_excess_qty = "SELECT * FROM bai_pro3.`allocate_stat_log` WHERE cat_ref='".$row['cat_ref']."' AND order_tid='".$row['order_tid']."'";
-                $res_excess_qty = mysqli_query($link_ui, $get_excess_qty) or exit("Sql Error : excess qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $res_excess_qty = mysqli_query($link, $get_excess_qty) or exit("Sql Error : excess qry".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $res_excess_qty = mysqli_fetch_all($res_excess_qty,MYSQLI_ASSOC);
                 //=====================================================================
                 echo "<thead>
@@ -361,7 +414,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                     $old_qty[$sno]=0;
                 }
                 $qry_get_doc_details = "SELECT COUNT(*) AS old_jobs,pac_seq_no FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".implode(',',$old_doc_nos).")";
-                $qry_get_doc_details_res = mysqli_query($link_ui, $qry_get_doc_details) or exit("Sql Error : qry_get_doc_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $qry_get_doc_details_res = mysqli_query($link, $qry_get_doc_details) or exit("Sql Error : qry_get_doc_details".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $old_cnt_jb = mysqli_fetch_array($qry_get_doc_details_res);
                 if($old_cnt_jb['old_jobs']==0)
                     echo "<td><button class='btn btn-info' data-toggle='modal' data-target='#modalLoginForm' onclick='assigndata($old_ratio,$max,$end)'>Generate Jobs</button></td>";
@@ -370,7 +423,8 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                     $imp_data = implode(',',$old_doc_nos);
                     echo "<td><a class='btn btn-warning' onclick='show_view_form($imp_data)'>View</a>"; 
                     if($old_cut_status=='')
-                        echo "<a class='btn btn-danger' id='del-$imp_data' onclick='delet($imp_data)'>Delete</a>";
+                        echo "<a class='btn btn-danger' id='del-$imp_data' onclick='delet($imp_data)'>Delete</a>
+                                <div id='delete_message' style='display:none'><h3 class='badge progress-bar-success'>Deleting...</h3></div>";
                     echo "</td>";
                 }else{
                     echo "<td><h3 class='label label-warning'>Jobs Already Created with another source..</h3></td>";
@@ -421,7 +475,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 echo "<td>$old_qty[$sno]</td>";
             }
             $qry_get_doc_details = "SELECT COUNT(*) AS old_jobs,pac_seq_no FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".implode(',',$old_doc_nos).")";
-            $qry_get_doc_details_res = mysqli_query($link_ui, $qry_get_doc_details) or exit("Sql Error : qry_get_doc_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $qry_get_doc_details_res = mysqli_query($link, $qry_get_doc_details) or exit("Sql Error : qry_get_doc_details".mysqli_error($GLOBALS["___mysqli_ston"]));
             $old_cnt_jb = mysqli_fetch_array($qry_get_doc_details_res);
             if($old_cnt_jb['old_jobs']==0)
                 echo "<td><button class='btn btn-info' data-toggle='modal' data-target='#modalLoginForm' onclick='assigndata($old_ratio,$max,$end)'>Generate Jobs</button></td>";
@@ -430,7 +484,8 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
                 $imp_data = implode(',',$old_doc_nos);
                 echo "<td><a class='btn btn-warning' onclick='show_view_form($imp_data)'>View</a>"; 
                 if($old_cut_status=='')
-                    echo "<a class='btn btn-danger' id='del-$imp_data' onclick='delet($imp_data)'>Delete</a>";
+                    echo "<a class='btn btn-danger' id='del-$imp_data' onclick='delet($imp_data)'>Delete</a>
+                            <div id='delete_message' style='display:none'><h3 class='badge progress-bar-success'>Deleting...</h3></div>";
                 echo "</td>";
             }else{
                 echo "<td><h3 class='label label-warning'>Jobs Already Created with another source..</h3></td>";
@@ -441,7 +496,7 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
             foreach($view_shows as $view){
                 echo "<div id='view-".$view."' style='display:none'>";
                 $qry_get_doc_details_view = "SELECT * FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".$view.")";
-                $qry_get_doc_details_view_res = mysqli_query($link_ui, $qry_get_doc_details_view) or exit("Sql Error : qry_get_doc_details_view_res".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $qry_get_doc_details_view_res = mysqli_query($link, $qry_get_doc_details_view) or exit("Sql Error : qry_get_doc_details_view_res".mysqli_error($GLOBALS["___mysqli_ston"]));
                 echo "<div class='pull-right'><button class='btn btn-info' onclick='hide_rev($view)'>Back</button></div><br/>";
                 echo "<table class='table'><thead><tr><th>#</th><th>Job</th><th>Size</th><th>Sewing Type</th><th>Quantity</th></tr></thead><tbody>";
                 $seq=1;
@@ -502,65 +557,69 @@ $ratio_result = mysqli_query($link_ui, $ratio_query) or exit("Sql Error : ratio_
     ?>
     <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      ng-app="cutjob" ng-controller="cutjobcontroller" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100 font-weight-bold">Sewing Job Generation</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-            
-                <div class='row'>
-                    <div class='col-sm-4'>
-                        <label data-error="wrong" data-success="right" for="defaultForm-email">Garment per Input Job</label>
-                        <input type="text" id="job-qty" class="form-control validate" ng-model= "jobcount" name="jobcount">
-                    </div>
-                    <div class='col-sm-4'>
-                        <label data-error="wrong" data-success="right" for="defaultForm-email">Garment per Bundle</label>
-                        <input type="text" id="bundle-qty" class="form-control validate" ng-model= "bundleqty" name="bundleqty">
-                    </div>
-                    <div class='col-sm-2'>
-                        <br/><br/>
-                        <button class="btn btn-success" ng-click="getjobs()">Confirm..</button>
-                    </div>
-                    <!--<div class='col-sm-2'>
-                        <br/><br/>
-                       <button class="btn btn-primary" ng-click="createjobs()">Confirm..</button>
-                    </div>-->
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100 font-weight-bold">Sewing Job Generation</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <br/>
-                <div ng-show='jobs.length'>
-                    <table class='table' style="display:none">
-                        <thead>
-                            <tr><th>#</th><th>Job ID</th><th>Bundle</th><th>Size</th><th>Quantity</th></tr>
-                        </thead>
-                        <tbody ng-repeat="items in fulljob">
-                            <tr class='danger'><th class='text-center'>Ratio</th><th class='text-center'>{{items.ratio}}</th>
-                                <td></td><th class='text-center'>Cut</th><th class='text-center'>{{items.cut}}</th></tr>
-                            <tr ng-repeat="item in items.sizedetails">
-                                <td>{{$index+1}}</td>
-                                <td>{{item.job_id}}</td>
-                                <td>{{item.bundle}}</td>
-                                <td>{{item.job_size}}</td>
-                                <td>{{item.job_qty}}</td>
-                                <td>{{item.type_of_sewing}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div ng-show='!jobs.length' class='alert alert-warning'>
-                    Please generate jobs..
-                </div>
+                <div class="modal-body">
+                
+                    <div class='row'>
+                        <div class='col-sm-4'>
+                            <label data-error="wrong" data-success="right" for="defaultForm-email">Garment per Input Job</label>
+                            <input type="text" id="job-qty" class="form-control validate integer" ng-model= "jobcount" name="jobcount">
+                        </div>
+                        <div class='col-sm-4'>
+                            <label data-error="wrong" data-success="right" for="defaultForm-email">Garment per Bundle</label>
+                            <input type="text" id="bundle-qty" class="form-control validate integer" ng-model= "bundleqty" name="bundleqty">
+                        </div>
+                        <div class='col-sm-2'>
+                            <br/><br/>
+                            <button class="btn btn-success" ng-click="getjobs()">Confirm..</button>
+                        </div>
+                        <!--<div class='col-sm-2'>
+                            <br/><br/>
+                           <button class="btn btn-primary" ng-click="createjobs()">Confirm..</button>
+                        </div>-->
+                    </div>
+                    <br/>
+                    <div ng-show='jobs.length'>
+                        <table class='table' style="display:none">
+                            <thead>
+                                <tr><th>#</th><th>Job ID</th><th>Bundle</th><th>Size</th><th>Quantity</th></tr>
+                            </thead>
+                            <tbody ng-repeat="items in fulljob">
+                                <tr class='danger'><th class='text-center'>Ratio</th><th class='text-center'>{{items.ratio}}</th>
+                                    <td></td><th class='text-center'>Cut</th><th class='text-center'>{{items.cut}}</th></tr>
+                                <tr ng-repeat="item in items.sizedetails">
+                                    <td>{{$index+1}}</td>
+                                    <td>{{item.job_id}}</td>
+                                    <td>{{item.bundle}}</td>
+                                    <td>{{item.job_size}}</td>
+                                    <td>{{item.job_qty}}</td>
+                                    <td>{{item.type_of_sewing}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div ng-show='!jobs.length' class='alert alert-warning'>
+                        Please generate jobs..
+                    </div>
 
-            </div> 
-            <div class="modal-footer d-flex justify-content-center">
-                <button class="btn btn-default" data-dismiss="modal">Close</button>
+                    <div id="generate_message" class='alert alert-success' style="display: none">
+                        Please Wait while we Generate Sewing Jobs...
+                    </div>
+
+                </div> 
+                <div class="modal-footer d-flex justify-content-center">
+                    <button class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 <?php
     //=====================
     //echo base64_decode($_GET['r']);
@@ -639,31 +698,32 @@ app.controller('cutjobcontroller', function($scope, $http) {
     $scope.getjobs = function() {
         if(Number($scope.jobcount)>0 && Number($scope.jobcount)>=Number($scope.bundleqty)){
             $scope.fulljob = {};
-           // console.log($scope.bundleqty);
+            // console.log($scope.bundleqty);
             for(var ss=0;Number(ss)<$scope.details_all.length;ss++){
-                //$scope.j++;
-                var dummy = {};
-                dummy['cut'] = $scope.details_all[ss].cut;
-                dummy['ratio'] = $scope.details_all[ss].ratio;
-                dummy['destination'] = $scope.details_all[ss].destination;
-                dummy['dono'] = $scope.details_all[ss].dono;
-                //console.log($scope.details_all[ss].size_details);
-                $scope.details = $scope.details_all[ss].size_details;
-                $scope.generatejobs();
-                var bun_jobs = $scope.genbundle($scope.jobs);
-                var arrange_jobs = $scope.arrange_jobs(bun_jobs);
-                dummy['sizedetails'] = arrange_jobs;
-                $scope.fulljob[ss] = dummy;
+            //$scope.j++;
+            var dummy = {};
+            dummy['cut'] = $scope.details_all[ss].cut;
+            dummy['ratio'] = $scope.details_all[ss].ratio;
+            dummy['destination'] = $scope.details_all[ss].destination;
+            dummy['dono'] = $scope.details_all[ss].dono;
+            //console.log($scope.details_all[ss].size_details);
+            $scope.details = $scope.details_all[ss].size_details;
+            $("#generate_message").css("display", "block");
+            $scope.generatejobs();
+            var bun_jobs = $scope.genbundle($scope.jobs);
+            var arrange_jobs = $scope.arrange_jobs(bun_jobs);
+            dummy['sizedetails'] = arrange_jobs;
+            $scope.fulljob[ss] = dummy;
 
             }
             //console.log($scope.fulljob);
-           $scope.createjobs();
-       }else{
-           if(Number($scope.jobcount)<=0)
+            $scope.createjobs();
+        }else{
+            if(Number($scope.jobcount)<=0)
             swal('Input Job Quantity should be grater then zero.');
-           if(Number($scope.jobcount)<Number($scope.bundleqty))
+            if(Number($scope.jobcount)<Number($scope.bundleqty))
             swal('Bundle Quantity should be less then input job quantity.');
-       }
+        }
     }
 
     $scope.arrange_jobs = function(bun_jobs){
@@ -874,15 +934,20 @@ function hide_rev(docs_id){
 }
 function delet(docs_id){
     $("#del-"+docs_id).css("display", "none");
+    $("#delete_message").css("display", "block");
     $.post( "<?= trim($url) ?>", { del_recs: docs_id } ).done(function(data) {
-    if(data=='success'){
-        swal('Jobs Deleted successfully.');
-        setTimeout(function(){ location.reload(); }, 300);
-    }else{
-        swal('Jobs Deleted successfully.');
-        setTimeout(function(){ location.reload(); }, 300);
-    }
-  });
+    
+        if(data=='cutting_done'){
+            swal('Cutting Already Done for this Docket','Cannot Delete Sewing Jobs','error');
+            setTimeout(function(){ location.reload(); }, 300);
+        }else if(data=='success'){
+            swal('Jobs Deleted successfully.');
+            setTimeout(function(){ location.reload(); }, 300);
+        }else{
+            swal('Jobs Deletion Failed.');
+            setTimeout(function(){ location.reload(); }, 300);
+        }
+    });
 
 }
 </script>
