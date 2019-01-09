@@ -21,12 +21,12 @@
 		<tr>
 		<th>S.No</th>
 		<th>Module Name</th>
-        <th>Module Color</th>
-        <th>Module Label</th>
 		<th>Section Name</th>
 		<th>Block Priorities</th>		
 		<th>Module Description</th>		
 		<th>Mapped Cut Table</th>
+        <th>Module Color</th>
+        <th>Module Label</th>
 		<th>Status</th>
 		<th> Edit / Delete </th>
 		</tr>
@@ -61,6 +61,10 @@
 			echo "<tr>
 			<td>".$sno++."</td>
 			<td>".$row["module_name"]."</td>
+			<td>".$row["section"]."</td>
+			<td>".$row["block_priorities"]."</td>
+            <td>".$row["module_description"]."</td>
+            <td>".$mapped_cut_table."</td>
             <td>".$row["color"]."</td>
             <td>".$row["label"]."</td>
 			<td>".$section_display_name."</td>
@@ -84,6 +88,25 @@
 $(document).ready(function() {
     $('#module_master').DataTable();
 } );
+function confirm_delete(e,t)
+    {
+        e.preventDefault();
+        var v = sweetAlert({
+        title: "Are you sure to Delete the Record?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+        }).then(function(isConfirm){
+        if (isConfirm) {
+        window.location = $(t).attr('href');
+        return true;
+        } else {
+        sweetAlert("Request Cancelled",'','error');
+        return false;
+        }
+        });
+    }
 </script>
 <style>
 table th
