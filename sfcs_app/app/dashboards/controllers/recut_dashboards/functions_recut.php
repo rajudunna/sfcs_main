@@ -231,6 +231,27 @@ function ReplaceProcess($replace_id_edit)
         $scheule = $row_row['SCHEDULE'];
         $color = $row_row['color'];
     }
+    $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code=$input_ops_code";
+	// echo $ops_seq_check;
+	$result_ops_seq_check = $link->query($ops_seq_check);
+	if($result_ops_seq_check->num_rows > 0)
+	{
+		while($row = $result_ops_seq_check->fetch_assoc()) 
+		{
+			$ops_seq = $row['ops_sequence'];
+			$seq_id = $row['id'];
+			$ops_order = $row['operation_order'];
+		}
+    }
+    $pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
+	$result_pre_ops_check = $link->query($pre_ops_check);
+	if($result_pre_ops_check->num_rows > 0)
+	{
+		while($row = $result_pre_ops_check->fetch_assoc()) 
+		{
+			$pre_ops_code = $row['operation_code'];
+        }
+    }
     //getting excess pieces
     $excess_table = '<div class="panel-group">
                         <div class="panel panel-success">
@@ -243,14 +264,27 @@ function ReplaceProcess($replace_id_edit)
     { 
         $size_replace =  $replace_sizes['size_id'];
         $excess_size_title = $replace_sizes['size_title'];
-        $excess_job_qry = "SELECT GROUP_CONCAT(input_job_no_random order by input_job_no_random)AS input_job_no_random_ref,SUM(carton_act_qty)as excess_qty FROM `$bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$scheule' AND order_col_des = '$color' AND old_size = '$size_replace' AND type_of_sewing = '2'";
+        $excess_job_qry = "SELECT GROUP_CONCAT(input_job_no_random order by input_job_no_random)AS input_job_no_random_ref,SUM(carton_act_qty)as excess_qty,group_concat(distinct doc_no)as doc_nos FROM `$bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$scheule' AND order_col_des = '$color' AND old_size = '$size_replace' AND type_of_sewing = '2'";
         $result_excess_job_qry = $link->query($excess_job_qry);
         if($result_excess_job_qry->num_rows > 0)
         {
             while($replace_row = $result_excess_job_qry->fetch_assoc()) 
             {
                 $input_job_no_excess = $replace_row['input_job_no_random_ref'];
-                $exces_qty =$replace_row['excess_qty'];
+                $doc_nos = $replace_row['doc_nos'];
+                $exces_qty_org =$replace_row['excess_qty'];
+                //cps_qry
+                $cps_qry= "select sum(remaining_qty)as remaining_qty  from $bai_pro3.cps_log where doc_no in ($doc_nos) and size_title = '$excess_size_title' and operation_code = $pre_ops_code";
+                $result_cps_qry = $link->query($cps_qry);
+                if($result_cps_qry->num_rows > 0)
+                {
+                    while($cps_row = $result_cps_qry->fetch_assoc()) 
+                    {
+                        $cps_row_excess = $cps_row['remaining_qty'];
+                    }
+
+                }
+                $exces_qty = min($exces_qty_org,$cps_row_excess);
             }
             //checking that inputjob already scanned or not
             if($exces_qty)
@@ -278,7 +312,7 @@ function ReplaceProcess($replace_id_edit)
                         $already_replaced_qty = $row_replace_already['replaced_qty'];
                     }
                 }
-                $exces_qty = $exces_qty - ($rec_qty + $already_replaced_qty);
+                $exces_qty = ($exces_qty) - ($rec_qty + $already_replaced_qty);
                 if($rec_qty == '')
                 {
                     $rec_qty = 0;

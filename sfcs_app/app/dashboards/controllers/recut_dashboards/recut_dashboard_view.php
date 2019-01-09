@@ -125,6 +125,10 @@
             // echo $sql_plandoc;
             mysqli_query($link,$sql_plandoc) or exit("While inserting into the plan doc stat log".mysqli_error($GLOBALS["___mysqli_ston"]));
            $insert_id=mysqli_insert_id($link);
+           if(strtolower($value) == 'body' || strtolower($value) == 'front')
+           {
+               $insert_id_act=mysqli_insert_id($link);
+           }
             $sql_recut_v2="insert into $bai_pro3.recut_v2 (date,cat_ref,order_tid,pcutno,acutno,remarks,$sizes_p,$sizes_a,a_plies,p_plies,doc_no) values (\"".date("Y-m-d")."\",".$cat_ref.",\"$order_tid\",$count,$count,\"".$value."\",$values,$values,$pliespercut,$pliespercut,$insert_id)";
             mysqli_query($link,$sql_recut_v2) or exit("While inserting into the recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
              // calling the function to insert to bundle craetion data and cps log
@@ -133,6 +137,7 @@
                 //Inserted Successfully
             }
         }
+        $insert_id = $insert_id_act;
         foreach($bcd_id as $key=>$act_id)
         {
             $recut_allowing_qty = $recutval[$key];
