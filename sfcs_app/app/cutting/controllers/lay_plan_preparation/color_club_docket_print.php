@@ -3248,7 +3248,15 @@ tags will be replaced.-->
  <tr class=xl1517319 height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td class='xl6817319 top left'>Cut No :</td>
-  <td colspan=2 class='xl9617319 top' ><?php if($remarks=="Normal") { echo leading_zeros($cut_no, 3); } else {if($remarks=="Pilot") { echo "Pilot";}}?></td>
+  <td colspan=2 class='xl9617319 top' >
+  <?php if($remarks=="Normal"){ 
+	  	echo leading_zeros($cut_no, 3);  
+	}else if(strtolower($remarks)=="recut"){ 
+		echo "Recut";
+	}else if($remarks=="Pilot"){ 
+		echo "Pilot";
+	}
+  ?></td>
   <td class='xl1517319 top'></td>
   <td colspan=2 class='xl6817319 top '>Date:</td>
   <td colspan=2 class='xl9617319 top right'><?php  echo $date; ?></td>
@@ -3698,12 +3706,11 @@ tags will be replaced.-->
 							echo "<td style='border:.5pt solid black;'>".chr($cc_code[$j]).leading_zeros($cut_no, 3)."</td>";
 							echo "<td style='border:.5pt solid black;'>".$docs[$j]."</td>";
 						}
-						echo "<tr style='height:40px'>";
+						// echo "<tr style='height:40px'>";
 						for($k=$temp_len1;$k<$total_size;$k++)
 						{
 							echo "<td style='border:.5pt solid black;'>".$qty[$k]."</td>";
 						}
-						echo $j.'$j';
 						echo "<td style='border:.5pt solid black;'>".$a_ratio_tot."</td>";
 						echo "<td style='border:.5pt solid black;'>".round( $plies[$j] , 2 )."</td>";
 						echo "<th style='border:.5pt solid black;'>".($a_ratio_tot)*($plies[$j])."</th>";
