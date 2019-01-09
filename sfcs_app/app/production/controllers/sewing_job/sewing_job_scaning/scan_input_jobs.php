@@ -397,6 +397,12 @@ $(document).ready(function()
 										var brep = Number(data[i].balance_to_report);
 										if(data[i].send_qty == null)
 											er = 0;
+
+										// if(brep > 0){
+										// 	status = '<font color="green">Scanning Pending</font>';
+										// }else if(brep == 0){
+
+										// }	
 										if(er == 0){//for first time scan
 											if(response['emb_cut_check_flag'] && brep == 0)
 											{
@@ -409,17 +415,17 @@ $(document).ready(function()
 											}else if(brep > 0){
 												status = '<font color="green">Scanning Pending</font>';
 											}
-										}else if(er != 0 && brep == 0){
+										}else if(er != 0 && brep == 0 && er != repq){
 											if(response['emb_cut_check_flag'])
 											{
 												if(response['is_emb_flag'] == '1')
 													status = '<font color="red">Embelishment not done</font>';
 												else
 													status = '<font color="red">Cut Quantity not done</font>';
-											}else {
-												status = '<font color="green">Scanning Pending</font>';
+											}else if(brep==0){
+												status = '<font color="red">Previous Operation Not Done</font>';
 											}
-										}else if(er != 0 && (repq == 0 || repq == null)) {
+										}else if(er != 0 && (repq == 0 || repq == null) && brep > 0) {
 											status = '<font color="green">Scanning Pending</font>';
 										}else if(er == repq){
 											status = '<font color="red">Already Scanned</font>';
