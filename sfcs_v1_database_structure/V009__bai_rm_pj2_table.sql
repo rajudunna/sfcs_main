@@ -13,13 +13,13 @@ MySQL - 10.3.8-MariaDB : Database - bai_rm_pj2
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`bai_rm_pj2` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `bai_rm_pj2`;
+/*USE `bai_rm_pj2`;*/
 
 /*Table structure for table `manual_form` */
 
-DROP TABLE IF EXISTS `manual_form`;
+DROP TABLE IF EXISTS `bai_rm_pj2`.`manual_form`;
 
-CREATE TABLE `manual_form` (
+CREATE TABLE `bai_rm_pj2`.`manual_form` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `buyer` varchar(100) NOT NULL,
   `style` varchar(50) NOT NULL,
@@ -46,9 +46,9 @@ CREATE TABLE `manual_form` (
 
 /*Table structure for table `mrn_out_allocation` */
 
-DROP TABLE IF EXISTS `mrn_out_allocation`;
+DROP TABLE IF EXISTS `bai_rm_pj2`.`mrn_out_allocation`;
 
-CREATE TABLE `mrn_out_allocation` (
+CREATE TABLE `bai_rm_pj2`.`mrn_out_allocation` (
   `tid` double NOT NULL AUTO_INCREMENT COMMENT 'Transaction ID',
   `mrn_tid` double DEFAULT NULL COMMENT 'MRN Transaction ID',
   `lable_id` varchar(255) DEFAULT NULL COMMENT 'Lable ID',
@@ -64,9 +64,9 @@ CREATE TABLE `mrn_out_allocation` (
 
 /*Table structure for table `mrn_reason_db` */
 
-DROP TABLE IF EXISTS `mrn_reason_db`;
+DROP TABLE IF EXISTS `bai_rm_pj2`.`mrn_reason_db`;
 
-CREATE TABLE `mrn_reason_db` (
+CREATE TABLE `bai_rm_pj2`.`mrn_reason_db` (
   `reason_tid` smallint(6) NOT NULL AUTO_INCREMENT COMMENT 'Reason ID',
   `reason_code` varchar(10) NOT NULL COMMENT 'Reason Code',
   `reason_desc` varchar(100) NOT NULL COMMENT 'Reason Description',
@@ -79,9 +79,9 @@ CREATE TABLE `mrn_reason_db` (
 
 /*Table structure for table `mrn_track` */
 
-DROP TABLE IF EXISTS `mrn_track`;
+DROP TABLE IF EXISTS `bai_rm_pj2`.`mrn_track`;
 
-CREATE TABLE `mrn_track` (
+CREATE TABLE `bai_rm_pj2`.`mrn_track` (
   `style` varchar(30) NOT NULL COMMENT 'Style No',
   `schedule` varchar(30) NOT NULL COMMENT 'Schedule No',
   `color` varchar(200) NOT NULL COMMENT 'Color',
@@ -117,9 +117,9 @@ CREATE TABLE `mrn_track` (
 
 /*Table structure for table `remarks_log` */
 
-DROP TABLE IF EXISTS `remarks_log`;
+DROP TABLE IF EXISTS `bai_rm_pj2`.`remarks_log`;
 
-CREATE TABLE `remarks_log` (
+CREATE TABLE `bai_rm_pj2`.`remarks_log` (
   `sno` int(11) NOT NULL AUTO_INCREMENT,
   `tid` int(11) NOT NULL,
   `remarks` varchar(200) NOT NULL,

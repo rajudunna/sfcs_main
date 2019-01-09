@@ -13,7 +13,7 @@ MySQL - 10.3.8-MariaDB : Database - bai_pro4
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`bai_pro4` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `bai_pro4`;
+/*USE `bai_pro4`;*/
 
 /* Function  structure for function  `uExtractNumberFromString` */
 
@@ -59,7 +59,7 @@ DELIMITER ;
 
 /*Table structure for table `bai_cut_to_ship_ref` */
 
-DROP TABLE IF EXISTS `bai_cut_to_ship_ref`;
+DROP TABLE IF EXISTS `bai_pro4`.`bai_cut_to_ship_ref`;
 
 /*!50001 DROP VIEW IF EXISTS `bai_cut_to_ship_ref` */;
 /*!50001 DROP TABLE IF EXISTS `bai_cut_to_ship_ref` */;
@@ -92,7 +92,7 @@ DROP TABLE IF EXISTS `bai_cut_to_ship_ref`;
 
 /*Table structure for table `delivery_report_p1` */
 
-DROP TABLE IF EXISTS `delivery_report_p1`;
+DROP TABLE IF EXISTS `bai_pro4`.`delivery_report_p1`;
 
 /*!50001 DROP VIEW IF EXISTS `delivery_report_p1` */;
 /*!50001 DROP TABLE IF EXISTS `delivery_report_p1` */;
@@ -170,7 +170,7 @@ DROP TABLE IF EXISTS `delivery_report_p1`;
 
 /*Table structure for table `fastreact_plan_summary` */
 
-DROP TABLE IF EXISTS `fastreact_plan_summary`;
+DROP TABLE IF EXISTS `bai_pro4`.`fastreact_plan_summary`;
 
 /*!50001 DROP VIEW IF EXISTS `fastreact_plan_summary` */;
 /*!50001 DROP TABLE IF EXISTS `fastreact_plan_summary` */;
@@ -195,7 +195,7 @@ DROP TABLE IF EXISTS `fastreact_plan_summary`;
 
 /*Table structure for table `shipment_plan_ref` */
 
-DROP TABLE IF EXISTS `shipment_plan_ref`;
+DROP TABLE IF EXISTS `bai_pro4`.`shipment_plan_ref`;
 
 /*!50001 DROP VIEW IF EXISTS `shipment_plan_ref` */;
 /*!50001 DROP TABLE IF EXISTS `shipment_plan_ref` */;
@@ -239,7 +239,7 @@ DROP TABLE IF EXISTS `shipment_plan_ref`;
 
 /*Table structure for table `week_delivery_plan_ref` */
 
-DROP TABLE IF EXISTS `week_delivery_plan_ref`;
+DROP TABLE IF EXISTS `bai_pro4`.`week_delivery_plan_ref`;
 
 /*!50001 DROP VIEW IF EXISTS `week_delivery_plan_ref` */;
 /*!50001 DROP TABLE IF EXISTS `week_delivery_plan_ref` */;

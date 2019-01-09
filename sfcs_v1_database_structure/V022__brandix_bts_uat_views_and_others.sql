@@ -13,7 +13,7 @@ MySQL - 10.3.8-MariaDB : Database - brandix_bts_uat
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`brandix_bts_uat` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `brandix_bts_uat`;
+/*USE `brandix_bts_uat`;*/
 
 /*!50106 set global event_scheduler = 1*/;
 

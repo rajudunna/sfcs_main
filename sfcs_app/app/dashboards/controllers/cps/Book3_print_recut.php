@@ -1058,34 +1058,34 @@ function printpr()
 //By Maximus (maximus@nsimail.com) w/ mods by DynamicDrive
 //For full source code, visit http://www.dynamicdrive.com
 
-var message="Function Disabled!";
+//var message="Function Disabled!";
 
 ///////////////////////////////////
-function clickIE4(){
-if (event.button==2){
-alert(message);
-return false;
-}
-}
+// function clickIE4(){
+// if (event.button==2){
+// alert(message);
+// return false;
+// }
+// }
 
-function clickNS4(e){
-if (document.layers||document.getElementById&&!document.all){
-if (e.which==2||e.which==3){
-alert(message);
-return false;
-}
-}
-}
+// function clickNS4(e){
+// if (document.layers||document.getElementById&&!document.all){
+// if (e.which==2||e.which==3){
+// alert(message);
+// return false;
+// }
+// }
+// }
 
-if (document.layers){
-document.captureEvents(Event.MOUSEDOWN);
-document.onmousedown=clickNS4;
-}
-else if (document.all&&!document.getElementById){
-document.onmousedown=clickIE4;
-}
+// if (document.layers){
+// document.captureEvents(Event.MOUSEDOWN);
+// document.onmousedown=clickNS4;
+// }
+// else if (document.all&&!document.getElementById){
+// document.onmousedown=clickIE4;
+// }
 
-document.oncontextmenu=new Function("alert(message);return false")
+// document.oncontextmenu=new Function("alert(message);return false")
 
 // --> 
 </script>
@@ -1340,10 +1340,13 @@ ZHJzL2Rvd25yZXYueG1sUEsBAi0ACgAAAAAAAAAhADhzEd/zBQAA8wUAABUAAAAAAAAAAAAAAAAA
     <x:AutoPict/>
    </x:ClientData>
   </v:shape><![endif]-->
+
+  <!-- Changes done by ram;05122018 logo variable added -->
+  
   <span style='mso-ignore:vglayout;
   position:absolute;z-index:5;margin-left:11px;margin-top:1px;width:327px;
   height:68px'><img width=327 height=68
-  src='/sfcs_app/common/images/BEK_image1.png' alt=LOGO v:shapes="Text_x0020_Box_x0020_13 Picture_x0020_14"></span>
+  src="<?= $logo ?>" alt=LOGO v:shapes="Text_x0020_Box_x0020_13 Picture_x0020_14"></span>
   <span style='mso-ignore:vglayout2'>
   <table cellpadding=0 cellspacing=0>
    <tr>

@@ -1,24 +1,30 @@
 
 <?php
-include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',5,'R')); 
+	include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',5,'R')); 
 
-$has_permission=haspermission($_GET['r']);
-//API related data
-$plant_code = $global_facility_code;
-$company_num = $company_no;
-$host= $api_hostname;
-$port= $api_port_no;
-$current_date = date('Y-m-d h:i:s');
-$shift=$_GET['shift'];
-  
-if(isset($_POST['id']))
-{
-	
-	//echo "<script>document.getElementById('main').hidden = true</script>";
-	echo "<h1 style='color:red;'>Please Wait a while !!!</h1>";
-	//echo "<script>document.getElementById('message').innerHTML='<b>Please wait a while</b>'</script>";
-}
+	$has_permission=haspermission($_GET['r']);
+	if (in_array($override_sewing_limitation,$has_permission))
+	{
+		$value = 'authorized';
+	}
+	else
+	{
+		$value = 'not_authorized';
+	}
+	echo '<input type="hidden" name="user_permission" id="user_permission" value="'.$value.'">';
+	//API related data
+	$plant_code = $global_facility_code;
+	$company_num = $company_no;
+	$host= $api_hostname;
+	$port= $api_port_no;
+	$current_date = date('Y-m-d h:i:s');
+	$shift=$_GET['shift'];
+	  
+	if(isset($_POST['id']))
+	{
+		echo "<h1 style='color:red;'>Please Wait a while !!!</h1>";
+	}
 ?>
 <body id='main'> 
 	<div class="panel panel-primary"> 
@@ -57,10 +63,16 @@ if(isset($_POST['id']))
 					<select class='form-control sampling' name='sampling' id='sampling' style='width:100%;' required><option value='Normal' selected>Normal</option><option value='sample'>Sample</option><option value='Shipment_Sample'>Shipment_Sample</option></select>
 				</div>
 				<div class="form-group col-md-3">
-						<label for="title">Select Operation:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
-							<select class="form-control select2" required name="operation" id="operation">
-								<option value="0">Select Operation</option>
-							</select>
+					<label for="title">Select Module:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
+					<select class="form-control select2" required name="module" id="module">
+						<option value="">Select Module</option>
+					</select>
+				</div>
+				<div class="form-group col-md-3">
+					<label for="title">Select Operation:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
+						<select class="form-control select2" required name="operation" id="operation">
+							<option value="0">Select Operation</option>
+						</select>
 				</div>
 			</div>
 		</div>
@@ -213,6 +225,13 @@ if(isset($_POST['id']))
 							$("#dynamic_table").append(markup1);
 						}
 					}
+					else
+					{
+						sweetAlert(restrict_msg,'','error');
+						$('#loading-image').hide();
+						$('#dynamic_table1').html('No Data Found');
+					}
+					//////////////////////////////////////////////////////
 				}
 			});
 		});
@@ -662,35 +681,44 @@ if(isset($_POST['id']))
 				{
 					$buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
 				}
-				$qry_nop="select avail_A,avail_B FROM $bai_pro.pro_atten WHERE module=".$b_module[$key]." AND date='$bac_dat'";
-				$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
-				{
-						$avail_A=$nop_qry_row['avail_A'];
-						$avail_B=$nop_qry_row['avail_B'];
-				}
-				if(mysqli_num_rows($qry_nop_result)>0)
-				{
-					if($row['shift']=='A')
-					{
-						$nop=$avail_A;
-					}
-					else
-					{
-						$nop=$avail_B;
-					}
-				}
-				else
-				{
-					$nop=0;
-				}
-				$b_rep_qty_ins = '-'.$reversalval[$key];
-				$bundle_op_id=$b_tid."-".$b_op_id."-".$b_inp_job_ref;
-				$appilication_out = 'IMS_OUT';
-				$checking_output_ops_code_out = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication_out'";
-			    //echo $checking_output_ops_code;
-				$result_checking_output_ops_code_out = $link->query($checking_output_ops_code_out);
-				if($result_checking_output_ops_code_out->num_rows > 0)
+			$qry_nop="select((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance WHERE module=".$b_module[$key]." and date='".$bac_dat."' and shift='".$b_shift."'";
+			$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
+			{
+				$avail=$nop_qry_row['nop'];
+			}
+			if(mysqli_num_rows($qry_nop_result)>0)
+			{
+				$nop=$avail;
+			}
+			else
+			{
+				$nop=0;
+			}
+			$b_rep_qty_ins = '-'.$reversalval[$key];
+			$bundle_op_id=$b_tid."-".$b_op_id."-".$b_inp_job_ref;
+			$appilication_out = 'IMS_OUT';
+			$checking_output_ops_code_out = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication_out'";
+		    //echo $checking_output_ops_code;
+			$result_checking_output_ops_code_out = $link->query($checking_output_ops_code_out);
+			if($result_checking_output_ops_code_out->num_rows > 0)
+			{
+			   while($row_result_checking_output_ops_code_out = $result_checking_output_ops_code_out->fetch_assoc()) 
+			   {
+                 $output_ops_code_out = $row_result_checking_output_ops_code_out['operation_code'];
+			   }
+			}
+			else
+			{
+		   	 $output_ops_code_out = 130;
+			}
+			if($b_op_id == $output_ops_code_out)
+			{
+				$insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
+				bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
+				) values ('".$b_module[$key]."','".$sec_head."','".$b_rep_qty_ins."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors."',USER(),'".$b_doc_num."','".$sfcs_smv."','".$b_rep_qty_ins."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref."')";
+				//echo "Bai log : ".$insert_bailog."</br>";
+				if($reversalval[$key] > 0)
 				{
 					while($row_result_checking_output_ops_code_out = $result_checking_output_ops_code_out->fetch_assoc()) 
 					{
@@ -775,6 +803,7 @@ if(isset($_POST['id']))
 		$url = '?r='.$_GET['r']."&shift=$b_shift";
 		echo "<script>window.location = '".$url."'</script>";
 	}
+}
 ?>
 
 <script type="text/javascript">
@@ -786,8 +815,7 @@ if(isset($_POST['id']))
 		var c = /^[0-9]+$/;
 		var v = document.getElementById(t.id);
 
-		if( !(v.value.match(c)) && v.value!=null )
-		{
+		if( !(v.value.match(c)) && v.value!=null ){
 			v.value = '';
 			return false;
 		}
@@ -799,4 +827,8 @@ if(isset($_POST['id']))
 		console.log("working");
 		$('.submission').hide();
 	}
+
 </script>
+
+
+

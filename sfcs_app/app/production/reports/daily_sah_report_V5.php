@@ -12,9 +12,9 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <meta name=ProgId content=Excel.Sheet>
 <meta name=Generator content="Microsoft Excel 14">
 <link rel=File-List href="SAH%20-JUN_files/filelist.xml">
-<script type="text/javascript" src="<?= getFullURL($_GET['r'],'datetimepicker_css.js','R');?>"></script>
-<script language="JavaScript" src="<?= getFullURL($_GET['r'],'FusionCharts.js','R');?>"></script>
-<script type="text/javascript" language="JavaScript" src="<?= getFullURL($_GET['r'],'FusionChartsExportComponent.js','R');?>"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',3,'R');?>"></script>
+<script language="JavaScript" src="<?= getFullURLLevel($_GET['r'],'common/js/FusionCharts.js',3,'R');?>"></script>
+<script type="text/javascript" language="JavaScript" src="<?= getFullURLLevel($_GET['r'],'js/FusionChartsExportComponent.js',3,'R');?>"></script>
 <script>
 function abc(value,x)
 {
@@ -1193,7 +1193,6 @@ for (var i = 0; i < value.length; i++) {
 	background:#EBF1DE;
 	mso-pattern:black none;
 	white-space:nowrap;}
--->
 </style>
 <style id="SAH -JUN_13441_Styles">
 
@@ -1213,8 +1212,8 @@ for (var i = 0; i < value.length; i++) {
         <input type="text" name="edat" id="edat" class="form-control" data-toggle="datepicker" size=8 onchange="return verify_date();" value="<?php  if(isset($_POST['edat'])) { echo $_POST['edat']; } else { echo date("Y-m-d"); } ?>"/>
     </div>
     <div class="col-md-2">
-        <!-- <label>Excepted Sections</label> -->
-        <input type="hidden" name="exp_sec" id="exp_sec"  class="form-control" value="-1" size="6" onkeyup="abc(this.value)" onblur="abc(this.value)" />
+        <label>Excepted Sections</label>
+        <input type="text" name="exp_sec" id="exp_sec"  class="form-control" value="<?php  if(isset($_POST['exp_sec'])) { echo $_POST['exp_sec']; } else { echo '0'; } ?>" size="6" onkeyup="abc(this.value)" onblur="abc(this.value)" />
     </div>
     <input type="submit" value="Show" name="submit" id="submit" onclick="return verify_date();"  class="btn btn-info" style="margin-top:22px;">
     <a href="<?= getFullURL($_GET['r'],'daily_sah_report_v6.php','N'); ?>" class="btn btn-warning" style="margin-top:22px;">Buyer Wise SAH Report</a>
@@ -1320,7 +1319,13 @@ $result_sec=mysqli_query($link, $sql_sec) or die("Error=".$sql_sec."-".mysqli_er
 while($row_sec=mysqli_fetch_array($result_sec))
 {
 	$sec_array[]=$row_sec["sec_id"];
-	$sec_list[]="Section - ".$row_sec["sec_id"];
+	$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=".$row_sec["sec_id"];
+	$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row12=mysqli_fetch_array($result12))
+	{
+		$section_display_name=$sql_row12["section_display_name"];
+	}
+	$sec_list[]=$section_display_name;
 	$lable[]=$row_sec["sec_head"];
 	$pro_res_a[]=$row_sec["pro_res_a"];
 	$pro_res_b[]=$row_sec["pro_res_b"];
@@ -2143,7 +2148,7 @@ $ext_sah_array_list=implode(",",$ext_sah_array_no);
 $int_sah_array_list=implode(",",$int_sah_array_no);
 $prod_loss_list=implode(",",$prod_loss);  
   
-  	echo "<script type=\"text/javascript\">
+echo "<script type=\"text/javascript\">
 $(function () {
     var chart;
     $(document).ready(function() {
@@ -2221,9 +2226,9 @@ $(function () {
     
 });
 		</script>
-	
-<script src=".getFullURL($_GET['r'],'highcharts.js','R')."></script>
-<script src=".getFullURL($_GET['r'],'exporting.js','R')."></script>
+
+<script type='text/javascript' src=\"".getFullURLLevel($_GET['r'],'common/js/highcharts.js',3,'R')."\"></script>	
+<script type='text/javascript' src=\"".getFullURLLevel($_GET['r'],'common/js/exporting.js',3,'R')."\"></script>	
 
 <div id=\"container\" style=\"width: 900px; height: 400px; margin: 0 auto\"></div>";
 

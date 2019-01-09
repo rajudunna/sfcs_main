@@ -349,31 +349,31 @@ $has_permission = haspermission($_GET['r']);
 //$username=strtolower($username_list[1]);
 // $username="sfcsproject1";
 // $special_users=array("sfcsproject1","kirang","rameshk","chathurangad","indikades","minuram","sfcsproject1","buddhikam");
-if(!in_array($authorized,$has_permission))
-{
-	echo '<script>
-	var ctrlPressed = false;
-	$(document).keydown(function(evt) {
-	  if (evt.which == 17 || evt.which == 13) { // ctrl
-	    ctrlPressed = true;
-		sweetAlert("This key has been disabled.","","warning");
-	  }
-	}).keyup(function(evt) {
-	  if (evt.which == 17) { // ctrl
-	    ctrlPressed = false;
-	  }
-	});
+// if(!in_array($authorized,$has_permission))
+// {
+// 	echo '<script>
+// 	var ctrlPressed = false;
+// 	$(document).keydown(function(evt) {
+// 	  if (evt.which == 17 || evt.which == 13) { // ctrl
+// 	    ctrlPressed = true;
+// 		sweetAlert("This key has been disabled.","","warning");
+// 	  }
+// 	}).keyup(function(evt) {
+// 	  if (evt.which == 17) { // ctrl
+// 	    ctrlPressed = false;
+// 	  }
+// 	});
 	
-	$(document).click(function() {
-	  if (ctrlPressed) {
-	    // do something
-		//alert("Test");
-	  } else {
-	    // do something else
-	  }
-	});
-	</script>';
-}
+// 	$(document).click(function() {
+// 	  if (ctrlPressed) {
+// 	    // do something
+// 		//alert("Test");
+// 	  } else {
+// 	    // do something else
+// 	  }
+// 	});
+// 	</script>';
+// }
 
 ?>
 
@@ -465,34 +465,34 @@ window.onload = startBlink;
 //By Maximus (maximus@nsimail.com) w/ mods by DynamicDrive
 //For full source code, visit http://www.dynamicdrive.com
 
-var message="Function Disabled!";
+//var message="Function Disabled!";
 
 ///////////////////////////////////
-function clickIE4(){
-if (event.button==2){
-sweetAlert("Function Disabled!","","warning");
-return false;
-}
-}
+// function clickIE4(){
+// if (event.button==2){
+// sweetAlert("Function Disabled!","","warning");
+// return false;
+// }
+// }
 
-function clickNS4(e){
-if (document.layers||document.getElementById&&!document.all){
-if (e.which==2||e.which==3){
-sweetAlert("Function Disabled!","","warning");
-return false;
-}
-}
-}
+// function clickNS4(e){
+// if (document.layers||document.getElementById&&!document.all){
+// if (e.which==2||e.which==3){
+// sweetAlert("Function Disabled!","","warning");
+// return false;
+// }
+// }
+// }
 
-if (document.layers){
-document.captureEvents(Event.MOUSEDOWN);
-document.onmousedown=clickNS4;
-}
-else if (document.all&&!document.getElementById){
-document.onmousedown=clickIE4;
-}
+// if (document.layers){
+// document.captureEvents(Event.MOUSEDOWN);
+// document.onmousedown=clickNS4;
+// }
+// else if (document.all&&!document.getElementById){
+// document.onmousedown=clickIE4;
+// }
 
-document.oncontextmenu=new Function("sweetAlert('Function Disabled!','','warning');return false")
+// document.oncontextmenu=new Function("sweetAlert('Function Disabled!','','warning');return false")
 
 // --> 
 </script>
@@ -621,7 +621,7 @@ if(sizeof($remove_docs)>0)
 
 // Remove Docs
 
-$sqlx="select * from $bai_pro3.sections_db where sec_id>0";
+$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section>0 GROUP BY section ORDER BY section + 0";
 //echo $sqlx;
 // mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -630,6 +630,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	$section=$sql_rowx['sec_id'];
 	$section_head=$sql_rowx['sec_head'];
 	$section_mods=$sql_rowx['sec_mods'];
+	$section_display_name=$sql_rowx['section_display_name'];
 
 	if($_GET["view_div"]!='ALL' && $_GET["view_div"]!='')
 	{
@@ -665,7 +666,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;height:100%;">';
 		echo "<p>";
 		echo "<table>";
-		echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$popup_url?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
+		echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$popup_url?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$section_display_name</a></h2></th></th></tr>";
 		//For Section level blinking
 		$blink_minimum=0;		
 		for($x=0;$x<sizeof($mods);$x++)

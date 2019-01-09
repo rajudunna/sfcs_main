@@ -81,32 +81,32 @@ echo '<META HTTP-EQUIV="refresh" content="180">';
 // echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 
 <?php
-$special_users=array("kirang","rameshk","chathurangad","minuram","buddhikam","sfcsproject1","saroasa");
-if(!in_array($username,$special_users))
-{
-	echo '<script>
-	var ctrlPressed = false;
-	$(document).keydown(function(evt) {
-	  if (evt.which == 17 || evt.which == 13) { // ctrl
-	    ctrlPressed = true;
-		alert("This key has been disabled.");
-	  }
-	}).keyup(function(evt) {
-	  if (evt.which == 17) { // ctrl
-	    ctrlPressed = false;
-	  }
-	});
+// $special_users=array("kirang","rameshk","chathurangad","minuram","buddhikam","sfcsproject1","saroasa");
+// if(!in_array($username,$special_users))
+// {
+// 	echo '<script>
+// 	var ctrlPressed = false;
+// 	$(document).keydown(function(evt) {
+// 	  if (evt.which == 17 || evt.which == 13) { // ctrl
+// 	    ctrlPressed = true;
+// 		alert("This key has been disabled.");
+// 	  }
+// 	}).keyup(function(evt) {
+// 	  if (evt.which == 17) { // ctrl
+// 	    ctrlPressed = false;
+// 	  }
+// 	});
 	
-	$(document).click(function() {
-	  if (ctrlPressed) {
-	    // do something
-		//alert("Test");
-	  } else {
-	    // do something else
-	  }
-	});
-	</script>';
-}
+// 	$(document).click(function() {
+// 	  if (ctrlPressed) {
+// 	    // do something
+// 		//alert("Test");
+// 	  } else {
+// 	    // do something else
+// 	  }
+// 	});
+// 	</script>';
+// }
 
 ?>
 <link rel="stylesheet" href="styles/bootstrap.min.css">
@@ -537,34 +537,34 @@ window.onload = startBlink;
 //By Maximus (maximus@nsimail.com) w/ mods by DynamicDrive
 //For full source code, visit http://www.dynamicdrive.com
 
-var message="Function Disabled!";
+//var message="Function Disabled!";
 
 ///////////////////////////////////
-function clickIE4(){
-if (event.button==2){
-alert(message);
-return false;
-}
-}
+// function clickIE4(){
+// if (event.button==2){
+// alert(message);
+// return false;
+// }
+// }
 
-function clickNS4(e){
-if (document.layers||document.getElementById&&!document.all){
-if (e.which==2||e.which==3){
-alert(message);
-return false;
-}
-}
-}
+// function clickNS4(e){
+// if (document.layers||document.getElementById&&!document.all){
+// if (e.which==2||e.which==3){
+// alert(message);
+// return false;
+// }
+// }
+// }
 
-if (document.layers){
-document.captureEvents(Event.MOUSEDOWN);
-document.onmousedown=clickNS4;
-}
-else if (document.all&&!document.getElementById){
-document.onmousedown=clickIE4;
-}
+// if (document.layers){
+// document.captureEvents(Event.MOUSEDOWN);
+// document.onmousedown=clickNS4;
+// }
+// else if (document.all&&!document.getElementById){
+// document.onmousedown=clickIE4;
+// }
 
-document.oncontextmenu=new Function("alert(message);return false")
+// document.oncontextmenu=new Function("alert(message);return false")
 
 // --> 
 </script>
@@ -719,7 +719,13 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo "<p>";
 		echo "<table>";
 		$url=getFullURL($_GET['r'],'board_update.php','N');
-		echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$url&section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";
+		$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
+		$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row12=mysqli_fetch_array($result12))
+		{
+			$section_display_name=$sql_row12["section_display_name"];
+		}
+		echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$url&section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$section_display_name</a></h2></th></th></tr>";
 
 		//$mods=explode(",",$section_mods);
 		
@@ -882,7 +888,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$fabric_status=$sql_row1['ft_status'];
 				//echo "2=".$fabric_status."-".$sql1."<br>";
 				//To get the status of join orders
-				$sql11="select ft_status from bai_orders_db_confirm where order_del_no=\"$schedule\" and order_joins=2";
+				$sql11="select ft_status from bai_orders_db_confirm where order_del_no=\"$schedule\" and $order_joins_in_2";
 				//echo $sql11."<br>";
 				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				

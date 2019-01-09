@@ -40,7 +40,15 @@ td
 }
 
 </style>
-<title>Factory View Sec-<?php echo $sec_x; ?></title>
+<?php
+	$sqlx1="SELECT * FROM $bai_pro3.sections_master WHERE sec_id=$sec_x";
+	$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+	{
+	$section1=$sql_rowx1['sec_name'];
+	}
+?>
+<title>Factory View -<?php echo $section1; ?></title>
 <body>
 <table class="table-bordered">
 <tr>

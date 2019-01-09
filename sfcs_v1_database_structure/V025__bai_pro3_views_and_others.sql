@@ -13,7 +13,7 @@ MySQL - 10.3.8-MariaDB : Database - bai_pro3
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`bai_pro3` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `bai_pro3`;
+/*USE `bai_pro3`;*/
 
 /* Trigger structure for table `bai_orders_db_confirm` */
 
@@ -330,7 +330,7 @@ DELIMITER ;
 
 /*Table structure for table `audit_disp_tb2` */
 
-DROP TABLE IF EXISTS `audit_disp_tb2`;
+DROP TABLE IF EXISTS `bai_pro3`.`audit_disp_tb2`;
 
 /*!50001 DROP VIEW IF EXISTS `audit_disp_tb2` */;
 /*!50001 DROP TABLE IF EXISTS `audit_disp_tb2` */;
@@ -344,7 +344,7 @@ DROP TABLE IF EXISTS `audit_disp_tb2`;
 
 /*Table structure for table `audit_disp_tb2_2` */
 
-DROP TABLE IF EXISTS `audit_disp_tb2_2`;
+DROP TABLE IF EXISTS `bai_pro3`.`audit_disp_tb2_2`;
 
 /*!50001 DROP VIEW IF EXISTS `audit_disp_tb2_2` */;
 /*!50001 DROP TABLE IF EXISTS `audit_disp_tb2_2` */;
@@ -359,7 +359,7 @@ DROP TABLE IF EXISTS `audit_disp_tb2_2`;
 
 /*Table structure for table `audit_disp_tb2_size` */
 
-DROP TABLE IF EXISTS `audit_disp_tb2_size`;
+DROP TABLE IF EXISTS `bai_pro3`.`audit_disp_tb2_size`;
 
 /*!50001 DROP VIEW IF EXISTS `audit_disp_tb2_size` */;
 /*!50001 DROP TABLE IF EXISTS `audit_disp_tb2_size` */;
@@ -374,7 +374,7 @@ DROP TABLE IF EXISTS `audit_disp_tb2_size`;
 
 /*Table structure for table `audit_disp_tb2_size_2` */
 
-DROP TABLE IF EXISTS `audit_disp_tb2_size_2`;
+DROP TABLE IF EXISTS `bai_pro3`.`audit_disp_tb2_size_2`;
 
 /*!50001 DROP VIEW IF EXISTS `audit_disp_tb2_size_2` */;
 /*!50001 DROP TABLE IF EXISTS `audit_disp_tb2_size_2` */;
@@ -390,7 +390,7 @@ DROP TABLE IF EXISTS `audit_disp_tb2_size_2`;
 
 /*Table structure for table `bai_qms_cts_ref` */
 
-DROP TABLE IF EXISTS `bai_qms_cts_ref`;
+DROP TABLE IF EXISTS `bai_pro3`.`bai_qms_cts_ref`;
 
 /*!50001 DROP VIEW IF EXISTS `bai_qms_cts_ref` */;
 /*!50001 DROP TABLE IF EXISTS `bai_qms_cts_ref` */;
@@ -415,7 +415,7 @@ DROP TABLE IF EXISTS `bai_qms_cts_ref`;
 
 /*Table structure for table `bai_qms_day_report` */
 
-DROP TABLE IF EXISTS `bai_qms_day_report`;
+DROP TABLE IF EXISTS `bai_pro3`.`bai_qms_day_report`;
 
 /*!50001 DROP VIEW IF EXISTS `bai_qms_day_report` */;
 /*!50001 DROP TABLE IF EXISTS `bai_qms_day_report` */;
@@ -449,7 +449,7 @@ DROP TABLE IF EXISTS `bai_qms_day_report`;
 
 /*Table structure for table `bai_qms_pop_report` */
 
-DROP TABLE IF EXISTS `bai_qms_pop_report`;
+DROP TABLE IF EXISTS `bai_pro3`.`bai_qms_pop_report`;
 
 /*!50001 DROP VIEW IF EXISTS `bai_qms_pop_report` */;
 /*!50001 DROP TABLE IF EXISTS `bai_qms_pop_report` */;
@@ -485,7 +485,7 @@ DROP TABLE IF EXISTS `bai_qms_pop_report`;
 
 /*Table structure for table `bai_ship_cts_ref` */
 
-DROP TABLE IF EXISTS `bai_ship_cts_ref`;
+DROP TABLE IF EXISTS `bai_pro3`.`bai_ship_cts_ref`;
 
 /*!50001 DROP VIEW IF EXISTS `bai_ship_cts_ref` */;
 /*!50001 DROP TABLE IF EXISTS `bai_ship_cts_ref` */;
@@ -499,7 +499,7 @@ DROP TABLE IF EXISTS `bai_ship_cts_ref`;
 
 /*Table structure for table `cut_dept_report` */
 
-DROP TABLE IF EXISTS `cut_dept_report`;
+DROP TABLE IF EXISTS `bai_pro3`.`cut_dept_report`;
 
 /*!50001 DROP VIEW IF EXISTS `cut_dept_report` */;
 /*!50001 DROP TABLE IF EXISTS `cut_dept_report` */;
@@ -521,7 +521,7 @@ DROP TABLE IF EXISTS `cut_dept_report`;
 
 /*Table structure for table `disp_mix` */
 
-DROP TABLE IF EXISTS `disp_mix`;
+DROP TABLE IF EXISTS `bai_pro3`.`disp_mix`;
 
 /*!50001 DROP VIEW IF EXISTS `disp_mix` */;
 /*!50001 DROP TABLE IF EXISTS `disp_mix` */;
@@ -543,7 +543,7 @@ DROP TABLE IF EXISTS `disp_mix`;
 
 /*Table structure for table `disp_mix_2` */
 
-DROP TABLE IF EXISTS `disp_mix_2`;
+DROP TABLE IF EXISTS `bai_pro3`.`disp_mix_2`;
 
 /*!50001 DROP VIEW IF EXISTS `disp_mix_2` */;
 /*!50001 DROP TABLE IF EXISTS `disp_mix_2` */;
@@ -565,7 +565,7 @@ DROP TABLE IF EXISTS `disp_mix_2`;
 
 /*Table structure for table `disp_mix_size` */
 
-DROP TABLE IF EXISTS `disp_mix_size`;
+DROP TABLE IF EXISTS `bai_pro3`.`disp_mix_size`;
 
 /*!50001 DROP VIEW IF EXISTS `disp_mix_size` */;
 /*!50001 DROP TABLE IF EXISTS `disp_mix_size` */;
@@ -588,7 +588,7 @@ DROP TABLE IF EXISTS `disp_mix_size`;
 
 /*Table structure for table `disp_mix_size_2` */
 
-DROP TABLE IF EXISTS `disp_mix_size_2`;
+DROP TABLE IF EXISTS `bai_pro3`.`disp_mix_size_2`;
 
 /*!50001 DROP VIEW IF EXISTS `disp_mix_size_2` */;
 /*!50001 DROP TABLE IF EXISTS `disp_mix_size_2` */;
@@ -611,7 +611,7 @@ DROP TABLE IF EXISTS `disp_mix_size_2`;
 
 /*Table structure for table `disp_tb1` */
 
-DROP TABLE IF EXISTS `disp_tb1`;
+DROP TABLE IF EXISTS `bai_pro3`.`disp_tb1`;
 
 /*!50001 DROP VIEW IF EXISTS `disp_tb1` */;
 /*!50001 DROP TABLE IF EXISTS `disp_tb1` */;
@@ -628,7 +628,7 @@ DROP TABLE IF EXISTS `disp_tb1`;
 
 /*Table structure for table `disp_tb1_2` */
 
-DROP TABLE IF EXISTS `disp_tb1_2`;
+DROP TABLE IF EXISTS `bai_pro3`.`disp_tb1_2`;
 
 /*!50001 DROP VIEW IF EXISTS `disp_tb1_2` */;
 /*!50001 DROP TABLE IF EXISTS `disp_tb1_2` */;
@@ -645,7 +645,7 @@ DROP TABLE IF EXISTS `disp_tb1_2`;
 
 /*Table structure for table `disp_tb1_size` */
 
-DROP TABLE IF EXISTS `disp_tb1_size`;
+DROP TABLE IF EXISTS `bai_pro3`.`disp_tb1_size`;
 
 /*!50001 DROP VIEW IF EXISTS `disp_tb1_size` */;
 /*!50001 DROP TABLE IF EXISTS `disp_tb1_size` */;
@@ -662,7 +662,7 @@ DROP TABLE IF EXISTS `disp_tb1_size`;
 
 /*Table structure for table `disp_tb1_size_2` */
 
-DROP TABLE IF EXISTS `disp_tb1_size_2`;
+DROP TABLE IF EXISTS `bai_pro3`.`disp_tb1_size_2`;
 
 /*!50001 DROP VIEW IF EXISTS `disp_tb1_size_2` */;
 /*!50001 DROP TABLE IF EXISTS `disp_tb1_size_2` */;
@@ -679,7 +679,7 @@ DROP TABLE IF EXISTS `disp_tb1_size_2`;
 
 /*Table structure for table `disp_tb2` */
 
-DROP TABLE IF EXISTS `disp_tb2`;
+DROP TABLE IF EXISTS `bai_pro3`.`disp_tb2`;
 
 /*!50001 DROP VIEW IF EXISTS `disp_tb2` */;
 /*!50001 DROP TABLE IF EXISTS `disp_tb2` */;
@@ -693,7 +693,7 @@ DROP TABLE IF EXISTS `disp_tb2`;
 
 /*Table structure for table `disp_tb2_2` */
 
-DROP TABLE IF EXISTS `disp_tb2_2`;
+DROP TABLE IF EXISTS `bai_pro3`.`disp_tb2_2`;
 
 /*!50001 DROP VIEW IF EXISTS `disp_tb2_2` */;
 /*!50001 DROP TABLE IF EXISTS `disp_tb2_2` */;
@@ -708,7 +708,7 @@ DROP TABLE IF EXISTS `disp_tb2_2`;
 
 /*Table structure for table `disp_tb2_size` */
 
-DROP TABLE IF EXISTS `disp_tb2_size`;
+DROP TABLE IF EXISTS `bai_pro3`.`disp_tb2_size`;
 
 /*!50001 DROP VIEW IF EXISTS `disp_tb2_size` */;
 /*!50001 DROP TABLE IF EXISTS `disp_tb2_size` */;
@@ -723,7 +723,7 @@ DROP TABLE IF EXISTS `disp_tb2_size`;
 
 /*Table structure for table `disp_tb2_size_2` */
 
-DROP TABLE IF EXISTS `disp_tb2_size_2`;
+DROP TABLE IF EXISTS `bai_pro3`.`disp_tb2_size_2`;
 
 /*!50001 DROP VIEW IF EXISTS `disp_tb2_size_2` */;
 /*!50001 DROP TABLE IF EXISTS `disp_tb2_size_2` */;
@@ -739,7 +739,7 @@ DROP TABLE IF EXISTS `disp_tb2_size_2`;
 
 /*Table structure for table `emb_garment_carton_pendings` */
 
-DROP TABLE IF EXISTS `emb_garment_carton_pendings`;
+DROP TABLE IF EXISTS `bai_pro3`.`emb_garment_carton_pendings`;
 
 /*!50001 DROP VIEW IF EXISTS `emb_garment_carton_pendings` */;
 /*!50001 DROP TABLE IF EXISTS `emb_garment_carton_pendings` */;
@@ -766,7 +766,7 @@ DROP TABLE IF EXISTS `emb_garment_carton_pendings`;
 
 /*Table structure for table `fg_wh_report` */
 
-DROP TABLE IF EXISTS `fg_wh_report`;
+DROP TABLE IF EXISTS `bai_pro3`.`fg_wh_report`;
 
 /*!50001 DROP VIEW IF EXISTS `fg_wh_report` */;
 /*!50001 DROP TABLE IF EXISTS `fg_wh_report` */;
@@ -782,7 +782,7 @@ DROP TABLE IF EXISTS `fg_wh_report`;
 
 /*Table structure for table `fg_wh_report_summary` */
 
-DROP TABLE IF EXISTS `fg_wh_report_summary`;
+DROP TABLE IF EXISTS `bai_pro3`.`fg_wh_report_summary`;
 
 /*!50001 DROP VIEW IF EXISTS `fg_wh_report_summary` */;
 /*!50001 DROP TABLE IF EXISTS `fg_wh_report_summary` */;
@@ -802,7 +802,7 @@ DROP TABLE IF EXISTS `fg_wh_report_summary`;
 
 /*Table structure for table `fsp_order_ref` */
 
-DROP TABLE IF EXISTS `fsp_order_ref`;
+DROP TABLE IF EXISTS `bai_pro3`.`fsp_order_ref`;
 
 /*!50001 DROP VIEW IF EXISTS `fsp_order_ref` */;
 /*!50001 DROP TABLE IF EXISTS `fsp_order_ref` */;
@@ -822,7 +822,7 @@ DROP TABLE IF EXISTS `fsp_order_ref`;
 
 /*Table structure for table `ft_st_pk_shipfast_status` */
 
-DROP TABLE IF EXISTS `ft_st_pk_shipfast_status`;
+DROP TABLE IF EXISTS `bai_pro3`.`ft_st_pk_shipfast_status`;
 
 /*!50001 DROP VIEW IF EXISTS `ft_st_pk_shipfast_status` */;
 /*!50001 DROP TABLE IF EXISTS `ft_st_pk_shipfast_status` */;
@@ -987,7 +987,7 @@ DROP TABLE IF EXISTS `ft_st_pk_shipfast_status`;
 
 /*Table structure for table `ims_combine` */
 
-DROP TABLE IF EXISTS `ims_combine`;
+DROP TABLE IF EXISTS `bai_pro3`.`ims_combine`;
 
 /*!50001 DROP VIEW IF EXISTS `ims_combine` */;
 /*!50001 DROP TABLE IF EXISTS `ims_combine` */;
@@ -1017,7 +1017,7 @@ DROP TABLE IF EXISTS `ims_combine`;
 
 /*Table structure for table `ims_log_backup_t1` */
 
-DROP TABLE IF EXISTS `ims_log_backup_t1`;
+DROP TABLE IF EXISTS `bai_pro3`.`ims_log_backup_t1`;
 
 /*!50001 DROP VIEW IF EXISTS `ims_log_backup_t1` */;
 /*!50001 DROP TABLE IF EXISTS `ims_log_backup_t1` */;
@@ -1044,7 +1044,7 @@ DROP TABLE IF EXISTS `ims_log_backup_t1`;
 
 /*Table structure for table `ims_log_backup_t2` */
 
-DROP TABLE IF EXISTS `ims_log_backup_t2`;
+DROP TABLE IF EXISTS `bai_pro3`.`ims_log_backup_t2`;
 
 /*!50001 DROP VIEW IF EXISTS `ims_log_backup_t2` */;
 /*!50001 DROP TABLE IF EXISTS `ims_log_backup_t2` */;
@@ -1071,7 +1071,7 @@ DROP TABLE IF EXISTS `ims_log_backup_t2`;
 
 /*Table structure for table `ims_log_live` */
 
-DROP TABLE IF EXISTS `ims_log_live`;
+DROP TABLE IF EXISTS `bai_pro3`.`ims_log_live`;
 
 /*!50001 DROP VIEW IF EXISTS `ims_log_live` */;
 /*!50001 DROP TABLE IF EXISTS `ims_log_live` */;
@@ -1101,7 +1101,7 @@ DROP TABLE IF EXISTS `ims_log_live`;
 
 /*Table structure for table `ims_log_long_pending_transfers` */
 
-DROP TABLE IF EXISTS `ims_log_long_pending_transfers`;
+DROP TABLE IF EXISTS `bai_pro3`.`ims_log_long_pending_transfers`;
 
 /*!50001 DROP VIEW IF EXISTS `ims_log_long_pending_transfers` */;
 /*!50001 DROP TABLE IF EXISTS `ims_log_long_pending_transfers` */;
@@ -1124,7 +1124,7 @@ DROP TABLE IF EXISTS `ims_log_long_pending_transfers`;
 
 /*Table structure for table `incentive_emb_reference` */
 
-DROP TABLE IF EXISTS `incentive_emb_reference`;
+DROP TABLE IF EXISTS `bai_pro3`.`incentive_emb_reference`;
 
 /*!50001 DROP VIEW IF EXISTS `incentive_emb_reference` */;
 /*!50001 DROP TABLE IF EXISTS `incentive_emb_reference` */;
@@ -1136,7 +1136,7 @@ DROP TABLE IF EXISTS `incentive_emb_reference`;
 
 /*Table structure for table `incentive_fca_audit_fail_sch` */
 
-DROP TABLE IF EXISTS `incentive_fca_audit_fail_sch`;
+DROP TABLE IF EXISTS `bai_pro3`.`incentive_fca_audit_fail_sch`;
 
 /*!50001 DROP VIEW IF EXISTS `incentive_fca_audit_fail_sch` */;
 /*!50001 DROP TABLE IF EXISTS `incentive_fca_audit_fail_sch` */;
@@ -1148,7 +1148,7 @@ DROP TABLE IF EXISTS `incentive_fca_audit_fail_sch`;
 
 /*Table structure for table `live_pro_table_ref` */
 
-DROP TABLE IF EXISTS `live_pro_table_ref`;
+DROP TABLE IF EXISTS `bai_pro3`.`live_pro_table_ref`;
 
 /*!50001 DROP VIEW IF EXISTS `live_pro_table_ref` */;
 /*!50001 DROP TABLE IF EXISTS `live_pro_table_ref` */;
@@ -1162,7 +1162,7 @@ DROP TABLE IF EXISTS `live_pro_table_ref`;
 
 /*Table structure for table `live_pro_table_ref2` */
 
-DROP TABLE IF EXISTS `live_pro_table_ref2`;
+DROP TABLE IF EXISTS `bai_pro3`.`live_pro_table_ref2`;
 
 /*!50001 DROP VIEW IF EXISTS `live_pro_table_ref2` */;
 /*!50001 DROP TABLE IF EXISTS `live_pro_table_ref2` */;
@@ -1176,7 +1176,7 @@ DROP TABLE IF EXISTS `live_pro_table_ref2`;
 
 /*Table structure for table `live_pro_table_ref3` */
 
-DROP TABLE IF EXISTS `live_pro_table_ref3`;
+DROP TABLE IF EXISTS `bai_pro3`.`live_pro_table_ref3`;
 
 /*!50001 DROP VIEW IF EXISTS `live_pro_table_ref3` */;
 /*!50001 DROP TABLE IF EXISTS `live_pro_table_ref3` */;
@@ -1190,7 +1190,7 @@ DROP TABLE IF EXISTS `live_pro_table_ref3`;
 
 /*Table structure for table `marker_ref_matrix_view` */
 
-DROP TABLE IF EXISTS `marker_ref_matrix_view`;
+DROP TABLE IF EXISTS `bai_pro3`.`marker_ref_matrix_view`;
 
 /*!50001 DROP VIEW IF EXISTS `marker_ref_matrix_view` */;
 /*!50001 DROP TABLE IF EXISTS `marker_ref_matrix_view` */;
@@ -1322,7 +1322,7 @@ DROP TABLE IF EXISTS `marker_ref_matrix_view`;
 
 /*Table structure for table `order_cat_doc_mix` */
 
-DROP TABLE IF EXISTS `order_cat_doc_mix`;
+DROP TABLE IF EXISTS `bai_pro3`.`order_cat_doc_mix`;
 
 /*!50001 DROP VIEW IF EXISTS `order_cat_doc_mix` */;
 /*!50001 DROP TABLE IF EXISTS `order_cat_doc_mix` */;
@@ -1484,7 +1484,7 @@ DROP TABLE IF EXISTS `order_cat_doc_mix`;
 
 /*Table structure for table `order_cat_doc_mk_mix` */
 
-DROP TABLE IF EXISTS `order_cat_doc_mk_mix`;
+DROP TABLE IF EXISTS `bai_pro3`.`order_cat_doc_mk_mix`;
 
 /*!50001 DROP VIEW IF EXISTS `order_cat_doc_mk_mix` */;
 /*!50001 DROP TABLE IF EXISTS `order_cat_doc_mk_mix` */;
@@ -1648,7 +1648,7 @@ DROP TABLE IF EXISTS `order_cat_doc_mk_mix`;
 
 /*Table structure for table `order_cat_doc_mk_mix_v2` */
 
-DROP TABLE IF EXISTS `order_cat_doc_mk_mix_v2`;
+DROP TABLE IF EXISTS `bai_pro3`.`order_cat_doc_mk_mix_v2`;
 
 /*!50001 DROP VIEW IF EXISTS `order_cat_doc_mk_mix_v2` */;
 /*!50001 DROP TABLE IF EXISTS `order_cat_doc_mk_mix_v2` */;
@@ -1812,7 +1812,7 @@ DROP TABLE IF EXISTS `order_cat_doc_mk_mix_v2`;
 
 /*Table structure for table `order_cat_recut_doc_mix` */
 
-DROP TABLE IF EXISTS `order_cat_recut_doc_mix`;
+DROP TABLE IF EXISTS `bai_pro3`.`order_cat_recut_doc_mix`;
 
 /*!50001 DROP VIEW IF EXISTS `order_cat_recut_doc_mix` */;
 /*!50001 DROP TABLE IF EXISTS `order_cat_recut_doc_mix` */;
@@ -1964,7 +1964,7 @@ DROP TABLE IF EXISTS `order_cat_recut_doc_mix`;
 
 /*Table structure for table `order_cat_recut_doc_mk_mix` */
 
-DROP TABLE IF EXISTS `order_cat_recut_doc_mk_mix`;
+DROP TABLE IF EXISTS `bai_pro3`.`order_cat_recut_doc_mk_mix`;
 
 /*!50001 DROP VIEW IF EXISTS `order_cat_recut_doc_mk_mix` */;
 /*!50001 DROP TABLE IF EXISTS `order_cat_recut_doc_mk_mix` */;
@@ -2115,7 +2115,7 @@ DROP TABLE IF EXISTS `order_cat_recut_doc_mk_mix`;
 
 /*Table structure for table `packing_dashboard` */
 
-DROP TABLE IF EXISTS `packing_dashboard`;
+DROP TABLE IF EXISTS `bai_pro3`.`packing_dashboard`;
 
 /*!50001 DROP VIEW IF EXISTS `packing_dashboard` */;
 /*!50001 DROP TABLE IF EXISTS `packing_dashboard` */;
@@ -2142,7 +2142,7 @@ DROP TABLE IF EXISTS `packing_dashboard`;
 
 /*Table structure for table `packing_dashboard_new` */
 
-DROP TABLE IF EXISTS `packing_dashboard_new`;
+DROP TABLE IF EXISTS `bai_pro3`.`packing_dashboard_new`;
 
 /*!50001 DROP VIEW IF EXISTS `packing_dashboard_new` */;
 /*!50001 DROP TABLE IF EXISTS `packing_dashboard_new` */;
@@ -2170,7 +2170,7 @@ DROP TABLE IF EXISTS `packing_dashboard_new`;
 
 /*Table structure for table `packing_dashboard_new2` */
 
-DROP TABLE IF EXISTS `packing_dashboard_new2`;
+DROP TABLE IF EXISTS `bai_pro3`.`packing_dashboard_new2`;
 
 /*!50001 DROP VIEW IF EXISTS `packing_dashboard_new2` */;
 /*!50001 DROP TABLE IF EXISTS `packing_dashboard_new2` */;
@@ -2198,7 +2198,7 @@ DROP TABLE IF EXISTS `packing_dashboard_new2`;
 
 /*Table structure for table `packing_dboard_stage1` */
 
-DROP TABLE IF EXISTS `packing_dboard_stage1`;
+DROP TABLE IF EXISTS `bai_pro3`.`packing_dboard_stage1`;
 
 /*!50001 DROP VIEW IF EXISTS `packing_dboard_stage1` */;
 /*!50001 DROP TABLE IF EXISTS `packing_dboard_stage1` */;
@@ -2224,7 +2224,7 @@ DROP TABLE IF EXISTS `packing_dboard_stage1`;
 
 /*Table structure for table `packing_issues` */
 
-DROP TABLE IF EXISTS `packing_issues`;
+DROP TABLE IF EXISTS `bai_pro3`.`packing_issues`;
 
 /*!50001 DROP VIEW IF EXISTS `packing_issues` */;
 /*!50001 DROP TABLE IF EXISTS `packing_issues` */;
@@ -2252,7 +2252,7 @@ DROP TABLE IF EXISTS `packing_issues`;
 
 /*Table structure for table `packing_pending_schedules` */
 
-DROP TABLE IF EXISTS `packing_pending_schedules`;
+DROP TABLE IF EXISTS `bai_pro3`.`packing_pending_schedules`;
 
 /*!50001 DROP VIEW IF EXISTS `packing_pending_schedules` */;
 /*!50001 DROP TABLE IF EXISTS `packing_pending_schedules` */;
@@ -2263,7 +2263,7 @@ DROP TABLE IF EXISTS `packing_pending_schedules`;
 
 /*Table structure for table `packing_summary` */
 
-DROP TABLE IF EXISTS `packing_summary`;
+DROP TABLE IF EXISTS `bai_pro3`.`packing_summary`;
 
 /*!50001 DROP VIEW IF EXISTS `packing_summary` */;
 /*!50001 DROP TABLE IF EXISTS `packing_summary` */;
@@ -2289,7 +2289,7 @@ DROP TABLE IF EXISTS `packing_summary`;
 
 /*Table structure for table `packing_summary_backup` */
 
-DROP TABLE IF EXISTS `packing_summary_backup`;
+DROP TABLE IF EXISTS `bai_pro3`.`packing_summary_backup`;
 
 /*!50001 DROP VIEW IF EXISTS `packing_summary_backup` */;
 /*!50001 DROP TABLE IF EXISTS `packing_summary_backup` */;
@@ -2315,7 +2315,7 @@ DROP TABLE IF EXISTS `packing_summary_backup`;
 
 /*Table structure for table `packing_summary_input` */
 
-DROP TABLE IF EXISTS `packing_summary_input`;
+DROP TABLE IF EXISTS `bai_pro3`.`packing_summary_input`;
 
 /*!50001 DROP VIEW IF EXISTS `packing_summary_input` */;
 /*!50001 DROP TABLE IF EXISTS `packing_summary_input` */;
@@ -2344,7 +2344,7 @@ DROP TABLE IF EXISTS `packing_summary_input`;
 
 /*Table structure for table `packing_summary_temp` */
 
-DROP TABLE IF EXISTS `packing_summary_temp`;
+DROP TABLE IF EXISTS `bai_pro3`.`packing_summary_temp`;
 
 /*!50001 DROP VIEW IF EXISTS `packing_summary_temp` */;
 /*!50001 DROP TABLE IF EXISTS `packing_summary_temp` */;
@@ -2369,7 +2369,7 @@ DROP TABLE IF EXISTS `packing_summary_temp`;
 
 /*Table structure for table `pack_to_be_backup` */
 
-DROP TABLE IF EXISTS `pack_to_be_backup`;
+DROP TABLE IF EXISTS `bai_pro3`.`pack_to_be_backup`;
 
 /*!50001 DROP VIEW IF EXISTS `pack_to_be_backup` */;
 /*!50001 DROP TABLE IF EXISTS `pack_to_be_backup` */;
@@ -2386,7 +2386,7 @@ DROP TABLE IF EXISTS `pack_to_be_backup`;
 
 /*Table structure for table `pac_stat_log_for_live` */
 
-DROP TABLE IF EXISTS `pac_stat_log_for_live`;
+DROP TABLE IF EXISTS `bai_pro3`.`pac_stat_log_for_live`;
 
 /*!50001 DROP VIEW IF EXISTS `pac_stat_log_for_live` */;
 /*!50001 DROP TABLE IF EXISTS `pac_stat_log_for_live` */;
@@ -2411,7 +2411,7 @@ DROP TABLE IF EXISTS `pac_stat_log_for_live`;
 
 /*Table structure for table `pac_stat_log_temp` */
 
-DROP TABLE IF EXISTS `pac_stat_log_temp`;
+DROP TABLE IF EXISTS `bai_pro3`.`pac_stat_log_temp`;
 
 /*!50001 DROP VIEW IF EXISTS `pac_stat_log_temp` */;
 /*!50001 DROP TABLE IF EXISTS `pac_stat_log_temp` */;
@@ -2433,7 +2433,7 @@ DROP TABLE IF EXISTS `pac_stat_log_temp`;
 
 /*Table structure for table `plandoc_stat_log_cat_log_ref` */
 
-DROP TABLE IF EXISTS `plandoc_stat_log_cat_log_ref`;
+DROP TABLE IF EXISTS `bai_pro3`.`plandoc_stat_log_cat_log_ref`;
 
 /*!50001 DROP VIEW IF EXISTS `plandoc_stat_log_cat_log_ref` */;
 /*!50001 DROP TABLE IF EXISTS `plandoc_stat_log_cat_log_ref` */;
@@ -2463,7 +2463,7 @@ DROP TABLE IF EXISTS `plandoc_stat_log_cat_log_ref`;
 
 /*Table structure for table `plan_dash_doc_summ` */
 
-DROP TABLE IF EXISTS `plan_dash_doc_summ`;
+DROP TABLE IF EXISTS `bai_pro3`.`plan_dash_doc_summ`;
 
 /*!50001 DROP VIEW IF EXISTS `plan_dash_doc_summ` */;
 /*!50001 DROP TABLE IF EXISTS `plan_dash_doc_summ` */;
@@ -2562,7 +2562,7 @@ DROP TABLE IF EXISTS `plan_dash_doc_summ`;
 
 /*Table structure for table `plan_dash_doc_summ_input` */
 
-DROP TABLE IF EXISTS `plan_dash_doc_summ_input`;
+DROP TABLE IF EXISTS `bai_pro3`.`plan_dash_doc_summ_input`;
 
 /*!50001 DROP VIEW IF EXISTS `plan_dash_doc_summ_input` */;
 /*!50001 DROP TABLE IF EXISTS `plan_dash_doc_summ_input` */;
@@ -2603,7 +2603,7 @@ DROP TABLE IF EXISTS `plan_dash_doc_summ_input`;
 
 /*Table structure for table `plan_dash_summ` */
 
-DROP TABLE IF EXISTS `plan_dash_summ`;
+DROP TABLE IF EXISTS `bai_pro3`.`plan_dash_summ`;
 
 /*!50001 DROP VIEW IF EXISTS `plan_dash_summ` */;
 /*!50001 DROP TABLE IF EXISTS `plan_dash_summ` */;
@@ -2687,7 +2687,7 @@ DROP TABLE IF EXISTS `plan_dash_summ`;
 
 /*Table structure for table `plan_doc_summ` */
 
-DROP TABLE IF EXISTS `plan_doc_summ`;
+DROP TABLE IF EXISTS `bai_pro3`.`plan_doc_summ`;
 
 /*!50001 DROP VIEW IF EXISTS `plan_doc_summ` */;
 /*!50001 DROP TABLE IF EXISTS `plan_doc_summ` */;
@@ -2719,7 +2719,7 @@ DROP TABLE IF EXISTS `plan_doc_summ`;
 
 /*Table structure for table `plan_doc_summ_input` */
 
-DROP TABLE IF EXISTS `plan_doc_summ_input`;
+DROP TABLE IF EXISTS `bai_pro3`.`plan_doc_summ_input`;
 
 /*!50001 DROP VIEW IF EXISTS `plan_doc_summ_input` */;
 /*!50001 DROP TABLE IF EXISTS `plan_doc_summ_input` */;
@@ -2756,7 +2756,7 @@ DROP TABLE IF EXISTS `plan_doc_summ_input`;
 
 /*Table structure for table `plan_doc_summ_in_ref` */
 
-DROP TABLE IF EXISTS `plan_doc_summ_in_ref`;
+DROP TABLE IF EXISTS `bai_pro3`.`plan_doc_summ_in_ref`;
 
 /*!50001 DROP VIEW IF EXISTS `plan_doc_summ_in_ref` */;
 /*!50001 DROP TABLE IF EXISTS `plan_doc_summ_in_ref` */;
@@ -2787,7 +2787,7 @@ DROP TABLE IF EXISTS `plan_doc_summ_in_ref`;
 
 /*Table structure for table `qms_vs_recut` */
 
-DROP TABLE IF EXISTS `qms_vs_recut`;
+DROP TABLE IF EXISTS `bai_pro3`.`qms_vs_recut`;
 
 /*!50001 DROP VIEW IF EXISTS `qms_vs_recut` */;
 /*!50001 DROP TABLE IF EXISTS `qms_vs_recut` */;
@@ -2811,7 +2811,7 @@ DROP TABLE IF EXISTS `qms_vs_recut`;
 
 /*Table structure for table `recut_v2_summary` */
 
-DROP TABLE IF EXISTS `recut_v2_summary`;
+DROP TABLE IF EXISTS `bai_pro3`.`recut_v2_summary`;
 
 /*!50001 DROP VIEW IF EXISTS `recut_v2_summary` */;
 /*!50001 DROP TABLE IF EXISTS `recut_v2_summary` */;
@@ -2960,7 +2960,7 @@ DROP TABLE IF EXISTS `recut_v2_summary`;
 
 /*Table structure for table `test_plan_doc_summ` */
 
-DROP TABLE IF EXISTS `test_plan_doc_summ`;
+DROP TABLE IF EXISTS `bai_pro3`.`test_plan_doc_summ`;
 
 /*!50001 DROP VIEW IF EXISTS `test_plan_doc_summ` */;
 /*!50001 DROP TABLE IF EXISTS `test_plan_doc_summ` */;
@@ -2991,7 +2991,7 @@ DROP TABLE IF EXISTS `test_plan_doc_summ`;
 
 /*Table structure for table `zero_module_trans` */
 
-DROP TABLE IF EXISTS `zero_module_trans`;
+DROP TABLE IF EXISTS `bai_pro3`.`zero_module_trans`;
 
 /*!50001 DROP VIEW IF EXISTS `zero_module_trans` */;
 /*!50001 DROP TABLE IF EXISTS `zero_module_trans` */;

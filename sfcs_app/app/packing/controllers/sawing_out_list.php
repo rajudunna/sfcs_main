@@ -42,7 +42,8 @@
 				<?php 
 					$url = getFullURLLevel($_GET['r'],"reports/pdfs/sawing_out_labels_v1.php",1,'R');
 					$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job_no,$link);
-					echo "<a href=\"$url?tid=$tid&job_no=$input_job_no&schedule=$schedule\" target=\"_blank\" class=\"btn btn-warning btn-sm\" onclick=\"return popitup("."'"."$url?tid=$tid&job_no=$input_job_no&schedule=$schedule"."'".")\"><i class='fa fa-print'></i>&nbsp;&nbsp;".$display_prefix1."</a><br/>";	
+					// echo "<a href=\"$url?tid=$tid&job_no=$input_job_no&schedule=$schedule\" target=\"_blank\" class=\"btn btn-warning btn-sm\" onclick=\"return popitup("."'"."$url?tid=$tid&job_no=$input_job_no&schedule=$schedule"."'".")\"><i class='fa fa-print'></i>&nbsp;&nbsp;".$display_prefix1."</a><br/>";	
+					echo $display_prefix1;
 					
 					$sql="SELECT title_size_".$size." as size FROM $bai_pro3.bai_orders_db WHERE order_del_no=\"$schedule\" AND order_col_des=\"$color\"";
 					// echo $sql;
@@ -99,7 +100,7 @@
 		
 		<?php
 			
-			$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\"";
+			$sql="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_style_no=\"$style\" and order_del_no=\"$schedule\"";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{

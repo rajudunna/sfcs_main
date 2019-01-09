@@ -13,7 +13,7 @@ for($i=0;$i<sizeof($sections_db);$i++)
 	
 	$id_new="green";
 	
-	$sqlx="select * from $bai_pro3.sections_db where sec_id=$section_id";
+	$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$section_id GROUP BY section ORDER BY section + 0";
 	$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	{
@@ -32,13 +32,12 @@ for($i=0;$i<sizeof($sections_db);$i++)
 			$teams[]=$sql_row2['bac_shift'];
 		}
 		
-		$avail_criteria='sum(avail_'.implode('+avail_',$teams).')';
-		$absen_criteria='sum(absent_'.implode('+absent_',$teams).')';
-		
+		// $avail_criteria='sum(avail_'.implode('+avail_',$teams).')';
+		// $absen_criteria='sum(absent_'.implode('+absent_',$teams).')';
+		$date=date("Y-m-d");
 		if(sizeof($teams)>0) // ERROR CORRECTION
 		{
-		
-			$sql2="select $avail_criteria as \"avail\", $absen_criteria as \"absent\" from $bai_pro.pro_atten where module in ($section_mods) and date=\"".date("Y-m-d")."\"";
+			$sql2="select sum(present+jumper) as \"avail\", sum(absent) as \"absent\" from $bai_pro.pro_attendance where module in ($section_mods) and date='".$date."'";
 			//secho $sql2;
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error4569".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))

@@ -541,7 +541,7 @@
 				$parent_id=echo_title("$bai_pro3.tbl_pack_ref","id","schedule",$schedule,$link);
 				$updated_carton_method = echo_title("$bai_pro3.tbl_pack_size_ref","pack_method","parent_id",$parent_id,$link);
 				{
-					$o_colors = echo_title("$bai_pro3.bai_orders_db","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db.order_joins NOT IN ('1','2') AND order_del_no",$schedule,$link);	
+					$o_colors = echo_title("$bai_pro3.bai_orders_db","group_concat(distinct order_col_des order by order_col_des)","bai_orders_db.$order_joins_not_in AND order_del_no",$schedule,$link);	
 					$p_colors = echo_title("$brandix_bts.tbl_orders_sizes_master","group_concat(distinct order_col_des order by order_col_des)","parent_id",$schedule_id,$link);
 					if($o_colors<>'')
 					{
@@ -767,7 +767,7 @@
 												echo "<div class='panel-heading'>Details</div>
 												<div class='panel-body'>";
 											$col_array = array();
-											$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and order_joins not in (1,2)";
+											$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and $order_joins_not_in";
 											//echo $sizes_query;die();
 											$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
 											$row_count = mysqli_num_rows($sizes_result);
@@ -1071,7 +1071,7 @@
 												echo "<div class='panel-heading'>Details</div>
 												<div class='panel-body'>";
 											$col_array = array();
-											$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and order_joins not in (1,2)";
+											$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and $order_joins_not_in";
 											//echo $sizes_query;die();
 											$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
 											$row_count = mysqli_num_rows($sizes_result);

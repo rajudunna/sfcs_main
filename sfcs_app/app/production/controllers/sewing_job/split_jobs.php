@@ -19,7 +19,7 @@
             $url_s = getFullURLLevel($_GET['r'],'input_job_split.php',0,'N');
             //echo $schedule.' '.$job_no; 
             echo '<h4><b>Schedule : <a href="#" class="btn btn-success">'.$schedule.'</a></b></h4>'; 
-            echo '<a href="'.$url_s.'" class="btn btn-primary pull-right">Click here to go Back</a>'; 
+            echo '<a href="'.$url_s.'&schedule='.$schedule.'" class="btn btn-primary pull-right">Click here to go Back</a>'; 
 			$sql1="SELECT * FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref='$job_no_ran'"; 
             $result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			

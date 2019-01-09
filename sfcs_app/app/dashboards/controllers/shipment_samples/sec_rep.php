@@ -145,11 +145,18 @@ if(isset($_GET['val']))
 <?php
 	    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
 		$section=$_GET['section'];
+		$sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
+		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+		{
+			$section_display_name=$sql_rowx1['section_display_name'];
+		}
+		
 		echo "<div class='panel panel-primary'>
-		<div class='panel-heading'>Section - $section Summary</div>
+		<div class='panel-heading'>$section_display_name Summary</div>
 		<div class='panel-body'>";
 		
-		$sql="select * from $bai_pro3.sections_db where sec_id=$section";
+		$sql="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name where section=$section GROUP BY section ORDER BY section + 0";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))

@@ -47,32 +47,32 @@ Service Request #525434/ kirang/ 2014-01-10: Add the ordercut details in RTS das
 
 	$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 	$username=strtolower($username_list[1]);
-	$special_users=array("kirang","kirang","kirang","kirang");
-	if(!in_array($username,$special_users))
-	{
-		echo '<script>
-		var ctrlPressed = false;
-		$(document).keydown(function(evt) {
-		if (evt.which == 17 || evt.which == 13) { // ctrl
-			ctrlPressed = true;
-			alert("This key has been disabled.");
-		}
-		}).keyup(function(evt) {
-		if (evt.which == 17) { // ctrl
-			ctrlPressed = false;
-		}
-		});
+	// $special_users=array("kirang","kirang","kirang","kirang");
+	// if(!in_array($username,$special_users))
+	// {
+	// 	echo '<script>
+	// 	var ctrlPressed = false;
+	// 	$(document).keydown(function(evt) {
+	// 	if (evt.which == 17 || evt.which == 13) { // ctrl
+	// 		ctrlPressed = true;
+	// 		alert("This key has been disabled.");
+	// 	}
+	// 	}).keyup(function(evt) {
+	// 	if (evt.which == 17) { // ctrl
+	// 		ctrlPressed = false;
+	// 	}
+	// 	});
 		
-		$(document).click(function() {
-		if (ctrlPressed) {
-			// do something
-			//alert("Test");
-		} else {
-			// do something else
-		}
-		});
-		</script>';
-	}
+	// 	$(document).click(function() {
+	// 	if (ctrlPressed) {
+	// 		// do something
+	// 		//alert("Test");
+	// 	} else {
+	// 		// do something else
+	// 	}
+	// 	});
+	// 	</script>';
+	// }
 
 ?>
 
@@ -486,34 +486,34 @@ window.onload = startBlink;
 //By Maximus (maximus@nsimail.com) w/ mods by DynamicDrive
 //For full source code, visit http://www.dynamicdrive.com
 
-	var message="Function Disabled!";
+	//var message="Function Disabled!";
 
 	///////////////////////////////////
-	function clickIE4(){
-	if (event.button==2){
-	alert(message);
-	return false;
-	}
-	}
+	// function clickIE4(){
+	// if (event.button==2){
+	// alert(message);
+	// return false;
+	// }
+	// }
 
-	function clickNS4(e){
-		if (document.layers||document.getElementById&&!document.all){
-			if (e.which==2||e.which==3){
-				alert(message);
-				return false;
-			}
-		}
-	}
+	// function clickNS4(e){
+	// 	if (document.layers||document.getElementById&&!document.all){
+	// 		if (e.which==2||e.which==3){
+	// 			alert(message);
+	// 			return false;
+	// 		}
+	// 	}
+	// }
 
-	if (document.layers){
-		document.captureEvents(Event.MOUSEDOWN);
-		document.onmousedown=clickNS4;
-	}
-	else if (document.all&&!document.getElementById){
-		document.onmousedown=clickIE4;
-	}
+	// if (document.layers){
+	// 	document.captureEvents(Event.MOUSEDOWN);
+	// 	document.onmousedown=clickNS4;
+	// }
+	// else if (document.all&&!document.getElementById){
+	// 	document.onmousedown=clickIE4;
+	// }
 
-	document.oncontextmenu=new Function("alert(message);return false")
+	// document.oncontextmenu=new Function("alert(message);return false")
 
 // --> 
 </script>
@@ -676,19 +676,21 @@ window.onload = startBlink;
 		$exdate_arr[]=$sql_row_del1["exdate"];
 	}
 	*/
-	$sqlx="select * from $bai_pro3.sections_db where sec_id>0";
+	// $sqlx="select * from $bai_pro3.sections_db where sec_id>0";
+	$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name GROUP BY section ORDER BY section + 0";
 	$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	{
 		$section=$sql_rowx['sec_id'];
 		$section_head=$sql_rowx['sec_head'];
 		$section_mods=$sql_rowx['sec_mods'];
+		$section_display_name=$sql_rowx['section_display_name'];
 
 		echo '<div style="width:300px;background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;">';
 		echo "<p>";
 		echo "<table>";
 		$url = getFullURL($_GET['r'],'board_update_recut.php','N');
-		echo "<tr><th colspan=2><h2><a href=\"$url\" onclick=\"Popup=window.open('$url&section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">SECTION - $section</a></h2></th></th></tr>";					
+		echo "<tr><th colspan=2><h2><a href=\"$url\" onclick=\"Popup=window.open('$url&section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$section_display_name</a></h2></th></th></tr>";					
 		$mods=array();
 		$mods=explode(",",$section_mods);
 		
