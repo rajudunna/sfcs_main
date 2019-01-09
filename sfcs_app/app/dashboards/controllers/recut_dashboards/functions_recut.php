@@ -312,7 +312,7 @@ function ReplaceProcess($replace_id_edit)
                         $already_replaced_qty = $row_replace_already['replaced_qty'];
                     }
                 }
-                $exces_qty = $exces_qty - ($rec_qty + $already_replaced_qty);
+                $exces_qty = ($exces_qty-$already_replaced_qty) - ($rec_qty + $already_replaced_qty);
                 if($rec_qty == '')
                 {
                     $rec_qty = 0;
