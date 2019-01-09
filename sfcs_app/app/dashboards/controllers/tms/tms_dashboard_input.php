@@ -578,7 +578,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$show_block = calculateJobsCount($table_name,$module,$order_div_ref);
 			if($show_block > 0){
 				echo "<div style='float:left;'>		    
-										<a href=\"../".getFullURL($_GET['r'],'issued_to_module_summary_report.php','R')."?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&order_div_ref=$buyer_division_ref\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/issued_to_module_summary_report.php?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&order_div_ref=$buyer_division_ref','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><div  class='gloss-pink' style='float:left;'><b>$show_block</b></div></a>
+										<a onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/issued_to_module_summary_report.php?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&order_div_ref=$buyer_division_ref','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><div  class='gloss-pink' style='float:left;'><b>$show_block</b></div></a>
 											
 							</div>";
 			}
