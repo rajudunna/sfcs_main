@@ -1061,7 +1061,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $remarks = $sql_row11['remarks'];
           if(strtolower($remarks) == 'recut'){
             $cut_str = 'R';
-            $id = 'pink';
+            
           }else
             $cut_str = chr($sql_row11['color_code']);
 
@@ -1083,7 +1083,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             
         if(strtolower($remarks) == 'recut'){
           $cut_str = 'R';
-          $id = 'pink';
+          
         }else
           $cut_str = chr($sql_row1['color_code']);
 
