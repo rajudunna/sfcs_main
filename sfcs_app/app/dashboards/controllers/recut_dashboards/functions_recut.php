@@ -205,6 +205,7 @@ if(isset($_GET['replace_id_edit']))
 }
 function ReplaceProcess($replace_id_edit)
 {
+    error_reporting(0);
     $count = 0;
     include("../../../../common/config/config_ajax.php");
     $html = "<button type='button' class='btn btn-success' value='Set' style='float: right;' onclick='setfunction();' id='setreset'>Select All</button>";
