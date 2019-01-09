@@ -71,7 +71,8 @@
     function submit_data(){
         e_plies = 0;
         $('.shades').each(function(key,e){
-            if(e.value == null || e.value == '')
+            console.log(e.value);
+            if(e.value == null || e.value == empty)
                 return swal('Fill All the '+shades+' Shades','','warning');
         });
         $('.plies').each(function(key,e){
