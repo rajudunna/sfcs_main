@@ -455,8 +455,9 @@ if($barcode_generation == 1)
 								$actual_rec_quantities[]=$cumulative_qty;
 								$rec_qtys_array[$bundle_individual_number] = $cumulative_qty;
 								//$fillup_qty[$doc_value][$b_sizes[$key]] = $cumulative_qty;
-								$cumulative_qty = 0;
 								$to_add += $cumulative_qty;
+								$cumulative_qty = 0;
+								
 							}
 						}
 						else if($bundle_pending_qty == 0)
