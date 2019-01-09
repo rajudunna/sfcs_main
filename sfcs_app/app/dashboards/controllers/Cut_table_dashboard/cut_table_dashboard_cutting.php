@@ -989,9 +989,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         {
           //We have no recut dockets for clubbing
           $remarks = '';
-					$is_recut_query = "SELECT remarks from $bai_pro3.plandoc_stat_log where doc_no = '$doc_no'";
-					$is_recut_result = mysqli_query($link,$is_recut_result);
-					while($row_rem = mysqli_fetch_array($is_recut_query))
+					$is_recut_query = "SELECT remarks from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
+					$is_recut_result = mysqli_query($link,$is_recut_query);
+					while($row_rem = mysqli_fetch_array($is_recut_result))
               $remarks = $row_rem['remarks'];
               
           if(strtolower($remarks) == 'recut')
