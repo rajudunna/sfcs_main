@@ -365,6 +365,10 @@ if($check_sql_res_check >0){
 }else{
 	$sql1="SELECT order_style_no,order_del_no,order_col_des,color_code,total,acutno,order_tid,order_style_no,order_del_no,xs,s,m,l,xl,xxl,xxxl,s06,s08,s10,s12,s14,s16,s18,s20,s22,s24,s26,s28,s30,clubbing from $bai_pro3.plan_dash_doc_summ where doc_no=$doc_no";
 }
+
+//gettin remarks 
+$sql_remarks = "SELECT remarks from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
+$remarks = mysqli_fetch_array(mysqli_query($link,$sql_remarks))['remarks'];
 //echo "Geeting cut ref no : ".$sql1;
 //mysql_query($sql1,$link) or exit("Sql Error1".mysql_error());
 //echo $sql1;
@@ -373,13 +377,17 @@ $sql_num_check=mysqli_num_rows($sql_result1);
 $sizes_table ='';
 while($sql_row1=mysqli_fetch_array($sql_result1))
 {
+	if(strtolower($remarks) == 'recut')
+		$appender = 'R';
+	else	
+		$appender = chr($sql_row1['color_code']);
 	$style=$sql_row1['order_style_no'];
 	$schedule=$sql_row1['order_del_no'];
 	echo "<tr>";
 	echo "<td>".$sql_row1['order_style_no']."</td>";
 	echo "<td>".$sql_row1['order_del_no']."</td>";
 	echo "<td>".$sql_row1['order_col_des']."</td>";
-	echo "<td>".chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3)."</td>";
+	echo "<td>".$appender.leading_zeros($sql_row1['acutno'],3)."</td>";
 	echo "</tr>";
 	$act_cut_no=$sql_row1['acutno'];
 	$cut_no_ref=$sql_row1['acutno'];
