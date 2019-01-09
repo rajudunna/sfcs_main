@@ -274,7 +274,7 @@ function ReplaceProcess($replace_id_edit)
                 $doc_nos = $replace_row['doc_nos'];
                 $exces_qty_org =$replace_row['excess_qty'];
                 //cps_qry
-                $cps_qry= "select sum(remaining_qty)as remaining_qty  from $bai_pro3.cps_log where doc_no in ($doc_nos) and size_title = '$excess_size_title' and operation_id = $pre_ops_code";
+                $cps_qry= "select sum(remaining_qty)as remaining_qty  from $bai_pro3.cps_log where doc_no in ($doc_nos) and size_title = '$excess_size_title' and operation_code = $pre_ops_code";
                 $result_cps_qry = $link->query($cps_qry);
                 if($result_cps_qry->num_rows > 0)
                 {
