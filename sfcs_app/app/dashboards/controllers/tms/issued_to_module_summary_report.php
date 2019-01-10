@@ -13,7 +13,16 @@
         $table_name="$temp_pool_db.plan_dash_doc_summ_input_$username";
         
       
-            $sql2x="SELECT sum(carton_act_qty) as carton_act_qty,order_del_no,order_style_no,input_job_no,log_time,input_trims_status,input_priority,input_module,input_job_no_random_ref FROM $table_name  WHERE (input_trims_status=4 and input_trims_status !='NULL') and input_module='$module' and input_job_no!='NULL' group by input_job_no_random_ref order by input_priority asc";
+        
+
+            $sql2x="SELECT b.date_n_time,SUM(a.carton_act_qty) AS carton_act_qty,order_del_no,order_style_no,a.input_job_no,log_time,input_trims_status,
+            input_priority,input_module,input_job_no_random_ref FROM $table_name AS a JOIN 
+            $bai_pro3.temp_line_input_log AS b ON
+            CONCAT(a.order_style_no,a.order_del_no,a.input_job_no) =CONCAT(b.style,b.schedule_no,b.input_job_no) 
+             WHERE 
+            (a.input_trims_status=4 AND a.input_trims_status !='NULL') AND a.input_module='$module' AND a.input_job_no!='NULL' AND
+            b.page_name='Trim Issue4'
+            GROUP BY a.input_job_no_random_ref ORDER BY b.date_n_time ASC";
 
         
         $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -33,18 +42,10 @@
             $order_del_no=$row21x["order_del_no"];
             $carton_act_qty=$row21x["carton_act_qty"];
             $input_job_no_random_ref=$row21x["input_job_no_random_ref"];
+            $date_n_time=$row21x["date_n_time"];
 
             $get_color = echo_title("$bai_pro3.packing_summary_input","order_col_des","order_del_no='$order_del_no' and input_job_no",$input_job_no,$link);
             $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$order_del_no,$get_color,$input_job_no,$link);
- 
-            $sql4x="SELECT date_n_time,schedule_no,style from $bai_pro3.temp_line_input_log where input_job_no='$input_job_no' and schedule_no='$order_del_no' and style='$order_style_no' and page_name='Trim Issue4'";
-            $result4x=mysqli_query($link, $sql4x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-            while($row41x=mysqli_fetch_array($result4x))
-            {
-                $date_n_time=$row41x["date_n_time"];
-            }
-
-
 
             echo "<td>".$srno++."</td>";
             echo "<td>".$order_style_no."</td>";
