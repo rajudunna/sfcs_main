@@ -12,6 +12,7 @@
         
         $module_label=$_REQUEST['module_label'];
         $mapped_cut_table = $_REQUEST['mapped_cut_table'];
+        $mini_plant=$_REQUEST['mini_plant'];
        
     }else
     {
@@ -180,7 +181,33 @@
             </div>
         </div>
     </div>
-
+    
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label control-label-left col-sm-3" for="table_status">Mini Plant</label>
+            <div class="controls col-sm-9">
+                <select class="form-control" name="mini_plant" id="mini_plant" required>
+                    <option value="">Please Select</option>
+                    <?php 
+                        $get_mini_plant_qury = "SELECT * FROM $bai_pro3.mini_plant_master";
+                        $mini_plant_result = mysqli_query( $link, $get_mini_plant_qury);
+                        while ($row = mysqli_fetch_array($mini_plant_result))
+                        {
+                            if ($mini_plant == $row['id'])
+                            {
+                                $selected = 'selected';
+                            }
+                            else
+                            {
+                                $selected = '';
+                            }
+                            echo "<option value='".$row['id']."' $selected>".$row['mini_plant_name']."</option>";
+                        }
+                    ?>
+                </select>
+            </div>
+        </div>
+    </div>
     <div class="col-md-4" style="visibility:hidden;"><div class="form-group">
        
        <div class='input-group date' id='datetimepicker11' >
