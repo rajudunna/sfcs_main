@@ -288,7 +288,45 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
                 $style=$sql_row['order_style_no']; 
                 $order_joins=$sql_row['order_joins']; 
                 echo "<tr>"; 
-                if($order_total>0) 
+				// Check Operaitons
+				$ops_master_sql = "select operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master where style='$style' and color='$color' and default_operration='yes' group by operation_code";
+				$result2_ops_master_sql = mysqli_query($link,$ops_master_sql)
+									or exit("Error Occured : Unable to get the Operation Codes");
+				while($row_result2_ops_master_sql = mysqli_fetch_array($result2_ops_master_sql))
+				{
+					$array1[] = $row_result2_ops_master_sql['operation_code'];
+				}			
+				$sql1 = "select OperationNumber FROM $bai_pro3.schedule_oprations_master where Style='$style' and Description ='$color' and ScheduleNumber='$schedule' group by OperationNumber";
+				$result1 = mysqli_query($link,$sql1)  
+					or exit("Error Occured : Unable to get the Operation Codes");
+			
+				while($row = mysqli_fetch_array($result1))
+				{
+					$array2[] = $row['OperationNumber'];
+				}
+				$val1 = "<td></td>";
+				$op_status_above=0;
+				if(sizeof($array1) == 0 || sizeof($array2) == 0)
+				{
+					$val1 = "<td>Ops Doesn't exist</td>";
+					$op_status_above=1;
+				}
+				$compare = array_diff($array1,$array2);
+				if(sizeof($compare) > 0)
+				{
+					$val1 = "<td>Ops codes not match</td>";
+					$op_status_above=1;
+				}
+
+				$mo_query = "SELECT * from $bai_pro3.mo_details where schedule='$schedule' and 
+							color='$color'  and style='$style' limit 1";
+				$mo_result = mysqli_query($link,$mo_query);	
+				if(!mysqli_num_rows($mo_result) > 0)
+				{
+					$val1 = "<td>MO Not Available</td>";
+					$op_status_above=1;
+				}			
+				if($order_total>0 && $op_status_above==0)
                 { 
                     $sql41="select * FROM $bai_pro3.`plandoc_stat_log` where order_tid='".$order_tid."'"; 
                     $result41=mysqli_query($link, $sql41) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -329,9 +367,9 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
 					   	echo "<td>Lay Plan Prepared</td>";
 					} 
                 } 
-                else 
+                else  
                 { 
-                    echo "<td></td>"; 
+                    echo $val1; 
                 }
 				$order_joins=0;
 				echo "<td>";				
