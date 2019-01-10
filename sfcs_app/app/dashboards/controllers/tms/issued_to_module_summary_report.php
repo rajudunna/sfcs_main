@@ -6,6 +6,7 @@
 <div class="panel-heading"><strong>Issued to Module Summary Report</strong></div>
 <?php
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');  
+        include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
         $username_list=explode('\\',$_SERVER['REMOTE_USER']);
         $username=strtolower($username_list[1]);
         $module=$_GET['module'];
@@ -33,29 +34,13 @@
             $carton_act_qty=$row21x["carton_act_qty"];
             $input_job_no_random_ref=$row21x["input_job_no_random_ref"];
 
-
-            $query1="SELECT type_of_sewing,input_job_no_random FROM $bai_pro3.packing_summary_input WHERE input_job_no_random=".$row21x["input_job_no_random_ref"]." group by input_job_no_random";
-            $result3x=mysqli_query($link, $query1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-            while($row31x=mysqli_fetch_array($result3x))
-            {
-                $type_of_sewing=$row31x["type_of_sewing"];
-
-                $sql88="select type_of_sewing,prefix,bg_color from $brandix_bts.tbl_sewing_job_prefix where type_of_sewing=".$row31x['type_of_sewing']."";
-								$sql_result88=mysqli_query($link, $sql88) or exit("Sql Error44b $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
-									while($sql_row88=mysqli_fetch_array($sql_result88))
-									{
-										$bg_color=$sql_row88["bg_color"];
-										$prefix=$sql_row88["prefix"];
-									}
-            }
-    
-
-
-
+            $get_color = echo_title("$bai_pro3.packing_summary_input","order_col_des","order_del_no='$order_del_no' and input_job_no",$input_job_no,$link);
+            $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$order_del_no,$get_color,$input_job_no,$link);
+ 
             echo "<td>".$srno++."</td>";
             echo "<td>".$order_style_no."</td>";
             echo "<td>".$order_del_no."</td>";
-            echo "<td>$prefix"."00".$input_job_no."(".$input_job_no_random_ref.")"."</td>";
+            echo "<td>$display_prefix1"."(".$input_job_no_random_ref.")"."</td>";
             echo "<td>".$carton_act_qty."</td>";
             echo "<td>".$log_time."</td>";
         
