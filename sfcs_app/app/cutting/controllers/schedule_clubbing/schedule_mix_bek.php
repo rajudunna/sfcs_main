@@ -325,7 +325,8 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
 				{
 					$val1 = "<td>MO Not Available</td>";
 					$op_status_above=1;
-				}			
+				}
+				$tabl_name="bai_pro3.bai_orders_db";				
 				if($order_total>0 && $op_status_above==0)
                 { 
                     $sql41="select * FROM $bai_pro3.`plandoc_stat_log` where order_tid='".$order_tid."'"; 
@@ -341,8 +342,18 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
 							$sql54311="select * from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' and mo_status='N'";
 							$result4111=mysqli_query($link, $sql54311) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"])); 
 							if(mysqli_num_rows($result4111)==0 && mysqli_num_rows($result41111)>0 && mysqli_num_rows($result411112)==0) 
-							
-								echo "<td><input type=\"checkbox\" name=\"col[]\" value=\"$color\" check></td>";
+							{
+								$sql5431112="select * from $bai_pro3.bai_orders_db_confirm where order_tid='".$order_tid."'";
+								$result411112=mysqli_query($link, $sql5431112) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"]));
+								if(mysqli_num_rows($result411112)==0)
+								{
+									echo "<td><input type=\"checkbox\" name=\"col[]\" value=\"$color\" check></td>";
+								}
+								else
+								{
+									$tabl_name="bai_pro3.bai_orders_db_confirm";
+									echo "<td>Excess Updated</td>";
+								}
 							}
 							else							
 							{
@@ -407,7 +418,7 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
 					$in=0;
 					for($q2=0;$q2<sizeof($unique_sizes_explode);$q2++) 
 					{ 
-						$sql61="select sum(order_s_".$unique_sizes_explode[$q2].") as order_qty,title_size_".$unique_sizes_explode[$q2]." as size,destination from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_col_des=\"$color\" and order_del_no=\"".$schedule."\"";     
+						$sql61="select sum(order_s_".$unique_sizes_explode[$q2].") as order_qty,title_size_".$unique_sizes_explode[$q2]." as size,destination from $tabl_name where order_style_no=\"$style\" and order_col_des=\"$color\" and order_del_no=\"".$schedule."\"";     
 						$result61=mysqli_query($link, $sql61) or die("Error3 = ".$sql61.mysqli_error($GLOBALS["___mysqli_ston"])); 
 						while($row61=mysqli_fetch_array($result61)) 
 						{     
