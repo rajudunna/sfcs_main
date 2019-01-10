@@ -14,7 +14,23 @@ $add_excess_qty_to_first_sch=1; //0-Yes, 1-NO
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 
 // error_reporting(0);
 ?>
+<style>
 
+#loading-image{
+  position:fixed;
+  top:0px;
+  right:0px;
+  width:100%;
+  height:100%;
+  background-color:#666;
+  /* background-image:url('ajax-loader.gif'); */
+  background-repeat:no-repeat;
+  background-position:center;
+  z-index:10000000;
+  opacity: 0.4;
+  filter: alpha(opacity=40); /* For IE8 and earlier */
+}
+</style>
 <script> 
 
 function firstbox() 
@@ -79,6 +95,7 @@ function check_all()
 	}
 	else
 	{
+		document.getElementById("loading-image").style.display = "block";
 		return true;
 	}
 }
@@ -170,6 +187,9 @@ table{
 </head> 
 <body> 
 <!--<div id="page_heading"><span style="float"><h3>Mixed Schedule : Job Segregation Panel (PO Level)</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div> -->
+<div class="ajax-loader" id="loading-image" style="display: none">
+    <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+</div>
 <div class="panel panel-primary">
 <div class="panel-heading">Schedule Club Splitting (Color Level)</div>
 <div class="panel-body">
@@ -276,8 +296,10 @@ echo "</select></div>";
 <?php  
 if(strlen($color)>0 and $color!="NIL"){ 
     //echo '<input type="submit" name="submit" value="Segregate">'; 
-    echo "</br><div class=\"col-sm-3\"><input type=\"submit\" onclick='return check_all();' class=\" btn btn-primary
-\" value=\"Segregate\" name=\"submit\"  id=\"Segregate\" onclick=\"document.getElementById('Segregate').style.display='none'; document.getElementById('msg1').style.display='';\"/></div>"; 
+    echo "</br>
+			<div class=\"col-sm-3\">
+				<input type=\"submit\" onclick='return check_all();' class=\"btn btn-primary\" value=\"Segregate\" name=\"submit\"  id=\"Segregate\"/>
+			</div>"; 
   echo "<span id=\"msg1\" style=\"display:none;\"><h5>Please Wait data is processing...!<h5></span>"; 
 } 
 
@@ -291,7 +313,8 @@ if(strlen($color)>0 and $color!="NIL"){
 <?php 
 
 if(isset($_POST['submit'])) 
-{ 
+{
+	echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "block";</script>';
     $order_del_no=$_POST['schedule']; 
     $style=$_POST['style']; 
     $color=$_POST['color'];
@@ -903,6 +926,7 @@ if(isset($_POST['submit']))
 				// echo "</div>";	
 				if(sizeof($pending_cat_ref)>0)
 				{
+					echo '<script type="text/javascript">console.log("pops4"); document.getElementById("loading-image").style.display = "none";</script>';
 					echo " <div class='alert alert-warning alert-dismissible'> Below categories need to complete Lay plan for Full Order.<br>";
 					for($iiij=0;$iiij<sizeof($pending_cat_ref);$iiij++)
 					{
@@ -913,6 +937,7 @@ if(isset($_POST['submit']))
 				echo "<br><br>";
 				if(sizeof($pend_order)>0)
 				{
+					echo '<script type="text/javascript">console.log("pops3"); document.getElementById("loading-image").style.display = "none";</script>';
 					echo " <div class='alert alert-info alert-dismissible'> For Below categories still Lay plan not started.<br>";
 					for($iiik=0;$iiik<sizeof($pend_order);$iiik++)
 					{
@@ -939,6 +964,7 @@ if(isset($_POST['submit']))
 		// echo "</div>";	
 		if(sizeof($pending_cat_ref)>0)
 		{
+			echo '<script type="text/javascript">console.log("pops1"); document.getElementById("loading-image").style.display = "none";</script>';
 			echo " <div class='alert alert-warning alert-dismissible'> Below categories need to complete Lay plan for Full Order.<br>";
 			for($iiij=0;$iiij<sizeof($pending_cat_ref);$iiij++)
 			{
@@ -949,6 +975,7 @@ if(isset($_POST['submit']))
 		echo "<br><br>";
 		if(sizeof($pend_order)>0)
 		{
+			echo '<script type="text/javascript">console.log("pops2"); document.getElementById("loading-image").style.display = "none";</script>';
 			echo " <div class='alert alert-info alert-dismissible'> For Below categories still Lay plan not started.<br>";
 			for($iiik=0;$iiik<sizeof($pend_order);$iiik++)
 			{

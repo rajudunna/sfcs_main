@@ -88,11 +88,6 @@ function secondbox()
 		window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value
 }
 
-function thirdbox()
-{
-	window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
-	
-}
 	function check_style()
 	{
 
@@ -178,7 +173,7 @@ echo "<div class=\"col-sm-12\"><div class=\"row\"><div class=\"col-sm-3\">
 	  <label for='style'>Select Style:</label> 
 	  <select class =\"form-control\" name=\"style\" id=\"style\"  onchange=\"firstbox();\" >";
 
-$sql="select distinct order_style_no from $bai_pro3.bai_orders_db";	
+$sql="select distinct order_style_no from $bai_pro3.bai_orders_db where $order_joins_not_in";	
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
@@ -208,7 +203,7 @@ echo "<div class=\"col-sm-3\">
       <select class=\"form-control\" name=\"schedule\" id=\"schedule\"onclick=\"return check_style();\"  onchange=\"secondbox();\" >";
 $sql_result='';
 if($style){
-$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";	
+$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and $order_joins_not_in";	
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -237,10 +232,10 @@ echo "</div>";
 
 echo "<div class='col-sm-3'>
 	  <label for='color'>Select Color:</label> 
-	  <select class = \"form-control\" name=\"color\" id=\"color\" onclick=\"return check_style_sch();\"   onchange=\"thirdbox();\" >";
+	  <select class = \"form-control\" name=\"color\" id=\"color\" onclick=\"return check_style_sch();\" >";
 $sql_result='';
 if($schedule){
-$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
+$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" and $order_joins_not_in";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 }
@@ -301,34 +296,105 @@ if(isset($_POST['submit']))
 		
 	}else{
 	
-	$qry = "select count(order_del_no) from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-	$sql=mysqli_query($link,$qry);
-
-	while($row=mysqli_fetch_array($sql))
+	$qry12 = "select order_tid,order_joins,order_no from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+	//echo $qry12."<br>";
+	$sql12=mysqli_query($link,$qry12);
+	while($row12=mysqli_fetch_array($sql12))
 	{
-		$count=$row["count(order_del_no)"];
-	}
-	$qry1 = "select count(order_del_no) from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-	$sql1=mysqli_query($link,$qry1);
-	//echo $sql1;
-	//echo "<tr><th>select count(order_del_no) from $table1 where order_del_no=\"$schedule\"</th></tr></table>";
-	while($row1=mysqli_fetch_array($sql1))
-	{
-		$count1=$row1["count(order_del_no)"];
-	}
-	//echo $count1;
-	if($count1 > 0)
+		$order_tid=$row12["order_tid"];
+		$ord_joins=$row12["order_joins"];
+		$ord_no=$row12["order_no"];
+		//echo $ord_joins."<br>";
+		if($ord_joins<>'0')
+		{
+			//echo "Test===".$ord_joins."<br>";
+			if(strlen($ord_joins)<4)
+			{
+				$status_col="Color-".str_replace("J","",$ord_joins)."";
+				$sel_club="select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$status_col\"";
+				//echo $sel_club."<br>";
+				$sql_res=mysqli_query($link, $sel_club);
+				while($row = mysqli_fetch_array($sql_res))
+				{
+					$tid=$row['order_tid'];
+					$sel_check="select count(*) as cnt from $bai_pro3.cat_stat_log where order_tid='".$tid."' and category<>''";
+					//echo $sel_club."<br>";
+					$sql_check=mysqli_query($link, $sel_check);
+					if(mysqli_num_rows($sql_check)>0)
+					{	
+						while($row_check = mysqli_fetch_array($sql_check))
+						{
+							$val=$row_check['cnt'];
+						}
+					}
+					else					
+					{
+						$val=0;
+					}	
+				}	
+			}
+			else
+			{
+				$status_sch=str_replace("J","",$ord_joins);
+				$sel_club="select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$status_sch\" and order_col_des=\"$color\"";
+				$sql_res=mysqli_query($link, $sel_club);
+				//echo $sel_club."<br>";
+				while($row = mysqli_fetch_array($sql_res))
+				{
+					$tid=$row['order_tid'];
+					$sel_check="select count(*) as cnt from $bai_pro3.cat_stat_log where order_tid='".$tid."' and category<>''";
+					//echo $sel_check."<br>";
+					$sql_check=mysqli_query($link, $sel_check);
+					if(mysqli_num_rows($sql_check)>0)
+					{	
+						while($row_check = mysqli_fetch_array($sql_check))
+						{
+							$val=$row_check['cnt'];
+						}
+					}
+					else					
+					{
+						$val=0;
+					}	
+				}			
+			}			
+		}
+		else
+		{
+			$sel_club="select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+			$sql_res=mysqli_query($link, $sel_club);
+			if(mysqli_num_rows($sql_res)>0)
+			{
+				while($row = mysqli_fetch_array($sql_res))
+				{
+					$tid=$row['order_tid'];
+					$sel_check="select count(*) as cnt from $bai_pro3.cat_stat_log where order_tid='".$tid."' and category<>''";
+					$sql_check=mysqli_query($link, $sel_check);
+					if(mysqli_num_rows($sql_check)>0)
+					{	
+						while($row_check = mysqli_fetch_array($sql_check))
+						{
+							$val=$row_check['cnt'];
+						}
+					}
+					else					
+					{
+						$val=0;
+					}	
+				}
+			}
+			else
+			{
+				$val=0;
+			}	
+		}	
+	}	
+	//echo $ord_joins."----".$val."<br>";
+	//echo $ord_no."----".$val."<br>";
+	if($ord_no=='1' || $val>0)
 	{
 		echo "<div class=\"col-sm-12\"><h4 align=left style='color:red;'>
 			  <span class=\"label label-warning\">Order Quantity already Updated</span></h4></div>";
-		
-		// echo "<table class=\"table table-striped jambo_table bulk_action\">";
-		// echo "<thread><tr><th>Style</th><td>$style</td></tr></thread>";
-		// echo "<thread><tr><th>Schedule</th><td>$schedule</td></tr></thread>";
-		// echo "<thread><tr><th>Color</th><td>$color</td></tr></thread>";
-		// echo "</table><br><br><br><br>";
-		// echo "<table>";
-
 		echo "<div class=\"row\">";
 		echo "<div class=\"col-sm-4\">";
 		echo "<div class=\"col-sm-12\">";
@@ -367,301 +433,47 @@ if(isset($_POST['submit']))
 
 		while($row2=mysqli_fetch_array($sql2))
 		{			
-				$s01_old=$row2['old_order_s_s01'];
-				$s02_old=$row2['old_order_s_s02'];
-				$s03_old=$row2['old_order_s_s03'];
-				$s04_old=$row2['old_order_s_s04'];
-				$s05_old=$row2['old_order_s_s05'];
-				$s06_old=$row2['old_order_s_s06'];
-				$s07_old=$row2['old_order_s_s07'];
-				$s08_old=$row2['old_order_s_s08'];
-				$s09_old=$row2['old_order_s_s09'];
-				$s10_old=$row2['old_order_s_s10'];
-				$s11_old=$row2['old_order_s_s11'];
-				$s12_old=$row2['old_order_s_s12'];
-				$s13_old=$row2['old_order_s_s13'];
-				$s14_old=$row2['old_order_s_s14'];
-				$s15_old=$row2['old_order_s_s15'];
-				$s16_old=$row2['old_order_s_s16'];
-				$s17_old=$row2['old_order_s_s17'];
-				$s18_old=$row2['old_order_s_s18'];
-				$s19_old=$row2['old_order_s_s19'];
-				$s20_old=$row2['old_order_s_s20'];
-				$s21_old=$row2['old_order_s_s21'];
-				$s22_old=$row2['old_order_s_s22'];
-				$s23_old=$row2['old_order_s_s23'];
-				$s24_old=$row2['old_order_s_s24'];
-				$s25_old=$row2['old_order_s_s25'];
-				$s26_old=$row2['old_order_s_s26'];
-				$s27_old=$row2['old_order_s_s27'];
-				$s28_old=$row2['old_order_s_s28'];
-				$s29_old=$row2['old_order_s_s29'];
-				$s30_old=$row2['old_order_s_s30'];
-				$s31_old=$row2['old_order_s_s31'];
-				$s32_old=$row2['old_order_s_s32'];
-				$s33_old=$row2['old_order_s_s33'];
-				$s34_old=$row2['old_order_s_s34'];
-				$s35_old=$row2['old_order_s_s35'];
-				$s36_old=$row2['old_order_s_s36'];
-				$s37_old=$row2['old_order_s_s37'];
-				$s38_old=$row2['old_order_s_s38'];
-				$s39_old=$row2['old_order_s_s39'];
-				$s40_old=$row2['old_order_s_s40'];
-				$s41_old=$row2['old_order_s_s41'];
-				$s42_old=$row2['old_order_s_s42'];
-				$s43_old=$row2['old_order_s_s43'];
-				$s44_old=$row2['old_order_s_s44'];
-				$s45_old=$row2['old_order_s_s45'];
-				$s46_old=$row2['old_order_s_s46'];
-				$s47_old=$row2['old_order_s_s47'];
-				$s48_old=$row2['old_order_s_s48'];
-				$s49_old=$row2['old_order_s_s49'];
-				$s50_old=$row2['old_order_s_s50'];
-
-							
-				$s01=$row2['order_s_s01'];
-				$s02=$row2['order_s_s02'];
-				$s03=$row2['order_s_s03'];
-				$s04=$row2['order_s_s04'];
-				$s05=$row2['order_s_s05'];
-				$s06=$row2['order_s_s06'];
-				$s07=$row2['order_s_s07'];
-				$s08=$row2['order_s_s08'];
-				$s09=$row2['order_s_s09'];
-				$s10=$row2['order_s_s10'];
-				$s11=$row2['order_s_s11'];
-				$s12=$row2['order_s_s12'];
-				$s13=$row2['order_s_s13'];
-				$s14=$row2['order_s_s14'];
-				$s15=$row2['order_s_s15'];
-				$s16=$row2['order_s_s16'];
-				$s17=$row2['order_s_s17'];
-				$s18=$row2['order_s_s18'];
-				$s19=$row2['order_s_s19'];
-				$s20=$row2['order_s_s20'];
-				$s21=$row2['order_s_s21'];
-				$s22=$row2['order_s_s22'];
-				$s23=$row2['order_s_s23'];
-				$s24=$row2['order_s_s24'];
-				$s25=$row2['order_s_s25'];
-				$s26=$row2['order_s_s26'];
-				$s27=$row2['order_s_s27'];
-				$s28=$row2['order_s_s28'];
-				$s29=$row2['order_s_s29'];
-				$s30=$row2['order_s_s30'];
-				$s31=$row2['order_s_s31'];
-				$s32=$row2['order_s_s32'];
-				$s33=$row2['order_s_s33'];
-				$s34=$row2['order_s_s34'];
-				$s35=$row2['order_s_s35'];
-				$s36=$row2['order_s_s36'];
-				$s37=$row2['order_s_s37'];
-				$s38=$row2['order_s_s38'];
-				$s39=$row2['order_s_s39'];
-				$s40=$row2['order_s_s40'];
-				$s41=$row2['order_s_s41'];
-				$s42=$row2['order_s_s42'];
-				$s43=$row2['order_s_s43'];
-				$s44=$row2['order_s_s44'];
-				$s45=$row2['order_s_s45'];
-				$s46=$row2['order_s_s46'];
-				$s47=$row2['order_s_s47'];
-				$s48=$row2['order_s_s48'];
-				$s49=$row2['order_s_s49'];
-				$s50=$row2['order_s_s50'];
-
-				$size01 = $row2['title_size_s01'];
-				$size02 = $row2['title_size_s02'];
-				$size03 = $row2['title_size_s03'];
-				$size04 = $row2['title_size_s04'];
-				$size05 = $row2['title_size_s05'];
-				$size06 = $row2['title_size_s06'];
-				$size07 = $row2['title_size_s07'];
-				$size08 = $row2['title_size_s08'];
-				$size09 = $row2['title_size_s09'];
-				$size10 = $row2['title_size_s10'];
-				$size11 = $row2['title_size_s11'];
-				$size12 = $row2['title_size_s12'];
-				$size13 = $row2['title_size_s13'];
-				$size14 = $row2['title_size_s14'];
-				$size15 = $row2['title_size_s15'];
-				$size16 = $row2['title_size_s16'];
-				$size17 = $row2['title_size_s17'];
-				$size18 = $row2['title_size_s18'];
-				$size19 = $row2['title_size_s19'];
-				$size20 = $row2['title_size_s20'];
-				$size21 = $row2['title_size_s21'];
-				$size22 = $row2['title_size_s22'];
-				$size23 = $row2['title_size_s23'];
-				$size24 = $row2['title_size_s24'];
-				$size25 = $row2['title_size_s25'];
-				$size26 = $row2['title_size_s26'];
-				$size27 = $row2['title_size_s27'];
-				$size28 = $row2['title_size_s28'];
-				$size29 = $row2['title_size_s29'];
-				$size30 = $row2['title_size_s30'];
-				$size31 = $row2['title_size_s31'];
-				$size32 = $row2['title_size_s32'];
-				$size33 = $row2['title_size_s33'];
-				$size34 = $row2['title_size_s34'];
-				$size35 = $row2['title_size_s35'];
-				$size36 = $row2['title_size_s36'];
-				$size37 = $row2['title_size_s37'];
-				$size38 = $row2['title_size_s38'];
-				$size39 = $row2['title_size_s39'];
-				$size40 = $row2['title_size_s40'];
-				$size41 = $row2['title_size_s41'];
-				$size42 = $row2['title_size_s42'];
-				$size43 = $row2['title_size_s43'];
-				$size44 = $row2['title_size_s44'];
-				$size45 = $row2['title_size_s45'];
-				$size46 = $row2['title_size_s46'];
-				$size47 = $row2['title_size_s47'];
-				$size48 = $row2['title_size_s48'];
-				$size49 = $row2['title_size_s49'];
-				$size50 = $row2['title_size_s50'];
-
-				$flag = $row2['title_flag'];
-				if($flag == 0)
-				{
-					$size01 = 1; $size01 = sprintf("%02d", $size01);
-					$size02 = 2; $size02 = sprintf("%02d", $size02);
-					$size03 = 3; $size03 = sprintf("%02d", $size03);
-					$size04 = 4; $size04 = sprintf("%02d", $size04);
-					$size05 = 5; $size05 = sprintf("%02d", $size05);
-					$size06 = 6; $size06 = sprintf("%02d", $size06);
-					$size07 = 7; $size07 = sprintf("%02d", $size07);
-					$size08 = 8; $size08 = sprintf("%02d", $size08);
-					$size09 = 9; $size09 = sprintf("%02d", $size09);
-					$size10 = 10;
-					$size11 = 11;
-					$size12 = 12;
-					$size13 = 13;
-					$size14 = 14;
-					$size15 = 15;
-					$size16 = 16;
-					$size17 = 17;
-					$size18 = 18;
-					$size19 = 19;
-					$size20 = 20;
-					$size21 = 21;
-					$size22 = 22;
-					$size23 = 23;
-					$size24 = 24;
-					$size25 = 25;
-					$size26 = 26;
-					$size27 = 27;
-					$size28 = 28;
-					$size29 = 29;
-					$size30 = 30;
-					$size31 = 31;
-					$size32 = 32;
-					$size33 = 33;
-					$size34 = 34;
-					$size35 = 35;
-					$size36 = 36;
-					$size37 = 37;
-					$size38 = 38;
-					$size39 = 39;
-					$size40 = 40;
-					$size41 = 41;
-					$size42 = 42;
-					$size43 = 43;
-					$size44 = 44;
-					$size45 = 45;
-					$size46 = 46;
-					$size47 = 47;
-					$size48 = 48;
-					$size49 = 49;
-					$size50 = 50;
-				}
-		}
-		
-		$xs_dif=$xs-$xs_old;
-		$s_dif=$s-$s_old;
-		$m_dif=$m-$m_old;
-		$l_dif=$l-$l_old;
-		$xl_dif=$xl-$xl_old;
-		$xxl_dif=$xxl-$xxl_old;
-		$xxxl_dif=$xxxl-$xxxl_old;
-		
-		$s01_dif=$s01-$s01_old;
-		$s02_dif=$s02-$s02_old;
-		$s03_dif=$s03-$s03_old;
-		$s04_dif=$s04-$s04_old;
-		$s05_dif=$s05-$s05_old;
-		$s06_dif=$s06-$s06_old;
-		$s07_dif=$s07-$s07_old;
-		$s08_dif=$s08-$s08_old;
-		$s09_dif=$s09-$s09_old;
-		$s10_dif=$s10-$s10_old;
-		$s11_dif=$s11-$s11_old;
-		$s12_dif=$s12-$s12_old;
-		$s13_dif=$s13-$s13_old;
-		$s14_dif=$s14-$s14_old;
-		$s15_dif=$s15-$s15_old;
-		$s16_dif=$s16-$s16_old;
-		$s17_dif=$s17-$s17_old;
-		$s18_dif=$s18-$s18_old;
-		$s19_dif=$s19-$s19_old;
-		$s20_dif=$s20-$s20_old;
-		$s21_dif=$s21-$s21_old;
-		$s22_dif=$s22-$s22_old;
-		$s23_dif=$s23-$s23_old;
-		$s24_dif=$s24-$s24_old;
-		$s25_dif=$s25-$s25_old;
-		$s26_dif=$s26-$s26_old;
-		$s27_dif=$s27-$s27_old;
-		$s28_dif=$s28-$s28_old;
-		$s29_dif=$s29-$s29_old;
-		$s30_dif=$s30-$s30_old;
-		$s31_dif=$s31-$s31_old;
-		$s32_dif=$s32-$s32_old;
-		$s33_dif=$s33-$s33_old;
-		$s34_dif=$s34-$s34_old;
-		$s35_dif=$s35-$s35_old;
-		$s36_dif=$s36-$s36_old;
-		$s37_dif=$s37-$s37_old;
-		$s38_dif=$s38-$s38_old;
-		$s39_dif=$s39-$s39_old;
-		$s40_dif=$s40-$s40_old;
-		$s41_dif=$s41-$s41_old;
-		$s42_dif=$s42-$s42_old;
-		$s43_dif=$s43-$s43_old;
-		$s44_dif=$s44-$s44_old;
-		$s45_dif=$s45-$s45_old;
-		$s46_dif=$s46-$s46_old;
-		$s47_dif=$s47-$s47_old;
-		$s48_dif=$s48-$s48_old;
-		$s49_dif=$s49-$s49_old;
-		$s50_dif=$s50-$s50_old;	
-		
+			for($ij=0;$ij<sizeof($sizes_array);$ij++)
+			{
+				$code="";
+				$code="".$sizes_array[$ij]."_old";
+				$$code=$row2["old_order_s_".$sizes_array[$ij].""];
+				$code="";
+				$code=$sizes_array[$ij];
+				$$code=$row2["order_s_".$sizes_array[$ij].""];
+				$code="";
+				$code="size".$sizes_code[$ij]."";
+				$$code=$row2["title_size_".$sizes_array[$ij].""];
+				$code="";
+				$code="".$sizes_array[$ij]."_dif";
+				$code1="";
+				$code1="".$sizes_array[$ij]."_old";
+				$code2="";
+				$code2=$sizes_array[$ij];
+				$$code=$$code2-$$code1;
+				$code="";	
+				
+			}	
+				
+		}		
 		echo "<tbody>";
 
 		for($i = 1; $i<=50; $i++ )
 		{
 			$x=$i;
 			$i = sprintf("%02d",$x);
-			
 			if(${size.$i} != null and ${s.$i} != null and ${s.$i._old} != null)
 			{
 				echo "<tr><td><center>".${"size".$i}."</center></td><td><center>".${"s".$i}."</center></td><td><center>".${"s".$i._old}."</center></td><td><center>".${"s".$i._dif}."</center></td></tr>";
 			}
 		}
 
-		// echo "<tbody><tr><td>$size01</td><td>$s01</td><td>$s01_old</td><td>$s01_dif</td></tr><tr><td>$size02</td><td>$s02</td><td>$s02_old</td><td>$s02_dif</td></tr><tr><td>$size03</td><td>$s03</td><td>$s03_old</td><td>$s03_dif</td></tr><tr><td>$size04</td><td>$s04</td><td>$s04_old</td><td>$s04_dif</td></tr><tr><td>$size05</td><td>$s05</td><td>$s05_old</td><td>$s05_dif</td></tr><tr><td>$size06</td><td>$s06</td><td>$s06_old</td><td>$s06_dif</td></tr><tr><td>$size07</td><td>$s07</td><td>$s07_old</td><td>$s07_dif</td></tr><tr><td>$size08</td><td>$s08</td><td>$s08_old</td><td>$s08_dif</td></tr><tr><td>$size09</td><td>$s09</td><td>$s09_old</td><td>$s09_dif</td></tr><tr><td>$size10</td><td>$s10</td><td>$s10_old</td><td>$s10_dif</td></tr><tr><td>$size11</td><td>$s11</td><td>$s11_old</td><td>$s11_dif</td></tr><tr><td>$size12</td><td>$s12</td><td>$s12_old</td><td>$s12_dif</td></tr><tr><td>$size13</td><td>$s13</td><td>$s13_old</td><td>$s13_dif</td></tr><tr><td>$size14</td><td>$s14</td><td>$s14_old</td><td>$s14_dif</td></tr><tr><td>$size15</td><td>$s15</td><td>$s15_old</td><td>$s15_dif</td></tr><tr><td>$size16</td><td>$s16</td><td>$s16_old</td><td>$s16_dif</td></tr><tr><td>$size17</td><td>$s17</td><td>$s17_old</td><td>$s17_dif</td></tr><tr><td>$size18</td><td>$s18</td><td>$s18_old</td><td>$s18_dif</td></tr><tr><td>$size19</td><td>$s19</td><td>$s19_old</td><td>$s19_dif</td></tr><tr><td>$size20</td><td>$s20</td><td>$s20_old</td><td>$s20_dif</td></tr><tr><td>$size21</td><td>$s21</td><td>$s21_old</td><td>$s21_dif</td></tr><tr><td>$size22</td><td>$s22</td><td>$s22_old</td><td>$s22_dif</td></tr><tr><td>$size23</td><td>$s23</td><td>$s23_old</td><td>$s23_dif</td></tr><tr><td>$size24</td><td>$s24</td><td>$s24_old</td><td>$s24_dif</td></tr><tr><td>$size25</td><td>$s25</td><td>$s25_old</td><td>$s25_dif</td></tr><tr><td>$size26</td><td>$s26</td><td>$s26_old</td><td>$s26_dif</td></tr><tr><td>$size27</td><td>$s27</td><td>$s27_old</td><td>$s27_dif</td></tr><tr><td>$size28</td><td>$s28</td><td>$s28_old</td><td>$s28_dif</td></tr><tr><td>$size29</td><td>$s29</td><td>$s29_old</td><td>$s29_dif</td></tr><tr><td>$size30</td><td>$s30</td><td>$s30_old</td><td>$s30_dif</td></tr><tr><td>$size31</td><td>$s31</td><td>$s31_old</td><td>$s31_dif</td></tr><tr><td>$size32</td><td>$s32</td><td>$s32_old</td><td>$s32_dif</td></tr><tr><td>$size33</td><td>$s33</td><td>$s33_old</td><td>$s33_dif</td></tr><tr><td>$size34</td><td>$s34</td><td>$s34_old</td><td>$s34_dif</td></tr><tr><td>$size35</td><td>$s35</td><td>$s35_old</td><td>$s35_dif</td></tr><tr><td>$size36</td><td>$s36</td><td>$s36_old</td><td>$s36_dif</td></tr><tr><td>$size37</td><td>$s37</td><td>$s37_old</td><td>$s37_dif</td></tr><tr><td>$size38</td><td>$s38</td><td>$s38_old</td><td>$s38_dif</td></tr><tr><td>$size39</td><td>$s39</td><td>$s39_old</td><td>$s39_dif</td></tr><tr><td>$size40</td><td>$s40</td><td>$s40_old</td><td>$s40_dif</td></tr><tr><td>$size41</td><td>$s41</td><td>$s41_old</td><td>$s41_dif</td></tr><tr><td>$size42</td><td>$s42</td><td>$s42_old</td><td>$s42_dif</td></tr><tr><td>$size43</td><td>$s43</td><td>$s43_old</td><td>$s43_dif</td></tr><tr><td>$size44</td><td>$s44</td><td>$s44_old</td><td>$s44_dif</td></tr><tr><td>$size45</td><td>$s45</td><td>$s45_old</td><td>$s45_dif</td></tr><tr><td>$size46</td><td>$s46</td><td>$s46_old</td><td>$s46_dif</td></tr><tr><td>$size47</td><td>$s47</td><td>$s47_old</td><td>$s47_dif</td></tr><tr><td>$size48</td><td>$s48</td><td>$s48_old</td><td>$s48_dif</td></tr><tr><td>$size49</td><td>$s49</td><td>$s49_old</td><td>$s49_dif</td></tr><tr><td>$size50</td><td>$s50</td><td>$s50_old</td><td>$s50_dif</td></tr></tbody>";
 		
 		echo "</tbody></table></div></div><br>";
 		
 	}
 	else
 	{
-		// echo "<table class='tblheading'>";
-		// echo "<tr><th>Style</th><td>$style</td></tr>";
-		// echo "<tr><th>Schedule</th><td>$schedule</td></tr>";
-		// echo "<tr><th>Color</th><td>$color</td></tr>";
-		// echo "</table><br><br><br><br><br><br><br><br>";
-		// echo "<table>";
 		echo "<div class=\"row\">";
 		echo "<div class=\"col-sm-4\">";
 		echo "<div class=\"col-sm-12\">";
@@ -802,228 +614,38 @@ if(isset($_POST['submit']))
         // echo "</table><br><br><br><br><br><br><br><br>";
 		echo "<div class=\"col-sm-12\"><div class=\"table-responsive\"><table class=\"table table-bordered\">";
 		echo "<thead><tr class=\"info\"><th><center>Size</center></th><th><center>Current Order Quantity</center></th><th><center>Old Order Quantity</center></th><th><center>Size Excess %</center></th><th><center>New Order Quantity</center></th></tr><thead>";
-		
-		$qry4= "select * from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+		if($ord_joins=='0')
+		{
+			$qry4= "select * from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+		}
+		else
+		{
+			$qry4= "select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+		}	
 		$sql2=mysqli_query($link,$qry4);
 		//$test_qry="select * from bai_orders_db where order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-		//echo $test_qry."<br>";
+		//echo $qry4."<br>";
 		while($row2=mysqli_fetch_array($sql2))
 		{
-			$s01_old=$row2['old_order_s_s01'];
-			$s02_old=$row2['old_order_s_s02'];
-			$s03_old=$row2['old_order_s_s03'];
-			$s04_old=$row2['old_order_s_s04'];
-			$s05_old=$row2['old_order_s_s05'];
-			$s06_old=$row2['old_order_s_s06'];
-			$s07_old=$row2['old_order_s_s07'];
-			$s08_old=$row2['old_order_s_s08'];
-			$s09_old=$row2['old_order_s_s09'];
-			$s10_old=$row2['old_order_s_s10'];
-			$s11_old=$row2['old_order_s_s11'];
-			$s12_old=$row2['old_order_s_s12'];
-			$s13_old=$row2['old_order_s_s13'];
-			$s14_old=$row2['old_order_s_s14'];
-			$s15_old=$row2['old_order_s_s15'];
-			$s16_old=$row2['old_order_s_s16'];
-			$s17_old=$row2['old_order_s_s17'];
-			$s18_old=$row2['old_order_s_s18'];
-			$s19_old=$row2['old_order_s_s19'];
-			$s20_old=$row2['old_order_s_s20'];
-			$s21_old=$row2['old_order_s_s21'];
-			$s22_old=$row2['old_order_s_s22'];
-			$s23_old=$row2['old_order_s_s23'];
-			$s24_old=$row2['old_order_s_s24'];
-			$s25_old=$row2['old_order_s_s25'];
-			$s26_old=$row2['old_order_s_s26'];
-			$s27_old=$row2['old_order_s_s27'];
-			$s28_old=$row2['old_order_s_s28'];
-			$s29_old=$row2['old_order_s_s29'];
-			$s30_old=$row2['old_order_s_s30'];
-			$s31_old=$row2['old_order_s_s31'];
-			$s32_old=$row2['old_order_s_s32'];
-			$s33_old=$row2['old_order_s_s33'];
-			$s34_old=$row2['old_order_s_s34'];
-			$s35_old=$row2['old_order_s_s35'];
-			$s36_old=$row2['old_order_s_s36'];
-			$s37_old=$row2['old_order_s_s37'];
-			$s38_old=$row2['old_order_s_s38'];
-			$s39_old=$row2['old_order_s_s39'];
-			$s40_old=$row2['old_order_s_s40'];
-			$s41_old=$row2['old_order_s_s41'];
-			$s42_old=$row2['old_order_s_s42'];
-			$s43_old=$row2['old_order_s_s43'];
-			$s44_old=$row2['old_order_s_s44'];
-			$s45_old=$row2['old_order_s_s45'];
-			$s46_old=$row2['old_order_s_s46'];
-			$s47_old=$row2['old_order_s_s47'];
-			$s48_old=$row2['old_order_s_s48'];
-			$s49_old=$row2['old_order_s_s49'];
-			$s50_old=$row2['old_order_s_s50'];
-			
-			$s01=$row2['order_s_s01'];
-			$s02=$row2['order_s_s02'];
-			$s03=$row2['order_s_s03'];
-			$s04=$row2['order_s_s04'];
-			$s05=$row2['order_s_s05'];
-			$s06=$row2['order_s_s06'];
-			$s07=$row2['order_s_s07'];
-			$s08=$row2['order_s_s08'];
-			$s09=$row2['order_s_s09'];
-			$s10=$row2['order_s_s10'];
-			$s11=$row2['order_s_s11'];
-			$s12=$row2['order_s_s12'];
-			$s13=$row2['order_s_s13'];
-			$s14=$row2['order_s_s14'];
-			$s15=$row2['order_s_s15'];
-			$s16=$row2['order_s_s16'];
-			$s17=$row2['order_s_s17'];
-			$s18=$row2['order_s_s18'];
-			$s19=$row2['order_s_s19'];
-			$s20=$row2['order_s_s20'];
-			$s21=$row2['order_s_s21'];
-			$s22=$row2['order_s_s22'];
-			$s23=$row2['order_s_s23'];
-			$s24=$row2['order_s_s24'];
-			$s25=$row2['order_s_s25'];
-			$s26=$row2['order_s_s26'];
-			$s27=$row2['order_s_s27'];
-			$s28=$row2['order_s_s28'];
-			$s29=$row2['order_s_s29'];
-			$s30=$row2['order_s_s30'];
-			$s31=$row2['order_s_s31'];
-			$s32=$row2['order_s_s32'];
-			$s33=$row2['order_s_s33'];
-			$s34=$row2['order_s_s34'];
-			$s35=$row2['order_s_s35'];
-			$s36=$row2['order_s_s36'];
-			$s37=$row2['order_s_s37'];
-			$s38=$row2['order_s_s38'];
-			$s39=$row2['order_s_s39'];
-			$s40=$row2['order_s_s40'];
-			$s41=$row2['order_s_s41'];
-			$s42=$row2['order_s_s42'];
-			$s43=$row2['order_s_s43'];
-			$s44=$row2['order_s_s44'];
-			$s45=$row2['order_s_s45'];
-			$s46=$row2['order_s_s46'];
-			$s47=$row2['order_s_s47'];
-			$s48=$row2['order_s_s48'];
-			$s49=$row2['order_s_s49'];
-			$s50=$row2['order_s_s50'];
-
-
-			$size01 = $row2['title_size_s01'];
-			$size02 = $row2['title_size_s02'];
-			$size03 = $row2['title_size_s03'];
-			$size04 = $row2['title_size_s04'];
-			$size05 = $row2['title_size_s05'];
-			$size06 = $row2['title_size_s06'];
-			$size07 = $row2['title_size_s07'];
-			$size08 = $row2['title_size_s08'];
-			$size09 = $row2['title_size_s09'];
-			$size10 = $row2['title_size_s10'];
-			$size11 = $row2['title_size_s11'];
-			$size12 = $row2['title_size_s12'];
-			$size13 = $row2['title_size_s13'];
-			$size14 = $row2['title_size_s14'];
-			$size15 = $row2['title_size_s15'];
-			$size16 = $row2['title_size_s16'];
-			$size17 = $row2['title_size_s17'];
-			$size18 = $row2['title_size_s18'];
-			$size19 = $row2['title_size_s19'];
-			$size20 = $row2['title_size_s20'];
-			$size21 = $row2['title_size_s21'];
-			$size22 = $row2['title_size_s22'];
-			$size23 = $row2['title_size_s23'];
-			$size24 = $row2['title_size_s24'];
-			$size25 = $row2['title_size_s25'];
-			$size26 = $row2['title_size_s26'];
-			$size27 = $row2['title_size_s27'];
-			$size28 = $row2['title_size_s28'];
-			$size29 = $row2['title_size_s29'];
-			$size30 = $row2['title_size_s30'];
-			$size31 = $row2['title_size_s31'];
-			$size32 = $row2['title_size_s32'];
-			$size33 = $row2['title_size_s33'];
-			$size34 = $row2['title_size_s34'];
-			$size35 = $row2['title_size_s35'];
-			$size36 = $row2['title_size_s36'];
-			$size37 = $row2['title_size_s37'];
-			$size38 = $row2['title_size_s38'];
-			$size39 = $row2['title_size_s39'];
-			$size40 = $row2['title_size_s40'];
-			$size41 = $row2['title_size_s41'];
-			$size42 = $row2['title_size_s42'];
-			$size43 = $row2['title_size_s43'];
-			$size44 = $row2['title_size_s44'];
-			$size45 = $row2['title_size_s45'];
-			$size46 = $row2['title_size_s46'];
-			$size47 = $row2['title_size_s47'];
-			$size48 = $row2['title_size_s48'];
-			$size49 = $row2['title_size_s49'];
-			$size50 = $row2['title_size_s50'];
-
-				$flag = $row2['title_flag'];
-				if($flag == 0)
-				{
-					$size01 = 1; $size01 = sprintf("%02d", $size01);
-					$size02 = 2; $size02 = sprintf("%02d", $size02);
-					$size03 = 3; $size03 = sprintf("%02d", $size03);
-					$size04 = 4; $size04 = sprintf("%02d", $size04);
-					$size05 = 5; $size05 = sprintf("%02d", $size05);
-					$size06 = 6; $size06 = sprintf("%02d", $size06);
-					$size07 = 7; $size07 = sprintf("%02d", $size07);
-					$size08 = 8; $size08 = sprintf("%02d", $size08);
-					$size09 = 9; $size09 = sprintf("%02d", $size09);
-					$size10 = 10; 
-					$size11 = 11;
-					$size12 = 12;
-					$size13 = 13;
-					$size14 = 14;
-					$size15 = 15;
-					$size16 = 16;
-					$size17 = 17;
-					$size18 = 18;
-					$size19 = 19;
-					$size20 = 20;
-					$size21 = 21;
-					$size22 = 22;
-					$size23 = 23;
-					$size24 = 24;
-					$size25 = 25;
-					$size26 = 26;
-					$size27 = 27;
-					$size28 = 28;
-					$size29 = 29;
-					$size30 = 30;
-					$size31 = 31;
-					$size32 = 32;
-					$size33 = 33;
-					$size34 = 34;
-					$size35 = 35;
-					$size36 = 36;
-					$size37 = 37;
-					$size38 = 38;
-					$size39 = 39;
-					$size40 = 40;
-					$size41 = 41;
-					$size42 = 42;
-					$size43 = 43;
-					$size44 = 44;
-					$size45 = 45;
-					$size46 = 46;
-					$size47 = 47;
-					$size48 = 48;
-					$size49 = 49;
-					$size50 = 50;
-				}
-
+			for($ij=0;$ij<sizeof($sizes_array);$ij++)
+			{
+				$code="";
+				$code="".$sizes_array[$ij]."_old";
+				$$code=$row2["old_order_s_".$sizes_array[$ij].""];
+				$code="";
+				$code=$sizes_array[$ij];
+				$$code=$row2["order_s_".$sizes_array[$ij].""];
+				$code="";
+				$code="size".$sizes_code[$ij]."";
+				$$code=$row2["title_size_".$sizes_array[$ij].""];
+				$code="";					
+			}			
 		}
 		
 		echo "<input type=\"hidden\" name=\"sty\" value=\"$style\">";
 		echo "<input type=\"hidden\" name=\"sch\" value=\"$schedule\">";
 		echo "<input type=\"hidden\" name=\"col\" value=\"$color\">";
-				
+		echo "<input type=\"hidden\" name=\"order_join\" value=\"$ord_joins\">";				
 		echo "<input type=\"hidden\" name=\"s011\" value=\"$s01\">
 				<input type=\"hidden\" name=\"s021\" value=\"$s02\">
 				<input type=\"hidden\" name=\"s031\" value=\"$s03\">
@@ -1139,89 +761,32 @@ if(isset($_POST['submit']))
 					$flag = (${"s".$i} == 0)?'readonly':'';	
 					$row_count++;				
 					echo "<tr>
-							  <td><center>".${"size".$i}."</center></td>
-							 
-							  <td><center>".${"s".$i._old}."</center></td>
-							  <td><center><input type='hidden' id='temps$i'  value='".${"s".$i}."'><center>".${"s".$i}."</center></td>
-							  <td><center><input type=\"text\" style='border=\"0px\"' name=\"s".$i."ext\" value=\"0\" size=\"4\" class=\"form-control input-sm float\" 
-									  onKeyUp=\"
-												  if(event.keyCode == 9) 
-												  		return; 
-												  else if(document.f3.s".$i."ext.value.length == 0 || document.f3.s".$i."ext.value.length == '' )
-												  	 document.f3.s".$i.".value = parseInt(document.f3.s".$j.".value)+parseInt(document.f3.s".$j.".value*document.f3.ext.value/100);
-												  else
-													  document.f3.s".$i.".value = parseInt(document.f3.s".$j.".value)+parseInt(document.f3.s".$j.".value*document.f3.s".$i."ext.value/100);\"
-									  	  ></center></td>
-											<td><center><input class=\"form-control input-sm\" type=\"text\"  style='border=\"0px\"' $flag onchange=\"validate_qty(this);\" name=\"s".$i."\" id=\"s".$i."\" value=".${"s".$i}."></center></td></tr>";					//    <tr><td>$size01</td><td>$s01</td><td>$s01_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s01ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s01.value=parseInt(document.f3.s011.value)+parseInt(document.f3.s011.value*document.f3.s01ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s01\" value=\"$s01\"></td>
+				  <td><center>".${"size".$i}."</center></td>
+				 
+				  <td><center>".${"s".$i._old}."</center></td>
+				  <td><center><input type='hidden' id='temps$i'  value='".${"s".$i}."'><center>".${"s".$i}."</center></td>
+				  <td><center><input type=\"text\" style='border=\"0px\"' name=\"s".$i."ext\" value=\"0\" size=\"4\" class=\"form-control input-sm float\" 
+				  onKeyUp=\"
+				  if(event.keyCode == 9) 
+						return; 
+				  else if(document.f3.s".$i."ext.value.length == 0 || document.f3.s".$i."ext.value.length == '' )
+					 document.f3.s".$i.".value = parseInt(document.f3.s".$j.".value)+parseInt(document.f3.s".$j.".value*document.f3.ext.value/100);
+				  else
+					  document.f3.s".$i.".value = parseInt(document.f3.s".$j.".value)+parseInt(document.f3.s".$j.".value*document.f3.s".$i."ext.value/100);\"
+				  ></center></td>
+					<td><center><input class=\"form-control input-sm\" type=\"text\"  style='border=\"0px\"' $flag onchange=\"validate_qty(this);\" name=\"s".$i."\" id=\"s".$i."\" value=".${"s".$i}."></center></td></tr>";
 				}
 				$j = $j+10;
 			}				
-// echo "<tr><td>$size01</td><td>$s01</td><td>$s01_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s01ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s01.value=parseInt(document.f3.s011.value)+parseInt(document.f3.s011.value*document.f3.s01ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s01\" value=\"$s01\"></td>
-// <tr><td>$size02</td><td>$s02</td><td>$s02_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s02ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s02.value=parseInt(document.f3.s021.value)+parseInt(document.f3.s021.value*document.f3.s02ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s02\" value=\"$s02\"></td>
-// <tr><td>$size03</td><td>$s03</td><td>$s03_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s03ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s03.value=parseInt(document.f3.s031.value)+parseInt(document.f3.s031.value*document.f3.s03ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s03\" value=\"$s03\"></td>
-// <tr><td>$size04</td><td>$s04</td><td>$s04_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s04ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s04.value=parseInt(document.f3.s041.value)+parseInt(document.f3.s041.value*document.f3.s04ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s04\" value=\"$s04\"></td>
-// <tr><td>$size05</td><td>$s05</td><td>$s05_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s05ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s05.value=parseInt(document.f3.s051.value)+parseInt(document.f3.s051.value*document.f3.s05ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s05\" value=\"$s05\"></td>
-// <tr><td>$size06</td><td>$s06</td><td>$s06_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s06ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s06.value=parseInt(document.f3.s061.value)+parseInt(document.f3.s061.value*document.f3.s06ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s06\" value=\"$s06\"></td>
-// <tr><td>$size07</td><td>$s07</td><td>$s07_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s07ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s07.value=parseInt(document.f3.s071.value)+parseInt(document.f3.s071.value*document.f3.s07ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s07\" value=\"$s07\"></td>
-// <tr><td>$size08</td><td>$s08</td><td>$s08_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s08ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s08.value=parseInt(document.f3.s081.value)+parseInt(document.f3.s081.value*document.f3.s08ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s08\" value=\"$s08\"></td>
-// <tr><td>$size09</td><td>$s09</td><td>$s09_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s09ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s09.value=parseInt(document.f3.s091.value)+parseInt(document.f3.s091.value*document.f3.s09ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s09\" value=\"$s09\"></td>
-// <tr><td>$size10</td><td>$s10</td><td>$s10_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s10ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s10.value=parseInt(document.f3.s101.value)+parseInt(document.f3.s101.value*document.f3.s10ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s10\" value=\"$s10\"></td>
-// <tr><td>$size11</td><td>$s11</td><td>$s11_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s11ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s11.value=parseInt(document.f3.s111.value)+parseInt(document.f3.s111.value*document.f3.s11ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s11\" value=\"$s11\"></td>
-// <tr><td>$size12</td><td>$s12</td><td>$s12_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s12ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s12.value=parseInt(document.f3.s121.value)+parseInt(document.f3.s121.value*document.f3.s12ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s12\" value=\"$s12\"></td>
-// <tr><td>$size13</td><td>$s13</td><td>$s13_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s13ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s13.value=parseInt(document.f3.s131.value)+parseInt(document.f3.s131.value*document.f3.s13ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s13\" value=\"$s13\"></td>
-// <tr><td>$size14</td><td>$s14</td><td>$s14_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s14ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s14.value=parseInt(document.f3.s141.value)+parseInt(document.f3.s141.value*document.f3.s14ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s14\" value=\"$s14\"></td>
-// <tr><td>$size15</td><td>$s15</td><td>$s15_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s15ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s15.value=parseInt(document.f3.s151.value)+parseInt(document.f3.s151.value*document.f3.s15ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s15\" value=\"$s15\"></td>
-// <tr><td>$size16</td><td>$s16</td><td>$s16_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s16ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s16.value=parseInt(document.f3.s161.value)+parseInt(document.f3.s161.value*document.f3.s16ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s16\" value=\"$s16\"></td>
-// <tr><td>$size17</td><td>$s17</td><td>$s17_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s17ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s17.value=parseInt(document.f3.s171.value)+parseInt(document.f3.s171.value*document.f3.s17ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s17\" value=\"$s17\"></td>
-// <tr><td>$size18</td><td>$s18</td><td>$s18_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s18ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s18.value=parseInt(document.f3.s181.value)+parseInt(document.f3.s181.value*document.f3.s18ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s18\" value=\"$s18\"></td>
-// <tr><td>$size19</td><td>$s19</td><td>$s19_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s19ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s19.value=parseInt(document.f3.s191.value)+parseInt(document.f3.s191.value*document.f3.s19ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s19\" value=\"$s19\"></td>
-// <tr><td>$size20</td><td>$s20</td><td>$s20_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s20ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s20.value=parseInt(document.f3.s201.value)+parseInt(document.f3.s201.value*document.f3.s20ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s20\" value=\"$s20\"></td>
-// <tr><td>$size21</td><td>$s21</td><td>$s21_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s21ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s21.value=parseInt(document.f3.s211.value)+parseInt(document.f3.s211.value*document.f3.s21ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s21\" value=\"$s21\"></td>
-// <tr><td>$size22</td><td>$s22</td><td>$s22_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s22ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s22.value=parseInt(document.f3.s221.value)+parseInt(document.f3.s221.value*document.f3.s22ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s22\" value=\"$s22\"></td>
-// <tr><td>$size23</td><td>$s23</td><td>$s23_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s23ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s23.value=parseInt(document.f3.s231.value)+parseInt(document.f3.s231.value*document.f3.s23ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s23\" value=\"$s23\"></td>
-// <tr><td>$size24</td><td>$s24</td><td>$s24_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s24ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s24.value=parseInt(document.f3.s241.value)+parseInt(document.f3.s241.value*document.f3.s24ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s24\" value=\"$s24\"></td>
-// <tr><td>$size25</td><td>$s25</td><td>$s25_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s25ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s25.value=parseInt(document.f3.s251.value)+parseInt(document.f3.s251.value*document.f3.s25ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s25\" value=\"$s25\"></td>
-// <tr><td>$size26</td><td>$s26</td><td>$s26_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s26ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s26.value=parseInt(document.f3.s261.value)+parseInt(document.f3.s261.value*document.f3.s26ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s26\" value=\"$s26\"></td>
-// <tr><td>$size27</td><td>$s27</td><td>$s27_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s27ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s27.value=parseInt(document.f3.s271.value)+parseInt(document.f3.s271.value*document.f3.s27ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s27\" value=\"$s27\"></td>
-// <tr><td>$size28</td><td>$s28</td><td>$s28_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s28ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s28.value=parseInt(document.f3.s281.value)+parseInt(document.f3.s281.value*document.f3.s28ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s28\" value=\"$s28\"></td>
-// <tr><td>$size29</td><td>$s29</td><td>$s29_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s29ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s29.value=parseInt(document.f3.s291.value)+parseInt(document.f3.s291.value*document.f3.s29ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s29\" value=\"$s29\"></td>
-// <tr><td>$size30</td><td>$s30</td><td>$s30_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s30ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s30.value=parseInt(document.f3.s301.value)+parseInt(document.f3.s301.value*document.f3.s30ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s30\" value=\"$s30\"></td>
-// <tr><td>$size31</td><td>$s31</td><td>$s31_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s31ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s31.value=parseInt(document.f3.s311.value)+parseInt(document.f3.s311.value*document.f3.s31ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s31\" value=\"$s31\"></td>
-// <tr><td>$size32</td><td>$s32</td><td>$s32_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s32ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s32.value=parseInt(document.f3.s321.value)+parseInt(document.f3.s321.value*document.f3.s32ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s32\" value=\"$s32\"></td>
-// <tr><td>$size33</td><td>$s33</td><td>$s33_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s33ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s33.value=parseInt(document.f3.s331.value)+parseInt(document.f3.s331.value*document.f3.s33ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s33\" value=\"$s33\"></td>
-// <tr><td>$size34</td><td>$s34</td><td>$s34_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s34ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s34.value=parseInt(document.f3.s341.value)+parseInt(document.f3.s341.value*document.f3.s34ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s34\" value=\"$s34\"></td>
-// <tr><td>$size35</td><td>$s35</td><td>$s35_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s35ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s35.value=parseInt(document.f3.s351.value)+parseInt(document.f3.s351.value*document.f3.s35ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s35\" value=\"$s35\"></td>
-// <tr><td>$size36</td><td>$s36</td><td>$s36_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s36ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s36.value=parseInt(document.f3.s361.value)+parseInt(document.f3.s361.value*document.f3.s36ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s36\" value=\"$s36\"></td>
-// <tr><td>$size37</td><td>$s37</td><td>$s37_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s37ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s37.value=parseInt(document.f3.s371.value)+parseInt(document.f3.s371.value*document.f3.s37ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s37\" value=\"$s37\"></td>
-// <tr><td>$size38</td><td>$s38</td><td>$s38_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s38ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s38.value=parseInt(document.f3.s381.value)+parseInt(document.f3.s381.value*document.f3.s38ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s38\" value=\"$s38\"></td>
-// <tr><td>$size39</td><td>$s39</td><td>$s39_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s39ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s39.value=parseInt(document.f3.s391.value)+parseInt(document.f3.s391.value*document.f3.s39ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s39\" value=\"$s39\"></td>
-// <tr><td>$size40</td><td>$s40</td><td>$s40_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s40ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s40.value=parseInt(document.f3.s401.value)+parseInt(document.f3.s401.value*document.f3.s40ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s40\" value=\"$s40\"></td>
-// <tr><td>$size41</td><td>$s41</td><td>$s41_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s41ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s41.value=parseInt(document.f3.s411.value)+parseInt(document.f3.s411.value*document.f3.s41ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s41\" value=\"$s41\"></td>
-// <tr><td>$size42</td><td>$s42</td><td>$s42_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s42ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s42.value=parseInt(document.f3.s421.value)+parseInt(document.f3.s421.value*document.f3.s42ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s42\" value=\"$s42\"></td>
-// <tr><td>$size43</td><td>$s43</td><td>$s43_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s43ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s43.value=parseInt(document.f3.s431.value)+parseInt(document.f3.s431.value*document.f3.s43ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s43\" value=\"$s43\"></td>
-// <tr><td>$size44</td><td>$s44</td><td>$s44_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s44ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s44.value=parseInt(document.f3.s441.value)+parseInt(document.f3.s441.value*document.f3.s44ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s44\" value=\"$s44\"></td>
-// <tr><td>$size45</td><td>$s45</td><td>$s45_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s45ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s45.value=parseInt(document.f3.s451.value)+parseInt(document.f3.s451.value*document.f3.s45ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s45\" value=\"$s45\"></td>
-// <tr><td>$size46</td><td>$s46</td><td>$s46_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s46ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s46.value=parseInt(document.f3.s461.value)+parseInt(document.f3.s461.value*document.f3.s46ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s46\" value=\"$s46\"></td>
-// <tr><td>$size47</td><td>$s47</td><td>$s47_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s47ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s47.value=parseInt(document.f3.s471.value)+parseInt(document.f3.s471.value*document.f3.s47ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s47\" value=\"$s47\"></td>
-// <tr><td>$size48</td><td>$s48</td><td>$s48_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s48ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s48.value=parseInt(document.f3.s481.value)+parseInt(document.f3.s481.value*document.f3.s48ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s48\" value=\"$s48\"></td>
-// <tr><td>$size49</td><td>$s49</td><td>$s49_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s49ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s49.value=parseInt(document.f3.s491.value)+parseInt(document.f3.s491.value*document.f3.s49ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s49\" value=\"$s49\"></td>
-// <tr><td>$size50</td><td>$s50</td><td>$s50_old</td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s50ext\" value=\"0\" size=\"4\" onKeyUp=\"document.f3.s50.value=parseInt(document.f3.s501.value)+parseInt(document.f3.s501.value*document.f3.s50ext.value/100);\"></td><td><input type=\"textbox\" style='border=\"0px\"' name=\"s50\" value=\"$s50\"></td>";
+
 	echo "<tr><td class=\" \"></td><td class=\" \"></td><td class=\" \"></td><td class=\" \"></td><td class=\" \">
 	  <input type=\"submit\" value=\"Update\" name=\"update\" id='update_btn' class=\"btn btn-success\"></td></tr><tbody>";
 	echo "</table></div></div>";
 
-		if($row_count == 0){
-			echo "<script>document.getElementById('update_btn').disabled = true;</script>";
-		}
 	}
 }
 }
-?> 
-</form> 
-</div>
-</div>
-</div>
-<?php
+
 
 if(isset($_POST["update"]))
 {
@@ -1229,7 +794,8 @@ if(isset($_POST["update"]))
 	$sch=$_POST["sch"];
 	$col=$_POST["col"];
 	$ext=$_POST["ext"];
-	
+	$ord_joins=$_POST["order_join"];
+
 	$s01_old=$_POST["s011"];
 	$s02_old=$_POST["s021"];
 	$s03_old=$_POST["s031"];
@@ -1331,21 +897,61 @@ if(isset($_POST["update"]))
 	$s48_new=$_POST["s48"];
 	$s49_new=$_POST["s49"];
 	$s50_new=$_POST["s50"];
-
-
+	$code="";
+	for($ij=0;$ij<sizeof($sizes_array);$ij++)
+	{
+		$code_new = "".$sizes_array[$ij]."_new";
+		if($$code_new=='')
+		{
+			$$code_new=0;
+		}
+	}	
 	
-	$update="update $bai_pro3.bai_orders_db set order_no=\"1\",old_order_s_s01=\"$s01_old\",old_order_s_s02=\"$s02_old\",old_order_s_s03=\"$s03_old\",old_order_s_s04=\"$s04_old\",old_order_s_s05=\"$s05_old\",old_order_s_s06=\"$s06_old\",old_order_s_s07=\"$s07_old\",old_order_s_s08=\"$s08_old\",old_order_s_s09=\"$s09_old\",old_order_s_s10=\"$s10_old\",old_order_s_s11=\"$s11_old\",old_order_s_s12=\"$s12_old\",old_order_s_s13=\"$s13_old\",old_order_s_s14=\"$s14_old\",old_order_s_s15=\"$s15_old\",old_order_s_s16=\"$s16_old\",old_order_s_s17=\"$s17_old\",old_order_s_s18=\"$s18_old\",old_order_s_s19=\"$s19_old\",old_order_s_s20=\"$s20_old\",old_order_s_s21=\"$s21_old\",old_order_s_s22=\"$s22_old\",old_order_s_s23=\"$s23_old\",old_order_s_s24=\"$s24_old\",old_order_s_s25=\"$s25_old\",old_order_s_s26=\"$s26_old\",old_order_s_s27=\"$s27_old\",old_order_s_s28=\"$s28_old\",old_order_s_s29=\"$s29_old\",old_order_s_s30=\"$s30_old\",old_order_s_s31=\"$s31_old\",old_order_s_s32=\"$s32_old\",old_order_s_s33=\"$s33_old\",old_order_s_s34=\"$s34_old\",old_order_s_s35=\"$s35_old\",old_order_s_s36=\"$s36_old\",old_order_s_s37=\"$s37_old\",old_order_s_s38=\"$s38_old\",old_order_s_s39=\"$s39_old\",old_order_s_s40=\"$s40_old\",old_order_s_s41=\"$s41_old\",old_order_s_s42=\"$s42_old\",old_order_s_s43=\"$s43_old\",old_order_s_s44=\"$s44_old\",old_order_s_s45=\"$s45_old\",old_order_s_s46=\"$s46_old\",old_order_s_s47=\"$s47_old\",old_order_s_s48=\"$s48_old\",old_order_s_s49=\"$s49_old\",old_order_s_s50=\"$s50_old\",order_s_s01=\"$s01_new\",order_s_s02=\"$s02_new\",order_s_s03=\"$s03_new\",order_s_s04=\"$s04_new\",order_s_s05=\"$s05_new\",order_s_s06=\"$s06_new\",order_s_s07=\"$s07_new\",order_s_s08=\"$s08_new\",order_s_s09=\"$s09_new\",order_s_s10=\"$s10_new\",order_s_s11=\"$s11_new\",order_s_s12=\"$s12_new\",order_s_s13=\"$s13_new\",order_s_s14=\"$s14_new\",order_s_s15=\"$s15_new\",order_s_s16=\"$s16_new\",order_s_s17=\"$s17_new\",order_s_s18=\"$s18_new\",order_s_s19=\"$s19_new\",order_s_s20=\"$s20_new\",order_s_s21=\"$s21_new\",order_s_s22=\"$s22_new\",order_s_s23=\"$s23_new\",order_s_s24=\"$s24_new\",order_s_s25=\"$s25_new\",order_s_s26=\"$s26_new\",order_s_s27=\"$s27_new\",order_s_s28=\"$s28_new\",order_s_s29=\"$s29_new\",order_s_s30=\"$s30_new\",order_s_s31=\"$s31_new\",order_s_s32=\"$s32_new\",order_s_s33=\"$s33_new\",order_s_s34=\"$s34_new\",order_s_s35=\"$s35_new\",order_s_s36=\"$s36_new\",order_s_s37=\"$s37_new\",order_s_s38=\"$s38_new\",order_s_s39=\"$s39_new\",order_s_s40=\"$s40_new\",order_s_s41=\"$s41_new\",order_s_s42=\"$s42_new\",order_s_s43=\"$s43_new\",order_s_s44=\"$s44_new\",order_s_s45=\"$s45_new\",order_s_s46=\"$s46_new\",order_s_s47=\"$s47_new\",order_s_s48=\"$s48_new\",order_s_s49=\"$s49_new\",order_s_s50=\"$s50_new\" where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$col\"";
-// echo $update;
-	//echo "<table><tr><th>$update</th></tr></table>";
-
-    if(!mysqli_query($link, $update))
+	if($ord_joins<>'0')
 	{
-		echo "<div class=\"col-sm-12 alert-danger\"><h2><span class=\"label label-default\">Order quantities already updated!</span></h2></div>";
-	}
-	else
-	{
-		$insert="insert into $bai_pro3.bai_orders_db_confirm (select * from bai_orders_db where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$col\")";
-		// echo $insert;
+		if(strlen($ord_joins)<4)
+		{
+			$status_col="Color-".str_replace("J","",$ord_joins)."";
+			$code="";
+			for($ij=0;$ij<sizeof($sizes_array);$ij++)
+			{
+				$code_old = "".$sizes_array[$ij]."_old";
+				$code_new = "".$sizes_array[$ij]."_new";
+				$code .= "order_s_".$sizes_array[$ij]."=(order_s_".$sizes_array[$ij]."+(".$$code_new."-".$$code_old.")),";
+			}
+			$query_code= rtrim($code,',');
+			$update_club="update $bai_pro3.bai_orders_db_confirm set $query_code where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$status_col\"";
+			//echo $update_club."<br>";
+			mysqli_query($link, $update_club);
+		}
+		else
+		{
+			$status_sch=str_replace("J","",$ord_joins);
+			$code="";
+			for($ij=0;$ij<sizeof($sizes_array);$ij++)
+			{
+				$code_old = "".$sizes_array[$ij]."_old";
+				$code_new = "".$sizes_array[$ij]."_new";
+				$code .= "order_s_".$sizes_array[$ij]."=(order_s_".$sizes_array[$ij]."+(".$$code_new."-".$$code_old.")),";
+				//echo $code."<br>";
+			}
+			$query_code= rtrim($code,',');
+			$update_club="update $bai_pro3.bai_orders_db_confirm set $query_code where order_style_no=\"$sty\" and order_del_no=\"$status_sch\" and order_col_des=\"$col\"";
+			//echo $update_club."<br>";
+			mysqli_query($link, $update_club);			
+		}
+		$update1="update $bai_pro3.bai_orders_db set order_no=\"1\" where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$col\"";
+		mysqli_query($link, $update1);
+		
+		$update="update $bai_pro3.bai_orders_db_confirm set order_no=\"1\",old_order_s_s01=\"$s01_old\",old_order_s_s02=\"$s02_old\",old_order_s_s03=\"$s03_old\",old_order_s_s04=\"$s04_old\",old_order_s_s05=\"$s05_old\",old_order_s_s06=\"$s06_old\",old_order_s_s07=\"$s07_old\",old_order_s_s08=\"$s08_old\",old_order_s_s09=\"$s09_old\",old_order_s_s10=\"$s10_old\",old_order_s_s11=\"$s11_old\",old_order_s_s12=\"$s12_old\",old_order_s_s13=\"$s13_old\",old_order_s_s14=\"$s14_old\",old_order_s_s15=\"$s15_old\",old_order_s_s16=\"$s16_old\",old_order_s_s17=\"$s17_old\",old_order_s_s18=\"$s18_old\",old_order_s_s19=\"$s19_old\",old_order_s_s20=\"$s20_old\",old_order_s_s21=\"$s21_old\",old_order_s_s22=\"$s22_old\",old_order_s_s23=\"$s23_old\",old_order_s_s24=\"$s24_old\",old_order_s_s25=\"$s25_old\",old_order_s_s26=\"$s26_old\",old_order_s_s27=\"$s27_old\",old_order_s_s28=\"$s28_old\",old_order_s_s29=\"$s29_old\",old_order_s_s30=\"$s30_old\",old_order_s_s31=\"$s31_old\",old_order_s_s32=\"$s32_old\",old_order_s_s33=\"$s33_old\",old_order_s_s34=\"$s34_old\",old_order_s_s35=\"$s35_old\",old_order_s_s36=\"$s36_old\",old_order_s_s37=\"$s37_old\",old_order_s_s38=\"$s38_old\",old_order_s_s39=\"$s39_old\",old_order_s_s40=\"$s40_old\",old_order_s_s41=\"$s41_old\",old_order_s_s42=\"$s42_old\",old_order_s_s43=\"$s43_old\",old_order_s_s44=\"$s44_old\",old_order_s_s45=\"$s45_old\",old_order_s_s46=\"$s46_old\",old_order_s_s47=\"$s47_old\",old_order_s_s48=\"$s48_old\",old_order_s_s49=\"$s49_old\",old_order_s_s50=\"$s50_old\",order_s_s01=\"$s01_new\",order_s_s02=\"$s02_new\",order_s_s03=\"$s03_new\",order_s_s04=\"$s04_new\",order_s_s05=\"$s05_new\",order_s_s06=\"$s06_new\",order_s_s07=\"$s07_new\",order_s_s08=\"$s08_new\",order_s_s09=\"$s09_new\",order_s_s10=\"$s10_new\",order_s_s11=\"$s11_new\",order_s_s12=\"$s12_new\",order_s_s13=\"$s13_new\",order_s_s14=\"$s14_new\",order_s_s15=\"$s15_new\",order_s_s16=\"$s16_new\",order_s_s17=\"$s17_new\",order_s_s18=\"$s18_new\",order_s_s19=\"$s19_new\",order_s_s20=\"$s20_new\",order_s_s21=\"$s21_new\",order_s_s22=\"$s22_new\",order_s_s23=\"$s23_new\",order_s_s24=\"$s24_new\",order_s_s25=\"$s25_new\",order_s_s26=\"$s26_new\",order_s_s27=\"$s27_new\",order_s_s28=\"$s28_new\",order_s_s29=\"$s29_new\",order_s_s30=\"$s30_new\",order_s_s31=\"$s31_new\",order_s_s32=\"$s32_new\",order_s_s33=\"$s33_new\",order_s_s34=\"$s34_new\",order_s_s35=\"$s35_new\",order_s_s36=\"$s36_new\",order_s_s37=\"$s37_new\",order_s_s38=\"$s38_new\",order_s_s39=\"$s39_new\",order_s_s40=\"$s40_new\",order_s_s41=\"$s41_new\",order_s_s42=\"$s42_new\",order_s_s43=\"$s43_new\",order_s_s44=\"$s44_new\",order_s_s45=\"$s45_new\",order_s_s46=\"$s46_new\",order_s_s47=\"$s47_new\",order_s_s48=\"$s48_new\",order_s_s49=\"$s49_new\",order_s_s50=\"$s50_new\" where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$col\"";
+		//echo $update."<br>";
+		mysqli_query($link, $update);
+		$delete="DELETE FROM $bai_pro3.bai_orders_db_club_confirm where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$col\"";
+		//echo $delete."<br>";
+		mysqli_query($link, $delete);
+		$insert="insert into $bai_pro3.bai_orders_db_club_confirm (select * from bai_orders_db_confirm where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$col\")";
+		//echo $insert."<br>";
+		//die();
         if(!mysqli_query($link, $insert))
 		{
 			//echo "<div class=\"col-sm-12 alert-danger\"><h2><span>Records are not inserted Failed!</span></h2></div>";
@@ -1356,8 +962,35 @@ if(isset($_POST["update"]))
 			//echo "<div class=\"col-sm-12 alert-success\"><h2><span>Order Quantity Updated Successfully</span></h2></div>";
 			echo "<script>sweetAlert('Order Quantity Updated Successfully','','success');</script>";
 		}
-		
 	}
+	else
+	{		
+		$update="update $bai_pro3.bai_orders_db set order_no=\"1\",old_order_s_s01=\"$s01_old\",old_order_s_s02=\"$s02_old\",old_order_s_s03=\"$s03_old\",old_order_s_s04=\"$s04_old\",old_order_s_s05=\"$s05_old\",old_order_s_s06=\"$s06_old\",old_order_s_s07=\"$s07_old\",old_order_s_s08=\"$s08_old\",old_order_s_s09=\"$s09_old\",old_order_s_s10=\"$s10_old\",old_order_s_s11=\"$s11_old\",old_order_s_s12=\"$s12_old\",old_order_s_s13=\"$s13_old\",old_order_s_s14=\"$s14_old\",old_order_s_s15=\"$s15_old\",old_order_s_s16=\"$s16_old\",old_order_s_s17=\"$s17_old\",old_order_s_s18=\"$s18_old\",old_order_s_s19=\"$s19_old\",old_order_s_s20=\"$s20_old\",old_order_s_s21=\"$s21_old\",old_order_s_s22=\"$s22_old\",old_order_s_s23=\"$s23_old\",old_order_s_s24=\"$s24_old\",old_order_s_s25=\"$s25_old\",old_order_s_s26=\"$s26_old\",old_order_s_s27=\"$s27_old\",old_order_s_s28=\"$s28_old\",old_order_s_s29=\"$s29_old\",old_order_s_s30=\"$s30_old\",old_order_s_s31=\"$s31_old\",old_order_s_s32=\"$s32_old\",old_order_s_s33=\"$s33_old\",old_order_s_s34=\"$s34_old\",old_order_s_s35=\"$s35_old\",old_order_s_s36=\"$s36_old\",old_order_s_s37=\"$s37_old\",old_order_s_s38=\"$s38_old\",old_order_s_s39=\"$s39_old\",old_order_s_s40=\"$s40_old\",old_order_s_s41=\"$s41_old\",old_order_s_s42=\"$s42_old\",old_order_s_s43=\"$s43_old\",old_order_s_s44=\"$s44_old\",old_order_s_s45=\"$s45_old\",old_order_s_s46=\"$s46_old\",old_order_s_s47=\"$s47_old\",old_order_s_s48=\"$s48_old\",old_order_s_s49=\"$s49_old\",old_order_s_s50=\"$s50_old\",order_s_s01=\"$s01_new\",order_s_s02=\"$s02_new\",order_s_s03=\"$s03_new\",order_s_s04=\"$s04_new\",order_s_s05=\"$s05_new\",order_s_s06=\"$s06_new\",order_s_s07=\"$s07_new\",order_s_s08=\"$s08_new\",order_s_s09=\"$s09_new\",order_s_s10=\"$s10_new\",order_s_s11=\"$s11_new\",order_s_s12=\"$s12_new\",order_s_s13=\"$s13_new\",order_s_s14=\"$s14_new\",order_s_s15=\"$s15_new\",order_s_s16=\"$s16_new\",order_s_s17=\"$s17_new\",order_s_s18=\"$s18_new\",order_s_s19=\"$s19_new\",order_s_s20=\"$s20_new\",order_s_s21=\"$s21_new\",order_s_s22=\"$s22_new\",order_s_s23=\"$s23_new\",order_s_s24=\"$s24_new\",order_s_s25=\"$s25_new\",order_s_s26=\"$s26_new\",order_s_s27=\"$s27_new\",order_s_s28=\"$s28_new\",order_s_s29=\"$s29_new\",order_s_s30=\"$s30_new\",order_s_s31=\"$s31_new\",order_s_s32=\"$s32_new\",order_s_s33=\"$s33_new\",order_s_s34=\"$s34_new\",order_s_s35=\"$s35_new\",order_s_s36=\"$s36_new\",order_s_s37=\"$s37_new\",order_s_s38=\"$s38_new\",order_s_s39=\"$s39_new\",order_s_s40=\"$s40_new\",order_s_s41=\"$s41_new\",order_s_s42=\"$s42_new\",order_s_s43=\"$s43_new\",order_s_s44=\"$s44_new\",order_s_s45=\"$s45_new\",order_s_s46=\"$s46_new\",order_s_s47=\"$s47_new\",order_s_s48=\"$s48_new\",order_s_s49=\"$s49_new\",order_s_s50=\"$s50_new\" where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$col\"";
+		//echo $update."<br>";
+		mysqli_query($link, $update);
+		$insert="insert into $bai_pro3.bai_orders_db_confirm (select * from bai_orders_db where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$col\")";
+		//echo $insert."<br>";
+		//die();
+        if(!mysqli_query($link, $insert))
+		{
+			//echo "<div class=\"col-sm-12 alert-danger\"><h2><span>Records are not inserted Failed!</span></h2></div>";
+			echo "<script>sweetAlert('Order Quantity Update Failed','','warning');</script>";
+		}
+		else
+		{
+			//echo "<div class=\"col-sm-12 alert-success\"><h2><span>Order Quantity Updated Successfully</span></h2></div>";
+			echo "<script>sweetAlert('Order Quantity Updated Successfully','','success');</script>";
+		}
+	}   
+
+}
+
+?> 
+</form> 
+</div>
+</div>
+</div>
+<?php
 
 	
 ?>
@@ -1372,108 +1005,108 @@ if(isset($_POST["update"]))
 
 
 <?php	
-	$email_header="<html><head><style>
-		body
-		{
-			font-family: Trebuchet MS;
-			font-size: 12px;
-		}
+	// $email_header="<html><head><style>
+		// body
+		// {
+			// font-family: Trebuchet MS;
+			// font-size: 12px;
+		// }
 		
-		table
-		{
-		border-collapse:collapse;
-		white-space:nowrap;
-		tr.total
-		{
-		font-weight: bold;
-		white-space:nowrap; 
-		}
+		// table
+		// {
+		// border-collapse:collapse;
+		// white-space:nowrap;
+		// tr.total
+		// {
+		// font-weight: bold;
+		// white-space:nowrap; 
+		// }
 		
-		table
-		{
-		border-collapse:collapse;
-		white-space:nowrap;
-		font-size: 12pt; 
-		}
-		}
+		// table
+		// {
+		// border-collapse:collapse;
+		// white-space:nowrap;
+		// font-size: 12pt; 
+		// }
+		// }
 		
-		th
-		{
-			background-color: RED;
-			color: WHITE;
-		border: 1px solid #660000;
-			padding: 10px;
-		white-space:nowrap; 
+		// th
+		// {
+			// background-color: RED;
+			// color: WHITE;
+		// border: 1px solid #660000;
+			// padding: 10px;
+		// white-space:nowrap; 
 		
-		}
+		// }
 		
-		td
-		{
-			background-color: WHITE;
-			color: BLACK;
-		border: 1px solid #660000;
-			padding: 1px;
-		white-space:nowrap; 
-		}
+		// td
+		// {
+			// background-color: WHITE;
+			// color: BLACK;
+		// border: 1px solid #660000;
+			// padding: 1px;
+		// white-space:nowrap; 
+		// }
 		
-		td.date
-		{
-			background-color: WHITE;
-			color: BLACK;
-		border: 1px solid #660000;
-			padding: 5px;
-		white-space:nowrap;
-		text-align:center;
-		}
+		// td.date
+		// {
+			// background-color: WHITE;
+			// color: BLACK;
+		// border: 1px solid #660000;
+			// padding: 5px;
+		// white-space:nowrap;
+		// text-align:center;
+		// }
 		
 		
-		td.style
-		{
-			background-color: YELLOW;
-			color: BLACK;
-		border: 1px solid #660000;
-			padding: 2px;
-		white-space:nowrap; 
-		font-weight: bold;
-		}
-		</style></head><body>";
-	$email_footer="</body></html>";
+		// td.style
+		// {
+			// background-color: YELLOW;
+			// color: BLACK;
+		// border: 1px solid #660000;
+			// padding: 2px;
+		// white-space:nowrap; 
+		// font-weight: bold;
+		// }
+		// </style></head><body>";
+	// $email_footer="</body></html>";
 	
 	
-	function send_email1($from, $to, $bcc, $subject1, $message1)
-	{
-		$headers  = 'MIME-Version: 1.0' . "\r\n";
-		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-		$headers .= "From: BAI-PRO <".$from.">\r\n";
-		$headers .= "Reply-To: ".$from."\r\n";
-		$headers .= "Return-Path: ".$from."\r\n";
+	// function send_email1($from, $to, $bcc, $subject1, $message1)
+	// {
+		// $headers  = 'MIME-Version: 1.0' . "\r\n";
+		// $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+		// $headers .= "From: BAI-PRO <".$from.">\r\n";
+		// $headers .= "Reply-To: ".$from."\r\n";
+		// $headers .= "Return-Path: ".$from."\r\n";
 		//$headers .= "CC: ".$cc."\r\n"
-		$headers .= "BCC: ".$to."\r\n";
+		// $headers .= "BCC: ".$to."\r\n";
 						
-		if (mail($to,$subject1,$message1,$headers) ) 
-		{  		
-			echo "<h2 align='center'>Email Successfully sent</h2>";	
-		} 
-		else 
-	    {				
-			echo "<h2 align='center'>Email could not be sent</h2>";			
-		}									
-	}
+		// if (mail($to,$subject1,$message1,$headers) ) 
+		// {  		
+			// echo "<h2 align='center'>Email Successfully sent</h2>";	
+		// } 
+		// else 
+	    // {				
+			// echo "<h2 align='center'>Email could not be sent</h2>";			
+		// }									
+	// }
 					
-	$subject1 = $plant_alert_code."Order Quantity Amendments of $sch on ".date("Y-m-d H:i:s")."";
+	// $subject1 = $plant_alert_code."Order Quantity Amendments of $sch on ".date("Y-m-d H:i:s")."";
 																	
-	$message1 =$email_header;
+	// $message1 =$email_header;
 									
-	$message1 .= "Dear All,</BR></BR> Sunny added ".$ext."% extra quantity to $sch schedule Order Qty.<br><br> ";
+	// $message1 .= "Dear All,</BR></BR> Sunny added ".$ext."% extra quantity to $sch schedule Order Qty.<br><br> ";
 	
-	$message1 .= "<table><tr><th>Size</th><th>New Order Qty</th><th>Old Order Qty</th></tr><tr><td>XS</td><td>$xs_new</td><td>$xs_old</td></tr><tr><td>S</td><td>$s_new</td><td>$s_old</td></tr><tr><td>M</td><td>$m_new</td><td>$m_old</td><tr><td>L</td><td>$l_new</td><td>$l_old</td></tr><tr><td>XL</td><td>$xl_new</td><td>$xl_old</td></tr><tr><td>XXL</td><td>$xxl_new</td><td>$xxl_old</td></tr><tr><td>XXXL</td><td>$xxxl_new</td><td>$xxxl_old</td></tr></table>";
+	// $message1 .= "<table><tr><th>Size</th><th>New Order Qty</th><th>Old Order Qty</th></tr><tr><td>XS</td><td>$xs_new</td><td>$xs_old</td></tr><tr><td>S</td><td>$s_new</td><td>$s_old</td></tr><tr><td>M</td><td>$m_new</td><td>$m_old</td><tr><td>L</td><td>$l_new</td><td>$l_old</td></tr><tr><td>XL</td><td>$xl_new</td><td>$xl_old</td></tr><tr><td>XXL</td><td>$xxl_new</td><td>$xxl_old</td></tr><tr><td>XXXL</td><td>$xxxl_new</td><td>$xxxl_old</td></tr></table>";
 											
 	
 	
 										
-	$message1 .=$email_footer;		
+	// $message1 .=$email_footer;		
 											
-	send_email1("baiict@brandix.com",$order_quantity_mail,"",$subject1,$message1);
-}
+	// send_email1("baiict@brandix.com",$order_quantity_mail,"",$subject1,$message1);
+//}
 
 ?>
