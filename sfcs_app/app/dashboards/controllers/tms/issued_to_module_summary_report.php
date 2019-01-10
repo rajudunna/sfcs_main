@@ -37,12 +37,21 @@
             $get_color = echo_title("$bai_pro3.packing_summary_input","order_col_des","order_del_no='$order_del_no' and input_job_no",$input_job_no,$link);
             $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$order_del_no,$get_color,$input_job_no,$link);
  
+            $sql4x="SELECT date_n_time,schedule_no,style from $bai_pro3.temp_line_input_log where input_job_no='$input_job_no' and schedule_no='$order_del_no' and style='$order_style_no'";
+            $result4x=mysqli_query($link, $sql4x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($row41x=mysqli_fetch_array($result4x))
+            {
+                $date_n_time=$row41x["date_n_time"];
+            }
+
+
+
             echo "<td>".$srno++."</td>";
             echo "<td>".$order_style_no."</td>";
             echo "<td>".$order_del_no."</td>";
             echo "<td>$display_prefix1"."(".$input_job_no_random_ref.")"."</td>";
             echo "<td>".$carton_act_qty."</td>";
-            echo "<td>".$log_time."</td>";
+            echo "<td>".date("Y-m-d h:IA",strtotime($date_n_time))."</td>";
         
 		
 		 echo "</tr>";
