@@ -322,6 +322,10 @@ function ReplaceProcess($replace_id_edit)
                 {
                     $already_replaced_qty = 0;
                 }
+                if($exces_qty < 0)
+                {
+                    $exces_qty = 0;
+                }
                 $excess_table .= "<tr><td>".$input_job_no_excess."</td><td>".$excess_size_title."</td><td>$rec_qty</td><td>$already_replaced_qty</td><td id='$excess_size_title'>".$exces_qty."</td></tr>";
                 $excess_table .= "<input type='hidden' name='input_job_no_random_ref_replace[$excess_size_title]' value='$input_job_no_excess'>";
             }

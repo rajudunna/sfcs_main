@@ -251,9 +251,10 @@ function GetSelectedItem()
 			$color_codex=$row21x["color_code"];
 		}
 		if(strtolower($remarks) == 'recut')
-			$appender = chr($color_codex);
-		else
 			$appender = 'R';
+		else
+			$appender = chr($color_codex);
+			
 
 		echo "<td>".$stylex."</td>";
 		echo "<td>".$schedulex."</td>";

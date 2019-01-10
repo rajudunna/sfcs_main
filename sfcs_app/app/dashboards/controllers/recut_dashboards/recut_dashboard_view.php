@@ -330,7 +330,7 @@
                         $input_job_expo_after = explode(',',$input_job_expo);
                         foreach($input_job_expo_after as $sj)
                         {
-                            $excess_job_qry = "SELECT input_job_no_random AS input_job_no_random_ref,SUM(carton_act_qty)as excess_qty FROM `$bai_pro3`.`packing_summary_input` WHERE input_job_no_random='$sj' and size_code = '$size[$key]' AND type_of_sewing = 2";
+                            $excess_job_qry = "SELECT input_job_no_random AS input_job_no_random_ref,SUM(carton_act_qty)as excess_qty,group_concat(distinct doc_no)as doc_nos FROM `$bai_pro3`.`packing_summary_input` WHERE input_job_no_random='$sj' and size_code = '$size[$key]' AND type_of_sewing = 2";
                             $result_excess_job_qry = $link->query($excess_job_qry);
                             if($result_excess_job_qry->num_rows > 0)
                             {
@@ -338,8 +338,20 @@
                                 {
         
                                     $input_job_no_excess = $replace_row['input_job_no_random_ref'];
-                                    $exces_qty =$replace_row['excess_qty'];
+                                    $doc_nos = $replace_row['doc_nos'];
+                                    $exces_qty_org =$replace_row['excess_qty'];
                                 }
+                                $cps_qry= "select sum(remaining_qty)as remaining_qty  from $bai_pro3.cps_log where doc_no in ($doc_nos) and size_title = '$excess_size_title' and operation_code = $pre_ops_code";
+                                $result_cps_qry = $link->query($cps_qry);
+                                if($result_cps_qry->num_rows > 0)
+                                {
+                                    while($cps_row = $result_cps_qry->fetch_assoc()) 
+                                    {
+                                        $cps_row_excess = $cps_row['remaining_qty'];
+                                    }
+                
+                                }
+                                $exces_qty = min($exces_qty_org,$cps_row_excess);
                                 //checking that inputjob already scanned or not
                                 $rec_qty = 0;
                                 $already_replaced_qty = 0;
