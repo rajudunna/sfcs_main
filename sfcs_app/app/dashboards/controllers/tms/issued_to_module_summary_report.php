@@ -51,7 +51,7 @@
             echo "<td>".$order_del_no."</td>";
             echo "<td>$display_prefix1"."(".$input_job_no_random_ref.")"."</td>";
             echo "<td>".$carton_act_qty."</td>";
-            echo "<td>".date("Y-m-d h:IA",strtotime($date_n_time))."</td>";
+            echo "<td>".date("Y-m-d h:iA",strtotime($date_n_time))."</td>";
         
 		
 		 echo "</tr>";
