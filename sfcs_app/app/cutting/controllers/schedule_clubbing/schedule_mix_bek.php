@@ -336,10 +336,12 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
                         { 
                             $sql543111="select * from $bai_pro3.cat_stat_log where order_tid='".$order_tid."'";
 							$result41111=mysqli_query($link, $sql543111) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"]));
+							$sql5431112="select * from $bai_pro3.bai_orders_db_confirm where order_tid='".$order_tid."'";
+							$result411112=mysqli_query($link, $sql5431112) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"]));
 							$sql54311="select * from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' and mo_status='N'";
 							$result4111=mysqli_query($link, $sql54311) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"])); 
-							if(mysqli_num_rows($result4111)==0 && mysqli_num_rows($result41111)>0) 
-							{
+							if(mysqli_num_rows($result4111)==0 && mysqli_num_rows($result41111)>0 && mysqli_num_rows($result411112)==0) 
+							
 								echo "<td><input type=\"checkbox\" name=\"col[]\" value=\"$color\" check></td>";
 							}
 							else							
