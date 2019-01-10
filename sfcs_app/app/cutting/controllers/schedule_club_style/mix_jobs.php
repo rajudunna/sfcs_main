@@ -5,7 +5,23 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 	  
 	$view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs); 
 ?> 
+<style>
 
+#loading-image{
+  position:fixed;
+  top:0px;
+  right:0px;
+  width:100%;
+  height:100%;
+  background-color:#666;
+  /* background-image:url('ajax-loader.gif'); */
+  background-repeat:no-repeat;
+  background-position:center;
+  z-index:10000000;
+  opacity: 0.4;
+  filter: alpha(opacity=40); /* For IE8 and earlier */
+}
+</style>
 
 
 <script>
@@ -23,9 +39,28 @@
 	{
 		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
 	}
+	
+	function check_all()
+	{
+		var style=document.getElementById('style').value;
+		var sch=document.getElementById('schedule').value;
+		var color=document.getElementById('color').value;
+		if(style=='' || sch=='' || color=='')
+		{
+			sweetAlert('Please Enter style ,Schedule and Color','','warning');
+			return false;
+		}
+		else
+		{
+			document.getElementById("loading-image").style.display = "block";
+			return true;
+		}
+	}
 </script>
 
-
+<div class="ajax-loader" id="loading-image" style="display: none">
+    <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+</div>
 <div class="panel panel-primary">
 	<div class="panel-heading">Schedule Club Splitting (Schedule Level)</div>
 	<div class="panel-body">
@@ -45,7 +80,7 @@
 		}
 
 		echo "<div class='row'><div class='col-md-3'>";
-		echo "Select Style: <select name=\"style\" class=\"form-control\" onchange=\"firstbox();\" required>";
+		echo "Select Style: <select name=\"style\"  id=\"style\" class=\"form-control\" onchange=\"firstbox();\" required>";
 		//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
 		//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 		//{
@@ -72,7 +107,7 @@
 
 	<?php
 		echo"<div class='col-md-3'>";
-		echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" required>";
+		echo "Select Schedule: <select name=\"schedule\"  id=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" required>";
 
 		//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
 		//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
@@ -97,7 +132,7 @@
 		echo "</select></div>";
 
 		echo"<div class='col-md-3'>";
-		echo "Select Color: <select name=\"color\" class=\"form-control\" onchange=\"thirdbox();\" required>";
+		echo "Select Color: <select name=\"color\" class=\"form-control\"  id=\"color\" onchange=\"thirdbox();\" required>";
 		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_tid in (select order_tid from $bai_pro3.plandoc_stat_log) and order_style_no=\"$style\" and order_del_no=\"$schedule\" and $order_joins_in_1";
 		//}
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -115,8 +150,9 @@
 			}
 		}
 		echo "</select></div>		<br>";
-		echo"<div class='col-md-3'>";
-		echo "<input type=\"submit\" class='btn btn-success' value=\"Segregate\" name=\"submit\"  id=\"Segregate\" onclick='this.disabled=true; this.value='Please Wait...';' /></div>";
+		echo"<div class='col-md-3'>
+				<input type=\"submit\" onclick='return check_all();' class='btn btn-success' value=\"Segregate\" name=\"submit\"  id=\"Segregate\" />
+			</div>";
 	?>
 
 	</div>
@@ -128,6 +164,7 @@
 
 if(isset($_POST['submit']))
 {
+	echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "block";</script>';
 	$order_sch=$_POST['schedule'];
 	$orders_join='J'.$order_sch;	
     $style=$_POST['style']; 
@@ -676,6 +713,7 @@ if(isset($_POST['submit']))
 				// echo "</div>";	
 				if(sizeof($pending_cat_ref)>0)
 				{
+					echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "none";</script>';
 					echo " <div class='alert alert-warning alert-dismissible'> Below categories need to complete Lay plan for Full Order.<br>";
 					for($iiij=0;$iiij<sizeof($pending_cat_ref);$iiij++)
 					{
@@ -686,6 +724,7 @@ if(isset($_POST['submit']))
 				echo "<br><br>";
 				if(sizeof($pend_order)>0)
 				{
+					echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "none";</script>';
 					echo " <div class='alert alert-info alert-dismissible'> For Below categories still Lay plan not started.<br>";
 					for($iiik=0;$iiik<sizeof($pend_order);$iiik++)
 					{
@@ -707,6 +746,7 @@ if(isset($_POST['submit']))
 		// echo "</div>";	
 		if(sizeof($pending_cat_ref)>0)
 		{
+			echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "none";</script>';
 			echo " <div class='alert alert-warning alert-dismissible'> Below categories need to complete Lay plan for Full Order.<br>";
 			for($iiij=0;$iiij<sizeof($pending_cat_ref);$iiij++)
 			{
@@ -717,6 +757,7 @@ if(isset($_POST['submit']))
 		echo "<br><br>";
 		if(sizeof($pend_order)>0)
 		{
+			echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "none";</script>';
 			echo " <div class='alert alert-info alert-dismissible'> For Below categories still Lay plan not started.<br>";
 			for($iiik=0;$iiik<sizeof($pend_order);$iiik++)
 			{
