@@ -336,6 +336,7 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 				}
 				else
 				{
+					$tabl_name="bai_pro3.bai_orders_db_confirm";
 					echo "<td>Lay Plan Prepared</td>";
 				}
 				
