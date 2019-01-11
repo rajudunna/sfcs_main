@@ -63,7 +63,7 @@ else
 
 	$bcd_data_query .= " and operation_id in ($opertions)";
 
-	$get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions)  ";
+	$get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions) ";
 	//echo $get_ops_query;
 	$ops_query_result=$link->query($get_ops_query);
 	while ($row1 = $ops_query_result->fetch_assoc())
@@ -96,6 +96,7 @@ else
 		{
 			if(strlen($ops_get_code[$op_code]) > 0)
 				$table_data .= "<th>$ops_get_code[$op_code]</th>";
+				$table_data .= "<th>".$ops_get_code[$op_code]."(Rejection)</th>";
 		}
 		
 	    foreach ($operation_code as $op_code) 
@@ -133,8 +134,7 @@ else
 
         $get_order_qty="select sum($asum_str) as order_qty from $bai_pro3.bai_orders_db_confirm where order_style_no='$style' and order_del_no='$schedule' and order_col_des='$color' ";
 			
-        $bcd_data_query = "SELECT SUM(recevied_qty) as recevied,operation_id from $brandix_bts.bundle_creation_data 
-                           where style='$style' and schedule ='$schedule' and color='$color'";
+        $bcd_data_query = "SELECT COALESCE(SUM(recevied_qty),0) as recevied,operation_id,COALESCE(sum(rejected_qty),0) as rejection from $brandix_bts.bundle_creation_data where style='$style' and schedule ='$schedule' and color='$color'";
        // echo $get_order_qty;
         if($_GET['size'] != '')
 	    {
@@ -159,7 +159,8 @@ else
 	    //echo $bcd_data_query.'<br/>';
 	    while ($row3 = $bcd_get_result->fetch_assoc())
 	    {
-		    $bcd_rec[$row3['operation_id']] = $row3['recevied'];
+			$bcd_rec[$row3['operation_id']] = $row3['recevied'];
+			$bcd_rej[$row3['operation_id']] = $row3['rejection'];
 	    }
 
 
@@ -171,7 +172,8 @@ else
 	    {
 	    	$cpk_qty = $row3['carton_qty'];
 	    }
-	    $bcd_rec[200] = $cpk_qty;
+		$bcd_rec[200] = $cpk_qty;
+		$bcd_rej[200] = 0;
 	    //echo $cpk_qty;
 
 	    $counter++;
@@ -186,10 +188,9 @@ else
 	    foreach ($operation_code as $key => $value) 
 	    {
 	    	if(strlen($ops_get_code[$value]) > 0){
-		    	if($bcd_rec[$value] == '')
-		    		$table_data .= "<td>0</td>";
-		    	else	
+		    		
 				   $table_data .= "<td>".$bcd_rec[$value]."</td>";
+				   $table_data .= "<td>".$bcd_rej[$value]."</td>";
 			}
 		} 
         
@@ -200,12 +201,11 @@ else
 
 	    	if($value == 15)
 	    	{
-                $wip[$value] = $order_qty - $bcd_rec[$value];
+                $wip[$value] = $order_qty -($bcd_rec[$value]+$bcd_rej[$value]);
 	    	}
 	    	else
 	    	{	
-                $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master 
-                                where style='$style' and color = '$color' and operation_code='$value'";
+                $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code='$value'";
                 //echo $ops_seq_check;
 				$result_ops_seq_check = $link->query($ops_seq_check);
 				while($row = $result_ops_seq_check->fetch_assoc()) 
@@ -223,10 +223,10 @@ else
                 if($value == 200)
                 {
                 	//echo $pre_op_code;
-                	$diff= $bcd_rec[$pre_op_code] - $bcd_rec[$value];
+                	$diff= $bcd_rec[$pre_op_code] - ($bcd_rec[$value]+$bcd_rej[$value]);
                 }else
                 {
-                  $diff= $bcd_rec[$pre_op_code] - $bcd_rec[$value];
+                  $diff= $bcd_rec[$pre_op_code] - ($bcd_rec[$value]+$bcd_rej[$value]);
                 }
                 if($diff < 0)
                 	$diff = 0;
