@@ -312,19 +312,24 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
 					$op_status_above=1;
 				}
 				$compare = array_diff($array1,$array2);
-				if(sizeof($compare) > 0)
+				if($op_status_above==0)
 				{
-					$val1 = "<td>Ops codes not match</td>";
-					$op_status_above=1;
+					if(sizeof($compare) > 0)
+					{
+						$val1 = "<td>Ops codes not match</td>";
+						$op_status_above=1;
+					}
 				}
-
 				$mo_query = "SELECT * from $bai_pro3.mo_details where schedule='$schedule' and 
 							color='$color'  and style='$style' limit 1";
 				$mo_result = mysqli_query($link,$mo_query);	
-				if(!mysqli_num_rows($mo_result) > 0)
+				if($op_status_above==0)
 				{
-					$val1 = "<td>MO Not Available</td>";
-					$op_status_above=1;
+					if(!mysqli_num_rows($mo_result) > 0)
+					{
+						$val1 = "<td>MO Not Available</td>";
+						$op_status_above=1;
+					}
 				}
 				$tabl_name="bai_pro3.bai_orders_db";				
 				if($order_total>0 && $op_status_above==0)
@@ -372,7 +377,17 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
                         } 
                         else 
                         { 
-                            echo "<td>Color-".$order_joins."</td>"; 
+                            $tabl_name="bai_pro3.bai_orders_db_confirm";
+							$sql5431112="select * from $bai_pro3.bai_orders_db_confirm where order_tid='".$order_tid."' and order_no=1";
+							$result411112=mysqli_query($link, $sql5431112) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"]));
+							if(mysqli_num_rows($result411112)==0)
+							{
+								echo "<td>Color-".$order_joins."</td>";
+							}
+							else
+							{							
+								echo "<td>Excess Updated-(Color-".substr($order_joins,1).")</td>";
+							}							 
                         } 
                     } 
                     else 

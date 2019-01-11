@@ -237,19 +237,24 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 				$op_status_above=1;
 			}
 			$compare = array_diff($array1,$array2);
-			if(sizeof($compare) > 0)
+			if($op_status_above==0)
 			{
-				$val1 = "<td>Ops codes not match</td>";
-				$op_status_above=1;
+				if(sizeof($compare) > 0)
+				{
+					$val1 = "<td>Ops codes not match</td>";
+					$op_status_above=1;
+				}
 			}
-
 			$mo_query = "SELECT * from $bai_pro3.mo_details where schedule='$schedule' and 
 						color='$color'  and style='$style' limit 1";
 			$mo_result = mysqli_query($link,$mo_query);	
-			if(!mysqli_num_rows($mo_result) > 0)
+			if($op_status_above==0)
 			{
-				$val1 = "<td>MO Not Available</td>";
-				$op_status_above=1;
+				if(!mysqli_num_rows($mo_result) > 0)
+				{
+					$val1 = "<td>MO Not Available</td>";
+					$op_status_above=1;
+				}
 			}
 			$tabl_name="bai_pro3.bai_orders_db";			
 			if($order_total>0 && $op_status_above==0)
@@ -295,7 +300,17 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 					}
 					else
 					{
-						echo "<td>".substr($order_joins,1)."</td>";
+						$tabl_name="bai_pro3.bai_orders_db_confirm";
+						$sql5431112="select * from $bai_pro3.bai_orders_db_confirm where order_tid='".$order_tid."' and order_no=1";
+						$result411112=mysqli_query($link, $sql5431112) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"]));
+						if(mysqli_num_rows($result411112)==0)
+						{
+							echo "<td>".substr($order_joins,1)."</td>";
+						}
+						else
+						{							
+							echo "<td>Excess Updated-(".substr($order_joins,1).")</td>";
+						}
 					}
 				}
 				else
@@ -456,10 +471,14 @@ if(isset($_POST['fix']))
 	$po=$_POST['po'];
 
 	//Generarting new schedule number for schedule clubbing style
-	$scheduleno_sql = "SELECT order_joins FROM bai_pro3.bai_orders_db_confirm WHERE LENGTH(order_joins)>7";
-	$scheduleno_sql_result =mysqli_query($link, $scheduleno_sql);
-	$num_sql_rows = mysqli_num_rows($scheduleno_sql_result);
-	$new_sch=date("ymd").str_pad($num_sql_rows, 4, '0', STR_PAD_LEFT)+1;
+	$val_exist_club=0;
+	$scheduleno_sql1 = "SELECT MAX(order_del_no) AS sch FROM $bai_pro3.bai_orders_db_confirm WHERE $order_joins_in and order_del_no like  \"%".date("ymd")."%\"";
+	$scheduleno_sql_result1 =mysqli_query($link, $scheduleno_sql1);
+	while($row123=mysqli_fetch_array($scheduleno_sql_result1))
+	{
+		$val_exist_club = ((substr($row123["sch"], 6))+2);
+	}
+	$new_sch=date("ymd").str_pad($val_exist_club, 5, '0', STR_PAD_LEFT);
 	
 	$size_array1=array();
 	$orginal_size_array1=array();
