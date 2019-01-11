@@ -300,7 +300,17 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 					}
 					else
 					{
-						echo "<td>".substr($order_joins,1)."</td>";
+						$tabl_name="bai_pro3.bai_orders_db_confirm";
+						$sql5431112="select * from $bai_pro3.bai_orders_db_confirm where order_tid='".$order_tid."' and order_no=1";
+						$result411112=mysqli_query($link, $sql5431112) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"]));
+						if(mysqli_num_rows($result411112)==0)
+						{
+							echo "<td>".substr($order_joins,1)."</td>";
+						}
+						else
+						{							
+							echo "<td>Excess Updated-(".substr($order_joins,1).")</td>";
+						}
 					}
 				}
 				else
