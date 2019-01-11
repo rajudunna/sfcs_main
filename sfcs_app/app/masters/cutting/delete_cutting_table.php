@@ -11,22 +11,33 @@ if (!$conn) {
 }
 if($tbl_id!=''){
 	$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
-	echo"<script>setTimeout(function () { 
-		swal({
-		  title: 'Are you sure?',
-		  text: 'Your will not be able to recover this Record!',
-		  type: 'warning',
-		  confirmButtonText: 'OK'
-		},
-		function(isConfirm){
-		  if (isConfirm) {
-			window.location.href = \"$url\";
-		  }
-		}); }, 100);</script>";
+	// echo"<script>setTimeout(function () { 
+	// 	swal({
+	// 	  title: 'Are you sure?',
+	// 	  text: 'Your will not be able to recover this Record!',
+	// 	  type: 'warning',
+	// 	  confirmButtonText: 'OK'
+	// 	},
+	// 	function(isConfirm){
+	// 	  if (isConfirm) {
+	// 		window.location.href = \"$url\";
+	// 	  }
+	// 	}); }, 100);</script>";
 $delete="delete from $bai_pro3.`tbl_cutting_table` where tbl_id='$tbl_id'";
 //echo $delete;
 if (mysqli_query($conn, $delete)) {
-			
+	echo"<script>setTimeout(function () { 
+		swal({
+			title: 'Deleted successfully.',
+			type: 'success',
+			confirmButtonText: 'OK'
+		},
+		function(isConfirm){
+			if (isConfirm) {
+			window.location.href = \"$url\";
+			}
+		}); }, 100);</script>";
+	echo "<script>window.location.href = \"$url\"</script>";
 		} else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}

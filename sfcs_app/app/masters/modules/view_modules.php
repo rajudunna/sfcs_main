@@ -21,12 +21,12 @@
 		<tr>
 		<th>S.No</th>
 		<th>Module Name</th>
-        <th>Module Color</th>
-        <th>Module Label</th>
 		<th>Section Name</th>
 		<th>Block Priorities</th>		
 		<th>Module Description</th>		
 		<th>Mapped Cut Table</th>
+        <th>Module Color</th>
+		<th>Module Label</th>
 		<th>Mini Plant</th>
 		<th>Status</th>
 		<th> Edit / Delete </th>
@@ -56,11 +56,12 @@
 			$mapped_cut_table=$row["mapped_cut_table"];
 			$block_priorities=$row["block_priorities"];
 			$mini_plant=$row["mini_plant_id"];
+			$mini_plant_name = $row["mini_plant_name"];
 			if ($mapped_cut_table == '' or $mapped_cut_table == NULL)
 			{
 				$mapped_cut_table = ' - ';
 			}
-			if ($row["mini_plant_name"] == null || $row["mini_plant_name"] == '')
+			if ($mini_plant_name == null || $mini_plant_name == '')
 			{
 				$mini_plant_name = " - ";
 			}
@@ -68,12 +69,12 @@
 			echo "<tr>
 			<td>".$sno++."</td>
 			<td>".$row["module_name"]."</td>
-            <td>".$row["color"]."</td>
-            <td>".$row["label"]."</td>
 			<td>".$section_display_name."</td>
 			<td>".$block_priorities."</td>
-			<td>".$row["module_description"]."</td>
-			<td>".$mapped_cut_table."</td>
+            <td>".$row["module_description"]."</td>
+            <td>".$mapped_cut_table."</td>
+            <td>".$row["color"]."</td>
+            <td>".$row["label"]."</td>
 			<td>".$mini_plant_name."</td>
 			<td>".$row["status"]." </td>
 			<td><a href='$url&rowid=$rowid&module_name=$module_name&section=$section&status=$status&module_description=$module_description&block_priorities=$block_priorities&mini_plant=$mini_plant&mapped_cut_table=$mapped_cut_table&module_color=$color&module_label=$label' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid&module_name=$module_name&section=$section' class='btn btn-danger btn-xs editor_remove' onclick='return confirm_delete(event,this);'>Delete</a></td>
@@ -92,6 +93,25 @@
 $(document).ready(function() {
     $('#module_master').DataTable();
 } );
+function confirm_delete(e,t)
+    {
+        e.preventDefault();
+        var v = sweetAlert({
+        title: "Are you sure to Delete the Record?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+        }).then(function(isConfirm){
+        if (isConfirm) {
+        window.location = $(t).attr('href');
+        return true;
+        } else {
+        sweetAlert("Request Cancelled",'','error');
+        return false;
+        }
+        });
+    }
 </script>
 <style>
 table th

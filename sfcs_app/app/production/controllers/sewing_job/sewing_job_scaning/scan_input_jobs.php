@@ -422,7 +422,10 @@ $(document).ready(function()
 										}
 										if(response['emb_cut_check_flag'] && data[i].balance_to_report == 0)
 										{
-											status = '<font color="red">Cut Quantity not done</font>';
+											if(response['is_emb_flag'] == '1')
+												status = '<font color="red">Embelishment not done</font>';
+											else
+												status = '<font color="red">Cut Quantity not done</font>';
 										}
 										if(data[i].send_qty != 0)
 										{

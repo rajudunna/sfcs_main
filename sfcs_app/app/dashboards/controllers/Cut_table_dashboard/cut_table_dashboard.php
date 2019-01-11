@@ -578,34 +578,34 @@ window.onload = sivamtime;
 //By Maximus (maximus@nsimail.com) w/ mods by DynamicDrive
 //For full source code, visit http://www.dynamicdrive.com
 
-var message="Function Disabled!";
+//var message="Function Disabled!";
 
 ///////////////////////////////////
-function clickIE4(){
-if (event.button==2){
-sweetAlert("Info!", message, "warning");
-return false;
-}
-}
+// function clickIE4(){
+// if (event.button==2){
+// sweetAlert("Info!", message, "warning");
+// return false;
+// }
+// }
 
-function clickNS4(e){
-if (document.layers||document.getElementById&&!document.all){
-if (e.which==2||e.which==3){
-sweetAlert("Info!", message, "warning");
-return false;
-}
-}
-}
+// function clickNS4(e){
+// if (document.layers||document.getElementById&&!document.all){
+// if (e.which==2||e.which==3){
+// sweetAlert("Info!", message, "warning");
+// return false;
+// }
+// }
+// }
 
-if (document.layers){
-document.captureEvents(Event.MOUSEDOWN);
-document.onmousedown=clickNS4;
-}
-else if (document.all&&!document.getElementById){
-document.onmousedown=clickIE4;
-}
+// if (document.layers){
+// document.captureEvents(Event.MOUSEDOWN);
+// document.onmousedown=clickNS4;
+// }
+// else if (document.all&&!document.getElementById){
+// document.onmousedown=clickIE4;
+// }
 
-document.oncontextmenu=new Function("sweetAlert('Info!', message, 'warning');return false")
+// document.oncontextmenu=new Function("sweetAlert('Info!', message, 'warning');return false")
 
 // --> 
 </script>
@@ -762,8 +762,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
    
   // start style wise display by dharani 10-26-2013 
-  
-    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).")) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")";
+  //$sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).")) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")";
+  $sql1="SELECT c.print_status,c.plan_lot_ref,c.bundle_location,c.fabric_status_new,c.doc_no,
+  c.cutting_tbl_id,c.priority,c.act_cut_status,c.rm_date,c.cut_inp_temp,c.order_tid,c.fabric_status,
+  c.color_code,c.clubbing,c.order_style_no,c.order_div,c.order_col_des,c.acutno,c.ft_status,c.st_status,c.pt_status,
+  c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,f.doc_ref,f.req_time FROM bai_pro3.cut_tbl_dash_doc_summ c  LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN (".implode(",",$doc_no_ref).") and c.act_cut_status<>'DONE' AND c.fabric_status_new !='5' order by f.req_time asc";
   
       //echo $_GET["view_div"];
       if($_GET["view_div"] == 'M')
@@ -774,7 +777,12 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     
        if($_GET["view_div"]=="ALL" or $_GET["view_div"]=="")
       {
-        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).")) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")";
+       // $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).")) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")";
+       $sql1="SELECT c.print_status,c.plan_lot_ref,c.bundle_location,c.fabric_status_new,c.doc_no,
+       c.cutting_tbl_id,c.priority,c.act_cut_status,c.rm_date,c.cut_inp_temp,c.order_tid,c.fabric_status,
+       c.color_code,c.clubbing,c.order_style_no,c.order_div,c.order_col_des,c.acutno,c.ft_status,c.st_status,c.pt_status,
+       c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,f.doc_ref,f.req_time FROM bai_pro3.cut_tbl_dash_doc_summ c  LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN (".implode(",",$doc_no_ref).") and c.act_cut_status<>'DONE' AND c.fabric_status_new !='5' order by f.req_time asc";
+
       }
       else
       {
@@ -789,10 +797,15 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $buyer_identity = $row_res['buyer_name'];
         }
           
-        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).")) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")"; 
+       // $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).")) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")"; 
+
+       $sql1="SELECT c.print_status,c.plan_lot_ref,c.bundle_location,c.fabric_status_new,c.doc_no,
+       c.cutting_tbl_id,c.priority,c.act_cut_status,c.rm_date,c.cut_inp_temp,c.order_tid,c.fabric_status,
+       c.color_code,c.clubbing,c.order_style_no,c.order_div,c.order_col_des,c.acutno,c.ft_status,c.st_status,c.pt_status,
+       c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,b.order_style_no,b.order_div,f.doc_ref,f.req_time FROM bai_pro3.cut_tbl_dash_doc_summ c LEFT JOIN bai_pro3.bai_orders_db_confirm b ON b.order_style_no
+       =c.order_style_no LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN(".implode(",",$doc_no_ref).") and b.order_div=".'"'.$buyer_identity.'"'." AND c.act_cut_status<>'DONE' AND c.fabric_status_new !='5' order by f.req_time asc";
         
       }
-      
   // close style wise display 
     //NEw check
     $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -809,6 +822,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $doc_no=$sql_row1['doc_no'];
       $order_tid=$sql_row1['order_tid'];
       $ord_style=$sql_row1['order_style_no'];
+      $req_time=date("M-d h:ia",strtotime($sql_row1['req_time']));
+		  $req_date_time=$sql_row1['req_time'];
       //$fabric_status=$sql_row1['fabric_status'];
       $plan_lot_ref_v1=$sql_row1['plan_lot_ref'];
       
@@ -855,15 +870,15 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       {
         $cut_wip_control=7000;
       }
-       $sql10="select doc_ref,req_time from $bai_pro3.fabric_priorities where doc_ref ='$doc_no'";
-		$result21=mysqli_query($link, $sql10) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+    //    $sql10="select doc_ref,req_time from $bai_pro3.fabric_priorities where doc_ref ='$doc_no'";
+		// $result21=mysqli_query($link, $sql10) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		 
-		while($row21=mysqli_fetch_array($result21))
-		{
-		  $req_time=date("M-d h:ia",strtotime($row21['req_time']));
-		  $req_date_time=$row21['req_time'];
+		// while($row21=mysqli_fetch_array($result21))
+		// {
+		//   $req_time=date("M-d h:ia",strtotime($row21['req_time']));
+		//   $req_date_time=$row21['req_time'];
 		  
-		}
+		// }
       
       
       $sql11="select sum(ims_pro_qty) as 'bac_qty', sum(emb) as 'emb_sum' from (SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as 'emb' FROM $bai_pro3.ims_log where ims_log.ims_doc_no=$doc_no UNION ALL SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as 'emb' FROM $bai_pro3.ims_log_backup WHERE ims_log_backup.ims_mod_no<>0 and ims_log_backup.ims_doc_no=$doc_no) as t";

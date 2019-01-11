@@ -357,6 +357,7 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 {
 	$mklength=$sql_row2['mklength'];
 	$mk_remarks=$sql_row2['remarks'];
+	$patt_ver=$sql_row2['mk_ver'];
 }
 	$sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_id." and doc_type=\"normal\"";
  //echo $sql;
@@ -2023,34 +2024,34 @@ function printpr()
 //By Maximus (maximus@nsimail.com) w/ mods by DynamicDrive
 //For full source code, visit http://www.dynamicdrive.com
 
-var message="Function Disabled!";
+//var message="Function Disabled!";
 
 ///////////////////////////////////
-function clickIE4(){
-if (event.button==2){
-alert(message);
-return false;
-}
-}
+// function clickIE4(){
+// if (event.button==2){
+// alert(message);
+// return false;
+// }
+// }
 
-function clickNS4(e){
-if (document.layers||document.getElementById&&!document.all){
-if (e.which==2||e.which==3){
-alert(message);
-return false;
-}
-}
-}
+// function clickNS4(e){
+// if (document.layers||document.getElementById&&!document.all){
+// if (e.which==2||e.which==3){
+// alert(message);
+// return false;
+// }
+// }
+// }
 
-if (document.layers){
-document.captureEvents(Event.MOUSEDOWN);
-document.onmousedown=clickNS4;
-}
-else if (document.all&&!document.getElementById){
-document.onmousedown=clickIE4;
-}
+// if (document.layers){
+// document.captureEvents(Event.MOUSEDOWN);
+// document.onmousedown=clickNS4;
+// }
+// else if (document.all&&!document.getElementById){
+// document.onmousedown=clickIE4;
+// }
 
-document.oncontextmenu=new Function("alert(message);return false")
+// document.oncontextmenu=new Function("alert(message);return false")
 
 // --> 
 </script>
@@ -2367,8 +2368,10 @@ tags will be replaced.-->
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Binding Cons.</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:90pt'>Fab. Requirement for lay</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:90pt'>Fab. Requirement for Binding</td>
-  <td rowspan=2 class=xl1144118 width=67 style='border-bottom:.5pt solid black;  width:70pt'>Act. Width</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Total Fab. Requirement</td>
+  <td rowspan=2 class=xl1144118 width=67 style='border-bottom:.5pt solid black;  width:70pt'>Act. Width</td>
+  <td rowspan=2 class=xl1144118 width=67 style='border-bottom:.5pt solid black;  width:70pt'>Revised Marker Length</td>
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Revised Total Fab. Requirement</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Issued Qty (Yds)</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Return Qty (Yds)</td>
 
@@ -2392,8 +2395,10 @@ tags will be replaced.-->
   <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $binding_con; ?></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_lay = $purlength*(1+$cuttable_wastage)*$plies; echo round($fab_lay,2).'<br/>('.$fab_uom.')';?></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_bind = $binding_con*$plies*$a_ratio_tot; echo round($fab_bind,2).'<br/>('.$fab_uom.')'; ?></td>
-  <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $actwidth; ?></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo round($fab_bind+$fab_lay,2).'<br/>('.$fab_uom.')'; ?></td>
+  <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $actwidth; ?></td> 
+  <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $act_mk_length; ?></td>
+  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_revised_lay = $act_mk_length*(1+$cuttable_wastage)*$plies; echo round($fab_revised_lay+$fab_bind,2).'<br/>('.$fab_uom.')';?></td>
 <!--<td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php //if(substr($style,0,1)=="M") 
 { $extra=round((($act_mk_length*$plies)*$savings),2); }  echo round((($act_mk_length*$plies)+$extra+$bind_con),2); //Extra 1% added to avoid cad saving manual mrn claims. ?></td>-->
@@ -2444,7 +2449,7 @@ tags will be replaced.-->
   <td rowspan="2" colspan="11" class=xl764118 style='border-bottom:.5pt solid black;' >Inspection Comments:
   
   <?php
-  $sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='normal'  group by roll_id";
+  $sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='normal'  group by roll_id order by batch_no,ref4 asc";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))

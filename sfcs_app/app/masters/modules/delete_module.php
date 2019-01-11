@@ -48,7 +48,6 @@ if($rowcount11>0 or 	$rowcount12>0 or 	$rowcount13>0){
 			echo"<script>setTimeout(function () { 
 				swal({
 				  title: 'Module Already in Production',
-				  text: 'Message!',
 				  type: 'warning',
 				  confirmButtonText: 'OK'
 				},
@@ -83,6 +82,17 @@ if($rowcount==0 or $rowcount==''){
       $total_modules1=$row['module_concat'];
        $delete5 = "update $bai_pro3.sections_db set sec_id='$section',sec_head='$section',sec_mods='$total_modules1' where sec_head='$section'"; 
 	   if (mysqli_query($conn, $delete5)) {
+			echo"<script>setTimeout(function () { 
+				swal({
+					title: 'Deleted successfully.',
+					type: 'success',
+					confirmButtonText: 'OK'
+				},
+				function(isConfirm){
+					if (isConfirm) {
+					window.location.href = \"$url\";
+					}
+				}); }, 100);</script>";
 			//header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw');
 		} else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);

@@ -9,28 +9,24 @@ Add columns in that table like start time and end time
 //$authorised_access=user_acl("SFCS_0063",$username,7,$group_id_sfcs); //2
 ?>
 
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'/styles/dropdowntabs.js',1,'R');?>"></script>
-<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'/styles/ddcolortabs.css',1,'R');?>" type="text/css" media="all" />
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/css/styles/dropdowntabs.js',3,'R');?>"></script>
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/styles/ddcolortabs.css',3,'R');?>" type="text/css" media="all" />
 	
 <!-- <meta http-equiv="cache-control" content="no-cache"> -->
-<!-- <style type="text/css" media="screen">
+ <style type="text/css" media="screen">
 /*====================================================
 	- HTML Table Filter stylesheet
 =====================================================*/
-@import "../TableFilter_EN/filtergrid.css";
+
 
 /*====================================================
 	- General html elements
 =====================================================*/
-body{
-	margin:15px; padding:15px; border:1px solid #666;
-	font-family:Trebuchet MS, sans-serif; font-size:88%;
-}
 h2{ margin-top: 50px; }
 caption{ margin:10px 0 0 5px; padding:10px; text-align:left; }
 pre{ font-size:13px; margin:5px; padding:5px; background-color:#f4f4f4; border:1px solid #ccc;  }
 .mytable{
-	width:100%; font-size:12px;
+	width:110%; font-size:12px;
 	border:1px solid #ccc;
 }
 div.tools{ margin:5px; }
@@ -38,9 +34,9 @@ div.tools input{ background-color:#f4f4f4; border:2px outset #f4f4f4; margin:2px
 th{ background-color:#003366; color:#FFF; padding:2px; border:1px solid #ccc; }
 td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 table{	background-color: white;}
-</style> -->
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'/TableFilter_EN/actb.js',1,'R');?>"></script>
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'/TableFilter_EN/tablefilter.js',1,'R');?>"></script>
+</style> 
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R');?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R');?>"></script>
 
 <Link rel='alternate' media='print' href=null>
 <Script Language=JavaScript>
@@ -83,14 +79,14 @@ else
 }
 
 echo '<div class="table-responsive">
-<table id="table1" class="table table-bordered">';
+<table id="table1" class="mytable table-bordered">';
 
 
 
 
 
 echo "<tr style='background-color:#337ab7;color:white;'>
-<th style='text-align:center;'>Date</th>	<th style='text-align:center;'>Section</th>	<th style='text-align:center;'>Shift</th>	<th style='text-align:center;'>Line</th>	<th style='text-align:center;'>Customer</th>	<th style='text-align:center;'>Style</th>	<th style='text-align:center;'>Sch no</th><th style='text-align:center;'>From</th><th style='text-align:center;'>To</th>	<th style='text-align:center;'>Hours open</th>	<th style='text-align:center;'>Department</th>	<th style='text-align:center;'>Reason</th>	<th style='text-align:center;'>Source</th>	<th style='text-align:center;'>Plan Eff%</th><th style='text-align:center;'>SAH Loss</th><th style='text-align:center;'> Lost Pieces </th><th colspan=2 style='text-align:center;'>Controls</th></tr>";
+<th style='text-align:center;'>Date</th>	<th style='text-align:center;'>Section</th>	<th style='text-align:center;'>Shift</th>	<th style='text-align:center;'>Line</th>	<th style='text-align:center;'>Customer</th>	<th style='text-align:center;'>Style</th>	<th style='text-align:center;'>Sch no</th><th style='text-align:center;'>From</th><th style='text-align:center;'>To</th>	<th style='text-align:center;'>Hours open</th>	<th style='text-align:center;'>Department</th>	<th style='text-align:center;'>Reason</th>	<th style='text-align:center;'>Source</th>	<th style='text-align:center;'>Plan Eff%</th><th style='text-align:center;'>SAH Loss</th><th style='text-align:center;'> Lost Pieces </th><th style='text-align:center;'>Controls</th></tr>";
 
 
 $sql="select * from $bai_pro.down_log where month(date)=month(\"$date\") and year(date)=year(\"$date\") order by date, shift, mod_no*1";
@@ -149,28 +145,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$dep_name=$sql_row1['dep_name'];
 	}
-	
-	/*$remarks1=$sql_row['remarks1'];
-	$remarks1_explode=explode("^",$remarks1);
-	$starttime_explode=explode(":",$remarks1_explode[2]);
-	$endtime_explode=explode(":",$remarks1_explode[3]);
-	if($starttime_explode[0] <13)
-	{
-		echo "<td>".$remarks1_explode[2]."AM</td>";
-	}
-	else
-	{
-		echo "<td>".$remarks1_explode[2]."PM</td>";
-	}
-	
-	if($endtime_explode[0] <13)
-	{
-		echo "<td>".$remarks1_explode[3]."AM</td>";
-	}
-	else
-	{
-		echo "<td>".$remarks1_explode[3]."PM</td>";
-	}*/
 	
 	$start_time=$sql_row['start_time'];
 	$end_time=$sql_row['end_time'];
@@ -241,18 +215,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					{
 					echo "<td>".$plan_eff."%</td>";
 					}
-		/*}
-
-		else
-		{
-			$sql2="select * from $bai_pro.pro_plan where date=\"$date\" and mod_no=\"$module\" and shift=\"$shift\"";
-			$sql_result2=mysql_query($sql2,$link) or die("Sql Error = ".mysql_error());
-			while($sql_row2=mysql_fetch_array($sql_result2))
-			{
-				$plan_eff=$sql_row2["plan_eff"];
-				echo "<td>".$sql_row2["plan_eff"]."%</td>";
-			}
-		}*/
 	}
 	else
 	{
@@ -337,10 +299,19 @@ echo "</table>";
 </div>
 
 <script language="javascript" type="text/javascript">
-//<![CDATA[
-var MyTableFilter = {  exact_match: false }
-	setFilterGrid( "table1", MyTableFilter );
-//]]>
+	var table3Filters = {
+	sort_select: true,
+	display_all_text: "Display all",
+	loader: true,
+	loader_text: "Filtering data...",
+	sort_select: true,
+	exact_match: false,
+	alternate_rows: true,  
+    col_width:30,//prevents column width variations  
+	rows_counter: true,
+	btn_reset: true
+	}
+	setFilterGrid("table1",table3Filters);
 </script>
 
 
