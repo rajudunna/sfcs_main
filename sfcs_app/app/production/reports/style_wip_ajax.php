@@ -87,7 +87,7 @@ else
 
     $table_data .="
 	   <th rowspan=2>Order Qty</th>
-	   <th colspan = $col_span style=text-align:center>Operation Reported Qty</th>
+	   <th colspan = ".($col_span*2)." style=text-align:center>Operation Reported Qty</th>
 	   <th colspan = $col_span style=text-align:center>Wip</th>
 	</tr>
 	<tr>";
@@ -95,8 +95,8 @@ else
 		foreach ($operation_code as $op_code) 
 		{
 			if(strlen($ops_get_code[$op_code]) > 0)
-				$table_data .= "<th>$ops_get_code[$op_code]</th>";
-				$table_data .= "<th>".$ops_get_code[$op_code]."(Rejection)</th>";
+			$table_data .= "<th>".$ops_get_code[$op_code]."<br>(Good)</th>";
+			$table_data .= "<th>".$ops_get_code[$op_code]."<br>(Rejection)</th>";
 		}
 		
 	    foreach ($operation_code as $op_code) 
