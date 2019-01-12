@@ -3,7 +3,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11; IE=9; IE=8; IE=7; IE=6; IE=5; IE=EDGE" />
 <?php
     $url = include(getFullURLLevel($_GET['r'],'/common/config/config.php',4,'R'));
-    include(getFullURLLevel($_GET['r'],'functions.php',0,'R'));
+    // include(getFullURLLevel($_GET['r'],'functions.php',0,'R'));
+    include(getFullURLLevel($_GET['r'],'/common/config/m3Updations.php',4,'R'));
 ?>
 <style>
             /* #loading-image {
@@ -48,7 +49,7 @@
                         <input type="text" class='integer form-control' id="plies" name="plies" size=5 required>
                     </div><br/>
                     <div class="col-md-3">
-                        <input type="submit" id="delete_reversal_docket" class="btn btn-danger" name="formSubmit" value="Delete">
+                        <input type="submit" id="delete_reversal_docket" class="btn btn-danger confirm-submit" name="formSubmit" value="Delete">
                     </div>
                     <img id="loading-image" class=""/>  
                 </div>
@@ -64,6 +65,15 @@ if(isset($_POST['formSubmit']))
     $plies_post = $_POST['plies'];
     $does_docket_exists_flag= '';
     $update_plan_doc_stat_flag = 0;
+    $op_code = 15;
+
+    //Cehecking for the clubbing dockets
+    $check_club_docket_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log 
+            where doc_no = $docket_number_post and org_doc_no >=1 ";
+    if(mysqli_num_rows(mysqli_query($link,$check_club_docket_query)) > 0){
+        echo "<script>swal('You Cannot Reverse a Clubbed Docket','','error')</script>";        
+        exit();
+    }
     $get_operation_code_qry = "SELECT * FROM $brandix_bts.tbl_style_ops_master WHERE style=(SELECT order_style_no FROM $bai_pro3.bai_orders_db WHERE order_tid IN (SELECT order_tid FROM bai_pro3.plandoc_stat_log WHERE doc_no=$docket_number_post)) AND color=(SELECT order_col_des FROM $bai_pro3.bai_orders_db WHERE order_tid IN (SELECT order_tid FROM bai_pro3.plandoc_stat_log WHERE doc_no=$docket_number_post)) AND operation_code > 15 LIMIT 1";
     $get_operation_code_qry_result = mysqli_query($link,$get_operation_code_qry) or exit(" Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
     if(mysqli_num_rows($get_operation_code_qry_result)>0)
@@ -166,7 +176,6 @@ if(isset($_POST['formSubmit']))
                         // echo $update_qry_bcd.'<br/>';
                         $update_qry_bcd_result = mysqli_query($link,$update_qry_bcd) or exit(" Error48".mysqli_error ($GLOBALS["___mysqli_ston"]));
                         $update_plan_doc_stat_flag = 1;
-                        $updation_m3 = updateM3TransactionsReversal($ref_no,$value,$pre_ops_code);
                     }
                     if($emb_check_flag == 1)
                     {
@@ -184,6 +193,7 @@ if(isset($_POST['formSubmit']))
                     $docket_log= "insert into $brandix_bts.reversal_docket_log(docket_number,bundle_number,operation_id,size_title,cutting_reversal,act_cut_status)values(".$docket_number_post.",".$ref_no.",".$pre_ops_code.",'".$key."',".$value.",'Reversal')";
                     // echo $docket_log.'<br/>';
                     $docket_log_res = mysqli_query($link,$docket_log) or exit(" Error77".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                    $updation_m3 = updateM3TransactionsReversal($ref_no,$value,$op_code);
                 }
                 if($update_plan_doc_stat_flag==1){
                     $cut_status_qry = "SELECT * from $bai_pro3.plandoc_stat_log where doc_no=$docket_number_post";
@@ -195,13 +205,17 @@ if(isset($_POST['formSubmit']))
                             $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post,act_cut_status='' WHERE doc_no=$docket_number_post";
                             // echo $update_plies_qry.'<br/><br/>';
                             $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error41".mysqli_error ($GLOBALS["___mysqli_ston"]));
-                            echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');</script>";
+                            $url = '?r='.$_GET['r'];
+                            echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');window.location = '".$url."'</script>";
                         }
                         else {
                             $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post,act_cut_status='DONE' WHERE doc_no=$docket_number_post";
                             // echo $update_plies_qry.'<br/><br/>';
                             $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error42".mysqli_error ($GLOBALS["___mysqli_ston"]));
-                            echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');</script>";
+                            $url = '?r='.$_GET['r'];
+                            echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');window.location = '".$url."'</script>";
+                           
+                          
                         }
                     }
                     

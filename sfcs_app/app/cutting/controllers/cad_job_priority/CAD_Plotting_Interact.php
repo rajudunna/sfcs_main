@@ -120,7 +120,7 @@ if(isset($_POST['submit']))
 	}
 	else
 	{
-		$mk_ref=$_POST['mk_ref'];
+	$mk_ref=$_POST['mk_ref'];
 	$doc_ref=$_POST['doc_ref'];
 	$p_width=$_POST['p_width'];
 	$cat_ref=$_POST['cat_ref'];
@@ -407,7 +407,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		}
 		else
 		{
-			if($min_width!=$purwidth  and $fabric_status==5 and ($category!="Binding Secondary" and $category!="Body Binding" and $category!="Binding" and $category!="Gusset"))
+			if($min_width!=$purwidth  and ($fabric_status==1 or $fabric_status==5) and ($category!="Binding Secondary" and $category!="Body Binding" and $category!="Binding" and $category!="Gusset"))
 			{
 				echo $tab;
 				$url = getFullURL($_GET['r'],'cad_plotting_interact.php','N');

@@ -356,10 +356,6 @@ if(isset($_POST['submit']))
 			unset($act_s);
 		}
 		?>
-		
-				<div class="row">
-						<h4>RMS Request Report</h4>
-				</div>
 
 				<div class='col-sm-12' style='text-align: left';>
 						<div class="col-sm-3" >
@@ -466,9 +462,9 @@ if(isset($_POST['submit']))
 							<th>Section</th>
 							<th>Shift</th>
 							<th>Input Stats</th>
-							<th>Input <span style='mso-spacerun:yes'></span>Date</th>
+							<th>Input <span style='mso-spacerun:yes'></span>Date(Minimum Date)</th>
 							<th>Module<span style='mso-spacerun:yes'></span></th>
-							<th>Shift</th>
+							<!--<th>Shift</th> -->
 						</tr>
 				<?php
 					
@@ -483,7 +479,7 @@ if(isset($_POST['submit']))
 						
 						$act_total=array_sum($act_s);
 						$cut_status=$sql_row1['act_cut_status'];
-						$input_status=$sql_row1['act_cut_issue_status'];
+						// $input_status=$sql_row1['act_cut_issue_status'];
 						$doc_date=$sql_row1['date'];
 						
 							$cut_date="";
@@ -508,16 +504,62 @@ if(isset($_POST['submit']))
 							$input_date="";
 							$input_module="";
 							$input_shift="";
+<<<<<<< HEAD
 						
 						$sql="select date,mod_no,shift from $bai_pro3.act_cut_issue_status where doc_no=$act_doc_no";
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_num_check=mysqli_num_rows($sql_result);
 						while($sql_row=mysqli_fetch_array($sql_result))
+=======
+							$input_reported_qty=0;
+						// $sql="select * from $bai_pro3.act_cut_issue_status where doc_no=$act_doc_no";						
+						// $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						// $sql_num_check=mysqli_num_rows($sql_result);
+						// while($sql_row=mysqli_fetch_array($sql_result))
+						// {
+						// 	$input_date=$sql_row['date'];
+						// 	$input_module=$sql_row['mod_no'];
+						// 	$input_shift=$sql_row['shift'];
+						// }	
+
+						$sql_ims_log="SELECT min(ims_date) as ims_date,COALESCE(SUM(ims_qty),0) as qty,group_concat(distinct ims_mod_no ORDER BY ims_mod_no) as mod_no from  $bai_pro3.ims_combine where ims_doc_no=$act_doc_no";
+						$sql_result_ims_log=mysqli_query($link, $sql_ims_log) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row_ims_log=mysqli_fetch_array($sql_result_ims_log))
+>>>>>>> production
 						{
-							$input_date=$sql_row['date'];
-							$input_module=$sql_row['mod_no'];
-							$input_shift=$sql_row['shift'];
-						}	
+							$input_date=$sql_row_ims_log['ims_date'];
+							$input_module=$sql_row_ims_log['mod_no'];
+							$input_reported_qty=$sql_row_ims_log['qty'];
+						}
+
+						if($act_total > 0)
+						{
+							if($input_reported_qty>0)
+							{								
+								if($act_total>$input_reported_qty)
+								{
+									$input_status="Partially Reported";	
+								}
+								else if($act_total<=$input_reported_qty)
+								{
+									$input_status="Fully Reported";		
+								}
+								else
+								{
+									$input_status="Not Yet Reported";	
+								}
+							}
+							else
+							{
+								$input_status="Not Yet Reported";
+							}
+							
+						}
+						else
+						{
+							$input_status="Not Yet Reported";
+						}
+
 						if($input_date!="")
 						{
 							$input_qty_total=$input_qty_total+$act_total;
@@ -540,7 +582,7 @@ if(isset($_POST['submit']))
 					echo "<td>$input_status</td>";
 					echo "<td>$input_date</td>";
 					echo "<td>$input_module</td>";
-					echo "<td>$input_shift</td>";
+					// echo "<td>$input_shift</td>";
 					echo "</tr>";
 					
 					}

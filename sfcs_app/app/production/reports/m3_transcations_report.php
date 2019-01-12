@@ -109,12 +109,14 @@
                     
                     if ($res['api_type'] == 'fg') {
                         $api_type = '<span class="badge progress-bar-warning">FG</span>';
-                    } else {
+                    } else if ($res['api_type'] == 'opn') {
                         $api_type = '<span class="badge progress-bar-info">Operation</span>';
+                    } else {
+                        $api_type = '<span class="badge progress-bar-danger">No API Type Available for this Record</span>';
                     }
                     
                     if($reason=='fail'){
-                        $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`transactions_log` WHERE transaction_id=".$res['id']))['response_message'] ?? 'fail with no reason.';
+                        $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`transactions_log` WHERE transaction_id=".$res['id']." order by sno desc limit 1"))['response_message'] ?? 'fail with no reason.';
                         $reason = '<label class="label label-danger">'.$ndr."</label>";
                     }else{
                         $reason = "<label class='label label-success'>".$reason."</label>";
@@ -157,7 +159,7 @@
     </div>
     <?php 
     echo "<script>
-    var table6_Props = 	{
+    var table6_Props =  {
         rows_counter: true,
         btn_reset: true,
         btn_reset_text: 'Clear',
