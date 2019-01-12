@@ -682,7 +682,7 @@ function calculateJobsCount($module,$order_div_ref)
 {
 	global $link;
 	$ijs_query  = "SELECT count(*) as jobs FROM $bai_pro3.plan_dashboard_input LEFT JOIN $bai_pro3.plan_doc_summ_input 
-	ON input_job_no_random=input_job_no_random_ref input_trims_status=4 AND input_module=$module $order_div_ref";
+	ON input_job_no_random=input_job_no_random_ref where input_trims_status=4 AND input_module=$module $order_div_ref";
 	$ijs_result = mysqli_query($link,$ijs_query);
 	while($row = mysqli_fetch_array($ijs_result)){
 		$jobs = $row['jobs'];
