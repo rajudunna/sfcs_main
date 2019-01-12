@@ -522,6 +522,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	}
 	else {
 		 $order_div_ref='';
+		 $buyer_division_ref='';
 	}	
 	$wip=array();
 	$sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1";
@@ -575,15 +576,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			 if (window.focus) {Popup.focus()} return false;\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
 			$y=0;
 
-
 			$show_block = calculateJobsCount($table_name,$module,$order_div_ref);
 			if($show_block > 0){
-				echo "<div style='float:left;'>
-								<div  class='gloss-pink' style='float:left;'>
-									<div>
-										<b>$show_block</b>
-									</div>
-								</div>
+				echo "<div style='float:left;'>		    
+										<a href=\"../".getFullURL($_GET['r'],'issued_to_module_summary_report.php','R')."?jobno=$input_job_no&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/issued_to_module_summary_report.php?jobno=$input_job_no&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><div  class='gloss-pink' style='float:left;'><b>$show_block</b></div></a>
+											
 							</div>";
 			}
 
