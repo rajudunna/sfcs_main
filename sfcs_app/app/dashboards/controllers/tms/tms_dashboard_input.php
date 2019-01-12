@@ -586,7 +586,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				}				
 				$input_job_no_random_ref=$row["input_job_no_random_ref"];
 				$input_trims_status=$row["input_trims_status"];
-				$sql2="SELECT min(st_status) as st_status,order_style_no,order_del_no,input_job_no FROM $bai_pro3.plan_doc_summ_input WHERE ".$order_div_ref." input_job_no_random='$input_job_no_random_ref'";	
+				$sql2="SELECT min(st_status) as st_status,order_style_no,order_del_no,input_job_no,order_col_des FROM $bai_pro3.plan_doc_summ_input WHERE ".$order_div_ref." input_job_no_random='$input_job_no_random_ref'";	
 				$result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($result2)>0)
 				{
@@ -594,6 +594,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					{
 						$trims_status=$row2['st_status'];
 						$style=$row2['order_style_no'];
+						$order_col_des=$row2['order_col_des'];
 						$schedule=$row2['order_del_no'];
 						$input_job_no=$row2['input_job_no'];
 					}									
@@ -628,9 +629,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							$id="red";
 						}
 					}
-					$get_type = echo_title("$bai_pro3.pac_stat_log_input_job","type_of_sewing","input_job_no_random",$input_job_no_random_ref,$link);
-					$display_prefix1 = echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","type_of_sewing",$get_type,$link);
-					$title=str_pad("Style:".$style,80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Job_No:".$display_prefix1.$input_job_no,80);
+					 $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$order_col_des,$input_job_no,$link);
+					$title=str_pad("Style:".$style,80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Job_No:".$display_prefix1,80);
 					if(in_array($authorized,$has_permission))
 					{
 						echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter</font></a></div></div></div>";
