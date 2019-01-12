@@ -899,7 +899,6 @@ function validation(id)
 			echo "<script>window.location = '".$url."'</script>";
 		}
 	}
-}
 ?>
 	
 <script type="text/javascript">
