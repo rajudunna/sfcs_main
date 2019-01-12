@@ -321,9 +321,6 @@
 					{
 						$count = 0;
 						echo "<br><div class='col-md-12'>
-								<marquee behavior='alternate'>
-									<font style='color:red; font-weight: bold;'>Excess Sewing Jobs will be Prepared in the First Sewing Job Generation</font>
-								</marquee><br><br>
 								<table class=\"table table-bordered\">
 									<tr class=\"info\">
 										<th>S.No</th>
