@@ -51,10 +51,11 @@
 		{
 			$size=$row1["ref_size_name"];
 			$color=$row1["color"];
-			// $ex_cut_status=$row1['exces_from'];
-			$ex_cut_status = echo_title("$bai_pro3.excess_cuts_log","excess_cut_qty","schedule_no='".$schedule."' AND color",$color,$link);
 			$style = $row1["style"];
 			$schedule = $row1["schedule"];
+			// $ex_cut_status=$row1['exces_from'];
+			$ex_cut_status = echo_title("$bai_pro3.excess_cuts_log","excess_cut_qty","schedule_no='".$schedule."' AND color",$color,$link);
+			$order_tid = echo_title("$bai_pro3.bai_orders_db_confirm","order_tid","order_style_no = '".$style."' and order_del_no='".$schedule."' AND order_col_des",$color,$link);
 			$sno = 1;
 			$order_size_quantity="SELECT COALESCE(SUM(order_sizes.order_quantity),0) AS orderQuantity,sizes.size_name,order_sizes.size_title FROM $brandix_bts.tbl_orders_master as orders	LEFT JOIN $brandix_bts.tbl_orders_sizes_master AS order_sizes ON orders.id=order_sizes.parent_id LEFT JOIN $brandix_bts.tbl_orders_size_ref AS sizes ON sizes.id=order_sizes.ref_size_name where orders.product_schedule='$schedule' and order_sizes.ref_size_name='$size' and order_sizes.order_col_des='$color'";
 			$result22=mysqli_query($link, $order_size_quantity) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -64,7 +65,6 @@
 				$size_code=strtolower($row22['size_name']);
 				$size_tit=strtoupper($row22['size_title']);
 			}
-			$order_tid=$style.$schedule.$color;
 			$sql2="SELECT cut_master.cat_ref FROM $brandix_bts.tbl_cut_master AS cut_master LEFT JOIN $brandix_bts.tbl_cut_size_master AS cut_sizes ON cut_master.id=cut_sizes.parent_id WHERE cut_master.style_id='".$style_id."' AND cut_master.product_schedule='".$schedule."' AND cut_sizes.color='".$color."' AND cut_sizes.ref_size_name='".$size."' GROUP BY cut_master.cat_ref limit 1";
 			$result12=mysqli_query($link, $sql2) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($rw=mysqli_fetch_array($result12))

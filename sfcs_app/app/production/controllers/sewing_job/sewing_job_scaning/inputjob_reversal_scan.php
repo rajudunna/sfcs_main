@@ -31,6 +31,9 @@
 		<div class="panel-heading">Sewing Jobs Reversal Scanning</div>
 		<div class='panel-body'>
 			<style>
+				table, th, td {
+					text-align: center;
+				}
 				#loading-image{
 					position:fixed;
 					top:0px;
@@ -158,9 +161,8 @@
                                 $('select[name="operation"]').append('<option value="'+ key +'">'+ value +'</option>');
                             }
 						});
-					}				
+					}
 				}
-				
 			});
 		});
 		$('#operation').change(function()
@@ -169,143 +171,152 @@
 			var ops = $('#operation').val();
 			var job_no = $('#job_number').val();
 			var remarks = $('#sampling option:selected').text();
-			var data_rev = [ops,job_no,remarks];
-            var module1 = $('#module').val();
-            if (module1 == 0)
-            {
-                sweetAlert('Please Select Module','','warning');
-                $('#operation option').prop('selected', function() {
-                    return this.defaultSelected;
-                });
+			var module1 = $('#module').val();
+			if (module1 == 0)
+			{
 				$('#loading-image').hide();
-                $('#dynamic_table1').html('No Data Found');
-            }
-            else if (ops == 0)
-            {
-                sweetAlert('Please Select Valid Operation','','warning');
+				sweetAlert('Please Select Module','','warning');
+				$('#operation option').prop('selected', function() {
+					return this.defaultSelected;
+				});
+				$('#dynamic_table1').html('No Data Found');
+			}
+			else if (ops == 0)
+			{
 				$('#loading-image').hide();
-                $('#dynamic_table1').html('No Data Found');
-            }
-            else
-            {
-                var module_flag = null;	var restrict_msg = '';
-                var pre_array_module = [module1,job_no,ops,'reversal'];
-                $.ajax({
-                    type: "POST",
-                    url: function_text+"?pre_array_module="+pre_array_module,
-                    dataType: "json",
-                    success: function (response) 
-                    {
-                        if (response == 4)
-                        {
-                            module_flag = 1; // block
-                            restrict_msg = 'No Module Assigned';
-                        }
-                        else if (response == 3)
-                        {
-                            module_flag = 1; // block
-                            restrict_msg = 'No Valid Block Priorities';
-                        }
-                        else if (response == 2)
-                        {
-                            var authorize_check = $('#user_permission').val();
-                            if (authorize_check == 'authorized')
-                            {
-                                module_flag = 0; // allow
-                            }
-                            else
-                            {
-                                module_flag = 1; // block
-                                restrict_msg = 'You are Not Authorized to report more than Block Priorities';
-                            }
-                        }
-                        else if (response == 0)
-                        {
-                            module_flag = 0; // allow
-                        }
-                        if(module_flag == 0)
-                        {
-                            var data_rev = [ops,job_no,remarks,module1];
-                            $.ajax({
-                                type: "POST",
-                                url: function_text+"?data_rev="+data_rev,
-                                dataType: "json",
-                                success: function (response) 
-                                {
-                                    $('#loading-image').hide();
-                                    $('#dynamic_table1').html('');
-                                    console.log(response);
-                                    var data = response['table_data'];
-                                    var check_flag = 0;
-                                    if(response['post_ops'])
-                                    {
-                                        var post_ops_data = response['post_ops'];
-                                        //var send_qty = response['send_qty'];
-                                        if (response['carton_ready_qty'])
-                                        {
-                                            var post_rec_qtys_array123 = response['carton_ready_qty'];
-                                            var check_flag = 2;
-                                        }
-                                        else
-                                        {
-                                            if(response['rec_qtys'])
-                                            {
-                                                var post_rec_qtys_array = response['rec_qtys'];
-                                                var check_flag = 1;
-                                            }
-                                        }						
-					  
-                                        for(var ops=0;ops<post_ops_data.length;ops++)
-                                        {
-                                            var mark1 = "<input type='hidden' name='post_ops[]' value='"+response['post_ops'][ops]+"'>";
-                                            $("#dynamic_table1").append(mark1);
-                                        }
-                                    }
-                                    if(response['ops_dep'])
-                                    {
-                                        var mark3="<input type='hidden' name='ops_dep' value='"+response['ops_dep']+"'>";
-                                        $("#dynamic_table1").append(mark3);
-                                    }
-                                    var send_qty = response['send_qty'];
-                                    if(response['status'])
-                                    {
-                                        sweetAlert('',response['status'],'error');
-                                        $('#dynamic_table1').html('No Data Found');
-                                    }
-                                    else if(data)
-                                    {
-                                        var s_no=0;
-                                        var btn = '<div class="pull-right"><input type="submit" class="btn btn-primary disable-btn smartbtn submission" value="Submit" name="formSubmit" id="smartbtn" onclick="validating();"></div>';
-                                        $("#dynamic_table1").append(btn);
-                                        var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr><th>S.No</th><th class='none'>Doc.No</th><th>Color</th><th>Module</th><th>Size</th><th>Sewing Job Qty</th><th>Reported Quantity</th><th>Eligible to reverse</th><th>Reversing Quantity</th></tr></thead><tbody>";
-                                        $("#dynamic_table1").append(markup);
-                                        $("#dynamic_table1").append(btn);
-                                        for(var i=0;i<data.length;i++)
-                                        {
-                                            if (check_flag == 2)
-                                            {
-                                                var post_rec_qtys = Number(post_rec_qtys_array123[i]);
-                                                // console.log('in carton_array = '+post_rec_qtys);
-                                            }
-                                            else
-                                            {
-                                                if(check_flag == 0)
-                                                {
-                                                    var post_rec_qtys = data[i].reported_qty;
-                                                }
-                                                else
-                                                {
-                                                    var post_rec_qtys = Number(data[i].reported_qty) - Number(post_rec_qtys_array[i]);
-                                                }
-                                            }
-                                                
-                                            s_no++;
-                                            var markup1 = "<tr><input type='hidden' name='doc_no[]' value='"+data[i].doc_no+"'><input type='hidden' name='operation_id' value='"+data[i].operation_id+"'><input type='hidden' name='remarks' value='"+data[i].remarks+"'><input type='hidden' name='mapped_color' value='"+data[i].mapped_color+"'><input type='hidden' name='size[]' value='"+data[i].size_code+"'><input type='hidden' name='size_id[]' value='"+data[i].size_id+"'><input type='hidden' name='input_job_no_random' value='"+data[i].input_job_no_random+"'><input type='hidden' name='bundle_no[]' value='"+data[i].tid+"'><input type='hidden' name='style' value='"+data[i].style+"'><input type='hidden' name='color[]' value='"+data[i].order_col_des+"'><input type='hidden' name='module[]' value='"+data[i].assigned_module+"'><input type='hidden' name='rep_qty[]' value='"+data[i].reported_qty+"'><input type='hidden' name='id[]' value="+data[i].id+"><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].assigned_module+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td>"+data[i].reported_qty+"</td><td id='"+i+"repor'>"+post_rec_qtys+"</td><td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
-                                            $("#dynamic_table").append(markup1);
-                                        }
+				sweetAlert('Please Select Valid Operation','','warning');
+				$('#dynamic_table1').html('No Data Found');
+			}
+			else
+			{
+				$('#loading-image').hide();
+				var module_flag = null;	var restrict_msg = '';
+				var pre_array_module = [module1,job_no,ops,'reversal'];
+				$.ajax({
+					type: "POST",
+					url: function_text+"?pre_array_module="+pre_array_module,
+					dataType: "json",
+					success: function (response) 
+					{
+						if (response == 4)
+						{
+							module_flag = 1; // block
+							restrict_msg = 'No Module Assigned';
+						}
+						else if (response == 3)
+						{
+							module_flag = 1; // block
+							restrict_msg = 'No Valid Block Priorities';
+						}
+						else if (response == 2)
+						{
+							var authorize_check = $('#user_permission').val();
+							if (authorize_check == 'authorized')
+							{
+								module_flag = 0; // allow
+							}
+							else
+							{
+								module_flag = 1; // block
+								restrict_msg = 'You are Not Authorized to report more than Block Priorities';
+							}
+						}
+						else if (response == 0)
+						{
+							module_flag = 0; // allow
+						}
+
+						if(module_flag == 0)
+						{
+							$('#loading-image').show();
+							var data_rev = [ops,job_no,remarks,module1];
+							$.ajax({
+								type: "POST",
+								url: function_text+"?data_rev="+data_rev,
+								dataType: "json",
+								success: function (response) 
+								{
+									$('#loading-image').hide();
+									$('#dynamic_table1').html('');
+									console.log(response);
+									var data = response['table_data'];
+									var check_flag = 0;
+									if(response['post_ops'])
+									{
+										var post_ops_data = response['post_ops'];
+										//var send_qty = response['send_qty'];
+										if (response['carton_ready_qty'])
+										{
+											var post_rec_qtys_array123 = response['carton_ready_qty'];
+											var check_flag = 2;
+										}
+										else
+										{
+											if(response['rec_qtys'])
+											{
+												var post_rec_qtys_array = response['rec_qtys'];
+												var check_flag = 1;
+											}
+										}						
+									  
+										for(var ops=0;ops<post_ops_data.length;ops++)
+										{
+											var mark1 = "<input type='hidden' name='post_ops[]' value='"+response['post_ops'][ops]+"'>";
+											$("#dynamic_table1").append(mark1);
+										}
 									}
+									if(response['ops_dep'])
+									{
+										var mark3="<input type='hidden' name='ops_dep' value='"+response['ops_dep']+"'>";
+										$("#dynamic_table1").append(mark3);
+									}
+									var send_qty = response['send_qty'];
+									if(response['status'])
+									{
+										sweetAlert('',response['status'],'error');
+										$('#dynamic_table1').html('No Data Found');
+									}
+									else if(data)
+									{
+										var s_no=0;
+										var btn = '<div class="pull-right"><input type="submit" class="btn btn-primary disable-btn smartbtn submission" value="Submit" name="formSubmit" id="smartbtn" onclick="validating();"></div>';
+										$("#dynamic_table1").append(btn);
+										var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr class='info'><th>S.No</th><th class='none'>Doc.No</th><th>Color</th><th>Module</th><th>Size</th><th>Sewing Job Qty</th><th>Reported Quantity</th><th>Eligible to reverse</th><th>Reversing Quantity</th></tr></thead><tbody>";
+										$("#dynamic_table1").append(markup);
+										$("#dynamic_table1").append(btn);
+										for(var i=0;i<data.length;i++)
+										{
+											if (check_flag == 2)
+											{
+												var post_rec_qtys = Number(post_rec_qtys_array123[i]);
+												// console.log('in carton_array = '+post_rec_qtys);
+											}
+											else
+											{
+												if(check_flag == 0)
+												{
+													var post_rec_qtys = data[i].reported_qty;
+												}
+												else
+												{
+													var post_rec_qtys = Number(data[i].reported_qty) - Number(post_rec_qtys_array[i]);
+												}
+											}
+												
+											s_no++;
+											var markup1 = "<tr><input type='hidden' name='doc_no[]' value='"+data[i].doc_no+"'><input type='hidden' name='operation_id' value='"+data[i].operation_id+"'><input type='hidden' name='remarks' value='"+data[i].remarks+"'><input type='hidden' name='mapped_color' value='"+data[i].mapped_color+"'><input type='hidden' name='size[]' value='"+data[i].size_code+"'><input type='hidden' name='size_id[]' value='"+data[i].size_id+"'><input type='hidden' name='input_job_no_random' value='"+data[i].input_job_no_random+"'><input type='hidden' name='bundle_no[]' value='"+data[i].tid+"'><input type='hidden' name='style' value='"+data[i].style+"'><input type='hidden' name='color[]' value='"+data[i].order_col_des+"'><input type='hidden' name='module[]' value='"+data[i].assigned_module+"'><input type='hidden' name='rep_qty[]' value='"+data[i].reported_qty+"'><input type='hidden' name='id[]' value="+data[i].id+"><td>"+s_no+"</td><td class='none'>"+data[i].doc_no+"</td><td>"+data[i].order_col_des+"</td><td>"+data[i].assigned_module+"</td><td>"+data[i].size_code+"</td><td>"+data[i].carton_act_qty+"</td><td>"+data[i].reported_qty+"</td><td id='"+i+"repor'>"+post_rec_qtys+"</td><td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
+											$("#dynamic_table").append(markup1);
+										}
+									}
+									else
+									{
+										sweetAlert(restrict_msg,'','error');
+										$('#loading-image').hide();
+										$('#dynamic_table1').html('No Data Found');
+									}
+									//////////////////////////////////////////////////////
 								}
-							});							                                  
+							});
 						}
 						else
 						{
@@ -319,15 +330,19 @@
 		});
 	});
 
-$('#sampling').change(function()
-{
-	$('#dynamic_table1').html('');
-	$('#dynamic_table1').html('No Data Found');
-	$('#operation').val(0);
-})
-</script>
+	$('#sampling').change(function()
+	{
+		$('#dynamic_table1').html('');
+		$('#dynamic_table1').html('No Data Found');
+		$('#operation').val(0);
+		$('#module').val(0);
+	});
 
-<script>
+	$('#module').change(function()
+	{
+		$('#dynamic_table1').html('');
+		$('#operation').val(0);
+	});
 
 function validation(id)
 	{
@@ -884,6 +899,7 @@ function validation(id)
 			echo "<script>window.location = '".$url."'</script>";
 		}
 	}
+}
 ?>
 	
 <script type="text/javascript">

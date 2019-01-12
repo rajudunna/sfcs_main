@@ -52,22 +52,34 @@
 			}
 			else
 			{
-				$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",scan_date=\"".date("Y-m-d H:i:s")."\",scan_user='$username' where pac_stat_id = '".$carton_id."'";
-				// echo $sql;
-				$pac_stat_log_result = mysqli_query($link, $sql) or exit("Error while updating pac_stat_log");
+				$imploded_b_tid = implode(",",$b_tid);
+				$reply = updateM3CartonScan($b_op_id,$imploded_b_tid,$team_id);
 
-				if (!$pac_stat_log_result)
+				if ($reply == 1)
 				{
-					$result_array['status'] = 3;
+					// Carton Scan eligible
+					$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",scan_date=\"".date("Y-m-d H:i:s")."\",scan_user='$username' where pac_stat_id = '".$carton_id."'";
+					// echo $sql;
+					$pac_stat_log_result = mysqli_query($link, $sql) or exit("Error while updating pac_stat_log");
+
+					if (!$pac_stat_log_result)
+					{
+						// Carton scan Failed
+						$result_array['status'] = 3;
+					}
+					else
+					{
+						// carton scanned successfully
+						$result_array['status'] = 2;
+					}
 				}
 				else
 				{
-					$result_array['status'] = 2;
-					$imploded_b_tid = implode(",",$b_tid);
-					updateM3CartonScan($b_op_id,$imploded_b_tid,$team_id);
+					// not eligible for scan carton
+					$result_array['status'] = 4;
 				}			
 			}
-
+			// 1 = carton already scanned || 2 = carton scanned successfully || 3 = carton scanned failed || 4 =  carton not eligible for scanning
 			$result_array['carton_no'] = $carton_no;
 			$result_array['style'] = $style;
 			$result_array['schedule'] = $schedule;

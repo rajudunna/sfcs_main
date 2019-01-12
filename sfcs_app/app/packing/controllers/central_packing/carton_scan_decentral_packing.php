@@ -102,6 +102,7 @@
 			var team_id = $("#team_id").val();
 			if (carton_id != '')
 			{
+				$("#error_msg").hide();
 				$("#loading_img").show();
 				var function_text = "carton_scan_ajax.php";
 				$.ajax({
@@ -112,7 +113,7 @@
 					cache: false,
 					success: function (response) 
 					{
-						// status: 0-invaild carton no; 1-already scanned; 2-newly scanned; 3-scanning failed
+						// status: 0-invaild carton no; 1-already scanned; 2-newly scanned; 3-scanning failed; 4-Carton not eligible for scanning(no qty in tbl_carton_ready)
 						console.log(response);
 						if(response['status']==1)
 						{ 
@@ -130,7 +131,7 @@
 							$('#'+id).val('');
 							$('#carton_id').focus();
 						}
-						else if(response['status']==0 || response['status']==3)
+						else if(response['status']==0 || response['status']==3 || response['status']==4)
 						{
 							$("#loading_img").hide();
 							if (response['status']==0)
@@ -140,6 +141,10 @@
 							else if (response['status']==3)
 							{
 								var msg = "Scanning Failed";
+							}
+							else if (response['status']==4)
+							{
+								var msg = "Carton Not Eligible Due to Quantity not Available";
 							}
 							
 							$("#error_msg").show();
