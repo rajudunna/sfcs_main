@@ -65,7 +65,7 @@
 				$size_code=strtolower($row22['size_name']);
 				$size_tit=strtoupper($row22['size_title']);
 			}
-			$sql2="SELECT cut_master.cat_ref FROM $brandix_bts.tbl_cut_master AS cut_master LEFT JOIN $brandix_bts.tbl_cut_size_master AS cut_sizes ON cut_master.id=cut_sizes.parent_id WHERE cut_master.product_schedule='".$schedule."' AND cut_sizes.color='".$color."' AND cut_sizes.ref_size_name='".$size."' GROUP BY cut_master.cat_ref limit 1";
+			$sql2="SELECT cut_master.cat_ref FROM $brandix_bts.tbl_cut_master AS cut_master LEFT JOIN $brandix_bts.tbl_cut_size_master AS cut_sizes ON cut_master.id=cut_sizes.parent_id WHERE cut_master.style_id='".$style_id."' AND cut_master.product_schedule='".$schedule."' AND cut_sizes.color='".$color."' AND cut_sizes.ref_size_name='".$size."' GROUP BY cut_master.cat_ref limit 1";
 			$result12=mysqli_query($link, $sql2) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($rw=mysqli_fetch_array($result12))
 			{
@@ -110,59 +110,24 @@
 				$ratio=$sql_row['quantity'];
 				$cut_quantity=$sql_row['total_cut_quantity'];
 				// Eiminate duplicate dockets
-				$sql221="SELECT * from $bai_pro3.tbl_docket_qty where doc_no='".$sql_row['docket_number']."' and ref_size='$size' and type=1";
+				$sql221="SELECT * from $bai_pro3.tbl_docket_qty where doc_no='".$sql_row['docket_number']."' and ref_size='$size'";
 				$result1221=mysqli_query($link, $sql221) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if(mysqli_num_rows($result1221)>0)
+				while($rw21=mysqli_fetch_array($result1221))
 				{
-					while($rw21=mysqli_fetch_array($result1221))
+					if($rw21['type']=='1')
 					{
 						$cut_quantity=$cut_quantity-$rw21['plan_qty'];
-						
 					}
-			    }
-			    $sql2211="SELECT sum(if(type=2,plan_qty,0)) as ex,sum(if(type=3,plan_qty,0)) as sam, from $bai_pro3.tbl_docket_qty where  ref_size='$size' and type in (2,3)";
-				$result12211=mysqli_query($link, $sql2211) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if(mysqli_num_rows($result12211)>0)
-				{
-					while($rw211=mysqli_fetch_array($result12211))
+					elseif($rw21['type']=='2')
 					{
-						if($rw211['sam']>0 && $sample<>$rw211['sam'])
-						{
-							if($rw211['sam']<$sample)
-							{
-								$sample=$sample-$rw211['sam'];	
-							}
-							else
-							{
-								$sample=$rw211['sam']-$sample;
-							}	
-
-						}
-						else
-						{
-							$sample=0;
-						}
-
-						/***********/
-
-						if($rw211['ex']>0 && $diff_qty<>$rw211['ex'])
-						{
-							if($rw211['ex']<$diff_qty)
-							{
-								$diff_qty=$diff_qty-$rw211['ex'];	
-							}
-							else
-							{
-								$diff_qty=$rw211['ex']-$diff_qty;
-							}	
-
-						}
-						else
-						{
-							$diff_qty=0;
-						}
+						$sample=$sample-$rw21['plan_qty'];	
 					}
-			    }
+					elseif($rw21['type']=='3')
+					{
+						$diff_qty=$diff_qty-$rw21['plan_qty'];
+					}	
+				}
+
 				if($cut_quantity>0)
 				{
 					do
@@ -183,7 +148,7 @@
 							{							
 								// echo "<tr><td>Sample</td><td>$cut_num</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$diff_qty."</td><td>".$sql_row['docket_number']."</td></tr>";
 
-								$insertMiniOrderdata="INSERT INTO $bai_pro3.`tbl_docket_qty` (`cut_no`, `doc_no`, `size`, `plan_qty`, `fill_qty`, `type`,`pac_stat_input_id`, `color`, `ref_size`) VALUES ('$cut_num', '".$sql_row['docket_number']."', '$size_tit', '$sample', '','3','$pac_stat_input_id','$color','$size')";
+								$insertMiniOrderdata="INSERT INTO $bai_pro3.`tbl_docket_qty` (`cut_no`, `doc_no`, `size`, `plan_qty`, `fill_qty`, `type`,`pac_stat_input_id`, `color`, `ref_size`) VALUES ('$cut_num', '".$sql_row['docket_number']."', '$size_tit', '$cut_quantity', '','3','$pac_stat_input_id','$color','$size')";
 								// echo "1=".$insertMiniOrderdata."<br><br>"; 
 								$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$cut_quantity=$cut_quantity-$sample;
@@ -206,7 +171,7 @@
 							{							
 								// echo "<tr><td>Excess</td><td>$cut_num</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$diff_qty."</td><td>".$sql_row['docket_number']."</td></tr>";
 
-								$insertMiniOrderdata="INSERT INTO $bai_pro3.`tbl_docket_qty` (`cut_no`, `doc_no`, `size`, `plan_qty`, `fill_qty`, `type`,`pac_stat_input_id`, `color`, `ref_size`) VALUES ('$cut_num', '".$sql_row['docket_number']."', '$size_tit', '$diff_qty', '','2','$pac_stat_input_id','$color','$size')";
+								$insertMiniOrderdata="INSERT INTO $bai_pro3.`tbl_docket_qty` (`cut_no`, `doc_no`, `size`, `plan_qty`, `fill_qty`, `type`,`pac_stat_input_id`, `color`, `ref_size`) VALUES ('$cut_num', '".$sql_row['docket_number']."', '$size_tit', '$cut_quantity', '','2','$pac_stat_input_id','$color','$size')";
 								// echo "1=".$insertMiniOrderdata."<br><br>"; 
 								$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$cut_quantity=$cut_quantity-$diff_qty;
