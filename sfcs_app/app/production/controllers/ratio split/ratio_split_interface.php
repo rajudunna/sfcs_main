@@ -59,8 +59,8 @@
         $('#shades_table').append("<tr class='danger'><td>Shade</td><td>Plies</td></tr>");
         while(shades-- > 0){
             $('#shades_table').append("<tr>\
-            <td><input id='shade_"+shades+"' type='text' class='form-control required shades'></td>\
-            <td><input id='plies_"+shades+"' type='text' class='form-control integer plies required'></td>\
+            <td><input id='shade_"+shades+"' name='shades[]' type='text' class='form-control required shades'></td>\
+            <td><input id='plies_"+shades+"' name='plies[]' type='text' class='form-control integer plies required'></td>\
             </tr>");
         }
         $('#shades_table').append("<tr><td colspan=2>\
@@ -69,21 +69,37 @@
     }
 
     function submit_data(){
+        var no_shades = 0,no_plies = 0;
         e_plies = 0;
         $('.shades').each(function(key,e){
             console.log(e.value);
             if(e.value == null || e.value == empty)
-                return swal('Fill All the '+shades+' Shades','','warning');
+                no_shades++;
         });
+
         $('.plies').each(function(key,e){
             if(e.value == null || e.value == '')
-                return swal('Fill All the '+shades+' Plies','','warning');
-            e_plies = e_plies + e.value;    
+                no_plies++;
+            else    
+                e_plies = e_plies + e.value;    
         });
+        if(no_plies > 0 || no_shades > 0)
+            return swal('Fill All the '+shades+' Shades','','warning');
         if(e_plies != a_plies)
             return swal('Original Plies not equal to Entered Plies','','error');
         
+        var post_data = {};
+        post_data = {};
+
         console.log('Fine');
+        $.ajax({
+            url:'',
+            data:post_data,
+            type:JSON,
+            success:function(){
+
+            }
+        });
     }
 
     function load_details(t){
@@ -99,10 +115,15 @@
                 }catch(e){
                     return swal('Problem incurred while Fetching Details','','error');
                 }
-
+                console.log(data.found);    
                 if(data.found == '0')
-                    return swal('Sewing Jobs Do Not Exist for the Docket',doc,'error');
-
+                    return swal('Sewing Jobs Do Not Exist for the Docket','','error');
+                else if(data.can_split == '0')
+                    return swal('You Cannot Split the Sewing Jobs for Docket','','error');
+                else if(data.clubbed == '1')
+                    return swal('You Cannot Split the Sewing Jobs for Schedule Clubbed Dockets','','error');
+                else if(data.scanned == '1')
+                    return swal('Jobs Related to the schedule already Scanned','You Cannot Split the Sewing Jobs','error');        
                 a_plies = data.plies;  
                 $('#details_block').show();
                 $('#d_style').html(data.style);
