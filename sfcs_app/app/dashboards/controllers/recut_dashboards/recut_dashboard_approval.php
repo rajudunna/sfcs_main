@@ -62,7 +62,6 @@ if(isset($_POST['approve']))
 			}
 		}
     }
-    
    $retreaving_last_sewing_job_qry = "SELECT MAX(input_job_no_random)as input_job_no_random,MAX(CAST(input_job_no AS DECIMAL)) as input_job_no,destination,packing_mode,sref_id,pac_seq_no FROM `$bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$schedule'";
     $res_retreaving_last_sewing_job_qry = $link->query($retreaving_last_sewing_job_qry);
     if($res_retreaving_last_sewing_job_qry->num_rows > 0)
@@ -78,7 +77,7 @@ if(isset($_POST['approve']))
             $sref_id = '0';
         }
     }
-    else
+    if($pac_seq_no == '' || $pac_seq_no == null)
     {
         $input_job_no = 1;
         $sql2="select group_concat(distinct trim(destination)) as dest,order_style_no as style,GROUP_CONCAT(DISTINCT order_col_des separator '<br/>') as color,order_po_no as cpo,order_date,vpo from $bai_pro3.bai_orders_db where order_del_no in (".$schedule.") and order_col_des=\"".$color."\""; 

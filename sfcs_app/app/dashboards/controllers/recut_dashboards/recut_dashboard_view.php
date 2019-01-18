@@ -440,7 +440,7 @@
         $brandix_bts.bundle_creation_data bcd LEFT JOIN $brandix_bts.tbl_orders_ops_ref ops ON ops.operation_code=bcd.operation_id 
         LEFT JOIN $brandix_bts.tbl_style_ops_master ts ON ts.operation_code=bcd.operation_id AND ts.`style` = bcd.`style` AND ts.`color` = bcd.`mapped_color`
         WHERE bcd.id = $bcd_id";
-        echo $selcting_qry.'</br>';
+        //echo $selcting_qry.'</br>';
         $result_selcting_qry=mysqli_query($link, $selcting_qry) or die("selcting_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($ops_row=mysqli_fetch_array($result_selcting_qry)) 
         {
@@ -475,20 +475,20 @@
                 AND ops_sequence = '$ops_seq'
                 ORDER BY operation_order";
             }
-            echo $operation_mapping_qry.'</br>';
+            //echo $operation_mapping_qry.'</br>';
             $result_operation_mapping_qry=mysqli_query($link, $operation_mapping_qry) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"]));
             while($ops_row=mysqli_fetch_array($result_operation_mapping_qry)) 
             {
                 $op_codes[] = $ops_row['operation_code'];
             }
-            var_dump($op_codes).'</br>';
+            //var_dump($op_codes).'</br>';
             $multiple_mos_tot_qty = $qty;
             $moq_qry = "SELECT id,mo_no,ref_no,op_code,bundle_quantity,SUM(bundle_quantity)AS bundle_quantity,SUM(good_quantity)AS good_quantity,
             SUM(rejected_quantity)AS rejected_quantity,(SUM(rejected_quantity)-(SUM(bundle_quantity)-bundle_quantity))AS rem FROM 
             $bai_pro3.`mo_operation_quantites` 
             WHERE ref_no=$bundle_number AND op_code=$operation_id GROUP BY mo_no,ref_no,op_code 
             ORDER BY id";
-            echo $moq_qry.'</br>';
+            //echo $moq_qry.'</br>';
             $moq_qry_res = $link->query($moq_qry);
             while($row_moq = $moq_qry_res->fetch_assoc()) 
             {
