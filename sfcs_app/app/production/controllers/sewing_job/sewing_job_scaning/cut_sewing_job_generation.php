@@ -116,8 +116,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
         $update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = '$inserted_id' ";
         $update_result = mysqli_query($link,$update_query) or exit("Problem while inserting to sewing jos ref");
 
-        $schedule_send = $schedule.'=1';
-        insertMOQuantitiesSewing($schedule_send,$inserted_id);
+        insertMOQuantitiesSewing($schedule,$inserted_id);
     }
 
     echo json_encode(['message'=>'success']);
@@ -424,7 +423,7 @@ if($schedule != "" && $color != "")
                     echo "<td><a class='btn btn-warning' onclick='show_view_form($imp_data)'>View</a>"; 
                     if($old_cut_status=='')
                         echo "<a class='btn btn-danger' id='del-$imp_data' onclick='delet($imp_data)'>Delete</a>
-                                <div id='delete_message' style='display:none'><h3 class='badge progress-bar-success'>Deleting...</h3></div>";
+                                <div id='delete_message_$imp_data' style='display:none'><h3 class='badge progress-bar-success'>Deleting...</h3></div>";
                     echo "</td>";
                 }else{
                     echo "<td><h3 class='label label-warning'>Jobs Already Created with another source..</h3></td>";
@@ -485,7 +484,7 @@ if($schedule != "" && $color != "")
                 echo "<td><a class='btn btn-warning' onclick='show_view_form($imp_data)'>View</a>"; 
                 if($old_cut_status=='')
                     echo "<a class='btn btn-danger' id='del-$imp_data' onclick='delet($imp_data)'>Delete</a>
-                            <div id='delete_message' style='display:none'><h3 class='badge progress-bar-success'>Deleting...</h3></div>";
+                            <div id='delete_message_$imp_data' style='display:none'><h3 class='badge progress-bar-success'>Deleting...</h3></div>";
                 echo "</td>";
             }else{
                 echo "<td><h3 class='label label-warning'>Jobs Already Created with another source..</h3></td>";
@@ -569,7 +568,7 @@ if($schedule != "" && $color != "")
                 
                     <div class='row'>
                         <div class='col-sm-4'>
-                            <label data-error="wrong" data-success="right" for="defaultForm-email">Garment per Input Job</label>
+                            <label data-error="wrong" data-success="right" for="defaultForm-email">Garment per Sewing Job</label>
                             <input type="text" id="job-qty" class="form-control validate integer" ng-model= "jobcount" name="jobcount">
                         </div>
                         <div class='col-sm-4'>
@@ -720,9 +719,9 @@ app.controller('cutjobcontroller', function($scope, $http) {
             $scope.createjobs();
         }else{
             if(Number($scope.jobcount)<=0)
-            swal('Input Job Quantity should be grater then zero.');
+            swal('Sewing Job Quantity should be grater then zero.');
             if(Number($scope.jobcount)<Number($scope.bundleqty))
-            swal('Bundle Quantity should be less then input job quantity.');
+            swal('Bundle Quantity should be less then Sewing Job quantity.');
         }
     }
 
@@ -934,7 +933,7 @@ function hide_rev(docs_id){
 }
 function delet(docs_id){
     $("#del-"+docs_id).css("display", "none");
-    $("#delete_message").css("display", "block");
+    $("#delete_message_"+docs_id).css("display", "block");
     $.post( "<?= trim($url) ?>", { del_recs: docs_id } ).done(function(data) {
     
         if(data=='cutting_done'){

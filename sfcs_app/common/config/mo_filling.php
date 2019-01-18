@@ -248,15 +248,8 @@
 	}
 
 	//tested
-	function insertMOQuantitiesSewing($schedule,$sref_id){
-		$scheduless = explode("=",$schedule);
-		if ($scheduless[1] == '1' || $scheduless[1] == 1 ) {
-			include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
-			$link = $link_ui;
-			$schedule = $scheduless[0];
-		} else {
-			include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-		}		
+	function insertMOQuantitiesSewing($schedule,$sref_id){	
+		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 		
 		$sewing_cat = 'sewing';
 		$mo_no=array();

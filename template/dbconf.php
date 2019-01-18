@@ -15,24 +15,6 @@ $user= $db_obj['db_user'];
 $password=$db_obj['db_pass'];
 $host= $db_obj['db_host'];
 $link_ui = mysqli_connect("$host","$user","$password","$database",$db_obj['db_port']);
-
-$central_administration_sfcs='central_administration_sfcs';
-$tbl_view_view_menu="tbl_view_view_menu";
-$view_menu_role="view_menu_role";
-$bai_pro3="bai_pro3";
-$bai_pro="bai_pro";
-$bai_pro4="bai_pro4";
-$bai_pro2="bai_pro2";
-$bai_rm_pj1="bai_rm_pj1";
-$bai_rm_pj2="bai_rm_pj2";
-$brandix_bts="brandix_bts";
-$bai_pack="bai_pack";
-$bai_kpi="bai_kpi";
-$brandix_bts_uat="brandix_bts_uat";
-$m3_inputs="m3_inputs";
-$m3_bulk_ops_rep_db="m3_bulk_ops_rep_db";
-$temp_pool_db="temp_pool_db";
-
 //echo $database;
 // Check connection
  if (mysqli_connect_errno())
