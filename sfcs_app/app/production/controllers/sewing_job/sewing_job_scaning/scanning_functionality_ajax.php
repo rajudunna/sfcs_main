@@ -1379,7 +1379,7 @@ else if($concurrent_flag == 0)
 							$ims_pro_qty_updating = mysqli_query($link,$update_query) or exit("While updating ims_pro_qty in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
 							if($ims_pro_qty_updating)
 							{
-								if($act_ims_input_qty == $act_ims_qty)
+								if($act_ims_input_qty <= $act_ims_qty)
 								{
 									$update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where tid = $updatable_id";
 									mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
