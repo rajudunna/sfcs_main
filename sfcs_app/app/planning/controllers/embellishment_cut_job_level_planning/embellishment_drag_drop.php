@@ -811,16 +811,16 @@
 														//echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';	
 
                                                        //remove docs
-														$sql1="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no=$doc_no and send_qty = receive_qty";
-														$sql_resultx=mysqli_query($link,$sql1) or exit("Sql Error2".mysqli_error());
-														while($sql_rowx=mysqli_fetch_array($sql_resultx))
-														{
-														 $remove_docs=$sql_rowx['doc_no'];
+														// $sql1="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no=$doc_no and send_qty = receive_qty";
+														// $sql_resultx=mysqli_query($link,$sql1) or exit("Sql Error2".mysqli_error());
+														// while($sql_rowx=mysqli_fetch_array($sql_resultx))
+														// {
+														//  $remove_docs=$sql_rowx['doc_no'];
+														// }
 
-														 $delete_sql="delete from $bai_pro3.embellishment_plan_dashboard where doc_no ='$remove_docs'";
+														 $delete_sql="delete from $bai_pro3.embellishment_plan_dashboard where doc_no ='$doc_no' and send_qty = receive_qty and send_qty <> 0 and receive_qty <> 0";
 														 
 														  mysqli_query($link, $delete_sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-														}
 														
 														
 													}
