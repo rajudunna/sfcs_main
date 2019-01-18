@@ -703,7 +703,7 @@ function myfunctionsearch()
 function isInt(t)
 {
     // alert();
-    if(t.value < 0 || t.value =='e' || t.value == 'E')
+    if(Number(t.value) < 0 || t.value =='e' || t.value == 'E')
     { 
         return false; 
     }

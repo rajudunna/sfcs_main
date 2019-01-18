@@ -496,6 +496,7 @@
                 $bundle_quantity_mo = $row_moq['rem'] - $array_mos[$max_mo_no];
                 if($bundle_quantity_mo < $multiple_mos_tot_qty)
                 {
+          
                     $multiple_mos_tot_qty = $multiple_mos_tot_qty - $bundle_quantity_mo;
                     $to_add_mo = $bundle_quantity_mo;
                     $array_mos[$max_mo_no]  = $bundle_quantity_mo;
@@ -1084,7 +1085,7 @@ function myfunctionsearch()
 function isInt(t)
 {
     // alert();
-    if(t.value < 0 || t.value =='e' || t.value == 'E')
+    if(Number(t.value) < 0 || t.value =='e' || t.value == 'E')
     { 
         return false; 
     }
