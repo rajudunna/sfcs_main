@@ -730,31 +730,6 @@
 							<?php
 								
 								
-								
-								$remove_docs=array();
-								// $sqlx="select doc_no from $bai_pro3.plan_dash_doc_summ where act_cut_issue_status=\"DONE\"";
-								//If 15 operation is done the boxes are removed so this query is commented
-
-								// $sql1="select doc_no from $bai_pro3.plan_dash_doc_summ_embl where act_cut_status=\"DONE\""; //KK223422
-
-								//echo $sqlx;
-								// mysqli_query($link,$sqlx) or exit("Sql Error".mysql_error());
-								$sql1="select doc_no from $bai_pro3.embellishment_plan_dashboard where send_qty = receive_qty";
-								$sql_resultx=mysqli_query($link,$sql1) or exit("Sql Error2".mysqli_error());
-								while($sql_rowx=mysqli_fetch_array($sql_resultx))
-								{
-								 $remove_docs[]=$sql_rowx['doc_no'];
-								}
-								
-								if(sizeof($remove_docs)>0)
-								{
-								
-								$delete_sql="delete from $bai_pro3.embellishment_plan_dashboard where doc_no in (".implode(",",$remove_docs).")";
-								 mysqli_query($link,$delete_sql) or exit("Sql Error4".mysqli_error());
-								}
-								
-								//remove docs
-								
 								$sqlx="select * from $bai_pro3.tbl_emb_table where emb_table_id>0";
 								// mysqli_query($link,$sqlx) or exit("Sql Error".mysql_error());
 								$sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error5".mysql_error());
@@ -835,7 +810,19 @@
 														echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
 														//echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';	
 
-													
+                                                       //remove docs
+														$sql1="select doc_no from $bai_pro3.embellishment_plan_dashboard where send_qty = receive_qty";
+														$sql_resultx=mysqli_query($link,$sql1) or exit("Sql Error2".mysqli_error());
+														while($sql_rowx=mysqli_fetch_array($sql_resultx))
+														{
+														 $remove_docs=$sql_rowx['doc_no'];
+
+														 $delete_sql="delete from $bai_pro3.embellishment_plan_dashboard where doc_no ='$remove_docs'";
+														 
+														  mysqli_query($link, $delete_sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+														}
+														
+														
 													}
 													
 												echo '</ul>';
