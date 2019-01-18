@@ -438,7 +438,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			
 		$flag = $sql_row['title_flag'];
 		/* Start  Adding MPO Number  */
-		$sql="select MPO from $bai_pro2.shipment_plan_summ where schedule_no=\"$order_del_no\"";
+		$sql="SELECT DISTINCT CPO AS MPO FROM m3_inputs.shipment_plan where schedule_no=\"$order_del_no\"";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
