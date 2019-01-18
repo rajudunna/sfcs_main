@@ -3,6 +3,10 @@
         width: 100%;    
         overflow-y: auto;
     }
+
+    table, th, td {
+        text-align: center;
+    }
 </style>
 
 
@@ -74,7 +78,7 @@
 
                                         if($scanning_methods="Bundle Level")
                                         {
-                                            echo "<th>Bundle Barcode With Operation</th>";
+                                            echo "<th>Bundle Barcode<br>With Operation</th>";
                                             echo "<th>Bundle Barcode</th>";
                                         }
                                         //echo "<th>TID</th>";
@@ -158,7 +162,6 @@
                                             }
                                             echo"</tr>";
                                         }
-                                        
                                    echo ' </table>
                             </form>
                 </div>
