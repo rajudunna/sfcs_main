@@ -258,7 +258,7 @@
 							{
 								echo '<h4>Pack Method: <span class="label label-info">'.$operation[$pack_method].'</span></h4>';
 								// echo "carton props added, You can proceed";
-								echo $bundle;
+								//echo $bundle;
 								if($bundle == 0)
 								{
 									$combo = array();
