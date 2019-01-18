@@ -733,14 +733,17 @@
 								
 								$remove_docs=array();
 								// $sqlx="select doc_no from $bai_pro3.plan_dash_doc_summ where act_cut_issue_status=\"DONE\"";
-								$sql1="select doc_no from $bai_pro3.plan_dash_doc_summ_embl where act_cut_status=\"DONE\""; //KK223422
+								//If 15 operation is done the boxes are removed so this query is commented
+
+								// $sql1="select doc_no from $bai_pro3.plan_dash_doc_summ_embl where act_cut_status=\"DONE\""; //KK223422
 
 								//echo $sqlx;
 								// mysqli_query($link,$sqlx) or exit("Sql Error".mysql_error());
+								$sql1="select doc_no from $bai_pro3.embellishment_plan_dashboard where send_qty = receive_qty";
 								$sql_resultx=mysqli_query($link,$sql1) or exit("Sql Error2".mysqli_error());
 								while($sql_rowx=mysqli_fetch_array($sql_resultx))
 								{
-								$remove_docs[]=$sql_rowx['doc_no'];
+								 $remove_docs[]=$sql_rowx['doc_no'];
 								}
 								
 								if(sizeof($remove_docs)>0)
