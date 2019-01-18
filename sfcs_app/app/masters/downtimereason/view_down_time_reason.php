@@ -26,7 +26,7 @@
 			$code=$row["code"];
 			$department=$row["rdept"];
 			$reason=$row["reason"];
-			echo "<tr><td>".$sno++."</td><td>".$row["code"]."</td><td>".$row["rdept"]." </td><td>".$row["reason"]."</td><td><a href='$url==&rowid=$rowid&code=$code&department=$department&reason=$reason' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid=$rowid&code=$code&department=$department&reason=$reason' class='btn btn-danger btn-xs editor_remove'>Delete</a></td></tr>";
+			echo "<tr><td>".$sno++."</td><td>".$row["code"]."</td><td>".$row["rdept"]." </td><td>".$row["reason"]."</td><td><a href='$url==&rowid=$rowid&code=$code&department=$department&reason=$reason' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid=$rowid&code=$code&department=$department&reason=$reason' class='btn btn-danger btn-xs editor_remove' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
 		}
 		echo "</tbody></table>";
 	} else {
@@ -39,7 +39,26 @@
 <script>
 $(document).ready(function() {
     $('#downtime_reason').DataTable();
-} );
+});
+function confirm_delete(e,t)
+{
+	e.preventDefault();
+	var v = sweetAlert({
+	title: "Are you sure to Delete the Record?",
+	icon: "warning",
+	buttons: true,
+	dangerMode: true,
+	buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+	}).then(function(isConfirm){
+	if (isConfirm) {
+	window.location = $(t).attr('href');
+	return true;
+	} else {
+	sweetAlert("Request Cancelled",'','error');
+	return false;
+	}
+	});
+}
 </script>
 <style>
 table th

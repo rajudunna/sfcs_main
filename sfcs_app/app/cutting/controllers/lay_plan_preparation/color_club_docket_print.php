@@ -379,6 +379,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$mklength=$sql_row2['mklength'];
 		$mk_remarks=$sql_row2['remarks'];
+		$patt_ver=$sql_row2['mk_ver'];
 	}
 	//echo ' total '.$a_ratio_tot;
 //echo implode(",",$docs);
@@ -3705,12 +3706,11 @@ tags will be replaced.-->
 							echo "<td style='border:.5pt solid black;'>".chr($cc_code[$j]).leading_zeros($cut_no, 3)."</td>";
 							echo "<td style='border:.5pt solid black;'>".$docs[$j]."</td>";
 						}
-						echo "<tr style='height:40px'>";
+						// echo "<tr style='height:40px'>";
 						for($k=$temp_len1;$k<$total_size;$k++)
 						{
 							echo "<td style='border:.5pt solid black;'>".$qty[$k]."</td>";
 						}
-						echo $j.'$j';
 						echo "<td style='border:.5pt solid black;'>".$a_ratio_tot."</td>";
 						echo "<td style='border:.5pt solid black;'>".round( $plies[$j] , 2 )."</td>";
 						echo "<th style='border:.5pt solid black;'>".($a_ratio_tot)*($plies[$j])."</th>";
@@ -3973,7 +3973,7 @@ $tkt_width=array();
 
 $idocs_1 = "'" . implode ( "', '", $docs ) . "'";
 
-$sql="select distinct * from $bai_rm_pj1.docket_ref where doc_no in ($idocs_1) and doc_type='normal'  group by roll_id";
+$sql="select distinct * from $bai_rm_pj1.docket_ref where doc_no in ($idocs_1) and doc_type='normal'  group by roll_id order by batch_no,ref4 asc";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {

@@ -331,7 +331,7 @@
 							{
 								$sql1231="SELECT * FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' 
 											and  sref_id = $sref_id and trim(order_col_des) = '$trimmed_color'
-											and type_of_sewing=1 ";
+											and type_of_sewing>0 ";
 								$result1231=mysqli_query($link, $sql1231) or 
 											die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 

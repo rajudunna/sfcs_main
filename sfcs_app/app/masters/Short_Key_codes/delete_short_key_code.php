@@ -12,6 +12,8 @@ $rid=$_GET['rowid1'];
 // Create connection
 // $conn = mysqli_connect($servername, $username, $password, $dbname);
 // Check connection
+//
+//
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
 if (!$conn) {
@@ -21,7 +23,18 @@ if($rid!=''){
 	$url=getFullURL($_GET['r'],'create_short_key_code.php','N');
 	$delete="delete from $brandix_bts.ops_short_cuts where id='$rid'";
 	if (mysqli_query($conn, $delete)) {
-				header("location: $url");
+		echo"<script>setTimeout(function () { 
+			swal({
+				title: 'Deleted successfully.',
+				type: 'success',
+				confirmButtonText: 'OK'
+			},
+			function(isConfirm){
+				if (isConfirm) {
+				window.location.href = \"$url\";
+				}
+			}); }, 100);</script>";
+		echo "<script>window.location.href = \"$url\"</script>";
 			} else {
 				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 			}

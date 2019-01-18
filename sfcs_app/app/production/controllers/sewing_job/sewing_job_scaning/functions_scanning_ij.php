@@ -11,15 +11,20 @@ if(isset($_GET['variable']))
 function getscheduledata($variable)
 {
 	include("../../../../../common/config/config_ajax.php");
-
-	$query_get_schedule_data= "SELECT tm.operation_code,tm.operation_name FROM brandix_bts.tbl_style_ops_master tr LEFT JOIN brandix_bts.tbl_orders_ops_ref tm ON tm.id=tr.operation_name WHERE tr.operation_code NOT IN (10,200,15) GROUP BY tr.operation_code ORDER BY tm.operation_code";
+	$category="'Send PF','Receive PF'";
+	$query_get_schedule_data= "SELECT tm.operation_code,tm.operation_name FROM brandix_bts.tbl_style_ops_master tr 
+			LEFT JOIN brandix_bts.tbl_orders_ops_ref tm ON tm.id=tr.operation_name 
+			WHERE tr.operation_code NOT IN (10,200,15) 
+			AND category NOT IN ($category)
+			GROUP BY tr.operation_code ORDER BY tm.operation_code";
 	$result = $link->query($query_get_schedule_data);
-   while($row = $result->fetch_assoc()){
-        $json[$row['operation_code']] = $row['operation_name'];
-   }
+	while($row = $result->fetch_assoc()){
+		$json[$row['operation_code']] = $row['operation_name'];
+	}
    echo json_encode($json);
 	
 }
+
 if(isset($_GET['schedule']))
 {
 	$schedule = $_GET['schedule'];

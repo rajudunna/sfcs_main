@@ -43,19 +43,7 @@ End : <input data-toggle="datepicker"  class="form-control" type="text" id="demo
 Section: <select name="module" id="myModule" class="form-control">
 <option value="0" <?php  if($module=="All")?>selected>All</option>
 <?php
-/*for($i=1;$i<=8; $i++)
-{
-	if($module==$i)
-	{
-		echo "<option value=\"$i\" selected>$i</option>";
-	}
-	else
-	{
-		echo "<option value=\"$i\">$i</option>";
-	}
-	
-}*/
-$sql="SELECT GROUP_CONCAT(sec_id) as mods FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
+$sql="SELECT GROUP_CONCAT(DISTINCT section ORDER BY section*1) AS mods FROM $bai_pro3.module_master ";
 $result7=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 // echo $sql;
 while($sql_row=mysqli_fetch_array($result7))
@@ -217,18 +205,8 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 		$section_value="";
 	}
 
-
-	// ob_end_flush();
-	// flush();
-	// usleep(10);
-	
-
-
-/*echo "<right><a href='".getFullURL($_GET['r'],'transaction_log_new_excel.php','R')."&sdate=$sdate&edate=$edate&
-shift=".str_replace('"','*',$shift)."&module=$module&hour_from=$hour_from&hour_to=$hour_to'>
-	<input type='submit' name='submit1' class='btn btn-info' value='Export to Excel'></a></right>";*/
 	if($module>0){
-		$sql="select * from $bai_pro3.sections_db where sec_id=$module";
+		$sql="SELECT GROUP_CONCAT(DISTINCT module_name ORDER BY module_name*1) AS sec_mods FROM $bai_pro3.module_master where section=$module";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -236,7 +214,7 @@ shift=".str_replace('"','*',$shift)."&module=$module&hour_from=$hour_from&hour_t
 		}	
 	}
 	else{
-		$sql="select GROUP_CONCAT(sec_mods) as sec_mods from $bai_pro3.sections_db where sec_id >= 0";
+		$sql="SELECT GROUP_CONCAT(DISTINCT module_name ORDER BY module_name*1) AS sec_mods FROM $bai_pro3.module_master";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -252,18 +230,10 @@ shift=".str_replace('"','*',$shift)."&module=$module&hour_from=$hour_from&hour_t
 
 
 if($hour_from=='Day' and $hour_to=='Day'){
-	$sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,bac_Qty,bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,$append from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and bac_no in ($module)
-	group by bac_no,bac_sec,bac_shift,bac_style,delivery,color,ims_doc_no,SIGN(bac_Qty),bac_date
-	order by bac_date desc,hour(bac_lastup)";
-	//$sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as \"bac_Qty\",bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,sum(size_s01) as \"size_s01\", sum(size_s02) as \"size_s02\", sum(size_s03) as \"size_s03\",sum(size_s04) as \"size_s04\",sum(size_s05) as \"size_s05\",sum(size_s06) as \"size_s06\", sum(size_s07) as \"size_s07\",sum(size_s08) as \"size_s08\",sum(size_s09) as \"size_s09\",sum(size_s10) as \"size_s10\",sum(size_s11) as \"size_s11\", sum(size_s12) as \"size_s12\", sum(size_s13) as \"size_s13\",sum(size_s14) as \"size_s14\", sum(size_s15) as \"size_s15\", sum(size_s16) as \"size_s16\",sum(size_s17) as \"size_s17\", sum(size_s18) as \"size_s18\", sum(size_s19) as \"size_s19\",sum(size_s20) as \"size_s20\", sum(size_s21) as \"size_s21\", sum(size_s22) as \"size_s22\",sum(size_s23) as \"size_s23\", sum(size_s24) as \"size_s24\", sum(size_s25) as \"size_s25\",sum(size_s26) as \"size_s26\",sum(size_s27) as \"size_s27\", sum(size_s28) as \"size_s28\",sum(size_s29) as \"size_s29\", sum(size_s30) as \"size_s30\",sum(size_s31) as \"size_s31\",sum(size_s32) as \"size_s32\",sum(size_s33) as \"size_s33\",sum(size_s34) as \"size_s34\",sum(size_s35) as \"size_s35\",sum(size_s36) as \"size_s36\",sum(size_s37) as \"size_s37\",sum(size_s38) as \"size_s38\",sum(size_s39) as \"size_s39\",sum(size_s40) as \"size_s40\",sum(size_s41) as \"size_s41\",sum(size_s42) as \"size_s42\",sum(size_s43) as \"size_s43\",sum(size_s44) as \"size_s44\",sum(size_s45) as \"size_s45\",sum(size_s46) as \"size_s46\",sum(size_s47) as \"size_s47\",sum(size_s48) as \"size_s48\",sum(size_s49) as \"size_s49\",sum(size_s50) as \"size_s50\" from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" and bac_shift in ('$shift') and bac_no in ($module) and bac_qty>0 group by bac_date,bac_style,delivery,color,ims_doc_no,bac_sec,bac_no,bac_shift,bac_lastup order by bac_date,bac_no*1,ims_doc_no,bac_shift,bac_lastup";
+	$sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,$append from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and bac_no in ($module) GROUP BY bac_date,HOUR(bac_lastup),bac_no,bac_shift,ims_doc_no,SIGN(bac_Qty) ORDER BY bac_date,HOUR(bac_lastup),bac_no*1,ims_doc_no*1";
 }else
 {
-	//$sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as \"bac_Qty\",bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,sum(size_s01) as \"size_s01\", sum(size_s02) as \"size_s02\", sum(size_s03) as \"size_s03\",sum(size_s04) as \"size_s04\",sum(size_s05) as \"size_s05\",sum(size_s06) as \"size_s06\", sum(size_s07) as \"size_s07\",sum(size_s08) as \"size_s08\",sum(size_s09) as \"size_s09\",sum(size_s10) as \"size_s10\",sum(size_s11) as \"size_s11\", sum(size_s12) as \"size_s12\", sum(size_s13) as \"size_s13\",sum(size_s14) as \"size_s14\", sum(size_s15) as \"size_s15\", sum(size_s16) as \"size_s16\",sum(size_s17) as \"size_s17\", sum(size_s18) as \"size_s18\", sum(size_s19) as \"size_s19\",sum(size_s20) as \"size_s20\", sum(size_s21) as \"size_s21\", sum(size_s22) as \"size_s22\",sum(size_s23) as \"size_s23\", sum(size_s24) as \"size_s24\", sum(size_s25) as \"size_s25\",sum(size_s26) as \"size_s26\",sum(size_s27) as \"size_s27\", sum(size_s28) as \"size_s28\",sum(size_s29) as \"size_s29\", sum(size_s30) as \"size_s30\",sum(size_s31) as \"size_s31\",sum(size_s32) as \"size_s32\",sum(size_s33) as \"size_s33\",sum(size_s34) as \"size_s34\",sum(size_s35) as \"size_s35\",sum(size_s36) as \"size_s36\",sum(size_s37) as \"size_s37\",sum(size_s38) as \"size_s38\",sum(size_s39) as \"size_s39\",sum(size_s40) as \"size_s40\",sum(size_s41) as \"size_s41\",sum(size_s42) as \"size_s42\",sum(size_s43) as \"size_s43\",sum(size_s44) as \"size_s44\",sum(size_s45) as \"size_s45\",sum(size_s46) as \"size_s46\",sum(size_s47) as \"size_s47\",sum(size_s48) as \"size_s48\",sum(size_s49) as \"size_s49\",sum(size_s50) as \"size_s50\" from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" and bac_shift in ('$shift') and bac_no in ($module) and hour(bac_lastup) between \"$hour_from\" and \"$hour_to\" and bac_qty>0 group by bac_date,bac_style,delivery,color,ims_doc_no,bac_sec,bac_no,bac_shift,bac_lastup order by bac_date,bac_no*1,ims_doc_no,bac_shift,bac_lastup";
-
-	
-	$sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,bac_Qty,bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,$append from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and bac_no in ($module) and hour(bac_lastup) between \"$hour_from\" and \"$hour_to\" 
-	group by bac_no,bac_sec,bac_shift,bac_style,delivery,color,ims_doc_no,SIGN(bac_Qty),bac_date
-	order by bac_date,hour(bac_lastup) desc";
+	$sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,$append from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and bac_no in ($module) and hour(bac_lastup) between \"$hour_from\" and \"$hour_to\" GROUP BY bac_date,HOUR(bac_lastup),bac_no,bac_shift,ims_doc_no,SIGN(bac_Qty) ORDER BY bac_date,HOUR(bac_lastup),bac_no*1,ims_doc_no*1";
 }
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -271,94 +241,88 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS
 
 if(mysqli_num_rows($sql_result)>0)
 {
-echo "<div>";
-echo "<div  class ='table-responsive'>";
-echo "<table id=\"table1\"  border=1 class=\"table\" cellpadding=\"0\" cellspacing=\"0\" style='margin-top:10pt;'><thead>";
-echo "<tr class='tblheading' style='color:white;'><th>Date</th><th>Time<th>Module</th><th>Section</th><th>Shift</th><th>User Style</th><th>Movex Style</th><th>Schedule</th><th>Color</th><th>Cut No</th>";
-//echo "<th>SMV</th><th>NOP</th>";
-echo "<th>Input Job No</th><th>Size</th><th>Quantity</th></tr></tbody>";
-// var_dump(mysqli_num_rows($sql_result));
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$tid=$sql_row['tid'];
-	$module=$sql_row['bac_no'];
-	$section=$sql_row['bac_sec'];
-	$date=$sql_row['bac_date'];
-	$shift=$sql_row['bac_shift'];
-	$qty=$sql_row['bac_Qty'];
-	$lastup=$sql_row['bac_lastup'];
-	$userstyle=$sql_row['bac_style'];
-	$doc_no=$sql_row['ims_doc_no'];
-	$ims_tid=$sql_row['ims_tid'];
-	$ims_table_name=$sql_row['ims_table_name'];
-	$log_time=$sql_row['log_time'];
-	$smv=$sql_row['smv'];
-	$nop=$sql_row['nop'];
-	$schedules=$sql_row['delivery'];
-	
-	$s01=$sql_row['size_s01'];
-	$s02=$sql_row['size_s02'];
-	$s03=$sql_row['size_s03'];
-	$s04=$sql_row['size_s04'];
-	$s05=$sql_row['size_s05'];
-	$s06=$sql_row['size_s06'];
-	$s07=$sql_row['size_s07'];
-	$s08=$sql_row['size_s08'];
-	$s09=$sql_row['size_s09'];
-	$s10=$sql_row['size_s10'];
-	$s11=$sql_row['size_s11'];
-	$s12=$sql_row['size_s12'];
-	$s13=$sql_row['size_s13'];
-	$s14=$sql_row['size_s14'];
-	$s15=$sql_row['size_s15'];
-	$s16=$sql_row['size_s16'];
-	$s17=$sql_row['size_s17'];
-	$s18=$sql_row['size_s18'];
-	$s19=$sql_row['size_s19'];
-	$s20=$sql_row['size_s20'];
-	$s21=$sql_row['size_s21'];
-	$s22=$sql_row['size_s22'];
-	$s23=$sql_row['size_s23'];
-	$s24=$sql_row['size_s24'];
-	$s25=$sql_row['size_s25'];
-	$s26=$sql_row['size_s26'];
-	$s27=$sql_row['size_s27'];
-	$s28=$sql_row['size_s28'];
-	$s29=$sql_row['size_s29'];
-	$s30=$sql_row['size_s30'];
-	$s31=$sql_row['size_s31'];
-	$s32=$sql_row['size_s32'];
-	$s33=$sql_row['size_s33'];
-	$s34=$sql_row['size_s34'];
-	$s35=$sql_row['size_s35'];
-	$s36=$sql_row['size_s36'];
-	$s37=$sql_row['size_s37'];
-	$s38=$sql_row['size_s38'];
-	$s39=$sql_row['size_s39'];
-	$s40=$sql_row['size_s40'];
-	$s41=$sql_row['size_s41'];
-	$s42=$sql_row['size_s42'];
-	$s43=$sql_row['size_s43'];
-	$s44=$sql_row['size_s44'];
-	$s45=$sql_row['size_s45'];
-	$s46=$sql_row['size_s46'];
-	$s47=$sql_row['size_s47'];
-	$s48=$sql_row['size_s48'];
-	$s49=$sql_row['size_s49'];
-	$s50=$sql_row['size_s50'];
+	echo "<div>";
+	echo "<div  class ='table-responsive'>";
+	echo "<table id=\"table1\"  border=1 class=\"table\" cellpadding=\"0\" cellspacing=\"0\" style='margin-top:10pt;'><thead>";
+	echo "<tr class='tblheading' style='color:white;'><th>Date</th><th>Time<th>Module</th><th>Section</th><th>Shift</th><th>User Style</th><th>Movex Style</th><th>Schedule</th><th>Color</th><th>Cut No</th>";
+	//echo "<th>SMV</th><th>NOP</th>";
+	echo "<th>Input Job No</th><th>Size</th><th>Quantity</th></tr></tbody>";
+	// var_dump(mysqli_num_rows($sql_result));
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$tid=$sql_row['tid'];
+		$module=$sql_row['bac_no'];
+		$section=$sql_row['bac_sec'];
+		$date=$sql_row['bac_date'];
+		$shift=$sql_row['bac_shift'];
+		$qty=$sql_row['bac_Qty'];
+		$lastup=$sql_row['bac_lastup'];
+		$userstyle=$sql_row['bac_style'];
+		$doc_no=$sql_row['ims_doc_no'];
+		$ims_tid=$sql_row['ims_tid'];
+		$ims_table_name=$sql_row['ims_table_name'];
+		$log_time=$sql_row['log_time'];
+		$smv=$sql_row['smv'];
+		$nop=$sql_row['nop'];
+		$schedules=$sql_row['delivery'];
+		
+		$s01=$sql_row['size_s01'];
+		$s02=$sql_row['size_s02'];
+		$s03=$sql_row['size_s03'];
+		$s04=$sql_row['size_s04'];
+		$s05=$sql_row['size_s05'];
+		$s06=$sql_row['size_s06'];
+		$s07=$sql_row['size_s07'];
+		$s08=$sql_row['size_s08'];
+		$s09=$sql_row['size_s09'];
+		$s10=$sql_row['size_s10'];
+		$s11=$sql_row['size_s11'];
+		$s12=$sql_row['size_s12'];
+		$s13=$sql_row['size_s13'];
+		$s14=$sql_row['size_s14'];
+		$s15=$sql_row['size_s15'];
+		$s16=$sql_row['size_s16'];
+		$s17=$sql_row['size_s17'];
+		$s18=$sql_row['size_s18'];
+		$s19=$sql_row['size_s19'];
+		$s20=$sql_row['size_s20'];
+		$s21=$sql_row['size_s21'];
+		$s22=$sql_row['size_s22'];
+		$s23=$sql_row['size_s23'];
+		$s24=$sql_row['size_s24'];
+		$s25=$sql_row['size_s25'];
+		$s26=$sql_row['size_s26'];
+		$s27=$sql_row['size_s27'];
+		$s28=$sql_row['size_s28'];
+		$s29=$sql_row['size_s29'];
+		$s30=$sql_row['size_s30'];
+		$s31=$sql_row['size_s31'];
+		$s32=$sql_row['size_s32'];
+		$s33=$sql_row['size_s33'];
+		$s34=$sql_row['size_s34'];
+		$s35=$sql_row['size_s35'];
+		$s36=$sql_row['size_s36'];
+		$s37=$sql_row['size_s37'];
+		$s38=$sql_row['size_s38'];
+		$s39=$sql_row['size_s39'];
+		$s40=$sql_row['size_s40'];
+		$s41=$sql_row['size_s41'];
+		$s42=$sql_row['size_s42'];
+		$s43=$sql_row['size_s43'];
+		$s44=$sql_row['size_s44'];
+		$s45=$sql_row['size_s45'];
+		$s46=$sql_row['size_s46'];
+		$s47=$sql_row['size_s47'];
+		$s48=$sql_row['size_s48'];
+		$s49=$sql_row['size_s49'];
+		$s50=$sql_row['size_s50'];
 
-	$input_job = $sql_row['jobno'];
-	//if($input_job>9){
-	// $input_job_no = 'J'.str_pad($input_job, 3, '0', STR_PAD_LEFT);
-	//}else{
-		//$input_job_no = 'J'.str_pad($input_job, 3, '0', STR_PAD_LEFT);	
-	//}
-	//$input_job_no=  'J'.leading_zeros($input_job,3);
+		$input_job = $sql_row['jobno'];
 
 		$sizes = array($s01,$s02,$s03,$s04,$s05,$s06,$s07,$s08,$s09,$s10,$s11,$s12,$s13,$s14,$s15, $s16,$s17, $s18,$s19, $s20, $s21,$s22,$s23, $s24,$s25, $s26,$s27, $s28,$s29, $s30,$s31, $s32,$s33, $s34,$s35,$s36,$s37, $s38, $s39,$s40, $s41,$s42,$s43, $s44,$s45, $s46,$s47,$s48, $s49, $s50);
 		$filtered_sizes = array_filter($sizes);
 		$title_sizes = array('title_size_s01','title_size_s02','title_size_s03','title_size_s04','title_size_s05','title_size_s06','title_size_s07', 'title_size_s08', 'title_size_s09', 'title_size_s10', 'title_size_s11','title_size_s12', 'title_size_s13','title_size_s14','title_size_s15', 'title_size_s16','title_size_s17', 'title_size_s18', 'title_size_s19','title_size_s20', 'title_size_s21','title_size_s22','title_size_s23', 'title_size_s24','title_size_s25','title_size_s26', 'title_size_s27','title_size_s28','title_size_s29', 'title_size_s30','title_size_s31','title_size_s32','title_size_s33','title_size_s34','title_size_s35','title_size_s36','title_size_s37','title_size_s38','title_size_s39','title_size_s40','title_size_s41','title_size_s42','title_size_s43','title_size_s44','title_size_s45','title_size_s46','title_size_s47','title_size_s48','title_size_s49','title_size_s50');
-	
+
 		$sql1="select * from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
 		// echo $sql1."<br>";
 		$sql_result2=mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -377,7 +341,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$cutno=$sql_row1['acutno'];
 			}
 		}
-		
+			
 		//date:2012-06-26
 		//added new code for getting data from archive table of orders
 		$sql12="select order_style_no,order_del_no,order_col_des,color_code,style_id from $bai_pro3.bai_orders_db where order_del_no=\"".$schedules."\" and order_tid=\"".$order_tid."\"";
@@ -444,8 +408,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}
 
 
-}
-echo "</table></div></div>";
+	}
+	echo "</table></div></div>";
 }
 else{
 	echo "<div class='alert alert-danger' style='width:1000px';>No Data Found</div>";
