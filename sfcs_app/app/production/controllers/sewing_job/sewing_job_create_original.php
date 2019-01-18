@@ -218,7 +218,8 @@
 						$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$sch_id,$link);
 						
 						$pac_stat_input_check = echo_title("$bai_pro3.pac_stat_input","count(*)","schedule",$schedule,$link);
-						$packing_summary_input_check = echo_title("$bai_pro3.packing_summary_input","count(*)","type_of_sewing=1 and order_del_no",$schedule,$link);
+						$packing_summary_input_check = echo_title("$bai_pro3.packing_summary_input","count(*)","order_del_no",$schedule,$link);
+						$packing_summary_input_check_cut_based = echo_title("$bai_pro3.packing_summary_input","count(*)","pac_seq_no = -1 and order_del_no",$schedule,$link);
 						$pack_size_ref_check = echo_title("$bai_pro3.tbl_pack_ref","count(*)","schedule",$schedule,$link);
 
 						if ($packing_summary_input_check > 0)
@@ -229,6 +230,14 @@
 								  <strong>Warning!</strong>
 								  <br>You have already created sewing jobs based on pack method, So You should go with the same process.';
 								echo "&nbsp;&nbsp;&nbsp;&nbsp;<a class='btn btn-primary' href = '".getFullURLLevel($_GET['r'],'create_sewing_job_packlist.php',0,'N')."'>Click Here to Go</a>
+								</div>";
+							}
+							else if ($packing_summary_input_check_cut_based > 0)
+							{
+								echo '<br><div class="alert alert-danger">
+								  <strong>Warning!</strong>
+								  <br>You have already created sewing jobs based on Cut Jobs, So You should go with the same process.';
+								echo "&nbsp;&nbsp;&nbsp;&nbsp;<a class='btn btn-primary' href = '".getFullURLLevel($_GET['r'],'sewing_job_scaning/cut_sewing_job_generation.php',0,'N')."'>Click Here to Go</a>
 								</div>";
 							}
 							else
