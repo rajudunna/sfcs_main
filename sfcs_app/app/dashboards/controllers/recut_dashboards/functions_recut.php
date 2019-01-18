@@ -179,7 +179,7 @@ function RecutProcess($recut_id_edit)
             $table_data .= "<td>".$row_cat['replaced_qty']."</td>";
             $rem_string = $s_no.'rems';
             $table_data .= "<td id='$rem_string'>".$remaining_qty."</td>";
-            $table_data .= "<td><input class='form-control integer' type = 'Number' name='recutval[]' value='0' id='$s_no' onchange='validationrecutindividual($s_no)' onkeyup='return  isInt(this);' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)'></td>";
+            $table_data .= "<td><input class='form-control integer' type = 'Number' name='recutval[]' value='0' min='0' id='$s_no' onchange='validationrecutindividual($s_no)' onkeyup='return  isInt(this);' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)'></td>";
             $table_data .= "<input type='hidden' name='ids[$bcd_id]' value='$ids'>";
             $table_data .= "<input type='hidden' name='size[]' value='$size'>";
             $table_data .= "<input type='hidden' name='bcd_ids[]' value='$bcd_id'>";
@@ -393,7 +393,7 @@ function ReplaceProcess($replace_id_edit)
                 $table_data .= "<td>".$row_cat['replaced_qty']."</td>";
                 $rem_string = $s_no.'rems';
                 $table_data .= "<td id='$rem_string'>".$remaining_qty."</td>";
-                $table_data .= "<td><input class='form-control integer' type='Number' id='$s_no' name='replaceval[]' value='0' onchange='validationreplaceindividual($s_no)' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)' onkeyup='return  isInt(this);></td>";
+                $table_data .= "<td><input class='form-control integer' type='Number' id='$s_no' name='replaceval[]' value='0' min='0' onchange='validationreplaceindividual($s_no)' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)'  onkeyup='return  isInt(this);'></td>";
                 $table_data .= "<input type='hidden' id = '$s_no' value='$remaining_qty'>";
                 $table_data .= "<input type='hidden' name='ids[$bcd_id]' value='$ids'>";
                 $table_data .= "<input type='hidden' name='size[]' value='$size_title'>";
@@ -536,7 +536,7 @@ function updatemarkers($markers_update_doc_id)
     $html .= "<div class='row'>
                 <div class='col-md-3'></div>
                 <div class='col-md-3'><b>Marker Length</b>:<input class='form-control integer' name='mklen' id='mklen' type='float' ></td></div>
-                <div class='col-md-3'><b>Plies </b>:<input class='form-control integer' name='plies' value='$a_plies' type='Number' id='a_plies' onchange='isintegervalidation();' onkeyup='return  isInt(this);></td></div>
+                <div class='col-md-3'><b>Plies </b>:<input class='form-control integer' name='plies' value='$a_plies' type='Number' min='0' id='a_plies' onchange='isintegervalidation();' onkeyup='return  isInt(this);'></td></div>
                 <div class='col-md-3'></div>
             </div>";
     $html .= '</br></br>';
@@ -557,7 +557,7 @@ function updatemarkers($markers_update_doc_id)
          }
         $table_data .= "<input type='hidden' name ='size[]' value ='$key'>";
         $quantity = $value*$a_plies;
-        $table_data .= "<tr><td>$size_title_ind</td><td>$quantity</td><td><input class='form-control integer' id='$s_no' name='ratioval[$key][]' value='$value' type='Number' onchange='isintegervallidation($s_no);' onkeyup='return  isInt(this);></td></tr>";
+        $table_data .= "<tr><td>$size_title_ind</td><td>$quantity</td><td><input class='form-control integer' id='$s_no' name='ratioval[$key][]' value='$value' type='Number' min='0' onchange='isintegervallidation($s_no);'  onkeyup='return  isInt(this);'></td></tr>";
     }
     $table_data .= "<input type='hidden' value='$s_no' id='no_of_rows'>";
     $qry_to_get = "SELECT * FROM  `$bai_pro3`.`cat_stat_log` WHERE  order_tid = \"$order_tid\" and category in ($in_categories)";
@@ -759,7 +759,7 @@ function IssuedtoModuleProcess($issued_to_module_process)
             $bcd_id = $row_cat['bcd_id'];
             $table_data .= "<input type='hidden' name='doc_no_ref' value='$issued_to_module_process'>";
             $table_data .= "<input type='hidden' name='bcd_id[]' value='$bcd_id'>";
-            $table_data .= "<td><input class='form-control integer' name='issueval[]' value='0' id='$s_no' onchange='validatingremaining($s_no)' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)' type='Number' onkeyup='return isInt(this);' required></td>";
+            $table_data .= "<td><input class='form-control integer' name='issueval[]' value='0'  min='0' id='$s_no' onchange='validatingremaining($s_no)' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)' type='Number' onkeyup='return isInt(this);' required></td>";
         }
         //$table_data .= "<input type='hidden' id='no_of_rows' value='$s_no'>";
         $table_data .= "</tr></tbody></table>";

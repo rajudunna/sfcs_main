@@ -1085,7 +1085,7 @@ function myfunctionsearch()
 function isInt(t)
 {
     // alert();
-    if(Number(t.value) < 0 || t.value =='e' || t.value == 'E')
+    if(Number(t.value) < '0' || t.value =='e' || t.value == 'E')
     { 
         t.value = 0;
         return false; 
