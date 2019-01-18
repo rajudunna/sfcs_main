@@ -134,7 +134,7 @@
         $delete_query = "Delete from $bai_pro3.mo_operation_quantites where mo_no in ($mos) and op_code in ($op_codes) ";
         $delete_result = mysqli_query($link,$delete_query);
         if($delete_result > 0){
-			echo "Deleted Successfully";
+			// echo "Deleted Successfully";
             return true;
         }
         return false;
