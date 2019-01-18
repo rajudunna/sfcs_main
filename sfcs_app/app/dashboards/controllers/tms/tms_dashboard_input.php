@@ -498,8 +498,15 @@ echo "</font>";
 //For blinking priorties as per the section module wips
 $bindex=0;
 $blink_docs=array();
+$table_name="$temp_pool_db.plan_dash_doc_summ_input_".$rbac_username;
+$sql="DROP TABLE IF EXISTS $table_name";
+mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+$sql="CREATE TABLE $table_name ENGINE = myisam SELECT * FROM $bai_pro3.plan_dash_doc_summ_input ";
+mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name GROUP BY section ORDER BY section + 0";
+// echo $sqlx."<br>";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
@@ -570,13 +577,15 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			 if (window.focus) {Popup.focus()} return false;\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
 			$y=0;
 
-			$show_block = calculateJobsCount($module,$order_div_ref);
+			$show_block = calculateJobsCount($table_name,$module,$order_div_ref);
 			if($show_block > 0){
 				echo "<div style='float:left;'>		    
-				<a href=\"../".getFullURL($_GET['r'],'issued_to_module_summary_report.php','R')."?jobno=$input_job_no&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/issued_to_module_summary_report.php?jobno=$input_job_no&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><div  class='gloss-pink' style='float:left;'><b>$show_block</b></div></a></div>";
+										<a href=\"../".getFullURL($_GET['r'],'issued_to_module_summary_report.php','R')."?jobno=$input_job_no&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/issued_to_module_summary_report.php?jobno=$input_job_no&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><div  class='gloss-pink' style='float:left;'><b>$show_block</b></div></a>
+											
+							</div>";
 			}
 
-			$sql="SELECT * FROM $bai_pro3.plan_dashboard_input WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_module=$module GROUP BY input_job_no_random_ref order by input_priority asc";	
+			$sql="SELECT * FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_module=$module ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc ";	
 			$result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row=mysqli_fetch_array($result))
 			{
@@ -586,67 +595,74 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				}				
 				$input_job_no_random_ref=$row["input_job_no_random_ref"];
 				$input_trims_status=$row["input_trims_status"];
-				$sql2="SELECT min(st_status) as st_status,order_style_no,order_del_no,input_job_no,order_col_des FROM $bai_pro3.plan_doc_summ_input WHERE ".$order_div_ref." input_job_no_random='$input_job_no_random_ref'";	
+				$sql2="SELECT min(st_status) as st_status,order_style_no,order_del_no,input_job_no FROM $temp_pool_db.plan_doc_summ_input_tms_$rbac_username WHERE input_job_no_random='$input_job_no_random_ref'";	
 				$result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if(mysqli_num_rows($result2)>0)
+				while($row2=mysqli_fetch_array($result2))
 				{
-					while($row2=mysqli_fetch_array($result2))
+					$trims_status=$row2['st_status'];
+					$style=$row2['order_style_no'];
+					$schedule=$row2['order_del_no'];
+					$input_job_no=$row2['input_job_no'];
+				}									
+				if($input_trims_status==4)
+				{
+					$id="pink"; 
+				}
+				else if($input_trims_status == 2 or $input_trims_status == 3)
+				{
+					$id="blue"; 
+				}
+				else if($input_trims_status == 1)
+				{
+					$id="yellow";
+				}
+				else
+				{
+					if($trims_status=="NULL" || $trims_status=="" || $trims_status=="(NULL)")
 					{
-						$trims_status=$row2['st_status'];
-						$style=$row2['order_style_no'];
-						$order_col_des=$row2['order_col_des'];
-						$schedule=$row2['order_del_no'];
-						$input_job_no=$row2['input_job_no'];
-					}									
-					if($input_trims_status==4)
+						$id="yash";
+					}			
+					else if($trims_status == 0 || $trims_status == 9)
 					{
-						$id="pink"; 
-					}
-					else if($input_trims_status == 2 or $input_trims_status == 3)
+						$id="red";
+					}			
+					else if($trims_status == 1)
 					{
-						$id="blue"; 
-					}
-					else if($input_trims_status == 1)
-					{
-						$id="yellow";
-					}
+						$id="lgreen";
+					}			
 					else
 					{
-						if($trims_status=="NULL" || $trims_status=="" || $trims_status=="(NULL)")
-						{
-							$id="yash";
-						}			
-						else if($trims_status == 0 || $trims_status == 9)
-						{
-							$id="red";
-						}			
-						else if($trims_status == 1)
-						{
-							$id="lgreen";
-						}			
-						else
-						{
-							$id="red";
-						}
+						$id="red";
 					}
-					 $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$order_col_des,$input_job_no,$link);
-					$title=str_pad("Style:".$style,80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Job_No:".$display_prefix1,80);
-					if(in_array($authorized,$has_permission))
-					{
-						echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter</font></a></div></div></div>";
-					}
-					else
-					{
-						echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ></div></div></div>";
-					}					
-					$y++;
-				}				
+				}
+				$get_color = echo_title("$bai_pro3.packing_summary_input","order_col_des","order_del_no='$schedule' and input_job_no",$input_job_no,$link);
+				$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$get_color,$input_job_no,$link);
+				$title=str_pad("Style:".$style,80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Job_No:".$display_prefix1,80);
+				if(in_array($authorized,$has_permission))
+				{
+					echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter</font></a></div></div></div>";
+				}
+				else
+				{
+					echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ></div></div></div>";
+				}					
+				$y++;			
 			}
 			for($j=$y+1;$j<=$priority_limit;$j++)
 			{
 				echo "<div id=\"$schedule\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"white\" style=\"font-size:12px; text-align:center; color:white\"><a href='#'></a></div></div></div>";
 			}
-			
+			$sqly="select buyer_div from $bai_pro3.plan_modules where module_id=$module";
+			$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_rowy=mysqli_fetch_array($sql_resulty))
+			{
+				$buyer_div=$sql_rowy['buyer_div'];
+				
+				if(substr($buyer_div,0,1)=="M")
+				{
+					$cut_wip_control=7000;
+				}		
+			}
 			echo "</td>";
 			echo "</tr>";
 		}
@@ -678,19 +694,29 @@ include('include_legends_tms.php');
 
 <?php
 
-function calculateJobsCount($module,$order_div_ref)
-{
+function calculateJobsCount($table_name,$module,$order_div_ref){
 	global $link;
-	$ijs_query  = "SELECT count(*) as jobs FROM $bai_pro3.plan_dashboard_input LEFT JOIN $bai_pro3.plan_doc_summ_input 
-	ON input_job_no_random=input_job_no_random_ref where input_trims_status=4 AND input_module=$module $order_div_ref";
+	$ijs_query  = "SELECT GROUP_CONCAT(DISTINCT input_job_no_random_ref) as jobs FROM $table_name WHERE input_trims_status=4  
+						     AND input_module=$module $order_div_ref";
 	$ijs_result = mysqli_query($link,$ijs_query);
 	while($row = mysqli_fetch_array($ijs_result)){
 		$jobs = $row['jobs'];
 	}
-	if($jobs == 0 || $jobs == '')
+
+	if($jobs == '')
+		return 0;
+	else{
+		$ips_jobs_query = "SELECT count(distinct input_job_no_random_ref) AS ips_jobs_match_count FROM bai_pro3.plan_dashboard_input where input_module = $module";
+		$inps_jobs_result = mysqli_query($link,$ips_jobs_query);
+		while($row = mysqli_fetch_array($inps_jobs_result)){
+				$ips_jobs_count = $row['ips_jobs_match_count'];
+		}			 
+	}
+
+	if($ips_jobs_count == 0 || $ips_jobs_count == '')
 		return 0;
 	else	
-		return $jobs;
+		return $ips_jobs_count;
 }
 
 
