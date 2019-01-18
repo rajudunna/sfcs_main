@@ -811,7 +811,7 @@
 														//echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';	
 
                                                        //remove docs
-														$sql1="select doc_no from $bai_pro3.embellishment_plan_dashboard where send_qty = receive_qty";
+														$sql1="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no=$doc_no and send_qty = receive_qty";
 														$sql_resultx=mysqli_query($link,$sql1) or exit("Sql Error2".mysqli_error());
 														while($sql_rowx=mysqli_fetch_array($sql_resultx))
 														{
