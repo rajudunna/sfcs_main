@@ -818,7 +818,7 @@
 														//  $remove_docs=$sql_rowx['doc_no'];
 														// }
 
-														 $delete_sql="delete from $bai_pro3.embellishment_plan_dashboard where doc_no ='$remove_docs' and send_qty = receive_qty and send_qty <> 0 and receive_qty <> 0";
+														 $delete_sql="delete from $bai_pro3.embellishment_plan_dashboard where doc_no ='$doc_no' and send_qty = receive_qty and send_qty <> 0 and receive_qty <> 0";
 														 
 														  mysqli_query($link, $delete_sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 														
