@@ -18,14 +18,14 @@ if(isset($_POST['approve']))
        $color = $row['order_col_des'];
 
    }
-   if($schedule != ''){
-        $sewing_job_validation = "SELECT doc_no from $bai_pro3.packing_summary_input where order_del_no = '$schedule'";
-        if(mysqli_num_rows(mysqli_query($link,$sewing_job_validation)) == 0){
-                $url = '?r='.$_GET['r'];
-                echo "<script>sweetAlert('Please Prepare Sewing Jobs for this Schedule','','warning');window.location = '".$url."'</script>";
-                exit();
-        } 
-    }
+//    if($schedule != ''){
+//         $sewing_job_validation = "SELECT doc_no from $bai_pro3.packing_summary_input where order_del_no = '$schedule'";
+//         if(mysqli_num_rows(mysqli_query($link,$sewing_job_validation)) == 0){
+//                 $url = '?r='.$_GET['r'];
+//                 echo "<script>sweetAlert('Please Prepare Sewing Jobs for this Schedule','','warning');window.location = '".$url."'</script>";
+//                 exit();
+//         } 
+//     }
    
    $codes=$_POST['code_no_ref'];
    $hostname=explode(".",gethostbyaddr($_SERVER['REMOTE_ADDR']));
@@ -65,15 +65,33 @@ if(isset($_POST['approve']))
     
    $retreaving_last_sewing_job_qry = "SELECT MAX(input_job_no_random)as input_job_no_random,MAX(CAST(input_job_no AS DECIMAL)) as input_job_no,destination,packing_mode,sref_id,pac_seq_no FROM `$bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$schedule'";
     $res_retreaving_last_sewing_job_qry = $link->query($retreaving_last_sewing_job_qry);
-    while($row_sj = $res_retreaving_last_sewing_job_qry->fetch_assoc()) 
-    {   
-        $input_job_no = $row_sj['input_job_no'];
-       // $input_job_no_random = $row_sj['input_job_no_random'];
-        $destination = $row_sj['destination'];
-        $packing_mode = $row_sj['packing_mode'];
-        $pac_seq_no = $row_sj['pac_seq_no'];
-        // $sref_id = $row_sj['sref_id'];
-        $sref_id = '1';
+    if($res_retreaving_last_sewing_job_qry->num_rows > 0)
+    {
+        while($row_sj = $res_retreaving_last_sewing_job_qry->fetch_assoc()) 
+        {   
+            $input_job_no = $row_sj['input_job_no'];
+            // $input_job_no_random = $row_sj['input_job_no_random'];
+            $destination = $row_sj['destination'];
+            $packing_mode = $row_sj['packing_mode'];
+            $pac_seq_no = $row_sj['pac_seq_no'];
+            // $sref_id = $row_sj['sref_id'];
+            $sref_id = '0';
+        }
+    }
+    else
+    {
+        $input_job_no = 1;
+        $sql2="select group_concat(distinct trim(destination)) as dest,order_style_no as style,GROUP_CONCAT(DISTINCT order_col_des separator '<br/>') as color,order_po_no as cpo,order_date,vpo from $bai_pro3.bai_orders_db where order_del_no in (".$schedule.") and order_col_des=\"".$color."\""; 
+        // echo $sql2; 
+        $result2=mysqli_query($link, $sql2) or die("Error-".$sql2."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        while($sql_row2=mysqli_fetch_array($result2)) 
+        { 
+            //$destination=$sql_row2["dest"]; 
+            $destination = $row_sj['dest'];
+            $packing_mode = 0;
+            $pac_seq_no = 0;
+            $sref_id = '0';
+        }
     }
     $act_input_job_no = $input_job_no+1;
     $act_input_job_no_random=$schedule.date("ymd").$act_input_job_no;

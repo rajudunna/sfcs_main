@@ -147,6 +147,7 @@
                 $retreaving_bcd_data_res = $link->query($retreaving_bcd_data);
                 while($row_bcd = $retreaving_bcd_data_res->fetch_assoc()) 
                 {
+                    $to_add_mo = 0;
                     $bcd_act_id = $row_bcd['id'];
                     $bundle_number = $row_bcd['bundle_number'];
                     $operation_id = $row_bcd['operation_id'];
@@ -230,12 +231,12 @@
                         }
                         $update_rejection_log_child = "update $bai_pro3.rejection_log_child set recut_qty = recut_qty+$to_add where bcd_id = $bcd_act_id";
                         mysqli_query($link,$update_rejection_log_child) or exit("While updating rejection log child".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        
+                        $to_add_mo += $to_add;
                         $update_rejection_log = "update $bai_pro3.rejections_log set recut_qty = recut_qty+$to_add,remaining_qty = remaining_qty - $to_add where style = '$style' and schedule = '$scheule' and color = '$color'";
                         mysqli_query($link,$update_rejection_log) or exit("While updating rejection log".mysqli_error($GLOBALS["___mysqli_ston"]));
                     }
+                    $mo_changes = mofillingforrecutreplace($to_add_mo,$bundle_number);
                 }
-
             }
         }
         $url = '?r='.$_GET['r'];
@@ -303,6 +304,7 @@
                 $retreaving_bcd_data_res = $link->query($retreaving_bcd_data);
                 while($row_bcd = $retreaving_bcd_data_res->fetch_assoc()) 
                 {
+                    $to_add_mo = 0;
                     $bcd_individual = $row_bcd['bundle_number'];
                     $bundle_number = $row_bcd['id'];
                     $operation_id = $row_bcd['operation_id'];
@@ -416,18 +418,106 @@
                                     //updating rejection log 
                                     $updating_rejection_log = "update $bai_pro3.rejections_log set replaced_qty = replaced_qty+$to_add_sj,remaining_qty = remaining_qty-$to_add_sj where style = '$style' and schedule = '$scheule' and color = '$color' ";
                                     mysqli_query($link, $updating_rejection_log) or exit("updating_rejection_log".mysqli_error($GLOBALS["___mysqli_ston"]));
-
+                                    $to_add_mo += $to_add_sj;
                                     $issued_to_module = issued_to_module($bundle_number,$to_add_sj,1);
                                 }
                             }
                         }
                     }
+                    $mo_changes = mofillingforrecutreplace($to_add_mo,$bundle_number);
                 }
                
             }
         }
         $url = '?r='.$_GET['r'];
         echo "<script>sweetAlert('Replacement Done Successfully!!!','','success');window.location = '".$url."'</script>"; 
+    }
+    function mofillingforrecutreplace($qty,$bcd_id)
+    {
+        include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+        //retreaving next operation of 15 for that style and color
+        $selcting_qry = "SELECT bcd.style,mapped_color,operation_id,bundle_number,operation_order,`ops_sequence` FROM 
+        $brandix_bts.bundle_creation_data bcd LEFT JOIN $brandix_bts.tbl_orders_ops_ref ops ON ops.operation_code=bcd.operation_id 
+        LEFT JOIN $brandix_bts.tbl_style_ops_master ts ON ts.operation_code=bcd.operation_id AND ts.`style` = bcd.`style` AND ts.`color` = bcd.`mapped_color`
+        WHERE bcd.id = $bcd_id";
+        echo $selcting_qry.'</br>';
+        $result_selcting_qry=mysqli_query($link, $selcting_qry) or die("selcting_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($ops_row=mysqli_fetch_array($result_selcting_qry)) 
+        {
+            $style = $ops_row['style'];
+            $color = $ops_row['mapped_color'];
+            $operation_id = $ops_row['operation_id'];
+            $bundle_number = $ops_row['bundle_number'];
+            $category_act = $ops_row['category'];
+            $ops_seq = $ops_row['ops_sequence'];
+            $ops_order = $ops_row['operation_order'];
+        }
+        if($operation_id != 15)
+        {
+            $category=["'Send PF'","'Receive PF'"];
+            if(in_array($category_act,$category))
+            {
+                $emb_cut_check_flag = 1;
+            }
+            if($emb_cut_check_flag)
+            {
+                $operation_mapping_qry = "SELECT tm.operation_code,tr.operation_name FROM `$brandix_bts`.`tbl_style_ops_master` tm 
+                LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` tr ON tr.operation_code = tm.`operation_code`
+                WHERE style = '$style' AND color = '$color'
+                AND category IN (".implode(',',$category).")";
+            }
+            else
+            {
+                $operation_mapping_qry = "SELECT tm.operation_code,tr.operation_name,operation_order,ops_sequence FROM `$brandix_bts`.`tbl_style_ops_master` tm 
+                LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` tr ON tr.operation_code = tm.`operation_code`
+                WHERE style = '$style' AND color = '$color'
+                AND category NOT IN (".implode(',',$category).") AND tm.operation_code NOT IN (10,200,15) AND CAST(operation_order AS CHAR) <= '$ops_order' 
+                AND ops_sequence = '$ops_seq'
+                ORDER BY operation_order";
+            }
+            echo $operation_mapping_qry.'</br>';
+            $result_operation_mapping_qry=mysqli_query($link, $operation_mapping_qry) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($ops_row=mysqli_fetch_array($result_operation_mapping_qry)) 
+            {
+                $op_codes[] = $ops_row['operation_code'];
+            }
+            var_dump($op_codes).'</br>';
+            $multiple_mos_tot_qty = $qty;
+            $moq_qry = "SELECT id,mo_no,ref_no,op_code,bundle_quantity,SUM(bundle_quantity)AS bundle_quantity,SUM(good_quantity)AS good_quantity,
+            SUM(rejected_quantity)AS rejected_quantity,(SUM(rejected_quantity)-(SUM(bundle_quantity)-bundle_quantity))AS rem FROM 
+            $bai_pro3.`mo_operation_quantites` 
+            WHERE ref_no=$bundle_number AND op_code=$operation_id GROUP BY mo_no,ref_no,op_code 
+            ORDER BY id";
+            echo $moq_qry.'</br>';
+            $moq_qry_res = $link->query($moq_qry);
+            while($row_moq = $moq_qry_res->fetch_assoc()) 
+            {
+                $max_mo_no = $row_moq['mo_no'];
+                $bundle_quantity_mo = $row_moq['rem'] - $array_mos[$max_mo_no];
+                if($bundle_quantity_mo < $multiple_mos_tot_qty)
+                {
+                    $multiple_mos_tot_qty = $multiple_mos_tot_qty - $bundle_quantity_mo;
+                    $to_add_mo = $bundle_quantity_mo;
+                    $array_mos[$max_mo_no]  = $bundle_quantity_mo;
+                }
+                else
+                {
+                    $to_add_mo = $multiple_mos_tot_qty;
+                    $array_mos[$max_mo_no]  = $multiple_mos_tot_qty;
+                    $multiple_mos_tot_qty = 0;
+                }
+                if($to_add_mo > 0)
+                {
+                    //insert qry
+                    foreach($op_codes as $key=>$value)
+                    {
+                        $updae_moq_qry="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$max_mo_no."', '".$bundle_number."','".$to_add_mo."', '$value', 'Cutting')";
+                        mysqli_query($link,$updae_moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    }
+                }
+            }
+    
+        }
     }
     // $shifts_array = ["IssueDone","RecutPending"];
     $drp_down = '<div class="row"><div class="col-md-3"><label>Status Filter:</label>
