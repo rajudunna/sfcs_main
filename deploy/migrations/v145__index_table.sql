@@ -1,0 +1,2 @@
+/*1306 index for most used fields for table store_in*/
+ALTER TABLE bai_rm_pj1.store_in DROP INDEX ref1, DROP INDEX NewIndex1, DROP INDEX lot_no, ADD KEY store_in_1ix (lot_no), ADD KEY store_in_2ix (barcode_number);

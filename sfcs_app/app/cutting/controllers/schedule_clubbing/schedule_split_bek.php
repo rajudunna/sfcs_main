@@ -14,7 +14,23 @@ $add_excess_qty_to_first_sch=1; //0-Yes, 1-NO
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 
 // error_reporting(0);
 ?>
+<style>
 
+#loading-image{
+  position:fixed;
+  top:0px;
+  right:0px;
+  width:100%;
+  height:100%;
+  background-color:#666;
+  /* background-image:url('ajax-loader.gif'); */
+  background-repeat:no-repeat;
+  background-position:center;
+  z-index:10000000;
+  opacity: 0.4;
+  filter: alpha(opacity=40); /* For IE8 and earlier */
+}
+</style>
 <script> 
 
 function firstbox() 
@@ -79,6 +95,7 @@ function check_all()
 	}
 	else
 	{
+		document.getElementById("loading-image").style.display = "block";
 		return true;
 	}
 }
@@ -170,6 +187,9 @@ table{
 </head> 
 <body> 
 <!--<div id="page_heading"><span style="float"><h3>Mixed Schedule : Job Segregation Panel (PO Level)</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div> -->
+<div class="ajax-loader" id="loading-image" style="display: none">
+    <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+</div>
 <div class="panel panel-primary">
 <div class="panel-heading">Schedule Club Splitting (Color Level)</div>
 <div class="panel-body">
@@ -224,7 +244,7 @@ echo "<div class=\"col-sm-3\"><label>Select Schedule: </label><select name=\"sch
 //$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\""; 
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != ''))  
 //{ 
-    $sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where length(order_del_no)<8 and order_style_no=\"$style\" and $order_joins_in_1 order by order_date";     
+    $sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_tid in (select order_tid from $bai_pro3.plandoc_stat_log) and length(order_del_no)<8 and order_style_no=\"$style\" and $order_joins_in_1 order by order_date";     
 //} 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 $sql_num_check=mysqli_num_rows($sql_result); 
@@ -247,7 +267,7 @@ else
 echo "</select></div>"; 
 
 echo "<div class=\"col-sm-3\"><label>Select Color: </label><select name=\"color\" id=\"color\" class=\"form-control\" onchange=\"thirdbox();\" >"; 
-$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and $order_joins_in_1"; 
+$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_tid in (select order_tid from $bai_pro3.plandoc_stat_log) and order_style_no=\"$style\" and order_del_no=\"$schedule\" and $order_joins_in_1"; 
 //}
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 $sql_num_check=mysqli_num_rows($sql_result); 
@@ -276,8 +296,10 @@ echo "</select></div>";
 <?php  
 if(strlen($color)>0 and $color!="NIL"){ 
     //echo '<input type="submit" name="submit" value="Segregate">'; 
-    echo "</br><div class=\"col-sm-3\"><input type=\"submit\" onclick='return check_all();' class=\" btn btn-primary
-\" value=\"Segregate\" name=\"submit\"  id=\"Segregate\" onclick=\"document.getElementById('Segregate').style.display='none'; document.getElementById('msg1').style.display='';\"/></div>"; 
+    echo "</br>
+			<div class=\"col-sm-3\">
+				<input type=\"submit\" onclick='return check_all();' class=\"btn btn-primary\" value=\"Segregate\" name=\"submit\"  id=\"Segregate\"/>
+			</div>"; 
   echo "<span id=\"msg1\" style=\"display:none;\"><h5>Please Wait data is processing...!<h5></span>"; 
 } 
 
@@ -291,7 +313,8 @@ if(strlen($color)>0 and $color!="NIL"){
 <?php 
 
 if(isset($_POST['submit'])) 
-{ 
+{
+	echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "block";</script>';
     $order_del_no=$_POST['schedule']; 
     $style=$_POST['style']; 
     $color=$_POST['color'];
@@ -762,7 +785,7 @@ if(isset($_POST['submit']))
 						{
 							if($size_q[$j]>0)
 							{
-								$sql471="update $bai_pro3.plandoc_stat_log set ".$size_p[$j]."='".$size_q[$j]."' where doc_no='$docn'";
+								$sql471="update $bai_pro3.plandoc_stat_log set ".$size_p[$j]."=($size_p[$j]+$size_q[$j]) where doc_no='$docn'";
 								mysqli_query($link, $sql471) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"])); 
 								$sql4712="update $bai_pro3.mix_temp_desti set qty='0' where doc_no='".$sql_row1['doc_no']."' and size='".$size_p[$j]."' and order_tid='".$sql_row1['order_tid']."'"; 
 								//echo $sql4712."<br>"; 
@@ -885,13 +908,25 @@ if(isset($_POST['submit']))
 				}
 				 
 				
-				if(sizeof($pending_cat_order)>0)
-				{	
-					echo " <div class='alert alert-info alert-dismissible'>
-					<strong>Info!</strong> Please Complete Lay Plan for order Quantity fro below.<br>";
-					for($iii=0;$iii<sizeof($pending_cat_order);$iii++)
+				// echo "</div>";	
+				if(sizeof($pending_cat_ref)>0)
+				{
+					echo '<script type="text/javascript">console.log("pops4"); document.getElementById("loading-image").style.display = "none";</script>';
+					echo " <div class='alert alert-warning alert-dismissible'> Below categories need to complete Lay plan for Full Order.<br>";
+					for($iiij=0;$iiij<sizeof($pending_cat_ref);$iiij++)
 					{
-						echo "Order Id ===> ".$pending_cat_order[$iii]." / Category ===> ".$pending_cat_ref_type[$iii]."<br>";
+						echo "Order Id ===> ".$pending_cat_order[$iiij]." / Category ===> ".$pending_cat_ref_type[$iiij]."<br>";
+					}
+					echo "</div>";
+				}		
+				echo "<br><br>";
+				if(sizeof($pend_order)>0)
+				{
+					echo '<script type="text/javascript">console.log("pops3"); document.getElementById("loading-image").style.display = "none";</script>';
+					echo " <div class='alert alert-info alert-dismissible'> For Below categories still Lay plan not started.<br>";
+					for($iiik=0;$iiik<sizeof($pend_order);$iiik++)
+					{
+						echo "Order Id ===> ".$pend_order[$iiik]." / Category ===> ".$pend_order_type[$iiik]."<br>";
 					}
 					echo "</div>";
 				}
@@ -914,22 +949,26 @@ if(isset($_POST['submit']))
 		// echo "</div>";	
 		if(sizeof($pending_cat_ref)>0)
 		{
+			echo '<script type="text/javascript">console.log("pops1"); document.getElementById("loading-image").style.display = "none";</script>';
 			echo " <div class='alert alert-warning alert-dismissible'> Below categories need to complete Lay plan for Full Order.<br>";
-			for($iii=0;$iii<sizeof($pending_cat_ref);$iii++)
+			for($iiij=0;$iiij<sizeof($pending_cat_ref);$iiij++)
 			{
-				echo "Order Id ===> ".$pending_cat_order[$iii]." / Category ===> ".$pending_cat_ref_type[$iii]."<br>";
+				echo "Order Id ===> ".$pending_cat_order[$iiij]." / Category ===> ".$pending_cat_ref_type[$iiij]."<br>";
 			}
-		}
-		echo "</div><br><br>";
+			echo "</div>";
+		}		
+		echo "<br><br>";
 		if(sizeof($pend_order)>0)
 		{
+			echo '<script type="text/javascript">console.log("pops2"); document.getElementById("loading-image").style.display = "none";</script>';
 			echo " <div class='alert alert-info alert-dismissible'> For Below categories still Lay plan not started.<br>";
-			for($iii=0;$iii<sizeof($pend_order);$iii++)
+			for($iiik=0;$iiik<sizeof($pend_order);$iiik++)
 			{
-				echo "Order Id ===> ".$pend_order[$iii]." / Category ===> ".$pend_order_type[$iii]."<br>";
+				echo "Order Id ===> ".$pend_order[$iiik]." / Category ===> ".$pend_order_type[$iiik]."<br>";
 			}
+			echo "</div>";
 		}		
-		echo "</div>";			
+					
 	} 
 } 
 ?>
