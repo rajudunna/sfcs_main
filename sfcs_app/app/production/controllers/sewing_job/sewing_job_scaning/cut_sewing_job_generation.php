@@ -220,88 +220,79 @@ if(isset($_POST) && isset($_POST['main_data'])){
         });
     </script>
 <div class = 'panel panel-primary'>
-<div class = 'panel-heading'>
-<b>Cut Sewing Job Generation</b>
-</div>
-<?php
-$style=$_GET['style'];
-$schedule=$_GET['schedule']; 
-$color  = $_GET['color'];
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-echo '<div class = "panel-body">';
-$sql="select distinct order_style_no from bai_pro3.bai_orders_db_confirm";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-echo "<div class=\"row\"><div class=\"col-sm-3\"><label>Select Style:</label>
-<select class='form-control' name=\"style\"  id='style'>";
+    <div class = 'panel-heading'><b>Cut Sewing Job Generation</b></div>
+    <?php
+        $style=$_GET['style'];
+        $schedule=$_GET['schedule']; 
+        $color  = $_GET['color'];
+        include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+        echo '<div class = "panel-body">';
+            $sql="select distinct order_style_no from bai_pro3.bai_orders_db_confirm";
+            $sql_result=mysqli_query($link, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
+            echo "<div class=\"row\">
+                    <div class=\"col-sm-3\">
+                        <label>Select Style:</label>
+                        <select class='form-control' name=\"style\"  id='style' required>";
+                            echo "<option value=''>Please Select</option>";
+                            while($sql_row=mysqli_fetch_array($sql_result))
+                            {
+                            	if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
+                            	{
+                            		echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
+                            	}
+                            	else
+                            	{
+                            		echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
+                            	}
+                            }
+                        echo "</select>
+                    </div>";
+                    $sql="select distinct order_del_no from bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_joins not in ('1','2')";
+                    $sql_result=mysqli_query($link, $sql) or exit("Sql Error schedule ".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    echo "<div class='col-sm-3'>
+                            <label>Select Schedule:</label> 
+                            <select class='form-control' name=\"schedule\"  id='schedule' required>";
+                                echo "<option value=''>Please Select</option>";
+                                while($sql_row=mysqli_fetch_array($sql_result))
+                                {
+                                    if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule))
+                                    {
+                                        echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
+                                    }
+                                    else
+                                    {
+                                        echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
+                                    }
+                                }
+                            echo "</select>
+                        </div>";
+                    $sql="select distinct order_col_des from bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no= \"$schedule\" and order_joins not in ('1','2')";
+                    $sql_result=mysqli_query($link, $sql) or exit("Sql Error color ".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    echo "<div class='col-sm-3'>
+                            <label>Select Color:</label>
+                            <select class='form-control' name=\"color\"  id='color' required>";
+                                echo "<option value=''>Please Select</option>";
+                                while($sql_row=mysqli_fetch_array($sql_result))
+                                {
+                                    if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
+                                    {
+                                        echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."</option>";
+                                    }
+                                    else
+                                    {
+                                        echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</option>";
+                                    }
+                                }
+                            echo "</select>
+                        </div>";
 
-echo "<option value='".$style."'>Please Select</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-
-	if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
-	{
-		echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
-	}
-	else
-	{
-		echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
-	}
-
-}
-echo "  </select>
-	</div>";
-//echo '<div class="col-sm-3">
-  //    <label for="usr">Schedule :</label>
-   //   <input type="text" class="form-control" value="'.$schedule.'"  name=\"schedule\"  id="schedule">
-   // </div>';
-   
-
-   echo "<div class='col-sm-3'><label>Select Schedule:</label> 
-   <select class='form-control' name=\"schedule\"  id='schedule'>";
-$sql="select distinct order_del_no from bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_joins not in ('1','2')";	
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-
-echo "<option value='".$schedule."' disabled selected>Please Select</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
- if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule)){
-         echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
-     }
- else{
-     echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
- }
-}
-
-echo "	</select>";
-  echo "</div>";
-
-echo "<div class='col-sm-3'><label>Select Color:</label>
-<select class='form-control' name=\"color\"  id='color'>";
-$sql="select distinct order_col_des from bai_pro3.bai_orders_db_confirm where order_del_no= $schedule and order_joins not in ('1','2')";
-    //echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-echo "<option value='".$color."' disabled selected>Please Select</option>";
-   while($sql_row=mysqli_fetch_array($sql_result))
-{
-	if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color)){
-		echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."</option>";
-	}else{
-		echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</option>";
-	}
-}
-
-echo "</select>
-    </div>
-    <div class='col-sm-3'>";
-    if($schedule!='' && $style!=''){
-        echo "<a class='btn btn-success pull-right' href='?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2IvaW5wdXRfam9iX21peF9jaF9yZXBvcnQucGhw&schedule=".$schedule."&seq_no=-1&style=".$style."' id='print_labels'>Print Labels</a>";
-    }
-    echo "</div>
-    <br/>";
+            echo "<div class='col-sm-3'>";
+                if($schedule!='' && $style!='')
+                {
+                    echo "<a class='btn btn-success pull-right' href='?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2IvaW5wdXRfam9iX21peF9jaF9yZXBvcnQucGhw&schedule=".$schedule."&seq_no=-1&style=".$style."' id='print_labels'>Print Labels</a>";
+                }
+            echo "</div>
+            <br/>";
     ?>
 </div>
 <?php
@@ -320,7 +311,7 @@ if($schedule != "" && $color != "")
     $max_cut = 0;
     $over_all_data = [];
     if(mysqli_num_rows($ratio_result)>0){
-        echo "<div class='col-sm-12' id='main-table'><div class='table-responsive'><table class='table'>";
+        echo "<div class='col-sm-12' id='main-table'><br><br><div class='table-responsive'><table class='table'>";
         while($row=mysqli_fetch_array($ratio_result))
         {
             $doc_nos[] = $row['doc_no'];
