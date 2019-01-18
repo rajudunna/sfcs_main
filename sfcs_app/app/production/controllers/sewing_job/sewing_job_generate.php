@@ -424,7 +424,11 @@
 		// echo '<h4>Pack Method: <span class="label label-info">'.$operation[$carton_method].'</span></h4>';
 		// echo "<table class='table table-striped table-bordered'>";
 		// echo "<thead><th>Docket Number</th><th>Color</th><th>Size</th><th>Size Title</th><th>Input Job Number</th><th>Rand No Number</th><th>Quantity</th></thead>";
-		$status_sew=1;
+		$input_job_no_tmp_new= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_del_no",$schedule,$link);
+		if ($input_job_no_tmp_new == '' or $input_job_no_tmp_new == null or $input_job_no_tmp_new == 0)
+		{
+			$status_sew=1;
+		}	
 		$cols_tot=array();
 		if($carton_method==1 || $carton_method==2)
 		{
