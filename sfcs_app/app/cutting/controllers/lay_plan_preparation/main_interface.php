@@ -435,6 +435,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}
 		
 			
+		$order_joins = $sql_row['order_joins'];
 		$flag = $sql_row['title_flag'];
 		/* Start  Adding MPO Number  */
 		$sql="select MPO from $bai_pro2.shipment_plan_summ where schedule_no=\"$order_del_no\"";

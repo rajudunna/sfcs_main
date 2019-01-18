@@ -532,7 +532,47 @@ if(isset($_POST['submit']))
 				
 				$size_p=array();
 				$size_q=array();
-				
+				// Sample Checking
+				for($j=0;$j<sizeof($ready_cat_ref);$j++)
+				{
+					$sql471="select order_tid,order_del_no,order_col_des from $bai_pro3.bai_orders_db_confirm where order_joins='$orders_join'"; 
+					//echo $sql47."<br>";
+					$sql_result471=mysqli_query( $link, $sql471) or exit("Sql Error46".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					while($sql_row471=mysqli_fetch_array($sql_result471)) 
+					{ 
+						$sql472="select * from $bai_pro3.sp_sample_order_db where order_tid='".$sql_row471['order_tid']."'"; 
+						//echo $sql47."<br>";
+						$sql_result472=mysqli_query( $link, $sql472) or exit("Sql Error46".mysqli_error($GLOBALS["___mysqli_ston"]));
+						if(mysqli_num_rows($sql_result472)>0)
+						{						
+							while($sql_row472=mysqli_fetch_array($sql_result472)) 
+							{
+								$qty=$sql_row472['input_qty'];
+								$sql12="SELECT * FROM $bai_pro3.`mix_temp_desti` where size='p_".$sql_row472['sizes_ref']."' and cat_ref='".$ready_cat_ref[$j]."' order by doc_no*1"; 
+								//echo $sql1."<br>";
+								$sql_result12=mysqli_query( $link, $sql12) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"])); 
+								while($sql_row1x12=mysqli_fetch_array($sql_result12)) 
+								{
+									if($qty>0)
+									{
+										if($qty>$sql_row1x12['qty'])
+										{
+											$update_sql="UPDATE `bai_pro3`.`mix_temp_desti` SET `order_tid` = '".$sql_row471['order_tid']."' , `order_del_no` = '".$sql_row471['order_del_no']."' , `order_col_des` = '".$sql_row471['order_col_des']."' WHERE `mix_tid` = ".$sql_row1x12['mix_tid']."";
+											mysqli_query( $link, $update_sql) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
+											$qty=$qty-$sql_row1x12['qty'];
+										}
+										else
+										{
+											$insert_sql="INSERT INTO `bai_pro3`.`mix_temp_desti` (`allo_new_ref`, `cat_ref`, `cutt_ref`, `mk_ref`, `size`, `qty`, `order_tid`, `order_del_no`, `order_col_des`, `destination`, `plies`, `doc_no`, `cutno`) select allo_new_ref,cat_ref,cutt_ref,mk_ref,size,".$qty.",'".$sql_row471['order_tid']."','".$sql_row471['order_del_no']."','".$sql_row471['order_col_des']."',destination,plies,doc_no,cutno where `mix_tid` = ".$sql_row1x12['mix_tid']."";
+											mysqli_query( $link, $update_sql) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
+											$qty=0;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 				//Executing Docket Creation & Updation
 				$sql1="SELECT cutno,order_col_des,order_del_no,order_tid,doc_no,GROUP_CONCAT(size ORDER BY size) as size,GROUP_CONCAT(qty ORDER BY size) as  ratio,cat_ref,plies FROM $bai_pro3.`mix_temp_desti` where size NOT LIKE \"%p_%\" and cat_ref='".$cat_ref."' GROUP BY order_tid,doc_no order by doc_no*1"; 
 				//echo $sql1."<br>";

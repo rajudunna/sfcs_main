@@ -920,9 +920,12 @@ if(isset($_POST["update"]))
 				$code .= "order_s_".$sizes_array[$ij]."=(order_s_".$sizes_array[$ij]."+(".$$code_new."-".$$code_old.")),";
 			}
 			$query_code= rtrim($code,',');
-			$update_club="update $bai_pro3.bai_orders_db_confirm set $query_code where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$status_col\"";
+			$update_club="update $bai_pro3.bai_orders_db_confirm set order_no=1,$query_code where order_style_no='".$sty."' and order_del_no=\"$sch\" and order_col_des='".$status_col."'";
 			//echo $update_club."<br>";
 			mysqli_query($link, $update_club);
+			$update_club1="update $bai_pro3.bai_orders_db set order_no=1 where order_style_no='".$sty."' and order_del_no=\"$sch\" and order_col_des='".$status_col."'";
+			//echo $update_club."<br>";
+			mysqli_query($link, $update_club1);
 		}
 		else
 		{
@@ -936,9 +939,13 @@ if(isset($_POST["update"]))
 				//echo $code."<br>";
 			}
 			$query_code= rtrim($code,',');
-			$update_club="update $bai_pro3.bai_orders_db_confirm set $query_code where order_style_no=\"$sty\" and order_del_no=\"$status_sch\" and order_col_des=\"$col\"";
+			$update_club="update $bai_pro3.bai_orders_db_confirm set order_no=1,$query_code where order_style_no='".$sty."' and order_del_no=\"$status_sch\" and order_col_des='".$col."'";
 			//echo $update_club."<br>";
-			mysqli_query($link, $update_club);			
+			mysqli_query($link, $update_club);
+
+			$update_club1="update $bai_pro3.bai_orders_db set order_no=1 where order_style_no='".$sty."' and order_del_no=\"$status_sch\" and order_col_des='".$col."'";
+			//echo $update_club."<br>";
+			mysqli_query($link, $update_club1);
 		}
 		$update1="update $bai_pro3.bai_orders_db set order_no=\"1\" where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$col\"";
 		mysqli_query($link, $update1);
