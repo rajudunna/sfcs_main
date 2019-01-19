@@ -101,6 +101,17 @@
         } 
         else 
         {
+
+            $sql="SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' and mrn_status='1'";  
+                $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $rowcount1=mysqli_num_rows($sql_result);
+              if($rowcount1>0)
+              {
+                 echo "<script>sweetAlert('MRN Confirmed for this Schedule','','warning')</script>";
+              }
+              else
+              {
+
             $pac_stat_input_check = echo_title("$bai_pro3.pac_stat_input","count(*)","schedule",$schedule,$link);
             
             if ($pac_stat_input_check > 0)
@@ -295,6 +306,7 @@
                     echo "<script>sweetAlert('Please Generate Sewing Jobs Before Deleting!!','','error')</script>";
                 } 
             }
+        }
             echo "</div></div>"; 
         } 
     }
@@ -307,6 +319,15 @@
         // echo $reason;
 
         $tid = array(); $docket_no = array();
+        $sql="SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' and mrn_status='1'";  
+        $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $rowcount2=mysqli_num_rows($sql_result);
+        if($rowcount2>0)
+        {
+            echo "<script>sweetAlert('MRN Confirmed for this Schedule','','warning')</script>";
+        }
+        else
+        {
 
         $get_seq_details = "SELECT tid, doc_no FROM bai_pro3.`packing_summary_input` WHERE pac_seq_no = $seqno and order_del_no='$schedule'";
         $details_seq=mysqli_query($link, $get_seq_details) or exit("error while fetching sequence details for this schedule"); 
@@ -422,6 +443,7 @@
                 }
             // MO Deletion end
         }
+        
         else
         {
             echo "<script>sweetAlert('Please Generate Sewing Jobs for Sequence - $seqno','','error')</script>";
@@ -431,6 +453,7 @@
                     }, 1500);
                 </script>");
         }
+    }
     }
 ?> 
 </div> 

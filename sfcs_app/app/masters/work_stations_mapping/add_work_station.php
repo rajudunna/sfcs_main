@@ -72,7 +72,7 @@
 		}else{
 		echo "<option value='Please Select'>Please Select</option><br/>\r\n";
 		}
-		$query = "SELECT id,operation_name,operation_code,short_cut_code FROM $brandix_bts.tbl_orders_ops_ref where work_center_id IS NULL";
+		$query = "SELECT id,operation_name,operation_code,short_cut_code FROM $brandix_bts.tbl_orders_ops_ref where work_center_id IS NULL or LENGTH(work_center_id)=0 ";
 		$result = $conn->query($query);
 		while($row = $result->fetch_assoc()) 
 		{

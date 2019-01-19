@@ -28,13 +28,13 @@
         $schedule=$_POST["schedule"];
         //$schedule="399160"; //for testing
         $schedule_split=explode(",",$schedule);
-		if($schedule!='')
-		{
-			$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
-			$result=mysqli_query($link, $sql) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$rowcount=mysqli_num_rows($result);
-			if($rowcount>0)
-			{
+        if($schedule!='')
+        {
+            $sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
+            $result=mysqli_query($link, $sql) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $rowcount=mysqli_num_rows($result);
+            if($rowcount>0)
+            {
             
         
     ?>
@@ -115,7 +115,26 @@
                     echo "</tr></table></center><br/>";
 
                 }
+                
+                        //To get operations
+                        $get_operations_sql="select DISTINCT(operation_code) from $brandix_bts.tbl_style_ops_master where style='$disStyle' and operation_code not in(10,15,60,70,200)";
+                       // echo $get_operations_sql;
+                        $ops_result=mysqli_query($link, $get_operations_sql) or die("Error-".$get_operations_sql."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                         while($row1=mysqli_fetch_array($ops_result))
+                         {
+                            $operation_code[]=$row1['operation_code'];
+                         }
+                          
+                         $opertions = implode(',',$operation_code);
 
+                        $get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions)  ";
+                        //echo $get_ops_query;
+                        $ops_query_result=$link->query($get_ops_query);
+                        while ($row2 = $ops_query_result->fetch_assoc())
+                        {
+                          $ops_get_code[$row2['operation_code']] = $row2['operation_name'];
+                        }
+                        $col_span = count($ops_get_code);
 
                 //$sizes_array=array("xs","s","m","l","xl","xxl","xxxl","s06","s08","s10","s12","s14","s16","s18","s20","s22","s24","s26","s28","s30");
 
@@ -345,7 +364,9 @@
                             $vpo=$sql_row2["vpo"];
                         }
 
-                        $sql_cut="select GROUP_CONCAT(DISTINCT order_col_des) AS color, GROUP_CONCAT(DISTINCT acutno) AS cut, SUM(carton_act_qty) AS totqty from $bai_pro3.packing_summary_input where order_del_no in (\"$schedule\") and input_job_no='".$sql_row["job"]."'";
+                        
+                        
+                        $sql_cut="select GROUP_CONCAT(DISTINCT order_col_des) AS color, GROUP_CONCAT(DISTINCT acutno) AS cut, SUM(carton_act_qty) AS totqty from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and input_job_no='".$sql_row["job"]."'";
                         // echo $sql_cut.'<br>';
                         $result_cut=mysqli_query($link, $sql_cut) or die("Error9-".$sql_cut."-".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($sql_row_cut=mysqli_fetch_array($result_cut))
@@ -431,13 +452,33 @@
                         $overall_qty = $overall_qty + $total_qty1;
                         echo "<td align=\"center\">".$total_qty1."</td>";
                         echo "<td>";
+
                         
+                        
+
                         $tot_input=0;
                         $tot_outout=0;
+                        $tot_rej=0;
                         $temp_module=0;
+                        $rej_qty1=0;
                         echo "<div class='table-responsive'>";
-                        echo "<table class=\"table table-bordered\"><tr><th>Input Date</th><th>Module#</th><th>Color</th><th>Size</th><th>Input Qty</th><th>Output Qty</th></tr>";
-                        $sql55="SELECT ims_date,ims_doc_no,ims_color,ims_mod_no,ims_size,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty FROM  $bai_pro3.ims_combine WHERE ims_schedule=".$sql_row1["del_no"]." AND input_job_no_ref='".$sql_row["job"]."' GROUP BY ims_date,ims_doc_no,ims_color,ims_size ORDER BY ims_date,ims_mod_no,ims_color";
+                        echo "<table class=\"table table-bordered\">
+                        <tr><th  rowspan=2>Input Date</th><th  rowspan=2>Module#</th>
+                        <th rowspan=2>Color</th><th rowspan=2>Size</th>
+                        <th rowspan=2>Input Qty</th><th rowspan=2>Output Qty</th>
+                        <th colspan=$col_span style=text-align:center>Rejected Qty</th></tr>";
+                        echo "<tr>";
+                        
+                        foreach ($operation_code as $op_code) 
+                        {
+                            if(strlen($ops_get_code[$op_code]) > 0)
+                                echo "<th>$ops_get_code[$op_code]</th>";
+                        }
+                        echo "</tr>"; 
+                        // var_dump($operation_code);
+                        // var_dump($ops_get_code);
+
+                        $sql55="SELECT ims_date,ims_doc_no,ims_color,ims_mod_no,ims_size,pac_tid,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty,input_job_rand_no_ref FROM  $bai_pro3.ims_combine WHERE ims_schedule=".$sql_row1["del_no"]." AND input_job_no_ref='".$sql_row["job"]."' GROUP BY ims_date,ims_doc_no,ims_color,ims_size ORDER BY ims_date,ims_mod_no,ims_color";
                         //echo $sql5."<br>";
                         $result55=mysqli_query($link, $sql55) or die("Error-".$sql55."-".mysqli_error($GLOBALS["___mysqli_ston"]));         
                         while($sql_row55=mysqli_fetch_array($result55))
@@ -446,31 +487,61 @@
                             // echo $order_del."<br>";
                             // echo $style."<br>";
                             $size_values=ims_sizes($order_tid,$order_del,$style,$sql_row55["ims_color"],str_replace("a_","",$sql_row55["ims_size"]),$link);
+
+                            unset($rej_qty);
+                            $rej_sql="select COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id from $bai_pro3.bai_qms_db where qms_schedule='".$sql_row1["del_no"]."' and qms_color='".$sql_row55["ims_color"]."' and qms_size='".trim($sql_row55["ims_size"],"a_")."' and SUBSTR(remarks,1,POSITION('-' IN remarks)-1)='".$sql_row55["ims_mod_no"]."' and qms_tran_type=3 and input_job_no='".$sql_row55["input_job_rand_no_ref"]."' group by operation_id";
+                            //echo $rej_sql;
+                            $rej_result=mysqli_query($link, $rej_sql) or die("Error-".$rej_sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            while($row3=mysqli_fetch_array($rej_result))
+                            {
+                              $rej_qty[$row3['operation_id']] = $row3['qms_qty'];
+                              $rej_qty1+=$row3['qms_qty'];
+                             
+                            }
                             
-                        ?>
+                            ?>
+
+                           
+                            
+                            <tr>
+                            <td><?php echo $sql_row55["ims_date"]; ?></td>
+                            <td><?php echo $sql_row55["ims_mod_no"]; ?></td>
+                            <?php $temp_module=$sql_row55["ims_mod_no"]; ?>
+                            <td><?php echo $sql_row55["ims_color"]; ?></td>
+                            <td><?php echo strtoupper($size_values); ?></td>
+                            <td><?php echo $sql_row55["ims_qty"]; ?></td>
+                            <td><?php echo $sql_row55["ims_pro_qty"]; ?></td>
+                            <?php  
+                            foreach ($operation_code as $key => $value) 
+                            {
+                                if(strlen($ops_get_code[$value]) > 0){
+                                    if($rej_qty[$value] == '')
+                                        echo "<td>0</td>";
+                                    else    
+                                       echo"<td>".$rej_qty[$value]."</td>";
+                                }
+                            }  ?> 
+                            </tr>
+                            
+                            <?php
+                            
+                            $tot_rej=$rej_qty1;
+                            $tot_input=$tot_input+$sql_row55["ims_qty"];
+                            $tot_outout=$tot_outout+$sql_row55["ims_pro_qty"];
+                            
+                            if($tot_outout < 0)
+                                $tot_outout=0;
+
                         
-                        <tr>
-                        <td><?php echo $sql_row55["ims_date"]; ?></td>
-                        <td><?php echo $sql_row55["ims_mod_no"]; ?></td>
-                        <?php $temp_module=$sql_row55["ims_mod_no"]; ?>
-                        <td><?php echo $sql_row55["ims_color"]; ?></td>
-                        <td><?php echo strtoupper($size_values); ?></td>
-                        <td><?php echo $sql_row55["ims_qty"]; ?></td>
-                        <td><?php echo $sql_row55["ims_pro_qty"]; ?></td>
-                        </tr>
-                        
-                        <?php
-                        $tot_input=$tot_input+$sql_row55["ims_qty"];
-                        $tot_outout=$tot_outout+$sql_row55["ims_pro_qty"];
                         }
                         
                         if ($total_qty1>$tot_outout)
                         {
-                            echo "<tr><td colspan=4 style=\"background-color:#ff8396;\"> </td><td style=\"background-color:#ff8396;color:white\">$tot_input</td><td style=\"background-color:#ff8396;color:white\">$tot_outout</td></tr>";
+                            echo "<tr><td colspan=4 style=\"background-color:#ff8396;\"> </td><td style=\"background-color:#ff8396;color:white\">$tot_input</td><td style=\"background-color:#ff8396;color:white\">$tot_outout</td><td colspan=3 style=\"background-color:#ff8396;color:white\">$tot_rej</td></tr>";
                         }
                         else
                         {
-                            echo "<tr><td colspan=4 style=\"background-color:#3399ff;\"> </td><td style=\"background-color:#3399ff;color:white\">$tot_input</td><td style=\"background-color:#3399ff;color:white\">$tot_outout</td></tr>";
+                            echo "<tr><td colspan=4 style=\"background-color:#3399ff;\"> </td><td style=\"background-color:#3399ff;color:white\">$tot_input</td><td style=\"background-color:#3399ff;color:white\">$tot_outout</td><td colspan=3 style=\"background-color:#ff8396;color:white\">$tot_rej</td></tr>";
                         }
                         echo "</table>";
                         echo "</div>";
@@ -592,9 +663,9 @@
             ?>
         </div>
     </div>
-	</div>
-	<?php
-	}
+    </div>
+    <?php
+    }
 }
 else
 {
