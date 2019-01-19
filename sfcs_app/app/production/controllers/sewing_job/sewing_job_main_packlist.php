@@ -606,6 +606,12 @@
 											{	
 												if($garments_per_carton<=$qty)
 												{
+													$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no."' and order_del_no",$schedule,$link);
+													if ($job_counter_tmp1 > 1)
+													{
+														$job_counter = $job_counter_tmp1;
+													}
+
 													$qty_new=$garments_per_carton;
 													$qty=$qty-$qty_new;
 													if($split_qty>0)
@@ -651,6 +657,12 @@
 												}
 												else
 												{
+													$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no."' and order_del_no",$schedule,$link);
+													if ($job_counter_tmp1 > 1)
+													{
+														$job_counter = $job_counter_tmp1;
+													}
+													
 													if($split_qty>0)
 													{	
 														do
@@ -889,6 +901,12 @@
 										{	
 											if($garments_per_carton<=$qty)
 											{
+												$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no."' and order_del_no",$schedule,$link);
+												if ($job_counter_tmp1 > 1)
+												{
+													$job_counter = $job_counter_tmp1;
+												}
+
 												$qty_new=$garments_per_carton;
 												$qty=$qty-$qty_new;
 												if($split_qty>0)
@@ -935,6 +953,12 @@
 											}
 											else
 											{
+												$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no."' and order_del_no",$schedule,$link);
+												if ($job_counter_tmp1 > 1)
+												{
+													$job_counter = $job_counter_tmp1;
+												}
+													
 												if($split_qty>0)
 												{	
 													do
