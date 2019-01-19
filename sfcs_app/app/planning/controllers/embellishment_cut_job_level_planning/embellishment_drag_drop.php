@@ -806,21 +806,24 @@
 																										
 														
 														$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".chr($color_code1).leading_zeros($acutno1,3),50)."\n".str_pad("Qty:".$total_qty1,50);
+                                                        
+                                                        $remove_docs=array();
+														$sql1="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no=$doc_no and send_qty = receive_qty and send_qty <> 0 and receive_qty <> 0";
+														$sql_resultx=mysqli_query($link,$sql1) or exit("Sql Error2".mysqli_error());
+														while($sql_rowx=mysqli_fetch_array($sql_resultx))
+														{
+														  $remove_docs=$sql_rowx['doc_no'];
+														}
 														
+														if(sizeof($remove_docs)>0)
+														{
+
+														}
+														else
+														{
 														echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
-														//echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';	
-
-                                                       //remove docs
-														// $sql1="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no=$doc_no and send_qty = receive_qty";
-														// $sql_resultx=mysqli_query($link,$sql1) or exit("Sql Error2".mysqli_error());
-														// while($sql_rowx=mysqli_fetch_array($sql_resultx))
-														// {
-														//  $remove_docs=$sql_rowx['doc_no'];
-														// }
-
-														 $delete_sql="delete from $bai_pro3.embellishment_plan_dashboard where doc_no ='$doc_no' and send_qty = receive_qty and send_qty <> 0 and receive_qty <> 0";
-														 
-														  mysqli_query($link, $delete_sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+														//echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';
+														}	
 														
 														
 													}
