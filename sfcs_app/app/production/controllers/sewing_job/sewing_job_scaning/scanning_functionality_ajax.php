@@ -307,7 +307,7 @@ if($barcode_generation == 1)
 											$remaining_bundle_reason = $r_reasons[$reason_key];
 											if($remaining_bundle_qty > 0)
 											{
-												$reason_remaining_qty[$r_reasons[$reason_key]] = $remaining_bundle_qty;
+												$reason_remaining_qty[$r_reasons[$reason_key]] += $remaining_bundle_qty;
 											}
 												
 										}
@@ -335,7 +335,7 @@ if($barcode_generation == 1)
 									}
 									else 
 									{
-										$reason_remaining_qty[$r_reasons[$reason_key]] = $reson_max_qty;
+										$reason_remaining_qty[$r_reasons[$reason_key]] += $reson_max_qty;
 									}
 									
 								}
@@ -634,7 +634,7 @@ if($barcode_generation == 1)
 										$remaining_bundle_reason = $r_reasons[$reason_key];
 										if($remaining_bundle_qty > 0)
 										{
-											$reason_remaining_qty[$r_reasons[$reason_key]] = $remaining_bundle_qty;
+											$reason_remaining_qty[$r_reasons[$reason_key]] += $remaining_bundle_qty;
 										}
 											
 									}
@@ -663,7 +663,7 @@ if($barcode_generation == 1)
 								}
 								else 
 								{
-									$reason_remaining_qty[$r_reasons[$reason_key]] = $reson_max_qty;
+									$reason_remaining_qty[$r_reasons[$reason_key]] += $reson_max_qty;
 								}
 								
 							}

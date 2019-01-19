@@ -12,7 +12,7 @@ function getReCutDetails($recut_id)
     include("../../../../common/config/config_ajax.php");
     $html = '';
     $get_details_qry = "SELECT DISTINCT category FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
-    ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id order by category";
+    ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id order by rc.`operation_id`";
     //    echo $get_details_qry;
     $result_get_details_qry = $link->query($get_details_qry);
     while($row = $result_get_details_qry->fetch_assoc()) 
@@ -110,7 +110,7 @@ function RecutProcess($recut_id_edit)
     }
     $html .= $categories;
     $get_details_qry = "SELECT DISTINCT category FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
-    ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id order by category";
+    ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id order by rc.`operation_id`";
     //    echo $get_details_qry;
     $result_get_details_qry = $link->query($get_details_qry);
     $s_no = 0;
@@ -337,7 +337,7 @@ function ReplaceProcess($replace_id_edit)
     if($count > 0)
     {
         $get_details_qry = "SELECT DISTINCT category FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
-        ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $replace_id_edit order by category";
+        ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $replace_id_edit order by rc.`operation_id`";
         $result_get_details_qry = $link->query($get_details_qry);
         while($row = $result_get_details_qry->fetch_assoc()) 
         {
@@ -427,7 +427,7 @@ function getDocketDetails($recut_doc_id)
     include("../../../../common/config/config_ajax.php");
     $html = '';
     $get_details_qry = "SELECT DISTINCT category FROM `$bai_pro3`.`recut_v2_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
-    ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_doc_id order by category";
+    ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_doc_id order by rc.`operation_id`";
     $result_get_details_qry = $link->query($get_details_qry);
     while($row = $result_get_details_qry->fetch_assoc()) 
     {
@@ -668,7 +668,7 @@ function Markersview($markers_view_docket)
     $table_data .= "</tbody></table>";
     $html .= $table_data;
     $shifts_array = ["","Available","Not Available"];
-    $html .= "<div class='row'><div class='col-md-3'></div><div class='col-md-3'></div><div class='col-md-3'>";
+    $html .= "<div class='row'><div class='col-md-3'></div><div class='col-md-3'></div><div class='col-md-3'></div>";
     if($flag == 1)
     {
         $drp_down = '<label>Required Materials: <span style="color:red">*</span></label>
@@ -699,7 +699,7 @@ function IssuedtoModuleProcess($issued_to_module_process)
     $html = "<button type='button' class='btn btn-success' value='Set' style='float: right;' onclick='setfunction();' id='setreset'>Select All</button>";
     $html .= "<button type='button' class='btn btn-success' value='ReSet' style='float: right;' onclick='resetfunction();' id='setreset'>Re Set</button></br></br>";
     $get_details_qry = "SELECT DISTINCT category FROM `$bai_pro3`.`recut_v2_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
-    ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_doc_id order by category";
+    ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_doc_id order by rc.`operation_id`";
     $result_get_details_qry = $link->query($get_details_qry);
     $s_no = 0;
     while($row = $result_get_details_qry->fetch_assoc()) 
