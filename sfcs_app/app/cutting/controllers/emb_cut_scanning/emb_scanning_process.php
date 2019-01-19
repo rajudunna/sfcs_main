@@ -297,10 +297,10 @@ foreach($b_tid as $key => $value)
                     $r_reasons = array();
                     $r_qty[] = $r_qty_array;
                     $r_reasons[] = $r_reasons_array;
-                    $b_tid = $b_tid[$key];
+                    //$b_tid = $b_tid[$key];
                     $implode_next[2] = array_sum($r_qty_array);
                     //retreving bcd id from bundle_ceration_data and inserting into the rejection_log table and rejection_log_child
-                    $bcd_id_qry = "select id,style,schedule,color,docket_number,size_title,size_id,assigned_module,input_job_no_random_ref,bundle_number from $brandix_bts.bundle_creation_data where bundle_number=$b_tid and operation_id = $b_op_id";
+                    $bcd_id_qry = "select id,style,schedule,color,docket_number,size_title,size_id,assigned_module,input_job_no_random_ref,bundle_number from $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$key] and operation_id = $b_op_id";
                     $bcd_id_qry_result=mysqli_query($link,$bcd_id_qry) or exit("Bcd id qry".mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($bcd_id_row=mysqli_fetch_array($bcd_id_qry_result))
                     {
