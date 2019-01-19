@@ -1373,6 +1373,7 @@ else if($concurrent_flag == 0)
 								$act_ims_input_qty = $row['ims_qty'];
 							}
 							$act_ims_qty = $pre_ims_qty + $b_rep_qty[$i] ;
+							$act_ims_qty = min($act_ims_qty,$b_in_job_qty[$key]);
 							//echo $act_ims_qty.'-'.$pre_ims_qty.'-'.$b_rep_qty[$i].'</br>';
 							//updating the ims_qty when it was there in ims_log
 							$update_query = "update $bai_pro3.ims_log set ims_pro_qty = $act_ims_qty where tid = $updatable_id";
