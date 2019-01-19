@@ -235,7 +235,7 @@
                         $update_rejection_log = "update $bai_pro3.rejections_log set recut_qty = recut_qty+$to_add,remaining_qty = remaining_qty - $to_add where style = '$style' and schedule = '$scheule' and color = '$color'";
                         mysqli_query($link,$update_rejection_log) or exit("While updating rejection log".mysqli_error($GLOBALS["___mysqli_ston"]));
                     }
-                    $mo_changes = mofillingforrecutreplace($to_add_mo,$bundle_number);
+                    $mo_changes = mofillingforrecutreplace($to_add_mo,$bcd_act_id);
                 }
             }
         }
