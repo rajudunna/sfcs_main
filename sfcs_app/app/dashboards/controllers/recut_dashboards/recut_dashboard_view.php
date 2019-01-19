@@ -410,7 +410,7 @@
                                         }
                     
                                     }
-                                    $update_cps_log_qry = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add_sj where doc_no=$doc_no and size_title='$size_title' and operation_code = $pre_ops_code";
+                                    $update_cps_log_qry = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add_sj where doc_no=$doc_no and size_title='$size_title' and operation_code = 15";
                                     mysqli_query($link, $update_cps_log_qry) or exit("update_cps_log_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                                     $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set replaced_qty = replaced_qty+$to_add_sj where bcd_id = $bundle_number";
