@@ -141,6 +141,18 @@ if($result_post_ops_check->num_rows > 0)
         $post_ops_code = $row8['operation_code'];
     }
 }
+$emb_cut_check_flag = 0;
+$category=['Send PF','Receive PF'];
+$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$post_ops_code'";
+$result_checking_qry = $link->query($checking_qry);
+while($row_cat = $result_checking_qry->fetch_assoc()) 
+{
+    $category_act = $row_cat['category'];
+}
+if(in_array($category_act,$category))
+{
+    $emb_cut_check_flag = 1;
+}
 /* END:--operation dependency and previous operation validation*/
 
 //Start:-- Size/Bundle level logic for Cut*/
@@ -368,7 +380,7 @@ foreach($b_tid as $key => $value)
                 $result_query_001_temp = $link->query($bulk_insert_post_temp) or exit('bulk_insert_post query error in updating');
             }
         }	
-        if($post_ops_code != null)
+        if($post_ops_code != null && $emb_cut_check_flag == 1)
         {
             $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id = ".$post_ops_code;
             $result_query = $link->query($query_post) or exit('query error in updating');

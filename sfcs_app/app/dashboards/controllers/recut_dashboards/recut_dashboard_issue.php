@@ -154,8 +154,6 @@ function issued_to_module($bcd_id,$qty,$ref)
     mysqli_query($link, $update_qry_cps) or exit("update_qry_cps".mysqli_error($GLOBALS["___mysqli_ston"]));
     $update_qry_bcd = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and operation_id = 15";
      mysqli_query($link, $update_qry_bcd) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-
     //retreaving emblishment operations from operatoin master
     $ops_master_qry = "select operation_code from $brandix_bts.tbl_orders_ops_ref where category in ('Send PF')"; 
     $result_ops_master_qry = $link->query($ops_master_qry);
@@ -163,7 +161,6 @@ function issued_to_module($bcd_id,$qty,$ref)
     {
        $emb_ops[] = $row_ops['operation_code'];
     }
-
     $qry_ops_mapping = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and  operation_code in (".implode(',',$emb_ops).")";
     // echo $qry_ops_mapping;
     $result_qry_ops_mapping = $link->query($qry_ops_mapping);
@@ -184,8 +181,8 @@ function issued_to_module($bcd_id,$qty,$ref)
             mysqli_query($link, $update_plan_dashboard_qry) or exit("update_plan_dashboard_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         }
     }
-    else
-    {
+    // else
+    // {
         $emb_cut_check_flag = 0;
         //checking the ips having that input job or not
         $category=['cutting','Send PF','Receive PF'];
@@ -229,7 +226,7 @@ function issued_to_module($bcd_id,$qty,$ref)
             //     }
             // }
         }   
-    }
+    // }
     // die();
     return;
 }
