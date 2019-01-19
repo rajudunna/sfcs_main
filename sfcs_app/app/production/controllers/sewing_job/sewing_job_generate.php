@@ -95,6 +95,12 @@
 									{	
 										if(($garments_per_carton-$input_job_quantiy_tmp)<=$qty)
 										{
+											$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no."' and order_del_no",$schedule,$link);
+											if ($job_counter_tmp1 > 1)
+											{
+												$job_counter = $job_counter_tmp1;
+											}
+
 											$qty_new=$garments_per_carton-$input_job_quantiy_tmp;
 											$qty=$qty-$qty_new;
 											if($split_qty>0)
@@ -272,6 +278,12 @@
 								{	
 									if(($garments_per_carton-$input_job_quantiy_tmp)<=$qty)
 									{
+										$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no."' and order_del_no",$schedule,$link);
+										if ($job_counter_tmp1 > 1)
+										{
+											$job_counter = $job_counter_tmp1;
+										}
+													
 										$qty_new=$garments_per_carton-$input_job_quantiy_tmp;
 										$qty=$qty-$qty_new;
 										if($split_qty>0)
@@ -513,6 +525,12 @@
 										{	
 											if($garments_per_carton<=$qty)
 											{
+												$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no."' and order_del_no",$schedule,$link);
+												if ($job_counter_tmp1 > 1)
+												{
+													$job_counter = $job_counter_tmp1;
+												}
+
 												$qty_new=$garments_per_carton;
 												$qty=$qty-$qty_new;
 												if($split_qty>0)
@@ -559,6 +577,12 @@
 											}
 											else
 											{
+												$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no."' and order_del_no",$schedule,$link);
+												if ($job_counter_tmp1 > 1)
+												{
+													$job_counter = $job_counter_tmp1;
+												}
+											
 												if($split_qty>0)
 												{	
 													do
@@ -719,7 +743,7 @@
 							if($status_sew==1)
 							{
 								$input_job_no=1;
-								$job_counter= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(barcode_sequence AS DECIMAL))+1","input_job_no='1' and order_del_no",$schedule,$link);
+								$job_counter= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='1' and order_del_no",$schedule,$link);
 								if($job_counter==0)
 								{
 									$job_counter=1;
@@ -733,7 +757,7 @@
 								$input_job_no_tmpn= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(input_job_no AS DECIMAL))","acutno='".$docs_cut[$iiii]."' and order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and order_del_no",$schedule,$link);	
 								if($input_job_no_tmpn>0)
 								{
-									$job_counter_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(barcode_sequence AS DECIMAL))+1","input_job_no='".$input_job_no_tmpn."' and order_del_no",$schedule,$link);
+									$job_counter_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no_tmpn."' and order_del_no",$schedule,$link);
 									$job_counter = $job_counter_tmp;
 									$input_job_no=$input_job_no_tmpn;
 								}
@@ -745,7 +769,7 @@
 							$color_code=$row1['color'];
 							$garments_per_carton=$row1['garments_per_carton']*$row1['no_of_cartons'];
 							$destination=echo_title("$bai_pro3.bai_orders_db","UPPER(destination)","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link); 
-							$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." and mini_order_num=1 AND color='".$color_code."' and size='".$size_ref."' and docket_number='".$docs_new[$iiii]."' group BY cut_num order by cut_num*1";
+							$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." and mini_order_num=1 AND color='".$color_code."' and size='".$size_ref."' and docket_number='".$docs_new[$iiii]."' group BY cut_num order by cut_num*1,size*1";
 							//echo $sql12."<br>";
 							$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							while($row12=mysqli_fetch_array($result12)) 
@@ -758,6 +782,12 @@
 									{	
 										if($garments_per_carton<=$qty)
 										{
+											$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no."' and order_del_no",$schedule,$link);
+											if ($job_counter_tmp1 > 1)
+											{
+												$job_counter = $job_counter_tmp1;
+											}
+
 											$qty_new=$garments_per_carton;
 											$qty=$qty-$qty_new;
 											if($split_qty>0)
@@ -793,7 +823,7 @@
 												mysqli_query($link, $sql1q) or die("Error---27".mysqli_error($GLOBALS["___mysqli_ston"]));
 												$id = mysqli_insert_id($link);
 												$jobs_array[] = $rand; $job_counter++;
-												// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty_new."</td></tr>";
+												// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty_new."</td></tr>";												
 												$qty_new=0;
 											}
 											$input_job_no++;
@@ -803,6 +833,12 @@
 										}
 										else
 										{
+											$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no."' and order_del_no",$schedule,$link);
+											if ($job_counter_tmp1 > 1)
+											{
+												$job_counter = $job_counter_tmp1;
+											}
+
 											if($split_qty>0)
 											{	
 												do
@@ -836,7 +872,7 @@
 												mysqli_query($link, $sql1q) or die("Error---30".mysqli_error($GLOBALS["___mysqli_ston"]));
 												$id = mysqli_insert_id($link);
 												$jobs_array[] = $rand; $job_counter++;
-												// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
+												// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";												
 												$qty=0;
 											}
 											$input_job_no++;
