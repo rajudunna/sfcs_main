@@ -781,7 +781,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
        $sql1="SELECT c.print_status,c.plan_lot_ref,c.bundle_location,c.fabric_status_new,c.doc_no,
        c.cutting_tbl_id,c.priority,c.act_cut_status,c.rm_date,c.cut_inp_temp,c.order_tid,c.fabric_status,
        c.color_code,c.clubbing,c.order_style_no,c.order_div,c.order_col_des,c.acutno,c.ft_status,c.st_status,c.pt_status,
-       c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,f.doc_ref,f.req_time FROM bai_pro3.cut_tbl_dash_doc_summ c  LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN (".implode(",",$doc_no_ref).") and c.act_cut_status<>'DONE' AND c.fabric_status_new !='5' order by f.req_time asc";
+       c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,f.doc_ref,f.req_time,c.remarks FROM bai_pro3.cut_tbl_dash_doc_summ c  LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN (".implode(",",$doc_no_ref).") and c.act_cut_status<>'DONE' AND c.fabric_status_new !='5' order by f.req_time asc";
 
       }
       else
