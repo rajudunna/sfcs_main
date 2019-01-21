@@ -1,5 +1,6 @@
 <?php
     $get_url = getFullURLLevel($_GET['r'],'ratio_split_get_details.php','R');
+    $post_url = getFullURLLevel($_GET['r'],'ratio_split_save.php','R');
 ?>
 <div class='col-sm-12'>
     <div class='panel panel-primary'>
@@ -52,6 +53,8 @@
     var a_plies = 0;
     var shades = 0;
     var e_plies = 0;
+    var doc = 0;
+    var schedule = '';
     function load_shades(t){
         $('#shades_table').html('');
         shades = Number(t.value);
@@ -68,43 +71,59 @@
         </tr>");
     }
 
+    function checkIfArrayIsUnique(myArray) {
+        var unique = myArray.filter((v, i, a) => a.indexOf(v) === i); 
+        return myArray.length == unique.length;
+    }
+
     function submit_data(){
-        var no_shades = 0,no_plies = 0;
+        var no_shades = 0,no_plies = 0,duplicates = 0;
+        var shades = {};
+        var shades_plies = {};
         e_plies = 0;
         $('.shades').each(function(key,e){
             console.log(e.value);
-            if(e.value == null || e.value == empty)
+            if(e.value == null || e.value == '')
                 no_shades++;
+            else{
+                shades[key] = e.value;
+                // if(checkIfArrayIsUnique(shades) == false)
+                //     duplicates++; 
+            }    
         });
-
+        if(duplicates > 0){
+            return swal('Shades are Duplicated','','warning');
+        }
         $('.plies').each(function(key,e){
             if(e.value == null || e.value == '')
                 no_plies++;
-            else    
-                e_plies = e_plies + e.value;    
+            else{    
+                e_plies = e_plies + Number(e.value); 
+                shades_plies[key] = e.value;  
+            } 
         });
         if(no_plies > 0 || no_shades > 0)
-            return swal('Fill All the '+shades+' Shades','','warning');
+            return swal('Fill All the Shades and plies','','warning');
+        console.log(e_plies+' - '+a_plies);
         if(e_plies != a_plies)
             return swal('Original Plies not equal to Entered Plies','','error');
         
-        var post_data = {};
-        post_data = {};
-
+        var post_data = {doc_no : doc,a_plies:a_plies,plies : a_plies,shades : shades,shades_plies : shades_plies,schedule:schedule};
+        console.log(post_data);
+        console.log(shades);    
         console.log('Fine');
         $.ajax({
-            url:'',
-            data:post_data,
-            type:JSON,
-            success:function(){
+            url  : '<?= $post_url ?>',
+            type : 'POST',
+            data : post_data,
+        }).done(function(res){
 
-            }
         });
     }
 
     function load_details(t){
         clear_data();
-        var doc = Number(t.value);
+        doc = Number(t.value);
         if(doc > 0){
             $.ajax({
                 url  : '<?= $get_url ?>?fetch=1&doc_no='+doc,
@@ -124,7 +143,9 @@
                     return swal('You Cannot Split the Sewing Jobs for Schedule Clubbed Dockets','','error');
                 else if(data.scanned == '1')
                     return swal('Jobs Related to the schedule already Scanned','You Cannot Split the Sewing Jobs','error');        
-                a_plies = data.plies;  
+                a_plies  = data.plies;  
+                schedule = data.schedule;
+
                 $('#details_block').show();
                 $('#d_style').html(data.style);
                 $('#d_schedule').html(data.schedule);
