@@ -1279,6 +1279,7 @@ else if($concurrent_flag == 0)
 							$act_ims_input_qty = $row['ims_qty'];
 						}
 						$act_ims_qty = $pre_ims_qty + $b_rep_qty[$i];
+						$act_ims_qty = min($act_ims_qty,$b_in_job_qty[$key]);
 						//updating the ims_qty when it was there in ims_log
 						$update_query = "update $bai_pro3.ims_log_backup set ims_qty = $act_ims_qty where tid = $updatable_id";
 						$ims_pro_qty_updating = mysqli_query($link,$update_query) or exit("While updating ims_pro_qty in ims_log_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1306,6 +1307,7 @@ else if($concurrent_flag == 0)
 								$pre_ims_qty = $row['ims_qty'];
 							}
 							$act_ims_qty = $pre_ims_qty + $b_rep_qty[$i] ;
+							$act_ims_qty = min($act_ims_qty,$b_in_job_qty[$key]);
 							//updating the ims_qty when it was there in ims_log
 							$update_query = "update $bai_pro3.ims_log set ims_qty = $act_ims_qty where tid = $updatable_id";
 							mysqli_query($link,$update_query) or exit("While updating ims_qty in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1372,7 +1374,6 @@ else if($concurrent_flag == 0)
 								$act_ims_input_qty = $row['ims_qty'];
 							}
 							$act_ims_qty = $pre_ims_qty + $b_rep_qty[$i] ;
-							$act_ims_qty = min($act_ims_qty,$b_in_job_qty[$key]);
 							//echo $act_ims_qty.'-'.$pre_ims_qty.'-'.$b_rep_qty[$i].'</br>';
 							//updating the ims_qty when it was there in ims_log
 							$update_query = "update $bai_pro3.ims_log set ims_pro_qty = $act_ims_qty where tid = $updatable_id";
