@@ -235,19 +235,20 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
 		mysqli_query($link,$sql77) or die("Error 2 = ".$sql77.mysqli_error($GLOBALS["___mysqli_ston"]));
 		for($qi=0;$qi<sizeof($orginal_size_array);$qi++)
 		{
-		$sql78="INSERT INTO $tabl (`size_name`) VALUES ('".$orginal_size_array[$qi]."')";
-		mysqli_query($link,$sql78) or die("Error 3 = ".$sql77.mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql78="INSERT INTO $tabl (`size_name`) VALUES ('".$orginal_size_array[$qi]."')";
+			mysqli_query($link,$sql78) or die("Error 3 = ".$sql77.mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		$sql79="SELECT * FROM $tabl ORDER BY CONVERT(bai_pro3.stripSpeciaChars(size_name,0,1,0,0) USING utf8)*1,
-		FIELD(size_name,'xxs''xs','s','m','l','xl','xxl','xxxl','xxxxl')";
+		FIELD(size_name,'xxs','xs','s','m','l','xl','xxl','xxxl','xxxxl')";
 		$result79=mysqli_query($link,$sql79) or die("Error 4 = ".$sql79.mysqli_error($GLOBALS["___mysqli_ston"]));
 		unset($orginal_size_array);
 		while($row79=mysqli_fetch_array($result79))
 		{
-		$orginal_size_array[]=$row79['size_name'];
+			$orginal_size_array[]=$row79['size_name'];
 		}
 		$sql80="DROP TABLE $tabl";
 		mysqli_query($link,$sql80) or die("Error 3 = ".$sql80.mysqli_error($GLOBALS["___mysqli_ston"]));
+
 		if(sizeof($orginal_size_array)<>sizeof($size_array))
 		{
 			for($qq=0;$qq<sizeof($sizes_array);$qq++)

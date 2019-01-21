@@ -160,7 +160,7 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 		mysqli_query($link,$sql78) or die("Error 3 = ".$sql77.mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	$sql79="SELECT * FROM $tabl ORDER BY CONVERT(bai_pro3.stripSpeciaChars(size_name,0,1,0,0) USING utf8)*1,
-	FIELD(size_name,'xxs''xs','s','m','l','xl','xxl','xxxl','xxxxl')";
+	FIELD(size_name,'xxs','xs','s','m','l','xl','xxl','xxxl','xxxxl')";
 	$result79=mysqli_query($link,$sql79) or die("Error 4 = ".$sql79.mysqli_error($GLOBALS["___mysqli_ston"]));
 	unset($orginal_size_array);
 	while($row79=mysqli_fetch_array($result79))

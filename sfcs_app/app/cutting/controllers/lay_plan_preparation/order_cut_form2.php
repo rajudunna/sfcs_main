@@ -315,7 +315,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$size48 = $sql_row['title_size_s48'];
 		$size49 = $sql_row['title_size_s49'];
 		$size50 = $sql_row['title_size_s50'];
-
+		$ord_joins=$sql_row['order_joins'];
 		$flag = $sql_row['title_flag'];
 		if($flag==0)
 		{
@@ -772,19 +772,56 @@ if($style_back == null){
 	$style_back = $_GET['style'];
 	// echo $style_back;
 }
-
-//Getting sample details here  By SK-05-07-2018 == Start
-$samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$tran_order_tid' order by sizes_ref";
-$samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
-$num_rows_samples = mysqli_num_rows($samples_qry_result);
-if($num_rows_samples >0){
-	$samples_total = 0;	
-	while($samples_data=mysqli_fetch_array($samples_qry_result))
+$order_tidss=array();
+if($ord_joins<>'0')
+{
+	if(strlen($schedule_back)<8)
 	{
-		$samples_total+=$samples_data['input_qty'];
-		$samples_size_arry[] =$samples_data['sizes_ref'];
-		$samples_input_qty_arry[] =$samples_data['input_qty'];
-	}		
+		$orders_join='J'.substr($color_back,-1);
+		$select_sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
+		$result=mysqli_query($link, $select_sql);
+		while($rows=mysqli_fetch_array($result))
+		{
+			$order_tidss[]=$rows['order_tid'];
+		}
+	}
+	else
+	{
+		$select_sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='J".$schedule_back."'";
+		$result=mysqli_query($link, $select_sql);
+		while($rows=mysqli_fetch_array($result))
+		{
+			$order_tidss[]=$rows['order_tid'];
+		}	
+	}	
+}
+else
+{
+	$order_tidss[]=$tran_order_tid;
+}
+//Getting sample details here  By SK-05-07-2018 == Start
+$samples_total = 0;	
+for($ii=0;$ii<sizeof($order_tidss);$ii++)
+{
+	$samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$order_tidss[$ii]' order by sizes_ref";
+	//echo $samples_qry."<br>";
+	$samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$num_rows_samples = mysqli_num_rows($samples_qry_result);
+	if($num_rows_samples >0)
+	{		
+		while($samples_data=mysqli_fetch_array($samples_qry_result))
+		{
+			for($s=0;$s<sizeof($s_tit);$s++)
+			{
+				if($samples_data['size']==$s_tit[$sizes_code[$s]])
+				{
+					$samples_total+=$samples_data['input_qty'];
+					//$samples_size_arry[$s_tit[$s]] =$samples_data['sizes_ref'];
+					$samples_input_qty_arry[$s_tit[$sizes_code[$s]]] = $samples_input_qty_arry[$s_tit[$sizes_code[$s]]]+$samples_data['input_qty'];
+				}
+			}
+		}		
+	}
 }
 // Samples End By SK-05-07-2018
 
@@ -819,14 +856,15 @@ for($s=0;$s<sizeof($s_tit);$s++)
 		<td><center>".$s_tit[$sizes_code[$s]]."</center></td>
 		<td><center>".$$code."</center></td>";
 		//samples qty display SK 06-07-2018 == Start
-		for($ss=0;$ss<sizeof($samples_size_arry);$ss++)
+		//for($ss=0;$ss<sizeof($samples_size_arry);$ss++)
+		//{
+			//if($size_code == $samples_size_arry[$ss]){
+				echo "<td><input type=\"hidden\" name=\"in_s".$sizes_code[$s]."_sample\" value=".$samples_input_qty_arry[$s_tit[$sizes_code[$s]]]."><center>".$samples_input_qty_arry[$s_tit[$sizes_code[$s]]]."</center></td>";
+				//$flg = 1;
+			//}			
+		//}	
+		if($samples_input_qty_arry[$s_tit[$sizes_code[$s]]]=='')
 		{
-			if($size_code == $samples_size_arry[$ss]){
-				echo "<td><input type=\"hidden\" name=\"in_s".$sizes_code[$s]."_sample\" value=".$samples_input_qty_arry[$ss]."><center>".$samples_input_qty_arry[$ss]."</center></td>";
-				$flg = 1;
-			}			
-		}	
-		if($flg == 0){
 			echo "<td class=\"sizes\"><strong>-</strong></td>";
 		}
 		//samples qty display SK 06-07-2018 == End

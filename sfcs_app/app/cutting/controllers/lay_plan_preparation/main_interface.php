@@ -436,6 +436,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}
 		
 			
+		$order_joins = $sql_row['order_joins'];
 		$flag = $sql_row['title_flag'];
 		/* Start  Adding MPO Number  */
 		$sql="SELECT DISTINCT CPO AS MPO FROM m3_inputs.shipment_plan where schedule_no=\"$order_del_no\"";
