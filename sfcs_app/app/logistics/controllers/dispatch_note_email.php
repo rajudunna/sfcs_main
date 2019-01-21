@@ -809,13 +809,11 @@ tags will be replaced.-->
 	// 	$headers .= 'To: '.$to. "\r\n";
 	// }
 	
-<<<<<<< HEAD
-	$to = $dispatch_mail;
-	$headers .= 'From: Shop Floor System Alert'. "\r\n";
-=======
+
+
 	$to = $disptach_mail;
 	$headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
->>>>>>> 1439-mail-functionality-not-working-in-bai2-dispatch-aod-application
+
 	//$headers .= 'Cc: YasanthiN@brandix.com' . "\r\n";
 	
 	//KiranG 20160112 Added validation to track duplicate mail track. SR# 83957742
