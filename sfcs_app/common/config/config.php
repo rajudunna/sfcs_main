@@ -165,6 +165,8 @@ $group_id_Main=5;
 $smtp_user=$conf1->get('smtp-user-name');
 // $header_from="From: Shop Floor System Alert <ictsysalert@brandix.com>";
 $header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
+$header_name=$smtp_user." Alert";
+$header_mail=$conf1->get('smtp_mail_from');
 $dispatch_mail = $conf1->get('dispatch_mail');
 //Central Administration Menu Access
 $central_administration_sfcs='central_administration_sfcs';
