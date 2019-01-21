@@ -524,40 +524,76 @@ if($flag==1)
 	echo "<th class=\"title\">Total</th>";
 	echo "</tr></thead>";
 }
-
-//Getting sample details here  By SK-05-07-2018 == Start
-$samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$tran_order_tid' order by sizes_ref";
-$samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
-$num_rows_samples = mysqli_num_rows($samples_qry_result);
-
-if($num_rows_samples >0){
-	$samples_total = 0;	
-	echo "<tr ><th class=\"heading2\">Samples Qty</th>";
-	while($samples_data=mysqli_fetch_array($samples_qry_result))
+$order_tidss=array();
+if($ord_joins<>'0')
+{
+	if(strlen($schedule)<8)
 	{
-		$samples_total+=$samples_data['input_qty'];
-		$samples_size_arry[] =$samples_data['sizes_ref'];
-		$samples_input_qty_arry[] =$samples_data['input_qty'];
-	}	
-	for($s=0;$s<sizeof($s_tit);$s++)
-	{
-		$size_code = 's'.$sizes_code[$s];
-		$flg = 0;
-		for($ss=0;$ss<sizeof($samples_size_arry);$ss++)
+		$orders_join='J'.substr($color_back,-1);
+		
+		$select_sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
+		//echo $select_sql."<br>";
+		$result=mysqli_query($link, $select_sql);
+		while($rows=mysqli_fetch_array($result))
 		{
-			if($size_code == $samples_size_arry[$ss]){
-				echo "<td class=\"sizes\">".$samples_input_qty_arry[$ss]."</td>";
-				$flg = 1;
-			}			
-		}	
-		if($flg == 0){
-			echo "<td class=\"sizes\"><strong>-</strong></td>";
+			$order_tidss[]=$rows['order_tid'];
 		}
-	}		
-	echo "<td class=\"sizes\">".$samples_total."</td></tr>";
+	}
+	else
+	{
+		$select_sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='J".$schedule."'";
+		//echo $select_sql."<br>";
+		$result=mysqli_query($link, $select_sql);
+		while($rows=mysqli_fetch_array($result))
+		{
+			$order_tidss[]=$rows['order_tid'];
+		}	
+	}	
+}
+else
+{
+	$order_tidss[]=$tran_order_tid;
 }
 
-// Samples End By SK-05-07-2018
+//var_dump($order_tidss)."<Br>";
+for($ii=0;$ii<sizeof($order_tidss);$ii++)
+{
+	$samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$order_tidss[$ii]' order by sizes_ref";
+	$samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$num_rows_samples = mysqli_num_rows($samples_qry_result);
+	if($num_rows_samples >0)
+	{		
+		while($samples_data=mysqli_fetch_array($samples_qry_result))
+		{
+			for($s=0;$s<sizeof($s_tit);$s++)
+			{
+				if($samples_data['size']==$s_tit[$sizes_code[$s]])
+				{
+					$samples_total+=$samples_data['input_qty'];
+					$samples_input_qty_arry[$s_tit[$sizes_code[$s]]] = $samples_input_qty_arry[$s_tit[$sizes_code[$s]]]+
+																	   $samples_data['input_qty'];
+				}
+			}
+		}		
+	}
+}
+if(array_sum($samples_input_qty_arry)>0)
+{
+	echo "<tr ><th class=\"heading2\">Samples Qty</th>";
+	for($st=0;$st<sizeof($s_tit);$st++)
+	{
+		if($samples_input_qty_arry[$s_tit[$sizes_code[$st]]]<>'')
+		{
+			echo "<td class=\"sizes\">".$samples_input_qty_arry[$s_tit[$sizes_code[$st]]]."</td>";
+		}
+		else		
+		{
+			echo "<td class=\"sizes\">-</td>";
+		}
+	}
+	echo "<td class=\"sizes\">".$samples_total."</td></tr>";
+}	
+
 $label = 'Original Qty';
 if($order_no>0)
 {

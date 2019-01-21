@@ -412,7 +412,7 @@ if(isset($_POST['submit']))
 	// echo "Not Done Ids----".sizeof($pend_order_ref)."<br>";
 	// echo "Not Done Ids----".$pend_order[0]."<br>";
 	// echo "Not Done Ids----".$pend_order_type[0]."<br>";
-	if(sizeof($ready_cat_ref)>0) 	
+	if(sizeof($ready_cat_ref)>0 &&(sizeof($cat_id_ref)==sizeof($ready_cat_ref)))) 	
 	{
 	    $sql2="truncate mix_temp_desti"; 
         mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 

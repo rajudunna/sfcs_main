@@ -816,13 +816,15 @@ for($ii=0;$ii<sizeof($order_tidss);$ii++)
 				if($samples_data['size']==$s_tit[$sizes_code[$s]])
 				{
 					$samples_total+=$samples_data['input_qty'];
-					//$samples_size_arry[$s_tit[$s]] =$samples_data['sizes_ref'];
-					$samples_input_qty_arry[$s_tit[$sizes_code[$s]]] = $samples_input_qty_arry[$s_tit[$sizes_code[$s]]]+$samples_data['input_qty'];
+					$samples_input_qty_arry[$s_tit[$sizes_code[$s]]] = $samples_input_qty_arry[$s_tit[$sizes_code[$s]]]+
+																	   $samples_data['input_qty'];
 				}
+					
 			}
 		}		
 	}
 }
+
 // Samples End By SK-05-07-2018
 
 echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=".$color_back."&style=".$style_back."&schedule=".$schedule_back."\"><<<< Click here to Go Back</a>";
@@ -858,15 +860,20 @@ for($s=0;$s<sizeof($s_tit);$s++)
 		//samples qty display SK 06-07-2018 == Start
 		//for($ss=0;$ss<sizeof($samples_size_arry);$ss++)
 		//{
-			//if($size_code == $samples_size_arry[$ss]){
-				echo "<td><input type=\"hidden\" name=\"in_s".$sizes_code[$s]."_sample\" value=".$samples_input_qty_arry[$s_tit[$sizes_code[$s]]]."><center>".$samples_input_qty_arry[$s_tit[$sizes_code[$s]]]."</center></td>";
+			if($samples_input_qty_arry[$s_tit[$sizes_code[$s]]]<>"")
+			{
+				 echo "<td><input type=\"hidden\" name=\"in_s".$sizes_code[$s]."_sample\" value=".$samples_input_qty_arry[$s_tit[$sizes_code[$s]]]."><center>".$samples_input_qty_arry[$s_tit[$sizes_code[$s]]]."</center></td>";
 				//$flg = 1;
-			//}			
+			}
+			else			
+			{
+				 echo "<td><input type=\"hidden\" name=\"in_s".$sizes_code[$s]."_sample\" value=0><center>-</center></td>";
+			}
 		//}	
-		if($samples_input_qty_arry[$s_tit[$sizes_code[$s]]]=='')
-		{
-			echo "<td class=\"sizes\"><strong>-</strong></td>";
-		}
+		// if($samples_input_qty_arry[$s_tit[$sizes_code[$s]]]=='')
+		// {
+			// echo "<td class=\"sizes\"><strong>-</strong></td>";
+		// }
 		//samples qty display SK 06-07-2018 == End
 		echo "<td><center>".$$code1."</center></td>
 		<td><center>".($$code1-$$code)."</center></td>
