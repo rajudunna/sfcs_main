@@ -668,7 +668,7 @@ function Markersview($markers_view_docket)
     $table_data .= "</tbody></table>";
     $html .= $table_data;
     $shifts_array = ["","Available","Not Available"];
-    $html .= "<div class='row'><div class='col-md-3'></div><div class='col-md-3'></div><div class='col-md-3'></div><div class='col-md-3'></div>";
+    $html .= "<div class='row'><div class='col-md-3'></div><div class='col-md-3'></div><div class='col-md-3'></div>";
     if($flag == 1)
     {
         $drp_down = '<label>Required Materials: <span style="color:red">*</span></label>
@@ -678,7 +678,7 @@ function Markersview($markers_view_docket)
             $drp_down .= '<option value='.$i.'>'.$shifts_array[$i].'</option>';
         }
         // $html .= $drp_down;
-        $html .= "<div class='col-md-3'></br><input type='submit' id='approve' class='btn btn-primary confirm-submit' value='Approve' name='approve'></div></div>"; 
+        $html .= "<div class='col-md-3' style='float:right;'></br><input type='submit' id='approve' class='btn btn-primary confirm-submit' value='Approve' name='approve'></div></div>"; 
      
     }
     $html .= '</div></div></div>';
