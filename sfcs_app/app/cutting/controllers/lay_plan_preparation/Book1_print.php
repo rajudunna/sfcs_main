@@ -1952,7 +1952,7 @@ tags will be replaced.-->
                             for($i=0;$i<sizeof($s_tit);$i++) 
                             { 
                             //echo $i."-".$i."--".$c_s[$i]."<br>"; 
-                            echo "<td class=xl6813019 style='text-align:left'>".$o_s[$i]."</td>"; 
+                            echo "<td class=xl6813019 style='text-align:center'>".$o_s[$i]."</td>"; 
                             } 
                             echo "<td class=xl7513019> $order_total</td>"; 
 
@@ -2032,7 +2032,7 @@ tags will be replaced.-->
                                                 echo "<td class=xl7213019 width=70 style='width:53pt'>Extra Ship</td>"; 
                                                 for($i=$temp_len1;$i<$temp_len;$i++)
                                                 { 
-                                                    echo "<td class=xl6813019>".$o_s[$i]."</td>"; 
+                                                    echo "<td class=xl6813019 style='text-align:center'>".$o_s[$i]."</td>"; 
                                                 } 
                                             } 
                                             else 
@@ -2116,7 +2116,7 @@ tags will be replaced.-->
                                             echo "<td class=xl7213019 width=70 style='width:53pt'>Extra Ship</td>"; 
                                             for($j=$temp_len1;$j<$temp_len-1;$j++)
                                             { 
-                                                echo "<td class=xl6813019>".$o_s[$j]."</td>"; 
+                                                echo "<td class=xl6813019 style='text-align:center'>".$o_s[$j]."</td>"; 
                                             } 
                                         } 
                                         else 
