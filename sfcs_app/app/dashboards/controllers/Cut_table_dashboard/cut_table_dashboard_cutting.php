@@ -799,6 +799,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     {
       $cut_new=$sql_row1['act_cut_status'];
       $cut_input_new=$sql_row1['act_cut_issue_status'];
+      $docket_remarks=$sql_row1['remarks'];
       $rm_new=strtolower(chop($sql_row1['rm_date']));
       $rm_update_new=strtolower(chop($sql_row1['rm_date']));
       $input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
@@ -963,7 +964,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         $club_c_code=array();
         $club_docs=array();
         $colors_db=array();
-        if($sql_row1['clubbing']>0)
+        if($sql_row1['clubbing']>0 && strtolower($docket_remarks)!="recut")
         {
           $total_qty=0;
           $fabric_required=0;
