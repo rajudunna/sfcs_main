@@ -678,7 +678,7 @@ function Markersview($markers_view_docket)
             $drp_down .= '<option value='.$i.'>'.$shifts_array[$i].'</option>';
         }
         // $html .= $drp_down;
-        $html .= "<div class='col-md-3' style='float:right;'></br><input type='submit' id='approve' class='btn btn-primary confirm-submit' value='Approve' name='approve'></div></div>"; 
+        $html .= "<div class='col-md-3' style='float:right;'></br><input type='submit' id='approve' class='btn btn-primary confirm-submit' value='Approve' name='approve' style='margin-left: 67%;'        ></div></div>"; 
      
     }
     $html .= '</div></div></div>';
