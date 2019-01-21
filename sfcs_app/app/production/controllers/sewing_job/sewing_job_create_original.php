@@ -258,7 +258,7 @@
 							{
 								echo '<h4>Pack Method: <span class="label label-info">'.$operation[$pack_method].'</span></h4>';
 								// echo "carton props added, You can proceed";
-								if($bundle > 0)
+								if($bundle == 0)
 								{
 									$combo = array();
 									$get_combo_query = "SELECT DISTINCT (combo_no) AS combo FROM `brandix_bts`.`tbl_carton_size_ref` WHERE parent_id = $c_ref";
