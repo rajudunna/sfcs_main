@@ -79,7 +79,7 @@ if(isset($_POST['approve']))
     }
     if($pac_seq_no == '' || $pac_seq_no == null)
     {
-        $input_job_no = 1;
+        $input_job_no = 0;
         $sql2="select group_concat(distinct trim(destination)) as dest,order_style_no as style,GROUP_CONCAT(DISTINCT order_col_des separator '<br/>') as color,order_po_no as cpo,order_date,vpo from $bai_pro3.bai_orders_db where order_del_no in (".$schedule.") and order_col_des=\"".$color."\""; 
         // echo $sql2; 
         $result2=mysqli_query($link, $sql2) or die("Error-".$sql2."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
