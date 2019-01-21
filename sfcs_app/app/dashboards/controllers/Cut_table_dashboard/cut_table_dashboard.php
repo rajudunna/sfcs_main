@@ -766,7 +766,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
   $sql1="SELECT c.print_status,c.plan_lot_ref,c.bundle_location,c.fabric_status_new,c.doc_no,
   c.cutting_tbl_id,c.priority,c.act_cut_status,c.rm_date,c.cut_inp_temp,c.order_tid,c.fabric_status,
   c.color_code,c.clubbing,c.order_style_no,c.order_div,c.order_col_des,c.acutno,c.ft_status,c.st_status,c.pt_status,
-  c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,f.doc_ref,f.req_time FROM bai_pro3.cut_tbl_dash_doc_summ c  LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN (".implode(",",$doc_no_ref).") and c.act_cut_status<>'DONE' AND c.fabric_status_new !='5' order by f.req_time asc";
+  c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,f.doc_ref,f.req_time,c.remarks FROM bai_pro3.cut_tbl_dash_doc_summ c  LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN (".implode(",",$doc_no_ref).") and c.act_cut_status<>'DONE' AND c.fabric_status_new !='5' order by f.req_time asc";
   
       //echo $_GET["view_div"];
       if($_GET["view_div"] == 'M')
@@ -781,7 +781,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
        $sql1="SELECT c.print_status,c.plan_lot_ref,c.bundle_location,c.fabric_status_new,c.doc_no,
        c.cutting_tbl_id,c.priority,c.act_cut_status,c.rm_date,c.cut_inp_temp,c.order_tid,c.fabric_status,
        c.color_code,c.clubbing,c.order_style_no,c.order_div,c.order_col_des,c.acutno,c.ft_status,c.st_status,c.pt_status,
-       c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,f.doc_ref,f.req_time FROM bai_pro3.cut_tbl_dash_doc_summ c  LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN (".implode(",",$doc_no_ref).") and c.act_cut_status<>'DONE' AND c.fabric_status_new !='5' order by f.req_time asc";
+       c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,f.doc_ref,f.req_time,c.remarks FROM bai_pro3.cut_tbl_dash_doc_summ c  LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN (".implode(",",$doc_no_ref).") and c.act_cut_status<>'DONE' AND c.fabric_status_new !='5' order by f.req_time asc";
 
       }
       else
@@ -802,7 +802,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
        $sql1="SELECT c.print_status,c.plan_lot_ref,c.bundle_location,c.fabric_status_new,c.doc_no,
        c.cutting_tbl_id,c.priority,c.act_cut_status,c.rm_date,c.cut_inp_temp,c.order_tid,c.fabric_status,
        c.color_code,c.clubbing,c.order_style_no,c.order_div,c.order_col_des,c.acutno,c.ft_status,c.st_status,c.pt_status,
-       c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,b.order_style_no,b.order_div,f.doc_ref,f.req_time FROM bai_pro3.cut_tbl_dash_doc_summ c LEFT JOIN bai_pro3.bai_orders_db_confirm b ON b.order_style_no
+       c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,b.order_style_no,b.order_div,f.doc_ref,f.req_time,c.remarks FROM bai_pro3.cut_tbl_dash_doc_summ c LEFT JOIN bai_pro3.bai_orders_db_confirm b ON b.order_style_no
        =c.order_style_no LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN(".implode(",",$doc_no_ref).") and b.order_div=".'"'.$buyer_identity.'"'." AND c.act_cut_status<>'DONE' AND c.fabric_status_new !='5' order by f.req_time asc";
         
       }
@@ -816,6 +816,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     {
       $cut_new=$sql_row1['act_cut_status'];
       $cut_input_new=$sql_row1['act_cut_issue_status'];
+      $docket_remarks=$sql_row1['remarks'];
       $rm_new=strtolower(chop($sql_row1['rm_date']));
       $rm_update_new=strtolower(chop($sql_row1['rm_date']));
       $input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
@@ -1049,11 +1050,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $club_c_code=array();
       $club_docs=array();
       $colors_db=array();
-      if($sql_row1['clubbing']>0)
+      if($sql_row1['clubbing']>0 && strtolower($docket_remarks)!="recut")
       {
         $total_qty=0;
         $fabric_required=0;
-        $sql11="select remarks,order_col_des,color_code,doc_no,material_req,(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where order_del_no='$schedule' and clubbing=".$sql_row1['clubbing']." and acutno=".$sql_row1['acutno'];
+        $sql11="select remarks,order_col_des,color_code,doc_no,material_req,(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where order_del_no='$schedule' and category in (".$in_categories.") and clubbing=".$sql_row1['clubbing']." and acutno=".$sql_row1['acutno'];
         
         $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($sql_row11=mysqli_fetch_array($sql_result11))
