@@ -792,33 +792,6 @@ tags will be replaced.-->
 </body>
 
 </html>";
-	// if($_SERVER['SERVER_NAME']=="qcinet")
-	// {
-	// 	if($iu_check==1)
-	// 	{
-	// 		$to  = 'SandeepCho@brandix.com,brandixhelpdesk@schemaxtech.com,FazlulR@brandix.com,rameshs@brandix.com,qcisecurity@brandix.com';
-	// 		$subject = 'BAI Alert - IU Dispatch Update AOD Ref# '.$note_no;
-	// 	}	
-	// 	else
-	// 	{
-	// 		$to  = 'SandeepCho@brandix.com,brandixhelpdesk@schemaxtech.com,FazlulR@brandix.com,rameshs@brandix.com,qcisecurity@brandix.com';
-	// 		$subject = 'Dispatch Update AOD Ref# '.$note_no;
-	// 	}
-	// }
-	
-	// if($_SERVER['SERVER_NAME']=="bai2net")
-	// {
-	// 	if($iu_check==1)
-	// 	{
-	// 		$to  = 'belinstantu@brandix.com, BAISpeed@brandix.com, naiduy@brandix.com, bharatk@brandix.com, brandixalerts@schemaxtech.com, brandixalerts@schemaxtech.com';
-	// 		$subject = 'BAI Alert - IU Dispatch Update AOD Ref# '.$note_no;
-	// 	}
-	// 	else
-	// 	{
-	// 		$to  = 'BAI2PlanningTeam@brandix.com, BAI2FinishingTeam@brandix.com, BAILogisticsTeam@brandix.com, BAI2ManufacturingTeam@brandix.com, erangar@brandix.com, brandixalerts@schemaxtech.com, brandixalerts@schemaxtech.com, naiduy@brandix.com, bharatk@brandix.com, brandixalerts@schemaxtech.com';
-	// 		$subject = 'Dispatch Update AOD Ref# '.$note_no;
-	// 	}
-	// }
 	
 	$subject = 'Security Check Out ';
 	// To send HTML mail, the Content-type header must be set
@@ -837,7 +810,7 @@ tags will be replaced.-->
 	// }
 	
 	$to = $disptach_mail;
-	$headers .= 'From: Shop Floor System Alert'. "\r\n";
+	$headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
 	//$headers .= 'Cc: YasanthiN@brandix.com' . "\r\n";
 	
 	//KiranG 20160112 Added validation to track duplicate mail track. SR# 83957742
@@ -859,7 +832,7 @@ tags will be replaced.-->
 		{
 			fwrite($fh, date("Y-m-d H:i:s").$username."Mail Successful<br>\r\n");
 			
-			$sql="update $bai_pro3.disp_db set exit_date=\"".date("Y-m-d H:i:s")."\", status=3, dispatched_by=USER() where disp_note_no=$note_no and exit_date = '' and status=2";
+			$sql="update $bai_pro3.disp_db set exit_date=\"".date("Y-m-d H:i:s")."\", status=3, dispatched_by=USER() where disp_note_no=$note_no and status=2";
 			mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			fwrite($fh, date("Y-m-d H:i:s").$username."Mail Query Success<br>\r\n");
