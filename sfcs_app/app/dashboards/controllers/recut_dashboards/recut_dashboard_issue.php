@@ -45,8 +45,9 @@ if(isset($_POST['formSubmit']))
     while($row_cat_ref = $res_qry_to_get->fetch_assoc()) 
     {
         $cat_ref =$row_cat_ref['tid'];
+        $patt_ver = $row_cat_ref['patt_ver'];
     }
-    $sql1="insert into $bai_pro3.maker_stat_log(date,cat_ref,order_tid,mklength) values (\"".date("Y-m-d")."\",".$cat_ref.",\"$order_tid\",".$mklen.")";
+    $sql1="insert into $bai_pro3.maker_stat_log(date,cat_ref,order_tid,mklength,mk_ver) values (\"".date("Y-m-d")."\",".$cat_ref.",\"$order_tid\",".$mklen.",'".$patt_ver."')";
     mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
     $ilastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
     $sql1="update $bai_pro3.recut_v2 set p_plies=".$plies.",a_plies=".$plies.",mk_ref=$ilastid where doc_no=".$doc_nos;
