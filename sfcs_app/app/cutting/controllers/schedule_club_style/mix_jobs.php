@@ -279,7 +279,7 @@ if(isset($_POST['submit']))
 			$pend_order_type[]=$cat_type[$ii];				
 		}
 	}
-	if(sizeof($ready_cat_ref)>0) 	
+	if(sizeof($ready_cat_ref)>0 &&(sizeof($cat_id_ref)==sizeof($ready_cat_ref))) 	
 	{
 	    $sql2="truncate $bai_pro3.mix_temp_desti"; 
         mysqli_query( $link, $sql2) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -616,17 +616,7 @@ if(isset($_POST['submit']))
 						mysqli_query( $link, $delete_sqls) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 				}				 
-				if(sizeof($cat_id_ref)==sizeof($ready_cat_ref))
-				{				
-					$sqlx="update $bai_pro3.bai_orders_db set order_joins='2' where order_del_no=$order_sch and order_col_des=\"$color\""; 
-					echo $sqlx."<br>";
-					//mysqli_query( $link, $sqlx) or exit("Sql Error1.3".mysqli_error($GLOBALS["___mysqli_ston"])); 
-					 
-					$sqlx="update $bai_pro3.bai_orders_db_confirm set order_joins='2' where order_del_no=$order_sch and order_col_des=\"$color\""; 
-					echo $sqlx."<br>";
-					//mysqli_query( $link, $sqlx) or exit("Sql Error1.69".mysqli_error($GLOBALS["___mysqli_ston"])); 
-				}
-			 
+				
 				//Executing Docket Creation & Updation
 				$sql1="SELECT cutno,order_col_des,order_del_no,order_tid,doc_no,GROUP_CONCAT(size ORDER BY size) as size,GROUP_CONCAT(qty ORDER BY size) as  ratio,cat_ref,plies FROM $bai_pro3.`mix_temp_desti` where size NOT LIKE \"%p_%\" and cat_ref='".$cat_ref."' GROUP BY order_tid,doc_no order by doc_no*1"; 
 				//echo $sql1."<br>";
