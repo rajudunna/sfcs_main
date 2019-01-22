@@ -427,10 +427,10 @@ $has_permission=haspermission($_GET['r']);
 
 $sql="DROP TABLE IF EXISTS $temp_pool_db.plan_doc_summ_input_tms_$rbac_username";
 //echo $sql."<br/>";
-mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
+//mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $sql="CREATE TABLE $temp_pool_db.plan_doc_summ_input_tms_$rbac_username ENGINE = MYISAM SELECT MIN(st_status) AS st_status,order_style_no,input_job_no_random,GROUP_CONCAT(DISTINCT order_del_no) AS order_del_no,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no FROM $bai_pro3.plan_doc_summ_input GROUP BY input_job_no_random";
-mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+//mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 ?>
 <div class="panel panel-primary">
 <div class="panel-heading"><strong>Sewing Trims Status Dashboard</strong></div>
@@ -500,10 +500,10 @@ $bindex=0;
 $blink_docs=array();
 $table_name="$temp_pool_db.plan_dash_doc_summ_input_".$rbac_username;
 $sql="DROP TABLE IF EXISTS $table_name";
-mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
+//mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $sql="CREATE TABLE $table_name ENGINE = myisam SELECT * FROM $bai_pro3.plan_dash_doc_summ_input ";
-mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+//mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name GROUP BY section ORDER BY section + 0";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -575,7 +575,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			echo "<td class=\"bottom\"><strong><a href=\"javascript:void(0)\" 
 			 if (window.focus) {Popup.focus()} return false;\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
 			$y=0;
-
+			echo "</br>";
 			$show_block = calculateJobsCount($table_name,$module,$order_div_ref);
 			if($show_block > 0){
 				echo "<div style='float:left;'>		    
@@ -584,7 +584,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							</div>";
 			}
 
-			$sql="SELECT * FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_module=$module ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc ";	
+			$sql="SELECT * FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_module=$module ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc ";
 			$result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row=mysqli_fetch_array($result))
 			{
@@ -695,8 +695,7 @@ include('include_legends_tms.php');
 
 function calculateJobsCount($table_name,$module,$order_div_ref){
 	global $link;
-	$ijs_query  = "SELECT GROUP_CONCAT(DISTINCT input_job_no_random_ref) as jobs FROM $table_name WHERE input_trims_status=4  
-						     AND input_module=$module $order_div_ref";
+	$ijs_query  = "SELECT GROUP_CONCAT(DISTINCT CONCAT(\"'\",input_job_no_random_ref,\"'\")) as jobs FROM $table_name WHERE input_trims_status=4 AND input_module=$module $order_div_ref";
 	$ijs_result = mysqli_query($link,$ijs_query);
 	while($row = mysqli_fetch_array($ijs_result)){
 		$jobs = $row['jobs'];
