@@ -948,7 +948,7 @@ if(isset($_POST["update"]))
 				$code1 .= "old_order_s_".$sizes_array[$ij]."=order_s_".$sizes_array[$ij].",";
 			}
 			$query_code= rtrim($code,',');
-			$sql_check="select * from $bai_pro3.bai_orders_db_confirm where order_no=1 and order_style_no='".$sty."' and order_del_no=\"$sch\" and order_col_des='".$status_col."'";
+			$sql_check="select * from $bai_pro3.bai_orders_db_confirm where order_no=1 and order_style_no='".$sty."' and order_del_no=\"$status_sch\" and order_col_des='".$col."'";
 			$res=mysqli_query($link, $sql_check);
 			if(mysqli_num_rows($res)>0)
 			{
