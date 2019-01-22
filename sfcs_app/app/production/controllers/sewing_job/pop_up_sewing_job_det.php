@@ -39,7 +39,7 @@
 								$col_array[]=$sizes_result11['order_col_des'];
 								for($kki=0;$kki<sizeof($sizes_array);$kki++)
 								{												
-									if($sizes_result11["title_size_".$sizes_array[$kki].""]<>"")
+									if($sizes_result11["title_size_".$sizes_array[$kki].""]<>"" && $sizes_result12["order_s_".$sizes_array[$kki].""]>0)
 									{
 										$order_array[$sizes_result11['order_col_des']][$sizes_result11["title_size_".$sizes_array[$kki].""]]=$sizes_result11["order_s_".$sizes_array[$kki].""];
 										$size_tit[]=$sizes_result11["title_size_".$sizes_array[$kki].""];
@@ -60,7 +60,7 @@
 								$col_array[]=$sizes_result12['order_col_des'];
 								for($kki=0;$kki<sizeof($sizes_array);$kki++)
 								{												
-									if($sizes_result12["title_size_".$sizes_array[$kki].""]<>"")
+									if($sizes_result12["title_size_".$sizes_array[$kki].""]<>"" && $sizes_result12["order_s_".$sizes_array[$kki].""]>0)
 									{
 										$plannedQty_query = "SELECT SUM(p_plies*p_$sizes_array[$kki]) AS plannedQty FROM $bai_pro3.plandoc_stat_log WHERE cat_ref IN (SELECT tid FROM $bai_pro3.cat_stat_log WHERE category IN ($in_categories) AND order_tid IN  (SELECT order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule AND order_col_des='".$sizes_result12['order_col_des']."' AND $order_joins_not_in))";
 										//echo $plannedQty_query."<br>";
@@ -75,8 +75,8 @@
 									}
 								}
 							}
-						}
-						
+						}						
+						$filter_size=array_unique($filter_size);
 						echo "<br><div class='col-md-12'>
 						<div class='table-responsive'>
 							<table class=\"table table-bordered\">
@@ -137,7 +137,7 @@
 									{
 										if($planned_array[$col_array[$kk]][$filter_size[$kki]]<>"")
 										{
-											$balance_value=$order_array[$col_array[$kk]][$filter_size[$kki]]-$planned_array[$col_array[$kk]][$filter_size[$kki]];
+											$balance_value=$planned_array[$col_array[$kk]][$filter_size[$kki]]-$order_array[$col_array[$kk]][$filter_size[$kki]];
 											if ($balance_value > 0) {
 												$color = '#00b33c';
 											} else if ($balance_value < 0 ) {

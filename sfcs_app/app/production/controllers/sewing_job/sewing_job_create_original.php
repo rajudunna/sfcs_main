@@ -302,6 +302,7 @@
 										$size_values=array();
 										$filter_size=array();
 										$size_tit=array();
+										$size_code=array();
 										$sizes_query = "SELECT * FROM $bai_pro3.`bai_orders_db` WHERE order_tid not in (SELECT order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule AND order_style_no='".$style."') AND order_del_no=$schedule AND order_style_no='".$style."' and $order_joins_not_in";
 										$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
 										$row_count = mysqli_num_rows($sizes_result);
@@ -316,6 +317,7 @@
 													{
 														$size_values[$sizes_result11['order_col_des']][$sizes_result11["title_size_".$sizes_array[$kki].""]]=$sizes_result11["order_s_".$sizes_array[$kki].""];
 														$size_tit[]=$sizes_result11["title_size_".$sizes_array[$kki].""];
+														$size_code[$sizes_result11['order_col_des']][$sizes_result12["title_size_".$sizes_array[$kki].""]]=$sizes_array[$kki];
 													}
 												}
 											}
@@ -335,6 +337,7 @@
 													{
 														$size_values[$sizes_result12['order_col_des']][$sizes_result12["title_size_".$sizes_array[$kki].""]]=$sizes_result12["order_s_".$sizes_array[$kki].""];
 														$size_tit[]=$sizes_result12["title_size_".$sizes_array[$kki].""];
+														$size_code[$sizes_result12['order_col_des']][$sizes_result12["title_size_".$sizes_array[$kki].""]]=$sizes_array[$kki];
 													}
 												}
 											}
@@ -343,10 +346,9 @@
 										{
 											for($kki=0;$kki<sizeof(array_unique($size_tit));$kki++)
 											{
-												//echo $size_values[$col_array[$kk]][$size_tit[$kki]]."<br>";
-												if($size_values[$col_array[$kk]][$size_tit[$kki]]<>'')
+												if($size_values[$col_array[$kk]][$size_tit[$kki]]<>"" && $size_values[$col_array[$kk]][$size_tit[$kki]]>0)
 												{
-													$plannedQty_query = "SELECT SUM(p_plies*p_$sizes_array[$kki]) AS plannedQty FROM $bai_pro3.plandoc_stat_log WHERE cat_ref IN (SELECT tid FROM $bai_pro3.cat_stat_log WHERE category IN ($in_categories) AND order_tid IN  (SELECT order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule AND order_col_des='".$col_array[$kk]."' AND $order_joins_not_in))";
+													$plannedQty_query = "SELECT SUM(p_plies*p_".$size_code[$col_array[$kk]][$size_tit[$kki]].") AS plannedQty FROM $bai_pro3.plandoc_stat_log WHERE cat_ref IN (SELECT tid FROM $bai_pro3.cat_stat_log WHERE category IN ($in_categories) AND order_tid IN  (SELECT order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule AND order_col_des='".$col_array[$kk]."' AND $order_joins_not_in))";
 													//echo $plannedQty_query."<br>";
 													$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
 													while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
@@ -359,6 +361,7 @@
 												}
 											}	
 										}
+										$filter_size=array_unique($filter_size);
 										$url1 = getFullURLLevel($_GET['r'],'pop_up_sewing_job_det.php',0,'R');
 										echo "<br><a class='btn btn-success' href='$url1?schedule=$sch_id&style=$style_id' onclick=\"return popitup2('$url1?schedule=$sch_id&style=$style_id')\" target='_blank'>Click Here For Color Wise Order Details</a>";
 
@@ -368,7 +371,7 @@
 											<table class=\"table table-bordered\">
 												<tr>
 													<th>Details</th>";
-													for ($i=0; $i < sizeof(array_unique($filter_size)); $i++)
+													for ($i=0; $i < sizeof($filter_size); $i++)
 													{
 														echo "<th>".$filter_size[$i]."</th>";
 													}	
@@ -378,9 +381,10 @@
 
 												echo "<tr>
 														<td>Order Qty</td>";
-														for ($i=0; $i <sizeof(array_unique($filter_size)); $i++)
+														for ($i=0; $i <sizeof($filter_size); $i++)
 														{ 
-															if($ordered_qty[$filter_size[$kki]]<>"")
+															echo $ordered_qty[$filter_size[$i]]."<br>";
+															if($ordered_qty[$filter_size[$i]]<>"")
 															{
 																echo "<td>".$ordered_qty[$filter_size[$i]]."</td>";
 																$tot_ordered = $tot_ordered + $ordered_qty[$filter_size[$i]];
@@ -397,7 +401,7 @@
 														<td>Cut Plan Qty</td>";
 														for ($i=0; $i  <sizeof(array_unique($filter_size)); $i++)
 														{														
-															if($planned_qty[$filter_size[$kki]]<>"")
+															if($planned_qty[$filter_size[$i]]<>"")
 															{
 																echo "<td>".$planned_qty[$filter_size[$i]]."</td>";
 																$tot_planned = $tot_planned + $planned_qty[$filter_size[$i]];
@@ -466,6 +470,7 @@
 											$size1 = explode(",",$size);
 											// var_dump($size);
 										}
+										$Ori_size=array();
 										for ($i=0; $i < sizeof($size1); $i++)
 										{
 											$Original_size_query = "SELECT DISTINCT size_title FROM `brandix_bts`.`tbl_orders_sizes_master` WHERE parent_id = $sch_id AND ref_size_name=$size1[$i]";
@@ -473,9 +478,13 @@
 											$Original_size_result=mysqli_query($link, $Original_size_query) or exit("Error while getting Qty Details");
 											while($Original_size_details=mysqli_fetch_array($Original_size_result)) 
 											{
-												$Ori_size = $Original_size_details['size_title'];
+												$Ori_size[] = $Original_size_details['size_title'];
 											}
-											echo "<th>".$Ori_size."</th>";
+											
+										}
+										for ($i=0; $i < sizeof(array_unique($Ori_size)); $i++)
+										{
+											echo "<th>".$Ori_size[$i]."</th>";
 										}
 										echo "</tr>";
 										for ($j=0; $j < sizeof($color1); $j++)
