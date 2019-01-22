@@ -800,7 +800,7 @@ else
 	$order_tidss[]=$tran_order_tid;
 }
 //Getting sample details here  By SK-05-07-2018 == Start
-$samples_total = 0;	
+$samples_total = 0;	$samples_input_qty_arry=array();
 for($ii=0;$ii<sizeof($order_tidss);$ii++)
 {
 	$samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$order_tidss[$ii]' order by sizes_ref";
@@ -823,6 +823,13 @@ for($ii=0;$ii<sizeof($order_tidss);$ii++)
 			}
 		}		
 	}
+	else
+	{
+		for($s=0;$s<sizeof($s_tit);$s++)
+		{
+			$samples_input_qty_arry[$s_tit[$sizes_code[$s]]]=0;
+		}
+	}	
 }
 
 // Samples End By SK-05-07-2018
