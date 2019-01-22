@@ -529,7 +529,7 @@ if($ord_joins<>'0')
 {
 	if(strlen($schedule)<8)
 	{
-		$orders_join='J'.substr($color_back,-1);
+		$orders_join='J'.substr($color,-1);
 		
 		$select_sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
 		//echo $select_sql."<br>";

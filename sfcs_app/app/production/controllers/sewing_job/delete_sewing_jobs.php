@@ -226,7 +226,7 @@
                         $sql_result111=mysqli_query($link, $get_tids) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                         while($sql_row111=mysqli_fetch_array($sql_result111)) 
                         { 
-                            $final_tid[]=$sql_row111['tids'];
+                            $final_tid[]=$sql_row111['tid'];
                         }
                         $sql3="DELETE FROM $bai_pro3.`pac_stat_log_input_job` WHERE tid IN (".implode(",",$final_tid).")";
                         // $sql3="DELETE FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random like  \"".$schedule."%\""; 

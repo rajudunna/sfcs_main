@@ -373,7 +373,6 @@
 														<td>Order Qty</td>";
 														for ($i=0; $i <sizeof($filter_size); $i++)
 														{ 
-															echo $ordered_qty[$filter_size[$i]]."<br>";
 															if($ordered_qty[$filter_size[$i]]<>"")
 															{
 																echo "<td>".$ordered_qty[$filter_size[$i]]."</td>";
