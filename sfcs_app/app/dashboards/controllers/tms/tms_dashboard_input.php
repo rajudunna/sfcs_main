@@ -696,8 +696,9 @@ include('include_legends_tms.php');
 
 function calculateJobsCount($table_name,$module,$order_div_ref){
 	global $link;
-	$ijs_query  = "SELECT GROUP_CONCAT(DISTINCT input_job_no_random_ref) as jobs FROM $table_name WHERE input_trims_status=4  
-						     AND input_module=$module $order_div_ref";
+	$ijs_query  = "SELECT group_concat(distinct \"'\",input_job_no_random_ref,\"'\")  as jobs FROM $table_name WHERE input_trims_status=4  
+							 AND input_module=$module $order_div_ref";
+							
 	$ijs_result = mysqli_query($link,$ijs_query);
 	while($row = mysqli_fetch_array($ijs_result)){
 		$jobs = $row['jobs'];
@@ -706,7 +707,8 @@ function calculateJobsCount($table_name,$module,$order_div_ref){
 	if($jobs == '')
 		return 0;
 	else{
-		$ips_jobs_query = "SELECT count(distinct input_job_no_random_ref) AS ips_jobs_match_count FROM bai_pro3.plan_dashboard_input where input_module = $module";
+		$ips_jobs_query = "SELECT count(distinct \"'\",input_job_no_random_ref,\"'\") AS ips_jobs_match_count FROM bai_pro3.plan_dashboard_input WHERE input_trims_status=4  
+		AND input_module=$module $order_div_ref";
 		$inps_jobs_result = mysqli_query($link,$ips_jobs_query);
 		while($row = mysqli_fetch_array($inps_jobs_result)){
 				$ips_jobs_count = $row['ips_jobs_match_count'];
