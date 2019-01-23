@@ -79,6 +79,15 @@
 					$selected_hour = $_POST['selected_hour'];
 					$selected_section = $_POST['selected_section'];
 
+					if ($selected_section == 'all')
+					{
+						$sec_add_variable_sec_master = "";
+					}
+					else
+					{
+						$sec_add_variable_sec_master = " where sec_name = '$selected_section'";
+					}
+
 					$time_display_sah = array();	$plan_sah = array();	$act_sah = array();
 					$plant_timings_query_sah="SELECT * FROM $bai_pro3.tbl_plant_timings";
 					// echo $plant_timings_query_sah;
@@ -86,7 +95,6 @@
 					while ($timing = mysqli_fetch_array($plant_timings_result))
 					{
 						$time_display_sah[] = $timing['time_display'].' '.$timing['day_part'];
-
 						$plan_sah_qry="SELECT round(SUM(plan_sah)/SUM(act_hours)) as plan_sah FROM $bai_pro.pro_plan WHERE DATE='$selected_date'";
 						// echo $plan_sah_qry;
 						$plan_sah_result=mysqli_query($link,$plan_sah_qry);
@@ -148,7 +156,7 @@
 													<tbody>';
 														$section_array = array();	$acheivement_array = array();
 														$plan_pcs_fact = 0;	$act_pcs_fact = 0;	$variation_fact =0;	$acheivement_fact = 0;
-														$section_query = "SELECT DISTINCT sec_name, section_display_name FROM $bai_pro3.`sections_master` order by sec_name*1";
+														$section_query = "SELECT DISTINCT sec_name, section_display_name FROM $bai_pro3.`sections_master` $sec_add_variable_sec_master order by sec_name*1";
 														$section_result=mysqli_query($link,$section_query);
 														while($Sec=mysqli_fetch_array($section_result))
 														{
@@ -310,7 +318,7 @@
 													</thead>
 													<tbody>';
 														$plan_pcs_fact = 0;	$act_pcs_fact = 0;	$variation_fact =0;	$acheivement_fact = 0;
-														$section_query = "SELECT DISTINCT sec_name, section_display_name FROM $bai_pro3.`sections_master` order by sec_name*1";
+														$section_query = "SELECT DISTINCT sec_name, section_display_name FROM $bai_pro3.`sections_master` $sec_add_variable_sec_master order by sec_name*1";
 														$section_result=mysqli_query($link,$section_query);
 														while($Sec=mysqli_fetch_array($section_result))
 														{
