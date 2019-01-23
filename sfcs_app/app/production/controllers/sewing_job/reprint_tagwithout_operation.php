@@ -12,50 +12,58 @@
 		'format' => [50, 101], 
 		'orientation' => 'L'
 	]);
-
-	$input_job=$_GET['input_job'];
-	$schedule=$_GET['schedule'];
+	$bundle_id=$_GET['bundle_id'];
 	?>
 
 	<?php
-
-
 	$html = '
 			<html>
 				<head>
-					<style>
-						body {
-							font-family: arial;
-							font-size: 12px;
-						}
-					
-						@page {
-							margin-top: 10px;
-							margin-left:20px;  
-							margin-right:2px;
-							margin-bottom:10px; 
-						}
-						#barcode {font-weight: normal; font-style: normal; line-height:normal; sans-serif; font-size: 8pt}
-					</style>
-					<script type="text/javascript" src="../../../common/js/jquery.min.js" ></script>
-					<script type="text/javascript" src="../../../common/js/table2CSV.js" ></script>
+				<style>
+				body {font-family: arial;
+					font-size: 12px;
+				}
+
+
+			
+				@page {
+				margin-top: 10px;
+				margin-left:20px;  
+				margin-right:2px;
+				margin-bottom:10px; 
+				}
+					#barcode {font-weight: normal; font-style: normal; line-height:normal; sans-serif; font-size: 8pt}
+
+				</style>
+				<script type="text/javascript" src="../../../common/js/jquery.min.js" ></script>
+				<script type="text/javascript" src="../../../common/js/table2CSV.js" ></script>
+
+
 				</head>
 				<body>';
 
-		$barcode_qry="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job."' order by doc_no*1,barcode_sequence*1";			
+		$barcode_qry="select * from $bai_pro3.packing_summary_input where tid='".$bundle_id."' order by old_size,tid";			
 		$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
+		$seq_num=1;
 		while($barcode_rslt = mysqli_fetch_array($sql_barcode))
 		{				
 			$barcode=$barcode_rslt['tid'];
 			$color=$barcode_rslt['order_col_des'];
 			$style=$barcode_rslt['order_style_no'];
+			$schedule=$barcode_rslt['order_del_no'];
+			$input_job=$barcode_rslt['input_job_no'];
 			$cutno=$barcode_rslt['acutno'];
 			$quantity=$barcode_rslt['carton_act_qty'];
 			$size=$barcode_rslt['size_code'];
 			$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color."' and order_del_no",$schedule,$link);
-			$seq_num=$barcode_rslt['barcode_sequence'];
 			
+			//sequence number logic based on size and colors
+			if(($size_temp!='') AND ($color_temp!='')){	
+				if(($size_temp!=$barcode_rslt['size_code'] ) OR ($color_temp!=$barcode_rslt['order_col_des'])){
+					$seq_num=1;
+				}
+			}
+
             $get_destination="select destination from bai_pro3.bai_orders_db where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."' ";
 			
 			$destination_result=mysqli_query($link, $get_destination)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -93,8 +101,6 @@
 					//reset sequence number by size and color
 					$size_temp=$size;
 					$color_temp=$color;
-			$update_bundle_print_status="UPDATE $bai_pro3.pac_stat_log_input_job SET bundle_print_status='1', bundle_print_time=now() WHERE tid='".$barcode."'";	
-			mysqli_query($link, $update_bundle_print_status)  or exit("Error while updatiing bundle print status for bundle: ".$barcode);
 		}
 	$html.='
 				</body>

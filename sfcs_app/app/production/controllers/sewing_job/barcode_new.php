@@ -23,26 +23,22 @@
 	$html = '
 			<html>
 				<head>
-				<style>
-				body {font-family: arial;
-					font-size: 12px;
-				}
+					<style>
+						body {
+							font-family: arial;
+							font-size: 12px;
+						}
 
-
-			
-				@page {
-				margin-top: 15px;
-				margin-left:20px;  
-				margin-right:2px;
-				margin-bottom:10px; 
-				}
-					#barcode {font-weight: normal; font-style: normal; line-height:normal; sans-serif; font-size: 8pt}
-
-				</style>
-				<script type="text/javascript" src="../../../common/js/jquery.min.js" ></script>
-				<script type="text/javascript" src="../../../common/js/table2CSV.js" ></script>
-
-
+						@page {
+							margin-top: 15px;
+							margin-left:20px;  
+							margin-right:2px;
+							margin-bottom:10px; 
+						}
+						#barcode {font-weight: normal; font-style: normal; line-height:normal; sans-serif; font-size: 8pt}
+					</style>
+					<script type="text/javascript" src="../../../common/js/jquery.min.js" ></script>
+					<script type="text/javascript" src="../../../common/js/table2CSV.js" ></script>
 				</head>
 				<body>';
 
@@ -131,7 +127,9 @@
 									<td> <b>Cut No:</b> '.chr($color_code).leading_zeros($cutno, 3).'</td>
 								</tr>
 							</table>
-						</div><br><br><br><br><br>';			 
+						</div><br><br><br><br><br>';
+				$update_bundle_print_status="UPDATE $bai_pro3.pac_stat_log_input_job SET bundle_print_status='1', bundle_print_time=now() WHERE tid='".$barcode."'";	
+				mysqli_query($link, $update_bundle_print_status)  or exit("Error while updatiing bundle print status for bundle: ".$barcode);			 
 			}
 			$seq_num++;
 			//reset sequence number by size and color
