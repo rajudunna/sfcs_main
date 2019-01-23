@@ -92,12 +92,65 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			break;
 		}
 	}
-	$department="Finishig";
+	$department="Finishing";
 }
+$message1 = "
+Dear User,
+<br/><br/>
+<strong><font color=\"green\">Security Checkout / Vehicle Exit Time: ".date("Y-m-d H:i")."</font></strong>
+<br/><br/>
+<table border=1 cellpadding=0 cellspacing=0 width=768 style='border-collapse:collapse; table-layout:fixed; width:578pt'>
+	<thead>
+		<tr>
+			<td colspan=\"4\"><center>Advice of Dispatch (Non - Returnable)</center></td>
+		</tr>
+		<tr>
+			<td rowspan=\"6\"><center>To:</center></td>
+		</tr>
+		<tr>
+			<td>$party_name</td>
+			<td>Date:</td>
+			<td>$disp_date</td>
+		</tr>
+		<tr>
+			<td>".$party_details['0']."</td>
+			<td>Vehicle No:</td>
+			<td>$vehicle</td>
+		</tr>
+		<tr>
+			<td>".$party_details['1']."</td>
+			<td>Mode:</td>
+			<td>$mode</td>
+		</tr>
+		<tr>
+			<td>".$party_details['2']."</td>
+			<td>Dept:</td>
+			<td>$department</td>
+		</tr>
+		<tr>
+			<td>".$party_details['3']."</td>
+			<td>Seal No:</td>
+			<td>$seal</td>
+		</tr>
+	</thead>
+</table>
+<br>
+<table border=1 style='border-collapse:collapse; table-layout:fixed; width:578pt'>
+	<tr>
+		<td>Sl No.</td>
+		<td>Style</td>
+		<td>Schedule</td>
+		<td>Cartons</td>
+		<td>Qty Dispatched</td>
+		<td>UOM</td>
+		<td>Remarks</td>
+	</tr>
+";
+
+
 ?>
 
 <?php
-
 $message='<html xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:x="urn:schemas-microsoft-com:office:excel"
 xmlns="http://www.w3.org/TR/REC-html40">
@@ -643,7 +696,6 @@ tags will be replaced.-->
 		
 		 $sql="select ship_style,ship_schedule,coalesce(sum(ship_cartons),0) as \"ship_cartons\", coalesce(sum(ship_s_xs),0) as \"ship_s_xs\",coalesce(sum(ship_s_s),0) as \"ship_s_s\",coalesce(sum(ship_s_m),0) as \"ship_s_m\",coalesce(sum(ship_s_l),0) as \"ship_s_l\",coalesce(sum(ship_s_xl),0) as \"ship_s_xl\",coalesce(sum(ship_s_xxl),0) as \"ship_s_xxl\",coalesce(sum(ship_s_xxxl),0) as \"ship_s_xxxl\"
 		,coalesce(sum(ship_s_s01),0) as \"ship_s_s01\",coalesce(sum(ship_s_s02),0) as \"ship_s_s02\",coalesce(sum(ship_s_s03),0) as \"ship_s_s03\",coalesce(sum(ship_s_s04),0) as \"ship_s_s04\",coalesce(sum(ship_s_s05),0) as \"ship_s_s05\",coalesce(sum(ship_s_s06),0) as \"ship_s_s06\",coalesce(sum(ship_s_s07),0) as \"ship_s_s07\",coalesce(sum(ship_s_s08),0) as \"ship_s_s08\",coalesce(sum(ship_s_s09),0) as \"ship_s_s09\",coalesce(sum(ship_s_s10),0) as \"ship_s_s10\",coalesce(sum(ship_s_s11),0) as \"ship_s_s11\",coalesce(sum(ship_s_s12),0) as \"ship_s_s12\",coalesce(sum(ship_s_s13),0) as \"ship_s_s13\",coalesce(sum(ship_s_s14),0) as \"ship_s_s14\",coalesce(sum(ship_s_s15),0) as \"ship_s_s15\",coalesce(sum(ship_s_s16),0) as \"ship_s_s16\",coalesce(sum(ship_s_s17),0) as \"ship_s_s17\",coalesce(sum(ship_s_s18),0) as \"ship_s_s18\",coalesce(sum(ship_s_s19),0) as \"ship_s_s19\",coalesce(sum(ship_s_s20),0) as \"ship_s_s20\",coalesce(sum(ship_s_s21),0) as \"ship_s_s21\",coalesce(sum(ship_s_s22),0) as \"ship_s_s22\",coalesce(sum(ship_s_s23),0) as \"ship_s_s23\",coalesce(sum(ship_s_s24),0) as \"ship_s_s24\",coalesce(sum(ship_s_s25),0) as \"ship_s_s25\",coalesce(sum(ship_s_s26),0) as \"ship_s_s26\",coalesce(sum(ship_s_s27),0) as \"ship_s_s27\",coalesce(sum(ship_s_s28),0) as \"ship_s_s28\",coalesce(sum(ship_s_s29),0) as \"ship_s_s29\",coalesce(sum(ship_s_s30),0) as \"ship_s_s30\",coalesce(sum(ship_s_s31),0) as \"ship_s_s31\",coalesce(sum(ship_s_s32),0) as \"ship_s_s32\",coalesce(sum(ship_s_s33),0) as \"ship_s_s33\",coalesce(sum(ship_s_s34),0) as \"ship_s_s34\",coalesce(sum(ship_s_s35),0) as \"ship_s_s35\",coalesce(sum(ship_s_s36),0) as \"ship_s_s36\",coalesce(sum(ship_s_s37),0) as \"ship_s_s37\",coalesce(sum(ship_s_s38),0) as \"ship_s_s38\",coalesce(sum(ship_s_s39),0) as \"ship_s_s39\",coalesce(sum(ship_s_s40),0) as \"ship_s_s40\",coalesce(sum(ship_s_s41),0) as \"ship_s_s41\",coalesce(sum(ship_s_s42),0) as \"ship_s_s42\",coalesce(sum(ship_s_s43),0) as \"ship_s_s43\",coalesce(sum(ship_s_s44),0) as \"ship_s_s44\",coalesce(sum(ship_s_s45),0) as \"ship_s_s45\",coalesce(sum(ship_s_s46),0) as \"ship_s_s46\",coalesce(sum(ship_s_s47),0) as \"ship_s_s47\",coalesce(sum(ship_s_s48),0) as \"ship_s_s48\",coalesce(sum(ship_s_s49),0) as \"ship_s_s49\",coalesce(sum(ship_s_s50),0) as \"ship_s_s50\",ship_remarks from $bai_pro3.ship_stat_log where ship_status='2' and disp_note_no='$disp_id' group by ship_schedule,ship_remarks order by ship_schedule";
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$num_sch=mysqli_num_rows($sql_result);
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -750,6 +802,16 @@ tags will be replaced.-->
 		  <td class=xl722606 style='border-top:none;border-left:none'>$rmks</td>
 		  <td class=xl662606></td>
 		 </tr>";
+			$message1.= "
+			<tr height=22 style='height:16.5pt'>
+				<td>$x</td>
+				<td>$ship_style</td>
+				<td>$ship_schedule</td>
+				<td>$ship_cartons</td>
+				<td>$total_pcs</td>
+				<td>PCS</td>
+				<td>$rmks</td>
+			</tr>";
 		 
 		 $x++;
 			
@@ -766,6 +828,16 @@ tags will be replaced.-->
 		  <td class=xl722606 style='border-top:none;border:none'>&nbsp;</td>
 		  <td class=xl662606></td>
 		 </tr>";
+
+		$message1.= "
+		<tr height=22 style='height:16.5pt'>
+		  <td colspan=3><center><strong>Total</strong></center></td>
+		  <td><strong>$grand_carts</strong></td>
+		  <td><strong>$grand_pcs</strong></td>
+		  <td><strong>PCS</strong></td>
+		  <td></td>
+		 </tr>
+		 </table><br/><br/>Message Sent Via:".$plant_name."";
  
  
 
@@ -788,12 +860,12 @@ tags will be replaced.-->
 
 </div>
 
-<br/><br/>Message Sent Via: http://Beknet
+
 </body>
 
 </html>";
-	
-	$subject = 'Security Check Out ';
+
+	$subject = 'Dispatch Update AOD Ref# '.$note_no;
 	// To send HTML mail, the Content-type header must be set
 	$headers  = 'MIME-Version: 1.0' . "\r\n";
 	$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
@@ -829,7 +901,7 @@ tags will be replaced.-->
 	{
 
 		fwrite($fh, date("Y-m-d H:i:s").$username."Mail Start<br>\r\n");
-		if(mail($to, $subject, $message, $headers))
+		if(mail($to, $subject, $message1, $headers))
 		{
 			fwrite($fh, date("Y-m-d H:i:s").$username."Mail Successful<br>\r\n");
 			
