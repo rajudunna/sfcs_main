@@ -125,10 +125,12 @@
 												</tr>
 											</table>
 										</div><br><br><br><br><br>';
-				}else{
-					$html="Oops..! All Operation are scanned";
-				}			 
+				}
+				// else{
+				// 	$html="Oops..! All Operation are scanned";
+				// }			 
 			}
+			$html.='<pagebreak />';
 			$seq_num++;
 			//reset sequence number by size and color
 			$size_temp=$size;
