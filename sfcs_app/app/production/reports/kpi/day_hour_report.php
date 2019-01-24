@@ -20,7 +20,7 @@
 		}
 	</style>
 	
-	<script src = "https://code.highcharts.com/highcharts.js"></script>
+	<script src = "<?= getFullURLLevel($_GET['r'],'common/js/highcharts.js',2,'R'); ?>"></script>
 	<div class="panel panel-primary">
 		<div class="panel-heading">Day & Hour Report</div>
 		<div class="panel-body">
@@ -333,7 +333,7 @@
 																while($row=mysqli_fetch_array($res))
 																{
 																	$team = $row['module_name'];
-																	$bai_log_qry="SELECT GROUP_CONCAT(DISTINCT bac_style) as bac_style, SUM(bac_Qty) as qty FROM $bai_pro.bai_log WHERE bac_sec='$section' AND bac_no='$team' AND bac_date='$selected_date' '";
+																	$bai_log_qry="SELECT GROUP_CONCAT(DISTINCT bac_style) as bac_style, SUM(bac_Qty) as qty FROM $bai_pro.bai_log WHERE bac_sec='$section' AND bac_no='$team' AND bac_date='$selected_date'";
 																	// echo $bai_log_qry.';<br>';
 																	$bai_log_result=mysqli_query($link,$bai_log_qry);
 																	while($res1=mysqli_fetch_array($bai_log_result))

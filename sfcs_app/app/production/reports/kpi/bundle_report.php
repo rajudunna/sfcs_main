@@ -11,7 +11,6 @@
 		margin-left: 0 !important;
 	}
 </style>
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
 <?php
 	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");

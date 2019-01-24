@@ -7,7 +7,7 @@ if($_GET['some'] == 'bundle_no')
 		$bundle_number = $_GET['bundle'];
 		$CAT = 'sewing';
 
-		$get_details="select order_style_no,order_del_no,order_col_des,size_code From $bai_pro3.packing_summary_input where tid='$bundle_number'";
+		$get_details="select order_style_no,order_del_no,order_col_des,size_code,carton_act_qty From $bai_pro3.packing_summary_input where tid='$bundle_number'";
 		//echo $get_details;
 		$sql_result1 = $link->query($get_details);
 		while($sql_row = $sql_result1->fetch_assoc())
@@ -16,6 +16,7 @@ if($_GET['some'] == 'bundle_no')
 			$schedule = $sql_row['order_del_no'];
 			$color = $sql_row['order_col_des'];
 			$size = $sql_row['size_code'];
+			$bundle_qty = $sql_row['carton_act_qty'];
 		}
 	    
 			
@@ -139,6 +140,10 @@ if($_GET['some'] == 'bundle_no')
 								<tr>
 								   <th>Scanned Time</th>
 								   <td>$scanned_time</td>
+								</tr>
+                                <tr>
+								   <th>Total Qty</th>
+								   <td>$bundle_qty</td>
 								</tr>
 								<tr>
 								   <th>Good Qty</th>
