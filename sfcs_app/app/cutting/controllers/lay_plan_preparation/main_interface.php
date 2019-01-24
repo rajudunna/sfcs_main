@@ -256,6 +256,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$carton_id=$sql_row['carton_id'];
     $destination=$sql_row['destination'];
 	$order_del_no=$sql_row['order_del_no'];
+	$order_joins=$sql_row['order_joins'];
 	
 	$o_s_s01=$sql_row['order_s_s01'];
 	$o_s_s02=$sql_row['order_s_s02'];
@@ -919,56 +920,56 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-		$order_s01=$sql_row['order_s_s01'];
-$order_s02=$sql_row['order_s_s02'];
-$order_s03=$sql_row['order_s_s03'];
-$order_s04=$sql_row['order_s_s04'];
-$order_s05=$sql_row['order_s_s05'];
-$order_s06=$sql_row['order_s_s06'];
-$order_s07=$sql_row['order_s_s07'];
-$order_s08=$sql_row['order_s_s08'];
-$order_s09=$sql_row['order_s_s09'];
-$order_s10=$sql_row['order_s_s10'];
-$order_s11=$sql_row['order_s_s11'];
-$order_s12=$sql_row['order_s_s12'];
-$order_s13=$sql_row['order_s_s13'];
-$order_s14=$sql_row['order_s_s14'];
-$order_s15=$sql_row['order_s_s15'];
-$order_s16=$sql_row['order_s_s16'];
-$order_s17=$sql_row['order_s_s17'];
-$order_s18=$sql_row['order_s_s18'];
-$order_s19=$sql_row['order_s_s19'];
-$order_s20=$sql_row['order_s_s20'];
-$order_s21=$sql_row['order_s_s21'];
-$order_s22=$sql_row['order_s_s22'];
-$order_s23=$sql_row['order_s_s23'];
-$order_s24=$sql_row['order_s_s24'];
-$order_s25=$sql_row['order_s_s25'];
-$order_s26=$sql_row['order_s_s26'];
-$order_s27=$sql_row['order_s_s27'];
-$order_s28=$sql_row['order_s_s28'];
-$order_s29=$sql_row['order_s_s29'];
-$order_s30=$sql_row['order_s_s30'];
-$order_s31=$sql_row['order_s_s31'];
-$order_s32=$sql_row['order_s_s32'];
-$order_s33=$sql_row['order_s_s33'];
-$order_s34=$sql_row['order_s_s34'];
-$order_s35=$sql_row['order_s_s35'];
-$order_s36=$sql_row['order_s_s36'];
-$order_s37=$sql_row['order_s_s37'];
-$order_s38=$sql_row['order_s_s38'];
-$order_s39=$sql_row['order_s_s39'];
-$order_s40=$sql_row['order_s_s40'];
-$order_s41=$sql_row['order_s_s41'];
-$order_s42=$sql_row['order_s_s42'];
-$order_s43=$sql_row['order_s_s43'];
-$order_s44=$sql_row['order_s_s44'];
-$order_s45=$sql_row['order_s_s45'];
-$order_s46=$sql_row['order_s_s46'];
-$order_s47=$sql_row['order_s_s47'];
-$order_s48=$sql_row['order_s_s48'];
-$order_s49=$sql_row['order_s_s49'];
-$order_s50=$sql_row['order_s_s50'];
+	$order_s01=$sql_row['order_s_s01'];
+	$order_s02=$sql_row['order_s_s02'];
+	$order_s03=$sql_row['order_s_s03'];
+	$order_s04=$sql_row['order_s_s04'];
+	$order_s05=$sql_row['order_s_s05'];
+	$order_s06=$sql_row['order_s_s06'];
+	$order_s07=$sql_row['order_s_s07'];
+	$order_s08=$sql_row['order_s_s08'];
+	$order_s09=$sql_row['order_s_s09'];
+	$order_s10=$sql_row['order_s_s10'];
+	$order_s11=$sql_row['order_s_s11'];
+	$order_s12=$sql_row['order_s_s12'];
+	$order_s13=$sql_row['order_s_s13'];
+	$order_s14=$sql_row['order_s_s14'];
+	$order_s15=$sql_row['order_s_s15'];
+	$order_s16=$sql_row['order_s_s16'];
+	$order_s17=$sql_row['order_s_s17'];
+	$order_s18=$sql_row['order_s_s18'];
+	$order_s19=$sql_row['order_s_s19'];
+	$order_s20=$sql_row['order_s_s20'];
+	$order_s21=$sql_row['order_s_s21'];
+	$order_s22=$sql_row['order_s_s22'];
+	$order_s23=$sql_row['order_s_s23'];
+	$order_s24=$sql_row['order_s_s24'];
+	$order_s25=$sql_row['order_s_s25'];
+	$order_s26=$sql_row['order_s_s26'];
+	$order_s27=$sql_row['order_s_s27'];
+	$order_s28=$sql_row['order_s_s28'];
+	$order_s29=$sql_row['order_s_s29'];
+	$order_s30=$sql_row['order_s_s30'];
+	$order_s31=$sql_row['order_s_s31'];
+	$order_s32=$sql_row['order_s_s32'];
+	$order_s33=$sql_row['order_s_s33'];
+	$order_s34=$sql_row['order_s_s34'];
+	$order_s35=$sql_row['order_s_s35'];
+	$order_s36=$sql_row['order_s_s36'];
+	$order_s37=$sql_row['order_s_s37'];
+	$order_s38=$sql_row['order_s_s38'];
+	$order_s39=$sql_row['order_s_s39'];
+	$order_s40=$sql_row['order_s_s40'];
+	$order_s41=$sql_row['order_s_s41'];
+	$order_s42=$sql_row['order_s_s42'];
+	$order_s43=$sql_row['order_s_s43'];
+	$order_s44=$sql_row['order_s_s44'];
+	$order_s45=$sql_row['order_s_s45'];
+	$order_s46=$sql_row['order_s_s46'];
+	$order_s47=$sql_row['order_s_s47'];
+	$order_s48=$sql_row['order_s_s48'];
+	$order_s49=$sql_row['order_s_s49'];
+	$order_s50=$sql_row['order_s_s50'];
 
 	
 }
@@ -1663,6 +1664,7 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 						</select>
 					</div>
 						<input type="hidden" id="style" name="style" value="<?=$style;?>"/>
+						<input type="hidden" id="order_joins_no" name="order_joins_no" value="<?=$order_joins;?>"/>
 						<input type="hidden" id="schedule" name="schedule" value="<?=$schedule;?>"/>
 						<input type="hidden" id="color" name="color" value="<?=$color;?>"/>
 						<input type="hidden" id="user" name="user" value="<?=$user;?>"/>
@@ -1692,7 +1694,7 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 							<option value='2' selected>Last Cut</option>
 						</select></div>";
 				}
-				echo "<input type='hidden' id='style' name='style' value=$style><input type='hidden' id='schedule' name='schedule' value=$schedule><input type='hidden' id='color' name='color' value='$color'><input type='hidden' id='user' name='user' value=$user/>";
+				echo "<input type='hidden' id='style' name='style' value=$style><input type='hidden' id='schedule' name='schedule' value=$schedule><input type='hidden' id='order_joins_no' name='order_joins_no' value=$order_joins><input type='hidden' id='color' name='color' value='$color'><input type='hidden' id='user' name='user' value=$user/>";
 				//check whether sewing job created or not
 				if($check=='1'){
 				} else {
