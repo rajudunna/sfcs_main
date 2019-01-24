@@ -127,10 +127,11 @@
 										</div><br><br><br><br><br>';
 				}
 				else{
-					$html="Oops..! ".$operations." Operation scanned";
-				}			 
+					$html.="<b>Oops..! ".$operations." Operation scanned</b>";
+				}
+				$html.='<pagebreak />';			 
 			}
-			$html.='<pagebreak />';
+			
 			$seq_num++;
 			//reset sequence number by size and color
 			$size_temp=$size;
