@@ -1,6 +1,6 @@
 <?php
-    $get_url = getFullURLLevel($_GET['r'],'ratio_split_get_details.php','R');
-    $post_url = getFullURLLevel($_GET['r'],'ratio_split_save.php','R');
+    $get_url  = getFullURLLevel($_GET['r'],'ratio_split_get_details.php',0,'R');
+    $post_url = getFullURLLevel($_GET['r'],'ratio_split_save.php',0,'R');
 ?>
 <div class='col-sm-12'>
     <div class='panel panel-primary'>
@@ -11,7 +11,7 @@
             <div class='row'>
                 <div class='col-sm-2'>
                     <label>Enter Docket No : </label>
-                    <input name='docket' type='text' class='form-control integer' onchange='load_details(this)'>
+                    <input name='docket' id='docket' type='text' class='form-control integer' onchange='load_details(this)'>
                 </div>
             </div>
             <div class='row' id='details_block' style='display : none'>
@@ -41,6 +41,9 @@
                     <table id='shades_table' class='table table-bordered'>
                     </table>
                 </div>
+                <div class='col-sm-offset-2 col-sm-4'>
+                    <span id='loading_div'><b style='font-size : 20px;color:#ff0000'>Please Wait...</b></span>
+                </div>
             </div>
         </div>
     </div>
@@ -58,6 +61,8 @@
     function load_shades(t){
         $('#shades_table').html('');
         shades = Number(t.value);
+        if(shades <= 1)
+            return swal('You cannot have 1 shade','','error');
         count = shades; 
         $('#shades_table').append("<tr class='danger'><td>Shade</td><td>Plies</td></tr>");
         while(shades-- > 0){
@@ -95,7 +100,7 @@
             return swal('Shades are Duplicated','','warning');
         }
         $('.plies').each(function(key,e){
-            if(e.value == null || e.value == '')
+            if(e.value == null || e.value == '' || e.value == 0) 
                 no_plies++;
             else{    
                 e_plies = e_plies + Number(e.value); 
@@ -112,12 +117,27 @@
         console.log(post_data);
         console.log(shades);    
         console.log('Fine');
+        $('#loading_div').show();
         $.ajax({
             url  : '<?= $post_url ?>',
             type : 'POST',
             data : post_data,
         }).done(function(res){
-
+            try{
+                var data = $.parseJSON(res);
+            }catch(e){
+                return swal('Problem incurred while Fetching Details','','error');
+            }
+            if(data.exist == 'yes')
+                return swal('Jobs Related to the schedule already Scanned','You Cannot Split the Sewing Jobs','error'); 
+            if(data.save == 'success'){
+                swal('Jobs Splitted Successfully','','success');
+                $('#docket').val('');
+                clear_data();
+            }
+        }).error(function(res){
+            swal('Network Error','Try Again','error');
+            $('#loading_div').display('none');
         });
     }
 
@@ -161,9 +181,11 @@
     }
 
     function clear_data(){
+        $('#loading_div').hide();
         $('#details_block').hide();
         $('#d_doc_no').html('');
         $('#d_org_plies').html('');
+        $('#shades_table').html('');
         e_plies = 0;
         a_plies = 0;
         shades  = 0;
