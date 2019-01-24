@@ -24,7 +24,7 @@ if(isset($_GET['fetch'])){
                 $color    = $row['order_col_des'];
                 
                 //verifying if any job related to the schedule is scanned or not
-                $verify_scan_query = "SELECT id from $brandix_bts.bundle_creation_data where schedule = '$schedule' and style='$style' and operation_id IN ($SEWIN,$SEWOUT) limit 1";                    
+                $verify_scan_query = "SELECT id from $brandix_bts.bundle_creation_data where docket_number = $doc_no and operation_id IN ($SEWIN,$SEWOUT) limit 1";                    
                 if(mysqli_num_rows(mysqli_query($link,$verify_scan_query)) > 0){
                     $response_data['scanned'] = 1;
                 }else{
