@@ -88,7 +88,7 @@
 				$operations=$ops['operation_name'];
 				$opscode=$ops['operation_code'];
 				//validating scanned perations for this bundle are not to supposed to show
-				$qry_validating_bcd="SELECT * FROM $brandix_bts.`bundle_creation_data` WHERE bundle_number='$barcode' AND operation_id='$opscode' AND send_qty=recevied_qty";
+				$qry_validating_bcd="SELECT * FROM $brandix_bts.`bundle_creation_data` WHERE bundle_number='$barcode' AND operation_id='$opscode' AND send_qty=recevied_qty and send_qty>0";
 				$sql_result=mysqli_query($link, $qry_validating_bcd) or exit($qry_validating_bcd."<br/> Error in section table ");
 				$no_rows=mysqli_num_rows($sql_result);
 				if($no_rows<=0){
@@ -126,9 +126,9 @@
 											</table>
 										</div><br><br><br><br><br>';
 				}
-				// else{
-				// 	$html="Oops..! All Operation are scanned";
-				// }			 
+				else{
+					$html="Oops..! ".$operations." Operation scanned";
+				}			 
 			}
 			$html.='<pagebreak />';
 			$seq_num++;
@@ -137,9 +137,7 @@
 			$color_temp=$color;
 			$cutno_temp=$cutno;
 		}
-	$html.='
-				</body>
-			</html>';
+	$html.='</body></html>';
 
 	$mpdf->WriteHTML($html); 
 	$mpdf->Output();
