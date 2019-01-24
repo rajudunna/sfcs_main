@@ -174,7 +174,7 @@
                         VALUES($insert_id,$bcd_act_id,$operation_id,$actual_allowing_to_recut,$to_add,0,0,'$size_id')";
                         mysqli_query($link,$inserting_into_recut_v2_child) or exit("While inserting into the recut v2 child".mysqli_error($GLOBALS["___mysqli_ston"]));
                         //retreaving bundle_number of recut docket from bcd and inserting into moq
-                        $retreaving_qry="select bundle_number from $brandix_bts.bundle_creation_data where docket_number='$insert_id' and operation_id ='15'";
+                        $retreaving_qry="select bundle_number from $brandix_bts.bundle_creation_data where docket_number='$insert_id' and operation_id ='15' and size_id = '$size_id'";
                         $retreaving_qry_res = $link->query($retreaving_qry);
                         while($row_bcd_recut = $retreaving_qry_res->fetch_assoc()) 
                         {
