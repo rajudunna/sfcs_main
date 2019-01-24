@@ -163,7 +163,7 @@ echo'<option value='.$shifts_array[$i].'>'.$shifts_array[$i].'</option>';
 <div class='col-md-3 col-sm-3 col-xs-12'>
 Module <select name="module" class="select2_single form-control">
 <?php
-$sql="SELECT * FROM $bai_pro3.`module_master`";
+$sql="SELECT * FROM $bai_pro3.`module_master` ORDER BY module_name*1 ASC";
 $result=mysqli_query($link, $sql) or exit("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($result))
 {
@@ -187,10 +187,11 @@ Employee Id : <input type="textbox" class="form-control" name="emp_no" value="<?
 Remarks : <select name='remark' id='remark' class='select2_single form-control'>
 <option value=0>----Select-----</option>
 <option value='Human Error' <?php if($_POST['remark']=='Human Error'){ echo "selected";} else{ echo "";}?>>Human error</option>
-<option value='Tag card miss in production' <?php if($_POST['remark']=='Tag card miss in production'){ echo "selected";} else{ echo "";}?>>Others</option>
+<option value='Tag card miss in production' <?php if($_POST['remark']=='Tag card miss in embellishment area'){ echo "selected";} else{ echo "";}?>>Tag card miss in Embellishment Area</option>
 <option value='Sticker is not scanning' <?php if($_POST['remark']=='Sticker is not scanning'){ echo "selected";} else{ echo "";}?>>Sticker is not scanning</option>
 <option value='Tag card missed in production' <?php if($_POST['remark']=='Tag card miss in production'){ echo "selected";} else{ echo "";}?>>Tag card Miss in Production Area</option>
-<option value='Tag card missed in Cuttin Area' <?php if($_POST['remark']=='Tag card miss in Cuttin Area'){ echo "selected";} else{ echo "";}?>>Tag card Miss in Cuttin Area</option>
+<option value='Tag card missed in Cuttin Area' <?php if($_POST['remark']=='Tag card miss in Cuttin Area'){ echo "selected";} else{ echo "";}?>>Tag card Miss in Cutting Area</option>
+<option value='Tag card miss in production' <?php if($_POST['remark']=='Tag card miss in production'){ echo "selected";} else{ echo "";}?>>Others</option>
 </select>
 </div>
 <div class='col-md-2 col-sm-2 col-xs-12' style='margin-top: 18px;'>
