@@ -68,6 +68,11 @@ $api_port_no = $conf1->get('api-port');
 
 $enable_api_call = $conf1->get('enable-api-call');
 
+// Total Plant working hours
+$tot_plant_working_hrs = $conf1->get('tot_plant_working_hrs');
+// Copy fr qty to forecast qty (yes/no)
+$copy_fr_to_forecast = $conf1->get('copy-fr-to-forecast');
+
 //Scanning Methods
 $scanning_methods = $conf1->get('scaning-method');
 
