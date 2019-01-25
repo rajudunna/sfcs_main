@@ -124,7 +124,7 @@
 													<td> <b>Cut No:</b> '.chr($color_code).leading_zeros($cutno, 3).'</td>
 												</tr>
 											</table>
-										</div><br><br><br><br><br>';
+										</div>';
 				}
 				else{
 					$html.="<b>Oops..! ".$operations." Operation scanned</b>";
