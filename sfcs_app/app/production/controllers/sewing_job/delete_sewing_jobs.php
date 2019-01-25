@@ -89,6 +89,7 @@
     { 
         $schedule=$_POST['schedule'];
         $reason=$_POST['reason']; 
+        $schedule = str_replace(' ', '', $schedule);
 
         $op_code_query = "Select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application' ";
                     $op_code_result = mysqli_query($link,$op_code_query);
@@ -98,7 +99,6 @@
 
         $validation_query = "SELECT id from $brandix_bts.bundle_creation_data where schedule = '$schedule' 
                     and operation_id = $ips_op_code";
-
         // $validation_query="SELECT * FROM $bai_pro3.act_cut_status WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '%".$schedule."%')"; 
         // echo $validation_query; 
         $sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data"); 
@@ -328,8 +328,8 @@
                     {
                         $update_doc_qty="update $bai_pro3.`tbl_docket_qty` set fill_qty=(fill_qty-".$row123['qty'].") WHERE type='".$row123['type_of_sewing']."' and doc_no='".$row123['doc_no']."' and size='".$row123['size_code']."'";
                         mysqli_query($link, $update_doc_qty) or exit("Update in  docket_qty table");
-                    }				
-                }		
+                    }               
+                }       
                 
                 $delete_pac_stat_input="DELETE FROM $bai_pro3.`pac_stat_input` WHERE SCHEDULE=$schedule AND pac_seq_no=$seqno"; 
                 // echo $delete_pac_stat_input."<br>"; 
@@ -348,7 +348,7 @@
                     $final_doc=array();
                     while($row432=mysqli_fetch_array($op_code_result)) 
                     {
-                        $temp_doc[]=$row432['doc_no'];					
+                        $temp_doc[]=$row432['doc_no'];                  
                     }
                     $final_doc=array_diff(array_unique($docket_no),$temp_doc);
                     
@@ -361,7 +361,7 @@
                         $delete_plan_input_qry="DELETE FROM bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref IN ('$get_job_random')"; 
                         // echo $delete_plan_input_qry."<br>"; 
                         mysqli_query($link, $delete_plan_input_qry) or exit("Sql Error delete_plan_input_qry");
-                    }    				 
+                    }                    
                 }
                 else
                 {
