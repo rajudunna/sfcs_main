@@ -63,6 +63,7 @@
 						if($status_check=='1')
 						{
 							$input_job_no=1;
+							$job_counter = 1;
 						}
 						else
 						{
@@ -94,6 +95,12 @@
 									{	
 										if(($garments_per_carton-$input_job_quantiy_tmp)<=$qty)
 										{
+											$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no."' and order_del_no",$schedule,$link);
+											if ($job_counter_tmp1 > 1)
+											{
+												$job_counter = $job_counter_tmp1;
+											}
+
 											$qty_new=$garments_per_carton-$input_job_quantiy_tmp;
 											$qty=$qty-$qty_new;
 											if($split_qty>0)
@@ -190,7 +197,7 @@
 				$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and order_del_no",$schedule,$link);
 				$rand=$schedule.date("ymd").$input_job_no;
 				//Excess Pieces Execution
-				$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num =3 and color in ('".implode("','",$cols_tot)."') order by cut_num*1"; 
+				$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num =3 and color in ('".implode("','",$cols_tot)."') order by cut_num*1,size*1"; 
 				$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($row12=mysqli_fetch_array($result12)) 
 				{ 
@@ -209,7 +216,7 @@
 				$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and order_del_no",$schedule,$link);
 				$rand=$schedule.date("ymd").$input_job_no;
 				//Excess Pieces Execution
-				$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num =2 and color in ('".implode("','",$cols_tot)."') order by cut_num*1"; 
+				$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num =2 and color in ('".implode("','",$cols_tot)."') order by cut_num*1,size*1"; 
 				$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($row12=mysqli_fetch_array($result12)) 
 				{ 
@@ -271,6 +278,12 @@
 								{	
 									if(($garments_per_carton-$input_job_quantiy_tmp)<=$qty)
 									{
+										$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no."' and order_del_no",$schedule,$link);
+										if ($job_counter_tmp1 > 1)
+										{
+											$job_counter = $job_counter_tmp1;
+										}
+													
 										$qty_new=$garments_per_carton-$input_job_quantiy_tmp;
 										$qty=$qty-$qty_new;
 										if($split_qty>0)
@@ -436,7 +449,7 @@
 				tbl_carton_ref.id='".$carton_id."' and color in ('".implode("','",$cols_tot)."') GROUP BY size_title ORDER BY ref_size_name*1";
 				$resulty=mysqli_query($link, $sql1y) or die ("Error1.1=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row1y=mysqli_fetch_array($resulty))
-				{				
+				{
 					$sql129="SELECT cut_num as cut,group_concat(DISTINCT docket_number ORDER BY docket_number) as doc FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_num=1 and mini_order_ref='".$carton_id."' and color in ('".implode("','",$cols_tot)."') and size_tit='".$row1y['size_title']."' group by cut_num order by cut_num*1";
 					//echo $sql129."<br>";
 					$result1219=mysqli_query($link, $sql129) or die ("Error1.1=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -463,24 +476,32 @@
 						{
 							if($status_sew==1)
 							{
-								$input_job_no=1;													
+								$input_job_no=1;
+								$job_counter= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(barcode_sequence AS DECIMAL))+1","input_job_no='1' and order_del_no",$schedule,$link);
+								if($job_counter==0)
+								{
+									$job_counter=1;
+								}								
 							}
 							else
 							{
 								$input_job_no_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_del_no",$schedule,$link);
 								$input_job_no=$input_job_no_tmp;
+								$job_counter=1;
 								$input_job_no_tmpn= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(input_job_no AS DECIMAL))","size_code='".$row1y['size_title']."' and acutno='".$docs_cut[$iiii]."' and order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and order_del_no",$schedule,$link);
-							
 								if($input_job_no_tmpn>0)
-								{
-									$job_counter = 1;
+								{							
+									$job_counter_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(barcode_sequence AS DECIMAL))+1","input_job_no='".$input_job_no_tmpn."' and order_del_no",$schedule,$link);
+									$job_counter = $job_counter_tmp;
 									$input_job_no=$input_job_no_tmpn;
 								}
 							}
+							//echo $input_job_no."-----Input_job---".$job_counter."<br>";
+							//echo $docs_newtmp[$iii]."-----Cut Docket---".$docs_cuttmp[$iii]."<br>";
 							$rand=$schedule.date("ymd").$input_job_no;
 							$sql1="SELECT * FROM $brandix_bts.tbl_carton_ref LEFT JOIN $brandix_bts.tbl_carton_size_ref ON tbl_carton_size_ref.parent_id=tbl_carton_ref.id where tbl_carton_ref.id='".$carton_id."' and color in ('".implode("','",$cols_tot)."') and size_title='".$row1y['size_title']."'";
 							$result1=mysqli_query($link, $sql1) or die ("Error1.1=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
-							
+							//echo $sql1."<br>"; 
 							while($row1=mysqli_fetch_array($result1))
 							{
 								$input_job_quantiy_tmp=0;
@@ -492,6 +513,7 @@
 								$destination=echo_title("$bai_pro3.bai_orders_db","UPPER(destination)","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link);
 								
 								$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num=1 and color='".$color_code."' and size='".$size_ref."' and docket_number='".$docs_new[$iiii]."' group BY cut_num order by cut_num*1";
+								//echo $sql12."<br>"; 
 								$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 								while($row12=mysqli_fetch_array($result12)) 
 								{ 
@@ -503,6 +525,12 @@
 										{	
 											if($garments_per_carton<=$qty)
 											{
+												$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no."' and order_del_no",$schedule,$link);
+												if ($job_counter_tmp1 > 1)
+												{
+													$job_counter = $job_counter_tmp1;
+												}
+
 												$qty_new=$garments_per_carton;
 												$qty=$qty-$qty_new;
 												if($split_qty>0)
@@ -549,6 +577,12 @@
 											}
 											else
 											{
+												$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no."' and order_del_no",$schedule,$link);
+												if ($job_counter_tmp1 > 1)
+												{
+													$job_counter = $job_counter_tmp1;
+												}
+											
 												if($split_qty>0)
 												{	
 													do
@@ -618,7 +652,7 @@
 						$job_counter = 1;
 						$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and order_del_no",$schedule,$link);
 						$rand=$schedule.date("ymd").$input_job_no;
-						$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num = 3 and docket_number='".$docs_new_o[$kkk]."'"; 
+						$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num = 3 and docket_number='".$docs_new_o[$kkk]."' ORDER BY size*1"; 
 						$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						while($row12=mysqli_fetch_array($result12)) 
 						{ 
@@ -650,7 +684,7 @@
 						$job_counter = 1;
 						$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and order_del_no",$schedule,$link);
 						$rand=$schedule.date("ymd").$input_job_no;
-						$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num = 2 and docket_number='".$docs_new_o[$kkk]."'"; 
+						$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num = 2 and docket_number='".$docs_new_o[$kkk]."' ORDER BY size*1"; 
 						$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						while($row12=mysqli_fetch_array($result12)) 
 						{ 
@@ -701,23 +735,30 @@
 					{
 						//echo $input_job_no."<Br>";						
 						$rand=$schedule.date("ymd").$input_job_no;	
-						$sql1="SELECT * FROM $brandix_bts.tbl_carton_ref LEFT JOIN $brandix_bts.tbl_carton_size_ref ON tbl_carton_size_ref.parent_id=tbl_carton_ref.id where tbl_carton_ref.id='".$carton_id."' and color in ('".implode("','",$cols_tot)."') GROUP BY color,size_title ORDER BY ref_size_name*1 desc";
+						$sql1="SELECT * FROM $brandix_bts.tbl_carton_ref LEFT JOIN $brandix_bts.tbl_carton_size_ref ON tbl_carton_size_ref.parent_id=tbl_carton_ref.id where tbl_carton_ref.id='".$carton_id."' and color in ('".implode("','",$cols_tot)."') GROUP BY color,size_title ORDER BY ref_size_name*1";
 						//echo $sql1."<br>";
 						$result1=mysqli_query($link, $sql1) or die ("Error1.1=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($row1=mysqli_fetch_array($result1))
 						{								
 							if($status_sew==1)
 							{
-								$input_job_no=1;													
+								$input_job_no=1;
+								$job_counter= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='1' and order_del_no",$schedule,$link);
+								if($job_counter==0)
+								{
+									$job_counter=1;
+								}									
 							}
 							else
 							{
 								$input_job_no_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_del_no",$schedule,$link);
 								$input_job_no=$input_job_no_tmp;
-								$input_job_no_tmpn= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(input_job_no AS DECIMAL))","acutno='".$docs_cut[$iiii]."' and order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and order_del_no",$schedule,$link);						
+								$job_counter=1;
+								$input_job_no_tmpn= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(input_job_no AS DECIMAL))","acutno='".$docs_cut[$iiii]."' and order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and order_del_no",$schedule,$link);	
 								if($input_job_no_tmpn>0)
 								{
-									$job_counter = 1;
+									$job_counter_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no_tmpn."' and order_del_no",$schedule,$link);
+									$job_counter = $job_counter_tmp;
 									$input_job_no=$input_job_no_tmpn;
 								}
 							}
@@ -728,7 +769,7 @@
 							$color_code=$row1['color'];
 							$garments_per_carton=$row1['garments_per_carton']*$row1['no_of_cartons'];
 							$destination=echo_title("$bai_pro3.bai_orders_db","UPPER(destination)","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link); 
-							$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." and mini_order_num=1 AND color='".$color_code."' and size='".$size_ref."' and docket_number='".$docs_new[$iiii]."' group BY cut_num order by cut_num*1";
+							$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." and mini_order_num=1 AND color='".$color_code."' and size='".$size_ref."' and docket_number='".$docs_new[$iiii]."' group BY cut_num order by cut_num*1,size*1";
 							//echo $sql12."<br>";
 							$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							while($row12=mysqli_fetch_array($result12)) 
@@ -741,6 +782,12 @@
 									{	
 										if($garments_per_carton<=$qty)
 										{
+											$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no."' and order_del_no",$schedule,$link);
+											if ($job_counter_tmp1 > 1)
+											{
+												$job_counter = $job_counter_tmp1;
+											}
+
 											$qty_new=$garments_per_carton;
 											$qty=$qty-$qty_new;
 											if($split_qty>0)
@@ -776,7 +823,7 @@
 												mysqli_query($link, $sql1q) or die("Error---27".mysqli_error($GLOBALS["___mysqli_ston"]));
 												$id = mysqli_insert_id($link);
 												$jobs_array[] = $rand; $job_counter++;
-												// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty_new."</td></tr>";
+												// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty_new."</td></tr>";												
 												$qty_new=0;
 											}
 											$input_job_no++;
@@ -786,6 +833,12 @@
 										}
 										else
 										{
+											$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","input_job_no='".$input_job_no."' and order_del_no",$schedule,$link);
+											if ($job_counter_tmp1 > 1)
+											{
+												$job_counter = $job_counter_tmp1;
+											}
+
 											if($split_qty>0)
 											{	
 												do
@@ -819,7 +872,7 @@
 												mysqli_query($link, $sql1q) or die("Error---30".mysqli_error($GLOBALS["___mysqli_ston"]));
 												$id = mysqli_insert_id($link);
 												$jobs_array[] = $rand; $job_counter++;
-												// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";
+												// echo "<tr><td>".$docket_number."</td><td>".$color_code."</td><td>".$row12["size_ref"]."</td><td>".$size_tit."</td><td>".$input_job_no."</td><td>".$rand."</td><td>".$qty."</td></tr>";												
 												$qty=0;
 											}
 											$input_job_no++;
@@ -853,7 +906,7 @@
 						$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and order_del_no",$schedule,$link);
 						$rand=$schedule.date("ymd").$input_job_no;
 						//Excess Pieces Execution
-						$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num =3 and docket_number='".$docs_new_o[$kkk]."' and color in ('".implode("','",$cols_tot)."') order by cut_num*1"; 
+						$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num =3 and docket_number='".$docs_new_o[$kkk]."' and color in ('".implode("','",$cols_tot)."') order by cut_num*1, size*1"; 
 						$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						while($row12=mysqli_fetch_array($result12)) 
 						{ 
@@ -884,7 +937,7 @@
 						$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and order_del_no",$schedule,$link);
 						$rand=$schedule.date("ymd").$input_job_no;
 						//Excess Pieces Execution
-						$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num =2 and docket_number='".$docs_new_o[$kkk]."' and color in ('".implode("','",$cols_tot)."') order by cut_num*1"; 
+						$sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND mini_order_num =2 and docket_number='".$docs_new_o[$kkk]."' and color in ('".implode("','",$cols_tot)."') order by cut_num*1, size*1"; 
 						$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						while($row12=mysqli_fetch_array($result12)) 
 						{ 
@@ -904,7 +957,7 @@
 			}
 		}
 	}
-	// echo "</table>";	
+	echo "</table>";	
 
 	//Deleting the entry from sewing jobs ref if no input job was created  --  Updating the bundle quantity after the jobs are inserted
 	/*
@@ -922,15 +975,17 @@
 		}
 	}
 	*/
+	$job_counter=echo_title("$bai_pro3.packing_summary_input","count(*)","order_del_no='$schedule' and sref_id",$inserted_id,$link);
 	$update_query = "Update $bai_pro3.sewing_jobs_ref set bundles_count = $job_counter where id = '$inserted_id' ";
 	$update_result = mysqli_query($link,$update_query) or exit("Problem while inserting to sewing jos ref");
 	
 	//----------MO FILL Function Calling  -----
 	$inserted = insertMOQuantitiesSewing($schedule,$inserted_id);
+	/*
 	if($inserted){
 		//Inserted Successfully
 	}
-	/*
+	
 	$mo_fill_url = getFullURLLevel($_GET['r'],'sewing_job_mo_fill.php',0,'N');
 	$url = "$mo_fill_url&style=$style_id&schedule=$schedule&schedule_id=$schedule_id&process_name=sewing&filename=create_sewing";
 	echo "<script>console.log($url);
@@ -938,7 +993,8 @@
 		  </script>";
 
 	echo("<script>location.href = '$mo_fill_url&sref_id=$inserted_id&style=$style_id&schedule=$schedule&schedule_id=$schedule_id&process_name=sewing&filename=create_sewing';</script>");	
-	*/
+	
+	
 	$jobs_array = array_unique($jobs_array);
 	foreach($jobs_array as $job){
 		$query = "select group_concat(tid order by tid DESC) as tid,input_job_no_random as ij from bai_pro3.pac_stat_log_input_job where input_job_no_random = '$job'
@@ -957,9 +1013,9 @@
     		$flag++;
 		}
 	}
-
+	*/
 	echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
-	echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N')."&style=$style_id&schedule=$schedule_id';</script>");		
+	echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N')."&style=$style_id&schedule=$schedule_id';</script>");
 ?> 
 </div></div>
 </body>
