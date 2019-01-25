@@ -3,6 +3,7 @@
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));
     $has_permission=haspermission($_GET['r']);
+    $application = 'IPS'; 
 ?> 
 <script type="text/javascript"> 
     function enableButton()  
@@ -89,7 +90,16 @@
         $schedule=$_POST['schedule'];
         $reason=$_POST['reason']; 
 
-        $validation_query="SELECT * FROM $bai_pro3.act_cut_status WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '%".$schedule."%')"; 
+        $op_code_query = "Select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application' ";
+                    $op_code_result = mysqli_query($link,$op_code_query);
+        while($row = mysqli_fetch_array($op_code_result)){
+            $ips_op_code = $row['operation_code'];
+        }
+
+        $validation_query = "SELECT id from $brandix_bts.bundle_creation_data where schedule = '$schedule' 
+                    and operation_id = $ips_op_code";
+
+        // $validation_query="SELECT * FROM $bai_pro3.act_cut_status WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '%".$schedule."%')"; 
         // echo $validation_query; 
         $sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data"); 
         $count= mysqli_num_rows($sql_result); 
@@ -100,8 +110,7 @@
             echo "<br><div class='alert alert-danger'>Cutting is Already Performed<br><br>You Cannot Delete the Schedule</div>"; 
         } 
         else 
-        {
-
+        {  
             $sql="SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' and mrn_status='1'";  
                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $rowcount1=mysqli_num_rows($sql_result);
