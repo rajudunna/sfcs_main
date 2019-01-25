@@ -913,32 +913,54 @@ if(isset($_POST["update"]))
 		{
 			$status_col="Color-".str_replace("J","",$ord_joins)."";
 			$code="";
+			$code1="";
 			for($ij=0;$ij<sizeof($sizes_array);$ij++)
 			{
 				$code_old = "".$sizes_array[$ij]."_old";
 				$code_new = "".$sizes_array[$ij]."_new";
 				$code .= "order_s_".$sizes_array[$ij]."=(order_s_".$sizes_array[$ij]."+(".$$code_new."-".$$code_old.")),";
+				$code1 .= "old_order_s_".$sizes_array[$ij]."=order_s_".$sizes_array[$ij].",";
 			}
 			$query_code= rtrim($code,',');
-			$update_club="update $bai_pro3.bai_orders_db_confirm set $query_code where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$status_col\"";
+			$sql_check="select * from $bai_pro3.bai_orders_db_confirm where order_no=1 and order_style_no='".$sty."' and order_del_no=\"$sch\" and order_col_des='".$status_col."'";
+			$res=mysqli_query($link, $sql_check);
+			if(mysqli_num_rows($res)>0)
+			{
+				$code1="";
+			}
+			$update_club="update $bai_pro3.bai_orders_db_confirm set order_no=1,$code1 $query_code where order_style_no='".$sty."' and order_del_no=\"$sch\" and order_col_des='".$status_col."'";
 			//echo $update_club."<br>";
 			mysqli_query($link, $update_club);
+			$update_club1="update $bai_pro3.bai_orders_db set order_no=1,$code1 $query_code where order_style_no='".$sty."' and order_del_no=\"$sch\" and order_col_des='".$status_col."'";
+			//echo $update_club."<br>";
+			mysqli_query($link, $update_club1);
 		}
 		else
 		{
 			$status_sch=str_replace("J","",$ord_joins);
 			$code="";
+			$code1="";
 			for($ij=0;$ij<sizeof($sizes_array);$ij++)
 			{
 				$code_old = "".$sizes_array[$ij]."_old";
 				$code_new = "".$sizes_array[$ij]."_new";
 				$code .= "order_s_".$sizes_array[$ij]."=(order_s_".$sizes_array[$ij]."+(".$$code_new."-".$$code_old.")),";
-				//echo $code."<br>";
+				$code1 .= "old_order_s_".$sizes_array[$ij]."=order_s_".$sizes_array[$ij].",";
 			}
 			$query_code= rtrim($code,',');
-			$update_club="update $bai_pro3.bai_orders_db_confirm set $query_code where order_style_no=\"$sty\" and order_del_no=\"$status_sch\" and order_col_des=\"$col\"";
+			$sql_check="select * from $bai_pro3.bai_orders_db_confirm where order_no=1 and order_style_no='".$sty."' and order_del_no=\"$status_sch\" and order_col_des='".$col."'";
+			$res=mysqli_query($link, $sql_check);
+			if(mysqli_num_rows($res)>0)
+			{
+				$code1="";
+			}
+			$update_club="update $bai_pro3.bai_orders_db_confirm set order_no=1,$code1 $query_code where order_style_no='".$sty."' and order_del_no=\"$status_sch\" and order_col_des='".$col."'";
 			//echo $update_club."<br>";
-			mysqli_query($link, $update_club);			
+			mysqli_query($link, $update_club);
+
+			$update_club1="update $bai_pro3.bai_orders_db set order_no=1,$code1 $query_code where order_style_no='".$sty."' and order_del_no=\"$status_sch\" and order_col_des='".$col."'";
+			//echo $update_club."<br>";
+			mysqli_query($link, $update_club1);
 		}
 		$update1="update $bai_pro3.bai_orders_db set order_no=\"1\" where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$col\"";
 		mysqli_query($link, $update1);

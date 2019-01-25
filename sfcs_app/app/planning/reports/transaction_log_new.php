@@ -229,12 +229,12 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 	$append = rtrim($append,',');
 
 
-if($hour_from=='Day' and $hour_to=='Day'){
-	$sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,$append from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and bac_no in ($module) GROUP BY bac_date,HOUR(bac_lastup),bac_no,bac_shift,ims_doc_no,SIGN(bac_Qty) ORDER BY bac_date,HOUR(bac_lastup),bac_no*1,ims_doc_no*1";
-}else
-{
-	$sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,$append from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and bac_no in ($module) and hour(bac_lastup) between \"$hour_from\" and \"$hour_to\" GROUP BY bac_date,HOUR(bac_lastup),bac_no,bac_shift,ims_doc_no,SIGN(bac_Qty) ORDER BY bac_date,HOUR(bac_lastup),bac_no*1,ims_doc_no*1";
-}
+	if($hour_from=='Day' and $hour_to=='Day'){
+		$sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,$append from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and bac_no in ($module) GROUP BY bac_date,HOUR(bac_lastup),bac_no,bac_shift,ims_doc_no,jobno,SIGN(bac_Qty) ORDER BY bac_date,HOUR(bac_lastup),bac_no*1,ims_doc_no*1,jobno*1";
+	}else
+	{
+		$sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,$append from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and bac_no in ($module) and hour(bac_lastup) between \"$hour_from\" and \"$hour_to\" GROUP BY bac_date,HOUR(bac_lastup),bac_no,bac_shift,ims_doc_no,jobno,SIGN(bac_Qty) ORDER BY bac_date,HOUR(bac_lastup),bac_no*1,ims_doc_no*1,jobno*1";
+	}
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 

@@ -3,6 +3,10 @@
         width: 100%;    
         overflow-y: auto;
     }
+
+    table, th, td {
+        text-align: center;
+    }
 </style>
 
 
@@ -63,8 +67,7 @@
                                 echo '<input type="hidden" name="mix_colors" value="'.$mix_colors.'">';
                                 echo '<input type="hidden" name="job_qty" value="'.$job_qty.'">';
 
-                                echo "<div class='table-responsive'>
-                                    <table class='table table-bordered'>";
+                                echo "<table class='table table-bordered'>";
                                         echo "<tr class='info'>";
                                         echo "<th>Schedule</th>";
                                         echo "<th>Color Set</th>";
@@ -75,7 +78,7 @@
 
                                         if($scanning_methods="Bundle Level")
                                         {
-                                            echo "<th>Bundle Barcode With Operation</th>";
+                                            echo "<th>Bundle Barcode<br>With Operation</th>";
                                             echo "<th>Bundle Barcode</th>";
                                         }
                                         //echo "<th>TID</th>";
@@ -159,8 +162,7 @@
                                             }
                                             echo"</tr>";
                                         }
-                                        
-                                   echo ' </table></div>
+                                   echo ' </table>
                             </form>
                 </div>
             </div>';

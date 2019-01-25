@@ -322,7 +322,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					}							
 					
 					$club_c_code=array();
-					$sql33x1="SELECT * FROM $bai_pro3.plan_dash_doc_summ where doc_no in (".$doc_no_ref_input.") order by doc_no*1";
+					$sql33x1="SELECT * FROM $bai_pro3.plan_dash_doc_summ where doc_no in (".$doc_no_ref.") order by doc_no*1";
 					$sql_result33x1=mysqli_query($link, $sql33x1) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row33x1=mysqli_fetch_array($sql_result33x1))
 					{

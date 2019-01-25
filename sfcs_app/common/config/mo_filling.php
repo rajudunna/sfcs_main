@@ -134,7 +134,7 @@
         $delete_query = "Delete from $bai_pro3.mo_operation_quantites where mo_no in ($mos) and op_code in ($op_codes) ";
         $delete_result = mysqli_query($link,$delete_query);
         if($delete_result > 0){
-			echo "Deleted Successfully";
+			// echo "Deleted Successfully";
             return true;
         }
         return false;
@@ -250,8 +250,8 @@
 	}
 
 	//tested
-	function insertMOQuantitiesSewing($schedule,$sref_id){
-		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+	function insertMOQuantitiesSewing($schedule,$sref_id){	
+		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 		
 		$sewing_cat = 'sewing';
 		$mo_no=array();
@@ -264,7 +264,7 @@
 		
 		$op_codes_query = "SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
 						WHERE category = '$sewing_cat' group by category";
-		$op_codes_result = mysqli_query($link,$op_codes_query) or exit('Problem in getting the op codes for sewing');   
+		$op_codes_result = mysqli_query($link,$op_codes_query) or exit('Problem in getting the op codes for sewing'.$op_codes_query);   
 		while($row = mysqli_fetch_array($op_codes_result)){
 			$op_codes = $row['codes'];
 		}   
