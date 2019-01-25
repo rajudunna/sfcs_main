@@ -293,9 +293,6 @@
             echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
         }
     }
-    else{
-        echo "Not Going..!";exit;
-    }
     $query_select = "select * from $brandix_bts.tbl_orders_ops_ref";
     $res_do_num=mysqli_query($link,$query_select);
     echo "<div class='container'><div class='panel panel-primary'><div class='panel-heading'>Operations List</div><div class='panel-body'>";
