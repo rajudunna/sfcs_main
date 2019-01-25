@@ -411,9 +411,17 @@ if(isset($_POST['submit']))
 	$sql="DROP TABLE IF EXISTS $newfiltertable";
 	//echo $sql."<br/>";
 	mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
+	$application='IPS';			
+	$scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
+	// echo $scanning_query;
+	$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row=mysqli_fetch_array($scanning_result))
+	{
+		$operation_name=$sql_row['operation_name'];
+		$operation_code=$sql_row['operation_code'];
+	}
 	//$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,input_job_no,SUM(carton_act_qty) AS carton_qty from plan_doc_summ_input where order_del_no in ($schedule_list) and input_job_no_random not in (select input_job_no_random_ref from plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
-	$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from $bai_pro3.plan_doc_summ_input where order_del_no in ($schedule_list) and acutno=$color and input_job_no_random not in (select input_job_no_random_ref from $bai_pro3.plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
+	$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random,$operation_code) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from $bai_pro3.plan_doc_summ_input where order_del_no in ($schedule_list) and acutno=$color and input_job_no_random not in (select input_job_no_random_ref from $bai_pro3.plan_dashboard_input,$operation_code) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
 	// echo $sql."<br/>";
 	mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
