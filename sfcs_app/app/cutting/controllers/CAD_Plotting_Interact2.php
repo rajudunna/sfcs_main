@@ -305,23 +305,23 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 						$path="sfcs_app/app/cutting/controllers/lay_plan_preparation/Book3_print.php";
 					}
 					
-					$tab= "<tr><td class=\"  \"><center><a class=\"btn btn-sm btn-primary\" href=\"$path?order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=$category&clubbing=$clubbing&cut_no=1\" onclick=\"Popup1=window.open('$path?order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">".$sql_row1['doc_no']."</a>";
+					$tab= "<tr><td class=\"  \"><center><a class=\"btn btn-sm btn-primary\" href=\"$path?order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=$category&clubbing=$clubbing&cut_no=$cutno\" onclick=\"Popup1=window.open('$path?order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$category."&clubbing=".$clubbing."&cut_no=".$cutno."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">".$sql_row1['doc_no']."</a>";
 					
 					$sql1x="select acutno,order_tid,print_status,cat_ref,allocate_ref,mk_ref,doc_no, plan_lot_ref,cat_ref,order_tid,p_xs as xs,p_s as s,p_m as m,p_l as l,p_xl as xl,p_xxl as xxl,p_xxxl as xxxl from $bai_pro3.plandoc_stat_log where order_tid='".$sql_row1['order_tid']."' and doc_no not in ($doc_no) AND length(plan_lot_ref)>0 and lastup=\"0000-00-00 00:00:00\" and act_cut_status<>\"DONE\" and fabric_status IN (1,5) and acutno=$cutno";
 					//echo $sql1;
 					$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row1x=mysqli_fetch_array($sql_result1x))
 					{
-						$tab.="<br/>[+]&nbsp;<a class=\"btn btn-sm btn-primary\" href=\"$path?order_tid=".$sql_row1x['order_tid']."&cat_ref=".$sql_row1x['cat_ref']."&doc_id=".$sql_row1x['doc_no']."&cat_title=$category&clubbing=$clubbing&cut_no=1\" onclick=\"Popup1=window.open('$path?order_tid=".$sql_row1x['order_tid']."&cat_ref=".$sql_row1x['cat_ref']."&doc_id=".$sql_row1x['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">".$sql_row1x['doc_no']."</a>";
+						$tab.="<br/>[+]&nbsp;<a class=\"btn btn-sm btn-primary\" href=\"$path?order_tid=".$sql_row1x['order_tid']."&cat_ref=".$sql_row1x['cat_ref']."&doc_id=".$sql_row1x['doc_no']."&cat_title=$category&clubbing=$clubbing&cut_no=1\" onclick=\"Popup1=window.open('$path?order_tid=".$sql_row1x['order_tid']."&cat_ref=".$sql_row1x['cat_ref']."&doc_id=".$sql_row1x['doc_no']."&cat_title=".$category."&clubbing=".$clubbing."&cut_no=".$sql_row1x['acutno']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">".$sql_row1x['doc_no']."</a>";
 					}
 					$tab.="</center></td>";
 					
 					$tab.= "<td class=\"  \"><center>$buyer_code</center></td>";
 					$tab.= "<td class=\"  \"><center>$print_date</center></td>";
 
-				//echo "<td class=\"  \">".str_replace(";","<br/>",$sql_row['plan_lot_ref'])."</td>";
+				    //echo "<td class=\"  \">".str_replace(";","<br/>",$sql_row['plan_lot_ref'])."</td>";
 
-				//echo "<td class=\"  \"><a href=\"cad_plotting_interact.php?doc_no=".$sql_row['doc_no']."\">Completed</td>";
+			     	//echo "<td class=\"  \"><a href=\"cad_plotting_interact.php?doc_no=".$sql_row['doc_no']."\">Completed</td>";
 
 					//$sql="update plandoc_stat_log set lastup=\"".date("Y-m-d")."\" where doc_no=".$_GET['doc_no'];
 					//mysql_query($sql,$link) or exit("Sql Error".mysql_error());
