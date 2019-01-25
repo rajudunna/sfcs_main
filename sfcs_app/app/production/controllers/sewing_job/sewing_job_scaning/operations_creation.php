@@ -68,6 +68,9 @@
                                 <div class="col-sm-3">
                                     <b>Operation code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="number" onkeypress="return validateQty(event);" class="form-control" id="opc" name="opc" required>
                                 </div>
+                                <div class="col-sm-3">
+                                    <b>M3 Operation Type<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="text" class="form-control" id="m_optype" name="m_optype" pattern="[a-zA-Z0-9._\s]+" title="This field can contain only alpha numeric characters.." required>
+                                </div>
                                 <div class='col-sm-3'>
                                      <div class="dropdown">
                                         <b>Type</b>
@@ -168,6 +171,8 @@
     $sw_cod="";
     $work_center="";
     $category="";
+    $parent_work_center_id="";
+    $m_operation_type="";
 
     if(isset($_POST["opn"])){
         $operation_name= $_POST["opn"];
@@ -196,6 +201,9 @@
     if(isset($_POST["parent_work_center_id"])){
         $parent_work_center_id = trim($_POST["parent_work_center_id"],' ');
     }
+    if(isset($_POST["m_optype"])){
+        $m_operation_type = trim($_POST["m_optype"],' ');
+    }
     
     /* $servername = "localhost";
     $username = "root";
@@ -207,8 +215,11 @@
     if (!$conn) {
         die("Connection failed: " . mysql_error());
     } */
-    if($operation_name!="" && $operation_code!="" && $short_key_code != "")
-    {
+
+
+    if($operation_name!="" && $operation_code!="" && $short_key_code != "" && $m_operation_type != "")
+    { 
+        //echo "Yes..its going";exit;
         $checking_qry = "select count(*)as cnt from $brandix_bts.tbl_orders_ops_ref where operation_code = $operation_code";
         $res_checking_qry = mysqli_query($link,$checking_qry);
         while($res_res_checking_qry = mysqli_fetch_array($res_checking_qry))
@@ -227,10 +238,16 @@
         {
             $cnt_short = $res_res_res_short_key_code_check_qry['cnt'];
         }
-        
-        if($cnt == 0 && $cnt_short == 0 && $cnt_work == 0)
+        $m_optype_check_qry = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where m3_operation_type = '$m_operation_type'";
+        $m_optype_check_qry_result = mysqli_query($link,$m_optype_check_qry);
+        while($m_optype_check_qry_rows = mysqli_fetch_array($m_optype_check_qry_result))
         {
-            $qry_insert = "INSERT INTO $brandix_bts.tbl_orders_ops_ref ( operation_name, default_operation,operation_code, type, operation_description,short_cut_code,work_center_id,category,parent_work_center_id)VALUES('$operation_name','$default_operation','$operation_code', '$type', '$sw_cod','$short_key_code','$work_center_id','$category','$parent_work_center_id')";
+            $cnt_moptyp = $m_optype_check_qry_rows['cnt'];
+        }
+        
+        if($cnt == 0 && $cnt_short == 0 && $cnt_work == 0 && $cnt_moptyp == 0)
+        {
+            $qry_insert = "INSERT INTO $brandix_bts.tbl_orders_ops_ref ( operation_name, default_operation,operation_code, type, operation_description,short_cut_code,work_center_id,category,parent_work_center_id,m3_operation_type)VALUES('$operation_name','$default_operation','$operation_code', '$type', '$sw_cod','$short_key_code','$work_center_id','$category','$parent_work_center_id','$m_operation_type')";
             $res_do_num = mysqli_query($link,$qry_insert);
             echo "<script>sweetAlert('Saved Successfully','','success')</script>";
         }
@@ -239,7 +256,6 @@
             $sql_message = 'Operation Code Already in use. Please give other.';
             echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
         }
-        
         else if($cnt_work != 0)
         {
             
@@ -249,6 +265,11 @@
         else if($cnt_short != 0)
         {
             $sql_message = 'Short Cut Key Code Already in use. Please give other.';
+            echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+        }
+        else if($cnt_moptyp != 0)
+        {
+            $sql_message = 'M3 Operation Type Already in use. Please give other.';
             echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
         }
         else if($cnt_short != 0 && $cnt != 0)
@@ -261,9 +282,14 @@
             $sql_message = 'Work Center and Operation Code Already in use. Please give other.';
             echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
         }
-        else if($cnt_work != 0 && $cnt_short != 0)
+        else if($cnt_work != 0 && $cnt_moptyp != 0)
         {
-            $sql_message = 'Work Center and Short Key Code Already in use. Please give other.';
+            $sql_message = 'Work Center and M3 Operation Type Already in use. Please give other.';
+            echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+        }
+        else if($cnt_moptyp != 0 && $cnt_short != 0)
+        {
+            $sql_message = 'M3 Operation Type and Short Key Code Already in use. Please give other.';
             echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
         }
     }
@@ -271,7 +297,7 @@
     $res_do_num=mysqli_query($link,$query_select);
     echo "<div class='container'><div class='panel panel-primary'><div class='panel-heading'>Operations List</div><div class='panel-body'>";
     echo "<div class='table-responsive'><table class='table table-bordered' id='table_one'>";
-    echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>Report To ERP</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>Form</th><th>Short Key Code</th><th style='text-align:  center;'>Work Center</th><th style='text-align:  center;'>Category</th><th style='text-align:  center;'>Parent Work Center Id</th><th style='text-align:  center;'>Action</th></tr></thead><tbody>";
+    echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>Report To ERP</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>M3 Operation Type</th><th style='text-align:  center;'>Form</th><th>Short Key Code</th><th style='text-align:  center;'>Work Center</th><th style='text-align:  center;'>Category</th><th style='text-align:  center;'>Parent Work Center Id</th><th style='text-align:  center;'>Action</th></tr></thead><tbody>";
     $i=1;
     while($res_result = mysqli_fetch_array($res_do_num))
     {
@@ -297,6 +323,7 @@
             <td>".$res_result['operation_name']."</td>
             <td>".$res_result['default_operation']."</td>
             <td>".$res_result['operation_code']."</td>
+            <td>".$res_result['m3_operation_type']."</td>
             <td>".$res_result['type']."</td>
             <td>".strtoupper($res_result['short_cut_code'])."</td>
             <td>".$res_result['work_center_id']."</td>
