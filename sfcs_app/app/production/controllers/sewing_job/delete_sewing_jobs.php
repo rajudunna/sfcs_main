@@ -88,7 +88,8 @@
     { 
         $schedule=$_POST['schedule'];
         $reason=$_POST['reason']; 
-
+        $schedule = str_replace(' ', '', $schedule);
+        
         $validation_query="SELECT * FROM $bai_pro3.act_cut_status WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '%".$schedule."%')"; 
         // echo $validation_query; 
         $sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data"); 
