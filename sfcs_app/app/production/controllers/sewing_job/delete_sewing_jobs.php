@@ -102,6 +102,17 @@
         } 
         else 
         {
+
+            $sql="SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' and mrn_status='1'";  
+                $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $rowcount1=mysqli_num_rows($sql_result);
+              if($rowcount1>0)
+              {
+                 echo "<script>sweetAlert('MRN Confirmed for this Schedule','','warning')</script>";
+              }
+              else
+              {
+
             $pac_stat_input_check = echo_title("$bai_pro3.pac_stat_input","count(*)","schedule",$schedule,$link);
             
             if ($pac_stat_input_check > 0)
@@ -222,15 +233,14 @@
                         $delete_plan_input_qry="DELETE FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref like  \"".$schedule."%\""; 
                         // echo $delete_plan_input_qry."<br>"; 
                         mysqli_query($link, $delete_plan_input_qry) or exit("Sql Error delete_plan_input_qry".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                        
-                        $get_tids="SELECT GROUP_CONCAT(tid) AS tids FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule'"; 
+                        $final_tid=array();
+                        $get_tids="SELECT tid FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule'"; 
                         $sql_result111=mysqli_query($link, $get_tids) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                         while($sql_row111=mysqli_fetch_array($sql_result111)) 
                         { 
-                            $final_tid=$sql_row111['tids'];
+                            $final_tid[]=$sql_row111['tid'];
                         }
-
-                        $sql3="DELETE FROM $bai_pro3.`pac_stat_log_input_job` WHERE tid IN (".$final_tid.")";
+                        $sql3="DELETE FROM $bai_pro3.`pac_stat_log_input_job` WHERE tid IN (".implode(",",$final_tid).")";
                         // $sql3="DELETE FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random like  \"".$schedule."%\""; 
                         // echo $sql3."<br>"; 
                         mysqli_query($link, $sql3) or exit("Sql Error91".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -296,6 +306,7 @@
                     echo "<script>sweetAlert('Please Generate Sewing Jobs Before Deleting!!','','error')</script>";
                 } 
             }
+        }
             echo "</div></div>"; 
         } 
     }
@@ -308,6 +319,15 @@
         // echo $reason;
 
         $tid = array(); $docket_no = array();
+        $sql="SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' and mrn_status='1'";  
+        $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $rowcount2=mysqli_num_rows($sql_result);
+        if($rowcount2>0)
+        {
+            echo "<script>sweetAlert('MRN Confirmed for this Schedule','','warning')</script>";
+        }
+        else
+        {
 
         $get_seq_details = "SELECT tid, doc_no FROM bai_pro3.`packing_summary_input` WHERE pac_seq_no = $seqno and order_del_no='$schedule'";
         $details_seq=mysqli_query($link, $get_seq_details) or exit("error while fetching sequence details for this schedule"); 
@@ -423,6 +443,7 @@
                 }
             // MO Deletion end
         }
+        
         else
         {
             echo "<script>sweetAlert('Please Generate Sewing Jobs for Sequence - $seqno','','error')</script>";
@@ -432,6 +453,7 @@
                     }, 1500);
                 </script>");
         }
+    }
     }
 ?> 
 </div> 

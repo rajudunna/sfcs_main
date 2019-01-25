@@ -148,6 +148,28 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 	}
 	sort(array_unique($orginal_size_array));
 	sort(array_unique($size_array));
+	$rand_no=date("ymd").rand(1,1000);
+	$tabl="temp_pool_db.new_tbl".$rand_no."";
+	$sql76="CREATE TEMPORARY TABLE $tabl SELECT * FROM brandix_bts.`tbl_orders_size_ref` LIMIT 1";
+	mysqli_query($link,$sql76) or die("Error 1 = ".$sql76.mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql77="DELETE FROM $tabl";
+	mysqli_query($link,$sql77) or die("Error 2 = ".$sql77.mysqli_error($GLOBALS["___mysqli_ston"]));
+	for($qi=0;$qi<sizeof($orginal_size_array);$qi++)
+	{
+		$sql78="INSERT INTO $tabl (`size_name`) VALUES ('".$orginal_size_array[$qi]."')";
+		mysqli_query($link,$sql78) or die("Error 3 = ".$sql77.mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
+	$sql79="SELECT * FROM $tabl ORDER BY CONVERT(bai_pro3.stripSpeciaChars(size_name,0,1,0,0) USING utf8)*1,
+	FIELD(size_name,'xxs','xs','s','m','l','xl','xxl','xxxl','xxxxl')";
+	$result79=mysqli_query($link,$sql79) or die("Error 4 = ".$sql79.mysqli_error($GLOBALS["___mysqli_ston"]));
+	unset($orginal_size_array);
+	while($row79=mysqli_fetch_array($result79))
+	{
+		$orginal_size_array[]=$row79['size_name'];
+	}
+	$sql80="DROP TABLE $tabl";
+	mysqli_query($link,$sql80) or die("Error 3 = ".$sql80.mysqli_error($GLOBALS["___mysqli_ston"]));
+
 	if(sizeof($orginal_size_array)<>sizeof($size_array))
 	{
 		for($qq=0;$qq<sizeof($sizes_array);$qq++)
@@ -174,6 +196,7 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 		echo "<tr class='warning'>";
 		echo "<th>Select</th>";
 		echo "<th>Item Codes</th>";
+		echo "<th>MO Status</th>";
 		echo "<th>Style</th>";
 		echo "<th>Schedule</th>";
 		echo "<th>Color</th>";
@@ -212,7 +235,51 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 			$color=$sql_row['order_col_des'];	
 			$order_joins=$sql_row['order_joins'];
 			echo "<tr>";
-			if($order_total>0)
+			// Check Operaitons
+			$ops_master_sql = "select operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master where style='$style' and color='$color' and default_operration='yes' group by operation_code";
+			$result2_ops_master_sql = mysqli_query($link,$ops_master_sql)
+								or exit("Error Occured : Unable to get the Operation Codes");
+			while($row_result2_ops_master_sql = mysqli_fetch_array($result2_ops_master_sql))
+			{
+				$array1[] = $row_result2_ops_master_sql['operation_code'];
+			}			
+			$sql1 = "select OperationNumber FROM $bai_pro3.schedule_oprations_master where Style='$style' and Description ='$color' and ScheduleNumber='$schedule' group by OperationNumber";
+			$result1 = mysqli_query($link,$sql1)  
+				or exit("Error Occured : Unable to get the Operation Codes");
+		
+			while($row = mysqli_fetch_array($result1))
+			{
+				$array2[] = $row['OperationNumber'];
+			}
+			$val1 = "<td></td>";
+			$op_status_above=0;
+			if(sizeof($array1) == 0 || sizeof($array2) == 0)
+			{
+				$val1 = "<td>Ops Doesn't exist</td>";
+				$op_status_above=1;
+			}
+			$compare = array_diff($array1,$array2);
+			if($op_status_above==0)
+			{
+				if(sizeof($compare) > 0)
+				{
+					$val1 = "<td>Ops codes not match</td>";
+					$op_status_above=1;
+				}
+			}
+			$mo_query = "SELECT * from $bai_pro3.mo_details where schedule='$schedule' and 
+						color='$color'  and style='$style' limit 1";
+			$mo_result = mysqli_query($link,$mo_query);	
+			if($op_status_above==0)
+			{
+				if(!mysqli_num_rows($mo_result) > 0)
+				{
+					$val1 = "<td>MO Not Available</td>";
+					$op_status_above=1;
+				}
+			}
+			$tabl_name="bai_pro3.bai_orders_db";			
+			if($order_total>0 && $op_status_above==0)
 			{
 				$sql41="select * FROM $bai_pro3.`plandoc_stat_log` where order_tid='".$order_tid."'";
 				$result41=mysqli_query($link,$sql41) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -220,38 +287,91 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 				{
 					if($order_joins=="0")
 					{
-						echo "<td><input type=\"checkbox\" name=\"sch[]\" value=\"$schedule\" checked></td>";
+						$sql543111="select * from $bai_pro3.cat_stat_log where order_tid='".$order_tid."'";
+						$result41111=mysqli_query($link, $sql543111) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql54311="select * from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' and mo_status='N'";
+						$result4111=mysqli_query($link, $sql54311) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"])); 
+						if(mysqli_num_rows($result4111)==0 && mysqli_num_rows($result41111)>0) 
+						{
+							$sql5431112="select * from $bai_pro3.bai_orders_db_confirm where order_tid='".$order_tid."'";
+							$result411112=mysqli_query($link, $sql5431112) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"]));
+							if(mysqli_num_rows($result411112)==0)
+							{
+								echo "<td><input type=\"checkbox\" name=\"sch[]\" value=\"$schedule\" check></td>";
+							}
+							else
+							{
+								$tabl_name="bai_pro3.bai_orders_db_confirm";
+								echo "<td>Excess Updated</td>";
+							}	
+						}
+						else							
+						{
+							$sql543112="select * from $bai_pro3.cat_stat_log where order_tid='".$order_tid."'";
+							$result41112=mysqli_query($link, $sql543112) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"])); 
+							if(mysqli_num_rows($result41112)==0)
+							{
+								echo "<td>Items Not Available</td>";
+							}
+							else
+							{
+								echo "<td>N/A</td>";
+							}	
+						}
 						$test_count=$test_count+1;
 					}
 					else
 					{
-						echo "<td>".substr($order_joins,1)."</td>";
+						$tabl_name="bai_pro3.bai_orders_db_confirm";
+						$sql5431112="select * from $bai_pro3.bai_orders_db_confirm where order_tid='".$order_tid."' and order_no=1";
+						$result411112=mysqli_query($link, $sql5431112) or die("Error3 = ".$sql4.mysqli_error($GLOBALS["___mysqli_ston"]));
+						if(mysqli_num_rows($result411112)==0)
+						{
+							echo "<td>".substr($order_joins,1)."</td>";
+						}
+						else
+						{							
+							echo "<td>Excess Updated-(".substr($order_joins,1).")</td>";
+						}
 					}
 				}
 				else
 				{
+					$tabl_name="bai_pro3.bai_orders_db_confirm";
 					echo "<td>Lay Plan Prepared</td>";
 				}
 				
 			}
-			else
-			{
-				echo "<td></td>";
+			else  
+			{ 
+				echo $val1; 
 			}
 			echo "<td>";				
 			echo "<table>";					
-			$sql543="select compo_no from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' group by compo_no";
+			$sql5431="select compo_no from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' group by compo_no";
+			//echo $sql543."<br>";		
+			$sql_result5431=mysqli_query($link, $sql5431) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row5431=mysqli_fetch_array($sql_result5431)) 
+			{ 
+				echo "<tr><td>".$sql_row5431['compo_no']."</td>";
+			}
+			echo "</table>";
+			echo "</td>";
+			echo "<td>";
+			echo "<table>";					
+			$sql543="select mo_status from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' group by compo_no";
 			//echo $sql543."<br>";		
 			$sql_result543=mysqli_query($link, $sql543) or exit("Sql Error A".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row543=mysqli_fetch_array($sql_result543)) 
 			{ 
-				echo "<tr><td>".$sql_row543['compo_no']."</td><tr>";
+				echo "<tr><td>".$sql_row543['mo_status']."</td>";
 			}
 			echo "</table>";
 			echo "</td>";
 			echo "<td>$style</td>";
 			echo "<td>$schedule</td>";
 			echo "<td>$color</td>";
+			
 			$row_ref=array();
 			for($q1=0;$q1<sizeof($unique_orginal_sizes_explode);$q1++)
 			{	
@@ -260,7 +380,7 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 				for($q2=0;$q2<sizeof($unique_sizes_explode);$q2++)
 				{
 					
-					$sql61="select sum(order_s_".$unique_sizes_explode[$q2].") as order_qty,title_size_".$unique_sizes_explode[$q2]." as size,destination from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_col_des=\"$color\" and order_del_no=\"".$schedule."\"";	
+					$sql61="select sum(order_s_".$unique_sizes_explode[$q2].") as order_qty,title_size_".$unique_sizes_explode[$q2]." as size,destination from $tabl_name where order_style_no=\"$style\" and order_col_des=\"$color\" and order_del_no=\"".$schedule."\"";	
 					$result61=mysqli_query($link, $sql61) or die("Error3 = ".$sql61.mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row61=mysqli_fetch_array($result61))
 					{	
@@ -373,10 +493,14 @@ if(isset($_POST['fix']))
 	$po=$_POST['po'];
 
 	//Generarting new schedule number for schedule clubbing style
-	$scheduleno_sql = "SELECT order_joins FROM bai_pro3.bai_orders_db_confirm WHERE LENGTH(order_joins)>7";
-	$scheduleno_sql_result =mysqli_query($link, $scheduleno_sql);
-	$num_sql_rows = mysqli_num_rows($scheduleno_sql_result);
-	$new_sch=date("ymd").str_pad($num_sql_rows, 4, '0', STR_PAD_LEFT)+1;
+	$val_exist_club=0;
+	$scheduleno_sql1 = "SELECT MAX(order_del_no) AS sch FROM $bai_pro3.bai_orders_db_confirm WHERE $order_joins_in and order_del_no like  \"%".date("ymd")."%\"";
+	$scheduleno_sql_result1 =mysqli_query($link, $scheduleno_sql1);
+	while($row123=mysqli_fetch_array($scheduleno_sql_result1))
+	{
+		$val_exist_club = ((substr($row123["sch"], 6))+2);
+	}
+	$new_sch=date("ymd").str_pad($val_exist_club, 5, '0', STR_PAD_LEFT);
 	
 	$size_array1=array();
 	$orginal_size_array1=array();
@@ -534,6 +658,27 @@ if(isset($_POST['fix']))
 			$sql451="insert ignore into $bai_pro3.bai_orders_db_club_confirm select * from $bai_pro3.bai_orders_db_confirm where order_del_no in (".implode(",",$schedule_array).") and order_col_des=\"".$color."\"";
 			$sql451=mysqli_query($link, $sql451) or die("Error".$sql451.mysqli_error($GLOBALS["___mysqli_ston"]));
 			
+			$sql452="select * from $bai_pro3.bai_orders_db_confirm where order_del_no in (".implode(",",$selected).") and order_col_des=\"".$color."\"";
+			$sql_result452=mysqli_query($link, $sql452) or die("Error".$sql452.mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row452=mysqli_fetch_array($sql_result452))
+			{
+				$sql453="select * from $bai_pro3.sp_sample_order_db where order_tid='".$sql_row452['order_tid']."'";
+				$sql_result453=mysqli_query($link, $sql453) or die("Error".$sql452.mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql_result453)>0)
+				{
+					while($sql_row453=mysqli_fetch_array($sql_result453))
+					{
+						for($kk=0;$kk<sizeof($sizes_array);$kk++)
+						{
+							if((trim($sql_row452["title_size_".$sizes_array[$kk].""])==trim($sql_row453['size'])) && ($sizes_array[$kk]<>$sql_row453['sizes_ref']))
+							{
+								$sql_update="update `bai_pro3`.`sp_sample_order_db` set `sizes_ref` = '".$sizes_array[$kk]."' where `order_tid` = '".$sql_row452['order_tid']."' and `size` = '".$sql_row453['size']."' and `sizes_ref` = '".$sql_row453['sizes_ref']."'";
+								mysqli_query($link, $sql_update) or die("Error".$sql_update.mysqli_error($GLOBALS["___mysqli_ston"]));
+							}
+						}	
+					}	
+				}				
+			}	
 					
 			echo "<h2>New Style: $style</h2>";
 			echo "<h2>New Schedule: $new_sch</h2>";

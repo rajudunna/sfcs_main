@@ -506,6 +506,7 @@ $sql="CREATE TABLE $table_name ENGINE = myisam SELECT * FROM $bai_pro3.plan_dash
 mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name GROUP BY section ORDER BY section + 0";
+// echo $sqlx."<br>";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
@@ -522,6 +523,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	}
 	else {
 		 $order_div_ref='';
+		 $buyer_division_ref='';
 	}	
 	$wip=array();
 	$sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1";
@@ -575,15 +577,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			 if (window.focus) {Popup.focus()} return false;\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
 			$y=0;
 
-
 			$show_block = calculateJobsCount($table_name,$module,$order_div_ref);
 			if($show_block > 0){
-				echo "<div style='float:left;'>
-								<div  class='gloss-pink' style='float:left;'>
-									<div>
-										<b>$show_block</b>
-									</div>
-								</div>
+				echo "<div style='float:left;'>		    
+										<a href=\"../".getFullURL($_GET['r'],'issued_to_module_summary_report.php','R')."?jobno=$input_job_no&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/issued_to_module_summary_report.php?jobno=$input_job_no&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><div  class='gloss-pink' style='float:left;'><b>$show_block</b></div></a>
+											
 							</div>";
 			}
 
@@ -698,8 +696,9 @@ include('include_legends_tms.php');
 
 function calculateJobsCount($table_name,$module,$order_div_ref){
 	global $link;
-	$ijs_query  = "SELECT GROUP_CONCAT(DISTINCT input_job_no_random_ref) as jobs FROM $table_name WHERE input_trims_status=4  
-						     AND input_module=$module $order_div_ref";
+	$ijs_query  = "SELECT group_concat(distinct \"'\",input_job_no_random_ref,\"'\")  as jobs FROM $table_name WHERE input_trims_status=4  
+							 AND input_module=$module $order_div_ref";
+							
 	$ijs_result = mysqli_query($link,$ijs_query);
 	while($row = mysqli_fetch_array($ijs_result)){
 		$jobs = $row['jobs'];
@@ -708,10 +707,8 @@ function calculateJobsCount($table_name,$module,$order_div_ref){
 	if($jobs == '')
 		return 0;
 	else{
-		$ips_jobs_query = "SELECT count(distinct pdsi.input_job_no_random) AS ips_jobs_match_count
-            FROM bai_pro3.plan_dashboard_input pdi
-            LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
-						WHERE input_module = $module AND pdsi.input_job_no_random IN ($jobs)";
+		$ips_jobs_query = "SELECT count(distinct \"'\",input_job_no_random_ref,\"'\") AS ips_jobs_match_count FROM bai_pro3.plan_dashboard_input WHERE input_trims_status=4  
+		AND input_module=$module $order_div_ref";
 		$inps_jobs_result = mysqli_query($link,$ips_jobs_query);
 		while($row = mysqli_fetch_array($inps_jobs_result)){
 				$ips_jobs_count = $row['ips_jobs_match_count'];

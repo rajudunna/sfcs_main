@@ -19,8 +19,11 @@ $pass=$mysql_details['db_pass'];
 
 //MSSql Configurations
 $ms_sql_odbc_host = $conf1->get('mssql-odbc');
+$ms_sql_odbc_server = $conf1->get('mssql-server-name');
 $ms_sql_odbc_user = $conf1->get('mssql-user-name');
 $ms_sql_odbc_pass = $conf1->get('mssql-password');
+$mssql_db = $conf1->get('m3database');
+$ms_sql_driver_name = $conf1->get('driver_name');
 
 //MY SQL host
 $ms_sql_odbc_host = $conf1->get('mysql-odbc');
@@ -154,6 +157,8 @@ $group_id_Main=5;
 $smtp_user=$conf1->get('smtp-user-name');
 // $header_from="From: Shop Floor System Alert <ictsysalert@brandix.com>";
 $header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
+$header_name=$smtp_user." Alert";
+$header_mail=$conf1->get('smtp_mail_from');
 $dispatch_mail = $conf1->get('dispatch_mail');
 //Central Administration Menu Access
 $central_administration_sfcs='central_administration_sfcs';

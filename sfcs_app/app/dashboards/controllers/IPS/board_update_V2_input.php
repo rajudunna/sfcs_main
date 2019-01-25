@@ -443,7 +443,7 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 			
 			if($clubbed_schedule_ref > 0)
 			{
-				$schedule=$clubbed_schedule_ref;
+				//$schedule=$clubbed_schedule_ref;
 				$sql_doc="select group_concat(doc_no) as doc_ref from $bai_pro3.plandoc_stat_log where order_tid like \"% ".$clubbed_schedule_ref."%\"";
 				$result_doc=mysqli_query($link, $sql_doc) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row_doc=mysqli_fetch_array($result_doc))
@@ -545,7 +545,7 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 			{
 				$id="blue";
 			}
-			$sqly="SELECT group_concat(doc_no) as doc_no,sum(carton_act_qty) as carton_qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
+			$sqly="SELECT group_concat(distinct doc_no) as doc_no,sum(carton_act_qty) as carton_qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
 			// echo $sqly."<br>";
 			$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowy=mysqli_fetch_array($resulty))
@@ -625,7 +625,7 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 			
 			//echo "<td >".$style."<br/><strong>".$schedule."<br/>".$display_prefix1."</strong><br/>".$total_qty."<br/></td><td></td>";
 			echo "<td>".$style."<br/><strong>".$schedule."<br/>".$display_prefix1."</strong><br/>".implode(", ",$club_c_code)."<br/>".$total_qty."</td><td>F.L.: $fabric_location / B.L.: $bundle_location</br>Col:".strtoupper($id)."</br><b>Ex-FT: $ex_factory</b><br/><b>DID: $doc_no</b></td>";
-
+			
 		
 		}
 			
