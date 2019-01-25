@@ -153,7 +153,7 @@ function issued_to_module($bcd_id,$qty,$ref)
     $update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$qty where doc_no = $docket_no and operation_code = 15 and size_code ='$size_id'";
     // echo $update_qry_cps.'</br>';
     mysqli_query($link, $update_qry_cps) or exit("update_qry_cps".mysqli_error($GLOBALS["___mysqli_ston"]));
-    $update_qry_bcd = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and operation_id = 15";
+    $update_qry_bcd = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and size_id = '$size_id' and operation_id = 15";
      mysqli_query($link, $update_qry_bcd) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
     //retreaving emblishment operations from operatoin master
     $ops_master_qry = "select operation_code from $brandix_bts.tbl_orders_ops_ref where category in ('Send PF')"; 

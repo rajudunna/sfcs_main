@@ -526,7 +526,7 @@ if($flag==1)
 	echo "</tr></thead>";
 }
 $order_tidss=array();
-if($ord_joins<>'0')
+if($order_joins<>'0')
 {
 	if(strlen($schedule)<8)
 	{

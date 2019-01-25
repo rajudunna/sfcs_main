@@ -1857,7 +1857,7 @@ tags will be replaced.-->
 					}
 					else
 					{
-						$order_tidss[]=$tran_order_tid;
+						$order_tidss[]=$order_tid;
 					}
 					$check_sample=0;
 					for($ii=0;$ii<sizeof($order_tidss);$ii++)
