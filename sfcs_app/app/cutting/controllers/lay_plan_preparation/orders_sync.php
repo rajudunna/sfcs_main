@@ -128,6 +128,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			$cat_ref=$l['cat_ref'];
 			$mk_ref=$l['mk_ref'];
 			$cuttable_ref=$l['cuttable_ref'];
+			$layplan_id1=0;
 			//Insert data into layplan(tbl_cut_master) table
 			$inserted_id_query1 = "select count(id) as id from $brandix_bts.tbl_cut_master where doc_num='".$doc_num."'";
 			$inserted_id_result1=mysqli_query($link, $inserted_id_query1) or ("Sql error1111");
