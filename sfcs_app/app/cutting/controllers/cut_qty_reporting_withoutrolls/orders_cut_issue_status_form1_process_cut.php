@@ -488,6 +488,8 @@ if(isset($_POST['update']))
 		}
 		
 		//echo "going inside loop";
+		unset($input_doc_nos);
+		
 		foreach($club_docs as $docket=>$cat_ref){
 			$cat_query = "SELECT category from $bai_pro3.cat_stat_log where tid='$cat_ref' and 
 						  category in ($in_categories)";
@@ -562,6 +564,12 @@ if(isset($_POST['update']))
 				$update_query = "UPDATE $bai_pro3.plandoc_stat_log set $equating_string act_cut_status='DONE'
 								where doc_no = '$docket' ";
 				$update_result = mysqli_query($link,$update_query);
+
+				$sql="insert ignore into $bai_pro3.act_cut_status (doc_no) values ($docket)";
+				mysqli_query($link, $sql) or exit("Sql Error1 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
+				$sql1="update $bai_pro3.act_cut_status set date=\"$input_date\", section=\"$input_section\", shift=\"$input_shift\", fab_received=0, fab_returned=0, damages=$input_damages, shortages=0, remarks=\"$input_remarks\", bundle_loc=\"$bun_loc\" ,leader_name=\"$leader_name\" where doc_no=$docket";
+				mysqli_query($link,$sql1) or exit("Sql Error2  $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 			unset($child_docs);
 			//getting all child dockets fro m3 reporting
