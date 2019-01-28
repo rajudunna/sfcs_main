@@ -100,13 +100,15 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
                         }else{
                             $to_insert_jobs[$key][$ij][$size][] = $qty;
                             $testing_purpose_splitted[$key][$ij][$size][] = $qty;
-                            $qty = 0;
                             $shade -= $qty;
+                            $qty = 0;
                             $shades1[$key] = $shade;
                             if($counter_1 > $QUIT_COUNTER)//FORCE QUIT if loops more than 1000 iterations
                                 exit('Infinte Loop Stuck');
                             unset($input_jobs[$size][$ij]);
                         }
+                        if($shade <= 0)
+                            unset($shades1[$key]);
                     }else{
                         if($qty == 0)
                             unset($input_jobs[$size][$ij]);
@@ -121,10 +123,6 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
         }
     }
 }
-
-
-//var_dump($testing_purpose_splitted);
-
 //inserting to shade splitting table
 $insert_query = "INSERT into $bai_pro3.shade_split(date_time,username,doc_no,schedule,shades,plies) 
                 values('".date('y-m-d H:i:s')."','$username',$doc_no,'$schedule','".implode($ashades,',')."','".implode($shades_plies,",")."')";
