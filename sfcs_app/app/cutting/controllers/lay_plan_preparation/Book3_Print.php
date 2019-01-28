@@ -165,7 +165,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$flag = $sql_row['title_flag'];
 }
 
-    $order_tidss=array();    $original_details = array();
+    $order_tidss=array();    $original_details = array(); $doc_no_child = Array();
     if($ord_joins<>'0')
     {
         if(strlen($delivery)<8)
@@ -179,7 +179,19 @@ while($sql_row=mysqli_fetch_array($sql_result))
             while($rows=mysqli_fetch_array($result))
             {
                 $order_tidss[]=$rows['order_tid'];
-                $original_details[]=$rows['order_col_des'];
+				$select_sql1="select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no='".$doc_id."' and order_tid='".$rows['order_tid']."'";
+				$result1=mysqli_query($link, $select_sql1);
+				if(mysqli_num_rows($result1)>0)
+				{
+					while($rows1=mysqli_fetch_array($result1))
+					{
+						$original_details[]=$rows['order_col_des']."-".$rows1['doc_no'];
+					}
+				}
+				else
+				{	
+					$original_details[]=$rows['order_col_des'];
+				}
             }
         }
         else
@@ -191,7 +203,19 @@ while($sql_row=mysqli_fetch_array($sql_result))
             while($rows=mysqli_fetch_array($result))
             {
                 $order_tidss[]=$rows['order_tid'];
-                $original_details[]=$rows['order_del_no'];
+                $select_sql1="select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no='".$doc_id."' and order_tid='".$rows['order_tid']."'";
+				$result1=mysqli_query($link, $select_sql1);
+				if(mysqli_num_rows($result1)>0)
+				{
+					while($rows1=mysqli_fetch_array($result1))
+					{
+						$original_details[]=$rows['order_del_no']."-".$rows1['doc_no'];
+					}
+				}
+				else
+				{	
+					$original_details[]=$rows['order_del_no'];
+				}
             }
         }   
     }
@@ -2304,7 +2328,7 @@ tags will be replaced.-->
  </tr>
  	<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'>
 		<td height=20 class=xl654118 style='height:10.0pt'></td>
-		<td class=xl694118 colspan="30">Original Details: <?php if (count($original_details) > 0)
+		<td class=xl694118 colspan="30">(Details - Docket): <?php if (count($original_details) > 0)
 						                                        {
 						                                            $org_details =  implode(',', $original_details);
 						                                            echo "$org_details";
