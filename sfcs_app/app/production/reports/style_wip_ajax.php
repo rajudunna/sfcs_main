@@ -109,7 +109,7 @@ if($_GET['some'] == 'bundle_no')
 					$bcd_rej[$row3['operation_id']] = $row3['rejection'];
 					$user = $row3['scanned_user'];
 					$shift = $row3['shift'];
-					$scanned_time = $row3['date_time'];
+					$scanned_time = $row3['scanned_date'];
 					$module = $row3['assigned_module'];
 			    }
 
