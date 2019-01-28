@@ -232,6 +232,13 @@
         {
             $cnt_work = $res_work_center_qry['cnt'];
         }
+        $operation_name_query = "select count(*)as cnt_ops_name from $brandix_bts.tbl_orders_ops_ref where operation_name = '$operation_name'";
+        $operation_name_query_result = mysqli_query($link,$operation_name_query);
+        while($operation_name_query_result1 = mysqli_fetch_array($operation_name_query_result))
+        {
+            $cnt_opsname = $operation_name_query_result1['cnt_ops_name'];
+           
+        }
         $short_key_code_check_qry = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where short_cut_code = '$short_key_code'";
         $res_short_key_code_check_qry = mysqli_query($link,$short_key_code_check_qry);
         while($res_res_res_short_key_code_check_qry = mysqli_fetch_array($res_short_key_code_check_qry))
@@ -245,7 +252,7 @@
             $cnt_moptyp = $m_optype_check_qry_rows['cnt'];
         }
         
-        if($cnt == 0 && $cnt_short == 0 && $cnt_work == 0 && $cnt_moptyp == 0)
+        if($cnt_opsname == 0 && $cnt == 0 && $cnt_short == 0 && $cnt_work == 0 && $cnt_moptyp == 0)
         {
             $qry_insert = "INSERT INTO $brandix_bts.tbl_orders_ops_ref ( operation_name, default_operation,operation_code, type, operation_description,short_cut_code,work_center_id,category,parent_work_center_id,m3_operation_type)VALUES('$operation_name','$default_operation','$operation_code', '$type', '$sw_cod','$short_key_code','$work_center_id','$category','$parent_work_center_id','$m_operation_type')";
             $res_do_num = mysqli_query($link,$qry_insert);
@@ -254,6 +261,11 @@
         else if($cnt != 0)
         {
             $sql_message = 'Operation Code Already in use. Please give other.';
+            echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+        }
+        else if($cnt_opsname != 0)
+        {
+            $sql_message = 'Operation Name Already in use. Please give other.';
             echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
         }
         else if($cnt_work != 0)
@@ -293,6 +305,7 @@
             echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
         }
     }
+    
     $query_select = "select * from $brandix_bts.tbl_orders_ops_ref";
     $res_do_num=mysqli_query($link,$query_select);
     echo "<div class='container'><div class='panel panel-primary'><div class='panel-heading'>Operations List</div><div class='panel-body'>";
