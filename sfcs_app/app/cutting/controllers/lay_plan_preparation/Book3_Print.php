@@ -41,6 +41,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$style=$sql_row['order_style_no']; //Style
 	$color=$sql_row['order_col_des']; //color
+	$ord_joins=$sql_row['order_joins']; // Order joins
 	$division=$sql_row['order_div'];
 	$delivery=$sql_row['order_del_no']; //Schedule
 	$pono=$sql_row['order_po_no']; //po
@@ -164,6 +165,40 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$flag = $sql_row['title_flag'];
 }
 
+    $order_tidss=array();    $original_details = array();
+    if($ord_joins<>'0')
+    {
+        if(strlen($delivery)<8)
+        {
+            // color clubbing
+            $orders_join='J'.substr($color,-1);
+            
+            $select_sql="select order_tid, trim(order_col_des) as order_col_des from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
+            //echo $select_sql."<br>";
+            $result=mysqli_query($link, $select_sql);
+            while($rows=mysqli_fetch_array($result))
+            {
+                $order_tidss[]=$rows['order_tid'];
+                $original_details[]=$rows['order_col_des'];
+            }
+        }
+        else
+        {
+            // schedule clubbing
+            $select_sql="select order_tid, order_del_no from $bai_pro3.bai_orders_db_confirm where order_joins='J".$delivery."'";
+            //echo $select_sql."<br>";
+            $result=mysqli_query($link, $select_sql);
+            while($rows=mysqli_fetch_array($result))
+            {
+                $order_tidss[]=$rows['order_tid'];
+                $original_details[]=$rows['order_del_no'];
+            }
+        }   
+    }
+    else
+    {
+        $order_tidss[]=$order_tid;
+    }
 
 $sql="select * from $bai_pro3.plan_dashboard where doc_no='$doc_id'";
 // echo $sql;
@@ -2248,7 +2283,6 @@ tags will be replaced.-->
   <td class='xl1104118 right'></td>
  </tr>
  
-
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
@@ -2268,15 +2302,40 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- </table>
- 
- <table border=0 cellpadding=0 cellspacing=0 align=left style='border-collapse: collapse;'>
- <?php
-	 $fab_uom = 'Yds';
-	 $temp = 0;
-	 $temp_len1 = 0;
-	 $temp_len = 0;
- ?>
+ 	<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'>
+		<td height=20 class=xl654118 style='height:10.0pt'></td>
+		<td class=xl694118 colspan="30">Original Details: <?php if (count($original_details) > 0)
+						                                        {
+						                                            $org_details =  implode(',', $original_details);
+						                                            echo "$org_details";
+						                                        } 
+						                                    ?></td>
+	</tr>
+ <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
+  <td height=20 class=xl654118 style='height:15.0pt'></td>
+  <td class=xl654118></td>
+  <td class=xl654118></td>
+  <td class=xl654118></td>
+  <td class=xl654118></td>
+  <td class=xl654118></td>
+  <td class=xl654118></td>
+  <td class=xl654118></td>
+  <td class=xl654118></td>
+  <td class=xl654118></td>
+  <td class=xl674118></td>
+  <td class=xl654118></td>
+  <td class=xl654118></td>
+  <td class=xl654118></td>
+  <td class=xl654118></td>
+  <td class=xl654118></td>
+  <td class=xl654118></td>
+ </tr>
+  	 <?php
+		 $fab_uom = 'Yds';
+		 $temp = 0;
+		 $temp_len1 = 0;
+		 $temp_len = 0;
+	 ?>
 	<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'>
 	  <td height=20 class=xl654118 style='height:10.0pt'></td>
 	  <?php
@@ -2356,7 +2415,7 @@ tags will be replaced.-->
 		<td class=xl654118></td>
 	</tr>
  </table>
-
+ 
  <table border=0 cellpadding=0 cellspacing=0 align='left' style='border-collapse: collapse;height:10.00pt'>
  <tr>
   <td rowspan=2 class=xl764118 style='border-bottom:1px solid black'>Rpt No</td>
