@@ -101,6 +101,9 @@ function validateQty(event)
                                         <b>Operation code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b><input type="number" onkeypress="return validateQty(event);" class="form-control" id="opc" name="opc" value= "<?php echo $row[0]['operation_code']?>" required>
                                     </div>
                                     <div class="col-sm-3">
+                                        <b>M3 Operation Type<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="text" class="form-control" id="m_optype" name="m_optype" pattern="[a-zA-Z0-9._\s]+" title="This field can contain only alpha numeric characters.." required>
+                                    </div>
+                                    <div class="col-sm-3">
                                          <div class="dropdown">
                                             <b>Type</b>
                                             <select class="form-control" id="sel" name="sel" required>
@@ -247,7 +250,10 @@ function validateQty(event)
         if(isset($_GET["parent_work_center_id"])){
             $parent_work_center_id = $_GET["parent_work_center_id"];
         }
-        if($operation_name!="" && $operation_code!="" && $short_cut_code != ""){
+        if(isset($_POST["m_optype"])){
+            $m_operation_type = trim($_POST["m_optype"],' ');
+        }
+        if($operation_name!="" && $operation_code!="" && $short_key_code != "" && $m_operation_type != ""){
             
             $checking_qry = "select count(*)as cnt from $brandix_bts.tbl_orders_ops_ref where operation_code = $operation_code and id <> $id";
             //echo $checking_qry;
@@ -257,16 +263,34 @@ function validateQty(event)
             {
                 $cnt = $res_res_checking_qry['cnt'];
             }
-            // echo $cnt;
+            $work_center = "select count(*)as cnt from $brandix_bts.tbl_orders_ops_ref where work_center_id = $work_center_id";
+            $work_center_qry = mysqli_query($link,$work_center);
+            while($res_work_center_qry = mysqli_fetch_array($work_center_qry))
+            {
+                $cnt_work = $res_work_center_qry['cnt'];
+            }
+            $operation_name_query = "select count(*)as cnt_ops_name from $brandix_bts.tbl_orders_ops_ref where operation_name = '$operation_name'";
+            $operation_name_query_result = mysqli_query($link,$operation_name_query);
+            while($operation_name_query_result1 = mysqli_fetch_array($operation_name_query_result))
+            {
+                $cnt_opsname = $operation_name_query_result1['cnt_ops_name'];
+
+            }
             $short_key_code_check_qry = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where short_cut_code = '$short_cut_code' and id <> $id AND $short_cut_code <> 0";
             $res_short_key_code_check_qry = mysqli_query($link,$short_key_code_check_qry);
             while($res_res_res_short_key_code_check_qry = mysqli_fetch_array($res_short_key_code_check_qry))
             {
                 $cnt_short = $res_res_res_short_key_code_check_qry['cnt'];
             }
-            if($cnt == 0 && $cnt_short == 0)
+            $m_optype_check_qry = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where m3_operation_type = '$m_operation_type'";
+            $m_optype_check_qry_result = mysqli_query($link,$m_optype_check_qry);
+            while($m_optype_check_qry_rows = mysqli_fetch_array($m_optype_check_qry_result))
             {
-                $qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation',work_center_id='$work_center_id',category='$category',parent_work_center_id='$parent_work_center_id' where id='$id'";
+                $cnt_moptyp = $m_optype_check_qry_rows['cnt'];
+            }
+            if($cnt_opsname == 0 && $cnt == 0 && $cnt_short == 0 && $cnt_work == 0 && $cnt_moptyp == 0)
+            {
+                $qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation',work_center_id='$work_center_id',category='$category',parent_work_center_id='$parent_work_center_id',m3_operation_type='$m_operation_type' where id='$id'";
                 // echo $qry_insert1;
                 // die();
                 $res_do_num1 = mysqli_query($link,$qry_insert1);
@@ -289,19 +313,47 @@ function validateQty(event)
             {
                 $sql_message = 'Operation Code Already in use. Please give other.';
                 echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
-                die();
+            }
+            else if($cnt_opsname != 0)
+            {
+                $sql_message = 'Operation Name Already in use. Please give other.';
+                echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+            }
+            else if($cnt_work != 0)
+            {
+                
+                $sql_message = 'Work Center Already in use. Please give other.';
+                echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
             }
             else if($cnt_short != 0)
             {
-                $sql_message = 'Short Key Code Already in use. Please give other.';
+                $sql_message = 'Short Cut Key Code Already in use. Please give other.';
                 echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
-                die();
+            }
+            else if($cnt_moptyp != 0)
+            {
+                $sql_message = 'M3 Operation Type Already in use. Please give other.';
+                echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
             }
             else if($cnt_short != 0 && $cnt != 0)
             {
                 $sql_message = 'Short Key Code and Operation Code Already in use. Please give other.';
                 echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
-                die();
+            }
+            else if($cnt_work != 0 && $cnt != 0)
+            {
+                $sql_message = 'Work Center and Operation Code Already in use. Please give other.';
+                echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+            }
+            else if($cnt_work != 0 && $cnt_moptyp != 0)
+            {
+                $sql_message = 'Work Center and M3 Operation Type Already in use. Please give other.';
+                echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+            }
+            else if($cnt_moptyp != 0 && $cnt_short != 0)
+            {
+                $sql_message = 'M3 Operation Type and Short Key Code Already in use. Please give other.';
+                echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
             }
     
         }
