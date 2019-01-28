@@ -32,6 +32,11 @@ if(isset($_GET['fetch'])){
                     $response_data['style']    = $style;
                     $response_data['schedule'] = $schedule;
                     $response_data['color']    = $color;
+                    //checking if the doc in slaready splitted or not
+                    $split_check_query = "SELECT id from $bai_pro3.shade_split where doc_no = $doc_no";
+                    if(mysqli_num_rows(mysqli_query($link,$split_check_query)) > 0){
+                        $response_data['already_split'] = 1;
+                    }
                 }          
             }
         }else{
