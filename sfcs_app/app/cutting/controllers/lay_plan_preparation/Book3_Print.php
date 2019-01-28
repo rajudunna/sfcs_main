@@ -2326,15 +2326,21 @@ tags will be replaced.-->
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- 	<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'>
+ 	<?php if (count($original_details) > 0)
+	{
+		?>
+	<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'>
 		<td height=20 class=xl654118 style='height:10.0pt'></td>
-		<td class=xl694118 colspan="30">(Details - Docket): <?php if (count($original_details) > 0)
+		<td class=xl694118 colspan="30">(Details - Docket): <?php
 						                                        {
 						                                            $org_details =  implode(',', $original_details);
 						                                            echo "$org_details";
 						                                        } 
-						                                    ?></td>
+						                                   ?> </td>
 	</tr>
+	<?php
+	}
+	?>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>

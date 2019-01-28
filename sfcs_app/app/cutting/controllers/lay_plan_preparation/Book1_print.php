@@ -1742,19 +1742,22 @@ tags will be replaced.-->
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
  </tr>
-
+	<?php 
+	if (count($original_details) > 0)
+	{
+	?>
     <tr class=xl6513019 height=30 style='mso-height-source:userset;height:30pt'> 
         <td height=20 class=xl6513019 style='height:10.0pt'></td>  
         <td class=xl6713019>Original Details :</td> 
-        <td colspan=30 class=xl9713019><?php 
-                                        if (count($original_details) > 0)
-                                        {
+        <td colspan=30 class=xl9713019><?php
                                             $org_details =  implode(',', $original_details);
                                             echo "$org_details";
-                                        }
+                                     
                                     ?></td>
     </tr>  
-
+	<?php 
+	}
+	?>
 <tr height=10></tr>
 <tr class=xl6513019 height=11 style='mso-height-source:userset;height:8.25pt'> 
   <td height=11 class=xl6513019 style='height:8.25pt'></td> 
