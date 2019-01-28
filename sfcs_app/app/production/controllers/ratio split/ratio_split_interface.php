@@ -17,8 +17,8 @@
             <div class='row' id='details_block' style='display : none'>
             <hr/>
                 <div class='col-sm-12' style='font-size : 12px'>
-                    <span id='already_split_text' style='color:#00ff00;font-size : 14px'>
-                        Shades were already split for this Docket</span>
+                    <!-- <span id='already_split_text' style='color:#00ff00;font-size : 14px'>
+                        Shades were already split for this Docket</span> -->
                     <table class='table table-bordered'> 
                         <tr class='info'><th>Style</th><th>Schedule</th><th>Color</th>
                             <th>Doc No</th><th>Actual Plies</th>
