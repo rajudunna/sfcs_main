@@ -902,7 +902,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       }
 
       if (count($original_details) > 0) {
-          $tool_tip = 'str_pad("Original Details:".implode(\',\', $original_details),80)."\n"';
+          $tool_tip = str_pad("Original Details:".trim(implode(",",$original_details)),80)."\n";
       } else {
           $tool_tip = '';
       }
