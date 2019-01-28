@@ -1062,7 +1062,7 @@ else if($concurrent_flag == 0)
 					$pre_recieved_qty = $row['recieved_qty'];
 				}
 
-				$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$ops_dep;
+				$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d h:i:s')."' where bundle_number =$b_tid[$key] and operation_id = ".$ops_dep;
 				//echo $query_post_dep.'</br>';
 				$result_query = $link->query($query_post_dep) or exit('query error in updating');
 	
@@ -1117,8 +1117,8 @@ else if($concurrent_flag == 0)
 					$final_rej_qty = $b_old_rej_qty_new + $b_rej_qty[$key];
 					$left_over_qty = $b_in_job_qty[$key] - $final_rep_qty - $final_rej_qty;
 					if($schedule_count){
-					$query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `rejected_qty`='". $final_rej_qty."', `left_over`= '".$left_over_qty."' , `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
-					// echo $query.'</br>';
+					$query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `rejected_qty`='". $final_rej_qty."', `left_over`= '".$left_over_qty."' , `scanned_date`='". date('Y-m-d h:i:s')."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
+					
 					$result_query = $link->query($query) or exit('query error in updating');
 					}
 					//m3 operations............. 
@@ -1135,7 +1135,7 @@ else if($concurrent_flag == 0)
 					}	
 					if($post_ops_code != null)
 					{
-						$query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$post_ops_code;
+						$query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d h:i:s')."' where bundle_number =$b_tid[$key] and operation_id = ".$post_ops_code;
 						$result_query = $link->query($query_post) or exit('query error in updating');
 					}
 					if($ops_dep)
@@ -1148,7 +1148,7 @@ else if($concurrent_flag == 0)
 							$pre_recieved_qty = $row['recieved_qty'];
 						}
 
-						$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$ops_dep;
+						$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d h:i:s')."' where bundle_number =$b_tid[$key] and operation_id = ".$ops_dep;
 						// $query_post_dep.'</br>';
 						$result_query = $link->query($query_post_dep) or exit('query error in updating');
 				
