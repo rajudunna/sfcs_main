@@ -20,12 +20,8 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 ?>
 <html lang="en">
 <head>
-  <title>Hourly Production Report</title>
-  <!-- <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="120" /> -->
-  
-  </head>
+	<title>Hourly Production Report</title>  
+</head>
 <body>
 
 <div class="container">
@@ -46,21 +42,24 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 						$ntime=date('H');
 					}
 
-					$plant_details_query="SELECT * FROM $bai_pro2.tbl_mini_plant_master;";
+					$plant_details_query="SELECT GROUP_CONCAT(module_name) as plant_modules, mini_plant_name as plant_name FROM bai_pro3.`module_master` LEFT JOIN bai_pro3.`mini_plant_master` ON module_master.`mini_plant_id` = mini_plant_master.`id` GROUP BY mini_plant_id";
+					$plant_details_result=mysqli_query($link,$plant_details_query);
+					while ($row = mysqli_fetch_array($plant_details_result))
+					{
+						if ($row['plant_name'] != null || $row['plant_name'] != '')
+						{
+							$plant_name[] = $row['plant_name'];
+							$plant_modules[] = explode(',', $row['plant_modules']);
+						}						
+					}
+
+					$plant_details_query="SELECT GROUP_CONCAT(module_name) AS plant_modules, 'Factory' AS plant_name FROM bai_pro3.`module_master`;";
 					$plant_details_result=mysqli_query($link,$plant_details_query);
 					while ($row = mysqli_fetch_array($plant_details_result))
 					{
 						$plant_name[] = $row['plant_name'];
 						$plant_modules[] = explode(',', $row['plant_modules']);
 					}
-
-					// for ($i=0; $i < sizeof($plant_name); $i++)
-					// { 
-					// 	echo $plant_name[$i].' == ';
-					// 	var_dump($plant_modules[$i]);
-					// 	echo '<br><br>';
-					// }
-					// die();
 				?>
 <div class="panel panel-primary">
 	<div class="panel-heading">Hourly Production Report</div>
@@ -130,7 +129,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 					<th>Act Eff</th>
 					<th style="display:none;">Act Pcs</th>
 					<th>Balance pcs against Forecast</th>
-					<th>Hit rate</th>
+					<th>Forecast Hit rate</th>
 					<th style="display:none;">Request Pcs/Hr</th>
 				</tr>
 			</thead>
@@ -170,6 +169,14 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				$sql5="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
 				$res5=mysqli_query($link,$sql5);
 
+				$get_nop_query="SELECT fix_nop FROM $bai_pro.pro_plan WHERE date='$frdate' and mod_no='$team'";
+				// echo $get_nop_query;
+				$nop_result=mysqli_query($link,$get_nop_query);
+				while($result=mysqli_fetch_array($nop_result))
+				{
+					$nop = $result['fix_nop'].'<br>';
+				}
+				
 				// $sql6="SELECT out_time,qty,status FROM $bai_pro2.hout where out_date='$frdate' AND team='$team'";
 				// $res6=mysqli_query($link,$sql6);
 				
@@ -188,8 +195,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				{
 					$sumcty="";
 				}
-					
-				$nop='24';
+						
 				?>
 
 			  
@@ -261,7 +267,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 						?>
 					</center></td>
 					<td style="background-color:#e1bee7;"><center>
-						<?php  
+						<?php
 							$pcsphr=$forecastqty/$hours;
 							echo round($pcsphr);
 						?>
@@ -269,7 +275,6 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 					<?php
 						for ($i=0; $i < sizeof($time_display); $i++)
 						{
-							// $row=echo_title("$bai_pro2.hout","SUM(qty)","team='$team' AND (TIME(out_time) BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."')) and out_date",$frdate,$link);
 							$row=echo_title("$bai_pro2.hout","SUM(qty)","out_date='$frdate' AND rep_start_time = TIME('".$start_time[$i]."') AND rep_end_time = TIME('".$end_time[$i]."') and team",$team,$link);
 
 							if ($row == '' || $row == NULL )
@@ -309,7 +314,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 									$reasons = array();
 									$break_resons = array(20,21,22);
 
-									$sql6_2x="SELECT distinct(reason_id) FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+									$sql6_2x="SELECT distinct(reason_id) FROM $bai_pro2.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
 									$res6_12x=mysqli_query($link,$sql6_2x);
 									$k = 0;
 									while ($rows = mysqli_fetch_array($res6_12x))
@@ -334,7 +339,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 										$color = '#DD3636';
 									}
 
-									$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+									$sql6_2="SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
 									// echo $sql6_2.'<br><br>';
 									$res6_12=mysqli_query($link,$sql6_2);
 									if (mysqli_num_rows($res6_12) > 0)
@@ -359,7 +364,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 									$reasons = array();
 									$break_resons = array(20,21,22);
 
-									$sql6_2="SELECT distinct(reason_id) FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+									$sql6_2="SELECT distinct(reason_id) FROM $bai_pro2.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
 									$res6_12=mysqli_query($link,$sql6_2);
 									$k = 0;
 									while ($rows = mysqli_fetch_array($res6_12))
@@ -384,7 +389,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 										$color = '#DD3636';
 									}
 									
-									$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+									$sql6_2="SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
 									// echo $sql6_2.'<br><br>';
 									$res6_12=mysqli_query($link,$sql6_2);
 									if (mysqli_num_rows($res6_12) > 0)

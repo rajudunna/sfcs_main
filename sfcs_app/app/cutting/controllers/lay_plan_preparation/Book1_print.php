@@ -2012,7 +2012,7 @@ tags will be replaced.-->
                             for($i=0;$i<sizeof($s_tit);$i++) 
                             { 
                             //echo $i."-".$i."--".$c_s[$i]."<br>"; 
-                            echo "<td class=xl6813019 style='text-align:left'>".$o_s[$i]."</td>"; 
+                            echo "<td class=xl6813019 style='text-align:center'>".$o_s[$i]."</td>"; 
                             } 
                             echo "<td class=xl7513019> $order_total</td>"; 
 
@@ -2092,7 +2092,7 @@ tags will be replaced.-->
                                                 echo "<td class=xl7213019 width=70 style='width:53pt'>Extra Ship</td>"; 
                                                 for($i=$temp_len1;$i<$temp_len;$i++)
                                                 { 
-                                                    echo "<td class=xl6813019>".$o_s[$i]."</td>"; 
+                                                    echo "<td class=xl6813019 style='text-align:center'>".$o_s[$i]."</td>"; 
                                                 } 
                                             } 
                                             else 
@@ -2176,7 +2176,7 @@ tags will be replaced.-->
                                             echo "<td class=xl7213019 width=70 style='width:53pt'>Extra Ship</td>"; 
                                             for($j=$temp_len1;$j<$temp_len-1;$j++)
                                             { 
-                                                echo "<td class=xl6813019>".$o_s[$j]."</td>"; 
+                                                echo "<td class=xl6813019 style='text-align:center'>".$o_s[$j]."</td>"; 
                                             } 
                                         } 
                                         else 
@@ -3085,7 +3085,7 @@ tags will be replaced.-->
                                 $total+=$array_val; 
                             } 
                         echo "<td class=xl8713019>0</td>"; 
-                        echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>0</div><div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;border-top: 1px solid black;margin-top:10pt'>$array_val</div></td>";
+                        echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>0</div><div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;border-top: 1px solid black;margin-top:10pt'>$total</div></td>";
                         // echo "<td class=xl8713019 style='text-align: center;'>0<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>$total</div></td>"; 
 
                         echo "<td class=xl8713019></td>"; 
