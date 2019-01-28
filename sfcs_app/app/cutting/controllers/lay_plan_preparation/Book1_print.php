@@ -28,7 +28,7 @@
     {
         $style=$sql_row['order_style_no']; //Style
         $color=$sql_row['order_col_des']; //color
-        $ord_joins=$sql_row['order_joins']; //color
+        $ord_joins=$sql_row['order_joins']; // Order joins
         $division=$sql_row['order_div'];
         $delivery=$sql_row['order_del_no']; //Schedule
         $pono=$sql_row['order_po_no']; //po
@@ -98,10 +98,42 @@
                     $s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
                 }
             }
-        }
-?> 
+    }
 
-<?php 
+    $order_tidss=array();    $original_details = array();
+    if($ord_joins<>'0')
+    {
+        if(strlen($delivery)<8)
+        {
+            // color clubbing
+            $orders_join='J'.substr($color,-1);
+            
+            $select_sql="select order_tid, trim(order_col_des) as order_col_des from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
+            //echo $select_sql."<br>";
+            $result=mysqli_query($link, $select_sql);
+            while($rows=mysqli_fetch_array($result))
+            {
+                $order_tidss[]=$rows['order_tid'];
+                $original_details[]=$rows['order_col_des'];
+            }
+        }
+        else
+        {
+            // schedule clubbing
+            $select_sql="select order_tid, order_del_no from $bai_pro3.bai_orders_db_confirm where order_joins='J".$delivery."'";
+            //echo $select_sql."<br>";
+            $result=mysqli_query($link, $select_sql);
+            while($rows=mysqli_fetch_array($result))
+            {
+                $order_tidss[]=$rows['order_tid'];
+                $original_details[]=$rows['order_del_no'];
+            }
+        }   
+    }
+    else
+    {
+        $order_tidss[]=$order_tid;
+    }
    
     $sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -115,12 +147,12 @@
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($sql_row=mysqli_fetch_array($sql_result)) 
     { 
-    $emb_a=$sql_row['order_embl_a']; 
-    $emb_b=$sql_row['order_embl_b']; 
-    $emb_c=$sql_row['order_embl_c']; 
-    $emb_d=$sql_row['order_embl_d']; 
-    $emb_e=$sql_row['order_embl_e']; 
-    $emb_f=$sql_row['order_embl_f']; 
+        $emb_a=$sql_row['order_embl_a']; 
+        $emb_b=$sql_row['order_embl_b']; 
+        $emb_c=$sql_row['order_embl_c']; 
+        $emb_d=$sql_row['order_embl_d']; 
+        $emb_e=$sql_row['order_embl_e']; 
+        $emb_f=$sql_row['order_embl_f']; 
     } 
 
     // embellishment end 
@@ -1709,7 +1741,23 @@ tags will be replaced.-->
   <td class=xl6713019></td> 
   <td class=xl6513019></td> 
   <td class=xl6513019></td> 
- </tr> 
+ </tr>
+	<?php 
+	if (count($original_details) > 0)
+	{
+	?>
+    <tr class=xl6513019 height=30 style='mso-height-source:userset;height:30pt'> 
+        <td height=20 class=xl6513019 style='height:10.0pt'></td>  
+        <td class=xl6713019>Original Details :</td> 
+        <td colspan=30 class=xl9713019><?php
+                                            $org_details =  implode(',', $original_details);
+                                            echo "$org_details";
+                                     
+                                    ?></td>
+    </tr>  
+	<?php 
+	}
+	?>
 <tr height=10></tr>
 <tr class=xl6513019 height=11 style='mso-height-source:userset;height:8.25pt'> 
   <td height=11 class=xl6513019 style='height:8.25pt'></td> 
@@ -1831,34 +1879,7 @@ tags will be replaced.-->
                 </tr> 
 
                 <?php 
-                    $order_tidss=array();
-					if($ord_joins<>'0')
-					{
-						if(strlen($delivery)<8)
-						{
-							$orders_join='J'.substr($color,-1);
-							
-							$select_sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
-							$result=mysqli_query($link, $select_sql);
-							while($rows=mysqli_fetch_array($result))
-							{
-								$order_tidss[]=$rows['order_tid'];
-							}
-						}
-						else
-						{
-							$select_sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='J".$delivery."'";
-							$result=mysqli_query($link, $select_sql);
-							while($rows=mysqli_fetch_array($result))
-							{
-								$order_tidss[]=$rows['order_tid'];
-							}	
-						}	
-					}
-					else
-					{
-						$order_tidss[]=$order_tid;
-					}
+                    
 					$check_sample=0;
 					for($ii=0;$ii<sizeof($order_tidss);$ii++)
 					{
