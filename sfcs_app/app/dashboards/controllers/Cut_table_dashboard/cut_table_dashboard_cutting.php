@@ -759,7 +759,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
     }
   
-    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).")  order by field(doc_no,".implode(",",$doc_no_ref)."),log_time asc";
+    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ ct
+      left join $bai_pro3.plandoc_stat_log psl ON ct.doc_no = psl.doc_no
+      where psl.org_doc_no <2 and ct.doc_no in (".implode(",",$doc_no_ref).")  order by field(ct.doc_no,".implode(",",$doc_no_ref)."),ct.log_time asc";
       if($_GET["view_div"] == 'M')
       {
         $_GET["view_div"] = "M&S";
@@ -768,7 +770,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     
        if($_GET["view_div"]=="ALL" or $_GET["view_div"]=="")
       {
-        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref)."),log_time asc";
+        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ ct
+        left join $bai_pro3.plandoc_stat_log psl ON ct.doc_no = psl.doc_no
+        where psl.org_doc_no <2 and ct.doc_no in (".implode(",",$doc_no_ref).") order by field(ct.doc_no,".implode(",",$doc_no_ref)."),ct.log_time asc";
       }
       else
       {
@@ -783,7 +787,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $buyer_identity = $row_res['buyer_name'];
         }
           
-        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref)."),log_time asc"; 
+        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ ct
+            left join $bai_pro3.plandoc_stat_log psl ON ct.doc_no = psl.doc_no
+            where psl.org_doc_no <2 and order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and ct.doc_no in (".implode(",",$doc_no_ref).") order by field(ct.doc_no,".implode(",",$doc_no_ref)."),ct.log_time asc"; 
       }
 
       
@@ -812,9 +818,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $p_plies=$sql_row1['p_plies'];
       $a_plies=$sql_row1['a_plies'];
       $fabric_status=$sql_row1['fabric_status_new']; //NEW due to plan dashboard clearing regularly and to stop issuing issued fabric.
-  // start style wise display by dharani 10-26-2013 
+        // start style wise display by dharani 10-26-2013 
 
-
+        
       $cut_master="select operation_code from $brandix_bts.tbl_orders_ops_ref where operation_name ='cutting'";
       $sql_result3=mysqli_query($link,$cut_master) or exit("Sql Error_cut_master".mysqli_error());
       while($row=mysqli_fetch_array($sql_result3))
@@ -893,6 +899,50 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         $log_time=$sql_row1['log_time'];
         $emb_stat=$sql_row1['emb_stat'];
         
+        $get_order_joins="select order_joins from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
+        $sql_result=mysqli_query($link, $get_order_joins) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($sql_row1236=mysqli_fetch_array($sql_result))
+        {
+            $ord_joins = $sql_row1236['order_joins'];
+        }
+
+        $original_details = array();
+        if($ord_joins<>'0')
+        {
+            if(strlen($schedule)<8)
+            {
+                // color clubbing
+                $orders_join='J'.substr($color,-1);
+                
+                $select_sql="select trim(order_col_des) as order_col_des from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
+                //echo $select_sql."<br>";
+                $result=mysqli_query($link, $select_sql);
+                while($rows=mysqli_fetch_array($result))
+                {
+                    $original_details[]=$rows['order_col_des'];
+                }
+            }
+            else
+            {
+                // schedule clubbing
+                $select_sql="select order_del_no from $bai_pro3.bai_orders_db_confirm where order_joins='J".$schedule."'";
+                //echo $select_sql."<br>";
+                $result=mysqli_query($link, $select_sql);
+                while($rows=mysqli_fetch_array($result))
+                {
+                    $original_details[]=$rows['order_del_no'];
+                }
+            }   
+        }
+
+        if (count($original_details) > 0) {
+			$tool_tip = str_pad("Original Details:".trim(implode(",",$original_details)),80)."\n";
+        } else {
+            $tool_tip = '';
+        }
+        
+
+
         //Exception for M&S WIP - 7000
         
         if(substr($style,0,1)=="M")
@@ -1126,7 +1176,17 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $rem="No status";
     }
             
-      $title=str_pad("Style:".trim($style),80)."\n".str_pad("CO:".trim($co_no),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),50)."\n".str_pad("Cut Job_No:".implode(", ",$club_c_code),80)."\n".str_pad("Docket No:".implode(", ",$club_docs),80)."\n".str_pad("Total_Qty:".$total_qty,80)."\n".str_pad("Plan_Time:".$log_time,50)."\n".str_pad("Lay_Req_Time:".$lay_time[array_search($doc_no,$doc_no_ref)],80)."\n".str_pad("Fab_Loc.:".$fabric_location."Bundle_Loc.:".$bundle_location,80);
+      $title=str_pad("Style:".trim($style),80)."\n".
+            str_pad("CO:".trim($co_no),80)."\n".
+            str_pad("Schedule:".$schedule,80)."\n".
+            str_pad("Color:".trim(implode(",",$colors_db)),50)."\n".
+            str_pad("Job_No:".implode(", ",$club_c_code),80)."\n".
+            $tool_tip.
+            str_pad("Docket No:".implode(", ",$club_docs),80)."\n".
+            str_pad("Total_Qty:".$total_qty,80)."\n".
+            str_pad("Plan_Time:".$log_time,50)."\n".
+            str_pad("Lay_Req_Time:".$lay_time[array_search($doc_no,$doc_no_ref)],80)."\n".
+            str_pad("Fab_Loc.:".$fabric_location."Bundle_Loc.:".$bundle_location,80);
       
       
       $clr=trim(implode(',',$colors_db),50);

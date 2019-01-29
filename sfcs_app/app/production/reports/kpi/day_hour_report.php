@@ -78,7 +78,7 @@
 					$selected_date = $_POST['selected_date'];
 					$selected_hour = $_POST['selected_hour'];
 					$selected_section = $_POST['selected_section'];
-
+					$temp_plan_sah = 0;
 					if ($selected_section == 'all')
 					{
 						$sec_add_variable_sec_master = "";
@@ -89,31 +89,40 @@
 					}
 
 					$time_display_sah = array();	$plan_sah = array();	$act_sah = array();
+
+					$plan_sah_qry="SELECT round(SUM(plan_sah)/".$tot_plant_working_hrs.") as plan_sah FROM $bai_pro.pro_plan WHERE DATE='$selected_date'";
+					// echo $plan_sah_qry;
+					$plan_sah_result=mysqli_query($link,$plan_sah_qry);
+					while ($plan_row = mysqli_fetch_array($plan_sah_result))
+					{
+						if ($plan_row['plan_sah'] > 0) {
+							$temp_plan_sah = $plan_row['plan_sah'];
+						} else {
+							$temp_plan_sah = 0;
+						}
+					}
+					
 					$plant_timings_query_sah="SELECT * FROM $bai_pro3.tbl_plant_timings";
 					// echo $plant_timings_query_sah;
 					$plant_timings_result=mysqli_query($link,$plant_timings_query_sah);
 					while ($timing = mysqli_fetch_array($plant_timings_result))
 					{
 						$time_display_sah[] = $timing['time_display'].' '.$timing['day_part'];
-						$plan_sah_qry="SELECT round(SUM(plan_sah)/SUM(act_hours)) as plan_sah FROM $bai_pro.pro_plan WHERE DATE='$selected_date'";
-						// echo $plan_sah_qry;
-						$plan_sah_result=mysqli_query($link,$plan_sah_qry);
-						while ($plan_row = mysqli_fetch_array($plan_sah_result))
-						{
-							$plan_sah[] = $plan_row['plan_sah'];
-						}
+						$plan_sah[] = $temp_plan_sah;
 
 						$act_sah_qry="SELECT SUM((bac_Qty*smv)/60) AS SAH FROM $bai_pro.bai_log WHERE bac_date='$selected_date' and TIME(bac_lastup) BETWEEN '".$timing['start_time']."' AND '".$timing['end_time']."'";
 						// echo $act_sah_qry.';<br>';
 						$act_sah_result=mysqli_query($link,$act_sah_qry);
 						while ($act_row = mysqli_fetch_array($act_sah_result))
 						{
-							$act_sah[] = $act_row['SAH'];
+							if ($act_row['SAH'] > 0) {
+								$act_sah[] = $act_row['SAH'];
+							} else {
+								$act_sah[] = 0;
+							}
 						}
 					}
 					$x_axis_display="'".implode("','",$time_display_sah)."'";
-
-					
 					$y_axis_plan_display="".implode(",",$plan_sah)."";
 					$y_axis_act_display="".implode(",",$act_sah)."";
 
@@ -259,8 +268,11 @@
 											               type: 'column'
 											            };
 											            var title = {
-											               text: '".$time_display."'
+											               text: 'Acheivement VS Section'
 											            };
+											            var subtitle = {
+														   text: '".$time_display."'
+														};
 											            var xAxis = {
 											               categories: [".$buyer_name_ref_implode."],
 											               title: {
@@ -300,6 +312,7 @@
 											            var json = {};   
 											            json.chart = chart; 
 											            json.title = title;
+											            json.subtitle = subtitle;
 											            json.tooltip = tooltip;
 											            json.xAxis = xAxis;
 											            json.yAxis = yAxis;  
@@ -421,14 +434,17 @@
 
 							<div class="col-md-12">
 								<div class="panel panel-info">
-									<div class="panel-heading text-center">Hourly Plan Vs Actual SAH for '.$selected_date.'</div>
+									<div class="panel-heading text-center">Hourly SAH Graph for '.$selected_date.'</div>
 											<div class="panel-body">
 												<div id = "sah_container" style = "height: 400px; width:auto;"></div>';
 												echo"<script language = \"JavaScript\">
 												         $(document).ready(function() {
 												            var title = {
-												               text: '".$selected_date."'   
+												                text: 'Hour VS SAH'
 												            };
+												            var subtitle = {
+												            	text: '".$selected_date."'
+															};
 												            var xAxis = {
 												               categories: [".$x_axis_display."],
 												               title: {
@@ -470,6 +486,7 @@
 
 												            var json = {};
 												            json.title = title;
+												            json.subtitle = subtitle;
 												            json.xAxis = xAxis;
 												            json.yAxis = yAxis;
 												            json.tooltip = tooltip;

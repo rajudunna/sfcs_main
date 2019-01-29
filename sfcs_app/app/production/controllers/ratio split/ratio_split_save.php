@@ -33,6 +33,7 @@ $tids   = [];
 $ratios = [];
 $sizes  = [];
 $inserted_tids = [];
+$jobs = [];
 //Concurrent Verification
 $bcd_verify = "SELECT * from $brandix_bts.bundle_creation_data where docket_number = '$doc_no' 
             and operation_id IN ($SEWIN,$SEWOUT)";
@@ -41,7 +42,7 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
     echo json_encode($response_data);
     exit();
 }else{
-    $jobs_query  = "SELECT order_style_no,order_col_des,input_job_no,input_job_no_random,carton_act_qty,packing_mode,
+    $jobs_query  = "SELECT pac_seq_no,order_style_no,order_col_des,input_job_no,input_job_no_random,carton_act_qty,packing_mode,
                     size_code,old_size,sref_id,tid,destination,type_of_sewing 
                     from $bai_pro3.packing_summary_input where doc_no = $doc_no";
     $jobs_result = mysqli_query($link,$jobs_query) or exit('Error');
@@ -50,6 +51,8 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
         $color = $row['order_col_des'];
         $ij = $row['input_job_no_random'];
         $size = $row['old_size'];
+        $jobs[] = $ij;
+        $pac_seq[$ij] = $row['pac_seq_no'];
         $input_jobs[$size][$ij] += $row['carton_act_qty'];
         $type_of_sewing[$ij] = $row['type_of_sewing']; // for figuring out the excess job
         // if($row['type_of_sewing'] == '1')
@@ -100,13 +103,15 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
                         }else{
                             $to_insert_jobs[$key][$ij][$size][] = $qty;
                             $testing_purpose_splitted[$key][$ij][$size][] = $qty;
-                            $qty = 0;
                             $shade -= $qty;
+                            $qty = 0;
                             $shades1[$key] = $shade;
                             if($counter_1 > $QUIT_COUNTER)//FORCE QUIT if loops more than 1000 iterations
                                 exit('Infinte Loop Stuck');
                             unset($input_jobs[$size][$ij]);
                         }
+                        if($shade <= 0)
+                            unset($shades1[$key]);
                     }else{
                         if($qty == 0)
                             unset($input_jobs[$size][$ij]);
@@ -121,10 +126,6 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
         }
     }
 }
-
-
-//var_dump($testing_purpose_splitted);
-
 //inserting to shade splitting table
 $insert_query = "INSERT into $bai_pro3.shade_split(date_time,username,doc_no,schedule,shades,plies) 
                 values('".date('y-m-d H:i:s')."','$username',$doc_no,'$schedule','".implode($ashades,',')."','".implode($shades_plies,",")."')";
@@ -152,9 +153,10 @@ foreach($to_insert_jobs as $shade => $ij){
         foreach($size_qty as $size => $qtys){
             foreach($qtys as $qty){
                 $type_of_sew = $type_of_sewing[$ijob];    
-                $insert_query = "INSERT into $bai_pro3.pac_stat_log_input_job (doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,type_of_sewing,sref_id,shade_group) 
+                $seq_no = $pac_seq[$ijob] != '' ? $pac_seq[$ijob] : 0;
+                $insert_query = "INSERT into $bai_pro3.pac_stat_log_input_job (doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,type_of_sewing,sref_id,shade_group) 
                 values 
-                ($doc_no,'$size_map[$size]',$qty,'$job_map[$ijob]','$ijob','$destination','$packing_mode','$size','N',$type_of_sew,$sref_id,'$shade')";
+                ($doc_no,'$size_map[$size]',$qty,'$job_map[$ijob]','$ijob','$destination','$packing_mode','$size','N',$seq_no,$type_of_sew,$sref_id,'$shade')";
                 mysqli_query($link,$insert_query) or exit("Problem while inserting new jobs job - $ijob - $size_map[$size] - $size - $qty - $type_of_sew");
                 $inserted_tids[] = mysqli_insert_id($link);
                 //echo "$ijob - $size_map[$size] - $size - $qty - $type_of_sew <br/>";
@@ -200,6 +202,24 @@ while($row = mysqli_fetch_array($sewing_op_codes_result))
 {
     $op_codes_style[] = $row['op_code'];
 }
+
+$jobs_array = array_unique($jobs);
+	foreach($jobs_array as $job){
+		$query = "select group_concat(tid order by tid DESC) as tid,input_job_no_random as ij from $bai_pro3.pac_stat_log_input_job where input_job_no_random = '$job'
+          group by input_job_no_random ";        
+		$result = mysqli_query($link,$query);
+		while($row = mysqli_fetch_array($result)){
+			$tids = $row['tid'];
+			$tid  = explode(',',$tids);
+			$barcode_seq = sizeof($tid);
+			foreach($tid as $id){
+				$update_query = "Update $bai_pro3.pac_stat_log_input_job set barcode_sequence = $barcode_seq where tid='$id'";
+				mysqli_query($link,$update_query) or exit('Unable to update');
+				$barcode_seq--;
+			}
+		}
+	}
+       
 
 $inserted_rescords_query = "SELECT tid,carton_act_qty from $bai_pro3.pac_stat_log_input_job where tid In (".implode($inserted_tids,',').")";
 $inserted_rescords_result = mysqli_query($link,$inserted_rescords_query) or exit('Problem in getting new inserted jobs');             

@@ -17,6 +17,8 @@
             <div class='row' id='details_block' style='display : none'>
             <hr/>
                 <div class='col-sm-12' style='font-size : 12px'>
+                    <!-- <span id='already_split_text' style='color:#00ff00;font-size : 14px'>
+                        Shades were already split for this Docket</span> -->
                     <table class='table table-bordered'> 
                         <tr class='info'><th>Style</th><th>Schedule</th><th>Color</th>
                             <th>Doc No</th><th>Actual Plies</th>
@@ -33,7 +35,7 @@
                 <div class='col-sm-12'>
                     <div class='col-sm-2'>
                         <label>No of Shades</label>
-                        <input name='shades' type='text' class='form-control' placeholder='shades' onchange='load_shades(this)'>
+                        <input id='shades_num' name='shades' type='text' class='form-control' placeholder='shades' onchange='load_shades(this)'>
                     </div>
                 </div>
                 <div class='col-sm-3'>
@@ -67,13 +69,14 @@
         $('#shades_table').append("<tr class='danger'><td>Shade</td><td>Plies</td></tr>");
         while(shades-- > 0){
             $('#shades_table').append("<tr>\
-            <td><input id='shade_"+shades+"' name='shades[]' type='text' class='form-control required shades'></td>\
-            <td><input id='plies_"+shades+"' name='plies[]' type='text' class='form-control integer plies required'></td>\
+            <td><input id='shade_"+shades+"' name='shades[]' type='text' class='form-control required shades' onkeypress='return alpha(event,this)'></td>\
+            <td><input id='plies_"+shades+"' name='plies[]' type='text' class='form-control integer plies required' onkeypress='return integer(event,this)'></td>\
             </tr>");
         }
         $('#shades_table').append("<tr><td colspan=2>\
-        <input name='submit' type='submit' class='btn btn-warning btn-sm' value='Submit' onclick='submit_data()'></td>\
+        <input name='submit' id='submit' type='submit' class='btn btn-warning btn-sm' value='Submit' onclick='submit_data()'></td>\
         </tr>");
+        $('#submit').show();
     }
 
     function checkIfArrayIsUnique(myArray) {
@@ -117,6 +120,7 @@
         console.log(post_data);
         console.log(shades);    
         console.log('Fine');
+        $('#submit').hide();
         $('#loading_div').show();
         $.ajax({
             url  : '<?= $post_url ?>',
@@ -165,7 +169,10 @@
                     return swal('Jobs Related to the schedule already Scanned','You Cannot Split the Sewing Jobs','error');        
                 a_plies  = data.plies;  
                 schedule = data.schedule;
-
+                if(data.already_split == '1')
+                    $('#already_split_text').show();
+                else
+                    $('#already_split_text').hide();
                 $('#details_block').show();
                 $('#d_style').html(data.style);
                 $('#d_schedule').html(data.schedule);
@@ -181,14 +188,46 @@
     }
 
     function clear_data(){
+        $('#already_split_text').hide();
         $('#loading_div').hide();
         $('#details_block').hide();
         $('#d_doc_no').html('');
         $('#d_org_plies').html('');
         $('#shades_table').html('');
+        $('#shades_num').val(0);
         e_plies = 0;
         a_plies = 0;
         shades  = 0;
         count   = 0;
     }
+
+    function integer(e,t){
+        console.log('hai');
+        if(e.keyCode == 13)
+			return;
+		var p = String.fromCharCode(e.which);
+		var c = /^[0-9]+$/;
+		var v = t.value;
+        console.log('cool');
+		if( !(p.match(c)) && p!=null ){
+			console.log('error');
+			e.preventDefault();
+			return false;
+		}
+    }
+
+    function alpha(e,t){
+        if(e.keyCode == 13)
+			return;
+		var p = String.fromCharCode(e.which);
+		var c = /^[a-zA-Z0-9. ]+$/;
+		var v = t.value;
+
+		if( !(p.match(c)) && p!=null ){
+			console.log('error');
+			e.preventDefault();
+			return false;
+		}
+    }
+
 </script>
