@@ -201,6 +201,15 @@ while($row = mysqli_fetch_array($sewing_op_codes_result))
     $op_codes_style[] = $row['op_code'];
 }
 
+$barcode_seq = 0;
+$barcode_seq = sizeof($inserted_tids);
+foreach($inserted_tids as $id){
+    $update_query = "Update $bai_pro3.pac_stat_log_input_job set barcode_sequence = $barcode_seq where tid=$id";
+    mysqli_query($link,$update_query) or exit('Unable to update');
+    $barcode_seq--;
+}
+       
+
 $inserted_rescords_query = "SELECT tid,carton_act_qty from $bai_pro3.pac_stat_log_input_job where tid In (".implode($inserted_tids,',').")";
 $inserted_rescords_result = mysqli_query($link,$inserted_rescords_query) or exit('Problem in getting new inserted jobs');             
 while($row=mysqli_fetch_array($inserted_rescords_result)){
