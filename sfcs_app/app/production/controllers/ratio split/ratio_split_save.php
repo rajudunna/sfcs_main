@@ -41,7 +41,7 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
     echo json_encode($response_data);
     exit();
 }else{
-    $jobs_query  = "SELECT order_style_no,order_col_des,input_job_no,input_job_no_random,carton_act_qty,packing_mode,
+    $jobs_query  = "SELECT pac_seq_no,order_style_no,order_col_des,input_job_no,input_job_no_random,carton_act_qty,packing_mode,
                     size_code,old_size,sref_id,tid,destination,type_of_sewing 
                     from $bai_pro3.packing_summary_input where doc_no = $doc_no";
     $jobs_result = mysqli_query($link,$jobs_query) or exit('Error');
@@ -151,7 +151,7 @@ foreach($to_insert_jobs as $shade => $ij){
         foreach($size_qty as $size => $qtys){
             foreach($qtys as $qty){
                 $type_of_sew = $type_of_sewing[$ijob];    
-                $seq_no = $pac_seq[$ijob];
+                $seq_no = $pac_seq[$ijob] != '' ? $pac_seq[$ijob] : 0;
                 $insert_query = "INSERT into $bai_pro3.pac_stat_log_input_job (doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,type_of_sewing,sref_id,shade_group) 
                 values 
                 ($doc_no,'$size_map[$size]',$qty,'$job_map[$ijob]','$ijob','$destination','$packing_mode','$size','N',$seq_no,$type_of_sew,$sref_id,'$shade')";
