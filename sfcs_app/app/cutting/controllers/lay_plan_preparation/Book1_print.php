@@ -107,7 +107,7 @@
         {
             // color clubbing
             $orders_join='J'.substr($color,-1);
-            
+            $label="Original Colors";
             $select_sql="select order_tid, trim(order_col_des) as order_col_des from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
             //echo $select_sql."<br>";
             $result=mysqli_query($link, $select_sql);
@@ -122,6 +122,7 @@
             // schedule clubbing
             $select_sql="select order_tid, order_del_no from $bai_pro3.bai_orders_db_confirm where order_joins='J".$delivery."'";
             //echo $select_sql."<br>";
+			$label="Original Schedules";
             $result=mysqli_query($link, $select_sql);
             while($rows=mysqli_fetch_array($result))
             {
@@ -1748,8 +1749,8 @@ tags will be replaced.-->
 	?>
     <tr class=xl6513019 height=30 style='mso-height-source:userset;height:30pt'> 
         <td height=20 class=xl6513019 style='height:10.0pt'></td>  
-        <td class=xl6713019>Original Details :</td> 
-        <td colspan=30 class=xl9713019><?php
+        <td class=xl6713019><?php echo $label; ?> :</td> 
+        <td colspan=30 style='text-align:left' class=xl9713019><?php
                                             $org_details =  implode(',', $original_details);
                                             echo "$org_details";
                                      
