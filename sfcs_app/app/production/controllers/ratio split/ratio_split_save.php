@@ -50,6 +50,7 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
         $color = $row['order_col_des'];
         $ij = $row['input_job_no_random'];
         $size = $row['old_size'];
+        $pac_seq[$ij] = $row['pac_seq_no'];
         $input_jobs[$size][$ij] += $row['carton_act_qty'];
         $type_of_sewing[$ij] = $row['type_of_sewing']; // for figuring out the excess job
         // if($row['type_of_sewing'] == '1')
@@ -150,9 +151,10 @@ foreach($to_insert_jobs as $shade => $ij){
         foreach($size_qty as $size => $qtys){
             foreach($qtys as $qty){
                 $type_of_sew = $type_of_sewing[$ijob];    
-                $insert_query = "INSERT into $bai_pro3.pac_stat_log_input_job (doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,type_of_sewing,sref_id,shade_group) 
+                $seq_no = $pac_seq[$ijob];
+                $insert_query = "INSERT into $bai_pro3.pac_stat_log_input_job (doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,type_of_sewing,sref_id,shade_group) 
                 values 
-                ($doc_no,'$size_map[$size]',$qty,'$job_map[$ijob]','$ijob','$destination','$packing_mode','$size','N',$type_of_sew,$sref_id,'$shade')";
+                ($doc_no,'$size_map[$size]',$qty,'$job_map[$ijob]','$ijob','$destination','$packing_mode','$size','N',$seq_no,$type_of_sew,$sref_id,'$shade')";
                 mysqli_query($link,$insert_query) or exit("Problem while inserting new jobs job - $ijob - $size_map[$size] - $size - $qty - $type_of_sew");
                 $inserted_tids[] = mysqli_insert_id($link);
                 //echo "$ijob - $size_map[$size] - $size - $qty - $type_of_sew <br/>";
@@ -198,6 +200,15 @@ while($row = mysqli_fetch_array($sewing_op_codes_result))
 {
     $op_codes_style[] = $row['op_code'];
 }
+
+$barcode_seq = 0;
+$barcode_seq = sizeof($inserted_tids);
+foreach($inserted_tids as $id){
+    $update_query = "Update $bai_pro3.pac_stat_log_input_job set barcode_sequence = $barcode_seq where tid=$id";
+    mysqli_query($link,$update_query) or exit('Unable to update');
+    $barcode_seq--;
+}
+       
 
 $inserted_rescords_query = "SELECT tid,carton_act_qty from $bai_pro3.pac_stat_log_input_job where tid In (".implode($inserted_tids,',').")";
 $inserted_rescords_result = mysqli_query($link,$inserted_rescords_query) or exit('Problem in getting new inserted jobs');             
