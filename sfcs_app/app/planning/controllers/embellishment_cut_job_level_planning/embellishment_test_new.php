@@ -173,11 +173,14 @@ $sql_num_check=mysqli_num_rows($sql_result);
 
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$code.=$sql_row['doc_no']."-".chr($sql_row['color_code']).leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*";
-		
-	$cat_ref= $sql_row['cat_ref'];
-	
-	
+	$club_docket_childs_verify = "SELECT doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no IN (
+		select doc_no from $bai_pro3.plandoc_stat_log WHERE org_doc_no = ".$sql_row['doc_no'].")";
+	if(mysqli_num_rows(mysqli_query($link,$club_docket_childs_verify)) > 0){
+		//do nothing
+	}else{	
+		$code.=$sql_row['doc_no']."-".chr($sql_row['color_code']).leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*";
+		$cat_ref= $sql_row['cat_ref'];
+	}
 }
 
 $sql= "select cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" order by doc_no";
