@@ -200,7 +200,7 @@ else
 {
 	echo "Docket Available:"."<font color=RED size=5>No</font>";
 }
-echo "</div><div class='col-sm-12'><br><span class='label label-info' style='font-size:14px;padding:5px'>Info! In this Method Clubbing Schedule (Or) Colours are Must Be SPLIT, If not Please go and use Splitting Method for selected Schedule (Or) Colour then try to plan  otherwise Planned Jobs are not Showed in EMB Dashboards.</span></div>";
+echo "</div><div class='col-sm-12'><br><div class='alert alert-info' style='font-size:13px;padding:5px'>Info! In this Method Clubbing Schedule (Or) Colours are Must Be SPLIT, If not Please go and use Splitting Method for selected Schedule (Or) Colour then try to plan  otherwise Planned Jobs are not Showed in EMB Dashboards.</div></div>";
 
 echo "</div></div></form>";
 
