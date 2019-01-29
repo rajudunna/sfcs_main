@@ -33,6 +33,7 @@ $tids   = [];
 $ratios = [];
 $sizes  = [];
 $inserted_tids = [];
+$jobs = [];
 //Concurrent Verification
 $bcd_verify = "SELECT * from $brandix_bts.bundle_creation_data where docket_number = '$doc_no' 
             and operation_id IN ($SEWIN,$SEWOUT)";
@@ -50,6 +51,7 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
         $color = $row['order_col_des'];
         $ij = $row['input_job_no_random'];
         $size = $row['old_size'];
+        $jobs[] = $ij;
         $pac_seq[$ij] = $row['pac_seq_no'];
         $input_jobs[$size][$ij] += $row['carton_act_qty'];
         $type_of_sewing[$ij] = $row['type_of_sewing']; // for figuring out the excess job
@@ -201,13 +203,22 @@ while($row = mysqli_fetch_array($sewing_op_codes_result))
     $op_codes_style[] = $row['op_code'];
 }
 
-$barcode_seq = 0;
-$barcode_seq = sizeof($inserted_tids);
-foreach($inserted_tids as $id){
-    $update_query = "Update $bai_pro3.pac_stat_log_input_job set barcode_sequence = $barcode_seq where tid=$id";
-    mysqli_query($link,$update_query) or exit('Unable to update');
-    $barcode_seq--;
-}
+$jobs_array = array_unique($jobs);
+	foreach($jobs_array as $job){
+		$query = "select group_concat(tid order by tid DESC) as tid,input_job_no_random as ij from $bai_pro3.pac_stat_log_input_job where input_job_no_random = '$job'
+          group by input_job_no_random ";        
+		$result = mysqli_query($link,$query);
+		while($row = mysqli_fetch_array($result)){
+			$tids = $row['tid'];
+			$tid  = explode(',',$tids);
+			$barcode_seq = sizeof($tid);
+			foreach($tid as $id){
+				$update_query = "Update $bai_pro3.pac_stat_log_input_job set barcode_sequence = $barcode_seq where tid='$id'";
+				mysqli_query($link,$update_query) or exit('Unable to update');
+				$barcode_seq--;
+			}
+		}
+	}
        
 
 $inserted_rescords_query = "SELECT tid,carton_act_qty from $bai_pro3.pac_stat_log_input_job where tid In (".implode($inserted_tids,',').")";
