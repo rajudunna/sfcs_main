@@ -74,8 +74,9 @@
             </tr>");
         }
         $('#shades_table').append("<tr><td colspan=2>\
-        <input name='submit' type='submit' class='btn btn-warning btn-sm' value='Submit' onclick='submit_data()'></td>\
+        <input name='submit' id='submit' type='submit' class='btn btn-warning btn-sm' value='Submit' onclick='submit_data()'></td>\
         </tr>");
+        $('#submit').show();
     }
 
     function checkIfArrayIsUnique(myArray) {
@@ -119,6 +120,7 @@
         console.log(post_data);
         console.log(shades);    
         console.log('Fine');
+        $('#submit').hide();
         $('#loading_div').show();
         $.ajax({
             url  : '<?= $post_url ?>',
