@@ -458,7 +458,7 @@ if($order_joins<>'0')
 	{
 		// color clubbing
 		$orders_join='J'.substr($color,-1);
-		
+		$label="Original Colors";
 		$select_sql="select order_tid, trim(order_col_des) as order_col_des from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
 		//echo $select_sql."<br>";
 		$result=mysqli_query($link, $select_sql);
@@ -473,6 +473,7 @@ if($order_joins<>'0')
 		// schedule clubbing
 		$select_sql="select order_tid, order_del_no from $bai_pro3.bai_orders_db_confirm where order_joins='J".$schedule."'";
 		//echo $select_sql."<br>";
+		$label="Original Schedules";
 		$result=mysqli_query($link, $select_sql);
 		while($rows=mysqli_fetch_array($result))
 		{
@@ -525,7 +526,7 @@ echo "<div class='col-sm-12 row'><div class='panel panel-info'>
 		{
 			$org_details =  implode(',', $original_details);
 			echo "<div class='col-md-4'>
-					<strong>Original Details : </strong>$org_details
+					<strong>$label : </strong>$org_details
 				</div>";
 		}
 		echo "
