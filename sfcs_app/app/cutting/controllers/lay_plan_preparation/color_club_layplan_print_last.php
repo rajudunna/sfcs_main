@@ -163,6 +163,7 @@ else
 	$exess_remove=1;
 }	
 $qtys = array();
+$qtys_sample = array();
 $sql = "select * from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' and order_col_des in ('".implode("','",$sch_color)."')";
 $result = mysqli_query($link, $sql) or exit("Sql Error2.1".mysqli_error());
 $old_order_tot = array();
@@ -173,6 +174,13 @@ while($sql_row = mysqli_fetch_array($result))
 		//if($sql_row['title_size_'.$sizes_array[$c]]<>'')
 		//{	
 			$qtys[$sql_row['order_tid']][$sizes_array[$c]] = $sql_row["order_s_".$sizes_array[$c].""];
+			$samples_qry="select COALESCE(sum(input_qty)) as sample_qty from $bai_pro3.sp_sample_order_db where order_tid='".$sql_row['order_tid']."'and sizes_ref='".$sizes_array[$c]."'";
+			// echo $samples_qry."<br>";
+			$samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($samples_data=mysqli_fetch_array($samples_qry_result))
+			{
+				$qtys_sample[$sql_row['order_tid']][$sizes_array[$c]] =$samples_data["sample_qty"];
+			}
 			$old_order_tot[$sql_row['order_tid']]+=$sql_row["order_s_".$sizes_array[$c].""];
 		//}		
 	}
@@ -1619,17 +1627,17 @@ tags will be replaced.-->
 	for($t=0;$t<$total_size;$t++)
 	{
 		if($temp==0){
-			echo "<th $style_css>Color/Sizes</th>";
+			echo "<th $style_css>Category</th><th $style_css>Color/Sizes</th>";
 		}
 		$temp=1;
-		echo "<th $style_css>".$sizes[$t].$t."</th>";
+		echo "<th $style_css>".$sizes[$t]."</th>";
 		if(($t+1) % $divide == 0){
 			$temp_len = $t+1;
 			echo "</tr>";
 			for($j=0;$j<sizeof($sch_tids);$j++)
 			{
 				echo "<tr>";
-				echo "<th $style_css>".$sch_color[$j]."</th>";
+				echo "<th $style_css>Revised Order Qty</th><th $style_css>".$sch_color[$j]."</th>";
 				for($i=$temp_len1;$i<$temp_len;$i++) {
 					echo "<th $style_css>".$qtys[$sch_tids[$j]][$sizes_array[$i]]."</th>";
 				}
@@ -1644,11 +1652,23 @@ tags will be replaced.-->
 			echo "<tr>";
 			for($j=0;$j<sizeof($sch_tids);$j++)
 			{
-				echo "<th $style_css>".$sch_color[$j]."</th>";
+				echo "<th $style_css>Original Order Qty</th><th $style_css>".$sch_color[$j]."</th>";
 				for($i=$temp_len1;$i<$total_size;$i++) {
 					echo "<th $style_css>".$qtys[$sch_tids[$j]][$sizes_array[$i]]."</th>";
 				}
 				echo "<th $style_css>".($old_order_tot[$sch_tids[$j]])."</th>";
+				echo "</tr>";
+			}
+			for($j1=0;$j1<sizeof($sch_tids);$j1++)
+			{
+				$total_samples=0;
+				echo "<tr>";
+				echo "<th $style_css>Sample Qty</th><th $style_css>".$sch_color[$j1]."</th>";
+				for($i1=0;$i1<$total_size;$i1++) {
+					echo "<th $style_css>".$qtys_sample[$sch_tids[$j1]][$sizes_array[$i1]]."</th>";
+					$total_samples+=$qtys_sample[$sch_tids[$j1]][$sizes_array[$i1]];
+				}
+				echo "<th $style_css>".$total_samples."</th>";
 				echo "</tr>";
 			}
 		}
