@@ -684,7 +684,8 @@ $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBAL
 if(mysqli_num_rows($sql_resultx) > 0){
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
-     $section_mods=$sql_rowx['tbl_id'];
+    $section_mods=$sql_rowx['tbl_id'];
+    $cut_table = $sql_rowx['tbl_id'];
     $emb_tbl_name=$sql_rowx['tbl_name'];
   if($_GET["view_div"]!='ALL' && $_GET["view_div"]!='')
   {
@@ -758,7 +759,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
     }
   
-    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).")  order by field(doc_no,".implode(",",$doc_no_ref)."),log_time asc";
+    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ ct
+      left join $bai_pro3.plandoc_stat_log psl ON ct.doc_no = psl.doc_no
+      where psl.org_doc_no <2 and ct.doc_no in (".implode(",",$doc_no_ref).")  order by field(ct.doc_no,".implode(",",$doc_no_ref)."),ct.log_time asc";
       if($_GET["view_div"] == 'M')
       {
         $_GET["view_div"] = "M&S";
@@ -767,7 +770,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     
        if($_GET["view_div"]=="ALL" or $_GET["view_div"]=="")
       {
-        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref)."),log_time asc";
+        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ ct
+        left join $bai_pro3.plandoc_stat_log psl ON ct.doc_no = psl.doc_no
+        where psl.org_doc_no <2 and ct.doc_no in (".implode(",",$doc_no_ref).") order by field(ct.doc_no,".implode(",",$doc_no_ref)."),ct.log_time asc";
       }
       else
       {
@@ -782,7 +787,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $buyer_identity = $row_res['buyer_name'];
         }
           
-        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref)."),log_time asc"; 
+        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ ct
+            left join $bai_pro3.plandoc_stat_log psl ON ct.doc_no = psl.doc_no
+            where psl.org_doc_no <2 and order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and ct.doc_no in (".implode(",",$doc_no_ref).") order by field(ct.doc_no,".implode(",",$doc_no_ref)."),ct.log_time asc"; 
       }
 
       
@@ -798,6 +805,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     {
       $cut_new=$sql_row1['act_cut_status'];
       $cut_input_new=$sql_row1['act_cut_issue_status'];
+      $docket_remarks=$sql_row1['remarks'];
       $rm_new=strtolower(chop($sql_row1['rm_date']));
       $rm_update_new=strtolower(chop($sql_row1['rm_date']));
       $input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
@@ -962,16 +970,22 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         $club_c_code=array();
         $club_docs=array();
         $colors_db=array();
-        if($sql_row1['clubbing']>0)
+        if($sql_row1['clubbing']>0 && strtolower($docket_remarks)!="recut")
         {
           $total_qty=0;
           $fabric_required=0;
-          $sql11="select order_col_des,color_code,doc_no,material_req,(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where order_del_no='$schedule' and clubbing=".$sql_row1['clubbing']." and acutno=".$sql_row1['acutno'];
+          $sql11="select remarks,order_col_des,color_code,doc_no,material_req,(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where order_del_no='$schedule' and category in (".$in_categories.") and clubbing=".$sql_row1['clubbing']." and acutno=".$sql_row1['acutno'];
           
           $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
           while($sql_row11=mysqli_fetch_array($sql_result11))
           {
-            $club_c_code[]=chr($sql_row11['color_code']).leading_zeros($sql_row1['acutno'],3);
+            $remarks = $sql_row11['remarks'];
+            if(strtolower($remarks) == 'recut')
+              $cut_str = 'R';
+            else
+              $cut_str = chr($sql_row11['color_code']);
+
+            $club_c_code[]=$cut_str.''.leading_zeros($sql_row1['acutno'],3);
             $club_docs[]=$sql_row11['doc_no'];
             $total_qty+=$sql_row11['total'];
             $colors_db[]=trim($sql_row11['order_col_des']);
@@ -980,9 +994,20 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         }
         else
         {
-          
+          //We have no recut dockets for clubbing
+          $remarks = '';
+					$is_recut_query = "SELECT remarks from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
+					$is_recut_result = mysqli_query($link,$is_recut_query);
+					while($row_rem = mysqli_fetch_array($is_recut_result))
+              $remarks = $row_rem['remarks'];
+              
+          if(strtolower($remarks) == 'recut')
+            $cut_str = 'R';
+          else
+            $cut_str = chr($sql_row1['color_code']);
+
           $colors_db[]=$color;
-          $club_c_code[]=chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3);
+          $club_c_code[]=$cut_str.''.leading_zeros($sql_row1['acutno'],3);
           $club_docs[]=$doc_no;
         }
         
@@ -1107,7 +1132,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $rem="No status";
     }
             
-      $title=str_pad("Style:".trim($style),80)."\n".str_pad("CO:".trim($co_no),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),50)."\n".str_pad("Job_No:".implode(", ",$club_c_code),80)."\n".str_pad("Docket No:".implode(", ",$club_docs),80)."\n".str_pad("Total_Qty:".$total_qty,80)."\n".str_pad("Plan_Time:".$log_time,50)."\n".str_pad("Lay_Req_Time:".$lay_time[array_search($doc_no,$doc_no_ref)],80)."\n".str_pad("Fab_Loc.:".$fabric_location."Bundle_Loc.:".$bundle_location,80);
+      $title=str_pad("Style:".trim($style),80)."\n".str_pad("CO:".trim($co_no),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),50)."\n".str_pad("Cut Job_No:".implode(", ",$club_c_code),80)."\n".str_pad("Docket No:".implode(", ",$club_docs),80)."\n".str_pad("Total_Qty:".$total_qty,80)."\n".str_pad("Plan_Time:".$log_time,50)."\n".str_pad("Lay_Req_Time:".$lay_time[array_search($doc_no,$doc_no_ref)],80)."\n".str_pad("Fab_Loc.:".$fabric_location."Bundle_Loc.:".$bundle_location,80);
       
       
       $clr=trim(implode(',',$colors_db),50);
@@ -1189,7 +1214,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             }
           }
         }
-        $get_cut_qty = getFullURLLevel($_GET['r'],'cutting/controllers/cut_qty_reporting_withoutrolls/orders_cut_issue_status_form_v2_cut.php',3,'N');
+      
+       // $get_cut_qty = getFullURLLevel($_GET['r'],'cutting/controllers/cut_qty_reporting_withoutrolls/orders_cut_issue_status_form_v2_cut.php',3,'N');
+        $get_cut_qty = 
+        getFullURLLevel($_GET['r'],'cutting/controllers/cut_reporting_without_rolls/cut_reporting_interface.php',3,'N');
 
         $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
         $sidemenu=true;
@@ -1198,9 +1226,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         //if(in_array($authorized,$has_permission) and $final_cols!="yellow" and $final_cols!="green")
       if($rep_status!=''){
        if(in_array($authorized,$has_permission) and ($final_cols=="yellow" || $final_cols=="orange")){
-            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='".$get_cut_qty."&doc_no=$doc_no' onclick='Popup=window.open('get_cut_qty.php?doc_no=$doc_no','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>RT:".$req_time1."</span></a></div></div><br/>";
-        }else if($final_cols=="red" || $final_cols=="lgreen" || $final_cols=="yash"){
-          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:11px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='#'
+            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='".$get_cut_qty."&doc_no=$doc_no&cut_table=$cut_table' onclick='Popup=window.open('$get_cut_qty.php?doc_no=$doc_no&cut_table=$cut_table','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
+        }else if($final_cols=="yash" || $final_cols=="red" || $final_cols=="lgreen"){
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='#'
              onclick=\"window.open('$href','yourWindowName','width=800,height=600')\"
             >$emb_stat_title"."LT:".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
         }

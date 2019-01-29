@@ -619,6 +619,15 @@ $module_limit=14;
 	$sql="DROP TABLE IF EXISTS $newfiltertable";
 	//echo $sql."<br/>";
 	mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$application='IPS';			
+	$scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
+	// echo $scanning_query;
+	$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row=mysqli_fetch_array($scanning_result))
+	{
+		$operation_name=$sql_row['operation_name'];
+		$operation_code=$sql_row['operation_code'];
+	}
 
 
 
@@ -626,13 +635,13 @@ $module_limit=14;
 	{
 		$input_jobs = echo_title("$bai_pro3.packing_summary_input","group_concat(distinct \"'\", input_job_no,\"'\")","order_col_des='$color' and acutno='$cutno' and order_del_no",$schedule_list,$link);
 		
-		$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select type_of_sewing,order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from $bai_pro3.plan_doc_summ_input where input_job_no in ($input_jobs) and order_del_no='$schedule_list' and acutno='$cutno' and input_job_no_random not in (select input_job_no_random_ref from $bai_pro3.plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
+		$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select type_of_sewing,order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random,$operation_code) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from $bai_pro3.plan_doc_summ_input where input_job_no in ($input_jobs) and order_del_no='$schedule_list' and acutno='$cutno' and input_job_no_random not in (select input_job_no_random_ref from $bai_pro3.plan_dashboard_input) and input_job_input_status(input_job_no_random,$operation_code)='' group by input_job_no order by input_job_no*1";
 	}
 	else
 	{
 		$input_jobs = echo_title("$bai_pro3.packing_summary_input","group_concat(distinct \"'\",input_job_no,\"'\")","order_col_des='$color' and  order_del_no",$schedule_list,$link);
 		
-		$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select type_of_sewing,order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from $bai_pro3.plan_doc_summ_input where input_job_no in ($input_jobs) and order_del_no='$schedule_list' and input_job_no_random not in (select input_job_no_random_ref from $bai_pro3.plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
+		$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select type_of_sewing,order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random,$operation_code) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from $bai_pro3.plan_doc_summ_input where input_job_no in ($input_jobs) and order_del_no='$schedule_list' and input_job_no_random not in (select input_job_no_random_ref from $bai_pro3.plan_dashboard_input) and input_job_input_status(input_job_no_random,$operation_code)='' group by input_job_no order by input_job_no*1";
 	}
 	// echo $sql."<br/>";
 	mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -728,15 +737,26 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 </form>
 
 	</div>	
-		<div id="dhtmlgoodies_mainContainer" style="padding-left: 200px;">
+	
+
+	<div id="dhtmlgoodies_mainContainer" style="padding-left: 200px;">
+		<!-- ONE <UL> for each "room" -->
 		<?php
+		
+		/*Example: <div>
+			<p>Team a</p>
+			<ul id="box1">
+				<li id="node16">Student P</li>
+			</ul>
+		</div> */
 		
 		$temp_table_name="temp_pool_db.plan_doc_summ_input_".$username;
 		$sql="DROP TABLE IF EXISTS $temp_table_name";
 		mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql="CREATE  TABLE $temp_table_name ENGINE = MYISAM SELECT act_cut_status,doc_no,order_style_no,order_del_no,order_col_des,carton_act_qty as total,input_job_no as acutno,group_concat(distinct char(color_code)) as color_code,input_job_no,input_job_no_random_ref,input_module from $bai_pro3.plan_dash_doc_summ_input where (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) GROUP BY input_job_no_random_ref order by input_priority";
-		mysqli_query($link, $sql) or exit("$sql Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql="CREATE  TABLE $temp_table_name ENGINE = MYISAM SELECT act_cut_status,doc_no,order_style_no,order_del_no,order_col_des,carton_act_qty as total,input_job_no as acutno,group_concat(distinct char(color_code)) as color_code,input_job_no,input_job_no_random_ref,input_module from $bai_pro3.plan_dash_doc_summ_input where (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) GROUP BY input_job_no_random_ref order by input_priority";
+			mysqli_query($link, $sql) or exit("$sql Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
 			
 		$sections_ref=array();
 		$sqlx1="select * from $bai_pro3.sections_db where sec_id>0";
@@ -756,12 +776,15 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 		$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error31".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		{
+
 			$section=$sql_rowx['sec_id'];
 			$section_head=$sql_rowx['sec_head'];
 			$section_mods=$sql_rowx['sec_mods'];
 			echo "<div style=\"width:170px;\" align=\"center\"><h4>SEC - $section</h4>";
 			$mods=array();
+			$operation_code=array();
 			$mods=explode(",",$section_mods);
+			$mods1 = $section_mods;
 			if(!(in_array($authorized,$has_perm)))
 			{
 				$mods=array();
@@ -770,106 +793,140 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 				while($sql_rowxy=mysqli_fetch_array($sql_resultxy))
 				{
 					$mods=explode(",",$sql_rowxy['module_id']);	
+					$mods1 = implode(',',$mods);
 				}				
 				if($mods[0]==NULL)
 				{
 					$mods=NULL;
 				}
 			}
-			
-			echo "<script>lis_limit('".sizeof($mods)."','".json_encode($mods)."')</script>";
-			for($x=0;$x<sizeof($mods);$x++)
-			{		
-				echo '<p>'.$mods[$x].'</p>
-				<ul id="'.$mods[$x].'" style="width:150px">';
-				$module=$mods[$x];
-				$sql1="SELECT * from $temp_table_name where input_module='$module'";
-				$sql_result1=mysqli_query($link, $sql1) or exit("$sql1 Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_num_check=mysqli_num_rows($sql_result1);
-				while($sql_row1=mysqli_fetch_array($sql_result1))
-				{
-					$type_of_sewing=$sql_row1['type_of_sewing'];
-					$doc_no_ref=$sql_row1['doc_no'];
-					$doc_no=$sql_row1["input_job_no_random_ref"];						
-					$style1=$sql_row1['order_style_no'];
-					$schedule1=$sql_row1['order_del_no'];
-					$color1=$sql_row1['order_col_des'];
-					$total_qty1=$sql_row1['total'];
-					$cut_no1=$sql_row1['acutno'];
-					$color_code1=$sql_row1['color_code'];
-					
-					$sql_style_id="SELECT DISTINCT style_id as sid FROM $bai_pro3.BAI_ORDERS_DB WHERE order_STYLE_NO=\"$style1\" and order_del_no=\"$schedule1\" LIMIT 1";
-					$sql_result_id=mysqli_query($link, $sql_style_id) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row_id=mysqli_fetch_array($sql_result_id))
-					{
-						$style_id_new=$sql_row_id["sid"];
-					}
-						
-					$get_fab_req_details="SELECT * FROM $bai_pro3.fabric_priorities WHERE doc_ref_club=\"$doc_no_ref\" ";
-					$get_fab_req_result=mysqli_query($link, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$resulted_rows = mysqli_num_rows($get_fab_req_result);
-					//echo $get_fab_req_details;
-					//die();
-					$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
-					$bg_color1 = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
+            unset($mods);
+            $get_operations="SELECT * FROM $brandix_bts.`tbl_orders_ops_ref` WHERE default_operation='yes' AND  (work_center_id IS NULL OR work_center_id='')";
+            $sql_res=mysqli_query($link, $get_operations) or exit("workstation id error");
+            while ($row2=mysqli_fetch_array($sql_res)) 
+            {
+            	$short_key = $row2['short_cut_code'];
+            }
 
-					$title=str_pad("Style:".$style1,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$display_prefix1,80)."\n".str_pad("Qty:".$total_qty1,90);
-					if($style1!=NULL)
+			$work_station_module="select module,operation_code from $bai_pro3.work_stations_mapping where module IN ($mods1)";
+			// echo $work_station_module;
+			$sql_result1=mysqli_query($link, $work_station_module) or exit("NO Modules availabel");
+			while ($row1=mysqli_fetch_array($sql_result1))
+			{
+			    $mods[]=$row1['module'];
+			    $operation_code[]=$row1['operation_code'];
+			}
+			echo "<script>lis_limit('".sizeof($mods)."','".json_encode($mods)."')</script>";
+			if (sizeof($mods) > 0) {
+				for($x=0;$x<sizeof($mods);$x++)
+				{
+					if($operation_code[$x] == $short_key)
 					{
-						if($style==$style1  and $schedule==$schedule1)
+						echo '<p>'.$mods[$x].'</p>
+						<ul id="'.$mods[$x].'" style="width:150px">';
+						$module=$mods[$x];
+						$sql1="SELECT * from $temp_table_name where input_module='$module'";
+						$sql_result1=mysqli_query($link, $sql1) or exit("$sql1 Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_num_check=mysqli_num_rows($sql_result1);
+						while($sql_row1=mysqli_fetch_array($sql_result1))
 						{
-							if($resulted_rows>0)
+							$type_of_sewing=$sql_row1['type_of_sewing'];
+							$doc_no_ref=$sql_row1['doc_no'];
+							$doc_no=$sql_row1["input_job_no_random_ref"];						
+							$style1=$sql_row1['order_style_no'];
+							$schedule1=$sql_row1['order_del_no'];
+							$color1=$sql_row1['order_col_des'];
+							$total_qty1=$sql_row1['total'];
+							$cut_no1=$sql_row1['acutno'];
+							$color_code1=$sql_row1['color_code'];
+							
+							$sql_style_id="SELECT DISTINCT style_id as sid FROM $bai_pro3.BAI_ORDERS_DB WHERE order_STYLE_NO=\"$style1\" and order_del_no=\"$schedule1\" LIMIT 1";
+							$sql_result_id=mysqli_query($link, $sql_style_id) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row_id=mysqli_fetch_array($sql_result_id))
 							{
-								if($bg_color1 == 'white')
+								$style_id_new=$sql_row_id["sid"];
+							}
+								
+							$get_fab_req_details="SELECT * FROM $bai_pro3.fabric_priorities WHERE doc_ref_club=\"$doc_no_ref\" ";
+							$get_fab_req_result=mysqli_query($link, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$resulted_rows = mysqli_num_rows($get_fab_req_result);
+							//echo $get_fab_req_details;
+							//die();
+							$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
+							$bg_color1 = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
+
+							$title=str_pad("Style:".$style1,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$display_prefix1,80)."\n".str_pad("Qty:".$total_qty1,90);
+							if($style1!=NULL)
+							{
+								if($style==$style1  and $schedule==$schedule1)
 								{
-									echo '<li id="'.$doc_no.'"  style="background-color:green;" data-color="green" title="'.$title.'"><strong><font color="white">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+									if($resulted_rows>0)
+									{
+										if($bg_color1 == 'white')
+										{
+											echo '<li id="'.$doc_no.'"  style="background-color:green;" data-color="green" title="'.$title.'"><strong><font color="white">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										}
+										else if($bg_color1 == 'yellow')
+										{
+											echo '<li id="'.$doc_no.'"  style="background-color:green;border: 4px solid yellow;" data-color="green" title="'.$title.'"><strong><font color="white">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										}
+										
+									}
+									else
+									{
+										if($bg_color1 == 'white')
+										{
+											echo '<li id="'.$doc_no.'"  style="background-color:red;" data-color="red" title="'.$title.'"><strong><font color="black">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										}
+										else if($bg_color1 == 'yellow')
+										{
+											echo '<li id="'.$doc_no.'"  style="background-color:white;border: 4px solid yellow;" data-color="red" title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+										}
+									}
+									
 								}
-								else if($bg_color1 == 'yellow')
+								else
 								{
-									echo '<li id="'.$doc_no.'"  style="background-color:green;border: 4px solid yellow;" data-color="green" title="'.$title.'"><strong><font color="white">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+									echo '<li id="'.$doc_no.'"  style="background-color:'.$bg_color1.';" data-color = '.$bg_color1.' title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
+								}
+							}				
+						}
+						if($code_db_new[6]==$module)
+						{
+							for($i=0;$i<sizeof($code_db)-1;$i++)
+							{
+								$code_db_new=array();
+								$code_db_new=explode("-",$code_db[$i]);
+								
+								if($code_db_new[2]=="DONE")
+								{
+									$check="#cce5ff";
+								}
+								else
+								{
+									$check="#cce5ff"; // red
 								}
 								
+								//echo "<li id=\"".$code_db_new[0]."|".$code_db_new[4]."\" style=\"background-color:$check;  color:white;\"><strong>".$code_db_new[1]."-".$code_db_new[5]."-".$code_db_new[3]."</strong></li>";
 							}
-							else
-							{
-								if($bg_color1 == 'white')
-								{
-									echo '<li id="'.$doc_no.'"  style="background-color:red;" data-color="red" title="'.$title.'"><strong><font color="black">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
-								}
-								else if($bg_color1 == 'yellow')
-								{
-									echo '<li id="'.$doc_no.'"  style="background-color:white;border: 4px solid yellow;" data-color="red" title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
-								}
-							}
-							
 						}
-						else
-						{
-							echo '<li id="'.$doc_no.'"  style="background-color:'.$bg_color1.';" data-color = '.$bg_color1.' title="'.$title.'"><strong><font color="red">'.$display_prefix1."(".$style_id_new.')</font></strong></li>';
-						}
-					}				
-				}
-				if($code_db_new[6]==$module)
-				{
-					for($i=0;$i<sizeof($code_db)-1;$i++)
-					{
-						$code_db_new=array();
-						$code_db_new=explode("-",$code_db[$i]);
-						
-						if($code_db_new[2]=="DONE")
-						{
-							$check="#cce5ff";
-						}
-						else
-						{
-							$check="#cce5ff"; // red
-						}
-						
-						//echo "<li id=\"".$code_db_new[0]."|".$code_db_new[4]."\" style=\"background-color:$check;  color:white;\"><strong>".$code_db_new[1]."-".$code_db_new[5]."-".$code_db_new[3]."</strong></li>";
+						echo '</ul>';
 					}
+					else
+					{
+						echo '<p>'.$mods[$x].'</p>
+								<div class="alert alert-warning" style="margin-left: 24px;">
+									<strong>Work-Station Mapped is '.$operation_code[$x].'</strong>
+								</div><br><br><br><br><br><br>';
+					}
+								
 				}
-				echo '</ul>';			
+			} else {
+				echo '<center><div class="alert alert-danger" style="margin-left: 24px;"><strong>No Work-Station Mapped</strong><br>
+				</div></center>';
 			}
+			
+			
 			echo "</div>";
 		}
 		

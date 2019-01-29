@@ -67,7 +67,9 @@ echo "<div class='row'>";
 	} 
 	echo "</select></div>"; 
 
-	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and $order_joins_in_full";     
+	$sql="SELECT distinct order_del_no from $bai_pro3.bai_orders_db_confirm boc
+		left join $bai_pro3.plandoc_stat_log pl ON pl.order_tid = boc.order_tid
+		where order_style_no=\"$style\"  and ($order_joins_in_full OR remarks='Recut' ) ";     
 	echo "<div class='col-sm-3'><label>Select Schedule: </label><select name=\"schedule\" onchange=\"secondbox();\" class='form-control' required>"; 
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	echo "<option value=\"\" selected>NIL</option>"; 
@@ -83,10 +85,9 @@ echo "<div class='row'>";
 	    } 
 	} 
 	echo "</select></div>";
-
 	echo "<div class='col-sm-3'><label>Select Color: </label>"; 
 	// $sql="select GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,max(plan_module),order_col_des from order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing>0 group by clubbing union select DISTINCT order_col_des,plan_module,order_col_des AS disp from $bai_pro3.order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing=0 group by clubbing,order_col_des";
-	$sql="SELECT GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,order_col_des FROM bai_pro3.`bai_orders_db_confirm` LEFT JOIN bai_pro3.`plandoc_stat_log` ON bai_orders_db_confirm.`order_tid`=plandoc_stat_log.`order_tid` WHERE order_style_no=\"$style\" AND order_del_no=\"$schedule\" AND $order_joins_in_full group by order_col_des";
+	$sql="SELECT GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,order_col_des FROM bai_pro3.`bai_orders_db_confirm` LEFT JOIN bai_pro3.`plandoc_stat_log` ON bai_orders_db_confirm.`order_tid`=plandoc_stat_log.`order_tid` WHERE order_style_no=\"$style\" AND order_del_no=\"$schedule\" AND ( $order_joins_in_full OR remarks='Recut') group by order_col_des";
 	// echo $sql;
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	echo "<select name=\"color\" onchange=\"thirdbox();\" class='form-control' >
@@ -112,8 +113,27 @@ echo "<div class='row'>";
 		$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row=mysqli_fetch_array($sql_result)) 
 		{ 
-		    $code.=$sql_row['doc_no']."-".chr($sql_row['color_code']).leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
-		    $cat_ref= $sql_row['cat_ref']; 
+			$doc_no_for_recut = $sql_row['doc_no'];
+			$remarks_query = "select * from $bai_pro3.plandoc_stat_log where doc_no = $doc_no_for_recut";
+			$remarks_query_result=mysqli_query($link,$remarks_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			while($remarks_row=mysqli_fetch_array($remarks_query_result)) 
+			{
+				$remarks = $remarks_row['remarks'];
+				$approve = $remarks_row['fabric_status'];
+			}
+			if(strtolower($remarks) == 'recut')
+			{
+				if($approve == 99)
+				{
+					$code.=$sql_row['doc_no']."-R".leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
+					$cat_ref= $sql_row['cat_ref']; 
+				}
+			}
+			else if(strtolower($remarks) != 'recut')
+			{
+				$code.=$sql_row['doc_no']."-".chr($sql_row['color_code']).leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
+				$cat_ref= $sql_row['cat_ref']; 
+			}
 		}	 
 
 		$sql= "select cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" order by doc_no"; 

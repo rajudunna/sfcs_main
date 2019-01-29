@@ -28,6 +28,7 @@
     {
         $style=$sql_row['order_style_no']; //Style
         $color=$sql_row['order_col_des']; //color
+        $ord_joins=$sql_row['order_joins']; //color
         $division=$sql_row['order_div'];
         $delivery=$sql_row['order_del_no']; //Schedule
         $pono=$sql_row['order_po_no']; //po
@@ -1830,12 +1831,60 @@ tags will be replaced.-->
                 </tr> 
 
                 <?php 
-                    //Getting sample details here  By SK-05-07-2018 == Start
-                    $samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$order_tid' order by sizes_ref";
-                    $samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    $num_rows_samples = mysqli_num_rows($samples_qry_result);
-                    if($num_rows_samples >0){
-                        $samples_total = 0;	   
+                    $order_tidss=array();
+					if($ord_joins<>'0')
+					{
+						if(strlen($delivery)<8)
+						{
+							$orders_join='J'.substr($color,-1);
+							
+							$select_sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
+							$result=mysqli_query($link, $select_sql);
+							while($rows=mysqli_fetch_array($result))
+							{
+								$order_tidss[]=$rows['order_tid'];
+							}
+						}
+						else
+						{
+							$select_sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='J".$delivery."'";
+							$result=mysqli_query($link, $select_sql);
+							while($rows=mysqli_fetch_array($result))
+							{
+								$order_tidss[]=$rows['order_tid'];
+							}	
+						}	
+					}
+					else
+					{
+						$order_tidss[]=$order_tid;
+					}
+					$check_sample=0;
+					for($ii=0;$ii<sizeof($order_tidss);$ii++)
+					{
+						$samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$order_tidss[$ii]' order by sizes_ref";
+						$samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$num_rows_samples = mysqli_num_rows($samples_qry_result);
+						if($num_rows_samples >0)
+						{		
+							while($samples_data=mysqli_fetch_array($samples_qry_result))
+							{
+								for($s=0;$s<sizeof($s_tit);$s++)
+								{									
+									if($samples_data['size']==$s_tit[$sizes_code[$s]])
+									{
+										$samples_input_qty_arry[$s_tit[$sizes_code[$s]]] = $samples_input_qty_arry[$s_tit[$sizes_code[$s]]]+
+																						   $samples_data['input_qty'];
+									}
+								}
+							}	
+							$check_sample=1;	
+						}
+						
+					}
+
+					if($check_sample==1)
+					{						
                 ?>
                 
                 <tr class=xl6513019 height=21 style='mso-height-source:userset;height:15.75pt'> 
@@ -1844,29 +1893,19 @@ tags will be replaced.-->
                     style='mso-spacerun:yes'></span></td> 
                         
                     <?php
-                        
-                        while($samples_data=mysqli_fetch_array($samples_qry_result))
-                        {
-                            $samples_total+=$samples_data['input_qty'];
-                            $samples_size_arry[] =$samples_data['sizes_ref'];
-                            $samples_input_qty_arry[] =$samples_data['input_qty'];
-                        }    
-                        for($s=0;$s<sizeof($s_tit);$s++) 
+					    for($s=0;$s<sizeof($s_tit);$s++) 
                         { 
-                            $size_code = 's'.$sizes_code[$s];
-                            $flg = 0;
-                            for($ss=0;$ss<sizeof($samples_size_arry);$ss++)
-                            {
-                                if($size_code == $samples_size_arry[$ss]){
-                                    echo "<td class=xl7413019>".$samples_input_qty_arry[$ss]."</td>";
-                                    $flg = 1;
-                                }			
-                            }	
-                            if($flg == 0){
-                                echo "<td class=xl7413019><strong>-</strong></td>";
-                            }      
-                        } 
-                        echo "<td class=xl7413019>".$samples_total."</td>";
+							if($samples_input_qty_arry[$s_tit[$sizes_code[$s]]]<>'')
+							{
+								echo "<td class=xl7413019>".$samples_input_qty_arry[$s_tit[$sizes_code[$s]]]."</td>";
+							}
+							else		
+							{
+								echo "<td class=xl7413019>0</td>";
+							} 
+						}
+					   
+                        echo "<td class=xl7413019>".array_sum($samples_input_qty_arry)."</td>";
                         }
                     ?>
 
@@ -1952,7 +1991,7 @@ tags will be replaced.-->
                             for($i=0;$i<sizeof($s_tit);$i++) 
                             { 
                             //echo $i."-".$i."--".$c_s[$i]."<br>"; 
-                            echo "<td class=xl6813019 style='text-align:left'>".$o_s[$i]."</td>"; 
+                            echo "<td class=xl6813019 style='text-align:center'>".$o_s[$i]."</td>"; 
                             } 
                             echo "<td class=xl7513019> $order_total</td>"; 
 
@@ -2032,7 +2071,7 @@ tags will be replaced.-->
                                                 echo "<td class=xl7213019 width=70 style='width:53pt'>Extra Ship</td>"; 
                                                 for($i=$temp_len1;$i<$temp_len;$i++)
                                                 { 
-                                                    echo "<td class=xl6813019>".$o_s[$i]."</td>"; 
+                                                    echo "<td class=xl6813019 style='text-align:center'>".$o_s[$i]."</td>"; 
                                                 } 
                                             } 
                                             else 
@@ -2116,7 +2155,7 @@ tags will be replaced.-->
                                             echo "<td class=xl7213019 width=70 style='width:53pt'>Extra Ship</td>"; 
                                             for($j=$temp_len1;$j<$temp_len-1;$j++)
                                             { 
-                                                echo "<td class=xl6813019>".$o_s[$j]."</td>"; 
+                                                echo "<td class=xl6813019 style='text-align:center'>".$o_s[$j]."</td>"; 
                                             } 
                                         } 
                                         else 
@@ -3025,7 +3064,7 @@ tags will be replaced.-->
                                 $total+=$array_val; 
                             } 
                         echo "<td class=xl8713019>0</td>"; 
-                        echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>0</div><div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;border-top: 1px solid black;margin-top:10pt'>$array_val</div></td>";
+                        echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>0</div><div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;border-top: 1px solid black;margin-top:10pt'>$total</div></td>";
                         // echo "<td class=xl8713019 style='text-align: center;'>0<div style='width: 77px;text-align: center; float: right; height:100%;border-top: 1px solid black;'>$total</div></td>"; 
 
                         echo "<td class=xl8713019></td>"; 

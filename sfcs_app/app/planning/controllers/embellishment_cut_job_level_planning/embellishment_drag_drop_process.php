@@ -20,9 +20,22 @@
 		
 		if($items[0]=="allItems")
 		{
-			$sql="DELETE from $bai_pro3.embellishment_plan_dashboard where doc_no=".$items[1];
-			// echo "<br>1=".$sql."<br>";
-			mysqli_query($link,$sql) or exit("Sql Error6".mysqli_error());
+			$sql312="select doc_no FROM bai_pro3.plandoc_stat_log WHERE org_doc_no=".$items[1]."";
+			// echo "<br>4=".$sql3."<br>";
+			$sql_result312=mysqli_query($link,$sql312) or exit("Sql Error3".mysql_error());
+			if(mysqli_num_rows($sql_result312)>0)
+			{	
+				while($sql_row312=mysqli_fetch_array($sql_result312))
+				{
+					$sql34="DELETE from $bai_pro3.embellishment_plan_dashboard where doc_no=".$sql_row312['doc_no'];
+					mysqli_query($link,$sql34) or exit("Sql Error6".mysqli_error());
+				}
+			}
+			else
+			{
+				$sql34="DELETE from $bai_pro3.embellishment_plan_dashboard where doc_no=".$items[1];
+				mysqli_query($link,$sql34) or exit("Sql Error6".mysqli_error());
+			}			
 			$sql1="DELETE from $bai_pro3.cutting_table_plan where doc_no=".$items[1];
 			// echo "<br>1=".$sql1."<br>";
 			mysqli_query($link,$sql1) or exit("Sql Error6".mysqli_error());
@@ -64,23 +77,41 @@
 					$receive_operation=$sql_row3["operation_code"];
 					// echo $receive_operation."<br>";
 				}
-				
-				$sql="insert ignore into $bai_pro3.embellishment_plan_dashboard (doc_no,send_op_code,receive_op_code) values ('".$items[1]."','".$send_operation."','".$receive_operation."')";
-				// echo "<br>2=".$sql."<br>";
-				mysqli_query($link,$sql) or exit("Sql Error8".mysqli_error());
-
-				if(mysqli_insert_id($link)>0)
-				{
-					$sql="update $bai_pro3.embellishment_plan_dashboard set priority=$x, module=".$items[0].", log_time=\"".date("Y-m-d H:i:s")."\",orginal_qty='".$doc_qty."' where doc_no='".$items[1]."' and send_op_code='".$send_operation."' and receive_op_code='".$receive_operation."'";
-					// echo "<br>2=".$sql."<br>";
-					mysqli_query($link,$sql) or exit("Sql Error9".mysqli_error());
+				$doc_nos=array();
+				$sql31="select doc_no FROM bai_pro3.plandoc_stat_log WHERE org_doc_no=".$items[1]."";
+				// echo "<br>4=".$sql3."<br>";
+				$sql_result31=mysqli_query($link,$sql31) or exit("Sql Error3".mysql_error());
+				if(mysqli_num_rows($sql_result31)>0)
+				{	
+					while($sql_row31=mysqli_fetch_array($sql_result31))
+					{
+						$doc_nos[]=$sql_row31["doc_no"];
+					}
 				}
 				else
 				{
-					$sql="update $bai_pro3.embellishment_plan_dashboard set priority=$x, module=".$items[0].",orginal_qty='".$doc_qty."' where doc_no='".$items[1]."'  and send_op_code='".$send_operation."' and receive_op_code='".$receive_operation."'";
-					// echo "<br>3=".$sql."<br>";
-					mysqli_query($link,$sql) or exit("Sql Error10".mysqli_error());
+					$doc_nos[]=$items[1];
 				}
+				for($ii=0;$ii<sizeof($doc_nos);$ii++)
+				{
+					$sql="insert ignore into $bai_pro3.embellishment_plan_dashboard (doc_no,send_op_code,receive_op_code) values ('".$doc_nos[$ii]."','".$send_operation."','".$receive_operation."')";
+					// echo "<br>2=".$sql."<br>";
+					mysqli_query($link,$sql) or exit("Sql Error8".mysqli_error());
+
+					if(mysqli_insert_id($link)>0)
+					{
+						$sql="update $bai_pro3.embellishment_plan_dashboard set priority=$x, module=".$items[0].", log_time=\"".date("Y-m-d H:i:s")."\",orginal_qty='".$doc_qty."' where doc_no='".$doc_nos[$ii]."' and send_op_code='".$send_operation."' and receive_op_code='".$receive_operation."'";
+						// echo "<br>2=".$sql."<br>";
+						mysqli_query($link,$sql) or exit("Sql Error9".mysqli_error());
+					}
+					else
+					{
+						$sql="update $bai_pro3.embellishment_plan_dashboard set priority=$x, module=".$items[0].",orginal_qty='".$doc_qty."' where doc_no='".$doc_nos[$ii]."'  and send_op_code='".$send_operation."' and receive_op_code='".$receive_operation."'";
+						// echo "<br>3=".$sql."<br>";
+						mysqli_query($link,$sql) or exit("Sql Error10".mysqli_error());
+					}
+				}
+				unset($doc_nos);
 				$sql12="select * from $bai_pro3.cutting_table_plan where doc_no='$items[1]'";
 				$resultr112=mysqli_query($link, $sql12) or exit("Sql Error5 == ".$sql12.' == '.mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($resultr112)==0)

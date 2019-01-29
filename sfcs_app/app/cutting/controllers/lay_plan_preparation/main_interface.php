@@ -256,6 +256,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$carton_id=$sql_row['carton_id'];
     $destination=$sql_row['destination'];
 	$order_del_no=$sql_row['order_del_no'];
+	$order_joins=$sql_row['order_joins'];
 	
 	$o_s_s01=$sql_row['order_s_s01'];
 	$o_s_s02=$sql_row['order_s_s02'];
@@ -435,6 +436,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}
 		
 			
+		$order_joins = $sql_row['order_joins'];
 		$flag = $sql_row['title_flag'];
 		/* Start  Adding MPO Number  */
 		$sql="SELECT DISTINCT CPO AS MPO FROM m3_inputs.shipment_plan where schedule_no=\"$order_del_no\"";
@@ -523,40 +525,76 @@ if($flag==1)
 	echo "<th class=\"title\">Total</th>";
 	echo "</tr></thead>";
 }
-
-//Getting sample details here  By SK-05-07-2018 == Start
-$samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$tran_order_tid' order by sizes_ref";
-$samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
-$num_rows_samples = mysqli_num_rows($samples_qry_result);
-
-if($num_rows_samples >0){
-	$samples_total = 0;	
-	echo "<tr ><th class=\"heading2\">Samples Qty</th>";
-	while($samples_data=mysqli_fetch_array($samples_qry_result))
+$order_tidss=array();
+if($order_joins<>'0')
+{
+	if(strlen($schedule)<8)
 	{
-		$samples_total+=$samples_data['input_qty'];
-		$samples_size_arry[] =$samples_data['sizes_ref'];
-		$samples_input_qty_arry[] =$samples_data['input_qty'];
-	}	
-	for($s=0;$s<sizeof($s_tit);$s++)
-	{
-		$size_code = 's'.$sizes_code[$s];
-		$flg = 0;
-		for($ss=0;$ss<sizeof($samples_size_arry);$ss++)
+		$orders_join='J'.substr($color,-1);
+		
+		$select_sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
+		//echo $select_sql."<br>";
+		$result=mysqli_query($link, $select_sql);
+		while($rows=mysqli_fetch_array($result))
 		{
-			if($size_code == $samples_size_arry[$ss]){
-				echo "<td class=\"sizes\">".$samples_input_qty_arry[$ss]."</td>";
-				$flg = 1;
-			}			
-		}	
-		if($flg == 0){
-			echo "<td class=\"sizes\"><strong>-</strong></td>";
+			$order_tidss[]=$rows['order_tid'];
 		}
-	}		
-	echo "<td class=\"sizes\">".$samples_total."</td></tr>";
+	}
+	else
+	{
+		$select_sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='J".$schedule."'";
+		//echo $select_sql."<br>";
+		$result=mysqli_query($link, $select_sql);
+		while($rows=mysqli_fetch_array($result))
+		{
+			$order_tidss[]=$rows['order_tid'];
+		}	
+	}	
+}
+else
+{
+	$order_tidss[]=$tran_order_tid;
 }
 
-// Samples End By SK-05-07-2018
+//var_dump($order_tidss)."<Br>";
+for($ii=0;$ii<sizeof($order_tidss);$ii++)
+{
+	$samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$order_tidss[$ii]' order by sizes_ref";
+	$samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$num_rows_samples = mysqli_num_rows($samples_qry_result);
+	if($num_rows_samples >0)
+	{		
+		while($samples_data=mysqli_fetch_array($samples_qry_result))
+		{
+			for($s=0;$s<sizeof($s_tit);$s++)
+			{
+				if($samples_data['size']==$s_tit[$sizes_code[$s]])
+				{
+					$samples_total+=$samples_data['input_qty'];
+					$samples_input_qty_arry[$s_tit[$sizes_code[$s]]] = $samples_input_qty_arry[$s_tit[$sizes_code[$s]]]+
+																	   $samples_data['input_qty'];
+				}
+			}
+		}		
+	}
+}
+if(array_sum($samples_input_qty_arry)>0)
+{
+	echo "<tr ><th class=\"heading2\">Samples Qty</th>";
+	for($st=0;$st<sizeof($s_tit);$st++)
+	{
+		if($samples_input_qty_arry[$s_tit[$sizes_code[$st]]]<>'')
+		{
+			echo "<td class=\"sizes\">".$samples_input_qty_arry[$s_tit[$sizes_code[$st]]]."</td>";
+		}
+		else		
+		{
+			echo "<td class=\"sizes\">-</td>";
+		}
+	}
+	echo "<td class=\"sizes\">".$samples_total."</td></tr>";
+}	
+
 $label = 'Original Qty';
 if($order_no>0)
 {
@@ -882,56 +920,56 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-		$order_s01=$sql_row['order_s_s01'];
-$order_s02=$sql_row['order_s_s02'];
-$order_s03=$sql_row['order_s_s03'];
-$order_s04=$sql_row['order_s_s04'];
-$order_s05=$sql_row['order_s_s05'];
-$order_s06=$sql_row['order_s_s06'];
-$order_s07=$sql_row['order_s_s07'];
-$order_s08=$sql_row['order_s_s08'];
-$order_s09=$sql_row['order_s_s09'];
-$order_s10=$sql_row['order_s_s10'];
-$order_s11=$sql_row['order_s_s11'];
-$order_s12=$sql_row['order_s_s12'];
-$order_s13=$sql_row['order_s_s13'];
-$order_s14=$sql_row['order_s_s14'];
-$order_s15=$sql_row['order_s_s15'];
-$order_s16=$sql_row['order_s_s16'];
-$order_s17=$sql_row['order_s_s17'];
-$order_s18=$sql_row['order_s_s18'];
-$order_s19=$sql_row['order_s_s19'];
-$order_s20=$sql_row['order_s_s20'];
-$order_s21=$sql_row['order_s_s21'];
-$order_s22=$sql_row['order_s_s22'];
-$order_s23=$sql_row['order_s_s23'];
-$order_s24=$sql_row['order_s_s24'];
-$order_s25=$sql_row['order_s_s25'];
-$order_s26=$sql_row['order_s_s26'];
-$order_s27=$sql_row['order_s_s27'];
-$order_s28=$sql_row['order_s_s28'];
-$order_s29=$sql_row['order_s_s29'];
-$order_s30=$sql_row['order_s_s30'];
-$order_s31=$sql_row['order_s_s31'];
-$order_s32=$sql_row['order_s_s32'];
-$order_s33=$sql_row['order_s_s33'];
-$order_s34=$sql_row['order_s_s34'];
-$order_s35=$sql_row['order_s_s35'];
-$order_s36=$sql_row['order_s_s36'];
-$order_s37=$sql_row['order_s_s37'];
-$order_s38=$sql_row['order_s_s38'];
-$order_s39=$sql_row['order_s_s39'];
-$order_s40=$sql_row['order_s_s40'];
-$order_s41=$sql_row['order_s_s41'];
-$order_s42=$sql_row['order_s_s42'];
-$order_s43=$sql_row['order_s_s43'];
-$order_s44=$sql_row['order_s_s44'];
-$order_s45=$sql_row['order_s_s45'];
-$order_s46=$sql_row['order_s_s46'];
-$order_s47=$sql_row['order_s_s47'];
-$order_s48=$sql_row['order_s_s48'];
-$order_s49=$sql_row['order_s_s49'];
-$order_s50=$sql_row['order_s_s50'];
+	$order_s01=$sql_row['order_s_s01'];
+	$order_s02=$sql_row['order_s_s02'];
+	$order_s03=$sql_row['order_s_s03'];
+	$order_s04=$sql_row['order_s_s04'];
+	$order_s05=$sql_row['order_s_s05'];
+	$order_s06=$sql_row['order_s_s06'];
+	$order_s07=$sql_row['order_s_s07'];
+	$order_s08=$sql_row['order_s_s08'];
+	$order_s09=$sql_row['order_s_s09'];
+	$order_s10=$sql_row['order_s_s10'];
+	$order_s11=$sql_row['order_s_s11'];
+	$order_s12=$sql_row['order_s_s12'];
+	$order_s13=$sql_row['order_s_s13'];
+	$order_s14=$sql_row['order_s_s14'];
+	$order_s15=$sql_row['order_s_s15'];
+	$order_s16=$sql_row['order_s_s16'];
+	$order_s17=$sql_row['order_s_s17'];
+	$order_s18=$sql_row['order_s_s18'];
+	$order_s19=$sql_row['order_s_s19'];
+	$order_s20=$sql_row['order_s_s20'];
+	$order_s21=$sql_row['order_s_s21'];
+	$order_s22=$sql_row['order_s_s22'];
+	$order_s23=$sql_row['order_s_s23'];
+	$order_s24=$sql_row['order_s_s24'];
+	$order_s25=$sql_row['order_s_s25'];
+	$order_s26=$sql_row['order_s_s26'];
+	$order_s27=$sql_row['order_s_s27'];
+	$order_s28=$sql_row['order_s_s28'];
+	$order_s29=$sql_row['order_s_s29'];
+	$order_s30=$sql_row['order_s_s30'];
+	$order_s31=$sql_row['order_s_s31'];
+	$order_s32=$sql_row['order_s_s32'];
+	$order_s33=$sql_row['order_s_s33'];
+	$order_s34=$sql_row['order_s_s34'];
+	$order_s35=$sql_row['order_s_s35'];
+	$order_s36=$sql_row['order_s_s36'];
+	$order_s37=$sql_row['order_s_s37'];
+	$order_s38=$sql_row['order_s_s38'];
+	$order_s39=$sql_row['order_s_s39'];
+	$order_s40=$sql_row['order_s_s40'];
+	$order_s41=$sql_row['order_s_s41'];
+	$order_s42=$sql_row['order_s_s42'];
+	$order_s43=$sql_row['order_s_s43'];
+	$order_s44=$sql_row['order_s_s44'];
+	$order_s45=$sql_row['order_s_s45'];
+	$order_s46=$sql_row['order_s_s46'];
+	$order_s47=$sql_row['order_s_s47'];
+	$order_s48=$sql_row['order_s_s48'];
+	$order_s49=$sql_row['order_s_s49'];
+	$order_s50=$sql_row['order_s_s50'];
 
 	
 }
@@ -1626,6 +1664,7 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 						</select>
 					</div>
 						<input type="hidden" id="style" name="style" value="<?=$style;?>"/>
+						<input type="hidden" id="order_joins_no" name="order_joins_no" value="<?=$order_joins;?>"/>
 						<input type="hidden" id="schedule" name="schedule" value="<?=$schedule;?>"/>
 						<input type="hidden" id="color" name="color" value="<?=$color;?>"/>
 						<input type="hidden" id="user" name="user" value="<?=$user;?>"/>
@@ -1655,7 +1694,7 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 							<option value='2' selected>Last Cut</option>
 						</select></div>";
 				}
-				echo "<input type='hidden' id='style' name='style' value=$style><input type='hidden' id='schedule' name='schedule' value=$schedule><input type='hidden' id='color' name='color' value='$color'><input type='hidden' id='user' name='user' value=$user/>";
+				echo "<input type='hidden' id='style' name='style' value=$style><input type='hidden' id='schedule' name='schedule' value=$schedule><input type='hidden' id='order_joins_no' name='order_joins_no' value=$order_joins><input type='hidden' id='color' name='color' value='$color'><input type='hidden' id='user' name='user' value=$user/>";
 				//check whether sewing job created or not
 				if($check=='1'){
 				} else {
