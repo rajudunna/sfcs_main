@@ -43,25 +43,31 @@ if($_POST['put'])
 			//echo "ok";
 			if($available[$i]==$qty_issued[$i])
 			{
-				$sql="update $bai_rm_pj1.store_in set ref1=\"".$n_location[$i]."\" where barcode_number=".$barcode_number[$i];
+				$sql="update $bai_rm_pj1.store_in set ref1=\"".$n_location[$i]."\" where barcode_number='$barcode_number[$i]'";
 				//echo $sql;
 				$sql_result2=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
-				$sql="insert into $bai_rm_pj1.location_trnsf (date,source_location,new_location,tid,lot_no,remarks,old_qty,new_qty,log_user) values (\"$date\",\"".$s_location[$i]."\",\"".$n_location[$i]."\",\"".$barcode_number[$i]."\",\"".$lot_no_new."\",\"".$remarks[$i]."\",".$available[$i].",".$qty_issued[$i].",USER())";
+				$sql="insert into $bai_rm_pj1.location_trnsf (date,source_location,new_location,tid,lot_no,remarks,old_qty,new_qty,log_user) values (\"$date\",\"".$s_location[$i]."\",\"".$n_location[$i]."\",\"".$barcode_number[$i]."\",\"".$lot_no_new."\",\"".$remarks[$i]."\",".$available[$i].",".$qty_issued[$i].",\"$username\")";
 //echo $sql;
 				$sql_result1=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 			else
 			{
-				$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, ref3, qty_rec, date, remarks,log_user,barcode_number,ref_tid) select lot_no,\"".$n_location[$i]."\",ref2,ref3,".$qty_issued[$i].",\"$date\",\"Transfer-".$remarks[$i]."\",\"$username\",\"".$barcode_number[$i]."\",\"".$ref_tid[$i]."\" from $bai_rm_pj1.store_in where barcode_number='$barcode_number[$i]'";
+				$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, ref3, qty_rec, date, remarks,log_user,barcode_number,ref_tid) select lot_no,\"".$n_location[$i]."\",ref2,ref3,".$qty_issued[$i].",\"$date\",\"Transfer-".$remarks[$i]."\",\"$username\",'0',\"".$ref_tid[$i]."\" from $bai_rm_pj1.store_in where barcode_number='$barcode_number[$i]'";
 //echo $sql;
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+				$new_tid=mysqli_insert_id($link);
+				
+				$sql="update $bai_rm_pj1.store_in set barcode_number='".$facility_code."-".$new_tid."' where tid='$new_tid'";
+				//echo $sql;
+				$sql_result2=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				$sql="update $bai_rm_pj1.store_in set qty_rec=".($qty_rec[$i]-$qty_issued[$i])." where barcode_number='$barcode_number[$i]'";
 				//echo $sql;
 				$sql_result2=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
-				$sql="insert into $bai_rm_pj1.location_trnsf (date,source_location,new_location,tid,lot_no,remarks,old_qty,new_qty,log_user) values (\"$date\",\"".$s_location[$i]."\",\"".$n_location[$i]."\",\"".$barcode_number[$i]."\",\"".$lot_no_new."\",\"".$remarks[$i]."\",".$available[$i].",".$qty_issued[$i].",USER())";
+				$sql="insert into $bai_rm_pj1.location_trnsf (date,source_location,new_location,tid,lot_no,remarks,old_qty,new_qty,log_user) values (\"$date\",\"".$s_location[$i]."\",\"".$n_location[$i]."\",\"".$barcode_number[$i]."\",\"".$lot_no_new."\",\"".$remarks[$i]."\",".$available[$i].",".$qty_issued[$i].",\"$username\")";
 //echo $sql;
 				$sql_result1=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
