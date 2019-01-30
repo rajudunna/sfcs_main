@@ -590,7 +590,7 @@ $(document).ready(function(){
 						if(Math.floor(this.valueOf()) === this.valueOf()) return 0;
 						return this.toString().split(".")[1].length || 0; 
 					}
-					var no_of_decimals = pre_ops_order.countDecimals();
+					var no_of_decimals = Number(pre_ops_order).countDecimals();
 					console.log(pre_ops_order_string);
 					pre_ops_order_string += '1';
 					var actual_ops_order = pre_ops_order_string;
