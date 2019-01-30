@@ -122,7 +122,25 @@ else
 						$actual_quentity_present = ($barcode_data['qty_rec']-$barcode_data['qty_issued'])+$barcode_data['qty_ret'];
 						//$actual_quentity_present = $barcode_data['qty_rec']-$barcode_data['qty_issued'];
 						// echo $actual_quentity_present.'if';
-			
+						if (is_numeric($barcode_data['ref5'])) {
+							$ref5=$barcode_data['ref5'];
+						}
+						else{
+							$ref5='0';
+						}
+						if (is_numeric($barcode_data['ref6'])) {
+							$ref6=$barcode_data['ref6'];
+						}
+						else{
+							$ref6='0';
+						}
+						if (is_numeric($barcode_data['ref3'])) {
+							$ref3=$barcode_data['ref3'];
+						}
+						else{
+							$ref3='0';
+						}
+						
 						if($actual_quentity_present>0)
 						{							
 								//=================== check rmwh db with present tid ==================
@@ -133,7 +151,7 @@ else
 								{
 									// echo $res_check_rm_db->num_rows.'aaaaa';
 									//=============== Insert Data in rmwh ==========================
-									$qry_insert_update_rmwh_data = "INSERT INTO $bai_rm_pj1.`store_in`(`lot_no`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `remarks`, `log_stamp`, `status`,`ref2`,`ref3`,`ref4`,`ref5`,`ref6`,`log_user`,`barcode_number`,`ref_tid`) VALUES ('".$barcode_data['lot_no']."','".$actual_quentity_present."','0','0','".date('Y-m-d')."','Directly came from ".$plant_name1."','".date('Y-m-d H:i:s')."','".$barcode_data['status']."','".$barcode_data['ref2']."','".$barcode_data['ref3']."','".$barcode_data['ref4']."','".$barcode_data['ref5']."','".$barcode_data['ref6']."','".$username."^".date('Y-m-d H:i:s')."','".$bar_code_new."','".$tid_new."')";	
+									$qry_insert_update_rmwh_data = "INSERT INTO $bai_rm_pj1.`store_in`(`lot_no`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `remarks`, `log_stamp`, `status`,`ref2`,`ref3`,`ref4`,`ref5`,`ref6`,`log_user`,`barcode_number`,`ref_tid`) VALUES ('".$barcode_data['lot_no']."','".$actual_quentity_present."','0','0','".date('Y-m-d')."','Directly came from ".$plant_name1."','".date('Y-m-d H:i:s')."','".$barcode_data['status']."','".$barcode_data['ref2']."','$ref3','".$barcode_data['ref4']."','$ref5','$ref6','".$username."^".date('Y-m-d H:i:s')."','".$bar_code_new."','".$tid_new."')";	
 									// echo $qry_insert_update_rmwh_data."<br/>";
 	
 									$res_insert_update_rmwh_data = $link->query($qry_insert_update_rmwh_data);
