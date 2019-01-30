@@ -62,11 +62,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
     $item=$sql_row['item'];
     $item_name=str_replace("?","",utf8_decode($sql_row['item_name']));
     $item_desc=str_replace("?","",utf8_decode($sql_row['item_desc']));
-    $inv_no=$sql_row['inv_no'];
+	$inv_no=$sql_row['inv_no'];
+	$ref_inv_no=str_replace("'","",str_replace('"','',$sql_row['inv_no']));
     $po_no=$sql_row['po_no'];
     $rec_no=$sql_row['rec_no'];
     $rec_qty=$sql_row['rec_qty'];
-    $batch_no=$sql_row['batch_no'];
+	$batch_no=$sql_row['batch_no'];
+	$ref_batch_no=str_replace("'","",str_replace('"','',$sql_row['batch_no']));
     $buyer=$sql_row['buyer'];
     $pkg_no=$sql_row['pkg_no'];
     $grn_date=$sql_row['grn_date'];
@@ -78,8 +80,10 @@ if($uom_ref=='MTR')
 }
 
 $child_lots="";
+$symbol='"';
 
-$sql="select group_concat(right(lot_no,4) SEPARATOR \" /\") as child_lots from $bai_rm_pj1.sticker_report where batch_no=\"$batch_no\" and inv_no=\"$inv_no\" and item=\"$item\" and lot_no not in ($lot_no)";
+$sql="select group_concat(right(lot_no,4) SEPARATOR \" /\") as child_lots from $bai_rm_pj1.sticker_report where REPLACE(REPLACE(batch_no,".$symbol."'".$symbol.",".$symbol."".$symbol."),'".$symbol."','')=\"".$ref_batch_no."\" and REPLACE(REPLACE(inv_no,".$symbol."'".$symbol.",".$symbol."".$symbol."),'".$symbol."','')=\"".$ref_inv_no."\" and item=\"".$item."\" and lot_no not in ($lot_no)";
+echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
