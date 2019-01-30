@@ -182,7 +182,7 @@ white-space:nowrap;
 
     <body onload="showHideDiv()"> 
         <div class="panel panel-primary">
-            <div class="panel-heading"><strong>Hourly Efficency Report (Rework)</strong></div>
+            <div class="panel-heading"><strong>Hourly Efficiency Report (Rework)</strong></div>
             <div class="panel-body">
                 <div id="non-printable"> 
                     <!-- <a href="#" onClick="print(); return false;">click here to print this page</a> --> 
