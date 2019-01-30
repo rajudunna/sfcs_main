@@ -573,8 +573,8 @@ $(document).ready(function(){
 			var component1 =  "'"+component+"'";
 			var s = $('#oper_code1').val();
 			//logic implimentation for operation_order
-		    var pre_ops_order = Number($('#rowId').val());
-			var first_ops_order = Number($('#first_ops_id').val());
+		    var pre_ops_order = $('#rowId').val();
+			var first_ops_order = $('#first_ops_id').val();
 			//var pre_ops_order = 10.111;
 			if(first_ops_order == 0)
 			{
@@ -593,7 +593,7 @@ $(document).ready(function(){
 					var no_of_decimals = pre_ops_order.countDecimals();
 					console.log(pre_ops_order_string);
 					pre_ops_order_string += '1';
-					var actual_ops_order = Number(pre_ops_order_string);
+					var actual_ops_order = pre_ops_order_string;
 				}
 
 			}
