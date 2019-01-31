@@ -39,14 +39,27 @@ $userName = getrbac_user()['uname'];
 				 //die();
 				mysqli_query($link, $insert_log_query) or die("Error while saving the track details1");
 			}
-			
+			$exisitng_docs = [];
 			$sqly="SELECT group_concat(doc_no) as doc_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$items[1]."' ORDER BY acutno";
 			//echo $sqly.";<br>";
 			$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowy=mysqli_fetch_array($resulty))
 			{
-				$doc_no_ref_input=$sql_rowy["doc_no"];
+				$doc_no_ref_input=$sql_rowy["doc_no"]; 
 			}
+			$incoming_docs = explode(',',$doc_no_ref_input);
+			$fabric_status_query = "SELECT doc_ref from $bai_pro3.fabric_priorities where doc_ref IN ($doc_no_ref_input)";
+			$fabric_status_result = mysqli_query($link,$fabric_status_query);
+			while($rowfs = mysqli_fetch_array($fabric_status_result)){
+				$exisitng_docs[] = $rowfs['doc_ref'];
+			}
+			$diff_docs = array_diff($incoming_docs,$exisitng_docs);
+			$doc_no_ref_input = implode(',',$diff_docs);
+			if($doc_no_ref_input == '')
+				$doc_no_ref_input = 1;
+			unset($diff_docs);
+			unset($exisitng_docs);
+			unset($incoming_docs);
 			$org_docs=array();
 			$org_docs[] = '-1';
 			$sql="select * from $bai_pro3.plandoc_stat_log where doc_no in (".$doc_no_ref_input.")";
