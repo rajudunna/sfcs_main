@@ -3,8 +3,13 @@
 //searching the bcd_id in rejection log child or not
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 echo "Started<br/>";
-$bcd_qry ="SELECT id,rejected_qty FROM $brandix_bts.`bundle_creation_data` WHERE rejected_qty > 0 AND SCHEDULE NOT IN 
-(SELECT DISTINCT SCHEDULE FROM $bai_pro3.`rejections_log`)";
+$bcd_qry ="SELECT bcd.id AS id,SUM(qms_qty) AS qrej,SUM(rejected_qty) AS rejected_qty
+            FROM bai_pro3.bai_qms_db bqd
+            LEFT JOIN brandix_bts.bundle_creation_data bcd ON bcd.bundle_number = bqd.bundle_no AND bcd.operation_id = bqd.operation_id
+            WHERE log_date < '2019-01-26' AND qms_tran_type = 3
+            AND bqd.operation_id IN (900,130,100)
+            GROUP BY bundle_no,bqd.operation_id
+            HAVING rejected_qty = qrej";
 // echo $bcd_qry.'</br>';
 $bcd_qry_result=mysqli_query($link,$bcd_qry) or exit("Initial Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 echo "Running<br/>";
