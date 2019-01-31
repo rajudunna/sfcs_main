@@ -312,6 +312,10 @@ $(document).ready(function()
 				{
 					module_flag = 0; // allow
 				}
+				if (barcode_generation == 0)
+				{
+					module_flag = 0; // allow
+				}
 				if(module_flag == 0)
 				{
 					var array = [job_number,operation_id,barcode_generation,assign_module];
