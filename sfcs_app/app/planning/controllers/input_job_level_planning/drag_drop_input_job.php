@@ -758,25 +758,11 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 			mysqli_query($link, $sql) or exit("$sql Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 			
-		$sections_ref=array();
-		$sqlx1="select * from $bai_pro3.sections_db where sec_id>0";
-		// echo "<br> SQLx1 :".$sqlx1."</br>";
-		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
-		{
-			$section_mods1=$sql_rowx1['sec_mods'];
-			$mods1=explode(",",$section_mods1);
-			for($x1=0;$x1<sizeof($mods1);$x1++)
-			{
-				$sections_ref[]=$sql_rowx1['sec_id'];
-			}
-		}		
-			
-		$sqlx="select * from $bai_pro3.sections_db where sec_id in (".implode(",",$sections_ref).")";
-		$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error31".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_rowx=mysqli_fetch_array($sql_resultx))
-		{
-
+		$sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name GROUP BY section ORDER BY section + 0";
+      $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    
+      while($sql_rowx=mysqli_fetch_array($sql_resultx))
+      {
 			$section=$sql_rowx['sec_id'];
 			$section_head=$sql_rowx['sec_head'];
 			$section_mods=$sql_rowx['sec_mods'];
