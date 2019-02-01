@@ -423,6 +423,7 @@ if($barcode_generation == 1)
 					$qms[$nop_qry_row['bundle_number']]['bundle_no'] = $nop_qry_row['bundle_number'];
 					$qms[$nop_qry_row['bundle_number']]['remarks'] = $remarks;
 					$actual_bundles[] = $nop_qry_row['bundle_number'];
+					$barcode_seq[] = $nop_qry_row['barcode_sequence'];
 					$barcode_sequence[] = $nop_qry_row['barcode_sequence'];
 					$b_colors_1[] =  $nop_qry_row['color'];
 					$b_sizes_1[] =  $nop_qry_row['size_title'];

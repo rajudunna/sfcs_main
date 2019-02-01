@@ -89,10 +89,10 @@
 						 
 					 </div><br>';
 		
-					 $seq_num++;
-					//reset sequence number by size and color
-					$size_temp=$size;
-					$color_temp=$color;
+			$seq_num++;
+			//reset sequence number by size and color
+			$size_temp=$size;
+			$color_temp=$color;
 			$update_bundle_print_status="UPDATE $bai_pro3.pac_stat_log_input_job SET bundle_print_status='1', bundle_print_time=now() WHERE tid='".$barcode."'";	
 			mysqli_query($link, $update_bundle_print_status)  or exit("Error while updatiing bundle print status for bundle: ".$barcode);
 		}

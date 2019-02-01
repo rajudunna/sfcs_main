@@ -136,6 +136,8 @@
 			$size_temp=$size;
 			$color_temp=$color;
 			$cutno_temp=$cutno;
+			$update_bundle_print_status="UPDATE $bai_pro3.pac_stat_log_input_job SET bundle_print_status='1', bundle_print_time=now() WHERE tid='".$barcode."'";	
+			mysqli_query($link, $update_bundle_print_status)  or exit("Error while updatiing bundle print status for bundle: ".$barcode);
 		}
 	$html.='
 				</body>
