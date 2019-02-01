@@ -339,8 +339,16 @@ else
 		    $to_get_cpk_result= $link->query($to_get_cpk);
 		    while ($row3 = $to_get_cpk_result->fetch_assoc())
 		    {
-		    	$cpk_qty = $row3['carton_qty'];
+		    	$cpk_main_qty = $row3['carton_qty'];
 		    }
+
+		    if($cpk_main_qty >0)
+		    {
+              $cpk_qty = $cpk_main_qty;
+		    }else
+		    {
+              $cpk_qty = 0;
+		    }	
 			$bcd_rec[200] = $cpk_qty;
 			$bcd_rej[200] = 0;
 		    //echo $cpk_qty;
