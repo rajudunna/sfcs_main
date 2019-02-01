@@ -334,7 +334,7 @@ else
 
 
 
-		    $to_get_cpk="select sum(carton_act_qty) as  carton_qty from $bai_pro3.pac_stat_log where style='$style' and schedule='$schedule' and color='$color' and size_code='$size_code' ";
+		    $to_get_cpk="select sum(carton_act_qty) as  carton_qty from $bai_pro3.pac_stat_log where style='$style' and schedule='$schedule' and color='$color' and size_code='$size_code' and status='DONE'";
 		    //echo $to_get_cpk;
 		    $to_get_cpk_result= $link->query($to_get_cpk);
 		    while ($row3 = $to_get_cpk_result->fetch_assoc())
