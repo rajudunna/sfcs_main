@@ -551,9 +551,10 @@ tags will be replaced.-->
   <td class=xl662606 width=199 style='width:149pt'></td>
   <td class=xl662606 width=16 style='width:12pt'></td>
  </tr>
+ <tr style='height:50pt'></tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
- <td colspan=3 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
+ <td colspan=3 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="180" height="60"></td>
   <td colspan=4 class=xl822606>Brandix Essentials Limited, <?= $plant_name ?> </td>
   <td class=xl742606>CUSTOMER COPY</td>
   <td class=xl662606></td>
@@ -573,7 +574,8 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=6 class=xl772606>Sri Lanka.</td>
+  <td colspan=3></td>
+  <td colspan=3 class=xl772606>Sri Lanka.</td>
   <td class=xl662606></td>
   <td class=xl712606 style='border-top:none'><?php echo $disp_id; ?></td>
   <td class=xl662606></td>
@@ -1106,17 +1108,17 @@ tags will be replaced.-->
   <td class=xl662606 width=199 style='width:149pt'></td>
   <td class=xl662606 width=16 style='width:12pt'></td>
  </tr>
- <tr height=22 style='height:16.5pt'>
+ <tr style='height:50pt'></tr>
+<tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
- <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
-  <td colspan=4 class=xl822606>Brandix Essentials Limited, <?= $plant_name ?></td>
-  <td class=xl662606></td>
+ <td colspan=3 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="180" height="60"></td>
+  <td colspan=4 class=xl822606>Brandix Essentials Limited, <?= $plant_name ?> </td>
   <td class=xl742606>FG COPY</td>
   <td class=xl662606></td>
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=4 class=xl772606>Plot # 12, BEK SEZ</td>
+  <td colspan=4 class=xl772606>Plot # 12 , BEK SEZ,</td>
   <td class=xl662606></td>
   <td class=xl662606></td>
   <td class=xl662606></td>
@@ -1124,13 +1126,13 @@ tags will be replaced.-->
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
   <td colspan=4 class=xl772606><?= $plant_name ?>, </td>
-  <td class=xl662606></td>
   <td class=xl732606>Dispatch Note No</td>
   <td class=xl662606></td>
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=4 class=xl772606>Sri Lanka.</td>
+  <td colspan=3></td>
+  <td colspan=3 class=xl772606>Sri Lanka.</td>
   <td class=xl662606></td>
   <td class=xl712606 style='border-top:none'><?php echo $disp_id; ?></td>
   <td class=xl662606></td>
@@ -1667,17 +1669,17 @@ tags will be replaced.-->
   <td class=xl662606 width=199 style='width:149pt'></td>
   <td class=xl662606 width=16 style='width:12pt'></td>
  </tr>
+ <tr style='height:50pt'></tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
- <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
-  <td colspan=4 class=xl822606>Brandix Essentials Limited, <?= $plant_name ?></td>
-  <td class=xl662606></td>
+ <td colspan=3 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="180" height="60"></td>
+  <td colspan=4 class=xl822606>Brandix Essentials Limited, <?= $plant_name ?> </td>
   <td class=xl742606>LOGISTICS COPY</td>
   <td class=xl662606></td>
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=4 class=xl772606>Plot # 12, BEK SEZ, </td>
+  <td colspan=4 class=xl772606>Plot # 12 , BEK SEZ,</td>
   <td class=xl662606></td>
   <td class=xl662606></td>
   <td class=xl662606></td>
@@ -1685,13 +1687,13 @@ tags will be replaced.-->
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
   <td colspan=4 class=xl772606><?= $plant_name ?>, </td>
-  <td class=xl662606></td>
   <td class=xl732606>Dispatch Note No</td>
   <td class=xl662606></td>
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=4 class=xl772606>Sri Lanka.</td>
+  <td colspan=3></td>
+  <td colspan=3 class=xl772606>Sri Lanka.</td>
   <td class=xl662606></td>
   <td class=xl712606 style='border-top:none'><?php echo $disp_id; ?></td>
   <td class=xl662606></td>
@@ -2223,17 +2225,17 @@ tags will be replaced.-->
   <td class=xl662606 width=199 style='width:149pt'></td>
   <td class=xl662606 width=16 style='width:12pt'></td>
  </tr>
- <tr height=22 style='height:16.5pt'>
+<tr style='height:50pt'></tr>
+<tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
- <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
-  <td colspan=4 class=xl822606>Brandix Essentials Limited, <?= $plant_name ?></td>
-  <td class=xl662606></td>
+ <td colspan=3 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="180" height="60"></td>
+  <td colspan=4 class=xl822606>Brandix Essentials Limited, <?= $plant_name ?> </td>
   <td class=xl742606>SECURITY COPY</td>
   <td class=xl662606></td>
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=4 class=xl772606>Plot # 12, BEK SEZ,</td>
+  <td colspan=4 class=xl772606>Plot # 12 , BEK SEZ,</td>
   <td class=xl662606></td>
   <td class=xl662606></td>
   <td class=xl662606></td>
@@ -2241,13 +2243,13 @@ tags will be replaced.-->
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
   <td colspan=4 class=xl772606><?= $plant_name ?>, </td>
-  <td class=xl662606></td>
   <td class=xl732606>Dispatch Note No</td>
   <td class=xl662606></td>
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=4 class=xl772606>Sri Lanka.</td>
+  <td colspan=3></td>
+  <td colspan=3 class=xl772606>Sri Lanka.</td>
   <td class=xl662606></td>
   <td class=xl712606 style='border-top:none'><?php echo $disp_id; ?></td>
   <td class=xl662606></td>
