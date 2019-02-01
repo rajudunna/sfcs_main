@@ -759,7 +759,7 @@ else if($concurrent_flag == 0)
 		}
 		$to_add = array_sum($b_rep_qty)+array_sum($b_rej_qty);
 		$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $b_doc_num[$key] and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
-		echo $update_qry_cps_log.'</br>';
+		// echo $update_qry_cps_log.'</br>';
 		$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 		$actual_rejection_reason_array_string = array();
 		foreach($b_tid as $key=>$value)
