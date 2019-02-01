@@ -214,18 +214,27 @@ function getjobdetails($job_number)
 		if($schedule_count_query->num_rows > 0)
 		{
 			if($module_no==0){
-				$schedule_query = "SELECT sum(recut_in)as recut_in,sum(replace_in)as replace_in,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,((SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number)  order by docket_number) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id = $job_number[4] GROUP BY size_code,order_col_des,assigned_module order by tid";
+				$schedule_query = "SELECT sum(recut_in)as recut_in,sum(replace_in)as replace_in,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,((SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number)  order by docket_number) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module,barcode_sequence FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id = $job_number[4] GROUP BY size_code,order_col_des,assigned_module order by tid";
 				
 			}else{
-				$schedule_query = "SELECT sum(recut_in)as recut_in,sum(replace_in)as replace_in,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,((SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number)  order by docket_number) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id =$job_number[4] and assigned_module = '$module_no' GROUP BY size_code,order_col_des,assigned_module order by tid";
+				$schedule_query = "SELECT sum(recut_in)as recut_in,sum(replace_in)as replace_in,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,((SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number)  order by docket_number) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module,barcode_sequence FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id =$job_number[4] and assigned_module = '$module_no' GROUP BY size_code,order_col_des,assigned_module order by tid";
 			}
 
 			$flag = 'bundle_creation_data';
 		}
 		else
 		{
-			$schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty,GROUP_CONCAT(DISTINCT(doc_no)  order by doc_no) as doc_no,'packing_summary_input' as flag,0 as recut_in,0 as replace_in FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$actual_input_job_number' GROUP BY size_code,order_col_des order by tid";
-			$flag = 'packing_summary_input';
+			if($job_number[2] == 1)
+			{
+				$schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty,GROUP_CONCAT(DISTINCT(doc_no)  order by doc_no) as doc_no,'packing_summary_input' as flag,0 as recut_in,0 as replace_in FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$actual_input_job_number' GROUP BY size_code,order_col_des order by tid";
+				$flag = 'packing_summary_input';
+			}
+			else
+			{
+				$schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty,GROUP_CONCAT(DISTINCT(doc_no)  order by doc_no) as doc_no,'packing_summary_input' as flag,0 as recut_in,0 as replace_in FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$actual_input_job_number' GROUP BY tid order by tid";
+				$flag = 'packing_summary_input';
+			}
+			
 		}				
 	}
 	else
@@ -235,16 +244,24 @@ function getjobdetails($job_number)
 		if($schedule_count_query->num_rows > 0)
 		{
 			if($module_no==0){
-				$schedule_query = "SELECT sum(recut_in)as recut_in,sum(replace_in)as replace_in,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,((SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number)  order by docket_number) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id = $job_number[4] GROUP BY size_code,order_col_des,assigned_module order by tid";
+				$schedule_query = "SELECT sum(recut_in)as recut_in,sum(replace_in)as replace_in,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,((SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number)  order by docket_number) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module,barcode_sequence FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id = $job_number[4] GROUP BY size_code,order_col_des,assigned_module order by tid";
 			}else{
-				$schedule_query = "SELECT sum(recut_in)as recut_in,sum(replace_in)as replace_in,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,((SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number) order by docket_number) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id = $job_number[4] and assigned_module = '$module_no' GROUP BY size_code,order_col_des,assigned_module order by tid";
+				$schedule_query = "SELECT sum(recut_in)as recut_in,sum(replace_in)as replace_in,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,((SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty))) as balance_to_report,GROUP_CONCAT(DISTINCT(docket_number) order by docket_number) as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module,barcode_sequence FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id = $job_number[4] and assigned_module = '$module_no' GROUP BY size_code,order_col_des,assigned_module order by tid";
 			}
 			$flag = 'bundle_creation_data';
 		}
 		else
 		{
-			$schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty,GROUP_CONCAT(DISTINCT(doc_no) order by doc_no) as doc_no,'packing_summary_input' as flag,0 as recut_in,0 as replace_in FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$actual_input_job_number' GROUP BY size_code,order_col_des order by tid";
-			$flag = 'packing_summary_input';
+			if($job_number[2] == 1)
+			{
+				$schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty,GROUP_CONCAT(DISTINCT(doc_no)  order by doc_no) as doc_no,'packing_summary_input' as flag,0 as recut_in,0 as replace_in FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$actual_input_job_number' GROUP BY size_code,order_col_des order by tid";
+				$flag = 'packing_summary_input';
+			}
+			else
+			{
+				$schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty,GROUP_CONCAT(DISTINCT(doc_no)  order by doc_no) as doc_no,'packing_summary_input' as flag,0 as recut_in,0 as replace_in FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$actual_input_job_number' GROUP BY tid order by tid";
+				$flag = 'packing_summary_input';
+			}
 		}
 	}
 	$s_no = 0;
