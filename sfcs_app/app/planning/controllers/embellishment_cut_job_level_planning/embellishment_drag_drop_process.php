@@ -43,15 +43,19 @@
 		}
 		else
 		{
-			
-			$sql1="select order_style_no as style,order_col_des as color from $bai_pro3.plan_doc_summ where doc_no='".$items[1]."'";
-			// echo $sql1;
+			$verify_parent_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log where org_doc_no = ".$items[1]."";
+			if(mysqli_num_rows(mysqli_query($link,$verify_parent_query)) > 0){
+				$sql1="select order_style_no as style,order_col_des as color 
+					from $bai_pro3.plan_doc_summ where org_doc_no='".$items[1]."'";
+			}else{
+				$sql1="select order_style_no as style,order_col_des as color 
+					from $bai_pro3.plan_doc_summ where doc_no='".$items[1]."'";
+			}
 			$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error11".mysql_error());
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
 				$style=$sql_row1['style'];
 				$color=$sql_row1['color'];
-				
 			}
 			$doc_qty=0;
 			$sql3="select (p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as qty from $bai_pro3.plandoc_stat_log where doc_no='".$items[1]."'";
