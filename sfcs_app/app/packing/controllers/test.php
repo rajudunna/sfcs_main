@@ -86,7 +86,8 @@ $color=$_GET['color'];
 				<label for="schedule">Select Schedule:</label>
 				<select class='form-control' name='schedule' onchange='secondbox();'>
 					<?php
-					$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" order by order_del_no";
+					$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" 
+					and $order_joins_not_in  order by order_del_no";
 					//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 					//{
 						//$sql="select distinct order_del_no from plan_doc_summ where order_style_no=\"$style\"";	
