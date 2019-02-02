@@ -222,7 +222,7 @@
             }
             while($row = $result_style_data->fetch_assoc()) 
             {
-                if($emb_cut_check_flag == 1 && $bundle_no == $row['bundle_number'])
+                if($emb_cut_check_flag == 1 && $bundle_no == $row['tid'])
                 {
                     $doc_no = $row['doc_no'];
                     $size = $row['old_size'];
