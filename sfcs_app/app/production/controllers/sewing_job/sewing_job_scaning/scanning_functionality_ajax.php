@@ -759,7 +759,6 @@ else if($concurrent_flag == 0)
 		{
 			$to_add = $b_rep_qty[$key] + $b_rej_qty[$key];
 			$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $b_doc_num[$key] and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
-			echo $update_qry_cps_log.'</br>';
 			$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 		}
 		// echo $update_qry_cps_log.'</br>';
