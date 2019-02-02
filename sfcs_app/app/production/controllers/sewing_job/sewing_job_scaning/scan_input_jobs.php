@@ -480,6 +480,7 @@ $(document).ready(function()
 											if(Number(data[i].tid) != Number(job_number))
 											{
 												var hidden_class='hidden';
+												var temp_var_bal1 = 0;
 											}
 										}
 										s_no++;
