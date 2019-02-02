@@ -123,7 +123,7 @@
 									
 								</tr>
 								<tr>	
-									<td><b>Operation:</b>'.trim($operations).' </td>
+									<td><b>Operation:</b>'.substr(str_replace(' ','',$operations),0,18).' </td>
 									<td> <b>Cut No:</b> '.chr($color_code).leading_zeros($cutno, 3).'</td>
 								</tr>
 							</table>
