@@ -224,7 +224,7 @@ function getjobdetails($job_number)
 		}
 		else
 		{
-			if($job_number[2] == 1)
+			if($bg == 1)
 			{
 				$schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty,GROUP_CONCAT(DISTINCT(doc_no)  order by doc_no) as doc_no,'packing_summary_input' as flag,0 as recut_in,0 as replace_in FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$actual_input_job_number' GROUP BY size_code,order_col_des order by tid";
 				$flag = 'packing_summary_input';
@@ -252,7 +252,7 @@ function getjobdetails($job_number)
 		}
 		else
 		{
-			if($job_number[2] == 1)
+			if($bg == 1)
 			{
 				$schedule_query = "SELECT *,sum(carton_act_qty) as balance_to_report,sum(carton_act_qty) as carton_act_qty, 0 as reported_qty, 0 as rejected_qty,GROUP_CONCAT(DISTINCT(doc_no)  order by doc_no) as doc_no,'packing_summary_input' as flag,0 as recut_in,0 as replace_in FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$actual_input_job_number' GROUP BY size_code,order_col_des order by tid";
 				$flag = 'packing_summary_input';
