@@ -44,8 +44,7 @@
 } */
 </style>
 
-<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; 
-include('config_splitting_function.php');
+<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />';
 ?>
 <?php 
 $dash=0;
@@ -623,6 +622,7 @@ echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"red\">Please wait
 set_time_limit(2000);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_splitting_function.php');
 ?>
 
 
