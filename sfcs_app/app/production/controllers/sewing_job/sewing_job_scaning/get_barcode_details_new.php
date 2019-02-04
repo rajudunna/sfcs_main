@@ -27,7 +27,23 @@
     $msg = 'Scanned Successfully';
 
     $string = $bundle_no.','.$op_no.','.'0';
-    getjobdetails($string, $bundle_no, $op_no, $shift);
+    //getting categry from operation_master 
+    $checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$op_no'";
+    $result_checking_qry = $link->query($checking_qry);
+    while($row_cat = $result_checking_qry->fetch_assoc()) 
+    {
+        $category_act = $row_cat['category'];
+    }
+    if($category_act != 'sewing')
+    {
+        $result_array['status'] = 'Invalid opeartion!!! You can only scan Sewing operatinos here';
+        echo json_encode($result_array);
+        die();
+    }
+    else
+    {
+        getjobdetails($string, $bundle_no, $op_no, $shift);
+    }
     function getjobdetails($job_number, $bundle_no, $op_no, $shift)
     {
             error_reporting(0);
