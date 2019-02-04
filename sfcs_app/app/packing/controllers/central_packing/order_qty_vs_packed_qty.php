@@ -170,11 +170,127 @@
 						//$schedule=$_POST['schedule'];
 						$schedule = $_POST['schedule'];	
 					}
-					
+					$psl_doc_array = array();	$tcm_doc_array = array();	$cols_orders_master_array = array();
+
 					$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
 					$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
 					// echo $style."---".$schedule;
-							
+
+
+					$get_doc_cols_orders_master = "SELECT DISTINCT order_col_des  FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE product_schedule='".$schedule."')";
+					$cols_result=mysqli_query($link, $get_doc_cols_orders_master) or exit("Errror while getting docket from plandoc_stat_log");
+					// echo $get_doc_cols_orders_master.'<br>';
+					while ($rowsss=mysqli_fetch_array($cols_result))
+					{
+						$cols_orders_master_array[] = $rowsss['order_col_des'];
+					}
+
+					$get_doc_plandoc_stat_log = "SELECT doc_no from $bai_pro3.order_cat_doc_mk_mix	WHERE category IN ($in_categories) AND order_del_no='".$schedule."' and order_col_des in ('".implode("','",$cols_orders_master_array)."')";
+					$plandoc_stat_result=mysqli_query($link, $get_doc_plandoc_stat_log) or exit("Errror while getting docket from plandoc_stat_log");
+					// echo $get_doc_plandoc_stat_log.'<br>';
+					while ($rows=mysqli_fetch_array($plandoc_stat_result))
+					{
+						$psl_doc_array[] = $rows['doc_no'];
+					}
+
+					$get_doc_tbl_cut_master = "SELECT distinct doc_num FROM $brandix_bts.`tbl_cut_size_master` LEFT JOIN $brandix_bts.`tbl_cut_master` ON tbl_cut_master.id=tbl_cut_size_master.parent_id WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_cut_master` WHERE product_schedule='".$schedule."')  AND color IN ('".implode("','",$cols_orders_master_array)."')";
+					$cut_master_result=mysqli_query($link, $get_doc_tbl_cut_master) or exit("Errror while getting docket from tbl_cut_master");
+					// echo $get_doc_tbl_cut_master.'<br>';
+					while ($row=mysqli_fetch_array($cut_master_result))
+					{
+						$tcm_doc_array[] = $row['doc_num'];
+					}
+					$result=array_diff($psl_doc_array,$tcm_doc_array);
+					// echo count($result);
+					// var_dump($result);
+					// die();
+					if(count($result) > 0)
+					{
+						$sizesMasterQuery="select id,upper(size_name) as size_name from $brandix_bts.tbl_orders_size_ref order by size_name";
+						$result2=mysqli_query($link, $sizesMasterQuery) or ("Sql error778".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sizes_tmp=array();
+						while($s=mysqli_fetch_array($result2))
+						{
+							for ($i=0; $i < sizeof($sizes_array); $i++)
+							{
+								if($s['size_name'] == $sizes_title[$i])
+								{
+									$sizes_tmp[]=$s['id'];
+								}
+							}
+						}
+
+						$productsQuery=echo_title("$brandix_bts.tbl_orders_master","id","ref_product_style='".$style_id."' and product_schedule",$schedule,$link);
+						if($productsQuery>0 || $productsQuery!='')
+						{
+							$order_id=$productsQuery;
+						}
+						else
+						{
+							$insertOrdersMaster="INSERT INTO $brandix_bts.tbl_orders_master(ref_product_style, product_schedule,order_status) VALUES ('".$style_id."','".$schedule."', 'OPEN')";
+							$result6=mysqli_query($link, $insertOrdersMaster) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$order_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+						}
+
+						// difference in plandoc_stat_log and tbl_cut_master
+						$layPlanQuery="SELECT plandoc_stat_log.*,cat_stat_log.category FROM $bai_pro3.plandoc_stat_log as plandoc_stat_log
+						LEFT JOIN $bai_pro3.cat_stat_log as cat_stat_log ON plandoc_stat_log.cat_ref = cat_stat_log.tid
+						WHERE cat_stat_log.category IN ($in_categories) AND  plandoc_stat_log.doc_no in (".implode(",",$result).")";
+						$result7=mysqli_query($link, $layPlanQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						if (mysqli_num_rows($result7) > 0)
+						{
+							while($l=mysqli_fetch_array($result7))
+							{
+								$order_tid = $l['order_tid'];
+								$col_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_tid",$order_tid,$link);
+								$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","order_col_des","order_tid",$order_tid,$link);
+								$doc_num=$l['doc_no'];
+								$cut_num=$l['acutno'];
+								$cut_status=$l['act_cut_status'];
+								$planned_module=$l['plan_module'];
+								if($planned_module==NULL)
+								{
+									$planned_module=0;
+								}
+								$request_time=$l['rm_date'];
+								$issued_time=$l['date'];
+								$planned_plies=$l['p_plies'];
+								$actual_plies=$l['a_plies'];
+								$plan_date=$l['date'];
+								$cat_ref=$l['cat_ref'];
+								$mk_ref=$l['mk_ref'];
+								$cuttable_ref=$l['cuttable_ref'];
+								//Insert data into layplan(tbl_cut_master) table
+								$inserted_id_query1 = "select count(id) as id from $brandix_bts.tbl_cut_master where doc_num='".$doc_num."'";
+								$inserted_id_result1=mysqli_query($link, $inserted_id_query1) or ("Sql error1111");
+								while($inserted_id_details1=mysqli_fetch_array($inserted_id_result1))
+								{
+									$layplan_id1=$inserted_id_details1['id'];
+								}
+								if($layplan_id1==0)
+								{
+									$insertLayPlanQuery="INSERT IGNORE INTO $brandix_bts.tbl_cut_master(doc_num,ref_order_num,cut_num,cut_status,planned_module,request_time,issued_time,planned_plies,actual_plies,plan_date,style_id,product_schedule,cat_ref,cuttable_ref,mk_ref,col_code) VALUES	('$doc_num',$order_id,$cut_num,'$cut_status','$planned_module','$request_time','$issued_time',$planned_plies,$actual_plies,'$plan_date',$style_id,'$schedule',$cat_ref,$cuttable_ref,$mk_ref,$col_code)";
+									$result8=mysqli_query($link, $insertLayPlanQuery) or ("Sql error999".mysqli_error($GLOBALS["___mysqli_ston"]));
+									$inserted_id_query = "select id from $brandix_bts.tbl_cut_master where doc_num='".$doc_num."'";
+									$inserted_id_result=mysqli_query($link, $inserted_id_query) or ("Sql error1111");
+									while($inserted_id_details=mysqli_fetch_array($inserted_id_result))
+									{
+										$layplan_id=$inserted_id_details['id'];
+									}
+									//Insert data into layplan reference table (tbl_cut_size_master)
+									for ($i=0; $i < sizeof($sizes_array); $i++)
+									{
+										if($l["p_".$sizes_array[$i].""]>0)
+										{
+										 	$insertLayplanItemsQuery="INSERT IGNORE INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."','".$layplan_id."','".$sizes_tmp[$i]."','".$l["p_".$sizes_array[$i].""]."')";
+											 // echo $insertLayplanItemsQuery."</br>";
+										 	$result9=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+										}
+									}
+								}
+							}
+						}
+					}
 					//echo "Style= ".$style."<br>Schedule= ".$schedule.'<br>';
 					
 					// Order Details Display Start
