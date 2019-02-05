@@ -68,6 +68,22 @@ $reptype=$_POST['reptype'];
 				<input type="text" class="form-control" data-toggle="datepicker" id="to_date" name="to_date" onchange="return verify_date();" value="<?php if($to_date=="") {echo  date("Y-m-d"); } else {echo $to_date;}?>">
 			</div>
 
+			     <div class="form-group">Shift: 
+			       <select class="form-control" id="shift" name="shift">
+			       <option value="ALL">ALL</option>
+			       <?php
+					$shifts = (isset($_GET['shift']))?$_GET['shift']:'';
+					foreach($shifts_array as $shift){
+					if($shifts == $shift){
+					  echo "<option value='$shift' selected>$shift</option>";
+					}else{
+					  echo "<option value='$shift' >$shift</option>";
+					}
+					}
+				?>
+			  </select>   
+			</div>
+
 
 			<button type="submit" id="submit" class="btn btn-primary" name="submit" onclick='return verify_date()'>Show</button>
 		</form>
@@ -77,6 +93,7 @@ if(isset($_POST['submit']))
 	
 	$from_date=$_POST['from_date'];
 	$to_date=$_POST['to_date'];
+    $to_shift=$_POST['shift'];
 
 	echo '<span class="pull-right">
 			<form action="'.$excel_form_action.'" method ="post" > 
@@ -84,7 +101,7 @@ if(isset($_POST['submit']))
 				<input class="btn btn-info btn-sm" type="submit" value="Export to Excel" onclick="getCSVData()">
 			</form></span>
 		';	
-echo "<div class='col-sm-12' style='overflow-y:scroll;max-height:600px;'>";
+    echo "<div class='col-sm-12' style='overflow-y:scroll;max-height:600px;'>";
 	echo "<table class='table table-hover table-bordered'  id='report'>";
 	echo "<tr class='danger'>";
 	echo "<th>Date</th>";
@@ -93,14 +110,22 @@ echo "<div class='col-sm-12' style='overflow-y:scroll;max-height:600px;'>";
 	echo "<th>Color</th>";
 	echo "<th>Module</th>";
 	echo "<th>Docket</th>";
+	echo "<th>Shift</th>";
 	echo "<th>Cut Job</th>";
 	echo "<th>Input Job</th>";
 	echo "<th>Size</th>";
 	echo "<th>Quantity</th>";
 	echo "</tr>";
 	
+	If($to_shift == 'ALL')
+	{
+       $sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,sum(ims_qty) as ims_qty,ims_style,ims_schedule,ims_color,input_job_no_ref, input_job_rand_no_ref from $bai_pro3.ims_combine where ims_date between \"$from_date\" and \"$to_date\"and ims_mod_no>0 group by ims_style,ims_schedule,ims_color,ims_mod_no,ims_doc_no,ims_size  order by ims_date DESC,ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,ims_size";
+	}
+	else
+	{
+		$sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,sum(ims_qty) as ims_qty,ims_style,ims_schedule,ims_color,input_job_no_ref, input_job_rand_no_ref from $bai_pro3.ims_combine where ims_date between \"$from_date\" and \"$to_date\"and ims_mod_no>0 and ims_shift = '$to_shift' group by ims_style,ims_schedule,ims_color,ims_mod_no,ims_doc_no,ims_size  order by ims_date DESC,ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,ims_size ";
+	}	
 	
-	$sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,sum(ims_qty) as ims_qty,ims_style,ims_schedule,ims_color,input_job_no_ref, input_job_rand_no_ref from $bai_pro3.ims_combine where ims_date between \"$from_date\" and \"$to_date\"and ims_mod_no>0 group by ims_style,ims_schedule,ims_color,ims_mod_no,ims_doc_no,ims_size  order by ims_date DESC,ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,ims_size ";
 
 	//echo $sql;
  	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -113,6 +138,7 @@ echo "<div class='col-sm-12' style='overflow-y:scroll;max-height:600px;'>";
 		echo "<td>".$sql_row['ims_color']."</td>";
 		echo "<td>".$sql_row['ims_mod_no']."</td>";
 		echo "<td>".$sql_row['ims_doc_no']."</td>";
+		echo "<td>".$sql_row['ims_shift']."</td>";
 		
 		$display_prefix1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$sql_row['input_job_no_ref'],$sql_row['input_job_rand_no_ref'],$link);
 		$sql111="select order_div from $bai_pro3.bai_orders_db where order_del_no=".$sql_row['ims_schedule'];
