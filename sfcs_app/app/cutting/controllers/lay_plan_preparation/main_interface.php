@@ -1644,16 +1644,18 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 		</div>
 		<div id="Marker" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 			<div class="panel-body">
-				<center>
-					<span class="pull-right">
-						<strong>
-							Overall Savings%: <?php echo '<span style="background-color: #f0ad4e;color: white;">'.$overall_savings."%"."</span>";?>
-							&nbsp;&nbsp;|&nbsp;&nbsp;
-							Overall CAD Consumption: <?php echo '<span style="    background-color: #f0ad4e;color: white;">'.$overall_cad_consumption."</span>";?>
-						</strong>
-					</span>
-				<center><br/>
-				<?php include("main_interface_5.php"); ?>
+				<div style="overflow-x:auto;">
+					<center>
+						<span class="pull-right">
+							<strong>
+								Overall Savings%: <?php echo '<span style="background-color: #f0ad4e;color: white;">'.$overall_savings."%"."</span>";?>
+								&nbsp;&nbsp;|&nbsp;&nbsp;
+								Overall CAD Consumption: <?php echo '<span style="    background-color: #f0ad4e;color: white;">'.$overall_cad_consumption."</span>";?>
+							</strong>
+						</span>
+					</center><br/>
+					<?php include("main_interface_5.php"); ?>
+				</div>
 			</div>
 		</div>
 	</div>
