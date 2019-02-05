@@ -73,12 +73,16 @@ $reptype=$_POST['reptype'];
 			       <option value="ALL">ALL</option>
 			       <?php
 					$shifts = (isset($_GET['shift']))?$_GET['shift']:'';
-					foreach($shifts_array as $shift){
-					if($shifts == $shift){
-					  echo "<option value='$shift' selected>$shift</option>";
-					}else{
-					  echo "<option value='$shift' >$shift</option>";
-					}
+					foreach($shifts_array as $key)
+					{
+						if($key == $shift)
+						{
+							echo "<option value='$key' selected>$key</option>";
+						}
+						else
+						{
+							echo "<option value='$key' >$key</option>";
+						}
 					}
 				?>
 			  </select>   
