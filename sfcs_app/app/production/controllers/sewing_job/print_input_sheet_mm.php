@@ -106,7 +106,7 @@
                             if($num_rows_samples >0){
                                 $samples_total = 0; 
                                 echo "<span><strong><u>Sample Quantites size wise:</u><strong></span><div class='row'>";
-                                echo "<div class='col-md-2'>";
+                                echo "<div class='col-md-12'>";
                                 echo "<div class='table-responsive'>";                      
                                 echo "<table class='table table-bordered'>"; 
                                 echo "<tr><thead>";                     

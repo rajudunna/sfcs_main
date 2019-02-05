@@ -19,6 +19,11 @@
 	}
 
 </script>
+<style>
+	table, th, td {
+		text-align: center;
+	}
+</style>
 </head>
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
@@ -249,46 +254,48 @@
 						</div>";
 					echo "<br>
 							<div class='col-md-12'>
-								<table class=\"table table-bordered\">
-									<tr class=\"info\">
-										<th>S.No</th>
-										<th>Packing Method</th>
-										<th>Description</th>
-										<th>Colors</th>
-										<th>Sizes</th>
-										<th>No Of Cartons</th>
-										<th>Quantity</th>
-										<th>Controls</th></tr>";
-										$i = 1;
-									$pack_meth_qry="
-									SELECT MAX(carton_no) AS cartons, SUM(carton_qty) AS qty,seq_no,pack_description,pack_method,GROUP_CONCAT(DISTINCT TRIM(size_title)) AS size ,GROUP_CONCAT(DISTINCT TRIM(color)) AS color FROM bai_pro3.pac_stat 
-									LEFT JOIN tbl_pack_ref ON tbl_pack_ref.schedule=pac_stat.schedule 
-									LEFT JOIN tbl_pack_size_ref ON tbl_pack_ref.id=tbl_pack_size_ref.parent_id AND pac_stat.pac_seq_no=tbl_pack_size_ref.seq_no WHERE pac_stat.schedule='$schedule'
-									GROUP BY seq_no ORDER BY seq_no*1";
-									$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
-									while($pack_result1=mysqli_fetch_array($pack_meth_qty))
-									{
-										$seq_no=$pack_result1['seq_no'];
-										$carton_qty_pac_stat=echo_title("$bai_pro3.pac_stat","sum(carton_qty)","schedule='".$schedule."' and pac_seq_no",$seq_no,$link);
-										$pack_method=$pack_result1['pack_method'];
-										echo "<tr>
-											<td>$i</td>
-											<td>".$operation[$pack_method]."</td>
-											<td>".$pack_result1['pack_description']."</td>
-											<td>".$pack_result1['color']."</td>
-											<td>".$pack_result1['size']."</td>
-											<td>".$pack_result1['cartons']."</td>
-											<td>".$carton_qty_pac_stat."</td>
-											<td>
-												<a class='btn btn-warning' href='$url?p_status=2&schedule=$schedule&seq_no=$seq_no&style=$style' target='_blank' >FG Check List
-												<a class='btn btn-warning' href='$url?p_status=1&schedule=$schedule&seq_no=$seq_no&style=$style' target='_blank' >Carton Track
-												<a class='btn btn-warning' href='$url2?schedule=$schedule&seq_no=$seq_no' target='_blank' >Print Lables</a>
-											</td>
-											<tr>";
-											$i++;
-									}
-									echo "
-								</table>
+								<div style=\"overflow-x:auto;\">
+									<table class=\"table table-bordered\">
+										<tr class=\"info\">
+											<th>S.No</th>
+											<th>Packing Method</th>
+											<th>Description</th>
+											<th>Colors</th>
+											<th>Sizes</th>
+											<th>No Of Cartons</th>
+											<th>Quantity</th>
+											<th>Controls</th></tr>";
+											$i = 1;
+										$pack_meth_qry="
+										SELECT MAX(carton_no) AS cartons, SUM(carton_qty) AS qty,seq_no,pack_description,pack_method,GROUP_CONCAT(DISTINCT TRIM(size_title)) AS size ,GROUP_CONCAT(DISTINCT TRIM(color)) AS color FROM bai_pro3.pac_stat 
+										LEFT JOIN tbl_pack_ref ON tbl_pack_ref.schedule=pac_stat.schedule 
+										LEFT JOIN tbl_pack_size_ref ON tbl_pack_ref.id=tbl_pack_size_ref.parent_id AND pac_stat.pac_seq_no=tbl_pack_size_ref.seq_no WHERE pac_stat.schedule='$schedule'
+										GROUP BY seq_no ORDER BY seq_no*1";
+										$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
+										while($pack_result1=mysqli_fetch_array($pack_meth_qty))
+										{
+											$seq_no=$pack_result1['seq_no'];
+											$carton_qty_pac_stat=echo_title("$bai_pro3.pac_stat","sum(carton_qty)","schedule='".$schedule."' and pac_seq_no",$seq_no,$link);
+											$pack_method=$pack_result1['pack_method'];
+											echo "<tr>
+												<td>$i</td>
+												<td>".$operation[$pack_method]."</td>
+												<td>".$pack_result1['pack_description']."</td>
+												<td>".$pack_result1['color']."</td>
+												<td>".$pack_result1['size']."</td>
+												<td>".$pack_result1['cartons']."</td>
+												<td>".$carton_qty_pac_stat."</td>
+												<td>
+													<a class='btn btn-warning' href='$url?p_status=2&schedule=$schedule&seq_no=$seq_no&style=$style' target='_blank' >FG Check List
+													<a class='btn btn-warning' href='$url?p_status=1&schedule=$schedule&seq_no=$seq_no&style=$style' target='_blank' >Carton Track
+													<a class='btn btn-warning' href='$url2?schedule=$schedule&seq_no=$seq_no' target='_blank' >Print Lables</a>
+												</td>
+												<tr>";
+												$i++;
+										}
+										echo "
+									</table>
+								</div>
 							</div>";
 				}
 				else
