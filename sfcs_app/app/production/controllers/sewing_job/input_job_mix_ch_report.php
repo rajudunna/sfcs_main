@@ -67,7 +67,8 @@
                                 echo '<input type="hidden" name="mix_colors" value="'.$mix_colors.'">';
                                 echo '<input type="hidden" name="job_qty" value="'.$job_qty.'">';
 
-                                echo "<table class='table table-bordered'>";
+                                echo "<div style='overflow-x:auto;'>
+                                        <table class='table table-bordered'>";
                                         echo "<tr class='info'>";
                                         echo "<th>Schedule</th>";
                                         echo "<th>Color Set</th>";
@@ -162,7 +163,7 @@
                                             }
                                             echo"</tr>";
                                         }
-                                   echo ' </table>
+                                   echo ' </table></div>
                             </form>
                 </div>
             </div>';
