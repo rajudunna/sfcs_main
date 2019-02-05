@@ -17,7 +17,7 @@ $tran_pin=$_GET["s"];
 		
 		echo '<form method="POST" name="form2" action="index.php?r='.$_GET['r'].'">';
 	
-		echo "<table border=1>";
+		echo "<table class='table table-bordered table-striped'>";
 		//echo "<tr><th>Inv No</th><th>Batch No</th><th>Shade</th><th>Roll ID</th><th>Lable ID</th><th>Roll Width</th><th>Qty Issued</th><th>Time</th></tr>";
 		echo "<tr><th>Inv No</th><th>Batch No</th><th>Shade</th><th>Roll ID</th><th>Lable ID</th><th>Issued Qty</th><th>Time</th></tr>";
 
