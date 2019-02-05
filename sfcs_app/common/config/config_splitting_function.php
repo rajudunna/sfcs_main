@@ -32,6 +32,9 @@ function roll_splitting_function($roll_id,$total_roll_qty,$issued_qty)
             //Uncheck this
             mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
         }
+
+        // $sql="update $bai_rm_pj1.store_in set status=2, allotment_status=2 where tid=".$tid_ref[$j];
+		// 	  $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
     }
     else
     {
