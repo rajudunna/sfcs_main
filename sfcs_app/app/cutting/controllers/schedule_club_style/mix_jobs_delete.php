@@ -212,7 +212,7 @@ if(isset($_POST['clear']))
 			// echo $sql4551."<br>"; 
 			$sql_result4551=mysqli_query($link, $sql4551) or exit("Sql Error114"); 
 			
-			$sql45312="UPDATE $bai_pro3.bai_orders_db set order_joins=0,order_no="" where order_tid in ('".implode("','",$order_tids)."')"; 
+			$sql45312="UPDATE $bai_pro3.bai_orders_db set order_joins=0,order_no='' where order_tid in ('".implode("','",$order_tids)."')"; 
 			// echo $sql4531."<br>"; 
 			$sql_result4531=mysqli_query($link, $sql45312) or exit("Sql Error113"); 
 			

@@ -234,7 +234,7 @@ if(isset($_POST['clear']))
 			// echo $sql4551."<br>"; 
 			$sql_result4551=mysqli_query($link, $sql4551) or exit("Sql Error113"); 
 			 
-			$sql45312="UPDATE $bai_pro3.bai_orders_db set order_joins=0,order_no="" where order_tid in ('".implode("','",$order_tids)."')"; 
+			$sql45312="UPDATE $bai_pro3.bai_orders_db set order_joins=0,order_no='' where order_tid in ('".implode("','",$order_tids)."')"; 
 			// echo $sql4531."<br>"; 
 			$sql_result4531=mysqli_query($link, $sql45312) or exit("Sql Error113"); 
 			
@@ -242,7 +242,7 @@ if(isset($_POST['clear']))
 			// echo $sql4536."<br>"; 
 			$sql_result4536=mysqli_query($link, $sql4536) or exit("Sql Error114"); 
 			 
-			$sql45271="DELETE from $bai_pro3.plandoc_stat_log where order_tid='".$order_tid_current.""; 
+			$sql45271="DELETE from $bai_pro3.plandoc_stat_log where order_tid='".$order_tid_current."'"; 
 			// echo $sql4527."<br>";  
 			$sql_result45271=mysqli_query($link, $sql45271) or exit("Sql Error115"); 
 			 
@@ -250,7 +250,7 @@ if(isset($_POST['clear']))
 			// echo $sql4527."<br>";  
 			$sql_result45298=mysqli_query($link, $sql452981) or exit("Sql Error116"); 
 			 
-			$sql4527="DELETE from $bai_pro3.allocate_stat_log where order_tid='".$order_tid_current.""; 
+			$sql4527="DELETE from $bai_pro3.allocate_stat_log where order_tid='".$order_tid_current."'"; 
 			// echo $sql4527."<br>";  
 			$sql_result4527=mysqli_query($link, $sql4527) or exit("Sql Error117"); 
 			 
@@ -258,7 +258,7 @@ if(isset($_POST['clear']))
 			// echo $sql4527."<br>";  
 			$sql_result45298=mysqli_query($link, $sql45298) or exit("Sql Error118"); 
 					 
-			$sql4528="DELETE from $bai_pro3.cuttable_stat_log where order_tid='".$order_tid_current.""; 
+			$sql4528="DELETE from $bai_pro3.cuttable_stat_log where order_tid='".$order_tid_current."'"; 
 			// echo $sql4528."<br>"; 
 			$sql_result4528=mysqli_query($link, $sql4528) or exit("Sql Error119"); 
 			 
@@ -266,7 +266,7 @@ if(isset($_POST['clear']))
 			// echo $sql4528123."<br>"; 
 			$sql_result4528=mysqli_query($link, $sql4528123) or exit("Sql Error120"); 
 
-			$sql4529="DELETE from $bai_pro3.maker_stat_log where order_tid='".$order_tid_current.""; 
+			$sql4529="DELETE from $bai_pro3.maker_stat_log where order_tid='".$order_tid_current."'"; 
 			// echo $sql4529."<br>"; 
 			$sql_result4529=mysqli_query($link, $sql4529) or exit("Sql Error121"); 
 
@@ -274,7 +274,7 @@ if(isset($_POST['clear']))
 			// echo $sql4529123."<br>"; 
 			$sql_result4529=mysqli_query($link, $sql4529123) or exit("Sql Error122"); 
 			 
-			$sql45229="DELETE from $bai_pro3.cat_stat_log where order_tid='".$order_tid_current.""; 
+			$sql45229="DELETE from $bai_pro3.cat_stat_log where order_tid='".$order_tid_current."'"; 
 			// echo $sql4529."<br>"; 
 			$sql_result45229=mysqli_query($link, $sql45229) or exit("Sql Error123"); 
 
