@@ -773,7 +773,6 @@ function get_me_emb_check_flag($style,$color,$op_code){
         else
             return 0;
     }
-    
     return 0;
     //emb checking ends
 }
@@ -853,6 +852,12 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
             mysqli_commit($link);
         else{    
             mysqli_rollback($link);
+            $update_query1 = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(p_plies-$plies=0,p_plies,a_plies-$plies)
+                            where doc_no = $doc_no ";
+            mysqli_query($link,$update_query1) or exit('Query Error Cut 1');
+            $update_query2 = "UPDATE $bai_pro3.plandoc_stat_log SET act_cut_status = IF(a_plies = p_plies,'','DONE')
+                            where doc_no = $doc_no ";
+            mysqli_query($link,$update_query2) or exit('Query Error Cut 2');  
             mysqli_close($link);
             return 'fail';
         }
