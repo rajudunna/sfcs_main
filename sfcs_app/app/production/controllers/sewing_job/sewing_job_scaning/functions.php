@@ -257,7 +257,7 @@ function savingdata($saving)
 				// echo "Hi".$temp."</br>";
 				//echo $sub_ops_code_compare;
 				$saving_sub_oper_data_qry = "insert into $brandix_bts.tbl_style_ops_master (operation_name,operation_code,operation_order,default_operration,ops_sequence,ops_dependency,component,barcode) values ($saving)";
-				$checking_for_same_ops_order = "select id,operation_order from $brandix_bts.tbl_style_ops_master where CAST(operation_order AS CHAR) >= $saving1[2] and id != $last_id and style = $saving1[9] and color = $saving1[10] and CAST(operation_order AS CHAR) like '$sub_ops_code_compare' order by operation_order";
+				$checking_for_same_ops_order = "select id,operation_order from $brandix_bts.tbl_style_ops_master where CAST(operation_order AS CHAR) >= '$saving1[2]' and id != $last_id and style = $saving1[9] and color = $saving1[10] and CAST(operation_order AS CHAR) like '$sub_ops_code_compare' order by operation_order";
 			// echo $checking_for_same_ops_order;
 				$result_checking_for_same_ops_order = $link->query($checking_for_same_ops_order);
 				if($result_checking_for_same_ops_order->num_rows > 0)
