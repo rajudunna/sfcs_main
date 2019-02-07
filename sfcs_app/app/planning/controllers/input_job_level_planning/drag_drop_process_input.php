@@ -170,7 +170,7 @@ $userName = getrbac_user()['uname'];
 					}					
 				}
 			}
-			$sql12="select order_del_no,clubbing from $bai_pro3.order_cat_doc_mk_mix where doc_no in (".implode(",",$dockets_ref).") and clubbing>0 and category in ('Body','Front') group by clubbing";
+			$sql12="select order_del_no,clubbing from $bai_pro3.order_cat_doc_mk_mix where doc_no in (".implode(",",$dockets_ref).") and clubbing>0 and category in ($in_categories) group by clubbing";
 			
 			$resultr112=mysqli_query($link, $sql12) or exit("Sql Error5 == ".$sql12.' == '.mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($resultr112)>0)
@@ -179,7 +179,7 @@ $userName = getrbac_user()['uname'];
 				{
 					$schedule=$sql_rowr112['order_del_no'];
 					$club=$sql_rowr112['clubbing'];
-					$sql121="select * from $bai_pro3.order_cat_doc_mk_mix where doc_no not in (".implode(",",$dockets_ref).") and acutno in (".implode(",",$cut_ref).") and clubbing='".$club."' and order_del_no='".$schedule."' and category in ('Body','Front')";
+					$sql121="select * from $bai_pro3.order_cat_doc_mk_mix where doc_no not in (".implode(",",$dockets_ref).") and acutno in (".implode(",",$cut_ref).") and clubbing='".$club."' and order_del_no='".$schedule."' and category in ($in_categories)";
 					$resultr1121=mysqli_query($link, $sql121) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_rowr1121=mysqli_fetch_array($resultr1121))
 					{
