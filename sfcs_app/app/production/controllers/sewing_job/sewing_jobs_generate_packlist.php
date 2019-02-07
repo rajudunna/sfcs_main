@@ -30,7 +30,17 @@
 	$mix_jobs = $_POST['mix_jobs'];
 	$schedule = $_POST['schedule'];
 	$style = $_POST['style'];
-	$doc_data=array();	
+	$doc_data=array();
+	$sql1222="SELECT MAX(id) as id FROM $bai_pro3.`pac_stat_input` WHERE SCHEDULE='$schedule'";
+	// echo $sql1.'<br>';
+	$result1122=mysqli_query($link, $sql1222) or die ("Error1.1=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($result1122)>0)
+	{
+		while($row1123=mysqli_fetch_array($result1122))
+		{
+			$id_old=$row1123['id'];
+		}
+	}
 	// echo "bundle_size = ".$bundle_size.", sew_no_of_cartons = ".$sew_no_of_cartons.", sew_pack_method = ".$sew_pack_method.", pack_seq_no = ".$pack_seq_no.", mix_jobs = ".$mix_jobs.", schedule = ".$schedule.", style = ".$style.", sew_pack  = ".$operation[$sew_pack_method].'<br>';
 	 // echo "<table class='table table-striped table-bordered'>";
 	 // echo "<thead><th>Type</th><th>Cut Number</th><th>Job Number</th><th>Color</th><th>Size</th><th>Quantity</th><th>Docket Number</th></thead>";
@@ -104,6 +114,7 @@
 				$sql23="SELECT cut_master.cat_ref,cut_master.cut_num,cut_sizes.id,`cut_master`.`planned_plies`,cut_master.actual_plies,cut_sizes.quantity,cut_master.planned_plies*cut_sizes.quantity AS total_cut_quantity,cut_master.doc_num as docket_number,sizes.size_name as size_title,cut_master.col_code FROM $brandix_bts.tbl_cut_master as cut_master LEFT JOIN $brandix_bts.tbl_cut_size_master as cut_sizes ON cut_master.id=cut_sizes.parent_id left join $brandix_bts.tbl_orders_size_ref as sizes on sizes.id=cut_sizes.ref_size_name WHERE cut_master.product_schedule='$schedule' AND cut_sizes.color='$color' and cut_sizes.ref_size_name=$size group by cut_num order by cut_master.cut_num*1 desc";						
 			}
 			//echo $sql23."<br>";
+			$check_status=0;
 			$result23=mysqli_query($link, $sql23) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($result23))
 			{
@@ -115,22 +126,58 @@
 				// Eiminate duplicate dockets
 				$sql221="SELECT * from $bai_pro3.tbl_docket_qty where doc_no='".$sql_row['docket_number']."' and ref_size='$size'";
 				$result1221=mysqli_query($link, $sql221) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($rw21=mysqli_fetch_array($result1221))
+				if(mysqli_num_rows($result1221)>0)
 				{
-					if($rw21['type']=='1')
+					while($rw21=mysqli_fetch_array($result1221))
 					{
 						$cut_quantity=$cut_quantity-$rw21['plan_qty'];
+						
 					}
-					elseif($rw21['type']=='2')
-					{
-						$sample=$sample-$rw21['plan_qty'];	
-					}
-					elseif($rw21['type']=='3')
-					{
-						$diff_qty=$diff_qty-$rw21['plan_qty'];
-					}	
 				}
+				if($check_id>0)
+				{
+					$sql2211="SELECT sum(if(type=2,plan_qty,0)) as ex,sum(if(type=3,plan_qty,0)) as sam from $bai_pro3.tbl_docket_qty where ref_size='$size' and color='".$color."' and pac_stat_input_id='$check_id' and type in (2,3)";
+					$result12211=mysqli_query($link, $sql2211) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($rw211=mysqli_fetch_array($result12211))
+					{
+						if($rw211['sam']>0 && $sample<>$rw211['sam'])
+						{
+							if($rw211['sam']<$sample)
+							{
+								$sample=$sample-$rw211['sam'];	
+							}
+							else
+							{
+								$sample=$rw211['sam']-$sample;
+							}	
 
+						}
+						else
+						{
+							$sample=0;
+						}
+
+						/***********/
+
+						if($rw211['ex']>0 && $diff_qty<>$rw211['ex'])
+						{
+							if($rw211['ex']<$diff_qty)
+							{
+								$diff_qty=$diff_qty-$rw211['ex'];	
+							}
+							else
+							{
+								$diff_qty=$rw211['ex']-$diff_qty;
+							}	
+
+						}
+						else
+						{
+							$diff_qty=0;
+						}
+					}
+				}
+				//echo $cut_quantity."--".$diff_qty."--".$sample."<bR>";
 				if($cut_quantity>0)
 				{
 					do
@@ -204,7 +251,17 @@
 			}
 		}
 		// echo "</table>";
-		$update1="update $bai_pro3.`tbl_docket_qty` set pac_stat_input_id='$pac_stat_input_id' where doc_no in (".implode(",",$doc_data).")";
+		if($id_old>0)
+		{
+			$update1="update $bai_pro3.`tbl_docket_qty` set pac_stat_input_id='$pac_stat_input_id' where pac_stat_input_id='$id_old'";
+			
+		}
+		else
+		{
+			$update1="update $bai_pro3.`tbl_docket_qty` set pac_stat_input_id='$pac_stat_input_id' where pac_stat_input_id in (".implode(",",$doc_data).")";
+		}	
+		
+		//echo $update1."<br>";
 		mysqli_query($link, $update1) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_main_packlist.php',0,'N')."&schedule=$schedule&seq_no=$pack_seq_no&pac_method=$sew_pack_method';</script>");
 	}
