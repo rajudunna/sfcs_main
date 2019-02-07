@@ -443,6 +443,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var schedule    = $('#post_schedule').val();
         var color       = $('#post_color').val();
         var fab_req     = Number($('#fab_required').val());
+        var error_msg = '';
         
         //Screen Validations
         if(c_plies == 0){
@@ -549,14 +550,18 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 clearFormData();
                 clearRejections();
             }
+            
+            if(data.error_msg.length > 0)
+                error_message = data.error_msg;
+
             if(data.saved == '1'){
                 if(data.m3_updated == '0')
-                    user_msg = 'M3 Reporting Failed for this docket.';
+                    user_msg = error_message+'M3 Reporting Failed for this docket.';
 
                 if(data.pass == '1')
-                    swal('Cut Qty Reported Successfully','','success');
+                    swal('Cut Qty Reported Successfully',error_message,'success');
                 else{
-                    swal('Cut Reporting Problem Error','','error');
+                    swal('Cut Reporting Problem Error',error_message,'error');
                     user_msg = 'CUT Reported with Error.Please Do not Proceed to Scanning for this docket';
                     //swal('Cut Qty Reported Successfully','','success');
                     //user_msg += 'Cut Reported Successfully';
@@ -564,11 +569,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     
                 if(rejections_flag){
                     if(data.rejections_response == '1')
-                        user_msg += 'Cut Reported Successfully';
+                        user_msg += error_message+'Cut Reported Successfully';
                     else if(data.rejections_response == '2')
-                        user_msg += 'Cut Reported Successfully , Rejections Saved BUT M3 Reporting Failed.';
+                        user_msg += error_message+'Cut Reported Successfully , Rejections Saved BUT M3 Reporting Failed.';
                     else    
-                        user_msg += 'Cut Reported Successfully BUT Rejections Reporting Failed ';    
+                        user_msg += error_message+'Cut Reported Successfully BUT Rejections Reporting Failed ';    
                 }
                 if(user_msg.length != 0){
                     $('#user_msg').html(user_msg);

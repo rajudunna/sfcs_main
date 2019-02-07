@@ -228,11 +228,11 @@ if($target == 'normal'){
 
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
                     act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
-    $insert_result = mysqli_query($link,$insert_query) or exit('Query Error Cut 1');   
+    $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1');   
     
     mysqli_begin_transaction($link);
     if($insert_result > 0){
-        $update_result = mysqli_query($link,$update_query) or exit('Query Error Cut 2');
+        $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2');
         if($update_result){
             $response_data['saved'] = 1;
             mysqli_commit($link);
@@ -254,7 +254,7 @@ if($target == 'normal'){
     if($m3_status == 'fail'){
         $response_data['pass'] = 0;
         echo json_encode($response_data);
-        exit();
+        force_exit('Normal Reporting Failed');
     }else{
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $m3_status;
@@ -282,11 +282,11 @@ if($target == 'schedule_clubbed'){
     
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
                     act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
-    $insert_result = mysqli_query($link,$insert_query) or exit('Query Error Cut 1');   
+    $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1');   
     
     mysqli_begin_transaction($link);
     if($insert_result > 0){
-        $update_result = mysqli_query($link,$update_query) or exit('Query Error Cut 2');
+        $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2');
         if($update_result){
             $response_data['saved'] = 1;
             mysqli_commit($link);
@@ -347,7 +347,7 @@ if($target == 'schedule_clubbed'){
         if(strlen($size_update_string) > 0){
             $update_childs_query = "UPDATE $bai_pro3.plandoc_stat_log set $size_update_string act_cut_status = 'DONE'
                                     where doc_no ='$child_doc' ";
-            $update_childs_result = mysqli_query($link,$update_childs_query) or exit('Child Docket Update Error');
+            $update_childs_result = mysqli_query($link,$update_childs_query) or force_exit('Child Docket Update Error');
            
         }
         unset($size_update_string);
@@ -404,7 +404,7 @@ if($target == 'schedule_clubbed'){
         foreach($rejection_details_each as $doc_no => $its_rejection_details){
             $style_color_query = "SELECT color,schedule from $brandix_bts.bundle_creation_data 
                                 where docket_number = $doc_no limit 1";
-            $style_color_result = mysqli_query($link,$style_color_query) or exit('Unable to Call the Rejections Saver');
+            $style_color_result = mysqli_query($link,$style_color_query) or force_exit('Unable to Call the Rejections Saver');
             if(mysqli_num_rows($style_color_result) > 0){     
                 $row = mysqli_fetch_array($style_color_result);  
                 $schedule = $row['schedule'];
@@ -420,7 +420,7 @@ if($target == 'schedule_clubbed'){
     iquit : if($status === 'fail'){
         $response_data['pass'] = 0;
         echo json_encode($response_data);
-        exit();
+        force_exit('Schedule Clubbed Docket Reporting Failed');
     }else{
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $status;
@@ -445,11 +445,11 @@ if($target == 'style_clubbed'){
 
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
                     act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
-    $insert_result = mysqli_query($link,$insert_query) or exit('Query Error Cut 1');   
+    $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1');   
 
     mysqli_begin_transaction($link);
     if($insert_result > 0){
-        $update_result = mysqli_query($link,$update_query) or exit('Query Error Cut 2');
+        $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2');
         if($update_result){
             $response_data['saved'] = 1;
             mysqli_commit($link);
@@ -522,7 +522,7 @@ if($target == 'style_clubbed'){
                     if($quit_counter++ > $THRESHOLD){
                         $response_data['pass'] = 0;
                         echo json_encode($response_data);
-                        exit();
+                        force_exit('Infinte loop struck');
                     }
                         
                     if(ceil($splitted % $docs) > 0)
@@ -555,7 +555,7 @@ if($target == 'style_clubbed'){
             if($quit_counter++ > $THRESHOLD){
                 $response_data['pass'] = 0;
                 echo json_encode($response_data);
-                exit();
+                force_exit('Threshold Exceeded');
             }
             $fulfill_qty = $reporting[$size];
             $counter = 0;
@@ -611,7 +611,7 @@ if($target == 'style_clubbed'){
                     if($quit_counter > 50){
                         $response_data['pass'] = 0;
                         echo json_encode($response_data);
-                        exit();
+                        force_exit('Infinite loop Struck 2');
                     }
                     if(ceil($splitted % $docs) > 0)
                         $splitted--;
@@ -647,7 +647,7 @@ if($target == 'style_clubbed'){
             $update_childs_query = "UPDATE $bai_pro3.plandoc_stat_log set $size_update_string act_cut_status = 'DONE'
                                     where doc_no = $child_doc ";
             $update_childs_result = mysqli_query($link,$update_childs_query) 
-                                or exit('Child Docket Update Error Style Clubbing');
+                                or force_exit('Child Docket Update Error Style Clubbing');
         }
     }
     //Updating plandoc_stat_log for child dockets
@@ -705,7 +705,7 @@ if($target == 'style_clubbed'){
             $style_color_query = "SELECT color,schedule from $brandix_bts.bundle_creation_data 
                                 where docket_number = $doc_no limit 1";
             //echo $style_color_query;                    
-            $style_color_result = mysqli_query($link,$style_color_query) or exit('Unable to Call the Rejections Saver');
+            $style_color_result = mysqli_query($link,$style_color_query) or force_exit('Unable to Call the Rejections Saver');
             if(mysqli_num_rows($style_color_result) > 0){     
                 $row = mysqli_fetch_array($style_color_result);  
                 $schedule = $row['schedule'];
@@ -721,7 +721,7 @@ if($target == 'style_clubbed'){
     iquit1 : if($status === 'fail'){
         $response_data['pass'] = 0;
         echo json_encode($response_data);
-        exit();
+        force_exit('Style Clubbed Docket Reporting Failed');
     }else{
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $status;
@@ -737,7 +737,7 @@ function get_me_emb_check_flag($style,$color,$op_code){
     $category=['cutting','Send PF','Receive PF'];
     $ops_seq_query = "SELECT id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master 
                     where style='$style' and color = '$color' and operation_code='$op_code'";
-    $ops_seq_result = mysqli_query($link,$ops_seq_query) or exit('Query Error 1');
+    $ops_seq_result = mysqli_query($link,$ops_seq_query) or force_exit('Query Error 1');
     while($row = mysqli_fetch_array($ops_seq_result)) 
     {
         $ops_seq    = $row['ops_sequence'];
@@ -749,7 +749,7 @@ function get_me_emb_check_flag($style,$color,$op_code){
                     and color = '$color' and ops_sequence = $ops_seq  
                     AND CAST(operation_order AS CHAR) > '$ops_order' 
                     AND operation_code not in (10,200) ORDER BY operation_order ASC LIMIT 1";
-        $post_ops_result = mysqli_query($link,$post_ops_query) or exit('Query Error 2');
+        $post_ops_result = mysqli_query($link,$post_ops_query) or force_exit('Query Error 2');
         while($row = mysqli_fetch_array($post_ops_result)) 
         {
             $post_ops_code = $row['operation_code'];
@@ -761,7 +761,7 @@ function get_me_emb_check_flag($style,$color,$op_code){
 
     //if post operation is emb then updating send qty of emb operation in BCD
     $category_qry = "SELECT category FROM $brandix_bts.tbl_orders_ops_ref WHERE operation_code = '$post_ops_code'";
-    $category_result = mysqli_query($link,$category_qry) or exit('Query Error 3');
+    $category_result = mysqli_query($link,$category_qry) or force_exit('Query Error 3');
     while($row = mysqli_fetch_array($category_result)) 
     {
         $category_act = $row['category'];
@@ -773,6 +773,7 @@ function get_me_emb_check_flag($style,$color,$op_code){
         else
             return 0;
     }
+    
     return 0;
     //emb checking ends
 }
@@ -789,7 +790,7 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
 
     //Updaitng to cps,bcd,moq,m3_transactions
     $doc_details_query = "SELECT * from $bai_pro3.plandoc_stat_log where doc_no = '$doc_no' ";
-    $doc_details_result = mysqli_query($link,$doc_details_query) or exit('Query Error 4');
+    $doc_details_result = mysqli_query($link,$doc_details_query) or force_exit('Query Error 4');
     while($row = mysqli_fetch_array($doc_details_result)){
         $a_plies = $row['a_plies'];
         $p_plies = $row['p_plies'];
@@ -825,7 +826,7 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
             $update_cps_query = "UPDATE $bai_pro3.cps_log set remaining_qty = remaining_qty + $qty,
                             reported_status = '$reported_status' 
                             where doc_no = '$doc_no' and size_code='$size' and operation_code = $op_code ";
-            $update_cps_result = mysqli_query($link,$update_cps_query) or exit('Query Error 5'); 
+            $update_cps_result = mysqli_query($link,$update_cps_query) or force_exit('Query Error 5'); 
             
            
             
@@ -834,14 +835,14 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
                             rejected_qty = rejected_qty + $rej
                             where docket_number = $doc_no and size_id = '$size' and operation_id = $op_code";
             //echo $update_bcd_query;                
-            $update_bcd_result = mysqli_query($link,$update_bcd_query) or exit('Query Error 6');
+            $update_bcd_result = mysqli_query($link,$update_bcd_query) or force_exit('Query Error 6');
 
             if($emb_cut_check_flag > 0)
             {
                 $update_bcd_query2 = "UPDATE $brandix_bts.bundle_creation_data set send_qty = send_qty+$qty
                                     WHERE docket_number = $doc_no AND size_id = '$size' 
                                     AND operation_id = $emb_cut_check_flag ";
-                $update_bcd_result2 = mysqli_query($link,$update_bcd_query2) or exit('Query Error 7');
+                $update_bcd_result2 = mysqli_query($link,$update_bcd_query2) or force_exit('Query Error 7');
 
             }   
             if($update_cps_result && $update_bcd_result)
@@ -852,12 +853,6 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
             mysqli_commit($link);
         else{    
             mysqli_rollback($link);
-            $update_query1 = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(p_plies-$plies=0,p_plies,a_plies-$plies)
-                            where doc_no = $doc_no ";
-            mysqli_query($link,$update_query1) or exit('Query Error Cut 1');
-            $update_query2 = "UPDATE $bai_pro3.plandoc_stat_log SET act_cut_status = IF(a_plies = p_plies,'','DONE')
-                            where doc_no = $doc_no ";
-            mysqli_query($link,$update_query2) or exit('Query Error Cut 2');  
             mysqli_close($link);
             return 'fail';
         }
@@ -869,7 +864,7 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
             $qty = $qty - $rejected[$size];
             $bundle_id_query = "SELECT bundle_number from $brandix_bts.bundle_creation_data 
                             where docket_number='$doc_no' and size_id='$size' and operation_id = $op_code";
-            $bundle_id_result = mysqli_query($link,$bundle_id_query) or exit('Query Error 8');
+            $bundle_id_result = mysqli_query($link,$bundle_id_query) or force_exit('Query Error 8');
             if(mysqli_num_rows($bundle_id_result) > 0){
                 $row = mysqli_fetch_array($bundle_id_result);
                 $bundle_number = $row['bundle_number'];
@@ -903,7 +898,7 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
         //To verify the reported status is full or not for updating in cps_log #923
         $size_qty_query = "SELECT SUM($s_p_sizes_str) as plan,SUM($s_a_sizes_str) as actual 
                         from $bai_pro3.plandoc_stat_log where doc_no = '$doc_no' ";               
-        $sizes_qty_result = mysqli_query($link,$size_qty_query) or exit('Getting Reported Status Error'); 
+        $sizes_qty_result = mysqli_query($link,$size_qty_query) or force_exit('Getting Reported Status Error'); 
         while($row = mysqli_fetch_array($sizes_qty_result)){
             if($row['plan'] == $row['actual'])
                 $reported_status = 'F';
@@ -922,24 +917,24 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
             $update_cps_query = "UPDATE $bai_pro3.cps_log set remaining_qty = remaining_qty + $qty,
                             reported_status = '$reported_status'
                             where doc_no = $doc_no and size_code='$size' and operation_code = $op_code ";
-            $update_cps_result = mysqli_query($link,$update_cps_query) or exit('CPS Error CLUB');
+            $update_cps_result = mysqli_query($link,$update_cps_query) or force_exit('CPS Error CLUB');
             //Updating CPS to Full Status
             $update_cps_f_query = "UPDATE $bai_pro3.cps_log set reported_status = 'F' 
                                     where doc_no = '$doc_no' and size_code='$size' and operation_code = $op_code 
                                     and cut_quantity = remaining_qty";
-            $update_cps_f_result = mysqli_query($link,$update_cps_f_query) or exit('Query Error 5.1');    
+            $update_cps_f_result = mysqli_query($link,$update_cps_f_query) or force_exit('Query Error 5.1');    
             //Updating BCD
             $update_bcd_query = "UPDATE $brandix_bts.bundle_creation_data set recevied_qty = recevied_qty + $qty,
                             rejected_qty = rejected_qty + $rej where docket_number = $doc_no and size_id = '$size' 
                             and operation_id = $op_code";
-            $update_bcd_result = mysqli_query($link,$update_bcd_query) or exit('BCD Error CLUB');
+            $update_bcd_result = mysqli_query($link,$update_bcd_query) or force_exit('BCD Error CLUB');
             // echo $update_bcd_query.'<br/>';
             if($emb_cut_check_flag > 0)
             {
                 $update_bcd_query2 = "UPDATE $brandix_bts.bundle_creation_data set send_qty = send_qty+$qty
                                 WHERE docket_number = $doc_no AND size_id = '$size' 
                                 AND operation_id = $emb_cut_check_flag";
-                $update_bcd_result2 = mysqli_query($link,$update_bcd_query2) or exit('BCD Error CLUB EMB');
+                $update_bcd_result2 = mysqli_query($link,$update_bcd_query2) or force_exit('BCD Error CLUB EMB');
             }   
             //echo $update_bcd_query.'<br/><br/>';
 
@@ -951,7 +946,7 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
     if($counter == $update_flag && $counter > 0)
         mysqli_commit($link);
     else{    
-        //mysqli_rollback($link);
+        mysqli_rollback($link);
         mysqli_close($link);
         return 'fail';
     }
@@ -967,7 +962,7 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
             $bundle_id_query = "SELECT bundle_number from $brandix_bts.bundle_creation_data 
                             where docket_number=$doc_no and size_id='$size' and operation_id = $op_code";
             //echo $bundle_id_query;                
-            $bundle_id_result = mysqli_query($link,$bundle_id_query) or exit('Query Error 8');
+            $bundle_id_result = mysqli_query($link,$bundle_id_query) or force_exit('Query Error 8');
             if(mysqli_num_rows($bundle_id_result) > 0){
                 $bundles_count++;
                 $row = mysqli_fetch_array($bundle_id_result);
@@ -990,6 +985,30 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
 
 
 
+function force_exit($str){
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    error_reporting(0);
+    global $response_data;
+    global $doc_no;
+    global $zero_a_sizes_str;
+    
+    //reverting back the updates 
+    $update_query1 = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(p_plies-$plies=0,p_plies,a_plies-$plies) 
+                where doc_no = $doc_no ";
+    mysqli_query($link,$update_query1);
+    $update_query2 = "UPDATE $bai_pro3.plandoc_stat_log SET act_cut_status = IF(a_plies = p_plies,'','DONE')
+                where doc_no = $doc_no ";
+    mysqli_query($link,$update_query2);
+    if($doc_no > 1){
+        $update_query3 = "UPDATE $bai_pro3.plandoc_stat_log SET $zero_a_sizes_str act_cut_status '' where org_doc_no = $doc_no ";
+        mysqli_query($link,$update_query3);
+    }
+    $response_data['error_msg'] = $str;
+    echo json_encode($response_data);
+    exit();
+}
+
 
 
 ?>
+
