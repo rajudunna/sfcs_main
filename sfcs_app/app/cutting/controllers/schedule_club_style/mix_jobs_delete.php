@@ -211,12 +211,16 @@ if(isset($_POST['clear']))
 			$sql4551="INSERT IGNORE INTO bai_pro3.bai_orders_db SELECT * FROM bai_pro3.bai_orders_db_club WHERE order_tid IN  ('".implode("','",$order_tids)."')"; 
 			// echo $sql4551."<br>"; 
 			$sql_result4551=mysqli_query($link, $sql4551) or exit("Sql Error114"); 
-			 
+			
+			$sql45312="UPDATE $bai_pro3.bai_orders_db set order_joins=0,order_no='' where order_tid in ('".implode("','",$order_tids)."')"; 
+			// echo $sql4531."<br>"; 
+			$sql_result4531=mysqli_query($link, $sql45312) or exit("Sql Error113"); 
+			
 			$sql4536="DELETE from $bai_pro3.bai_orders_db_confirm where order_tid in ('".implode("','",$order_tids)."')"; 
 			// echo $sql4536."<br>"; 
 			$sql_result4536=mysqli_query($link, $sql4536) or exit("Sql Error115"); 
 			 
-			$sql45271="DELETE from $bai_pro3.plandoc_stat_log where order_tid like \"%".$schedule.$color."%\""; 
+			$sql45271="DELETE from $bai_pro3.plandoc_stat_log where order_tid='".$order_tid_current."'"; 
 			// echo $sql4527."<br>";  
 			$sql_result45271=mysqli_query($link, $sql45271) or exit("Sql Error116"); 
 			 
@@ -224,7 +228,7 @@ if(isset($_POST['clear']))
 			// echo $sql4527."<br>";  
 			$sql_result45298=mysqli_query($link, $sql452981) or exit("Sql Error117"); 
 			 
-			$sql4527="DELETE from $bai_pro3.allocate_stat_log where order_tid like \"%".$schedule.$color."%\""; 
+			$sql4527="DELETE from $bai_pro3.allocate_stat_log where order_tid='".$order_tid_current."'";  
 			// echo $sql4527."<br>";  
 			$sql_result4527=mysqli_query($link, $sql4527) or exit("Sql Error118"); 
 			 
@@ -232,7 +236,7 @@ if(isset($_POST['clear']))
 			// echo $sql4527."<br>";  
 			$sql_result45298=mysqli_query($link, $sql45298) or exit("Sql Error119"); 
 					 
-			$sql4528="DELETE from $bai_pro3.cuttable_stat_log where order_tid like \"%".$schedule.$color."%\""; 
+			$sql4528="DELETE from $bai_pro3.cuttable_stat_log where order_tid='".$order_tid_current."'";  
 			// echo $sql4528."<br>"; 
 			$sql_result4528=mysqli_query($link, $sql4528) or exit("Sql Error120"); 
 			 
@@ -240,7 +244,7 @@ if(isset($_POST['clear']))
 			// echo $sql4528123."<br>"; 
 			$sql_result4528=mysqli_query($link, $sql4528123) or exit("Sql Error121"); 
 
-			$sql4529="DELETE from $bai_pro3.maker_stat_log where order_tid like \"%".$schedule.$color."%\""; 
+			$sql4529="DELETE from $bai_pro3.maker_stat_log where order_tid='".$order_tid_current."'";  
 			// echo $sql4529."<br>"; 
 			$sql_result4529=mysqli_query($link, $sql4529) or exit("Sql Error122"); 
 
@@ -248,7 +252,7 @@ if(isset($_POST['clear']))
 			// echo $sql4529123."<br>"; 
 			$sql_result4529=mysqli_query($link, $sql4529123) or exit("Sql Error123"); 
 			 
-			$sql45229="DELETE from $bai_pro3.cat_stat_log where order_tid like \"%".$schedule.$color."%\""; 
+			$sql45229="DELETE from $bai_pro3.cat_stat_log where order_tid='".$order_tid_current."'";  
 			// echo $sql4529."<br>"; 
 			$sql_result45229=mysqli_query($link, $sql45229) or exit("Sql Error124"); 
 
@@ -273,6 +277,10 @@ if(isset($_POST['clear']))
 			$sql451="DELETE from $bai_pro3.bai_orders_db where order_del_no='".$schedule."' and order_col_des=\"".$color."\" "; 
 			// echo $sql451."<br>"; 
 			$sql_result451=mysqli_query($link, $sql451) or exit("Sql Error126"); 
+			
+			$sql45132="DELETE from $bai_pro3.bai_orders_db_club where order_tid in ('".implode("','",$order_tids)."')"; 
+			// echo $sql451."<br>"; 
+			$sql_result45132=mysqli_query($link, $sql45132) or exit("Sql Error125"); 
 			
 			$sql4521="DELETE from $bai_pro3.bai_orders_db_club_confirm where order_tid in ('".implode("','",$order_tids)."')";
 			// echo $sql451."<br>"; 

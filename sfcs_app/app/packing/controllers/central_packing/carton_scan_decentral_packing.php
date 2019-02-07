@@ -46,23 +46,25 @@
 					<input type="button" name="submit_btn" id="submit_btn" class="btn btn-success" value="Submit">
 				</div>
 				<div id="display_result" name='display_result' class="col-sm-7">
-					<table class="table table-bordered">
-						<tr>
-							<th>Style</th><td id="style"></td>
-							<th>Sizes</th><td id="original_size"></td>
-						</tr>
-						<tr>
-							<th>Schedule</th><td id="schedule"></td>
-							<th>Carton Qty</th><td id="carton_act_qty"></td>
-						</tr>
-						<tr>
-							<th>Colors</th><td id="color"></td>
-							<th>Carton No</th><td id="carton_no"></td>
-						</tr>
-						<tr>
-							<th>Status</th><td id="status" colspan="3"></td>
-						</tr>
-					</table>
+					<div style='overflow-x:auto;'>
+						<table class="table table-bordered">
+							<tr>
+								<th>Style</th><td id="style"></td>
+								<th>Sizes</th><td id="original_size"></td>
+							</tr>
+							<tr>
+								<th>Schedule</th><td id="schedule"></td>
+								<th>Carton Qty</th><td id="carton_act_qty"></td>
+							</tr>
+							<tr>
+								<th>Colors</th><td id="color"></td>
+								<th>Carton No</th><td id="carton_no"></td>
+							</tr>
+							<tr>
+								<th>Status</th><td id="status" colspan="3"></td>
+							</tr>
+						</table>
+					</div>
 				</div>
 				<div class="alert alert-danger col-sm-4" id="error_msg" name='error_msg'>
 					<strong>Error!</strong> <br><span id="error"></span>
@@ -102,6 +104,7 @@
 			var team_id = $("#team_id").val();
 			if (carton_id != '')
 			{
+				$("#error_msg").hide();
 				$("#loading_img").show();
 				var function_text = "carton_scan_ajax.php";
 				$.ajax({
@@ -112,7 +115,7 @@
 					cache: false,
 					success: function (response) 
 					{
-						// status: 0-invaild carton no; 1-already scanned; 2-newly scanned; 3-scanning failed
+						// status: 0-invaild carton no; 1-already scanned; 2-newly scanned; 3-scanning failed; 4-Carton not eligible for scanning(no qty in tbl_carton_ready)
 						console.log(response);
 						if(response['status']==1)
 						{ 
@@ -130,7 +133,7 @@
 							$('#'+id).val('');
 							$('#carton_id').focus();
 						}
-						else if(response['status']==0 || response['status']==3)
+						else if(response['status']==0 || response['status']==3 || response['status']==4)
 						{
 							$("#loading_img").hide();
 							if (response['status']==0)
@@ -140,6 +143,10 @@
 							else if (response['status']==3)
 							{
 								var msg = "Scanning Failed";
+							}
+							else if (response['status']==4)
+							{
+								var msg = "Carton Not Eligible Due to Quantity not Available";
 							}
 							
 							$("#error_msg").show();
