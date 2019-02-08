@@ -101,7 +101,7 @@ function validateQty(event)
                                         <b>Operation code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b><input type="number" onkeypress="return validateQty(event);" class="form-control" id="opc" name="opc" value= "<?php echo $row[0]['operation_code']?>" required>
                                     </div>
                                     <div class="col-sm-3">
-                                        <b>M3 Operation Type<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="text" class="form-control" id="m_optype" name="m_optype" value= "<?php echo $row[0]['m3_operation_type']?>" pattern="[a-zA-Z0-9._\s]+" title="This field can contain only alpha numeric characters.." required>
+                                        <b>M3 Operation Type</b><input type="text" class="form-control" id="m_optype" name="m_optype" value= "<?php echo $row[0]['m3_operation_type']?>" pattern="[a-zA-Z0-9._\s]+" title="This field can contain only alpha numeric characters..">
                                     </div>
                                     <div class="col-sm-3">
                                          <div class="dropdown">
