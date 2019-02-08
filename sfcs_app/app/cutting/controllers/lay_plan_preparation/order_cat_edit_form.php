@@ -7,12 +7,10 @@
 <script type="text/javascript" >
 function dodisable()
 {
-enableButton();
-document.input.order_tid.style.visibility="hidden"; 
-document.input.cat_tid.style.visibility="hidden"; 
-
+	enableButton();
+	document.input.order_tid.style.visibility="hidden"; 
+	document.input.cat_tid.style.visibility="hidden"; 
 }
-
 
 function verify_nums(t,e){
 	if(e.keyCode == 8 || e.keyCode == 9){
@@ -79,25 +77,80 @@ function enableButton()
 
 
 <body onload="javascript:dodisable();">
-
-<?php //include("../menu_content.php"); ?>
 <?php 
-$cat_tid=$_GET['cat_tid'];
-//echo "Hello".$cat_tid;
-$sql="select order_tid from $bai_pro3.cat_stat_log where tid='$cat_tid'";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$sql="select order_del_no,order_style_no,order_col_des from $bai_pro3.bai_orders_db where order_tid='".$sql_row['order_tid']."'";
+	$cat_tid=$_GET['cat_tid'];
+	// echo "Cat Tid = ".$cat_tid.'<br>';
+
+	$colors_array = array();	$array1= array();	$array2= array();
+	$sql="select order_tid from $bai_pro3.cat_stat_log where tid='$cat_tid'";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$color=$sql_row['order_col_des'];
-		$style=$sql_row['order_style_no'];
-		$schedule=$sql_row['order_del_no'];
+		$sql="select order_del_no,order_style_no,order_col_des from $bai_pro3.bai_orders_db where order_tid='".$sql_row['order_tid']."'";
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+			$color=$sql_row['order_col_des'];
+			$style=$sql_row['order_style_no'];
+			$schedule=$sql_row['order_del_no'];
+			$colors_array[] = $sql_row['order_col_des'];
+		}
 	}
-}
-echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"><<<<< Click here to Go Back</a></div></br></br>"; ?>
+	foreach($colors_array as $key=>$color_value )
+	{
+		$ops_master_sql = "select operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master where style='$style' and color='$color_value' and default_operration='yes' group by operation_code";
+		// echo $ops_master_sql;
+		$result2_ops_master_sql = mysqli_query($link,$ops_master_sql)
+							or exit("Error Occured : Unable to get the Operation Codes");
+		while($row_result2_ops_master_sql = mysqli_fetch_array($result2_ops_master_sql))
+		{
+			$array1[] = $row_result2_ops_master_sql['operation_code'];
+		}
+		
+		$sql1 = "select OperationNumber FROM $bai_pro3.schedule_oprations_master where Style='$style' and Description ='$color_value' and ScheduleNumber='$schedule' group by OperationNumber";
+		$result1 = mysqli_query($link,$sql1)  
+			or exit("Error Occured : Unable to get the Operation Codes");;
+	
+		while($row = mysqli_fetch_array($result1))
+		{
+			$array2[] = $row['OperationNumber'];
+		}
+
+		if(sizeof($array1) == 0 || sizeof($array2) == 0){
+			echo "<script>swal('Operations Doesnt exist','Please Check the backend Job','danger');</script>";
+			echo "<script>setTimeout(function() {
+					location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+					},3000);
+				</script>";
+			exit();
+		}
+
+		$compare12 = array_diff($array1,$array2);
+		$compare21 = array_diff($array2,$array1);
+		if(count($compare12) > 0 || count($compare21) > 0)
+		{
+			echo "<script>swal('Operation codes does not match','','warning');</script>";
+			$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
+			echo "<script>setTimeout(function() {
+					location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+					},3000);
+				</script>";
+			exit();
+		}
+
+		$mo_query = "SELECT * from $bai_pro3.mo_details where schedule='$schedule' and 
+					color='$color_value'  and style='$style' limit 1";
+		$mo_result = mysqli_query($link,$mo_query);	
+		if(!mysqli_num_rows($mo_result) > 0){
+			echo "<script>swal('MO Details Does not Exist','','warning');</script>";
+			echo "<script>setTimeout(function() {
+					location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+					},3000);
+				</script>";
+			exit();
+		}		
+	}
+	echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a></div></br></br>"; ?>
 <div class="panel panel-primary">
 <div class="panel-heading">Order Category Classification FORM</div>
 <div class="panel-body">
