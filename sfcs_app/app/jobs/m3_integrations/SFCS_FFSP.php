@@ -4,8 +4,10 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 $connect = odbc_connect("$driver_name;Server=$sfsp_serverName;Database=$sfsp_m3_databasename;", $sfsp_uid,$sfsp_pwd);
 error_reporting(1);
 
-$get_details="select order_style_no,order_del_no,order_col_des from bai_pro3.bai_orders_db_confirm";
+$get_details="select order_style_no,order_del_no,order_col_des from bai_pro3.bai_orders_db_confirm group by order_style_no,order_del_no,order_col_des";
+echo $get_details."<br>";
 $result=mysqli_query($link, $get_details) or exit("NOT Updated schedule and color details".mysqli_error($GLOBALS["___mysqli_ston"]));
+echo mysqli_num_rows($result);
 while($row = mysqli_fetch_array($result))
 {
 	   $schedule =$row['order_del_no'];
@@ -79,20 +81,23 @@ while($row = mysqli_fetch_array($result))
 		{
 			$lay_done='NOT DONE';
 		}
-	   $sql_check="SELECT COUNT(*) as count FROM [BEL_RMDashboard].[dbo].[SFCS_FSP_Integration] WHERE Schedule=".$schedule." and ColorId='".$color."'";
-	   $result=odbc_exec($connect, $sql_check) or exit("Error=".odbc_errormsg($connect));
-	   while(odbc_fetch_row($result))
+       $sql_check="SELECT COUNT(*) as count FROM [BEL_RMDashboard].[dbo].[SFCS_FSP_Integration] WHERE Schedule=".$schedule." and ColorId='".$color."'";
+       echo $sql_check."<br>";
+	   $result_check=odbc_exec($connect, $sql_check) or exit("Error=".odbc_errormsg($connect));
+	   while(odbc_fetch_row($result_check))
 	   {
-		  $count1=odbc_result($result,1);
+		  $count1=odbc_result($result_check,1);
 
 		  if($count1==0)
 		  {
-		     $sql2="insert [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration(Schedule,FactoryId,ColorId,LayPlanPrepStatusDesc,NoOfCutJobs,LayPlanGenerationStatusDesc,InputStatusDesc,NoOfJobsPlanned) values('".$schedule."','".$facility_code."','".$color."','".$lay_done."','".$total_jobs_value."','".$lay_plan_status."','".$input_status."','".$planned_jobs_value."')";
+             $sql2="insert [$sfsp_serverName].[$sfsp_m3_databasename].dbo.SFCS_FSP_Integration(Schedule,FactoryId,ColorId,LayPlanPrepStatusDesc,NoOfCutJobs,LayPlanGenerationStatusDesc,InputStatusDesc,NoOfJobsPlanned) values('".$schedule."','".$facility_code."','".$color."','".$lay_done."','".$total_jobs_value."','".$lay_plan_status."','".$input_status."','".$planned_jobs_value."')";
+             echo $sql2."<br>";
 			 $result7=odbc_exec($connect, $sql2) or exit("Error2=".odbc_errormsg($connect));
 		  }
 		  else
 		  {             
-			$sql2="update [BAS-DBSRV-01].[BEL_RMDashboard].dbo.SFCS_FSP_Integration set LayPlanGenerationStatusDesc='".$lay_done."', NoOfJobsPlanned='".$planned_jobs_value."',NoOfCutJobs='".$total_jobs_value."',LayPlanPrepStatusDesc='".$lay_plan_status."',InputStatusDesc='".$input_status."' where Schedule='".$schedule."' AND ColorId='".$color."'";
+            $sql2="update [$sfsp_serverName].[$sfsp_m3_databasename].dbo.SFCS_FSP_Integration set LayPlanGenerationStatusDesc='".$lay_done."', NoOfJobsPlanned='".$planned_jobs_value."',NoOfCutJobs='".$total_jobs_value."',LayPlanPrepStatusDesc='".$lay_plan_status."',InputStatusDesc='".$input_status."' where Schedule='".$schedule."' AND ColorId='".$color."'";
+            echo $sql2."<br>";
 			$result8=odbc_exec($connect, $sql2) or exit("Error3=".odbc_errormsg($connect));
 		  }
 	   }
