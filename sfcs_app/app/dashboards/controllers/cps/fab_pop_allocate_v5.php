@@ -678,107 +678,110 @@ if(isset($_POST['allocate_new']))
 		if(sizeof($tid_ref)>0)
 		{
 		
-		//To extrac required information to find marker length for the docket.
-		unset($allo_c);
-		$allo_c=array();
-	
-		$sql="select cat_patt_ver,doc_no,material_req,mk_ref,cat_ref,allocate_ref,style_id,mk_ver,category,p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s06,p_s08,p_s10,p_s12,p_s14,p_s16,p_s18,p_s20,p_s22,p_s24,p_s26,p_s28,p_s30,strip_match,gmtway,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where doc_no=\"".$doc_ref[$i]."\"";
-		//echo $sql."<br/>";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error1 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$extra=0;
-			//if(substr($style_ref,0,1)=="M")
-			{
-				$extra=round(($sql_row['material_req']*$sql_row['savings']),2);
-			}
-			$material_req1=$sql_row['material_req']+$extra;
-			$mk_ref=$sql_row['mk_ref'];
-			$cat_ref=$sql_row['cat_ref'];
-			$allocate_ref=$sql_row['allocate_ref'];
-			$style_code=$sql_row['style_id'];
-			$buyer_code=substr($style_ref,0,1);
-			$mk_ver=$sql_row['mk_ver'];
-			$category=$sql_row['category'];
-			$strip_match=$sql_row['strip_match'];
-			$gmtway=$sql_row['gmtway'];
-			
-			$allo_c[]="xs=".$sql_row['p_xs'];
-			$allo_c[]="s=".$sql_row['p_s'];
-			$allo_c[]="m=".$sql_row['p_m'];
-			$allo_c[]="l=".$sql_row['p_l'];
-			$allo_c[]="xl=".$sql_row['p_xl'];
-			$allo_c[]="xxl=".$sql_row['p_xxl'];
-			$allo_c[]="xxxl=".$sql_row['p_xxxl'];
-			$allo_c[]="s06=".$sql_row['p_s06'];
-			$allo_c[]="s08=".$sql_row['p_s08'];
-			$allo_c[]="s10=".$sql_row['p_s10'];
-			$allo_c[]="s12=".$sql_row['p_s12'];
-			$allo_c[]="s14=".$sql_row['p_s14'];
-			$allo_c[]="s16=".$sql_row['p_s16'];
-			$allo_c[]="s18=".$sql_row['p_s18'];
-			$allo_c[]="s20=".$sql_row['p_s20'];
-			$allo_c[]="s22=".$sql_row['p_s22'];
-			$allo_c[]="s24=".$sql_row['p_s24'];
-			$allo_c[]="s26=".$sql_row['p_s26'];
-			$allo_c[]="s28=".$sql_row['p_s28'];
-			$allo_c[]="s30=".$sql_row['p_s30'];
-		}
-		//for #1305 ticket in git edite by Srinivas Y .
-		for($j=0;$j<sizeof($tid_ref);$j++)
-		{
-			//Removing for #1305 ticket and adding this functionality into a separate function 
-			$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
-		}
+			//To extrac required information to find marker length for the docket.
+			unset($allo_c);
+			$allo_c=array();
 		
-		
-		//To confirm docket as allocated
-		if($process_cat==1)
-		{
-			$sql1="update plandoc_stat_log set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
-		}
-		else
-		{
-			$sql1="update recut_v2 set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
-		}
-		
-		mysqli_query($link, $sql1) or exit("Sql Error5: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
-		//TO update Marker Matrix
-		if($process_cat==1)
-		{
-			//Search Valid Marker is available or not
-			//New version to verify style/ratio/pattern/width based algorith to identify new marker length
-			
-			$sql="select marker_length from $bai_pro3.marker_ref_matrix_view where strip_match='$strip_match' and gmtway='$gmtway' and style_code='$style_code' and buyer_code='$buyer_code' and lower(pat_ver)='".strtolower($mk_ver)."' and SUBSTRING_INDEX(marker_width,'.',1)='".$min_width[$i]."' and category='$category' and ".implode(" and ",$allo_c);
+			$sql="select cat_patt_ver,doc_no,material_req,mk_ref,cat_ref,allocate_ref,style_id,mk_ver,category,p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s06,p_s08,p_s10,p_s12,p_s14,p_s16,p_s18,p_s20,p_s22,p_s24,p_s26,p_s28,p_s30,strip_match,gmtway,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where doc_no=\"".$doc_ref[$i]."\"";
 			//echo $sql."<br/>";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error1x: $sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error1 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
-				$mk_length=$sql_row['marker_length'];
+				$extra=0;
+				//if(substr($style_ref,0,1)=="M")
+				{
+					$extra=round(($sql_row['material_req']*$sql_row['savings']),2);
+				}
+				$material_req1=$sql_row['material_req']+$extra;
+				$mk_ref=$sql_row['mk_ref'];
+				$cat_ref=$sql_row['cat_ref'];
+				$allocate_ref=$sql_row['allocate_ref'];
+				$style_code=$sql_row['style_id'];
+				$buyer_code=substr($style_ref,0,1);
+				$mk_ver=$sql_row['mk_ver'];
+				$category=$sql_row['category'];
+				$strip_match=$sql_row['strip_match'];
+				$gmtway=$sql_row['gmtway'];
+				
+				$allo_c[]="xs=".$sql_row['p_xs'];
+				$allo_c[]="s=".$sql_row['p_s'];
+				$allo_c[]="m=".$sql_row['p_m'];
+				$allo_c[]="l=".$sql_row['p_l'];
+				$allo_c[]="xl=".$sql_row['p_xl'];
+				$allo_c[]="xxl=".$sql_row['p_xxl'];
+				$allo_c[]="xxxl=".$sql_row['p_xxxl'];
+				$allo_c[]="s06=".$sql_row['p_s06'];
+				$allo_c[]="s08=".$sql_row['p_s08'];
+				$allo_c[]="s10=".$sql_row['p_s10'];
+				$allo_c[]="s12=".$sql_row['p_s12'];
+				$allo_c[]="s14=".$sql_row['p_s14'];
+				$allo_c[]="s16=".$sql_row['p_s16'];
+				$allo_c[]="s18=".$sql_row['p_s18'];
+				$allo_c[]="s20=".$sql_row['p_s20'];
+				$allo_c[]="s22=".$sql_row['p_s22'];
+				$allo_c[]="s24=".$sql_row['p_s24'];
+				$allo_c[]="s26=".$sql_row['p_s26'];
+				$allo_c[]="s28=".$sql_row['p_s28'];
+				$allo_c[]="s30=".$sql_row['p_s30'];
+			}
+			//for #1305 ticket in git edite by Srinivas Y .
+			for($j=0;$j<sizeof($tid_ref);$j++)
+			{
+				//Removing for #1305 ticket and adding this functionality into a separate function
+				if($issued_ref[$j] > 0)
+				{
+					$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
+				}
 			}
 			
-			if(mysqli_num_rows($sql_result)!=0)
+			
+			//To confirm docket as allocated
+			if($process_cat==1)
 			{
-				$sql="insert into bai_pro3.maker_stat_log(DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver) select DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver from $bai_pro3.maker_stat_log where tid='$mk_ref'";
-				//echo $sql."<br/>";
-				
-				mysqli_query($link, $sql) or exit("Sql Error1x: $sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
-				$ilast_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
-				
-				$sql="update bai_pro3.maker_stat_log set mklength=$mk_length where tid='$ilast_id'";
-				
-				mysqli_query($link, $sql) or exit("Sql Error1x: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
-				$sql="update bai_pro3.plandoc_stat_log set lastup=\"".date("Y-m-d")."\", mk_ref=$ilast_id where doc_no=".$doc[$i];
-				
-				mysqli_query($link, $sql) or exit("Sql Error: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
+				$sql1="update plandoc_stat_log set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
 			}
+			else
+			{
+				$sql1="update recut_v2 set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
+			}
+			
+			mysqli_query($link, $sql1) or exit("Sql Error5: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
+			//TO update Marker Matrix
+			if($process_cat==1)
+			{
+				//Search Valid Marker is available or not
+				//New version to verify style/ratio/pattern/width based algorith to identify new marker length
+				
+				$sql="select marker_length from $bai_pro3.marker_ref_matrix_view where strip_match='$strip_match' and gmtway='$gmtway' and style_code='$style_code' and buyer_code='$buyer_code' and lower(pat_ver)='".strtolower($mk_ver)."' and SUBSTRING_INDEX(marker_width,'.',1)='".$min_width[$i]."' and category='$category' and ".implode(" and ",$allo_c);
+				//echo $sql."<br/>";
+				$sql_result=mysqli_query($link, $sql) or exit("Sql Error1x: $sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row=mysqli_fetch_array($sql_result))
+				{
+					$mk_length=$sql_row['marker_length'];
+				}
+				
+				if(mysqli_num_rows($sql_result)!=0)
+				{
+					$sql="insert into bai_pro3.maker_stat_log(DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver) select DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver from $bai_pro3.maker_stat_log where tid='$mk_ref'";
+					//echo $sql."<br/>";
+					
+					mysqli_query($link, $sql) or exit("Sql Error1x: $sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+					$ilast_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+					
+					$sql="update bai_pro3.maker_stat_log set mklength=$mk_length where tid='$ilast_id'";
+					
+					mysqli_query($link, $sql) or exit("Sql Error1x: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+					$sql="update bai_pro3.plandoc_stat_log set lastup=\"".date("Y-m-d")."\", mk_ref=$ilast_id where doc_no=".$doc[$i];
+					
+					mysqli_query($link, $sql) or exit("Sql Error: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+				}
 			
 			//Search Valid Marker is available or not
-		}
+			}
 			
 		}
 		
