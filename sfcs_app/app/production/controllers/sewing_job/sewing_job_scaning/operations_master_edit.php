@@ -149,8 +149,8 @@ function validateQty(event)
                                 </div>
                                 <div class = "col-sm-3">
                                 <label for="style">Parent Work Center Id<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>         
-                                    <select id="parent_work_center_id" name="parent_work_center_id" style="width:100%;" class="form-control" required>
-                                    <option value='0'>Select Parent Work Center Id</option>
+                                    <select id="parent_work_center_id" name="parent_work_center_id" style="width:100%;" class="form-control">
+                                    <option value=''>Select Parent Work Center Id</option>
                                     <?php       
                                     if($vals>0){
                                         foreach ($vals as $value) 
@@ -264,7 +264,12 @@ function validateQty(event)
             {
                 $cnt_short = $res_res_res_short_key_code_check_qry['cnt'];
             }
-            if($cnt == 0 && $cnt_short == 0)
+            $work_center_qry = 1;
+            if(strtolower($default_operation)=='yes' && $parent_work_center_id == '')
+            {
+                $work_center_qry = 0;
+            }
+            if($cnt == 0 && $cnt_short == 0 &&  $work_center_qry == 1)
             {
                 $qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation',work_center_id='$work_center_id',category='$category',parent_work_center_id='$parent_work_center_id' where id='$id'";
                 // echo $qry_insert1;
@@ -302,6 +307,11 @@ function validateQty(event)
                 $sql_message = 'Short Key Code and Operation Code Already in use. Please give other.';
                 echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
                 die();
+            }
+            else if($work_center_qry == 0)
+            {
+                $sql_message = 'You should give work center id for Report to ERP Yes Operations';
+                echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
             }
     
         }
