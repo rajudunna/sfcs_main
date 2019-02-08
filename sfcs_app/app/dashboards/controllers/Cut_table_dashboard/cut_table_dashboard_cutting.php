@@ -699,6 +699,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
      $order_div_ref='';
   }
 
+
   // Ticket #976613 change the buyer division display based on the pink,logo,IU as per plan_modules
  $sql1d="SELECT tbl_id as modx from $bai_pro3.tbl_cutting_table where tbl_id in (".$section_mods.") order by tbl_id*1";
   $sql_num_checkd=0;
@@ -758,9 +759,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $req_date_time[]=$row2['log_time'];
 
     }
-  
-    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ ct
-      where ct.doc_no in (".implode(",",$doc_no_ref).")  order by field(ct.doc_no,".implode(",",$doc_no_ref)."),ct.log_time asc";
+    $imploded_docs = implode(",",$doc_no_ref);
+
+    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ ct 
+          where ct.doc_no in ($imploded_docs)  order by ct.doc_no,ct.log_time asc";
       if($_GET["view_div"] == 'M')
       {
         $_GET["view_div"] = "M&S";
@@ -770,12 +772,12 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
        if($_GET["view_div"]=="ALL" or $_GET["view_div"]=="")
       {
         $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ ct
-        where ct.doc_no in (".implode(",",$doc_no_ref).") order by field(ct.doc_no,".implode(",",$doc_no_ref)."),ct.log_time asc";
+          where ct.doc_no in ($imploded_docs) order by ct.doc_no,ct.log_time asc";
       }
       else
       {
         $dash = $_GET["view_div"];
-        $sql_qry = "select * from $bai_pro2.buyer_codes where buyer_name =".'"'.$dash.'"';
+        $sql_qry = "select * from $bai_pro2.buyer_codes where buyer_name ='$dash'";
         
         $res = mysqli_query($link, $sql_qry);
         $sql_count_check = mysqli_num_rows($res);
@@ -786,8 +788,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         }
           
         $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ ct
-            where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and ct.doc_no in (".implode(",",$doc_no_ref).") order by field(ct.doc_no,".implode(",",$doc_no_ref)."),ct.log_time asc"; 
+            where ct.order_div = '$buyer_identity' and ct.doc_no in ($imploded_docs) order by ct.doc_no,ct.log_time asc"; 
       }
+      $imploded_docs = '';
 
       
 
@@ -949,20 +952,20 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         
         
         
-        $sql11="select sum(ims_pro_qty) as 'bac_qty', sum(emb) as 'emb_sum' from (SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as 'emb' FROM $bai_pro3.ims_log where ims_log.ims_doc_no=$doc_no UNION ALL SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as 'emb' FROM $bai_pro3.ims_log_backup WHERE ims_log_backup.ims_mod_no<>0 and ims_log_backup.ims_doc_no=$doc_no) as t";
-        mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        // $sql11="select sum(ims_pro_qty) as 'bac_qty', sum(emb) as 'emb_sum' from (SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as 'emb' FROM $bai_pro3.ims_log where ims_log.ims_doc_no=$doc_no UNION ALL SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as 'emb' FROM $bai_pro3.ims_log_backup WHERE ims_log_backup.ims_mod_no<>0 and ims_log_backup.ims_doc_no=$doc_no) as t";
+        // mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         
-        $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-        $input_count=mysqli_num_rows($sql_result11);
-        while($sql_row11=mysqli_fetch_array($sql_result11))
-        {
-          $output=$sql_row11['bac_qty'];
-          $emb_sum=$sql_row11['emb_sum'];
-          if($emb_sum==NULL)
-          {
-            $input_count=0;
-          }
-        } 
+        // $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        // $input_count=mysqli_num_rows($sql_result11);
+        // while($sql_row11=mysqli_fetch_array($sql_result11))
+        // {
+        //   $output=$sql_row11['bac_qty'];
+        //   $emb_sum=$sql_row11['emb_sum'];
+        //   if($emb_sum==NULL)
+        //   {
+        //     $input_count=0;
+        //   }
+        // } 
         
         if($cut_new=="DONE"){ $cut_new="T";} else { $cut_new="F"; }
         if($rm_update_new==""){ $rm_update_new="F"; } else { $rm_update_new="T"; }
@@ -1054,7 +1057,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         
         $fabric_required=0;
         $cat_yy=0;
-        $sql11="select catyy,material_req from $bai_pro3.order_cat_doc_mk_mix where category in ('".implode("','",$in_categories)."') and order_del_no='$schedule' and order_col_des='$color' and doc_no=".$sql_row1['doc_no'];
+        $sql11="select catyy,material_req from $bai_pro3.order_cat_doc_mk_mix where category in ($in_categories) and order_del_no='$schedule' and order_col_des='$color' and doc_no=".$sql_row1['doc_no'];
         //echo $sql11."<br>";
         $sql_result111=mysqli_query($link, $sql11) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($sql_row111=mysqli_fetch_array($sql_result111))
@@ -1075,7 +1078,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         $colors_db=array_unique($colors_db);
         $club_c_code=array_unique($club_c_code);
         $club_docs=array_unique($club_docs);
-        
+        $imploded_docs = implode(",",$club_docs);
         //For Fabric Wip Tracking
         
         if($cut_new!="T" and $id=="yellow")
@@ -1083,7 +1086,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $fab_wip+=$total_qty;
         }
         $fab_status="";
-        $fab_issue_query="select * from $bai_pro3.plandoc_stat_log where fabric_status!=5 and doc_no IN (".implode(",",$club_docs).")";
+        $fab_issue_query="select * from $bai_pro3.plandoc_stat_log where fabric_status!=5 and doc_no IN($imploded_docs)";
         // echo "Fab Issue Query : ".$fab_issue_query."<br>";
         $fab_issue_result=mysqli_query($link, $fab_issue_query) or exit("error while getting fab issue details");
         if (mysqli_num_rows($fab_issue_result)>0)
@@ -1095,14 +1098,14 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             $fab_status = 5;
         }
                 
-        $fab_issue2_query="select * from $bai_pro3.plandoc_stat_log where fabric_status='1' and doc_no IN (".implode(",",$club_docs).")";
+        $fab_issue2_query="select * from $bai_pro3.plandoc_stat_log where fabric_status='1' and doc_no IN ($imploded_docs)";
         $fab_isuue2_result=mysqli_query($link, $fab_issue2_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
         if(mysqli_num_rows($fab_isuue2_result)>0)
         {
           $fab_status="1";
         }
 
-        $fab_request_query="select * from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$club_docs).")";
+        $fab_request_query="select * from $bai_pro3.fabric_priorities where doc_ref in ($imploded_docs)";
         $fab_request_result=mysqli_query($link, $fab_request_query) or exit("error while getting fab Requested details");
 
         if($fabric_status ==5)
