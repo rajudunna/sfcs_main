@@ -142,7 +142,7 @@
                                     }
                                 }
 
-                                if($flfag == 0){
+                                if($flag == 0){
                                     $url = 'index.php?r='.$_GET['r']."&job_no=$job_no_r&job=$job_no";
                                     $counter++;
                                     echo "<tr>";
