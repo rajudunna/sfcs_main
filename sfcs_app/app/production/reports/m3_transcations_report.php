@@ -38,7 +38,7 @@
     <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
     <div class='panel panel-primary'>
         <div class='panel-heading'>
-            <h3 class='panel-title'>M3 Transcation Report</h3>
+            <h3 class='panel-title'>M3 Transactions Report</h3>
         </div>
         <div class='panel-body'>
         <div class='row'>
