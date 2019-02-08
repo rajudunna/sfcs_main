@@ -276,7 +276,12 @@ function validateQty(event)
             {
                 $m3ops_type_short = $res_res_res_m_operation_type_qry['cnt'];
             }
-            if($cnt == 0 && $cnt_short == 0 && $m3ops_type_short == 0)
+            $work_center_qry = 1; 
+            if(strtolower($default_operation)=='yes' && $parent_work_center_id == '')
+            {
+                $work_center_qry = 0;
+            }
+            if($cnt == 0 && $cnt_short == 0 && $m3ops_type_short == 0 &&  $work_center_qry == 1)
             {
                 $qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation',work_center_id='$work_center_id',category='$category',parent_work_center_id='$parent_work_center_id',m3_operation_type='$m_operation_type' where id='$id'";
                 // echo $qry_insert1;

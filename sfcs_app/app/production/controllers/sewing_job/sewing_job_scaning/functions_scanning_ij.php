@@ -385,13 +385,10 @@ function getjobdetails($job_number)
 						$act_bal_to_report = $bundle_tot_qty;
 					}							
 					$result_array['emb_cut_check_flag'] = $pre_ops_code;
-					//checking if the style has emb and is not done				
-					$result_array['emb_cut_check_flag'] = $pre_ops_code;
 					if(in_array($category_act,$emb_category))
 						$result_array['is_emb_flag'] = 1;
 					else	
 						$result_array['is_emb_flag'] = 0;
-
 				}
 				else
 				{
