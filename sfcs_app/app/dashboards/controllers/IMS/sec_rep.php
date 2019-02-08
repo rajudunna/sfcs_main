@@ -163,12 +163,13 @@ if(isset($_GET['val']))
 
 ?>
 
-<?php	 
+<?php	
+
 		if(isset($_POST['submit']))
 		{
 			$input_selection=$_POST['input_selection'];
 			if($input_selection=='bundle_wise'){
-				$bundlenum_header="<th>Bundle No</th>";
+				$bundlenum_header="<th rowspan=2>Bundle No</th>";
 				$report_header="BundleWise";
 			}else{
 				$bundlenum_header="";
@@ -176,7 +177,7 @@ if(isset($_GET['val']))
 			}
 			
 		}else{
-			$bundlenum_header="<th>Bundle No</th>";
+			$bundlenum_header="<th rowspan=2>Bundle No</th>";
 			$report_header="BundleWise";
 		}
 
@@ -221,15 +222,83 @@ if(isset($_GET['val']))
 		{
 			$sec_mods=$sql_row['sec_mods'];
 		}
+
+		//To Get style
+		$get_style="select DISTINCT(ims_style) from $bai_pro3.ims_log where ims_mod_no in ($sec_mods)";
+		//echo $get_style;
+		$style_result=mysqli_query($link, $get_style) or die("Error-".$get_style."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row1=mysqli_fetch_array($style_result))
+		{
+		  $disStyle[]=$sql_row1['ims_style'];
+		}
+
+		$styles = "'" . implode ( "', '", $disStyle ) . "'";
+
+
+        //To get sewing operations 
+
+        $sewing_master="select operation_code from $brandix_bts.tbl_orders_ops_ref where category ='sewing'";
+        $sql_result3=mysqli_query($link,$sewing_master) or exit("Sql Error_cut_master".mysqli_error());
+		while($row=mysqli_fetch_array($sql_result3))
+		{
+			$operations[] = $row['operation_code'];
+		}
+
+		$sewing_operations = "'" . implode ( "', '", $operations) . "'";
+		//To get operations
+		$get_operations_sql="select DISTINCT(operation_code) from $brandix_bts.tbl_style_ops_master where style in ($styles) and operation_code  in ($sewing_operations)";
+		//echo $get_operations_sql;
+		$ops_result=mysqli_query($link, $get_operations_sql) or die("Error-".$get_operations_sql."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		while($row1=mysqli_fetch_array($ops_result))
+		{
+		  $operation_code[]=$row1['operation_code'];
+		}
+
+		$opertions = implode(',',$operation_code);
+
+		$get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions)  ";
+		//echo $get_ops_query;
+		$ops_query_result=$link->query($get_ops_query);
+		while ($row2 = $ops_query_result->fetch_assoc())
+		{
+		  $ops_get_code[$row2['operation_code']] = $row2['operation_name'];
+		}
+		$col_span = count($ops_get_code);
 		
 		$modules=array();
 		$modules=explode(",",$sec_mods);
-		echo '<div><table style="color:black; border: 1px solid #337ab7;" class="table table-bordered">';
-		echo "<tr class=\"new\" style='background-color:#337ab7'><th>Module</th>";
+		echo "<div class='table-responsive'>";
+		echo "<table class=\"table table-bordered\">";
+		echo "<tr>
+				<th rowspan=2>Module</th>";
 		echo $bundlenum_header;
 		//echo "<th>CID</th><th>DOC#</th>";
-		echo "<th>Style</th><th>Schedule</th><th>Color</th><th>Input Job No</th><th>Cut No</th><th>Size</th><th>Input</th><th>Output</th><th>Rejected</th><th>Balance</th><th>Input Remarks</th><th>Ex-Factory</th><th width='150'>Remarks</th><th>Age</th><th>WIP</th></tr>";
-		
+		echo "  <th rowspan=2>Style</th>
+				<th rowspan=2>Schedule</th>
+				<th rowspan=2>Color</th>
+				<th rowspan=2>Input Job No</th>
+				<th rowspan=2>Cut No</th>
+				<th rowspan=2>Size</th>
+				<th rowspan=2>Input</th>
+				<th rowspan=2>Output</th>
+				<th colspan=3 style=text-align:center>Rejected Qty</th>
+				<th rowspan=2>Balance</th>
+				<th rowspan=2>Input Remarks</th>
+				<th rowspan=2>Ex-Factory</th>
+				<th rowspan=2 width='150'>Remarks</th>
+				<th rowspan=2>Age</th>
+				<th rowspan=2>WIP</th>";
+		echo "</tr>";
+		echo "<tr>
+				";             
+		foreach ($operation_code as $op_code) 
+		{
+			if(strlen($ops_get_code[$op_code]) > 0)
+			{
+				echo "<th>$ops_get_code[$op_code]</th>";
+			}
+		}
+		echo "</tr>";
 		$toggle=0;
 		$j=1;
 		for($i=0; $i<sizeof($modules); $i++)
@@ -352,31 +421,30 @@ if(isset($_GET['val']))
 					$user_style=$sql_row33['style_id']; //Color Code
 				}				
 				
-				$rejected=0;
-				$good_garments=0;
-				$sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected, COALESCE(SUM(IF(qms_tran_type=5,qms_qty,0)),0) AS good_garments from $bai_pro3.bai_qms_db where qms_schedule='".$sql_row12['ims_schedule']."' and qms_color='".$sql_row12['ims_color']."' and qms_size='".strtoupper($size_value)."' and qms_style='".$sql_row12['ims_style']."' and input_job_no='".$sql_row12['input_job_rand_no_ref']."' and qms_remarks='".$sql_row12['ims_remarks']."'and operation_id=130 ";
+				$rejected1=array();
+				$sql33="select COALESCE(SUM(qms_qty),0) AS rejected,operation_id from $bai_pro3.bai_qms_db where qms_schedule='".$sql_row12['ims_schedule']."' and qms_color='".$sql_row12['ims_color']."' and qms_size='".strtoupper($size_value)."' and qms_style='".$sql_row12['ims_style']."' and input_job_no='".$sql_row12['input_job_rand_no_ref']."' and qms_remarks='".$sql_row12['ims_remarks']."' ";
 
 				//getting selection and apend result to query
 				if(isset($_POST['submit']))
 				{
 					$input_selection=$_POST['input_selection'];
 					if($input_selection=='input_wise'){
-					$sql33.=" GROUP BY input_job_no,qms_size ";
+					$sql33.=" GROUP BY input_job_no,qms_size,operation_id ";
 					}
 
 					if($input_selection=='bundle_wise'){
-					$sql33.=" and bundle_no=".$sql_row12['pac_tid'];
+					$sql33.=" and bundle_no=".$sql_row12['pac_tid']. " group by operation_id";
 					}
 				}else{
-					$sql33.=" and bundle_no=".$sql_row12['pac_tid'];
+					$sql33.=" and bundle_no=".$sql_row12['pac_tid']. " group by operation_id";
 				}
 				
 				//mysqli_query($link, $sql33) or exit("Sql Error".$sql33.mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row33=mysqli_fetch_array($sql_result33))
 				{
-					$rejected=$sql_row33['rejected']; 
-					$good_garments=$sql_row33['good_garments']; 
+					$rejected1[$sql_row33['operation_id']] = $sql_row33['rejected'];
+					$rejected = $sql_row33['rejected'];
 				}
 				
 				
@@ -406,7 +474,18 @@ if(isset($_GET['val']))
 						echo "<td>".$sql_row12['pac_tid']."</td>";
 					}
 					//echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>";
-					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>$rejected</td>";				
+					echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td>";
+				
+					foreach ($operation_code as $key => $value) 
+					{
+						if(strlen($ops_get_code[$value]) > 0){
+							if($rejected1[$value] == '')
+								echo "<td>0</td>";
+							else    
+								echo"<td>".$rejected1[$value]."</td>";
+						}
+					}  
+                          			
 					echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td>";
 					//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
 					echo $quality_log_row;
@@ -444,7 +523,16 @@ if(isset($_GET['val']))
 						echo "<td>".$sql_row12['ims_style']."</td>";
 					}
 					//echo "<td>".$sql_row12['ims_cid']."</td><td>".$sql_row12['ims_doc_no']."</td>";
-					echo"<td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>$rejected</td>";
+					echo"<td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".$display_prefix1."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td>";
+					foreach ($operation_code as $key => $value) 
+					{
+						if(strlen($ops_get_code[$value]) > 0){
+							if($rejected1[$value] == '')
+								echo "<td>0</td>";
+							else    
+								echo"<td>".$rejected1[$value]."</td>";
+						}
+					}  
 					echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td>";
 					//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
 					echo $quality_log_row;
