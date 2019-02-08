@@ -185,6 +185,7 @@ function getjobdetails($job_number)
 			$pre_ops_code = $row['operation_code'];
 		}
 		$category=['cutting','Send PF','Receive PF'];
+		$emb_category = ['Send PF','Receive PF'];
 		$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$pre_ops_code'";
 		$result_checking_qry = $link->query($checking_qry);
 		while($row_cat = $result_checking_qry->fetch_assoc()) 
@@ -367,6 +368,10 @@ function getjobdetails($job_number)
 						$act_bal_to_report = $bundle_tot_qty;
 					}							
 					$result_array['emb_cut_check_flag'] = $pre_ops_code;
+					if(in_array($category_act,$emb_category))
+						$result_array['is_emb_flag'] = 1;
+					else	
+						$result_array['is_emb_flag'] = 0;
 				}
 				else
 				{
