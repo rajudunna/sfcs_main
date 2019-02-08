@@ -443,7 +443,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var schedule    = $('#post_schedule').val();
         var color       = $('#post_color').val();
         var fab_req     = Number($('#fab_required').val());
-        var error_msg = '';
+        var error_message = '';
         
         //Screen Validations
         if(c_plies == 0){
@@ -551,13 +551,14 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 clearRejections();
             }
             
-            if(data.error_msg.length > 0)
+            console.log(data.error_msg);
+            if(data.error_msg)
                 error_message = data.error_msg;
 
             if(data.saved == '1'){
                 if(data.m3_updated == '0')
                     user_msg = error_message+'M3 Reporting Failed for this docket.';
-
+                
                 if(data.pass == '1')
                     swal('Cut Qty Reported Successfully',error_message,'success');
                 else{
