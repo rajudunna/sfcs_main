@@ -445,19 +445,23 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var fab_req     = Number($('#fab_required').val());
         
         //Screen Validations
-        if(c_plies == 0){
-            swal('Error','Please Enter Reporting Plies','error');
-            return false;
-        }
-        if(c_plies > avl_plies){
-            swal('Warning','The Reporting Plies are more than, that are to be Reported','error');
-            return false;
-        }
-        if(rec > fab_req)
-            return swal('info','Reporting More Than Eligible Fabric','info'); 
-        if(fab_req < ret_to+rec+damages+shortages){
-            swal('Warning','The Reporting Fabric must not be greater than received + fabric returned + shortages + damages','error');
-            return false;
+        if(c_plies == 0 && full_reporting_flag == '1'){
+            //do nothing
+        }else{
+            if(c_plies == 0){
+                swal('Please Enter Reporting Plies','Or Mark this as Fully Reported Cut','error');
+                return false;
+            }
+            if(c_plies > avl_plies){
+                swal('Warning','The Reporting Plies are more than, that are to be Reported','error');
+                return false;
+            }
+            if(rec > fab_req)
+                return swal('info','Reporting More Than Eligible Fabric','info'); 
+            if(fab_req < ret_to+rec+damages+shortages){
+                swal('Warning','The Reporting Fabric must not be greater than received + fabric returned + shortages + damages','error');
+                return false;
+            }
         }
         
         if(shift == null || cut_table == null || team_leader == null){

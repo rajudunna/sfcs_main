@@ -155,6 +155,34 @@ if(mysqli_num_rows($avl_plies_result) > 0){
     }
 }
 
+if($plies == 0 && $full_reporting_flag == 1){
+    //Force reporting 0 cut as complete reported
+    $all_docs = '';
+    $update_psl_query = "UPDATE $bai_pro3.plandoc_stat_log set act_cut_status='DONE' where doc_no = $doc_no 
+                        or org_doc_no = $doc_no";
+    mysqli_query($link,$update_psl_query);
+
+    //getting child docs if any
+    $child_docs_query = "SELECT group_concat(doc_no) as docs from $bai_pro3.plandoc_stat_log where org_doc_no = $doc_no";
+    $child_docs_result = mysqli_query($link,$child_docs_query);
+    while($row = mysqli_fetch_array($child_docs_result)){
+        $child_docs = $row['docs'];
+    }
+    if(strlen($child_docs) == 0)
+        $all_docs = $doc_no;
+    else
+        $all_docs = $child_docs;
+
+    $update_cps_query = "UPDATE $bai_pro3.cps_log set reported_status = 'F' where doc_no IN ($all_docs) and 
+                        operation_code = $op_code";
+    mysqli_query($link,$update_cps_query);
+    $response_data['saved'] = 1;
+    $response_data['pass'] = 1;
+    echo json_encode($response_data);
+    exit();
+}
+
+
 //Recut Docket Saving
 if($target == 'recut'){
     $rejections_done = [];
