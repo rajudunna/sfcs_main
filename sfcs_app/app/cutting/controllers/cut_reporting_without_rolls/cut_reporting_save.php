@@ -159,9 +159,21 @@ if(mysqli_num_rows($avl_plies_result) > 0){
 if($plies == 0 && $full_reporting_flag == 1){
     //Force reporting 0 cut as complete reported
     $all_docs = '';
-    $update_psl_query = "UPDATE $bai_pro3.plandoc_stat_log set act_cut_status='DONE' where doc_no = $doc_no 
-                        or org_doc_no = $doc_no";
-    mysqli_query($link,$update_psl_query);
+
+    //inserting to act_cutstatus 
+    $remarks = "$date^$cut_table^$shift^$f_rec^$f_ret^$damages^$shortages^$returned_to^$plies";
+    $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, 
+                    damages,shortages,remarks,log_date,bundle_loc,leader_name) 
+                    values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader')
+                    ON DUPLICATE KEY 
+                    UPDATE date='$date',section='$cut_table',shift='$shift',fab_received=fab_received + $f_rec,fab_returned='$f_ret',damages='$damages',shortages='$shortages',
+                    remarks=CONCAT(remarks,'$','$remarks'),
+                    log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader' ";
+
+    $update_psl_query = "UPDATE $bai_pro3.plandoc_stat_log set act_cut_status='DONE' 
+                    where doc_no = $doc_no or org_doc_no = $doc_no";
+    $insert_result = mysqli_query($link,$insert_query) or exit('Query Error 0 Cut 1');   
+    $update_result = mysqli_query($link,$update_psl_query) or exit('Query Error 0 Cut 2');
 
     //getting child docs if any
     $child_docs_query = "SELECT group_concat(doc_no) as docs from $bai_pro3.plandoc_stat_log where org_doc_no = $doc_no";
@@ -174,8 +186,20 @@ if($plies == 0 && $full_reporting_flag == 1){
     else
         $all_docs = $child_docs;
 
+    $op_codes_str = '';
+    $op_codes_query = "SELECT group_concat(operation_code) as op_codes FROM brandix_bts.tbl_orders_ops_ref 
+                    WHERE category IN ('Send PF','Receive PF')";
+    $op_codes_result = mysqli_query($link,$op_codes_query);
+    while($orow = mysqli_fetch_array($op_codes_result)){
+        $op_codes = $orow['op_codes'];
+    }                
+    if(strlen($op_codes) > 0)
+        $op_codes_str .= $op_code.','.$op_codes;
+    else
+        $op_codes_str = $op_code;
+
     $update_cps_query = "UPDATE $bai_pro3.cps_log set reported_status = 'F' where doc_no IN ($all_docs) and 
-                        operation_code = $op_code";
+                        operation_code IN ($op_codes_str)";
     mysqli_query($link,$update_cps_query);
     $response_data['saved'] = 1;
     $response_data['pass'] = 1;
