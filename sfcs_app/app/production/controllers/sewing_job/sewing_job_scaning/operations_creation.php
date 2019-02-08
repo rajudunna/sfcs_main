@@ -110,7 +110,7 @@
                                 </div>
                                 <div class = "col-sm-3">
                                 <b>Parent Work Center Id<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b>            
-                                    <select id="parent_work_center_id" style="width:100%;" name="parent_work_center_id" class="form-control" required>
+                                    <select id="parent_work_center_id" style="width:100%;" name="parent_work_center_id" class="form-control">
                                     <option value=''>Select Parent Work Center Id</option>
                                     <?php   
                                     if($vals>0){
@@ -144,6 +144,7 @@
                                 <div class="col-sm-3">
                                     <b>Category</b>
                                     <select class="form-control"id='category' name='category' title="It's Mandatory field" required>
+                                    <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span>
                                     <option value="">Please Select</option>
                                     <option value='cutting'>Cutting</option>
                                     <option value='Send PF'>Embellishment Send</option>
@@ -251,8 +252,13 @@
         {
             $cnt_moptyp = $m_optype_check_qry_rows['cnt'];
         }
-        
-        if($cnt_opsname == 0 && $cnt == 0 && $cnt_short == 0 && $cnt_work == 0 && $cnt_moptyp == 0)
+        //validating Parent Work Center Id with report to ERP
+        $work_center_qry = 1; 
+        if(strtolower($default_operation)=='yes' && $parent_work_center_id == '')
+        {
+            $work_center_qry = 0;
+        }
+        if($cnt == 0 && $cnt_short == 0 && $cnt_work == 0 && $work_center_qry == 1 && $cnt_opsname == 0)
         {
             $qry_insert = "INSERT INTO $brandix_bts.tbl_orders_ops_ref ( operation_name, default_operation,operation_code, type, operation_description,short_cut_code,work_center_id,category,parent_work_center_id,m3_operation_type)VALUES('$operation_name','$default_operation','$operation_code', '$type', '$sw_cod','$short_key_code','$work_center_id','$category','$parent_work_center_id','$m_operation_type')";
             $res_do_num = mysqli_query($link,$qry_insert);
@@ -302,6 +308,11 @@
         else if($cnt_moptyp != 0 && $cnt_short != 0)
         {
             $sql_message = 'M3 Operation Type and Short Key Code Already in use. Please give other.';
+            echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+        }
+        else if($work_center_qry == 0)
+        {
+            $sql_message = 'You should give work center id for Report to ERP Yes Operations';
             echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
         }
     }
