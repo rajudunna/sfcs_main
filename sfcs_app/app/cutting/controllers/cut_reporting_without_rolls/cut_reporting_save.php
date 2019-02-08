@@ -129,6 +129,7 @@ $a_sizes_str   = '';
 $s_p_sizes_str = '';
 $s_a_sizes_str = '';
 foreach($sizes_array as $size){
+    $zero_a_sizes_str .= 'a_'.$size.'=0,';
     $p_sizes_str .= 'p_'.$size.',';
     $a_sizes_str .= 'a_'.$size.',';
     $s_p_sizes_str .= 'p_'.$size.'+';
@@ -253,8 +254,9 @@ if($target == 'normal'){
     } 
     if($m3_status == 'fail'){
         $response_data['pass'] = 0;
-        echo json_encode($response_data);
         force_exit('Normal Reporting Failed');
+        echo json_encode($response_data);
+        exit();
     }else{
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $m3_status;
@@ -419,8 +421,9 @@ if($target == 'schedule_clubbed'){
     mysqli_close($link);
     iquit : if($status === 'fail'){
         $response_data['pass'] = 0;
-        echo json_encode($response_data);
         force_exit('Schedule Clubbed Docket Reporting Failed');
+        echo json_encode($response_data);
+        exit();
     }else{
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $status;
@@ -720,8 +723,9 @@ if($target == 'style_clubbed'){
     mysqli_close($link);
     iquit1 : if($status === 'fail'){
         $response_data['pass'] = 0;
-        echo json_encode($response_data);
         force_exit('Style Clubbed Docket Reporting Failed');
+        echo json_encode($response_data);
+        exit();
     }else{
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $status;
@@ -783,6 +787,7 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
     error_reporting(0);
     global $full_reporting_flag;
     $update_counter = 0;
+    $counter = 0;
     $category=['cutting','Send PF','Receive PF'];
     $op_code = 15;
 
@@ -827,15 +832,18 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
                             reported_status = '$reported_status' 
                             where doc_no = '$doc_no' and size_code='$size' and operation_code = $op_code ";
             $update_cps_result = mysqli_query($link,$update_cps_query) or force_exit('Query Error 5'); 
-            
+            $cps_counter = 0;
+            if(mysqli_affected_rows($link) == 1)   
+                $cps_counter++;
            
-            
             //Updating BCD
             $update_bcd_query = "UPDATE $brandix_bts.bundle_creation_data set recevied_qty = recevied_qty + $qty,
                             rejected_qty = rejected_qty + $rej
                             where docket_number = $doc_no and size_id = '$size' and operation_id = $op_code";
             //echo $update_bcd_query;                
             $update_bcd_result = mysqli_query($link,$update_bcd_query) or force_exit('Query Error 6');
+            if(mysqli_affected_rows($link) == 1 && $cps_counter == 1)   
+                $counter++;
 
             if($emb_cut_check_flag > 0)
             {
@@ -843,10 +851,9 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
                                     WHERE docket_number = $doc_no AND size_id = '$size' 
                                     AND operation_id = $emb_cut_check_flag ";
                 $update_bcd_result2 = mysqli_query($link,$update_bcd_query2) or force_exit('Query Error 7');
-
             }   
-            if($update_cps_result && $update_bcd_result)
-                $counter++;
+            // if($update_cps_result && $update_bcd_result)
+            //     $counter++;
         }
 
         if($counter == sizeof($cut_qty) && $counter > 0)
@@ -894,6 +901,7 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
     //NEED TO DEVELOP VERIFICATION FOR THE STYLE CLUBBED DOCKETS
     $emb_cut_check_flag = get_me_emb_check_flag($style,$color,$op_code);
 
+    mysqli_begin_transaction($link);
     foreach($reported as $doc_no=>$size_qty){
         //To verify the reported status is full or not for updating in cps_log #923
         $size_qty_query = "SELECT SUM($s_p_sizes_str) as plan,SUM($s_a_sizes_str) as actual 
@@ -918,17 +926,25 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
                             reported_status = '$reported_status'
                             where doc_no = $doc_no and size_code='$size' and operation_code = $op_code ";
             $update_cps_result = mysqli_query($link,$update_cps_query) or force_exit('CPS Error CLUB');
+            $cps_counter = 0;
+            if(mysqli_affected_rows($link) == 1)   
+                $cps_counter++;
+
             //Updating CPS to Full Status
             $update_cps_f_query = "UPDATE $bai_pro3.cps_log set reported_status = 'F' 
                                     where doc_no = '$doc_no' and size_code='$size' and operation_code = $op_code 
                                     and cut_quantity = remaining_qty";
-            $update_cps_f_result = mysqli_query($link,$update_cps_f_query) or force_exit('Query Error 5.1');    
+            $update_cps_f_result = mysqli_query($link,$update_cps_f_query) or force_exit('Query Error 5.1'); 
+            
+            
             //Updating BCD
             $update_bcd_query = "UPDATE $brandix_bts.bundle_creation_data set recevied_qty = recevied_qty + $qty,
-                            rejected_qty = rejected_qty + $rej where docket_number = $doc_no and size_id = '$size' 
+                            rejected_qty = rejected_qty + $rej where docket_number = $doc_no AND size_id = '$size' 
                             and operation_id = $op_code";
             $update_bcd_result = mysqli_query($link,$update_bcd_query) or force_exit('BCD Error CLUB');
-            // echo $update_bcd_query.'<br/>';
+            if(mysqli_affected_rows($link) == 1 && $cps_counter == 1)   
+                $counter++;
+
             if($emb_cut_check_flag > 0)
             {
                 $update_bcd_query2 = "UPDATE $brandix_bts.bundle_creation_data set send_qty = send_qty+$qty
@@ -936,13 +952,11 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
                                 AND operation_id = $emb_cut_check_flag";
                 $update_bcd_result2 = mysqli_query($link,$update_bcd_query2) or force_exit('BCD Error CLUB EMB');
             }   
-            //echo $update_bcd_query.'<br/><br/>';
-
-            if($update_cps_result && $update_bcd_result)
-                $counter++;
+            // if($update_cps_result && $update_bcd_result)
+            //     $counter++;
         }
     }
-
+    //echo "$counter -- $update_flag";
     if($counter == $update_flag && $counter > 0)
         mysqli_commit($link);
     else{    
@@ -991,21 +1005,22 @@ function force_exit($str){
     global $response_data;
     global $doc_no;
     global $zero_a_sizes_str;
+    global $plies;
     
     //reverting back the updates 
     $update_query1 = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(p_plies-$plies=0,p_plies,a_plies-$plies) 
                 where doc_no = $doc_no ";
+
     mysqli_query($link,$update_query1);
     $update_query2 = "UPDATE $bai_pro3.plandoc_stat_log SET act_cut_status = IF(a_plies = p_plies,'','DONE')
-                where doc_no = $doc_no ";
+                where doc_no = $doc_no ";        
     mysqli_query($link,$update_query2);
     if($doc_no > 1){
-        $update_query3 = "UPDATE $bai_pro3.plandoc_stat_log SET $zero_a_sizes_str act_cut_status '' where org_doc_no = $doc_no ";
+        $update_query3 = "UPDATE $bai_pro3.plandoc_stat_log SET $zero_a_sizes_str act_cut_status = '' where org_doc_no = $doc_no ";
         mysqli_query($link,$update_query3);
-    }
+    } 
     $response_data['error_msg'] = $str;
-    echo json_encode($response_data);
-    exit();
+    return;
 }
 
 
