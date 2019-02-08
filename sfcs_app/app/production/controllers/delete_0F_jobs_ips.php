@@ -83,14 +83,14 @@
                     //                where operation_id = '$op_code'
                     //                GROUP BY pdi.input_job_no_random_ref";   
 
-                    $jobs_query = "SELECT input_job_no_random_ref,doc_no,module from $bai_pro3.plan_dashboard_input pdi 
+                    $jobs_query = "SELECT input_job_no_random_ref,doc_no,input_module from $bai_pro3.plan_dashboard_input pdi 
                                 left join $bai_pro3.plan_dashboard pd ON pd.track_id = pdi.track_id";              
                     //echo $jobs_query;          
                     $jobs_result = mysqli_query($link,$jobs_query) or exit("No Jobs Found");
                     while($row = mysqli_fetch_array($jobs_result)){
                         $flag = 1;
                         $job_no_r= $row['input_job_no_random_ref'];
-                        $module  = $row['module'];
+                        $module  = $row['input_module'];
 
                         //getting job no
                         $job_no_query = "SELECT input_job_no,group_concat(distinct doc_no) as doc_str,
