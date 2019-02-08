@@ -43,7 +43,7 @@ $color=$_GET['color'];
 
 if(strlen($color) > 4){	
 	$split_verify = "SELECT group_concat(doc_no) as docs from 
-					$bai_pro3.plandoc_stat_log where order_tid like  '$style%$schedule$color' and org_doc_no = 1";
+					$bai_pro3.plandoc_stat_log where order_tid like  '$style%$schedule$color%' and org_doc_no = 1";
 	$split_result = mysqli_query($link,$split_verify);
 	while($row = mysqli_fetch_array($split_result)){
 		$docs = $row['docs'];
