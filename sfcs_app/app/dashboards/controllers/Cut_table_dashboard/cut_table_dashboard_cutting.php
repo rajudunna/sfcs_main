@@ -162,7 +162,13 @@ function blink_new_priority(x)
 .recut{
   border-left  : 15px solid pink;
   border-right : 15px solid pink;
+  border-top : 1px solid black;
+  border-bottom : 1px solid black;
 }
+.normal{
+  border : 1px solid black;
+}
+
 
 /*blink css for req time exceeding */
 @-webkit-keyframes blinker {
@@ -235,7 +241,7 @@ a{
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -262,7 +268,7 @@ height: 25px;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -289,7 +295,7 @@ height: 25px;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -319,7 +325,7 @@ height: 25px;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
     padding: 1px;
@@ -351,7 +357,7 @@ height: 25px;
   float: left;
   margin: 2px;
   color:black;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    /*padding: 4px;*/
@@ -380,7 +386,7 @@ height: 25px;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -406,7 +412,7 @@ height: 25px;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
   height: 25px;
     width: 250px;
     /* padding: 4px; */
@@ -432,7 +438,7 @@ border: 1px solid #000000;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
     /* padding: 4px; */
@@ -459,7 +465,7 @@ height: 25px;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
   height: 25px;
     width: 250px;
     /* padding: 4px; */
@@ -485,7 +491,7 @@ border: 1px solid #000000;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -498,7 +504,7 @@ height: 25px;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -1272,9 +1278,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             }
           }
         }
-      if($remarks == 'recut'){
+      if(strtolower($remarks) == 'recut')
         $recut_class = 'recut';
-      }
+      else
+        $recut_class = 'normal';
 
       // $get_cut_qty = getFullURLLevel($_GET['r'],'cutting/controllers/cut_qty_reporting_withoutrolls/orders_cut_issue_status_form_v2_cut.php',3,'N');
       $get_cut_qty = 
