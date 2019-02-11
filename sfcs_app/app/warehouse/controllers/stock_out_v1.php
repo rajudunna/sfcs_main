@@ -63,7 +63,7 @@ $().ready(function() {
 
 <div style="float:right;">
 <FORM method="post" name="input2" action="?r=<?= $_GET['r'] ?>">
-<div id="seract_lot">Search Lot No/Location: <!--<input type="text" id="course" name="lot_no">-->
+<div id="seract_lot">Search Lot No: <!--<input type="text" id="course" name="lot_no">-->
 <textarea id="course" name="lot_no" cols=12 rows=10 style="height: 107px;"></textarea>
 <input type="submit" name="submit" value="Search" class="btn btn-success"></div>
 </form>
@@ -225,7 +225,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	  {
 		  echo "<td  style='background-color:white;'>$location</td><td style='background-color:white;'>$lot_ref</td><td style='background-color:white;'>$barcode_number</td><td style='background-color:white;'>$box</td><td style='background-color:white;'>$available</td>";
 		  echo '<td style="background-color:white;"><input style="width:88px; type="text" name="date[]" value="'.date("Y-m-d").'"></td>';
-		  echo '<td style="background-color:white;"><input style="width: 72px; type="text" name="qty_issued[]"  value="" onchange="if(check(this.value, '.$available.')==1010){ this.value=0;}"></td>';
+		  echo '<td style="background-color:white;"><input class="float" style="width: 72px; type="text" name="qty_issued[]"  value="" onchange="if(check(this.value, '.$available.')==1010){ this.value=0;}"></td>';
 		  echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="style[]"  value=""></td>';
 		  echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="schedule[]"  value=""></td>';
 		  echo '<td style="background-color:white;"><input style="width: 62px; type="text" name="cut[]" value=""></td>';
@@ -370,7 +370,7 @@ if(isset($_POST['put']))
   {
 	  if($qty_issued[$j]>0)
 	  {
-		  $sql="insert into $bai_rm_pj1.store_out (tran_tid, qty_issued, style, schedule, cutno, date, remarks, updated_by) values (".$tid[$j].",".$qty_issued[$j].",'".$style[$i]."','".$schedule[$i]."','".$cut[$i]."','".$date[$i]."','".$remarks[$i]."','".$username."_rm_issue')";
+		  $sql="insert into $bai_rm_pj1.store_out (tran_tid, qty_issued, style, schedule, cutno, date, remarks, updated_by) values (".$tid[$j].",".$qty_issued[$j].",'".$style[$j]."','".$schedule[$j]."','".$cut[$j]."','".$date[$j]."','".$remarks[$j]."','".$username."_rm_issue')";
 		  $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 		  $qty_issued_new=0;
 		  

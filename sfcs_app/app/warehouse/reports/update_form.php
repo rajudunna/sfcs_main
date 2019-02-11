@@ -129,7 +129,8 @@ function validateQty(event)
 
 		<?php 
 		include("menu_include.php");
-		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
+		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config_splitting_function.php',3,'R')); ?>
 		<?php //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);?>
 
 <?php
@@ -312,7 +313,8 @@ if($_GET["lots"] > 0)
 		echo "<td><input type=\"hidden\" name=\"ref_tid[]\" value=\"".$ref_tid."\" /><input type=\"hidden\" name=\"lblids[]\" value=\"".$sql_row1["tid"]."\" >".$ref_tid."-".$sql_row1["tid"]."</td>";
 		echo "<td><input type=\"hidden\" name=\"lotnos[]\" value=\"".$sql_row1["lot_no"]."\" >".$sql_row1["lot_no"]."</td>";
 		echo "<td>".$sql_row1["ref4"]."</td>";
-		echo "<td>".$sql_row1["qty_rec"]."</td>";
+		//echo "<td>".$sql_row1["qty_rec"]."</td>";
+		echo "<td><input type=\"hidden\" name=\"receivedqty[]\" value=\"".$sql_row1["qty_rec"]."\" >".$sql_row1["qty_rec"]."</td>";
 		$bgcolor="#dfgfd";
 		if($sql_row1["qty_issued"] > 0)
 		{
@@ -321,7 +323,7 @@ if($_GET["lots"] > 0)
 		echo "<td bgcolor=\"$bgcolor\">".$sql_row1["qty_issued"]."</td>";
 		echo "<td>".$sql_row1["qty_ret"]."</td>";
 		echo "<td><input type=\"hidden\" name=\"lotbal[]\" value=\"".($sql_row1["qty_rec"]+$sql_row1["qty_ret"]-$sql_row1["qty_issued"])."\"  />".($sql_row1["qty_rec"]+$sql_row1["qty_ret"]-$sql_row1["qty_issued"])."</td>";
-		echo "<td><input type=\"text\"  name=\"issqty[]\"  value=\"0\" $readonly onkeyup=\"DataCheck();\"/></td>";
+		echo "<td><input type=\"text\"  class='float' name=\"issqty[]\"  value=\"0\" $readonly onkeyup=\"DataCheck();\"/></td>";
 		echo "</tr>";
 		}
 	}
@@ -627,34 +629,46 @@ $(document).ready(function(){
 		$tid=$_POST['tid'];
 		$ins_rem=$_POST['ins_rem'];
 		$available=$_POST['available'];
-		$lable_ids=$_POST["lblids"];
+		//$lable_ids=$_POST["lblids"];
+		$val_ref=$_POST["lotbal"];
+		$tid_ref=$_POST["lblids"];
+
 		$issued_qty=$_POST["issqty"];
 		$lot_nos=$_POST["lotnos"];
 		$ref_tids=$_POST["ref_tid"];
 		//echo sizeof($lable_ids);
 		
-		for($i=0;$i<sizeof($tid);$i++)
+		for($j=0;$j<sizeof($tid);$j++)
 		{
 			//if($available[$i]>0)
 			{
-				$sql="update $bai_rm_pj2.mrn_track set status=7, issued_by=\"$username\",issued_date=\"".date("Y-m-d H:i:s")."\",issued_qty=".$available[$i]."  where tid=".$tid[$i];
+				$sql="update $bai_rm_pj2.mrn_track set status=7, issued_by=\"$username\",issued_date=\"".date("Y-m-d H:i:s")."\",issued_qty=".$available[$j]."  where tid=".$tid[$j];
 				//echo $sql."<br>";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
 		$host_name=str_replace(".brandixlk.org","",gethostbyaddr($_SERVER['REMOTE_ADDR']));
-		for($i=0;$i<sizeof($lable_ids);$i++)
+		for($j=0;$j<sizeof($issued_qty);$j++)
 		{
-			if($issued_qty[$i]>0)
+			if($issued_qty[$j]>0)
 			{
-				$sql1="insert into $bai_rm_pj2.mrn_out_allocation(mrn_tid,lable_id,lot_no,iss_qty,updated_user) values(\"".$ref_tids[$i]."\",\"".$lable_ids[$i]."\",\"".$lot_nos[$i]."\",\"".$issued_qty[$i]."\",\"".$username."^".$host_name."\")";
+				$sql1="insert into $bai_rm_pj2.mrn_out_allocation(mrn_tid,lable_id,lot_no,iss_qty,updated_user) values(\"".$ref_tids[$j]."\",\"".$tid_ref[$j]."\",\"".$lot_nos[$j]."\",\"".$issued_qty[$j]."\",\"".$username."^".$host_name."\")";
 				//echo $sql1."</br>";
 				mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
-				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_qty[$i]." where tid=\"".$lable_ids[$i]."\"";
+				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_qty[$j]." where tid=\"".$tid_ref[$j]."\"";
 				//echo $sql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
+
+			if($issued_qty[$j]<$val_ref[$j]){
+
+		
+				$issued_ref[$j]=$issued_qty[$j];
+				$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
+
+			}
+
 			
 		}
 		
