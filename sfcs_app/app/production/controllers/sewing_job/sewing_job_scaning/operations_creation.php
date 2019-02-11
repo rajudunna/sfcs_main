@@ -246,11 +246,14 @@
         {
             $cnt_short = $res_res_res_short_key_code_check_qry['cnt'];
         }
-        $m_optype_check_qry = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where m3_operation_type = '$m_operation_type'";
-        $m_optype_check_qry_result = mysqli_query($link,$m_optype_check_qry);
-        while($m_optype_check_qry_rows = mysqli_fetch_array($m_optype_check_qry_result))
+        if($m_operation_type != '')
         {
-            $cnt_moptyp = $m_optype_check_qry_rows['cnt'];
+            $m_optype_check_qry = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where m3_operation_type = '$m_operation_type'";
+            $m_optype_check_qry_result = mysqli_query($link,$m_optype_check_qry);
+            while($m_optype_check_qry_rows = mysqli_fetch_array($m_optype_check_qry_result))
+            {
+                $cnt_moptyp = $m_optype_check_qry_rows['cnt'];
+            }
         }
         $m_operation_type_check = 1; 
         if(strtolower($default_operation)=='yes' && $m_operation_type == '')

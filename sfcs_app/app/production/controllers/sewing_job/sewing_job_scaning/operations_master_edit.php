@@ -270,11 +270,14 @@ function validateQty(event)
             {
                 $cnt_short = $res_res_res_short_key_code_check_qry['cnt'];
             }
-            $m_operation_type_qry = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where m3_operation_type = '$m_operation_type' and id <> $id AND $m_operation_type <> 0";
-            $res_m_operation_type_qry = mysqli_query($link,$m_operation_type_qry);
-            while($res_res_res_m_operation_type_qry = mysqli_fetch_array($res_m_operation_type_qry))
+            if($m_operation_type != '')
             {
-                $m3ops_type_short = $res_res_res_m_operation_type_qry['cnt'];
+                $m_operation_type_qry = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where m3_operation_type = '$m_operation_type' and id <> $id AND $m_operation_type <> 0";
+                $res_m_operation_type_qry = mysqli_query($link,$m_operation_type_qry);
+                while($res_res_res_m_operation_type_qry = mysqli_fetch_array($res_m_operation_type_qry))
+                {
+                    $m3ops_type_short = $res_res_res_m_operation_type_qry['cnt'];
+                }
             }
             $m_operation_type_check = 1; 
             if(strtolower($default_operation)=='yes' && $m_operation_type == '')
