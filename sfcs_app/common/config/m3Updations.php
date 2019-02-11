@@ -534,7 +534,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
             while($result=mysqli_fetch_array($tbl_carton_ready_check_result))
             {
                 $remaining_qty = $result['remaining_qty'];
-                if (($remaining_qty - $mo_qty_array[$i]) > 0)
+                if (($remaining_qty - $mo_qty_array[$i]) >= 0)
                 {
                     // mo eligible for scan
                     $flag_ok = 1;
@@ -884,7 +884,7 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
                     {
                         $is_m3 = $row['default_operration'];
                     }
-					 $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = $mo_number AND OperationNumber = $main_ops_code";
+                     $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = $mo_number AND OperationNumber = $main_ops_code";
                         $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
                         {

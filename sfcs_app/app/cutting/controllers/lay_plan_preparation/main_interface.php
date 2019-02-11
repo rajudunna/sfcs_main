@@ -451,6 +451,44 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		/* end  Adding MPO Number  */
 
 $color_code = chr($color_code);
+$order_tidss=array();	$original_details = array();
+if($order_joins<>'0')
+{
+	if(strlen($schedule)<8)
+	{
+		// color clubbing
+		$orders_join='J'.substr($color,-1);
+		$label="Original Colors";
+		$select_sql="select order_tid, trim(order_col_des) as order_col_des from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
+		//echo $select_sql."<br>";
+		$result=mysqli_query($link, $select_sql);
+		while($rows=mysqli_fetch_array($result))
+		{
+			$order_tidss[]=$rows['order_tid'];
+			$original_details[]=$rows['order_col_des'];
+		}
+	}
+	else
+	{
+		// schedule clubbing
+		$select_sql="select order_tid, order_del_no from $bai_pro3.bai_orders_db_confirm where order_joins='J".$schedule."'";
+		//echo $select_sql."<br>";
+		$label="Original Schedules";
+		$result=mysqli_query($link, $select_sql);
+		while($rows=mysqli_fetch_array($result))
+		{
+			$order_tidss[]=$rows['order_tid'];
+			$original_details[]=$rows['order_del_no'];
+		}
+	}	
+}
+else
+{
+	$order_tidss[]=$tran_order_tid;
+}
+
+// var_dump($order_tidss)."<Br>";
+
 echo "<div class='col-sm-12 row'><div class='panel panel-info'>
 <div class='panel-body' >
 	<div class='row'>
@@ -479,11 +517,19 @@ echo "<div class='col-sm-12 row'><div class='panel panel-info'>
 	<br/>
 	<div class='row'>
 		<div class='col-md-4'>
-		<strong>Destination : </strong>$destination
+			<strong>Destination : </strong>$destination
 		</div>
 		<div class='col-md-4'>
-		<strong>MPO : </strong>$mpo
-		</div>
+			<strong>MPO : </strong>$mpo
+		</div>";
+		if (count($original_details) > 0)
+		{
+			$org_details =  implode(',', $original_details);
+			echo "<div class='col-md-4'>
+					<strong>$label : </strong>$org_details
+				</div>";
+		}
+		echo "
 	</div>
 	<br/>";
 // 	echo "<div class='row'>
@@ -525,38 +571,7 @@ if($flag==1)
 	echo "<th class=\"title\">Total</th>";
 	echo "</tr></thead>";
 }
-$order_tidss=array();
-if($order_joins<>'0')
-{
-	if(strlen($schedule)<8)
-	{
-		$orders_join='J'.substr($color,-1);
-		
-		$select_sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
-		//echo $select_sql."<br>";
-		$result=mysqli_query($link, $select_sql);
-		while($rows=mysqli_fetch_array($result))
-		{
-			$order_tidss[]=$rows['order_tid'];
-		}
-	}
-	else
-	{
-		$select_sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_joins='J".$schedule."'";
-		//echo $select_sql."<br>";
-		$result=mysqli_query($link, $select_sql);
-		while($rows=mysqli_fetch_array($result))
-		{
-			$order_tidss[]=$rows['order_tid'];
-		}	
-	}	
-}
-else
-{
-	$order_tidss[]=$tran_order_tid;
-}
 
-//var_dump($order_tidss)."<Br>";
 for($ii=0;$ii<sizeof($order_tidss);$ii++)
 {
 	$samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$order_tidss[$ii]' order by sizes_ref";

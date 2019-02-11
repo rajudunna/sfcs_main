@@ -231,12 +231,13 @@ function GetSelectedItem()
 	for($i=0;$i<sizeof($doc_nos_splitx);$i++)
 	{
 		echo "<tr>";
-		$sql11x="select order_tid,acutno from $bai_pro3.plandoc_stat_log where doc_no=\"".$doc_nos_splitx[$i]."\"";
+		$sql11x="select order_tid,acutno,remarks from $bai_pro3.plandoc_stat_log where doc_no=\"".$doc_nos_splitx[$i]."\"";
 		$sql_result11x=mysqli_query($link, $sql11x) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row11x=mysqli_fetch_array($sql_result11x))
 		{
 			$order_tidx=$row11x["order_tid"];
 			$cut_nosx=$row11x["acutno"];
+			$remarks = $row11x["remarks"];
 		}
 
 		$sql21x="select order_style_no,order_del_no,order_col_des,order_div,color_code from $bai_pro3.bai_orders_db where order_tid=\"".$order_tidx."\"";
@@ -249,12 +250,17 @@ function GetSelectedItem()
 			$buyerx=$row21x["order_div"];
 			$color_codex=$row21x["color_code"];
 		}
+		if(strtolower($remarks) == 'recut')
+			$appender = 'R';
+		else
+			$appender = chr($color_codex);
+			
 
 		echo "<td>".$stylex."</td>";
 		echo "<td>".$schedulex."</td>";
 		echo "<td>".$colorx."</td>";
 		echo "<td>".$doc_nos_splitx[$i]."</td>";
-		echo "<td>".chr($color_codex)."00".$cut_nosx."</td>";
+		echo "<td>".$appender."00".$cut_nosx."</td>";
 		echo "</tr>";
 	}
 

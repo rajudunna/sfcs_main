@@ -13,6 +13,11 @@ $module_color =$_REQUEST['module_color'];
 $module_label =$_REQUEST['module_label'];
 $mapped_cut_table =$_REQUEST['mapped_cut_table'];
 $datetime =$_REQUEST['datetimepicker11'];
+$mini_plant =$_REQUEST['mini_plant'];
+if ($mini_plant == '' || $mini_plant == null)
+{
+	$mini_plant = 'NULL';
+}
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $username=getrbac_user()['uname'];
 $conn=$link;
@@ -62,7 +67,7 @@ else
 	{
 		//update
 		
-		$sql = "update $bai_pro3.module_master set module_name='$module',date_time='$datetime',mapped_cut_table='$mapped_cut_table',module_description='$description', block_priorities='$block_priorities', section='$sections',status='$modulestatus',color='$module_color', label='$module_label' where id=$id";
+		$sql = "update $bai_pro3.module_master set module_name='$module',date_time='$datetime',mapped_cut_table='$mapped_cut_table',module_description='$description', block_priorities='$block_priorities', mini_plant_id=".$mini_plant.", section='$sections',status='$modulestatus',color='$module_color', label='$module_label' where id=$id";
 		// echo $sql;die();
 		if (mysqli_query($conn, $sql)) {
 		} else {
@@ -146,8 +151,8 @@ else
 			$row_count=mysqli_num_rows($plan_modules_result);
 			if($row_count==0)
 			{
-				$sql9 = "INSERT INTO $bai_pro3.module_master (module_name,date_time,module_description,status,section,color,label,mapped_cut_table,block_priorities)
-					VALUES ('$module','$datetime','$description','$modulestatus','$sections','$module_color','$module_label','$mapped_cut_table','$block_priorities')";
+				$sql9 = "INSERT INTO $bai_pro3.module_master (module_name,date_time,module_description,status,section,color,label,mapped_cut_table,block_priorities,mini_plant_id)
+					VALUES ('$module','$datetime','$description','$modulestatus','$sections','$module_color','$module_label','$mapped_cut_table','$block_priorities',".$mini_plant.")";
 
 				if (mysqli_query($conn, $sql9))
 				{

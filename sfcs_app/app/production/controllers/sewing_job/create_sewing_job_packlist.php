@@ -152,7 +152,7 @@
 				// echo $style."---".$schedule;
 				$packing_summary_input_check_cut_based = echo_title("$bai_pro3.packing_summary_input","count(*)","pac_seq_no = -1 and order_del_no",$schedule,$link);
 				$pac_stat_input_check = echo_title("$bai_pro3.pac_stat_input","count(*)","schedule",$schedule,$link);
-				$packing_summary_input_check = echo_title("$bai_pro3.packing_summary_input","count(*)","order_del_no",$schedule,$link);
+				$packing_summary_input_check = echo_title("$bai_pro3.packing_summary_input","count(*)","type_of_sewing=1 and order_del_no",$schedule,$link);
 				$pack_size_ref_check = echo_title("$bai_pro3.tbl_pack_ref","count(*)","schedule",$schedule,$link);
 
 				if ($packing_summary_input_check > 0)

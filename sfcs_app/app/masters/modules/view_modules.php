@@ -10,7 +10,7 @@
 		die("Connection failed: " . $conn->connect_error);
 	} 
 
-	$sql = "SELECT * FROM $bai_pro3.`module_master`";
+	$sql = "SELECT *, module_master.id AS rowid FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.mini_plant_master ON module_master.mini_plant_id = mini_plant_master.id";
 	$result = $conn->query($sql);
 	$sno = 1;
 	$url=getFullURL($_GET['r'],'add_module.php','N');
@@ -26,7 +26,8 @@
 		<th>Module Description</th>		
 		<th>Mapped Cut Table</th>
         <th>Module Color</th>
-        <th>Module Label</th>
+		<th>Module Label</th>
+		<th>Mini Plant</th>
 		<th>Status</th>
 		<th> Edit / Delete </th>
 		</tr>
@@ -34,8 +35,9 @@
 		<tbody>";
 		// output data of each row
 		$section_display_name='';
-		while($row = $result->fetch_assoc()) {
-			$rowid=$row["id"];
+		while($row = $result->fetch_assoc())
+		{
+			$rowid=$row["rowid"];
 			$module_name=$row["module_name"];
 			$status=$row["status"];
 			$section=$row["section"];
@@ -53,26 +55,29 @@
 			$module_description=$row["module_description"];
 			$mapped_cut_table=$row["mapped_cut_table"];
 			$block_priorities=$row["block_priorities"];
+			$mini_plant=$row["mini_plant_id"];
+			$mini_plant_name = $row["mini_plant_name"];
 			if ($mapped_cut_table == '' or $mapped_cut_table == NULL)
 			{
 				$mapped_cut_table = ' - ';
+			}
+			if ($mini_plant_name == null || $mini_plant_name == '')
+			{
+				$mini_plant_name = " - ";
 			}
 			
 			echo "<tr>
 			<td>".$sno++."</td>
 			<td>".$row["module_name"]."</td>
-			<td>".$row["section"]."</td>
-			<td>".$row["block_priorities"]."</td>
+			<td>".$section_display_name."</td>
+			<td>".$block_priorities."</td>
             <td>".$row["module_description"]."</td>
             <td>".$mapped_cut_table."</td>
             <td>".$row["color"]."</td>
             <td>".$row["label"]."</td>
-			<td>".$section_display_name."</td>
-			<td>".$block_priorities."</td>
-			<td>".$row["module_description"]."</td>
-			<td>".$mapped_cut_table."</td>
+			<td>".$mini_plant_name."</td>
 			<td>".$row["status"]." </td>
-			<td><a href='$url&rowid=$rowid&module_name=$module_name&section=$section&status=$status&module_description=$module_description&block_priorities=$block_priorities&mapped_cut_table=$mapped_cut_table&module_color=$color&module_label=$label' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid&module_name=$module_name&section=$section' class='btn btn-danger btn-xs editor_remove' onclick='return confirm_delete(event,this);'>Delete</a></td>
+			<td><a href='$url&rowid=$rowid&module_name=$module_name&section=$section&status=$status&module_description=$module_description&block_priorities=$block_priorities&mini_plant=$mini_plant&mapped_cut_table=$mapped_cut_table&module_color=$color&module_label=$label' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid&module_name=$module_name&section=$section' class='btn btn-danger btn-xs editor_remove' onclick='return confirm_delete(event,this);'>Delete</a></td>
 			</tr>";
 		}
 

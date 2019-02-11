@@ -24,12 +24,6 @@
 		$count_result = mysqli_query($link,$count_query);
 		if(mysqli_num_rows($count_result)>0)
 		{
-			while($sql_row=mysqli_fetch_array($count_result))
-			{
-				$doc_no_ref=$sql_row['doc_no_ref'];
-				$status=$sql_row['status'];
-			}
-
 			$b_tid = array();
 			$get_all_tid = "SELECT group_concat(tid) as tid,min(status) as status FROM bai_pro3.`pac_stat_log` WHERE pac_stat_id = '".$carton_id."'";
 			$tid_result = mysqli_query($link,$get_all_tid);
