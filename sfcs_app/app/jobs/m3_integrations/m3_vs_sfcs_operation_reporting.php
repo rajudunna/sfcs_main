@@ -128,8 +128,7 @@
     }
     $message.= "</table><br/><br/>Message Sent Via:".$plant_name."</body> 
     </html>";
-    echo $message;
-    $to  ="satishkalla@schemaxtech.com"; 
+    $to  =$m3_vs_sfcs_operation_reporting; 
     // subject 
     $subject = 'M3 Quantities and SFCS Quantities'; 
     // To send HTML mail, the Content-type header must be set 
@@ -146,6 +145,8 @@
         }else{
             print("Email Sent Failed")."\n"; 
         }
+    }else{
+        print("No records found,So mail will not send")."\n";
     }
     
     $end_timestamp = microtime(true);
