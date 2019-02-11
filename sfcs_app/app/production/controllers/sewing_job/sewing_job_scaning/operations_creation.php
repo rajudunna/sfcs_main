@@ -106,7 +106,7 @@
 
                                 </div>
                                 <div class = "col-sm-3">
-                                <b>Parent Work Center Id<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b>            
+                                <b>Parent Work Center Id<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='orange'>*</font></span></b>            
                                     <select id="parent_work_center_id" style="width:100%;" name="parent_work_center_id" class="form-control">
                                     <option value=''>Select Parent Work Center Id</option>
                                     <?php   
@@ -139,22 +139,26 @@
                                     <b>Work Center</b><input type="text" class="form-control" id="work_center_id" name="work_center_id">
                                 </div>
                                 <div class="col-sm-3">
-                                    <b>Category</b>
+                                    <b>Category</b> <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span>
                                     <select class="form-control"id='category' name='category' title="It's Mandatory field" required>
-                                    <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span>
                                     <option value="">Please Select</option>
                                     <option value='cutting'>Cutting</option>
                                     <option value='Send PF'>Embellishment Send</option>
                                     <option value='Receive PF'>Embellishment Received</option>
                                     <option value='sewing'>Sewing</option>
                                     <option value='packing'>Packing</option>
-                                    
                                     </select>
+                                </div></div>
+                                <div class='row'>
+                                    <div class="col-sm-2">
+                                        <button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
+                                    </div>
+                                    <div class="col-sm-2"></div><div class="col-sm-2"></div><div class="col-sm-2"></div>
+                                    <div class="col-sm-4" pull-right>
+                                    </br>
+                                        <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='orange'>* :</font></span> Fields are mandatory when report to ERP is "Yes". 
+                                    </div>
                                 </div>
-                                <div class="col-sm-2">
-                                    <button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
-                                </div>
-                            </div>
                         </form>
                     </div>  
                 </div>
