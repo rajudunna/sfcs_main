@@ -1115,7 +1115,7 @@ if(isset($_POST['allocate']))
 			echo "<td>".$sql_row['qty_rec']."</td>";
 			echo "<td>".$sql_row['ref5']."</td>";
 			echo "<td>".($sql_row['qty_rec']-$sql_row['qty_isfillingsued']+$sql_row['qty_ret'])."</td>";
-			echo "<td><input class='form-control integer' name=\"issued_new".$doc_ref."[$j]\" type = 'text' id=\"issued".$doc_ref."[$j]\" value = '0' onchange='filling($doc_ref,$j);' readonly></input></td>";
+			echo "<td><input class='form-control integer' name=\"issued_new".$doc_ref."[$j]\" type = 'number' min='0' step='any' id=\"issued".$doc_ref."[$j]\" value = '0' onchange='filling($doc_ref,$j);' readonly></input></td>";
 			
 			//echo "</br>Allotment Status".$sql_row['allotment_status']."</br>";
 
