@@ -431,7 +431,7 @@ if(isset($_GET['val']))
 	
 				$rejected1=array();
 				$rejected=array();
-                $get_rejected_qty="select sum(rejected_qty) as rejected,operation_id from $brandix_bts.bundle_creation_data where assigned_module=$module_ref and input_job_no_random_ref = '$input_job'";
+                $get_rejected_qty="select sum(rejected_qty) as rejected,operation_id,size_title from $brandix_bts.bundle_creation_data where assigned_module=$module_ref and input_job_no_random_ref = '$input_job'";
                 //getting selection and apend result to query
 				if(isset($_POST['submit']))
 				{
@@ -450,7 +450,7 @@ if(isset($_GET['val']))
 				$sql_result33=mysqli_query($link, $get_rejected_qty) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row33=mysqli_fetch_array($sql_result33))
 				{
-					$rejected1[$sql_row33['operation_id']] = $sql_row33['rejected'];
+					$rejected1[$sql_row33['size_title']][$sql_row33['operation_id']] = $sql_row33['rejected'];
 					if($sql_row33['operation_id'] == $output_code)
 					{
 					 $rejected = $sql_row33['rejected'];
@@ -515,7 +515,7 @@ if(isset($_GET['val']))
 							if($rejected1[$value] == '')
 								echo "<td>0</td>";
 							else    
-								echo"<td>".$rejected1[$value]."</td>";
+								echo"<td>".$rejected1[$size_title][$value]."</td>";
 						}
 					}  
                           			
@@ -575,7 +575,7 @@ if(isset($_GET['val']))
 							if($rejected1[$value] == '')
 								echo "<td>0</td>";
 							else    
-								echo"<td>".$rejected1[$value]."</td>";
+								echo"<td>".$rejected1[$size_title][$value]."</td>";
 						}
 					}  
 					echo "<td>".($row12['input']-($row12['output']+$rejected))."</td>";
