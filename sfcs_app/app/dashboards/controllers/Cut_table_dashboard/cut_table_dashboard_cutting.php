@@ -159,6 +159,10 @@ function blink_new_priority(x)
 
 
 <style>
+.recut{
+  border-left  : 15px solid pink;
+  border-right : 15px solid pink;
+}
 
 /*blink css for req time exceeding */
 @-webkit-keyframes blinker {
@@ -1268,33 +1272,36 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             }
           }
         }
-      
-       // $get_cut_qty = getFullURLLevel($_GET['r'],'cutting/controllers/cut_qty_reporting_withoutrolls/orders_cut_issue_status_form_v2_cut.php',3,'N');
-        $get_cut_qty = 
-        getFullURLLevel($_GET['r'],'cutting/controllers/cut_reporting_without_rolls/cut_reporting_interface.php',3,'N');
+      if($remarks == 'recut'){
+        $recut_class = 'recut';
+      }
 
-        $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
-        $sidemenu=true;
+      // $get_cut_qty = getFullURLLevel($_GET['r'],'cutting/controllers/cut_qty_reporting_withoutrolls/orders_cut_issue_status_form_v2_cut.php',3,'N');
+      $get_cut_qty = 
+      getFullURLLevel($_GET['r'],'cutting/controllers/cut_reporting_without_rolls/cut_reporting_interface.php',3,'N');
+
+      $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
+      $sidemenu=true;
       $href="$get_fabric_requisition&doc_no=$doc_no&module=$table_id&section=$table_id&sidemenu=$sidemenu&group_docs=".implode(",",$club_docs);
   
         //if(in_array($authorized,$has_permission) and $final_cols!="yellow" and $final_cols!="green")
       if($rep_status!=''){
        if(in_array($authorized,$has_permission) and ($final_cols=="yellow" || $final_cols=="orange")){
-            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='".$get_cut_qty."&doc_no=$doc_no&cut_table=$cut_table' onclick='Popup=window.open('$get_cut_qty.php?doc_no=$doc_no&cut_table=$cut_table','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
+            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='".$get_cut_qty."&doc_no=$doc_no&cut_table=$cut_table' onclick='Popup=window.open('$get_cut_qty.php?doc_no=$doc_no&cut_table=$cut_table','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
         }else if($final_cols=="yash" || $final_cols=="red" || $final_cols=="lgreen"){
-          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='#'
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='#'
              onclick=\"window.open('$href','yourWindowName','width=800,height=600')\"
             >$emb_stat_title"."LT:".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
         }
         else if($final_cols=="pink"){
-          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:11px; float:left; color:white' title='$title'>RT:".$req_time1."</div></div><br/>";
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' title='$title'>RT:".$req_time1."</div></div><br/>";
         }
         else{
           if($fabric_req_date<date("Y-M-d h:i:sa")){
-          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:white' title='$title'><span class='blink'>RT:".$req_time1."</span></div></div><br/>";
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:white' title='$title'><span class='blink'>RT:".$req_time1."</span></div></div><br/>";
           }
           else{
-            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; float:left; color:white' title='$title'>RT:".$req_time1."</div></div><br/>";
+            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' title='$title'>RT:".$req_time1."</div></div><br/>";
           }
         }
       }
