@@ -776,7 +776,7 @@ if(isset($_POST['new_entry']))
 							else
 							{	
 								//Removing for #1305 ticket and adding this functionality into a separate function 
-								$roll_splitting = roll_splitting_function($roll_id,$balance,$alloc_qty);	
+								$roll_splitting = roll_splitting_function($primary_roll_id,$balance,$alloc_qty);	
 							}
 
 						}
