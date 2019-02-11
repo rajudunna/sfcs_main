@@ -13,7 +13,7 @@ if($_GET["print_status"]==1)
 }
 else
 {
-	$print_status="Orginal";
+	$print_status="Original";
 }
 
 $sql="select * from $bai_rm_pj2.mrn_track where tid=$mrn_id";

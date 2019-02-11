@@ -727,10 +727,25 @@ if(isset($_POST['allocate_new']))
 			//for #1305 ticket in git edite by Srinivas Y .
 			for($j=0;$j<sizeof($tid_ref);$j++)
 			{
-				//Removing for #1305 ticket and adding this functionality into a separate function
-				if($issued_ref[$j] > 0)
+				if($tid_ref[$j]>0)
 				{
-					$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
+					if($process_cat==1)
+					{
+						$sql="insert into bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'normal',".$issued_ref[$j].",'1')";
+					}
+					else
+					{
+						$sql="insert into bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'recut',".$issued_ref[$j].",'1')";
+					}
+					
+					//Uncheck this
+					mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+					//Removing for #1305 ticket and adding this functionality into a separate function
+					if($issued_ref[$j] > 0)
+					{
+						$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
+					}
+
 				}
 			}
 			

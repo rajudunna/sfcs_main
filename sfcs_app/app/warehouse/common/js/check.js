@@ -47,7 +47,7 @@ function enableButton() {
 
 function check(x, y) {
     if (x < 0) {
-        sweetAlert("You cant enter a value less than 0", "", "info");
+        sweetAlert("You can't enter a value less than 0", "", "info");
         return 1010;
     }
     if ((x > y)) {
@@ -58,7 +58,7 @@ function check(x, y) {
 
 function check2(x) {
     if (x < 0) {
-        sweetAlert("You cant enter a value less than 0", "", "info");
+        sweetAlert("You can't enter a value less than 0", "", "info");
         return 1010;
     }
 }
@@ -71,12 +71,12 @@ function roundNumber(num, dec) {
 function check3(x, y) {
 
     if (x < 0) {
-        sweetAlert("You cant enter a value less than 0", "", "info");
+        sweetAlert("You can't enter a value less than 0", "", "info");
         return 1010;
     }
 
     if (x > y) {
-        sweetAlert("You cant enter more than available qty", "", "warning");
+        sweetAlert("You can't enter more than available qty", "", "warning");
         return 1010;
     }
 
