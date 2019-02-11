@@ -101,7 +101,7 @@ function validateQty(event)
                                         <b>Operation code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b><input type="number" onkeypress="return validateQty(event);" class="form-control" id="opc" name="opc" value= "<?php echo $row[0]['operation_code']?>" required>
                                     </div>
                                     <div class="col-sm-3">
-                                        <b>M3 Operation Type</b><input type="text" class="form-control" id="m_optype" name="m_optype" value= "<?php echo $row[0]['m3_operation_type']?>" pattern="[a-zA-Z0-9._\s]+" title="This field can contain only alpha numeric characters..">
+                                        <b>M3 Operation Type</b><span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='orange'>*</font><input type="text" class="form-control" id="m_optype" name="m_optype" value= "<?php echo $row[0]['m3_operation_type']?>" pattern="[a-zA-Z0-9._\s]+" title="This field can contain only alpha numeric characters..">
                                     </div>
                                     <div class="col-sm-3">
                                          <div class="dropdown">
@@ -276,7 +276,12 @@ function validateQty(event)
             {
                 $m3ops_type_short = $res_res_res_m_operation_type_qry['cnt'];
             }
-            if($cnt == 0 && $cnt_short == 0 && $m3ops_type_short == 0)
+            $m_operation_type_check = 1; 
+            if(strtolower($default_operation)=='yes' && $m_operation_type == '')
+            {
+                $m_operation_type_check = 0;
+            }
+            if($cnt == 0 && $cnt_short == 0 && $m3ops_type_short == 0 && $m_operation_type_check == 1)
             {
                 $qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation',work_center_id='$work_center_id',category='$category',parent_work_center_id='$parent_work_center_id',m3_operation_type='$m_operation_type' where id='$id'";
                 // echo $qry_insert1;
@@ -332,6 +337,11 @@ function validateQty(event)
                 $sql_message = 'M3 operation type and Short Key Code Already in use. Please give other.';
                 echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
                 die();
+            }
+            else if($m_operation_type_check == 0)
+            {
+                $sql_message = 'M3 Operation Type is mandatory when report to ERP is YES.';
+                echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
             }
     
         }
