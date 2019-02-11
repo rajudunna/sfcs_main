@@ -325,6 +325,7 @@
         else if($work_center_qry == 0)
         {
             $sql_message = 'You should give work center id for Report to ERP Yes Operations';
+            echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
 
         }
         else if($m_operation_type_check == 0)
