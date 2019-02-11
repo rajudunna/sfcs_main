@@ -128,8 +128,8 @@
     }
     $message.= "</table><br/><br/>Message Sent Via:".$plant_name."</body> 
     </html>";
-    echo $message;
-    $to  ="satishkalla@schemaxtech.com"; 
+    // echo $message;
+    $to  =$m3_vs_sfcs_operation_reporting; 
     // subject 
     $subject = 'M3 Quantities and SFCS Quantities'; 
     // To send HTML mail, the Content-type header must be set 
