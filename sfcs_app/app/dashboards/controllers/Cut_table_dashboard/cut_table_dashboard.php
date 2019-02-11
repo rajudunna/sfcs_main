@@ -222,8 +222,12 @@ table
 .recut{
   border-left  : 15px solid pink;
   border-right : 15px solid pink;
+  border-top : 1px solid black;
+  border-bottom : 1px solid black;
 }
-
+.normal{
+  border : 1px solid black;
+}
 
 a{
   text-decoration:none;
@@ -264,7 +268,7 @@ height: 25px;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -291,7 +295,7 @@ height: 25px;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -321,7 +325,7 @@ height: 25px;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
     padding: 1px;
@@ -353,7 +357,7 @@ height: 25px;
   float: left;
   margin: 2px;
   color:black;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    /*padding: 4px;*/
@@ -382,7 +386,7 @@ height: 25px;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -408,7 +412,7 @@ height: 25px;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
   height: 25px;
     width: 250px;
     /* padding: 4px; */
@@ -434,7 +438,7 @@ border: 1px solid #000000;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
     /* padding: 4px; */
@@ -461,7 +465,7 @@ height: 25px;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
   height: 25px;
     width: 250px;
     /* padding: 4px; */
@@ -487,7 +491,7 @@ border: 1px solid #000000;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -500,7 +504,7 @@ height: 25px;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -1045,7 +1049,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       {
             $id="yellow";
       }
-
+     
       if($fabric_status!=1 and $ft_status==1)
       {
         $id="green";
@@ -1276,8 +1280,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $sel_sch=$sql_row12['order_del_no'];      
     }
 
-    if($remarks == 'recut')
+    if(strtolower($remarks) == 'recut')
       $recut_class='recut';
+    else  
+      $recut_class='normal';
 
     $fab_pop_details = getFullURLLevel($_GET['r'],'cps/fab_pop_details.php',1,'R');
     $fab_pop_details1 = getFullURLLevel($_GET['r'],'cps/fab_pop_alert.php',1,'R');
