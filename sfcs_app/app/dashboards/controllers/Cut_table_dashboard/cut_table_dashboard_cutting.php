@@ -235,7 +235,7 @@ a{
 }
 
 .white {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #ffffff;
   display:block;
@@ -262,7 +262,7 @@ height: 25px;
 
 
 .red {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #ff0000;
   display:block;
@@ -288,7 +288,7 @@ height: 25px;
 }
 
 .lgreen {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #00ff00;
   color: white;
@@ -318,7 +318,7 @@ height: 25px;
 }
 
 .green {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
    color: white;
   height:20px;
   background-color: #339900;
@@ -350,7 +350,7 @@ height: 25px;
 }
 
 .yellow {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #ffff00;
   display:block;
@@ -380,7 +380,7 @@ height: 25px;
 
 
 .pink {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #ff00ff;
   display:block;
@@ -406,7 +406,7 @@ height: 25px;
 }
 
 .orange {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #ff9900;
   display:block;
@@ -432,7 +432,7 @@ height: 25px;
 }
 
 .blue {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #15a5f2;
   display:block;
@@ -459,7 +459,7 @@ height: 25px;
 
 
 .yash {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #999999;
   display:block;
@@ -485,7 +485,7 @@ height: 25px;
 }
 
 .black {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: black;
   display:block;
@@ -498,7 +498,7 @@ height: 25px;
 }
 
 .brown {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #333333;
   display:block;
