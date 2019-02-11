@@ -512,7 +512,7 @@ if(isset($_GET['val']))
 					foreach ($operation_code as $key => $value) 
 					{
 						if(strlen($ops_get_code[$value]) > 0){
-							if($rejected1[$value] == '')
+							if($rejected1[$size_title][$value] == '')
 								echo "<td>0</td>";
 							else    
 								echo"<td>".$rejected1[$size_title][$value]."</td>";
@@ -572,7 +572,7 @@ if(isset($_GET['val']))
 					foreach ($operation_code as $key => $value) 
 					{
 						if(strlen($ops_get_code[$value]) > 0){
-							if($rejected1[$value] == '')
+							if($rejected1[$size_title][$value] == '')
 								echo "<td>0</td>";
 							else    
 								echo"<td>".$rejected1[$size_title][$value]."</td>";
