@@ -367,14 +367,14 @@ if(isset($_GET['val']))
 			}
 			
 		$row_counter = 0;
-		$get_job="select distinct input_job_no_random_ref from $brandix_bts.bundle_creation_data where style in ($styles)  and original_qty != recevied_qty and  send_qty > 0 and operation_id in($input_code)";
+		$get_job="select distinct input_job_no_random_ref from $brandix_bts.bundle_creation_data where style in ($styles)  and original_qty != recevied_qty and  send_qty > 0 and operation_id in($sewing_operations)";
 		//echo $get_job;
 		$sql_result=mysqli_query($link, $get_job) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$input_job=$sql_row['input_job_no_random_ref'];
 
-			$get_details="select style,schedule,color,size_title,size_id,cut_number,input_job_no,bundle_number,remarks,docket_number,sum(if(operation_id = 100,recevied_qty,0)) as input,sum(if(operation_id = 130,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where assigned_module=$module_ref and input_job_no_random_ref = '$input_job' and operation_id in ($input_code,$output_code) and (recevied_qty >0 or rejected_qty >0) and original_qty != recevied_qty";	
+			$get_details="select style,schedule,color,size_title,size_id,cut_number,input_job_no,bundle_number,remarks,docket_number,sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where assigned_module=$module_ref and input_job_no_random_ref = '$input_job' and operation_id in ($sewing_operations) and (recevied_qty >0 or rejected_qty >0) and original_qty != recevied_qty";	
 
 			if(isset($_POST['submit']))
 			{
