@@ -218,7 +218,7 @@
     } */
 
 
-    if($operation_name!="" && $operation_code!="" && $short_key_code != "" && $m_operation_type != "")
+    if($operation_name!="" && $operation_code!="" && $short_key_code != "")
     { 
         //echo "Yes..its going";exit;
         $checking_qry = "select count(*)as cnt from $brandix_bts.tbl_orders_ops_ref where operation_code = $operation_code";
