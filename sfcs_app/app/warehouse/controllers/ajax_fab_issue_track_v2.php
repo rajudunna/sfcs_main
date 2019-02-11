@@ -53,7 +53,7 @@ $tran_pin=$_GET["s"];
 		//echo "<td><input type='text' name='roll_width' value=\"".$roll_width."\" size='6' class='input'/></td>";
 		echo "<input type='hidden' name='qty_issued_chk' id='qty_issued_chk' value=\"".$qty."\" size='6' class='input'>"; 
 		echo "<input type='hidden' name='bal_qty' id='bal_qty' value=\"".$bal."\" >"; 
-		echo "<td><input type='text' name='qty_issued' id='qty_issued' value=\"".$qty."\" onkeyup=\"validate_qty_2();\" size='6' class='input' onkeypress=\"return numbersOnly(event)\"/></td>"; 
+		echo "<td><input class='form-control integer' name='qty_issued' id='qty_issued' value=\"".$qty."\" onkeyup=\"validate_qty_2();\" size='6' type = 'number' min='0' step='any' onkeypress=\"return numbersOnly(event)\"/></td>"; 
 	}
 	echo "<td><input type='submit' value='Update' name='update_ajax' id='update' class='btn btn-success btn-xs'></td><tr></table>";
 	echo "</form>";
