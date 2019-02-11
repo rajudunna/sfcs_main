@@ -262,6 +262,28 @@ if(isset($_GET['val']))
 				}
 				$col_span = count($ops_get_code);
 
+				//To get input operation
+				$application='IPS';
+
+				$scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+				$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row1111=mysqli_fetch_array($scanning_result))
+				{
+				  $operation_name=$sql_row1111['operation_name'];
+				  $input_code=$sql_row1111['operation_code'];
+				} 
+
+				//To get output operation
+				$application='IMS_OUT';
+
+				$scanning_query1="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+				$scanning_result1=mysqli_query($link, $scanning_query1)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row111=mysqli_fetch_array($scanning_result1))
+				{
+				  $operation_name=$sql_row111['operation_name'];
+				  $output_code=$sql_row111['operation_code'];
+				}
+
 				$modules=array();
 				$modules=explode(",",$sec_mods);
 				echo "<div class='table-responsive'>
@@ -302,7 +324,7 @@ if(isset($_GET['val']))
 			$new_module = $module_ref;
 			$rowcount_check=0;
 
-			$sql12="select sum(send_qty-recevied_qty) as balance, count(*) as count from $brandix_bts.bundle_creation_data where assigned_module='$module_ref' and  send_qty > 0 and original_qty != recevied_qty";
+			$sql12="select sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output, count(*) as count from $brandix_bts.bundle_creation_data where assigned_module='$module_ref' and  send_qty > 0 and original_qty != recevied_qty";
 			if(isset($_POST['submit']))
 			{
 				$input_selection=$_POST['input_selection'];
@@ -322,7 +344,7 @@ if(isset($_GET['val']))
 			$balance=0;
 			while($sql_row12=mysqli_fetch_array($sql_result12))
 			{
-			  $balance=$balance+$sql_row12['balance'];
+			  $balance=$balance+$sql_row12['input']-$sql_row12['output'];
 			  $sql_num_check=$sql_num_check+1;
 			}
 			// echo "</br>num : ".$sql_num_check."</br>";
@@ -344,27 +366,7 @@ if(isset($_GET['val']))
 				$rowcount_check=1;
 			}
 
-			//To get input operation
-			$application='IPS';
-
-			$scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
-			$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row1111=mysqli_fetch_array($scanning_result))
-			{
-			  $operation_name=$sql_row1111['operation_name'];
-			  $input_code=$sql_row1111['operation_code'];
-			} 
-
-			//To get output operation
-			$application='IMS_OUT';
-
-			$scanning_query1="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
-			$scanning_result1=mysqli_query($link, $scanning_query1)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row111=mysqli_fetch_array($scanning_result1))
-			{
-			  $operation_name=$sql_row111['operation_name'];
-			  $output_code=$sql_row111['operation_code'];
-			}
+			
 			
 		$row_counter = 0;
 		$get_job="select distinct input_job_no_random_ref from $brandix_bts.bundle_creation_data where style in ($styles)  and original_qty != recevied_qty and  send_qty > 0 and operation_id in($sewing_operations)";
@@ -439,10 +441,10 @@ if(isset($_GET['val']))
 					}
 
 					if($input_selection=='bundle_wise'){
-						$get_rejected_qty.=" and bundle_number= $bundle_number group by operation_id";
+						$get_rejected_qty.=" and bundle_number= $bundle_number group by operation_id,size_title";
 					}
 				}else{
-					$get_rejected_qty.=" and bundle_number= $bundle_number group by operation_id";
+					$get_rejected_qty.=" and bundle_number= $bundle_number group by operation_id,size_title";
 				}
 				//echo  $get_rejected_qty;
 				$sql_result33=mysqli_query($link, $get_rejected_qty) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
