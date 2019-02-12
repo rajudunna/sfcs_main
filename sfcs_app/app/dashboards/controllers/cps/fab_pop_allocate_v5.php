@@ -222,10 +222,14 @@ function filling(doc_no,i)
 	var issued_qty=parseFloat(document.input["val"+doc_no+"["+i+"]"].value);
 	var new_value = parseFloat(document.getElementById("issued"+doc_no+"["+i+"]").value);
 	var old_value = parseFloat(document.getElementById("issued_new"+doc_no+"["+i+"]").value);
+	if(isNaN(new_value))
+	{
+		new_value = parseFloat(0);
+		document.getElementById("issued"+doc_no+"["+i+"]").value = new_value;
+	}
 	var present_bal = parseFloat(document.getElementById("balal"+doc_no).innerHTML);
 	var allocate_bal = parseFloat(document.getElementById("alloc"+doc_no).innerHTML);
 	var actual_balance = parseFloat(present_bal)+parseFloat(old_value)-parseFloat(new_value);
-	// alert(actual_balance);
 	if(old_value - new_value > actual_balance && new_value > old_value || new_value > issued_qty || actual_balance < 0)
 	{
 		sweetAlert("You are Issuing more than Available Quantity","","warning");
@@ -238,7 +242,6 @@ function filling(doc_no,i)
 		document.getElementById("balal"+doc_no).innerHTML =  actual_balance;
 		document.getElementById("alloc"+doc_no).innerHTML =  actual_allcoate;
 	}
-	
 }
 </script>
 <script>
