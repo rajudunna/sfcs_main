@@ -616,8 +616,8 @@ if(isset($_POST['update_ajax']))
 	//Removing for #1305 ticket and adding this functionality into a separate function 
 	$roll_splitting = roll_splitting_function($roll_id,$bal_qty,$qty_issued);
 
-	// $sql="update $bai_rm_pj1.fabric_cad_allocation set  allocated_qty=\"$qty_issued\",roll_id=\"$roll_id\" where tran_pin=\"$tran_pin\"";
-	// mysqli_query($link, $sql) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	 $sql="update $bai_rm_pj1.fabric_cad_allocation set  allocated_qty=\"$qty_issued\",roll_id=\"$roll_id\" where tran_pin=\"$tran_pin\"";
+	mysqli_query($link, $sql) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	// $sql1="update $bai_rm_pj1.store_in set qty_allocated=\"$qty_issued\",allotment_status='1' where tid=\"$roll_id\" ";
 	// mysqli_query($link, $sql1) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
