@@ -306,7 +306,7 @@ if($_GET["lots"] > 0)
 	echo "<div>";
 	$row_count = 0;
 	$lots_no=$_GET["lots"];
-	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_ret,ref4 from $bai_rm_pj1.store_in where lot_no in ($lots_no)";
+	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_allocated,qty_ret,ref4 from $bai_rm_pj1.store_in where lot_no in ($lots_no)";
 	// echo $host."-".$sql1;
 	$result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -318,7 +318,7 @@ if($_GET["lots"] > 0)
 	}
 	while($sql_row1=mysqli_fetch_array($result1))
 	{
-		if(($sql_row1["qty_rec"]+$sql_row1["qty_ret"]-$sql_row1["qty_issued"]) > 0)
+		if(($sql_row1["qty_rec"]+$sql_row1["qty_ret"]-$sql_row1["qty_issued"]-$sql_row1["qty_allocated"]) > 0)
 		{	
 		$readonly="readonly";	
 		if(strlen($sql_row1["ref4"]) > 0)
