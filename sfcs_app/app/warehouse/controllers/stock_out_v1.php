@@ -75,7 +75,7 @@ if(isset($_POST['submit']))
   $lot_nos=$_POST['lot_no'];
   $lot_nos_explode=explode(",",$lot_nos);
   //Added the single quotes for multiple level of stock searching
-  $lot_no=implode(",",$lot_nos_explode);
+  $lot_no=implode("','",$lot_nos_explode);
   //echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"insert.php?lot_no=$lot_no_new\"; }</script>";
 }
 else
@@ -83,7 +83,8 @@ else
   $lot_nos=$_GET['lot_no'];
   $lot_nos_explode=explode(",",$lot_nos);
   //Added the single quotes for multiple level of stock searching
-  $lot_no=implode(",",$lot_nos_explode);
+  $lot_no=implode("','",$lot_nos_explode);
+  
 }
 
 
@@ -193,7 +194,7 @@ switch (trim($product_group))
 if($sql_num_check1>0)
 {
   //$sql="select * from store_in where lot_no=\"".trim($lot_no)."\" and status in (0,1) and roll_status in (0,2) order by lot_no";	
-  $sql="select * from $bai_rm_pj1.store_in where lot_no in (".trim($lot_no).") and status in (0,1) and roll_status in (0,2)  order by lot_no";	
+  $sql="select * from $bai_rm_pj1.store_in where lot_no in ('".trim($lot_no)."') and status in (0,1) and roll_status in (0,2)  order by lot_no";	
   //
 }
 else
@@ -386,14 +387,16 @@ if(isset($_POST['put']))
 
 		  //this is for new roll splitting logic
 
-		  if($qty_issued[$j]<$available[$j]){
-			 
+		  if($qty_issued[$j]<=$available[$j]){
 			$val_ref[$j]=$available[$j];
 			 $issued_ref[$j]=$qty_issued[$j];
 			 $tid_ref[$j]= $tid[$j];
-		
-				  
+		  
 			  $roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
+
+			  $sql12="update $bai_rm_pj1.store_in set qty_issued=".$issued_ref[$j]." where tid=".$tid_ref[$j];
+			  $sql_result=mysqli_query($link,$sql12) or exit("Sql Error45".mysqli_error());
+			//   $sql_result=mysqli_query($link,$sql12) or exit("Sql Error".mysqli_error());
 			  //current date in php
 			//   $current_date=date("Y-m-d");
 
