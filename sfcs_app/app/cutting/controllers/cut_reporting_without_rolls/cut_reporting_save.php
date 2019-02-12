@@ -214,7 +214,6 @@ if($target == 'recut'){
    $target = 'normal';
 }
 
-
 //Normal Docket Saving
 if($target == 'normal'){
     //inserting to act_cutstatus 
@@ -240,6 +239,7 @@ if($target == 'normal'){
         }else{   
             $response_data['saved'] = 0;
             mysqli_rollback($link);    
+            exit();
         } 
     }else{
         $response_data['saved'] = 0;
@@ -294,11 +294,15 @@ if($target == 'schedule_clubbed'){
             mysqli_commit($link);
         }else{   
             $response_data['saved'] = 0;
-            mysqli_rollback($link);    
+            mysqli_rollback($link);
+            exit();    
         } 
     }else{
         $response_data['saved'] = 0;
     }
+    mysqli_close($link);
+    $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or 
+            die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
     //getting all child dockets
     $child_docs_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log psl  
@@ -350,7 +354,6 @@ if($target == 'schedule_clubbed'){
             $update_childs_query = "UPDATE $bai_pro3.plandoc_stat_log set $size_update_string act_cut_status = 'DONE'
                                     where doc_no ='$child_doc' ";
             $update_childs_result = mysqli_query($link,$update_childs_query) or force_exit('Child Docket Update Error');
-           
         }
         unset($size_update_string);
         unset($planned);
@@ -418,7 +421,6 @@ if($target == 'schedule_clubbed'){
         }
         $response_data['rejections_response'] = $rej_status;
     } 
-    mysqli_close($link);
     iquit : if($status === 'fail'){
         $response_data['pass'] = 0;
         force_exit('Schedule Clubbed Docket Reporting Failed');
@@ -458,11 +460,15 @@ if($target == 'style_clubbed'){
             mysqli_commit($link);
         }else{   
             $response_data['saved'] = 0;
-            mysqli_rollback($link);    
+            mysqli_rollback($link);
+            exit();    
         } 
     }else{
         $response_data['saved'] = 0;
     }
+    mysqli_close($link);
+    $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) 
+            or force_exit("Could not connect21: ");
 
     //getting all child dockets
     $child_docs_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log psl  
@@ -526,6 +532,7 @@ if($target == 'style_clubbed'){
                         $response_data['pass'] = 0;
                         echo json_encode($response_data);
                         force_exit('Infinte loop struck');
+                        exit();
                     }
                         
                     if(ceil($splitted % $docs) > 0)
@@ -559,6 +566,7 @@ if($target == 'style_clubbed'){
                 $response_data['pass'] = 0;
                 echo json_encode($response_data);
                 force_exit('Threshold Exceeded');
+                exit();
             }
             $fulfill_qty = $reporting[$size];
             $counter = 0;
@@ -615,6 +623,7 @@ if($target == 'style_clubbed'){
                         $response_data['pass'] = 0;
                         echo json_encode($response_data);
                         force_exit('Infinite loop Struck 2');
+                        exit();
                     }
                     if(ceil($splitted % $docs) > 0)
                         $splitted--;
@@ -720,7 +729,6 @@ if($target == 'style_clubbed'){
         }
         $response_data['rejections_response'] = $rej_status;
     } 
-    mysqli_close($link);
     iquit1 : if($status === 'fail'){
         $response_data['pass'] = 0;
         force_exit('Style Clubbed Docket Reporting Failed');
@@ -863,6 +871,9 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
             mysqli_close($link);
             return 'fail';
         }
+        mysqli_close($link);
+        $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) 
+                or die("Could not connect21: ");
         $counter = 0;
 
         //Maintaining seperate loop for reporting to moq,m3 inorder to prevail the cut qty reporting for cps,bcd in case of a failure
@@ -870,7 +881,7 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
         foreach($cut_qty as $size=>$qty){
             $qty = $qty - $rejected[$size];
             $bundle_id_query = "SELECT bundle_number from $brandix_bts.bundle_creation_data 
-                            where docket_number='$doc_no' and size_id='$size' and operation_id = $op_code";
+                            where docket_number=$doc_no and size_id='$size' and operation_id = $op_code";
             $bundle_id_result = mysqli_query($link,$bundle_id_query) or force_exit('Query Error 8');
             if(mysqli_num_rows($bundle_id_result) > 0){
                 $row = mysqli_fetch_array($bundle_id_result);
@@ -880,7 +891,6 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
             if($updated == true)
                 $counter++;
         }
-        mysqli_close($link);
         //the $counter returns the no:of rows affected to moq,m3_transactions
         if($counter == sizeof($cut_qty))
             return $counter;
@@ -964,7 +974,9 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
         mysqli_close($link);
         return 'fail';
     }
-
+    mysqli_close($link);
+    $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) 
+            or force_exit("Could not connect21: ");
     $counter = 0;
     $update_flag = 0;
     $bundles_count = 0;
@@ -989,14 +1001,12 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
             }
         }
     }
-    mysqli_close($link);
     //the $counter returns the no:of rows affected to moq,m3_transactions
     if($counter == $bundles_count)
         return $counter;
     else    
         return 0; 
 }
-
 
 
 function force_exit($str){
