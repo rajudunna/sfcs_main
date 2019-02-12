@@ -212,8 +212,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <td id='r_reported_plies'></td>
                             <!-- add validation for ret + rec + dam + short = c_plies -->
                             <td><input type='text' class='form-control integer' value='0' id='c_plies'></td>
-                            <td><input type='text' class='form-control integer' value='0' id='fab_received'></td>
-                            <td><input type='text' class='form-control integer' value='0' id='fab_returned'>
+                            <td><input type='text' class='form-control float' value='0' id='fab_received'></td>
+                            <td><input type='text' class='form-control float' value='0' id='fab_returned'>
                                 <br><br>
                                 <span id='returend_to_parent'>
                                     <select class='form-control' id='returned_to'>
