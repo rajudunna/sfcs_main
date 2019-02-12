@@ -323,7 +323,7 @@ echo $drp_down;
             </thead>
             <?php  
             $s_no = 1;
-            $blocks_query  = "SELECT SUM(rejected_qty)as rejected_qty,parent_id as doc_no,SUM(recut_qty)as recut_qty,SUM(recut_reported_qty) as recut_reported_qty,SUM(issued_qty)as issued_qty,r.`mk_ref`,b.`style_id`AS style,b.`order_col_des` AS color,b.`order_del_no` as schedule,fabric_status
+            $blocks_query  = "SELECT SUM(rejected_qty)as rejected_qty,parent_id as doc_no,SUM(recut_qty)as recut_qty,SUM(recut_reported_qty) as recut_reported_qty,SUM(issued_qty)as issued_qty,r.`mk_ref`,b.`order_style_no` AS style,b.`order_col_des` AS color,b.`order_del_no` as schedule,fabric_status
             FROM `$bai_pro3`.`recut_v2_child` rc 
             LEFT JOIN $bai_pro3.`recut_v2` r ON r.doc_no = rc.`parent_id`
             LEFT JOIN $bai_pro3.`bai_orders_db` b ON b.order_tid = r.`order_tid`
@@ -336,6 +336,14 @@ echo $drp_down;
                 while($row = mysqli_fetch_array($blocks_result))
                 {
                     $id = $row['doc_no'];
+                    //chekcing this docket planned or not
+                    $dock_checking_flag = 0;
+                    $checking_docket_planned_qry = "SELECT * FROM `$bai_pro3`.`cutting_table_plan` WHERE doc_no = $id";
+                    $result_checking_docket_planned_qry = $link->query($checking_docket_planned_qry);
+                    if($result_checking_docket_planned_qry->num_rows > 0)
+                    {
+                        $dock_checking_flag = 1;
+                    }
                     $rem_qty = $row['recut_reported_qty'] - $row['issued_qty'];
                     if($row['mk_ref'] == '0')
                     {
@@ -346,6 +354,11 @@ echo $drp_down;
                     {
                         $button_html = "Markers updated and Waiting for Approval";
                         $html_hiding = "WaitingForApproval";
+                    }
+                    else if($row['fabric_status'] == '99' && $dock_checking_flag == 0)
+                    {
+                        $button_html = "<b style='color:blue;'>Approved and Planning Pending!!!</b>";
+                        $html_hiding = "Planning Pending";
                     }
                     else if($row['recut_reported_qty'] <= 0)
                     {
