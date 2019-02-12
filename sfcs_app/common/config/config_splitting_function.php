@@ -12,6 +12,7 @@ function roll_splitting_function($roll_id,$total_roll_qty,$issued_qty)
     mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
     if(strtolower($roll_splitting) == 'yes')
     {
+        
         if($total_roll_qty>=$issued_qty)
         { 
             //balanced qty
@@ -41,7 +42,17 @@ function roll_splitting_function($roll_id,$total_roll_qty,$issued_qty)
     }
     else
     {
-        $sql="update bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_qty." where tid=".$roll_id;
+       
+        if($total_roll_qty==$issued_qty)
+        {
+           
+            $sql="update bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_qty.",status=2,allotment_status=2 where tid=".$roll_id;
+        }
+        else{
+        
+            $sql="update bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_qty.",status=0,allotment_status=1 where tid=".$roll_id;
+        }
+        
         //Uncheck this
         mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
     }
