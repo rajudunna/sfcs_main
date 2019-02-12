@@ -585,7 +585,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                     }
                 }
                 // 200 Operation start
-                    $inserting_into_m3_tran_log_pms070mi = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`module_no`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`,`api_type`) VALUES ('".date('Y-m-d h:i:s')."','$mo_number','$mo_quantity','','Normal','$username','$team_id','$b_op_id','$short_key_code','$id','$work_station_id','','$main_ops_code','opn')";
+                    $inserting_into_m3_tran_log_pms070mi = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`module_no`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`,`api_type`) VALUES ('".date('Y-m-d H:i:s')."','$mo_number','$mo_quantity','','Normal','$username','$team_id','$b_op_id','$short_key_code','$id','$work_station_id','','$main_ops_code','opn')";
                     // echo $inserting_into_m3_tran_log_pms070mi;
                     mysqli_query($link,$inserting_into_m3_tran_log_pms070mi) or exit("While inserting into m3_tranlog pms070mi");
                     $insert_id_pms070mi=mysqli_insert_id($link);
@@ -620,7 +620,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                 // 200 Operation End
 
                 // FG start
-                    $inserting_into_m3_tran_log_fg_pms050mi = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`module_no`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`,`api_type`) VALUES ('".date('Y-m-d h:i:s')."','$mo_number','$mo_quantity','','Normal','$username','$team_id','$b_op_id','$short_key_code','$id','$work_station_id','','$main_ops_code','fg')";
+                    $inserting_into_m3_tran_log_fg_pms050mi = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`module_no`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`,`api_type`) VALUES ('".date('Y-m-d H:i:s')."','$mo_number','$mo_quantity','','Normal','$username','$team_id','$b_op_id','$short_key_code','$id','$work_station_id','','$main_ops_code','fg')";
                     // echo $inserting_into_m3_tran_log_fg_pms050mi;
                     mysqli_query($link,$inserting_into_m3_tran_log_fg_pms050mi) or exit("While inserting into m3_tranlog");
                     $insert_id_pms050mi=mysqli_insert_id($link);
@@ -712,7 +712,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
                 }
             }
             // 200 Operation start
-                $inserting_into_m3_tran_log_pms070mi = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`,`api_type`) VALUES ('".date('Y-m-d h:i:s')."','$mo_number','$negative_qty','','cpk_reversal','$username','$b_op_id','$short_key_code','$id','$work_station_id','','$main_ops_code','opn')";
+                $inserting_into_m3_tran_log_pms070mi = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`,`api_type`) VALUES ('".date('Y-m-d H:i:s')."','$mo_number','$negative_qty','','cpk_reversal','$username','$b_op_id','$short_key_code','$id','$work_station_id','','$main_ops_code','opn')";
                 // echo $inserting_into_m3_tran_log_pms070mi;
                 mysqli_query($link,$inserting_into_m3_tran_log_pms070mi) or exit("While inserting into m3_tranlog pms070mi");
                 $insert_id_pms070mi=mysqli_insert_id($link);
@@ -746,7 +746,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
             // 200 Operation End
 
             // FG start
-                $inserting_into_m3_tran_log_pms050mi = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`,`api_type`) VALUES ('".date('Y-m-d h:i:s')."','$mo_number','$negative_qty','','cpk_reversal','$username','$b_op_id','$short_key_code','$id','$work_station_id','','$main_ops_code','fg')";
+                $inserting_into_m3_tran_log_pms050mi = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`,`api_type`) VALUES ('".date('Y-m-d H:i:s')."','$mo_number','$negative_qty','','cpk_reversal','$username','$b_op_id','$short_key_code','$id','$work_station_id','','$main_ops_code','fg')";
                 // echo $inserting_into_m3_tran_log_pms050mi;
                 mysqli_query($link,$inserting_into_m3_tran_log_pms050mi) or exit("While inserting into m3_tranlog pms050mi");
                 $insert_id_pms050mi=mysqli_insert_id($link);
