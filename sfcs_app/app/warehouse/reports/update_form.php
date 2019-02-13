@@ -290,13 +290,13 @@ if($_GET["lots"] > 0)
 	echo "<div>";
 	
 	$lots_no=$_GET["lots"];
-	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_allocated,qty_ret,ref4 from $bai_rm_pj1.store_in where lot_no in ($lots_no)";
+	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_allocated,qty_ret,ref4,barcode_number from $bai_rm_pj1.store_in where lot_no in ($lots_no)";
 	// echo $host."-".$sql1;
 	$result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	if(mysqli_num_rows($result1)>0){
 		echo "<table class='table table-bordered'>";
-		echo "<tr><th>LableId</th><th>LotNo</th><th>Shade</th><th>Received Qty</th><th>Issued Qty</th><th>Return Qty</th><th>Balance</th><th>Issue Qty</th></tr>";
+		echo "<tr><th>LableId</th><th>Barcode</th><th>LotNo</th><th>Shade</th><th>Received Qty</th><th>Issued Qty</th><th>Return Qty</th><th>Balance</th><th>Issue Qty</th></tr>";
 	}else{
 		echo "<script>sweetAlert('Inavlid Lot Number','','warning')</script>";
 	}
@@ -311,6 +311,7 @@ if($_GET["lots"] > 0)
 		}
 		echo "<tr>";
 		echo "<td><input type=\"hidden\" name=\"ref_tid[]\" value=\"".$ref_tid."\" /><input type=\"hidden\" name=\"lblids[]\" value=\"".$sql_row1["tid"]."\" >".$ref_tid."-".$sql_row1["tid"]."</td>";
+		echo "<td>".$sql_row1["barcode_number"]."</td>";
 		echo "<td><input type=\"hidden\" name=\"lotnos[]\" value=\"".$sql_row1["lot_no"]."\" >".$sql_row1["lot_no"]."</td>";
 		echo "<td>".$sql_row1["ref4"]."</td>";
 		//echo "<td>".$sql_row1["qty_rec"]."</td>";
@@ -655,17 +656,19 @@ $(document).ready(function(){
 				$sql1="insert into $bai_rm_pj2.mrn_out_allocation(mrn_tid,lable_id,lot_no,iss_qty,updated_user) values(\"".$ref_tids[$j]."\",\"".$tid_ref[$j]."\",\"".$lot_nos[$j]."\",\"".$issued_qty[$j]."\",\"".$username."^".$host_name."\")";
 				//echo $sql1."</br>";
 				mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
+			
+
+				if($issued_qty[$j]<=$val_ref[$j]){
+
+			
+					$issued_ref[$j]=$issued_qty[$j];
+					$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
+
+				}
+
 				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_qty[$j]." where tid=\"".$tid_ref[$j]."\"";
 				//echo $sql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			}
-
-			if($issued_qty[$j]<$val_ref[$j]){
-
-		
-				$issued_ref[$j]=$issued_qty[$j];
-				$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
 
 			}
 
