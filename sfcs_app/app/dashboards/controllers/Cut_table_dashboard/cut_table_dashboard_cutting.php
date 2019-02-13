@@ -159,6 +159,16 @@ function blink_new_priority(x)
 
 
 <style>
+.recut{
+  border-left  : 15px solid pink;
+  border-right : 15px solid pink;
+  border-top : 1px solid black;
+  border-bottom : 1px solid black;
+}
+.normal{
+  border : 1px solid black;
+}
+
 
 /*blink css for req time exceeding */
 @-webkit-keyframes blinker {
@@ -225,13 +235,13 @@ a{
 }
 
 .white {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #ffffff;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -252,13 +262,13 @@ height: 25px;
 
 
 .red {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #ff0000;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -278,14 +288,14 @@ height: 25px;
 }
 
 .lgreen {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #00ff00;
   color: white;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -308,14 +318,14 @@ height: 25px;
 }
 
 .green {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
    color: white;
   height:20px;
   background-color: #339900;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
     padding: 1px;
@@ -340,14 +350,14 @@ height: 25px;
 }
 
 .yellow {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #ffff00;
   display:block;
   float: left;
   margin: 2px;
   color:black;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    /*padding: 4px;*/
@@ -370,13 +380,13 @@ height: 25px;
 
 
 .pink {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #ff00ff;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -396,13 +406,13 @@ height: 25px;
 }
 
 .orange {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #ff9900;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
   height: 25px;
     width: 250px;
     /* padding: 4px; */
@@ -422,13 +432,13 @@ border: 1px solid #000000;
 }
 
 .blue {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #15a5f2;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
     /* padding: 4px; */
@@ -449,13 +459,13 @@ height: 25px;
 
 
 .yash {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #999999;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
   height: 25px;
     width: 250px;
     /* padding: 4px; */
@@ -475,26 +485,26 @@ border: 1px solid #000000;
 }
 
 .black {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: black;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
 }
 
 .brown {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #333333;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -1268,33 +1278,37 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             }
           }
         }
-      
-       // $get_cut_qty = getFullURLLevel($_GET['r'],'cutting/controllers/cut_qty_reporting_withoutrolls/orders_cut_issue_status_form_v2_cut.php',3,'N');
-        $get_cut_qty = 
-        getFullURLLevel($_GET['r'],'cutting/controllers/cut_reporting_without_rolls/cut_reporting_interface.php',3,'N');
+      if(strtolower($remarks) == 'recut')
+        $recut_class = 'recut';
+      else
+        $recut_class = 'normal';
 
-        $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
-        $sidemenu=true;
+      // $get_cut_qty = getFullURLLevel($_GET['r'],'cutting/controllers/cut_qty_reporting_withoutrolls/orders_cut_issue_status_form_v2_cut.php',3,'N');
+      $get_cut_qty = 
+      getFullURLLevel($_GET['r'],'cutting/controllers/cut_reporting_without_rolls/cut_reporting_interface.php',3,'N');
+
+      $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
+      $sidemenu=true;
       $href="$get_fabric_requisition&doc_no=$doc_no&module=$table_id&section=$table_id&sidemenu=$sidemenu&group_docs=".implode(",",$club_docs);
   
         //if(in_array($authorized,$has_permission) and $final_cols!="yellow" and $final_cols!="green")
       if($rep_status!=''){
        if(in_array($authorized,$has_permission) and ($final_cols=="yellow" || $final_cols=="orange")){
-            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='".$get_cut_qty."&doc_no=$doc_no&cut_table=$cut_table' onclick='Popup=window.open('$get_cut_qty.php?doc_no=$doc_no&cut_table=$cut_table','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
+            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='".$get_cut_qty."&doc_no=$doc_no&cut_table=$cut_table' onclick='Popup=window.open('$get_cut_qty.php?doc_no=$doc_no&cut_table=$cut_table','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
         }else if($final_cols=="yash" || $final_cols=="red" || $final_cols=="lgreen"){
-          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='#'
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='#'
              onclick=\"window.open('$href','yourWindowName','width=800,height=600')\"
             >$emb_stat_title"."LT:".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
         }
         else if($final_cols=="pink"){
-          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:11px; float:left; color:white' title='$title'>RT:".$req_time1."</div></div><br/>";
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' title='$title'>RT:".$req_time1."</div></div><br/>";
         }
         else{
           if($fabric_req_date<date("Y-M-d h:i:sa")){
-          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:white' title='$title'><span class='blink'>RT:".$req_time1."</span></div></div><br/>";
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:white' title='$title'><span class='blink'>RT:".$req_time1."</span></div></div><br/>";
           }
           else{
-            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; float:left; color:white' title='$title'>RT:".$req_time1."</div></div><br/>";
+            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' title='$title'>RT:".$req_time1."</div></div><br/>";
           }
         }
       }
