@@ -57,18 +57,23 @@ $section_no=$_GET['section_no'];
 		ob_end_flush();
 		flush();
 		usleep(1);
-		
+		$sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section_no";
+		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+		{
+			$section_display_name=$sql_rowx1['section_display_name'];
+		}
 		?>
 		<div class="table table-responsive">
 		<table class="table table-bordered">
 			<tr>
-			<th colspan=10 >Production Plan for Section -<?= $section_no; ?></th>
+			<th colspan=10 >Production Plan for <?= $section_display_name; ?></th>
 			<th colspan=20 >Date :<?= date('Y-m-d H:i'); ?></th>
 			</tr>
 			<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th>Priority 2</th><th>Priority 3</th><th>Priority 4</th><th>Priority 5</th><th>Priority 6</th><th>Priority 7</th><th>Priority 8</th><th>Priority 9</th><th>Priority 10</th><th>Priority 11</th><th>Priority 12</th><th>Priority 13</th><th>Priority 14</th></tr>
 
 <?php
-$sqlx="select * from $bai_pro3.sections_db where sec_id>0 and sec_id=$section_no";
+$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$section_no GROUP BY section ORDER BY section + 0";
 $sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error1".mysqli_error());
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
@@ -146,7 +151,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$fabric_status=$sql_row1['ft_status'];
 				
 				//To get the status of join orders
-				$sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" and order_joins=2";
+				$sql11="select ft_status from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" and $order_joins_in_2";
 				$sql_result11=mysqli_query($link,$sql11) or exit("Sql Error3".mysqli_error());
 				
 				if(mysqli_num_rows($sql_result11)>0)
@@ -166,17 +171,16 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				}
 				//To get the status of join orders
 			}
-			//NEW FSP
+			//NEW FSP (commented for #1337 ticket)
 			
-			$sqlcheck="select * from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='$input_job_no_random_ref'";
-			$resultcheck=mysqli_query($link,$sqlcheck) or exit("Sql Error5".mysqli_error());
-			while($row4=mysqli_fetch_array($resultcheck))
-			{
-				$input_trims_status=$row4['input_trims_status'];
-			}
-			$sql2="SELECT min(st_status) as st_status,order_style_no,group_concat(distinct order_del_no) as order_del_no,group_concat(distinct input_job_no) as input_job_no,group_concat(distinct doc_no) as doc_no FROM $bai_pro3.plan_doc_summ_input WHERE input_job_no_random='$input_job_no_random_ref'";	
-			//$sql2="SELECT min(st_status) as st_status,order_style_no,group_concat(distinct order_del_no) as order_del_no,group_concat(distinct input_job_no) as input_job_no,group_concat(distinct doc_no) as doc_no FROM plan_doc_summ_input WHERE input_job_no_random='$input_job_no_random_ref'";	
-			//echo $sql2."<br>";
+			// $sqlcheck="select * from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='$input_job_no_random_ref'";
+			// $resultcheck=mysqli_query($link,$sqlcheck) or exit("Sql Error5".mysqli_error());
+			// while($row4=mysqli_fetch_array($resultcheck))
+			// {
+			// 	$input_trims_status=$row4['input_trims_status'];
+			// }
+			// $sql2="SELECT min(st_status) as st_status,order_style_no,group_concat(distinct order_del_no) as order_del_no,group_concat(distinct input_job_no) as input_job_no,group_concat(distinct doc_no) as doc_no FROM $bai_pro3.plan_doc_summ_input WHERE input_job_no_random='$input_job_no_random_ref'";	
+			$sql2="SELECT min(st_status) as st_status,order_style_no,group_concat(distinct order_del_no) as order_del_no,group_concat(distinct input_job_no) as input_job_no,group_concat(distinct doc_no) as doc_no,input_trims_status FROM $bai_pro3.plan_dash_doc_summ_input WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_job_no_random='$input_job_no_random_ref'";
 			$result2=mysqli_query($link,$sql2) or exit("Sql Error6".mysqli_error());
 			while($row2=mysqli_fetch_array($result2))
 			{
@@ -186,6 +190,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$schedule=$row2['order_del_no'];
 				$input_job_no=$row2['input_job_no'];
 				$doc_no_ref=$row2['doc_no'];
+				$input_trims_status=$row2['input_trims_status'];
 			}
 
 			$doc_no_ref_input = implode("','",$doc_no_ref);
@@ -293,22 +298,57 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			} 
 			
 			
-			//For Trims
-			$trimid="Green";
-			if($input_trims_status == 1)
-			{
-				$trimid="Yellow";
-			}
+			//For Trims (commented for #1337 ticket)
+			// $trimid="Green";
+			// if($input_trims_status == 1)
+			// {
+			// 	$trimid="Yellow";
+			// }
 			
-			if($input_trims_status == 2 or $input_trims_status == 3)
-			{
-				$trimid="Blue"; 
-			}
+			// if($input_trims_status == 2 or $input_trims_status == 3)
+			// {
+			// 	$trimid="Blue"; 
+			// }
 				
+			// if($input_trims_status==4)
+			// {
+			// 	$trimid="Pink"; //Total Trim input issued to module
+			// 	//Circle if the total panel Input is issued to module
+			// }
+            
+            //Changed for #1337 ticket
+
+            //echo "</br>Input Trim : ".$input_trims_status;
 			if($input_trims_status==4)
 			{
-				$trimid="Pink"; //Total Trim input issued to module
-				//Circle if the total panel Input is issued to module
+				$trimid="PINK"; 
+			}
+			else if($input_trims_status == 2 or $input_trims_status == 3)
+			{
+				$trimid="BLUE"; 
+			}
+			else if($input_trims_status == 1)
+			{
+				$trimid="YELLOW";
+			}
+			else
+			{
+				if($trims_status=="NULL" || $trims_status=="" || $trims_status=="(NULL)")
+				{
+					$trimid="YASH";
+				}			
+				else if($trims_status == 0 || $trims_status == 9)
+				{
+					$trimid="RED";
+				}			
+				else if($trims_status == 1)
+				{
+					$trimid="L-Green";
+				}			
+				else
+				{
+					$trimid="RED";
+				}
 			}
 			
 			//For Color Clubbing

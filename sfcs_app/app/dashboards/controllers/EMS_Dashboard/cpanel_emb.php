@@ -547,34 +547,34 @@ window.onload = startBlink;
 //By Maximus (maximus@nsimail.com) w/ mods by DynamicDrive
 //For full source code, visit http://www.dynamicdrive.com
 
-var message="Function Disabled!";
+//var message="Function Disabled!";
 
 ///////////////////////////////////
-function clickIE4(){
-if (event.button==2){
-sweetAlert("Function Disabled!","","warning");
-return false;
-}
-}
+// function clickIE4(){
+// if (event.button==2){
+// sweetAlert("Function Disabled!","","warning");
+// return false;
+// }
+// }
 
-function clickNS4(e){
-if (document.layers||document.getElementById&&!document.all){
-if (e.which==2||e.which==3){
-sweetAlert("Function Disabled!","","warning");
-return false;
-}
-}
-}
+// function clickNS4(e){
+// if (document.layers||document.getElementById&&!document.all){
+// if (e.which==2||e.which==3){
+// sweetAlert("Function Disabled!","","warning");
+// return false;
+// }
+// }
+// }
 
-if (document.layers){
-document.captureEvents(Event.MOUSEDOWN);
-document.onmousedown=clickNS4;
-}
-else if (document.all&&!document.getElementById){
-document.onmousedown=clickIE4;
-}
+// if (document.layers){
+// document.captureEvents(Event.MOUSEDOWN);
+// document.onmousedown=clickNS4;
+// }
+// else if (document.all&&!document.getElementById){
+// document.onmousedown=clickIE4;
+// }
 
-document.oncontextmenu=new Function("sweetAlert('Function Disabled!','','warning');return false")
+// document.oncontextmenu=new Function("sweetAlert('Function Disabled!','','warning');return false")
 
 // --> 
 </script>
@@ -611,7 +611,7 @@ echo "<p>";
 
 echo "<table><tr><td>IMS:</td></tr></table>";
 	
-//echo "<a href=\"$dns_adr/projects/alpha/anu/ims/sec_rep.php?section=$section\" onclick=\"Popup=window.open('$dns_adr/projects/alpha/anu/ims/sec_rep.php?section=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><h2>SECTION - $section <br/>($section_head)</h2></a>";
+
 echo "<table>";
 
 $mods=array();

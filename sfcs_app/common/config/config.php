@@ -19,16 +19,21 @@ $pass=$mysql_details['db_pass'];
 
 //MSSql Configurations
 $ms_sql_odbc_host = $conf1->get('mssql-odbc');
+$ms_sql_odbc_server = $conf1->get('mssql-server-name');
 $ms_sql_odbc_user = $conf1->get('mssql-user-name');
 $ms_sql_odbc_pass = $conf1->get('mssql-password');
+$mssql_db = $conf1->get('m3database');
+$ms_sql_driver_name = $conf1->get('driver_name');
 
 //MY SQL host
 $ms_sql_odbc_host = $conf1->get('mysql-odbc');
 //ms-sql sticker_report
-$host_ms = "10.227.221.25";
-$user_ms = "BAISFCS";
-$password_ms = "fcs@m3pr";
-$conn_string = "DRIVER={iSeries Access ODBC Driver};System=10.227.40.10;Uid=".$user_ms.";Pwd=".$password_ms.";";
+$host_ms = $conf1->get('m3_system_id');
+$user_ms = $conf1->get('m3_user_name');
+$password_ms = $conf1->get('m3_password');
+$m3_db = $conf1->get('m3_db');
+$conn_string = "DRIVER={iSeries Access ODBC Driver};System=".$host_ms.";Uid=".$user_ms.";Pwd=".$password_ms.";";
+//echo $conn_string;
 //M3 MSSQL DB Configurations
 $m3_mssql_odbc_name="bcimovsms01_bai";
 $m3_mssql_username="brandix_india_user1";
@@ -49,12 +54,24 @@ $rms_request_time = $conf1->get('rms_request_time');
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
 
+//get plant details and adress
+$plant_head=$conf1->get('plant_head');
+$plant_address=$conf1->get('plant_address');
+$plant_location=$conf1->get('plant_location');
+
 //M3 Rest API Calls Details
 $company_no = $conf1->get('companey-number');
 $api_username = $conf1->get('api-user-name');
 $api_password = $conf1->get('api-password');
 $api_hostname = $conf1->get('api-host-name');
 $api_port_no = $conf1->get('api-port');
+
+$enable_api_call = $conf1->get('enable-api-call');
+
+// Total Plant working hours
+$tot_plant_working_hrs = $conf1->get('tot_plant_working_hrs');
+// Copy fr qty to forecast qty (yes/no)
+$copy_fr_to_forecast = $conf1->get('copy-fr-to-forecast');
 
 //Scanning Methods
 $scanning_methods = $conf1->get('scaning-method');
@@ -83,6 +100,9 @@ $line_in = $conf1->get('line-in');
 // }
 //LDAP CODE ENDS***
 
+//For Logo Path
+$logo = '/sfcs_app/common/images/logo.png';
+
 //Auto Close Exempted Pages
 $autoclose_page_exempted=array("baiadmn","baisysadmin","baiictadmin","baischtasksvc","sfcsproject1");
 $autoclose_period=1800000;
@@ -102,8 +122,9 @@ $sizes_code=array('01','02','03','04','05','06','07','08','09','10','11','12','1
 
 $sizes_title=array('S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26','S27','S28','S29','S30','S31','S32','S33','S34','S35','S36','S37','S38','S39','S40','S41','S42','S43','S44','S45','S46','S47','S48','S49','S50');
 
-//$shifts_array = $conf1->get('shifts');
-$shifts_array = array("A","B","C","G");
+$shifts_array = $conf1->get('shifts');
+$teams_array = $conf1->get('teams');
+//$shifts_array = array("A","B","C","G","ALL");
 
 $mod_names = array("1","2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40");
 
@@ -123,6 +144,10 @@ $comp_no=$conf1->get('company_no');
 $central_wh_code=$conf1->get('central_wh_code');
 $plant_wh_code=$conf1->get('plant_wh_code');
 $plant_prod_code=$conf1->get('plant_prod_code');
+$shrinkage_inspection=$conf1->get('shrinkage-inspection');
+$sewing_rejection=$conf1->get('sewing_rejection');
+
+
 
 
 
@@ -137,6 +162,8 @@ $group_id_Main=5;
 $smtp_user=$conf1->get('smtp-user-name');
 // $header_from="From: Shop Floor System Alert <ictsysalert@brandix.com>";
 $header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
+$header_name=$smtp_user." Alert";
+$header_mail=$conf1->get('smtp_mail_from');
 $dispatch_mail = $conf1->get('dispatch_mail');
 //Central Administration Menu Access
 $central_administration_sfcs='central_administration_sfcs';
@@ -163,8 +190,16 @@ mysqli_select_db($link, $bai_pro3) or die("Error in selecting the database:".mys
 
 $operation=array("Please Select","Single Colour & Single Size","Multi Colour & Single Size","Multi Colour & Multi Size","Single Colour & Multi Size");
 
-$filter_joins="order_joins not in (1,2) and ";
+$order_joins_not_in="order_joins not in ('1','2')";
 
+$order_joins_in="order_joins in ('1','2')";
+
+$order_joins_in_full="order_joins in ('0','1','2')";
+
+$order_joins_in_2 ="order_joins='2'";
+
+$order_joins_in_1 ="order_joins='1'";
+    
 $sql_query = "select * from $central_administration_sfcs.rbac_permission where status='active'";
 $res_query = mysqli_query($link, $sql_query);
 while($sql_row=mysqli_fetch_array($res_query))
@@ -183,7 +218,7 @@ while($methods=mysqli_fetch_array($pack_result))
 //***************************************************
 //======== for central warehouse connections ========
 //***************************************************
-    $is_chw = $conf1->get('central_warehouse');
+  /*  $is_chw = $conf1->get('central_warehouse');
     $cwh_link = Null;
     if($is_chw == 'yes'){
         $cwh_host = $conf1->get('cw_host');
@@ -192,6 +227,6 @@ while($methods=mysqli_fetch_array($pack_result))
         $cwh_port = $conf1->get('cw_port');
         $cwh_link = ($GLOBALS["___mysqli_ston"] = mysqli_connect($cwh_host.":".$cwh_port, $cwh_user_name, $cwh_password)) or die("Could not connect cwh: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-    }
+    } */
 //===================================================
 ?>

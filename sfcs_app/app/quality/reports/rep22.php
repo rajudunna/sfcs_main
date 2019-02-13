@@ -122,6 +122,7 @@ background-position:center middle;
 				//$choice=-1;
 				$sec_db="";
 				$sql="select sec_mods from $bai_pro3.sections_db where sec_id=$section";
+				//echo $sql;
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
@@ -129,7 +130,7 @@ background-position:center middle;
 				}
 			}
 			
-
+             
 			echo "<br/><hr/><br/><div class='table-responsive'><table class='table table-bordered'>";
 			echo "<tr class='tblheading'>
 				<th rowspan=3>Module</th>
@@ -160,46 +161,65 @@ background-position:center middle;
 
 					</tr>";
 
-
+                   
+                    // To get category sewing
+		            $get_category="SELECT group_concat(operation_code) as op_codes FROM $brandix_bts.`tbl_orders_ops_ref` 
+		                           WHERE category ='sewing'";
+		            $category_result=mysqli_query($link, $get_category)or exit("category_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		            while($sql_row=mysqli_fetch_array($category_result))
+		            {
+		                $sw_category=$sql_row['op_codes'];
+		            } 
+                   
+                   // die();
 					if($choice==0)
 					{
-						$sql="select sum(bac_qty) as \"output\", bac_no from $bai_pro.bai_log where bac_no in ($sec_db) and bac_date between \"$sdate\" and \"$edate\" group by bac_no";
+
+						 $sql="select operation_id,sum(if(operation_id = 130,recevied_qty,0)) as output,assigned_module from brandix_bts.bundle_creation_data_temp where assigned_module in ($sec_db) and operation_id in ($sw_category) and date(date_time) between '$sdate' and '$edate' GROUP BY assigned_module" ;
 					}
 
 					if($choice==1)
 					{
-						$sql="select sum(bac_qty) as \"output\", group_concat(distinct delivery) as \"delivery\", group_concat(distinct color) as \"color\", bac_style from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" group by bac_style order by bac_style+1";
+
+						$sql="select operation_id,sum(if(operation_id = 130,recevied_qty,0)) as output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color, style from brandix_bts.bundle_creation_data_temp where operation_id in($sw_category) and date(date_time) between '$sdate' and '$edate' group by style order by style";
 					}
 
 					if($choice==2)
 					{
-						$sql="select sum(bac_qty) as \"output\", bac_no, bac_shift from $bai_pro.bai_log where bac_no in ($sec_db) and bac_date between \"$sdate\" and \"$edate\" group by bac_no,bac_shift order by bac_no,bac_shift";
+
+						$sql="select operation_id,sum(if(operation_id = 130,recevied_qty,0)) as output, assigned_module, shift from brandix_bts.bundle_creation_data_temp where assigned_module in ($sec_db) and operation_id in ($sw_category) and date(date_time) between '$sdate' and '$edate' group by assigned_module,shift order by assigned_module,shift";
 					}
 
 					if($choice==3)
 					{
-						$sql="select sum(bac_qty) as \"output\", group_concat(distinct delivery) as \"delivery\", group_concat(distinct color) as \"color\", bac_style,bac_no, bac_shift from $bai_pro.bai_log where bac_no in ($sec_db) and bac_date between \"$sdate\" and \"$edate\" group by bac_style,bac_no,bac_shift order by bac_no,bac_shift";
+
+						$sql="select operation_id,sum(if(operation_id = 130,recevied_qty,0)) as output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color, style,assigned_module,shift from $brandix_bts.bundle_creation_data_temp where assigned_module in ($sec_db) and operation_id in ($sw_category) and date(date_time) between '$sdate' and '$edate' 
+						    group by style,assigned_module,shift order by assigned_module,shift";
 					}
 					$grand_vals=array();
-					
+					//echo $sql;
 					for($i=0;$i<33;$i++) {	$grand_vals[$i]=0;	}
 					$grand_output=0;
 					$grand_rejections=0;
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
-					
-					$mod=$sql_row['bac_no'];
-					$shif=$sql_row['bac_shift'];
-					$delivery=$sql_row['delivery'];
+					$op = $sql_row['operation_id'];
+					$mod=$sql_row['assigned_module'];
+					$shif=$sql_row['shift'];
+					$schedule=$sql_row['schedule'];
 					echo "<tr>";
-					echo "<td>".$sql_row['bac_no']."</td>";
-					echo "<td>".$sql_row['bac_shift']."</td>";
-					echo "<td>".$sql_row['bac_style']."</td>";
-					echo "<td>".$sql_row['delivery']."</td>";
+					echo "<td>".$sql_row['assigned_module']."</td>";
+					echo "<td>".$sql_row['shift']."</td>";
+					echo "<td>".$sql_row['style']."</td>";
+					echo "<td>".$sql_row['schedule']."</td>";
 					echo "<td>".$sql_row['color']."</td>";
 					
-					$sw_out=$sql_row['output'];
+					
+					    $sw_out=$sql_row['output'];
+					
+
+					//echo $sw_out;
 					
 					$sql1x="SET SESSION group_concat_max_len = 1000000";
 					mysqli_query($link, $sql1x) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -212,7 +232,7 @@ background-position:center middle;
 					
 					if($choice==1)
 					{
-						$sql1="select group_concat(ref1,\"$\") as \"ref1\",sum(qms_qty) as \"qms_qty\" from $bai_pro3.bai_qms_db where qms_tran_type=3 and qms_schedule in ($delivery) and log_date between \"$sdate\" and \"$edate\"";
+						$sql1="select group_concat(ref1,\"$\") as \"ref1\",sum(qms_qty) as \"qms_qty\" from $bai_pro3.bai_qms_db where qms_tran_type=3 and qms_schedule in ($schedule) and log_date between \"$sdate\" and \"$edate\"";
 						//echo $sql1."<br/>";
 					}
 					
@@ -225,7 +245,7 @@ background-position:center middle;
 					if($choice==3)
 					{
 						
-						$sql1="select group_concat(ref1,\"$\") as \"ref1\",sum(qms_qty) as \"qms_qty\" from $bai_pro3.bai_qms_db where qms_tran_type=3 and qms_schedule in ($delivery) and substring_index(remarks,\"-\",1)=\"$mod\" and  substring_index(substring_index(remarks,\"-\",2),\"-\",-1)=\"$shif\" and log_date between \"$sdate\" and \"$edate\"";
+						$sql1="select group_concat(ref1,\"$\") as \"ref1\",sum(qms_qty) as \"qms_qty\" from $bai_pro3.bai_qms_db where qms_tran_type=3 and qms_schedule in ($schedule) and substring_index(remarks,\"-\",1)=\"$mod\" and  substring_index(substring_index(remarks,\"-\",2),\"-\",-1)=\"$shif\" and log_date between \"$sdate\" and \"$edate\"";
 					  // echo "query=".$sql1;
 					}
 					
@@ -308,10 +328,15 @@ background-position:center middle;
 					
 				} 
 				
-				
+				$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
+				$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row12=mysqli_fetch_array($result12))
+				{
+					$section_display_name=$sql_row12["section_display_name"];
+				}
 				
 				echo "<tr >";
-				echo "<td colspan=5 bgcolor=#f47f7f>Section - $section</td>";
+				echo "<td colspan=5 bgcolor=#f47f7f>$section_display_name</td>";
 				echo "<td>".$grand_output."</td>";
 				echo "<td class=\"BG\">$span1".$grand_rejections."$span3$span2"; if($grand_output>0) { echo round(($grand_rejections/$grand_output)*100,1)."%"; } echo "$span3</td>";
 				for($i=0;$i<33;$i++) {	
@@ -346,9 +371,15 @@ background-position:center middle;
 				}
 				echo "</tr>";
 				
-				
+				$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=".$sections[$i];
+				$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row12=mysqli_fetch_array($result12))
+				{
+					$section_display_name=$sql_row12["section_display_name"];
+				}
+
 				echo "<tr >";
-				echo "<td colspan=5 bgcolor=#f47f7f>Section - $section</td>";
+				echo "<td colspan=5 bgcolor=#f47f7f>$section_display_name</td>";
 				echo "<td>".$grand_output."</td>";
 				echo "<td class=\"BG\">$span1".$grand_rejections."$span3$span2"; if($grand_output>0) { echo round(($grand_rejections/$grand_output)*100,1)."%"; } echo "$span3</td>";
 

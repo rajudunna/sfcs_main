@@ -8,13 +8,34 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		<div class="panel panel-primary">
 			<!-- <div class="panel-heading"><b>Orders Synchronization</b></div> -->
 			<div class="panel-body">
+				<style>
+					#loading-image
+					{
+						position:fixed;
+						top:0px;
+						right:0px;
+						width:100%;
+						height:100%;
+						background-color:#666;
+						/* background-image:url('ajax-loader.gif'); */
+						background-repeat:no-repeat;
+						background-position:center;
+						z-index:10000000;
+						opacity: 0.4;
+						filter: alpha(opacity=40); /* For IE8 and earlier */
+					}
+				</style>
+
+				<div class="ajax-loader" id="loading-image">
+				    <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+</div>
 <?php
 	  $order_tid=$_GET['order_tid'];
 	  $get_order_tid = $_GET['order_tid'];
 	  $color=$_GET['color'];
 	  $style=$_GET['style'];
 	  $schedule=$_GET['schedule'];
-	$sql="SELECT * FROM $bai_pro3.bai_orders_db_confirm as bai_orders_db_confirm LEFT JOIN $bai_pro3.plandoc_stat_log as plandoc_stat_log ON plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid WHERE bai_orders_db_confirm.order_joins not in ('1','2') AND bai_orders_db_confirm.order_tid='".$order_tid."' and bai_orders_db_confirm.order_del_no='".$schedule."' and bai_orders_db_confirm.order_col_des='".$color."' GROUP BY bai_orders_db_confirm.order_col_des";
+	$sql="SELECT * FROM $bai_pro3.bai_orders_db_confirm as bai_orders_db_confirm LEFT JOIN $bai_pro3.plandoc_stat_log as plandoc_stat_log ON plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid WHERE bai_orders_db_confirm.$order_joins_not_in AND bai_orders_db_confirm.order_tid='".$order_tid."' and bai_orders_db_confirm.order_del_no='".$schedule."' and bai_orders_db_confirm.order_col_des='".$color."' GROUP BY bai_orders_db_confirm.order_col_des";
 	//HAVING plan_quantity>=confirm_order_quantity"; //this will validate whether layplan has > order quantity or not
 	$result=mysqli_query($link, $sql) or ("Sql error777".mysqli_error($GLOBALS["___mysqli_ston"]));
 	//echo $sql."ads";
@@ -107,6 +128,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			$cat_ref=$l['cat_ref'];
 			$mk_ref=$l['mk_ref'];
 			$cuttable_ref=$l['cuttable_ref'];
+			$layplan_id1=0;
 			//Insert data into layplan(tbl_cut_master) table
 			$inserted_id_query1 = "select count(id) as id from $brandix_bts.tbl_cut_master where doc_num='".$doc_num."'";
 			$inserted_id_result1=mysqli_query($link, $inserted_id_query1) or ("Sql error1111");

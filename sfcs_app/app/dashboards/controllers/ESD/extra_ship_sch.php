@@ -627,34 +627,34 @@ $('.roundedCorner').corner();
 //By Maximus (maximus@nsimail.com) w/ mods by DynamicDrive
 //For full source code, visit http://www.dynamicdrive.com
 
-var message="Function Disabled!";
+//var message="Function Disabled!";
 
 ///////////////////////////////////
-function clickIE4(){
-if (event.button==2){
-sweetAlert("Function Disabled!","","warning");
-return false;
-}
-}
+// function clickIE4(){
+// if (event.button==2){
+// sweetAlert("Function Disabled!","","warning");
+// return false;
+// }
+// }
 
-function clickNS4(e){
-if (document.layers||document.getElementById&&!document.all){
-if (e.which==2||e.which==3){
-sweetAlert("Function Disabled!","","warning");
-return false;
-}
-}
-}
+// function clickNS4(e){
+// if (document.layers||document.getElementById&&!document.all){
+// if (e.which==2||e.which==3){
+// sweetAlert("Function Disabled!","","warning");
+// return false;
+// }
+// }
+// }
 
-if (document.layers){
-document.captureEvents(Event.MOUSEDOWN);
-document.onmousedown=clickNS4;
-}
-else if (document.all&&!document.getElementById){
-document.onmousedown=clickIE4;
-}
+// if (document.layers){
+// document.captureEvents(Event.MOUSEDOWN);
+// document.onmousedown=clickNS4;
+// }
+// else if (document.all&&!document.getElementById){
+// document.onmousedown=clickIE4;
+// }
 
-document.oncontextmenu=new Function("sweetAlert('Function Disabled!','','warning');return false")
+// document.oncontextmenu=new Function("sweetAlert('Function Disabled!','','warning');return false")
 
 // --> 
 </script>
@@ -682,8 +682,7 @@ document.oncontextmenu=new Function("sweetAlert('Function Disabled!','','warning
 		{
 			//echo "Last Update at: ".$sql_row['lastup']."<br/>";
 		}
-		$sqlx="select * from $bai_pro3.sections_db where sec_id>0";
-		//$sqlx="select * from sections_db where sec_id in (1)";
+		$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section>0 GROUP BY section ORDER BY section + 0";
 		// mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx=mysqli_fetch_array($sql_resultx))
@@ -691,13 +690,14 @@ document.oncontextmenu=new Function("sweetAlert('Function Disabled!','','warning
 			$section=$sql_rowx['sec_id'];
 			$section_head=$sql_rowx['sec_head'];
 			$section_mods=$sql_rowx['sec_mods'];
+			$section_display_name=$sql_rowx['section_display_name'];
 			$priority_limit=$sql_rowx['ims_priority_boxes'];
 
 		//echo '<div style="border: 3px coral solid; width: 200px; height: 1200px; float: left; margin: 10px; padding: 10px; overflow: scroll;">';
 		echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 5px; padding: 10px;width:300px;">';
 		echo "<p>";
-		//echo "<a href=\"$dns_adr/projects/alpha/anu/ims/sec_rep.php?section=$section\" onclick=\"Popup=window.open('$dns_adr/projects/alpha/anu/ims/sec_rep.php?section=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"font-size:24px;color:#000000;\"><b>SECTION - $section</b><br><font style=\"font-size:16px;font-color:#000000;\">($section_head)</font></font></a>";
-		echo "<font style=\"font-size:24px;color:#000000;\"><b>SECTION - $section</b><br><font style=\"font-size:16px;font-color:#000000;\"></font></font></a>";
+	
+		echo "<font style=\"font-size:24px;color:#000000;\"><b>$section_display_name</b><br><font style=\"font-size:16px;font-color:#000000;\"></font></font></a>";
 		//echo "<br/><div id=\"progressBar\" class=\"progressBar$section\"><div></div></div>";
 		echo "<table>";
 		//echo "modules no".$section_mods;

@@ -4,17 +4,58 @@ Change Log:
 2. Service Request #716897/ kirang / 2015-5-16:  Add the User Style ID and Packing Method validations at Cut Plan generation 
 -->
 
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R')); ?>
-<?php //echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
+<?php 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));
+?>
 
 <style>
-div.block
-{
-	float: left;	
-	padding: 30 px;
-}
+	div.block
+	{
+		float: left;	
+		padding: 30 px;
+	}
 </style>
+
+<script type="text/javascript">
+	function validateFloatKeyPress(el, evt)
+	{
+		var charCode = (evt.which) ? evt.which : event.keyCode;
+		var number = el.value.split('.');
+		if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
+		{
+			return false;
+		}
+		//just one dot
+		if(number.length>1 && charCode == 46)
+		{
+			return false;
+		}
+		//get the carat position
+		var caratPos = getSelectionStart(el);
+		var dotPos = el.value.indexOf(".");
+		if( caratPos > dotPos && dotPos>-1 && (number[1].length > 1))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	function getSelectionStart(o)
+	{
+		if (o.createTextRange)
+		{
+			var r = document.selection.createRange().duplicate()
+			r.moveEnd('character', o.value.length)
+			if (r.text == '') return o.value.length
+			return o.value.lastIndexOf(r.text)
+		}
+		else
+		{
+			return o.selectionStart
+		}
+	}
+</script>
 
 <script type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/check.js',2,'R')?>"></script>
 <!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->
@@ -22,7 +63,6 @@ div.block
 <?php	
 $tran_order_tid=$_GET['tran_order_tid'];
 $sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
@@ -31,15 +71,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$color=$sql_row['order_col_des'];
 	$style=$sql_row['order_style_no'];
 	$schedule=$sql_row['order_del_no'];
-	
-
 }
 ?>
 
 <div class="panel panel-primary">
-<div class="panel-heading">Maker Form</div>
+<div class="panel-heading">Marker Form</div>
 <div class="panel-body">
-<?php echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"><<<< Click here to Go Back</a>";?>	
+<?php echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a>";?>	
 <FORM method="post" name="input" action="<?php echo getFullURL($_GET['r'], "order_maker_process.php", "N"); ?>">
 <?php
 
@@ -59,61 +97,58 @@ echo "<input type=\"hidden\" name=\"tran_order_tid\" value=\"".$tran_order_tid."
 echo "<br/>";
 
 $sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	
-/*echo "<td>";
-Echo "<table><tr><td>Order Ref</td><td>:</td><td>".$tran_order_tid."</td></tr><tr><td>Date</td><td>:</td><td>".$sql_row['order_date']."</td></tr>";
+	/*echo "<td>";
+	Echo "<table><tr><td>Order Ref</td><td>:</td><td>".$tran_order_tid."</td></tr><tr><td>Date</td><td>:</td><td>".$sql_row['order_date']."</td></tr>";
 
-echo "<tr>";
-echo "<td>Division</td><td>:</td><td>".$sql_row['order_div']."</td></tr>";
+	echo "<tr>";
+	echo "<td>Division</td><td>:</td><td>".$sql_row['order_div']."</td></tr>";
 
-echo "<tr>";
-echo "<td>Stye</td><td>:</td><td>".$sql_row['order_style_no']."</td></tr>";
+	echo "<tr>";
+	echo "<td>Stye</td><td>:</td><td>".$sql_row['order_style_no']."</td></tr>";
 
-echo "<tr><td>Delivery No</td><td>:</td><td>".$sql_row['order_del_no']."</td></tr>";
+	echo "<tr><td>Delivery No</td><td>:</td><td>".$sql_row['order_del_no']."</td></tr>";
 
-echo "<tr><td>Color</td><td>:</td><td> ".$sql_row['order_col_code']."</td></tr>";
-
-
-echo "<tr><td>Color Description</td><td>:</td><td>".$sql_row['order_col_des']."</td></tr>";
-
-echo "<tr><td>Order YY</td><td>:</td><td> ".$sql_row['order_yy']."</td></tr>";
-echo "</table>";
-echo "</td><td>";
-echo "<table border=1>";
-
-echo "<tr align=center bgcolor=yellow><td>Sizes</td><td>XS</td><td>S</td><td>M</td><td>L</td><td>XL</td><td>XXL</td><td>XXXl</td><td>Total</td></tr>";
-
-echo "<tr><td bgcolor=#CCFF66>Quantity</td>";
-echo "<td>".$sql_row['order_s_xs']."</td>";
-
-echo "<td>".$sql_row['order_s_s']."</td>";
-
-echo "<td>".$sql_row['order_s_m']."</td>";
-
-echo "<td>".$sql_row['order_s_l']."</td>";
-
-echo "<td>".$sql_row['order_s_xl']."</td>";
-
-echo "<td>".$sql_row['order_s_xxl']."</td>";
-
-echo "<td>".$sql_row['order_s_xxxl']."</td>";
-
-echo "<td>".($sql_row['order_s_xs']+$sql_row['order_s_s']+$sql_row['order_s_m']+$sql_row['order_s_l']+$sql_row['order_s_xl']+$sql_row['order_s_xxl']+$sql_row['order_s_xxxl'])."</td></tr>";
+	echo "<tr><td>Color</td><td>:</td><td> ".$sql_row['order_col_code']."</td></tr>";
 
 
-echo "<tr>
-<td bgcolor=#CCFF66>Remarks</td>
-<td colspan=\"11\">".$sql_row['Order_remarks']."</td>
-</tr>";
+	echo "<tr><td>Color Description</td><td>:</td><td>".$sql_row['order_col_des']."</td></tr>";
 
-echo "</table>"; */
+	echo "<tr><td>Order YY</td><td>:</td><td> ".$sql_row['order_yy']."</td></tr>";
+	echo "</table>";
+	echo "</td><td>";
+	echo "<table border=1>";
 
+	echo "<tr align=center bgcolor=yellow><td>Sizes</td><td>XS</td><td>S</td><td>M</td><td>L</td><td>XL</td><td>XXL</td><td>XXXl</td><td>Total</td></tr>";
+
+	echo "<tr><td bgcolor=#CCFF66>Quantity</td>";
+	echo "<td>".$sql_row['order_s_xs']."</td>";
+
+	echo "<td>".$sql_row['order_s_s']."</td>";
+
+	echo "<td>".$sql_row['order_s_m']."</td>";
+
+	echo "<td>".$sql_row['order_s_l']."</td>";
+
+	echo "<td>".$sql_row['order_s_xl']."</td>";
+
+	echo "<td>".$sql_row['order_s_xxl']."</td>";
+
+	echo "<td>".$sql_row['order_s_xxxl']."</td>";
+
+	echo "<td>".($sql_row['order_s_xs']+$sql_row['order_s_s']+$sql_row['order_s_m']+$sql_row['order_s_l']+$sql_row['order_s_xl']+$sql_row['order_s_xxl']+$sql_row['order_s_xxxl'])."</td></tr>";
+
+
+	echo "<tr>
+	<td bgcolor=#CCFF66>Remarks</td>
+	<td colspan=\"11\">".$sql_row['Order_remarks']."</td>
+	</tr>";
+
+	echo "</table>"; */
 }
 
 /* NEW */
@@ -131,109 +166,109 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$order_xxl=$sql_row['order_s_xxl'];
 	$order_xxxl=$sql_row['order_s_xxxl'];
 	$order_s01=$sql_row['order_s_s01'];
-		$order_s02=$sql_row['order_s_s02'];
-		$order_s03=$sql_row['order_s_s03'];
-		$order_s04=$sql_row['order_s_s04'];
-		$order_s05=$sql_row['order_s_s05'];
-		$order_s06=$sql_row['order_s_s06'];
-		$order_s07=$sql_row['order_s_s07'];
-		$order_s08=$sql_row['order_s_s08'];
-		$order_s09=$sql_row['order_s_s09'];
-		$order_s10=$sql_row['order_s_s10'];
-		$order_s11=$sql_row['order_s_s11'];
-		$order_s12=$sql_row['order_s_s12'];
-		$order_s13=$sql_row['order_s_s13'];
-		$order_s14=$sql_row['order_s_s14'];
-		$order_s15=$sql_row['order_s_s15'];
-		$order_s16=$sql_row['order_s_s16'];
-		$order_s17=$sql_row['order_s_s17'];
-		$order_s18=$sql_row['order_s_s18'];
-		$order_s19=$sql_row['order_s_s19'];
-		$order_s20=$sql_row['order_s_s20'];
-		$order_s21=$sql_row['order_s_s21'];
-		$order_s22=$sql_row['order_s_s22'];
-		$order_s23=$sql_row['order_s_s23'];
-		$order_s24=$sql_row['order_s_s24'];
-		$order_s25=$sql_row['order_s_s25'];
-		$order_s26=$sql_row['order_s_s26'];
-		$order_s27=$sql_row['order_s_s27'];
-		$order_s28=$sql_row['order_s_s28'];
-		$order_s29=$sql_row['order_s_s29'];
-		$order_s30=$sql_row['order_s_s30'];
-		$order_s31=$sql_row['order_s_s31'];
-		$order_s32=$sql_row['order_s_s32'];
-		$order_s33=$sql_row['order_s_s33'];
-		$order_s34=$sql_row['order_s_s34'];
-		$order_s35=$sql_row['order_s_s35'];
-		$order_s36=$sql_row['order_s_s36'];
-		$order_s37=$sql_row['order_s_s37'];
-		$order_s38=$sql_row['order_s_s38'];
-		$order_s39=$sql_row['order_s_s39'];
-		$order_s40=$sql_row['order_s_s40'];
-		$order_s41=$sql_row['order_s_s41'];
-		$order_s42=$sql_row['order_s_s42'];
-		$order_s43=$sql_row['order_s_s43'];
-		$order_s44=$sql_row['order_s_s44'];
-		$order_s45=$sql_row['order_s_s45'];
-		$order_s46=$sql_row['order_s_s46'];
-		$order_s47=$sql_row['order_s_s47'];
-		$order_s48=$sql_row['order_s_s48'];
-		$order_s49=$sql_row['order_s_s49'];
-		$order_s50=$sql_row['order_s_s50'];
-	$style_code=$sql_row['style_id'];
-		$size01 = $sql_row['title_size_s01'];
-		$size02 = $sql_row['title_size_s02'];
-		$size03 = $sql_row['title_size_s03'];
-		$size04 = $sql_row['title_size_s04'];
-		$size05 = $sql_row['title_size_s05'];
-		$size06 = $sql_row['title_size_s06'];
-		$size07 = $sql_row['title_size_s07'];
-		$size08 = $sql_row['title_size_s08'];
-		$size09 = $sql_row['title_size_s09'];
-		$size10 = $sql_row['title_size_s10'];
-		$size11 = $sql_row['title_size_s11'];
-		$size12 = $sql_row['title_size_s12'];
-		$size13 = $sql_row['title_size_s13'];
-		$size14 = $sql_row['title_size_s14'];
-		$size15 = $sql_row['title_size_s15'];
-		$size16 = $sql_row['title_size_s16'];
-		$size17 = $sql_row['title_size_s17'];
-		$size18 = $sql_row['title_size_s18'];
-		$size19 = $sql_row['title_size_s19'];
-		$size20 = $sql_row['title_size_s20'];
-		$size21 = $sql_row['title_size_s21'];
-		$size22 = $sql_row['title_size_s22'];
-		$size23 = $sql_row['title_size_s23'];
-		$size24 = $sql_row['title_size_s24'];
-		$size25 = $sql_row['title_size_s25'];
-		$size26 = $sql_row['title_size_s26'];
-		$size27 = $sql_row['title_size_s27'];
-		$size28 = $sql_row['title_size_s28'];
-		$size29 = $sql_row['title_size_s29'];
-		$size30 = $sql_row['title_size_s30'];
-		$size31 = $sql_row['title_size_s31'];
-		$size32 = $sql_row['title_size_s32'];
-		$size33 = $sql_row['title_size_s33'];
-		$size34 = $sql_row['title_size_s34'];
-		$size35 = $sql_row['title_size_s35'];
-		$size36 = $sql_row['title_size_s36'];
-		$size37 = $sql_row['title_size_s37'];
-		$size38 = $sql_row['title_size_s38'];
-		$size39 = $sql_row['title_size_s39'];
-		$size40 = $sql_row['title_size_s40'];
-		$size41 = $sql_row['title_size_s41'];
-		$size42 = $sql_row['title_size_s42'];
-		$size43 = $sql_row['title_size_s43'];
-		$size44 = $sql_row['title_size_s44'];
-		$size45 = $sql_row['title_size_s45'];
-		$size46 = $sql_row['title_size_s46'];
-		$size47 = $sql_row['title_size_s47'];
-		$size48 = $sql_row['title_size_s48'];
-		$size49 = $sql_row['title_size_s49'];
-		$size50 = $sql_row['title_size_s50'];
-		$title_flag = $sql_row['title_flag'];
-	$buyer_code=substr($sql_row['order_style_no'],0,1);
+	$order_s02=$sql_row['order_s_s02'];
+	$order_s03=$sql_row['order_s_s03'];
+	$order_s04=$sql_row['order_s_s04'];
+	$order_s05=$sql_row['order_s_s05'];
+	$order_s06=$sql_row['order_s_s06'];
+	$order_s07=$sql_row['order_s_s07'];
+	$order_s08=$sql_row['order_s_s08'];
+	$order_s09=$sql_row['order_s_s09'];
+	$order_s10=$sql_row['order_s_s10'];
+	$order_s11=$sql_row['order_s_s11'];
+	$order_s12=$sql_row['order_s_s12'];
+	$order_s13=$sql_row['order_s_s13'];
+	$order_s14=$sql_row['order_s_s14'];
+	$order_s15=$sql_row['order_s_s15'];
+	$order_s16=$sql_row['order_s_s16'];
+	$order_s17=$sql_row['order_s_s17'];
+	$order_s18=$sql_row['order_s_s18'];
+	$order_s19=$sql_row['order_s_s19'];
+	$order_s20=$sql_row['order_s_s20'];
+	$order_s21=$sql_row['order_s_s21'];
+	$order_s22=$sql_row['order_s_s22'];
+	$order_s23=$sql_row['order_s_s23'];
+	$order_s24=$sql_row['order_s_s24'];
+	$order_s25=$sql_row['order_s_s25'];
+	$order_s26=$sql_row['order_s_s26'];
+	$order_s27=$sql_row['order_s_s27'];
+	$order_s28=$sql_row['order_s_s28'];
+	$order_s29=$sql_row['order_s_s29'];
+	$order_s30=$sql_row['order_s_s30'];
+	$order_s31=$sql_row['order_s_s31'];
+	$order_s32=$sql_row['order_s_s32'];
+	$order_s33=$sql_row['order_s_s33'];
+	$order_s34=$sql_row['order_s_s34'];
+	$order_s35=$sql_row['order_s_s35'];
+	$order_s36=$sql_row['order_s_s36'];
+	$order_s37=$sql_row['order_s_s37'];
+	$order_s38=$sql_row['order_s_s38'];
+	$order_s39=$sql_row['order_s_s39'];
+	$order_s40=$sql_row['order_s_s40'];
+	$order_s41=$sql_row['order_s_s41'];
+	$order_s42=$sql_row['order_s_s42'];
+	$order_s43=$sql_row['order_s_s43'];
+	$order_s44=$sql_row['order_s_s44'];
+	$order_s45=$sql_row['order_s_s45'];
+	$order_s46=$sql_row['order_s_s46'];
+	$order_s47=$sql_row['order_s_s47'];
+	$order_s48=$sql_row['order_s_s48'];
+	$order_s49=$sql_row['order_s_s49'];
+	$order_s50=$sql_row['order_s_s50'];
 
+	$style_code=$sql_row['style_id'];
+	$size01 = $sql_row['title_size_s01'];
+	$size02 = $sql_row['title_size_s02'];
+	$size03 = $sql_row['title_size_s03'];
+	$size04 = $sql_row['title_size_s04'];
+	$size05 = $sql_row['title_size_s05'];
+	$size06 = $sql_row['title_size_s06'];
+	$size07 = $sql_row['title_size_s07'];
+	$size08 = $sql_row['title_size_s08'];
+	$size09 = $sql_row['title_size_s09'];
+	$size10 = $sql_row['title_size_s10'];
+	$size11 = $sql_row['title_size_s11'];
+	$size12 = $sql_row['title_size_s12'];
+	$size13 = $sql_row['title_size_s13'];
+	$size14 = $sql_row['title_size_s14'];
+	$size15 = $sql_row['title_size_s15'];
+	$size16 = $sql_row['title_size_s16'];
+	$size17 = $sql_row['title_size_s17'];
+	$size18 = $sql_row['title_size_s18'];
+	$size19 = $sql_row['title_size_s19'];
+	$size20 = $sql_row['title_size_s20'];
+	$size21 = $sql_row['title_size_s21'];
+	$size22 = $sql_row['title_size_s22'];
+	$size23 = $sql_row['title_size_s23'];
+	$size24 = $sql_row['title_size_s24'];
+	$size25 = $sql_row['title_size_s25'];
+	$size26 = $sql_row['title_size_s26'];
+	$size27 = $sql_row['title_size_s27'];
+	$size28 = $sql_row['title_size_s28'];
+	$size29 = $sql_row['title_size_s29'];
+	$size30 = $sql_row['title_size_s30'];
+	$size31 = $sql_row['title_size_s31'];
+	$size32 = $sql_row['title_size_s32'];
+	$size33 = $sql_row['title_size_s33'];
+	$size34 = $sql_row['title_size_s34'];
+	$size35 = $sql_row['title_size_s35'];
+	$size36 = $sql_row['title_size_s36'];
+	$size37 = $sql_row['title_size_s37'];
+	$size38 = $sql_row['title_size_s38'];
+	$size39 = $sql_row['title_size_s39'];
+	$size40 = $sql_row['title_size_s40'];
+	$size41 = $sql_row['title_size_s41'];
+	$size42 = $sql_row['title_size_s42'];
+	$size43 = $sql_row['title_size_s43'];
+	$size44 = $sql_row['title_size_s44'];
+	$size45 = $sql_row['title_size_s45'];
+	$size46 = $sql_row['title_size_s46'];
+	$size47 = $sql_row['title_size_s47'];
+	$size48 = $sql_row['title_size_s48'];
+	$size49 = $sql_row['title_size_s49'];
+	$size50 = $sql_row['title_size_s50'];
+	$title_flag = $sql_row['title_flag'];
+	$buyer_code=substr($sql_row['order_style_no'],0,1);
 }
 
 $sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" and tid=$cat_ref";
@@ -242,50 +277,49 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 //echo "<table border=1><tr><td>TID</td><td>Date</td><td>Category</td><td>PurWidth</td><td>gmtway</td><td>STATUS</td><td>remarks</td></tr>";
 while($sql_row=mysqli_fetch_array($sql_result))
 {
+	$pur_width=$sql_row['purwidth'];
+	$patt_ver=$sql_row['patt_ver'];
 
-$pur_width=$sql_row['purwidth'];
-$patt_ver=$sql_row['patt_ver'];
+	$strip_match=$sql_row['strip_match'];
+	$gmtway=$sql_row['gmtway'];
 
-$strip_match=$sql_row['strip_match'];
-$gmtway=$sql_row['gmtway'];
+	$category=$sql_row['category'];
+		
+	$check=0;
+	$sql2="select sum(cuttable_s_xs) as \"cxs\", sum(cuttable_s_s) as \"cs\", sum(cuttable_s_m) as \"cm\", sum(cuttable_s_l) as \"cl\", sum(cuttable_s_xl) as \"cxl\", sum(cuttable_s_xxl) as \"cxxl\", sum(cuttable_s_xxxl) as \"cxxxl\" from $bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\" and cat_id=".$sql_row['tid'];
+	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$category=$sql_row['category'];
-	
-$check=0;
-$sql2="select sum(cuttable_s_xs) as \"cxs\", sum(cuttable_s_s) as \"cs\", sum(cuttable_s_m) as \"cm\", sum(cuttable_s_l) as \"cl\", sum(cuttable_s_xl) as \"cxl\", sum(cuttable_s_xxl) as \"cxxl\", sum(cuttable_s_xxxl) as \"cxxxl\" from $bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\" and cat_id=".$sql_row['tid'];
-$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row2=mysqli_fetch_array($sql_result2))
+	{
+		$cxs=$sql_row2['cxs'];
+		$cs=$sql_row2['cs'];
+		$cm=$sql_row2['cm'];
+		$cl=$sql_row2['cl'];
+		$cxl=$sql_row2['cxl'];
+		$cxxl=$sql_row2['cxxl'];
+		$cxxxl=$sql_row2['cxxxl'];
 
-while($sql_row2=mysqli_fetch_array($sql_result2))
-{
-	$cxs=$sql_row2['cxs'];
-	$cs=$sql_row2['cs'];
-	$cm=$sql_row2['cm'];
-	$cl=$sql_row2['cl'];
-	$cxl=$sql_row2['cxl'];
-	$cxxl=$sql_row2['cxxl'];
-	$cxxxl=$sql_row2['cxxxl'];
+		if($cxs<$order_xs){$check=1;}
+		if($cs<$order_s){$check=1;}
+		if($cm<$order_m){$check=1;}
+		if($cl<$order_l){$check=1;}
+		if($cxl<$order_xl){$check=1;}
+		if($cxxl<$order_xxl){$check=1;}
+		if($cxxxl<$order_xxxl){$check=1;}
+		
+	}
 
-	if($cxs<$order_xs){$check=1;}
-	if($cs<$order_s){$check=1;}
-	if($cm<$order_m){$check=1;}
-	if($cl<$order_l){$check=1;}
-	if($cxl<$order_xl){$check=1;}
-	if($cxxl<$order_xxl){$check=1;}
-	if($cxxxl<$order_xxxl){$check=1;}
-	
-}
+	$color="GREEN";
 
-$color="GREEN";
-
-if($check==1)
-{
-	$color="RED";
-}
+	if($check==1)
+	{
+		$color="RED";
+	}
 	
 
 	/* $check_id=$sql_row['tid'];*/
 
-/*	echo "<tr>";
+	/*	echo "<tr>";
 	echo "<td>".$sql_row['tid']."</td>";
 	echo "<td>".$sql_row['date']."</td>";
 	echo "<td>".$sql_row['category']."</td>";
@@ -299,83 +333,62 @@ if($check==1)
 }
 //echo "</table>";
 
-
-
-
-/* NEW */
-
-
-
-//echo "</div>";
-//echo "<div class=block>";
-
-/* update */
-
-
 $sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and tid=$allocate_ref";
 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 while($sql_row2=mysqli_fetch_array($sql_result2))
 {
+	/*echo "</table>";
+	echo "</td><td>";
+	echo "<table border=1>";
 
+	echo "<tr align=center bgcolor=yellow><td>Sizes</td><td>XS</td><td>S</td><td>M</td><td>L</td><td>XL</td><td>XXL</td><td>XXXl</td><td>Total</td><td>ration</td><td>cuts</td><td>plies</td><td>Max Plies / Cut</td></tr>";
 
-/*echo "</table>";
-echo "</td><td>";
-echo "<table border=1>";
+	echo "<tr><td bgcolor=#CCFF66>Quantity</td>";
 
-echo "<tr align=center bgcolor=yellow><td>Sizes</td><td>XS</td><td>S</td><td>M</td><td>L</td><td>XL</td><td>XXL</td><td>XXXl</td><td>Total</td><td>ration</td><td>cuts</td><td>plies</td><td>Max Plies / Cut</td></tr>";
+	echo "<td>".$sql_row2['allocate_xs']."</td>";
 
-echo "<tr><td bgcolor=#CCFF66>Quantity</td>";
+	echo "<td>".$sql_row2['allocate_s']."</td>";
 
-echo "<td>".$sql_row2['allocate_xs']."</td>";
+	echo "<td>".$sql_row2['allocate_m']."</td>";
 
-echo "<td>".$sql_row2['allocate_s']."</td>";
+	echo "<td>".$sql_row2['allocate_l']."</td>";
 
-echo "<td>".$sql_row2['allocate_m']."</td>";
+	echo "<td>".$sql_row2['allocate_xl']."</td>";
 
-echo "<td>".$sql_row2['allocate_l']."</td>";
+	echo "<td>".$sql_row2['allocate_xxl']."</td>";
 
-echo "<td>".$sql_row2['allocate_xl']."</td>";
+	echo "<td>".$sql_row2['allocate_xxxl']."</td>";
 
-echo "<td>".$sql_row2['allocate_xxl']."</td>";
+	echo "<td>".($sql_row2['allocate_xs']+$sql_row2['allocate_s']+$sql_row2['allocate_m']+$sql_row2['allocate_l']+$sql_row2['allocate_xl']+$sql_row2['allocate_xxl']+$sql_row2['allocate_xxxl'])."</td>";
 
-echo "<td>".$sql_row2['allocate_xxxl']."</td>";
+	echo "<td>".$sql_row2['ratio']."</td>";
+	echo "<td>".$sql_row2['cut_count']."</td>";
+	echo "<td>".$sql_row2['plies']."</td>";
+	echo "<td>".$sql_row2['pliespercut']."</td></tr>";
+	echo "<tr>
+	<td bgcolor=#CCFF66>Remarks</td>
+	<td colspan=12>".$sql_row2['remarks']."</td>
+	</tr>";
 
-echo "<td>".($sql_row2['allocate_xs']+$sql_row2['allocate_s']+$sql_row2['allocate_m']+$sql_row2['allocate_l']+$sql_row2['allocate_xl']+$sql_row2['allocate_xxl']+$sql_row2['allocate_xxxl'])."</td>";
-
-echo "<td>".$sql_row2['ratio']."</td>";
-echo "<td>".$sql_row2['cut_count']."</td>";
-echo "<td>".$sql_row2['plies']."</td>";
-echo "<td>".$sql_row2['pliespercut']."</td></tr>";
-echo "<tr>
-<td bgcolor=#CCFF66>Remarks</td>
-<td colspan=12>".$sql_row2['remarks']."</td>
-</tr>";
-
-echo "</table>"; */
-
-
+	echo "</table>"; */
 }
-
-
-
-/* update*/
 
 
 echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">";
 echo "<tr>
-		<td>Marker LENGTH 1</td><td>:</td>
+		<td>Marker Length 1</td><td>:</td>
 		<input type=\"hidden\" name=\"in_pwidth[]\" value=\"$pur_width\">
 		<td>
-			<INPUT class=\"form-control float\" type=\"text\" title='Please enter numbers and decimals' required name=\"in_mklength[]\" size=\"10\" id=\"mk_len\">
+			<INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' type=\"text\" title='Please enter numbers and decimals' required name=\"in_mklength[]\" size=\"10\" id=\"mk_len\">
 		</td>
 		<td><b>Pur Width:</b> <label class='label label-primary'>$pur_width</label></td>
 	</tr>";
-echo "<tr><td>Marker LENGTH 2</td><td>:</td><td><input class=\"form-control float\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
-echo "<tr><td>Marker LENGTH 3</td><td>:</td><td><input class=\"form-control float\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
-echo "<tr><td>Marker LENGTH 4</td><td>:</td><td><input class=\"form-control float\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
-echo "<tr><td>Marker LENGTH 5</td><td>:</td><td><input class=\"form-control float\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
-echo "<tr><td>Marker LENGTH 6</td><td>:</td><td><input class=\"form-control float\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
+echo "<tr><td>Marker Length 2</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
+echo "<tr><td>Marker Length 3</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
+echo "<tr><td>Marker Length 4</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
+echo "<tr><td>Marker Length 5</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
+echo "<tr><td>Marker Length 6</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
 
 echo "<tr><td>Marker Efficiency</td>
 		  <td>:</td>

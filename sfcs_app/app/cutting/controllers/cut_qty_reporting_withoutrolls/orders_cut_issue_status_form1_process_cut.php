@@ -18,6 +18,12 @@ $b_op_id = 15;
 
 <?php
 
+
+foreach($sizes_array as $size){
+    $equating_string.= "a_$size = p_$size,";
+}
+
+
 //function to update M3 Bulk OR
 
 function update_m3_or($doc_no,$plies,$operation,$old_plies,$link)
@@ -296,6 +302,8 @@ if(isset($_POST['update']))
 			}
 
 		}
+		//explicitly assigning to array
+		$input_doc_nos = $input_doc_no;
 	}
 	else if($club_status=='1')
 	{
@@ -359,7 +367,8 @@ if(isset($_POST['update']))
 		$sql_result2=mysqli_query($link, $sql3) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{
-			
+			//for clubbing dockets getting category
+			$club_docs[$sql_row2['doc_no']] = $sql_row2['cat_ref'];
 			$sql4="UPDATE $bai_pro3.plandoc_stat_log SET `act_cut_status` = 'DONE' , `fabric_status` = '5' , `plan_lot_ref` = '\'STOCK\'' WHERE `doc_no` = '".$sql_row2['doc_no']."'";
 			$sql_result3=mysqli_query($link, $sql4) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			//echo $sql4."<br>";
@@ -477,18 +486,113 @@ if(isset($_POST['update']))
 			//echo $sql14."<br>";
 			$sql_result=mysqli_query($link, $sql14) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
+		unset($input_doc_nos);
 		
+		foreach($club_docs as $docket=>$cat_ref){
+			$cat_query = "SELECT category from $bai_pro3.cat_stat_log where tid='$cat_ref' and 
+						  category in ($in_categories)";
+			$cat_result = mysqli_query($link,$cat_query);
+			if(mysqli_num_rows($cat_result) > 0){
+				//$insert = doc_size_wise_bundle_insertion($docket);
+				$input_doc_nos[] = $docket;
+			}
+		}
+		//var_dump($input_doc_nos);
+		$input_doc_nos = implode(',',$input_doc_nos);
+	}else if($club_status == '2'){
+
+		$plies_query = "SELECT p_plies from $bai_pro3.plandoc_stat_log where doc_no = '$input_doc_no' ";
+		$plies_result = mysqli_query($link,$plies_query);
+		while($row = mysqli_fetch_array($plies_result)){
+			$p_plies = $row['p_plies'];
+		}
+		if(!($plies == $p_plies)){
+			echo "<script type=\"text/javascript\"> 
+				swal('Actual Plies should be equal to Planned Plies','Try Again','error');
+				setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel_cut.php',0,'N')."'; }</script>";
+			exit();
+		}
+
+
+		// echo "<script>alert('into club status = 1')</script>";
+		if(strlen($_POST['remarks'])>0)
+		{
+			$input_remarks=$_POST['remarks']."$".$input_date."^".$input_section."^".$input_shift."^".$input_fab_rec."^".$input_fab_ret."^".$input_damages."^".$input_shortages."^".$ret_to."^".$plies;
+		}
+		else
+		{
+			$input_remarks=$input_date."^".$input_section."^".$input_shift."^".$input_fab_rec."^".$input_fab_ret."^".$input_damages."^".$input_shortages."^".$ret_to."^".$plies;
+		}
+
+		$input_fab_rec+=$old_input_fab_rec;
+		$input_fab_ret+=$old_input_fab_ret;
+		$input_damages+=$old_input_damages;
+		$input_shortages+=$old_input_shortages;
+		
+		// echo "<script>alert('till plies')</script>";
+		if($plies>0)
+		{
+			// echo "<script>alert('till return function')</script>";
+			// echo "<script>alert('into return function')</script>";
+			$sql="insert ignore into $bai_pro3.act_cut_status (doc_no) values ($input_doc_no)";
+			//echo $sql;
+			mysqli_query($link, $sql) or exit("Sql Error1 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//echo $sql;
+			
+			$sql="update $bai_pro3.act_cut_status set date=\"$input_date\", section=\"$input_section\", shift=\"$input_shift\", fab_received=$input_fab_rec, fab_returned=$input_fab_ret, damages=$input_damages, shortages=$input_shortages, remarks=\"$input_remarks\", bundle_loc=\"$bun_loc\" ,leader_name=\"$leader_name\" where doc_no=$input_doc_no";
+			//echo $sql;
+			mysqli_query($link, $sql) or exit("Sql Error2  $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//echo $sql;
+			
+			$sql1="update $bai_pro3.plandoc_stat_log set act_cut_status='DONE', a_plies=$a_plies,
+				pcutdocid=concat(pcutdocid,'$','$bun_loc') where doc_no=$input_doc_no";
+			//echo $sql1;
+			mysqli_query($link, $sql1) or exit("Sql Error3 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
+			//getting all child dockets
+			$child_docs_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log psl  
+						LEFT JOIN $bai_pro3.cat_stat_log csl ON csl.tid = psl.cat_ref
+						where org_doc_no = '$input_doc_no' ";
+			$child_docs_result = mysqli_query($link,$child_docs_query);
+			while($row = mysqli_fetch_array($child_docs_result)){
+				$child_docs[] = $row['doc_no'];
+			}
+			foreach($child_docs as $docket){
+				$update_query = "UPDATE $bai_pro3.plandoc_stat_log set $equating_string act_cut_status='DONE'
+								where doc_no = '$docket' ";
+				$update_result = mysqli_query($link,$update_query);
+
+				$sql="insert ignore into $bai_pro3.act_cut_status (doc_no) values ($docket)";
+				mysqli_query($link, $sql) or exit("Sql Error1 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
+				$sql1="update $bai_pro3.act_cut_status set date=\"$input_date\", section=\"$input_section\", shift=\"$input_shift\", fab_received=0, fab_returned=0, damages=$input_damages, shortages=0, remarks=\"$input_remarks\", bundle_loc=\"$bun_loc\" ,leader_name=\"$leader_name\" where doc_no=$docket";
+				mysqli_query($link,$sql1) or exit("Sql Error2  $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			}
+			unset($child_docs);
+			//getting all child dockets fro m3 reporting
+			$child_docs_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log psl  
+						LEFT JOIN $bai_pro3.cat_stat_log csl ON csl.tid = psl.cat_ref
+						where org_doc_no = '$input_doc_no' and category IN ($in_categories)";
+			$child_docs_result = mysqli_query($link,$child_docs_query);
+			while($row = mysqli_fetch_array($child_docs_result)){
+				$child_docs[] = $row['doc_no'];
+			}
+		}
+		//explicitly assigning to array
+		$input_doc_nos = implode(',',$child_docs);
 	}
+
+
+
 	if ($failed == 1) 
 	{
-	
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'doc_track_panel_cut.php',0,'N')."'; }</script>";
 	}
 	else
 	{
-	
 		$go_back = 'doc_track_panel_cut';
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'trail.php',0,'N')."&doc_no_ref=$input_doc_no&plies=$plies&go_back_to=$go_back'; }</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = '".getFullURLLevel($_GET['r'],'trail.php',0,'N')."&doc_no_ref=$input_doc_nos&plies=$plies&go_back_to=$go_back'; }</script>";
 	}
 	
 }

@@ -1,6 +1,6 @@
-<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
+<script src="/sfcs_app/common/js/jquery-1.11.1.min.js"></script>
+<script src="/sfcs_app/common/js/sweetalert-dev.js"></script>
+<link rel="stylesheet" href="/sfcs_app/common/css/sweetalert.css">
 <?php
 $rid=$_GET['rowid1'];
 // echo $rid;
@@ -31,7 +31,7 @@ if($rid!=''){
 			window.location.href = \"$url\";
 		  }
 		}); }, 100);</script>";
-$delete="delete from bai_pro3.sections_master where sec_id='$rid'";
+$delete="delete from $bai_pro3.sections_master where sec_id='$rid'";
 if (mysqli_query($conn, $delete)) {
 			//header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw');
 		} else {

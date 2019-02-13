@@ -294,6 +294,14 @@ if($_GET["lots"] > 0)
 {
 	//echo "Hello";
 	$ref_tid=$_GET["tid"];
+
+	$sql1="select product from $bai_rm_pj2.mrn_track where tid=$ref_tid";
+	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row1=mysqli_fetch_array($sql_result1))
+	{	
+		$product_code=$sql_row1['product'];
+	}
+
 	echo "<div>";
 	$row_count = 0;
 	$lots_no=$_GET["lots"];
@@ -315,6 +323,13 @@ if($_GET["lots"] > 0)
 		if(strlen($sql_row1["ref4"]) > 0)
 		{
 			$readonly="";
+		}
+		if($product_code=='FAB')
+		{
+			$readonly=$readonly;
+		}
+		else {
+			$readonly='';
 		}
 		echo "<tr>";
 		echo "<td><input type=\"hidden\" name=\"ref_tid[]\" value=\"".$ref_tid."\" /><input type=\"hidden\" name=\"lblids[]\" value=\"".$sql_row1["tid"]."\" >".$ref_tid."-".$sql_row1["tid"]."</td>";
@@ -416,7 +431,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 
 	echo "<td>".$item_desc."</td>";
-	echo "<td>".$reason_code_db[array_search($sql_row['reason_code'],$reason_id_db)]."</td>";
+	// echo "<td>".$reason_code_db[array_search($sql_row['reason_code'],$reason_id_db)]."</td>";
+	$reason_code = $sql_row['reason_code'];
+	$sql_reason = "SELECT * FROM $bai_rm_pj2.mrn_reason_db WHERE reason_tid = \"$reason_code\"";
+	$result_reason = mysqli_query($link,$sql_reason);
+	$reason_row = mysqli_fetch_assoc($result_reason);
+	echo "<td>".$reason_row['reason_code']."-".$reason_row['reason_desc']."</td>";
 	switch($level)
 	{
 		case 2:
@@ -469,17 +489,17 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		case 1:
 			{
-				echo "<td><input type=\"text\" class='form-control' name=\"ins_rem\" value=\"0\"></td>";
+				echo "<td><input type=\"text\"  name=\"ins_rem\" value=\"0\"></td>";
 	   			break;
 			}
 		case 2:
 		{
-			echo "<td><input type=\"text\" class='form-control' name=\"ins_rem\" value=\"0\"></td>";
+			echo "<td><input type=\"text\"  name=\"ins_rem\" value=\"0\"></td>";
    			break;
 		}
 		case 3:
 		{
-			echo "<td><input type=\"text\" class='form-control' name=\"ins_rem\" value=\"0\"></td>";
+			echo "<td><input type=\"text\"  name=\"ins_rem\" value=\"0\"></td>";
    			break;
 		}
 	}	

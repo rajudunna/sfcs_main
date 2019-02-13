@@ -57,7 +57,7 @@ while($row=mysqli_fetch_array($sql))
 	//echo "<br>".$plan_sth."---".$act_sth;
 }
 
-$sql1="select count(*) as cnt from $bai_pro3.sections_db where sec_id > 0";
+$sql1="select count(*) as cnt from $bai_pro3.sections_master where sec_id > 0";
 $sql_result=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row1=mysqli_fetch_array($sql_result))
 {

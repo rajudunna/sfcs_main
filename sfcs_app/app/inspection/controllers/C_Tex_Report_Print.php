@@ -1777,6 +1777,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$lot_ref_batch=$sql_row['lot_ref_batch'];
 	$lot_count=$sql_row['lot_count'];
 	$buyer_code=$sql_row['buyer_code'];
+	$supplier_ref_name=$sql_row['supplier'];
 	
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 	$new_ref_date=substr($grn_date,0,4)."-".substr($grn_date,4,2)."-".substr($grn_date,6,2);
@@ -1941,17 +1942,17 @@ tags will be replaced.-->
   <td colspan=2 class=xl9324082 dir=LTR width=272 style='border-right:1.0pt solid black;
   border-left:none;width:204pt'>
   <?php
- 
-  for($i=0;$i<sizeof($suppliers);$i++)
-  {
-  	$x=array();
-	$x=explode("$",$suppliers[$i]);
-	if($supplier==$x[1])
-	{
-		echo $x[0];
-	}
+ echo $supplier_ref_name;
+//   for($i=0;$i<sizeof($suppliers);$i++)
+//   {
+//   	$x=array();
+// 	$x=explode("$",$suppliers[$i]);
+// 	if($supplier==$x[1])
+// 	{
+// 		echo $x[0];
+// 	}
 	
-  }
+//   }
 
   ?>
   
@@ -2131,9 +2132,13 @@ tags will be replaced.-->
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>No<br>of Joins</td>
   <td class=xl13324082 dir=LTR width=99 style='border-left:none;width:74pt'>Width  Deviation</td>
   <td class=xl13324082 dir=LTR colspan=2 width=77 style='border-left:none;width:58pt'>Lot  No</td>
+  <?php
+  if($shrinkage_inspection == 'yes')
+	  { ?>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Shrinkage  Length</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Shrinkage  Width</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Shrinkage  Group</td>
+  <?php } ?>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Roll Remarks</td>
   <td class=xl13324082 dir=LTR colspan=8 width=68 style='border-left:none;width:130pt'>Rejection Reason</td>
  </tr>
@@ -2231,11 +2236,14 @@ if($num_check>0)
 	  <td class=xl12824082 style='border-left:none'>".$temp[6]."</td>
 	  <td class=xl12824082 style='border-left:none'>".$temp[8]."</td>
 	  <td class=xl12824082 style='border-left:none'>".round(($temp[6]-$temp[5]),2)."</td>
-	  <td class=xl12824082 colspan=2 align=right style='border-left:none'>".$temp[7]."</td>
-	  <td class=xl12824082 style='border-left:none;'>".$temp[11]."</td>
+	  <td class=xl12824082 colspan=2 align=right style='border-left:none'>".$temp[7]."</td>";
+	  if($shrinkage_inspection == 'yes')
+	  {
+	  echo "<td class=xl12824082 style='border-left:none;'>".$temp[11]."</td>
 	  <td class=xl12824082 style='border-left:none;'>".$temp[12]."</td>
-	  <td class=xl12824082 style='border-left:none;'>".$temp[13]."</td>
-	  <td class=xl12824082 style='border-left:none;'>".$temp[14]."</td>
+	  <td class=xl12824082 style='border-left:none;'>".$temp[13]."</td>";
+	  }
+	  echo "<td class=xl12824082 style='border-left:none;'>".$temp[14]."</td>
 	  <td class=xl12824082 colspan=8 width=98 style='border-left:none;width:130pt'>";
 
 	  			$reject_reason_query="select * from $bai_rm_pj1.reject_reasons ";
@@ -2428,7 +2436,6 @@ if($num_check>0)
 </body>
 
 </html>
-
 
 
 

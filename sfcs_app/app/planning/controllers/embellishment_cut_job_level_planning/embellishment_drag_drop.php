@@ -668,7 +668,7 @@
 						<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #008080;color: white;margin-left: 30px;">
 						<div>Different Style,Schedule And Color Jobs</div>
 						</div>&nbsp;&nbsp;&nbsp;
-						<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #FF3333;color: white;margin-left: 30px;">
+						<div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: red;color: white;margin-left: 30px;">
 						<div>Selected Style,Schedule And Color Jobs</div>
 						</div>
 						<div style="clear: both;"> </div>
@@ -680,7 +680,7 @@
 
 						<div id="dhtmlgoodies_listOfItems">
 
-							<div style="position: fixed;width: 150px;height:300px;overflow:scroll;margin-top: 30px;text-align:center">
+							<div  id='scrollable_block' style="position: fixed;width: 150px;height:300px;overflow:scroll;margin-top: 30px;text-align:center">
 								<p>Jobs</p>		
 								<ul id="allItems">
 
@@ -706,7 +706,7 @@
 											
 											$title=title_des($link,$code_db_new[0]);
 											// <li data-color="green" style="background-color:green; color:white;">
-											echo "<li id=\"".$code_db_new[0]."\" style=\" background-color:$check; color:white;\"  data-color='blue' title=\"$title\" class=\"normalTip\"><strong>".$code_db_new[1]."</strong></li>";
+											echo "<li  class='apply-remove' id=\"".$code_db_new[0]."\" style=\" background-color:$check; color:white;\"  data-color='blue' title=\"$title\"><strong>".$code_db_new[1]."</strong></li>";
 										}
 									?>
 								
@@ -729,28 +729,6 @@
 
 							<?php
 								
-								
-								
-								$remove_docs=array();
-								// $sqlx="select doc_no from $bai_pro3.plan_dash_doc_summ where act_cut_issue_status=\"DONE\"";
-								$sqlx="select doc_no from $bai_pro3.plan_dash_doc_summ_embl where act_cut_status=\"DONE\""; //KK223422
-
-								//echo $sqlx;
-								// mysqli_query($link,$sqlx) or exit("Sql Error".mysql_error());
-								$sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error2".mysqli_error());
-								while($sql_rowx=mysqli_fetch_array($sql_resultx))
-								{
-								$remove_docs[]=$sql_rowx['doc_no'];
-								}
-								
-								if(sizeof($remove_docs)>0)
-								{
-								
-								$sqlx="delete from $bai_pro3.embellishment_plan_dashboard where doc_no in (".implode(",",$remove_docs).")";
-								// mysqli_query($link,$sqlx) or exit("Sql Error4".mysqli_error());
-								}
-								
-								//remove docs
 								
 								$sqlx="select * from $bai_pro3.tbl_emb_table where emb_table_id>0";
 								// mysqli_query($link,$sqlx) or exit("Sql Error".mysql_error());
@@ -819,7 +797,7 @@
 																										
 														if($style==$style_new and $color==$color_new and $schedule==$schedule_new)
 														{
-															$id="#FF3333";
+															$id="red";
 														}
 														else
 														{
@@ -828,10 +806,27 @@
 																										
 														
 														$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".chr($color_code1).leading_zeros($acutno1,3),50)."\n".str_pad("Qty:".$total_qty1,50);
+                                                        
+                                                        $remove_docs=array();
+														$sql2="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no=$doc_no and send_qty = receive_qty and send_qty <> 0 and receive_qty <> 0";
+
+														$sql_resultx1=mysqli_query($link,$sql2) or exit("Sql Error2".mysqli_error());
+														while($sql_rowx=mysqli_fetch_array($sql_resultx1))
+														{
+														  $remove_docs=$sql_rowx['doc_no'];
+														}
 														
+														if(sizeof($remove_docs)>0)
+														{
+
+														}
+														else
+														{
 														echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
-														//echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';	
-													
+														//echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';
+														}	
+														
+														
 													}
 													
 												echo '</ul>';
@@ -862,3 +857,12 @@
 </html>
 
 <script src="../../common/js/jquery-1.3.2.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.apply-remove').css({'min-width':'134px'});
+        $('#scrollable_block').scroll(function(){
+            $('.apply-remove').css({'border':'1px solid black'});
+            $('.apply-remove').css({'display':'inline-block'});
+        });
+    });
+</script>

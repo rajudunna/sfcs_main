@@ -1,18 +1,10 @@
-<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
+<script src="/sfcs_app/common/js/jquery-1.11.1.min.js"></script>
+<script src="/sfcs_app/common/js/sweetalert-dev.js"></script>
+<link rel="stylesheet" href="/sfcs_app/common/css/sweetalert.css">
 <?php
 $rid=$_GET['rowid1'];
 $module_name=$_GET['module_name'];
 $section=$_GET['section'];
-// echo $rid;
-// $servername = "192.168.0.110:3326";
-// $username = "baiall";
-// $password = "baiall";
-// $dbname = "bai_pro3";
-
-// Create connection
-// $conn = mysqli_connect($servername, $username, $password, $dbname);
 // Check connection
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
@@ -56,7 +48,6 @@ if($rowcount11>0 or 	$rowcount12>0 or 	$rowcount13>0){
 			echo"<script>setTimeout(function () { 
 				swal({
 				  title: 'Module Already in Production',
-				  text: 'Message!',
 				  type: 'warning',
 				  confirmButtonText: 'OK'
 				},
@@ -67,21 +58,21 @@ if($rowcount11>0 or 	$rowcount12>0 or 	$rowcount13>0){
 				}); }, 100);</script>";
 }
 else{
-$delete="delete from bai_pro3.module_master where id='$rid'";
+$delete="delete from $bai_pro3.module_master where id='$rid'";
 if (mysqli_query($conn, $delete)) {
 			//header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw');
 		} else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
 		
-$delete1="delete from bai_pro3.plan_modules where module_id='$module_name'";
+$delete1="delete from $bai_pro3.plan_modules where module_id='$module_name'";
 if (mysqli_query($conn, $delete1)) {
 			//header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw');
 		} else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}		
 		
-$delete2="select * from bai_pro3.plan_modules where module_id='$module_name'";
+$delete2="select * from $bai_pro3.plan_modules where module_id='$module_name'";
 $result4= mysqli_query($conn, $delete2);
 $rowcount=mysqli_num_rows($result4);
 if($rowcount==0 or $rowcount==''){
@@ -91,6 +82,17 @@ if($rowcount==0 or $rowcount==''){
       $total_modules1=$row['module_concat'];
        $delete5 = "update $bai_pro3.sections_db set sec_id='$section',sec_head='$section',sec_mods='$total_modules1' where sec_head='$section'"; 
 	   if (mysqli_query($conn, $delete5)) {
+			echo"<script>setTimeout(function () { 
+				swal({
+					title: 'Deleted successfully.',
+					type: 'success',
+					confirmButtonText: 'OK'
+				},
+				function(isConfirm){
+					if (isConfirm) {
+					window.location.href = \"$url\";
+					}
+				}); }, 100);</script>";
 			//header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw');
 		} else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);

@@ -1,6 +1,5 @@
 <?php 
 
-
 $include_path=getenv('config_job_path');
 include($include_path.'\configuration\API\confr.php');
 $conf = new confr($include_path.'\configuration\API\saved_fields\fields.json');
@@ -38,6 +37,26 @@ $sfsp_pwd=$conf->get('sf_sp_pwd');
 $user_ms = "BAISFCS";
 $password_ms = "fcs@m3pr";
 $conn_string = "DRIVER={iSeries Access ODBC Driver};System=10.227.40.10;Uid=".$user_ms.";Pwd=".$password_ms.";";
+//HRMS DATABASE CONNECTIONS
+$hrms_server_name=$conf->get('hrms-server-name');
+$hrms_server_port=$conf->get('hrms-port');
+$hrms_host=$hrms_server_name.":".$hrms_server_port;
+$hrms_user=$conf->get('hrms-user-name');
+$hrms_pass = $conf->get('hrms-password');
+
+$host_ms = $conf->get('m3_system_id');
+$user_ms = $conf->get('m3_user_name');
+$password_ms = $conf->get('m3_password');
+$m3_db = $conf->get('m3_db');
+$conn_string = "DRIVER={iSeries Access ODBC Driver};System=".$host_ms.";Uid=".$user_ms.";Pwd=".$password_ms.";";
+
+// Production Status Connections
+$prod_status_server_name=$conf->get('prod-status-server-name');
+$prod_status_username=$conf->get('prod-status-user-name');
+$prod_status_password = $conf->get('prod-status-password');
+$prod_status_database=$conf->get('prod-status-db');
+$prod_status_driver_name=$conf->get('prod-status-driver-name');
+
 
 //material requirement in week_del_mail_v2
 $server="GD-RPTSQL";
@@ -73,6 +92,8 @@ $sizes_title=array('S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','
 $plant_name = $conf->get('plantname');
 $fab_uom = $conf->get('uom');
 
+$shifts_array = $conf->get('shifts');
+$teams_array = $conf->get('teams');
 
 //M3 Rest API Calls Details
 $company_no = $conf->get('companey-number');
@@ -81,6 +102,8 @@ $api_password = $conf->get('api-password');
 $api_hostname = $conf->get('api-host-name');
 $api_port_no = $conf->get('api-port');
 
+//Mo SOAP CALL
+$mo_soap_api = $conf->get('mo_soap_api');
 
 //Central Administraion Group ID's
 $group_id_sfcs=8;
@@ -103,8 +126,8 @@ $bai_ict="bai_ict";
 $path=$include_path."/sfcs_app/app";
 // $mail_to_test=$mail_alert[2];
 $smtp_user=$conf->get('smtp-user-name');
-$header_name="BEKSFCS Alert";
-$header_mail="bek_sfcs@brandix.com";
+$header_name=$smtp_user." Alert";
+$header_mail=$conf->get('smtp_mail_from');
  $header_from= 'From: BEKSFCS Alert <bek_sfcs@brandix.com>';
 // $header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
 $order_summary_report=$conf->get('order_summary_mail');

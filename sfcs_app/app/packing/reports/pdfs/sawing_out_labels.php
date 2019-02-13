@@ -9,7 +9,7 @@
 
 	$mpdf = new \Mpdf\Mpdf([
 		'mode' => 'utf-8', 
-		'format' => [70, 110], 
+		'format' => [50, 101], 
 		'orientation' => 'L'
 	]);
 
@@ -27,85 +27,120 @@
 
 	//echo $style.'<br>'.$schedule.'<br>'.$color.'<br>'.$size.'<br>'.$job_no.'<br>'.$tid.'<br>'.$doc;
 
-	$query="SELECT * FROM $bai_pro3.bai_orders_db where order_del_no='$schedule'";
-	$query_result=mysqli_query($link, $query) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$rowq=mysqli_fetch_array($query_result);
-	$country=$rowq['destination'];
+	$mpocponos="select co_no,vpo,destination,order_date from $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule'";
+	$nosrslt=mysqli_query($link, $mpocponos) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if($norows=mysqli_fetch_array($nosrslt))
+	{
+		$cono=$norows['co_no'];
+		$vpo=$norows['vpo'];
+		$destination=$norows['destination'];
+		$ex_fact_date=$norows['order_date'];
+
+	}
 
 	$sql="SELECT * FROM $bai_pro3.pac_stat_log where schedule='$schedule' AND color='$color' AND size_code='$size' AND input_job_number='$job_no'";
+	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-
+	$tot_cart=mysqli_num_rows($sql_result);
 	$html = '
 			<html>
-				<head>
-				<style>
-				body {font-family: arial;
-					font-size: 12px;
-				}
+			<head>
+			<style>
+			body {font-family: arial;
+				font-size: 12px;
+			}
+			@page {
+			margin-top: 5px;
+			margin-left:10px;  
+			margin-right:2px;
+			margin-bottom:1px; 
+			}
+				#barcode {font-weight: normal; font-style: normal; line-height:normal; sans-serif; font-size: 8pt}
 
-				.new_td
-				{
-					font-size:18px;
-				}
-
-				.new_td2
-				{
-					font-size:25px;
-					font-weight: bold;
-				}
-				.new_td3
-				{
-					font-size:18px;
-					font-weight: bold;
-				}
-
-				table
-				{
-					margin-left:auto;
-					margin-right:auto;
-					margin-top:auto;
-					margin-bottom:auto;
-				}
-				@page {
-				margin-top: 7px;
-				margin-bottom: 2px;   
-				}
-					#barcode {font-weight: normal; font-style: normal; line-height:normal; sans-serif; font-size: 8pt}
-
-				</style>
-				<script type="text/javascript" src="../../../common/js/jquery.min.js" ></script>
-				<script type="text/javascript" src="../../../common/js/table2CSV.js" ></script>
+			</style>
+			<script type="text/javascript" src="../../../common/js/jquery.min.js" ></script>
+			<script type="text/javascript" src="../../../common/js/table2CSV.js" ></script>
 
 
-				</head>
-				<body>';
+			</head>
+			<body>';
 
 	while($rows=mysqli_fetch_array($sql_result)){
 			$tid=$rows['tid'];
 			$doc=$tid;
 			$st=$rows['style'];
-			$module=$rows['module'];
+			$modu=$rows['module'];
+			$input_job_random=$rows['input_job_random'];
+			$cartonno=$rows['carton_no'];
+			$ss="SELECT input_module FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref='$input_job_random'";
+					//echo $ss;
+					$ss_result=mysqli_query($link,$ss) or exit("Sql Error3 $ss".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                $rs=mysqli_fetch_array($ss_result);
+	
+	                $ss1="SELECT ims_mod_no FROM $bai_pro3.ims_log WHERE input_job_rand_no_ref='$input_job_random'";
+					//echo $ss1;
+					$ss1_result=mysqli_query($link,$ss1) or exit("Sql Error4 $ss1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                $rs1=mysqli_fetch_array($ss1_result);
+					//die();
+					$ss11="SELECT ims_mod_no FROM $bai_pro3.ims_log_backup WHERE input_job_rand_no_ref='$random_job'";
+	                $ss1_result1=mysqli_query($link,$ss11) or exit("Sql Error4 $ss11".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                $rs11=mysqli_fetch_array($ss1_result1);
+                    if($rs){
+						$module=$rs['input_module'];
+						}else if(!$rs && $rs1){
+						$module=$rs1['ims_mod_no'];
+						}else if(!$rs1 && !$rs && $rs11){
+						$module=$rs11['ims_mod_no'];
+						}else if(!$rs && !$rs1 && !$rs11){
+						$module='Not Processed';
+						}
 
-			$sql="SELECT title_size_".$size." as size FROM $bai_pro3.bai_orders_db WHERE order_del_no=\"$schedule\" AND order_col_des=\"$color\"";
+			$sql="SELECT title_size_".$size." as size,order_date FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no=\"$schedule\" AND order_col_des=\"$color\"";
 			// echo $sql;
 			$sql_result1=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($title_size = mysqli_fetch_array($sql_result1))
 			{	
 				// echo "size".$title_size["size"];
 				$title_size_ref=$title_size["size"];
+				$order_date=$title_size["order_date"];
 			}	
+			// <td><b>Module No:</b>'.$module.'</td>
 
-			$html.= '<br/><div><table><tr><td colspace="4"><barcode code="'.$doc.'" type="C39"/ height="0.80" size="1.1"
-				 text="1"></td><td></td></tr></table>
-				 <table><tr><td>Style:</td><td>'.$st.'</td><td>Barcode ID:</td><td>'.$doc.'</td></tr>
-				 <tr><td>Schedule:</td><td>'.$schedule.'</td><td>Module No:</td><td>'.$module.'</td></tr>
-				 <tr><td>Color:</td><td>'.$color.'</td><td>Country:</td><td>'.$country.'</td></tr>
-				 <tr><td>Job Number:</td><td>J0'.$job_no.'</td></tr>
-				 <tr><td>Size :</td><td>'.strtoupper($title_size_ref).'</td></tr>
-				 <tr><td>Quantity</td><td>'.$rows['carton_act_qty'].'</td></tr>
+			$html.= '<div>
+					<table>
+					<tr>
+						<td><barcode code="'.$doc.'" type="C39"/ height="0.80" size="0.8" text="1"></td>
+						<td>'.leading_zeros($doc,10).'</td>
+					</tr>
+					<tr>
+						 <td><b>Style : </b>'.$st.'</td>
+						 <td><b>Schedule : </b>'.$schedule.'</td>
+					</tr>
+					<tr>
+						<td><b>Color: </b>'.$color.'</td>
+					</tr>
+					<tr>
+						<td><b>Size : </b>'.strtoupper($title_size_ref).'</td>
+						<td><b>Module no : </b>'.$module.'</td>
+					</tr>
+					<tr>
+						<td><b>Carton No:</b>'.$cartonno.'/'.$tot_cart.' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Qty:</b>'.$rows['carton_act_qty'].' </td><td> <b>Country :</b>'.$destination.'</td>	 
+					
+					</tr>
+					<tr>
+							<td><b>Co No:</b>'.$cono.' </td>
+							<td><b>VPO:</b>'.$vpo.' </td>
+					</tr>
+					<tr>
+						<td><b>Job Number : </b>J0'.$job_no.'</td>
+						<td><b>Ex-Factory : </b>'.$ex_fact_date.'</td>
+					</tr>
+					<tr>
+					 </tr>
 				
 				 </table>					 
-				 </div><br/><br/><br/>';
+				 </div>';
+			$html.='<pagebreak />';
 		}
 	$html.='
 				</body>

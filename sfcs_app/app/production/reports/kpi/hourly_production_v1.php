@@ -6,6 +6,16 @@
 	//load the database configuration file
 	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
+
+	$master_resons = array();
+	$sql_mstr_resns = "SELECT id FROM $bai_pro2.downtime_reason WHERE id NOT IN (20,21,22) ";
+	$res_mstr = mysqli_query($link, $sql_mstr_resns) or exit('SQL Error:'.$sql_mstr_resns);
+	$z = 0;
+	while ($row_mstr = mysqli_fetch_array($res_mstr))
+	{
+		$master_resons[$z] = $row_mstr['id'];
+		$z++;
+	}
 ?>
 <body>
 
@@ -25,31 +35,37 @@
 		$ntime=date('H');
 	}
 
-	$plant_details_query="SELECT * FROM $bai_pro2.tbl_mini_plant_master;";
+	$plant_details_query="SELECT GROUP_CONCAT(module_name) as plant_modules, mini_plant_name as plant_name FROM bai_pro3.`module_master` LEFT JOIN bai_pro3.`mini_plant_master` ON module_master.`mini_plant_id` = mini_plant_master.`id` GROUP BY mini_plant_id";
+	$plant_details_result=mysqli_query($link,$plant_details_query);
+	while ($row = mysqli_fetch_array($plant_details_result))
+	{
+		if ($row['plant_name'] != null || $row['plant_name'] != '')
+		{
+			$plant_name[] = $row['plant_name'];
+			$plant_modules[] = explode(',', $row['plant_modules']);
+		}
+	}
+
+	$plant_details_query="SELECT GROUP_CONCAT(module_name) AS plant_modules, 'Factory' AS plant_name FROM bai_pro3.`module_master`;";
 	$plant_details_result=mysqli_query($link,$plant_details_query);
 	while ($row = mysqli_fetch_array($plant_details_result))
 	{
 		$plant_name[] = $row['plant_name'];
 		$plant_modules[] = explode(',', $row['plant_modules']);
 	}
-
-
 ?>
 <div class="panel panel-primary">
 <div class="panel-heading">Hourly Production Report- Section Wise <?php  echo $frdate;  ?></div>
 <div class="panel-body">
-	<form action='index.php' method='GET'>
-		<input type='hidden' name='r' value='<?= $_GET["r"]; ?>'>
-		<br>
-		<div class="col-sm-3">
-		<label>Date :</label>
-		<input type='text' data-toggle="datepicker" class="form-control" value='<?php echo $frdate;  ?>' name='pro_date' id='pro_date' readonly>
-		</div><br/>
-		<div class="col-sm-1">
-		<input type='submit' class="btn btn-primary" value='Filter' name='submit'>
+	<form  action="index.php"  method='GET' class="form-inline">
+		<div class='row'>
+			<input type="hidden" value="<?= $_GET['r']; ?>" name="r" >
+			<label>Date : </label>
+			<input type='text' data-toggle="datepicker" value='<?php echo $frdate;  ?>' name='pro_date' class='form-control' readonly>
+			<input type='submit' value='Filter' class='btn btn-primary' name='submit'>
 		</div>
 	</form>
-  <hr>
+	<hr>
    
    <?php
 if(isset($_GET['submit']))
@@ -63,13 +79,6 @@ if(isset($_GET['submit']))
 		$end_time[] = $row['end_time'];
 		$time_display[] = $row['time_display'].'<br>'.$row['day_part'];
 	}
-
-	// $total_hours = $plant_end_time - $plant_start_time;
-	// list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
-	// $minutes_29 = $minutes-1;
-   	// $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
-	// // echo $sql;
-	// $res=mysqli_query($link,$sql);	
    	?>
  
     <div class="table-area">
@@ -103,13 +112,13 @@ if(isset($_GET['submit']))
 					  <th>Act Eff</th>
 					  <th style="display:none;">Act Pcs</th>
 					  <th>Balance pcs against Forecast</th>
-					  <th>Hit rate</th>
+					  <th>Forecast Hit rate</th>
 					  <th style="display:none;">Request Pcs/Hr</th>
 					</tr>
 				</thead>
 	    
 				<?php 
-				$section_query = "SELECT DISTINCT(section_id) FROM $bai_pro3.`plan_modules`";
+				$section_query = "SELECT DISTINCT(section_id) FROM $bai_pro3.plan_modules";
 				$section_result=mysqli_query($link,$section_query);
 
 				$tot_reported_plantWise=array(); $tot_frqty_plantWise=array(); $tot_forecast_qty_plantWise=array();
@@ -135,7 +144,7 @@ if(isset($_GET['submit']))
 					$sec_tot_plan_eff=0; $sec_tot_act_eff=0; $sec_tot_hitrate=0; $sec_tot_required=0; $module_count=0;
 					$section = $Sec['section_id'];  $sec_tot_qty_array = array(); $sec_tot_balance=0;
 					// $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
-					$sql="SELECT fr_data.*, plan_modules.section_id FROM $bai_pro2.fr_data  LEFT JOIN $bai_pro3.`plan_modules` ON fr_data.`team` = plan_modules. module_id WHERE fr_data.frdate='$frdate' AND plan_modules.section_id='$section' GROUP BY fr_data.team ORDER BY fr_data.team*1;";
+					$sql="SELECT fr_data.*, plan_modules.section_id FROM $bai_pro2.fr_data  LEFT JOIN $bai_pro3.plan_modules ON fr_data.team = plan_modules. module_id WHERE fr_data.frdate='$frdate' AND plan_modules.section_id='$section' GROUP BY fr_data.team ORDER BY fr_data.team*1;";
 					// echo $sql.'<br>';
 					$res=mysqli_query($link,$sql);
 					if (mysqli_num_rows($res) > 0) 
@@ -167,6 +176,14 @@ if(isset($_GET['submit']))
 							
 							$sql5="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
 							$res5=mysqli_query($link,$sql5);
+							
+							$get_nop_query="SELECT fix_nop FROM $bai_pro.pro_plan WHERE date='$frdate' and mod_no='$team'";
+							// echo $get_nop_query;
+							$nop_result=mysqli_query($link,$get_nop_query);
+							while($result=mysqli_fetch_array($nop_result))
+							{
+								$nop = $result['fix_nop'].'<br>';
+							}
 
 							$sqlsc="SELECT SUM(bac_Qty) AS sumqty FROM $bai_pro.bai_log where bac_no='$team' AND bac_date='$frdate'";
 							// echo $sqlsc;
@@ -179,7 +196,7 @@ if(isset($_GET['submit']))
 							{
 								$sumcty="";
 							}
-							$nop='24';
+							
 							?>
 
 					  
@@ -254,7 +271,7 @@ if(isset($_GET['submit']))
 									</center></td>
 									<td style="background-color:#e1bee7;"><center>
 										<?php  
-											$pcsphr=$forecastqty/10;
+											$pcsphr=$forecastqty/$hours;
 											echo round($pcsphr);
 										?>
 									</center></td>
@@ -262,7 +279,6 @@ if(isset($_GET['submit']))
 										for ($i=0; $i < sizeof($time_display); $i++)
 										{
 											$row=echo_title("$bai_pro2.hout","SUM(qty)","out_date='$frdate' AND rep_start_time = TIME('".$start_time[$i]."') AND rep_end_time = TIME('".$end_time[$i]."') and team",$team,$link);
-											// $row=echo_title("$bai_pro2.hout","SUM(qty)","team='$team' AND (TIME(out_time) BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."')) and out_date",$frdate,$link);
 											
 											if ($row == '' || $row == NULL )
 											{
@@ -299,13 +315,40 @@ if(isset($_GET['submit']))
 											else if ($row < round($pcsphr))
 											{
 												if ($row == 0)
-												{									
-													$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+												{
+													$reasons = array();
+													$break_resons = array(20,21,22);
+
+													$sql6_2x="SELECT distinct(reason_id) FROM $bai_pro2.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+													$res6_12x=mysqli_query($link,$sql6_2x);
+													$k = 0;
+													while ($rows = mysqli_fetch_array($res6_12x))
+													{
+														$reasons[$k] = $rows['reason_id'];
+														$k++;
+													}
+													
+													$only_others = sizeof(array_intersect($master_resons, $reasons));
+													$only_breaks = sizeof(array_intersect($break_resons, $reasons));
+
+													if($only_breaks > 0 && $only_others > 0 )
+													{
+														$color = '#D4AC0D';
+													}
+													else if($only_breaks > 0 && $only_others == 0)
+													{
+														$color = '#D40D86';
+													}
+													else
+													{
+														$color = '#DD3636';
+													}							
+													$sql6_2="SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
 													// echo $sql6_2.'<br><br>';
 													$res6_12=mysqli_query($link,$sql6_2);
 													if (mysqli_num_rows($res6_12) > 0)
 													{
-														echo "<td><center> 0 </center></td>";
+														echo "<td style='background-color:$color; color:white;'><center> 0 </center></td>";
 													}
 													else
 													{
@@ -321,7 +364,35 @@ if(isset($_GET['submit']))
 												}
 												else
 												{
-													$sql6_2="SELECT * FROM `bai_pro2`.`hourly_downtime` WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+													$reasons = array();
+													$break_resons = array(20,21,22);
+
+													$sql6_2="SELECT distinct(reason_id) FROM $bai_pro2.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+													$res6_12=mysqli_query($link,$sql6_2);
+													$k = 0;
+													while ($rows = mysqli_fetch_array($res6_12))
+													{
+														$reasons[$k] = $rows['reason_id'];
+														$k++;
+													}
+													
+													$only_others = sizeof(array_intersect($master_resons, $reasons));
+													$only_breaks = sizeof(array_intersect($break_resons, $reasons));
+
+													if($only_breaks > 0 && $only_others > 0 )
+													{
+														$color = '#D4AC0D';
+													}
+													else if($only_breaks > 0 && $only_others == 0)
+													{
+														$color = '#D40D86';
+													}
+													else
+													{
+														$color = '#DD3636';
+													}
+
+													$sql6_2="SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
 													// echo $sql6_2.'<br><br>';
 													$res6_12=mysqli_query($link,$sql6_2);
 													if (mysqli_num_rows($res6_12) > 0)
@@ -335,7 +406,7 @@ if(isset($_GET['submit']))
 															}
 														}
 														$dummy[$section_wise_total][$i] = $dummy[$section_wise_total][$i] + $row;												
-														echo "<td style='background-color:#dd3636; color:white;'><center>".$row."</center></td>";
+														echo "<td style='background-color:$color; color:white;'><center>".$row."</center></td>";
 													}
 													else
 													{
@@ -520,10 +591,15 @@ if(isset($_GET['submit']))
 								</tr>
 									<?php
 						}
-					
+							$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
+							$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row12=mysqli_fetch_array($result12))
+							{
+								$section_display_name=$sql_row12["section_display_name"];
+							}
 							?>
 							<tr style="background-color:lightgreen;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;">
-								<td>Section - <?php  echo $section; ?></center></td>
+								<td><?php  echo $section_display_name; ?></center></td>
 								<td></td>
 								<td></td>
 								<td><center><?php  echo $sec_tot_fr_qty; $grand_tot_fr_qty = $grand_tot_fr_qty + $sec_tot_fr_qty; ?></center></td>

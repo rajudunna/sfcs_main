@@ -46,16 +46,29 @@
 
 <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 <?php 
-
+$dash=0;
+if(isset($_POST['allocate']))
+{
+	$dash=$_POST['dashboard'];
+}
+if($dash==1){
 $php_self = explode('/',$_SERVER['PHP_SELF']);
-array_pop($php_self);
-$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
-$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+$ctd =array_slice($php_self, 0, -2);
+$url_rr=base64_encode(implode('/',$ctd)."/cut_table_dashboard/cut_table_dashboard.php");
+$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_rr;
+}
+else{
+	$php_self = explode('/',$_SERVER['PHP_SELF']);
+	array_pop($php_self);
+	$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+	$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+}
+
 ?>
 <br/>
 <div class='row'>
 	<div class='col-md-2 pull-left'>
-		<a class='btn btn-primary' href = '<?= $url ?>'> << Back</a>
+		<a class='btn btn-primary' href = '<?= $url1 ?>'> << Back</a>
 	</div>
 </div>
 <br/>
@@ -213,7 +226,7 @@ function check_qty(x)
 		var mat_req=document.input["mat_req["+i+"]"].value;
 		var no_ele=document.input["chk"+doc_ref+"[]"];
 		no_ele=(parseInt(no_ele.length));
-		
+		alert(no_ele);
 		var selc=0;
 		for(j=0;j<no_ele;j++)
 		{
@@ -289,10 +302,11 @@ var srgp1;
 var doc_count = 0;
 var verifier = 0;
 var doc_flag=0;
-function check_qty2(x,m,n,doc)
+function check_qty2(x,m,n,doc,row_count,doc_count_no)
 {	
 //PLEASE DO NOT MODIFY THE ORDER OF ANY OF THE BELOW STATEMENTS OF THIS FUNCTION
 	////  code for shrinkage validation
+	// alert(row_count+"="+x+"-"+doc);
 	if(doc_count==0){
 		old_doc = doc;
 		doc_count++;
@@ -394,16 +408,17 @@ function check_qty2(x,m,n,doc)
 	var alloc_disab=0;
 	for(i=0;i<x;i++)
 	{
-		var doc_ref=document.input["doc_ref["+i+"]"].value;
-		var mat_req=document.input["mat_req["+i+"]"].value;
+		var doc_ref=document.input["doc_ref["+doc_count_no+"]"].value;
+		var mat_req=document.input["mat_req["+doc_count_no+"]"].value;
 		var no_ele=document.input["chk"+doc_ref+"[]"];
+		// alert(no_ele);
 		no_ele=(parseInt(no_ele.length));
 		var selc=0;
 		var widt=0;
 		var issued_qty=0;
 		var round_val=0;
 		var alloc_qty=0;
-		for(j=0;j<no_ele;j++)
+		for(j=0;j<row_count;j++)
 		{
 			
 			var tx="chk"+doc_ref+j;
@@ -413,6 +428,7 @@ function check_qty2(x,m,n,doc)
 			{
 				
 				issued_qty=document.input["val"+doc_ref+"["+j+"]"].value;
+				// alert(doc_ref+"-"+j+"-"+issued_qty+"-"+row_count+"-"+doc_count_no);
 				if(widt<=parseFloat((document.input["width"+doc_ref+"["+j+"]"].value)))
 				{	
 					selc=selc+parseFloat((document.input["val"+doc_ref+"["+j+"]"].value));
@@ -559,6 +575,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 if(isset($_POST['allocate_new']))
 {
 	$doc_ref=$_POST['doc_ref']; //array
+	$dash=$_POST['dashboard']; //array
+
 	$min_width=$_POST['min_width'];	//array
 	$lot_db=$_POST['lot_db']; //array
 	$process_cat=$_POST['process_cat'];
@@ -573,7 +591,7 @@ if(isset($_POST['allocate_new']))
 		$val_ref_base=$_POST[$temp];
 		$temp="issued_new".$doc_ref[$i];
 		$issued_ref_base=$_POST[$temp];
-		
+		$username=getrbac_user()['uname'];	
 		
 		$temp="chk".$doc_ref[$i];
 		$chk_ref=$_POST[$temp];
@@ -596,7 +614,6 @@ if(isset($_POST['allocate_new']))
 			$val_ref[]=$val_ref_base[$x];
 			$issued_ref[]=$issued_ref_base[$x];
 		}
-		//var_dump($issued_ref);
 		
 		if(strpos(strtolower($lot_db[$i]),"stock"))
 		{
@@ -675,7 +692,7 @@ if(isset($_POST['allocate_new']))
 				//Uncheck this
 				mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
-				
+				$new_tid=array();
 				//this is for new rolls allocation for remaing qty
 				if($val_ref[$j]>$issued_ref[$j]){
 					
@@ -685,20 +702,29 @@ if(isset($_POST['allocate_new']))
 					$current_date=date("Y-m-d");
 
 					//getting new rolls details
-					$qry_rolldetails="SELECT lot_no,ref1,ref2,ref3,remarks,log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason FROM $bai_rm_pj1.store_in WHERE tid=".$tid_ref[$j];
+					$qry_rolldetails="SELECT lot_no,ref1,ref2,ref3,remarks,log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason,barcode_number,ref_tid FROM $bai_rm_pj1.store_in WHERE tid=".$tid_ref[$j];
 					$result__rolldetials=mysqli_query($link, $qry_rolldetails);
 					$row_rolldetials=mysqli_fetch_assoc($result__rolldetials);
-					
-					$qry_newroll="insert into bai_rm_pj1.store_in(lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll) values('".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$balance_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$row_rolldetials["log_user"]."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".$row_rolldetials["ref5"]."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$tid_ref[$j]."')";
+				
+					$qry_newroll="insert into bai_rm_pj1.store_in(lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll,ref_tid,barcode_number) values('".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$balance_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$row_rolldetials["log_user"]."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".$row_rolldetials["ref5"]."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$tid_ref[$j]."','".$row_rolldetials["ref_tid"]."','".$row_rolldetials["barcode_number"]."')";
 					mysqli_query($link, $qry_newroll) or exit("Sql Error3: $qry_newroll".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+					$new_tid=mysqli_insert_id($link);
+
+					$sql22="update bai_rm_pj1.store_in set barcode_number='".$facility_code."-".$new_tid."' where tid=".$new_tid;
+					//Uncheck this
+					mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 				}
 
 				//To update Allocated Qty
-				$sql="update bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
-
-				// $sql="update bai_rm_pj1.store_in set qty_rec=".$issued_ref[$j].",qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
+				// $sql="update $bai_rm_pj1.store_in set qty_allocated=".$issued_ref[$j]." where tid=".$tid_ref[$j];
+				$sql="update bai_rm_pj1.store_in set qty_rec=".$issued_ref[$j].",qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
 				//Uncheck this
 				mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+				
+				
 			}
 		}
 		
@@ -754,17 +780,26 @@ if(isset($_POST['allocate_new']))
 		}
 		
 	}
+	// echo "<h2>Successfully Updated.</h2>";
 	
 	//Exit Code
-	
-	echo "<h2>Successfully Updated.</h2>";
+	$dash=$_POST['dashboard'];
+	if($dash==1){
+ 	$php_self = explode('/',$_SERVER['PHP_SELF']);
+	$ctd =array_slice($php_self, 0, -2);
+	$url_rr=base64_encode(implode('/',$ctd)."/cut_table_dashboard/cut_table_dashboard.php");
+	$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_rr;
+	}
+	else{
+		$php_self = explode('/',$_SERVER['PHP_SELF']);
+		array_pop($php_self);
+		$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+		$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+	}
 	//this is for after allocating article redirect to cps dashboard.removed sfcsui
-	$php_self = explode('/',$_SERVER['PHP_SELF']);
-	array_pop($php_self);
-	$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
-	$url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+
 	echo"<script>swal('Successfully Updated.','','success')</script>";
-	echo"<script>location.href = '".$url."';</script>"; 
+	echo"<script>location.href =  '".$url1."';</script>"; 
 
 	// if($process_cat==1)
 	// {
@@ -785,6 +820,8 @@ if(isset($_POST['allocate']))
 {
 	echo "<form name='input' method='post' action='fab_pop_allocate_v5.php' onkeypress='return event.keyCode != 13'>";
 	$doc=$_POST['doc'];
+	$dash=$_POST['dashboard'];
+
 	//$lot_db_2 = $_POST["pms$doc[0]"];
 	//var_dump($doc);
 	// echo "DOC : ".sizeof($doc);exit;
@@ -906,9 +943,12 @@ if(isset($_POST['allocate']))
 		echo "<th id='col1'>Item Code</th>";	
 		echo "<th id='col2'>Lot No</th>";	
 		echo "<th>Shade</th>";
+		if($shrinkage_inspection == 'yes')
+	  {
 		echo "<th id='col'>Shrinkage<br/>Group</th>";
 		echo "<th id='col'>Shrinkage<br/>Width</th>";	
 		echo "<th id='col'>Shrinkage<br/>Length</th>";
+	  }
 		echo "<th>Roll No</th>";	
 		echo "<th id='col'>Location</th>";	
 		echo "<th>Group</th>";	
@@ -916,10 +956,10 @@ if(isset($_POST['allocate']))
 		echo "<th>Ctx Width</th>";	
 		echo "<th>Tkt<br/></th>";	
 		echo "<th>Ctx<br/>Length</th>";		
-		// echo "<th id='col'>Allocated</th>";
+		echo "<th id='col'>Avail Qty</th>";
 		echo "<th>Issued Qty</th>";
 		echo "<th>Select</th>";
-		//echo "<th>Allocated Qnty</th>";
+		// echo "<th>Avail Qnty</th>";
 		echo "</tr></thead><tbody>";
 		
 		
@@ -953,7 +993,7 @@ if(isset($_POST['allocate']))
 			$temp_var='';
 			if($sql_row['allotment_status']==0 and strlen($sql_row['shade'])>0)
 			{
-				$temp_var.="<td><input type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref')\">";
+				$temp_var.="<td><input type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref',$row_count,'$i')\">";
 				$temp_var.="<input type=\"hidden\" name=\"val".$doc_ref."[$j]\" value=\"".$sql_row['balance']."\">";
 				$temp_var.="<input type=\"hidden\" name=\"width".$doc_ref."[$j]\" value=\"".$sql_row['width']."\">";
 				$temp_var.="<input type=\"hidden\" name=\"lable".$doc_ref."[$j]\" value=\"".$sql_row['tid']."\">";
@@ -991,7 +1031,7 @@ if(isset($_POST['allocate']))
 				}
 				// $temp_var.=$tag.'---<br/>';
 				//To release for some time
-				$temp_var.="<input style='$valid_check' type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref')\">";
+				$temp_var.="<input style='$valid_check' type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref',$row_count,$i')\">";
 				//$temp_var.="<input type=\"hidden\" id=\"chk$doc_ref$j\" name=\"chk".$doc1_ref."[]\" value=\"0\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color')\">";
 				$temp_var.="<input type=\"hidden\" name=\"val".$doc_ref."[$j]\" value=\"".$sql_row['balance']."\">";
 				$temp_var.="<input type=\"hidden\" name=\"width".$doc_ref."[$j]\" value=\"".$sql_row['width']."\">";
@@ -1040,9 +1080,12 @@ if(isset($_POST['allocate']))
 			echo "<td id='col1'>".$sql_row['item']."</td>";
 			echo "<td id='col1'>".$sql_row['lot_no']."</td>";
 			echo "<td>".$sql_row['shade']."</td>";
+			if($shrinkage_inspection == 'yes')
+	        {
 			echo "<td>".$sql_row['shrinkage_group']."</td>";
 			echo "<td>".$sql_row['shrinkage_width']."</td>";
 			echo "<td>".$sql_row['shrinkage_length']."</td>";
+			}
 			echo "<td>".$sql_row['ref2']."</td>";
 			echo "<td>".$sql_row['ref1']."</td>";
 			echo "<td>".$sql_row['shade']."</td>";
@@ -1050,7 +1093,7 @@ if(isset($_POST['allocate']))
 			echo "<td>".$sql_row['ref3']."</td>";
 			echo "<td>".$sql_row['qty_rec']."</td>";
 			echo "<td>".$sql_row['ref5']."</td>";
-			// echo "<td>".$allocated_qty."</td>";
+			echo "<td>".($sql_row['qty_rec']-$sql_row['qty_issued']+$sql_row['qty_ret'])."</td>";
 			echo "<td><span id=\"issued".$doc_ref."[$j]\"></span></td>";
 			
 			//echo "</br>Allotment Status".$sql_row['allotment_status']."</br>";
@@ -1149,6 +1192,8 @@ if(isset($_POST['allocate']))
 		
 		//Table to show all list of available items
 		echo "<input type='hidden' value='$doc_ref' id='doc_chk'><br/>";
+		echo "<input type='hidden' value='$dash' id='dashboard' name='dashboard'><br/>";
+
 	}
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\" onclick=\"check_qty(".sizeof($doc).")\">";
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\">";

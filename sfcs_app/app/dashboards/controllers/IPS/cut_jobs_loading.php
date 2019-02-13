@@ -207,7 +207,7 @@ echo "</select>";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 //{
 	//$sql="select distinct order_del_no from plan_doc_summ_input";	
-	//$sql="select distinct order_del_no from bai_orders_db where order_joins IN ('0','1','2') order by order_joins*1";
+	//$sql="select distinct order_del_no from bai_orders_db where $order_joins_in_full order by order_joins*1";
 	$sql="select distinct order_del_no from $bai_pro3.plan_doc_summ where order_style_no=\"$style\"";	
 //}
 echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" id='schedule'>";
@@ -311,25 +311,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 if($sql_num_check>0)
 {
-	// $sql1="select group_concat(sec_mods) as mods from bai_pro3.sections_db";
-	// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// while($sql_row1=mysqli_fetch_array($sql_result1))
-	// {
-	// 	$modules=$sql_row1["mods"];
-	// }	
-	// $modules_array=explode(",",$modules);
-	
-	// if(strlen($color)>0)
-	// {
-	// 	echo "Select Modules: <select name=\"modules\" class=\"form-control\" id='modules'>";
-	// 	for($i1=0;$i1<sizeof($modules_array);$i1++)
-	// 	{
-	// 		echo "<option value=\"".$modules_array[$i1]."\">".$modules_array[$i1]."</option>";
-	// 	}
-	// 	echo "</select>&nbsp;&nbsp;";
-	// }
-	
 	echo "Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
 	echo "<input type=\"hidden\" name=\"code\" value=\"$code\">";
 	echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
@@ -430,9 +411,17 @@ if(isset($_POST['submit']))
 	$sql="DROP TABLE IF EXISTS $newfiltertable";
 	//echo $sql."<br/>";
 	mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
+	$application='IPS';			
+	$scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
+	// echo $scanning_query;
+	$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row=mysqli_fetch_array($scanning_result))
+	{
+		$operation_name=$sql_row['operation_name'];
+		$operation_code=$sql_row['operation_code'];
+	}
 	//$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,input_job_no,SUM(carton_act_qty) AS carton_qty from plan_doc_summ_input where order_del_no in ($schedule_list) and input_job_no_random not in (select input_job_no_random_ref from plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
-	$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from $bai_pro3.plan_doc_summ_input where order_del_no in ($schedule_list) and acutno=$color and input_job_no_random not in (select input_job_no_random_ref from $bai_pro3.plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
+	$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random,$operation_code) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from $bai_pro3.plan_doc_summ_input where order_del_no in ($schedule_list) and acutno=$color and input_job_no_random not in (select input_job_no_random_ref from $bai_pro3.plan_dashboard_input,$operation_code) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
 	// echo $sql."<br/>";
 	mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 	

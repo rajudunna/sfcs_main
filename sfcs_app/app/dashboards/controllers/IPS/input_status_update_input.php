@@ -278,7 +278,10 @@ else
 		$org_schs=$row333["org_schs"];
 		//echo $org_schs;
 	}
-	$join_sch=substr($join_sch, 1);
+
+	/*This was changed due to #1334 ticket on 27-12-2018*/
+	//$join_sch=substr($join_sch, 1);
+	$join_sch=$schedule;
 	
 }
 //echo $org_schs;
@@ -309,12 +312,7 @@ else
 
 echo "<h3>Style:$style / Schedule:$join_sch / Input Job#: J".leading_zeros($jobno,3)."</h3>";
 
-$sql="SELECT GROUP_CONCAT(CONCAT(\"'\",order_col_des,\"'\")) AS colorset,GROUP_CONCAT(sizegroup) AS size_group FROM (
-SELECT DISTINCT order_col_des,GROUP_CONCAT(sizeset SEPARATOR '*') AS sizegroup FROM (
-SELECT order_col_des,CONCAT(m3_size_code,'$',SUM(carton_act_qty)) AS sizeset FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY order_col_des,size_code
-) AS a GROUP BY order_col_des
-) AS b";
-	
+$sql="SELECT GROUP_CONCAT(CONCAT(\"'\",order_col_des,\"'\")) AS colorset,GROUP_CONCAT(sizegroup) AS size_group FROM ( SELECT DISTINCT order_col_des,GROUP_CONCAT(sizeset SEPARATOR '*') AS sizegroup FROM ( SELECT order_col_des,CONCAT(m3_size_code,'$',SUM(carton_act_qty)) AS sizeset FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY order_col_des,size_code) AS a GROUP BY order_col_des) AS b";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error88 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 
@@ -323,9 +321,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$size_group=$sql_row['size_group'];
 }
 
+$seq_no=echo_title("$bai_pro3.packing_summary_input","pac_seq_no","input_job_no_random",$doc,$link);
+
 //echo "<h4>Ratio Sheet</h4>";
 
- echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$org_schs\" onclick=\"return popitup('../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$org_schs')\">Print Input Job Sheet - Job Wise</a><br>";
+ echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$org_schs&seq_no=$seq_no\" onclick=\"return popitup('../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$org_schs&seq_no=$seq_no')\">Print Input Job Sheet - Job Wise</a><br>";
 	
  //echo "<br><a class='btn btn-info btn-sm' href=\"print_input_sheet_dest.php?schedule=$org_schs\" onclick=\"return popitup_new('print_input_sheet_dest.php?schedule=$org_schs')\">Print Input Job Sheet - Destination Wise</a><br>";
 

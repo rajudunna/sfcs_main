@@ -12,9 +12,9 @@
     array_pop($v_r);
     $url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/ips_dashboard.php";
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    $sec_result = mysqli_query($link, "SELECT DISTINCT sec_id FROM $bai_pro3.sections_db WHERE sec_id>0") or exit("Sec qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $sec_result = mysqli_query($link, "SELECT DISTINCT sec_name FROM $bai_pro3.sections_master WHERE sec_name>0 order by sec_name") or exit("Sec qry".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sections = mysqli_fetch_all($sec_result,MYSQLI_ASSOC);
-    echo "<script>var sec_ids = '".implode(',',array_column($sections, 'sec_id'))."';</script>";
+    echo "<script>var sec_ids = '".implode(',',array_column($sections, 'sec_name'))."';</script>";
     echo "<div class='panel panel-primary'>
             <div class='panel-heading'><h3 class='panel-title'>IPS Dashboard</h3></div>
             <div class='panel-body'>
@@ -47,8 +47,8 @@
         echo "<div style='width:20%;float:left;padding:5px'>
             <div class='panel panel-success'>
                 <div class='panel-body sec-box'>
-                    <div class='loading-block' id='sec-load-".$sec['sec_id']."' style='display:block'></div>
-                    <div id='sec-".$sec['sec_id']."'>
+                    <div class='loading-block' id='sec-load-".$sec['sec_name']."' style='display:block'></div>
+                    <div id='sec-".$sec['sec_name']."'>
 
                     </div>
                 </div>
@@ -496,25 +496,3 @@ border: 1px solid black;
 }
 </style>
 
-<script>
-function firstbox()
-{
-  var shift_id = document.getElementById('shift').value;
-  window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&shift="+shift_id;
-}
-</script>
-<script>         
-function PopupCenter(pageURL, title,w,h) {
-    
-    var shift= $('#shift').val();
-    console.log(shift);
-    if(shift==''){
-swal('Please Select Shift First','','error');
-return false;
-    }
- 
-var left = (screen.width/2)-(w/2);
-var top = (screen.height/2)-(h/2);
-var targetWin = window.open (pageURL, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
-} 
-</script>

@@ -3,6 +3,7 @@
 //CR# 198/ kirang / 2014-11-26/ Included the new rejection details and form details in report level
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 $view_access=user_acl("SFCS_0049",$username,1,$group_id_sfcs);
 ?>
 
@@ -29,8 +30,8 @@ $categories=array("Fabric","Fabric","Fabric","Fabric","Fabric","Fabric","Cutting
 	<div class='col-md-2'>
 		Team: <select name="team" class="form-control">
 				<?php 
-				for ($i=0; $i < sizeof($shifts_array); $i++) {?>
-				<option <?php echo 'value="'.$shifts_array[$i].'"'; if($shift==$shifts_array[$i]){ echo "selected";} ?>><?php echo $shifts_array[$i] ?></option>
+				for ($i=0; $i < sizeof($teams_array); $i++) {?>
+				<option <?php echo 'value="'.$teams_array[$i].'"'; if($shift==$teams_array[$i]){ echo "selected";} ?>><?php echo $teams_array[$i] ?></option>
 				<?php }
 				?>
 				</select>
@@ -238,9 +239,9 @@ if(isset($_POST['filter']))
 				echo "<td>".$supplier."</td>";
 				echo "<td>".$batch."</td>";
 				echo "<td>".$fab_des."</td>";
-				$size_value = strtoupper($sql_row['qms_size']);
+				// $size_value = strtoupper($sql_row['qms_size']);
 				// Due to ims_sizes function issue commented and getting size value directly from bai_qms_db table
-				// $size_value=ims_sizes('',$sql_row['qms_schedule'],$sql_row['qms_style'],$sql_row['qms_color'],strtoupper($sql_row['qms_size']),$link);
+				$size_value=ims_sizes('',$sql_row['qms_schedule'],$sql_row['qms_style'],$sql_row['qms_color'],strtoupper($sql_row['qms_size']),$link);
 				
 				echo "<td>".$size_value."</td>";
 				/*if($temp2[0]>=0 and $temp2[0]<=5)

@@ -7,7 +7,7 @@
 ?>
 
 <?php
-	// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/db_hosts.php");
+	//include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/db_hosts.php");
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
@@ -19,8 +19,8 @@
 	function qty_update(org_qty, id)
 	{
 		var update_qty = $('#update_qty_'+id).val();
-		if(update_qty > org_qty || update_qty == 0){
-			sweetAlert('Update quantity should greater than 0 and Excess cut.','','warning');
+		if(update_qty > org_qty){
+			sweetAlert('Update quantity should not be greater than Excess cut.','','warning');
 			$('#update_qty_'+id).val(org_qty);
 		}
 		
@@ -501,6 +501,7 @@ if(isset($_POST['submit']))
 		echo "<input type=\"hidden\" name=\"color\" value=\"".$color."\">";
 		
 		echo "<tr><th>Garment Category: </th><td><div class='row'><div class='col-md-4'><select name=\"gtype\" id=\"gtype\" class='form-control'>";
+		echo "<option value=''>Please Select</option>";
 		echo "<option value=\"Good Garments\">Good Garments</option>";
 		echo "<option value=\"Without Label\">Without Label</option>";
 		echo "<option value=\"Without Heatseal\">Without Heatseal</option>";
@@ -511,15 +512,16 @@ if(isset($_POST['submit']))
 		echo "</select></div></div></td></tr>";
 		
 		echo "<tr><th>Cut No</th><td><div class='row'><div class='col-md-4'><select name=\"doc_ref\" id=\"doc_ref\"  class='form-control'>";
-		for($i2=0;$i2<sizeof($doc_no_ref);$i2++)
+		echo "<option value=''>Please Select</option>";
+       for($i2=0;$i2<sizeof($doc_no_ref);$i2++)
 		{
 			echo "<option value=\"".$doc_no_ref[$i2]."\">".$acutno_ref[$i2]."</option>";
 		}
 		echo "</select></div></div></td></tr>";
-		echo "<tr><th>Carton No: *</th><td><div class='row'><div class='col-md-4'><input type=\"text\" value=\"\" name=\"sourceid\" id=\"sourceid\"  class='form-control integer'></div></div></td></tr>";
+		echo "<tr><th>Carton No: </th><td><div class='row'><div class='col-md-4'><input type=\"text\" value=\"0\" name=\"sourceid\" id=\"sourceid\"  class='form-control integer'></div></div></td></tr>";
 		
-		echo "<tr><th>Source : *</th><td><div class='row'><div class='col-md-4'><select name=\"source\" id=\"source\"  class='form-control'>";
-		echo "<option value=\" \"></option>";
+		echo "<tr><th>Source : </th><td><div class='row'><div class='col-md-4'><select name=\"source\" id=\"source\"  class='form-control'>";
+		echo "<option value=\" \">Please Select</option>";
 		//echo "<option value=\"-1\">Production (O.R)</option>";
 		echo "<option value=\"SAM\">Sample (O.R)</option>";
 		echo "<option value=\"ENP\">Embellishment (O.R)</option>";
@@ -538,8 +540,6 @@ if(isset($_POST['submit']))
 			echo "<option value=\"".$sql_mods[$i]."\">".$sql_mods[$i]."</option>";
 			}	
 		}
-		//echo "<option value=\"2\">Cut Section - 2</option>";
-		//echo "<option value=\"3\">Cut Section - 3</option>"; 
 		echo "</select></div></div></td></tr><br>";
 
 		
@@ -571,15 +571,20 @@ if(isset($_POST['update']))
 	
 	//Added DOCKET Number to store in database
 	$doc_no_id=$_POST["doc_ref"];
+	//echo $doc_no_id;
+	//die();
 	$temp="5";
 	
 	//echo $source."-".$doc_no_id;
 	
-	$usr_msg="<div class='alert alert-danger' role='alert'>The following entries are failed to update due to M3 system validations:</div><br/>
-				<div class='col-sm-12'>
-				<div class='col-md-4'>
-					<table class='table table-bordered'>
-						<tr><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th></tr>";
+	/*Commneted By ram*/
+	// $usr_msg="<div class='alert alert-danger' role='alert'>The following entries are failed to update due to M3 system validations:</div><br/>
+	// 			<div class='col-sm-12'>
+	// 			<div class='col-md-4'>
+	// 				<table class='table table-bordered'>
+	// 					<tr><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th></tr>";
+
+	/*upto here*/
 	
 		//M3 Bulk Operation Reporting
 		//Extract Operation Code and Reason Code
@@ -595,11 +600,13 @@ if(isset($_POST['update']))
 	for($i=0;$i<sizeof($sizes_db);$i++)
 	{
 		//
-		if($qty[$i]>0 and rejection_validation_m3($m3_operation_code,$schedule,$color,$sizes_db[$i],$qty[$i],0,$username)=='TRUE')
-		{
+		// if($qty[$i]>0 and rejection_validation_m3($m3_operation_code,$schedule,$color,$sizes_db[$i],$qty[$i],0,$username)=='TRUE')
+		// {
 			//Changed Query for capturing the docket number
 			$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,remarks,log_date,ref1,doc_no) values (\"".$style."\",\"".$schedule."\",\"".$color."\",\"".$sizes_db[$i]."\",".$qty[$i].",$temp,\"".$source."\",\"".date("Y-m-d")."\",\"$gtype\",\"$doc_no_id\")";
 			//echo $sql."<br>";
+			//die();
+			
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 			
@@ -609,14 +616,15 @@ if(isset($_POST['update']))
 				
 				$sql_sup="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_reason) values(NOW(),'".$style."','".$schedule."','".$color."','".$sizes_db[$i]."','".substr($doc_no_id,1)."',".$qty[$i].",USER(),'$m3_operation_code',$iLastid,'".(is_numeric($_POST['source'])?$_POST['source']:'0')."','','".$m3_reason_code."')"; 
 			
-				//echo $sql."<br/>";
+				//echo $sql_sup."<br/>";
+				//die();
 				mysqli_query($link, $sql_sup) or exit("Sql Error6$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				//M3 Bulk Operation Reporting
-		}
-		else
-		{
-			$usr_msg.="<tr><td>".$schedule."</td><td>".$color."</td><td>".$sizes_db[$i]."</td><td>".$qty[$i]."</td></tr>";
-		}
+		// }
+		// else
+		// {
+		// 	$usr_msg.="<tr><td>".$schedule."</td><td>".$color."</td><td>".$sizes_db[$i]."</td><td>".$qty[$i]."</td></tr>";
+		// }
 	}
 	$usr_msg.="</table></div></div>";
 	

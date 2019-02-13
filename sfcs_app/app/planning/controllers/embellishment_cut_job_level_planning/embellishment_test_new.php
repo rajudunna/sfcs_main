@@ -88,7 +88,11 @@ $color=$_GET['color'];
 
 echo "<div class='row'>";
 echo "<div class='col-sm-3'><label>Select Style: </label><select name=\"style\" onchange=\"firstbox();\" class='form-control' >";
-$sql="select distinct order_style_no from $bai_pro3.plan_doc_summ where CONCAT(TRIM(order_style_no),TRIM(order_col_des)) IN (SELECT DISTINCT CONCAT(TRIM(style),TRIM(color)) FROM brandix_bts.tbl_style_ops_master WHERE operation_code IN (SELECT GROUP_CONCAT(operation_code) FROM brandix_bts.tbl_orders_ops_ref WHERE category IN ('Send PF','Receive PF')))";
+$sql="SELECT DISTINCT order_style_no FROM $bai_pro3.plan_doc_summ 
+WHERE CONCAT(TRIM(order_style_no),TRIM(order_col_des)) IN (SELECT DISTINCT CONCAT(TRIM(style),TRIM(color)) 
+FROM $brandix_bts.tbl_style_ops_master 
+WHERE operation_code IN (SELECT DISTINCT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE category IN 
+('Send PF','Receive PF')))";
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
 $sql_num_check=mysqli_num_rows($sql_result);
 echo "<option value=\"NIL\" selected>NIL</option>";
@@ -162,18 +166,21 @@ else
 echo "</select></div>";
 
 $code="";
-$sql="select doc_no,color_code,acutno,act_cut_status,cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" and doc_no not in (select doc_no from $bai_pro3.embellishment_plan_dashboard) and (a_plies<>p_plies or act_cut_issue_status='') order by doc_no";
+$sql="select doc_no,color_code,acutno,act_cut_status,cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" and org_doc_no<2 and doc_no not in (select doc_no from $bai_pro3.embellishment_plan_dashboard) and (a_plies<>p_plies or act_cut_status='') order by doc_no";
 
-$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
+$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 $sql_num_check=mysqli_num_rows($sql_result);
 
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$code.=$sql_row['doc_no']."-".chr($sql_row['color_code']).leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*";
-		
-	$cat_ref= $sql_row['cat_ref'];
-	
-	
+	$club_docket_childs_verify = "SELECT doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no IN (
+		select doc_no from $bai_pro3.plandoc_stat_log WHERE org_doc_no = ".$sql_row['doc_no'].")";
+	if(mysqli_num_rows(mysqli_query($link,$club_docket_childs_verify)) > 0){
+		//do nothing
+	}else{	
+		$code.=$sql_row['doc_no']."-".chr($sql_row['color_code']).leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*";
+		$cat_ref= $sql_row['cat_ref'];
+	}
 }
 
 $sql= "select cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" order by doc_no";
@@ -196,7 +203,7 @@ else
 {
 	echo "Docket Available:"."<font color=RED size=5>No</font>";
 }
-echo "</div>";
+echo "</div><div class='col-sm-12'><br><div class='alert alert-info' style='font-size:13px;padding:5px'>Info! In this Method Clubbing Schedule (Or) Colours are Must Be SPLIT, If not Please go and use Splitting Method for selected Schedule (Or) Colour then try to plan  otherwise Planned Jobs are not Showed in EMB Dashboards.</div></div>";
 
 echo "</div></div></form>";
 

@@ -164,7 +164,7 @@ mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_s
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"><<<<< Click here to Go Back</a>";
 echo "<br><br>";
-echo "<table class=\"table table-bordered\">";
+echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">";
 
 if($flag == 1)
 {
@@ -258,10 +258,13 @@ $color_code=$sql_row33['color_code']; //Color Code
 	if($remarks=="Normal")
 	{
 		echo "<td>".chr($color_code).leading_zeros($pcutno,3)."</td>";
+	}else if(strtolower($remarks)=="recut")
+	{
+		echo "<td>R".leading_zeros($pcutno,3)."</td>";
 	}
 	else
 	{
-		if($remarks="Pilot")
+		if($remarks=="Pilot")
 		{
 			echo "<td>Pilot</td>";
 		}
@@ -346,7 +349,7 @@ $color_code=$sql_row33['color_code']; //Color Code
 
 }
 
-echo "</table>";
+echo "</table></div>";
 ?>
 
 </div></div>

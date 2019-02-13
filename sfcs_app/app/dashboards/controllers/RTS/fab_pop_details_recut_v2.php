@@ -184,6 +184,7 @@ changes log:
 	//list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
 	$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 	$username=$username_list[1];
+	$print_status = 1;
 	// $view_access=user_acl("SFCS_0197",$username,1,$group_id_sfcs);
 	// $authorized=user_acl("SFCS_0197",$username,7,$group_id_sfcs);
 	//$authorized=array("kirang","harikrishnar","fazlulr","himapriyag","sfcsproject1","chandrasekharko","herambaj","kishorek","kirang","sarojiniv","kirang","ravipu","ramanav","sekhark","lovakumarig","ganeshb","pithanic","srinivasaraot","santhoshbo","vemanas","dharmarajua","bhupalv","varalakshmik","eswarraok","babjim","ramunaidus","nagendral","sivaramakrishnat","gowthamis","rajinig","revathil","lovarajub","ramud","sivark","kirang","kirang");
@@ -414,35 +415,7 @@ th
 			$type=2; // For normal recut
 		}
 
-		$path=getFullURLLevel($_GET['r'],'Book3_print_recut.php',0,'N');
-		if(substr($style_ref,0,1)!="P" or substr($style_ref,0,1)!="K" or substr($style_ref,0,1)!="L" or substr($style_ref,0,1)!="O" )
-		{
-			if($mns_status>0)
-			{
-				$path=getFullURLLevel($_GET['r'],'Book3_print_recut.php',0,'N');  // For M&S Men Briefs
-			}
-			else
-			{
-				$path=getFullURLLevel($_GET['r'],'Book3_print_recut1.php',0,'N'); // FOR M&S Ladies Briefs
-			}
-			
-		}
-
-		else
-		{
-			if(substr($style_ref,0,1)=="Y")
-			{
-				if($mns_status>0)
-				{
-					$path=getFullURLLevel($_GET['r'],'Book3_print_recut.php',0,'N');  // For M&S Men Briefs
-				}
-				else
-				{
-					$path=getFullURLLevel($_GET['r'],'Book3_print_recut1.php',0,'N'); // FOR M&S Ladies Briefs
-				}
-			}
-			
-		}
+		$path=getFullURLLevel($_GET['r'],'cutting/controllers/lay_plan_preparation/recut_print.php',3,'R');
 		
 		echo "<form name=\"ins\" method=\"post\"  onsubmit=\"return check_doc_val()\" action='".getFullURLLevel($_GET['r'],'fab_pop_allocate_v5_new.php',0,'R')."'>"; //new version
 		echo "<input type=\"hidden\" value=\"2\" name=\"process_cat\">"; //this is to identify recut or normal processing of docket (1 for normal 2 for recut)
@@ -497,7 +470,7 @@ th
 
 			if(strlen($sql_row1['plan_lot_ref'])>0)
 			{
-				echo "<td><a href=\"$path&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&type=$type\" onclick=\"Popup1=window.open('$path&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&type=$type','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+				echo "<td><a href=\"$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&type=$type\" onclick=\"Popup1=window.open('$path?print_status=$print_status&order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&type=$type','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 			}
 			else
 			{

@@ -169,7 +169,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 } 
 //To Show Clubbed Schedules 
 
-$sqlx="SELECT DISTINCT order_del_no FROM bai_pro3.bai_orders_db_confirm WHERE order_joins in (2)";     
+$sqlx="SELECT DISTINCT order_del_no FROM bai_pro3.bai_orders_db_confirm WHERE $order_joins_in_2";     
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_rowx=mysqli_fetch_array($sql_resultx)) 
 { 

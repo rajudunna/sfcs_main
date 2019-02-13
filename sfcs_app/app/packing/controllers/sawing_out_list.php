@@ -25,12 +25,13 @@
 		<table class="table table-bordered">
 			<tr><th>Job Number</th><th>Color</th><th>Size</th><th>Module</th><th>Total Quantity</th><th>Action</th></tr>
 			<?php   
-				$sql1="SELECT tid,input_job_number,size_code,color,SUM(carton_act_qty) AS tqty,carton_act_qty,module FROM $bai_pro3.pac_stat_log where schedule='$schedule' GROUP BY input_job_number,size_code,color  ORDER BY input_job_number*1 ASC";
+				$sql1="SELECT tid,input_job_number,size_code,color,SUM(carton_act_qty) AS tqty,carton_act_qty,module,input_job_random FROM $bai_pro3.pac_stat_log where schedule='$schedule' GROUP BY input_job_number,size_code,color  ORDER BY input_job_number*1 ASC";
 				// echo $sql1."<br>";
 				$sql_result=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($rows=mysqli_fetch_array($sql_result)){
 					//echo $rows['input_job_number'].' '.$rows['color'].' '.$rows['size'].' '.$rows['tqty'].'<br>';
 					$input_job_no=$rows['input_job_number'];
+					$input_job_random=$rows['input_job_random'];
 					$tid=$rows['tid'];
 					$module=$rows['module'];
 					$color=$rows['color'];
@@ -41,7 +42,8 @@
 				<?php 
 					$url = getFullURLLevel($_GET['r'],"reports/pdfs/sawing_out_labels_v1.php",1,'R');
 					$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job_no,$link);
-					echo "<a href=\"$url?tid=$tid&job_no=$input_job_no&schedule=$schedule\" target=\"_blank\" class=\"btn btn-warning btn-sm\" onclick=\"return popitup("."'"."$url?tid=$tid&job_no=$input_job_no&schedule=$schedule"."'".")\"><i class='fa fa-print'></i>&nbsp;&nbsp;".$display_prefix1."</a><br/>";	
+					// echo "<a href=\"$url?tid=$tid&job_no=$input_job_no&schedule=$schedule\" target=\"_blank\" class=\"btn btn-warning btn-sm\" onclick=\"return popitup("."'"."$url?tid=$tid&job_no=$input_job_no&schedule=$schedule"."'".")\"><i class='fa fa-print'></i>&nbsp;&nbsp;".$display_prefix1."</a><br/>";	
+					echo $display_prefix1;
 					
 					$sql="SELECT title_size_".$size." as size FROM $bai_pro3.bai_orders_db WHERE order_del_no=\"$schedule\" AND order_col_des=\"$color\"";
 					// echo $sql;
@@ -51,11 +53,35 @@
 						// echo "size".$title_size["size"];
 						$title_size_ref=$title_size["size"];
 					}
+
+					$ss="SELECT input_module FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref='$input_job_random'";
+					//echo $ss;
+					$ss_result=mysqli_query($link,$ss) or exit("Sql Error3 $ss".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                $rs=mysqli_fetch_array($ss_result);
+	
+	                $ss1="SELECT ims_mod_no FROM $bai_pro3.ims_log WHERE input_job_rand_no_ref='$input_job_random'";
+					//echo $ss1;
+					$ss1_result=mysqli_query($link,$ss1) or exit("Sql Error4 $ss1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                $rs1=mysqli_fetch_array($ss1_result);
+					//die();
+					$ss11="SELECT ims_mod_no FROM $bai_pro3.ims_log_backup WHERE input_job_rand_no_ref='$random_job'";
+	                $ss1_result1=mysqli_query($link,$ss11) or exit("Sql Error4 $ss11".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                $rs11=mysqli_fetch_array($ss1_result1);
+                    if($rs){
+						$module=$rs['input_module'];
+						}else if(!$rs && $rs1){
+						$module=$rs1['ims_mod_no'];
+						}else if(!$rs1 && !$rs && $rs11){
+						$module=$rs11['ims_mod_no'];
+						}else if(!$rs && !$rs1 && !$rs11){
+						$module='Not Processed';
+						}
+
 				?>
 				</td>
 				<td><?php echo $rows['color']; ?></td>
 				<td><?php echo strtoupper($title_size_ref) ?></td>
-				<td><?php echo $rows['module']; ?></td>
+				<td><?php echo $module; ?></td>
 				<td><?php echo $rows['tqty'];   ?></td>
 				<td>
 				<?php 
@@ -74,7 +100,7 @@
 		
 		<?php
 			
-			$sql="select * from $bai_pro3.bai_orders_db_confirm where $filter_joins order_style_no=\"$style\" and order_del_no=\"$schedule\"";
+			$sql="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in and order_style_no=\"$style\" and order_del_no=\"$schedule\"";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
