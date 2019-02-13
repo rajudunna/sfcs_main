@@ -830,7 +830,7 @@ if ($sql_result)
 
 			//	echo "<td class=\"b1\">".$sql_row['remarks']."</td>";
 			// start enable the validation to avoid the category change after docket generation
-			$sql5="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=".$sql_row['tid']."";
+			$sql5="select * from $bai_pro3.plandoc_stat_log where order_tid='".$sql_row['order_tid']."' and cat_ref=".$sql_row['tid']."";
 			//echo $sql5."<br/>";
 			$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result5);
