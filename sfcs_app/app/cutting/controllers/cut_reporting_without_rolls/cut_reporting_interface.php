@@ -223,8 +223,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                                 </select>
                                 </span>
                             </td>
-                            <td><input type='text' class='form-control integer' value='0' id='damages'></td>
-                            <td><input type='text' class='form-control integer' value='0' id='shortages'></td>
+                            <td><input type='text' class='form-control float' value='0' id='damages'></td>
+                            <td><input type='text' class='form-control float' value='0' id='shortages'></td>
                             <!-- <td><input type='text' class='form-control integer' place-holder='Rejections' id='rejection_pieces' name='rejection_pieces'><br><br> -->
                             <td>
                             <input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn' value='Show Rejections'>
