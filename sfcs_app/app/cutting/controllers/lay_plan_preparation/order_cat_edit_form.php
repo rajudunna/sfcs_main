@@ -79,6 +79,9 @@ function enableButton()
 <body onload="javascript:dodisable();">
 <?php 
 	$cat_tid=$_GET['cat_tid'];
+	$get_color=$_GET['color'];
+	$get_style=$_GET['style'];
+	$get_schedule=$_GET['schedule'];
 	// echo "Cat Tid = ".$cat_tid.'<br>';
 
 	$colors_array = array();	$array1= array();	$array2= array();
@@ -119,7 +122,7 @@ function enableButton()
 		if(sizeof($array1) == 0 || sizeof($array2) == 0){
 			echo "<script>swal('Operations Doesnt exist','Please Check the backend Job','danger');</script>";
 			echo "<script>setTimeout(function() {
-					location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+					location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule\";
 					},3000);
 				</script>";
 			exit();
@@ -132,7 +135,7 @@ function enableButton()
 			echo "<script>swal('Operation codes does not match','','warning');</script>";
 			$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
 			echo "<script>setTimeout(function() {
-					location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+					location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule\";
 					},3000);
 				</script>";
 			exit();
@@ -144,13 +147,13 @@ function enableButton()
 		if(!mysqli_num_rows($mo_result) > 0){
 			echo "<script>swal('MO Details Does not Exist','','warning');</script>";
 			echo "<script>setTimeout(function() {
-					location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+					location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule\";
 					},3000);
 				</script>";
 			exit();
 		}		
 	}
-	echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a></div></br></br>"; ?>
+	echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a></div></br></br>"; ?>
 <div class="panel panel-primary">
 <div class="panel-heading">Order Category Classification FORM</div>
 <div class="panel-body">
