@@ -748,7 +748,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     $doc_no_ref[]=0;
     $req_time[]=0;
     $req_date_time[]=0;
-    $sql2="select * from $bai_pro3.cutting_table_plan where cutting_tbl_id in (".$section_mods.") group by doc_no order by log_time,cutting_tbl_id";
+    $sql2="select * from $bai_pro3.cutting_table_plan where cutting_tbl_id in (".$section_mods.") group by doc_no order by log_time asc";
     $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row2=mysqli_fetch_array($result2))
     {
@@ -762,7 +762,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     $imploded_docs = implode(",",$doc_no_ref);
 
     $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ ct 
-          where ct.doc_no in ($imploded_docs)  order by ct.doc_no,ct.log_time asc";
+          where ct.doc_no in ($imploded_docs)  order by ct.log_time asc";
       if($_GET["view_div"] == 'M')
       {
         $_GET["view_div"] = "M&S";
@@ -772,7 +772,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
        if($_GET["view_div"]=="ALL" or $_GET["view_div"]=="")
       {
         $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ ct
-          where ct.doc_no in ($imploded_docs) order by ct.doc_no,ct.log_time asc";
+          where ct.doc_no in ($imploded_docs) order by ct.log_time asc";
       }
       else
       {
@@ -788,7 +788,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         }
           
         $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ ct
-            where ct.order_div = '$buyer_identity' and ct.doc_no in ($imploded_docs) order by ct.doc_no,ct.log_time asc"; 
+            where ct.order_div = '$buyer_identity' and ct.doc_no in ($imploded_docs) order by ct.log_time asc"; 
       }
       $imploded_docs = '';
 
