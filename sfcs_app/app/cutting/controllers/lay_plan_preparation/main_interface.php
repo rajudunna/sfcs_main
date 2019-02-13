@@ -830,11 +830,10 @@ if ($sql_result)
 
 			//	echo "<td class=\"b1\">".$sql_row['remarks']."</td>";
 			// start enable the validation to avoid the category change after docket generation
-			$sql5="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=".$sql_row['tid']."";
+			$sql5="select * from $bai_pro3.plandoc_stat_log where order_tid='".$sql_row['order_tid']."' and cat_ref=".$sql_row['tid']."";
 			//echo $sql5."<br/>";
 			$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result5);
-
 			if($sql_num_check==0)
 			{
 				//echo "<td class=\"  \"><center><a class=\"btn btn-sm btn-primary\" href=\"".getFullURL($_GET['r'], "dumindu/order_cat_edit_form.php", "N")."&cat_tid=".$sql_row['tid']."&style=".$style."&schedule=".$schedule."&color=".$color."\">c</a></center></td>";
@@ -846,7 +845,30 @@ if ($sql_result)
 			}
 			else
 			{
-				echo "<td class=\"  \"><center>N/A</center></td>";
+				if ($sql_row['order_tid'] == $tran_order_tid)
+				{
+					echo "<td class=\"  \"><center>N/A</center></td>";
+				}
+				else
+				{
+					$get_details="select * from $bai_pro3.bai_orders_db where order_tid='".$sql_row['order_tid']."'";
+					//echo $get_details."<br/>";
+					$result_details=mysqli_query($link, $get_details) or exit("Error while getting style/schedule/color");
+					if (mysqli_num_rows($result_details) > 0)
+					{
+						while($rows=mysqli_fetch_array($result_details))
+						{
+							$get_style = $rows['order_style_no'];
+							$get_schedule = $rows['order_del_no'];
+							$get_color = $rows['order_col_des'];
+						}
+						echo "<td>
+								<center>
+									<a class='btn btn-success btn-xs' href='".getFullURL($_GET['r'], "main_interface.php", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule'>Go To</a>
+								</center>
+							</td>";
+					}
+				}
 			}
 			// end enable the validation to avoid the category change after docket generation
 			echo "</tr>";

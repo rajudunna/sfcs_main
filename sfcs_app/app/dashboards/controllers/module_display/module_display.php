@@ -158,12 +158,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
 $sql1="select sum(plan_pro) as pro from $bai_pro.pro_plan_today where mod_no='$module'";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result1))
-{
-	$hourly_target=round($sql_row1['pro']/$tot_plant_working_hrs,0);
-	if($hourly_target='NAN')
+{	
+	if($tot_plant_working_hrs>0 && $sql_row1['pro']>0)
+	{
+		$hourly_target=round($sql_row1['pro']/$tot_plant_working_hrs,0);		
+	}
+	else
 	{
 		$hourly_target=0;
-	}
+	}	
 }
 
 ?>
