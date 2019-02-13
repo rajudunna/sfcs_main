@@ -50,7 +50,7 @@ function roll_splitting_function($roll_id,$total_roll_qty,$issued_qty)
         }
         else{
         
-            $sql="update bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_qty.",status=0,allotment_status=0 where tid=".$roll_id;
+            $sql="update bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_qty.",status=0,allotment_status=1 where tid=".$roll_id;
         }
         
         //Uncheck this
