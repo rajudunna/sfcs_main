@@ -101,6 +101,19 @@ function thirdbox()
 $style=$_GET['style'];
 $schedule=$_GET['schedule']; 
 $color=$_GET['color'];
+
+
+if(strlen($schedule) > 8){	
+	$split_verify = "SELECT order_joins from $bai_pro3.bai_orders_db_confrim where order_del_no = '$schedule' ";
+	$split_result = msyqli_query($link,$split_verify);
+	$row = mysqli_fetch_array($split_result);
+	if( $row['order_joins'] != 2){
+		echo "<script>swal('Split the Clubbed Schedule Before Planning','','error');
+		window.location.href = url+'&style=$style&schedule=$schedule';</script>";
+		exit();
+	}
+}
+
 // $sql="select distinct order_style_no from $bai_pro3.plan_doc_summ $criteria";	
 // echo $sql;
 
