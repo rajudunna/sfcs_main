@@ -164,6 +164,7 @@ else
 }	
 $qtys = array();
 $qtys_sample = array();
+$qtys_sample_sum = array();
 $sql = "select * from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' and order_col_des in ('".implode("','",$sch_color)."')";
 $result = mysqli_query($link, $sql) or exit("Sql Error2.1".mysqli_error());
 $old_order_tot = array();
@@ -180,6 +181,7 @@ while($sql_row = mysqli_fetch_array($result))
 			while($samples_data=mysqli_fetch_array($samples_qry_result))
 			{
 				$qtys_sample[$sql_row['order_tid']][$sizes_array[$c]] =$samples_data["sample_qty"];
+				$qtys_sample_sum[$sql_row['order_tid']]+=$samples_data["sample_qty"];
 			}
 			$old_order_tot[$sql_row['order_tid']]+=$sql_row["order_s_".$sizes_array[$c].""];
 		//}		
@@ -1659,15 +1661,17 @@ tags will be replaced.-->
 			}
 			for($j1=0;$j1<sizeof($sch_tids);$j1++)
 			{
-				$total_samples=0;
-				echo "<tr>";
-				echo "<th $style_css>Sample Qty</th><th $style_css>".$sch_color[$j1]."</th>";
-				for($i1=0;$i1<$total_size;$i1++) {
-					echo "<th $style_css>".$qtys_sample[$sch_tids[$j1]][$sizes_array[$i1]]."</th>";
-					$total_samples+=$qtys_sample[$sch_tids[$j1]][$sizes_array[$i1]];
-				}
-				echo "<th $style_css>".$total_samples."</th>";
-				echo "</tr>";
+				if($qtys_sample_sum[$sch_tids[$j1]] > 0){
+					$total_samples=0;
+					echo "<tr>";
+					echo "<th $style_css>Sample Qty</th><th $style_css>".$sch_color[$j1]."</th>";
+					for($i1=0;$i1<$total_size;$i1++) {
+						echo "<th $style_css>".$qtys_sample[$sch_tids[$j1]][$sizes_array[$i1]]."</th>";
+						$total_samples+=$qtys_sample[$sch_tids[$j1]][$sizes_array[$i1]];
+					}
+					echo "<th $style_css>".$total_samples."</th>";
+					echo "</tr>";
+			    }
 			}
 		}
 	}
