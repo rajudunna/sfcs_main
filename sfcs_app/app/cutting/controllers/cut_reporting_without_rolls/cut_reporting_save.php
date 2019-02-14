@@ -1045,7 +1045,6 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
             $reported_status = 'F';
 
         $stat = mysqli_begin_transaction($link) or force_exit('Unable to Acquire Lock 2'); 
-        var_dump($last);
         if($stat == 0)
             return 'fail';   
         foreach($size_qty as $size => $qty){
