@@ -793,6 +793,7 @@ if ($sql_result)
 			<th class=\"word-wrap\"><center>Pattern Version</th>
 			<th class=\"word-wrap\"><center>MO status</th>
 			<th class=\" \"><center>Controls</th>
+			<th class=\" \"><center>Redirect</th>
 		</tr></thead>";
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -842,9 +843,6 @@ if ($sql_result)
 							<a class='btn btn-info btn-xs' href='".getFullURL($_GET['r'], "order_cat_edit_form.php", "N")."&cat_tid=".$sql_row['tid']."&style=".$style."&schedule=".$schedule."&color=".$color."'>Edit</a>
 						</center>
 					</td>";
-			}
-			else
-			{
 				if ($sql_row['order_tid'] == $tran_order_tid)
 				{
 					echo "<td class=\"  \"><center>N/A</center></td>";
@@ -862,6 +860,35 @@ if ($sql_result)
 							$get_schedule = $rows['order_del_no'];
 							$get_color = $rows['order_col_des'];
 						}
+						echo "<td>
+								<center>
+									<a class='btn btn-success btn-xs' href='".getFullURL($_GET['r'], "main_interface.php", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule'>Go To</a>
+								</center>
+							</td>";
+					}
+				}
+			}
+			else
+			{
+				if ($sql_row['order_tid'] == $tran_order_tid)
+				{
+					echo "<td class=\"  \"><center>N/A</center></td>";
+					echo "<td class=\"  \"><center>N/A</center></td>";
+				}
+				else
+				{
+					$get_details="select * from $bai_pro3.bai_orders_db where order_tid='".$sql_row['order_tid']."'";
+					//echo $get_details."<br/>";
+					$result_details=mysqli_query($link, $get_details) or exit("Error while getting style/schedule/color");
+					if (mysqli_num_rows($result_details) > 0)
+					{
+						while($rows=mysqli_fetch_array($result_details))
+						{
+							$get_style = $rows['order_style_no'];
+							$get_schedule = $rows['order_del_no'];
+							$get_color = $rows['order_col_des'];
+						}
+						echo "<td class=\"  \"><center>N/A</center></td>";
 						echo "<td>
 								<center>
 									<a class='btn btn-success btn-xs' href='".getFullURL($_GET['r'], "main_interface.php", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule'>Go To</a>
