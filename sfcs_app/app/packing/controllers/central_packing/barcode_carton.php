@@ -6,7 +6,7 @@
 
 
 <?php
-
+	ini_set("pcre.backtrack_limit", "5000000");
 	$mpdf = new \Mpdf\Mpdf([
 		'mode' => 'utf-8', 
 		'format' => [50, 101], 
