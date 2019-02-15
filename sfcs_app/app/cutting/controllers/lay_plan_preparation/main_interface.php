@@ -840,18 +840,18 @@ if ($sql_result)
 				//echo "<td class=\"  \"><center><a class=\"btn btn-sm btn-primary\" href=\"".getFullURL($_GET['r'], "dumindu/order_cat_edit_form.php", "N")."&cat_tid=".$sql_row['tid']."&style=".$style."&schedule=".$schedule."&color=".$color."\">c</a></center></td>";
 
 				// Control start
-				if ($sql_row['order_tid'] == $tran_order_tid)
-				{
+				// if ($sql_row['order_tid'] == $tran_order_tid)
+				// {
 					echo "<td>
 							<center>
 								<a class='btn btn-info btn-xs' href='".getFullURL($_GET['r'], "order_cat_edit_form.php", "N")."&cat_tid=".$sql_row['tid']."&style=".$style."&schedule=".$schedule."&color=".$color."'>Edit</a>
 							</center>
 						</td>";
-				}
-				else
-				{
-					echo "<td class=\"  \"><center>N/A</center></td>";
-				}
+				// }
+				// else
+				// {
+				// 	echo "<td class=\"  \"><center>N/A</center></td>";
+				// }
 				// Control End
 
 				// Go To Start
