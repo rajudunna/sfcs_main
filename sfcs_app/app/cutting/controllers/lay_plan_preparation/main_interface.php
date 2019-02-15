@@ -838,11 +838,23 @@ if ($sql_result)
 			if($sql_num_check==0)
 			{
 				//echo "<td class=\"  \"><center><a class=\"btn btn-sm btn-primary\" href=\"".getFullURL($_GET['r'], "dumindu/order_cat_edit_form.php", "N")."&cat_tid=".$sql_row['tid']."&style=".$style."&schedule=".$schedule."&color=".$color."\">c</a></center></td>";
-				echo "<td>
-						<center>
-							<a class='btn btn-info btn-xs' href='".getFullURL($_GET['r'], "order_cat_edit_form.php", "N")."&cat_tid=".$sql_row['tid']."&style=".$style."&schedule=".$schedule."&color=".$color."'>Edit</a>
-						</center>
-					</td>";
+
+				// Control start
+				// if ($sql_row['order_tid'] == $tran_order_tid)
+				// {
+					echo "<td>
+							<center>
+								<a class='btn btn-info btn-xs' href='".getFullURL($_GET['r'], "order_cat_edit_form.php", "N")."&cat_tid=".$sql_row['tid']."&style=".$style."&schedule=".$schedule."&color=".$color."'>Edit</a>
+							</center>
+						</td>";
+				// }
+				// else
+				// {
+				// 	echo "<td class=\"  \"><center>N/A</center></td>";
+				// }
+				// Control End
+
+				// Go To Start
 				if ($sql_row['order_tid'] == $tran_order_tid)
 				{
 					echo "<td class=\"  \"><center>N/A</center></td>";
@@ -867,12 +879,16 @@ if ($sql_result)
 							</td>";
 					}
 				}
+				// Go To End
 			}
 			else
 			{
 				if ($sql_row['order_tid'] == $tran_order_tid)
 				{
+					// Control
 					echo "<td class=\"  \"><center>N/A</center></td>";
+
+					// Go To
 					echo "<td class=\"  \"><center>N/A</center></td>";
 				}
 				else
@@ -888,7 +904,11 @@ if ($sql_result)
 							$get_schedule = $rows['order_del_no'];
 							$get_color = $rows['order_col_des'];
 						}
+
+						// Control
 						echo "<td class=\"  \"><center>N/A</center></td>";
+
+						// Go To
 						echo "<td>
 								<center>
 									<a class='btn btn-success btn-xs' href='".getFullURL($_GET['r'], "main_interface.php", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule'>Go To</a>
