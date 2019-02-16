@@ -896,7 +896,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $.ajax({
             url : '<?= $get_url ?>?doc_no='+doc_no
         }).done(function(res){
-            
+            GLOBAL_CALL = 0;
             var data = $.parseJSON(res);
             avl_plies = Number(data.avl_plies);
             fab_req = Number(data.fab_required);
