@@ -842,11 +842,18 @@ if ($sql_result)
 				// Control start
 				// if ($sql_row['order_tid'] == $tran_order_tid)
 				// {
-					echo "<td>
-							<center>
-								<a class='btn btn-info btn-xs' href='".getFullURL($_GET['r'], "order_cat_edit_form.php", "N")."&cat_tid=".$sql_row['tid']."&style=".$style."&schedule=".$schedule."&color=".$color."'>Edit</a>
-							</center>
-						</td>";
+					if($sql_row['mo_status']=="Y")
+					{
+						echo "<td>
+								<center>
+									<a class='btn btn-info btn-xs' href='".getFullURL($_GET['r'], "order_cat_edit_form.php", "N")."&cat_tid=".$sql_row['tid']."&style=".$style."&schedule=".$schedule."&color=".$color."'>Edit</a>
+								</center>
+							</td>";
+					}
+					else
+					{
+						echo "<td class=\"  \"><center>N/A</center></td>";
+					}
 				// }
 				// else
 				// {
