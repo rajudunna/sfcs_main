@@ -29,7 +29,7 @@
 		}
 		echo "</tbody></table>";
 	} else {
-		echo "0 results";
+		echo "<span class='label label-danger'>0 results</span>";
 	}
 	?>
 
