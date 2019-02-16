@@ -988,12 +988,11 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
             // if($update_cps_result && $update_bcd_result)
             //     $counter++;
         }
-
-        if($counter == sizeof($cut_qty) && $counter > 0)
+        if($counter == sizeof($cut_qty) && $counter > 0){
             $stat1 = mysqli_commit($link2) or force_exit("Cant Commit Transaction 2");
             if($stat1 == 0)
                 return 'fail';
-        else{    
+        }else{    
             mysqli_rollback($link2);
             mysqli_close($link2);
             return 'fail';
