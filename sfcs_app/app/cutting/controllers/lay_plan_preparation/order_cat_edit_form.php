@@ -7,10 +7,12 @@
 <script type="text/javascript" >
 function dodisable()
 {
-	enableButton();
-	document.input.order_tid.style.visibility="hidden"; 
-	document.input.cat_tid.style.visibility="hidden"; 
+enableButton();
+document.input.order_tid.style.visibility="hidden"; 
+document.input.cat_tid.style.visibility="hidden"; 
+
 }
+
 
 function verify_nums(t,e){
 	if(e.keyCode == 8 || e.keyCode == 9){
@@ -77,15 +79,16 @@ function enableButton()
 
 
 <body onload="javascript:dodisable();">
-<?php 
-	$cat_tid=$_GET['cat_tid'];
-	$get_color=$_GET['color'];
-	$get_style=$_GET['style'];
-	$get_schedule=$_GET['schedule'];
-	// echo "Cat Tid = ".$cat_tid.'<br>';
 
-	$colors_array = array();	$array1= array();	$array2= array();
-	$sql="select order_tid from $bai_pro3.cat_stat_log where tid='$cat_tid'";
+<?php //include("../menu_content.php"); ?>
+<?php 
+$cat_tid=$_GET['cat_tid'];
+//echo "Hello".$cat_tid;
+$sql="select order_tid from $bai_pro3.cat_stat_log where tid='$cat_tid'";
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row=mysqli_fetch_array($sql_result))
+{
+	$sql="select order_del_no,order_style_no,order_col_des from $bai_pro3.bai_orders_db where order_tid='".$sql_row['order_tid']."'";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -365,20 +368,20 @@ function enableButton()
 </div>
 
 <script>
-function verify(){
-	var v = document.getElementById('in_width').value;
-	if(Number(v) <= 0){
-		sweetAlert('Pur Width cannot be zero','','warning');
-		return false;
-	}
-	var pat = document.getElementById('patt_ver');
+	function verify(){
+		var v = document.getElementById('in_width').value;
+		if(Number(v) <= 0){
+			sweetAlert('Pur Width cannot be zero','','warning');
+			return false;
+		}
+		var pat = document.getElementById('patt_ver');
 
-	if( pat.value ==null || pat.value == 0){
-		sweetAlert('Please Enter Valid Pattern Version','','warning');
-		//pat.value = 0;
-		return false;
+		if( pat.value ==null || pat.value == 0){
+			sweetAlert('Please Enter Valid Pattern Version','','warning');
+			//pat.value = 0;
+			return false;
+		}
+		return true;
 	}
-	return true;
-}
 
 </script>

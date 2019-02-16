@@ -119,9 +119,8 @@ foreach($val_schedules as $schedule){
 			exit();
 		}
 
-		$compare12 = array_diff($array1,$array2);
-		$compare21 = array_diff($array2,$array1);
-		if(count($compare12) > 0 || count($compare21) > 0)
+		$compare = array_diff($array1,$array2);
+		if(sizeof($compare) > 0)
 		{
 			echo "<script>swal('Operation codes does not match','','warning');</script>";
 			$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
@@ -759,7 +758,7 @@ Change log:
 */
 //echo $tran_order_tid;
 //$tran_order_tid1=str_replace(' ', '', $tran_order_tid);
-$sql="select *,COALESCE(binding_consumption,0) AS binding_con from $bai_pro3.cat_stat_log where order_tid IN (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_del_no ='$schedule')";
+$sql="select *,COALESCE(binding_consumption,0) AS binding_con from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" ORDER BY category";
 //echo $sql."</br>test";
 $cats_ids=array();
 //$sql="select * from cat_stat_log where order_tid like \"% ".$schedule."%\" order by catyy DESC";
@@ -818,11 +817,11 @@ if ($sql_result)
 			echo "<td class=\"  \"><center>".$sql_row['binding_con']."</center></td>";
 
 			//echo $sql_row['tid']."</br>";
-			//		if($sql_row['gmtway']=="Y") { echo "<td class=\"  \" align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
+	//		if($sql_row['gmtway']=="Y") { echo "<td class=\"  \" align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
 
-			if($sql_row['strip_match']=="Y") { echo "<td class=\"  \"  align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
+	//		if($sql_row['strip_match']=="Y") { echo "<td class=\"  \"  align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
 
-			if($sql_row['gusset_sep']=="Y") { echo "<td class=\"  \"  align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
+	//		if($sql_row['gusset_sep']=="Y") { echo "<td class=\"  \"  align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
 
 			echo "<td class=\"  \"><center>".$sql_row['patt_ver']."</center></td>";
 			
@@ -831,10 +830,11 @@ if ($sql_result)
 
 			//	echo "<td class=\"b1\">".$sql_row['remarks']."</td>";
 			// start enable the validation to avoid the category change after docket generation
-			$sql5="select * from $bai_pro3.plandoc_stat_log where order_tid='".$sql_row['order_tid']."' and cat_ref=".$sql_row['tid']."";
+			$sql5="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=".$sql_row['tid']."";
 			//echo $sql5."<br/>";
 			$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result5);
+
 			if($sql_num_check==0)
 			{
 				//echo "<td class=\"  \"><center><a class=\"btn btn-sm btn-primary\" href=\"".getFullURL($_GET['r'], "dumindu/order_cat_edit_form.php", "N")."&cat_tid=".$sql_row['tid']."&style=".$style."&schedule=".$schedule."&color=".$color."\">c</a></center></td>";
@@ -920,7 +920,7 @@ if ($sql_result)
 			// end enable the validation to avoid the category change after docket generation
 			echo "</tr>";
 		}
-	}
+     }
 }
 //echo "<table class=\"b1\"><tr class=\"b1\"><th class=\"heading2\">TID</th><th class=\"b1\">Date</th><th class=\"b1\">Category</th><th class=\"b1\">CAT YY</th><th class=\"b1\">Color Code</th><th class=\"b1\">Fab Code</th><th class=\"b1\">Fabric Description</th><th class=\"b1\">Pur Width</th><th class=\"b1\">One GMT One Way</th><th class=\"b1\">Strip Match</th><th class=\"b1\">Gusset Sep</th><th class=\"b1\">Pat. Ver.</th><th class=\"b1\">MO stat</th><th class=\"b1\">Controls</th></tr>";
 /* if($sql_num_check>0){
@@ -976,7 +976,7 @@ if ($sql_result)
 
 
  */
-echo "</table></div></div>
+echo "</table></div>
 </div>
 </div></div></div>";
 
@@ -1738,6 +1738,7 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 			</div>
 		</div>
 	</div>
+</div>
 
 
 <div class="col-sm-12 row">
