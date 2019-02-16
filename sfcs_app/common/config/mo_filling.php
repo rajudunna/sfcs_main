@@ -294,7 +294,7 @@
 		foreach($colors as $col){
 			$trimmed_color = trim($col);
 			$jobs_sizes_query = "Select distinct(size_code) as size from $bai_pro3.packing_summary_input 
-								where order_col_des = '$col' ";
+								where order_col_des = '$col' and order_del_no ='$schedule'";
 			$jobs_size_result = mysqli_query($link,$jobs_sizes_query) or exit('Error Encounterd while getting sizes in MO');
 			while($row = mysqli_fetch_array($jobs_size_result)){
 				$sizes[] = $row['size'];
