@@ -6,8 +6,8 @@
 $dr_id=$_POST['dr_id'];
 $code=$_POST['time_value'];
 $day_part=$_POST['day_part'];
-$start1 = $_POST['time_display']; 
-$end1   = $_POST['time_display1'];
+$start1 = $_POST['start_time']; 
+$end1   = $_POST['end_time'];
 $tval = $_POST['time_value'];						
 $start = explode(':',$start1);
 $end = explode(':',$end1);	
@@ -95,7 +95,8 @@ else
 				}
 		}else
 		{
-				$query1="select * from $bai_pro3.tbl_plant_timings where time_value='$code' and (time_display='$department' or day_part='$day_part')";
+				// $query1="select * from $bai_pro3.tbl_plant_timings where time_value='$code' and (time_display='$department' or day_part='$day_part')";
+				$query1 = "SELECT * from $bai_pro3.tbl_plant_timings where time_value='$code' ";
 				$sql_result1=mysqli_query($conn, $query1);
 				
 				if(mysqli_num_rows($sql_result1)>0){
@@ -113,8 +114,8 @@ else
 								}
 							}); }, 100);</script>";
 					}else{
-								$start1 = $_POST['time_display']; 
-								$end1   = $_POST['time_display1'];
+								$start1 = $_POST['start_time']; 
+								$end1   = $_POST['end_time'];
 								$tval = $_POST['time_value'];						
 								$start = explode(':',$start1);
 								$end = explode(':',$end1);								
