@@ -208,6 +208,24 @@ if($plies == 0 && $full_reporting_flag == 1){
     exit();
 }
 
+if($target=='dummy'){
+    $remarks = "$date^$cut_table^$shift^$f_rec^$f_ret^$damages^$shortages^$returned_to^$plies";
+    $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, 
+                    damages,shortages,remarks,log_date,bundle_loc,leader_name) 
+                    values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader')
+                    ON DUPLICATE KEY 
+                    UPDATE date='$date',section='$cut_table',shift='$shift',fab_received=fab_received + $f_rec,fab_returned='$f_ret',damages='$damages',shortages='$shortages',
+                    remarks=CONCAT(remarks,'$','$remarks'),
+                    log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader' ";
+
+    $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
+                    act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
+    $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1');  
+    $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2'); 
+    $response_data['saved'] = 1;
+    echo json_encode($response_data);
+    exit();
+}
 
 //Recut Docket Saving
 if($target == 'recut'){
