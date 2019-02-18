@@ -208,7 +208,7 @@ if($plies == 0 && $full_reporting_flag == 1){
     exit();
 }
 
-if($target=='dummy'){
+if(strpos($target,'_other')==true){
     $remarks = "$date^$cut_table^$shift^$f_rec^$f_ret^$damages^$shortages^$returned_to^$plies";
     $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, 
                     damages,shortages,remarks,log_date,bundle_loc,leader_name) 
