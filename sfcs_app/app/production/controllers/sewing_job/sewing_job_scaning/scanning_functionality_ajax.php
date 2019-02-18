@@ -1197,7 +1197,7 @@ else if($concurrent_flag == 0)
 		{
 			if($b_rep_qty[$i] > 0)
 			{
-				$hout_plant_timings_qry = "SELECT TIME(NOW()),start_time,end_time,time_id FROM $bai_pro3.tbl_plant_timings WHERE  start_time<=TIME(NOW()) AND end_time>=TIME(NOW())";
+				$hout_plant_timings_qry = "SELECT TIME(NOW()),start_time,end_time,time_id,time_value FROM $bai_pro3.tbl_plant_timings WHERE  start_time<=TIME(NOW()) AND end_time>=TIME(NOW())";
 				$hout_plant_timings_result = $link->query($hout_plant_timings_qry);
 
 				if($hout_plant_timings_result->num_rows > 0){
