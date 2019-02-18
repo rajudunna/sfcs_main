@@ -225,6 +225,7 @@ if($target=='dummy'){
     $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2'); 
     $update_result2 = mysqli_query($link,$update_query2) or force_exit('Query Error Cut 2');
     $response_data['saved'] = 1;
+    $response_data['pass'] = 1;
     echo json_encode($response_data);
     exit();
 }
