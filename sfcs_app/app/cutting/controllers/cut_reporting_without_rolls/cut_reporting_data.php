@@ -214,6 +214,16 @@ $response_data['date']      = $date;
 $response_data['doc_target_type'] = $target_doc_type;
 $response_data['ratio_data']      = getSizesRatio($doc_no,$child_docs);
 
+if(!in_array($category,$fabric_categories_array) ){
+    $target_doc_type = 'dummy';
+    $details = "SELECT order_del_no,order_col_des,order_style_no from bai_pro3.bai_orders_db_confirm where order_tid='$order_tid'";
+    $details_r = mysqli_query($link,$details);
+    $row1 = mysqli_fetch_array($details_r);
+    $response_data['styles']   = $row1['order_style_no'];
+    $response_data['schedules']= $row1['order_del_no'];
+    $response_data['colors']   = $row1['order_col_des'];
+}
+
 echo json_encode($response_data);
 exit();
 
