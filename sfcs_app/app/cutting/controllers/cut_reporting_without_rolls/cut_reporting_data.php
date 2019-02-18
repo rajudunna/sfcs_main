@@ -203,7 +203,7 @@ if(!in_array($category,$fabric_categories_array) ){
     $response_data['schedules']= $row1['order_del_no'];
     $response_data['colors']   = $row1['order_col_des'];
     $response_data['good_pieces'] = $a_plies * $ratio;
-    if($a_plies == $p_plies){
+    if($a_plies == $p_plies &&  $act_cut_status == 'DONE'){
         $response_data['cut_done']  = 1;
     }
 }
