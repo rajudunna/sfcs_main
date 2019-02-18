@@ -202,6 +202,7 @@ if(!in_array($category,$fabric_categories_array) ){
     $response_data['styles']   = $row1['order_style_no'];
     $response_data['schedules']= $row1['order_del_no'];
     $response_data['colors']   = $row1['order_col_des'];
+    $response_data['good_pieces'] = $a_plies * $size_ratio;
 }
     
 $response_data['doc_no'] = $doc_no;
