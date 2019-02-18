@@ -205,7 +205,6 @@ if(!in_array($category,$fabric_categories_array) ){
     $response_data['good_pieces'] = $a_plies * $ratio;
     if($a_plies == $p_plies){
         $response_data['cut_done']  = 1;
-        $response_data['can_report']  = 0;
     }
 }
     
