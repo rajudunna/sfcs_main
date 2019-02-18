@@ -195,7 +195,7 @@ if($response_data['cut_done'] == 1 && $fully_report =0 )
     $response_data['partial']  = 0;        
 
 if(!in_array($category,$fabric_categories_array) ){
-    $target_doc_type = 'dummy';
+    $target_doc_type .= '_other';
     $details = "SELECT order_del_no,order_col_des,order_style_no from bai_pro3.bai_orders_db_confirm where order_tid='$order_tid'";
     $details_r = mysqli_query($link,$details);
     $row1 = mysqli_fetch_array($details_r);
