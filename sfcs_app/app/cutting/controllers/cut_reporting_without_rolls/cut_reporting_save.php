@@ -220,8 +220,10 @@ if($target=='dummy'){
 
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
                     act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
+    $update_query2 = "UPDATE $bai_pro3.plandoc_stat_log SET act_cut_status='DONE',fabric_status=5 where org_doc_no = $doc_no ";                
     $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1');  
     $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2'); 
+    $update_result2 = mysqli_query($link,$update_query2) or force_exit('Query Error Cut 2');
     $response_data['saved'] = 1;
     echo json_encode($response_data);
     exit();
