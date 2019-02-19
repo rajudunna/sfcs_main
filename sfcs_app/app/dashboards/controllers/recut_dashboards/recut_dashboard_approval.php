@@ -265,7 +265,7 @@ echo $drp_down;
                 </thead>
                 <?php  
                 $s_no = 1;
-                $blocks_query  = "SELECT fabric_status,SUM(rejected_qty)as rejected_qty,parent_id as doc_no,SUM(recut_qty)as recut_qty,SUM(recut_reported_qty) as recut_reported_qty,SUM(issued_qty)as issued_qty,r.`mk_ref`,b.`style_id`AS style,b.`order_col_des` AS color,b.`order_del_no` as schedule
+                $blocks_query  = "SELECT fabric_status,SUM(rejected_qty)as rejected_qty,parent_id as doc_no,SUM(recut_qty)as recut_qty,SUM(recut_reported_qty) as recut_reported_qty,SUM(issued_qty)as issued_qty,r.`mk_ref`,b.`order_style_no`AS style,b.`order_col_des` AS color,b.`order_del_no` as schedule
                 FROM `$bai_pro3`.`recut_v2_child` rc 
                 LEFT JOIN $bai_pro3.`recut_v2` r ON r.doc_no = rc.`parent_id`
                 LEFT JOIN $bai_pro3.`bai_orders_db` b ON b.order_tid = r.`order_tid`

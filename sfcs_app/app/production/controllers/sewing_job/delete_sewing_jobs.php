@@ -89,6 +89,7 @@
     { 
         $schedule=$_POST['schedule'];
         $reason=$_POST['reason']; 
+        $schedule = str_replace(' ', '', $schedule);
 
         $op_code_query = "Select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application' ";
                     $op_code_result = mysqli_query($link,$op_code_query);
@@ -98,7 +99,6 @@
 
         $validation_query = "SELECT id from $brandix_bts.bundle_creation_data where schedule = '$schedule' 
                     and operation_id = $ips_op_code";
-
         // $validation_query="SELECT * FROM $bai_pro3.act_cut_status WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '%".$schedule."%')"; 
         // echo $validation_query; 
         $sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data"); 

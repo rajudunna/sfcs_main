@@ -179,18 +179,19 @@ if($a_plies != $p_plies && $act_cut_status == 'DONE'){
 }
 
 //Verifying for the 'F' forcefully reported docket
-$fully_report = 0;
+$nfully_report = 0;
 $cps_full_status_query = "SELECT reported_status from $bai_pro3.cps_log where doc_no IN ($child_docs) 
                     and operation_code = $op_code ";                                        
 $cps_full_status_result = mysqli_query($link,$cps_full_status_query);
 while($row=mysqli_fetch_array($cps_full_status_result)){
     if($row['reported_status'] == 'P' || $row['reported_status'] == ''){
         $response_data['cut_done'] = 0;
+        $nfully_report++;
     }else if($row['reported_status'] == 'F'){
         $response_data['cut_done'] = 1;
     }    
 }            
-if($response_data['cut_done'] == 1)
+if($response_data['cut_done'] == 1 && $fully_report =0 )
     $response_data['partial']  = 0;        
 
 $response_data['doc_no'] = $doc_no;
