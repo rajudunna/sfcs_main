@@ -110,8 +110,8 @@
 
                                 </div>
                                 <div class = "col-sm-3">
-                                <b>Parent Work Center Id<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b>            
-                                    <select id="parent_work_center_id" style="width:100%;" name="parent_work_center_id" class="form-control" required>
+                                <b>Parent Work Center Id<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='orange'>*</font></span></b>            
+                                    <select id="parent_work_center_id" style="width:100%;" name="parent_work_center_id" class="form-control">
                                     <option value=''>Select Parent Work Center Id</option>
                                     <?php   
                                     if($vals>0){
@@ -143,7 +143,7 @@
                                     <b>Work Center</b><input type="text" class="form-control" id="work_center_id" name="work_center_id">
                                 </div>
                                 <div class="col-sm-3">
-                                    <b>Category</b>
+                                    <b>Category</b> <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span>
                                     <select class="form-control"id='category' name='category' title="It's Mandatory field" required>
                                     <option value="">Please Select</option>
                                     <option value='cutting'>Cutting</option>
@@ -151,13 +151,18 @@
                                     <option value='Receive PF'>Embellishment Received</option>
                                     <option value='sewing'>Sewing</option>
                                     <option value='packing'>Packing</option>
-                                    
                                     </select>
+                                </div></div>
+                                <div class='row'>
+                                    <div class="col-sm-2">
+                                        <button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
+                                    </div>
+                                    <div class="col-sm-2"></div><div class="col-sm-2"></div><div class="col-sm-2"></div>
+                                    <div class="col-sm-4" pull-right>
+                                    </br>
+                                        <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='orange'>* :</font></span> Fields are mandatory when report to ERP is "Yes". 
+                                    </div>
                                 </div>
-                                <div class="col-sm-2">
-                                    <button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
-                                </div>
-                            </div>
                         </form>
                     </div>  
                 </div>
@@ -255,12 +260,17 @@
                 $cnt_moptyp = $m_optype_check_qry_rows['cnt'];
             }
         }
+        $work_center_qry = 1; 
+        if(strtolower($default_operation)=='yes' && $parent_work_center_id == '')
+        {
+            $work_center_qry = 0;
+        }
         $m_operation_type_check = 1; 
         if(strtolower($default_operation)=='yes' && $m_operation_type == '')
         {
             $m_operation_type_check = 0;
         }
-        if($cnt_opsname == 0 && $cnt == 0 && $cnt_short == 0 && $cnt_work == 0 && $cnt_moptyp == 0 && $m_operation_type_check == 1)
+        if($cnt_opsname == 0 && $cnt == 0 && $cnt_short == 0 && $cnt_work == 0 && $cnt_moptyp == 0 && $m_operation_type_check == 1  && $work_center_qry == 1)
         {
             $qry_insert = "INSERT INTO $brandix_bts.tbl_orders_ops_ref ( operation_name, default_operation,operation_code, type, operation_description,short_cut_code,work_center_id,category,parent_work_center_id,m3_operation_type)VALUES('$operation_name','$default_operation','$operation_code', '$type', '$sw_cod','$short_key_code','$work_center_id','$category','$parent_work_center_id','$m_operation_type')";
             $res_do_num = mysqli_query($link,$qry_insert);
@@ -311,6 +321,12 @@
         {
             $sql_message = 'M3 Operation Type and Short Key Code Already in use. Please give other.';
             echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+        }
+        else if($work_center_qry == 0)
+        {
+            $sql_message = 'You should give work center id for Report to ERP Yes Operations';
+            echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
+
         }
         else if($m_operation_type_check == 0)
         {

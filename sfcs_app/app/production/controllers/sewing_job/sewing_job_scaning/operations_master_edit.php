@@ -114,85 +114,87 @@ function validateQty(event)
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
-                                     <div class="dropdown">
-                                        <b>Report To ERP<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
-                                        <select class="form-control" id="sel1" name="sel1" required>
-                                        <option value="">Please Select</option>
-                                        <option value='yes' <?php echo $row[0]['default_operation']== 'yes'? 'selected' : ''?>>Yes</option>
-                                        <option value='No' <?php echo $row[0]['default_operation']== 'No'? 'selected' : ''?>>No</option></select>   
+                                        <div class="dropdown">
+                                            <b>Report To ERP<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
+                                            <select class="form-control" id="sel1" name="sel1" required>
+                                            <option value="">Please Select</option>
+                                            <option value='yes' <?php echo $row[0]['default_operation']== 'yes'? 'selected' : ''?>>Yes</option>
+                                            <option value='No' <?php echo $row[0]['default_operation']== 'No'? 'selected' : ''?>>No</option></select>   
+                                        </div>
                                     </div>
                                 </div>
+                                <div class ="row">
                                     <div class="col-sm-3" hidden="true">
                                         <b>Sewing Order Code</b><input type="text" class="form-control" id="sw_cod" name="sw_cod" value= "<?php echo $row[0]['operation_description']?>">
                                     </div> 
                                     <div class = "col-sm-3">
-                                <label for="style">Short Key Code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>            
-                                    <select id="short_key_code" name = "short_cut_code" style="width:100%;" class="form-control" required>
-                                    <option value='0'>Select Short Code</option>
-                                    <?php                       
-                                        if ($result_oper->num_rows > 0) {
-                                            while($row_short = $result_oper->fetch_assoc()) {
-                                            $row_value = $row_short['short_key_code'];
-                                                if($row_short['short_key_code'] == $row[0]['short_cut_code'])
-                                                {
-                                                    $selected = 'selected';
+                                        <label for="style">Short Key Code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>            
+                                            <select id="short_key_code" name = "short_cut_code" style="width:100%;" class="form-control" required>
+                                            <option value='0'>Select Short Code</option>
+                                            <?php                       
+                                                if ($result_oper->num_rows > 0) {
+                                                    while($row_short = $result_oper->fetch_assoc()) {
+                                                    $row_value = $row_short['short_key_code'];
+                                                        if($row_short['short_key_code'] == $row[0]['short_cut_code'])
+                                                        {
+                                                            $selected = 'selected';
+                                                        }
+                                                        else
+                                                        {
+                                                            $selected = '';
+                                                        }
+                                                        echo "<option value='".$row_short['short_key_code']."' $selected>".strtoupper($row_value)."</option>";
+                                                    }
+                                                } else {
+                                                    echo "<option value=''>No Data Found..</option>";
                                                 }
-                                                else
-                                                {
-                                                    $selected = '';
-                                                }
-                                                echo "<option value='".$row_short['short_key_code']."' $selected>".strtoupper($row_value)."</option>";
-                                            }
-                                        } else {
-                                            echo "<option value=''>No Data Found..</option>";
-                                        }
-                                    ?>
-                                </select>
+                                            ?>
+                                        </select>
 
-                                </div>
-                                <div class = "col-sm-3">
-                                <label for="style">Parent Work Center Id<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>         
-                                    <select id="parent_work_center_id" name="parent_work_center_id" style="width:100%;" class="form-control" required>
-                                    <option value='0'>Select Parent Work Center Id</option>
-                                    <?php       
-                                    if($vals>0){
-                                        foreach ($vals as $value) 
-                                               {
-                                                   //echo "Oper Desc: ".$value['OPDS']."MO No:".$value['MFNO']."Work Station Id :".$value['PLG1']."SMV :".$value['PITI']."Operation :".$value['OPNO']."</br>";
-                                                   
-                                                   //getting values from api call
-                                                   $PLGR=$value['PLGR'];
-                                                   $PLNM=$value['PLNM'];
-                                           echo "<option value='". $PLGR."'>".$PLGR."-".$PLNM."</option>";
-   
-                                               }
-                                           }else{
-                                               echo "<option value=''>No Data Found..</option>"; 
-                                           }                
-                                        // if ($result_work_center_id->num_rows > 0) {
-                                        //  while($row_short = $result_work_center_id->fetch_assoc()) {
-                                        //      // var_dump($row_short);
-                                        //  $row_value = $row_short['work_center_id_name'];
-                                        //      if($row_short['work_center_id_name'] == $row[0]['parent_work_center_id'])
-                                        //      {
-                                        //          $selected = 'selected';
-                                        //      }
-                                        //      else
-                                        //      {
-                                        //          $selected = '';
-                                        //      }
-                                        //      echo "<option value='".$row_short['work_center_id_name']."' $selected>".strtoupper($row_value)."</option>";
-                                        //  }
-                                        // } else {
-                                        //  echo "<option value=''>No Data Found..</option>";
-                                        // }
-                                    ?>
-                                </select>
+                                    </div>
+                                    <div class = "col-sm-3">
+                                        <label for="style">Parent Work Center Id<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='orange'>*</font></span></label>         
+                                            <select id="parent_work_center_id" name="parent_work_center_id" style="width:100%;" class="form-control">
+                                            <option value=''>Select Parent Work Center Id</option>
+                                            <?php       
+                                            if($vals>0){
+                                                foreach ($vals as $value) 
+                                                    {
+                                                        //echo "Oper Desc: ".$value['OPDS']."MO No:".$value['MFNO']."Work Station Id :".$value['PLG1']."SMV :".$value['PITI']."Operation :".$value['OPNO']."</br>";
+                                                        
+                                                        //getting values from api call
+                                                        $PLGR=$value['PLGR'];
+                                                        $PLNM=$value['PLNM'];
+                                                echo "<option value='". $PLGR."'>".$PLGR."-".$PLNM."</option>";
+        
+                                                    }
+                                                }else{
+                                                    echo "<option value=''>No Data Found..</option>"; 
+                                                }                
+                                                // if ($result_work_center_id->num_rows > 0) {
+                                                //  while($row_short = $result_work_center_id->fetch_assoc()) {
+                                                //      // var_dump($row_short);
+                                                //  $row_value = $row_short['work_center_id_name'];
+                                                //      if($row_short['work_center_id_name'] == $row[0]['parent_work_center_id'])
+                                                //      {
+                                                //          $selected = 'selected';
+                                                //      }
+                                                //      else
+                                                //      {
+                                                //          $selected = '';
+                                                //      }
+                                                //      echo "<option value='".$row_short['work_center_id_name']."' $selected>".strtoupper($row_value)."</option>";
+                                                //  }
+                                                // } else {
+                                                //  echo "<option value=''>No Data Found..</option>";
+                                                // }
+                                            ?>
+                                        </select>
 
-                                </div>
+                                    </div>
                                     <div class="col-sm-3">
                                         <b>Work Center</b><input type="text" class="form-control" id="work_center_id" name="work_center_id" value= "<?php echo $row[0]['work_center_id']?>">
-                                    </div> 
+                                    </div>
                                     <div class="col-sm-3">
                                         <b>Category</b>
                                         <select class="form-control" id="category" name="category" required>
@@ -204,11 +206,17 @@ function validateQty(event)
                                              <option value='Receive PF' <?php echo $row[0]['category']== 'Receive PF'? 'selected' : ''?>>Embellishment Received</option>
                                         </select>
                                     </div>
+                                </div>
+                                <div class='row'>
                                     <div class="col-sm-2">
                                         <button type="submit" class="btn btn-info" style="margin-top:18px;">Update</button>
                                     </div>
+                                    <div class="col-sm-2"></div><div class="col-sm-2"></div><div class="col-sm-2"></div>
+                                    <div class="col-sm-4" pull-right>
+                                    </br>
+                                        <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='orange'>* :</font></span> Fields are mandatory when report to ERP is "Yes". 
+                                    </div>
                                 </div>
-                                
                             </form>
                         </div>
                     </div>
@@ -279,12 +287,17 @@ function validateQty(event)
                     $m3ops_type_short = $res_res_res_m_operation_type_qry['cnt'];
                 }
             }
+            $work_center_qry = 1; 
+            if(strtolower($default_operation)=='yes' && $parent_work_center_id == '')
+            {
+                $work_center_qry = 0;
+            }
             $m_operation_type_check = 1; 
             if(strtolower($default_operation)=='yes' && $m_operation_type == '')
             {
                 $m_operation_type_check = 0;
             }
-            if($cnt == 0 && $cnt_short == 0 && $m3ops_type_short == 0 && $m_operation_type_check == 1)
+            if($cnt == 0 && $cnt_short == 0 && $m3ops_type_short == 0 && $m_operation_type_check == 1 &&  $work_center_qry == 1)
             {
                 $qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation',work_center_id='$work_center_id',category='$category',parent_work_center_id='$parent_work_center_id',m3_operation_type='$m_operation_type' where id='$id'";
                 // echo $qry_insert1;
@@ -340,6 +353,11 @@ function validateQty(event)
                 $sql_message = 'M3 operation type and Short Key Code Already in use. Please give other.';
                 echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
                 die();
+            }
+            else if($work_center_qry == 0)
+            {
+                $sql_message = 'You should give work center id for Report to ERP Yes Operations';
+                echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
             }
             else if($m_operation_type_check == 0)
             {
