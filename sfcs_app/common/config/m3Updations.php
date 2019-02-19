@@ -89,34 +89,45 @@ function updateM3Transactions($ref_id,$op_code,$qty)
                     }
                     else
                     {
-                        $get_op_code_smv_qry = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' AND m3_smv > 0;";
-                        $result_smv=mysqli_query($link, $get_routing_query) or exit("error while fetching opn routing");
-                        if (mysqli_num_rows($result_smv) > 0)
-                        {
-                            $opn_routing=mysqli_fetch_array($result_smv);
-                            $opn_routing_code = $opn_routing['operation_code'];
-                        }
+                        $opn_routing_code = 200;
                     }
-                    
-                    if ($opn_routing_code == $op_code)
-                    {
-                        $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no=$mo_number";
-                        $count_result = $link->query($get_count);
-                        while($row = $count_result->fetch_assoc()) 
-                        {
-                            $count = $row['count'];
-                        }
 
-                        if ($count > 0)
+                    $get_details_b4_carton_ready = "SELECT ops_sequence,operation_order FROM $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' AND operation_code=$opn_routing_code";
+                    $result_details_b4_carton_ready=mysqli_query($link, $get_details_b4_carton_ready) or exit("error while fetching pre_op_code_b4_carton_ready");
+                    if (mysqli_num_rows($result_details_b4_carton_ready) > 0)
+                    {
+                        $op_order=mysqli_fetch_array($result_details_b4_carton_ready);
+                        $ops_sequence = $op_order['ops_sequence'];
+                        $operation_order = $op_order['operation_order'];
+
+                        $get_pre_op_code_b4_carton_ready = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' AND ops_sequence = '$ops_sequence' AND CAST(operation_order AS CHAR) < '$operation_order' AND operation_code NOT IN (10,200,15) ORDER BY operation_order DESC LIMIT 1";
+                        $result_pre_op_b4_carton_ready=mysqli_query($link, $get_pre_op_code_b4_carton_ready) or exit("error while fetching pre_op_code_b4_carton_ready");
+                        if (mysqli_num_rows($result_pre_op_b4_carton_ready) > 0)
                         {
-                            $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $to_update_qty, cumulative_qty = cumulative_qty + $to_update_qty where mo_no= $mo_number";
+                            $final_op_code=mysqli_fetch_array($result_pre_op_b4_carton_ready);
+                            $opn_b4_200 = $final_op_code['operation_code'];
                         }
-                        else
+                        
+                        if ($opn_b4_200 == $op_code)
                         {
-                            $insert_update_tbl_carton_ready = "INSERT INTO $bai_pro3.tbl_carton_ready (operation_id, mo_no, remaining_qty, cumulative_qty) VALUES ('$op_code', '$mo_number', '$to_update_qty', '$to_update_qty');";
+                            $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no=$mo_number";
+                            $count_result = $link->query($get_count);
+                            while($row = $count_result->fetch_assoc()) 
+                            {
+                                $count = $row['count'];
+                            }
+
+                            if ($count > 0)
+                            {
+                                $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $to_update_qty, cumulative_qty = cumulative_qty + $to_update_qty where mo_no= $mo_number";
+                            }
+                            else
+                            {
+                                $insert_update_tbl_carton_ready = "INSERT INTO $bai_pro3.tbl_carton_ready (operation_id, mo_no, remaining_qty, cumulative_qty) VALUES ('$op_code', '$mo_number', '$to_update_qty', '$to_update_qty');";
+                            }
+                            mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating/inserting tbl_carton_ready");
                         }
-                        mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating/inserting tbl_carton_ready");
-                    }                        
+                    }                                           
                 // 763 mo filling for new operation end
                 $dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and operation_code=$op_code";
                 $result_dep_ops_array_qry = $link->query($dep_ops_array_qry);
@@ -255,30 +266,41 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
                     }
                     else
                     {
-                        $get_op_code_smv_qry = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' AND m3_smv > 0;";
-                        $result_smv=mysqli_query($link, $get_routing_query) or exit("error while fetching opn routing");
-                        if (mysqli_num_rows($result_smv) > 0)
-                        {
-                            $opn_routing=mysqli_fetch_array($result_smv);
-                            $opn_routing_code = $opn_routing['operation_code'];
-                        }
+                        $opn_routing_code = 200;
                     }
 
-                    if ($opn_routing_code == $op_code)
+                    $get_details_b4_carton_ready = "SELECT ops_sequence,operation_order FROM $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' AND operation_code=$opn_routing_code";
+                    $result_details_b4_carton_ready=mysqli_query($link, $get_details_b4_carton_ready) or exit("error while fetching pre_op_code_b4_carton_ready");
+                    if (mysqli_num_rows($result_details_b4_carton_ready) > 0)
                     {
-                        $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no=$mo_number";
-                        $count_result = $link->query($get_count);
-                        while($row = $count_result->fetch_assoc()) 
-                        {
-                            $count = $row['count'];
-                        }
+                        $op_order=mysqli_fetch_array($result_details_b4_carton_ready);
+                        $ops_sequence = $op_order['ops_sequence'];
+                        $operation_order = $op_order['operation_order'];
 
-                        if ($count > 0)
+                        $get_pre_op_code_b4_carton_ready = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' AND ops_sequence = '$ops_sequence' AND CAST(operation_order AS CHAR) < '$operation_order' AND operation_code NOT IN (10,200,15) ORDER BY operation_order DESC LIMIT 1;";
+                        $result_pre_op_b4_carton_ready=mysqli_query($link, $get_pre_op_code_b4_carton_ready) or exit("error while fetching pre_op_code_b4_carton_ready");
+                        if (mysqli_num_rows($result_pre_op_b4_carton_ready) > 0)
                         {
-                            $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty - $to_update_qty, cumulative_qty = cumulative_qty - $to_update_qty where mo_no= $mo_number";
+                            $final_op_code=mysqli_fetch_array($result_pre_op_b4_carton_ready);
+                            $opn_b4_200 = $final_op_code['operation_code'];
                         }
-                        mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating/inserting tbl_carton_ready");
-                    }                        
+                        
+                        if ($opn_b4_200 == $op_code)
+                        {
+                            $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no=$mo_number";
+                            $count_result = $link->query($get_count);
+                            while($row = $count_result->fetch_assoc()) 
+                            {
+                                $count = $row['count'];
+                            }
+
+                            if ($count > 0)
+                            {
+                                $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty - $to_update_qty, cumulative_qty = cumulative_qty - $to_update_qty where mo_no= $mo_number";
+                                mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating/inserting tbl_carton_ready");
+                            }
+                        }
+                    }                          
                 // 763 mo filling for new operation end
 
                 $ims_pro_qty_updating = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites".mysqli_error($GLOBALS["___mysqli_ston"]));
