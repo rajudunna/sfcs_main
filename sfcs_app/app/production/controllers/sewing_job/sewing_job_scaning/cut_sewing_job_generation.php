@@ -124,6 +124,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
 }else if(isset($_POST) && isset($_POST['del_recs'])){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     $doc_no = $_POST['del_recs'];
+    // 217
     $validation_query="SELECT * FROM $bai_pro3.act_cut_status WHERE doc_no IN (".$doc_no.")"; 
     $sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data"); 
     $count= mysqli_num_rows($sql_result); 
@@ -411,9 +412,9 @@ if($schedule != "" && $color != "")
                 elseif($old_cnt_jb['pac_seq_no']=='-1'){
                     $view_shows[] = implode(',',$old_doc_nos);
                     $imp_data = implode(',',$old_doc_nos);
-                    echo "<td><a class='btn btn-warning' onclick='show_view_form($imp_data)'>View</a>"; 
+                    echo "<td><a class='btn btn-warning' onclick='show_view_form(\"$imp_data\")'>View</a>"; 
                     if($old_cut_status=='')
-                        echo "<a class='btn btn-danger' id='del-$imp_data' onclick='delet($imp_data)'>Delete</a>
+                        echo "<a class='btn btn-danger' id='del-$imp_data' onclick='delet(\"$imp_data\")'>Delete</a>
                                 <div id='delete_message_$imp_data' style='display:none'><h3 class='badge progress-bar-success'>Deleting...</h3></div>";
                     echo "</td>";
                 }else{
@@ -472,9 +473,9 @@ if($schedule != "" && $color != "")
             elseif($old_cnt_jb['pac_seq_no']=='-1'){
                 $view_shows[] = implode(',',$old_doc_nos);
                 $imp_data = implode(',',$old_doc_nos);
-                echo "<td><a class='btn btn-warning' onclick='show_view_form($imp_data)'>View</a>"; 
+                echo "<td><a class='btn btn-warning' onclick='show_view_form(\"$imp_data\")'>View</a>"; 
                 if($old_cut_status=='')
-                    echo "<a class='btn btn-danger' id='del-$imp_data' onclick='delet($imp_data)'>Delete</a>
+                    echo "<a class='btn btn-danger' id='del-$imp_data' onclick='delet(\"$imp_data\")'>Delete</a>
                             <div id='delete_message_$imp_data' style='display:none'><h3 class='badge progress-bar-success'>Deleting...</h3></div>";
                 echo "</td>";
             }else{
@@ -484,10 +485,11 @@ if($schedule != "" && $color != "")
         echo "</tbody></table></div></div>"; 
         if(count($view_shows)>0){
             foreach($view_shows as $view){
-                echo "<div id='view-".$view."' style='display:none'>";
+                $ids = str_replace(",","_",$view);
+                echo "<div id='view-".$ids."' style='display:none'>";
                 $qry_get_doc_details_view = "SELECT * FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".$view.")";
                 $qry_get_doc_details_view_res = mysqli_query($link, $qry_get_doc_details_view) or exit("Sql Error : qry_get_doc_details_view_res".mysqli_error($GLOBALS["___mysqli_ston"]));
-                echo "<div class='pull-right'><button class='btn btn-info' onclick='hide_rev($view)'>Back</button></div><br/>";
+                echo "<div class='pull-right'><button class='btn btn-info' onclick='hide_rev(\"$view\")'>Back</button></div><br/>";
                 echo "<table class='table'><thead><tr><th>#</th><th>Job</th><th>Size</th><th>Sewing Type</th><th>Quantity</th></tr></thead><tbody>";
                 $seq=1;
                 while($wr = mysqli_fetch_array($qry_get_doc_details_view_res)){
@@ -915,11 +917,18 @@ function assigndata(s,max,end){
 }
 
 function show_view_form(docs_id){
-    $("#view-"+docs_id).css("display", "block");
+    //var r = docs_id.replace(",","_");
+    var myarr = docs_id.split(",");
+    var r = myarr.join('_');
+    console.log("view-"+r);
+    $("#view-"+r).css("display", "block");
     $("#main-table").css("display", "none");
 }
 function hide_rev(docs_id){
-    $("#view-"+docs_id).css("display", "none");
+    var myarr = docs_id.split(",");
+    var r = myarr.join('_');
+    console.log("view-"+r);
+    $("#view-"+r).css("display", "none");
     $("#main-table").css("display", "block");
 }
 function delet(docs_id){
