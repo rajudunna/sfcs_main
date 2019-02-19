@@ -212,8 +212,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <td id='r_reported_plies'></td>
                             <!-- add validation for ret + rec + dam + short = c_plies -->
                             <td><input type='text' class='form-control integer' value='0' id='c_plies'></td>
-                            <td><input type='text' class='form-control integer' value='0' id='fab_received'></td>
-                            <td><input type='text' class='form-control integer' value='0' id='fab_returned'>
+                            <td><input type='text' class='form-control float' value='0' id='fab_received'></td>
+                            <td><input type='text' class='form-control float' value='0' id='fab_returned'>
                                 <br><br>
                                 <span id='returend_to_parent'>
                                     <select class='form-control' id='returned_to'>
@@ -223,8 +223,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                                 </select>
                                 </span>
                             </td>
-                            <td><input type='text' class='form-control integer' value='0' id='damages'></td>
-                            <td><input type='text' class='form-control integer' value='0' id='shortages'></td>
+                            <td><input type='text' class='form-control float' value='0' id='damages'></td>
+                            <td><input type='text' class='form-control float' value='0' id='shortages'></td>
                             <!-- <td><input type='text' class='form-control integer' place-holder='Rejections' id='rejection_pieces' name='rejection_pieces'><br><br> -->
                             <td>
                             <input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn' value='Show Rejections'>
@@ -443,21 +443,26 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var schedule    = $('#post_schedule').val();
         var color       = $('#post_color').val();
         var fab_req     = Number($('#fab_required').val());
+        var error_message = '';
         
         //Screen Validations
-        if(c_plies == 0){
-            swal('Error','Please Enter Reporting Plies','error');
-            return false;
-        }
-        if(c_plies > avl_plies){
-            swal('Warning','The Reporting Plies are more than, that are to be Reported','error');
-            return false;
-        }
-        if(rec > fab_req)
-            return swal('info','Reporting More Than Eligible Fabric','info'); 
-        if(fab_req < ret_to+rec+damages+shortages){
-            swal('Warning','The Reporting Fabric must not be greater than received + fabric returned + shortages + damages','error');
-            return false;
+        if(c_plies == 0 && full_reporting_flag == '1'){
+            //do nothing
+        }else{
+            if(c_plies == 0){
+                swal('Please Enter Reporting Plies','Or Mark this as Fully Reported Cut','error');
+                return false;
+            }
+            if(c_plies > avl_plies){
+                swal('Warning','The Reporting Plies are more than, that are to be Reported','error');
+                return false;
+            }
+            if(rec > fab_req)
+                return swal('info','Reporting More Than Eligible Fabric','info'); 
+            if(fab_req < ret_to+rec+damages+shortages){
+                swal('Warning','The Reporting Fabric must not be greater than received + fabric returned + shortages + damages','error');
+                return false;
+            }
         }
         
         if(shift == null || cut_table == null || team_leader == null){
@@ -549,14 +554,19 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 clearFormData();
                 clearRejections();
             }
+            
+            console.log(data.error_msg);
+            if(data.error_msg)
+                error_message = data.error_msg;
+
             if(data.saved == '1'){
                 if(data.m3_updated == '0')
-                    user_msg = 'M3 Reporting Failed for this docket.';
-
+                    user_msg = error_message+'M3 Reporting Failed for this docket.';
+                
                 if(data.pass == '1')
-                    swal('Cut Qty Reported Successfully','','success');
+                    swal('Cut Qty Reported Successfully',error_message,'success');
                 else{
-                    swal('Cut Reporting Problem Error','','error');
+                    swal('Cut Reporting Problem Error',error_message,'error');
                     user_msg = 'CUT Reported with Error.Please Do not Proceed to Scanning for this docket';
                     //swal('Cut Qty Reported Successfully','','success');
                     //user_msg += 'Cut Reported Successfully';
@@ -564,11 +574,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     
                 if(rejections_flag){
                     if(data.rejections_response == '1')
-                        user_msg += 'Cut Reported Successfully';
+                        user_msg += error_message+'Cut Reported Successfully';
                     else if(data.rejections_response == '2')
-                        user_msg += 'Cut Reported Successfully , Rejections Saved BUT M3 Reporting Failed.';
+                        user_msg += error_message+'Cut Reported Successfully , Rejections Saved BUT M3 Reporting Failed.';
                     else    
-                        user_msg += 'Cut Reported Successfully BUT Rejections Reporting Failed ';    
+                        user_msg += error_message+'Cut Reported Successfully BUT Rejections Reporting Failed ';    
                 }
                 if(user_msg.length != 0){
                     $('#user_msg').html(user_msg);
@@ -886,7 +896,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $.ajax({
             url : '<?= $get_url ?>?doc_no='+doc_no
         }).done(function(res){
-            
+            GLOBAL_CALL = 0;
             var data = $.parseJSON(res);
             avl_plies = Number(data.avl_plies);
             fab_req = Number(data.fab_required);
