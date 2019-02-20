@@ -737,6 +737,7 @@ if($target == 'style_clubbed'){
         }while($fulfill_qty > 0);
     }
     //ALL Excess Qty left out to be filled equally 
+    /*
     foreach($left_over as $size=>$qty){
         if($qty > 0){
             $docs = $dockets[$size];
@@ -770,6 +771,7 @@ if($target == 'style_clubbed'){
             }
         }
     }
+    */
     //Array Cloning reported into reported2
     foreach($reported as $doc => $size_wise){
         foreach($size_wise as $size => $qty){
