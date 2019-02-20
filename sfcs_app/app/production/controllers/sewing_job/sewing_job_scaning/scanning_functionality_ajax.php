@@ -49,6 +49,7 @@ $r_qtys=$new_data['qty_data'];
 $r_no_reasons = $new_data['tot_reasons'];
 $mapped_color = $new_data['color'];
 $type = $form;
+$barcode_sequence = $new_data['barcode_sequence'];
 $barcode_generation =  $new_data['barcode_generation'];
 $emb_cut_check_flag = $new_data['emb_cut_check_flag'];
 if($barcode_generation == 1)
@@ -718,7 +719,6 @@ if($barcode_generation == 1)
 		$b_rej_qty[] = $actual_rej_quantities[$value];
 	}
 }
-
 //Before CR Logic
 foreach ($b_tid as $key=>$value)
 {
@@ -756,6 +756,30 @@ else if($concurrent_flag == 0)
 		while($row = $result_fetching_job_number_from_bundle->fetch_assoc()) 
 		{
 			$b_job_no = $row['input_job_no_random'];
+		}
+		foreach($b_tid as $key=>$value)
+		{
+			$to_add = $b_rep_qty[$key];
+			$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $b_doc_num[$key] and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+			$update_qry_cps_log_res = $link->query($update_qry_cps_log);
+		}
+		// echo $update_qry_cps_log.'</br>';
+		
+		$actual_rejection_reason_array_string = array();
+		foreach($b_tid as $key=>$value)
+		{
+			$r_reasons = explode(",", $r_reason[$value]);
+			$r_qty = explode(",", $r_qtys[$value]);
+			foreach($r_reasons as $reason_key=>$reason_value)
+			{
+				$bundle_individual_number = $value;
+				$remain_qty_key = $r_reasons[$reason_key];
+				$remain_qty_value = $r_qty[$reason_key];
+				if($remain_qty_value > 0)
+				{
+					$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$remain_qty_key.'-'. $remain_qty_value ;
+				}
+			}	
 		}
 	}
 	$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
@@ -818,7 +842,7 @@ else if($concurrent_flag == 0)
 	{
 		$ops_seq_dep[] = $ops_seq;
 	}
-	$pre_ops_check = "SELECT tm.operation_code as operation_code,ops_sequence FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN brandix_bts.`tbl_orders_ops_ref` tr ON tr.id=tm.operation_name WHERE style='".$b_style."' AND color = '".$mapped_color."' and (ops_sequence = ".$ops_seq." or ops_sequence in  (".implode(',',$ops_seq_dep).")) AND  tr.category NOT IN ('cutting','Send PF','Receive PF') AND tm.operation_code != 200";
+	$pre_ops_check = "SELECT tm.operation_code as operation_code,ops_sequence FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN brandix_bts.`tbl_orders_ops_ref` tr ON tr.id=tm.operation_name WHERE style='".$b_style."' AND color = '".$mapped_color."' and (ops_sequence = ".$ops_seq." or ops_sequence in  (".implode(',',$ops_seq_dep).")) AND  tr.category IN ('sewing') AND tm.operation_code != 200";
 	// echo $pre_ops_check;
 	$result_pre_ops_check = $link->query($pre_ops_check);
 	if($result_pre_ops_check->num_rows > 0)
@@ -942,16 +966,6 @@ else if($concurrent_flag == 0)
 						}
 					}
 				}
-				if($barcode_generation != 1)
-				{
-					if($r_qty[$tid] != null && $r_reasons[$tid] != null)
-					{
-						$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$b_colors[$key].'","'.date('Y-m-d').'","'.$b_sizes[$key].'","'.$b_rej_qty[$key].'","3","'.$remarks_var.'","'.$remarks_code.'","'.$b_doc_num[$key].'","'.$b_job_no.'","'. $b_op_id.'","'. $b_remarks[$key].'","'.$b_tid[$key].'"),';
-						$reason_flag = true;
-					}
-
-				}
-				
 			}
 		$concurrent_flag = 0;
 		//commenting to decrease the response time
@@ -1026,18 +1040,6 @@ else if($concurrent_flag == 0)
 			$bundle_creation_result_temp = $link->query($final_query_000_temp);
 			//$bundle_creation_post_result = $link->query($bulk_insert_post);
 			//echo $bulk_insert_rej;
-			if($barcode_generation != 1)
-			{
-				if($reason_flag){
-					if(substr($bulk_insert_rej, -1) == ','){
-						$final_query = substr($bulk_insert_rej, 0, -1);
-					}else{
-						$final_query = $bulk_insert_rej;
-					}
-					//echo $final_query;
-					//$rej_insert_result = $link->query($final_query) or exit('data error');
-				}
-			}
 			
 			//echo $m3_bulk_bundle_insert;
 			
@@ -1078,10 +1080,6 @@ else if($concurrent_flag == 0)
 		$query = '';
 		if($table_name == 'bundle_creation_data')
 		{
-			if($barcode_generation != 1)
-			{
-				$bulk_insert_rej = "INSERT INTO $bai_pro3.bai_qms_db(`qms_style`, `qms_schedule`,`qms_color`,`log_user`, `log_date`, `qms_size`, `qms_qty`, `qms_tran_type`,`remarks`, `ref1`, `doc_no`, `input_job_no`, `operation_id`, `qms_remarks`, `bundle_no`) VALUES";
-			}
 			$smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
 			$result_smv_query = $link->query($smv_query);
 			while($row_ops = $result_smv_query->fetch_assoc()) 
@@ -1166,25 +1164,6 @@ else if($concurrent_flag == 0)
 					
 				}
 				
-			}
-			if($concurrent_flag == 0)
-			{
-				if($barcode_generation != 1)
-				{
-					if($reason_flag)
-					{
-						if(substr($bulk_insert_rej, -1) == ',')
-						{
-							$final_query = substr($bulk_insert_rej, 0, -1);
-						}
-						else
-						{
-							$final_query = $bulk_insert_rej;
-						}
-						//echo $final_query;
-						$rej_insert_result = $link->query($final_query) or exit('data error');
-					}
-				}
 			}
 			if(substr($bulk_insert_post_temp, -1) == ','){
 				$final_query_000_temp = substr($bulk_insert_post_temp, 0, -1);
@@ -1488,7 +1467,6 @@ else if($concurrent_flag == 0)
 			}
 			
 		}
-		// var_dump($actual_rejection_reason_array_string);
 		if(sizeof($actual_rejection_reason_array_string) > 0)
 		{
 			for($i=0;$i<sizeof($actual_rejection_reason_array_string);$i++)
