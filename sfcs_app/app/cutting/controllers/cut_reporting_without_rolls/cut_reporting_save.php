@@ -756,8 +756,9 @@ if($target == 'style_clubbed'){
     foreach($left_over as $size=>$qty){
         if($qty > 0){
             $docs = $dockets[$size];
-            $splitted = $qty;
-            $quit_counter = 0;
+            if($docs > 0){
+                $splitted = $qty;
+                $quit_counter = 0;
                 if($qty > $docs){
                     do{
                         $quit_counter++;
@@ -776,12 +777,13 @@ if($target == 'style_clubbed'){
                     $rem = $qty;
                     $splitted = 0;
                 }
-            foreach($planned[$size] as $docket => $ignore){
-                if($rem > 0){
-                    $rem--;
-                    $reported[$docket][$size]  = $splitted + 1;
-                }else{
-                    $reported[$docket][$size] += $splitted;
+                foreach($planned[$size] as $docket => $ignore){
+                    if($rem > 0){
+                        $rem--;
+                        $reported[$docket][$size]  = $splitted + 1;
+                    }else{
+                        $reported[$docket][$size] += $splitted;
+                    }
                 }
             }
         }
