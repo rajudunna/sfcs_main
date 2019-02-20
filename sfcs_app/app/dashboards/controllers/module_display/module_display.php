@@ -33,7 +33,7 @@ setTimeout(function(){
 		<label for="module" class="mb-2 mr-sm-2">Module: </label>
 	        <select class="form-control mb-2 mr-sm-2" name="module_name" id='module'> 
 <?php
-            $sql = "SELECT module_name FROM $bai_pro3.module_master order by id" ;
+            $sql = "SELECT module_name FROM $bai_pro3.module_master order by module_name*1" ;
 $result = mysqli_query($link, $sql);
         while($row=mysqli_fetch_array($result))
 {
