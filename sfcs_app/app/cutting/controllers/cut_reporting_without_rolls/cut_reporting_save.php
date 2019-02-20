@@ -2,7 +2,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
 include('cut_rejections_save.php');
-error_reporting(0);
+//error_reporting(0);
 $THRESHOLD = 200; //This Constant ensures the loop to force quit if it was struck in an infinte loop
 
 /*
@@ -935,7 +935,7 @@ function get_me_emb_check_flag($style,$color,$op_code){
 
 function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection_details){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    error_reporting(0);
+    //error_reporting(0);
     global $full_reporting_flag;
     $update_counter = 0;
     $counter = 0;
@@ -1053,7 +1053,7 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
 
 function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejection_details_each_size){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    error_reporting(0);
+    //error_reporting(0);
     global $full_reporting_flag;
     global $s_a_sizes_str;
     global $s_p_sizes_str;
@@ -1172,7 +1172,7 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
 
 function force_exit($str){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    error_reporting(0);
+    //error_reporting(0);
     global $response_data;
     global $doc_no;
     global $zero_a_sizes_str;
