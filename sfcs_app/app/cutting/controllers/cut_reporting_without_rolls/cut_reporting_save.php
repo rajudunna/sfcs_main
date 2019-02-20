@@ -2,7 +2,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
 include('cut_rejections_save.php');
-//error_reporting(0);
+error_reporting(0);
 $THRESHOLD = 200; //This Constant ensures the loop to force quit if it was struck in an infinte loop
 
 /*
@@ -602,7 +602,6 @@ if($target == 'style_clubbed'){
     $child_docs_result = mysqli_query($link,$child_docs_query);
     while($row = mysqli_fetch_array($child_docs_result)){
         $child_docs[] = $row['doc_no'];
-
     }
     //getting the no of schedules clubbed for the style for equal filling logic
     $child_schedules_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log psl  
@@ -614,13 +613,28 @@ if($target == 'style_clubbed'){
     }
 
     //getting size wise qty of parent docket
-    $doc_qty_query = "SELECT $p_sizes_str,doc_no from $bai_pro3.plandoc_stat_log where doc_no = '$doc_no' 
-                    order by acutno ASC";
-    $doc_qty_result = mysqli_query($link,$doc_qty_query);
-    while($row = mysqli_fetch_array($doc_qty_result)){
-        foreach($sizes_array as $size){
-            if($row['p_'.$size] > 0)
-                $reporting[$size] = ($row['p_'.$size] * $plies);
+    if($plies == $p_plies){
+        $doc_qty_query = "SELECT $p_sizes_str,doc_no,a_plies from $bai_pro3.plandoc_stat_log where org_doc_no = '$doc_no' 
+        order by acutno ASC";
+        $doc_qty_result = mysqli_query($link,$doc_qty_query);
+        while($row = mysqli_fetch_array($doc_qty_result)){
+            $doc = $row['doc_no'];
+            $a_plies = $row['a_plies'];
+            foreach($sizes_array as $size){
+                if($row['p_'.$size] > 0)
+                    $reported[$doc][$size] = ($row['p_'.$size] * $a_plies);
+            }
+        }
+        goto full_plies;
+    }else{
+        $doc_qty_query = "SELECT $p_sizes_str,doc_no from $bai_pro3.plandoc_stat_log where doc_no = '$doc_no' 
+                        order by acutno ASC";
+        $doc_qty_result = mysqli_query($link,$doc_qty_query);
+        while($row = mysqli_fetch_array($doc_qty_result)){
+            foreach($sizes_array as $size){
+                if($row['p_'.$size] > 0)
+                    $reporting[$size] = ($row['p_'.$size] * $plies);
+            }
         }
     }
 
@@ -686,6 +700,7 @@ if($target == 'style_clubbed'){
         $cum_reported = 0;
         $quit_counter = 0;
         do{
+            $left_over[$size] = 0;
             if($quit_counter++ > $THRESHOLD){
                 $response_data['pass'] = 0;
                 force_exit('Threshold Exceeded');
@@ -737,7 +752,7 @@ if($target == 'style_clubbed'){
         }while($fulfill_qty > 0);
     }
     //ALL Excess Qty left out to be filled equally 
-    /*
+    
     foreach($left_over as $size=>$qty){
         if($qty > 0){
             $docs = $dockets[$size];
@@ -771,7 +786,8 @@ if($target == 'style_clubbed'){
             }
         }
     }
-    */
+
+    full_plies : 
     //Array Cloning reported into reported2
     foreach($reported as $doc => $size_wise){
         foreach($size_wise as $size => $qty){
@@ -937,7 +953,7 @@ function get_me_emb_check_flag($style,$color,$op_code){
 
 function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection_details){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    //error_reporting(0);
+    error_reporting(0);
     global $full_reporting_flag;
     $update_counter = 0;
     $counter = 0;
@@ -1055,7 +1071,7 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
 
 function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejection_details_each_size){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    //error_reporting(0);
+    error_reporting(0);
     global $full_reporting_flag;
     global $s_a_sizes_str;
     global $s_p_sizes_str;
@@ -1174,7 +1190,7 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
 
 function force_exit($str){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    //error_reporting(0);
+    error_reporting(0);
     global $response_data;
     global $doc_no;
     global $zero_a_sizes_str;
