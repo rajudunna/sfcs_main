@@ -271,8 +271,8 @@ if($target == 'recut'){
 if($target == 'normal'){
     //inserting to act_cutstatus 
     $remarks = "$date^$cut_table^$shift^$f_rec^$f_ret^$damages^$shortages^$returned_to^$plies";
-    $link2 = mysqli_connect($host, $user, $pass) or force_exit("Could not connect Normal ");
-    mysqli_begin_transaction($link2) or force_exit("Cant Begin Transaction");
+    // $link2 = mysqli_connect($host, $user, $pass) or force_exit("Could not connect Normal ");
+    // mysqli_begin_transaction($link2) or force_exit("Cant Begin Transaction");
     $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, 
                     damages,shortages,remarks,log_date,bundle_loc,leader_name) 
                     values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader')
@@ -283,30 +283,31 @@ if($target == 'normal'){
 
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
                     act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
-    $insert_result = mysqli_query($link2,$insert_query) or force_exit('Query Error Cut 1');   
+    $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1');   
     
     if($insert_result > 0){
-        $update_result = mysqli_query($link2,$update_query) or force_exit('Query Error Cut 2');
+        $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2');
         if($update_result){
             $response_data['saved'] = 1;
-            $stat = mysqli_commit($link2)  or force_exit("Cant Commit Transaction");
-            if($stat == 0){
-                echo json_encode($response_data);
-                exit();
-            }
+            // $stat = mysqli_commit($link2)  or force_exit("Cant Commit Transaction");
+            // if($stat == 0){
+            //     echo json_encode($response_data);
+            //     exit();
+            // }
         }else{   
             $response_data['saved'] = 0;
-            mysqli_rollback($link2); 
-            mysqli_close($link2);   
+            echo json_encode($response_data);
+            //mysqli_rollback($link2); 
+            //mysqli_close($link2);   
             exit();
         } 
     }else{
         $response_data['saved'] = 0;
         echo json_encode($response_data);
-        mysqli_close($link2);
+        //mysqli_close($link2);
         exit();
     }
-    mysqli_close($link2);
+    //mysqli_close($link2);
 
     $m3_status  = update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection_details);
    
@@ -336,8 +337,8 @@ if($target == 'schedule_clubbed'){
     $quit_counter1 = 0;
     $quit_counter2 = 0;
     $remarks = "$date^$cut_table^$shift^$f_rec^$f_ret^$damages^$shortages^$returned_to^$plies";
-    $link2 = mysqli_connect($host, $user, $pass) or force_exit("Could not connect Schedule Clubbed");
-    mysqli_begin_transaction($link2) or force_exit("Cant Begin Transaction");
+    // $link2 = mysqli_connect($host, $user, $pass) or force_exit("Could not connect Schedule Clubbed");
+    // mysqli_begin_transaction($link2) or force_exit("Cant Begin Transaction");
     $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, 
                     damages,shortages,remarks,log_date,bundle_loc,leader_name) 
                     values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader')
@@ -348,30 +349,31 @@ if($target == 'schedule_clubbed'){
     
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
                     act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
-    $insert_result = mysqli_query($link2,$insert_query) or force_exit('Query Error Cut 1');   
+    $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1');   
     
     if($insert_result > 0){
-        $update_result = mysqli_query($link2,$update_query) or force_exit('Query Error Cut 2');
+        $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2');
         if($update_result){
             $response_data['saved'] = 1;
-            $stat = mysqli_commit($link2)  or force_exit('Cant Commit Transaction');
-            if($stat == 0){
-                echo json_encode($response_data);
-                exit();
-            }
+            // $stat = mysqli_commit($link2)  or force_exit('Cant Commit Transaction');
+            // if($stat == 0){
+            //     echo json_encode($response_data);
+            //     exit();
+            // }
         }else{   
             $response_data['saved'] = 0;
-            mysqli_rollback($link2);
-            mysqli_close($link2);
+            // mysqli_rollback($link2);
+            // mysqli_close($link2);
+            echo json_encode($response_data);
             exit();    
         } 
     }else{
         $response_data['saved'] = 0;
         echo json_encode($response_data);
-        mysqli_close($link);
+        //mysqli_close($link);
         exit();
     }
-    mysqli_close($link2);
+    //mysqli_close($link2);
     // $link = mysqli_connect($host, $user, $pass) or force_exit('Unable To COnnect DB'); 
     // if($link == 0){
     //     echo json_encode($response_data);
@@ -437,10 +439,10 @@ if($target == 'schedule_clubbed'){
             $update_childs_query = "UPDATE $bai_pro3.plandoc_stat_log set $size_update_string act_cut_status = 'DONE'
                                     where doc_no ='$child_doc' ";
             $update_childs_result = mysqli_query($link,$update_childs_query) or force_exit('Child Docket Update Error');
-            if($update_childs_result == 0){
-                echo json_encode($response_data);
-                exit();
-            }
+            // if($update_childs_result == 0){
+            //     echo json_encode($response_data);
+            //     exit();
+            // }
         }
         unset($size_update_string);
         unset($planned);
@@ -534,8 +536,8 @@ if($target == 'style_clubbed'){
     $quit_counter2 = 0;
     $remarks = "$date^$cut_table^$shift^$f_rec^$f_ret^$damages^$shortages^$returned_to^$plies";
 
-    $link2 = mysqli_connect($host, $user, $pass) or force_exit("Could not connect Style Clubbed ");
-    mysqli_begin_transaction($link2) or force_exit("Cant Begin Transaction");
+    // $link2 = mysqli_connect($host, $user, $pass) or force_exit("Could not connect Style Clubbed ");
+    // mysqli_begin_transaction($link2) or force_exit("Cant Begin Transaction");
     $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, 
                     damages,shortages,remarks,log_date,bundle_loc,leader_name) 
                     values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader')
@@ -546,30 +548,31 @@ if($target == 'style_clubbed'){
 
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
                     act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
-    $insert_result = mysqli_query($link2,$insert_query) or force_exit('Query Error Cut 1');   
+    $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1');   
 
     if($insert_result > 0){
-        $update_result = mysqli_query($link2,$update_query) or force_exit('Query Error Cut 2');
+        $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2');
         if($update_result){
             $response_data['saved'] = 1;
-            $stat = mysqli_commit($link2) or force_exit("Cant Commit Transaction");
-            if($stat == 0){
-                echo json_encode($response_data);
-                exit();
-            }
+            // $stat = mysqli_commit($link2) or force_exit("Cant Commit Transaction");
+            // if($stat == 0){
+            //     echo json_encode($response_data);
+            //     exit();
+            // }
         }else{   
             $response_data['saved'] = 0;
-            mysqli_rollback($link2);
-            mysqli_close($link2);
+            echo json_encode($response_data);
+            // mysqli_rollback($link2);
+            // mysqli_close($link2);
             exit();    
         } 
     }else{
         $response_data['saved'] = 0;
         echo json_encode($response_data);
-        mysqli_close($link2);
+        //mysqli_close($link2);
         exit();
     }
-    mysqli_close($link2);
+    //mysqli_close($link2);
 
     //getting all child dockets
     $child_docs_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log psl  
@@ -905,7 +908,6 @@ function get_me_emb_check_flag($style,$color,$op_code){
         else
             return 0;
     }
-    
     return 0;
     //emb checking ends
 }
@@ -952,10 +954,10 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
             $rejected[$size] = $total_sum;//total size wise qty sum into an array
         }
         
-        $link2 = mysqli_connect($host, $user, $pass) or force_exit("Could not connect CPS_BCD ");
-        $stat  = mysqli_begin_transaction($link2) or force_exit("Cant Begin Transaction CPS_BCD");
-        if($stat == 0)
-            return 'fail';
+        // $link2 = mysqli_connect($host, $user, $pass) or force_exit("Could not connect CPS_BCD ");
+        // $stat  = mysqli_begin_transaction($link2) or force_exit("Cant Begin Transaction CPS_BCD");
+        // if($stat == 0)
+        //     return 'fail';
 
         foreach($cut_qty as $size=>$qty){
             $qty = $qty - $rejected[$size];
@@ -964,9 +966,9 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
             $update_cps_query = "UPDATE $bai_pro3.cps_log set remaining_qty = remaining_qty + $qty,
                             reported_status = '$reported_status' 
                             where doc_no = $doc_no and size_code='$size' and operation_code = $op_code ";
-            $update_cps_result = mysqli_query($link2,$update_cps_query); 
+            $update_cps_result = mysqli_query($link,$update_cps_query); 
             $cps_counter = 0;
-            if(mysqli_affected_rows($link2) == 1)   
+            if(mysqli_affected_rows($link) == 1)   
                 $cps_counter++;
            
             //Updating BCD
@@ -974,8 +976,8 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
                             rejected_qty = rejected_qty + $rej
                             where docket_number = $doc_no and size_id = '$size' and operation_id = $op_code";
             //echo $update_bcd_query;                
-            $update_bcd_result = mysqli_query($link2,$update_bcd_query);
-            if(mysqli_affected_rows($link2) == 1 && $cps_counter == 1)   
+            $update_bcd_result = mysqli_query($link,$update_bcd_query);
+            if(mysqli_affected_rows($link) == 1 && $cps_counter == 1)   
                 $counter++;
 
             if($emb_cut_check_flag > 0)
@@ -983,21 +985,21 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
                 $update_bcd_query2 = "UPDATE $brandix_bts.bundle_creation_data set send_qty = send_qty+$qty
                                     WHERE docket_number = $doc_no AND size_id = '$size' 
                                     AND operation_id = $emb_cut_check_flag ";
-                $update_bcd_result2 = mysqli_query($link2,$update_bcd_query2);
+                $update_bcd_result2 = mysqli_query($link,$update_bcd_query2);
             }   
             // if($update_cps_result && $update_bcd_result)
             //     $counter++;
         }
         if($counter == sizeof($cut_qty) && $counter > 0){
-            $stat1 = mysqli_commit($link2) or force_exit("Cant Commit Transaction 2");
-            if($stat1 == 0)
-                return 'fail';
+            // $stat1 = mysqli_commit($link2) or force_exit("Cant Commit Transaction 2");
+            // if($stat1 == 0)
+            //     return 'fail';
         }else{    
-            mysqli_rollback($link2);
-            mysqli_close($link2);
+            // mysqli_rollback($link2);
+            // mysqli_close($link2);
             return 'fail';
         }
-        mysqli_close($link2);
+        //mysqli_close($link2);
         // $link= mysqli_connect($host, $user, $pass) or force_exit('Could not connect DB');
         // if($link == 0){
         //     echo json_encode($response_data);
@@ -1056,8 +1058,8 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
         if($full_reporting_flag == 1)
             $reported_status = 'F';
 
-        $link2 = mysqli_connect($host, $user, $pass) or force_exit("Could not connect CPS_BCD ");
-        $stat  = mysqli_begin_transaction($link2) or force_exit("Cant Begin Transaction CPS_BCD");   
+        // $link2 = mysqli_connect($host, $user, $pass) or force_exit("Could not connect CPS_BCD ");
+        // $stat  = mysqli_begin_transaction($link2) or force_exit("Cant Begin Transaction CPS_BCD");   
         foreach($size_qty as $size => $qty){
             $qty = $qty - $rejection_details_each_size[$doc_no][$size];
             $rej = $rejection_details_each_size[$doc_no][$size] > 0 ? $rejection_details_each_size[$doc_no][$size] : 0; 
@@ -1068,24 +1070,23 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
             $update_cps_query = "UPDATE $bai_pro3.cps_log set remaining_qty = remaining_qty + $qty,
                             reported_status = '$reported_status'
                             where doc_no = $doc_no and size_code='$size' and operation_code = $op_code ";
-            $update_cps_result = mysqli_query($link2,$update_cps_query);
+            $update_cps_result = mysqli_query($link,$update_cps_query);
             $cps_counter = 0;
-            if(mysqli_affected_rows($link2) == 1)   
+            if(mysqli_affected_rows($link) == 1)   
                 $cps_counter++;
 
             //Updating CPS to Full Status
             $update_cps_f_query = "UPDATE $bai_pro3.cps_log set reported_status = 'F' 
                                     where doc_no = '$doc_no' and size_code='$size' and operation_code = $op_code 
                                     and cut_quantity = remaining_qty";
-            $update_cps_f_result = mysqli_query($link2,$update_cps_f_query); 
-            
+            $update_cps_f_result = mysqli_query($link,$update_cps_f_query); 
             
             //Updating BCD
             $update_bcd_query = "UPDATE $brandix_bts.bundle_creation_data set recevied_qty = recevied_qty + $qty,
                             rejected_qty = rejected_qty + $rej where docket_number = $doc_no AND size_id = '$size' 
                             and operation_id = $op_code";
-            $update_bcd_result = mysqli_query($link2,$update_bcd_query);
-            if(mysqli_affected_rows($link2) == 1 && $cps_counter == 1)   
+            $update_bcd_result = mysqli_query($link,$update_bcd_query);
+            if(mysqli_affected_rows($link) == 1 && $cps_counter == 1)   
                 $counter++;
 
             if($emb_cut_check_flag > 0)
@@ -1093,7 +1094,7 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
                 $update_bcd_query2 = "UPDATE $brandix_bts.bundle_creation_data set send_qty = send_qty+$qty
                                 WHERE docket_number = $doc_no AND size_id = '$size' 
                                 AND operation_id = $emb_cut_check_flag";
-                $update_bcd_result2 = mysqli_query($link2,$update_bcd_query2);
+                $update_bcd_result2 = mysqli_query($link,$update_bcd_query2);
             }   
             // if($update_cps_result && $update_bcd_result)
             //     $counter++;
@@ -1102,15 +1103,15 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
 
     //echo "$counter -- $update_flag";
     if($counter == $update_flag && $counter > 0){
-        $stat1 = mysqli_commit($link2) or force_exit("Cant Commit Transaction 2");
-        if($stat1 == 0)
-            return 'fail'; 
+        // $stat1 = mysqli_commit($link2) or force_exit("Cant Commit Transaction 2");
+        // if($stat1 == 0)
+        //     return 'fail'; 
     }else{   
-        mysqli_rollback($link2);
-        mysqli_close($link2);
+        // mysqli_rollback($link2);
+        // mysqli_close($link2);
         return 'fail';
     }
-    mysqli_close($link2);
+    //mysqli_close($link2);
     // $link = mysqli_connect($host, $user, $pass) or force_exit("Could not connect21: ");
     // if($link == 0){
     //     echo json_encode($response_data);
