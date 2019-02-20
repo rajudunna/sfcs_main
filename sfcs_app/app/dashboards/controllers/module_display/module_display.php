@@ -31,20 +31,20 @@ setTimeout(function(){
 		form {color: black;}
 	</style>
 		<label for="module" class="mb-2 mr-sm-2">Module: </label>
-	        <select class="form-control mb-2 mr-sm-2" name="module" id='module'> 
+	        <select class="form-control mb-2 mr-sm-2" name="module_name" id='module'> 
 <?php
-            $sql = "SELECT module FROM $bai_pro3.module_master";
+            $sql = "SELECT module_name FROM $bai_pro3.module_master";
 $result = mysqli_query($link, $sql);
         while($row=mysqli_fetch_array($result))
 {
-	$module=$_POST['module'];
+	$module=$_POST['module_name'];
 	if($module == '')
-		$module = $_GET['module'];
+		$module = $_GET['module_name'];
 
-	if($module ==  $row['module'])
-		echo "<option value='". $row['module']."' selected>".$row['module'].'</option>';
+	if($module ==  $row['module_name'])
+		echo "<option value='". $row['module_name']."' selected>".$row['module_name'].'</option>';
 	else	
-    	echo "<option value='". $row['module']."'>".$row['module'].'</option>';
+    	echo "<option value='". $row['module_name']."'>".$row['module_name'].'</option>';
 }
 
 ?>
@@ -52,12 +52,12 @@ $result = mysqli_query($link, $sql);
     <input type="submit"  class="btn btn-primary mb-2" value="submit">
 </form>
 <?php
-if(isset($_POST['module']))
+if(isset($_POST['module_name']))
 {
-	$module=$_POST['module'];
-}elseif(isset($_GET['module']))
+	$module=$_POST['module_name'];
+}elseif(isset($_GET['module_name']))
 {
-	$module=$_GET['module'];
+	$module=$_GET['module_name'];
 }else{
 	$module=1;
 }
