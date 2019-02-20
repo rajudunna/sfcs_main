@@ -15,18 +15,54 @@
 	
 	img { zoom: 30%;}
 </style>
-
-
+<script >
+setTimeout(function(){
+	    var module = document.getElementById('module').value; 
+	    var url = window.location.href+'&module='+module;
+	    if(module){
+	        window.location.href = url;    
+	    }
+	},120000);
+</script>
+</head>
+<div class="panel panel-primary"> <div class="panel-heading"><h4 class="panel-title">Endline Dashboard</h4></div></div>
+	<form id="2" class="form-inline" role="form" method="post" action="<?= $action_url ?>" onsubmit="return function">
+		<style>
+		form {color: black;}
+	</style>
+		<label for="module" class="mb-2 mr-sm-2">Module: </label>
+	        <select class="form-control mb-2 mr-sm-2" name="module" id='module'> 
 <?php
+            $sql = "SELECT module FROM $bai_pro.grand_rep";
+$result = mysqli_query($link, $sql);
+        while($row=mysqli_fetch_array($result))
+{
+	$module=$_POST['module'];
+	if($module == '')
+		$module = $_GET['module'];
 
-if(isset($_GET['module']))
+	if($module ==  $row['module'])
+		echo "<option value='". $row['module']."' selected>".$row['module'].'</option>';
+	else	
+    	echo "<option value='". $row['module']."'>".$row['module'].'</option>';
+}
+
+?>
+</select>
+    <input type="submit"  class="btn btn-primary mb-2" value="submit">
+</form>
+<?php
+if(isset($_POST['module']))
+{
+	$module=$_POST['module'];
+}elseif(isset($_GET['module']))
 {
 	$module=$_GET['module'];
-}
-else
-{
+}else{
 	$module=1;
 }
+
+
 $date_check=date("Y-m-d");
 $sql="select sum(bac_qty) as act_out,GROUP_CONCAT(DISTINCT bac_style) as styles from $bai_pro.bai_log_buf where bac_date='".$date_check."' and bac_no=$module";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
