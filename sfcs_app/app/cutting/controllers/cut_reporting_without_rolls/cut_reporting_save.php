@@ -662,24 +662,26 @@ if($target == 'style_clubbed'){
         $qty = $reporting[$size];
         if($qty > 0){
             $docs = $dockets[$size];
-            $splitted = $qty;
-            $quit_counter = 0;
-            if($qty > $docs){
-                do{
-                    if($quit_counter++ > $THRESHOLD){
-                        $response_data['pass'] = 0;
-                        force_exit('Infinte loop struck');
-                        echo json_encode($response_data);
-                        exit();
-                    }              
-                    if(ceil($splitted % $docs) > 0)
-                        $splitted--;
-                }while($splitted % $docs > 0);
-                $rem = $qty - $splitted;
-                $splitted = $splitted/$docs;
-            }else{
-                $rem = $qty;
-                $splitted = 0;
+            if($docs > 0){
+                $splitted = $qty;
+                $quit_counter = 0;
+                if($qty > $docs){
+                    do{
+                        if($quit_counter++ > $THRESHOLD){
+                            $response_data['pass'] = 0;
+                            force_exit('Infinte loop struck');
+                            echo json_encode($response_data);
+                            exit();
+                        }              
+                        if(ceil($splitted % $docs) > 0)
+                            $splitted--;
+                    }while($splitted % $docs > 0);
+                    $rem = $qty - $splitted;
+                    $splitted = $splitted/$docs;
+                }else{
+                    $rem = $qty;
+                    $splitted = 0;
+                }
             }
         }
 
