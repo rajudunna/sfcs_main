@@ -145,7 +145,8 @@ $SAH_Countdown_alert=$conf->get('sah_countdown_email');
 $line_wip_track=$conf->get('production_wip_status_mail');
 $pop_pending_list_mail=$conf->get('carton_pendings_mail');
 $Aod_gate_pass=$conf->get('pro_aod_gatepass_update_to_belbal_co_invoice_mail');
-
+// m3 to sfcs operations report mail
+$m3_vs_sfcs_operation_reporting=$conf->get('m3_vs_sfcs_operation_reporting');
 
 //sah countdown
 $http_host=gethostname();
