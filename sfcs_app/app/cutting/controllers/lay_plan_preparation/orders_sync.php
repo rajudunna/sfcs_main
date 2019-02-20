@@ -8,6 +8,27 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		<div class="panel panel-primary">
 			<!-- <div class="panel-heading"><b>Orders Synchronization</b></div> -->
 			<div class="panel-body">
+				<style>
+					#loading-image
+					{
+						position:fixed;
+						top:0px;
+						right:0px;
+						width:100%;
+						height:100%;
+						background-color:#666;
+						/* background-image:url('ajax-loader.gif'); */
+						background-repeat:no-repeat;
+						background-position:center;
+						z-index:10000000;
+						opacity: 0.4;
+						filter: alpha(opacity=40); /* For IE8 and earlier */
+					}
+				</style>
+
+				<div class="ajax-loader" id="loading-image">
+				    <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+</div>
 <?php
 	  $order_tid=$_GET['order_tid'];
 	  $get_order_tid = $_GET['order_tid'];
@@ -107,6 +128,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			$cat_ref=$l['cat_ref'];
 			$mk_ref=$l['mk_ref'];
 			$cuttable_ref=$l['cuttable_ref'];
+			$layplan_id1=0;
 			//Insert data into layplan(tbl_cut_master) table
 			$inserted_id_query1 = "select count(id) as id from $brandix_bts.tbl_cut_master where doc_num='".$doc_num."'";
 			$inserted_id_result1=mysqli_query($link, $inserted_id_query1) or ("Sql error1111");

@@ -36,8 +36,17 @@ $blink_docs=array();
 $table_name="$bai_pro3.plan_dashboard_input";
 
 // Remove Docs
+$application='IPS';			
+$scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
+// echo $scanning_query;
+$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row=mysqli_fetch_array($scanning_result))
+{
+	$operation_name=$sql_row['operation_name'];
+	$operation_code=$sql_row['operation_code'];
+}
 $remove_docs=array();
-$sqlx="select distinct input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where $bai_pro3.input_job_input_status(input_job_no_random_ref)=\"DONE\"";
+$sqlx="select distinct input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where $bai_pro3.input_job_input_status(input_job_no_random_ref,$operation_code)=\"DONE\"";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
@@ -112,8 +121,33 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$input_job_no_random_ref=$row["input_job_no_random_ref"];
 				$input_trims_status=$row["input_trims_status"];
 				$add_css="behavior: url(border-radius-ie8.htc);  border-radius: 10px;";
-				
-				
+				$sql123="SELECT operation_code FROM $brandix_bts.tbl_ims_ops WHERE appilication='IPS'";
+				// echo $sql."<br>";
+				$sql_result122=mysqli_query($link, $sql123) or exit($sql12."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row122=mysqli_fetch_array($sql_result122))
+				{
+					$ops_code = $sql_row122['operation_code'];
+				}
+				$rej_qty=0;
+				$sql12="SELECT sum(recut_in+replace_in) as qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$ops_code";
+				// echo $sql12.';<br>';
+				$sql_result12=mysqli_query($link, $sql12) or exit($sql12."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row12=mysqli_fetch_array($sql_result12))
+				{
+					if($sql_row12['qty'] > 0)
+					{
+						$rej_qty = $sql_row12['qty'];
+					}					
+				}
+
+				if($rej_qty > 0)
+				{
+					$rejection_border = "border-style: solid;border-color: Magenta ;border-width: 3px;";
+				}
+				else
+				{
+					$rejection_border = "";
+				}
 				// echo $id;
 				$sqly="SELECT type_of_sewing,order_style_no,order_del_no,GROUP_CONCAT(DISTINCT order_col_des) AS order_col_des,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no,sum(carton_act_qty) as carton_qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
 				//echo $sqly."<br>";
@@ -358,7 +392,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							if($add_css == ""){				
 								$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
 									<div id=\"SJ$input_job_no\" style=\"float:left;\">
-										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"viewPopupCenter('$style','$schedule','$module','$input_job_no_random_ref','$operation_code','$sidemenu');\"><font style=\"color:black;\"></font></a>
+										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"viewPopupCenter('$style','$schedule','$module','$input_job_no_random_ref','$operation_code','$sidemenu');\"><font style=\"color:black;\"></font></a>
 										</div>
 									</div>
 								</div>";
@@ -367,7 +401,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							{
 								$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
 									<div id=\"SJ$input_job_no\" style=\"float:left;\">
-										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
+										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
 										</div>
 									</div>
 								</div>";
@@ -379,7 +413,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							{									
 								$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
 									<div id=\"SJ$input_job_no\" style=\"float:left;\">
-										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"viewPopupCenter('$style','$schedule','$module','$input_job_no_random_ref','$operation_code','$sidemenu');\"><font style=\"color:black;\"></font></a>
+										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"viewPopupCenter('$style','$schedule','$module','$input_job_no_random_ref','$operation_code','$sidemenu');\"><font style=\"color:black;\"></font></a>
 										</div>
 									</div>
 								</div>";
@@ -388,7 +422,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							{
 								$ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
 									<div id=\"SJ$input_job_no\" style=\"float:left;\">
-										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
+										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
 										</div>
 									</div>
 								</div>";
@@ -398,7 +432,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					else
 					{
 						
-						$ips_data.="<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a></div></div></div>";
+						$ips_data.="<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a></div></div></div>";
 					}
 					$y++;	
 				}

@@ -25,15 +25,25 @@
 			// echo "string";
 			$loc_id = $_GET['delete_id'];
 			// echo $loc_id;
-			$dalete_emb_details="delete from $bai_pro3.tbl_emb_table where emb_table_id = ".$loc_id." ";
-			// echo $delete;
-			$delete_emb_result = mysqli_query( $link, $dalete_emb_details);
-			if ($delete_emb_result == 1 or $delete_emb_result == '1')
-			{
+
+			$to_check_module="select * from $bai_pro3.embellishment_plan_dashboard where module= $loc_id";
+			$module_result = mysqli_query( $link, $to_check_module);
+			if (mysqli_num_rows($module_result) > 0) {
 				echo "<script>
-						sweetAlert('Emblishment Table Deleted Successfully','','success');
-						window.location.href = \"$self_url\";
-					</script>";
+							sweetAlert('Emblishment Table in Production','','error');
+							window.location.href = \"$self_url\";
+						</script>";
+			} else {
+				$dalete_emb_details="delete from $bai_pro3.tbl_emb_table where emb_table_id = ".$loc_id." ";
+				// echo $delete;
+				$delete_emb_result = mysqli_query( $link, $dalete_emb_details);
+				if ($delete_emb_result == 1 or $delete_emb_result == '1')
+				{
+					echo "<script>
+							sweetAlert('Emblishment Table Deleted Successfully','','success');
+							window.location.href = \"$self_url\";
+						</script>";
+				}
 			}
 		}
 	?>

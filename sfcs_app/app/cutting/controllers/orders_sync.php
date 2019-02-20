@@ -190,7 +190,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 					category in ($in_categories)";			
 		$cat_result = mysqli_query($link,$cat_query);
 		if(mysqli_num_rows($cat_result) > 0){
-			$insert = doc_size_wise_bundle_insertion($docket,1);
+			$cps_present_query = "SELECT id from $bai_pro3.cps_log where doc_no = $docket";
+			if(mysqli_num_rows(mysqli_query($link,$cps_present_query)) == 0 )	
+				$insert = doc_size_wise_bundle_insertion($docket,1);
 		}
 	}
 	//exit();

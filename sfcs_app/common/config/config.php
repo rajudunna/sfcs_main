@@ -68,6 +68,11 @@ $api_port_no = $conf1->get('api-port');
 
 $enable_api_call = $conf1->get('enable-api-call');
 
+// Total Plant working hours
+$tot_plant_working_hrs = $conf1->get('tot_plant_working_hrs');
+// Copy fr qty to forecast qty (yes/no)
+$copy_fr_to_forecast = $conf1->get('copy-fr-to-forecast');
+
 //Scanning Methods
 $scanning_methods = $conf1->get('scaning-method');
 
@@ -157,6 +162,8 @@ $group_id_Main=5;
 $smtp_user=$conf1->get('smtp-user-name');
 // $header_from="From: Shop Floor System Alert <ictsysalert@brandix.com>";
 $header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
+$header_name=$smtp_user." Alert";
+$header_mail=$conf1->get('smtp_mail_from');
 $dispatch_mail = $conf1->get('dispatch_mail');
 //Central Administration Menu Access
 $central_administration_sfcs='central_administration_sfcs';

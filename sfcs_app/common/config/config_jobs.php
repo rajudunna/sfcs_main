@@ -26,6 +26,17 @@ $pwd = $conf->get('mssql-password');
 $m3_databasename=$conf->get('m3database');
 $driver_name=$conf->get('driver_name');
 
+//sfcs-ffsp configurations
+$sfsp_serverName=$conf->get('sf_sp_servername');
+$sfsp_m3_databasename=$conf->get('sf_sp_dbname');
+$sfsp_uid=$conf->get('sf_sp_username');
+$sfsp_pwd=$conf->get('sf_sp_pwd');
+
+
+//ms-sql jobs 
+$user_ms = "BAISFCS";
+$password_ms = "fcs@m3pr";
+$conn_string = "DRIVER={iSeries Access ODBC Driver};System=10.227.40.10;Uid=".$user_ms.";Pwd=".$password_ms.";";
 //HRMS DATABASE CONNECTIONS
 $hrms_server_name=$conf->get('hrms-server-name');
 $hrms_server_port=$conf->get('hrms-port');

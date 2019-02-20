@@ -10,24 +10,16 @@
         $username_list=explode('\\',$_SERVER['REMOTE_USER']);
         $username=strtolower($username_list[1]);
         $module=$_GET['module'];
-        $table_name="$temp_pool_db.plan_dash_doc_summ_input_$username";
-        
-      
-        
-
-            $sql2x="SELECT b.date_n_time,SUM(a.carton_act_qty) AS carton_act_qty,order_del_no,order_style_no,a.input_job_no,log_time,input_trims_status,
-            input_priority,input_module,input_job_no_random_ref FROM $table_name AS a JOIN 
-            $bai_pro3.temp_line_input_log AS b ON
-            CONCAT(a.order_style_no,a.order_del_no,a.input_job_no) =CONCAT(b.style,b.schedule_no,b.input_job_no) 
-             WHERE 
-            (a.input_trims_status=4 AND a.input_trims_status !='NULL') AND a.input_module='$module' AND a.input_job_no!='NULL' AND
-            b.page_name='Trim Issue4'
-            GROUP BY a.input_job_no_random_ref ORDER BY b.date_n_time ASC";
-
-        
+        $table_name="$bai_pro3.plan_dash_doc_summ_input";
+		$sql2x="SELECT b.date_n_time,SUM(a.carton_act_qty) AS carton_act_qty,order_del_no,order_style_no,a.input_job_no,log_time,input_trims_status,
+		input_priority,input_module,input_job_no_random_ref FROM $table_name AS a JOIN 
+		$bai_pro3.temp_line_input_log AS b ON
+		CONCAT(a.order_style_no,a.order_del_no,a.input_job_no) =CONCAT(b.style,b.schedule_no,b.input_job_no) 
+		WHERE 
+		a.input_trims_status=4 AND a.input_module='$module' AND a.input_job_no!='NULL' AND
+		b.page_name='Trim Issue4'
+		GROUP BY a.input_job_no_random_ref ORDER BY b.date_n_time ASC";        
         $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-        
-        $rows2=mysqli_num_rows($result2x);	
         echo"<div class='panel-body'>";
         echo "<table class='table table-bordered' style='border-color: #337ab7;'>
         <tr style='background-color: #337ab7;color:white;'><th>Sequence Number</th><th>Style</th><th>Schedule</th><th>Sewing Job Number</th><th>Sewing Job Qty</th><th>Issued Date and Time</th></tr>";

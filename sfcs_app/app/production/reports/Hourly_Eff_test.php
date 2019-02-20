@@ -183,7 +183,7 @@ td,th
 
     <body onload="showHideDiv()"> 
         <div class="panel panel-primary">
-            <div class="panel-heading"><strong>Hourly Efficency Report</strong></div>
+            <div class="panel-heading"><strong>Hourly Efficiency Report</strong></div>
             <div class="panel-body">
                 <div id="non-printable"> 
 				
