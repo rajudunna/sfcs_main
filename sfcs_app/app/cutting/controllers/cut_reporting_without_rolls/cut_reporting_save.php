@@ -734,32 +734,34 @@ if($target == 'style_clubbed'){
     foreach($left_over as $size=>$qty){
         if($qty > 0){
             $docs = $dockets[$size];
-            $splitted = $qty;
-            $quit_counter = 0;
-            if($qty > $docs){
-                do{
-                    $quit_counter++;
-                    if($quit_counter > 50){
-                        $response_data['pass'] = 0;
-                        force_exit('Infinite loop Struck 2');
-                        echo json_encode($response_data);
-                        exit();
-                    }
-                    if(ceil($splitted % $docs) > 0)
-                        $splitted--;
-                }while($splitted % $docs > 0);
-                $rem = $qty - $splitted;
-                $splitted = $splitted/$docs;
-            }else{
-                $rem = $qty;
-                $splitted = 0;
-            }
-            foreach($planned[$size] as $docket => $ignore){
-                if($rem > 0){
-                    $rem--;
-                    $reported[$docket][$size]  = $splitted + 1;
+            if($docs > 0){
+                $splitted = $qty;
+                $quit_counter = 0;
+                if($qty > $docs){
+                    do{
+                        $quit_counter++;
+                        if($quit_counter > 50){
+                            $response_data['pass'] = 0;
+                            force_exit('Infinite loop Struck 2');
+                            echo json_encode($response_data);
+                            exit();
+                        }
+                        if(ceil($splitted % $docs) > 0)
+                            $splitted--;
+                    }while($splitted % $docs > 0);
+                    $rem = $qty - $splitted;
+                    $splitted = $splitted/$docs;
                 }else{
-                    $reported[$docket][$size] += $splitted;
+                    $rem = $qty;
+                    $splitted = 0;
+                }
+                foreach($planned[$size] as $docket => $ignore){
+                    if($rem > 0){
+                        $rem--;
+                        $reported[$docket][$size]  = $splitted + 1;
+                    }else{
+                        $reported[$docket][$size] += $splitted;
+                    }
                 }
             }
         }
