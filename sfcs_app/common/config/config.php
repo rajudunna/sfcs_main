@@ -145,6 +145,7 @@ $central_wh_code=$conf1->get('central_wh_code');
 $plant_wh_code=$conf1->get('plant_wh_code');
 $plant_prod_code=$conf1->get('plant_prod_code');
 $shrinkage_inspection=$conf1->get('shrinkage-inspection');
+$roll_splitting=$conf1->get('roll-splitting');
 $sewing_rejection=$conf1->get('sewing_rejection');
 
 

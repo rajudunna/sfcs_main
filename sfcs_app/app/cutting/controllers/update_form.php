@@ -132,11 +132,12 @@ function validateQty(event)
 		<?php 
         include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/menu_include.php',1,'R'));
         //common/php/menu_include.php
-		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
+		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config_splitting_function.php',3,'R'));
+		?>
 		<?php //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);?>
 
 <?php
-
 if(isset($_GET['level']))
 {
 $ref=$_GET['ref'];
@@ -296,7 +297,7 @@ if($_GET["lots"] > 0)
 	$ref_tid=$_GET["tid"];
 
 	$sql1="select product from $bai_rm_pj2.mrn_track where tid=$ref_tid";
-	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{	
 		$product_code=$sql_row1['product'];
@@ -305,19 +306,19 @@ if($_GET["lots"] > 0)
 	echo "<div>";
 	$row_count = 0;
 	$lots_no=$_GET["lots"];
-	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_ret,ref4 from $bai_rm_pj1.store_in where lot_no in ($lots_no)";
+	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_allocated,qty_ret,ref4,barcode_number from $bai_rm_pj1.store_in where lot_no in ($lots_no)";
 	// echo $host."-".$sql1;
-	$result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	if(mysqli_num_rows($result1)>0){
 		echo "<table class='table table-bordered'>";
-		echo "<tr><th>LableId</th><th>LotNo</th><th>Shade</th><th>Received Qty</th><th>Issued Qty</th><th>Return Qty</th><th>Balance</th><th>Issue Qty</th></tr>";
+		echo "<tr><th>LableId</th><th>Barcode</th><th>LotNo</th><th>Shade</th><th>Received Qty</th><th>Issued Qty</th><th>Return Qty</th><th>Balance</th><th>Issue Qty</th></tr>";
 	}else{
 		echo "<script>sweetAlert('Inavlid Lot Number','','warning')</script>";
 	}
 	while($sql_row1=mysqli_fetch_array($result1))
 	{
-		if(($sql_row1["qty_rec"]+$sql_row1["qty_ret"]-$sql_row1["qty_issued"]) > 0)
+		if(($sql_row1["qty_rec"]+$sql_row1["qty_ret"]-$sql_row1["qty_issued"]-$sql_row1["qty_allocated"]) > 0)
 		{	
 		$readonly="readonly";	
 		if(strlen($sql_row1["ref4"]) > 0)
@@ -333,9 +334,11 @@ if($_GET["lots"] > 0)
 		}
 		echo "<tr>";
 		echo "<td><input type=\"hidden\" name=\"ref_tid[]\" value=\"".$ref_tid."\" /><input type=\"hidden\" name=\"lblids[]\" value=\"".$sql_row1["tid"]."\" >".$ref_tid."-".$sql_row1["tid"]."</td>";
+		echo "<td>".$sql_row1["barcode_number"]."</td>";
 		echo "<td><input type=\"hidden\" name=\"lotnos[]\" value=\"".$sql_row1["lot_no"]."\" >".$sql_row1["lot_no"]."</td>";
 		echo "<td>".$sql_row1["ref4"]."</td>";
-		echo "<td>".$sql_row1["qty_rec"]."</td>";
+		echo "<td><input type=\"hidden\" name=\"receivedqty[]\" value=\"".$sql_row1["qty_rec"]."\" >".$sql_row1["qty_rec"]."</td>";
+	//	echo "<td>".$sql_row1["qty_rec"]."</td>";
 		$bgcolor="#dfgfd";
 		if($sql_row1["qty_issued"] > 0)
 		{
@@ -409,7 +412,7 @@ else
 	$sql="select * from $bai_rm_pj2.mrn_track where rand_track_id=\"$ref\" and tid=\"$ref_tid\"";
 }
 // echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {	
 	$row_count++;
@@ -424,7 +427,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td>".$sql_row['item_desc']."</td>";
 	
 	$sql1="select item_desc from $bai_rm_pj1.sticker_report where item like \"%".$sql_row['item_code']."%\"";
-	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error23".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
 		$item_desc=$sql_row1['item_desc'];
@@ -579,11 +582,11 @@ $(document).ready(function(){
 		//echo "ins remarks= ".$ins_rem;
 		$sql="update $bai_rm_pj2.mrn_track set status=2, app_by=\"$username\",app_date=\"".date("Y-m-d H:i:s")."\" where tid in (".implode(",",$tid).")";
 		//echo $sql;
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error24".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		$sql1="insert into $bai_rm_pj2.remarks_log (tid,remarks,username,date,level)values (".implode(",",$tid).",\"".$ins_rem."\",\"".$username."\",\"".date("Y-m-d H:i:s")."\",\"Approved\")";
 		//echo $sql1;
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
 		// echo "<h3><font color=green>Successfully Updated.</font></h3>";
 		echo "<script>sweetAlert('Approved Successfully','','success')</script>";
 		// echo "<br/><br/><h3><font color=Red>Please Refresh the page after Updation....</font></h3>";
@@ -598,11 +601,11 @@ $(document).ready(function(){
 		$tid=$_POST['tid'];
 		$ins_rem=$_POST['ins_rem'];
 		$sql="update bai_rm_pj2.mrn_track set status=3, app_by=\"$username\",app_date=\"".date("Y-m-d H:i:s")."\" where tid in (".implode(",",$tid).")";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error26".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		$sql1="insert into $bai_rm_pj2.remarks_log (tid,remarks,username,date,level)values (".implode(",",$tid).",\"".$ins_rem."\",\"".$username."\",\"".date("Y-m-d H:i:s")."\",\"Rejected\")";
 		//echo $sql1;
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error27".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		// echo "<h3><font color=green>Successfully Updated.</font></h3>";
 		echo "<script>sweetAlert('Rejected Successfully','','success')</script>";
@@ -628,12 +631,12 @@ $(document).ready(function(){
 			{
 				$sql="update $bai_rm_pj2.mrn_track set status=6, updated_by=\"$username\",updated_date=\"".date("Y-m-d H:i:s")."\",avail_qty=0  where tid=".$tid[$i];
 			}
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error28".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		
 		$sql1="insert into $bai_rm_pj2.remarks_log (tid,remarks,username,date,level)values (".implode(",",$tid).",\"".$ins_rem."\",\"".$username."\",\"".date("Y-m-d H:i:s")."\",\"Updated\")";
 		//echo $sql1;
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error29".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		// echo "<h3><font color=green>Successfully Updated.</font></h3>";
 		echo "<script>sweetAlert('Updated Successfully','','success')</script>";
@@ -654,37 +657,48 @@ $(document).ready(function(){
 	}
 	//ISSUE
 	if(isset($_POST['issue']))
-	{
+	{		
 		$tid=$_POST['tid'];
 		$ins_rem=$_POST['ins_rem'];
 		$available=$_POST['available'];
-		$lable_ids=$_POST["lblids"];
+		//$val_ref=$_POST["receivedqty"];
+		$val_ref=$_POST["lotbal"];
+		$tid_ref=$_POST["lblids"];
 		$issued_qty=$_POST["issqty"];
 		$lot_nos=$_POST["lotnos"];
 		$ref_tids=$_POST["ref_tid"];
 		//echo sizeof($lable_ids);
-		
-		for($i=0;$i<sizeof($tid);$i++)
+		for($j=0;$j<sizeof($tid);$j++)
 		{
 			//if($available[$i]>0)
 			{
-				$sql="update $bai_rm_pj2.mrn_track set status=7, issued_by=\"$username\",issued_date=\"".date("Y-m-d H:i:s")."\",issued_qty=".$available[$i]."  where tid=".$tid[$i];
+				$sql="update $bai_rm_pj2.mrn_track set status=7, issued_by=\"$username\",issued_date=\"".date("Y-m-d H:i:s")."\",issued_qty=".$available[$j]."  where tid=".$tid[$j];
 				//echo $sql."<br>";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
 		$host_name=str_replace(".brandixlk.org","",gethostbyaddr($_SERVER['REMOTE_ADDR']));
-		for($i=0;$i<sizeof($lable_ids);$i++)
+		for($j=0;$j<sizeof($issued_qty);$j++)
 		{
-			if($issued_qty[$i]>0)
+			if($issued_qty[$j]>0)
 			{
-				$sql1="insert into $bai_rm_pj2.mrn_out_allocation(mrn_tid,lable_id,lot_no,iss_qty,updated_user) values(\"".$ref_tids[$i]."\",\"".$lable_ids[$i]."\",\"".$lot_nos[$i]."\",\"".$issued_qty[$i]."\",\"".$username."^".$host_name."\")";
+				$sql1="insert into $bai_rm_pj2.mrn_out_allocation(mrn_tid,lable_id,lot_no,iss_qty,updated_user) values(\"".$ref_tids[$j]."\",\"".$tid_ref[$j]."\",\"".$lot_nos[$j]."\",\"".$issued_qty[$j]."\",\"".$username."^".$host_name."\")";
 				//echo $sql1."</br>";
 				mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
-				$sql3="update $bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_qty[$i]." where tid=\"".$lable_ids[$i]."\"";
+			
+
+				if($issued_qty[$j]<=$val_ref[$j]){
+
+			
+					$issued_ref[$j]=$issued_qty[$j];
+					$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
+
+				}
+
+				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_qty[$j]." where tid=\"".$tid_ref[$j]."\"";
 				//echo $sql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 			}
 			
 		}

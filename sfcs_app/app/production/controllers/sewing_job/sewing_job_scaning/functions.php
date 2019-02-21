@@ -269,8 +269,8 @@ function savingdata($saving)
 					// echo $ops_order;
 						$act_ops_order_str = (string)$ops_order.'1';
 					// echo $act_ops_order_str;
-						$act_ops_order = (float)$act_ops_order_str;
-						$updating_qry = "update $brandix_bts.tbl_style_ops_master set operation_order = $act_ops_order where id = $updating_id";
+						$act_ops_order = $act_ops_order_str;
+						$updating_qry = "update $brandix_bts.tbl_style_ops_master set operation_order = '$act_ops_order' where id = $updating_id";
 						$array_changed_order_ids_values[$updating_id]=$act_ops_order;
 					// echo $updating_qry;
 						$link->query($updating_qry);
