@@ -394,7 +394,7 @@ if(isset($_POST['put']))
 		  
 			  $roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
 
-			  $sql12="update $bai_rm_pj1.store_in set qty_issued=".$issued_ref[$j]." where tid=".$tid_ref[$j];
+			  $sql12="update $bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_ref[$j]."  where tid=".$tid_ref[$j];
 			  $sql_result=mysqli_query($link,$sql12) or exit("Sql Error45".mysqli_error());
 			//   $sql_result=mysqli_query($link,$sql12) or exit("Sql Error".mysqli_error());
 			  //current date in php
