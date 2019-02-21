@@ -66,13 +66,26 @@ if(isset($_POST) && isset($_POST['main_data'])){
         $result_time2 = mysqli_query($link, $ins_qry2) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
         $inserted_id = mysqli_insert_id($link);
 
+        $get_details_jobs="select max(input_job_no) as check_jobs from $bai_pro3.packing_summary_input where order_style_no='$style' and order_del_no='$schedule'";
+        $check_jobs_cnt_qry =  mysqli_query($link, $get_details_jobs) or exit("Sql Error : get_details_jobs".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $check_jobcount = mysqli_fetch_array($check_jobs_cnt_qry);
+        $rowcount=mysqli_num_rows($check_jobs_cnt_qry);
+
+        
         $old_jobs_cnt_qry = "SELECT COUNT(*) AS old_jobs FROM (SELECT COUNT(*) AS old_jobs FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".$docnos.") GROUP BY input_job_no) AS tab";
         //echo $old_jobs_cnt_qry;
         $old_jobs_cnt_res = mysqli_query($link, $old_jobs_cnt_qry) or exit("Sql Error : old_jobs_cnt_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         $oldqty_jobcount = mysqli_fetch_array($old_jobs_cnt_res);
         // print_r($oldqty_jobcount)."<br/>";
         foreach ($details as $term ) {
-            $job = $oldqty_jobcount['old_jobs']+$term['job_id'];			
+            if($rowcount > 0)
+            { 
+             $job = $oldqty_jobcount['old_jobs']+$check_jobcount['check_jobs']+$term['job_id']; 
+            }
+            else
+            {
+              $job = $oldqty_jobcount['old_jobs']+$term['job_id'];    
+            }   	
 			if(($job<>$temp_job) || $barcode_seq==1)
 			{
 				$i=1;
@@ -300,7 +313,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
 if($schedule != "" && $color != "")
 {
     $ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db_confirm.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db_confirm.order_del_no='".$schedule."' AND TRIM(bai_orders_db_confirm.order_col_des) =trim('".$color."')";
-
+  echo $ratio_query;
     $doc_nos = [];
     $view_shows=[];
     $ratio_result = mysqli_query($link, $ratio_query) or exit("Sql Error : ratio_query".mysqli_error($GLOBALS["___mysqli_ston"]));
