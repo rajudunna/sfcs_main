@@ -81,7 +81,7 @@ echo "<div class='col-md-2 col-sm-3 col-xs-12'>";
 
 echo "Select Style: <select name=\"style\" class=\" form-control\" onchange=\"firstbox();\" required>";
 
-$sql="SELECT DISTINCT (b.order_style_no) AS order_style_no,s.order_tid FROM $bai_pro3.sp_sample_order_db  s LEFT JOIN bai_orders_db b ON b.order_tid=s.order_tid";	
+$sql="SELECT DISTINCT (b.order_style_no) AS order_style_no,s.order_tid FROM $bai_pro3.sp_sample_order_db  s LEFT JOIN bai_orders_db b ON b.order_tid=s.order_tid group by order_style_no";	
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
