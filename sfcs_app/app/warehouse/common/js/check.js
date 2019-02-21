@@ -161,6 +161,7 @@ function clear_sr() {
     }
     document.getElementById('auto_qty').value = '0';
     document.getElementById('auto_rows').value = '0';
+    quantity();
 }
 
 function button_disable() {
@@ -216,7 +217,6 @@ function button_disable() {
 
 
 function quantity(t) {
-
     var available = document.getElementById('available').value;
     var total = 0;
     var sumx = 0;
@@ -330,4 +330,5 @@ function fill_vsr() {
             }
         }
     }
+    quantity();
 }
