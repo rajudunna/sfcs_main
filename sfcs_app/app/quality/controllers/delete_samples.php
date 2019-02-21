@@ -237,7 +237,7 @@ if(isset($_POST['submit']))
 		$rowcount=mysqli_num_rows($sql_result1);
 		if($rowcount>0){
 		$count=0;
-		$sql="select * from $bai_pro3.cuttable_stat_log where order_tid=\"".$order_tid."\"";
+		$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid."\"";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{	
