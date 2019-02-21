@@ -1,8 +1,8 @@
 <?php
 
-include($_SERVER['DOCUMENT_ROOT'].'/common/config/config.php'); 
-include($_SERVER['DOCUMENT_ROOT'].'/common/config/functions.php'); 
-include($_SERVER['DOCUMENT_ROOT'].'/common/config/mo_filling.php'); 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/mo_filling.php'); 
 
 
 /*
