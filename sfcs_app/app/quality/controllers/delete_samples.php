@@ -81,7 +81,7 @@ echo "<div class='col-md-2 col-sm-3 col-xs-12'>";
 
 echo "Select Style: <select name=\"style\" class=\" form-control\" onchange=\"firstbox();\" required>";
 
-$sql="SELECT DISTINCT (b.order_style_no) AS order_style_no,s.order_tid FROM $bai_pro3.sp_sample_order_db  s LEFT JOIN bai_orders_db b ON b.order_tid=s.order_tid";	
+$sql="SELECT DISTINCT (b.order_style_no) AS order_style_no,s.order_tid FROM $bai_pro3.sp_sample_order_db  s LEFT JOIN bai_orders_db b ON b.order_tid=s.order_tid group by order_style_no";	
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
@@ -237,7 +237,7 @@ if(isset($_POST['submit']))
 		$rowcount=mysqli_num_rows($sql_result1);
 		if($rowcount>0){
 		$count=0;
-		$sql="select * from $bai_pro3.cuttable_stat_log where order_tid=\"".$order_tid."\"";
+		$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid."\"";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{	
