@@ -1379,7 +1379,7 @@ else if($concurrent_flag == 0)
 				//inserting bai_log and bai_log_buff
 				$appilication_out = "IMS_OUT";
 				$checking_output_ops_code_out = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication_out'";
-			// echo $checking_output_ops_code_out;
+			   // echo $checking_output_ops_code_out;
 				$result_checking_output_ops_code_out = $link->query($checking_output_ops_code_out);
 				if($result_checking_output_ops_code_out->num_rows > 0)
 				{
@@ -1448,11 +1448,17 @@ else if($concurrent_flag == 0)
 
 			}
 			if($b_rep_qty[$i] > 0 || $b_rej_qty[$i] > 0)
+			{
+				//echo $b_rej_qty[$i];
+				$size = strtoupper($b_sizes[$i]);
+				$get_barcode="select barcode_sequence from $bai_pro3.packing_summary_input where tid=$b_tid[$i]";
+				$barcode_status=mysqli_query($link,$get_barcode) or exit("Barcode Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($barcode_row=mysqli_fetch_array($barcode_status))
 				{
-					//echo $b_rej_qty[$i];
-					$size = strtoupper($b_sizes[$i]);
-					$table_data .= "<tr><td data-title='Job No'>$b_inp_job_ref[$i]</td><td data-title='Bundle No'>$b_tid[$i]</td><td data-title='Color'>$b_colors[$i]</td><td data-title='Size'>$size</td><td data-title='Remarks'>$barcode_sequence[$i]</td><td data-title='Reported Qty'>$b_rep_qty[$i]</td><td data-title='Rejected Qty'>$b_rej_qty[$i]</td></tr>";
+					$bar_value=$barcode_row['barcode_sequence'];
 				}
+				$table_data .= "<tr><td data-title='Job No'>$b_inp_job_ref[$i]</td><td data-title='Bundle No'>$b_tid[$i]</td><td data-title='Color'>$b_colors[$i]</td><td data-title='Size'>$size</td><td data-title='Remarks'>$bar_value</td><td data-title='Reported Qty'>$b_rep_qty[$i]</td><td data-title='Rejected Qty'>$b_rej_qty[$i]</td></tr>";
+			}
 			
 		}
 		$table_data .= "</tbody></table></div></div></div>";
