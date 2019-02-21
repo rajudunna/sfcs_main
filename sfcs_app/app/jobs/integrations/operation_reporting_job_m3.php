@@ -4,6 +4,7 @@ error_reporting(0);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 include($include_path.'\sfcs_app\common\config\rest_api_calls.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
 set_time_limit(1000000);
 
 //details from config tool
@@ -57,6 +58,7 @@ while($row=mysqli_fetch_array($transaction_result))
         else
         {
             $api_data = $obj->getCurlAuthRequest($api_url);
+            $api_log = writing_logs_to_file($transaction_id,$api_url,$api_data);
             $decoded = json_decode($api_data,true);
             $type=$decoded['@type'];
             $code=$decoded['@code'];
@@ -106,6 +108,7 @@ while($row=mysqli_fetch_array($transaction_result))
         else
         {
             $api_data = $obj->getCurlAuthRequest($api_url);
+            $api_log = writing_logs_to_file($transaction_id,$api_url,$api_data);
             $decoded = json_decode($api_data,true);
             $type=$decoded['@type'];
             $code=$decoded['@code'];
