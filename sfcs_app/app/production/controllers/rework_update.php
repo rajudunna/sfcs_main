@@ -78,7 +78,13 @@ table
 
 </style>
 <script>
-
+function shiftselect()
+{
+	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value+"&shift="+document.select_module.shift.value
+}
+function firstbox()
+{
+	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value+"&shift="+document.select_module.shift.value+"&section="+document.select_module.select_section.value
 function firstbox()
 {
 	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value+"&section="+document.select_module.select_section.value
@@ -195,7 +201,13 @@ function second_box(){
 
 	function validateThisFrom(thisForm) 
 	{
-		if (thisForm.module.value == "0")
+		if (thisForm.select_section.value == "NIL")
+		{
+			sweetAlert("Please select SECTION",'','warning');
+			return false;
+		}
+
+		if (thisForm.module.value == "0" || thisForm.module.value == "")
 		{
 			sweetAlert("Please select MODULE",'','warning');
 			return false;
@@ -278,7 +290,7 @@ function second_box(){
 		}
 
 		$module_ref=$_POST['module']; 
-		$shift=$_POST['shift'];
+		$shift=$_GET['shift'];
 		$zone_base=$_POST['zone_base'];
 	?>
 
@@ -307,11 +319,12 @@ function second_box(){
 		echo "</div>";
 		?>		
 	<div class="col-sm-2">
-		Shift:	<select name="shift" class="form-control">
+		Shift:	<select name="shift" class="form-control" id="shift" onchange="shiftselect();">
 					<?php 
-						for ($i=0; $i < sizeof($shifts_array); $i++) {?>
-							<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($shift==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
-						<?php }
+	for ($i=0; $i < sizeof($shifts_array); $i++) {
+							?>
+							<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($shift === $shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
+												<?php }
 					?>
 				</select>
 	</div>
@@ -337,7 +350,7 @@ function second_box(){
 		echo "</select></div>";	
 
 		echo "<div class='col-sm-2'>Module: <select name='module' class='form-control' id='module' onclick='check_section()'>";
-				echo "<option value='0'>Select Module</option>";
+				echo "<option value='0' selected>Select Module</option>";
 		$sql="select group_concat(sec_mods) as \"sec_mods\" from $bai_pro3.sections_db where sec_id in (\"$section\")";
 		// echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -349,6 +362,8 @@ function second_box(){
 		$modules=explode(",",$sec_mods);
 		for ($i=0; $i < sizeof($modules); $i++) 
 		{ 
+				if ($modules[$i] != '' || $modules[$i] != null)
+			{
 			if ($module_ref==$modules[$i])
 			{
 				$selected = 'selected';
@@ -358,7 +373,10 @@ function second_box(){
 				$selected = '';
 			}
 			echo "<option value='".$modules[$i]."' ".$selected.">".$modules[$i]."</option>";
+			}
 		}
+
+
 		echo "</select></div>";
 
 		echo "<div class='col-sm-2'>Select Time: <select name='zone_base' class='form-control' id='zone_base'>";
@@ -792,6 +810,7 @@ if (isset($_POST['submit11']))
 		}else{
 			if(in_array($authorized,$has_permission))
 			{
+
 				echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();" style="display:none">';
 				echo '<input type="submit" name="update" class="btn btn-primary" id="update" value="Update" onclick="javascript:button_disable();" onclick="" style="display:none">';
 				echo "<p>If You Want to Update Please Select Section,Module and Time</p>";
