@@ -45,7 +45,8 @@ error_reporting(0);
 		}
 		else
 		{
-			document.getElementById("qty_issued").value=qty_issued_chk;
+			sweetAlert('You entered more than avaiable qty.','','warning');
+			document.getElementById("qty_issued").value=bal_qty;
 		}
 	}
 </script>
