@@ -217,8 +217,9 @@ document.getElementById('process_message').style.visibility="hidden";
 //OK document.getElementById('allocate_new').style.visibility="hidden";
 
 }
-function filling(doc_no,i)
-{
+function filling(doc_no,i,doc_count_no)
+{	
+	var doc_ref=document.input["doc_ref["+doc_count_no+"]"].value;
 	var issued_qty=parseFloat(document.input["val"+doc_no+"["+i+"]"].value);
 	var new_value = parseFloat(document.getElementById("issued"+doc_no+"["+i+"]").value);
 	var old_value = parseFloat(document.getElementById("issued_new"+doc_no+"["+i+"]").value);
@@ -236,7 +237,13 @@ function filling(doc_no,i)
 		document.getElementById("issued"+doc_no+"["+i+"]").value = old_value;
 	}
 	else
-	{
+	{	
+		//alert(actual_balance);
+		if(actual_balance==0){
+			document.getElementById(doc_ref).style.backgroundColor = "GREEN";
+		}else{
+			document.getElementById(doc_ref).style.backgroundColor = "RED";
+		}
 		document.getElementById("issued_new"+doc_no+"["+i+"]").value = new_value;
 		var actual_allcoate = parseFloat(allocate_bal)-parseFloat(old_value)+parseFloat(new_value);
 		document.getElementById("balal"+doc_no).innerHTML =  actual_balance;
@@ -559,7 +566,8 @@ function check_qty23(x,m,n,doc,row_count,doc_count_no)
 	//document.getElementById('allocate_new').style.visibility="";
 }
 function check_qty2(x,m,n,doc,row_count,doc_count_no,act_count)
-{
+{	
+	var doc_ref=document.input["doc_ref["+doc_count_no+"]"].value;
 	var bal = parseFloat(document.getElementById("balal"+doc).innerHTML);
 	if(document.getElementById(m).checked)
 	{
@@ -581,6 +589,13 @@ function check_qty2(x,m,n,doc,row_count,doc_count_no,act_count)
 			document.getElementById("issued_new"+doc+"["+act_count+"]").value = parseFloat(eligibile.toFixed(2));
 			document.getElementById("balal"+doc).innerHTML =  parseFloat(balance)-parseFloat(eligibile);
 			document.getElementById("alloc"+doc).innerHTML =  parseFloat(allocate)+parseFloat(eligibile);
+			var bal_qty_colorchnage=parseFloat(balance)-parseFloat(eligibile);
+			//alert(bal_qty_colorchnage);
+			if(bal_qty_colorchnage==0){
+				document.getElementById(doc_ref).style.backgroundColor = "GREEN";
+			}else{
+				document.getElementById(doc_ref).style.backgroundColor = "RED";
+			}
 		}
 		
 	}
@@ -588,7 +603,7 @@ function check_qty2(x,m,n,doc,row_count,doc_count_no,act_count)
 	{
 		document.getElementById("issued"+doc+"["+act_count+"]").readOnly = true;
 		document.getElementById("issued"+doc+"["+act_count+"]").value = 0;
-		filling(doc,act_count);
+		filling(doc,act_count,doc_count_no);
 	}
 	
 }
@@ -734,7 +749,11 @@ if(isset($_POST['allocate_new']))
 			for($j=0;$j<sizeof($tid_ref);$j++)
 			{
 				if($tid_ref[$j]>0)
-				{
+				{	
+					//if there is no ctex width we will take ticket width as ctex
+					if(($width_ref[$j]=='') or ($width_ref[$j]==NULL)){
+						$width_ref[$j]=$issued_ref[$j];
+					}
 					if($process_cat==1)
 					{
 						$sql="insert into bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'normal',".$issued_ref[$j].",'1')";
@@ -754,8 +773,6 @@ if(isset($_POST['allocate_new']))
 
 				}
 			}
-			
-			
 			//To confirm docket as allocated
 			if($process_cat==1)
 			{
@@ -1121,7 +1138,7 @@ if(isset($_POST['allocate']))
 			echo "<td>".$sql_row['qty_rec']."</td>";
 			echo "<td>".$sql_row['ref5']."</td>";
 			echo "<td>".($sql_row['qty_rec']-$sql_row['qty_issued']+$sql_row['qty_ret'])."</td>";
-			echo "<td><input class='form-control float' name=\"issued_new".$doc_ref."[$j]\" type = 'number' min='0' step='any' id=\"issued".$doc_ref."[$j]\" value = '0' onchange='filling($doc_ref,$j);' readonly></input></td>";
+			echo "<td><input class='form-control float' name=\"issued_new".$doc_ref."[$j]\" type = 'number' min='0' step='any' id=\"issued".$doc_ref."[$j]\" value = '0' onchange='filling($doc_ref,$j,$i);' readonly></input></td>";
 			
 			//echo "</br>Allotment Status".$sql_row['allotment_status']."</br>";
 
