@@ -198,6 +198,12 @@ function second_box(){
 
 	function validateThisFrom(thisForm) 
 	{
+		if (thisForm.select_section.value == "NIL")
+		{
+			sweetAlert("Please select SECTION",'','warning');
+			return false;
+		}
+
 		if (thisForm.module.value == "0" || thisForm.module.value == "")
 		{
 			sweetAlert("Please select MODULE",'','warning');
@@ -353,6 +359,8 @@ function second_box(){
 		$modules=explode(",",$sec_mods);
 		for ($i=0; $i < sizeof($modules); $i++) 
 		{ 
+				if ($modules[$i] != '' || $modules[$i] != null)
+			{
 			if ($module_ref==$modules[$i])
 			{
 				$selected = 'selected';
@@ -362,7 +370,10 @@ function second_box(){
 				$selected = '';
 			}
 			echo "<option value='".$modules[$i]."' ".$selected.">".$modules[$i]."</option>";
+			}
 		}
+
+
 		echo "</select></div>";
 
 		echo "<div class='col-sm-2'>Select Time: <select name='zone_base' class='form-control' id='zone_base'>";
