@@ -10,7 +10,7 @@ class rest_api_calls {
 	}
 	
 	//For rest api calls m3 authentication based 
-	public function getCurlAuthRequest($url){
+	public function getCurlAuthRequest($url,$unique_id){
 		$include_path=getenv('config_job_path');
 		include($include_path.'\sfcs_app\common\config\m3_api_const.php');
         $basic_auth=base64_encode($api_username.':'.$api_password);
@@ -33,6 +33,7 @@ class rest_api_calls {
 			),
 		));
 		$response = curl_exec($curl);
+		$log_data = writing_logs_to_file($unique_id,$url,$response);
 		$httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 		$err = curl_error($curl);
 
@@ -55,5 +56,22 @@ class rest_api_calls {
 	}		
 }
 $obj = new rest_api_calls();	
-
+function writing_logs_to_file($unique_id,$api_call,$response_from_api)
+{
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+    $directory = $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/app/m3_log_files/'.$facility_code;
+    if (!file_exists($directory)) {
+        mkdir($directory, 0777, true);
+    }
+    $date = date("d_m_Y");
+    $current_date = date("Y-m-d H:i:s");
+    $file_name_string = $facility_code.'_'.$date.'_api_log.txt';
+    $my_file = $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/app/m3_log_files/'.$facility_code.'/'.$file_name_string;
+    $handle = fopen($my_file, 'a') or die('Cannot open file:  '.$my_file);
+	$file_data_request = $current_date.'  '.$unique_id.'  '.$api_call;
+	fwrite($handle,"\n".$file_data_request); 
+	$file_data_response = $current_date.'  '.$unique_id.'  '.$response_from_api;
+    fwrite($handle,"\n".$file_data_response); 
+    fclose($handle);
+}
 ?>
