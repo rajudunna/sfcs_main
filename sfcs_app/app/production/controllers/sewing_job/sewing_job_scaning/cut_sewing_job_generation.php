@@ -47,6 +47,21 @@ if(isset($_POST) && isset($_POST['main_data'])){
     $style  = $_POST['style'];
     $docnos = $_POST['docnos'];
     $count = 0;
+
+    $ins_qry2 = "INSERT INTO `bai_pro3`.`sewing_jobs_ref` (style,schedule,bundles_count,log_time) VALUES ('".$style."','".$schedule."','0',NOW())";
+    $result_time2 = mysqli_query($link, $ins_qry2) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $inserted_id = mysqli_insert_id($link);
+
+        
+    $old_jobs_cnt_qry = "SELECT  MAX(input_job_no*1) AS old_jobs 
+            FROM bai_pro3.packing_summary_input WHERE order_del_no = '$schedule'";
+        //echo $old_jobs_cnt_qry;
+    $old_jobs_cnt_res = mysqli_query($link, $old_jobs_cnt_qry) or exit("Sql Error : old_jobs_cnt_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $oldqty_jobcount = mysqli_fetch_array($old_jobs_cnt_res);
+    // print_r($oldqty_jobcount)."<br/>";
+    // if($oldqty_jobcount['old_jobs'] > 0)
+    //     $oldqty_jobcount['old_jobs'] += 1;
+
     foreach($_POST['main_data'] as $iv){
         //$reason = explode('(',$iv['reasons'])[0];
         $cut = $iv['cut'];
@@ -62,30 +77,10 @@ if(isset($_POST) && isset($_POST['main_data'])){
         $doc_no_ref = '';
 		$temp_job=1;
         
-        $ins_qry2 = "INSERT INTO `bai_pro3`.`sewing_jobs_ref` (style,schedule,bundles_count,log_time) VALUES ('".$style."','".$schedule."','0',NOW())";
-        $result_time2 = mysqli_query($link, $ins_qry2) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
-        $inserted_id = mysqli_insert_id($link);
-
-        $get_details_jobs="select max(input_job_no) as check_jobs from $bai_pro3.packing_summary_input where order_style_no='$style' and order_del_no='$schedule'";
-        $check_jobs_cnt_qry =  mysqli_query($link, $get_details_jobs) or exit("Sql Error : get_details_jobs".mysqli_error($GLOBALS["___mysqli_ston"]));
-        $check_jobcount = mysqli_fetch_array($check_jobs_cnt_qry);
-        $rowcount=mysqli_num_rows($check_jobs_cnt_qry);
-
         
-        $old_jobs_cnt_qry = "SELECT COUNT(*) AS old_jobs FROM (SELECT COUNT(*) AS old_jobs FROM bai_pro3.pac_stat_log_input_job WHERE doc_no IN (".$docnos.") GROUP BY input_job_no) AS tab";
-        //echo $old_jobs_cnt_qry;
-        $old_jobs_cnt_res = mysqli_query($link, $old_jobs_cnt_qry) or exit("Sql Error : old_jobs_cnt_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
-        $oldqty_jobcount = mysqli_fetch_array($old_jobs_cnt_res);
-        // print_r($oldqty_jobcount)."<br/>";
+
         foreach ($details as $term ) {
-            if($rowcount > 0)
-            { 
-             $job = $oldqty_jobcount['old_jobs']+$check_jobcount['check_jobs']+$term['job_id']; 
-            }
-            else
-            {
-              $job = $oldqty_jobcount['old_jobs']+$term['job_id'];    
-            }   	
+            $job = $oldqty_jobcount['old_jobs']+$term['job_id'];    
 			if(($job<>$temp_job) || $barcode_seq==1)
 			{
 				$i=1;
