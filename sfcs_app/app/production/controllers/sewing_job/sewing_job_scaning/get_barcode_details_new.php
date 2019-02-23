@@ -776,11 +776,20 @@
                     }
                     elseif($b_op_id == $output_ops_code)
                     {
-                        $input_ops_code = 100;
-                        if($input_ops_code == 100 || $input_ops_code == 129)
+                        //To gent Input Operation Code
+                        $application='IPS';
+                        $scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+                        //echo $scanning_query;
+                        $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($sql_row=mysqli_fetch_array($scanning_result))
+                        {
+                          $operation_name=$sql_row['operation_name'];
+                          $operation_code=$sql_row['operation_code'];
+                        }
+                        if($operation_code == 100 || $operation_code == 129)
                         {
                             //updating ims_pro_qty against the input
-                            $searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid[$i]' AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref=$b_job_no AND operation_id=$input_ops_code AND ims_remarks = '$b_remarks[$i]'";
+                            $searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid[$i]' AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref=$b_job_no AND operation_id=$operation_code AND ims_remarks = '$b_remarks[$i]'";
                             $result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
                             if($result_searching_query_in_imslog->num_rows > 0)
                             {
