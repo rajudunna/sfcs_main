@@ -723,6 +723,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
 
     
     $scope.getjobs = function() {
+        $scope.jobcount = $('#job-qty').val();
         if(Number($scope.jobcount)>0 && Number($scope.jobcount)>=Number($scope.bundleqty)){
             $scope.fulljob = {};
             // console.log($scope.bundleqty);
