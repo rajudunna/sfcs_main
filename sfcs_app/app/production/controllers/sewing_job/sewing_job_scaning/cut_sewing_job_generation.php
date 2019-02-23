@@ -607,7 +607,7 @@ if($schedule != "" && $color != "")
                         </div>
                         <div class='col-sm-2'>
                             <br/><br/>
-                            <button class="btn btn-success" ng-click="getjobs()">Confirm..</button>
+                            <button class="btn btn-success confirm-submit" ng-click="getjobs()">Confirm..</button>
                         </div>
                         <!--<div class='col-sm-2'>
                             <br/><br/>
