@@ -3,32 +3,24 @@
      <?php
     if(isset($_REQUEST['time_id']))
     {
-        // var_dump($_GET);
-        // die();
-        $dr_id=$_GET['time_id'];
+        $end_time_str = '';
         $code=$_GET['time_value'];
-        $time=$_GET['time_display'];
-        $times = explode('-',$time);
-
-        // $st = $times[0];
-        $xx = explode(':',$times[0]);
-        $x1=$xx[0];
-        $x2=$xx[1];
-        $h1 = str_pad($x1,2,'0',STR_PAD_LEFT);
-        $m1 = str_pad($x2,2,'0',STR_PAD_LEFT);
-        $st="$h1:$m1";
-        $yy = explode(':',$times[1]);
-        $y1=$yy[0];
-        $y2=$yy[1];
-        $h2 = str_pad($y1,2,'0',STR_PAD_LEFT);
-        $m2 = str_pad($y2,2,'0',STR_PAD_LEFT);
-        $et="$h2:$m2";
-        $day_part=$_GET['day_part'];
-
+        $start_time = $_GET['start_time'];
+        $end_time = $_GET['end_time'];
+       
+        $end_time_split = explode(':',$end_time);
+        $eh = $end_time_split[0];
+        $em = $end_time_split[1];
+        if($end_time_split[2] == 0)
+            $end_time_str = "$eh:$em";
+        else{
+            $em++;
+            $end_time_str = "$eh:$em";
+        }
         echo "<script>
             $(document).ready(function(){
-                $('#start_time').val('$st');
-                $('#end_time').val('$et');
+                $('#start_time').val('$start_time');
+                $('#end_time').val('$end_time_str');
             });
             </script>";
     }else
