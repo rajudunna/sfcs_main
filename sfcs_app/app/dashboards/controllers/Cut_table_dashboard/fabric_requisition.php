@@ -120,95 +120,36 @@ function GetSelectedItem()
 	var date=currentTime.getDate();
 	var month=currentTime.getUTCMonth()+1;
 	var yer=currentTime.getFullYear();
-	//var hours=currentTime.getHours();
+	var hours=currentTime.getHours();
 	//var hours=currentTime.getHours()+3; //3 hours lead time
-	var hours=currentTime.getHours()+parseInt(rms_request_time_test); //1 hours lead time
+	//var hours=currentTime.getHours()+parseInt(rms_request_time_test); //1 hours lead time
 	var mints=currentTime.getMinutes();
 	var datsplit=dat.split("-");
 	var timsplit=mins.split(":");
 	
-	var dat_new=(parseInt(parseInt(datsplit[0])+''+(datsplit[1])+''+(datsplit[2])));
-	var cur_new=(parseInt(yer+''+pad(month,2)+''+pad(date,2)));
-	if(mints < 10)
-	{
-		mints="0"+mints;
-	}
-	//alert(timsplit[0]+"-"+hours+"&"+timsplit[1]+"-"+mints);
-	
-	//3 Hours Lead Time
-	//alert(month+"-"+datsplit[1]);
-	
-	if(datsplit[0] >= yer){
-		if(datsplit[1] >= month){
-			if(datsplit[2] >= date){
-				if(dat_new>cur_new)
-				{
-					
-				}
-				else
-				{
-					if(parseFloat(timsplit[0]+"."+timsplit[1]) >= parseFloat(hours+"."+mints))
-					{
-						//alert("Ok");
-						//alert(timsplit[0]+"."+timsplit[1]+"-"+hours+"."+mints);
-					}
-					else{
-						//alert("Hours Not ok");
-						//alert(timsplit[0]+"."+timsplit[1]+"-"+hours+"."+mints);
-						// alert("");
-						sweetAlert("Info!", "Enter Correct Date And Time.", "warning");
-						document.getElementById("sdat").value=yer+"-"+month+"-"+date;
-						document.getElementById("mins").value="";
-						document.apply['submit'].disabled =true;
-						document.apply['check'].checked=false;
-					}	
-				}
-								
-			}
-			else{
-				//alert("Date Not ok");
-				if(datsplit[1]!=month)
-				{
-					
-				}
-				else
-				{
-					// alert("Enter Correct Date And Time2");
-					sweetAlert("Info!", "Enter Correct Date And Time.", "warning");
-					document.getElementById("sdat").value=yer+"-"+month+"-"+date;
-					document.getElementById("mins").value="";
-					document.apply['submit'].disabled =true;
-					document.apply['check'].checked=false;
-				}				
-			}			
+	var dt1 = new Date(parseInt(month)+" "+parseInt(date)+", "+parseInt(yer)+" "+parseInt(hours)+":"+parseInt(mints));
+	var dt2 = new Date(parseInt(datsplit[1])+" "+parseInt(datsplit[2])+", "+parseInt(datsplit[0])+" "+parseInt(timsplit[0])+":"+parseInt(timsplit[1]));
+	var diff =(dt2.getTime() - dt1.getTime()) / 1000;
+	var diff=diff / (60 * 60);
+	var round_diff=diff.toFixed(2);
+	if(parseFloat(round_diff)>0){
+		if(parseFloat(round_diff)>parseFloat(rms_request_time_test)){	
+		
 		}
 		else{
-			//Add condition if it is new year
-			if(datsplit[0]>yer)
-			{
-				
-			}
-			else
-			{
-				//month not ok
-				// alert("Enter Correct Date And Time3");
-				sweetAlert("Info!", "Enter Correct Date And Time.", "warning");
-				document.getElementById("sdat").value=yer+"-"+month+"-"+date;
-				document.getElementById("mins").value="";
-				document.apply['submit'].disabled =true;
-				document.apply['check'].checked=false;
-			}	
-		}		
-	}
-	else{
-		//alert("Year Not Ok");
+			sweetAlert("Info!", "Enter Correct Date And Time.", "warning");
+			document.getElementById("sdat").value=yer+"-"+month+"-"+date;
+			document.getElementById("mins").value=mins;
+			document.apply['submit'].disabled =true;
+			document.apply['check'].checked=false;
+		}
+	}else{
 		sweetAlert("Info!", "Enter Correct Date And Time.", "warning");
-		// alert("Enter Correct Date And Time4");
 		document.getElementById("sdat").value=yer+"-"+month+"-"+date;
-		document.getElementById("mins").value="";
+		document.getElementById("mins").value=mins;
 		document.apply['submit'].disabled =true;
 		document.apply['check'].checked=false;
-	}	
+	}
 	
 }
 

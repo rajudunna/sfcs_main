@@ -1035,7 +1035,8 @@ if(isset($_POST['allocate']))
 			
 			
 			$temp_var='';
-			if($sql_row['allotment_status']==0 and strlen($sql_row['shade'])>0)
+			//if($sql_row['allotment_status']==0 and strlen($sql_row['shade'])>0)
+			if(($sql_row['allotment_status']==0) or($sql_row['allotment_status']==1) and (strlen($sql_row['shade'])>0))
 			{
 				$temp_var.="<td><input type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref',$row_count,'$i','$j')\">";
 				$temp_var.="<input type=\"hidden\" name=\"val".$doc_ref."[$j]\" value=\"".$sql_row['balance']."\">";
