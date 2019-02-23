@@ -367,6 +367,8 @@ echo "</tr>";
 	}
 	array_push($sizes_count_array,$count123);
 	$max_size = max($sizes_count_array);
+	if($max_size <= 0)
+		$max_size = 0;
 // 	echo "<td>$ship_xs</td><td>$ship_s</td><td>$ship_m</td><td>$ship_l</td><td>$ship_xl</td><td>$ship_xxl</td><td>$ship_xxxl</td><td>$ship_s01</td>
 // <td>$ship_s02</td>
 // <td>$ship_s03</td>
@@ -1232,8 +1234,10 @@ for($i=0;$i<sizeof($order_qtys);$i++)
 		echo "<tr><td>".$size_value[$i]."</td><td>".$order_qtys[$i]."</td><td>".$fg_qtys[$i]."</td><td>".$ship_qtys[$i]."</td><td>".$available_qty."</td>";
 		if($available_qty>0)
 		{
-			echo "<td><input type='text' class='integer' name=\"qty[$x]\" id=\"qty\" value=\"$available_qty\" 
-			      onkeyup='validateshipqty()'><input type=\"hidden\" name=\"size[$x]\" value=\"".$sizes[$i]."\"></td>";
+			echo "<td><input type='text' class='integer' id='$i' name=\"qty[$x]\" id=\"qty\" value=\"$available_qty\" 
+			      onkeyup='validateshipqty(this)'>
+			<input type='hidden'  value='$available_qty' id='".$i."_avl'>
+		    <input type=\"hidden\" name=\"size[$x]\" value=\"".$sizes[$i]."\"></td>";
 			$x++;
 		}
 		else
@@ -1287,9 +1291,9 @@ echo "</form></div>
 </div>";	
 
 }
-echo "<script>
-		document.getElementById('myTd').colSpan = '".$max_size."';
-	</script>";
+// echo "<script>
+// 		document.getElementById('myTd').colSpan = '$max_size';
+// 	</script>";
 ?> 
 
 	</div>	
@@ -1307,15 +1311,14 @@ echo "<script>
 </script>
 
 <script>
-function validateshipqty()
+function validateshipqty(t)
 {
-var availqty='<?php echo $available_qty; ?>';
-var shipqty=document.getElementById('qty').value;
-
-if(shipqty>availqty)
-{
-sweetAlert("You cant enter ship qty more than available qty","","warning");
-document.getElementById('qty').value='<?php echo $available_qty; ?>';
-}
+	var availqty= Number($('#'+t.id+'_avl').val());
+	var shipqty = Number(t.value);
+	if(shipqty>availqty)
+	{
+		sweetAlert("You cant enter ship qty more than available qty","","warning");
+		t.value = 0;
+	}
 }
 </script>
