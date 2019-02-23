@@ -2,7 +2,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
 <?php
-
+$time_id = $_GET['time_id'];
 $dr_id=$_POST['dr_id'];
 $code=$_POST['time_value'];
 $day_part=$_POST['day_part'];
@@ -51,7 +51,7 @@ if (empty($code) || empty($start_time) || empty($end_time) ||  empty($day_part) 
 }
 else
 {
-		if($dr_id>0)
+		if($dr_id>0 || $time_id > 0)
 		{
 			//update
 			$sql = "update $bai_pro3.tbl_plant_timings set time_value='$code',
@@ -96,7 +96,6 @@ else
 								}
 							}); }, 100);</script>";
 					}else{
-								
 						$sql = "INSERT INTO $bai_pro3.tbl_plant_timings (time_value,time_display,start_time,end_time,day_part)
 						VALUES ('$tval','$sh-$eh_dummy','$start_time','$end_time','$day_part')";
 

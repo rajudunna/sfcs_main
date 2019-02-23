@@ -3,6 +3,7 @@
      <?php
     if(isset($_REQUEST['time_id']))
     {
+        $dr_id = $_GET['time_id'];
         $end_time_str = '';
         $code=$_GET['time_value'];
         $start_time = $_GET['start_time'];
@@ -143,6 +144,11 @@
         var v1 = document.getElementById("start_time").value;
         var v2 = document.getElementById("end_time").value;
         var day_time = document.getElementById("day_part").value;
+        if(day_time.length == 0){
+            swal('Please Select Time','','warning');
+            return false;
+        }
+
         var sh = v1.substr(0,2);
         if(sh == 0)
             sh = 24;
@@ -164,6 +170,11 @@
         calculate();
         var v1 = document.getElementById("start_time").value;
         var v2 = document.getElementById("end_time").value;
+        console.log('V! == '+v1);
+        if(v1.length==0 || v2.length==0 ){
+            swal('Please Enter Satrt and End Time','','warning');
+            return false;
+        }
         var sh = v1.substr(0,2);
         var sm = v1.substr(2,4);
         var eh = v2.substr(0,2);
