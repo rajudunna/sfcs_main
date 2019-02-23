@@ -411,17 +411,6 @@ if($schedule != "" && $color != "")
                 $raw['end'] = $end;
                 $end++;
             }else{
-                $old_doc_nos = [];
-                $old_pplice = [];
-                $old_doc_nos[] = $row['doc_no'];
-                $old_pplice[]=$row['p_plies'];
-
-                $display_qty = 0;
-                $bundle_qty = 0;
-                $display_qty = calculate_ratio($old_doc_nos[0],$link);
-                $bundle_qty = $old_pplice[0];
-                echo "<input id='".$old_ratio."_display_qty' type='hidden' value='$display_qty'>";
-                echo "<input id='".$old_ratio."_bundle_qty' type='hidden' value='$bundle_qty'>";
                 echo "<tr>
                 <td>".$old_ratio."</td>
                 <td>".implode(',',$old_pcut)."</td>
@@ -449,11 +438,18 @@ if($schedule != "" && $color != "")
                 }
                 echo "</tr>";
                 //Till here 
+                $display_qty = 0;
+                $bundle_qty = 0;
+                $display_qty = calculate_ratio($old_doc_nos[0],$link);
+                $bundle_qty = $old_pplice[0];
+                echo "<input id='".$old_ratio."_display_qty' type='hidden' value='$display_qty'>";
+                echo "<input id='".$old_ratio."_bundle_qty' type='hidden' value='$bundle_qty'>";
 
                 $end = 1;
                 $old_ratio = $row['ratio'];
                 $old_pcut = [];
-                
+                $old_doc_nos = [];
+                $old_pplice = [];                
                 
                 $old_cut_status = '';
                 echo "<tr style='display:none'>
@@ -470,7 +466,8 @@ if($schedule != "" && $color != "")
                 echo "</tr>";
                 
                 $old_pcut[]=$row['pcutno'];
-                
+                $old_doc_nos[] = $row['doc_no'];
+                $old_pplice[]=$row['p_plies'];
                 
                 if($row['act_cut_status']!='')
                     $old_cut_status = $row['act_cut_status'];
