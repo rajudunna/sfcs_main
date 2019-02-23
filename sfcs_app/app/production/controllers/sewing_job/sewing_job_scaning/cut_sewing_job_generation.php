@@ -8,6 +8,13 @@ output v0.1: Generate jobs.
 Technical Stack : PHP 7,Angular js 1.4,JQuery, Maria DB
 update : 1.Excess and sample code implemented, 2. View and deleate operations implemented in this screen. 3.Redirect to print screens.
 =================================================================== */
+function calculate_ratio($doc,$link){
+    $sum_ratio_query = "SELECT SUM(cut_quantity) as ratio from bai_pro3.cps_log where doc_no=$doc
+    and operation_code = 15";
+    $sum_ratio_result = mysqli_query($link,$sum_ratio_query);
+    $row = mysqli_fetch_array($sum_ratio_result);
+    return $row['ratio'];
+}
 
 function assign_to_gets($ars,$data_samps){
     for($lp=1;$lp<=$ars['max'];$lp++){
@@ -323,7 +330,7 @@ if($schedule != "" && $color != "")
         echo "<div class='col-sm-12' id='main-table'><br><br><div class='table-responsive'><table class='table'>";
         while($row=mysqli_fetch_array($ratio_result))
         {
-            $doc_nos[] = $row['doc_no'];
+            // $doc_nos[] = $row['doc_no'];
             $raw = [];
             if($i==0){
                 //============ find 1st are last cut =================
@@ -372,9 +379,10 @@ if($schedule != "" && $color != "")
                $old_cut_status = '';
                $end = 1;
                $old_doc_nos = [];
-
+                  
             }
             $i++;
+            //no need to consider
             if($old_ratio==$row['ratio']){
                 echo "<tr style='display:none'>
                 <td>".$row['ratio']."</td>
@@ -403,6 +411,17 @@ if($schedule != "" && $color != "")
                 $raw['end'] = $end;
                 $end++;
             }else{
+                $old_doc_nos = [];
+                $old_pplice = [];
+                $old_doc_nos[] = $row['doc_no'];
+                $old_pplice[]=$row['p_plies'];
+
+                $display_qty = 0;
+                $bundle_qty = 0;
+                $display_qty = calculate_ratio($old_doc_nos[0],$link);
+                $bundle_qty = $old_pplice[0];
+                echo "<input id='".$old_ratio."_display_qty' type='hidden' value='$display_qty'>";
+                echo "<input id='".$old_ratio."_bundle_qty' type='hidden' value='$bundle_qty'>";
                 echo "<tr>
                 <td>".$old_ratio."</td>
                 <td>".implode(',',$old_pcut)."</td>
@@ -429,16 +448,18 @@ if($schedule != "" && $color != "")
                     echo "<td><h3 class='label label-warning'>Jobs Already Created with another source..</h3></td>";
                 }
                 echo "</tr>";
+                //Till here 
+
                 $end = 1;
                 $old_ratio = $row['ratio'];
                 $old_pcut = [];
-                $old_pplice = [];
-                $old_doc_nos = [];
+                
+                
                 $old_cut_status = '';
                 echo "<tr style='display:none'>
-                <td>".$row['ratio']."</td>
-                <td id='datarc".$row['ratio'].$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."'data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
-                <td>".$row['p_plies']."</td>";
+                    <td>".$row['ratio']."</td>
+                    <td id='datarc".$row['ratio'].$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."'data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
+                    <td>".$row['p_plies']."</td>";
                 for($k=1;$k<=$max;$k++){
                     $sno = str_pad($k,2,"0",STR_PAD_LEFT);
                     echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio'].$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
@@ -449,8 +470,8 @@ if($schedule != "" && $color != "")
                 echo "</tr>";
                 
                 $old_pcut[]=$row['pcutno'];
-                $old_pplice[]=$row['p_plies'];
-                $old_doc_nos[] = $row['doc_no'];
+                
+                
                 if($row['act_cut_status']!='')
                     $old_cut_status = $row['act_cut_status'];
                 $raw['pcutno'] = $row['pcutno'];
@@ -465,6 +486,12 @@ if($schedule != "" && $color != "")
             $max_cut = $row['pcutno'];
             $over_all_data[] = $raw;
         }
+        $display_qty = 0;
+        $bundle_qty = 0;
+        $display_qty = calculate_ratio($old_doc_nos[0],$link);
+        $bundle_qty = $old_pplice[0];
+        echo "<input id='".$old_ratio."_display_qty' type='hidden' value='$display_qty'>";
+        echo "<input id='".$old_ratio."_bundle_qty' type='hidden' value='$bundle_qty'>";
         echo "<tr>
             <td>".$old_ratio."</td>
             <td>".implode(",",$old_pcut)."</td>
@@ -566,7 +593,9 @@ if($schedule != "" && $color != "")
                     </button>
                 </div>
                 <div class="modal-body">
-                
+                    <!-- <div class='col-sm-12'>
+                        <span>Job Qty : </span><div id='display_qty'></div>
+                    </div> -->
                     <div class='row'>
                         <div class='col-sm-4'>
                             <label data-error="wrong" data-success="right" for="defaultForm-email">Garment per Sewing Job</label>
@@ -629,6 +658,7 @@ if($schedule != "" && $color != "")
 $url = base64_decode($_GET['r']);
 $url = str_replace('\\', '/', $url);
 $docnos = implode(',',$doc_nos);
+
 ?>
 
 </div>
@@ -888,6 +918,13 @@ app.controller('cutjobcontroller', function($scope, $http) {
 angular.bootstrap($('#modalLoginForm'), ['cutjob']);
 function assigndata(s,max,end){
     var details = [];
+    $('#display_qty').val(0);
+    console.log('#'+s+'_display_qty');
+    var d_qty = $('#'+s+'_display_qty').val();
+    var b_qty = $('#'+s+'_bundle_qty').val();
+    $('#job-qty').val(d_qty);
+    $('#bundle-qty').val(b_qty);
+
     for(var jpg=1;Number(jpg)<Number(end);jpg++){
         var dummy = [];
         var pl_cut_id = document.getElementById('datarc'+s+jpg);
