@@ -607,7 +607,7 @@ if($schedule != "" && $color != "")
                         </div>
                         <div class='col-sm-2'>
                             <br/><br/>
-                            <button class="btn btn-success confirm-submit" ng-click="getjobs()">Confirm..</button>
+                            <button class="btn btn-success" id="sub-mit" ng-click="getjobs()">Confirm..</button>
                         </div>
                         <!--<div class='col-sm-2'>
                             <br/><br/>
@@ -748,6 +748,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
             }
             //console.log($scope.fulljob);
             $scope.createjobs();
+            $('#sub-mit').hide();
         }else{
             if(Number($scope.jobcount)<=0)
             swal('Sewing Job Quantity should be grater then zero.');
@@ -917,6 +918,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
 });
 angular.bootstrap($('#modalLoginForm'), ['cutjob']);
 function assigndata(s,max,end){
+    $('#sub-mit').show();
     var details = [];
     $('#display_qty').val(0);
     console.log('#'+s+'_display_qty');
