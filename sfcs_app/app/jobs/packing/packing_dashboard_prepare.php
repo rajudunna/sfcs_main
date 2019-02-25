@@ -1,9 +1,9 @@
 <?php
 	$start_timestamp = microtime(true);
-
+	
 	$include_path=getenv('config_job_path');
 	include($include_path.'\sfcs_app\common\config\config_jobs.php');	
-	
+
 	//NEW to reset all pending cartons
 	//$sql="update pac_stat_log set disp_carton_no=NULL";
 	$sql="update $bai_pro3.pac_stat_log set disp_carton_no=NULL where status='DONE' and disp_carton_no=1";
@@ -27,9 +27,8 @@
 	$sql3="truncate $bai_pro3.packing_summary_tmp_v1";
 	mysqli_query($link, $sql3) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql4="insert into $bai_pro3.packing_summary_tmp_v1 select * from bai_pro3.packing_summary where 
-	order_del_no in (select order_del_no from bai_pro3.packing_pending_schedules)";
-	// echo $sql4;
+	$sql4="insert into $bai_pro3.packing_summary_tmp_v1(doc_no,doc_no_ref,tid,size_code,remarks,status,lastup,container,disp_carton_no,disp_id,carton_act_qty,audit_status,order_style_no,order_del_no,order_col_des) SELECT bai_pro3.pac_stat_log.doc_no AS doc_no,bai_pro3.pac_stat_log.doc_no_ref AS doc_no_ref,bai_pro3.pac_stat_log.tid AS tid,bai_pro3.pac_stat_log.size_code AS size_code,bai_pro3.pac_stat_log.remarks AS remarks,bai_pro3.pac_stat_log.status AS STATUS,bai_pro3.pac_stat_log.lastup  AS lastup,bai_pro3.pac_stat_log.container AS container,bai_pro3.pac_stat_log.disp_carton_no AS disp_carton_no,bai_pro3.pac_stat_log.disp_id AS disp_id,bai_pro3.pac_stat_log.carton_act_qty AS carton_act_qty,bai_pro3.pac_stat_log.audit_status AS audit_status,bai_pro3.bai_orders_db_confirm.order_style_no AS order_style_no,bai_pro3.bai_orders_db_confirm.order_del_no AS order_del_no,bai_pro3.pac_stat_log.color AS order_col_des FROM bai_pro3.pac_stat_log LEFT JOIN bai_pro3.plandoc_stat_log ON bai_pro3.pac_stat_log.doc_no = bai_pro3.plandoc_stat_log.doc_no LEFT JOIN bai_pro3.bai_orders_db_confirm ON bai_pro3.bai_orders_db_confirm.order_tid = bai_pro3.plandoc_stat_log.order_tid WHERE bai_pro3.bai_orders_db_confirm.order_del_no IN (SELECT order_del_no FROM bai_pro3.packing_pending_schedules)";
+	echo $sql4;
 	$res2=mysqli_query($link, $sql4) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($res2)
 	{
@@ -123,10 +122,9 @@ if(sizeof($sch_to_process)>0)
 			$carton_qty_completed=0;
 			$received_qty=0;
 
-	$sql="select coalesce(ims_pro_qty_cumm,0) as \"completed\" from $bai_pro3.ims_log_packing where ims_style=\"".$styles[$j]."\" and ims_schedule=".$schedules[$j]." and ims_color=\"".$color_group[$i]."\" and ims_size=\"a_".$sizes[$j]."\" and ims_doc_no in (".implode(",",$doc_no).")";
-
-	// echo $doc_refs[$j]."<br>";
-	// 		echo $sql."<br/>";
+			$sql="select coalesce(ims_pro_qty_cumm,0) as \"completed\" from $bai_pro3.ims_log_packing where ims_style=\"".$styles[$j]."\" and ims_schedule=".$schedules[$j]." and ims_color=\"".$color_group[$i]."\" and ims_size=\"a_".$sizes[$j]."\" and ims_doc_no in (".implode(",",$doc_no).")";
+			// echo $doc_refs[$j]."<br>";
+			// echo $sql."<br/>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -134,7 +132,7 @@ if(sizeof($sch_to_process)>0)
 			}
 			
 
-	$sql="select coalesce(sum(ims_pro_qty),0) as \"completed\" from $bai_pro3.ims_log where ims_style=\"".$styles[$j]."\" and ims_schedule=".$schedules[$j]." and ims_color=\"".$color_group[$i]."\" and ims_size=\"a_".$sizes[$j]."\" and ims_doc_no in (".implode(",",$doc_no).")";
+			$sql="select coalesce(sum(ims_pro_qty),0) as \"completed\" from $bai_pro3.ims_log where ims_style=\"".$styles[$j]."\" and ims_schedule=".$schedules[$j]." and ims_color=\"".$color_group[$i]."\" and ims_size=\"a_".$sizes[$j]."\" and ims_doc_no in (".implode(",",$doc_no).")";
 			// echo $sql."<br/>";
 			
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -214,10 +212,11 @@ if(sizeof($sch_to_process)>0)
 			}
 				
 			$sql="insert into packing_dashboard_temp (tid,doc_no,size_code,carton_act_qty,lastup,remarks,doc_no_ref,ims_style,ims_schedule,ims_color,ims_mod_no,ims_log_date) values ($a1,\"$a2\",\"$a3\",$a4,\"$a5\",\"$a6\",\"$a7\",\"$a8\",\"$a9\",\"$a10\",$mod_no,\"$ims_log_date\")";
-echo $sql;
+			echo $sql;
 			mysql_query($sql,$link) or exit("Sql Error".mysql_error()); */
 			
 			$sql="update $bai_pro3.pac_stat_log set disp_carton_no=1 where doc_no=\"".$doc_refs[$j]."\" and size_code=\"".$sizes[$j]."\"";
+			// echo $sql."<br>";
 			//$sql="update pac_stat_log set disp_carton_no=1 where doc_no_ref=\"".$doc_refs[$j]."\""; //20111213
 			$res3=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			if($res3)
@@ -225,6 +224,7 @@ echo $sql;
 				print("Updated main  pac_stat_log table Successfully")."\n";
 			}
 			$sql="update $bai_pro3.packing_summary_tmp_v1 set disp_carton_no=1 where doc_no=\"".$doc_refs[$j]."\"  and size_code=\"".$sizes[$j]."\"";
+			// echo $sql."<br>";
 			//$sql="update packing_summary_tmp_v1 set disp_carton_no=1 where doc_no_ref=\"".$doc_refs[$j]."\""; //20111213
 			$res4=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			if($res4)
@@ -238,7 +238,7 @@ echo $sql;
 			{
 				//NEW Implementation for Clearing existing things.
 				$sql="update $bai_pro3.pac_stat_log set disp_carton_no=NULL where doc_no_ref=\"".$doc_refs[$j]."\" and size_code=\"".$sizes[$j]."\"";
-
+				// echo $sql."<br>";
 				//$sql="update pac_stat_log set disp_carton_no=1 where doc_no_ref=\"".$doc_refs[$j]."\""; //20111213
 				$res5=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				if($res5)
@@ -252,9 +252,11 @@ echo $sql;
 	//NEW2011
 	//NEW ADD 2011-07-14
 	$sql1="truncate $bai_pro3.packing_dashboard_temp";
+	// echo $sql1."<br>";
 	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	$sql1="insert into $bai_pro3.packing_dashboard_temp SELECT tid,doc_no,size_code,carton_no,carton_mode,carton_act_qty,status,lastup,remarks,doc_no_ref,ims_style,ims_schedule,ims_color,input_date,ims_pro_qty,ims_mod_no,ims_log_date from bai_pro3.packing_dashboard";
+	// echo $sql1."<br>";
 	$res6=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($res6)
 	{
