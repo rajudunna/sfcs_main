@@ -612,6 +612,7 @@ if(isset($_POST['update_ajax']))
 	$roll_width=$_POST['roll_width'];
 	$doc_no=$_POST['doc_no'];
 	$bal_qty=$_POST['bal_qty'];
+
 	
 	
 	//Removing for #1305 ticket and adding this functionality into a separate function 
