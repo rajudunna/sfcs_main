@@ -159,6 +159,16 @@ function blink_new_priority(x)
 
 
 <style>
+.recut{
+  border-left  : 15px solid pink;
+  border-right : 15px solid pink;
+  border-top : 1px solid black;
+  border-bottom : 1px solid black;
+}
+.normal{
+  border : 1px solid black;
+}
+
 
 /*blink css for req time exceeding */
 @-webkit-keyframes blinker {
@@ -225,13 +235,13 @@ a{
 }
 
 .white {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #ffffff;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -252,13 +262,13 @@ height: 25px;
 
 
 .red {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #ff0000;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -278,14 +288,14 @@ height: 25px;
 }
 
 .lgreen {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #00ff00;
   color: white;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -308,14 +318,14 @@ height: 25px;
 }
 
 .green {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
    color: white;
   height:20px;
   background-color: #339900;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
     padding: 1px;
@@ -340,14 +350,14 @@ height: 25px;
 }
 
 .yellow {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #ffff00;
   display:block;
   float: left;
   margin: 2px;
   color:black;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    /*padding: 4px;*/
@@ -370,13 +380,13 @@ height: 25px;
 
 
 .pink {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #ff00ff;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -396,13 +406,13 @@ height: 25px;
 }
 
 .orange {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #ff9900;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
   height: 25px;
     width: 250px;
     /* padding: 4px; */
@@ -422,13 +432,13 @@ border: 1px solid #000000;
 }
 
 .blue {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #15a5f2;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
     /* padding: 4px; */
@@ -449,13 +459,13 @@ height: 25px;
 
 
 .yash {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #999999;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
   height: 25px;
     width: 250px;
     /* padding: 4px; */
@@ -475,26 +485,26 @@ border: 1px solid #000000;
 }
 
 .black {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: black;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
 }
 
 .brown {
-  max-width:130px; min-width:20px;
+  max-width:150px; min-width:20px;
   height:20px;
   background-color: #333333;
   display:block;
   float: left;
   margin: 2px;
-border: 1px solid #000000;
+/* border: 1px solid #000000; */
 height: 25px;
     width: 250px;
    padding: 4px;
@@ -578,34 +588,34 @@ window.onload = sivamtime;
 //By Maximus (maximus@nsimail.com) w/ mods by DynamicDrive
 //For full source code, visit http://www.dynamicdrive.com
 
-var message="Function Disabled!";
+//var message="Function Disabled!";
 
 ///////////////////////////////////
-function clickIE4(){
-if (event.button==2){
-sweetAlert("Info!", message, "warning");
-return false;
-}
-}
+// function clickIE4(){
+// if (event.button==2){
+// sweetAlert("Info!", message, "warning");
+// return false;
+// }
+// }
 
-function clickNS4(e){
-if (document.layers||document.getElementById&&!document.all){
-if (e.which==2||e.which==3){
-sweetAlert("Info!", message, "warning");
-return false;
-}
-}
-}
+// function clickNS4(e){
+// if (document.layers||document.getElementById&&!document.all){
+// if (e.which==2||e.which==3){
+// sweetAlert("Info!", message, "warning");
+// return false;
+// }
+// }
+// }
 
-if (document.layers){
-document.captureEvents(Event.MOUSEDOWN);
-document.onmousedown=clickNS4;
-}
-else if (document.all&&!document.getElementById){
-document.onmousedown=clickIE4;
-}
+// if (document.layers){
+// document.captureEvents(Event.MOUSEDOWN);
+// document.onmousedown=clickNS4;
+// }
+// else if (document.all&&!document.getElementById){
+// document.onmousedown=clickIE4;
+// }
 
-document.oncontextmenu=new Function("sweetAlert('Info!', message, 'warning');return false")
+// document.oncontextmenu=new Function("sweetAlert('Info!', message, 'warning');return false")
 
 // --> 
 </script>
@@ -684,7 +694,8 @@ $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBAL
 if(mysqli_num_rows($sql_resultx) > 0){
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
-     $section_mods=$sql_rowx['tbl_id'];
+    $section_mods=$sql_rowx['tbl_id'];
+    $cut_table = $sql_rowx['tbl_id'];
     $emb_tbl_name=$sql_rowx['tbl_name'];
   if($_GET["view_div"]!='ALL' && $_GET["view_div"]!='')
   {
@@ -697,6 +708,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
   else {
      $order_div_ref='';
   }
+
 
   // Ticket #976613 change the buyer division display based on the pink,logo,IU as per plan_modules
  $sql1d="SELECT tbl_id as modx from $bai_pro3.tbl_cutting_table where tbl_id in (".$section_mods.") order by tbl_id*1";
@@ -746,7 +758,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     $doc_no_ref[]=0;
     $req_time[]=0;
     $req_date_time[]=0;
-    $sql2="select * from $bai_pro3.cutting_table_plan where cutting_tbl_id in (".$section_mods.") group by doc_no order by log_time,cutting_tbl_id";
+    $sql2="select * from $bai_pro3.cutting_table_plan where cutting_tbl_id in (".$section_mods.") group by doc_no order by log_time asc";
     $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row2=mysqli_fetch_array($result2))
     {
@@ -757,8 +769,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $req_date_time[]=$row2['log_time'];
 
     }
-  
-    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).")  order by field(doc_no,".implode(",",$doc_no_ref).")";
+    $imploded_docs = implode(",",$doc_no_ref);
+
+    $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ ct 
+          where ct.doc_no in ($imploded_docs)  order by ct.log_time asc";
       if($_GET["view_div"] == 'M')
       {
         $_GET["view_div"] = "M&S";
@@ -767,12 +781,13 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     
        if($_GET["view_div"]=="ALL" or $_GET["view_div"]=="")
       {
-        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref).")";
+        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ ct
+          where ct.doc_no in ($imploded_docs) order by ct.log_time asc";
       }
       else
       {
         $dash = $_GET["view_div"];
-        $sql_qry = "select * from $bai_pro2.buyer_codes where buyer_name =".'"'.$dash.'"';
+        $sql_qry = "select * from $bai_pro2.buyer_codes where buyer_name ='$dash'";
         
         $res = mysqli_query($link, $sql_qry);
         $sql_count_check = mysqli_num_rows($res);
@@ -782,8 +797,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $buyer_identity = $row_res['buyer_name'];
         }
           
-        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and doc_no in (".implode(",",$doc_no_ref).") order by field(doc_no,".implode(",",$doc_no_ref).")"; 
+        $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ ct
+            where ct.order_div = '$buyer_identity' and ct.doc_no in ($imploded_docs) order by ct.log_time asc"; 
       }
+      $imploded_docs = '';
 
       
 
@@ -798,6 +815,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     {
       $cut_new=$sql_row1['act_cut_status'];
       $cut_input_new=$sql_row1['act_cut_issue_status'];
+      $docket_remarks=$sql_row1['remarks'];
       $rm_new=strtolower(chop($sql_row1['rm_date']));
       $rm_update_new=strtolower(chop($sql_row1['rm_date']));
       $input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
@@ -810,9 +828,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $p_plies=$sql_row1['p_plies'];
       $a_plies=$sql_row1['a_plies'];
       $fabric_status=$sql_row1['fabric_status_new']; //NEW due to plan dashboard clearing regularly and to stop issuing issued fabric.
-  // start style wise display by dharani 10-26-2013 
+        // start style wise display by dharani 10-26-2013 
 
-
+        
       $cut_master="select operation_code from $brandix_bts.tbl_orders_ops_ref where operation_name ='cutting'";
       $sql_result3=mysqli_query($link,$cut_master) or exit("Sql Error_cut_master".mysqli_error());
       while($row=mysqli_fetch_array($sql_result3))
@@ -891,6 +909,50 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         $log_time=$sql_row1['log_time'];
         $emb_stat=$sql_row1['emb_stat'];
         
+        $get_order_joins="select order_joins from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
+        $sql_result=mysqli_query($link, $get_order_joins) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($sql_row1236=mysqli_fetch_array($sql_result))
+        {
+            $ord_joins = $sql_row1236['order_joins'];
+        }
+
+        $original_details = array();
+        if($ord_joins<>'0')
+        {
+            if(strlen($schedule)<8)
+            {
+                // color clubbing
+                $orders_join='J'.substr($color,-1);
+                
+                $select_sql="select trim(order_col_des) as order_col_des from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
+                //echo $select_sql."<br>";
+                $result=mysqli_query($link, $select_sql);
+                while($rows=mysqli_fetch_array($result))
+                {
+                    $original_details[]=$rows['order_col_des'];
+                }
+            }
+            else
+            {
+                // schedule clubbing
+                $select_sql="select order_del_no from $bai_pro3.bai_orders_db_confirm where order_joins='J".$schedule."'";
+                //echo $select_sql."<br>";
+                $result=mysqli_query($link, $select_sql);
+                while($rows=mysqli_fetch_array($result))
+                {
+                    $original_details[]=$rows['order_del_no'];
+                }
+            }   
+        }
+
+        if (count($original_details) > 0) {
+			$tool_tip = str_pad("Original Details:".trim(implode(",",$original_details)),80)."\n";
+        } else {
+            $tool_tip = '';
+        }
+        
+
+
         //Exception for M&S WIP - 7000
         
         if(substr($style,0,1)=="M")
@@ -900,20 +962,20 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         
         
         
-        $sql11="select sum(ims_pro_qty) as 'bac_qty', sum(emb) as 'emb_sum' from (SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as 'emb' FROM $bai_pro3.ims_log where ims_log.ims_doc_no=$doc_no UNION ALL SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as 'emb' FROM $bai_pro3.ims_log_backup WHERE ims_log_backup.ims_mod_no<>0 and ims_log_backup.ims_doc_no=$doc_no) as t";
-        mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        // $sql11="select sum(ims_pro_qty) as 'bac_qty', sum(emb) as 'emb_sum' from (SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as 'emb' FROM $bai_pro3.ims_log where ims_log.ims_doc_no=$doc_no UNION ALL SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as 'emb' FROM $bai_pro3.ims_log_backup WHERE ims_log_backup.ims_mod_no<>0 and ims_log_backup.ims_doc_no=$doc_no) as t";
+        // mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         
-        $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-        $input_count=mysqli_num_rows($sql_result11);
-        while($sql_row11=mysqli_fetch_array($sql_result11))
-        {
-          $output=$sql_row11['bac_qty'];
-          $emb_sum=$sql_row11['emb_sum'];
-          if($emb_sum==NULL)
-          {
-            $input_count=0;
-          }
-        } 
+        // $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        // $input_count=mysqli_num_rows($sql_result11);
+        // while($sql_row11=mysqli_fetch_array($sql_result11))
+        // {
+        //   $output=$sql_row11['bac_qty'];
+        //   $emb_sum=$sql_row11['emb_sum'];
+        //   if($emb_sum==NULL)
+        //   {
+        //     $input_count=0;
+        //   }
+        // } 
         
         if($cut_new=="DONE"){ $cut_new="T";} else { $cut_new="F"; }
         if($rm_update_new==""){ $rm_update_new="F"; } else { $rm_update_new="T"; }
@@ -962,16 +1024,22 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         $club_c_code=array();
         $club_docs=array();
         $colors_db=array();
-        if($sql_row1['clubbing']>0)
+        if($sql_row1['clubbing']>0 && strtolower($docket_remarks)!="recut")
         {
           $total_qty=0;
           $fabric_required=0;
-          $sql11="select order_col_des,color_code,doc_no,material_req,(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where order_del_no='$schedule' and clubbing=".$sql_row1['clubbing']." and acutno=".$sql_row1['acutno'];
+          $sql11="select remarks,order_col_des,color_code,doc_no,material_req,(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where order_del_no='$schedule' and category in (".$in_categories.") and clubbing=".$sql_row1['clubbing']." and acutno=".$sql_row1['acutno'];
           
           $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
           while($sql_row11=mysqli_fetch_array($sql_result11))
           {
-            $club_c_code[]=chr($sql_row11['color_code']).leading_zeros($sql_row1['acutno'],3);
+            $remarks = $sql_row11['remarks'];
+            if(strtolower($remarks) == 'recut')
+              $cut_str = 'R';
+            else
+              $cut_str = chr($sql_row11['color_code']);
+
+            $club_c_code[]=$cut_str.''.leading_zeros($sql_row1['acutno'],3);
             $club_docs[]=$sql_row11['doc_no'];
             $total_qty+=$sql_row11['total'];
             $colors_db[]=trim($sql_row11['order_col_des']);
@@ -980,15 +1048,26 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         }
         else
         {
-          
+          //We have no recut dockets for clubbing
+          $remarks = '';
+					$is_recut_query = "SELECT remarks from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
+					$is_recut_result = mysqli_query($link,$is_recut_query);
+					while($row_rem = mysqli_fetch_array($is_recut_result))
+              $remarks = $row_rem['remarks'];
+              
+          if(strtolower($remarks) == 'recut')
+            $cut_str = 'R';
+          else
+            $cut_str = chr($sql_row1['color_code']);
+
           $colors_db[]=$color;
-          $club_c_code[]=chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3);
+          $club_c_code[]=$cut_str.''.leading_zeros($sql_row1['acutno'],3);
           $club_docs[]=$doc_no;
         }
         
         $fabric_required=0;
         $cat_yy=0;
-        $sql11="select catyy,material_req from $bai_pro3.order_cat_doc_mk_mix where category in ('".implode("','",$in_categories)."') and order_del_no='$schedule' and order_col_des='$color' and doc_no=".$sql_row1['doc_no'];
+        $sql11="select catyy,material_req from $bai_pro3.order_cat_doc_mk_mix where category in ($in_categories) and order_del_no='$schedule' and order_col_des='$color' and doc_no=".$sql_row1['doc_no'];
         //echo $sql11."<br>";
         $sql_result111=mysqli_query($link, $sql11) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($sql_row111=mysqli_fetch_array($sql_result111))
@@ -1009,7 +1088,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         $colors_db=array_unique($colors_db);
         $club_c_code=array_unique($club_c_code);
         $club_docs=array_unique($club_docs);
-        
+        $imploded_docs = implode(",",$club_docs);
         //For Fabric Wip Tracking
         
         if($cut_new!="T" and $id=="yellow")
@@ -1017,7 +1096,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $fab_wip+=$total_qty;
         }
         $fab_status="";
-        $fab_issue_query="select * from $bai_pro3.plandoc_stat_log where fabric_status!=5 and doc_no IN (".implode(",",$club_docs).")";
+        $fab_issue_query="select * from $bai_pro3.plandoc_stat_log where fabric_status!=5 and doc_no IN($imploded_docs)";
         // echo "Fab Issue Query : ".$fab_issue_query."<br>";
         $fab_issue_result=mysqli_query($link, $fab_issue_query) or exit("error while getting fab issue details");
         if (mysqli_num_rows($fab_issue_result)>0)
@@ -1029,14 +1108,14 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             $fab_status = 5;
         }
                 
-        $fab_issue2_query="select * from $bai_pro3.plandoc_stat_log where fabric_status='1' and doc_no IN (".implode(",",$club_docs).")";
+        $fab_issue2_query="select * from $bai_pro3.plandoc_stat_log where fabric_status='1' and doc_no IN ($imploded_docs)";
         $fab_isuue2_result=mysqli_query($link, $fab_issue2_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
         if(mysqli_num_rows($fab_isuue2_result)>0)
         {
           $fab_status="1";
         }
 
-        $fab_request_query="select * from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$club_docs).")";
+        $fab_request_query="select * from $bai_pro3.fabric_priorities where doc_ref in ($imploded_docs)";
         $fab_request_result=mysqli_query($link, $fab_request_query) or exit("error while getting fab Requested details");
 
         if($fabric_status ==5)
@@ -1107,7 +1186,17 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $rem="No status";
     }
             
-      $title=str_pad("Style:".trim($style),80)."\n".str_pad("CO:".trim($co_no),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),50)."\n".str_pad("Job_No:".implode(", ",$club_c_code),80)."\n".str_pad("Docket No:".implode(", ",$club_docs),80)."\n".str_pad("Total_Qty:".$total_qty,80)."\n".str_pad("Plan_Time:".$log_time,50)."\n".str_pad("Lay_Req_Time:".$lay_time[array_search($doc_no,$doc_no_ref)],80)."\n".str_pad("Fab_Loc.:".$fabric_location."Bundle_Loc.:".$bundle_location,80);
+      $title=str_pad("Style:".trim($style),80)."\n".
+            str_pad("CO:".trim($co_no),80)."\n".
+            str_pad("Schedule:".$schedule,80)."\n".
+            str_pad("Color:".trim(implode(",",$colors_db)),50)."\n".
+            str_pad("Job_No:".implode(", ",$club_c_code),80)."\n".
+            $tool_tip.
+            str_pad("Docket No:".implode(", ",$club_docs),80)."\n".
+            str_pad("Total_Qty:".$total_qty,80)."\n".
+            str_pad("Plan_Time:".$log_time,50)."\n".
+            str_pad("Lay_Req_Time:".$lay_time[array_search($doc_no,$doc_no_ref)],80)."\n".
+            str_pad("Fab_Loc.:".$fabric_location."Bundle_Loc.:".$bundle_location,80);
       
       
       $clr=trim(implode(',',$colors_db),50);
@@ -1189,30 +1278,37 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             }
           }
         }
-        $get_cut_qty = getFullURLLevel($_GET['r'],'cutting/controllers/cut_qty_reporting_withoutrolls/orders_cut_issue_status_form_v2_cut.php',3,'N');
+      if(strtolower($remarks) == 'recut')
+        $recut_class = 'recut';
+      else
+        $recut_class = 'normal';
 
-        $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
-        $sidemenu=true;
+      // $get_cut_qty = getFullURLLevel($_GET['r'],'cutting/controllers/cut_qty_reporting_withoutrolls/orders_cut_issue_status_form_v2_cut.php',3,'N');
+      $get_cut_qty = 
+      getFullURLLevel($_GET['r'],'cutting/controllers/cut_reporting_without_rolls/cut_reporting_interface.php',3,'N');
+
+      $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
+      $sidemenu=true;
       $href="$get_fabric_requisition&doc_no=$doc_no&module=$table_id&section=$table_id&sidemenu=$sidemenu&group_docs=".implode(",",$club_docs);
   
         //if(in_array($authorized,$has_permission) and $final_cols!="yellow" and $final_cols!="green")
       if($rep_status!=''){
        if(in_array($authorized,$has_permission) and ($final_cols=="yellow" || $final_cols=="orange")){
-            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='".$get_cut_qty."&doc_no=$doc_no' onclick='Popup=window.open('get_cut_qty.php?doc_no=$doc_no','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>RT:".$req_time1."</span></a></div></div><br/>";
-        }else if($final_cols=="red" || $final_cols=="lgreen" || $final_cols=="yash"){
-          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:11px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='#'
+            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='".$get_cut_qty."&doc_no=$doc_no&cut_table=$cut_table' onclick='Popup=window.open('$get_cut_qty.php?doc_no=$doc_no&cut_table=$cut_table','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
+        }else if($final_cols=="yash" || $final_cols=="red" || $final_cols=="lgreen"){
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='#'
              onclick=\"window.open('$href','yourWindowName','width=800,height=600')\"
             >$emb_stat_title"."LT:".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
         }
         else if($final_cols=="pink"){
-          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:11px; float:left; color:white' title='$title'>RT:".$req_time1."</div></div><br/>";
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' title='$title'>RT:".$req_time1."</div></div><br/>";
         }
         else{
           if($fabric_req_date<date("Y-M-d h:i:sa")){
-          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; text-align:center; float:left; color:white' title='$title'><span class='blink'>RT:".$req_time1."</span></div></div><br/>";
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:white' title='$title'><span class='blink'>RT:".$req_time1."</span></div></div><br/>";
           }
           else{
-            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols' style='font-size:12px; float:left; color:white' title='$title'>RT:".$req_time1."</div></div><br/>";
+            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' title='$title'>RT:".$req_time1."</div></div><br/>";
           }
         }
       }

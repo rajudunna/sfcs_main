@@ -1,6 +1,11 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
 	<title>Color Wise Order Details</title>
+	<style type="text/css">
+		table, th, td {
+			text-align: center;
+		}
+	</style>
 </head>
 <?php
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
@@ -8,128 +13,135 @@
 	
 	error_reporting(0);
 ?>
-
-<div class="panel panel-primary">
-	<div class="panel-heading"><b>Order Details - Color Wise</b></div>
-	<div class="panel-body">
-		<div class="col-md-12">
-			<?php
-				if($_GET['style'] and $_GET['schedule'])
-				{
-					$style=$_GET['style'];
-					$schedule=$_GET['schedule'];
-					// echo "Style= ".$style_id."<br>Schedule= ".$sch_id.'<br>';
-					$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link);
-					$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
-					
-					$mini_order_ref = echo_title("$brandix_bts.tbl_min_ord_ref","id","ref_crt_schedule",$schedule,$link);
-					$bundle = echo_title("$brandix_bts.tbl_miniorder_data","count(*)","mini_order_ref",$mini_order_ref,$link);
-					$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$sch_id,$link);
-					$carton_qty = echo_title("$brandix_bts.tbl_carton_size_ref","sum(quantity)","parent_id",$c_ref,$link);
-
-
-					// Order Details Display Start
+<br>
+<div class="col-md-12">
+	<div class="panel panel-primary">
+		<div class="panel-heading"><b>Order Details - Color Wise</b></div>
+		<div class="panel-body">
+				<?php
+					if($_GET['style'] and $_GET['schedule'])
 					{
-						$col_array = array();
-						$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."'";
-						//echo $sizes_query;die();
-						$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
-						$row_count = mysqli_num_rows($sizes_result);
-						while($sizes_result1=mysqli_fetch_array($sizes_result))
+						$style=$_GET['style'];
+						$schedule=$_GET['schedule'];
+						$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link);
+						$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
+						// Order Details Display Start
 						{
-							$col_array[]=$sizes_result1['order_col_des'];
-						}
-
-						foreach ($sizes_array as $key => $value)
-						{
-							$query = "SELECT bod.order_s_$sizes_array[$key] as order_qty, bod.title_size_$sizes_array[$key] as title, sum(psl.a_$sizes_array[$key]*psl.a_plies) AS planned_qty,order_col_des FROM $bai_pro3.bai_orders_db bod LEFT JOIN $bai_pro3.plandoc_stat_log psl ON psl.order_tid=bod.order_tid WHERE order_del_no=$schedule AND order_style_no='".$style."' AND order_s_$sizes_array[$key]>0 GROUP BY order_col_des";
-						//	echo $query.'<br>';
-							$qty=mysqli_query($link, $query) or exit("Sql Error2");
-							while($qty_result=mysqli_fetch_array($qty))
+							$col_array = array();
+							$planned_qty = array();
+							$ordered_qty = array();
+							$col_array = array();
+							$size_values=array();
+							$filter_size=array();
+							$size_tit=array();
+							$sizes_query = "SELECT * FROM $bai_pro3.`bai_orders_db` WHERE order_tid not in (SELECT order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule AND order_style_no='".$style."') AND order_del_no=$schedule AND order_style_no='".$style."' and $order_joins_not_in";
+							$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
+							$row_count2 = mysqli_num_rows($sizes_result);
+							if($row_count2>0)
 							{
-								// echo $qty_result['title'];
-								$sizes_order_array[] = $qty_result['title'];
-								//echo $col_array[$key1]."-".$qty_result['order_col_des']."-".$qty_result['title']."-".$qty_result['order_qty']."</br>";
-								$order_array[$qty_result['order_col_des']][$qty_result['title']] = $qty_result['order_qty'];
-								$planned_array[$qty_result['order_col_des']][$qty_result['title']] = $qty_result['planned_qty'];
-								$balance_array[$qty_result['order_col_des']][$qty_result['title']] = $qty_result['planned_qty']-$qty_result['order_qty'];
+								while($sizes_result11=mysqli_fetch_array($sizes_result))
+								{
+									$col_array[]=$sizes_result11['order_col_des'];
+									for($kki=0;$kki<sizeof($sizes_array);$kki++)
+									{												
+										if($sizes_result11["title_size_".$sizes_array[$kki].""]<>"" && $sizes_result12["order_s_".$sizes_array[$kki].""]>0)
+										{
+											$order_array[$sizes_result11['order_col_des']][$sizes_result11["title_size_".$sizes_array[$kki].""]]=$sizes_result11["order_s_".$sizes_array[$kki].""];
+											$size_tit[]=$sizes_result11["title_size_".$sizes_array[$kki].""];
+											$filter_size[]=$sizes_result11["title_size_".$sizes_array[$kki].""];
+										}
+									}
+								}
 							}
-						}
-						//var_dump($order_array);
-						echo "<br><div class='col-md-12'>
-						<div class='table-responsive'>
-							<table class=\"table table-bordered\">
-								<tr>
-									<th>Details</th>
-									<th>Colors</th>";
-									foreach(array_unique($sizes_order_array) as $size)
-									{
-										echo "<th>$size</th>";
-									}	
-									
-									echo "<th>Total</th>
-								</tr>";
-
-								$counter = 0;
-								foreach ($order_array as $key => $value) 
+							$sizes_query1 = "SELECT * FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule AND order_style_no='".$style."' and $order_joins_not_in";
+							//echo $sizes_query1."<br>";
+							$sizes_result1=mysqli_query($link, $sizes_query1) or exit("Sql Error2 $sizes_query");
+							$row_count1 = mysqli_num_rows($sizes_result1);
+							$row_count=$row_count1+$row_count2;
+							if($row_count1>0)
+							{
+								while($sizes_result12=mysqli_fetch_array($sizes_result1))
 								{
-									$order_total = 0;
-									if($counter == 0)
-									{
-										echo "<tr><td rowspan='$row_count'>Order Qty</td>";
-									}
-									echo "<td>".$key."</td>";
-									foreach ($value as $key1 => $value1) 
-									{
-										foreach(array_unique($sizes_order_array) as $size)
+									$col_array[]=$sizes_result12['order_col_des'];
+									for($kki=0;$kki<sizeof($sizes_array);$kki++)
+									{												
+										if($sizes_result12["title_size_".$sizes_array[$kki].""]<>"" && $sizes_result12["order_s_".$sizes_array[$kki].""]>0)
 										{
-											if($key1 == $size){
-												echo "<td>".$value1."</td>";
-												$order_total += $value1;
+											$plannedQty_query = "SELECT SUM(p_plies*p_$sizes_array[$kki]) AS plannedQty FROM $bai_pro3.plandoc_stat_log WHERE cat_ref IN (SELECT tid FROM $bai_pro3.cat_stat_log WHERE category IN ($in_categories) AND order_tid IN  (SELECT order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule AND order_col_des='".$sizes_result12['order_col_des']."' AND $order_joins_not_in))";
+											//echo $plannedQty_query."<br>";
+											$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
+											while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
+											{
+												$planned_array[$sizes_result12['order_col_des']][$sizes_result12["title_size_".$sizes_array[$kki].""]] = $planned_array[$size_tit[$kki]]+$planneQTYDetails['plannedQty'];
 											}
+											$order_array[$sizes_result12['order_col_des']][$sizes_result12["title_size_".$sizes_array[$kki].""]]=$sizes_result12["order_s_".$sizes_array[$kki].""];
+											$size_tit[]=$sizes_result12["title_size_".$sizes_array[$kki].""];
+											$filter_size[]=$sizes_result12["title_size_".$sizes_array[$kki].""];
 										}
 									}
-									echo "<td>$order_total</td></tr>";
-									$counter++;
 								}
-
-								$counter1 = 0;
-								foreach ($planned_array as $key => $value) 
-								{
-									$planned_total = 0;
-									if($counter1 == 0)
-									{
-										echo "<tr><td rowspan='$row_count'>Planned Qty</td>";
-									}
-									echo "<td>".$key."</td>";
-									foreach ($value as $key1_1 => $order_value)
-									{
-										foreach(array_unique($sizes_order_array) as $size)
+							}						
+							$filter_size=array_unique($filter_size);
+							echo "<div style=\"overflow-x:auto;\">
+								<table class=\"table table-bordered\">
+									<tr class='info'>
+										<th>Details</th>
+										<th>Colors</th>";
+										foreach(array_unique($filter_size) as $size)
 										{
-											if($key1_1 == $size){
-												echo "<td>".$order_value."</td>";
-												$planned_total += $order_value;
+											echo "<th>$size</th>";
+										}	
+										
+										echo "<th>Total</th>
+									</tr>";
+									echo "<tr><td rowspan='$row_count'>Order Qty</td>";
+									for($kk=0;$kk<sizeof($col_array);$kk++)
+									{
+										$order_total=0;
+										echo "<td>".$col_array[$kk]."</td>";
+										for($kki=0;$kki<sizeof(array_unique($filter_size));$kki++)
+										{
+											if($order_array[$col_array[$kk]][$filter_size[$kki]]<>"")
+											{
+												echo "<td>".$order_array[$col_array[$kk]][$filter_size[$kki]]."</td>";
+												$order_total += $order_array[$col_array[$kk]][$filter_size[$kki]];
 											}
+											else
+											{
+												echo "<td>0</td>";
+											}	
 										}
+										echo "<td>$order_total</td></tr>";
 									}
-									echo "<td>$planned_total</td></tr>";
-									$counter1++;
-								}
-
-								$counter3 = 0;
-								foreach ($balance_array as $key => $value) 
-								{
-									$balance_total = 0;
-									if($counter3 == 0)
+									echo "<tr><td rowspan='$row_count'>Planned Qty</td>";
+									for($kk=0;$kk<sizeof($col_array);$kk++)
 									{
-										echo "<tr><td rowspan='$row_count'>Balance Qty</td>";
-									}
-									echo "<td>".$key."</td>";
-									foreach ($value as $key1 => $balance_value) 
-									{
-										foreach(array_unique($sizes_order_array) as $size)
+										$planned_total=0;
+										echo "<td>".$col_array[$kk]."</td>";
+										for($kki=0;$kki<sizeof(array_unique($filter_size));$kki++)
 										{
-											if($key1 == $size){
+											if($planned_array[$col_array[$kk]][$filter_size[$kki]]<>"")
+											{
+												echo "<td>".$planned_array[$col_array[$kk]][$filter_size[$kki]]."</td>";
+												$planned_total  += $planned_array[$col_array[$kk]][$filter_size[$kki]];
+											}
+											else
+											{
+												echo "<td>0</td>";
+											}	
+										}
+										echo "<td>$planned_total</td></tr>";
+									}
+									echo "<tr><td rowspan='$row_count'>Balance Qty</td>";
+									for($kk=0;$kk<sizeof($col_array);$kk++)
+									{
+										$balance_value=0;$balance_total = 0;
+										echo "<td>".$col_array[$kk]."</td>";
+										for($kki=0;$kki<sizeof(array_unique($filter_size));$kki++)
+										{
+											if($planned_array[$col_array[$kk]][$filter_size[$kki]]<>"")
+											{
+												$balance_value=$planned_array[$col_array[$kk]][$filter_size[$kki]]-$order_array[$col_array[$kk]][$filter_size[$kki]];
 												if ($balance_value > 0) {
 													$color = '#00b33c';
 												} else if ($balance_value < 0 ) {
@@ -140,25 +152,26 @@
 												echo "<td style='color:".$color."; font-weight:bold'>".$balance_value."</td>";
 												$balance_total += $balance_value;
 											}
+											else
+											{
+												$color = '#000000';
+												echo "<td style='color:".$color."; font-weight:bold'>0</td>";
+											}	
 										}
+										if ($balance_total > 0) {
+											$color = '#00b33c';
+										} else if ($balance_total < 0 ) {
+											$color = '#FF0000';
+										} else if ($balance_total == 0 ) {
+											$color = '#000000';
+										}
+										echo "<td style='color:".$color."; font-weight:bold'>$balance_total</td></tr>";
 									}
-
-									if ($balance_total > 0) {
-										$color = '#00b33c';
-									} else if ($balance_total < 0 ) {
-										$color = '#FF0000';
-									} else if ($balance_total == 0 ) {
-										$color = '#000000';
-									}
-									echo "<td style='color:".$color."; font-weight:bold'>$balance_total</td></tr>";
-									$counter3++;
-								}
-
-						echo "</table></div></div>";
+							echo "</table></div>";
+						}
+						// Order Details Display End
 					}
-					// Order Details Display End
-				}
-			?> 
+				?> 
 		</div>
 	</div>
 </div>

@@ -19,8 +19,11 @@ $pass=$mysql_details['db_pass'];
 
 //MSSql Configurations
 $ms_sql_odbc_host = $conf1->get('mssql-odbc');
+$ms_sql_odbc_server = $conf1->get('mssql-server-name');
 $ms_sql_odbc_user = $conf1->get('mssql-user-name');
 $ms_sql_odbc_pass = $conf1->get('mssql-password');
+$mssql_db = $conf1->get('m3database');
+$ms_sql_driver_name = $conf1->get('driver_name');
 
 //MY SQL host
 $ms_sql_odbc_host = $conf1->get('mysql-odbc');
@@ -64,6 +67,11 @@ $api_hostname = $conf1->get('api-host-name');
 $api_port_no = $conf1->get('api-port');
 
 $enable_api_call = $conf1->get('enable-api-call');
+
+// Total Plant working hours
+$tot_plant_working_hrs = $conf1->get('tot_plant_working_hrs');
+// Copy fr qty to forecast qty (yes/no)
+$copy_fr_to_forecast = $conf1->get('copy-fr-to-forecast');
 
 //Scanning Methods
 $scanning_methods = $conf1->get('scaning-method');
@@ -137,6 +145,7 @@ $central_wh_code=$conf1->get('central_wh_code');
 $plant_wh_code=$conf1->get('plant_wh_code');
 $plant_prod_code=$conf1->get('plant_prod_code');
 $shrinkage_inspection=$conf1->get('shrinkage-inspection');
+$roll_splitting=$conf1->get('roll-splitting');
 $sewing_rejection=$conf1->get('sewing_rejection');
 
 
@@ -154,6 +163,8 @@ $group_id_Main=5;
 $smtp_user=$conf1->get('smtp-user-name');
 // $header_from="From: Shop Floor System Alert <ictsysalert@brandix.com>";
 $header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
+$header_name=$smtp_user." Alert";
+$header_mail=$conf1->get('smtp_mail_from');
 $dispatch_mail = $conf1->get('dispatch_mail');
 //Central Administration Menu Access
 $central_administration_sfcs='central_administration_sfcs';

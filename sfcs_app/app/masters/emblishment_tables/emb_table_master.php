@@ -25,15 +25,25 @@
 			// echo "string";
 			$loc_id = $_GET['delete_id'];
 			// echo $loc_id;
-			$dalete_emb_details="delete from $bai_pro3.tbl_emb_table where emb_table_id = ".$loc_id." ";
-			// echo $delete;
-			$delete_emb_result = mysqli_query( $link, $dalete_emb_details);
-			if ($delete_emb_result == 1 or $delete_emb_result == '1')
-			{
+
+			$to_check_module="select * from $bai_pro3.embellishment_plan_dashboard where module= $loc_id";
+			$module_result = mysqli_query( $link, $to_check_module);
+			if (mysqli_num_rows($module_result) > 0) {
 				echo "<script>
-						sweetAlert('Emblishment Table Deleted Successfully','','success');
-						window.location.href = \"$self_url\";
-					</script>";
+							sweetAlert('Emblishment Table in Production','','error');
+							window.location.href = \"$self_url\";
+						</script>";
+			} else {
+				$dalete_emb_details="delete from $bai_pro3.tbl_emb_table where emb_table_id = ".$loc_id." ";
+				// echo $delete;
+				$delete_emb_result = mysqli_query( $link, $dalete_emb_details);
+				if ($delete_emb_result == 1 or $delete_emb_result == '1')
+				{
+					echo "<script>
+							sweetAlert('Emblishment Table Deleted Successfully','','success');
+							window.location.href = \"$self_url\";
+						</script>";
+				}
 			}
 		}
 	?>
@@ -55,8 +65,8 @@
 				</div>
 				&nbsp;&nbsp;
 				<div class="form-group">
-					<label>Cutting Table: </label>
-					<select class="form-control" name="cut_table" id="cut_table">
+					<label>Cutting Table:<span style="color:red;">*</span></label>
+					<select class="form-control" name="cut_table" id="cut_table" required>
 						<option value="">Please Select</option>
 						<?php 
 							$get_cut_table_qury = "SELECT tbl_name FROM bai_pro3.`tbl_cutting_table` WHERE status='active';";
@@ -79,7 +89,7 @@
 				</div>
 				&nbsp;&nbsp;
 				<div class="form-group">
-					<label>Status: </label>
+					<label>Status:<span style="color:red;">*</span></label>
 					<select required class="form-control" name="emb_status" id="emb_status">
 						<option value="">Please Select</option>
 						<?php 

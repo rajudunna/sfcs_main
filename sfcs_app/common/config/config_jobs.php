@@ -26,6 +26,17 @@ $pwd = $conf->get('mssql-password');
 $m3_databasename=$conf->get('m3database');
 $driver_name=$conf->get('driver_name');
 
+//sfcs-ffsp configurations
+$sfsp_serverName=$conf->get('sf_sp_servername');
+$sfsp_m3_databasename=$conf->get('sf_sp_dbname');
+$sfsp_uid=$conf->get('sf_sp_username');
+$sfsp_pwd=$conf->get('sf_sp_pwd');
+
+
+//ms-sql jobs 
+$user_ms = "BAISFCS";
+$password_ms = "fcs@m3pr";
+$conn_string = "DRIVER={iSeries Access ODBC Driver};System=10.227.40.10;Uid=".$user_ms.";Pwd=".$password_ms.";";
 //HRMS DATABASE CONNECTIONS
 $hrms_server_name=$conf->get('hrms-server-name');
 $hrms_server_port=$conf->get('hrms-port');
@@ -134,7 +145,8 @@ $SAH_Countdown_alert=$conf->get('sah_countdown_email');
 $line_wip_track=$conf->get('production_wip_status_mail');
 $pop_pending_list_mail=$conf->get('carton_pendings_mail');
 $Aod_gate_pass=$conf->get('pro_aod_gatepass_update_to_belbal_co_invoice_mail');
-
+// m3 to sfcs operations report mail
+$m3_vs_sfcs_operation_reporting=$conf->get('m3_vs_sfcs_operation_reporting');
 
 //sah countdown
 $http_host=gethostname();

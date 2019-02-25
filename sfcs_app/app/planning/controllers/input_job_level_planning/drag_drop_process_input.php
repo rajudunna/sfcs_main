@@ -39,14 +39,27 @@ $userName = getrbac_user()['uname'];
 				 //die();
 				mysqli_query($link, $insert_log_query) or die("Error while saving the track details1");
 			}
-			
+			$exisitng_docs = [];
 			$sqly="SELECT group_concat(doc_no) as doc_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$items[1]."' ORDER BY acutno";
 			//echo $sqly.";<br>";
 			$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowy=mysqli_fetch_array($resulty))
 			{
-				$doc_no_ref_input=$sql_rowy["doc_no"];
+				$doc_no_ref_input=$sql_rowy["doc_no"]; 
 			}
+			$incoming_docs = explode(',',$doc_no_ref_input);
+			$fabric_status_query = "SELECT doc_ref from $bai_pro3.fabric_priorities where doc_ref IN ($doc_no_ref_input)";
+			$fabric_status_result = mysqli_query($link,$fabric_status_query);
+			while($rowfs = mysqli_fetch_array($fabric_status_result)){
+				$exisitng_docs[] = $rowfs['doc_ref'];
+			}
+			$diff_docs = array_diff($incoming_docs,$exisitng_docs);
+			$doc_no_ref_input = implode(',',$diff_docs);
+			if($doc_no_ref_input == '')
+				$doc_no_ref_input = 1;
+			unset($diff_docs);
+			unset($exisitng_docs);
+			unset($incoming_docs);
 			$org_docs=array();
 			$org_docs[] = '-1';
 			$sql="select * from $bai_pro3.plandoc_stat_log where doc_no in (".$doc_no_ref_input.")";
@@ -157,7 +170,7 @@ $userName = getrbac_user()['uname'];
 					}					
 				}
 			}
-			$sql12="select order_del_no,clubbing from $bai_pro3.order_cat_doc_mk_mix where doc_no in (".implode(",",$dockets_ref).") and clubbing>0 and category in ('Body','Front') group by clubbing";
+			$sql12="select order_del_no,clubbing from $bai_pro3.order_cat_doc_mk_mix where doc_no in (".implode(",",$dockets_ref).") and clubbing>0 and category in ($in_categories) group by clubbing";
 			
 			$resultr112=mysqli_query($link, $sql12) or exit("Sql Error5 == ".$sql12.' == '.mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($resultr112)>0)
@@ -166,7 +179,7 @@ $userName = getrbac_user()['uname'];
 				{
 					$schedule=$sql_rowr112['order_del_no'];
 					$club=$sql_rowr112['clubbing'];
-					$sql121="select * from $bai_pro3.order_cat_doc_mk_mix where doc_no not in (".implode(",",$dockets_ref).") and acutno in (".implode(",",$cut_ref).") and clubbing='".$club."' and order_del_no='".$schedule."' and category in ('Body','Front')";
+					$sql121="select * from $bai_pro3.order_cat_doc_mk_mix where doc_no not in (".implode(",",$dockets_ref).") and acutno in (".implode(",",$cut_ref).") and clubbing='".$club."' and order_del_no='".$schedule."' and category in ($in_categories)";
 					$resultr1121=mysqli_query($link, $sql121) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_rowr1121=mysqli_fetch_array($resultr1121))
 					{
@@ -209,7 +222,7 @@ $userName = getrbac_user()['uname'];
 				$sqlx1="update $bai_pro3.plan_dashboard set priority=$x1, module=".$items[0].", log_time=\"".date("Y-m-d H:i:s")."\" where doc_no='".$dockets_ref[$d]."'";
 				mysqli_query($link, $sqlx1) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
-				$sql43="select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no='$dockets_ref[$d]'";
+				$sql43="select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no=".$dockets_ref[$d]."";
 				$resultr43=mysqli_query($link, $sql43) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($resultr43)>0)
 				{
@@ -223,7 +236,7 @@ $userName = getrbac_user()['uname'];
 				}
 				else
 				{
-					$sqlx12="update $bai_pro3.plandoc_stat_log set plan_module=".$items[0]." where doc_no='".$org_doc_no."'";
+					$sqlx12="update $bai_pro3.plandoc_stat_log set plan_module=".$items[0]." where doc_no='".$dockets_ref[$d]."'";
 					mysqli_query($link, $sqlx12) or exit("Sql Error62.3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}							
 				$x1++;
@@ -232,9 +245,18 @@ $userName = getrbac_user()['uname'];
 			unset($dockets_ref);		
 		}		
 	}
+	$application='IPS';			
+	$scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
+	// echo $scanning_query;
+	$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row=mysqli_fetch_array($scanning_result))
+	{
+		$operation_name=$sql_row['operation_name'];
+		$operation_code=$sql_row['operation_code'];
+	}
 	$remove_docs=array();
 	$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where
-	input_job_input_status(input_job_no_random)=\"DONE\"";
+	input_job_input_status(input_job_no_random,$operation_code)=\"DONE\"";
 	//echo $sqlx;
 	$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowx=mysqli_fetch_array($sql_resultx))

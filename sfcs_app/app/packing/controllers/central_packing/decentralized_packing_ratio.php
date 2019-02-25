@@ -516,7 +516,7 @@
 				?>
 				&nbsp;&nbsp;
 				<input type="submit" name="submit" id="submit" class="btn btn-success" onclick="return check_val();" value="Submit">
-				</form>
+			</form>
 		</div>
 		
 		</br>

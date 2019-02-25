@@ -101,32 +101,32 @@ else
 //$authorised=array("kirang","amulyap","narasimharaop","sureshn","edwinr","eswarammae","nagashivan","prasadms");
 
 
-if(!in_array($authorized,$permission))
-{
-	echo '<script>
-	var ctrlPressed = false;
-	$(document).keydown(function(evt) {
-	  if (evt.which == 17) { // ctrl
-	    ctrlPressed = true;
-		alert("This key has been disabled.");
-	  }
-	}).keyup(function(evt) {
-	  if (evt.which == 17) { // ctrl
-	    ctrlPressed = false;
-	  }
-	});
+// if(!in_array($authorized,$permission))
+// {
+// 	echo '<script>
+// 	var ctrlPressed = false;
+// 	$(document).keydown(function(evt) {
+// 	  if (evt.which == 17) { // ctrl
+// 	    ctrlPressed = true;
+// 		alert("This key has been disabled.");
+// 	  }
+// 	}).keyup(function(evt) {
+// 	  if (evt.which == 17) { // ctrl
+// 	    ctrlPressed = false;
+// 	  }
+// 	});
 	
-	$(document).click(function() {
-	  if (ctrlPressed) {
-	    // do something
-		//alert("Test");
-	  } else {
-	    // do something else
-	  }
-	});
-	</script>';
+// 	$(document).click(function() {
+// 	  if (ctrlPressed) {
+// 	    // do something
+// 		//alert("Test");
+// 	  } else {
+// 	    // do something else
+// 	  }
+// 	});
+// 	</script>';
 
-}
+// }
 
 ?>
 

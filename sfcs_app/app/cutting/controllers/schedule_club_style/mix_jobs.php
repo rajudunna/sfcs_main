@@ -5,7 +5,23 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 	  
 	$view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs); 
 ?> 
+<style>
 
+#loading-image{
+  position:fixed;
+  top:0px;
+  right:0px;
+  width:100%;
+  height:100%;
+  background-color:#666;
+  /* background-image:url('ajax-loader.gif'); */
+  background-repeat:no-repeat;
+  background-position:center;
+  z-index:10000000;
+  opacity: 0.4;
+  filter: alpha(opacity=40); /* For IE8 and earlier */
+}
+</style>
 
 
 <script>
@@ -23,9 +39,28 @@
 	{
 		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
 	}
+	
+	function check_all()
+	{
+		var style=document.getElementById('style').value;
+		var sch=document.getElementById('schedule').value;
+		var color=document.getElementById('color').value;
+		if(style=='' || sch=='' || color=='')
+		{
+			sweetAlert('Please Enter style ,Schedule and Color','','warning');
+			return false;
+		}
+		else
+		{
+			document.getElementById("loading-image").style.display = "block";
+			return true;
+		}
+	}
 </script>
 
-
+<div class="ajax-loader" id="loading-image" style="display: none">
+    <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+</div>
 <div class="panel panel-primary">
 	<div class="panel-heading">Schedule Club Splitting (Schedule Level)</div>
 	<div class="panel-body">
@@ -45,11 +80,11 @@
 		}
 
 		echo "<div class='row'><div class='col-md-3'>";
-		echo "Select Style: <select name=\"style\" class=\"form-control\" onchange=\"firstbox();\" required>";
+		echo "Select Style: <select name=\"style\"  id=\"style\" class=\"form-control\" onchange=\"firstbox();\" required>";
 		//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
 		//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 		//{
-			$sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm where $order_joins_in_1 order by order_style_no";	
+			$sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm where order_tid in (select order_tid from $bai_pro3.plandoc_stat_log) and $order_joins_in_1";	
 		//}
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
@@ -72,12 +107,12 @@
 
 	<?php
 		echo"<div class='col-md-3'>";
-		echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" required>";
+		echo "Select Schedule: <select name=\"schedule\"  id=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" required>";
 
 		//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
 		//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 		//{
-			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and $order_joins_in_1 order by order_date";	
+			$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_tid in (select order_tid from $bai_pro3.plandoc_stat_log) and length(order_del_no)>7 and order_style_no=\"$style\" and $order_joins_in_1 order by order_date";	
 		//}
 		// echo "working".$sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -97,8 +132,8 @@
 		echo "</select></div>";
 
 		echo"<div class='col-md-3'>";
-		echo "Select Color: <select name=\"color\" class=\"form-control\" onchange=\"thirdbox();\" required>";
-		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and $order_joins_in_1";
+		echo "Select Color: <select name=\"color\" class=\"form-control\"  id=\"color\" onchange=\"thirdbox();\" required>";
+		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_tid in (select order_tid from $bai_pro3.plandoc_stat_log) and order_style_no=\"$style\" and order_del_no=\"$schedule\" and $order_joins_in_1";
 		//}
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
@@ -115,8 +150,9 @@
 			}
 		}
 		echo "</select></div>		<br>";
-		echo"<div class='col-md-3'>";
-		echo "<input type=\"submit\" class='btn btn-success' value=\"Segregate\" name=\"submit\"  id=\"Segregate\" onclick='this.disabled=true; this.value='Please Wait...';' /></div>";
+		echo"<div class='col-md-3'>
+				<input type=\"submit\" onclick='return check_all();' class='btn btn-success' value=\"Segregate\" name=\"submit\"  id=\"Segregate\" />
+			</div>";
 	?>
 
 	</div>
@@ -128,6 +164,7 @@
 
 if(isset($_POST['submit']))
 {
+	echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "block";</script>';
 	$order_sch=$_POST['schedule'];
 	$orders_join='J'.$order_sch;	
     $style=$_POST['style']; 
@@ -136,8 +173,10 @@ if(isset($_POST['submit']))
 	$order_id_ref=array();
 	$doc_det=array();
 	$pend_order=array();
+	$pend_order_type=array();
 	$pending_cat_ref=array();
 	$pending_cat_order=array();
+	$pend_order_ref=array();
 	$pending_cat_ref_type=array();
 	$ready_cat_ref=array();
 	$ready_cat_order=array();
@@ -153,6 +192,7 @@ if(isset($_POST['submit']))
 		$order_id_ref[]=$sql_row4["order_tid"];
 		$cat_type[]=$sql_row4["category"];
 	}
+	
 	$sql47="select * from  $bai_pro3.bai_orders_db_confirm where order_del_no='$order_sch' and order_col_des=\"".$color."\""; 
 	//echo $sql47."<br>";
 	$sql_result47=mysqli_query( $link, $sql47) or exit("Sql Error46".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -220,15 +260,12 @@ if(isset($_POST['submit']))
 			$pend_order_type[]=$cat_type[$ii];				
 		}
 	}
-	//echo sizeof($ready_cat_ref)."<br>";	
-	// exit();
-	//die();
-	if(sizeof($ready_cat_ref)>0) 	
+	if(sizeof($ready_cat_ref)>0 &&(sizeof($cat_id_ref)==sizeof($ready_cat_ref))) 	
 	{
-	    $sql2="truncate mix_temp_desti"; 
+	    $sql2="truncate $bai_pro3.mix_temp_desti"; 
         mysqli_query( $link, $sql2) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
-        $sql3="truncate mix_temp_source"; 
+        $sql3="truncate $bai_pro3.mix_temp_source"; 
         mysqli_query( $link, $sql3) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		for($l=0;$l<sizeof($ready_cat_ref);$l++)
 		{
@@ -489,13 +526,77 @@ if(isset($_POST['submit']))
 								*/								
 							}
 						}
-					}
-					
-				}
-				
-				
+					}					
+				}				
 				$size_p=array();
 				$size_q=array();
+				// Sample Checking
+				for($j=0;$j<sizeof($ready_cat_ref);$j++)
+				{
+					$sql471="select order_tid,order_del_no,order_col_des from $bai_pro3.bai_orders_db_confirm where order_joins='$orders_join'"; 
+					//echo $sql471."<br>";
+					$sql_result471=mysqli_query( $link, $sql471) or exit("Sql Error46".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					while($sql_row471=mysqli_fetch_array($sql_result471)) 
+					{ 
+						$sql472="select * from $bai_pro3.sp_sample_order_db where order_tid='".$sql_row471['order_tid']."'"; 
+						//echo $sql472."<br>";
+						$sql_result472=mysqli_query( $link, $sql472) or exit("Sql Error46".mysqli_error($GLOBALS["___mysqli_ston"]));
+						if(mysqli_num_rows($sql_result472)>0)
+						{						
+							while($sql_row472=mysqli_fetch_array($sql_result472)) 
+							{
+								$qty=$sql_row472['input_qty'];
+								$sql12="SELECT * FROM $bai_pro3.`mix_temp_desti` where size='p_".$sql_row472['sizes_ref']."' and cat_ref='".$ready_cat_ref[$j]."' order by doc_no*1"; 
+								//echo $sql12."<br>";
+								//echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "none";</script>';
+								$sql_result12=mysqli_query( $link, $sql12) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"])); 
+								while($sql_row1x12=mysqli_fetch_array($sql_result12)) 
+								{
+									if($qty>0)
+									{
+										if($qty>$sql_row1x12['qty'])
+										{
+											$update_sql="UPDATE $bai_pro3.`mix_temp_desti` SET `order_tid` = '".$sql_row471['order_tid']."' , `order_del_no` = '".$sql_row471['order_del_no']."' , `order_col_des` = '".$sql_row471['order_col_des']."' WHERE `mix_tid` = ".$sql_row1x12['mix_tid']."";
+											//echo $update_sql."<br>";
+											//echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "none";</script>';
+											mysqli_query( $link, $update_sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+											
+											$qty=$qty-$sql_row1x12['qty'];
+										}
+										else
+										{
+											$insert_sql="INSERT INTO $bai_pro3.`mix_temp_desti` (`allo_new_ref`, `cat_ref`, `cutt_ref`, `mk_ref`, `size`, `qty`, `order_tid`, `order_del_no`, `order_col_des`, `destination`, `plies`, `doc_no`, `cutno`) select allo_new_ref,cat_ref,cutt_ref,mk_ref,size,".$qty.",'".$sql_row471['order_tid']."','".$sql_row471['order_del_no']."','".$sql_row471['order_col_des']."',destination,plies,doc_no,cutno from $bai_pro3.`mix_temp_desti` where `mix_tid` = ".$sql_row1x12['mix_tid']."";
+											//echo $insert_sql."<br>";
+											//echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "none";</script>';
+											mysqli_query( $link, $insert_sql) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
+											$update_sql1="UPDATE $bai_pro3.`mix_temp_desti` SET qty=(qty-$qty) WHERE `mix_tid` = ".$sql_row1x12['mix_tid']."";
+											//echo $insert_sql."<br>";
+											mysqli_query( $link, $update_sql1) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
+											$qty=0;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				$cnt=0;
+				$sql47221="SELECT cat_ref,order_tid,doc_no,COUNT(*) AS cnt,GROUP_CONCAT(mix_tid) AS tids,SUM(qty) as qunty FROM $bai_pro3.`mix_temp_desti` WHERE size LIKE \"%p_%\" GROUP BY cat_ref,order_tid,doc_no,size HAVING cnt>1 ORDER BY doc_no*1"; 
+				//echo $sql472."<br>";
+				$sql_result47212=mysqli_query( $link, $sql47221) or exit("Sql Error46".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql_result47212)>0)
+				{
+					while($sql_row1123=mysqli_fetch_array($sql_result47212)) 
+					{ 
+						$cnt=$sql_row1123['cnt']-1;
+						$update_sqls="UPDATE $bai_pro3.`mix_temp_desti` SET qty=".$sql_row1123['qunty']." WHERE `mix_tid` in (".$sql_row1123['tids'].")";
+						//echo $update_sqls."<bR>";
+						mysqli_query( $link, $update_sqls) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$delete_sqls="DELETE from $bai_pro3.`mix_temp_desti` WHERE `mix_tid` in (".$sql_row1123['tids'].") limit $cnt";
+						//echo $delete_sqls."<bR>";
+						mysqli_query( $link, $delete_sqls) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
+					}
+				}				 
 				
 				//Executing Docket Creation & Updation
 				$sql1="SELECT cutno,order_col_des,order_del_no,order_tid,doc_no,GROUP_CONCAT(size ORDER BY size) as size,GROUP_CONCAT(qty ORDER BY size) as  ratio,cat_ref,plies FROM $bai_pro3.`mix_temp_desti` where size NOT LIKE \"%p_%\" and cat_ref='".$cat_ref."' GROUP BY order_tid,doc_no order by doc_no*1"; 
@@ -505,29 +606,15 @@ if(isset($_POST['submit']))
 				{ 
 					$size_p=explode(",",$sql_row1x['size']);
 					$size_q=explode(",",$sql_row1x['ratio']);
-					$sqlx1="select max(doc_no)+1 as doc_n from bai_pro3.plandoc_stat_log"; 
-					$sql_resultx1=mysqli_query( $link, $sqlx1) or exit("Sql Error963".mysqli_error($GLOBALS["___mysqli_ston"])); 
-					while($sql_rowx1=mysqli_fetch_array($sql_resultx1)) 
-					{ 
-						$docn=$sql_rowx1["doc_n"];
-					}
-					$sqlx12="select max(pcutno)+1 as cut from $bai_pro3.plandoc_stat_log where order_tid='".$sql_row1x['order_tid']."' and cat_ref='".$sql_row1x['cat_ref']."'"; 
-					$sql_resultx12=mysqli_query($link, $sqlx12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-					while($sql_rowx12=mysqli_fetch_array($sql_resultx12)) 
-					{ 
-						$cutno=$sql_rowx12["cut"];
-						if($cutno==0)
-						{
-							$cutno=1;
-						}
-					}
+					
 					if(array_sum($size_q)>0)
 					{
-						$sqlx351="insert into $bai_pro3.plandoc_stat_log (date,cat_ref,cuttable_ref,allocate_ref,mk_ref,order_tid,pcutno,acutno,p_plies,a_plies,destination,org_doc_no,org_plies,ratio,remarks,pcutdocid,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50,doc_no) select date,cat_ref,cuttable_ref,allocate_ref,mk_ref,'".$sql_row1x['order_tid']."','".$cutno."','".$cutno."',1,1,'".$sql_row1x['destination']."','".$sql_row1x['doc_no']."','".$sql_row1x['plies']."',ratio,remarks,pcutdocid,0,0,0,0,0,0,0,0,0,0,0,0, 
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,$docn 
+						$sqlx351="insert into $bai_pro3.plandoc_stat_log (date,cat_ref,cuttable_ref,allocate_ref,mk_ref,order_tid,pcutno,acutno,p_plies,a_plies,destination,org_doc_no,org_plies,ratio,remarks,pcutdocid,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50) select date,cat_ref,cuttable_ref,allocate_ref,mk_ref,'".$sql_row1x['order_tid']."','".$sql_row1x['cutno']."','".$sql_row1x['cutno']."',1,1,'".$sql_row1x['destination']."','".$sql_row1x['doc_no']."','".$sql_row1x['plies']."',ratio,remarks,pcutdocid,0,0,0,0,0,0,0,0,0,0,0,0, 
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
 						from plandoc_stat_log where cat_ref='$cat_ref' and doc_no='".$sql_row1x['doc_no']."'";
 						//echo $sqlx351."<br>";
-						$sql_result351=mysqli_query( $link, $sqlx351) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"])); 
+						$sql_result351=mysqli_query( $link, $sqlx351) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$docn=mysqli_insert_id($link);						
 						for($j=0;$j<sizeof($size_p);$j++)
 						{
 							if($size_q[$j]>0)
@@ -546,51 +633,54 @@ if(isset($_POST['submit']))
 					unset($size_q);
 				}
 				
-				//echo "Executing Docket Creation & Updation // Extra peices<br>";
 				//Executing Docket Creation & Updation // Extra peices
 				$sql16="SELECT cutno,order_col_des,order_del_no,order_tid,doc_no,GROUP_CONCAT(size ORDER BY size) as size,GROUP_CONCAT(qty ORDER BY size) as  ratio,cat_ref,plies FROM $bai_pro3.`mix_temp_desti` where size LIKE \"%p_%\" and cat_ref='".$cat_ref."' GROUP BY order_tid,doc_no order by doc_no*1"; 
 				//echo $sql16."<br>";
 				$sql_result16=mysqli_query( $link, $sql16) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row1=mysqli_fetch_array($sql_result16)) 
 				{ 
-					$size_p=explode(",",$sql_row1['size']);
-					$size_q=explode(",",$sql_row1['ratio']);
-					$sqlx1="select max(doc_no)+1 as doc_n from $bai_pro3.plandoc_stat_log"; 
-					$sql_resultx1=mysqli_query( $link, $sqlx1) or exit("Sql Error6666".mysqli_error($GLOBALS["___mysqli_ston"])); 
-					while($sql_rowx1=mysqli_fetch_array($sql_resultx1)) 
-					{ 
-						$docn=$sql_rowx1["doc_n"];
-					}
-					$sqlx12="select max(pcutno)+1 as cut from $bai_pro3.plandoc_stat_log where order_tid='".$sql_row1['order_tid']."' and cat_ref='".$sql_row1['cat_ref']."'"; 
-					$sql_resultx12=mysqli_query($link, $sqlx12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-					while($sql_rowx12=mysqli_fetch_array($sql_resultx12)) 
-					{ 
-						$cutno=$sql_rowx12["cut"];
-						if($cutno==0)
+					$sqlx1="select * from $bai_pro3.plandoc_stat_log where org_doc_no='".$sql_row1['doc_no']."' and order_tid='".$sql_row1['order_tid']."'"; 
+					$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					if(mysqli_num_rows($sql_resultx1)>0)
+					{
+						while($sql_rowx12=mysqli_fetch_array($sql_resultx1)) 
 						{
-							$cutno=1;
+							$docn=$sql_rowx12['doc_no'];
+						}
+						$size_p=explode(",",$sql_row1['size']);
+						$size_q=explode(",",$sql_row1['ratio']);
+						for($j=0;$j<sizeof($size_p);$j++)
+						{
+							if($size_q[$j]>0)
+							{
+								$sql471="update $bai_pro3.plandoc_stat_log set ".$size_p[$j]."=($size_p[$j]+$size_q[$j]) where doc_no='$docn'";
+								mysqli_query($link, $sql471) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"])); 
+								$sql4712="update $bai_pro3.mix_temp_desti set qty='0' where doc_no='".$sql_row1['doc_no']."' and size='".$size_p[$j]."' and order_tid='".$sql_row1['order_tid']."'"; 
+								//echo $sql4712."<br>"; 
+								$sql_result4712=mysqli_query($link, $sql4712) or exit("Sql Error444712".mysqli_error($GLOBALS["___mysqli_ston"])); 
+							}
 						}
 					}
-					//echo $sql_row1['size']."<--->".$sql_row1['ratio']."<br>";
-					if(array_sum($size_q)>0)
+					else
 					{
-						$sqlx351="insert into $bai_pro3.plandoc_stat_log (date,cat_ref,cuttable_ref,allocate_ref,mk_ref,order_tid,pcutno,acutno,p_plies,a_plies,destination,org_doc_no,org_plies,ratio,remarks,pcutdocid,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50,doc_no) select date,cat_ref,cuttable_ref,allocate_ref,mk_ref,'".$sql_row1['order_tid']."','".$cutno."','".$cutno."',1,1,'".$sql_row1['destination']."','".$sql_row1['doc_no']."','".$sql_row1['plies']."',ratio,remarks,pcutdocid,0,0,0,0,0,0,0,0,0,0,0,0, 
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,$docn 
-						from $bai_pro3.plandoc_stat_log where cat_ref='$cat_ref' and doc_no='".$sql_row1['doc_no']."'";
-						//echo $sqlx351."<br>";
-						$sql_result351=mysqli_query( $link, $sqlx351) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"])); 
-						
+						$sqlx351="insert into $bai_pro3.plandoc_stat_log (date,cat_ref,cuttable_ref,allocate_ref,mk_ref,order_tid,pcutno,acutno,p_plies,a_plies,destination,org_doc_no,org_plies,ratio,remarks,pcutdocid,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50) select date,cat_ref,cuttable_ref,allocate_ref,mk_ref,'".$sql_row1['order_tid']."','".$sql_row1['cutno']."','".$sql_row1['cutno']."',1,1,'".$sql_row1['destination']."','".$sql_row1['doc_no']."','".$sql_row1['plies']."',ratio,remarks,pcutdocid,0,0,0,0,0,0,0,0,0,0,0,0, 
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+						from $bai_pro3.plandoc_stat_log where cat_ref='$cat_ref' and order_tid='".$order_tid."' and doc_no='".$sql_row1['doc_no']."'";
+						$sql_result351=mysqli_query($link, $sqlx351) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"])); 
+						$docn=mysqli_insert_id($link);
+						$size_p=explode(",",$sql_row1['size']);
+						$size_q=explode(",",$sql_row1['ratio']);
 						for($j=0;$j<sizeof($size_p);$j++)
 						{
 							if($size_q[$j]>0)
 							{
 								$sql471="update $bai_pro3.plandoc_stat_log set ".$size_p[$j]."='".$size_q[$j]."' where doc_no='$docn'"; 
 								//echo $sql471."<br>"; 
-								$sql_result471=mysqli_query( $link, $sql471) or exit("Sql Error44471".mysqli_error($GLOBALS["___mysqli_ston"])); 
+								$sql_result471=mysqli_query($link, $sql471) or exit("Sql Error44471".mysqli_error($GLOBALS["___mysqli_ston"])); 
 								 
 								$sql4712="update $bai_pro3.mix_temp_desti set qty='0' where doc_no='".$sql_row1['doc_no']."' and size='".$size_p[$j]."' and order_tid='".$sql_row1['order_tid']."'"; 
 								//echo $sql4712."<br>"; 
-								$sql_result4712=mysqli_query( $link, $sql4712) or exit("Sql Error444712".mysqli_error($GLOBALS["___mysqli_ston"])); 
+								$sql_result4712=mysqli_query($link, $sql4712) or exit("Sql Error444712".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							}	
 						}
 					}
@@ -684,13 +774,25 @@ if(isset($_POST['submit']))
 				// <strong>Success!</strong> Successfully Splitting Completed.
 				// </div>"; 
 				//echo "<h3>Try Again Later<h3>";
-				if(sizeof($pending_cat_order)>0)
-				{	
-					echo " <div class='alert alert-info alert-dismissible'>
-					<strong>Info!</strong> Please Complete Lay Plan for order Quantity fro below.<br>";
-					for($iii=0;$iii<sizeof($pending_cat_order);$iii++)
+				// echo "</div>";	
+				if(sizeof($pending_cat_ref)>0)
+				{
+					echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "none";</script>';
+					echo " <div class='alert alert-warning alert-dismissible'> Below categories need to complete Lay plan for Full Order.<br>";
+					for($iiij=0;$iiij<sizeof($pending_cat_ref);$iiij++)
 					{
-						echo "Order Id ===> ".$pending_cat_order[$iii]." / Category ===> ".$pending_cat_ref_type[$iii]."<br>";
+						echo "Order Id ===> ".$pending_cat_order[$iiij]." / Category ===> ".$pending_cat_ref_type[$iiij]."<br>";
+					}
+					echo "</div>";
+				}		
+				echo "<br><br>";
+				if(sizeof($pend_order)>0)
+				{
+					echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "none";</script>';
+					echo " <div class='alert alert-info alert-dismissible'> For Below categories still Lay plan not started.<br>";
+					for($iiik=0;$iiik<sizeof($pend_order);$iiik++)
+					{
+						echo "Order Id ===> ".$pend_order[$iiik]." / Category ===> ".$pend_order_type[$iiik]."<br>";
 					}
 					echo "</div>";
 				}
@@ -705,12 +807,30 @@ if(isset($_POST['submit']))
 	} 
 	else 
 	{ 		
-		echo " <div class='alert alert-info alert-dismissible'><strong>Info!</strong> Please Prepare Lay Plan for below categories.<br>";
-		for($iii=0;$iii<sizeof($pend_order);$iii++)
+		// echo "</div>";	
+		if(sizeof($pending_cat_ref)>0)
 		{
-			echo "Order Id ===> ".$pend_order[$iii]." / Category ===> ".$pend_order_type[$iii]."<br>";
-		}
-		echo "</div>";		
+			echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "none";</script>';
+			echo " <div class='alert alert-warning alert-dismissible'> Below categories need to complete Lay plan for Full Order.<br>";
+			for($iiij=0;$iiij<sizeof($pending_cat_ref);$iiij++)
+			{
+				echo "Order Id ===> ".$pending_cat_order[$iiij]." / Category ===> ".$pending_cat_ref_type[$iiij]."<br>";
+			}
+			echo "</div>";
+		}		
+		echo "<br><br>";
+		if(sizeof($pend_order)>0)
+		{
+			echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "none";</script>';
+			echo " <div class='alert alert-info alert-dismissible'> For Below categories still Lay plan not started.<br>";
+			for($iiik=0;$iiik<sizeof($pend_order);$iiik++)
+			{
+				echo "Order Id ===> ".$pend_order[$iiik]." / Category ===> ".$pend_order_type[$iiik]."<br>";
+			}
+			echo "</div>";
+		}	
 	} 
+
+	
 }
 ?>

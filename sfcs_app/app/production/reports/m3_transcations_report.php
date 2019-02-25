@@ -38,7 +38,7 @@
     <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
     <div class='panel panel-primary'>
         <div class='panel-heading'>
-            <h3 class='panel-title'>M3 Transcation Report</h3>
+            <h3 class='panel-title'>M3 Transactions Report</h3>
         </div>
         <div class='panel-body'>
         <div class='row'>
@@ -84,9 +84,10 @@
             $resp_stat[] = $_GET['schedule'] ? 'schedule="'.$_GET["schedule"].'"' : '';
             $resp_stat[] = ($_GET['tdate'] && $_GET['fdate']) ? 'DATE(m3_transactions.date_time) between  "'.$_GET["fdate"].'" and "'.$_GET["tdate"].'"' : '';
             $ar_nw = array_filter($resp_stat);
-            $qry_m3_trans = "SELECT style,schedule,color,size,m3_transactions.date_time as dt,m3_transactions.mo_no,op_code,quantity,response_status,m3_transactions.id,m3_transactions.log_user,m3_transactions.ref_no,m3_transactions.reason,m3_transactions.module_no,m3_transactions.api_type,m3_transactions.workstation_id
+            $qry_m3_trans = "SELECT style,schedule,color,size,m3_transactions.date_time as dt,m3_transactions.mo_no,op_code,quantity,response_status,m3_transactions.id,m3_transactions.log_user,m3_transactions.ref_no,m3_transactions.reason,m3_transactions.module_no,m3_transactions.api_type,m3_transactions.workstation_id,m3_trail_count
             FROM bai_pro3.`m3_transactions`  
             LEFT JOIN bai_pro3.`mo_details` ON m3_transactions.mo_no=mo_details.mo_no WHERE ".implode(' and ',$ar_nw);
+
             $result_m3_trans = mysqli_query($link_ui, $qry_m3_trans);
             $ary_res = mysqli_fetch_all($result_m3_trans,MYSQLI_ASSOC);
             if(count($ary_res)>0){
@@ -97,9 +98,11 @@
                     echo "<div class='table-responsive' style='height:500px;overflow-y: scroll;'>";
                 }
 ?>
-                
+                <br/>
                 <table class="<?= $_GET['excel'] ?? "table table-bordered" ?>" id='table2'>
-                    <thead><tr class="info"><th>Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Mo Number</th><th>Job Number</th><th>Module</th><th>Operation Code</th><th>Operation Name</th><th>Workstation Id</th><th>Rejection Reason</th><th>User</th><th>Quantity</th><th>Status</th><th>API Type</th></tr></thead>
+                    <thead><tr class="info"><th>Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Mo Number</th><th>Job Number</th><th>Module</th><th>Operation Code</th><th>Operation Name</th><th>Workstation Id</th><th>Rejection Reason</th><th>User</th><th>Quantity</th><th>Status</th><th>API Type</th>
+                    <th>Failed Count</th></tr>
+                    </thead>
                     
 <?php
                 $i=1;
@@ -116,7 +119,7 @@
                     }
                     
                     if($reason=='fail'){
-                        $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`transactions_log` WHERE transaction_id=".$res['id']))['response_message'] ?? 'fail with no reason.';
+                        $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`transactions_log` WHERE transaction_id=".$res['id']." order by sno desc limit 1"))['response_message'] ?? 'fail with no reason.';
                         $reason = '<label class="label label-danger">'.$ndr."</label>";
                     }else{
                         $reason = "<label class='label label-success'>".$reason."</label>";
@@ -141,6 +144,7 @@
                         <td><?= $res['quantity'] ?></td>
                         <td><?= $reason ?></td>
                         <td><?= $api_type ?></td>
+                        <td><?= $res['m3_trail_count'] ?></td>
                     </tr>
 <?php           }      ?>
                     

@@ -27,7 +27,23 @@
     $msg = 'Scanned Successfully';
 
     $string = $bundle_no.','.$op_no.','.'0';
-    getjobdetails($string, $bundle_no, $op_no, $shift);
+    //getting categry from operation_master 
+    $checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$op_no'";
+    $result_checking_qry = $link->query($checking_qry);
+    while($row_cat = $result_checking_qry->fetch_assoc()) 
+    {
+        $category_act = $row_cat['category'];
+    }
+    if($category_act != 'sewing')
+    {
+        $result_array['status'] = 'Invalid opeartion!!! You can only scan Sewing operatinos here';
+        echo json_encode($result_array);
+        die();
+    }
+    else
+    {
+        getjobdetails($string, $bundle_no, $op_no, $shift);
+    }
     function getjobdetails($job_number, $bundle_no, $op_no, $shift)
     {
             error_reporting(0);
@@ -176,7 +192,7 @@
                     $schedule_count_query = $link->query($schedule_count_query);
                     if($schedule_count_query->num_rows > 0)
                     {
-                        $schedule_query = "SELECT `style` as order_style_no,`schedule` as order_del_no,`send_qty`,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,`original_qty` as carton_act_qty,`recevied_qty` as reported_qty,`rejected_qty` as rejected_qty,(send_qty-(recevied_qty+rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks, mapped_color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id = $job_number[4] order by tid";
+                        $schedule_query = "SELECT `style` as order_style_no,`schedule` as order_del_no,`send_qty`,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,`original_qty` as carton_act_qty,`recevied_qty` as reported_qty,`rejected_qty` as rejected_qty,((send_qty+recut_in+replace_in)-(recevied_qty+rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks, mapped_color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id = $job_number[4] order by tid";
                         $flags=3;
                         $flag = 'bundle_creation_data';
                     }
@@ -193,7 +209,7 @@
                 $schedule_count_query = $link->query($schedule_count_query);
                 if($schedule_count_query->num_rows > 0)
                 {
-                    $schedule_query = "SELECT `style` as order_style_no,`schedule` as order_del_no,`send_qty`,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,`original_qty` as carton_act_qty,`recevied_qty` as reported_qty,`rejected_qty` as rejected_qty,(send_qty-(recevied_qty+rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks, mapped_color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id = $job_number[4] order by tid";
+                    $schedule_query = "SELECT `style` as order_style_no,`schedule` as order_del_no,`send_qty`,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,`original_qty` as carton_act_qty,`recevied_qty` as reported_qty,`rejected_qty` as rejected_qty,((send_qty+recut_in+replace_in)-(recevied_qty+rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks, mapped_color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id = $job_number[4] order by tid";
                     $flags=3;
                     $flag = 'bundle_creation_data';
                 }
@@ -222,7 +238,7 @@
             }
             while($row = $result_style_data->fetch_assoc()) 
             {
-                if($emb_cut_check_flag == 1 && $bundle_no == $row['bundle_number'])
+                if($emb_cut_check_flag == 1 && $bundle_no == $row['tid'])
                 {
                     $doc_no = $row['doc_no'];
                     $size = $row['old_size'];
@@ -368,7 +384,7 @@
         {
             $ops_seq_dep[] = $ops_seq;
         }
-        $pre_ops_check = "SELECT tm.operation_code as operation_code,ops_sequence FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN brandix_bts.`tbl_orders_ops_ref` tr ON tr.id=tm.operation_name WHERE style='$b_style' AND color = '$mapped_color' and (ops_sequence = '$ops_seq' or ops_sequence in  (".implode(',',$ops_seq_dep).")) AND  tr.category NOT IN ('cutting','Send PF','Receive PF') AND tm.operation_code != 200";
+        $pre_ops_check = "SELECT tm.operation_code as operation_code,ops_sequence FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN brandix_bts.`tbl_orders_ops_ref` tr ON tr.id=tm.operation_name WHERE style='$b_style' AND color = '$mapped_color' and (ops_sequence = '$ops_seq' or ops_sequence in  (".implode(',',$ops_seq_dep).")) AND  tr.category  IN ('sewing') AND tm.operation_code != 200";
         $result_pre_ops_check = $link->query($pre_ops_check);
         if($result_pre_ops_check->num_rows > 0)
             {
@@ -760,11 +776,20 @@
                     }
                     elseif($b_op_id == $output_ops_code)
                     {
-                        $input_ops_code = 100;
-                        if($input_ops_code == 100 || $input_ops_code == 129)
+                        //To gent Input Operation Code
+                        $application='IPS';
+                        $scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+                        //echo $scanning_query;
+                        $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($sql_row=mysqli_fetch_array($scanning_result))
+                        {
+                          $operation_name=$sql_row['operation_name'];
+                          $operation_code=$sql_row['operation_code'];
+                        }
+                        if($operation_code == 100 || $operation_code == 129)
                         {
                             //updating ims_pro_qty against the input
-                            $searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid[$i]' AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref=$b_job_no AND operation_id=$input_ops_code AND ims_remarks = '$b_remarks[$i]'";
+                            $searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid[$i]' AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref=$b_job_no AND operation_id=$operation_code AND ims_remarks = '$b_remarks[$i]'";
                             $result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
                             if($result_searching_query_in_imslog->num_rows > 0)
                             {

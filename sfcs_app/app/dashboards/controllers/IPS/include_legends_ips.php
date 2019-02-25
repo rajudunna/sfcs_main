@@ -18,14 +18,23 @@
 <div class="red" ></div> Material Not Available and Not Requested from W/H
 </div>
 <div style="width:240px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
-<div class="yash" ></div> Material Status Not Updated in FSP
+<div class="yash" ></div> Material Status Not Updated 
 </div>
 <div style="width:170px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
 <div class="white" ></div> Empty Slot
 </div>
 <div style="width:170px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
-<div class="pink" ></div> Ready To Issue
+<div class="pink" ></div> Ready In Warehouse
 </div>
+<div style="width:170px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
+<div class="orange" ></div> Input Partially Reported
+</div>
+
+<div style="width:170px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
+    <div class="white" style="border-style: solid;border-color: Magenta ;border-width: 3px;"></div> Recut Issued / Replaced
+</div>
+
+
 
 <div style="clear: both;"> </div>
 </div>

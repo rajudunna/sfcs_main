@@ -168,18 +168,19 @@ if(isset($_POST['delete']))
 	$reason=$_POST['reason'];
 		
 
-	$query = "select qty_issued from $bai_rm_pj1.store_in where barcode_number='$lid'";
+	$query = "select qty_issued,qty_allocated from $bai_rm_pj1.store_in where barcode_number='$lid'";
 	
 	$result = mysqli_query($link,$query);
 	while($row = mysqli_fetch_array($result)){
 		$issued_qty = $row['qty_issued'];
+		$qty_allocated = $row['qty_allocated'];
 	}
 	
 
 	
-	if((int)$issued_qty > 0){
+	if((int)$issued_qty > 0 || (int)$qty_allocated>0){
 	
-		echo "<script>sweetAlert('Quantity is issued already','you should not delete it','warning');</script>";
+		echo "<script>sweetAlert('Quantity is issued/Allocated already','you should not delete it','warning');</script>";
 		$url = getFullURL($_GET['r'],'entry_delete.php','N');
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500); function Redirect() {  location.href = \"$url\"; }</script>";
 	
@@ -352,18 +353,19 @@ if(isset($_POST['put']))
 	
 	//$sql="select * from store_in where lot_no=".$lot_no;
 	
-	$sql="SELECT sum(qty_issued) as total_issued,sum(qty_ret) as total_returned FROM $bai_rm_pj1.store_in where lot_no='$lot_no' group by lot_no";
+	$sql="SELECT sum(qty_issued) as total_issued,sum(qty_ret) as total_returned,sum(qty_allocated) as total_qty_allocated FROM $bai_rm_pj1.store_in where lot_no='$lot_no' group by lot_no";
 	
 	// echo "<br/>".$sql;
 	$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$total_issued=$sql_row['total_issued'];
+		//$total_issued=$sql_row['total_issued'];
 		$total_returned=$sql_row['total_returned'];
+		$total_qty_allocated=$sql_row['total_qty_allocated'];
 	}
 	
-	if($total_issued==$total_returned)
+	if($total_qty_allocated==$total_returned)
 	{
 		if(in_array($authorized,$has_permission))
 		{

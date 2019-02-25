@@ -269,8 +269,8 @@ function savingdata($saving)
 					// echo $ops_order;
 						$act_ops_order_str = (string)$ops_order.'1';
 					// echo $act_ops_order_str;
-						$act_ops_order = (float)$act_ops_order_str;
-						$updating_qry = "update $brandix_bts.tbl_style_ops_master set operation_order = $act_ops_order where id = $updating_id";
+						$act_ops_order = $act_ops_order_str;
+						$updating_qry = "update $brandix_bts.tbl_style_ops_master set operation_order = '$act_ops_order' where id = $updating_id";
 						$array_changed_order_ids_values[$updating_id]=$act_ops_order;
 					// echo $updating_qry;
 						$link->query($updating_qry);
@@ -664,7 +664,7 @@ function dependency_ops_validation($dependency_ops_ary)
 	//var_dump($dependency_ops_ary);
 	include("../../../../../common/config/config_ajax.php");
 
-	$check_for_order_id_query = "select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no='$dependency_ops_ary[1]' and order_col_des='$dependency_ops_ary[2]'";
+	$check_for_order_id_query = "select order_tid from $bai_pro3.bai_orders_db where order_style_no='$dependency_ops_ary[1]' and order_col_des='$dependency_ops_ary[2]'";
 	//echo $check_for_order_id_query;
 	$check_for_order_id = $link->query($check_for_order_id_query);
     foreach($check_for_order_id as $key=> $value){

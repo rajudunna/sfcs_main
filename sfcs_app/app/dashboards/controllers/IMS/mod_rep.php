@@ -341,19 +341,38 @@
                                 $break_counter = 0;
                                 while($sql_rowx=mysqli_fetch_array($sql_resultx))
                                 {
+                                    //$section_mods = [] ;
                                     $break_counter++;
                                     $section=$sql_rowx['sec_id'];
                                     $section_head=$sql_rowx['sec_head'];
-                                    $section_mods=$sql_rowx['sec_mods']; 
+                                    $section_mods[]=$sql_rowx['sec_mods']; 
+                                    
+                            
+                                    $mods1 = implode(',',$section_mods);
 
-                                    $mods=array();
-                                    $mods=explode(",",$section_mods);
-
-                                    for($x=0;$x<sizeof($mods);$x++)
+                                    $get_operations="SELECT * FROM $brandix_bts.`tbl_orders_ops_ref` WHERE default_operation='yes' AND  (work_center_id IS NULL OR work_center_id='')";
+                                    $sql_res=mysqli_query($link, $get_operations) or exit("workstation id error");
+                                    while ($row2=mysqli_fetch_array($sql_res)) 
                                     {
-                                        echo "<option value=\"".$mods[$x]."\" >".$mods[$x]."</option>";
-                                        //$module=$mods[$x];
+                                        $short_key = $row2['short_cut_code'];
                                     }
+
+                                    $work_station_module="select module from $bai_pro3.work_stations_mapping where module IN ($mods1) and operation_code = '$short_key'";
+                                    $sql_result1=mysqli_query($link, $work_station_module) or exit("NO Modules availabel");
+                                    while ($row1=mysqli_fetch_array($sql_result1))
+                                    {
+                                        if (!in_array($row1['module'], $work_mod))
+                                        {
+                                            $work_mod[]=$row1['module'];
+                                        }
+                                    }
+                                }
+                                // $final_mods = array_unique($work_mod);
+                                // echo($final_mods);
+                                for($x=0;$x<sizeof($work_mod);$x++)
+                                {
+                                  echo "<option value=\"".$work_mod[$x]."\" >".$work_mod[$x]."</option>";
+                                  //$module=$mods[$x];
                                 }
                             ?>
                     </select>

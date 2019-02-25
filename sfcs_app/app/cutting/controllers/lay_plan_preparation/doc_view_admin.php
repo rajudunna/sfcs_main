@@ -258,10 +258,13 @@ $color_code=$sql_row33['color_code']; //Color Code
 	if($remarks=="Normal")
 	{
 		echo "<td>".chr($color_code).leading_zeros($pcutno,3)."</td>";
+	}else if(strtolower($remarks)=="recut")
+	{
+		echo "<td>R".leading_zeros($pcutno,3)."</td>";
 	}
 	else
 	{
-		if($remarks="Pilot")
+		if($remarks=="Pilot")
 		{
 			echo "<td>Pilot</td>";
 		}

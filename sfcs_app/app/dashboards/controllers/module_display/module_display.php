@@ -15,63 +15,91 @@
 	
 	img { zoom: 30%;}
 </style>
-
-
+<script >
+setTimeout(function(){
+	    var module = document.getElementById('module').value; 
+	    var url = window.location.href+'&module='+module;
+	    if(module){
+	        window.location.href = url;    
+	    }
+	},120000);
+</script>
+</head>
+<div class="panel panel-primary"> <div class="panel-heading"><h4 class="panel-title">Endline Dashboard</h4></div></div>
+	<form id="2" class="form-inline" role="form" method="post" action="<?= $action_url ?>" onsubmit="return function">
+		<style>
+		form {color: black;}
+	</style>
+		<label for="module" class="mb-2 mr-sm-2">Module: </label>
+	        <select class="form-control mb-2 mr-sm-2" name="module_name" id='module'> 
 <?php
-if(isset($_GET['module']))
+            $sql = "SELECT module_name FROM $bai_pro3.module_master ORDER BY module_name *'1'" ;
+$result = mysqli_query($link, $sql);
+        while($row=mysqli_fetch_array($result))
 {
-	$module=$_GET['module'];
+	$module=$_POST['module_name'];
+	if($module == '')
+		$module = $_GET['module_name'];
+
+	if($module ==  $row['module_name'])
+		echo "<option value='". $row['module_name']."' selected>".$row['module_name'].'</option>';
+	else	
+    	echo "<option value='". $row['module_name']."'>".$row['module_name'].'</option>';
 }
-else
+
+?>
+</select>
+    <input type="submit"  class="btn btn-primary mb-2" value="submit">
+</form>
+<?php
+if(isset($_POST['module_name']))
 {
+	$module=$_POST['module_name'];
+}elseif(isset($_GET['module_name']))
+{
+	$module=$_GET['module_name'];
+}else{
 	$module=1;
 }
 
 
-
-$sql="select sum(plan_out) as plan_out,sum(act_out) as act_out,nop,styles from $bai_pro.grand_rep where date=CURDATE() and module=$module";
-//$sql="select sum(plan_out) as plan_out,sum(act_out) as act_out,nop,styles from bai_pro.grand_rep where date='2017-11-08' and module=$module";
+$date_check=date("Y-m-d");
+$sql="select sum(bac_qty) as act_out,GROUP_CONCAT(DISTINCT bac_style) as styles from $bai_pro.bai_log_buf where bac_date='".$date_check."' and bac_no=$module";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
+if(mysqli_num_rows($sql_result)>0)
 {
-	$plan_out=$sql_row['plan_out'];
-	$act_out=$sql_row['act_out'];
-	$balance_out=($plan_out-$act_out)>0?($plan_out-$act_out):0;
-	$nop=$sql_row['nop'];
-	$styles=$sql_row['styles'];
-}
-
-if($plan_out==0 or $act_out==0)
-{
-
-$sql="select sum(plan_pro) as plan_out from $bai_pro.pro_plan_today where date=CURDATE() and mod_no=$module";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$plan_out=$sql_row['plan_out'];
-	}
-	$sql="select sum(bac_Qty) as act_out,max(nop) as nop,group_concat(distinct bac_style) as styles from $bai_pro.bai_log_buf where bac_date=CURDATE() and bac_no=$module";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		
 		$act_out=$sql_row['act_out'];
-		$balance_out=($plan_out-$act_out)>0?($plan_out-$act_out):0;
-		$nop=$sql_row['nop'];
 		$styles=$sql_row['styles'];
 	}
-	
-	if($nop=='')
+}
+else
+{
+	$act_out=0;
+	$styles='';
+}
+$sql11="select sum(plan_pro) as pro from $bai_pro.pro_plan_today where mod_no='$module'";
+$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row11=mysqli_fetch_array($sql_result11))
+{
+	$plan_out=$sql_row11['pro'];
+}
+$balance_out=($plan_out-$act_out)>0?($plan_out-$act_out):0;
+$sql114="select sum(present+jumper) as atten from $bai_pro.pro_attendance where module='$module' and date='".$date_check."'";
+$sql_result114=mysqli_query($link, $sql114) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row114=mysqli_fetch_array($sql_result114))
+{
+	if($sql_row114['atten']<>'')
+	{
+		$nop=$sql_row114['atten'];
+	}
+	else
 	{
 		$nop=0;
-	}
-	if($act_out=='')
-	{
-		$act_out=0;
-	}
+	}	
 }
 
-//echo $sql;
 ?>
 <div class='dashboard col-sm-12'>
 <table>
@@ -80,8 +108,22 @@ $sql="select sum(plan_pro) as plan_out from $bai_pro.pro_plan_today where date=C
 </tr>
 
 <tr>
-<td><mytag>Target &nbsp;&nbsp;- ඉලක්කය</mytag></td>
-<td><mytag>Balance &nbsp;&nbsp;- ඉතිරි</mytag></td>
+<td><mytag>Target &nbsp;&nbsp; <?php if($plant_location=='Sri Lanka'){
+								echo "- ඉලක්කය"; }
+								elseif($plant_location=='India'){	
+								echo "- రోజు వారి టార్గెట్";				}
+								else
+								{
+									
+								}	?></mytag></td>
+<td><mytag>Balance &nbsp;&nbsp; <?php if($plant_location=='Sri Lanka'){
+								echo "- ඉතිරි"; }
+								elseif($plant_location=='India'){	
+									echo "- కుట్టవలసిన పీసులు";		}
+								else
+								{
+									
+								}	?></mytag></td>
 </tr>
 
 <tr>
@@ -95,8 +137,23 @@ $sql="select sum(plan_pro) as plan_out from $bai_pro.pro_plan_today where date=C
 
 
 <tr>
-<td><mytag>Operators &nbsp;&nbsp;- ක්රියාකරුවන්</mytag></td>
-<td><mytag>Achievement&nbsp;&nbsp;- ජයග්රහණය</mytag></td>
+<td><mytag>Operators &nbsp;&nbsp; <?php if($plant_location=='Sri Lanka'){
+								echo "- ක්රියාකරුවන්"; }
+								elseif($plant_location=='India'){
+								echo "- ఆపరేటర్లు";	
+											}
+								else
+								{
+									
+								}	?></mytag></td>
+<td><mytag>Achievement&nbsp;&nbsp; <?php if($plant_location=='Sri Lanka'){
+								echo "- ජයග්රහණය"; }
+								elseif($plant_location=='India'){	
+								echo "- కుట్టిన పీసులు";			}
+								else
+								{
+									
+								}	?></mytag></td>
 </tr>
 
 <tr>
@@ -109,145 +166,99 @@ $sql="select sum(plan_pro) as plan_out from $bai_pro.pro_plan_today where date=C
 </table>
 </div>
 <?php
+$time_display=array();
+$act_out=array();
+$time_prefix=array();
 
-$plan_out=array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-
-$sql="select * from $bai_pro.pro_plan_today where date=CURDATE() and mod_no=$module";
+$sql="select * from $bai_pro3.tbl_plant_timings";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
+	$time_display[]=$sql_row['time_display'];
+	$time_prefix[]=$sql_row['day_part'];
+	$sql2="SELECT SUM(bac_qty) as outp FROM $bai_pro.bai_log_buf WHERE bac_date='".$date_check."' AND bac_no=$module and TIME(bac_lastup)>= TIME('".$sql_row['start_time']."') AND TIME(bac_lastup)< TIME('".$sql_row['end_time']."')";
+	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row2=mysqli_fetch_array($sql_result2))
+	{
+		if($sql_row2['outp']<>'')
+		{
+			$act_out[$sql_row['time_display']]=$sql_row2['outp'];
+		}
+		else
+		{
+			$act_out[$sql_row['time_display']]=0;
+		}	
+	}
 	
-	$hourly_target=round($sql_row['plan_pro']/8,0);
-	if($sql_row['shift']=='A')
-	{
-		$plan_out[6]=$hourly_target + ($sql_row['plan_pro']-(round($sql_row['plan_pro']/8,0)*8));
-		$plan_out[7]=$hourly_target;
-		$plan_out[8]=$hourly_target;
-		$plan_out[9]=$hourly_target;
-		$plan_out[10]=$hourly_target;
-		$plan_out[11]=$hourly_target;
-		$plan_out[12]=$hourly_target;
-		$plan_out[13]=$hourly_target;
-
-		
-	}
-	if($sql_row['shift']=='B')
-	{
-		$plan_out[14]=$hourly_target  + ($sql_row['plan_pro']-(round($sql_row['plan_pro']/8,0)*8));
-		$plan_out[15]=$hourly_target;
-		$plan_out[16]=$hourly_target;
-		$plan_out[17]=$hourly_target;
-		$plan_out[18]=$hourly_target;
-		$plan_out[19]=$hourly_target;
-		$plan_out[20]=$hourly_target;
-		$plan_out[21]=$hourly_target;
-
-	}
-	$hourly_target=0;
 }
-
-$act_out=array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-
-$sql="SELECT HOUR(bac_lastup) AS hr, SUM(bac_qty) as outp FROM $bai_pro.bai_log_buf WHERE bac_date=CURDATE() AND bac_no=$module GROUP BY HOUR(bac_lastup)";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$act_out[$sql_row['hr']]=$sql_row['outp'];
-	$current_hour=$sql_row['hr'];
+$sql1="select sum(plan_pro) as pro from $bai_pro.pro_plan_today where mod_no='$module'";
+$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row1=mysqli_fetch_array($sql_result1))
+{	
+	if($tot_plant_working_hrs>0 && $sql_row1['pro']>0)
+	{
+		$hourly_target=round($sql_row1['pro']/$tot_plant_working_hrs,0);		
+	}
+	else
+	{
+		$hourly_target=0;
+	}	
 }
 
 ?>
 
 <table class='table' id='my_table'>
 	<tr class='red'>
-		<th class='left_head'>Hour</th>
-		<th>06-07</th>
-		<th>07-08</th>
-		<th>08-09</th>
-		<th>09-10</th>
-		<th>10-11</th>
-		<th>11-12</th>
-		<th>12-13</th>
-		<th>13-14</th>
-		<th>14-15</th>
-		<th>15-16</th>
-		<th>16-17</th>
-		<th>17-18</th>
-		<th>18-19</th>
-		<th>19-20</th>
-		<th>20-21</th>
-		<th>21-22</th>
-
+	<th class='left_head'>Hour</th>
+	<?php
+	for($i=0;$i<sizeof($time_display);$i++)
+	{
+		echo "<th>".$time_display[$i]." ".$time_prefix[$i]."</th>";
+	}
+	?>
 	</tr>
 	<tr>
 		<th class='left_head'>Target PCs</th>
-		<td><?php echo $plan_out[6]; ?></td>
-		<td><?php echo $plan_out[7]; ?></td>
-		<td><?php echo $plan_out[8]; ?></td>
-		<td><?php echo $plan_out[9]; ?></td>
-		<td><?php echo $plan_out[10]; ?></td>
-		<td><?php echo $plan_out[11]; ?></td>
-		<td><?php echo $plan_out[12]; ?></td>
-		<td><?php echo $plan_out[13]; ?></td>
-		<td><?php echo $plan_out[14]; ?></td>
-		<td><?php echo $plan_out[15]; ?></td>
-		<td><?php echo $plan_out[16]; ?></td>
-		<td><?php echo $plan_out[17]; ?></td>
-		<td><?php echo $plan_out[18]; ?></td>
-		<td><?php echo $plan_out[19]; ?></td>
-		<td><?php echo $plan_out[20]; ?></td>
-		<td><?php echo $plan_out[21]; ?></td>
+		<?php
+		for($ii=0;$ii<sizeof($time_display);$ii++)
+		{
+			echo "<td>".$hourly_target."</td>";
+		}
+		?>		
 	</tr>
 	<tr>
 		<th class='left_head'>Actual PCs</th>
-		<td><?php echo $act_out[6]; ?></td>
-		<td><?php echo $act_out[7]; ?></td>
-		<td><?php echo $act_out[8]; ?></td>
-		<td><?php echo $act_out[9]; ?></td>
-		<td><?php echo $act_out[10]; ?></td>
-		<td><?php echo $act_out[11]; ?></td>
-		<td><?php echo $act_out[12]; ?></td>
-		<td><?php echo $act_out[13]; ?></td>
-		<td><?php echo $act_out[14]; ?></td>
-		<td><?php echo $act_out[15]; ?></td>
-		<td><?php echo $act_out[16]; ?></td>
-		<td><?php echo $act_out[17]; ?></td>
-		<td><?php echo $act_out[18]; ?></td>
-		<td><?php echo $act_out[19];; ?></td>
-		<td><?php echo $act_out[20]; ?></td>
-		<td><?php echo $act_out[21]; ?></td>
+		<?php
+		for($iii=0;$iii<sizeof($time_display);$iii++)
+		{
+			echo "<td>".$act_out[$time_display[$iii]]."</td>";
+		}
+		?>
 	</tr>
 	<tr>
 		<th class='left_head'>Balance</th>
 
 <?php
 
-for($i=6;$i<=21;$i++)
+for($j=0;$j<sizeof($time_display);$j++)
 {
-		$bg_color="bgcolor=\"black\"";
-		
-		if($i<=$current_hour)
+	$bg_color="bgcolor=\"black\"";		
+	if($act_out[$time_display[$j]]==0)
+	{
+		$bg_color="bgcolor=\"red\"";
+	}
+	else
+	{
+		if($act_out[$time_display[$j]]>=$hourly_target)
 		{
-			
-			if($act_out[$i]==0)
-			{
-				$bg_color="bgcolor=\"red\"";
-			}
-			else
-			{
-				if($act_out[$i]>=$plan_out[$i])
-				{
-					$bg_color="bgcolor=\"green\"";
-				}
-				else
-				{
-					$bg_color="bgcolor=\"orange\"";
-				}
-				
-			}
+			$bg_color="bgcolor=\"green\"";
 		}
-		
-		echo "<td $bg_color>".(($plan_out[$i]-$act_out[$i])>0?($plan_out[$i]-$act_out[$i]):0)."</td>";
+		else
+		{
+			$bg_color="bgcolor=\"orange\"";
+		}			
+	}		
+	echo "<td $bg_color>".(($hourly_target-$act_out[$time_display[$j]])>0?($hourly_target-$act_out[$time_display[$j]]):0)."</td>";
 }
 
 ?>

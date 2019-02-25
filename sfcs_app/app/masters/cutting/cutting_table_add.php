@@ -50,10 +50,8 @@
                         <div id="valOk" class="row viewerror clearfix hidden">
                             <div class="alert alert-success">Yay! ..</div>
                         </div>
-
-                        
-                                    <div class="row">
-                                        <div class="col-md-12"><div class="row"><div class="col-md-4"><div class="form-group">
+						<div class="row">
+							<div class="col-md-12"><div class="row"><div class="col-md-4"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="table_name">Table Name<span class="req"> *</span></label>
 			    <div class="controls col-sm-9">
                     
