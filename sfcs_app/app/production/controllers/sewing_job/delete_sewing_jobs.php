@@ -97,7 +97,7 @@
             $ips_op_code = $row['operation_code'];
         }
 
-        $validation_query = "SELECT id from $brandix_bts.bundle_creation_data where schedule = '$schedule' 
+        $validation_query = "SELECT id from $brandix_bts.bundle_creation_data where schedule = '$schedule' and recevied_qty > 0
                     and operation_id = $ips_op_code";
         // $validation_query="SELECT * FROM $bai_pro3.act_cut_status WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '%".$schedule."%')"; 
         // echo $validation_query; 
