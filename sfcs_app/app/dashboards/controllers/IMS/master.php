@@ -121,7 +121,7 @@ if(isset($_POST['submit']))
 										<option value="">Select</option>
 									
 									<?php
-										$get_operations="SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code not in (10,15,200) group by operation_code order by operation_code";
+										$get_operations="SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code not in (10,15) group by operation_code order by operation_code*1";
 										$result=mysqli_query($link,$get_operations);
 										while ($test = mysqli_fetch_array($result))
 										{
