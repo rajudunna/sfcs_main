@@ -37,9 +37,9 @@ $tran_pin=$_GET["s"];
 			$result1=mysqli_query($link, $sql) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row12=mysqli_fetch_array($result1))
 			{
-				$bal=$row12['qty_rec']+$row12['qty_ret']-($row12['qty_issued']+$row12['partial_appr_qty']);
+				$bal1=$row12['qty_rec']+$row12['qty_ret']+$row12['qty_ret']-($row12['qty_issued']+$row12['partial_appr_qty']+$row12['qty_allocated']);
 			}
-		
+		$bal=$bal1+$qty;
 			echo "	<input type='hidden' name='tran_pin' value=\"".$tran_pin."\">
 					<input type='hidden' name='doc_no' value=\"".$row1['doc_no']."\">
 					<input type='hidden' name='doc_type' value=\"".$row1['doc_type']."\">";
