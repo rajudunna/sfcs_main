@@ -1745,7 +1745,6 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 			</div>
 		</div>
 	</div>
-</div>
 
 
 <div class="col-sm-12 row">
