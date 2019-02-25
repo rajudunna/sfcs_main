@@ -76,10 +76,13 @@ function writing_logs_to_file($unique_id,$api_call_url='',$response_from_api='')
 	$file_name_string = $facility_code.'_'.$date.'_api_log.txt';
 	$my_file = $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/app/m3_log_files/'.$facility_code.'/'.$file_name_string;
 	$handle = fopen($my_file, 'a') or die('Cannot open file:  '.$my_file);
-	$file_data_request = $current_date.'  '.$unique_id.'  '.$api_call_url;
-	fwrite($handle,"\n".$file_data_request); 
-	$file_data_response = $current_date.'  '.$unique_id.'  '.$response_from_api;
-	fwrite($handle,"\n".$file_data_response); 
+	if($api_call_url<>''){ // for logging only url related info
+		$file_data_request = $current_date.'  '.$unique_id.'  '.$api_call_url;
+		fwrite($handle,"\n".$file_data_request); 
+	}else{ // for logging response related info
+		$file_data_response = $current_date.'  '.$unique_id.'  '.$response_from_api;
+		fwrite($handle,"\n".$file_data_response); 
+	}
 	fclose($handle);
 }
 ?>
