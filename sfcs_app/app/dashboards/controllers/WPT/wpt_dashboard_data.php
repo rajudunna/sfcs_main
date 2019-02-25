@@ -118,20 +118,17 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
         $break_me_at = 11;
     }
     
-    $dockets_cqty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,pdsi.doc_no AS doc_no,
+    /*$dockets_cqty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,pdsi.doc_no AS doc_no,
             acutno,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
             FROM bai_pro3.plan_dashboard_input pdi
             LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
             WHERE input_module = '$module'
             AND a_plies = p_plies AND act_cut_status='DONE' 
-            group by input_module";
-    $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,pdsi.doc_no AS doc_no,
-            acutno,a_plies,p_plies,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
-            FROM bai_pro3.plan_dashboard_input pdi
-            LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
-            WHERE input_module = '$module' 
-            AND ( (a_plies = p_plies and act_cut_status='') OR (a_plies < p_plies AND act_cut_status='DONE') ) 
-            group by doc_no order by input_priority ASC";   
+            group by input_module";*/
+    $dockets_cqty_query = "SELECT GROUP_CONCAT(DISTINCT CONCAT(\"'\",pdi.input_job_no_random_ref,\"'\")) AS jobs,pslij.doc_no AS doc_no,psl.act_cut_status as act_cut_status,bodc.order_style_no as style,psl.acutno as acutno,bodc.color_code as color_code,bodc.order_del_no as schedule,bodc.order_col_des as color,bodc.ft_status as ft_status FROM bai_pro3.plan_dashboard_input AS pdi,bai_pro3.pac_stat_log_input_job AS pslij,bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc WHERE input_module='$module' AND pdi.input_job_no_random_ref=pslij.input_job_no_random AND psl.doc_no=pslij.doc_no AND psl.order_tid=bodc.order_tid AND psl.a_plies = psl.p_plies AND psl.act_cut_status='DONE'";
+
+    $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(DISTINCT pdi.input_job_no_random_ref) AS jobs,pslij.doc_no AS doc_no,psl.a_plies AS a_plies,psl.p_plies AS p_plies,psl.act_cut_status AS act_cut_status,    bodc.order_style_no AS style,psl.acutno AS acutno,bodc.color_code AS color_code,bodc.order_del_no AS SCHEDULE,bodc.order_col_des AS color,bodc.ft_status AS ft_status FROM bai_pro3.plan_dashboard_input AS pdi,bai_pro3.pac_stat_log_input_job AS pslij,
+    bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc WHERE input_module = '$module' AND ( (a_plies = p_plies and act_cut_status='') OR (a_plies < p_plies AND act_cut_status='DONE')) group by doc_no order by input_priority ASC";   
     /*             
     $partial_dockets_query  = "SELECT GROUP_CONCAT(distinct psi.input_job_no_random) AS jobs,pds.order_style_no as style,
             pds.order_col_des as color,pds.doc_no as doc_no,pds.acutno as acutno,pds.color_code,
@@ -192,12 +189,10 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             $job_qty_result = mysqli_query($link,$job_qty_query);
             $jrow = mysqli_fetch_array($job_qty_result);
             */
-            $job_qty_query = "SELECT SUM(carton_act_qty) as job_qty from $bai_pro3.pac_stat_log_input_job 
-                            where input_job_no_random IN ($jobs)";              
+            $job_qty_query = "SELECT SUM(carton_act_qty) as job_qty from $bai_pro3.pac_stat_log_input_job where input_job_no_random IN ($jobs)";              
             $job_qty_result = mysqli_query($link,$job_qty_query);  
             
-            $cut_qty_query = "SELECT SUM(cut_quantity) as cut_qty,SUM(remaining_qty) as rem_qty from $bai_pro3.cps_log 
-                            where doc_no = '$doc_no' and operation_code = $cutting_op_code ";
+            $cut_qty_query = "SELECT SUM(cut_quantity) as cut_qty,SUM(remaining_qty) as rem_qty from $bai_pro3.cps_log where doc_no = $doc_no and operation_code = $cutting_op_code";
             $cut_qty_result = mysqli_query($link,$cut_qty_query);
 
             /*
@@ -230,8 +225,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                 }else if($order == 1 || $order == 3){
                     if($cut_status == '') $cut_status = 0; else $cut_status = 5;
 
-                    $fabric_status_query="select * from $bai_pro3.plandoc_stat_log where fabric_status<>'5' 
-                                        and doc_no in ($doc_no)";
+                    $fabric_status_query="select * from $bai_pro3.plandoc_stat_log where fabric_status<>'5' and doc_no in ($doc_no)";
                     $fabric_status_query_result  =mysqli_query($link, $fabric_status_query) or exit($docs_data.='Fabric Status error');
                     if(mysqli_num_rows($fabric_status_query_result) > 0) $fabric_status = 0; else $fabric_status = 5;
                     
