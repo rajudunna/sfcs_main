@@ -588,7 +588,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                   $application1='IMS';
 
                   $scanning_query1="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application1'";
-                  $scanning_result=mysqli_query($link, $scanning_query1)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                  $scanning_result1=mysqli_query($link, $scanning_query1)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
                   while($sql_row1=mysqli_fetch_array($scanning_result1))
                   {
                     $operation_name=$sql_row1['operation_name'];
