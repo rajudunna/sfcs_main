@@ -270,8 +270,8 @@
         while($row = mysqli_fetch_array($op_code_result)){
             $ips_op_code = $row['operation_code'];
         }
-
-        $validation_query = "SELECT id from $brandix_bts.bundle_creation_data where schedule = '$schedule' 
+        
+        $validation_query = "SELECT id from $brandix_bts.bundle_creation_data where schedule = '$schedule' and recevied_qty > 0 
                     and operation_id = $ips_op_code";
         $sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data");      
         $count= mysqli_num_rows($sql_result); 
