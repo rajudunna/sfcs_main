@@ -12,11 +12,10 @@ function getscheduledata($variable)
 {
 	include("../../../../../common/config/config_ajax.php");
 	$category="'sewing'";
-	$query_get_schedule_data= "SELECT tm.operation_code,tm.operation_name FROM brandix_bts.tbl_style_ops_master tr 
-			LEFT JOIN brandix_bts.tbl_orders_ops_ref tm ON tm.id=tr.operation_name 
-			WHERE tr.operation_code NOT IN (10,200,15) 
-			AND category IN ($category)
-			GROUP BY tr.operation_code ORDER BY tm.operation_code";
+	$query_get_schedule_data= "SELECT tm.operation_code,tm.operation_name FROM brandix_bts.tbl_orders_ops_ref tm
+	WHERE tm.operation_code NOT IN (10,200,15) 
+	AND category IN ($category)
+	GROUP BY tm.operation_code ORDER BY tm.operation_code";
 	$result = $link->query($query_get_schedule_data);
 	while($row = $result->fetch_assoc()){
 		$json[$row['operation_code']] = $row['operation_name'];
