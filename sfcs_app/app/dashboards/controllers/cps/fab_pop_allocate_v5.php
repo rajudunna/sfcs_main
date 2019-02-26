@@ -755,7 +755,7 @@ if(isset($_POST['allocate_new']))
 						//$width_ref[$j]=$issued_ref[$j];
 						//getting recieved qty from store_in
 						$query3="SELECT qty_rec FROM $bai_rm_pj1.store_in WHERE tid='$tid_ref[$j]'";
-						$sql_result1=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row3=mysqli_fetch_array($sql_result3))
 						{
 							$width_ref[$j]=$sql_row3['qty_rec'];
@@ -765,11 +765,11 @@ if(isset($_POST['allocate_new']))
 					}
 					if($process_cat==1)
 					{
-						$sql="insert into bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'normal',".$issued_ref[$j].",'1')";
+						$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'normal',".$issued_ref[$j].",'1')";
 					}
 					else
 					{
-						$sql="insert into bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'recut',".$issued_ref[$j].",'1')";
+						$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'recut',".$issued_ref[$j].",'1')";
 					}
 					
 					//Uncheck this
