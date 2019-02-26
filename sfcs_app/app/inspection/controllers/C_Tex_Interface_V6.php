@@ -3126,7 +3126,7 @@ function validate_unique_shade(shde, roll, index)
 	if($.trim($('#ele_shade\\['+index+'\\]').val()) == ''){
 		sweetAlert('Please Enter Shade Group','','warning');
 		document.input["ele_shade["+index+"]"].style.background="#99ff88";
-		//document.input["ele_shade["+index+"]"].style.border="3px solid red";
+		
 	}
 	console.log('ele_shade['+index+']');
 	var arr = new Array();
