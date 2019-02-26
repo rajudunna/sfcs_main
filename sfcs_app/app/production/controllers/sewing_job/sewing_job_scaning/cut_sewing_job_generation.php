@@ -60,11 +60,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
     $inserted_id = mysqli_insert_id($link);
 
         
-    $old_jobs_cnt_qry = "SELECT  MAX(input_job_no*1) AS old_jobs 
-            FROM bai_pro3.packing_summary_input WHERE order_del_no = '$schedule'";
-        //echo $old_jobs_cnt_qry;
-    $old_jobs_cnt_res = mysqli_query($link, $old_jobs_cnt_qry) or exit("Sql Error : old_jobs_cnt_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
-    $oldqty_jobcount = mysqli_fetch_array($old_jobs_cnt_res);
+    
     // print_r($oldqty_jobcount)."<br/>";
     // if($oldqty_jobcount['old_jobs'] > 0)
     //     $oldqty_jobcount['old_jobs'] += 1;
@@ -85,9 +81,16 @@ if(isset($_POST) && isset($_POST['main_data'])){
 		$temp_job=1;
         
         
-
         foreach ($details as $term ) {
-            $job = $oldqty_jobcount['old_jobs']+$term['job_id'];    
+            // echo 'JOB COUNT '.$term['job_id'].'<br/>';
+            // continue;
+            $old_jobs_cnt_qry = "SELECT  MAX(input_job_no*1) AS old_jobs 
+            FROM $bai_pro3.packing_summary_input WHERE order_del_no = '$schedule'";
+        //echo $old_jobs_cnt_qry;
+            $old_jobs_cnt_res = mysqli_query($link, $old_jobs_cnt_qry) or exit("Sql Error : old_jobs_cnt_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $oldqty_jobcount = mysqli_fetch_array($old_jobs_cnt_res);
+
+            $job = $oldqty_jobcount['old_jobs']+1;    
 			if(($job<>$temp_job) || $barcode_seq==1)
 			{
 				$i=1;
@@ -719,6 +722,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
        {
 
        }
+       console.log($scope.jobs)
     }
 
     
@@ -868,7 +872,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
         var params = $.param({
         'main_data' : $scope.fulljob, 'style' : style, 'schedule' : schedule, 'color' : color,'docnos' : docnos
         });
-        
+        console.log($scope.fulljob)
             //$scope.saveinit = false;
             $http({ 
                 method: 'POST', 
