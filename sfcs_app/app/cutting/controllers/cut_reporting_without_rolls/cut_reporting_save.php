@@ -3,7 +3,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
 include('cut_rejections_save.php');
 error_reporting(0);
+$LEFT_THRESHOLD = 10000;
 $THRESHOLD = 200; //This Constant ensures the loop to force quit if it was struck in an infinte loop
+$LEFT = 0;
 
 /*
 $target = 'testing';
@@ -157,6 +159,7 @@ if(mysqli_num_rows($avl_plies_result) > 0){
     }
 }
 
+//0 plies saving logic 
 if($plies == 0 && $full_reporting_flag == 1){
     //Force reporting 0 cut as complete reported
     $all_docs = '';
@@ -208,6 +211,28 @@ if($plies == 0 && $full_reporting_flag == 1){
     exit();
 }
 
+//Other categroy dockets Saving Logic
+if(strpos($target,'_other')==true){
+    $remarks = "$date^$cut_table^$shift^$f_rec^$f_ret^$damages^$shortages^$returned_to^$plies";
+    $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, 
+                    damages,shortages,remarks,log_date,bundle_loc,leader_name) 
+                    values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader')
+                    ON DUPLICATE KEY 
+                    UPDATE date='$date',section='$cut_table',shift='$shift',fab_received=fab_received + $f_rec,fab_returned='$f_ret',damages='$damages',shortages='$shortages',
+                    remarks=CONCAT(remarks,'$','$remarks'),
+                    log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader' ";
+
+    $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
+                    act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
+    $update_query2 = "UPDATE $bai_pro3.plandoc_stat_log SET act_cut_status='DONE',fabric_status=5 where org_doc_no = $doc_no ";                
+    $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1');  
+    $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2'); 
+    $update_result2 = mysqli_query($link,$update_query2) or force_exit('Query Error Cut 2');
+    $response_data['saved'] = 1;
+    $response_data['pass'] = 1;
+    echo json_encode($response_data);
+    exit();
+}
 
 //Recut Docket Saving
 if($target == 'recut'){
@@ -636,7 +661,7 @@ if($target == 'style_clubbed'){
 
     //Initial Equal distribution for all dockets
     $rem = 0;
-   
+    
     foreach($planned as $size => $docket){
         $qty = $reporting[$size];
         if($qty > 0){
@@ -673,12 +698,10 @@ if($target == 'style_clubbed'){
                     $remaining[$child_doc][$size] = $splitted; 
             }
         }
-
     }
 
     //Equal Filling Logic for all child dockets 
-    foreach($planned as $size => $plan){
-        $cum_reported = 0;
+    next_size : foreach($planned as $size => $plan){
         $quit_counter = 0;
         do{
             $left_over[$size] = 0;
@@ -708,35 +731,74 @@ if($target == 'style_clubbed'){
                 }
                 if($planned[$size][$docket] > 0)
                     $counter++;
+
+                // if($planned[$size][$docket] > 0 && $reported[$docket][$size]-$planned[$size][$docket] == 0)    
+                //     $left_over[$size] += $planned[$size][$docket];
+                // else
                 $left_over[$size] += $remaining[$docket][$size];
+
                 $fulfill_qty -= $reported[$docket][$size];
             }
             if($counter == 0)
-                break; 
-                //var_dump($reported);
-                //echo "<br/> FULL FILL = $fulfill_qty - $counter - $left_over[$size]  ";
-            $left_over[$size] = round($left_over[$size]/$counter);
-                // echo " -- $left_over[$size] <br/>";
-                // var_dump($reported);
-                // echo "<br/>";
+                break;
+        
+            //$left_over[$size] = round($left_over[$size]/$counter);
             foreach($planned[$size] as $docket => $qty){
-                if($planned[$size][$docket] > 0){
-                    $remaining[$docket][$size] = $left_over[$size];
-                }else{
-                    $remaining[$docket][$size] = 0;
-                }
+                $remaining[$docket][$size] = 0;
             }
-            //var_dump($remaining);
-            //unset($left_over[$size]);
+            //Equal sharing of left over size for all dockets whose planned is still to be fulfilled
+            $LEFT = $left_over[$size];
+            $left_quit_counter = 0;
+            do{
+                if($left_quit_counter++ > $LEFT_THRESHOLD){
+                    $response_data['pass'] = 0;
+                    force_exit('LEFT Threshold Exceeded');
+                    echo json_encode($response_data);
+                    exit();
+                }
+                foreach($planned[$size] as $docket => $qty){
+                    if($planned[$size][$docket] > 0){
+                        $remaining[$docket][$size] += 1;
+                        $LEFT--;
+                    }else{
+                        $remaining[$docket][$size] = 0;
+                    }
+                    if($LEFT<=0)
+                        break;
+                }
+            }while($LEFT > 0);
+           
+            // foreach($planned[$size] as $docket => $qty){
+            //     if($planned[$size][$docket] > 0){
+            //         $remaining[$docket][$size] = $left_over[$size];
+            //     }else{
+            //         $remaining[$docket][$size] = 0;
+            //     }
+            // }
             if($left_over[$size] == 0)
                 $fulfill_qty = 0;
         }while($fulfill_qty > 0);
     }
+   
     //ALL Excess Qty left out to be filled equally 
     foreach($left_over as $size=>$qty){
         if($qty > 0){
+            //Ensuring if any qty to be fulfilled before considering it as excess left over qty
+            foreach($planned as $docket=>$dummy){
+                foreach($docket[$size] as $dummy=>$rqty){
+                    if($rqty > 0 && $qty > 0){
+                        if($rqty > $qty){
+                            $reported[$docket][$size] += $qty;
+                            $qty = 0;
+                        }else{
+                            $reported[$docket][$size] += $rqty;
+                            $qty -= $rqty;
+                        }
+                    }
+                }
+            }
             $docs = $dockets[$size];
-            if($docs > 0){
+            if($docs > 0 && $qty > 0){
                 $splitted = $qty;
                 $quit_counter = 0;
                 if($qty > $docs){
@@ -760,7 +822,7 @@ if($target == 'style_clubbed'){
                 foreach($planned[$size] as $docket => $ignore){
                     if($rem > 0){
                         $rem--;
-                        $reported[$docket][$size]  = $splitted + 1;
+                        $reported[$docket][$size] += $splitted + 1;
                     }else{
                         $reported[$docket][$size] += $splitted;
                     }
@@ -826,8 +888,6 @@ if($target == 'style_clubbed'){
                                                     $reported2[$doc][$size] -= $rqty;
                                                     unset($rejection_details[$size][$reason]);
                                                     //$reason_wise[$reason] = 0;
-                                                    // var_dump($rejection_details);echo " Rej <br/>";
-                                                    // var_dump($reported2);echo " above <br/>";
                                                     goto next_reason1;
                                                 }else{
                                                     $rejection_details_each[$doc][$size][$reason] += $dqty;
@@ -836,8 +896,6 @@ if($target == 'style_clubbed'){
                                                     $rejection_details[$size][$reason] -= $dqty;
                                                     $rqty -= $dqty;
                                                     //$reason_wise[$reason] -= $dqty;
-                                                    //var_dump($rejection_details);echo " Rej <br/>";
-                                                    //var_dump($reported2);echo "<br/>";
                                                     goto next_docket1;
                                                 }
                                             }
@@ -875,7 +933,7 @@ if($target == 'style_clubbed'){
     } 
     iquit1 : if($status === 'fail'){
         $response_data['pass'] = 0;
-        force_exit('Style Clubbed Docket Reporting Failed');
+        //force_exit('Style Clubbed Docket Reporting Failed');
         echo json_encode($response_data);
         exit();
     }else{
