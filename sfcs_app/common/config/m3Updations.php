@@ -145,7 +145,7 @@ function updateM3Transactions($ref_id,$op_code,$qty)
                     if($enable_api_call == 'YES'){
             
                         $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&REMK=$insert_id&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-                        $api_data = $obj->getCurlAuthRequest($api_url,$insert_id);
+                        $api_data = $obj->getCurlAuthRequest1($api_url,$insert_id);
                         $decoded = json_decode($api_data,true);
                         $type=$decoded['@type'];
                         $code=$decoded['@code'];
@@ -310,7 +310,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
                     // //M3 Rest API Call
                     if($enable_api_call == 'YES'){
                         $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&REMK=$insert_id&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-                        $api_data = $obj->getCurlAuthRequest($api_url,$insert_id);
+                        $api_data = $obj->getCurlAuthRequest1($api_url,$insert_id);
                         $decoded = json_decode($api_data,true);
                         $type=$decoded['@type'];
                         $code=$decoded['@code'];
@@ -462,7 +462,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                         //M3 Rest API Call
                         if($enable_api_call == 'YES'){
                             $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&SCQA=$to_update_qty&MAQA=$to_update_qty&REMK=$insert_id&SCRE=".$r_reasons[$key]."&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-                            $api_data = $obj->getCurlAuthRequest($api_url,$insert_id);
+                            $api_data = $obj->getCurlAuthRequest1($api_url,$insert_id);
                             $decoded = json_decode($api_data,true);
                             $type=$decoded['@type'];
                             $code=$decoded['@code'];
@@ -591,7 +591,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                     if($enable_api_call == 'YES')
                     {
                         $api_url_pms070mi = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$mo_quantity&REMK=$insert_id_pms070mi&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-                        $api_data_pms070mi = $obj->getCurlAuthRequest($api_url_pms070mi,$insert_id_pms070mi);
+                        $api_data_pms070mi = $obj->getCurlAuthRequest1($api_url_pms070mi,$insert_id_pms070mi);
                         $decoded_pms070mi = json_decode($api_data_pms070mi,true);
                         $type_pms070mi=$decoded_pms070mi['@type'];
                         $code_pms070mi=$decoded_pms070mi['@code'];
@@ -626,7 +626,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                     if($enable_api_call == 'YES')
                     {
                         $api_url_pms050mi = $host.":".$port."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&RPQA=$mo_quantity&REMK=$insert_id_pms050mi&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
-                        $api_data_pms050mi = $obj->getCurlAuthRequest($api_url_pms050mi,$insert_id_pms050mi);
+                        $api_data_pms050mi = $obj->getCurlAuthRequest1($api_url_pms050mi,$insert_id_pms050mi);
                         $decoded_pms050mi = json_decode($api_data_pms050mi,true);
                         $type_pms050mi=$decoded_pms050mi['@type'];
                         $code=$decoded_pms050mi['@code'];
@@ -716,7 +716,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
                 if($enable_api_call == 'YES')
                 {
                     $api_url_pms070mi = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$negative_qty&REMK=$insert_id_pms070mi&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-                    $api_data_pms070mi = $obj->getCurlAuthRequest($api_url_pms070mi,$insert_id_pms070mi);
+                    $api_data_pms070mi = $obj->getCurlAuthRequest1($api_url_pms070mi,$insert_id_pms070mi);
                     $decoded_pms070mi = json_decode($api_data_pms070mi,true);
                     $type_pms070mi=$decoded_pms070mi['@type'];
                     $code_pms070mi=$decoded_pms070mi['@code'];
@@ -751,7 +751,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
                 if($enable_api_call == 'YES')
                 {
                     $api_url_pms050mi = $host.":".$port."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&RPQA=$negative_qty&REMK=$insert_id_pms050mi&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
-                    $api_data_pms050mi = $obj->getCurlAuthRequest($api_url_pms050mi,$insert_id_pms050mi);
+                    $api_data_pms050mi = $obj->getCurlAuthRequest1($api_url_pms050mi,$insert_id_pms050mi);
                     $decoded_pms050mi = json_decode($api_data_pms050mi,true);
                     $type_pms050mi=$decoded_pms050mi['@type'];
                     $code=$decoded_pms050mi['@code'];
@@ -904,7 +904,7 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
                         //M3 Rest API Call
                         if($enable_api_call == 'YES'){
                             $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&SCQA=$to_update_qty&MAQA=$to_update_qty&REMK=$insert_id&SCRE=".$r_reasons[$key]."&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-                            $api_data = $obj->getCurlAuthRequest($api_url,$insert_id);
+                            $api_data = $obj->getCurlAuthRequest1($api_url,$insert_id);
                             $decoded = json_decode($api_data,true);
                             $type=$decoded['@type'];
                             $code=$decoded['@code'];
