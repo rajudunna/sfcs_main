@@ -16,7 +16,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				    		Enter Batch No <span class="required"></span>
 				    	</label>
 		    			<div class="col-md-4 col-sm-4 col-xs-12">
-					      	<input type="text" id="course" name="lot_no" class="form-control col-md-3 col-xs-12 input-sm alpha">
+					      	<input type="text" id="course" name="lot_no" class="form-control col-md-3 col-xs-12 input-sm">
 					    </div>
 					    <input type="submit" class="btn btn-primary" onclick="return check_bat();"  name="submit" value="Search">
 					 </div>
