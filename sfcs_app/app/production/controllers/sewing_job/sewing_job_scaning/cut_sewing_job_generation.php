@@ -53,17 +53,38 @@ if(isset($_POST) && isset($_POST['main_data'])){
     $schedule  = $_POST['schedule'];
     $style  = $_POST['style'];
     $docnos = $_POST['docnos'];
+    $colorname=$_POST['color'];
     $count = 0;
 
     $ins_qry2 = "INSERT INTO `bai_pro3`.`sewing_jobs_ref` (style,schedule,bundles_count,log_time) VALUES ('".$style."','".$schedule."','0',NOW())";
     $result_time2 = mysqli_query($link, $ins_qry2) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
     $inserted_id = mysqli_insert_id($link);
 
-        
+    $old_jobs_cnt_qry = "SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no=$schedule";
+    //echo $old_jobs_cnt_qry;
+    $old_jobs_cnt_res = mysqli_query($link, $old_jobs_cnt_qry) or exit("Sql Error : old_jobs_cnt_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $oldqty_jobcount = mysqli_num_rows($old_jobs_cnt_res);    
     
     // print_r($oldqty_jobcount)."<br/>";
     // if($oldqty_jobcount['old_jobs'] > 0)
     //     $oldqty_jobcount['old_jobs'] += 1;
+
+            if($oldqty_jobcount == 0)
+            {
+                $job1 = 0; 
+            } 
+            else
+            {
+                 $old_jobs_count_qry = "SELECT max(input_job_no*1) as max_job FROM $bai_pro3.packing_summary_input WHERE order_del_no=$schedule";
+                 //echo $old_jobs_count_qry;
+                 $old_jobs_count_res = mysqli_query($link, $old_jobs_count_qry) or exit("Sql Error : old_jobs_count_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+                 while($max_oldqty_jobcount = mysqli_fetch_array($old_jobs_count_res))
+                 {
+                    $max_job_count=$max_oldqty_jobcount['max_job'];
+                 } 
+
+                 $job1 = $max_job_count;
+            }     
 
     foreach($_POST['main_data'] as $iv){
         //$reason = explode('(',$iv['reasons'])[0];
@@ -75,27 +96,26 @@ if(isset($_POST) && isset($_POST['main_data'])){
         $doc_type = 'N';
         $packing_mode = 1;
         $status = '';
-		$i=1;
-		$barcode_seq=1;
+        $i=1;
+        $barcode_seq=1;
         $doc_no_ref = '';
-		$temp_job=1;
+        $temp_job=1;
+
+
         
         
         foreach ($details as $term ) {
             // echo 'JOB COUNT '.$term['job_id'].'<br/>';
-            // continue;
-            $old_jobs_cnt_qry = "SELECT  MAX(input_job_no*1) AS old_jobs 
-            FROM $bai_pro3.packing_summary_input WHERE order_del_no = '$schedule'";
-        //echo $old_jobs_cnt_qry;
-            $old_jobs_cnt_res = mysqli_query($link, $old_jobs_cnt_qry) or exit("Sql Error : old_jobs_cnt_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $oldqty_jobcount = mysqli_fetch_array($old_jobs_cnt_res);
+            // continue;  
 
-            $job = $oldqty_jobcount['old_jobs']+1;    
-			if(($job<>$temp_job) || $barcode_seq==1)
-			{
-				$i=1;
-				$barcode_seq=0;
-			}
+                            $job = $job1+$term['job_id'];
+
+
+            if(($job<>$temp_job) || $barcode_seq==1)
+            {
+                $i=1;
+                $barcode_seq=0;
+            }
             $rand=$schedule.date("ymd").$job;
             $carton_act_qty = $term['job_qty'];
             $size_code = $term['job_size'];
@@ -119,7 +139,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
                 '".$doc_type."',
                 '".$type_of_sewing."',
                 '-1',
-    			$i,
+                $i,
                 $inserted_id
             );
             ";
@@ -206,13 +226,13 @@ if(isset($_POST) && isset($_POST['main_data'])){
     ?>
     <script>
         $(document).ready(function(){
-        	var url1 = '?r=<?= $_GET['r'] ?>';
+            var url1 = '?r=<?= $_GET['r'] ?>';
             console.log(url1);
             $("#style").change(function(){
                 //alert("The text has been changed.");
-        		var optionSelected = $("option:selected", this);
+                var optionSelected = $("option:selected", this);
                var valueSelected = this.value;
-        	  window.location.href =url1+"&style="+valueSelected
+              window.location.href =url1+"&style="+valueSelected
             });
             $("#schedule").change(function(){
                // var input = $(this);
@@ -221,19 +241,19 @@ if(isset($_POST) && isset($_POST['main_data'])){
              //window.location.href =url1+"&schedule="+val;
              var optionSelected = $("option:selected", this);
                var valueSelected2 = this.value;
-        	   var style1 = $("#style").val();
-        	   window.location.href =url1+"&style="+style1+"&schedule="+valueSelected2
+               var style1 = $("#style").val();
+               window.location.href =url1+"&style="+style1+"&schedule="+valueSelected2
             });
 
             $("#color").change(function(){
                 //alert("The text has been changed.");
-        		var optionSelected = $("option:selected", this);
+                var optionSelected = $("option:selected", this);
                var valueSelected3 = this.value;
                var style1 = $("#style").val();
                var schedule = $("#schedule").val();
                window.location.href =url1+"&style="+style1+"&schedule="+schedule+"&color="+valueSelected3
                //alert(valueSelected2); 
-        	 //window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
+             //window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
             });
 
         });
@@ -255,14 +275,14 @@ if(isset($_POST) && isset($_POST['main_data'])){
                             echo "<option value=''>Please Select</option>";
                             while($sql_row=mysqli_fetch_array($sql_result))
                             {
-                            	if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
-                            	{
-                            		echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
-                            	}
-                            	else
-                            	{
-                            		echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
-                            	}
+                                if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
+                                {
+                                    echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
+                                }
+                                else
+                                {
+                                    echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
+                                }
                             }
                         echo "</select>
                     </div>";
@@ -333,7 +353,7 @@ if($schedule != "" && $color != "")
         echo "<div class='col-sm-12' id='main-table'><br><br><div class='table-responsive'><table class='table'>";
         while($row=mysqli_fetch_array($ratio_result))
         {
-            // $doc_nos[] = $row['doc_no'];
+            $doc_nos[] = $row['doc_no'];
             $raw = [];
             if($i==0){
                 //============ find 1st are last cut =================
@@ -682,7 +702,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
            $scope.jobs   = [];
            $scope.balance = 0;
            $scope.excess = 0;
-           $scope.j = 1;
+           $scope.j++;
         for(var i=0; i<$scope.details.length; i++)
         {
             if($scope.balance>0){
@@ -727,6 +747,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
 
     
     $scope.getjobs = function() {
+        $scope.j = 0;
         $scope.jobcount = $('#job-qty').val();
         if(Number($scope.jobcount)>0 && Number($scope.jobcount)>=Number($scope.bundleqty)){
             $scope.fulljob = {};
@@ -873,7 +894,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
         'main_data' : $scope.fulljob, 'style' : style, 'schedule' : schedule, 'color' : color,'docnos' : docnos
         });
         console.log($scope.fulljob)
-            //$scope.saveinit = false;
+            $scope.saveinit = false;
             $http({ 
                 method: 'POST', 
                 url: url_serv,
