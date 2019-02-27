@@ -616,10 +616,14 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                         $api_url_pms070mi = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$mo_quantity&REMK=$insert_id_pms070mi&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
                         $api_data_pms070mi = $obj->getCurlAuthRequest1($api_url_pms070mi,$insert_id_pms070mi);
                         $decoded_pms070mi = json_decode($api_data_pms070mi,true);
-                        $type_pms070mi=$decoded_pms070mi['@type'];
-                        $code_pms070mi=$decoded_pms070mi['@code'];
-                        $message_pms070mi=$decoded_pms070mi['Message'];
-
+                        if(isset($decoded_pms070mi['@type']))
+                        {
+                            $type_pms070mi=$decoded_pms070mi['@type'];
+                        }
+                        else
+                        {
+                            $type_pms070mi=0;
+                        }
                         //validating response pass/fail and inserting log
                         if($type_pms070mi!='ServerReturnedNOK')
                         {
@@ -629,6 +633,8 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                         }
                         else
                         {
+                            //$code_pms070mi=$decoded_pms070mi['@code'];
+                            $message_pms070mi=$decoded_pms070mi['Message'];
                             //updating response status in m3_transactions
                             $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms070mi."";
                             mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions");
@@ -651,10 +657,14 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                         $api_url_pms050mi = $host.":".$port."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&RPQA=$mo_quantity&REMK=$insert_id_pms050mi&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
                         $api_data_pms050mi = $obj->getCurlAuthRequest1($api_url_pms050mi,$insert_id_pms050mi);
                         $decoded_pms050mi = json_decode($api_data_pms050mi,true);
-                        $type_pms050mi=$decoded_pms050mi['@type'];
-                        $code=$decoded_pms050mi['@code'];
-                        $message_pms050mi=$decoded_pms050mi['Message'];
-
+                        if(isset($decoded_pms050mi['@type']))
+                        {
+                            $type_pms050mi=$decoded_pms050mi['@type'];
+                        }
+                        else
+                        {
+                            $type_pms050mi=0;
+                        }
                         //validating response pass/fail and inserting log
                         if($type_pms050mi!='ServerReturnedNOK')
                         {
@@ -665,6 +675,8 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                         else
                         {
                             //updating response status in m3_transactions
+                            //$code=$decoded_pms050mi['@code'];
+                            $message_pms050mi=$decoded_pms050mi['Message'];
                             $qry_m3_transactions_pms050mi="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms050mi."";
                             mysqli_query($link,$qry_m3_transactions_pms050mi) or exit("While updating into M3 Transactions");
 
