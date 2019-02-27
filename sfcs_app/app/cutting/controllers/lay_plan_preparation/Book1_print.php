@@ -2895,20 +2895,28 @@ tags will be replaced.-->
 
                     while($sql_row=mysqli_fetch_array($sql_result)) 
                     { 
-                        $a_s01=$sql_row['a_s01']; 
-                        $a_s02=$sql_row['a_s02']; 
-                        $a_s03=$sql_row['a_s03']; 
-                        $a_s04=$sql_row['a_s04']; 
-                        $a_s05=$sql_row['a_s05']; 
-                        $a_s06=$sql_row['a_s06']; 
-                        $a_s07=$sql_row['a_s07']; 
-                        $a_s08=$sql_row['a_s08']; 
-                        $a_s09=$sql_row['a_s09']; 
-                        $a_s10=$sql_row['a_s10']; 
-                        $a_s11=$sql_row['a_s11']; 
-                        $a_s12=$sql_row['a_s12']; 
-                        $a_s13=$sql_row['a_s13']; 
-                        $a_s14=$sql_row['a_s14']; 
+                        foreach($sizes_array as $size)
+                        {
+                            if($sql_row['a_'.$size]>0)
+                                $pilot_ratio[$size]=$sql_row['a_'.$size];
+
+                        } 
+                      
+                       
+                        // $a_s01=$sql_row['a_s01']; 
+                        // $a_s02=$sql_row['a_s02']; 
+                        // $a_s03=$sql_row['a_s03']; 
+                        // $a_s04=$sql_row['a_s04']; 
+                        // $a_s05=$sql_row['a_s05']; 
+                        // $a_s06=$sql_row['a_s06']; 
+                        // $a_s07=$sql_row['a_s07']; 
+                        // $a_s08=$sql_row['a_s08']; 
+                        // $a_s09=$sql_row['a_s09']; 
+                        // $a_s10=$sql_row['a_s10']; 
+                        // $a_s11=$sql_row['a_s11']; 
+                        // $a_s12=$sql_row['a_s12']; 
+                        // $a_s13=$sql_row['a_s13']; 
+                        // $a_s14=$sql_row['a_s14']; 
 
                         $cutno=$sql_row['acutno']; 
                         $plies=$sql_row['p_plies']; 
@@ -2916,61 +2924,53 @@ tags will be replaced.-->
                         $docketdate=$sql_row['date']; 
                         $mk_ref=$sql_row['mk_ref']; 
                         
-                        $a_s01_tot=$a_s01_tot+($a_s01*$plies); 
-                        $a_s02_tot=$a_s02_tot+($a_s02*$plies); 
-                        $a_s03_tot=$a_s03_tot+($a_s03*$plies); 
-                        $a_s04_tot=$a_s04_tot+($a_s04*$plies); 
-                        $a_s05_tot=$a_s05_tot+($a_s05*$plies); 
-                        $a_s06_tot=$a_s06_tot+($a_s06*$plies); 
-                        $a_s07_tot=$a_s07_tot+($a_s07*$plies); 
-                        $a_s08_tot=$a_s08_tot+($a_s08*$plies); 
-                        $a_s09_tot=$a_s09_tot+($a_s09*$plies); 
-                        $a_s10_tot=$a_s10_tot+($a_s10*$plies); 
-                        $a_s11_tot=$a_s11_tot+($a_s11*$plies); 
-                        $a_s12_tot=$a_s12_tot+($a_s12*$plies); 
-                        $a_s13_tot=$a_s13_tot+($a_s13*$plies); 
-                        $a_s14_tot=$a_s14_tot+($a_s14*$plies); 
+                        // $a_s01_tot=$a_s01_tot+($a_s01*$plies); 
+                        // $a_s02_tot=$a_s02_tot+($a_s02*$plies); 
+                        // $a_s03_tot=$a_s03_tot+($a_s03*$plies); 
+                        // $a_s04_tot=$a_s04_tot+($a_s04*$plies); 
+                        // $a_s05_tot=$a_s05_tot+($a_s05*$plies); 
+                        // $a_s06_tot=$a_s06_tot+($a_s06*$plies); 
+                        // $a_s07_tot=$a_s07_tot+($a_s07*$plies); 
+                        // $a_s08_tot=$a_s08_tot+($a_s08*$plies); 
+                        // $a_s09_tot=$a_s09_tot+($a_s09*$plies); 
+                        // $a_s10_tot=$a_s10_tot+($a_s10*$plies); 
+                        // $a_s11_tot=$a_s11_tot+($a_s11*$plies); 
+                        // $a_s12_tot=$a_s12_tot+($a_s12*$plies); 
+                        // $a_s13_tot=$a_s13_tot+($a_s13*$plies); 
+                        // $a_s14_tot=$a_s14_tot+($a_s14*$plies); 
 
                         $plies_tot=$plies_tot+$plies; 
-                        
+                        $ratio_total = 0;
+                        $input_total = 0;
                         echo "<tr class=xl6613019 height=20 style='mso-height-source:userset;height:15.0pt'> 
                             <td height=20 class=xl6613019 style='height:15.0pt'></td>"; 
-                            echo "<td class=xl8613019>Pilot</td>"; 
-                            echo "<td class=xl8713019>".$a_s01."</td>"; 
-                            echo "<td class=xl8713019>".$a_s02."</td>"; 
-                            echo "<td class=xl8713019>".$a_s03."</td>"; 
-                            echo "<td class=xl8713019>".$a_s04."</td>"; 
-                            echo "<td class=xl8713019>".$a_s05."</td>"; 
-                            echo "<td class=xl8713019>".$a_s06."</td>"; 
-                            echo "<td class=xl8713019>".$a_s07."</td>"; 
-                            echo "<td class=xl8713019>".$a_s08."</td>"; 
-                            echo "<td class=xl8713019>".$a_s09."</td>"; 
-                            echo "<td class=xl8713019>".$a_s10."</td>"; 
-                            echo "<td class=xl8713019>".$a_s11."</td>"; 
-                            echo "<td class=xl8713019>".$a_s12."</td>"; 
-                            echo "<td class=xl8713019>".$a_s13."</td>"; 
-                            echo "<td class=xl8713019>".$plies."</td>"; 
-                            echo "<td class=xl8713019></td>"; 
-                            echo "<td class=xl8713019></td>"; 
-                            echo "<td class=xl8713019></td>"; 
-                            echo "<td class=xl8713019>".($a_s01*$plies)."</td>"; 
-                            echo "<td class=xl8713019>".($a_s02*$plies)."</td>"; 
-                            echo "<td class=xl8713019>".($a_s03*$plies)."</td>"; 
-                            echo "<td class=xl8713019>".($a_s04*$plies)."</td>"; 
-                            echo "<td class=xl8713019>".($a_s05*$plies)."</td>"; 
-                            echo "<td class=xl8713019>".($a_s06*$plies)."</td>"; 
-                            echo "<td class=xl8713019>".($a_s07*$plies)."</td>"; 
-                            echo "<td class=xl8713019>".($a_s08*$plies)."</td>"; 
-                            echo "<td class=xl8713019>".($a_s09*$plies)."</td>"; 
-                            echo "<td class=xl8713019>".($a_s10*$plies)."</td>"; 
-                            echo "<td class=xl8713019>".($a_s11*$plies)."</td>"; 
-                            echo "<td class=xl8713019>".($a_s12*$plies)."</td>"; 
-                            echo "<td class=xl8713019>".($a_s13*$plies)."</td>"; 
-                            echo "<td class=xl8713019>".($a_s14*$plies)."</td>"; 
-
-                            echo "<td class=xl8713019>".(($a_s01*$plies)+($a_s02*$plies)+($a_s03*$plies)+($a_s04*$plies)+($a_s05*$plies)+($a_s06*$plies)+($a_s07*$plies)+($a_s08*$plies)+($a_s09*$plies)+($a_s10*$plies)+($a_s11*$plies)+($a_s12*$plies)+($a_s13*$plies)+($a_s14*$plies))."</td>"; 
+                            echo "<td rowspan=2 class=xl8613019>Pilot</td>"; 
+                            echo "<td class=xl8613019>ratio</td>";
+                            foreach($pilot_ratio as $size=>$value)
+                            { 
+                                  echo "<td class=xl8713019>".$value."</td>";
+                                  $ratio_total = $ratio_total + $value;
+                            } 
+                            echo "<td rowspan=2 class=xl8713019>".$plies."</td>";
+                            echo "<td class=xl8713019>$ratio_total</td>";
+                            echo "<td rowspan=2 class=xl8713019></td>";
+                            echo "<td rowspan=2 class=xl8713019></td>";
+                            echo "<td rowspan=2 class=xl8713019></td>";
+                            //echo "<td class=xl8713019>".(($a_s01*$plies)+($a_s02*$plies)+($a_s03*$plies)+($a_s04*$plies)+($a_s05*$plies)+($a_s06*$plies)+($a_s07*$plies)+($a_s08*$plies)+($a_s09*$plies)+($a_s10*$plies)+($a_s11*$plies)+($a_s12*$plies)+($a_s13*$plies)+($a_s14*$plies))."</td>"; 
                             echo "<td class=xl8513019>&nbsp;</td>"; 
                         echo "</tr>"; 
+                        echo "<tr class=xl6613019 height=20 style='mso-height-source:userset;height:15.0pt'> 
+                            <td height=20 class=xl6613019 style='height:15.0pt'></td>"; 
+                            echo "<td class=xl8613019>input</td>";
+                            foreach($pilot_ratio as $size=>$value)
+                            { 
+                                  echo "<td class=xl8713019>".$value*$plies."</td>";
+                                  $input_total = $input_total + $value*$plies;
+                            } 
+                            echo "<td class=xl8713019>$input_total</td>";
+                            //echo "<td class=xl8713019>".(($a_s01*$plies)+($a_s02*$plies)+($a_s03*$plies)+($a_s04*$plies)+($a_s05*$plies)+($a_s06*$plies)+($a_s07*$plies)+($a_s08*$plies)+($a_s09*$plies)+($a_s10*$plies)+($a_s11*$plies)+($a_s12*$plies)+($a_s13*$plies)+($a_s14*$plies))."</td>"; 
+                            echo "<td class=xl8513019>&nbsp;</td>"; 
+                        echo "</tr>";
 
                     } 
 
