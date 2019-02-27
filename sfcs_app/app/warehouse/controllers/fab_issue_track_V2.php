@@ -45,7 +45,8 @@ error_reporting(0);
 		}
 		else
 		{
-			document.getElementById("qty_issued").value=qty_issued_chk;
+			sweetAlert('You entered more than avaiable qty.','','warning');
+			document.getElementById("qty_issued").value=bal_qty;
 		}
 	}
 </script>
@@ -611,6 +612,7 @@ if(isset($_POST['update_ajax']))
 	$roll_width=$_POST['roll_width'];
 	$doc_no=$_POST['doc_no'];
 	$bal_qty=$_POST['bal_qty'];
+
 	
 	
 	//Removing for #1305 ticket and adding this functionality into a separate function 
@@ -751,18 +753,19 @@ if(isset($_POST['new_entry']))
 							// echo $sql."<br>";
 							mysqli_query($link, $sql) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							
-							$sql="select ref3,ref6 from $bai_rm_pj1.store_in where barcode_number='$roll_id'";
+							$sql="select ref3,ref6,qty_rec from $bai_rm_pj1.store_in where barcode_number='$roll_id'";
 							$result1=mysqli_query($link, $sql) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($row1=mysqli_fetch_array($result1))
 							{
 								$ctx_width=$row1["ref3"];
 								$act_width=$row1["ref6"];
 								$tid_new=$row1["tid"];
+								$qty_rec=$row1["qty_rec"];
 							}
 
 							if($ctx_width == 0)
 							{
-								$ctx_width=$act_width;
+								$ctx_width=$qty_rec;
 							}
 							
 							$sql="update $bai_rm_pj1.fabric_cad_allocation set roll_width=\"$ctx_width\" where roll_id=\"$primary_roll_id\"";
