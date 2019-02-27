@@ -1426,7 +1426,7 @@ else if($concurrent_flag == 0)
 					}
 					$ims_log_date=date("Y-m-d");
 					$bac_dat=$ims_log_date;
-					$log_time=date("Y-m-d");
+					$log_time=date("Y-m-d H:i:s");
 					$buyer_qry="select order_div FROM $bai_pro3.bai_orders_db WHERE order_style_no='".$b_style."' AND order_del_no='".$b_schedule."' AND order_col_des='".$b_colors[$i]."'";
 					$buyer_qry_result=mysqli_query($link,$buyer_qry) or exit("Bundles Query Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($buyer_qry_row=mysqli_fetch_array($buyer_qry_result)){
