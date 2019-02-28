@@ -33,7 +33,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 <link rel="stylesheet" href="../../../../../assets/css/datepicker.css" />
 <!-- <script src="../../../../../assets/js/datepicker.js"></script> -->
 <script src="../../../../common/js/jquery.min.js"></script>
-
+<script src="../../../../common/js/TableFilter_EN/actb.js"></script>
+<script src="../../../../common/js/TableFilter_EN/tablefilter.js"></script>
 
 
 <script src="../../../../common/js/sweetalert.min.js"></script>
@@ -147,7 +148,7 @@ if($cat!=''){
 	// echo $sql2;
 	echo "<hr/>";
 
-	echo "<div style='max-height:600px;overflow-x:scroll;overflow-y:scroll'><table class='table table-bordered'>";
+	echo "<div style='max-height:600px;overflow-x:scroll;overflow-y:scroll'><table id='example1' name='example1' class='table table-bordered'>";
 	echo "<tr><th>Section</th><th>Module</th><th>Lay Req. Date</th><th>Lay Req. Time</th><th>Style</th><th>Schedule</th><th>Color</th><th>Docket No</th><th>Job No</th><th>Qty</th><th>Fabric Status</th><th>Requested By</th><th>Requested at</th><th>Issued at</th></tr>";
 	$result2=mysqli_query($link,$sql2) or die("Error = ".mysqli_error());
 	if(mysqli_num_rows($result2) > 0) {
@@ -329,7 +330,22 @@ $('#selection,#edat,#sdat,#stime,#etime').on('input',function(){
 });
 	
 </script> 
-
+<script language="javascript" type="text/javascript">
+	//<![CDATA[
+		$('#reset_example1').addClass('btn btn-warning');
+	var table6_Props = 	{
+							rows_counter: true,
+							btn_reset: true,
+							// btn_reset_text: "Clear",
+							loader: true,
+							loader_text: "Filtering data..."
+						};
+	setFilterGrid( "example1",table6_Props );
+	$(document).ready(function(){
+		$('#reset_example1').addClass('btn btn-warning btn-xs');
+	});
+	//]]>
+</script>
 </body>
 </div>
 </div>
@@ -339,5 +355,12 @@ $('#selection,#edat,#sdat,#stime,#etime').on('input',function(){
 }
 #stime{
 	margin-top:2pt;
+}
+#reset_example1{
+	width : 50px;
+	color : #ec971f;
+	margin-top : 10px;
+	margin-left : 0px;
+	margin-bottom:15pt;
 }
 </style>
