@@ -729,7 +729,7 @@
                                 echo "<td>".$alloc_qty."</td>";
                                 //echo "<td>".round($req_qty,2)."</td>";
                                 //echo "<td>".round($iss_qty,2)."</td>";
-                                echo "<td><input style=\"background-color:#66FFCC;\" class='integer quantities' type=\"text\" size=\"5\" value=\"0\" onchange=\"if(this.value=='') { this.value=0; }\" ".$validation_ref_text." id=\"qty_$z1\" onfocus=\"this.focus();this.select();\" name=\"qty[]\"></td>";
+                                echo "<td><input style=\"background-color:#66FFCC;\" class='float quantities' type=\"text\" size=\"5\" value=\"0\" onchange=\"if(this.value=='') { this.value=0; }\" ".$validation_ref_text." id=\"qty_$z1\" onfocus=\"this.focus();this.select();\" name=\"qty[]\"></td>";
                                 $uom = $finalrecords[$x]['PEUN'];
                                 echo "<td><input type=\"hidden\" name=\"uom[]\" value=\"$uom\">".$uom."</td>";
                                 echo "<td><select name=\"reason[]\" id=\"resaon_$z1\" ".$validation_ref_select." >";
