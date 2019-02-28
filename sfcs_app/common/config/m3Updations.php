@@ -521,6 +521,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
 {
     $obj = new rest_api_calls();
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    error_reporting(0);
     $current_date = date("Y-m-d H:i:s");
 
     $host = $api_hostname;
