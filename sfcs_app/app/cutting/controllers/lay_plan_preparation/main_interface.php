@@ -119,8 +119,9 @@ foreach($val_schedules as $schedule){
 			exit();
 		}
 
-		$compare = array_diff($array1,$array2);
-		if(sizeof($compare) > 0)
+		$compare12 = array_diff($array1,$array2);
+		$compare21 = array_diff($array2,$array1);
+		if(count($compare12) > 0 || count($compare21) > 0)
 		{
 			echo "<script>swal('Operation codes does not match','','warning');</script>";
 			$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
@@ -758,7 +759,7 @@ Change log:
 */
 //echo $tran_order_tid;
 //$tran_order_tid1=str_replace(' ', '', $tran_order_tid);
-$sql="select *,COALESCE(binding_consumption,0) AS binding_con from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" ORDER BY category";
+$sql="select *,COALESCE(binding_consumption,0) AS binding_con from $bai_pro3.cat_stat_log where order_tid IN (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_del_no ='$schedule')";
 //echo $sql."</br>test";
 $cats_ids=array();
 //$sql="select * from cat_stat_log where order_tid like \"% ".$schedule."%\" order by catyy DESC";
@@ -766,28 +767,34 @@ $cats_ids=array();
 //mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
-if ($sql_result) {
-     if (mysqli_num_rows($sql_result) == 0) {
-        //echo "// do one thing";
-     }
-     else {
-        //echo mysql_num_rows($sql_result);
-		//          <th class=\"column-title\"><center>Strip Match</th>
-		//			<th class=\"column-title\"><center>Gusset Seperation</th>
-		//			<th class=\"column-title\"><center>One GMT One Way</th>
-				echo "<table class=\"table table-bordered\"><thead><tr class=\"\">
-					<th class=\" \"><center>Date</th>
-					<th class=\" \"><center>Category</th>
-					<th class=\"word-wrap\"><center>CAT YY</th>
-					<th class=\"word-wrap \"><center>Color Code</th>
-					<th class=\"word-wrap\"><center>Fabric Code</th>
-					<th class=\"word-wrap\"><center>Fabric Description</th>
-					<th class=\"word-wrap\"><center>Pur Width</th>
-					<th class=\"word-wrap\"><center>Binding Consumption</th>
-					<th class=\"word-wrap\"><center>Pattern Version</th>
-					<th class=\"word-wrap\"><center>MO status</th>
-					<th class=\" \"><center>Controls</th>
-				</tr></thead>";
+if ($sql_result)
+{
+	if (mysqli_num_rows($sql_result) == 0)
+	{
+		//echo "// do one thing";
+	}
+	else
+	{
+		// echo mysql_num_rows($sql_result);
+		// <th class=\"column-title\"><center>Strip Match</th>
+		// <th class=\"column-title\"><center>Gusset Seperation</th>
+		// <th class=\"column-title\"><center>One GMT One Way</th>
+		echo "<div class='table-responsive'><table class=\"table table-bordered\"><thead><tr class=\"\">
+			<th class=\" \"><center>Date</th>
+			<th class=\" \"><center>Category</th>
+			<th class=\"word-wrap\"><center>CAT YY</th>
+			<th class=\"word-wrap \"><center>Color Code</th>
+			<th class=\"word-wrap\"><center>Fabric Code</th>
+			<th class=\"word-wrap\"><center>Fabric Description</th>
+			<th class=\"word-wrap\"><center>Pur Width</th>
+			<th class=\"word-wrap\"><center>Binding Consumption</th>
+			<th class=\"word-wrap\"><center>Strip Match</th>
+			<th class=\"word-wrap\"><center>Gusset Seperation</th>
+			<th class=\"word-wrap\"><center>Pattern Version</th>
+			<th class=\"word-wrap\"><center>MO status</th>
+			<th class=\" \"><center>Controls</th>
+			<th class=\" \"><center>Redirect</th>
+		</tr></thead>";
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$date_cat = $sql_row['date'];
@@ -811,11 +818,11 @@ if ($sql_result) {
 			echo "<td class=\"  \"><center>".$sql_row['binding_con']."</center></td>";
 
 			//echo $sql_row['tid']."</br>";
-	//		if($sql_row['gmtway']=="Y") { echo "<td class=\"  \" align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
+			//		if($sql_row['gmtway']=="Y") { echo "<td class=\"  \" align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
 
-	//		if($sql_row['strip_match']=="Y") { echo "<td class=\"  \"  align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
+			if($sql_row['strip_match']=="Y") { echo "<td class=\"  \"  align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
 
-	//		if($sql_row['gusset_sep']=="Y") { echo "<td class=\"  \"  align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
+			if($sql_row['gusset_sep']=="Y") { echo "<td class=\"  \"  align='center'><span class='label label-success'>YES</span></td>"; } else { echo "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";	}
 
 			echo "<td class=\"  \"><center>".$sql_row['patt_ver']."</center></td>";
 			
@@ -824,24 +831,103 @@ if ($sql_result) {
 
 			//	echo "<td class=\"b1\">".$sql_row['remarks']."</td>";
 			// start enable the validation to avoid the category change after docket generation
-			$sql5="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=".$sql_row['tid']."";
+			$sql5="select * from $bai_pro3.plandoc_stat_log where order_tid='".$sql_row['order_tid']."' and cat_ref=".$sql_row['tid']."";
 			//echo $sql5."<br/>";
 			$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result5);
-
 			if($sql_num_check==0)
 			{
 				//echo "<td class=\"  \"><center><a class=\"btn btn-sm btn-primary\" href=\"".getFullURL($_GET['r'], "dumindu/order_cat_edit_form.php", "N")."&cat_tid=".$sql_row['tid']."&style=".$style."&schedule=".$schedule."&color=".$color."\">c</a></center></td>";
-				echo "<td><center><a class='btn btn-info btn-xs' href='".getFullURL($_GET['r'], "order_cat_edit_form.php", "N")."&cat_tid=".$sql_row['tid']."&style=".$style."&schedule=".$schedule."&color=".$color."'>Edit</a></center>";
+
+				// Control start
+				// if ($sql_row['order_tid'] == $tran_order_tid)
+				// {
+					if($sql_row['mo_status']=="Y")
+					{
+						echo "<td>
+								<center>
+									<a class='btn btn-info btn-xs' href='".getFullURL($_GET['r'], "order_cat_edit_form.php", "N")."&cat_tid=".$sql_row['tid']."&style=".$style."&schedule=".$schedule."&color=".$color."'>Edit</a>
+								</center>
+							</td>";
+					}
+					else
+					{
+						echo "<td class=\"  \"><center>N/A</center></td>";
+					}
+				// }
+				// else
+				// {
+				// 	echo "<td class=\"  \"><center>N/A</center></td>";
+				// }
+				// Control End
+
+				// Go To Start
+				if ($sql_row['order_tid'] == $tran_order_tid)
+				{
+					echo "<td class=\"  \"><center>N/A</center></td>";
+				}
+				else
+				{
+					$get_details="select * from $bai_pro3.bai_orders_db where order_tid='".$sql_row['order_tid']."'";
+					//echo $get_details."<br/>";
+					$result_details=mysqli_query($link, $get_details) or exit("Error while getting style/schedule/color");
+					if (mysqli_num_rows($result_details) > 0)
+					{
+						while($rows=mysqli_fetch_array($result_details))
+						{
+							$get_style = $rows['order_style_no'];
+							$get_schedule = $rows['order_del_no'];
+							$get_color = $rows['order_col_des'];
+						}
+						echo "<td>
+								<center>
+									<a class='btn btn-success btn-xs' href='".getFullURL($_GET['r'], "main_interface.php", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule'>Go To</a>
+								</center>
+							</td>";
+					}
+				}
+				// Go To End
 			}
 			else
 			{
-				echo "<td class=\"  \"><center>N/A</center></td>";
+				if ($sql_row['order_tid'] == $tran_order_tid)
+				{
+					// Control
+					echo "<td class=\"  \"><center>N/A</center></td>";
+
+					// Go To
+					echo "<td class=\"  \"><center>N/A</center></td>";
+				}
+				else
+				{
+					$get_details="select * from $bai_pro3.bai_orders_db where order_tid='".$sql_row['order_tid']."'";
+					//echo $get_details."<br/>";
+					$result_details=mysqli_query($link, $get_details) or exit("Error while getting style/schedule/color");
+					if (mysqli_num_rows($result_details) > 0)
+					{
+						while($rows=mysqli_fetch_array($result_details))
+						{
+							$get_style = $rows['order_style_no'];
+							$get_schedule = $rows['order_del_no'];
+							$get_color = $rows['order_col_des'];
+						}
+
+						// Control
+						echo "<td class=\"  \"><center>N/A</center></td>";
+
+						// Go To
+						echo "<td>
+								<center>
+									<a class='btn btn-success btn-xs' href='".getFullURL($_GET['r'], "main_interface.php", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule'>Go To</a>
+								</center>
+							</td>";
+					}
+				}
 			}
 			// end enable the validation to avoid the category change after docket generation
 			echo "</tr>";
 		}
-     }
+	}
 }
 //echo "<table class=\"b1\"><tr class=\"b1\"><th class=\"heading2\">TID</th><th class=\"b1\">Date</th><th class=\"b1\">Category</th><th class=\"b1\">CAT YY</th><th class=\"b1\">Color Code</th><th class=\"b1\">Fab Code</th><th class=\"b1\">Fabric Description</th><th class=\"b1\">Pur Width</th><th class=\"b1\">One GMT One Way</th><th class=\"b1\">Strip Match</th><th class=\"b1\">Gusset Sep</th><th class=\"b1\">Pat. Ver.</th><th class=\"b1\">MO stat</th><th class=\"b1\">Controls</th></tr>";
 /* if($sql_num_check>0){
@@ -897,7 +983,7 @@ if ($sql_result) {
 
 
  */
-echo "</table></div>
+echo "</table></div></div>
 </div>
 </div></div></div>";
 
@@ -1644,20 +1730,20 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 		</div>
 		<div id="Marker" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 			<div class="panel-body">
-				<center>
-					<span class="pull-right">
-						<strong>
-							Overall Savings%: <?php echo '<span style="background-color: #f0ad4e;color: white;">'.$overall_savings."%"."</span>";?>
-							&nbsp;&nbsp;|&nbsp;&nbsp;
-							Overall CAD Consumption: <?php echo '<span style="    background-color: #f0ad4e;color: white;">'.$overall_cad_consumption."</span>";?>
-						</strong>
-					</span>
-				<center><br/>
-				<?php include("main_interface_5.php"); ?>
+					<center>
+						<span class="pull-right">
+							<strong>
+								Overall Savings%: <?php echo '<span style="background-color: #f0ad4e;color: white;">'.$overall_savings."%"."</span>";?>
+								&nbsp;&nbsp;|&nbsp;&nbsp;
+								Overall CAD Consumption: <?php echo '<span style="    background-color: #f0ad4e;color: white;">'.$overall_cad_consumption."</span>";?>
+							</strong>
+						</span>
+					<center><br/>
+					<?php include("main_interface_5.php"); ?>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
 
 <div class="col-sm-12 row">
