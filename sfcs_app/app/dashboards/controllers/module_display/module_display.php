@@ -177,7 +177,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$time_value[] = $sql_row['time_value'];
 	$time_display[$sql_row['time_value']]=$sql_row['time_display'];
 	$time_prefix[$sql_row['time_value']]=$sql_row['day_part'];
-	$sql2="SELECT SUM(bac_qty) as outp FROM $bai_pro.bai_log_buf WHERE bac_date='".$date_check."' AND bac_no=$module and TIME(bac_lastup)>= TIME('".$sql_row['start_time']."') AND TIME(bac_lastup)< TIME('".$sql_row['end_time']."')";
+	$sql2="SELECT SUM(bac_qty) as outp FROM $bai_pro.bai_log_buf WHERE bac_date='".$date_check."' AND bac_no=$module and Hour(bac_lastup)>= Hour('".$sql_row['start_time']."') AND Hour(bac_lastup)< Hour('".$sql_row['end_time']."')";
 	//echo $sql2;
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
