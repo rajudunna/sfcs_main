@@ -16,9 +16,12 @@
 	img { zoom: 30%;}
 </style>
 <script >
+
 setTimeout(function(){
 	    var module = document.getElementById('module').value; 
-	    var url = window.location.href+'&module='+module;
+        var originalURL = window.location.href;
+	    var alteredURL = originalURL.split('&');
+	    var url = alteredURL[0]+'&module_name='+module;
 	    if(module){
 	        window.location.href = url;    
 	    }
