@@ -36,29 +36,6 @@ function verify_spec(e)
 	return true;
 }
 
-
-
-
-// function verify_spec(t,e){
-// 	if(e.keyCode == 8 || e.keyCode == 9){
-// 			return;
-// 		}
-
-// 	var c = /^[0-9a-zA-Z-. ]+$/;
-// 	var id = t.id;
-// 	var qty = document.getElementById(id);
-
-// 	if( !(qty.value.match(c)) && qty.value!=null){
-// 		sweetAlert('Please Enter Pattern Version','','warning');
-// 		qty.value = 0;
-// 		return false;
-// 	}
-// }
-
-
-
-
-
 function enableButton() 
 {
 	if(document.getElementById('option').checked)
@@ -78,6 +55,8 @@ function enableButton()
 
 <body onload="javascript:dodisable();">
 <?php 
+if(isset($_GET['cat_tid']))
+{
 	$cat_tid=$_GET['cat_tid'];
 	$get_color=$_GET['color'];
 	$get_style=$_GET['style'];
@@ -86,10 +65,12 @@ function enableButton()
 
 	$colors_array = array();	$array1= array();	$array2= array();
 	$sql="select order_tid from $bai_pro3.cat_stat_log where tid='$cat_tid'";
+	// echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$sql="select order_del_no,order_style_no,order_col_des from $bai_pro3.bai_orders_db where order_tid='".$sql_row['order_tid']."'";
+		// echo $sql."<br>";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -121,6 +102,7 @@ function enableButton()
 			}
 			
 			$sql1 = "select OperationNumber FROM $bai_pro3.schedule_oprations_master where Style='$style' and Description ='$color_value' and ScheduleNumber='$schedule' group by OperationNumber";
+			// echo $sql."<br>";
 			$result1 = mysqli_query($link,$sql1)  
 				or exit("Error Occured : Unable to get the Operation Codes");;
 		
@@ -164,6 +146,7 @@ function enableButton()
 			}		
 		}
 	}
+}
 	echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a></div></br></br>"; ?>
 <div class="panel panel-primary">
 <div class="panel-heading">Order Category Classification FORM</div>
@@ -176,10 +159,6 @@ function enableButton()
 	echo "<input type=\"hidden\" class=\"form-control\" name=\"get_style\" value=\"".$get_style."\">";
 	echo "<input type=\"hidden\" class=\"form-control\" name=\"get_schedule\" value=\"".$get_schedule."\">";
 	echo "<input type=\"hidden\" class=\"form-control\" name=\"get_color\" value=\"".$get_color."\">";
-
-	// echo "<div class=\"col-sm-12 row\">";
-	// echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "1", "N" )."&color=".$color."&style=".$style."&schedule=".$schedule."\"><<<<< Click here to Go Back</a></div>";
-	// echo "<br/><br/>";
 
 	$sql="select * from $bai_pro3.cat_stat_log where tid=\"$cat_tid\"";
 	//echo "Cat Stat Log : ".$sql."</br>";
@@ -212,22 +191,7 @@ function enableButton()
 			echo "<option value='".$sql_row4['cat_name']."' $select >".$sql_row4['cat_name']."</option>";
 			$select="";
 		}
-		//echo "<option value=\"Body\""; if($sql_row['category']=='Body'){ echo "selected"; } echo ">1-Body</option>";
-		/*
-		echo "<option value=\"Body\""; if($sql_row['category']=='Body'){ echo "selected"; } echo ">Body</option>";
-		echo "<option value=\"Gusset\""; if($sql_row['category']=='Gusset'){ echo "selected"; } echo ">Gusset</option>";
-		echo "<option value=\"Front\""; if($sql_row['category']=='Front'){ echo "selected"; } echo ">Front</option>";
-		echo "<option value=\"Back\""; if($sql_row['category']=='Back'){ echo "selected"; } echo ">Back</option>";
-		echo "<option value=\"Binding\""; if($sql_row['category']=='Binding'){ echo "selected"; } echo ">Binding</option>";
-		echo "<option value=\"Mesh\""; if($sql_row['category']=='Mesh'){ echo "selected"; } echo ">Mesh</option>";
-		echo "<option value=\"Lace\""; if($sql_row['category']=='Lace'){ echo "selected"; } echo ">Lace</option>";
-		echo "<option value=\"Body Secondary\""; if($sql_row['category']=='Body Secondary'){ echo "selected"; } echo ">Body Secondary</option>";
-		echo "<option value=\"Front Secondary\""; if($sql_row['category']=='Front Secondary'){ echo "selected"; } echo ">Front Secondary</option>";
-		echo "<option value=\"Body Binding\""; if($sql_row['category']=='Body Binding'){ echo "selected"; } echo ">Body Binding</option>";
-		echo "<option value=\"Cup\""; if($sql_row['category']=='Cup'){ echo "selected"; } echo ">Cup</option>";
-		echo "<option value=\"Liner\""; if($sql_row['category']=='Liner'){ echo "selected"; } echo ">Liner</option>";
-		echo "<option value=\"Wing\""; if($sql_row['category']=='Wing'){ echo "selected"; } echo ">Wing</option>";
-		*/
+		
 		echo "</select></div></td></tr>";
 
 		echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Pur Width</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><input class=\"form-control float\" required type=\"text\"  name=\"in_width\" id='in_width' value=\"".$sql_row['purwidth']."\"></div></td></tr>";
@@ -288,10 +252,10 @@ function enableButton()
 		$validation_result = mysqli_query($link, $validation_query_cat) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$result_validation_query_cat = mysqli_fetch_row($validation_result);
 		$order_tid_result = $result_validation_query_cat[0];
-		$sql =  "select tid,category from $bai_pro3.cat_stat_log where order_tid = '$order_tid_result' and col_des = '$col_des'";
+		$sql =  "select tid,category from $bai_pro3.cat_stat_log where order_tid = '$order_tid_result'";
 		$validation_sql = mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-		$sql1 =  "select category from $bai_pro3.cat_stat_log where tid = '$cat_tid' and col_des = '$col_des' ";
+		$sql1 =  "select category from $bai_pro3.cat_stat_log where tid = '$cat_tid'";
 		$validation_sql1 = mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_row1=mysqli_fetch_row($validation_sql1);
 		$flag=1;
