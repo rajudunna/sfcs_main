@@ -2,11 +2,7 @@
 <?php
 //chnages for recommitt
 	set_time_limit(50000);
-	//require_once('phplogin/auth.php');
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
-//	$view_access=user_acl("SFCS_0077",$username,1,$group_id_sfcs);
 ?>
 
 <style>
@@ -54,18 +50,16 @@ table{
 	font-size:15px;
 }
 
+.flt{
+	width:100%;
+}
 
 </style>
 
-<!-- <?php echo '<link href="'.getFullURL($_GET['r'],'/sfcs/styles/sfcs_styles.css','R').'" rel="stylesheet" type="text/css" />'; ?>
-   -->
    <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
  <?php echo '<link href="'.getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',1,'R').'" rel="stylesheet" type="text/css" />';  ?>
   <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R');?>"></script>
- <!-- <script type="text/javascript" src="<?= getFullURL($_GET['r'],'jquery-1.3.2.js','R')?>"></script> -->
-
-
 
 <script type="text/javascript" src="../<?= getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R'); ?>" ></script>
 </head>
@@ -75,8 +69,6 @@ table{
 <div class="panel panel-primary">
 <div class="panel-heading">GRN to Production Track</div>
 <div class="panel-body">
-<!-- <div id="page_heading"><span style="float: left"><h3>GRN to Production Track</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div> -->
-
 
 <form name='export' action= "<?=getFullURL($_GET['r'],'export_excel.php','R') ?>"  method ="post" > 
 <input type="hidden" name="csv_text" id="csv_text">
@@ -188,12 +180,14 @@ echo '<div class="table-responsive"><table class="table table-bordered" id="tabl
 		echo "</tr></tbody>";
 
 	}
-	echo '</table></div>';
+	echo '</table></body></div>';
 ?>
+</div>
+</div>
+</body>
 <script>
 
 	$('#reset_table1').addClass('btn btn-warning');
-// <![CDATA[
 	var table6_Props = 	{
 							rows_counter: true,
 							btn_reset: true,
@@ -211,10 +205,3 @@ function getCSVData(){
  $("#csv_text").val(csv_value);	
 }
 </script>
-
-</div>
-</div>
-<style>
-.flt{
-	width:100%;
-}
