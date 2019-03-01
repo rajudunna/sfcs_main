@@ -220,10 +220,12 @@ table tr:hover td {
 		$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
 		$res2=mysqli_query($link,$sql2);
 		
-		$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
+		$sql3="SELECT COALESCE(SUM(fr_qty),0) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
+		// echo $sql3."<br>";
 		$res3=mysqli_query($link,$sql3);
 		
-		$sql4="SELECT qty,reason FROM $bai_pro3.line_forecast where date='$frdate' AND module='$team'";
+		$sql4="SELECT COALESCE(SUM(qty,0)) as qty,reason FROM $bai_pro3.line_forecast where date='$frdate' AND module='$team'";
+		// echo $sql4."<br>";
 		$res4=mysqli_query($link,$sql4);
 		$res5=mysqli_query($link,$sql4);
 	
@@ -231,7 +233,7 @@ table tr:hover td {
 		{
 			$sql6="SELECT * FROM $bai_pro2.hourly_downtime where date='$frdate' AND team='$team' and hour(time)='".$time_value[$i1]."' AND dreason!='N'";
 			$res6=mysqli_query($link,$sql6);
-			echo $sql6."-".mysqli_num_rows($res6)."<br>";
+			// echo $sql6."-".mysqli_num_rows($res6)."<br>";
 			if(mysqli_num_rows($res6) > 0)
 			{
 				while($row6=mysqli_fetch_array($res6))
@@ -243,7 +245,7 @@ table tr:hover td {
 					$out[$time_value[$i1]."".$team]=$row6['output_qty'];
 					$tout[$time_value[$i1]."".$team]=$tout[$time_value[$i1]."".$team]+$row6['output_qty'];
 					$total_out[$team]=$total_out[$team]+$row6['output_qty'];
-					$dres[$time_value[$i1]."".$team]=$row6['dreason'];					
+					$dres[$time_value[$i1]."".$team][]=$row6['dreason'];					
 				}
 			}
 			else
@@ -251,14 +253,11 @@ table tr:hover td {
 				$out[$time_value[$i1]."".$team]=0;
 				$tout[$time_value[$i1]."".$team]=$tout[$time_value[$i1]."".$team]+0;
 				$total_out[$team]=$total_out[$team]+0;
-				$dres[$time_value[$i1]."".$team]="N/A";
+				$dres[$time_value[$i1]."".$team][]="N/A";
 			}
 			
 		}
-		for ($i2=0; $i2 < sizeof($time_value); $i2++)
-		{
-			echo $team."-".$time_value[$i2]."-".$out[$time_value[$i2]."".$team]."-".$tout[$time_value[$i2]."".$team]."-".$dres[$time_value[$i2]."".$team]."-".sizeof($dres[$time_value[$i2]."".$team])."<br><br>";
-		}
+		
 			
 	$nop='24';	
 	?>
@@ -323,9 +322,9 @@ table tr:hover td {
 			for ($i3=0; $i3 < sizeof($time_value); $i3++)
 		    {
 				echo '<td>';
-				for($i4=0;$i4<sizeof($dres[$time_value[$i3]."".$team]);$i4++)
+				//for($i4=0;$i4<sizeof($dres[$time_value[$i3]."".$team]);$i4++)
 				{
-					echo $dres[$time_value[$i3]."".$team].'<br>';
+					echo implode(",",$dres[$time_value[$i3]."".$team]).'<br>';
 				}
 				echo '</td>';
 				echo '<td><b>'.$tout[$time_value[$i3]."".$team].'</b></td>';
