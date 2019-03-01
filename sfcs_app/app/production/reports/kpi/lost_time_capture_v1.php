@@ -149,7 +149,7 @@ table tr:hover td {
    
    <?php
    if(isset($_GET['submit'])){
-   $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
+    $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
     //echo $sql;
 	$res=mysqli_query($link,$sql); 
 	$i=0; 
@@ -158,6 +158,18 @@ table tr:hover td {
 	$sumfrqty=$sumfrqty1=$sumfrqty2=$sumfrplanqty=0;
 	$tout1=$tout2=$tout3=$tout4=$tout5=$tout6=$tout7=$tout8=$tout9=$tout10=$tout11="";
 	
+    $plant_timings_query="SELECT * FROM $bai_pro3.tbl_plant_timings order by time_id*1";
+	// echo $plant_timings_query;
+	$plant_timings_result=mysqli_query($link,$plant_timings_query);
+	while ($row = mysqli_fetch_array($plant_timings_result))
+	{
+		$start_time[] = $row['start_time'];
+		$end_time[] = $row['end_time'];
+		$time_display[] = $row['time_display'].'<br>'.$row['day_part'];
+		$time_value[]=$row['time_value'];
+	}
+ 
+
    ?>
 <div class="table-responsive">
   <table class="table table-bordered">
@@ -179,123 +191,75 @@ table tr:hover td {
 		<th>Reason</th>
 		<th>Pcs</th>
 		
-		<th rowspan="2">8.30 A.M.</th>
-		<th>Pcs</th>
-		<th>9.30 A.M.</th>
-		<th>Pcs</th>
-		<th>10.30 A.M</th>
-		<th>Pcs</th>
-		<th>11.30 A.M</th>
-		<th>Pcs</th>
-		<th>12.30 P.M.</th>
-		<th>Pcs</th>
-		<th>1.30 P.M.</th>
-		<th>Pcs</th>
-		<th>2.30 P.M.</th>
-		<th>Pcs</th>
-		<th>3.30 P.M.</th>
-		<th>Pcs</th>
-		<th>4.30 P.M.</th>
-		<th>Pcs</th>
-		<th>5.30 P.M.</th>
-		<th>Pcs</th>
-		<th>6.30 P.M.</th>
-		<th>Pcs</th>
-		<th></th>
-		
-		
+		<?php
+			for ($i=0; $i < sizeof($time_display); $i++)
+			{
+				echo "<th><center>$time_display[$i]</center></th>";
+				echo "<th><center>PCS</center></th>";
+				
+			}
+		?>
+		<th>Control</th>	
       </tr>
     </thead>
-	<?php  while($row=mysqli_fetch_array($res)){ 
+	<?php  
+	while($row=mysqli_fetch_array($res))
+	{ 
 		
-	 // echo $frdate;
-    $date=$row['frdate'];
-	//echo $date;
-	$newDate = date("Y-m-d", strtotime($date));
-	//echo $newDate.'<br>';
+		// echo $frdate;
+		$date=$row['frdate'];
+		//echo $date;
+		$newDate = date("Y-m-d", strtotime($date));
+		//echo $newDate.'<br>';0
+		
+		$team=$row['team'];
+		//get styles which run in lines
+		$sql1="SELECT distinct style FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
+		$res1=mysqli_query($link,$sql1);
+		
+		$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
+		$res2=mysqli_query($link,$sql2);
+		
+		$sql3="SELECT COALESCE(SUM(fr_qty),0) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
+		// echo $sql3."<br>";
+		$res3=mysqli_query($link,$sql3);
+		
+		$sql4="SELECT COALESCE(SUM(qty,0)) as qty,reason FROM $bai_pro3.line_forecast where date='$frdate' AND module='$team'";
+		// echo $sql4."<br>";
+		$res4=mysqli_query($link,$sql4);
+		$res5=mysqli_query($link,$sql4);
 	
-	$team=$row['team'];
-	
-	//get styles which run in lines
-	$sql1="SELECT distinct style FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
-	$res1=mysqli_query($link,$sql1);
-	
-	$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
-	$res2=mysqli_query($link,$sql2);
-	
-	$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
-	$res3=mysqli_query($link,$sql3);
-	
-	$sql4="SELECT qty,reason FROM $bai_pro3.line_forecast where date='$frdate' AND module='$team'";
-	$res4=mysqli_query($link,$sql4);
-	$res5=mysqli_query($link,$sql4);
-	
-	
-	$sql6="SELECT time,dreason,output_qty FROM $bai_pro2.hourly_downtime where date='$frdate' AND team='$team' AND dreason!='N'";
-	$res6=mysqli_query($link,$sql6);
-		while($row6=mysqli_fetch_array($res6)){
-			$sout_time=$row6['time'];
-			$arr = explode(":", "$sout_time");
-			$num = $arr[0];
-			
-			if($num=='8'){
-				$out1=$row6['output_qty'];
-				$tout1=$tout1+$out1;
-				$dres1[]=$row6['dreason'];
-			}else if($num=='9'){
-				$out2=$row6['output_qty'];
-				$tout2=$tout2+$out2;
-				$dres2[]=$row6['dreason'];
-			}else if($num=='10'){
-				$out3=$row6['output_qty'];
-				$tout3=$tout3+$out3;
-				$dres3[]=$row6['dreason'];
-			}else if($num=='11'){
-				$out4=$row6['output_qty'];
-				$tout4=$tout4+$out4;
-				$dres4[]=$row6['dreason'];
-			}else if($num=='12'){
-				$out5=$row6['output_qty'];
-				$tout5=$tout5+$out5;
-				//$dres5=array();
-				$dres5[]=$row6['dreason'];
-				
-				
-			}else if($num=='13'){
-				$out6=$row6['output_qty'];
-				$tout6=$tout6+$out6;
-				$dres6[]=$row6['dreason'];
-				
-			}else if($num=='14'){
-				$out7=$row6['output_qty'];
-				$tout7=$tout7+$out7;
-				$dres7[]=$row6['dreason'];
-				
-			}else if($num=='15'){
-				$out8=$row6['output_qty'];
-				$tout8=$tout8+$out8;
-				$dres8[]=$row6['dreason'];	
-			}else if($num=='16'){
-				$out9=$row6['output_qty'];
-				$tout9=$tout9+$out9;
-				$dres9[]=$row6['dreason'];	
-			}else if($num=='17'){
-				$out10=$row6['output_qty'];
-				$tout10=$tout10+$out10;
-				$dres10[]=$row6['dreason'];	
-			}else if($num=='18'){
-				$out11=$row6['output_qty'];
-				$tout11=$tout11+$out11;
-				$dres11[]=$row6['dreason'];	
+		for ($i1=0; $i1 < sizeof($time_value); $i1++)
+		{
+			$sql6="SELECT * FROM $bai_pro2.hourly_downtime where date='$frdate' AND team='$team' and hour(time)='".$time_value[$i1]."' AND dreason!='N'";
+			$res6=mysqli_query($link,$sql6);
+			// echo $sql6."-".mysqli_num_rows($res6)."<br>";
+			if(mysqli_num_rows($res6) > 0)
+			{
+				while($row6=mysqli_fetch_array($res6))
+				{
+					$sout_time=$row6['time'];
+					$arr = explode(":", "$sout_time");
+					$num = $arr[0];
+
+					$out[$time_value[$i1]."".$team]=$row6['output_qty'];
+					$tout[$time_value[$i1]."".$team]=$tout[$time_value[$i1]."".$team]+$row6['output_qty'];
+					$total_out[$team]=$total_out[$team]+$row6['output_qty'];
+					$dres[$time_value[$i1]."".$team][]=$row6['dreason'];					
+				}
 			}
-		$out=$out1+$out2+$out3+$out4+$out5+$out6+$out6+$out7+$out8+$out9+$out10+$out11;
-		
+			else
+			{
+				$out[$time_value[$i1]."".$team]=0;
+				$tout[$time_value[$i1]."".$team]=$tout[$time_value[$i1]."".$team]+0;
+				$total_out[$team]=$total_out[$team]+0;
+				$dres[$time_value[$i1]."".$team][]="N/A";
+			}
+			
 		}
 		
-		$nop='24';
-	
-	
-	
+			
+	$nop='24';	
 	?>
 
     <tbody>
@@ -353,96 +317,25 @@ table tr:hover td {
 			}else{
 				echo '<td></td>';
 			}	
-			  
-			echo '<td>';
-			for($i=0;$i<sizeof($dres1);$i++)
-			{
-			echo $dres1[$i].'<br>';
-			}
-			echo '</td>';
-			echo '<td><b>'.$tout1.'</b></td>';
-			echo '<td>';
-			for($i=0;$i<sizeof($dres2);$i++)
-			{
-			echo $dres2[$i].'<br>';
-			}
-			echo '</td>';
-			echo '<td><b>'.$tout2.'</b></td>';
-			echo '<td>';
-			for($i=0;$i<sizeof($dres3);$i++)
-			{
-			echo $dres3[$i].'<br>';
-			}
-			echo '</td>';
-			echo '<td><b>'.$tout3.'</b></td>';
-			echo '<td>';
-			for($i=0;$i<sizeof($dres4);$i++)
-			{
-			echo $dres4[$i].'<br>';
-			}
-			echo '</td>';
-			echo '<td><b>'.$tout4.'</b></td>';
-			echo '<td>';
-			for($i=0;$i<sizeof($dres5);$i++)
-			{
-			echo $dres5[$i].'<br>';
-			}
-			echo '</td>';
-			echo '<td><b>'.$tout5.'</b></td>';
-			echo '<td>';
-			for($i=0;$i<sizeof($dres6);$i++)
-			{
-			echo $dres6[$i].'<br>';
-			}
-			echo '</td>';
-			echo '<td><b>'.$tout6.'</b></td>';
-			echo '<td>';
-			for($i=0;$i<sizeof($dres7);$i++)
-			{
-			echo $dres7[$i].'<br>';
-			}
-			echo '</td>';
-			echo '<td><b>'.$tout7.'</b></td>';
-			echo '<td>';
-			for($i=0;$i<sizeof($dres8);$i++)
-			{
-			echo $dres8[$i].'<br>';
-			}
-			echo '</td>';
-			echo '<td><b>'.$tout8.'</b></td>';
-			echo '<td>';
-			for($i=0;$i<sizeof($dres9);$i++)
-			{
-			echo $dres9[$i].'<br>';
-			}
-			echo '</td>';
-			echo '<td><b>'.$tout9.'</b></td>';
-			echo '<td>';
-			for($i=0;$i<sizeof($dres10);$i++)
-			{
-			echo $dres10[$i].'<br>';
-			}
-			echo '</td>';
-			echo '<td><b>'.$tout10.'</b></td>';
-			echo '<td>';
-			for($i=0;$i<sizeof($dres11);$i++)
-			{
-			echo $dres11[$i].'<br>';
-			}
-			echo '</td>';
-			echo '<td><b>'.$tout11.'</b></td>';
+			 
 			
-			// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
-			// $username=strtolower($username_list[1]);
-			// $super_user=array("hasithada","thusharako","thilinana","chathurangad","dinushapre","diland","ranganak");
-							
-				if (in_array($authorized, $has_perm)){
-					$url=base64_encode('/sfcs_app/app/production/reports/kpi/edit_downtime.php');
-					// echo $url;
-						echo '<td><b><a href="index.php?r='.$url.'&team='.$team.'&dat='.$frdate.'">Edit</a></b></td>';
+			for ($i3=0; $i3 < sizeof($time_value); $i3++)
+		    {
+				echo '<td>';
+				//for($i4=0;$i4<sizeof($dres[$time_value[$i3]."".$team]);$i4++)
+				{
+					echo implode(",",$dres[$time_value[$i3]."".$team]).'<br>';
 				}
+				echo '</td>';
+				echo '<td><b>'.$tout[$time_value[$i3]."".$team].'</b></td>';
+			}
+							
+			if (in_array($authorized, $has_perm)){
+				$url=base64_encode('/sfcs_app/app/production/reports/kpi/edit_downtime.php');
+					echo '<td><b><a href="index.php?r='.$url.'&team='.$team.'&dat='.$frdate.'">Edit</a></b></td>';
+			}
 			
-				?>
+		?>
 				
 	
 	<?php  $out=0;  
@@ -454,50 +347,7 @@ table tr:hover td {
 	<?php 
 		if($team%3==0 && $team<36){
 		?>
-	<!-- <tr style="background-color:#ec407a;display:none;">
-        <th colspan="12"></th>
-		<th style="border:1px solid #ec407a;">Time</th>
-		<th colspan="17" style="border:1px solid #ec407a;"></th>
-      </tr>
-      <tr style="background-color:#039be5;color:white">
-        <th>Team</th>
-        
-        <th>Style</th>
-		<th style="display:none;">Sch</th>
-		<th>FR Plan</th>
-		<th>Forecast</th>
-		
-		<th>Planned <br> Status</th>
-		<th>Reason</th>
-		<th>Pcs</th>
-		
-		<th>8.30 A.M.</th>
-		<th>Pcs</th>
-		<th>9.30 A.M.</th>
-		<th>Pcs</th>
-		<th>10.30 A.M</th>
-		<th>Pcs</th>
-		<th>11.30 A.M</th>
-		<th>Pcs</th>
-		<th>12.30 P.M.</th>
-		<th>Pcs</th>
-		<th>1.30 P.M.</th>
-		<th>Pcs</th>
-		<th>2.30 P.M.</th>
-		<th>Pcs</th>
-		<th>3.30 P.M.</th>
-		<th>Pcs</th>
-		<th>4.30 P.M.</th>
-		<th>Pcs</th>
-		<th>5.30 P.M.</th>
-		<th>Pcs</th>
-		<th>6.30 P.M.</th>
-		<th>Pcs</th>
 	
-		
-		
-      </tr>	 -->
-
 
 
 	<?php   
