@@ -36,7 +36,7 @@
 		<b>Plant Timings</b>
 	</div>
 	<div class='panel-body'>
-        <form action="<?= $action_url ?>" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
+        <form action="<?= $action_url ?>" id="formentry" class="form-horizontal" role="form" method="POST"  onsubmit="return time_diff();">
             <input type='hidden' id='dr_id' name='dr_id' value="<?php echo $dr_id; ?>" >
             <div class="container-fluid shadow">
                 <div class="row">
@@ -54,7 +54,7 @@
                     </div>
                     <div class="col-md-2">
                         <label for='start_time'>Start Time</label>
-                        <input type='time' value='Satrt Time' class='form-control' name='start_time' id='start_time'>
+                        <input type='time' value='Satrt Time' class='form-control without_ampm' name='start_time' id='start_time'>
                         <!-- <input placeholder="Selected time" type="time" id="start" class="form-control timepicker" onchange="calculate()"> -->
                         <!-- <SELECT name="time_display" id="start" value="<?php echo $start_time ; ?>" class="form-control" onchange="calculate()">
                         <option value='' selected>Please Select</option> -->
@@ -76,7 +76,7 @@
                     </div>
                     <div class="col-md-2">
                         <label for='end_time'>End Time</label>
-                        <input type='time' value='End Time' class='form-control' name='end_time' id='end_time'>
+                        <input type='time' value='End Time' class='form-control without_ampm' name='end_time' id='end_time'>
                         <!-- <input placeholder="Selected time" type="time" id="start1" class="form-control timepicker" onchange="calculate()"> -->
                         <!--
                         <SELECT name="time_display1" id="start1" value="<?php echo $end_time; ?>" class="form-control">
@@ -102,7 +102,7 @@
                     <div class="col-md-2">
                         <label for='day_part'>Day Part</label>
                         <select class='form-control' name="day_part" id='day_part' onchange="calculate()" required>
-                            <option selected>Please Select</option>
+                            <option value>Please Select</option>
                             <?php
                                 if($day_part!=''){ 
                                     if($day_part == 'AM'){
@@ -123,7 +123,7 @@
                     </div>
                     <div class='col-sm-1'>
                         <label>&nbsp;<br/></label><br/>
-                        <input id="btn_save" type="submit" class="btn btn-primary btn-sm"  onclick="return time_diff();"   name="btn_save" value='Save'>                    
+                        <input id="btn_save" type="submit" class="btn btn-primary btn-sm"    name="btn_save" value='Save'>                    
                     </div>
                 </div>      
                
@@ -143,12 +143,8 @@
     function calculate(){
         var v1 = document.getElementById("start_time").value;
         var v2 = document.getElementById("end_time").value;
-        var day_time = document.getElementById("day_part").value;
-        if(day_time.length == 0){
-            swal('Please Select Time','','warning');
-            return false;
-        }
-
+       
+       
         var sh = v1.substr(0,2);
         if(sh == 0)
             sh = 24;
@@ -167,7 +163,13 @@
     }
     
     function time_diff(){
-        calculate();
+        var day_time = document.getElementById("day_part").value;
+        console.log('YES'+day_time.length);
+        if(day_time.length == 0){
+            swal('Please Select AM/PM','','warning');
+            return false;
+        }
+
         var v1 = document.getElementById("start_time").value;
         var v2 = document.getElementById("end_time").value;
         console.log('V! == '+v1);
@@ -192,3 +194,18 @@
 
 </script>
 </html>
+
+<style>
+
+.without_ampm::-webkit-datetime-edit-ampm-field {
+   display: none;
+ }
+ input[type=time]::-webkit-clear-button {
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   -o-appearance: none;
+   -ms-appearance:none;
+   appearance: none;
+   margin: -10px; 
+ }
+</style>
