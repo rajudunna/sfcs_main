@@ -70,29 +70,30 @@
             <div class='row'></div>
             <div class='row'>
             <hr/>
+
                 <div class='l-div col-sm-4'>
-                    <span class="l-block yellow" >&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                    <span class='l-text'>Fabric Issued to Cutting Module</span>
-                </div>
-                <div class='l-div col-sm-4'>
-                    <span class="l-block green" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
-                    <span class='l-text'>Material Requested</span>
-                </div>
-                <div class='l-div col-sm-4'>
-                    <span class="l-block lgreen" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
-                    <span class='l-text'>Material Available and Not Requested</span>
+                    <span class="l-block yash" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'>Material Status Not Updated in FSP</span>
                 </div>
                 <div class='l-div col-sm-4'>   
                     <span class="l-block red" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'>Material Not Available and Not Requested</span>
                 </div>
                 <div class='l-div col-sm-4'>
-                    <span class="l-block yash" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
-                    <span class='l-text'>Material Status Not Updated in FSP</span>
+                    <span class="l-block lgreen" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'>Material Available and Not Requested</span>
+                </div>
+                <div class='l-div col-sm-4'>
+                    <span class="l-block green" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                    <span class='l-text'>Material Requested</span>
                 </div>
                 <div class='l-div col-sm-4'>
                     <span class="l-block pink" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'>Ready To Issue</span>
+                </div>
+                <div class='l-div col-sm-4'>
+                    <span class="l-block yellow" >&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    <span class='l-text'>Fabric Issued to Cutting Module</span>
                 </div>
                 <div class='l-div col-sm-4'>
                     <span class="l-block orange" >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
