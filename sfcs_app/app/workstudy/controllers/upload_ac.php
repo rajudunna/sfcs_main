@@ -53,7 +53,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 {	
 	$date=$sql_row['yer_mon'];
 }
-echo $no_of_rows."<br>";
+//echo $no_of_rows."<br>";
 if($date=='')
 {
 	$date=date("Y-m-d");
