@@ -1,11 +1,11 @@
 <?php
-    // LOGIC TO INSERT TRANSACTIONS IN M3_TRANSACTIONS TABLE
+// LOGIC TO INSERT TRANSACTIONS IN M3_TRANSACTIONS TABLE
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
 function updateM3Transactions($ref_id,$op_code,$qty)
 {
     $obj = new rest_api_calls();    
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    
+
     $host = $api_hostname;
     $port = $api_port_no;
     $company_num = $company_no;
@@ -88,34 +88,45 @@ function updateM3Transactions($ref_id,$op_code,$qty)
                     }
                     else
                     {
-                        $get_op_code_smv_qry = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' AND m3_smv > 0;";
-                        $result_smv=mysqli_query($link, $get_routing_query) or exit("error while fetching opn routing");
-                        if (mysqli_num_rows($result_smv) > 0)
-                        {
-                            $opn_routing=mysqli_fetch_array($result_smv);
-                            $opn_routing_code = $opn_routing['operation_code'];
-                        }
+                        $opn_routing_code = 200;
                     }
-                    
-                    if ($opn_routing_code == $op_code)
-                    {
-                        $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no=$mo_number";
-                        $count_result = $link->query($get_count);
-                        while($row = $count_result->fetch_assoc()) 
-                        {
-                            $count = $row['count'];
-                        }
 
-                        if ($count > 0)
+                    $get_details_b4_carton_ready = "SELECT ops_sequence,operation_order FROM $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' AND operation_code=$opn_routing_code";
+                    $result_details_b4_carton_ready=mysqli_query($link, $get_details_b4_carton_ready) or exit("error while fetching pre_op_code_b4_carton_ready");
+                    if (mysqli_num_rows($result_details_b4_carton_ready) > 0)
+                    {
+                        $op_order=mysqli_fetch_array($result_details_b4_carton_ready);
+                        $ops_sequence = $op_order['ops_sequence'];
+                        $operation_order = $op_order['operation_order'];
+
+                        $get_pre_op_code_b4_carton_ready = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' AND ops_sequence = '$ops_sequence' AND CAST(operation_order AS CHAR) < '$operation_order' AND operation_code NOT IN (10,200,15) ORDER BY operation_order DESC LIMIT 1";
+                        $result_pre_op_b4_carton_ready=mysqli_query($link, $get_pre_op_code_b4_carton_ready) or exit("error while fetching pre_op_code_b4_carton_ready");
+                        if (mysqli_num_rows($result_pre_op_b4_carton_ready) > 0)
                         {
-                            $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $to_update_qty, cumulative_qty = cumulative_qty + $to_update_qty where mo_no= $mo_number";
+                            $final_op_code=mysqli_fetch_array($result_pre_op_b4_carton_ready);
+                            $opn_b4_200 = $final_op_code['operation_code'];
                         }
-                        else
+                        
+                        if ($opn_b4_200 == $op_code)
                         {
-                            $insert_update_tbl_carton_ready = "INSERT INTO $bai_pro3.tbl_carton_ready (operation_id, mo_no, remaining_qty, cumulative_qty) VALUES ('$op_code', '$mo_number', '$to_update_qty', '$to_update_qty');";
+                            $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no=$mo_number";
+                            $count_result = $link->query($get_count);
+                            while($row = $count_result->fetch_assoc()) 
+                            {
+                                $count = $row['count'];
+                            }
+
+                            if ($count > 0)
+                            {
+                                $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $to_update_qty, cumulative_qty = cumulative_qty + $to_update_qty where mo_no= $mo_number";
+                            }
+                            else
+                            {
+                                $insert_update_tbl_carton_ready = "INSERT INTO $bai_pro3.tbl_carton_ready (operation_id, mo_no, remaining_qty, cumulative_qty) VALUES ('$op_code', '$mo_number', '$to_update_qty', '$to_update_qty');";
+                            }
+                            mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating/inserting tbl_carton_ready");
                         }
-                        mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating/inserting tbl_carton_ready");
-                    }                        
+                    }                                           
                 // 763 mo filling for new operation end
                 $dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and operation_code=$op_code";
                 $result_dep_ops_array_qry = $link->query($dep_ops_array_qry);
@@ -145,7 +156,7 @@ function updateM3Transactions($ref_id,$op_code,$qty)
                     if($enable_api_call == 'YES'){
             
                         $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&REMK=$insert_id&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-                        $api_data = $obj->getCurlAuthRequest($api_url);
+                        $api_data = $obj->getCurlAuthRequest1($api_url,$insert_id);
                         $decoded = json_decode($api_data,true);
                         $type=$decoded['@type'];
                         $code=$decoded['@code'];
@@ -254,30 +265,41 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
                     }
                     else
                     {
-                        $get_op_code_smv_qry = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' AND m3_smv > 0;";
-                        $result_smv=mysqli_query($link, $get_routing_query) or exit("error while fetching opn routing");
-                        if (mysqli_num_rows($result_smv) > 0)
-                        {
-                            $opn_routing=mysqli_fetch_array($result_smv);
-                            $opn_routing_code = $opn_routing['operation_code'];
-                        }
+                        $opn_routing_code = 200;
                     }
 
-                    if ($opn_routing_code == $op_code)
+                    $get_details_b4_carton_ready = "SELECT ops_sequence,operation_order FROM $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' AND operation_code=$opn_routing_code";
+                    $result_details_b4_carton_ready=mysqli_query($link, $get_details_b4_carton_ready) or exit("error while fetching pre_op_code_b4_carton_ready");
+                    if (mysqli_num_rows($result_details_b4_carton_ready) > 0)
                     {
-                        $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no=$mo_number";
-                        $count_result = $link->query($get_count);
-                        while($row = $count_result->fetch_assoc()) 
-                        {
-                            $count = $row['count'];
-                        }
+                        $op_order=mysqli_fetch_array($result_details_b4_carton_ready);
+                        $ops_sequence = $op_order['ops_sequence'];
+                        $operation_order = $op_order['operation_order'];
 
-                        if ($count > 0)
+                        $get_pre_op_code_b4_carton_ready = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' AND ops_sequence = '$ops_sequence' AND CAST(operation_order AS CHAR) < '$operation_order' AND operation_code NOT IN (10,200,15) ORDER BY operation_order DESC LIMIT 1;";
+                        $result_pre_op_b4_carton_ready=mysqli_query($link, $get_pre_op_code_b4_carton_ready) or exit("error while fetching pre_op_code_b4_carton_ready");
+                        if (mysqli_num_rows($result_pre_op_b4_carton_ready) > 0)
                         {
-                            $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty - $to_update_qty, cumulative_qty = cumulative_qty - $to_update_qty where mo_no= $mo_number";
+                            $final_op_code=mysqli_fetch_array($result_pre_op_b4_carton_ready);
+                            $opn_b4_200 = $final_op_code['operation_code'];
                         }
-                        mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating/inserting tbl_carton_ready");
-                    }                        
+                        
+                        if ($opn_b4_200 == $op_code)
+                        {
+                            $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no=$mo_number";
+                            $count_result = $link->query($get_count);
+                            while($row = $count_result->fetch_assoc()) 
+                            {
+                                $count = $row['count'];
+                            }
+
+                            if ($count > 0)
+                            {
+                                $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty - $to_update_qty, cumulative_qty = cumulative_qty - $to_update_qty where mo_no= $mo_number";
+                                mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating/inserting tbl_carton_ready");
+                            }
+                        }
+                    }                          
                 // 763 mo filling for new operation end
 
                 $ims_pro_qty_updating = mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -310,7 +332,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
                     // //M3 Rest API Call
                     if($enable_api_call == 'YES'){
                         $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$to_update_qty&REMK=$insert_id&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-                        $api_data = $obj->getCurlAuthRequest($api_url);
+                        $api_data = $obj->getCurlAuthRequest1($api_url,$insert_id);
                         $decoded = json_decode($api_data,true);
                         $type=$decoded['@type'];
                         $code=$decoded['@code'];
@@ -338,7 +360,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
     }
     return true;
     
-}//Function ends
+}
 function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
 {
     $obj = new rest_api_calls();
@@ -462,7 +484,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                         //M3 Rest API Call
                         if($enable_api_call == 'YES'){
                             $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&SCQA=$to_update_qty&MAQA=$to_update_qty&REMK=$insert_id&SCRE=".$r_reasons[$key]."&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-                            $api_data = $obj->getCurlAuthRequest($api_url);
+                            $api_data = $obj->getCurlAuthRequest1($api_url,$insert_id);
                             $decoded = json_decode($api_data,true);
                             $type=$decoded['@type'];
                             $code=$decoded['@code'];
@@ -494,11 +516,11 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
     }
     return true;
 }
-
 function updateM3CartonScan($b_op_id, $b_tid, $team_id)
 {
     $obj = new rest_api_calls();
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    error_reporting(0);
     $current_date = date("Y-m-d H:i:s");
 
     $host = $api_hostname;
@@ -592,12 +614,16 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                     if($enable_api_call == 'YES')
                     {
                         $api_url_pms070mi = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$mo_quantity&REMK=$insert_id_pms070mi&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-                        $api_data_pms070mi = $obj->getCurlAuthRequest($api_url_pms070mi);
+                        $api_data_pms070mi = $obj->getCurlAuthRequest1($api_url_pms070mi,$insert_id_pms070mi);
                         $decoded_pms070mi = json_decode($api_data_pms070mi,true);
-                        $type_pms070mi=$decoded_pms070mi['@type'];
-                        $code_pms070mi=$decoded_pms070mi['@code'];
-                        $message_pms070mi=$decoded_pms070mi['Message'];
-
+                        if(isset($decoded_pms070mi['@type']))
+                        {
+                            $type_pms070mi=$decoded_pms070mi['@type'];
+                        }
+                        else
+                        {
+                            $type_pms070mi=0;
+                        }
                         //validating response pass/fail and inserting log
                         if($type_pms070mi!='ServerReturnedNOK')
                         {
@@ -607,6 +633,8 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                         }
                         else
                         {
+                            //$code_pms070mi=$decoded_pms070mi['@code'];
+                            $message_pms070mi=$decoded_pms070mi['Message'];
                             //updating response status in m3_transactions
                             $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms070mi."";
                             mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 Transactions");
@@ -627,12 +655,16 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                     if($enable_api_call == 'YES')
                     {
                         $api_url_pms050mi = $host.":".$port."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&RPQA=$mo_quantity&REMK=$insert_id_pms050mi&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
-                        $api_data_pms050mi = $obj->getCurlAuthRequest($api_url_pms050mi);
+                        $api_data_pms050mi = $obj->getCurlAuthRequest1($api_url_pms050mi,$insert_id_pms050mi);
                         $decoded_pms050mi = json_decode($api_data_pms050mi,true);
-                        $type_pms050mi=$decoded_pms050mi['@type'];
-                        $code=$decoded_pms050mi['@code'];
-                        $message_pms050mi=$decoded_pms050mi['Message'];
-
+                        if(isset($decoded_pms050mi['@type']))
+                        {
+                            $type_pms050mi=$decoded_pms050mi['@type'];
+                        }
+                        else
+                        {
+                            $type_pms050mi=0;
+                        }
                         //validating response pass/fail and inserting log
                         if($type_pms050mi!='ServerReturnedNOK')
                         {
@@ -643,6 +675,8 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                         else
                         {
                             //updating response status in m3_transactions
+                            //$code=$decoded_pms050mi['@code'];
+                            $message_pms050mi=$decoded_pms050mi['Message'];
                             $qry_m3_transactions_pms050mi="UPDATE $bai_pro3.`m3_transactions` SET response_status='fail' WHERE id=".$insert_id_pms050mi."";
                             mysqli_query($link,$qry_m3_transactions_pms050mi) or exit("While updating into M3 Transactions");
 
@@ -717,7 +751,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
                 if($enable_api_call == 'YES')
                 {
                     $api_url_pms070mi = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&MAQA=$negative_qty&REMK=$insert_id_pms070mi&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-                    $api_data_pms070mi = $obj->getCurlAuthRequest($api_url_pms070mi);
+                    $api_data_pms070mi = $obj->getCurlAuthRequest1($api_url_pms070mi,$insert_id_pms070mi);
                     $decoded_pms070mi = json_decode($api_data_pms070mi,true);
                     $type_pms070mi=$decoded_pms070mi['@type'];
                     $code_pms070mi=$decoded_pms070mi['@code'];
@@ -752,7 +786,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
                 if($enable_api_call == 'YES')
                 {
                     $api_url_pms050mi = $host.":".$port."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&RPQA=$negative_qty&REMK=$insert_id_pms050mi&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
-                    $api_data_pms050mi = $obj->getCurlAuthRequest($api_url_pms050mi);
+                    $api_data_pms050mi = $obj->getCurlAuthRequest1($api_url_pms050mi,$insert_id_pms050mi);
                     $decoded_pms050mi = json_decode($api_data_pms050mi,true);
                     $type_pms050mi=$decoded_pms050mi['@type'];
                     $code=$decoded_pms050mi['@code'];
@@ -895,8 +929,9 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
                         }
                     // if(strtolower($is_m3) == 'yes')
                     // {
+                        $to_update_qty = -$to_update_qty;
                         $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`) 
-                        VALUES ('$current_date','$mo_number',($to_update_qty*-1),'$r_reasons[$key]','Normal','$username','',$b_module,'$b_shift',$op_code,'',$id,'$work_station_id','','$main_ops_code')";
+                        VALUES ('$current_date','$mo_number',$to_update_qty,'$r_reasons[$key]','Normal','$username','',$b_module,'$b_shift',$op_code,'',$id,'$work_station_id','','$main_ops_code')";
                         mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into the m3_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
                     
                         //getting the last inserted record
@@ -905,7 +940,7 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
                         //M3 Rest API Call
                         if($enable_api_call == 'YES'){
                             $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_number&OPNO=$main_ops_code&DPLG=$work_station_id&SCQA=$to_update_qty&MAQA=$to_update_qty&REMK=$insert_id&SCRE=".$r_reasons[$key]."&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
-                            $api_data = $obj->getCurlAuthRequest($api_url);
+                            $api_data = $obj->getCurlAuthRequest1($api_url,$insert_id);
                             $decoded = json_decode($api_data,true);
                             $type=$decoded['@type'];
                             $code=$decoded['@code'];
@@ -937,4 +972,5 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
     }
     return true;
 }
+
 ?>

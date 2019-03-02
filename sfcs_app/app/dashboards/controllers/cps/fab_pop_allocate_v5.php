@@ -44,7 +44,8 @@
 } */
 </style>
 
-<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
+<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />';
+?>
 <?php 
 $dash=0;
 if(isset($_POST['allocate']))
@@ -187,7 +188,10 @@ src="../../../../common/js/TableFilter_EN/tablefilter.js"></script> -->
 
 <script>
 
-
+	$('.float').keypress(function(e){
+	});
+	$('.float').on('change',function(e){	
+	});
 			// $(document).keypress(
 			// 		function(event){
 			// 		if (event.which == '13')
@@ -213,8 +217,40 @@ document.getElementById('process_message').style.visibility="hidden";
 //OK document.getElementById('allocate_new').style.visibility="hidden";
 
 }
+function filling(doc_no,i,doc_count_no)
+{	
+	var doc_ref=document.input["doc_ref["+doc_count_no+"]"].value;
+	var issued_qty=parseFloat(document.input["val"+doc_no+"["+i+"]"].value);
+	var new_value = parseFloat(document.getElementById("issued"+doc_no+"["+i+"]").value);
+	var old_value = parseFloat(document.getElementById("issued_new"+doc_no+"["+i+"]").value);
+	if(isNaN(new_value))
+	{
+		new_value = parseFloat(0);
+		document.getElementById("issued"+doc_no+"["+i+"]").value = new_value;
+	}
+	var present_bal = parseFloat(document.getElementById("balal"+doc_no).innerHTML);
+	var allocate_bal = parseFloat(document.getElementById("alloc"+doc_no).innerHTML);
+	var actual_balance = parseFloat(present_bal)+parseFloat(old_value)-parseFloat(new_value);
+	if(old_value - new_value > actual_balance && new_value > old_value || new_value > issued_qty || actual_balance < 0)
+	{
+		sweetAlert("You are Issuing more than Available Quantity","","warning");
+		document.getElementById("issued"+doc_no+"["+i+"]").value = old_value;
+	}
+	else
+	{	
+		//alert(actual_balance);
+		if(actual_balance==0){
+			document.getElementById(doc_ref).style.backgroundColor = "GREEN";
+		}else{
+			document.getElementById(doc_ref).style.backgroundColor = "RED";
+		}
+		document.getElementById("issued_new"+doc_no+"["+i+"]").value = new_value;
+		var actual_allcoate = parseFloat(allocate_bal)-parseFloat(old_value)+parseFloat(new_value);
+		document.getElementById("balal"+doc_no).innerHTML =  actual_balance;
+		document.getElementById("alloc"+doc_no).innerHTML =  actual_allcoate;
+	}
+}
 </script>
-
 <script>
 function check_qty(x)
 {
@@ -302,9 +338,9 @@ var srgp1;
 var doc_count = 0;
 var verifier = 0;
 var doc_flag=0;
-function check_qty2(x,m,n,doc,row_count,doc_count_no)
+function check_qty23(x,m,n,doc,row_count,doc_count_no)
 {	
-//PLEASE DO NOT MODIFY THE ORDER OF ANY OF THE BELOW STATEMENTS OF THIS FUNCTION
+    //PLEASE DO NOT MODIFY THE ORDER OF ANY OF THE BELOW STATEMENTS OF THIS FUNCTION
 	////  code for shrinkage validation
 	// alert(row_count+"="+x+"-"+doc);
 	if(doc_count==0){
@@ -403,7 +439,7 @@ function check_qty2(x,m,n,doc,row_count,doc_count_no)
 	}	
 	// console.log('check_count '+check_count);
 	////  code for shrinkage validation
-///////////////////////SHRINKAGE VALIDATION ENDS	
+	///////////////////////SHRINKAGE VALIDATION ENDS	
 	var check=0;
 	var alloc_disab=0;
 	for(i=0;i<x;i++)
@@ -420,13 +456,11 @@ function check_qty2(x,m,n,doc,row_count,doc_count_no)
 		var alloc_qty=0;
 		for(j=0;j<row_count;j++)
 		{
-			
 			var tx="chk"+doc_ref+j;
 			widt=0;
 			//console.log("chk"+doc_ref+j);
 			if(document.getElementById(tx).checked)
 			{
-				
 				issued_qty=document.input["val"+doc_ref+"["+j+"]"].value;
 				// alert(doc_ref+"-"+j+"-"+issued_qty+"-"+row_count+"-"+doc_count_no);
 				if(widt<=parseFloat((document.input["width"+doc_ref+"["+j+"]"].value)))
@@ -434,22 +468,23 @@ function check_qty2(x,m,n,doc,row_count,doc_count_no)
 					selc=selc+parseFloat((document.input["val"+doc_ref+"["+j+"]"].value));
 					widt=parseFloat((document.input["width"+doc_ref+"["+j+"]"].value));
 					document.input["min_width["+i+"]"].value=widt;
-					
+					console.log("selc"+selc);
+					console.log("mat_req"+mat_req);
 					if(selc<=mat_req){
-						document.getElementById("issued"+doc_ref+"["+j+"]").innerHTML=issued_qty;
+						document.getElementById("issued"+doc_ref+"["+j+"]").value=issued_qty;
 						document.getElementById("issued_new"+doc_ref+"["+j+"]").value=issued_qty;
 						alloc_qty=alloc_qty+parseFloat(issued_qty);
 					}else{
 						if((mat_req-selc)<0){
 							round_val=(parseFloat(mat_req)-parseFloat(selc)+parseFloat(issued_qty));
 								if(round_val>0){
-									document.getElementById("issued"+doc_ref+"["+j+"]").innerHTML=round_val.toFixed(2);
+									document.getElementById("issued"+doc_ref+"["+j+"]").value=round_val.toFixed(2);
 									document.getElementById("issued_new"+doc_ref+"["+j+"]").value=round_val.toFixed(2);
 									alloc_qty=alloc_qty+parseFloat(round_val.toFixed(2));
 								}else{
 									//alert("Dear user...You already completed required Quantity");
 									sweetAlert("User...You already completed required Quantity"," ","warning");
-									document.getElementById("issued"+doc_ref+"["+j+"]").innerHTML="";
+									document.getElementById("issued"+doc_ref+"["+j+"]").value="";
 									if(document.getElementById("issued_new"+doc_ref+"["+j+"]").value){
 										//console.log("true"+ "chk"+doc_ref+j);
 										document.getElementById(m).checked = true;
@@ -468,7 +503,7 @@ function check_qty2(x,m,n,doc,row_count,doc_count_no)
 					console.log(widt+"<="+parseFloat((document.input["width"+doc_ref+"["+j+"]"].value))+" J = "+j);
 				}
 			}else{
-					document.getElementById("issued"+doc_ref+"["+j+"]").innerHTML="0";
+					document.getElementById("issued"+doc_ref+"["+j+"]").value="0";
 				}
 
 		}
@@ -530,6 +565,48 @@ function check_qty2(x,m,n,doc,row_count,doc_count_no)
 	//NEW
 	//document.getElementById('allocate_new').style.visibility="";
 }
+function check_qty2(x,m,n,doc,row_count,doc_count_no,act_count)
+{	
+	var doc_ref=document.input["doc_ref["+doc_count_no+"]"].value;
+	var bal = parseFloat(document.getElementById("balal"+doc).innerHTML);
+	if(document.getElementById(m).checked)
+	{
+		if(bal <= 0)
+		{
+			sweetAlert("You Met Required quantity","","warning");
+			document.getElementById(m).checked = false;
+		}
+		else
+		{
+			console.log("issued"+doc+"["+act_count+"]");
+			console.log("balal"+doc);
+			var issued_qty=parseFloat(document.input["val"+doc+"["+act_count+"]"].value);
+			var balance = parseFloat(document.getElementById("balal"+doc).innerHTML);
+			var allocate = parseFloat(document.getElementById("alloc"+doc).innerHTML);
+			var eligibile = Math.min(issued_qty,balance);
+			document.getElementById("issued"+doc+"["+act_count+"]").readOnly = false;
+			document.getElementById("issued"+doc+"["+act_count+"]").value = parseFloat(eligibile.toFixed(2));
+			document.getElementById("issued_new"+doc+"["+act_count+"]").value = parseFloat(eligibile.toFixed(2));
+			document.getElementById("balal"+doc).innerHTML =  parseFloat(balance)-parseFloat(eligibile);
+			document.getElementById("alloc"+doc).innerHTML =  parseFloat(allocate)+parseFloat(eligibile);
+			var bal_qty_colorchnage=parseFloat(balance)-parseFloat(eligibile);
+			//alert(bal_qty_colorchnage);
+			if(bal_qty_colorchnage==0){
+				document.getElementById(doc_ref).style.backgroundColor = "GREEN";
+			}else{
+				document.getElementById(doc_ref).style.backgroundColor = "RED";
+			}
+		}
+		
+	}
+	else
+	{
+		document.getElementById("issued"+doc+"["+act_count+"]").readOnly = true;
+		document.getElementById("issued"+doc+"["+act_count+"]").value = 0;
+		filling(doc,act_count,doc_count_no);
+	}
+	
+}
 
 </script>
 
@@ -566,6 +643,7 @@ echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"red\">Please wait
 set_time_limit(2000);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_splitting_function.php');
 ?>
 
 
@@ -595,7 +673,6 @@ if(isset($_POST['allocate_new']))
 		
 		$temp="chk".$doc_ref[$i];
 		$chk_ref=$_POST[$temp];
-		
 		unset($tid_ref);
 		unset($width_ref);
 		unset($val_ref);
@@ -614,7 +691,6 @@ if(isset($_POST['allocate_new']))
 			$val_ref[]=$val_ref_base[$x];
 			$issued_ref[]=$issued_ref_base[$x];
 		}
-		
 		if(strpos(strtolower($lot_db[$i]),"stock"))
 		{
 			$tid_ref[]=0;
@@ -623,159 +699,136 @@ if(isset($_POST['allocate_new']))
 		if(sizeof($tid_ref)>0)
 		{
 		
-		//To extrac required information to find marker length for the docket.
-		unset($allo_c);
-		$allo_c=array();
-	
-		$sql="select cat_patt_ver,doc_no,material_req,mk_ref,cat_ref,allocate_ref,style_id,mk_ver,category,p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s06,p_s08,p_s10,p_s12,p_s14,p_s16,p_s18,p_s20,p_s22,p_s24,p_s26,p_s28,p_s30,strip_match,gmtway,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where doc_no=\"".$doc_ref[$i]."\"";
-		//echo $sql."<br/>";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error1 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$extra=0;
-			//if(substr($style_ref,0,1)=="M")
-			{
-				$extra=round(($sql_row['material_req']*$sql_row['savings']),2);
-			}
-			$material_req1=$sql_row['material_req']+$extra;
-			$mk_ref=$sql_row['mk_ref'];
-			$cat_ref=$sql_row['cat_ref'];
-			$allocate_ref=$sql_row['allocate_ref'];
-			$style_code=$sql_row['style_id'];
-			$buyer_code=substr($style_ref,0,1);
-			$mk_ver=$sql_row['mk_ver'];
-			$category=$sql_row['category'];
-			$strip_match=$sql_row['strip_match'];
-			$gmtway=$sql_row['gmtway'];
-			
-			$allo_c[]="xs=".$sql_row['p_xs'];
-			$allo_c[]="s=".$sql_row['p_s'];
-			$allo_c[]="m=".$sql_row['p_m'];
-			$allo_c[]="l=".$sql_row['p_l'];
-			$allo_c[]="xl=".$sql_row['p_xl'];
-			$allo_c[]="xxl=".$sql_row['p_xxl'];
-			$allo_c[]="xxxl=".$sql_row['p_xxxl'];
-			$allo_c[]="s06=".$sql_row['p_s06'];
-			$allo_c[]="s08=".$sql_row['p_s08'];
-			$allo_c[]="s10=".$sql_row['p_s10'];
-			$allo_c[]="s12=".$sql_row['p_s12'];
-			$allo_c[]="s14=".$sql_row['p_s14'];
-			$allo_c[]="s16=".$sql_row['p_s16'];
-			$allo_c[]="s18=".$sql_row['p_s18'];
-			$allo_c[]="s20=".$sql_row['p_s20'];
-			$allo_c[]="s22=".$sql_row['p_s22'];
-			$allo_c[]="s24=".$sql_row['p_s24'];
-			$allo_c[]="s26=".$sql_row['p_s26'];
-			$allo_c[]="s28=".$sql_row['p_s28'];
-			$allo_c[]="s30=".$sql_row['p_s30'];
-		}
+			//To extrac required information to find marker length for the docket.
+			unset($allo_c);
+			$allo_c=array();
 		
-		$sql="update bai_rm_pj1.store_in set allotment_status=1 where tid in (".implode(",",$tid_ref).")";
-
-		//Uncheck this
-		mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
-		//To update allocated roll details in docket/label reference table.
-		for($j=0;$j<sizeof($tid_ref);$j++)
-		{
-			if($tid_ref[$j]>0)
-			{
-				if($process_cat==1)
-				{
-					$sql="insert into bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'normal',".$issued_ref[$j].",'1')";
-				}
-				else
-				{
-					$sql="insert into bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'recut',".$issued_ref[$j].",'1')";
-				}
-				
-				//Uncheck this
-				mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
-				$new_tid=array();
-				//this is for new rolls allocation for remaing qty
-				if($val_ref[$j]>$issued_ref[$j]){
-					
-					//balanced qty
-					$balance_qty=(($val_ref[$j])-($issued_ref[$j]));
-					//current date in php
-					$current_date=date("Y-m-d");
-
-					//getting new rolls details
-					$qry_rolldetails="SELECT lot_no,ref1,ref2,ref3,remarks,log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason,barcode_number,ref_tid FROM $bai_rm_pj1.store_in WHERE tid=".$tid_ref[$j];
-					$result__rolldetials=mysqli_query($link, $qry_rolldetails);
-					$row_rolldetials=mysqli_fetch_assoc($result__rolldetials);
-				
-					$qry_newroll="insert into bai_rm_pj1.store_in(lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll,ref_tid,barcode_number) values('".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$balance_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$row_rolldetials["log_user"]."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".$row_rolldetials["ref5"]."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$tid_ref[$j]."','".$row_rolldetials["ref_tid"]."','".$row_rolldetials["barcode_number"]."')";
-					mysqli_query($link, $qry_newroll) or exit("Sql Error3: $qry_newroll".mysqli_error($GLOBALS["___mysqli_ston"]));
-					
-					$new_tid=mysqli_insert_id($link);
-
-					$sql22="update bai_rm_pj1.store_in set barcode_number='".$facility_code."-".$new_tid."' where tid=".$new_tid;
-					//Uncheck this
-					mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-				}
-
-				//To update Allocated Qty
-				// $sql="update $bai_rm_pj1.store_in set qty_allocated=".$issued_ref[$j]." where tid=".$tid_ref[$j];
-				$sql="update bai_rm_pj1.store_in set qty_rec=".$issued_ref[$j].",qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
-				//Uncheck this
-				mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-				
-				
-			}
-		}
-		
-		
-		//To confirm docket as allocated
-		if($process_cat==1)
-		{
-			$sql1="update plandoc_stat_log set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
-		}
-		else
-		{
-			$sql1="update recut_v2 set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
-		}
-		
-		mysqli_query($link, $sql1) or exit("Sql Error5: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
-		//TO update Marker Matrix
-		if($process_cat==1)
-		{
-			//Search Valid Marker is available or not
-			//New version to verify style/ratio/pattern/width based algorith to identify new marker length
-			
-			$sql="select marker_length from $bai_pro3.marker_ref_matrix_view where strip_match='$strip_match' and gmtway='$gmtway' and style_code='$style_code' and buyer_code='$buyer_code' and lower(pat_ver)='".strtolower($mk_ver)."' and SUBSTRING_INDEX(marker_width,'.',1)='".$min_width[$i]."' and category='$category' and ".implode(" and ",$allo_c);
+			$sql="select cat_patt_ver,doc_no,material_req,mk_ref,cat_ref,allocate_ref,style_id,mk_ver,category,p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s06,p_s08,p_s10,p_s12,p_s14,p_s16,p_s18,p_s20,p_s22,p_s24,p_s26,p_s28,p_s30,strip_match,gmtway,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where doc_no=\"".$doc_ref[$i]."\"";
 			//echo $sql."<br/>";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error1x: $sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error1 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
-				$mk_length=$sql_row['marker_length'];
+				$extra=0;
+				//if(substr($style_ref,0,1)=="M")
+				{
+					$extra=round(($sql_row['material_req']*$sql_row['savings']),2);
+				}
+				$material_req1=$sql_row['material_req']+$extra;
+				$mk_ref=$sql_row['mk_ref'];
+				$cat_ref=$sql_row['cat_ref'];
+				$allocate_ref=$sql_row['allocate_ref'];
+				$style_code=$sql_row['style_id'];
+				$buyer_code=substr($style_ref,0,1);
+				$mk_ver=$sql_row['mk_ver'];
+				$category=$sql_row['category'];
+				$strip_match=$sql_row['strip_match'];
+				$gmtway=$sql_row['gmtway'];
+				
+				$allo_c[]="xs=".$sql_row['p_xs'];
+				$allo_c[]="s=".$sql_row['p_s'];
+				$allo_c[]="m=".$sql_row['p_m'];
+				$allo_c[]="l=".$sql_row['p_l'];
+				$allo_c[]="xl=".$sql_row['p_xl'];
+				$allo_c[]="xxl=".$sql_row['p_xxl'];
+				$allo_c[]="xxxl=".$sql_row['p_xxxl'];
+				$allo_c[]="s06=".$sql_row['p_s06'];
+				$allo_c[]="s08=".$sql_row['p_s08'];
+				$allo_c[]="s10=".$sql_row['p_s10'];
+				$allo_c[]="s12=".$sql_row['p_s12'];
+				$allo_c[]="s14=".$sql_row['p_s14'];
+				$allo_c[]="s16=".$sql_row['p_s16'];
+				$allo_c[]="s18=".$sql_row['p_s18'];
+				$allo_c[]="s20=".$sql_row['p_s20'];
+				$allo_c[]="s22=".$sql_row['p_s22'];
+				$allo_c[]="s24=".$sql_row['p_s24'];
+				$allo_c[]="s26=".$sql_row['p_s26'];
+				$allo_c[]="s28=".$sql_row['p_s28'];
+				$allo_c[]="s30=".$sql_row['p_s30'];
+			}
+			//for #1305 ticket in git edite by Srinivas Y .
+			for($j=0;$j<sizeof($tid_ref);$j++)
+			{
+				if($tid_ref[$j]>0)
+				{	
+					//if there is no ctex width we will take ticket width as ctex
+					if(($width_ref[$j]=='') or ($width_ref[$j]==NULL)){
+						//$width_ref[$j]=$issued_ref[$j];
+						//getting recieved qty from store_in
+						$query3="SELECT qty_rec FROM $bai_rm_pj1.store_in WHERE tid='$tid_ref[$j]'";
+						$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row3=mysqli_fetch_array($sql_result3))
+						{
+							$width_ref[$j]=$sql_row3['qty_rec'];
+						}
+
+
+					}
+					if($process_cat==1)
+					{
+						$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'normal',".$issued_ref[$j].",'1')";
+					}
+					else
+					{
+						$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'recut',".$issued_ref[$j].",'1')";
+					}
+					
+					//Uncheck this
+					mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+					//Removing for #1305 ticket and adding this functionality into a separate function
+					if($issued_ref[$j] > 0)
+					{
+						$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
+					}
+
+				}
+			}
+			//To confirm docket as allocated
+			if($process_cat==1)
+			{
+				$sql1="update plandoc_stat_log set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
+			}
+			else
+			{
+				$sql1="update recut_v2 set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
 			}
 			
-			if(mysqli_num_rows($sql_result)!=0)
+			mysqli_query($link, $sql1) or exit("Sql Error5: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
+			//TO update Marker Matrix
+			if($process_cat==1)
 			{
-				$sql="insert into bai_pro3.maker_stat_log(DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver) select DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver from $bai_pro3.maker_stat_log where tid='$mk_ref'";
+				//Search Valid Marker is available or not
+				//New version to verify style/ratio/pattern/width based algorith to identify new marker length
+				
+				$sql="select marker_length from $bai_pro3.marker_ref_matrix_view where strip_match='$strip_match' and gmtway='$gmtway' and style_code='$style_code' and buyer_code='$buyer_code' and lower(pat_ver)='".strtolower($mk_ver)."' and SUBSTRING_INDEX(marker_width,'.',1)='".$min_width[$i]."' and category='$category' and ".implode(" and ",$allo_c);
 				//echo $sql."<br/>";
+				$sql_result=mysqli_query($link, $sql) or exit("Sql Error1x: $sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row=mysqli_fetch_array($sql_result))
+				{
+					$mk_length=$sql_row['marker_length'];
+				}
 				
-				mysqli_query($link, $sql) or exit("Sql Error1x: $sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
-				$ilast_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
-				
-				$sql="update bai_pro3.maker_stat_log set mklength=$mk_length where tid='$ilast_id'";
-				
-				mysqli_query($link, $sql) or exit("Sql Error1x: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
-				$sql="update bai_pro3.plandoc_stat_log set lastup=\"".date("Y-m-d")."\", mk_ref=$ilast_id where doc_no=".$doc[$i];
-				
-				mysqli_query($link, $sql) or exit("Sql Error: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
-			}
+				if(mysqli_num_rows($sql_result)!=0)
+				{
+					$sql="insert into bai_pro3.maker_stat_log(DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver) select DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver from $bai_pro3.maker_stat_log where tid='$mk_ref'";
+					//echo $sql."<br/>";
+					
+					mysqli_query($link, $sql) or exit("Sql Error1x: $sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+					$ilast_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+					
+					$sql="update bai_pro3.maker_stat_log set mklength=$mk_length where tid='$ilast_id'";
+					
+					mysqli_query($link, $sql) or exit("Sql Error1x: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+					$sql="update bai_pro3.plandoc_stat_log set lastup=\"".date("Y-m-d")."\", mk_ref=$ilast_id where doc_no=".$doc[$i];
+					
+					mysqli_query($link, $sql) or exit("Sql Error: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+				}
 			
 			//Search Valid Marker is available or not
-		}
+			}
 			
 		}
 		
@@ -933,7 +986,7 @@ if(isset($_POST['allocate']))
 		echo "<h3><font color=blue>".$doc_cat[$i]."-".$doc_com[$i]." /width: ".$pur_width."</font></h3>";
 		
 		//To show stats
-		echo "<h4>Required: ".round($mat_req,2)." / Allocated: <span id=\"alloc$doc_ref\"></span> / Balance to Allocate: <span id=\"balal$doc_ref\">".round($mat_req,2)."</span></h4>";
+		echo "<h4>Required: ".round($mat_req,2)." / Allocated: <span id=\"alloc$doc_ref\">0.00</span> / Balance to Allocate: <span id=\"balal$doc_ref\">".round($mat_req,2)."</span></h4>";
 		echo "<div class='table-responsive'><table id='example".$i."' class='table table-bordered' cellspacing='0'>";
 		
 		echo "<thead><tr id=\"$doc_ref\" bgcolor=\"RED\">";
@@ -957,7 +1010,7 @@ if(isset($_POST['allocate']))
 		echo "<th>Tkt<br/></th>";	
 		echo "<th>Ctx<br/>Length</th>";		
 		echo "<th id='col'>Avail Qty</th>";
-		echo "<th>Issued Qty</th>";
+		echo "<th style='width:45%;'>Issued Quantity</th>";
 		echo "<th>Select</th>";
 		// echo "<th>Avail Qnty</th>";
 		echo "</tr></thead><tbody>";
@@ -966,7 +1019,7 @@ if(isset($_POST['allocate']))
 
 
 		//Current Version
-		$sql="select * from $bai_rm_pj1.fabric_status_v3 where lot_no in (".implode(",",$lot_db_2).") AND allotment_status='0' order by shade";
+		$sql="select * from $bai_rm_pj1.fabric_status_v3 where lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1) order by shade";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error12: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$row_count=mysqli_num_rows($sql_result);
 		$j=0;
@@ -991,13 +1044,14 @@ if(isset($_POST['allocate']))
 			
 			
 			$temp_var='';
-			if($sql_row['allotment_status']==0 and strlen($sql_row['shade'])>0)
+			//if($sql_row['allotment_status']==0 and strlen($sql_row['shade'])>0)
+			if(($sql_row['allotment_status']==0) or($sql_row['allotment_status']==1) and (strlen($sql_row['shade'])>0))
 			{
-				$temp_var.="<td><input type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref',$row_count,'$i')\">";
+				$temp_var.="<td><input type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref',$row_count,'$i','$j')\">";
 				$temp_var.="<input type=\"hidden\" name=\"val".$doc_ref."[$j]\" value=\"".$sql_row['balance']."\">";
 				$temp_var.="<input type=\"hidden\" name=\"width".$doc_ref."[$j]\" value=\"".$sql_row['width']."\">";
 				$temp_var.="<input type=\"hidden\" name=\"lable".$doc_ref."[$j]\" value=\"".$sql_row['tid']."\">";
-				$temp_var.="<input type=\"hidden\" name=\"issued_new".$doc_ref."[$j]\" id=\"issued_new".$doc_ref."[$j]\">";
+				$temp_var.="<input type=\"hidden\" name=\"issued_new1".$doc_ref."[$j]\" id=\"issued_new".$doc_ref."[$j]\">";
 				$temp_var.="</td>";
 				
 			}
@@ -1031,12 +1085,12 @@ if(isset($_POST['allocate']))
 				}
 				// $temp_var.=$tag.'---<br/>';
 				//To release for some time
-				$temp_var.="<input style='$valid_check' type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref',$row_count,$i')\">";
+				$temp_var.="<input style='$valid_check' type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref',$row_count,$i,$j')\">";
 				//$temp_var.="<input type=\"hidden\" id=\"chk$doc_ref$j\" name=\"chk".$doc1_ref."[]\" value=\"0\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color')\">";
 				$temp_var.="<input type=\"hidden\" name=\"val".$doc_ref."[$j]\" value=\"".$sql_row['balance']."\">";
 				$temp_var.="<input type=\"hidden\" name=\"width".$doc_ref."[$j]\" value=\"".$sql_row['width']."\">";
 				$temp_var.="<input type=\"hidden\" name=\"lable".$doc_ref."[$j]\" value=\"".$sql_row['tid']."\">";
-				$temp_var.="<input type=\"hidden\" name=\"issued_new".$doc_ref."[$j]\" id=\"issued_new".$doc_ref."[$j]\">";
+				$temp_var.="<input type=\"hidden\" name=\"issued_new1".$doc_ref."[$j]\" id=\"issued_new".$doc_ref."[$j]\">";
 				
 				if(strlen($tag)>0)
 				{
@@ -1075,6 +1129,14 @@ if(isset($_POST['allocate']))
 					$tag=$sql_row1['doc_nos'];
 					$allocated_qty=$sql_row1['allocated_qty'];
 			}
+
+
+			$sql5="SELECT coalesce(sum(allocated_qty),0) as allocated_qty,roll_id,status FROM $bai_rm_pj1.fabric_cad_allocation where roll_id=".$sql_row['tid']." and status='1'";
+				$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row5=mysqli_fetch_array($sql_result5))
+				{
+					$fab_cad_allocated_qty=$sql_row5['allocated_qty'];
+				}
 			echo "<td>".$sql_row['grn_date']."</td>";
 			echo "<td>".$sql_row['batch_no']."</td>";
 			echo "<td id='col1'>".$sql_row['item']."</td>";
@@ -1093,8 +1155,8 @@ if(isset($_POST['allocate']))
 			echo "<td>".$sql_row['ref3']."</td>";
 			echo "<td>".$sql_row['qty_rec']."</td>";
 			echo "<td>".$sql_row['ref5']."</td>";
-			echo "<td>".($sql_row['qty_rec']-$sql_row['qty_issued']+$sql_row['qty_ret'])."</td>";
-			echo "<td><span id=\"issued".$doc_ref."[$j]\"></span></td>";
+			echo "<td>".($sql_row['qty_rec']-$sql_row['qty_issued']+$sql_row['qty_ret']-$fab_cad_allocated_qty)."</td>";
+			echo "<td><input class='form-control float' name=\"issued_new".$doc_ref."[$j]\" type = 'number' min='0' step='any' id=\"issued".$doc_ref."[$j]\" value = '0' onchange='filling($doc_ref,$j,$i);' readonly></input></td>";
 			
 			//echo "</br>Allotment Status".$sql_row['allotment_status']."</br>";
 
@@ -1405,3 +1467,4 @@ th{
 <script src="../../../../common/js/bootstrap1.min.js"></script>
 
 <!-- <script src="../../../../common/js/jquery.dataTables.min.js"></script> -->
+

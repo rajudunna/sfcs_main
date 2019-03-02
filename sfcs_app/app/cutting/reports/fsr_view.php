@@ -302,6 +302,16 @@ if(isset($_POST['submit']) && $reptype == 1)
 		$shortages=round($sql_row['shortages'],2);
 		$leader_name = $sql_row['leader_name'];
 
+		//
+			$s="select emp_name from $bai_pro3.tbl_leader_name where id = '$leader_name'";
+		
+			$sql_result22=mysqli_query($link, $s) or exit("Sql Error ef".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row22=mysqli_fetch_array($sql_result22))
+			{
+			  $leader_name1 = $sql_row22['emp_name'];
+			}
+		//
+
 		$sql1="select * from $bai_pro3.plandoc_stat_log where doc_no='$doc_no'";
 		//echo $sql1;
 		//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -449,7 +459,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$act_saving</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$act_saving_pct%</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$net_saving</td>";
-		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$leader_name</td>";
+		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$leader_name1</td>";
 		// echo "<td class=xl6618241 style='border-top:none;border-left:none'>$net_saving_pct%</td>";
 		echo "</tr>";
 	}
@@ -747,7 +757,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	echo "<td>".$act_saving_pct."%</td>";
 	echo "<td>$net_saving_sum</td>";
 	echo "<td>".$net_saving_pct."%</td>";
-	//echo "<td>$leader_name</td>";
+	//echo "<td>$leader_name1</td>";
 	echo "</tr>";
  	}	
 }

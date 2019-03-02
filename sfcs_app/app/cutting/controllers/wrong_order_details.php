@@ -158,32 +158,62 @@ $(document).ready(function() {
                         }
                         else
                         {
-                          $del_order_details="DELETE FROM $m3_inputs.order_details WHERE style='$style' AND SCHEDULE='$schdule' AND GMT_Color='$color'";
-                          $result6 = $link->query($del_order_details);
-                       
+	                        //To get Mo's
+	                        $mo=array();
+	                        $get_mos="select monumber from $m3_inputs.mo_details where style='$style' and schedule='$schdule' and colourdesc='$color'";
+	                        //echo $get_mos;
+	                        $result6 = $link->query($get_mos);
+	                        while($row2 = $result6->fetch_assoc())
+	                        {
+	                            $mo[] = $row2['monumber'];
+	                        }
+	                        	
+	                        $mos = implode(",", $mo);
+	                        $del_bom_details="DELETE FROM $m3_inputs.bom_details where mo_no in($mos)";
+	                        $result7 = $link->query($del_bom_details);
 
-                          $del_shipment_plan="DELETE FROM $m3_inputs.shipment_plan WHERE style_no='$style' AND schedule_no='$schdule' AND colour='$color'";
-                          $result7 = $link->query($del_shipment_plan);
-                         
+	                        $del_order_details="DELETE FROM $m3_inputs.order_details WHERE style='$style' AND SCHEDULE='$schdule' AND GMT_Color='$color'";
+	                        $result8 = $link->query($del_order_details);
+	                       
 
-                          $del_bai_orders="DELETE FROM $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schdule' AND order_col_des='$color'";
-                          $result8 = $link->query($del_bai_orders);
-                        
+	                        $del_shipment_plan="DELETE FROM $m3_inputs.shipment_plan WHERE style_no='$style' AND schedule_no='$schdule' AND colour='$color'";
+	                        $result9 = $link->query($del_shipment_plan);
+	                         
+	                        $del_m3_mo_details="DELETE FROM $m3_inputs.mo_details WHERE style='$style' and schedule='$schdule' and colourdesc='$color'";
+	                        $result10 = $link->query($del_m3_mo_details);
+							
+							$del_order_original="DELETE FROM $m3_inputs.order_details_original WHERE style='$style' AND SCHEDULE='$schdule' AND GMT_color='$color'";
+							$result17 = $link->query($del_order_original);
+							
 
-                          $del_bai_orders_confirm="DELETE FROM $bai_pro3.bai_orders_db_confirm WHERE order_style_no='$style' AND order_del_no='$schdule' AND order_col_des='$color'";
-                          $result9 = $link->query($del_bai_orders_confirm);
-                     
+                            $del_shipment_original="DELETE FROM $m3_inputs.shipment_plan_original WHERE style_no='$style' AND schedule_no='$schdule' AND colour='$color'";
+							$result18 = $link->query($del_shipment_original);
+							
 
-                          $del_cat_stat_log ="DELETE FROM bai_pro3.cat_stat_log WHERE order_tid = '$order_tid'";
-                          $result10 = $link->query($del_cat_stat_log);
-                          
-                          $user1=getrbac_user()['uname'];
-                          $delete_track="insert into $brandix_bts.delete_log (user,style,schedule,color) values('$user1','$style','$schdule','$color')";
-                          $result11 = $link->query($delete_track);
-                          //echo  $delete_track;
+	                        $del_mo_details="DELETE FROM $bai_pro3.mo_details where style='$style' and schedule='$schdule' and color='$color'";
+	                        $result11 = $link->query($del_mo_details);
+
+	                        $del_bai_orders="DELETE FROM $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schdule' AND order_col_des='$color'";
+	                        $result12 = $link->query($del_bai_orders);
+	                        
+
+	                        $del_bai_orders_confirm="DELETE FROM $bai_pro3.bai_orders_db_confirm WHERE order_style_no='$style' AND order_del_no='$schdule' AND order_col_des='$color'";
+	                        $result13 = $link->query($del_bai_orders_confirm);
+	                     
+
+	                        $del_cat_stat_log ="DELETE FROM $bai_pro3.cat_stat_log WHERE order_tid = '$order_tid'";
+	                        $result14 = $link->query($del_cat_stat_log);
+
+	                        $del_schedule_operation="DELETE FROM $bai_pro3.schedule_oprations_master WHERE Style='$style' AND Description ='$color' AND ScheduleNumber='$schdule'";  
+	                        $result15 = $link->query($del_schedule_operation);
+
+	                        $user1=getrbac_user()['uname'];
+	                        $delete_track="insert into $brandix_bts.delete_log (user,style,schedule,color) values('$user1','$style','$schdule','$color')";
+	                        $result16 = $link->query($delete_track);
+	                          //echo  $delete_track;
 
 
-                          echo "<script>swal('','Deleted Successfully','warning') </script>";
+	                        echo "<script>swal('','Deleted Successfully','warning') </script>";
 
 
                         }	

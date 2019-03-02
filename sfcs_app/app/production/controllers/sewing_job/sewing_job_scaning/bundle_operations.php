@@ -573,8 +573,8 @@ $(document).ready(function(){
 			var component1 =  "'"+component+"'";
 			var s = $('#oper_code1').val();
 			//logic implimentation for operation_order
-		    var pre_ops_order = Number($('#rowId').val());
-			var first_ops_order = Number($('#first_ops_id').val());
+		    var pre_ops_order = $('#rowId').val();
+			var first_ops_order = $('#first_ops_id').val();
 			//var pre_ops_order = 10.111;
 			if(first_ops_order == 0)
 			{
@@ -590,10 +590,8 @@ $(document).ready(function(){
 						if(Math.floor(this.valueOf()) === this.valueOf()) return 0;
 						return this.toString().split(".")[1].length || 0; 
 					}
-					var no_of_decimals = pre_ops_order.countDecimals();
-					console.log(pre_ops_order_string);
-					pre_ops_order_string += '1';
-					var actual_ops_order = Number(pre_ops_order_string);
+					var no_of_decimals = Number(pre_ops_order).countDecimals();					pre_ops_order_string += '1';
+					var actual_ops_order = pre_ops_order_string;
 				}
 
 			}
@@ -601,7 +599,7 @@ $(document).ready(function(){
 			{
 				var actual_ops_order = pre_ops_order;
 			}
-			//console.log(pre_ops_order_string);
+			// console.log("actual_ops_order"+actual_ops_order);
 
 			var saving_data = [style_id,oper_name_id,actual_ops_order,0,m3_smv,m3_smv,s,oper_def1,s,style1,color1,2,barcode1,supplier_id,oper_seq,oper_dep,component1];
 			//console.log(saving_data);
@@ -1178,7 +1176,6 @@ function value_edition(btn,id_of_main)
 						console.log(ind_value_ops_order);
 						document.getElementById('rowIndex').value = ind;
 						document.getElementById('rowId').value = ind_value_ops_order;
-
 						$('#myModal').modal('toggle');
 					}
 					else

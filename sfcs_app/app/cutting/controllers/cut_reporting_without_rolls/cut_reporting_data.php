@@ -68,7 +68,7 @@ if(mysqli_num_rows($validation_result)>0){
     $fab_required = $row['material_req'];
     $module = $row['plan_module'];
     $fabric_status = $row['fabric_status'];
-    if(in_array($category,$fabric_categories_array) && $cat_ref > 0 && $fabric_status == 5)
+    if($cat_ref > 0 && $fabric_status == 5)
         $response_data['can_report']   = 1;
     else{    
         $response_data['can_report']   = 2;
@@ -194,6 +194,20 @@ while($row=mysqli_fetch_array($cps_full_status_result)){
 if($response_data['cut_done'] == 1 && $fully_report =0 )
     $response_data['partial']  = 0;        
 
+if(!in_array($category,$fabric_categories_array) ){
+    $target_doc_type .= '_other';
+    $details = "SELECT order_del_no,order_col_des,order_style_no from bai_pro3.bai_orders_db_confirm where order_tid='$order_tid'";
+    $details_r = mysqli_query($link,$details);
+    $row1 = mysqli_fetch_array($details_r);
+    $response_data['styles']   = $row1['order_style_no'];
+    $response_data['schedules']= $row1['order_del_no'];
+    $response_data['colors']   = $row1['order_col_des'];
+    $response_data['good_pieces'] = $a_plies * $ratio;
+    if($a_plies == $p_plies &&  $act_cut_status == 'DONE'){
+        $response_data['cut_done']  = 1;
+    }
+}
+    
 $response_data['doc_no'] = $doc_no;
 $response_data['fab_required'] = $fab_required; 
 $response_data['doc_qty']    = $doc_qty;

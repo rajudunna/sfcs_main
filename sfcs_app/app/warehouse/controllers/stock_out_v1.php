@@ -2,6 +2,9 @@
 <?php 
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config_splitting_function.php',3,'R'));
+
+// require_once('phplogin/auth.php');
 ob_start();
 $url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
 include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
@@ -52,13 +55,17 @@ if(isset($_POST['submit']))
 {
   $lot_nos=$_POST['lot_no'];
   $lot_nos_explode=explode(",",$lot_nos);
-  $lot_no=implode(",",$lot_nos_explode);
+  //Added the single quotes for multiple level of stock searching
+  $lot_no=implode("','",$lot_nos_explode);
+  //echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"insert.php?lot_no=$lot_no_new\"; }</script>";
 }
 else
 {
   $lot_nos=$_GET['lot_no'];
   $lot_nos_explode=explode(",",$lot_nos);
-  $lot_no=implode(",",$lot_nos_explode);
+  //Added the single quotes for multiple level of stock searching
+  $lot_no=implode("','",$lot_nos_explode);
+  
 }
 
 
@@ -79,7 +86,9 @@ if(strlen($lot_no)>2)
 	  echo"<style>#back1{display:none;}</style>";
 	 }
 
-$sql5="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date from $bai_rm_pj1.sticker_report where lot_no in ('".trim($lot_no)."')";
+//$sql="select * from sticker_report where lot_no=\"".trim($lot_no)."\"";
+$sql5="select * from $bai_rm_pj1.sticker_report where lot_no in ('".trim($lot_no)."')";
+//mysqli_query($sql,$link) or exit("Sql Error2".mysqli_error());
 $sql_result5=mysqli_query($link, $sql5) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check1=mysqli_num_rows($sql_result5);
 while($sql_row=mysqli_fetch_array($sql_result5))
@@ -100,6 +109,7 @@ while($sql_row=mysqli_fetch_array($sql_result5))
 }
 
 $sql="select sum(qty_rec) as \"qty_rec\" from $bai_rm_pj1.store_in where lot_no in ('".trim($lot_no)."')";
+//mysqli_query($sql,$link) or exit("Sql Error3".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error3".mysqli_error());
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -163,15 +173,15 @@ switch (trim($product_group))
 
 if($sql_num_check1>0)
 {
- 
-  $sql="select tid,ref1,ref2,qty_rec,barcode_number,status,qty_issued,qty_ret,partial_appr_qty,ref5,lot_no from $bai_rm_pj1.store_in where lot_no in ('".trim($lot_no)."') and status in (0,1) and roll_status in (0,2)  order by lot_no";	
+  //$sql="select * from store_in where lot_no=\"".trim($lot_no)."\" and status in (0,1) and roll_status in (0,2) order by lot_no";	
+  $sql="select * from $bai_rm_pj1.store_in where lot_no in ('".trim($lot_no)."') and status in (0,1) and roll_status in (0,2)  order by lot_no";	
   //
 }
 else
 {
-  
-  $sql="select tid,ref1,ref2,qty_rec,barcode_number,status,qty_issued,qty_ret,partial_appr_qty,ref5,lot_no from $bai_rm_pj1.store_in where ref1 in ('".trim($lot_no)."') and status in (0,1) and roll_status in (0,2) order by lot_no";
-
+  //$sql="select * from store_in where ref1=\"".trim($lot_no)."\" and status in (0,1) and roll_status in (0,2) order by lot_no";
+  $sql="select * from $bai_rm_pj1.store_in where ref1 in ('".trim($lot_no)."') and status in (0,1) and roll_status in (0,2) order by lot_no";
+//echo $sql;
 }
 
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error1".mysqli_error());
@@ -195,7 +205,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	  {
 		  echo "<td  style='background-color:white;'>$location</td><td style='background-color:white;'>$lot_ref</td><td style='background-color:white;'>$barcode_number</td><td style='background-color:white;'>$box</td><td style='background-color:white;'>$available</td>";
 		  echo '<td style="background-color:white;"><input style="width:88px; type="text" name="date[]" value="'.date("Y-m-d").'"></td>';
-		  echo '<td style="background-color:white;"><input style="width: 72px; type="text" name="qty_issued[]"  value="" onchange="if(check(this.value, '.$available.')==1010){ this.value=0;}"></td>';
+		  echo '<td style="background-color:white;"><input class="float" style="width: 72px; type="text" name="qty_issued[]"  value="" onchange="if(check(this.value, '.$available.')==1010){ this.value=0;}"></td>';
 		  echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="style[]"  value=""></td>';
 		  echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="schedule[]"  value=""></td>';
 		  echo '<td style="background-color:white;"><input style="width: 62px; type="text" name="cut[]" value=""></td>';
@@ -235,10 +245,10 @@ echo "<div class='table-responsive'>";
 echo "<table class='table table-bordered'>";
 echo "<tr style='background-color:white;'><th>date</th><th>Label Id</th><th>Roll No</th><th>Qty</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Remarks</th><th>User</th></tr>";
 if($sql_num_check1>0){
-$sql="select date,qty_issued,Style,Schedule,tran_tid,cutno,remarks,updated_by from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where lot_no in ('".trim($lot_no)."')) order by date";
+$sql="select * from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where lot_no in ('".trim($lot_no)."')) order by date";
 }
 else{
-  $sql="select date,qty_issued,Style,Schedule,tran_tid,cutno,remarks,updated_by from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where ref1 in ('".trim($lot_no)."')) order by date";
+  $sql="select * from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where ref1 in ('".trim($lot_no)."')) order by date";
 }
 
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error5".mysqli_error());
@@ -329,15 +339,16 @@ if(isset($_POST['put']))
   $available2=$_POST['available2']; //CTEX Length
   $lot_no_new=$_POST['lot_no'];
   $user_name=$_SESSION['SESS_MEMBER_ID'];
-  for($i=0; $i<sizeof($qty_issued); $i++)
+  for($j=0; $j<sizeof($qty_issued); $j++)
   {
-	  if($qty_issued[$i]>0)
+	  if($qty_issued[$j]>0)
 	  {
-		  $sql="insert into $bai_rm_pj1.store_out (tran_tid, qty_issued, style, schedule, cutno, date, remarks, updated_by) values (".$tid[$i].",".$qty_issued[$i].",'".$style[$i]."','".$schedule[$i]."','".$cut[$i]."','".$date[$i]."','".$remarks[$i]."','".$username."_rm_issue')";
+		  $sql="insert into $bai_rm_pj1.store_out (tran_tid, qty_issued, style, schedule, cutno, date, remarks, updated_by) values (".$tid[$j].",".$qty_issued[$j].",'".$style[$j]."','".$schedule[$j]."','".$cut[$j]."','".$date[$j]."','".$remarks[$j]."','".$username."_rm_issue')";
 		  $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 		  $qty_issued_new=0;
 		  
-		  $sql5="select qty_issued from $bai_rm_pj1.store_in where tid=".$tid[$i];
+		  $sql5="select qty_issued from $bai_rm_pj1.store_in where tid=".$tid[$j];
+		  //mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 		  $sql_result=mysqli_query($link,$sql5) or exit("Sql Error".mysqli_error());
 		  $sql_num_check=mysqli_num_rows($sql_result);
 		  while($sql_row=mysqli_fetch_array($sql_result))
@@ -346,47 +357,55 @@ if(isset($_POST['put']))
 		  }
 		  $qty_issued_new=$qty_issued_new+$qty_issued[$i];
 
-		  if($qty_issued[$i]<$available[$i]){
-				  
-			  //balanced qty
-			  $balance_qty=(($available[$i])-($qty_issued[$i]));
+		  //this is for new roll splitting logic
+
+		  if($qty_issued[$j]<=$available[$j]){
+			$val_ref[$j]=$available[$j];
+			 $issued_ref[$j]=$qty_issued[$j];
+			 $tid_ref[$j]= $tid[$j];
+		  
+			  $roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
+
+			  $sql12="update $bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_ref[$j]."  where tid=".$tid_ref[$j];
+			  $sql_result=mysqli_query($link,$sql12) or exit("Sql Error45".mysqli_error());
+			//   $sql_result=mysqli_query($link,$sql12) or exit("Sql Error".mysqli_error());
 			  //current date in php
-			  $current_date=date("Y-m-d");
+			//   $current_date=date("Y-m-d");
 
-			  //getting new rolls details
-			  $qry_rolldetails="SELECT lot_no,ref1,ref2,ref3,remarks,log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason,barcode_number,ref_tid FROM $bai_rm_pj1.store_in WHERE tid=".$tid[$i];
-			  $result__rolldetials=mysqli_query($link, $qry_rolldetails);
-			  $row_rolldetials=mysqli_fetch_assoc($result__rolldetials);
+			//   //getting new rolls details
+			//   $qry_rolldetails="SELECT lot_no,ref1,ref2,ref3,remarks,log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason,barcode_number,ref_tid FROM $bai_rm_pj1.store_in WHERE tid=".$tid[$i];
+			//   $result__rolldetials=mysqli_query($link, $qry_rolldetails);
+			//   $row_rolldetials=mysqli_fetch_assoc($result__rolldetials);
 
-			  $qry_newroll="insert into $bai_rm_pj1.store_in(lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll,ref_tid,barcode_number) values('".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$balance_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$row_rolldetials["log_user"]."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".$row_rolldetials["ref5"]."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$tid[$i]."','".$tid[$i]."','0')";
-			  mysqli_query($link, $qry_newroll) or exit("Sql Error3: $qry_newroll".mysqli_error($GLOBALS["___mysqli_ston"]));
-			  //echo "</br>".$qry_newroll;
+			//   $qry_newroll="insert into $bai_rm_pj1.store_in(lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll,ref_tid,barcode_number) values('".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$balance_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$row_rolldetials["log_user"]."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".$row_rolldetials["ref5"]."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$tid[$i]."','".$tid[$i]."','0')";
+			//   mysqli_query($link, $qry_newroll) or exit("Sql Error3: $qry_newroll".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//   //echo "</br>".$qry_newroll;
 
 
-			  $new_tid=mysqli_insert_id($link);
+			//   $new_tid=mysqli_insert_id($link);
 
-			  $sql22="update $bai_rm_pj1.store_in set barcode_number='".$facility_code."-".$new_tid."' where tid=".$new_tid;
-			  //echo "</br>".$sql22;
-			  mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//   $sql22="update $bai_rm_pj1.store_in set barcode_number='".$facility_code."-".$new_tid."' where tid=".$new_tid;
+			//   //echo "</br>".$sql22;
+			//   mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-			  $sql12="update $bai_rm_pj1.store_in set qty_rec=".$qty_issued_new.",qty_issued=".$qty_issued_new.", allotment_status=0 where tid=".$tid[$i];
-			  $sql_result=mysqli_query($link,$sql12) or exit("Sql Error".mysqli_error());
+			//   $sql12="update $bai_rm_pj1.store_in set qty_rec=".$qty_issued_new.",qty_issued=".$qty_issued_new.", allotment_status=0 where tid=".$tid[$i];
+			//   $sql_result=mysqli_query($link,$sql12) or exit("Sql Error".mysqli_error());
 			  
 			  
 
 		  }
 
-		  if($available[$i]==$qty_issued[$i])
-		  {
-			  $sql="update $bai_rm_pj1.store_in set status=2, allotment_status=2 where tid=".$tid[$i];
-			  $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
-		  }
-		  //CTEX Length
-		  if($qty_issued[$i]>=$available2[$i])
-		  {
-			  $sql="update $bai_rm_pj1.store_in set allotment_status=2 where tid=".$tid[$i];
-			  $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
-		  }
+		//   if($val_ref[$j]==$issued_ref[$j])
+		//   {
+		// 	  $sql="update $bai_rm_pj1.store_in set status=2, allotment_status=2 where tid=".$tid_ref[$j];
+		// 	  $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
+		//   }
+		//   //CTEX Length
+		//   if($issued_ref[$j]>=$available2[$j])
+		//   {
+		// 	  $sql="update $bai_rm_pj1.store_in set allotment_status=2 where tid=".$tid_ref[$j];
+		// 	  $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
+		//   }
 	  }
   }
   echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";

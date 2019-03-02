@@ -232,7 +232,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//if(substr($style,0,1)=="M") 
 	$savings=$sql_row['savings'];
 	$extra=round((($sql_row['material_req'])*$savings),2);
-	$met_req[]=$sql_row['material_req']+$extra;
+	$met_req[]=$mklength*$sql_row['p_plies']+$extra;
 	$plies[]=$sql_row['p_plies'];
 	$docs[]=$sql_row['doc_no'];
 	$cc_code[]=$sql_row['color_code'];
