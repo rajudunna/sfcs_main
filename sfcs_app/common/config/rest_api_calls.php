@@ -80,8 +80,9 @@ class rest_api_calls {
 
 		$log_data = writing_logs_to_file($unique_id,$url);
 		$response = curl_exec($curl);
-		// Added Code
-		$body = substr($response, strpos($response, "\r\n\r\n")+4);
+		$header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+		$header = substr($response, 0, $header_size);
+		$body = substr($response, $header_size);
 		$log_data = writing_logs_to_file($unique_id,$response);
 		$httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 		$err = curl_error($curl);
