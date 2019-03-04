@@ -50,7 +50,7 @@ echo "<input type='hidden' id='style' value='".$_GET['style']."'>
 <input type='hidden' id='input_job_no' value='".$_GET['input_job']."'>";
 
 $colors=[];
-$sql="select order_col_des from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' group by order_col_des";	 
+$sql="select order_col_des from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' group by order_col_des";
 $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($sql_result))
 {
@@ -65,7 +65,6 @@ if(count($colors)>0){
         unset($size_code);
         unset($size_code_qty);
         $sql="select size_code,sum(carton_act_qty) as carton_act_qty from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and order_col_des='".$color."' and input_job_no='".$input_job_no."' group by size_code";
- 
         $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
         $colorrows = mysqli_num_rows($sql_result);
         while($row=mysqli_fetch_array($sql_result))
@@ -76,8 +75,7 @@ if(count($colors)>0){
         
         $limit=40; 
         $limit1=40; 
-        $size_count = count($size_code);
-        $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job_no,$link);
+        $size_count = count($size_code);         
         if($colorrows >0){
             ?>
             <div class="row">
@@ -127,7 +125,6 @@ if(count($colors)>0){
             <br>
             <?php
                 $sql="select order_col_des,size_code,SUM(carton_act_qty) as carton_act_qty from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job_no."' and order_col_des='".$color."' group by size_code";
-                //echo $sql."<br/>";
                 $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
                 //echo mysqli_num_rows($sql_result)."<br>";
                 if(mysqli_num_rows($sql_result) > 0){
@@ -139,7 +136,6 @@ if(count($colors)>0){
                         $size_qty = $row['carton_act_qty'];
                 
 						$mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."'";
-						
                         $mo_sql_result=mysqli_query($link, $mo_sql) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 						$mo_numrows=mysqli_num_rows($mo_sql_result);
 						
@@ -185,64 +181,67 @@ if(count($colors)>0){
                         $checkingitemcode_strim = [];
                         $checkingitemcode_ptrim = [];
                         foreach ($final_data as $key1 => $value1) {
-							$op_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and description = '".$value1['color']."' and Main_OperationNumber = '".$value1['OPNO']."' and SMV > 0";
-							
-                            $op_sql_result = mysqli_query($link, $op_query) or die("Error".$op_query.mysqli_error($GLOBALS["___mysqli_ston"]));
-                            if(mysqli_num_rows($op_sql_result) > 0){
-                                $value1['trim_type'] = 'STRIM';
-                                //call the api to get the wastage
-                                $mfno = $value1['MFNO'];
-                                $prno = urlencode($value1['PRNO']);
-                                $mseq = $value1['MSEQ'];
+                            if($value1['OPNO'] != 200){
+                                $op_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and description = '".$value1['color']."' and Main_OperationNumber = ".$value1['OPNO']." and SMV > 0";
+                                $op_sql_result = mysqli_query($link, $op_query) or die("Error".$op_query.mysqli_error($GLOBALS["___mysqli_ston"]));
+                                if(mysqli_num_rows($op_sql_result) > 0){
+                                    $value1['trim_type'] = 'STRIM';
+                                    //call the api to get the wastage
+                                    $mfno = $value1['MFNO'];
+                                    $prno = urlencode($value1['PRNO']);
+                                    $mseq = $value1['MSEQ'];
 
-                                $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
-                                $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
-								$api_data_result = json_decode($api_data_wastage, true);
-								  
-                                $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
+                                    $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
+                                    $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
+                                    $api_data_result = json_decode($api_data_wastage, true);
+                                    
+                                    $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
 
-                                if(!in_array($value1['MTNO'],$checkingitemcode_strim)){
-                                    $value1['UOM'] = $result_values[0][0]['Value'];
-                                    $value1['WITH_WASTAGE'] = ($value1['size_qty']*$value1['CNQT'])+($value1['size_qty']*$value1['CNQT']*$result_values[0][1]['Value']/100);
-                                    $value1['WITH_OUT_WASTAGE'] = ($value1['size_qty']*$value1['CNQT']);
-                                    $api_selected_valuess_strim[$value1['MTNO']] = $value1;
-                                    array_push($checkingitemcode_strim,$value1['MTNO']);
-                                }else{
-                                    $api_selected_valuess_strim[$value1['MTNO']]['CNQT']+=$value1['CNQT'];
-                                    $api_selected_valuess_strim[$value1['MTNO']]['size_qty']+=$value1['size_qty'];
-                                    $api_selected_valuess_strim[$value1['MTNO']]['WITH_WASTAGE']+=($value1['size_qty']*$value1['CNQT'])+($value1['size_qty']*$value1['CNQT']*$result_values[0][1]['Value']/100);
-                                    $api_selected_valuess_strim[$value1['MTNO']]['WITH_OUT_WASTAGE']+=($value1['size_qty']*$value1['CNQT']); 
+                                    if(!in_array($value1['MTNO'],$checkingitemcode_strim)){
+                                        $value1['UOM'] = $result_values[0][0]['Value'];
+                                        $value1['WITH_WASTAGE'] = ($value1['size_qty']*$value1['CNQT'])+($value1['size_qty']*$value1['CNQT']*$result_values[0][1]['Value']/100);
+                                        $value1['WITH_OUT_WASTAGE'] = ($value1['size_qty']*$value1['CNQT']);
+                                        $api_selected_valuess_strim[$value1['MTNO']] = $value1;
+                                        array_push($checkingitemcode_strim,$value1['MTNO']);
+                                    }else{
+                                        $api_selected_valuess_strim[$value1['MTNO']]['CNQT']+=$value1['CNQT'];
+                                        $api_selected_valuess_strim[$value1['MTNO']]['size_qty']+=$value1['size_qty'];
+                                        $api_selected_valuess_strim[$value1['MTNO']]['WITH_WASTAGE']+=($value1['size_qty']*$value1['CNQT'])+($value1['size_qty']*$value1['CNQT']*$result_values[0][1]['Value']/100);
+                                        $api_selected_valuess_strim[$value1['MTNO']]['WITH_OUT_WASTAGE']+=($value1['size_qty']*$value1['CNQT']); 
+                                    }
                                 }
                             }
-                           
-                            $op_ptrim_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and description = '".$value1['color']."' and Main_OperationNumber = '".$value1['OPNO']."' and Main_OperationNumber = 200";
-                            $op_ptrim_sql_result = mysqli_query($link, $op_ptrim_query) or die("Error".$op_ptrim_query.mysqli_error($GLOBALS["___mysqli_ston"]));
-                            if(mysqli_num_rows($op_ptrim_sql_result) > 0){
-                                $value1['trim_type'] = 'PTRIM';                                
-                                //call the api to get the wastage
-                                $mfno = $value1['MFNO'];
-                                $prno = urlencode($value1['PRNO']);
-                                $mseq = $value1['MSEQ'];
+                            if($value1['OPNO'] == 200){
+                                $op_ptrim_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and description = '".$value1['color']."' and Main_OperationNumber = 200";
+                                $op_ptrim_sql_result = mysqli_query($link, $op_ptrim_query) or die("Error".$op_ptrim_query.mysqli_error($GLOBALS["___mysqli_ston"]));
+                                if(mysqli_num_rows($op_ptrim_sql_result) > 0){
+                                    $value1['trim_type'] = 'PTRIM';                                
+                                    //call the api to get the wastage
+                                    $mfno = $value1['MFNO'];
+                                    $prno = urlencode($value1['PRNO']);
+                                    $mseq = $value1['MSEQ'];
 
-                                $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
-                                $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
-								$api_data_result = json_decode($api_data_wastage, true);
-								  
-                                $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
+                                    $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
+                                    $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
+                                    $api_data_result = json_decode($api_data_wastage, true);
+                                    
+                                    $result_values = array_column($api_data_result['MIRecord'], 'NameValue');
 
-                                if(!in_array($value1['MTNO'],$checkingitemcode_ptrim)){
-                                    $value1['WITH_WASTAGE'] = ($value1['size_qty']*$value1['CNQT'])+($value1['size_qty']*$value1['CNQT']*$result_values[0][1]['Value']/100);
-                                    $value1['WITH_OUT_WASTAGE'] = ($value1['size_qty']*$value1['CNQT']);
-                                    $value1['UOM'] = $result_values[0][0]['Value'];
-                                    $api_selected_valuess_ptrim[$value1['MTNO']] = $value1;
-                                    array_push($checkingitemcode_ptrim,$value1['MTNO']);
-                                }else{
-                                    $api_selected_valuess_ptrim[$value1['MTNO']]['CNQT']+=$value1['CNQT'];
-                                    $api_selected_valuess_ptrim[$value1['MTNO']]['size_qty']+=$value1['size_qty'];
-                                    $api_selected_valuess_ptrim[$value1['MTNO']]['WITH_WASTAGE']+=($value1['size_qty']*$value1['CNQT'])+($value1['size_qty']*$value1['CNQT']*$result_values[0][1]['Value']/100);
-                                    $api_selected_valuess_ptrim[$value1['MTNO']]['WITH_OUT_WASTAGE']+=($value1['size_qty']*$value1['CNQT']);
+                                    if(!in_array($value1['MTNO'],$checkingitemcode_ptrim)){
+                                        $value1['WITH_WASTAGE'] = ($value1['size_qty']*$value1['CNQT'])+($value1['size_qty']*$value1['CNQT']*$result_values[0][1]['Value']/100);
+                                        $value1['WITH_OUT_WASTAGE'] = ($value1['size_qty']*$value1['CNQT']);
+                                        $value1['UOM'] = $result_values[0][0]['Value'];
+                                        $api_selected_valuess_ptrim[$value1['MTNO']] = $value1;
+                                        array_push($checkingitemcode_ptrim,$value1['MTNO']);
+                                    }else{
+                                        $api_selected_valuess_ptrim[$value1['MTNO']]['CNQT']+=$value1['CNQT'];
+                                        $api_selected_valuess_ptrim[$value1['MTNO']]['size_qty']+=$value1['size_qty'];
+                                        $api_selected_valuess_ptrim[$value1['MTNO']]['WITH_WASTAGE']+=($value1['size_qty']*$value1['CNQT'])+($value1['size_qty']*$value1['CNQT']*$result_values[0][1]['Value']/100);
+                                        $api_selected_valuess_ptrim[$value1['MTNO']]['WITH_OUT_WASTAGE']+=($value1['size_qty']*$value1['CNQT']);
+                                    }
                                 }
-                            }                                                 
+                            }
+                                                                             
                         }
                         
                         if(count($api_selected_valuess_strim)>0){?>
