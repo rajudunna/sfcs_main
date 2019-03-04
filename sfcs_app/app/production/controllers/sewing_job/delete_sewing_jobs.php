@@ -90,14 +90,14 @@
         $schedule=$_POST['schedule'];
         $reason=$_POST['reason']; 
         $schedule = str_replace(' ', '', $schedule);
-
+        
         $op_code_query = "Select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application' ";
                     $op_code_result = mysqli_query($link,$op_code_query);
         while($row = mysqli_fetch_array($op_code_result)){
             $ips_op_code = $row['operation_code'];
         }
 
-        $validation_query = "SELECT id from $brandix_bts.bundle_creation_data where schedule = '$schedule' 
+        $validation_query = "SELECT id from $brandix_bts.bundle_creation_data where schedule = '$schedule' and recevied_qty > 0
                     and operation_id = $ips_op_code";
         // $validation_query="SELECT * FROM $bai_pro3.act_cut_status WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '%".$schedule."%')"; 
         // echo $validation_query; 
@@ -121,12 +121,12 @@
             }
             else
             {
-                $pac_stat_input_check = echo_title("$bai_pro3.pac_stat_input","count(*)","schedule",$schedule,$link);
+                $pac_stat_input_check = echo_title("$bai_pro3.packing_summary_input","count(*)","pac_seq_no > 0 and order_del_no",$schedule,$link);
                 if ($pac_stat_input_check > 0)
                 {
                     $url=getFullURL($_GET['r'],'delete_sewing_jobs.php','N');
 
-                    $get_seq_details = "SELECT * FROM bai_pro3.`pac_stat_input` WHERE SCHEDULE='$schedule'";
+                    $get_seq_details = "SELECT DISTINCT pac_seq_no,packing_mode, order_del_no FROM bai_pro3.`packing_summary_input` WHERE order_del_no='$schedule'";
                     $details_seq=mysqli_query($link, $get_seq_details) or exit("error while fetching sequence details for this schedule"); 
                     if (mysqli_num_rows($details_seq) > 0)
                     {
@@ -141,9 +141,9 @@
                                     </tr>";
                         while($row=mysqli_fetch_array($details_seq)) 
                         {
-                            $schedule1 = $row['schedule'];
+                            $schedule1 = $row['order_del_no'];
                             $pac_seq_no = $row['pac_seq_no'];
-                            $pack_method = $row['pack_method'];
+                            $pack_method = $row['packing_mode'];
 
                             echo "<tr>
                                     <td>$schedule1</td>
@@ -270,8 +270,8 @@
         while($row = mysqli_fetch_array($op_code_result)){
             $ips_op_code = $row['operation_code'];
         }
-
-        $validation_query = "SELECT id from $brandix_bts.bundle_creation_data where schedule = '$schedule' 
+        
+        $validation_query = "SELECT id from $brandix_bts.bundle_creation_data where schedule = '$schedule' and recevied_qty > 0 
                     and operation_id = $ips_op_code";
         $sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data");      
         $count= mysqli_num_rows($sql_result); 
@@ -313,6 +313,21 @@
                 {
                     $op_codes_details  = $row12['res']; 
                 }
+
+                $sql_to_verify_row741="SELECT MAX(id) AS id FROM bai_pro3.`pac_stat_input` WHERE SCHEDULE='$schedule' AND pac_seq_no=$seqno";
+                $op_code_result1256 = mysqli_query($link, $sql_to_verify_row741) or exit("while check pac_stat_input");
+                while($row12236=mysqli_fetch_array($op_code_result1256)) 
+                {
+                    $max_id  = $row12236['id']; 
+                }
+
+                $sql_to_verify_row741="SELECT MAX(id) AS id FROM bai_pro3.`pac_stat_input` WHERE SCHEDULE='$schedule' AND id <> $max_id;";
+                $op_code_result1256 = mysqli_query($link, $sql_to_verify_row741) or exit("while check pac_stat_input");
+                while($row12236=mysqli_fetch_array($op_code_result1256)) 
+                {
+                    $max_id_b4  = $row12236['id']; 
+                }
+
                 if($op_codes_details==0)
                 {
                     $delete_tbl_docket_qty="DELETE FROM $bai_pro3.`tbl_docket_qty` WHERE pac_stat_input_id IN (SELECT id FROM $bai_pro3.`pac_stat_input` WHERE SCHEDULE=$schedule)"; 
@@ -328,8 +343,11 @@
                     {
                         $update_doc_qty="update $bai_pro3.`tbl_docket_qty` set fill_qty=(fill_qty-".$row123['qty'].") WHERE type='".$row123['type_of_sewing']."' and doc_no='".$row123['doc_no']."' and size='".$row123['size_code']."'";
                         mysqli_query($link, $update_doc_qty) or exit("Update in  docket_qty table");
-                    }				
-                }		
+                    }
+
+                    $update1="update $bai_pro3.`tbl_docket_qty` set pac_stat_input_id='$max_id_b4' where pac_stat_input_id='$max_id'";
+                    mysqli_query($link, $update1) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));              
+                }       
                 
                 $delete_pac_stat_input="DELETE FROM $bai_pro3.`pac_stat_input` WHERE SCHEDULE=$schedule AND pac_seq_no=$seqno"; 
                 // echo $delete_pac_stat_input."<br>"; 
@@ -348,7 +366,7 @@
                     $final_doc=array();
                     while($row432=mysqli_fetch_array($op_code_result)) 
                     {
-                        $temp_doc[]=$row432['doc_no'];					
+                        $temp_doc[]=$row432['doc_no'];                  
                     }
                     $final_doc=array_diff(array_unique($docket_no),$temp_doc);
                     
@@ -361,7 +379,7 @@
                         $delete_plan_input_qry="DELETE FROM bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref IN ('$get_job_random')"; 
                         // echo $delete_plan_input_qry."<br>"; 
                         mysqli_query($link, $delete_plan_input_qry) or exit("Sql Error delete_plan_input_qry");
-                    }    				 
+                    }                    
                 }
                 else
                 {
