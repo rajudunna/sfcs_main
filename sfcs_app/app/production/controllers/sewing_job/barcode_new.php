@@ -50,7 +50,8 @@
 		while($barcode_rslt = mysqli_fetch_array($sql_barcode))
 		{
 			$sewing_job_random_id=$barcode_rslt['input_job_no_random'];
-			$barcode=$barcode_rslt['tid'];
+			//$barcode=$barcode_rslt['tid'];
+			$barcode=leading_zeros($barcode_rslt['tid'],4);
 			$color=$barcode_rslt['order_col_des'];
 			$style=$barcode_rslt['order_style_no'];
 			$cutno=$barcode_rslt['acutno'];
