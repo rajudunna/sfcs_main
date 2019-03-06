@@ -472,7 +472,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			if(strlen($_GET["lots"]) > 0)
 			{
-				echo "<td><input type=\"text\" id=\"tot\" class='integer' name=\"available[]\" value=\"0\" onchange=\"if(this.value<0 || this.value>".$sql_row['avail_qty'].") {  this.value=0; alert('Please enter correct value.');}\" onkeyup=\"DataCheck();\"  onfocus=\"this.focus(); this.select();\" ></td>";
+				echo "<td><input type=\"text\" id=\"tot\" class='float' name=\"available[]\" value=\"0\" onchange=\"if(this.value<0 || this.value>".$sql_row['avail_qty'].") {  this.value=0; alert('Please enter correct value.');}\" onkeyup=\"DataCheck();\"  onfocus=\"this.focus(); this.select();\" ></td>";
 				echo "<td><input type=\"text\" id=\"bal\" name=\"balneed[]\" value=\"0\"></td>";
 				break;
 			}
