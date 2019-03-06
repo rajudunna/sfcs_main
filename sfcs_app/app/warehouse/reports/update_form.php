@@ -435,7 +435,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		case 2:
 		{
-			echo "<td><input type=\"text\" name=\"available[]\" id=\"availa\" value=\"0\" onchange=\"if(this.value<0 || this.value>".$sql_row['req_qty'].") {  this.value=0; alert('Please enter correct value.');}\"  onfocus=\"this.focus();
+			echo "<td><input type=\"text\" class='float' name=\"available[]\" value=\"0\" onchange=\"if(this.value<0 || this.value>".$sql_row['req_qty'].") {  this.value=0; alert('Please enter correct value.');}\"  onfocus=\"this.focus();
    this.select();\" ></td>";
    			break;
 		}
@@ -443,7 +443,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			if(strlen($_GET["lots"]) > 0)
 			{
-				echo "<td><input type=\"text\" id=\"tot\" name=\"available[]\" value=\"0\" onchange=\"if(this.value<0 || this.value>".$sql_row['avail_qty'].") {  this.value=0; alert('Please enter correct value.');}\" onkeyup=\"DataCheck();\"  onfocus=\"this.focus(); this.select();\" ></td>";
+				echo "<td><input type=\"text\"  class='float' id=\"tot\" name=\"available[]\" value=\"0\" onchange=\"if(this.value<0 || this.value>".$sql_row['avail_qty'].") {  this.value=0; alert('Please enter correct value.');}\" onkeyup=\"DataCheck();\"  onfocus=\"this.focus(); this.select();\" ></td>";
 				echo "<td><input type=\"text\" id=\"bal\" name=\"balneed[]\" value=\"0\"></td>";
 				break;
 			}
@@ -528,7 +528,7 @@ col_4: "select" }
 
 $(document).ready(function(){
 	$('#tot').on('change',function(e){
-		alert('hi');
+		//alert('hi');
 	});
 });
 
