@@ -231,12 +231,12 @@ white-space:nowrap;
                                     { 
                                         if($sections_string==$sql_row2['sec_name']) 
                                         { 
-                                            echo "<option value=\"".$sql_row2['sec_name']."\" selected>Unit-".$sql_row2['sec_name'].""; 
+                                            echo "<option value=\"".$sql_row2['sec_name']."\" selected>".$sql_row2['section_display_name'].""; 
 											$sections_list[]=$sql_row2['sec_name'];
                                         } 
                                         else 
                                         { 
-                                            echo "<option value=\"".$sql_row2['sec_name']."\">Unit-".$sql_row2['sec_name'].""; 
+                                            echo "<option value=\"".$sql_row2['sec_name']."\">".$sql_row2['section_display_name'].""; 
 											$sections_list[]=$sql_row2['sec_name'];
                                         } 
                                     } 
