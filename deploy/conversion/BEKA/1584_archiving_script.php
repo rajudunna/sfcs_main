@@ -28,6 +28,7 @@
 
 
 <?php
+ini_set('max_execution_time',0);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 echo "<br/><br/>Started Running <br/>";
