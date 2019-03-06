@@ -357,6 +357,10 @@ if(isset($_POST["submit"]))
                     $order_det_suc[]=$order_tid[$i]; 
                     //MAIL 
                     //echo "<script language=\"javascript\"> setTimeout(\"CloseWindow()\",0); function CloseWindow() { window.open('','_self',''); window.close(); }  </script>"; 
+                    $deleted = deleteMOQuantitiesCut($schedule,$color);
+                    if($deleted){
+                        //Successfully Deleted From Mo Operation Quantites
+                    }
                 } 
                 else 
                 { 
@@ -442,10 +446,7 @@ if(isset($_POST["submit"]))
             //echo $deletefrommoquantitys;
             mysqli_query($link, $deletefrommoquantitys) or die("Error while deleting mo nos from mo operation quantities".mysqli_error($GLOBALS["___mysqli_ston"])); 
             */
-            $deleted = deleteMOQuantitiesCut($schedule,$color);
-            if($deleted){
-                //Successfully Deleted From Mo Operation Quantites
-            }
+           
         } 
         else 
         { 
