@@ -830,7 +830,7 @@
 								{
 									$counter = 1;
 									$val = explode(',', $n['bundle_nos']);
-									$rooo = ceil(count($val)/6);
+									$rooo = ceil(count($val)/3);
 									echo "
 									<tr height=20 style='height:15.0pt'>
 										<td height=20 rowspan=$rooo class=xl656065 style='height:15.0pt'>".$sno."</td>
@@ -839,14 +839,14 @@
 										<td class=xl666065 rowspan=$rooo >".$n['qty']."</td>
 										<td class=xl666065 rowspan=$rooo >".$n['bundle_count']."</td>
 										<td class=xl666065 rowspan=$rooo >".$location."</td>";
-										for ($i=0; $i < count($val); $i+=6)
+										for ($i=0; $i < count($val); $i+=3)
 										{
 											$temp = "";
 											if ($counter > 1)
 											{
 												echo "<tr height=20 style='height:15.0pt'>";
 											}
-												for($m=$i;$m<$i+6;$m++)
+												for($m=$i;$m<$i+3;$m++)
 												{
 													if ($val[$m] != '' || $val[$m] != null) 
 													{
