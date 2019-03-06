@@ -100,7 +100,7 @@
 							FROM bai_pro3.`pac_stat_log_input_job`
 							LEFT JOIN bai_pro3.`plandoc_stat_log` ON plandoc_stat_log.`doc_no` = pac_stat_log_input_job.`doc_no`
 							LEFT JOIN bai_pro3.`bai_orders_db` ON plandoc_stat_log.`order_tid` = bai_orders_db.`order_tid`
-							WHERE order_style_no='$style' AND order_del_no='$schedule' GROUP BY doc_no";
+							WHERE order_style_no='$style' AND order_del_no='$schedule' GROUP BY doc_no order by doc_no";
 					// echo $sql1;
 					$sql_result1=mysqli_query($link, $sql1) or exit("Error while fetching details for the selected style and schedule");
 					if (mysqli_num_rows($sql_result1) > 0)

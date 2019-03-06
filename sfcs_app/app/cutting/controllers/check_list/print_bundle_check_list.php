@@ -19,14 +19,14 @@
 			$doc_no = $_GET['doc_no'];
 			// echo $style.$schedule.$doc_no;
 			$sql12="SELECT order_div FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no='$schedule' limit 1";
-			// echo $sql1;
+			// echo $sql12;
 			$sql_result12=mysqli_query($link, $sql12) or exit("Error while fetching details for the selected style and schedule");
 			while($m1=mysqli_fetch_array($sql_result12))
 			{
 				$order_div = $m1['order_div'];
 			}
 			$sql123="SELECT bundle_loc FROM $bai_pro3.`act_cut_status` WHERE doc_no='$doc_no' limit 1";
-			// echo $sql1;
+			// echo $sql123;
 			$sql_result123=mysqli_query($link, $sql123) or exit("Error while fetching details for the selected style and schedule");
 			while($m13=mysqli_fetch_array($sql_result123))
 			{
@@ -208,7 +208,7 @@
 					font-family:Calibri, sans-serif;
 					mso-font-charset:0;
 					mso-number-format:General;
-					text-align:right;
+					text-align:center;
 					vertical-align:bottom;
 					border-top:none;
 					border-right:.5pt solid windowtext;
@@ -750,7 +750,7 @@
 				<table border=0 cellpadding=0 cellspacing=0 width=896 style='border-collapse:collapse;table-layout:fixed;width:672pt'>
 				 	<col width=64 span=14 style='width:48pt'>
 					<tr height=20 style='mso-height-source:userset;height:15.0pt'>
-						<td colspan=14 rowspan=2 height=40 class=xl836065 width=896 style='border-right:.5pt solid black;border-bottom:.5pt solid black;height:30.0pt;width:672pt'>Ticket Check List&nbsp;</td>
+						<td colspan=14 rowspan=2 height=40 class=xl836065 width=896 style='border-right:.5pt solid black;border-bottom:.5pt solid black;height:30.0pt;width:672pt'>Bundle Check List&nbsp;</td>
 					</tr>
 				 	<tr height=20 style='mso-height-source:userset;height:15.0pt'></tr>
 					<tr height=20 style='height:15.0pt'></tr>
@@ -783,23 +783,24 @@
 						{
 							$display_sewing_job = get_sewing_job_prefix_inp('prefix','brandix_bts.tbl_sewing_job_prefix',$key,$value,$link);
 							$total_bundle_qty = 0;	$total_bundles = 0;
-							$sql1234="SELECT input_module FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='$value' limit 1";
-							// echo $sql1;
-							$sql_result1234=mysqli_query($link, $sql1234) or exit("Error while fetching details for the selected style and schedule");
-							while($m134=mysqli_fetch_array($sql_result1234))
-							{
-								$input_module = $m134['input_module'];
-							}
 							$location='';
 							if($bundle_loc=='')
 							{
-								if($input_module<>"")
+								$sql1234="SELECT input_module FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='$value' limit 1";
+								// echo $sql1;
+								$sql_result1234=mysqli_query($link, $sql1234) or exit("Error while fetching details for the selected style and schedule");
+								while($m134=mysqli_fetch_array($sql_result1234))
+								{
+									$input_module = $m134['input_module'];
+								}
+
+								if($input_module != "")
 								{
 									$location="L-".$input_module;
 								}
 								else
 								{
-									$location='';
+									$location='-';
 								}	
 							}
 							else
@@ -813,14 +814,15 @@
 								</tr>
 								<tr height=20 style='height:15.0pt'>
 									<td height=20 class=xl636065 style='height:15.0pt'>Sno</td>
-									<td colspan=3 class=xl746065 style='border-right:.5pt solid black;border-left:none'>Color</td>
+									<td colspan=4 class=xl746065 style='border-right:.5pt solid black;border-left:none'>Color</td>
 									<td class=xl646065>Size</td>
 									<td class=xl646065>Bundles<br>Total<br>Quantity</td>
 									<td class=xl646065>Bundles<br>Count</td>
+									<td class=xl646065>Bundle<br>Location</td>
 									<td colspan=7 class=xl746065 style='border-right:.5pt solid black;border-left:none'>Bundle Numbers - Bundle Quantity</td>
 								</tr>";
 								$sql123="SELECT order_col_des,size_code, SUM(carton_act_qty) AS qty, COUNT(*) AS bundle_count,GROUP_CONCAT(tid, '-', carton_act_qty) AS bundle_nos 
-									FROM bai_pro3.`packing_summary_input` WHERE input_job_no_random='".$value."' GROUP BY order_col_des,size_code;";
+									FROM bai_pro3.`packing_summary_input` WHERE input_job_no_random='".$value."' and doc_no = '".$doc_no."' GROUP BY order_col_des,size_code;";
 								// echo $sql123;
 								$sql_result123=mysqli_query($link, $sql123) or exit("Error while fetching details for the selected style and schedule");
 								$sno = 1;
@@ -832,10 +834,11 @@
 									echo "
 									<tr height=20 style='height:15.0pt'>
 										<td height=20 rowspan=$rooo class=xl656065 style='height:15.0pt'>".$sno."</td>
-										<td colspan=3 rowspan=$rooo class=xl686065 style='border-right:.5pt solid black;border-left:none'>".$n['order_col_des']."</td>
+										<td colspan=4 rowspan=$rooo class=xl686065 style='text-align:left; border-right:.5pt solid black;border-left:none'>".$n['order_col_des']."</td>
 										<td class=xl666065 rowspan=$rooo>".$n['size_code']."</td>
 										<td class=xl666065 rowspan=$rooo >".$n['qty']."</td>
-										<td class=xl666065 rowspan=$rooo >".$n['bundle_count']."</td>";
+										<td class=xl666065 rowspan=$rooo >".$n['bundle_count']."</td>
+										<td class=xl666065 rowspan=$rooo >".$location."</td>";
 										for ($i=0; $i < count($val); $i+=6)
 										{
 											$temp = "";
@@ -866,10 +869,10 @@
 
 								echo "
 								<tr height=20 style='height:15.0pt'>
-									<td colspan=5 height=20 class=xl716065 style='border-right:.5pt solid black;height:15.0pt'>Total Quantity</td>
+									<td colspan=6 height=20 class=xl716065 style='border-right:.5pt solid black;height:15.0pt'>Total Quantity</td>
 									<td class=xl676065>".$total_bundle_qty."</td>
 									<td class=xl676065>".$total_bundles."</td>
-									<td colspan=7 class=xl686065 style='border-right:.5pt solid black;border-left:none'>&nbsp;</td>
+									<td colspan=8 class=xl686065 style='border-right:.5pt solid black;border-left:none'></td>
 								</tr>
 							";
 						}
