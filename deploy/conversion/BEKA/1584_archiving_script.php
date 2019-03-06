@@ -28,6 +28,7 @@
 
 
 <?php
+ini_set('max_execution_time',0);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 echo "<br/><br/>Started Running <br/>";
@@ -141,7 +142,7 @@ foreach($docs as $doc){
 		$input_jobs[] = $row['input_job_no_random'];
 	}
 }
-
+array_unique($schedules);
 // tbl_carton_ref_archive;	carton_barcode
 // tbl_carton_size_ref_archive;	parent_id
 // tbl_cut_master_archive;	product_schedule
@@ -310,8 +311,8 @@ foreach($schedules as $schedule){
 	$archive_query[] = "INSERT INTO $bai_pro3.pac_stat_archive(select * from $bai_pro3.pac_stat where schedule = '$schedule')";
 	$archive_query[] = "INSERT INTO $bai_pro3.pac_stat_input_archive(select * from $bai_pro3.pac_stat_input where schedule = '$schedule')";
 	$archive_query[] = "INSERT INTO $bai_pro3.pac_stat_log_archive(select * from $bai_pro3.pac_stat_log where schedule = '$schedule')";
-	$archive_query[] = "INSERT INTO $bai_pro.bai_log_archive(select * from $bai_pro3.bai_log where delivery = '$schedule')";
-	$archive_query[] = "INSERT INTO $bai_pro.bai_log_buf_archive(select * from $bai_pro3.bai_log_buf where delivery = '$schedule')";
+	$archive_query[] = "INSERT INTO $bai_pro.bai_log_archive(select * from $bai_pro.bai_log where delivery = '$schedule')";
+	$archive_query[] = "INSERT INTO $bai_pro.bai_log_buf_archive(select * from $bai_pro.bai_log_buf where delivery = '$schedule')";
 	$archive_query[] = "INSERT INTO $brandix_bts.tbl_carton_ref_archive(select * from $brandix_bts.tbl_carton_ref where carton_barcode = '$schedule')";
 	$archive_query[] = "INSERT INTO $brandix_bts.tbl_cut_master_archive(select * from $brandix_bts.tbl_cut_master where product_schedule = '$schedule')";
 	$archive_query[] = "INSERT INTO $brandix_bts.tbl_orders_master_archive(select * from $brandix_bts.tbl_orders_master where product_schedule = '$schedule')";
@@ -336,15 +337,15 @@ foreach($schedules as $schedule){
 // tbl_orders_sizes_master_archive;	parent_id
 
 foreach($carton_size_ref as $id){
-	$archive_query[] = "INSERT INTO $brandix_bts.tbl_carton_size_ref_archive(select * from $bai_pro3.tbl_carton_size_ref where parent_id = '$id')";
+	$archive_query[] = "INSERT INTO $brandix_bts.tbl_carton_size_ref_archive(select * from $brandix_bts.tbl_carton_size_ref where parent_id = '$id')";
 	$delete_query[] = "DELETE from $brandix_bts.tbl_carton_size_ref where parent_id = '$id'";
 }
 foreach($cut_size_master as $id){
-	$archive_query[] = "INSERT INTO $brandix_bts.tbl_cut_size_master_archive(select * from $bai_pro3.tbl_cut_size_master where parent_id = '$id')";
+	$archive_query[] = "INSERT INTO $brandix_bts.tbl_cut_size_master_archive(select * from $brandix_bts.tbl_cut_size_master where parent_id = '$id')";
 	$delete_query[] = "DELETE from $brandix_bts.tbl_cut_size_master where parent_id = '$id'";
 }
 foreach($orders_sizes_master as $id){
-	$archive_query[] = "INSERT INTO $brandix_bts.tbl_orders_sizes_master_archive(select * from $bai_pro3.tbl_orders_sizes_master where parent_id = '$id')";
+	$archive_query[] = "INSERT INTO $brandix_bts.tbl_orders_sizes_master_archive(select * from $brandix_bts.tbl_orders_sizes_master where parent_id = '$id')";
 	$delete_query[] = "DELETE from $brandix_bts.tbl_orders_sizes_master where parent_id = '$id'";
 }
 
