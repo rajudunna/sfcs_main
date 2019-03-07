@@ -232,10 +232,10 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             if($order == 0){
                 //$cut_wip += $job_qty;
                 $cut_wip = $rem_qty;
+                if($cut_wip > $job_qty-$scan_qty)
+                    $cut_wip = $job_qty-$scan_qty;
                 if($cut_wip < 0)
-                    $cut_wip = 0;
-                else if($cut_wip > $job_qty)
-                    $cut_wip = $job_qty;
+                    $cut_wip = 0;    
                 continue;
             }
 
