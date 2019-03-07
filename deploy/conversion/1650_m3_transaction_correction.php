@@ -1,12 +1,12 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 error_reporting(0);
-$m3_transactions_qry ="SELECT *,quantity*-1 as negative_quntity FROM bai_pro3.m3_transactions WHERE m3_ops_code = 200 AND date_time >= '2019-02-28 14:44:33' AND quantity > 0";
+$m3_transactions_qry ="SELECT *,quantity*-1 as negative_quntity FROM bai_pro3.m3_transactions WHERE m3_ops_code = 200 AND date_time >= '2019-02-28 14:44:33' AND quantity > 0 ORDER BY id LIMIT 1,500";
 $m3_transactions_qry_result=mysqli_query($link,$m3_transactions_qry) or exit("Initial Query Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 echo "Running<br/>";
 while($m3_transactions_qry_result_row=mysqli_fetch_array($m3_transactions_qry_result))
 {
-    $date_time =  $m3_transactions_qry_result_row['date_time'];
+    $date_time =  date("Y-m-d H:i:s");
     $mo_no = $m3_transactions_qry_result_row['mo_no'];
     $quantity =  $m3_transactions_qry_result_row['quantity'];
     $reason = $m3_transactions_qry_result_row['reason'];
