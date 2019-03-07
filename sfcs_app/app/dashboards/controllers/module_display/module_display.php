@@ -112,7 +112,7 @@ while($sql_row114=mysqli_fetch_array($sql_result114))
 
 <tr>
 <td><mytag>Target &nbsp;&nbsp; <?php if($plant_location=='Sri Lanka'){
-								echo "- ඉලක්කය"; }
+								echo "- ඉලක්කය "; }
 								elseif($plant_location=='India'){	
 								echo "- రోజు వారి టార్గెట్";				}
 								else
@@ -141,7 +141,7 @@ while($sql_row114=mysqli_fetch_array($sql_result114))
 
 <tr>
 <td><mytag>Operators &nbsp;&nbsp; <?php if($plant_location=='Sri Lanka'){
-								echo "- ක්‍රියාකරුවන්"; }
+								echo "- ක්‍රියාකරුවන් "; }
 								elseif($plant_location=='India'){
 								echo "- ఆపరేటర్లు";	
 											}
