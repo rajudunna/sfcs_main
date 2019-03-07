@@ -48,11 +48,12 @@ error_reporting(E_ALL ^ E_NOTICE);
 $sql="select max(yer_mon) as yer_mon from $bai_pro.tbl_freez_plan_track where track_status<>0";
 
 $sql_result=mysqli_query($link, $sql);
+$no_of_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {	
 	$date=$sql_row['yer_mon'];
 }
-//echo $date."<br>";
+//echo $no_of_rows."<br>";
 if($date=='')
 {
 	$date=date("Y-m-d");
@@ -60,7 +61,7 @@ if($date=='')
 }
 else
 {
-	echo "<div class='row'><div class='col-sm-12'><div class='alert alert-info'><font style='color:white'><strong>Info!</strong>      You are going to upload Freez Plan for: ".date('Y-M', strtotime('+0 month', strtotime($date)))."</font></div></div>";	
+	echo "<div class='row'><div class='col-sm-12'><div class='alert alert-info'><font style='color:white'><strong>Info!</strong>      You are going to upload Freez Plan for: ".date('Y-M', strtotime('+1 month', strtotime($date)))."</font></div></div>";	
 }
 
 echo '</div><hr>';
