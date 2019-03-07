@@ -120,7 +120,7 @@ while($sql_row114=mysqli_fetch_array($sql_result114))
 									
 								}	?></mytag></td>
 <td><mytag>Balance &nbsp;&nbsp; <?php if($plant_location=='Sri Lanka'){
-								echo "- ඉතිරි"; }
+								echo "- ඉතිරිය"; }
 								elseif($plant_location=='India'){	
 									echo "- కుట్టవలసిన పీసులు";		}
 								else
@@ -141,7 +141,7 @@ while($sql_row114=mysqli_fetch_array($sql_result114))
 
 <tr>
 <td><mytag>Operators &nbsp;&nbsp; <?php if($plant_location=='Sri Lanka'){
-								echo "- ක්රියාකරුවන්"; }
+								echo "- ක්‍රියාකරුවන්"; }
 								elseif($plant_location=='India'){
 								echo "- ఆపరేటర్లు";	
 											}
@@ -150,7 +150,7 @@ while($sql_row114=mysqli_fetch_array($sql_result114))
 									
 								}	?></mytag></td>
 <td><mytag>Achievement&nbsp;&nbsp; <?php if($plant_location=='Sri Lanka'){
-								echo "- ජයග්රහණය"; }
+								echo "- ජයග්‍රහණය"; }
 								elseif($plant_location=='India'){	
 								echo "- కుట్టిన పీసులు";			}
 								else
