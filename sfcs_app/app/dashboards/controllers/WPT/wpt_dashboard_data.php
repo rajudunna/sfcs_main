@@ -118,9 +118,9 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     if($ims_wip == 0){
         $break_me_at = 11;
     }
-    $ips_op_code_query = "SELECT operation_code FROM brandix_bts.tbl_ims_ops WHERE appilication = 'IPS'";
+    $ips_op_code_query = "SELECT operation_code FROM $brandix_bts.tbl_ims_ops WHERE appilication = 'IPS'";
     $ips_op_code_result = mysqli_query($link,$ips_op_code_query);
-    $ips_op_code = mysqli_fetch_array($link,$ips_op_code_result)['operation_code'];
+    $ips_op_code = mysqli_fetch_array($ips_op_code_result)['operation_code'];
 
     $dockets_cqty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,GROUP_CONCAT(distinct pdsi.doc_no) AS doc_no,
             acutno,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
@@ -205,7 +205,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             $cut_qty_result = mysqli_query($link,$cut_qty_query);
             
             $scanned_qty_query = "SELECT SUM(recevied_qty+rejected_qty-(replace_in+recut_in)) as scan_qty 
-                            from $brandix_bts.bundle_creation_data  where input_job_no_random IN ($jobs) and operation_id = $ips_op_code";
+                            from $brandix_bts.bundle_creation_data  where input_job_no_random_ref IN ($jobs) and operation_id = $ips_op_code";
             $scanned_qty_result = mysqli_query($link,$scanned_qty_query); 
             
             // $cut_report_query = "SELECT SUM(recevied_qty) as rep_qty from 
