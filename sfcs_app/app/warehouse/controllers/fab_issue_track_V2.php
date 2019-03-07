@@ -773,7 +773,7 @@ if(isset($_POST['new_entry']))
 							
 							if($balance1==0)
 							{
-								$sql1="update $bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$alloc_qty.", status='2', allotment_status='2' where barcode_number=\"$roll_id\"";
+								$sql1="update $bai_rm_pj1.store_in set qty_allocated=".$alloc_qty.", status='2', allotment_status='2' where barcode_number=\"$roll_id\"";
 								$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							}
 							else
