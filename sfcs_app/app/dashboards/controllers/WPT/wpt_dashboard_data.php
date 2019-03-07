@@ -110,6 +110,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     $dockets = array();
     $cutting_op_code = 15;
     $temp_line_breaker = 0;
+    $ips_op_code = 0;
     $docs_data = '';
     $break_me_at = 6;
     $cut_wip = 0; 
@@ -117,13 +118,16 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     if($ims_wip == 0){
         $break_me_at = 11;
     }
-    
-    $dockets_cqty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,pdsi.doc_no AS doc_no,
+    $ips_op_code_query = "SELECT operation_code FROM brandix_bts.tbl_ims_ops WHERE appilication = 'IPS'";
+    $ips_op_code_result = mysqli_query($link,$ips_op_code_query);
+    $ips_op_code = mysqli_fetch_array($link,$ips_op_code_result)['operation_code'];
+
+    $dockets_cqty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,GROUP_CONCAT(distinct pdsi.doc_no AS doc_no),
             acutno,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
             FROM bai_pro3.plan_dashboard_input pdi
             LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
             WHERE input_module = $module 
-            AND a_plies = p_plies AND act_cut_status='DONE' 
+            AND act_cut_status='DONE' 
             group by input_module";
     $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,pdsi.doc_no AS doc_no,
             acutno,a_plies,p_plies,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
@@ -197,30 +201,38 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             $job_qty_result = mysqli_query($link,$job_qty_query);  
             
             $cut_qty_query = "SELECT SUM(cut_quantity) as cut_qty,SUM(remaining_qty) as rem_qty from $bai_pro3.cps_log 
-                            where doc_no = '$doc_no' and operation_code = $cutting_op_code ";
+                            where doc_no IN ($doc_no) and operation_code = $cutting_op_code ";
             $cut_qty_result = mysqli_query($link,$cut_qty_query);
-
-            /*
-            $cut_report_query = "SELECT SUM(recevied_qty + rejected_qty) as rep_qty,SUM(original_qty) as plan_qty from 
+            
+            $scanned_qty_query = "SELECT SUM(recevied_qty+rejected_qty-(replace_in+recut_in)) as scan_qty 
+                            from $brandix_bts.bundle_creation_data  where input_job_no_random IN ($jobs) and operation_id = $ips_op_code";
+            $scanned_qty_result = mysqli_query($link,$scanned_qty_query); 
+            
+            $cut_report_query = "SELECT SUM(recevied_qty) as rep_qty from 
                                 $brandix_bts.bundle_creation_data 
-                                where docket_number='$doc_no' and  operation_id = $cutting_op_code";
+                                where docket_number IN ($doc_no) and  operation_id = $cutting_op_code";
             $cut_report_result = mysqli_query($link,$cut_report_query);
-            */
             
             $jrow  = mysqli_fetch_array($job_qty_result);
             $crow  = mysqli_fetch_array($cut_qty_result);
             $crrow = mysqli_fetch_array($cut_report_result);
+            $scrow = mysqli_fetch_array($scanned_qty_result);
             
-            $job_qty = $jrow['job_qty'];
-            $scan_qty= $jrow['scan_qty'];
+            $job_qty  = $jrow['job_qty'];
+            $scan_qty = $scrow['scan_qty'];
+            $cut_rep_qty = $crrow['rep_qty'];
             $doc_qty = $crow['cut_qty'];
             $rem_qty = $crow['rem_qty'];
-            $cut_rep_qty = $crrow['rep_qty'];
-            $plan_qty = $crrow['plan_qty'];
+            $plan_qty= $crrow['plan_qty'];
             $status_color = '';
             
             if($order == 0){
-                $cut_wip += $job_qty;
+                //$cut_wip += $job_qty;
+                $cut_wip = $cut_rep_qty - $scan_qty;
+                if($cut_wip < 0)
+                    $cut_wip = 0;
+                else if($cut_wip > $job_qty)
+                    $cut_wip = $job_qty;
                 continue;
             }
 
