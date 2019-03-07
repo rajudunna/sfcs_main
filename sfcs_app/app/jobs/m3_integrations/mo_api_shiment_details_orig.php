@@ -19,8 +19,41 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
     $res_data_m3inp_data = mysqli_query($link, $get_data_m3inp_data) or exit("Sql Error select m3_inputs.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
     $res_new_data = mysqli_fetch_array($res_data_m3inp_data);
 
-    $ins_shipment_details = "INSERT INTO `m3_inputs`.`shipment_plan_original`(`Customer_Order_No`, `CO_Line_Status`, `Ex_Factory`, `Order_Qty`, `Mode`, `Destination`, `Packing_Method`, `FOB_Price_per_piece`, `MPO`, `CPO`, `DBFDST`, `Size`, `HMTY15`, `ZFeature`, `MMBUAR`, `Style_No`, `Product`, `Buyer_Division`, `Buyer`, `CM_Value`, `Schedule_No`, `Colour`, `Alloc_Qty`, `Dsptched_Qty`, `BTS_vs_Ord_Qty`, `BTS_vs_FG_Qty`, `time_stamp`) VALUES ('".$res_new_data['REFERENCEORDER']."','','".date('Ymd',strtotime($res_new_data['COPLANDELDATE']))."','".$result_data['mo_tot_qty']."','','".$result_data['destination']."','".$result_data['packing_method']."','','','".$result_data['cpo']."','','".$result_data['size']."','','".$result_data['zfeature']."','','".$result_data['style']."','','".$result_data['buyer_id']."','','','".$result_data['schedule']."','".$result_data['color']."','','','','',now())";
-    $res_shipment_details = mysqli_query($link, $ins_shipment_details) or exit("Sql Error Insert Shipment Details".mysqli_error($GLOBALS["___mysqli_ston"]));
+    // $ins_shipment_details = "INSERT INTO `m3_inputs`.`shipment_plan_original`(`Customer_Order_No`, `CO_Line_Status`, `Ex_Factory`, `Order_Qty`, `Mode`, `Destination`, `Packing_Method`, `FOB_Price_per_piece`, `MPO`, `CPO`, `DBFDST`, `Size`, `HMTY15`, `ZFeature`, `MMBUAR`, `Style_No`, `Product`, `Buyer_Division`, `Buyer`, `CM_Value`, `Schedule_No`, `Colour`, `Alloc_Qty`, `Dsptched_Qty`, `BTS_vs_Ord_Qty`, `BTS_vs_FG_Qty`, `time_stamp`) VALUES ('".$res_new_data['REFERENCEORDER']."','','".date('Ymd',strtotime($res_new_data['COPLANDELDATE']))."','".$result_data['mo_tot_qty']."','','".$result_data['destination']."','".$result_data['packing_method']."','','','".$result_data['cpo']."','','".$result_data['size']."','','".$result_data['zfeature']."','','".$result_data['style']."','','".$result_data['buyer_id']."','','','".$result_data['schedule']."','".$result_data['color']."','','','','',now())";
+    // $res_shipment_details = mysqli_query($link, $ins_shipment_details) or exit("Sql Error Insert Shipment Details".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
+    $shipment_plan_qry = "INSERT INTO `bai_pro3`.`shipment_plan` (
+        `style_no`,
+        `schedule_no`,
+        `color`,
+        `order_qty`,
+        `exfact_date`,
+        `CPO`,
+        `buyer_div`,
+        `size_code`,
+        `packing_method`,
+        `destination`,
+        `zfeature`
+      )
+      VALUES
+        (
+            '".$result_data['style']."',
+            '".$result_data['schedule']."',
+            '".$result_data['color']."',
+            '".$result_data['mo_tot_qty']."',
+            '".date('Ymd',strtotime($res_new_data['COPLANDELDATE']))."',
+            '".$result_data['cpo']."',
+            '".$result_data['cpo']."',
+            '".$result_data['size']."',
+            '".$result_data['packing_method']."',
+            '".$result_data['destination']."',
+            '".$result_data['zfeature']."'
+        )";
+
+    $res_shipment_details = mysqli_query($link, $shipment_plan_qry) or exit("Sql Error Insert Shipment Details".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
     if($res_shipment_details){
         $up_qry = "UPDATE $bai_pro3.mo_details SET shipment_master_status=1 WHERE id in (".$result_data['ids'].")";
         $up_res = mysqli_query($link, $up_qry) or exit("Error : update query".mysqli_error($GLOBALS["___mysqli_ston"]));

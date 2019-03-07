@@ -80,9 +80,38 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
 
                         $item_description1=str_replace('"','""',$item_description1);
 
-                        $ins_order_details = "INSERT INTO $m3_inputs.order_details_original(`Facility`, `Customer_Style_No`, `CPO_NO`, `VPO_NO`, `CO_no`, `Style`, `Schedule`, `Manufacturing_Schedule_no`, `MO_Split_Method`, `MO_Released_Status_Y_N`, `GMT_Color`, `GMT_Size`, `GMT_Z_Feature`, `Graphic_Number`, `CO_Qty`, `MO_Qty`, `PCD`, `Plan_Delivery_Date`, `Destination`, `Packing_Method`, `Item_Code`, `Item_Description`, `RM_Color_Description`, `Order_YY_WO_Wastage`, `Wastage`, `Required_Qty`, `UOM`, `MO_NUMBER`, `SEQ_NUMBER`, `time_stamp`) VALUES ('".$global_facility_code."','','".$result_data['cpo']."','".$res_m3_trans_mo['VPO']."','','".$result_data['style']."','".$result_data['schedule']."','".$result_data['schedule']."','','Y','".$result_data['color']."','".$result_data['size']."','".$result_data['zfeature']."','','0','".$result_data['mo_quantity']."','".date('Ymd',strtotime($res_m3_trans_mo['STARTDATE']))."','".date('Ymd',strtotime($res_m3_trans_mo['COPLANDELDATE']))."','".$result_data['destination']."','".$result_data['packing_method']."','".urldecode($item_code)."',\"".$item_description1."\",\"".$color_description."\",'".$order_yy."','".$wastage."','".$Required_Qty."','".$uom."','".$mo_no."','".$sequence_no."','".date('Y-m-d H:i:s')."')";
-                        $res_order_details = mysqli_query($link, $ins_order_details) or exit("Sql Error Insert Order Details".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        
+                        // $ins_order_details = "INSERT INTO $m3_inputs.order_details_original(`Facility`, `Customer_Style_No`, `CPO_NO`, `VPO_NO`, `CO_no`, `Style`, `Schedule`, `Manufacturing_Schedule_no`, `MO_Split_Method`, `MO_Released_Status_Y_N`, `GMT_Color`, `GMT_Size`, `GMT_Z_Feature`, `Graphic_Number`, `CO_Qty`, `MO_Qty`, `PCD`, `Plan_Delivery_Date`, `Destination`, `Packing_Method`, `Item_Code`, `Item_Description`, `RM_Color_Description`, `Order_YY_WO_Wastage`, `Wastage`, `Required_Qty`, `UOM`, `MO_NUMBER`, `SEQ_NUMBER`, `time_stamp`) VALUES ('".$global_facility_code."','','".$result_data['cpo']."','".$res_m3_trans_mo['VPO']."','','".$result_data['style']."','".$result_data['schedule']."','".$result_data['schedule']."','','Y','".$result_data['color']."','".$result_data['size']."','".$result_data['zfeature']."','','0','".$result_data['mo_quantity']."','".date('Ymd',strtotime($res_m3_trans_mo['STARTDATE']))."','".date('Ymd',strtotime($res_m3_trans_mo['COPLANDELDATE']))."','".$result_data['destination']."','".$result_data['packing_method']."','".urldecode($item_code)."',\"".$item_description1."\",\"".$color_description."\",'".$order_yy."','".$wastage."','".$Required_Qty."','".$uom."','".$mo_no."','".$sequence_no."','".date('Y-m-d H:i:s')."')";
+                        // $res_order_details = mysqli_query($link, $ins_order_details) or exit("Sql Error Insert Order Details".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                        $orderplanqry = "INSERT INTO `bai_pro3`.`order_plan` (
+                            `schedule_no`,
+                            `mo_status`,
+                            `style_no`,
+                            `color`,
+                            `size_code`,
+                            `order_qty`,
+                            `compo_no`,
+                            `item_des`,
+                            `order_yy`,
+                            `col_des`,
+                            `material_sequence`
+                          )
+                          VALUES
+                            (
+                              '".$result_data['schedule']."',
+                              'Y',
+                              '".$result_data['style']."',
+                              '".$result_data['color']."',
+                              '".$result_data['size']."',
+                              '".$result_data['mo_quantity']."',
+                              '".urldecode($item_code)."',
+                              '".$item_description1."',
+                              '".$order_yy."',
+                              '".$color_description."',
+                              '".$sequence_no."'
+                            )
+                          ";
+                        $res_order_details = mysqli_query($link, $orderplanqry) or exit("Sql Error Insert Order Details".mysqli_error($GLOBALS["___mysqli_ston"]));
                     }
         
         }

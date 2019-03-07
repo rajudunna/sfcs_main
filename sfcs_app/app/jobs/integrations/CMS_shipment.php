@@ -8,13 +8,13 @@ $time_diff=(int)date("YmdH")-$log_time;
 
 set_time_limit(6000000);
 
-$insert_shipment_plan="INSERT INTO $m3_inputs.shipment_plan SELECT * FROM $m3_inputs.shipment_plan_original WHERE CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) NOT IN (SELECT CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) FROM $m3_inputs.shipment_plan) AND CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) IN (SELECT CONCAT(TRIM(Style),TRIM(SCHEDULE),TRIM(GMT_Color)) FROM $m3_inputs.order_details_original WHERE MO_Released_Status_Y_N='Y') ORDER BY TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)";
-echo $insert_shipment_plan."<br><br>";
-$res=mysqli_query($link, $insert_shipment_plan) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
-if($res)
-{
-	print("Data Inserted into shipment_plan from shipment_plan_original ")."\n";
-}
+// $insert_shipment_plan="INSERT INTO $m3_inputs.shipment_plan SELECT * FROM $m3_inputs.shipment_plan_original WHERE CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) NOT IN (SELECT CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) FROM $m3_inputs.shipment_plan) AND CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) IN (SELECT CONCAT(TRIM(Style),TRIM(SCHEDULE),TRIM(GMT_Color)) FROM $m3_inputs.order_details_original WHERE MO_Released_Status_Y_N='Y') ORDER BY TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)";
+// echo $insert_shipment_plan."<br><br>";
+// $res=mysqli_query($link, $insert_shipment_plan) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
+// if($res)
+// {
+// 	print("Data Inserted into shipment_plan from shipment_plan_original ")."\n";
+// }
 function check_style($string)
 {
 	global $link;
@@ -61,15 +61,15 @@ function isNumber($c)
 
 
 <?php
-	$sql39="truncate $bai_pro3.shipment_plan";
-	mysqli_query($link, $sql39) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql23="insert into $bai_pro3.shipment_plan (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination) SELECT TRIM(BOTH FROM Style_No), TRIM(BOTH FROM Schedule_No), TRIM(BOTH FROM Colour), Order_Qty, Ex_Factory, Customer_Order_No, Buyer_Division, Size, Packing_Method,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H,Destination FROM m3_inputs.shipment_plan WHERE CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) NOT IN (SELECT CONCAT(TRIM(order_style_no),TRIM(order_del_no),TRIM(order_col_des)) FROM bai_pro3.bai_orders_db) ORDER BY TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)";
-	echo $sql23."<br>";
-	$result23=mysqli_query($link, $sql23) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if($result23)
-	{
-		print("M3 to SFCS Sync Successfully Completed")."\n";
-	}
+	// $sql39="truncate $bai_pro3.shipment_plan";
+	// mysqli_query($link, $sql39) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// $sql23="insert into $bai_pro3.shipment_plan (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination) SELECT TRIM(BOTH FROM Style_No), TRIM(BOTH FROM Schedule_No), TRIM(BOTH FROM Colour), Order_Qty, Ex_Factory, Customer_Order_No, Buyer_Division, Size, Packing_Method,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H,Destination FROM m3_inputs.shipment_plan WHERE CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) NOT IN (SELECT CONCAT(TRIM(order_style_no),TRIM(order_del_no),TRIM(order_col_des)) FROM bai_pro3.bai_orders_db) ORDER BY TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)";
+	// echo $sql23."<br>";
+	// $result23=mysqli_query($link, $sql23) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// if($result23)
+	// {
+	// 	print("M3 to SFCS Sync Successfully Completed")."\n";
+	// }
 	$sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_SP_1\")";
 	$res1=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($res1)
@@ -95,13 +95,13 @@ function isNumber($c)
 	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_tid like '%***%'";
 	$resultset=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql="select distinct style_no from $bai_pro3.shipment_plan";
+	$sql="select distinct style_no from $bai_pro3.shipment_plan where shipment_status = 0";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$style=str_pad($sql_row['style_no'],"15"," ");
 		
-		$sql1="select distinct schedule_no from $bai_pro3.shipment_plan where style_no=\"$style\" ";
+		$sql1="select distinct schedule_no from $bai_pro3.shipment_plan where style_no=\"$style\" and shipment_status = 0";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -325,9 +325,13 @@ function isNumber($c)
 							mysqli_query($link, $sql31) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$size_ref=$size_ref+1;
 						}
+
+						
 					}
 				
 				}
+				$sql4 = "update $bai_pro3.shipment_plan set shipment_status=1 where style_no='".$style."' and schedule_no='".$sch_no."' and color='".$color."'";
+				mysqli_query($link, $sql4) or exit("Sql Error at updating shipment".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
 	}
