@@ -156,6 +156,7 @@ else
 	
 									$res_insert_update_rmwh_data = $link->query($qry_insert_update_rmwh_data);
 									
+									
 									$sticker_report = "select * from $bai_rm_pj1.`sticker_report` where lot_no=".$barcode_data['lot_no']."";
 									//echo $sticker_report."<br/>";
 									$res_sticker_report_cwh = $link_new->query($sticker_report);
