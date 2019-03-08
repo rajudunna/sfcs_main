@@ -52,22 +52,30 @@ function verify(){
 						<input type="hidden" name="section" value="0"/>  
 						<select name="section" class="form-control">
 							<?php
-							$sql2="select * from $bai_pro.unit_db order by sno";
-							mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($sql_row2=mysqli_fetch_array($sql_result2))
-							{
-								if($sql_row2['unit_members']==$_POST['section']){ 
-							?>
-								<option value="<?=$sql_row2['unit_members']?>" selected><?=$sql_row2['unit_id']?></option>
-							<?php
-								}
-								else {
-							?>
-								<option value="<?=$sql_row2['unit_members']?>" ><?=$sql_row2['unit_id']?></option>
-							<?php
-							}
-							}
+							 $sql2="select * from $bai_pro3.sections_master order by sec_id"; 
+									
+							 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+							 while($sql_row2=mysqli_fetch_array($sql_result2)) 
+							 { 
+								 if($sections_string==$sql_row2['sec_name']) 
+								 { 
+									 echo "<option value=\"".$sql_row2['sec_name']."\" selected>".$sql_row2['section_display_name']."</option>"; 
+									 $sections_list[]=$sql_row2['sec_name'];
+								 } 
+								 else 
+								 { 
+									 echo "<option value=\"".$sql_row2['sec_name']."\">".$sql_row2['section_display_name']."</option>"; 
+									 $sections_list[]=$sql_row2['sec_name'];
+								 } 
+							 } 
+							 if($sections_string==implode(",",$sections_list)) 
+							 {
+								 echo "<option value=\"".implode(",",$sections_list)."\" selected>Factory</option>"; 
+							 }
+							 else
+							 {
+								 echo "<option value=\"".implode(",",$sections_list)."\">Factory</option>"; 
+							 }
 							?>
 						</select>
 					</div>
