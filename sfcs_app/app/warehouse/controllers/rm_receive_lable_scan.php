@@ -178,6 +178,7 @@ else
 									//echo "<br/>result:".count($sticker_data1)."<br/>";
 									if(count($sticker_data1)==0)
 									{
+										//these are single culumn replaces
 										$pkg_no=str_replace('"','""',$sticker_data['pkg_no']);
 										$item_desc=str_replace('"','""',$sticker_data['item_desc']);
 										$item_name=str_replace('"','""',$sticker_data['item_name']);
