@@ -57,7 +57,7 @@ function verify(){
 							 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							 while($sql_row2=mysqli_fetch_array($sql_result2)) 
 							 { 
-								 if($sections_string==$sql_row2['sec_name']) 
+								 if($_POST['section']==$sql_row2['sec_name']) 
 								 { 
 									 echo "<option value=\"".$sql_row2['sec_name']."\" selected>".$sql_row2['section_display_name']."</option>"; 
 									 $sections_list[]=$sql_row2['sec_name'];
@@ -68,7 +68,7 @@ function verify(){
 									 $sections_list[]=$sql_row2['sec_name'];
 								 } 
 							 } 
-							 if($sections_string==implode(",",$sections_list)) 
+							 if($_POST['section']==implode(",",$sections_list)) 
 							 {
 								 echo "<option value=\"".implode(",",$sections_list)."\" selected>Factory</option>"; 
 							 }
@@ -127,13 +127,18 @@ if(isset($_POST['submit']))
 	$section=$_POST['section'];
 	$buyer=$_POST['buyer'];
 
-	$sql2="select unit_id from $bai_pro.unit_db where unit_members=\"".$_POST['section']."\"";
-	//echo $sql2;
-	mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row2=mysqli_fetch_array($sql_result2))
+	$sql2="select * from $bai_pro3.sections_master WHERE sec_name in (\"".$_POST['section']."\")"; 
+	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	if(mysqli_num_rows($sql_result2)==1)
 	{
-		$report_heading=$sql_row2['unit_id'];
+		while($sql_row2=mysqli_fetch_array($sql_result2)) 
+		{ 
+			$report_heading=$sql_row2['section_display_name'];
+		}
+	}
+	else
+	{
+		$report_heading="Factory";
 	}
 	$table_temp="";
 	$table_temp.='<style id="Daily_Efficiency_Report_26424_Styles">
@@ -3083,12 +3088,13 @@ if(isset($_POST['submit']))
 			$psthb_mod_total=0;
 			$section_array=array();
 
-			$sqlx="select * from $bai_pro3.sections_db where sec_id in ($sec_temp)";
+			$sqlx="select * from $bai_pro3.sections_master where sec_name in ($sec_temp)";
+			// echo $sqlx."<br>";
 			mysqli_query($link, $sqlx) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			{
-				$section_array[]=$sql_rowx['sec_id'];
+				$section_array[]=$sql_rowx['sec_name'];
 			}
 
 			if($buyer_name == "ALL")
@@ -3731,12 +3737,12 @@ if(isset($_POST['submit']))
 
 			$total=$atotal+$btotal;
 
-			$sql2="select sec_head from $bai_pro.pro_sec_db where sec_no=$sec";
+			$sql2="select * from $bai_pro3.sections_master where sec_name in ($sec)";
 			mysqli_query($link, $sql2) or exit("Sql Error444".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error444".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
-				$head_name=$sql_row2['sec_head'];
+				$head_name=$sql_row2['section_display_name'];
 			}
 
 			$table_temp="<tr height=22 style='mso-height-source:userset;height:16.5pt;'>";
