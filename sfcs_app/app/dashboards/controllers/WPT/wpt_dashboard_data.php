@@ -194,21 +194,56 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             $cut_qty_result = mysqli_query($link,$cut_qty_query);
 
             if($order == 0){
+                $all_jobs = explode(',',$jobs);
+
+                //filtering scanned and unscanned jobs
+                $scanned_jobs_query = "SELECT input_job_no_random_ref as ij from $brandix_bts.bundle_creation_data where 
+                    input_job_no_random_ref IN ($jobs)";
+                $scanned_jobs_result = mysqli_query($link,$scanned_jobs_query);
+                while($jobs_row = mysqli_fetch_array($scanned_jobs_result)){
+                    $scanned_jobs[] = $jobs_row['ij']; 
+                }
+                $unscanned_jobs = array_diff($all_jobs,$scanned_jobs);
+                $unscanned_jobs_string = implode($unscanned_jobs);
+
+                //for unscanned_jobs
+                $un_scanned_qty_query = "SELECT SUM(carton_act_qty) as job_qty,group_concat(doc_no) as docs,old_size 
+                        from $bai_pro3.pac_stat_log_input_job  
+                        where input_job_no_random_ref IN ($unscanned_jobs_string) group by input_job_no_random_ref,old_size";
+                $un_scanned_qty_result = mysqli_query($link,$un_scanned_qty_query); 
+                if(mysqli_num_rows($un_scanned_qty_result)>0){
+                    while($uscrow = mysqli_fetch_array($un_scanned_qty_result)){
+                        $docs = $uscrow['docs'];
+                        $size = $uscrow['old_size'];
+                        $eligible = $uscrow['job_qty'];
+                        $rem_qty_query = "SELECT SUM(remaining_qty) as rem_qty 
+                            from $bai_pro3.cps_log where doc_no IN ($docs) and size_code = '$size' and operation_code = $cutting_op_code ";
+                        $rem_qty_result = mysqli_query($link,$rem_qty_query);
+                        $rrow = mysqli_fetch_array($rem_qty_result);
+                        $cut_wip += min($eligible,$rrow['rem_qty']);
+                        $eligible = 0;
+                    }
+                }
+                //for scanned jobs
                 $scanned_qty_query = "SELECT SUM((send_qty+replace_in+recut_in)-(recevied_qty+rejected_qty)) as eligible,
                                 group_concat(docket_number) as docs,size_id from $brandix_bts.bundle_creation_data  
-                                where input_job_no_random_ref IN ($jobs) and operation_id = $ips_op_code group by input_job_no_random_ref,size_id";
+                                where input_job_no_random_ref IN ($scanned_jobs) and operation_id = $ips_op_code group by input_job_no_random_ref,size_id";
                 $scanned_qty_result = mysqli_query($link,$scanned_qty_query); 
-                while($scrow = mysqli_fetch_array($scanned_qty_result)){
-                    $docs = $scrow['docs'];
-                    $size = $scrow['size_id'];
-                    $eligible = $scrow['eligible'];
-                    $rem_qty_query = "SELECT SUM(remaining_qty) as rem_qty 
+                if(mysqli_num_rows($scanned_qty_result)>0){
+                    while($scrow = mysqli_fetch_array($scanned_qty_result)){
+                        $docs = $scrow['docs'];
+                        $size = $scrow['size_id'];
+                        $eligible = $scrow['eligible'];
+                        $rem_qty_query = "SELECT SUM(remaining_qty) as rem_qty 
                             from $bai_pro3.cps_log where doc_no IN ($docs) and size_code = '$size' and operation_code = $cutting_op_code ";
-                    $rem_qty_result = mysqli_query($link,$rem_qty_query);
-                    $rrow = mysqli_fetch_array($rem_qty_result);
-                    $cut_wip += min($eligible,$rrow['rem_qty']);
-                    $eligible = 0;
+                        $rem_qty_result = mysqli_query($link,$rem_qty_query);
+                        $rrow = mysqli_fetch_array($rem_qty_result);
+                        $cut_wip += min($eligible,$rrow['rem_qty']);
+                        $eligible = 0;
+                    }
                 }
+                delete($scanned_jobs);
+                delete($unscanned_jobs);
                 continue;
             }
     
