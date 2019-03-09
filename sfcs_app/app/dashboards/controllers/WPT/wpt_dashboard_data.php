@@ -124,20 +124,20 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     }
     
     
-    $dockets_cqty_query = "SELECT GROUP_CONCAT('\'',distinct pdsi.input_job_no_random,'\'') AS jobs,GROUP_CONCAT(distinct pdsi.doc_no) AS doc_no,
+    $dockets_cqty_query = "SELECT GROUP_CONCAT(distinct '\"',pdsi.input_job_no_random,'\"') AS jobs,GROUP_CONCAT(distinct pdsi.doc_no) AS doc_no,
             acutno,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
             FROM bai_pro3.plan_dashboard_input pdi
             LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
             WHERE input_module = $module 
-            AND act_cut_status='DONE' 
-            group by input_module";
-    $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT('\'',distinct pdsi.input_job_no_random,'\'') AS jobs,pdsi.doc_no AS doc_no,
+            AND act_cut_status='DONE' ";
+    $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(distinct '\"',pdsi.input_job_no_random,'\"') AS jobs,pdsi.doc_no AS doc_no,
             acutno,a_plies,p_plies,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
             FROM bai_pro3.plan_dashboard_input pdi
             LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
             WHERE input_module = $module 
             AND ( (a_plies = p_plies and act_cut_status='') OR (a_plies < p_plies AND act_cut_status='DONE') ) 
-            group by doc_no order by input_priority ASC";   
+            group by doc_no order by input_priority ASC";  
+             
     /*             
     $partial_dockets_query  = "SELECT GROUP_CONCAT(distinct psi.input_job_no_random) AS jobs,pds.order_style_no as style,
             pds.order_col_des as color,pds.doc_no as doc_no,pds.acutno as acutno,pds.color_code,
@@ -205,6 +205,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                 }
                 $unscanned_jobs = array_diff($all_jobs,$scanned_jobs);
                 $unscanned_jobs_string = implode(',',$unscanned_jobs);
+                $scanned_jobs_string = implode(',',$scanned_jobs);
 
                 //for unscanned_jobs
                 $un_scanned_qty_query = "SELECT SUM(carton_act_qty) as job_qty,group_concat(doc_no) as docs,old_size 
@@ -217,7 +218,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                         $size = $uscrow['old_size'];
                         $eligible = $uscrow['job_qty'];
                         $rem_qty_query = "SELECT SUM(remaining_qty) as rem_qty 
-                            from $bai_pro3.cps_log where doc_no IN ($docs) and size_code = '$size' and operation_code = $cutting_op_code ";
+                            from $bai_pro3.cps_log where doc_no IN ($docs) and size_code = '$size' and operation_code = $cutting_op_code ";   
                         $rem_qty_result = mysqli_query($link,$rem_qty_query);
                         $rrow = mysqli_fetch_array($rem_qty_result);
                         $cut_wip += min($eligible,$rrow['rem_qty']);
@@ -227,7 +228,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                 //for scanned jobs
                 $scanned_qty_query = "SELECT SUM((send_qty+replace_in+recut_in)-(recevied_qty+rejected_qty)) as eligible,
                                 group_concat(docket_number) as docs,size_id from $brandix_bts.bundle_creation_data  
-                                where input_job_no_random_ref IN ($scanned_jobs) and operation_id = $ips_op_code group by input_job_no_random_ref,size_id";
+                                where input_job_no_random_ref IN ($scanned_jobs_string) and operation_id = $ips_op_code group by input_job_no_random_ref,size_id";
                 $scanned_qty_result = mysqli_query($link,$scanned_qty_query); 
                 if(mysqli_num_rows($scanned_qty_result)>0){
                     while($scrow = mysqli_fetch_array($scanned_qty_result)){
