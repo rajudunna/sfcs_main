@@ -19,6 +19,10 @@ $final_wip = array();
 $line_breaker = 0;
 if($section > 0){
     $docket_cqty = array();
+    //getting ips op code
+    $ips_op_code_query = "SELECT operation_code FROM $brandix_bts.tbl_ims_ops WHERE appilication = 'IPS'";
+    $ips_op_code_result = mysqli_query($link,$ips_op_code_query);
+    $ips_op_code = mysqli_fetch_array($ips_op_code_result)['operation_code'];
 
     //getting all modules against to the section
     $modules_query = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$section GROUP BY section ORDER BY section + 0";
@@ -110,6 +114,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     $dockets = array();
     $cutting_op_code = 15;
     $temp_line_breaker = 0;
+    global $ips_op_code;
     $docs_data = '';
     $break_me_at = 6;
     $cut_wip = 0; 
@@ -118,14 +123,15 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
         $break_me_at = 11;
     }
     
-    $dockets_cqty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,pdsi.doc_no AS doc_no,
+    
+    $dockets_cqty_query = "SELECT GROUP_CONCAT('\'',distinct pdsi.input_job_no_random,'\'') AS jobs,GROUP_CONCAT(distinct pdsi.doc_no) AS doc_no,
             acutno,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
             FROM bai_pro3.plan_dashboard_input pdi
             LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
             WHERE input_module = $module 
-            AND a_plies = p_plies AND act_cut_status='DONE' 
+            AND act_cut_status='DONE' 
             group by input_module";
-    $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,pdsi.doc_no AS doc_no,
+    $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT('\'',distinct pdsi.input_job_no_random,'\'') AS jobs,pdsi.doc_no AS doc_no,
             acutno,a_plies,p_plies,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
             FROM bai_pro3.plan_dashboard_input pdi
             LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
@@ -179,25 +185,12 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             $aplies = $row['a_plies'];
             $pplies = $row['p_plies'];
 
-            // if($order == 1){
-            //     $dockets[] = $doc_no;
-            // }
-            // if($order > 1){
-            //     if(in_array($doc_no,$dockets))
-            //         continue;
-            // }
-            /*
-            $job_qty_query = "SELECT SUM(send_qty) as job_qty,SUM(recevied_qty) as scan_qty from $bai_pro3.bundle_creation_data 
-                            where input_job_no_random_ref IN ($jobs) and operation_id = 100";
-            $job_qty_result = mysqli_query($link,$job_qty_query);
-            $jrow = mysqli_fetch_array($job_qty_result);
-            */
+        
             $job_qty_query = "SELECT SUM(carton_act_qty) as job_qty from $bai_pro3.pac_stat_log_input_job 
                             where input_job_no_random IN ($jobs)";              
             $job_qty_result = mysqli_query($link,$job_qty_query);  
-            
-            $cut_qty_query = "SELECT SUM(cut_quantity) as cut_qty,SUM(remaining_qty) as rem_qty from $bai_pro3.cps_log 
-                            where doc_no = '$doc_no' and operation_code = $cutting_op_code ";
+            $cut_qty_query = "SELECT SUM(cut_quantity) as cut_qty,SUM(remaining_qty) as rem_qty 
+                            from $bai_pro3.cps_log where doc_no IN ($doc_no) and operation_code = $cutting_op_code ";
             $cut_qty_result = mysqli_query($link,$cut_qty_query);
 
             if($order == 0){
@@ -256,21 +249,12 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     
             $jrow  = mysqli_fetch_array($job_qty_result);
             $crow  = mysqli_fetch_array($cut_qty_result);
-            $crrow = mysqli_fetch_array($cut_report_result);
             
-            $job_qty = $jrow['job_qty'];
-            $scan_qty= $jrow['scan_qty'];
+            $job_qty  = $jrow['job_qty'];
             $doc_qty = $crow['cut_qty'];
             $rem_qty = $crow['rem_qty'];
-            $cut_rep_qty = $crrow['rep_qty'];
-            $plan_qty = $crrow['plan_qty'];
             $status_color = '';
             
-            if($order == 0){
-                $cut_wip += $job_qty;
-                continue;
-            }
-
             if($order == 1){
                 if($aplies < $pplies && $cut_status == 'DONE'){
                     $status_color = 'orange';
@@ -311,13 +295,6 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                     }else{
                         $status_color = 'yash';
                     }
-
-                    if($status_color == 'yellow' || $status_color == 'blue'){
-                        if( ($plan_qty > $cut_rep_qty ) && $cut_rep_qty != 0){
-                            $status_color='orange';
-                        }
-                    }
-
                 }else if($order == 2){
                     $status_color = 'orange';
                 }
