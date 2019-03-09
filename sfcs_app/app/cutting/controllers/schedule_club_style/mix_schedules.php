@@ -191,7 +191,7 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 	echo "<form name='testnew' action='index.php?r=".$_GET['r']."' method='post'>";
 	if(sizeof($size_array)>0)
 	{
-		echo "<table class='table table-bordered '>";
+		echo "<div style='overflow-x:auto;'><table class='table table-bordered '>";
 		echo "<tr class='warning'>";
 		echo "<th>Select</th>";
 		echo "<th>Item Codes</th>";
@@ -407,7 +407,7 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 			echo "<td>$order_total</td>";
 			echo "</tr>";
 		}
-		echo "</table>";	
+		echo "</table></div>";	
 		$sql4="SELECT DISTINCT size_code as size_code FROM $bai_pro3.`orders_club_schedule` where order_del_no in (".implode(",",$schedule_array).") ORDER BY size_code";
 		$result4=mysqli_query($link, $sql4) or die("Error3 = ".$sql61.mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row4=mysqli_fetch_array($result4))
@@ -432,7 +432,7 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 			while($sql_row452=mysqli_fetch_array($sql_result452))
 			{
 				$row_count++;
-				echo "<table class='table table-responsive table-bordered'>
+				echo "<div style='overflow-x:auto;'><table class='table table-bordered'>
 						<tr class='info'>
 						<th>Style </th><th>Schedule No</th>
 						<th>Color</th><th>Orginal schedules</th>";
@@ -458,7 +458,7 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 				}
 				unset($sizes_code_tmp);
 				echo "</tr>";
-				echo "</table>";
+				echo "</table></div>";
 				echo "<br>";
 			}
 		}

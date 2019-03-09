@@ -165,7 +165,7 @@
 							<div class="col-md-12 ">';       
 							echo '</div>';
 							echo '<form name="new" method="post" action="?r='.$_GET['r'].'">';
-							echo "<div class='row'>
+							echo "<div style='overflow-x:auto;'>
 							<table class='table table-bordered'>";
 							echo "<tr class='info'>";
 							echo "<th>Sewing Job No</th>";
