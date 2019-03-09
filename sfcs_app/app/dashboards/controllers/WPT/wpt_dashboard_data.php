@@ -124,14 +124,14 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     }
     
     
-    $dockets_cqty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,GROUP_CONCAT(distinct pdsi.doc_no) AS doc_no,
+    $dockets_cqty_query = "SELECT GROUP_CONCAT('\'',distinct pdsi.input_job_no_random,'\'') AS jobs,GROUP_CONCAT(distinct pdsi.doc_no) AS doc_no,
             acutno,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
             FROM bai_pro3.plan_dashboard_input pdi
             LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
             WHERE input_module = $module 
             AND act_cut_status='DONE' 
             group by input_module";
-    $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,pdsi.doc_no AS doc_no,
+    $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT('\'',distinct pdsi.input_job_no_random,'\'') AS jobs,pdsi.doc_no AS doc_no,
             acutno,a_plies,p_plies,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
             FROM bai_pro3.plan_dashboard_input pdi
             LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
