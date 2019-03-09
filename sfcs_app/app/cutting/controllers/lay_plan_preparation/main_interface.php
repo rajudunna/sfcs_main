@@ -527,7 +527,9 @@ echo "<div class='col-sm-12 row'><div class='panel panel-info'>
 		{
 			$org_details =  implode(',', $original_details);
 			echo "<div class='col-md-4'>
-					<strong>$label : </strong>$org_details
+					<div style='overflow-x:auto;'>
+						<strong>$label : </strong>$org_details
+					</div>
 				</div>";
 		}
 		echo "

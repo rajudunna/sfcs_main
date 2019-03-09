@@ -165,7 +165,7 @@
 							<div class="col-md-12 ">';       
 							echo '</div>';
 							echo '<form name="new" method="post" action="?r='.$_GET['r'].'">';
-							echo "<div class='row'>
+							echo "<div class='col-12 col-sm-12 col-lg-12 table-responsive'>
 							<table class='table table-bordered'>";
 							echo "<tr class='info'>";
 							echo "<th>Sewing Job No</th>";
