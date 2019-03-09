@@ -109,21 +109,20 @@ if($result1)
 	print("Deleted Shipment plan successfully")."\n";
 }
 $k=0;
-$sql="SELECT Customer_Order_No AS A,MPO,CPO,Buyer_Division,Style_No,Schedule_No,Colour,Size,ZFeature,SUM(Order_Qty) as qty,Ex_Factory,MODE,Destination,Packing_Method,FOB_Price_per_piece,CM_Value,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H FROM $m3_inputs.shipment_plan WHERE schedule_no > 0 GROUP BY Style_No,Schedule_No,Colour,Size,Ex_Factory,Destination";
+$sql="SELECT Customer_Order_No AS A,CPO,buyer_div,style_no,schedule_no,color,size_code,zfeature,SUM(order_qty) as qty,exfact_date,destination,packing_method FROM $bai_pro3.shipment_plan WHERE schedule_no > 0 GROUP BY style_no,schedule_no,color,size_code,exfact_date,destination";
 // echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$style=str_pad($sql_row['Style_No'],"15"," ");
-	$schedule=$sql_row['Schedule_No'];
-	$color=str_pad($sql_row['Colour'],"30"," ");
+	$style=str_pad($sql_row['style_no'],"15"," ");
+	$schedule=$sql_row['schedule_no'];
+	$color=str_pad($sql_row['color'],"30"," ");
 	$qty=$sql_row['qty'];
-	$order_date=$sql_row['Ex_Factory'];
+	$order_date=$sql_row['exfact_date'];
 
 	$order_no=$sql_row['A'];
 	$cpo=str_replace('"',"'",$sql_row['CPO']);
-	$mpo=$sql_row['MPO'];
-	$division=$sql_row['Buyer_Division'];
+	$division=$sql_row['buyer_div'];
 
 	$date_code=substr($order_date,0,-4)."-".substr($order_date,4,-2)."-".substr($order_date,-2);
 
@@ -136,7 +135,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$color=str_replace('"',"'",$color);
 	$division=str_replace('"',"'",$division);
 
-	$sql3="insert into $bai_pro2.shipment_plan(style_no, schedule_no, color, order_qty, exfact_date, week_code, cust_order, cpo, buyer_div, mpo) values("."\"$style\"".", "."\"$schedule\"".", "."\"$color\"".", ".$qty.", "."\"$date_code\"".", ".$weekcode.", "."\"$order_no\"".", "."\"$cpo\"".", "."\"$division\"".", "."\"$mpo\")";
+	$sql3="insert into $bai_pro2.shipment_plan(style_no, schedule_no, color, order_qty, exfact_date, week_code, cust_order, cpo, buyer_div, mpo) values("."\"$style\"".", "."\"$schedule\"".", "."\"$color\"".", ".$qty.", "."\"$date_code\"".", ".$weekcode.", "."\"$order_no\"".", "."\"$cpo\"".", "."\"$division\"".", '')";
 	// echo $sql3."<br/><br/>";
 	$result11=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($result11)

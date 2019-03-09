@@ -2,14 +2,6 @@
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
-set_time_limit(6000000);
-// $insert_order_details="INSERT INTO $m3_inputs.order_details SELECT * FROM $m3_inputs.order_details_original WHERE (CONCAT(TRIM(Style),TRIM(SCHEDULE),TRIM(GMT_Color)) NOT IN (SELECT CONCAT(TRIM(Style),TRIM(SCHEDULE),TRIM(GMT_Color)) FROM $m3_inputs.order_details) AND MO_Released_Status_Y_N='Y') ORDER BY TRIM(Style),TRIM(SCHEDULE),TRIM(GMT_Color)";
-// $res=mysqli_query($link, $insert_order_details) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
-// echo $insert_order_details."<br><br>";
-// if($res)
-// {
-// 	print("Data Inserted into order_details from order_details_original ")."\n";
-// }
 ?>
 
 
@@ -23,19 +15,6 @@ set_time_limit(6000000);
 	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"ssc_porcess4.php\"; }</script>";
 ?>
 <?php
-
-
-// $sql3="truncate table $bai_pro3.order_plan";
-// mysqli_query($link, $sql3) or exit("Sql Errorc".mysqli_error($GLOBALS["___mysqli_ston"]));
-							
-// $sql="insert into $bai_pro3.order_plan (schedule_no, mo_status, style_no, color, size_code, order_qty, compo_no, item_des, order_yy, col_des,material_sequence ) select SCHEDULE,MO_Released_Status_Y_N,Style,GMT_Color,GMT_Size,MO_Qty,Item_Code,Item_Description,Order_YY_WO_Wastage,RM_Color_Description,SEQ_NUMBER from $m3_inputs.order_details WHERE MO_Released_Status_Y_N='Y' AND CONCAT(Style,SCHEDULE,GMT_Color) NOT IN (SELECT order_tid FROM bai_pro3.cat_stat_log)";
-// echo $sql."<br><br>";
-// mysqli_query($link, $sql) or exit("Sql Error1d".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
-// $sql="UPDATE order_plan SET color=CONCAT(CONVERT(stripSpeciaChars(size_code,0,0,1,0) USING utf8),'===',color) WHERE 
-// CONCAT(size_code REGEXP '[[:alpha:]]+',size_code REGEXP '[[:digit:]]+')='11' AND (RIGHT(TRIM(BOTH FROM size_code),1) in ('0','1') OR CONCAT(size_code REGEXP '[[./.]]','NEW')='1NEW') AND CONCAT(color REGEXP '[***]','NEW')<>'1NEW' AND CONCAT(color REGEXP '[===]','NEW')<>'1NEW'";
-// echo $sql."<br>";
-// mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $item_des="";
 $col_des="";
@@ -73,7 +52,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$ssc_code2=$ssc_code.$sql_row22['compo_no'];
 				$compo_no=$sql_row22['compo_no'];					
 				
-				$sql31="select MO_Released_Status_Y_N as mo_status,Item_Description as item_des,RM_Color_Description as col_des,round(sum(Required_Qty)/sum(MO_Qty),4) as order_yy from $m3_inputs.order_details where Style=\"$style\" and Schedule=\"$sch_no\" and GMT_Color=\"$color\" and Item_Code=\"$compo_no\"";
+				$sql31="select mo_status as mo_status,item_des as item_des,col_des as col_des,round(sum(required_qty)/sum(order_qty),4) as order_yy from $bai_pro3.order_plan where style_no=\"$style\" and schedule_no=\"$sch_no\" and color=\"$color\" and compo_no=\"$compo_no\"";
 				// echo $sql31."<br>";
 				$sql_result31=mysqli_query($link, $sql31) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row31=mysqli_fetch_array($sql_result31))

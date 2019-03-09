@@ -160,7 +160,7 @@ $(document).ready(function() {
                         {
 	                        //To get Mo's
 	                        $mo=array();
-	                        $get_mos="select monumber from $m3_inputs.mo_details where style='$style' and schedule='$schdule' and colourdesc='$color'";
+	                        $get_mos="select monumber from $bai_pro3.mo_details where style='$style' and schedule='$schdule' and color='$color'";
 	                        //echo $get_mos;
 	                        $result6 = $link->query($get_mos);
 	                        while($row2 = $result6->fetch_assoc())
@@ -172,23 +172,13 @@ $(document).ready(function() {
 	                        $del_bom_details="DELETE FROM $m3_inputs.bom_details where mo_no in($mos)";
 	                        $result7 = $link->query($del_bom_details);
 
-	                        $del_order_details="DELETE FROM $m3_inputs.order_details WHERE style='$style' AND SCHEDULE='$schdule' AND GMT_Color='$color'";
+	                        $del_order_details="DELETE FROM $bai_pro3.order_plan WHERE style_no='$style' AND schedule_no='$schdule' AND color='$color'";
 	                        $result8 = $link->query($del_order_details);
 	                       
 
-	                        $del_shipment_plan="DELETE FROM $m3_inputs.shipment_plan WHERE style_no='$style' AND schedule_no='$schdule' AND colour='$color'";
-	                        $result9 = $link->query($del_shipment_plan);
-	                         
-	                        $del_m3_mo_details="DELETE FROM $m3_inputs.mo_details WHERE style='$style' and schedule='$schdule' and colourdesc='$color'";
-	                        $result10 = $link->query($del_m3_mo_details);
-							
-							$del_order_original="DELETE FROM $m3_inputs.order_details_original WHERE style='$style' AND SCHEDULE='$schdule' AND GMT_color='$color'";
-							$result17 = $link->query($del_order_original);
-							
+	                        $del_shipment_plan="DELETE FROM $bai_pro3.shipment_plan WHERE style_no='$style' AND schedule_no='$schdule' AND color='$color'";
+	                        $result9 = $link->query($del_shipment_plan);							
 
-                            $del_shipment_original="DELETE FROM $m3_inputs.shipment_plan_original WHERE style_no='$style' AND schedule_no='$schdule' AND colour='$color'";
-							$result18 = $link->query($del_shipment_original);
-							
 
 	                        $del_mo_details="DELETE FROM $bai_pro3.mo_details where style='$style' and schedule='$schdule' and color='$color'";
 	                        $result11 = $link->query($del_mo_details);

@@ -60,14 +60,6 @@ function isNumber($c) {
 <body>
 
 <?php
-
-
-	//KiranG 20171212- Added to take MO level order quantities and to avoid duplicates.
-	
-	$username_val="orderdetail_plan_".$username.date("YmdHis");
-	$sql="CREATE TEMPORARY TABLE $username_val ENGINE=MyISAM SELECT DISTINCT MO_NUMBER,TRIM(BOTH FROM Style) as Style,TRIM(BOTH FROM SCHEDULE) as SCHEDULE,TRIM(BOTH FROM GMT_Color) as GMT_Color,GMT_Size,MO_Qty FROM $m3_inputs.order_details WHERE MO_Released_Status_Y_N='Y'";
-			//echo $sql."<br/>";
-			mysqli_query($link, $sql) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 	//KiranG 20171212- Added to take MO level order quantities and to avoid duplicates.
 	
@@ -284,8 +276,8 @@ function isNumber($c) {
 						
 						//KiranG 20171212 - Taking Mo level order quantites.
 						
-						$sql3abc="select coalesce(sum(MO_Qty),0) as \"order_qty\"
- from $bai_pro3.$username_val where Style=\"$style\" and SCHEDULE=\"$sch_no\" and GMT_Color=\"$color\" and GMT_Size=\"$size_code\"";
+						$sql3abc="select coalesce(sum(order_qty),0) as \"order_qty\"
+ from $bai_pro3.order_plan where style_no=\"$style\" and schedule_no=\"$sch_no\" and color=\"$color\" and size_code=\"$size_code\"";
 					// echo $sql3abc."<br>";
 					$sql_result3abc=mysqli_query($link, $sql3abc) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row3abc=mysqli_fetch_array($sql_result3abc))

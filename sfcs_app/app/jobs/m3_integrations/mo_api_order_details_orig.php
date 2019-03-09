@@ -4,7 +4,7 @@
 	Created at : 09-10-2018
 	Updated at : 11-10-2018
 	Input : data from bai_pro3.mo_details with status 0.
-    Output : populate the data in m3_inputs.order_details_original.
+    Output : populate the data in bai_pro3.order_plan.
     V2 : save bom details.
 */
 $start_timestamp = microtime(true);
@@ -70,18 +70,11 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                 item_code,item_description,color,color_description,size,z_code,per_piece_consumption,wastage,uom,material_sequence,product_no,operation_code) VALUES (now(),'".$mo_no."','".$global_facility_code."','".urldecode($item_code)."',\"".$item_description."\",'".$color_res."',\"".$color_description."\",'".$size_description."','".$z_feature_description."','".$order_yy."','".$wastage."','".$uom."','".$sequence_no."','".urldecode($prno)."','".$response['response']['OPNO']."')";
                     $res_save_bom = mysqli_query($link, $qry_save_bom) or exit("Sql Error Insert bom Details".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(in_array(trim($response['response']['OPNO']),$res_chk_op)){
-                        //================================================
-                        $get_m3_trans_mo = "SELECT * FROM $m3_inputs.mo_details WHERE MONUMBER=".$mo_no;
-                        $res_m3_trans_mo = mysqli_query($link, $get_m3_trans_mo) or exit("Sql Error select m3_transcation.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        $res_m3_trans_mo = mysqli_fetch_array($res_m3_trans_mo);
                         //================ insert order_details_original =========================
                         $Required_Qty=(($order_yy*$result_data['mo_quantity'])+($order_yy*$result_data['mo_quantity']*$wastage/100));
                         $item_description1 = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$comp_no.'&ITNO='.getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$comp_no.'&ITNO='.$item_code,$basic_auth)['response']['HDPR'],$basic_auth)['response']['FUDS'];
 
                         $item_description1=str_replace('"','""',$item_description1);
-
-                        // $ins_order_details = "INSERT INTO $m3_inputs.order_details_original(`Facility`, `Customer_Style_No`, `CPO_NO`, `VPO_NO`, `CO_no`, `Style`, `Schedule`, `Manufacturing_Schedule_no`, `MO_Split_Method`, `MO_Released_Status_Y_N`, `GMT_Color`, `GMT_Size`, `GMT_Z_Feature`, `Graphic_Number`, `CO_Qty`, `MO_Qty`, `PCD`, `Plan_Delivery_Date`, `Destination`, `Packing_Method`, `Item_Code`, `Item_Description`, `RM_Color_Description`, `Order_YY_WO_Wastage`, `Wastage`, `Required_Qty`, `UOM`, `MO_NUMBER`, `SEQ_NUMBER`, `time_stamp`) VALUES ('".$global_facility_code."','','".$result_data['cpo']."','".$res_m3_trans_mo['VPO']."','','".$result_data['style']."','".$result_data['schedule']."','".$result_data['schedule']."','','Y','".$result_data['color']."','".$result_data['size']."','".$result_data['zfeature']."','','0','".$result_data['mo_quantity']."','".date('Ymd',strtotime($res_m3_trans_mo['STARTDATE']))."','".date('Ymd',strtotime($res_m3_trans_mo['COPLANDELDATE']))."','".$result_data['destination']."','".$result_data['packing_method']."','".urldecode($item_code)."',\"".$item_description1."\",\"".$color_description."\",'".$order_yy."','".$wastage."','".$Required_Qty."','".$uom."','".$mo_no."','".$sequence_no."','".date('Y-m-d H:i:s')."')";
-                        // $res_order_details = mysqli_query($link, $ins_order_details) or exit("Sql Error Insert Order Details".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                         $orderplanqry = "INSERT INTO `bai_pro3`.`order_plan` (
                             `schedule_no`,
@@ -94,7 +87,9 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                             `item_des`,
                             `order_yy`,
                             `col_des`,
-                            `material_sequence`
+                            `material_sequence`,
+                            `required_qty`,
+                            `VPO_NO`
                           )
                           VALUES
                             (
@@ -108,7 +103,9 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                               '".$item_description1."',
                               '".$order_yy."',
                               '".$color_description."',
-                              '".$sequence_no."'
+                              '".$sequence_no."',
+                              '".$Required_Qty."',
+                              '".$result_data['vpo']."'
                             )
                           ";
                         $res_order_details = mysqli_query($link, $orderplanqry) or exit("Sql Error Insert Order Details".mysqli_error($GLOBALS["___mysqli_ston"]));

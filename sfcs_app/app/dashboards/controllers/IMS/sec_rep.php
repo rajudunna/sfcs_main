@@ -458,11 +458,11 @@ if(isset($_GET['val']))
 				}
 				
                 //Ex-Factory
-				$get_exfactory="select ex_factory from $m3_inputs.shipment_plan where schedule_no=$schedule";
+				$get_exfactory="select exfact_date from $bai_pro3.shipment_plan where schedule_no=$schedule";
 				$sql_result3=mysqli_query($link, $get_exfactory) or exit("Sql Error7 =$get_exfactory".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row33=mysqli_fetch_array($sql_result3))
 				{
-					$ex_factory=$row33['ex_factory'];
+					$ex_factory=$row33['exfact_date'];
 				}
 
 				//To get Age from ims_log

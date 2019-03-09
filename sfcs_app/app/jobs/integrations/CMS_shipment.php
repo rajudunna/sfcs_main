@@ -8,13 +8,6 @@ $time_diff=(int)date("YmdH")-$log_time;
 
 set_time_limit(6000000);
 
-// $insert_shipment_plan="INSERT INTO $m3_inputs.shipment_plan SELECT * FROM $m3_inputs.shipment_plan_original WHERE CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) NOT IN (SELECT CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) FROM $m3_inputs.shipment_plan) AND CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) IN (SELECT CONCAT(TRIM(Style),TRIM(SCHEDULE),TRIM(GMT_Color)) FROM $m3_inputs.order_details_original WHERE MO_Released_Status_Y_N='Y') ORDER BY TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)";
-// echo $insert_shipment_plan."<br><br>";
-// $res=mysqli_query($link, $insert_shipment_plan) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
-// if($res)
-// {
-// 	print("Data Inserted into shipment_plan from shipment_plan_original ")."\n";
-// }
 function check_style($string)
 {
 	global $link;
@@ -61,15 +54,6 @@ function isNumber($c)
 
 
 <?php
-	// $sql39="truncate $bai_pro3.shipment_plan";
-	// mysqli_query($link, $sql39) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// $sql23="insert into $bai_pro3.shipment_plan (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination) SELECT TRIM(BOTH FROM Style_No), TRIM(BOTH FROM Schedule_No), TRIM(BOTH FROM Colour), Order_Qty, Ex_Factory, Customer_Order_No, Buyer_Division, Size, Packing_Method,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H,Destination FROM m3_inputs.shipment_plan WHERE CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) NOT IN (SELECT CONCAT(TRIM(order_style_no),TRIM(order_del_no),TRIM(order_col_des)) FROM bai_pro3.bai_orders_db) ORDER BY TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)";
-	// echo $sql23."<br>";
-	// $result23=mysqli_query($link, $sql23) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// if($result23)
-	// {
-	// 	print("M3 to SFCS Sync Successfully Completed")."\n";
-	// }
 	$sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_SP_1\")";
 	$res1=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($res1)
@@ -81,14 +65,7 @@ function isNumber($c)
 ?>
 <?php
 	$username="ber_databasesvc";
-	$username_val="orderdetail_plan_".$username.date("YmdHis");
-	$sql="CREATE TEMPORARY TABLE temp_pool_db.$username_val ENGINE=MyISAM select DISTINCT MO_NUMBER,TRIM(BOTH FROM Style) as Style,TRIM(BOTH FROM SCHEDULE) as SCHEDULE,TRIM(BOTH FROM GMT_Color) as GMT_Color,GMT_Size,MO_Qty FROM $m3_inputs.order_details WHERE MO_Released_Status_Y_N='Y'";
-	// echo $sql."<br>";
-	$res=mysqli_query($link, $sql) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if($res)
-	{
-		echo "temperory table created";
-	}
+	$username_val="orderdetail_plan_".$username.date("YmdHis");	
 			
 	$size=array("s01","s02","s03","s04","s05","s06","s07","s08","s09","s10","s11","s12","s13","s14","s15","s16","s17","s18","s19","s20","s21","s22","s23","s24","s25","s26","s27","s28","s29","s30","s31","s32","s33","s34","s35","s36","s37","s38","s39","s40","s41","s42","s43","s44","s45","s46","s47","s48","s49","s50"); 
 	
@@ -313,7 +290,7 @@ function isNumber($c)
 						if($flag==1)
 						{	
 							$vpo='';
-							$vpo_query="select VPO_NO from $m3_inputs.order_details where GMT_Color=\"$color\" and Schedule=\"$sch_no\" and Style=\"$style\"";
+							$vpo_query="select VPO_NO from $bai_pro3.order_plan where style_no=\"$style\" and schedule_no=\"$sch_no\" and color=\"$color\"";
 							// echo $vpo_no."<br>";
 							$vpo_result=mysqli_query($link, $vpo_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row3=mysqli_fetch_array($vpo_result))
