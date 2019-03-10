@@ -54,7 +54,13 @@
 							mysqli_query($link, $update_pac_stat_log) or exit("Error while updating pac_stat_log");
 							$imploded_b_tid = implode(",",$b_tid);
 							updateM3CartonScanReversal($b_op_id,$imploded_b_tid);
-							
+
+							foreach ($b_tid as $key => $value)
+							{
+								$update_bcd_temp = "UPDATE $brandix_bts.bundle_creation_data_temp SET recevied_qty=0, scanned_user='', scanned_date='', assigned_module='', bundle_status='' WHERE bundle_number = $value and operation_id=$b_op_id";
+								// echo $update_bcd_temp.'<br>';
+								mysqli_query($link,$update_bcd_temp);
+							}
 							echo "<script>sweetAlert('Carton ".$carton_id." is Reversed','','success')</script>";
 						}
 					}
