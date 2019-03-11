@@ -33,7 +33,7 @@ if($section > 0){
     if($modules_str != ''){
         $data.= "<table><tbody>";
         $moduleso = $modules = explode(',',$modules_str);
-        
+
         foreach($modules as $module){
             $line_breaker = 0;
             $total_wip = 0;
@@ -201,7 +201,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                     input_job_no_random_ref IN ($jobs) and  operation_id = $ips_op_code group by input_job_no_random_ref";
                 $scanned_jobs_result = mysqli_query($link,$scanned_jobs_query);
                 while($jobs_row = mysqli_fetch_array($scanned_jobs_result)){
-                    $scanned_jobs[] = $jobs_row['ij']; 
+                    $scanned_jobs[] = '"'.$jobs_row['ij'].'"'; 
                 }
                 $unscanned_jobs = array_diff($all_jobs,$scanned_jobs);
                 $unscanned_jobs_string = implode(',',$unscanned_jobs);
@@ -210,7 +210,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                 //for unscanned_jobs
                 $un_scanned_qty_query = "SELECT SUM(carton_act_qty) as job_qty,group_concat(doc_no) as docs,old_size 
                         from $bai_pro3.pac_stat_log_input_job  
-                        where input_job_no_random IN ($unscanned_jobs_string) group by input_job_no_random,old_size";
+                        where input_job_no_random IN ($unscanned_jobs_string) group by input_job_no_random,old_size";      
                 $un_scanned_qty_result = mysqli_query($link,$un_scanned_qty_query); 
                 if(mysqli_num_rows($un_scanned_qty_result)>0){
                     while($uscrow = mysqli_fetch_array($un_scanned_qty_result)){
@@ -218,14 +218,14 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                         $size = $uscrow['old_size'];
                         $eligible = $uscrow['job_qty'];
                         $rem_qty_query = "SELECT SUM(remaining_qty) as rem_qty 
-                            from $bai_pro3.cps_log where doc_no IN ($docs) and size_code = '$size' and operation_code = $cutting_op_code ";   
+                            from $bai_pro3.cps_log where doc_no IN ($docs) and size_code = '$size' and operation_code = $cutting_op_code ";     
                         $rem_qty_result = mysqli_query($link,$rem_qty_query);
                         $rrow = mysqli_fetch_array($rem_qty_result);
                         $cut_wip += min($eligible,$rrow['rem_qty']);
                         $eligible = 0;
                     }
                 }
-                //for scanned jobs
+                //for scanned jobs   
                 $scanned_qty_query = "SELECT SUM((send_qty+replace_in+recut_in)-(recevied_qty+rejected_qty)) as eligible,
                                 group_concat(docket_number) as docs,size_id from $brandix_bts.bundle_creation_data  
                                 where input_job_no_random_ref IN ($scanned_jobs_string) and operation_id = $ips_op_code group by input_job_no_random_ref,size_id";
