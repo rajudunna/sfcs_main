@@ -1070,6 +1070,9 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
             // if($update_cps_result && $update_bcd_result)
             //     $counter++;
         }
+        foreach($cut_qty as $size => $qty){
+            insert_into_bcd_temp($doc_no,$size,$qty,$op_code);
+        }
         if($counter == sizeof($cut_qty) && $counter > 0){
             // $stat1 = mysqli_commit($link2) or force_exit("Cant Commit Transaction 2");
             // if($stat1 == 0)
@@ -1179,6 +1182,9 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
             // if($update_cps_result && $update_bcd_result)
             //     $counter++;
         }
+        foreach($size_qty as $size => $qty){
+            insert_into_bcd_temp($doc_no,$size,$qty,$op_code);
+        }
     }
 
     //echo "$counter -- $update_flag";
@@ -1259,6 +1265,25 @@ function force_exit($str){
     return 0;
 }
 
+function insert_into_bcd_temp($doc,$size,$qty,$op_code){
+    $last_id = 0;
+    global $link;
+    global $brandix_bts;
+    $date = date('Y-m-d H:i:s');
+    $insert_query = "INSERT into $brandix_bts.bundle_creation_data_temp(date_time,cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,
+                bundle_number,original_qty,send_qty,recevied_qty,missing_qty,rejected_qty,left_over,operation_id,operation_sequence,
+                ops_dependency,docket_number,bundle_status,split_status,sewing_order_status,is_sewing_order,sewing_order,
+                assigned_module,remarks,scanned_date,shift,scanned_user,sync_status,shade,input_job_no,input_job_no_random_ref) (
+            select  date_time,cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,
+                bundle_number,original_qty,send_qty,recevied_qty,missing_qty,rejected_qty,left_over,operation_id,operation_sequence,
+                ops_dependency,docket_number,bundle_status,split_status,sewing_order_status,is_sewing_order,sewing_order,
+                assigned_module,remarks,scanned_date,shift,scanned_user,sync_status,shade,input_job_no,input_job_no_random_ref
+            from $brandix_bts.bundle_creation_data where docket_number=$doc and size_id='$size' and operation_id = $op_code)";
+    mysqli_query($link,$insert_query);
+    $last_id = mysqli_insert_id($link); 
+    $update_bcd_temp =  "UPDATE $brandix_bts.bundle_creation_data_temp set recevied_qty = $qty,scanned_date='$date' where id=$last_id";
+    mysqli_query($link,$update_bcd_temp);
+}
 
 
 ?>
