@@ -34,6 +34,7 @@ class ReactApp extends React.Component {
     }
 
     getData = (event)=>{
+        this.setState({loadingimage:true});
         let value = event.target.value;
         if(value){
             value = event.target.value;
