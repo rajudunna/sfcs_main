@@ -281,7 +281,8 @@
 							
 						}
 				if($_GET['var1']==1)
-				{
+				{	
+					//added m3 db in query
 					$conn = odbc_connect("$ms_sql_driver_name;Server=$ms_sql_odbc_server;Database=$mssql_db;", $ms_sql_odbc_user,$ms_sql_odbc_pass);
 					$schedule=$_GET['schedule'];
 					$style=$_GET['style'];
@@ -416,6 +417,7 @@
 						$mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid1) and op_code='$op_code' group by mo_no";
 						//echo $mo_operation_quantites_query."<br>";
 						//die();
+						//added m3 db in query
 						$mssql_insert_query="insert into [$mssql_db].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status,DSP1,DSP2,DSP3,DSP4) values";
 						$values = array();
 						$ref_no = array();
