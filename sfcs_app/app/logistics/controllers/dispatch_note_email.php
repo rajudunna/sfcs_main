@@ -915,7 +915,7 @@ tags will be replaced.-->
 				$url = getFullURL($_GET['r'],"security_check.php",'N');
 				// echo "<script>sweetAlert('','Successfully Updated.','success')</script>";
 				// header("location: $url");
-		        echo "<script>sweetAlert('Mail sent Successfully',' ','success')</script>";
+		        echo "<script>sweetAlert('Mail Sent Successfully',' ','success')</script>";
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url\"; }</script>";
 				
 				
