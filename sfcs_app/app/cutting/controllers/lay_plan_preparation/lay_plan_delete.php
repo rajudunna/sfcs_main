@@ -232,9 +232,9 @@ if(isset($_POST["submit"]))
                 //echo $sql72."<br>"; 
                 //echo $row72."<br>"; 
                  
-                $sql73="SELECT * from $bai_pro.bai_log where delivery='$schedule'"; 
-                $result73=mysqli_query($link, $sql73) or die("Error=73".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                $row73=mysqli_num_rows($result73); 
+                // $sql73="SELECT * from $bai_pro.bai_log where delivery='$schedule'"; 
+                // $result73=mysqli_query($link, $sql73) or die("Error=73".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                // $row73=mysqli_num_rows($result73); 
                 //echo $sql73."<br>"; 
                 //echo $row73."<br>"; 
                  
@@ -244,7 +244,7 @@ if(isset($_POST["submit"]))
                 //echo $sql74."<br>"; 
                 //echo $row74."<br>"; 
 
-                if($row71 == 0 and $row72==0 and $row73==0 and $row74==0) 
+                if($row71 == 0 and $row72==0 and $row74==0) 
                 { 
                     $sql33="select doc_no from $bai_pro3.plandoc_stat_log where order_tid='".$order_tid[$i]."'"; 
                     $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
