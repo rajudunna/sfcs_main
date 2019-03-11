@@ -71,7 +71,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                     $res_save_bom = mysqli_query($link, $qry_save_bom) or exit("Sql Error Insert bom Details".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(in_array(trim($response['response']['OPNO']),$res_chk_op)){
                         //================ insert order_details_original =========================
-                        $Required_Qty=round((($order_yy*$result_data['mo_quantity'])+($order_yy*$result_data['mo_quantity']*$wastage/100)),7);
+                        $Required_Qty=round((($order_yy*$result_data['mo_quantity'])+($order_yy*$result_data['mo_quantity']*$wastage/100)),4);
                         $item_description1 = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$comp_no.'&ITNO='.getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$comp_no.'&ITNO='.$item_code,$basic_auth)['response']['HDPR'],$basic_auth)['response']['FUDS'];
 
                         $item_description1=str_replace('"','""',$item_description1);
