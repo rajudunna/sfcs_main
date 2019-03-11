@@ -54,12 +54,31 @@
 							mysqli_query($link, $update_pac_stat_log) or exit("Error while updating pac_stat_log");
 							$imploded_b_tid = implode(",",$b_tid);
 							updateM3CartonScanReversal($b_op_id,$imploded_b_tid);
-
-							foreach ($b_tid as $key => $value)
+							
+							$get_carton_type=mysqli_fetch_array($carton_details);
+							$carton_type = $get_carton_type['carton_mode'];
+							if ($get_carton_type['carton_mode'] == 'P')
 							{
-								$update_bcd_temp = "UPDATE $brandix_bts.bundle_creation_data_temp SET recevied_qty=0, scanned_user='', scanned_date='', assigned_module='', bundle_status='' WHERE bundle_number = $value and operation_id=$b_op_id";
-								// echo $update_bcd_temp.'<br>';
-								mysqli_query($link,$update_bcd_temp);
+								$carton_type = 'Partial';
+							}
+							else if($get_carton_type['carton_mode'] == 'F')
+							{
+								$carton_type = 'Full';
+							}
+					
+							$get_details_to_insert_bcd_temp = "SELECT * FROM $bai_pro3.`pac_stat_log` WHERE pac_stat_id = ".$carton_id;
+							// echo $get_details_to_insert_bcd_temp.'<br><br>';
+							$bcd_detail_result = mysqli_query($link,$get_details_to_insert_bcd_temp);
+							while($row=mysqli_fetch_array($bcd_detail_result))
+							{
+								$date = date('Y-m-d H:i:s');
+								$bundle_tid = $row['tid'];
+								$negative_reveived = $row['carton_act_qty']*-1;
+
+								$bcd_temp_insert_query = "INSERT into $brandix_bts.bundle_creation_data_temp(date_time,style,schedule,color,size_id,size_title,bundle_number,original_qty,send_qty,recevied_qty,operation_id,bundle_status,remarks,scanned_date,scanned_user,input_job_no,input_job_no_random_ref)
+								values ('$date', '".$row['style']."', '".$row['schedule']."', '".$row['color']."', '".$row['size_code']."', '".$row['size_tit']."', $bundle_tid, ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", $negative_reveived, $b_op_id, 'Carton Reversal', '$carton_type', '$date', '$username', $carton_id, '$carton_id')";
+								// echo $bcd_temp_insert_query.'<br>';
+								mysqli_query($link,$bcd_temp_insert_query);
 							}
 							echo "<script>sweetAlert('Carton ".$carton_id." is Reversed','','success')</script>";
 						}

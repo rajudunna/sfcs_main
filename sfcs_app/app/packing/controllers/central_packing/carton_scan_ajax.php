@@ -80,21 +80,9 @@
 					{
 						$date = date('Y-m-d H:i:s');
 						$bundle_tid = $row['tid'];
-						$checkInBCDTemp = "SELECT * FROM $brandix_bts.bundle_creation_data_temp WHERE bundle_number=$bundle_tid and operation_code = $b_op_id;";
-						$bcd_check_result = mysqli_query($link,$checkInBCDTemp);
-						if(mysqli_num_rows($bcd_check_result)>0)
-						{
-							$update_bcd_temp = "UPDATE $brandix_bts.bundle_creation_data_temp SET recevied_qty=".$row['carton_act_qty'].",scanned_user='$username',scanned_date='$date', assigned_module='$team_id', bundle_status='DONE' WHERE bundle_number = $bundle_tid and operation_id=$b_op_id";
-							// echo $update_bcd_temp.'<br>';
-							mysqli_query($link,$update_bcd_temp);
-						}
-						else
-						{
-							$bcd_temp_insert_query = "INSERT into $brandix_bts.bundle_creation_data_temp(date_time,style,schedule,color,size_id,size_title,bundle_number,original_qty,send_qty,recevied_qty,operation_id,bundle_status,assigned_module,remarks,scanned_date,scanned_user,input_job_no,input_job_no_random_ref)
-							values ('$date', '".$row['style']."', '".$row['schedule']."', '".$row['color']."', '".$row['size_code']."', '".$row['size_tit']."', $bundle_tid, ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", $b_op_id, 'DONE', '$team_id', '$carton_type', '$date', '$username', $carton_id, '$carton_id')";
-							// echo $bcd_temp_insert_query.'<br>';
-							mysqli_query($link,$bcd_temp_insert_query);
-						}
+						$bcd_temp_insert_query = "INSERT into $brandix_bts.bundle_creation_data_temp(date_time,style,schedule,color,size_id,size_title,bundle_number,original_qty,send_qty,recevied_qty,operation_id,bundle_status,assigned_module,remarks,scanned_date,scanned_user,input_job_no,input_job_no_random_ref) values ('$date', '".$row['style']."', '".$row['schedule']."', '".$row['color']."', '".$row['size_code']."', '".$row['size_tit']."', $bundle_tid, ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", $b_op_id, 'DONE', '$team_id', '$carton_type', '$date', '$username', $carton_id, '$carton_id')";
+						// echo $bcd_temp_insert_query.'<br>';
+						mysqli_query($link,$bcd_temp_insert_query);
 					}
 
 					if (!$pac_stat_log_result)
