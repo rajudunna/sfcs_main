@@ -232,9 +232,9 @@ if(isset($_POST["submit"]))
                 //echo $sql72."<br>"; 
                 //echo $row72."<br>"; 
                  
-                $sql73="SELECT * from $bai_pro.bai_log where delivery='$schedule'"; 
-                $result73=mysqli_query($link, $sql73) or die("Error=73".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                $row73=mysqli_num_rows($result73); 
+                // $sql73="SELECT * from $bai_pro.bai_log where delivery='$schedule'"; 
+                // $result73=mysqli_query($link, $sql73) or die("Error=73".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                // $row73=mysqli_num_rows($result73); 
                 //echo $sql73."<br>"; 
                 //echo $row73."<br>"; 
                  
@@ -244,7 +244,7 @@ if(isset($_POST["submit"]))
                 //echo $sql74."<br>"; 
                 //echo $row74."<br>"; 
 
-                if($row71 == 0 and $row72==0 and $row73==0 and $row74==0) 
+                if($row71 == 0 and $row72==0 and $row74==0) 
                 { 
                     $sql33="select doc_no from $bai_pro3.plandoc_stat_log where order_tid='".$order_tid[$i]."'"; 
                     $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -357,6 +357,10 @@ if(isset($_POST["submit"]))
                     $order_det_suc[]=$order_tid[$i]; 
                     //MAIL 
                     //echo "<script language=\"javascript\"> setTimeout(\"CloseWindow()\",0); function CloseWindow() { window.open('','_self',''); window.close(); }  </script>"; 
+                    $deleted = deleteMOQuantitiesCut($schedule,$color);
+                    if($deleted){
+                        //Successfully Deleted From Mo Operation Quantites
+                    }
                 } 
                 else 
                 { 
@@ -442,10 +446,7 @@ if(isset($_POST["submit"]))
             //echo $deletefrommoquantitys;
             mysqli_query($link, $deletefrommoquantitys) or die("Error while deleting mo nos from mo operation quantities".mysqli_error($GLOBALS["___mysqli_ston"])); 
             */
-            $deleted = deleteMOQuantitiesCut($schedule,$color);
-            if($deleted){
-                //Successfully Deleted From Mo Operation Quantites
-            }
+           
         } 
         else 
         { 

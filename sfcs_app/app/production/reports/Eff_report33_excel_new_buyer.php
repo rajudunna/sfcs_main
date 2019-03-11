@@ -7,13 +7,14 @@ Ticket #815663
  -->
  <?php
 //echo "DB name : ".$bai_pro."</br>";
-$sql="select * from $bai_pro.unit_db where unit_id='Factory'";
-mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$sec_code=$sql_row['unit_members'];
-}
+$sql="select GROUP_CONCAT(DISTINCT sec_name) as unit_members from $bai_pro3.sections_master order by sec_id"; 
+// echo $sql."<br>";
+mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+while($sql_row=mysqli_fetch_array($sql_result)) 
+{ 
+	$sec_code=$sql_row['unit_members']; 
+} 
 //Takes the Buyer names in selected time period
 $sql_buyer="select distinct buyer as buyer from $bai_pro.grand_rep where date between \"$date\" and \"$edate\" order by buyer";
 $sql_result_buyer=mysqli_query($link, $sql_buyer) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));

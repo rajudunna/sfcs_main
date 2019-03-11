@@ -80,20 +80,23 @@ class rest_api_calls {
 
 		$log_data = writing_logs_to_file($unique_id,$url);
 		$response = curl_exec($curl);
+		$header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+		$header = substr($response, 0, $header_size);
+		$body = substr($response, $header_size);
 		$log_data = writing_logs_to_file($unique_id,$response);
 		$httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 		$err = curl_error($curl);
 
 		curl_close($curl);
-			
+		
 		if($httpcode >= 200 && $httpcode < 300){
 			if($err){
 				//return "cURL Error #:" . $err;
 				$reposnse1['@type'] = 'ServerReturnedNOK';
 				$reposnse1['Message']   = $err; 
 				return json_encode($reposnse1);
-			}else{
-				return $response;
+			}else{				
+				return $body;
 			}
 		}else{
 			$reposnse1['@type'] = 'ServerReturnedNOK';

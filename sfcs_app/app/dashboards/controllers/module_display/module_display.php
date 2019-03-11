@@ -16,9 +16,12 @@
 	img { zoom: 30%;}
 </style>
 <script >
+
 setTimeout(function(){
 	    var module = document.getElementById('module').value; 
-	    var url = window.location.href+'&module='+module;
+        var originalURL = window.location.href;
+	    var alteredURL = originalURL.split('&');
+	    var url = alteredURL[0]+'&module_name='+module;
 	    if(module){
 	        window.location.href = url;    
 	    }
@@ -109,7 +112,7 @@ while($sql_row114=mysqli_fetch_array($sql_result114))
 
 <tr>
 <td><mytag>Target &nbsp;&nbsp; <?php if($plant_location=='Sri Lanka'){
-								echo "- ඉලක්කය"; }
+								echo "- ඉලක්කය "; }
 								elseif($plant_location=='India'){	
 								echo "- రోజు వారి టార్గెట్";				}
 								else
@@ -117,7 +120,7 @@ while($sql_row114=mysqli_fetch_array($sql_result114))
 									
 								}	?></mytag></td>
 <td><mytag>Balance &nbsp;&nbsp; <?php if($plant_location=='Sri Lanka'){
-								echo "- ඉතිරි"; }
+								echo "- ඉතිරිය"; }
 								elseif($plant_location=='India'){	
 									echo "- కుట్టవలసిన పీసులు";		}
 								else
@@ -138,7 +141,7 @@ while($sql_row114=mysqli_fetch_array($sql_result114))
 
 <tr>
 <td><mytag>Operators &nbsp;&nbsp; <?php if($plant_location=='Sri Lanka'){
-								echo "- ක්රියාකරුවන්"; }
+								echo "- ක්‍රියාකරුවන් "; }
 								elseif($plant_location=='India'){
 								echo "- ఆపరేటర్లు";	
 											}
@@ -147,7 +150,7 @@ while($sql_row114=mysqli_fetch_array($sql_result114))
 									
 								}	?></mytag></td>
 <td><mytag>Achievement&nbsp;&nbsp; <?php if($plant_location=='Sri Lanka'){
-								echo "- ජයග්රහණය"; }
+								echo "- ජයග්‍රහණය"; }
 								elseif($plant_location=='India'){	
 								echo "- కుట్టిన పీసులు";			}
 								else
@@ -174,22 +177,23 @@ $sql="select * from $bai_pro3.tbl_plant_timings";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$time_display[]=$sql_row['time_display'];
-	$time_prefix[]=$sql_row['day_part'];
-	$sql2="SELECT SUM(bac_qty) as outp FROM $bai_pro.bai_log_buf WHERE bac_date='".$date_check."' AND bac_no=$module and TIME(bac_lastup)>= TIME('".$sql_row['start_time']."') AND TIME(bac_lastup)< TIME('".$sql_row['end_time']."')";
+	$time_value[] = $sql_row['time_value'];
+	$time_display[$sql_row['time_value']]=$sql_row['time_display'];
+	$time_prefix[$sql_row['time_value']]=$sql_row['day_part'];
+	$sql2="SELECT SUM(bac_qty) as outp FROM $bai_pro.bai_log_buf WHERE bac_date='".$date_check."' AND bac_no=$module and Hour(bac_lastup)>= Hour('".$sql_row['start_time']."') AND Hour(bac_lastup)< Hour('".$sql_row['end_time']."')";
+	//echo $sql2;
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
 		if($sql_row2['outp']<>'')
 		{
-			$act_out[$sql_row['time_display']]=$sql_row2['outp'];
+			$act_out[$sql_row['time_value']]=$sql_row2['outp'];
 		}
 		else
 		{
-			$act_out[$sql_row['time_display']]=0;
+			$act_out[$sql_row['time_value']]=0;
 		}	
 	}
-	
 }
 $sql1="select sum(plan_pro) as pro from $bai_pro.pro_plan_today where mod_no='$module'";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -211,17 +215,15 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	<tr class='red'>
 	<th class='left_head'>Hour</th>
 	<?php
-	for($i=0;$i<sizeof($time_display);$i++)
-	{
-		echo "<th>".$time_display[$i]." ".$time_prefix[$i]."</th>";
+	foreach($time_value as $hour){
+		echo "<th>".$time_display[$hour]." ".$time_prefix[$hour]."</th>";
 	}
 	?>
 	</tr>
 	<tr>
 		<th class='left_head'>Target PCs</th>
 		<?php
-		for($ii=0;$ii<sizeof($time_display);$ii++)
-		{
+		foreach($time_value as $hour){
 			echo "<td>".$hourly_target."</td>";
 		}
 		?>		
@@ -229,9 +231,8 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	<tr>
 		<th class='left_head'>Actual PCs</th>
 		<?php
-		for($iii=0;$iii<sizeof($time_display);$iii++)
-		{
-			echo "<td>".$act_out[$time_display[$iii]]."</td>";
+		foreach($time_value as $hour){
+			echo "<td>".$act_out[$hour]."</td>";
 		}
 		?>
 	</tr>
@@ -240,16 +241,16 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 
 <?php
 
-for($j=0;$j<sizeof($time_display);$j++)
+foreach($time_value as $hour)
 {
 	$bg_color="bgcolor=\"black\"";		
-	if($act_out[$time_display[$j]]==0)
+	if($act_out[$hour]==0)
 	{
 		$bg_color="bgcolor=\"red\"";
 	}
 	else
 	{
-		if($act_out[$time_display[$j]]>=$hourly_target)
+		if($act_out[$hour]>=$hourly_target)
 		{
 			$bg_color="bgcolor=\"green\"";
 		}
@@ -258,7 +259,7 @@ for($j=0;$j<sizeof($time_display);$j++)
 			$bg_color="bgcolor=\"orange\"";
 		}			
 	}		
-	echo "<td $bg_color>".(($hourly_target-$act_out[$time_display[$j]])>0?($hourly_target-$act_out[$time_display[$j]]):0)."</td>";
+	echo "<td $bg_color>".(($hourly_target-$act_out[$hour])>0?($hourly_target-$act_out[$hour]):0)."</td>";
 }
 
 ?>

@@ -40,11 +40,11 @@ while($row=mysqli_fetch_array($transaction_result))
         if ($api_type == 'fg')
         {
             // fg rejected
-            $api_url = $host.":".$port."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&RPQA=$quantity&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
+            $api_url = $host.":".$port."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&RPQA=$quantity&REMK=$transaction_id&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
         }
         else if ($api_type == 'opn')
         {
-            $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&OPNO=$op_code&DPLG=$workstation_id&SCQA=$quantity&SCRE=$reason&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+            $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&REMK=$transaction_id&OPNO=$op_code&DPLG=$workstation_id&SCQA=$quantity&SCRE=$reason&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
         }
 
         else
@@ -90,11 +90,11 @@ while($row=mysqli_fetch_array($transaction_result))
         if ($api_type == 'fg')
         {
             // fg good report
-            $api_url = $host.":".$port."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&RPQA=$quantity&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
+            $api_url = $host.":".$port."/m3api-rest/execute/PMS050MI/RptReceipt?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&RPQA=$quantity&REMK=$transaction_id&DSP1=1&DSP2=1&DSP3=1&DSP4=1&DSP5=1";
         }
         else if ($api_type == 'opn')
         {
-            $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&OPNO=$op_code&DPLG=$workstation_id&MAQA=$quantity&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+            $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&OPNO=$op_code&DPLG=$workstation_id&MAQA=$quantity&REMK=$transaction_id&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
         }
         else
         {
