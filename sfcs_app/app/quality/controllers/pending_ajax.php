@@ -14,7 +14,7 @@ $color=$_POST['color'];
 			{
 				$color_count=$sql_row1['col_cnt'];
 			}
-echo "<label>Select Color:</label><select class='form-control' name=\"color\"  required>";
+echo "<label>Select Color:</label><select class='form-control' name=\"color\" id=\"color1\" required>";
 $sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\"";
 
 // mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -22,7 +22,8 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS
 $sql_num_check=mysqli_num_rows($sql_result);
 if($color_count>1)
 {
-echo "<option value=\"0\" selected>All</option>";
+	//echo "<option>Please Select</option>";
+	echo "<option value=\"0\" selected>All</option>";
 }	
 while($sql_row=mysqli_fetch_array($sql_result))
 {
