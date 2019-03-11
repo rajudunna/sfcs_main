@@ -914,8 +914,10 @@ tags will be replaced.-->
 			{
 				fwrite($fh, date("Y-m-d H:i:s").$username."Success Redirect<br>\r\n");
 				$url = getFullURL($_GET['r'],"security_check.php",'N');
-				echo "<script>sweetAlert('','Successfully Updated.','success')</script>";
-				header("location: $url");
+				// echo "<script>sweetAlert('','Successfully Updated.','success')</script>";
+				// header("location: $url");
+		        echo "<script>sweetAlert('Mail Sent Successfully',' ','success')</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url\"; }</script>";
 				
 				
 			}
