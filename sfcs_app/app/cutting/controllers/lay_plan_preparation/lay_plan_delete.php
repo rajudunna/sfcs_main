@@ -232,9 +232,9 @@ if(isset($_POST["submit"]))
                 //echo $sql72."<br>"; 
                 //echo $row72."<br>"; 
                  
-                $sql73="SELECT * from $bai_pro.bai_log where delivery='$schedule'"; 
-                $result73=mysqli_query($link, $sql73) or die("Error=73".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                $row73=mysqli_num_rows($result73); 
+                // $sql73="SELECT * from $bai_pro.bai_log where delivery='$schedule'"; 
+                // $result73=mysqli_query($link, $sql73) or die("Error=73".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                // $row73=mysqli_num_rows($result73); 
                 //echo $sql73."<br>"; 
                 //echo $row73."<br>"; 
                  
