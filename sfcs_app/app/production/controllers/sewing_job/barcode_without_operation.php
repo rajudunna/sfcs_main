@@ -82,13 +82,20 @@
 							</tr>	
 							<tr><td><b>Style:</b></td><td>'.$barcode_rslt['order_style_no'].'</td>
 								<td><b>Schedule:</b></td><td>'.$schedule.'</td>
-							</tr>
-							<tr><td><b>Job Number:</b></td><td>'.$display1.'</td>
-								<td><b>Size:</b></td><td>'.$barcode_rslt['size_code'].'</td>';
+							</tr>';
+							
 					if($shade != '')
-						$html.= "<td><b>Shade:</b>$shade</td>";
-					$html.=	'</tr>
-							<tr><td><b>Barcode ID:</b></td><td>'.$barcode.'</td>
+						$html.= '
+							<tr><td colspan=2><b>Job Number:</b>'.$display1.'</td>
+								<td><b>Size:</b>'.$barcode_rslt['size_code'].'</td>
+								<td><b>Shade:</b>'.$shade.'</td>
+							</tr>';
+					else 
+						$html.= '<tr><td><b>Job Number:</b></td><td>'.$display1.'</td>
+									<td><b>Size:</b></td><td>'.$barcode_rslt['size_code'].'</td>
+								</tr>';
+
+					$html.='<tr><td><b>Barcode ID:</b></td><td>'.$barcode.'</td>
 								<td><b>Cut No:</b></td><td>'.chr($color_code).leading_zeros($cutno, 3).'</td>
 							</tr>
 							<tr><td><b>Color:</b></td><td colspan=3>'.substr($barcode_rslt['order_col_des'],0,35).'</td></tr>
