@@ -201,7 +201,7 @@
 							</div><br>";
 							echo "<div class='row'>";
 							echo "<div class='col-sm-4 left'>Vehicle No<b>:</b></div><div class='col-sm-4 left'><input class='form-control alpha' type='text' name='vehicle' id='vehicle' ></div></div>";
-							echo "<br><div class='row'><div class='col-sm-4 left'>Seal No<b>:</b></div><div class='col-sm-4 left'><input class='form-control alpha' type='text' id='seal' name='seal' onkeyup='javascript:return validate_data1(event);'></div><br>";
+							echo "<br><div class='row'><div class='col-sm-4 left'>Seal No<b>:</b></div><div class='col-sm-4 left'><input class='form-control alpha' type='text' id='seal' name='seal'></div><br>";
 							echo "</div><br>";	
 							/*
 							echo "<div class='row'>
