@@ -32,7 +32,7 @@ if($sql_num_check1==0)
 	$sql3="delete FROM $bai_pro3.allocate_stat_log where tid=\"$allocate_ref\"";
 	// echo "<br/>".$sql3."<br/>";
 	mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql4="delete FROM $bai_pro3.maker_stat_log where allocate_ref=\"$allocate_ref\"";
+	$sql4="delete FROM $bai_pro3.maker_stat_log where tid=\"$mk_ref\"";
 	mysqli_query($link, $sql4) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	// echo "<br/>".$sql4."<br/>";
 	echo "<script type=\"text/javascript\"> 
