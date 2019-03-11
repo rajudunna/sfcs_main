@@ -337,7 +337,12 @@ if(isset($_POST) && isset($_POST['main_data'])){
 <?php
 if($schedule != "" && $color != "")
 {
-    $ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm LEFT JOIN bai_pro3.cat_stat_log ON bai_orders_db_confirm.order_tid = cat_stat_log.order_tid LEFT JOIN bai_pro3.plandoc_stat_log ON cat_stat_log.tid = plandoc_stat_log.cat_ref WHERE cat_stat_log.category IN ('Body','Front') AND bai_orders_db_confirm.order_del_no='".$schedule."' AND TRIM(bai_orders_db_confirm.order_col_des) =trim('".$color."')";
+
+	
+    $ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm bd
+   LEFT JOIN bai_pro3.cat_stat_log csl ON bd.order_tid = csl.order_tid 
+   LEFT JOIN bai_pro3.plandoc_stat_log psl ON csl.tid = psl.cat_ref AND psl.order_tid = bd.order_tid 
+   WHERE csl.category IN ('Body','Front') AND bd.order_del_no='".$schedule."' AND TRIM(bd.order_col_des) =trim('".$color."') AND psl.order_tid <> ''";
   //echo $ratio_query;
     $doc_nos = [];
     $view_shows=[];
