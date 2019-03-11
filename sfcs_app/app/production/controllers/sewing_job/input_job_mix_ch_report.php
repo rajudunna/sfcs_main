@@ -94,115 +94,115 @@
                                         $temp=0;
                                         $temp+=$sql_row['carton_act_qty'];
                                         $color=$sql_row['order_col_des'];
-                                    }
-                                    $bg_color = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row['input_job_no'],$link);
-                                    
-                                    $sql4="select order_tid from $bai_pro3.bai_orders_db where order_del_no=\"".$sql_row["sch_mix"]."\"";
-                                    $sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                    while($sql_row4=mysqli_fetch_array($sql_result4))
-                                    {
-                                        $order_tid=$sql_row4["order_tid"];
-                                    }
-                                    $total_cuts=explode(",",$sql_row['acutno']);
-                                    $cut_jobs_new='';
-                                    for($ii=0;$ii<sizeof($total_cuts);$ii++)
-                                    {
-                                        $arr = explode("$", $total_cuts[$ii], 2);;
-                                        // $col = $arr[0];
-                                        $sql4="select color_code from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des='".$arr[0]."'";
-                                        //echo $sql4."<br>";
+                                        $bg_color = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row['input_job_no'],$link);
+                                        
+                                        $sql4="select order_tid from $bai_pro3.bai_orders_db where order_del_no=\"".$sql_row["sch_mix"]."\"";
                                         $sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         while($sql_row4=mysqli_fetch_array($sql_result4))
                                         {
-                                            $temp+=$sql_row['carton_act_qty'];
-                                            if($temp>$job_qty or $color!=$sql_row['order_col_des'] or in_array($sql_row['order_del_no'],$donotmix_sch_list))
-                                            {
-                                                $job_no++;
-                                                $temp=0;
-                                                $temp+=$sql_row['carton_act_qty'];
-                                                $color=$sql_row['order_col_des'];
-                                            }
-                                            $bg_color = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row['input_job_no'],$link);
-                                            
-                                            $budndle_print_sum =echo_title("$bai_pro3.packing_summary_input","sum(bundle_print_status)","input_job_no='".$sql_row['input_job_no']."' and order_del_no",$schedule,$link);
-                                            $tid_count = echo_title("$bai_pro3.packing_summary_input","count(tid)","input_job_no='".$sql_row['input_job_no']."' and order_del_no",$schedule,$link);
-
-                                            if ($tid_count == $budndle_print_sum)
-                                            {
-                                                $print_btn_color = 'danger';
-                                            }
-                                            else if ($budndle_print_sum == 0)
-                                            {
-                                                $print_btn_color = 'info';
-                                            }
-                                            else if ($tid_count > $budndle_print_sum)
-                                            {
-                                                $print_btn_color = 'warning';
-                                            }
-
-                                            $sql4="select order_tid from $bai_pro3.bai_orders_db where order_del_no=\"".$sql_row["sch_mix"]."\"";
+                                            $order_tid=$sql_row4["order_tid"];
+                                        }
+                                        $total_cuts=explode(",",$sql_row['acutno']);
+                                        $cut_jobs_new='';
+                                        for($ii=0;$ii<sizeof($total_cuts);$ii++)
+                                        {
+                                            $arr = explode("$", $total_cuts[$ii], 2);;
+                                            // $col = $arr[0];
+                                            $sql4="select color_code from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des='".$arr[0]."'";
+                                            //echo $sql4."<br>";
                                             $sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
                                             while($sql_row4=mysqli_fetch_array($sql_result4))
                                             {
-                                                $order_tid=$sql_row4["order_tid"];
-                                            }
-                                            $total_cuts=explode(",",$sql_row['acutno']);
-                                            $cut_jobs_new='';
-                                            for($ii=0;$ii<sizeof($total_cuts);$ii++)
-                                            {
-                                                $arr = explode("$", $total_cuts[$ii], 2);;
-                                               // $col = $arr[0];
-                                                $sql4="select color_code from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des='".$arr[0]."'";
-                                                //echo $sql4."<br>";
+                                                $temp+=$sql_row['carton_act_qty'];
+                                                if($temp>$job_qty or $color!=$sql_row['order_col_des'] or in_array($sql_row['order_del_no'],$donotmix_sch_list))
+                                                {
+                                                    $job_no++;
+                                                    $temp=0;
+                                                    $temp+=$sql_row['carton_act_qty'];
+                                                    $color=$sql_row['order_col_des'];
+                                                }
+                                                $bg_color = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row['input_job_no'],$link);
+                                                
+                                                $budndle_print_sum =echo_title("$bai_pro3.packing_summary_input","sum(bundle_print_status)","input_job_no='".$sql_row['input_job_no']."' and order_del_no",$schedule,$link);
+                                                $tid_count = echo_title("$bai_pro3.packing_summary_input","count(tid)","input_job_no='".$sql_row['input_job_no']."' and order_del_no",$schedule,$link);
+
+                                                if ($tid_count == $budndle_print_sum)
+                                                {
+                                                    $print_btn_color = 'danger';
+                                                }
+                                                else if ($budndle_print_sum == 0)
+                                                {
+                                                    $print_btn_color = 'info';
+                                                }
+                                                else if ($tid_count > $budndle_print_sum)
+                                                {
+                                                    $print_btn_color = 'warning';
+                                                }
+
+                                                $sql4="select order_tid from $bai_pro3.bai_orders_db where order_del_no=\"".$sql_row["sch_mix"]."\"";
                                                 $sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
                                                 while($sql_row4=mysqli_fetch_array($sql_result4))
                                                 {
-                                                    $color_code=$sql_row4["color_code"];
+                                                    $order_tid=$sql_row4["order_tid"];
                                                 }
-                                                $cut_jobs_new .= chr($color_code).leading_zeros($arr[1], 3)."<br>";
-                                                unset($arr);
-                                            }
-                                            $doc_tag=$sql_row["doc_no"];
-
-                                    $sql_des="SELECT group_concat(distinct size_code ORDER BY old_size) as size_code from $bai_pro3.packing_summary_input where pac_seq_no='$seq_no' and order_del_no=\"".$schedule."\" and input_job_no='".$sql_row['input_job_no']."'";
-                                    // echo $sql_des.'<br>';
-                                    $sql_result4x=mysqli_query($link, $sql_des) or exit("Sql Error44 $sql_des".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                    while($sql_row4x=mysqli_fetch_array($sql_result4x))
-                                    {
-                                        $size_codes=$sql_row4x['size_code'];
-                                    }
-
-                                    echo "<tr style='background-color:$bg_color;'>";
-
-                                    echo "<td>".$sql_row['order_del_no']."</td>";
-                                    echo "<td>".$sql_row['order_col_des']."</td>";
-                                    echo "<td>".$cut_jobs_new."</td>";
-                                    echo "<td>".strtoupper($size_codes)."</td>";
-                                    echo "<td>".$sql_row['carton_act_qty']."</td>";
-                                    echo "<td>";
-
-                                    $url4 = getFullURLLevel($_GET['r'],'new_job_sheet3.php',0,'R');
-                                    echo "<a target='_blank' class='btn btn-info btn-sm' href='$url4?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."' onclick=\"return popitup2('".$url4."?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."')\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Job Sheet-<b>".$sql_row['input_job_no']."</b></a><br>";
-
-                                            echo"</td>";
-                                            if($scanning_methods=='Bundle Level')
-                                            {
-                                                if ($print_btn_color == 'danger')
+                                                $total_cuts=explode(",",$sql_row['acutno']);
+                                                $cut_jobs_new='';
+                                                for($ii=0;$ii<sizeof($total_cuts);$ii++)
                                                 {
-                                                    echo '<td><span class="badge progress-bar-danger">Printing Done</span></td>
-                                                            <td><span class="badge progress-bar-danger">Printing Done</span></td>';
+                                                    $arr = explode("$", $total_cuts[$ii], 2);;
+                                                   // $col = $arr[0];
+                                                    $sql4="select color_code from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des='".$arr[0]."'";
+                                                    //echo $sql4."<br>";
+                                                    $sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                                    while($sql_row4=mysqli_fetch_array($sql_result4))
+                                                    {
+                                                        $color_code=$sql_row4["color_code"];
+                                                    }
+                                                    $cut_jobs_new .= chr($color_code).leading_zeros($arr[1], 3)."<br>";
+                                                    unset($arr);
                                                 }
-                                                else
-                                                {
-                                                    $url5 = getFullURLLevel($_GET['r'],'barcode_new.php',0,'R');
-                                                    $url6 = getFullURLLevel($_GET['r'],'barcode_without_operation.php',0,'R');
+                                                $doc_tag=$sql_row["doc_no"];
 
-                                                    echo "<td><a class='btn btn-".$print_btn_color." btn-sm' href='$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
-                                                    
-                                                    echo "<td><a class='btn btn-".$print_btn_color." btn-sm' href='$url6?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url6?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
+                                                $sql_des="SELECT group_concat(distinct size_code ORDER BY old_size) as size_code from $bai_pro3.packing_summary_input where pac_seq_no='$seq_no' and order_del_no=\"".$schedule."\" and input_job_no='".$sql_row['input_job_no']."'";
+                                                // echo $sql_des.'<br>';
+                                                $sql_result4x=mysqli_query($link, $sql_des) or exit("Sql Error44 $sql_des".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                                while($sql_row4x=mysqli_fetch_array($sql_result4x))
+                                                {
+                                                    $size_codes=$sql_row4x['size_code'];
                                                 }
+
+                                                echo "<tr style='background-color:$bg_color;'>";
+
+                                                echo "<td>".$sql_row['order_del_no']."</td>";
+                                                echo "<td>".$sql_row['order_col_des']."</td>";
+                                                echo "<td>".$cut_jobs_new."</td>";
+                                                echo "<td>".strtoupper($size_codes)."</td>";
+                                                echo "<td>".$sql_row['carton_act_qty']."</td>";
+                                                echo "<td>";
+
+                                                $url4 = getFullURLLevel($_GET['r'],'new_job_sheet3.php',0,'R');
+                                                echo "<a target='_blank' class='btn btn-info btn-sm' href='$url4?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."' onclick=\"return popitup2('".$url4."?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."')\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Job Sheet-<b>".$sql_row['input_job_no']."</b></a><br>";
+
+                                                echo"</td>";
+                                                if($scanning_methods=='Bundle Level')
+                                                {
+                                                    if ($print_btn_color == 'danger')
+                                                    {
+                                                        echo '<td><span class="badge progress-bar-danger">Printing Done</span></td>
+                                                                <td><span class="badge progress-bar-danger">Printing Done</span></td>';
+                                                    }
+                                                    else
+                                                    {
+                                                        $url5 = getFullURLLevel($_GET['r'],'barcode_new.php',0,'R');
+                                                        $url6 = getFullURLLevel($_GET['r'],'barcode_without_operation.php',0,'R');
+
+                                                        echo "<td><a class='btn btn-".$print_btn_color." btn-sm' href='$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
+                                                        
+                                                        echo "<td><a class='btn btn-".$print_btn_color." btn-sm' href='$url6?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url6?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
+                                                    }
+                                                }
+                                                echo"</tr>";
                                             }
-                                            echo"</tr>";
                                         }
                                    echo ' </table>
                             </form>
