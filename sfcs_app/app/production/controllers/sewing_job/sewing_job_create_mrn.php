@@ -314,7 +314,10 @@
 									$employee_no=$order_del_no."-".$input_job_no;
 									$remarks="Team"."-".$input_module."::".$date;
 								}
-								
+								if(strlen($employee_no) > 10)
+								{
+									$employee_no = substr($employee_no,-10);
+								}
 								$tid1=implode(",",$tid);
 								$mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid1) and op_code='$op_code' group by mo_no";
 								$mssql_insert_query="insert into [MRN_V2].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status,DSP1,DSP2,DSP3,DSP4) values";
@@ -409,8 +412,10 @@
 									$employee_no=$order_del_no."-".$input_job_no;
 									$remarks="Team"."-".$input_module."::".$date;
 								}
-								
-							
+								if(strlen($employee_no) > 10)
+								{
+									$employee_no = substr($employee_no,-10);
+								}															
 								$tid1=implode(",",$tid);
 								$mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid1) and op_code='$op_code' group by mo_no";
 								//echo $mo_operation_quantites_query."<br>";
