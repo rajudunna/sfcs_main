@@ -1,8 +1,5 @@
 
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	      ?>
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );  ?>
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header.php',1,'R') );  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R') );  ?>
 
 <style>
@@ -14,6 +11,9 @@
 
 <?php
 
+$table="upload";
+$table1="packing_summary";
+$table2="packing_summary_tmp";
 if(isset($_POST['division']))
 {
 	$division=$_POST['division'];
@@ -150,17 +150,13 @@ if(isset($_POST["submit"]))
 	set_time_limit(10000000);
 	
 	$sql_del="truncate table $bai_pro3.$table2";
+	//echo $sql_del;
 	if(!mysqli_query($link,$sql_del))
 	{
-		die('Error'.mysqli_error());
+		die('Error1'.mysqli_error());
 	}
 	
-	$sql_insrt="INSERT INTO $bai_pro3.$table2 SELECT * FROM $bai_pro3.$table1 WHERE lastup between '$_POST[dat] 00:00:00' and '$_POST[dat1] 23:59:59'";
-	//echo $sql_insrt;
-	if(!mysqli_query($link,$sql_insrt))
-	{
-		die('Error'.mysqli_error());
-	}
+
 	
 	//$size=array("XS","S","M","L","XL","XXL","S06","S08","S10","S12","S14","S16","S18","S20","S22","S24","S26","S28","S30"); 
 	$size = $sizes_array;
@@ -203,7 +199,7 @@ if(isset($_POST["submit"]))
 	echo "<h2><label>Selected Period :-</label> From : <span class='label label-success'>".$hour_from."".$time_stamp."</span> To : <span class='label label-success'>".$hour_to."".$time_stamp1."</h2></span>";
 	echo "<div class='table-responsive col-md-12' style='max-height:600px;overflow-y:scroll'>";
 	echo "<table id=\"table1\" class=\"table table-bordered\" style='width:100%'>";
-	echo "<tr class='danger'><th>Docket</th><th>Docket Ref</th><th>TID</th><th>Size</th><th>Remarks</th><th>Status</th><th>Last Updated</th><th>Carton Act Qty</th><th>Style</th><th>Schedule</th><th>Color</th></tr>";
+	echo "<tr class='danger'><th>TID</th><th>Size</th><th>Status</th><th>Last Updated</th><th>Carton Act Qty</th><th>Style</th><th>Schedule</th><th>Color</th></tr>";
 	$packing_tid_list=array();
 	$sql="select * from $bai_pro3.packing_summary where tid in (select tid from $bai_pro3.pac_stat_log where scan_date between \"".$sdate." ".$mtime."\" and \"".$edate." ".$aftime1."\" and status=\"DONE\" order by scan_date)";
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
@@ -212,12 +208,10 @@ if(isset($_POST["submit"]))
 
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$doc_no=$sql_row['doc_no'];
-		$doc_no_ref=$sql_row['doc_no_ref'];
+
 		$tid=$sql_row['tid'];
 		$packing_tid_list[]=$sql_row['tid'];
 		$size_code=$sql_row['size_code'];
-		$remarks=$sql_row['remarks'];
 		$status=$sql_row['status'];
 		$lastup=$sql_row['lastup'];
 		$container=$sql_row['container'];
@@ -232,7 +226,7 @@ if(isset($_POST["submit"]))
 		$size_value=ims_sizes('',$sql_row['order_del_no'],$sql_row['order_style_no'],$sql_row['order_col_des'],strtoupper(substr("a_".$sql_row['size_code'],2)),$link);
 					
 
-		echo "<tr><td>".$sql_row['doc_no']."</td><td>".$sql_row['doc_no_ref']."</td><td>".$sql_row['tid']."</td><td>".$size_value."</td><td>".$sql_row['remarks']."</td><td>".(strlen($sql_row['status'])==0?"Pending":$sql_row['status'])."</td><td>".$sql_row['lastup']."</td><td>".$sql_row['carton_act_qty']."</td><td>".$sql_row['order_style_no']."</td><td>".$sql_row['order_del_no']."</td><td>".$sql_row['order_col_des']."</td></tr>";
+		echo "<tr><td>".$sql_row['tid']."</td><td>".$size_value."</td><td>".(strlen($sql_row['status'])==0?"Pending":$sql_row['status'])."</td><td>".$sql_row['lastup']."</td><td>".$sql_row['carton_act_qty']."</td><td>".$sql_row['order_style_no']."</td><td>".$sql_row['order_del_no']."</td><td>".$sql_row['order_col_des']."</td></tr>";
 	}
 	echo '<tr><th colspan=7 style="text-align:right">Total:</th><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td><td colspan=3></td></tr>';
 		echo "</table>";
