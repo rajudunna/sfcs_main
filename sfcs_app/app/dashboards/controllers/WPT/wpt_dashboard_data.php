@@ -210,7 +210,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                 //for unscanned_jobs
                 $un_scanned_qty_query = "SELECT SUM(carton_act_qty) as job_qty,group_concat(doc_no) as docs,old_size 
                         from $bai_pro3.pac_stat_log_input_job  
-                        where input_job_no_random_ref IN ($unscanned_jobs_string) group by input_job_no_random_ref,old_size";
+                        where input_job_no_random IN ($unscanned_jobs_string) group by input_job_no_random,old_size";
                 $un_scanned_qty_result = mysqli_query($link,$un_scanned_qty_query); 
                 if(mysqli_num_rows($un_scanned_qty_result)>0){
                     while($uscrow = mysqli_fetch_array($un_scanned_qty_result)){
