@@ -41,8 +41,6 @@ if($_GET['some'] == 'bundle_no')
 			//echo $get_operations;
 			$opertions = implode(',',$operation_code);
 
-			$bcd_data_query .= " and operation_id in ($opertions)";
-
 			$get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions) ";
 			//echo $get_ops_query;
 			$ops_query_result=$link->query($get_ops_query);
@@ -92,7 +90,7 @@ if($_GET['some'] == 'bundle_no')
                 //To get Bundle Qty
 		        $get_bundle_qty="select sum(carton_act_qty) as bundle_qty from $bai_pro3.pac_stat_log_input_job where tid='$bundle_number'";
 					
-		        $bcd_data_query = "SELECT COALESCE(SUM(recevied_qty),0) as recevied,operation_id,COALESCE(sum(rejected_qty),0) as rejection,scanned_user,shift,scanned_date,assigned_module  from $brandix_bts.bundle_creation_data where style='$style' and schedule ='$schedule' and color='$color' and size_title='$size' and bundle_number='$bundle_number'  group by operation_id";
+		        $bcd_data_query = "SELECT COALESCE(SUM(recevied_qty),0) as recevied,operation_id,COALESCE(sum(rejected_qty),0) as rejection,scanned_user,shift,date_time,assigned_module  from $brandix_bts.bundle_creation_data_temp where style='$style' and schedule ='$schedule' and color='$color' and size_title='$size' and bundle_number='$bundle_number'  group by operation_id";
 		      
 
 			    $get_bundle_result =$link->query($get_bundle_qty);
@@ -109,7 +107,7 @@ if($_GET['some'] == 'bundle_no')
 					$bcd_rej[$row3['operation_id']] = $row3['rejection'];
 					$user = $row3['scanned_user'];
 					$shift = $row3['shift'];
-					$scanned_time[$row3['operation_id']] = $row3['scanned_date'];
+					$scanned_time[$row3['operation_id']] = $row3['date_time'];
 					$module = $row3['assigned_module'];
 			    }
 
