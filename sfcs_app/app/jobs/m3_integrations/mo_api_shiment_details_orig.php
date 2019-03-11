@@ -28,7 +28,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
         `packing_method`,
         `destination`,
         `zfeature`,
-        `Customer_Order_No`,
+        `Customer_Order_No`
       )
       VALUES
         (
