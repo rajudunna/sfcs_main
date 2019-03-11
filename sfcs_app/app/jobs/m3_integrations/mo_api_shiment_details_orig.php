@@ -36,7 +36,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
             '".$result_data['schedule']."',
             '".$result_data['color']."',
             '".$result_data['mo_tot_qty']."',
-            '".date('Ymd',strtotime($res_new_data['COPLANDELDATE']))."',
+            '".date('Ymd',strtotime($result_data['coplandeldate']))."',
             '".$result_data['cpo']."',
             '".$result_data['cpo']."',
             '".$result_data['size']."',
