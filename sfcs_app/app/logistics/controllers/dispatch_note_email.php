@@ -893,7 +893,7 @@ tags will be replaced.-->
 	$sql="select * from $bai_pro3.disp_db where disp_note_no='$note_no' and (exit_date IS NULL OR exit_date = '') and status=2";
 
 	$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	//var_dump($sql_result);
+//var_dump($sql_result);
 	//die();
 	fwrite($fh, "Note: $note_no".date("Y-m-d H:i:s").$username."Select Query<br>\r\n");
 
@@ -914,8 +914,10 @@ tags will be replaced.-->
 			{
 				fwrite($fh, date("Y-m-d H:i:s").$username."Success Redirect<br>\r\n");
 				$url = getFullURL($_GET['r'],"security_check.php",'N');
-				echo "<script>sweetAlert('','Successfully Updated.','success')</script>";
-				header("location: $url");
+				// echo "<script>sweetAlert('','Successfully Updated.','success')</script>";
+				// header("location: $url");
+		        echo "<script>sweetAlert('Mail sent Successfully',' ','success')</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url\"; }</script>";
 				
 				
 			}
