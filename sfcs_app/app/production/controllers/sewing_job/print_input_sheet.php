@@ -157,31 +157,24 @@
 							$schs_array[]=$row["sch"];
 							$division=$row["order_div"];
 						}
-
-
-						$size_array=array();
-
-						for($p=0;$p<sizeof($schs_array);$p++)
+						$sewing_jobratio_sizes_query1236 = "SELECT group_concat(id) as id from brandix_bts.`tbl_orders_master` where product_schedule=$schedule";
+						// echo $sewing_jobratio_sizes_query1236.'<br>';
+						$sewing_jobratio_sizes_result145=mysqli_query($link, $sewing_jobratio_sizes_query1236) or exit("Error while getting Job Ratio Details");
+						while($sewing_jobratio_color_details145=mysqli_fetch_array($sewing_jobratio_sizes_result145)) 
 						{
-							for($q=0;$q<sizeof($sizes_array);$q++)
-							{
-								$sql6="select sum(order_s_".$sizes_array[$q].") as order_qty,title_size_".$sizes_array[$q]." as size from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schs_array[$p].") ";
-								$result6=mysqli_query($link, $sql6) or die("Error35 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-								while($row6=mysqli_fetch_array($result6))
-								{
-									//echo $sizes_array[$q]."-".$row6["order_qty"]."<br>";
-									if($row6["order_qty"] > 0)
-									{
-										if(!in_array($sizes_array[$q],$size_array))
-										{
-											$size_array[]=$sizes_array[$q];
-											$orginal_size_array[]=$row6["size"];
-										}
-									}
-								}
-							}
+							$group_id = $sewing_jobratio_color_details145['id'];
 						}
 
+						$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN ($group_id)";
+						// echo $sewing_jobratio_sizes_query.'<br>';
+						$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
+						while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
+						{
+							$ref_size = $sewing_jobratio_color_details['size'];
+							$size_main = explode(",",$ref_size);
+							// var_dump($size);
+						}
+						
 						echo "<div class='row'>";
 						echo "<div class='col-md-12'>";
 						echo "<div class='table-responsive'>";
@@ -197,9 +190,9 @@
 						echo "<th>Cut Job#</th>";
 						echo "<th>Delivery Date</th>";
 						echo "<th>Sewing Job#</th>";
-						for($i=0;$i<sizeof($size_array);$i++)
+						for($i=0;$i<sizeof($size_main);$i++)
 						{
-							echo "<th align=\"center\">".$orginal_size_array[$i]."</th>";
+							echo "<th align=\"center\">".$size_main[$i]."</th>";
 						}
 						echo "<th>Total</th>";
 						echo "</thead></tr>";
@@ -309,15 +302,15 @@
 								echo "<td height=20 style='height:15.0pt'>".substr($cut_jobs_new, 0,-1)."</td>";
 								echo "<td height=20 style='height:15.0pt'>".$del_date."</td>";
 								echo "<td height=20 style='height:15.0pt'>".$display."</td>";
-								for($i=0;$i<sizeof($size_array);$i++)
+								for($i=0;$i<sizeof($size_main);$i++)
 								{
-									$sql7="SELECT * FROM $bai_pro3.packing_summary_input where order_del_no in (".$sql_row1["del_no"].")  and size_code='".$orginal_size_array[$i]."' and pac_seq_no=$seq_no and input_job_no='".$sql_row["job"]."' and acutno in (".$acutno_ref.")";
+									$sql7="SELECT * FROM $bai_pro3.packing_summary_input where order_del_no in (".$sql_row1["del_no"].")  and size_code='".$size_main[$i]."' and pac_seq_no=$seq_no and input_job_no='".$sql_row["job"]."' and acutno in (".$acutno_ref.")";
 									// echo $sql7."<br>";
 									$result7=mysqli_query($link, $sql7) or die("Error7-".$sql7."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 									$rows_count=mysqli_num_rows($result7);
 									if($rows_count > 0)
 									{
-										$sql5="SELECT round(sum(carton_act_qty),0) as qty FROM $bai_pro3.packing_summary_input where size_code='".$orginal_size_array[$i]."' and order_del_no in (".$sql_row1["del_no"].") and pac_seq_no=$seq_no and input_job_no='".$sql_row["job"]."' and acutno in (".$acutno_ref.")";
+										$sql5="SELECT round(sum(carton_act_qty),0) as qty FROM $bai_pro3.packing_summary_input where size_code='".$size_main[$i]."' and order_del_no in (".$sql_row1["del_no"].") and pac_seq_no=$seq_no and input_job_no='".$sql_row["job"]."' and acutno in (".$acutno_ref.")";
 										// echo $sql5."<br>";
 										$result5=mysqli_query($link, $sql5) or die("Error969-".$sql5."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 										while($sql_row5=mysqli_fetch_array($result5))
@@ -340,9 +333,9 @@
 						$o_total=0;
 						echo "<tr>";
 						echo "<th colspan=9  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;font-size:14px;\"> Total</th>";
-						for ($i=0; $i < sizeof($size_array); $i++)
+						for ($i=0; $i < sizeof($size_main); $i++)
 						{ 
-							$sql1="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE  order_del_no IN ($joinSch) and size_code='$orginal_size_array[$i]' and pac_seq_no=$seq_no";
+							$sql1="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE  order_del_no IN ($joinSch) and size_code='$size_main[$i]' and pac_seq_no=$seq_no";
 							//echo $sql1;
 							$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error996".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row1=mysqli_fetch_array($sql_result1))
