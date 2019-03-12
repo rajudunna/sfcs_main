@@ -336,7 +336,8 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 		global $link;
 		global $bai_pro3;
 		global $in_categories;
-		if(in_array($in_cat,$in_categories)){
+		$cats = explode(',',str_replace('"','',$in_categories));
+		if(in_array(strtoupper($in_cat),$cats)){
 			$order_tid_query = "SELECT category from $bai_pro3.cat_stat_log where order_tid='$order_tid' and category IN ($in_categories)";
 			$order_tid_result = mysqli_query($link,$order_tid_query);
 			while($row = mysqli_fetch_array($order_tid_result)){

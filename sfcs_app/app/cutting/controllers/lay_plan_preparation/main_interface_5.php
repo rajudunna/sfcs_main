@@ -7,7 +7,7 @@
 	</style>
 </head>
 <?php
-
+$dummy = 0;//variable for maintaining unique id for satisfying the requirement of "confirm-submit" class
 $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_result)>0)
@@ -84,7 +84,6 @@ echo "<div>
 							$cat_yy1=$sql_row2['catyy'];
 							$category1=$sql_row2['category'];
 							$binding_consumption=$sql_row2['binding_con'];
-
 						}
 
 						$sql2="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref1";
@@ -135,7 +134,8 @@ echo "<div>
 							$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							if(mysqli_num_rows($sql_result21)==0)
 							{
-								echo "<td class=\"  \"><center><a id='delete_form' class=\"btn btn-xs btn-danger confirm-submit\" href=\"".getFullURL($_GET['r'], "delete_id.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1\">Delete</a>";
+								$dummy++;
+								echo "<td class=\"  \"><center><a id='delete_form$dummy' class=\"btn btn-xs btn-danger confirm-submit\" href=\"".getFullURL($_GET['r'], "delete_id.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1\">Delete</a>";
 							}
 							else
 							{
