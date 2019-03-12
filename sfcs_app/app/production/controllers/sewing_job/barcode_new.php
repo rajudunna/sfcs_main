@@ -165,7 +165,7 @@
 								</tr>
 								<tr>	
 									<td><b>Operation:</b>'.substr(str_replace(' ','',$operations),0,18).' - '.$opscode.'</td>
-									<td><b>Cut No:</b>'.chr($color_code).leading_zeros($cutno, 3).'</td>
+									<td colspan=2><b>Cut No:</b>'.chr($color_code).leading_zeros($cutno, 3).'</td>
 								</tr>
 							</table>
 						</div><br><br><br><br><br>';
