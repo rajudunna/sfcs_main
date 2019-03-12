@@ -294,7 +294,7 @@
 		foreach($colors as $col){
 			$trimmed_color = trim($col);
 			$jobs_sizes_query = "Select distinct(size_code) as size from $bai_pro3.packing_summary_input 
-								where order_col_des = '$col' ";
+								where order_col_des = '$col' and order_del_no ='$schedule'";
 			$jobs_size_result = mysqli_query($link,$jobs_sizes_query) or exit('Error Encounterd while getting sizes in MO');
 			while($row = mysqli_fetch_array($jobs_size_result)){
 				$sizes[] = $row['size'];
@@ -358,7 +358,7 @@
 							$bundle_no = $row1234['tid'];
 							for($kk=0;$kk<sizeof($mo_no);$kk++)
 							{               
-								$last_mo = $mo_no[sizeof($mo_no)];  
+								$last_mo = $mo_no[$kk];    
 								$m_fil=0;
 								$sql12345="SELECT sum(bundle_quantity) as qty FROM $bai_pro3.mo_operation_quantites WHERE mo_no=$mo_no[$kk] and op_code IN ($ops[0]) GROUP BY op_code";
 								$result12345=mysqli_query($link, $sql12345) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 

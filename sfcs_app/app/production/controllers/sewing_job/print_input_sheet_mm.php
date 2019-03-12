@@ -193,7 +193,7 @@
                     echo "<th>Total</th>"; 
                     echo "</tr>"; 
 
-                    $sql="select distinct input_job_no as job, type_of_sewing from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and pac_seq_no=$seq_no group by input_job_no_random order by  acutno*1,input_job_no*1"; 
+                    $sql="select distinct input_job_no as job, type_of_sewing from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and pac_seq_no=$seq_no group by input_job_no_random order by  order_col_des,acutno*1,input_job_no*1"; 
                     // echo $sql;
                     $result=mysqli_query($link, $sql) or die("Error-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));             
                     while($sql_row=mysqli_fetch_array($result)) 
