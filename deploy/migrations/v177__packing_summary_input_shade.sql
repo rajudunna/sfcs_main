@@ -1,10 +1,10 @@
-DELIMITER $$
+/*#1323 script*/
+USE `bai_pro3`;
+alter table bai_pro3.pac_stat_log_input_job add column shade_group varchar(6) NULL after bundle_print_time;
 
-USE `bai_pro3`$$
+DROP VIEW IF EXISTS bai_pro3.packing_summary_input;
 
-DROP VIEW IF EXISTS `packing_summary_input`$$
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`baiall`@`%` SQL SECURITY DEFINER VIEW `packing_summary_input` AS 
+CREATE VIEW bai_pro3.packing_summary_input AS 
 SELECT
   `bai_orders_db_confirm`.`order_joins`          AS `order_joins`,
   `pac_stat_log_input_job`.`doc_no`              AS `doc_no`,
@@ -36,6 +36,4 @@ FROM ((`pac_stat_log_input_job`
     LEFT JOIN `plandoc_stat_log`
       ON (`pac_stat_log_input_job`.`doc_no` = `plandoc_stat_log`.`doc_no`))
    LEFT JOIN `bai_orders_db_confirm`
-     ON (`bai_orders_db_confirm`.`order_tid` = `plandoc_stat_log`.`order_tid`))$$
-
-DELIMITER ;
+     ON (`bai_orders_db_confirm`.`order_tid` = `plandoc_stat_log`.`order_tid`));
