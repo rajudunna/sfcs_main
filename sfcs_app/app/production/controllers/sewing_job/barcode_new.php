@@ -58,7 +58,7 @@
 			$quantity=$barcode_rslt['carton_act_qty'];
 			$size=$barcode_rslt['size_code'];
 			$seq_num=$barcode_rslt['barcode_sequence'];
-
+			$shade = strtoupper($barcode_rslt['shade_group']);
 			
 
 			$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color."' and order_del_no",$schedule,$link);
@@ -83,12 +83,48 @@
 					 // </div><br><br><br>';
 
 			$get_destination="select destination from bai_pro3.bai_orders_db where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."' ";
-			
+
 			$destination_result=mysqli_query($link, $get_destination)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($dest_row = mysqli_fetch_array($destination_result))
             {
             	$destination=$dest_row['destination'];
-            }
+			}
+			
+			//A dummy sticker for each bundle
+			$html.= '<div>
+							<table width="98%">
+								<tr>
+									<td colspan=4>
+									</td>
+									<td style="border: 4px solid black;	border-top-right-radius: 30px 12px; font-size:12px; width:60px; height:40px; text-align:center;">
+										<p style= "font-size: 15px;font-weight: bold;">'.$seq_num.'</p>
+									</td>
+								</tr>
+								<tr>
+									<td><b>Barcode ID:</b>'.trim($barcode).'</td>
+									<td><b>Qty:</b>'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
+									<td colspan=3><b>Country:</b>'.trim($destination).'</td>
+								</tr>
+								<tr>
+									<td><b>Style:</b>'.$barcode_rslt['order_style_no'].'</td>
+									<td colspan=4><b>Schedule:</b>'.$schedule.'</td>
+								</tr>
+								<tr>
+									<td><b>Job Number:</b>'.$display1.'</td>
+									<td><b>Size:</b>'.trim($barcode_rslt['size_code']).'</td>';
+						if($shade != '')
+							$html.= "<td><b>Shade:</b>$shade</td>";
+						$html.='</tr> 
+								<tr>
+									<td colspan=5><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
+								</tr>
+								<tr>	
+									<td><b>Cut No:</b>'.chr($color_code).leading_zeros($cutno, 3).'</td>
+								</tr>
+							</table>
+						</div><br><br><br><br><br>';
+			//Dummy sticker Ends
+
 			$operation_det="SELECT tor.operation_name as operation_name,tor.operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style ' AND color='$color' and tsm.barcode='Yes' and tor.operation_code not in (10,15,200)";
 			$sql_result1=mysqli_query($link, $operation_det) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($ops = mysqli_fetch_array($sql_result1))
@@ -120,14 +156,16 @@
 								</tr>
 								<tr>
 									<td><b>Job Number:</b>'.$display1.'</td>
-									<td><b>Size:</b>'.trim($barcode_rslt['size_code']).'</td>
-								</tr> 
+									<td><b>Size:</b>'.trim($barcode_rslt['size_code']).'</td>';
+						if($shade != '')
+							$html.= "<td><b>Shade:</b>$shade</td>";		
+						$html.='</tr> 
 								<tr>
 									<td colspan=5><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
 								</tr>
 								<tr>	
-									<td><b>Operation:</b>'.substr(str_replace(' ','',$operations),0,18).'</td>
-									<td><b>Cut No:</b>'.chr($color_code).leading_zeros($cutno, 3).'</td>
+									<td><b>Operation:</b>'.substr(str_replace(' ','',$operations),0,18).' - '.$opscode.'</td>
+									<td colspan=2><b>Cut No:</b>'.chr($color_code).leading_zeros($cutno, 3).'</td>
 								</tr>
 							</table>
 						</div><br><br><br><br><br>';
