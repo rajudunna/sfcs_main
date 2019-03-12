@@ -7,7 +7,7 @@ $shift=$_POST['shift'];
 
 for($i=0;$i<sizeof($mod_names);$i++)
 {
-	$sql2="update $bai_pro.pro_attendance set jumper='".$_POST['jpa'.$i]."' where date='".$date."' and module='$mod_names[$i]'";
+	$sql2="update $bai_pro.pro_attendance set jumper='".$_POST['jpa'.$i]."' where date='".$date."' and module='$mod_names[$i]' and shift = '$shift'";
 	// echo $sql2."<br>";
 	mysqli_query($link, $sql2) or exit("Sql Errora $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
