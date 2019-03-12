@@ -114,8 +114,11 @@ echo "<div>
 							{
 								//Validate for print status of the cut 
 								$print_status_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log where mk_ref=$mk_ref1 
-									and cat_ref=$cat_ref1 and ratio=$ratio and print_status is not null ";
-								if(mysqli_num_rows(mysqli_query($link,$print_status_query) == 0)){
+									and order_tid='$tran_order_tid1' and print_status is not null ";
+								if(mysqli_num_rows(mysqli_query($link,$print_status_query)) > 0 ){
+									echo "<td class=\"  \"><center><a id='revise_form' class=\"btn btn-xs btn-warning\" 
+									href=\"".getFullURL($_GET['r'], "revise_process.php", "N")."&tran_order_tid=$tran_order_tid1&allocate_ref=$allocate_ref1\">Revise</a></center></td>";
+								}else{
 									if($mk_status1==9)
 									{
 										echo "<td class=\"  \"><center>
@@ -126,11 +129,7 @@ echo "<div>
 										echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_makers_form2_edit.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1\">Edit</a>";
 										echo " | <a id='revise_form' class=\"btn btn-xs btn-warning\" href=\"".getFullURL($_GET['r'], "revise_process.php", "N")."&tran_order_tid=$tran_order_tid1&allocate_ref=$allocate_ref1\">Revise</a></center></td>";
 									}
-								}else{
-									echo "<td class=\"  \"><center><a id='revise_form' class=\"btn btn-xs btn-warning\" 
-									href=\"".getFullURL($_GET['r'], "revise_process.php", "N")."&tran_order_tid=$tran_order_tid1&allocate_ref=$allocate_ref1\">Revise</a></center></td>";
 								}
-								
 							}	
 							$sql21="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid1\" and mk_ref=$mk_ref1 ";
 							$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
