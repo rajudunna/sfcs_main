@@ -16,7 +16,7 @@
 
 <body onload='assigncmb()'>
     <?php
-    $colors = ['white','yellow','red','blue','orange','green','pink','black'];
+    $colors = ['white','yellow','green'];
     if(isset($_GET['id']))
     {
         $dr_id=$_GET['id'];
