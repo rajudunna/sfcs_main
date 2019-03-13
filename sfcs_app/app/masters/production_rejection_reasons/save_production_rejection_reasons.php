@@ -78,13 +78,13 @@
 			    <label class="control-label control-label-left col-sm-3" for="reason_desc">Reason Description:</label>
 			    <div class="controls col-sm-9">
                     
-                <input id="reason_desc" type="text" class="form-control k-textbox alpha" data-role="text"  required="required" name="reason_desc" value=<?php echo $reason_desc; ?> ><span id="errId2" class="error"></span></div>
+                <input id="reason_desc" type="text" class="form-control k-textbox alpha" data-role="text"  required="required" name="reason_desc" value="<?php echo $reason_desc; ?>" ><span id="errId2" class="error"></span></div>
                 
 		</div></div></div><div class="row"><div class="col-md-6"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="reason_code">Reason Code:</label>
 			    <div class="controls col-sm-9">
                     
-                <input id="reason_code" type="text" class="form-control k-textbox integer" data-role="text"  name="reason_code" required="required" <?= $jj ?> value=<?php echo $reason_code; ?> ><span id="errId3" class="error"></span></div>
+                <input id="reason_code" type="text" class="form-control k-textbox integer" data-role="text"  name="reason_code" required="required" <?= $jj ?> value="<?php echo $reason_code; ?>" ><span id="errId3" class="error"></span></div>
                 
 		</div></div><div class="col-md-6"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="reason_order">Reason Order:</label>
