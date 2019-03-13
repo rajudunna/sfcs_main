@@ -147,8 +147,7 @@ $ref=$_GET['ref'];
 $level=$_GET['level'];
 $product=$_GET['product'];
 $reason_code=$_GET['reason_code'];
-$ref_tid=$_GET['ref_tid'];
-//echo $level;	
+$ref_tid=$_GET['ref_tid'];	
 
 if($level==8)
 {
@@ -164,7 +163,11 @@ if($level==8)
 }
 
 if($level==3)
-{
+{	
+	if($_GET['tid']!=''){
+		$ref_tid=$_GET['tid'];
+	}
+	
 	echo "<form action=\"?r=".$_GET["r"]."\" method=\"post\">";
 	echo "<div class='col-md-4'>Enter Lots Here:<input type=\"textarea\" onkeypress='return validateQty(event);' rows=5 name=\"lots\" class='form-control' value=\"\" required></div>";
 	echo "&nbsp;&nbsp;<input type=\"submit\" style=\"margin-top: 18px;\" value=\"Submit\" class='btn btn-success' name=\"submitlot\" />";
