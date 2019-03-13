@@ -52,15 +52,14 @@ class ReactApp extends React.Component {
                         columnsData.push(val);
                     });            
                 }
-                this.setState({ tableData: response.data.data,columnsData:columnsData,loadingimage:false});
-            }else{
-                swal('Warning','No Records found for the selected date','warning'); 
-                this.setState({ tableData:[],columnsData:[],loadingimage:false});
+                this.setState({ tableData: response.data.data,columnsData:columnsData,loadingimage:false,mainData:response.data.data,tempData:[]});
+            }else{ 
+                this.setState({ tableData:[],columnsData:[],loadingimage:false,mainData:[],tempData:[]});
             }
             
         }) .catch((error) => {
             swal('Error','Some thing went wrong, Please try again '+error,'error');     
-            this.setState({ tableData: [],columnsData:[],loadingimage:false});
+            this.setState({ tableData: [],columnsData:[],loadingimage:false,mainData:[],tempData:[]});
         }); 
     }
   
@@ -75,7 +74,7 @@ class ReactApp extends React.Component {
                 element._subRows.forEach(elem1=>{
                     elem1._subRows.forEach(elem2=>{
                         elem2._subRows.forEach(function(elem3){
-                            elem3._subRows.forEach(elem4=>{                                                                                                     
+                            elem3._subRows.forEach(elem4=>{
                                 data.push(elem4);
                             });                            
                         })
@@ -135,7 +134,7 @@ class ReactApp extends React.Component {
     render() {
         const tableData = this.state.tableData;        
         const dynamicColumns = this.state.columnsData;  
-        const loadingimage = this.state.loadingimage;    
+        const loadingimage = this.state.loadingimage;   
 
         let colHeadData = [];
         let coldata = {
@@ -222,6 +221,86 @@ class ReactApp extends React.Component {
                                 sortable= {true}
                                 multiSort= {true}
                                 resizable= {true}
+                                onFilteredChange={(filtered, column) => {  
+                                    if(filtered.length >0){
+                                        filtered.forEach(data =>{
+                                            if(data.id == 'style'){
+                                                if(column.Header == "Style"){             
+                                                    if(this.state.tempData.length > 0){
+                                                        for (var i=0; i < this.state.tempData.length; i++) {
+                                                            if (this.state.tempData[i].style.trim()  === data.value) {
+                                                                this.state.tempData.push(this.state.tempData[i]);
+                                                            }
+                                                        }
+                                                    }else{
+                                                        for (var i=0; i < this.state.mainData.length; i++) {
+                                                            if (this.state.mainData[i].style.trim()  === data.value) {
+                                                                this.state.tempData.push(this.state.mainData[i]);
+                                                            }
+                                                        }
+                                                    }                                                    
+                                                }
+                                            }
+                                            
+                                            if(data.id == 'schedule'){
+                                                if(column.Header == "Schedule"){
+                                                    if(this.state.tempData.length > 0){
+                                                        for (var i=0; i < this.state.tempData.length; i++) {
+                                                            if (this.state.tempData[i].schedule === data.value) {
+                                                                this.state.tempData.push(this.state.tempData[i]);
+                                                            }
+                                                        }
+                                                    }else{
+                                                        for (var i=0; i < this.state.mainData.length; i++) {
+                                                            if (this.state.mainData[i].schedule === data.value) {
+                                                                this.state.tempData.push(this.state.mainData[i]);
+                                                            }
+                                                        }
+                                                    }                                                    
+                                                }
+                                            }
+    
+                                            if(data.id == 'color'){
+                                                if(column.Header == "Color"){
+                                                    if(this.state.tempData.length > 0){
+                                                        for (var i=0; i < this.state.tempData.length; i++) {
+                                                            if (this.state.tempData[i].color.trim()  === data.value ) {
+                                                                this.state.tempData.push(this.state.tempData[i]);
+                                                            }
+                                                        }
+                                                    }else{
+                                                        for (var i=0; i < this.state.mainData.length; i++) {
+                                                            if (this.state.mainData[i].color.trim()  === data.value ) {
+                                                                this.state.tempData.push(this.state.mainData[i]);
+                                                            }
+                                                        }
+                                                    }                                                    
+                                                }
+                                            }
+        
+                                            if(data.id == 'size'){
+                                                if(column.Header == "Size"){
+                                                    if(this.state.tempData.length > 0){
+                                                        for (var i=0; i < this.state.tempData.length; i++) {
+                                                            if (this.state.tempData[i].size.trim()  === data.value ) {
+                                                                this.state.tempData.push(this.state.tempData[i]);
+                                                            }
+                                                        }
+                                                    }else{
+                                                        for (var i=0; i < this.state.mainData.length; i++) {
+                                                            if (this.state.mainData[i].size.trim()  === data.value ) {
+                                                                this.state.tempData.push(this.state.mainData[i]);
+                                                            }
+                                                        }
+                                                    }                                                    
+                                                }
+                                            }
+                                        })
+                                        this.setState({ tableData: this.state.tempData});
+                                    }else{
+                                        this.setState({ tableData: this.state.mainData,tempData:[]});
+                                    }                                                                        
+                                }}
                             />
                         </div>
                     </div>
