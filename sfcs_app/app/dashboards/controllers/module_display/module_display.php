@@ -89,7 +89,7 @@ while($sql_row11=mysqli_fetch_array($sql_result11))
 	$plan_out=$sql_row11['pro'];
 }
 $balance_out=($plan_out-$act_out)>0?($plan_out-$act_out):0;
-$sql114="select sum(present+jumper) as atten from $bai_pro.pro_attendance where module='$module' and date='".$date_check."'";
+$sql114="select (SUM(present+jumper)-SUM(absent)) as atten from $bai_pro.pro_attendance where module='$module' and date='".$date_check."'";
 $sql_result114=mysqli_query($link, $sql114) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row114=mysqli_fetch_array($sql_result114))
 {
