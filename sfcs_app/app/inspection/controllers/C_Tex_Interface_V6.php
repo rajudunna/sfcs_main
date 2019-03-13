@@ -2309,7 +2309,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	  <td class=xl12824082 style='border-left:none'>".$temp[3]."<input class='hidden' type='hidden' id='ele_t_length".$i."' name='ele_t_length[$i]' value='".$temp[3]."' onchange='change_body(2,this.name,$i)'></td>
 	  <td class=xl12824082 style='border-left:none'><input class='textbox ctex_len float' ".$readonly." type='text'  min='0'  id='ele_c_length".$i."'  onkeyup='Subtract(".$i.");' name='ele_c_length[$i]' value='".$temp[4]."' onchange='change_body(2,this.name,$i)' ></td>
 
-	  <td class=xl12824082 style='border-left:none'><input class='Text_B' type='text' name='subt".$i."' id='subt".$i."' readonly value='".((int)$temp[4] - (int)$temp[3])."'></td>
+	  <td class=xl12824082 style='border-left:none'><input class='Text_B' type='text' name='subt".$i."' id='subt".$i."' readonly value='".($temp[4] - $temp[3])."'></td>
 
 	  <td class=xl12824082 style='border-left:none'><input class='textbox ticket_wid float' ".$readonly." type='text' min='0'  name='ele_t_width[$i]' id='ele_t_width".$i."' onkeyup='minus(".$i.");' value='".$temp[5]."' onchange='change_body(2,this.name,$i)'></td>
 	  <td class=xl12824082 style='border-left:none'><input class='textbox ctex_wid float' ".$readonly." type='text' min='0'  name='ele_c_width[$i]' id='ele_c_width".$i."' onkeyup='minus(".$i.");' value='".$temp[6]."' onchange='change_body(2,this.name,$i)'></td>
