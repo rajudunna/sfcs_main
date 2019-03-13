@@ -18,7 +18,6 @@ CREATE TABLE `bai_pro3`.`deleted_sewing_jobs` (
   `size_id` varchar(10) NOT NULL,
   `qty` int(5) DEFAULT NULL,
   `tid` int(10) DEFAULT NULL,
-  `type_of_sewing` int(2) DEFAULT NULL,
-  `date_time` datetime DEFAULT NULL,
+  `type_of_sewing` int(2) DEFAULT NULL
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1;

@@ -114,6 +114,9 @@ function validateQty(event)
 {
 	event = (event) ? event : window.event;
 	var charCode = (event.which) ? event.which : event.keyCode;
+	if(event.which == 13 || event.which == 44){
+		return true;
+	}
 	if (charCode > 31 && (charCode < 48 || charCode > 57)) {
 		return false;
 	}
