@@ -564,11 +564,11 @@
 
 					// echo 'order_colors: '.$size_of_ordered_colors.'<br>planned: '.$size_of_planned_colors;
 
-					if ($size_of_ordered_colors!=$size_of_planned_colors)
-					{
-						echo "<script>sweetAlert('Please prepare Lay Plan for all Colors in this Schedule - $schedule','','warning')</script>";
-					}
-					else
+					// if ($size_of_ordered_colors!=$size_of_planned_colors)
+					// {
+					// 	echo "<script>sweetAlert('Please prepare Lay Plan for all Colors in this Schedule - $schedule','','warning')</script>";
+					// }
+					// else
 					{
 						$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT order_col_des) AS color, GROUP_CONCAT(DISTINCT size_title) AS size FROM $brandix_bts.tbl_orders_sizes_master WHERE parent_id IN ($schedule_id)";
 						// echo $sewing_jobratio_sizes_query;
