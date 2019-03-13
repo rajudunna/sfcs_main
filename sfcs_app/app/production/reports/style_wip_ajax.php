@@ -27,7 +27,7 @@ if($_GET['some'] == 'bundle_no')
 			  $op_codes = $row['op_codes'];
 			}
 
-			$get_operations= "select DISTINCT(operation_code) from $brandix_bts.tbl_style_ops_master where style='$style' and color='$color' and operation_code in ($op_codes)";
+			$get_operations= "select DISTINCT(operation_code) from $brandix_bts.tbl_style_ops_master where style='$style' and color='$color' and operation_code in ($op_codes) order by operation_order";
 
 			$bcd_root_query = "SELECT * from $brandix_bts.bundle_creation_data where style='$style' and schedule ='$schedule' and color='$color' and bundle_number= '$bundle_number' limit 1";
 	        $result1 = $link->query($get_operations);
@@ -215,7 +215,7 @@ else
 		}
 		}	
 
-
+        $get_operations .=" order by operation_order"; 
 
 		$result1 = $link->query($get_operations);
 		while($row2 = $result1->fetch_assoc())
