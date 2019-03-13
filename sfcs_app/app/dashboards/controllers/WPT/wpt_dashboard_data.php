@@ -105,6 +105,7 @@ echo json_encode($section_data);
 
 <?php
 function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
+    $scanned_jobs = [];
     global $line_breaker;
     global $sum_str; 
     global $link;
