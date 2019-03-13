@@ -52,14 +52,14 @@ class ReactApp extends React.Component {
                         columnsData.push(val);
                     });            
                 }
-                this.setState({ tableData: response.data.data,columnsData:columnsData,loadingimage:false,mainData:response.data.data,tempData:[]});
+                this.setState({ tableData: response.data.data,columnsData:columnsData,loadingimage:false,mainData:response.data.data});
             }else{ 
-                this.setState({ tableData:[],columnsData:[],loadingimage:false,mainData:[],tempData:[]});
+                this.setState({ tableData:[],columnsData:[],loadingimage:false});
             }
             
         }) .catch((error) => {
             swal('Error','Some thing went wrong, Please try again '+error,'error');     
-            this.setState({ tableData: [],columnsData:[],loadingimage:false,mainData:[],tempData:[]});
+            this.setState({ tableData: [],columnsData:[],loadingimage:false});
         }); 
     }
   
@@ -177,7 +177,7 @@ class ReactApp extends React.Component {
                             }
                         }                                            
                     }
-                    return colSum
+                   return  (<span style={{ float: "right" }}>{colSum}</span>)
                 },
                 columns:[{
                     Header: val.op_name,
@@ -186,11 +186,13 @@ class ReactApp extends React.Component {
                     aggregate: (values, rows) => _.sum(values),
                     Aggregated: row => {
                     return (
-                        <span>
+                        <span style={{
+                            float: "right"
+                          }}>
                         {(row.value)?row.value:'0'}
                         </span>
                     );
-                    }
+                    },
                 }]
             }
             colHeadData.push(collist);
@@ -221,86 +223,6 @@ class ReactApp extends React.Component {
                                 sortable= {true}
                                 multiSort= {true}
                                 resizable= {true}
-                                onFilteredChange={(filtered, column) => {  
-                                    if(filtered.length >0){
-                                        filtered.forEach(data =>{
-                                            if(data.id == 'style'){
-                                                if(column.Header == "Style"){             
-                                                    if(this.state.tempData.length > 0){
-                                                        for (var i=0; i < this.state.tempData.length; i++) {
-                                                            if (this.state.tempData[i].style.trim()  === data.value) {
-                                                                this.state.tempData.push(this.state.tempData[i]);
-                                                            }
-                                                        }
-                                                    }else{
-                                                        for (var i=0; i < this.state.mainData.length; i++) {
-                                                            if (this.state.mainData[i].style.trim()  === data.value) {
-                                                                this.state.tempData.push(this.state.mainData[i]);
-                                                            }
-                                                        }
-                                                    }                                                    
-                                                }
-                                            }
-                                            
-                                            if(data.id == 'schedule'){
-                                                if(column.Header == "Schedule"){
-                                                    if(this.state.tempData.length > 0){
-                                                        for (var i=0; i < this.state.tempData.length; i++) {
-                                                            if (this.state.tempData[i].schedule === data.value) {
-                                                                this.state.tempData.push(this.state.tempData[i]);
-                                                            }
-                                                        }
-                                                    }else{
-                                                        for (var i=0; i < this.state.mainData.length; i++) {
-                                                            if (this.state.mainData[i].schedule === data.value) {
-                                                                this.state.tempData.push(this.state.mainData[i]);
-                                                            }
-                                                        }
-                                                    }                                                    
-                                                }
-                                            }
-    
-                                            if(data.id == 'color'){
-                                                if(column.Header == "Color"){
-                                                    if(this.state.tempData.length > 0){
-                                                        for (var i=0; i < this.state.tempData.length; i++) {
-                                                            if (this.state.tempData[i].color.trim()  === data.value ) {
-                                                                this.state.tempData.push(this.state.tempData[i]);
-                                                            }
-                                                        }
-                                                    }else{
-                                                        for (var i=0; i < this.state.mainData.length; i++) {
-                                                            if (this.state.mainData[i].color.trim()  === data.value ) {
-                                                                this.state.tempData.push(this.state.mainData[i]);
-                                                            }
-                                                        }
-                                                    }                                                    
-                                                }
-                                            }
-        
-                                            if(data.id == 'size'){
-                                                if(column.Header == "Size"){
-                                                    if(this.state.tempData.length > 0){
-                                                        for (var i=0; i < this.state.tempData.length; i++) {
-                                                            if (this.state.tempData[i].size.trim()  === data.value ) {
-                                                                this.state.tempData.push(this.state.tempData[i]);
-                                                            }
-                                                        }
-                                                    }else{
-                                                        for (var i=0; i < this.state.mainData.length; i++) {
-                                                            if (this.state.mainData[i].size.trim()  === data.value ) {
-                                                                this.state.tempData.push(this.state.mainData[i]);
-                                                            }
-                                                        }
-                                                    }                                                    
-                                                }
-                                            }
-                                        })
-                                        this.setState({ tableData: this.state.tempData});
-                                    }else{
-                                        this.setState({ tableData: this.state.mainData,tempData:[]});
-                                    }                                                                        
-                                }}
                             />
                         </div>
                     </div>
