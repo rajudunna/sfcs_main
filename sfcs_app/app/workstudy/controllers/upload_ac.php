@@ -48,11 +48,12 @@ error_reporting(E_ALL ^ E_NOTICE);
 $sql="select max(yer_mon) as yer_mon from $bai_pro.tbl_freez_plan_track where track_status<>0";
 
 $sql_result=mysqli_query($link, $sql);
+$no_of_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {	
 	$date=$sql_row['yer_mon'];
 }
-//echo $date."<br>";
+//echo $no_of_rows."<br>";
 if($date=='')
 {
 	$date=date("Y-m-d");
@@ -60,7 +61,7 @@ if($date=='')
 }
 else
 {
-	echo "<div class='row'><div class='col-sm-12'><div class='alert alert-info'><font style='color:white'><strong>Info!</strong>      You are going to upload Freez Plan for: ".date('Y-M', strtotime('+0 month', strtotime($date)))."</font></div></div>";	
+	echo "<div class='row'><div class='col-sm-12'><div class='alert alert-info'><font style='color:white'><strong>Info!</strong>      You are going to upload Freez Plan for: ".date('Y-M', strtotime('+1 month', strtotime($date)))."</font></div></div>";	
 }
 
 echo '</div><hr>';
@@ -112,7 +113,7 @@ if(strlen($filename)>0)
 	echo ' <form name="update" method="GET" action="index.php"> 
 	<input type="hidden" name="r" value='.$redirect[1].'>
 	<div class="row"><div class="col-sm-3"><label>Process File ID: </label><input type="text" class="form-control" name="id" size="25" value='.$filename.' id="ile">
-	<input type="hidden" name="date" value="'.date('Y-m-d', strtotime('+0 month', strtotime($date))).'">
+	<input type="hidden" name="date" value="'.date('Y-m-d', strtotime('+1 month', strtotime($date))).'">
 	<input type="submit" name="update" class="btn btn-primary" value="Update" id="addUpdate" onclick="show_loader()">';	
 	echo '</div></div>
 	</form> ';

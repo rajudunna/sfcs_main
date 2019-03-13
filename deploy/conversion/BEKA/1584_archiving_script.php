@@ -33,7 +33,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 echo "<br/><br/>Started Running <br/>";
 
-$order_tids = ['P19980C9       586365TROPNC C001 4ATL(G)           ','A0737SS9       569437STONEWASH                     ','A0737SS9       586317STONEWASH                     ',
+/*$order_tids = ['P19980C9       586365TROPNC C001 4ATL(G)           ','A0737SS9       569437STONEWASH                     ','A0737SS9       586317STONEWASH                     ',
                 'A0737SS9        586319Quail                         ',
 				'A0737SS9       586322Quail                         ','JJE069S9       59141209 - Black                    ','JJE069S9       59141269 - Navy                     ',
 				'JJE069S9       59141409 - Black                    ','JJE069S9       59141469 - Navy                     ','JJE069S9       59141503 - Grey Marl                ',
@@ -103,7 +103,10 @@ $order_tids = ['P19980C9       586365TROPNC C001 4ATL(G)           ','A0737SS9  
 				'TWU21AF9       580962RED-600-UTHW8207              ','TWU21AF9       580963RED-600-UTHW8207              ','TWU21AF9       580977RED-600-UTHW8207              ',
 				'T195AF9S       579749BLACK-001000  				','T195AF9I       580312BLACK-001000                  ','T195AF9S       579749BLUE FROST -420000            ',
 				'T195AF9I       580312LICHEN-370000   '
-];
+];*/
+
+$order_tids = ['TWU21AF9       580951QUARTZ-681-UTHW8060           ','TWU21AF9       580952GARDEN-356-UTHW8059           ',
+			'TWU21AF9       580953PERIWINKLE-436-UTHW8057       ','TWU21AF9       580964RED-600-UTHW8207              '];
 
 $docs = [];
 $input_jobs = [];
@@ -281,7 +284,6 @@ foreach($input_jobs as $inpout_job){
 	$delete_query[] = "DELETE FROM $bai_pro3.ims_log where input_job_rand_no_ref = '$inpout_job' ";
 	$delete_query[] = "DELETE from $bai_pro3.ims_log_backup where input_job_rand_no_ref = '$inpout_job' ";
 	/**/$delete_query[] = "DELETE from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$inpout_job'";
-
 }
 
 //5.
@@ -289,7 +291,7 @@ foreach($input_jobs as $inpout_job){
 // mo_details_archive;
 // mo_operation_quantites_archive;
 
-foreach($mos as $mo){
+foreach($mos as $mo_no){
 	$archive_query[] = "INSERT INTO $bai_pro3.m3_transactions_archive(select * from $bai_pro3.m3_transactions where mo_no = '$mo_no')";
 	$archive_query[] = "INSERT INTO $bai_pro3.mo_details_archive(select * from $bai_pro3.mo_details where mo_no = '$mo_no')";
 	$archive_query[] = "INSERT INTO $bai_pro3.mo_operation_quantites_archive(select * from $bai_pro3.mo_operation_quantites where mo_no = '$mo_no')";
@@ -297,7 +299,6 @@ foreach($mos as $mo){
 	$delete_query[] = "DELETE from $bai_pro3.m3_transactions where mo_no = '$mo_no'";
 	$delete_query[] = "DELETE from $bai_pro3.mo_details where mo_no = '$mo_no'";
 	$delete_query[] = "DELETE from $bai_pro3.mo_operation_quantites where mo_no = '$mo_no'";
-
 }
 
 //6.

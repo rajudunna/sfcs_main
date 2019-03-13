@@ -622,7 +622,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                         }
                         else
                         {
-                            $type_pms070mi=0;
+                            $type_pms070mi='0';
                         }
                         //validating response pass/fail and inserting log
                         if($type_pms070mi!='ServerReturnedNOK')
@@ -663,7 +663,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                         }
                         else
                         {
-                            $type_pms050mi=0;
+                            $type_pms050mi='0';
                         }
                         //validating response pass/fail and inserting log
                         if($type_pms050mi!='ServerReturnedNOK')

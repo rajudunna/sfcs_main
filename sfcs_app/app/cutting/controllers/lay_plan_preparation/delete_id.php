@@ -38,7 +38,6 @@ if($sql_num_check1==0)
 	echo "<script type=\"text/javascript\"> 
 				sweetAlert('Deleted Successfully','','error');			
 		  </script>";
-
 }
 else
 {

@@ -63,8 +63,8 @@
     function load_shades(t){
         $('#shades_table').html('');
         shades = Number(t.value);
-        if(shades <= 1)
-            return swal('You cannot have 1 shade','','error');
+        // if(shades <= 1)
+        //     return swal('You cannot have 1 shade','','error');
         count = shades; 
         $('#shades_table').append("<tr class='danger'><td>Shade</td><td>Plies</td></tr>");
         while(shades-- > 0){

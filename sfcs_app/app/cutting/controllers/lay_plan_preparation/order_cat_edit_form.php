@@ -5,47 +5,47 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/header_scripts.php',4,'R'));?>
 
 <script type="text/javascript" >
-function dodisable()
-{
-	enableButton();
-	document.input.order_tid.style.visibility="hidden"; 
-	document.input.cat_tid.style.visibility="hidden"; 
-}
+	function dodisable()
+	{
+		enableButton();
+		document.input.order_tid.style.visibility="hidden"; 
+		document.input.cat_tid.style.visibility="hidden"; 
+	}
 
-function verify_nums(t,e){
-	if(e.keyCode == 8 || e.keyCode == 9){
-			return;
+	function verify_nums(t,e){
+		if(e.keyCode == 8 || e.keyCode == 9){
+				return;
+			}
+
+		var c = /^[0-9]+$/;
+		var id = t.id;
+		var qty = document.getElementById(id);
+
+		if( !(qty.value.match(c)) && qty.value!=null){
+			//sweetAlert('Please Enter Only Numbers','','warning');
+			qty.value = qty.value.replace(/[^0-9]/g,'');
+			qty.value = 0;
+			return false;
 		}
-
-	var c = /^[0-9]+$/;
-	var id = t.id;
-	var qty = document.getElementById(id);
-
-	if( !(qty.value.match(c)) && qty.value!=null){
-		//sweetAlert('Please Enter Only Numbers','','warning');
-		qty.value = qty.value.replace(/[^0-9]/g,'');
-		qty.value = 0;
-		return false;
 	}
-}
 
-function verify_spec(e)
-{
-	var pver = document.getElementById('patt_ver').value;
-	document.getElementById('patt_ver').value = pver.replace('"','').replace("'","");
-	return true;
-}
-
-function enableButton() 
-{
-	if(document.getElementById('option').checked)
+	function verify_spec(e)
 	{
-		document.getElementById('update').disabled='';
-	} 
-	else 
-	{
-		document.getElementById('update').disabled='true';
+		var pver = document.getElementById('patt_ver').value;
+		document.getElementById('patt_ver').value = pver.replace('"','').replace("'","");
+		return true;
 	}
+
+	function enableButton() 
+	{
+		if(document.getElementById('option').checked)
+		{
+			document.getElementById('update').disabled='';
+		} 
+		else 
+		{
+			document.getElementById('update').disabled='true';
+		}
 	}
 </script>
 
@@ -132,7 +132,6 @@ if(isset($_GET['cat_tid']))
 					</script>";
 				exit();
 			}
-
 			$mo_query = "SELECT * from $bai_pro3.mo_details where schedule='$schedule' and 
 						color='$color_value'  and style='$style' limit 1";
 			$mo_result = mysqli_query($link,$mo_query);	
@@ -147,86 +146,84 @@ if(isset($_GET['cat_tid']))
 		}
 	}
 }
-	echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a></div></br></br>"; ?>
+echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a></div></br></br>"; ?>
 <div class="panel panel-primary">
 <div class="panel-heading">Order Category Classification FORM</div>
 <div class="panel-body">
 
 <form method="post" name="input" action="<?php echo getFullURL($_GET['r'], "order_cat_edit_form.php", "N"); ?>">
+	<?php
+		echo "<input type=\"hidden\" class=\"form-control\" name=\"get_style\" value=\"".$get_style."\">";
+		echo "<input type=\"hidden\" class=\"form-control\" name=\"get_schedule\" value=\"".$get_schedule."\">";
+		echo "<input type=\"hidden\" class=\"form-control\" name=\"get_color\" value=\"".$get_color."\">";
 
+		$sql="select * from $bai_pro3.cat_stat_log where tid=\"$cat_tid\"";
+		//echo "Cat Stat Log : ".$sql."</br>";
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_num_check=mysqli_num_rows($sql_result);
 
-<?php
-	echo "<input type=\"hidden\" class=\"form-control\" name=\"get_style\" value=\"".$get_style."\">";
-	echo "<input type=\"hidden\" class=\"form-control\" name=\"get_schedule\" value=\"".$get_schedule."\">";
-	echo "<input type=\"hidden\" class=\"form-control\" name=\"get_color\" value=\"".$get_color."\">";
-
-	$sql="select * from $bai_pro3.cat_stat_log where tid=\"$cat_tid\"";
-	//echo "Cat Stat Log : ".$sql."</br>";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check=mysqli_num_rows($sql_result);
-
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		//echo "<div class=\"col-sm-12\">";
-		echo "<input type=\"hidden\" class=\"form-control\" name=\"order_tid\" value=\"".$sql_row['order_tid']."\">"; 
-		echo "<input type=\"hidden\" class=\"form-control\" name=\"cat_tid\" value=\"".$cat_tid."\">";
-		echo "<input type=\"hidden\" class=\"form-control\" name=\"col_des\" value=\"".$sql_row['col_des']."\">";
-		//echo "</div>";
-
-		echo "<div class=\"table-responsive\"><table class=\"table table-striped jambo_table bulk_action\"><tbody>";
-		echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Fab Code</th><td class=\"  \">:</td><div class=\"col-md-4\"><td class=\"  \">".$sql_row['compo_no']."</div></td>";
-		echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Fab Description</th><td class=\"  \">:</td><div class=\"col-md-4\"><td class=\"  \">".$sql_row['fab_des']."</div></td>";
-		echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Consumption</th><td class=\"  \">:</td><div class=\"col-md-4\"><td class=\"  \">".$sql_row['catyy']."</div></td>";
-		echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Date</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><INPUT class=\"form-control\" type=\"text\" data-toggle='datepicker' required name=\"in_date\" value=";if($sql_row['date']=="0000-00-00"){echo date("Y-m-d");}else{echo $sql_row['date'];} 
-		echo "></div></td>";
-		$sql4="select * from $bai_pro3.tbl_category where status='1'";
-		$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Category</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><select class=\"form-control\" required name=\"in_cat\">";
-		while($sql_row4=mysqli_fetch_array($sql_result4))
+		while($sql_row=mysqli_fetch_array($sql_result))
 		{
-			if($sql_row['category']==$sql_row4['cat_name'])
+			//echo "<div class=\"col-sm-12\">";
+			echo "<input type=\"hidden\" class=\"form-control\" name=\"order_tid\" value=\"".$sql_row['order_tid']."\">"; 
+			echo "<input type=\"hidden\" class=\"form-control\" name=\"cat_tid\" value=\"".$cat_tid."\">";
+			echo "<input type=\"hidden\" class=\"form-control\" name=\"col_des\" value=\"".$sql_row['col_des']."\">";
+			//echo "</div>";
+
+			echo "<div class=\"table-responsive\"><table class=\"table table-striped jambo_table bulk_action\"><tbody>";
+			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Fab Code</th><td class=\"  \">:</td><div class=\"col-md-4\"><td class=\"  \">".$sql_row['compo_no']."</div></td>";
+			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Fab Description</th><td class=\"  \">:</td><div class=\"col-md-4\"><td class=\"  \">".$sql_row['fab_des']."</div></td>";
+			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Consumption</th><td class=\"  \">:</td><div class=\"col-md-4\"><td class=\"  \">".$sql_row['catyy']."</div></td>";
+			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Date</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><INPUT class=\"form-control\" type=\"text\" data-toggle='datepicker' required name=\"in_date\" value=";if($sql_row['date']=="0000-00-00"){echo date("Y-m-d");}else{echo $sql_row['date'];} 
+			echo "></div></td>";
+			$sql4="select * from $bai_pro3.tbl_category where status='1'";
+			$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Category</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><select class=\"form-control\" required name=\"in_cat\">";
+			while($sql_row4=mysqli_fetch_array($sql_result4))
 			{
-				$select="selected";
-			}		
-			echo "<option value='".$sql_row4['cat_name']."' $select >".$sql_row4['cat_name']."</option>";
-			$select="";
+				if($sql_row['category']==$sql_row4['cat_name'])
+				{
+					$select="selected";
+				}		
+				echo "<option value='".$sql_row4['cat_name']."' $select >".$sql_row4['cat_name']."</option>";
+				$select="";
+			}
+			
+			echo "</select></div></td></tr>";
+
+			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Pur Width</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><input class=\"form-control float\" required type=\"text\"  name=\"in_width\" id='in_width' value=\"".$sql_row['purwidth']."\"></div></td></tr>";
+			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Pattern Ver</th><td class=\"  \">:</td><td class=\"  \">
+			<div class=\"col-md-4\">
+			<input class='form-control' onkeyup=\"return verify_spec(event)\"  type=\"text\"  name=\"patt_ver\" id='patt_ver' value=\"".$sql_row['patt_ver']."\"  required >
+			</div></td></tr>";
+			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Binding Consumption</th><td class=\"  \">:</td><td class=\"  \">
+			<div class=\"col-md-4\">
+			<input class='form-control float' type=\"text\" name=\"binding_consumption\" id='binding_consumption' value=\"".$sql_row['binding_consumption']."\"  required >
+			</div></td></tr>";
+
+			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Gmt Way</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><select class=\"form-control\" name=\"gmt_way\">";
+			echo "<option value=\"N\""; if($sql_row['gmtway']=='N'){ echo "selected"; } echo ">All Gmt One Way</option>";
+			echo "<option value=\"Y\""; if($sql_row['gmtway']=='Y'){ echo "selected"; } echo ">One Gmt One Way</option>";
+			echo "</select></div></td></tr>";
+
+			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Strip Match</th><td class=\"  \">:</td><td><div class=\"col-md-4\"><select class=\"form-control\" name=\"strip_match\">";
+			echo "<option value=\"N\""; if($sql_row['strip_match']=='N'){ echo "selected"; } echo ">NO</option>";
+			echo "<option value=\"Y\""; if($sql_row['strip_match']=='Y'){ echo "selected"; } echo ">YES</option>";
+			echo "</select></div></td></tr>";
+
+			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Gusset Seperation</th><td class=\"  \">:</td><td><div class=\"col-md-4\"><select class=\"form-control\" name=\"guess_sep\">";
+			echo "<option value=\"N\""; if($sql_row['gusset_sep']=='N'){ echo "selected"; } echo ">NO</option>";
+			echo "<option value=\"Y\""; if($sql_row['gusset_sep']=='Y'){ echo "selected"; } echo ">YES</option>";
+			echo "</select></div></td></tr>";
+
+			/* echo "<tr><td>Remarks</td><td>:</td><td> <INPUT type=\"text\" name=\"remarks\" value=\"".$sql_row['remarks']."\"></td></tr>"; */
+
+			echo "</tbody></table></div>";
+			//echo "<center><input class=\"form-check-input\" type=\"checkbox\" name=\"option\"  id=\"option\" onclick=\"javascript:enableButton();\">Enable";
+			echo "&nbsp;&nbsp;&nbsp;<INPUT class=\"btn btn-sm btn-primary\" onclick='return verify()' TYPE = \"submit\" id='update'  Name = \"Update\" VALUE = \"Update\"></center>";
 		}
-		
-		echo "</select></div></td></tr>";
 
-		echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Pur Width</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><input class=\"form-control float\" required type=\"text\"  name=\"in_width\" id='in_width' value=\"".$sql_row['purwidth']."\"></div></td></tr>";
-		echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Pattern Ver</th><td class=\"  \">:</td><td class=\"  \">
-		<div class=\"col-md-4\">
-		<input class='form-control' onkeyup=\"return verify_spec(event)\"  type=\"text\"  name=\"patt_ver\" id='patt_ver' value=\"".$sql_row['patt_ver']."\"  required >
-		</div></td></tr>";
-		echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Binding Consumption</th><td class=\"  \">:</td><td class=\"  \">
-		<div class=\"col-md-4\">
-		<input class='form-control float' type=\"text\" name=\"binding_consumption\" id='binding_consumption' value=\"".$sql_row['binding_consumption']."\"  required >
-		</div></td></tr>";
-
-		echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Gmt Way</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><select class=\"form-control\" name=\"gmt_way\">";
-		echo "<option value=\"N\""; if($sql_row['gmtway']=='N'){ echo "selected"; } echo ">All Gmt One Way</option>";
-		echo "<option value=\"Y\""; if($sql_row['gmtway']=='Y'){ echo "selected"; } echo ">One Gmt One Way</option>";
-		echo "</select></div></td></tr>";
-
-		echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Strip Match</th><td class=\"  \">:</td><td><div class=\"col-md-4\"><select class=\"form-control\" name=\"strip_match\">";
-		echo "<option value=\"N\""; if($sql_row['strip_match']=='N'){ echo "selected"; } echo ">NO</option>";
-		echo "<option value=\"Y\""; if($sql_row['strip_match']=='Y'){ echo "selected"; } echo ">YES</option>";
-		echo "</select></div></td></tr>";
-
-		echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Gusset Seperation</th><td class=\"  \">:</td><td><div class=\"col-md-4\"><select class=\"form-control\" name=\"guess_sep\">";
-		echo "<option value=\"N\""; if($sql_row['gusset_sep']=='N'){ echo "selected"; } echo ">NO</option>";
-		echo "<option value=\"Y\""; if($sql_row['gusset_sep']=='Y'){ echo "selected"; } echo ">YES</option>";
-		echo "</select></div></td></tr>";
-
-		/* echo "<tr><td>Remarks</td><td>:</td><td> <INPUT type=\"text\" name=\"remarks\" value=\"".$sql_row['remarks']."\"></td></tr>"; */
-
-		echo "</tbody></table></div>";
-		//echo "<center><input class=\"form-check-input\" type=\"checkbox\" name=\"option\"  id=\"option\" onclick=\"javascript:enableButton();\">Enable";
-		echo "&nbsp;&nbsp;&nbsp;<INPUT class=\"btn btn-sm btn-primary\" onclick='return verify()' TYPE = \"submit\" id='update'  Name = \"Update\" VALUE = \"Update\"></center>";
-	}
-
-?>
+	?>
 </form>
 
 <?php
@@ -235,9 +232,18 @@ if(isset($_GET['cat_tid']))
 		$get_color=$_POST['get_color'];
 		$get_schedule=$_POST['get_schedule'];
 		$get_style=$_POST['get_style'];
+		$tran_order_tid=$_POST['order_tid'];
+		$in_cat=$_POST['in_cat'];
+
+		$cat_exist = verify_category($tran_order_tid,$in_cat);
+		if($cat_exist == 1)
+		{
+			echo "<script>swal('The Category Cant Be Updated','','error')</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule\"; }</script>";
+			exit();
+		}
 
 		$in_date=$_POST['in_date'];
-		$in_cat=$_POST['in_cat'];
 		$in_width=$_POST['in_width'];
 		$binding_consumption=$_POST['binding_consumption'];
 		$patt_ver=$_POST['patt_ver'];
@@ -246,7 +252,6 @@ if(isset($_GET['cat_tid']))
 		$guess_sep=$_POST['guess_sep'];
 		$remarks=$_POST['remarks'];
 		$cat_tid=$_POST['cat_tid'];
-		$tran_order_tid=$_POST['order_tid'];
 		$col_des = $_POST['col_des'];
 		$validation_query_cat = "select order_tid from $bai_pro3.cat_stat_log where tid = '$cat_tid'";
 		$validation_result = mysqli_query($link, $validation_query_cat) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -324,25 +329,48 @@ if(isset($_GET['cat_tid']))
 		}
 	}
 ?>
+
+<?php
+	//function to check for FRONT/BODY category only for a 
+	function verify_category($order_tid,$in_cat){
+		global $link;
+		global $bai_pro3;
+		global $in_categories;
+		$cats = explode(',',str_replace('"','',$in_categories));
+		if(in_array(strtoupper($in_cat),$cats)){
+			$order_tid_query = "SELECT category from $bai_pro3.cat_stat_log where order_tid='$order_tid' and category IN ($in_categories)";
+			$order_tid_result = mysqli_query($link,$order_tid_query);
+			while($row = mysqli_fetch_array($order_tid_result)){
+				$category[] = $row['category'];
+			}
+			if(count($category) == 0)
+				return 0;
+			foreach($category as $cat){
+				if( !(strtolower($cat) == strtolower($in_cat)) )
+					return 1;
+			}
+		}
+		return 0;
+	}
+?>
 </div>
 </div>
 </div>
 
 <script>
-function verify(){
-	var v = document.getElementById('in_width').value;
-	if(Number(v) <= 0){
-		sweetAlert('Pur Width cannot be zero','','warning');
-		return false;
-	}
-	var pat = document.getElementById('patt_ver');
+	function verify(){
+		var v = document.getElementById('in_width').value;
+		if(Number(v) <= 0){
+			sweetAlert('Pur Width cannot be zero','','warning');
+			return false;
+		}
+		var pat = document.getElementById('patt_ver');
 
-	if( pat.value ==null || pat.value == 0){
-		sweetAlert('Please Enter Valid Pattern Version','','warning');
-		//pat.value = 0;
-		return false;
+		if( pat.value ==null || pat.value == 0){
+			sweetAlert('Please Enter Valid Pattern Version','','warning');
+			//pat.value = 0;
+			return false;
+		}
+		return true;
 	}
-	return true;
-}
-
 </script>

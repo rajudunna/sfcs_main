@@ -18,12 +18,13 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config
 ?>
 
 <style>
-td,th{
-	color : #000;
-}
-.black{
-	color : #000;
-}
+	td,th{
+		color : #000;
+		text-align: center;
+	}
+	.black{
+		color : #000;
+	}
 </style>
 <script>
 	function firstbox()
@@ -86,7 +87,8 @@ $color=$_GET['color'];
 				<label for="schedule">Select Schedule:</label>
 				<select class='form-control' name='schedule' onchange='secondbox();'>
 					<?php
-					$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" order by order_del_no";
+					$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" 
+					and $order_joins_not_in  order by order_del_no";
 					//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 					//{
 						//$sql="select distinct order_del_no from plan_doc_summ where order_style_no=\"$style\"";	
@@ -236,7 +238,7 @@ echo "<form name='prepare' method='post' action=$form_submit1 >";
 echo "<div class='row' style='max-height:600px;overflow-x:scroll;overflow-y:scroll' >";
 echo "<table class='table table-bordered table-responsive'>
 		<tr class='danger'>
-			<th>Select</th><th>Style</th><th>Schedule</th><th>Color</th><th>Total Pcs </th><th>Total Cartons</th><th>Remarks</th><th>Controls</th><th>Size</th>";
+			<th>Select</th><th>Style</th><th>Schedule</th><th>Color</th><th>Total Pcs </th><th>Total Cartons</th><th>Remarks</th><th>Controls</th><th id='myTd'>Size</th>";
 			//echo "<th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>XXL</th><th>XXXL</th>";
 // for($i=1;$i<=50;$i++){
 // 	echo "<th>s$i</th>";
@@ -340,21 +342,33 @@ echo "</tr>";
 	$unset_url = getFullURL($_GET['r'],'unset.php','N').'&ship_tid='.$sql_row['ship_tid'];
 	//$unset_url = 'index.php?r='.$_GET['r'].'&ship_tid='.$sql_row['ship_tid'];
 	echo "<td><a class='btn btn-xs btn-info' href='$unset_url'>Un-Set</a></td>";
-	for($i=1;$i<=count($ship_s);$i++){
-		if($ship_s[$i] !=0){
+	$sizes_count_array = array();	$count123 = 0;
+	for($i=1;$i<=count($ship_s);$i++)
+	{
+		if($ship_s[$i] !=0)
+		{
 			$key1 = 's'.str_pad($i, 2, "0", STR_PAD_LEFT);
-			$get_color = "SELECT title_size_".$key1." FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='".$ship_schedule."' LIMIT 1";			
+			$get_color = "SELECT title_size_".$key1." FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='".$ship_schedule."' and order_col_des='".$ship_color."' LIMIT 1";	
+			// echo $get_color.';<br>';		
 			$sql_color=mysqli_query($link, $get_color);
 			$sql_num_check1=mysqli_num_rows($sql_color);
-			if($sql_num_check1>0){				
+			if($sql_num_check1>0)
+			{				
 				$color_des=mysqli_fetch_array($sql_color);				
 				$sizek=$color_des[0];				
-			}else{				
+			}
+			else
+			{				
 				$sizek="empty";
 			}		
 			echo "<td>".$ship_s[$i]."<b>(".$sizek.")<br/></td>";
+			$count123++;
 		}
 	}
+	array_push($sizes_count_array,$count123);
+	$max_size = max($sizes_count_array);
+	if($max_size <= 0)
+		$max_size = 0;
 // 	echo "<td>$ship_xs</td><td>$ship_s</td><td>$ship_m</td><td>$ship_l</td><td>$ship_xl</td><td>$ship_xxl</td><td>$ship_xxxl</td><td>$ship_s01</td>
 // <td>$ship_s02</td>
 // <td>$ship_s03</td>
@@ -434,10 +448,20 @@ if(isset($_POST['submit']))
 
 	echo "<div style='padding-left:2%; padding-right:2%;'><div class='panel panel-info'>";
 	echo "<div class='panel-heading'><span><strong>Style :$style_x</strong></span> <span style='margin-left:5%;'><strong>Schedule :$schedule_x</strong><span>";
-	if($color_x!='0'){
+    if($color_x!='0'){
 		echo "<span style='margin-left:5%;'><strong>Color :$color_x</strong><span></div>";
+	}else{
+		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\"";
+		mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+			$color_y .= $sql_row['order_col_des'].',';
+		}	
+		$color_y = rtrim($color_y,",");
+		echo "<span style='margin-left:5%;'><strong>Color :$color_y</strong><span></div>";
 	}
-
+	
 	$order_xs=0;
 	$order_s=0;
 	$order_m=0;
@@ -1218,8 +1242,10 @@ for($i=0;$i<sizeof($order_qtys);$i++)
 		echo "<tr><td>".$size_value[$i]."</td><td>".$order_qtys[$i]."</td><td>".$fg_qtys[$i]."</td><td>".$ship_qtys[$i]."</td><td>".$available_qty."</td>";
 		if($available_qty>0)
 		{
-			echo "<td><input type='text' class='integer' name=\"qty[$x]\" id=\"qty\" value=\"$available_qty\" 
-			      onkeyup='validateshipqty()'><input type=\"hidden\" name=\"size[$x]\" value=\"".$sizes[$i]."\"></td>";
+			echo "<td><input type='text' class='integer' id='$i' name=\"qty[$x]\" id=\"qty\" value=\"$available_qty\" 
+			      onkeyup='validateshipqty(this)'>
+			<input type='hidden'  value='$available_qty' id='".$i."_avl'>
+		    <input type=\"hidden\" name=\"size[$x]\" value=\"".$sizes[$i]."\"></td>";
 			$x++;
 		}
 		else
@@ -1273,6 +1299,9 @@ echo "</form></div>
 </div>";	
 
 }
+echo "<script>
+		document.getElementById('myTd').colSpan = '$max_size';
+	</script>";
 ?> 
 
 	</div>	
@@ -1290,22 +1319,14 @@ echo "</form></div>
 </script>
 
 <script>
-function validateshipqty()
+function validateshipqty(t)
 {
-var availqty='<?php echo $available_qty; ?>';
-var shipqty=document.getElementById('qty').value;
-
-if(shipqty>availqty)
-{
-sweetAlert("You cant enter ship qty more than available qty","","warning");
-document.getElementById('qty').value='<?php echo $available_qty; ?>';
-}
+	var availqty= Number($('#'+t.id+'_avl').val());
+	var shipqty = Number(t.value);
+	if(shipqty>availqty)
+	{
+		sweetAlert("You cant enter ship qty more than available qty","","warning");
+		t.value = 0;
+	}
 }
 </script>
-
-
-
-
-
-
-

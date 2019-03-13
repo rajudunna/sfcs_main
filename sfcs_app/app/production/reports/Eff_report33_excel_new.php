@@ -1,6 +1,6 @@
 <?php 
 
-$sql="select * from $bai_pro.unit_db where unit_id=\"Factory\""; 
+$sql="select GROUP_CONCAT(DISTINCT sec_name) as unit_members from $bai_pro3.sections_master order by sec_id"; 
 // echo $sql."<br>";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
