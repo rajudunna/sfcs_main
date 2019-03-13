@@ -634,7 +634,7 @@
 																			{
 																				if ($size_main[$size_count] == $individual_color)
 																				{
-																					echo "<td><input type='text'  readonly name='GarPerCart[$j][]' id=$gar_per_cart_id class='form-control integer' value='".$qty."'></td>";
+																					echo "<td><input type='text'  readonly name='GarPerCart[$j][]' id=$gar_per_cart_id size=4 value='".$qty."'></td>";
 																				}
 																			}
 																			else
@@ -789,7 +789,7 @@
 																				}														
 																			}
  
-																			echo "<td><input type='text' readonly='true' name='SewingJobQty[$j][]' id=$sew_job_qty_id class='form-control integer' value='0'></td>";
+																			echo "<td><input type='text' readonly='true' name='SewingJobQty[$j][]' id=$sew_job_qty_id size=4 value='0'></td>";
 																		}
 																echo "</tr>";
 																$row_count++;
