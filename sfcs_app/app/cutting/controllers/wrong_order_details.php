@@ -169,7 +169,7 @@ $(document).ready(function() {
 	                        }
 	                        	
 	                        $mos = implode(",", $mo);
-	                        $del_bom_details="DELETE FROM $m3_inputs.bom_details where mo_no in($mos)";
+	                        $del_bom_details="DELETE FROM $bai_pro3.bom_details where mo_no in($mos)";
 	                        $result7 = $link->query($del_bom_details);
 
 	                        $del_order_details="DELETE FROM $bai_pro3.order_plan WHERE style_no='$style' AND schedule_no='$schdule' AND color='$color'";

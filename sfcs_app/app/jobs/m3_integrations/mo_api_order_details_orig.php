@@ -66,7 +66,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                 $item_description=str_replace('"','""',$item_description);
                 $color_description=str_replace('"','""',$color_description);
 
-                $qry_save_bom = "INSERT INTO $m3_inputs.bom_details(date_time,mo_no,plant_code,
+                $qry_save_bom = "INSERT INTO $bai_pro3.bom_details(date_time,mo_no,plant_code,
                 item_code,item_description,color,color_description,size,z_code,per_piece_consumption,wastage,uom,material_sequence,product_no,operation_code) VALUES (now(),'".$mo_no."','".$global_facility_code."','".urldecode($item_code)."',\"".$item_description."\",'".$color_res."',\"".$color_description."\",'".$size_description."','".$z_feature_description."','".$order_yy."','".$wastage."','".$uom."','".$sequence_no."','".urldecode($prno)."','".$response['response']['OPNO']."')";
                     $res_save_bom = mysqli_query($link, $qry_save_bom) or exit("Sql Error Insert bom Details".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(in_array(trim($response['response']['OPNO']),$res_chk_op)){
