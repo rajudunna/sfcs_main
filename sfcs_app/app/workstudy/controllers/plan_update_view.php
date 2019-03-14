@@ -29,7 +29,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	<th>Team A <br/>Plan Clock Hours</th>
 	<th>Team A <br/>Plan SAH</th>
 	
-	<th>Team A <br/>Plan Hours</th><th>Team A <br/>Plan Couple</th><th>Team B <br/>Plan Eff</th>	<th>Team B <br/>Plan Pro</th>
+	<th>Team A <br/>Plan Hours</th><th>Team A <br/>Plan Couple</th><th>SMV</th><th>NOP</th><th>Team B <br/>Plan Eff</th>	<th>Team B <br/>Plan Pro</th>
 	
 	<th>Team B <br/>Plan Clock Hours</th>
 	<th>Team B <br/>Plan SAH</th>
@@ -95,7 +95,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			}
 			
 			if($shift=="B")
-			{
+			{	
+				echo '<td bgcolor=\"#99FFDD\">'.$smv.'</td>';
+				echo '<td bgcolor=\"#99FFDD\">'.$nop.'</td>';
 				echo '<td bgcolor=\"#99FF88\">'.$plan_eff.'</td>';
 				echo '<td bgcolor=\"#99FF88\">'.round($plan_pro,0).'</td>';
 				echo '<td bgcolor=\"#FFEEFF\">'.$plan_clh.'</td>';

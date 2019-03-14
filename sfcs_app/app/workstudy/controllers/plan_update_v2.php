@@ -444,8 +444,8 @@ $max_allowed_date=date("Y-m-d");
 			echo '<td bgcolor=\"#99FFDD\" style="color: #FFFFFF">'.$module.'<input type="hidden" name="module[]" value="'.$module.'"></td>';
 			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="section[]" value="'.$sec_no.'" size="3" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_alpha_numeric(event, this.name)" name="style[]" value="'.$bac_style.'" size="3" onChange="markchange('.$x.')" id="alpha_style"></td>';
-			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="nop[]" class="integer" value="'.$nop.'" size="3" onChange="markchange('.$x.')"></td>';
+			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="nop[]" class="integer" value="'.$nop.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
 			echo '<td bgcolor=\"#000000\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="plan_eff_ex[]" value="'.$plan_eff_ex.'" size="3" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" name="eff_a[]" class="integer" value="'.($plan_eff-$plan_eff_ex).'" size="4" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" '.$bgcolor_tag.' name="pro_a[]" class="integer" value="'.round($plan_pro,0).'" size="4" onChange="markchange('.$x.')"></td>';
@@ -467,8 +467,8 @@ $max_allowed_date=date("Y-m-d");
 			{
 				$couple=1;
 			}
-			echo '<td bgcolor=\"#99FFDD\"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv1[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#99FFDD\"><input type="text" class="integer" onkeyup="return pop_test(event, this.name)" name="nop1[]" class="integer" value="'.$nop.'" size="3" onChange="markchange('.$x.')"></td>';
+			echo '<td bgcolor=\"#99FFDD\"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv1[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			echo '<td bgcolor=\"#99FFDD\"><input type="text" class="integer" onkeyup="return pop_test(event, this.name)" name="nop1[]" class="integer" value="'.$nop.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
 			echo '<td bgcolor=\"#99FF88\"><input type="text" onkeyup="return pop_test(event, this.name)" name="eff_b[]" class="integer" value="'.($plan_eff-$plan_eff_ex).'" size="4" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor=\"#99FF88\"><input type="text" '.$bgcolor_tag.' onkeyup="return pop_test(event, this.name)" name="pro_b[]" class="integer" value="'.round($plan_pro,0).'" size="4" onChange="markchange('.$x.')"></td>';
 			
