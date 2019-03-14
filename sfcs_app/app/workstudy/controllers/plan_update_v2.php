@@ -24,7 +24,7 @@ input
 	background-color:none;
 }
 .hidet{
-	display:none;
+	//display:none;
 }
 </style>
 <script>
