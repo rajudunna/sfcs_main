@@ -11,6 +11,9 @@ CREATE TABLE `bai_pro3`.`shade_split` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1;
 
+/*
+//this is covered under v181
+
 CREATE TABLE `bai_pro3`.`deleted_sewing_jobs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `schedule` int(10) NOT NULL,
@@ -21,3 +24,4 @@ CREATE TABLE `bai_pro3`.`deleted_sewing_jobs` (
   `type_of_sewing` int(2) DEFAULT NULL
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1;
+*/

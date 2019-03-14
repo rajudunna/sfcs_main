@@ -32,6 +32,7 @@
         {
             $order_tid = $row_row_row['order_tid'];
         }
+        $old_order_tid = $order_tid;
         $recutval_sizes = array();
         //getting main cat ref for clubbing dockets
         $sql2="select org_doc_no from $bai_pro3.plandoc_stat_log where order_tid='$order_tid' and org_doc_no > 1 limit 1";
@@ -75,16 +76,16 @@
             $parent_cat_ref = 0;
             /*
             if($doc_no_org > 0){
-                $qry_to_get = "SELECT cat_ref as tid FROM  `$bai_pro3`.`plandoc_stat_log` WHERE  doc_no = '$doc_no_org'";
+                $qry_to_get = "SELECT order_tid as tid FROM  `$bai_pro3`.`plandoc_stat_log` WHERE  doc_no = '$doc_no_org'";
                 $res_qry_to_get = $link->query($qry_to_get);
                 while($row_cat_ref = $res_qry_to_get->fetch_assoc()) 
                 {
-                    $parent_cat_ref = $row_cat_ref['tid'];
+                    $order_tid = $row_cat_ref['tid'];
                 }       
             }
             */
 
-            $qry_to_get = "SELECT * FROM  `$bai_pro3`.`cat_stat_log` WHERE  order_tid = \"$order_tid\" 
+            $qry_to_get = "SELECT * FROM  `$bai_pro3`.`cat_stat_log` WHERE  order_tid = '$order_tid'
                 and category = '$value'";
             // echo $qry_to_get.'</br>';
             $res_qry_to_get = $link->query($qry_to_get);
@@ -92,8 +93,12 @@
             {
                 $cat_ref =$row_cat_ref['tid'];
             }
-
-            $sql2="select count(pcutdocid) as \"count\" from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref";
+            $order_tid = $old_order_tid;
+            if($org_doc_no > 0)
+                $sql2="select max(pcutdocid) as \"count\" from $bai_pro3.plandoc_stat_log where order_tid='$order_tid'";
+            else
+                $sql2="select max(pcutdocid) as \"count\" from $bai_pro3.plandoc_stat_log where order_tid='$order_tid' and cat_ref=$cat_ref";
+               
             mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
             $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
