@@ -92,7 +92,7 @@
                 $cat_ref =$row_cat_ref['tid'];
             }
             //$order_tid = $old_order_tid;
-            $sql2="select max(pcutdocid) as count from $bai_pro3.plandoc_stat_log where order_tid='$order_tid' and cat_ref=$cat_ref";
+            $sql2="select max(pcutno) as count from $bai_pro3.plandoc_stat_log where order_tid='$order_tid' and cat_ref=$cat_ref";
             mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
             $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
             while($sql_row2=mysqli_fetch_array($sql_result2))
