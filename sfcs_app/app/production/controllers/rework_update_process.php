@@ -107,6 +107,7 @@ if(isset($_POST['date']))
 		{					
 			$mno=$mno_x[$x];
 			$mst=$mst_x[$x];
+			$shift=$msh[$x];
 			$temp_style=$mst_x[$x];
 			$mqt=$mqt_x[$x];
 			$rew_qty=$rework_qty[$x]; //rework
@@ -126,10 +127,10 @@ if(isset($_POST['date']))
 			$csnb=explode("^",$csnb_code);
 			
 			$note.=$doc_no."-".$mqt."<br/>";
-			$dat=date("Y-m-d");
+			$dat=date("Y-m-d H:i:s");
 			if($zone>0)
 			{
-				$dat=date("Y-m-d", strtotime($dat))." ".$zone.":00:00";
+				$dat=date("Y-m-d H:i:s", strtotime($dat))." ";
 			}
 		
 			//$sec=$_POST['section'];
@@ -168,31 +169,13 @@ if(isset($_POST['date']))
 				if($rew_qty>=0 and $rew_qty!="")
 				{
 					// echo "<script>alert('till insert query');</script>";
-					$sql="insert into $bai_pro.bai_quality_log (bac_no, bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser) values (\"$mno\", \"$sec\", \"$rew_qty\", \"$dat\", \"$dat\", \"$msh\", \"$mst\", \"$rem\",  \"$ldate\",  \"$color\", \"$buyer\", \"$schedule\",USER())"; 
+					$sql="insert into $bai_pro.bai_quality_log (bac_no, bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser) values (\"$mno\", \"$sec\", \"$rew_qty\", \"$dat\", \"$dat\", \"$shift\", \"$mst\", \"$rem\",  \"$ldate\",  \"$color\", \"$buyer\", \"$schedule\",USER())"; 
 					// echo $sql."<br/>";
 					// die();
 					$note.=$sql."<br/>";
 					mysqli_query($link, $sql) or exit("Sql Error5$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// echo "<script>alert('query executed');</script>";
-				 $sql1="insert into $bai_pro.bai_log (bac_no,bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser) values (\"$mno\", \"$sec\", \"0\", \"$dat\", \"$dat\", \"$msh\", \"$mst\", \"$rem\",  \"$ldate\",  \"$color\", \"$buyer\", \"$schedule\",USER())";
-				 		$note.=$sql1."<br/>";
-							mysqli_query($link, $sql1) or exit("Sql Error51$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-				  $sql2="insert into $bai_pro.bai_log_buf (bac_no,bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser) values (\"$mno\", \"$sec\", \"0\", \"$dat\", \"$dat\", \"$msh\", \"$mst\", \"$rem\",  \"$ldate\",  \"$color\", \"$buyer\", \"$schedule\",USER())";
-				 			 $note.=$sql2."<br/>";
-								mysqli_query($link, $sql2) or exit("Sql Error52$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-
-
-
 				}
-
-
-
-
-
-
-
 				$flag=1;
 			}
 			else

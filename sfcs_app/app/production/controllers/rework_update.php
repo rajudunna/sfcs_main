@@ -1,38 +1,13 @@
-<!--
-Core Module:In this interface we can update the output.
-
-Deascription:In this interface we can update the output.
-
-Changes Log:
-
-Ticket #504203/KiranG - 2014-02-19
-Excluded Excess/Sample Panel Output Reporting Modules
-
-KiranG - 2014-02-23: Revised Time lines to report previous day output in system
-
-
-KiranG - CR# 121
--Added SMV and SMO value columns to avoid SMV/SMO missings.
--->
 <?php 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-    // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-    // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
-
-	//Due to sunday working.
-	// $view_access=user_acl("SFCS_0169",$username,1,$group_id_sfcs);
-	// $special_day_permissions=user_acl("SFCS_0169",$username,38,$group_id_sfcs);
-	// $hod_acces_list=user_acl("SFCS_0169",$username,39,$group_id_sfcs);
+ 
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
     $has_permission=haspermission($_GET['r']);
 	
 
 	$workstudy_limit="23.59";
 	$user_limit="23.59";
-	
-	//Due to sunday working.
-	//$special_day_permissions=array("kirang");
-	//$hod_acces_list=array("kirang");
+
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -78,16 +53,10 @@ table
 
 </style>
 <script>
-function shiftselect()
-{
-	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value+"&shift="+document.select_module.shift.value
-}
+
 function firstbox()
 {
-	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value+"&shift="+document.select_module.shift.value+"&section="+document.select_module.select_section.value
-function firstbox()
-{
-	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&sdate="+document.getElementById('sdate').value+"&section="+document.select_module.select_section.value
+	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&section="+document.select_module.select_section.value
 }
 function second_box(){
 	var sdate = document.getElementById('sdate').value;
@@ -201,13 +170,7 @@ function second_box(){
 
 	function validateThisFrom(thisForm) 
 	{
-		if (thisForm.select_section.value == "NIL")
-		{
-			sweetAlert("Please select SECTION",'','warning');
-			return false;
-		}
-
-		if (thisForm.module.value == "0" || thisForm.module.value == "")
+		if (thisForm.module.value == "0")
 		{
 			sweetAlert("Please select MODULE",'','warning');
 			return false;
@@ -290,7 +253,7 @@ function second_box(){
 		}
 
 		$module_ref=$_POST['module']; 
-		$shift=$_GET['shift'];
+		$shift=$_POST['shift'];
 		$zone_base=$_POST['zone_base'];
 	?>
 
@@ -309,7 +272,7 @@ function second_box(){
 	?>
 <!--<div id="page_heading"><span style="float"><h3>Rework Update Panel</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>-->
 	<form action="#" method="POST" onsubmit="return validateThisFrom (this);" name="select_module" id="select_module">
-		<input type="hidden" name="today" id="today" value="<?php echo date("Y-m-d"); ?>">
+		<!-- <input type="hidden" name="today" id="today" value="<?php echo date("Y-m-d"); ?>">
 		<div class="col-sm-2"><?php 
 			
 			if(in_array($authorized,$has_permission))
@@ -319,15 +282,14 @@ function second_box(){
 		echo "</div>";
 		?>		
 	<div class="col-sm-2">
-		Shift:	<select name="shift" class="form-control" id="shift" onchange="shiftselect();">
+		Shift:	<select name="shift" class="form-control">
 					<?php 
-	for ($i=0; $i < sizeof($shifts_array); $i++) {
-							?>
-							<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($shift === $shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
-												<?php }
+						for ($i=0; $i < sizeof($shifts_array); $i++) {?>
+							<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($shift==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
+						<?php }
 					?>
 				</select>
-	</div>
+	</div> -->
 	<?php	
 		echo "<div class='col-sm-2'>Select Section: <select name='select_section' class='form-control' id='select_section' onchange=\"firstbox();\" >";
 		echo "<option value=\"NIL\" selected>Please Select</option>";
@@ -350,7 +312,7 @@ function second_box(){
 		echo "</select></div>";	
 
 		echo "<div class='col-sm-2'>Module: <select name='module' class='form-control' id='module' onclick='check_section()'>";
-				echo "<option value='0' selected>Select Module</option>";
+		echo "<option value='0' selected>Select Module</option>";
 		$sql="select group_concat(sec_mods) as \"sec_mods\" from $bai_pro3.sections_db where sec_id in (\"$section\")";
 		// echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -379,29 +341,7 @@ function second_box(){
 
 		echo "</select></div>";
 
-		echo "<div class='col-sm-2'>Select Time: <select name='zone_base' class='form-control' id='zone_base'>";
-		echo "<option value='NIL' selected>Please Select</option>";
-		$sql="SELECT * FROM $bai_pro3.tbl_plant_timings";
-		// echo $sql;
-		$sql_result=mysqli_query($link, $sql) or exit("Error while getting Timings");		
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			if($sql_row['time_value']==$zone_base)
-			{
-				$selected = 'selected';
-			}
-			else
-			{
-				$selected = '';
-			}
-			echo "<option value=\"".$sql_row['time_value']."\" ".$selected.">".$sql_row['time_display']."    ".$sql_row['day_part']."</option>";
-		}
-		echo "</select></div>";
-
-		
-
-		
-	?></br>
+?></br>
 	<div class="col-sm-2">
 	<input type="submit" name="submit11" id="submit11" onclick="check_all_details();" class="btn btn-primary" value="Submit">
 	</div>
@@ -425,7 +365,7 @@ if (isset($_POST['submit11']))
 		<input type="hidden" name="date" value="<?php echo $_POST['date']; ?>">
 		<input type="hidden" name="module" value="<?php echo $_POST['module']; ?>"> 		
 		<input type="hidden" name="section" value="<?php echo $_POST['select_section']; ?>"> 		
-		<input type="hidden" name="shift" value="<?php echo $_POST['shift']; ?>"> 		
+		
 		<input type="hidden" name="zone_base" value="<?php echo $_POST['zone_base']; ?>"> 		
 				
 	<?php
@@ -451,45 +391,17 @@ if (isset($_POST['submit11']))
 			$for_zero_entries=0;
 			$row_count = 0;
 			
-			$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate'";
-			// echo $sql12;
-			// mysqli_query($link, $sql12) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_num_check=mysqli_num_rows($sql_result12);
-			
-			if($sql_num_check>0)
-			{
-				// echo "<tr bgcolor=\"$tr_color\" class=\"new\" onMouseover=\"this.bgColor='#DDDDDD'\" onMouseout=\"this.bgColor='$tr_color'\"><td rowspan=$sql_num_check>$module_ref</td>";
-				// $rowcount_check=1;
-				
-				//NEW
-				$sql="select distinct rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref  and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate' order by ims_doc_no";
-			}
-			else
-			{
-				// echo "<tr bgcolor=\"$tr_color\" class=\"new\" onMouseover=\"this.bgColor='#DDDDDD'\" onMouseout=\"this.bgColor='$tr_color'\"><td rowspan=$sql_num_check>$module_ref</td>";
-				// $rowcount_check=1;
-				$sql="SELECT rand_track FROM $bai_pro3.ims_log_backup WHERE ims_mod_no=$module_ref AND ims_status=\"DONE\" AND rand_track>0 and (ims_qty-ims_pro_qty)=0 and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate' ORDER BY ims_date DESC limit 1";
-				$for_zero_entries=1;
-				//echo $sql."<br/>";
-			}
+		   $sql="select distinct rand_track from $bai_pro3.ims_log where ims_mod_no=$module_ref  and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') order by ims_doc_no";
 		
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
+           $sql_result=mysqli_query($link, $sql) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result)>0)
 			{
-				//The below if else was shifted from top to here.Identify the code just above 4-lines and uncommentit,then remove this block if unnecessary
-				// if($sql_num_check>0){
-				// 	echo "<tr><td rowspan=$sql_num_check>$module_ref</td>";
-				// 	$rowcount_check=1;
-				// }else{
-				// 	echo "<tr ><td rowspan=$sql_num_check>$module_ref</td>";
-				// 	$rowcount_check=1;
-				// }
+				
 				echo '<div class="table-responsive"><table class="table table-bordered"		style="color:black; border: 1px solid red;">';
-		echo "<tr class=\"new\"><th>Mod#</th>";
-		echo "<th>Style</th><th>Schedule</th><th>Color</th><th>Cut#</th><th>Sewing Job#</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th>";
-		// echo "<th>QTY</th><th>SMV</th><th>SMO</th><th>Status</th>";
-		echo "<th>Rework Qty</th><th>Remarks</th></tr>";
+				echo "<tr class=\"new\"><th>Mod#</th>";
+				echo "<th>Style</th><th>Schedule</th><th>Color</th><th>Cut#</th><th>Sewing Job#</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th>";
+				// echo "<th>QTY</th><th>SMV</th><th>SMO</th><th>Status</th>";
+				echo "<th>Rework Qty</th><th>Remarks</th></tr>";
 
 				$id_count = 0;	
 				while($sql_row=mysqli_fetch_array($sql_result))
@@ -497,27 +409,19 @@ if (isset($_POST['submit11']))
 					$row_count++;
 					$id_count++;
 					$rand_track=$sql_row['rand_track'];
-					$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track  and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate' order by ims_schedule, ims_size DESC";
-					if($for_zero_entries==1)
-					{
-						$sql12="select * from $bai_pro3.ims_log_backup where ims_mod_no=$module_ref and rand_track=$rand_track  and ims_status=\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate' order by ims_schedule, ims_size DESC limit 1";
-						//echo $sql12."<br/>";
-						
-					}
+					$sql12="select * from $bai_pro3.ims_log where ims_mod_no=$module_ref and rand_track=$rand_track  and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') order by ims_schedule, ims_size DESC";
+					
 					$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error556".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row12=mysqli_fetch_array($sql_result12))
 					{
 						
 						$ims_doc_no=$sql_row12['ims_doc_no'];
+						$shift=$sql_row12['ims_shift'];
 					
 						$sql22="select * from $bai_pro3.live_pro_table_ref where doc_no=$ims_doc_no and a_plies>0";
-						if($for_zero_entries==1)
-						{
-							$sql22="select * from $bai_pro3.live_pro_table_ref3 where doc_no=$ims_doc_no and a_plies>0 limit 1";
-							//echo $sql22."<br/>";
-						}
+						//echo $sql22;
 						$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-						
+
 						while($sql_row22=mysqli_fetch_array($sql_result22))
 						{
 							$color_code=$sql_row22['color_code']; //Color Code
@@ -532,7 +436,7 @@ if (isset($_POST['submit11']))
 							$user_style=$sql_row33['style_id']; //Color Code
 						}
 						
-						
+						echo '<input type="hidden" name="shift[]" value="'.$sql_row12['ims_shift'].'">';
 						echo '<input type="hidden" name="module[]" value="'.$module_ref.'">';
 						echo '<input type="hidden" name="style[]" value="'.$user_style.'">';
 						echo '<input type="hidden" name="m3_style[]" value="'.$sql_row12['ims_style'].'">'; //M3_Style code for Bulk Operation Reporting
@@ -635,7 +539,7 @@ if (isset($_POST['submit11']))
 		<input type="hidden" name="date" value="<?php echo $_POST['date']; ?>">
 		<input type="hidden" name="module" value="<?php echo $_POST['module']; ?>"> 		
 		<input type="hidden" name="section" value="<?php echo $_POST['select_section']; ?>"> 		
-		<input type="hidden" name="shift" value="<?php echo $_POST['shift']; ?>"> 		
+		
 		<input type="hidden" name="zone_base" value="<?php echo $_POST['zone_base']; ?>"> 		
 				
 	<?php
@@ -661,28 +565,9 @@ if (isset($_POST['submit11']))
 			$for_zero_entries=0;
 			$row_count = 0;
 			
-			$sql12="select * from $bai_pro3.ims_log where  ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate'";
-			//echo $sql12;
-			// mysqli_query($link, $sql12) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_num_check=mysqli_num_rows($sql_result12);
 			
-			if($sql_num_check>0)
-			{
-				// echo "<tr bgcolor=\"$tr_color\" class=\"new\" onMouseover=\"this.bgColor='#DDDDDD'\" onMouseout=\"this.bgColor='$tr_color'\"><td rowspan=$sql_num_check>$module_ref</td>";
-				// $rowcount_check=1;
-				
-				//NEW
-				$sql="select distinct rand_track from $bai_pro3.ims_log where  ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate' order by ims_doc_no";
-			}
-			else
-			{
-				// echo "<tr bgcolor=\"$tr_color\" class=\"new\" onMouseover=\"this.bgColor='#DDDDDD'\" onMouseout=\"this.bgColor='$tr_color'\"><td rowspan=$sql_num_check>$module_ref</td>";
-				// $rowcount_check=1;
-				$sql="SELECT rand_track FROM $bai_pro3.ims_log_backup WHERE  ims_status=\"DONE\" AND rand_track>0 and (ims_qty-ims_pro_qty)=0 and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate' ORDER BY ims_date DESC limit 1";
-				$for_zero_entries=1;
-				//echo $sql."<br/>";
-			}
+				$sql="select distinct rand_track from $bai_pro3.ims_log where  ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') order by ims_doc_no";
+			
 		
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result)>0)
@@ -702,26 +587,19 @@ if (isset($_POST['submit11']))
 					$id_count++;
 					$rand_track=$sql_row['rand_track'];
 					
-					$sql12="select * from $bai_pro3.ims_log where  rand_track=$rand_track  and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate' order by ims_schedule, ims_size DESC";
+					$sql12="select * from $bai_pro3.ims_log where  rand_track=$rand_track  and ims_status<>\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') order by ims_schedule, ims_size DESC";
 					//echo $sql12."<br/>";
-					if($for_zero_entries==1)
-					{
-						$sql12="select * from $bai_pro3.ims_log_backup where  rand_track=$rand_track  and ims_status=\"DONE\" and ims_remarks NOT IN ('EXCESS','SAMPLE','EMB') and ims_date='$sdate' order by ims_schedule, ims_size DESC limit 1";
-						//echo $sql12."<br/>";
-						
-					}
+					
 					$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error556".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row12=mysqli_fetch_array($sql_result12))
 					{
 						
 						$ims_doc_no=$sql_row12['ims_doc_no'];
+						$shift=$sql_row12['ims_shift'];
 					
 						$sql22="select * from $bai_pro3.live_pro_table_ref where doc_no=$ims_doc_no and a_plies>0";
-						if($for_zero_entries==1)
-						{
-							$sql22="select * from $bai_pro3.live_pro_table_ref3 where doc_no=$ims_doc_no and a_plies>0 limit 1";
-							//echo $sql22."<br/>";
-						}
+						//echo $sql22;
+						
 						$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 						
 						while($sql_row22=mysqli_fetch_array($sql_result22))
@@ -738,7 +616,8 @@ if (isset($_POST['submit11']))
 							$user_style=$sql_row33['style_id']; //Color Code
 						}
 						
-						
+							
+						echo '<input type="hidden" name="shift[]" value="'.$sql_row12['ims_shift'].'">';
 						echo '<input type="hidden" name="module[]" value="'.$sql_row12['ims_mod_no'].'">';
 						echo '<input type="hidden" name="style[]" value="'.$user_style.'">';
 						echo '<input type="hidden" name="m3_style[]" value="'.$sql_row12['ims_style'].'">'; //M3_Style code for Bulk Operation Reporting
@@ -810,10 +689,9 @@ if (isset($_POST['submit11']))
 		}else{
 			if(in_array($authorized,$has_permission))
 			{
-
 				echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();" style="display:none">';
 				echo '<input type="submit" name="update" class="btn btn-primary" id="update" value="Update" onclick="javascript:button_disable();" onclick="" style="display:none">';
-				echo "<p>If You Want to Update Please Select Section,Module and Time</p>";
+				echo "<p>If You Want to Update Please Select Section and Module</p>";
 			}
 		}
 	?>
