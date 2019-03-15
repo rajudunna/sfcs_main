@@ -408,7 +408,7 @@ if(isset($_POST['submit']))
 						while($sql_row192=mysqli_fetch_array($sql_result192)) 
 						{								
 							$order_del_no=$sql_row192['order_del_no'];
-							$order_tid=$sql_row192["order_tid"];
+							$order_tid1=$sql_row192["order_tid"];
 							$order_col=$sql_row192["order_col_des"];
 							$destination_id_new=$sql_row192["destination"];
 							$req_qty=$sql_row192['ord_qty'];
@@ -431,7 +431,7 @@ if(isset($_POST['submit']))
 										$update_value=0;
 										if($req_qty > 0)
 										{
-											$sqlx3="insert into $bai_pro3.mix_temp_desti(allo_new_ref,cat_ref,cutt_ref,mk_ref,size,qty,order_tid,order_del_no,order_col_des,destination,plies,doc_no,cutno) values ($doc_no,$cat_ref,$cut_ref,$mk_ref,\"".$sizes_array[$i]."\",\"".$available."\",\"".$order_tid."\",\"".$order_del_no."\",\"".$order_col."\",\"".$destination_id_new."\",\"".$plies_ref."\",\"".$doc_no."\",\"".$cutno."\")"; 
+											$sqlx3="insert into $bai_pro3.mix_temp_desti(allo_new_ref,cat_ref,cutt_ref,mk_ref,size,qty,order_tid,order_del_no,order_col_des,destination,plies,doc_no,cutno) values ($doc_no,$cat_ref,$cut_ref,$mk_ref,\"".$sizes_array[$i]."\",\"".$available."\",\"".$order_tid1."\",\"".$order_del_no."\",\"".$order_col."\",\"".$destination_id_new."\",\"".$plies_ref."\",\"".$doc_no."\",\"".$cutno."\")"; 
 											//echo $sqlx3."<br>";
 											mysqli_query($link, $sqlx3) or exit("Sql Errorx3".mysqli_error($GLOBALS["___mysqli_ston"]));
 											
@@ -447,7 +447,7 @@ if(isset($_POST['submit']))
 										$update_value=$available-$req_qty;
 										if($req_qty > 0)
 										{
-											$sqlx3="insert into $bai_pro3.mix_temp_desti(allo_new_ref,cat_ref,cutt_ref,mk_ref,size,qty,order_tid,order_del_no,order_col_des,destination,plies,doc_no,cutno) values ($doc_no,$cat_ref,$cut_ref,$mk_ref,\"".$sizes_array[$i]."\",\"".$req_qty."\",\"".$order_tid."\",\"".$order_del_no."\",\"".$order_col."\",\"".$destination_id_new."\",\"".$plies_ref."\",\"".$doc_no."\",\"".$cutno."\")";
+											$sqlx3="insert into $bai_pro3.mix_temp_desti(allo_new_ref,cat_ref,cutt_ref,mk_ref,size,qty,order_tid,order_del_no,order_col_des,destination,plies,doc_no,cutno) values ($doc_no,$cat_ref,$cut_ref,$mk_ref,\"".$sizes_array[$i]."\",\"".$req_qty."\",\"".$order_tid1."\",\"".$order_del_no."\",\"".$order_col."\",\"".$destination_id_new."\",\"".$plies_ref."\",\"".$doc_no."\",\"".$cutno."\")";
 											//echo $sqlx3."<br>";											
 											mysqli_query($link, $sqlx3) or exit("Sql Errorx3".mysqli_error($GLOBALS["___mysqli_ston"]));
 											$sqlx7="update $bai_pro3.mix_temp_source set qty=$update_value where doc_no='$doc_no' and size='".$sizes_array[$i]."'";
