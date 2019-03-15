@@ -298,7 +298,7 @@
 					{
 						$input_module=$sql_row76['input_module'];
 					}
-					$sql55="SELECT tid,input_job_no,order_del_no  FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$inputjobno'";
+					$sql55="SELECT tid,input_job_no,order_del_no,mrn_status  FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$inputjobno' AND mrn_status ='1'";
 					$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check1=mysqli_num_rows($sql_result01);
 					// $tid=array();
@@ -372,7 +372,31 @@
 							}
 							</script>";
 						}
+					}else{
+
+						$sql="select * from $brandix_bts.tbl_orders_style_ref where product_style='$style'";
+						$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row10=mysqli_fetch_array($sql_result))
+						{
+							$id=$sql_row10['id'];
+						}
+						$sql8="select * from $brandix_bts.tbl_orders_master where product_schedule='$schedule'";
+						$sql_result8=mysqli_query($link, $sql8) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row11=mysqli_fetch_array($sql_result8))
+						{
+							$schedule_id=$sql_row11['id'];
+						}
+						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+						$('#loading-image').hide();
+						function Redirect() {
+						sweetAlert('MRN Reversal Already Done','','success');
+						location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+
+						}
+						</script>";
+
 					}
+					
 				}
 				elseif($_GET['var1']==2)
 				{	
@@ -393,7 +417,7 @@
 					{
 						$input_module=$sql_row76['input_module'];
 					}
-					$sql55="SELECT tid,input_job_no,order_del_no  FROM $bai_pro3.packing_summary_input WHERE  input_job_no_random='$inputjobno'";
+					$sql55="SELECT tid,input_job_no,order_del_no,mrn_status  FROM $bai_pro3.packing_summary_input WHERE  input_job_no_random='$inputjobno' and mrn_status !='1'";
 					$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// $tid=array();
 					$sql_num_check1=mysqli_num_rows($sql_result01);
@@ -472,6 +496,29 @@
 							}
 							</script>";
 						}	
+					}
+					else{
+
+						$sql="select * from $brandix_bts.tbl_orders_style_ref where product_style='$style'";
+						$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row10=mysqli_fetch_array($sql_result))
+						{
+							$id=$sql_row10['id'];
+						}
+						$sql8="select * from $brandix_bts.tbl_orders_master where product_schedule='$schedule'";
+						$sql_result8=mysqli_query($link, $sql8) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row11=mysqli_fetch_array($sql_result8))
+						{
+							$schedule_id=$sql_row11['id'];
+						}
+						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+							$('#loading-image').hide();
+							function Redirect() {
+							sweetAlert('MRN Already Confirmed','','warning');
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+
+							}
+							</script>";
 					}
 				}
 		    }
