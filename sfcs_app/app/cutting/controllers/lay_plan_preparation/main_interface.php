@@ -1715,7 +1715,12 @@ if($order_no == "1"){
 	$orderqty = $o_total;
 }
 $total_fabric_req = $cat_yy * $orderqty;
-$overall_savings = round(((($total_fabric_req-$used_fabric)/$total_fabric_req)*100),0);
+if($total_fabric_req){
+	$overall_savings = round(((($total_fabric_req-$used_fabric)/$total_fabric_req)*100),0);
+}else{
+	$overall_savings = 0;
+}
+
 /*  Calculating Overall Consumption
 Used Fabric req/Order Quantity(New/Old)
 */
