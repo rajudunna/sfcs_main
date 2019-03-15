@@ -17,12 +17,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	
 	<?php
 	
-	
 	if(isset($_POST['filter']))
 	{
 		$date=$_POST['date'];
 	echo '<hr/><div class="table-responsive"><table class="table table-bordered">
-	<tr bgcolor=#d9534f><td colspan=18><strong>Plan Update Review</strong><span align=right style="margin-left:750px;"> Date: '.$date.'</span></td></tr>
+	<tr bgcolor=#d9534f><td colspan=20><strong>Plan Update Review</strong><span align=right style="margin-left:750px;"> Date: '.$date.'</span></td></tr>
 	
 	<tr style="background-color:#286090;color:white;"><th>Module</th>	<th>Section</th><th>Style</th><th>SMV</th><th>NOP</th><th>Team A <br/>Plan Eff</th><th>Team A <br/>Plan Pro</th>
 	
@@ -38,7 +37,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 </tr>';
 
 	$x=0;
-	$sql="select * from $bai_pro.pro_plan where date=\"$date\"";
+	$sql="select * from $bai_pro.pro_plan where date=\"$date\"order by mod_no*1, shift";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	// $sql_count="select count(*) from bai_pro.pro_plan where date=\"$date\"";
 	// $sql_result_count=mysqli_query($link, $sql_count) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
