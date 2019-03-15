@@ -331,7 +331,7 @@
 						echo "<br><div class='col-md-12'>
 								<table class=\"table table-bordered\">
 									<tr class=\"info\">
-										<th>S.No</th>
+										<th>Sequence<br>Number</th>
 										<th>Sewing Job Method</th>
 										<th style='display: none;'>Mix Jobs</th>
 										<th>Description</th>	

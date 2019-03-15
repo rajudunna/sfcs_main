@@ -77,12 +77,12 @@ function firstbox()
 <div class="panel panel-primary">
 <div class="panel-heading">FCA Pending List</div>
 <div class="panel-body">
-<form name="test" method="post" action="<?php $_GET['r']; ?>">
+<form name="test" method="post"  onsubmit='return check_color()' action="<?php $_GET['r']; ?>">
 
 <div class='col-md-3'>
   <label>Schedule No:</label>
   <input type="text" class='form-control integer' size=5  id="schedule" name='schedule'
-  onblur="javascript:  show_content(schedule);" value="" required>
+   onchange="javascript:  show_content(schedule);" value="" required>
 </div>
 <div class='col-md-4'>
   <span id='show_content'></span>
@@ -107,6 +107,18 @@ function show_content(schedule, colors)
 			$('#btn').show();
 		});
 	}
+}
+
+function check_color(){
+		var col = $('#color1').val();
+		try{
+			if(col.length > 0)
+				return true;
+			else
+				return false;	
+		}catch(e){
+			return false;
+		}
 }
 </script>
 

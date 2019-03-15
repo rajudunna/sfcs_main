@@ -271,7 +271,7 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
         echo '<form name="testnew" action="#" method="post">'; 
         if(sizeof($unique_sizes_explode)>0) 
         { 
-            echo "<table class=\"table table-bordered\">"; 
+            echo "<div style='overflow-x:auto;'><table class=\"table table-bordered\">"; 
             echo "<tr>"; 
             echo "<th>Select</th>";
 			echo "<th>Item codes</th>";	
@@ -490,7 +490,7 @@ if(isset($_POST['submit']) || $_GET['schedule']>0)
                 echo "<td>$order_total</td>"; 
                 echo "</tr>"; 
             } 
-            echo "</table>"; 
+            echo "</table></div>"; 
 			echo '<input type="hidden" name="style" value="'.$style.'">'; 
             echo '<input type="hidden" name="schedules" value="'.$schedule.'">'; 
             echo '<input type="hidden" name="exfact" value="'.$exfact.'">'; 

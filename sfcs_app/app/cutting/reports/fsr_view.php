@@ -542,8 +542,8 @@ $sql_num_check=mysqli_num_rows($sql_result);
 	echo "</tr>";
 
 while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$section_new=$sql_row['section'];
+
+{	$section_new=$sql_row['section'];
 	
 	$sql11="select distinct shift from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and section in ($section_new) and shift in ($shift) ".$query. "order by shift";
 	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 6".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -565,7 +565,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$damages=0;
 		$shortages=0;
 	
-		$sql3="select sum((a_xs+a_s+a_m+a_l+a_xl+a_xxl+a_xxxl)*a_plies) as \"cut_qty\" from $bai_pro3.plandoc_stat_log where doc_no in ($doc_list)";
+		$sql3="select sum((a_s01+a_s02+a_s03+a_s04+a_s05+a_s06+a_s07+a_s08+a_s09+a_s10+a_s11+a_s12+a_s13+a_s14+a_s15+a_s16+a_s17+a_s18+a_s19+a_s20+a_s21+a_s22+a_s23+a_s24+a_s25+a_s26+a_s27+a_s28+a_s29+a_s30+a_s31+a_s32+a_s33+a_s34+a_s35+a_s36+a_s37+a_s38+a_s39+a_s40+a_s41+a_s42+a_s43+a_s44+a_s45+a_s46+a_s47+a_s48+a_s49+a_s50)*a_plies) as \"cut_qty\" from $bai_pro3.plandoc_stat_log where doc_no in ($doc_list)";
+		//echo $sql3;
+		//mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row3=mysqli_fetch_array($sql_result3))
 		{

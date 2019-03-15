@@ -15,14 +15,15 @@
 </head>
 
 <body onload='assigncmb()'>
-     <?php
+    <?php
+    $colors = ['white','yellow','green'];
     if(isset($_GET['id']))
     {
         $dr_id=$_GET['id'];
         $code=$_GET['prefix_name'];
         $department=$_GET['prefix'];
         $reason=$_GET['type_of_sewing'];
-        $type='#'.$_GET['bg_color'];
+        $type=$_GET['bg_color'];
     }else
     {
         $dr_id=0;
@@ -75,15 +76,20 @@
 			    <div class="controls col-sm-9">
 				<input id="type_of_sewing" type="text" class="form-control k-textbox" data-role="text"  name="type_of_sewing" value="<?php echo $reason; ?>"  data-parsley-errors-container="#errId1" readonly><span id="errId1" class="error"></span>
 				</div>
-                
 		</div></div>
 		<div class="col-md-4"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="reason">Back Ground Color</label>
-			    <div class="controls col-sm-9">
-				<input id="reason" type="color" class="form-control k-textbox" data-role="text"  name="bg_color"  value="<?php echo $type; ?>" data-parsley-errors-container="#errId1"> <span id="errId1" class="error"></span>
-				</div>
-                
-		</div></div>
+            <label class="control-label control-label-left col-sm-3" for="reason">Back Ground Color</label>
+            <div class="controls col-sm-9">
+                <select class='form-control' id="reason" name="bg_color">
+                    <option>Please Select</option>
+                <?php
+                    foreach($colors as $color)
+                        echo "<option value='$color'>$color</option>";
+                ?>
+                </select>
+            </div>      
+		    </div>
+        </div>
 		<div class="col-md-4"><div class="form-group">
 			    
 			    
@@ -91,8 +97,6 @@
 		<button id="btn_save" type="submit" class="btn btn-primary btn-lg" name="btn_save">Save</button></div></div></div></div>
                                     </div>
                                 
-
-
                     </div>
                 </div>
             </form>

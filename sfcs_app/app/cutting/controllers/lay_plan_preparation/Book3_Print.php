@@ -2371,7 +2371,7 @@ tags will be replaced.-->
   <td class=xl654118></td>
  </tr>
   	 <?php
-		 $fab_uom = 'Yds';
+		 //$fab_uom = $fab_uom;
 		 $temp = 0;
 		 $temp_len1 = 0;
 		 $temp_len = 0;
@@ -2471,8 +2471,8 @@ tags will be replaced.-->
   <td rowspan=2 class=xl1144118 width=67 style='border-bottom:.5pt solid black;  width:70pt'>Act. Width</td>
   <td rowspan=2 class=xl1144118 width=67 style='border-bottom:.5pt solid black;  width:70pt'>Revised Marker Length</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Revised Total Fab. Requirement</td>
-  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Issued Qty (Yds)</td>
-  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Return Qty (Yds)</td>
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Issued Qty (<?= $fab_uom ?>)</td>
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Return Qty (<?= $fab_uom ?>)</td>
 
   <td rowspan=4 colspan=10 class=xl1144118 width=64 style='border-bottom:.6pt solid black'></td>
   <td class=xl674118></td>
@@ -2618,9 +2618,9 @@ $item_name[] = $sql_row['item'];
 <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
   <td class=xl764118 style='border-bottom:.5pt solid black;'>Shade</td>
-  <td class=xl764118 colspan=3 style='border-bottom:.5pt solid black;'>Shade Wise Total Fab (Yds)</td>
+  <td class=xl764118 colspan=3 style='border-bottom:.5pt solid black;'>Shade Wise Total Fab (<?= $fab_uom ?>)</td>
   <td class=xl764118 colspan=3 style='border-bottom:.5pt solid black;'>No of Plies from Shade</td>
-  <td class=xl764118 colspan=4 style='border-bottom:.5pt solid black;'>Fabric from shade for Binding (Yds)</td>
+  <td class=xl764118 colspan=4 style='border-bottom:.5pt solid black;'>Fabric from shade for Binding (<?= $fab_uom ?>)</td>
   <td class=xl654118>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 	<td class=xl654118 colspan="3"><u><strong>Cutting Supervisor Authorization</strong></u></td>
 </tr>

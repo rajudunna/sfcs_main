@@ -307,12 +307,20 @@ if(isset($_POST['submit']))
 
 	echo "<div style='padding-left:2%; padding-right:2%;'><div class='panel panel-info'>";
 	echo "<div class='panel-heading'><span><strong>Style :$style_x</strong></span> <span style='margin-left:5%;'><strong>Schedule :$schedule_x</strong><span>";
-	if($color_x!='0'){
+    if($color_x!='0'){
 		echo "<span style='margin-left:5%;'><strong>Color :$color_x</strong><span></div>";
 	}else{
-		echo "</div>";
+		$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\"";
+		mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+			$color_y .= $sql_row['order_col_des'].',';
+		}	
+		$color_y = rtrim($color_y,",");
+		echo "<span style='margin-left:5%;'><strong>Color :$color_y</strong><span></div>";
 	}
-
+	
 	$order_xs=0;
 	$order_s=0;
 	$order_m=0;
@@ -1145,9 +1153,9 @@ echo "</form></div>
 </div>";	
 
 }
-// echo "<script>
-// 		document.getElementById('myTd').colSpan = '$max_size';
-// 	</script>";
+echo "<script>
+		document.getElementById('myTd').colSpan = '$max_size';
+	</script>";
 ?> 
 
 	</div>	

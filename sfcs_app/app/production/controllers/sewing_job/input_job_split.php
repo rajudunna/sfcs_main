@@ -44,7 +44,7 @@ if(isset($_POST['submit']) || isset($_GET['schedule']))
     }
     echo '<h4><b>Schedule : <a class="btn btn-success">'.$schedule.'</a></b></h4>';
     // $unconditional_remove=$_POST['unconditional_remove'];
-    $sql="SELECT input_job_no,input_job_no_random, order_del_no, order_col_des FROM $bai_pro3.packing_summary_input WHERE input_job_no_random LIKE '$schedule%' group by input_job_no ORDER BY input_job_no*1 ";
+    $sql="SELECT input_job_no,input_job_no_random, order_del_no, order_col_des FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' group by input_job_no ORDER BY input_job_no*1 ";
     // echo $sql;
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
     $rowcount=mysqli_num_rows($sql_result);

@@ -33,7 +33,8 @@ th{
 <?php
     set_time_limit(6000000);
 	$msg="<table id='table1' class='table table-bordered'><tr><th>Buyer Division</th><th>Style</th><th>CO</th><th>Schedule</th><th>Color</th><th>EMB GARMENT WIP</th><th>EX-Factory</th></tr>";
-	$sql="select order_style_no,order_col_des,order_del_no,doc_no,size_code,if(status ='DONE',sum(carton_act_qty),0) as carton,if(status='EGR',sum(carton_act_qty),0) as carton1,if(status='EGS',sum(carton_act_qty),0) as carton2 from $bai_pro3.packing_summary WHERE date(lastup) >= '2015-01-01' and STATUS IN ('EGR','EGS') group by order_del_no order by order_del_no, doc_no,size_code";
+    $sql="select order_style_no,order_col_des,order_del_no,doc_no,size_code,if(status ='DONE',sum(carton_act_qty),0) as carton,if(status='EGR',sum(carton_act_qty),0) as carton1,if(status='EGS',sum(carton_act_qty),0) as carton2 from $bai_pro3.packing_summary WHERE date(lastup) >= \"2015-01-01\" and STATUS IN (\"EGR\",\"EGS\") group by order_del_no order by order_del_no, doc_no,size_code";
+	//echo $sql."<br>";
 	$result=mysqli_query($link, $sql) or die("Sql error--1".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	if(mysqli_fetch_array($result)>0){
 		while($row=mysqli_fetch_array($result))

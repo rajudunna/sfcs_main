@@ -154,8 +154,9 @@ $sewing_rejection=$conf1->get('sewing_rejection');
 
 $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
 
-$plant_start_time = $conf1->get('plant-start-time');;
-$plant_end_time = $conf1->get('plant-end-time');;
+$plant_start_time = $conf1->get('plant-start-time');
+$plant_end_time = $conf1->get('plant-end-time');
+$detailed_bundle_sticker = $conf1->get('detailed-bundle-sticker');
 //Central Administraion Group ID's
 $group_id_sfcs=8;
 $group_id_Main=5;
@@ -166,6 +167,8 @@ $header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
 $header_name=$smtp_user." Alert";
 $header_mail=$conf1->get('smtp_mail_from');
 $dispatch_mail = $conf1->get('dispatch_mail');
+$wpt_refresh_time = $conf1->get('wpt-refresh-time');
+
 //Central Administration Menu Access
 $central_administration_sfcs='central_administration_sfcs';
 $tbl_view_view_menu="tbl_view_view_menu";
@@ -185,6 +188,7 @@ $m3_inputs="m3_inputs";
 $m3_bulk_ops_rep_db="m3_bulk_ops_rep_db";
 $temp_pool_db="temp_pool_db";
 $module_limit = 32;
+
 
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 mysqli_select_db($link, $bai_pro3) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));

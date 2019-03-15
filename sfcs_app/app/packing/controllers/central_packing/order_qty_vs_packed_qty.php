@@ -477,7 +477,7 @@
 					echo "<br><div class='col-md-12'>
 							<table class=\"table table-bordered\">
 								<tr class=\"info\">
-									<th>S.No</th>
+									<th>Sequence<br>Number</th>
 									<th>Packing Method</th>
 									<th>Description</th>
 									<th>Quantity</th>
