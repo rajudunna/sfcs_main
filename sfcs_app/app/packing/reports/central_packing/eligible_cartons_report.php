@@ -66,7 +66,7 @@ table, th, td {
 				<select name="style" id="style" class="form-control" onchange="secondbox();" required>
 					<option value="">Please Select</option>
 					<?php
-						$sql="SELECT order_style_no as style FROM $bai_pro3.bai_orders_db_confirm left join $bai_pro3.pac_stat on $bai_pro3.pac_stat.style=$bai_pro3.bai_orders_db_confirm.order_style_no WHERE vpo='$vpo' GROUP BY order_style_no";
+						$sql="SELECT order_style_no as style FROM $bai_pro3.bai_orders_db_confirm left join $bai_pro3.pac_stat on $bai_pro3.pac_stat.style=$bai_pro3.bai_orders_db_confirm.order_style_no WHERE vpo='$vpo'and vpo<>'' GROUP BY order_style_no";
 						$sql_result=mysqli_query($link, $sql) or exit("error while fetching VPO numbers");
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
