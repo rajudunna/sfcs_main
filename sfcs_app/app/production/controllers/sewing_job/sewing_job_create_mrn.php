@@ -62,7 +62,6 @@
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	$has_permission=haspermission($_GET['r']);
-
 	if(isset($_POST['style']))
 	{
 	    $style=$_POST['style'];
@@ -159,10 +158,10 @@
 						$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$sch_id,$link);
 						$packing_summary_input_check = echo_title("$bai_pro3.packing_summary_input","count(*)","order_del_no",$schedule,$link);
 						if($packing_summary_input_check > 0)
-						{
+						{								
 							echo '<br>
-							<div class="panel panel-primary panel-body">
-							<div class="col-md-12 ">';       
+							 <div class="panel panel-primary panel-body">
+							 <div class="col-md-12 ">';       
 							echo '</div>';
 							echo '<form name="new" method="post" action="?r='.$_GET['r'].'">';
 							echo "<div class='col-12 col-sm-12 col-lg-12 table-responsive'>
@@ -187,11 +186,11 @@
 
 								$sql88="select type_of_sewing,prefix,bg_color from $brandix_bts.tbl_sewing_job_prefix where type_of_sewing=".$sql_row['type_of_sewing']."";
 								$sql_result88=mysqli_query($link, $sql88) or exit("Sql Error44b $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
-								while($sql_row88=mysqli_fetch_array($sql_result88))
-								{
-									$bg_color=$sql_row88["bg_color"];
-									$prefix=$sql_row88["prefix"];
-								}
+									while($sql_row88=mysqli_fetch_array($sql_result88))
+									{
+										$bg_color=$sql_row88["bg_color"];
+										$prefix=$sql_row88["prefix"];
+									}
 
 								$total_cuts=explode(",",$sql_row['acutno']);
 								$cut_jobs_new='';
@@ -216,7 +215,7 @@
 								echo "<td>".$sql_row['carton_act_qty']."</td>";
 								$mrn_status=$sql_row['mrn_status']; 
 								if($mrn_status>0)
-								{
+								{							
 									echo "<td><center>Confirmed</center></td>";
 									if(in_array($authorized,$has_permission))
 									{ 
@@ -233,7 +232,7 @@
 									$sql57="SELECT tid FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='".$sql_row['input_job_no_random']."'";
 									$sql_result02=mysqli_query($link, $sql57) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 									while($sql_row02=mysqli_fetch_array($sql_result02))
-									{
+									{				
 										$tid1[]=$sql_row02['tid'];
 									}
 									$op_code=1;
@@ -257,14 +256,14 @@
 											echo "<td></td>";	
 										}
 									     echo"</tr>"; 
-									}
-									else{
+									 }
+									 else{
 										echo"<td><center>NO MRN Operation</center></td>";
 										echo "<td></td>";
-										
-									}
-								}
+
+									 }
 							}
+						}
 							echo"</table>";
 							echo"</form>";
 							echo"</div>";
@@ -279,205 +278,251 @@
 							</script>";
 							
 						}
-						if($_GET['var1']==1)
+				if($_GET['var1']==1)
+				{	
+					//added m3 db in query
+					$conn = odbc_connect("$ms_sql_driver_name;Server=$ms_sql_odbc_server;Database=$mssql_db;", $ms_sql_odbc_user,$ms_sql_odbc_pass);
+					$schedule=$_GET['schedule'];
+					$style=$_GET['style'];
+					$inputjobno=$_GET['inputjobno'];
+					$op_code=1;
+					$sql14="SELECT co_no FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule' and order_style_no='$style'";					
+					$sql_result14=mysqli_query($link, $sql14) or exit("Sql Error71".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row14=mysqli_fetch_array($sql_result14))
+					{
+						$co_no=$sql_row14['co_no'];
+					}
+					$sql76="SELECT input_module  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno'";
+					$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row76=mysqli_fetch_array($sql_result76))
+					{
+						$input_module=$sql_row76['input_module'];
+					}
+					$sql55="SELECT tid,input_job_no,order_del_no,mrn_status  FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$inputjobno' AND mrn_status ='1'";
+					$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_num_check1=mysqli_num_rows($sql_result01);
+					// $tid=array();
+					if($sql_num_check1>0)
+					{
+						while($sql_row01=mysqli_fetch_array($sql_result01))
 						{
-							$conn = odbc_connect("$ms_sql_driver_name;Server=$ms_sql_odbc_server;Database=$mssql_db;", $ms_sql_odbc_user,$ms_sql_odbc_pass);
-							$schedule=$_GET['schedule'];
-							$style=$_GET['style'];
-							$inputjobno=$_GET['inputjobno'];
-							$op_code=1;
-							$sql14="SELECT co_no FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule' and order_style_no='$style'";					
-							$sql_result14=mysqli_query($link, $sql14) or exit("Sql Error71".mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($sql_row14=mysqli_fetch_array($sql_result14))
-							{
-								$co_no=$sql_row14['co_no'];
-							}
-							$sql76="SELECT input_module  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno'";
-							$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($sql_row76=mysqli_fetch_array($sql_result76))
-							{
-								$input_module=$sql_row76['input_module'];
-							}
-							$sql55="SELECT tid,input_job_no,order_del_no  FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$inputjobno'";
-							$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$sql_num_check1=mysqli_num_rows($sql_result01);
-							// $tid=array();
-							if($sql_num_check1>0)
-							{
-								while($sql_row01=mysqli_fetch_array($sql_result01))
-								{
 
-									$tid[]=$sql_row01['tid'];
-									$input_job_no=$sql_row01['input_job_no'];
-									$order_del_no=$sql_row01['order_del_no'];
-									$date=date('Ymd');
-									$employee_no=$order_del_no."-".$input_job_no;
-									$remarks="Team"."-".$input_module."::".$date;
-								}
-								if(strlen($employee_no) > 10)
-								{
-									$employee_no = substr($employee_no,-10);
-								}
-								$tid1=implode(",",$tid);
-								$mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid1) and op_code='$op_code' group by mo_no";
-								$mssql_insert_query="insert into [$mssql_db].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status,DSP1,DSP2,DSP3,DSP4) values";
-								$values = array();
-								$ref_no = array();
-								$sql_result5=mysqli_query($link, $mo_operation_quantites_query) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-								while($sql_row5=mysqli_fetch_array($sql_result5))
-								{
-									$id=$sql_row5['id'];
-									$mo_no=$sql_row5['mo_no'];
-									$bundle_quantity=$sql_row5['bundle_quantity']*-1;
-									$op_code=$sql_row5['op_code'];
-									$op_desc=$sql_row5['op_desc'];
-									$ref_no[]=$sql_row5['ref_no'];
-									array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_no . "','" . $op_code . "','" . $bundle_quantity . "','".$employee_no."','".$remarks."','".$co_no."','".$order_del_no."',NULL,'1','1','1','1')"); 
-
-								}
-								$ref_no1=implode(",",$ref_no);
-								$mssql_insert_query_result=odbc_exec($conn, $mssql_insert_query . implode(', ', $values));
-								$sql_num_check5=odbc_num_rows($mssql_insert_query_result);
-								$sql="select * from $brandix_bts.tbl_orders_style_ref where product_style='$style'";
-								$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-								while($sql_row10=mysqli_fetch_array($sql_result))
-								{
-									$id=$sql_row10['id'];
-								}
-								$sql8="select * from $brandix_bts.tbl_orders_master where product_schedule='$schedule'";
-								$sql_result8=mysqli_query($link, $sql8) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-								while($sql_row11=mysqli_fetch_array($sql_result8))
-								{
-									$schedule_id=$sql_row11['id'];
-								}
-								if($sql_num_check5>0)
-								{
-									$pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='0' where input_job_no_random='$inputjobno'";
-									$pass_update1_result=mysqli_query($link, $pass_update1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-									echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-									$('#loading-image').hide();
-									function Redirect() {
-									sweetAlert('MRN Reversal successfully Completed','','success');
-									location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
-									}
-									</script>";
-								}
-								else
-								{
-									echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-									$('#loading-image').hide();
-									function Redirect() {
-									sweetAlert('Reversal Failed','','success');
-									location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
-
-									}
-									</script>";
-								}
-
-							}
+							$tid[]=$sql_row01['tid'];
+							$input_job_no=$sql_row01['input_job_no'];
+							$order_del_no=$sql_row01['order_del_no'];
+							$date=date('Ymd');
+							$employee_no=$order_del_no."-".$input_job_no;
+							$remarks="Team"."-".$input_module."::".$date;
 						}
-						elseif($_GET['var1']==2)
-						{	
-							$conn = odbc_connect("$ms_sql_driver_name;Server=$ms_sql_odbc_server;Database=$mssql_db;", $ms_sql_odbc_user,$ms_sql_odbc_pass);
-							$schedule=$_GET['schedule'];
-							$style=$_GET['style'];
-							$inputjobno=$_GET['inputjobno'];
-							$op_code=1;
-							$sql14="SELECT co_no FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule' and order_style_no='$style'";					
-							$sql_result14=mysqli_query($link, $sql14) or exit("Sql Error71".mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($sql_row14=mysqli_fetch_array($sql_result14))
-							{
-								$co_no=$sql_row14['co_no'];
-							}
-							$sql76="SELECT input_module  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno'";
-							$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($sql_row76=mysqli_fetch_array($sql_result76))
-							{
-								$input_module=$sql_row76['input_module'];
-							}
-							$sql55="SELECT tid,input_job_no,order_del_no  FROM $bai_pro3.packing_summary_input WHERE  input_job_no_random='$inputjobno'";
-							$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
-							// $tid=array();
-							$sql_num_check1=mysqli_num_rows($sql_result01);
-							// $tid=array();
-							if($sql_num_check1>0)
-							{
-								while($sql_row01=mysqli_fetch_array($sql_result01))
-								{
-
-									$tid[]=$sql_row01['tid'];
-									$input_job_no=$sql_row01['input_job_no'];
-									$order_del_no=$sql_row01['order_del_no'];
-									$date=date('Ymd');
-									$employee_no=$order_del_no."-".$input_job_no;
-									$remarks="Team"."-".$input_module."::".$date;
-								}
-								if(strlen($employee_no) > 10)
-								{
-									$employee_no = substr($employee_no,-10);
-								}															
-								$tid1=implode(",",$tid);
-								$mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid1) and op_code='$op_code' group by mo_no";
-								//echo $mo_operation_quantites_query."<br>";
-								//die();
-								$mssql_insert_query="insert into [$mssql_db].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status,DSP1,DSP2,DSP3,DSP4) values";
-								$values = array();
-								$ref_no = array();
-								$sql_result5=mysqli_query($link, $mo_operation_quantites_query) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-								while($sql_row5=mysqli_fetch_array($sql_result5))
-								{
-									$id=$sql_row5['id'];
-									$mo_no=$sql_row5['mo_no'];
-									$bundle_quantity=$sql_row5['bundle_quantity'];
-									$op_code=$sql_row5['op_code'];
-									$op_desc=$sql_row5['op_desc'];
-									$ref_no[]=$sql_row5['ref_no'];
-									array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_no . "','" . $op_code . "','" . $bundle_quantity . "','".$employee_no."','".$remarks."','".$co_no."','".$order_del_no."',NULL,'1','1','1','1')"); 
-								}
-								$ref_no1=implode(",",$ref_no);
-								$mssql_insert_query_result=odbc_exec($conn, $mssql_insert_query . implode(', ', $values));
-								$sql_num_check5=odbc_num_rows($mssql_insert_query_result);
-								
-								$sql="select * from $brandix_bts.tbl_orders_style_ref where product_style='$style'";
-								$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-								while($sql_row10=mysqli_fetch_array($sql_result))
-								{
-									$id=$sql_row10['id'];
-								}
-								$sql8="select * from $brandix_bts.tbl_orders_master where product_schedule='$schedule'";
-								$sql_result8=mysqli_query($link, $sql8) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-								while($sql_row11=mysqli_fetch_array($sql_result8))
-								{
-									$schedule_id=$sql_row11['id'];
-								}
-								if($sql_num_check5>0)
-								{
-									$pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='1' where input_job_no_random='$inputjobno'";
-									$pass_update1_result=mysqli_query($link, $pass_update1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-									echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-									$('#loading-image').hide();
-									function Redirect() {
-									sweetAlert('MRN Confirmed Successfully','','success');
-									location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
-
-									}
-									</script>";
-								}						
-								else
-								{
-									echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-									$('#loading-image').hide();
-									function Redirect() {
-									sweetAlert('MRN Confirmed Failed','','warning');
-									location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
-
-									}
-									</script>";
-								}	
-							}
+						if(strlen($employee_no) > 10)
+						{
+							$employee_no = substr($employee_no,-10);
 						}
+						$tid1=implode(",",$tid);
+						$mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid1) and op_code='$op_code' group by mo_no";
+						$mssql_insert_query="insert into [$mssql_db].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status,DSP1,DSP2,DSP3,DSP4) values";
+						$values = array();
+						$ref_no = array();
+						$sql_result5=mysqli_query($link, $mo_operation_quantites_query) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row5=mysqli_fetch_array($sql_result5))
+						{
+							$id=$sql_row5['id'];
+							$mo_no=$sql_row5['mo_no'];
+							$bundle_quantity=$sql_row5['bundle_quantity']*-1;
+							$op_code=$sql_row5['op_code'];
+							$op_desc=$sql_row5['op_desc'];
+							$ref_no[]=$sql_row5['ref_no'];
+							array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_no . "','" . $op_code . "','" . $bundle_quantity . "','".$employee_no."','".$remarks."','".$co_no."','".$order_del_no."',NULL,'1','1','1','1')"); 
+						}
+						$ref_no1=implode(",",$ref_no);
+						$mssql_insert_query_result=odbc_exec($conn, $mssql_insert_query . implode(', ', $values));
+						$sql_num_check5=odbc_num_rows($mssql_insert_query_result);
+						$sql="select * from $brandix_bts.tbl_orders_style_ref where product_style='$style'";
+						$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row10=mysqli_fetch_array($sql_result))
+						{
+							$id=$sql_row10['id'];
+						}
+						$sql8="select * from $brandix_bts.tbl_orders_master where product_schedule='$schedule'";
+						$sql_result8=mysqli_query($link, $sql8) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row11=mysqli_fetch_array($sql_result8))
+						{
+							$schedule_id=$sql_row11['id'];
+						}
+						if($sql_num_check5>0)
+						{
+							$pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='0' where input_job_no_random='$inputjobno'";
+							$pass_update1_result=mysqli_query($link, $pass_update1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+							$('#loading-image').hide();
+							function Redirect() {
+							sweetAlert('MRN Reversal successfully Completed','','success');
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+							}
+							</script>";
+						}
+						else
+						{
+							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+							$('#loading-image').hide();
+							function Redirect() {
+							sweetAlert('Reversal Failed','','success');
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+
+							}
+							</script>";
+						}
+					}else{
+
+						$sql="select * from $brandix_bts.tbl_orders_style_ref where product_style='$style'";
+						$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row10=mysqli_fetch_array($sql_result))
+						{
+							$id=$sql_row10['id'];
+						}
+						$sql8="select * from $brandix_bts.tbl_orders_master where product_schedule='$schedule'";
+						$sql_result8=mysqli_query($link, $sql8) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row11=mysqli_fetch_array($sql_result8))
+						{
+							$schedule_id=$sql_row11['id'];
+						}
+						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+						$('#loading-image').hide();
+						function Redirect() {
+						sweetAlert('MRN Reversal Already Done','','success');
+						location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+
+						}
+						</script>";
+
+					}
+					
+				}
+				elseif($_GET['var1']==2)
+				{	
+					$conn = odbc_connect("$ms_sql_driver_name;Server=$ms_sql_odbc_server;Database=$mssql_db;", $ms_sql_odbc_user,$ms_sql_odbc_pass);
+					$schedule=$_GET['schedule'];
+					$style=$_GET['style'];
+					$inputjobno=$_GET['inputjobno'];
+					$op_code=1;
+					$sql14="SELECT co_no FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule' and order_style_no='$style'";					
+					$sql_result14=mysqli_query($link, $sql14) or exit("Sql Error71".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row14=mysqli_fetch_array($sql_result14))
+					{
+						$co_no=$sql_row14['co_no'];
+					}
+					$sql76="SELECT input_module  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno'";
+					$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row76=mysqli_fetch_array($sql_result76))
+					{
+						$input_module=$sql_row76['input_module'];
+					}
+					$sql55="SELECT tid,input_job_no,order_del_no,mrn_status  FROM $bai_pro3.packing_summary_input WHERE  input_job_no_random='$inputjobno' and mrn_status !='1'";
+					$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// $tid=array();
+					$sql_num_check1=mysqli_num_rows($sql_result01);
+					// $tid=array();
+					if($sql_num_check1>0)
+					{
+						while($sql_row01=mysqli_fetch_array($sql_result01))
+						{
+							$tid[]=$sql_row01['tid'];
+							$input_job_no=$sql_row01['input_job_no'];
+							$order_del_no=$sql_row01['order_del_no'];
+							$date=date('Ymd');
+							$employee_no=$order_del_no."-".$input_job_no;
+							$remarks="Team"."-".$input_module."::".$date;
+						}
+						if(strlen($employee_no) > 10)
+						{
+							$employee_no = substr($employee_no,-10);
+						}					
+						$tid1=implode(",",$tid);
+						$mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid1) and op_code='$op_code' group by mo_no";
+						//echo $mo_operation_quantites_query."<br>";
+						//die();
+						//added m3 db in query
+						$mssql_insert_query="insert into [$mssql_db].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status,DSP1,DSP2,DSP3,DSP4) values";
+						$values = array();
+						$ref_no = array();
+						$sql_result5=mysqli_query($link, $mo_operation_quantites_query) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row5=mysqli_fetch_array($sql_result5))
+						{
+							$id=$sql_row5['id'];
+							$mo_no=$sql_row5['mo_no'];
+							$bundle_quantity=$sql_row5['bundle_quantity'];
+							$op_code=$sql_row5['op_code'];
+							$op_desc=$sql_row5['op_desc'];
+							$ref_no[]=$sql_row5['ref_no'];
+							array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_no . "','" . $op_code . "','" . $bundle_quantity . "','".$employee_no."','".$remarks."','".$co_no."','".$order_del_no."',NULL,'1','1','1','1')"); 
+						}
+						$ref_no1=implode(",",$ref_no);
+						$mssql_insert_query_result=odbc_exec($conn, $mssql_insert_query . implode(', ', $values));
+						$sql_num_check5=odbc_num_rows($mssql_insert_query_result);
+						
+						$sql="select * from $brandix_bts.tbl_orders_style_ref where product_style='$style'";
+						$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row10=mysqli_fetch_array($sql_result))
+						{
+							$id=$sql_row10['id'];
+						}
+						$sql8="select * from $brandix_bts.tbl_orders_master where product_schedule='$schedule'";
+						$sql_result8=mysqli_query($link, $sql8) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row11=mysqli_fetch_array($sql_result8))
+						{
+							$schedule_id=$sql_row11['id'];
+						}
+						if($sql_num_check5>0)
+						{
+							$pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='1' where input_job_no_random='$inputjobno'";
+							$pass_update1_result=mysqli_query($link, $pass_update1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+							$('#loading-image').hide();
+							function Redirect() {
+							sweetAlert('MRN Confirmed Successfully','','success');
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+
+							}
+							</script>";
+						}						
+						else
+						{
+							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+							$('#loading-image').hide();
+							function Redirect() {
+							sweetAlert('MRN Confirmed Failed','','warning');
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+
+							}
+							</script>";
+						}	
+					}
+					else{
+
+						$sql="select * from $brandix_bts.tbl_orders_style_ref where product_style='$style'";
+						$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row10=mysqli_fetch_array($sql_result))
+						{
+							$id=$sql_row10['id'];
+						}
+						$sql8="select * from $brandix_bts.tbl_orders_master where product_schedule='$schedule'";
+						$sql_result8=mysqli_query($link, $sql8) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row11=mysqli_fetch_array($sql_result8))
+						{
+							$schedule_id=$sql_row11['id'];
+						}
+						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+							$('#loading-image').hide();
+							function Redirect() {
+							sweetAlert('MRN Already Confirmed','','warning');
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+
+							}
+							</script>";
 					}
 				}
+		    }
+		}
 			?> 
 		</div>
 	</div>
