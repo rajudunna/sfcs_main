@@ -210,7 +210,7 @@ foreach($b_tid as $key => $value)
                     $act_reciving_qty_temp = $b_rep_qty[$key]+$b_rej_qty[$key];
                     if($act_reciving_qty_temp > $send_qty)
                     {
-                        //$concurrent_flag = 1;
+                        // $concurrent_flag = 1;
                     }
                 }
 
