@@ -3,6 +3,8 @@
 <?php 
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
     $url = getFullURLLevel($_GET['r'],'wpt_dashboard_data.php',0,'R');
+	$RELOAD_TIME = (int)$wpt_refresh_time;
+
     // $sections_query = "Select sec_id from $bai_pro3.sections_db where sec_id > 0";
     $sections_query = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section>0 GROUP BY section ORDER BY section + 0";
     $sections_result = mysqli_query($link,$sections_query);
@@ -13,11 +15,11 @@
 ?>
 
 
-
 <div class='row'>
     <div class='panel panel-primary'>
         <div class='panel-heading'>
             <b>WPT DASHBOARD</b>
+            <p class='pull-right'>Auto-Refresh : <?= $RELOAD_TIME ?> mins </p>
         </div>
         <div class='panel-body'>
             <div class='row'>
@@ -153,7 +155,7 @@
 
     setInterval(function() {
         call_ajax(sections[0],true);
-    }, 120000); 
+    }, <?= $RELOAD_TIME * 6000 ?>); 
 
 
     function load_data(){
@@ -189,7 +191,7 @@
                 }
             }catch(err){
                 if(sync_type){
-                    $('#sec-'+section).html('<b>couldn\'t fetch the data.It will automatically refresh in 2 mins</b>');
+                    $('#sec-'+section).html('<b>couldn\'t fetch the data.It will automatically refresh in <?= $RELOAD_TIME ?> mins</b>');
                     $('#sec-load-'+section).css('display','none');
                     if(sync_type){
                         var ind = sections.indexOf(section);
@@ -201,7 +203,7 @@
             }
         }).fail(function(){
             if(sync_type){
-                $('#sec-'+section).html('<b>Network Error.It will automatically refresh in 2 mins.</b>');
+                $('#sec-'+section).html('<b>Network Error.It will automatically refresh in <?= $RELOAD_TIME ?> mins.</b>');
                 $('#sec-load-'+section).css('display','none');
                 var ind = sec_id_ar.indexOf(section);
                 if(sections[ind+1]){
