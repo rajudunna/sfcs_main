@@ -185,7 +185,7 @@ foreach($b_tid as $key => $value)
 
         
     //update shift and module against to each bundle number in BCD insert rejection in qms_db
-    $select_send_qty = "SELECT send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
+    $select_send_qty = "SELECT (send_qty+recut_in+replace_in)as send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
     $result_select_send_qty = $link->query($select_send_qty) or exit('Error getting data from Bundle creation data');
     if($result_select_send_qty->num_rows >0)
     {
@@ -198,7 +198,7 @@ foreach($b_tid as $key => $value)
             $total_rec_qty = $pre_recieved_qty + $act_reciving_qty+$rejected_qty;
             if($total_rec_qty > $send_qty)
             {
-                // $concurrent_flag = 1;
+                $concurrent_flag = 1;
             }
             else
             {
