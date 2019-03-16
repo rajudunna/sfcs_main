@@ -321,7 +321,9 @@ function second_box(){
 			$sec_mods=$sql_row['sec_mods'];
 		}
 		$modules=array();
+
 		$modules=explode(",",$sec_mods);
+		sort($modules);
 		for ($i=0; $i < sizeof($modules); $i++) 
 		{ 
 				if ($modules[$i] != '' || $modules[$i] != null)
