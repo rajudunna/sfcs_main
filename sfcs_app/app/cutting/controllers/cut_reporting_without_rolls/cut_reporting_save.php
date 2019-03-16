@@ -7,91 +7,7 @@ $LEFT_THRESHOLD = 10000;
 $THRESHOLD = 200; //This Constant ensures the loop to force quit if it was struck in an infinte loop
 $LEFT = 0;
 
-/*
-$target = 'testing';
-if($target == 'testing'){
-    // EXAMPLE LOGIC
-    // $planned['S']['D1'] = 50; $planned['M']['D1'] = 10; $planned['L']['D1'] = 30;
-    // $planned['S']['D2'] = 10; $planned['M']['D2'] = 60; $planned['L']['D2'] = 20;
-    // $planned['S']['D3'] = 11; $planned['M']['D3'] = 20; $planned['L']['D3'] = 90;
 
-    // $remaining['D1']['S'] =  30; $remaining['D1']['M'] = 20; $remaining['D1']['L'] = 20;
-    // $remaining['D2']['S'] =  30; $remaining['D2']['M'] = 20; $remaining['D2']['L'] = 20;
-    // $remaining['D3']['S'] =  30; $remaining['D3']['M'] = 20; $remaining['D3']['L'] = 20;
-
-    // $fulfill_size_quantity['S'] = 90;$fulfill_size_quantity['M'] = 60;$fulfill_size_quantity['L'] = 60;
-    // $docs_count['S'] = 3;$docs_count['M'] = 3;$docs_count['L'] = 3;
-    // $counter = 0;
-
-    foreach($planned as $size => $plan){
-            echo "<br/>Size : $size <br/>";
-        do{
-            $fulfill_qty = $fulfill_size_quantity[$size];
-            $counter = 0;
-            foreach($plan as $docket => $qty){
-                if($planned[$size][$docket] > 0 && $remaining[$docket][$size] >0){
-                    $qty = $qty - $reported[$docket][$size];
-                    if($remaining[$docket][$size] > $qty){
-                        $reported[$docket][$size] += $qty;
-                        $remaining[$docket][$size] -= $qty;
-                        $planned[$size][$docket] = 0;
-                        $qty = 0;
-                    }else{
-                        $reported[$docket][$size] += $remaining[$docket][$size];
-                        $planned[$size][$docket]  -= $remaining[$docket][$size];
-                        $remaining[$docket][$size] = 0;
-                        $qty = 0;
-                        // $counter++;
-                    }   
-                }
-                if($planned[$size][$docket] > 0)
-                    $counter++;
-                $left_over[$size] += $remaining[$docket][$size];
-                $fulfill_qty -= $reported[$docket][$size];
-            }
-            if($counter == 0)
-                break; 
-                //var_dump($reported);
-                //echo "<br/> FULL FILL = $fulfill_qty - $counter - $left_over[$size]  ";
-            $left_over[$size] = round($left_over[$size]/$counter);
-                // echo " -- $left_over[$size] <br/>";
-                // var_dump($reported);
-                // echo "<br/>";
-
-               
-            foreach($planned[$size] as $docket => $qty){
-                if($planned[$size][$docket] > 0){
-                    $remaining[$docket][$size] = $left_over[$size];
-                }else{
-                    $remaining[$docket][$size] = 0;
-                }
-            }
-                var_dump($remaining);
-            unset($left_over[$size]);
-        }while($fulfill_qty > 0);
-        //exit();
-    }
-
-    foreach($left_over as $size=>$qty){
-        $docs = $docs_count[$size];
-        $splitted = $qty;
-        do{
-            if(ceil($splitted % $docs) > 0)
-                $splitted--;
-        }while($splitted % $docs > 0);
-        $rem = $qty - $splitted;
-        $splitted = $splitted/$docs;
-
-        foreach($planned[$size] as $doc => $ignore){
-            if($rem > 0){
-                $rem--;
-                $splitted += 1;
-            }
-            $reported[$docket][$size] += $splitted;
-        }
-    }
-}
-*/
 
 $response_data = array();
 $data = $_POST;
@@ -342,7 +258,7 @@ if($target == 'normal'){
     } 
     if($m3_status == 'fail'){
         $response_data['pass'] = 0;
-        force_exit('Normal Reporting Failed');
+        //force_exit('Normal Reporting Failed');
         echo json_encode($response_data);
         exit();
     }else{
@@ -543,7 +459,7 @@ if($target == 'schedule_clubbed'){
     } 
     iquit : if($status === 'fail'){
         $response_data['pass'] = 0;
-        force_exit('Schedule Clubbed Docket Reporting Failed');
+        //force_exit('Schedule Clubbed Docket Reporting Failed');
         echo json_encode($response_data);
         exit();
     }else{
@@ -1069,6 +985,12 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
             // if($update_cps_result && $update_bcd_result)
             //     $counter++;
         }
+        //maintainig a seperate loop for bcd temp insertions
+        foreach($cut_qty as $size => $qty){
+            $qty = $qty - $rejected[$size];
+            $rej = $rejected[$size]>0 ? $rejected[$size] : 0;
+            insert_into_bcd_temp($doc_no,$size,$qty,$rej,$op_code);
+        }
         if($counter == sizeof($cut_qty) && $counter > 0){
             // $stat1 = mysqli_commit($link2) or force_exit("Cant Commit Transaction 2");
             // if($stat1 == 0)
@@ -1178,6 +1100,14 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
             // if($update_cps_result && $update_bcd_result)
             //     $counter++;
         }
+        //maintaining a seperate loop for bcd temp insertions
+        foreach($size_qty as $size => $qty){
+            $qty = $qty - $rejection_details_each_size[$doc_no][$size];
+            $rej = $rejection_details_each_size[$doc_no][$size] > 0 ? $rejection_details_each_size[$doc_no][$size] : 0; 
+            if($qty == '')
+                $qty = 0;
+            insert_into_bcd_temp($doc_no,$size,$qty,$rej,$op_code);
+        }
     }
 
     //echo "$counter -- $update_flag";
@@ -1258,6 +1188,26 @@ function force_exit($str){
     return 0;
 }
 
+function insert_into_bcd_temp($doc_no,$size,$qty,$rej,$op_code){
+    $last_id = 0;
+    global $link;
+    global $brandix_bts;
+    $date = date('Y-m-d H:i:s');
+    $insert_query = "INSERT into $brandix_bts.bundle_creation_data_temp(date_time,cut_number,style,SCHEDULE,color,size_id,
+                size_title,sfcs_smv,
+                bundle_number,original_qty,send_qty,recevied_qty,missing_qty,rejected_qty,left_over,operation_id,operation_sequence,
+                ops_dependency,docket_number,bundle_status,split_status,sewing_order_status,is_sewing_order,sewing_order,
+                assigned_module,remarks,scanned_date,shift,scanned_user,sync_status,shade,input_job_no,input_job_no_random_ref) (
+            select  date_time,cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,
+                bundle_number,original_qty,send_qty,recevied_qty,missing_qty,rejected_qty,left_over,operation_id,operation_sequence,
+                ops_dependency,docket_number,bundle_status,split_status,sewing_order_status,is_sewing_order,sewing_order,
+                assigned_module,remarks,scanned_date,shift,scanned_user,sync_status,shade,input_job_no,input_job_no_random_ref
+            from $brandix_bts.bundle_creation_data where docket_number=$doc_no and size_id='$size' and operation_id = $op_code)";
+    mysqli_query($link,$insert_query);
+    $last_id = mysqli_insert_id($link); 
+    $update_bcd_temp =  "UPDATE $brandix_bts.bundle_creation_data_temp set recevied_qty = $qty,rejected_qty=$rej,scanned_date='$date' where id=$last_id";
+    mysqli_query($link,$update_bcd_temp);
+}
 
 
 ?>
