@@ -224,19 +224,19 @@ white-space:nowrap;
                             <label for="section">Select Unit: </label>
                             <?php
 									echo "<select name=\"section\" id='section' class=\"form-control\" >"; 
-                                    $sql2="select * from $bai_pro3.sections_master order by sec_id"; 
+                                    $sql2="select * from $bai_pro3.sections_master order by sec_name*1"; 
 									// echo "<option value=\"".$sql2."\" selected>Unit-".$sql2.""; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         if($sections_string==$sql_row2['sec_name']) 
                                         { 
-                                            echo "<option value=\"".$sql_row2['sec_name']."\" selected>Unit-".$sql_row2['sec_name'].""; 
+                                            echo "<option value=\"".$sql_row2['sec_name']."\" selected>".$sql_row2['section_display_name'].""; 
 											$sections_list[]=$sql_row2['sec_name'];
                                         } 
                                         else 
                                         { 
-                                            echo "<option value=\"".$sql_row2['sec_name']."\">Unit-".$sql_row2['sec_name'].""; 
+                                            echo "<option value=\"".$sql_row2['sec_name']."\">".$sql_row2['section_display_name'].""; 
 											$sections_list[]=$sql_row2['sec_name'];
                                         } 
                                     } 
