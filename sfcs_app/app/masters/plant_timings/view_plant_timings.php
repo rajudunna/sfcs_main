@@ -15,8 +15,8 @@
 			$rowid=$row["time_id"];
 			$code=$row["time_value"];
 			$department=$row["time_display"];
-			$reason=$row["start_time"];
-			$type=$row["end_time"];
+			$start_time=$row["start_time"];
+			$end_time=$row["end_time"];
 			$day_part = $row["day_part"];
 
 
@@ -24,12 +24,12 @@
 			$url1=getFullURL($_GET['r'],'delete_plant_timings.php','N');
 			
 			echo "<tr><td>".$sno++."</td><td>".$row["time_value"]."</td><td>".$row["time_display"]." </td><td>".$row["day_part"]."</td><td>".$row["start_time"]."</td><td>".$row["end_time"]."</td>
-			<td><a href='$url&time_id=$rowid&time_value=$code&time_display=$department&day_part=$day_part' class='btn btn-warning btn-xs editor_edit'>Edit</a> / 
-			<a href='$url1&time_id=$rowid&time_value=$code&time_display=$department&day_part=$day_part&start_time=$reason&end_time=$type'class='btn btn-danger btn-xs' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
+			<td><a href='$url&time_id=$rowid&time_value=$code&time_display=$department&day_part=$day_part&start_time=$start_time&end_time=$end_time' class='btn btn-warning btn-xs editor_edit'>Edit</a> / 
+			<a href='$url1&time_id=$rowid&time_value=$code&time_display=$department&day_part=$day_part&start_time=$start_time&end_time=$end_time'class='btn btn-danger btn-xs' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
 		}
 		echo "</tbody></table>";
 	} else {
-		echo "0 results";
+		echo "<span class='label label-danger'>0 results</span>";
 	}
 	?>
 
