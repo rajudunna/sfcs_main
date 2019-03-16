@@ -478,7 +478,7 @@ if (isset($_POST['submit11']))
 							$mod_rem=$sql_rowx['mod_remarks'];
 							$id_count++;
 							echo "<td><input type=\"number\" min=0 max=$balance onkeyup='verify_qty($balance,this,event)' onchange='verify_qty($balance,this,event)' name=\"rework_qty[]\" value=\"\"  id=\"rqty$id_count\"/></td>";
-							echo "<td> <input type=\"text\" name=\"remarks[]\" value=\"".$mod_rem."\" /></td><input type=\"hidden\" name=\"csnb_code[]\" value=\"$couple_x^$smv^$nop^$buyer^$section\">";								
+							echo "<td> <input type=\"text\" name=\"remarks[]\"/></td><input type=\"hidden\" name=\"csnb_code[]\" value=\"$couple_x^$smv^$nop^$buyer^$section\">";								
 						}
 						
 
