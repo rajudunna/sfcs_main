@@ -397,7 +397,7 @@ if (isset($_POST['submit11']))
 			{
 				
 				echo '<div class="table-responsive"><table class="table table-bordered"		style="color:black; border: 1px solid red;">';
-				echo "<tr class=\"new\"><th>Mod#</th>";
+				echo "<tr class=\"new\">";
 				echo "<th>Style</th><th>Schedule</th><th>Color</th><th>Cut#</th><th>Sewing Job#</th><th>Size</th><th>Input</th><th>Output</th><th>Balance</th>";
 				// echo "<th>QTY</th><th>SMV</th><th>SMO</th><th>Status</th>";
 				echo "<th>Rework Qty</th><th>Remarks</th></tr>";
@@ -444,14 +444,14 @@ if (isset($_POST['submit11']))
 						echo '<input type="hidden" name="cut[]" value="'.$sql_row12['ims_doc_no'].'">';
 						echo '<input type="hidden" name="size[]" value="'.$sql_row12['ims_size'].'">';
 						echo '<input type="hidden" name="tid[]" value="'.$sql_row12['tid'].'">';
-						$module_no=$sql_row12['ims_mod_no'];
+						//$module_no=$sql_row12['ims_mod_no'];
 						//To extract as per the M3 Size
 						$size_value=ims_sizes('',$sql_row12['ims_schedule'],$sql_row12['ims_style'],$sql_row12['ims_color'],strtoupper(substr($sql_row12['ims_size'],2)),$link11);
 						echo "<tr>";
 						if($rowcount_check==1)
 						{
 							$display_prefix3 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
-							echo "<td>".$module_no."</td><td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".$display_prefix3."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
+							echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".$display_prefix3."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
 							$balance=$sql_row12['ims_qty']-$sql_row12['ims_pro_qty'];
 							// echo '<td><input type="text" name="qty[]" autocomplete="off" size="8" onchange="if(check(this.value, '.($sql_row12['ims_qty']-$sql_row12['ims_pro_qty']).')==1010){ this.value=0;}" value="0" tabindex="'.$j.'" style="background-color:green; color=white;"></td>';
 							
@@ -461,7 +461,7 @@ if (isset($_POST['submit11']))
 						{
 							$display_prefix4 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
 							
-							echo "<td>".$module_no."</td><td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".$display_prefix4."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
+							echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".$display_prefix4."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
 							$balance=$sql_row12['ims_qty']-$sql_row12['ims_pro_qty'];
 							// echo '<td><input type="text" name="qty[]" autocomplete="off" size="8" onchange="if(check(this.value, '.($sql_row12['ims_qty']-$sql_row12['ims_pro_qty']).')==1010){ this.value=0;}" value="" tabindex="'.$j.'" style="background-color:green; color=white;"></td>';
 						}
