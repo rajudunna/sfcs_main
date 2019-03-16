@@ -321,7 +321,9 @@ function second_box(){
 			$sec_mods=$sql_row['sec_mods'];
 		}
 		$modules=array();
+
 		$modules=explode(",",$sec_mods);
+		sort($modules);
 		for ($i=0; $i < sizeof($modules); $i++) 
 		{ 
 				if ($modules[$i] != '' || $modules[$i] != null)
@@ -358,7 +360,6 @@ function second_box(){
 if (isset($_POST['submit11']))
 {
 ?>		
-
 	<FORM method="post" name="test" action="<?= getFullURLLevel($_GET['r'],'rework_update_process.php',0,'N');?>" enctype="multipart/form-data" id="test">
 		<!--<input type='hidden' name='r' value="<?= base64_encode(getFullURLLevel($_GET['r'],'rework_update_process.php',0,'R')) ?>">-->
 		<input type="hidden" name="form_secret" value="<?php echo $_SESSION['form_secret']; ?>" id="form_secret">
