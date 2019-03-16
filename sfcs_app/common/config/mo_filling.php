@@ -41,7 +41,14 @@
 		}else{
 			mysqli_rollback($link);
 			return false;
-		}	
+		}
+		$archive_query = "INSERT INTO $brandix_bts.bundle_creation_data_temp_archive(
+                           select * from $brandix_bts.bundle_creation_data_temp where schedule='$schedule' and color='$color')";
+        mysqli_query($link,$archive_query);
+        $delete_bcd = "DELETE from  $brandix_bts.bundle_creation_data where schedule='$schedule' and color='$color' ";
+        mysqli_query($link,$delete_bcd);
+        $delete_bcd_temp = "DELETE from  $brandix_bts.bundle_creation_data_temp where schedule='$schedule' and color='$color'";
+        mysqli_query($link,$delete_bcd_temp);
 		mysqli_close($link);
 		// -----Transaction End ---------
 		return false;
