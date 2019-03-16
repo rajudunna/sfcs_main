@@ -299,15 +299,21 @@ function second_box(){
 		
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
+			$section_unit=$sql_row['sec_id'];
+			$sql11="SELECT * FROM $bai_pro3.sections_master WHERE sec_name=$section_unit";
+			$sql_result91=mysqli_query($link, $sql11) or exit("Error while getting Sections_name");
+			while($sql_row1=mysqli_fetch_array($sql_result91))
+			{
+
 			if(str_replace(" ","",$sql_row['sec_id'])==str_replace(" ","",$section))
 			{
-				echo "<option value=\"".$sql_row['sec_id']."\" selected>".$sql_row['sec_id']."</option>";
+				echo "<option value=\"".$sql_row['sec_id']."\" selected>".$sql_row1['section_display_name']."</option>";
 			}
 			else
 			{
-				echo "<option value=\"".$sql_row['sec_id']."\">".$sql_row['sec_id']."</option>";
+				echo "<option value=\"".$sql_row['sec_id']."\">".$sql_row1['section_display_name']."</option>";
 			}
-
+		}
 		}
 		echo "</select></div>";	
 
