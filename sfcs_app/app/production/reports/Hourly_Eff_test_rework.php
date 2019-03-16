@@ -224,7 +224,7 @@ white-space:nowrap;
                             <label for="section">Select Unit: </label>
                             <?php
 									echo "<select name=\"section\" id='section' class=\"form-control\" >"; 
-                                    $sql2="select * from $bai_pro3.sections_master order by sec_id"; 
+                                    $sql2="select * from $bai_pro3.sections_master order by sec_name*1"; 
 									// echo "<option value=\"".$sql2."\" selected>Unit-".$sql2.""; 
                                     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
