@@ -93,7 +93,7 @@
 			}
 			$display1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$input_job,$sewing_job_random_id,$link);
 			//A dummy sticker for each bundle
-			echo $detailed_bundle_sticker.'-';
+			//echo $detailed_bundle_sticker.'-';
 			if((int)$detailed_bundle_sticker == 1){
 				$html.= '<div>
 							<table width="98%">
