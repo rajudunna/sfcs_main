@@ -1,20 +1,24 @@
 <?php 
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-$view_access=user_acl("SFCS_0060",$username,1,$group_id_sfcs);
+//$view_access=user_acl("SFCS_0060",$username,1,$group_id_sfcs);
 ?>
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:x="urn:schemas-microsoft-com:office:excel"
 xmlns="http://www.w3.org/TR/REC-html40">
-
+<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/>
 <title>Daily SAH</title>
 <!-- <script type="text/javascript" src="jquery.min.js"></script> -->
 <meta name=ProgId content=Excel.Sheet>
 <meta name=Generator content="Microsoft Excel 14">
 <link rel=File-List href="SAH%20-JUN_files/filelist.xml">
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/FileSaver.js',1,'R');?>"></script>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',3,'R');?>"></script>
 <script language="JavaScript" src="<?= getFullURLLevel($_GET['r'],'common/js/FusionCharts.js',3,'R');?>"></script>
 <script type="text/javascript" language="JavaScript" src="<?= getFullURLLevel($_GET['r'],'js/FusionChartsExportComponent.js',3,'R');?>"></script>
+<style id="SAH -JUN_13441_Styles">
+
+</style>
 <script>
 function abc(value,x)
 {
@@ -66,6 +70,9 @@ for (var i = 0; i < value.length; i++) {
 		}
 	}
 </script>
+<style>
+
+</style>
 <style id="SAH -JUN_13441_Styles">
 <!--table
 	{mso-displayed-decimal-separator:"\.";
@@ -85,7 +92,8 @@ for (var i = 0; i < value.length; i++) {
 	vertical-align:bottom;
 	mso-background-source:auto;
 	mso-pattern:auto;
-	white-space:nowrap;}
+	white-space:nowrap;
+	border:0;}
 .xl84212
 	{padding:0px;
 	mso-ignore:padding;
@@ -117,7 +125,8 @@ for (var i = 0; i < value.length; i++) {
 	vertical-align:bottom;
 	mso-background-source:auto;
 	mso-pattern:auto;
-	white-space:nowrap;}
+	white-space:nowrap;
+	border:0;}
 .xl86212
 	{padding:0px;
 	mso-ignore:padding;
@@ -133,7 +142,8 @@ for (var i = 0; i < value.length; i++) {
 	vertical-align:bottom;
 	mso-background-source:auto;
 	mso-pattern:auto;
-	white-space:nowrap;}
+	white-space:nowrap;
+	border:0;}
 .xl87212
 	{padding:0px;
 	mso-ignore:padding;
@@ -149,7 +159,8 @@ for (var i = 0; i < value.length; i++) {
 	vertical-align:middle;
 	mso-background-source:auto;
 	mso-pattern:auto;
-	white-space:nowrap;}
+	white-space:nowrap;
+	border:0;}
 .xl88212
 	{padding:0px;
 	mso-ignore:padding;
@@ -165,7 +176,8 @@ for (var i = 0; i < value.length; i++) {
 	vertical-align:bottom;
 	mso-background-source:auto;
 	mso-pattern:auto;
-	white-space:nowrap;}
+	white-space:nowrap;
+	border:0}
 .xl89212
 	{padding:0px;
 	mso-ignore:padding;
@@ -724,7 +736,7 @@ for (var i = 0; i < value.length; i++) {
 	vertical-align:bottom;
 	mso-background-source:auto;
 	mso-pattern:auto;
-	white-space:nowrap;}
+	white-space:nowrap;border:0;}
 .xl8413441
 	{padding-top:1px;
 	padding-right:1px;
@@ -742,7 +754,8 @@ for (var i = 0; i < value.length; i++) {
 	vertical-align:bottom;
 	mso-background-source:auto;
 	mso-pattern:auto;
-	white-space:nowrap;}
+	white-space:nowrap;
+	border:0;}
 .xl8513441
 	{padding-top:1px;
 	padding-right:1px;
@@ -778,7 +791,8 @@ for (var i = 0; i < value.length; i++) {
 	vertical-align:bottom;
 	mso-background-source:auto;
 	mso-pattern:auto;
-	white-space:nowrap;}
+	white-space:nowrap;
+	border:0;}
 .xl8713441
 	{padding-top:1px;
 	padding-right:1px;
@@ -796,7 +810,8 @@ for (var i = 0; i < value.length; i++) {
 	vertical-align:middle;
 	mso-background-source:auto;
 	mso-pattern:auto;
-	white-space:nowrap;}
+	white-space:nowrap;
+	border:0;}
 .xl8813441
 	{padding-top:1px;
 	padding-right:1px;
@@ -814,7 +829,8 @@ for (var i = 0; i < value.length; i++) {
 	vertical-align:bottom;
 	mso-background-source:auto;
 	mso-pattern:auto;
-	white-space:nowrap;}
+	white-space:nowrap;
+	border:0;}
 .xl8913441
 	{padding-top:1px;
 	padding-right:1px;
@@ -892,6 +908,7 @@ for (var i = 0; i < value.length; i++) {
 	white-space:nowrap;}
 .xl9313441
 	{padding-top:1px;
+	border-right:1.0pt;
 	padding-right:1px;
 	padding-left:1px;
 	mso-ignore:padding;
@@ -1043,6 +1060,7 @@ for (var i = 0; i < value.length; i++) {
 	white-space:nowrap;}
 .xl10113441
 	{padding-top:1px;
+	border-right:1.0pt;
 	padding-right:1px;
 	padding-left:1px;
 	mso-ignore:padding;
@@ -1194,9 +1212,7 @@ for (var i = 0; i < value.length; i++) {
 	mso-pattern:black none;
 	white-space:nowrap;}
 </style>
-<style id="SAH -JUN_13441_Styles">
 
-</style>
 <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 <div class="panel panel-primary">
 <div class="panel-heading">Daily SAH Report</div>
@@ -1217,7 +1233,10 @@ for (var i = 0; i < value.length; i++) {
     </div>
     <input type="submit" value="Show" name="submit" id="submit" onclick="return verify_date();"  class="btn btn-info" style="margin-top:22px;">
     <a href="<?= getFullURL($_GET['r'],'daily_sah_report_v6.php','N'); ?>" class="btn btn-warning" style="margin-top:22px;">Buyer Wise SAH Report</a>
-    <a href="<?= getFullURL($_GET['r'],'daily_sah_report_v5_Excel.php','N'); ?>" class="btn btn-primary" style="margin-top:22px;">Excel</a>
+    
+	           
+						<input type="button" class="btn btn-success" id='excel1' value="Export to Excel">
+		
 </div>
 <!--<th style='background-color:#EEEEEE;'>Select Factory</th><td style='background-color:#EEEEEE;'><select name="fac">
 	<option>Select</option>
@@ -1337,10 +1356,11 @@ $sec_list[]="Factory";
 $section_list="'".implode("','",$sec_list)."'";
 
 //echo sizeof($date1);	
-echo "<hr/><div class='table-responsive'><div id=\"SAH -JUN_13441\" align=center x:publishsource=\"Excel\" style='max-height: 800px;overflow-y: scroll;'>
+echo "<hr/><div class='table-responsive' id=\"SAH -JUN_13441\">
+<div id='print_content' align=center x:publishsource=\"Excel\" style='max-height: 800px;overflow-y: scroll;'>
 
-<table border=0 cellpadding=0 cellspacing=0 width=3739 style='border-collapse:
- collapse;width:3204pt' >
+<table border=1 cellpadding=0 cellspacing=0 width=3739 style='border-collapse:
+ collapse;width:3204pt;border-right:1.0pt' >
  <col width=64 style='width:48pt'>
  <col width=83 style='mso-width-source:userset;mso-width-alt:3035;width:62pt'>
  <col width=64 style='width:48pt'>
@@ -1372,7 +1392,7 @@ echo "<hr/><div class='table-responsive'><div id=\"SAH -JUN_13441\" align=center
  <col class=xl1513441 width=72 style='mso-width-source:userset;mso-width-alt:
  2633;width:54pt'>
  <col class=xl1513441 width=64 span=2 style='mso-width-source:userset;
- mso-width-alt:2340;width:48pt'>";
+ mso-width-alt:2340;width:48pt;'>";
  
  //Changed as per the CR Dated: 2013-06-18 04:21 PM - Kirang
 /* echo "<tr height=21 style='height:15.75pt'>  
@@ -1387,49 +1407,49 @@ echo "<hr/><div class='table-responsive'><div id=\"SAH -JUN_13441\" align=center
  </tr>"; */
  // Section Hod , Section workstudy and Production Executives Names
   echo "<tr height=21 style='height:15.75pt'>
-  <td colspan=2 height=21 class=xl10113441 style='height:15.75pt'>Section HOD</td>";
+  <td colspan=2 height=21 class=xl10113441 style='height:15.75pt;background: #1F497D;color:white;'>Section HOD</td>";
   for($i=0;$i<sizeof($sec_array);$i++)
   {
-  		echo "<td colspan=9 class=xl9313441 style='border-left:none'>".$lable[$i]."</td>";
+  		echo "<td colspan=9 class=xl9313441 style='border-left:none;background: gray;color:white;text-align: center;'>".$lable[$i]."</td>";
   }
-  echo "<td colspan=9 rowspan=3 class=xl9313441 width=520 style='width:390pt'>Factory</td>
+  echo "<td colspan=9 rowspan=3 class=xl9313441 width=520 style='width:390pt;background: gray;color:white;'>Factory</td>
  </tr>
  
  <tr height=21 style='height:15.75pt'>
-  <td colspan=2 height=21 class=xl10113441 style='height:15.75pt'>Section Work
+  <td colspan=2 height=21 class=xl10113441 style='height:15.75pt;background: #1F497D;color:white;'>Section Work
   Study</td>";
   for($i=0;$i<sizeof($sec_array);$i++)
   {
-  		echo "<td colspan=9 class=xl9313441 style='border-left:none'>".$ie_res_a[$i]."(Shift - A) / ".$ie_res_b[$i]."(Shift - B)</td>";
+  		echo "<td colspan=9 class=xl9313441 style='border-left:none;background: gray;color:white;text-align: center;'>".$ie_res_a[$i]."(Shift - A) / ".$ie_res_b[$i]."(Shift - B)</td>";
   }
   echo "
  </tr>
  <tr height=21 style='height:15.75pt'>
-  <td colspan=2 height=21 class=xl10113441 style='height:15.75pt'>Production
+  <td colspan=2 height=21 class=xl10113441 style='height:15.75pt;border-right:1.0pt;background: #1F497D;color:white;'>Production
   Executives</td>
   ";
   for($i=0;$i<sizeof($sec_array);$i++)
   {
-  		echo "<td colspan=9 class=xl9313441 style='border-left:none'>".$pro_res_a[$i]."(Shift - A) / ".$pro_res_b[$i]."(Shift - B)</td>";
+  		echo "<td colspan=9 class=xl9313441 style='border-left:none;background: gray;color:white;text-align: center;'>".$pro_res_a[$i]."(Shift - A) / ".$pro_res_b[$i]."(Shift - B)</td>";
   }
   echo "
  </tr>
  <tr height=36 style='mso-height-source:userset;height:27.0pt'>
- <td colspan=2 rowspan=2 height=57 class=xl10213441 style='height:42.75pt'>DATE</td>";
+ <td colspan=2 rowspan=2 height=57 class=xl10213441 style='height:42.75pt;background: #1F497D;color:white;'>DATE</td>";
   for($h=0;$h<sizeof($sec_array)+1;$h++)
   {
 	  echo   "
-	  <td rowspan=2 class=xl9913441 style='border-top:none'><span
+	  <td rowspan=2 class=xl9913441 style='border-top:none;background: #4F6228;color:white;'><span
 	  style='mso-spacerun:yes'> </span>PLAN SAH</td>
-	  <td colspan=3 class=xl9913441 style='border-left:none'>ACTUAL SAH</td>
-	  <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Actual
+	  <td colspan=3 class=xl9913441 style='border-left:none;background: #4F6228;color:white;'>ACTUAL SAH</td>
+	  <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt;background: #4F6228;color:white;'>Actual
 	  %</td>
-	  <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>EFF %</td>
-	  <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>External
+	  <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt;background: #4F6228;color:white;'>EFF %</td>
+	  <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt;background: #4F6228;color:white;'>External
 	  SAH loss</td>
-	  <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Internal
+	  <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt;background: #4F6228;color:white;'>Internal
 	  SAH loss</td>
-	  <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Production loss</td>";
+	  <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt;background: #4F6228;color:white;'>Production loss</td>";
   }
   
  echo "</tr>
@@ -1438,9 +1458,9 @@ echo "<hr/><div class='table-responsive'><div id=\"SAH -JUN_13441\" align=center
   for($h=0;$h<sizeof($sec_array)+1;$h++)
   {	
   echo "<td height=21 class=xl9913441 style='height:15.75pt;border-top:none;
-  border-left:none'>A</td>
-  <td class=xl9913441 style='border-top:none;border-left:none'>B</td>
-  <td class=xl9913441 style='border-top:none;border-left:none'>Total</td>";
+  border-left:none;    background: #4F6228;color:white;'>A</td>
+  <td class=xl9913441 style='border-top:none;border-left:none; background: #4F6228;color:white;'>B</td>
+  <td class=xl9913441 style='border-top:none;border-left:none; background: #4F6228;color:white;'>Total</td>";
   }
  echo "</tr>";
 
@@ -1552,8 +1572,8 @@ while($row=mysqli_fetch_array($sql_dat))
 $date = $row['date']; 
 $weekday = date('l', strtotime($date));
 echo "<tr height=21 style='height:15.75pt'>
-<td height=21 class=xl10313441 style='height:15.75pt;border-top:none'>".$weekday."</td>
-<td class=xl10413441 style='border-top:none;border-left:none'>".$date."</td>";
+<td height=21 class=xl10313441 style='height:15.75pt;border-top:none;background: #1F497D;color:white;'>".$weekday."</td>
+<td class=xl10413441 style='border-top:none;border-left:none;background: #1F497D;color:white;'>".$date."</td>";
 	
 //echo implode(",",$sec_array);
 for($i=0;$i<sizeof($sec_array);$i++)
@@ -1581,12 +1601,12 @@ for($i=0;$i<sizeof($sec_array);$i++)
 	  }
 	  if(!in_array($sec_array[$i],$exp_sec))	  
 	  {
-		  echo "<td class=xl10513441 style='border-top:none;border-left:none'>".number_format($plan_sah_a+$plan_sah_b,$decimal_factor)."</td>";
-		  echo "<td class=xl10513441 style='border-top:none;border-left:none'>".number_format($act_sah_a,$decimal_factor)."</td>";
-		  echo "<td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_b,$decimal_factor)."</td>";
-		  echo "<td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_a+$act_sah_b,$decimal_factor)."</td>";
-		  echo "<td class=xl10713441 style='border-top:none;border-left:none'>".round((($act_sah_a+$act_sah_b)/div_by_zero($plan_sah,1))*100,1)."%</td>";
-		  echo "<td class=xl10713441 style='border-top:none;border-left:none'>".round((($act_sah_a+$act_sah_b)/div_by_zero($plan_clh,1))*100,1)."%</td>";
+		  echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;'>".number_format($plan_sah_a+$plan_sah_b,$decimal_factor)."</td>";
+		  echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;'>".number_format($act_sah_a,$decimal_factor)."</td>";
+		  echo "<td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;'>".number_format($act_sah_b,$decimal_factor)."</td>";
+		  echo "<td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;'>".number_format($act_sah_a+$act_sah_b,$decimal_factor)."</td>";
+		  echo "<td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;'>".round((($act_sah_a+$act_sah_b)/div_by_zero($plan_sah,1))*100,1)."%</td>";
+		  echo "<td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;'>".round((($act_sah_a+$act_sah_b)/div_by_zero($plan_clh,1))*100,1)."%</td>";
 		  //echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
 		  //echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
 		  //echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
@@ -1642,7 +1662,7 @@ for($i=0;$i<sizeof($sec_array);$i++)
 	  }
 	  if(!in_array($sec_array[$i],$exp_sec))	
 	  {
-	  echo "<td class=xl10813441 style='border-top:none;border-left:none'>".round($ext_sah_loss_total,2)."</td>";
+	  echo "<td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;'>".round($ext_sah_loss_total,2)."</td>";
 	  }
 	  $total_ext_sah=$total_ext_sah+round($ext_sah_loss_total,2);	 
 	  
@@ -1726,8 +1746,8 @@ for($i=0;$i<sizeof($sec_array);$i++)
 	  }
 	  if(!in_array($sec_array[$i],$exp_sec))	
 	  {
-	  echo "<td class=xl10813441 style='border-top:none;border-left:none'>".round($int_sah_loss_total,2)."</td>";
-	  echo "<td class=xl10813441 style='border-top:none;border-left:none'>".number_format($plan_sah_a+$plan_sah_b-($act_sah_a+$act_sah_b)-$ext_sah_loss_total-$int_sah_loss_total,2)."</td>";
+	  echo "<td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;'>".round($int_sah_loss_total,2)."</td>";
+	  echo "<td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;'>".number_format($plan_sah_a+$plan_sah_b-($act_sah_a+$act_sah_b)-$ext_sah_loss_total-$int_sah_loss_total,2)."</td>";
 	  }
 	  $total_int_sah=$total_int_sah+round($int_sah_loss_total,2);	  
 	  
@@ -1772,15 +1792,15 @@ $grandtotal_prod_loss=$grandtotal_prod_loss+$total_sah_first_tot;
 
 //echo "individual sum=".$total_sah_first_tot."<br/>";
 
-  echo "<td class=xl10513441 style='border-top:none;border-left:none'>".number_format($plan_sah_sec_a+$plan_sah_sec_b,$decimal_factor)."</td>
-  <td class=xl10513441 style='border-top:none;border-left:none'>".number_format($act_sah_sec_a,$decimal_factor)."</td>
-  <td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_sec_b,$decimal_factor)."</td>
-  <td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_sec,$decimal_factor)."</td>
-  <td class=xl10713441 style='border-top:none;border-left:none'>".round(($act_sah_sec/div_by_zero($plan_sah_sec,1))*100,1)."%</td>
-  <td class=xl10713441 style='border-top:none;border-left:none'>".round(($act_sah_sec/div_by_zero($plan_clh_sec,1))*100,1)."%</td>
-  <td class=xl10813441 style='border-top:none;border-left:none'>".round($total_ext_sah+$total_ext_sahx,2)."</td>
-  <td class=xl10813441 style='border-top:none;border-left:none'>".round($total_int_sah,2)."</td>
-  <td class=xl10813441 style='border-top:none;border-left:none'>".round($total_sah_first_tot,2)."</td>";
+  echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;'>".number_format($plan_sah_sec_a+$plan_sah_sec_b,$decimal_factor)."</td>
+  <td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;'>".number_format($act_sah_sec_a,$decimal_factor)."</td>
+  <td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;'>".number_format($act_sah_sec_b,$decimal_factor)."</td>
+  <td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;'>".number_format($act_sah_sec,$decimal_factor)."</td>
+  <td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;'>".round(($act_sah_sec/div_by_zero($plan_sah_sec,1))*100,1)."%</td>
+  <td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;'>".round(($act_sah_sec/div_by_zero($plan_clh_sec,1))*100,1)."%</td>
+  <td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;'>".round($total_ext_sah+$total_ext_sahx,2)."</td>
+  <td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;'>".round($total_int_sah,2)."</td>
+  <td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;'>".round($total_sah_first_tot,2)."</td>";
 $today_plan_sah_x=$plan_sah_sec_a+$plan_sah_sec_b; 
  $plan_sah_sec=0; $act_sah_sec_a=0; $act_sah_sec_b=0;$act_sah_sec=0;$total_ext_sah=0;$total_ext_sahx=0;$total_int_sah=0;$plan_clh_sec=0;$plan_sah_sec_a=0;$plan_sah_sec_b=0;
 
@@ -1790,7 +1810,7 @@ echo "</tr>";
 $eff_array=array();
 
 echo "<tr height=27 style='mso-height-source:userset;height:20.25pt'>
-<td colspan=2 height=27 class=xl10013441 style='height:20.25pt'>Total</td>";
+<td colspan=2 height=27 class=xl10013441 style='height:20.25pt;background: red;color:white;'>Total</td>";
 for($i2=0;$i2<sizeof($sec_array);$i2++)
 {	
 
@@ -1822,12 +1842,12 @@ for($i2=0;$i2<sizeof($sec_array);$i2++)
   {
   $plan[]=$plan_sah_fac;  
   $eff_array[]=round(($act_sah_fac/div_by_zero($plan_sah_fac,1))*100,1);
-  echo "<td class=xl9713441 style='border-top:none;border-left:none'>".number_format($plan_sah_fac_a+$plan_sah_fac_b,$decimal_factor)."</td>";
-  echo "<td class=xl9713441 style='border-top:none;border-left:none'>".number_format($act_sah_fac_a,$decimal_factor)."</td>";
-  echo "<td class=xl9713441 style='border-top:none;border-left:none'>".number_format($act_sah_fac_b,$decimal_factor)."</td>";
-  echo "<td class=xl9713441 style='border-top:none;border-left:none'>".number_format($act_sah_fac,$decimal_factor)."</td>";
-  echo "<td class=xl9813441 style='border-top:none;border-left:none'>".round(($act_sah_fac/div_by_zero($plan_sah_fac,1))*100,1)."%</td>";
-  echo "<td class=xl9813441 style='border-top:none;border-left:none'>".round(($act_sah_fac/div_by_zero($plan_clh_fac,1))*100,1)."%</td>";
+  echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;'>".number_format($plan_sah_fac_a+$plan_sah_fac_b,$decimal_factor)."</td>";
+  echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;'>".number_format($act_sah_fac_a,$decimal_factor)."</td>";
+  echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;'>".number_format($act_sah_fac_b,$decimal_factor)."</td>";
+  echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;'>".number_format($act_sah_fac,$decimal_factor)."</td>";
+  echo "<td class=xl9813441 style='border-top:none;border-left:none;background: #00B050;'>".round(($act_sah_fac/div_by_zero($plan_sah_fac,1))*100,1)."%</td>";
+  echo "<td class=xl9813441 style='border-top:none;border-left:none;background: #00B050;'>".round(($act_sah_fac/div_by_zero($plan_clh_fac,1))*100,1)."%</td>";
   }
   $sql13="select mod_no,dtime,shift,date,plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i2]."\" and DATE between \"".$dat."\" and \"".$dat1."\" and source=1 and remarks!=\"Open capacity\"";
  // echo $sql13;
@@ -1886,7 +1906,7 @@ for($i2=0;$i2<sizeof($sec_array);$i2++)
   }
   if(!in_array($sec_array[$i2],$exp_sec))	  
   {
-  echo "<td class=xl9713441 style='border-top:none;border-left:none'>".round($ext_sah_loss_total1,2)."</td>";
+  echo "<td class=xl9713441 style='border-top:none;border-left:none;    background: #00B050;'>".round($ext_sah_loss_total1,2)."</td>";
   $ext_sah_array[]=$ext_sah_loss_total1;
   }
   
@@ -1992,8 +2012,8 @@ for($i2=0;$i2<sizeof($sec_array);$i2++)
   
 	
   $int_sah_array[]=$int_sah_loss_total1;
-  echo "<td class=xl9713441 style='border-top:none;border-left:none'>".round($int_sah_loss_total1,2)."</td>";
-  echo "<td class=xl9713441 style='border-top:none;border-left:none'>".round($plan_sah_fac_a+$plan_sah_fac_b-$act_sah_fac-$ext_sah_loss_total1-$int_sah_loss_total1,2)."</td>";
+  echo "<td class=xl9713441 style='border-top:none;border-left:none;    background: #00B050;'>".round($int_sah_loss_total1,2)."</td>";
+  echo "<td class=xl9713441 style='border-top:none;border-left:none;    background: #00B050;'>".round($plan_sah_fac_a+$plan_sah_fac_b-$act_sah_fac-$ext_sah_loss_total1-$int_sah_loss_total1,2)."</td>";
   }
   
   $total_int_sah1=$total_int_sah1+round($int_sah_loss_total1,2);
@@ -2032,20 +2052,20 @@ $total_prod_loss=0;
 //echo "new total grand sum=".$grandtotal_prod_loss."<br/>";
 $total_prod_loss=$grandtotal_prod_loss;
 
-  echo "<td class=xl9713441 style='border-top:none;border-left:none'>".number_format($total_plan_sah_fac,$decimal_factor)."</td>
-  <td class=xl9713441 style='border-top:none;border-left:none'>".number_format($total_act_sah_fac_a,$decimal_factor)."</td>
-  <td class=xl9713441 style='border-top:none;border-left:none'>".number_format($total_act_sah_fac_b,$decimal_factor)."</td>
-  <td class=xl9713441 style='border-top:none;border-left:none'>".number_format($total_act_sah_fac,$decimal_factor)."</td>
-  <td class=xl9813441 style='border-top:none;border-left:none'>".round(($total_act_sah_fac/div_by_zero($total_plan_sah_fac,1))*100,1)."%</td>
-  <td class=xl9813441 style='border-top:none;border-left:none'>".round(($total_act_sah_fac/div_by_zero($total_plan_clh_fac,1))*100,1)."%</td>
-  <td class=xl9713441 style='border-top:none;border-left:none'>".round($total_ext_sah1+$total_ext_sah1s,2)."</td>
-  <td class=xl9713441 style='border-top:none;border-left:none'>".round($total_int_sah1,2)."</td>
-  <td class=xl9713441 style='border-top:none;border-left:none'>".round($total_prod_loss,2)."</td>";
+  echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;'>".number_format($total_plan_sah_fac,$decimal_factor)."</td>
+  <td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;'>".number_format($total_act_sah_fac_a,$decimal_factor)."</td>
+  <td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;'>".number_format($total_act_sah_fac_b,$decimal_factor)."</td>
+  <td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;'>".number_format($total_act_sah_fac,$decimal_factor)."</td>
+  <td class=xl9813441 style='border-top:none;border-left:none;background: #00B050;'>".round(($total_act_sah_fac/div_by_zero($total_plan_sah_fac,1))*100,1)."%</td>
+  <td class=xl9813441 style='border-top:none;border-left:none;background: #00B050;'>".round(($total_act_sah_fac/div_by_zero($total_plan_clh_fac,1))*100,1)."%</td>
+  <td class=xl9713441 style='border-top:none;border-left:none;    background: #00B050;'>".round($total_ext_sah1+$total_ext_sah1s,2)."</td>
+  <td class=xl9713441 style='border-top:none;border-left:none;    background: #00B050;'>".round($total_int_sah1,2)."</td>
+  <td class=xl9713441 style='border-top:none;border-left:none;    background: #00B050;'>".round($total_prod_loss,2)."</td>";
   echo "</tr>";
 
 
 echo "<tr height=25 style='height:18.75pt'>
-  <td colspan=2 height=25 class=xl9513441 style='height:18.75pt'>External SAH
+  <td colspan=2 height=25 class=xl9513441 style='height:18.75pt;background: black;color:red;'>External SAH
   loss</td>";
  for($i3=0;$i3<sizeof($ext_sah_array);$i3++)
   {
@@ -2055,9 +2075,9 @@ echo "<tr height=25 style='height:18.75pt'>
 	  <td class=xl1513441></td>
 	  <td class=xl1513441></td>
 	  <td class=xl1513441></td>
-	  <td class=xl8913441>".round($ext_sah_array[$i3]*100/div_by_zero($plan[$i3],1),1)."%</td>
-	  <td class=xl8913441>".round($int_sah_array[$i3]*100/div_by_zero($plan[$i3],1),1)."%</td>
-	  <td class=xl8913441>".round($total_prod_loss_array[$i3]*100/div_by_zero($plan[$i3],1),1)."%</td>";
+	  <td class=xl8913441 style='background: black;color:red;'>".round($ext_sah_array[$i3]*100/div_by_zero($plan[$i3],1),1)."%</td>
+	  <td class=xl8913441 style='background: black;color:red;'>".round($int_sah_array[$i3]*100/div_by_zero($plan[$i3],1),1)."%</td>
+	  <td class=xl8913441 style='background: black;color:red;'>".round($total_prod_loss_array[$i3]*100/div_by_zero($plan[$i3],1),1)."%</td>";
   } 
   
   echo "<td class=xl1513441></td>
@@ -2066,9 +2086,9 @@ echo "<tr height=25 style='height:18.75pt'>
   <td class=xl1513441></td>
   <td class=xl1513441></td>
   <td class=xl1513441></td>
-  <td class=xl8913441>".round((($total_ext_sah1+$total_ext_sah1s)/div_by_zero($total_plan_sah_fac,1))*100,1)."%</td>
-  <td class=xl8913441>".round(($total_int_sah1/div_by_zero($total_plan_sah_fac,1))*100,1)."%</td>
-  <td class=xl8913441>".round(($total_prod_loss/div_by_zero($total_plan_sah_fac,1))*100,1)."%</td>
+  <td class=xl8913441 style='background: black;color:red;'>".round((($total_ext_sah1+$total_ext_sah1s)/div_by_zero($total_plan_sah_fac,1))*100,1)."%</td>
+  <td class=xl8913441 style='background: black;color:red;'>".round(($total_int_sah1/div_by_zero($total_plan_sah_fac,1))*100,1)."%</td>
+  <td class=xl8913441 style='background: black;color:red;'>".round(($total_prod_loss/div_by_zero($total_plan_sah_fac,1))*100,1)."%</td>
  </tr>";
  
  echo "<tr height=21 style='height:15.75pt'>
@@ -2131,8 +2151,8 @@ echo "<tr height=25 style='height:18.75pt'>
   <td class=xl8813441></td>
   <td class=xl8813441></td>
  </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl85212 rowspan=10 colspan=8 style='height:15.75pt'>";
+ <tr height=21  style='height:15.75pt' class='flowchart'>
+  <td height=21 border=0 class=xl85212 rowspan=10 colspan=8 style='height:15.75pt'>";
   
 $eff_array_list=implode(",",$eff_array); 
 
@@ -2243,8 +2263,8 @@ $(function () {
 
   
   <td colspan=3 rowspan=2 class=xl95212 style='border-right:.5pt solid black;
-  border-bottom:.5pt solid black'>No of Days</td>
-  <td rowspan=2 class=xl101212 style='border-bottom:.5pt solid black'>".$days."</td></tr>";
+  border-bottom:.5pt solid black;  background: #CCC0DA;'>No of Days</td>
+  <td rowspan=2 class=xl101212 style='border-bottom:.5pt solid black;background: #B1A0C7;'>".$days."</td></tr>";
 
  $total_ext_sah1=0; $total_ext_sah1s=0;  $total_int_sah1=0;
  echo "<tr height=21 style='height:15.75pt'>
@@ -2291,8 +2311,8 @@ $(function () {
   <td class=xl88212></td>
   <td class=xl88212></td>
 
-  <td colspan=3 rowspan=2 class=xl93212>Planned SAH / Month</td>
-  <td rowspan=2 class=xl94212 style='border-top:none'><span
+  <td colspan=3 rowspan=2 class=xl93212 style='background: #CCC0DA;'>Planned SAH / Month</td>
+  <td rowspan=2 class=xl94212 style='border-top:none;background: #B1A0C7;'><span
   style='mso-spacerun:yes'></span>".number_format($vs_sah_plan)." </td>
  </tr>
  <tr height=21 style='height:15.75pt'>
@@ -2341,9 +2361,9 @@ $(function () {
   <td class=xl88212></td>
   
   <td colspan=3 rowspan=2 class=xl95212 style='border-right:.5pt solid black;
-  border-bottom:.5pt solid black'>Today Plan SAH</td>
+  border-bottom:.5pt solid black; background: #CCC0DA;'>Today Plan SAH</td>
   <td rowspan=2 class=xl103212 style='border-bottom:.5pt solid black;
-  border-top:none'>".number_format($today_plan_sah_x)."</td>
+  border-top:none;background: #B1A0C7;'>".number_format($today_plan_sah_x)."</td>
  </tr>
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl85212 style='height:15.75pt'></td>
@@ -2391,9 +2411,9 @@ $(function () {
   <td class=xl88212></td>
   
   <td colspan=3 rowspan=2 class=xl95212 style='border-right:.5pt solid black;
-  border-bottom:.5pt solid black'>Today Actual SAH</td>
+  border-bottom:.5pt solid black; background: #CCC0DA;'>Today Actual SAH</td>
   <td rowspan=2 class=xl103212 style='border-bottom:.5pt solid black;
-  border-top:none'>".number_format($vs_act_sah_today)."</td>
+  border-top:none;    background: #B1A0C7;'>".number_format($vs_act_sah_today)."</td>
  </tr>
   <tr height=20 style='height:15.0pt'>
   <td height=20 class=xl15212 style='height:15.0pt'></td>
@@ -2440,10 +2460,10 @@ $(function () {
   <td class=xl88212></td>
   <td class=xl88212></td>
   
-  <td colspan=3 rowspan=2 class=xl93212>MTD Plan SAH<span
-  style='mso-spacerun:yes'></span></td>
-  <td rowspan=2 class=xl94212 style='border-top:none'><span
-  style='mso-spacerun:yes'></span>".number_format($vs_plan_sah)."</td>
+  <td colspan=3 rowspan=2 class=xl93212 style='background: #CCC0DA'>MTD Plan SAH<span
+  style='mso-spacerun:yes;'></span></td>
+  <td rowspan=2 class=xl94212 style='border-top:none;background: #B1A0C7;'><span
+  style='mso-spacerun:yes;background: #B1A0C7;'></span>".number_format($vs_plan_sah)."</td>
  </tr>
  <tr height=20 style='height:15.0pt'>
   <td height=20 class=xl15212 style='height:15.0pt'></td>
@@ -2503,10 +2523,10 @@ $(function () {
   <td class=xl88212></td>
 
   
-  <td colspan=3 rowspan=2 class=xl93212>MTD Actual SAH<span
-  style='mso-spacerun:yes'></span></td>
-  <td rowspan=2 class=xl94212 style='border-top:none'><span
-  style='mso-spacerun:yes'></span>".number_format($vs_act_sah)."</td>
+  <td colspan=3 rowspan=2 class=xl93212 style='background: #CCC0DA;'>MTD Actual SAH<span
+  style='mso-spacerun:yes;'></span></td>
+  <td rowspan=2 class=xl94212 style='border-top:none;background: #B1A0C7;'><span
+  style='mso-spacerun:yes;'></span>".number_format($vs_act_sah)."</td>
  </tr>
  <tr height=20 style='height:15.0pt'>
   <td height=20 class=xl15212 style='height:15.0pt'></td>
@@ -2561,10 +2581,10 @@ $(function () {
   <td class=xl88212></td>
   <td class=xl88212></td>
   
-  <td colspan=3 rowspan=2 class=xl93212>Avg SAH achieved<span
+  <td colspan=3 rowspan=2 class=xl93212 style='background: #CCC0DA;'>Avg SAH achieved<span
   style='mso-spacerun:yes'></span></td>
-  <td rowspan=2 class=xl94212 style='border-top:none'><span
-  style='mso-spacerun:yes'></span>".number_format(round($vs_act_sah/$days,0))."</td>
+  <td rowspan=2 class=xl94212 style='border-top:none;background: #B1A0C7;'><span
+  style='mso-spacerun:yes;'></span>".number_format(round($vs_act_sah/$days,0))."</td>
  </tr>
  <tr height=20 style='height:15.0pt'>
   <td height=20 class=xl15212 style='height:15.0pt'></td>
@@ -2618,8 +2638,8 @@ $(function () {
   <td class=xl88212></td>
   <td class=xl88212></td>
   <td class=xl88212></td>
-  <td colspan=3 rowspan=2 class=xl93212>SAH required</td>
-   <td rowspan=2 class=xl94212 style='border-top:none'><span
+  <td colspan=3 rowspan=2 class=xl93212 style='background: #CCC0DA;'>SAH required</td>
+   <td rowspan=2 class=xl94212 style='border-top:none;background: #B1A0C7;'><span
   style='mso-spacerun:yes'></span>";
   /*if(($actual_working_days-$days) > 0)
   {
@@ -2781,3 +2801,19 @@ echo "<script>sweetAlert('Please enter sections','','warning')</script>";
 </div>
 </div>
 </div>
+
+<script>
+	$('#excel1').click(function(){
+		var graph = document.getElementById('container').innerHTML;
+		$('#container').html('');
+		var html = document.getElementById('print_content').innerHTML;
+		html.replace('<div');
+        var blob = new Blob([html], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+		});
+		saveAs(blob,"daily_sah_report_v5.xls");
+		$('#container').html(graph);
+		//document.getElementById('container').innerHTML = graph;
+		return;
+    })
+</script>
