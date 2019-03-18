@@ -389,7 +389,7 @@
 						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 						$('#loading-image').hide();
 						function Redirect() {
-						sweetAlert('MRN Reversal Already Done','','success');
+						sweetAlert('MRN Reversal Already Done','','warning');
 						location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
 
 						}
@@ -417,7 +417,7 @@
 					{
 						$input_module=$sql_row76['input_module'];
 					}
-					$sql55="SELECT tid,input_job_no,order_del_no,mrn_status  FROM $bai_pro3.packing_summary_input WHERE  input_job_no_random='$inputjobno' and mrn_status !='1'";
+					$sql55="SELECT tid,input_job_no,order_del_no,mrn_status  FROM $bai_pro3.packing_summary_input WHERE  input_job_no_random='$inputjobno' AND mrn_status IS NULL";
 					$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// $tid=array();
 					$sql_num_check1=mysqli_num_rows($sql_result01);
