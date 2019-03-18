@@ -139,7 +139,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 						<center>
 						<div class="form-group col-lg-6 col-sm-12">
 							<label><?php echo $label_name_to_show ?><span style="color:red"></span></label>
-							<input type="text" id="job_number" onkeyup="validateQty1(event,this);" value='<?= $input_job_no_random_ref ?>' class="form-control" required placeholder="Scan the Job..." <?php echo $read_only_job_no;?>/>
+							<input type="text" id="job_number" value='<?= $input_job_no_random_ref ?>' class="form-control" required placeholder="Scan the Job..." <?php echo $read_only_job_no;?>/>
 						</div>
 						<div class = "form-group col-lg-6 col-sm-12" hidden='true'>
 							<label>Assigning To Module</label><br>
