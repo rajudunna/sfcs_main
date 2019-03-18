@@ -19,6 +19,10 @@ $final_wip = array();
 $line_breaker = 0;
 if($section > 0){
     $docket_cqty = array();
+    //getting ips op code
+    $ips_op_code_query = "SELECT operation_code FROM $brandix_bts.tbl_ims_ops WHERE appilication = 'IPS'";
+    $ips_op_code_result = mysqli_query($link,$ips_op_code_query);
+    $ips_op_code = mysqli_fetch_array($ips_op_code_result)['operation_code'];
 
     //getting all modules against to the section
     $modules_query = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$section GROUP BY section ORDER BY section + 0";
@@ -29,7 +33,7 @@ if($section > 0){
     if($modules_str != ''){
         $data.= "<table><tbody>";
         $moduleso = $modules = explode(',',$modules_str);
-        
+
         foreach($modules as $module){
             $line_breaker = 0;
             $total_wip = 0;
@@ -101,6 +105,7 @@ echo json_encode($section_data);
 
 <?php
 function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
+    $scanned_jobs = []; 
     global $line_breaker;
     global $sum_str; 
     global $link;
@@ -110,6 +115,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     $dockets = array();
     $cutting_op_code = 15;
     $temp_line_breaker = 0;
+    global $ips_op_code;
     $docs_data = '';
     $break_me_at = 6;
     $cut_wip = 0; 
@@ -118,17 +124,19 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
         $break_me_at = 11;
     }
     
-    /*$dockets_cqty_query = "SELECT GROUP_CONCAT(distinct pdsi.input_job_no_random) AS jobs,pdsi.doc_no AS doc_no,
+    
+    $dockets_cqty_query = "SELECT GROUP_CONCAT(distinct '\"',pdsi.input_job_no_random,'\"') AS jobs,GROUP_CONCAT(distinct pdsi.doc_no) AS doc_no,
             acutno,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
             FROM bai_pro3.plan_dashboard_input pdi
             LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
             WHERE input_module = '$module'
-            AND a_plies = p_plies AND act_cut_status='DONE' 
-            group by input_module";*/
-    $dockets_cqty_query = "SELECT GROUP_CONCAT(DISTINCT CONCAT(\"'\",pdi.input_job_no_random_ref,\"'\")) AS jobs,pslij.doc_no AS doc_no,psl.act_cut_status as act_cut_status,bodc.order_style_no as style,psl.acutno as acutno,bodc.color_code as color_code,bodc.order_del_no as schedule,bodc.order_col_des as color,bodc.ft_status as ft_status FROM bai_pro3.plan_dashboard_input AS pdi,bai_pro3.pac_stat_log_input_job AS pslij,bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc WHERE input_module='$module' AND pdi.input_job_no_random_ref=pslij.input_job_no_random AND psl.doc_no=pslij.doc_no AND psl.order_tid=bodc.order_tid AND psl.a_plies = psl.p_plies AND psl.act_cut_status='DONE'";
+            AND act_cut_status='DONE' ";
+    $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(DISTINCT pdi.input_job_no_random_ref) AS jobs,pslij.doc_no AS doc_no,psl.a_plies AS a_plies,psl.p_plies AS p_plies,psl.act_cut_status AS act_cut_status,    bodc.order_style_no AS style,psl.acutno AS acutno,bodc.color_code AS color_code,bodc.order_del_no AS SCHEDULE,bodc.order_col_des AS color,bodc.ft_status AS ft_status 
+FROM bai_pro3.plan_dashboard_input AS pdi,bai_pro3.pac_stat_log_input_job AS pslij,
+    bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc 
 
-    $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(DISTINCT pdi.input_job_no_random_ref) AS jobs,pslij.doc_no AS doc_no,psl.a_plies AS a_plies,psl.p_plies AS p_plies,psl.act_cut_status AS act_cut_status,    bodc.order_style_no AS style,psl.acutno AS acutno,bodc.color_code AS color_code,bodc.order_del_no AS SCHEDULE,bodc.order_col_des AS color,bodc.ft_status AS ft_status FROM bai_pro3.plan_dashboard_input AS pdi,bai_pro3.pac_stat_log_input_job AS pslij,
-    bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc WHERE input_module = '$module' AND ( (a_plies = p_plies and act_cut_status='') OR (a_plies < p_plies AND act_cut_status='DONE')) group by doc_no order by input_priority ASC";   
+WHERE input_module = '$module' AND ( (a_plies = p_plies and act_cut_status='') OR (a_plies < p_plies AND act_cut_status='DONE')) group by doc_no order by input_priority ASC";  
+             
     /*             
     $partial_dockets_query  = "SELECT GROUP_CONCAT(distinct psi.input_job_no_random) AS jobs,pds.order_style_no as style,
             pds.order_col_des as color,pds.doc_no as doc_no,pds.acutno as acutno,pds.color_code,
@@ -176,56 +184,85 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             $aplies = $row['a_plies'];
             $pplies = $row['p_plies'];
 
-            // if($order == 1){
-            //     $dockets[] = $doc_no;
-            // }
-            // if($order > 1){
-            //     if(in_array($doc_no,$dockets))
-            //         continue;
-            // }
-            /*
-            $job_qty_query = "SELECT SUM(send_qty) as job_qty,SUM(recevied_qty) as scan_qty from $bai_pro3.bundle_creation_data 
-                            where input_job_no_random_ref IN ($jobs) and operation_id = 100";
-            $job_qty_result = mysqli_query($link,$job_qty_query);
-            $jrow = mysqli_fetch_array($job_qty_result);
-            */
-            $job_qty_query = "SELECT SUM(carton_act_qty) as job_qty from $bai_pro3.pac_stat_log_input_job where input_job_no_random IN ($jobs)";              
+        
+            $job_qty_query = "SELECT SUM(carton_act_qty) as job_qty from $bai_pro3.pac_stat_log_input_job 
+                            where input_job_no_random IN ($jobs)";              
             $job_qty_result = mysqli_query($link,$job_qty_query);  
-            
-            $cut_qty_query = "SELECT SUM(cut_quantity) as cut_qty,SUM(remaining_qty) as rem_qty from $bai_pro3.cps_log where doc_no = $doc_no and operation_code = $cutting_op_code";
+            $cut_qty_query = "SELECT SUM(cut_quantity) as cut_qty,SUM(remaining_qty) as rem_qty 
+                            from $bai_pro3.cps_log where doc_no IN ($doc_no) and operation_code = $cutting_op_code ";
             $cut_qty_result = mysqli_query($link,$cut_qty_query);
 
-            /*
-            $cut_report_query = "SELECT SUM(recevied_qty + rejected_qty) as rep_qty,SUM(original_qty) as plan_qty from 
-                                $brandix_bts.bundle_creation_data 
-                                where docket_number='$doc_no' and  operation_id = $cutting_op_code";
-            $cut_report_result = mysqli_query($link,$cut_report_query);
-            */
-            
-            $jrow  = mysqli_fetch_array($job_qty_result);
-            $crow  = mysqli_fetch_array($cut_qty_result);
-            $crrow = mysqli_fetch_array($cut_report_result);
-            
-            $job_qty = $jrow['job_qty'];
-            $scan_qty= $jrow['scan_qty'];
-            $doc_qty = $crow['cut_qty'];
-            $rem_qty = $crow['rem_qty'];
-            $cut_rep_qty = $crrow['rep_qty'];
-            $plan_qty = $crrow['plan_qty'];
-            $status_color = '';
-            
             if($order == 0){
-                $cut_wip += $job_qty;
+                $all_jobs = explode(',',$jobs);
+
+                //filtering scanned and unscanned jobs
+                $scanned_jobs_query = "SELECT input_job_no_random_ref as ij from $brandix_bts.bundle_creation_data where 
+                    input_job_no_random_ref IN ($jobs) and  operation_id = $ips_op_code group by input_job_no_random_ref";
+                $scanned_jobs_result = mysqli_query($link,$scanned_jobs_query);
+                while($jobs_row = mysqli_fetch_array($scanned_jobs_result)){
+                    $scanned_jobs[] = '"'.$jobs_row['ij'].'"'; 
+                }
+                $unscanned_jobs = array_diff($all_jobs,$scanned_jobs);
+                $unscanned_jobs_string = implode(',',$unscanned_jobs);
+                $scanned_jobs_string = implode(',',$scanned_jobs);
+
+                //for unscanned_jobs
+                $un_scanned_qty_query = "SELECT SUM(carton_act_qty) as job_qty,group_concat(doc_no) as docs,old_size 
+                        from $bai_pro3.pac_stat_log_input_job  
+                        where input_job_no_random IN ($unscanned_jobs_string) group by input_job_no_random,old_size";      
+                $un_scanned_qty_result = mysqli_query($link,$un_scanned_qty_query); 
+                if(mysqli_num_rows($un_scanned_qty_result)>0){
+                    while($uscrow = mysqli_fetch_array($un_scanned_qty_result)){
+                        $docs = $uscrow['docs'];
+                        $size = $uscrow['old_size'];
+                        $eligible = $uscrow['job_qty'];
+                        $rem_qty_query = "SELECT SUM(remaining_qty) as rem_qty 
+                            from $bai_pro3.cps_log where doc_no IN ($docs) and size_code = '$size' and operation_code = $cutting_op_code ";     
+                        $rem_qty_result = mysqli_query($link,$rem_qty_query);
+                        $rrow = mysqli_fetch_array($rem_qty_result);
+                        $cut_wip += min($eligible,$rrow['rem_qty']);
+                        $eligible = 0;
+                    }
+                }
+                //for scanned jobs   
+                $scanned_qty_query = "SELECT SUM((send_qty+replace_in+recut_in)-(recevied_qty+rejected_qty)) as eligible,
+                                group_concat(docket_number) as docs,size_id from $brandix_bts.bundle_creation_data  
+                                where input_job_no_random_ref IN ($scanned_jobs_string) and operation_id = $ips_op_code group by input_job_no_random_ref,size_id";
+                $scanned_qty_result = mysqli_query($link,$scanned_qty_query); 
+                if(mysqli_num_rows($scanned_qty_result)>0){
+                    while($scrow = mysqli_fetch_array($scanned_qty_result)){
+                        $docs = $scrow['docs'];
+                        $size = $scrow['size_id'];
+                        $eligible = $scrow['eligible'];
+                        $rem_qty_query = "SELECT SUM(remaining_qty) as rem_qty 
+                            from $bai_pro3.cps_log where doc_no IN ($docs) and size_code = '$size' and operation_code = $cutting_op_code ";
+                        $rem_qty_result = mysqli_query($link,$rem_qty_query);
+                        $rrow = mysqli_fetch_array($rem_qty_result);
+                        $cut_wip += min($eligible,$rrow['rem_qty']);
+                        $eligible = 0;
+                    }
+                }
+                unset($scanned_jobs);
+                unset($unscanned_jobs);
                 continue;
             }
-
+    
+            $jrow  = mysqli_fetch_array($job_qty_result);
+            $crow  = mysqli_fetch_array($cut_qty_result);
+            
+            $job_qty  = $jrow['job_qty'];
+            $doc_qty = $crow['cut_qty'];
+            $rem_qty = $crow['rem_qty'];
+            $status_color = '';
+            
             if($order == 1){
                 if($aplies < $pplies && $cut_status == 'DONE'){
                     $status_color = 'orange';
                 }else if($order == 1 || $order == 3){
                     if($cut_status == '') $cut_status = 0; else $cut_status = 5;
 
-                    $fabric_status_query="select * from $bai_pro3.plandoc_stat_log where fabric_status<>'5' and doc_no in ($doc_no)";
+                    $fabric_status_query="select * from $bai_pro3.plandoc_stat_log where fabric_status<>'5' 
+                                        and doc_no in ($doc_no)";
                     $fabric_status_query_result  =mysqli_query($link, $fabric_status_query) or exit($docs_data.='Fabric Status error');
                     if(mysqli_num_rows($fabric_status_query_result) > 0) $fabric_status = 0; else $fabric_status = 5;
                     
@@ -258,13 +295,6 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                     }else{
                         $status_color = 'yash';
                     }
-
-                    if($status_color == 'yellow' || $status_color == 'blue'){
-                        if( ($plan_qty > $cut_rep_qty ) && $cut_rep_qty != 0){
-                            $status_color='orange';
-                        }
-                    }
-
                 }else if($order == 2){
                     $status_color = 'orange';
                 }
