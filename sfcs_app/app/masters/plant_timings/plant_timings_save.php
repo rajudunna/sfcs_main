@@ -4,18 +4,19 @@
 <?php
 $time_id = $_GET['time_id'];
 $dr_id=$_POST['dr_id'];
-$code=$_POST['time_value'];
+$code=$_POST['start_code_0'];
 $day_part=$_POST['day_part'];
 $start1 = $_POST['start_time']; 
 $end1   = $_POST['end_time'];
+
 $tval = $_POST['time_value'];						
 $start = explode(':',$start1);
 $end = explode(':',$end1);	
-$sh = $start[0];
-$sm = $start[1];
-$eh = $end[0];
+$sh = $_GET['start_time_0'];
+$sm = $_GET['start_time_1'];
+$eh = $_GET['end_time_0'];
 $eh_dummy = $eh;
-$em = $end[1];	
+$em = $_GET['end_time_1'];	
 
 
 if($em==0){

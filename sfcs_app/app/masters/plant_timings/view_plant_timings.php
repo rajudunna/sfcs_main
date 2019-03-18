@@ -18,6 +18,8 @@
 			$start_time=$row["start_time"];
 			$end_time=$row["end_time"];
 			$day_part = $row["day_part"];
+			
+
 
 
 			$url=getFullURL($_GET['r'],'plant_timings_add.php','N');

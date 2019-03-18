@@ -1,13 +1,22 @@
-
+<!doctype html>
+<html>
+<meta charset="utf-8">
 <body>
      <?php
     if(isset($_REQUEST['time_id']))
     {
         $dr_id = $_GET['time_id'];
         $end_time_str = '';
-        $code=$_GET['time_value'];
+        $code=$_GET['start_time_0'];
         $start_time = $_GET['start_time'];
+        $start_time1 = $_GET['start_time1'];
+                $start_time2 = $_GET['start_time2'];
+       
         $end_time = $_GET['end_time'];
+                $end_time1 = $_GET['end_time1'];
+                        $end_time2 = $_GET['end_time2'];
+
+
        
         $end_time_split = explode(':',$end_time);
         $eh = $end_time_split[0];
@@ -50,11 +59,13 @@
                 <div class="row">
                     <div class="col-md-2">
                         <label for="code">Time Value<span class="req"></label>
-                        <input id="t_value" type="text" class="form-control" name="time_value" value="<?= $code; ?>" name='code' readonly>
+                        <input id="t_value" type="text" class="form-control" name="start_time_0" value="<?= $code; ?>" name='code' readonly>
                     </div>
                     <div class="col-md-2">
-                        <label for='start_time'>Start Time</label>
-                        <input type='time' value='Satrt Time' class='form-control without_ampm' name='start_time' id='start_time'>
+                        <label for="start_time">Start Time HOURS</label>
+                        <input type="number" class="form-control without_ampm" name="start_time_0" id="start_time" maxlength="02" min="00" max="23">
+                        <label for="start_time">Start Time MINUTES</label>
+                        <input type="number" class="form-control without_ampm" name="start_time_1" id="start_time" maxlength="02" min="00" max="59">
                         <!-- <input placeholder="Selected time" type="time" id="start" class="form-control timepicker" onchange="calculate()"> -->
                         <!-- <SELECT name="time_display" id="start" value="<?php echo $start_time ; ?>" class="form-control" onchange="calculate()">
                         <option value='' selected>Please Select</option> -->
@@ -75,8 +86,13 @@
                         ?>
                     </div>
                     <div class="col-md-2">
-                        <label for='end_time'>End Time</label>
-                        <input type='time' value='End Time' class='form-control without_ampm' name='end_time' id='end_time'>
+                        <label for="start_time">END Time HOURS</label>
+                        <input type="number" class="form-control without_ampm" name="end_time_0" id="end_time_0" maxlength="02" min="00" max="23">
+                        <label for="start_time">END Time MINUTES</label>
+                        <input type="number" class="form-control without_ampm" name="end_time_1" id="end_time_1" maxlength="02" min="00" max="59">
+
+
+
                         <!-- <input placeholder="Selected time" type="time" id="start1" class="form-control timepicker" onchange="calculate()"> -->
                         <!--
                         <SELECT name="time_display1" id="start1" value="<?php echo $end_time; ?>" class="form-control">
@@ -101,9 +117,12 @@
                     </div>
                     <div class="col-md-2">
                         <label for='day_part'>Day Part</label>
+
                         <select class='form-control' name="day_part" id='day_part' onchange="calculate()" required>
                             <option value>Please Select</option>
                             <?php
+
+                            if($start_time_0<11 || $end_time_0<11){
                                 if($day_part!=''){ 
                                     if($day_part == 'AM'){
                                         echo "<option value='AM' selected>AM</option>";
@@ -117,7 +136,7 @@
                                 <option value='AM' >AM</option>
                                 <option value='PM' >PM</option>
                             <?php
-                                }
+                                }}
                             ?>
                         </select>
                     </div>
@@ -132,7 +151,9 @@
     </div>
 <div class='col-sm-12'>
     <br/><br/>
-    <?php include('view_plant_timings.php'); ?>
+    <?php include('view_plant_timings.php');
+
+    ?>
 </div>
 </body>
 <script>
@@ -141,11 +162,14 @@
     // });
 
     function calculate(){
-        var v1 = document.getElementById("start_time").value;
-        var v2 = document.getElementById("end_time").value;
+        var v1 = document.getElementById("start_time_0").value;
+        var v11 = document.getElementById("start_time_1").value;
+
+        var v2 = document.getElementById("end_time_0").value;
+        var v21 = document.getElementById("end_time_1").value;
        
        
-        var sh = v1.substr(0,2);
+        var sh = v1;
         if(sh == 0)
             sh = 24;
         document.getElementById("t_value").value = sh;
@@ -164,23 +188,29 @@
     
     function time_diff(){
         var day_time = document.getElementById("day_part").value;
+        if(sh>11){
+
+        }
         console.log('YES'+day_time.length);
         if(day_time.length == 0){
             swal('Please Select AM/PM','','warning');
             return false;
         }
 
-        var v1 = document.getElementById("start_time").value;
-        var v2 = document.getElementById("end_time").value;
+         var v1 = document.getElementById("start_time_0").value;
+        var v11 = document.getElementById("start_time_1").value;
+
+        var v2 = document.getElementById("end_time_0").value;
+        var v21 = document.getElementById("end_time_1").value;
         console.log('V! == '+v1);
-        if(v1.length==0 || v2.length==0 ){
-            swal('Please Enter Satrt and End Time','','warning');
+        if(v1.length==0 || v2.length==0 v11.length==0 || v21.length==0 ){
+            swal('Please Enter Start and End Time','','warning');
             return false;
         }
-        var sh = v1.substr(0,2);
-        var sm = v1.substr(2,4);
-        var eh = v2.substr(0,2);
-        var em = v2.substr(2,4);
+        var sh = v1;
+        var sm = v11;
+        var eh = v2;
+        var em = v21;
         console.log(sh+' - '+eh);
         
         if(sh == eh){
