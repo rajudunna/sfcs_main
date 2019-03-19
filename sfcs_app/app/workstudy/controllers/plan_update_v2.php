@@ -331,7 +331,7 @@ if(mysqli_num_rows(mysqli_query($link, "select * from $bai_ict.report_alert_trac
 ?>
 
 <?php 
-$sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
+$sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date< \"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -407,17 +407,21 @@ $max_allowed_date=date("Y-m-d");
 		$plan_sah=$sql_row['plan_sah'];
 		$plan_eff_ex=$sql_row['plan_eff_ex'];
 		
-		$sql1="select distinct bac_style as bac_style,smv,nop from $bai_pro.bai_log_buf where bac_date='$max_date' and bac_no=$module and smv>0 and nop>0 order by bac_no";
+		$sql1="select distinct bac_style as bac_style,smv,nop from $bai_pro.bai_log_buf where bac_date='$max_date' and bac_no=$module and smv>0 and nop>0 and bac_shift='$shift' order by bac_no";
 		//$sql1="select distinct bac_style as bac_style,smv,nop from bai_log_buf where bac_date=\"2012-11-06\" and bac_no=$module and smv>0 and nop>0 order by bac_no";
-		//echo $sql1."<br/>";
 		
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
-		{
-			$smv=$sql_row1['smv'];
-			$nop=$sql_row1['nop'];
-			$bac_style=$sql_row1['bac_style'];
-			//echo $bac_style;
+		{	if($shift=='A'){
+				$smv=$sql_row1['smv'];
+				$nop=$sql_row1['nop'];
+				$bac_style=$sql_row1['bac_style'];
+			}elseif($shift=='B'){
+				$smv1=$sql_row1['smv'];
+				$nop1=$sql_row1['nop'];
+				$bac_style=$sql_row1['bac_style'];
+			}
+			
 		}
 		
 		$bgcolor_tag=" style=\"background-color: white\"";
@@ -442,10 +446,10 @@ $max_allowed_date=date("Y-m-d");
 			}
 			echo "<tr>";
 			echo '<td bgcolor=\"#99FFDD\" style="color: #FFFFFF">'.$module.'<input type="hidden" name="module[]" value="'.$module.'"></td>';
-			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="section[]" value="'.$sec_no.'" size="3" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_alpha_numeric(event, this.name)" name="style[]" value="'.$bac_style.'" size="3" onChange="markchange('.$x.')" id="alpha_style"></td>';
+			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="section[]" value="'.$sec_no.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_alpha_numeric(event, this.name)" name="style[]" value="'.$bac_style.'" size="3" onChange="markchange('.$x.')" id="alpha_style" /readonly></td>';
 			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
-			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="nop[]" class="integer" value="'.$nop.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="nop[]" class="integer" value="'.$nop1.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
 			echo '<td bgcolor=\"#000000\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="plan_eff_ex[]" value="'.$plan_eff_ex.'" size="3" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" name="eff_a[]" class="integer" value="'.($plan_eff-$plan_eff_ex).'" size="4" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" '.$bgcolor_tag.' name="pro_a[]" class="integer" value="'.round($plan_pro,0).'" size="4" onChange="markchange('.$x.')"></td>';
@@ -458,6 +462,10 @@ $max_allowed_date=date("Y-m-d");
 			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" name="hrs_a[]" value="'.$act_hours.'" size="4" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" name="couple_a[]" class="integer" value="'.$couple.'" size="4" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor="#FFAA00"><input type="text" onkeyup="return pop_test(event, this.name)" name="fix_nop_a[]" class="integer" value="'.$fix_nop.'" size="4" onChange="markchange('.$x.')"></td>';
+
+			$nop="";
+			$smv="";
+			$bac_style="";
 		}
 		
 		if($shift=="B")
@@ -467,7 +475,7 @@ $max_allowed_date=date("Y-m-d");
 			{
 				$couple=1;
 			}
-			echo '<td bgcolor=\"#99FFDD\"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv1[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			echo '<td bgcolor=\"#99FFDD\"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv1[]" value="'.$smv1.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
 			echo '<td bgcolor=\"#99FFDD\"><input type="text" class="integer" onkeyup="return pop_test(event, this.name)" name="nop1[]" class="integer" value="'.$nop.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
 			echo '<td bgcolor=\"#99FF88\"><input type="text" onkeyup="return pop_test(event, this.name)" name="eff_b[]" class="integer" value="'.($plan_eff-$plan_eff_ex).'" size="4" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor=\"#99FF88\"><input type="text" '.$bgcolor_tag.' onkeyup="return pop_test(event, this.name)" name="pro_b[]" class="integer" value="'.round($plan_pro,0).'" size="4" onChange="markchange('.$x.')"></td>';
@@ -483,8 +491,11 @@ $max_allowed_date=date("Y-m-d");
 			echo '<td bgcolor=\"#99FF88\"><input type="text"  name="remarks[]" value="'.$remarks.'" size="15" onChange="markchange('.$x.')"><input type="hidden" name="check[]" value=""></td>';
 			echo "</tr>";
 			$x++;
-		}
-				
+
+			$nop1="";
+			$smv1="";
+			$bac_style="";
+		}			
 	}
 	echo '
 	</table>
