@@ -129,13 +129,15 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             acutno,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
             FROM bai_pro3.plan_dashboard_input pdi
             LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
-            WHERE input_module = '$module'
+            WHERE input_module = $module 
             AND act_cut_status='DONE' ";
-    $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(DISTINCT pdi.input_job_no_random_ref) AS jobs,pslij.doc_no AS doc_no,psl.a_plies AS a_plies,psl.p_plies AS p_plies,psl.act_cut_status AS act_cut_status,    bodc.order_style_no AS style,psl.acutno AS acutno,bodc.color_code AS color_code,bodc.order_del_no AS SCHEDULE,bodc.order_col_des AS color,bodc.ft_status AS ft_status 
-FROM bai_pro3.plan_dashboard_input AS pdi,bai_pro3.pac_stat_log_input_job AS pslij,
-    bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc 
-
-WHERE input_module = '$module' AND ( (a_plies = p_plies and act_cut_status='') OR (a_plies < p_plies AND act_cut_status='DONE')) group by doc_no order by input_priority ASC";  
+    $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(distinct '\"',pdsi.input_job_no_random,'\"') AS jobs,pdsi.doc_no AS doc_no,
+            acutno,a_plies,p_plies,color_code,order_style_no as style,order_col_des as color,order_del_no as schedule,act_cut_status,ft_status
+            FROM bai_pro3.plan_dashboard_input pdi
+            LEFT JOIN bai_pro3.plan_doc_summ_input pdsi ON pdsi.input_job_no_random = pdi.input_job_no_random_ref
+            WHERE input_module = $module 
+            AND ( (a_plies = p_plies and act_cut_status='') OR (a_plies < p_plies AND act_cut_status='DONE') ) 
+            group by doc_no order by input_priority ASC";  
              
     /*             
     $partial_dockets_query  = "SELECT GROUP_CONCAT(distinct psi.input_job_no_random) AS jobs,pds.order_style_no as style,
