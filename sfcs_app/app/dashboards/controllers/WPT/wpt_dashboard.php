@@ -155,7 +155,7 @@
 
     setInterval(function() {
         call_ajax(sections[0],true);
-    }, <?= $RELOAD_TIME * 6000 ?>); 
+    }, <?= $RELOAD_TIME * 60000 ?>); 
 
 
     function load_data(){

@@ -205,13 +205,25 @@ for($i=0;$i<=10;$i++)
 	{
 		echo "<option value=\"".$sql_row["sec_id"]."\">".$sql_row["sec_id"]."</option>";
 	}
+	/*for($s=1;$s<=8;$s++)
+	{
+		echo "<option value=\"".$s."\">".$s."</option>";
+	}*/
+	
 
 	echo "</select>
 	</td>	
-	<td align='center'>
-	<select name=\"shift[$i]\" class=\"form-control\">
-	<option value=\"A\">A</option>
-	<option value=\"B\">B</option>
+	<td align='center'>	<select name=\"shift[$i]\" class=\"form-control\">";
+	
+			$shifts = (isset($_GET["shift"]))?$_GET["shift"]:'';
+              foreach($shifts_array as $shift){
+                if($shifts == $shift){
+                  echo "<option value=".$shift." selected>".$shift."</option>";
+                }else{
+                  echo "<option value=".$shift.">".$shift."</option>";
+                }
+              }
+              echo "
 	</select>
 	</td>
 

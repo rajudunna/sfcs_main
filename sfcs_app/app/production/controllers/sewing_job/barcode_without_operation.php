@@ -58,12 +58,12 @@
 			$seq_num=$barcode_rslt['barcode_sequence'];
 			$shade = strtoupper($barcode_rslt['shade_group']);
 
-            $get_destination="select destination from bai_pro3.bai_orders_db where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."' ";
+            $get_destination="select TRIM(destination) as destinations from bai_pro3.bai_orders_db where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."' ";
 			
 			$destination_result=mysqli_query($link, $get_destination)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($dest_row = mysqli_fetch_array($destination_result))
             {
-            	$destination=$dest_row['destination'];
+            	$destination=$dest_row['destinations'];
             }
 			
             
@@ -86,20 +86,20 @@
 							
 					if($shade != '')
 						$html.= '
-							<tr><td colspan=2><b>Job Number:</b>'.$display1.'</td>
+							<tr><td colspan=2><b>JobNumber:</b>'.$display1.'</td>
 								<td><b>Size:</b>'.$barcode_rslt['size_code'].'</td>
 								<td><b>Shade:</b>'.$shade.'</td>
 							</tr>';
 					else 
-						$html.= '<tr><td><b>Job Number:</b></td><td>'.$display1.'</td>
+						$html.= '<tr><td><b>JobNumber:</b></td><td>'.$display1.'</td>
 									<td><b>Size:</b></td><td>'.$barcode_rslt['size_code'].'</td>
 								</tr>';
 
-					$html.='<tr><td><b>Barcode ID:</b></td><td>'.$barcode.'</td>
-								<td><b>Cut No:</b></td><td>'.chr($color_code).leading_zeros($cutno, 3).'</td>
+					$html.='<tr><td><b>BarcodeID:</b></td><td>'.$barcode.'</td>
+								<td><b>CutNo:</b></td><td>'.chr($color_code).leading_zeros($cutno, 3).'</td>
 							</tr>
 							<tr><td><b>Color:</b></td><td colspan=3>'.substr($barcode_rslt['order_col_des'],0,35).'</td></tr>
-							<tr><td><b>Country Code:</b></td><td>'.$destination.'</td>
+							<tr><td><b>CountryCode:</b></td><td>'.$destination.'</td>
 								<td><b>Qty:</b></td><td>'.$quantity.'</td>
 							</tr>
 							</table>

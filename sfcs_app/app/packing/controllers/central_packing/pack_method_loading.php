@@ -248,7 +248,7 @@
 							</div>
 						</div>";
 					echo "<br>
-							<div class='col-md-12'>
+							<div class='col-md-12 table-responsive'>
 								<table class=\"table table-bordered\">
 									<tr class=\"info\">
 										<th>S.No</th>
