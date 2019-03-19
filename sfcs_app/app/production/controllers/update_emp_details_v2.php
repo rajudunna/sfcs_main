@@ -116,6 +116,13 @@ if(isset($_POST['submit']))
 	$shift_start_time=$_POST['shift_start'];
 	$shift_end_time=$_POST['shift_end'];
 	
+	$get_modules="SELECT module_name FROM bai_pro3.`module_master` ORDER BY module_name*1";
+	$modules_reslt=mysqli_query($link, $get_modules) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while ($row = mysqli_fetch_array($modules_reslt))
+	{
+		$modules[] = $row['module_name'];
+	}
+
 	$sql1="Select * from $bai_pro.pro_attendance where date=\"$date\" and  shift='".$shift."' and (present >0 or absent >0) order by module*1";
 
 	echo "
@@ -172,11 +179,11 @@ if(isset($_POST['submit']))
 			}
 			else
 			{
-				for($i=0;$i<sizeof($mod_names);$i++) 
+				for($i=0;$i<sizeof($modules);$i++) 
 				{ ?>
 					<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_emp_data_v2.php",0,"N") ?>" >
 						<tr>
-							<td> <?php echo $mod_names[$i]; ?> </td>
+							<td> <?php echo $modules[$i]; ?> </td>
 							<td><input type="text" class="form-control" style="width: 180px;" value="0" name="pra<?php echo $i; ?>"></td>
 							<td><input type="text" class="form-control" style="width: 180px;"value="0" name="aba<?php echo $i; ?>"></td>
 						</tr>

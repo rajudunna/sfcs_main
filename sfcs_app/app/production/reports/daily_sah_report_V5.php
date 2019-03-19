@@ -1298,11 +1298,11 @@ $actual_working_days=$working_days-$half_days+($half_days/2);
 //echo $working_days."-".$half_days."-".($working_days-$half_days+($half_days/2));
 
 //$sql7=mysql_query("SELECT COUNT(DISTINCT DATE) as days FROM $bai_pro.grand_rep WHERE (DATE between \"$dat\" and \"$dat1\")");
-$sql7=mysqli_query($link, "SELECT COUNT(DISTINCT shift) as days FROM $bai_pro.grand_rep WHERE (DATE between \"$c_dat\" and \"$dat1\") GROUP BY date");
-while($rows7=mysqli_fetch_array($sql7))
+$sql71256=mysqli_query($link, "SELECT COUNT(DISTINCT date) as days FROM $bai_pro.grand_rep WHERE (DATE between \"$c_dat\" and \"$dat1\")");
+while($rows7123=mysqli_fetch_array($sql71256))
 {
 	//To calculate completed working shifts and days of a month
-	$days=$days+($rows7["days"]/$days_fac);
+	$days=$rows7123["days"];
 	//echo "<td rowspan=2 class=xl6527942 width=64 style='width:48pt'>".$rows7["COUNT(DISTINCT DATE)"]."</td>";
 }
 
