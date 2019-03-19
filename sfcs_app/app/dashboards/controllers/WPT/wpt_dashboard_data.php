@@ -5,14 +5,7 @@ $url = '/sfcs_app/app/dashboards/controllers/rms/fabric_requisition.php';
 $url = base64_encode($url);
 $section = $_GET['section'];
 $blocks_per_sec = $_GET['blocks'];
-/*
-foreach($sizes_array as $size){
-    $sum.= $size." + ";
-    $asum.= "a_".$size." + ";
-}
-$sum_str = rtrim($sum,' + ');
-$asum_str = rtrim($asum,' + ');
-*/
+
 $data = '';
 $jquery_data = '';
 $final_wip = array();
@@ -127,31 +120,10 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     
     $dockets_cqty_query = "SELECT GROUP_CONCAT(DISTINCT pdi.input_job_no_random_ref) AS jobs,pslij.doc_no AS doc_no,psl.act_cut_status AS act_cut_status,bodc.order_style_no AS style,psl.acutno AS acutno,bodc.color_code AS color_code,bodc.order_del_no AS SCHEDULE,bodc.order_col_des AS color,bodc.ft_status AS ft_status FROM bai_pro3.plan_dashboard_input AS pdi,bai_pro3.pac_stat_log_input_job AS pslij,bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc WHERE input_module=$module AND pdi.input_job_no_random_ref=pslij.input_job_no_random AND psl.doc_no=pslij.doc_no AND psl.order_tid=bodc.order_tid AND psl.a_plies = psl.p_plies AND psl.act_cut_status='DONE'";
     $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(DISTINCT pdi.input_job_no_random_ref) AS jobs,pslij.doc_no AS doc_no,psl.a_plies AS a_plies,psl.p_plies AS p_plies,psl.act_cut_status AS act_cut_status,bodc.order_style_no AS style,psl.acutno AS acutno,bodc.color_code AS color_code,bodc.order_del_no AS SCHEDULE,bodc.order_col_des AS color,bodc.ft_status AS ft_status FROM bai_pro3.plan_dashboard_input AS pdi,bai_pro3.pac_stat_log_input_job AS pslij,bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc WHERE input_module='$module' AND pdi.input_job_no_random_ref=pslij.input_job_no_random AND psl.doc_no=pslij.doc_no AND psl.order_tid=bodc.order_tid AND ((psl.a_plies = psl.p_plies AND psl.act_cut_status='') OR (psl.a_plies < psl.p_plies AND psl.act_cut_status='DONE')) GROUP BY doc_no ORDER BY input_priority ASC";  
-    // echo "1-".$dockets_cqty_query."<br><br>";
-    // echo "2-".$dockets_qty_job_qty_query."<br><br>";     
-    /*             
-    $partial_dockets_query  = "SELECT GROUP_CONCAT(distinct psi.input_job_no_random) AS jobs,pds.order_style_no as style,
-            pds.order_col_des as color,pds.doc_no as doc_no,pds.acutno as acutno,pds.color_code,
-            pds.order_del_no as schedule,fabric_status,ft_status
-            from $bai_pro3.plan_dash_doc_summ pds
-            LEFT JOIN $bai_pro3.pac_stat_log_input_job psi ON pds.doc_no = psi.doc_no
-            where module = $module  
-            and pds.a_plies != pds.p_plies and act_cut_status = 'DONE' 
-            group by doc_no order by priority";
-    $nfull_dockets_query = "SELECT  GROUP_CONCAT(distinct psi.input_job_no_random) AS jobs,order_style_no as style,
-            order_col_des as color,pds.doc_no as doc_no,acutno as acutno,
-            color_code,order_del_no as schedule,fabric_status,ft_status 
-            from $bai_pro3.plan_dash_doc_summ pds
-            LEFT JOIN $bai_pro3.pac_stat_log_input_job psi ON pds.doc_no = psi.doc_no
-            where module = $module and  act_cut_status = '' 
-            group by doc_no order by priority";  
-    */
+   
+
     $dockets_cqty_result        = mysqli_query($link,$dockets_cqty_query);
     $dockets_qty_job_qty_result = mysqli_query($link,$dockets_qty_job_qty_query);
-    // var_dump($dockets_cqty_result);
-    // var_dump($dockets_qty_job_qty_result);
-    //$partial_dockets_result = mysqli_query($link,$partial_dockets_query) or exit($data.='Problem in c-partial docs');
-    //$nfull_dockets_result   = mysqli_query($link,$nfull_dockets_query)   or exit($data.='Problem in empty dockets');
 
     $dockets_result_array = array();
     $dockets_result_array = [$dockets_cqty_result,$dockets_qty_job_qty_result];
