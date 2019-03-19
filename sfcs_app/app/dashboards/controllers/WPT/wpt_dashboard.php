@@ -4,7 +4,7 @@
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
     $url = getFullURLLevel($_GET['r'],'wpt_dashboard_data.php',0,'R');
 	$RELOAD_TIME = (int)$wpt_refresh_time;
-
+    $dashboard_name="WPT";
     // $sections_query = "Select sec_id from $bai_pro3.sections_db where sec_id > 0";
     $sections_query = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section>0 GROUP BY section ORDER BY section + 0";
     $sections_result = mysqli_query($link,$sections_query);

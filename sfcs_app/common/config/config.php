@@ -103,7 +103,7 @@ $line_in = $conf1->get('line-in');
 
 //For Logo Path
 $logo = '/sfcs_app/common/images/logo.png';
-
+if(!isset($dashboard_name)){
 //Auto Close Exempted Pages
 $autoclose_page_exempted=array("baiadmn","baisysadmin","baiictadmin","baischtasksvc","sfcsproject1");
 $autoclose_period=1800000;
@@ -115,7 +115,7 @@ echo "<script language=\"javascript\">
     setTimeout(\"window.open('', '_self'); window.close();\",$autoclose_period);
 </script>";
 }
-
+}
 $dnr_adr_sp_chain = "http://192.168.0.110:8002"; 
 $fab_uom=$conf1->get('uom');
 $sizes_array=array('s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','s14','s15','s16','s17','s18','s19','s20','s21','s22','s23','s24','s25','s26','s27','s28','s29','s30','s31','s32','s33','s34','s35','s36','s37','s38','s39','s40','s41','s42','s43','s44','s45','s46','s47','s48','s49','s50');
