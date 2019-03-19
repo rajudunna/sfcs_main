@@ -6,6 +6,7 @@ array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/cut_table_dashboard.php");
 $has_permission=haspermission($url_r); 
 $dash='CTD';
+$dashboard_name="CTDW";
 ?>
 <script type="text/javascript">
 jQuery(document).ready(function($){
