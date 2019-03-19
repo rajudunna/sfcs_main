@@ -85,12 +85,12 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				echo '<td bgcolor=\"#99FFDD\">'.$bac_style.'</td>';
 				echo '<td bgcolor=\"#99FFDD\">'.$smv.'</td>';
 				echo '<td bgcolor=\"#99FFDD\">'.$nop.'</td>';
-				echo '<td bgcolor=\"#FFEEFF\">'.$plan_eff.'</td>';
-				echo '<td bgcolor=\"#FFEEFF\">'.round($plan_pro,0).'</td>';
-				echo '<td bgcolor=\"#FFEEFF\">'.$plan_clh.'</td>';
-				echo '<td bgcolor=\"#FFEEFF\">'.$plan_sah.'</td>';
-				echo '<td bgcolor=\"#FFEEFF\">'.$act_hours.'</td>';
-				echo '<td bgcolor=\"#FFEEFF\">'.$couple.'</td>';
+				echo '<td bgcolor=\"#4b992f\">'.$plan_eff.'</td>';
+				echo '<td bgcolor=\"#4b992f\">'.round($plan_pro,0).'</td>';
+				echo '<td bgcolor=\"#4b992f\">'.$plan_clh.'</td>';
+				echo '<td bgcolor=\"#4b992f\">'.$plan_sah.'</td>';
+				echo '<td bgcolor=\"#4b992f\">'.$act_hours.'</td>';
+				echo '<td bgcolor=\"#4b992f\">'.$couple.'</td>';
 			}
 			
 			if($shift=="B")
@@ -99,8 +99,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				echo '<td bgcolor=\"#99FFDD\">'.$nop.'</td>';
 				echo '<td bgcolor=\"#99FF88\">'.$plan_eff.'</td>';
 				echo '<td bgcolor=\"#99FF88\">'.round($plan_pro,0).'</td>';
-				echo '<td bgcolor=\"#FFEEFF\">'.$plan_clh.'</td>';
-				echo '<td bgcolor=\"#FFEEFF\">'.$plan_sah.'</td>';
+				echo '<td bgcolor=\"#4b992f\">'.$plan_clh.'</td>';
+				echo '<td bgcolor=\"#4b992f\">'.$plan_sah.'</td>';
 				echo '<td bgcolor=\"#99FF88\">'.$act_hours.'</td>';
 				echo '<td bgcolor=\"#99FF88\">'.$couple.'</td>';
 				echo '<td bgcolor=\"#99FFDD\">'.$remarks.'</td>';
