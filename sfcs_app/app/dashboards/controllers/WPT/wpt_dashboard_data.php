@@ -173,7 +173,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                 $scanned_jobs_string = implode(',',$scanned_jobs);
 
                 //for unscanned_jobs
-                $un_scanned_qty_query = "SELECT SUM(carton_act_qty) as job_qty,group_concat(doc_no) as docs,old_size 
+                $un_scanned_qty_query = "SELECT SUM(carton_act_qty) as job_qty,group_concat(distinct doc_no) as docs,old_size 
                         from $bai_pro3.pac_stat_log_input_job  
                         where input_job_no_random IN ($unscanned_jobs_string) group by input_job_no_random,old_size";      
                 $un_scanned_qty_result = mysqli_query($link,$un_scanned_qty_query); 
@@ -191,7 +191,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                 }
                 //for scanned jobs   
                 $scanned_qty_query = "SELECT SUM((send_qty+replace_in+recut_in)-(recevied_qty+rejected_qty)) as eligible,
-                                group_concat(docket_number) as docs,size_id from $brandix_bts.bundle_creation_data  
+                                group_concat(distinct docket_number) as docs,size_id from $brandix_bts.bundle_creation_data  
                                 where input_job_no_random_ref IN ($scanned_jobs_string) and operation_id = $ips_op_code group by input_job_no_random_ref,size_id";
                 $scanned_qty_result = mysqli_query($link,$scanned_qty_query); 
                 if(mysqli_num_rows($scanned_qty_result)>0){
