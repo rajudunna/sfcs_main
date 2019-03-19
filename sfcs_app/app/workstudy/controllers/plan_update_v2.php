@@ -68,7 +68,9 @@ function auto_cal_clh(maxval)
 	{
 		if(sah_a[i].value>0 && eff_a[i].value>0)
 		{
-			clh_a[i].value=Math.round((sah_a[i].value/(parseFloat(eff_a[i].value)+parseFloat(plan_eff_ex[i].value)))*100,2);
+			//clh_a[i].value=Math.round((sah_a[i].value/(parseFloat(eff_a[i].value)+parseFloat(plan_eff_ex[i].value)))*100,2);
+
+			clh_a[i].value=Math.round((sah_a[i].value/(parseFloat(eff_a[i].value)))*100,2);
 		}
 		else
 		{
@@ -76,7 +78,8 @@ function auto_cal_clh(maxval)
 		}
 		if(sah_b[i].value>0 && eff_b[i].value>0)
 		{
-			clh_b[i].value=Math.round((sah_b[i].value/(parseFloat(eff_b[i].value)+parseFloat(plan_eff_ex[i].value)))*100,2);
+			//clh_b[i].value=Math.round((sah_b[i].value/(parseFloat(eff_b[i].value)+parseFloat(plan_eff_ex[i].value)))*100,2);
+			clh_b[i].value=Math.round((sah_b[i].value/(parseFloat(eff_b[i].value)))*100,2);
 		}
 		else
 		{
@@ -369,7 +372,7 @@ $max_allowed_date=date("Y-m-d");
 	
 	echo '></div><br/></td><td colspan=14><strong>Plan Update Panel</strong></td></tr>
 	
-	<tr><th>Module</th>	<th class="hidet">Section</th><th class="hidet">Style</th><th class="hidet">SMV</th><th class="hidet">NOP</th><th class="hidet">ADD/Eff%</th><th>Team A <br/>Plan Eff</th><th>Team A <br/>Plan Pro</th>
+	<tr><th>Module</th>	<th class="hidet">Section</th><th class="hidet">Style</th><th class="hidet">SMV</th><th class="hidet">NOP</th><th>Team A <br/>Plan Eff</th><th>Team A <br/>Plan Pro</th>
 	<th>Team A <br/>Plan Clock Hours</th>
 	<th>Team A <br/>Plan SAH</th>
 	<th>Team A <br/>Plan Hours</th><th>Team A <br/>Plan Couple</th><th>Fixed <br/>NOP</th><th>SMV</th><th>NOP</th><th>Team B <br/>Plan Eff</th>	<th>Team B <br/>Plan Pro</th>
@@ -447,10 +450,11 @@ $max_allowed_date=date("Y-m-d");
 			echo "<tr>";
 			echo '<td bgcolor=\"#99FFDD\" style="color: #FFFFFF">'.$module.'<input type="hidden" name="module[]" value="'.$module.'"></td>';
 			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="section[]" value="'.$sec_no.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
-			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_alpha_numeric(event, this.name)" name="style[]" value="'.$bac_style.'" size="3" onChange="markchange('.$x.')" id="alpha_style" /readonly></td>';
-			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			//echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_alpha_numeric(event, this.name)" name="style[]" value="'.$bac_style.'" size="" onChange="markchange('.$x.')" id="alpha_style" /readonly></td>';
+			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" name="style[]" value="'.$bac_style.'" size="" onChange="markchange('.$x.')" id="alpha_style" /readonly></td>';
+			//echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" name="smv[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
 			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="nop[]" class="integer" value="'.$nop1.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
-			echo '<td bgcolor=\"#000000\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="plan_eff_ex[]" value="'.$plan_eff_ex.'" size="3" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" name="eff_a[]" class="integer" value="'.($plan_eff-$plan_eff_ex).'" size="4" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" '.$bgcolor_tag.' name="pro_a[]" class="integer" value="'.round($plan_pro,0).'" size="4" onChange="markchange('.$x.')"></td>';
 			

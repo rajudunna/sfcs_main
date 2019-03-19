@@ -56,13 +56,20 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			$plan_clh=$sql_row['plan_clh'];
 			$plan_sah=$sql_row['plan_sah'];
 			
-			$sql1="select bac_style,smv,nop from $bai_pro.bai_log_buf where bac_date=\"$date\" and bac_no=$module and smv>0 and nop>0 order by bac_no";
-			//echo $sql1."<br/>";		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql1="select bac_style,smv,nop from $bai_pro.bai_log_buf where bac_date=\"$date\" and bac_no=$module and smv>0 and nop>0 and bac_shift='$shift' order by bac_no";
+			//echo $sql1."<br/>";		
+			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
-				$smv=$sql_row1['smv'];
-				$nop=$sql_row1['nop'];
-				$bac_style=$sql_row1['bac_style'];
+				if($shift=='A'){
+					$smv=$sql_row1['smv'];
+					$nop=$sql_row1['nop'];
+					$bac_style=$sql_row1['bac_style'];
+				}elseif($shift=='B'){
+					$smv1=$sql_row1['smv'];
+					$nop1=$sql_row1['nop'];
+					$bac_style=$sql_row1['bac_style'];
+				}
 			}
 			
 			$bgcolor_tag=" style=\"background-color: white\"";
@@ -95,7 +102,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			
 			if($shift=="B")
 			{	
-				echo '<td bgcolor=\"#99FFDD\">'.$smv.'</td>';
+				echo '<td bgcolor=\"#99FFDD\">'.$smv1.'</td>';
 				echo '<td bgcolor=\"#99FFDD\">'.$nop.'</td>';
 				echo '<td bgcolor=\"#99FF88\">'.$plan_eff.'</td>';
 				echo '<td bgcolor=\"#99FF88\">'.round($plan_pro,0).'</td>';
