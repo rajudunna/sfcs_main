@@ -166,7 +166,11 @@
                 else if(data.clubbed == '1')
                     return swal('You Cannot Split the Sewing Jobs for Schedule Clubbed Dockets','','error');
                 else if(data.scanned == '1')
-                    return swal('Jobs Related to the schedule already Scanned','You Cannot Split the Sewing Jobs','error');        
+                    return swal('Jobs Related to the schedule already Scanned','You Cannot Split the Sewing Jobs','error');
+                else if(data.mrn == '0')
+                    return swal('Jobs Related to the Docket already MRN Confirmed','You Cannot Split the Ratio for the Docket.','error'); 
+                else if(data.print_status == '0')
+                    return swal('Jobs Related to the Bundles already Printed.','You Cannot Split the Ratio for the Docket.','error');                
                 a_plies  = data.plies;  
                 schedule = data.schedule;
                 if(data.already_split == '1')
