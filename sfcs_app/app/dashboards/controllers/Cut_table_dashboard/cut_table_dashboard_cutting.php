@@ -610,7 +610,7 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
                   
                         //if(in_array($authorized,$has_permission) and $final_cols!="yellow" and $final_cols!="green")
                       if($rep_status!=''){
-                        if(in_array($authorized,$has_permission) and ($final_cols=="yellow" || $final_cols=="orange")){
+                        if($final_cols=="yellow" || $final_cols=="orange"){
                             echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='".$get_cut_qty."&doc_no=$doc_no&cut_table=$cut_table' onclick='Popup=window.open('$get_cut_qty.php?doc_no=$doc_no&cut_table=$cut_table','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
                         }else if($final_cols=="yash" || $final_cols=="red" || $final_cols=="lgreen"){
                           echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='#'
