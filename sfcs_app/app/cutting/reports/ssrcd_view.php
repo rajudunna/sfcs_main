@@ -399,26 +399,26 @@ if(isset($_POST['submit']))
 					<th class='danger' style="width:100px;">Size</th>
 					<?php
 						for($s=0;$s<sizeof($s_tit);$s++){
-								echo "<td class='danger'>".$s_tit[$sizes_code[$s]]."</td>";
-							}
+							echo "<td class='danger'>".$s_tit[$sizes_code[$s]]."</td>";
+						}
 					?>
 				</tr>
 				<tr>
 					<th class='danger'  style="width:100px;">Order Qty</th>
 					<?php
 						for($s=0;$s<sizeof($s_tit);$s++)
-							{
-								echo "<td>".$o_s[$sizes_code[$s]]."</td>";
-							}
+						{
+							echo "<td>".$o_s[$sizes_code[$s]]."</td>";
+						}
 					?>
 				</tr>
 				<tr>
 					<th class='danger' style="width:100px;">Extra Cut</th>
 					<?php
 						for($s=0;$s<sizeof($s_tit);$s++)
-							{
-								echo "<td>".($a_s[$sizes_code[$s]]-$o_s[$sizes_code[$s]])."</td>";
-							}
+						{
+							echo "<td>".($a_s[$sizes_code[$s]]-$o_s[$sizes_code[$s]])."</td>";
+						}
 					?>
 				</tr>		
 			</table>
@@ -426,12 +426,12 @@ if(isset($_POST['submit']))
 		<div class='col-sm-4' >
 			<table class="table table-bordered table-responsive">
 					<tr>
-						<th class='success'>Size</th>
+						<th class='success'>Order Qty</th>
 						<td><?php echo $o_total; ?></td>
 						<td>100%</td>
 					</tr>
 					<tr>
-						<th class='success'>Order Qty</th>
+						<th class='success'>Cut Qty</th>
 						<td><?php  echo $cut_qty_total;  ?></td>
 						<td><?php if($o_total>0){echo  round(($cut_qty_total/$o_total)*100,0); }?>%</td>
 					</tr>

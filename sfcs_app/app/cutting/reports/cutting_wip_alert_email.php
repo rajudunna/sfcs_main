@@ -101,7 +101,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		$total15=0;
 		$total16=0;
 		$clubbing=0;
-		$sql1="SELECT group_concat(order_style_no SEPARATOR '<br/>') as style, group_concat(order_del_no SEPARATOR ',') as schedule, group_concat(order_col_des SEPARATOR '<br/>') as color, group_concat(concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs, sum(total) as total,group_concat(doc_no SEPARATOR ',') as doc_no,acutno FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='DONE' group by module";
+		$sql1="SELECT group_concat(distinct order_style_no SEPARATOR '<br/>') as style, group_concat(distinct order_del_no SEPARATOR ',') as schedule, group_concat(distinct order_col_des SEPARATOR '<br/>') as color, group_concat(distinct concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs, sum(total) as total,group_concat(doc_no SEPARATOR ',') as doc_no,acutno FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='DONE' group by module";
 		// echo $sql1."<br>";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result1)>0)
@@ -114,7 +114,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$club_docs=array();
 				
 				//echo  $clubbing."<br/>";
-				$sql123="SELECT group_concat(order_style_no SEPARATOR '<br/>') as style, group_concat(order_del_no SEPARATOR ',') as schedule, group_concat(order_col_des SEPARATOR '<br/>') as color, group_concat(concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs, sum(total) as total,clubbing,group_concat(doc_no SEPARATOR ',') as doc_no,acutno FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='DONE' and clubbing=0 group by module";
+				$sql123="SELECT group_concat(distinct order_style_no SEPARATOR '<br/>') as style, group_concat(distinct order_del_no SEPARATOR ',') as schedule, group_concat(distinct order_col_des SEPARATOR '<br/>') as color, group_concat(distinct concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs, sum(total) as total,clubbing,group_concat(doc_no SEPARATOR ',') as doc_no,acutno FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='DONE' and clubbing=0 group by module";
 				//echo $sql12."<br>";
 				$sql_result123=mysqli_query($link, $sql123) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row123=mysqli_fetch_array($sql_result123))
@@ -125,7 +125,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				
 				//echo "total11=". $total11."<br/>";
 				
-				$sql12="SELECT group_concat(order_style_no SEPARATOR '<br/>') as style, group_concat(order_del_no SEPARATOR ',') as schedule, group_concat(order_col_des SEPARATOR '<br/>') as color, group_concat(concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs, sum(total) as total,clubbing,group_concat(doc_no SEPARATOR ',') as doc_no,acutno FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='DONE' and clubbing!=0 group by module";
+				$sql12="SELECT group_concat(distinct order_style_no SEPARATOR '<br/>') as style, group_concat(distinct order_del_no SEPARATOR ',') as schedule, group_concat(distinct order_col_des SEPARATOR '<br/>') as color, group_concat(distinct concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs, sum(total) as total,clubbing,group_concat(doc_no SEPARATOR ',') as doc_no,acutno FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='DONE' and clubbing!=0 group by module";
 				//echo $sql12."<br>";
 				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row12=mysqli_fetch_array($sql_result12))
@@ -269,7 +269,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		else
 		{
 			$clubbing=0;
-			$sql131="SELECT group_concat(order_style_no SEPARATOR '<br/>') as style, group_concat(order_del_no SEPARATOR ',') as schedule, group_concat(order_col_des SEPARATOR '<br/>') as color, group_concat(concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs,clubbing FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='' group by module";
+			$sql131="SELECT group_concat(distinct order_style_no SEPARATOR '<br/>') as style, group_concat(distinct order_del_no SEPARATOR ',') as schedule, group_concat(distinct order_col_des SEPARATOR '<br/>') as color, group_concat(distinct concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs,clubbing FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='' group by module";
 		
 			//echo $sql131."<br>";
 			$sql_result131=mysqli_query($link, $sql131) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
