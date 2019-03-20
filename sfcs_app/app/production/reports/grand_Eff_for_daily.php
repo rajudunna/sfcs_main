@@ -305,6 +305,8 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 				}
 				else
 				{
+					if($smv == '')
+						$smv = 0;
 					$sql2="update $bai_pro.grand_rep set date=\"$date\", module=\"$module\", shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv=$smv, nop=$nop, buyer=\"$max_buyer\", days=$days, max_style=\"$delivery^$style_code_new\", max_out=$max,rework_qty=$rework_qty where tid=\"$code\"";
 				}
 				// echo $sql2."<br>";
