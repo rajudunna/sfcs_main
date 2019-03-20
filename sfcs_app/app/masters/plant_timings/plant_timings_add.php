@@ -106,9 +106,9 @@
                 </div>
                 <div class='col-sm-3'>
                     <label style='text-align:center'>Start Time</label><br/>
-                    <input type='text' class='integer form-control ele' name='start_hour' id='start_hour' onkeyup='return validate_hours(this)' required>
-                    &nbsp;:&nbsp;
-                    <input type='text' class='integer form-control ele' name='start_min'  id='start_min'  onkeyup='return validate_mins(this)' required>
+                    <input type='text' class='integer form-control ele' name='start_hour' id='start_hour' onkeyup='return validate_hours(this)' placeholder='HH' required>
+                    <b>&nbsp;:&nbsp;</b>
+                    <input type='text' class='integer form-control ele' name='start_min'  id='start_min'  onkeyup='return validate_mins(this)' placeholder='MM' required>
                     &nbsp;&nbsp;
                     <!-- <select class='form-control eles' name='start_m' required>
                         <option disabled></option><option value='AM'>AM</option><option value='PM'>PM</option>
@@ -116,9 +116,9 @@
                 </div>
                 <div class='col-sm-3'>
                     <label style='text-align:center'>End Time</label><br/>
-                    <input type='text' class='integer form-control ele' name='end_hour' id='end_hour' onkeyup='return validate_hours(this)' required>
-                    &nbsp;:&nbsp;
-                    <input type='text' class='integer form-control ele' name='end_min'  id='end_min'  onkeyup='return validate_mins(this)' required>
+                    <input type='text' class='integer form-control ele' name='end_hour' id='end_hour' onkeyup='return validate_hours(this)' placeholder='HH' required>
+                    <b>&nbsp;:&nbsp;</b>
+                    <input type='text' class='integer form-control ele' name='end_min'  id='end_min'  onkeyup='return validate_mins(this)' placeholder='MM' required>
                     &nbsp;&nbsp;
                     <!-- <select class='form-control eles' name='end_m' required>
                         <option disabled></option><option value='AM'>AM</option><option value='PM'>PM</option>
