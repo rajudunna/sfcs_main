@@ -18,7 +18,7 @@ if(isset($_GET['fetch'])){
    			 	exit();
         	}
         	$doc_query12 = "SELECT doc_no from $bai_pro3.packing_summary_input where doc_no = $doc_no and bundle_print_status=1";
-        	if(mysqli_num_rows(mysqli_query($link,$doc_query12) > 0))
+        	if(mysqli_num_rows(mysqli_query($link,$doc_query12)) > 0)
         	{
             	$response_data['print_status'] = 0;
             	 echo JSON_ENCODE($response_data);
