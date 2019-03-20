@@ -713,7 +713,9 @@ white-space:nowrap;
                                     $sec_head=$sql_row['sec_head']; 
                                 } 
 
-                                $sql="select mod_style, mod_no from $pro_mod where mod_sec=$sec and mod_date=\"$date\" order by mod_no*1"; 
+                                
+                                //$sql="select mod_style, mod_no from $pro_mod where mod_sec=$sec and mod_date=\"$date\" order by mod_no*1"; 
+                                $sql="SELECT module_name as mod_no from $bai_pro3.module_master where section=$sec order by module_name*1";
                                 //echo $sql."<br>"; 
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 if($option1==1)
