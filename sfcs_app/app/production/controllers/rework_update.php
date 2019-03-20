@@ -56,7 +56,7 @@ table
 
 function firstbox()
 {
-	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&section="+document.select_module.select_section.value
+	window.location.href ="<?= getFullURLLevel($_GET['r'],'rework_update.php',0,'N'); ?>&shift="+document.select_module.shift.value+"&section="+document.select_module.select_section.value
 }
 function second_box(){
 	var sdate = document.getElementById('sdate').value;
@@ -251,9 +251,14 @@ function second_box(){
 		{
 			$sdate = date('Y-m-d');
 		}
+				if($_POST['shift']){
+			$shift=$_POST['shift'];
+		}else{
+			$shift=$_GET['shift'];
+		}
+	
 
 		$module_ref=$_POST['module']; 
-		$shift=$_POST['shift'];
 		$zone_base=$_POST['zone_base'];
 	?>
 
