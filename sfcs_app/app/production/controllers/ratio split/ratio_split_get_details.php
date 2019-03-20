@@ -17,13 +17,13 @@ if(isset($_GET['fetch'])){
         //verifying for valid docket or not (sewing jobs has to be created) 
         $doc_query = "SELECT doc_no from $bai_pro3.packing_summary_input where doc_no = $doc_no limit 1";
         if(mysqli_num_rows(mysqli_query($link,$doc_query)) > 0){
-            $doc_query1 = "SELECT doc_no from $bai_pro3.packing_summary_input where doc_no = $doc_no and mrn_status=1";
-        	if(mysqli_num_rows(mysqli_query($link,$doc_query1)) > 0)
-        	{
-            	$response_data['mrn'] = 0;
-            	 echo JSON_ENCODE($response_data);
-   			 	exit();
-        	}
+            // $doc_query1 = "SELECT doc_no from $bai_pro3.packing_summary_input where doc_no = $doc_no and mrn_status=1";
+        	// if(mysqli_num_rows(mysqli_query($link,$doc_query1)) > 0)
+        	// {
+            // 	$response_data['mrn'] = 0;
+            // 	 echo JSON_ENCODE($response_data);
+   			//  	exit();
+        	// }
         	$doc_query12 = "SELECT doc_no from $bai_pro3.packing_summary_input where doc_no = $doc_no and bundle_print_status=1";
         	if(mysqli_num_rows(mysqli_query($link,$doc_query12)) > 0)
         	{
