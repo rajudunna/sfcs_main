@@ -98,12 +98,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				echo '<td bgcolor=\"#4b992f\">'.$plan_sah.'</td>';
 				echo '<td bgcolor=\"#4b992f\">'.$act_hours.'</td>';
 				echo '<td bgcolor=\"#4b992f\">'.$couple.'</td>';
+				$smv="";
+				$nop="";
 			}
 			
 			if($shift=="B")
 			{	
 				echo '<td bgcolor=\"#99FFDD\">'.$smv1.'</td>';
-				echo '<td bgcolor=\"#99FFDD\">'.$nop.'</td>';
+				echo '<td bgcolor=\"#99FFDD\">'.$nop1.'</td>';
 				echo '<td bgcolor=\"#99FF88\">'.$plan_eff.'</td>';
 				echo '<td bgcolor=\"#99FF88\">'.round($plan_pro,0).'</td>';
 				echo '<td bgcolor=\"#4b992f\">'.$plan_clh.'</td>';
@@ -112,8 +114,12 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				echo '<td bgcolor=\"#99FF88\">'.$couple.'</td>';
 				echo '<td bgcolor=\"#99FFDD\">'.$remarks.'</td>';
 				echo "</tr>";
+				$smv1="";
+				$nop1="";
 				$x++;
 			}
+
+			$bac_style='';
 		}
 	}
 	else {
