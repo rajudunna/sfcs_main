@@ -178,11 +178,11 @@ if(isset($_POST['date']))
 					 $sql1="insert into $bai_pro.bai_log (bac_no,bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser) values (\"$mno\", \"$sec\", \"$rew_qty\", \"$dat\", \"$dat\", \"$shift\", \"$mst\", \"$rem\",  \"$ldate\",  \"$color\", \"$buyer\", \"$schedule\",USER())"; 
 				 		$note.=$sql1."<br/>";
 							mysqli_query($link, $sql1) or exit("Sql Error51$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-					echo $sql1."<br/>";
+					//echo $sql1."<br/>";
 				  $sql2="insert into $bai_pro.bai_log_buf (bac_no,bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser) values (\"$mno\", \"$sec\", \"$rew_qty\", \"$dat\", \"$dat\", \"$shift\", \"$mst\", \"$rem\",  \"$ldate\",  \"$color\", \"$buyer\", \"$schedule\",USER())"; 
 				 			 $note.=$sql2."<br/>";
 								mysqli_query($link, $sql2) or exit("Sql Error52$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-								echo $sql2."<br/>";
+								//echo $sql2."<br/>";
 					// echo "<script>alert('query executed');</script>";
 				}
 				$flag=1;
