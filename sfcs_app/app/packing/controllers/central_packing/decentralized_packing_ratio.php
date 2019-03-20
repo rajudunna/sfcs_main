@@ -648,7 +648,7 @@
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' oninput=calculateqty($size_count,$size_of_ordered_colors); onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'></td>";
+																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' oninput=calculateqty($size_count,$size_of_planned_colors); onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'></td>";
 																				}
 																			}
 																			else
@@ -681,7 +681,7 @@
 															echo "<tr>";
 																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																{
-																	echo "<td><input type='text' size='6' maxlength='5' required name='BagPerCart[]' id='BagPerCart_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' class='form-control integer' oninput=calculateqty($size_count,$size_of_ordered_colors);></td>";
+																	echo "<td><input type='text' size='6' maxlength='5' required name='BagPerCart[]' id='BagPerCart_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' class='form-control integer' oninput=calculateqty($size_count,$size_of_planned_colors);></td>";
 																}
 															echo "</tr>
 														</table>
@@ -753,7 +753,7 @@
 															echo "<tr>";
 																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																{
-																	echo "<td><input type='number' size='6' maxlength='5' required name='NoOf_Cartons[]' oninput=ss_ms_cart_func($size_of_ordered_colors,".sizeof($size1).");  id='NoOf_Cartons_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' min='0' max='0' class='form-control integer'></td>";
+																	echo "<td><input type='number' size='6' maxlength='5' required name='NoOf_Cartons[]' oninput=ss_ms_cart_func($size_of_planned_colors,".sizeof($size1).");  id='NoOf_Cartons_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' min='0' max='0' class='form-control integer'></td>";
 																}
 															echo "</tr>
 														</table>
@@ -984,7 +984,7 @@
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' oninput=calculateqty1($sizeofsizes,$size_of_ordered_colors); onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'></td>";
+																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' oninput=calculateqty1($sizeofsizes,$size_of_planned_colors); onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'></td>";
 																				}
 																			}
 																			else
@@ -1004,7 +1004,7 @@
 										echo "<div class='panel panel-primary'>";
 												echo "<div class='panel-heading'>Poly Bags Per Carton</div>";
 												echo "<div class='panel-body'>";
-												echo "<div class='col-xs-12'>Number of Poly Bags Per Carton : <input type='text' required name='BagPerCart' id='BagPerCart' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' oninput=calculateqty1($sizeofsizes,$size_of_ordered_colors);></div>";
+												echo "<div class='col-xs-12'>Number of Poly Bags Per Carton : <input type='text' required name='BagPerCart' id='BagPerCart' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' oninput=calculateqty1($sizeofsizes,$size_of_planned_colors);></div>";
 													
 												echo "</div>
 											</div>";
@@ -1061,7 +1061,7 @@
 										echo "<div class='panel panel-primary'>";
 												echo "<div class='panel-heading'>No of Cartons</div>";
 												echo "<div class='panel-body'>";
-												echo "<div class='col-xs-12'>Number of Cartons : <input type='number' required name='NoOf_Cartons1' id='NoOf_Cartons1' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} oninput=mm_sm_cart_func($sizeofsizes,$size_of_ordered_colors); min='0' max='0' value='0' ></div>";
+												echo "<div class='col-xs-12'>Number of Cartons : <input type='number' required name='NoOf_Cartons1' id='NoOf_Cartons1' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} oninput=mm_sm_cart_func($sizeofsizes,$size_of_planned_colors); min='0' max='0' value='0' ></div>";
 												echo "</div>
 											</div>";
 
