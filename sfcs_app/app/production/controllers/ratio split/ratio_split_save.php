@@ -56,7 +56,7 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
         exit();
     }
     $jobs_query  = "SELECT pac_seq_no,order_style_no,order_col_des,input_job_no,input_job_no_random,carton_act_qty,packing_mode,
-                    size_code,old_size,sref_id,tid,destination,type_of_sewing 
+                    size_code,old_size,sref_id,tid,destination,type_of_sewing,mrn_status
                     from $bai_pro3.packing_summary_input where doc_no = $doc_no";
     $jobs_result = mysqli_query($link,$jobs_query) or exit('Error');
     while($row=mysqli_fetch_array($jobs_result)){
@@ -65,17 +65,18 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
         $ij = $row['input_job_no_random'];
         $size = $row['old_size'];
         $jobs[] = $ij;
+        $job_num = $row['input_job_no'];
+        $mrn_jobs[$job_num] = $row['mrn_status']; //getting mrn status of jobs 
         $pac_seq[$ij] = $row['pac_seq_no'];
         $input_jobs[$size][$ij] += $row['carton_act_qty'];
         $type_of_sewing[$ij] = $row['type_of_sewing']; // for figuring out the excess job
-        // if($row['type_of_sewing'] == '1')
-        //     $job_wise_qty[$size][$ij] += $row['carton_act_qty']; 
         $tids[] = $row['tid']; //need to delete these from pac_stat_log_input_job
         $sref_id = $row['sref_id'];
         $size_map[$size] = $row['size_code'];
-        $job_map[$ij] = $row['input_job_no'];
+        $job_map[$ij] = $job_num;
         $destination  = $row['destination'];
         $packing_mode = $row['packing_mode'];
+        
     }
     
     $size_ratios_query = "SELECT * from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
@@ -182,6 +183,14 @@ array_unique($inserted_tids);
 $delete_pacs = "DELETE from $bai_pro3.pac_stat_log_input_job where tid IN (".implode(',',$tids).")";
 mysqli_query($link,$delete_pacs);
 
+
+//Updating the old MRN  statuses as it is
+foreach($mrn_jobs as $job => $mrn){
+    if(! ((int)$mrn > 0) ) 
+        $mrn = 0;
+    $mrn_update_query = "UPDATE $bai_pro3.pac_stat_log_input_job set mrn_status='$mrn' where doc_no = $doc_no and input_job_no = $job";
+    mysqli_query($link,$mrn_update_query);
+}
 //Deleting from moq
 //sewing cat opcodes
 $sewing_op_codes = "SELECT group_concat(operation_code) as op_codes FROM $brandix_bts.tbl_orders_ops_ref WHERE category = '$CAT'";
