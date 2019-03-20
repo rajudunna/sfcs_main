@@ -592,8 +592,6 @@ if(isset($_POST['fix']))
 		{ 
 			$order_tid=$sql_row17['order_tid'];
 			$sql11="SELECT * from $bai_pro3.bai_orders_db where order_tid='$order_tid'";
-			echo $sql11;
-			die();
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error B".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row11=mysqli_fetch_array($sql_result11)) 
 			{ 
