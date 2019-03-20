@@ -5,7 +5,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 ?>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<!---<link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/css/table.css',4,'R'); ?>">
+<link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/css/table.css',4,'R'); ?>">
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',4,'R') ?>"></script>
 <link rel="stylesheet" type="text/css" href="<?= getFullURLLevel($_GET['r'],'common/js/style.css',4,'R'); ?>">
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.min.js',4,'R') ?>"></script>
@@ -43,12 +43,12 @@ div.tools input{ background-color:#f4f4f4; outset #f4f4f4; margin:2px; }
 .mytable th{ background-color:#29759c; color:#FFF; width: 100px; padding:2px; solid #ccc; white-space: nowrap;}
 td{ padding:2px; width: 100px; white-space: nowrap;}
 
-</style>--->
+</style>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',4,'R') ?>"></script><!-- External script -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',4,'R') ?>"></script>
 <script language="javascript" type="text/javascript"></script>
 
-<!---<div id="page_heading"><span style="float:"><h3>Packing WIP</h3></span><span style="float: right">&nbsp;</span></div>--->
+
 
 <div class="panel panel-primary">
 <div class="panel-heading">Packing WIP</div>
@@ -64,7 +64,7 @@ $resultw=mysqli_query($link, $sqlw) or die("Sql error--1".$sql.mysqli_errno($GLO
 while($roww=mysqli_fetch_array($resultw))
 {
 	$schedule_ref=$roww['del_no'];	
-    $sql="select order_style_no,order_col_des,order_del_no,doc_no,acutno,size_code from $bai_pro3.packing_summary WHERE order_del_no=\"".$schedule_ref."\" group by order_del_no order by order_del_no,doc_no,size_code";
+    $sql="select order_style_no,order_col_des,order_del_no,doc_no,size_code from $bai_pro3.packing_summary WHERE order_del_no=\"".$schedule_ref."\" group by order_del_no order by order_del_no,doc_no,size_code";
 	//echo $sql."<br>";
 	$result=mysqli_query($link, $sql) or die("Sql error--1".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($result))

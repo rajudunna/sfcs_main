@@ -332,7 +332,7 @@ else
 				$bcd_rej[$row3['operation_id']] = $row3['rejection'];
 		    }
 
-
+    
 
 		    $to_get_cpk="select sum(carton_act_qty) as  carton_qty from $bai_pro3.pac_stat_log where style='$style' and schedule='$schedule' and color='$color' and size_code='$size_code' and status='DONE'";
 		    //echo $to_get_cpk;
@@ -415,6 +415,8 @@ else
 			} 
 
 		   	$table_data .= "</tr>";
+		   	unset($bcd_rec);
+		   	unset($bcd_rej);
 		}
 		  
 		echo $table_data."</tbody></table>";

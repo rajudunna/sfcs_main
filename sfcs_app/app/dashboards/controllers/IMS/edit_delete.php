@@ -37,7 +37,7 @@ function validateQty(event)
 		$operation_code = "";
 		$id = $_GET['id'];
 	
-		$qry = "select * from $brandix_bts.tbl_ims_ops where appilication=".$id;
+		$qry = "select * from $brandix_bts.tbl_ims_ops where appilication='".$id."'";
 		//echo $qry;	
 		$res_do_num = mysqli_query($link,$qry);
 		//$row=[];
@@ -82,7 +82,7 @@ function validateQty(event)
 		
 			<div class="container">
 				<div class="panel panel-primary">
-					<div class="panel-heading">Update Operation <?php echo "<b>".$row[0]['operation_name']."</b>"; ?>
+					<div class="panel-heading">Update Operation for application =  <?php echo "<b>".$id."</b>"; ?>
 						<a href='<?= getFullURLLevel($_GET['r'],'master.php',0,'N'); ?>' class='pull btn btn-warning'>Back</a>
 					</div>
 					<div class="panel-body">
@@ -112,7 +112,7 @@ function validateQty(event)
 										<option value="">Select</option>
 									
 									<?php
-										$get_operations="SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code not in (10,15,200) group by operation_code order by operation_code";
+										$get_operations="SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code not in (10,15) group by operation_code order by operation_code*1";
 										$result=mysqli_query($link,$get_operations);
 										while ($test = mysqli_fetch_array($result))
 										{

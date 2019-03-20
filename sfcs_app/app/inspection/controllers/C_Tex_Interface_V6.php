@@ -2273,6 +2273,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 			$readonly = '';
 			$dropdown_read = '';
 		}
+	
 		echo "<input type='hidden' name=\"qty_allocated[$i]\" id=\"qty_allocated[$i]\" value='".$temp[16]."'>";
 		if(!in_array($authorized,$has_permission))
 		{
@@ -2874,7 +2875,7 @@ function enableButton1()
 			var v = $('#ele_shade\\['+i+'\\]');
 
 			v.removeClass('mandate');
-			if($('#ele_shade\\['+i+'\\]').val() == '')
+			if($.trim($('#ele_shade\\['+i+'\\]').val()) == '')
 			{
 				if($('input[name="ele_shade[' + i + ']"]').is('[readonly]'))
 				{
@@ -3121,6 +3122,12 @@ function change_body(x,y,z)
 function validate_unique_shade(shde, roll, index)
 {
 	var ele_shade = $('#ele_shade\\['+index+'\\]');
+	var ele_shade1 = document.input["ele_shade["+index+"]"].value;
+	if($.trim($('#ele_shade\\['+index+'\\]').val()) == ''){
+		sweetAlert('Please Enter Shade Group','','warning');
+		document.input["ele_shade["+index+"]"].style.background="#99ff88";
+		
+	}
 	console.log('ele_shade['+index+']');
 	var arr = new Array();
 	$('.unique_shade_'+roll).each(function(){
@@ -3139,6 +3146,7 @@ function validate_unique_shade(shde, roll, index)
 		console.log(arr);
 		console.log($.unique(arr));
 	}
+	
 	// alert();
 }
 function change_head(x,y)

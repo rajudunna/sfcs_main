@@ -1,6 +1,11 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 
+if($fabric_validation_for_cut_report == 'yes')
+    $FABRIC_VALIDATION = 1;
+else
+    $FABRIC_VALIDATION = 0;
+
 if(isset($_GET['doc_no'])){
     $cut_table = $_GET['cut_table'];
     $doc_no = $_GET['doc_no'];
@@ -457,11 +462,15 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 swal('Warning','The Reporting Plies are more than, that are to be Reported','error');
                 return false;
             }
-            if(rec > fab_req)
-                return swal('info','Reporting More Than Eligible Fabric','info'); 
-            if(fab_req < ret_to+rec+damages+shortages){
-                swal('Warning','The Reporting Fabric must not be greater than received + fabric returned + shortages + damages','error');
-                return false;
+           
+            if(<?= $FABRIC_VALIDATION ?>){  
+                console.log('Fabric Validation is Truned On');  
+                if(rec > fab_req)
+                    return swal('info','Reporting More Than Eligible Fabric','info'); 
+                if(fab_req < ret_to+rec+damages+shortages){
+                    swal('Warning','The Reporting Fabric must not be greater than received + fabric returned + shortages + damages','error');
+                    return false;
+                }
             }
         }
         

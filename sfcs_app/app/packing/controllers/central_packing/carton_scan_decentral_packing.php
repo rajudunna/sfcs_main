@@ -83,22 +83,37 @@
 		$("#display_result").hide();
 		$("#error_msg").hide();
 		$("#loading_img").hide();
+		$("#submit_btn").attr("disabled", true);
+		
+		$('#manual_carton_id').keyup(function(){
+			if($(this).val().length !=0)
+				$('#submit_btn').attr('disabled', false);            
+			else
+				$('#submit_btn').attr('disabled',true);
+		});
 
 		$("#carton_id").change(function()
 		{
 			var carton_id = $('#carton_id').val();
-			callajax(carton_id,'carton_id');
+			if (carton_id != '' || carton_id != null)
+			{
+				callajax(carton_id,'carton_id');
+			}
 		});
-		
 
 		$("#submit_btn").click(function()
 		{
 			var manual_carton_id = $('#manual_carton_id').val();
-			callajax(manual_carton_id,'manual_carton_id');
+			$("#submit_btn").attr("disabled", true);
+			if (manual_carton_id != '' || manual_carton_id != null)
+			{
+				callajax(manual_carton_id,'manual_carton_id');
+			}
 		});
 
 		function callajax(carton_id,id)
 		{
+			$("#submit_btn").attr("disabled", true);
 			$("#display_result").hide();
 			var emp_id = $("#emp_id").val();
 			var team_id = $("#team_id").val();
@@ -132,6 +147,7 @@
 							$('#status').css("background-color", "limegreen");
 							$('#'+id).val('');
 							$('#carton_id').focus();
+							$("#submit_btn").attr("disabled", true);
 						}
 						else if(response['status']==0 || response['status']==3 || response['status']==4)
 						{
@@ -154,6 +170,7 @@
 							$('#'+id).val('');
 							$('#carton_id').focus();
 							$("#display_result").hide();
+							$("#submit_btn").attr("disabled", true);
 						}
 						else if(response['status']==2)
 						{
@@ -170,12 +187,12 @@
 							$('#status').css("background-color", "limegreen");						
 							$('#'+id).val('');
 							$('#carton_id').focus();
+							$("#submit_btn").attr("disabled", true);
 						}
 					}
 				});
 			}
 		}
-		
 	});
 </script>
 </html>

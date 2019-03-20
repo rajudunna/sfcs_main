@@ -6,4 +6,7 @@ $api_username = $conf->get('api-user-name');
 $api_password = $conf->get('api-password');
 $api_hostname = $conf->get('api-host-name');
 $api_port_no = $conf->get('api-port');
+
+$facility_code = $conf->get('plantcode');
+
 ?>
