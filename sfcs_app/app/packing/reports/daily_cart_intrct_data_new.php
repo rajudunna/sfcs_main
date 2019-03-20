@@ -264,7 +264,7 @@ var fnsFilters = {
 	btn_reset_text: "Clear",
 	col_operation: { 
 						id: ["table1Tot1"],
-						col: [7],  
+						col: [4],  
 						operation: ["sum"],
 						decimal_precision: [1],
 						write_method: ["innerHTML"] 
