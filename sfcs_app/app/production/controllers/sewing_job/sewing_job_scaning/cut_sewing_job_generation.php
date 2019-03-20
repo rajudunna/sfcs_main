@@ -163,7 +163,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     $doc_no = $_POST['del_recs'];
     // 217
-    $validation_query="SELECT * FROM $bai_pro3.act_cut_status WHERE doc_no IN (".$doc_no.")"; 
+    $validation_query="SELECT * FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (".$doc_no.") and act_cut_status = 'DONE' "; 
     $sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data"); 
     $count= mysqli_num_rows($sql_result); 
     if ($count>0) 
