@@ -361,7 +361,7 @@ $max_allowed_date=date("Y-m-d");
 	//if($username=="kirang" or $username=="kirang")
 	//{
 		echo '<div class="table-responsive"><table class="table table-bordered">
-	<tr><td colspan=6><b>Change Date</b></td><td colspan=3><div class="col-md-10"><input type="text" data-toggle="datepicker" name="date_change" value="'.date("Y-m-d").'" class="form-control" size=15';
+	<tr><td colspan=6><b>Date</b></td><td colspan=3><div class="col-md-10"><input type="text" data-toggle="datepicker" name="date_change" value="'.date("Y-m-d").'" class="form-control" size=15';
 	
 	//Date:12-10-2015/kirang/Task: added user validation to avoid warning message on selection of back date
 	// if(!(in_array($username,$super_user)) )
@@ -454,7 +454,7 @@ $max_allowed_date=date("Y-m-d");
 			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" name="style[]" value="'.$bac_style.'" size="" onChange="markchange('.$x.')" id="alpha_style" /readonly></td>';
 			//echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
 			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" name="smv[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
-			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="nop[]" class="integer" value="'.$nop1.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="nop[]" class="integer" value="'.$nop.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
 			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" name="eff_a[]" class="integer" value="'.($plan_eff-$plan_eff_ex).'" size="4" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" '.$bgcolor_tag.' name="pro_a[]" class="integer" value="'.round($plan_pro,0).'" size="4" onChange="markchange('.$x.')"></td>';
 			
@@ -479,8 +479,11 @@ $max_allowed_date=date("Y-m-d");
 			{
 				$couple=1;
 			}
-			echo '<td bgcolor=\"#99FFDD\"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv1[]" value="'.$smv1.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
-			echo '<td bgcolor=\"#99FFDD\"><input type="text" class="integer" onkeyup="return pop_test(event, this.name)" name="nop1[]" class="integer" value="'.$nop.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+
+			//echo '<td bgcolor=\"#99FFDD\"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv1[]" value="'.$smv1.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			//echo '<td bgcolor=\"#99FFDD\"><input type="text" class="integer" onkeyup="return pop_test(event, this.name)" name="nop1[]" class="integer" value="'.$nop1.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			echo '<td bgcolor=\"#99FFDD\"><input type="text" name="smv1[]" value="'.$smv1.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			echo '<td bgcolor=\"#99FFDD\"><input type="text" class="integer" name="nop1[]" class="integer" value="'.$nop1.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
 			echo '<td bgcolor=\"#99FF88\"><input type="text" onkeyup="return pop_test(event, this.name)" name="eff_b[]" class="integer" value="'.($plan_eff-$plan_eff_ex).'" size="4" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor=\"#99FF88\"><input type="text" '.$bgcolor_tag.' onkeyup="return pop_test(event, this.name)" name="pro_b[]" class="integer" value="'.round($plan_pro,0).'" size="4" onChange="markchange('.$x.')"></td>';
 			
