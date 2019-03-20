@@ -8,7 +8,7 @@
 	$norows = mysqli_num_rows($sql_result);
 	$sno = 1;
 		if($norows > 0){
-		echo "<table id='downtime_reason' class='table'><thead><tr><th>S.No</th><th>Time Value</th><th>Time Display</th><th>Day Part</th><th>Start Time</th><th>End Time</th><th> Edit / Delete </th></tr></thead><tbody>";
+		echo "<table id='downtime_reason' class='table'><thead><tr><th>S.No</th><th>Time Value</th><th>Time Display</th><th>Start Time</th><th>End Time</th><th> Edit / Delete </th></tr></thead><tbody>";
 		// output data of each row
 		while($row=mysqli_fetch_array($sql_result)) {
 			$rowid=$row["time_id"];
@@ -21,7 +21,7 @@
 			$url=getFullURL($_GET['r'],'plant_timings_add.php','N');
 			$url1=getFullURL($_GET['r'],'delete_plant_timings.php','N');
 
-			echo "<tr><td>".$sno++."</td><td>".$row["time_value"]."</td><td>".$row["time_display"]." </td><td>".$row["day_part"]."</td><td>".$row["start_time"]."</td><td>".$row["end_time"]."</td>
+			echo "<tr><td>".$sno++."</td><td>".$row["time_value"]."</td><td>".$row["time_display"]." </td><td>".$row["start_time"]."</td><td>".$row["end_time"]."</td>
 			<td>
 			<a href='$url&id=$rowid&time_value=$time_value&time_display=$time_display&day_part=$day_part&start_time=$start_time&end_time=$end_time' class='btn btn-warning btn-xs editor_edit'>Edit</a> / 
 			<a href='$url1&id=$rowid&time_value=$time_value&time_display=$time_display&day_part=$day_part&start_time=$start_time&end_time=$end_time'class='btn btn-danger btn-xs' onclick='return confirm_delete(event,this);'>Delete</a>

@@ -13,7 +13,7 @@
 	$sday_part = $_POST['start_m'];
 	$eday_part = $_POST['start_e'];	
 	$actual_eh = $eh;
-	if($em==0){
+	if($em==0 && $eh > 0){
 		$em=59;
 		$eh -= 1;
 	}else{

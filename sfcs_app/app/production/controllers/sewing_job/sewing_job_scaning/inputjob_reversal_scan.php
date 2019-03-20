@@ -862,7 +862,7 @@
 					$docket_n =  $row['docket_number']; 
 					$up_size = $row['size_title'];
 				}
-				if($docket_n > 0)
+				if((int)$docket_n > 0)
 				{
 					$update_query = "Update $bai_pro3.cps_log set remaining_qty = remaining_qty + $reversal_value 
 					where doc_no = '$docket_n' and size_title = '$up_size' and operation_code = '$post_ops_code'";
