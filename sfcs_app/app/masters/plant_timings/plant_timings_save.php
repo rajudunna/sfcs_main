@@ -19,6 +19,10 @@
 	}else{
 		$em=$em-1;
 	}
+	if($sh > 0 && $sh <= 11)
+		$sday_part = 'AM';
+	else	
+		$sday_part = 'PM';
 	$sh = str_pad($sh,2,"0",STR_PAD_LEFT);
 	$sm = str_pad($sm,2,"0",STR_PAD_LEFT);
 	$eh = str_pad($eh,2,"0",STR_PAD_LEFT);
