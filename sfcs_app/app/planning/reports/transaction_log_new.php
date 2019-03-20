@@ -389,7 +389,7 @@ if(mysqli_num_rows($sql_result)>0)
 
 			$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedules,$color,$input_job,$link);
 			echo "<tbody><tr bgcolor=\"$bgcolor\">";
-			$time=explode(" ",$lastup);
+			$time = explode(" ",$log_time);
 			//echo "<td>$tid</td>";
 			echo "<td>$date</td>";
 			echo "<td>".$time[1]."</td>";

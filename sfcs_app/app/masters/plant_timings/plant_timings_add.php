@@ -1,7 +1,7 @@
 <script>
     function validate_hours(t){
-        if(Number(t.value) > 12){
-            t.value = 12;
+        if(Number(t.value) > 23){
+            t.value = 23;
             var st = $('#start_hour').val();
             $('#time_value').val(st);
             return false;
@@ -110,9 +110,9 @@
                     &nbsp;:&nbsp;
                     <input type='text' class='integer form-control ele' name='start_min'  id='start_min'  onkeyup='return validate_mins(this)' required>
                     &nbsp;&nbsp;
-                    <select class='form-control eles' name='start_m' required>
+                    <!-- <select class='form-control eles' name='start_m' required>
                         <option disabled></option><option value='AM'>AM</option><option value='PM'>PM</option>
-                    </select>
+                    </select> -->
                 </div>
                 <div class='col-sm-3'>
                     <label style='text-align:center'>End Time</label><br/>
@@ -120,9 +120,9 @@
                     &nbsp;:&nbsp;
                     <input type='text' class='integer form-control ele' name='end_min'  id='end_min'  onkeyup='return validate_mins(this)' required>
                     &nbsp;&nbsp;
-                    <select class='form-control eles' name='end_m' required>
+                    <!-- <select class='form-control eles' name='end_m' required>
                         <option disabled></option><option value='AM'>AM</option><option value='PM'>PM</option>
-                    </select>
+                    </select> -->
                 </div>
                 <div class='col-sm-1'>
                     <label><br/></label>
