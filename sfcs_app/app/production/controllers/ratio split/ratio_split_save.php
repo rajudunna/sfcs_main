@@ -42,6 +42,19 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
     echo json_encode($response_data);
     exit();
 }else{
+    if(sizeof($shades) == 1){
+        $insert_query = "INSERT into $bai_pro3.shade_split(date_time,username,doc_no,schedule,shades,plies) 
+                values('".date('y-m-d H:i:s')."','$username',$doc_no,'$schedule','".implode($ashades,',')."',
+                '".implode($shades_plies,",")."')";
+        mysqli_query($link,$insert_query) or exit('Problem in inserting into shade split');  
+        
+        $update_psl_query = "UPDATE $bai_pro3.pac_stat_log_input_job set shade_group = '".$ashades[0]."' where doc_no = $doc_no ";
+        mysqli_query($link,$update_psl_query);
+
+        $response_data['save'] = 'success';
+        echo json_encode($response_data);
+        exit();
+    }
     $jobs_query  = "SELECT pac_seq_no,order_style_no,order_col_des,input_job_no,input_job_no_random,carton_act_qty,packing_mode,
                     size_code,old_size,sref_id,tid,destination,type_of_sewing 
                     from $bai_pro3.packing_summary_input where doc_no = $doc_no";
