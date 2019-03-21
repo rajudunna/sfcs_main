@@ -24,6 +24,10 @@
             swal('Hours are equal','','warning');    
             return false;
         }
+        if(Number(eh) < Number(sh)){
+            swal('End Time is less than start time','','warning');    
+            return false;
+        }
     }
     
     function time_diff(){
@@ -99,7 +103,7 @@
             <form action = "<?= $action_url ?>" onsubmit="return calculate()" method='POST'>
                 <input type='hidden' value='<?= $exist_id ?>' name='id'>
                 <div class='col-sm-2'>
-                    <label>Time Display</label>
+                    <label>Time Value</label>
                     <input type='text' class='integer form-control' name='time_value' id='time_value' readonly>
                 </div>
                 <div class='col-sm-1'>
