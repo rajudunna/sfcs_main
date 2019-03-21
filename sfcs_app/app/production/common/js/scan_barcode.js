@@ -12,17 +12,28 @@ app.controller('scanctrl', function ($scope, $http, $window) {
     $scope.$watch('shift', function(shift){
         $scope.shift = shift;
     });
+	 $scope.$watch('op_code', function(op_code){
+        $scope.op_code = op_code;
+    });
     $scope.scanned = function(event){
         if(event.charCode == 13){
         $('#loading-image').show();
-        $scope.last_barcode = $scope.barcode;
+		if($scope.op_code != undefined)
+		{
+		   $scope.last_barcode = $scope.barcode+'-'+$scope.op_code;
+		}
+        else
+		{
+			$scope.last_barcode = $scope.barcode;
+		}
+		console.log($scope.last_barcode);
         $scope.last_barcode_status = 'In-Progress';
         $scope.last_barcode_status_remarks = '';
         $scope.showtable = true;
             $('.bgcolortable').css("background-color", "white");
         if($scope.barcode != ''){
-            if($scope.barcode.includes('-')){
-                var split = $scope.barcode.split('-');
+            if($scope.last_barcode.includes('-')){
+                var split = $scope.last_barcode.split('-');
                 if(split.length == 2){
                     var bundle_num = split[0];
                     var op_no = split[1];
