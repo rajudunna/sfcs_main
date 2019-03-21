@@ -3,7 +3,7 @@
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
     $url = getFullURLLEVEL($_GET['r'],'scan_barcode_wout_keystroke.php',0,'N');
     $category="'sewing'";
-	$query_get_schedule_data= "SELECT tm.operation_code,tm.operation_name FROM brandix_bts.tbl_orders_ops_ref tm
+	$query_get_schedule_data= "SELECT tm.operation_code,tm.operation_name FROM $brandix_bts.tbl_orders_ops_ref tm
 	WHERE tm.operation_code NOT IN (10,200,15) 
 	AND category IN ($category)
     GROUP BY tm.operation_code ORDER BY tm.operation_code";
@@ -31,7 +31,7 @@
             </div>
             <div class="col-md-4">
                 <label for="title">Select Operation:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
-                <select class="form-control select2"  name="operation" id="operation" required>
+                <select class="form-control select2"  name="operation_code" id="operation" required>
                     <option value="">Select Operation</option>
                     <?php
                         foreach($ops_array as $key=>$value)
