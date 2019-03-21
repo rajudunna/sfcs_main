@@ -528,7 +528,6 @@ if(isset($_POST['update']))
 	$module=$_POST['module'];
 	$section=$_POST['section'];
 	$check=$_POST['check'];
-	$plan_eff_ex=$_POST['plan_eff_ex'];
 	
 	$eff_a=$_POST['eff_a'];
 	$pro_a=$_POST['pro_a'];
@@ -561,14 +560,14 @@ if(isset($_POST['update']))
 			$sql1="insert ignore into $bai_pro.pro_plan (plan_tag) values (\"$plan_tag\")";
 			mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 						
-			$sql1="update $bai_pro.pro_plan set sec_no=".$section[$i].", date=\"$date\", mod_no=".$module[$i].", shift=\"A\", plan_eff=".($eff_a[$i]+$plan_eff_ex[$i]).",  plan_pro=".$pro_a[$i].", remarks=\"".$remarks[$i]."\", act_hours=".$hrs_a[$i].", couple=".$couple_a[$i].", fix_nop=".$fix_nop_a[$i].", plan_clh=".$clh_a[$i].",plan_sah=".$sah_a[$i].",plan_eff_ex=".$plan_eff_ex[$i]." where plan_tag=\"".$plan_tag."\"";
+			$sql1="update $bai_pro.pro_plan set sec_no=".$section[$i].", date=\"$date\", mod_no=".$module[$i].", shift=\"A\", plan_eff=".($eff_a[$i]).",  plan_pro=".$pro_a[$i].", remarks=\"".$remarks[$i]."\", act_hours=".$hrs_a[$i].", couple=".$couple_a[$i].", fix_nop=".$fix_nop_a[$i].", plan_clh=".$clh_a[$i].",plan_sah=".$sah_a[$i]." where plan_tag=\"".$plan_tag."\"";
 			$note.=$sql1."<br/>";
 			mysqli_query($link, $sql1) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$sql1="insert ignore into $bai_pro.pro_plan_today (plan_tag) values (\"$plan_tag\")";
 			mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			$sql1="update $bai_pro.pro_plan_today set sec_no=".$section[$i].", date=\"$date\", mod_no=".$module[$i].", shift=\"A\", plan_eff=".($eff_a[$i]+$plan_eff_ex[$i]).",  plan_pro=".$pro_a[$i].", remarks=\"".$remarks[$i]."\", act_hours=".$hrs_a[$i].", couple=".$couple_a[$i].", fix_nop=".$fix_nop_a[$i].", plan_clh=".$clh_a[$i].",plan_sah=".$sah_a[$i].",plan_eff_ex=".$plan_eff_ex[$i]." where plan_tag=\"".$plan_tag."\"";
+			$sql1="update $bai_pro.pro_plan_today set sec_no=".$section[$i].", date=\"$date\", mod_no=".$module[$i].", shift=\"A\", plan_eff=".($eff_a[$i]).",  plan_pro=".$pro_a[$i].", remarks=\"".$remarks[$i]."\", act_hours=".$hrs_a[$i].", couple=".$couple_a[$i].", fix_nop=".$fix_nop_a[$i].", plan_clh=".$clh_a[$i].",plan_sah=".$sah_a[$i]." where plan_tag=\"".$plan_tag."\"";
 			$note.=$sql1."<br/>";
 			mysqli_query($link, $sql1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
@@ -577,14 +576,14 @@ if(isset($_POST['update']))
 			mysqli_query($link, $sql1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			
-			$sql1="update $bai_pro.pro_plan set sec_no=".$section[$i].", date=\"$date\", mod_no=".$module[$i].", shift=\"B\", plan_eff=".($eff_b[$i]+$plan_eff_ex[$i]).",  plan_pro=".$pro_b[$i].", remarks=\"".$remarks[$i]."\", act_hours=".$hrs_b[$i].", couple=".$couple_b[$i].", fix_nop=".$fix_nop_b[$i].", plan_clh=".$clh_b[$i].",plan_sah=".$sah_b[$i].",plan_eff_ex=".$plan_eff_ex[$i]." where plan_tag=\"".$plan_tag."\"";
+			$sql1="update $bai_pro.pro_plan set sec_no=".$section[$i].", date=\"$date\", mod_no=".$module[$i].", shift=\"B\", plan_eff=".($eff_b[$i]).",  plan_pro=".$pro_b[$i].", remarks=\"".$remarks[$i]."\", act_hours=".$hrs_b[$i].", couple=".$couple_b[$i].", fix_nop=".$fix_nop_b[$i].", plan_clh=".$clh_b[$i].",plan_sah=".$sah_b[$i]." where plan_tag=\"".$plan_tag."\"";
 			$note.=$sql1."<br/>";
 			mysqli_query($link, $sql1) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$sql1="insert ignore into $bai_pro.pro_plan_today (plan_tag) values (\"$plan_tag\")";
 			mysqli_query($link, $sql1) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 						
-			$sql1="update $bai_pro.pro_plan_today set sec_no=".$section[$i].", date=\"$date\", mod_no=".$module[$i].", shift=\"B\", plan_eff=".($eff_b[$i]+$plan_eff_ex[$i]).",  plan_pro=".$pro_b[$i].", remarks=\"".$remarks[$i]."\", act_hours=".$hrs_b[$i].", couple=".$couple_b[$i].", fix_nop=".$fix_nop_b[$i].", plan_clh=".$clh_b[$i].",plan_sah=".$sah_b[$i].",plan_eff_ex=".$plan_eff_ex[$i]." where plan_tag=\"".$plan_tag."\"";
+			$sql1="update $bai_pro.pro_plan_today set sec_no=".$section[$i].", date=\"$date\", mod_no=".$module[$i].", shift=\"B\", plan_eff=".($eff_b[$i]).",  plan_pro=".$pro_b[$i].", remarks=\"".$remarks[$i]."\", act_hours=".$hrs_b[$i].", couple=".$couple_b[$i].", fix_nop=".$fix_nop_b[$i].", plan_clh=".$clh_b[$i].",plan_sah=".$sah_b[$i]." where plan_tag=\"".$plan_tag."\"";
 			$note.=$sql1."<br/>";
 			mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
