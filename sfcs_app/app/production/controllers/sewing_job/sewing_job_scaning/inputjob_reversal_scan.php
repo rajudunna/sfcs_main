@@ -775,7 +775,7 @@
 				}
 				$ims_log_date=date("Y-m-d");
 				$bac_dat=$ims_log_date;
-				$log_time=date("Y-m-d");
+				$log_time=date("Y-m-d H:i:s");
 				$buyer_qry="select order_div FROM $bai_pro3.bai_orders_db WHERE order_style_no='".$b_style."' AND order_del_no='".$b_schedule."' AND order_col_des='".$b_colors."'";
 				$buyer_qry_result=mysqli_query($link,$buyer_qry) or exit("Bundles Query Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($buyer_qry_row=mysqli_fetch_array($buyer_qry_result))
@@ -862,7 +862,7 @@
 					$docket_n =  $row['docket_number']; 
 					$up_size = $row['size_title'];
 				}
-				if($docket_n > 0)
+				if((int)$docket_n > 0)
 				{
 					$update_query = "Update $bai_pro3.cps_log set remaining_qty = remaining_qty + $reversal_value 
 					where doc_no = '$docket_n' and size_title = '$up_size' and operation_code = '$post_ops_code'";
