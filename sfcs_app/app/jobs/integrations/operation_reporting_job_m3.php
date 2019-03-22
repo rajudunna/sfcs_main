@@ -49,7 +49,7 @@ while($row=mysqli_fetch_array($transaction_result))
         }
         else if ($api_type == 'opn')
         {
-            $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&REMK=$transaction_id&OPNO=$op_code&DPLG=$workstation_id&SCQA=$quantity&SCRE=$reason&RPDT=$api_date&RPTM=$api_time&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+            $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&REMK=$transaction_id&OPNO=$op_code&DPLG=$workstation_id&SCQA=$quantity&MAQA=$quantity&SCRE=$reason&RPDT=$api_date&RPTM=$api_time&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
         }
 
         else
