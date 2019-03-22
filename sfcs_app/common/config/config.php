@@ -54,6 +54,7 @@ $rms_request_time = $conf1->get('rms_request_time');
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
 
+
 //get plant details and adress
 $plant_head=$conf1->get('plant_head');
 $plant_address=$conf1->get('plant_address');
@@ -102,7 +103,7 @@ $line_in = $conf1->get('line-in');
 
 //For Logo Path
 $logo = '/sfcs_app/common/images/logo.png';
-
+if(!isset($dashboard_name)){
 //Auto Close Exempted Pages
 $autoclose_page_exempted=array("baiadmn","baisysadmin","baiictadmin","baischtasksvc","sfcsproject1");
 $autoclose_period=1800000;
@@ -113,6 +114,7 @@ if(!in_array($username,$autoclose_page_exempted))
 echo "<script language=\"javascript\">
     setTimeout(\"window.open('', '_self'); window.close();\",$autoclose_period);
 </script>";
+}
 }
 $dnr_adr_sp_chain = "http://192.168.0.110:8002"; 
 $fab_uom=$conf1->get('uom');
@@ -150,7 +152,8 @@ $sewing_rejection=$conf1->get('sewing_rejection');
 
 
 
-
+$logo = '/sfcs_app/common/images/logo.png';
+$icon2='/sfcs_app/common/images/BAI_Logo.JPG';
 
 $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
 
@@ -225,13 +228,13 @@ while($methods=mysqli_fetch_array($pack_result))
 //***************************************************
   /*  $is_chw = $conf1->get('central_warehouse');
     $cwh_link = Null;
-    if($is_chw == 'yes'){
-        $cwh_host = $conf1->get('cw_host');
-        $cwh_user_name = $conf1->get('cw_username');
-        $cwh_password = $conf1->get('cw_password');
-        $cwh_port = $conf1->get('cw_port');
-        $cwh_link = ($GLOBALS["___mysqli_ston"] = mysqli_connect($cwh_host.":".$cwh_port, $cwh_user_name, $cwh_password)) or die("Could not connect cwh: ".mysqli_error($GLOBALS["___mysqli_ston"]));
+    // if($is_chw == 'yes'){
+    //     $cwh_host = $conf1->get('cw_host');
+    //     $cwh_user_name = $conf1->get('cw_username');
+    //     $cwh_password = $conf1->get('cw_password');
+    //     $cwh_port = $conf1->get('cw_port');
+    //     $cwh_link = ($GLOBALS["___mysqli_ston"] = mysqli_connect($cwh_host.":".$cwh_port, $cwh_user_name, $cwh_password)) or die("Could not connect cwh: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-    } */
-//===================================================
+    // }
+//===================================================*/
 ?>
