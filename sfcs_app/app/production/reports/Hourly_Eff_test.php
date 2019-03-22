@@ -544,7 +544,7 @@ td,th
                                     $h1[$i]=$time; 
                                     $h2[$i]=$time; 
                                     $timestr=$time.":0:0"; 
-                                    if ($time > 12) {   $time = date("g", strtotime($timestr));   }
+                                    //if ($time > 12) {   $time = date("g", strtotime($timestr));   }
                                     $headers[$i]=$time; 
                                     $i=$i+1;
                                 }
@@ -588,7 +588,7 @@ td,th
                                     $h1[$i]=$time; 
                                     $h2[$i]=$time; 
                                     $timestr=$time.":0:0"; 
-                                    if ($time > 12) {   $time = date("g", strtotime($timestr));   }
+                                    //if ($time > 12) {   $time = date("g", strtotime($timestr));   }
                                     $headers[$i]=$time; 
                                     $i=$i+1;
                                 } 
@@ -1563,7 +1563,7 @@ td,th
                                     // echo $sql_row['time']."<br>"; 
                                     $h2[$i]=$sql_row['time']; 
                                     $timestr=$sql_row['time'].":0:0"; 
-                                    if ($time > 12) {   $time = date("g", strtotime($timestr));   }
+                                    //if ($time > 12) {   $time = date("g", strtotime($timestr));   }
                                     $headers[$i]=$time;
                                     $i=$i+1; 
                                 } 
