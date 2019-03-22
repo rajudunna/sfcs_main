@@ -443,7 +443,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $ord_style=$sql_row1['order_style_no'];
           //$fabric_status=$sql_row1['fabric_status'];
           $plan_lot_ref_v1=$sql_row1['plan_lot_ref'];
-
+          $track_id=$sql_row1['track_id'];
+          
           $fabric_status=$sql_row1['fabric_status_new']; //NEW due to plan dashboard clearing regularly and to stop issuing issued fabric.
           if($fabric_status==null or $fabric_status==0)
           {
@@ -485,7 +486,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             $co_no=$sql_row112['co_no'];
           }
 
-          $sql21="select orginal_qty,send_qty,receive_qty,send_op_code,receive_op_code from $bai_pro3.embellishment_plan_dashboard where doc_no='".$doc_no."'";
+          $sql21="select orginal_qty,send_qty,receive_qty,send_op_code,receive_op_code from $bai_pro3.embellishment_plan_dashboard where doc_no='".$doc_no."' and track_id=$track_id";
           // echo $sql2;
           $result21=mysqli_query($link, $sql21) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
           while($row21=mysqli_fetch_array($result21))
