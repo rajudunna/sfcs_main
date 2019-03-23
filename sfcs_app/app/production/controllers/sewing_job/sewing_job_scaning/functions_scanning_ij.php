@@ -1243,19 +1243,34 @@ if(isset($_GET['pre_array_module']))
 }
 function validating_with_module($pre_array_module)
 {
+	include("../../../../../common/config/config_ajax.php");
 	$block_priorities = null;
 	$pre_array_module = explode(",",$pre_array_module);
 	$module = $pre_array_module[0];
 	$job_no = $pre_array_module[1];
 	$operation = $pre_array_module[2];
 	$screen = $pre_array_module[3];
+	$scan_type = $pre_array_module[4];
+	
+
 	$input_job_array = array();
 	$response_flag = 0;	$go_here = 0;
-	include("../../../../../common/config/config_ajax.php");
 	
 	if ($module == 0)
 	{
-		$get_module_no = "SELECT input_module FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$job_no'";
+		if ($scan_type == 0)
+		{
+			# bundle level
+			$get_module_no = "SELECT input_module FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (select input_job_no_random from $bai_pro3.pac_stat_log_input_job where tid=$job_no)";
+			$get_module_no_bcd = "SELECT assigned_module FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$job_no' AND operation_id='$operation'";
+		}
+		else if ($scan_type == 1)
+		{
+			# sewing job level
+			$get_module_no = "SELECT input_module FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$job_no'";
+			$get_module_no_bcd = "SELECT assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";
+		}
+
 		$module_rsult = $link->query($get_module_no);
 		if (mysqli_num_rows($module_rsult) > 0)
 		{
@@ -1266,7 +1281,6 @@ function validating_with_module($pre_array_module)
 		}
 		else
 		{
-			$get_module_no_bcd = "SELECT assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";
 			$module_rsult_bcd = $link->query($get_module_no_bcd);
 			while($sql_row11_bcd = $module_rsult_bcd->fetch_assoc()) 
 			{
@@ -1275,7 +1289,16 @@ function validating_with_module($pre_array_module)
 		}
 	}
 
-	$check_if_ij_is_scanned = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";
+	if ($scan_type == 0)
+	{
+		# bundle level
+		$check_if_ij_is_scanned = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$job_no' AND operation_id='$operation'";
+	}
+	else if ($scan_type == 1)
+	{
+		# sewing job level
+		$check_if_ij_is_scanned = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";		
+	}
 	$check_result = $link->query($check_if_ij_is_scanned);
 	if (mysqli_num_rows($check_result) > 0)
 	{
@@ -1298,7 +1321,7 @@ function validating_with_module($pre_array_module)
 
 	if ($go_here == 1)
 	{
-		if ($module != '' || $module != null || $module > 0)
+		if ($module != '' && $module != null && $module > 0)
 		{
 			$validating_qry = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE ims_mod_no = '$module'";
 			$result_validating_qry = $link->query($validating_qry);
@@ -1345,7 +1368,14 @@ function validating_with_module($pre_array_module)
 		}
 	}
 	// 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
-	echo $response_flag;
+	if ($screen == 'wout_keystroke')
+    {
+        return $response_flag;
+    }
+    else
+    {
+        echo $response_flag;
+    }
 }
 
 

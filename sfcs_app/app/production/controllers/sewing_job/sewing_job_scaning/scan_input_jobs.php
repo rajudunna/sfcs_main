@@ -142,7 +142,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 						<center>
 						<div class="form-group col-lg-6 col-sm-12">
 							<label><?php echo $label_name_to_show ?><span style="color:red"></span></label>
-							<input type="text" id="job_number" value='<?= $input_job_no_random_ref ?>' class="form-control" required placeholder="Scan the Job..." <?php echo $read_only_job_no;?>/>
+							<input type="text" id="job_number" onkeyup="validateQty1(event,this);" value='<?= $input_job_no_random_ref ?>' class="form-control" required placeholder="Scan the Job..." <?php echo $read_only_job_no;?>/>
 						</div>
 						<div class = "form-group col-lg-6 col-sm-12" hidden='true'>
 							<label>Assigning To Module</label><br>
@@ -281,7 +281,7 @@ $(document).ready(function()
 		var assign_module = $('#module').val();
 		var current = "<?php echo $operation_name; ?>";
 		var module_flag = null;	var restrict_msg = '';
-		var pre_array_module = [assign_module,job_number,operation_id,'scan'];
+		var pre_array_module = [assign_module,job_number,operation_id,'scan',barcode_generation];
 		$.ajax({
 			type: "POST",
 			url: function_text+"?pre_array_module="+pre_array_module,
@@ -315,10 +315,10 @@ $(document).ready(function()
 				{
 					module_flag = 0; // allow
 				}
-				if (barcode_generation == 0)
-				{
-					module_flag = 0; // allow
-				}
+				// if (barcode_generation == 0)
+				// {
+				// 	module_flag = 0; // allow
+				// }
 				if(module_flag == 0)
 				{
 					var array = [job_number,operation_id,barcode_generation,assign_module];
