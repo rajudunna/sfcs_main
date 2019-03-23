@@ -2,6 +2,15 @@
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
     $shift = $_POST['shift'];
+    $has_permission=haspermission($_GET['r']);
+    if (in_array($override_sewing_limitation,$has_permission))
+    {
+        $value = 'authorized';
+    }
+    else
+    {
+        $value = 'not_authorized';
+    }
 ?>
 
 <style>
@@ -34,6 +43,7 @@ th,td{
             <div class="col-md-5">
                 <div class="col-padding" >
                     <input type="text" id="barcode_scan" class="form-control input-lg" ng-model="barcode" ng-keypress="scanned($event)" placeholder="scan here" autofocus>
+                    <input type="hidden" id="user_permission" ng-model="user_permission" ng-init="user_permission='<?= $value; ?>'">
                     <input type="hidden" class="form-control" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'get_barcode_details_new.php',0,'R') ?>'">
                 </div>
             </div>
