@@ -289,7 +289,7 @@ echo $drp_down;
                         {
                             $button_html = "<button type='button' class='btn btn-success' onclick='viewmarkerdetails(".$id.",1)'>Approve</button>";
                             $html_hiding = "NotApproved";
-                            $button_html_rej = "<button type='submit' id='rej' class='btn btn-danger confirm-submit' name='reject' onclick='submitfunction($id);'>Reject</button>";
+                            $button_html_rej = "<button type='submit' id='rej$id' class='btn btn-danger confirm-submit' name='reject' onclick='submitfunction($id);'>Reject</button>";
                         }
                         echo "<tr><td>$s_no</td>";
                         echo "<td>".$row['doc_no']."</td>";
