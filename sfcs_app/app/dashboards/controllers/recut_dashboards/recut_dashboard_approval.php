@@ -210,6 +210,7 @@ $drp_down .= "</select></div>";
 $drp_down = "<div class='row'><div class='col-md-3'><label>Schedule Filter:</label>
               <input class='form-control integer' placeholder='Enter Schedule here' onchange='myfunctionsearch()' id='schedule_id'></input></div></div>";
 echo $drp_down;
+
 ?>
 </br></br>
 <div class="modal fade" id="myModal" role="dialog">
