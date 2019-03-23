@@ -36,7 +36,7 @@
                     <?php
                         foreach($ops_array as $key=>$value)
                         {
-                            echo "<option value='$key'>$value</option>"; 
+                            echo "<option value='$key'>$value - $key</option>"; 
                         }
                     ?>
                 </select>
