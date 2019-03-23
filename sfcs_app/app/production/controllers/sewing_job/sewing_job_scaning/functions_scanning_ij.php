@@ -1253,23 +1253,25 @@ function validating_with_module($pre_array_module)
 	$screen = $pre_array_module[3];
 	$scan_type = $pre_array_module[4];
 	
-	if ($scan_type == 0)
-	{
-		# bundle level
-		$get_module_no = "SELECT input_module FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (select input_job_no_random from $bai_pro3.pac_stat_log_input_job where tid=$job_no)";
-		$get_module_no_bcd = "SELECT assigned_module FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$job_no' AND operation_id='$operation'";
-	}
-	else if ($scan_type == 1)
-	{
-		# sewing job level
-		$get_module_no = "SELECT input_module FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$job_no'";
-		$get_module_no_bcd = "SELECT assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";
-	}
+
 	$input_job_array = array();
 	$response_flag = 0;	$go_here = 0;
 	
 	if ($module == 0)
 	{
+		if ($scan_type == 0)
+		{
+			# bundle level
+			$get_module_no = "SELECT input_module FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (select input_job_no_random from $bai_pro3.pac_stat_log_input_job where tid=$job_no)";
+			$get_module_no_bcd = "SELECT assigned_module FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$job_no' AND operation_id='$operation'";
+		}
+		else if ($scan_type == 1)
+		{
+			# sewing job level
+			$get_module_no = "SELECT input_module FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$job_no'";
+			$get_module_no_bcd = "SELECT assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";
+		}
+
 		$module_rsult = $link->query($get_module_no);
 		if (mysqli_num_rows($module_rsult) > 0)
 		{
@@ -1296,8 +1298,7 @@ function validating_with_module($pre_array_module)
 	else if ($scan_type == 1)
 	{
 		# sewing job level
-		$check_if_ij_is_scanned = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";
-		
+		$check_if_ij_is_scanned = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";		
 	}
 	$check_result = $link->query($check_if_ij_is_scanned);
 	if (mysqli_num_rows($check_result) > 0)
