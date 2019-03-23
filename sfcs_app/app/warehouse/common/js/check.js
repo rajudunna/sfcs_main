@@ -225,7 +225,6 @@ function quantity(t) {
         var temp = document.test["qty[" + i + "]"].value;
         total = Number(total).toFixed(2) + Number(temp).toFixed(2);
         if (Number(total) > Number(available)) {
-            alert(total);
             sweetAlert('Error!', 'The allocated quantity is exceeding available balance ', 'warning');
             t.value = '';
             for (i = 0; i < 100; i++)
