@@ -1292,15 +1292,19 @@ function validating_with_module($pre_array_module)
 	if ($scan_type == 0)
 	{
 		# bundle level
-		$check_if_ij_is_scanned = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$job_no' AND operation_id='$operation'";
+		$check_if_ij_is_scanned = "SELECT sum(recevied_qty) as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$job_no' AND operation_id='$operation'";
 	}
 	else if ($scan_type == 1)
 	{
 		# sewing job level
-		$check_if_ij_is_scanned = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";		
+		$check_if_ij_is_scanned = "SELECT sum(recevied_qty) as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";		
 	}
 	$check_result = $link->query($check_if_ij_is_scanned);
-	if (mysqli_num_rows($check_result) > 0)
+	while ($row = mysqli_fetch_array($check_result))
+	{
+		$res = $row['recevied_qty'];
+	}
+	if ($res > 0  && $res != null && $res != '')
 	{
 		if ($screen == 'scan')
 		{
