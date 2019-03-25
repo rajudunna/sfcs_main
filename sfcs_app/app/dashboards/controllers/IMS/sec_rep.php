@@ -304,8 +304,8 @@ if(isset($_GET['val']))
 								<th rowspan=2>Input Remarks</th>
 								<th rowspan=2>Ex-Factory</th>
 								<th width='150'>Remarks</th>
-								<th>Age</th>
-								<th>WIP</th>
+								<th rowspan=2>Age</th>
+								<th rowspan=2>WIP</th>
 							</tr>
 							<tr>";             
 								foreach ($operation_code as $op_code) 
