@@ -1,5 +1,17 @@
 <html>
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+if(isset($_POST['module_name']))
+{
+	$module=$_POST['module_name'];
+	$shifts=$_POST['shifts'];
+}	
+else
+{
+	$module=1;
+	$shifts=implode("','",$shifts_array);
+}
+
+?>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="refresh" content="180">
@@ -52,23 +64,52 @@ $result = mysqli_query($link, $sql);
 
 ?>
 </select>
+&nbsp&nbsp
+<label for="module" class="mb-2 mr-sm-2">Shift: </label>
+	     		<select class='form-control' id='module' name='shifts' >
+				<?php if($shifts ==  $shift)
+					echo "<option value=".implode("','",$shifts_array)." selected>ALL</option>";
+                    else
+					echo "<option value=".implode("','",$shifts_array).">ALL</option>";
+                    foreach($shifts_array as $shift){
+					if($shifts ==  $shift)
+						echo "<option value='$shift' selected>$shift</option>";
+					else
+						echo "<option value='$shift' >$shift</option>";		
+                  }
+					?>
+
+</select>
     <input type="submit"  class="btn btn-primary mb-2" value="submit">
 </form>
 <?php
 if(isset($_POST['module_name']))
 {
 	$module=$_POST['module_name'];
-}elseif(isset($_GET['module_name']))
+	$shifts=$_POST['shifts'];
+}	
+else
 {
-	$module=$_GET['module_name'];
-}else{
 	$module=1;
+	$shifts=implode("','",$shifts_array);
 }
-
-
 $date_check=date("Y-m-d");
-$sql="select sum(bac_qty) as act_out,GROUP_CONCAT(DISTINCT bac_style) as styles from $bai_pro.bai_log_buf where bac_date='".$date_check."' and bac_no=$module";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql1="select * from $bai_pro.pro_atten_hours where date='".$date_check."' and shift in ('".$shifts."') order by start_time";
+$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+if(mysqli_num_rows($sql_result1)>0)
+{
+	while($sql_row1=mysqli_fetch_array($sql_result1))
+	{
+		$start=$sql_row1['start_time'];
+		$end=$sql_row1['end_time'];
+		for($i=$start;$i<=$end;$i++)
+		{
+			$hours_main[]=$i;
+		}		
+	}
+}
+$sql="select sum(bac_qty) as act_out,GROUP_CONCAT(DISTINCT bac_style) as styles from $bai_pro.bai_log_buf where bac_date='".$date_check."' and bac_no=$module and bac_shift in ('".$shifts."')";
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_result)>0)
 {
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -82,15 +123,15 @@ else
 	$act_out=0;
 	$styles='';
 }
-$sql11="select sum(plan_pro) as pro from $bai_pro.pro_plan_today where mod_no='$module'";
-$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql11="select sum(plan_pro) as pro from $bai_pro.pro_plan_today where mod_no='$module' and shift in ('".$shifts."')";
+$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row11=mysqli_fetch_array($sql_result11))
 {
 	$plan_out=$sql_row11['pro'];
 }
 $balance_out=($plan_out-$act_out)>0?($plan_out-$act_out):0;
-$sql114="select (SUM(present+jumper)-SUM(absent)) as atten from $bai_pro.pro_attendance where module='$module' and date='".$date_check."'";
-$sql_result114=mysqli_query($link, $sql114) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql114="select (SUM(present+jumper)-SUM(absent)) as atten from $bai_pro.pro_attendance where module='$module' and date='".$date_check."' and  shift in ('".$shifts."')";
+$sql_result114=mysqli_query($link, $sql114) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row114=mysqli_fetch_array($sql_result114))
 {
 	if($sql_row114['atten']<>'')
@@ -172,33 +213,11 @@ while($sql_row114=mysqli_fetch_array($sql_result114))
 $time_display=array();
 $act_out=array();
 $time_prefix=array();
-
-$sql="select * from $bai_pro3.tbl_plant_timings";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$time_value[] = $sql_row['time_value'];
-	$time_display[$sql_row['time_value']]=$sql_row['time_display'];
-	$time_prefix[$sql_row['time_value']]=$sql_row['day_part'];
-	$sql2="SELECT SUM(bac_qty) as outp FROM $bai_pro.bai_log_buf WHERE bac_date='".$date_check."' AND bac_no=$module and Hour(bac_lastup)>= Hour('".$sql_row['start_time']."') AND Hour(bac_lastup)< Hour('".$sql_row['end_time']."')";
-	//echo $sql2;
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row2=mysqli_fetch_array($sql_result2))
-	{
-		if($sql_row2['outp']<>'')
-		{
-			$act_out[$sql_row['time_value']]=$sql_row2['outp'];
-		}
-		else
-		{
-			$act_out[$sql_row['time_value']]=0;
-		}	
-	}
-}
-$sql1="select sum(plan_pro) as pro from $bai_pro.pro_plan_today where mod_no='$module'";
-$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$tot_plant_working_hrs=sizeof($hours_main);
+$sql1="select sum(plan_pro) as pro from $bai_pro.pro_plan_today where mod_no='$module' and shift in ('".$shifts."')";
+$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result1))
-{	
+{
 	if($tot_plant_working_hrs>0 && $sql_row1['pro']>0)
 	{
 		$hourly_target=round($sql_row1['pro']/$tot_plant_working_hrs,0);		
@@ -208,6 +227,33 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$hourly_target=0;
 	}	
 }
+for($j=0;$j<sizeof($hours_main);$j++)
+{
+	$hourly_targets[$hours_main[$j]]=$hourly_target;
+	$sql="select * from $bai_pro3.tbl_plant_timings where time_value='".$hours_main[$j]."'";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$time_value[] = $sql_row['time_value'];
+		$time_display[$sql_row['time_value']]=$sql_row['time_display'];
+		$time_prefix[$sql_row['time_value']]=$sql_row['day_part'];
+		$sql2="SELECT SUM(bac_qty) as outp FROM $bai_pro.bai_log_buf WHERE bac_date='".$date_check."' AND bac_no=$module and Hour(bac_lastup)>= Hour('".$sql_row['start_time']."') AND Hour(bac_lastup)< Hour('".$sql_row['end_time']."')";
+		//echo $sql2;
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row2=mysqli_fetch_array($sql_result2))
+		{
+			if($sql_row2['outp']<>'')
+			{
+				$act_out[$sql_row['time_value']]=$sql_row2['outp'];
+			}
+			else
+			{
+				$act_out[$sql_row['time_value']]=0;
+			}	
+		}
+	}
+}
+	
 
 ?>
 
@@ -223,8 +269,12 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	<tr>
 		<th class='left_head'>Target PCs</th>
 		<?php
-		foreach($time_value as $hour){
-			echo "<td>".$hourly_target."</td>";
+		foreach($time_value as $hour){	
+				if($hourly_targets[$hour]=='')
+				{
+					$hourly_targets[$hour]=0;
+				}
+				echo "<td>".$hourly_targets[$hour]."</td>";		
 		}
 		?>		
 	</tr>
@@ -250,7 +300,7 @@ foreach($time_value as $hour)
 	}
 	else
 	{
-		if($act_out[$hour]>=$hourly_target)
+		if($act_out[$hour]>=$hourly_targets[$hour])
 		{
 			$bg_color="bgcolor=\"green\"";
 		}
@@ -259,7 +309,7 @@ foreach($time_value as $hour)
 			$bg_color="bgcolor=\"orange\"";
 		}			
 	}		
-	echo "<td $bg_color>".(($hourly_target-$act_out[$hour])>0?($hourly_target-$act_out[$hour]):0)."</td>";
+	echo "<td $bg_color>".(($hourly_targets[$hour]-$act_out[$hour])>0?($hourly_targets[$hour]-$act_out[$hour]):0)."</td>";
 }
 
 ?>
