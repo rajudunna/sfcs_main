@@ -102,7 +102,7 @@ if(mysqli_num_rows($sql_result1)>0)
 	{
 		$start=$sql_row1['start_time'];
 		$end=$sql_row1['end_time'];
-		for($i=$start;$i<=$end;$i++)
+		for($i=$start;$i<$end;$i++)
 		{
 			$hours_main[]=$i;
 		}		
