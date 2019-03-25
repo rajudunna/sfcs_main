@@ -492,7 +492,7 @@
 
 	
 <div class="panel panel-primary">
-	<div class="panel-heading"><strong>Add Packing Ratio</strong> <?php echo "<a class='btn btn-warning	pull-right btn-sm' href='$url2&style=$style&schedule=$schedule' >Go Back</a>";  ?></div>
+	<div class="panel-heading"><strong>Add Packing Ratio</strong> <?php echo "<a class='btn btn-warning	pull-right btn-sm' href='$url2&style=$style&schedule=$schedule' style='padding-bottom: 0px;'><i class=\"fas fa-arrow-left\"></i>&nbsp; Go Back</a>";  ?></div>
 	<div class="panel-body">
 		<div class="col-md-12">
 			<form method="POST" class="form-inline" name="decentralized_packing_ratio">
@@ -648,7 +648,7 @@
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' oninput=calculateqty($size_count,$size_of_ordered_colors); onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'></td>";
+																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' oninput=calculateqty($size_count,$size_of_planned_colors); onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'></td>";
 																				}
 																			}
 																			else
@@ -681,7 +681,7 @@
 															echo "<tr>";
 																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																{
-																	echo "<td><input type='text' size='6' maxlength='5' required name='BagPerCart[]' id='BagPerCart_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' class='form-control integer' oninput=calculateqty($size_count,$size_of_ordered_colors);></td>";
+																	echo "<td><input type='text' size='6' maxlength='5' required name='BagPerCart[]' id='BagPerCart_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' class='form-control integer' oninput=calculateqty($size_count,$size_of_planned_colors);></td>";
 																}
 															echo "</tr>
 														</table>
@@ -753,7 +753,7 @@
 															echo "<tr>";
 																for ($size_count=0; $size_count < sizeof($size1); $size_count++)
 																{
-																	echo "<td><input type='number' size='6' maxlength='5' required name='NoOf_Cartons[]' oninput=ss_ms_cart_func($size_of_ordered_colors,".sizeof($size1).");  id='NoOf_Cartons_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' min='0' max='0' class='form-control integer'></td>";
+																	echo "<td><input type='number' size='6' maxlength='5' required name='NoOf_Cartons[]' oninput=ss_ms_cart_func($size_of_planned_colors,".sizeof($size1).");  id='NoOf_Cartons_".$size_count."' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' min='0' max='0' class='form-control integer'></td>";
 																}
 															echo "</tr>
 														</table>
@@ -767,9 +767,9 @@
 												echo "<div class='panel-heading'>Details</div>
 												<div class='panel-body'>";
 											$col_array = array();
-											$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and $order_joins_not_in";
+											$sewing_jobratio_cols_query = "SELECT DISTINCT order_col_des FROM $brandix_bts.tbl_orders_sizes_master WHERE parent_id IN ($schedule_id)";
 											//echo $sizes_query;die();
-											$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
+											$sizes_result=mysqli_query($link, $sewing_jobratio_cols_query) or exit("Sql Error2 $sewing_jobratio_cols_query");
 											$row_count = mysqli_num_rows($sizes_result);
 											while($sizes_result1=mysqli_fetch_array($sizes_result))
 											{
@@ -808,8 +808,8 @@
 														for ($j=0; $j < sizeof($col_array); $j++)
 														{
 															$tot_ordered = 0;	$pack_tot_saved = 0;
-															$tot_planned = 0;
-															$pack_tot = 0;
+															$tot_planned = 0;	$tot_carton_eligible_oq = 0;
+															$pack_tot = 0;	$tot_carton_eligible_pq = 0;
 															for($kk=0;$kk<sizeof($size_main);$kk++)
 															//foreach ($sizes_array as $key => $value)
 															{
@@ -866,7 +866,7 @@
 															
 
 															echo "<tr>
-																	<td rowspan=4>$col_array[$j]</td>
+																	<td rowspan=6>$col_array[$j]</td>
 																	<td>Order Qty</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{
@@ -895,6 +895,28 @@
 																		$pack_tot_saved = $pack_tot_saved + $pack_qty_saved[$col_array[$j]][$size_main[$i]];
 																	}
 																	echo "<td>$pack_tot_saved</td>
+																</tr>";
+
+															echo "<tr>
+																	<td>Carton Eligibility Against Order Qty</td>";
+																	for ($i=0; $i < sizeof($size_main); $i++)
+																	{
+																		$carton_eligi_orderQty = $ordered_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]];
+																		echo "<td>".$carton_eligi_orderQty."</td>";
+																		$tot_carton_eligible_oq = $tot_carton_eligible_oq + $carton_eligi_orderQty;
+																	}
+																	echo "<td>$tot_carton_eligible_oq</td>
+																</tr>";
+
+															echo "<tr>
+																	<td>Carton Eligibility Against Planned Qty</td>";
+																	for ($i=0; $i < sizeof($size_main); $i++)
+																	{
+																		$carton_eligi_planQty = $planned_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]];
+																		echo "<td>".$carton_eligi_planQty."</td>";
+																		$tot_carton_eligible_pq = $tot_carton_eligible_pq + $carton_eligi_planQty;
+																	}
+																	echo "<td>$tot_carton_eligible_pq</td>
 																</tr>";
 
 															echo "<tr>
@@ -984,7 +1006,7 @@
 																			if (mysqli_num_rows($individual_sizes_result) >0)
 																			{
 																				if ($size1[$size_count] == $individual_color) {
-																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' oninput=calculateqty1($sizeofsizes,$size_of_ordered_colors); onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'></td>";
+																					echo "<td><input type='text' size='6' maxlength='5' required name='GarPerBag[$j][]' id='GarPerBag_".$row_count."_".$size_count."' class='form-control integer' oninput=calculateqty1($sizeofsizes,$size_of_planned_colors); onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0'></td>";
 																				}
 																			}
 																			else
@@ -1004,7 +1026,7 @@
 										echo "<div class='panel panel-primary'>";
 												echo "<div class='panel-heading'>Poly Bags Per Carton</div>";
 												echo "<div class='panel-body'>";
-												echo "<div class='col-xs-12'>Number of Poly Bags Per Carton : <input type='text' required name='BagPerCart' id='BagPerCart' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' oninput=calculateqty1($sizeofsizes,$size_of_ordered_colors);></div>";
+												echo "<div class='col-xs-12'>Number of Poly Bags Per Carton : <input type='text' required name='BagPerCart' id='BagPerCart' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value='0' oninput=calculateqty1($sizeofsizes,$size_of_planned_colors);></div>";
 													
 												echo "</div>
 											</div>";
@@ -1061,7 +1083,7 @@
 										echo "<div class='panel panel-primary'>";
 												echo "<div class='panel-heading'>No of Cartons</div>";
 												echo "<div class='panel-body'>";
-												echo "<div class='col-xs-12'>Number of Cartons : <input type='number' required name='NoOf_Cartons1' id='NoOf_Cartons1' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} oninput=mm_sm_cart_func($sizeofsizes,$size_of_ordered_colors); min='0' max='0' value='0' ></div>";
+												echo "<div class='col-xs-12'>Number of Cartons : <input type='number' required name='NoOf_Cartons1' id='NoOf_Cartons1' class='form-control integer' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} oninput=mm_sm_cart_func($sizeofsizes,$size_of_planned_colors); min='0' max='0' value='0' ></div>";
 												echo "</div>
 											</div>";
 
@@ -1071,9 +1093,9 @@
 												echo "<div class='panel-heading'>Details</div>
 												<div class='panel-body'>";
 											$col_array = array();
-											$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and $order_joins_not_in";
-											//echo $sizes_query;die();
-											$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
+											$sewing_jobratio_cols_query = "SELECT DISTINCT order_col_des FROM $brandix_bts.tbl_orders_sizes_master WHERE parent_id IN ($schedule_id)";
+											// echo $sewing_jobratio_cols_query;die();
+											$sizes_result=mysqli_query($link, $sewing_jobratio_cols_query) or exit("Sql Error2 $sewing_jobratio_cols_query");
 											$row_count = mysqli_num_rows($sizes_result);
 											while($sizes_result1=mysqli_fetch_array($sizes_result))
 											{
@@ -1111,8 +1133,8 @@
 														for ($j=0; $j < sizeof($col_array); $j++)
 														{
 															$tot_ordered = 0;	$pack_tot_saved=0;
-															$tot_planned = 0;
-															$pack_tot = 0;
+															$tot_planned = 0;	$tot_carton_eligible_oq = 0;
+															$pack_tot = 0;	$tot_carton_eligible_pq = 0;
 															for($kk=0;$kk<sizeof($size_main);$kk++)
 															//foreach ($sizes_array as $key => $value)
 															{
@@ -1168,7 +1190,7 @@
 															
 
 															echo "<tr>
-																	<td rowspan=4>$col_array[$j]</td>
+																	<td rowspan=6>$col_array[$j]</td>
 																	<td>Order Quantity</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{
@@ -1199,6 +1221,28 @@
 																		$pack_tot_saved = $pack_tot_saved + $pack_qty_saved[$col_array[$j]][$size_main[$i]];
 																	}
 																	echo "<td>$pack_tot_saved</td>
+																</tr>";
+
+															echo "<tr>
+																	<td>Carton Eligibility Against Order Qty</td>";
+																	for ($i=0; $i < sizeof($size_main); $i++)
+																	{
+																		$carton_eligi_orderQty = $ordered_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]];
+																		echo "<td>".$carton_eligi_orderQty."</td>";
+																		$tot_carton_eligible_oq = $tot_carton_eligible_oq + $carton_eligi_orderQty;
+																	}
+																	echo "<td>$tot_carton_eligible_oq</td>
+																</tr>";
+
+															echo "<tr>
+																	<td>Carton Eligibility Against Planned Qty</td>";
+																	for ($i=0; $i < sizeof($size_main); $i++)
+																	{
+																		$carton_eligi_planQty = $planned_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]];
+																		echo "<td>".$carton_eligi_planQty."</td>";
+																		$tot_carton_eligible_pq = $tot_carton_eligible_pq + $carton_eligi_planQty;
+																	}
+																	echo "<td>$tot_carton_eligible_pq</td>
 																</tr>";
 
 															echo "<tr>
