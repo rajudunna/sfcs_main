@@ -1294,6 +1294,13 @@ function validating_with_module($pre_array_module)
 	{
 		# bundle level
 		$check_if_ij_is_scanned = "SELECT sum(recevied_qty) as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$job_no' AND operation_id='$operation'";
+
+		$get_ij_rand_no_QUERY = "SELECT input_job_no_random FROM $bai_pro3.pac_stat_log_input_job WHERE tid = '$job_no'";
+		$get_ij_rand_no_RESULT = $link->query($get_ij_rand_no_QUERY);
+		while ($ij = mysqli_fetch_array($get_ij_rand_no_RESULT))
+		{
+			$job_no = $ij['input_job_no_random'];
+		}
 	}
 	else if ($scan_type == 1)
 	{
@@ -1307,7 +1314,7 @@ function validating_with_module($pre_array_module)
 	}
 	if ($res > 0  && $res != null && $res != '')
 	{
-		if ($screen == 'scan')
+		if ($screen == 'scan' || $screen == 'wout_keystroke')
 		{
 			// Scanning screen
 			$response_flag = 0;
