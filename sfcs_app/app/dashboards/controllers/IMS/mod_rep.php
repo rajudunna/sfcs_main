@@ -54,7 +54,7 @@
     }
 
 
-    function dateDiffsql($link,$start,$end)
+    function dateDiffsql($start,$end)
     {
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
         $sql="select distinct bac_date from $bai_pro.bai_log_buf where bac_date<='$start' and bac_date>='$end'";
@@ -340,7 +340,7 @@
                                                     echo "N/A"; 
                                                 }
                                                 // echo '<input type="hidden" value="'.$pac_tid.'" name="pac_tid[]">'; 
-                                         
+                                            $aging=dateDiffsql(date("Y-m-d"),$sql_row12['ims_date']);
                                             echo "</td>
                                                 <td>".$pac_tid."</td>
                                                 <td>".$sql_row12['ims_date']."</td>";
@@ -356,7 +356,7 @@
                                                 <td>".$rejected."</td>
                                                 <td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td>
                                                 <td>".$sql_row12['ims_remarks']."</td>
-                                                <td>".dateDiffsql($link,date("Y-m-d"),$sql_row12['ims_date'])."</td>
+                                                <td>".$aging."</td>
                                                 <td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>
                                         </tr>"; 
                                 }
@@ -447,6 +447,8 @@
         col_11: "none",
         col_12: "none",
         col_13: "none",
+        col_14: "none",
+        col_15: "none",
         sort_select: true,
         paging: true,  
         paging_length: 100, 
