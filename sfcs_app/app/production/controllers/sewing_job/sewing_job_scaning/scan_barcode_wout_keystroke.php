@@ -28,7 +28,13 @@ th,td{
     <center><img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
 </div>
 <div class="panel panel-primary " id="scanBarcode" ng-app="scanning_interface" ng-cloak>
-    <div class="panel-heading" >Bundle Barcode Scanning</div>
+    <?php if($op_code)
+    {?>
+        <div class="panel-heading" >Bundle Barcode Scanning Without Operation</div>
+    <?php }else
+    {?>
+       <div class="panel-heading" >Bundle Barcode Scanning</div>
+    <?php }?>
     <div class="panel-body"  ng-controller="scanctrl">
         <div class="row jumbotron " ng-init="shift='<?= $shift ?>'">
 
