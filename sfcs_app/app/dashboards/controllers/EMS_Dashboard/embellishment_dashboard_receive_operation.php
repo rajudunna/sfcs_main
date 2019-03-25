@@ -602,7 +602,7 @@ function loadpopup(url){
                 text: "Please select shift",
                 type: "warning"
             }).then(function() {
-                window.close();
+                // window.close();
             });
   }
 }
