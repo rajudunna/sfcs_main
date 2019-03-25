@@ -14,7 +14,7 @@
     // var_dump($ops_array);
 ?>
 <div class="panel panel-primary " id="bundlewise_scanBarcode">
-    <div class="panel-heading">Bundle Barcode Scanning</div>
+    <div class="panel-heading">Bundle Barcode Scanning Without Operation</div>
     <div class="panel-body">
     <form method ='POST' action='<?php echo $url ?>'>
         <div class="row">
@@ -36,7 +36,7 @@
                     <?php
                         foreach($ops_array as $key=>$value)
                         {
-                            echo "<option value='$key'>$value</option>"; 
+                            echo "<option value='$key'>$value - $key</option>"; 
                         }
                     ?>
                 </select>
