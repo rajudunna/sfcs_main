@@ -2,6 +2,7 @@
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
     $shift = $_POST['shift'];
+	$op_code=$_POST['operation_code'];
 ?>
 
 <style>
@@ -27,12 +28,24 @@ th,td{
     <center><img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
 </div>
 <div class="panel panel-primary " id="scanBarcode" ng-app="scanning_interface" ng-cloak>
-    <div class="panel-heading" >Bundle Barcode Scanning</div>
+    <?php if($op_code)
+    {?>
+        <div class="panel-heading" >Bundle Barcode Scanning Without Operation</div>
+    <?php }else
+    {?>
+       <div class="panel-heading" >Bundle Barcode Scanning</div>
+    <?php }?>
     <div class="panel-body"  ng-controller="scanctrl">
         <div class="row jumbotron " ng-init="shift='<?= $shift ?>'">
 
             <div class="col-md-5">
-                <div class="col-padding" >
+			    <?php if($op_code)
+				{?>
+					<div class="col-padding" ng-init="op_code='<?= $op_code ?>'">
+				<?php }else
+				{?>
+					<div class="col-padding">
+				<?php }?>
                     <input type="text" id="barcode_scan" class="form-control input-lg" ng-model="barcode" ng-keypress="scanned($event)" placeholder="scan here" autofocus>
                     <input type="hidden" class="form-control" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'get_barcode_details_new.php',0,'R') ?>'">
                 </div>

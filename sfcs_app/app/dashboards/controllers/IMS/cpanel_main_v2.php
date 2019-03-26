@@ -383,6 +383,7 @@ $.ajax
 
 <title>IMS</title>
 <?php
+$dashboard_name="IMS";
 $start_timestamp = microtime(true);
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
@@ -469,7 +470,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
       $module=$mods[$x];
       $data[] = $mods[$x];
 
-      $module_sql = "SELECT * FROM $bai_pro3.module_master WHERE module_name=\"$module\"";
+      $module_sql = "SELECT * FROM $bai_pro3.module_master WHERE module_name='$module'";
       $module_sql_result = mysqli_query($link,$module_sql);
       $module_col_lab = mysqli_fetch_array($module_sql_result);
       // print_r($module_col_lab['color']);

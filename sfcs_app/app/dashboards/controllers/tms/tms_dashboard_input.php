@@ -1,6 +1,7 @@
 
 <?php
 $double_modules=array();
+$dashboard_name="TMS";
 ?>
 
 <?php

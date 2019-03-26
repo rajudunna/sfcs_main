@@ -413,8 +413,6 @@
                 $b_query_temp[$op_code] = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`) VALUES";
             }
         }
-
-        $m3_bulk_bundle_insert = "INSERT INTO m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_remarks,sfcs_log_user,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref,m3_error_code) VALUES";
         // insert or update based on table
         if($table_name == 'packing_summary_input')
         {     
@@ -444,11 +442,12 @@
                     if($b_rep_qty[$key] > 0 )
                     {
                         $bulk_insert_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'"),';
-                    }
-                    //m3 operations............. 
-                    if($b_rep_qty[$key] > 0) {
-                        $m3_bulk_bundle_insert .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'.$b_doc_num[$key].'","'.$b_rep_qty[$key].'","","'.$b_remarks[$key].'",USER(),"'. $b_op_id.'","'.$b_inp_job_ref[$key].'","'.$b_module[$key].'","'.$b_shift.'","'.$b_op_name.'","'.$b_tid[$key].'",""),';
-                        $flag_decision = true;
+                        if($emb_cut_check_flag == 1)
+                        {
+                            $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$b_rep_qty[$key] where doc_no = '".$b_doc_num[$key]."' and size_title='".$b_sizes[$key]."' AND operation_code = $pre_ops_code";
+                            $update_qry_cps_log_res = $link->query($update_qry_cps_log);
+                        }
+                        
                     }
                     $count = 1;
                     foreach($pre_ops_code_temp as $index => $op_code)
@@ -493,25 +492,15 @@
                 $final_query_000_temp = $bulk_insert_temp;
             }
             $bundle_creation_result_temp = $link->query($final_query_000_temp);
-            //echo $m3_bulk_bundle_insert;
-            
-            if(strtolower($is_m3) == 'yes' && $flag_decision){
-                if(substr($m3_bulk_bundle_insert, -1) == ','){
-                    $final_query100 = substr($m3_bulk_bundle_insert, 0, -1);
-                }else{
-                    $final_query100 = $m3_bulk_bundle_insert;
-                }
-                $rej_insert_result100 = $link->query($final_query100) or exit('data error');
-            }
             $sql_message = 'Data inserted successfully';
                     //all operation codes query.. (not tested)
-        }else{
+        }
+        else
+        {
             $query = '';
 
             if($table_name == 'bundle_creation_data')
             {
-                $bulk_insert_rej = "INSERT INTO $bai_pro3.bai_qms_db(`qms_style`, `qms_schedule`,`qms_color`,`log_user`, `log_date`, `qms_size`, `qms_qty`, `qms_tran_type`,`remarks`, `ref1`, `doc_no`, `input_job_no`, `operation_id`, `qms_remarks`, `bundle_no`) VALUES";
-
                 $schedule_count_query = "SELECT input_job_no_random_ref FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = $b_job_no AND operation_id =$b_op_id";
 
                 $schedule_count_query = $link->query($schedule_count_query) or exit('query error');
@@ -525,12 +514,9 @@
                 $concurrent_flag = 0;
                 foreach ($b_tid as $key => $tid) 
                 {
-
                     if($b_tid[$key] == $bundle_no){
-                        
                         if($concurrent_flag == 0)
                         {
-
                             $smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
                             $result_smv_query = $link->query($smv_query);
                             while($row_ops = $result_smv_query->fetch_assoc()) 
@@ -580,21 +566,22 @@
                                     
                                     $result_query = $link->query($query) or exit('query error in updating');
                                 }else{
-                                     
+                                        
                                     $bulk_insert_post .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'")';	
                                     $result_query_001 = $link->query($bulk_insert_post) or exit('bulk_insert_post query error in updating');
                                 }
-                                //m3 operations............. 
-                                if($b_rep_qty[$key] > 0){
-                                    $m3_bulk_bundle_insert .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'. $b_size_code[$key].'","'. $b_sizes[$key].'","'.$b_doc_num[$key].'","'.$previously_scanned.'","","'.$b_remarks[$key].'",USER(),"'. $b_op_id.'","'.$b_inp_job_ref[$key].'","'.$b_module[$key].'","'.$b_shift.'","'.$b_op_name.'","'.$b_tid[$key].'",""),';
-                                    $flag_decision = true;
-                                }
+                              
                                 if($result_query)
                                 {
                                     if($b_rep_qty[$key] > 0)
                                     {
                                         $bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$previously_scanned .'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'")';	
                                         $result_query_001_temp = $link->query($bulk_insert_post_temp) or exit('bulk_insert_post query error in updating');
+                                        if($emb_cut_check_flag == 1)
+                                        {
+                                            $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previously_scanned where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code = $pre_ops_code";
+                                            $update_qry_cps_log_res = $link->query($update_qry_cps_log);
+                                        }
                                     }
                                 }	
                                 
@@ -624,33 +611,6 @@
                 if($concurrent_flag == 1)
                 {
                     echo "<h1 style='color:red;'>You are Scanning More than eligible quantity.</h1>";
-                }
-                if($concurrent_flag == 0)
-                {
-                    if($reason_flag)
-                    {
-                        if(substr($bulk_insert_rej, -1) == ',')
-                        {
-                            $final_query = substr($bulk_insert_rej, 0, -1);
-                        }
-                        else
-                        {
-                            $final_query = $bulk_insert_rej;
-                        }
-                        $rej_insert_result = $link->query($final_query) or exit('data error');
-                    }
-                    if(strtolower($is_m3) == 'yes' && $flag_decision)
-                    {
-                        if(substr($m3_bulk_bundle_insert, -1) == ',')
-                        {
-                            $final_query100 = substr($m3_bulk_bundle_insert, 0, -1);
-                        }
-                        else
-                        {
-                            $final_query100 = $m3_bulk_bundle_insert;
-                        }
-                        $rej_insert_result100 = $link->query($final_query100) or exit('data error');
-                    }
                 }
             }	
         }
@@ -728,11 +688,6 @@
             }
             for($i=0;$i<sizeof($b_tid);$i++)
             {
-                if($emb_cut_check_flag == 1)
-                {
-                    $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-($b_rep_qty[$i] + $b_rej_qty[$i]) where doc_no = $doc_value and size_title='$size_ims' AND operation_code = $pre_ops_code";
-                    $update_qry_cps_log_res = $link->query($update_qry_cps_log);
-                }
                 if($b_tid[$i] == $bundle_no){
                     if($b_op_id == 100 || $b_op_id == 129)
                     {

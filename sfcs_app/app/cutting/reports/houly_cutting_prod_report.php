@@ -42,7 +42,7 @@ if(isset($_POST['submit']))
 			</style>
 			
 		<?php
-		echo "<div class=\"table-responsive\"><table class='table'><tr class='danger'><th rowspan=2>Cutting<br>Section</th><th colspan=$total_hours>Time</th><th rowspan=2>Cut Qty</th><th rowspan=2>Yards</th><th rowspan=2># of Docket</th></tr>";
+		echo "<div class=\"table-responsive\"><table class='table'><tr class='danger'><th rowspan=2>Cutting<br>Table</th><th colspan=$total_hours>Time</th><th rowspan=2>Cut Qty</th><th rowspan=2>$fab_uom</th><th rowspan=2># of Docket</th></tr>";
 	   	echo "<tr class='warning'>";
 	   	$query='';
 	   	for ($i=0; $i < $total_hours; $i++)
@@ -59,16 +59,17 @@ if(isset($_POST['submit']))
 		// echo "<tr class='warning'><th>8.30 am</th><th>9.30 am</th><th>10.30 am</th><th>11.30 am</th><th>12.30 pm</th><th>1.30 pm</th><th>2.30 pm</th><th>3.30 pm</th><th>4.30 pm</th><th>5.30 pm</th><th>6.30 pm</th></tr>";
 		// Section A Start
 		$grand_tot_no_of_doc=$grand_tot_cut_qty=0;
-		$cutting_tbl_query= "SELECT tbl_id FROM $bai_pro3.tbl_cutting_table order by tbl_id*1";
+		$cutting_tbl_query= "SELECT tbl_id,tbl_name FROM $bai_pro3.tbl_cutting_table order by tbl_id*1";
 		$cutting_tbl_result=mysqli_query($link, $cutting_tbl_query) or exit("Sql Error1.2022");
-		while($tbl_id=mysqli_fetch_array($cutting_tbl_result))
+		while($row=mysqli_fetch_array($cutting_tbl_result))
 		{
-			$tbl_id=$tbl_id['tbl_id'];
+			$tbl_id=$row['tbl_id'];
+			$tbl_name=$row['tbl_name'];
 			$sql2="SELECT $query ROUND((SUM(fab_received)-(SUM(damages)+SUM(shortages))),2) AS tot_fab,COUNT(doc_no)  AS doc_count FROM $bai_pro3.cut_dept_report WHERE date= \"$from_date\" and section=$tbl_id";
 			 // echo '<br>'.$sql2;
 			// $sql2="SELECT * FROM $bai_pro3.cut_dept_report WHERE date= \"$from_date\" and section=$tbl_id";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-			echo "<tr><td>".$tbl_id."</td>";
+			echo "<tr><td>".$tbl_name."</td>";
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
 				$total_qty = 0;

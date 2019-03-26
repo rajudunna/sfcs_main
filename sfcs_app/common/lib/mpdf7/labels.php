@@ -72,7 +72,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
     $buyer=$sql_row['buyer'];
     $pkg_no=$sql_row['pkg_no'];
     $grn_date=$sql_row['grn_date'];
-    $uom_ref=$sql_row['uom'];
+	$uom_ref=$sql_row['uom'];
+	$style_no=$sql_row['style_no'];
 }
 if($uom_ref=='MTR')
 {
@@ -126,7 +127,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b>/$child_lots  / Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."</b> </td></tr>";
 				//$html.= "<tr><td>REC # : <strong>$rec_no </strong>/ GRN D: <strong>$grn_date</strong> /Qty (YDS) : <strong> $qty_rec</strong></td></tr>";
 				$html.= "<tr><td>REC # : <strong>".str_pad($rec_no, 11, " ", STR_PAD_RIGHT)."</strong> / GRN D: <strong>$grn_date</strong> / Qty (".$uom_ref.") : <strong> $qty_rec</strong></td></tr>";
-				$html.= "<tr><td>BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)."</b> / BOX # : <b>$ref2</b>  </td></td></tr>";
+				$html.= "<tr><td>Style :<strong>".str_pad($style_no, 7, " ", STR_PAD_RIGHT)."</strong> / BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)."</b> / BOX # : <b>$ref2</b>  </td></td></tr>";
 				$html.= "<tr><td>".'<barcode code="'.leading_zeros($barcode_number,8).'" type="C39"/ height="0.60" size="0.90" text="1">       '."<strong>".str_pad(leading_zeros($barcode_number,8), 10, " ", STR_PAD_RIGHT)."</strong></tr>";
 				break;
 			}	
@@ -138,7 +139,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$html.= "<tr><td>PO No : <strong>".str_pad($po_no, 7, " ", STR_PAD_RIGHT)."</strong>  / REF NO : <strong>$remarks</strong> / PKG # : <b>$pkg_no</b> </td></tr>";
 				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b> /  Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."/ </b>  /</td></tr>";
 				$html.= "<tr><td>REC # : <strong>".str_pad($rec_no, 11, " ", STR_PAD_RIGHT)." </strong>/ GRN D: <strong>$grn_date</strong> / Qty (".$uom_ref.") : <strong> $qty_rec</strong></td></tr>";
-				$html.= "<tr><td>BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)."</b> / BOX # : <b>$ref2</b> </td></td></tr>";
+				$html.= "<tr><td>Style :<strong>".str_pad($style_no, 7, " ", STR_PAD_RIGHT)."</strong> / BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)."</b> / BOX # : <b>$ref2</b> </td></td></tr>";
 				$html.= "<tr><td>".'<barcode code="'.leading_zeros($barcode_number,8).'" type="C39"/ height="0.60" size="0.90" text="1">       '."<strong>".str_pad(leading_zeros($barcode_number,8), 10, " ", STR_PAD_RIGHT)."</strong></tr>";
 				break;
 			}	
@@ -152,7 +153,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b>/$child_lots / Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."</b> </td></tr>";
 				$html.= "<tr><td>REC # : <strong>$rec_no </strong> / GRN D: <strong>$grn_date</strong> /Qty (YDS) : <strong> $qty_rec</strong></td></tr>";
 				//$html.= "<tr><td>REC # : <strong>".str_pad($rec_no, 11, " ", STR_PAD_RIGHT)." </strong>/ Qty (".$uom_ref.") : <strong> $qty_rec</strong></td></tr>";
-				$html.= "<tr><td>BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)."</b> / ROLL # : <b>$ref2</b>  </td></tr>";
+				$html.= "<tr><td>Style :<strong>".str_pad($style_no, 7, " ", STR_PAD_RIGHT)."</strong> / BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)."</b> / ROLL # : <b>$ref2</b>  </td></tr>";
 				$html.= "<tr><td>".'<barcode code="'.leading_zeros($barcode_number,8).'" type="C39"/ height="0.60" size="0.90" text="1">       '."<strong>".str_pad(leading_zeros($barcode_number,8), 10, " ", STR_PAD_RIGHT)."</strong></tr>";
 				break;
 
@@ -166,7 +167,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$html.= "<tr><td>PO No : <strong>".str_pad($po_no, 7, " ", STR_PAD_RIGHT)."</strong> / REF NO : <strong>$remarks</strong> / PKG # : <b>$pkg_no</b></td></tr>";
 				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b> / Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."</b> </td></tr>";
 				$html.= "<tr><td>REC # : <strong>".str_pad($rec_no, 11, " ", STR_PAD_RIGHT)." </strong> / GRN D: <strong>$grn_date</strong>/ Qty (".$uom_ref.") : <strong>$qty_rec</strong></td></tr>";
-				$html.= "<tr><td>BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)." </b>/ BOX # : <b>$ref2</b> </td></td></tr>";
+				$html.= "<tr><td>Style :<strong>".str_pad($style_no, 7, " ", STR_PAD_RIGHT)."</strong> / BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)." </b>/ BOX # : <b>$ref2</b> </td></td></tr>";
 				$html.= "<tr><td>".'<barcode code="'.leading_zeros($barcode_number,8).'" type="C39"/ height="0.60" size="0.90" text="1">       '."<strong>".str_pad(leading_zeros($barcode_number,8), 10, " ", STR_PAD_RIGHT)."</strong></tr>";
 				break;
 			}	
@@ -178,7 +179,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$html.= "<tr><td>PO No : <strong>".str_pad($po_no, 7, " ", STR_PAD_RIGHT)."</strong>  / REF NO : <strong>$remarks</strong> / PKG # : <b>$pkg_no</b> </td></tr>";
 				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b> / Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."</b> </td></tr>";
 				$html.= "<tr><td>REC # : <strong>".str_pad($rec_no, 11, " ", STR_PAD_RIGHT)." </strong>/ GRN Date : <strong>$grn_date</strong>/ Qty (".$uom_ref.") : <strong>$qty_rec</strong></td></tr>";
-				$html.= "<tr><td>BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)."</b> / BOX # : <b>$ref2</b> </td></td></tr>";
+				$html.= "<tr><td>Style :<strong>".str_pad($style_no, 7, " ", STR_PAD_RIGHT)."</strong> / BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)."</b> / BOX # : <b>$ref2</b> </td></td></tr>";
 				$html.= "<tr><td>".'<barcode code="'.leading_zeros($barcode_number,8).'" type="C39"/ height="0.60" size="0.90" text="1">       '."<strong>".str_pad(leading_zeros($barcode_number,8), 10, " ", STR_PAD_RIGHT)."</strong></tr>";
 				break;
 			}
