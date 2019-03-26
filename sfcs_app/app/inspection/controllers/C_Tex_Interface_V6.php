@@ -1791,6 +1791,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$ctex_sum+= ($sql_row['ref5']);
 		$avg_t_width+= ($sql_row['ref6']);
 		$avg_c_width+= ($sql_row['ref3']);
+		$rec_qty1+= ($sql_row['qty_rec']);
 	
 	if($sql_row['print_check']==1)
 	{
@@ -2443,9 +2444,9 @@ echo '</form>';
  <tr height=31 style='mso-height-source:userset;height:23.25pt'>
   <td height=31 class=xl6824082 style='height:23.25pt;border-top:none'><?php echo $num_rows; ?></td>
   <td class=xl6924082 style='border-top:none;border-left:none'><?php  echo $shade_count; ?></td>
-  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round($rec_qty,2); ?></td>
+  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round($rec_qty1,2); ?></td>
   <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round($ctex_sum,2); ?></td>
-  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round(($ctex_sum-$rec_qty),2); ?></td>
+  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round(($ctex_sum-$rec_qty1),2); ?></td>
   <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round($avg_t_width,2); ?></td>
   <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round($avg_c_width,2); ?></td>
   <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round(($avg_c_width-$avg_t_width),4); ?></td>
