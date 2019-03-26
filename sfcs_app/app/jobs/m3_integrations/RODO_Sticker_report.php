@@ -3,17 +3,22 @@ $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(6000000);
-	// include('mssql_conn.php');
-	$conn = odbc_connect($conn_string,$user_ms,$password_ms);
-	error_reporting(0);
-	if($conn)
+
+$conn = odbc_connect($conn_string,$user_ms,$password_ms);
+error_reporting(0);
+if($conn)
+{
+	foreach($grn_details as $codes)
 	{
-		// include('mysql_db_config.php');
+	
+		$code=explode("-",$codes);
+		$cluster_code=$code[0];
+		$central_wh_code=$code[1];
+		$plant_wh_code=$code[2];
 		$curr_date = date(Ymd);
-		// $query_text = "CALL  BAISFCS.RPT_APL_SFCS_M3_INTEGRATION('BEL',200,'BAL','E54','".$curr_date."','".$curr_date."',0,'%','%','RODO')";
 		$query_text = "CALL  $m3_db.RPT_APL_SFCS_M3_INTEGRATION('".$cluster_code."',$comp_no,'".$central_wh_code."','".$plant_wh_code."','".$curr_date."','".$curr_date."',0,'%','%','RODO')";
 		$result = odbc_exec($conn, $query_text);
-			$j=0;
+		$j=0;
 		while($row = odbc_fetch_array($result))
 		{
 		
@@ -47,19 +52,21 @@ set_time_limit(6000000);
 				$j++;
 			}
 		}
-		if($j>0)
-		{
-			print("Updated $j Records in Sticker Report Successfully ")."\n";
-
-		}
 	}
-	else
+	if($j>0)
 	{
-		print("Connection Failed")."\n";
+		print("Updated Records in Sticker Report Successfully ")."\n";
+	}else{
+		print("No Records are updated in Sticker Report")."\n";
 	}
+}
+else
+{
+	print("Connection Failed")."\n";
+}
 
-	$end_timestamp = microtime(true);
-	$duration = $end_timestamp - $start_timestamp;
-	print("Execution took ".$duration." milliseconds.");
+$end_timestamp = microtime(true);
+$duration = $end_timestamp - $start_timestamp;
+print("Execution took ".$duration." milliseconds.");
 
 ?>
