@@ -114,6 +114,9 @@ $userName = getrbac_user()['uname'];
 					//echo $insert_log_query.";<br>";
 					// die();
 					mysqli_query($link, $insert_log_query) or die("Error while saving the track details2");
+
+					$insert_qry1="insert into $bai_pro3.job_transfer_details (sewing_job_number,transfered_module,status) values (".$items[1].",".$items[0].",'P')";
+					mysqli_query($link, $insert_qry1)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}				
 			} 
 			else
