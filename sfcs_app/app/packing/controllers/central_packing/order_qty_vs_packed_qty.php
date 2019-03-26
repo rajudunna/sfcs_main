@@ -466,7 +466,7 @@
 							</tr>";
 
 						echo "<tr>
-								<td>Carton Eligibility Against Planned Qty</td>";
+								<td>Carton Eligibility Against Cut Plan Qty</td>";
 								for ($i=0; $i < sizeof($size_main); $i++)
 								{
 									$carton_eligi_plan_qty = $planned_qty[$col_array[$j]][$size_main[$i]] - $pack_qty[$col_array[$j]][$size_main[$i]];
