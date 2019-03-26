@@ -309,7 +309,7 @@ foreach($time_value as $hour)
 			$bg_color="bgcolor=\"orange\"";
 		}			
 	}		
-	echo "<td $bg_color>".(($hourly_targets[$hour]-$act_out[$hour])>0?($hourly_targets[$hour]-$act_out[$hour]):0)."</td>";
+	echo "<td $bg_color>".(($hourly_targets[$hour]-$act_out[$hour])>0?($hourly_targets[$hour]-$act_out[$hour]):$act_out[$hour]-$hourly_targets[$hour])."</td>";
 }
 
 ?>
