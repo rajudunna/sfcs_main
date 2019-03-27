@@ -486,6 +486,7 @@
                             // echo $order_tid."<br>";
                             // echo $order_del."<br>";
                             // echo $style."<br>";
+							$order_tid='';
                             $size_values=ims_sizes($order_tid,$order_del,$style,$sql_row55["ims_color"],str_replace("a_","",$sql_row55["ims_size"]),$link);
 
                             unset($rej_qty);
