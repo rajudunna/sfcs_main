@@ -366,7 +366,7 @@ $(document).ready(function()
 									var op_codes_str='';
 									$.each(op_codes, function( index, value ) {
 										console.log( index + ": " + value );
-										op_codes_str = op_codes_str + '<th>'+value+'</th>';
+										op_codes_str = op_codes_str + '<th>'+index+'</th>';
 									});
 									for(var i=0;i<data.length;i++)
 									{

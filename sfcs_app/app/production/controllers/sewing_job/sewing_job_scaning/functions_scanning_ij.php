@@ -14,7 +14,7 @@ function getscheduledata($variable)
 	$category="'sewing'";
 	$query_get_schedule_data= "SELECT tm.operation_code,tm.operation_name FROM brandix_bts.tbl_orders_ops_ref tm
 	WHERE tm.operation_code NOT IN (10,200,15) 
-	AND category IN ($category)
+	AND category IN ($category) AND display_operations='yes'
 	GROUP BY tm.operation_code ORDER BY tm.operation_code";
 	$result = $link->query($query_get_schedule_data);
 	while($row = $result->fetch_assoc()){
@@ -172,9 +172,21 @@ function getjobdetails($job_number)
 	{
 		
 		$ops_get_code[] = $row['operation_code'];
-		$result_array['ops_get_code'][] = $row['operation_code'];
+		//$result_array['ops_get_code'][] = $row['operation_code'];
 
 	}
+
+	$opertions = implode(',',$ops_get_code);
+
+	$to_display_values="SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions) and display_operations='yes'";
+	//echo $to_display_values;
+	$ops_query_result1=$link->query($to_display_values);
+	while ($row1 = $ops_query_result1->fetch_assoc())
+	{
+      $result_array['ops_get_code'][$row1['operation_name']] = $row1['operation_code'];
+	}
+	// echo $display_code;
+
 	$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
 	$result_pre_ops_check = $link->query($pre_ops_check);
 	if($result_pre_ops_check->num_rows > 0)

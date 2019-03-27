@@ -206,8 +206,16 @@ function validateQty(event)
                                              <option value='Receive PF' <?php echo $row[0]['category']== 'Receive PF'? 'selected' : ''?>>Embellishment Received</option>
                                         </select>
                                     </div>
-                                </div>
-                                <div class='row'>
+
+                                    <div class="col-sm-3">
+                                     <div class="dropdown">
+                                        <b>Operations To Display<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
+                                        <select class="form-control" id="display1" name="display1" required>
+                                        <option value="">Please Select</option><option value='yes' selected>Yes</option><option value='No' >No</option></select>    
+                                    </div>
+                                    </div></div>
+                                    
+                                  <div class='row'>
                                     <div class="col-sm-2">
                                         <button type="submit" class="btn btn-info" style="margin-top:18px;">Update</button>
                                     </div>
@@ -226,6 +234,7 @@ function validateQty(event)
         
         $operation_name = "";
         $default_operation = "";
+        $display_operations= "";
         $operation_code = "";   
         $type = "";
         $sw_cod = "";
@@ -235,6 +244,9 @@ function validateQty(event)
         }
         if(isset($_GET["sel1"])){
             $default_operation= $_GET["sel1"];
+        }
+        if(isset($_GET["display1"])){
+            $display_operations= $_GET["display1"];
         }
         if(isset($_GET["opc"])){
             $operation_code= $_GET["opc"];
@@ -299,9 +311,9 @@ function validateQty(event)
             }
             if($cnt == 0 && $cnt_short == 0 && $m3ops_type_short == 0 && $m_operation_type_check == 1 &&  $work_center_qry == 1)
             {
-                $qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation',work_center_id='$work_center_id',category='$category',parent_work_center_id='$parent_work_center_id',m3_operation_type='$m_operation_type' where id='$id'";
-                // echo $qry_insert1;
-                // die();
+                $qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', display_operations='$display_operations', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation',work_center_id='$work_center_id',category='$category',parent_work_center_id='$parent_work_center_id',m3_operation_type='$m_operation_type' where id='$id'";
+                 echo $qry_insert1;
+                 die();
                 $res_do_num1 = mysqli_query($link,$qry_insert1);
                 
                 echo "<h3 style='color:red;text-align:center;'>Please Wait!!!  While Redirecting to page !!!</h3>";

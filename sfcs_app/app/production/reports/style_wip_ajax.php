@@ -21,7 +21,7 @@ if($_GET['some'] == 'bundle_no')
 	    
 			
 
-			$sewing_op_codes = "SELECT group_concat(operation_code) as op_codes FROM $brandix_bts.tbl_orders_ops_ref WHERE category = '$CAT'";
+			$sewing_op_codes = "SELECT group_concat(operation_code) as op_codes FROM $brandix_bts.tbl_orders_ops_ref WHERE category = '$CAT' and display_operations='yes'";
 			$row = mysqli_fetch_array(mysqli_query($link,$sewing_op_codes));
 			{
 			  $op_codes = $row['op_codes'];
@@ -230,7 +230,7 @@ else
 
 		$bcd_data_query .= " and operation_id in ($opertions)";
 
-		$get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions) ";
+		$get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions) and display_operations='yes'";
 		//echo $get_ops_query;
 		$ops_query_result=$link->query($get_ops_query);
 		while ($row1 = $ops_query_result->fetch_assoc())
@@ -261,9 +261,10 @@ else
 				
 			foreach ($operation_code as $op_code) 
 			{
-				if(strlen($ops_get_code[$op_code]) > 0)
-				$table_data .= "<th>".$ops_get_code[$op_code]."<br>(Good)</th>";
-				$table_data .= "<th>".$ops_get_code[$op_code]."<br>(Rejection)</th>";
+				if(strlen($ops_get_code[$op_code]) > 0){
+					$table_data .= "<th>".$ops_get_code[$op_code]."<br>(Good)</th>";
+					$table_data .= "<th>".$ops_get_code[$op_code]."<br>(Rejection)</th>";
+				}
 			}
 			
 		    foreach ($operation_code as $op_code) 
