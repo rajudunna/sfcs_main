@@ -25,11 +25,7 @@ $uid=$conf->get('mssql-user-name');
 $pwd = $conf->get('mssql-password');
 $m3_databasename=$conf->get('m3database');
 $driver_name=$conf->get('driver_name');
-$mssql_db = $conf->get('m3database');
-$ms_sql_odbc_server = $conf->get('mssql-server-name');
-$ms_sql_driver_name = $conf->get('driver_name');
-$ms_sql_odbc_user = $conf->get('mssql-user-name');
-$ms_sql_odbc_pass = $conf->get('mssql-password');
+
 //sfcs-ffsp configurations
 $sfsp_serverName=$conf->get('sf_sp_servername');
 $sfsp_m3_databasename=$conf->get('sf_sp_dbname');
