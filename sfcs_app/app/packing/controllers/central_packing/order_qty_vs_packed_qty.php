@@ -325,7 +325,7 @@
 								<table class=\"table table-bordered\">
 									<tr class=\"info\">
 										<th>Colors</th>
-										<th>Details</th>";
+										<th colspan=2>Details</th>";
 										for ($i=0; $i < sizeof($size_main); $i++)
 										{
 											echo "<th>$size_main[$i]</th>";
@@ -412,7 +412,7 @@
 
 							echo "<tr>
 								<td rowspan=6>$col_array[$j]</td>
-								<td>Order Qty</td>";
+								<td colspan=2>Order Qty</td>";
 								for ($i=0; $i < sizeof($size_main); $i++)
 								{ 
 									echo "<td>".$ordered_qty[$col_array[$j]][$size_main[$i]]."</td>";
@@ -421,28 +421,28 @@
 								echo "<td>$tot_ordered</td>
 							</tr>";
 
-							echo "<tr>
-									<td>Cut Plan Qty</td>";
-									for ($i=0; $i < sizeof($size_main); $i++)
-									{ 
-										echo "<td>".$planned_qty[$col_array[$j]][$size_main[$i]]."</td>";
-										$tot_planned = $tot_planned + $planned_qty[$col_array[$j]][$size_main[$i]];
-									}
-									echo "<td>$tot_planned</td>
-								</tr>";
+						echo "<tr>
+								<td colspan=2>Cut Plan Qty</td>";
+								for ($i=0; $i < sizeof($size_main); $i++)
+								{ 
+									echo "<td>".$planned_qty[$col_array[$j]][$size_main[$i]]."</td>";
+									$tot_planned = $tot_planned + $planned_qty[$col_array[$j]][$size_main[$i]];
+								}
+								echo "<td>$tot_planned</td>
+							</tr>";
 
-							echo "<tr>
-									<td>Packing Saved Quantity</td>";
-									for ($i=0; $i < sizeof($size_main); $i++)
-									{									
-										echo "<td>".$pack_qty_saved[$col_array[$j]][$size_main[$i]]."</td>";
-										$pack_tot_saved = $pack_tot_saved + $pack_qty_saved[$col_array[$j]][$size_main[$i]];
-									}
-									echo "<td>$pack_tot_saved</td>
-								</tr>";
+						echo "<tr>
+								<td colspan=2>Packing Saved Quantity</td>";
+								for ($i=0; $i < sizeof($size_main); $i++)
+								{									
+									echo "<td>".$pack_qty_saved[$col_array[$j]][$size_main[$i]]."</td>";
+									$pack_tot_saved = $pack_tot_saved + $pack_qty_saved[$col_array[$j]][$size_main[$i]];
+								}
+								echo "<td>$pack_tot_saved</td>
+							</tr>";
 
-							echo "<tr>
-								<td>Pack Generated</td>";
+						echo "<tr>
+								<td colspan=2>Pack Generated</td>";
 								for ($i=0; $i < sizeof($size_main); $i++)
 								{									
 									echo "<td>".$pack_qty[$col_array[$j]][$size_main[$i]]."</td>";
@@ -451,22 +451,23 @@
 								echo "<td>$pack_tot</td>
 							</tr>";
 
-							echo "<tr>
-								<td>Carton Eligibility Against Order Qty</td>";
+						echo "<tr>
+								<td rowspan=2>Carton Eligibility</td>
+								<td>Against Order Qty</td>";
 								for ($i=0; $i < sizeof($size_main); $i++)
 								{
-									$carton_eligi_oq = $ordered_qty[$col_array[$j]][$size_main[$i]] - $pack_qty[$col_array[$j]][$size_main[$i]];
+									$carton_eligi_oq = $ordered_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]];
 									echo "<td>".$carton_eligi_oq."</td>";
 									$tot_orderQty_eligible = $tot_orderQty_eligible + $carton_eligi_oq;
 								}
 								echo "<td>$tot_orderQty_eligible</td>
 							</tr>";
 
-							echo "<tr>
-								<td>Carton Eligibility Against Cut Plan Qty</td>";
+						echo "<tr>
+								<td>Against Cut Plan Qty</td>";
 								for ($i=0; $i < sizeof($size_main); $i++)
 								{
-									$carton_eligi_plan_qty = $planned_qty[$col_array[$j]][$size_main[$i]] - $pack_qty[$col_array[$j]][$size_main[$i]];
+									$carton_eligi_plan_qty = $planned_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]];
 									echo "<td>".$carton_eligi_plan_qty."</td>";
 									$tot_planQty_eligible = $tot_planQty_eligible + $carton_eligi_plan_qty;
 								}
