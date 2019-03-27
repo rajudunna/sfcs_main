@@ -42,6 +42,14 @@ while($row = mysqli_fetch_array($result))
             $sql2="insert into [$mssql_db].[dbo].[tbl_Update_M3_MRN_Link](CONO,Color,EmployeeNo,Inputdate,Line,Status) values('".$cono."','".$order_col_des."','".$employee_no."','".$date."','".$line."',NULL)";
                     echo $sql2."<br>";
             $result7=odbc_exec($connect, $sql2) or exit("Error2=".odbc_errormsg($connect));
+            $sql_num_check5=odbc_num_rows($result7);
+            if($sql_num_check5>0){
+
+             $sql_query="update $bai_pro3.job_transfer_details set status='S' where sewing_job_number='$sewing_job_number' ";
+             $sql_query_result=mysqli_query($link, $sql_query) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+            }
+
 
         }
 	  
