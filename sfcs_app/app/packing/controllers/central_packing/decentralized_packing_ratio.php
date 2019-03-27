@@ -516,7 +516,7 @@
 				?>
 				&nbsp;&nbsp;
 				<input type="submit" name="submit" id="submit" class="btn btn-success" onclick="return check_val();" value="Submit">
-			</form>
+				</form>
 		</div>
 		
 		</br>
@@ -796,7 +796,7 @@
 													<table class=\"table table-bordered\">
 														<tr class=\"info\">
 															<th>Colors</th>
-															<th>Details</th>";
+															<th colspan=2>Details</th>";
 															for ($i=0; $i < sizeof($size_main); $i++)
 															{
 																echo "<th>$size_main[$i]</th>";
@@ -867,7 +867,7 @@
 
 															echo "<tr>
 																	<td rowspan=6>$col_array[$j]</td>
-																	<td>Order Qty</td>";
+																	<td colspan=2>Order Qty</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{
 																		echo "<input type='hidden' name='order_qty' id='order_qty_".$j."_".$i."' value='".($planned_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]]) ."' />";
@@ -878,7 +878,7 @@
 																</tr>";
 
 															echo "<tr>
-																	<td>Cut Plan Qty</td>";
+																	<td colspan=2>Cut Plan Qty</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{ 
 																		echo "<td>".$planned_qty[$col_array[$j]][$size_main[$i]]."</td>";
@@ -888,7 +888,7 @@
 																</tr>";
 
 															echo "<tr>
-																	<td>Pack Saved Quantity</td>";
+																	<td colspan=2>Pack Saved Quantity</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{									
 																		echo "<td>".$pack_qty_saved[$col_array[$j]][$size_main[$i]]."</td>";
@@ -898,7 +898,8 @@
 																</tr>";
 
 															echo "<tr>
-																	<td>Carton Eligibility Against Order Qty</td>";
+																	<td rowspan=2>Carton Eligibility</td>
+																	<td>Against Order Qty</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{
 																		$carton_eligi_orderQty = $ordered_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]];
@@ -909,7 +910,7 @@
 																</tr>";
 
 															echo "<tr>
-																	<td>Carton Eligibility Against Cut Plan Qty</td>";
+																	<td>Against Cut Plan Qty</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{
 																		$carton_eligi_planQty = $planned_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]];
@@ -920,7 +921,7 @@
 																</tr>";
 
 															echo "<tr>
-																	<td>New Pack Quantity</td>";
+																	<td colspan=2>New Pack Quantity</td>";
 
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{
