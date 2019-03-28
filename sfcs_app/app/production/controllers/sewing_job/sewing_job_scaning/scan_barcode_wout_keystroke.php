@@ -2,7 +2,6 @@
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
     $shift = $_POST['shift'];
-	$op_code=$_POST['operation_code'];
     $has_permission=haspermission($_GET['r']);
     if (in_array($override_sewing_limitation,$has_permission))
     {
@@ -12,6 +11,7 @@
     {
         $value = 'not_authorized';
     }
+	$op_code=$_POST['operation_code'];
 ?>
 
 <style>
