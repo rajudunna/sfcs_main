@@ -586,14 +586,17 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							</div>";
 			}
 
-			$sql="SELECT * FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_module=$module ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc ";	
+			$sql="SELECT *,group_concat(distinct order_col_des) as cols,sum(carton_act_qty) as qty FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_module=$module ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc ";	
 			$result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row=mysqli_fetch_array($result))
 			{
 				if($y==$priority_limit)
 				{
 					break;
-				}				
+				}
+				$get_color = $row["order_col_des"];				
+				$order_col=$row["cols"];
+				$qty=$row["qty"];
 				$input_job_no_random_ref=$row["input_job_no_random_ref"];
 				$input_trims_status=$row["input_trims_status"];
 				$sql2="SELECT min(st_status) as st_status,order_style_no,order_del_no,input_job_no FROM $temp_pool_db.plan_doc_summ_input_tms_$rbac_username WHERE input_job_no_random='$input_job_no_random_ref'";	
@@ -604,7 +607,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$style=$row2['order_style_no'];
 					$schedule=$row2['order_del_no'];
 					$input_job_no=$row2['input_job_no'];
-				}									
+				}	
+				$co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedule,$link);
 				if($input_trims_status==4)
 				{
 					$id="pink"; 
@@ -636,9 +640,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						$id="red";
 					}
 				}
-				$get_color = echo_title("$bai_pro3.packing_summary_input","order_col_des","order_del_no='$schedule' and input_job_no",$input_job_no,$link);
+				
 				$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$get_color,$input_job_no,$link);
-				$title=str_pad("Style:".$style,80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Job_No:".$display_prefix1,80);
+				$title=str_pad("Style:".$style,80)."\n".str_pad("Co No:".$co_no,80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Colors:".$order_col,80)."\n".str_pad("Job_No:".$display_prefix1,80)."\n".str_pad("Job Qty:".$qty,80);
+				$order_col='';
 				if(in_array($authorized,$has_permission))
 				{
 					echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter</font></a></div></div></div>";
