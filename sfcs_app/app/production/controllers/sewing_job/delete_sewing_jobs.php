@@ -90,15 +90,17 @@
         $schedule=$_POST['schedule'];
         $reason=$_POST['reason']; 
         $schedule = str_replace(' ', '', $schedule);
-
-        $op_code_query = "Select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application' ";
+        $ips_op_codes=array();
+        $ips_op_codes[]=0;
+        // $op_code_query = "Select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application' ";
+        $op_code_query="SELECT operation_code FROM tbl_orders_ops_ref WHERE category='sewing'";
                     $op_code_result = mysqli_query($link,$op_code_query);
         while($row = mysqli_fetch_array($op_code_result)){
-            $ips_op_code = $row['operation_code'];
+            $ips_op_codes[] = $row['operation_code'];
         }
-
+        $ips_op_code=implode(",",$ips_op_codes);
         $validation_query = "SELECT id from $brandix_bts.bundle_creation_data where schedule = '$schedule' and recevied_qty > 0
-                    and operation_id = $ips_op_code";
+                    and operation_id in (".$ips_op_code.")";
         // $validation_query="SELECT * FROM $bai_pro3.act_cut_status WHERE doc_no IN (SELECT doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '%".$schedule."%')"; 
         // echo $validation_query; 
         $sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data"); 
@@ -265,14 +267,17 @@
         $seqno = $_GET['seq_no'];
         $reason = $_GET['reason'];
         // echo $reason;
-        $op_code_query = "Select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application' ";
+        $ips_op_codes=array();
+        $ips_op_codes[]=0;
+        // $op_code_query = "Select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application' ";
+        $op_code_query="SELECT operation_code FROM tbl_orders_ops_ref WHERE category='sewing'";
                     $op_code_result = mysqli_query($link,$op_code_query);
         while($row = mysqli_fetch_array($op_code_result)){
-            $ips_op_code = $row['operation_code'];
+            $ips_op_codes[] = $row['operation_code'];
         }
-        
-        $validation_query = "SELECT id from $brandix_bts.bundle_creation_data where schedule = '$schedule' and recevied_qty > 0 
-                    and operation_id = $ips_op_code";
+        $ips_op_code=implode(",",$ips_op_codes);
+        $validation_query = "SELECT id from $brandix_bts.bundle_creation_data where schedule = '$schedule' and recevied_qty > 0
+                    and operation_id in (".$ips_op_code.")";
         $sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data");      
         $count= mysqli_num_rows($sql_result); 
         if($count>0) 
