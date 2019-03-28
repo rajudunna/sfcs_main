@@ -93,7 +93,7 @@
         $ips_op_codes=array();
         $ips_op_codes[]=0;
         // $op_code_query = "Select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application' ";
-        $op_code_query="SELECT operation_code FROM tbl_orders_ops_ref WHERE category='sewing'";
+        $op_code_query="SELECT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE category='sewing'";
                     $op_code_result = mysqli_query($link,$op_code_query);
         while($row = mysqli_fetch_array($op_code_result)){
             $ips_op_codes[] = $row['operation_code'];
@@ -270,7 +270,7 @@
         $ips_op_codes=array();
         $ips_op_codes[]=0;
         // $op_code_query = "Select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application' ";
-        $op_code_query="SELECT operation_code FROM tbl_orders_ops_ref WHERE category='sewing'";
+        $op_code_query="SELECT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE category='sewing'";
                     $op_code_result = mysqli_query($link,$op_code_query);
         while($row = mysqli_fetch_array($op_code_result)){
             $ips_op_codes[] = $row['operation_code'];
