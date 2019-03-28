@@ -152,7 +152,15 @@
                                     <option value='sewing'>Sewing</option>
                                     <option value='packing'>Packing</option>
                                     </select>
+                                </div>
+                                <div class="col-sm-3">
+                                     <div class="dropdown">
+                                        <b>Operations To Display<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
+                                        <select class="form-control" id="display1" name="display1" required>
+                                        <option value="">Please Select</option><option value='yes' selected>Yes</option><option value='No' >No</option></select>    
+                                    </div>
                                 </div></div>
+                                 
                                 <div class='row'>
                                     <div class="col-sm-2">
                                         <button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
@@ -173,6 +181,7 @@
 <?php
     $operation_name = "";
     $default_operation = "";
+    $display_operations= "";
     $operation_code = "";
     $sw_cod="";
     $work_center="";
@@ -185,6 +194,9 @@
     }
     if(isset($_POST["sel1"])){
         $default_operation= $_POST["sel1"];
+    }
+    if(isset($_POST["display1"])){
+        $display_operations= $_POST["display1"];
     }
     if(isset($_POST["opc"])){
         $operation_code= $_POST["opc"];
@@ -272,7 +284,7 @@
         }
         if($cnt_opsname == 0 && $cnt == 0 && $cnt_short == 0 && $cnt_work == 0 && $cnt_moptyp == 0 && $m_operation_type_check == 1  && $work_center_qry == 1)
         {
-            $qry_insert = "INSERT INTO $brandix_bts.tbl_orders_ops_ref ( operation_name, default_operation,operation_code, type, operation_description,short_cut_code,work_center_id,category,parent_work_center_id,m3_operation_type)VALUES('$operation_name','$default_operation','$operation_code', '$type', '$sw_cod','$short_key_code','$work_center_id','$category','$parent_work_center_id','$m_operation_type')";
+            $qry_insert = "INSERT INTO $brandix_bts.tbl_orders_ops_ref ( operation_name, default_operation,operation_code, display_operations, type, operation_description,short_cut_code,work_center_id,category,parent_work_center_id,m3_operation_type)VALUES('$operation_name','$default_operation','$operation_code', '$display_operations','$type', '$sw_cod','$short_key_code','$work_center_id','$category','$parent_work_center_id','$m_operation_type')";
             $res_do_num = mysqli_query($link,$qry_insert);
             echo "<script>sweetAlert('Saved Successfully','','success')</script>";
         }
@@ -339,7 +351,7 @@
     $res_do_num=mysqli_query($link,$query_select);
     echo "<div class='container'><div class='panel panel-primary'><div class='panel-heading'>Operations List</div><div class='panel-body'>";
     echo "<div class='table-responsive'><table class='table table-bordered' id='table_one'>";
-    echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>Report To ERP</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>M3 Operation Type</th><th style='text-align:  center;'>Form</th><th>Short Key Code</th><th style='text-align:  center;'>Work Center</th><th style='text-align:  center;'>Category</th><th style='text-align:  center;'>Parent Work Center Id</th><th style='text-align:  center;'>Action</th></tr></thead><tbody>";
+    echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>Report To ERP</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>M3 Operation Type</th><th style='text-align:  center;'>Operation To Display</th><th style='text-align:  center;'>Form</th><th>Short Key Code</th><th style='text-align:  center;'>Work Center</th><th style='text-align:  center;'>Category</th><th style='text-align:  center;'>Parent Work Center Id</th><th style='text-align:  center;'>Action</th></tr></thead><tbody>";
     $i=1;
     while($res_result = mysqli_fetch_array($res_do_num))
     {
@@ -366,6 +378,7 @@
             <td>".$res_result['default_operation']."</td>
             <td>".$res_result['operation_code']."</td>
             <td>".$res_result['m3_operation_type']."</td>
+            <td>".$res_result['display_operations']."</td>
             <td>".$res_result['type']."</td>
             <td>".strtoupper($res_result['short_cut_code'])."</td>
             <td>".$res_result['work_center_id']."</td>
