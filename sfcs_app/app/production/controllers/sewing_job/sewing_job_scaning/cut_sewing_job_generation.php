@@ -154,8 +154,9 @@ if(isset($_POST) && isset($_POST['main_data'])){
         $update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = '$inserted_id' ";
         $update_result = mysqli_query($link,$update_query) or exit("Problem while inserting to sewing jos ref");
 
-        insertMOQuantitiesSewing($schedule,$inserted_id);
+        
     }
+    insertMOQuantitiesSewing($schedule,$inserted_id);
 
     echo json_encode(['message'=>'success']);
 
@@ -754,6 +755,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
     $scope.getjobs = function() {
         $scope.j = 0;
         $scope.jobcount = $('#job-qty').val();
+        $scope.bundleqty = $('#bundle-qty').val();
         if(Number($scope.jobcount)>0 && Number($scope.jobcount)>=Number($scope.bundleqty)){
             $scope.fulljob = {};
             // console.log($scope.bundleqty);

@@ -315,7 +315,8 @@ if(isset($_POST['submit']))
 		{
 			$act_doc_no=$sql_row1['doc_no'];
 			$act_cut_no=$sql_row1['acutno'];
-			
+
+			$status=$sql_row1['act_cut_status'];
 			for($s=0;$s<sizeof($sizes_code);$s++)
 			{
 				$act_s[$sizes_code[$s]]=$sql_row1["a_s".$sizes_code[$s].""]*$sql_row1['a_plies'];
@@ -340,7 +341,7 @@ if(isset($_POST['submit']))
 				$cut_shift=$sql_row['shift'];
 			}
 			
-			if($cut_date!="")
+			if($status == 'DONE')
 			{
 				$cut_qty_total=$cut_qty_total+$act_total;
 			}
@@ -399,26 +400,31 @@ if(isset($_POST['submit']))
 					<th class='danger' style="width:100px;">Size</th>
 					<?php
 						for($s=0;$s<sizeof($s_tit);$s++){
-								echo "<td class='danger'>".$s_tit[$sizes_code[$s]]."</td>";
-							}
+							echo "<td class='danger'>".$s_tit[$sizes_code[$s]]."</td>";
+						}
 					?>
 				</tr>
 				<tr>
 					<th class='danger'  style="width:100px;">Order Qty</th>
 					<?php
 						for($s=0;$s<sizeof($s_tit);$s++)
-							{
-								echo "<td>".$o_s[$sizes_code[$s]]."</td>";
-							}
+						{
+							echo "<td>".$o_s[$sizes_code[$s]]."</td>";
+						}
 					?>
 				</tr>
 				<tr>
 					<th class='danger' style="width:100px;">Extra Cut</th>
 					<?php
 						for($s=0;$s<sizeof($s_tit);$s++)
-							{
-								echo "<td>".($a_s[$sizes_code[$s]]-$o_s[$sizes_code[$s]])."</td>";
+						{
+							$extra_val = $a_s[$sizes_code[$s]]-$o_s[$sizes_code[$s]];
+							if ($extra_val > 0) {
+								echo "<td>$extra_val</td>";
+							} else {
+								echo "<td> 0 </td>";
 							}
+						}
 					?>
 				</tr>		
 			</table>
@@ -426,23 +432,57 @@ if(isset($_POST['submit']))
 		<div class='col-sm-4' >
 			<table class="table table-bordered table-responsive">
 					<tr>
-						<th class='success'>Size</th>
+						<th class='success'>Order Qty</th>
 						<td><?php echo $o_total; ?></td>
 						<td>100%</td>
 					</tr>
 					<tr>
-						<th class='success'>Order Qty</th>
-						<td><?php  echo $cut_qty_total;  ?></td>
-						<td><?php if($o_total>0){echo  round(($cut_qty_total/$o_total)*100,0); }?>%</td>
+						<th class='success'>Cut Qty</th>
+						<td>
+							<?php
+								if ($cut_qty_total > $o_total)
+								{
+									echo $o_total;
+								}
+								else
+								{
+									echo $cut_qty_total;
+								}
+							?>
+						</td>
+						<td>
+							<?php
+								if ($cut_qty_total > $o_total)
+								{
+									echo round(($o_total/$o_total)*100,2);
+								}
+								else
+								{
+									echo round(($cut_qty_total/$o_total)*100,2);
+								}
+							?>
+							%
+						</td>
 					</tr>
 					<tr>
 						<th class='success'>Extra Cut</th>
-						<td><?php echo $input_qty_total;  ?></td>
+						<td>
+							<?php 
+								if (($cut_qty_total - $o_total) > 0)
+								{
+									echo $cut_qty_total - $o_total;
+								}
+								else
+								{
+									echo "0";
+								}
+							?>
+						</td>
 						<td></td>
 					</tr>		
 			</table>
 		</div>
-	</div>
+		</div>
 		<br>
 		
 
@@ -477,125 +517,125 @@ if(isset($_POST['submit']))
 							<th>Module<span style='mso-spacerun:yes'></span></th>
 							<!--<th>Shift</th> -->
 						</tr>
-				<?php
-					
-					while($sql_row1=mysqli_fetch_array($sql_result1))
-					{
-						$act_doc_no=$sql_row1['doc_no'];
-						$act_cut_no=$sql_row1['acutno'];
-						for($s=0;$s<sizeof($sizes_code);$s++)
-						{
-							$act_s[$sizes_code[$s]]=$sql_row1["a_s".$sizes_code[$s].""]*$sql_row1['a_plies'];
-						}
-						
-						$act_total=array_sum($act_s);
-						$cut_status=$sql_row1['act_cut_status'];
-						// $input_status=$sql_row1['act_cut_issue_status'];
-						$doc_date=$sql_row1['date'];
-						
-							$cut_date="";
-							$cut_section="";
-							$cut_shift="";
-						
-						$sql="select * from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
-						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$sql_num_check=mysqli_num_rows($sql_result);
-						while($sql_row=mysqli_fetch_array($sql_result))
-						{
-							$cut_date=$sql_row['date'];
-							$cut_section=$sql_row['section'];
-							$cut_shift=$sql_row['shift'];
-						}
-						
-						if($cut_date!="")
-						{
-							$cut_qty_total=$cut_qty_total+$act_total;
-						}
-						
-							$input_date="";
-							$input_module="";
-							$input_shift="";
-							$input_reported_qty=0;
-						// $sql="select * from $bai_pro3.act_cut_issue_status where doc_no=$act_doc_no";						
-						// $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						// $sql_num_check=mysqli_num_rows($sql_result);
-						// while($sql_row=mysqli_fetch_array($sql_result))
-						// {
-						// 	$input_date=$sql_row['date'];
-						// 	$input_module=$sql_row['mod_no'];
-						// 	$input_shift=$sql_row['shift'];
-						// }	
-
-						$sql_ims_log="SELECT min(ims_date) as ims_date,COALESCE(SUM(ims_qty),0) as qty,group_concat(distinct ims_mod_no ORDER BY ims_mod_no) as mod_no from  $bai_pro3.ims_combine where ims_doc_no=$act_doc_no";
-						$sql_result_ims_log=mysqli_query($link, $sql_ims_log) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($sql_row_ims_log=mysqli_fetch_array($sql_result_ims_log))
-						{
-							$input_date=$sql_row_ims_log['ims_date'];
-							$input_module=$sql_row_ims_log['mod_no'];
-							$input_reported_qty=$sql_row_ims_log['qty'];
-						}
-
-						if($act_total > 0)
-						{
-							if($input_reported_qty>0)
-							{								
-								if($act_total>$input_reported_qty)
+						<?php
+							
+							while($sql_row1=mysqli_fetch_array($sql_result1))
+							{
+								$act_doc_no=$sql_row1['doc_no'];
+								$act_cut_no=$sql_row1['acutno'];
+								for($s=0;$s<sizeof($sizes_code);$s++)
 								{
-									$input_status="Partially Reported";	
+									$act_s[$sizes_code[$s]]=$sql_row1["a_s".$sizes_code[$s].""]*$sql_row1['a_plies'];
 								}
-								else if($act_total<=$input_reported_qty)
+								
+								$act_total=array_sum($act_s);
+								$cut_status=$sql_row1['act_cut_status'];
+								// $input_status=$sql_row1['act_cut_issue_status'];
+								$doc_date=$sql_row1['date'];
+								
+									$cut_date="";
+									$cut_section="";
+									$cut_shift="";
+								
+								$sql="select * from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
+								mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$sql_num_check=mysqli_num_rows($sql_result);
+								while($sql_row=mysqli_fetch_array($sql_result))
 								{
-									$input_status="Fully Reported";		
+									$cut_date=$sql_row['date'];
+									$cut_section=$sql_row['section'];
+									$cut_shift=$sql_row['shift'];
+								}
+								
+								if($cut_date!="")
+								{
+									$cut_qty_total=$cut_qty_total+$act_total;
+								}
+								
+									$input_date="";
+									$input_module="";
+									$input_shift="";
+									$input_reported_qty=0;
+								// $sql="select * from $bai_pro3.act_cut_issue_status where doc_no=$act_doc_no";						
+								// $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								// $sql_num_check=mysqli_num_rows($sql_result);
+								// while($sql_row=mysqli_fetch_array($sql_result))
+								// {
+								// 	$input_date=$sql_row['date'];
+								// 	$input_module=$sql_row['mod_no'];
+								// 	$input_shift=$sql_row['shift'];
+								// }	
+
+								$sql_ims_log="SELECT min(ims_date) as ims_date,COALESCE(SUM(ims_qty),0) as qty,group_concat(distinct ims_mod_no ORDER BY ims_mod_no) as mod_no from  $bai_pro3.ims_combine where ims_doc_no=$act_doc_no";
+								$sql_result_ims_log=mysqli_query($link, $sql_ims_log) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($sql_row_ims_log=mysqli_fetch_array($sql_result_ims_log))
+								{
+									$input_date=$sql_row_ims_log['ims_date'];
+									$input_module=$sql_row_ims_log['mod_no'];
+									$input_reported_qty=$sql_row_ims_log['qty'];
+								}
+
+								if($act_total > 0)
+								{
+									if($input_reported_qty>0)
+									{								
+										if($act_total>$input_reported_qty)
+										{
+											$input_status="Partially Reported";	
+										}
+										else if($act_total<=$input_reported_qty)
+										{
+											$input_status="Fully Reported";		
+										}
+										else
+										{
+											$input_status="Not Yet Reported";	
+										}
+									}
+									else
+									{
+										$input_status="Not Yet Reported";
+									}
+									
 								}
 								else
 								{
-									$input_status="Not Yet Reported";	
+									$input_status="Not Yet Reported";
 								}
-							}
-							else
-							{
-								$input_status="Not Yet Reported";
-							}
-							
-						}
-						else
-						{
-							$input_status="Not Yet Reported";
-						}
 
-						if($input_date!="")
-						{
-							$input_qty_total=$input_qty_total+$act_total;
-						}	
-					echo "<tr>";
-					echo "<td>".leading_zeros($act_doc_no,9)."</td>";
-					echo "<td>".chr($color_code).leading_zeros($act_cut_no,3)."</td>";
-					
-					for($s=0;$s<sizeof($s_tit);$s++)
-					{
-						echo "<td class=xl675113 style='border-top:none;border-left:none'>".$act_s[$sizes_code[$s]]."</td>";
-					}	
-					unset($act_s);
-					echo "<td>$act_total</td>";
-					echo "<td>$cut_status</td>";
-					echo "<td>$doc_date</td>";
-					echo "<td>$cut_date</td>";
-					echo "<td>$cut_section</td>";
-					echo "<td>$cut_shift</td>";
-					echo "<td>$input_status</td>";
-					echo "<td>$input_date</td>";
-					echo "<td>$input_module</td>";
-					// echo "<td>$input_shift</td>";
-					echo "</tr>";
-					
+								if($input_date!="")
+								{
+									$input_qty_total=$input_qty_total+$act_total;
+								}	
+								echo "<tr>";
+								echo "<td>".leading_zeros($act_doc_no,9)."</td>";
+								echo "<td>".chr($color_code).leading_zeros($act_cut_no,3)."</td>";
+								
+								for($s=0;$s<sizeof($s_tit);$s++)
+								{
+									echo "<td class=xl675113 style='border-top:none;border-left:none'>".$act_s[$sizes_code[$s]]."</td>";
+								}	
+								unset($act_s);
+								echo "<td>$act_total</td>";
+								echo "<td>$cut_status</td>";
+								echo "<td>$doc_date</td>";
+								echo "<td>$cut_date</td>";
+								echo "<td>$cut_section</td>";
+								echo "<td>$cut_shift</td>";
+								echo "<td>$input_status</td>";
+								echo "<td>$input_date</td>";
+								echo "<td>$input_module</td>";
+								// echo "<td>$input_shift</td>";
+								echo "</tr>";
+							
+							}
 					}
+						?>
+				 	</table>
+					</div>
+					<?php
 				}
-				?>
-		 	</table>
-		 </div>
-		 <?php
-		}
  
 	}
 }

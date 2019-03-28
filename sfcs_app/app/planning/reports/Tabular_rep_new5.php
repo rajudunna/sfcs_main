@@ -163,28 +163,28 @@ if(isset($_POST['submit1']))
 ?>
 <form name="test" action="<?php echo getFullURLLevel($_GET['r'],'Tabular_rep_new5.php','0','N'); ?>" method="post">
 <?php
-$sql="select distinct CPO from $bai_pro2.order_status_buffer order by CPO";	
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-echo "<div class=\"row\"><div class=\"col-sm-2\"><label>Select CPO:</label><select class='form-control' name=\"cpo\"  id=\"cpo\" onchange=\"firstbox();\">";
-echo "<option value='' disabled selected>Please Select</option>";
-if($cpo=="all") {
-	echo "<option value='all' selected>All</option>";
-}else{
-echo "<option value='all'>All</option>";
-}
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	
-	if(str_replace(" ","",$sql_row['CPO'])==str_replace(" ","",$cpo))
-    {
-		echo "<option value=\"".$sql_row['CPO']."\" selected>".$sql_row['CPO']."</option>";	
+	$sql="select distinct CPO from $bai_pro2.order_status_buffer order by CPO";	
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
+	echo "<div class=\"row\"><div class=\"col-sm-2\"><label>Select CPO:</label><select class='form-control' name=\"cpo\"  id=\"cpo\" onchange=\"firstbox();\">";
+	echo "<option value='' disabled selected>Please Select</option>";
+	if($cpo=="all") {
+		echo "<option value='all' selected>All</option>";
+	}else{
+	echo "<option value='all'>All</option>";
 	}
-	else{
-		echo "<option value=\"".$sql_row['CPO']."\" >".$sql_row['CPO']."</option>";
-	}
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		
+		if(str_replace(" ","",$sql_row['CPO'])==str_replace(" ","",$cpo))
+	    {
+			echo "<option value=\"".$sql_row['CPO']."\" selected>".$sql_row['CPO']."</option>";	
+		}
+		else{
+			echo "<option value=\"".$sql_row['CPO']."\" >".$sql_row['CPO']."</option>";
+		}
 
-}
+	}
 
     echo "  </select>
 	</div>";
@@ -197,7 +197,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<option value='' disabled selected>Please Select</option>";
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
-		
+
 		if(str_replace(" ","",$sql_row1['buyer_div'])==str_replace(" ","",$buyer_div))
 		 {
 			echo "<option value=\"".$sql_row1['buyer_div']."\" selected>".$sql_row1['buyer_div']."</option>";
@@ -218,39 +218,39 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<div class=\"col-sm-2\"><label>Select Style:</label><select class='form-control' name=\"style\"  id=\"style\" onchange=\"thirdbox();\">";
 	echo "<option value='' disabled selected>Please Select</option>";
 	while($sql_row2=mysqli_fetch_array($sql_result2))
-	{
-		
+	{	
+
 		if(str_replace(" ","",$sql_row2['style'])==str_replace(" ","",$style)){
 			echo "<option value=\"".$sql_row2['style']."\" selected>".$sql_row2['style']."</option>";
-
+		
 		}else{
 			echo "<option value=\"".$sql_row2['style']."\">".$sql_row2['style']."</option>";
+		
+		}	
 
-		}
-			
-	
+
 	}
 	echo "  </select>
     </div>";
-    $sql_query="select distinct style_id from $bai_pro2.order_status_buffer where replace(cpo,\"'\",\"\")='".str_replace("'","",$cpo)."' and  buyer_div='$buyer_div' and style='$style' order by style_id";
-	$sql_result3=mysqli_query($link, $sql_query) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_query="select distinct style_id from $bai_pro2.order_status_buffer where replace(cpo,\"'\",\"\")='".str_replace("'","",$cpo)."' and  buyer_div='$buyer_div' and style='$style' order by style_id";
+   	$sql_result3=mysqli_query($link, $sql_query) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check3=mysqli_num_rows($sql_result3);
 	echo "<div class=\"col-sm-2\"><label>Select User Style ID:</label><select class='form-control' name=\"style_id\"  id=\"style_id\" onchange=\"fourthbox();\">";
 	
 	echo "<option value='' disabled selected>Please Select</option>";
 	while($sql_row3=mysqli_fetch_array($sql_result3))
-	{
-		
+	{	
+
 		if(str_replace(" ","",$sql_row3['style_id'])==str_replace(" ","",$style_id))
 		{
-		echo "<option value=\"".$sql_row3['style_id']."\" selected>".$sql_row3['style_id']."</option>";
+			echo "<option value=\"".$sql_row3['style_id']."\" selected>".$sql_row3['style_id']."</option>";
 		}
 		else
 		{
-	    echo "<option value=\"".$sql_row3['style_id']."\">".$sql_row3['style_id']."</option>";
+	    	echo "<option value=\"".$sql_row3['style_id']."\">".$sql_row3['style_id']."</option>";
 		}
-	
-	
+
+
 	}
 	echo "  </select>
 	</div>";
@@ -276,8 +276,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 	echo "  </select>
 	</div>";
-	
-    $sql2="select distinct color from $bai_pro2.order_status_buffer where replace(cpo,\"'\",\"\")='".str_replace("'","",$cpo)."' and  buyer_div='$buyer_div' and style='$style' and style_id='$style_id' and schedule='$schedule' order by color";
+
+	$sql2="select distinct color from $bai_pro2.order_status_buffer where replace(cpo,\"'\",\"\")='".str_replace("'","",$cpo)."' and  buyer_div='$buyer_div' and style='$style' and style_id='$style_id' and schedule='$schedule' order by color";	
 	$sql_result5=mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check5=mysqli_num_rows($sql_result5);
 	echo "<div class=\"col-sm-3\"><label>Select Color:</label><select class='form-control' name=\"color\"  id=\"color\" onchange=\"sixthbox();\">";
@@ -387,8 +387,31 @@ if(isset($_POST['submit1']))
 	<input type="hidden" name="csv_123" id="csv_123">
 	<input class="pull-right btn btn-info" type="submit" id="excel" value="Export to Excel" onclick="getCSVData()">
 	</form>';
-			
-			
+
+	$operation_code = array();	$ops_get_code = array();	$operations_no = array();
+
+	$get_operations_workflow= "select DISTINCT(operation_code) from $brandix_bts.default_operation_workflow where operation_code not in (10) order by operation_order*1";
+	$result1 = $link->query($get_operations_workflow);
+	while($row1 = $result1->fetch_assoc())
+	{
+		$operation_code[] = $row1['operation_code'];
+	}
+	
+	
+	$get_operations_no= "select DISTINCT(operation_id) from $brandix_bts.bundle_creation_data_temp";				
+	$result4 = $link->query($get_operations_no);
+	while($row3 = $result4->fetch_assoc())
+	{
+		$operations_no[] = $row3['operation_id'];
+	}
+
+	$opertions = array_intersect($operation_code,$operations_no);
+	$get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in (".implode(',', $opertions).")";
+	$ops_query_result=$link->query($get_ops_query);
+	while ($row123 = $ops_query_result->fetch_assoc())
+	{
+		$ops_get_code[$row123['operation_code']] = $row123['operation_name'];
+	}
 
 	echo "<div class='table-responsive'><table id=\"table1\"  class=\" table table-bordered\"><thead>";
 	echo "<tr class='info'>";
@@ -402,21 +425,26 @@ if(isset($_POST['submit1']))
 	echo "<th>Color</th>";
 	echo "<th>Ex-Factory Date</th>";
 	echo "<th>Order Qty</th>";
-	echo "<th>Cut Qty</th>";
-	echo "<th>%</th>";
-	echo "<th>Sewing In Qty</th>";
-	echo "<th>%</th>";
-	echo "<th>Sewing Out Qty</th>";
-	echo "<th>%</th>";
-	echo "<th>Pack Qty</th>";
-	echo "<th>%</th>";
+	foreach ($ops_get_code as $key => $value)
+	{
+		echo "<th>$value ($key)</th>";
+		echo "<th>$value Completed %</th>";
+	}
+	// echo "<th>Cut Qty</th>";
+	// echo "<th>%</th>";
+	// echo "<th>Sewing In Qty</th>";
+	// echo "<th>%</th>";
+	// echo "<th>Sewing Out Qty</th>";
+	// echo "<th>%</th>";
+	// echo "<th>Pack Qty</th>";
+	// echo "<th>%</th>";
 	echo "<th>Ship Qty</th>";
-	echo "<th>%</th>";
+	echo "<th>Shipping Completed %</th>";
 	echo "</tr></thead><tbody>";
 	$count=0;
 	while($sql_row11=mysqli_fetch_array($sql_result11))
 	{
-	
+
 		$cut_qty=0;
 		$sewing_in=0;
 		$sewing_out=0;
@@ -454,9 +482,9 @@ if(isset($_POST['submit1']))
 			$sql_result1_count=mysqli_num_rows($sql_result1);
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
-				
-				
-				
+
+
+
 				$cust_order=$sql_row1['Cust_order'];
 				$cpo=$sql_row1['CPO'];
 				$mpo=$sql_row1['MPO'];
@@ -467,10 +495,17 @@ if(isset($_POST['submit1']))
 				$exfact_date=$sql_row1['exf_date'];
 				$order_qty=$sql_row1['order_qty'];
 				
-				$style_id=$sql_row1['style_id'];
-			
-			
+				$style_id=$sql_row1['style_id'];				
 			}
+
+			$bcd_data_query = "SELECT COALESCE(SUM(recevied_qty),0) as recevied,operation_id from $brandix_bts.bundle_creation_data where style='$style_no' and schedule ='$schedule_no' and color='$color' group by operation_id";
+			// echo $bcd_data_query.';<br>';
+			$bcd_get_result =$link->query($bcd_data_query);
+		    while ($row3 = $bcd_get_result->fetch_assoc())
+		    {
+				$bcd_rec[$row3['operation_id']] = $row3['recevied'];
+		    }
+
 			echo "<tr>";
 			echo "<td>$cust_order</td>";
 			echo "<td>$mpo</td>";
@@ -482,52 +517,30 @@ if(isset($_POST['submit1']))
 			echo "<td>$color</td>";
 			echo "<td>$exfact_date</td>";
 			echo "<td>$order_qty</td>";
-			echo "<td>$cut_qty</td>";
-			if($order_qty>0)
-			{
-				echo "<td>".round(($cut_qty/$order_qty)*100,0)."%</td>";
-			}
-			else
-			{
-				echo "<td>0%</td>";
-			}
 
-			echo  "<td>$sewing_in</td>";
-
-			if($order_qty>0)
+			foreach ($ops_get_code as $key => $value)
 			{
-				echo "<td>".round(($sewing_in/$order_qty)*100,0)."%</td>";
-			}
-			else
-			{
-				echo "<td>0%</td>";
-			}
-
-			echo  "<td>$sewing_out</td>";
-
-			if($order_qty>0)
-			{
-				echo "<td>".round(($sewing_out/$order_qty)*100,0)."%</td>";
-			}
-			else
-			{
-				echo "<td>0%</td>";
-			}
-
-			echo  "<td>$pack_qty</td>";
-
-			if($order_qty>0)
-			{
-				echo "<td>".round(($pack_qty/$order_qty)*100,0)."%</td>";
-			}
-			else
-			{
-				echo "<td>0%</td>";
+				if ($bcd_rec[$key] > 0)
+				{
+					echo "<td>".$bcd_rec[$key]."</td>";
+				}
+				else
+				{
+					echo "<td>0</td>";
+				}
+				
+				if ($bcd_rec[$key] > 0 && $order_qty > 0)
+				{
+					echo "<td>".round(($bcd_rec[$key]/$order_qty)*100,0)."%</td>";
+				}
+				else
+				{
+					echo "<td>0%</td>";
+				}
 			}
 
 			echo  "<td>$ship_qty</td>";
-
-			if($order_qty>0)
+			if($order_qty>0 && $ship_qty>0)
 			{
 				echo "<td>".round(($ship_qty/$order_qty)*100,0)."%</td>";
 			}
@@ -535,7 +548,6 @@ if(isset($_POST['submit1']))
 			{
 				echo "<td>0%</td>";
 			}
-
 			echo "</tr>";
 			$count++;	
 		}
