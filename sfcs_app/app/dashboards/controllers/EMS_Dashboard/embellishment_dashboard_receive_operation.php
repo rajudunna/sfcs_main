@@ -443,7 +443,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $ord_style=$sql_row1['order_style_no'];
           //$fabric_status=$sql_row1['fabric_status'];
           $plan_lot_ref_v1=$sql_row1['plan_lot_ref'];
-
+          $track_id=$sql_row1['track_id'];
+          
           $fabric_status=$sql_row1['fabric_status_new']; //NEW due to plan dashboard clearing regularly and to stop issuing issued fabric.
           if($fabric_status==null or $fabric_status==0)
           {
@@ -485,7 +486,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             $co_no=$sql_row112['co_no'];
           }
 
-          $sql21="select orginal_qty,send_qty,receive_qty,send_op_code,receive_op_code from $bai_pro3.embellishment_plan_dashboard where doc_no='".$doc_no."'";
+          $sql21="select orginal_qty,send_qty,receive_qty,send_op_code,receive_op_code from $bai_pro3.embellishment_plan_dashboard where doc_no='".$doc_no."' and track_id=$track_id";
           // echo $sql2;
           $result21=mysqli_query($link, $sql21) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
           while($row21=mysqli_fetch_array($result21))
@@ -552,8 +553,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $title=str_pad("Style:".trim($style),80)."\n".str_pad("CO:".trim($co_no),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),50)."\n".str_pad("Cut_No:".implode(", ",$club_c_code),80)."\n".str_pad("DOC No:".implode(", ",$club_docs),80)."\n".str_pad("Total_Qty:".$total_qty,80)."\n".str_pad("Send Qty:".$send_qty,80)."\n".str_pad("Received Qty:".$receive_qty,80)."\n".str_pad("Plan_Time:".$log_time,50)."\n";
 
           $clr=trim(implode(',',$colors_db),50);
-        
-          echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(".implode(", ",$club_c_code).")</span></div></div><br>";           
+          
+          if($send_qty > 0)
+          {            
+            echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(".implode(", ",$club_c_code).")</span></div></div><br>"; 
+          }          
         }
       }   
       echo "</td>";
@@ -598,7 +602,7 @@ function loadpopup(url){
                 text: "Please select shift",
                 type: "warning"
             }).then(function() {
-                window.close();
+                // window.close();
             });
   }
 }
