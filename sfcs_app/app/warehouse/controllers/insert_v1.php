@@ -373,7 +373,7 @@ echo '<div class="panel panel-default">
 				<div class="col-md-3">
 					<input type="hidden" value="'.$lot_no.'" name="lot_no">
 					<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();"  style="margin-top:33px;">Enable
-					<input type="submit" value="Submit" name="put" id="put" onclick="return button_disable();" class="btn btn-success style="margin-top:33px;"/>
+					<input type="submit" value="Submit" name="put" id="put" onclick="clickAndDisable(this);" class="btn btn-success style="margin-top:33px;"/>
 				</div>
 			</div>
 		</div></div>';
@@ -624,7 +624,13 @@ $(document).ready(function()
 
 
 </script>
-
+<script> 
+   function clickAndDisable(link) {
+     link.onclick = function(event) {
+        event.preventDefault();
+     }
+   }   
+</script>
 <style>
 .sticky {
   position: fixed;

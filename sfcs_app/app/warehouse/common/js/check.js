@@ -240,15 +240,21 @@ function quantity(t) {
     }
 
     $total_qty = parseFloat(available) - roundNumber((parseFloat(sumx)), 2);
-    if($total_qty>0){
-        $total_qty= $total_qty;
-    }
-    else{
-        $total_qty=0;
-    }
+    // if($total_qty>0){
+    //     $total_qty= $total_qty;
+    // }
+    // else{
+    //     $total_qty=0;
+    // }
     if (available < roundNumber((parseFloat(sumx)), 2)) {
         sweetAlert("Can't Fill excess Quantity", '', 'warning');
         t.value = '';
+        for (i = 0; i < 100; i++)
+
+        balance = Number(balance.toFixed(2)) - Number(document.test["qty[" + i + "]"].value);
+        document.getElementById('balance_new11').value = balance.toFixed(2);
+        document.getElementById('balance_new11_qty').value = balance.toFixed(2);
+        return;
     }
     document.getElementById('balance_new11').value = $total_qty.toFixed(2);
     document.getElementById('balance_new11_qty').value = $total_qty.toFixed(2);
