@@ -425,7 +425,7 @@ if(isset($_GET['job_rev_no']))
 function getjobreversaldetails($job_rev_no)
 {
 	include("../../../../../common/config/config_ajax.php");	
-	$operations_qty = "SELECT operation_name,operation_id FROM $brandix_bts.bundle_creation_data bc LEFT JOIN $brandix_bts.tbl_orders_ops_ref os ON os.operation_code=bc.operation_id WHERE input_job_no_random_ref='$job_rev_no' GROUP BY operation_id";
+	$operations_qty = "SELECT operation_name,operation_id FROM $brandix_bts.bundle_creation_data bc LEFT JOIN $brandix_bts.tbl_orders_ops_ref os ON os.operation_code=bc.operation_id WHERE input_job_no_random_ref='$job_rev_no' AND os.display_operations='yes' GROUP BY operation_id";
 	$result_operations_qty = $link->query($operations_qty);
 	if($result_operations_qty->num_rows > 0)
 	{

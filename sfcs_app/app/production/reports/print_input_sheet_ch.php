@@ -117,7 +117,7 @@
                 }
                 
                         //To get operations
-                        $get_operations_sql="select DISTINCT(operation_code) from $brandix_bts.tbl_style_ops_master where style='$disStyle' and operation_code not in(10,15,60,70,200)";
+                        $get_operations_sql="select DISTINCT(operation_code) from $brandix_bts.tbl_style_ops_master where style='$disStyle'";
                        // echo $get_operations_sql;
                         $ops_result=mysqli_query($link, $get_operations_sql) or die("Error-".$get_operations_sql."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
                          while($row1=mysqli_fetch_array($ops_result))
@@ -127,7 +127,7 @@
                           
                          $opertions = implode(',',$operation_code);
 
-                        $get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions)  ";
+                        $get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions) AND category ='sewing' AND display_operations='yes'";
                         //echo $get_ops_query;
                         $ops_query_result=$link->query($get_ops_query);
                         while ($row2 = $ops_query_result->fetch_assoc())
