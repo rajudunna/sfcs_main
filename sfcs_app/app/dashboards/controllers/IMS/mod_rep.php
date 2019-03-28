@@ -4,6 +4,10 @@
     ini_set('display_errors', 'On');
     set_time_limit(6000); 
 
+ ?>   
+
+<?php  
+
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
     include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
@@ -12,6 +16,7 @@
     $url_r = base64_encode(implode('/',$php_self)."/sec_rep.php");
     $has_permission=haspermission($url_r);
     $user_name = getrbac_user()['uname'];
+    error_reporting(0);
 
     $ref_no=time();
     //echo $ref_no;
@@ -34,6 +39,31 @@
         $section_id=$_POST['section_id']; 
     }
 ?> 
+ <?php
+
+    function dateDiff($start, $end) {
+
+    $start_ts = strtotime($start);
+
+    $end_ts = strtotime($end);
+
+    $diff = $end_ts - $start_ts;
+
+    return round($diff / 86400);
+
+    }
+
+
+    function dateDiffsql($start,$end)
+    {
+        include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
+        $sql="select distinct bac_date from $bai_pro.bai_log_buf where bac_date<='$start' and bac_date>='$end'";
+        $sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+        
+        return mysqli_num_rows($sql_result);
+    }
+
+ ?>  
 
 <head>
     <title>Module Transfer Panel</title>
@@ -177,6 +207,8 @@
                             <th>Rejected</th>
                             <th>Balance</th>
                             <th>Input<br>Remarks</th>
+                            <th>Age</th>
+                            <th>WIP</th>
                         </tr>
                         <?php
                             $toggle=0; 
@@ -308,7 +340,7 @@
                                                     echo "N/A"; 
                                                 }
                                                 // echo '<input type="hidden" value="'.$pac_tid.'" name="pac_tid[]">'; 
-                                         
+                                            $aging=dateDiffsql(date("Y-m-d"),$sql_row12['ims_date']);
                                             echo "</td>
                                                 <td>".$pac_tid."</td>
                                                 <td>".$sql_row12['ims_date']."</td>";
@@ -324,6 +356,8 @@
                                                 <td>".$rejected."</td>
                                                 <td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td>
                                                 <td>".$sql_row12['ims_remarks']."</td>
+                                                <td>".$aging."</td>
+                                                <td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>
                                         </tr>"; 
                                 }
                             }
@@ -413,6 +447,8 @@
         col_11: "none",
         col_12: "none",
         col_13: "none",
+        col_14: "none",
+        col_15: "none",
         sort_select: true,
         paging: true,  
         paging_length: 100, 

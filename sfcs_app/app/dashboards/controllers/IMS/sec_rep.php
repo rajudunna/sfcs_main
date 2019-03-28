@@ -304,8 +304,8 @@ if(isset($_GET['val']))
 								<th rowspan=2>Input Remarks</th>
 								<th rowspan=2>Ex-Factory</th>
 								<th width='150'>Remarks</th>
-								<th>Age</th>
-								<th>WIP</th>
+								<th rowspan=2>Age</th>
+								<th rowspan=2>WIP</th>
 							</tr>
 							<tr>";             
 								foreach ($operation_code as $op_code) 
@@ -324,7 +324,8 @@ if(isset($_GET['val']))
 			$new_module = $module_ref;
 			$rowcount_check=0;
 
-			$sql12="select sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output, count(*) as count from $brandix_bts.bundle_creation_data where assigned_module='$module_ref' and  send_qty > 0 and original_qty != recevied_qty";
+			$sql12="select sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output, count(*) as count from $brandix_bts.bundle_creation_data where assigned_module='$module_ref' and  send_qty > 0";
+			//echo $sql12;
 			if(isset($_POST['submit']))
 			{
 				$input_selection=$_POST['input_selection'];
@@ -339,6 +340,7 @@ if(isset($_GET['val']))
 			{
 				$sql12.=" GROUP BY bundle_number,operation_id ";
 			}
+			//echo $sql12;
 			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=0;
 			$balance=0;
@@ -347,6 +349,7 @@ if(isset($_GET['val']))
 			  $balance=$balance+$sql_row12['input']-$sql_row12['output'];
 			  $sql_num_check=$sql_num_check+1;
 			}
+			//echo $balance;
 			// echo "</br>num : ".$sql_num_check."</br>";
 			
 			if($sql_num_check>0)
