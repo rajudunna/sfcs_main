@@ -192,7 +192,7 @@
 			{
 				$('#loading-image').hide();
 				var module_flag = null;	var restrict_msg = '';
-				var pre_array_module = [module1,job_no,ops,'reversal'];
+				var pre_array_module = [module1,job_no,ops,'reversal',1];
 				$.ajax({
 					type: "POST",
 					url: function_text+"?pre_array_module="+pre_array_module,

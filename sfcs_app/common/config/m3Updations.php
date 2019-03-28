@@ -540,7 +540,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
 
     $mo_array  = array();   $mo_qty_array = array();
     $validate_qry = "SELECT mo_no,sum(bundle_quantity) as bun_quantity from $bai_pro3.mo_operation_quantites where ref_no in (".$b_tid.") and op_code = $b_op_id group by mo_no";
-    $qry_nop_result=mysqli_query($link,$validate_qry) or exit("Bundles Query Error14 => ".$qry_to_check_mo_numbers);
+    $qry_nop_result=mysqli_query($link,$validate_qry) or exit("Bundles Query Error14 => ".$validate_qry);
     while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
     {
         $mo_array[] = $nop_qry_row['mo_no'];
