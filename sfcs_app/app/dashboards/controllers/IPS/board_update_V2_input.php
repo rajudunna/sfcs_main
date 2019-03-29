@@ -14,32 +14,6 @@ error_reporting(0);
 $section_no=$_GET['section_no'];
 ?>
 
-
-<?php
-
-//New Implementation to restrict as per time lines to update Planning Board 20111211
-	/* $hour=date("H");
-	$restricted_hours=array(7,8,9,15,16);
-	if(in_array($hour,$restricted_hours))
-	{
-		header("Location:time_out.php?msg=2");
-	} */
-	
-	$hour=date("H.i");
-		
-	//if(($hour>=7.45 and $hour<=10.00) or ($hour>=15.15 and $hour<=16.45)) //OLD
-	if(($hour>=7.45 and $hour<=9.45) or ($hour>=12.30 and $hour<=14.00) or ($hour>=16.00 and $hour<=17.30))
-	//if(($hour>=7.15 and $hour<=9.45) or ($hour>=15.15 and $hour<=17.15))
-	{
-		//header("Location:time_out.php?msg=2");
-	}
-	else
-	{
-		
-	}
-	
-?>
-
 <html>
 <head>
 
@@ -405,7 +379,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$sql_result1x115=mysqli_query($link, $sql1x115) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result1x115)>0)
 			{
-				if(sizeof($doc_no_ref_explode)<>mysqli_num_rows($sql_result1x115))
+				if(sizeof($doc_no_ref)<>mysqli_num_rows($sql_result1x115))
 				{
 					$fabric_req="0";
 				}
