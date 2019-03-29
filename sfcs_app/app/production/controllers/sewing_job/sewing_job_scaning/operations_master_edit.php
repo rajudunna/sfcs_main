@@ -312,8 +312,6 @@ function validateQty(event)
             if($cnt == 0 && $cnt_short == 0 && $m3ops_type_short == 0 && $m_operation_type_check == 1 &&  $work_center_qry == 1)
             {
                 $qry_insert1 = "update $brandix_bts.tbl_orders_ops_ref set operation_description='".$sw_cod."', type='".$type."', display_operations='$display_operations', operation_name='$operation_name',operation_code='$operation_code',short_cut_code='$short_cut_code',default_operation='$default_operation',work_center_id='$work_center_id',category='$category',parent_work_center_id='$parent_work_center_id',m3_operation_type='$m_operation_type' where id='$id'";
-                 echo $qry_insert1;
-                 die();
                 $res_do_num1 = mysqli_query($link,$qry_insert1);
                 
                 echo "<h3 style='color:red;text-align:center;'>Please Wait!!!  While Redirecting to page !!!</h3>";
