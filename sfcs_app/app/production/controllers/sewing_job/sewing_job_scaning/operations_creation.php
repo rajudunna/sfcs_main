@@ -155,11 +155,14 @@
                                 </div>
                                 <div class="col-sm-3">
                                      <div class="dropdown">
-                                        <b>Operations To Display<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
+                                        <b>Operations To Display</b> <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span>
                                         <select class="form-control" id="display1" name="display1" required>
-                                        <option value="">Please Select</option><option value='yes' selected>Yes</option><option value='No' >No</option></select>    
+                                        <option value="">Please Select</option>
+                                        <option value='yes'>Yes</option>
+                                        <option value='No' >No</option>
+                                        </select>    
                                     </div>
-                                </div></div>
+                                </div>
                                  
                                 <div class='row'>
                                     <div class="col-sm-2">
