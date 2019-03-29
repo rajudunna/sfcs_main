@@ -113,6 +113,8 @@ function validateQty(event)
                                             </select>   
                                         </div>
                                     </div>
+                                </div>
+                                <div class ="row">
                                     <div class="col-sm-3">
                                         <div class="dropdown">
                                             <b>Report To ERP<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
@@ -122,8 +124,7 @@ function validateQty(event)
                                             <option value='No' <?php echo $row[0]['default_operation']== 'No'? 'selected' : ''?>>No</option></select>   
                                         </div>
                                     </div>
-                                </div>
-                                <div class ="row">
+                                
                                     <div class="col-sm-3" hidden="true">
                                         <b>Sewing Order Code</b><input type="text" class="form-control" id="sw_cod" name="sw_cod" value= "<?php echo $row[0]['operation_description']?>">
                                     </div> 
@@ -150,11 +151,10 @@ function validateQty(event)
                                                 }
                                             ?>
                                         </select>
-
                                     </div>
                                     <div class = "col-sm-3">
                                         <label for="style">Parent Work Center Id<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='orange'>*</font></span></label>         
-                                            <select id="parent_work_center_id" name="parent_work_center_id" style="width:100%;" class="form-control">
+                                        <select id="parent_work_center_id" name="parent_work_center_id" style="width:100%;" class="form-control">
                                             <option value=''>Select Parent Work Center Id</option>
                                             <?php       
                                             if($vals>0){
@@ -190,11 +190,12 @@ function validateQty(event)
                                                 // }
                                             ?>
                                         </select>
-
                                     </div>
                                     <div class="col-sm-3">
                                         <b>Work Center</b><input type="text" class="form-control" id="work_center_id" name="work_center_id" value= "<?php echo $row[0]['work_center_id']?>">
                                     </div>
+                                </div>
+                                <div class ="row">                                    
                                     <div class="col-sm-3">
                                         <b>Category</b>
                                         <select class="form-control" id="category" name="category" required>
@@ -208,20 +209,18 @@ function validateQty(event)
                                     </div>
 
                                     <div class="col-sm-3">
-                                     <div class="dropdown">
-                                        <b>Operations To Display<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
-                                        <select class="form-control" id="display1" name="display1" required>
-                                        <option value="">Please Select</option><option value='yes' selected>Yes</option><option value='No' >No</option></select>    
+                                        <div class="dropdown">
+                                            <b>Operations To Display<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
+                                            <select class="form-control" id="display1" name="display1" required>
+                                            <option value="">Please Select</option>
+                                            <option value='yes' <?php echo $row[0]['display_operations']== 'yes'? 'selected' : ''?>>Yes</option>
+                                            <option value='No' <?php echo $row[0]['display_operations']== 'No'? 'selected' : ''?>>No</option>
+                                            </select>    
+                                        </div>
                                     </div>
-                                    </div></div>
                                     
-                                  <div class='row'>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-6">
                                         <button type="submit" class="btn btn-info" style="margin-top:18px;">Update</button>
-                                    </div>
-                                    <div class="col-sm-2"></div><div class="col-sm-2"></div><div class="col-sm-2"></div>
-                                    <div class="col-sm-4" pull-right>
-                                    </br>
                                         <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='orange'>* :</font></span> Fields are mandatory when report to ERP is "Yes". 
                                     </div>
                                 </div>
