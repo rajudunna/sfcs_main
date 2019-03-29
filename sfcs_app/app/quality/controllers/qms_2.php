@@ -334,7 +334,7 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 	FROM bai_pro3.bai_qms_db qms 
 	LEFT JOIN brandix_bts.`bundle_creation_data` bts ON bts.`bundle_number` = qms.`bundle_no` AND bts.`operation_id` = qms.`operation_id` 
 	LEFT JOIN bai_pro3.`rejection_log_child` rej ON rej.`bcd_id` = bts.`id` WHERE qms_tran_type=3 AND qms_schedule='$schedule' 
-	AND recut_qty = 0
+	AND recut_qty = 0 AND replaced_qty = 0
 	";
 	// echo $sql."<br>";
 	$result=mysqli_query($link, $sql) or die("Sql error".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
