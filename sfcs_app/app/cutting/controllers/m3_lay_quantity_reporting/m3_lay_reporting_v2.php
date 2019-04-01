@@ -59,7 +59,10 @@ if(isset($_POST['confirm']))
 	$qty_db=$_POST['qty_db'];
 	$job_no=$_POST['job_no'];
 
-	$docket_number = implode(',',$doc_no);
+	foreach($check_db as $key => $ignore)
+	  $new_doc_no[] = $doc_no[$key];
+
+	$docket_number = implode(',',$new_doc_no);
 	// var_dump($check_db);
 	// echo 'check bd: '.$check_db;
 	
@@ -67,10 +70,10 @@ if(isset($_POST['confirm']))
 	    $get_all_docs_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log where org_doc_no IN ($docket_number)";
 	    $docs_result = mysqli_query($link,$get_all_docs_query);
 	    while($row = mysqli_fetch_array($docs_result)){
-	    	$doc_no[] = $row['doc_no'];
+	    	$new_doc_no[] = $row['doc_no'];
 	    }
 
-	    $docket_number = implode(',',$doc_no);
+	    $docket_number = implode(',',$new_doc_no);
 
     	$get_operations="select operation_code from $brandix_bts.tbl_orders_ops_ref where operation_name='Laying'";
 		//echo $get_operations;
@@ -1883,7 +1886,7 @@ ZHJzL2Rvd25yZXYueG1sUEsBAi0ACgAAAAAAAAAhADhzEd/zBQAA8wUAABUAAAAAAAAAAAAAAAAA
    </tr>
    <tr>
     <td></td>
-    <td><img width=412 height=49 title="<?php echo $plant_name; ?>" src="<?= getFullURL($_GET['r'],'../../common/images/BEK_image1.png','R');?>"
+    <td><img width=412 height=49 title="<?php echo $plant_name; ?>" src="<?= getFullURL($_GET['r'],'../../common/images/logo.png','R');?>"
     alt=LOGO v:shapes="Text_x0020_Box_x0020_1 Picture_x0020_2"></td>
     <td width=14></td>
    </tr>
