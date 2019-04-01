@@ -8,25 +8,16 @@
   {
 	  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	  //echo $operation1;
-	   
-    $sql="select sfcs_doc_no from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no='".$doc_no."' and m3_op_des='".$operation1."'";
+    $sql="select * from $bai_pro3.cps_log where doc_no='".$doc_no."' and short_key_code='".$operation1."' and remaining_qty > 0";
 	//echo $sql;
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error1.6".mysqli_error($GLOBALS["___mysqli_ston"]));
-    if(mysqli_num_rows($sql_result)==0 && $joins_checkbox==2)
+    if(mysqli_num_rows($sql_result) > 0)
 	{
-		$sql1="SELECT GROUP_CONCAT(doc_no SEPARATOR ',') AS doc_no FROM $bai_pro3.plandoc_stat_log WHERE org_doc_no='$doc_no'";
-		$sql_result1=mysqli_query($link, $sql1) or exit("error while getting original doc nos");
-		while($sql_row=mysqli_fetch_array($sql_result1))
-		{
-			$original_docs=$sql_row['doc_no'];
-		}
-		$sql="select sfcs_doc_no from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no IN (".$original_docs.") and m3_op_des='$operation1'";
-		$sql_result11=mysqli_query($link, $sql) or exit("Sql Error1.9".mysqli_error($GLOBALS["___mysqli_ston"]));
-		return mysqli_num_rows($sql_result11);
+		return 1;
 	}
 	else 
 	{
-		return mysqli_num_rows($sql_result);
+		return 0;
 	}
 	// return mysqli_num_rows($sql_result);
   }
@@ -38,6 +29,9 @@
 
 if(isset($_POST['confirm']))
 {
+	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
+	
 	$style=$_POST['style'];
 	$schedule=$_POST['schedule'];
 	$color=$_POST['color'];
@@ -48,72 +42,59 @@ if(isset($_POST['confirm']))
 	$size_db=$_POST['size_db'];
 	$qty_db=$_POST['qty_db'];
 	$job_no=$_POST['job_no'];
-	
+
+	$docket_number = implode(',',$doc_no);
 	// var_dump($check_db);
 	// echo 'check bd: '.$check_db;
-	if (empty($check_db))
-	{
-		echo "<script>sweetAlert('Error','Please Select atleast one check box','error')</script>";
-	} else {
-		for($i=0;$i<sizeof($doc_no);$i++)
+	
+
+	    $get_all_docs_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log where org_doc_no IN ($docket_number)";
+	    $docs_result = mysqli_query($link,$get_all_docs_query);
+	    while($row = mysqli_fetch_array($docs_result)){
+	    	$doc_no[] = $row['doc_no'];
+	    }
+
+	    $docket_number = implode(',',$doc_no);
+
+    	$get_operations="select operation_code from $brandix_bts.tbl_orders_ops_ref where operation_name='Laying'";
+		//echo $get_operations;
+    	$sql_result111=mysqli_query($link, $get_operations) or exit("Operation ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
+    	while($row=mysqli_fetch_array($sql_result111))
+    	{
+	      $operation=$row['operation_code'];
+	    }
+	    $get_cps_data="select id,cut_quantity from $bai_pro3.cps_log where doc_no IN ($docket_number) and operation_code='$operation'";
+		//echo $get_cps_data;
+	    $sql_result=mysqli_query($link, $get_cps_data) or exit("CPS ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($sql_result))
 		{
-			if($check_db[$i]>0)
-			{
-				//echo $key_db[$i];
-				$key=$key_db[$i];
-			}
-			
-			if($doc_no[$i]==$key)
-			{				
-				if($joins_checkbox==2)
-				{
-          $color = array();
-				  $original_docs = array();
-					$joins_check_query = "SELECT pc.doc_no, db.order_col_des 
-					FROM $bai_pro3.plandoc_stat_log pc
-					LEFT JOIN $bai_pro3.bai_orders_db_confirm db ON pc.order_tid=db.order_tid 
-					WHERE pc.org_doc_no='$key'";
-					// $joins_check_query = "select doc_no from plandoc_stat_log where org_doc_no='$key'";
-					// echo '<br>'.$joins_check_query;
-					$Oiginal_doc_result=mysqli_query($link, $joins_check_query) or exit("Error while getting original Doc No's");
-					while($sql_row=mysqli_fetch_array($Oiginal_doc_result))
-					{
-						$color[]=$sql_row['order_col_des'];
-						$original_docs[]=$sql_row['doc_no'];
-					}
-					// var_dump($original_docs);
-					for($i=0; $i<sizeof($original_docs); $i++)
-					{
-						$sql="select sfcs_doc_no from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no='$original_docs[$i]' and m3_op_des='LAY' and sfcs_size='".$size_db[$i]."' and sfcs_job_no='".$job_no[$i]."'";
-						// echo '<br>m3_tran_log= '.$sql;
-						$sql_result=mysqli_query($link, $sql) or exit("Sql Error1.1".mysqli_error($GLOBALS["___mysqli_ston"]));
-						if(mysqli_num_rows($sql_result)==0)
-						{
-							$sql="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_job_no,sfcs_status,m3_op_code) values 
-							(NOW(),'$style','$schedule','$color[$i]','".$size_db[$i]."',$original_docs[$i],".$qty_db[$i].",USER(),'LAY',$original_docs[$i],0,'','".$job_no[$i]."',0,10)";
-							// echo '<br>M3_tran_log Query= '.$sql;
-							mysqli_query($link, $sql) or exit("Sql Error1.2".mysqli_error($GLOBALS["___mysqli_ston"]));
-						}
-					}
-				}
-				else
-				{
-					//echo $size_db[$i]."-".$qty_db[$i]."-".$job_no[$i]."<br/>";
-					$sql="select sfcs_doc_no from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_doc_no='$key' and m3_op_des='LAY' and sfcs_size='".$size_db[$i]."' and sfcs_job_no='".$job_no[$i]."'";
-					// echo '<br>select from me_tran_log= '.$sql;
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error1.3".mysqli_error($GLOBALS["___mysqli_ston"]));
-					
-					if(mysqli_num_rows($sql_result)==0)
-					{
-						$sql="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_tid_ref,sfcs_mod_no,sfcs_shift,sfcs_job_no,sfcs_status,m3_op_code) values (NOW(),'$style','$schedule','$color','".$size_db[$i]."',$key,".$qty_db[$i].",USER(),'LAY',$key,0,'','".$job_no[$i]."',0,10)";
-						// echo '<br>M3_tran_log Query= '.$sql;
-						mysqli_query($link, $sql) or exit("Sql Error1.4".mysqli_error($GLOBALS["___mysqli_ston"]));
-					}
-				}
-			}
+	       $bundle_number=$sql_row['id'];
+	       $quantity=$sql_row['cut_quantity'];
+
+		    $update_bcd="UPDATE $brandix_bts.bundle_creation_data SET recevied_qty = '$quantity' WHERE docket_number IN ($docket_number) AND operation_id='$operation' AND bundle_number= 'bundle_number'";
+	        $sql_result1=mysqli_query($link, $update_bcd) or exit("BCD ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+	       $update_cps="UPDATE $bai_pro3.cps_log SET remaining_qty = '$quantity' WHERE id='$bundle_number' AND operation_code='$operation'"; 
+	        $sql_result2=mysqli_query($link, $update_cps) or exit("CPS Operations ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
+        }
+
+        $cps_data="select id,cut_quantity,operation_code from $bai_pro3.cps_log where doc_no IN ($docket_number) and operation_code='$operation'";
+		//echo $cps_data;
+
+	    $sql_result23=mysqli_query($link, $cps_data) or exit("M3 ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row2=mysqli_fetch_array($sql_result23))
+		{   
+			$ref_id=$row2['id'];
+			$op_code=$row2['operation_code'];
+			$qty=$row2['cut_quantity'];
+			updateM3TransactionsLay($ref_id,$op_code,$qty,$job_no);
 		}
-	}
-}
+
+       
+    }
+
 
 ?>
 
