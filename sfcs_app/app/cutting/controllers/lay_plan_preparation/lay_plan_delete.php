@@ -286,9 +286,9 @@ if(isset($_POST["submit"]))
                     $sql_result=mysqli_query($link, $get_cps_data) or exit("CPS ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row112=mysqli_fetch_array($sql_result))
                     {
-                        $ref_id=$row2['id'];
-                        $op_code=$row2['operation_code'];
-                        $qty=$row2['cut_quantity'];
+                        $ref_id=$sql_row112['id'];
+                        $op_code=$sql_row112['operation_code'];
+                        $qty=$sql_row112['cut_quantity'];
 
                         $get_cut="select doc_no from $bai_pro3.plandoc_stat_log where doc_no=''";
 
