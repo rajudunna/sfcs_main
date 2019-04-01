@@ -1028,8 +1028,8 @@ function updateM3TransactionsLay($ref_id,$op_code,$qty,$cut_num)
         $id = $nop_qry_row['mq_id'];
         $ops_des = $nop_qry_row ['op_desc'];
 
-        $update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $actual_rep_qty where id= $id";
-        mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites".mysqli_error($GLOBALS["___mysqli_ston"]));
+        // $update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $actual_rep_qty where id= $id";
+        // mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites".mysqli_error($GLOBALS["___mysqli_ston"]));
 
         $dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and operation_code=$op_code";
         $result_dep_ops_array_qry = $link->query($dep_ops_array_qry);
