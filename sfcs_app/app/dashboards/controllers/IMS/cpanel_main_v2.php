@@ -535,6 +535,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                   $ims_remarks=$sql_rowred['ims_remarks'];
                   $ims_size=$sql_rowred['ims_size'];
                   $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des in (".$color_ref.") and order_del_no",$schedul_no,$link);
+				  $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedul_no,$link);
                   $cut_no=$sql_rowred['acutno'];
                   $inputno=$sql_rowred['inputjobno'];
                   $inputjobnorand=$sql_rowred['inputjobnorand'];
@@ -622,6 +623,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                 ?>
                   <a href="javascript:void(0);" onclick="loadpopup('<?= $ui_url1;?>', 'myPop1',800,600);"  title="
                   Style No : <?php echo $style_no."<br/>"; ?>
+				  Co No : <?php echo $co_no."<br/>"; ?>
                   Schedul No :<?php echo $schedul_no."<br/>"; ?>
                   Color : <?php echo $color_name."<br/>"; ?>
                   Docket No : <?php echo $docket_no."<br/>"; ?>
