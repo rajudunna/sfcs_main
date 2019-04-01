@@ -12,6 +12,7 @@ Task: Lay Plan Delettion Validation (added IMS and Cut Completion Status)
 <?php    
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
 $layplanmail = $conf1->get('layplanmail'); 
 //var_dump($layplanmail);
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 
@@ -293,13 +294,14 @@ if(isset($_POST["submit"]))
 
 
                         $get_color_code = "select color_code From $bai_pro3.bai_orders_db where order_tid =\"".$order_tid[$i]."\"";
-                        $result1 = mysqli_query($link,$op_codes_query) or exit('Problem while getting color code'); 
+                        $result1 = mysqli_query($link,$get_color_code) or exit('Problem while getting color code'); 
                         while($row2=mysqli_fetch_array($result1))
                         {
                          $color=$row2['color_code'];
                         }
 
-                        $job_no = chr($color).leading_zeros($cutno,3);
+                        // $job_no = chr($color).leading_zeros($cutno,3);
+                        $job_no = chr($color)."00".$cutno;
 
                         updateM3TransactionsLay($ref_id,$op_code,-$qty,$job_no);
 

@@ -59,10 +59,12 @@ if(isset($_POST['confirm']))
 	$qty_db=$_POST['qty_db'];
 	$job_no=$_POST['job_no'];
 
-	foreach($check_db as $key => $ignore)
+	foreach($check_db as $key => $ignore){
 	  $new_doc_no[] = $doc_no[$key];
-
-	$docket_number = implode(',',$new_doc_no);
+	  $cuts[] = $job_no[$key];
+	}
+	$job_no = $cuts;
+    $docket_number = implode(',',$new_doc_no);
 	// var_dump($check_db);
 	// echo 'check bd: '.$check_db;
 	
