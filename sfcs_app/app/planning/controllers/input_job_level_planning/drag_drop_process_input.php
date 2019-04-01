@@ -7,6 +7,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 	
 $userName = getrbac_user()['uname'];
 
+	
 	$list=$_POST['listOfItems'];
 	$list_db=array();
 	$list_db=explode(";",$list);
@@ -258,13 +259,17 @@ $userName = getrbac_user()['uname'];
 		$operation_code=$sql_row['operation_code'];
 	}
 	$remove_docs=array();
-	$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where
-	input_job_input_status(input_job_no_random,$operation_code)=\"DONE\"";
+
+	$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dashboard_input";
 	//echo $sqlx;
 	$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	{
-		$remove_docs[]="'".$sql_rowx['doc_no']."'";
+		$job_status=job_rec_status($sql_rowx['doc_no'],$operation_code);
+		if($job_status=='DONE')
+		{
+			$remove_docs[]="'".$sql_rowx['doc_no']."'";
+		}
 	}	
 	if(sizeof($remove_docs)>0)
 	{
