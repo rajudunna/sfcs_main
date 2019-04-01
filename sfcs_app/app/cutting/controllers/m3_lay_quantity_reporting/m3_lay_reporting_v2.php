@@ -6,9 +6,25 @@
 
   function m3_job_exists_check($doc_no,$operation1,$joins_checkbox)
   {
-	  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	  //echo $operation1;
-    $sql="select * from $bai_pro3.cps_log where doc_no='".$doc_no."' and short_key_code='".$operation1."' and remaining_qty > 0";
+
+	$get_all_docs_query = "SELECT group_concat(doc_no) as doc_no from $bai_pro3.plandoc_stat_log where org_doc_no = '$doc_no'"; 
+	$docs_result = mysqli_query($link,$get_all_docs_query);
+	 while($row = mysqli_fetch_array($docs_result))
+	 {
+	   $docket_number = $row['doc_no'];
+	 }
+
+    if($docket_number == '')
+    {
+       $doc = $docket_number;
+    }else
+    {
+       $doc = $doc_no;
+    }
+
+    $sql="select * from $bai_pro3.cps_log where doc_no IN ($doc) and short_key_code='".$operation1."' and remaining_qty > 0";
 	//echo $sql;
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error1.6".mysqli_error($GLOBALS["___mysqli_ston"]));
     if(mysqli_num_rows($sql_result) > 0)
