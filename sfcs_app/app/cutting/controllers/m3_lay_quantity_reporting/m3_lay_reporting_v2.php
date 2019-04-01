@@ -69,11 +69,12 @@ if(isset($_POST['confirm']))
 	// echo 'check bd: '.$check_db;
 	
 
-	    $get_all_docs_query = "SELECT doc_no,acutno from $bai_pro3.plandoc_stat_log where org_doc_no IN ($docket_number) or doc_no IN ($docket_number)";
+	    $get_all_docs_query = "SELECT doc_no,acutno,order_tid from $bai_pro3.plandoc_stat_log where org_doc_no IN ($docket_number) or doc_no IN ($docket_number)";
 	    $docs_result = mysqli_query($link,$get_all_docs_query);
 	    while($row = mysqli_fetch_array($docs_result)){
 	    	$new_doc_no[] = $row['doc_no'];
 	    	$cut_nos[$row['doc_no']] = $row['acutno'];
+	    	$order_tid_main = $row['order_tid'];
 	    }
 
 	    $docket_number = implode(',',$new_doc_no);
@@ -112,10 +113,20 @@ if(isset($_POST['confirm']))
 	    $sql_result23=mysqli_query($link, $cps_data) or exit("M3 ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row2=mysqli_fetch_array($sql_result23))
 		{   
+			$doc=$row2['doc_no'];
 			$ref_id=$row2['id'];
 			$op_code=$row2['operation_code'];
 			$qty=$row2['cut_quantity'];
-			$cut_num=$cut_nos[$doc];
+			$cutno=$cut_nos[$doc];
+
+			$get_color_code = "select color_code From $bai_pro3.bai_orders_db where order_tid =\"".$order_tid_main."\"";
+            $result1 = mysqli_query($link,$get_color_code) or exit('Problem while getting color code'); 
+            while($row3=mysqli_fetch_array($result1))
+            {
+             $color=$row3['color_code'];
+            }
+
+            $cut_num = chr($color).leading_zeros($cutno,3);
 			updateM3TransactionsLay($ref_id,$op_code,$qty,$cut_num);
 		}
 

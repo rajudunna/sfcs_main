@@ -290,8 +290,6 @@ if(isset($_POST["submit"]))
                         $op_code=$sql_row112['operation_code'];
                         $quantity=$sql_row112['cut_quantity'];
 
-                        $get_cut="select doc_no from $bai_pro3.plandoc_stat_log where doc_no=''";
-
 
                         $get_color_code = "select color_code From $bai_pro3.bai_orders_db where order_tid =\"".$order_tid[$i]."\"";
                         $result1 = mysqli_query($link,$get_color_code) or exit('Problem while getting color code'); 
