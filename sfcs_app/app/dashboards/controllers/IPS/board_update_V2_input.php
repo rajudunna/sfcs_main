@@ -322,6 +322,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$total_qty=$sql_row1['carton_act_qty'];
 			$jobno=$sql_row1['input_job_no'];
 			$type_of_sewing=$sql_row1['type_of_sewing'];
+			$ft_status=$sql_row1['ft_status'];
 			// $bundle_location="";
 			// if(sizeof(explode("$",$sql_row1['bundle_location']))>1)
 			// {
@@ -379,7 +380,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$sql_result1x115=mysqli_query($link, $sql1x115) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result1x115)>0)
 			{
-				if(sizeof($doc_no_ref)<>mysqli_num_rows($sql_result1x115))
+				if(sizeof(explode(",",$doc_no_ref))<>mysqli_num_rows($sql_result1x115))
 				{
 					$fabric_req="0";
 				}
