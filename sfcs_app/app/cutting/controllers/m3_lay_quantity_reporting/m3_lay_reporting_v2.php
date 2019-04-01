@@ -99,6 +99,10 @@ if(isset($_POST['confirm']))
 	       $update_cps="UPDATE $bai_pro3.cps_log SET remaining_qty = '$quantity' WHERE id='$bundle_number' AND operation_code='$operation'"; 
 	        $sql_result2=mysqli_query($link, $update_cps) or exit("CPS Operations ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
 
+	        $update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $quantity where ref_no= $bundle_number and op_code= $operation";
+             mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
 
         }
 
