@@ -288,7 +288,7 @@ if(isset($_POST["submit"]))
                     {
                         $ref_id=$sql_row112['id'];
                         $op_code=$sql_row112['operation_code'];
-                        $qty=$sql_row112['cut_quantity'];
+                        $quantity=$sql_row112['cut_quantity'];
 
                         $get_cut="select doc_no from $bai_pro3.plandoc_stat_log where doc_no=''";
 
@@ -301,9 +301,10 @@ if(isset($_POST["submit"]))
                         }
 
                         // $job_no = chr($color).leading_zeros($cutno,3);
+                        $qty=-$quantity;
                         $job_no = chr($color)."00".$cutno;
 
-                        updateM3TransactionsLay($ref_id,$op_code,-$qty,$job_no);
+                        updateM3TransactionsLay($ref_id,$op_code,$qty,$job_no);
 
 
                     }
