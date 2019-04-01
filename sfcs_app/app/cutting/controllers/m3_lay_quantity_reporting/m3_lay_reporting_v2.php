@@ -63,16 +63,17 @@ if(isset($_POST['confirm']))
 	  $new_doc_no[] = $doc_no[$key];
 	  $cuts[] = $job_no[$key];
 	}
-	$job_no = $cuts;
+	
     $docket_number = implode(',',$new_doc_no);
 	// var_dump($check_db);
 	// echo 'check bd: '.$check_db;
 	
 
-	    $get_all_docs_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log where org_doc_no IN ($docket_number)";
+	    $get_all_docs_query = "SELECT doc_no,acutno from $bai_pro3.plandoc_stat_log where org_doc_no IN ($docket_number) or doc_no IN ($docket_number)";
 	    $docs_result = mysqli_query($link,$get_all_docs_query);
 	    while($row = mysqli_fetch_array($docs_result)){
 	    	$new_doc_no[] = $row['doc_no'];
+	    	$cut_nos[$row['doc_no']] = $row['acutno'];
 	    }
 
 	    $docket_number = implode(',',$new_doc_no);
@@ -101,7 +102,7 @@ if(isset($_POST['confirm']))
 
         }
 
-        $cps_data="select id,cut_quantity,operation_code from $bai_pro3.cps_log where doc_no IN ($docket_number) and operation_code='$operation'";
+        $cps_data="select id,cut_quantity,operation_code,doc_no from $bai_pro3.cps_log where doc_no IN ($docket_number) and operation_code='$operation'";
 		//echo $cps_data;
 
 	    $sql_result23=mysqli_query($link, $cps_data) or exit("M3 ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -110,7 +111,8 @@ if(isset($_POST['confirm']))
 			$ref_id=$row2['id'];
 			$op_code=$row2['operation_code'];
 			$qty=$row2['cut_quantity'];
-			updateM3TransactionsLay($ref_id,$op_code,$qty,$job_no);
+			$cut_num=$cut_nos[$doc];
+			updateM3TransactionsLay($ref_id,$op_code,$qty,$cut_num);
 		}
 
        
