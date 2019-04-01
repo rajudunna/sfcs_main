@@ -2,15 +2,6 @@
 
 	function deleteMOQuantitiesCut($schedule,$color){
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
-
-         $get_operations="select operation_code from $brandix_bts.tbl_orders_ops_ref where operation_name='Laying'";
-        //echo $get_operations;
-        $sql_result111=mysqli_query($link, $get_operations) or exit("Operation ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
-        while($row=mysqli_fetch_array($sql_result111))
-        {
-          $operation=$row['operation_code'];
-        }
 
 		$cutting_ref = "'cutting','Send PF','Receive PF'";
 		$op_codes_query = "Select GROUP_CONCAT(operation_code) as op_code from $brandix_bts.tbl_orders_ops_ref where default_operation='Yes' and category in ($cutting_ref)";
@@ -28,30 +19,7 @@
 		if(sizeof($bundle_nos) == 0)
 			return true;
 
-        $ref_nos_query = "Select recevied_qty,bundle_number,operation_id,cut_number from $brandix_bts.bundle_creation_data 
-						  where operation_id = $operation and trim(schedule)='".trim($schedule)."' 
-						  and trim(color)='".trim($color)."'";
-		$ref_nos_result = mysqli_query($link,$ref_nos_query) or exit('Problem in getting bundles from BCD');
-        while($row1=mysqli_fetch_array($result))
-	      {
-	         $qty=$row1['recevied_qty'];
-	         $ref_id=$row1['bundle_number'];
-	         $op_code=$row1['operation_id']; 
-	         $cutno=$row1['cut_number'];
-
-	        $get_color_code = "select color_code From $bai_pro3.bai_orders_db where trim(order_del_no)='".trim($schedule)."' 
-						  and trim(order_col_des)='".trim($color)."'";
-			$result1 = mysqli_query($link,$op_codes_query) or exit('Problem while getting color code');	
-			while($row2=mysqli_fetch_array($result1))
-			{
-              $color=$row2['color_code'];
-			}
-			$job_no = chr($color).leading_zeros($cutno,3);
-
-	         updateM3TransactionsLay($ref_id,$op_code,-$qty,$job_no);
-	      }
-
-        // ----Transaction begin---
+		// ----Transaction begin---
 		mysqli_begin_transaction($link);
 		$delete_bcd_query = "Delete from $brandix_bts.bundle_creation_data where bundle_number in ($bundle_nos)
 							and operation_id IN ($op_codes)";
