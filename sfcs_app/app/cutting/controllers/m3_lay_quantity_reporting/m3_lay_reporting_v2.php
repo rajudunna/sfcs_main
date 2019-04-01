@@ -16,7 +16,7 @@
 	   $docket_number = $row['doc_no'];
 	 }
 
-    if($docket_number == '')
+    if($docket_number != '')
     {
        $doc = $docket_number;
     }else
