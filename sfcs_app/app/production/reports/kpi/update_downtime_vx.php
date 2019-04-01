@@ -14,7 +14,7 @@ $dout3=$_POST['dout3'];
 
 	$odate=$_POST['ddate'];
 	$otime=$_POST['hour'].':30:00';
-	$hour=$_POST['hour'];	
+	$hour=$_POST['hour'].':30:00';	
 	//$remarks='NA';
 
 if($dreason1 != ""){
