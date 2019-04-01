@@ -254,12 +254,11 @@ if(isset($_POST["submit"]))
 
                 if($row71 == 0 and $row72==0 and $row74==0) 
                 { 
-                    $sql33="select doc_no,acutno from $bai_pro3.plandoc_stat_log where order_tid='".$order_tid[$i]."'"; 
+                    $sql33="select doc_no from $bai_pro3.plandoc_stat_log where order_tid='".$order_tid[$i]."'"; 
                     $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     while($sql_row33=mysqli_fetch_array($sql_result33)) 
                     { 
                         $docket_number[]=$sql_row33['doc_no'];
-                        $cutno[]=$sql_row33['acutno'];
                         //M3 Reversal 
                         //M3 Bulk operation reversal 
                         //To update M3 Bulk Upload Tool (To pass negative entry) 
@@ -289,6 +288,9 @@ if(isset($_POST["submit"]))
                         $ref_id=$row2['id'];
                         $op_code=$row2['operation_code'];
                         $qty=$row2['cut_quantity'];
+
+                        $get_cut="select doc_no from $bai_pro3.plandoc_stat_log where doc_no=''";
+
 
                         $get_color_code = "select color_code From $bai_pro3.bai_orders_db where order_tid =\"".$order_tid[$i]."\"";
                         $result1 = mysqli_query($link,$op_codes_query) or exit('Problem while getting color code'); 
