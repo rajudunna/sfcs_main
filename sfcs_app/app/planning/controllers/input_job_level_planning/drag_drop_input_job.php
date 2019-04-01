@@ -8,39 +8,7 @@ $has_perm=haspermission($_GET['r']);
 $module_limit=14;
 // $super_user=array("roshanm","muralim","kirang","bainet","rameshk","baiict","gayanl","baisysadmin","chathurangad","buddhikam","saroasa","chathurikap","sfcsproject2","thanushaj","kemijaht","sfcsproject1","ber_databasesvc","saranilaga","thusiyas","thineshas","sudathra");
 
-function job_rec_status($input_job_no,$op_code)
-{
-		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-		
-		$sql="SELECT COALESCE(SUM(recevied_qty),0) AS rec_qty,COALESCE(SUM(send_qty),0) AS s_qty,COALESCE(SUM(recut_in),0) AS rc_qty,COALESCE(SUM(replace_in),0) AS rp_qty,COALESCE(SUM(rejected_qty),0) AS rej_qty FROM brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '".$input_job_no."' AND operation_id = $op_code";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-				$rec_qty=$sql_row["rec_qty"];
-				$s_qty=$sql_row["s_qty"];
-				$rc_qty=$sql_row["rc_qty"];
-				$rp_qty=$sql_row["rp_qty"];
-				$rej_qty=$sql_row["rej_qty"];
-		}
 
-		$sql2="SELECT COALESCE(SUM(carton_act_qty),0) as job_qty FROM bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='".$input_job_no."'";
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row2=mysqli_fetch_array($sql_result2))
-		{
-			 $job_qty=$sql_row2["job_qty"];
-		}
-
-		if(($rec_qty >= $job_qty) AND ($s_qty+$rc_qty+$rp_qty=$rec_qty+$rej_qty)) 
-		{
-				$status='DONE';
-		}
-		else
-		{
-		  	$status='';
-		}
-
-		return $status;
-}
 
 ?>
 <!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> -->
