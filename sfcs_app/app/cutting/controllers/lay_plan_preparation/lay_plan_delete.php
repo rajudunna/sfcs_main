@@ -255,11 +255,12 @@ if(isset($_POST["submit"]))
 
                 if($row71 == 0 and $row72==0 and $row74==0) 
                 { 
-                    $sql33="select doc_no from $bai_pro3.plandoc_stat_log where order_tid='".$order_tid[$i]."'"; 
+                    $sql33="select doc_no,acutno from $bai_pro3.plandoc_stat_log where order_tid='".$order_tid[$i]."'"; 
                     $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     while($sql_row33=mysqli_fetch_array($sql_result33)) 
                     { 
                         $docket_number[]=$sql_row33['doc_no'];
+                        $cut_nos[$sql_row33['doc_no']] = $sql_row33['acutno'];
                         //M3 Reversal 
                         //M3 Bulk operation reversal 
                         //To update M3 Bulk Upload Tool (To pass negative entry) 
@@ -281,14 +282,16 @@ if(isset($_POST["submit"]))
                     }
 
                     $new_doc=implode(',',$docket_number);
-                    $get_cps_data="select id,cut_quantity,operation_code from $bai_pro3.cps_log where doc_no IN ($new_doc) and operation_code='$operation'";
+                    $get_cps_data="select id,cut_quantity,operation_code,doc_no from $bai_pro3.cps_log where doc_no IN ($new_doc) and operation_code='$operation'";
                     //echo $get_cps_data;
                     $sql_result=mysqli_query($link, $get_cps_data) or exit("CPS ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row112=mysqli_fetch_array($sql_result))
                     {
+                        $doc=$sql_row112['doc_no'];
                         $ref_id=$sql_row112['id'];
                         $op_code=$sql_row112['operation_code'];
                         $quantity=$sql_row112['cut_quantity'];
+                        $cutno=$cut_nos[$doc];
 
 
                         $get_color_code = "select color_code From $bai_pro3.bai_orders_db where order_tid =\"".$order_tid[$i]."\"";
