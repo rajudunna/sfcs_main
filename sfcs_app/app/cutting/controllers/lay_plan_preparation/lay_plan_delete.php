@@ -300,9 +300,9 @@ if(isset($_POST["submit"]))
 
                         // $job_no = chr($color).leading_zeros($cutno,3);
                         $qty=-$quantity;
-                        $job_no = chr($color)."00".$cutno;
+                        $cut_num = chr($color)."00".$cutno;
 
-                        updateM3TransactionsLay($ref_id,$op_code,$qty,$job_no);
+                        updateM3TransactionsLay($ref_id,$op_code,$qty,$cut_num);
 
 
                     }
