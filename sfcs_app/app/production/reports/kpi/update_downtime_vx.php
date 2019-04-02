@@ -13,14 +13,15 @@ $dout2=$_POST['dout2'];
 $dout3=$_POST['dout3'];
 
 	$odate=$_POST['ddate'];
-	$otime=$_POST['hour'].':30:00';
+	$otime=$_POST['hour'].':30';
 	$hour=$_POST['hour'];	
 	//$remarks='NA';
 
 if($dreason1 != ""){
 				
-		$sql="DELETE from $bai_pro2.hourly_downtime WHERE team='$team' AND date='$odate' AND dhour='$hour'";
+		$sql="delete from $bai_pro2.hourly_downtime WHERE team='$team' AND date='$odate' AND dhour='$hour'";
 		mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		echo $sql;
 		
 		//echo $sql;
 		
