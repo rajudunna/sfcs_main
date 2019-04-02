@@ -115,14 +115,15 @@ if(isset($_POST['submit']))
 	$date=$_POST['dat'];
 	$shift_start_time=$_POST['shift_start'];
 	$shift_end_time=$_POST['shift_end'];
-	$modules_array = array();
-	$get_modules = "SELECT DISTINCT module_name FROM $bai_pro3.`module_master` where status='Active' ORDER BY module_name*1;";
+	$modules_array = array();	$modules_id_array=array();
+	$get_modules = "SELECT DISTINCT module_name, id FROM $bai_pro3.`module_master` where status='Active' ORDER BY module_name*1;";
 	$modules_result=mysqli_query($link, $get_modules) or exit ("Error while fetching modules: $get_modules");
 	if(mysqli_num_rows($modules_result) > 0)
 	{
 		while($module_row=mysqli_fetch_array($modules_result))
 		{
 			$modules_array[]=$module_row['module_name'];
+			$modules_id_array[$module_row['module_name']]=$module_row['id'];
 		}
 		$modules = implode("','", $modules_array);
 		$sql1="SELECT * FROM $bai_pro.pro_attendance WHERE DATE='$date' AND shift='$shift' AND (present > 0 OR absent > 0) AND module IN ('$modules')";
@@ -145,7 +146,7 @@ if(isset($_POST['submit']))
 						$avail_av=$sql_row1['present'];
 						$absent_ab=$sql_row1['absent'];
 						$module=$sql_row1['module'];
-						$k=$module-1;
+						$k=$modules_id_array[$module];
 						echo "<tr>
 								<td>".$module."</td>"; 
 								if(in_array($authorized,$has_permission))
