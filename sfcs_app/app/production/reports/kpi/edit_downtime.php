@@ -43,7 +43,7 @@ th, td {
 				$res2=mysqli_query($link,$sql2);
 				$res3=mysqli_query($link,$sql2);
 				$res4=mysqli_query($link,$sql2);		
-			
+			  
 			?><div class='panel panel-primary'>
 			<div class='panel-heading'>Update DownTime</div>
 			<div class='panel-body'>
@@ -52,9 +52,16 @@ th, td {
 				<div class='row'>
 				<div class='col-sm-3'>
 					<label>Hour</label><select class="form-control"  name='hour'>
+					<?php
+					  $sql6="SELECT start_time FROM $bai_pro3.`tbl_plant_timings";
+				$res6=mysqli_query($link,$sql6) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); ;
+					while($row6=mysqli_fetch_array($res6))
+		{
+			echo "<option value=".$row6['start_time'].">".$row6['start_time']."</option>";
+			
+		}?>
 					
-					<option value='08'>8:30</option>
-					<option value='09'>9:30</option>
+					<!--<option value='09'>9:30</option>
 					<option value='10'>10:30</option>
 					<option value='11'>11:30</option>
 					<option value='12'>12:30</option>
@@ -63,7 +70,7 @@ th, td {
 					<option value='15'>3:30</option>
 					<option value='16'>4:30</option>
 					<option value='17'>5:30</option>
-					<option value='18'>6:30</option>
+					<option value='18'>6:30</option>-->
 				
 					</select>
 				</div>
