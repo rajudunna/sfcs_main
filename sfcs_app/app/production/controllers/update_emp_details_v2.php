@@ -115,96 +115,102 @@ if(isset($_POST['submit']))
 	$date=$_POST['dat'];
 	$shift_start_time=$_POST['shift_start'];
 	$shift_end_time=$_POST['shift_end'];
-	
-	$get_modules="SELECT module_name FROM bai_pro3.`module_master` ORDER BY module_name*1";
-	$modules_reslt=mysqli_query($link, $get_modules) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while ($row = mysqli_fetch_array($modules_reslt))
+	$modules_array = array();
+	$get_modules = "SELECT DISTINCT module_name FROM $bai_pro3.`module_master` where status='Active' ORDER BY module_name*1;";
+	$modules_result=mysqli_query($link, $get_modules) or exit ("Error while fetching modules: $get_modules");
+	if(mysqli_num_rows($modules_result) > 0)
 	{
-		$modules[] = $row['module_name'];
-	}
-
-	$sql1="Select * from $bai_pro.pro_attendance where date=\"$date\" and  shift='".$shift."' and (present >0 or absent >0) order by module*1";
-
-	echo "
-	<table border=1 class='table table-bordered'>
-		<tr class='info'>
-			<th>Module</th>
-			<th>Team - $shift Available Emp</th>
-			<th>Team - $shift Absent Emp</th>";
-			$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_num_check=mysqli_num_rows($sql_result1);
-			if($sql_num_check>0)
-			{
-				echo "<th>Total</th>
-				</tr>";
-				while($sql_row1=mysqli_fetch_array($sql_result1))
+		while($module_row=mysqli_fetch_array($modules_result))
+		{
+			$modules_array[]=$module_row['module_name'];
+		}
+		$modules = implode("','", $modules_array);
+		$sql1="SELECT * FROM $bai_pro.pro_attendance WHERE DATE='$date' AND shift='$shift' AND (present > 0 OR absent > 0) AND module IN ('$modules')";
+		echo "
+		<table border=1 class='table table-bordered'>
+			<tr class='info'>
+				<th>Module</th>
+				<th>Team - $shift Available Emp</th>
+				<th>Team - $shift Absent Emp</th>";
+				$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_num_check=mysqli_num_rows($sql_result1);
+				if($sql_num_check>0)
 				{
-					$atten_id=$sql_row1['atten_id'];
-					$date=$sql_row1['date'];
-					$avail_av=$sql_row1['present'];
-					$absent_ab=$sql_row1['absent'];
-					$module=$sql_row1['module'];
-					$k=$module-1;
-					echo "<tr>
-							<td>".$module."</td>"; 
-							if(in_array($authorized,$has_permission))
-							{
-								$readonly = ''; ?>
-								<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_emp_data_v2.php",0,"N") ?>" >
+					echo "<th>Total</th>
+					</tr>";
+					while($sql_row1=mysqli_fetch_array($sql_result1))
+					{
+						$atten_id=$sql_row1['atten_id'];
+						$date=$sql_row1['date'];
+						$avail_av=$sql_row1['present'];
+						$absent_ab=$sql_row1['absent'];
+						$module=$sql_row1['module'];
+						$k=$module-1;
+						echo "<tr>
+								<td>".$module."</td>"; 
+								if(in_array($authorized,$has_permission))
+								{
+									$readonly = ''; ?>
+									<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_emp_data_v2.php",0,"N") ?>" >
+									<?php
+										echo "<input type=\"hidden\" name=\"shift\" value=\"$shift\">";
+										echo "<input type=\"hidden\" name=\"date\" value=\"$date\">";
+										echo "<input type=\"hidden\" name=\"shift_start_time\" value=\"$shift_start_time\">";
+										echo "<input type=\"hidden\" name=\"shift_end_time\" value=\"$shift_end_time\">";			
+								}
+								else
+								{
+									$readonly = 'readonly';
+								}
+							?>
+								
+								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>"></td>
+								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $absent_ab; ?>" name="aba<?php echo $k; ?>"></td>
 								<?php
-									echo "<input type=\"hidden\" name=\"shift\" value=\"$shift\">";
-									echo "<input type=\"hidden\" name=\"date\" value=\"$date\">";
-									echo "<input type=\"hidden\" name=\"shift_start_time\" value=\"$shift_start_time\">";
-									echo "<input type=\"hidden\" name=\"shift_end_time\" value=\"$shift_end_time\">";			
-							}
-							else
-							{
-								$readonly = 'readonly';
-							}
-						?>
-							
-							<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>"></td>
-							<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $absent_ab; ?>" name="aba<?php echo $k; ?>"></td>
-							<?php
-							echo "<td>".($avail_av-$absent_ab)."</td>
-						</tr>";
+								echo "<td>".($avail_av-$absent_ab)."</td>
+							</tr>";
+					}
+					if(in_array($authorized,$has_permission))
+					{ ?>
+						<tr>
+							<th colspan=5><input type="submit" class="btn btn-primary" value="Submit"> </th>
+						</tr> <?php
+					}
+					echo "</table>";
 				}
-				if(in_array($authorized,$has_permission))
-				{ ?>
+				else
+				{
+					for($i=0;$i<sizeof($modules_array);$i++) 
+					{ ?>
+						<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_emp_data_v2.php",0,"N") ?>" >
+							<tr>
+								<td> <?php echo $modules_array[$i]; ?> </td>
+								<td><input type="text" class="form-control" style="width: 180px;" value="0" name="pra<?php echo $i; ?>"></td>
+								<td><input type="text" class="form-control" style="width: 180px;"value="0" name="aba<?php echo $i; ?>"></td>
+							</tr>
+						<?php
+					}
+					echo "<input type=\"hidden\" name=\"shift\" value=\"$shift\">";
+					echo "<input type=\"hidden\" name=\"date\" value=\"$date\">";
+					echo "<input type=\"hidden\" name=\"shift_start_time\" value=\"$shift_start_time\">";
+					echo "<input type=\"hidden\" name=\"shift_end_time\" value=\"$shift_end_time\">";
+					 ?>
+					
 					<tr>
 						<th colspan=5><input type="submit" class="btn btn-primary" value="Submit"> </th>
-					</tr> <?php
-				}
-				echo "</table>";
-			}
-			else
-			{
-				for($i=0;$i<sizeof($modules);$i++) 
-				{ ?>
-					<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_emp_data_v2.php",0,"N") ?>" >
-						<tr>
-							<td> <?php echo $modules[$i]; ?> </td>
-							<td><input type="text" class="form-control" style="width: 180px;" value="0" name="pra<?php echo $i; ?>"></td>
-							<td><input type="text" class="form-control" style="width: 180px;"value="0" name="aba<?php echo $i; ?>"></td>
-						</tr>
+					</tr>
+				
+						</table>
+					</form>
+					</div>
+					</div>
 					<?php
 				}
-				echo "<input type=\"hidden\" name=\"shift\" value=\"$shift\">";
-				echo "<input type=\"hidden\" name=\"date\" value=\"$date\">";
-				echo "<input type=\"hidden\" name=\"shift_start_time\" value=\"$shift_start_time\">";
-				echo "<input type=\"hidden\" name=\"shift_end_time\" value=\"$shift_end_time\">";
-				 ?>
-				
-				<tr>
-					<th colspan=5><input type="submit" class="btn btn-primary" value="Submit"> </th>
-				</tr>
-			
-	</table>
-</form>
-</div>
-</div>
-<?php
-}
+	}
+	else
+	{
+		echo "No Modules Available in Modules Master";
+	}
 }
 ?>
 </body>
