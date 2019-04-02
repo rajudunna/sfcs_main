@@ -21,7 +21,7 @@ $userName = getrbac_user()['uname'];
 		
 		if($items[0]=="allItems")
 		{	
-			$get_original_module="SELECT packing_summary_input.`doc_no`, packing_summary_input.`order_del_no`, plan_dashboard_input.`input_job_no_random_ref`, packing_summary_input.`input_job_no`, plan_dashboard_input.`input_module` FROM $bai_pro3.`plan_dashboard_input` LEFT JOIN $bai_pro3.`packing_summary_input` ON plan_dashboard_input.`input_job_no_random_ref`=packing_summary_input.`input_job_no_random` WHERE plan_dashboard_input. input_job_no_random_ref='".$items[1]."'";
+			$get_original_module="SELECT packing_summary_input.`doc_no`, packing_summary_input.`order_del_no`, plan_dashboard_input.`input_job_no_random_ref`, packing_summary_input.`input_job_no`, plan_dashboard_input.`input_module` FROM $bai_pro3.`plan_dashboard_input` LEFT JOIN $bai_pro3.`packing_summary_input` ON plan_dashboard_input.`input_job_no_random_ref`=packing_summary_input.`input_job_no_random` WHERE plan_dashboard_input. input_job_no_random_ref='".$items[1]."' group by plan_dashboard_input.input_job_no_random_ref";
 			// echo $get_original_module.";<br>";
 			$result_org_module=mysqli_query($link, $get_original_module) or die("Error while getting original module0");
 			if (mysqli_num_rows($result_org_module) > 0)
@@ -63,7 +63,7 @@ $userName = getrbac_user()['uname'];
 			unset($incoming_docs);
 			$org_docs=array();
 			$org_docs[] = '-1';
-			$sql="select * from $bai_pro3.plandoc_stat_log where doc_no in (".$doc_no_ref_input.")";
+			$sql="select org_doc_no from $bai_pro3.plandoc_stat_log where doc_no in (".$doc_no_ref_input.")";
 			//echo $sql."<br>";
 			$resultr1=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowr1=mysqli_fetch_array($resultr1))
@@ -97,7 +97,7 @@ $userName = getrbac_user()['uname'];
 		}
 		else
 		{
-			$get_original_module="SELECT packing_summary_input.`doc_no`, packing_summary_input.`order_del_no`, plan_dashboard_input.`input_job_no_random_ref`, packing_summary_input.`input_job_no`, plan_dashboard_input.`input_module` FROM $bai_pro3.`plan_dashboard_input` LEFT JOIN $bai_pro3.`packing_summary_input` ON plan_dashboard_input.`input_job_no_random_ref`=packing_summary_input.`input_job_no_random` WHERE plan_dashboard_input. input_job_no_random_ref='".$items[1]."'";
+			$get_original_module="SELECT packing_summary_input.`doc_no`, packing_summary_input.`order_del_no`, plan_dashboard_input.`input_job_no_random_ref`, packing_summary_input.`input_job_no`, plan_dashboard_input.`input_module` FROM $bai_pro3.`plan_dashboard_input` LEFT JOIN $bai_pro3.`packing_summary_input` ON plan_dashboard_input.`input_job_no_random_ref`=packing_summary_input.`input_job_no_random` WHERE plan_dashboard_input. input_job_no_random_ref='".$items[1]."' group by plan_dashboard_input.input_job_no_random_ref";
 			$result_org_module=mysqli_query($link, $get_original_module) or die("Error while getting original module1");
 			if (mysqli_num_rows($result_org_module) > 0)
 			{
@@ -119,7 +119,7 @@ $userName = getrbac_user()['uname'];
 			} 
 			else
 			{
-				$get_schedule="SELECT `order_del_no`, input_job_no FROM $bai_pro3.`packing_summary_input` WHERE input_job_no_random='".$items[1]."'";
+				$get_schedule="SELECT `order_del_no`, input_job_no FROM $bai_pro3.`packing_summary_input` WHERE input_job_no_random='".$items[1]."' GROUP BY input_job_no_random";
 				// echo $get_schedule.";<br>";
 				$result_schedule=mysqli_query($link, $get_schedule) or die("Error while getting schedule No");
 				while($sql_row_schedule=mysqli_fetch_array($result_schedule))
@@ -194,7 +194,7 @@ $userName = getrbac_user()['uname'];
 				$resultr112=mysqli_query($link, $sql12) or exit("Sql Error5 == ".$sql12.' == '.mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($resultr112)==0)
 				{
-					$sql_map_table="select * from $bai_pro3.module_master where module_name=".$items[0]." and status='Active'";
+					$sql_map_table="select mapped_cut_table from $bai_pro3.module_master where module_name=".$items[0]." and status='Active'";
 					$sql_map_table_res=mysqli_query($link, $sql_map_table) or exit("Sql error sql_map_table".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_map_table_res)>0)
 					{
@@ -205,7 +205,7 @@ $userName = getrbac_user()['uname'];
 					
 						if($mapped_cut_table != NULL)
 						{
-							$sql12="select * from $bai_pro3.tbl_cutting_table where tbl_name='$mapped_cut_table'";
+							$sql12="select tbl_id from $bai_pro3.tbl_cutting_table where tbl_name='$mapped_cut_table'";
 
 							$resultr112=mysqli_query($link, $sql12) or exit("Sql Error5 == ".$sql12.' == '.mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row12=mysqli_fetch_array($resultr112))
@@ -245,34 +245,6 @@ $userName = getrbac_user()['uname'];
 			}
 			unset($dockets_ref);		
 		}		
-	}
-	$application='IPS';			
-	$scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
-	// echo $scanning_query;
-	$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row=mysqli_fetch_array($scanning_result))
-	{
-		$operation_name=$sql_row['operation_name'];
-		$operation_code=$sql_row['operation_code'];
-	}
-	$remove_docs=array();
-
-	$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dashboard_input";
-	//echo $sqlx;
-	$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11.1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_rowx=mysqli_fetch_array($sql_resultx))
-	{
-		$job_status=job_rec_status($sql_rowx['doc_no'],$operation_code);
-		if($job_status=='DONE')
-		{
-			$remove_docs[]="'".$sql_rowx['doc_no']."'";
-		}
-	}	
-	if(sizeof($remove_docs)>0)
-	{
-		$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_docs).")";
-		//echo $sqlx.";<br>";
-		mysqli_query($link, $sqlx) or exit("Sql Error11.2");
 	}
 	echo '<div class="alert alert-success"><h2>Sucessfully Updated... <br/> Please wait while we redirect to IPS Dashboard....</h2></div>';
 	//echo "<h2>Sucessfully Updated... <br/> Please wait while redirect to IPS Dashboard....</h2>";
