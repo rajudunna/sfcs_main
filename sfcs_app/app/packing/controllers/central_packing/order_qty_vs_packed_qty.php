@@ -455,7 +455,7 @@
 							</tr>";
 
 						echo "<tr>
-								<td rowspan=2>Carton Eligibility</td>
+								<td rowspan=2 style='padding-top: 24px;'>Carton Eligibility</td>
 								<td>Against Order Qty</td>";
 								for ($i=0; $i < sizeof($size_main); $i++)
 								{
