@@ -442,7 +442,11 @@ table tr:hover td {
 			// $super_user=array("sfcsproject1","hasithada","thusharako","thilinana","chathurangad","dinushapre","diland","ranganak");
 							
 				if (in_array($authorized, $has_perm)){
-						echo '<td><b><a href="'.getFullURLLevel($_GET['r'],'edit_downtime.php',0,'N').'"&team='.$team.'&dat='.$frdate.'">Edit</a></b></td>';
+						//echo '<td><b><a href="'.getFullURLLevel($_GET['r'],'edit_downtime.php?r=&team='.$team.'&dat='.$frdate.'',0,'N').'"&team='.$team.'&dat='.$frdate.'">Edit</a></b></td>';
+						//echo '<td><b><a href="'.getFullURLLevel($_GET['r'],'edit_downtime.php',0,'N').'"&team='.$team.'&dat='.$frdate.'">Edit</a></b></td>';
+					$url=base64_encode('/sfcs_app/app/production/reports/kpi/edit_downtime.php');
+					echo '<td><b><a href="index.php?r='.$url.'&team='.$team.'&dat='.$frdate.'">Edit</a></b></td>';
+					//echo '<td><b><a href="'.getFullURLLevel($_GET['r'],'edit_downtime.php?&team='.$team.'&dat='.$frdate.'',0,'N').'"&team='.$team.'&dat='.$frdate.'">Edit</a></b></td>';
 				}
 			
 				?>
