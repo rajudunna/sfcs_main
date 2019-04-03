@@ -281,7 +281,7 @@ function min_vals($ary){
 function update_barcode_sequences($input_job_random)
 {
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    $query = "select tid from $bai_pro3.pac_stat_log_input_job where input_job_no_random = '$input_job_random' order by doc_no,old_size*1";
+    $query = "select tid from $bai_pro3.pac_stat_log_input_job where input_job_no_random = '$input_job_random' order by doc_no,old_size";
     $result = mysqli_query($link,$query);
 	$counter=1;
 	while($row = mysqli_fetch_array($result))
