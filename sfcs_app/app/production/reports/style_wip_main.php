@@ -54,6 +54,9 @@
 			            <label class="checkbox-inline">Size</label>
 	               
 					<input type="button"  class="btn btn-success" value="Submit" onclick="getdata()"> 
+						<div class="ajax-loader" id="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px; display:none">
+						    <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
+					    </div>
 					</div>
 				</div>
 				
@@ -154,6 +157,7 @@
 
 
       function getdata(){
+      	$('#loading-image').show();
 	      var style = $("#style").val();
 	      var schedule = $("#schedule").val();
 	      var color = $("#color").val();	
@@ -178,6 +182,7 @@
                     //setFilterGrid("dynamic_table1",table3Filters);
 					//getexcel();
 					// $('#dynamic_table').innerHTML = response ;
+					$('#loading-image').hide();
 				}
 
 		});
