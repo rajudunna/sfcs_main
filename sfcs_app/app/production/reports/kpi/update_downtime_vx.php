@@ -13,7 +13,7 @@ $dout2=$_POST['dout2'];
 $dout3=$_POST['dout3'];
 
 	$odate=$_POST['ddate'];
-	$otime=$_POST['hour'].':30';
+	$otime=$_POST['hour'];
 	$hour=$_POST['hour'];	
 	//$remarks='NA';
 

@@ -243,7 +243,7 @@ table tr:hover td {
 	$res4=mysqli_query($link,$sql4);
 	$res5=mysqli_query($link,$sql4);
 	
-	$sql6="SELECT time,dreason,output_qty FROM $bai_pro2.hourly_downtime where date='$frdate' AND team='$team' AND dreason!='N'";
+	$sql6="SELECT time,group_concat(distinct dreason) as dreason,sum(output_qty) as output_qty FROM $bai_pro2.hourly_downtime where date='$frdate' AND team='$team' AND dreason!='N' group by time";
 	$res6=mysqli_query($link,$sql6) or exit('$sql6 error'. mysqli_error($link));
 		while($row6=mysqli_fetch_array($res6)){
 			$sout_time=$row6['time'];
