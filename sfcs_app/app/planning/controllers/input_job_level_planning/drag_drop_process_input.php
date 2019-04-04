@@ -182,7 +182,7 @@ $userName = getrbac_user()['uname'];
 			mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$msc41=microtime(true);
 			$log.="<th>".$msc41."</th>";
-			$msc42=$msc42-$msc41;
+			$msc42=$msc41-$msc40;
 			$log.="<th>".$msc42."</th></tr>";
 			$plan_moduleqry1="update $bai_pro3.plandoc_stat_log set plan_module= NULL where doc_no in (".implode(",",$org_docs).")";
 			$log.="<tr><th>".$plan_moduleqry1."</th>";
