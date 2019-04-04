@@ -847,7 +847,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 
 							$sql_pre1="select prefix,bg_color from $brandix_bts.tbl_sewing_job_prefix where type_of_sewing=".$sql_row1['type_of_sewing']."";
 							$sql_result_pre1=mysqli_query($link, $sql_pre1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($sql_row_pre1=mysqli_fetch_array($sql_result_pre))
+							while($sql_row_pre1=mysqli_fetch_array($sql_result_pre1))
 							{
 									$prefix_value1=$sql_row_pre1["prefix"];
 									$bg_color1=$sql_row_pre1["bg_color"];
