@@ -182,12 +182,14 @@ if(isset($_POST['submit']))
 				else
 				{
 					for($i=0;$i<sizeof($modules_array);$i++) 
-					{ ?>
+					{ 
+						$k=$modules_id_array[$modules_array[$i]];
+						?>
 						<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_emp_data_v2.php",0,"N") ?>" >
 							<tr>
 								<td> <?php echo $modules_array[$i]; ?> </td>
-								<td><input type="text" class="form-control" style="width: 180px;" value="0" name="pra<?php echo $i; ?>"></td>
-								<td><input type="text" class="form-control" style="width: 180px;"value="0" name="aba<?php echo $i; ?>"></td>
+								<td><input type="text" class="form-control" style="width: 180px;" value="0" name="pra<?php echo $k; ?>"></td>
+								<td><input type="text" class="form-control" style="width: 180px;"value="0" name="aba<?php echo $k; ?>"></td>
 							</tr>
 						<?php
 					}
