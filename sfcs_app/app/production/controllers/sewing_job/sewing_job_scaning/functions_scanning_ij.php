@@ -1253,6 +1253,11 @@ function validating_with_module($pre_array_module)
 	$screen = $pre_array_module[3];
 	$scan_type = $pre_array_module[4];
 	
+	$application='IPS';
+	$get_routing_query="SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+	$routing_result=mysqli_query($link, $get_routing_query) or exit("error while fetching opn routing");
+	$opn_routing=mysqli_fetch_array($routing_result);
+	$opn_routing_code = $opn_routing['operation_code'];
 
 	$input_job_array = array();
 	$response_flag = 0;	$go_here = 0;
@@ -1263,13 +1268,13 @@ function validating_with_module($pre_array_module)
 		{
 			# bundle level
 			$get_module_no = "SELECT input_module FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (select input_job_no_random from $bai_pro3.pac_stat_log_input_job where tid=$job_no)";
-			$get_module_no_bcd = "SELECT assigned_module FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$job_no' AND operation_id='$operation'";
+			$get_module_no_bcd = "SELECT assigned_module FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$job_no'";
 		}
 		else if ($scan_type == 1)
 		{
 			# sewing job level
 			$get_module_no = "SELECT input_module FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$job_no'";
-			$get_module_no_bcd = "SELECT assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";
+			$get_module_no_bcd = "SELECT assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no'";
 		}
 
 		$module_rsult = $link->query($get_module_no);
@@ -1293,7 +1298,7 @@ function validating_with_module($pre_array_module)
 	if ($scan_type == 0)
 	{
 		# bundle level
-		$check_if_ij_is_scanned = "SELECT sum(recevied_qty) as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$job_no' AND operation_id='$operation'";
+		$check_if_ij_is_scanned = "SELECT sum(recevied_qty) as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$job_no' AND operation_id='$opn_routing_code'";
 
 		$get_ij_rand_no_QUERY = "SELECT input_job_no_random FROM $bai_pro3.pac_stat_log_input_job WHERE tid = '$job_no'";
 		$get_ij_rand_no_RESULT = $link->query($get_ij_rand_no_QUERY);
@@ -1305,7 +1310,7 @@ function validating_with_module($pre_array_module)
 	else if ($scan_type == 1)
 	{
 		# sewing job level
-		$check_if_ij_is_scanned = "SELECT sum(recevied_qty) as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";		
+		$check_if_ij_is_scanned = "SELECT sum(recevied_qty) as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$opn_routing_code'";		
 	}
 	$check_result = $link->query($check_if_ij_is_scanned);
 	while ($row = mysqli_fetch_array($check_result))
