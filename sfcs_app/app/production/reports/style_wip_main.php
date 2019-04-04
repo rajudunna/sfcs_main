@@ -2,6 +2,7 @@
 <html>
 <head>
 	<script type="text/javascript" src="sfcs_app/common/js/tablefilter.js" ></script>
+	<script type="text/javascript" src="sfcs_app/common/js/table2CSV.js" ></script>
 	<title>Style WIP Report</title>
 	<?php
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
@@ -30,7 +31,7 @@
 			<div class="panel-heading">Style WIP Report</div>
 			<div class="panel-body">
 				<div class='row'>
-					<div class="form-inline col-sm-10">
+					<div class="form-inline col-sm-12">
 
 						<label><font size="2">Style: </font></label>
 						<select  name="style" class="form-control" id="style">
@@ -54,6 +55,7 @@
 			            <label class="checkbox-inline">Size</label>
 	               
 					<input type="button"  class="btn btn-success" value="Submit" onclick="getdata()"> 
+					<input id="excel" type="button"  class="btn btn-success" value="Export To Excel" onclick="getCSVData()" style="display:none"> 
 						<div class="ajax-loader" id="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px; display:none">
 						    <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
 					    </div>
@@ -90,6 +92,7 @@
 			},
 			error: function(response){
 				$('#loading-image').hide();	
+				$('#excel').hide();
 				// alert('failure');
 				// console.log(response);
 				swal('Error in getting style');
@@ -101,6 +104,7 @@
 
 
     $('#style').change(function(){
+    	$('#excel').hide();
         $('#schedule option').remove();
         $('#color option').remove();
         var style = $(this).val();
@@ -128,6 +132,7 @@
     });
 
     $('#schedule').change(function(){
+    	$('#excel').hide();
         $('#color option').remove();
         var schedule = $('#schedule').val();
         var style = $('#style').val();
@@ -183,10 +188,25 @@
 					//getexcel();
 					// $('#dynamic_table').innerHTML = response ;
 					$('#loading-image').hide();
+					$('#excel').show();
 				}
 
 		});
 	  }
+
+	  
+function downloadFile(fileName, urlData) {
+   var aLink = document.createElement('a');
+   aLink.download = fileName;
+   aLink.href = urlData;
+   var event = new MouseEvent('click');
+   aLink.dispatchEvent(event);
+  }
+
+function getCSVData() {
+    var data = $('#dynamic_table1').table2CSV({delivery: 'value',filename: 'style_wip.csv'});
+   downloadFile('style_wip.csv', 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data));
+}
 	
 </script>
 
