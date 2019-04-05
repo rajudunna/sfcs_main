@@ -3,6 +3,7 @@
 <head>
 	<script type="text/javascript" src="sfcs_app/common/js/tablefilter.js" ></script>
 	<script type="text/javascript" src="sfcs_app/common/js/table2CSV.js" ></script>
+
 	<title>Style WIP Report</title>
 	<?php
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
@@ -189,24 +190,29 @@
 					// $('#dynamic_table').innerHTML = response ;
 					$('#loading-image').hide();
 					$('#excel').show();
+					// $('#noExport').hide();
 				}
 
 		});
 	  }
 
-	  
-function downloadFile(fileName, urlData) {
-   var aLink = document.createElement('a');
-   aLink.download = fileName;
-   aLink.href = urlData;
-   var event = new MouseEvent('click');
-   aLink.dispatchEvent(event);
-  }
+	 
 
 function getCSVData() {
-    var data = $('#dynamic_table1').table2CSV({delivery: 'value',filename: 'style_wip.csv'});
-   downloadFile('style_wip.csv', 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data));
+ // $('thead').css({"background-color": "blue"});
+  var uri = 'data:application/vnd.ms-excel;base64,'
+    , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+    , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+    , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+  
+    var table = document.getElementById('dynamic_table1').innerHTML;
+    // $('thead').css({"background-color": "blue"});
+    var ctx = {worksheet: name || 'Worksheet', table : table}
+    window.location.href = uri + base64(format(template, ctx))
+  
 }
+
+
 	
 </script>
 
