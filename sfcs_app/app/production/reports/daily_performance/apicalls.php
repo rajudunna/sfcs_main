@@ -48,7 +48,7 @@ function getData($date){
 	if(count($over_all_operations)>0){
 		$operation_codes_no = implode(',',$over_all_operations);
 		//columns Data
-		$get_data_bcd_temp= "SELECT style,SCHEDULE,color,size_title,sum(recevied_qty) as recevied_qty,operation_id as op_code FROM brandix_bts.`bundle_creation_data_temp` WHERE DATE(scanned_date) = '$date' AND operation_id in ($operation_codes_no) GROUP BY style,SCHEDULE,color,size_title,operation_id";
+		$get_data_bcd_temp= "SELECT style,SCHEDULE,color,size_title,sum(recevied_qty) as recevied_qty,operation_id as op_code FROM brandix_bts.`bundle_creation_data_temp` WHERE scanned_date BETWEEN '$date 00:00:00.0000' AND '$date 23:59:59.9999' AND operation_id in ($operation_codes_no) GROUP BY style,SCHEDULE,color,size_title,operation_id";
 		$result5 = $link->query($get_data_bcd_temp);
 		$op_count1 = mysqli_num_rows($result5);
 		if($op_count1>0){
