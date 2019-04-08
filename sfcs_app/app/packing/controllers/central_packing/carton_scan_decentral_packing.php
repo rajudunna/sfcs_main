@@ -155,10 +155,10 @@
 							document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'> Carton Already Scanned</center>";
 							$('#status').css("background-color", "limegreen");
 							$('#'+id).val('');
-							$('#carton_id').focus();
 							$("#carton_id").attr("disabled", false);
 							$("#manual_carton_id").attr("disabled", false);
 							$("#submit_btn").attr("disabled", true);
+							$('#carton_id').focus();
 						}
 						else if(response['status']==0 || response['status']==3 || response['status']==4)
 						{
@@ -179,11 +179,11 @@
 							$("#error_msg").show();
 							document.getElementById('error').innerHTML = msg;
 							$('#'+id).val('');
-							$('#carton_id').focus();
 							$("#display_result").hide();
 							$("#carton_id").attr("disabled", false);
 							$("#manual_carton_id").attr("disabled", false);
 							$("#submit_btn").attr("disabled", true);
+							$('#carton_id').focus();
 						}
 						else if(response['status']==2)
 						{
@@ -199,10 +199,10 @@
 							document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'>Carton Scanned Succesfully</center>";
 							$('#status').css("background-color", "limegreen");						
 							$('#'+id).val('');
-							$('#carton_id').focus();
 							$("#carton_id").attr("disabled", false);
 							$("#manual_carton_id").attr("disabled", false);
 							$("#submit_btn").attr("disabled", true);
+							$('#carton_id').focus();
 						}
 					}
 				});

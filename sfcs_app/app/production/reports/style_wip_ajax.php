@@ -422,6 +422,7 @@ else
 		   	$table_data .= "</tr>";
 		   	unset($bcd_rec);
 		   	unset($bcd_rej);
+		   	unset($cpk_main_qty);
 		}
 		  
 		echo $table_data."</tbody></table>";
