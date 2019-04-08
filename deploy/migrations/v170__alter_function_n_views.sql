@@ -11,22 +11,6 @@ RETURN COALESCE(@bin_con,0);
 END*/$$
 DELIMITER ;
 
-/* Function  structure for function  `fn_know_binding_con_v2` */
-
-/*!50003 DROP FUNCTION IF EXISTS `bai_pro3`.`fn_know_binding_con_v2` */;
-DELIMITER $$
-
-/*!50003 CREATE FUNCTION `bai_pro3`.`fn_know_binding_con_v2`(ord_id VARCHAR(200),category VARCHAR(100),cat_ref INT(10)) RETURNS FLOAT(10,4)
-BEGIN
-DECLARE bin_con FLOAT(10,4);
-IF category='Front' OR category='Body' THEN
-SET @bin_con = ((SELECT COALESCE(binding_consumption,0) FROM bai_pro3.cat_stat_log WHERE order_tid=ord_id AND tid=cat_ref));
-ELSE
-SET @bin_con =0;
-END IF;
-RETURN COALESCE(@bin_con,0);
-END */$$
-DELIMITER ;
 
 DROP VIEW IF EXISTS `bai_pro3`.`order_cat_doc_mk_mix`;
 
