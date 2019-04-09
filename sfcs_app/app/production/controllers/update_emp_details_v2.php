@@ -120,22 +120,24 @@ if(isset($_POST['submit']))
 	$modules_result=mysqli_query($link, $get_modules) or exit ("Error while fetching modules: $get_modules");
 	if(mysqli_num_rows($modules_result) > 0)
 	{
-		while($module_row=mysqli_fetch_array($modules_result))
-		{
-			$modules_array[]=$module_row['module_name'];
-			$modules_id_array[$module_row['module_name']]=$module_row['id'];
-		}
-		$modules = implode("','", $modules_array);
-		$sql1="SELECT * FROM $bai_pro.pro_attendance WHERE DATE='$date' AND shift='$shift' AND (present > 0 OR absent > 0) AND module IN ('$modules')";
-		echo "
-		<table border=1 class='table table-bordered'>
-			<tr class='info'>
-				<th>Module</th>
-				<th>Team - $shift Available Emp</th>
-				<th>Team - $shift Absent Emp</th>";
-				$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_num_check=mysqli_num_rows($sql_result1);
-				if($sql_num_check>0)
+		$modules[] = $row['module_name'];
+	}
+
+	$sql1="Select * from $bai_pro.pro_attendance where date=\"$date\" and  shift='".$shift."'  order by module*1";
+
+	echo "
+	<table border=1 class='table table-bordered'>
+		<tr class='info'>
+			<th>Module</th>
+			<th>Team - $shift Available Emp</th>
+			<th>Team - $shift Absent Emp</th>";
+			$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_num_check=mysqli_num_rows($sql_result1);
+			if($sql_num_check>0)
+			{
+				echo "<th>Total</th>
+				</tr>";
+				while($sql_row1=mysqli_fetch_array($sql_result1))
 				{
 					echo "<th>Total</th>
 					</tr>";
