@@ -287,8 +287,13 @@ $(document).ready(function()
 			url: function_text+"?pre_array_module="+pre_array_module,
 			dataType: "json",
 			success: function (response) 
-			{				
-				if (response == 4)
+			{
+				if (response == 5)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'Trims Not Issued';
+				}
+				else if (response == 4)
 				{
 					module_flag = 1; // block
 					restrict_msg = 'No Module Assigned';

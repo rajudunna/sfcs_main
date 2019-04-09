@@ -1321,81 +1321,99 @@ function validating_with_module($pre_array_module)
 	else if ($scan_type == 1)
 	{
 		# sewing job level
-		$check_if_ij_is_scanned = "SELECT sum(recevied_qty) as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$opn_routing_code'";		
+		if ($screen == 'scan') {
+			$check_if_ij_is_scanned = "SELECT sum(recevied_qty) as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$opn_routing_code'";
+		} else {
+			$check_if_ij_is_scanned = "SELECT sum(recevied_qty) as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";
+		}				
 	}
-	$check_result = $link->query($check_if_ij_is_scanned);
-	while ($row = mysqli_fetch_array($check_result))
+	$check_tms_status_query = "SELECT input_trims_status FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='$job_no' GROUP BY input_job_no_random_ref";
+	$tms_check_result = $link->query($check_tms_status_query);
+	while ($tms_result = mysqli_fetch_array($tms_check_result))
 	{
-		$res = $row['recevied_qty'];
+		$tms_status = $tms_result['input_trims_status'];
 	}
-	if ($res > 0  && $res != null && $res != '')
+
+	if ($tms_status > 1)
 	{
-		if ($screen == 'scan' || $screen == 'wout_keystroke')
+		$check_result = $link->query($check_if_ij_is_scanned);
+		while ($row = mysqli_fetch_array($check_result))
 		{
-			// Scanning screen
-			$response_flag = 0;
+			$res = $row['recevied_qty'];
+		}
+		if ($res > 0  && $res != null && $res != '')
+		{
+			if ($screen == 'scan' || $screen == 'wout_keystroke')
+			{
+				// Scanning screen
+				$response_flag = 0;
+			}
+			else
+			{
+				// Reversal screen
+				$go_here = 1;
+			}
 		}
 		else
 		{
-			// Reversal screen
+			// Sewing Job not scanned
 			$go_here = 1;
+		}
+
+		if ($go_here == 1)
+		{
+			if ($module != '' && $module != null && $module > 0)
+			{
+				$validating_qry = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE ims_mod_no = '$module'";
+				$result_validating_qry = $link->query($validating_qry);
+				while($row = $result_validating_qry->fetch_assoc()) 
+				{
+					$input_job_array[] = $row['input_job_rand_no_ref'];
+				}
+
+				$block_prio_qry = "SELECT block_priorities FROM $bai_pro3.`module_master` WHERE module_name='$module'";
+				$result_block_prio = $link->query($block_prio_qry);
+				while($sql_row = $result_block_prio->fetch_assoc())
+				{
+					$block_priorities = $sql_row['block_priorities'];
+				}
+
+				if ($block_priorities == '' || $block_priorities == null || $block_priorities == 0 || $block_priorities == '0')
+				{
+					$response_flag = 3;
+				}
+				else
+				{
+					if(!in_array($job_no,$input_job_array))
+					{
+						// job not in module (adding new job to module)
+						if (sizeof($input_job_array) < $block_priorities)
+						{
+							$response_flag = 0; // allow
+						}
+						else
+						{
+							$response_flag = 2; // check for user acces (block priorities)
+						}
+					}
+					else
+					{
+						// job already in module
+						$response_flag = 0;	// allow
+					}
+				}
+			}
+			else
+			{
+				$response_flag = 4;
+			}
 		}
 	}
 	else
 	{
-		// Sewing Job not scanned
-		$go_here = 1;
-	}
-
-	if ($go_here == 1)
-	{
-		if ($module != '' && $module != null && $module > 0)
-		{
-			$validating_qry = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE ims_mod_no = '$module'";
-			$result_validating_qry = $link->query($validating_qry);
-			while($row = $result_validating_qry->fetch_assoc()) 
-			{
-				$input_job_array[] = $row['input_job_rand_no_ref'];
-			}
-
-			$block_prio_qry = "SELECT block_priorities FROM $bai_pro3.`module_master` WHERE module_name='$module'";
-			$result_block_prio = $link->query($block_prio_qry);
-			while($sql_row = $result_block_prio->fetch_assoc())
-			{
-				$block_priorities = $sql_row['block_priorities'];
-			}
-
-			if ($block_priorities == '' || $block_priorities == null || $block_priorities == 0 || $block_priorities == '0')
-			{
-				$response_flag = 3;
-			}
-			else
-			{
-				if(!in_array($job_no,$input_job_array))
-				{
-					// job not in module (adding new job to module)
-					if (sizeof($input_job_array) < $block_priorities)
-					{
-						$response_flag = 0; // allow
-					}
-					else
-					{
-						$response_flag = 2; // check for user acces (block priorities)
-					}
-				}
-				else
-				{
-					// job already in module
-					$response_flag = 0;	// allow
-				}
-			}
-		}
-		else
-		{
-			$response_flag = 4;
-		}
-	}
-	// 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
+		$response_flag = 5;
+	}		
+	// 5 = Trims not issued to Module, 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
 	if ($screen == 'wout_keystroke')
     {
         return $response_flag;
