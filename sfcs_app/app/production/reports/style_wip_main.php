@@ -64,7 +64,7 @@
 				</div>
 				
 				<div  class='panel panel-primary' id="dynamic_table1" hidden='true'>
-						<div class='panel-heading'>Styles Report</div>
+						<div class='panel-heading'><b>Style Wip Report </b></div>
 						<div style='overflow-y:scroll' class='panel-body' id="dynamic_table">
 							
 						</div>
@@ -199,7 +199,8 @@
 	 
 
 function getCSVData() {
- // $('thead').css({"background-color": "blue"});
+  $('table').attr('border', '1');
+  $('table').removeClass('table-bordered');
   var uri = 'data:application/vnd.ms-excel;base64,'
     , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
     , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
@@ -207,11 +208,15 @@ function getCSVData() {
   
     var table = document.getElementById('dynamic_table1').innerHTML;
     // $('thead').css({"background-color": "blue"});
-    var ctx = {worksheet: name || 'Worksheet', table : table}
-    window.location.href = uri + base64(format(template, ctx))
-  
+    var ctx = {worksheet: name || 'Hellomama', table : table}
+    //window.location.href = uri + base64(format(template, ctx))
+    var link = document.createElement("a");
+    link.download = "Style WIP Report.xls";
+    link.href = uri + base64(format(template, ctx));
+    link.click();
+    $('table').attr('border', '0');
+    $('table').addClass('table-bordered');
 }
-
 
 	
 </script>
