@@ -126,7 +126,7 @@ if(isset($_GET['tid']))
 		$schedule = $sql_row['qms_schedule'];
 	}
 	$form = 'P';
-	if($operation_code >=130)
+	if($operation_id >=130)
 	{
 		$form = 'G';
 	}
