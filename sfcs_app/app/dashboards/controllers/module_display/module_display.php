@@ -54,7 +54,7 @@ setTimeout(function(){
 	    if(module){
 	        window.location.href = url;    
 	    }
-	},12000);
+	},120000);
 </script>
 </head>
 <div class="panel panel-primary"> <div class="panel-heading"><h4 class="panel-title">Endline Dashboard</h4></div></div>
