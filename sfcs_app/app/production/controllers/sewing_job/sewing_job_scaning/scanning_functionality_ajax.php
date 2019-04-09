@@ -1488,7 +1488,7 @@ else if($concurrent_flag == 0)
 				$r_reasons = array();
 				$implode_next = explode('-',$actual_rejection_reason_array_string[$i]);
 				$r_qty[] = $implode_next[2];
-				$rejection_code_fetech_qry = "select m3_reason_code from $bai_pro3.bai_qms_rejection_reason where reason_code= $implode_next[1]";
+				$rejection_code_fetech_qry = "select m3_reason_code from $bai_pro3.bai_qms_rejection_reason where reason_code= $implode_next[1] and form_type='".$form."'";
 				$result_rejection_code_fetech_qry = $link->query($rejection_code_fetech_qry);
 				while($rowresult_rejection_code_fetech_qry = $result_rejection_code_fetech_qry->fetch_assoc()) 
 				{
