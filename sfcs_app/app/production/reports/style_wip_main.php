@@ -208,7 +208,7 @@ function getCSVData() {
   
     var table = document.getElementById('dynamic_table1').innerHTML;
     // $('thead').css({"background-color": "blue"});
-    var ctx = {worksheet: name || 'Hellomama', table : table}
+    var ctx = {worksheet: name || 'Style WIP Report', table : table}
     //window.location.href = uri + base64(format(template, ctx))
     var link = document.createElement("a");
     link.download = "Style WIP Report.xls";
