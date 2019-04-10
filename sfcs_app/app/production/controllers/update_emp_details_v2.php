@@ -123,7 +123,7 @@ if(isset($_POST['submit']))
 		$modules[] = $row['module_name'];
 	}
 
-	$sql1="Select * from $bai_pro.pro_attendance where date=\"$date\" and  shift='".$shift."' and (present >0 or absent >0) order by module*1";
+	$sql1="Select * from $bai_pro.pro_attendance where date=\"$date\" and  shift='".$shift."'  order by module*1";
 
 	echo "
 	<table border=1 class='table table-bordered'>
