@@ -199,7 +199,12 @@
 					dataType: "json",
 					success: function (response) 
 					{
-						if (response == 4)
+						if (response == 5)
+						{
+							module_flag = 1; // block
+							restrict_msg = 'Trims Not Issued';
+						}
+						else if(response == 4)
 						{
 							module_flag = 1; // block
 							restrict_msg = 'No Module Assigned';

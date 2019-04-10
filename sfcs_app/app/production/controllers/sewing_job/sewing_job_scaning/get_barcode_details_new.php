@@ -47,8 +47,12 @@
         // [module,bundle_no,op_code,screen,scan_type]
         $stri = "0,$bundle_no,$op_no,wout_keystroke,0";
         $ret = validating_with_module($stri);
-        // 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
-        if ($ret == 4) {
+        // 5 = Trims not issued to Module, 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
+        if ($ret == 5) {
+            $result_array['status'] = 'Trims Not Issued';
+            echo json_encode($result_array);
+            die();
+        } else if ($ret == 4) {
             $result_array['status'] = 'No module for Bundle';
             echo json_encode($result_array);
             die();
