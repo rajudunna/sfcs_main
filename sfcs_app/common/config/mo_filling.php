@@ -444,7 +444,7 @@
 									for($jjj=0;$jjj<sizeof($ops);$jjj++)
 									{
 										$sql="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`,`ref_no`,  `bundle_quantity`, `op_code`, `op_desc`) 
-										VALUES ('".date("Y-m-d H:i:s")."', '".$lastmo."', '".$row12341['tid']."','".$qty."', '".$ops[$jjj]."', '".$op_namem[$jjj]."')";
+										VALUES ('".date("Y-m-d H:i:s")."', '".$last_mo."', '".$row12341['tid']."','".$qty."', '".$ops[$jjj]."', '".$op_namem[$jjj]."')";
 										$result1=mysqli_query($link, $sql) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));        
 									}                           
 								}
