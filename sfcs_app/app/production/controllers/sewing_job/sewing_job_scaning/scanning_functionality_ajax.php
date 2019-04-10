@@ -768,6 +768,7 @@ else if($concurrent_flag == 0)
 		$actual_rejection_reason_array_string = array();
 		foreach($b_tid as $key=>$value)
 		{
+			$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$form;
 			$r_reasons = explode(",", $r_reason[$value]);
 			$r_qty = explode(",", $r_qtys[$value]);
 			foreach($r_reasons as $reason_key=>$reason_value)
@@ -778,6 +779,10 @@ else if($concurrent_flag == 0)
 				if($remain_qty_value > 0)
 				{
 					$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$remain_qty_key.'-'. $remain_qty_value ;
+					$remarks_code = $remain_qty_key.'-'.$remain_qty_value;
+					$bulk_insert_rej = "INSERT INTO $bai_pro3.bai_qms_db(`qms_style`, `qms_schedule`,`qms_color`,`log_user`, `log_date`, `qms_size`, `qms_qty`, `qms_tran_type`,`remarks`, `ref1`, `doc_no`, `input_job_no`, `operation_id`, `qms_remarks`, `bundle_no`) VALUES";
+					$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$b_colors[$key].'",user(),"'.date('Y-m-d').'","'.$b_size_code[$key].'","'.$remain_qty_value.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$b_doc_num[$key].'","'.$b_job_no.'","'. $b_op_id.'","'. $b_remarks[$key].'","'.$bundle_individual_number.'")';
+					$rej_insert_result = $link->query($bulk_insert_rej) or exit('data error');
 				}
 			}	
 		}
