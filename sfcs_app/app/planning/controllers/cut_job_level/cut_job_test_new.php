@@ -104,7 +104,7 @@ echo "<div class='row'>";
 	echo "</select></div>";
 	echo "<div class='col-sm-3'><label>Select Color: </label>"; 
 	// $sql="select GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,max(plan_module),order_col_des from order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing>0 group by clubbing union select DISTINCT order_col_des,plan_module,order_col_des AS disp from $bai_pro3.order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing=0 group by clubbing,order_col_des";
-	$sql="SELECT GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,order_col_des FROM bai_pro3.`bai_orders_db_confirm` LEFT JOIN bai_pro3.`plandoc_stat_log` ON bai_orders_db_confirm.`order_tid`=plandoc_stat_log.`order_tid` WHERE order_style_no=\"$style\" AND order_del_no=\"$schedule\" AND ( $order_joins_in_full OR remarks='Recut') group by order_col_des";
+	$sql="SELECT GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,order_col_des FROM bai_pro3.`bai_orders_db_confirm` LEFT JOIN bai_pro3.`plandoc_stat_log` ON bai_orders_db_confirm.`order_tid`=plandoc_stat_log.`order_tid` WHERE order_style_no=\"$style\" AND order_del_no=\"$schedule\" AND ( $order_joins_in_full OR remarks='Recut') AND org_doc_no in(0,1) group by order_col_des";
 	// echo $sql;
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	echo "<select name=\"color\" onchange=\"thirdbox();\" class='form-control' >
