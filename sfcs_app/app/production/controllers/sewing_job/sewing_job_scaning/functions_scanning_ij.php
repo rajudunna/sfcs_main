@@ -1327,11 +1327,20 @@ function validating_with_module($pre_array_module)
 			$check_if_ij_is_scanned = "SELECT sum(recevied_qty) as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";
 		}				
 	}
-	$check_tms_status_query = "SELECT input_trims_status FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='$job_no' GROUP BY input_job_no_random_ref";
+	$check_tms_status_query = "SELECT input_trims_status FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='$job_no'";
 	$tms_check_result = $link->query($check_tms_status_query);
-	while ($tms_result = mysqli_fetch_array($tms_check_result))
-	{
-		$tms_status = $tms_result['input_trims_status'];
+	if (mysqli_num_rows($tms_check_result) > 0) {
+		while ($tms_result = mysqli_fetch_array($tms_check_result))
+		{
+			$tms_status = $tms_result['input_trims_status'];
+		}
+	} else {
+		$check_tms_status_query_backup = "SELECT input_trims_status FROM $bai_pro3.plan_dashboard_input_backup WHERE input_job_no_random_ref='$job_no'";
+		$tms_check_result_backup = $link->query($check_tms_status_query_backup);
+		while ($tms_result_backup = mysqli_fetch_array($tms_check_result_backup))
+		{
+			$tms_status = $tms_result_backup['input_trims_status'];
+		}
 	}
 
 	if ($tms_status > 1)
