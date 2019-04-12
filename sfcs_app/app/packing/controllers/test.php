@@ -132,13 +132,7 @@ $color=$_GET['color'];
 						$sql_num_check=mysqli_num_rows($sql_result);
 
 						echo "<option value=\"NIL\" selected>NIL</option>";
-						if($color_count>'1')
-						{
-					?>
-							<option value="0" <?php if($color=="0") { echo "selected"; } ?>>ALL</option>
-					<?php
-						}	
-							
+
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
 							if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
