@@ -1217,6 +1217,7 @@ echo "<div class='table-responsive' style='max-height:600px;overflow-x:scroll;ov
 echo "<tr class='success'><th>Size</th><th>Order Qty</th><th>FG Qty</th><th>Ship/Resr. Qty</th><th>Available to Ship Qty</th><th>Enter Ship Qty</th></tr>";
 $size_value=array();
 $x=0;
+$tot_available_qty =0;
 for($i=0;$i<sizeof($order_qtys);$i++)
 {
 	if($order_qtys[$i]>0)
@@ -1229,6 +1230,7 @@ for($i=0;$i<sizeof($order_qtys);$i++)
 		//Error Correction
 	
 		$available_qty=$pass_qtys[$i]-$ship_qtys[$i];
+		$tot_available_qty += $available_qty;
 		// $available_qty=$fg_qtys[$i]-$ship_qtys[$i];
 		
 		$size_value[$i]=ims_sizes('',$schedule_no,$style_no,$color_no,strtoupper($sizes[$i]),$link);
@@ -1250,7 +1252,10 @@ for($i=0;$i<sizeof($order_qtys);$i++)
 		echo "</tr>";
 	}
 }
-
+if($tot_available_qty>0)
+{
+	$tot_pass_qty = $tot_available_qty;
+}
 echo "<tr class='warning'><th>Total</th><th>$tot_order_qty</th><th>$tot_fg_qty</th><th>$tot_ship_qty</th><th>".($tot_pass_qty-$tot_ship_qty)."</th><th></th></tr>";
 
 echo "</table>";
