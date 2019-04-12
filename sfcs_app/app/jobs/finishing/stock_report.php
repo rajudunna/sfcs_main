@@ -6,14 +6,13 @@ error_reporting(0);
 // Report simple running errors
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 $start_timestamp = microtime(true);
-$include_path=getenv('config_job_path');
+//$include_path=getenv('config_job_path');
+$include_path='C:\xampp\htdocs\sfcs_main';
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
-function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link11)
+function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link)
 {
-	$include_path=getenv('config_job_path');
-	include($include_path.'\sfcs_app\common\config\config_jobs.php');
-
+	global $bai_pro3;
 	$ims = substr($ims_size2,1);
 	error_reporting(0);
 	
