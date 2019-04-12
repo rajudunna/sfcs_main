@@ -6,8 +6,7 @@ error_reporting(0);
 // Report simple running errors
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 $start_timestamp = microtime(true);
-//$include_path=getenv('config_job_path');
-$include_path='C:\xampp\htdocs\sfcs_main';
+$include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link)
@@ -32,16 +31,17 @@ function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$li
 		{
 				$size_val=$sql_row['size_val'];
 				$flag = $sql_row['title_flag'];
-	    }
-			
-		if($flag==1)
+				
+				if($flag==1)
 		{
 			return $size_val;
 		}
 		else
 		{
 			return $ims_size2;
-		}		
+		}	
+	    }
+			
 	}
 	else
 	{
