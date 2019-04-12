@@ -11,6 +11,9 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link11)
 {
+	$include_path=getenv('config_job_path');
+	include($include_path.'\sfcs_app\common\config\config.php');
+
 	$ims = substr($ims_size2,1);
 	error_reporting(0);
 	
@@ -25,7 +28,7 @@ function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$li
 		{
 			$sql23="select title_size_$ims_size2 as size_val,title_flag from $bai_pro3.bai_orders_db_confirm where order_tid=\"".$order_tid."\"";
 		}
-		$sql_result=mysqli_query($link, $sql23);
+		$sql_result=mysqli_query($link, $sql23) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));;
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 				$size_val=$sql_row['size_val'];
