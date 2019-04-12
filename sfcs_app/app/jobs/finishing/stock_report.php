@@ -13,7 +13,6 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link)
 {
 	global $bai_pro3;
-
 	$ims = substr($ims_size2,1);
 	error_reporting(0);
 	
