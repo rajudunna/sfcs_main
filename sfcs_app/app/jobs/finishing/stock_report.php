@@ -12,7 +12,7 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link11)
 {
 	$include_path=getenv('config_job_path');
-	include($include_path.'\sfcs_app\common\config\config.php');
+	include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 	$ims = substr($ims_size2,1);
 	error_reporting(0);
