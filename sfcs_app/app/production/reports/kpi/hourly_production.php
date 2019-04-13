@@ -20,6 +20,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 ?>
 <html lang="en">
 <head>
+    <meta http-equiv="refresh" content="120">
 	<title>Hourly Production Report</title>  
 </head>
 <body>
