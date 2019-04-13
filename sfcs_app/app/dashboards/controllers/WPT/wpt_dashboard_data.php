@@ -224,20 +224,20 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             $status_color = '';
             
             if($order == 1 || $order == 2 ){
+                $actual_doc = 0;
+                $actual_doc = $doc_no;
+                //checking for clubbing dockets
+                $club_docket_query = "SELECT org_doc_no from $bai_pro3.plandoc_stat_log where doc_no in ($doc_no) and org_doc_no > 1";
+                $club_docket_result = mysqli_query($link,$club_docket_query);
+                if( mysqli_num_rows( $club_docket_result ) > 0 ){
+                    $row = mysqli_fetch_array($club_docket_result);
+                    $doc_no  = $org_doc_no = $row['org_doc_no']; // overriding the incoming docket with the clubbed original docket.
+                }
+                
                 if($aplies < $pplies && $cut_status == 'DONE'){
                     $status_color = 'orange';
                 }else if($order == 1 || $order == 3){
                     if($cut_status == '') $cut_status = 0; else $cut_status = 5;
-
-                    $actual_doc = 0;
-                    $actual_doc = $doc_no;
-                    //checking for clubbing dockets
-                    $club_docket_query = "SELECT org_doc_no from $bai_pro3.plandoc_stat_log where doc_no in ($doc_no) and org_doc_no > 1";
-                    $club_docket_result = mysqli_query($link,$club_docket_query);
-                    if( mysqli_num_rows( $club_docket_result ) > 0 ){
-                        $row = mysqli_fetch_array($club_docket_result);
-                        $doc_no  = $org_doc_no = $row['org_doc_no']; // overriding the incoming docket with the clubbed original docket.
-                    }
 
                     $fabric_status_query="SELECT doc_no from $bai_pro3.plandoc_stat_log where fabric_status<>'5' 
                                         and doc_no in ($doc_no)";
