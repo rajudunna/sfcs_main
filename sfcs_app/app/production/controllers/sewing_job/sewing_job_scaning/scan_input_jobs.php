@@ -59,13 +59,22 @@
 
 
 $url = getFullURL($_GET['r'],'pre_input_job_scanning.php','N');
-// echo $operation_code;
-$form = 'P';
-if($operation_code >=130)
+//echo $operation_code;
+
+if($operation_code ==100)
 {
-	$form = 'G';
+  $form = "'P'";
 }
-$qery_rejection_resons = "select * from $bai_pro3.bai_qms_rejection_reason where form_type = '$form'";
+else if($operation_code ==130)
+{
+    $form = "'G','P'";
+}
+else if($operation_code >130)
+{
+	$form = "'G'";
+}
+
+$qery_rejection_resons = "select * from $bai_pro3.bai_qms_rejection_reason where form_type in ($form)";
 $result_rejections = $link->query($qery_rejection_resons);
 if(isset($_POST['flag_validation']))
 {
@@ -234,7 +243,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 													<?php				    	
 														if ($result_rejections->num_rows > 0) {
 															while($row = $result_rejections->fetch_assoc()) {
-																echo "<option value='".$row['reason_code']."'>".$row['reason_desc']."</option>";
+																echo "<option value='".$row['sno']."'>".$row['form_type']."-".$row['reason_desc']."</option>";
 															}
 														} else {
 															echo "<option value=''>No Data Found..</option>";
