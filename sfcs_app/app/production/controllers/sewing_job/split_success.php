@@ -14,6 +14,7 @@
 <?php
 	$username_list=explode('\\',$_SERVER['REMOTE_USER']); 
 	$username=strtolower($username_list[1]); 
+	$schedule=$_POST['schedule']; 
 	$tids=$_POST['tid']; 
 	$qtys=$_POST['qty']; 
 	$input_job_no_random=$_POST['input_job_no_random']; 
@@ -25,7 +26,7 @@
 
 	// echo "ij = $input_job_no<br>ij_rand = $input_job_no_random<br>";
 
-	$getlastrec="SELECT MAX(input_job_no) AS input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE status = '$input_job_no'"; 
+	$getlastrec="SELECT MAX(input_job_no) AS input_job_no FROM $bai_pro3.packing_summary_input WHERE status = '$input_job_no' and order_del_no='$schedule'"; 
 	// echo $getlastrec;die();
 	$res_last_rec=mysqli_query($link,$getlastrec);
 	if(mysqli_num_rows($res_last_rec) > 0)
@@ -42,6 +43,10 @@
 			if (count($finalval) > 1)
 			{
 				$incrementno=end($finalval)+1;
+			}
+			else
+			{
+				$incrementno = 1;
 			}
 		}
 	}
@@ -80,16 +85,7 @@
 			$jobs_array[] = $input_job_no;
 			$sref_id=$row['sref_id']; 
 			$pac_seq_no=$row['pac_seq_no']; 
-
-			$url_s = getFullURLLevel($_GET['r'],'split_jobs.php',0,'N');
-
-			$sqlx="SELECT order_del_no FROM $bai_pro3.packing_summary_input where tid='$tid'"; 
-			$resultx=mysqli_query($link, $sqlx) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
-			if($rowx=mysqli_fetch_array($resultx))
-			{ 
-				$schedule=$rowx['order_del_no']; 
-			}
-
+			
 			$query_check = "SELECT * FROM $brandix_bts.`bundle_creation_data_temp` WHERE input_job_no_random_ref='$input_job_no_random'";
 			$res_query_check=mysqli_query($link,$query_check);
 			if (mysqli_num_rows($res_query_check) == 0) 
@@ -170,7 +166,7 @@
 			}
 			else 
 			{
-				echo "<script>sweetAlert('Warning','For Sewing Job $input_job_no, Scanning is Performed.So, you cannot split the Sewing Job Anymore.','success');</script>";
+				echo "<script>sweetAlert('Warning','For Sewing Job $input_job_no, Scanning is Performed.So, you cannot split the Sewing Job Anymore.','error');</script>";
 			}
 			
 		}
