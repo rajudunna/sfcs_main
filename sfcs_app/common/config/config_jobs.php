@@ -106,6 +106,9 @@ $api_port_no = $conf->get('api-port');
 //Mo SOAP CALL
 $mo_soap_api = $conf->get('mo_soap_api');
 
+//REST API TimeOut
+$API_CALL_TIME_OUT = $conf->get('api_call_time_out');
+
 //Central Administraion Group ID's
 $group_id_sfcs=8;
 $group_id_Main=5;
