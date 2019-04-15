@@ -10,15 +10,25 @@ $ops_dep='';
 $post_ops_code='';
 $qry_status='';
 error_reporting(0);
-if($operation_code ==100)
+// To get Output Operation
+$application1='IMS_OUT';
+$scanning_query_out=" select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application1'";
+//echo $scanning_query;
+$scanning_result_out=mysqli_query($link, $scanning_query_out)or exit("scanning_out_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row_out=mysqli_fetch_array($scanning_result_out))
+{
+	$operation_out_routing=$sql_row_out['operation_code'];
+}
+
+if($operation_code < $operation_out_routing)
 {
   $form = "'P'";
 }
-else if($operation_code ==130)
+else if($operation_code == $operation_out_routing)
 {
     $form = "'G','P'";
 }
-else if($operation_code >130)
+else if($operation_code > $operation_out_routing)
 {
 	$form = "'G'";
 }

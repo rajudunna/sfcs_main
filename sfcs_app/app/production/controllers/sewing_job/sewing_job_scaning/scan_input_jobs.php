@@ -50,6 +50,18 @@
 	{
 		$operation_code_routing=$sql_row['operation_code'];
 	}
+
+	// To get Output Operation
+
+    $application1='IMS_OUT';
+	$scanning_query_out=" select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application1'";
+	//echo $scanning_query;
+	$scanning_result_out=mysqli_query($link, $scanning_query_out)or exit("scanning_out_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row_out=mysqli_fetch_array($scanning_result_out))
+	{
+		$operation_out_routing=$sql_row_out['operation_code'];
+	}
+
 	echo '<input type="hidden" name="operation_code_routing" id="operation_code_routing" value="'.$operation_code_routing.'">';
 	echo '<input type="hidden" name="sewing_rejection" id="sewing_rejection" value="'.$sewing_rejection.'">';
 	echo '<input type="hidden" name="display_reporting_qty" id="display_reporting_qty" value="'.$display_reporting_qty.'">';
@@ -61,15 +73,15 @@
 $url = getFullURL($_GET['r'],'pre_input_job_scanning.php','N');
 //echo $operation_code;
 
-if($operation_code ==100)
+if($operation_code == $operation_code_routing)
 {
   $form = "'P'";
 }
-else if($operation_code ==130)
+else if($operation_code == $operation_out_routing)
 {
     $form = "'G','P'";
 }
-else if($operation_code >130)
+else if($operation_code > $operation_out_routing)
 {
 	$form = "'G'";
 }
