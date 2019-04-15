@@ -52,14 +52,22 @@
 	}
 
 	// To get Output Operation
-
     $application1='IMS_OUT';
 	$scanning_query_out=" select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application1'";
-	//echo $scanning_query;
 	$scanning_result_out=mysqli_query($link, $scanning_query_out)or exit("scanning_out_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row_out=mysqli_fetch_array($scanning_result_out))
 	{
 		$operation_out_routing=$sql_row_out['operation_code'];
+	}
+
+	//To get Line Out Operation
+	$application2='IMS';
+	$scanning_query_line_out=" select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application2'";
+	//echo $scanning_query;
+	$scanning_result_line_out=mysqli_query($link, $scanning_query_line_out)or exit("scanning_out_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row_out=mysqli_fetch_array($scanning_result_line_out))
+	{
+		$operation_line_out=$sql_row_out['operation_code'];
 	}
 
 	echo '<input type="hidden" name="operation_code_routing" id="operation_code_routing" value="'.$operation_code_routing.'">';
@@ -84,6 +92,10 @@ else if($operation_code == $operation_out_routing)
 else if($operation_code > $operation_out_routing)
 {
 	$form = "'G'";
+}
+else if($operation_code == $operation_line_out)
+{
+    $form = "'G','P'";
 }
 
 $qery_rejection_resons = "select * from $bai_pro3.bai_qms_rejection_reason where form_type in ($form)";
