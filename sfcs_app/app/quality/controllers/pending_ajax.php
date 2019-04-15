@@ -5,22 +5,26 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $schedule=$_POST['get_id'];
 $color=$_POST['color'];
 
-	// $sql1="select count(order_col_des) as col_cnt from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\"";
-	// //	echo "query=".$sql1;
-	// 	mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// 		$sql_num_check=mysqli_num_rows($sql_result1);
-	// 		while($sql_row1=mysqli_fetch_array($sql_result1))
-	// 		{
-	// 			$color_count=$sql_row1['col_cnt'];
-	// 		}
+	$sql1="select count(order_col_des) as col_cnt from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\"";
+	//	echo "query=".$sql1;
+		mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_num_check=mysqli_num_rows($sql_result1);
+			while($sql_row1=mysqli_fetch_array($sql_result1))
+			{
+				$color_count=$sql_row1['col_cnt'];
+			}
 echo "<label>Select Color:</label><select class='form-control' name=\"color\"  id=\"color1\" required>";
 $sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\"";
 
 // mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-// $sql_num_check=mysqli_num_rows($sql_result);
-	
+$sql_num_check=mysqli_num_rows($sql_result);
+if($color_count>1)
+{
+	//echo "<option>Please Select</option>";
+	echo "<option  value=\"0\" selected>All</option>";
+}	
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 

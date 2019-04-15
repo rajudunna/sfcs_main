@@ -7,12 +7,12 @@ if(isset($_POST['hold']))
 	$style_new=$_POST['style_new'];
 	$schedule_new=$_POST['schedule_new'];
 	$color_new=$_POST['color_new'];
+	$color_new1=$_POST['color_new1'];
 	$crts=$_POST['crts'];
 	$qty=$_POST['qty'];
 	$size=$_POST['size'];
 	$query=array();
 	$rmks=$_POST['rmks'];
-	
 	//echo "<br/>Color=".$color_new;
 
 	for($i=0;$i<sizeof($qty);$i++)
@@ -25,15 +25,16 @@ if(isset($_POST['hold']))
 	
 	if(sizeof($query)>0)
 	{
-		if($color_new=='0')
+		if($color_new1=='1')
 		{
-			$sql="insert into $bai_pro3.ship_stat_log set ship_style=\"$style_new\",ship_schedule=\"$schedule_new\",ship_status=\"1\",ship_remarks=\"$rmks\",ship_cartons=".abs($crts).",".implode(",",$query);
+			$sql="insert into $bai_pro3.ship_stat_log set ship_style=\"$style_new\",ship_schedule=\"$schedule_new\",ship_color=\"".$color_new."\",ship_status=\"1\",ship_remarks=\"$rmks\",ship_cartons=".abs($crts).",".implode(",",$query);
+			// echo "<br/> query1=".$sql;
 		}
 		else
 		{
 			$sql="insert into $bai_pro3.ship_stat_log set ship_style=\"$style_new\",ship_schedule=\"$schedule_new\",ship_color=\"$color_new\",ship_status=\"1\",ship_remarks=\"$rmks\",ship_cartons=".abs($crts).",".implode(",",$query);
+			// echo "<br/> query2=".$sql;
 		}
-		//echo "<br/> query=".$sql;;
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	$url = getFullURL($_GET['r'],'test.php','N');
