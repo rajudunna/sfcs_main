@@ -70,6 +70,7 @@ $sqsrv_id = "sa";
 $sqsrv_pwd = "BAWR123";
 $sqsrv_db="AutoMo";
 //m3 integration plant codes
+$grn_details=$conf->get('grndetails');
 $cluster_code=$conf->get('cluster_code');
 $comp_no=$conf->get('company_no');
 $central_wh_code=$conf->get('central_wh_code');

@@ -126,7 +126,7 @@ if(isset($_POST['submit']))
 			$modules_id_array[$module_row['module_name']]=$module_row['id'];
 		}
 		$modules = implode("','", $modules_array);
-		$sql1="SELECT * FROM $bai_pro.pro_attendance WHERE DATE='$date' AND shift='$shift' AND (present > 0 OR absent > 0) AND module IN ('$modules')";
+		$sql1="SELECT * FROM $bai_pro.pro_attendance WHERE DATE='$date' AND shift='$shift' AND module IN ('$modules') order by module*1";
 		echo "
 		<table border=1 class='table table-bordered'>
 			<tr class='info'>

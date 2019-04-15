@@ -486,6 +486,7 @@
                             // echo $order_tid."<br>";
                             // echo $order_del."<br>";
                             // echo $style."<br>";
+							$order_tid='';
                             $size_values=ims_sizes($order_tid,$order_del,$style,$sql_row55["ims_color"],str_replace("a_","",$sql_row55["ims_size"]),$link);
 
                             unset($rej_qty);
@@ -537,11 +538,11 @@
                         
                         if ($total_qty1>$tot_outout)
                         {
-                            echo "<tr><td colspan=4 style=\"background-color:#ff8396;\"> </td><td style=\"background-color:#ff8396;color:white\">$tot_input</td><td style=\"background-color:#ff8396;color:white\">$tot_outout</td><td colspan=3 style=\"background-color:#ff8396;color:white\">$tot_rej</td></tr>";
+                            echo "<tr><td colspan=4 style=\"background-color:#ff8396;\"> </td><td style=\"background-color:#ff8396;color:white\">$tot_input</td><td style=\"background-color:#ff8396;color:white\">$tot_outout</td><td colspan=".count($operation_code)." style=\"background-color:#ff8396;color:white\">$tot_rej</td></tr>";
                         }
                         else
                         {
-                            echo "<tr><td colspan=4 style=\"background-color:#3399ff;\"> </td><td style=\"background-color:#3399ff;color:white\">$tot_input</td><td style=\"background-color:#3399ff;color:white\">$tot_outout</td><td colspan=3 style=\"background-color:#ff8396;color:white\">$tot_rej</td></tr>";
+                            echo "<tr><td colspan=4 style=\"background-color:#3399ff;\"> </td><td style=\"background-color:#3399ff;color:white\">$tot_input</td><td style=\"background-color:#3399ff;color:white\">$tot_outout</td><td colspan=".count($operation_code)." style=\"background-color:#ff8396;color:white\">$tot_rej</td></tr>";
                         }
                         echo "</table>";
                         echo "</div>";

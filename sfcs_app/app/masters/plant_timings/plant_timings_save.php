@@ -1,189 +1,115 @@
-<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
+
 <?php
-
-$dr_id=$_POST['dr_id'];
-$code=$_POST['time_value'];
-$day_part=$_POST['day_part'];
-$start1 = $_POST['time_display']; 
-$end1   = $_POST['time_display1'];
-$tval = $_POST['time_value'];						
-$start = explode(':',$start1);
-$end = explode(':',$end1);	
-$sh = $start[0];
-$sm = $start[1];
-$eh = $end[0];
-$em = $end[1];	
-	if($day_part=='PM')	{
-									$sh=$sh+12;
-									$eh=$eh+12;
-								}
-
-								if($sh >=24)	{
-									$sh=$sh-24;
-								}
-								if($eh >=24){
-									$eh=$eh-24;
-								}
-										
-								if($em==0){
-									$em=59;
-								}else{
-									$em=$em-1;
-								$eh=$eh-1;
-								}
-								// $end_time = "$eh:30:00";
-								// if($sm == 0){
-								// 	$start_time = ($sh+2).':29:59';
-								// 	if($sh >=23)	{
-										$start_time = "$sh:"."$sm:"."00";
-										$end_time = "$sh:"."$em:"."59";
-
-								// 	}
-								// 	$start_time = ($sh+2).':29:59';
-								// }else{
-								// 	$start_time = "$sh:".($sm+2).":59";
-								// }
-
-
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-$conn=$link;
-
-
-	if (empty($code) || empty($start_time) || empty($end_time) ||  empty($day_part) ) 
-{
+	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	$url=getFullURL($_GET['r'],'plant_timings_add.php','N');
-	echo"<script>setTimeout(function () { 
-		swal({
-		  title: 'Please Fill All Values',
-		  text: 'Message!',
-		  type: 'warning',
-		  confirmButtonText: 'OK'
-		},
-		function(isConfirm){
-		  if (isConfirm) {
-			window.location.href = \"$url\";
-		  }
-		}); }, 100);</script>";
-}
-else
-{
-		if($dr_id>0)
-		{
-			//update
-			$sql = "update $bai_pro3.tbl_plant_timings set time_value='$code',
-			start_time='$start_time',end_time='$end_time',day_part='$day_part',time_display='$start1-$end1' where time_id=$dr_id";
-				if (mysqli_query($conn, $sql)) {
-					$url=getFullURL($_GET['r'],'plant_timings_add.php','N');
-					//echo $url;
-					//echo "Record updated successfully";
-					echo"<script>setTimeout(function () { 
-						swal({
-							title: 'Record updated successfully',
-							text: 'Message!',
-							type: 'success',
-							confirmButtonText: 'OK'
-						},
-						function(isConfirm){
-							if (isConfirm) {
-							window.location.href = \"$url\";
-							}
-						}); }, 100);</script>";
-				} else {
-					echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-				}
-		}else
-		{
-				$query1="select * from $bai_pro3.tbl_plant_timings where time_value='$code' and (time_display='$department' or day_part='$day_part')";
-				$sql_result1=mysqli_query($conn, $query1);
-				
-				if(mysqli_num_rows($sql_result1)>0){
-						$url=getFullURL($_GET['r'],'plant_timings_add.php','N');
-						echo"<script>setTimeout(function () { 
-							swal({
-								title: 'Plant Timings already exists',
-								text: 'Message!',
-								type: 'warning',
-								confirmButtonText: 'OK'
-							},
-							function(isConfirm){
-								if (isConfirm) {
-								window.location.href = \"$url\";
-								}
-							}); }, 100);</script>";
-					}else{
-								$start1 = $_POST['time_display']; 
-								$end1   = $_POST['time_display1'];
-								$tval = $_POST['time_value'];						
-								$start = explode(':',$start1);
-								$end = explode(':',$end1);								
-								$sh = $start[0];
-								$sm = $start[1];
-								$eh = $end[0];
-								$em = $end[1];	
-								if($day_part=='PM')	{
-									$sh=$sh+12;
-									$eh=$eh+12;
-								}
 
-								if($sh >=24)	{
-									$sh=$sh-24;
-								}
-								if($eh >=24){
-									$eh=$eh-24;
-								}
-								
-								if($em==0){
-									$em=59;
-								}else{
-									$em=$em-1;
-								$eh=$eh-1;
-								}
-								// $end_time = "$eh:30:00";
-								// if($sm == 0){
-								// 	$start_time = ($sh+2).':29:59';
-								// 	if($sh >=23)	{
-										$start_time = "$sh:"."$sm:"."00";
-										$end_time = "$sh:"."$em:"."59";
+	$conn=$link;
+	//Update Record on GET
+	$exist_id = (int)$_POST['id'];
+	//New record on POST
+	$sh = $_POST['start_hour'];
+	$eh = $_POST['end_hour'];
+	$sm = $_POST['start_min'];
+	$em = $_POST['end_min'];
+	$time_value = $_POST['time_value'];
+	$sday_part = $_POST['start_m'];
+	$eday_part = $_POST['start_e'];	
+	$actual_eh = $eh;
+	if($em==0 && $eh > 0){
+		$em=59;
+		$eh -= 1;
+	}else{
+		$em=$em-1;
+	}
+	if($sh > 0 && $sh <= 11)
+		$sday_part = 'AM';
+	else	
+		$sday_part = 'PM';
+	$sh = str_pad($sh,2,"0",STR_PAD_LEFT);
+	$sm = str_pad($sm,2,"0",STR_PAD_LEFT);
+	$eh = str_pad($eh,2,"0",STR_PAD_LEFT);
+	$em = str_pad($em,2,"0",STR_PAD_LEFT);
+	$actual_eh = str_pad($actual_eh,2,"0",STR_PAD_LEFT);
 
-								// 	}
-								// 	$start_time = ($sh+2).':29:59';
-								// }else{
-								// 	$start_time = "$sh:".($sm+2).":59";
-								// }
-								$sql = "INSERT INTO $bai_pro3.tbl_plant_timings (time_value,time_display,start_time,end_time,day_part)
-								VALUES ('$tval','$start1-$end1','$start_time','$end_time','$day_part')";
+	$start_time = "$sh:"."$sm:"."00";
+	$end_time   = "$eh:"."$em:"."59";
+			
+	if($exist_id > 0)
+	{
+		$flag = verify_start_time($start_time,$end_time,$sh,$sm,$eh,$em,$exist_id);
+		if($flag == 1){
+			$url.="&id=$exist_id&time_value=$time_value&time_display=$time_display&day_part=$day_part&start_time=$start_time&end_time=$end_time";
+			echo"<script>
+				swal('Time span Is Already Defined','Select Another Time span','error');
+				setTimeout(function (){ window.location.href = '$url'; },3000);
+			</script>";
+			exit();
+			
+		}
 
-								if (mysqli_query($conn, $sql)) 
-								{
-									$url=getFullURL($_GET['r'],'plant_timings_add.php','N');
-									//echo "New record created successfully";
-									echo"<script>setTimeout(function () { 
-										swal({
-											title: 'New record created successfully',
-											text: 'Message!',
-											type: 'success',
-											confirmButtonText: 'OK'
-										},
-										function(isConfirm){
-											if (isConfirm) {
-											window.location.href = \"$url\";
-											}
-										}); }, 100);</script>";
-								} 
-								else 
-								{
-										echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-								}
-					}
+		//update
+		$sql = "UPDATE $bai_pro3.tbl_plant_timings set time_value='$time_value',start_time='$start_time',end_time='$end_time',
+				day_part='$sday_part',time_display='$sh-$actual_eh' where time_id=$exist_id";
+		if(mysqli_query($conn, $sql)) {
+			echo"<script>swal('Updated Successfully','','success');setTimeout(function (){ window.location.href = '$url'; },1000);</script>";
+		} else {
+			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+		}
+	}else
+	{
+		$flag = verify_start_time($start_time,$end_time,$sh,$sm,$eh,$em);
+		if($flag == 1){
+			$url.="&time_value=$time_value&time_display=$time_display&day_part=$day_part&start_time=$start_time&end_time=$end_time";
+			echo"<script>
+				swal('Time span Is Already Defined','Select Another Time span','error');
+				setTimeout(function (){ window.location.href = '$url'; },3000);
+			</script>";
+			exit();
+			
+		}
+
+		$query1 = "SELECT * from $bai_pro3.tbl_plant_timings where time_value='$time_value' ";
+		$sql_result1=mysqli_query($conn, $query1);
+		if(mysqli_num_rows($sql_result1)>0){
+			$url=getFullURL($_GET['r'],'plant_timings_add.php','N');
+			echo"<script>swal('Time Value Already Exists','','warning');setTimeout(function (){ window.location.href = '$url'; },1000);</script>";
+			
+		}else{
+			$sql = "INSERT INTO $bai_pro3.tbl_plant_timings (time_value,time_display,start_time,end_time,day_part)
+			VALUES ('$time_value','$sh-$actual_eh','$start_time','$end_time','$sday_part')";
+			if(mysqli_query($conn, $sql)) 
+			{
+				echo"<script>swal('Inserted Successfully','','success');setTimeout(function (){ window.location.href = '$url'; },1000);</script>";
+			} 
+			else 
+			{
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 			}
+		}
 	}
 
-$url1 = getFullURL($_GET['r'],'plant_timings_add.php','N');
 
-
-mysqli_close($conn);
-//header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2Rvd250aW1lcmVhc29uL2Rvd25fdGltZV9yZWFzb25fYWRkLnBocA==');
-exit;
+function verify_start_time($start_time,$end_time,$sh,$sm,$eh,$em,$id=0){
+	global $link;
+	global $bai_pro3;
+	//verifying if the timings already exists between the incoming new timing period
+	$exist_query = "SELECT * FROM tbl_plant_timings WHERE ((start_time BETWEEN '$start_time' AND '$end_time' ) 
+			OR (end_time BETWEEN '$start_time' AND '$end_time')) ";
+	if($id > 0)
+		$exist_query.=" AND time_id<>$id";
+	if(mysqli_num_rows(mysqli_query($link,$exist_query)) > 0){
+		return 1;
+	}else{
+		//If tables start_time and end_time is not between incoming time period then checking
+		//if incoming time lapse is completely between an existing time period in table
+		$verify_query = "SELECT * FROM tbl_plant_timings WHERE (start_time < '$start_time') and (end_time > '$start_time')";
+		if($id > 0)
+			$verify_query.=" AND time_id<>$id";
+		if(mysqli_num_rows(mysqli_query($link,$verify_query)) > 0)
+			return 1;
+	}
+	
+	return 0;
+}	
 ?>
+

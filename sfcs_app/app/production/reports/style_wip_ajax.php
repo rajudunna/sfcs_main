@@ -27,7 +27,7 @@ if($_GET['some'] == 'bundle_no')
 			  $op_codes = $row['op_codes'];
 			}
 
-			$get_operations= "select DISTINCT(operation_code) from $brandix_bts.tbl_style_ops_master where style='$style' and color='$color' and operation_code in ($op_codes)";
+			$get_operations= "select DISTINCT(operation_code) from $brandix_bts.tbl_style_ops_master where style='$style' and color='$color' and operation_code in ($op_codes) order by operation_order";
 
 			$bcd_root_query = "SELECT * from $brandix_bts.bundle_creation_data where style='$style' and schedule ='$schedule' and color='$color' and bundle_number= '$bundle_number' limit 1";
 	        $result1 = $link->query($get_operations);
@@ -215,7 +215,7 @@ else
 		}
 		}	
 
-
+        $get_operations .=" order by operation_order"; 
 
 		$result1 = $link->query($get_operations);
 		while($row2 = $result1->fetch_assoc())
@@ -332,8 +332,15 @@ else
 
     
 
-		    $to_get_cpk="select sum(carton_act_qty) as  carton_qty from $bai_pro3.pac_stat_log where style='$style' and schedule='$schedule' and color='$color' and size_code='$size_code' and status='DONE'";
-		    //echo $to_get_cpk;
+		    $to_get_cpk="select sum(carton_act_qty) as  carton_qty from $bai_pro3.pac_stat_log where style='$style' and schedule='$schedule' and color='$color' and status='DONE'";
+            if($_GET['size'] != '')
+		    {
+		       $to_get_cpk .= " and size_code='$size_code'";
+		    }
+		    else
+		    {
+               $to_get_cpk .= " group by color";
+		    }
 		    $to_get_cpk_result= $link->query($to_get_cpk);
 		    while ($row3 = $to_get_cpk_result->fetch_assoc())
 		    {

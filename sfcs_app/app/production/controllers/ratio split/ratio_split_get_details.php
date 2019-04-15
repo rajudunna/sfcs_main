@@ -7,9 +7,30 @@ if(isset($_GET['fetch'])){
     $doc_no = $_GET['doc_no'];
 
     if($doc_no > 0){
+        //verifying for bundles printing
+        $print_query = "SELECT tid from $bai_pro3.pac_stat_log_input_job where doc_no = $doc_no and bundle_print_status > 0";
+        if(mysqli_num_rows(mysqli_query($link,$print_query)) > 0){
+            $response_data['printed'] = 1;
+            echo JSON_ENCODE($response_data);
+            exit();
+        }
         //verifying for valid docket or not (sewing jobs has to be created) 
         $doc_query = "SELECT doc_no from $bai_pro3.packing_summary_input where doc_no = $doc_no limit 1";
         if(mysqli_num_rows(mysqli_query($link,$doc_query)) > 0){
+            // $doc_query1 = "SELECT doc_no from $bai_pro3.packing_summary_input where doc_no = $doc_no and mrn_status=1";
+        	// if(mysqli_num_rows(mysqli_query($link,$doc_query1)) > 0)
+        	// {
+            // 	$response_data['mrn'] = 0;
+            // 	 echo JSON_ENCODE($response_data);
+   			//  	exit();
+        	// }
+        	$doc_query12 = "SELECT doc_no from $bai_pro3.packing_summary_input where doc_no = $doc_no and bundle_print_status=1";
+        	if(mysqli_num_rows(mysqli_query($link,$doc_query12)) > 0)
+        	{
+            	$response_data['print_status'] = 0;
+            	 echo JSON_ENCODE($response_data);
+   			 	exit();
+        	}		
             $doc_details_query = "SELECT a_plies,order_style_no,order_del_no,order_col_des,org_doc_no from $bai_pro3.plandoc_stat_log psl
                 left join $bai_pro3.bai_orders_db bd ON bd.order_tid = psl.order_tid
                 where doc_no = $doc_no";  

@@ -85,12 +85,13 @@
     }
 
     function submit_data(){
-        var no_shades = 0,no_plies = 0,duplicates = 0;
+        var no_shades = 0,no_plies = 0,duplicates = 0,shade_length = 0;
         var shades = {};
         var shades_plies = {};
         e_plies = 0;
         $('.shades').each(function(key,e){
-            console.log(e.value);
+            if(e.value.length > 5)
+                shade_length++;
             if(e.value == null || e.value == '')
                 no_shades++;
             else{
@@ -99,6 +100,10 @@
                 //     duplicates++; 
             }    
         });
+        console.log(shade_length);
+        if(shade_length > 0){
+            return swal('Shades Length Exceeded 5 chars','','warning');
+        }
         if(duplicates > 0){
             return swal('Shades are Duplicated','','warning');
         }
@@ -161,12 +166,18 @@
                 console.log(data.found);    
                 if(data.found == '0')
                     return swal('Sewing Jobs Do Not Exist for the Docket','','error');
+                else if(data.printed == '1')
+                    return swal('You Cannot Split the Sewing Jobs for Docket','Bundles already Printed','info');
                 else if(data.can_split == '0')
                     return swal('You Cannot Split the Sewing Jobs for Docket','','error');
                 else if(data.clubbed == '1')
                     return swal('You Cannot Split the Sewing Jobs for Schedule Clubbed Dockets','','error');
                 else if(data.scanned == '1')
-                    return swal('Jobs Related to the schedule already Scanned','You Cannot Split the Sewing Jobs','error');        
+                    return swal('Jobs Related to the schedule already Scanned','You Cannot Split the Sewing Jobs','error');
+                else if(data.mrn == '0')
+                    return swal('Jobs Related to the Docket already MRN Confirmed','You Cannot Split the Ratio for the Docket.','error'); 
+                else if(data.print_status == '0')
+                    return swal('Jobs Related to the Bundles already Printed.','You Cannot Split the Ratio for the Docket.','error');                
                 a_plies  = data.plies;  
                 schedule = data.schedule;
                 if(data.already_split == '1')

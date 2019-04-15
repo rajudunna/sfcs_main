@@ -278,14 +278,19 @@ $(document).ready(function()
 		var assign_module = $('#module').val();
 		var current = "<?php echo $operation_name; ?>";
 		var module_flag = null;	var restrict_msg = '';
-		var pre_array_module = [assign_module,job_number,operation_id,'scan'];
+		var pre_array_module = [assign_module,job_number,operation_id,'scan',barcode_generation];
 		$.ajax({
 			type: "POST",
 			url: function_text+"?pre_array_module="+pre_array_module,
 			dataType: "json",
 			success: function (response) 
 			{
-				if (response == 4)
+				if (response == 5)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'Trims Not Issued';
+				}
+				else if (response == 4)
 				{
 					module_flag = 1; // block
 					restrict_msg = 'No Module Assigned';
@@ -312,10 +317,10 @@ $(document).ready(function()
 				{
 					module_flag = 0; // allow
 				}
-				if (barcode_generation == 0)
-				{
-					module_flag = 0; // allow
-				}
+				// if (barcode_generation == 0)
+				// {
+				// 	module_flag = 0; // allow
+				// }
 				if(module_flag == 0)
 				{
 					var array = [job_number,operation_id,barcode_generation,assign_module];
