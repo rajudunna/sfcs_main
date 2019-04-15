@@ -38,12 +38,13 @@ else if($operation_code == $operation_out_routing)
 {
     $form = "'G','P'";
 }
+else if($operation_code == $operation_line_out)
+{
+    $form = "'G','P'";
+}
 else if($operation_code > $operation_out_routing)
 {
 	$form = "'G'";
-}else if($operation_code == $operation_line_out)
-{
-    $form = "'G','P'";
 }
 
 $qery_rejection_resons = "select * from $bai_pro3.bai_qms_rejection_reason where form_type = '$form'";
