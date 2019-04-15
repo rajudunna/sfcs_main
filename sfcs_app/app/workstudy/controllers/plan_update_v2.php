@@ -24,7 +24,7 @@ input
 	background-color:none;
 }
 .hidet{
-	display:none;
+	//display:none;
 }
 </style>
 <script>
@@ -68,7 +68,9 @@ function auto_cal_clh(maxval)
 	{
 		if(sah_a[i].value>0 && eff_a[i].value>0)
 		{
-			clh_a[i].value=Math.round((sah_a[i].value/(parseFloat(eff_a[i].value)+parseFloat(plan_eff_ex[i].value)))*100,2);
+			//clh_a[i].value=Math.round((sah_a[i].value/(parseFloat(eff_a[i].value)+parseFloat(plan_eff_ex[i].value)))*100,2);
+
+			clh_a[i].value=Math.round((sah_a[i].value/(parseFloat(eff_a[i].value)))*100,2);
 		}
 		else
 		{
@@ -76,7 +78,8 @@ function auto_cal_clh(maxval)
 		}
 		if(sah_b[i].value>0 && eff_b[i].value>0)
 		{
-			clh_b[i].value=Math.round((sah_b[i].value/(parseFloat(eff_b[i].value)+parseFloat(plan_eff_ex[i].value)))*100,2);
+			//clh_b[i].value=Math.round((sah_b[i].value/(parseFloat(eff_b[i].value)+parseFloat(plan_eff_ex[i].value)))*100,2);
+			clh_b[i].value=Math.round((sah_b[i].value/(parseFloat(eff_b[i].value)))*100,2);
 		}
 		else
 		{
@@ -331,7 +334,7 @@ if(mysqli_num_rows(mysqli_query($link, "select * from $bai_ict.report_alert_trac
 ?>
 
 <?php 
-$sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
+$sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date< \"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -358,7 +361,7 @@ $max_allowed_date=date("Y-m-d");
 	//if($username=="kirang" or $username=="kirang")
 	//{
 		echo '<div class="table-responsive"><table class="table table-bordered">
-	<tr><td colspan=6><b>Change Date</b></td><td colspan=3><div class="col-md-10"><input type="text" data-toggle="datepicker" name="date_change" value="'.date("Y-m-d").'" class="form-control" size=15';
+	<tr><td colspan=6><b>Date</b></td><td colspan=3><div class="col-md-10"><input type="text" data-toggle="datepicker" name="date_change" value="'.date("Y-m-d").'" class="form-control" size=15';
 	
 	//Date:12-10-2015/kirang/Task: added user validation to avoid warning message on selection of back date
 	// if(!(in_array($username,$super_user)) )
@@ -369,7 +372,7 @@ $max_allowed_date=date("Y-m-d");
 	
 	echo '></div><br/></td><td colspan=14><strong>Plan Update Panel</strong></td></tr>
 	
-	<tr><th>Module</th>	<th class="hidet">Section</th><th class="hidet">Style</th><th class="hidet">SMV</th><th class="hidet">NOP</th><th class="hidet">ADD/Eff%</th><th>Team A <br/>Plan Eff</th><th>Team A <br/>Plan Pro</th>
+	<tr><th>Module</th>	<th class="hidet">Section</th><th class="hidet">Style</th><th class="hidet">SMV</th><th class="hidet">NOP</th><th>Team A <br/>Plan Eff</th><th>Team A <br/>Plan Pro</th>
 	<th>Team A <br/>Plan Clock Hours</th>
 	<th>Team A <br/>Plan SAH</th>
 	<th>Team A <br/>Plan Hours</th><th>Team A <br/>Plan Couple</th><th>Fixed <br/>NOP</th><th>SMV</th><th>NOP</th><th>Team B <br/>Plan Eff</th>	<th>Team B <br/>Plan Pro</th>
@@ -407,17 +410,21 @@ $max_allowed_date=date("Y-m-d");
 		$plan_sah=$sql_row['plan_sah'];
 		$plan_eff_ex=$sql_row['plan_eff_ex'];
 		
-		$sql1="select distinct bac_style as bac_style,smv,nop from $bai_pro.bai_log_buf where bac_date='$max_date' and bac_no=$module and smv>0 and nop>0 order by bac_no";
+		$sql1="select distinct bac_style as bac_style,smv,nop from $bai_pro.bai_log_buf where bac_date='$max_date' and bac_no=$module and smv>0 and nop>0 and bac_shift='$shift' order by bac_no";
 		//$sql1="select distinct bac_style as bac_style,smv,nop from bai_log_buf where bac_date=\"2012-11-06\" and bac_no=$module and smv>0 and nop>0 order by bac_no";
-		//echo $sql1."<br/>";
 		
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
-		{
-			$smv=$sql_row1['smv'];
-			$nop=$sql_row1['nop'];
-			$bac_style=$sql_row1['bac_style'];
-			//echo $bac_style;
+		{	if($shift=='A'){
+				$smv=$sql_row1['smv'];
+				$nop=$sql_row1['nop'];
+				$bac_style=$sql_row1['bac_style'];
+			}elseif($shift=='B'){
+				$smv1=$sql_row1['smv'];
+				$nop1=$sql_row1['nop'];
+				$bac_style=$sql_row1['bac_style'];
+			}
+			
 		}
 		
 		$bgcolor_tag=" style=\"background-color: white\"";
@@ -442,11 +449,12 @@ $max_allowed_date=date("Y-m-d");
 			}
 			echo "<tr>";
 			echo '<td bgcolor=\"#99FFDD\" style="color: #FFFFFF">'.$module.'<input type="hidden" name="module[]" value="'.$module.'"></td>';
-			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="section[]" value="'.$sec_no.'" size="3" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_alpha_numeric(event, this.name)" name="style[]" value="'.$bac_style.'" size="3" onChange="markchange('.$x.')" id="alpha_style"></td>';
-			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="nop[]" class="integer" value="'.$nop.'" size="3" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#000000\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="plan_eff_ex[]" value="'.$plan_eff_ex.'" size="3" onChange="markchange('.$x.')"></td>';
+			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="section[]" value="'.$sec_no.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			//echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_alpha_numeric(event, this.name)" name="style[]" value="'.$bac_style.'" size="" onChange="markchange('.$x.')" id="alpha_style" /readonly></td>';
+			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" name="style[]" value="'.$bac_style.'" size="" onChange="markchange('.$x.')" id="alpha_style" /readonly></td>';
+			//echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" name="smv[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			echo '<td bgcolor=\"#99FFDD\" class="hidet"><input type="text" onkeyup="return pop_test(event, this.name)" name="nop[]" class="integer" value="'.$nop.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
 			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" name="eff_a[]" class="integer" value="'.($plan_eff-$plan_eff_ex).'" size="4" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" '.$bgcolor_tag.' name="pro_a[]" class="integer" value="'.round($plan_pro,0).'" size="4" onChange="markchange('.$x.')"></td>';
 			
@@ -458,6 +466,10 @@ $max_allowed_date=date("Y-m-d");
 			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" name="hrs_a[]" value="'.$act_hours.'" size="4" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor=\"#FFEEFF\"><input type="text" onkeyup="return pop_test(event, this.name)" name="couple_a[]" class="integer" value="'.$couple.'" size="4" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor="#FFAA00"><input type="text" onkeyup="return pop_test(event, this.name)" name="fix_nop_a[]" class="integer" value="'.$fix_nop.'" size="4" onChange="markchange('.$x.')"></td>';
+
+			$nop="";
+			$smv="";
+			$bac_style="";
 		}
 		
 		if($shift=="B")
@@ -467,8 +479,11 @@ $max_allowed_date=date("Y-m-d");
 			{
 				$couple=1;
 			}
-			echo '<td bgcolor=\"#99FFDD\"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv1[]" value="'.$smv.'" size="3" onChange="markchange('.$x.')"></td>';
-			echo '<td bgcolor=\"#99FFDD\"><input type="text" class="integer" onkeyup="return pop_test(event, this.name)" name="nop1[]" class="integer" value="'.$nop.'" size="3" onChange="markchange('.$x.')"></td>';
+
+			//echo '<td bgcolor=\"#99FFDD\"><input type="text" onkeyup="return pop_test_float(event, this.name)" name="smv1[]" value="'.$smv1.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			//echo '<td bgcolor=\"#99FFDD\"><input type="text" class="integer" onkeyup="return pop_test(event, this.name)" name="nop1[]" class="integer" value="'.$nop1.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			echo '<td bgcolor=\"#99FFDD\"><input type="text" name="smv1[]" value="'.$smv1.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
+			echo '<td bgcolor=\"#99FFDD\"><input type="text" class="integer" name="nop1[]" class="integer" value="'.$nop1.'" size="3" onChange="markchange('.$x.')" /readonly></td>';
 			echo '<td bgcolor=\"#99FF88\"><input type="text" onkeyup="return pop_test(event, this.name)" name="eff_b[]" class="integer" value="'.($plan_eff-$plan_eff_ex).'" size="4" onChange="markchange('.$x.')"></td>';
 			echo '<td bgcolor=\"#99FF88\"><input type="text" '.$bgcolor_tag.' onkeyup="return pop_test(event, this.name)" name="pro_b[]" class="integer" value="'.round($plan_pro,0).'" size="4" onChange="markchange('.$x.')"></td>';
 			
@@ -483,8 +498,11 @@ $max_allowed_date=date("Y-m-d");
 			echo '<td bgcolor=\"#99FF88\"><input type="text"  name="remarks[]" value="'.$remarks.'" size="15" onChange="markchange('.$x.')"><input type="hidden" name="check[]" value=""></td>';
 			echo "</tr>";
 			$x++;
-		}
-				
+
+			$nop1="";
+			$smv1="";
+			$bac_style="";
+		}			
 	}
 	echo '
 	</table>
@@ -510,7 +528,6 @@ if(isset($_POST['update']))
 	$module=$_POST['module'];
 	$section=$_POST['section'];
 	$check=$_POST['check'];
-	$plan_eff_ex=$_POST['plan_eff_ex'];
 	
 	$eff_a=$_POST['eff_a'];
 	$pro_a=$_POST['pro_a'];
@@ -543,14 +560,14 @@ if(isset($_POST['update']))
 			$sql1="insert ignore into $bai_pro.pro_plan (plan_tag) values (\"$plan_tag\")";
 			mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 						
-			$sql1="update $bai_pro.pro_plan set sec_no=".$section[$i].", date=\"$date\", mod_no=".$module[$i].", shift=\"A\", plan_eff=".($eff_a[$i]+$plan_eff_ex[$i]).",  plan_pro=".$pro_a[$i].", remarks=\"".$remarks[$i]."\", act_hours=".$hrs_a[$i].", couple=".$couple_a[$i].", fix_nop=".$fix_nop_a[$i].", plan_clh=".$clh_a[$i].",plan_sah=".$sah_a[$i].",plan_eff_ex=".$plan_eff_ex[$i]." where plan_tag=\"".$plan_tag."\"";
+			$sql1="update $bai_pro.pro_plan set sec_no='".$section[$i]."', date=\"$date\", mod_no='".$module[$i]."', shift=\"A\", plan_eff='".($eff_a[$i])."',  plan_pro='".$pro_a[$i]."', remarks=\"".$remarks[$i]."\", act_hours='".$hrs_a[$i]."', couple='".$couple_a[$i]."', fix_nop='".$fix_nop_a[$i]."', plan_clh='".$clh_a[$i]."',plan_sah='".$sah_a[$i]."' where plan_tag=\"".$plan_tag."\"";
 			$note.=$sql1."<br/>";
-			mysqli_query($link, $sql1) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+			mysqli_query($link, $sql1) or exit("Sql Error6 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$sql1="insert ignore into $bai_pro.pro_plan_today (plan_tag) values (\"$plan_tag\")";
 			mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			$sql1="update $bai_pro.pro_plan_today set sec_no=".$section[$i].", date=\"$date\", mod_no=".$module[$i].", shift=\"A\", plan_eff=".($eff_a[$i]+$plan_eff_ex[$i]).",  plan_pro=".$pro_a[$i].", remarks=\"".$remarks[$i]."\", act_hours=".$hrs_a[$i].", couple=".$couple_a[$i].", fix_nop=".$fix_nop_a[$i].", plan_clh=".$clh_a[$i].",plan_sah=".$sah_a[$i].",plan_eff_ex=".$plan_eff_ex[$i]." where plan_tag=\"".$plan_tag."\"";
+			$sql1="update $bai_pro.pro_plan_today set sec_no='".$section[$i]."', date=\"$date\", mod_no='".$module[$i]."', shift=\"A\", plan_eff='".($eff_a[$i])."',  plan_pro='".$pro_a[$i]."', remarks=\"".$remarks[$i]."\", act_hours='".$hrs_a[$i]."', couple='".$couple_a[$i]."', fix_nop='".$fix_nop_a[$i]."', plan_clh='".$clh_a[$i]."',plan_sah='".$sah_a[$i]."' where plan_tag=\"".$plan_tag."\"";
 			$note.=$sql1."<br/>";
 			mysqli_query($link, $sql1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
@@ -559,14 +576,14 @@ if(isset($_POST['update']))
 			mysqli_query($link, $sql1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			
-			$sql1="update $bai_pro.pro_plan set sec_no=".$section[$i].", date=\"$date\", mod_no=".$module[$i].", shift=\"B\", plan_eff=".($eff_b[$i]+$plan_eff_ex[$i]).",  plan_pro=".$pro_b[$i].", remarks=\"".$remarks[$i]."\", act_hours=".$hrs_b[$i].", couple=".$couple_b[$i].", fix_nop=".$fix_nop_b[$i].", plan_clh=".$clh_b[$i].",plan_sah=".$sah_b[$i].",plan_eff_ex=".$plan_eff_ex[$i]." where plan_tag=\"".$plan_tag."\"";
+			$sql1="update $bai_pro.pro_plan set sec_no='".$section[$i]."', date=\"$date\", mod_no='".$module[$i]."', shift=\"B\", plan_eff='".($eff_b[$i])."',  plan_pro='".$pro_b[$i]."', remarks=\"".$remarks[$i]."\", act_hours='".$hrs_b[$i]."', couple='".$couple_b[$i]."', fix_nop='".$fix_nop_b[$i]."', plan_clh='".$clh_b[$i]."',plan_sah='".$sah_b[$i]."' where plan_tag=\"".$plan_tag."\"";
 			$note.=$sql1."<br/>";
-			mysqli_query($link, $sql1) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+			mysqli_query($link, $sql1) or exit("Sql Error10 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$sql1="insert ignore into $bai_pro.pro_plan_today (plan_tag) values (\"$plan_tag\")";
 			mysqli_query($link, $sql1) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 						
-			$sql1="update $bai_pro.pro_plan_today set sec_no=".$section[$i].", date=\"$date\", mod_no=".$module[$i].", shift=\"B\", plan_eff=".($eff_b[$i]+$plan_eff_ex[$i]).",  plan_pro=".$pro_b[$i].", remarks=\"".$remarks[$i]."\", act_hours=".$hrs_b[$i].", couple=".$couple_b[$i].", fix_nop=".$fix_nop_b[$i].", plan_clh=".$clh_b[$i].",plan_sah=".$sah_b[$i].",plan_eff_ex=".$plan_eff_ex[$i]." where plan_tag=\"".$plan_tag."\"";
+			$sql1="update $bai_pro.pro_plan_today set sec_no='".$section[$i]."', date=\"$date\", mod_no='".$module[$i]."', shift=\"B\", plan_eff='".($eff_b[$i])."',  plan_pro='".$pro_b[$i]."', remarks=\"".$remarks[$i]."\", act_hours='".$hrs_b[$i]."', couple='".$couple_b[$i]."', fix_nop='".$fix_nop_b[$i]."', plan_clh='".$clh_b[$i]."',plan_sah='".$sah_b[$i]."' where plan_tag=\"".$plan_tag."\"";
 			$note.=$sql1."<br/>";
 			mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			

@@ -54,6 +54,14 @@ if(isset($_POST['submit']))
 {
 	$shift=$_POST['team'];
 	$date=$_POST['dat'];
+	$modules_array = array();	$modules_id_array=array();
+	$get_modules = "SELECT DISTINCT module_name, id FROM $bai_pro3.`module_master` where status='Active' ORDER BY module_name*1;";
+	$modules_result=mysqli_query($link, $get_modules) or exit ("Error while fetching modules: $get_modules");
+	while($module_row=mysqli_fetch_array($modules_result))
+	{
+		$modules_array[]=$module_row['module_name'];
+		$modules_id_array[$module_row['module_name']]=$module_row['id'];
+	}
 
 	$sql112="Select * from $bai_pro.pro_attendance where date=\"$date\" and  shift='".$shift."' and (present >0 or absent >0) order by module*1";
 	$sql_result112=mysqli_query($link, $sql112) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -68,14 +76,14 @@ if(isset($_POST['submit']))
 			echo "<table border=1 class='table table-bordered'><tr style='background-color:#29759C; color: white;'><th>Module</th><th>Team - $shift Available Emp</th><th>Team - $shift Absent Emp</th><th>Team - $shift Jumper</th><th>Total</th></tr>";
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
-			// $atten_id=$sql_row1['atten_id'];
-			$date=$sql_row1['date'];
-			$avail_A=$sql_row1['present'];
-			$absent_A=$sql_row1['absent'];
-			$jumper_A=$sql_row1['jumper'];
-			$module=$sql_row1['module'];
-			$k=$module-1;
-			echo "<tr>
+				// $atten_id=$sql_row1['atten_id'];
+				$date=$sql_row1['date'];
+				$avail_A=$sql_row1['present'];
+				$absent_A=$sql_row1['absent'];
+				$jumper_A=$sql_row1['jumper'];
+				$module=$sql_row1['module'];
+				$k=$modules_id_array[$module];
+				echo "<tr>
 					<td>".$module."</td>
 					<td>".$avail_A."</td>
 					<td>".$absent_A."</td>";
@@ -113,16 +121,20 @@ if(isset($_POST['submit']))
 		{
 			echo "<table border=1 class='table table-bordered'><tr style='background-color:#29759C; color: white;'><th>Module</th><th>Team - $shift Jumper</th></tr>";
 			
-			for($i=0;$i<sizeof($mod_names);$i++) { ?>
-			<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_jump_data_v2.php",0,"N") ?>" >
+			for($i=0;$i<sizeof($modules_array);$i++)
+			{ 
+				$mod = $modules_array[$i];
+				$mod_id = $modules_id_array[$mod];
+				?>
+				<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_jump_data_v2.php",0,"N") ?>" >
 				<tr>
 					<td>
-						<?php echo $mod_names[$i]."</td>";
+						<?php echo $modules_array[$i]."</td>";
 						 ?>
-						<td><input type="text" class="form-control" style="width: 180px;" value="0" name="jpa<?php echo $i; ?>"></td>
+						<td><input type="text" class="form-control" style="width: 180px;" value="0" name="jpa_<?php echo $mod_id; ?>"></td>
 						<?php
 				echo "</tr>";
-				}
+			}
 			echo "<input type=\"hidden\" name=\"shift\" value=\"$shift\">";
 			echo "<input type=\"hidden\" name=\"date\" value=\"$date\">"; ?>
 				<tr>
