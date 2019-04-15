@@ -65,37 +65,52 @@ function button_disable()
 	<a href='<?= $url ?>' class='pull-right btn btn-danger'>Go Back</a>
 </div>	
 <!--<h2>Re-Check Update Panel</h2>-->
+<form name="apply" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url'];?>" method="post" enctype="multipart/form data">
 <?php 
 
 echo "Style: $style <br/>";
 echo "Schedule: $schedule <br/>";
 if($color!='0')
 {
-echo "<br/>  color:".$color."<br/>";
+	echo "<br/>  color:".$color."<br/>";
 }
 
-echo "<form name=\"apply\" method=\"post\" action=\"".$_GET['r']."\">";
-echo "<table>";
-echo "<tr><th>Size</th><th>Rejected Qty</th><th>Pass Qty</th></tr>";
+// echo "<form name=\"apply\" method=\"post\" action=\"".$_GET['r']."\">";
+echo "<table class='table table-bordered'>";
+echo "<tr><th>Color</th><th>Size</th><th>Rejected Qty</th><th>Pass Qty</th></tr>";
 $x=0;
 if($color=='0')
 {
-$sql="select * from $bai_pro3.disp_mix_size where order_style_no=\"$style\" and order_del_no=\"$schedule\"  and fca_fail<>0";
+	$sql="select * from $bai_pro3.disp_mix_size_2 where order_style_no=\"$style\" and order_del_no=\"$schedule\" and fca_fail<>0 group by order_col_des,size_code";
 }
 else
 {
-$sql="select * from $bai_pro3.disp_mix_size_2 where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" and fca_fail<>0";
+	$sql="select * from $bai_pro3.disp_mix_size_2 where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" and fca_fail<>0";
 }
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$available_qty=abs($sql_row['fca_fail']);
-	echo "<tr><td>".$sql_row['size_code']."</td><td>".$sql_row['fca_fail']."</td><td><input type=\"text\" name=\"qty[$x]\" value=\"0\" onchange='if(this.value>$available_qty) { alert(\"Wrong Qty\"); this.value=0; } if(this.value<0) { alert(\"Wrong Qty\"); this.value=0; }'><input type=\"hidden\" name=\"size[$x]\" value=\"".$sql_row['size_code']."\"></td></tr>";
-$x++;
+	echo "<tr><td>".$sql_row['order_col_des']."</td><td>".$sql_row['size_code']."</td><td>".$sql_row['fca_fail']."</td><td><input type=\"text\" name=\"qty[$x]\" value=\"0\" onchange='if(this.value>$available_qty) { alert(\"Wrong Qty\"); this.value=0; } if(this.value<0) { alert(\"Wrong Qty\"); this.value=0; }'><input type=\"hidden\" name=\"size[$x]\" value=\"".$sql_row['size_code']."\">";
+	if($color=='0')
+	{
+		echo "<input type=\"hidden\" name=\"color_new[$x]\" value=\"".$sql_row['order_col_des']."\">";
+	}
+	echo "</td></tr>";
+	$x++;
 }
 echo "</table>";
-echo "<input type=\"hidden\" name=\"style_new\" value=\"$style\"><input type=\"hidden\" name=\"schedule_new\" value=\"$schedule\"> <input type=\"hidden\" name=\"color_new\" value=\"$color\">";
+echo "<input type=\"hidden\" name=\"style_new\" value=\"$style\"><input type=\"hidden\" name=\"schedule_new\" value=\"$schedule\">";
+if($color!='0')
+{
+	echo "<input type=\"hidden\" name=\"color_new\" value=\"$color\">";
+	echo "<input type=\"hidden\" name=\"color_new1\" value=\"$color\">";
+}
+else
+{
+	echo "<input type=\"hidden\" name=\"color_new1\" value=\"1\">";
+}
 echo '<br/><input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable';
 echo "<input type=\"submit\" class='btn btn-primary' name=\"update\" value=\"Update\" id='update'>";
 
@@ -114,17 +129,20 @@ if(isset($_POST['update']))
 	$style_new=$_POST['style_new'];
 	$schedule_new=$_POST['schedule_new'];
 	$color_new=$_POST['color_new'];
+	$color_new1=$_POST['color_new1'];
 	$size=$_POST['size'];
 	$qty=$_POST['qty'];
-	if($color_new=='0')
+	if($color_new1=='1')
 	{
 		for($i=0;$i<sizeof($qty);$i++)
 		{
 			if($qty[$i]>0)
 			{
-				$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", tran_type=2, size=\"".$size[$i]."\", pcs=".$qty[$i];
+				$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\",color=\"".$color_new[$i]."\", tran_type=2, size=\"".$size[$i]."\", pcs=".$qty[$i];
+				// echo "<br/>query1=".$sql;
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", tran_type=1, size=\"".$size[$i]."\", pcs=".$qty[$i];
+				$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\",color=\"".$color_new[$i]."\", tran_type=1, size=\"".$size[$i]."\", pcs=".$qty[$i];
+				// echo "<br/>query2=".$sql;
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
@@ -136,8 +154,10 @@ if(isset($_POST['update']))
 			if($qty[$i]>0)
 			{
 				$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\",color=\"$color_new\",  tran_type=2, size=\"".$size[$i]."\", pcs=".$qty[$i];
+				// echo "<br/>query11=".$sql;
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\",color=\"$color_new\",  tran_type=1, size=\"".$size[$i]."\", pcs=".$qty[$i];
+				// echo "<br/>query12=".$sql;
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
@@ -145,7 +165,5 @@ if(isset($_POST['update']))
 	echo "<h2><font color=\"green\">Successfully Updated!</font></h2>";
 	$url1=getFullURL($_GET['r'],'pending.php','N');
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url1\"; }</script>";
-
-
-
+}
 ?>

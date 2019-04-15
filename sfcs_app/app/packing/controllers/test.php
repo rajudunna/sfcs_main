@@ -132,7 +132,13 @@ $color=$_GET['color'];
 						$sql_num_check=mysqli_num_rows($sql_result);
 
 						echo "<option value=\"NIL\" selected>NIL</option>";
-
+						if($color_count>'1')
+						{
+					?>
+							<option value="0" <?php if($color=="0") { echo "selected"; } ?>>ALL</option>
+					<?php
+						}	
+							
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
 							if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
@@ -528,70 +534,74 @@ $sql="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in an
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-				
+		$color_array[] = $sql_row['order_col_des'];		
 		$style_no=$sql_row['order_style_no'];
 		$schedule_no=$sql_row['order_del_no'];
 		$color_no=$sql_row['order_col_des'];
 		
-		$order_xs+=$sql_row['order_s_xs'];
-		$order_s+=$sql_row['order_s_s'];
-		$order_m+=$sql_row['order_s_m'];
-		$order_l+=$sql_row['order_s_l'];
-		$order_xl+=$sql_row['order_s_xl'];
-		$order_xxl+=$sql_row['order_s_xxl'];
-		$order_xxxl+=$sql_row['order_s_xxxl'];
+		$order_xs=$sql_row['order_s_xs'];
+		$order_s=$sql_row['order_s_s'];
+		$order_m=$sql_row['order_s_m'];
+		$order_l=$sql_row['order_s_l'];
+		$order_xl=$sql_row['order_s_xl'];
+		$order_xxl=$sql_row['order_s_xxl'];
+		$order_xxxl=$sql_row['order_s_xxxl'];
 		
-		$order_s01+=$sql_row['order_s_s01'];
-		$order_s02+=$sql_row['order_s_s02'];
-		$order_s03+=$sql_row['order_s_s03'];
-		$order_s04+=$sql_row['order_s_s04'];
-		$order_s05+=$sql_row['order_s_s05'];
-		$order_s06+=$sql_row['order_s_s06'];
-		$order_s07+=$sql_row['order_s_s07'];
-		$order_s08+=$sql_row['order_s_s08'];
-		$order_s09+=$sql_row['order_s_s09'];
-		$order_s10+=$sql_row['order_s_s10'];
-		$order_s11+=$sql_row['order_s_s11'];
-		$order_s12+=$sql_row['order_s_s12'];
-		$order_s13+=$sql_row['order_s_s13'];
-		$order_s14+=$sql_row['order_s_s14'];
-		$order_s15+=$sql_row['order_s_s15'];
-		$order_s16+=$sql_row['order_s_s16'];
-		$order_s17+=$sql_row['order_s_s17'];
-		$order_s18+=$sql_row['order_s_s18'];
-		$order_s19+=$sql_row['order_s_s19'];
-		$order_s20+=$sql_row['order_s_s20'];
-		$order_s21+=$sql_row['order_s_s21'];
-		$order_s22+=$sql_row['order_s_s22'];
-		$order_s23+=$sql_row['order_s_s23'];
-		$order_s24+=$sql_row['order_s_s24'];
-		$order_s25+=$sql_row['order_s_s25'];
-		$order_s26+=$sql_row['order_s_s26'];
-		$order_s27+=$sql_row['order_s_s27'];
-		$order_s28+=$sql_row['order_s_s28'];
-		$order_s29+=$sql_row['order_s_s29'];
-		$order_s30+=$sql_row['order_s_s30'];
-		$order_s31+=$sql_row['order_s_s31'];
-		$order_s32+=$sql_row['order_s_s32'];
-		$order_s33+=$sql_row['order_s_s33'];
-		$order_s34+=$sql_row['order_s_s34'];
-		$order_s35+=$sql_row['order_s_s35'];
-		$order_s36+=$sql_row['order_s_s36'];
-		$order_s37+=$sql_row['order_s_s37'];
-		$order_s38+=$sql_row['order_s_s38'];
-		$order_s39+=$sql_row['order_s_s39'];
-		$order_s40+=$sql_row['order_s_s40'];
-		$order_s41+=$sql_row['order_s_s41'];
-		$order_s42+=$sql_row['order_s_s42'];
-		$order_s43+=$sql_row['order_s_s43'];
-		$order_s44+=$sql_row['order_s_s44'];
-		$order_s45+=$sql_row['order_s_s45'];
-		$order_s46+=$sql_row['order_s_s46'];
-		$order_s47+=$sql_row['order_s_s47'];
-		$order_s48+=$sql_row['order_s_s48'];
-		$order_s49+=$sql_row['order_s_s49'];
-		$order_s50+=$sql_row['order_s_s50'];
+		$order_s01=$sql_row['order_s_s01'];
+		$order_s02=$sql_row['order_s_s02'];
+		$order_s03=$sql_row['order_s_s03'];
+		$order_s04=$sql_row['order_s_s04'];
+		$order_s05=$sql_row['order_s_s05'];
+		$order_s06=$sql_row['order_s_s06'];
+		$order_s07=$sql_row['order_s_s07'];
+		$order_s08=$sql_row['order_s_s08'];
+		$order_s09=$sql_row['order_s_s09'];
+		$order_s10=$sql_row['order_s_s10'];
+		$order_s11=$sql_row['order_s_s11'];
+		$order_s12=$sql_row['order_s_s12'];
+		$order_s13=$sql_row['order_s_s13'];
+		$order_s14=$sql_row['order_s_s14'];
+		$order_s15=$sql_row['order_s_s15'];
+		$order_s16=$sql_row['order_s_s16'];
+		$order_s17=$sql_row['order_s_s17'];
+		$order_s18=$sql_row['order_s_s18'];
+		$order_s19=$sql_row['order_s_s19'];
+		$order_s20=$sql_row['order_s_s20'];
+		$order_s21=$sql_row['order_s_s21'];
+		$order_s22=$sql_row['order_s_s22'];
+		$order_s23=$sql_row['order_s_s23'];
+		$order_s24=$sql_row['order_s_s24'];
+		$order_s25=$sql_row['order_s_s25'];
+		$order_s26=$sql_row['order_s_s26'];
+		$order_s27=$sql_row['order_s_s27'];
+		$order_s28=$sql_row['order_s_s28'];
+		$order_s29=$sql_row['order_s_s29'];
+		$order_s30=$sql_row['order_s_s30'];
+		$order_s31=$sql_row['order_s_s31'];
+		$order_s32=$sql_row['order_s_s32'];
+		$order_s33=$sql_row['order_s_s33'];
+		$order_s34=$sql_row['order_s_s34'];
+		$order_s35=$sql_row['order_s_s35'];
+		$order_s36=$sql_row['order_s_s36'];
+		$order_s37=$sql_row['order_s_s37'];
+		$order_s38=$sql_row['order_s_s38'];
+		$order_s39=$sql_row['order_s_s39'];
+		$order_s40=$sql_row['order_s_s40'];
+		$order_s41=$sql_row['order_s_s41'];
+		$order_s42=$sql_row['order_s_s42'];
+		$order_s43=$sql_row['order_s_s43'];
+		$order_s44=$sql_row['order_s_s44'];
+		$order_s45=$sql_row['order_s_s45'];
+		$order_s46=$sql_row['order_s_s46'];
+		$order_s47=$sql_row['order_s_s47'];
+		$order_s48=$sql_row['order_s_s48'];
+		$order_s49=$sql_row['order_s_s49'];
+		$order_s50=$sql_row['order_s_s50'];
 
+		$order_qtys_new[$color_no]=array($order_xs,$order_s,$order_m,$order_l,$order_xl,$order_xxl,$order_xxxl,$order_s01,$order_s02,$order_s03,$order_s04,$order_s05,$order_s06,$order_s07,$order_s08,$order_s09,$order_s10,$order_s11,$order_s12,$order_s13,$order_s14,$order_s15,$order_s16,$order_s17,$order_s18,$order_s19,$order_s20,$order_s21,$order_s22		,$order_s23,$order_s24,$order_s25,$order_s26,$order_s27,$order_s28,$order_s29,$order_s30,$order_s31,$order_s32,$order_s33,$order_s34,$order_s35,$order_s36,$order_s37,$order_s38,$order_s39,$order_s40,$order_s41,$order_s42,$order_s43,$order_s44,$order_s45,$order_s46,$order_s47,$order_s48,$order_s49,$order_s50);
+
+		$tot_order_qty_new[$color_no]=array_sum($order_qtys_new[$color_no]);
+		$tot_order_qty_tot += $tot_order_qty_new[$color_no];
 	}
 	
 	$fg_xs=0;
@@ -655,7 +665,7 @@ $sql="select * from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in an
 
 if($color_x=='0')
 {
-	$sql="select SUM(IF(size_code=\"xs\",carton_act_qty,0)) AS \"xs\", SUM(IF(size_code=\"s\",carton_act_qty,0)) AS \"s\", SUM(IF(size_code=\"m\",carton_act_qty,0)) AS \"m\", SUM(IF(size_code=\"l\",carton_act_qty,0)) AS \"l\", SUM(IF(size_code=\"xl\",carton_act_qty,0)) AS \"xl\", SUM(IF(size_code=\"xxl\",carton_act_qty,0)) AS \"xxl\", SUM(IF(size_code=\"xxxl\",carton_act_qty,0)) AS \"xxxl\"
+	$sql="select order_col_des,SUM(IF(size_code=\"xs\",carton_act_qty,0)) AS \"xs\", SUM(IF(size_code=\"s\",carton_act_qty,0)) AS \"s\", SUM(IF(size_code=\"m\",carton_act_qty,0)) AS \"m\", SUM(IF(size_code=\"l\",carton_act_qty,0)) AS \"l\", SUM(IF(size_code=\"xl\",carton_act_qty,0)) AS \"xl\", SUM(IF(size_code=\"xxl\",carton_act_qty,0)) AS \"xxl\", SUM(IF(size_code=\"xxxl\",carton_act_qty,0)) AS \"xxxl\"
 ,SUM(IF(size_code=\"s01\",carton_act_qty,0)) AS \"s01\",SUM(IF(size_code=\"s02\",carton_act_qty,0)) AS \"s02\",SUM(IF(size_code=\"s03\",carton_act_qty,0)) AS \"s03\"
 , SUM(IF(size_code=\"s04\",carton_act_qty,0)) AS \"s04\",SUM(IF(size_code=\"s05\",carton_act_qty,0)) AS \"s05\",SUM(IF(size_code=\"s06\",carton_act_qty,0)) AS \"s06\"
 , SUM(IF(size_code=\"s07\",carton_act_qty,0)) AS \"s07\", SUM(IF(size_code=\"s08\",carton_act_qty,0)) AS \"s08\", SUM(IF(size_code=\"s09\",carton_act_qty,0)) AS \"s09\"
@@ -672,11 +682,11 @@ if($color_x=='0')
 , SUM(IF(size_code=\"s40\",carton_act_qty,0)) AS \"s40\", SUM(IF(size_code=\"s41\",carton_act_qty,0)) AS \"s41\", SUM(IF(size_code=\"s42\",carton_act_qty,0)) AS \"s42\"
 , SUM(IF(size_code=\"s43\",carton_act_qty,0)) AS \"s43\", SUM(IF(size_code=\"s44\",carton_act_qty,0)) AS \"s44\", SUM(IF(size_code=\"s45\",carton_act_qty,0)) AS \"s45\"
 , SUM(IF(size_code=\"s46\",carton_act_qty,0)) AS \"s46\", SUM(IF(size_code=\"s47\",carton_act_qty,0)) AS \"s47\", SUM(IF(size_code=\"s48\",carton_act_qty,0)) AS \"s48\"
-, SUM(IF(size_code=\"s49\",carton_act_qty,0)) AS \"s49\", SUM(IF(size_code=\"s50\",carton_act_qty,0)) AS \"s50\" from $bai_pro3.packing_summary where order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\" and status=\"DONE\"";
+, SUM(IF(size_code=\"s49\",carton_act_qty,0)) AS \"s49\", SUM(IF(size_code=\"s50\",carton_act_qty,0)) AS \"s50\" from $bai_pro3.packing_summary where order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\" and status=\"DONE\" group by order_col_des";
 }
 else
 {
-	$sql="select SUM(IF(size_code=\"xs\",carton_act_qty,0)) AS \"xs\", SUM(IF(size_code=\"s\",carton_act_qty,0)) AS \"s\", SUM(IF(size_code=\"m\",carton_act_qty,0)) AS \"m\", SUM(IF(size_code=\"l\",carton_act_qty,0)) AS \"l\", SUM(IF(size_code=\"xl\",carton_act_qty,0)) AS \"xl\", SUM(IF(size_code=\"xxl\",carton_act_qty,0)) AS \"xxl\", SUM(IF(size_code=\"xxxl\",carton_act_qty,0)) AS \"xxxl\",SUM(IF(size_code=\"s01\",carton_act_qty,0)) AS \"s01\",SUM(IF(size_code=\"s02\",carton_act_qty,0)) AS \"s02\",SUM(IF(size_code=\"s03\",carton_act_qty,0)) AS \"s03\"
+	$sql="select order_col_des,SUM(IF(size_code=\"xs\",carton_act_qty,0)) AS \"xs\", SUM(IF(size_code=\"s\",carton_act_qty,0)) AS \"s\", SUM(IF(size_code=\"m\",carton_act_qty,0)) AS \"m\", SUM(IF(size_code=\"l\",carton_act_qty,0)) AS \"l\", SUM(IF(size_code=\"xl\",carton_act_qty,0)) AS \"xl\", SUM(IF(size_code=\"xxl\",carton_act_qty,0)) AS \"xxl\", SUM(IF(size_code=\"xxxl\",carton_act_qty,0)) AS \"xxxl\",SUM(IF(size_code=\"s01\",carton_act_qty,0)) AS \"s01\",SUM(IF(size_code=\"s02\",carton_act_qty,0)) AS \"s02\",SUM(IF(size_code=\"s03\",carton_act_qty,0)) AS \"s03\"
 , SUM(IF(size_code=\"s04\",carton_act_qty,0)) AS \"s04\",SUM(IF(size_code=\"s05\",carton_act_qty,0)) AS \"s05\",SUM(IF(size_code=\"s06\",carton_act_qty,0)) AS \"s06\"
 , SUM(IF(size_code=\"s07\",carton_act_qty,0)) AS \"s07\", SUM(IF(size_code=\"s08\",carton_act_qty,0)) AS \"s08\", SUM(IF(size_code=\"s09\",carton_act_qty,0)) AS \"s09\"
 , SUM(IF(size_code=\"s10\",carton_act_qty,0)) AS \"s10\", SUM(IF(size_code=\"s11\",carton_act_qty,0)) AS \"s11\", SUM(IF(size_code=\"s12\",carton_act_qty,0)) AS \"s12\"
@@ -700,65 +710,70 @@ else
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$fg_xs+=$sql_row['xs'];
-		$fg_s+=$sql_row['s'];
-		$fg_m+=$sql_row['m'];
-		$fg_l+=$sql_row['l'];
-		$fg_xl+=$sql_row['xl'];
-		$fg_xxl+=$sql_row['xxl'];
-		$fg_xxxl+=$sql_row['xxxl'];
+		$color_des = $sql_row['order_col_des'];
+		$fg_xs=$sql_row['xs'];
+		$fg_s=$sql_row['s'];
+		$fg_m=$sql_row['m'];
+		$fg_l=$sql_row['l'];
+		$fg_xl=$sql_row['xl'];
+		$fg_xxl=$sql_row['xxl'];
+		$fg_xxxl=$sql_row['xxxl'];
 		
-		$fg_s01+=$sql_row['s01'];
-		$fg_s02+=$sql_row['s02'];
-		$fg_s03+=$sql_row['s03'];
-		$fg_s04+=$sql_row['s04'];
-		$fg_s05+=$sql_row['s05'];
-		$fg_s06+=$sql_row['s06'];
-		$fg_s07+=$sql_row['s07'];
-		$fg_s08+=$sql_row['s08'];
-		$fg_s09+=$sql_row['s09'];
-		$fg_s10+=$sql_row['s10'];
-		$fg_s11+=$sql_row['s11'];
-		$fg_s12+=$sql_row['s12'];
-		$fg_s13+=$sql_row['s13'];
-		$fg_s14+=$sql_row['s14'];
-		$fg_s15+=$sql_row['s15'];
-		$fg_s16+=$sql_row['s16'];
-		$fg_s17+=$sql_row['s17'];
-		$fg_s18+=$sql_row['s18'];
-		$fg_s19+=$sql_row['s19'];
-		$fg_s20+=$sql_row['s20'];
-		$fg_s21+=$sql_row['s21'];
-		$fg_s22+=$sql_row['s22'];
-		$fg_s23+=$sql_row['s23'];
-		$fg_s24+=$sql_row['s24'];
-		$fg_s25+=$sql_row['s25'];
-		$fg_s26+=$sql_row['s26'];
-		$fg_s27+=$sql_row['s27'];
-		$fg_s28+=$sql_row['s28'];
-		$fg_s29+=$sql_row['s29'];
-		$fg_s30+=$sql_row['s30'];
-		$fg_s31+=$sql_row['s31'];
-		$fg_s32+=$sql_row['s32'];
-		$fg_s33+=$sql_row['s33'];
-		$fg_s34+=$sql_row['s34'];
-		$fg_s35+=$sql_row['s35'];
-		$fg_s36+=$sql_row['s36'];
-		$fg_s37+=$sql_row['s37'];
-		$fg_s38+=$sql_row['s38'];
-		$fg_s39+=$sql_row['s39'];
-		$fg_s40+=$sql_row['s40'];
-		$fg_s41+=$sql_row['s41'];
-		$fg_s42+=$sql_row['s42'];
-		$fg_s43+=$sql_row['s43'];
-		$fg_s44+=$sql_row['s44'];
-		$fg_s45+=$sql_row['s45'];
-		$fg_s46+=$sql_row['s46'];
-		$fg_s47+=$sql_row['s47'];
-		$fg_s48+=$sql_row['s48'];
-		$fg_s49+=$sql_row['s49'];
-		$fg_s50+=$sql_row['s50'];
+		$fg_s01=$sql_row['s01'];
+		$fg_s02=$sql_row['s02'];
+		$fg_s03=$sql_row['s03'];
+		$fg_s04=$sql_row['s04'];
+		$fg_s05=$sql_row['s05'];
+		$fg_s06=$sql_row['s06'];
+		$fg_s07=$sql_row['s07'];
+		$fg_s08=$sql_row['s08'];
+		$fg_s09=$sql_row['s09'];
+		$fg_s10=$sql_row['s10'];
+		$fg_s11=$sql_row['s11'];
+		$fg_s12=$sql_row['s12'];
+		$fg_s13=$sql_row['s13'];
+		$fg_s14=$sql_row['s14'];
+		$fg_s15=$sql_row['s15'];
+		$fg_s16=$sql_row['s16'];
+		$fg_s17=$sql_row['s17'];
+		$fg_s18=$sql_row['s18'];
+		$fg_s19=$sql_row['s19'];
+		$fg_s20=$sql_row['s20'];
+		$fg_s21=$sql_row['s21'];
+		$fg_s22=$sql_row['s22'];
+		$fg_s23=$sql_row['s23'];
+		$fg_s24=$sql_row['s24'];
+		$fg_s25=$sql_row['s25'];
+		$fg_s26=$sql_row['s26'];
+		$fg_s27=$sql_row['s27'];
+		$fg_s28=$sql_row['s28'];
+		$fg_s29=$sql_row['s29'];
+		$fg_s30=$sql_row['s30'];
+		$fg_s31=$sql_row['s31'];
+		$fg_s32=$sql_row['s32'];
+		$fg_s33=$sql_row['s33'];
+		$fg_s34=$sql_row['s34'];
+		$fg_s35=$sql_row['s35'];
+		$fg_s36=$sql_row['s36'];
+		$fg_s37=$sql_row['s37'];
+		$fg_s38=$sql_row['s38'];
+		$fg_s39=$sql_row['s39'];
+		$fg_s40=$sql_row['s40'];
+		$fg_s41=$sql_row['s41'];
+		$fg_s42=$sql_row['s42'];
+		$fg_s43=$sql_row['s43'];
+		$fg_s44=$sql_row['s44'];
+		$fg_s45=$sql_row['s45'];
+		$fg_s46=$sql_row['s46'];
+		$fg_s47=$sql_row['s47'];
+		$fg_s48=$sql_row['s48'];
+		$fg_s49=$sql_row['s49'];
+		$fg_s50=$sql_row['s50'];
 
+		$fg_qty_new[$color_des]=array($fg_xs,$fg_s,$fg_m,$fg_l,$fg_xl,$fg_xxl,$fg_xxxl,$fg_s01,$fg_s02,$fg_s03,$fg_s04,$fg_s05,$fg_s06,$fg_s07,$fg_s08,$fg_s09,$fg_s10,$fg_s11,$fg_s12,$fg_s13,$fg_s14,$fg_s15,$fg_s16,$fg_s17,$fg_s18,$fg_s19,$fg_s20,$fg_s21,$fg_s22,$fg_s23,$fg_s24,$fg_s25,$fg_s26,$fg_s27,$fg_s28,$fg_s29,$fg_s30,$fg_s31,$fg_s32,$fg_s33,$fg_s34,$fg_s35,$fg_s36,$fg_s37,$fg_s38,$fg_s39,$fg_s40,$fg_s41,$fg_s42,$fg_s43,$fg_s44,$fg_s45,$fg_s46,$fg_s47,$fg_s48,$fg_s49,$fg_s50);
+
+		$tot_fg_qty_new[$color_des]=array_sum($fg_qty_new[$color_des]);
+		$tot_fg_qty_tot += $tot_fg_qty_new[$color_des];
 	}
 	
 	$pass_xs=0;
@@ -884,7 +899,7 @@ else
 if($color_x=='0')
 {
 
-$sql="select  SUM(IF(size=\"xs\" and tran_type=1,pcs,0)) as \"pass_xs\", SUM(IF(size=\"s\" and tran_type=1,pcs,0)) as \"pass_s\", SUM(IF(size=\"m\" and tran_type=1,pcs,0)) as \"pass_m\", SUM(IF(size=\"l\" and tran_type=1,pcs,0)) as \"pass_l\", SUM(IF(size=\"xl\" and tran_type=1,pcs,0)) as \"pass_xl\", SUM(IF(size=\"xxl\" and tran_type=1,pcs,0)) as \"pass_xxl\", SUM(IF(size=\"xxxl\" and tran_type=1,pcs,0)) as \"pass_xxxl\", SUM(IF(size=\"s01\" and tran_type=1,pcs,0)) as \"pass_s01\", SUM(IF(size=\"s02\" and tran_type=1,pcs,0)) as \"pass_s02\", SUM(IF(size=\"s03\" and tran_type=1,pcs,0)) as \"pass_s03\"
+$sql="select  color,SUM(IF(size=\"xs\" and tran_type=1,pcs,0)) as \"pass_xs\", SUM(IF(size=\"s\" and tran_type=1,pcs,0)) as \"pass_s\", SUM(IF(size=\"m\" and tran_type=1,pcs,0)) as \"pass_m\", SUM(IF(size=\"l\" and tran_type=1,pcs,0)) as \"pass_l\", SUM(IF(size=\"xl\" and tran_type=1,pcs,0)) as \"pass_xl\", SUM(IF(size=\"xxl\" and tran_type=1,pcs,0)) as \"pass_xxl\", SUM(IF(size=\"xxxl\" and tran_type=1,pcs,0)) as \"pass_xxxl\", SUM(IF(size=\"s01\" and tran_type=1,pcs,0)) as \"pass_s01\", SUM(IF(size=\"s02\" and tran_type=1,pcs,0)) as \"pass_s02\", SUM(IF(size=\"s03\" and tran_type=1,pcs,0)) as \"pass_s03\"
 , SUM(IF(size=\"s04\" and tran_type=1,pcs,0)) as \"pass_s04\", SUM(IF(size=\"s05\" and tran_type=1,pcs,0)) as \"pass_s05\", SUM(IF(size=\"s06\" and tran_type=1,pcs,0)) as \"pass_s06\", SUM(IF(size=\"s07\" and tran_type=1,pcs,0)) as \"pass_s07\", SUM(IF(size=\"s08\" and tran_type=1,pcs,0)) as \"pass_s08\"
 , SUM(IF(size=\"s09\" and tran_type=1,pcs,0)) as \"pass_s09\", SUM(IF(size=\"s10\" and tran_type=1,pcs,0)) as \"pass_s10\", SUM(IF(size=\"s11\" and tran_type=1,pcs,0)) as \"pass_s11\", SUM(IF(size=\"s12\" and tran_type=1,pcs,0)) as \"pass_s12\", SUM(IF(size=\"s13\" and tran_type=1,pcs,0)) as \"pass_s13\"
 , SUM(IF(size=\"s14\" and tran_type=1,pcs,0)) as \"pass_s14\", SUM(IF(size=\"s15\" and tran_type=1,pcs,0)) as \"pass_s15\", SUM(IF(size=\"s16\" and tran_type=1,pcs,0)) as \"pass_s16\", SUM(IF(size=\"s17\" and tran_type=1,pcs,0)) as \"pass_s17\", SUM(IF(size=\"s18\" and tran_type=1,pcs,0)) as \"pass_s18\"
@@ -900,11 +915,11 @@ $sql="select  SUM(IF(size=\"xs\" and tran_type=1,pcs,0)) as \"pass_xs\", SUM(IF(
 , SUM(IF(size=\"s34\" and tran_type=2,pcs,0)) as \"fail_s34\", SUM(IF(size=\"s35\" and tran_type=2,pcs,0)) as \"fail_s35\", SUM(IF(size=\"s36\" and tran_type=2,pcs,0)) as \"fail_s36\", SUM(IF(size=\"s37\" and tran_type=2,pcs,0)) as \"fail_s37\", SUM(IF(size=\"s38\" and tran_type=2,pcs,0)) as \"fail_s38\"
 , SUM(IF(size=\"s39\" and tran_type=2,pcs,0)) as \"fail_s39\", SUM(IF(size=\"s40\" and tran_type=2,pcs,0)) as \"fail_s40\", SUM(IF(size=\"s41\" and tran_type=2,pcs,0)) as \"fail_s41\", SUM(IF(size=\"s42\" and tran_type=2,pcs,0)) as \"fail_s42\", SUM(IF(size=\"s43\" and tran_type=2,pcs,0)) as \"fail_s43\"
 , SUM(IF(size=\"s44\" and tran_type=2,pcs,0)) as \"fail_s44\", SUM(IF(size=\"s45\" and tran_type=2,pcs,0)) as \"fail_s45\", SUM(IF(size=\"s46\" and tran_type=2,pcs,0)) as \"fail_s46\", SUM(IF(size=\"s47\" and tran_type=2,pcs,0)) as \"fail_s47\", SUM(IF(size=\"s48\" and tran_type=2,pcs,0)) as \"fail_s48\"
-, SUM(IF(size=\"s49\" and tran_type=2,pcs,0)) as \"fail_s49\", SUM(IF(size=\"s50\" and tran_type=2,pcs,0)) as \"fail_s50\" from $bai_pro3.fca_audit_fail_db where style=\"$style_x\" and schedule=\"$schedule_x\"";
+, SUM(IF(size=\"s49\" and tran_type=2,pcs,0)) as \"fail_s49\", SUM(IF(size=\"s50\" and tran_type=2,pcs,0)) as \"fail_s50\" from $bai_pro3.fca_audit_fail_db where style=\"$style_x\" and schedule=\"$schedule_x\" group by color";
 }
 else
 {
-	$sql="select  SUM(IF(size=\"xs\" and tran_type=1,pcs,0)) as \"pass_xs\", SUM(IF(size=\"s\" and tran_type=1,pcs,0)) as \"pass_s\", SUM(IF(size=\"m\" and tran_type=1,pcs,0)) as \"pass_m\", SUM(IF(size=\"l\" and tran_type=1,pcs,0)) as \"pass_l\", SUM(IF(size=\"xl\" and tran_type=1,pcs,0)) as \"pass_xl\", SUM(IF(size=\"xxl\" and tran_type=1,pcs,0)) as \"pass_xxl\", SUM(IF(size=\"xxxl\" and tran_type=1,pcs,0)) as \"pass_xxxl\", SUM(IF(size=\"s01\" and tran_type=1,pcs,0)) as \"pass_s01\", SUM(IF(size=\"s02\" and tran_type=1,pcs,0)) as \"pass_s02\", SUM(IF(size=\"s03\" and tran_type=1,pcs,0)) as \"pass_s03\"
+	$sql="select color,SUM(IF(size=\"xs\" and tran_type=1,pcs,0)) as \"pass_xs\", SUM(IF(size=\"s\" and tran_type=1,pcs,0)) as \"pass_s\", SUM(IF(size=\"m\" and tran_type=1,pcs,0)) as \"pass_m\", SUM(IF(size=\"l\" and tran_type=1,pcs,0)) as \"pass_l\", SUM(IF(size=\"xl\" and tran_type=1,pcs,0)) as \"pass_xl\", SUM(IF(size=\"xxl\" and tran_type=1,pcs,0)) as \"pass_xxl\", SUM(IF(size=\"xxxl\" and tran_type=1,pcs,0)) as \"pass_xxxl\", SUM(IF(size=\"s01\" and tran_type=1,pcs,0)) as \"pass_s01\", SUM(IF(size=\"s02\" and tran_type=1,pcs,0)) as \"pass_s02\", SUM(IF(size=\"s03\" and tran_type=1,pcs,0)) as \"pass_s03\"
 , SUM(IF(size=\"s04\" and tran_type=1,pcs,0)) as \"pass_s04\", SUM(IF(size=\"s05\" and tran_type=1,pcs,0)) as \"pass_s05\", SUM(IF(size=\"s06\" and tran_type=1,pcs,0)) as \"pass_s06\", SUM(IF(size=\"s07\" and tran_type=1,pcs,0)) as \"pass_s07\", SUM(IF(size=\"s08\" and tran_type=1,pcs,0)) as \"pass_s08\"
 , SUM(IF(size=\"s09\" and tran_type=1,pcs,0)) as \"pass_s09\", SUM(IF(size=\"s10\" and tran_type=1,pcs,0)) as \"pass_s10\", SUM(IF(size=\"s11\" and tran_type=1,pcs,0)) as \"pass_s11\", SUM(IF(size=\"s12\" and tran_type=1,pcs,0)) as \"pass_s12\", SUM(IF(size=\"s13\" and tran_type=1,pcs,0)) as \"pass_s13\"
 , SUM(IF(size=\"s14\" and tran_type=1,pcs,0)) as \"pass_s14\", SUM(IF(size=\"s15\" and tran_type=1,pcs,0)) as \"pass_s15\", SUM(IF(size=\"s16\" and tran_type=1,pcs,0)) as \"pass_s16\", SUM(IF(size=\"s17\" and tran_type=1,pcs,0)) as \"pass_s17\", SUM(IF(size=\"s18\" and tran_type=1,pcs,0)) as \"pass_s18\"
@@ -927,6 +942,7 @@ else
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
+		$color_val = $sql_row['color'];
 		$pass_xs=$sql_row['pass_xs'];
 		$pass_s=$sql_row['pass_s'];
 		$pass_m=$sql_row['pass_m'];
@@ -1046,8 +1062,12 @@ else
 		$fail_s49=$sql_row['fail_s49'];
 		$fail_s50=$sql_row['fail_s50'];
 
+
+		$pass_qtys_new[$color_val]=array($pass_xs,$pass_s,$pass_m,$pass_l,$pass_xl,$pass_xxl,$pass_xxxl,$pass_s01,$pass_s02,$pass_s03,$pass_s04,$pass_s05,$pass_s06,$pass_s07,$pass_s08,$pass_s09,$pass_s10,$pass_s11,$pass_s12,$pass_s13,$pass_s14,$pass_s15,$pass_s16,$pass_s17,$pass_s18,$pass_s19,$pass_s20,$pass_s21,$pass_s22,$pass_s23,$pass_s24,$pass_s25,$pass_s26,$pass_s27,$pass_s28,$pass_s29,$pass_s30,$pass_s31,$pass_s32,$pass_s33,$pass_s34,$pass_s35,$pass_s36,$pass_s37,$pass_s38,$pass_s39,$pass_s40,$pass_s41,$pass_s42,$pass_s43,$pass_s44,$pass_s45,$pass_s46,$pass_s47,$pass_s48,$pass_s49,$pass_s50);
+
+		$tot_pass_qtys_new[$color_val]=array_sum($pass_qtys_new[$color_val]);
 	}
-	
+	// var_dump($pass_qtys_new);
 	$ship_xs=0;
 	$ship_s=0;
 	$ship_m=0;
@@ -1108,7 +1128,7 @@ else
 
 
 	if($color_x=='0'){
-		$sql="select * from $bai_pro3.ship_stat_log where ship_style=\"$style_x\" and ship_schedule=\"$schedule_x\"";
+		$sql="select * from $bai_pro3.ship_stat_log where ship_style=\"$style_x\" and ship_schedule=\"$schedule_x\" GROUP BY ship_color";
 	}
 	else{
 		$sql="select * from $bai_pro3.ship_stat_log where ship_style=\"$style_x\" and ship_schedule=\"$schedule_x\" and ship_color=\"$color_x\"";
@@ -1117,85 +1137,90 @@ else
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$ship_xs+=$sql_row['ship_s_xs'];
-		$ship_s+=$sql_row['ship_s_s'];
-		$ship_m+=$sql_row['ship_s_m'];
-		$ship_l+=$sql_row['ship_s_l'];
-		$ship_xl+=$sql_row['ship_s_xl'];
-		$ship_xxl+=$sql_row['ship_s_xxl'];
-		$ship_xxxl+=$sql_row['ship_s_xxxl'];
+		$ship_clr_des = $sql_row['ship_color'];
+		$ship_xs=$sql_row['ship_s_xs'];
+		$ship_s=$sql_row['ship_s_s'];
+		$ship_m=$sql_row['ship_s_m'];
+		$ship_l=$sql_row['ship_s_l'];
+		$ship_xl=$sql_row['ship_s_xl'];
+		$ship_xxl=$sql_row['ship_s_xxl'];
+		$ship_xxxl=$sql_row['ship_s_xxxl'];
 		
-		$ship_s01+=$sql_row['ship_s_s01'];
-		$ship_s02+=$sql_row['ship_s_s02'];
-		$ship_s03+=$sql_row['ship_s_s03'];
-		$ship_s04+=$sql_row['ship_s_s04'];
-		$ship_s05+=$sql_row['ship_s_s05'];
-		$ship_s06+=$sql_row['ship_s_s06'];
-		$ship_s07+=$sql_row['ship_s_s07'];
-		$ship_s08+=$sql_row['ship_s_s08'];
-		$ship_s09+=$sql_row['ship_s_s09'];
-		$ship_s10+=$sql_row['ship_s_s10'];
-		$ship_s11+=$sql_row['ship_s_s11'];
-		$ship_s12+=$sql_row['ship_s_s12'];
-		$ship_s13+=$sql_row['ship_s_s13'];
-		$ship_s14+=$sql_row['ship_s_s14'];
-		$ship_s15+=$sql_row['ship_s_s15'];
-		$ship_s16+=$sql_row['ship_s_s16'];
-		$ship_s17+=$sql_row['ship_s_s17'];
-		$ship_s18+=$sql_row['ship_s_s18'];
-		$ship_s19+=$sql_row['ship_s_s19'];
-		$ship_s20+=$sql_row['ship_s_s20'];
-		$ship_s21+=$sql_row['ship_s_s21'];
-		$ship_s22+=$sql_row['ship_s_s22'];
-		$ship_s23+=$sql_row['ship_s_s23'];
-		$ship_s24+=$sql_row['ship_s_s24'];
-		$ship_s25+=$sql_row['ship_s_s25'];
-		$ship_s26+=$sql_row['ship_s_s26'];
-		$ship_s27+=$sql_row['ship_s_s27'];
-		$ship_s28+=$sql_row['ship_s_s28'];
-		$ship_s29+=$sql_row['ship_s_s29'];
-		$ship_s30+=$sql_row['ship_s_s30'];
-		$ship_s31+=$sql_row['ship_s_s31'];
-		$ship_s32+=$sql_row['ship_s_s32'];
-		$ship_s33+=$sql_row['ship_s_s33'];
-		$ship_s34+=$sql_row['ship_s_s34'];
-		$ship_s35+=$sql_row['ship_s_s35'];
-		$ship_s36+=$sql_row['ship_s_s36'];
-		$ship_s37+=$sql_row['ship_s_s37'];
-		$ship_s38+=$sql_row['ship_s_s38'];
-		$ship_s39+=$sql_row['ship_s_s39'];
-		$ship_s40+=$sql_row['ship_s_s40'];
-		$ship_s41+=$sql_row['ship_s_s41'];
-		$ship_s42+=$sql_row['ship_s_s42'];
-		$ship_s43+=$sql_row['ship_s_s43'];
-		$ship_s44+=$sql_row['ship_s_s44'];
-		$ship_s45+=$sql_row['ship_s_s45'];
-		$ship_s46+=$sql_row['ship_s_s46'];
-		$ship_s47+=$sql_row['ship_s_s47'];
-		$ship_s48+=$sql_row['ship_s_s48'];
-		$ship_s49+=$sql_row['ship_s_s49'];
-		$ship_s50+=$sql_row['ship_s_s50'];
+		$ship_s01=$sql_row['ship_s_s01'];
+		$ship_s02=$sql_row['ship_s_s02'];
+		$ship_s03=$sql_row['ship_s_s03'];
+		$ship_s04=$sql_row['ship_s_s04'];
+		$ship_s05=$sql_row['ship_s_s05'];
+		$ship_s06=$sql_row['ship_s_s06'];
+		$ship_s07=$sql_row['ship_s_s07'];
+		$ship_s08=$sql_row['ship_s_s08'];
+		$ship_s09=$sql_row['ship_s_s09'];
+		$ship_s10=$sql_row['ship_s_s10'];
+		$ship_s11=$sql_row['ship_s_s11'];
+		$ship_s12=$sql_row['ship_s_s12'];
+		$ship_s13=$sql_row['ship_s_s13'];
+		$ship_s14=$sql_row['ship_s_s14'];
+		$ship_s15=$sql_row['ship_s_s15'];
+		$ship_s16=$sql_row['ship_s_s16'];
+		$ship_s17=$sql_row['ship_s_s17'];
+		$ship_s18=$sql_row['ship_s_s18'];
+		$ship_s19=$sql_row['ship_s_s19'];
+		$ship_s20=$sql_row['ship_s_s20'];
+		$ship_s21=$sql_row['ship_s_s21'];
+		$ship_s22=$sql_row['ship_s_s22'];
+		$ship_s23=$sql_row['ship_s_s23'];
+		$ship_s24=$sql_row['ship_s_s24'];
+		$ship_s25=$sql_row['ship_s_s25'];
+		$ship_s26=$sql_row['ship_s_s26'];
+		$ship_s27=$sql_row['ship_s_s27'];
+		$ship_s28=$sql_row['ship_s_s28'];
+		$ship_s29=$sql_row['ship_s_s29'];
+		$ship_s30=$sql_row['ship_s_s30'];
+		$ship_s31=$sql_row['ship_s_s31'];
+		$ship_s32=$sql_row['ship_s_s32'];
+		$ship_s33=$sql_row['ship_s_s33'];
+		$ship_s34=$sql_row['ship_s_s34'];
+		$ship_s35=$sql_row['ship_s_s35'];
+		$ship_s36=$sql_row['ship_s_s36'];
+		$ship_s37=$sql_row['ship_s_s37'];
+		$ship_s38=$sql_row['ship_s_s38'];
+		$ship_s39=$sql_row['ship_s_s39'];
+		$ship_s40=$sql_row['ship_s_s40'];
+		$ship_s41=$sql_row['ship_s_s41'];
+		$ship_s42=$sql_row['ship_s_s42'];
+		$ship_s43=$sql_row['ship_s_s43'];
+		$ship_s44=$sql_row['ship_s_s44'];
+		$ship_s45=$sql_row['ship_s_s45'];
+		$ship_s46=$sql_row['ship_s_s46'];
+		$ship_s47=$sql_row['ship_s_s47'];
+		$ship_s48=$sql_row['ship_s_s48'];
+		$ship_s49=$sql_row['ship_s_s49'];
+		$ship_s50=$sql_row['ship_s_s50'];
 
+		$ship_qtys_new[$ship_clr_des]=array($ship_xs,$ship_s,$ship_m,$ship_l,$ship_xl,$ship_xxl,$ship_xxxl,$ship_s01,$ship_s02,$ship_s03,$ship_s04,$ship_s05,$ship_s06,$ship_s07,$ship_s08,$ship_s09,$ship_s10,$ship_s11,$ship_s12,$ship_s13,$ship_s14,$ship_s15,$ship_s16,$ship_s17,$ship_s18,$ship_s19,$ship_s20,$ship_s21,$ship_s22,$ship_s23,$ship_s24,$ship_s25,$ship_s26,$ship_s27,$ship_s28,$ship_s29,$ship_s30,$ship_s31,$ship_s32,$ship_s33,$ship_s34,$ship_s35,$ship_s36,$ship_s37,$ship_s38,$ship_s39,$ship_s40,$ship_s41,$ship_s42,$ship_s43,$ship_s44,$ship_s45,$ship_s46,$ship_s47,$ship_s48,$ship_s49,$ship_s50);
+
+		$tot_ship_qtys_new[$ship_clr_des]=array_sum($ship_qtys_new[$ship_clr_des]);
+		// echo "<br/>";
+		$tot_ship_qtys_tot += $tot_ship_qtys_new[$ship_clr_des];
 	}
-	
 $sizes=array("XS","S","M","L","XL","XXL","XXXL","s01","s02","s03","s04","s05","s06","s07","s08","s09","s10","s11","s12","s13","s14","s15","s16","s17","s18","s19","s20","s21","s22","s23","s24","s25","s26","s27","s28","s29","s30","s31","s32","s33","s34","s35","s36","s37","s38","s39","s40","s41","s42","s43","s44","s45","s46","s47","s48","s49","s50");
 
-$order_qtys=array($order_xs,$order_s,$order_m,$order_l,$order_xl,$order_xxl,$order_xxxl,$order_s01,$order_s02,$order_s03,$order_s04,$order_s05,$order_s06,$order_s07,$order_s08,$order_s09,$order_s10,$order_s11,$order_s12,$order_s13,$order_s14,$order_s15,$order_s16,$order_s17,$order_s18,$order_s19,$order_s20,$order_s21,$order_s22
-,$order_s23,$order_s24,$order_s25,$order_s26,$order_s27,$order_s28,$order_s29,$order_s30,$order_s31,$order_s32,$order_s33,$order_s34,$order_s35,$order_s36,$order_s37
-,$order_s38,$order_s39,$order_s40,$order_s41,$order_s42,$order_s43,$order_s44,$order_s45,$order_s46,$order_s47,$order_s48,$order_s49,$order_s50);
+// $order_qtys=array($order_xs,$order_s,$order_m,$order_l,$order_xl,$order_xxl,$order_xxxl,$order_s01,$order_s02,$order_s03,$order_s04,$order_s05,$order_s06,$order_s07,$order_s08,$order_s09,$order_s10,$order_s11,$order_s12,$order_s13,$order_s14,$order_s15,$order_s16,$order_s17,$order_s18,$order_s19,$order_s20,$order_s21,$order_s22
+// ,$order_s23,$order_s24,$order_s25,$order_s26,$order_s27,$order_s28,$order_s29,$order_s30,$order_s31,$order_s32,$order_s33,$order_s34,$order_s35,$order_s36,$order_s37
+// ,$order_s38,$order_s39,$order_s40,$order_s41,$order_s42,$order_s43,$order_s44,$order_s45,$order_s46,$order_s47,$order_s48,$order_s49,$order_s50);
 
-$tot_order_qty=array_sum($order_qtys);
+// $tot_order_qty=array_sum($order_qtys);
 
-$fg_qtys=array($fg_xs,$fg_s,$fg_m,$fg_l,$fg_xl,$fg_xxl,$fg_xxxl,$fg_s01,$fg_s02,$fg_s03,$fg_s04,$fg_s05,$fg_s06,$fg_s07,$fg_s08,$fg_s09,$fg_s10,$fg_s11,$fg_s12,$fg_s13,$fg_s14,$fg_s15,$fg_s16,$fg_s17,$fg_s18,$fg_s19,$fg_s20,$fg_s21,$fg_s22,$fg_s23,$fg_s24,$fg_s25,$fg_s26,$fg_s27,$fg_s28,$fg_s29,$fg_s30,$fg_s31,$fg_s32
-,$fg_s33,$fg_s34,$fg_s35,$fg_s36,$fg_s37,$fg_s38,$fg_s39,$fg_s40,$fg_s41,$fg_s42,$fg_s43,$fg_s44,$fg_s45,$fg_s46,$fg_s47,$fg_s48,$fg_s49,$fg_s50);
+// $fg_qtys=array($fg_xs,$fg_s,$fg_m,$fg_l,$fg_xl,$fg_xxl,$fg_xxxl,$fg_s01,$fg_s02,$fg_s03,$fg_s04,$fg_s05,$fg_s06,$fg_s07,$fg_s08,$fg_s09,$fg_s10,$fg_s11,$fg_s12,$fg_s13,$fg_s14,$fg_s15,$fg_s16,$fg_s17,$fg_s18,$fg_s19,$fg_s20,$fg_s21,$fg_s22,$fg_s23,$fg_s24,$fg_s25,$fg_s26,$fg_s27,$fg_s28,$fg_s29,$fg_s30,$fg_s31,$fg_s32
+// ,$fg_s33,$fg_s34,$fg_s35,$fg_s36,$fg_s37,$fg_s38,$fg_s39,$fg_s40,$fg_s41,$fg_s42,$fg_s43,$fg_s44,$fg_s45,$fg_s46,$fg_s47,$fg_s48,$fg_s49,$fg_s50);
 
-$tot_fg_qty=array_sum($fg_qtys);
+// $tot_fg_qty=array_sum($fg_qtys);
 
-$pass_qtys=array($pass_xs,$pass_s,$pass_m,$pass_l,$pass_xl,$pass_xxl,$pass_xxxl,$pass_s01,$pass_s02,$pass_s03,$pass_s04,$pass_s05,$pass_s06,$pass_s07,$pass_s08,$pass_s09,$pass_s10,$pass_s11,$pass_s12,$pass_s13,$pass_s14,$pass_s15,$pass_s16,$pass_s17,$pass_s18,$pass_s19,$pass_s20,$pass_s21,$pass_s22,$pass_s23,$pass_s24
-,$pass_s25,$pass_s26,$pass_s27,$pass_s28,$pass_s29,$pass_s30,$pass_s31,$pass_s32,$pass_s33,$pass_s34,$pass_s35,$pass_s36,$pass_s37,$pass_s38,$pass_s39,$pass_s40
-,$pass_s41,$pass_s42,$pass_s43,$pass_s44,$pass_s45,$pass_s46,$pass_s47,$pass_s48,$pass_s49,$pass_s50);
+// $pass_qtys=array($pass_xs,$pass_s,$pass_m,$pass_l,$pass_xl,$pass_xxl,$pass_xxxl,$pass_s01,$pass_s02,$pass_s03,$pass_s04,$pass_s05,$pass_s06,$pass_s07,$pass_s08,$pass_s09,$pass_s10,$pass_s11,$pass_s12,$pass_s13,$pass_s14,$pass_s15,$pass_s16,$pass_s17,$pass_s18,$pass_s19,$pass_s20,$pass_s21,$pass_s22,$pass_s23,$pass_s24
+// ,$pass_s25,$pass_s26,$pass_s27,$pass_s28,$pass_s29,$pass_s30,$pass_s31,$pass_s32,$pass_s33,$pass_s34,$pass_s35,$pass_s36,$pass_s37,$pass_s38,$pass_s39,$pass_s40
+// ,$pass_s41,$pass_s42,$pass_s43,$pass_s44,$pass_s45,$pass_s46,$pass_s47,$pass_s48,$pass_s49,$pass_s50);
 
-$tot_pass_qty=array_sum($pass_qtys);
+// $tot_pass_qty=array_sum($pass_qtys);
 
 $fail_qtys=array($fail_xs,$fail_s,$fail_m,$fail_l,$fail_xl,$fail_xxl,$fail_xxxl,$fail_s01,$fail_s02,$fail_s03,$fail_s04,$fail_s05,$fail_s06,$fail_s07,$fail_s08,$fail_s09,$fail_s10,$fail_s11,$fail_s12,$fail_s13,$fail_s14,$fail_s15,$fail_s16,$fail_s17,$fail_s18,$fail_s19,$fail_s20,$fail_s21,$fail_s22,$fail_s23,$fail_s24
 ,$fail_s25,$fail_s26,$fail_s27,$fail_s28,$fail_s29,$fail_s30,$fail_s31,$fail_s32,$fail_s33,$fail_s34,$fail_s35,$fail_s36,$fail_s37,$fail_s38,$fail_s39,$fail_s40
@@ -1203,60 +1228,126 @@ $fail_qtys=array($fail_xs,$fail_s,$fail_m,$fail_l,$fail_xl,$fail_xxl,$fail_xxxl,
 
 $tot_fail_qty=array_sum($fail_qtys);
 
-$ship_qtys=array($ship_xs,$ship_s,$ship_m,$ship_l,$ship_xl,$ship_xxl,$ship_xxxl,$ship_s01,$ship_s02,$ship_s03,$ship_s04,$ship_s05,$ship_s06,$ship_s07,$ship_s08
-,$ship_s09,$ship_s10,$ship_s11,$ship_s12,$ship_s13,$ship_s14,$ship_s15,$ship_s16,$ship_s17,$ship_s18,$ship_s19,$ship_s20,$ship_s21,$ship_s22,$ship_s23,$ship_s24
-,$ship_s25,$ship_s26,$ship_s27,$ship_s28,$ship_s29,$ship_s30,$ship_s31,$ship_s32,$ship_s33,$ship_s34,$ship_s35,$ship_s36,$ship_s37,$ship_s38,$ship_s39,$ship_s40
-,$ship_s41,$ship_s42,$ship_s43,$ship_s44,$ship_s45,$ship_s46,$ship_s47,$ship_s48,$ship_s49,$ship_s50);
+// $ship_qtys=array($ship_xs,$ship_s,$ship_m,$ship_l,$ship_xl,$ship_xxl,$ship_xxxl,$ship_s01,$ship_s02,$ship_s03,$ship_s04,$ship_s05,$ship_s06,$ship_s07,$ship_s08
+// ,$ship_s09,$ship_s10,$ship_s11,$ship_s12,$ship_s13,$ship_s14,$ship_s15,$ship_s16,$ship_s17,$ship_s18,$ship_s19,$ship_s20,$ship_s21,$ship_s22,$ship_s23,$ship_s24
+// ,$ship_s25,$ship_s26,$ship_s27,$ship_s28,$ship_s29,$ship_s30,$ship_s31,$ship_s32,$ship_s33,$ship_s34,$ship_s35,$ship_s36,$ship_s37,$ship_s38,$ship_s39,$ship_s40
+// ,$ship_s41,$ship_s42,$ship_s43,$ship_s44,$ship_s45,$ship_s46,$ship_s47,$ship_s48,$ship_s49,$ship_s50);
 
-$tot_ship_qty=array_sum($ship_qtys);
+// $tot_ship_qty=array_sum($ship_qtys);
 
 $url = getFullURL($_GET['r'],'reserve.php','N');
-echo "<div class='panel-body'>";
-echo "<form name='apply' method='post' action='$url' enctype='multipart/form data'>";
-echo "<div class='table-responsive' style='max-height:600px;overflow-x:scroll;overflow-y:scroll'><table class='table table-bordered'>";
-echo "<tr class='success'><th>Size</th><th>Order Qty</th><th>FG Qty</th><th>Ship/Resr. Qty</th><th>Available to Ship Qty</th><th>Enter Ship Qty</th></tr>";
+	echo "<div class='panel-body'>
+		<form name='apply' method='post' action='$url' enctype='multipart/form data'>
+			<div class='table-responsive' style='max-height:600px;overflow-x:scroll;overflow-y:scroll'>
+				<table class='table table-bordered'>
+					<tr class='success'>
+						<th>Color</th>
+						<th>Size</th>
+						<th>Order Qty</th>
+						<th>FG Qty</th>
+						<th>Ship/Resr. Qty</th>
+						<th>Available to Ship Qty</th>
+						<th>Enter Ship Qty</th>
+					</tr>";
 $size_value=array();
-$x=0;
-$tot_available_qty =0;
-for($i=0;$i<sizeof($order_qtys);$i++)
+$x=0;$tot_pass_qty_new =0;
+for ($k=0; $k < sizeof($color_array); $k++) 
 {
-	if($order_qtys[$i]>0)
+	for($i=0;$i<sizeof($order_qtys_new[$color_array[$k]]);$i++)
 	{
-		//Error Correction
-		if($pass_qtys[$i]>$order_qtys[$i])
+
+
+		if($order_qtys_new[$color_array[$k]][$i]>0 || $order_qtys_new[trim($color_array[$k])][$i] > 0)
 		{
-			$pass_qtys[$i]=$order_qtys[$i];
-		}
-		//Error Correction
-	
-		$available_qty=$pass_qtys[$i]-$ship_qtys[$i];
-		$tot_available_qty += $available_qty;
-		// $available_qty=$fg_qtys[$i]-$ship_qtys[$i];
-		
-		$size_value[$i]=ims_sizes('',$schedule_no,$style_no,$color_no,strtoupper($sizes[$i]),$link);
-		
-		echo "<tr><td>".$size_value[$i]."</td><td>".$order_qtys[$i]."</td><td>".$fg_qtys[$i]."</td><td>".$ship_qtys[$i]."</td><td>".$available_qty."</td>";
-		if($available_qty>0)
-		{
-			echo "<td><input type='text' class='integer' id='$i' name=\"qty[$x]\" id=\"qty\" value=\"$available_qty\" 
-			      onkeyup='validateshipqty(this)'>
-			<input type='hidden'  value='$available_qty' id='".$i."_avl'>
-		    <input type=\"hidden\" name=\"size[$x]\" value=\"".$sizes[$i]."\"></td>";
-			$x++;
-		}
-		else
-		{
-			echo "<td>N/A</td>";
+
+			if($order_qtys_new[trim($color_array[$k])][$i] > 0) 
+			{
+				 $order_qty = $order_qtys_new[trim($color_array[$k])][$i];
+			} elseif($order_qtys_new[$color_array[$k]][$i] > 0)
+			{
+				 $order_qty = $order_qtys_new[$color_array[$k]][$i];
+			}
+
+			//Error Correction
+			if($pass_qtys_new[trim($color_array[$k])][$i] > 0) 
+			{
+				 $pass_qty = $pass_qtys_new[trim($color_array[$k])][$i];
+			} elseif($pass_qtys_new[$color_array[$k]][$i] > 0)
+			{
+				 $pass_qty = $pass_qtys_new[$color_array[$k]][$i];
+			} 
+
+			// var_dump($pass_qtys_new);
+			if($pass_qty>$order_qty)
+			{
+				 $pass_qty=$order_qty;
+			}
+
+			//Error Correction
+			if ($ship_qtys_new[trim($color_array[$k])][$i] > 0) 
+			{
+				$ship_qty = $ship_qtys_new[trim($color_array[$k])][$i];
+			} elseif($ship_qtys_new[$color_array[$k]][$i] > 0)
+			{
+				$ship_qty = $ship_qtys_new[$color_array[$k]][$i];
+			} else
+			{
+				$ship_qty = 0;
+			}
+
+			// echo $pass_qty;
+			$available_qty=$pass_qty-$ship_qty;
+			$tot_available_qty += $available_qty;
+			// $available_qty=$fg_qtys[$i]-$ship_qtys[$i];
 			
+
+			if ($fg_qty_new[trim($color_array[$k])][$i] > 0) 
+			{
+				$fg_qty = $fg_qty_new[trim($color_array[$k])][$i];
+			} elseif($fg_qty_new[$color_array[$k]][$i] > 0)
+			{
+				$fg_qty = $fg_qty_new[$color_array[$k]][$i];
+			} else
+			{
+				$fg_qty = 0;
+			}
+
+
+			// var_dump($ship_qtys_new);
+
+			$size_value[$i]=ims_sizes('',$schedule_no,$style_no,$color_no,strtoupper($sizes[$i]),$link);
+			
+			echo "<tr><td>".$color_array[$k]."</td><td>".$size_value[$i]."</td><td>".$order_qty."</td><td>".$fg_qty."</td><td>".$ship_qty."</td><td>".$available_qty."</td>";
+			if($available_qty>0)
+			{
+				echo "<td><input type='text' class='integer' id='$i' name=\"qty[$x]\" id=\"qty\" value=\"$available_qty\" 
+				      onkeyup='validateshipqty(this)'>
+				<input type='hidden'  value='$available_qty' id='".$i."_avl'>
+			    <input type=\"hidden\" name=\"size[$x]\" value=\"".$sizes[$i]."\"></td>";
+			}
+			else
+			{
+				echo "<td>N/A</td>";
+				
+			}
+			if($color_x=='0')
+			{
+				echo "<input type='hidden' name='color_new' value='".$color_array[$k]."'>";
+			}
+			$x++;
+			echo "</tr>";
 		}
-		echo "</tr>";
 	}
 }
 if($tot_available_qty>0)
 {
-	$tot_pass_qty = $tot_available_qty;
+	$tot_pass_qty_new = $tot_available_qty;
 }
-echo "<tr class='warning'><th>Total</th><th>$tot_order_qty</th><th>$tot_fg_qty</th><th>$tot_ship_qty</th><th>".($tot_pass_qty-$tot_ship_qty)."</th><th></th></tr>";
+else
+{
+	$tot_pass_qty_new = $tot_pass_qty_new-$tot_ship_qtys_tot;
+}
+echo "<tr class='warning'><th colspan='2'>Total</th><th>".$tot_order_qty_tot."</th><th>".$tot_fg_qty_tot."</th><th>".$tot_ship_qtys_tot."</th><th>".$tot_pass_qty_new."</th><th></th></tr>";
 
 echo "</table>";
 
@@ -1264,7 +1355,7 @@ if($x>0)
 {
 	if($color_x=='0')
     {
-	$sql="select container,group_concat(tid) as \"label_id\", count(*) as \"count\" from $bai_pro3.packing_summary where order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\" group by container";
+	$sql="select container,group_concat(tid) as \"label_id\", count(*) as \"count\" from $bai_pro3.packing_summary where order_style_no=\"$style_x\" and order_del_no=\"$schedule_x\" group by container,order_col_des";
 	}
 	else
 	{
@@ -1284,8 +1375,16 @@ if($x>0)
 	echo "<div class='col-sm-6 black'>Total Cartons as per Packing List :</div>
 		  <div class='col-sm-6'><b class='text-danger'>$total</b></div><br><br>";
 	echo "<input type='hidden' name='style_new' value='$style_x'>
-		  <input type='hidden' name='schedule_new' value='$schedule_x'>
-		  <input type='hidden' name='color_new' value='$color_x'>";
+		  <input type='hidden' name='schedule_new' value='$schedule_x'>";
+	if($color_x!='0')
+	{
+		echo "<input type=\"hidden\" name=\"color_new\" value=\"$color_x\">";
+		echo "<input type=\"hidden\" name=\"color_new1\" value=\"$color_x\">";
+	}
+	else
+	{
+		echo "<input type=\"hidden\" name=\"color_new1\" value=\"1\">";
+	}
 	echo "<div class='col-sm-6 black'>Enter no of Cartons:</div>
 		  <div class='col-sm-6'><input onkeyup='negative()' type='number' id='crts' name='crts' value='0' size='5'></div><br><br>";
 	echo "<div class='col-sm-6 black'>Remarks :</div>

@@ -116,19 +116,18 @@ if($color!='0')
 echo "<br/>color&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;".$color;
 }
 echo "<br/><br/><table width=40% class='table table-bordered'>";
-echo "<tr><th>Size</th><th>Available<br/>Qty</th><th>Approve<br/> Qty</th>";
+echo "<tr><th>Color</th><th>Size</th><th>Available<br/>Qty</th><th>Approve<br/> Qty</th>";
 
 echo "</tr>";
 $x=0;
-
-if($color=='0')
-{
-$sql="select * from $bai_pro3.disp_mix_size where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
-}
-else
-{
-$sql="select * from $bai_pro3.disp_mix_size_2 where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-}
+	if($color=='0')
+	{
+	$sql="select * from $bai_pro3.disp_mix_size_2 where order_style_no=\"$style\" and order_del_no=\"$schedule\" group by order_col_des,size_code";
+	}
+	else
+	{
+		$sql="select * from $bai_pro3.disp_mix_size_2 where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+	}
 //echo $sql;
 // mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -138,15 +137,28 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$size_value=ims_sizes('',$sql_row['order_del_no'],$sql_row['order_style_no'],$sql_row['order_col_des'],strtoupper($sql_row['size_code']),$link);
 	if($qty>0)
 	{
-		echo "<tr><td>".$size_value."</td><td>$qty</td><td><input type=\"text\" id=\"quantity\"  name=\"qty[$x]\" value=\"0\" size=\"10\"
+		echo "<tr><td>".$sql_row['order_col_des']."</td><td>".$size_value."</td><td>$qty</td><td><input type=\"text\" id=\"quantity\"  name=\"qty[$x]\" value=\"$qty\" size=\"10\"
 		 onchange='if(this.value>$qty) 
-		{ alert(\"Approve Quantity must not be greater than Available Quantity\"); this.value=0; } if(this.value<0) { alert(\"Please enter Valid Data\"); this.value=0; }'><input type=\"hidden\" name=\"size[$x]\" value=\"".$sql_row['size_code']."\"></td>";
-		echo "</tr>";
+			{ <script>sweetAlert('Approve Quantity must not be greater than Available Quantity.','','info');this.value=0; } if(this.value<0) { alert(\"Please enter Valid Data\"); this.value=0; }</script><input type=\"hidden\" name=\"size[$x]\" value=\"".$sql_row['size_code']."\">";
+		if($color=='0')
+		{
+			echo "<input type=\"hidden\" name=\"color_new[$x]\" value=\"".$sql_row['order_col_des']."\">";
+		}
+		echo "</td></tr>";
 		$x++;
 	}
 }
 echo "</table>";
-echo "<input type=\"hidden\" name=\"style_new\" value=\"$style\"><input type=\"hidden\" name=\"schedule_new\" value=\"$schedule\"><input type=\"hidden\" name=\"color_new\" value=\"$color\">";
+echo "<input type=\"hidden\" name=\"style_new\" value=\"$style\"><input type=\"hidden\" name=\"schedule_new\" value=\"$schedule\">";
+if($color!='0')
+{
+	echo "<input type=\"hidden\" name=\"color_new\" value=\"$color\">";
+	echo "<input type=\"hidden\" name=\"color_new1\" value=\"$color\">";
+}
+else
+{
+	echo "<input type=\"hidden\" name=\"color_new1\" value=\"1\">";
+}
 echo '<br/><input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable';
 echo "<input type=\"submit\" id=\"update\" name=\"update\" class=\"btn btn-primary\"value=\"Update\" onclick=\"javascript:button_disable();\">";
 
@@ -166,6 +178,7 @@ if(isset($_POST['update']))
 	$style_new=$_POST['style_new'];
 	$schedule_new=$_POST['schedule_new'];
 	$color_new=$_POST['color_new'];
+	$color_new1=$_POST['color_new1'];
 	$size=$_POST['size'];
 	$qty=$_POST['qty'];
 	//echo sizeof($qty)."size<br>";
@@ -196,31 +209,31 @@ if(isset($_POST['update']))
 		}
 	}
 	}*/
-	if($color_new=='0')
+	if($color_new1=='1')
 	{
-	for($i=0;$i<sizeof($qty);$i++)
-	{
-		if($qty[$i]>0)
+		for($i=0;$i<sizeof($qty);$i++)
 		{
-			$sql="insert into $bai_pro3.fca_audit_fail_db (style,schedule,tran_type,size,done_by,pcs) values (\"".$style_new."\",\"".$schedule_new."\",1,\"".$size[$i]."\",\"".$username."\",\"".$qty[$i]."\")";
-			//echo "<br/>query1=".$sql;
-			mysqli_query($link, $sql) or exit("Sql Error".$sql);
+			if($qty[$i]>0)
+			{
+				$sql="insert into $bai_pro3.fca_audit_fail_db (style,schedule,tran_type,size,done_by,pcs,color) values (\"".$style_new."\",\"".$schedule_new."\",1,\"".$size[$i]."\",\"".$username."\",\"".$qty[$i]."\",\"".$color_new[$i]."\")";
+				// echo "<br/>query1=".$sql;
+				mysqli_query($link, $sql) or exit("Sql Error".$sql);
+			}
 		}
-	}
 	}
 	else
 	{
-	for($i1=0;$i1<sizeof($qty);$i1++)
-	{
-		echo "<br>".$i1."-".$qty[$i1]."-".sizeof($qty)."<br>";
-		if($qty[$i1]>0)
+		for($i1=0;$i1<sizeof($qty);$i1++)
 		{
-			$sql1="insert into $bai_pro3.fca_audit_fail_db (style,schedule,tran_type,size,done_by,pcs,color) values (\"".$style_new."\",\"".$schedule_new."\",1,\"".$size[$i1]."\",\"".$username."\",\"".$qty[$i1]."\",\"".$color_new."\")";
-			//$sql1="insert into fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\",color=\"$color_new\", tran_type=1, size=\"".$size[$i1]."\", done_by=\"$username\", pcs=\"".$qty[$i1]."\"";
-			//echo "<br/>query2=".$sql1;
-			mysqli_query($link, $sql1) or exit("Sql Error2".$sql1."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// echo "<br>".$i1."-".$qty[$i1]."-".sizeof($qty)."<br>";
+			if($qty[$i1]>0)
+			{
+				$sql1="insert into $bai_pro3.fca_audit_fail_db (style,schedule,tran_type,size,done_by,pcs,color) values (\"".$style_new."\",\"".$schedule_new."\",1,\"".$size[$i1]."\",\"".$username."\",\"".$qty[$i1]."\",\"".$color_new."\")";
+				//$sql1="insert into fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\",color=\"$color_new\", tran_type=1, size=\"".$size[$i1]."\", done_by=\"$username\", pcs=\"".$qty[$i1]."\"";
+				// echo "<br/>query2=".$sql1;
+				mysqli_query($link, $sql1) or exit("Sql Error2".$sql1."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+			}
 		}
-	}
 	}
 	$url1=getFullURL($_GET['r'],'pending.php','N');
 	echo "<h2><font color=\"green\">Successfully Updated!</font></h2>";
