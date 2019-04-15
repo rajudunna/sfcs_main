@@ -1909,7 +1909,7 @@ white-space:nowrap;
                                         $mod_ref_nos=$sql_row['bac_no']; 
                                         echo "<tr><td>".$mod_style."</td>"; 
 
-                                        $sql2="select nop,smv from $pro_style where style=\"$mod_style\" and date=\"$date\""; 
+                                        $sql2="select * from $table_name where bac_style=\"$mod_style\" and bac_date=\"$date\" limit 1"; 
                                         //echo $sql2."<br>"; 
                                         $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error34".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         if(mysqli_num_rows($sql_result2) > 0) 
