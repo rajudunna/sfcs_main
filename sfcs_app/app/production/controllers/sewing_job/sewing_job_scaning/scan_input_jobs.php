@@ -65,9 +65,9 @@
 	$scanning_query_line_out=" select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application2'";
 	//echo $scanning_query;
 	$scanning_result_line_out=mysqli_query($link, $scanning_query_line_out)or exit("scanning_out_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row_out=mysqli_fetch_array($scanning_result_line_out))
+	while($sql_row_line_out=mysqli_fetch_array($scanning_result_line_out))
 	{
-		$operation_line_out=$sql_row_out['operation_code'];
+		$operation_line_out=$sql_row_line_out['operation_code'];
 	}
 
 	echo '<input type="hidden" name="operation_code_routing" id="operation_code_routing" value="'.$operation_code_routing.'">';
