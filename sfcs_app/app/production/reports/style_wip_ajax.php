@@ -298,7 +298,7 @@ else
 		   	$color = $row_main['color'];
 		    $size = $row_main['size_title'];
 		    $size_code =  $row_main['size_id'];
-
+		    $cpk_main_qty = 0;
 
 		    $get_order_qty="select sum($asum_str) as order_qty from $bai_pro3.bai_orders_db_confirm where order_style_no='$style' and order_del_no='$schedule' and order_col_des='$color' ";
 				
