@@ -92,7 +92,8 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$available_qty=abs($sql_row['fca_fail']);
-	echo "<tr><td>".$sql_row['order_col_des']."</td><td>".$sql_row['size_code']."</td><td>".$sql_row['fca_fail']."</td><td><input type=\"text\" name=\"qty[$x]\" value=\"0\" onchange='if(this.value>$available_qty) { alert(\"Wrong Qty\"); this.value=0; } if(this.value<0) { alert(\"Wrong Qty\"); this.value=0; }'><input type=\"hidden\" name=\"size[$x]\" value=\"".$sql_row['size_code']."\">";
+	$size_val=ims_sizes('',$sql_row['order_del_no'],$sql_row['order_style_no'],$sql_row['order_col_des'],strtoupper($sql_row['size_code']),$link);
+	echo "<tr><td>".$sql_row['order_col_des']."</td><td>".$size_val."</td><td>".$sql_row['fca_fail']."</td><td><input type=\"text\" name=\"qty[$x]\" value=\"0\" onchange='if(this.value>$available_qty) { alert(\"Wrong Qty\"); this.value=0; } if(this.value<0) { alert(\"Wrong Qty\"); this.value=0; }'><input type=\"hidden\" name=\"size[$x]\" value=\"".$sql_row['size_code']."\">";
 	if($color=='0')
 	{
 		echo "<input type=\"hidden\" name=\"color_new[$x]\" value=\"".$sql_row['order_col_des']."\">";
