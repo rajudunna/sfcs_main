@@ -125,17 +125,20 @@ function check_color(){
 
 
 <?php
-
 if(isset($_POST['schedule']) or isset($_POST['filter']) or isset($_GET['schedule']))
 {
     if(isset($_POST['schedule'])){
 		$schedule=$_POST['schedule'];
 		$color= $_POST['color'];
 	}
-	if(isset($_GET['schedule'])){
+	if(!isset($_POST['filter'])){
 		$schedule=$_GET['schedule'];
 		$color = $_GET['color'];
 	}
+	// if(isset($_GET['schedule'])){
+	// 	$schedule=$_GET['schedule'];
+	// 	$color = $_GET['color'];
+	// }
 
 // echo " <br/> schedule=".$schedule;
 

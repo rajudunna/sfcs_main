@@ -938,7 +938,6 @@ else
 , SUM(IF(size=\"s49\" and tran_type=2,pcs,0)) as \"fail_s49\", SUM(IF(size=\"s50\" and tran_type=2,pcs,0)) as \"fail_s50\" from $bai_pro3.fca_audit_fail_db where style=\"$style_x\" and schedule=\"$schedule_x\" and color=\"$color_x\"";
 }
 
-	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -1126,7 +1125,7 @@ else
 	$ship_s49=0;
 	$ship_s50=0;
 
-
+	$tot_ship_qtys_tot =0;
 	if($color_x=='0'){
 		$sql="select * from $bai_pro3.ship_stat_log where ship_style=\"$style_x\" and ship_schedule=\"$schedule_x\" GROUP BY ship_color";
 	}
@@ -1250,7 +1249,7 @@ $url = getFullURL($_GET['r'],'reserve.php','N');
 						<th>Enter Ship Qty</th>
 					</tr>";
 $size_value=array();
-$x=0;$tot_pass_qty_new =0;
+$x=0;$tot_pass_qty_new =0;$tot_available_qty=0;
 for ($k=0; $k < sizeof($color_array); $k++) 
 {
 	for($i=0;$i<sizeof($order_qtys_new[$color_array[$k]]);$i++)
@@ -1272,12 +1271,17 @@ for ($k=0; $k < sizeof($color_array); $k++)
 			if($pass_qtys_new[trim($color_array[$k])][$i] > 0) 
 			{
 				 $pass_qty = $pass_qtys_new[trim($color_array[$k])][$i];
+				 // echo $pass_qty."qry1";
 			} elseif($pass_qtys_new[$color_array[$k]][$i] > 0)
 			{
 				 $pass_qty = $pass_qtys_new[$color_array[$k]][$i];
-			} 
+				 // echo $pass_qty."qry2";
+			} else
+			{
+				$pass_qty =0;
+			}
 
-			// var_dump($pass_qtys_new);
+			// var_dump($pass_qty,$order_qty);
 			if($pass_qty>$order_qty)
 			{
 				 $pass_qty=$order_qty;
@@ -1296,6 +1300,7 @@ for ($k=0; $k < sizeof($color_array); $k++)
 			}
 
 			// echo $pass_qty;
+			$available_qty =0;
 			$available_qty=$pass_qty-$ship_qty;
 			$tot_available_qty += $available_qty;
 			// $available_qty=$fg_qtys[$i]-$ship_qtys[$i];
@@ -1332,14 +1337,14 @@ for ($k=0; $k < sizeof($color_array); $k++)
 			}
 			if($color_x=='0')
 			{
-				echo "<input type='hidden' name='color_new' value='".$color_array[$k]."'>";
+				echo "<input type='hidden' name='color_new[$x]' value='".trim($color_array[$k])."'>";
 			}
 			$x++;
 			echo "</tr>";
 		}
 	}
 }
-if($tot_available_qty>0)
+if($tot_available_qty>=0)
 {
 	$tot_pass_qty_new = $tot_available_qty;
 }
@@ -1379,7 +1384,7 @@ if($x>0)
 	if($color_x!='0')
 	{
 		echo "<input type=\"hidden\" name=\"color_new\" value=\"$color_x\">";
-		echo "<input type=\"hidden\" name=\"color_new1\" value=\"$color_x\">";
+		echo "<input type=\"hidden\" name=\"color_new1\" value=\"0\">";
 	}
 	else
 	{
