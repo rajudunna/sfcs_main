@@ -2121,7 +2121,7 @@ tags will be replaced.-->
   <td class=xl11324082 style='border-top:none;border-left:none'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)" onkeypress="return isFloat(event)" type="text" class="textbox req_man"  id="shrink_l" name="shrink_l" value="'.$shrink_l.'" />';  } else { echo $shrink_l; } ?> </td>
   <td class=xl11424082 style='border-top:none;border-left:none'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)" onkeypress="return isFloat(event)" type="text" class="textbox req_man"  id="shrink_w" name="shrink_w" value="'.$shrink_w.'" />';  } else { echo $shrink_w; } ?> </td>
   <td colspan=2 class=xl11324082>Invoice</td>
-  <td colspan=4 class=xl11324082 style='border-right:1.0pt solid black'><?php echo $inv_no; ?></td>
+  <td class='scroll_number' colspan=4 class=xl11324082 style='border-right:1.0pt solid black'><?php echo $inv_no; ?></td>
  </tr>
  <tr height=21 style='mso-height-source:userset;height:15.75pt'>
   <td height=21 class=xl8224082 colspan=2 style='height:15.75pt'>Special  Instruction</td>
