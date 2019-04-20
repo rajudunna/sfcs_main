@@ -1,4 +1,4 @@
-﻿﻿<!--
+﻿<!--
 Date : 2014-01-18;
 Task : Added the automatic buyer division efficiency calculation code;
 User: kirang;
@@ -14,10 +14,10 @@ Ticket #516359.
 //service request #474467 /2014-12-24 / kirang / Modification on efficiency report for M&S styles (put MS instead of M&S)
  -->
  <?php 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-$view_access=user_acl("SFCS_0059",$username,1,$group_id_sfcs);
-$final_rep9 = getFullURL($_GET["r"],"final_rep9.php","N");
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+	$view_access=user_acl("SFCS_0059",$username,1,$group_id_sfcs);
+	$final_rep9 = getFullURL($_GET["r"],"final_rep9.php","N");
 
 ?>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/FileSaver.js',1,'R');?>"></script>
@@ -25,14 +25,14 @@ $final_rep9 = getFullURL($_GET["r"],"final_rep9.php","N");
 </style>
 
 <script>
-function verify(){
-	var from = document.getElementById('demo1').value;
-	var to = document.getElementById('demo2').value;
-	if( from > to){
-		sweetAlert('Start Date should be less than End Date','','warning');
-		return false;
+	function verify(){
+		var from = document.getElementById('demo1').value;
+		var to = document.getElementById('demo2').value;
+		if( from > to){
+			sweetAlert('Start Date should be less than End Date','','warning');
+			return false;
+		}
 	}
-}
 </script>
 <div class="panel panel-primary">
 	<div class="panel-heading">Daily Efficiency Report</div>	
@@ -2939,6 +2939,7 @@ if(isset($_POST['submit']))
 	$decimal_factor=2;
 	echo $table_temp;
 	$table.=$table_temp;
+
 	$x_sec=0;
 	$sec_temp=$_POST['section'];
 	// echo $sec_temp;
@@ -2975,6 +2976,7 @@ if(isset($_POST['submit']))
 
 // For Grand Eff Calculation
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'grand_Eff_for_daily.php',0,'R'));
+
 //to fasten system
 
 	$sql="truncate $bai_pro.grand_rep_temp";
@@ -3264,7 +3266,7 @@ if(isset($_POST['submit']))
 					$age_days=$age_days+1;
 				}
 
-				//echo $sql21."-".$styledb_no."-".$style_chk."<br>";
+		//echo $sql21."-".$styledb_no."-".$style_chk."<br>";
 
 			}while($rowsx !=0);
 
@@ -3310,7 +3312,21 @@ if(isset($_POST['submit']))
 					$absent_A_fix=$sql_rowA['absent_A'];
 				}
 
-				//---------------------------------------------------------------------------------need to paste
+				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $bai_pro.pro_attendance where module=$mod and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
+				$sql_resultB=mysqli_query($link, $sqlB) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_rowB=mysqli_fetch_array($sql_resultB))
+				{
+					
+					$table_temp="<td class=xl8726424>".($sql_rowB['avail_B']-$sql_rowB['absent_B'])."</td>";
+
+					echo $table_temp;
+					$table.=$table_temp;
+
+					$avail_B=$avail_B+$sql_rowB['avail_B'];
+					$avail_B_fix=$sql_rowB['avail_B'];
+					$absent_B=$absent_B+$sql_rowB['absent_B'];
+					$absent_B_fix=$sql_rowB['absent_B'];
+				}
 
 
 				$sql132="select act_hours as hrs from $bai_pro.pro_plan where mod_no=$mod and shift=\"A\" and date between \"$date\" and \"$edate\" ";
@@ -3519,7 +3535,7 @@ if(isset($_POST['submit']))
 					$affb=0;
 				}
 
-				//$table_temp="<td class=xl9326424>".round(($affb*100),0)."%--aa</td>";
+			//$table_temp="<td class=xl9326424>".round(($affb*100),0)."%--aa</td>";
 				$table_temp="<td class=xl9326424>".round(($sthb/$clhb)*100,0)."%</td>";
 				echo $table_temp;
 				$table.=$table_temp;
@@ -3594,8 +3610,8 @@ if(isset($_POST['submit']))
 					echo $table_temp;
 					$table.=$table_temp;
 				}
-				// Ticket #516359 /modify the Actual efficiency % (average) based on running shifts.
-				// Actual Eff % taken from Actual Clock hours.   
+			// Ticket #516359 /modify the Actual efficiency % (average) based on running shifts.
+			// Actual Eff % taken from Actual Clock hours.   
 				if(($clha+$clhb)>0)
 				{
 					if($act_hrsa+$act_hrsb != 0 && $avail_A_fix-$absent_A_fix != 0 && $avail_B_fix-$absent_B_fix != 0)
@@ -3626,6 +3642,7 @@ if(isset($_POST['submit']))
 
 				$totalmodules=$totalmodules+1;
 
+			}
 		}
 			/*****************************************************************************************************************/
 
