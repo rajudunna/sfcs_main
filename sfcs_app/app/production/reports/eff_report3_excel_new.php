@@ -3318,8 +3318,13 @@ if(isset($_POST['submit']))
 				{
 					
 					$table_temp="<td class=xl8726424>".($sql_rowB['avail_B']-$sql_rowB['absent_B'])."</td>";
+					echo $table_temp;
+					$table.=$table_temp;
 
-					//need to paste
+					$avail_B=$avail_B+$sql_rowB['avail_B'];
+					$avail_B_fix=$sql_rowB['avail_B'];
+					$absent_B=$absent_B+$sql_rowB['absent_B'];
+					$absent_B_fix=$sql_rowB['absent_B'];
 				}
 
 
