@@ -3312,6 +3312,7 @@ if(isset($_POST['submit']))
 					$absent_A_fix=$sql_rowA['absent_A'];
 				}
 
+<<<<<<< HEAD
 				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $bai_pro.pro_attendance where module=$mod and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
 				$sql_resultB=mysqli_query($link, $sqlB) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowB=mysqli_fetch_array($sql_resultB))
@@ -3333,6 +3334,9 @@ if(isset($_POST['submit']))
 
 				$absent_A=$absent_A+$sql_row2['absent_A'];
 				$absent_B=$absent_B+$sql_row2['absent_B'];
+=======
+				//---------------------------------------------------------------------------------need to paste
+>>>>>>> 1888-daily-efficiency-report-is-showing-wrong-details-fd-id-12257
 
 
 				$sql132="select act_hours as hrs from $bai_pro.pro_plan where mod_no=$mod and shift=\"A\" and date between \"$date\" and \"$edate\" ";
