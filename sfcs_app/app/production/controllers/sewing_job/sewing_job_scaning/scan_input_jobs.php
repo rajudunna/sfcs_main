@@ -60,7 +60,7 @@
 	//To Get Sewing Operations
 	$category = 'sewing';
 	$get_operations = "select operation_code from brandix_bts.tbl_orders_ops_ref where category='$category'";
-	echo $get_operations;
+	//echo $get_operations;
 	$operations_result_out=mysqli_query($link, $get_operations)or exit("get_operations_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row_out=mysqli_fetch_array($operations_result_out))
 	{
