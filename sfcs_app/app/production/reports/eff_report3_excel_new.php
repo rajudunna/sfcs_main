@@ -4060,7 +4060,6 @@ if(isset($_POST['submit']))
 			} 
 		}
 	echo "</table></div></div>";
-}
 ?>
 </div>
 <style>
