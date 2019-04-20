@@ -3310,21 +3310,7 @@ if(isset($_POST['submit']))
 					$absent_A_fix=$sql_rowA['absent_A'];
 				}
 
-				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $bai_pro.pro_attendance where module=$mod and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
-				$sql_resultB=mysqli_query($link, $sqlB) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_rowB=mysqli_fetch_array($sql_resultB))
-				{
-					
-					$table_temp="<td class=xl8726424>".($sql_rowB['avail_B']-$sql_rowB['absent_B'])."</td>";
-
-					echo $table_temp;
-					$table.=$table_temp;
-
-					$avail_B=$avail_B+$sql_rowB['avail_B'];
-					$avail_B_fix=$sql_rowB['avail_B'];
-					$absent_B=$absent_B+$sql_rowB['absent_B'];
-					$absent_B_fix=$sql_rowB['absent_B'];
-				}
+				//---------------------------------------------------------------------------------need to paste
 
 
 				$sql132="select act_hours as hrs from $bai_pro.pro_plan where mod_no=$mod and shift=\"A\" and date between \"$date\" and \"$edate\" ";
