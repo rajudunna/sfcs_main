@@ -51,54 +51,35 @@
 		$operation_code_routing=$sql_row['operation_code'];
 	}
 
-	// To get Output Operation
-    $application1='IMS_OUT';
-	$scanning_query_out=" select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application1'";
-	$scanning_result_out=mysqli_query($link, $scanning_query_out)or exit("scanning_out_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row_out=mysqli_fetch_array($scanning_result_out))
-	{
-		$operation_out_routing=$sql_row_out['operation_code'];
-	}
-
-	//To get Line Out Operation
-	$application2='IMS';
-	$scanning_query_line_out=" select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application2'";
-	//echo $scanning_query;
-	$scanning_result_line_out=mysqli_query($link, $scanning_query_line_out)or exit("scanning_out_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row_line_out=mysqli_fetch_array($scanning_result_line_out))
-	{
-		$operation_line_out=$sql_row_line_out['operation_code'];
-	}
 
 	echo '<input type="hidden" name="operation_code_routing" id="operation_code_routing" value="'.$operation_code_routing.'">';
 	echo '<input type="hidden" name="sewing_rejection" id="sewing_rejection" value="'.$sewing_rejection.'">';
 	echo '<input type="hidden" name="display_reporting_qty" id="display_reporting_qty" value="'.$display_reporting_qty.'">';
 	echo '<input type="hidden" name="line-in" id="line-in" value="'.$line_in.'">';
 
+	//To Get Sewing Operations
+	$category = 'sewing';
+	$get_operations = "select operation_code from brandix_bts.tbl_orders_ops_ref where category='$category'";
+	echo $get_operations;
+	$operations_result_out=mysqli_query($link, $get_operations)or exit("get_operations_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row_out=mysqli_fetch_array($operations_result_out))
+	{
+		$sewing_operations[]=$sql_row_out['operation_code'];
+	}
 
 
 
-$url = getFullURL($_GET['r'],'pre_input_job_scanning.php','N');
-//echo $operation_code;
+	$url = getFullURL($_GET['r'],'pre_input_job_scanning.php','N');
+	//echo $operation_code;
+	if(in_array($operation_code,$sewing_operations))
+	{
+	$form = "'G','P'";
+	}else
+	{
+		$form = "'P'";
+	}
 
-if($operation_code == $operation_code_routing)
-{
-  $form = "'P'";
-}
-else if($operation_code == $operation_out_routing)
-{
-    $form = "'G','P'";
-}
-else if($operation_code == $operation_line_out)
-{
-    $form = "'G','P'";
-}
-else if($operation_code > $operation_out_routing)
-{
-	$form = "'G'";
-}
-
-
+	
 $qery_rejection_resons = "select * from $bai_pro3.bai_qms_rejection_reason where form_type in ($form)";
 $result_rejections = $link->query($qery_rejection_resons);
 if(isset($_POST['flag_validation']))
