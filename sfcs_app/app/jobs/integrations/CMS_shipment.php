@@ -313,14 +313,17 @@ function isNumber($c)
 						if($flag==1)
 						{	
 							$vpo='';
-							$vpo_query="select VPO_NO from $m3_inputs.order_details where GMT_Color=\"$color\" and Schedule=\"$sch_no\" and Style=\"$style\"";
+							$customer_style='';
+							$vpo_query="select VPO_NO,Customer_Style_No from $m3_inputs.order_details where GMT_Color=\"$color\" and Schedule=\"$sch_no\" and Style=\"$style\"";
 							// echo $vpo_no."<br>";
 							$vpo_result=mysqli_query($link, $vpo_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row3=mysqli_fetch_array($vpo_result))
 							{		
 								$vpo=$sql_row3['VPO_NO'];
+								$customer_style=$sql_row3['Customer_Style_No'];
 							}
-							$sql31="update $bai_pro3.bai_orders_db set vpo=\"$vpo\", packing_method=\"$packing_method\",destination=\"$destination\", zfeature=\"$zfeature\", style_id=\"$style_id\",  order_style_no=\"$style\", order_del_no=\"$sch_no\", order_col_des=\"$color\", order_s_".$size[$size_ref]."=$order_qty,title_size_".$size[$size_ref]."=\"".trim($size_code)."\",order_date=\"$exfact_date\",title_flag=\"$flag\", order_po_no=\"$cpo\",co_no=\"$cpo\", order_div=\"$buyer_div\" where order_tid=\"$ssc_code\"";//co_no added on 2017-12-23
+							
+							$sql31="update $bai_pro3.bai_orders_db set vpo=\"$vpo\", packing_method=\"$packing_method\",destination=\"$destination\", zfeature=\"$zfeature\", style_id=\"$style_id\",  order_style_no=\"$style\", order_del_no=\"$sch_no\", order_col_des=\"$color\", order_s_".$size[$size_ref]."=$order_qty,title_size_".$size[$size_ref]."=\"".trim($size_code)."\",order_date=\"$exfact_date\",title_flag=\"$flag\", order_po_no=\"$cpo\",co_no=\"$cpo\", order_div=\"$buyer_div\",customer_style_no=\"$customer_style\" where order_tid=\"$ssc_code\"";//co_no added on 2017-12-23
 							echo $sql31."<br><br>";
 							mysqli_query($link, $sql31) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$size_ref=$size_ref+1;
