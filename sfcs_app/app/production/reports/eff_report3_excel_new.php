@@ -1,4 +1,4 @@
-﻿<!--
+﻿﻿<!--
 Date : 2014-01-18;
 Task : Added the automatic buyer division efficiency calculation code;
 User: kirang;
@@ -3282,14 +3282,13 @@ if(isset($_POST['submit']))
 				<td class=xl8526424 style='width:100px;word-wrap:break-word;'>$age_days</td>
 				<td class=xl8626424 style='width:100px;word-wrap:break-word;'>".$nop."</td>";
 				//$total_nop=$total_nop+$nop;
-				//echo $total_nop;
 				$age_days=0;
 				echo $table_temp;
 				$table.=$table_temp;
 
 
 				$operatorssum=$operatorssum+$nop;
-               // echo $operatorssum;
+
 				$date_range=array();
 				$sql2="select distinct date from $bai_pro.grand_rep where date between \"$date\" and \"$edate\"";
 				mysqli_query($link, $sql2) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3298,7 +3297,7 @@ if(isset($_POST['submit']))
 				{
 					$date_range[]=$sql_row2['date'];
 				}
-				$sqlA="select sum(present+jumper) as \"avail_A\",sum(absent) as \"absent_A\" from $bai_pro.pro_attendance where module=\"$mod\" and shift=\"A\" and  date in (\"".implode('","',$date_range)."\") ";
+				$sqlA="select sum(present+jumper) as \"avail_A\",sum(absent) as \"absent_A\" from $bai_pro.pro_attendance where module=$mod and shift=\"A\" and  date in (\"".implode('","',$date_range)."\")";
 				$sql_resultA=mysqli_query($link, $sqlA) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowA=mysqli_fetch_array($sql_resultA))
 				{
@@ -3306,13 +3305,14 @@ if(isset($_POST['submit']))
 
 					echo $table_temp;
 					$table.=$table_temp;
+
 					$avail_A=$avail_A+$sql_rowA['avail_A'];
 					$avail_A_fix=$sql_rowA['avail_A'];
 					$absent_A=$absent_A+$sql_rowA['absent_A'];
 					$absent_A_fix=$sql_rowA['absent_A'];
 				}
 
-				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $bai_pro.pro_attendance where module=\"$mod\" and shift=\"B\" and  date in (\"".implode('","',$date_range)."\") ";
+				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $bai_pro.pro_attendance where module=$mod and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
 				$sql_resultB=mysqli_query($link, $sqlB) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowB=mysqli_fetch_array($sql_resultB))
 				{
