@@ -166,27 +166,18 @@ $table_flag = false;
 			$input=array();
 			$output=array();
 			$j1=0;$j2=0;$j11=0;$j12=0;$output1=0;;$count=0;$temp=0;
-			$customer1=substr($style,0,1);
-			if($customer1=='P' or $customer1=='K')
+			//$customer1=substr($style,0,1);
+
+			$sq11="select order_div from $bai_pro3.bai_orders_db where order_tid='".$order_tid."'";
+			$result11=mysqli_query($link, $sq11) or die("sql error--11".$sq11.mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($result11)>0)
 			{
-				$customer='VS Pink';
+				while($row11=mysqli_fetch_array($result11))
+				{
+					$order_div=$row11["order_div"];
+				}
 			}
-			else if($customer1=='L' or $customer1=='O')
-			{
-				$customer='VS Logo';
-			}
-			else if($customer1=='U' or $customer1=='G')
-			{
-				$customer='Glamour';
-			}
-			else if($customer1=='M')
-			{
-				$customer='M&S';
-			}
-			else if($customer1=='Y')
-			{
-				$customer='LBI';
-			}
+
 			$sql2="select tid from $bai_pro3.cat_stat_log where order_tid='".$order_tid."' and category in ($in_categories)";
 			$result2=mysqli_query($link, $sql2) or die("sql error--2".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($result2)>0)
@@ -363,7 +354,7 @@ $table_flag = false;
 					$table_flag = true;
 					//	echo "<tr><td>".$customer."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$order_qty."</td><td>".$output."</td><td>".$status."</td><td>".$ex_factory."</td><td></td><td>".$section1_inp."</td><td>".$section1_out."</td><td>".$section2_inp."</td><td>".$section2_out."</td><td>".$section3_inp."</td><td>".$section3_out."</td><td>".$section4_inp."</td><td>".$section4_out."</td><td>".$act_cut_qty."--".$plan_act_qty."--".$input."--".$output."--".$fg."</td></tr>";		
 					// echo '<tr></tr>';
-					echo "<tr><td>".$customer."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$m3_qty."</td><td>".$output1."</td><td>".round($output1*100/div_by_zero($m3_qty),2)."%<td>".$status."</td><td>".$ex_factory."</td><td>".$ped."</td>";
+					echo "<tr><td>".$order_div."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$m3_qty."</td><td>".$output1."</td><td>".round($output1*100/div_by_zero($m3_qty),2)."%<td>".$status."</td><td>".$ex_factory."</td><td>".$ped."</td>";
 					for($j1=0;$j1<sizeof($input);$j1++)
 					{
 						echo "<td>".$input[$j1]."</td><td>".$output[$j1]."</td>";
