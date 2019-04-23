@@ -1,8 +1,8 @@
 <?php 
 
-$include_path=getenv('config_job_path');
-include($include_path.'\configuration\API\confr.php');
-$conf = new confr($include_path.'\configuration\API\saved_fields\fields.json');
+//$include_path=getenv('config_job_path');
+include('C:\xampp\htdocs\sfcs_main\configuration\API\confr.php');
+$conf = new confr('C:\xampp\htdocs\sfcs_main\configuration\API\saved_fields\fields.json');
 $mail_alert = [];
 for($i=1;$i<=20;$i++){
 	$mail_alert[$i-1]=$conf->get('mail'.$i);
@@ -104,7 +104,7 @@ $api_port_no = $conf->get('api-port');
 //Mo SOAP CALL
 $mo_soap_api = $conf->get('mo_soap_api');
 //Emp_status
-$Status = $conf->get('Status');
+$emp_active_status = $conf->get('emp_active_status');
 
 //REST API TimeOut
 $API_CALL_TIME_OUT = $conf->get('api_call_time_out');
