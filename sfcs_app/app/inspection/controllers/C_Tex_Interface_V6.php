@@ -1946,7 +1946,7 @@ tags will be replaced.-->
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;  border-top:none;width:60pt'>Color</td>
   <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php echo $item_desc; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Qty In (<?php echo $fab_uom; ?>)</td>
-  <td colspan=2 class=xl10324082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php echo $rec_qty; ?></td>
+  <td colspan=2 class=xl10324082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php echo round($rec_qty,2); ?></td>
   <td class=xl9424082 dir=LTR width=99 style='border-top:none;border-left:none;  width:74pt'>PTS/100 Sq.Yd.</td>
   <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;  width:109pt'><?php if(in_array($authorized,$has_permission)) { echo "<input onchange=\"change_head(1,this.name)\" type=\"text\" class=\"textbox float req_man\"  id=\"pts\" name=\"pts\" value='".$pts."' />"; } else { echo $pts; }?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Package</td>
