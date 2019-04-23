@@ -182,7 +182,30 @@
 				{
 					do
 					{
-						if($sample > 0)
+						if($diff_qty > 0)
+						{
+							if($diff_qty>$cut_quantity)
+							{
+								// echo "<tr><td>Excess</td><td>$cut_num</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$cut_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
+
+								$insertMiniOrderdata="INSERT INTO $bai_pro3.`tbl_docket_qty` (`cut_no`, `doc_no`, `size`, `plan_qty`, `fill_qty`, `type`,`pac_stat_input_id`, `color`, `ref_size`) VALUES ('$cut_num', '".$sql_row['docket_number']."', '$size_tit', '$cut_quantity', '','2','$pac_stat_input_id','$color','$size')";
+								// echo "0=".$insertMiniOrderdata."<br><br>";
+								$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$diff_qty=$diff_qty-$cut_quantity;
+								$cut_quantity=0;
+							}
+							else
+							{
+								// echo "<tr><td>Excess</td><td>$cut_num</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$diff_qty."</td><td>".$sql_row['docket_number']."</td></tr>";
+
+								$insertMiniOrderdata="INSERT INTO $bai_pro3.`tbl_docket_qty` (`cut_no`, `doc_no`, `size`, `plan_qty`, `fill_qty`, `type`,`pac_stat_input_id`, `color`, `ref_size`) VALUES ('$cut_num', '".$sql_row['docket_number']."', '$size_tit', '$diff_qty', '','2','$pac_stat_input_id','$color','$size')";
+								// echo "1=".$insertMiniOrderdata."<br><br>"; 
+								$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$cut_quantity=$cut_quantity-$diff_qty;
+								$diff_qty=0;								
+							}
+						}
+						else if($sample > 0)
 						{
 							if($sample>$cut_quantity)
 							{	
@@ -202,30 +225,7 @@
 								// echo "1=".$insertMiniOrderdata."<br><br>"; 
 								$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$cut_quantity=$cut_quantity-$sample;
-								$sample=0;							
-							}						
-						}
-						else if($diff_qty > 0)
-						{
-							if($diff_qty>$cut_quantity)
-							{	
-								 // echo "<tr><td>Excess</td><td>$cut_num</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$cut_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
-
-								$insertMiniOrderdata="INSERT INTO $bai_pro3.`tbl_docket_qty` (`cut_no`, `doc_no`, `size`, `plan_qty`, `fill_qty`, `type`,`pac_stat_input_id`, `color`, `ref_size`) VALUES ('$cut_num', '".$sql_row['docket_number']."', '$size_tit', '$cut_quantity', '','2','$pac_stat_input_id','$color','$size')";
-								// echo "0=".$insertMiniOrderdata."<br><br>";
-								$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-								$diff_qty=$diff_qty-$cut_quantity;
-								$cut_quantity=0;
-							}
-							else
-							{							
-								 // echo "<tr><td>Excess</td><td>$cut_num</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$diff_qty."</td><td>".$sql_row['docket_number']."</td></tr>";
-
-								$insertMiniOrderdata="INSERT INTO $bai_pro3.`tbl_docket_qty` (`cut_no`, `doc_no`, `size`, `plan_qty`, `fill_qty`, `type`,`pac_stat_input_id`, `color`, `ref_size`) VALUES ('$cut_num', '".$sql_row['docket_number']."', '$size_tit', '$diff_qty', '','2','$pac_stat_input_id','$color','$size')";
-								// echo "1=".$insertMiniOrderdata."<br><br>"; 
-								$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-								$cut_quantity=$cut_quantity-$diff_qty;
-								$diff_qty=0;
+								$sample=0;	
 								if($cut_quantity>0)
 								{
 									 // echo "<tr><td>Normal</td><td>$cut_num</td><td>".chr($color_code).leading_zeros($cut_num,3)."</td><td>".$color."</td><td>".$size_tit."</td><td>".$cut_quantity."</td><td>".$sql_row['docket_number']."</td></tr>";
@@ -234,7 +234,7 @@
 									// echo "N=".$insertMiniOrderdata."<br><br>";
 									$result3=mysqli_query($link, $insertMiniOrderdata) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 									$cut_quantity=0;
-								}
+								}						
 							}						
 						}
 						else

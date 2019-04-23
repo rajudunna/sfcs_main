@@ -67,15 +67,16 @@
                         
                         $joinSch=$schedule; 
                         //$sql2="select * from $bai_pro3.bai_orders_db_confirm where order_del_no = \"$joinSch\" "; 
-                        $sql2="select order_style_no,GROUP_CONCAT(DISTINCT order_col_des) AS order_col_des from $bai_pro3.bai_orders_db_confirm where order_del_no = \"$joinSch\" "; 
-                        
+                        $sql2="select order_style_no,order_col_des, order_tid from $bai_pro3.bai_orders_db_confirm where order_del_no = \"$joinSch\" "; 
                         $result2=mysqli_query($link, $sql2) or die("Error22 = ".mysqli_error($GLOBALS["___mysqli_ston"])); 
                         while($row=mysqli_fetch_array($result2)) 
                         { 
                             $disStyle=$row["order_style_no"]; 
-                            $disColor=$row["order_col_des"]; 
+                            $new_col[]=$row["order_col_des"];
+                            $new_order_tid[] =  $row["order_tid"];
                             
                         } 
+                        $disColor = implode(',',$new_col);
                     ?> 
 
                     <div style="float:left"> 
@@ -88,58 +89,56 @@
                     </div><br><br><br><br><br><br><br><br>
                     <?php 
                             //Getting sample details here  By SK-07-07-2018 == Start
-                            $sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$disStyle\" and order_del_no=\"$joinSch\" and order_col_des=\"$disColor\"";
-                            $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            while($sql_row=mysqli_fetch_array($sql_result))
+                            $sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id in (select id from brandix_bts.tbl_orders_master where product_schedule='$schedule')";
+                            // echo $sewing_jobratio_sizes_query.'<br>';
+                            $sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
+                            while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
                             {
-                                for($s=0;$s<sizeof($sizes_code);$s++)
-                                {
-                                    if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
-                                    {
-                                        $s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
-                                    }   
-                                }
+                                $ref_size = $sewing_jobratio_color_details['size'];
+                                $size_main = explode(",",$ref_size);
+                                // var_dump($size);
                             }
-                            $samples_qry="select * from $bai_pro3.sp_sample_order_db where order_tid='$order_tid' order by sizes_ref";
-                            $samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            $num_rows_samples = mysqli_num_rows($samples_qry_result);
-                            if($num_rows_samples >0){
-                                $samples_total = 0; 
-                                echo "<span><strong><u>Sample Quantites size wise:</u><strong></span><div class='row'>";
-                                echo "<div class='col-md-12'>";
-                                echo "<div class='table-responsive'>";                      
-                                echo "<table class='table table-bordered'>"; 
-                                echo "<tr><thead>";                     
-                                for($i=0;$i<sizeof($s_tit);$i++){
-                                    echo "<th align=\"center\">".$s_tit[$sizes_code[$i]]."</th>";
-                                }
-                                echo "<th align=\"center\">Total</th></thead></tr><tr>";
-                                while($samples_data=mysqli_fetch_array($samples_qry_result))
-                                {
-                                    $samples_total+=$samples_data['input_qty'];
-                                    $samples_size_arry[] =$samples_data['sizes_ref'];
-                                    $samples_input_qty_arry[] =$samples_data['input_qty'];
-                                }   
-                                for($s=0;$s<sizeof($s_tit);$s++)
-                                {
-                                    $size_code = 's'.$sizes_code[$s];
-                                    $flg = 0;
-                                    for($ss=0;$ss<sizeof($samples_size_arry);$ss++)
+                            $sizeofsizes=sizeof($size_main);
+                            $sample_qty = array();
+                            echo "<br>
+                            <span><strong><u>Sample Quantites size wise:</u><strong></span><div class='row'>
+							<div class='col-md-12 table-responsive'>
+								<table class=\"table table-bordered\">
+									<tr class=\"info\">
+										<th>Colors</th>";
+										for ($i=0; $i < sizeof($size_main); $i++)
+										{
+											echo "<th>$size_main[$i]</th>";
+										}	
+										echo "<th>Total</th>
+                                    </tr>";
+                                    for ($j=0; $j < sizeof($new_col); $j++)
                                     {
-                                        if($size_code == $samples_size_arry[$ss])
+                                        $tot_sample = 0;
+                                        echo "<tr>
+                                            <td>$new_col[$j]</td>";
+                                        for($kk=0;$kk<sizeof($size_main);$kk++)
                                         {
-                                            echo "<td class=\"sizes\">".$samples_input_qty_arry[$ss]."</td>";
-                                            $flg = 1;
-                                        }           
-                                    }   
-                                    if($flg == 0)
-                                    {
-                                        echo "<td class=\"sizes\"><strong>-</strong></td>";
+                                            $getpackqty="SELECT input_qty FROM bai_pro3.sp_sample_order_db 
+                                            WHERE order_tid = '".$new_order_tid[$j]."' AND size='$size_main[$kk]'";
+                                            $packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
+                                            if(mysqli_num_rows($packqtyrslt) > 0)
+                                            {
+                                                $pack_row=mysqli_fetch_array($packqtyrslt);
+                                                echo "<td>".$pack_row['input_qty']."</td>";
+                                                $tot_sample = $tot_sample + $pack_row['input_qty'];
+                                            }
+                                            else
+                                            {
+                                                echo "<td>0</td>";
+                                                $tot_sample = $tot_sample + 0;
+                                            }
+                                        }
+                                        echo "<td>$tot_sample</td>
+                                        </tr>";
                                     }
-                                }       
-                                echo "<td class=\"sizes\">".$samples_total."</td></tr></table></div></div></div>";
-                            }
-
+                                echo "</table>
+                            </div>";
                             ?>
 
                     <?php 
