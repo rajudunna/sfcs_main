@@ -105,7 +105,7 @@ $api_port_no = $conf->get('api-port');
 //Mo SOAP CALL
 $mo_soap_api = $conf->get('mo_soap_api');
 //Emp_status
-$emp_active_status_new = $conf->get('emp_active_status_new');
+$emp_active_status = $conf->get('emp_active_status');
 
 //Central Administraion Group ID's
 $group_id_sfcs=8;
