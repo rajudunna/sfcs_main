@@ -104,7 +104,7 @@ $api_port_no = $conf->get('api-port');
 //Mo SOAP CALL
 $mo_soap_api = $conf->get('mo_soap_api');
 //Emp_status
-$emp_active_status_new = $conf->get('emp_active_status_new');
+$emp_active_status = $conf->get('emp_active_status');
 
 //REST API TimeOut
 $API_CALL_TIME_OUT = $conf->get('api_call_time_out');
