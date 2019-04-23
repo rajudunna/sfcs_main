@@ -68,7 +68,7 @@ $sqly="select team,module, SUM(IF(attn_status='A',1,0)) as absent, SUM(IF(attn_s
 $sql_resulty=mysqli_query($link_hrms, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
 $sql11="update $bai_pro.pro_attendance set present='',absent='' where date=\"$date\"";
-	echo $sql11."<br/>";
+	//echo $sql11."<br/>";
 	mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	
 while($sql_row1=mysqli_fetch_array($sql_resulty)) 
