@@ -1457,6 +1457,15 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
+    .scroll_number{
+    /* border-left: none; */
+    max-width: 100px;
+    overflow: scroll;
+    /* text-overflow: ellipsis; */
+    white-space: nowrap;
+
+	}
+
 .xl12924082
 	{padding-top:1px;
 	padding-right:1px;
@@ -1927,7 +1936,7 @@ tags will be replaced.-->
   <td colspan=9 class=xl9324082 dir=LTR style='border-left:none;'><?php echo $buyer; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
   width:102pt'>Lot No</td>
-  <td colspan=4 class=xl10024082 style='border-right:1.0pt solid black;
+  <td class='scroll_number' colspan=4 class=xl10024082 style='border-right:1.0pt solid black;
   border-bottom:.5pt solid black;border-left:none'><?php echo $lot_ref_batch; ?></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
@@ -1982,7 +1991,7 @@ tags will be replaced.-->
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;
   border-top:none;width:60pt'>PO Number</td>
-  <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;
+  <td class='scroll_number' colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;
   width:98pt'><?php echo $po_no; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
   width:102pt'>Qty Inspected</td>
@@ -2089,7 +2098,7 @@ tags will be replaced.-->
   <td class=xl11324082 style='border-top:none;border-left:none'><?php echo $shrink_l; ?></td>
   <td class=xl11424082 style='border-top:none;border-left:none'><?php echo $shrink_w; ?></td>
   <td colspan=2 class=xl11324082>Invoice</td>
-  <td colspan=2 class=xl11324082 style='border-right:1.0pt solid black'><?php echo $inv_no; ?></td>
+  <td class='scroll_number' colspan=2 class=xl11324082 style='border-right:1.0pt solid black'><?php echo $inv_no; ?></td>
  </tr>
  
  
