@@ -1,8 +1,8 @@
 <?php 
 
-//$include_path=getenv('config_job_path');
-include('C:\xampp\htdocs\sfcs_main\configuration\API\confr.php');
-$conf = new confr('C:\xampp\htdocs\sfcs_main\configuration\API\saved_fields\fields.json');
+$include_path=getenv('config_job_path');
+include($include_path.'\configuration\API\confr.php');
+$conf = new confr($include_path.'\configuration\API\saved_fields\fields.json');
 $mail_alert = [];
 for($i=1;$i<=20;$i++){
 	$mail_alert[$i-1]=$conf->get('mail'.$i);
