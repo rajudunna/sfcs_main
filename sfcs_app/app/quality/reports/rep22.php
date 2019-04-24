@@ -329,7 +329,7 @@ background-position:center middle;
 				} 
 				
 				$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
-				$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row12=mysqli_fetch_array($result12))
 				{
 					$section_display_name=$sql_row12["section_display_name"];
@@ -371,7 +371,8 @@ background-position:center middle;
 				}
 				echo "</tr>";
 				
-				$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=".$sections[$i];
+				$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=".$section;
+				// echo $sql12;
 				$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row12=mysqli_fetch_array($result12))
 				{
