@@ -255,6 +255,7 @@ if(isset($_POST["submit"]))
 
                 if($row71 == 0 and $row72==0 and $row74==0) 
                 { 
+                    $docket_number[]=-1;
                     $sql33="select doc_no,acutno from $bai_pro3.plandoc_stat_log where order_tid='".$order_tid[$i]."'"; 
                     $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     while($sql_row33=mysqli_fetch_array($sql_result33)) 
