@@ -3,13 +3,28 @@
 if(isset($_POST['module_name']))
 {
 	$module=$_POST['module_name'];
-	$shifts=$_POST['shifts'];
-}	
+}		
+elseif(isset($_GET['module_name']))
+{
+	$module=$_GET['module_name'];
+}
 else
 {
 	$module=1;
+}
+
+if(isset($_POST['shifts']))
+{
+	$shifts=$_POST['shifts'];
+}	
+elseif(isset($_GET['shift']))
+{
+	$shifts=$_GET['shift'];
+
+}else{
 	$shifts=implode("','",$shifts_array);
 }
+
 
 ?>
 <head>
@@ -31,9 +46,11 @@ else
 
 setTimeout(function(){
 	    var module = document.getElementById('module').value; 
+	    var shifts = document.getElementById('shifts').value; 
+
         var originalURL = window.location.href;
 	    var alteredURL = originalURL.split('&');
-	    var url = alteredURL[0]+'&module_name='+module;
+	    var url = alteredURL[0]+'&module_name='+module+'&shift='+shifts;
 	    if(module){
 	        window.location.href = url;    
 	    }
@@ -65,8 +82,8 @@ $result = mysqli_query($link, $sql);
 ?>
 </select>
 &nbsp&nbsp
-<label for="module" class="mb-2 mr-sm-2">Shift: </label>
-	     		<select class='form-control' id='module' name='shifts' >
+<label for="shifts" class="mb-2 mr-sm-2">Shift: </label>
+	     		<select class='form-control' id='shifts' name='shifts' >
 				<?php if($shifts ==  $shift)
 					echo "<option value=".implode("','",$shifts_array)." selected>ALL</option>";
                     else
@@ -86,13 +103,28 @@ $result = mysqli_query($link, $sql);
 if(isset($_POST['module_name']))
 {
 	$module=$_POST['module_name'];
-	$shifts=$_POST['shifts'];
-}	
+}		
+elseif(isset($_GET['module_name']))
+{
+	$module=$_GET['module_name'];
+}
 else
 {
 	$module=1;
+}
+
+if(isset($_POST['shifts']))
+{
+	$shifts=$_POST['shifts'];
+}	
+elseif(isset($_GET['shift']))
+{
+	$shifts=$_GET['shift'];
+
+}else{
 	$shifts=implode("','",$shifts_array);
 }
+
 $date_check=date("Y-m-d");
 $sql1="select * from $bai_pro.pro_atten_hours where date='".$date_check."' and shift in ('".$shifts."') order by start_time";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));

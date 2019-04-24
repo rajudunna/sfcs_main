@@ -205,7 +205,7 @@ if(isset($_POST["submit"]))
     $schedule_id=0;
     $schedule_id=echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
     
-    $sql_s="select * from $bai_pro3.packing_summary_input where order_del_no ='$schedule'";
+    $sql_s="select * from $bai_pro3.packing_summary_input where order_del_no ='$schedule' and order_col_des ='$color'";
     $result_s=mysqli_query($link, $sql_s) or die("Error=s".mysqli_error($GLOBALS["___mysqli_ston"])); 
     $mini_orders = mysqli_num_rows($result_s);
     if($mini_orders>0) 
