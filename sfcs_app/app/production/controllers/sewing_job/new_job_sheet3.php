@@ -5509,6 +5509,7 @@ $hourly_sewing_out_count = "SELECT * FROM $bai_pro3.`tbl_plant_timings`";
         {
             $color_code = $rowxs123["color_code"];
         }
+        
         // echo $color_code;
         $cut_new = chr($color_code).leading_zeros($rowxs["acutno"], 3);
          echo "<tr class=xl10632351 height=48 style='mso-height-source:userset;height:36.0pt'> 
