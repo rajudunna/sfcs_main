@@ -2,6 +2,8 @@
 <html>
 <head>
 	<script type="text/javascript" src="sfcs_app/common/js/tablefilter.js" ></script>
+	<script type="text/javascript" src="sfcs_app/common/js/table2CSV.js" ></script>
+
 	<title>Style WIP Report</title>
 	<?php
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
@@ -30,7 +32,7 @@
 			<div class="panel-heading">Style WIP Report</div>
 			<div class="panel-body">
 				<div class='row'>
-					<div class="form-inline col-sm-10">
+					<div class="form-inline col-sm-12">
 
 						<label><font size="2">Style: </font></label>
 						<select  name="style" class="form-control" id="style">
@@ -54,6 +56,7 @@
 			            <label class="checkbox-inline">Size</label>
 	               
 					<input type="button"  class="btn btn-success" value="Submit" onclick="getdata()"> 
+					<input id="excel" type="button"  class="btn btn-success" value="Export To Excel" onclick="getCSVData()" style="display:none"> 
 						<div class="ajax-loader" id="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px; display:none">
 						    <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
 					    </div>
@@ -61,7 +64,7 @@
 				</div>
 				
 				<div  class='panel panel-primary' id="dynamic_table1" hidden='true'>
-						<div class='panel-heading'>Styles Report</div>
+						<div class='panel-heading'><b>Style Wip Report </b></div>
 						<div style='overflow-y:scroll' class='panel-body' id="dynamic_table">
 							
 						</div>
@@ -90,6 +93,7 @@
 			},
 			error: function(response){
 				$('#loading-image').hide();	
+				$('#excel').hide();
 				// alert('failure');
 				// console.log(response);
 				swal('Error in getting style');
@@ -101,6 +105,7 @@
 
 
     $('#style').change(function(){
+    	$('#excel').hide();
         $('#schedule option').remove();
         $('#color option').remove();
         var style = $(this).val();
@@ -128,6 +133,7 @@
     });
 
     $('#schedule').change(function(){
+    	$('#excel').hide();
         $('#color option').remove();
         var schedule = $('#schedule').val();
         var style = $('#style').val();
@@ -183,10 +189,35 @@
 					//getexcel();
 					// $('#dynamic_table').innerHTML = response ;
 					$('#loading-image').hide();
+					$('#excel').show();
+					// $('#noExport').hide();
 				}
 
 		});
 	  }
+
+	 
+
+function getCSVData() {
+  $('table').attr('border', '1');
+  $('table').removeClass('table-bordered');
+  var uri = 'data:application/vnd.ms-excel;base64,'
+    , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+    , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+    , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+  
+    var table = document.getElementById('dynamic_table1').innerHTML;
+    // $('thead').css({"background-color": "blue"});
+    var ctx = {worksheet: name || 'Style WIP Report', table : table}
+    //window.location.href = uri + base64(format(template, ctx))
+    var link = document.createElement("a");
+    link.download = "Style WIP Report.xls";
+    link.href = uri + base64(format(template, ctx));
+    link.click();
+    $('table').attr('border', '0');
+    $('table').addClass('table-bordered');
+}
+
 	
 </script>
 

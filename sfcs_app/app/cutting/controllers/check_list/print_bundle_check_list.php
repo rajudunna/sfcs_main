@@ -821,7 +821,7 @@
 									<td class=xl646065>Bundle<br>Location</td>
 									<td colspan=7 class=xl746065 style='border-right:.5pt solid black;border-left:none'>Bundle Numbers - Bundle Quantity</td>
 								</tr>";
-								$sql123="SELECT order_col_des,size_code, SUM(carton_act_qty) AS qty, COUNT(*) AS bundle_count,GROUP_CONCAT(tid, '-', carton_act_qty) AS bundle_nos 
+								$sql123="SELECT order_col_des,size_code, SUM(carton_act_qty) AS qty, COUNT(*) AS bundle_count,GROUP_CONCAT(tid, '-', carton_act_qty ORDER BY tid) AS bundle_nos 
 									FROM bai_pro3.`packing_summary_input` WHERE input_job_no_random='".$value."' and doc_no = '".$doc_no."' GROUP BY order_col_des,size_code;";
 								// echo $sql123;
 								$sql_result123=mysqli_query($link, $sql123) or exit("Error while fetching details for the selected style and schedule");

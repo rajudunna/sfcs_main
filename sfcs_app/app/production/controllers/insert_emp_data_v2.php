@@ -16,25 +16,35 @@ if($count == 0){
 	$sql2="update $bai_pro.pro_atten_hours set start_time='".$shift_start_time."',end_time='".$shift_end_time."' where date='".$date."' and shift='".$shift."' ";
 	mysqli_query($link, $sql2) or exit("Sql Errorc $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
-
-for($i=0;$i<sizeof($mod_names);$i++)
+$modules_array = array();	$modules_id_array=array();
+$get_modules = "SELECT DISTINCT module_name, id FROM $bai_pro3.`module_master` where status='Active' ORDER BY module_name*1;";
+$modules_result=mysqli_query($link, $get_modules) or exit ("Error while fetching modules: $get_modules");
+while($module_row=mysqli_fetch_array($modules_result))
 {
-	// echo $i."--present---".$_POST['pra'.$i]."<br>";
-	// echo $i."--Absent---".$_POST['aba'.$i]."<br>";
-	// $attenid=$date."-".$mod_names[$i];
-	$sqla="Select * from $bai_pro.pro_attendance where date=\"$date\" and module=\"$mod_names[$i]\" and shift='".$shift."'";
+	$modules_array[]=$module_row['module_name'];
+	$modules_id_array[$module_row['module_name']]=$module_row['id'];
+}
+
+for($i=0;$i<sizeof($modules_array);$i++)
+{
+	$pra_id = 'pra'.$modules_id_array[$modules_array[$i]];
+	$aba_id = 'aba'.$modules_id_array[$modules_array[$i]];
+	// echo $i."--present---".$_POST[$pra_id]."<br>";
+	// echo $i."--Absent---".$_POST[$aba_id]."<br>";
+	// $attenid=$date."-".$modules_array[$i];
+	$sqla="Select * from $bai_pro.pro_attendance where date=\"$date\" and module=\"$modules_array[$i]\" and shift='".$shift."'";
 	// echo $sqla."</br>";
 	$sqlresa=mysqli_query($link, $sqla) or exit("Sql Errord $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sqlresa)==0)
 	{
-		$sql1="INSERT INTO $bai_pro.pro_attendance (date,module,shift) VALUES ('".$date."','$mod_names[$i]','".$shift."')";
+		$sql1="INSERT INTO $bai_pro.pro_attendance (date,module,shift) VALUES ('".$date."','$modules_array[$i]','".$shift."')";
 		// echo $sql1."</br>";
 		mysqli_query($link, $sql1) or exit("Sql Errore $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql23="update $bai_pro.pro_attendance set present='".$_POST['pra'.$i]."',absent='".$_POST['aba'.$i]."' where date='".$date."' and module='$mod_names[$i]' and shift='".$shift."'";
+		$sql23="update $bai_pro.pro_attendance set present='".$_POST[$pra_id]."',absent='".$_POST[$aba_id]."' where date='".$date."' and module='$modules_array[$i]' and shift='".$shift."'";
 		// echo $sql23."</br>";
 		mysqli_query($link, $sql23) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}else{
-		$sql22="update $bai_pro.pro_attendance set present='".$_POST['pra'.$i]."',absent='".$_POST['aba'.$i]."' where date='".$date."' and module='$mod_names[$i]' and shift='".$shift."'";
+		$sql22="update $bai_pro.pro_attendance set present='".$_POST[$pra_id]."',absent='".$_POST[$aba_id]."' where date='".$date."' and module='$modules_array[$i]' and shift='".$shift."'";
 		// echo $sql22."</br>";
 		mysqli_query($link, $sql22) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}

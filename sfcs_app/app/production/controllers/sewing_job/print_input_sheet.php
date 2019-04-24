@@ -212,19 +212,19 @@
 								$acutno_ref=$sql_row1["acutno"];
 
 								//$sql2d="select group_concat(distinct destination) as dest from plandoc_stat_log where doc_no in (".$doc_nos_des.") and acutno='".$acutno_ref."'";
-								$sql2d="select group_concat(distinct destination) as dest from $bai_pro3.pac_stat_log_input_job where doc_no in (".$doc_nos_des.") and pac_seq_no=$seq_no";
-								$result2d=mysqli_query($link, $sql2d) or die("Error888-".$sql2d."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-								while($sql_row2d=mysqli_fetch_array($result2d))
-								{
-									$destination=$sql_row2d["dest"];
-								}
+								// $sql2d="select group_concat(distinct destination) as dest from $bai_pro3.pac_stat_log_input_job where doc_no in (".$doc_nos_des.") and pac_seq_no=$seq_no";
+								// $result2d=mysqli_query($link, $sql2d) or die("Error888-".$sql2d."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+								// while($sql_row2d=mysqli_fetch_array($result2d))
+								// {
+								// 	$destination=$sql_row2d["dest"];
+								// }
 
 								$sql2="select group_concat(distinct trim(destination)) as dest,order_style_no as style,GROUP_CONCAT(DISTINCT order_col_des separator '<br/>') as color,order_po_no as cpo,order_date,vpo from $bai_pro3.bai_orders_db where $order_joins_not_in and order_del_no in (".$sql_row1["del_no"].")";
 								// echo $sql2;
 								$result2=mysqli_query($link, $sql2) or die("Error-".$sql2."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row2=mysqli_fetch_array($result2))
 								{
-									//$destination=$sql_row2["dest"];
+									$destination=$sql_row2["dest"];
 									$color=$sql_row2["color"];
 									$style=$sql_row2["style"];
 									$po=$sql_row2["cpo"];
