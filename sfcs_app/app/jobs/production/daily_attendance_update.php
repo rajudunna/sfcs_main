@@ -22,7 +22,7 @@ while($row=mysqli_fetch_array($result))
 $emp_lists=implode(",",$emp_list); 
 
 $sql="SELECT team,module, SUM(IF(attn_status='A',1,0)) AS absent, SUM(IF(attn_status='P',1,0)) AS present FROM $database1.$month WHERE emp_id IN ($emp_lists) AND DATE=\"".$date."\" AND $database1.$month.emp_w_status in (".$emp_active_status.") AND module>0 GROUP BY module,team ORDER BY module+0" ;
-//echo $sql;
+echo $sql;
 
  
 $sql_result=mysqli_query($link_hrms, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
