@@ -100,7 +100,7 @@
 ?>
                 <br/>
                 <table class="<?= $_GET['excel'] ?? "table table-bordered" ?>" id='table2'>
-                    <thead><tr class="info"><th>ID</th><th>Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Mo Number</th><th>Job Number</th><th>Module</th><th>Operation Code</th><th>M3 Operation Code</th><th>Operation Name</th><th>Workstation Id</th><th>Rejection Reason</th><th>User</th><th>Quantity</th><th>Status</th><th>API Type</th>
+                    <thead><tr class="info"><th>ID</th><th>Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Mo Number</th><th>Job Number</th><th>Module</th><th>SFCS Operation Code</th><th>M3 Operation Code</th><th>Operation Name</th><th>Workstation Id</th><th>Rejection Reason</th><th>User</th><th>Quantity</th><th>Status</th><th>API Type</th>
                     <th>Failed Count</th></tr>
                     </thead>
                     
@@ -179,3 +179,5 @@ $('#reset_table2').addClass('btn btn-warning btn-xs');
     } 
     
     ?>
+
+
