@@ -79,7 +79,10 @@
                                         {
                                             echo "<th>Bundle Barcode<br>With Operation</th>";
                                             echo "<th>Bundle Barcode</th>";
+                                            echo "<th>Bundle Barcode(2*1)<br>with operation</th>";
+                                            echo "<th>Bundle Barcode(2*1)<br>with out operation</th>";
                                         }
+
                                         //echo "<th>TID</th>";
                                         //echo "<th>Doc# Ref</th>";
 
@@ -173,16 +176,24 @@
                                                 if ($print_btn_color == 'danger')
                                                 {
                                                     echo '<td><span class="badge progress-bar-danger">Printing Done</span></td>
+                                                            <td><span class="badge progress-bar-danger">Printing Done</span></td>
+                                                            <td><span class="badge progress-bar-danger">Printing Done</span></td>
                                                             <td><span class="badge progress-bar-danger">Printing Done</span></td>';
                                                 }
                                                 else
                                                 {
                                                     $url5 = getFullURLLevel($_GET['r'],'barcode_new.php',0,'R');
                                                     $url6 = getFullURLLevel($_GET['r'],'barcode_without_operation.php',0,'R');
+                                                    $url7 = getFullURLLevel($_GET['r'],'barcode_new_2_1.php',0,'R');
+                                                    $url8 = getFullURLLevel($_GET['r'],'barcode_without_operation2_2.php',0,'R');
 
                                                     echo "<td><a class='btn btn-".$print_btn_color." btn-sm' href='$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
                                                     
                                                     echo "<td><a class='btn btn-".$print_btn_color." btn-sm' href='$url6?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url6?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
+                                                    echo "<td><a class='btn btn-".$print_btn_color." btn-sm' href='$url7?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
+                                                    
+                                                    echo "<td><a class='btn btn-".$print_btn_color." btn-sm' href='$url8?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url6?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
+
                                                 }
                                             }
                                             echo"</tr>";
@@ -273,6 +284,8 @@
                                     {
                                         echo "<th>Bundle Barcode<br>With Operation</th>";
                                         echo "<th>Bundle Barcode</th>";
+                                        echo "<th>Bundle Barcode(2*1)<br>with operation</th>";
+                                        echo "<th>Bundle Barcode(2*1)<br>with out operation</th>";
                                     }
                                     //echo "<th>TID</th>";
                                     //echo "<th>Doc# Ref</th>";
@@ -367,17 +380,26 @@
                                             if ($print_btn_color == 'danger')
                                             {
                                                 echo '<td><span class="badge progress-bar-danger">Printing Done</span></td>
+                                                        <td><span class="badge progress-bar-danger">Printing Done</span></td>
+                                                        <td><span class="badge progress-bar-danger">Printing Done</span></td>
                                                         <td><span class="badge progress-bar-danger">Printing Done</span></td>';
                                             }
                                             else
                                             {
                                                 $url5 = getFullURLLevel($_GET['r'],'barcode_new.php',0,'R');
                                                 $url6 = getFullURLLevel($_GET['r'],'barcode_without_operation.php',0,'R');
+                                                $url7 = getFullURLLevel($_GET['r'],'barcode_new_2_1.php',0,'R');
+                                                $url8 = getFullURLLevel($_GET['r'],'barcode_without_operation2_2.php',0,'R');
 
                                                 echo "<td><a class='btn btn-".$print_btn_color." btn-sm' href='$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
                                                 
                                                 echo "<td><a class='btn btn-".$print_btn_color." btn-sm' href='$url6?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url6?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
+                                                echo "<td><a class='btn btn-".$print_btn_color." btn-sm' href='$url7?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
+                                                
+                                                echo "<td><a class='btn btn-".$print_btn_color." btn-sm' href='$url8?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url6?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
+
                                             }
+
                                         }
                                         echo"</tr>";
                                     }
