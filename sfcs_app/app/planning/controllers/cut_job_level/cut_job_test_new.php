@@ -104,7 +104,7 @@ echo "<div class='row'>";
 	echo "</select></div>";
 	echo "<div class='col-sm-3'><label>Select Color: </label>"; 
 	// $sql="select GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,max(plan_module),order_col_des from order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing>0 group by clubbing union select DISTINCT order_col_des,plan_module,order_col_des AS disp from $bai_pro3.order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing=0 group by clubbing,order_col_des";
-	$sql="SELECT GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,order_col_des FROM bai_pro3.`bai_orders_db_confirm` LEFT JOIN bai_pro3.`plandoc_stat_log` ON bai_orders_db_confirm.`order_tid`=plandoc_stat_log.`order_tid` WHERE order_style_no=\"$style\" AND order_del_no=\"$schedule\" AND ( $order_joins_in_full OR remarks='Recut') group by order_col_des";
+	$sql="SELECT GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,order_col_des FROM bai_pro3.bai_orders_db_confirm LEFT JOIN bai_pro3.plandoc_stat_log ON bai_orders_db_confirm.order_tid=plandoc_stat_log.order_tid WHERE order_style_no=\"$style\" AND order_del_no=\"$schedule\" AND ( $order_joins_in_full OR remarks='Recut') group by order_col_des";
 	// echo $sql;
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	echo "<select name=\"color\" onchange=\"thirdbox();\" class='form-control' >
@@ -126,7 +126,10 @@ echo "<div class='row'>";
 	if ($check_status < 3 )
 	{
 		$code=""; 
-		$sql="select doc_no,color_code,acutno,act_cut_status,cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" and doc_no not in (select doc_no from  $bai_pro3.cutting_table_plan) and ( act_cut_status='') order by doc_no"; 
+		//$sql="select doc_no,color_code,acutno,act_cut_status,cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" and doc_no not in (select doc_no from  $bai_pro3.cutting_table_plan) and ( act_cut_status='') order by doc_no"; 
+		$sql="SELECT psl.doc_no,bodc.color_code,psl.acutno,psl.act_cut_status,psl.cat_ref,psl.remarks FROM bai_pro3.plandoc_stat_log AS psl, bai_pro3.bai_orders_db_confirm AS bodc,bai_pro3.cat_stat_log AS csl WHERE bodc.order_style_no=\"$style\" and bodc.order_del_no=\"$schedule\" and bodc.order_col_des=\"$color\" AND psl.order_tid=bodc.order_tid AND csl.order_tid = bodc.order_tid AND csl.order_tid=psl.order_tid AND csl.category IN ('Body','Front') AND doc_no NOT IN (SELECT doc_no FROM bai_pro3.cutting_table_plan) AND ( psl.act_cut_status='') AND psl.remarks='Normal' 
+			UNION 
+			SELECT psl.doc_no,bodc.color_code,psl.acutno,psl.act_cut_status,psl.cat_ref,psl.remarks FROM bai_pro3.plandoc_stat_log AS psl, bai_pro3.bai_orders_db_confirm AS bodc,bai_pro3.cat_stat_log AS csl WHERE bodc.order_style_no=\"$style\" and bodc.order_del_no=\"$schedule\" and bodc.order_col_des=\"$color\" AND psl.order_tid=bodc.order_tid AND csl.order_tid = bodc.order_tid AND csl.order_tid=psl.order_tid AND doc_no NOT IN (SELECT doc_no FROM bai_pro3.cutting_table_plan) AND ( psl.act_cut_status='') AND psl.remarks='Recut'";
 		$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row=mysqli_fetch_array($sql_result)) 
 		{ 

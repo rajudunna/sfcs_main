@@ -9,7 +9,7 @@ if(isset($_GET['recut_id']))
 }
 function getReCutDetails($recut_id)
 {
-    include("../../../../common/config/config_ajax.php");
+        include("../../../../common/config/config_ajax.php");
     $html = '';
     $get_details_qry = "SELECT DISTINCT category FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
     ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id order by rc.`operation_id`";
@@ -106,7 +106,7 @@ function RecutProcess($recut_id_edit)
     while($sql_row=mysqli_fetch_array($sql_result))
     {
         $cat = $sql_row['category'];
-        $categories .= "<input type='hidden' name='cat[]' value='$cat'>";
+        $categories .= "<b>$cat</b>"."<input type='checkbox' name='cat[]' value='$cat' onclick='checks()'>";
     }
     $html .= $categories;
     $get_details_qry = "SELECT DISTINCT category FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
@@ -193,7 +193,7 @@ function RecutProcess($recut_id_edit)
     }
     $html .= "<input type='hidden' id='total_rows' value='$s_no'>";
     echo $html;
-
+    
 }
 if(isset($_GET['replace_id_edit']))
 {
