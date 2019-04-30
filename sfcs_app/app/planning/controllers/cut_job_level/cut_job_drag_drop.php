@@ -782,8 +782,8 @@
                                                      $doc_no= "''";
                                                     }
 												    
-													$sql1="select act_cut_status,act_cut_issue_status,doc_no,order_style_no,order_del_no,order_col_des,acutno,color_code from $bai_pro3.plan_doc_summ where doc_no  in ($doc_no) and act_cut_status<>\"DONE\""; 
-
+													 // $sql1="select act_cut_status,act_cut_issue_status,doc_no,order_style_no,order_del_no,order_col_des,acutno,color_code from $bai_pro3.plan_doc_summ where doc_no  in ($doc_no) and act_cut_status<>\"DONE\""; 
+													$sql1="SELECT act_cut_status,act_cut_issue_status,doc_no,order_style_no,order_del_no,order_col_des,acutno,color_code FROM bai_pro3.plandoc_stat_log AS psl,bai_pro3.`bai_orders_db_confirm` AS bodc WHERE psl.doc_no  IN ($doc_no)  AND psl.`order_tid`=bodc.order_tid AND psl.act_cut_status<>\"DONE\"";
 													$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error7".mysql_error());
 													$sql_num_check=mysqli_num_rows($sql_result1);
 													while($sql_row1=mysqli_fetch_array($sql_result1))
