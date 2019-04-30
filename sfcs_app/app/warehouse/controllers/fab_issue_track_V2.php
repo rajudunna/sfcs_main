@@ -298,7 +298,7 @@ if(isset($_POST["submit"]) or $flag==1)
 					}
 				}else
 				{
-					$sql="select doc_no,material_req,order_tid,order_del_no,,fabric_status from $bai_pro3.order_cat_recut_doc_mk_mix where doc_no=\"".$docket."\"";
+					$sql="select doc_no,material_req,order_tid,order_del_no,fabric_status from $bai_pro3.order_cat_recut_doc_mk_mix where doc_no=\"".$docket."\"";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row=mysqli_fetch_array($sql_result))
 					{
