@@ -392,7 +392,7 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
                           //We have no recut dockets for clubbing
                           $remarks = '';
                           $is_recut_query = "SELECT remarks,acutno from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
-                          echo $is_recut_query."<br>";
+                          // echo $is_recut_query."<br>";
                           $is_recut_result = mysqli_query($link,$is_recut_query);
                           while($row_rem = mysqli_fetch_array($is_recut_result))
                           {
