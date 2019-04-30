@@ -142,7 +142,7 @@
 				//$display1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 				
 				$html.= '<div>
-							<table width="98%" style="font-size:6px;">
+							<table width="98%" style="font-size:4px;">
 								<tr>
 									<td colspan=3>'.str_replace(' ','',$barcode_rslt['order_style_no']).'/'.$schedule.'/'.substr(str_replace(' ','',$operations),0,18).' - '.$opscode.'</td>
 								</tr>
