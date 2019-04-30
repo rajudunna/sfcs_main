@@ -404,7 +404,6 @@
                                             echo"</td>";
                                             if($scanning_methods=='Bundle Level')
                                             {
-                                                
                                                 if ($print_btn_color == 'danger')
                                                 {
                                                     echo '<td><span class="badge progress-bar-danger">Printing Done</span></td>
@@ -428,7 +427,6 @@
                                                 }
                                             }
                                             echo"</tr>";
-                                        echo"</td>";
                                         }
                                         ?>
                                     </table>
