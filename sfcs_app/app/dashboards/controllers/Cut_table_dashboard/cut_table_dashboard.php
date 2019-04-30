@@ -774,10 +774,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
    
   // start style wise display by dharani 10-26-2013 
   //$sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).")) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")";
-  $sql1="SELECT c.print_status,c.plan_lot_ref,c.bundle_location,c.fabric_status_new,c.doc_no,
-  c.cutting_tbl_id,c.priority,c.act_cut_status,c.rm_date,c.cut_inp_temp,c.order_tid,c.fabric_status,
-  c.color_code,c.clubbing,c.order_style_no,c.order_div,c.order_col_des,c.acutno,c.ft_status,c.st_status,c.pt_status,
-  c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,f.doc_ref,f.req_time,c.remarks FROM bai_pro3.cut_tbl_dash_doc_summ c  LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN (".implode(",",$doc_no_ref).") and c.act_cut_status<>'DONE' AND c.fabric_status_new !='5' order by f.req_time asc";
+  // $sql1="SELECT c.print_status,c.plan_lot_ref,c.bundle_location,c.fabric_status_new,c.doc_no,
+  // c.cutting_tbl_id,c.priority,c.act_cut_status,c.rm_date,c.cut_inp_temp,c.order_tid,c.fabric_status,
+  // c.color_code,c.clubbing,c.order_style_no,c.order_div,c.order_col_des,c.acutno,c.ft_status,c.st_status,c.pt_status,
+  // c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,f.doc_ref,f.req_time,c.remarks FROM bai_pro3.cut_tbl_dash_doc_summ c  LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN (".implode(",",$doc_no_ref).") and c.act_cut_status<>'DONE' AND c.fabric_status_new !='5' order by f.req_time asc";
+  $sql1="SELECT c.print_status,c.plan_lot_ref,c.pcutdocid as bundle_location,c.fabric_status as fabric_status_new,c.doc_no, ctp.cutting_tbl_id,ctp.priority,c.act_cut_status,c.rm_date,c.cut_inp_temp,c.order_tid, bodc.color_code,csl.clubbing,bodc.order_style_no,bodc.order_div,bodc.order_col_des,c.acutno,bodc.ft_status,bodc.st_status,bodc.pt_status, bodc.trim_status,c.act_movement_status,bodc.order_del_no,ctp.log_time,c.cat_ref,f.doc_ref,f.req_time,c.remarks,(IF(((bodc.`order_embl_a` + bodc.`order_embl_b`) > 0),1,0) + IF(((bodc.`order_embl_e` + bodc.`order_embl_f`) > 0),2,0)) AS `emb_stat1` FROM bai_pro3.bai_orders_db_confirm AS bodc,bai_pro3.cat_stat_log AS csl,`bai_pro3`.`cutting_table_plan` ctp,bai_pro3.plandoc_stat_log AS c LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN (".implode(",",$doc_no_ref).") AND ctp.`doc_no` = c.`doc_no` AND bodc.`order_tid` = c.`order_tid` AND csl.`tid` = c.`cat_ref` AND c.act_cut_status<>'DONE' AND c.fabric_status !='5' ORDER BY f.req_time ASC";
   
       //echo $_GET["view_div"];
       if($_GET["view_div"] == 'M')
@@ -789,11 +790,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
        if($_GET["view_div"]=="ALL" or $_GET["view_div"]=="")
       {
        // $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).")) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")";
-       $sql1="SELECT c.print_status,c.plan_lot_ref,c.bundle_location,c.fabric_status_new,c.doc_no,
-       c.cutting_tbl_id,c.priority,c.act_cut_status,c.rm_date,c.cut_inp_temp,c.order_tid,c.fabric_status,
-       c.color_code,c.clubbing,c.order_style_no,c.order_div,c.order_col_des,c.acutno,c.ft_status,c.st_status,c.pt_status,
-       c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,f.doc_ref,f.req_time,c.remarks FROM bai_pro3.cut_tbl_dash_doc_summ c  LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN (".implode(",",$doc_no_ref).") and c.act_cut_status<>'DONE' AND c.fabric_status_new !='5' order by f.req_time asc";
-
+       // $sql1="SELECT c.print_status,c.plan_lot_ref,c.bundle_location,c.fabric_status_new,c.doc_no,
+       // c.cutting_tbl_id,c.priority,c.act_cut_status,c.rm_date,c.cut_inp_temp,c.order_tid,c.fabric_status,
+       // c.color_code,c.clubbing,c.order_style_no,c.order_div,c.order_col_des,c.acutno,c.ft_status,c.st_status,c.pt_status,
+       // c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,f.doc_ref,f.req_time,c.remarks FROM bai_pro3.cut_tbl_dash_doc_summ c  LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN (".implode(",",$doc_no_ref).") and c.act_cut_status<>'DONE' AND c.fabric_status_new !='5' order by f.req_time asc";
+        $sql1="SELECT c.print_status,c.plan_lot_ref,c.pcutdocid as bundle_location,c.fabric_status as fabric_status_new,c.doc_no, ctp.cutting_tbl_id,ctp.priority,c.act_cut_status,c.rm_date,c.cut_inp_temp,c.order_tid, bodc.color_code,csl.clubbing,bodc.order_style_no,bodc.order_div,bodc.order_col_des,c.acutno,bodc.ft_status,bodc.st_status,bodc.pt_status, bodc.trim_status,c.act_movement_status,bodc.order_del_no,ctp.log_time,c.cat_ref,f.doc_ref,f.req_time,c.remarks,(IF(((bodc.`order_embl_a` + bodc.`order_embl_b`) > 0),1,0) + IF(((bodc.`order_embl_e` + bodc.`order_embl_f`) > 0),2,0)) AS `emb_stat1` FROM bai_pro3.bai_orders_db_confirm AS bodc,bai_pro3.cat_stat_log AS csl,`bai_pro3`.`cutting_table_plan` ctp,bai_pro3.plandoc_stat_log AS c LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN (".implode(",",$doc_no_ref).") AND ctp.`doc_no` = c.`doc_no` AND bodc.`order_tid` = c.`order_tid` AND csl.`tid` = c.`cat_ref` AND c.act_cut_status<>'DONE' AND c.fabric_status !='5' ORDER BY f.req_time ASC";
       }
       else
       {
@@ -810,13 +811,17 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           
        // $sql1="SELECT * from $bai_pro3.cut_tbl_dash_doc_summ where order_style_no  in (select order_style_no from $bai_pro3.bai_orders_db_confirm where order_div = ".'"'.$buyer_identity.'"'.") and doc_no in (select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$doc_no_ref).")) and act_cut_status<>'DONE' and fabric_status_new !='5' order by field(doc_no,".implode(",",$doc_no_ref).")"; 
 
-       $sql1="SELECT c.print_status,c.plan_lot_ref,c.bundle_location,c.fabric_status_new,c.doc_no,
-       c.cutting_tbl_id,c.priority,c.act_cut_status,c.rm_date,c.cut_inp_temp,c.order_tid,c.fabric_status,
-       c.color_code,c.clubbing,c.order_style_no,c.order_div,c.order_col_des,c.acutno,c.ft_status,c.st_status,c.pt_status,
-       c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,b.order_style_no,b.order_div,f.doc_ref,f.req_time,c.remarks FROM bai_pro3.cut_tbl_dash_doc_summ c LEFT JOIN bai_pro3.bai_orders_db_confirm b ON b.order_style_no
-       =c.order_style_no LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN(".implode(",",$doc_no_ref).") and b.order_div=".'"'.$buyer_identity.'"'." AND c.act_cut_status<>'DONE' AND c.fabric_status_new !='5' order by f.req_time asc";
+       // $sql1="SELECT c.print_status,c.plan_lot_ref,c.bundle_location,c.fabric_status_new,c.doc_no,
+       // c.cutting_tbl_id,c.priority,c.act_cut_status,c.rm_date,c.cut_inp_temp,c.order_tid,c.fabric_status,
+       // c.color_code,c.clubbing,c.order_style_no,c.order_div,c.order_col_des,c.acutno,c.ft_status,c.st_status,c.pt_status,
+       // c.trim_status,c.act_movement_status,c.order_del_no,c.log_time,c.emb_stat,c.cat_ref,b.order_style_no,b.order_div,f.doc_ref,f.req_time,c.remarks FROM bai_pro3.cut_tbl_dash_doc_summ c LEFT JOIN bai_pro3.bai_orders_db_confirm b ON b.order_style_no
+       // =c.order_style_no LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN(".implode(",",$doc_no_ref).") and b.order_div=".'"'.$buyer_identity.'"'." AND c.act_cut_status<>'DONE' AND c.fabric_status_new !='5' order by f.req_time asc";
+
+         $sql1="SELECT c.print_status,c.plan_lot_ref,c.pcutdocid as bundle_location,c.fabric_status as fabric_status_new,c.doc_no, ctp.cutting_tbl_id,ctp.priority,c.act_cut_status,c.rm_date,c.cut_inp_temp,c.order_tid, bodc.color_code,csl.clubbing,bodc.order_style_no,bodc.order_div,bodc.order_col_des,c.acutno,bodc.ft_status,bodc.st_status,bodc.pt_status, bodc.trim_status,c.act_movement_status,bodc.order_del_no,ctp.log_time,c.cat_ref,f.doc_ref,f.req_time,c.remarks,(IF(((bodc.`order_embl_a` + bodc.`order_embl_b`) > 0),1,0) + IF(((bodc.`order_embl_e` + bodc.`order_embl_f`) > 0),2,0)) AS `emb_stat1` FROM bai_pro3.bai_orders_db_confirm AS bodc,bai_pro3.cat_stat_log AS csl,`bai_pro3`.`cutting_table_plan` ctp,bai_pro3.plandoc_stat_log AS c LEFT JOIN bai_pro3.fabric_priorities f ON f.doc_ref=c.doc_no WHERE f.doc_ref IN (".implode(",",$doc_no_ref).") AND ctp.`doc_no` = c.`doc_no` AND bodc.`order_tid` = c.`order_tid` AND csl.`tid` = c.`cat_ref`  AND b.order_div=".'"'.$buyer_identity.'"'."AND c.act_cut_status<>'DONE' AND c.fabric_status !='5' ORDER BY f.req_time ASC";
         
       }
+
+      // echo $sql1;
   // close style wise display 
     //NEw check
     $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
