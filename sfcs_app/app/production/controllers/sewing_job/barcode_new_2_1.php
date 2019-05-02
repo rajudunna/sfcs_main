@@ -142,24 +142,26 @@
 				//$display1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 				
 				$html.= '<div>
-							<table width="98%" style="font-size:6px;">
-								<tr>
-									<td colspan=3>'.str_replace(' ','',$barcode_rslt['order_style_no']).'/'.$schedule.'/'.substr(str_replace(' ','',$operations),0,18).' - '.$opscode.'</td>
-								</tr>
-								<tr>
-									<td colspan=3><b></b>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
-								</tr>
-								
-
-								<tr>
-									<td colspan=8>
+							<table width="98%" style="font-size:4px;">
+							   <tr>	
+							      <td colspan=6>'.str_replace(' ','',$barcode_rslt['order_style_no']).'/'.$schedule.'</td>
+							      <td rowspan="0" style="border: 1px solid black;	border-top-right-radius: 1px 1px; font-size:4px; text-align:center;">
+								    <p style= "font-size: 4px;font-weight: bold;">'.$seq_num.'</p>
+							</td>
+							
+						   </tr>
+						   <tr>
+								<td colspan=3>'.str_replace(' ','',$barcode_rslt['order_style_no']).'/'.$schedule.'/'.substr(str_replace(' ','',$operations),0,18).' - '.$opscode.'</td>
+						  </tr>
+						   <tr>
+							  <td colspan=8>
 										<div>
-											<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.75" size="0.8" text="1">
-										</div>
-									<center style="font-size:8px;"><b></b>'.trim($barcode).'</td>
-								</tr>
+											<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.60" size="0.8" text="1">
+										</div><br>
+									<center style="font-size:6px;">'.trim($barcode).'</td>
+							</tr>
 								<tr>
-									<td colspan=8><b></b>'.trim($barcode_rslt['size_code']).'/<b></b>'.trim($destination);
+									<td colspan=8>'.trim($barcode_rslt['size_code']).'/'.trim($destination);
 
 						if($shade != '')
 							$html.= "/<b>$shade</b></td>";	

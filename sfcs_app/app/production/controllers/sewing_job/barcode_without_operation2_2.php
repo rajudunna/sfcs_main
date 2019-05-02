@@ -70,20 +70,22 @@
 			$display1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$input_job,$sewing_job_random_id,$link);
 			$html.= '<div>
 			<table width="98%" style="font-size:4px;">
-				<tr>
-					<td colspan=3>'.str_replace(' ','',$barcode_rslt['order_style_no']).'/'.$schedule.'</td>
+				<tr>	
+					<td colspan=7>'.str_replace(' ','',$barcode_rslt['order_style_no']).'/'.$schedule.'</td>
+					<td rowspan="0" style="border: 1px solid black;	border-top-right-radius: 1px 1px; font-size:4px; text-align:center;width:10%">
+								    <p style= "font-size: 4px;font-weight: bold;">'.$seq_num.'</p>
+							</td>
+					
 				</tr>
 				<tr>
-					<td colspan=3>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
+					<td colspan=8>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
 				</tr>
-				
-
 				<tr>
 					<td colspan=8>
 						<div>
 							<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1">
-						</div>
-					<center style="font-size:8px;">'.trim($barcode).'</td>
+						</div><br/>
+					<center style="font-size:6px;"><b>'.trim($barcode).'</b></td>
 				</tr>
 				<tr>
 					<td colspan=8>'.trim($barcode_rslt['size_code']).'/'.trim($destination).'</td>';
@@ -94,7 +96,7 @@
 			$html.= "</td>";	
 		$html.='</tr> 
 			<tr>	
-			<td colspan=3>'.chr($color_code).leading_zeros($cutno,3).'/'.$display1.'/'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
+			<td colspan=8><b></b>'.chr($color_code).leading_zeros($cutno,3).'/'.$display1.'/'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
 					
 			</tr>
 
