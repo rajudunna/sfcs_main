@@ -17,7 +17,7 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
   <div class="panel panel-primary">
     <div class='panel-heading'>
       <span style='float'><strong>
-      <a href=".$url."  target='_blank'>Cut Table Dashboard For Cutting </a></strong></a></span><span style='float: right; margin-top: 0px'><b>
+      <a href=<?php echo $url;  ?>  target='_blank'>Cut Table Dashboard For Cutting </a></strong></a></span><span style='float: right; margin-top: 0px'><b>
       <a href='javascript:void(0)' onclick='Popup=window.open('cps.htm"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); 
       if (window.focus) {Popup.focus()} return false;'></a></b></span>
     </div>
