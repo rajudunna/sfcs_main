@@ -147,19 +147,19 @@
 									<td colspan=3>'.str_replace(' ','',$barcode_rslt['order_style_no']).'/'.$schedule.'/'.substr(str_replace(' ','',$operations),0,18).' - '.$opscode.'</td>
 								</tr>
 								<tr>
-									<td colspan=3><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
+									<td colspan=3><b></b>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
 								</tr>
 								
 
 								<tr>
 									<td colspan=8>
 										<div>
-											<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.60" size="0.8" text="1">
+											<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.75" size="0.8" text="1">
 										</div>
-									<center style="font-size:8px;"><b>Barcode ID:</b>'.trim($barcode).'</td>
+									<center style="font-size:8px;"><b></b>'.trim($barcode).'</td>
 								</tr>
 								<tr>
-									<td colspan=8><b>Size:</b>'.trim($barcode_rslt['size_code']).'/<b>Country:</b>'.trim($destination);
+									<td colspan=8><b></b>'.trim($barcode_rslt['size_code']).'/<b></b>'.trim($destination);
 
 						if($shade != '')
 							$html.= "/<b>$shade</b></td>";	

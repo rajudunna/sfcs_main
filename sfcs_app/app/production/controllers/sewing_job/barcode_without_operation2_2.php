@@ -74,7 +74,7 @@
 					<td colspan=3>'.str_replace(' ','',$barcode_rslt['order_style_no']).'/'.$schedule.'</td>
 				</tr>
 				<tr>
-					<td colspan=3><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
+					<td colspan=3>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
 				</tr>
 				
 
@@ -83,10 +83,10 @@
 						<div>
 							<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1">
 						</div>
-					<center style="font-size:8px;"><b>Barcode ID:</b>'.trim($barcode).'</td>
+					<center style="font-size:8px;">'.trim($barcode).'</td>
 				</tr>
 				<tr>
-					<td colspan=8><b>Size:</b>'.trim($barcode_rslt['size_code']).'/<b>Country:</b>'.trim($destination).'</td>';
+					<td colspan=8>'.trim($barcode_rslt['size_code']).'/'.trim($destination).'</td>';
 
 		if($shade != '')
 		        $html.= "/<b>$shade</b></td>";		
@@ -94,7 +94,7 @@
 			$html.= "</td>";	
 		$html.='</tr> 
 			<tr>	
-			<td colspan=3><b></b>'.chr($color_code).leading_zeros($cutno,3).'/'.$display1.'/'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
+			<td colspan=3>'.chr($color_code).leading_zeros($cutno,3).'/'.$display1.'/'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
 					
 			</tr>
 
