@@ -85,7 +85,7 @@
 						<div>
 							<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1">
 						</div><br/>
-					<center style="font-size:6px;"><b>'.trim($barcode).'</b></td>
+					<center style="font-size:6px;">'.trim($barcode).'</b></td>
 				</tr>
 				<tr>
 					<td colspan=8>'.trim($barcode_rslt['size_code']).'/'.trim($destination).'</td>';
