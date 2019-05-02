@@ -290,7 +290,8 @@
 										$size_main = explode(",",$ref_size);
 										// var_dump($size);
 									}
-
+									asort($size_main);
+									$size_main=array_values(array_unique($size_main));
 									$sizeofsizes=sizeof($size_main);
 									$size_of_ordered_colors=sizeof($color_main);
 
@@ -323,7 +324,7 @@
 											}
 										}
 										$sizes_query1 = "SELECT * FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule AND order_style_no='".$style."' and $order_joins_not_in";
-										//echo $sizes_query1."<br>";
+										// echo $sizes_query1."<br>";
 										$sizes_result1=mysqli_query($link, $sizes_query1) or exit("Sql Error2 $sizes_query");
 										$row_count1 = mysqli_num_rows($sizes_result1);
 										if($row_count1>0)
@@ -331,25 +332,30 @@
 											while($sizes_result12=mysqli_fetch_array($sizes_result1))
 											{
 												$col_array[]=$sizes_result12['order_col_des'];
+												// var_dump(sizeof($sizes_array));
 												for($kki=0;$kki<sizeof($sizes_array);$kki++)
 												{												
 													if($sizes_result12["title_size_".$sizes_array[$kki].""]<>"")
 													{
 														$size_values[$sizes_result12['order_col_des']][$sizes_result12["title_size_".$sizes_array[$kki].""]]=$sizes_result12["order_s_".$sizes_array[$kki].""];
 														$size_tit[]=$sizes_result12["title_size_".$sizes_array[$kki].""];
+
 														$size_code[$sizes_result12['order_col_des']][$sizes_result12["title_size_".$sizes_array[$kki].""]]=$sizes_array[$kki];
 													}
 												}
 											}
+											asort($size_tit);
 										}
+										$size_tit = array_values(array_unique($size_tit));
 										for($kk=0;$kk<sizeof($col_array);$kk++)
 										{
-											for($kki=0;$kki<sizeof(array_unique($size_tit));$kki++)
+											for($kki=0;$kki<sizeof($size_tit);$kki++)
 											{
 												if($size_values[$col_array[$kk]][$size_tit[$kki]]<>"" && $size_values[$col_array[$kk]][$size_tit[$kki]]>0)
 												{
 													$plannedQty_query = "SELECT SUM(p_plies*p_".$size_code[$col_array[$kk]][$size_tit[$kki]].") AS plannedQty FROM $bai_pro3.plandoc_stat_log WHERE cat_ref IN (SELECT tid FROM $bai_pro3.cat_stat_log WHERE category IN ($in_categories) AND order_tid IN  (SELECT order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no=$schedule AND order_col_des='".$col_array[$kk]."' AND $order_joins_not_in))";
-													//echo $plannedQty_query."<br>";
+													// var_dump("<br/>",$size_tit[$kki]);
+													// echo $plannedQty_query."<br>";
 													$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error2");
 													while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
 													{
@@ -357,11 +363,13 @@
 													}
 													$ordered_qty[$size_tit[$kki]]=$ordered_qty[$size_tit[$kki]]+$size_values[$col_array[$kk]][$size_tit[$kki]];
 													//echo $ordered_qty[$size_tit[$kki]]."<br>";
+													// var_dump($ordered_qty);
 													$filter_size[]=$size_tit[$kki];
 												}
-											}	
+											}
 										}
-										$filter_size=array_unique($filter_size);
+										asort($filter_size);
+										$filter_size=array_values(array_unique($filter_size));
 										$url1 = getFullURLLevel($_GET['r'],'pop_up_sewing_job_det.php',0,'R');
 										echo "<br><a class='btn btn-success' href='$url1?schedule=$sch_id&style=$style_id' onclick=\"return popitup2('$url1?schedule=$sch_id&style=$style_id')\" target='_blank'>Click Here For Color Wise Order Details</a>";
 
@@ -398,7 +406,7 @@
 
 												echo "<tr>
 														<td>Cut Plan Qty</td>";
-														for ($i=0; $i  <sizeof(array_unique($filter_size)); $i++)
+														for ($i=0; $i  <sizeof($filter_size); $i++)
 														{														
 															if($planned_qty[$filter_size[$i]]<>"")
 															{
@@ -416,7 +424,7 @@
 
 												echo "<tr>
 														<td>Balance Qty</td>";
-														for ($i=0; $i <sizeof(array_unique($filter_size)); $i++)
+														for ($i=0; $i <sizeof($filter_size); $i++)
 														{
 															if($ordered_qty[$filter_size[$i]]<>"")
 															{
@@ -469,6 +477,7 @@
 											$size1 = explode(",",$size);
 											// var_dump($size);
 										}
+										asort($size1);
 										$Ori_size=array();
 										for ($i=0; $i < sizeof($size1); $i++)
 										{
@@ -481,7 +490,9 @@
 											}
 											
 										}
-										for ($i=0; $i < sizeof(array_unique($Ori_size)); $i++)
+										asort($Ori_size);
+										$Ori_size=array_values(array_unique($Ori_size));
+										for ($i=0; $i < sizeof($Ori_size); $i++)
 										{
 											echo "<th>".$Ori_size[$i]."</th>";
 										}
@@ -490,18 +501,23 @@
 										{
 											echo "<tr>
 													<td>$color1[$j]</td>";
-													for ($i=0; $i < sizeof($size1); $i++)
+													for ($i=0; $i < sizeof($Ori_size); $i++)
 													{
-														$qty_query = "SELECT quantity FROM $brandix_bts.`tbl_carton_size_ref` WHERE ref_size_name=$size1[$i] AND parent_id=$parent_id AND color='".$color1[$j]."'";
-														// echo $qty_query;
+														$qty_query = "SELECT quantity,size_title FROM $brandix_bts.`tbl_carton_size_ref` WHERE size_title='".$Ori_size[$i]."' AND parent_id=$parent_id AND color='".$color1[$j]."'";
+														// echo $qty_query."<br/>";
+														$qty =0;
 														$qty_query_result=mysqli_query($link, $qty_query) or exit("Error while getting Qty Details");
 														while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
 														{
 															$qty = $qty_query_details['quantity'];
-															if ($qty == '') {
-																$qty=0;
-															}
-															echo "<td>".$qty.'</td>';
+														}
+														if($qty=='')
+														{
+															echo "<td>0</td>";	
+														}
+														else
+														{
+															echo "<td>".$qty."</td>";
 														}
 													}
 											echo "</tr>";
@@ -591,8 +607,8 @@
 																			$individual_color = $individual_sizes_details['size_title'];
 																		}
 
-																		$get_combo_query = "SELECT distinct(combo_no) FROM $brandix_bts.`tbl_carton_size_ref` WHERE size_title='$size_main[$size_count]' AND parent_id=$c_ref AND color='".$color_main[$j]."'";
-																		// echo '<br>'.$get_combo_query;
+																		$get_combo_query = "SELECT distinct(combo_no) FROM $brandix_bts.`tbl_carton_size_ref` WHERE  parent_id=$c_ref AND color='".$color_main[$j]."'";
+																		// echo '<br>'.$get_combo_query;die();
 																		$combo_query_result=mysqli_query($link, $get_combo_query) or exit("Error while getting combo Details");
 																		while($combo_query_details=mysqli_fetch_array($combo_query_result)) 
 																		{
@@ -603,12 +619,13 @@
 																		$qty_query_result=mysqli_query($link, $qty_query) or exit("Error while getting Qty Details");
 																		while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
 																		{
+																			// var_dump($comboNO,$size_main[$size_count]);die();
 																			$qty = $qty_query_details['garments_per_carton'];
 																			// $comboNO = $qty_query_details['combo_no'];
 																			if ($qty == '') {
 																				$qty=0;
 																			}
-																			if ($combo_count == 0) {
+																			if ($combo_count == 0 ) {
 																				echo "<td>$comboNO</td>";
 																				$combo_count++;
 																			}
@@ -748,7 +765,7 @@
 																		$combo_count=0;
 																		for ($size_count=0; $size_count < sizeof($size_main); $size_count++)
 																		{
-																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color_main[$j]."' AND size_title='".$size1[$size_count]."'";
+																			$individual_sizes_query = "SELECT size_title FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN (SELECT id FROM brandix_bts.`tbl_orders_master` WHERE ref_product_style=$style_id AND product_schedule=$schedule) AND order_col_des='".$color_main[$j]."' AND size_title='".$size_main[$size_count]."'";
 																			// echo $individual_sizes_query.'<br>';
 																			$individual_sizes_result=mysqli_query($link, $individual_sizes_query) or exit("Error while getting individual size Details");
 																			while($individual_sizes_details=mysqli_fetch_array($individual_sizes_result)) 
@@ -756,7 +773,7 @@
 																				$individual_color = $individual_sizes_details['size_title'];
 																			}
 
-																			$qty_query = "SELECT distinct(combo_no) FROM $brandix_bts.`tbl_carton_size_ref` WHERE size_title='$size_main[$size_count]' AND parent_id=$c_ref AND color='".$color_main[$j]."'";
+																			$qty_query = "SELECT distinct(combo_no) FROM $brandix_bts.`tbl_carton_size_ref` WHERE parent_id=$c_ref AND color='".$color_main[$j]."'";
 																			// echo '<br>'.$qty_query;
 																			$qty_query_result=mysqli_query($link, $qty_query) or exit("Error while getting Qty Details");
 																			while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
