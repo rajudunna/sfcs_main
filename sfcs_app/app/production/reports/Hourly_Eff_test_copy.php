@@ -90,8 +90,6 @@ table#info tr.total_grand
 }
 
 
-
-
 table#TABLE2 td
 {
 	border: 1px solid black;
@@ -622,25 +620,27 @@ td,th
                                 </tr>"; 
                                 // echo "</table>"; 
                             } 
-                            echo "<table id=\"TABLE2\">";
-                            // echo "<tr><td colspan=4 style='background-color:#29759C; color: white;'> ".$section_display_name."</td></tr>"; 
-                             echo "<tr><th style='background-color:#29759C;'>Section#</th><th style='background-color:#29759C;'>Module#</th><th style='background-color:#29759C;'>NOP</th><th style='background-color:#29759C;'>Style DB</th><th style='background-color:#29759C;'>Schedule</th>";  
-                             $headers=array(); 
-                             $i=0; 
-                             $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) $time_query order by hour(bac_lastup)"; 
-                             $sql_result=mysqli_query($link, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                             
-                             while($sql_row=mysqli_fetch_array($sql_result)) 
-                             { 
-                                 $time = $sql_row['time'];
-                                 $h1[$i]=$time; 
-                                 $h2[$i]=$time; 
-                                 $timestr=$time.":0:0"; 
-                                 //if ($time > 12) {   $time = date("g", strtotime($timestr));   }
-                                 $headers[$i]=$time; 
-                                 $i=$i+1;
-                             }    
-                             for($i=0;$i<sizeof($headers);$i++) 
+                            if($option1==1)
+                                {  
+                                    echo "<table id=\"Table2\">";
+                                   // echo "<tr><td colspan=4 style='background-color:#29759C; color: white;'> ".$section_display_name."</td></tr>"; 
+                                    echo "<tr><th style='background-color:#29759C;'>Section#</th><th style='background-color:#29759C;'>Module#</th><th style='background-color:#29759C;'>NOP</th><th style='background-color:#29759C;'>Style DB</th><th style='background-color:#29759C;'>Schedule</th>";           $headers=array(); 
+                                    $i=0; 
+                                    $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) $time_query order by hour(bac_lastup)"; 
+                                    $sql_result=mysqli_query($link, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    
+                                    while($sql_row=mysqli_fetch_array($sql_result)) 
+                                    { 
+                                        $time = $sql_row['time'];
+                                        $h1[$i]=$time; 
+                                        $h2[$i]=$time; 
+                                        $timestr=$time.":0:0"; 
+                                        if ($time > 12) {   $time = date("g", strtotime($timestr));   }
+                                        $headers[$i]=$time; 
+                                        $i=$i+1;
+                                    }     
+                                      
+                                    for($i=0;$i<sizeof($headers);$i++) 
                                     { 
                                         echo "<th style='background-color:#29759C;'>".$headers[$i]."-".($headers[$i]+1)."</th>";
                                     } 
@@ -653,7 +653,17 @@ td,th
                                         <th style='background-color:#29759C;'>Act. EFF%</th> 
                                         <th style='background-color:#29759C;'>Balance Pcs.</th> 
                                         <th style='background-color:#29759C;'>Act. Pcs/Hr</th> 
-                                        <th style='background-color:#29759C;'>Req. Pcs/Hr</th> ";      
+                                        <th style='background-color:#29759C;'>Req. Pcs/Hr</th> 
+                                        </tr>"; 
+                                    //$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$sec";
+                                   // $result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                   // while($sql_row12=mysqli_fetch_array($result12))
+                                   // {
+                                       // $section_display_name=$sql_row12["section_display_name"];
+                                   // }
+                                } 
+
+                     
                             for ($j=0;$j<sizeof($sections);$j++) 
                             { 
                                 $sec=$sections[$j]; 
@@ -686,32 +696,7 @@ td,th
                                 // $sql="select mod_style, mod_no from $pro_mod where mod_sec=$sec and mod_date=\"$date\" order by mod_no*1";  
                                 $sql="select 0 as mod_style,module_name as mod_no FROM $bai_pro3.module_master WHERE section=$sec order by module_name*1";      
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                if($option1==1)
-                                {  
-                                    $sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$sec";
-                                    $result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                    while($sql_row12=mysqli_fetch_array($result12))
-                                    {
-                                        $section_display_name=$sql_row12["section_display_name"];
-                                    }
-                                      
-                                    // for($i=0;$i<sizeof($headers);$i++) 
-                                    // { 
-                                    //     echo "<th style='background-color:#29759C;'>".$headers[$i]."-".($headers[$i]+1)."</th>";
-                                    // } 
-                                    // echo "<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Hours</th> 
-                                    //     <th style='background-color:#29759C;'>Plan EFF%</th> 
-                                    //     <th style='background-color:#29759C;'>Plan Pro.</th> 
-                                    //     <th style='background-color:#29759C;'>CLH</th> 
-                                    //     <th style='background-color:#29759C;'>Plan SAH/Hr</th> 
-                                    //     <th style='background-color:#29759C;'>Act SAH</th> 
-                                    //     <th style='background-color:#29759C;'>Act. EFF%</th> 
-                                    //     <th style='background-color:#29759C;'>Balance Pcs.</th> 
-                                    //     <th style='background-color:#29759C;'>Act. Pcs/Hr</th> 
-                                    //     <th style='background-color:#29759C;'>Req. Pcs/Hr</th> 
-                                       echo" </tr>"; 
-                                } 
-                               
+                                
                                     $peff_a_total=0; 
 
                                     $peff_g_total=0; 
@@ -982,7 +967,6 @@ td,th
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
                                             $sum=$sql_row2['sum']; 
-                                           
                                             if($sum==0) 
                                             { 
                                                 $sum=0; 
@@ -990,9 +974,7 @@ td,th
                                             } 
                                             else 
                                             { 
-                                            	if($option1==1){   
-                                                     echo "<td bgcolor=\"YELLOW\">".$sum."</td>";
-                                                     } 
+                                            	if($option1==1){    echo "<td bgcolor=\"YELLOW\">".$sum."</td>"; } 
                                                 $gtotal=$gtotal+$sum; 
                                             } 
                                         } 
@@ -1011,9 +993,7 @@ td,th
                                         } 
                                         else 
                                         { 
-                                        if($option1==1){ 
-                                            echo "<td>".$sum."</td>"; 
-                                        } 
+                                        if($option1==1){ echo "<td>".$sum."</td>"; } 
                                         } 
                                     } 
                                     $atotal=$sum; 
@@ -1098,9 +1078,7 @@ td,th
 
                                     $peff_g_total=$peff_a_total; 
 
-                                    if($option1==1){       
-                                         echo "<td>".round($ppro_a,0)."</td>"; 
-                                         } 
+                                    if($option1==1){        echo "<td>".round($ppro_a,0)."</td>";  } 
                                     $ppro_a_total=$ppro_a_total+$ppro_a; 
                                     $ppro_g_total=$ppro_a_total; 
 
@@ -1132,14 +1110,11 @@ td,th
                                     } 
                                  
                                     if($option1==1){
-                                        echo "<td>".round($stha,0)."</td>";       
-                                         echo "<td bgcolor=\"$color\">".round(($effa*100),0)."%</td>"; 
-                                        } 
+                                        echo "<td>".round($stha,0)."</td>";        
+                                        echo "<td bgcolor=\"$color\">".round(($effa*100),0)."%</td>"; } 
                                     $effa_total=$effa_total+round(($effa*100),2); 
                                     $effg_total=$effa_total; 
-                                    if($option1==1){       
-                                         echo "<td>".round(($atotal-$ppro_a),0)."</td>";
-                                         } 
+                                    if($option1==1){        echo "<td>".round(($atotal-$ppro_a),0)."</td>"; } 
                                     if($hoursa_shift>0) 
                                     { 
                                         $avgperhour=$atotal/$hoursa_shift; 
@@ -1165,13 +1140,14 @@ td,th
                                     $hourlytargettotal=$hourlytargettotal+$exp_pcs_hr; 
                                 } 
 
-                                // if($option1==1)
-                                // {
-                                //     echo "<tr class=\"total\"><td colspan=5>Total</td>"; 
-                                // } else 
-                                // { 
-                                //     echo "<tr class=\"total\"><td rowspan=4>".$sec."</td><td>Total</td>";  
-                                // } 
+                                if($option1==1)
+                                {
+                                   // echo "<tr class=\"total\"><td colspan=5>Total</td>";
+                                }
+                               else 
+                                { 
+                                   echo "<tr class=\"total\"><td rowspan=4>".$sec."</td><td>Total</td>";  
+                                } 
 
                                 $total=0; 
                                 $atotal=0;
@@ -1182,15 +1158,18 @@ td,th
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
                                         $sum=$sql_row2['sum']; 
-                                        // if($sum>0) 
-                                        // { 
-                                        //     //echo "<td>".$sum."</td>";
-                                        // } 
-                                        // else 
-                                        // { 
-                                        //     $sum=0; 
-                                        //     //echo "<td bgcolor=\"red\">0</td>"; 
-                                        // }
+                                        if($sum>0) 
+                                        {  if($option1!=1) 
+                                            {
+                                            echo "<td>".$sum."</td>";}
+                                        } 
+                                        else 
+                                        { 
+                                            $sum=0; 
+                                            if($option1!=1) 
+                                            {
+                                            echo "<td bgcolor=\"red\">0</td>"; }
+                                        }
                                     } 
                                 } 
 								
@@ -1258,9 +1237,10 @@ td,th
                                 } 
 
 
-                                /* 20100226 hourly break total*/ 
-                               // echo "<td rowspan=4>".$atotal."</td>"; 
-                               // echo "<td rowspan=4>".$hoursa_shift."</td>"; 
+                                /* 20100226 hourly break total*/  if($option1!=1) 
+                                                 {
+                                echo "<td rowspan=4>".$atotal."</td>"; 
+                                echo "<td rowspan=4>".$hoursa_shift."</td>"; }
 
                                 $peffresulta=0; 
 
@@ -1268,12 +1248,14 @@ td,th
                                 { 
                                     $peffresulta=(round(($pstha/$pclha),2)*100); 
                                 } 
-                               // echo "<td rowspan=4>".$peffresulta."%</td>"; 
-                                //echo "<td rowspan=4>".round($ppro_a_total,0)."</td>"; 
-                               // echo "<td rowspan=4>".$clha_total."</td>"; 
-                              //  $clha_total_new+=$clha_total; //Change 20100819 
-                               // echo "<td rowspan=4>".round($plan_sah_hr_total,0)."</td>"; 
-                                //$sah_per_fac=round(($stha_total*100/$plan_sah_hr_total),0); 
+                                if($option1!=1) 
+                                {
+                                echo "<td rowspan=4>".$peffresulta."%</td>"; 
+                                echo "<td rowspan=4>".round($ppro_a_total,0)."</td>"; 
+                                echo "<td rowspan=4>".$clha_total."</td>"; 
+                                $clha_total_new+=$clha_total; //Change 20100819 
+                                echo "<td rowspan=4>".round($plan_sah_hr_total,0)."</td>"; }
+                                $sah_per_fac=round(($stha_total*100/$plan_sah_hr_total),0); 
                                 if($sah_per_fac < 90) 
                                 { 
                                     $color_per_fac="#ff0915"; 
@@ -1308,149 +1290,196 @@ td,th
                                 { 
                                     $color_per_fac1="#ff0915"; 
                                 } 
-
-                               // echo "<td rowspan=4>".round($stha_total,0)."</td>"; 
+                                if($option1!=1) 
+                                                 {
+                                echo "<td rowspan=4>".round($stha_total,0)."</td>"; }
                                 $fac_sah_total=$fac_sah_total+$plan_sah_hr_total; 
                                 $plan_sah_hr_total=0; 
 
                                 //echo "<td rowspan=4 ><font size=30 color=\"$color_per_fac1\">&#8226;</font><br/>".round($xa,0)."%</td>"; 
-                               // echo "<td rowspan=4 style='background-color:$color_per_fac1; color:black; font-weight:bold;' >".round($xa,0)."%</td>";    
-                               // echo "<td  rowspan=4>".round(($atotal-$ppro_a_total),0)."</td>"; 
-                               // echo "<td  rowspan=4>".round($avgpcstotal,0)."</td>"; 
+                                if($option1!=1) 
+                                {
+                                echo "<td rowspan=4 style='background-color:$color_per_fac1; color:black; font-weight:bold;' >".round($xa,0)."%</td>";    
+                                echo "<td  rowspan=4>".round(($atotal-$ppro_a_total),0)."</td>"; 
+                                echo "<td  rowspan=4>".round($avgpcstotal,0)."</td>";} 
 
                                 /* 20100318 */ 
 
-                                // if((7.5-$hoursa_shift)>0) 
-                                // { 
-                                //     echo "<td  rowspan=4>".round($hourlytargettotal,0)."</td>"; 
-                                // } 
-                                // else 
-                                // { 
-                                //     echo "<td  rowspan=4>".round(($atotal-$ppro_a_total),0)."</td>"; 
-                                // } 
+                                if((7.5-$hoursa_shift)>0) 
+                                {  if($option1!=1) 
+                                    {
+                                    echo "<td  rowspan=4>".round($hourlytargettotal,0)."</td>"; }
+                                } 
+                                else 
+                                {   if($option1!=1) 
+                                    {
+                                    echo "<td  rowspan=4>".round(($atotal-$ppro_a_total),0)."</td>"; }
+                                } 
 
 
                                 /* STH */ 
 
-                                // if($option1==1){ echo "<tr class=\"total\"><td colspan=5>HOURLY SAH</td>"; } else {  echo "<tr class=\"total\"><td>HOURLY SAH</td>"; } 
-                                // for($i=0; $i<sizeof($h1); $i++) 
-                                // { 
-                                //     $sth=0; 
-                                //     $sql2="select sum((bac_qty*smv)/60) as \"sth\" from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                //     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                //     while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                //     { 
-                                //         $sth=$sql_row2['sth']; 
-                                //     } 
-                                //     echo "<td>".round($sth,0)."</td>"; 
-                                // } 
+                                if($option1==1)
+                                {
+                                    // echo "<tr class=\"total\"><td colspan=5>HOURLY SAH</td>";
+                                } 
+                                else
+                                 { 
+                                      echo "<tr class=\"total\"><td>HOURLY SAH</td>";
+                                 } 
+                                for($i=0; $i<sizeof($h1); $i++) 
+                                { 
+                                    $sth=0; 
+                                    $sql2="select sum((bac_qty*smv)/60) as \"sth\" from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
+                                    { 
+                                        $sth=$sql_row2['sth']; 
+                                    } 
+                                    if($option1!=1) 
+                                    {   
+                                    echo "<td>".round($sth,0)."</td>";
+                                    } 
+                                } 
 
-                                // /* EFF */ 
-                                // if($option1==1) {  echo "<tr class=\"total\"><td colspan=5>HLY EFF%</td>"; } else { echo "<tr class=\"total\"><td>HLY EFF%</td>";   } 
+                                /* EFF */ 
+                                if($option1==1) 
+                                {  
+                                   // echo "<tr class=\"total\"><td colspan=5>HLY EFF%</td>";
+                                }
+                                else
+                                 {
+                                      echo "<tr class=\"total\"><td>HLY EFF%</td>"; 
+                                 } 
 
 
-                                // for($i=0; $i<sizeof($h1); $i++) 
-                                // {
-                                //     $eff=0; 
-                                //     /* NEW20100219 */ 
-                                //     $minutes=60; 
-                                //     if(($h1[$i]==9 or $h1[$i]==17) and ($sec==1 or $sec==2 or  $sec==3 or $sec==6)) 
-                                //     { 
-                                //         $minutes=30; 
-                                //     } 
-                                //     else 
-                                //     { 
-                                //         $minutes=60; 
-                                //     } 
+                                for($i=0; $i<sizeof($h1); $i++) 
+                                {
+                                    $eff=0; 
+                                    /* NEW20100219 */ 
+                                    $minutes=60; 
+                                    if(($h1[$i]==9 or $h1[$i]==17) and ($sec==1 or $sec==2 or  $sec==3 or $sec==6)) 
+                                    { 
+                                        $minutes=30; 
+                                    } 
+                                    else 
+                                    { 
+                                        $minutes=60; 
+                                    } 
                                      
-                                //     if(($h1[$i]==10 or $h1[$i]==18) and ($sec==4)) 
-                                //     { 
-                                //         $minutes=30; 
-                                //     }              
+                                    if(($h1[$i]==10 or $h1[$i]==18) and ($sec==4)) 
+                                    { 
+                                        $minutes=30; 
+                                    }              
                              
-                                //     //echo $h1[$i]."-".$sec."-".$minutes; 
-                                //     /* NEW20100219 */ 
+                                    //echo $h1[$i]."-".$sec."-".$minutes; 
+                                    /* NEW20100219 */ 
 
-                                //     //IMS    $sql2="select sum(($table_name.bac_qty*pro_style.smv)/(pro_style.nop*".$minutes.")*100) as \"eff\" from $table_name,pro_style where $table_name.bac_date=\"$date\" and pro_style.date=\"$date\" and $table_name.bac_sec=$sec and $table_name.bac_style=pro_style.style and Hour($table_name.bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                    //IMS    $sql2="select sum(($table_name.bac_qty*pro_style.smv)/(pro_style.nop*".$minutes.")*100) as \"eff\" from $table_name,pro_style where $table_name.bac_date=\"$date\" and pro_style.date=\"$date\" and $table_name.bac_sec=$sec and $table_name.bac_style=pro_style.style and Hour($table_name.bac_lastup) between $h1[$i] and $h2[$i]"; 
 
-                                //     $sql2="select sum((bac_qty*smv)/(nop*".$minutes.")*100) as \"eff\" from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                //     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                //     while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                //     { 
-                                //         $eff=$sql_row2['eff']; 
-                                //     } 
+                                    $sql2="select sum((bac_qty*smv)/(nop*".$minutes.")*100) as \"eff\" from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
+                                    { 
+                                        $eff=$sql_row2['eff']; 
+                                    } 
 
-                                //     /* NEW20100219 */ 
-                                //     $sql2="select count(distinct bac_no) as \"noofmodsb\" from $table_name where bac_date=\"$date\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec"; 
-                                //     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                //     while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                //     { 
-                                //         $noofmodsb=$sql_row2['noofmodsb']; 
-                                //     } 
-                                //     $noofmods=$noofmodsb; 
-                                //     /* NEW20100219 */ 
+                                    /* NEW20100219 */ 
+                                    $sql2="select count(distinct bac_no) as \"noofmodsb\" from $table_name where bac_date=\"$date\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec"; 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
+                                    { 
+                                        $noofmodsb=$sql_row2['noofmodsb']; 
+                                    } 
+                                    $noofmods=$noofmodsb; 
+                                    /* NEW20100219 */ 
 
-                                //     if($noofmods>0) 
-                                //     { 
-                                //         echo "<td>".round((round($eff,2)/$noofmods),0)."%</td>"; 
-                                //     } 
-                                //     else 
-                                //     { 
-                                //         echo "<td>0</td>"; 
-                                //     } 
-                                // } 
+                                    if($noofmods>0) 
+                                    { 
+                                        if($option1!=1) 
+                                        { 
+                                        echo "<td>".round((round($eff,2)/$noofmods),0)."%</td>"; 
+                                        }
+                                    } 
+                                    else 
+                                    { 
+                                        if($option1!=1) 
+                                        { 
+                                        echo "<td>0</td>"; 
+                                        }
+                                    } 
+                                } 
 
-                                // /* AVG p per hour */ 
+                                /* AVG p per hour */ 
 
-                                // if($option1==1) {  echo "<tr class=\"total\"><td colspan=5>AVG-Pcs/HR</td>"; } else { echo "<tr class=\"total\"><td>AVG-Pcs/HR</td>";  }
-                                // $total=0; 
-                                // $btotal=0; 
+                                if($option1==1) 
+                                { 
+                                 //echo "<tr class=\"total\"><td colspan=5>AVG-Pcs/HR</td>"; 
+                                }
+                                else 
+                                 {
+                                  echo "<tr class=\"total\"><td>AVG-Pcs/HR</td>"; 
+                                 }
+                                $total=0; 
+                                $btotal=0; 
 
-                                // for($i=0; $i<sizeof($h1); $i++) 
-                                // { 
-                                //     $sum=0; 
-                                //     $count=0; 
+                                for($i=0; $i<sizeof($h1); $i++) 
+                                { 
+                                    $sum=0; 
+                                    $count=0; 
 
-                                //     $sql2="select bac_qty from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                //     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                //     while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                //     { 
-                                //         if($sql_row2['bac_qty']>0) 
-                                //         $count=$count+1; 
-                                //     } 
+                                    $sql2="select bac_qty from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
+                                    { 
+                                        if($sql_row2['bac_qty']>0) 
+                                        $count=$count+1; 
+                                    } 
 
-                                //     $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                //     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                //     while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                //     { 
-                                //         $sum=$sql_row2['sum']; 
-                                //         if($sum==0) 
-                                //         { 
-                                //             $sum=0; 
-                                //             echo "<td bgcolor=\"RED\">0</td>"; 
-                                //         } 
-                                //         else 
-                                //         { 
-                                //             if($count>0) 
-                                //             { 
-                                //                 echo "<td>".round(($sum/$count),0)."</td>"; 
-                                //             } 
-                                //             else 
-                                //             { 
-                                //                 echo "<td>".round(($sum),0)."</td>"; 
-                                //             } 
-                                //         } 
-                                //     } 
-                                // } 
-                                // echo "</tr>"; 
-                                // /*        echo "</table>"; */ 
-                                // echo "<br/>"; 
-                             
+                                    $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" $time_query and bac_sec=$sec and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
+                                    { 
+                                        $sum=$sql_row2['sum']; 
+                                        if($sum==0) 
+                                        { 
+                                            $sum=0; 
+                                            if($option1!=1) 
+                                            { 
+                                            echo "<td bgcolor=\"RED\">0</td>"; 
+                                            }
+                                        } 
+                                        else 
+                                        { 
+                                            if($count>0) 
+                                            { 
+                                                if($option1!=1) 
+                                                { 
+                                                echo "<td>".round(($sum/$count),0)."</td>"; 
+                                                }
+                                            } 
+                                            else 
+                                            { 
+                                                if($option1!=1) 
+                                                 { 
+                                                echo "<td>".round(($sum),0)."</td>"; 
+                                                 }
+                                            } 
+                                        } 
+                                    } 
+                                } 
+                                echo "</tr>";
+
+                                 
+                                 
+                                /*        echo "</table>"; */ 
+                                echo "<br/>"; 
                                 if($secstyles==1 && sizeof($sections)==1) 
                                 { 
                                     /* Stylewise Report */ 
                                     $sdate=$date; 
                                     /*    echo "<table id=\"info\">"; */ 
+                                    echo "<tr><td>Style Summary ".$style_summ_head."</td></tr>"; 
                                     echo "<tr style='background-color:#29759C;'><th style='background-color:#29759C;'>Style Code</th><th style='background-color:#29759C;'>SMV</th><th style='background-color:#29759C;'>Oprs</th><th style='background-color:#29759C;'>Mod Count</th>"; 
 
                                     for($i=0;$i<sizeof($headers);$i++) 
@@ -1586,7 +1615,7 @@ td,th
                                         echo "</tr>"; 
                                     } 
 
-                                    echo "<tr class=\"total\"><td>Total</td><td></td><td></td><td></td>"; 
+                                    echo "<tr class=\"total000\"><td>Total</td><td></td><td></td><td></td>"; 
 
                                     $total=0; 
 
@@ -1604,6 +1633,7 @@ td,th
                                             } 
                                             else 
                                             { 
+                                               
                                                 echo "<td>".$sum."</td>"; 
                                                 $total=$total+$sum; 
                                             } 
@@ -1621,48 +1651,15 @@ td,th
                                     echo "</table>"; 
                                 } 
 
-                            } /* NEW */ 
+                            }
 
-                            //echo "<tr class=\"total\"><td colspan=5>Total</td> <td>".round($sum)."</td>"; 
-                               
+                           // echo "<tr class=\"total\"><td>Total</td><td></td><td></td><td></td><td></td>";
                             
-		echo "<tr class=\"total\"><td>Total</td><td></td><td></td><td></td><td></td>";
+                                   
 
-		$total=0;
+                            
+                             /* NEW */ 
 
-		for($i=0; $i<sizeof($h1); $i++)
-		{
-
-		$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec=$sec and bac_shift in ($team)";
-		
-		$sql_result2=mysql_query($sql2,$link) or exit("Sql Error".mysql_error());
-		while($sql_row2=mysql_fetch_array($sql_result2))
-		{
-			$sum=$sql_row2['sum'];
-			if($sum==0)
-			{
-				$sum=0;
-				echo "<td bgcolor=\"RED\"></td>";
-
-			}
-			else
-			{
-				echo "<td>".$sum."</td>";
-				$total=$total+$sum;
-			}
-		}
-
-		}
-		echo "<td>".$total."</td>";
-
-		echo "<td>".round($planpcsgrand,0)."</td>";
-		echo "<td>".round($balancepcs,0)."</td>";
-		echo "<td>".$avgpcshrsum."</td>";
-		echo "<td>".round($exp_pcs_hr_total,0)."</td>";
-
-			 echo "<td>".round($avgperhour2_sum,0)."</td>";
-	 echo "<td>".round($exp_pcs_hr2_sum)."</td>";
-	echo "<tr>";
 
                             /* NEW 20100321 */ 
                             if($option1!=1 && sizeof($sections)>1) 
@@ -1885,6 +1882,7 @@ td,th
                                     $avgpcstotal=$avgpcstotal+$avgperhour; 
                                     $hourlytargettotal=$hourlytargettotal+$exp_pcs_hr; 
                                 } 
+                                
                                 echo "<tr class=\"total\"><td rowspan=4>Factory</td><td>Total</td>"; 
 
                                 $total=0; 
@@ -2043,119 +2041,119 @@ td,th
 
                                 /* STH */ 
 
-                                // echo "<tr class=\"total\"><td>HOURLY SAH</td>"; 
-                                // for($i=0; $i<sizeof($h1); $i++) 
-                                // { 
+                                echo "<tr class=\"total\"><td>HOURLY SAH</td>"; 
+                                for($i=0; $i<sizeof($h1); $i++) 
+                                { 
 
-                                //     $sth=0; 
-                                //     $sql2="select sum((bac_qty*smv)/60) as \"sth\" from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and Hour(bac_lastup) between $h1[$i] and $h2[$i]";
-                                //     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                //     while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                //     { 
-                                //         $sth=$sql_row2['sth']; 
-                                //     } 
-                                //     echo "<td>".round($sth,0)."</td>"; 
-                                // } 
+                                    $sth=0; 
+                                    $sql2="select sum((bac_qty*smv)/60) as \"sth\" from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and Hour(bac_lastup) between $h1[$i] and $h2[$i]";
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
+                                    { 
+                                        $sth=$sql_row2['sth']; 
+                                    } 
+                                    echo "<td>".round($sth,0)."</td>"; 
+                                } 
 
-                                // /* EFF */ 
-                                // echo "<tr class=\"total\"><td>HLY EFF%</td>"; 
-                                // for($i=0; $i<sizeof($h1); $i++) 
-                                // { 
-                                //     $eff=0; 
-                                //     /* NEW20100219 */ 
-                                //     $minutes=60; 
-                                //     if(($h1[$i]==9 or $h1[$i]==17) and ($sec==1 or $sec==2 or  $sec==5 or $sec==6)) 
-                                //     { 
-                                //         $minutes=30; 
-                                //     } 
-                                //     else 
-                                //     { 
-                                //         $minutes=60; 
-                                //     } 
+                                /* EFF */ 
+                                echo "<tr class=\"total\"><td>HLY EFF%</td>"; 
+                                for($i=0; $i<sizeof($h1); $i++) 
+                                { 
+                                    $eff=0; 
+                                    /* NEW20100219 */ 
+                                    $minutes=60; 
+                                    if(($h1[$i]==9 or $h1[$i]==17) and ($sec==1 or $sec==2 or  $sec==5 or $sec==6)) 
+                                    { 
+                                        $minutes=30; 
+                                    } 
+                                    else 
+                                    { 
+                                        $minutes=60; 
+                                    } 
                                      
-                                //     if(($h1[$i]==10 or $h1[$i]==18) and ($sec==3 or $sec==4)) 
-                                //     { 
-                                //         $minutes=30; 
-                                //     } 
-                                //     //echo $minutes; 
-                                //     /* NEW20100219 */ 
+                                    if(($h1[$i]==10 or $h1[$i]==18) and ($sec==3 or $sec==4)) 
+                                    { 
+                                        $minutes=30; 
+                                    } 
+                                    //echo $minutes; 
+                                    /* NEW20100219 */ 
 
-                                //     //IMS    $sql2="select sum(($table_name.bac_qty*pro_style.smv)/(pro_style.nop*".$minutes.")*100) as \"eff\" from $table_name,pro_style where $table_name.bac_date=\"$date\" and pro_style.date=\"$date\" and $table_name.bac_sec in ($sections_group) and $table_name.bac_style=pro_style.style and Hour($table_name.bac_lastup) between $h1[$i] and $h2[$i]";
+                                    //IMS    $sql2="select sum(($table_name.bac_qty*pro_style.smv)/(pro_style.nop*".$minutes.")*100) as \"eff\" from $table_name,pro_style where $table_name.bac_date=\"$date\" and pro_style.date=\"$date\" and $table_name.bac_sec in ($sections_group) and $table_name.bac_style=pro_style.style and Hour($table_name.bac_lastup) between $h1[$i] and $h2[$i]";
 
-                                //     $sql2="select sum((bac_qty*smv)/(nop*".$minutes.")*100) as \"eff\" from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                //     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                //     while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                //     { 
-                                //         $eff=$sql_row2['eff']; 
-                                //     } 
+                                    $sql2="select sum((bac_qty*smv)/(nop*".$minutes.")*100) as \"eff\" from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
+                                    { 
+                                        $eff=$sql_row2['eff']; 
+                                    } 
 
-                                //     /* NEW20100219 */ 
-                                //     $sql2="select count(distinct bac_no) as \"noofmodsb\" from $table_name where bac_date=\"$date\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group)"; 
-                                //     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                //     while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                //     { 
-                                //         $noofmodsb=$sql_row2['noofmodsb']; 
-                                //     } 
+                                    /* NEW20100219 */ 
+                                    $sql2="select count(distinct bac_no) as \"noofmodsb\" from $table_name where bac_date=\"$date\" $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group)"; 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
+                                    { 
+                                        $noofmodsb=$sql_row2['noofmodsb']; 
+                                    } 
 
-                                //     $noofmods=$noofmodsb; 
-                                //     /* NEW20100219 */ 
+                                    $noofmods=$noofmodsb; 
+                                    /* NEW20100219 */ 
 
-                                //     if($noofmods>0) 
-                                //     { 
-                                //         echo "<td>".round((round($eff,2)/$noofmods),0)."%</td>"; 
-                                //     } 
-                                //     else 
-                                //     { 
-                                //         echo "<td>0</td>"; 
-                                //     } 
-                                // } 
+                                    if($noofmods>0) 
+                                    { 
+                                        echo "<td>".round((round($eff,2)/$noofmods),0)."%</td>"; 
+                                    } 
+                                    else 
+                                    { 
+                                        echo "<td>0</td>"; 
+                                    } 
+                                } 
 
-                                // /* AVG p per hour */ 
+                                /* AVG p per hour */ 
 
-                                // echo "<tr class=\"total\"><td>AVG-Pcs/HR</td>"; 
+                                echo "<tr class=\"total\"><td>AVG-Pcs/HR</td>"; 
 
-                                // $total=0; 
-                                // $btotal=0; 
+                                $total=0; 
+                                $btotal=0; 
 
-                                // for($i=0; $i<sizeof($h1); $i++) 
-                                // { 
-                                //     $sum=0; 
-                                //     $count=0; 
+                                for($i=0; $i<sizeof($h1); $i++) 
+                                { 
+                                    $sum=0; 
+                                    $count=0; 
 
-                                //     $sql2="select bac_qty from $table_name where bac_date=\"$date\" and bac_sec in ($sections_group) $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                //     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                //     while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                //     { 
-                                //         if($sql_row2['bac_qty']>0) 
-                                //         $count=$count+1; 
-                                //     } 
+                                    $sql2="select bac_qty from $table_name where bac_date=\"$date\" and bac_sec in ($sections_group) $time_query and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
+                                    { 
+                                        if($sql_row2['bac_qty']>0) 
+                                        $count=$count+1; 
+                                    } 
 
-                                //     $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
-                                //     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                //     while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                //     { 
-                                //         $sum=$sql_row2['sum']; 
-                                //         if($sum==0) 
-                                //         { 
-                                //             $sum=0; 
-                                //             echo "<td bgcolor=\"red\">0</td>"; 
-                                //         } 
-                                //         else 
-                                //         { 
-                                //             if($count>0) 
-                                //             { 
-                                //                 echo "<td>".round(($sum/$count),0)."</td>"; 
-                                //             } 
-                                //             else 
-                                //             { 
-                                //                 echo "<td>".round(($sum),0)."</td>"; 
-                                //             } 
-                                //         } 
-                                //     } 
-                                // } 
-                                // echo "</tr>"; 
-                                // /*        echo "</table>"; */ 
-                                // echo "<br/>"; 
+                                    $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and Hour(bac_lastup) between $h1[$i] and $h2[$i]"; 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
+                                    { 
+                                        $sum=$sql_row2['sum']; 
+                                        if($sum==0) 
+                                        { 
+                                            $sum=0; 
+                                            echo "<td bgcolor=\"red\">0</td>"; 
+                                        } 
+                                        else 
+                                        { 
+                                            if($count>0) 
+                                            { 
+                                                echo "<td>".round(($sum/$count),0)."</td>"; 
+                                            } 
+                                            else 
+                                            { 
+                                                echo "<td>".round(($sum),0)."</td>"; 
+                                            } 
+                                        } 
+                                    } 
+                                } 
+                                echo "</tr>"; 
+                                /*        echo "</table>"; */ 
+                                echo "<br/>"; 
                             } /* NEW */ 
                             /* NEW 20100321 */ 
 
@@ -2172,9 +2170,11 @@ td,th
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
                                     $style_summ_head=$sql_row['unit_id']; 
-                                } 
+                                }
+                               
                                 echo "<table id=\"info\">"; 
-                                echo "<tr></br><td>Style Summary ".$style_summ_head."</td></tr>"; 
+
+                                echo "<tr></br></br><td>Style Summary ".$style_summ_head."</td></tr>"; 
                                 echo "<tr><th>Style Code</th><th>SMV</th><th>Oprs</th><th>Mod Count</th>"; 
 
                                 for($m=0;$m<sizeof($headers);$m++) 
@@ -2364,9 +2364,7 @@ td,th
                             } 
                         }    
                     ?> 
-					 
 					</div>
-                    
                 </div>
             </div>
 			
@@ -2374,20 +2372,19 @@ td,th
         </div>
     </body> 
 <?php  ((is_null($___mysqli_res = mysqli_close($link))) ? false : $___mysqli_res); 
-
 echo "<script>
-    var table6_Props =  {
-        rows_counter: true,
-        col_0: \"select\",
-        col_1: \"select\",
-        col_3: \"select\",
-        col_4: \"select\",
-        btn_reset: true,
-        btn_reset_text: 'Clear',
-        loader: true,
-        loader_text: 'Filtering data...',
-        display_all_text: \"Display all rows\",
-    };
-setFilterGrid( 'TABLE2',table6_Props );
-    </script>";
-    ?> 
+var table6_Props =  {
+    rows_counter: true,
+    col_0: \"select\",
+    col_1: \"select\",
+    col_3: \"select\",
+    col_4: \"select\",
+    btn_reset: true,
+    btn_reset_text: 'Clear',
+    loader: true,
+    loader_text: 'Filtering data...',
+    display_all_text: \"Display all rows\",
+};
+setFilterGrid( 'Table2',table6_Props );
+</script>";
+?> 
