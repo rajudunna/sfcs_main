@@ -23,7 +23,8 @@ $has_permission=haspermission($url_r);
 
 ?>
 <?php
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	// $username="sfcsproject1";
 	// $users=array("sfcsproject1","rameshk","kirang","duminduw","rajanaa","chandrasekhard","prabathsa","baiadmn","naleenn","priyankat","balasubramanyams","lakshmik","ramalingeswararaoa","baicutsec1","tharangam");
 	//$mods=array();
@@ -201,7 +202,8 @@ function GetSelectedItem()
 		echo "<td>".$schedulex."</td>";
 		echo "<td>".$colorx."</td>";
 		echo "<td>".$doc_nos_splitx[$i]."</td>";
-		echo "<td>".$appender."00".$cut_nosx."</td>";
+		echo "<td>".$appender.leading_zeros($cut_nosx,3)."</td>";
+		// echo "<td>".$appender."00".$cut_nosx."</td>";
 		echo "</tr>";
 	}
 
@@ -468,7 +470,8 @@ while($row2=mysqli_fetch_array($result2))
 	echo "<td>".$color."</td>";
 	
 	echo "<td>".$row2["doc_ref"]."</td>";
-	echo "<td>".chr($color_code)."00".$cut_nos."</td>";
+	echo "<td>".chr($color_code).leading_zeros($cut_nos,3)."</td>";
+	// echo "<td>".chr($color_code)."00".$cut_nos."</td>";
 	
 	$issued_time=$row2["issued_time"];
 	
