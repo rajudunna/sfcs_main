@@ -9,6 +9,7 @@ $date=date("Y-m-d");
 $database="bai_hr_database"; 
 $database1="bai_hr_tna_em_".date("y",strtotime($date)).date("y",strtotime($date)); 
 $month=date("M",strtotime($date)); 
+
 $sql1="select id_map_ref FROM $database.emp_join_track WHERE emp_join_type=2 and emp_cat4=1"; 
 // echo $sql1."<br>"; 
 $result=mysqli_query($link_hrms, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -20,8 +21,10 @@ while($row=mysqli_fetch_array($result))
 
 $emp_lists=implode(",",$emp_list); 
 
-$sql="SELECT team,module, SUM(IF(attn_status='A',1,0)) AS absent, SUM(IF(attn_status='P',1,0)) AS present FROM $database1.$month WHERE emp_id IN ($emp_lists) AND DATE=\"".$date."\" AND module>0 GROUP BY module,team ORDER BY module+0" ;
-// echo $sql; 
+$sql="SELECT team,module, SUM(IF(attn_status='A',1,0)) AS absent, SUM(IF(attn_status='P',1,0)) AS present FROM $database1.$month WHERE emp_id IN ($emp_lists) AND DATE=\"".$date."\" AND $database1.$month.emp_w_status in (".$emp_active_status.") AND module>0 GROUP BY module,team ORDER BY module+0" ;
+//echo $sql;
+
+ 
 $sql_result=mysqli_query($link_hrms, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row1=mysqli_fetch_array($sql_result)) 
 { 
@@ -59,10 +62,14 @@ while($sql_row1=mysqli_fetch_array($sql_result))
 $date=date("Y-m-d",mktime(0, 0, 0, date("m")  , date("d")-1, date("Y"))); 
 $database1="bai_hr_tna_em_".date("y",strtotime($date)).date("y",strtotime($date)); 
 $month=date("M",strtotime($date)); 
-$sqly="select team,module, SUM(IF(attn_status='A',1,0)) as absent, SUM(IF(attn_status='P',1,0)) as present FROM $database1.$month WHERE emp_id IN ($emp_lists) AND DATE=\"".$date."\" AND module>0 GROUP BY module,team ORDER BY module+0" ;
+$sqly="select team,module, SUM(IF(attn_status='A',1,0)) as absent, SUM(IF(attn_status='P',1,0)) as present FROM $database1.$month WHERE emp_id IN ($emp_lists) AND DATE=\"".$date."\" AND $database1.$month.emp_w_status in (".$emp_active_status.") AND module>0 GROUP BY module,team ORDER BY module+0" ;
 // echo $sql."<br>"; 
 $sql_resulty=mysqli_query($link_hrms, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
+$sql11="update $bai_pro.pro_attendance set present='',absent='' where date=\"$date\"";
+	//echo $sql11."<br/>";
+	mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	
 while($sql_row1=mysqli_fetch_array($sql_resulty)) 
 { 
     $module=$sql_row1['module']; 
@@ -82,7 +89,8 @@ while($sql_row1=mysqli_fetch_array($sql_resulty))
 		$sql23="update $bai_pro.pro_attendance set present='".$active."',absent='".$absent."' where date='".$date."' and module='$module' and shift='".$team."'";
 		// echo $sql23."</br>";
 		mysqli_query($link, $sql23) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
-	}else{
+	}
+	else{
 		$sql22="update $bai_pro.pro_attendance set present='".$active."',absent='".$absent."' where date='".$date."' and module='$module' and shift='".$team."'";
 		// echo $sql22."</br>";
 		mysqli_query($link, $sql22) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));

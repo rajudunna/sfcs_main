@@ -11,6 +11,7 @@ for($i=1;$i<=20;$i++){
 $username="sfcsproject1";
 $remove_user_name = true; // set false for static username removing 
 
+
 //SFCS Db Configurations
 $mysql_details=[];
 $mysql_details = $conf->getDBConfig();
@@ -31,7 +32,6 @@ $sfsp_serverName=$conf->get('sf_sp_servername');
 $sfsp_m3_databasename=$conf->get('sf_sp_dbname');
 $sfsp_uid=$conf->get('sf_sp_username');
 $sfsp_pwd=$conf->get('sf_sp_pwd');
-
 
 //ms-sql jobs 
 $user_ms = "BAISFCS";
@@ -105,6 +105,8 @@ $api_port_no = $conf->get('api-port');
 
 //Mo SOAP CALL
 $mo_soap_api = $conf->get('mo_soap_api');
+//Emp_status
+$emp_active_status = $conf->get('emp_active_status');
 
 //Central Administraion Group ID's
 $group_id_sfcs=8;
