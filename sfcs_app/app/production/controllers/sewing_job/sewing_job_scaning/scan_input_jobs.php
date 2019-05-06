@@ -50,21 +50,37 @@
 	{
 		$operation_code_routing=$sql_row['operation_code'];
 	}
+
+
 	echo '<input type="hidden" name="operation_code_routing" id="operation_code_routing" value="'.$operation_code_routing.'">';
 	echo '<input type="hidden" name="sewing_rejection" id="sewing_rejection" value="'.$sewing_rejection.'">';
 	echo '<input type="hidden" name="display_reporting_qty" id="display_reporting_qty" value="'.$display_reporting_qty.'">';
 	echo '<input type="hidden" name="line-in" id="line-in" value="'.$line_in.'">';
 
+	//To Get Sewing Operations
+	$category = 'sewing';
+	$get_operations = "select operation_code from brandix_bts.tbl_orders_ops_ref where category='$category'";
+	//echo $get_operations;
+	$operations_result_out=mysqli_query($link, $get_operations)or exit("get_operations_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row_out=mysqli_fetch_array($operations_result_out))
+	{
+		$sewing_operations[]=$sql_row_out['operation_code'];
+	}
 
 
 
-$url = getFullURL($_GET['r'],'pre_input_job_scanning.php','N');
-$form = 'P';
-if($operation_code >=130)
-{
-	$form = 'G';
-}
-$qery_rejection_resons = "select * from $bai_pro3.bai_qms_rejection_reason where form_type = '$form'";
+	$url = getFullURL($_GET['r'],'pre_input_job_scanning.php','N');
+	//echo $operation_code;
+	if(in_array($operation_code,$sewing_operations))
+	{
+	$form = "'G','P'";
+	}else
+	{
+		$form = "'P'";
+	}
+
+	
+$qery_rejection_resons = "select * from $bai_pro3.bai_qms_rejection_reason where form_type in ($form)";
 $result_rejections = $link->query($qery_rejection_resons);
 if(isset($_POST['flag_validation']))
 {
@@ -231,7 +247,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 													<?php				    	
 														if ($result_rejections->num_rows > 0) {
 															while($row = $result_rejections->fetch_assoc()) {
-																echo "<option value='".$row['reason_code']."'>".$row['reason_desc']."</option>";
+																echo "<option value='".$row['sno']."'>".$row['form_type']."-".$row['reason_desc']."</option>";
 															}
 														} else {
 															echo "<option value=''>No Data Found..</option>";
