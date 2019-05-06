@@ -32,10 +32,10 @@
 							font-size : 12px;
 						}
 						@page {
-							margin-top: 15px;
-							margin-left:20px;  
+							margin-top: 3.5px;
+							margin-left:3.50px;  
 							margin-right:2px;
-							margin-bottom:10px; 
+							margin-bottom:1.50px; 
 						}
 						#barcode {font-weight: normal; font-style: normal; line-height:normal; sans-serif; font-size: 8pt}
 					</style>
@@ -77,7 +77,7 @@
 			if((int)$detailed_bundle_sticker == 1)
 			{
 				$html.= '<div>
-							<table width="98%">
+							<table width="100%" style="font-size:4px;">
 								<tr>
 									<td colspan=6>
 										<div></div>
@@ -87,7 +87,7 @@
 									</td>
 								</tr>
 								<tr>
-									<td colspan=2><b>Style:</b>'.$barcode_rslt['order_style_no'].'</td>
+									<td colspan=2><b></b>'.$barcode_rslt['order_style_no'].'</td>
 									<td colspan=2><b>Schedule:</b>'.$schedule.'</td>
 								</tr>
 								<tr>
@@ -140,7 +140,7 @@
 						   <tr>
 							  <td colspan=8>
 										<div>
-											<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.65" text="1">
+											<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="1.50" size="0.65" text="1">
 										</div><br/>
 									<center style="font-size:6px;">'.trim($barcode).'</td>
 							</tr>
