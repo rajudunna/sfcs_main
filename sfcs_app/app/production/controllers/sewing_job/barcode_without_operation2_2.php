@@ -29,10 +29,10 @@
 						}
 					
 						@page {
-							margin-top: 10px;
-							margin-left:20px;  
+							margin-top: 3.5px;
+							margin-left:3.50px;  
 							margin-right:2px;
-							margin-bottom:10px; 
+							margin-bottom:1.50px; 
 						}
 						#barcode {font-weight: normal; font-style: normal; line-height:normal; sans-serif; font-size: 8pt}
 					</style>
@@ -69,7 +69,7 @@
 			//$display1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 			$display1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$input_job,$sewing_job_random_id,$link);
 			$html.= '<div>
-			<table width="98%" style="font-size:4px;">
+			<table width="100%" style="font-size:4px;">
 				<tr>	
 					<td colspan=7>'.str_replace(' ','',$barcode_rslt['order_style_no']).'/'.$schedule.'</td>
 					<td rowspan="0" style="border: 1px solid black;	border-top-right-radius: 1px 1px; font-size:4px; text-align:center;width:10%">
@@ -83,7 +83,7 @@
 				<tr>
 					<td colspan=8>
 						<div>
-							<barcode code="'.$barcode.'" type="C39"/ height="0.80" size="0.8" text="1">
+							<barcode code="'.$barcode.'" type="C39"/ height="1.10" size="0.90" text="1">
 						</div><br/>
 					<center style="font-size:6px;">'.trim($barcode).'</b></td>
 				</tr>
