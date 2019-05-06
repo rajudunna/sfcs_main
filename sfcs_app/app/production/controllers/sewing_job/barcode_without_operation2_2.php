@@ -78,14 +78,14 @@
 					
 				</tr>
 				<tr>
-					<td colspan=8>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
+					<td colspan=8>'.substr($barcode_rslt['order_col_des'],0,25).'</td> 
 				</tr>
 				<tr>
 					<td colspan=8>
 						<div>
-							<barcode code="'.$barcode.'" type="C39"/ height="1.10" size="0.90" text="1">
+							<barcode code="'.$barcode.'" type="C39"/ height="1.20" size="0.90" text="1">
 						</div><br/>
-					<center style="font-size:6px;">'.trim($barcode).'</b></td>
+					<center>'.trim($barcode).'</td> 
 				</tr>
 				<tr>
 					<td colspan=8>'.trim($barcode_rslt['size_code']).'/'.trim($destination).'</td>';
@@ -96,7 +96,7 @@
 			$html.= "</td>";	
 		$html.='</tr> 
 			<tr>	
-			<td colspan=8><b></b>'.chr($color_code).leading_zeros($cutno,3).'/'.$display1.'/'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
+			<td colspan=8>'.chr($color_code).leading_zeros($cutno,3).'/'.$display1.'/'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
 					
 			</tr>
 
