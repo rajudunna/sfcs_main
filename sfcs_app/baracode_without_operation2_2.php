@@ -78,7 +78,7 @@
 					
 				</tr>
 				<tr>
-					<td colspan=8>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
+					<td colspan=8>'.substr($barcode_rslt['order_col_des'],0,25).'</td> 
 				</tr>
 				<tr>
 					<td colspan=8>
