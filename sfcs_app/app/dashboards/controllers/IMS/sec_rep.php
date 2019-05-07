@@ -372,7 +372,7 @@ if(isset($_GET['val']))
 			
 			
 		$row_counter = 0;
-		$get_job="select distinct input_job_no_random_ref from $brandix_bts.bundle_creation_data where style in ($styles)  and original_qty != recevied_qty and  send_qty > 0 and operation_id in($sewing_operations)";
+		$get_job="select distinct input_job_no_random_ref from $brandix_bts.bundle_creation_data where style in ($styles)  and original_qty != (recevied_qty-rejected_qty) and  send_qty > 0 and operation_id in($sewing_operations)";
 		//echo $get_job;
 		$sql_result=mysqli_query($link, $get_job) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
