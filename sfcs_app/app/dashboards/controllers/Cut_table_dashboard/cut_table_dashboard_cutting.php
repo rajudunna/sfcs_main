@@ -170,6 +170,7 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
                           where ct.order_div = '$buyer_identity' and ct.doc_no in ($imploded_docs) order by ct.log_time asc"; 
                     }
                     $imploded_docs = '';
+                    // echo $sql1;
                     // close style wise display 
                     //NEw check
                     $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));   
@@ -259,9 +260,9 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
                           }
                           
                           
-                          $style=$sql_row1['order_style_no'];
-                          $schedule=$sql_row1['order_del_no'];
-                          $color=$sql_row1['order_col_des'];
+                          // $style=$sql_row1['order_style_no'];
+                          // $schedule=$sql_row1['order_del_no'];
+                          // $color=$sql_row1['order_col_des'];
                           $total_qty=$sql_row1['total'];
                           
                           $cut_no=$sql_row1['acutno'];
@@ -269,11 +270,14 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
                           $log_time=$sql_row1['log_time'];
                           $emb_stat=$sql_row1['emb_stat'];
                           
-                          $get_order_joins="select order_joins from $bai_pro3.bai_orders_db_confirm where order_tid='$order_tid'";
+                          $get_order_joins="select order_joins,order_style_no,order_del_no,order_col_des from $bai_pro3.bai_orders_db_confirm where order_tid='$order_tid'";
                           $sql_result=mysqli_query($link, $get_order_joins) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
                           while($sql_row1236=mysqli_fetch_array($sql_result))
                           {
                               $ord_joins = $sql_row1236['order_joins'];
+                              $style=$sql_row1236['order_style_no'];
+                              $schedule=$sql_row1236['order_del_no'];
+                              $color=$sql_row1236['order_col_des'];
                           }
 
                           $original_details = array();
@@ -387,10 +391,14 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
                         {
                           //We have no recut dockets for clubbing
                           $remarks = '';
-                          $is_recut_query = "SELECT remarks from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
+                          $is_recut_query = "SELECT remarks,acutno from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
+                          // echo $is_recut_query."<br>";
                           $is_recut_result = mysqli_query($link,$is_recut_query);
                           while($row_rem = mysqli_fetch_array($is_recut_result))
+                          {
                               $remarks = $row_rem['remarks'];
+                              $recut_cutno = $row_rem['acutno'];
+                          }
                               
                           if(strtolower($remarks) == 'recut')
                             $cut_str = 'R';
@@ -398,7 +406,7 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
                             $cut_str = chr($sql_row1['color_code']);
 
                           $colors_db[]=$color;
-                          $club_c_code[]=$cut_str.''.leading_zeros($sql_row1['acutno'],3);
+                          $club_c_code[]=$cut_str.''.leading_zeros($recut_cutno,3);
                           $club_docs[]=$doc_no;
                         }
                         
