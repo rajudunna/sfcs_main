@@ -21,6 +21,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 
 
 <style id="C_Tex_Interface_24082_Styles">
+
 <!--table
 	{mso-displayed-decimal-separator:"\.";
 	mso-displayed-thousand-separator:"\,";}
@@ -1457,6 +1458,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
+
 .xl12924082
 	{padding-top:1px;
 	padding-right:1px;
@@ -1927,7 +1929,7 @@ tags will be replaced.-->
   <td colspan=9 class=xl9324082 dir=LTR style='border-left:none;'><?php echo $buyer; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
   width:102pt'>Lot No</td>
-  <td colspan=4 class=xl10024082 style='border-right:1.0pt solid black;
+  <td colspan=4 class=xl9624082 style='border-right:1.0pt solid black;
   border-bottom:.5pt solid black;border-left:none'><?php echo $lot_ref_batch; ?></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
@@ -1957,7 +1959,7 @@ tags will be replaced.-->
   ?>
   
   </td>
-  <td colspan=2 rowspan=6 class=xl9324082x dir=LTR width=272 style='border-right:1.0pt solid black;
+  <td colspan=2 rowspan=5 class=xl9324082x dir=LTR width=272 style='border-right:1.0pt solid black;
   border-left:none;width:204pt'>FABRIC SWATCH
   </td>
  </tr>
@@ -1969,7 +1971,7 @@ tags will be replaced.-->
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
   width:102pt'>Qty In (<?php echo $fab_uom; ?>)</td>
   <td colspan=2 class=xl10324082 dir=LTR width=128 style='border-right:.5pt solid black;
-  border-left:none;width:96pt'><?php echo $rec_qty; ?></td>
+  border-left:none;width:96pt'><?php echo round($rec_qty,2); ?></td>
   <td class=xl9424082 dir=LTR width=99 style='border-top:none;border-left:none;
   width:74pt'>PTS/100 Sq.Yd.</td>
   <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;
@@ -1981,9 +1983,9 @@ tags will be replaced.-->
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;
-  border-top:none;width:60pt'>PO Number</td>
+  border-top:none;width:60pt;'>PO Number</td>
   <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;
-  width:98pt'><?php echo $po_no; ?></td>
+  width:98pt;word-break: break-all;'><?php echo $po_no; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
   width:102pt'>Qty Inspected</td>
   <td colspan=2 class=xl10524082 dir=LTR width=128 style='border-right:.5pt solid black;
@@ -2089,7 +2091,7 @@ tags will be replaced.-->
   <td class=xl11324082 style='border-top:none;border-left:none'><?php echo $shrink_l; ?></td>
   <td class=xl11424082 style='border-top:none;border-left:none'><?php echo $shrink_w; ?></td>
   <td colspan=2 class=xl11324082>Invoice</td>
-  <td colspan=2 class=xl11324082 style='border-right:1.0pt solid black'><?php echo $inv_no; ?></td>
+  <td colspan=4 class=xl9624082 style='border-right:1.0pt solid black;word-break: break-all;'><?php echo $inv_no; ?></td>
  </tr>
  
  
