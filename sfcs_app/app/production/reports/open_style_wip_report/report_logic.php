@@ -1,15 +1,36 @@
 <?php
-  include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php'); 
+error_reporting(0);
+  include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+  $sum ='';
+  $asum ='';  
   foreach($sizes_array as $size)
   {
       $sum.= $size." + ";
       $asum.= "order_s_".$size." + ";
   }
-//   $i=0;
-// echo date("Y-m-d H:i:s")."-1st <br/>";
+
 
    $operation_code = [];
    $opertion_names = [];
+   $wip_quantity = [];
+   $main_quantity = [];
+   $wip = [];
+   $operation = [];
+   $style = '';
+   $schedule = '';
+   $color = '';
+   $size = '';
+   $order_qty = '';
+   $cono = '';
+   $ops_seq = '';
+   $seq_id = '';
+   $ops_order = '';
+   $main_good_qty =[];
+   $main_rejected_qty = [];
+   $bcd_good_qty1 = [];
+   $bcd_rejected_qty1 = [];
+   $main_data = [];
+   $pre_op_code = 0;
    //To get default Operations
     $get_operations_workflow= "SELECT DISTINCT(operation_code) FROM $brandix_bts.`tbl_style_ops_master` where operation_code not in ('10','1') order by operation_order*1";
    // echo $get_operations_workflow;
@@ -40,21 +61,7 @@
     // echo date("Y-m-d H:i:s")."-3st <br/>";
       $today=date("Y-m-d");
         //$today='2019-04-27 12:00:00';
-         $wip_quantity = [];
-         $main_quantity = [];
-         $wip = [];
-         $operation = [];
-         $style = '';
-         $schedule = '';
-         $color = '';
-         $size = '';
-         $size_code =  '';
-
-        $main_good_qty =[];
-        $main_rejected_qty = [];
-        $bcd_good_qty1 = [];
-        $bcd_rejected_qty1 = [];
-        $main_data = [];
+        
 
      $get_style_wip_data="select * FROM $brandix_bts.open_style_wip group by style,schedule,color,size";
      //echo  $get_style_wip_data;
@@ -67,10 +74,8 @@
         $color = $row1['color'];
         $size = $row1['size'];
         $operation[] = $row1['operation_code'];
-        $size_code =  $row1['size_id'];
         
-
-        
+ 
 
          $asum_str = rtrim($asum,' + ');
         //To get Order Qty
@@ -83,6 +88,15 @@
             $order_qty = $row5['order_qty'];
             $cono = $row5['co_no'];
         }
+		foreach ($operation_code as $key => $value) 
+        {
+          $main_good_qty[$value] = 0;
+          $main_rejected_qty[$value] = 0;
+          $bcd_good_qty1[$value] = 0;
+          $bcd_rejected_qty1[$value] = 0;
+		  $bcd_rec[$value] =0;
+		  $bcd_rej[$value] =0;
+	    }
 
         $single_data = ['style'=>$style,'schedule'=>$schedule,'color'=>$color,'size'=>$size,'cono'=>$cono];
         
@@ -138,7 +152,7 @@
                         $seq_id = $row7['id'];
                         $ops_order = $row7['operation_order'];
                     }
-                    $post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) < '$ops_order' AND operation_code not in (10) ORDER BY operation_order DESC LIMIT 1";
+                    $post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = '$ops_seq'  AND CAST(operation_order AS CHAR) < '$ops_order' AND operation_code not in (10) ORDER BY operation_order DESC LIMIT 1";
                     $result_post_ops_check = $link->query($post_ops_check);
                     //echo $post_ops_check.'<br/>';
                     $row8 = mysqli_fetch_array($result_post_ops_check);
