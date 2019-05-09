@@ -1,5 +1,7 @@
 <?php
-  include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php'); 
+  include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+  $sum ='';
+  $asum ='';  
   foreach($sizes_array as $size)
   {
       $sum.= $size." + ";
@@ -48,7 +50,7 @@
          $schedule = '';
          $color = '';
          $size = '';
-         $size_code =  '';
+         
 
         $main_good_qty =[];
         $main_rejected_qty = [];
@@ -67,10 +69,8 @@
         $color = $row1['color'];
         $size = $row1['size'];
         $operation[] = $row1['operation_code'];
-        $size_code =  $row1['size_id'];
         
-
-        
+ 
 
          $asum_str = rtrim($asum,' + ');
         //To get Order Qty
@@ -83,6 +83,15 @@
             $order_qty = $row5['order_qty'];
             $cono = $row5['co_no'];
         }
+		foreach ($operation_code as $key => $value) 
+        {
+          $main_good_qty[$value] = 0;
+          $main_rejected_qty[$value] = 0;
+          $bcd_good_qty1[$value] = 0;
+          $bcd_rejected_qty1[$value] = 0;
+		  $bcd_rec[$value] =0;
+		  $bcd_rej[$value] =0;
+	    }
 
         $single_data = ['style'=>$style,'schedule'=>$schedule,'color'=>$color,'size'=>$size,'cono'=>$cono];
         
