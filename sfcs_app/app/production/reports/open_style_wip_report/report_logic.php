@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);
   include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
   $sum ='';
   $asum ='';  
@@ -62,14 +63,14 @@
         //$today='2019-04-27 12:00:00';
         
 
-     $get_style_wip_data="select * FROM $brandix_bts.open_style_wip group by style,schedule,color,size";
+     $get_style_wip_data="select * FROM $brandix_bts.open_style_wip group by style,SCHEDULE,color,size";
      //echo  $get_style_wip_data;
      $get_style_data_result =$link->query($get_style_wip_data);
      // echo date("Y-m-d H:i:s")."-4st <br/>";
      while ($row1 = $get_style_data_result->fetch_assoc())
      {
         $style = $row1['style'];
-        $schedule = $row1['schedule'];
+        $schedule = $row1['SCHEDULE'];
         $color = $row1['color'];
         $size = $row1['size'];
         $operation[] = $row1['operation_code'];
