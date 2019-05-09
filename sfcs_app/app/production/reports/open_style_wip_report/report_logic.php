@@ -29,6 +29,7 @@
    $bcd_good_qty1 = [];
    $bcd_rejected_qty1 = [];
    $main_data = [];
+   $pre_op_code = 0;
    //To get default Operations
     $get_operations_workflow= "SELECT DISTINCT(operation_code) FROM $brandix_bts.`tbl_style_ops_master` where operation_code not in ('10','1') order by operation_order*1";
    // echo $get_operations_workflow;
