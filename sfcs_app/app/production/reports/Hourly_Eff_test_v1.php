@@ -1,6 +1,5 @@
 <title>Hourly Efficiency Report</title>
 <meta http-equiv="X-UA-Compatible" content="IE=8,IE=edge,chrome=1" /> 
-<script language="javascript" type="text/javascript" src="../common/js/datetimepicker_css.js"></script> 
 <link rel="stylesheet" href="style.css" type="text/css" media="all" /> 
 <link rel="stylesheet" href="../../../common/css/styles/bootstrap.min.css">
 <script language="javascript" type="text/javascript" src="../../../common/js/TableFilter_EN/tablefilter.js"></script>
@@ -249,10 +248,10 @@ td,th
                         error_reporting(0);
                         $secstyles=$_POST['secstyles']; 
                         $sections_string=$_POST['section']; 
+                        $hour_filter=$_POST['hour_filter']; 
                         $date=$_POST['dat']; 
                         $option1=$_POST['option1']; 
                         $team=$_POST['team']; 
-                        $hour_filter=$_POST['hour_filter']; 
                         $total_hours = $plant_end_time - $plant_start_time;
                         // echo $total_hours."<br>";
                         list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
@@ -266,10 +265,10 @@ td,th
                         <div class="row">
                             <div class="col-md-2">
 									<label for="demo1">Select Date: </label>
-                                	<input id="demo1" readonly type="text" class="form-control" size="8" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>     <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="../common/images/cal.gif" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
+                                	<input type="date" data-toggle="datepicker" name="dat" id="demo1" value="<?php print(date("Y-m-d")); ?>"  class="form-control"/></td> 
                             </div>
                             <div class="col-md-2">
-                                <label for="section">Select Unit: </label>
+                                <label for="section">Select Section: </label>
                                 <?php
                                     echo "<select name=\"section\" id='section' class=\"form-control\" >"; 
                                     $sql2="select * from $bai_pro3.sections_master order by sec_id"; 
@@ -312,49 +311,45 @@ td,th
                             </div> 
                             <div class="col-md-2">
                                <label for="hour_filter" valign="top">Select Hour: </label>
-                                <select name="hour_filter[]" id="hour_filter" class="form-control" multiple> 
-                                    <?php 
-                                         $hour_filter1 = array();
-                                         for ($i=0; $i <= $total_hours; $i++)
-                                         {
-                                             $hour2=$hour;
-                                            if($minutes >0)
-                                            {
-                                                 $to_hour = "'".$hour2.":".$minutes."'";
-                                            }
-                                            else
-                                            {
-                                                 $to_hour = "'".$hour2."'";
-                                            }
-                                            $hour_filter1[]=$to_hour;
-                                            $hour++;
-                                         }
-                                         echo '<option value="'.(implode(',',$hour_filter1)).'">All</option>'; 
-                                         list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
-                                         for ($i=0; $i <= $total_hours; $i++)
-                                         {
-                                             $hour1=$hour;
-                                             if($minutes >0){
-                                                $to_hour = $hour1.":".$minutes;
-                                             }
-                                             else{
-                                                 $to_hour = $hour1;
-                                             }
-											//  if($hour1 > 12)
-											//  {
-											// 	$to_hour = $hour1-12;
-											//  }
-											//  else
-											//  {
-											// 	$to_hour = $hour1;
-											//  }
-                                             echo '<option value="\''.$to_hour.'\'">'.$to_hour.'</option>';
-                                             // echo '<br/>'.$to_hour;
-                                             $hour++;
-                 
-                                         }
+                               <?php
+                                    echo "<select name=\"hour_filter\" id='hour_filter' class=\"form-control\" >";
+                                    
+                                    
+
+                                    $sql22="SELECT GROUP_CONCAT(CONCAT(start_time,'$',end_time)) AS intervala,GROUP_CONCAT(time_value) AS time_display FROM $bai_pro3.tbl_plant_timings"; 
+									
+                                    $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_row22=mysqli_fetch_array($sql_result22);
+                                    $hours_list=$sql_row22['intervala'];
+                                    $hours_list_ss=implode("','",$hours_list);
+                                    $hours_list_dispaly=$sql_row22['time_display'];
+                                    $hours_list_array=explode(",",$hours_list);
+                                    $hours_list_dispaly_array=explode(",",$hours_list_dispaly);
+                                    
+                                    if($hour_filter==$hours_list_ss){
+                                        echo "<option value=\"".$hours_list_ss."\" selected>All</option>";
+                                    }else{
+                                        echo "<option value=\"".$hours_list_ss."\">All</option>";
+                                    }
+                                   
+                                    // echo "<option value=\"".$hour_filter."\">selected</option>";
+                                    foreach($hours_list_array as $key => $hours_list_ss){
+                                        if($hours_list_ss==$hour_filter){
+                                            echo "<option value=\"".$hours_list_ss."\" selected>".$hours_list_dispaly_array[$key]."</option>"; 
+                                        }else{
+                                            echo "<option value=\"".$hours_list_ss."\">".$hours_list_dispaly_array[$key]."</option>"; 
+                                        }
+                                      
+                                      
+                                        //echo $hours_list; 
+                                    }  
+                                    
+                                   
+                                    echo "</select>"; 
+                                    
+                                ?>
                                      	
-                                    ?> 
+                                   
                                 </select>
                             </div> 
                             <div class="col-md-2">
@@ -375,6 +370,7 @@ td,th
                                 ?> 
                             </div>
                     </form> 
+
                     
                     <div id="loading" align="center" style="position:relative; top:10px; left:20px;"> 
                         <img src="../common/images/pleasewait.gif"> 
@@ -450,11 +446,13 @@ td,th
                             
                             if($hour_filter=='') 
                             { 
-                                   $time_query=""; 
+                                  $time_query=""; 
                             } 
                             else 
-                            { 
-                                   $time_query=" AND HOUR(bac_lastup) in (".implode(",",$hour_filter).") "; 
+                            {      
+                                $hour_filter_array=explode("$", $_POST['hour_filter']);
+                                   //$time_query=" AND HOUR(bac_lastup) in ('".$hour_filter."') "; 
+                                   $time_query=" AND TIME(bac_lastup) BETWEEN ('".$hour_filter_array[0]."') and ('".$hour_filter_array[1]."')"; 
                             }
                             
                             /* Function END */ 
@@ -463,6 +461,7 @@ td,th
                             $sections=explode(",", $_POST['section']); 
                             $sections_group=$_POST['section']; 
                             $secstyles=$_POST['secstyles']; 
+                            $hours=$_POST['hour_filter'];
                             $option1=$_POST['option1']; 
                             $date=$_POST['dat']; 
                             $team=$_POST['team'];
@@ -627,7 +626,7 @@ td,th
                                     echo "<tr><th style='background-color:#29759C;'>Section#</th><th style='background-color:#29759C;'>Module#</th><th style='background-color:#29759C;'>NOP</th><th style='background-color:#29759C;'>Style DB</th><th style='background-color:#29759C;'>Schedule</th>";           $headers=array(); 
                                     $i=0; 
                                     $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) $time_query order by hour(bac_lastup)"; 
-                                    $sql_result=mysqli_query($link, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result=mysqli_query($link, $sql) or exit("Sql Error123".$sql.mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     
                                     while($sql_row=mysqli_fetch_array($sql_result)) 
                                     { 
@@ -1615,7 +1614,7 @@ td,th
                                         echo "</tr>"; 
                                     } 
 
-                                    echo "<tr class=\"total\"><td>Total</td><td></td><td></td><td></td>"; 
+                                    echo "<tr class=\"total000\"><td>Total</td><td></td><td></td><td></td>"; 
 
                                     $total=0; 
 
@@ -1652,6 +1651,12 @@ td,th
                                 } 
 
                             }
+
+                           // echo "<tr class=\"total\"><td>Total</td><td></td><td></td><td></td><td></td>";
+                            
+                                   
+
+                            
                              /* NEW */ 
 
 
@@ -2365,6 +2370,14 @@ td,th
             </div>
         </div>
     </body> 
+    <?php
+  if (isset($_POST['submit'])) 
+  {
+  
+    echo "<div>".$date . " " . $sections_string . " " . $team . " " . $hour_filter  ." ". $secstyles ." ". $option1."</div>";
+  
+  }
+?>
 <?php  ((is_null($___mysqli_res = mysqli_close($link))) ? false : $___mysqli_res); 
 echo "<script>
 var table6_Props =  {
@@ -2380,5 +2393,16 @@ var table6_Props =  {
     display_all_text: \"Display all rows\",
 };
 setFilterGrid( 'Table2',table6_Props );
+
+var table7_Props =  {
+    rows_counter: true,
+    col_0: \"select\",
+    btn_reset: true,
+    btn_reset_text: 'Clear',
+    loader: true,
+    loader_text: 'Filtering data...',
+    display_all_text: \"Display all rows\",
+};
+setFilterGrid( 'Table3',table7_Props );
 </script>";
 ?> 
