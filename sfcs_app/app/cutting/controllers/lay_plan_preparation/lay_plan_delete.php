@@ -12,6 +12,7 @@ Task: Lay Plan Delettion Validation (added IMS and Cut Completion Status)
 <?php    
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
 $layplanmail = $conf1->get('layplanmail'); 
 //var_dump($layplanmail);
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 
@@ -204,7 +205,7 @@ if(isset($_POST["submit"]))
     $schedule_id=0;
     $schedule_id=echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
     
-    $sql_s="select * from $bai_pro3.packing_summary_input where order_del_no ='$schedule'";
+    $sql_s="select * from $bai_pro3.packing_summary_input where order_del_no ='$schedule' and order_col_des ='$color'";
     $result_s=mysqli_query($link, $sql_s) or die("Error=s".mysqli_error($GLOBALS["___mysqli_ston"])); 
     $mini_orders = mysqli_num_rows($result_s);
     if($mini_orders>0) 
@@ -214,6 +215,14 @@ if(isset($_POST["submit"]))
     }
     else 
     { 
+        $get_operations="select operation_code from $brandix_bts.tbl_orders_ops_ref where operation_name='Laying'";
+        //echo $get_operations;
+        $sql_result111=mysqli_query($link, $get_operations) or exit("Operation ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($row=mysqli_fetch_array($sql_result111))
+        {
+          $operation=$row['operation_code'];
+        }
+
 		if($check>0 || $check_a>0 || $check_c>0 || $check_m>0 || $check_oc>0) 
         {              
             for($i=0;$i<sizeof($order_tid);$i++) 
@@ -246,10 +255,13 @@ if(isset($_POST["submit"]))
 
                 if($row71 == 0 and $row72==0 and $row74==0) 
                 { 
-                    $sql33="select doc_no from $bai_pro3.plandoc_stat_log where order_tid='".$order_tid[$i]."'"; 
+                    $docket_number[]=-1;
+                    $sql33="select doc_no,acutno from $bai_pro3.plandoc_stat_log where order_tid='".$order_tid[$i]."'"; 
                     $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     while($sql_row33=mysqli_fetch_array($sql_result33)) 
                     { 
+                        $docket_number[]=$sql_row33['doc_no'];
+                        $cut_nos[$sql_row33['doc_no']] = $sql_row33['acutno'];
                         //M3 Reversal 
                         //M3 Bulk operation reversal 
                         //To update M3 Bulk Upload Tool (To pass negative entry) 
@@ -269,7 +281,36 @@ if(isset($_POST["submit"]))
                         $update="update $bai_pro3.bai_orders_db set order_s_s01='".$sql_row['old_order_s_s01']."',order_s_s02='".$sql_row['old_order_s_s02']."',order_s_s03='".$sql_row['old_order_s_s03']."',order_s_s04='".$sql_row['old_order_s_s04']."',order_s_s05='".$sql_row['old_order_s_s05']."',order_s_s06='".$sql_row['old_order_s_s06']."',order_s_s07='".$sql_row['old_order_s_s07']."',order_s_s08='".$sql_row['old_order_s_s08']."',order_s_s09='".$sql_row['old_order_s_s09']."',order_s_s10='".$sql_row['old_order_s_s10']."',order_s_s11='".$sql_row['old_order_s_s11']."',order_s_s12='".$sql_row['old_order_s_s12']."',order_s_s13='".$sql_row['old_order_s_s13']."',order_s_s14='".$sql_row['old_order_s_s14']."',order_s_s15='".$sql_row['old_order_s_s15']."',order_s_s16='".$sql_row['old_order_s_s16']."',order_s_s17='".$sql_row['old_order_s_s17']."',order_s_s18='".$sql_row['old_order_s_s18']."',order_s_s19='".$sql_row['old_order_s_s19']."',order_s_s20='".$sql_row['old_order_s_s20']."',order_s_s21='".$sql_row['old_order_s_s21']."',order_s_s22='".$sql_row['old_order_s_s22']."',order_s_s23='".$sql_row['old_order_s_s23']."',order_s_s24='".$sql_row['old_order_s_s24']."',order_s_s25='".$sql_row['old_order_s_s25']."',order_s_s26='".$sql_row['old_order_s_s26']."',order_s_s27='".$sql_row['old_order_s_s27']."',order_s_s28='".$sql_row['old_order_s_s28']."',order_s_s29='".$sql_row['old_order_s_s29']."',order_s_s30='".$sql_row['old_order_s_s30']."',order_s_s29='".$sql_row['old_order_s_s31']."',order_s_s32='".$sql_row['old_order_s_s32']."',order_s_s33='".$sql_row['old_order_s_s33']."',order_s_s34='".$sql_row['old_order_s_s34']."',order_s_s35='".$sql_row['old_order_s_s35']."',order_s_s36='".$sql_row['old_order_s_s36']."',order_s_s37='".$sql_row['old_order_s_s37']."',order_s_s38='".$sql_row['old_order_s_s38']."',order_s_s39='".$sql_row['old_order_s_s39']."',order_s_s40='".$sql_row['old_order_s_s40']."',order_s_s41='".$sql_row['old_order_s_s41']."',order_s_s42='".$sql_row['old_order_s_s42']."',order_s_s43='".$sql_row['old_order_s_s43']."',order_s_s44='".$sql_row['old_order_s_s44']."',order_s_s45='".$sql_row['old_order_s_s45']."',order_s_s46='".$sql_row['old_order_s_s46']."',order_s_s47='".$sql_row['old_order_s_s47']."',order_s_s48='".$sql_row['old_order_s_s48']."',order_s_s49='".$sql_row['old_order_s_s49']."',order_s_s50='".$sql_row['old_order_s_s50']."' where order_del_no=".$schedule." and order_col_des='".$color."'";                   
                         mysqli_query($link, $update) or die("quantites not updated".mysqli_error($GLOBALS["___mysqli_ston"]));
                     }
-                     
+
+                    $new_doc=implode(',',$docket_number);
+                    $get_cps_data="select id,cut_quantity,operation_code,doc_no from $bai_pro3.cps_log where doc_no IN ($new_doc) and operation_code='$operation'";
+                    //echo $get_cps_data;
+                    $sql_result=mysqli_query($link, $get_cps_data) or exit("CPS ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($sql_row112=mysqli_fetch_array($sql_result))
+                    {
+                        $doc=$sql_row112['doc_no'];
+                        $ref_id=$sql_row112['id'];
+                        $op_code=$sql_row112['operation_code'];
+                        $quantity=$sql_row112['cut_quantity'];
+                        $cutno=$cut_nos[$doc];
+
+
+                        $get_color_code = "select color_code From $bai_pro3.bai_orders_db where order_tid =\"".$order_tid[$i]."\"";
+                        $result1 = mysqli_query($link,$get_color_code) or exit('Problem while getting color code'); 
+                        while($row2=mysqli_fetch_array($result1))
+                        {
+                         $color=$row2['color_code'];
+                        }
+
+                        // $job_no = chr($color).leading_zeros($cutno,3);
+                        $qty=-$quantity;
+                        $cut_num = chr($color)."00".$cutno;
+
+                        updateM3TransactionsLay($ref_id,$op_code,$qty,$cut_num);
+
+
+                    }
+
                     $sql8="select doc_no from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid[$i]."\""; 
                     $result8=mysqli_query($link, $sql8) or die("Error=8".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     //echo $sql8."<br>"; 

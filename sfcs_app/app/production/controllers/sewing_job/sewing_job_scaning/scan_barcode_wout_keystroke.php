@@ -2,6 +2,15 @@
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
     $shift = $_POST['shift'];
+    $has_permission=haspermission($_GET['r']);
+    if (in_array($override_sewing_limitation,$has_permission))
+    {
+        $value = 'authorized';
+    }
+    else
+    {
+        $value = 'not_authorized';
+    }
 	$op_code=$_POST['operation_code'];
 ?>
 
@@ -47,6 +56,7 @@ th,td{
 					<div class="col-padding">
 				<?php }?>
                     <input type="text" id="barcode_scan" class="form-control input-lg" ng-model="barcode" ng-keypress="scanned($event)" placeholder="scan here" autofocus>
+                    <input type="hidden" id="user_permission" ng-model="user_permission" ng-init="user_permission='<?= $value; ?>'">
                     <input type="hidden" class="form-control" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'get_barcode_details_new.php',0,'R') ?>'">
                 </div>
             </div>
@@ -89,7 +99,7 @@ th,td{
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="bar_code_details in scanned_barcode_details track by $index">
+                    <tr ng-repeat="bar_code_details in scanned_barcode_details.reverse()">
                         <td>{{$index+1}}</td>
                         <td>{{bar_code_details.data.bundle_no}}</td>
                         <td>{{bar_code_details.data.op_no}}</td>

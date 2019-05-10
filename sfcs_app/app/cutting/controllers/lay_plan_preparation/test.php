@@ -6,12 +6,6 @@ Service Request #861761 / kirang/ 2015-03-17  :  Add New buyer CK for Cut Plan g
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 ?>
-<?php 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-$view_access=user_acl("SFCS_0215",$username,1,$group_id_sfcs);
-?>
-
-
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
 
 <script>

@@ -128,9 +128,9 @@ else
 							echo "<td>".$sql_row['qms_style']."</td>";
 							echo "<td>".$sql_row['qms_schedule']."</td>";
 							echo "<td>".$sql_row['qms_color']."</td>";
-							//echo "<td>".$sql_row['qms_size']."</td>";
-							$size_value=ims_sizes($order_tid,$sql_row['qms_schedule'],$sql_row['qms_style'],$sql_row['qms_color'],$sql_row['qms_size'],$link);
-							echo "<td>".$size_value."</td>";
+							echo "<td>".$sql_row['qms_size']."</td>";
+							// $size_value=ims_sizes($order_tid,$sql_row['qms_schedule'],$sql_row['qms_style'],$sql_row['qms_color'],$sql_row['qms_size'],$link);
+							// echo "<td>".$size_value."</td>";
 							echo "<td>".$sql_row['good_panels']."</td>";
 							echo "<td>".$sql_row['rejected']."</td>";
 							echo "<td>".$sql_row['replaced']."</td>";

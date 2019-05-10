@@ -492,7 +492,7 @@
 
 	
 <div class="panel panel-primary">
-	<div class="panel-heading"><strong>Add Packing Ratio</strong> <?php echo "<a class='btn btn-warning	pull-right btn-sm' href='$url2&style=$style&schedule=$schedule' >Go Back</a>";  ?></div>
+	<div class="panel-heading"><strong>Add Packing Ratio</strong> <?php echo "<a class='btn btn-warning	pull-right btn-sm' href='$url2&style=$style&schedule=$schedule' style='padding-bottom: 0px;'><i class=\"fas fa-arrow-left\"></i>&nbsp; Go Back</a>";  ?></div>
 	<div class="panel-body">
 		<div class="col-md-12">
 			<form method="POST" class="form-inline" name="decentralized_packing_ratio">
@@ -516,7 +516,7 @@
 				?>
 				&nbsp;&nbsp;
 				<input type="submit" name="submit" id="submit" class="btn btn-success" onclick="return check_val();" value="Submit">
-			</form>
+				</form>
 		</div>
 		
 		</br>
@@ -767,9 +767,9 @@
 												echo "<div class='panel-heading'>Details</div>
 												<div class='panel-body'>";
 											$col_array = array();
-											$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and $order_joins_not_in";
+											$sewing_jobratio_cols_query = "SELECT DISTINCT order_col_des FROM $brandix_bts.tbl_orders_sizes_master WHERE parent_id IN ($schedule_id)";
 											//echo $sizes_query;die();
-											$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
+											$sizes_result=mysqli_query($link, $sewing_jobratio_cols_query) or exit("Sql Error2 $sewing_jobratio_cols_query");
 											$row_count = mysqli_num_rows($sizes_result);
 											while($sizes_result1=mysqli_fetch_array($sizes_result))
 											{
@@ -796,7 +796,7 @@
 													<table class=\"table table-bordered\">
 														<tr class=\"info\">
 															<th>Colors</th>
-															<th>Details</th>";
+															<th colspan=2>Details</th>";
 															for ($i=0; $i < sizeof($size_main); $i++)
 															{
 																echo "<th>$size_main[$i]</th>";
@@ -808,8 +808,8 @@
 														for ($j=0; $j < sizeof($col_array); $j++)
 														{
 															$tot_ordered = 0;	$pack_tot_saved = 0;
-															$tot_planned = 0;
-															$pack_tot = 0;
+															$tot_planned = 0;	$tot_carton_eligible_oq = 0;
+															$pack_tot = 0;	$tot_carton_eligible_pq = 0;
 															for($kk=0;$kk<sizeof($size_main);$kk++)
 															//foreach ($sizes_array as $key => $value)
 															{
@@ -866,8 +866,8 @@
 															
 
 															echo "<tr>
-																	<td rowspan=4>$col_array[$j]</td>
-																	<td>Order Qty</td>";
+																	<td rowspan=6>$col_array[$j]</td>
+																	<td colspan=2>Order Qty</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{
 																		echo "<input type='hidden' name='order_qty' id='order_qty_".$j."_".$i."' value='".($planned_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]]) ."' />";
@@ -878,7 +878,7 @@
 																</tr>";
 
 															echo "<tr>
-																	<td>Cut Plan Qty</td>";
+																	<td colspan=2>Cut Plan Qty</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{ 
 																		echo "<td>".$planned_qty[$col_array[$j]][$size_main[$i]]."</td>";
@@ -888,7 +888,7 @@
 																</tr>";
 
 															echo "<tr>
-																	<td>Pack Saved Quantity</td>";
+																	<td colspan=2>Pack Saved Quantity</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{									
 																		echo "<td>".$pack_qty_saved[$col_array[$j]][$size_main[$i]]."</td>";
@@ -898,7 +898,30 @@
 																</tr>";
 
 															echo "<tr>
-																	<td>New Pack Quantity</td>";
+																	<td style='padding-top: 24px;' rowspan=2>Carton Eligibility</td>
+																	<td>Against Order Qty</td>";
+																	for ($i=0; $i < sizeof($size_main); $i++)
+																	{
+																		$carton_eligi_orderQty = $ordered_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]];
+																		echo "<td>".$carton_eligi_orderQty."</td>";
+																		$tot_carton_eligible_oq = $tot_carton_eligible_oq + $carton_eligi_orderQty;
+																	}
+																	echo "<td>$tot_carton_eligible_oq</td>
+																</tr>";
+
+															echo "<tr>
+																	<td>Against Cut Plan Qty</td>";
+																	for ($i=0; $i < sizeof($size_main); $i++)
+																	{
+																		$carton_eligi_planQty = $planned_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]];
+																		echo "<td>".$carton_eligi_planQty."</td>";
+																		$tot_carton_eligible_pq = $tot_carton_eligible_pq + $carton_eligi_planQty;
+																	}
+																	echo "<td>$tot_carton_eligible_pq</td>
+																</tr>";
+
+															echo "<tr>
+																	<td colspan=2>New Pack Quantity</td>";
 
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{
@@ -1071,9 +1094,9 @@
 												echo "<div class='panel-heading'>Details</div>
 												<div class='panel-body'>";
 											$col_array = array();
-											$sizes_query = "SELECT order_col_des FROM $bai_pro3.`bai_orders_db` WHERE order_del_no=$schedule AND order_style_no='".$style."' and $order_joins_not_in";
-											//echo $sizes_query;die();
-											$sizes_result=mysqli_query($link, $sizes_query) or exit("Sql Error2 $sizes_query");
+											$sewing_jobratio_cols_query = "SELECT DISTINCT order_col_des FROM $brandix_bts.tbl_orders_sizes_master WHERE parent_id IN ($schedule_id)";
+											// echo $sewing_jobratio_cols_query;die();
+											$sizes_result=mysqli_query($link, $sewing_jobratio_cols_query) or exit("Sql Error2 $sewing_jobratio_cols_query");
 											$row_count = mysqli_num_rows($sizes_result);
 											while($sizes_result1=mysqli_fetch_array($sizes_result))
 											{
@@ -1099,7 +1122,7 @@
 													<table class=\"table table-bordered\">
 														<tr class=\"info\">
 															<th>Colors</th>
-															<th>Details</th>";
+															<th colspan=2>Details</th>";
 															for ($i=0; $i < sizeof($size_main); $i++)
 															{
 																echo "<th>$size_main[$i]</th>";
@@ -1111,8 +1134,8 @@
 														for ($j=0; $j < sizeof($col_array); $j++)
 														{
 															$tot_ordered = 0;	$pack_tot_saved=0;
-															$tot_planned = 0;
-															$pack_tot = 0;
+															$tot_planned = 0;	$tot_carton_eligible_oq = 0;
+															$pack_tot = 0;	$tot_carton_eligible_pq = 0;
 															for($kk=0;$kk<sizeof($size_main);$kk++)
 															//foreach ($sizes_array as $key => $value)
 															{
@@ -1168,8 +1191,8 @@
 															
 
 															echo "<tr>
-																	<td rowspan=4>$col_array[$j]</td>
-																	<td>Order Quantity</td>";
+																	<td rowspan=6>$col_array[$j]</td>
+																	<td colspan=2>Order Quantity</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{
 																		echo "<input type='hidden' name='order_qty' id='mm_sm_order_qty_".$j."_".$i."' value='".($planned_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]])."' />";
@@ -1182,7 +1205,7 @@
 																</tr>";
 
 															echo "<tr>
-																	<td>Cut Plan Quantity</td>";
+																	<td colspan=2>Cut Plan Quantity</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{ 
 																		echo "<td>".$planned_qty[$col_array[$j]][$size_main[$i]]."</td>";
@@ -1192,7 +1215,7 @@
 																</tr>";
 
 															echo "<tr>
-																	<td>Pack Saved Quantity</td>";
+																	<td colspan=2>Pack Saved Quantity</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{									
 																		echo "<td>".$pack_qty_saved[$col_array[$j]][$size_main[$i]]."</td>";
@@ -1202,7 +1225,30 @@
 																</tr>";
 
 															echo "<tr>
-																	<td>New Pack Quantity</td>";
+																	<td style='padding-top: 24px;' rowspan=2>Carton Eligibility</td>
+																	<td>Against Order Qty</td>";
+																	for ($i=0; $i < sizeof($size_main); $i++)
+																	{
+																		$carton_eligi_orderQty = $ordered_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]];
+																		echo "<td>".$carton_eligi_orderQty."</td>";
+																		$tot_carton_eligible_oq = $tot_carton_eligible_oq + $carton_eligi_orderQty;
+																	}
+																	echo "<td>$tot_carton_eligible_oq</td>
+																</tr>";
+
+															echo "<tr>
+																	<td>Against Cut Plan Qty</td>";
+																	for ($i=0; $i < sizeof($size_main); $i++)
+																	{
+																		$carton_eligi_planQty = $planned_qty[$col_array[$j]][$size_main[$i]] - $pack_qty_saved[$col_array[$j]][$size_main[$i]];
+																		echo "<td>".$carton_eligi_planQty."</td>";
+																		$tot_carton_eligible_pq = $tot_carton_eligible_pq + $carton_eligi_planQty;
+																	}
+																	echo "<td>$tot_carton_eligible_pq</td>
+																</tr>";
+
+															echo "<tr>
+																	<td colspan=2>New Pack Quantity</td>";
 																	for ($i=0; $i < sizeof($size_main); $i++)
 																	{									
 																		echo "<td><p id='mm_sm_pac_gen_".$j."_".$i."'></p></td>";

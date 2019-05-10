@@ -47,6 +47,7 @@
                     $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$job_no,$link);
 
                     //echo '<form action='.getFullURLLevel($_GET['r'],'split_success.php',0,'N').' method="post">'; 
+                    echo "<input type='hidden' name='schedule' value='$schedule'>"; 
                     echo "<input type='hidden' name='tid[]' value='$tid'>"; 
                     echo "<input type='hidden' name='input_job_no_random' value='$input_job_no_random'>"; 
                     echo "<input type='hidden' name='input_job_no' value='$input_job_no'>"; 

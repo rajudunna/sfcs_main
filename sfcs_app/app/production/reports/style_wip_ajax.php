@@ -90,9 +90,9 @@ if($_GET['some'] == 'bundle_no')
                 //To get Bundle Qty
 		        $get_bundle_qty="select sum(carton_act_qty) as bundle_qty from $bai_pro3.pac_stat_log_input_job where tid='$bundle_number'";
 					
-		        $bcd_data_query = "SELECT COALESCE(SUM(recevied_qty),0) as recevied,operation_id,COALESCE(sum(rejected_qty),0) as rejection,scanned_user,shift,max(date_time) as max,assigned_module  from $brandix_bts.bundle_creation_data_temp where style='$style' and schedule ='$schedule' and color='$color' and size_title='$size' and bundle_number='$bundle_number'  group by operation_id";
+		        $bcd_data_query = "SELECT COALESCE(SUM(recevied_qty),0) as recevied,operation_id,COALESCE(sum(rejected_qty),0) as rejection,group_concat(distinct scanned_user) as scanned_user,shift,max(date_time) as max,assigned_module  from $brandix_bts.bundle_creation_data_temp where style='$style' and schedule ='$schedule' and color='$color' and size_title='$size' and bundle_number='$bundle_number'  group by operation_id";
 		      
-
+		        // echo $bcd_data_query;
 			    $get_bundle_result =$link->query($get_bundle_qty);
 				while ($row2 = $get_bundle_result->fetch_assoc())
 				{
@@ -105,7 +105,8 @@ if($_GET['some'] == 'bundle_no')
 			    {
 					$bcd_rec[$row3['operation_id']] = $row3['recevied'];
 					$bcd_rej[$row3['operation_id']] = $row3['rejection'];
-					$user = $row3['scanned_user'];
+					// $user = $row3['scanned_user'];
+					$user_name[$row3['operation_id']] = $row3['scanned_user'];
 					$shift = $row3['shift'];
 					$scanned_time[$row3['operation_id']] = $row3['max'];
 					$module = $row3['assigned_module'];
@@ -133,7 +134,7 @@ if($_GET['some'] == 'bundle_no')
 								</tr>
 								<tr>
 								   <th>Scanned User</th>
-								   <td>$user</td>
+								   <td>$user_name[$value]</td>
 								</tr>
 								<tr>
 								   <th>Scanned Time</th>
@@ -298,7 +299,7 @@ else
 		   	$color = $row_main['color'];
 		    $size = $row_main['size_title'];
 		    $size_code =  $row_main['size_id'];
-
+		    $cpk_main_qty = 0;
 
 		    $get_order_qty="select sum($asum_str) as order_qty from $bai_pro3.bai_orders_db_confirm where order_style_no='$style' and order_del_no='$schedule' and order_col_des='$color' ";
 				

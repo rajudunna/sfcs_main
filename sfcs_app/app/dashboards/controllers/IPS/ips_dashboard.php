@@ -129,7 +129,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$ops_code = $sql_row122['operation_code'];
 				}
 				$rej_qty=0;
-				$sql12="SELECT sum(recut_in+replace_in) as qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$ops_code";
+				$sql12="SELECT sum(recevied_qty+recut_in) as input,sum(recut_in+replace_in) as qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$ops_code";
 				// echo $sql12.';<br>';
 				$sql_result12=mysqli_query($link, $sql12) or exit($sql12."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row12=mysqli_fetch_array($sql_result12))
@@ -137,7 +137,15 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					if($sql_row12['qty'] > 0)
 					{
 						$rej_qty = $sql_row12['qty'];
-					}					
+					}
+					// if($sql_row12['input'] > 0)
+					// {
+						$input = $sql_row12['input'];
+					// }
+					// else
+					// {
+						// $input = 0;
+					// }			
 				}
 
 				if($rej_qty > 0)
@@ -149,7 +157,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$rejection_border = "";
 				}
 				// echo $id;
-				$sqly="SELECT type_of_sewing,order_style_no,order_del_no,GROUP_CONCAT(DISTINCT order_col_des) AS order_col_des,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no,sum(carton_act_qty) as carton_qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
+				$sqly="SELECT type_of_sewing,order_style_no,order_del_no,GROUP_CONCAT(DISTINCT TRIM(order_col_des)) AS order_col_des,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no,sum(carton_act_qty) as carton_qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
 				//echo $sqly."<br>";
 				$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowy=mysqli_fetch_array($resulty))
@@ -176,14 +184,20 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				if($doc_no_ref == '')
 					$doc_no_ref = $doc_no_ref1;
 
-				$sql33x112="SELECT MIN(st_status) AS st_status,MIN(ft_status) AS ft_status FROM $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' and order_col_des in ('".implode("','",explode(",",$order_col))."')";
+				$sql33x112="SELECT co_no,MIN(st_status) AS st_status,MIN(ft_status) AS ft_status FROM $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' and order_col_des in ('".implode("','",explode(",",$order_col))."')";
 				$sql_result33x112=mysqli_query($link, $sql33x112) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row33x112=mysqli_fetch_array($sql_result33x112))
 				{
+					$co_no=$sql_row33x112['co_no'];
 					$ft_status=$sql_row33x112['ft_status'];
 					$trims_status=$sql_row33x112['st_status'];
 				}
-				
+				$colors=explode(",",$order_col);
+				for($i=0;$i<sizeof($colors);$i++)
+				{
+					$cols_de = str_pad("Color:".trim(implode(",",$colors)),80)."\n";
+				}
+					
 				if($input_trims_status>1)
 				{
 					$add_css="";
@@ -355,12 +369,12 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					}			
 					$club_c_code=array_unique($club_c_code);
 				
-					$title=str_pad("Style:".$style,50)."\n".str_pad("Schedule:".$schedule,50)."\n".str_pad("Sewing Job No:".$display_prefix1,50)."\n".str_pad("Total_Qty:".$carton_qty,50)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),50)."\n".str_pad("Remarks :".$rem,50)."\n".str_pad("Trim Status :".$tstatus,50);
+					$title=str_pad("Style:".$style,50)."\n".str_pad("Co No:".$co_no,50)."\n".str_pad("Schedule:".$schedule,50)."\n". $cols_de.str_pad("Sewing Job No:".$display_prefix1,50)."\n".str_pad("Total Qty:".$carton_qty,50)."\n".str_pad("Balance to Issue:".($carton_qty-$input),50)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),50)."\n".str_pad("Remarks :".$rem,50)."\n".str_pad("Trim Status :".$tstatus,50);
 					//$ui_url='input_status_update_input.php';	
 					$ui_url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/input_status_update_input.php";
 					$ui_url1 ='?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php');
 					$application='IPS';
-					
+					$cols_de='';
 					$sidemenu=true;
 					$scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
 					// echo $scanning_query;

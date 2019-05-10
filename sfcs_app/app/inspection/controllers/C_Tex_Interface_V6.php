@@ -14,7 +14,27 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <meta name=ProgId content=Excel.Sheet>
 <meta name=Generator content="Microsoft Excel 14">
 <link rel=File-List href="C_Tex_Interface_files/filelist.xml">
+<script>
+ function isFloat(evt) {
 
+var charCode = (event.which) ? event.which : event.keyCode;
+if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57 ) && charCode !=45) {
+    return false;
+}
+else {
+    //if dot sign entered more than once then don't allow to enter dot sign again. 46 is the code for dot sign
+    var parts = evt.srcElement.value.split('.');
+    if (parts.length > 1 && charCode == 46)
+      {
+        return false;
+      }
+
+
+    return true;
+
+}
+}
+</script>
 <style>
 .textbox{
 	background-color:#99ff88;
@@ -1467,7 +1487,17 @@ table
 	border-left:.5pt solid windowtext;
 	mso-background-source:auto;
 	mso-pattern:auto;
-	white-space:nowrap;}
+	white-space:nowrap;
+	}
+    .scroll_number{
+    /* border-left: none; */
+    max-width: 100px;
+    overflow: scroll;
+    /* text-overflow: ellipsis; */
+    white-space: nowrap;
+
+	}
+
 .xl13024082
 	{padding-top:1px;
 	padding-right:1px;
@@ -1788,9 +1818,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	$scount_temp[]=$sql_row['ref4'];
 
-	$ctex_sum+= ((int)$sql_row['ref5']);
-		$avg_t_width+= ((int)$sql_row['ref6']);
-		$avg_c_width+= ((int)$sql_row['ref3']);
+	$ctex_sum+= ($sql_row['ref5']);
+		$avg_t_width+= ($sql_row['ref6']);
+		$avg_c_width+= ($sql_row['ref3']);
+		$rec_qty1+= ($sql_row['qty_rec']);
 	
 	if($sql_row['print_check']==1)
 	{
@@ -1897,7 +1928,7 @@ tags will be replaced.-->
   border-top:none;width:60pt'>Buyer</td>
   <td colspan=9 class=xl9324082 dir=LTR  style='border-left:none;'><?php echo $buyer; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Lot No</td>
-  <td colspan=4 class=xl10024082 style='border-right:1.0pt solid black;  border-bottom:.5pt solid black;border-left:none'><?php echo $lot_ref_batch; ?></td>
+  <td class='scroll_number' colspan=4 class=xl10024082 style='border-right:1.0pt solid black;  border-bottom:.5pt solid black;border-left:none'><?php echo $lot_ref_batch; ?></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;  border-top:none;width:60pt'>Consumption<span style='mso-spacerun:yes'></span></td>
@@ -1915,7 +1946,7 @@ tags will be replaced.-->
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;  border-top:none;width:60pt'>Color</td>
   <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php echo $item_desc; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Qty In (<?php echo $fab_uom; ?>)</td>
-  <td colspan=2 class=xl10324082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php echo $rec_qty; ?></td>
+  <td colspan=2 class=xl10324082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php echo round($rec_qty,2); ?></td>
   <td class=xl9424082 dir=LTR width=99 style='border-top:none;border-left:none;  width:74pt'>PTS/100 Sq.Yd.</td>
   <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;  width:109pt'><?php if(in_array($authorized,$has_permission)) { echo "<input onchange=\"change_head(1,this.name)\" type=\"text\" class=\"textbox float req_man\"  id=\"pts\" name=\"pts\" value='".$pts."' />"; } else { echo $pts; }?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Package</td>
@@ -1923,7 +1954,7 @@ tags will be replaced.-->
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;  border-top:none;width:60pt'>PO Number</td>
-  <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php echo $po_no; ?></td>
+  <td  class="scroll_number" colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php echo $po_no; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Qty Inspected</td>
   <td colspan=2 class=xl10524082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="qty_insp" name="qty_insp" value="'.$qty_insp.'" >'; } else { echo $qty_insp; }?></td>
   <td class=xl9424082 dir=LTR width=99 style='border-top:none;border-left:none;  width:74pt'>Fallout</td>
@@ -2087,10 +2118,10 @@ tags will be replaced.-->
 	 }
  }  
     ?></td>
-  <td class=xl11324082 style='border-top:none;border-left:none'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="shrink_l" name="shrink_l" value="'.$shrink_l.'" />';  } else { echo $shrink_l; } ?> </td>
-  <td class=xl11424082 style='border-top:none;border-left:none'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="shrink_w" name="shrink_w" value="'.$shrink_w.'" />';  } else { echo $shrink_w; } ?> </td>
+  <td class=xl11324082 style='border-top:none;border-left:none'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)" onkeypress="return isFloat(event)" type="text" class="textbox req_man"  id="shrink_l" name="shrink_l" value="'.$shrink_l.'" />';  } else { echo $shrink_l; } ?> </td>
+  <td class=xl11424082 style='border-top:none;border-left:none'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)" onkeypress="return isFloat(event)" type="text" class="textbox req_man"  id="shrink_w" name="shrink_w" value="'.$shrink_w.'" />';  } else { echo $shrink_w; } ?> </td>
   <td colspan=2 class=xl11324082>Invoice</td>
-  <td colspan=4 class=xl11324082 style='border-right:1.0pt solid black'><?php echo $inv_no; ?></td>
+  <td class='scroll_number' colspan=4 class=xl11324082 style='border-right:1.0pt solid black'><?php echo $inv_no; ?></td>
  </tr>
  <tr height=21 style='mso-height-source:userset;height:15.75pt'>
   <td height=21 class=xl8224082 colspan=2 style='height:15.75pt'>Special  Instruction</td>
@@ -2309,7 +2340,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	  <td class=xl12824082 style='border-left:none'>".$temp[3]."<input class='hidden' type='hidden' id='ele_t_length".$i."' name='ele_t_length[$i]' value='".$temp[3]."' onchange='change_body(2,this.name,$i)'></td>
 	  <td class=xl12824082 style='border-left:none'><input class='textbox ctex_len float' ".$readonly." type='text'  min='0'  id='ele_c_length".$i."'  onkeyup='Subtract(".$i.");' name='ele_c_length[$i]' value='".$temp[4]."' onchange='change_body(2,this.name,$i)' ></td>
 
-	  <td class=xl12824082 style='border-left:none'><input class='Text_B' type='text' name='subt".$i."' id='subt".$i."' readonly value='".($temp[4] - $temp[3])."'></td>
+	  <td class=xl12824082 style='border-left:none'><input class='Text_B' type='text' name='subt".$i."' id='subt".$i."' readonly value='".round(($temp[4] - $temp[3]),2)."' ></td>
 
 	  <td class=xl12824082 style='border-left:none'><input class='textbox ticket_wid float' ".$readonly." type='text' min='0'  name='ele_t_width[$i]' id='ele_t_width".$i."' onkeyup='minus(".$i.");' value='".$temp[5]."' onchange='change_body(2,this.name,$i)'></td>
 	  <td class=xl12824082 style='border-left:none'><input class='textbox ctex_wid float' ".$readonly." type='text' min='0'  name='ele_c_width[$i]' id='ele_c_width".$i."' onkeyup='minus(".$i.");' value='".$temp[6]."' onchange='change_body(2,this.name,$i)'></td>
@@ -2317,7 +2348,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 
 	  <td class=xl12824082 style='border-left:none'><input class='textbox el_joins integer' ".$readonly." type='text' id='ele_c_joins[$i]'  name='ele_c_joins[$i]'  value='".$temp[8]."' onchange='change_body(2,this.name,$i)' ></td>
 
-	  <td class=xl12824082 style='border-left:none'><input class='Text_B' type='text' name='min".$i."' id='min".$i."' readonly value='".($temp[6] - $temp[5])."'></td>
+	  <td class=xl12824082 style='border-left:none'><input class='Text_B' type='text' name='min".$i."' id='min".$i."' readonly value='".round(($temp[6] - $temp[5]),2)."'></td>
 
 	  <td class=xl12824082 colspan='2' style='border-left:none;width:100px'>".$temp[7]."</td>";
 	  
@@ -2443,12 +2474,12 @@ echo '</form>';
  <tr height=31 style='mso-height-source:userset;height:23.25pt'>
   <td height=31 class=xl6824082 style='height:23.25pt;border-top:none'><?php echo $num_rows; ?></td>
   <td class=xl6924082 style='border-top:none;border-left:none'><?php  echo $shade_count; ?></td>
-  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round($rec_qty,2); ?></td>
+  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round($rec_qty1,2); ?></td>
   <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round($ctex_sum,2); ?></td>
-  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round(($ctex_sum-$rec_qty),2); ?></td>
-  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo $avg_t_width; ?></td>
-  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo $avg_c_width; ?></td>
-  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round($avg_c_width-$avg_t_width, 4); ?></td>
+  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round(($ctex_sum-$rec_qty1),2); ?></td>
+  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round($avg_t_width,2); ?></td>
+  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round($avg_c_width,2); ?></td>
+  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round(($avg_c_width-$avg_t_width),4); ?></td>
   <td class=xl7024082 style='border-top:none;border-left:none'><?php echo $lot_count; ?></td>
   <!-- <td class=xl7924082 dir=LTR width=68 style='border-top:none;width:51pt'>Qty</td> -->
   </tr>

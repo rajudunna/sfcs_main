@@ -159,12 +159,12 @@ echo "<br/>color&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;".$color."";
 
 echo "<br/><br/>";
 echo "<table class='table table-bordered'>";
-echo "<tr><th>Size</th><th>Available Qty</th><th>Module Qty</th><th>Module</th><th>Reject Qty</th><th>Reason Code</th></tr>";
+echo "<tr><th>Color</th><th>Size</th><th>Available Qty</th><th>Module Qty</th><th>Module</th><th>Reject Qty</th><th>Reason Code</th></tr>";
 $x=0;
 
 if($color=='0')
 {
-$sql="select * from $bai_pro3.disp_mix_size where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
+$sql="select * from $bai_pro3.disp_mix_size_2 where order_style_no=\"$style\" and order_del_no=\"$schedule\" group by order_col_des,size_code";
 }
 else
 {
@@ -178,10 +178,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	if($qty>0)
 	{
 	    $size_value=ims_sizes('',$sql_row['order_del_no'],$sql_row['order_style_no'],$sql_row['order_col_des'],strtoupper($sql_row['size_code']),$link);
-		echo "<tr><td>".$size_value."</td><td>$qty</td>";
+		echo "<tr><td>".$sql_row['order_col_des']."</td><td>".$size_value."</td><td>$qty</td>";
 		if($color=='0')
 		{
-		$sql2="select sum(bac_qty) as sizes,bac_no as mods from $bai_pro.bai_log_buf where delivery=\"$schedule\" and size_".$sql_row['size_code']." > 0 group by bac_no order by bac_no+0";
+			$sql2="select sum(bac_qty) as sizes,bac_no as mods from $bai_pro.bai_log_buf where delivery=\"$schedule\" and color=\"".$sql_row['order_col_des']."\" and size_".$sql_row['size_code']." > 0 group by bac_no order by bac_no+0";
 		}
 		else
 		{
@@ -203,8 +203,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 		echo "<td>".$mod_exp1."</td>";
 		echo "<td>".$mod_exp2."</td>";
-		echo "<td><input type=\"text\" onkeypress=\"return AcceptOnlyNumbers(event);\" name=\"qty[$x]\" value=\"0\" onchange='if(this.value>$qty) { alert(\"Wrong Qty\"); this.value=0; } if(this.value<0) { alert(\"Wrong Qty\"); this.value=0; }'><input type=\"hidden\" name=\"size[$x]\" value=\"".$sql_row['size_code']."\"></td>";
-		echo "<td><select name=\"".$sql_row['size_code']."[]\" size=\"5\" multiple>";
+		echo "<td><input type=\"text\" onkeypress=\"return AcceptOnlyNumbers(event);\" name=\"qty[$x]\" value=\"0\" onchange='if(this.value>$qty) { alert(\"Wrong Qty\"); this.value=0; } if(this.value<0) { alert(\"Wrong Qty\"); this.value=0; }'><input type=\"hidden\" name=\"size[$x]\" value=\"".$sql_row['size_code']."\">";
+		if($color=='0')
+		{
+			echo "<input type=\"hidden\" name=\"color_new[$x]\" value=\"".$sql_row['order_col_des']."\">";
+		}
+		echo "</td><td><select name=\"".$sql_row['size_code']."[]\" size=\"5\" multiple>";
 		for($i=0;$i<sizeof($reason_id);$i++)
 		{
 			echo "<option value=\"".$reason_code[$i]."\">".$reason_id[$i]."</option>";
@@ -223,7 +227,16 @@ echo "<br/><br/><table>";
 //echo "<tr><td><input type=\"text\" name=\"mods\" id=\"mods\" value=\"\" onkeyup=\"abc(this.value)\" onblur=\"abc(this.value)\"></td></tr>";
 echo "</table>";
 
-echo "<input type=\"hidden\" name=\"style_new\" value=\"$style\"><input type=\"hidden\" name=\"schedule_new\" value=\"$schedule\"><input type=\"hidden\" name=\"color_new\" value=\"$color\">";
+echo "<input type=\"hidden\" name=\"style_new\" value=\"$style\"><input type=\"hidden\" name=\"schedule_new\" value=\"$schedule\">";
+if($color!='0')
+{
+	echo "<input type=\"hidden\" name=\"color_new\" value=\"$color\">";
+	echo "<input type=\"hidden\" name=\"color_new1\" value=\"$color\">";
+}
+else
+{
+	echo "<input type=\"hidden\" name=\"color_new1\" value=\"1\">";
+}
 echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable';
 echo "<input type=\"submit\" class=\"btn btn-primary\" id=\"update\" name=\"update\" value=\"Update\" onclick=\"javascript:button_disable();\">";
 
@@ -241,6 +254,7 @@ if(isset($_POST['update']))
 	$style_new=$_POST['style_new'];
 	$schedule_new=$_POST['schedule_new'];
 	$color_new=$_POST['color_new'];
+	$color_new1=$_POST['color_new1'];
 	$size=$_POST['size'];
 	//echo "size=".implode(",",$size)."<br>";
 	$qty=$_POST['qty'];
@@ -255,18 +269,17 @@ if(isset($_POST['update']))
 		$reason=$_POST[$size[$i]];
 		$modss=$_POST["m".$size[$i].""];
 		//echo "mods=".$modss."<br>";
-				
 		if($qty[$i]>0)
 		{
-			if($color_new=='0')
+			if($color_new1=='1')
 			{
-			$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", tran_type=2, size=\"".$size[$i]."\", fail_reason=\"".implode(",",$reason)."\", done_by=\"$username\", remarks=\"".implode(",",$modss)."\", pcs=-".$qty[$i];
+			$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", color=\"".$color_new[$i]."\", tran_type=2, size=\"".$size[$i]."\", fail_reason=\"".implode(",",$reason)."\", done_by=\"$username\", remarks=\"".implode(",",$modss)."\", pcs=-".$qty[$i];
 			}
 			else
 			{
-			$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", color=\"$color_new\", tran_type=2, size=\"".$size[$i]."\", fail_reason=\"".implode(",",$reason)."\", done_by=\"$username\", remarks=\"".implode(",",$modss)."\", pcs=-".$qty[$i];
+				$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", color=\"$color_new\", tran_type=2, size=\"".$size[$i]."\", fail_reason=\"".implode(",",$reason)."\", done_by=\"$username\", remarks=\"".implode(",",$modss)."\", pcs=-".$qty[$i];
 			}
-			//echo $sql."<br>";
+			// echo $sql."<br>";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 	}
