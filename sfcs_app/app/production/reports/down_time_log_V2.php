@@ -131,13 +131,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$schedule=$sql_row['schedule'];
 	$style=$sql_row['style'];
 	echo "<td>".$sql_row['mod_no']."</td>";
-			$sql_buyer="SELECT TRIM(order_div) FROM $bai_pro3.bai_orders_db where order_style_no ='$style'";
+			$sql_buyer="SELECT order_div FROM $bai_pro3.bai_orders_db where order_style_no ='$style'";
 			$sql_result_buyer=mysqli_query($link, $sql_buyer) or exit($sql_buyer."Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 			{
 				$buyer=$sql_row_buyer["order_div"];
 			}
-	echo"<td >".$buyer."</td>";
+	echo"<td style='font-size:10px'>".$buyer."</td>";
 	
 	echo "<td>".$style."</td>";
 	echo "<td>".$schedule."</td>";
