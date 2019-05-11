@@ -86,7 +86,7 @@ echo '<div class="table-responsive">
 
 
 echo "<tr style='background-color:#337ab7;color:white;'>
-<th style='text-align:center;'>Date</th>	<th style='text-align:center;'>Section</th>	<th style='text-align:center;'>Shift</th>	<th style='text-align:center;'>Line</th>	<th style='text-align:center;'>Customer</th>	<th style='text-align:center;'>Style</th>	<th style='text-align:center;'>Sch no</th><th style='text-align:center;'>From</th><th style='text-align:center;'>To</th>	<th style='text-align:center;'>Hours open</th>	<th style='text-align:center;'>Department</th>	<th style='text-align:center;'>Reason</th>	<th style='text-align:center;'>Source</th>	<th style='text-align:center;'>Plan Eff%</th><th style='text-align:center;'>SAH Loss</th><th style='text-align:center;'> Lost Pieces </th><th style='text-align:center;'>Controls</th></tr>";
+<th style='text-align:center;'>Date</th>	<th style='text-align:center;'>Section</th>	<th style='text-align:center;'>Shift</th>	<th style='text-align:center;'>Line</th>	<th colspan="6" style='text-align:center;'>Customer</th>	<th style='text-align:center;'>Style</th>	<th style='text-align:center;'>Sch no</th><th style='text-align:center;'>From</th><th style='text-align:center;'>To</th>	<th style='text-align:center;'>Hours open</th>	<th style='text-align:center;'>Department</th>	<th style='text-align:center;'>Reason</th>	<th style='text-align:center;'>Source</th>	<th style='text-align:center;'>Plan Eff%</th><th style='text-align:center;'>SAH Loss</th><th style='text-align:center;'> Lost Pieces </th><th style='text-align:center;'>Controls</th></tr>";
 
 
 $sql="select * from $bai_pro.down_log where month(date)=month(\"$date\") and year(date)=year(\"$date\") order by date, shift, mod_no*1";
@@ -137,7 +137,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				$buyer=$sql_row_buyer["order_div"];
 			}
-	echo"<td style='text-align:center;'>".$buyer."</td>";
+	echo"<td >".$buyer."</td>";
 	
 	echo "<td>".$style."</td>";
 	echo "<td>".$schedule."</td>";
