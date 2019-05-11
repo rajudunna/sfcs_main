@@ -137,7 +137,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				$buyer=$sql_row_buyer["order_div2"];
 			}
-	echo"<td style="word-wrap: break-word;">".$buyer."</td>";
+	echo"<td style='word-wrap: break-word;'>".$buyer."</td>";
 	
 	echo "<td>".$style."</td>";
 	echo "<td>".$schedule."</td>";
