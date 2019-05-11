@@ -311,7 +311,7 @@ td,th
                         <div class="row">
                             <div class="col-md-2">
 									<label for="demo1">Select Date: </label>
-                                	<input type="date" data-toggle="datepicker" name="dat" id="demo1" value="<?php print(date("Y-m-d")); ?>"  class="form-control"/></td> 
+                                	<input type="date" data-toggle="datepicker" name="dat" id="demo1" value="<?= $date; ?>"  required class="form-control"/></td> 
                             </div>
                             <div class="col-md-2">
                                 <label for="section">Select Section: </label>
@@ -392,7 +392,6 @@ td,th
                                             echo "<option value=\"".$hours_list_ss."\">".$hours_list_dispaly_array[$key]."</option>"; 
                                         }
                                        
-                                       // $sql="SELECT start_time,end_time FROM $bai_pro3.tbl_plant_timings WHERE time_value IN($KEY);";
                                         
                                     }  
                                    
@@ -503,7 +502,7 @@ td,th
                             {      
                                 $hour_filter_array=explode("$", $_POST['hour_filter']);
                                    //$time_query=" AND HOUR(bac_lastup) in ('".$hour_filter."') "; 
-                                   $time_query=" AND TIME(bac_lastup) BETWEEN ('".$hour_filter_array[0]."') and ('".$hour_filter_array[1]."')"; 
+                                   $time_query="AND TIME(bac_lastup) BETWEEN ('".$hour_filter_array[0]."') and ('".$hour_filter_array[1]."')"; 
                             }
                             
                             /* Function END */ 
@@ -1530,7 +1529,7 @@ td,th
                                     /* Stylewise Report */ 
                                     $sdate=$date; 
                                     /*    echo "<table id=\"info\">"; */ 
-                                    echo "<tr><td>Style Summary ".$style_summ_head."</td></tr>"; 
+                                    echo "<tr></br><td>Style Summary ".$style_summ_head."</td></tr>"; 
                                     echo "<table id=\"Table3\">";
                                     echo "<tr style='background-color:#29759C;'><th style='background-color:#29759C;'>Style Code</th><th style='background-color:#29759C;'>SMV</th><th style='background-color:#29759C;'>Oprs</th><th style='background-color:#29759C;'>Mod Count</th>"; 
 
@@ -1666,6 +1665,14 @@ td,th
                                         $exp_pcs_hr2_sum=$exp_pcs_hr2_sum+$exp_pcs_hr2; 
                                         echo "</tr>"; 
                                     } 
+                                    // if($sql_result==0){
+
+                                    //     echo "<td></td><td></td><td></td><td></td>";
+
+                                    //     for($i=0;$i<=count($hours_list_array);$i++){
+                                    //         echo "<td></td>";
+                                    //     }
+                                    // }
 
                                     echo "<tr class=\"total000\"><td>Total</td><td></td><td></td><td></td>"; 
 
@@ -1705,9 +1712,43 @@ td,th
 
                             }
 
-                            echo "<tr class=\"total\"><td>Total</td><td></td><td></td><td></td><td></td>
-                            <td>$total</td></tr>";
-                            
+                         /*   echo "<tr class=\"total\"><td>Total</td><td></td><td></td><td></td><td></td>
+                            <td>$total</td></tr>"; */
+                            echo "<tr class=\"total\"><td>Total</td><td></td><td></td><td></td><td></td>"; 
+                            $total=0; 
+
+                            for($i=0; $i<sizeof($h1); $i++) 
+                            { 
+                                $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and Hour(bac_lastup) between $h1[$i] and $h2[$i] and bac_sec in ($sections_group) and bac_shift in ($team) $time_query";              
+                                $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                while($sql_row2=mysqli_fetch_array($sql_result2)) 
+                                { 
+                                    $sum=$sql_row2['sum']; 
+                                    if($sum==0) 
+                                    { 
+                                        $sum=0; 
+                                        echo "<td bgcolor=\"red\">0</td>"; 
+                                    } 
+                                    else 
+                                    { 
+                                        echo "<td>".$sum."</td>"; 
+                                        $total=$total+$sum; 
+                                    } 
+                                } 
+                            } 
+                            echo "<td>".$total."</td>"; 
+                            echo "<td>".round($planpcsgrand,0)."</td>"; 
+                            echo "<td>".round($balancepcs,0)."</td>"; 
+                            echo "<td>".$avgpcshrsum."</td>"; 
+                            echo "<td>".round($exp_pcs_hr_total,0)."</td>"; 
+                            echo "<td>".round($avgperhour2_sum,0)."</td>"; 
+                            echo "<td>".round($exp_pcs_hr2_sum)."</td>"; 
+                            echo "<td>".round($exp_pcs_hr2_sum)."</td>"; 
+                            echo "<td>".round($exp_pcs_hr2_sum)."</td>"; 
+                            echo "<td>".round($exp_pcs_hr2_sum)."</td>";
+                            echo "<tr>"; 
+                            echo "</table>"; 
+                      
                                    
 
                             
@@ -1720,40 +1761,26 @@ td,th
                                 /*new 20100320 */ 
                                 /*new 20100320 */       $sec=$sections[$j]; 
 
-                                /*new 20100320 */        // $sec=$_POST['section']; 
-
-
-
-                                /* $date=date("Y-m-d", mktime(0,0,0,date("m") ,date("d"),date("Y")));  */ 
-
-                                /* $sec=5; */ 
-
-                                /* $date=date("Y-m-d", mktime(0,0,0,date("m") ,date("d"),date("Y"))); */ 
-
-                                /* $date = date("Y-m-d", $sdate); 
-                                echo $sdate; */ 
-
-                                /* $h1=array(1,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21); 
-                                $h2=array(6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,24); */ 
+                               
                                 $h1=array(); 
                                 $h2=array(); 
                                 //$headers=array(); 
                                 $i=0; 
 
-                                $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) $time_query order by bac_lastup"; 
-                                // echo $sql."<br>"; 
-                                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                while($sql_row=mysqli_fetch_array($sql_result)) 
-                                { 
-                                    $time = $sql_row['time'];
-                                    $h1[$i]=$sql_row['time']; 
-                                    // echo $sql_row['time']."<br>"; 
-                                    $h2[$i]=$sql_row['time']; 
-                                    $timestr=$sql_row['time'].":0:0"; 
-                                    //if ($time > 12) {   $time = date("g", strtotime($timestr));   }
-                                   // $headers[$i]=$time;
-                                    $i=$i+1; 
-                                } 
+                                // $sql="select distinct(Hour(bac_lastup)) as \"time\" from $table_name where bac_date=\"$date\" and bac_shift in ($team) $time_query order by bac_lastup"; 
+                                // // echo $sql."<br>"; 
+                                // $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                // while($sql_row=mysqli_fetch_array($sql_result)) 
+                                // { 
+                                //     $time = $sql_row['time'];
+                                //     $h1[$i]=$sql_row['time']; 
+                                //     // echo $sql_row['time']."<br>"; 
+                                //     $h2[$i]=$sql_row['time']; 
+                                //     $timestr=$sql_row['time'].":0:0"; 
+                                //     //if ($time > 12) {   $time = date("g", strtotime($timestr));   }
+                                //    // $headers[$i]=$time;
+                                //     $i=$i+1; 
+                                // } 
                                 $sql="select mod_style, mod_no from $pro_mod where mod_sec in ($sections_group) and mod_date=\"$date\" order by mod_no";      
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
@@ -2249,6 +2276,13 @@ td,th
                                 $sql="select distinct bac_style,smv from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and bac_shift in ($team)";      
 								// echo $sql."<br>";								
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                $rowcount=mysqli_num_rows($sql_result);
+                                if($rowcount==0){
+
+                                    for($i=0; $i<sizeof($headers); $i++){
+                                        echo "<td></td>";
+                                    }
+                                }else{
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
                                     $mod_style=$sql_row['bac_style']; 
@@ -2384,7 +2418,7 @@ td,th
                                     $exp_pcs_hr2_sum=$exp_pcs_hr2_sum+$exp_pcs_hr2; 
                                     echo "</tr>"; 
                                 } 
-
+                            }
                                 echo "<tr class=\"total\"><td>Total</td><td></td><td></td><td></td>"; 
                                 $total=0; 
 
@@ -2431,31 +2465,30 @@ td,th
   if (isset($_POST['submit'])) 
   {
          /* Factory Summary table */
-
+         if($option1=1) 
+      {
 
          echo "<table id=\"info\">";
          //echo "<tr class=\"total\"><td rowspan=4>Factory</td><td>Total</td>"; 
+         echo "<th><h4>Factory Summary</h4></th>";
 
-         echo "<th><h4>Factory Summary</h4></th>
-                                        <th style='background-color:#29759C;color:white;'>Total</th>
-                                <th style='background-color:#29759C;color:white;'>Avg Hours</th>
-                                
-                                
-                                <th style='background-color:#29759C;color:white;'>Avg Plan EFF%</th>
-                                
-                                
-                                
-                                <th style='background-color:#29759C;color:white;'>Plan Pro.</th>
-                                
-                                
-                                <th style='background-color:#29759C;color:white;'>CLH</th>
-                                <th style='background-color:#29759C;color:white;'>Plan SAH/Hr</th>
-                                <th style='background-color:#29759C;color:white;'>Act SAH</th>
-                                <th style='background-color:#29759C;color:white;'>Act. EFF%</th> 
-                                <th style='background-color:#29759C;color:white;'>Avg Balance Pcs.</th>
-                                <th style='background-color:#29759C;color:white;'>Act. Pcs/Hr</th>
-                                <th style='background-color:#29759C;color:white;'>Req. Pcs/Hr</th>";
+            for($i=0;$i<sizeof($headers);$i++) 
+            { 
+                echo "<th style='background-color:#29759C;'>".$headers[$i]."-".($headers[$i]+1)."</th>";  
+            }
+         echo "<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Avg Hours</th> 
+         <th style='background-color:#29759C;'>Avg Plan EFF%</th> 
+         <th style='background-color:#29759C;'>Plan Pro.</th> 
 
+         <th style='background-color:#29759C;'>CLH</th> 
+         <th style='background-color:#29759C;'>Plan SAH/Hr</th> 
+         <th style='background-color:#29759C;'>Act SAH</th> 
+         <th style='background-color:#29759C;'>Act. EFF%</th> 
+         <th style='background-color:#29759C;'>Avg Balance Pcs.</th> 
+         <th style='background-color:#29759C;'>Act.Pcs/Hr</th> 
+         <th style='background-color:#29759C;'>Req.Pcs/Hr</th>"; 
+         
+         echo "<tr class=\"total\"><td colspan=1>Totals</td>";
          $total=0; 
          $atotal=0; 
 
@@ -2758,7 +2791,9 @@ td,th
         //                         echo "<tr class=\"total\"><td colspan=1>AVG-Pcs/HR</td>";
         //                         echo "</table>";
         //                         echo "<br></br>";  
-        // }
+        // 
+
+    }
 
 
 
