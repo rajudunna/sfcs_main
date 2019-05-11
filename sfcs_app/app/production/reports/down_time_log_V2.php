@@ -137,7 +137,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				$buyer=$sql_row_buyer["order_div"];
 			}
-	echo"<td >".$buyer."</td>";
+	echo"<td style='font-size:5px;'>".$buyer."</td>";
 	
 	echo "<td>".$style."</td>";
 	echo "<td>".$schedule."</td>";
