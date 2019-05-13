@@ -25,6 +25,10 @@ $ms_sql_odbc_pass = $conf1->get('mssql-password');
 $mssql_db = $conf1->get('m3database');
 $ms_sql_driver_name = $conf1->get('driver_name');
 
+//Barcode Configuration
+$barcode_4x2 = $conf1->get('4x2-barcode');
+$barcode_2x1 = $conf1->get('2x1-barcode');
+
 //MY SQL host
 $ms_sql_odbc_host = $conf1->get('mysql-odbc');
 //ms-sql sticker_report
