@@ -284,7 +284,7 @@ function insert_into_moq($ref_id,$op_code,$qty){
     //getting the operations and op_codes  for that mo if exists
     foreach($mos as $mo=>$mo_qty){
         $mo_op_query ="SELECT OperationNumber,OperationDescription FROM $bai_pro3.schedule_oprations_master 
-                       WHERE OperationNumber=$op_code and MONumber=$mo limit 1";             
+                       WHERE OperationNumber=$op_code and MONumber='$mo' limit 1";             
         $mo_ops_result = mysqli_query($link,$mo_op_query) or exit('No Operations Exists for MO '.$mo);
         while($row = mysqli_fetch_array($mo_ops_result)){
             $op_desc[$mo] = $row['OperationDescription'];
@@ -309,7 +309,7 @@ function insert_into_moq($ref_id,$op_code,$qty){
             $filled_qty = 0;
             //getting already filled quantities 
             $filled_qty_query = "Select SUM(bundle_quantity) as filled from $bai_pro3.mo_operation_quantites where 
-                                 mo_no = $mo and op_code = $op_code";
+                                 mo_no = '$mo' and op_code = $op_code";
             $filled_qty_result = mysqli_query($link,$filled_qty_query);	
             while($row = mysqli_fetch_array($filled_qty_result)){
                 $filled_qty = $row['filled'];
@@ -337,7 +337,7 @@ function insert_into_moq($ref_id,$op_code,$qty){
         //Updating all excess to last mo 
         if($qty > 0){
             $update_query = "Update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity + $qty 
-                             where mo_no = $last_mo and ref_no = $ref_id and op_code = $op_code";
+                             where mo_no = '$last_mo' and ref_no = $ref_id and op_code = $op_code";
             mysqli_query($link,$update_query) or exit("Error 3 In Updating excess qty to MO Qtys for mo : ".$mo);
         }
     }

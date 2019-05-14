@@ -211,7 +211,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
                 $op_codes  = $row['codes']; 
             }
 
-            $mo_query  = "SELECT GROUP_CONCAT(mo_no) as mos from $bai_pro3.mo_details where schedule = '$get_order_del_no'";
+            $mo_query  = "SELECT GROUP_CONCAT(\"'\",mo_no,\"'\") as mos from $bai_pro3.mo_details where schedule = '$get_order_del_no'";
             $mo_result = mysqli_query($link,$mo_query);
             while($row = mysqli_fetch_array($mo_result))
             {

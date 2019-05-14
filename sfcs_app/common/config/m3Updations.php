@@ -109,7 +109,7 @@ function updateM3Transactions($ref_id,$op_code,$qty)
                         
                         if ($opn_b4_200 == $op_code)
                         {
-                            $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no=$mo_number";
+                            $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no='$mo_number'";
                             $count_result = $link->query($get_count);
                             while($row = $count_result->fetch_assoc()) 
                             {
@@ -118,7 +118,7 @@ function updateM3Transactions($ref_id,$op_code,$qty)
 
                             if ($count > 0)
                             {
-                                $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $to_update_qty, cumulative_qty = cumulative_qty + $to_update_qty where mo_no= $mo_number";
+                                $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $to_update_qty, cumulative_qty = cumulative_qty + $to_update_qty where mo_no= '$mo_number'";
                             }
                             else
                             {
@@ -137,7 +137,7 @@ function updateM3Transactions($ref_id,$op_code,$qty)
                 if(strtolower($is_m3) == 'yes')
                 {
                     //getting m3_op_code
-                    $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = $mo_number AND OperationNumber = $op_code";
+                    $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $op_code";
                     $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
                     {
@@ -223,7 +223,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
             $work_station_id = $row['work_station_id'];
         } 
     }
-    $qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where ref_no = $bundle_no and op_code = $op_code order by mo_no";
+    $qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where ref_no = $bundle_no and op_code = $op_code order by mo_no*1";
     $qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
     $total_bundle_rec_present_qty = $b_rep_qty;
     while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
@@ -286,7 +286,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
                         
                         if ($opn_b4_200 == $op_code)
                         {
-                            $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no=$mo_number";
+                            $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no='$mo_number'";
                             $count_result = $link->query($get_count);
                             while($row = $count_result->fetch_assoc()) 
                             {
@@ -295,7 +295,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
 
                             if ($count > 0)
                             {
-                                $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty - $to_update_qty, cumulative_qty = cumulative_qty - $to_update_qty where mo_no= $mo_number";
+                                $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty - $to_update_qty, cumulative_qty = cumulative_qty - $to_update_qty where mo_no= '$mo_number'";
                                 mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating/inserting tbl_carton_ready");
                             }
                         }
@@ -313,7 +313,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
                 if($is_m3 == 'Yes' || $is_m3 == 'yes' || $is_m3 == 'YES')
                 {
                         //getting m3_op_code
-                        $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = $mo_number AND OperationNumber = $op_code";
+                        $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $op_code";
                         $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
                         {
@@ -462,7 +462,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                         $is_m3 = $row['default_operration'];
                     }
                         //getting m3_op_code
-                        $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = $mo_number AND OperationNumber = $main_ops_code";
+                        $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $main_ops_code";
                         $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
                         {
@@ -539,7 +539,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
     }
 
     $mo_array  = array();   $mo_qty_array = array();
-    $validate_qry = "SELECT mo_no,sum(bundle_quantity) as bun_quantity from $bai_pro3.mo_operation_quantites where ref_no in (".$b_tid.") and op_code = $b_op_id group by mo_no";
+    $validate_qry = "SELECT mo_no,sum(bundle_quantity) as bun_quantity from $bai_pro3.mo_operation_quantites where ref_no in (".$b_tid.") and op_code = $b_op_id group by mo_no*1";
     $qry_nop_result=mysqli_query($link,$validate_qry) or exit("Bundles Query Error14 => ".$validate_qry);
     while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
     {
@@ -586,7 +586,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
             $good_quantity_past = $nop_qry_row['good_quantity'];
             $id = $nop_qry_row['id'];
 
-            $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty - $mo_quantity where mo_no= $mo_number";
+            $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty - $mo_quantity where mo_no= '$mo_number'";
             // echo $insert_update_tbl_carton_ready;
             mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating tbl_carton_ready");
 
@@ -596,7 +596,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
             
             //M3 Rest API Call START
                 //getting m3_op_code
-                $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = $mo_number AND OperationNumber = $b_op_id";
+                $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $b_op_id";
                 $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
                 if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
                 {
@@ -725,7 +725,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
         $id = $nop_qry_row['id'];
         $negative_qty = $good_quantity_past * -1;
 
-        $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $good_quantity_past where mo_no= $mo_number";
+        $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $good_quantity_past where mo_no= '$mo_number'";
         // echo $insert_update_tbl_carton_ready;
         mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating tbl_carton_ready");
 
@@ -733,7 +733,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
         mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites");
 
         // M3 Rest API Call START
-            $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = $mo_number AND OperationNumber = $b_op_id";
+            $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $b_op_id";
             $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
             if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
             {
@@ -918,7 +918,7 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
                     {
                         $is_m3 = $row['default_operration'];
                     }
-                     $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = $mo_number AND OperationNumber = $main_ops_code";
+                     $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $main_ops_code";
                         $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
                         {
@@ -1039,7 +1039,7 @@ function updateM3TransactionsLay($ref_id,$op_code,$qty,$cut_num)
         if(strtolower($is_m3) == 'yes')
         {
             //getting m3_op_code
-            $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = $mo_number AND OperationNumber = $op_code";
+            $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $op_code";
             $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
             if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
             {

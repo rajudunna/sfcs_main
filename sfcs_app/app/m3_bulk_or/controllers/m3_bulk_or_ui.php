@@ -191,12 +191,12 @@ if(($username=="baischtasksvc") and ($log_time==0 or $time_diff>1))
 			}
 			
 			//echo "<br>select QCI_M3_DB_LINK.dbo.know_op_number('".know_my_config('facility')."',".$mo_number.",'".know_my_config('facility').$sql_row['m3_op_des']."')<br>";
-			echo "<br>select QCI_M3_DB_LINK.dbo.know_op_number('".know_my_config('facility')."',".$mo_number.",'".$sql_row['m3_op_des']."')<br>";
+			echo "<br>select QCI_M3_DB_LINK.dbo.know_op_number('".know_my_config('facility')."','".$mo_number."','".$sql_row['m3_op_des']."')<br>";
 			//Kirang: Added on 20150728 to update smv value against the schedule and color.
 			//$smv=mssql_mdm_value("select QCI_M3_DB_LINK.dbo.know_smv_value('".know_my_config('facility')."',".$mo_number.",".$m3_op_code.")");
 			
 			//20151113 mssql_mdm_value -> mssql_mdm_value_sfcs
-			$smv=mssql_mdm_value_sfcs_smv($sql_row['sfcs_schedule'],$m3_color_code,$sql_row['sfcs_size'],"select QCI_M3_DB_LINK.dbo.know_smv_value('".know_my_config('facility')."',".$mo_number.",".$m3_op_code.")");
+			$smv=mssql_mdm_value_sfcs_smv($sql_row['sfcs_schedule'],$m3_color_code,$sql_row['sfcs_size'],"select QCI_M3_DB_LINK.dbo.know_smv_value('".know_my_config('facility')."','".$mo_number."',".$m3_op_code.")");
 			//$smv=0;
 			if($smv>0)
 			{
@@ -209,7 +209,7 @@ if(($username=="baischtasksvc") and ($log_time==0 or $time_diff>1))
 			echo "MP=".$sql_row['sfcs_tid']."-".$mo_number."-".$m3_op_code."<br>";
 			if($mo_number>0 and $m3_op_code>0)
 			{
-				$sql_new="update $m3_bulk_ops_rep_db.m3_sfcs_tran_log set m3_size='$m3_size_code', m3_mo_no=$mo_number, m3_op_code=$m3_op_code,sfcs_job_no='$job_no', sfcs_status=10 where sfcs_tid=".$sql_row['sfcs_tid']." and sfcs_status in (0,16)";
+				$sql_new="update $m3_bulk_ops_rep_db.m3_sfcs_tran_log set m3_size='$m3_size_code', m3_mo_no='$mo_number', m3_op_code=$m3_op_code,sfcs_job_no='$job_no', sfcs_status=10 where sfcs_tid=".$sql_row['sfcs_tid']." and sfcs_status in (0,16)";
 				//echo $sql_new."<br>";
 				$sql_result_new=mysqli_query($link, $sql_new) or exit("Sql Error2 $sql_new".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}

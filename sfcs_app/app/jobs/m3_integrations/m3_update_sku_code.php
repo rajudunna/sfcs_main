@@ -44,7 +44,7 @@ foreach($mo_details as $key => $value)
     {
         $mfno[$value2['MFNO']]= $value2['PRNO'];
     }
-    $update_qry = "update $bai_pro3.mo_details set product_sku='$mfno[$value]' where mo_no =$mo_no";
+    $update_qry = "update $bai_pro3.mo_details set product_sku='$mfno[$value]' where mo_no ='$mo_no'";
     // echo $update_qry."<br>";
     $update_qry_result = mysqli_query($link, $update_qry) or die("update_qry error".mysqli_error($GLOBALS["___mysqli_ston"]));
     if($update_qry_result)
