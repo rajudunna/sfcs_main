@@ -168,8 +168,8 @@ $(document).ready(function() {
 	                            $mo[] = $row2['monumber'];
 	                        }
 	                        	
-	                        $mos = implode(",", $mo);
-	                        $del_bom_details="DELETE FROM $m3_inputs.bom_details where mo_no in($mos)";
+	                        // $mos = implode(",", $mo);
+	                        $del_bom_details="DELETE FROM $m3_inputs.bom_details where mo_no in('".implode("','",$mo)."')";
 	                        $result7 = $link->query($del_bom_details);
 
 	                        $del_order_details="DELETE FROM $m3_inputs.order_details WHERE style='$style' AND SCHEDULE='$schdule' AND GMT_Color='$color'";

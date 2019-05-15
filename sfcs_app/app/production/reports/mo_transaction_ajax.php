@@ -68,7 +68,7 @@ if(isset($_GET['submit']))
 	    {
 	       $good_qty = 0;
 	       $get_m3_quantities="select sum(good_quantity) as good_quantity from $bai_pro3.mo_operation_quantites 
-	                           where mo_no = $mos and op_code='".$value."'";
+	                           where mo_no = '$mos' and op_code='".$value."'";
                              //echo $get_m3_quantities;
 	       $get_m3__result=$link->query($get_m3_quantities);
 	       while ($row = $get_m3__result->fetch_assoc())
