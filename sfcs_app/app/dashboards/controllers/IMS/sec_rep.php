@@ -223,7 +223,7 @@ if(isset($_GET['val']))
 				}
 
 				//To get sewing operations 
-		        $sewing_master="select operation_code from $brandix_bts.tbl_orders_ops_ref where category ='sewing' ";
+		        $sewing_master="select operation_code from $brandix_bts.tbl_orders_ops_ref where category ='sewing' AND display_operations='yes'";
 		        $sql_result3=mysqli_query($link,$sewing_master) or exit("Sql Error_cut_master".mysqli_error());
 				while($row=mysqli_fetch_array($sql_result3))
 				{
