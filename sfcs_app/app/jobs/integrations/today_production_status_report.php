@@ -3,8 +3,11 @@ $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');	
 $data_result='';
-// $connect = odbc_connect("$prod_status_driver_name;Server=$prod_status_server_name;Database=$prod_status_database;", $prod_status_username,$prod_status_password);
-$connect = odbc_connect("$prod_status_driver_name;Server=bci-ctsql-01\belctsql;Database=SAH_TEST;", 'shopfloor_user','welcome#123');
+$prod_status_server_name = 'bci-ctsql-01\belctsql';
+$prod_status_database = 'SAH_TEST';
+$prod_status_username = 'shopfloor_user';
+$prod_status_password = 'welcome#123';
+$connect = odbc_connect("$prod_status_driver_name;Server=$prod_status_server_name;Database=$prod_status_database;", $prod_status_username,$prod_status_password);
 
 if(isset($_GET["date"]))
 {
