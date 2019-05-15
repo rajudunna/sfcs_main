@@ -385,14 +385,14 @@ if(isset($_GET['val']))
 			{
 				$input_selection=$_POST['input_selection'];
 				if($input_selection=='input_wise'){
-					$get_details.=" GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $input_code,recevied_qty,0)) != SUM(IF(operation_id = $output_code,recevied_qty,0))";
+					$get_details.=" GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $input_code,original_qty,0)) != SUM(IF(operation_id = $output_code,recevied_qty,0))";
 				}
 
 				if($input_selection=='bundle_wise'){
 					$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $input_code,original_qty,0)) != SUM(IF(operation_id = $output_code,recevied_qty,0))";
 				}
 			}else{
-				$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $input_code,recevied_qty,0)) != SUM(IF(operation_id = $output_code,recevied_qty,0))";
+				$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $input_code,original_qty,0)) != SUM(IF(operation_id = $output_code,recevied_qty,0))";
 			}  
 			$get_details.="  order by schedule, size_id DESC";
 			//echo $get_details;
