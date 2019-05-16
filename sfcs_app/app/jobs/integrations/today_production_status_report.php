@@ -59,11 +59,11 @@ if($ops_code != '')
         $sah=$sql_row["SAH"];
         $sah_total=$sah_total+$sah;
 
-        $sql_delete="DELETE FROM [SAH].[dbo].[BEL_Daily_N] WHERE Date='".$production_date."' and Facility='".$plant_prod_code."' and Team='".$module."' and style='".$style."' and schedule='".$schedule."' and colour='".$color."' and Size='".$size."'";
+        $sql_delete="DELETE FROM [SAH_Test].[dbo].[BEL_Daily_N] WHERE Date='".$production_date."' and Facility='".$plant_prod_code."' and Team='".$module."' and style='".$style."' and schedule='".$schedule."' and colour='".$color."' and Size='".$size."'";
         // echo $sql_delete.";<br>";
         odbc_exec($connect, $sql_delete);  
 
-        $sql_insert="INSERT INTO [SAH].[dbo].[BEL_Daily_N] VALUES('".$plant_prod_code."','".$module."','".$production_date."','".$style."','".$schedule."','".$schedule."','".$color."','".$size."','".$qty."','".$smv."','".$sah."')";
+        $sql_insert="INSERT INTO [SAH_Test].[dbo].[BEL_Daily_N] VALUES('".$plant_prod_code."','".$module."','".$production_date."','".$style."','".$schedule."','".$schedule."','".$color."','".$size."','".$qty."','".$smv."','".$sah."')";
         // echo $sql_insert.";<br><br>";
         odbc_exec($connect, $sql_insert);  
 
