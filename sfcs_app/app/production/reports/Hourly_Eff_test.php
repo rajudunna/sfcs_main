@@ -464,7 +464,7 @@ td,th
 	if(sizeof(explode(",",$team))==1)
 	{
 		$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift ='".$team."'";
-		//echo $sql_hr."<br>";
+		echo $sql_hr."<br>";
 		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_hr)>0)
 		{
@@ -476,13 +476,14 @@ td,th
 		}
 		else
 		{
-			exit;
+			echo "<h2>Plant Timings Not Available,Please Update Plant Timings.</h2><br>";					
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",800); function Redirect() {  location.href = '".$_SERVER['PHP_SELF']."'; }</script>";
+			die;
 		}
 	}
 	else
 	{
 		$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date'";
-		//echo $sql_hr."<br>";
 		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_hr)>0)
 		{
@@ -497,7 +498,9 @@ td,th
 		}
 		else
 		{
-			exit;
+				echo "<h2>Plant Timings Not Available,Please Update Plant Timings.</h2><br>";					
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",800); function Redirect() {  location.href = '".$_SERVER['PHP_SELF']."'; }</script>";
+				die;
 		}
 	}
 	
@@ -1081,8 +1084,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 		} 
 		echo "<td>".round($avgperhour,0)."</td>";
         /* NEW 20100318 */ 
-		
-		if($current_hr<14)
+		if(sizeof($shifts_array)<2)
 		{
 			$qty=round(($ppro_a-$atotal),0);
 			$hoursnw=8-$hoursa;
@@ -1094,16 +1096,33 @@ for ($j=0;$j<sizeof($sections);$j++)
 			else
 			{
 				$exp_pcs_hr=round($qty,0)/round($hoursnw,0);
-			}		
+			}
 		}
 		else
-		{
-			$qty=round(($ppro_a-$atotal),0);
-			//echo $qty."<br>";
-			$hoursnw=16-$hoursa;
-			$exp_pcs_hr=round($qty,0)/round($hoursnw,0);
-			//$exp_pcs_hr=round(($atotal-$ppro_a),0);
-			
+		{	
+			if($current_hr<14)
+			{
+				$qty=round(($ppro_a-$atotal),0);
+				$hoursnw=8-$hoursa;
+				//echo $qty."<br>";
+				if($hoursnw==0)
+				{
+					$exp_pcs_hr=round($qty,0);
+				}
+				else
+				{
+					$exp_pcs_hr=round($qty,0)/round($hoursnw,0);
+				}		
+			}
+			else
+			{
+				$qty=round(($ppro_a-$atotal),0);
+				//echo $qty."<br>";
+				$hoursnw=16-$hoursa;
+				$exp_pcs_hr=round($qty,0)/round($hoursnw,0);
+				//$exp_pcs_hr=round(($atotal-$ppro_a),0);
+				
+			}
 		}
 		// $expect_qty=$expect_qty+$exp_pcs_hr;
 		// if($option1==1){	 echo "<td>".round($exp_pcs_hr,0)."</td>"; }
@@ -1718,7 +1737,7 @@ if($style_break==1)
 		$exp_pcs_hr=0; 
 		$exp_pcs_hr2=0; 
 				
-		if($current_hr<14)
+		if(sizeof($shifts_array)<2)
 		{
 			$qty=round(($plan_pcs-$total),0);
 			$hoursnw=8-$hoursa;
@@ -1730,29 +1749,46 @@ if($style_break==1)
 			else
 			{
 				$exp_pcs_hr=round($qty,0)/round($hoursnw,0);
-				$exp_pcs_hr2=round($qty,0)/round($hoursnw,0)/$count2;
-			}		
+				$exp_pcs_hr2=round($qty,0)/round($hoursnw,0)/$count;
+			}
 		}
 		else
-		{
-			$qty=round(($plan_pcs-$total),0);
-			//echo $qty."<br>";
-			$hoursnw=16-$hoursa;
-			$exp_pcs_hr=round($qty,0)/round($hoursnw,0);
-			$exp_pcs_hr2=round($qty,0)/round($hoursnw,0)/$count2;
-			//$exp_pcs_hr=round(($atotal-$ppro_a),0);
-			
+		{	
+			if($current_hr<14)
+			{
+				$qty=round(($plan_pcs-$total),0);
+				$hoursnw=8-$hoursa;
+				//echo $qty."<br>";
+				if($hoursnw==0)
+				{
+					$exp_pcs_hr=round($qty,0);
+				}
+				else
+				{
+					$exp_pcs_hr=round($qty,0)/round($hoursnw,0);
+					$exp_pcs_hr2=round($qty,0)/round($hoursnw,0)/$count;
+				}		
+			}
+			else
+			{
+				$qty=round(($plan_pcs-$total),0);
+				//echo $qty."<br>";
+				$hoursnw=16-$hoursa;
+				$exp_pcs_hr=round($qty,0)/round($hoursnw,0);
+				$exp_pcs_hr2=round($qty,0)/round($hoursnw,0)/$count;
+				
+			}
 		}
 		
 		// if((7.5-$hoursa_shift)>0) 
 		// { 
 			// $exp_pcs_hr=($plan_pcs-$total)/(7.5-$hoursa_shift); 
-			// $exp_pcs_hr2=(($plan_pcs-$total)/(7.5-$hoursa_shift))/$count2; 
+			// $exp_pcs_hr2=(($plan_pcs-$total)/(7.5-$hoursa_shift))/$count; 
 		// } 
 		// else 
 		// { 
 			// $exp_pcs_hr=($total-$plan_pcs); 
-			// $exp_pcs_hr2=($total-$plan_pcs)/$count2; 
+			// $exp_pcs_hr2=($total-$plan_pcs)/$count; 
 		// } 
 		$style_summery.="<td>".round($exp_pcs_hr,0)."</td>"; 
 		$exp_pcs_hr_total=$exp_pcs_hr_total+$exp_pcs_hr; 
