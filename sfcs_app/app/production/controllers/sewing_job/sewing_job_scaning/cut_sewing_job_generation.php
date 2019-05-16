@@ -164,12 +164,22 @@ if(isset($_POST) && isset($_POST['main_data'])){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     $doc_no = $_POST['del_recs'];
     // 217
-    $validation_query="SELECT * FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (".$doc_no.") and act_cut_status = 'DONE' "; 
-    $sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data"); 
-    $count= mysqli_num_rows($sql_result); 
+    $ips_op_codes=array();
+	$ips_op_codes[]=0;
+	$op_code_query="SELECT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE category='sewing'";
+	            $op_code_result = mysqli_query($link,$op_code_query);
+	while($row = mysqli_fetch_array($op_code_result))
+	{
+	    $ips_op_codes[] = $row['operation_code'];
+	}
+	$ips_op_code=implode(",",$ips_op_codes);
+	$validation_query = "SELECT id from $brandix_bts.bundle_creation_data where docket_number in (".$doc_no.") and recevied_qty > 0
+	            and operation_id in (".$ips_op_code.")";
+	$sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data");      
+	$count= mysqli_num_rows($sql_result);
     if ($count>0) 
     {
-        echo 'cutting_done';
+        echo 'sewing_done';
     } 
     else 
     {
@@ -1013,8 +1023,8 @@ function delet(docs_id){
     $("#delete_message_"+docs_id).css("display", "block");
     $.post( "<?= trim($url) ?>", { del_recs: docs_id } ).done(function(data) {
     
-        if(data=='cutting_done'){
-            swal('Cutting Already Done for this Docket','Cannot Delete Sewing Jobs','error');
+        if(data=='sewing_done'){
+            swal('Scanning is Already Performed','Cannot Delete Sewing Jobs','error');
             setTimeout(function(){ location.reload(); }, 300);
         }else if(data=='success'){
             swal('Jobs Deleted successfully.');
