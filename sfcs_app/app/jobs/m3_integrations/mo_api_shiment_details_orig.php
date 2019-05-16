@@ -15,7 +15,7 @@ $res_get_soap_data = mysqli_query($link, $qry_get_soap_data) or exit("Sql Error 
 $i = 0;
 
 while($result_data = mysqli_fetch_array($res_get_soap_data)){
-    $get_data_m3inp_data = "select * from $m3_inputs.mo_details WHERE MONUMBER=".$result_data['mo_no']." AND STYLE='".$result_data['style']."' AND SCHEDULE='".$result_data['schedule']."' AND SIZENAME='".$result_data['size']."' AND COLOURDESC='".$result_data['color']."'";
+    $get_data_m3inp_data = "select * from $m3_inputs.mo_details WHERE MONUMBER='".$result_data['mo_no']."' AND STYLE='".$result_data['style']."' AND SCHEDULE='".$result_data['schedule']."' AND SIZENAME='".$result_data['size']."' AND COLOURDESC='".$result_data['color']."'";
     $res_data_m3inp_data = mysqli_query($link, $get_data_m3inp_data) or exit("Sql Error select m3_inputs.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
     $res_new_data = mysqli_fetch_array($res_data_m3inp_data);
 

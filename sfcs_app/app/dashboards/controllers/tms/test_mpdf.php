@@ -148,7 +148,7 @@ $html.='<div class="panel panel-primary">
 
                                         //getting data from bom_details in m3inputs
 
-                                        $bom_details="select * from $m3_inputs.bom_details where plant_code='".$plant_code."' and mo_no=".$mo_no;
+                                        $bom_details="select * from $m3_inputs.bom_details where plant_code='".$plant_code."' and mo_no='$mo_no'";
                                         
                                         $bom_details_result=mysqli_query($link, $bom_details) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 
