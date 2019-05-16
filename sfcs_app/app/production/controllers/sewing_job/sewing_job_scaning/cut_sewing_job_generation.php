@@ -468,7 +468,7 @@ if($schedule != "" && $color != "")
                     $view_shows[] = implode(',',$old_doc_nos);
                     $imp_data = implode(',',$old_doc_nos);
                     echo "<td><a class='btn btn-warning' onclick='show_view_form(\"$imp_data\")'>View</a>"; 
-                    if($old_cut_status=='')
+                    //if($old_cut_status=='')
                         echo "<a class='btn btn-danger' id='del-$imp_data' onclick='delet(\"$imp_data\")'>Delete</a>
                                 <div id='delete_message_$imp_data' style='display:none'><h3 class='badge progress-bar-success'>Deleting...</h3></div>";
                     echo "</td>";
@@ -545,7 +545,7 @@ if($schedule != "" && $color != "")
                 $view_shows[] = implode(',',$old_doc_nos);
                 $imp_data = implode(',',$old_doc_nos);
                 echo "<td><a class='btn btn-warning' onclick='show_view_form(\"$imp_data\")'>View</a>"; 
-                if($old_cut_status=='')
+                //if($old_cut_status=='')
                     echo "<a class='btn btn-danger' id='del-$imp_data' onclick='delet(\"$imp_data\")'>Delete</a>
                             <div id='delete_message_$imp_data' style='display:none'><h3 class='badge progress-bar-success'>Deleting...</h3></div>";
                 echo "</td>";
@@ -1025,13 +1025,13 @@ function delet(docs_id){
     
         if(data=='sewing_done'){
             swal('Scanning is Already Performed','Cannot Delete Sewing Jobs','error');
-            setTimeout(function(){ location.reload(); }, 300);
+            setTimeout(function(){ location.reload(); }, 600);
         }else if(data=='success'){
             swal('Jobs Deleted successfully.');
-            setTimeout(function(){ location.reload(); }, 300);
+            setTimeout(function(){ location.reload(); }, 600);
         }else{
             swal('Jobs Deletion Failed.');
-            setTimeout(function(){ location.reload(); }, 300);
+            setTimeout(function(){ location.reload(); }, 600);
         }
     });
 
