@@ -1,5 +1,7 @@
 <?php
-include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+$start_timestamp = microtime(true);
+$include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 error_reporting(0);
 
 // $to_date = '2019-04-30 11:00:00';
@@ -87,6 +89,8 @@ while ($row = $get_temp_data_result->fetch_assoc())
    }	
 
 }
-
+$end_timestamp = microtime(true);
+$duration = $end_timestamp - $start_timestamp;
+print("Execution took ".$duration." milliseconds.");
 
 ?>
