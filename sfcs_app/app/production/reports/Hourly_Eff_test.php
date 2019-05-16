@@ -454,13 +454,63 @@ td,th
     $date=$_POST['dat'];//date of the input 
     $sections_group=$sections_string=$_POST['section'];//sections
     $team=$_POST['team'];//team
+	//echo explode(",",$team)."<bR>";
     $hour_filter=$_POST['hour_filter'];//slected hour  
     $style_break=($_POST['secstyles']==1) ? $_POST['secstyles'] : 0 ; //style break
     $hourly_break=($_POST['option1']==1) ? $_POST['option1'] : 0;//hourly Break 
     //echo "<br>date".$date." - section -".$sections_string." - team - ".$team." - hour ".$hour_filter." - style break".$secstyles." -hourly Break ".$option1; 
-	//$current_hr=date('H');
-	$current_hr=23;
-    $current_date=date('Y-m-d');	
+	$current_hr=date('H');
+	$current_date=date('Y-m-d');
+	if(sizeof(explode(",",$team))==1)
+	{
+		$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift ='".$team."'";
+		//echo $sql_hr."<br>";
+		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_result_hr)>0)
+		{
+			while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+			{
+				$start_check=$sql_row_hr['start_time'];
+				$end_check=$sql_row_hr['end_time'];
+			}
+		}
+		else
+		{
+			exit;
+		}
+	}
+	else
+	{
+		$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date'";
+		//echo $sql_hr."<br>";
+		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_result_hr)>0)
+		{
+			$sql_hr12="SELECT MIN(time_value*1)AS vals,MAX(time_value*1) AS vals2 FROM $bai_pro3.tbl_plant_timings";
+			//echo $sql_hr12."<br>";
+			$sql_result_hr12=mysqli_query($link, $sql_hr12) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row_hr12=mysqli_fetch_array($sql_result_hr12)) 
+			{
+				$start_check=$sql_row_hr12['vals'];
+				$end_check=$sql_row_hr12['vals2'];
+			}
+		}
+		else
+		{
+			exit;
+		}
+	}
+	
+	if($current_date<>$date)
+    {
+		$sql32="SELECT MAX(time_value*1) as val FROM $bai_pro3.tbl_plant_timings";
+		//echo $sql."<br>";
+		$sql_result32=mysqli_query($link, $sql32) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		while($sql_row32=mysqli_fetch_array($sql_result32)) 
+		{
+			$current_hr=$sql_row32['val'];
+		}			
+    }
     if($hour_filter=='All') 
     { 
 		$time_query=""; 
@@ -595,7 +645,7 @@ td,th
 		{ 
 			// $time_query="";
 			// $current_hr=11;
-			$sql="SELECT * FROM $bai_pro3.tbl_plant_timings where time_value<=".$current_hr."";
+			$sql="SELECT * FROM $bai_pro3.tbl_plant_timings where time_value<=".$current_hr." and time_value BETWEEN $start_check and $end_check";
 			//echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row=mysqli_fetch_array($sql_result)) 
