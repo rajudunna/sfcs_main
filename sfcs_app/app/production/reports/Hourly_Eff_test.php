@@ -17,7 +17,12 @@ body
 	font-family: "calibri", Verdana, Arial, Helvetica, sans-serif;
 	text-decoration: none;
 }
-
+#inf_table_format_first{
+	width: 100%;
+}
+.maincontentof{
+	overflow: auto; 
+}
 table#filter td
 {
 	
@@ -453,8 +458,8 @@ td,th
     $style_break=($_POST['secstyles']==1) ? $_POST['secstyles'] : 0 ; //style break
     $hourly_break=($_POST['option1']==1) ? $_POST['option1'] : 0;//hourly Break 
     //echo "<br>date".$date." - section -".$sections_string." - team - ".$team." - hour ".$hour_filter." - style break".$secstyles." -hourly Break ".$option1; 
-	$current_hr=date('H');
-	//$current_hr=12;
+	//$current_hr=date('H');
+	$current_hr=23;
     $current_date=date('Y-m-d');	
     if($hour_filter=='All') 
     { 
@@ -580,7 +585,8 @@ td,th
 	$hr_disp=array();
 	$hr_start=array();
 	$hr_end=array();
-    echo "<table id=\"table_format_first\">";
+	
+    echo "<div class=\"maincontentof\"><table class='table table-bordered' id=\"table_format_first\">";
     echo "<tr><th style='background-color:#29759C;'>Section#</th><th style='background-color:#29759C;'>Module#</th><th style='background-color:#29759C;'>NOP</th><th style='background-color:#29759C;'>Style DB</th><th style='background-color:#29759C;'>Schedule</th>";
 	
     if($hourly_break==1)
@@ -595,7 +601,7 @@ td,th
 			while($sql_row=mysqli_fetch_array($sql_result)) 
 			{ 
 				$hr[] = $sql_row['time_value'];
-				$hr_disp[] = $sql_row['time_display'];
+				$hr_disp[] = $sql_row['time_display']." ".$sql_row['day_part'];
 				$hr_start[] = $sql_row['start_time'];
 				$hr_end[] = $sql_row['end_time'];																			
 			}									  
@@ -1239,7 +1245,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 	echo "<td id='table1Tots".($var_val+8)."' style='background-color:#FFFFCC;'>".round(($sum_total_final-$ppro_a_total_sum_total),0)."</td>";
 	echo "<td id='table1Tots".($var_val+9)."' style='background-color:#FFFFCC;'>".$avgpcstotal_sum_total."</td>";
 	echo "<td id='table1Tots".($var_val+10)."' style='background-color:#FFFFCC;'>".$req_pcs_per_hour."</td>";
-	echo"</tr></table><br><br>";
+	echo"</tr></table><br><br></div>";
 	$var_val=$var_val+10;
 	for($j=1;$j<=$var_val;$j++)
 	{
@@ -1249,16 +1255,9 @@ for ($j=0;$j<sizeof($sections);$j++)
 		$val41[]=1;
 		$val51[]="innerHTML";
 	}
-	// echo implode('","',$val11)."<br>";
-	// echo implode(',',$val21)."<br>";
-	// echo implode('","',$val31)."<br>";
-	// echo implode(',',$val41)."<br>";
-	// echo implode('","',$val51)."<br>";
-
-
 	/* Ending of sections table  */
 	//-----------------------------------------common to show this for all selections total factory start-------------------------------------//
-	$total_factory_summery="<table id=\"info\"><th><h4>Factory Summary</h4></th>";
+	$total_factory_summery="<div class=\"maincontentof\"><table id=\"info\" class='table table-bordered'><th><h4>Factory Summary</h4></th>";
 	for($i=0;$i<sizeof($hr);$i++) 
 	{ 
 		if($hourly_break==1)
@@ -1519,7 +1518,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 			} 
 		}
 	$total_factory_summery .="</tr>"; 
-	$total_factory_summery .="</table>";
+	$total_factory_summery .="</table></div>";
 	echo  $total_factory_summery;
 //-----------------------------------------common to show this for all selections total factory end-------------------------------------//
 //-----------------------------------------style summery Report while he selects Style Break-------------------------------------//
@@ -1531,13 +1530,13 @@ if($style_break==1)
 	$style_summ_head=""; 
 	$style_summery='';
 	$style_summery='<br><h2 style="color:white;background-color: #337ab7;">Style Summary<h2>'; 
-	$style_summery.="<table id=\"table_format_one\">"; 
-	$style_summery.="<tr><th>Style Name</th><th>SMV</th><th>Oprs</th><th>Mod Count</th>"; 
+	$style_summery.="<div class=\"maincontentof\"><table class='table table-bordered' id=\"table_format_one\">"; 
+	$style_summery.="<tr><th style='background-color:#29759C;'>Style Name</th style='background-color:#29759C;'><th style='background-color:#29759C;'>SMV</th ><th style='background-color:#29759C;'>Oprs</th><th style='background-color:#29759C;'>Mod Count</th>"; 
 	for($m=0;$m<sizeof($hr);$m++) 
 	{ 
-		$style_summery.="<th>".$hr_disp[$m]."</th>"; 
+		$style_summery.="<th style='background-color:#29759C;'>".$hr_disp[$m]."</th>"; 
 	} 
-	$style_summery.="<th>Total</th><th>Plan Pcs</th><th>Balance Pcs</th><th>Avg. Pcs/Hr</th><th>Hr Tgt.</th><th>Avg. Pcs<br/>Hr/Mod</th><th>Hr Tgt./Mod.</th></tr>"; 
+	$style_summery.="<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Plan Pcs</th><th style='background-color:#29759C;'>Balance Pcs</th><th style='background-color:#29759C;'>Avg. Pcs/Hr</th><th style='background-color:#29759C;'>Hr Tgt.</th><th style='background-color:#29759C;'>Avg. Pcs<br/>Hr/Mod</th><th style='background-color:#29759C;'>Hr Tgt./Mod.</th></tr>"; 
 	$avgpcshrsum=0; 
 	$planpcsgrand=0; 
 	$balancepcs=0; 
@@ -1688,8 +1687,9 @@ if($style_break==1)
 	$style_summery.="<td id='table1Tot".($value+5)."' style='background-color:#FFFFCC;'>".round($avgperhour2_sum,0)."</td>"; 
 	$style_summery.="<td id='table1Tot".($value+6)."' style='background-color:#FFFFCC;'>".round($exp_pcs_hr2_sum)."</td>"; 
 
-	$style_summery.="</table>";
+	$style_summery.="</table></div>";
 	echo  $style_summery;
+	echo "</div>";
 	$value=$value+6;
 	for($j=1;$j<=$value;$j++)
 	{
@@ -1723,9 +1723,22 @@ if($style_break==1)
 	loader_text: "Filtering data...",
 	col_0: 'select',
 	col_1: 'select',
+	col_2: 'none',
 	col_3: 'select',
 	col_4: 'select',
 	col_<?php echo ($var_val+4); ?>: 'select',
+	<?php for($i=0;$i<sizeof($hr);$i++) 
+		{
+			echo "col_".($i+5).": 'none',";
+		}
+		if(sizeof($hr)>0){
+			echo "col_".(sizeof($hr)+6).": 'none',";
+			echo "col_".(sizeof($hr)+7).": 'none',";
+			echo "col_".(sizeof($hr)+8).": 'none',";
+			echo "col_".(sizeof($hr)+9).": 'none',";
+			echo "col_".(sizeof($hr)+10).": 'none',";
+		}
+		?>
 	btn_reset: true,
 		alternate_rows: true,
 		btn_reset_text: "Clear",
@@ -1755,6 +1768,16 @@ if($style_break==1)
 	loader: true,
 	loader_text: "Filtering data...",
 	col_0: 'select',
+	<?php for($i=0;$i<sizeof($hr);$i++) 
+		{
+			echo "col_".($i+4).": 'none',";
+		}
+		if(sizeof($hr)>0){
+			echo "col_".(sizeof($hr)+5).": 'none',";
+			echo "col_".(sizeof($hr)+6).": 'none',";
+			echo "col_".(sizeof($hr)+7).": 'none',";
+			echo "col_".(sizeof($hr)+8).": 'none',";
+		}?>
 	btn_reset: true,
 		alternate_rows: true,
 		btn_reset_text: "Clear",
