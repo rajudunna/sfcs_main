@@ -1279,7 +1279,18 @@ else if($concurrent_flag == 0)
 						}
 					}
 				}
-				if($b_op_id == 100 || $b_op_id == 129)
+                  
+                  //To get Sewing In operation From Operation Routing
+				  $application='IPS';
+
+	              $scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+	              $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	              while($sql_row1111=mysqli_fetch_array($scanning_result))
+	              {
+	                $operation_out_code=$sql_row1111['operation_code'];
+	              }
+
+				if($b_op_id == $operation_out_code || $b_op_id == $operation_out_code)
 				{
 					$searching_query_in_imslog = "SELECT tid,ims_qty FROM $bai_pro3.ims_log_backup WHERE pac_tid = $b_tid[$i] AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref='$b_job_no' AND operation_id=$b_op_id AND ims_remarks = '$b_remarks[$i]'";
 					$result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
@@ -1372,7 +1383,18 @@ else if($concurrent_flag == 0)
 						$input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);
 					//}
 					//echo 'input_ops_code'.$input_ops_code;
-					if($input_ops_code == 100 || $input_ops_code == 129)
+						
+                      //To get Sewing In operation From Operation Routing
+                      $application='IPS';
+
+	                  $scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+	                  $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                  while($sql_row11111=mysqli_fetch_array($scanning_result))
+	                  {
+	                    $operation_out_code=$sql_row11111['operation_code'];
+	                  }
+			        			
+					if($input_ops_code == $operation_out_code)
 					{
 						//updating ims_pro_qty against the input
 						$searching_query_in_imslog = "SELECT tid,ims_pro_qty,ims_qty FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid[$i]' AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref='$b_job_no' AND operation_id=$input_ops_code AND ims_remarks = '$b_remarks[$i]'";
