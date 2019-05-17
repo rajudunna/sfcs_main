@@ -301,10 +301,16 @@
 
                                     if($scanning_methods="Bundle Level")
                                     {
-                                        echo "<th>Bundle Barcode<br>With Operation</th>";
+										if(strtolower($barcode_4x2) == 'yes')
+                                        {
+										echo "<th>Bundle Barcode<br>With Operation</th>";
                                         echo "<th>Bundle Barcode</th>";
+										}
+										if(strtolower($barcode_2x1) == 'yes')
+                                        {
                                         echo "<th>Bundle Barcode(2*1)<br>with operation</th>";
                                         echo "<th>Bundle Barcode(2*1)<br>with out operation</th>";
+										}
                                     }
                                     //echo "<th>TID</th>";
                                     //echo "<th>Doc# Ref</th>";
@@ -326,10 +332,16 @@
                                         $temp+=$sql_row['carton_act_qty'];
                                         if($temp>$job_qty or $color!=$sql_row['order_col_des'] or in_array($sql_row['order_del_no'],$donotmix_sch_list))
                                         {
-                                            echo "<th>Bundle Barcode<br>With Operation</th>";
+                                            if(strtolower($barcode_4x2) == 'yes')
+											{
+											echo "<th>Bundle Barcode<br>With Operation</th>";
                                             echo "<th>Bundle Barcode</th>";
+											}
+											if(strtolower($barcode_2x1) == 'yes')
+											{
                                             echo "<th>Bundle Barcode(2*1)<br>with operation</th>";
                                             echo "<th>Bundle Barcode(2*1)<br>with out operation</th>";
+											}
                                         }
                                         //echo "<th>TID</th>";
                                         //echo "<th>Doc# Ref</th>";
@@ -420,13 +432,19 @@
 
                                             echo"</td>";
                                             if($scanning_methods=='Bundle Level')
-                                            {
+                                            {   
                                                 if ($print_btn_color == 'danger')
                                                 {
+													if(strtolower($barcode_4x2) == 'yes')
+													{
                                                     echo '<td><span class="badge progress-bar-danger">Printing Done</span></td>
-                                                            <td><span class="badge progress-bar-danger">Printing Done</span></td>
-                                                            <td><span class="badge progress-bar-danger">Printing Done</span></td>
                                                             <td><span class="badge progress-bar-danger">Printing Done</span></td>';
+													}
+													if(strtolower($barcode_2x1) == 'yes')
+													{
+													echo '<td><span class="badge progress-bar-danger">Printing Done</span></td>
+                                                            <td><span class="badge progress-bar-danger">Printing Done</span></td>';
+													}
                                                 }
                                                 else
                                                 {
@@ -434,12 +452,18 @@
                                                     $url6 = getFullURLLevel($_GET['r'],'barcode_without_operation.php',0,'R');
                                                     $url7 = getFullURLLevel($_GET['r'],'barcode_new_2_1.php',0,'R');
                                                     $url8 = getFullURLLevel($_GET['r'],'barcode_without_operation2_2.php',0,'R');
-
+													
+													if(strtolower($barcode_4x2) == 'yes')
+													{
                                                     echo "<td><a class='btn btn-".$print_btn_color." btn-sm' href='$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url5?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
                                                     
                                                     echo "<td><a class='btn btn-".$print_btn_color." btn-sm' href='$url6?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url6?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
+													}
+													if(strtolower($barcode_4x2) == 'yes')
+													{
                                                     echo "<td><a class='btn btn-".$print_btn_color." btn-sm' href='$url7?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url7?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
                                                     echo "<td><a class='btn btn-".$print_btn_color." btn-sm' href='$url8?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."' onclick=\"return popitup2('$url8?input_job=".$sql_row['input_job_no']."&schedule=".$sql_row['order_del_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print</a></td>";
+													}
 
                                                 }
                                             }
