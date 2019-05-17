@@ -179,7 +179,7 @@
                 if(! $sql_result ) {
 				    die('Could not delete data: ' . mysql_error());
 							  }
-				 $deletemo = "DELETE FROM $bai_pro3.mo_operation_quantites WHERE mo_no = $tid AND op_code = $row[0];";
+				 $deletemo = "DELETE FROM $bai_pro3.mo_operation_quantites WHERE mo_no = '$tid' AND op_code = $row[0];";
 				 $sql_result=mysqli_query($link, $deletemo) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 if(! $sql_result ) {
 					 die('Could not delete data: ' . mysql_error());
@@ -215,8 +215,8 @@
 								}	
 				$sqno = implode(",",$seqno);
 				$packmethod =  implode(",",$packmethod);
-				$otid =  implode(",",$tid);
-				echo $otid;
+				// $otid =  implode(",",$tid);
+				// echo $otid;
 				$op_code = "SELECT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE operation_name = 'Carton Packing'";
 				 $op_code_result=mysqli_query($link, $op_code) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                  $row = mysqli_fetch_row($op_code_result);
@@ -227,7 +227,7 @@
 				if(! $sql_result ) {
 				 die('Could not delete data: ' . mysql_error());
 				 }
-				$deletemo = "DELETE FROM $bai_pro3.mo_operation_quantites WHERE mo_no in ($otid) AND op_code = $row[0];";
+				$deletemo = "DELETE FROM $bai_pro3.mo_operation_quantites WHERE mo_no in ('".implode("','",$tid)."') AND op_code = $row[0];";
 				$sql_result=mysqli_query($link, $deletemo) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(! $sql_result ) {
 					die('Could not delete data: ' . mysql_error());

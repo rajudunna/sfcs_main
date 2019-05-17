@@ -97,12 +97,12 @@
 			if( $qty >= 0){
 				$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
 							(`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
-							('".date('Y-m-d H:i:s')."',$mo_no,$ref_no,$rej_qty,$op_code,'recut')";
+							('".date('Y-m-d H:i:s')."','$mo_no',$ref_no,$rej_qty,$op_code,'recut')";
 				mysqli_query($link,$insert_query) or exit('Mo Updation error 1');
 			}else{
 				$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
 							(`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES 
-							('".date('Y-m-d H:i:s')."',$mo_no,$ref_no,$qty,$op_code,'recut')";
+							('".date('Y-m-d H:i:s')."','$mo_no',$ref_no,$qty,$op_code,'recut')";
 				mysqli_query($link,$insert_query) or exit('Mo Updation error 2');
 				break;
 			}	
@@ -112,7 +112,7 @@
 		if($qty > 0){
 			$insert_query = "Insert into $bai_pro3.mo_operation_quantites 
 						(`date_time`, `mo_no`, `ref_no`,`bundle_quantity`,`op_code`,`op_desc`) VALUES 
-						('".date('Y-m-d H:i:s')."',$last_mo,$ref_no,$qty,$op_code,'recut')";
+						('".date('Y-m-d H:i:s')."','$last_mo',$ref_no,$qty,$op_code,'recut')";
 			mysqli_query($link,$insert_query) or exit('Mo Updation error 3');	
 		}
 		unset($mos);
@@ -130,7 +130,7 @@
             $op_codes  = $row['codes'];	
         }
 
-        $mo_query  = "Select GROUP_CONCAT(mo_no) as mos from $bai_pro3.mo_details where schedule = $schedule";
+        $mo_query  = "Select GROUP_CONCAT(\"'\",mo_no,\"'\") as mos from $bai_pro3.mo_details where schedule = $schedule";
         $mo_result = mysqli_query($link,$mo_query);
         while($row = mysqli_fetch_array($mo_result)){
             $mos = $row['mos'];
@@ -191,7 +191,7 @@
 		}
 
 		$mo_details = "SELECT * FROM $bai_pro3.mo_details WHERE TRIM(size)='$size' 
-					   and TRIM(schedule)=$schedule and TRIM(color)='$color' order by mo_no";
+					   and TRIM(schedule)=$schedule and TRIM(color)='$color' order by mo_no*1";
 		$mos_result = mysqli_query($link,$mo_details);		
 		while($row = mysqli_fetch_array($mos_result)){
 			$mos[$row['mo_no']] = $row['mo_quantity'];
@@ -203,7 +203,7 @@
 		//getting the operations and op_codes  for that mo if exists
 		foreach($mos as $mo=>$mo_qty){
 			$mo_op_query ="SELECT OperationNumber,OperationDescription FROM $bai_pro3.schedule_oprations_master 
-						   WHERE OperationNumber=$op_code and MONumber=$mo limit 1";
+						   WHERE OperationNumber=$op_code and MONumber='$mo' limit 1";
 			$mo_ops_result = mysqli_query($link,$mo_op_query) or exit('No Operations Exists for MO '.$mo);
 			while($row = mysqli_fetch_array($mo_ops_result)){
 				$op_desc[$mo] = $row['OperationDescription'];
@@ -228,7 +228,7 @@
 				$filled_qty = 0;
 				//getting already filled quantities 
 				$filled_qty_query = "Select SUM(bundle_quantity) as filled from $bai_pro3.mo_operation_quantites where 
-									 mo_no = $mo and op_code = $op_code";
+									 mo_no = '$mo' and op_code = $op_code";
 				$filled_qty_result = mysqli_query($link,$filled_qty_query);	
 				while($row = mysqli_fetch_array($filled_qty_result)){
 					$filled_qty = $row['filled'];
@@ -256,7 +256,7 @@
 			//Updating all excess to last mo 
 			if($qty > 0){
 				$update_query = "Update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity + $qty 
-								 where mo_no = $last_mo and ref_no = $ref_id and op_code = $op_code";
+								 where mo_no = '$last_mo' and ref_no = $ref_id and op_code = $op_code";
 				mysqli_query($link,$update_query) or exit("Error 3 In Updating excess qty to MO Qtys for mo : ".$mo);
 			}
 		}
@@ -324,7 +324,7 @@
 				{
 					$mo_no[]= $row1210['mo_no'];
 					$moq[]  = $row1210['mo_quantity'];
-					$sql1212="SELECT OperationNumber,OperationDescription FROM $bai_pro3.schedule_oprations_master WHERE OperationNumber in ($op_codes) and MONumber=".$row1210['mo_no']." order by OperationNumber*1"; 
+					$sql1212="SELECT OperationNumber,OperationDescription FROM $bai_pro3.schedule_oprations_master WHERE OperationNumber in ($op_codes) and MONumber='".$row1210['mo_no']."' order by OperationNumber*1"; 
 					$result1212=mysqli_query($link, $sql1212) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row1212=mysqli_fetch_array($result1212)) 
 					{
@@ -373,7 +373,7 @@
 							{               
 								$last_mo = $mo_no[$kk];    
 								$m_fil=0;
-								$sql12345="SELECT sum(bundle_quantity) as qty FROM $bai_pro3.mo_operation_quantites WHERE mo_no=$mo_no[$kk] and op_code IN ($ops[0]) GROUP BY op_code";
+								$sql12345="SELECT sum(bundle_quantity) as qty FROM $bai_pro3.mo_operation_quantites WHERE mo_no='".$mo_no[$kk]."' and op_code IN ($ops[0]) GROUP BY op_code";
 								$result12345=mysqli_query($link, $sql12345) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 								while($row12345=mysqli_fetch_array($result12345)) 
 								{
@@ -421,7 +421,7 @@
 							if($qty > 0){
 								for($l=0;$l<sizeof($ops);$l++){    
 										$sql = "Update $bai_pro3.mo_operation_quantites set 
-												bundle_quantity = bundle_quantity + $qty where mo_no =$last_mo and 
+												bundle_quantity = bundle_quantity + $qty where mo_no ='$last_mo' and 
 												ref_no = $bundle_no and op_code =$ops[$l]";
 								
 										$result1=mysqli_query($link, $sql) or exit('Error Encountered');
@@ -444,7 +444,7 @@
 									for($jjj=0;$jjj<sizeof($ops);$jjj++)
 									{
 										$sql="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`,`ref_no`,  `bundle_quantity`, `op_code`, `op_desc`) 
-										VALUES ('".date("Y-m-d H:i:s")."', '".$lastmo."', '".$row12341['tid']."','".$qty."', '".$ops[$jjj]."', '".$op_namem[$jjj]."')";
+										VALUES ('".date("Y-m-d H:i:s")."', '".$last_mo."', '".$row12341['tid']."','".$qty."', '".$ops[$jjj]."', '".$op_namem[$jjj]."')";
 										$result1=mysqli_query($link, $sql) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));        
 									}                           
 								}
@@ -522,7 +522,7 @@
 						{
 							$mo_no[]= $row1210['mo_no'];
 							$moq[]  = $row1210['mo_quantity'];
-							$sql1212="SELECT OperationNumber,OperationDescription FROM $bai_pro3.schedule_oprations_master WHERE OperationNumber in ($op_codes) and MONumber=".$row1210['mo_no']." order by OperationNumber*1";
+							$sql1212="SELECT OperationNumber,OperationDescription FROM $bai_pro3.schedule_oprations_master WHERE OperationNumber in ($op_codes) and MONumber='".$row1210['mo_no']."' order by OperationNumber*1";
 							$result1212=mysqli_query($link, $sql1212) or die("error while fetching Mo Details from schedule_oprations_master.");
 							while($row1212=mysqli_fetch_array($result1212))
 							{
@@ -567,7 +567,7 @@
 									{                                                     
 										$last_mo = $mo_no[sizeof($mo_no)];      
 										$m_fil=0;
-										$sql12345="SELECT sum(bundle_quantity) as qty FROM $bai_pro3.mo_operation_quantites WHERE mo_no=$mo_no[$kk] and op_code IN ($ops[0]) GROUP BY op_code";
+										$sql12345="SELECT sum(bundle_quantity) as qty FROM $bai_pro3.mo_operation_quantites WHERE mo_no='".$mo_no[$kk]."' and op_code IN ($ops[0]) GROUP BY op_code";
 										$result12345=mysqli_query($link, $sql12345) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 										while($row12345=mysqli_fetch_array($result12345))
 										{
@@ -626,7 +626,7 @@
 										{     
 											if($ops_m_id[$last_mo][$ops[$l]]>0)
 											{  
-												$sql = "Update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity + $qty where mo_no =$last_mo and	ref_no=".$row1234['tid']." and op_code =".$ops_m_id[$last_mo][$ops[$l]];
+												$sql = "Update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity + $qty where mo_no ='$last_mo' and	ref_no=".$row1234['tid']." and op_code =".$ops_m_id[$last_mo][$ops[$l]];
 												$result1=mysqli_query($link, $sql) or exit('Error Encountered');
 												$res=1;
 											}

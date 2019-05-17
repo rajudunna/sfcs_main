@@ -94,7 +94,9 @@ xmlns="http://www.w3.org/TR/REC-html40">
         $module_no=$_GET["moduleno"]; 
         $color=$_GET["color"];
         //echo $doc."<br>"; 
-    } 
+    }
+
+
 
     $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$jobno,$link);
     $ssql12="SELECT COUNT( DISTINCT order_col_des) AS color_count,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'  GROUP BY input_job_no_random"; 
@@ -124,13 +126,14 @@ xmlns="http://www.w3.org/TR/REC-html40">
         $team_number='No Module <br>Assigned';
     }
 
-    $sql1w="select group_concat(distinct order_date) as order_date,group_concat(distinct vpo) as po_no,group_concat(packing_method) as pac from $bai_pro3.bai_orders_db where order_del_no=\"".$schedule."\""; 
+    $sql1w="select group_concat(distinct order_date) as order_date,group_concat(distinct vpo) as po_no,group_concat(packing_method) as pac,customer_style_no from $bai_pro3.bai_orders_db where order_del_no=\"".$schedule."\""; 
     $result1w=mysqli_query($link, $sql1w) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row1w=mysqli_fetch_array($result1w)) 
     { 
         $po_no=$row1w["po_no"]; 
         $del_date=$row1w["order_date"]; 
         $packing_method=$row1w["pac"]; 
+        $customer_style_no=$row1w["customer_style_no"];
     }
  
     $job1_qty=array(); 
@@ -5384,8 +5387,8 @@ function printdiv(printpage) {
   <td colspan=2 class=xl25532351 width=88 style='width:66pt'><b><?php echo $del_date; ?></b></td> 
   <td class=xl13232351 width=59 style='border-top:none;width:44pt'>Ctn range</td> 
   <td colspan=2 class=xl25732351 width=97 style='border-right:1.0pt solid black;   border-left:none;width:73pt'></td> 
-  <td colspan=2 class=xl25932351 width=103 style='border-right:1.0pt solid black;   border-left:none;width:78pt'>Barcode ID</td> 
-  <td colspan=3 class=xl26132351 style='border-right:1.0pt solid black; border-left:none'><?php echo  $doc;   ?></td> 
+  <td colspan=2 class=xl25932351 width=103 style='border-right:1.0pt solid black;   border-left:none;width:78pt'>Customer Style Number</td> 
+  <td colspan=3 class=xl26132351 style='border-right:1.0pt solid black; border-left:none'><?php echo  $customer_style_no;   ?></td> 
  </tr> 
  <tr height=38 style='mso-height-source:userset;height:28.5pt'> 
   <td height=38 class=xl13132351 style='height:28.5pt'>Line</td> 
@@ -5511,7 +5514,8 @@ $hourly_sewing_out_count = "SELECT * FROM $bai_pro3.`tbl_plant_timings`";
          echo "<tr class=xl10632351 height=48 style='mso-height-source:userset;height:36.0pt'> 
           <td rowspan=2 height=96 class=xl17132351 width=89 
           style='border-bottom:1.0pt solid black;height:72.0pt;border-top:none;width:67pt;word-wrap:break-word;'>".$rowxs["order_col_des"]."-(<b>".$cut_new."</b>)</td> 
-          <td rowspan=2 class=xl18232351 style='border-bottom:1.0pt solid black'>".strtoupper($rowxs["size_code"])."</td> 
+          <td rowspan=2 height=96 class=xl17132351 width=89 style='border-bottom:1.0pt solid black;height:72.0pt;width:67pt;word-wrap:break-word;'>".strtoupper($rowxs["size_code"])."</td> 
+
           <td rowspan=2 class=xl18432351 width=59 style='border-bottom:1.0pt solid black; 
           width:44pt'>".$rowxs["cum_qty"]."</td>"; 
             for($i=1;$i<=$count_tot;$i++){

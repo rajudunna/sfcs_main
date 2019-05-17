@@ -34,8 +34,9 @@ $offstha_sum=0;
 
 
 
-$sql="select distinct mod_no from $bai_pro.pro_mod where mod_sec in(".$sec_code.") and mod_date between \"$date\" and \"$edate\" order by mod_no"; 
+//$sql="select distinct mod_no from $bai_pro.pro_mod where mod_sec in(".$sec_code.") and mod_date between \"$date\" and \"$edate\" order by mod_no"; 
 // echo $sql."<br>";
+$sql="select distinct module from $bai_pro.grand_rep where section in(".$sec_code.") and date between \"$date\" and \"$edate\" order by module*1"; 
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
@@ -59,7 +60,7 @@ $effg_total=0;
 
 while($sql_row=mysqli_fetch_array($sql_result)) 
 { 
-$mod=$sql_row['mod_no']; 
+$mod=$sql_row['module']; 
 $style=$sql_row['mod_style']; 
 
 $max=0; 
@@ -94,7 +95,7 @@ $grand_total_nop_x=$grand_total_nop_x+$nop;
 
 
 
-$sql2="select sum(avail_A) as \"avail_A\", sum(avail_B) as \"avail_B\", sum(absent_A) as \"absent_A\", sum(absent_B) as \"absent_B\" from $bai_pro.pro_atten where module=$mod and date in (\"".implode('","',$date_range)."\")"; 
+/*$sql2="select sum(avail_A) as \"avail_A\", sum(avail_B) as \"avail_B\", sum(absent_A) as \"absent_A\", sum(absent_B) as \"absent_B\" from $bai_pro.pro_atten where module=$mod and date in (\"".implode('","',$date_range)."\")"; 
 mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -107,7 +108,38 @@ $absent_A=$absent_A+$sql_row2['absent_A'];
 $absent_A_clk=$sql_row2['absent_A'];
 $absent_B=$absent_B+$sql_row2['absent_B'];
 $absent_B_clk=$sql_row2['absent_B'];
-} 
+} */
+
+$sqlA="select sum(present+jumper) as \"avail_A\",sum(absent) as \"absent_A\" from $bai_pro.pro_attendance where module=$mod and shift=\"A\" and  date in (\"".implode('","',$date_range)."\")";
+				$sql_resultA=mysqli_query($link, $sqlA) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_rowA=mysqli_fetch_array($sql_resultA))
+				{
+					$table_temp="<td class=xl8726424>".($sql_rowA['avail_A']-$sql_rowA['absent_A'])."</td>";
+
+					echo $table_temp;
+					$table.=$table_temp;
+
+					$avail_A=$avail_A+$sql_rowA['avail_A'];
+					$avail_A_fix=$sql_rowA['avail_A'];
+					$absent_A=$absent_A+$sql_rowA['absent_A'];
+					$absent_A_fix=$sql_rowA['absent_A'];
+				}
+
+				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $bai_pro.pro_attendance where module=$mod and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
+				$sql_resultB=mysqli_query($link, $sqlB) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_rowB=mysqli_fetch_array($sql_resultB))
+				{
+					
+					$table_temp="<td class=xl8726424>".($sql_rowB['avail_B']-$sql_rowB['absent_B'])."</td>";
+
+					echo $table_temp;
+					$table.=$table_temp;
+
+					$avail_B=$avail_B+$sql_rowB['avail_B'];
+					$avail_B_fix=$sql_rowB['avail_B'];
+					$absent_B=$absent_B+$sql_rowB['absent_B'];
+					$absent_B_fix=$sql_rowB['absent_B'];
+				}
 
 $sql132="select act_hours as hrs from $bai_pro.pro_plan where mod_no=$mod and shift=\"A\" and date between \"$date\" and \"$edate\" ";
 //echo $sql132."<br>";

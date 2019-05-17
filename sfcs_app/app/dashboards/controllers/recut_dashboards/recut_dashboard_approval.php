@@ -262,11 +262,11 @@ echo $drp_down;
                 <b>ReCut Approval Dashboard - View</b>
             </div>
             <div class='panel-body'>
-            <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Recut Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Quantity</th><th>Recut Reported Quantity</th><th>Eligibility to Issue Quantity</th><th>View recut</th><th>Markers view</th><th>Approve</th><th>Reject</th>
+            <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Recut Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Category</th><th>Rejected quantity</th><th>Recut Quantity</th><th>Recut Reported Quantity</th><th>Eligibility to Issue Quantity</th><th>View recut</th><th>Markers view</th><th>Approve</th><th>Reject</th>
                 </thead>
                 <?php  
                 $s_no = 1;
-                $blocks_query  = "SELECT fabric_status,SUM(rejected_qty)as rejected_qty,parent_id as doc_no,SUM(recut_qty)as recut_qty,SUM(recut_reported_qty) as recut_reported_qty,SUM(issued_qty)as issued_qty,r.`mk_ref`,b.`order_style_no`AS style,b.`order_col_des` AS color,b.`order_del_no` as schedule
+                $blocks_query  = "SELECT fabric_status,SUM(rejected_qty)as rejected_qty,parent_id as doc_no,SUM(recut_qty)as recut_qty,SUM(recut_reported_qty) as recut_reported_qty,SUM(issued_qty)as issued_qty,r.`mk_ref`,b.`order_style_no`AS style,b.`order_col_des` AS color,b.`order_del_no` as schedule,remarks as category
                 FROM `$bai_pro3`.`recut_v2_child` rc 
                 LEFT JOIN $bai_pro3.`recut_v2` r ON r.doc_no = rc.`parent_id`
                 LEFT JOIN $bai_pro3.`bai_orders_db` b ON b.order_tid = r.`order_tid`
@@ -296,6 +296,7 @@ echo $drp_down;
                         echo "<td>".$row['style']."</td>";
                         echo "<td>".$row['schedule']."</td>";
                         echo "<td>".$row['color']."</td>";
+                        echo "<td>".$row['category']."</td>";
                         echo "<td>".$row['rejected_qty']."</td>";
                         echo "<td>".$row['recut_qty']."</td>";
                         echo "<td>".$row['recut_reported_qty']."</td>";

@@ -9,4 +9,6 @@ $api_port_no = $conf->get('api-port');
 
 $facility_code = $conf->get('plantcode');
 
+//REST API TimeOut
+$API_CALL_TIME_OUT = $conf->get('api_call_time_out');
 ?>
