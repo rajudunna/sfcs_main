@@ -401,9 +401,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						if(($cut_origional_qty > $report_origional_qty) && $recevied_qty>0){
 							$id='orange';
 						}
-						else{
+						/*else{
 							$id='blue';
-						}
+						}*/
+						
 						if($id=="yellow")
 						{									
 							if($add_css == ""){				
