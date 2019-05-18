@@ -70,7 +70,11 @@
 					<strong>Error!</strong> <br><span id="error"></span>
 				</div>
 				<div id="loading_img" name='loading_img' class="col-sm-7 pull right">
-					<img src="../../common/images/pleasewait.gif" alt="Please Wait...">
+					<center>
+						<span id="scan_carton_id"></span>
+						<br>
+						<img src="../../common/images/pleasewait.gif" alt="Please Wait...">
+					</center>
 				</div>
 			</div>
 		</div>
@@ -97,6 +101,8 @@
 			var carton_id = $('#carton_id').val();
 			if (carton_id != '' || carton_id != null)
 			{
+				$("#carton_id").attr("disabled", true);
+				$("#manual_carton_id").attr("disabled", true);
 				callajax(carton_id,'carton_id');
 			}
 		});
@@ -107,6 +113,8 @@
 			$("#submit_btn").attr("disabled", true);
 			if (manual_carton_id != '' || manual_carton_id != null)
 			{
+				$("#carton_id").attr("disabled", true);
+				$("#manual_carton_id").attr("disabled", true);
 				callajax(manual_carton_id,'manual_carton_id');
 			}
 		});
@@ -121,6 +129,7 @@
 			{
 				$("#error_msg").hide();
 				$("#loading_img").show();
+				$("#scan_carton_id").html("<b><font size='7'>Scanning Carton No: <font color='green' size='7'>"+carton_id+"</font></font><b>");
 				var function_text = "carton_scan_ajax.php";
 				$.ajax({
 					url: function_text,
@@ -146,8 +155,10 @@
 							document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'> Carton Already Scanned</center>";
 							$('#status').css("background-color", "limegreen");
 							$('#'+id).val('');
-							$('#carton_id').focus();
+							$("#carton_id").attr("disabled", false);
+							$("#manual_carton_id").attr("disabled", false);
 							$("#submit_btn").attr("disabled", true);
+							$('#carton_id').focus();
 						}
 						else if(response['status']==0 || response['status']==3 || response['status']==4)
 						{
@@ -168,9 +179,11 @@
 							$("#error_msg").show();
 							document.getElementById('error').innerHTML = msg;
 							$('#'+id).val('');
-							$('#carton_id').focus();
 							$("#display_result").hide();
+							$("#carton_id").attr("disabled", false);
+							$("#manual_carton_id").attr("disabled", false);
 							$("#submit_btn").attr("disabled", true);
+							$('#carton_id').focus();
 						}
 						else if(response['status']==2)
 						{
@@ -186,8 +199,10 @@
 							document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'>Carton Scanned Succesfully</center>";
 							$('#status').css("background-color", "limegreen");						
 							$('#'+id).val('');
-							$('#carton_id').focus();
+							$("#carton_id").attr("disabled", false);
+							$("#manual_carton_id").attr("disabled", false);
 							$("#submit_btn").attr("disabled", true);
+							$('#carton_id').focus();
 						}
 					}
 				});

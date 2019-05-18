@@ -321,14 +321,7 @@ td,th
                             <div class="col-md-2">
                                 <input type="submit" name="submit" class="btn btn-primary" value="Filter" id="filter"/>  
                                 <?php 	
-                                    $team_ref=str_replace('"',"*",$team); 
-                                    // echo "<form action=\"Hourly_Eff_Print.php?section=$sections_string&secstyles=$secstyles&option1=$option1&dat=$date&team=$team\"><input type=\"submit\" value=\"Print\"></form>"; 
-                                    if(strlen($team_ref)>0) 
-                                    { 
-                                        // echo "<div style=\"float:right;\">"; 
-                                        // echo "<a href=\"Hourly_Eff_Print_New.php?section=$sections_string&secstyles=$secstyles&option1=$option1&dat=$date&team=$team_ref\" onclick=\"Popup=window.open('Hourly_Eff_Print_New.php?section=".$sections_string."&secstyles=".$secstyles."&option1=".$option1."&dat=".$date."&team=".$team_ref."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><img border=0 width=100px height=100px src=\"../images/Printer_icon2.png\"></a>"; 
-                                        // echo "</div>"; 
-                                    }     
+                                    $team_ref=str_replace('"',"*",$team);                                    
                                 ?> 
                             </div>
                     </form> 
@@ -607,7 +600,8 @@ td,th
                                 { 
                                     $sec_head=$sql_row['sec_head']; 
                                 } 
-                                $sql="select mod_style, mod_no from $pro_mod where mod_sec=$sec and mod_date=\"$date\" order by mod_no*1";                          
+                                // $sql="select mod_style, mod_no from $pro_mod where mod_sec=$sec and mod_date=\"$date\" order by mod_no*1";  
+                                $sql="select 0 as mod_style,module_name as mod_no FROM $bai_pro3.module_master WHERE section=$sec order by module_name*1";      
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 if($option1==1)
                                 {  

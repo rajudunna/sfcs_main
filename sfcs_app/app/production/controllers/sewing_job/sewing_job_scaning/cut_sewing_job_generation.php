@@ -154,8 +154,9 @@ if(isset($_POST) && isset($_POST['main_data'])){
         $update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = '$inserted_id' ";
         $update_result = mysqli_query($link,$update_query) or exit("Problem while inserting to sewing jos ref");
 
-        insertMOQuantitiesSewing($schedule,$inserted_id);
+        
     }
+    insertMOQuantitiesSewing($schedule,$inserted_id);
 
     echo json_encode(['message'=>'success']);
 
@@ -163,7 +164,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     $doc_no = $_POST['del_recs'];
     // 217
-    $validation_query="SELECT * FROM $bai_pro3.act_cut_status WHERE doc_no IN (".$doc_no.")"; 
+    $validation_query="SELECT * FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (".$doc_no.") and act_cut_status = 'DONE' "; 
     $sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data"); 
     $count= mysqli_num_rows($sql_result); 
     if ($count>0) 
@@ -210,7 +211,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
                 $op_codes  = $row['codes']; 
             }
 
-            $mo_query  = "SELECT GROUP_CONCAT(mo_no) as mos from $bai_pro3.mo_details where schedule = '$get_order_del_no'";
+            $mo_query  = "SELECT GROUP_CONCAT(\"'\",mo_no,\"'\") as mos from $bai_pro3.mo_details where schedule = '$get_order_del_no'";
             $mo_result = mysqli_query($link,$mo_query);
             while($row = mysqli_fetch_array($mo_result))
             {
@@ -754,6 +755,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
     $scope.getjobs = function() {
         $scope.j = 0;
         $scope.jobcount = $('#job-qty').val();
+        $scope.bundleqty = $('#bundle-qty').val();
         if(Number($scope.jobcount)>0 && Number($scope.jobcount)>=Number($scope.bundleqty)){
             $scope.fulljob = {};
             // console.log($scope.bundleqty);

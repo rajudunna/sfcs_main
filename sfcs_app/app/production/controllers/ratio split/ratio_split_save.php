@@ -42,8 +42,21 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
     echo json_encode($response_data);
     exit();
 }else{
+    if(sizeof($shades) == 1){
+        $insert_query = "INSERT into $bai_pro3.shade_split(date_time,username,doc_no,schedule,shades,plies) 
+                values('".date('y-m-d H:i:s')."','$username',$doc_no,'$schedule','".implode($ashades,',')."',
+                '".implode($shades_plies,",")."')";
+        mysqli_query($link,$insert_query) or exit('Problem in inserting into shade split');  
+        
+        $update_psl_query = "UPDATE $bai_pro3.pac_stat_log_input_job set shade_group = '".$ashades[0]."' where doc_no = $doc_no ";
+        mysqli_query($link,$update_psl_query);
+
+        $response_data['save'] = 'success';
+        echo json_encode($response_data);
+        exit();
+    }
     $jobs_query  = "SELECT pac_seq_no,order_style_no,order_col_des,input_job_no,input_job_no_random,carton_act_qty,packing_mode,
-                    size_code,old_size,sref_id,tid,destination,type_of_sewing 
+                    size_code,old_size,sref_id,tid,destination,type_of_sewing,mrn_status
                     from $bai_pro3.packing_summary_input where doc_no = $doc_no";
     $jobs_result = mysqli_query($link,$jobs_query) or exit('Error');
     while($row=mysqli_fetch_array($jobs_result)){
@@ -52,17 +65,18 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
         $ij = $row['input_job_no_random'];
         $size = $row['old_size'];
         $jobs[] = $ij;
+        $job_num = $row['input_job_no'];
+        $mrn_jobs[$job_num] = $row['mrn_status']; //getting mrn status of jobs 
         $pac_seq[$ij] = $row['pac_seq_no'];
         $input_jobs[$size][$ij] += $row['carton_act_qty'];
         $type_of_sewing[$ij] = $row['type_of_sewing']; // for figuring out the excess job
-        // if($row['type_of_sewing'] == '1')
-        //     $job_wise_qty[$size][$ij] += $row['carton_act_qty']; 
         $tids[] = $row['tid']; //need to delete these from pac_stat_log_input_job
         $sref_id = $row['sref_id'];
         $size_map[$size] = $row['size_code'];
-        $job_map[$ij] = $row['input_job_no'];
+        $job_map[$ij] = $job_num;
         $destination  = $row['destination'];
         $packing_mode = $row['packing_mode'];
+        
     }
     
     $size_ratios_query = "SELECT * from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
@@ -169,6 +183,14 @@ array_unique($inserted_tids);
 $delete_pacs = "DELETE from $bai_pro3.pac_stat_log_input_job where tid IN (".implode(',',$tids).")";
 mysqli_query($link,$delete_pacs);
 
+
+//Updating the old MRN  statuses as it is
+foreach($mrn_jobs as $job => $mrn){
+    if(! ((int)$mrn > 0) ) 
+        $mrn = 0;
+    $mrn_update_query = "UPDATE $bai_pro3.pac_stat_log_input_job set mrn_status='$mrn' where doc_no = $doc_no and input_job_no = $job";
+    mysqli_query($link,$mrn_update_query);
+}
 //Deleting from moq
 //sewing cat opcodes
 $sewing_op_codes = "SELECT group_concat(operation_code) as op_codes FROM $brandix_bts.tbl_orders_ops_ref WHERE category = '$CAT'";
@@ -262,7 +284,7 @@ function insert_into_moq($ref_id,$op_code,$qty){
     //getting the operations and op_codes  for that mo if exists
     foreach($mos as $mo=>$mo_qty){
         $mo_op_query ="SELECT OperationNumber,OperationDescription FROM $bai_pro3.schedule_oprations_master 
-                       WHERE OperationNumber=$op_code and MONumber=$mo limit 1";             
+                       WHERE OperationNumber=$op_code and MONumber='$mo' limit 1";             
         $mo_ops_result = mysqli_query($link,$mo_op_query) or exit('No Operations Exists for MO '.$mo);
         while($row = mysqli_fetch_array($mo_ops_result)){
             $op_desc[$mo] = $row['OperationDescription'];
@@ -287,7 +309,7 @@ function insert_into_moq($ref_id,$op_code,$qty){
             $filled_qty = 0;
             //getting already filled quantities 
             $filled_qty_query = "Select SUM(bundle_quantity) as filled from $bai_pro3.mo_operation_quantites where 
-                                 mo_no = $mo and op_code = $op_code";
+                                 mo_no = '$mo' and op_code = $op_code";
             $filled_qty_result = mysqli_query($link,$filled_qty_query);	
             while($row = mysqli_fetch_array($filled_qty_result)){
                 $filled_qty = $row['filled'];
@@ -315,7 +337,7 @@ function insert_into_moq($ref_id,$op_code,$qty){
         //Updating all excess to last mo 
         if($qty > 0){
             $update_query = "Update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity + $qty 
-                             where mo_no = $last_mo and ref_no = $ref_id and op_code = $op_code";
+                             where mo_no = '$last_mo' and ref_no = $ref_id and op_code = $op_code";
             mysqli_query($link,$update_query) or exit("Error 3 In Updating excess qty to MO Qtys for mo : ".$mo);
         }
     }

@@ -117,7 +117,7 @@
                 }
                 
                         //To get operations
-                        $get_operations_sql="select DISTINCT(operation_code) from $brandix_bts.tbl_style_ops_master where style='$disStyle' and operation_code not in(10,15,60,70,200)";
+                        $get_operations_sql="select DISTINCT(operation_code) from $brandix_bts.tbl_style_ops_master where style='$disStyle'";
                        // echo $get_operations_sql;
                         $ops_result=mysqli_query($link, $get_operations_sql) or die("Error-".$get_operations_sql."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
                          while($row1=mysqli_fetch_array($ops_result))
@@ -127,7 +127,7 @@
                           
                          $opertions = implode(',',$operation_code);
 
-                        $get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions)  ";
+                        $get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions) AND category ='sewing' AND display_operations='yes'";
                         //echo $get_ops_query;
                         $ops_query_result=$link->query($get_ops_query);
                         while ($row2 = $ops_query_result->fetch_assoc())
@@ -486,6 +486,7 @@
                             // echo $order_tid."<br>";
                             // echo $order_del."<br>";
                             // echo $style."<br>";
+							$order_tid='';
                             $size_values=ims_sizes($order_tid,$order_del,$style,$sql_row55["ims_color"],str_replace("a_","",$sql_row55["ims_size"]),$link);
 
                             unset($rej_qty);
@@ -537,11 +538,11 @@
                         
                         if ($total_qty1>$tot_outout)
                         {
-                            echo "<tr><td colspan=4 style=\"background-color:#ff8396;\"> </td><td style=\"background-color:#ff8396;color:white\">$tot_input</td><td style=\"background-color:#ff8396;color:white\">$tot_outout</td><td colspan=3 style=\"background-color:#ff8396;color:white\">$tot_rej</td></tr>";
+                            echo "<tr><td colspan=4 style=\"background-color:#ff8396;\"> </td><td style=\"background-color:#ff8396;color:white\">$tot_input</td><td style=\"background-color:#ff8396;color:white\">$tot_outout</td><td colspan=".count($operation_code)." style=\"background-color:#ff8396;color:white\">$tot_rej</td></tr>";
                         }
                         else
                         {
-                            echo "<tr><td colspan=4 style=\"background-color:#3399ff;\"> </td><td style=\"background-color:#3399ff;color:white\">$tot_input</td><td style=\"background-color:#3399ff;color:white\">$tot_outout</td><td colspan=3 style=\"background-color:#ff8396;color:white\">$tot_rej</td></tr>";
+                            echo "<tr><td colspan=4 style=\"background-color:#3399ff;\"> </td><td style=\"background-color:#3399ff;color:white\">$tot_input</td><td style=\"background-color:#3399ff;color:white\">$tot_outout</td><td colspan=".count($operation_code)." style=\"background-color:#ff8396;color:white\">$tot_rej</td></tr>";
                         }
                         echo "</table>";
                         echo "</div>";

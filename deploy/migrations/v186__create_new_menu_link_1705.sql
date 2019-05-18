@@ -1,0 +1,4 @@
+/*#1705 menu link added*/
+INSERT INTO central_administration_sfcs.tbl_menu_list (menu_pid, page_id, fk_group_id, fk_app_id, parent_id, link_type, link_status, link_visibility, link_location, link_description, link_tool_tip, link_cmd) VALUES('1651','SFCS_9022','8','8','1487','1','1','1','/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/pre_bundle_level_scanning_without_ops.php','Bundle Wise Scanning With Out Operation','16','Bundle Wise Scanning With Out Operation');
+
+INSERT INTO central_administration_sfcs.rbac_role_menu (menu_pid, menu_description, roll_id) VALUES('1651','Bundle Wise Scanning With Out Operation','1');

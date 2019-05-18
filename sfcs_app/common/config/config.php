@@ -25,6 +25,10 @@ $ms_sql_odbc_pass = $conf1->get('mssql-password');
 $mssql_db = $conf1->get('m3database');
 $ms_sql_driver_name = $conf1->get('driver_name');
 
+//Barcode Configuration
+$barcode_4x2 = $conf1->get('4x2-barcode');
+$barcode_2x1 = $conf1->get('2x1-barcode');
+
 //MY SQL host
 $ms_sql_odbc_host = $conf1->get('mysql-odbc');
 //ms-sql sticker_report
@@ -53,6 +57,7 @@ $message_sent_via=$conf1->get('msg-sent-via');  //msg-sent-via
 $rms_request_time = $conf1->get('rms_request_time');
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
+
 
 //get plant details and adress
 $plant_head=$conf1->get('plant_head');
@@ -102,7 +107,7 @@ $line_in = $conf1->get('line-in');
 
 //For Logo Path
 $logo = '/sfcs_app/common/images/logo.png';
-
+if(!isset($dashboard_name)){
 //Auto Close Exempted Pages
 $autoclose_page_exempted=array("baiadmn","baisysadmin","baiictadmin","baischtasksvc","sfcsproject1");
 $autoclose_period=1800000;
@@ -113,6 +118,7 @@ if(!in_array($username,$autoclose_page_exempted))
 echo "<script language=\"javascript\">
     setTimeout(\"window.open('', '_self'); window.close();\",$autoclose_period);
 </script>";
+}
 }
 $dnr_adr_sp_chain = "http://192.168.0.110:8002"; 
 $fab_uom=$conf1->get('uom');
@@ -139,6 +145,7 @@ $api_hostname = $conf1->get('api-host-name');
 $api_port_no = $conf1->get('api-port');
 
 //m3 integration plant codes
+$grn_details=$conf1->get('grndetails');
 $cluster_code=$conf1->get('cluster_code');
 $comp_no=$conf1->get('company_no');
 $central_wh_code=$conf1->get('central_wh_code');
@@ -150,7 +157,8 @@ $sewing_rejection=$conf1->get('sewing_rejection');
 
 
 
-
+$logo = '/sfcs_app/common/images/logo.png';
+$icon2='/sfcs_app/common/images/BAI_Logo.JPG';
 
 $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
 
@@ -225,13 +233,13 @@ while($methods=mysqli_fetch_array($pack_result))
 //***************************************************
   /*  $is_chw = $conf1->get('central_warehouse');
     $cwh_link = Null;
-    if($is_chw == 'yes'){
-        $cwh_host = $conf1->get('cw_host');
-        $cwh_user_name = $conf1->get('cw_username');
-        $cwh_password = $conf1->get('cw_password');
-        $cwh_port = $conf1->get('cw_port');
-        $cwh_link = ($GLOBALS["___mysqli_ston"] = mysqli_connect($cwh_host.":".$cwh_port, $cwh_user_name, $cwh_password)) or die("Could not connect cwh: ".mysqli_error($GLOBALS["___mysqli_ston"]));
+    // if($is_chw == 'yes'){
+    //     $cwh_host = $conf1->get('cw_host');
+    //     $cwh_user_name = $conf1->get('cw_username');
+    //     $cwh_password = $conf1->get('cw_password');
+    //     $cwh_port = $conf1->get('cw_port');
+    //     $cwh_link = ($GLOBALS["___mysqli_ston"] = mysqli_connect($cwh_host.":".$cwh_port, $cwh_user_name, $cwh_password)) or die("Could not connect cwh: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-    } */
-//===================================================
+    // }
+//===================================================*/
 ?>

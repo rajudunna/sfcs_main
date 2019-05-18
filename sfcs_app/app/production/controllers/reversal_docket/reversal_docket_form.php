@@ -67,6 +67,17 @@ if(isset($_POST['formSubmit']))
     $update_plan_doc_stat_flag = 0;
     $op_code = 15;
 
+    $check_docket_query="SELECT * FROM bai_pro3.plandoc_stat_log psl 
+    LEFT JOIN bai_pro3.cat_stat_log csl ON csl.tid = psl.cat_ref
+    WHERE doc_no = $docket_number_post AND category NOT IN ($in_categories);";
+    if(mysqli_num_rows(mysqli_query($link,$check_docket_query)) > 0)
+    {
+        $reverse_cut_qty= "UPDATE bai_pro3.plandoc_stat_log SET act_cut_status = '' ,a_plies=p_plies WHERE doc_no = $docket_number_post";
+        $reverse_cut_qty_result = mysqli_query($link,$reverse_cut_qty) or exit(" Error78".mysqli_error ($GLOBALS["___mysqli_ston"]));
+        $url = '?r='.$_GET['r'];
+        echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');window.location = '".$url."'</script>";
+        exit();
+    }
     //Cehecking for the clubbing dockets
     $check_club_docket_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log 
             where doc_no = $docket_number_post and org_doc_no >=1 ";

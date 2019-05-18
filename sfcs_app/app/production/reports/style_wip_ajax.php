@@ -21,7 +21,7 @@ if($_GET['some'] == 'bundle_no')
 	    
 			
 
-			$sewing_op_codes = "SELECT group_concat(operation_code) as op_codes FROM $brandix_bts.tbl_orders_ops_ref WHERE category = '$CAT'";
+			$sewing_op_codes = "SELECT group_concat(operation_code) as op_codes FROM $brandix_bts.tbl_orders_ops_ref WHERE category = '$CAT' and display_operations='yes'";
 			$row = mysqli_fetch_array(mysqli_query($link,$sewing_op_codes));
 			{
 			  $op_codes = $row['op_codes'];
@@ -90,9 +90,9 @@ if($_GET['some'] == 'bundle_no')
                 //To get Bundle Qty
 		        $get_bundle_qty="select sum(carton_act_qty) as bundle_qty from $bai_pro3.pac_stat_log_input_job where tid='$bundle_number'";
 					
-		        $bcd_data_query = "SELECT COALESCE(SUM(recevied_qty),0) as recevied,operation_id,COALESCE(sum(rejected_qty),0) as rejection,scanned_user,shift,max(date_time) as max,assigned_module  from $brandix_bts.bundle_creation_data_temp where style='$style' and schedule ='$schedule' and color='$color' and size_title='$size' and bundle_number='$bundle_number'  group by operation_id";
+		        $bcd_data_query = "SELECT COALESCE(SUM(recevied_qty),0) as recevied,operation_id,COALESCE(sum(rejected_qty),0) as rejection,group_concat(distinct scanned_user) as scanned_user,shift,max(date_time) as max,assigned_module  from $brandix_bts.bundle_creation_data_temp where style='$style' and schedule ='$schedule' and color='$color' and size_title='$size' and bundle_number='$bundle_number'  group by operation_id";
 		      
-
+		        // echo $bcd_data_query;
 			    $get_bundle_result =$link->query($get_bundle_qty);
 				while ($row2 = $get_bundle_result->fetch_assoc())
 				{
@@ -105,7 +105,8 @@ if($_GET['some'] == 'bundle_no')
 			    {
 					$bcd_rec[$row3['operation_id']] = $row3['recevied'];
 					$bcd_rej[$row3['operation_id']] = $row3['rejection'];
-					$user = $row3['scanned_user'];
+					// $user = $row3['scanned_user'];
+					$user_name[$row3['operation_id']] = $row3['scanned_user'];
 					$shift = $row3['shift'];
 					$scanned_time[$row3['operation_id']] = $row3['max'];
 					$module = $row3['assigned_module'];
@@ -133,7 +134,7 @@ if($_GET['some'] == 'bundle_no')
 								</tr>
 								<tr>
 								   <th>Scanned User</th>
-								   <td>$user</td>
+								   <td>$user_name[$value]</td>
 								</tr>
 								<tr>
 								   <th>Scanned Time</th>
@@ -230,7 +231,7 @@ else
 
 		$bcd_data_query .= " and operation_id in ($opertions)";
 
-		$get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions) ";
+		$get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions) and display_operations='yes'";
 		//echo $get_ops_query;
 		$ops_query_result=$link->query($get_ops_query);
 		while ($row1 = $ops_query_result->fetch_assoc())
@@ -261,9 +262,10 @@ else
 				
 			foreach ($operation_code as $op_code) 
 			{
-				if(strlen($ops_get_code[$op_code]) > 0)
-				$table_data .= "<th>".$ops_get_code[$op_code]."<br>(Good)</th>";
-				$table_data .= "<th>".$ops_get_code[$op_code]."<br>(Rejection)</th>";
+				if(strlen($ops_get_code[$op_code]) > 0){
+					$table_data .= "<th>".$ops_get_code[$op_code]."<br>(Good)</th>";
+					$table_data .= "<th>".$ops_get_code[$op_code]."<br>(Rejection)</th>";
+				}
 			}
 			
 		    foreach ($operation_code as $op_code) 
@@ -297,7 +299,7 @@ else
 		   	$color = $row_main['color'];
 		    $size = $row_main['size_title'];
 		    $size_code =  $row_main['size_id'];
-
+		    $cpk_main_qty = 0;
 
 		    $get_order_qty="select sum($asum_str) as order_qty from $bai_pro3.bai_orders_db_confirm where order_style_no='$style' and order_del_no='$schedule' and order_col_des='$color' ";
 				
@@ -332,8 +334,15 @@ else
 
     
 
-		    $to_get_cpk="select sum(carton_act_qty) as  carton_qty from $bai_pro3.pac_stat_log where style='$style' and schedule='$schedule' and color='$color' and size_code='$size_code' and status='DONE'";
-		    //echo $to_get_cpk;
+		    $to_get_cpk="select sum(carton_act_qty) as  carton_qty from $bai_pro3.pac_stat_log where style='$style' and schedule='$schedule' and color='$color' and status='DONE'";
+            if($_GET['size'] != '')
+		    {
+		       $to_get_cpk .= " and size_code='$size_code'";
+		    }
+		    else
+		    {
+               $to_get_cpk .= " group by color";
+		    }
 		    $to_get_cpk_result= $link->query($to_get_cpk);
 		    while ($row3 = $to_get_cpk_result->fetch_assoc())
 		    {

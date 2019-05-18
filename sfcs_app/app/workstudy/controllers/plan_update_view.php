@@ -17,19 +17,18 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	
 	<?php
 	
-	
 	if(isset($_POST['filter']))
 	{
 		$date=$_POST['date'];
 	echo '<hr/><div class="table-responsive"><table class="table table-bordered">
-	<tr bgcolor=#d9534f><td colspan=18><strong>Plan Update Review</strong><span align=right style="margin-left:750px;"> Date: '.$date.'</span></td></tr>
+	<tr bgcolor=#d9534f><td colspan=20><strong>Plan Update Review</strong><span align=right style="margin-left:750px;"> Date: '.$date.'</span></td></tr>
 	
 	<tr style="background-color:#286090;color:white;"><th>Module</th>	<th>Section</th><th>Style</th><th>SMV</th><th>NOP</th><th>Team A <br/>Plan Eff</th><th>Team A <br/>Plan Pro</th>
 	
 	<th>Team A <br/>Plan Clock Hours</th>
 	<th>Team A <br/>Plan SAH</th>
 	
-	<th>Team A <br/>Plan Hours</th><th>Team A <br/>Plan Couple</th><th>Team B <br/>Plan Eff</th>	<th>Team B <br/>Plan Pro</th>
+	<th>Team A <br/>Plan Hours</th><th>Team A <br/>Plan Couple</th><th>SMV</th><th>NOP</th><th>Team B <br/>Plan Eff</th>	<th>Team B <br/>Plan Pro</th>
 	
 	<th>Team B <br/>Plan Clock Hours</th>
 	<th>Team B <br/>Plan SAH</th>
@@ -38,7 +37,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 </tr>';
 
 	$x=0;
-	$sql="select * from $bai_pro.pro_plan where date=\"$date\"";
+	$sql="select * from $bai_pro.pro_plan where date=\"$date\"order by mod_no*1, shift";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	// $sql_count="select count(*) from bai_pro.pro_plan where date=\"$date\"";
 	// $sql_result_count=mysqli_query($link, $sql_count) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -57,13 +56,20 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			$plan_clh=$sql_row['plan_clh'];
 			$plan_sah=$sql_row['plan_sah'];
 			
-			$sql1="select bac_style,smv,nop from $bai_pro.bai_log_buf where bac_date=\"$date\" and bac_no=$module and smv>0 and nop>0 order by bac_no";
-			//echo $sql1."<br/>";		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql1="select bac_style,smv,nop from $bai_pro.bai_log_buf where bac_date=\"$date\" and bac_no=$module and smv>0 and nop>0 and bac_shift='$shift' order by bac_no";
+			//echo $sql1."<br/>";		
+			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
-				$smv=$sql_row1['smv'];
-				$nop=$sql_row1['nop'];
-				$bac_style=$sql_row1['bac_style'];
+				if($shift=='A'){
+					$smv=$sql_row1['smv'];
+					$nop=$sql_row1['nop'];
+					$bac_style=$sql_row1['bac_style'];
+				}elseif($shift=='B'){
+					$smv1=$sql_row1['smv'];
+					$nop1=$sql_row1['nop'];
+					$bac_style=$sql_row1['bac_style'];
+				}
 			}
 			
 			$bgcolor_tag=" style=\"background-color: white\"";
@@ -86,26 +92,34 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				echo '<td bgcolor=\"#99FFDD\">'.$bac_style.'</td>';
 				echo '<td bgcolor=\"#99FFDD\">'.$smv.'</td>';
 				echo '<td bgcolor=\"#99FFDD\">'.$nop.'</td>';
-				echo '<td bgcolor=\"#FFEEFF\">'.$plan_eff.'</td>';
-				echo '<td bgcolor=\"#FFEEFF\">'.round($plan_pro,0).'</td>';
-				echo '<td bgcolor=\"#FFEEFF\">'.$plan_clh.'</td>';
-				echo '<td bgcolor=\"#FFEEFF\">'.$plan_sah.'</td>';
-				echo '<td bgcolor=\"#FFEEFF\">'.$act_hours.'</td>';
-				echo '<td bgcolor=\"#FFEEFF\">'.$couple.'</td>';
+				echo '<td bgcolor=\"#4b992f\">'.$plan_eff.'</td>';
+				echo '<td bgcolor=\"#4b992f\">'.round($plan_pro,0).'</td>';
+				echo '<td bgcolor=\"#4b992f\">'.$plan_clh.'</td>';
+				echo '<td bgcolor=\"#4b992f\">'.$plan_sah.'</td>';
+				echo '<td bgcolor=\"#4b992f\">'.$act_hours.'</td>';
+				echo '<td bgcolor=\"#4b992f\">'.$couple.'</td>';
+				$smv="";
+				$nop="";
 			}
 			
 			if($shift=="B")
-			{
+			{	
+				echo '<td bgcolor=\"#99FFDD\">'.$smv1.'</td>';
+				echo '<td bgcolor=\"#99FFDD\">'.$nop1.'</td>';
 				echo '<td bgcolor=\"#99FF88\">'.$plan_eff.'</td>';
 				echo '<td bgcolor=\"#99FF88\">'.round($plan_pro,0).'</td>';
-				echo '<td bgcolor=\"#FFEEFF\">'.$plan_clh.'</td>';
-				echo '<td bgcolor=\"#FFEEFF\">'.$plan_sah.'</td>';
+				echo '<td bgcolor=\"#4b992f\">'.$plan_clh.'</td>';
+				echo '<td bgcolor=\"#4b992f\">'.$plan_sah.'</td>';
 				echo '<td bgcolor=\"#99FF88\">'.$act_hours.'</td>';
 				echo '<td bgcolor=\"#99FF88\">'.$couple.'</td>';
 				echo '<td bgcolor=\"#99FFDD\">'.$remarks.'</td>';
 				echo "</tr>";
+				$smv1="";
+				$nop1="";
 				$x++;
 			}
+
+			$bac_style='';
 		}
 	}
 	else {

@@ -69,6 +69,7 @@
         $sizes_p = rtrim($sizes,",");
         $sizes_a = rtrim($sizes_a,",");
         $values = rtrim($values,",");
+        $insert_id_act = array();
         //getting cat stat log
         $date=date("Y-m-d", mktime(0,0,0,date("m") ,date("d"),date("Y")));
         foreach($cat as $key=>$value)
@@ -124,10 +125,11 @@
             // echo $sql_plandoc;
             mysqli_query($link,$sql_plandoc) or exit("While inserting into the plan doc stat log".mysqli_error($GLOBALS["___mysqli_ston"]));
            $insert_id=mysqli_insert_id($link);
-           if(strtolower($value) == 'body' || strtolower($value) == 'front')
-           {
-               $insert_id_act=mysqli_insert_id($link);
-           }
+            if(strtolower($value) == 'body' || strtolower($value) == 'front')
+            {
+               $insert_id_b_or_f=mysqli_insert_id($link);
+            }
+            $insert_id_act[]=mysqli_insert_id($link);
             $sql_recut_v2="insert into $bai_pro3.recut_v2 (date,cat_ref,order_tid,pcutno,acutno,remarks,$sizes_p,$sizes_a,a_plies,p_plies,doc_no) values (\"".date("Y-m-d")."\",".$cat_ref.",\"$order_tid\",$count,$count,\"".$value."\",$values,$values,$pliespercut,$pliespercut,$insert_id)";
             mysqli_query($link,$sql_recut_v2) or exit("While inserting into the recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
              // calling the function to insert to bundle craetion data and cps log
@@ -136,7 +138,7 @@
                 //Inserted Successfully
             }
         }
-        $insert_id = $insert_id_act;
+        $insert_id = $insert_id_b_or_f;
         foreach($bcd_id as $key=>$act_id)
         {
             $recut_allowing_qty = $recutval[$key];
@@ -167,74 +169,80 @@
                         $to_add = $recut_allowing_qty;
                         $recut_allowing_qty = 0;
                     }
-                    if($to_add > 0)
+                    foreach ($insert_id_act as $key_insert => $val_insert) 
                     {
-                        $inserting_into_recut_v2_child = "INSERT INTO `$bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`,`size_id`)
-                        VALUES($insert_id,$bcd_act_id,$operation_id,$actual_allowing_to_recut,$to_add,0,0,'$size_id')";
-                        mysqli_query($link,$inserting_into_recut_v2_child) or exit("While inserting into the recut v2 child".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        //retreaving bundle_number of recut docket from bcd and inserting into moq
-                        $retreaving_qry="select bundle_number from $brandix_bts.bundle_creation_data where docket_number='$insert_id' and operation_id ='15' and size_id = '$size_id'";
-                        $retreaving_qry_res = $link->query($retreaving_qry);
-                        while($row_bcd_recut = $retreaving_qry_res->fetch_assoc()) 
+                        if($to_add > 0)
                         {
-                            $bundle_number_recut = $row_bcd_recut['bundle_number'];
-                        }
-                        $multiple_mos_tot_qty = $to_add;
-                        $array_mos = array();
-                        //retreaving mo_number which is related to that bcd_act_id
-                        $moq_qry = "SELECT mo_no,bundle_quantity,`rejected_quantity` FROM $bai_pro3.`mo_operation_quantites` WHERE ref_no=$bundle_number AND op_code=$operation_id AND `rejected_quantity`>0 ORDER BY mo_no";
-                        // echo $moq_qry.'</br>';
-                        // die();
-                        $moq_qry_res = $link->query($moq_qry);
-                        while($row_moq = $moq_qry_res->fetch_assoc()) 
-                        {
-                            $max_mo_no = $row_moq['mo_no'];
-                            // echo $row_moq['rejected_quantity'].'-'.$array_mos[$max_mo_no].'</br>';
-                            $bundle_quantity_mo = $row_moq['rejected_quantity'] - $array_mos[$max_mo_no];
-                            // echo $bundle_quantity_mo.'-'.$multiple_mos_tot_qty.'</br>';
-                            if($bundle_quantity_mo < $multiple_mos_tot_qty)
+                            $inserting_into_recut_v2_child = "INSERT INTO `$bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`,`size_id`)
+                            VALUES($val_insert,$bcd_act_id,$operation_id,$actual_allowing_to_recut,$to_add,0,0,'$size_id')";
+                            mysqli_query($link,$inserting_into_recut_v2_child) or exit("While inserting into the recut v2 child".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            //retreaving bundle_number of recut docket from bcd and inserting into moq
+                            $retreaving_qry="select bundle_number from $brandix_bts.bundle_creation_data where docket_number='$val_insert' and operation_id ='15' and size_id = '$size_id'";
+                            $retreaving_qry_res = $link->query($retreaving_qry);
+                            while($row_bcd_recut = $retreaving_qry_res->fetch_assoc()) 
                             {
-                                $multiple_mos_tot_qty = $multiple_mos_tot_qty - $bundle_quantity_mo;
-                                $to_add_mo = $bundle_quantity_mo;
-                                $array_mos[$max_mo_no]  = $bundle_quantity_mo;
+                                $bundle_number_recut = $row_bcd_recut['bundle_number'];
                             }
-                            else
+                            $multiple_mos_tot_qty = $to_add;
+                            $array_mos = array();
+                            //retreaving mo_number which is related to that bcd_act_id
+                            $moq_qry = "SELECT mo_no,bundle_quantity,`rejected_quantity` FROM $bai_pro3.`mo_operation_quantites` WHERE ref_no=$bundle_number AND op_code=$operation_id AND `rejected_quantity`>0 ORDER BY mo_no";
+                            // echo $moq_qry.'</br>';
+                            // die();
+                            $moq_qry_res = $link->query($moq_qry);
+                            while($row_moq = $moq_qry_res->fetch_assoc()) 
                             {
-                                $to_add_mo = $multiple_mos_tot_qty;
-                                $array_mos[$max_mo_no]  = $multiple_mos_tot_qty;
-                                $multiple_mos_tot_qty = 0;
-                            }
-                            // echo $to_add_mo.'</br>';
-                            if($to_add_mo > 0)
-                            {
-                                $checking_moq_qry = "SELECT * FROM $bai_pro3.mo_operation_quantites WHERE ref_no = $bundle_number_recut AND op_code = 15";
-                                // echo $checking_moq_qry.'</br>';
-                                $checking_moq_qry_res = $link->query($checking_moq_qry);
-                                if(mysqli_num_rows($checking_moq_qry_res) > 0)
+                                $max_mo_no = $row_moq['mo_no'];
+                                // echo $row_moq['rejected_quantity'].'-'.$array_mos[$max_mo_no].'</br>';
+                                $bundle_quantity_mo = $row_moq['rejected_quantity'] - $array_mos[$max_mo_no];
+                                // echo $bundle_quantity_mo.'-'.$multiple_mos_tot_qty.'</br>';
+                                if($bundle_quantity_mo < $multiple_mos_tot_qty)
                                 {
-                                    //update qry
-                                    while($row_moq_bcd = $checking_moq_qry_res->fetch_assoc()) 
-                                    {
-                                        $id_moq = $row_moq_bcd['id'];
-                                    }
-                                    $updae_moq_qry = "update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity+$to_add_mo where id=$id_moq";
+                                    $multiple_mos_tot_qty = $multiple_mos_tot_qty - $bundle_quantity_mo;
+                                    $to_add_mo = $bundle_quantity_mo;
+                                    $array_mos[$max_mo_no]  = $bundle_quantity_mo;
                                 }
                                 else
                                 {
-                                    //insert qry
-                                    $updae_moq_qry="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$max_mo_no."', '".$bundle_number_recut."','".$to_add_mo."', '15', 'Cutting')";
+                                    $to_add_mo = $multiple_mos_tot_qty;
+                                    $array_mos[$max_mo_no]  = $multiple_mos_tot_qty;
+                                    $multiple_mos_tot_qty = 0;
                                 }
-                                // echo $updae_moq_qry.'</br>';
-                                mysqli_query($link,$updae_moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                // echo $to_add_mo.'</br>';
+                                if($to_add_mo > 0)
+                                {
+                                    $checking_moq_qry = "SELECT * FROM $bai_pro3.mo_operation_quantites WHERE ref_no = $bundle_number_recut AND op_code = 15";
+                                    // echo $checking_moq_qry.'</br>';
+                                    $checking_moq_qry_res = $link->query($checking_moq_qry);
+                                    if(mysqli_num_rows($checking_moq_qry_res) > 0)
+                                    {
+                                        //update qry
+                                        while($row_moq_bcd = $checking_moq_qry_res->fetch_assoc()) 
+                                        {
+                                            $id_moq = $row_moq_bcd['id'];
+                                        }
+                                        $updae_moq_qry = "update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity+$to_add_mo where id=$id_moq";
+                                    }
+                                    else
+                                    {
+                                        //insert qry
+                                        $updae_moq_qry="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$max_mo_no."', '".$bundle_number_recut."','".$to_add_mo."', '15', 'Cutting')";
+                                    }
+                                    // echo $updae_moq_qry.'</br>';
+                                    mysqli_query($link,$updae_moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                }
                             }
+                            $update_rejection_log_child = "update $bai_pro3.rejection_log_child set recut_qty = recut_qty+$to_add where bcd_id = $bcd_act_id";
+                            mysqli_query($link,$update_rejection_log_child) or exit("While updating rejection log child".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            $to_add_mo += $to_add;
+                            $update_rejection_log = "update $bai_pro3.rejections_log set recut_qty = recut_qty+$to_add,remaining_qty = remaining_qty - $to_add where style = '$style' and schedule = '$scheule' and color = '$color'";
+                            mysqli_query($link,$update_rejection_log) or exit("While updating rejection log".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
-                        $update_rejection_log_child = "update $bai_pro3.rejection_log_child set recut_qty = recut_qty+$to_add where bcd_id = $bcd_act_id";
-                        mysqli_query($link,$update_rejection_log_child) or exit("While updating rejection log child".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        $to_add_mo += $to_add;
-                        $update_rejection_log = "update $bai_pro3.rejections_log set recut_qty = recut_qty+$to_add,remaining_qty = remaining_qty - $to_add where style = '$style' and schedule = '$scheule' and color = '$color'";
-                        mysqli_query($link,$update_rejection_log) or exit("While updating rejection log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if($val_insert == $insert_id)
+                        {
+                            $mo_changes = mofillingforrecutreplace($to_add_mo,$bcd_act_id);
+                        }
                     }
-                    $mo_changes = mofillingforrecutreplace($to_add_mo,$bcd_act_id);
                 }
             }
         }
@@ -1090,11 +1098,19 @@ function isInt(t)
         return false; 
     }
 }
-</script>
-<script>
+    function checks(){
+        $('#recut').hide();
+        $('input[type=checkbox]').each((key,val)=>{
+            if(val.checked == true){
+                $('#recut').show();
+            }
+        });
+    }
+
 $(document).ready(function() 
 {
     $('#myTable1').hide();
+    $('#recut').hide();
     // $('.loading-image').hide();
     // myFunction();
     // $('#recut').on('click', function(){

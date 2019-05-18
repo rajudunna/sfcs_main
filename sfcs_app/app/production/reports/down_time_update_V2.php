@@ -488,58 +488,15 @@ if(isset($_POST["submit"]))
 	for($i=0;$i<sizeof($module);$i++)
 	{
 		if($lost_mins[$i]>0)
-		{
-			if($schedule[$i]!=0)
+		{		
+			$sql_buyer="SELECT order_div FROM $bai_pro3.bai_orders_db where order_style_no=".$style[$i];
+			$sql_result_buyer=mysqli_query($link, $sql_buyer) or exit($sql_buyer."Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 			{
-				//2016-10-06 / CR 512 / kirang / Changed the logic to capture the Buyer Name
-				$order_style_no=0;
-				$sql3="select distinct order_style_no as order_style_no from $bai_pro3.bai_orders_db where order_del_no='".$schedule[$i]."'";
-					//echo "<br/>".$sql3."<br/>";
-				$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row3=mysqli_fetch_array($sql_result3))
-				{
-					$order_style_no=$sql_row3["order_style_no"];
-				}
-			
-			
-				//2016-10-06 / CR 512 / kirang / Changed the logic to capture the Buyer Name
-				//$sql1="SELECT distinct(buyer) FROM pro_style WHERE style=\"".$style[$i]."\"";	
-				
-				$sql1="SELECT distinct(buyer_id) as buyer FROM $bai_pro2.movex_styles WHERE movex_style=\"".$order_style_no."\"";	
-				//echo "<br/>".$sql1."<br/>";			
-				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row1=mysqli_fetch_array($sql_result1))
-				{
-					$buyer[$i]=$sql_row1["buyer"];
-				}
-			
-			}
-			else if($style[$i]!='')
-			{
-				$sql_buyer="SELECT distinct(buyer_id) as buyer  FROM $bai_pro2.movex_styles where style_id='".$style[$i]."' and buyer_id!=''";
-				
-				//echo "<br/>".$sql_buyer;
-				
-				$sql_result=mysqli_query($link, $sql_buyer) or exit($sql_buyer."Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row=mysqli_fetch_array($sql_result))
-				{
-					$buyer[$i]=$sql_row["buyer"];
-				}
-				
-				
-			}
-			else
-			{
-				$sql_buyer="SELECT buyer FROM $bai_pro3.buyer_style a join $bai_pro3.plan_modules b on a.buyer_name=b.buyer_div where module_id=".$module[$i];
-				$sql_result_buyer=mysqli_query($link, $sql_buyer) or exit($sql_buyer."Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
-				{
-					$buyer[$i]=$sql_row_buyer["buyer"];
-				}
+				$buyer=$sql_row_buyer["order_div"];
 			}
 			
-			
-			$sql2="insert into $bai_pro.down_log(mod_no,date,department,remarks,style,dtime,shift,section,customer,schedule,source,capture,lastup,nop,start_time,end_time,reason_code,updated_by) values (".$module[$i].", \"".$date."\", \"".$department[$i]."\",\"".$reason[$i]."\", \"".$style[$i]."\", ".$lost_mins[$i].", \"".$shift[$i]."\", \"".$section[$i]."\", \"".$buyer[$i]."\", \"".$schedule[$i]."\", \"".$source[$i]."\", \"".$capture."\", \"".$lastup."\",\"".$nop[$i]."\",\"".$start_time[$i]."\",\"".$end_time[$i]."\",".$reason_code[$i].",'$username')";
+			$sql2="insert into $bai_pro.down_log(mod_no,date,department,remarks,style,dtime,shift,section,customer,schedule,source,capture,lastup,nop,start_time,end_time,reason_code,updated_by) values (".$module[$i].", \"".$date."\", \"".$department[$i]."\",\"".$reason[$i]."\", \"".$style[$i]."\", ".$lost_mins[$i].", \"".$shift[$i]."\", \"".$section[$i]."\", \"".$buyer."\", \"".$schedule[$i]."\", \"".$source[$i]."\", \"".$capture."\", \"".$lastup."\",\"".$nop[$i]."\",\"".$start_time[$i]."\",\"".$end_time[$i]."\",".$reason_code[$i].",'$username')";
 			//echo "<br/><br/>".$sql2."<br/>";
 			$result = mysqli_query($link, $sql2) or exit("Sql Error[$i]".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if ($result=='1') {

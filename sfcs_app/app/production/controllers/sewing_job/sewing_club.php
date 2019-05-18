@@ -3,7 +3,6 @@
 include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 ?>
-<!--<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>-->
 <script>
  $(document).ready(function(){
 	var url1 = '<?= getFullURL($_GET['r'],'sewing_club.php','N'); ?>';
@@ -20,10 +19,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
        var valueSelected2 = this.value;
 	   var style1 = $("#style").val();
 	   window.location.href =url1+"&style="+style1+"&schedule="+valueSelected2
-	 //window.location.href ="http://localhost/sfcs_app/app/production/controllers/sewing_job/sewing_club.php?schedule="+valueSelected2
-	 
-	 //window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
-    });
+	  });
 });
 </script>
 <head>
@@ -35,95 +31,47 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 <body>
 <form>
 <?php
-	
-	//include("menu_content.php");
-	
-	$style=$_GET['style'];
-	$schedule=$_GET['schedule']; 
-	// echo $schedule;
-	 //echo $variable = "<script>document.write(valueSelected)</script>";
-	 if(isset($_POST['myval'])){
-		$value = $_POST['myval'];
-		//echo $value;  
-		//die();
-		$value1 = explode(",",$value);
-		//var_dump($value1);
-		$list1 = "'". implode("', '", $value1) ."'";
-		//print_r($value1);
-		//echo count($value1);
-		$checked_count = count($value1);
-        //echo $checked_count;
-			//die();
-			if($checked_count > 1)
-			{
-		//print_r($value1);
-		//echo min($value1);
-		//var_dump($value1[0]);
-		//echo $schedule;
-		$value2 = min_vals($value1);
-		//echo $value2;
-		//die();
+$style=$_GET['style'];
+$schedule=$_GET['schedule']; 
+if(isset($_POST['myval']))
+{
+	$value = $_POST['myval'];
+	$value1 = explode(",",$value);
+	$list1 = "'". implode("', '", $value1) ."'";
+	$checked_count = count($value1);
+	if($checked_count > 1)
+	{
+		$value2 = min($value1);
 		$list = "'". implode("', '", $value1) ."'";
-		//echo $list;
-		$count_sch_qry3="SELECT input_job_no_random FROM bai_pro3.packing_summary_input WHERE order_del_no ='$schedule' AND input_job_no ='$value2'";
+		$count_sch_qry3="SELECT input_job_no_random FROM $bai_pro3.packing_summary_input WHERE order_del_no ='$schedule' AND input_job_no ='$value2'";
 		$result13=mysqli_query($link, $count_sch_qry3) or die("Error110-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$row2=mysqli_fetch_array($result13);
 		$input_job_random_min = $row2['input_job_no_random'];
-		// echo $input_job_random_min;
-		
-		
-		$check_update_before="select * from brandix_bts.bundle_creation_data_temp where schedule='".$schedule."' and input_job_no in ($list1) ";
-		// echo $check_update_before;
-		
-		$result22=mysqli_query($link, $check_update_before) or die("Error100-".$check_update_before."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$rows_count22=mysqli_num_rows($result22);
-		// echo $rows_count22;die();
-		if($rows_count22 > 0){
-			  //echo 'Sorry! Some of the jobs were already scanned';
-			  echo "<script>sweetAlert('Sorry! Some of the jobs were already scanned','','warning');</script>";
-		}
-		
-		else{
-		$count_sch_qry1="SELECT input_job_no,input_job_no_random FROM bai_pro3.packing_summary_input WHERE order_del_no ='$schedule' AND input_job_no in ($list1) ";
+		$count_sch_qry1="SELECT input_job_no,input_job_no_random FROM $bai_pro3.packing_summary_input WHERE order_del_no ='$schedule' AND input_job_no in ($list1) group by input_job_no";
 		$result10=mysqli_query($link, $count_sch_qry1) or die("Error100-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-		//$row2=mysqli_fetch_array($result10);
-		//$input_job_random = $row2['input_job_no_random'];
 		while($row2=mysqli_fetch_array($result10))
-						{
-							// swal("Already Scanned");
-							$input_job=$row2["input_job_no"];
-							$input_job_random=$row2["input_job_no_random"];
-							$count_sch_qry2 = "UPDATE bai_pro3.pac_stat_log_input_job SET input_job_no = '$value2', input_job_no_random = '$input_job_random_min'
-							WHERE input_job_no = '$input_job' and input_job_no_random = '$input_job_random'";
-							//echo $count_sch_qry2 ;
-							$result12=mysqli_query($link, $count_sch_qry2) or die("Error108-".$count_sch_qry2."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-							update_barcode_sequences($input_job_random_min);
-							 //die();
-							//echo 'Input Job NO '.$input_job.'clubbed to '.$value2.' and Random Number '.$input_job_random_min.' </br>';
-							//echo "Updated data successfully\n";
-							
-						}
-						echo "<script>sweetAlert('Following Sewing Jobs Clubbed Sucessfully','','success');</script>";
-			}
+		{
+			$input_job_random=$row2["input_job_no_random"];
+			$input_job_no_r=$row2["input_job_no"];
+			$count_sch_qry2 = "UPDATE bai_pro3.pac_stat_log_input_job SET input_job_no = '$value2', input_job_no_random = '$input_job_random_min' WHERE input_job_no='$input_job_no_r' and input_job_no_random = '$input_job_random'";
+			$result12=mysqli_query($link, $count_sch_qry2) or die("Error108-".$count_sch_qry2."-".mysqli_error($GLOBALS["___mysqli_ston"]));				
 		}
-		else{
-			//echo "Please Select More than One Sewing Job to Club";
-			//swal('Please Select More than One Sewing Job to Club','','warning');
-			echo "<script>sweetAlert('Please Select More than One Sewing Job to Club','','warning');</script>";
-			
-		}
-	 }
+		update_barcode_sequences($input_job_random_min);
+		echo "<script>sweetAlert('Following Sewing Jobs Clubbed Sucessfully','','success');</script>";
+	}	
+	else
+	{
+		echo "<script>sweetAlert('Please Select More than One Sewing Job to Club','','warning');</script>";			
+	}
+}
 ?>
 <?php
-$sql="select distinct order_style_no from bai_orders_db";	
+$sql="select order_style_no from $bai_pro3.packing_summary_input group by order_style_no";	
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
 echo "<div class=\"row\"><div class=\"col-sm-3\"><label>Select Style:</label><select class='form-control' name=\"style\"  id='style'>";
-
 echo "<option value='' disabled selected>Please Select</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-
 	if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
 	{
 		echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
@@ -132,25 +80,22 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
 	}
-
 }
 echo "  </select>
 	</div>";
-	
-	echo "<div class='col-sm-3'><label>Select Schedule:</label> 
+echo "<div class='col-sm-3'><label>Select Schedule:</label> 
 	  <select class='form-control' name=\"schedule\"  id='schedule'>";
-$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";	
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select order_del_no from $bai_pro3.packing_summary_input where order_style_no='$style' group by order_del_no";	
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-
 echo "<option value='' disabled selected>Please Select</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule)){
+	if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule))
+	{
 			echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
-		}
-	else{
+	}
+	else
+	{
 		echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
 	}
 }
@@ -164,163 +109,89 @@ echo "	</select>
 <?php
 if($style != "" && $schedule != "")
 {	
-$query_sewing_check = "SELECT * FROM $bai_pro3.packing_summary_input WHERE order_style_no ='$style' AND order_del_no = '$schedule'";
-//
-//echo $query_sewing_check;
-//die();
-$result111=mysqli_query($link, $query_sewing_check) or die("Error100-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-$rows_count_jobs=mysqli_num_rows($result111);
-if($rows_count_jobs == 0){
-		echo "<script>sweetAlert('Sewing Jobs Not Generated for this style and schedule','','warning');</script>";
-	} 
-	
-	else{?>
-		
-<div class="panel panel-primary">
-				<!--<div class="panel-heading"><b>Ratio Sheet (Sewing Job wise)</b></div>-->
-				<div class="panel-body">
-					<!--<div style="float:right"><img src="../../common/images/Book1_29570_image003_v2.png" width="250px"/></div>-->
-					
-					<?php
-						
-
-						echo "<div class='row'>";
-						echo "<div class='col-md-12'>";
-						
-						echo "<table id = \"example\">"; 
-						echo "<thead>";
-						echo "<tr>";
-						//echo "<th>Style</th>"; 
-						/* echo "<th>PO#</th>"; */
-						echo "<th>Schedule</th>";
-						echo "<th>Cutting Job</th>";
-						echo "<th>Input Job#</th>";
-						echo "<th>Quantity</th>";
-						
-						echo "<th>Clubbing Details</th>";  
-						echo "</tr></thead>";
-
-						//$sql="select distinct input_job_no as job from $bai_pro3.packing_summary_input where order_del_no in ($schedule) order by input_job_no*1 ";
-						//echo $sql."<br>";
-						$sql = "SELECT type_of_sewing,input_job_no_random,sch_mix,input_job_no,GROUP_CONCAT(DISTINCT tid ORDER BY tid) AS tid,GROUP_CONCAT(DISTINCT doc_no_ref ORDER BY doc_no) AS doc_no_ref,GROUP_CONCAT(DISTINCT m3_size_code order by m3_size_code) AS size_code,group_concat(distinct order_col_des order by order_col_des) as order_col_des,doc_no,group_concat(distinct order_del_no) as order_del_no,GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno,SUM(carton_act_qty) AS carton_act_qty FROM (SELECT DISTINCT(SUBSTRING_INDEX(order_joins,'J',-1)) AS sch_mix,order_del_no,input_job_no,input_job_no_random,tid,doc_no,doc_no_ref,m3_size_code,order_col_des,acutno,SUM(carton_act_qty) AS carton_act_qty,type_of_sewing FROM bai_pro3.packing_summary_input WHERE order_del_no in ($schedule) GROUP BY order_col_des,order_del_no,input_job_no_random,
-						acutno,m3_size_code order by field(order_del_no,$schedule),field(m3_size_code,'s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','s14','s15','s16','s17','s18','s19','s20','s21','s22','s23','s24','s25','s26','s27','s28','s29','s30','s31','s32','s33','s34','s35','s36','s37','s38','s39','s40','s41','s42','s43','s44','s45','s46','s47','s48','s49','s50')) AS t GROUP BY input_job_no_random ORDER BY input_job_no*1,field(m3_size_code,'s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','s14','s15','s16','s17','s18','s19','s20','s21','s22','s23','s24','s25','s26','s27','s28','s29','s30','s31','s32','s33','s34','s35','s36','s37','s38','s39','s40','s41','s42','s43','s44','s45','s46','s47','s48','s49','s50')";
-						$result=mysqli_query($link, $sql) or die("Error8-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($sql_row=mysqli_fetch_array($result))
+	?>
+	<div class="panel panel-primary">
+		<div class="panel-body">
+			<?php
+			echo "<div class='row'>";
+			echo "<div class='col-md-12'>";
+			echo "<table id = \"example\">"; 
+			echo "<thead>";
+			echo "<tr>";
+			echo "<th>Schedule</th>";
+			echo "<th>Cutting Job</th>";
+			echo "<th>Input Job#</th>";
+			echo "<th>Quantity</th>";
+			echo "<th>Clubbing Details</th>";  
+			echo "</tr></thead>";
+			$sql = "SELECT order_del_no,input_job_no,input_job_no_random,SUM(carton_act_qty) AS carton_act_qty,order_col_des FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' GROUP BY input_job_no ORDER BY input_job_no*1";
+			$result=mysqli_query($link, $sql) or die("Error8-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row=mysqli_fetch_array($result))
+			{
+				$del_no_new=$sql_row["order_del_no"];
+				$job_new=$sql_row["input_job_no"];
+				$input_job_no_random=$sql_row["input_job_no_random"];
+				$get_cut_no="SELECT GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno from $bai_pro3.packing_summary_input WHERE order_del_no = '$del_no_new' and input_job_no='$job_new' ";
+				$result_cut_no=mysqli_query($link, $get_cut_no) or die("Error92-".$get_cut_no."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row_cut_no=mysqli_fetch_array($result_cut_no))
+				{
+					$total_cuts=explode(",",$sql_row_cut_no['acutno']);
+					$cut_jobs_new='';
+					for($ii=0;$ii<sizeof($total_cuts);$ii++)
+					{
+						$arr = explode("$", $total_cuts[$ii], 2);;
+						$sql4="select color_code from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des='".$arr[0]."'";
+						$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row4=mysqli_fetch_array($sql_result4))
 						{
-							
-							    $del_no_new=$sql_row["order_del_no"];
-								// echo $del_no_new;
-								$job_new=$sql_row["input_job_no"];
-
-								$input_job_no_random=$sql_row["input_job_no_random"];
-								
-								
-								//getting cut job numbers
-								$get_cut_no="SELECT GROUP_CONCAT(DISTINCT CONCAT(order_col_des,'$',acutno) ORDER BY doc_no SEPARATOR ',') AS acutno from $bai_pro3.packing_summary_input WHERE order_del_no = '$del_no_new' and input_job_no='$job_new' ";
-								// echo $get_cut_no.'<br>';
-								$result_cut_no=mysqli_query($link, $get_cut_no) or die("Error92-".$get_cut_no."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-								while($sql_row_cut_no=mysqli_fetch_array($result_cut_no))
-								{
-									$total_cuts=explode(",",$sql_row_cut_no['acutno']);
-									$cut_jobs_new='';
-									for($ii=0;$ii<sizeof($total_cuts);$ii++)
-									{
-										$arr = explode("$", $total_cuts[$ii], 2);;
-										// $col = $arr[0];
-										$sql4="select color_code from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des='".$arr[0]."'";
-										//echo $sql4."<br>";
-										$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
-										while($sql_row4=mysqli_fetch_array($sql_result4))
-										{
-											$color_code=$sql_row4["color_code"];
-										}
-										$cut_jobs_new .= chr($color_code).leading_zeros($arr[1], 3)."<br>";
-										unset($arr);
-									}
-								}
-								
-								
-								
-								// echo $job_new;
-								$count_sch_qry="select * from brandix_bts.bundle_creation_data_temp where schedule='".$del_no_new."' and input_job_no='".$job_new."'";
-								$result9=mysqli_query($link, $count_sch_qry) or die("Error100-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-								$rows_count1=mysqli_num_rows($result9);
-
-								//Validation For sewing clubbing cant if jobs loaded
-								$count_plan_input="select * from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$input_job_no_random."'";
-								$result_plan_input=mysqli_query($link, $count_plan_input) or die("Error101-".$count_plan_input."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-								$plan_dash_count=mysqli_num_rows($result_plan_input);
-
-								
-								// echo $rows_count1;
-								// die();
-								echo "<tr height=20 style='height:15.0pt'>";
-								//echo "<td height=20 style='height:15.0pt'>".$style."</td>";
-								echo "<td height=20 style='height:15.0pt'>".$sql_row["order_del_no"]."</td>";
-								echo "<td height=20 style='height:15.0pt'>".$cut_jobs_new."</td>";
-								$url=getFullURL($_GET['r'],'small_popup.php','R');
-								// echo "<td height=20 style='height:15.0pt'>J".$sql_row["input_job_no"]." <a class='tooltippage' id='clickme' href='#' rel='$url&schedule='".$sql_row["order_del_no"]."'&jobno='".$sql_row["input_job_no"]." title='Full Details of Input Job'>Click Here</a></td>";
-								$get_color = echo_title("$bai_pro3.packing_summary_input","order_col_des","order_del_no='".$sql_row["order_del_no"]."' and input_job_no",$sql_row["input_job_no"],$link);
-								$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row["order_del_no"],$get_color,$sql_row["input_job_no"],$link);
-								echo "<td height=20 style='height:15.0pt'> <a class='btn btn-success btn-sm' href='$url?schedule=$del_no_new&jobno=$job_new' onclick=\"return popitup2('$url?schedule=$del_no_new&jobno=$job_new')\" target='_blank'>".$display_prefix1."</a></td>";
-								 echo "<td height=20 style='height:15.0pt'>".$sql_row["carton_act_qty"]."</td>"; 
-								
-                               
-
-								// echo "<td>Clubbed</td>";		
-								if(($rows_count1 > 0) || ($plan_dash_count > 0)){
-									    
-                                 		echo "<td>Already Jobs Loaded/ Scanned</td>";			
-								}
-								// else {
-									// echo "<td>hai</td>";
-								// }
-								else{
-									
-									echo "<td><input type='checkbox' id='club' name='club[]' value=".$sql_row["input_job_no"]." ></td>";
-								}
-										
-								
-								/* echo "<td align=\"center\">".$total_qty1."</td>"; */
-								$total_qty1=0;
-								echo "</tr>";
-							
+							$color_code=$sql_row4["color_code"];
 						}
-						
-
-						echo "</table></div></div></div></div><br>";
-					?>
-				</div>
-				
-				<div id='alert-box' class='deliveryChargeDetail'></div>
-
-				<form method='post'>
-				<input type='hidden' id='myval' name='myval'>
-            <button type="submit" class="btn btn-primary btn-lg">Merge Jobs</button>
-			</form>
-				<?php
-	}
-	
-}
-else
-{
-	
-}
-//echo "<div id='alert-box' class='deliveryChargeDetail'></div>";
-	 ?>
-
-	 
-	<script>
-	
-	
-
+						$cut_jobs_new .= chr($color_code).leading_zeros($arr[1], 3)."<br>";
+						unset($arr);
+					}
+				}
+				$count_sch_qry="select * from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref='".$input_job_no_random."'";
+				$result9=mysqli_query($link, $count_sch_qry) or die("Error100-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$rows_count1=mysqli_num_rows($result9);
+				//Validation For sewing clubbing cant if jobs loaded
+				$count_plan_input="select * from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$input_job_no_random."'";
+				$result_plan_input=mysqli_query($link, $count_plan_input) or die("Error101-".$count_plan_input."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$plan_dash_count=mysqli_num_rows($result_plan_input);
+				echo "<tr height=20 style='height:15.0pt'>";
+				echo "<td height=20 style='height:15.0pt'>".$sql_row["order_del_no"]."</td>";
+				echo "<td height=20 style='height:15.0pt'>".$cut_jobs_new."</td>";
+				$url=getFullURL($_GET['r'],'small_popup.php','R');
+				$get_color = $sql_row["order_col_des"];
+				$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row["order_del_no"],$get_color,$sql_row["input_job_no"],$link);
+				echo "<td height=20 style='height:15.0pt'> <a class='btn btn-success btn-sm' href='$url?schedule=$del_no_new&jobno=$job_new' onclick=\"return popitup2('$url?schedule=$del_no_new&jobno=$job_new')\" target='_blank'>".$display_prefix1."</a></td>";
+				echo "<td height=20 style='height:15.0pt'>".$sql_row["carton_act_qty"]."</td>"; 
+				if(($rows_count1 > 0) || ($plan_dash_count > 0))
+				{								    
+					echo "<td>Already Jobs Loaded</td>";			
+				}
+				else
+				{									
+					echo "<td><input type='checkbox' id='club' name='club[]' value=".$sql_row["input_job_no"]." ></td>";
+				}
+				$total_qty1=0;
+				echo "</tr>";							
+			}
+			echo "</table></div></div></div></div><br>";
+			?>
+			</div>				
+		<div id='alert-box' class='deliveryChargeDetail'></div>
+		<form method='post'>
+	<input type='hidden' id='myval' name='myval'>
+	<button type="submit" class="btn btn-primary btn-lg">Merge Jobs</button>
+	</form>
+	<?php
+}	
+?>
+<script>
 	 $(document).ready(function() {
     var tableUsers =  $('#example').DataTable();
-	//alert('Hello');
-	 
 	var rows = tableUsers.rows({ 'search': 'applied' }).nodes();
-	$('input[type="checkbox"]', rows).each(function(i,e){
-				
+	$('input[type="checkbox"]', rows).each(function(i,e){				
                 $(e).change(function(){
                     var checkBoxC = [];
                     var club = new Array();
@@ -329,23 +200,19 @@ else
                     $('input[type="checkbox"]:checked', rows).each(function(o,a){
                         checkBoxC[checkBoxC.length]=$(a).val();
 						  $.each(checkBoxC, function(h, el){
-                            if($.inArray(el, club) === -1) club.push(el);
-							
+                            if($.inArray(el, club) === -1) club.push(el);			
 							
                         });
-						
 						console.log(club.length);
-						if(club.length>0){
-						idsp = '<p>List Of Sewing Jobs to be Clubbed :</p><ul class = list-group >';
-						for(var i=0;i<club.length;i++){
-							idsp+="<li class='label label-success' style='font-size:15px;'>J"+club[i]+"</li>&nbsp;";
+						if(club.length>0)
+						{
+							idsp = '<p>List Of Sewing Jobs to be Clubbed :</p><ul class = list-group >';
+							for(var i=0;i<club.length;i++){
+								idsp+="<li class='label label-success' style='font-size:15px;'>J"+club[i]+"</li>&nbsp;";
+							}
+							idsp+='</ul>';
 						}
-						idsp+='</ul>';
-						}
-						//console.log(idsp);
-
-						
-                    });
+					});
 					//$(".deliveryChargeDetail ul").addClass('list-group');
 					$('#myval').val(club);
 					$('#alert-box').html(idsp);
@@ -353,19 +220,6 @@ else
             });
 	
      });
-
-	 
-  /* $(document).ready(function() {
-    var table = $('#example').DataTable();
- 
-    $('button').click( function() {
-        var data = table.$('input').serialize();
-		console.log(data);
-        
-        return false;
-    } );
-});  */
-	
 </script>
 <style>
 table th
@@ -403,7 +257,7 @@ div#example_filter {
 }
 .lastActive {
     background-color: red;
-}
+} 
 
 </style>
 </body>
@@ -424,20 +278,18 @@ function min_vals($ary){
 	return $temp;
 }
 
-function update_barcode_sequences($input_job_random){
+function update_barcode_sequences($input_job_random)
+{
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    $query = "select group_concat(tid order by tid DESC) as tid from $bai_pro3.pac_stat_log_input_job 
-             where input_job_no_random = $input_job_random";
+    $query = "select tid from $bai_pro3.pac_stat_log_input_job where input_job_no_random = '$input_job_random' order by doc_no,old_size";
     $result = mysqli_query($link,$query);
-    while($row = mysqli_fetch_array($result)){
-        $tids = $row['tid'];
-        $tid = explode(',',$tids);
-        $counter = sizeof($tid);
-        foreach($tid as $id){
-            $update_query = "Update bai_pro3.pac_stat_log_input_job set barcode_sequence = $counter where tid='$id'";
-            mysqli_query($link,$update_query) or exit('Unable to update');
-            $counter--;
-        }
+	$counter=1;
+	while($row = mysqli_fetch_array($result))
+	{
+        $tid = $row['tid'];
+        $update_query = "Update bai_pro3.pac_stat_log_input_job set barcode_sequence = $counter where tid=$tid";
+        mysqli_query($link,$update_query) or exit('Unable to update');
+        $counter++;        
 	}
 	return;
 }  

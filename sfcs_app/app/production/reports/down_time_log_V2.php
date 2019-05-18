@@ -86,7 +86,7 @@ echo '<div class="table-responsive">
 
 
 echo "<tr style='background-color:#337ab7;color:white;'>
-<th style='text-align:center;'>Date</th>	<th style='text-align:center;'>Section</th>	<th style='text-align:center;'>Shift</th>	<th style='text-align:center;'>Line</th>	<th style='text-align:center;'>Customer</th>	<th style='text-align:center;'>Style</th>	<th style='text-align:center;'>Sch no</th><th style='text-align:center;'>From</th><th style='text-align:center;'>To</th>	<th style='text-align:center;'>Hours open</th>	<th style='text-align:center;'>Department</th>	<th style='text-align:center;'>Reason</th>	<th style='text-align:center;'>Source</th>	<th style='text-align:center;'>Plan Eff%</th><th style='text-align:center;'>SAH Loss</th><th style='text-align:center;'> Lost Pieces </th><th style='text-align:center;'>Controls</th></tr>";
+<th style='text-align:center;'>Date</th>	<th style='text-align:center;'>Section</th>	<th style='text-align:center;'>Shift</th>	<th style='text-align:center;'>Line</th>	<th style='text-align:center;padding:10px;'>Customer</th>	<th style='text-align:center;'>Style</th>	<th style='text-align:center;'>Sch no</th><th style='text-align:center;'>From</th><th style='text-align:center;'>To</th>	<th style='text-align:center;'>Hours open</th>	<th style='text-align:center;'>Department</th>	<th style='text-align:center;'>Reason</th>	<th style='text-align:center;'>Source</th>	<th style='text-align:center;'>Plan Eff%</th><th style='text-align:center;'>SAH Loss</th><th style='text-align:center;'> Lost Pieces </th><th style='text-align:center;'>Controls</th></tr>";
 
 
 $sql="select * from $bai_pro.down_log where month(date)=month(\"$date\") and year(date)=year(\"$date\") order by date, shift, mod_no*1";
@@ -131,7 +131,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$schedule=$sql_row['schedule'];
 	$style=$sql_row['style'];
 	echo "<td>".$sql_row['mod_no']."</td>";
-	echo "<td>".$sql_row['customer']."</td>";
+			$sql_buyer="SELECT TRIM(order_div) as order_div2 FROM $bai_pro3.bai_orders_db where order_style_no ='$style'";
+			$sql_result_buyer=mysqli_query($link, $sql_buyer) or exit($sql_buyer."Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
+			{
+				$buyer=$sql_row_buyer["order_div2"];
+			}
+	echo"<td style='word-wrap: break-word;'>".$buyer."</td>";
+	
 	echo "<td>".$style."</td>";
 	echo "<td>".$schedule."</td>";
 	

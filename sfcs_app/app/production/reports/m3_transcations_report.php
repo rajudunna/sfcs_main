@@ -84,7 +84,7 @@
             $resp_stat[] = $_GET['schedule'] ? 'schedule="'.$_GET["schedule"].'"' : '';
             $resp_stat[] = ($_GET['tdate'] && $_GET['fdate']) ? 'DATE(m3_transactions.date_time) between  "'.$_GET["fdate"].'" and "'.$_GET["tdate"].'"' : '';
             $ar_nw = array_filter($resp_stat);
-            $qry_m3_trans = "SELECT style,schedule,color,size,m3_transactions.date_time as dt,m3_transactions.mo_no,op_code,quantity,response_status,m3_transactions.id,m3_transactions.log_user,m3_transactions.ref_no,m3_transactions.reason,m3_transactions.module_no,m3_transactions.api_type,m3_transactions.workstation_id,m3_trail_count
+            $qry_m3_trans = "SELECT style,schedule,color,size,m3_transactions.date_time as dt,m3_transactions.mo_no,op_code,quantity,response_status,m3_transactions.id,m3_transactions.log_user,m3_transactions.ref_no,m3_transactions.reason,m3_transactions.module_no,m3_transactions.api_type,m3_transactions.workstation_id,m3_trail_count,m3_ops_code
             FROM bai_pro3.`m3_transactions`  
             LEFT JOIN bai_pro3.`mo_details` ON m3_transactions.mo_no=mo_details.mo_no WHERE ".implode(' and ',$ar_nw);
 
@@ -100,7 +100,7 @@
 ?>
                 <br/>
                 <table class="<?= $_GET['excel'] ?? "table table-bordered" ?>" id='table2'>
-                    <thead><tr class="info"><th>Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Mo Number</th><th>Job Number</th><th>Module</th><th>Operation Code</th><th>Operation Name</th><th>Workstation Id</th><th>Rejection Reason</th><th>User</th><th>Quantity</th><th>Status</th><th>API Type</th>
+                    <thead><tr class="info"><th>ID</th><th>Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Mo Number</th><th>Job Number</th><th>Module</th><th>SFCS Operation Code</th><th>M3 Operation Code</th><th>Operation Name</th><th>Workstation Id</th><th>Rejection Reason</th><th>User</th><th>Quantity</th><th>Status</th><th>API Type</th>
                     <th>Failed Count</th></tr>
                     </thead>
                     
@@ -128,6 +128,7 @@
 
 ?>
                     <tr>
+                        <td><?= $res['id'] ?></td>
                         <td><?= $res['dt'] ?></td>
                         <td><?= $res['style'] ?></td>
                         <td><?= $res['schedule'] ?></td>
@@ -137,6 +138,7 @@
                         <td><?= $job['input_job_no'] ?></td>
                         <td><?= $res['module_no'] ?></td>
                         <td><?= $res['op_code'] ?></td>
+					    <td><?= $res['m3_ops_code'] ?></td>
                         <td><?= $get_op_name['operation_name'] ?></td>
                         <td><?= $res['workstation_id'] ?></td>
                         <td><?= $res['reason'] ?></td>
@@ -177,3 +179,5 @@ $('#reset_table2').addClass('btn btn-warning btn-xs');
     } 
     
     ?>
+
+

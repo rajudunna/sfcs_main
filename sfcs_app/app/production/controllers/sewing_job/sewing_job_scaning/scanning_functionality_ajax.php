@@ -5,15 +5,30 @@ include("../../../../../common/config/m3Updations.php");
 $post_data = $_POST['bulk_data'];
 parse_str($post_data,$new_data);
 $operation_code = $new_data['operation_id'];
-$form = 'P';
+//$form = 'P';
 $ops_dep='';
 $post_ops_code='';
 $qry_status='';
 error_reporting(0);
-if($operation_code >=130)
+
+//To Get Sewing Operations
+$category = 'sewing';
+$get_operations = "select operation_code from brandix_bts.tbl_orders_ops_ref where category='$category'";
+//echo $get_operations;
+$operations_result_out=mysqli_query($link, $get_operations)or exit("get_operations_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row_out=mysqli_fetch_array($operations_result_out))
 {
-	$form = 'G';
+	$sewing_operations[]=$sql_row_out['operation_code'];
 }
+
+if(in_array($operation_code,$sewing_operations))
+{
+	$form = "'G','P'";
+}else
+{
+	$form = "'P'";
+}
+
 $qery_rejection_resons = "select * from $bai_pro3.bai_qms_rejection_reason where form_type = '$form'";
 $result_rejections = $link->query($qery_rejection_resons);
 $bulk_insert_rej = "INSERT INTO $bai_pro3.bai_qms_db(`qms_style`, `qms_schedule`,`qms_color`,`log_user`, `log_date`, `qms_size`, `qms_qty`, `qms_tran_type`,`remarks`, `ref1`, `doc_no`, `input_job_no`, `operation_id`, `qms_remarks`, `bundle_no`) VALUES";
@@ -276,11 +291,12 @@ if($barcode_generation == 1)
 											$reason_remaining_qty[$remain_qty_key] = 0;
 											$actual_rejection_reason_array[$bundle_individual_number] += $remain_qty_value;
 										}
-										$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where reason_code= '$remain_qty_key'";
+										$rejection_code_fetech_qry = "select reason_code,form_type from $bai_pro3.bai_qms_rejection_reason where sno= '$remain_qty_key'";
 										$result_rejection_code_fetech_qry = $link->query($rejection_code_fetech_qry);
 										while($rowresult_rejection_code_fetech_qry = $result_rejection_code_fetech_qry->fetch_assoc()) 
 										{
 											$reason_code = $rowresult_rejection_code_fetech_qry['reason_code'];
+											$type = $rowresult_rejection_code_fetech_qry['form_type'];
 										}
 										$remarks_code = $reason_code.'-'.$insertable_qty_rej;
 										$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
@@ -323,11 +339,12 @@ if($barcode_generation == 1)
 											$insertable_qty_rej = $reson_max_qty;
 											$reason_remaining_qty[$r_reasons[$reason_key]] = 0;
 										}
-										$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where reason_code= '$r_reasons[$reason_key]'";
+										$rejection_code_fetech_qry = "select reason_code,form_type from $bai_pro3.bai_qms_rejection_reason where sno= '$r_reasons[$reason_key]'";
 										$result_rejection_code_fetech_qry = $link->query($rejection_code_fetech_qry);
 										while($rowresult_rejection_code_fetech_qry = $result_rejection_code_fetech_qry->fetch_assoc()) 
 										{
 											$reason_code = $rowresult_rejection_code_fetech_qry['reason_code'];
+											$type = $rowresult_rejection_code_fetech_qry['form_type'];
 										}
 										$remarks_code = $reason_code.'-'.$insertable_qty_rej;
 										$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
@@ -600,11 +617,12 @@ if($barcode_generation == 1)
 											$reason_remaining_qty[$remain_qty_key] = 0;
 											$actual_rejection_reason_array[$bundle_individual_number] += $remain_qty_value;
 										}
-										$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where reason_code= '$remain_qty_key'";
+										$rejection_code_fetech_qry = "select reason_code,form_type from $bai_pro3.bai_qms_rejection_reason where sno= '$remain_qty_key'";
 										$result_rejection_code_fetech_qry = $link->query($rejection_code_fetech_qry);
 										while($rowresult_rejection_code_fetech_qry = $result_rejection_code_fetech_qry->fetch_assoc()) 
 										{
 											$reason_code = $rowresult_rejection_code_fetech_qry['reason_code'];
+											$type = $rowresult_rejection_code_fetech_qry['form_type'];
 										}
 										$remarks_code = $reason_code.'-'.$insertable_qty_rej;
 										$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
@@ -652,11 +670,12 @@ if($barcode_generation == 1)
 										$insertable_qty_rej = $reson_max_qty;
 										$reason_remaining_qty[$r_reasons[$reason_key]] = 0;
 									}
-									$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where reason_code= '$r_reasons[$reason_key]'";
+									$rejection_code_fetech_qry = "select reason_code,form_type from $bai_pro3.bai_qms_rejection_reason where sno= '$r_reasons[$reason_key]'";
 									$result_rejection_code_fetech_qry = $link->query($rejection_code_fetech_qry);
 									while($rowresult_rejection_code_fetech_qry = $result_rejection_code_fetech_qry->fetch_assoc()) 
 									{
 										$reason_code = $rowresult_rejection_code_fetech_qry['reason_code'];
+										$type = $rowresult_rejection_code_fetech_qry['form_type'];
 									}
 									$remarks_code = $reason_code.'-'.$insertable_qty_rej;
 									$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
@@ -768,6 +787,7 @@ else if($concurrent_flag == 0)
 		$actual_rejection_reason_array_string = array();
 		foreach($b_tid as $key=>$value)
 		{
+			$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$form;
 			$r_reasons = explode(",", $r_reason[$value]);
 			$r_qty = explode(",", $r_qtys[$value]);
 			foreach($r_reasons as $reason_key=>$reason_value)
@@ -778,6 +798,10 @@ else if($concurrent_flag == 0)
 				if($remain_qty_value > 0)
 				{
 					$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$remain_qty_key.'-'. $remain_qty_value ;
+					$remarks_code = $remain_qty_key.'-'.$remain_qty_value;
+					$bulk_insert_rej = "INSERT INTO $bai_pro3.bai_qms_db(`qms_style`, `qms_schedule`,`qms_color`,`log_user`, `log_date`, `qms_size`, `qms_qty`, `qms_tran_type`,`remarks`, `ref1`, `doc_no`, `input_job_no`, `operation_id`, `qms_remarks`, `bundle_no`) VALUES";
+					$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$b_colors[$key].'",user(),"'.date('Y-m-d').'","'.$b_size_code[$key].'","'.$remain_qty_value.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$b_doc_num[$key].'","'.$b_job_no.'","'. $b_op_id.'","'. $b_remarks[$key].'","'.$bundle_individual_number.'")';
+					$rej_insert_result = $link->query($bulk_insert_rej) or exit('data error');
 				}
 			}	
 		}
@@ -917,12 +941,13 @@ else if($concurrent_flag == 0)
 					{
 						//m3 operations............. 
 						//$m3_bulk_bundle_insert .= '("'.date('Y-m-d').'","'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'. $b_size_code[$key].'","'. $b_sizes[$key].'","'.$b_doc_num[$key].'","'.$r_qty_array[$index].'","'.$r_reasons_array[$index].'","'.$b_remarks[$key].'",USER(),"'. $b_op_id.'","'.$b_inp_job_ref[$key].'","'.$b_module.'","'.$b_shift.'","'.$b_op_name.'","'.$b_tid[$key].'",""),';
-						$rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where reason_code= '$r_reasons_array[$index]'";
+						$rejection_code_fetech_qry = "select reason_code,form_type from $bai_pro3.bai_qms_rejection_reason where sno= '$r_reasons_array[$index]'";
 						//echo $rejection_code_fetech_qry;
 						$result_rejection_code_fetech_qry = $link->query($rejection_code_fetech_qry);
 						while($rowresult_rejection_code_fetech_qry = $result_rejection_code_fetech_qry->fetch_assoc()) 
 						{
 							$reason_code = $rowresult_rejection_code_fetech_qry['reason_code'];
+							$type = $rowresult_rejection_code_fetech_qry['form_type'];
 						}
 						if($index == sizeof($r_qty_array)-1){
 							$remarks_code .= $reason_code.'-'.$r_qnty;
@@ -1205,7 +1230,7 @@ else if($concurrent_flag == 0)
 		{
 			if($b_rep_qty[$i] > 0)
 			{
-				$hout_plant_timings_qry = "SELECT TIME(NOW()),start_time,end_time,time_id FROM $bai_pro3.tbl_plant_timings WHERE  start_time<=TIME(NOW()) AND end_time>=TIME(NOW())";
+				$hout_plant_timings_qry = "SELECT TIME(NOW()),start_time,end_time,time_id,time_value FROM $bai_pro3.tbl_plant_timings WHERE  start_time<=TIME(NOW()) AND end_time>=TIME(NOW())";
 				$hout_plant_timings_result = $link->query($hout_plant_timings_qry);
 
 				if($hout_plant_timings_result->num_rows > 0){
@@ -1214,6 +1239,7 @@ else if($concurrent_flag == 0)
 						$plant_start_timing = $hout_plant_timings_result_data['start_time'];
 						$plant_end_timing = $hout_plant_timings_result_data['end_time'];
 						$plant_time_id = $hout_plant_timings_result_data['time_id'];
+						$plant_time_hour = $hout_plant_timings_result_data['time_value'];
 					}
 				}
 
@@ -1255,7 +1281,18 @@ else if($concurrent_flag == 0)
 						}
 					}
 				}
-				if($b_op_id == 100 || $b_op_id == 129)
+                  
+                  //To get Sewing In operation From Operation Routing
+				  $application='IPS';
+
+	              $scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+	              $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	              while($sql_row1111=mysqli_fetch_array($scanning_result))
+	              {
+	                $operation_out_code=$sql_row1111['operation_code'];
+	              }
+
+				if($b_op_id == $operation_out_code || $b_op_id == $operation_out_code)
 				{
 					$searching_query_in_imslog = "SELECT tid,ims_qty FROM $bai_pro3.ims_log_backup WHERE pac_tid = $b_tid[$i] AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref='$b_job_no' AND operation_id=$b_op_id AND ims_remarks = '$b_remarks[$i]'";
 					$result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
@@ -1348,7 +1385,18 @@ else if($concurrent_flag == 0)
 						$input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);
 					//}
 					//echo 'input_ops_code'.$input_ops_code;
-					if($input_ops_code == 100 || $input_ops_code == 129)
+						
+                      //To get Sewing In operation From Operation Routing
+                      $application='IPS';
+
+	                  $scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+	                  $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                  while($sql_row11111=mysqli_fetch_array($scanning_result))
+	                  {
+	                    $operation_out_code=$sql_row11111['operation_code'];
+	                  }
+			        			
+					if($input_ops_code == $operation_out_code)
 					{
 						//updating ims_pro_qty against the input
 						$searching_query_in_imslog = "SELECT tid,ims_pro_qty,ims_qty FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid[$i]' AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref='$b_job_no' AND operation_id=$input_ops_code AND ims_remarks = '$b_remarks[$i]'";
@@ -1410,7 +1458,7 @@ else if($concurrent_flag == 0)
 					}
 					$ims_log_date=date("Y-m-d");
 					$bac_dat=$ims_log_date;
-					$log_time=date("Y-m-d");
+					$log_time=date("Y-m-d H:i:s");
 					$buyer_qry="select order_div FROM $bai_pro3.bai_orders_db WHERE order_style_no='".$b_style."' AND order_del_no='".$b_schedule."' AND order_col_des='".$b_colors[$i]."'";
 					$buyer_qry_result=mysqli_query($link,$buyer_qry) or exit("Bundles Query Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($buyer_qry_row=mysqli_fetch_array($buyer_qry_result)){
@@ -1431,7 +1479,7 @@ else if($concurrent_flag == 0)
 					$bundle_op_id=$b_tid[$i]."-".$b_op_id."-".$b_inp_job_ref[$i];
 					$insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
 					bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
-					) values ('".$b_module[$i]."','".$sec_head."','".$b_rep_qty[$i]."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors[$i]."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty[$i]."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref[$i]."')";
+					) values ('".$b_module[$i]."','".$sec_head."','".$b_rep_qty[$i]."',DATE_FORMAT(NOW(), '%Y-%m-%d $plant_time_hour'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors[$i]."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty[$i]."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref[$i]."')";
 					//echo "Bai log : ".$insert_bailog."</br>";
 					if($b_rep_qty[$i] > 0)
 					{
@@ -1443,7 +1491,7 @@ else if($concurrent_flag == 0)
 						/*Insert same data into bai_pro.bai_log_buf table*/
 						$insert_bailogbuf="insert into $bai_pro.bai_log_buf(bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
 						bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
-						) values ('".$b_module[$i]."','".$sec_head."','".$b_rep_qty[$i]."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors[$i]."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty[$i]."','ims_log','".$b_op_id."','".$nop."','".$b_op_id."','".$b_op_id."','".$b_inp_job_ref[$i]."')";
+						) values ('".$b_module[$i]."','".$sec_head."','".$b_rep_qty[$i]."',DATE_FORMAT(NOW(), '%Y-%m-%d $plant_time_hour'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors[$i]."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty[$i]."','ims_log','".$b_op_id."','".$nop."','".$b_op_id."','".$b_op_id."','".$b_inp_job_ref[$i]."')";
 						//echo "</br>Insert Bailog buf: ".$insert_bailogbuf."</br>";
 						if($b_rep_qty[$i] > 0)
 						{
@@ -1487,7 +1535,7 @@ else if($concurrent_flag == 0)
 				$r_reasons = array();
 				$implode_next = explode('-',$actual_rejection_reason_array_string[$i]);
 				$r_qty[] = $implode_next[2];
-				$rejection_code_fetech_qry = "select m3_reason_code from $bai_pro3.bai_qms_rejection_reason where reason_code= $implode_next[1]";
+				$rejection_code_fetech_qry = "select m3_reason_code from $bai_pro3.bai_qms_rejection_reason where sno= $implode_next[1]";
 				$result_rejection_code_fetech_qry = $link->query($rejection_code_fetech_qry);
 				while($rowresult_rejection_code_fetech_qry = $result_rejection_code_fetech_qry->fetch_assoc()) 
 				{

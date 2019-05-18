@@ -231,23 +231,33 @@ for($i=0;$i<=10;$i++)
 	<td>
 
 	<select name=\"sec[$i]\" id=\"sec_$i\" name=\"sec_$i\" class=\"form-control\">";
-	$sql="SELECT sec_id FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
-	//echo $sql;
+	//$sql="SELECT sec_id FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
+	
+	$sql="select * from $bai_pro3.sections_master order by sec_id";
 	$result7=mysqli_query($link, $sql) or exit("Sql Erro1r".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($result7))
 	{
-		echo "<option value=\"".$sql_row["sec_id"]."\">".$sql_row["sec_id"]."</option>";
+		echo "<option value=\"".$sql_row["sec_name"]."\">".$sql_row["section_display_name"]."</option>";
 	}
 	/*for($s=1;$s<=8;$s++)
 	{
 		echo "<option value=\"".$s."\">".$s."</option>";
 	}*/
+	
+
 	echo "</select>
 	</td>	
-	<td align='center'>
-	<select name=\"shift[$i]\" class=\"form-control\">
-	<option value=\"A\">A</option>
-	<option value=\"B\">B</option>
+	<td align='center'>	<select name=\"shift[$i]\" class=\"form-control\">";
+	
+			$shifts = (isset($_GET["shift"]))?$_GET["shift"]:'';
+              foreach($shifts_array as $shift){
+                if($shifts == $shift){
+                  echo "<option value=".$shift." selected>".$shift."</option>";
+                }else{
+                  echo "<option value=".$shift.">".$shift."</option>";
+                }
+              }
+              echo "
 	</select>
 	</td>
 

@@ -45,20 +45,20 @@ $end=$_POST['dat1'];
 $shift=$_POST['team'];
 
 echo "<hr><div class='table-responsive'><table class='table table-bordered'>
-      <tr>
-  			 <th colspan='11' style='background-color:#29759C;color:white;'>DAILY LOST TIME REPORT</th>
- 			 <th colspan='15' style='background-color:#29759C;color:white;'>Start Date : ".$start." End Date : ".$end." Shift : ".$shift."</th>
- 	  </tr>
-      <tr>
-   		    <th rowspan='2' style='background-color:#29759C;color:white;'>TeamNo</th>
-			<th rowspan='2' style='background-color:#29759C;color:white;'>Actual Styles</th>";
-			//<th rowspan='2'>Down Time Styles</th>
-		    //<th rowspan='2'>Style</th>
-   			echo "<th style='background-color:#29759C;color:white;' colspan='24'>Type Of Delay</th>
-  	  </tr>
+		      <tr>
+		  			 <th id='head' style='background-color:#29759C;color:white;'>DAILY LOST TIME REPORT</th>
+		 			 <th id='head1' style='background-color:#29759C;color:white;'>Start Date : ".$start." End Date : ".$end." Shift : ".$shift."</th>
+		 	  </tr>
+		      <tr>
+		   		    <th rowspan='2' style='background-color:#29759C;color:white;'>TeamNo</th>
+					<th rowspan='2' style='background-color:#29759C;color:white;'>Actual Styles</th>";
+					//<th rowspan='2'>Down Time Styles</th>
+				    //<th rowspan='2'>Style</th>
+		   			echo "<th style='background-color:#29759C;color:white;' id='myTd'>Type Of Delay</th>
+		  	  </tr>
       <tr>";
 		
-	  $sql="select dep_name from $bai_pro.down_deps order by dep_id+0";
+	  $sql="select distinct dep_name from $bai_pro.down_deps order by dep_id+0";
 	  //echo $sql;
 	  mysqli_query($link, $sql) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
       $row=mysqli_query($link, $sql) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -67,7 +67,7 @@ echo "<hr><div class='table-responsive'><table class='table table-bordered'>
 	   	 $dep[]=$rows['dep_name'];
 		 echo "<th style='background-color:#29759C;color:white;'>".$rows['dep_name']."</th>";
 	  }
-	   
+
 			echo "<th style='background-color:#29759C;color:white;'>Total</th>";
   	 echo "</tr>";
     
@@ -87,9 +87,9 @@ echo "<hr><div class='table-responsive'><table class='table table-bordered'>
 	 	echo " Sec = ".$sec[$i]."  Sec Head = ".$sec_head[$i]."<br><br>";
 	 }
 	 */
-	 for($i=0;$i<sizeof($sec);$i++)
-	 {
-		 echo "<tr>";
+	for($i=0;$i<sizeof($sec);$i++)
+	{
+		echo "<tr>";
 		$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=".$sec[$i];
 		$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row12=mysqli_fetch_array($result12))
@@ -198,58 +198,58 @@ echo "<hr><div class='table-responsive'><table class='table table-bordered'>
 		echo "<tr>";		
 		echo "<th colspan=\"2\">section $sec[$i] Total</th>";
 		for($j=0;$j<sizeof($dep);$j++)
-			{
-				$sql7="select dep_id from $bai_pro.down_deps where dep_name=\"$dep[$j]\"";
-			  	mysqli_query($link, $sql7) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		      	$row7=mysqli_query($link, $sql7) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			  	while($rows7=mysqli_fetch_array($row7))
-			  	{				
-					$dep_id=$rows7["dep_id"];
-					$sql8="select sum(dtime) from $bai_pro.down_log where department=\"$dep_id\" and date between \"$start\" and \"$end\" and section=\"$sec[$i]\" and shift in ($shift)";
-					//echo $sql8."<br>";
-				  	mysqli_query($link, $sql8) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			      	$row8=mysqli_query($link, $sql8) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				  	while($rows8=mysqli_fetch_array($row8))
-				  	{
-						echo "<td bgcolor=\"#00ffff\">".round($rows8["sum(dtime)"]/60,0)."</td>";
-					}
+		{
+			$sql7="select dep_id from $bai_pro.down_deps where dep_name=\"$dep[$j]\"";
+		  	mysqli_query($link, $sql7) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	      	$row7=mysqli_query($link, $sql7) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		  	while($rows7=mysqli_fetch_array($row7))
+		  	{				
+				$dep_id=$rows7["dep_id"];
+				$sql8="select sum(dtime) from $bai_pro.down_log where department=\"$dep_id\" and date between \"$start\" and \"$end\" and section=\"$sec[$i]\" and shift in ($shift)";
+				//echo $sql8."<br>";
+			  	mysqli_query($link, $sql8) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		      	$row8=mysqli_query($link, $sql8) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			  	while($rows8=mysqli_fetch_array($row8))
+			  	{
+					echo "<td bgcolor=\"#00ffff\">".round($rows8["sum(dtime)"]/60,0)."</td>";
 				}
-			}	
+			}
+		}	
 			
-			$sql9="select sum(dtime) from $bai_pro.down_log where date between \"$start\" and \"$end\" and section=\"$sec[$i]\" and shift in ($shift)";
-					//echo $sql9."<br>";
-			mysqli_query($link, $sql9) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$row9=mysqli_query($link, $sql9) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($rows9=mysqli_fetch_array($row9))
-			{
-				echo "<td bgcolor=\"#00ffff\">".round($rows9["sum(dtime)"]/60,0)."</td>";
-			}		
-			
-			echo "</tr>";
+		$sql9="select sum(dtime) from $bai_pro.down_log where date between \"$start\" and \"$end\" and section=\"$sec[$i]\" and shift in ($shift)";
+				//echo $sql9."<br>";
+		mysqli_query($link, $sql9) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$row9=mysqli_query($link, $sql9) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($rows9=mysqli_fetch_array($row9))
+		{
+			echo "<td bgcolor=\"#00ffff\">".round($rows9["sum(dtime)"]/60,0)."</td>";
+		}		
 		
-	 }
-            echo "<tr>";
-			
-			echo "<th colspan=\"2\">Factory Total</th>";
-			
-			for($j=0;$j<sizeof($dep);$j++)
-			{
-				$sql11="select dep_id from $bai_pro.down_deps where dep_name=\"$dep[$j]\"";
-			  	mysqli_query($link, $sql11) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		      	$row11=mysqli_query($link, $sql11) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			  	while($rows11=mysqli_fetch_array($row11))
-			  	{				
-					$dep_id=$rows11["dep_id"];
-					$sql12="select sum(dtime) from $bai_pro.down_log where department=\"$dep_id\" and date between \"$start\" and \"$end\" and shift in ($shift)";
-					//echo $sql12."<br>";
-				  	mysqli_query($link, $sql12) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			      	$row12=mysqli_query($link, $sql12) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				  	while($rows12=mysqli_fetch_array($row12))
-				  	{
-						echo "<th>".round($rows12["sum(dtime)"]/60,0)."</th>";
-					}
+		echo "</tr>";
+		
+	}
+    echo "<tr>";
+	
+	echo "<th colspan=\"2\">Factory Total</th>";
+
+		for($j=0;$j<sizeof($dep);$j++)
+		{
+			$sql11="select dep_id from $bai_pro.down_deps where dep_name=\"$dep[$j]\" limit 1";
+		  	mysqli_query($link, $sql11) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	      	$row11=mysqli_query($link, $sql11) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		  	while($rows11=mysqli_fetch_array($row11))
+		  	{				
+				$dep_id=$rows11["dep_id"];
+				$sql12="select sum(dtime) from $bai_pro.down_log where department=\"$dep_id\" and date between \"$start\" and \"$end\" and shift in ($shift)";
+				//echo $sql12."<br>";
+			  	mysqli_query($link, $sql12) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		      	$row12=mysqli_query($link, $sql12) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			  	while($rows12=mysqli_fetch_array($row12))
+			  	{
+					echo "<th>".round($rows12["sum(dtime)"]/60,0)."</th>";
 				}
-			}	
+			}
+		}	
 			
 			$sql10="select sum(dtime) from $bai_pro.down_log where date between \"$start\" and \"$end\" and shift in ($shift)";
 			//echo $sql10."<br>";
@@ -265,5 +265,11 @@ echo "<hr><div class='table-responsive'><table class='table table-bordered'>
 echo "</table></div>";
  
 ?>
+
+<script type="text/javascript">
+	document.getElementById("myTd").colSpan = "<?php echo count($dep)+1; ?>";
+	document.getElementById("head").colSpan = "<?php echo (count($dep)+4)/2; ?>";
+	document.getElementById("head1").colSpan = "<?php echo (count($dep)+4)/2; ?>";
+</script>
 </div>
 </div>

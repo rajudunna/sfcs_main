@@ -383,6 +383,7 @@ $.ajax
 
 <title>IMS</title>
 <?php
+$dashboard_name="IMS";
 $start_timestamp = microtime(true);
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
@@ -469,7 +470,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
       $module=$mods[$x];
       $data[] = $mods[$x];
 
-      $module_sql = "SELECT * FROM $bai_pro3.module_master WHERE module_name=\"$module\"";
+      $module_sql = "SELECT * FROM $bai_pro3.module_master WHERE module_name='$module'";
       $module_sql_result = mysqli_query($link,$module_sql);
       $module_col_lab = mysqli_fetch_array($module_sql_result);
       // print_r($module_col_lab['color']);
@@ -534,6 +535,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                   $ims_remarks=$sql_rowred['ims_remarks'];
                   $ims_size=$sql_rowred['ims_size'];
                   $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des in (".$color_ref.") and order_del_no",$schedul_no,$link);
+				  $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedul_no,$link);
                   $cut_no=$sql_rowred['acutno'];
                   $inputno=$sql_rowred['inputjobno'];
                   $inputjobnorand=$sql_rowred['inputjobnorand'];
@@ -621,6 +623,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                 ?>
                   <a href="javascript:void(0);" onclick="loadpopup('<?= $ui_url1;?>', 'myPop1',800,600);"  title="
                   Style No : <?php echo $style_no."<br/>"; ?>
+				  Co No : <?php echo $co_no."<br/>"; ?>
                   Schedul No :<?php echo $schedul_no."<br/>"; ?>
                   Color : <?php echo $color_name."<br/>"; ?>
                   Docket No : <?php echo $docket_no."<br/>"; ?>

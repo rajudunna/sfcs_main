@@ -6,10 +6,16 @@
 
     $mo_details = [];
     $overall_details = [];
+    $mo_number=array();
     $from_date = date('Y-m-d');
     $to_date = date('Y-m-d');
+    $sql1_mo_no="select distinct mo_no as mo_no from $bai_pro3.m3_transactions where DATE(date_time)>='$from_date' and DATE(date_time)<='$to_date'";
+    $sql1_mo_no_res = mysqli_query($link,$sql1_mo_no);
+    while($row_mo_no = mysqli_fetch_array($sql1_mo_no_res)){
+        $mo_number[] = $row_mo_no['mo_no'];
+    }
     
-    $sql_mo="SELECT  mo_no,product_sku,style,schedule,color,size,mo_quantity FROM $bai_pro3.mo_details  where mo_no in (select distinct mo_no from $bai_pro3.m3_transactions where DATE(date_time)>='$from_date' and DATE(date_time)<='$to_date') group by mo_no,product_sku";
+    $sql_mo="SELECT  mo_no,product_sku,style,schedule,color,size,mo_quantity FROM $bai_pro3.mo_details  where mo_no in ('".implode("','",$mo_number)."') group by mo_no,product_sku";
     $result_mo=mysqli_query($link, $sql_mo) or exit("Sql Error mo".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row_mo=mysqli_fetch_array($result_mo))
     {
@@ -32,7 +38,7 @@
             $data = array_column($value, 'Value','Name');
 
             //getting sum of operation code wise data from SFCS table
-            $sql="select sum(good_quantity) as MAQT,sum(rejected_quantity)  as SCQT,op_code as OPNO  from $bai_pro3.mo_operation_quantites where mo_no=".$data['MFNO']." and op_code=".$data['OPNO'];
+            $sql="select sum(good_quantity) as MAQT,sum(rejected_quantity)  as SCQT,op_code as OPNO  from $bai_pro3.mo_operation_quantites where mo_no='".$data['MFNO']."' and op_code=".$data['OPNO'];
             $results_mop=mysqli_query($link, $sql) or exit("Sql Error mo operation quantites".mysqli_error($GLOBALS["___mysqli_ston"]));
 
             while($row = mysqli_fetch_array($results_mop)){
