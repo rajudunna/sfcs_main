@@ -75,10 +75,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$uom_ref=$sql_row['uom'];
 	$style_no=$sql_row['style_no'];
 }
-if($uom_ref=='MTR')
+
+$uom_ref=$fab_uom;
+/*if($uom_ref=='MTR')
 {
     $uom_ref='YRD';
-}
+}*/
 
 $child_lots="";
 $symbol='"';
