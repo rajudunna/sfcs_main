@@ -640,7 +640,7 @@ td,th
 	$hr_end=array();
 	
     echo "<div class=\"maincontentof\"><table class='table table-bordered' id=\"table_format_first\">";
-    echo "<tr><th style='background-color:#29759C;'>Section#</th><th style='background-color:#29759C;'>Module#</th><th style='background-color:#29759C;'>NOP</th><th style='background-color:#29759C;'>Style DB</th><th style='background-color:#29759C;'>Schedule</th>";
+    echo "<tr><th style='background-color:#29759C;color:white;'>Section#</th><th style='background-color:#29759C;color:white;'>Module#</th><th style='background-color:#29759C;color:white;'>NOP</th><th style='background-color:#29759C;color:white;'>Style DB</th><th style='background-color:#29759C;color:white;'>Schedule</th>";
 	
     if($hourly_break==1)
 	{
@@ -675,20 +675,20 @@ td,th
 		}
 		for($i=0;$i<sizeof($hr);$i++) 
 		{ 
-			echo "<th style='background-color:#29759C;'>".$hr_disp[$i]."</th>";
+			echo "<th style='background-color:#29759C;color:white;'>".$hr_disp[$i]."</th>";
 		}
     }
 	
-     echo "<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Hours</th> 
-          <th style='background-color:#29759C;'>Plan EFF%</th> 
-          <th style='background-color:#29759C;'>Plan Pro.</th> 
-          <th style='background-color:#29759C;'>CLH</th> 
-          <th style='background-color:#29759C;'>Plan SAH</th> 
-          <th style='background-color:#29759C;'>Act SAH</th> 
-          <th style='background-color:#29759C;'>Act. EFF%</th> 
-          <th style='background-color:#29759C;'>Balance Pcs.</th> 
-          <th style='background-color:#29759C;'>Act. Pcs/Hr</th> 
-          <th style='background-color:#29759C;'>Req. Pcs/Hr</th> 
+     echo "<th style='background-color:#29759C;color:white;'>Total</th><th style='background-color:#29759C;color:white;'>Hours</th> 
+          <th style='background-color:#29759C;color:white;'>Plan EFF%</th> 
+          <th style='background-color:#29759C;color:white;'>Plan Pro.</th> 
+          <th style='background-color:#29759C;color:white;'>CLH</th> 
+          <th style='background-color:#29759C;color:white;'>Plan SAH</th> 
+          <th style='background-color:#29759C;color:white;'>Act SAH</th> 
+          <th style='background-color:#29759C;color:white;'>Act. EFF%</th> 
+          <th style='background-color:#29759C;color:white;'>Balance Pcs.</th> 
+          <th style='background-color:#29759C;color:white;'>Act. Pcs/Hr</th> 
+          <th style='background-color:#29759C;color:white;'>Req. Pcs/Hr</th> 
         </tr>";
 
 		$sum_total=array();
@@ -1365,7 +1365,10 @@ for ($j=0;$j<sizeof($sections);$j++)
 	}
 	/* Ending of sections table  */
 	//-----------------------------------------common to show this for all selections total factory start-------------------------------------//
-	$total_factory_summery="<div class=\"maincontentof\"><table id=\"info\" class='table table-bordered'><th><h4>Factory Summary</h4></th>";
+	$total_factory_summery ="";
+	$total_factory_summery="<br><h2 style=\"color:white;background-color: #29759C;\">Factory Summary<h2>"; 
+	
+	$total_factory_summery .="<div class=\"maincontentof\"><table id=\"info\" class='table table-bordered'><th ><h4>Factory Summary</h4></th>";
 	for($i=0;$i<sizeof($hr);$i++) 
 	{ 
 		if($hourly_break==1)
@@ -1399,11 +1402,11 @@ for ($j=0;$j<sizeof($sections);$j++)
 				if($sum==0) 
 				{ 
 					$sum=0; 
-					$total_factory_summery .="<td bgcolor=\"red\">0</td>"; 
+					$total_factory_summery .="<td style='background-color:white;color:black'>0</td>"; 
 				} 
 				else 
 				{ 
-					$total_factory_summery .="<td>".$sum."</td>"; 
+					$total_factory_summery .="<td style='background-color:white;color:black'>".$sum."</td>"; 
 				} 
 			} 
 		} 
@@ -1463,8 +1466,8 @@ for ($j=0;$j<sizeof($sections);$j++)
 	} 
 
 	/* 20100226factory view */ 
-	$total_factory_summery .="<td rowspan=4>".$atotal."</td>"; 
-	$total_factory_summery .="<td rowspan=4>".$hoursa_shift."</td>"; 
+	$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".$atotal."</td>"; 
+	$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".$hoursa_shift."</td>"; 
 
 	$peffresulta=0; 
 
@@ -1473,9 +1476,9 @@ for ($j=0;$j<sizeof($sections);$j++)
 		$peffresulta=(round(($pstha/$pclha),2)*100); 
 	} 
 
-		$total_factory_summery .="<td rowspan=4>".$peffresulta."%</td>"; 
-		$total_factory_summery .="<td rowspan=4>".round($ppro_a_total,0)."</td>"; 
-		$total_factory_summery .="<td rowspan=4>".$clha_total_new."</td>"; //Change 20100819 
+		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".$peffresulta."%</td>"; 
+		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".round($ppro_a_total,0)."</td>"; 
+		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".$clha_total_new."</td>"; //Change 20100819 
 		  
 		$sah_per_fac1=round(($stha_total*100/$fac_sah_total),0); 
 		if($sah_per_fac1 < 90) 
@@ -1491,7 +1494,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 			$color_per_fac1="#1cfe0a"; 
 		} 
 		
-		$total_factory_summery .="<td rowspan=4>".round($fac_sah_total,0)."</td>"; 
+		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".round($fac_sah_total,0)."</td>"; 
 		$total_factory_summery .="<td rowspan=4>".round($stha_total,0)."</td>"; 
 
 		$xa=0; 
@@ -1517,18 +1520,18 @@ for ($j=0;$j<sizeof($sections);$j++)
 		//echo "<td rowspan=4 bgcolor=\"$color_per_fac2\">".round($xa,0)."%</td>"; 
 		//echo "<td rowspan=4 ><font size=30 color=\"$color_per_fac2\">&#8226;</font><br/>".round($xa,0)."%</td>"; 
 		$total_factory_summery .="<td rowspan=4 style='background-color:$color_per_fac2; color:black; font-weight:bold; '>".round($xa,0)."%</td>"; 
-		$total_factory_summery .="<td  rowspan=4>".round(($atotal-$ppro_a_total),0)."</td>"; 
+		$total_factory_summery .="<td  rowspan=4 style='background-color:white;color:black'>".round(($atotal-$ppro_a_total),0)."</td>"; 
 		$total_factory_summery .="<td  rowspan=4>".round($avgpcstotal,0)."</td>"; 
 
 		/* 20100318 */ 
 
 		if((7.5-$hoursa_shift)>0) 
 		{ 
-			$total_factory_summery .="<td  rowspan=4>".round($hourlytargettotal,0)."</td>"; 
+			$total_factory_summery .="<td  rowspan=4 style='background-color:white;color:black'>".round($hourlytargettotal,0)."</td>"; 
 		} 
 		else 
 		{ 
-			$total_factory_summery .="<td  rowspan=4>".round(($atotal-$ppro_a_total),0)."</td>"; 
+			$total_factory_summery .="<td  rowspan=4 style='background-color:white;color:black'>".round(($atotal-$ppro_a_total),0)."</td>"; 
 		} 
 
 		/* STH */ 
@@ -1545,7 +1548,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 				{ 
 					$sth=$sql_row2['sth']; 
 				} 
-				$total_factory_summery .="<td>".round($sth,0)."</td>"; 
+				$total_factory_summery .="<td style='background-color:white;color:black'>".round($sth,0)."</td>"; 
 			} 
         }
 
@@ -1574,11 +1577,11 @@ for ($j=0;$j<sizeof($sections);$j++)
 				/* NEW20100219 */ 
 				if($noofmods>0) 
 				{ 
-					$total_factory_summery .="<td>".round((round($eff,2)/$noofmods),0)."%</td>"; 
+					$total_factory_summery .="<td style='background-color:white;color:black'>".round((round($eff,2)/$noofmods),0)."%</td>"; 
 				} 
 				else 
 				{ 
-					$total_factory_summery .="<td>0</td>"; 
+					$total_factory_summery .="<td style='background-color:white;color:black'>0</td>"; 
 				} 
 			} 
 		}
@@ -1609,17 +1612,17 @@ for ($j=0;$j<sizeof($sections);$j++)
 					if($sum==0) 
 					{ 
 						$sum=0; 
-						$total_factory_summery .="<td bgcolor=\"red\">0</td>"; 
+						$total_factory_summery .="<td style='background-color:white;color:black'>0</td>"; 
 					} 
 					else 
 					{ 
 						if($count>0) 
 						{ 
-							$total_factory_summery .="<td>".round(($sum/$count),0)."</td>"; 
+							$total_factory_summery .="<td style='background-color:white;color:black'>".round(($sum/$count),0)."</td>"; 
 						} 
 						else 
 						{ 
-							$total_factory_summery .="<td>".round(($sum),0)."</td>"; 
+							$total_factory_summery .="<td style='background-color:white;color:black'>".round(($sum),0)."</td>"; 
 						} 
 					} 
 				} 
@@ -1639,12 +1642,12 @@ if($style_break==1)
 	$style_summery='';
 	$style_summery='<br><h2 style="color:white;background-color: #337ab7;">Style Summary<h2>'; 
 	$style_summery.="<div class=\"maincontentof\"><table class='table table-bordered' id=\"table_format_one\">"; 
-	$style_summery.="<tr><th style='background-color:#29759C;'>Style Name</th style='background-color:#29759C;'><th style='background-color:#29759C;'>SMV</th ><th style='background-color:#29759C;'>Oprs</th><th style='background-color:#29759C;'>Mod Count</th>"; 
+	$style_summery.="<tr><th style='background-color:#29759C;color:white;'>Style Name</th style='background-color:#29759C;color:white;'><th style='background-color:#29759C;color:white;'>SMV</th ><th style='background-color:#29759C;color:white;'>Oprs</th><th style='background-color:#29759C;color:white;'>Mod Count</th>"; 
 	for($m=0;$m<sizeof($hr);$m++) 
 	{ 
-		$style_summery.="<th style='background-color:#29759C;'>".$hr_disp[$m]."</th>"; 
+		$style_summery.="<th style='background-color:#29759C;color:white;'>".$hr_disp[$m]."</th>"; 
 	} 
-	$style_summery.="<th style='background-color:#29759C;'>Total</th><th style='background-color:#29759C;'>Plan Pcs</th><th style='background-color:#29759C;'>Balance Pcs</th><th style='background-color:#29759C;'>Avg. Pcs/Hr</th><th style='background-color:#29759C;'>Hr Tgt.</th><th style='background-color:#29759C;'>Avg. Pcs<br/>Hr/Mod</th><th style='background-color:#29759C;'>Hr Tgt./Mod.</th></tr>"; 
+	$style_summery.="<th style='background-color:#29759C;color:white;'>Total</th><th style='background-color:#29759C;color:white;'>Plan Pcs</th><th style='background-color:#29759C;color:white;'>Balance Pcs</th><th style='background-color:#29759C;color:white;'>Avg. Pcs/Hr</th><th style='background-color:#29759C;color:white;'>Hr Tgt.</th><th style='background-color:#29759C;color:white;'>Avg. Pcs<br/>Hr/Mod</th><th style='background-color:#29759C;color:white;'>Hr Tgt./Mod.</th></tr>"; 
 	$avgpcshrsum=0; 
 	$planpcsgrand=0; 
 	$balancepcs=0; 
@@ -1887,11 +1890,16 @@ if($style_break==1)
 			echo "col_".($i+5).": 'none',";
 		}
 		if(sizeof($hr)>0){
+			echo "col_".(sizeof($hr)+5).": 'none',";
 			echo "col_".(sizeof($hr)+6).": 'none',";
 			echo "col_".(sizeof($hr)+7).": 'none',";
 			echo "col_".(sizeof($hr)+8).": 'none',";
 			echo "col_".(sizeof($hr)+9).": 'none',";
 			echo "col_".(sizeof($hr)+10).": 'none',";
+			echo "col_".(sizeof($hr)+11).": 'none',";
+			echo "col_".(sizeof($hr)+12).": 'none',";
+			echo "col_".(sizeof($hr)+13).": 'none',";
+			echo "col_".(sizeof($hr)+14).": 'none',";
 		}
 		?>
 	btn_reset: true,
@@ -1923,15 +1931,21 @@ if($style_break==1)
 	loader: true,
 	loader_text: "Filtering data...",
 	col_0: 'select',
+	col_1: 'none',
+	col_2: 'none',
+	col_3: 'none',
 	<?php for($i=0;$i<sizeof($hr);$i++) 
 		{
 			echo "col_".($i+4).": 'none',";
 		}
 		if(sizeof($hr)>0){
+			echo "col_".(sizeof($hr)+4).": 'none',";
 			echo "col_".(sizeof($hr)+5).": 'none',";
 			echo "col_".(sizeof($hr)+6).": 'none',";
 			echo "col_".(sizeof($hr)+7).": 'none',";
 			echo "col_".(sizeof($hr)+8).": 'none',";
+			echo "col_".(sizeof($hr)+9).": 'none',";
+			echo "col_".(sizeof($hr)+10).": 'none',";
 		}?>
 	btn_reset: true,
 		alternate_rows: true,
