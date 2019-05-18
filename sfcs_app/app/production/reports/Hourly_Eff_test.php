@@ -1368,7 +1368,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 	$total_factory_summery ="";
 	$total_factory_summery="<br><h2 style=\"color:white;background-color: #29759C;\">Factory Summary<h2>"; 
 	
-	$total_factory_summery .="<div class=\"maincontentof\"><table id=\"info\" class='table table-bordered'><th ><h4>Factory Summary</h4></th>";
+	$total_factory_summery .="<div class=\"maincontentof\"><table id=\"info\" class='table table-bordered'><th style='background-color:#29759C;'><h4></h4></th>";
 	for($i=0;$i<sizeof($hr);$i++) 
 	{ 
 		if($hourly_break==1)
@@ -1386,7 +1386,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 	 <th style='background-color:#29759C;'>Avg Balance Pcs.</th> 
 	 <th style='background-color:#29759C;'>Act.Pcs/Hr</th> 
 	 <th style='background-color:#29759C;'>Req.Pcs/Hr</th>"; 
-	$total_factory_summery .="<tr class=\"total\"><td colspan=1>Totals</td>";
+	$total_factory_summery .="<tr class=\"total\"><td colspan=1 style='background-color:white;color:black'>Totals</td>";
 	$total=0; 
 	$atotal=0; 
 	if($hourly_break==1)
@@ -1536,7 +1536,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 
 		/* STH */ 
 
-		$total_factory_summery .="<tr class=\"total\"><td>HOURLY SAH</td>"; 
+		$total_factory_summery .="<tr class=\"total\"><td style='background-color:white;color:black'>HOURLY SAH</td>"; 
 		if($hourly_break==1)
         {
 			for($i=0; $i<sizeof($hr); $i++) 
@@ -1553,7 +1553,7 @@ for ($j=0;$j<sizeof($sections);$j++)
         }
 
 		/* EFF */ 
-		$total_factory_summery .="<tr class=\"total\"><td>HLY EFF%</td>"; 
+		$total_factory_summery .="<tr class=\"total\"><td style='background-color:white;color:black'>HLY EFF%</td>"; 
 		if($hourly_break==1)
 		{
 			for($i=0; $i<sizeof($hr); $i++) 
@@ -1586,7 +1586,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 			} 
 		}
          /* AVG p per hour */ 
-        $total_factory_summery .="<tr class=\"total\"><td>AVG-Pcs/HR</td>"; 
+        $total_factory_summery .="<tr class=\"total\"><td style='background-color:white;color:black'>AVG-Pcs/HR</td>"; 
 		$total=0; 
 		$btotal=0; 
 		if($hourly_break==1)
