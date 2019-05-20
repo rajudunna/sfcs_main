@@ -139,7 +139,11 @@ class ReactApp extends React.Component {
      let collistData1 = [];
      let collistData2 = [];
      let collistData3 = [];
+	 let coltotaldata = [];
+	 
+		
         let coldata = {
+			//Header: "Total:",
             columns: [
                 {
                     Header: "Style",
@@ -165,64 +169,65 @@ class ReactApp extends React.Component {
                     Header: "Size",
                     accessor: "size",
                     filterable:true
-                },  
+                },
+                {
+                    Header: "Order Quantity",
+                    accessor: "orderqty",
+                    filterable:true
+                },				
             ]
-            };
+        };
         colHeadData.push(coldata);
-
-		//to get good
+		
+		
+		//to get good,rej,wip
         dynamicColumns.forEach(val=>{
-            let columns = {
-                    Header: val.op_name,
-					//headerClassName: 'green',
-                    accessor: 'good'+val.op_code,
-                    filterable:false,
-					//className:'green'
+            let goodcolumns = {
+                Header: val.op_name,
+			    //headerClassName: 'green',
+                accessor: 'good'+val.op_code,
+                filterable:false,
+			    //className:'green'
+             }
+			let rejcolumns = {
+                Header: val.op_name,
+                accessor: 'rej'+val.op_code,
+                filterable:false,
+			    //className:'red'
                 }
-            collistData1.push(columns);
+		    let wipcolumns = {
+                Header: val.op_name,
+                accessor: 'wip'+val.op_code,
+                filterable:false,
+			    //className:'yellow'
+            }
+				
+            collistData1.push(goodcolumns);
+            collistData2.push(rejcolumns);	
+            collistData3.push(wipcolumns);
         })
 		
-		let collist = {
-             Header: "Operation Reported Qty(Good)",
-			 columns: collistData1,
-			 className:'green'
-		}
-		colHeadData.push(collist);
-		
-		//to get rej		
-		dynamicColumns.forEach(val=>{
-            let columns = {
-                    Header: val.op_name,
-                    accessor: 'rej'+val.op_code,
-                    filterable:false,
-					//className:'red'
-                }
-            collistData2.push(columns);
-        })
+	
 		let collist1 = {
-             Header: "Operation Reported Qty(Rejections)",
-			 columns: collistData2,
-			 className:'red'
+            Header: "Operation Reported Qty(Good)",
+			columns : collistData1,
+			className:'green'
 		}
-		colHeadData.push(collist1);
-		
-		//to get wip
-		dynamicColumns.forEach(val=>{
-            let columns = {
-                    Header: val.op_name,
-                    accessor: 'wip'+val.op_code,
-                    filterable:false,
-					//className:'yellow'
-                }
-            collistData3.push(columns);
-        })
 		let collist2 = {
-             Header: "WIP",
-			 columns: collistData3,
-			 className:'yellow'
+            Header: "Operation Reported Qty(Rejections)",
+			columns: collistData2,
+			className:'red'
 		}
-		colHeadData.push(collist2);
+		let collist3 = {
+            Header: "WIP",
+			columns: collistData3,
+			className:'yellow'
+		}
 		
+		colHeadData.push(collist1);
+		colHeadData.push(collist2);
+		colHeadData.push(collist3);
+
 		//console.log(tableData);
         return (
             <div> 
@@ -236,7 +241,8 @@ class ReactApp extends React.Component {
                                 ref={this.reactTable}
                                 data={tableData}
                                 className='-striped -highlight'
-                                columns={colHeadData}
+								
+                                columns={coltotaldata,colHeadData}
                                 loading={loadingimage}
                                 defaultPageSize={20}
                                 sortable= {true}
