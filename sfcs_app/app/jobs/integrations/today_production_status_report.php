@@ -3,12 +3,7 @@ $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');	
 $data_result='';
-$prod_status_server_name = 'bci-ctsql-01\belctsql';
-$prod_status_database = 'SAH_TEST';
-$prod_status_username = 'shopfloor_user';
-$prod_status_password = 'welcome#123';
 $connect = odbc_connect("$prod_status_driver_name;Server=$prod_status_server_name;Database=$prod_status_database;", $prod_status_username,$prod_status_password);
-
 if(isset($_GET["date"]))
 {
     $date=$_GET["date"];
@@ -59,11 +54,11 @@ if($ops_code != '')
         $sah=$sql_row["SAH"];
         $sah_total=$sah_total+$sah;
 
-        $sql_delete="DELETE FROM [SAH_Test].[dbo].[BEL_Daily_N] WHERE Date='".$production_date."' and Facility='".$plant_prod_code."' and Team='".$module."' and style='".$style."' and schedule='".$schedule."' and colour='".$color."' and Size='".$size."'";
+        $sql_delete="DELETE FROM [SAH].[dbo].[BEL_Daily_N] WHERE Date='".$production_date."' and Facility='".$plant_prod_code."' and Team='".$module."' and style='".$style."' and schedule='".$schedule."' and colour='".$color."' and Size='".$size."'";
         // echo $sql_delete.";<br>";
         odbc_exec($connect, $sql_delete);  
 
-        $sql_insert="INSERT INTO [SAH_Test].[dbo].[BEL_Daily_N] VALUES('".$plant_prod_code."','".$module."','".$production_date."','".$style."','".$schedule."','".$schedule."','".$color."','".$size."','".$qty."','".$smv."','".$sah."')";
+        $sql_insert="INSERT INTO [SAH].[dbo].[BEL_Daily_N] VALUES('".$plant_prod_code."','".$module."','".$production_date."','".$style."','".$schedule."','".$schedule."','".$color."','".$size."','".$qty."','".$smv."','".$sah."')";
         // echo $sql_insert.";<br><br>";
         odbc_exec($connect, $sql_insert);  
 
