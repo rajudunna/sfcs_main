@@ -18,7 +18,7 @@ window.open(Site,'PopupName','toolbar=no,statusbar=yes,menubar=yes,location=no,s
 </script>
 </head>
 <!--<body onLoad="popup('http://bainet:8080/projects/alpha/anu/new_int_v4/new_factory_eff2_copy_new.php')"> -->
-<?php $url=getFullURLLevel($_GET['r'],'Hourly_Eff_test_copy.php',0,'R') ?>
+<?php $url=getFullURLLevel($_GET['r'],'Hourly_Eff_test_new.php',0,'R') ?>
 
 <body onLoad="<?php echo "popup('$url')"; ?>">
 </body>
