@@ -4,7 +4,6 @@ $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');	
 $data_result='';
 $connect = odbc_connect("$prod_status_driver_name;Server=$prod_status_server_name;Database=$prod_status_database;", $prod_status_username,$prod_status_password);
-
 if(isset($_GET["date"]))
 {
     $date=$_GET["date"];
