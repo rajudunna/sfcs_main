@@ -2,6 +2,7 @@
 <?php include('../../../../common/config/functions.php'); ?>
 <?php ini_set('error_reporting', E_ALL); ?>
 <?php
+$divide=15;
 $schedule=$_GET['schedule'];
 $style=$_GET['style'];
 $schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
@@ -50,7 +51,59 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$cols[]=$sql_row1['color'];
 	$sizes[]=$sql_row1['size'];
 	//$pac_seq_no[]=$sql_row1['pac_seq_no'];
+
 }
+$sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id ='$schedule_id'";
+					//echo $sewing_jobratio_sizes_query.'<br>';
+					$sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
+					while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
+					{
+						$ref_size = $sewing_jobratio_color_details['size'];
+						$size_main = explode(",",$ref_size);
+						// var_dump($size);
+					}
+					$sizeofsizes=sizeof($size_main);
+
+					// Order Details Display Start
+					//{
+						$planned_qty = array();
+						$ordered_qty = array();
+						$pac_qty = array();
+						$tot_ordered = 0;
+						$tot_planned = 0;
+						$total_carton_qty = 0;
+						for($kk=0;$kk<sizeof($size_main);$kk++)
+						//foreach ($sizes_array as $key => $value)
+						{					
+							$plannedQty_query = "SELECT SUM(quantity*planned_plies) AS plan_qty FROM $brandix_bts.tbl_cut_size_master 
+							LEFT JOIN $brandix_bts.tbl_cut_master ON tbl_cut_size_master.parent_id=tbl_cut_master.id 
+							LEFT JOIN $brandix_bts.tbl_orders_sizes_master ON tbl_orders_sizes_master.parent_id=tbl_cut_master.ref_order_num
+							WHERE tbl_cut_master.ref_order_num='$schedule_id' AND tbl_orders_sizes_master.size_title='$size_main[$kk]' AND tbl_cut_size_master.ref_size_name=tbl_orders_sizes_master.ref_size_name AND tbl_cut_size_master.color=tbl_orders_sizes_master.order_col_des";
+							//echo $plannedQty_query.'<br>';
+							$plannedQty_result=mysqli_query($link, $plannedQty_query) or exit("Sql Error22");
+							while($planneQTYDetails=mysqli_fetch_array($plannedQty_result))
+							{
+								$planned_qty[$size_main[$kk]] = $planneQTYDetails['plan_qty'];
+								//echo $planned_qty[$size_main[$kk]]."---Testing<br>";
+							}
+							$orderQty_query = "SELECT SUM(order_act_quantity) AS orderedQty FROM $brandix_bts.tbl_orders_sizes_master 
+							WHERE parent_id='$schedule_id' AND tbl_orders_sizes_master.size_title='$size_main[$kk]'";
+							//echo $orderQty_query.'<br>';
+							$Order_qty_resut=mysqli_query($link, $orderQty_query) or exit("Sql Error23");
+							while($orderQty_details=mysqli_fetch_array($Order_qty_resut))
+							{
+								$ordered_qty[$size_main[$kk]] = $orderQty_details['orderedQty'];
+							}
+							
+							$pacQty_query = "SELECT SUM(carton_act_qty) AS pack_qty FROM $bai_pro3.packing_summary 
+							WHERE order_del_no='$schedule' AND size_tit='$size_main[$kk]'";
+							//echo $pacQty_query.'<br>';
+							$pac_qty_resut=mysqli_query($link, $pacQty_query) or exit("Sql Error24");
+							while($pacQty_details=mysqli_fetch_array($pac_qty_resut))
+							{
+								$pac_qty[$size_main[$kk]] = $pacQty_details['pack_qty'];
+							}
+						}
 ?>
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:x="urn:schemas-microsoft-com:office:excel"
@@ -795,95 +848,77 @@ tags will be replaced.-->
   <td class=xl7219400></td>
  </tr>
  <?php
- /*
- ?>
- <tr class=xl7219400 height=21 style='mso-height-source:userset;height:15.75pt'>
-  <td height=21 class=xl7419400 style='height:15.75pt'>Size:</td>
-  
-  
-  
-  <?php
-  
-  $count=0;
-  for($i=0;$i<sizeof($order_qtys);$i++)
-  {
-  	if($order_qtys[$i]>0)
-	{
-		echo "<td class=xl7019400>".$size_titles[$i]."</td>";
-		$count++;
-	}
-  }
-  for($i=0;$i<13-$count-1;$i++)
-  {
-  	echo "<td class=xl7019400>&nbsp;</td>";
-  }
-  echo "<td class=xl7019400>Total</td>";
-  ?>
-  
-  
- </tr>
- 
-
-			<tr class=xl7219400 height=21 style='mso-height-source:userset;height:15.75pt'>
-				<td height=21 class=xl7419400 style='height:15.75pt'>Order Qty:</td>
-
-				<?php
-
-				$count=0;
-				for($i=0;$i<sizeof($old_order_qtys);$i++)
-				{
-					if($old_order_qtys[$i]>0)
-				{
-					echo "<td class=xl7019400>".$old_order_qtys[$i]."</td>";
-					$count++;
-				}
-				}
-				for($i=0;$i<13-$count-1;$i++)
-				{
-					echo "<td class=xl7019400>&nbsp;</td>";
-				}
-				echo "<td class=xl7019400>$old_total</td>";
-
-				?>
-			</tr>
-
- <tr class=xl7219400 height=21 style='mso-height-source:userset;height:15.75pt'>
-  <td height=21 class=xl7419400 style='height:15.75pt'>Plan Qty:</td>
-  
-
+		 //$fab_uom = $fab_uom;
+		 $temp = 0;
+		 $temp_len1 = 0;
+		 $temp_len = 0;
+	 ?>
+  <tr class=xl7219400 height=21 style='mso-height-source:userset;height:15.75pt'>
   
   <?php
   
-  $count=0;
-  for($i=0;$i<sizeof($order_qtys);$i++)
+ $total_size = sizeof($size_main);
+  for($s=0; $s<($total_size); $s++)
   {
-  	if($order_qtys[$i]>0)
-	{
-		echo "<td class=xl7019400>".$carton_qtys[$i]."</td>";
-		$count++;
-	}
-  }
-  for($i=0;$i<13-$count;$i++)
-  {
-  	echo "<td class=xl7019400>&nbsp;</td>";
+  	
+	            if($temp == 0)
+				{
+					echo "<td class=xl7419400>Size:</td>";
+					$temp = 1;
+				}
+		echo "<td class=xl7019400>".$size_main[$s]."</td>";
+		
+	            if(($s+1) % $divide == 0)
+				{
+					
+					$temp_len = $s+1;
+					echo "</tr>";
+					echo "<tr class=xl7219400 height=21 style='mso-height-source:userset;height:15.75pt'>
+						   <td class=xl7419400>Order Qty:</td>";
+							for($i=$temp_len1;$i<$temp_len;$i++) {
+									echo "<td class=xl7019400>".$ordered_qty[$size_main[$i]]."</td>";
+									$tot_ordered = $tot_ordered + $ordered_qty[$size_main[$i]];
+								}
+					//echo "<td class=xl7019400>$tot_ordered</td>";
+					echo "</tr>";
+					echo "<tr class=xl7219400 height=21 style='mso-height-source:userset;height:15.75pt'>
+					<td class=xl7419400>Carton Qty:</td>";
+					for($i=$temp_len1;$i<$temp_len;$i++) {
+						echo "<td class=xl7019400 >".$pac_qty[$size_main[$i]]."</td>";
+						$total_carton_qty = $total_carton_qty + $pac_qty[$size_main[$i]];
+					}
+				
+					  //echo "<td class=xl7019400>$total_carton_qty</td>";
+					echo "</tr>";
+				echo "<tr class=xl7219400 height=21 style='mso-height-source:userset;height:15.75pt'></tr>";
+					$temp = 0;
+					$temp_len1=$temp_len;
+				}
+				//echo $s.'=='.$total_size;
+				 if($s+1==$total_size) {
+					
+					echo "<td class=xl7019400>Total</td></tr><tr class=xl7219400 height=21 style='mso-height-source:userset;height:15.75pt'>
+                          <td class=xl7419400>Order Qty:</td>";
+					for($i=$temp_len1;$i<$total_size;$i++) {
+						echo "<td class=xl7019400>".$ordered_qty[$size_main[$i]]."</td>";
+									$tot_ordered = $tot_ordered + $ordered_qty[$size_main[$i]];
+					}
+					echo "<td class=xl7019400>".$tot_ordered."</td>";
+					echo "</tr>";
+					echo "<tr class=xl7219400 height=21 style='mso-height-source:userset;height:15.75pt'>
+                         <td class=xl7419400>Carton Qty:</td>";
+					for($i=$temp_len1;$i<$total_size;$i++) {
+						echo "<td class=xl7019400 >".$pac_qty[$size_main[$i]]."</td>";
+						$total_carton_qty = $total_carton_qty + $pac_qty[$size_main[$i]];
+					}
+					echo "<td class=xl7019400>".$total_carton_qty."</td>";
+					echo "</tr>";
+				}
   }
   
+
   ?>
-  
-  <td class=xl7119400></td>
-  <td class=xl7219400></td>
-  <td class=xl7219400></td>
-  <td class=xl7219400></td>
-  <td class=xl7219400></td>
-  <td class=xl7219400></td>
-  <td class=xl7219400></td>
-  <td class=xl7219400></td>
-  <td class=xl7219400></td>
-  <td class=xl7219400></td>
- </tr>
- <?php
- */
- ?>
+
  <tr class=xl7219400 height=21 style='mso-height-source:userset;height:15.75pt'>
   <td height=21 class=xl7619400 style='height:15.75pt'></td>
    <td class=xl7119400></td>
@@ -938,37 +973,8 @@ tags will be replaced.-->
 	  <td class=xl8319400 style='border-top:none'>&nbsp;</td>
 	    
 	  </tr>
-	<?php
-		$carton_nodes=array();
-		$x=1;
-		$sql="select carton_no,MIN(STATUS) as status,min(pac_stat_id) as \"tid\",sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where order_del_no='$schedule' and seq_no = '".$seq_no[$i]."' group by carton_no order by carton_no*1";
-		$sql_result4=mysqli_query($link, $sql) or exit("Sql Error b44--".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row4=mysqli_fetch_array($sql_result4))
-		{
-			$carton_act_qty=$sql_row4['carton_act_qty'];
-			$status=$sql_row4['status'];
-			$tid=$sql_row4['tid'];
-			$carton_no=$sql_row4['carton_no'];
-			if($_GET['p_status']==1)
-			{
-				$bgcolor="RED";
-				if($status=="DONE")
-				{
-					$bgcolor="GREEN";
-				}
-			}
-			else
-			{
-				$bgcolor='';
-			}
-			
-			$carton_nodes[]=$x."-".$carton_no."-".$carton_act_qty."-".$bgcolor."-".$tid;
-			$x++;
-		}
-		$cycle=0;
-	?>	
-	<tr class=xl6553519400 height=20 style='height:15.0pt'>
-	  <td height=20 class=xl7719400 style='height:15.0pt'>Rows</td>
+	  <tr class=xl6553519400 height=20 style='height:15.0pt'>
+	  <td height=20 class=xl7719400 style='height:15.0pt'></td> 
 	  <td class=xl7819400 style='border-left:none'>Sno</td>
 	  <td class=xl7819400 style='border-left:none'>C# No</td>
 	  <td class=xl7819400 style='border-left:none'>Qty</td>
@@ -1016,23 +1022,103 @@ tags will be replaced.-->
 	  <td class=xl6553519400></td>
 	  <td class=xl6553519400></td>
 	 </tr>
+	
 	 </thead>
- <?php
+	<?php
+		
+	if($pack_method[$i]==1)
+	{
+		$sql123="SELECT pack_method,style,schedule,GROUP_CONCAT(DISTINCT COLOR) AS cols,GROUP_CONCAT(DISTINCT size_title order by ref_size_name*1) AS size_tit FROM $bai_pro3.tbl_pack_ref 
+		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no='".$seq_no[$i]."'  and  schedule='$schedule' group by COLOR,size_title order by ref_size_name";
+	}
+	elseif($pack_method[$i]==2)
+	{
+		$sql123="SELECT pack_method,style,schedule,group_concat(DISTINCT (color) SEPARATOR \"','\") as cols,GROUP_CONCAT(DISTINCT size_title order by ref_size_name*1) AS size_tit FROM $bai_pro3.tbl_pack_ref 
+		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no='".$seq_no[$i]."'  and  schedule='$schedule' group by size_title order by ref_size_name";
+	}
+	elseif($pack_method[$i]==3)
+	{
+		$sql123="SELECT pack_method,style,schedule,group_concat(DISTINCT (color) SEPARATOR \"','\") as cols,group_concat(DISTINCT (size_title) SEPARATOR \"','\") as size_tit FROM $bai_pro3.tbl_pack_ref 
+		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no='".$seq_no[$i]."' and  schedule='$schedule'";
+	}
+	elseif($pack_method[$i]==4)
+	{
+		$sql123="SELECT pack_method,style,schedule,color as cols,group_concat(DISTINCT (size_title) SEPARATOR \"','\") as size_tit FROM $bai_pro3.tbl_pack_ref 
+		LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_size_ref.parent_id=tbl_pack_ref.id WHERE tbl_pack_size_ref.seq_no='".$seq_no[$i]."' and  schedule='$schedule' group by color";
+	}
+	// echo $sql123;
+	$result123=mysqli_query($link, $sql123) or die ("Error1.11=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row123=mysqli_fetch_array($result123))
+	{
+		$cols_tot_tmp[]=$row123['cols'];
+		$cols_size_tmp[]=$row123['size_tit'];
+		$style=$row123['style'];
+		$schedule=$row123['schedule'];
+		$pack_method1=$row123['pack_method'];
+		if($pack_method1==1){
+		$sql="select carton_no,MIN(STATUS) as status,min(pac_stat_id) as \"tid\",sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where order_del_no='$schedule' and seq_no = '".$seq_no[$i]."' and size_tit= '".$row123['size_tit']."' and order_col_des='".$row123['cols']."' group by carton_no order by carton_no*1";
+		}elseif($pack_method1==2){
+			$sql="select carton_no,MIN(STATUS) as status,min(pac_stat_id) as \"tid\",sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where order_del_no='$schedule' and seq_no = '".$seq_no[$i]."' and size_tit= '".$row123['size_tit']."' and order_col_des in('".$row123['cols']."') group by carton_no order by carton_no*1";
+		}
+		elseif($pack_method1==3){
+		$sql="select carton_no,MIN(STATUS) as status,min(pac_stat_id) as \"tid\",sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where order_del_no='$schedule' and seq_no = '".$seq_no[$i]."' and size_tit in('".$row123['size_tit']."') and order_col_des in ('".$row123['cols']."') group by carton_no order by carton_no*1";	
+		}
+		else{
+			$sql="select carton_no,MIN(STATUS) as status,min(pac_stat_id) as \"tid\",sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where order_del_no='$schedule' and seq_no = '".$seq_no[$i]."' and size_tit in('".$row123['size_tit']."') and order_col_des ='".$row123['cols']."' group by carton_no order by carton_no*1";
+		}
+			
+		//echo $sql."</br>";
+		
+	$carton_nodes=array();
+		$x=1;
+	
+
+		$sql_result4=mysqli_query($link, $sql) or exit("Sql Error b44--".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row4=mysqli_fetch_array($sql_result4))
+		{
+			$carton_act_qty=$sql_row4['carton_act_qty'];
+			$status=$sql_row4['status'];
+			$tid=$sql_row4['tid'];
+			$carton_no=$sql_row4['carton_no'];
+			if($_GET['p_status']==1)
+			{
+				$bgcolor="RED";
+				if($status=="DONE")
+				{
+					$bgcolor="GREEN";
+				}
+			}
+			else
+			{
+				$bgcolor='';
+			}
+			
+			$carton_nodes[]=$x."-".$carton_no."-".$carton_act_qty."-".$bgcolor."-".$tid;
+			$x++;
+		}
+	
+		$cycle=0;
+	
 	$cycle=0;$sno=1;$node_detail=array();$val=0;
 	$val=sizeof($carton_nodes);
+	if($pack_method1==1 or $pack_method1==2){
+	echo"<tr class=xl6553519400 height=20 style='mso-height-source:userset;height:15.0pt'>
+	  <td  style='border-top:none' colspan=2><b>Combination <b>: </td>
+	  
+	  <td   colspan=17 >".($row123['cols']).",".($row123['size_tit'])."</td>
+	
+	  </tr>";
+	}else{
+		
+	}
 	for($j=0;$j<sizeof($carton_nodes);$j+=4)
 	{
-		echo "<tr class=xl6553519400 height=20 style='height:15.0pt'>";
-		if($cycle==0)
-		{
-			echo " <td height=20 class=xl8019400 style='height:15.0pt'>".$sno."</td>";
-			$sno++;
-		}
-		else
-		{
-			echo " <td height=20 class=xl8019400 style='height:15.0pt'>".$sno."</td>";
-			$sno++;
-		}
+		
+		
+		
+		 
+	  echo "<tr class=xl6553519400 height=20 style='height:15.0pt'><td></td>";
+	  
 		for($m=$j;$m<$j+4;$m++)
 		{		
 			
@@ -1042,10 +1128,11 @@ tags will be replaced.-->
 				$val1=$node_detail[2];
 				if($val1>0)
 				{
+					
 					echo "<td class=xl8419400>".$node_detail[0]."</td>
 					<td class=xl8419400 style='border-left:none;background-color:$node_detail[3];'>".$node_detail[1]."</td>
-					<td class=xl8419400 style='border-left:none;background-color:$node_detail[3];'>".$node_detail[2]."</td>
-					<td class=xl8419400 style='border-left:none;background-color:$node_detail[3];' colspan=2>".$node_detail[4]."</td>";
+					<td class=xl8419400 style='border-left:none;'>".$node_detail[2]."</td>
+					<td class=xl8419400 style='border-left:none;' colspan=2>".$node_detail[4]."</td>";
 				}
 				else
 				{
@@ -1057,12 +1144,17 @@ tags will be replaced.-->
 				}			
 			}
 		}
+		 
 		unset($node_detail);
 		echo "<td class=xl6553519400></td>
 			<td class=xl6553519400></td>
 			<td class=xl6553519400></td>
 			</tr>";
 			$cycle++;
+			
+	 
+	}
+	echo"<tr class=xl6553519400 height=20 style='mso-height-source:userset;height:15.0pt'></tr>";
 	}
 	?>
 	<tr class=xl6553519400 height=20 style='mso-height-source:userset;height:15.0pt'>
