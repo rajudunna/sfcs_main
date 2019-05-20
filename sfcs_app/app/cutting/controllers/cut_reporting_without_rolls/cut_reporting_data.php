@@ -228,6 +228,7 @@ $response_data['date']      = $date;
 $response_data['doc_target_type'] = $target_doc_type;
 $response_data['ratio_data']      = getSizesRatio($doc_no,$child_docs);
 
+
 echo json_encode($response_data);
 exit();
 

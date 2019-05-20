@@ -933,7 +933,9 @@ cy9tZWRpYS9pbWFnZTEuanBlZ1BLBQYAAAAABgAGAIUBAAAsHgAAAAA=
     <x:AutoPict/>
    </x:ClientData>
   </v:shape><![endif]-->
-  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG" width="200" height="60"></td>
+
+  <td colspan=6 rowspan=3 class=xl8217319x valign="top" align="left"><img src="<?= $logo ?>" width="200" height="60"></td>
+
   <span
   style='mso-ignore:vglayout2'>
   <table cellpadding=0 cellspacing=0>

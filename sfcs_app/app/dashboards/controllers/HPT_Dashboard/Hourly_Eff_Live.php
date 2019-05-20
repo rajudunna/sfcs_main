@@ -389,11 +389,19 @@ for ($i=0; $i <= $total_hours; $i++)
 		}
 		$sql="select mod_style, mod_no from $pro_mod where mod_sec=$sec and mod_date=\"$date\" order by mod_no*1";
 
+		/* Headings */
+		$sec_head="";
+		$sql="select * from $bai_pro.pro_sec_db where sec_no=$sec";
+		
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if($option1==1)
-		{ 
-			echo "<table id=\"info\" class=\"table table-bordered\">"; 
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+			$sec_head=$sql_row['sec_head'];
 		}
+		$sql="select mod_style, mod_no from $pro_mod where mod_sec=$sec and mod_date=\"$date\" order by mod_no*1";
+		// echo $sql;	
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if($option1==1){  echo "<table id=\"info\" class=\"table table-bordered\">"; }
 
 
 		if($option1==1)

@@ -1129,6 +1129,7 @@
 				$status_sew=0;
 				
 				//Excess
+				$colo = implode("','",$cols_tot);
 				$sql120="SELECT doc_no 
 					FROM $bai_pro3.tbl_docket_qty 
 					LEFT JOIN $bai_pro3.pac_stat_input ON pac_stat_input.`id` = tbl_docket_qty.`pac_stat_input_id`

@@ -7,6 +7,7 @@
 	// Create connection
 	// $conn = new mysqli($servername, $username, $password, $dbname);
 	// Check connection
+	//
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	$conn=$link;
 	if ($conn->connect_error) {

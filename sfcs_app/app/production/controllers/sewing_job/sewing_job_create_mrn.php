@@ -391,6 +391,7 @@
 						function Redirect() {
 						sweetAlert('MRN Reversal Already Done','','warning');
 						location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+
 						}
 						</script>";
 

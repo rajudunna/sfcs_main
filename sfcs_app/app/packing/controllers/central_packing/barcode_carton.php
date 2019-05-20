@@ -80,7 +80,7 @@
 					<table>
 						<tr>
 							<td ><barcode code="'.leading_zeros($pac_stat_id,10).'" type="C39"/ height="0.80" size="0.8" text="1"></td>
-							<td >'.leading_zeros($pac_stat_id,10).'</td>
+							<td >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.leading_zeros($pac_stat_id,10).'</td>
 						</tr>
 						
 						<tr>

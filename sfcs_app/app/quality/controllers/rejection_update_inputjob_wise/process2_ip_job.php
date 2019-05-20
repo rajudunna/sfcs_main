@@ -157,6 +157,7 @@ function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$li
 
 if(isset($_POST['Update']))
 {
+	
 	$module=$_POST['mods'];
 	$team=$_POST['shift']; //array
 	$date=$_POST['date']; //array
@@ -184,11 +185,24 @@ if(isset($_POST['Update']))
 	//Added by KiranG 20150418
 	$usr_msg="<br/><br/><table><tr><th>Module</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th></tr>";
 	if($sum > 0){
+		$embs = 'Send PF';$embr='Receive PF';$opary = array();
 		for($x=0;$x<sizeof($qty);$x++)
 		{
 			$iLastid=0;
 			if($qty[$x]>=0 and $qty[$x]!="")
 			{
+				$emb_operations = "SELECT tbl_style_ops_master.operation_code AS opcode,tbl_orders_ops_ref.operation_name as opname  FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON 
+				$brandix_bts.tbl_style_ops_master.operation_name = $brandix_bts.`tbl_orders_ops_ref`.id
+				WHERE style='".$style[$x]."' AND color='".$color[$x]."' 
+				AND category IN ('$embs','$embr')";
+				// echo $emb_operations;
+				$sql_result1=mysqli_query($link,$emb_operations) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row1=mysqli_fetch_array($sql_result1))
+				{
+					if($sql_row1['opcode']!='' && $sql_row1['opname']!=''){
+						array_push($opary,$sql_row1['opcode']);
+					}
+				}
 				$r_qty = array();
 				$r_reasons = array();
 				$check_proceed=0; //0-OK, 1- NOK
@@ -296,9 +310,13 @@ if(isset($_POST['Update']))
 							$input_job=$job[$x];
 							$doc=$job[$x];
 						}
-						//$size_value1=ims_sizes($order_tid,$schedule[$x],$style[$x],$color[$x],$size[$x],$link);
-						$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,ref1,remarks,log_date,doc_no,log_user,input_job_no) values (\"".$style[$x]."\",\"".$schedule[$x]."\",\"".$color[$x]."\",\"".$size[$x]."\",".$qty[$x].",\"".$qms_tran_type."\",\"".implode("$",$ref_code)."\",\"".$module[$x]."-".$team[$x]."-".$form[$x]."\",\"".date("Y-m-d")."\",\"".$doc."\",'$username',\"".$input_job."\")";
-						//echo $sql."<br>";
+						if(in_array($module[$x],$opary)){
+							$remarks = 'ENP';
+						}else{
+							$remarks = 'CUT';
+						}
+						$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,ref1,remarks,log_date,doc_no,log_user,input_job_no,operation_id) values (\"".$style[$x]."\",\"".$schedule[$x]."\",\"".$color[$x]."\",\"".$size[$x]."\",".$qty[$x].",\"".$qms_tran_type."\",\"".implode("$",$ref_code)."\",\"".$remarks."-".$team[$x]."-".$form[$x]."\",\"".date("Y-m-d")."\",\"".$doc."\",'$username',\"".$input_job."\",\"".$module[$x]."\")";
+						// echo $sql."<br>";
 						mysqli_query($link, $sql) or exit("Sql Error4 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 						
@@ -352,7 +370,7 @@ if(isset($_POST['Update']))
 						//$replace_ref[]=$style[$x]."$".$schedule[$x]."$".$color[$x]."$".$size[$x]."$".$module;	
 					}
 							
-					$replace_ref[]=$style[$x]."$".$schedule[$x]."$".$color[$x]."$".$size_value1."$".$module[$x]."$".$team[$x]."$".$iLastid;	
+					$replace_ref[]=$style[$x]."$".$schedule[$x]."$".$color[$x]."$".$size[$x]."$".$module[$x]."$".$team[$x]."$".$iLastid."$".$doc;	
 					//to track min and max insert ids
 					$maxilastid=$iLastid;
 					if($minilastid==0)
@@ -362,12 +380,12 @@ if(isset($_POST['Update']))
 				}
 				else
 				{
-					$usr_msg.="<tr><td>".$module[$x]."</td><td>".$schedule[$x]."</td><td>".$color[$x]."</td><td>".$size_value1."</td><td>".$qty[$x]."</td></tr>";
+					$usr_msg.="<tr><td>".$module[$x]."</td><td>".$schedule[$x]."</td><td>".$color[$x]."</td><td>".$size[$x]."</td><td>".$qty[$x]."</td></tr>";
 				}
 				//Logic for M3_TRANSACTIONS AND MO FILLING #759 CR CODE STARTING
 				$doc_no_ref = substr($job[$x],1);
-				$op_code = '15';
-				$b_op_id = '15';
+				$op_code = $module[$x];
+				$b_op_id = $module[$x];
 				$b_tid = array();
 				$b_module = (is_numeric($module[$x])?$module[$x]:'0');
 				$b_shift = $team[$x];
@@ -531,7 +549,8 @@ if(isset($_POST['update1']))
 	$replace=$_POST['replace'];
 	$replace_ref=array();
 	$replace_ref=explode("#",$_POST['replace_ref']);
-	
+
+	$embs = 'Send PF';$embr='Receive PF';$opary1 = array();
 	for($i=0;$i<sizeof($replace);$i++)
 	{
 		if($replace[$i]>0)
@@ -539,12 +558,121 @@ if(isset($_POST['update1']))
 			$temp=array();
 			//echo "temp=".$replace_ref[$i];
 			$temp=explode("$",$replace_ref[$i]);
+
+			$emb_operations = "SELECT tbl_style_ops_master.operation_code AS opcode,tbl_orders_ops_ref.operation_name as opname  FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON 
+			$brandix_bts.tbl_style_ops_master.operation_name = $brandix_bts.`tbl_orders_ops_ref`.id
+			WHERE style='".$temp[0]."' AND color='".$temp[2]."' 
+			 AND category IN ('$embs','$embr')";
+			$sql_result1=mysqli_query($link,$emb_operations) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row1=mysqli_fetch_array($sql_result1))
+			{
+				if($sql_row1['opcode']!='' && $sql_row1['opname']!=''){
+					array_push($opary1,$sql_row1['opcode']);
+				}
+			}
+
+			if(in_array($temp[4],$opary1)){
+				$remarks = 'ENP';
+			}else{
+				$remarks = 'CUT';
+			}
 			
-			$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,remarks,log_date,ref1,log_user) values (\"".$temp[0]."\",\"".$temp[1]."\",\"".$temp[2]."\",\"".$temp[3]."\",".$replace[$i].",2,\"".$temp[4]."-".$temp[5]."\",\"".date("Y-m-d")."\",\"TID-".$temp[6]."\",'$username')";
-			//echo "<br/> query= ".$sql;
+			$sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,remarks,log_date,ref1,log_user,doc_no,operation_id) values (\"".$temp[0]."\",\"".$temp[1]."\",\"".$temp[2]."\",\"".$temp[3]."\",".$replace[$i].",2,\"".$remarks."-".$temp[5]."\",\"".date("Y-m-d")."\",\"TID-".$temp[6]."\",'$username',\"".substr($temp[7],1)."\",\"".$temp[4]."\")";
+			// echo "<br/> query= ".$sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error11 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
+			$sql1="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,remarks,log_date,ref1,log_user,doc_no,operation_id) values (\"".$temp[0]."\",\"".$temp[1]."\",\"".$temp[2]."\",\"".$temp[3]."\",".($replace[$i]*-1).",1,\"".$remarks."-".$temp[5]."\",\"".date("Y-m-d")."\",\"TID-".$temp[6]."\",'$username',\"".substr($temp[7],1)."\",\"".$temp[4]."\")";
+			// echo "<br/> query= ".$sql1;
+			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error11 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-	
+			$sql2="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,remarks,log_date,ref1,log_user,doc_no,operation_id) values (\"".$temp[0]."\",\"".$temp[1]."\",\"".$temp[2]."\",\"".$temp[3]."\",".($replace[$i]*-1).",3,\"".$remarks."-".$temp[5]."\",\"".date("Y-m-d")."\",\"TID-".$temp[6]."\",'$username',\"".substr($temp[7],1)."\",\"".$temp[4]."\")";
+			// echo "<br/> query= ".$sql2."<br>";
+			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error11 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+			 $cpslog_update = "UPDATE $bai_pro3.cps_log SET remaining_qty= remaining_qty+$replace[$i] WHERE doc_no='".substr($temp[7],1)."' AND size_title='".$temp[3]."' AND operation_code='$temp[4]'";
+			// echo $cpslog_update."<br>";
+			$cps_execute = mysqli_query($link,$cpslog_update) or exit("erro6.1");
+
+			$selecting_qry = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE docket_number = '".substr($temp[7],1)."' AND size_id = '".$temp[3]."' AND operation_id = '".$temp[4]."'";
+			// echo $selecting_qry;
+			$result_selecting_qry = $link->query($selecting_qry);
+			while($row_result_selecting_qry = $result_selecting_qry->fetch_assoc()) 
+			{
+				$id_to_update = $row_result_selecting_qry['id'];
+				$ref_no = $row_result_selecting_qry['bundle_number'];
+				$mapped_color = $row_result_selecting_qry['mapped_color'];
+				$b_style = $row_result_selecting_qry['style'];
+			}
+			$update_qry = "update $brandix_bts.bundle_creation_data set recevied_qty = recevied_qty+$replace[$i] where id = $id_to_update";
+			// echo $update_qry."<br>";
+			$updating_bundle_data = mysqli_query($link,$update_qry) or exit("While updating budle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+			$ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code='".$temp[4]."'";
+			// echo $ops_seq_check."<br>";
+			$result_ops_seq_check = $link->query($ops_seq_check);
+			while($row = $result_ops_seq_check->fetch_assoc()) 
+			{
+				$ops_seq = $row['ops_sequence'];
+				$seq_id = $row['id'];
+				$ops_order = $row['operation_order'];
+			}
+			$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) > '$ops_order' AND operation_code not in (10,200) ORDER BY operation_order ASC LIMIT 1";
+			// echo $post_ops_check."<br>";
+			$result_post_ops_check = $link->query($post_ops_check);
+			
+			if($result_post_ops_check->num_rows > 0)
+			{
+				while($row = $result_post_ops_check->fetch_assoc()) 
+				{
+					$post_ops_code = $row['operation_code'];
+				}
+			}
+			if($post_ops_code)
+			{
+				$category=['cutting','Send PF','Receive PF'];
+				$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $post_ops_code";
+				// echo $checking_qry;
+				$result_checking_qry = $link->query($checking_qry);
+				while($row_cat = $result_checking_qry->fetch_assoc()) 
+				{
+					$category_act = $row_cat['category'];
+				}
+				if(in_array($category_act,$category))
+				{
+					$emb_cut_check_flag = 1;
+				}
+				if($emb_cut_check_flag)
+				{
+					$update_qry_post = "update $brandix_bts.bundle_creation_data set send_qty = send_qty+$replace[$i] WHERE docket_number = '".substr($temp[7],1)."' AND size_id = '".$temp[3]."' AND operation_id = '$post_ops_code'";
+					// echo $update_qry_post;
+					$updating_post_ops = mysqli_query($link,$update_qry_post) or exit("While updating cps".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+					
+				}
+			}
+			$moqty = (int)$replace[$i];
+			$mo_op_qty = "update bai_pro3.mo_operation_quantites set bundle_quantity= bundle_quantity+$moqty where ref_no=$ref_no and op_code=$temp[4]";
+			$cps_execute = mysqli_query($link,$mo_op_qty) or exit("Error While Updating the Mo Operation Quantities");
+
+			//FOR M3 Upload
+			if($temp[4]=="ENP")
+			{
+				
+			}
+			else
+			{
+				//commented for #759 CR
+				// $sql="select sfcs_tid from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_style='".$temp[0]."' and sfcs_schedule='".$temp[1]."' and sfcs_color='".$temp[2]."' and sfcs_job_no='REPLACE' and sfcs_tid_ref=".$temp[6];
+				// $sql_result=mysqli_query($link, $sql) or exit("Sql Error12 $sql".mysqli_error($GLOBALS["___mysqli_ston"])); 	
+				
+				// if(mysqli_num_rows($sql_result)==0)
+				// {
+				// 	$sql="INSERT INTO $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,sfcs_doc_no,sfcs_qty,sfcs_log_user,m3_op_des,sfcs_job_no,sfcs_tid_ref,sfcs_mod_no,sfcs_shift) values(NOW(),'".$temp[0]."','".$temp[1]."','".$temp[2]."','".$temp[3]."',0,".$replace[$i].",USER(),'SIN','REPLACE',".$temp[6].",'".$temp[4]."','".$temp[5]."')";
+				// 	mysqli_query($link, $sql) or exit("Sql Error13 $sql".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				// }
+					
+			}
 		}
 	}
 	echo "<h2>Successfully Updated.</h2>";

@@ -183,8 +183,27 @@ if(isset($_POST['submit']))
 	$ready_cat_ref_type=array();
 	$o_s=array();	
 	$o_s_t=array();
+	
 	$table_tag=" $bai_pro3.bai_orders_db_club_confirm";
-	$sql4="select * from $bai_pro3.cat_stat_log where order_tid like \"%".$order_sch.$color."%\" and category<>''"; 
+	
+	$sql47="select * from  $bai_pro3.bai_orders_db_confirm where order_del_no='$order_sch' and order_col_des=\"".$color."\""; 
+	//echo $sql47."<br>";
+	$sql_result47=mysqli_query( $link, $sql47) or exit("Sql Error46".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	while($sql_row47=mysqli_fetch_array($sql_result47)) 
+	{ 
+		$ord_tid=$sql_row47['order_tid'];
+		for($s=0;$s<sizeof($sizes_array);$s++)
+		{
+			if($sql_row47["title_size_".$sizes_array[$s].""]<>'')
+			{
+				$o_s[$sizes_array[$s]]=$sql_row47["order_s_".$sizes_array[$s].""];
+				$o_s_t[$sizes_array[$s]]=$sql_row47["title_size_".$sizes_array[$s].""];
+				//echo $sql_row47["title_size_".$sizes_array[$s].""]."----".$sql_row47["order_s_".$sizes_array[$s].""]."<br>";
+			}
+		}	
+		
+	} 	
+	$sql4="select * from $bai_pro3.cat_stat_log where order_tid='".$ord_tid."' and category<>''"; 
 	$sql_result4=mysqli_query( $link, $sql4) or exit("Sql Error47".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row4=mysqli_fetch_array($sql_result4)) 
 	{

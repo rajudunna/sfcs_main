@@ -513,7 +513,9 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var user_msg = '';
         //AJAX Call
         var terminate_flag = 0;
-        console.log(form_data);
+        console.log(form_data);a
+        console.log(pieces);
+        console.log(cumulative_size);
         if(total_rejected_pieces > 0){
             $.each(pieces_actual,function(key,value){
                 if(  Number(cumulative_size[key]) > Number(value) ){
@@ -710,6 +712,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         delete pieces;
         delete pieces_actual;
         delete rejections_post;
+        console.log(rejections_post);
         global_serial_id = 0;
         total_rejected_pieces = 0;
         rejections_post = {};

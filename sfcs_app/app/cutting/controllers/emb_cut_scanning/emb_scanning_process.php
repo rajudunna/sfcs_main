@@ -291,7 +291,8 @@ foreach($b_tid as $key => $value)
                     $reported_status = 'P';
                 }
                 //update remaining quantity in cps_log table
-                $cps_log_qry = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty+$tot_report_qty,`reported_status`='$reported_status' where id =$b_tid[$key] and operation_code='$b_op_id'"; 
+                $cps_log_qry = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty+$tot_report_qty,`reported_status`='$reported_status' where id = '".$b_tid[$key]."' and operation_code='$b_op_id'";
+                // echo $cps_log_qry;
                 $cps_log_result = $link->query($cps_log_qry) or exit('CPS LOG query error');
 
             }         

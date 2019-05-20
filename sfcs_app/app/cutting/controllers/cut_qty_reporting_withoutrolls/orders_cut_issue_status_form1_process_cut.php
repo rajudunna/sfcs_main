@@ -486,6 +486,8 @@ if(isset($_POST['update']))
 			//echo $sql14."<br>";
 			$sql_result=mysqli_query($link, $sql14) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
+		
+		//echo "going inside loop";
 		unset($input_doc_nos);
 		
 		foreach($club_docs as $docket=>$cat_ref){
@@ -582,8 +584,6 @@ if(isset($_POST['update']))
 		//explicitly assigning to array
 		$input_doc_nos = implode(',',$child_docs);
 	}
-
-
 
 	if ($failed == 1) 
 	{

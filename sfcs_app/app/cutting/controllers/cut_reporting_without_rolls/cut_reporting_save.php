@@ -697,6 +697,7 @@ if($target == 'style_clubbed'){
     }
    
     //ALL Excess Qty left out to be filled equally 
+    
     foreach($left_over as $size=>$qty){
         if($qty > 0){
             //Ensuring if any qty to be fulfilled before considering it as excess left over qty

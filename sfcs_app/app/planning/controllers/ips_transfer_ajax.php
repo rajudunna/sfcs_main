@@ -182,6 +182,9 @@ function save_details($data,$module,$module1){
 
         $insert_qry="insert into bai_pro3.ips_job_transfer (job_no,module,transfered_module,user) values (".$job.",".$module1.",".$module.",'".$username."')";
         mysqli_query($link, $insert_qry)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+        $insert_qry1="insert into $bai_pro3.job_transfer_details (sewing_job_number,transfered_module,status) values (".$job.",".$module.",'P')";
+        mysqli_query($link, $insert_qry1)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $counter++;
     }
     return 1;

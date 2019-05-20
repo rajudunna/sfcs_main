@@ -5509,13 +5509,13 @@ $hourly_sewing_out_count = "SELECT * FROM $bai_pro3.`tbl_plant_timings`";
         {
             $color_code = $rowxs123["color_code"];
         }
+        
         // echo $color_code;
         $cut_new = chr($color_code).leading_zeros($rowxs["acutno"], 3);
          echo "<tr class=xl10632351 height=48 style='mso-height-source:userset;height:36.0pt'> 
           <td rowspan=2 height=96 class=xl17132351 width=89 
           style='border-bottom:1.0pt solid black;height:72.0pt;border-top:none;width:67pt;word-wrap:break-word;'>".$rowxs["order_col_des"]."-(<b>".$cut_new."</b>)</td> 
           <td rowspan=2 height=96 class=xl17132351 width=89 style='border-bottom:1.0pt solid black;height:72.0pt;width:67pt;word-wrap:break-word;'>".strtoupper($rowxs["size_code"])."</td> 
-
           <td rowspan=2 class=xl18432351 width=59 style='border-bottom:1.0pt solid black; 
           width:44pt'>".$rowxs["cum_qty"]."</td>"; 
             for($i=1;$i<=$count_tot;$i++){

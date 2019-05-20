@@ -3199,7 +3199,7 @@ tags will be replaced.-->
   <td colspan=3 style='font-size:20px' class=xl7617319>Cutting Department</td>
   <td class=xl6417319></td>
  </tr>
-
+ <tr height=21 style='height:15.75pt'></tr>
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td class=xl6417319></td>
@@ -3979,7 +3979,7 @@ echo "<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-col
   <td colspan=3 rowspan=2 class=xl1064118>Comments</td>
  </tr> <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
-  <td class=xl724118>&nbsp;</td>
+  <td class=xl724118>&nbsp;</td>	
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
  
@@ -3992,6 +3992,7 @@ echo "<table border=0 cellpadding=0 cellspacing=0 align='left' style='border-col
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>+</td>
   <td class=xl744118>-</td>
+
   <!--<td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>
   <td class=xl744118>&nbsp;</td>

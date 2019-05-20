@@ -19,6 +19,11 @@
 	}
 
 </script>
+<style>
+	table, th, td {
+		text-align: center;
+	}
+</style>
 </head>
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));

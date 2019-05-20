@@ -84,7 +84,9 @@ $qery_rejection_resons = "select * from $bai_pro3.bai_qms_rejection_reason where
 $result_rejections = $link->query($qery_rejection_resons);
 if(isset($_POST['flag_validation']))
 {
+	//echo "<script>document.getElementById('main').hidden = true</script>";
 	echo "<h1 style='color:red;'>Please Wait a while !!!</h1>";
+	//echo "<script>document.getElementById('message').innerHTML='<b>Please wait a while</b>'</script>";
 }
 $configuration_bundle_print_array = ['0'=>'Bundle Number','1'=>'Sewing Job Number'];
 $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
@@ -285,7 +287,7 @@ $(document).ready(function()
 	$("#job_number").change(function()
 	{
 	<?php }?>
-        $('#dynamic_table1').html('');
+		$('#dynamic_table1').html('');
 		$('#loading-image').show();
 		var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
 		var barcode_generation = "<?php echo $barcode_generation?>";
@@ -340,7 +342,8 @@ $(document).ready(function()
 				if(module_flag == 0)
 				{
 					var array = [job_number,operation_id,barcode_generation,assign_module];
-					$.ajax({
+					$.ajax
+					({
 							type: "POST",
 							url: function_text+"?job_number="+array,
 							dataType: "json",
@@ -353,7 +356,6 @@ $(document).ready(function()
 								var data = response['table_data'];
 								var flag = response['flag'];
 								var op_codes = response['ops_get_code'];
-								//var sample_qtys = response[]]
 								var emb_ops = response['emb_cut_check_flag'];
 								if(response['status'])
 								{
@@ -418,6 +420,8 @@ $(document).ready(function()
 										var readonly ='';
 										var temp_var_bal = 0;
 										var er   = Number(data[i].send_qty);
+										if(data[i].send_qty == null)
+											er = 0;
 										var repq = Number(data[i].reported_qty)+Number(data[i].rejected_qty);
 										var brep = Number(data[i].balance_to_report);
 										if(data[i].send_qty == null)
@@ -469,6 +473,7 @@ $(document).ready(function()
 										}
 										else if(data[i].send_qty != 0 && Number(data[i].balance_to_report) ==0)
 										{
+											console.log("coming");
 											if(Number(data[i].send_qty) == Number(data[i].reported_qty)+Number(data[i].recut_in)+Number(data[i].replace_in)+Number(data[i].balance_to_report))
 											{
 												status = '<font color="red">Already Scanned</font>';
@@ -476,7 +481,10 @@ $(document).ready(function()
 										}
 										else if(response['emb_cut_check_flag'] && data[i].balance_to_report == 0)
 										{
-											status = '<font color="red">Cut Quantity not done</font>';
+											if(response['is_emb_flag'] == '1')
+												status = '<font color="red">Embelishment not done</font>';
+											else
+												status = '<font color="red">Cut Quantity not done</font>';
 										}
 										else
 										{
@@ -515,25 +523,27 @@ $(document).ready(function()
 										$("#dynamic_table").hide();
 									}
 								}
-								var markup99 = "</tbody></table></br></div></div></div>";
-								$("#dynamic_table").append(markup99);
-								$("#dynamic_table").show();
-								$('#hid_job').val(job_number);
-								$('#loading-image').hide();
-								$('#loading-image').hide();
+									var markup99 = "</tbody></table></br></div></div></div>";
+									$("#dynamic_table").append(markup99);
+									$("#dynamic_table").show();
+									$('#hid_job').val(job_number);
+									$('#loading-image').hide();
 							}		    
-						});
-			}
-			else
-			{
-				sweetAlert(restrict_msg,'','error');
-				$('#loading-image').hide();
-			}	
-		}		
-	});				
+					});
+				}
+				else
+				{
+					sweetAlert(restrict_msg,'','error');
+					$('#loading-image').hide();
+				}
+			}		
+		});
+		
 	<?php if ($_POST['operation_name']) {?>
 	});
 	<?php }?>
+		
+	
 });
 function rejections_capture(val)
 {
@@ -601,29 +611,29 @@ $("#reason").change(function(){
 });
 function validating_cumulative(e,t)
 {
-	var result = 0;
-	$('input[name="quantity[]"]').each(function(){
-		if(isNaN($(this).val()))
+		var result = 0;
+		$('input[name="quantity[]"]').each(function(){
+			if(isNaN($(this).val()))
+			{
+				$(this).val('');
+			}
+			else
+			{
+				result += Number($(this).val());
+			}
+		});
+		var  tot = $('#changed_rej').val();
+		if(Number(tot) == Number(result))
 		{
-			$(this).val('');
+			$('#footer').show();
 		}
 		else
 		{
-			result += Number($(this).val());
+			// sweetAlert('','Please Check Rejection Quantity','error');
+			$('#footer').hide();
 		}
-	});
-	var  tot = $('#changed_rej').val();
-	if(Number(tot) == Number(result))
-	{
-		$('#footer').show();
-	}
-	else
-	{
-		// sweetAlert('','Please Check Rejection Quantity','error');
-		$('#footer').hide();
-	}
-
-
+		
+	
 }
 
 function validating_remarks_qty(val,remarks)
@@ -727,7 +737,6 @@ function validate_reporting_report(val)
 		$('#'+reporting_id).val(0);
 	}
 }
-
 function neglecting_function()
 {
 	var val = document.getElementById('changed_rej_id').value;
@@ -774,11 +783,12 @@ $('input[type=submit]').click(function() {
     $(this).parents('form').submit()
 })
 </script>	
-
 <script>
 function check_pack()
 {
 	var count = document.getElementById('count_of_data').value;
+	// var qty = document.getElementById('pack').value;
+	// var status = document.getElementById('status').value;
 	var tot_qty = 0;
 	var tot_rej_qty = 0;
 	for(var i=0; i<count; i++)
@@ -796,19 +806,24 @@ function check_pack()
 	if(Number(tot_qty) <= 0 && Number(tot_rej_qty) <= 0)
 	{
 		sweetAlert("Please enter atleast one size quantity","","warning");
+		//swal('Please Enter Any size quantity','','warning');
 		return false;
 	}
 	else
 	{
 		$('.submission').hide();
+		//alert("working");
 		$('#progressbar').show();
 		$('.progress-bar').css('width', 30+'%').attr('aria-valuenow', 20); 
 		$('.progress-bar').css('width', 50+'%').attr('aria-valuenow', 30); 
 		
 		var bulk_data =  $("#smartform").serialize();  
+		//var bulk_data =  $("#smartform").serialize(),basketData.serializeArray();  
 		console.log(bulk_data);
+		//var bulk_data = ['1','2'];
 		var function_text = "<?php echo getFullURL($_GET['r'],'scanning_functionality_ajax.php','R'); ?>";
 		$('.progress-bar').css('width', 80+'%').attr('aria-valuenow', 40); 
+		//$('#storingfomr').submit();
 		document.getElementById('dynamic_table1').innerHTML = '';
 		document.getElementById('style_show').innerHTML = '';
 		document.getElementById('schedule_show').innerHTML = '';
@@ -824,6 +839,7 @@ function check_pack()
 				type: "POST",
 				url: function_text,
 				data : {bulk_data: bulk_data},
+				//dataType: "json",
 				success: function (response) 
 				{	
 					console.log(response);
@@ -876,7 +892,7 @@ function validating()
 
 </script>
 <style>
-.hidden_class,.hidden_class_for_remarks{
+.hidden_class,hidden_class_for_remarks{
 	display:none;
 }
 

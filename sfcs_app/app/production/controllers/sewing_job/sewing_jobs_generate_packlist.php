@@ -96,6 +96,7 @@
 				$sample=0;
 			}	
 			$sql22="SELECT sum(allocate_".$size_code."*plies) as qty from $bai_pro3.allocate_stat_log where cat_ref='".$cat_ref."' and order_tid='".$order_tid."'";
+			//echo $sql22."<br>";
 			$result122=mysqli_query($link, $sql22) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($rw2=mysqli_fetch_array($result122))
 			{
@@ -103,6 +104,7 @@
 			}
 			
 			$diff_qty=$cut_alloc-($order_qty_col_size+$sample);
+			//echo $color."--".$size_tit."--".$order_qty_col_size."--".$sample."--".$diff_qty."<br>";
 			if($ex_cut_status=='1')
 			{
 				$sql23="SELECT cut_master.cat_ref,cut_master.cut_num,cut_sizes.id,`cut_master`.`planned_plies`,cut_master.actual_plies,cut_sizes.quantity,cut_master.planned_plies*cut_sizes.quantity AS total_cut_quantity,cut_master.doc_num as docket_number,sizes.size_name as size_title,cut_master.col_code FROM $brandix_bts.tbl_cut_master as cut_master LEFT JOIN $brandix_bts.tbl_cut_size_master as cut_sizes ON cut_master.id=cut_sizes.parent_id left join $brandix_bts.tbl_orders_size_ref as sizes on sizes.id=cut_sizes.ref_size_name WHERE cut_master.product_schedule='$schedule' AND cut_sizes.color='$color' and cut_sizes.ref_size_name=$size group by cut_num order by cut_master.cut_num";
@@ -111,6 +113,7 @@
 			{
 				$sql23="SELECT cut_master.cat_ref,cut_master.cut_num,cut_sizes.id,`cut_master`.`planned_plies`,cut_master.actual_plies,cut_sizes.quantity,cut_master.planned_plies*cut_sizes.quantity AS total_cut_quantity,cut_master.doc_num as docket_number,sizes.size_name as size_title,cut_master.col_code FROM $brandix_bts.tbl_cut_master as cut_master LEFT JOIN $brandix_bts.tbl_cut_size_master as cut_sizes ON cut_master.id=cut_sizes.parent_id left join $brandix_bts.tbl_orders_size_ref as sizes on sizes.id=cut_sizes.ref_size_name WHERE cut_master.product_schedule='$schedule' AND cut_sizes.color='$color' and cut_sizes.ref_size_name=$size group by cut_num order by cut_master.cut_num*1 desc";						
 			}
+			//echo $sql23."<br>";
 			$check_status=0;
 			$result23=mysqli_query($link, $sql23) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($result23))

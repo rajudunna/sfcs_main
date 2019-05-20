@@ -448,11 +448,11 @@ if(isset($_POST["update"])){
 	$sch=$_POST["sch"];
 	$ext=$_POST["ext"];
 	$rowcnt = $_POST['rowscount'];
-	$val=0;
 	if($rowcnt > 0)
 	{
 		for($i=0;$i<$rowcnt;$i++)
 		{	
+			$val=0;
 			$color = $_POST['color'.$i];
 			$sel_check="select count(*) as cnt from $bai_pro3.bai_orders_db where where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_joins='0'";
 			//echo $sel_club."<br>";

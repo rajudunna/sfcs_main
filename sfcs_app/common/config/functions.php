@@ -133,6 +133,7 @@ function leading_zeros($value, $places)
 	return $output;
 }
 
+
 function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$link)
 {
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
@@ -144,6 +145,7 @@ function ims_sizes($order_tid,$ims_schedule,$ims_style,$ims_color,$ims_size2,$li
 		if($order_tid=='')
 		{
 			$sql23="select title_size_$ims_size2 as size_val,title_flag from $bai_pro3.bai_orders_db_confirm where order_style_no='$ims_style' and order_del_no='$ims_schedule' and order_col_des='$ims_color'";
+
 		}
 		else
 		{

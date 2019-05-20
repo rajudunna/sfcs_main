@@ -1534,7 +1534,7 @@ tags will be replaced.-->
  <tr height=20 style='height:15.0pt'>
   
   <td colspan=9 rowspan=2 class=xl7514212>Additional Material Request <Br/>Transaction Note</td>
-  <td  height=20 align="right" colspan=4 class=xl6614212 style='height:75.0pt'><img src="/sfcs_app/common/images/<?= $global_facility_code ?>_Logo.JPG"></img><br/></br></td>
+  <td  height=20 align="right" colspan=4 class=xl6614212 style='height:75.0pt'><img src="<?= $logo ?>"></img><br/></br></td>
   <td class=xl1514212></td>
   <td class=xl1514212></td>
   <td class=xl1514212></td>

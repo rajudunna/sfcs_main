@@ -13,7 +13,7 @@ app.controller('scanctrl', function ($scope, $http, $window) {
     $scope.$watch('shift', function(shift){
         $scope.shift = shift;
     });
-	 $scope.$watch('op_code', function(op_code){
+	$scope.$watch('op_code', function(op_code){
         $scope.op_code = op_code;
     });
     $scope.scanned = function(event){

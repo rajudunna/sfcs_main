@@ -3309,7 +3309,6 @@ if(isset($_POST['submit']))
 					$absent_A=$absent_A+$sql_rowA['absent_A'];
 					$absent_A_fix=$sql_rowA['absent_A'];
 				}
-
 				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $bai_pro.pro_attendance where module=$mod and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
 				$sql_resultB=mysqli_query($link, $sqlB) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowB=mysqli_fetch_array($sql_resultB))

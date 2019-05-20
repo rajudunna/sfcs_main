@@ -96,17 +96,15 @@ if(isset($_POST['date']))
 	
 	for($x=0;$x<sizeof($mno_x);$x++)
 	{	
-		// echo "<script>alert('into for loop');</script>";		
-		//Validation to calcuate clock hours
 		if($mqt_x[0]=="")
 		{
 			$mqt_x[0]=0;
 		}
 		
-		// if($mqt_x[$x]>=0 and $mqt_x[$x]!="" and is_numeric($mqt_x[$x]))
 		{					
 			$mno=$mno_x[$x];
 			$mst=$mst_x[$x];
+			$shift=$msh[$x];
 			$temp_style=$mst_x[$x];
 			$mqt=$mqt_x[$x];
 			$rew_qty=$rework_qty[$x]; //rework
@@ -126,10 +124,10 @@ if(isset($_POST['date']))
 			$csnb=explode("^",$csnb_code);
 			
 			$note.=$doc_no."-".$mqt."<br/>";
-			$dat=date("Y-m-d");
+			$dat=date("Y-m-d H:i:s");
 			if($zone>0)
 			{
-				$dat=date("Y-m-d", strtotime($dat))." ".$zone.":00:00";
+				$dat=date("Y-m-d H:i:s", strtotime($dat))." ";
 			}
 		
 			//$sec=$_POST['section'];
@@ -144,7 +142,6 @@ if(isset($_POST['date']))
 			$first_word = $words[0];
 			$code=$first_word."-".$mno; 
 		
-			//Added validation to accept zero values for clocking. -kirang 2015-09-03
 			if($mqt==0)
 			{
 				$ret_val='TRUE';
@@ -153,8 +150,6 @@ if(isset($_POST['date']))
 			{
 				$ret_val=output_validation('SOT',$schedule,$color,$size,$mqt,$tid,$username);
 			}
-			// echo "<script>alert('till return value if condition');</script>";
-			//Validations
 			if($ret_val=='TRUE')
 			{		
 				$mst=$temp_style;
@@ -163,50 +158,29 @@ if(isset($_POST['date']))
 				$nop=$csnb[2];
 				$buyer=$csnb[3];
 				$sec=$csnb[4];
-				// echo "<script>alert('till rework if condition');</script>";
-				//REWORK
 				if($rew_qty>=0 and $rew_qty!="")
 				{
-					// echo "<script>alert('till insert query');</script>";
-					$sql="insert into $bai_pro.bai_quality_log (bac_no, bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser) values (\"$mno\", \"$sec\", \"$rew_qty\", \"$dat\", \"$dat\", \"$msh\", \"$mst\", \"$rem\",  \"$ldate\",  \"$color\", \"$buyer\", \"$schedule\",USER())"; 
-					// echo $sql."<br/>";
-					// die();
+					$sql="insert into $bai_pro.bai_quality_log (bac_no, bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser) values (\"$mno\", \"$sec\", \"$rew_qty\", \"$dat\", \"$dat\", \"$shift\", \"$mst\", \"$rem\",  \"$ldate\",  \"$color\", \"$buyer\", \"$schedule\",USER())"; 
 					$note.=$sql."<br/>";
 					mysqli_query($link, $sql) or exit("Sql Error5$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-					// echo "<script>alert('query executed');</script>";
 				}
 				$flag=1;
 			}
 			else
 			{
 				$usr_msg.="<tr><td>$mno</td><td>$schedule</td><td>$color</td><td>$size</td><td>$mqt</td></tr>";
-			}
-			//Validations					
-		}//condition			
-	} //LOOP
+			}				
+		}			
+	}
 	$back_url = getFullURLLevel($_GET['r'],'rework_update.php',0,'N');
 	echo "<script>document.getElementById('wait').style.visibility='hidden';</script>";
 	echo "<h2><font color=green>Data Saved Successfully!!</font></h2>";
 	echo "<a href= '$back_url' class='btn btn-primary'>Click Here to go back</a>";
-
-	// echo '<script type="text/javascript">
-    //         function Redirect() {
-    //            window.location="'.$back_url.'";
-    //         }
-            
-    //         document.write("You will be redirected back in 5 sec.");
-    //         setTimeout("Redirect()", 5000);
-    //   </script>';
 		
 	$usr_msg.="</table>";
 	if ($flag!=1) {
 	 	echo $usr_msg;
 	} 
-
- 
-	// header("Location: ims_close.php?usr_msg=$usr_msg");
-	
-	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",10000); function Redirect() {  window.close(); }</script>";
 }
 ?>
 

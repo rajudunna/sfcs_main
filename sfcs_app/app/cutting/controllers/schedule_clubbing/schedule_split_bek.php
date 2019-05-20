@@ -334,7 +334,22 @@ if(isset($_POST['submit']))
 	$o_s=array();	
 	$o_s_t=array();
 	$table_tag="$bai_pro3.bai_orders_db_club_confirm";
-	$sql4="select * from $bai_pro3.cat_stat_log where order_tid like \"%".$order_del_no.$color."%\" and category<>''"; 
+	$sql47="select * from $bai_pro3.bai_orders_db_confirm where order_del_no='$order_del_no' and order_col_des=\"".$color."\""; 
+	$sql_result47=mysqli_query($link, $sql47) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	while($sql_row47=mysqli_fetch_array($sql_result47)) 
+	{ 
+		$ord_tid=$sql_row47["order_tid"];
+		for($s=0;$s<sizeof($sizes_array);$s++)
+		{
+			if($sql_row47["title_size_".$sizes_array[$s].""]<>'')
+			{
+				$o_s[$sizes_array[$s]]=$sql_row47["order_s_".$sizes_array[$s].""];
+				$o_s_t[$sizes_array[$s]]=$sql_row47["title_size_".$sizes_array[$s].""];
+			}
+		}	
+		$orders_join='J'.substr($sql_row47["order_col_des"],-1);
+	}
+	$sql4="select * from $bai_pro3.cat_stat_log where order_tid='".$ord_tid."' and category<>''"; 
 	$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row4=mysqli_fetch_array($sql_result4)) 
 	{

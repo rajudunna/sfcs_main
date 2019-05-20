@@ -3,7 +3,6 @@
 <head>
 
 <script language="javascript" type="text/javascript" src="datetimepicker_css.js"></script>
-
 <?php //include("header_scripts.php"); 
 $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=strtolower($username_list[1]);

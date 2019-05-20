@@ -11,6 +11,7 @@
         $module_color=$_REQUEST['module_color'];
         
         $module_label=$_REQUEST['module_label'];
+        $mapped_cut_table = $_REQUEST['mapped_cut_table'];
         $mini_plant=$_REQUEST['mini_plant'];
        
     }else

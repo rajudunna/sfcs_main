@@ -23,11 +23,11 @@ function check_style($string)
 	for ($index=0;$index<strlen($string);$index++) {
     	if(isNumber($string[$index]))
 		{
-			$nums .= $string[$index];
+			$nums = $string[$index];
 		}
      	else    
 		{
-			$chars .= $string[$index];
+			$chars = $string[$index];
 			$check=$check+1;
 			if($check==2)
 			{

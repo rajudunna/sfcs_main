@@ -147,7 +147,7 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 		}
 	}
 	sort(array_unique($orginal_size_array));
-	sort(array_unique($size_array));
+	Sort(array_unique($size_array));
 	$rand_no=date("ymd").rand(1,1000);
 	$tabl="temp_pool_db.new_tbl".$rand_no."";
 	$sql76="CREATE TEMPORARY TABLE $tabl SELECT * FROM brandix_bts.`tbl_orders_size_ref` LIMIT 1";
@@ -169,7 +169,6 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 	}
 	$sql80="DROP TABLE $tabl";
 	mysqli_query($link,$sql80) or die("Error 3 = ".$sql80.mysqli_error($GLOBALS["___mysqli_ston"]));
-
 	if(sizeof($orginal_size_array)<>sizeof($size_array))
 	{
 		for($qq=0;$qq<sizeof($sizes_array);$qq++)

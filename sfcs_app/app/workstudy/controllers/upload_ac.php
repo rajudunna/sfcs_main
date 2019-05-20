@@ -110,7 +110,7 @@ if(strlen($filename)>0)
 	echo "<br/><div style='color:green'><b>File Loaded Successfully , Please Update plan</b></div><br/>";
 	echo "<br/><br/>" ;
 	$redirect = explode('?r=',$action_var);
-	echo ' <form name="update" method="GET" action="index.php"> 
+	echo ' <form name="update" method="GET" action="index.php">
 	<input type="hidden" name="r" value='.$redirect[1].'>
 	<div class="row"><div class="col-sm-3"><label>Process File ID: </label><input type="text" class="form-control" name="id" size="25" value='.$filename.' id="ile">
 	<input type="hidden" name="date" value="'.date('Y-m-d', strtotime('+1 month', strtotime($date))).'">

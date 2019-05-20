@@ -27,6 +27,12 @@ $pwd = $conf->get('mssql-password');
 $m3_databasename=$conf->get('m3database');
 $driver_name=$conf->get('driver_name');
 
+$host_ms = $conf->get('m3_system_id');
+$user_ms = $conf->get('m3_user_name');
+$password_ms = $conf->get('m3_password');
+$m3_db = $conf->get('m3_db');
+$conn_string = "DRIVER={iSeries Access ODBC Driver};System=".$host_ms.";Uid=".$user_ms.";Pwd=".$password_ms.";";
+
 //sfcs-ffsp configurations
 $sfsp_serverName=$conf->get('sf_sp_servername');
 $sfsp_m3_databasename=$conf->get('sf_sp_dbname');
@@ -44,19 +50,12 @@ $hrms_host=$hrms_server_name.":".$hrms_server_port;
 $hrms_user=$conf->get('hrms-user-name');
 $hrms_pass = $conf->get('hrms-password');
 
-$host_ms = $conf->get('m3_system_id');
-$user_ms = $conf->get('m3_user_name');
-$password_ms = $conf->get('m3_password');
-$m3_db = $conf->get('m3_db');
-$conn_string = "DRIVER={iSeries Access ODBC Driver};System=".$host_ms.";Uid=".$user_ms.";Pwd=".$password_ms.";";
-
 // Production Status Connections
 $prod_status_server_name=$conf->get('prod-status-server-name');
 $prod_status_username=$conf->get('prod-status-user-name');
 $prod_status_password = $conf->get('prod-status-password');
 $prod_status_database=$conf->get('prod-status-db');
 $prod_status_driver_name=$conf->get('prod-status-driver-name');
-
 
 //material requirement in week_del_mail_v2
 $server="GD-RPTSQL";

@@ -273,7 +273,6 @@ if(isset($_POST['submit']))
 			$temp[]=$size[$j]."=".$qty[$j];
 		}
 		
-		
 		$query="SELECT* FROM $bai_pro3.`cuttable_stat_log` WHERE order_tid='$order_tid'";
 		$sql_result111=mysqli_query($link, $query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	    while($sql_row111=mysqli_fetch_array($sql_result111))

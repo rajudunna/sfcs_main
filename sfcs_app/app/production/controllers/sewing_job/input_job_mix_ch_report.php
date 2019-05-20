@@ -424,8 +424,6 @@
                                                 if ($print_btn_color == 'danger')
                                                 {
                                                     echo '<td><span class="badge progress-bar-danger">Printing Done</span></td>
-                                                            <td><span class="badge progress-bar-danger">Printing Done</span></td>
-                                                            <td><span class="badge progress-bar-danger">Printing Done</span></td>
                                                             <td><span class="badge progress-bar-danger">Printing Done</span></td>';
                                                 }
                                                 else

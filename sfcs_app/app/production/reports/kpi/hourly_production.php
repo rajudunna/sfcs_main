@@ -269,7 +269,11 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 					</center></td>
 					<td style="background-color:#e1bee7;"><center>
 						<?php
-							$pcsphr=$forecastqty/$hours;
+							if ($forecastqty == 0 || $hours == 0) {
+							    $pcsphr=0;
+							} else {
+							    $pcsphr=$forecastqty/$hours;
+							}
 							echo round($pcsphr);
 						?>
 					</center></td>
@@ -287,6 +291,14 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 							{
 								if ($row > 0)
 								{
+									$total_qty = $total_qty + $row;
+									for ($k=0; $k < sizeof($plant_name); $k++) 
+									{
+									    if (in_array($team, $plant_modules[$k]))
+									    {
+									        $grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row;
+									    }
+									}
 									echo "<td><center>".$row."</center></td>";
 								}
 								else
@@ -302,6 +314,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 								// echo $total_qty.'-'.$i.'- '.$k.'- '.$row.'<br/>';
 									if (in_array($team, $plant_modules[$k]))
 									{
+										// echo $plant_modules[$k][];
 										$grand_tot_qty_time_array1[$plant_name[$k]][$i] = $grand_tot_qty_time_array1[$plant_name[$k]][$i] + $row;
 									}
 								}		

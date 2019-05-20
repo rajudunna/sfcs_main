@@ -815,7 +815,7 @@ if ($sql_result)
 			echo "<td class=\"  \"><center>".$sql_row['catyy']."</center></td>";
 			echo "<td class=\"word-wrap\"><center>".$sql_row['col_des']."</center></td>";
 			echo "<td class=\"word-wrap\"><center>".$sql_row['compo_no']."</center></td>";
-			echo "<td class=\"word-wrap\"><center>".$sql_row['fab_des']."</center></td>";
+			echo "<td class=\"word-wrap\"><center style='width:200px;'>".$sql_row['fab_des']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['purwidth']."</center></td>";
 			echo "<td class=\"  \"><center>".$sql_row['binding_con']."</center></td>";
 
@@ -1732,6 +1732,7 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 		</div>
 		<div id="Marker" class="panel-collapse collapse-in collapse in" aria-expanded="true">
 			<div class="panel-body">
+				<div style="overflow-x:auto;">
 					<center>
 						<span class="pull-right">
 							<strong>
@@ -1740,7 +1741,7 @@ $overall_cad_consumption = round($used_fabric/$orderqty,4);
 								Overall CAD Consumption: <?php echo '<span style="    background-color: #f0ad4e;color: white;">'.$overall_cad_consumption."</span>";?>
 							</strong>
 						</span>
-					<center><br/>
+					</center><br/>
 					<?php include("main_interface_5.php"); ?>
 				</div>
 			</div>

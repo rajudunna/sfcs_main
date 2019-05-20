@@ -883,6 +883,7 @@ tags will be replaced.-->
 	
 	$to = $dispatch_mail;
 	$headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
+
 	//$headers .= 'Cc: YasanthiN@brandix.com' . "\r\n";
 	
 	//KiranG 20160112 Added validation to track duplicate mail track. SR# 83957742
@@ -892,7 +893,7 @@ tags will be replaced.-->
 	$sql="select * from $bai_pro3.disp_db where disp_note_no='$note_no' and (exit_date IS NULL OR exit_date = '') and status=2";
 
 	$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-//var_dump($sql_result);
+	//var_dump($sql_result);
 	//die();
 	fwrite($fh, "Note: $note_no".date("Y-m-d H:i:s").$username."Select Query<br>\r\n");
 

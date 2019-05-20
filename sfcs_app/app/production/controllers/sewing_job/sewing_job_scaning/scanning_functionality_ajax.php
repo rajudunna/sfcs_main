@@ -74,7 +74,6 @@ if($barcode_generation == 1)
 	$actual_rec_quantities = array();
 	$actual_rejection_reason_array = array();
 	$actual_rejection_reason_array_string = array();
-	$barcode_seq = array();
 	//For positive quantities 
 	$send_qty_array = array();
 	$rec_qtys_array = array();
@@ -136,7 +135,6 @@ if($barcode_generation == 1)
 					$bundle_individual_number = $nop_qry_row['tid'];
 					//echo $bundle_individual_number.'</br>';
 					$actual_bundles[] = $nop_qry_row['tid'];
-					$barcode_seq[] = $nop_qry_row['barcode_sequence'];
 					$b_colors_1[] =  $nop_qry_row['order_col_des'];
 					$qms[$nop_qry_row['tid']]['order_col_des'] = $nop_qry_row['order_col_des'];
 					$qms[$nop_qry_row['tid']]['size_code'] = $nop_qry_row['size_code'];
@@ -1207,7 +1205,7 @@ else if($concurrent_flag == 0)
 	}
 	if($concurrent_flag == 0)
 	{
-		$table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Sequence No</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr></thead><tbody>";
+		$table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Barcode Sequence</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr></thead><tbody>";
 		// $checking_output_ops_code = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color='$mapped_color' AND ops_dependency >= 130 AND ops_dependency < 200";
 		$appilication = 'IMS_OUT';
 		$checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication'";

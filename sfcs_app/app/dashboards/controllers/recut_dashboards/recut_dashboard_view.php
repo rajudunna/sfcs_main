@@ -119,8 +119,8 @@
             $remarks = 'Recut';
             $count = $count+1;
             $pcutdocid=$order_tid."/".$allocate_ref."/".$count;
-            if($parent_cat_ref > 0)
-                $cat_ref = $parent_cat_ref;
+            //if($parent_cat_ref > 0)
+                //$cat_ref = $parent_cat_ref;
             $sql_plandoc="insert into $bai_pro3.plandoc_stat_log(pcutdocid, date, cat_ref, cuttable_ref, allocate_ref, mk_ref, order_tid, pcutno,acutno,ratio,a_plies,p_plies,remarks,$sizes_p,$sizes_a)values  (\"$pcutdocid\", \"$date\", $cat_ref, $cuttable_ref, $allocate_ref, $mk_ref, \"$order_tid\", $count,$count, $ratio,$pliespercut,$pliespercut,\"$remarks\",$values,$values)";
             // echo $sql_plandoc;
             mysqli_query($link,$sql_plandoc) or exit("While inserting into the plan doc stat log".mysqli_error($GLOBALS["___mysqli_ston"]));
