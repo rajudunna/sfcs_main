@@ -7,9 +7,23 @@ error_reporting(0);
 // $to_date = '2019-04-30 11:00:00';
 // $from_date = '2019-04-26 06:00:27';
 $to_date = date("Y-m-d H:i:s");
-$from_date = date('Y-m-d H:i:s',strtotime("-1 days"));
+//$from_date = date('Y-m-d H:i:s',strtotime("-1 days"));
 $today = date("Y-m-d H:i:s");
 
+$get_last_date = "SELECT updated_time FROM $brandix_bts.open_style_wip ORDER BY updated_time DESC LIMIT 1";
+$get_last_date_result =$link->query($get_last_date);
+while ($row111 = $get_last_date_result->fetch_assoc())
+{
+  $updated_date = $row111['updated_time'];
+}
+
+if($updated_date > 0)
+{
+  $from_date = $updated_date;
+}else
+{
+  $from_date = date('Y-m-d H:i:s',strtotime("-1 days"));
+}
 
 $get_temp_data ="select style,schedule,color,size_title,operation_id From $brandix_bts.bundle_creation_data_temp Where date_time between '$from_date' And '$to_date' group by style,schedule,color,size_title,operation_id";
 //echo $get_temp_data.'<br>hii';

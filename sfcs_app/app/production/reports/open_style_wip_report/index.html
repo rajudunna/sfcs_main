@@ -30,9 +30,48 @@
       var XLSX = window.XLSX;
 		</script>
     <script type="text/jsx" src="/sfcs_app/app/production/reports/open_style_wip_report/main.js"></script>
+
+	<span style='height:50px'></span>
+  <div class='col-sm-2' style="width:220px;height:auto;float:left;margin-top:0;border : 1px solid black">
+   <table width="00%" class="description" style='float : none'>
+      <tr>
+        <td>Operation Reported Quantity (GOOD)</td>
+        <td><div class="blue_box" style="margin-left:15px;"></div></td>
+      </tr>
+      <tr>
+        <td>Operation Reported Quantity (REJECTED)</td>
+        <td><div class="green_box" style="margin-left:15px;"></div></td>
+      </tr>
+      <tr>
+        <td>WIP</td>
+        <td><div class="red_box" style="margin-left:15px;"></div></td>
+      </tr>
+    </table>
+  </div>
+	
   </body>
 </html>
+<style>
+.blue_box
+{
+  width:20px;height:20px;float:left;margin-right:5px;background-color:#11dd30;line-height:0px;font-size:0px;
+  margin-bottom:5px;border:1px;
+}
 
+.green_box
+{
+  width:20px;height:20px;float:left;margin-right:5px;background-color:#de1738;line-height:0px;font-size:0px;
+  margin-bottom:5px;
+padding-top:10px;
+}
+.red_box
+{
+  width:20px;height:20px;float:left;margin-right:5px;background-color:yellow;line-height:0px;font-size:0px;
+  margin-bottom:5px;
+  padding-left : 3px;
+  padding-right : 3px;
+}
+</style>
 <style>
 .rej{
    background : #de1738;
@@ -44,3 +83,4 @@ background : #11dd30;
 background : yellow;
 }
 </style>
+
