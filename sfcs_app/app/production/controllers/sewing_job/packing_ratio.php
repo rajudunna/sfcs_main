@@ -192,27 +192,37 @@
 							$Original_size_result=mysqli_query($link, $Original_size_query) or exit("Error while getting Qty Details");
 							while($Original_size_details=mysqli_fetch_array($Original_size_result)) 
 							{
-								$Ori_size = $Original_size_details['size_title'];
+								$Ori_size[] = $Original_size_details['size_title'];
 							}
-							echo "<th>".$Ori_size."</th>";
+						}
+						asort($Ori_size);
+						$Ori_size=array_values(array_unique($Ori_size));
+						for ($i=0; $i < sizeof($Ori_size); $i++)
+						{
+							echo "<th>".$Ori_size[$i]."</th>";
 						}
 						echo "</tr>";
 						for ($j=0; $j < sizeof($color1); $j++)
 						{
 							echo "<tr>
 									<td>$color1[$j]</td>";
-									for ($i=0; $i < sizeof($size1); $i++)
+									for ($i=0; $i < sizeof($Ori_size); $i++)
 									{
-										$qty_query = "SELECT quantity FROM $brandix_bts.`tbl_carton_size_ref` WHERE ref_size_name=$size1[$i] AND parent_id=$parent_id AND color='".$color1[$j]."'";
-										// echo $qty_query;
+										$qty_query = "SELECT quantity,size_title FROM $brandix_bts.`tbl_carton_size_ref` WHERE size_title='".$Ori_size[$i]."' AND parent_id=$parent_id AND color='".$color1[$j]."'";
+										// echo $qty_query."<br/>";
+										$qty =0;
 										$qty_query_result=mysqli_query($link, $qty_query) or exit("Error while getting Qty Details");
 										while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
 										{
 											$qty = $qty_query_details['quantity'];
-											if ($qty == '') {
-												$qty=0;
-											}
-											echo "<td>".$qty.'</td>';
+										}
+										if($qty=='')
+										{
+											echo "<td>0</td>";	
+										}
+										else
+										{
+											echo "<td>".$qty."</td>";
 										}
 									}
 							echo "</tr>";
@@ -243,7 +253,7 @@
 						{
 							$poly_bags_per_carton=array();
 							$size_title=array();
-							$poly_bags_per_carton_query = "SELECT poly_bags_per_carton,size_title FROM $brandix_bts.`tbl_carton_size_ref` WHERE parent_id=$c_ref GROUP BY size_title DESC";
+							$poly_bags_per_carton_query = "SELECT poly_bags_per_carton,size_title FROM $brandix_bts.`tbl_carton_size_ref` WHERE parent_id=$c_ref GROUP BY size_title ASC";
 							// echo $poly_bags_per_carton_query;
 							$poly_bags_per_carton_result=mysqli_query($link, $poly_bags_per_carton_query) or exit("Error while getting poly_bags_per_carton Details");
 							while($poly_bags_per_carton_details=mysqli_fetch_array($poly_bags_per_carton_result)) 
@@ -251,7 +261,6 @@
 								$poly_bags_per_carton[]=$poly_bags_per_carton_details['poly_bags_per_carton'];
 								$size_title[]=$poly_bags_per_carton_details['size_title'];
 							}
-
 							echo "<br><div class='col-md-12'><b>Number of Poly Bags Per Carton: </b>
 							<div class='table-responsive'>
 							<table class=\"table table-bordered\">
@@ -285,6 +294,8 @@
 							$size1 = explode(",",$ref_size);
 							// var_dump($size);
 						}
+						asort($size1);
+						$size1=array_values(array_unique($size1));
 						echo "
 							<div class='col-md-12'><b>Garments Per Carton: </b>
 								<div class='table-responsive'>
@@ -319,19 +330,21 @@
 														while($qty_query_details=mysqli_fetch_array($qty_query_result)) 
 														{
 															$qty = $qty_query_details['garments_per_carton'];
-															if ($qty == '') {
-																$qty=0;
-															}
-															if (mysqli_num_rows($individual_sizes_result) >0)
+														}
+														if (mysqli_num_rows($individual_sizes_result) >0)
+														{
+															if ($size1[$size_count] == $individual_color) 
 															{
-																if ($size1[$size_count] == $individual_color) {
-																	echo "<td>".$qty."</td>";
-																}
+																echo "<td>".$qty."</td>";
 															}
 															else
 															{
 																echo "<td>".$qty."</td>";
 															}
+														}
+														else
+														{
+															echo "<td>0</td>";
 														}
 														
 													}
