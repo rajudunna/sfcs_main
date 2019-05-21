@@ -1,4 +1,5 @@
 class ReactApp extends React.Component {
+    
     constructor(props) {
         super(props);
         this.reactTable = React.createRef(); 		
@@ -55,13 +56,13 @@ class ReactApp extends React.Component {
     displayExcel(data){
 		
         let dynamicColumns = this.state.columnsData;
+        const operations = ['good','rej','wip']; // A hardcoded array,Change this in accordance with the keys getting from php file 
 		//let mainHeader = ["","","","","Good","","","","","","","Rejected","","","","","","","WIP"];
 		let mainHeader = ["","","","","","Good"];
         let headerCol = ["Style","Customer Order No","Schedule","Color","Size"];
         let sheet_data = [];        
         const file_name = 'Open Style Wip Report.xlsx';
-        const operations = ['good','rej','wip']; // A hardcoded array,Change this in accordance with the keys getting from php file 
-        
+       
 		operations.forEach(ignore=>{
 		    dynamicColumns.forEach(vals=>{
 			    headerCol.push(vals.op_name);
@@ -134,14 +135,10 @@ class ReactApp extends React.Component {
 	    const tableData = this.state.tableData;        
         const dynamicColumns = this.state.columnsData;  
         const loadingimage = this.state.loadingimage; 
-
-     let colHeadData = [];
-     let collistData1 = [];
-     let collistData2 = [];
-     let collistData3 = [];
-	 let coltotaldata = [];
-	 
-		
+        const operations = ['good','rej','wip']; // A hardcoded array,Change this in accordance with the keys getting from php file 
+        let colHeadData = [];
+        let tablecolumns;
+	
         let coldata = {
 			//Header: "Total:",
             columns: [
@@ -178,57 +175,45 @@ class ReactApp extends React.Component {
             ]
         };
         colHeadData.push(coldata);
-		
-		
-		//to get good,rej,wip
-        dynamicColumns.forEach(val=>{
-            let goodcolumns = {
-                Header: val.op_name,
-			    //headerClassName: 'green',
-                accessor: 'good'+val.op_code,
-                filterable:false,
-			    //className:'green'
-             }
-			let rejcolumns = {
-                Header: val.op_name,
-                accessor: 'rej'+val.op_code,
-                filterable:false,
-			    //className:'red'
-                }
-		    let wipcolumns = {
-                Header: val.op_name,
-                accessor: 'wip'+val.op_code,
-                filterable:false,
-			    //className:'yellow'
-            }
-				
-            collistData1.push(goodcolumns);
-            collistData2.push(rejcolumns);	
-            collistData3.push(wipcolumns);
-        })
-		
-	
-		let collist1 = {
-            Header: "Operation Reported Qty(Good)",
-			columns : collistData1,
-			className:'green'
-		}
-		let collist2 = {
-            Header: "Operation Reported Qty(Rejections)",
-			columns: collistData2,
-			className:'red'
-		}
-		let collist3 = {
-            Header: "WIP",
-			columns: collistData3,
-			className:'yellow'
-		}
-		
-		colHeadData.push(collist1);
-		colHeadData.push(collist2);
-		colHeadData.push(collist3);
 
-		//console.log(tableData);
+        //to get good,rej,wip
+        console.log(dynamicColumns);
+        operations.forEach(op=>{
+            dynamicColumns.forEach(val=>{
+                    tablecolumns = {
+                            Header:()=>{
+                                let colSum = 0;
+                                console.log(tableData);
+                                for (let i = 0; i <= tableData.length; i++) {                        
+                                    if(tableData[i]){
+                                        if(tableData[i][op+val.op_code]){
+                                            colSum+=Number([tableData[i][op+val.op_code]]);
+                                        }
+                                    }                                            
+                                }
+                            return  (<span style={{ float: "right" }}>{colSum}</span>)
+                            },
+                            columns:[{
+                                Header: val.op_name,
+                                accessor: op+val.op_code,
+                                filterable:false,
+                                headerClassName : op,
+                                aggregate: (values, rows) => _.sum(values),
+                                Aggregated: row => {
+                                return (
+                                    <span style={{
+                                        
+                                    }}>
+                                    {(row.value)?row.value:'0'}
+                                    </span>
+                                );
+                                },
+                            }]
+                    }
+                    colHeadData.push(tablecolumns);
+            });
+            
+        });
         return (
             <div> 
                 <div className="panel panel-primary">
@@ -241,8 +226,7 @@ class ReactApp extends React.Component {
                                 ref={this.reactTable}
                                 data={tableData}
                                 className='-striped -highlight'
-								
-                                columns={coltotaldata,colHeadData}
+                                columns={colHeadData}
                                 loading={loadingimage}
                                 defaultPageSize={20}
                                 sortable= {true}
@@ -256,7 +240,7 @@ class ReactApp extends React.Component {
         );
     }
 }
-  
+
 ReactDOM.render(
     <ReactApp />, 
     document.getElementById("app")

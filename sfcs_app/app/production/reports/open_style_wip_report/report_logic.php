@@ -110,7 +110,7 @@ error_reporting(0);
         $operations = implode(',',$operation);
 
         $get_qty_data = "select COALESCE(SUM(good_qty),0) as good_qty,COALESCE(SUM(rejected_qty),0) as rejected_qty,operation_code From $brandix_bts.open_style_wip where style='$style' and schedule='$schedule' and color='$color' and size='$size' group by operation_code";
-        //echo $get_qty_data;
+       // echo $get_qty_data;
         $get_qty_result =$link->query($get_qty_data);
           // echo date("Y-m-d H:i:s")."-6st  <br/>";
         while ($row2 = $get_qty_result->fetch_assoc())
