@@ -94,9 +94,18 @@ $sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size
 							{
 								$ordered_qty[$size_main[$kk]] = $orderQty_details['orderedQty'];
 							}
-							
-							$pacQty_query = "SELECT SUM(carton_act_qty) AS pack_qty FROM $bai_pro3.packing_summary 
-							WHERE order_del_no='$schedule' AND size_tit='$size_main[$kk]'";
+							if($_GET['seq_no']==0)
+                            {
+	                       $pacQty_query = "SELECT SUM(carton_act_qty) AS pack_qty FROM $bai_pro3.packing_summary 
+							WHERE order_del_no='$schedule' AND size_tit='$size_main[$kk]' ";
+                              }
+							else
+							{
+								  $pacQty_query = "SELECT SUM(carton_act_qty) AS pack_qty FROM $bai_pro3.packing_summary 
+														WHERE order_del_no='$schedule' AND size_tit='$size_main[$kk]' and seq_no='".$_GET['seq_no']."'";
+							}
+							//$pacQty_query = "SELECT SUM(carton_act_qty) AS pack_qty FROM $bai_pro3.packing_summary 
+							//WHERE order_del_no='$schedule' AND size_tit='$size_main[$kk]' ";
 							//echo $pacQty_query.'<br>';
 							$pac_qty_resut=mysqli_query($link, $pacQty_query) or exit("Sql Error24");
 							while($pacQty_details=mysqli_fetch_array($pac_qty_resut))
