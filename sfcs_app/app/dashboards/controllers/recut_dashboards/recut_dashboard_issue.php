@@ -377,6 +377,14 @@ echo $drp_down;
                     else
                     {
                         $button_html = "<button type='button'class='btn btn-danger' onclick='issuemodule(".$id.")'>Issue To Module</button>";
+                        $path1="../../../production/controllers/sewing_job/recut_barcode/barcode_4_2.php";
+                        $path="../../../production/controllers/sewing_job/recut_barcode/barcode_2_1.php";    
+                        echo "<a class='btn btn-".$print_btn_color." btn-sm' href='$path?docket=".$row['doc_no']."' onclick=\"return popitup2('$path?docket=".$row['doc_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Bundle Print 2 * 1</a>";
+
+                        echo "<a class='btn btn-".$print_btn_color." btn-sm' href='$path1?docket=".$row['doc_no']."' onclick=\"return popitup2('$path1?docket=".$row['doc_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Bundle Print 4 * 2</a>";
+             
+                        $button_html = "<button type='button'class='btn btn-danger' onclick='issuemodule(".$id.")'>Bundle Tickets</button>";
+
                         $html_hiding = "IssueToModule";
                     }
                     echo "<tr><td>$s_no</td>";
