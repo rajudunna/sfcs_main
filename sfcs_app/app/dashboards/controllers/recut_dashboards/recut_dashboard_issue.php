@@ -208,27 +208,26 @@ function issued_to_module($bcd_id,$qty,$ref)
                 SELECT * FROM `$bai_pro3`.`plan_dashboard_input_backup`
                 WHERE input_job_no_random_ref = '$input_job_no_random_ref'";
                 mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
+            }            
+            $qry_ops_mapping_after = "SELECT of.operation_code FROM `$brandix_bts`.`tbl_style_ops_master` tm 
+            LEFT JOIN brandix_bts.`tbl_orders_ops_ref` of ON of.`operation_code`=tm.`operation_code`
+            WHERE tm.`style` ='$style' AND tm.`color` = '$mapped_color'
+            AND category = 'sewing' AND display_operations='yes'";
+            $result_qry_ops_mapping_after = $link->query($qry_ops_mapping_after);
+            if(mysqli_num_rows($result_qry_ops_mapping_after) > 0)
+            {
+                while($ops_post = $result_qry_ops_mapping_after->fetch_assoc()) 
+                {
+                    $input_ops_code = $ops_post['operation_code'];
+                }
             }
-            $input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);
-            // $qry_ops_mapping_after = "SELECT of.operation_code FROM `$brandix_bts`.`tbl_style_ops_master` tm 
-            // LEFT JOIN brandix_bts.`tbl_orders_ops_ref` of ON of.`operation_code`=tm.`operation_code`
-            // WHERE tm.`style` ='$style' AND tm.`color` = '$mapped_color'
-            // AND category = 'sewing'";
-            // // echo $qry_ops_mapping_after;
-            // $result_qry_ops_mapping_after = $link->query($qry_ops_mapping_after);
-            // if(mysqli_num_rows($result_qry_ops_mapping_after) > 0)
-            // {
-            //     while($ops_post = $result_qry_ops_mapping_after->fetch_assoc()) 
-            //     {
-            //         $input_ops_code = $ops_post['operation_code'];
-                    $update_qry_bcd_input = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where bundle_number = $bundle_number and operation_id = $input_ops_code";
-                    // echo $update_qry_bcd_input;
-                    mysqli_query($link, $update_qry_bcd_input) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
-            //     }
-            // }
+            else
+            {
+                $input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);  
+            }    
+            $update_qry_bcd_input = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where bundle_number = $bundle_number and operation_id = $input_ops_code";
+            mysqli_query($link, $update_qry_bcd_input) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));            
         }   
-    // }
-    // die();
     return;
 }
 $shifts_array = ["IssueToModule","AlreadyIssued","WaitingForApproval","UpdateMarkers","ReportPending"];
