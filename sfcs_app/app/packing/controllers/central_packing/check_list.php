@@ -1067,7 +1067,7 @@ tags will be replaced.-->
 			$sql="select carton_no,MIN(STATUS) as status,min(pac_stat_id) as \"tid\",sum(carton_act_qty) as \"carton_act_qty\" from $bai_pro3.packing_summary where order_del_no='$schedule' and seq_no = '".$seq_no[$i]."' and size_tit in('".$row123['size_tit']."') and order_col_des ='".$row123['cols']."' group by carton_no order by carton_no*1";
 		}
 			
-		//echo $sql."</br>";
+	//echo $sql."</br>";
 		
 	$carton_nodes=array();
 		$x=1;
@@ -1101,11 +1101,11 @@ tags will be replaced.-->
 	
 	$cycle=0;$sno=1;$node_detail=array();$val=0;
 	$val=sizeof($carton_nodes);
-	if($pack_method1==1 or $pack_method1==2){
+	if($pack_method1==1 or $pack_method1==2 or $pack_method1==4){
 	echo"<tr class=xl6553519400 height=20 style='mso-height-source:userset;height:15.0pt'>
 	  <td  style='border-top:none' colspan=2><b>Combination <b>: </td>
 	  
-	  <td   colspan=17 >".($row123['cols']).",".($row123['size_tit'])."</td>
+	  <td   colspan=17 ><b>".($row123['cols'])."-".($row123['size_tit'])."</b></td>
 	
 	  </tr>";
 	}else{
