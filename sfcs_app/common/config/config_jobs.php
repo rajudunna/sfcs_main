@@ -39,10 +39,7 @@ $sfsp_m3_databasename=$conf->get('sf_sp_dbname');
 $sfsp_uid=$conf->get('sf_sp_username');
 $sfsp_pwd=$conf->get('sf_sp_pwd');
 
-//ms-sql jobs 
-$user_ms = "BAISFCS";
-$password_ms = "fcs@m3pr";
-$conn_string = "DRIVER={iSeries Access ODBC Driver};System=10.227.40.10;Uid=".$user_ms.";Pwd=".$password_ms.";";
+
 //HRMS DATABASE CONNECTIONS
 $hrms_server_name=$conf->get('hrms-server-name');
 $hrms_server_port=$conf->get('hrms-port');
@@ -57,17 +54,7 @@ $prod_status_password = $conf->get('prod-status-password');
 $prod_status_database=$conf->get('prod-status-db');
 $prod_status_driver_name=$conf->get('prod-status-driver-name');
 
-//material requirement in week_del_mail_v2
-$server="GD-RPTSQL";
-$database="M3_BEL";
-$userid="BAIMacroReaders";
-$password="BAI@macrosm3";
 
-// bel data upload Sqlsrv Connections
-$sqsrv_server = "berwebsrv01";
-$sqsrv_id = "sa";
-$sqsrv_pwd = "BAWR123";
-$sqsrv_db="AutoMo";
 //m3 integration plant codes
 $grn_details=$conf->get('grndetails');
 $cluster_code=$conf->get('cluster_code');
@@ -75,10 +62,7 @@ $comp_no=$conf->get('company_no');
 $central_wh_code=$conf->get('central_wh_code');
 $plant_wh_code=$conf->get('plant_wh_code');
 $plant_prod_code=$conf->get('plant_prod_code');
-// schedules Operation Capturing MDM
-$odbc_host="BAIDBSRV01";
-$odbc_user="sa";
-$odbc_pass="Brandix@7";
+
 //To Facilitate SFCS Filters
 $global_facility_code=$conf->get('plantcode');
 $facility_code=$global_facility_code;
