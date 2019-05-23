@@ -464,7 +464,7 @@ td,th
 	if(sizeof(explode(",",$team))==1)
 	{
 		$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift ='".$team."'";
-		echo $sql_hr."<br>";
+		//echo $sql_hr."<br>";
 		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_hr)>0)
 		{
@@ -1464,21 +1464,22 @@ for ($j=0;$j<sizeof($sections);$j++)
 		$pclha=$pclha+($phours*$nop); 
 		$pstha=$pstha+($plan_pro*$smv)/60; 
 	} 
-
+	$peffresulta=0; 
+	$sql21="select avg(plan_eff) as eff from $pro_plan where sec_no in ($sections_group) and date=\"$date\"";      
+	$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error 33 ". $sql2.mysqli_error($GLOBALS["___mysqli_ston"])); 
+	while($sql_row21=mysqli_fetch_array($sql_result21)) 
+	{
+		$peffresulta=$sql_row21['eff'];
+	}
 	/* 20100226factory view */ 
 	$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".$atotal."</td>"; 
 	$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".$hoursa_shift."</td>"; 
 
-	$peffresulta=0; 
-
-	if($ppro_a_total>0 && $pclha>0) 
-	{ 
-		$peffresulta=(round(($pstha/$pclha),2)*100); 
-	} 
+	
 
 		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".$peffresulta."%</td>"; 
-		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".round($ppro_a_total,0)."</td>"; 
-		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".$clha_total_new."</td>"; //Change 20100819 
+		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".round($ppro_a_total_sum_total,0)."</td>"; 
+		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".$clha_total_sum_total."</td>"; //Change 20100819 
 		  
 		$sah_per_fac1=round(($stha_total*100/$fac_sah_total),0); 
 		if($sah_per_fac1 < 90) 
@@ -1495,13 +1496,13 @@ for ($j=0;$j<sizeof($sections);$j++)
 		} 
 		
 		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".round($fac_sah_total,0)."</td>"; 
-		$total_factory_summery .="<td rowspan=4>".round($stha_total,0)."</td>"; 
+		$total_factory_summery .="<td rowspan=4>".round($stha_total_sum_total,0)."</td>"; 
 
 		$xa=0; 
 		$xb=0; 
-		if($clha_total>0) 
+		if($clha_total_sum_total>0) 
 		{ 
-			$xa=round(($stha_total/$clha_total_new)*100,2); //Change 20100819 
+			$xa=round(($stha_total_sum_total/$clha_total_sum_total)*100,2); //Change 20100819 
 		}
 
 		if($xa>=70) 
@@ -1516,22 +1517,55 @@ for ($j=0;$j<sizeof($sections);$j++)
 		{ 
 			$color_per_fac2="#ff0915"; 
 		} 
-
-		//echo "<td rowspan=4 bgcolor=\"$color_per_fac2\">".round($xa,0)."%</td>"; 
-		//echo "<td rowspan=4 ><font size=30 color=\"$color_per_fac2\">&#8226;</font><br/>".round($xa,0)."%</td>"; 
+		$avgpcstotal=$ppro_a_total_sum_total/$hoursa_shift;
 		$total_factory_summery .="<td rowspan=4 style='background-color:$color_per_fac2; color:black; font-weight:bold; '>".round($xa,0)."%</td>"; 
 		$total_factory_summery .="<td  rowspan=4 style='background-color:white;color:black'>".round(($atotal-$ppro_a_total),0)."</td>"; 
 		$total_factory_summery .="<td  rowspan=4>".round($avgpcstotal,0)."</td>"; 
-
-		/* 20100318 */ 
-
-		if((7.5-$hoursa_shift)>0) 
+			
+		
+		if($current_date==$date) 
 		{ 
-			$total_factory_summery .="<td  rowspan=4 style='background-color:white;color:black'>".round($hourlytargettotal,0)."</td>"; 
+			if(sizeof($shifts_array)<2)
+			{
+				$qty=round(($ppro_a_total_sum_total-$atotal),0);
+				$hoursnw=8-$hoursa_shift;
+				if($hoursnw==0)
+				{
+					$exp_pcs_hr=round($qty,0);
+				}
+				else
+				{
+					$exp_pcs_hr=round($qty,0)/round($hoursnw,0);
+				}
+			}
+			else
+			{	
+				if($current_hr<14)
+				{
+					$qty=round(($ppro_a_total_sum_total-$atotal),0);
+					$hoursnw=8-$hoursa_shift;
+					if($hoursnw==0)
+					{
+						$exp_pcs_hr=round($qty,0);
+					}
+					else
+					{
+						$exp_pcs_hr=round($qty,0)/round($hoursnw,0);
+					}		
+				}
+				else
+				{
+					$qty=round(($ppro_a_total_sum_total-$atotal),0);
+					$hoursnw=16-$hoursa;
+					$exp_pcs_hr=round($qty,0)/round($hoursnw,0);
+					
+				}
+			}
+			$total_factory_summery .="<td  rowspan=4 style='background-color:white;color:black'>A-".round($exp_pcs_hr,0)."</td>"; 
 		} 
 		else 
 		{ 
-			$total_factory_summery .="<td  rowspan=4 style='background-color:white;color:black'>".round(($atotal-$ppro_a_total),0)."</td>"; 
+			$total_factory_summery .="<td  rowspan=4 style='background-color:white;color:black'>".round(($ppro_a_total_sum_total-$atotal),0)."</td>"; 
 		} 
 
 		/* STH */ 
@@ -1559,7 +1593,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 			for($i=0; $i<sizeof($hr); $i++) 
 			{ 
 				$eff=0; 
-				$minutes=30;
+				$minutes=60;
 				$sql2="select sum((bac_qty*smv)/(nop*".$minutes.")*100) as \"eff\" from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and TIME(bac_lastup) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')"; 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
