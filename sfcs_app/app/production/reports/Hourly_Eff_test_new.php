@@ -522,13 +522,13 @@ td,th
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row=mysqli_fetch_array($sql_result)) 
 		{				
-			$time_query=" AND TIME(bac_lastup) BETWEEN ('".$sql_row['start_time']."') and ('".$sql_row['end_time']."')"; 		
+			$time_query=" AND TIME(log_time) BETWEEN ('".$sql_row['start_time']."') and ('".$sql_row['end_time']."')"; 		
 		}		
     } 
     else 
     {	
 		$hour_filter_array=explode("$", $_POST['hour_filter']);
-		$time_query=" AND TIME(bac_lastup) BETWEEN ('".$hour_filter_array[0]."') and ('".$hour_filter_array[1]."')"; 
+		$time_query=" AND TIME(log_time) BETWEEN ('".$hour_filter_array[0]."') and ('".$hour_filter_array[1]."')"; 
     }
     $sections=explode(",", $_POST['section']);
     $teams=explode(",",$team);
@@ -662,7 +662,7 @@ td,th
 		else 
 		{      
 			$hour_filter_array=explode("$", $_POST['hour_filter']);
-			//$time_query="AND TIME(bac_lastup) BETWEEN ('".$hour_filter_array[0]."') and ('".$hour_filter_array[1]."')"; 
+			//$time_query="AND TIME(log_time) BETWEEN ('".$hour_filter_array[0]."') and ('".$hour_filter_array[1]."')"; 
 			$sql="SELECT * FROM $bai_pro3.tbl_plant_timings where start_time='".$hour_filter_array[0]."' and end_time='".$hour_filter_array[1]."'";
 			//echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -950,7 +950,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 		{ 
 			for($i=0; $i<sizeof($hr); $i++) 
 			{ 
-				$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_no=$mod  AND TIME(bac_lastup) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and bac_shift in ($team)"; 
+				$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_no=$mod  AND TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and bac_shift in ($team)"; 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{					
@@ -1148,7 +1148,7 @@ for ($j=0;$j<sizeof($sections);$j++)
     for($i=0; $i<sizeof($hr); $i++) 
 	{ 
 		$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" $time_query 
-		and bac_sec=$sec and TIME(bac_lastup) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')";
+		and bac_sec=$sec and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')";
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
@@ -1296,7 +1296,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 		for($ii=0;$ii<sizeof($hr);$ii++) 
 		{
 			//$iii=$ii;
-			// $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and TIME(bac_lastup) BETWEEN ('".$hr_start[$ii]."') and ('".$hr_end[$ii]."')"; 
+			// $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and TIME(log_time) BETWEEN ('".$hr_start[$ii]."') and ('".$hr_end[$ii]."')"; 
 			// $sql_result2213=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// if(mysqli_num_rows($sql_result2213)>0)
 			// {	
@@ -1394,7 +1394,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 		for($i=0; $i<sizeof($hr); $i++) 
 		{ 
 			$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" 
-			and bac_sec in ($sections_group)  and TIME(bac_lastup) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')"; 
+			and bac_sec in ($sections_group)  and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')"; 
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error 11". $sql2.mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row2=mysqli_fetch_array($sql_result2)) 
 			{ 
@@ -1576,7 +1576,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 			for($i=0; $i<sizeof($hr); $i++) 
 			{
 				$sth=0; 
-				$sql2="select sum((bac_qty*smv)/60) as \"sth\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and TIME(bac_lastup) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')";
+				$sql2="select sum((bac_qty*smv)/60) as \"sth\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{ 
@@ -1594,14 +1594,14 @@ for ($j=0;$j<sizeof($sections);$j++)
 			{ 
 				$eff=0; 
 				$minutes=60;
-				$sql2="select sum((bac_qty*smv)/(nop*".$minutes.")*100) as \"eff\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and TIME(bac_lastup) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')"; 
+				$sql2="select sum((bac_qty*smv)/(nop*".$minutes.")*100) as \"eff\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')"; 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{ 
 					$eff=$sql_row2['eff']; 
 				} 
 				/* NEW20100219 */ 
-				$sql2="select count(distinct bac_no) as \"noofmodsb\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" $time_query and TIME(bac_lastup) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and bac_sec in ($sections_group)"; 
+				$sql2="select count(distinct bac_no) as \"noofmodsb\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" $time_query and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and bac_sec in ($sections_group)"; 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{ 
@@ -1629,7 +1629,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 			{ 
 				$sum=0; 
 				$count=0;
-				$sql2="select bac_qty from $table_name where bac_shift in ($team) and bac_date=\"$date\" and bac_sec in ($sections_group) $time_query and TIME(bac_lastup) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')"; 
+				$sql2="select bac_qty from $table_name where bac_shift in ($team) and bac_date=\"$date\" and bac_sec in ($sections_group) $time_query and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')"; 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{ 
@@ -1638,7 +1638,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 				} 
 
 				$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" $time_query 
-				and bac_sec in ($sections_group) and TIME(bac_lastup) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')"; 
+				and bac_sec in ($sections_group) and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')"; 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{ 
@@ -1713,7 +1713,7 @@ if($style_break==1)
 			$total=0;
 			for($i=0; $i<sizeof($hr); $i++) 
 			{ 
-				$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and bac_style=\"$mod_style\" and TIME(bac_lastup) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and bac_sec in ($sections_group) and bac_shift in ($team)"; 
+				$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and bac_style=\"$mod_style\" and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and bac_sec in ($sections_group) and bac_shift in ($team)"; 
 				//echo $sql2."<BR>"; 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -1842,7 +1842,7 @@ if($style_break==1)
 	{
 		for($i=0; $i<sizeof($hr); $i++) 
 		{ 
-			$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and TIME(bac_lastup) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and bac_sec in ($sections_group) and bac_shift in ($team) $time_query";
+			$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and bac_sec in ($sections_group) and bac_shift in ($team) $time_query";
 			//echo $sql2;           
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row2=mysqli_fetch_array($sql_result2)) 
