@@ -88,7 +88,7 @@ for ($i=0; $i < sizeof($shifts_array); $i++) {
 
 <label for="hour_filter" valign="top">From Hour: </label>
 <?php
-	echo "<select name=\"hour_from\" id='hour_filter' class=\"form-control\" >";
+	echo "<select name=\"hour_from\" id='hour_from' class=\"form-control\" >";
 	$sql22="SELECT time_value FROM $bai_pro3.tbl_plant_timings order by time_value*1"; 
 	$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($rows=mysqli_fetch_array($sql_result22))
@@ -110,7 +110,7 @@ for ($i=0; $i < sizeof($shifts_array); $i++) {
 <div class="col-md-2">
 <label for="hour_filter" valign="top">To Hour: </label>
 <?php
-	echo "<select name=\"hour_to\" id='hour_filter' class=\"form-control\" >";
+	echo "<select name=\"hour_to\" id='hour_to' class=\"form-control\" >";
 	$sql221="SELECT time_value FROM $bai_pro3.tbl_plant_timings  order by time_value*1"; 
 	$sql_result221=mysqli_query($link, $sql221) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($rows1=mysqli_fetch_array($sql_result221))
@@ -411,8 +411,8 @@ function getData(){
 	{
 		var val1 = $('#demo1').val();
 		var val2 = $('#demo2').val();
-		var h1 = $('#hour').val();
-		var h2 = $('#hour1').val();
+		var h1 = $('#hour_from').val();
+		var h2 = $('#hour_to').val();
 		var h1_num = h1*1;
 		var h2_num = h2*1;
 		if(h1_num > h2_num){
