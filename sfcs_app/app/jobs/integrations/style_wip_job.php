@@ -4,26 +4,43 @@ $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 error_reporting(0);
 
-// $to_date = '2019-04-30 11:00:00';
-// $from_date = '2019-04-26 06:00:27';
-$to_date = date("Y-m-d H:i:s");
-$from_date = date('Y-m-d H:i:s',strtotime("-1 days"));
-$today = date("Y-m-d H:i:s");
+ //$to_date = '2019-05-22 01:00:00';
+ //$from_date = '2019-05-21 01:00:00';
 
-// $get_last_date = "SELECT updated_time FROM $brandix_bts.open_style_wip ORDER BY updated_time DESC LIMIT 1";
-// $get_last_date_result =$link->query($get_last_date);
-// while ($row111 = $get_last_date_result->fetch_assoc())
-// {
-//   $updated_date = $row111['updated_time'];
-// }
+if(isset($_GET["to_date"]))
+{
+    $to_date=$_GET["to_date"];
+}
+else
+{
+    $to_date = date("Y-m-d H:i:s");
+}
+ 
+// $from_date = date('Y-m-d H:i:s',strtotime("-1 days"));
+//$today = date("Y-m-d H:i:s");
 
-// if($updated_date > 0)
-// {
-//   $from_date = $updated_date;
-// }else
-// {
-//   $from_date = date('Y-m-d H:i:s',strtotime("-1 days"));
-// }
+$get_last_date = "SELECT updated_time FROM $brandix_bts.open_style_wip ORDER BY updated_time DESC LIMIT 1";
+$get_last_date_result =$link->query($get_last_date);
+while ($row111 = $get_last_date_result->fetch_assoc())
+{
+  $updated_date = $row111['updated_time'];
+}
+
+if($updated_date > 0)
+{
+  $from_date = $updated_date;
+}else
+{
+  if(isset($_GET["from_date"]))
+  {
+      $from_date=$_GET["from_date"];
+  }
+  else
+  {
+     $from_date = date('Y-m-d H:i:s',strtotime("-1 days"));
+  }
+  
+}
 
 $get_temp_data ="select style,schedule,color,size_title,operation_id From $brandix_bts.bundle_creation_data_temp Where date_time between '$from_date' And '$to_date' group by style,schedule,color,size_title,operation_id";
 //echo $get_temp_data.'<br>hii';
@@ -69,6 +86,10 @@ while ($row = $get_temp_data_result->fetch_assoc())
                $main_good_qty = $good_quantity + $previous_good_qty;
                $main_rejected_qty =  $rejected_quantity + $previous_rejected_qty;
 
+               $insert_query="INSERT ignore INTO $brandix_bts.open_style_wip (style, schedule, color, operation_code, size, created_time) values ('$style','$schedule','$color','$operation_code','$size_id','$today')";
+               //echo $insert_query .'<br>';
+               $insert_log_result = mysqli_query($link,$insert_query) or exit('Insert  Error');
+
                $update_log="UPDATE $brandix_bts.open_style_wip SET good_qty = '$main_good_qty',rejected_qty = '$main_rejected_qty',updated_time = '$today' where style = '$main_style' and schedule ='$main_schedule' and color ='$main_color' and size ='$main_size' and operation_code = $main_operation";
              //  echo  $update_log.'<br>updated';
                $update_qry_log_res = mysqli_query($link,$update_log) or exit('Update  Error');
@@ -87,20 +108,24 @@ while ($row = $get_temp_data_result->fetch_assoc())
       $get_main_data_result =$link->query($get_main_data);
       while ($row3 = $get_main_data_result->fetch_assoc())
       {
-      	 $style = $row3['style'];
-      	 $schedule = $row3['schedule'];
-      	 $color = $row3['color'];
-      	 $size_id = $row3['size_title'];
-      	 $operation_code = $row3['operation_id'];
-      	 $good_quantity = $row3['good_qty'];
-      	 $rejected_quantity = $row3['rejected_qty'];
+         $style = $row3['style'];
+         $schedule = $row3['schedule'];
+         $color = $row3['color'];
+         $size_id = $row3['size_title'];
+         $operation_code = $row3['operation_id'];
+         $good_quantity = $row3['good_qty'];
+         $rejected_quantity = $row3['rejected_qty'];
 
-      	 $insert_query="INSERT INTO $brandix_bts.open_style_wip (style, schedule, color, operation_code, size, good_qty, rejected_qty, created_time, updated_time) values ('$style','$schedule','$color','$operation_code','$size_id','$good_quantity','$rejected_quantity','$today','$today')";
+         $insert_query1="INSERT ignore INTO $brandix_bts.open_style_wip (style, schedule, color, operation_code, size, created_time) values ('$style','$schedule','$color','$operation_code','$size_id','$today')";
          //echo $insert_query .'<br>';
-      	 $insert_log_result = mysqli_query($link,$insert_query) or exit('Insert  Error');
+         $insert_log_result1 = mysqli_query($link,$insert_query1) or exit('Insert  Error1');
+
+         $update_query_log="UPDATE $brandix_bts.open_style_wip SET good_qty = '$good_quantity',rejected_qty = '$rejected_quantity',updated_time = '$today' where style = '$style' and schedule ='$schedule' and color ='$color' and size ='$size_id' and operation_code = $operation_code";
+             //  echo  $update_log.'<br>updated';
+          $update_log_res = mysqli_query($link,$update_query_log) or exit('Update  Error1');
       }
 
-   }	
+   }  
 
 }
 $end_timestamp = microtime(true);
