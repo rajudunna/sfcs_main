@@ -515,7 +515,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
             <!-- module number DIV END -->
             <div style="float:left;padding-left:25px;">
               <?php 
-                $sqlred="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output,ims_doc_no,ims_style,ims_schedule,ims_color,rand_track,ims_size,ims_remarks,input_job_no_ref AS inputjobno,input_job_rand_no_ref AS inputjobnorand,ims_date,pac_tid,acutno FROM $bai_pro3.ims_log
+                $sqlred="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output,ims_doc_no,ims_style,ims_schedule,ims_color,rand_track,group_concat(ims_size) as ims_size,ims_remarks,input_job_no_ref AS inputjobno,input_job_rand_no_ref AS inputjobnorand,ims_date,pac_tid,acutno FROM $bai_pro3.ims_log
                 LEFT JOIN $bai_pro3.plandoc_stat_log ON ims_log.ims_doc_no=plandoc_stat_log .doc_no  WHERE ims_mod_no='$module' AND ims_status <> 'DONE' GROUP BY inputjobnorand ORDER BY ims_date limit $ims_priority_boxes";
                 $sql_resultred=mysqli_query($link, $sqlred) or exit("Sql Error11111".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -566,7 +566,12 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                     $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
                   }
                   $sizes_implode="'".implode("','",$size_value)."'";   
-                  $main_size=substr($ims_size, 2);   
+                  //$main_size=substr($ims_size, 2);  
+                   for($i=0;$i<sizeof($sizes_explode);$i++)
+                  {				  
+                  $main_size[]=substr($sizes_explode[$i], 2);  
+				  }	
+                  $sizes_implode1="'".implode("','",$main_size)."'"; 				  
                   $rejected=0;
 
                   $application='IMS_OUT';
@@ -578,7 +583,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                     $operation_out_code=$sql_row['operation_code'];
                   }
 
-                  $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule='".$sql_rowred['ims_schedule']."' and qms_color in (".$color_ref.") and qms_size in ('".$main_size."') and input_job_no='".$sql_rowred['inputjobnorand']."' and qms_style='".$sql_rowred['ims_style']."' and operation_id=$operation_out_code and qms_remarks in ('".$ims_remarks."')";
+                  $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule='".$sql_rowred['ims_schedule']."' and qms_color in (".$color_ref.") and qms_size in ($sizes_implode1) and input_job_no='".$sql_rowred['inputjobnorand']."' and qms_style='".$sql_rowred['ims_style']."' and operation_id=$operation_out_code and qms_remarks in ('".$ims_remarks."')";
                   $sql_result33=mysqli_query($link, $sql33) ;
                   //echo  $sql33;
                   while($sql_row33=mysqli_fetch_array($sql_result33))
