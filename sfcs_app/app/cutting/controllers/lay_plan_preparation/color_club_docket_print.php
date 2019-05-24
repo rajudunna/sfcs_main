@@ -3365,7 +3365,9 @@ tags will be replaced.-->
 					echo "<td style='border:.5pt solid black;'>".chr($cc_code[$i]).leading_zeros($cut_no, 3)."</td>";
 					echo "<td style='border:.5pt solid black;'>".$docs[$i]."</td>";
 				}
-				$fab_bind[$i] = (float)$binding_con1[$i]*(int)$plies[$i]*(float)$a_ratio_tot;//Caliculation for Bind/Rib
+				$fab_bind[$i] = (float)$binding_con1[$i]*(int)$plies[$i]*(float)$a_ratio_tot[$docs[$i]];//Caliculation for Bind/Rib
+				
+
 				$total_yds[$i]=$met_req[$i]+$fab_bind[$i];
 				$sum+=  $total_yds[$i];
 				for($j=$temp_len1;$j<$temp_len;$j++)
@@ -3382,7 +3384,7 @@ tags will be replaced.-->
 		{
 			for($i=0;$i<sizeof($color_codes);$i++) 
 			{
-				$fab_bind[$i] = (float)$binding_con1[$i]*(int)$plies[$i]*(float)$a_ratio_tot;//Caliculation for Bind/Rib
+				$fab_bind[$i] = (float)$binding_con1[$i]*(int)$plies[$i]*(float)$a_ratio_tot[$docs[$i]];//Caliculation for Bind/Rib
 				$total_yds[$i]=$met_req[$i]+$fab_bind[$i];
 				$sum+=  $total_yds[$i];
 			}

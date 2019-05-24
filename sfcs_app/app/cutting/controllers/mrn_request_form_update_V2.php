@@ -22,7 +22,7 @@ if(isset($_POST['update']))
 
 	$batch_ref=$_POST['batch_ref'];
 	
-	$rand=rand().date("Hs");
+	$rand=rand(1000,10000).date("Hs");
 	$test=0;
 	
 	$table="Dear All, <br/><br/> Please find the below details of additional material request and as per given below remarks.<br/><br/>";
