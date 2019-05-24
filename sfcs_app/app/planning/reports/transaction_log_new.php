@@ -115,7 +115,7 @@ for ($i=0; $i < sizeof($shifts_array); $i++) {
 	$sql_result221=mysqli_query($link, $sql221) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($rows1=mysqli_fetch_array($sql_result221))
 	{		
-		if($hour_to==$rows['time_value'])
+		if($hour_to==$rows1['time_value'])
 		{
 			echo "<option value=\"".$rows1['time_value']."\" selected>".$rows1['time_value']."</option>";
 		}
