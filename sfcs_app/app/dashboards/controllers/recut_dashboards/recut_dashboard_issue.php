@@ -50,7 +50,7 @@ if(isset($_POST['formSubmit']))
     $sql1="insert into $bai_pro3.maker_stat_log(date,cat_ref,order_tid,mklength,mk_ver) values (\"".date("Y-m-d")."\",".$cat_ref.",\"$order_tid\",".$mklen.",'".$patt_ver."')";
     mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
     $ilastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
-    $sql1="update $bai_pro3.recut_v2 set p_plies=".$plies.",a_plies=".$plies.",mk_ref=$ilastid where doc_no=".$doc_nos;
+    $sql1="update $bai_pro3.recut_v2 set fabric_status='0',p_plies=".$plies.",a_plies=".$plies.",mk_ref=$ilastid where doc_no=".$doc_nos;
     mysqli_query($link, $sql1) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sql1="update $bai_pro3.plandoc_stat_log set p_plies=".$plies.",a_plies=".$plies.",mk_ref=$ilastid where doc_no=".$doc_nos;
     mysqli_query($link, $sql1) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -350,7 +350,13 @@ echo $drp_down;
                         $dock_checking_flag = 1;
                     }
                     $rem_qty = $row['recut_reported_qty'] - $row['issued_qty'];
-                    if($row['mk_ref'] == '0')
+
+                    if($row['fabric_status'] == '98' && $row['mk_ref'] == '0')
+                    {
+                        $button_html = "<button type='button' style='border-color: #f4d142;border-width: 4px;' class='btn btn-danger' onclick='editmarkers(".$id.")'>Markers Rejected</button>";
+                        $html_hiding = "MarkersRejected";
+                    }
+                    else if($row['mk_ref'] == '0')
                     {
                         $button_html = "<button type='button'class='btn btn-danger' onclick='editmarkers(".$id.")'>Update Markers</button>";
                         $html_hiding = "UpdateMarkers";
