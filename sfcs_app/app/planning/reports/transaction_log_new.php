@@ -23,8 +23,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	$edate=$_POST['edate'];
 	$shift=$_POST['shift'];
 	$module=$_POST['module'];
-	$hour=$_POST['hour'];
-	$hour1=$_POST['hour1'];
+	$hour_from=$_POST['hour_from'];
+	$hour_to=$_POST['hour_to'];
 ?>
 <!--<div id="page_heading"><span style="float"><h3>Daily Production Status Report</h3></span><span style="float: right; margin-top: -20px"><b>?</b>&nbsp;</span></div>-->
 <div class="panel panel-primary">
@@ -34,13 +34,13 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <form name="text" method="post" action="index.php?r=<?php echo $_GET['r']; ?>">
 <div class="col-md-12">
 <div class="col-md-2">
-Start : <input data-toggle="datepicker" class="form-control" type="text" id="demo1" name="sdate" value="<?php  if($sdate==""){ echo date("Y-m-d"); } else { echo $sdate; } ?>" size="10"> 
+<label valign="top">Start: </label><input data-toggle="datepicker" class="form-control" type="text" id="demo1" name="sdate" value="<?php  if($sdate==""){ echo date("Y-m-d"); } else { echo $sdate; } ?>" size="10" required> 
 </div>
 <div class="col-md-2">
-End : <input data-toggle="datepicker"  class="form-control" type="text" id="demo2" name="edate" value="<?php  if($edate==""){ echo date("Y-m-d"); } else { echo $edate; } ?>" size="10">
+<label valign="top">End: </label> <input data-toggle="datepicker"  class="form-control" type="text" id="demo2" name="edate" value="<?php  if($edate==""){ echo date("Y-m-d"); } else { echo $edate; } ?>" size="10" required>
 </div>
 <div class="col-md-1">
-Section: <select name="module" id="myModule" class="form-control">
+<label valign="top">Section: </label> <select name="module" id="myModule" class="form-control">
 <option value="0" <?php  if($module=="All")?>selected>All</option>
 <?php
 $sql="SELECT GROUP_CONCAT(DISTINCT section ORDER BY section*1) AS mods FROM $bai_pro3.module_master ";
@@ -50,7 +50,6 @@ while($sql_row=mysqli_fetch_array($result7))
 {
 	$sql_mod=$sql_row["mods"];
 }
-// $module=1;
 $sql_mods=explode(",",$sql_mod);
 for($i=0;$i<sizeof($sql_mods);$i++)
 {
@@ -66,7 +65,7 @@ for($i=0;$i<sizeof($sql_mods);$i++)
 ?>
 </select></div>
 <div class="col-md-1">
-Shift: <select name="shift" id="myshift" class="form-control">
+<label valign="top">Shift Hour: </label> <select name="shift" id="myshift" class="form-control">
 <option value='All' <?php if($shift=="All"){ echo "selected"; } ?> >All</option>
 <?php 
 for ($i=0; $i < sizeof($shifts_array); $i++) {
@@ -87,85 +86,49 @@ for ($i=0; $i < sizeof($shifts_array); $i++) {
 
 <div class="col-md-2">
 
-Hour From: <select name="hour" id="hour" class="form-control">
-	<?php
-	echo "<option value=\"Day\">Day All</option>";	
-		for($i=6;$i<=22;$i++)
+<label for="hour_filter" valign="top">From Hour: </label>
+<?php
+	echo "<select name=\"hour_from\" id='hour_filter' class=\"form-control\" >";
+	$sql22="SELECT time_value FROM $bai_pro3.tbl_plant_timings order by time_value*1"; 
+	$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($rows=mysqli_fetch_array($sql_result22))
+	{
+		if($hour_from==$rows['time_value'])
 		{
-			if($i<13)
-			{
-				$suffix="";
-				if($i<10)
-				{
-					$suffix=0;
-				}	
-				if($i == $hour) {
-					echo "<option value=\"".$i."\" selected>".$suffix."".$i." AM</option>";
-				}
-				else {
-					echo "<option value=\"".$i."\">".$suffix."".$i." AM</option>";
-				}
-			}
-			else
-			{
-				$i1=$i-12;
-				$suffix1="";
-				if($i1<10)
-				{
-					$suffix1=0;
-				}	
-				if($i == $hour) {
-					echo "<option value=\"".$i."\" selected>".$suffix1."".$i1." PM</option>";
-				}
-				else {
-					echo "<option value=\"".$i."\">".$suffix1."".$i1." PM</option>";
-				}
-			}
-			
-		}	
-	?>
-</select></div>
-
+			echo "<option value=\"".$rows['time_value']."\" selected>".$rows['time_value']."</option>";
+		}
+		else
+		{
+			echo "<option value=\"".$rows['time_value']."\" >".$rows['time_value']."</option>";
+		}		
+	}  
+    echo "</select>"; 
+   // echo $sql; 
+?>
+</select>
+</div>
 <div class="col-md-2">
-
-To: <select name="hour1" id="hour1" class="form-control">
-	<?php
-	echo "<option value=\"Day\">Day All</option>";	
-		for($i=6;$i<=22;$i++)
+<label for="hour_filter" valign="top">To Hour: </label>
+<?php
+	echo "<select name=\"hour_to\" id='hour_filter' class=\"form-control\" >";
+	$sql221="SELECT time_value FROM $bai_pro3.tbl_plant_timings  order by time_value*1"; 
+	$sql_result221=mysqli_query($link, $sql221) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($rows1=mysqli_fetch_array($sql_result221))
+	{		
+		if($hour_to==$rows['time_value'])
 		{
-			if($i<13)
-			{
-				$suffix="";
-				if($i<10)
-				{
-					$suffix=0;
-				}	
-				if($i == $hour1) {			
-					echo "<option value=\"".$i."\" selected>".$suffix."".$i." AM</option>";
-				}
-				else {
-					echo "<option value=\"".$i."\">".$suffix."".$i." AM</option>";
-				}
-			}
-			else
-			{
-				$i1=$i-12;
-				$suffix1="";
-				if($i1<10)
-				{
-					$suffix1=0;
-				}
-				if($i == $hour1) {	
-					echo "<option value=\"".$i."\" selected>".$suffix1."".$i1." PM</option>";
-				}
-				else {
-					echo "<option value=\"".$i."\">".$suffix1."".$i1." PM</option>";
-				}
-			}
-			
-		}	
-	?>
-</select></div>
+			echo "<option value=\"".$rows1['time_value']."\" selected>".$rows1['time_value']."</option>";
+		}
+		else
+		{
+			echo "<option value=\"".$rows1['time_value']."\" >".$rows1['time_value']."</option>";
+		} 
+	}  
+    echo "</select>"; 
+   // echo $sql; 
+?>
+</select>
+</div>
 
 
 <input type="submit" value="submit" class="btn btn-info" name="submit" style="margin-top:18px" onclick="return verify_date()" >
@@ -188,8 +151,8 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 	$edate=$_POST['edate'];
 	$shift_new=$_POST['shift'];
 	$module=$_POST['module'];
-	$hour_from=$_POST["hour"];
-	$hour_to=$_POST["hour1"];
+	$hour_from=$_POST["hour_from"];
+	$hour_to=$_POST["hour_to"];
 	if($shift_new!='All')
 	{
 		$shift_value="and bac_shift in ('".$shift_new."')";
@@ -204,41 +167,26 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 	else {
 		$section_value="";
 	}
-
-	if($module>0){
-		$sql="SELECT GROUP_CONCAT(DISTINCT module_name ORDER BY module_name*1) AS sec_mods FROM $bai_pro3.module_master where section=$module";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$module=$sql_row['sec_mods'];
-		}	
+	$sql2212="SELECT start_time FROM $bai_pro3.tbl_plant_timings where time_value='$hour_from'"; 
+	$sql_result2212=mysqli_query($link, $sql2212) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($rows12=mysqli_fetch_array($sql_result2212))
+	{
+		$start_hour=$rows12['start_time'];
 	}
-	else{
-		$sql="SELECT GROUP_CONCAT(DISTINCT module_name ORDER BY module_name*1) AS sec_mods FROM $bai_pro3.module_master";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$module=$sql_row['sec_mods'];
-		}	
+	$sql2212="SELECT end_time FROM $bai_pro3.tbl_plant_timings where time_value='$hour_to'"; 
+	$sql_result2212=mysqli_query($link, $sql2212) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($rows12=mysqli_fetch_array($sql_result2212))
+	{
+		$end_hour=$rows12['end_time'];
 	}
 	
-
 	foreach($sizes_array as $key=>$size){
 		$append.= " SUM(size_$size) as size_$size,";
 	}
 	$append = rtrim($append,',');
 
-
-	if($hour_from=='Day' and $hour_to=='Day'){
-		$sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,$append from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and bac_no in ($module) GROUP BY bac_date,HOUR(bac_lastup),bac_no,bac_shift,ims_doc_no,jobno,SIGN(bac_Qty) ORDER BY bac_date,HOUR(bac_lastup),bac_no*1,ims_doc_no*1,jobno*1";
-	}else
-	{
-		$sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,$append from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and bac_no in ($module) and hour(bac_lastup) between \"$hour_from\" and \"$hour_to\" GROUP BY bac_date,HOUR(bac_lastup),bac_no,bac_shift,ims_doc_no,jobno,SIGN(bac_Qty) ORDER BY bac_date,HOUR(bac_lastup),bac_no*1,ims_doc_no*1,jobno*1";
-	}
-
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-
+	$sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,$append from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and TIME(bac_lastup) BETWEEN ('".$start_hour."') and ('".$end_hour."') GROUP BY bac_date,HOUR(bac_lastup),bac_no,bac_shift,ims_doc_no,jobno,SIGN(bac_Qty) ORDER BY bac_date,HOUR(bac_lastup),bac_no*1,ims_doc_no*1,jobno*1";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_result)>0)
 {
 	echo "<div>";
