@@ -159,235 +159,208 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 	{
 		$shift_value="and bac_shift in ('".$shift_new."')";
 	}
-	else {
+	else 
+	{
 		$shift_value="";
 	}
 	if($module!=0)
 	{
 		$section_value="and bac_sec =$module";
 	}
-	else {
+	else 
+	{
 		$section_value="";
 	}
-	$sql2212="SELECT start_time FROM $bai_pro3.tbl_plant_timings where time_value='$hour_from'"; 
-	$sql_result2212=mysqli_query($link, $sql2212) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($rows12=mysqli_fetch_array($sql_result2212))
+	foreach($sizes_array as $key=>$size)
 	{
-		$start_hour=$rows12['start_time'];
-	}
-	$sql2212="SELECT end_time FROM $bai_pro3.tbl_plant_timings where time_value='$hour_to'"; 
-	$sql_result2212=mysqli_query($link, $sql2212) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($rows12=mysqli_fetch_array($sql_result2212))
-	{
-		$end_hour=$rows12['end_time'];
-	}
-	
-	foreach($sizes_array as $key=>$size){
 		$append.= " SUM(size_$size) as size_$size,";
 	}
-	$append = rtrim($append,',');
-
-	$sql="select tid,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,$append from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and TIME(log_time) BETWEEN ('".$start_hour."') and ('".$end_hour."') GROUP BY bac_date,HOUR(log_time),bac_no,bac_shift,ims_doc_no,jobno,SIGN(bac_Qty) ORDER BY bac_date,HOUR(log_time),bac_no*1,ims_doc_no*1,jobno*1";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-if(mysqli_num_rows($sql_result)>0)
-{
-	echo "<div>";
-	echo "<div  class ='table-responsive'>";
-	echo "<table id=\"table1\"  border=1 class=\"table\" cellpadding=\"0\" cellspacing=\"0\" style='margin-top:10pt;'><thead>";
-	echo "<tr class='tblheading' style='color:white;'><th>Date</th><th>Time<th>Module</th><th>Section</th><th>Shift</th><th>User Style</th><th>Movex Style</th><th>Schedule</th><th>Color</th><th>Cut No</th>";
-	//echo "<th>SMV</th><th>NOP</th>";
-	echo "<th>Input Job No</th><th>Size</th><th>Quantity</th></tr></tbody>";
-	// var_dump(mysqli_num_rows($sql_result));
-	while($sql_row=mysqli_fetch_array($sql_result))
+	$sql22121="SELECT start_time,end_time FROM $bai_pro3.tbl_plant_timings where time_value='$hour_from'"; 
+	$sql_result22121=mysqli_query($link, $sql22121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($rows1231=mysqli_fetch_array($sql_result22121))
 	{
-		$tid=$sql_row['tid'];
-		$module=$sql_row['bac_no'];
-		$section=$sql_row['bac_sec'];
-		$date=$sql_row['bac_date'];
-		$shift=$sql_row['bac_shift'];
-		$qty=$sql_row['bac_Qty'];
-		$lastup=$sql_row['bac_lastup'];
-		$userstyle=$sql_row['bac_style'];
-		$doc_no=$sql_row['ims_doc_no'];
-		$ims_tid=$sql_row['ims_tid'];
-		$ims_table_name=$sql_row['ims_table_name'];
-		$log_time=$sql_row['log_time'];
-		$smv=$sql_row['smv'];
-		$nop=$sql_row['nop'];
-		$schedules=$sql_row['delivery'];
-		
-		$s01=$sql_row['size_s01'];
-		$s02=$sql_row['size_s02'];
-		$s03=$sql_row['size_s03'];
-		$s04=$sql_row['size_s04'];
-		$s05=$sql_row['size_s05'];
-		$s06=$sql_row['size_s06'];
-		$s07=$sql_row['size_s07'];
-		$s08=$sql_row['size_s08'];
-		$s09=$sql_row['size_s09'];
-		$s10=$sql_row['size_s10'];
-		$s11=$sql_row['size_s11'];
-		$s12=$sql_row['size_s12'];
-		$s13=$sql_row['size_s13'];
-		$s14=$sql_row['size_s14'];
-		$s15=$sql_row['size_s15'];
-		$s16=$sql_row['size_s16'];
-		$s17=$sql_row['size_s17'];
-		$s18=$sql_row['size_s18'];
-		$s19=$sql_row['size_s19'];
-		$s20=$sql_row['size_s20'];
-		$s21=$sql_row['size_s21'];
-		$s22=$sql_row['size_s22'];
-		$s23=$sql_row['size_s23'];
-		$s24=$sql_row['size_s24'];
-		$s25=$sql_row['size_s25'];
-		$s26=$sql_row['size_s26'];
-		$s27=$sql_row['size_s27'];
-		$s28=$sql_row['size_s28'];
-		$s29=$sql_row['size_s29'];
-		$s30=$sql_row['size_s30'];
-		$s31=$sql_row['size_s31'];
-		$s32=$sql_row['size_s32'];
-		$s33=$sql_row['size_s33'];
-		$s34=$sql_row['size_s34'];
-		$s35=$sql_row['size_s35'];
-		$s36=$sql_row['size_s36'];
-		$s37=$sql_row['size_s37'];
-		$s38=$sql_row['size_s38'];
-		$s39=$sql_row['size_s39'];
-		$s40=$sql_row['size_s40'];
-		$s41=$sql_row['size_s41'];
-		$s42=$sql_row['size_s42'];
-		$s43=$sql_row['size_s43'];
-		$s44=$sql_row['size_s44'];
-		$s45=$sql_row['size_s45'];
-		$s46=$sql_row['size_s46'];
-		$s47=$sql_row['size_s47'];
-		$s48=$sql_row['size_s48'];
-		$s49=$sql_row['size_s49'];
-		$s50=$sql_row['size_s50'];
-
-		$input_job = $sql_row['jobno'];
-
-		$sizes = array($s01,$s02,$s03,$s04,$s05,$s06,$s07,$s08,$s09,$s10,$s11,$s12,$s13,$s14,$s15, $s16,$s17, $s18,$s19, $s20, $s21,$s22,$s23, $s24,$s25, $s26,$s27, $s28,$s29, $s30,$s31, $s32,$s33, $s34,$s35,$s36,$s37, $s38, $s39,$s40, $s41,$s42,$s43, $s44,$s45, $s46,$s47,$s48, $s49, $s50);
-		$filtered_sizes = array_filter($sizes);
-		$title_sizes = array('title_size_s01','title_size_s02','title_size_s03','title_size_s04','title_size_s05','title_size_s06','title_size_s07', 'title_size_s08', 'title_size_s09', 'title_size_s10', 'title_size_s11','title_size_s12', 'title_size_s13','title_size_s14','title_size_s15', 'title_size_s16','title_size_s17', 'title_size_s18', 'title_size_s19','title_size_s20', 'title_size_s21','title_size_s22','title_size_s23', 'title_size_s24','title_size_s25','title_size_s26', 'title_size_s27','title_size_s28','title_size_s29', 'title_size_s30','title_size_s31','title_size_s32','title_size_s33','title_size_s34','title_size_s35','title_size_s36','title_size_s37','title_size_s38','title_size_s39','title_size_s40','title_size_s41','title_size_s42','title_size_s43','title_size_s44','title_size_s45','title_size_s46','title_size_s47','title_size_s48','title_size_s49','title_size_s50');
-
-		$sql1="select * from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
-		// echo $sql1."<br>";
-		$sql_result2=mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row1=mysqli_fetch_array($sql_result2))
-		{
-			$order_tid=$sql_row1['order_tid'];
-			$cutno=$sql_row1['acutno'];
-		}
-		
-		if(mysqli_num_rows($sql_result2)==0){
-			$sql1="select * from $bai_pro3.plandoc_stat_log_archive where doc_no=$doc_no";
-			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row1=mysqli_fetch_array($sql_result1))
-			{
-				$order_tid=$sql_row1['order_tid'];
-				$cutno=$sql_row1['acutno'];
-			}
-		}
-			
-		//date:2012-06-26
-		//added new code for getting data from archive table of orders
-		$sql12="select order_style_no,order_del_no,order_col_des,color_code,style_id from $bai_pro3.bai_orders_db where order_del_no=\"".$schedules."\" and order_tid=\"".$order_tid."\"";
-		// echo $sql12."<br>";
-		$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_no_rows=mysqli_num_rows($sql_result12);
-		
-		$table="$bai_pro3.bai_orders_db";
-		if($sql_no_rows == 0)
-		{
-			$table="$bai_pro3.bai_orders_db_archive";
-		}
-		
-		$sql1="select order_style_no,order_del_no,order_col_des,color_code,style_id from $table where order_del_no=\"".$schedules."\" and order_tid=\"".$order_tid."\" ";
-		//echo $sql1."<br>";
-
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row1=mysqli_fetch_array($sql_result1))
-		{
-			$style=$sql_row1['order_style_no'];
-			$schedule=$sql_row1['order_del_no'];
-			$color=$sql_row1['order_col_des'];
-			$color_code=$sql_row1['color_code'];
-			$style_id=$sql_row1['style_id'];
-		}
-		
-		$bgcolor="";	
-		if($smv==0 and $nop==0)
-		{
-			$bgcolor="WHITE";
-		} 
-		//var_dump($filtered_sizes);
-		foreach( $filtered_sizes as $key => $value)
-		{
-			$finalized_size_qty = $value;
-			$finalized_title_size = $title_sizes[$key];
-			$getting_title_size = "select $finalized_title_size from $bai_pro3.bai_orders_db where order_del_no=\"".$schedules."\" and order_tid=\"".$order_tid."\"";
-			// echo $getting_title_size;
-			// mysqli_query($link11, $getting_title_size) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result001=mysqli_query($link, $getting_title_size) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_result_fetch = mysqli_fetch_array($sql_result001)){
-				$finalized_title_size_value = $sql_result_fetch[$finalized_title_size];
-			}
-			// 
-
-			$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedules,$color,$input_job,$link);
-			echo "<tbody><tr bgcolor=\"$bgcolor\">";
-			$time = explode(" ",$log_time);
-			//echo "<td>$tid</td>";
-			echo "<td>$date</td>";
-			echo "<td>".$time[1]."</td>";
-			echo "<td>$module</td>";
-			echo "<td>$section</td>";
-			echo "<td>$shift</td>";
-			echo "<td>$style_id</td>";
-			echo "<td>$style</td>";
-			echo "<td>".$schedules."</td>";
-			echo "<td>$color</td>";
-			echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td>";
-			echo "<td>$display_prefix1</td>";
-			echo "<td>$finalized_title_size_value</td>";
-			echo "<td>$finalized_size_qty</td>";
-			echo "</tr></tbody>";
-		}
-
-
+		$start_check=$rows1231['start_time'];
 	}
-	echo "</table></div></div>";
-}
-else{
-	echo "<div class='alert alert-danger' style='width:1000px';>No Data Found</div>";
-	echo "<script>$(document).ready(function(){
-			 $('#table1').css('display','none');
-		 });</script>";
-}
+	$sql25="SELECT start_time,end_time FROM $bai_pro3.tbl_plant_timings where time_value='$hour_to'"; 
+	$sql_result25=mysqli_query($link, $sql25) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($rows125=mysqli_fetch_array($sql_result25))
+	{
+		$end_check=$rows125['end_time'];
+	}
+	$sql="select tid from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and time(log_time) BETWEEN ('".$start_check."') and ('".$end_check."')";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error311".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($sql_result)>0)
+	{
+		echo "<div>";
+		echo "<div  class ='table-responsive'>";
+		echo "<table id=\"table1\"  border=1 class=\"table\" cellpadding=\"0\" cellspacing=\"0\" style='margin-top:10pt;'><thead><tr class='tblheading' style='color:white;'><th>Date</th><th>Time<th>Module</th><th>Section</th><th>Shift</th><th>Style</th><th>Schedule</th><th>Color</th><th>Cut No</th><th>Input Job No</th><th>Size</th><th>Quantity</th></tr></thead><tbody>";
+		$total_qty=0;
+		do{
+			for($ii=$hour_from;$ii<=$hour_to;$ii++)
+			{
+				$sql2212="SELECT start_time,end_time,time_display FROM $bai_pro3.tbl_plant_timings where time_value='$ii'"; 
+				$sql_result2212=mysqli_query($link, $sql2212) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($rows12=mysqli_fetch_array($sql_result2212))
+				{
+					$time_display=$rows12['time_display'];
+					$time_display=$rows12['time_display'];
+					$start_hour=$rows12['start_time'];
+					$end_hour=$rows12['end_time'];
+					$time_query=" AND TIME(log_time) BETWEEN ('".$rows12['start_time']."') and ('".$rows12['end_time']."')";
+				}
+				$sql1="select smv,nop,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,$append log_time from $bai_pro.bai_log where bac_date='".$sdate."' $time_query $shift_value $section_value  GROUP BY bac_sec,bac_no,bac_style,delivery,jobno,color,ims_doc_no ORDER BY bac_style,delivery,jobno*1";
+				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql_result1)>0)
+				{
+					while($sql_row=mysqli_fetch_array($sql_result1))
+					{
+						$module=$sql_row['bac_no'];
+						$section=$sql_row['bac_sec'];
+						$date=$sql_row['bac_date'];
+						$shift=$sql_row['bac_shift'];
+						$qty=$sql_row['bac_Qty'];
+						$lastup=$sql_row['bac_lastup'];
+						$style=$sql_row['bac_style'];
+						$doc_no=$sql_row['ims_doc_no'];
+						$log_time=$sql_row['log_time'];
+						$schedule=$sql_row['delivery'];
+						$color=$sql_row['color'];
+						$smv=$sql_row['smv'];
+						$nop=$sql_row['nop'];
+						for($i=0;$i<sizeof($sizes_array);$i++)
+						{
+							if($sql_row["size_".$sizes_array[$i].""]>0)
+							{						
+								$sizes[$sizes_array[$i]]=$sql_row["size_".$sizes_array[$i].""];
+								$sizes_val[]=$sizes_array[$i];								
+							}
+						}
+						$input_job = $sql_row['jobno'];
+						$sql112="select * from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
+						//echo $sql1."<br>";
+						$sql_result2=mysqli_query($link, $sql112) or exit("Sql Error4--".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row1=mysqli_fetch_array($sql_result2))
+						{
+							$order_tid=$sql_row1['order_tid'];
+							$cutno=$sql_row1['acutno'];
+						}
+						if(mysqli_num_rows($sql_result2)==0){
+							$sql15="select * from $bai_pro3.plandoc_stat_log_archive where doc_no=$doc_no";
+							$sql_result1212=mysqli_query($link, $sql15) or exit("Sql Error5--".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row112=mysqli_fetch_array($sql_result1212))
+							{
+								$order_tid=$sql_row112['order_tid'];
+								$cutno=$sql_row112['acutno'];
+							}
+						}					
+						$sql12="select order_style_no,order_del_no,order_col_des,color_code,style_id from $bai_pro3.bai_orders_db where order_del_no=\"".$schedule."\" and order_tid=\"".$order_tid."\"";
+						$sql_result122=mysqli_query($link, $sql12) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_no_rows=mysqli_num_rows($sql_result122);
+						$table="$bai_pro3.bai_orders_db";
+						if($sql_no_rows == 0)
+						{
+							$table="$bai_pro3.bai_orders_db_archive";
+						}
+						$sql143="select order_style_no,order_del_no,order_col_des,color_code,style_id from $table where order_del_no=\"".$schedule."\" and order_tid=\"".$order_tid."\" ";
+						$sql_result132=mysqli_query($link, $sql143) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row132=mysqli_fetch_array($sql_result132))
+						{
+							$style=$sql_row132['order_style_no'];
+							$schedule=$sql_row132['order_del_no'];
+							$color=$sql_row132['order_col_des'];
+							$color_code=$sql_row132['color_code'];
+							$style_id=$sql_row132['style_id'];
+						}
+						$bgcolor="";	
+						if($smv==0 and $nop==0)
+						{
+							$bgcolor="WHITE";
+						} 
+						for($k=0;$k<sizeof($sizes_val);$k++)
+						{
+							$finalized_size_qty = $sizes[$sizes_val[$k]];
+							$getting_title_size = "select title_size_".$sizes_val[$k]." as size from $table where order_del_no=\"".$schedule."\" and order_tid=\"".$order_tid."\"";
+							$sql_result001=mysqli_query($link, $getting_title_size) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_result_fetch = mysqli_fetch_array($sql_result001)){
+								$finalized_title_size_value = $sql_result_fetch["size"];
+							}
+							$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
+							echo "<tr bgcolor=\"$bgcolor\"><td>$sdate</td><td>".$time_display."</td><td>$module</td><td>$section</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>$display_prefix1</td><td>$finalized_title_size_value</td><td >".$sizes[$sizes_val[$k]]."</td></tr>";
+							$total_qty=$total_qty+$sizes[$sizes_val[$k]];							
+						}				
+						unset($sizes_val);
+						unset($sizes);				
+					}
+				}
+				$time_query='';
+			}			
+			$sdate = date ("Y-m-d", strtotime("+1 days", strtotime($sdate)));			
+		}
+		while (strtotime($sdate) <= strtotime($edate)); 
+		echo "<tr style='background-color:#FFFFCC;' class='total_excel'><td colspan=11>Total</td><td id='table1Tot1'>$total_qty</td></tr></tbody></table></div></div>";
+	}
+	else
+	{
+		echo "<div class='alert alert-danger' style='width:1000px';>No Data Found</div>";
+		echo "<script>$(document).ready(function(){
+				 $('#table1').css('display','none');
+			 });</script>";
+	}
 }
  
 ?>
 <script>
-
-	var table3Filters = {
-	rows_counter: true,
-	rows_counter_text: "Total rows: ",
-	btn_reset: true,
-	sort_select: true,
-	display_all_text: "Display all"
-	}
-	setFilterGrid("table1",table3Filters);
-	$('#reset_table1').addClass('btn btn-warning btn-xs');
+var fnsFilters = {
 	
+	rows_counter: true,
+	sort_select: true,
+		on_change: true,
+		display_all_text: " [ Show all ] ",
+		loader_text: "Filtering data...",  
+	loader: true,
+	loader_text: "Filtering data...",
+	col_0: 'select',
+	col_1: 'select',
+	col_2: 'select',
+	col_3: 'select',
+	col_4: 'select',
+	col_5: 'select',
+	col_6: 'select',
+	col_7: 'select',
+	col_8: 'select',
+	col_9: 'select',
+	col_10: 'select',
+	col_11: 'select',
+	
+	btn_reset: true,
+		alternate_rows: true,
+		btn_reset_text: "Clear",
+	col_operation: {						
+						id: ["table1Tot1"],
+						col: [11],  
+						operation: ["sum"],
+						decimal_precision: [1],
+						write_method: ["innerHTML"] 
+					},
+	rows_always_visible: [grabTag(grabEBI('table1'),"tr").length]
+		
+	};
+	
+	 setFilterGrid("table1",fnsFilters);
+	
+
 </script>
 <script language="javascript">
 
 function getData(){
- var csv_value=$('#table1').table2CSV({delivery:'value'});
- $("#csv_text").val(csv_value);	
+	var dummytable = $('.fltrow').html();
+	var dummytotal = $('.total_excel').html();
+	$('.fltrow').html('');
+	$('.total_excel').html('');
+	var csv_value= $("#table1").table2CSV({delivery:'value',excludeRows: '.fltrow .total_excel'});
+	$("#csv_text").val(csv_value);	
+	$('.fltrow').html(dummytable);
+	$('.total_excel').html(dummytotal);
 }
 </script>
 <script type="text/javascript">
