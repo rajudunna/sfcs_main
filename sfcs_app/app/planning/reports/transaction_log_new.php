@@ -43,25 +43,27 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <label valign="top">Section: </label> <select name="module" id="myModule" class="form-control">
 <option value="0" <?php  if($module=="All")?>selected>All</option>
 <?php
-$sql="SELECT GROUP_CONCAT(DISTINCT section ORDER BY section*1) AS mods FROM $bai_pro3.module_master ";
+$sql_mods=array();
+$sql_name=array();
+$sql="SELECT * FROM $bai_pro3.sections_master";
 $result7=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-// echo $sql;
 while($sql_row=mysqli_fetch_array($result7))
 {
-	$sql_mod=$sql_row["mods"];
+	$sql_mods[]=$sql_row["sec_name"];
+	$sql_name[]=$sql_row["section_display_name"];
 }
-$sql_mods=explode(",",$sql_mod);
 for($i=0;$i<sizeof($sql_mods);$i++)
 {
 	if($sql_mods[$i]==$module)
 	{
-		echo "<option value=\"".$sql_mods[$i]."\" selected>".str_pad($sql_mods[$i],2,"0",0)."</option>";
+		echo "<option value=\"".$sql_mods[$i]."\" selected>".$sql_name[$i]."</option>";
 	}
 	else
 	{
-		echo "<option value=\"".$sql_mods[$i]."\">".str_pad($sql_mods[$i],2,"0",0)."</option>";
-	}	
+		echo "<option value=\"".$sql_mods[$i]."\" >".$sql_name[$i]."</option>";
+	}
 }	
+	
 ?>
 </select></div>
 <div class="col-md-1">
