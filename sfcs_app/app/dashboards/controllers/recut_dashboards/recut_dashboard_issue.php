@@ -212,7 +212,7 @@ function issued_to_module($bcd_id,$qty,$ref)
             $qry_ops_mapping_after = "SELECT of.operation_code FROM `$brandix_bts`.`tbl_style_ops_master` tm 
             LEFT JOIN brandix_bts.`tbl_orders_ops_ref` of ON of.`operation_code`=tm.`operation_code`
             WHERE tm.`style` ='$style' AND tm.`color` = '$mapped_color'
-            AND category = 'sewing' AND display_operations='yes'";
+            AND category = 'sewing' AND display_operations='yes' ORDER BY operation_order*1 LIMIT 1";
             $result_qry_ops_mapping_after = $link->query($qry_ops_mapping_after);
             if(mysqli_num_rows($result_qry_ops_mapping_after) > 0)
             {
@@ -377,12 +377,7 @@ echo $drp_down;
                     else
                     {
                         $button_html = "<button type='button'class='btn btn-danger' onclick='issuemodule(".$id.")'>Issue To Module</button>";
-                        $path1="../../../production/controllers/sewing_job/recut_barcode/barcode_4_2.php";
-                        $path="../../../production/controllers/sewing_job/recut_barcode/barcode_2_1.php";    
-                        echo "<a class='btn btn-".$print_btn_color." btn-sm' href='$path?docket=".$row['doc_no']."' onclick=\"return popitup2('$path?docket=".$row['doc_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Bundle Print 2 * 1</a>";
-
-                        echo "<a class='btn btn-".$print_btn_color." btn-sm' href='$path1?docket=".$row['doc_no']."' onclick=\"return popitup2('$path1?docket=".$row['doc_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Bundle Print 4 * 2</a>";
-             
+                      
                         $button_html = "<button type='button'class='btn btn-danger' onclick='issuemodule(".$id.")'>Bundle Tickets</button>";
 
                         $html_hiding = "IssueToModule";
