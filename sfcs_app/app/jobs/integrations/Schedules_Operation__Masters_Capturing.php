@@ -16,7 +16,7 @@ print("job started\n");
 while($sql_row=mysqli_fetch_array($result_qry_modetails))
 {
 
-    $mo_num=$sql_row['mo_num'];
+    $mo_num=trim($sql_row['mo_num']);
     $FG_code=rawurlencode($sql_row['product_sku']);
 
     //getting all work center id in sfcs

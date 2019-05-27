@@ -24,7 +24,7 @@ $res_get_soap_data = mysqli_query($link, $qry_get_soap_data) or exit("Sql Error 
 $i=0;
 while($result_data = mysqli_fetch_array($res_get_soap_data)){
     $res_order_details = false;
-    $mo_no = $result_data['mo_no'];
+    $mo_no = trim($result_data['mo_no']);
     $api_url = $api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelMaterials;returncols=MTNO,ITDS,CNQT,MSEQ,PRNO,MFNO,OPNO?CONO=$comp_no&FACI=$global_facility_code&MFNO=".$mo_no;
     //echo $api_url."<br/>";
     $response1 = getCurlAuthRequestLocal1($api_url,$basic_auth);
