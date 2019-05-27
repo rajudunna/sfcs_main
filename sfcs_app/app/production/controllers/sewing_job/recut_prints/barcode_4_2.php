@@ -121,7 +121,7 @@
 										<td colspan=9><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
 									</tr>
 									<tr>	
-										<td colspan=6><b>CutNo:</b>'.$color_code).'</td>
+										<td colspan=6><b>CutNo:</b>'.$color_code.'</td>
 									</tr>
 								</table>
 							</div><br><br><br><br><br>';	
@@ -218,7 +218,7 @@
 							
 						</div><br>';
 						}				
-		
+					}
 			
 		
 	$html.='
