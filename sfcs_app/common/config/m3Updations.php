@@ -53,7 +53,7 @@ function updateM3Transactions($ref_id,$op_code,$qty)
         $total_bundle_present_qty = $total_bundle_rec_present_qty;
         if($total_bundle_present_qty > 0)
         {
-            $mo_number = $nop_qry_row['mo_no'];
+            $mo_number = trim($nop_qry_row['mo_no']);
             $mo_quantity = $nop_qry_row['bundle_quantity'];
             $good_quantity_past = $nop_qry_row['good_quantity'];
             $rejected_quantity_past = $nop_qry_row['rejected_quantity'];
@@ -232,7 +232,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
         $total_bundle_present_qty = $total_bundle_rec_present_qty;
         if($total_bundle_present_qty > 0)
         {
-            $mo_number = $nop_qry_row['mo_no'];
+            $mo_number = trim($nop_qry_row['mo_no']);
             $mo_quantity = $nop_qry_row['bundle_quantity'];
             $good_quantity_past = $nop_qry_row['good_quantity'];
             $rejected_quantity_past = $nop_qry_row['rejected_quantity'];
@@ -430,7 +430,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
         while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
         {
             $total_bundle_present_qty = $total_bundle_rej_present_qty;
-            $mo_number = $nop_qry_row['mo_no'];
+            $mo_number = trim($nop_qry_row['mo_no']);
             $mo_quantity = $nop_qry_row['bundle_quantity'];
             $good_quantity_past = $nop_qry_row['good_quantity'];
             $rejected_quantity_past = $nop_qry_row['rejected_quantity'];
@@ -582,7 +582,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
         $qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14 => ".$qry_to_check_mo_numbers);
         while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
         {
-            $mo_number = $nop_qry_row['mo_no'];
+            $mo_number = trim($nop_qry_row['mo_no']);
             $mo_quantity = $nop_qry_row['bundle_quantity'];
             $good_quantity_past = $nop_qry_row['good_quantity'];
             $id = $nop_qry_row['id'];
@@ -721,7 +721,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
     $qry_nop_result=mysqli_query($link,$qry_to_check_mo_numbers) or exit("Bundles Query Error14 => ".$qry_to_check_mo_numbers);
     while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
     {
-        $mo_number = $nop_qry_row['mo_no'];
+        $mo_number = trim($nop_qry_row['mo_no']);
         $mo_quantity = $nop_qry_row['bundle_quantity'];
         $good_quantity_past = $nop_qry_row['good_quantity'];
         $id = $nop_qry_row['id'];
@@ -881,7 +881,7 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
         while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
         {
             $total_bundle_present_qty = $total_bundle_rej_present_qty;
-            $mo_number = $nop_qry_row['mo_no'];
+            $mo_number = trim($nop_qry_row['mo_no']);
             $mo_quantity = $nop_qry_row['bundle_quantity'];
             $good_quantity_past = $nop_qry_row['good_quantity'];
             $rejected_quantity_past = $nop_qry_row['rejected_quantity'];
@@ -1020,7 +1020,7 @@ function updateM3TransactionsLay($ref_id,$op_code,$qty,$cut_num)
  
     while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
     {
-        $mo_number = $nop_qry_row['mo_no'];
+        $mo_number = trim($nop_qry_row['mo_no']);
         $mo_quantity = $nop_qry_row['bundle_quantity'];
         $good_quantity_past = $nop_qry_row['good_quantity'];
         $rejected_quantity_past = $nop_qry_row['rejected_quantity'];

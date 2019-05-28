@@ -38,7 +38,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
 
 
             //============= call api for wastage =============
-            $mfno = $response['response']['MFNO'];
+            $mfno = trim($response['response']['MFNO']);
             $prno = urlencode($response['response']['PRNO']);
             $url_wastage = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$comp_no&FACI=$global_facility_code&MFNO=$mfno&PRNO=$prno&MSEQ=$sequence_no";
             //echo $url_wastage;die();
