@@ -24,9 +24,9 @@
     //looping MONO's array
     foreach($mo_details as $key=>$details)
     {    
-
+        $mo_no=trim($details['mo_no']);
         //calling the API
-        $url=$api_hostname .":".$api_port_no."/m3api-rest/execute/PMS100MI/SelOperations;returncols=MFNO,OPNO,OPDS,MAQT,SCQT?CONO=".$company_no ."&FACI=".$facility_code."&MFNO=".$details['mo_no']."&PRNO=".$details['product_sku'];     
+        $url=$api_hostname .":".$api_port_no."/m3api-rest/execute/PMS100MI/SelOperations;returncols=MFNO,OPNO,OPDS,MAQT,SCQT?CONO=".$company_no ."&FACI=".$facility_code."&MFNO=".$mo_no."&PRNO=".$details['product_sku'];     
         $url1 = str_replace(' ', '%20', $url);
         $result = $obj->getCurlAuthRequest($url1);      
         $decoded = json_decode($result,true); 

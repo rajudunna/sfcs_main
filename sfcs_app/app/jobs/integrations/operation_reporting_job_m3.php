@@ -31,7 +31,7 @@ while($row=mysqli_fetch_array($transaction_result))
 {
     $flag='';
     $transaction_id = $row['id'];
-    $mo_no = $row['mo_no'];
+    $mo_no = trim($row['mo_no']);
     $op_code = $row['m3_ops_code'];
     $workstation_id = $row['workstation_id'];
     $quantity = $row['quantity'];
