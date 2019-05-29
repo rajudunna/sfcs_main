@@ -15,6 +15,7 @@
 
 	$id=$_GET['recut_id'];
 	$sticker_type=$_GET['sticker_type'];
+	$sequence=$_GET['sequence'];
 	?>
 
 	<?php
@@ -41,7 +42,7 @@
 					<script type="text/javascript" src="../../../common/js/table2CSV.js" ></script>
 				</head>
 				<body>';
-				$get_bundles="select bcd_id,issued_qty from $bai_pro3.recut_v2_child where parent_id='".$id."'";
+				$get_bundles="select bcd_id,issued_qty from $bai_pro3.recut_v2_child_issue_track where recut_id='".$id."' and status=".$sequence."";
 				//	echo $get_bundles."<br>";
 					$get_bundles_result=mysqli_query($link, $get_bundles) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($bundle_data = mysqli_fetch_array($get_bundles_result))

@@ -82,6 +82,19 @@ if(isset($_POST['formIssue']))
     $issueval = $_POST['issueval'];
     $bcd_id = $_POST['bcd_id'];
     $doc_no_ref = $_POST['doc_no_ref'];
+    $get_recut_status="select max(status) as recut_status from $bai_pro3.recut_v2_child_issue_track where recut_id=".$doc_no_ref."";
+    $get_recut_result=mysqli_query($link, $get_recut_status)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($recut_row = mysqli_fetch_array($get_recut_result))
+    {
+        if($recut_row['recut_status']!='')
+        {
+            $issue_status=$recut_row['recut_status']+1;
+        }
+        else
+        {
+            $issue_status=1;
+        }       
+    }
     foreach($issueval as $key=>$value)
     {
         //retreaving remaining_qty from recut_v2_child
@@ -117,7 +130,11 @@ if(isset($_POST['formIssue']))
                 //updating recut_v2_child
                 $update_recut_v2_child = "update $bai_pro3.recut_v2_child set issued_qty = issued_qty+$to_add where bcd_id = $bundle_number and parent_id = $doc_no_ref";
                mysqli_query($link, $update_recut_v2_child) or exit("update_recut_v2_child".mysqli_error($GLOBALS["___mysqli_ston"]));
-                //updating rejection_log_child
+
+              $insert_query_track= "INSERT INTO $bai_pro3.`recut_v2_child_issue_track` (`recut_id`, `bcd_id`, `issued_qty`, `status`) VALUES ( $doc_no_ref, $bundle_number, $to_add, $issue_status)"; 
+              mysqli_query($link, $insert_query_track) or exit("Inserting_recut_v2_issue_track_table_track".mysqli_error($GLOBALS["___mysqli_ston"]));
+               
+               //updating rejection_log_child
                 $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set issued_qty=issued_qty+$to_add where bcd_id = $bundle_number";
                mysqli_query($link, $updating_rejection_log_child) or exit("updating_rejection_log_child".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $issued_to_module = issued_to_module($bundle_number,$to_add,2);
