@@ -229,7 +229,7 @@ function issued_to_module($bcd_id,$qty,$ref)
             $qry_ops_mapping_after = "SELECT of.operation_code FROM `$brandix_bts`.`tbl_style_ops_master` tm 
             LEFT JOIN brandix_bts.`tbl_orders_ops_ref` of ON of.`operation_code`=tm.`operation_code`
             WHERE tm.`style` ='$style' AND tm.`color` = '$mapped_color'
-            AND category = 'sewing' AND display_operations='yes' ORDER BY operation_order*1 LIMIT 1";
+            AND category = 'sewing' AND display_operations='yes' and of.operation_code>1 ORDER BY operation_order*1 LIMIT 1";
             $result_qry_ops_mapping_after = $link->query($qry_ops_mapping_after);
             if(mysqli_num_rows($result_qry_ops_mapping_after) > 0)
             {
@@ -395,9 +395,7 @@ echo $drp_down;
                     {
                         $button_html = "<button type='button'class='btn btn-danger' onclick='issuemodule(".$id.")'>Issue To Module</button>";
                       
-                        $button_html = "<button type='button'class='btn btn-danger' onclick='issuemodule(".$id.")'>Bundle Tickets</button>";
-
-                        $html_hiding = "IssueToModule";
+						$html_hiding = "IssueToModule";
                     }
                     echo "<tr><td>$s_no</td>";
                     echo "<td>".$row['doc_no']."</td>";
