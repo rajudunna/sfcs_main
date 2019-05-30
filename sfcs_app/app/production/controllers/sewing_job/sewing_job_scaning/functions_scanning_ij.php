@@ -126,25 +126,23 @@ function getjobdetails($job_number)
 			if($row['ops_dependency'] == $job_number[4])
 			{
 				$ops_dep_code = $row['operation_code'];
-				//$schedule_count_query = "SELECT sum(recevied_qty)as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id =$ops_dep_code";
-				/*Removed sum function qry*/
-				$schedule_count_query ="SELECT recevied_qty as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id =$ops_dep_code";
+				$schedule_count_query = "SELECT recevied_qty as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id =$ops_dep_code";
 				//echo $schedule_count_query;
 				$schedule_count_query = $link->query($schedule_count_query);
 				if($schedule_count_query->num_rows > 0)
-                {
-                    while($row = $schedule_count_query->fetch_assoc()) 
-                    {
-                        $recevied_qty = $row['recevied_qty'];
-                    }
-                    if($recevied_qty == 0)
-                    {
-                        $ops_dep_flag =1;
-                        $result_array['status'] = 'The dependency operations for this operation are not yet done.';
-                        echo json_encode($result_array);
-                        die();
-                    }
-                }else{
+				{
+					while($row = $schedule_count_query->fetch_assoc()) 
+					{
+						$recevied_qty = $row['recevied_qty'];
+					}
+					if($recevied_qty == 0)
+					{
+						$ops_dep_flag =1;
+						$result_array['status'] = 'The dependency operations for this operation are not yet done.';
+						echo json_encode($result_array);
+						die();
+					}
+				}else{
 
                     $schedule_count_query = "SELECT sum(recevied_qty)as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$doc_no_dependency' AND operation_id =$ops_dep_code";
                     $schedule_count_query = $link->query($schedule_count_query);
@@ -303,7 +301,6 @@ function getjobdetails($job_number)
 	else
 	{
 		$result_style_data = $link->query($schedule_query);
-		$parellel_ops_flag=0;
 		$parellel_ops=array();
 		while($row = $result_style_data->fetch_assoc()) 
 		{
@@ -370,29 +367,21 @@ function getjobdetails($job_number)
 				$min_val_doc_wise = array();
 				$row_bundle_wise_qty =0;
 				$bundle_tot_qty =0;
-				//getting previous parellel operations for current operation based on next operation column in style ops master
-                if($parellel_ops_flag!=1){
+				$ops_size=sizeof($parellel_ops);
 
-                    $qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and ops_dependency=$job_number[4]";
+				if($ops_size<=0){
+
+                    $qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and ops_dependency='$job_number[4]'";
                     $qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
-                    while ($row = mysqli_fetch_array($qry_parellel_ops_result))
-                    {   
-                        $parellel_ops[] = $row['operation_code'];
-                    }
+					if($qry_parellel_ops_result->num_rows > 0){
+						while ($row_parellel = mysqli_fetch_array($qry_parellel_ops_result))
+							{   
+								$parellel_ops[] = $row_parellel['operation_code'];
+							}
 
+					}
 				}
-				//disable below query 
-				//$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code = $pre_ops_code group by doc_no";
-
-				if(sizeof($parellel_ops)>0){
-                    //$parellel_operations = implode(',',$parellel_ops);
-                    $retreving_remaining_qty_qry = "select min(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code in (".implode(',',$parellel_ops).")";
-                    $parellel_ops_flag=1;
-
-                }else{
-                    $retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code = $pre_ops_code group by doc_no";
-				}
-				
+				$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code = $pre_ops_code group by doc_no";
 				$result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
 				if($result_retreving_remaining_qty_qry->num_rows > 0)
 				{
