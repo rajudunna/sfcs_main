@@ -2,6 +2,8 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
 include('cut_rejections_save.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/app/cutting/controllers/cut_reporting_without_rolls/emb_reporting.php');
+//include('emb_reporting.php');
 error_reporting(0);
 $LEFT_THRESHOLD = 10000;
 $THRESHOLD = 200; //This Constant ensures the loop to force quit if it was struck in an infinte loop
@@ -265,6 +267,7 @@ if($target == 'normal'){
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $m3_status;
         echo json_encode($response_data);
+        emblishment_quantities($doc_no,$style,$color);
         exit();
     } 
 }
@@ -466,6 +469,7 @@ if($target == 'schedule_clubbed'){
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $status;
         echo json_encode($response_data);
+        emblishment_quantities(implode(",",$child_docs),$style,$color);
         exit();
     } 
 }
@@ -857,6 +861,7 @@ if($target == 'style_clubbed'){
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $status;
         echo json_encode($response_data);
+        emblishment_quantities(implode(",",$child_docs),$style,$color);
         exit();
     } 
 }

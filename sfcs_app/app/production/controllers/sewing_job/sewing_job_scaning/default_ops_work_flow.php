@@ -16,7 +16,7 @@ $result_oper = $link->query($qry_get_operation_name);
 		<div class="panel-heading"><strong>Default Operation Flow</strong></div>
 		<div class="panel-body">
             <div id ="dynamic_table1">
-                <table class = 'table table-striped' id='dynamic_table'><thead><tr><th>Operation Code</th><th>Operation Name</th><th>Operation Group</th><th>Report To ERP</th><th>Barcode</th><th>Next Operations</th><th>Component</th><th></th><th style='text-align:center;'>Controls</th><th><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,0);'><i class='fa fa-plus' aria-hidden='true'></i></button></th></tr></thead>
+                <table class = 'table table-striped' id='dynamic_table'><thead><tr><th>Operation Code</th><th>Operation Name</th><th>Operation Group</th><th>Report To ERP</th><th>Barcode</th><th>Previous Operation</th><th>Next Operations</th><th>Component</th><th style='text-align:center;'>Controls</th><th><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,0);'><i class='fa fa-plus' aria-hidden='true'></i></button></th></tr></thead>
             </div>
 <?php
 $qry_get_operation_name = "SELECT id,operation_name,default_operation,operation_code FROM $brandix_bts.tbl_orders_ops_ref";
@@ -81,6 +81,8 @@ $result_oper2 = $link->query($qry_get_suppliers);
 					<label class="radio-inline"><input type="radio" name="optradio2" value = "No" id= 'optradio2' onclick="autooperseq()" checked>No</label><br><br>
 					<label>Operation Group</label>
 					<input class="form-control input-sm integer" id="oper_seq2" type="text" onchange='verify_num_seq1(this)' value = '0'>
+					<label>Previous Operation</label>
+					<input class="form-control input-sm integer" id="oper_prev2" type="text">
 					<label>Next Operation</label>
 					<input class="form-control input-sm integer" id="oper_depe2" type="text">
 					<label>Component</label>
@@ -139,6 +141,8 @@ $result_oper2 = $link->query($qry_get_suppliers);
 			<label class="radio-inline"><input type="radio" name="optradio" value = "No" id= 'None' onclick="autooperseq()" checked>No</label><br><br>
 			<label>Operation Group </label>
 			<input class="form-control input-sm integer" id="oper_seq1" type="text"  onchange='verify_num_seq2(this)' value = '0'>
+			<label>Previous Operation</label>
+			<input class="form-control input-sm integer" id="oper_prev1" type="text">
 			<label>Next Operation</label>
 			<input class="form-control input-sm integer" id="oper_depe1" type="text">
 			<label>Component</label>
@@ -198,13 +202,21 @@ $(document).ready(function(){
                         {
                             data[i].ops_sequence = '';
                         }
-                        if(data[i].ops_dependency == null)
+                         if(data[i].ops_dependency == null)
                         {
                             data[i].ops_dependency = '';
+                        }
+                        if(data[i].previous_operation == null)
+                        {
+                            data[i].previous_operation = '';
                         }
                         if(data[i].component == null)
                         {
                             data[i].component = '';
+                        }
+                        if(data[i].previous_operation == 0)
+                        {
+                            data[i].previous_operation = '';
                         }
                         if(data[i].ops_dependency == 0)
                         {
@@ -227,7 +239,7 @@ $(document).ready(function(){
                         // {
                         //     var editing_class = '';
                         // }
-                        var markup1 = "<tr><td class='none' id="+data[i].main_id+"operation_id>"+data[i]['operation_id']+"</td><td id="+data[i].main_id+"ops_code>"+data[i]['operation_code']+"</td><td class='none' id="+data[i].main_id+"ops_order>"+data[i]['operation_order']+"</td><td id="+data[i].main_id+"operation_name>"+data[i]['ops_name']+"</td><td id="+data[i].main_id+"seq>"+data[i].ops_sequence+"</td><td>"+data[i]['default_operration']+"</td></td><td id="+data[i].main_id+"barcode>"+data[i].barcode+"</td><td id="+data[i].main_id+"dep>"+data[i].ops_dependency+"</td><td id="+data[i].main_id+"comp>"+data[i].component+"</td>";
+                        var markup1 = "<tr><td class='none' id="+data[i].main_id+"operation_id>"+data[i]['operation_id']+"</td><td id="+data[i].main_id+"ops_code>"+data[i]['operation_code']+"</td><td class='none' id="+data[i].main_id+"ops_order>"+data[i]['operation_order']+"</td><td id="+data[i].main_id+"operation_name>"+data[i]['ops_name']+"</td><td id="+data[i].main_id+"seq>"+data[i].ops_sequence+"</td><td>"+data[i]['default_operration']+"</td></td><td id="+data[i].main_id+"barcode>"+data[i].barcode+"</td><td id="+data[i].main_id+"prev>"+data[i].previous_operation+"</td><td id="+data[i].main_id+"dep>"+data[i].ops_dependency+"</td><td id="+data[i].main_id+"comp>"+data[i].component+"</td>";
                         <?php
                             if(in_array($edit,$has_permission))
                             {	?>
@@ -326,11 +338,16 @@ $(document).ready(function(){
 			var barcode = $("input:radio[name=optradio2]:checked").val();
 			var barcode1 =  "'"+barcode+"'";
 			var oper_seq = $('#oper_seq2').val();
+			var oper_prev = $('#oper_prev2').val();
 			var oper_dep = $('#oper_depe2').val();
             var s = $('#oper_code1').val();
 			if(oper_dep == '')
 			{
 				oper_dep = 0;
+			}
+			if(oper_prev == '')
+			{
+				oper_prev = 0;
 			}
 			//alert(oper_dep);
 			var component = $('#component2').val();
@@ -377,7 +394,7 @@ $(document).ready(function(){
                 var actual_ops_order = pre_ops_order;
 			}
 			// alert('hello1'+actual_ops_order);
-			var saving_data = [oper_name_id,s,actual_ops_order,oper_def1,oper_seq,oper_dep,component1,barcode1];
+			var saving_data = [oper_name_id,s,actual_ops_order,oper_def1,oper_seq,oper_prev,oper_dep,component1,barcode1];
 			//console.log(saving_data);
 			  $.ajax
 				({
@@ -411,7 +428,7 @@ $(document).ready(function(){
 									console.log(id);
 									document.getElementById(id).innerHTML = value; 
 								});
-								var markup = "<tr><td class='none' id="+response+"operation_id>"+oper_name_id+"</td><td class='none' id="+response+"ops_order>"+actual_ops_order+"</td><td id="+response+"ops_code>"+s+"</td><td id="+response+"operation_name>"+oper_name+"</td><td id="+response+"seq>"+oper_seq+"</td><td>"+oper_def+"</td><td id="+response+"barcode>"+barcode+"</td><td id="+response+"dep>"+oper_dep+"</td><td id="+response+"comp>"+component+"</td><td><button type='button' class='btn btn-info btn-sm particular' id='particularedit'  onclick='myfunctionedit(this,"+response+")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></td><td><button type='button' class='btn btn-danger btn-sm'  onclick='default_oper("+response+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></button></td><td><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,"+response+");'><i class='fa fa-plus' aria-hidden='true'></i></button></td></tr>";
+								var markup = "<tr><td class='none' id="+response+"operation_id>"+oper_name_id+"</td><td class='none' id="+response+"ops_order>"+actual_ops_order+"</td><td id="+response+"ops_code>"+s+"</td><td id="+response+"operation_name>"+oper_name+"</td><td id="+response+"seq>"+oper_seq+"</td><td>"+oper_def+"</td><td id="+response+"barcode>"+barcode+"</td><td id="+response+"prev>"+oper_prev+"</td><td id="+response+"dep>"+oper_dep+"</td><td id="+response+"comp>"+component+"</td><td><button type='button' class='btn btn-info btn-sm particular' id='particularedit'  onclick='myfunctionedit(this,"+response+")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></td><td><button type='button' class='btn btn-danger btn-sm'  onclick='default_oper("+response+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></button></td><td><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,"+response+");'><i class='fa fa-plus' aria-hidden='true'></i></button></td></tr>";
 								//$('#dynamic_table').append(markup);	
 								var row = $("#rowIndex").val();
                                 if(row != 0 && first_ops_order == 0)
@@ -437,6 +454,7 @@ $(document).ready(function(){
 		}
 		//$("input:radio[name=optradio2]:checked").val('No') ;
 		$('#oper_seq2').val('0');
+		$('#oper_prev2').val('');
 		$('#oper_depe2').val('');
 		$('#component2').val('');			
 	  });
@@ -468,6 +486,7 @@ $("#edit").click(function()
 	var barcode = $("input:radio[name=optradio]:checked").val();
 	var barcode_text = "'"+barcode+"'";
 	var oper_seq = $('#oper_seq1').val();
+	var oper_prev = $('#oper_prev1').val();
 	var oper_dep = $('#oper_depe1').val();
 	var component = $('#component1').val();
 	var ops_code1 = $('#ops_code1').val();
@@ -494,7 +513,8 @@ $("#edit").click(function()
 	}
 	if(flag == 1)
 	{
-		editable_data = [id,barcode_text,oper_seq,oper_dep,component1,ops_code1];
+		editable_data = [id,barcode_text,oper_seq,oper_prev,oper_dep,component1,ops_code1];
+		console.log(editable_data);
 	$.ajax
 		({
 			
@@ -518,6 +538,7 @@ $("#edit").click(function()
 						//alert(supplier_id);
 						//$("#"+id+"supplier_id").html(supplier_id);
 						$("#"+id+"seq").html(oper_seq);
+						$("#"+id+"prev").html(oper_prev);
 						$("#"+id+"dep").html(oper_dep);
 						$("#"+id+"comp").html(component);
 						$("#"+id+"ops_code").html(ops_code1);
@@ -861,6 +882,7 @@ function myfunctionedit(val,id)
 					document.getElementById('editable_id').value = id;
 					actual_barcode = id+"barcode";
 					seq = id+"seq";
+					prev = id+"prev";
 					dep = id+"dep";
 					comp=id+"comp";
 					//sup_id = id+"supplier_id";
@@ -871,6 +893,7 @@ function myfunctionedit(val,id)
 					//var barcode = "#"+actual_barcode;
 					barcode = document.getElementById(actual_barcode).innerText;
 					seqence = document.getElementById(seq).innerText;
+					prev = document.getElementById(prev).innerText;
 					dep = document.getElementById(dep).innerText;
 					comp = document.getElementById(comp).innerText;
 					//sup_id = document.getElementById(sup_id).innerText;
@@ -890,6 +913,7 @@ function myfunctionedit(val,id)
 						dep = '';
 						document.getElementById('dep_flag').value = 'Yes';
 					}
+					document.getElementById('oper_prev1').value = prev;
 					document.getElementById('oper_depe1').value = dep;
 					document.getElementById('component1').value = comp;
 					//document.getElementById('optradio').value = 'Yes';
