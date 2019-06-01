@@ -86,6 +86,21 @@
                             }
                         }
                     }
+                    elseif($count == 0)
+                    {
+                        $numcols = count($line);
+                        if($numcols > 8)
+                        {
+                            echo "<script>
+                            sweetAlert('Oops','columns mismatch with file','error')
+                            setTimeout(
+                            function(){
+                                location.href = ' $url ';
+                            },2000);
+                            </script>";
+                            exit();
+                        }
+                    }
                     $count++;  
                 }            
                 //close opened csv files
