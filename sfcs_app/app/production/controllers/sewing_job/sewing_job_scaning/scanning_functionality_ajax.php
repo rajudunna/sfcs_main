@@ -887,7 +887,7 @@ else if($concurrent_flag == 0)
 	}
 	if($ops_dep)
 	{
-		$dep_ops_array_qry_seq = "select ops_dependency,operation_code,ops_sequence from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' AND ops_dependency != 200 AND ops_dependency != 0";
+		$dep_ops_array_qry_seq = "select tm.ops_dependency,tm.operation_code,tm.ops_sequence from $brandix_bts.tbl_style_ops_master tm LEFT JOIN brandix_bts.`tbl_orders_ops_ref` tr ON tr.id=tm.operation_name WHERE tm.style='$b_style' AND tm.color = '$mapped_color' AND tm.ops_dependency != 200 AND tm.ops_dependency != 0  and tr.category = 'sewing'";
 		// $dep_ops_array_qry_seq.'</br>';
 		$result_dep_ops_array_qry_seq = $link->query($dep_ops_array_qry_seq);
 		while($row = $result_dep_ops_array_qry_seq->fetch_assoc()) 

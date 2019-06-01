@@ -392,7 +392,6 @@ function getjobdetails($job_number)
 						
 						if(sizeof($parellel_ops)>0){
 							//new logic here based on 2001 CR
-							$act_bal_to_report="143";
 							//get min qty of all operations
 							$qry_min_prevops="SELECT MIN(recevied_qty) AS min_recieved_qty FROM brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND size_id ='$size' AND operation_id in (".implode(',',$parellel_ops).")";
 							$result_qry_min_prevops = $link->query($qry_min_prevops);
