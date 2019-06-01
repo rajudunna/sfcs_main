@@ -1,5 +1,10 @@
 <html>
 <head>
+<style>
+th,td{
+    text-align:center;
+}
+</style>
 <?php 
     include(getFullURLLevel($_GET['r'],'common/config/config_ajax.php',3,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
@@ -12,6 +17,7 @@ $(document).ready(function() {
     $('#myTable').DataTable( { 
         paging:false,
         "bSort": false,
+       
         "dom": '<"top"iflp<"clear">>rt',
         initComplete: function () {
             this.api().columns().every( function () {
@@ -65,12 +71,7 @@ function ajax_data(style)
 
     });
 
-
-
-
 }
-
-
 
 </script>
 
@@ -192,11 +193,22 @@ function ajax_data(style)
                                                         <td>{$tot_bundles[$i]}</td>";
                                                         for ($ii=0; $ii< count($operation_codes); $ii++) 
                                                         {
-                                                            echo "<td>".$data_array_rec[$tot_bundles[$i]][$operation_codes[$ii]]."</td>";
-                                                            echo "<td>".$data_array_rej[$tot_bundles[$i]][$operation_codes[$ii]]."</td>";
-                                                            echo "<td>".($data_array_rej[$tot_bundles[$i]][$operation_codes[$ii]]-$data_array_recut[$tot_bundles[$i]][$operation_codes[$ii]])."</td>";
+                                                            if($data_array_rec[$tot_bundles[$i]][$operation_codes[$ii]]==0){
+                                                                echo "<td>--</td>";
+                                                            }else{
+                                                                 echo "<td>".$data_array_rec[$tot_bundles[$i]][$operation_codes[$ii]]."</td>";
+                                                            }
+                                                            if($data_array_rej[$tot_bundles[$i]][$operation_codes[$ii]]==0){
+                                                                echo "<td>--</td>";
+                                                            }else{
+                                                                echo "<td>".$data_array_rej[$tot_bundles[$i]][$operation_codes[$ii]]."</td>";
+                                                            }
+                                                            if(($data_array_rej[$tot_bundles[$i]][$operation_codes[$ii]]-$data_array_recut[$tot_bundles[$i]][$operation_codes[$ii]])==0){
+                                                                echo "<td>--</td>";
+                                                            }else{
+                                                                echo "<td>".($data_array_rej[$tot_bundles[$i]][$operation_codes[$ii]]-$data_array_recut[$tot_bundles[$i]][$operation_codes[$ii]])."</td>";
+                                                            }
                                                         }
-                                                       
                                                     }
                                                 }
                                            ?>
