@@ -50,15 +50,15 @@ function validateQty(event)
 	return true;
 }
 
-function isNumberKey(evt,issued_qty)
-{
-	var myVal = event.target.value;
-	if(myVal > issued_qty){
-		event.target.value = myVal.substring(0,myVal.length-1)
-		return false;
-	}
-	return true;
-}
+// function isNumberKey(evt,issued_qty)
+// {
+// 	var myVal = event.target.value;
+// 	if(myVal > issued_qty){
+// 		event.target.value = myVal.substring(0,myVal.length-1)
+// 		return false;
+// 	}
+// 	return true;
+// }
 </script>
 
   <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
@@ -228,7 +228,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<tr>";
 		echo "<td>$location</td><td>$box</td><td>$available</td><td>$qty_issued</td>";
 		echo '<td><input type="text" class="form-control" name="date[]" value="'.date("Y-m-d").'" readonly></td>';
-		echo '<td><input type="text" class="form-control integer" name="qty_return[]" value="" id="return_qty'.$count.'" onkeypress="return isNumberKey(event,'.$qty_issued.');" onkeyup="return isNumberKey(event,'.$qty_issued.');" onchange="if(check2(this.value)==1010){ this.value=0;}"></td>';
+		//echo '<td><input type="text" class="form-control integer" name="qty_return[]" value="" id="return_qty'.$count.'" onkeypress="return isNumberKey(event,'.$qty_issued.');" onkeyup="return isNumberKey(event,'.$qty_issued.');" onchange="if(check2(this.value)==1010){ this.value=0;}"></td>';
+		echo '<td><input type="text" class="form-control float" name="qty_return[]" value="" id="return_qty'.$count.'" onkeypress="return isNumberKey(event,'.$qty_issued.');" onkeyup="return isNumberKey(event,'.$qty_issued.');" onchange="if(check2(this.value)==1010){ this.value=0;}"></td>';
 		echo '<td><input type="text" class="form-control" name="remarks[]" value="">';
 		echo '<input type="hidden" name="tid[]" value="'.$tid.'"><input type="hidden" name="status[]" value="'.$status.'"></td>';
 	echo "</tr>";	
