@@ -11,6 +11,17 @@ $post_ops_code='';
 $qry_status='';
 error_reporting(0);
 
+//getting dependency operation
+$parellel_ops=array();
+$qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and ops_dependency='$operation_code'";
+$qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
+	if($qry_parellel_ops_result->num_rows > 0){
+		while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
+		{ 
+			$parellel_ops[] = $row_prellel['operation_code'];
+		}
+	}
+
 //To Get Sewing Operations
 $category = 'sewing';
 $get_operations = "select operation_code from brandix_bts.tbl_orders_ops_ref where category='$category'";
@@ -109,7 +120,13 @@ if($barcode_generation == 1)
 				$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if($emb_cut_check_flag != 0)
 				{
-					$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+					if(sizeof($parellel_ops)>0){
+						$retreving_remaining_qty_qry = "SELECT min(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code in (".implode(',',$parellel_ops).")";
+
+					}else{
+						$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+					}
+					
 					// echo $retreving_remaining_qty_qry.'</br>';
 					$result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
 					if($result_retreving_remaining_qty_qry->num_rows > 0)
@@ -190,7 +207,13 @@ if($barcode_generation == 1)
 					}	
 				}
 				//updating this to cps log
-				$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+				if(sizeof($parellel_ops)>0){
+					$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code in (".implode(',',$parellel_ops).")";
+
+				}else{
+					$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+				}
+								
 				$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 
 			}
@@ -218,7 +241,14 @@ if($barcode_generation == 1)
 				$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if($emb_cut_check_flag != 0)
 				{
-					$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+					
+					if(sizeof($parellel_ops)>0){
+						$retreving_remaining_qty_qry = "SELECT min(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code in (".implode(',',$parellel_ops).")";
+
+					}else{
+						$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+					}
+
 					// echo $retreving_remaining_qty_qry.'</br>';
 					$result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
 					if($result_retreving_remaining_qty_qry->num_rows > 0)
@@ -412,7 +442,11 @@ if($barcode_generation == 1)
 				$remaining_qty_rec = 0;
 				if($emb_cut_check_flag != 0)
 				{
-					$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+					if(sizeof($parellel_ops)>0){
+						$retreving_remaining_qty_qry = "SELECT min(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code in (".implode(',',$parellel_ops).")";
+					}else{
+						$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+					}
 					$result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
 					// if($result_retreving_remaining_qty_qry->num_rows > 0)
 					// {
@@ -493,7 +527,11 @@ if($barcode_generation == 1)
 						$to_add += 0;
 					}
 				}
-				$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+				if(sizeof($parellel_ops)>0){
+					$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code in (".implode(',',$parellel_ops).")";
+				}else{
+					$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+				}
 				$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 			}
 			
@@ -525,7 +563,12 @@ if($barcode_generation == 1)
 					$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if($emb_cut_check_flag != 0)
 					{
-						$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+						if(sizeof($parellel_ops)>0){
+							$retreving_remaining_qty_qry = "SELECT min(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code in (".implode(',',$parellel_ops).")";
+						}else{
+							$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+						}
+						
 						$result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
 						if($result_retreving_remaining_qty_qry->num_rows > 0)
 						{
@@ -777,7 +820,12 @@ else if($concurrent_flag == 0)
 		foreach($b_tid as $key=>$value)
 		{
 			$to_add = $b_rep_qty[$key];
-			$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $b_doc_num[$key] and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+			if(sizeof($parellel_ops)>0){
+				$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $b_doc_num[$key] and size_title='$b_sizes[$key]' AND operation_code in (".implode(',',$parellel_ops).")";
+			}else{
+				$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $b_doc_num[$key] and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+			}
+			
 			$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 		}
 		// echo $update_qry_cps_log.'</br>';
@@ -1607,8 +1655,12 @@ else if($concurrent_flag == 0)
 					$insert_into_rejections_reason_track_res =$link->query($insert_into_rejections_reason_track);
 					//updating this to cps log
 					if($emb_cut_check_flag)
-					{
-						$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$implode_next[2] where doc_no = $doc_value and size_title='$size_title' AND operation_code = $emb_cut_check_flag";
+					{	
+						if(sizeof($parellel_ops)>0){
+							$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$implode_next[2] where doc_no = $doc_value and size_title='$size_title' AND operation_code in (".implode(',',$parellel_ops).")";
+						}else{
+							$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$implode_next[2] where doc_no = $doc_value and size_title='$size_title' AND operation_code = $emb_cut_check_flag";
+						}
 						$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 					}
 				}
