@@ -1305,6 +1305,30 @@ function getCutDetails($doc_number){
             echo json_encode($result_array);
             die();
         }
+
+        $pre_ops_code = '';
+		$emb_category = 'Send PF';
+   
+	    $get_operations = "select operation_code from $brandix_bts.tbl_orders_ops_ref where category ='$emb_category'";
+	    //echo $get_operations;
+	    $result_ops = $link->query($get_operations);
+	    while($row_ops = $result_ops->fetch_assoc())
+	    {
+	      $operations[] = $row_ops['operation_code'];
+	    }
+		$emb_operations = implode(',',$operations);
+		
+		$get_code="select previous_operation from $brandix_bts.tbl_style_ops_master where operation_code in ($emb_operations)";
+		//echo $get_code;
+		$result_get_code_check = $link->query($get_code);
+		if($result_get_code_check->num_rows > 0)
+		{
+			while($row = $result_get_code_check->fetch_assoc())
+			{
+			   $pre_ops_code = $row['previous_operation'];	
+			}
+
+		}
         
         $pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code != 10 ORDER BY operation_order DESC LIMIT 1";
         $result_pre_ops_check = $link->query($pre_ops_check);
@@ -1312,7 +1336,7 @@ function getCutDetails($doc_number){
         {
             while($row = $result_pre_ops_check->fetch_assoc()) 
             {
-                $pre_ops_code = $row['operation_code'];
+                $pre_ops_code !='' ? $pre_ops_code : $pre_ops_code = $row['operation_code'];
             }
             $pre_ops_validation = "SELECT sum(recevied_qty)as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id = $pre_ops_code";
             $result_pre_ops_validation = $link->query($pre_ops_validation);
