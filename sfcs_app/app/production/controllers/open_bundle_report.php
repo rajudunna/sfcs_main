@@ -8,73 +8,43 @@ th,td{
 <?php 
     include(getFullURLLevel($_GET['r'],'common/config/config_ajax.php',3,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+    
+	if(isset($_POST['style']))
+	{
+		$style=$_POST['style'];
+		$schedule=$_POST['schedule'];
+	}
+	else
+	{
+		$style=$_GET['style'];
+		$schedule=$_GET['schedule'];
+	}
 ?>
 
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/openbundle_report.min.js',3,'R'); ?>"></script>
-
-<script>
-$(document).ready(function() {
-    $('#myTable').DataTable( { 
-        paging:false,
-        "bSort": false,
-       
-        "dom": '<"top"iflp<"clear">>rt',
-        initComplete: function () {
-            this.api().columns().every( function () {
-                var column = this;
-                var select = $('<select><option value=""></option></select>')
-                    .appendTo( $(column.header()) )
-                    .on( 'change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );    
- 
-                        column
-                            .search( val ? '^'+val+'$' : '', true, false )
-                            .draw();
-                    } );
- 
-                column.data().unique().sort().each( function ( d, j ) {
-                    select.append( '<option value="'+d+'">'+d+'</option>' )
-                    
-                } );
-                
-            } );
-        }
-    });
-});
-
-function ajax_data(style)
-{
-// alert(style);
-// xhttp = new XMLHttpRequest();
-//   xhttp.onreadystatechange = function() {
-//     if (this.readyState == 4 && this.status == 200) {
-//      // document.getElementById("schedule").innerHTML = this.responseText;
-//      alert(this.responseText);
-//     }
-//   };
-//   xhttp.open("GET", "open_bundle_report_ajax.php?style_ref="+style, true);
-//   xhttp.send();   
-  var function_text = "<?php echo getFullURL($_GET['r'],'open_bundle_report_ajax.php','R'); ?>";
-    $('#myModal').modal('toggle');
-    $.ajax({
-
-			type: "GET",
-			url: function_text+"?style_ref="+style,
-			//dataType: "json",
-			success: function (response) 
-			{
-                document.getElementById('schedule').innerHTML = response;
-               // alert(response);
-            }
-
-    });
-
-}
-
-</script>
-
+<script language="javascript" type="text/javascript">
+function firstbox()
+	{
+		var url1 = '<?= getFullUrl($_GET['r'],'open_bundle_report.php','N'); ?>';
+		window.location.href =url1+"&style="+document.bundle_rep.style.value;
+	}
+function check_val()
+	{
+		var style=document.getElementById("style").value;
+		var schedule=document.getElementById("schedule").value;
+		
+		if(style=='NIL' || schedule=='NIL')
+		{
+			sweetAlert('Please Select the Values','','warning');
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+    </script>
+    
 </head>
 <body>
     <div class='panel panel-primary'>
@@ -82,36 +52,59 @@ function ajax_data(style)
 		    <b>Open bundle Report</b>
 	    </div>
     	<div class="panel-body">
-		    <form method="post" name="test" action="#">
+		    <form method="post" name="bundle_rep" action="#">
                     
                     <div class="col-sm-2 form-group">
                         <label for='style'>Select Style</label>
+
                         <?php
-                            $sql_options_style="SELECT DISTINCT(style) FROM brandix_bts.`bundle_creation_data`";
-                            $options_res=mysqli_query($link,$sql_options_style);
-                        ?>
-                        <select class="form-control" name="style" id="style"  onchange="ajax_data(this.value);">
-                            <?php
-                                echo '<option value="">Select style</option>';
-                                
-                                while( $row_options = mysqli_fetch_assoc( $options_res ) )
-                                {
-                                    echo '<option value="'.$row_options['style'].'">'.$row_options['style'].'</option>';
-                                }
-                            ?>
-                
-                        </select>
+                        // Style
+                        echo "<select name=\"style\" id=\"style\"  class='form-control' onchange=\"firstbox();\">";
+                        $sql="select * from $brandix_bts.tbl_orders_style_ref order by product_style";
+                        $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $sql_num_check=mysqli_num_rows($sql_result);
+                        echo "<option value=\"NIL\" selected>Select Style</option>";
+                        while($sql_row=mysqli_fetch_array($sql_result))
+                        {
+                            if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$style))
+                            {
+                                echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['product_style']."</option>";
+                            }
+                            else
+                            {
+                                echo "<option value=\"".$sql_row['id']."\">".$sql_row['product_style']."</option>";
+                            }
+                        }
+                        echo "</select>";
+                    ?>
+
                     </div>
                     <div class="col-sm-2 form-group">
                         <label for='schedule'>Select Schedule</label>
-                        <select class='form-control' name='schedule' id='schedule'>
-                        <option value="">Select schedule</option>
-                        </select>
+                        <?php
+                            echo "<select class='form-control' name='schedule' id='schedule'>";
+                            $sql="select id,product_schedule as schedule from $brandix_bts.tbl_orders_master where ref_product_style=\"$style\" group by schedule";
+                            $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            $sql_num_check=mysqli_num_rows($sql_result);
+                            echo "<option value=\"NIL\" selected>Select Schedule</option>";
+                            while($sql_row=mysqli_fetch_array($sql_result))
+                            {
+                                if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$schedule))
+                                {
+                                    echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['schedule']."</option>";
+                                }
+                                else
+                                {
+                                    echo "<option value=\"".$sql_row['id']."\">".$sql_row['schedule']."</option>";
+                                }
+                            }
+                            echo "</select>";
+				        ?>
                     </div>	
                     <br/>
                     <div class="col-sm-2 form-group">
                         <?php
-                          echo "<input class='btn btn-success' type=\"submit\" value=\"Submit\" name=\"submit\" id=\"submit_data\">";
+                          echo "<input class='btn btn-success' type=\"submit\" value=\"Submit\" name=\"submit\" id=\"submit_data\" onclick=\"return check_val();\">";
                         ?>
                     </div> 
 	         </form>
@@ -120,9 +113,11 @@ function ajax_data(style)
         <?php 
           if(isset($_POST['submit']))
           {
-                $style=$_POST['style'];                   
-               $schedule=$_POST['schedule'];
-                
+               
+                $schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$_POST['schedule'],$link);
+                $style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$_POST['style'],$link);
+               
+               
                 ?>
                 <div class='row'>
                      <div class='panel panel-primary'>
@@ -220,22 +215,22 @@ function ajax_data(style)
                              }
                             ?>
                             
-<script>
+        <script>
 
-	var table3Filters = {
-	rows_counter: true,
-	rows_counter_text: "Total rows: ",
-	btn_reset: true,
-    sort_select: true,
-	display_all_text: "Display all"
-	}
-	setFilterGrid("myTable",table3Filters);
-	$('#reset_myTable').addClass('btn btn-warning btn-xs');
-	$('select.required').change(function() {
-    var total = $('select.required').length;
-    var selected = $('select.required option:selected').length;
-    $('#submit_data').attr('disabled', (selected == total));
-});
-</script>
-</body>
-</html>
+            var table3Filters = {
+            rows_counter: true,
+            rows_counter_text: "Total rows: ",
+            btn_reset: true,
+            sort_select: true,
+            display_all_text: "Display all"
+            }
+            setFilterGrid("myTable",table3Filters);
+            $('#reset_myTable').addClass('btn btn-warning btn-xs');
+            $('select.required').change(function() {
+            var total = $('select.required').length;
+            var selected = $('select.required option:selected').length;
+            $('#submit_data').attr('disabled', (selected == total));
+        });
+        </script>
+        </body>
+        </html>
