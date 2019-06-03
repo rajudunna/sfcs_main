@@ -158,7 +158,8 @@ if(in_array($category_act,$category))
  
 
 $dep_ops_check = "select ops_dependency from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' AND operation_code = $b_op_id";
-//echo $dep_ops_check;
+ // echo $dep_ops_check;
+ // die();
 $result_dep_ops_check = $link->query($dep_ops_check);
 if($result_dep_ops_check->num_rows > 0)
 {
@@ -171,15 +172,16 @@ else
 {
     $next_operation = '';
 }
-
+$flag ='';
 if($next_operation > 0)
 {
    $flag = 'parallel_scanning';
-    $get_ops_dep = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and ops_dependency = $job_number[4]";
+    $get_ops_dep = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_dependency = $next_operation";
+   // echo $get_ops_dep;
    $result_ops_dep = $link->query($get_ops_dep);
    while($row_dep = $result_ops_dep->fetch_assoc()) 
    {
-      $operations[] = $row_dep['operation_code'];
+      $emb_operations[] = $row_dep['operation_code'];
    }
    //$emb_operations = implode(',',$operations);
 }
@@ -413,9 +415,13 @@ foreach($b_tid as $key => $value)
                 $result_query_001_temp = $link->query($bulk_insert_post_temp) or exit('bulk_insert_post query error in updating');
             }
         }
-        if($flag = 'parallel_scanning')
+        // echo $emb_cut_check_flag;
+        // echo $post_ops_code;
+        // echo $flag;
+        if($flag == 'parallel_scanning')
         {
            $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where bundle_number ='".$b_tid[$key]."' and operation_id in (".implode(',',$emb_operations).")";
+          // echo $pre_send_qty_qry;
             $result_pre_send_qty = $link->query($pre_send_qty_qry);
             while($row = $result_pre_send_qty->fetch_assoc()) 
             {
@@ -430,9 +436,10 @@ foreach($b_tid as $key => $value)
             if($post_ops_code != null && $emb_cut_check_flag == 1)
             {
                 $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id = ".$post_ops_code;
+               
                 $result_query = $link->query($query_post) or exit('query error in updating');
             }
-        }	
+         }	
        
         if($ops_dep)
         {
