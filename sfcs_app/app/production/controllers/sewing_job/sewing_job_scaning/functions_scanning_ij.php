@@ -1318,7 +1318,7 @@ function getCutDetails($doc_number){
 	    }
 		$emb_operations = implode(',',$operations);
 		
-		$get_code="select previous_operation from $brandix_bts.tbl_style_ops_master where operation_code in ($emb_operations)";
+		$get_code="select previous_operation from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code in ($emb_operations)";
 		//echo $get_code;
 		$result_get_code_check = $link->query($get_code);
 		if($result_get_code_check->num_rows > 0)
