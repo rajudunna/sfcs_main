@@ -189,10 +189,9 @@
         }
    
         //End Here
-
-        if($next_operation < 0)
+        else 
         {
-            $ops_dep_flag = 0;
+          $ops_dep_flag = 0;
             $ops_dep_qry = "SELECT ops_dependency,operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$job_number[1]' AND color =  '$maped_color' AND ops_dependency != 200 AND ops_dependency != 0";
             $result_ops_dep_qry = $link->query($ops_dep_qry);
             while($row = $result_ops_dep_qry->fetch_assoc()) 
@@ -221,14 +220,19 @@
                     }
                 }
             }
-        }  
+        }
 
         
-         if($next_operation < 0)
-        {
+            
+      
+
+        
+        //  if($next_operation < 0)
+        // {
        
                 $flags=0;
                 $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and operation_code=$job_number[4]";
+                echo $ops_seq_check;
                 $result_ops_seq_check = $link->query($ops_seq_check);
                 if($result_ops_seq_check->num_rows > 0)
                 {
@@ -316,7 +320,7 @@
                         $flag = 'packing_summary_input';
                     }
                 }
-            }   
+           // }   
 
          if($flag == 'parallel_scanning')
          {
@@ -405,33 +409,37 @@
 
                    //  }
                 }
+                else
+                {
+                      if($emb_cut_check_flag == 1 && $bundle_no == $row['tid'])
+                      {
+                        
+                            $doc_no = $row['doc_no'];
+                            $size = $row['old_size'];
+
+                            $retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code = $pre_ops_code group by doc_no";
+                            echo $retreving_remaining_qty_qry;
+                            $result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
+                            if($result_retreving_remaining_qty_qry->num_rows > 0)
+                            {
+                                while($row_remaining = $result_retreving_remaining_qty_qry->fetch_assoc()) 
+                                {
+                                    $sum_balance = $row_remaining['balance_to_report'];
+                                }
+                            }
+                            if($sum_balance < $row['balance_to_report'])
+                            {
+                                $result_array['status'] = 'Previous operation not yet done for this jobs.';
+                                echo json_encode($result_array);
+                                die();
+
+                            }
+                      }
+                }
 
                
                 
-                if($emb_cut_check_flag == 1 && $bundle_no == $row['tid'])
-                {
-                    
-                    $doc_no = $row['doc_no'];
-                    $size = $row['old_size'];
-
-                    $retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code = $pre_ops_code group by doc_no";
-                    //echo $retreving_remaining_qty_qry;
-                    $result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
-                    if($result_retreving_remaining_qty_qry->num_rows > 0)
-                    {
-                        while($row_remaining = $result_retreving_remaining_qty_qry->fetch_assoc()) 
-                        {
-                            $sum_balance = $row_remaining['balance_to_report'];
-                        }
-                    }
-                    if($sum_balance < $row['balance_to_report'])
-                    {
-                        $result_array['status'] = 'Previous operation not yet done for this jobs.';
-                        echo json_encode($result_array);
-                        die();
-
-                    }
-                }
+              
                 $style = $job_number[1];
                 $schedule =  $job_number[2];
                 $color = $row['order_col_des'];
