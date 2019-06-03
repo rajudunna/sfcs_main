@@ -384,30 +384,34 @@
                    //echo $parallel_balance_report;
                    if($parallel_balance_report<0)
                    {
-                     $result_array['status'] = 'Previous operation not yet';
+                     $result_array['status'] = 'Previous operation not yet done.';
                       echo json_encode($result_array);
                       die();
                    }
-                    
-                   // $reterving_qty_parallel = "SELECT min(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code in ($emb_operations) group by doc_no";
-                   // //echo $reterving_qty_parallel;
-                   // $result_reterving_qty_parallel = $link->query($reterving_qty_parallel);
-                   //  if($result_reterving_qty_parallel->num_rows > 0)
-                   //  {
-                   //      while($row_parallel_remaining = $result_reterving_qty_parallel->fetch_assoc()) 
-                   //      {
-                   //          $sum_parallel_balance = $row_parallel_remaining['balance_to_report'];
-                   //      }
-                   //  }
-                   //  echo $sum_parallel_balance;
-                   //  echo $parallel_balance_report;
-                   //  if($sum_parallel_balance < $parallel_balance_report)
-                   //  {
-                   //      $result_array['status'] = 'Previous operation not yet';
-                   //      echo json_encode($result_array);
-                   //      die();
 
-                   //  }
+                    $type_of_sewing_query = "SELECT *,carton_act_qty as balance_to_report, 0 as reported_qty, 0 as rejected_qty, 'packing_summary_input' as flag,tid as bundle_number,barcode_sequence FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]' order by tid";
+                     $result_sewing_query = $link->query($type_of_sewing_query);
+                     while($row = $result_sewing_query->fetch_assoc()) 
+                     {
+                        $job_number_reference = $row['type_of_sewing'];
+                     } 
+                    if($job_number_reference == 2)
+                    {
+                        $selecting_sample_qtys = "SELECT input_qty FROM $bai_pro3.sp_sample_order_db WHERE order_tid = (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_col_des='$color' ) AND sizes_ref = '$size'";
+                        $result_selecting_sample_qtys = $link->query($selecting_sample_qtys);
+                        if($result_selecting_sample_qtys->num_rows > 0)
+                        {
+                            while($row_res = $result_selecting_sample_qtys->fetch_assoc()) 
+                            {
+                                $row['carton_act_qty'] = $row_res['input_qty'];
+                            }
+                        }
+                        else
+                        {
+                            $result_array['status'] = 'Sample Quantities not updated!!!';
+                        }
+                    }  
+   
                 }
                 else
                 {
