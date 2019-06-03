@@ -209,19 +209,7 @@ function ReplaceProcess($replace_id_edit)
     $count = 0;
     include("../../../../common/config/config_ajax.php");
     $html = "<button type='button' class='btn btn-success' value='Set' style='float: right;' onclick='setfunction();' id='setreset'>Select All</button>";
-    $html .= "<button type='button' class='btn btn-success' value='ReSet' style='float: right;' onclick='resetfunction();' id='setreset'>Re Set</button></br></br>";
-    $appilication = 'IPS';
-    $checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication'";
-    // echo $checking_output_ops_code;
-    $result_checking_output_ops_code = $link->query($checking_output_ops_code);
-    if($result_checking_output_ops_code->num_rows > 0)
-    {
-        while($row_result_checking_output_ops_code = $result_checking_output_ops_code->fetch_assoc()) 
-        {
-            $input_ops_code = $row_result_checking_output_ops_code['operation_code'];
-        }
-
-    }
+    $html .= "<button type='button' class='btn btn-success' value='ReSet' style='float: right;' onclick='resetfunction();' id='setreset'>Re Set</button></br></br>";    
     $qry_details = "SELECT style,SCHEDULE,color FROM `$bai_pro3`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
     WHERE rc.`parent_id` = $replace_id_edit";
     // echo $qry_details;
@@ -232,6 +220,34 @@ function ReplaceProcess($replace_id_edit)
         $scheule = $row_row['SCHEDULE'];
         $color = $row_row['color'];
     }
+    $qry_ops_mapping_after = "SELECT of.operation_code FROM `$brandix_bts`.`tbl_style_ops_master` tm 
+    LEFT JOIN brandix_bts.`tbl_orders_ops_ref` of ON of.`operation_code`=tm.`operation_code`
+    WHERE tm.`style` ='$style' AND tm.`color` = '$color'
+    AND category = 'sewing' AND display_operations='yes' and of.operation_code>1 ORDER BY operation_order*1 LIMIT 1";
+    $result_qry_ops_mapping_after = $link->query($qry_ops_mapping_after);
+    if(mysqli_num_rows($result_qry_ops_mapping_after) > 0)
+    {
+        while($ops_post = $result_qry_ops_mapping_after->fetch_assoc()) 
+        {
+            $input_ops_code = $ops_post['operation_code'];
+        }
+    }
+    else
+    {
+        $appilication = 'IPS';
+        $checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication'";
+        // echo $checking_output_ops_code;
+        $result_checking_output_ops_code = $link->query($checking_output_ops_code);
+        if($result_checking_output_ops_code->num_rows > 0)
+        {
+            while($row_result_checking_output_ops_code = $result_checking_output_ops_code->fetch_assoc()) 
+            {
+                $input_ops_code = $row_result_checking_output_ops_code['operation_code'];
+            }
+
+        } 
+    }
+    
     $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code=$input_ops_code";
 	// echo $ops_seq_check;
 	$result_ops_seq_check = $link->query($ops_seq_check);

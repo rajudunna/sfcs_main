@@ -128,16 +128,57 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				{
 					$ops_code = $sql_row122['operation_code'];
 				}
+				
+			
+				// echo $id;
+				$sqly="SELECT type_of_sewing,order_style_no,order_del_no,GROUP_CONCAT(DISTINCT TRIM(order_col_des)) AS order_col_des,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no,sum(carton_act_qty) as carton_qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
+				//echo $sqly."<br>";
+				$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_rowy=mysqli_fetch_array($resulty))
+				{
+					$doc_no_ref = $sql_rowy["doc_no"];
+					$doc_no_ref1 = $sql_rowy["doc_no"];
+					$doc_no_ref_input=$sql_rowy["doc_no"];
+					$carton_qty=$sql_rowy["carton_qty"];
+					$style=$sql_rowy['order_style_no'];
+					$schedule=$sql_rowy['order_del_no'];
+					$order_col=$sql_rowy['order_col_des'];
+					$input_job_no=$sql_rowy['input_job_no'];
+					$schedule_no=$sql_rowy['order_del_no'];
+					$type_of_sewing=$sql_rowy['type_of_sewing'];
+				}
 				$rej_qty=0;
-				$sql12="SELECT sum(recevied_qty+recut_in) as input,sum(recut_in+replace_in) as qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$ops_code";
+				$qry_ops_mapping_after = "SELECT of.operation_code FROM `$brandix_bts`.`tbl_style_ops_master` tm 
+				LEFT JOIN brandix_bts.`tbl_orders_ops_ref` of ON of.`operation_code`=tm.`operation_code`
+				WHERE tm.`style` ='$style' AND tm.`color` = '$order_col'
+				AND category = 'sewing' AND display_operations='yes' ORDER BY operation_order*1 LIMIT 1";
+				$result_qry_ops_mapping_after = $link->query($qry_ops_mapping_after);
+				if(mysqli_num_rows($result_qry_ops_mapping_after) > 0)
+				{
+					while($ops_post = $result_qry_ops_mapping_after->fetch_assoc()) 
+					{
+						$input_ops_code = $ops_post['operation_code'];
+					}
+				}
+				$sql1212="SELECT sum(recut_in+replace_in) as qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$ops_code";
 				// echo $sql12.';<br>';
-				$sql_result12=mysqli_query($link, $sql12) or exit($sql12."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row12=mysqli_fetch_array($sql_result12))
+				$sql_result1212=mysqli_query($link, $sql1212) or exit($sql12."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row1212=mysqli_fetch_array($sql_result1212))
 				{
 					if($sql_row12['qty'] > 0)
 					{
 						$rej_qty = $sql_row12['qty'];
 					}
+				}
+				$sql12="SELECT sum(recevied_qty+recut_in) as input FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$ops_code";
+				// echo $sql12.';<br>';
+				$sql_result12=mysqli_query($link, $sql12) or exit($sql12."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row12=mysqli_fetch_array($sql_result12))
+				{
+					//if($sql_row12['qty'] > 0)
+					//{
+					//	$rej_qty = $sql_row12['qty'];
+					//}
 					// if($sql_row12['input'] > 0)
 					// {
 						$input = $sql_row12['input'];
@@ -155,23 +196,6 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				else
 				{
 					$rejection_border = "";
-				}
-				// echo $id;
-				$sqly="SELECT type_of_sewing,order_style_no,order_del_no,GROUP_CONCAT(DISTINCT TRIM(order_col_des)) AS order_col_des,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no,sum(carton_act_qty) as carton_qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
-				//echo $sqly."<br>";
-				$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_rowy=mysqli_fetch_array($resulty))
-				{
-					$doc_no_ref = $sql_rowy["doc_no"];
-					$doc_no_ref1 = $sql_rowy["doc_no"];
-					$doc_no_ref_input=$sql_rowy["doc_no"];
-					$carton_qty=$sql_rowy["carton_qty"];
-					$style=$sql_rowy['order_style_no'];
-					$schedule=$sql_rowy['order_del_no'];
-					$order_col=$sql_rowy['order_col_des'];
-					$input_job_no=$sql_rowy['input_job_no'];
-					$schedule_no=$sql_rowy['order_del_no'];
-					$type_of_sewing=$sql_rowy['type_of_sewing'];
 				}			
 				//FOR SCHEDULE CLUBBING ensuring for parent docket
 				if($doc_no_ref != ''){
