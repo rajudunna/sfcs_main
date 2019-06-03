@@ -420,7 +420,7 @@ foreach($b_tid as $key => $value)
         // echo $flag;
         if($flag == 'parallel_scanning')
         {
-           $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where bundle_number ='".$b_tid[$key]."' and operation_id in (".implode(',',$emb_operations).")";
+           $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id in (".implode(',',$emb_operations).")";
            // echo $pre_send_qty_qry;
            // die();
             $result_pre_send_qty = $link->query($pre_send_qty_qry);
