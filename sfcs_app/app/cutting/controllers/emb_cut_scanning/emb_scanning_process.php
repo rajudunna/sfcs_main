@@ -421,14 +421,15 @@ foreach($b_tid as $key => $value)
         if($flag == 'parallel_scanning')
         {
            $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where bundle_number ='".$b_tid[$key]."' and operation_id in (".implode(',',$emb_operations).")";
-          // echo $pre_send_qty_qry;
+           // echo $pre_send_qty_qry;
+           // die();
             $result_pre_send_qty = $link->query($pre_send_qty_qry);
             while($row = $result_pre_send_qty->fetch_assoc()) 
             {
                 $pre_recieved_qty = $row['recieved_qty'];
             }
 
-            $query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$next_operation;
+            $query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and size_title='". $b_sizes[$key]."' and operation_id = ".$next_operation;
             $result_query = $link->query($query_post_dep) or exit('query error in updating');   
         }
         else
