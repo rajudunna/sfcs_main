@@ -344,7 +344,7 @@
             }
 
           
-            $schedule_query = "SELECT `style` as order_style_no,`schedule` as order_del_no,`send_qty`,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,`original_qty` as carton_act_qty,sum(recevied_qty) AS current_recieved_qty,`rejected_qty` as rejected_qty,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'parallel_scanning' as flag,size_id as old_size,remarks, mapped_color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE docket_number = $main_dockets AND operation_id = '$job_number[4]' order by tid";
+            $schedule_query = "SELECT `style` as order_style_no,`schedule` as order_del_no,`send_qty`,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,`original_qty` as carton_act_qty,sum(recevied_qty) AS current_recieved_qty,`rejected_qty` as rejected_qty,((send_qty+recut_in+replace_in)-(recevied_qty+rejected_qty)) as balance_to_report`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'parallel_scanning' as flag,size_id as old_size,remarks, mapped_color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE docket_number = $main_dockets AND operation_id = '$job_number[4]' order by tid";
 
             $flags=3;
             $flag = 'parallel_scanning';
@@ -376,7 +376,7 @@
                    // $doc_no = $row['doc_no'];
                    // $size = $row['old_size'];
 
-                   $current_ops_qty = $row['current_recieved_qty'];
+                   $current_ops_qty = $row['balance_to_report'];
                    // echo $previous_minqty;
 
                    
