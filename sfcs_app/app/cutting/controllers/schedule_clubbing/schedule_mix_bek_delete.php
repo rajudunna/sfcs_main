@@ -58,8 +58,8 @@
         echo"<div class='col-md-3'>"; 
         echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" required>"; 
 
-        $sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and $order_joins_in  order by order_date";     
-        $sql_result=mysqli_query($link, $sql) or exit("Sql Error schedule"); 
+		$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where length(order_del_no)<8 and order_style_no=\"$style\" and $order_joins_in order by order_date"; 
+	    $sql_result=mysqli_query($link, $sql) or exit("Sql Error schedule"); 
         echo "<option value=''>Please Select</option>"; 
         while($sql_row=mysqli_fetch_array($sql_result)) 
         { 
