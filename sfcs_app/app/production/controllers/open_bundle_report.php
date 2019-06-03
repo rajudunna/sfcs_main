@@ -20,6 +20,7 @@
 td ,th {
 text-align: center;
 }
+
 </style>
 <script>
 $(document).ready(function() {
@@ -156,7 +157,7 @@ function check_val()
                              <b>All Open Bundles</b>
                             </div>
                             <div class='panel-body' style="overflow: scroll;height: 616px;">
-                                <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'>
+                                <table style='padding:0px' class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'>
                                     <thead>
                                         <tr>
                                             <th rowspan="2">Schedule</th>
