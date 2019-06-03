@@ -1335,7 +1335,9 @@ function getCutDetails($doc_number){
         {
             while($row = $result_pre_ops_check->fetch_assoc()) 
             {
-                $pre_ops_code !='' ? $pre_ops_code : $pre_ops_code = $row['operation_code'];
+                if($pre_ops_code == 0){
+				   $pre_ops_code = $row['operation_code'];
+				}
             }
             $pre_ops_validation = "SELECT sum(recevied_qty)as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id = $pre_ops_code";
             $result_pre_ops_validation = $link->query($pre_ops_validation);
