@@ -232,7 +232,7 @@
        
                 $flags=0;
                 $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and operation_code=$job_number[4]";
-                echo $ops_seq_check;
+                //echo $ops_seq_check;
                 $result_ops_seq_check = $link->query($ops_seq_check);
                 if($result_ops_seq_check->num_rows > 0)
                 {
@@ -418,7 +418,7 @@
                             $size = $row['old_size'];
 
                             $retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code = $pre_ops_code group by doc_no";
-                            echo $retreving_remaining_qty_qry;
+                           // echo $retreving_remaining_qty_qry;
                             $result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
                             if($result_retreving_remaining_qty_qry->num_rows > 0)
                             {
