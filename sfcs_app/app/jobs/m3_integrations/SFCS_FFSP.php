@@ -4,7 +4,7 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 $connect = odbc_connect("$driver_name;Server=$sfsp_serverName;Database=$sfsp_m3_databasename;", $sfsp_uid,$sfsp_pwd);
 error_reporting(1);
 
-$get_details="select order_style_no,order_del_no,order_col_des from bai_pro3.bai_orders_db_confirm group by order_style_no,order_del_no,order_col_des";
+$get_details="select order_style_no,order_del_no,order_col_des from bai_pro3.bai_orders_db_confirm order_joins not in ('1','2') group by order_style_no,order_del_no,order_col_des";
 echo $get_details."<br>";
 $result=mysqli_query($link, $get_details) or exit("NOT Updated schedule and color details".mysqli_error($GLOBALS["___mysqli_ston"]));
 echo mysqli_num_rows($result);
