@@ -11,17 +11,6 @@ $post_ops_code='';
 $qry_status='';
 error_reporting(0);
 
-//getting dependency operation
-$parellel_ops=array();
-$qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and ops_dependency='$operation_code'";
-$qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
-	if($qry_parellel_ops_result->num_rows > 0){
-		while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
-		{ 
-			$parellel_ops[] = $row_prellel['operation_code'];
-		}
-	}
-
 //To Get Sewing Operations
 $category = 'sewing';
 $get_operations = "select operation_code from brandix_bts.tbl_orders_ops_ref where category='$category'";
@@ -78,6 +67,8 @@ $type = $form;
 $barcode_sequence = $new_data['barcode_sequence'];
 $barcode_generation =  $new_data['barcode_generation'];
 $emb_cut_check_flag = $new_data['emb_cut_check_flag'];
+
+
 if($barcode_generation == 1)
 {
 	$concurrent_flag = 0;
@@ -104,7 +95,17 @@ if($barcode_generation == 1)
 	{
 		// for positives
 		foreach($b_tid as $key => $value)
-		{
+		{   
+			//getting dependency operation
+			$parellel_ops=array();
+			$qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_job_no' and color = '$maped_color' and ops_dependency='$operation_code'";
+			$qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
+			if($qry_parellel_ops_result->num_rows > 0){
+				while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
+				{ 
+					$parellel_ops[] = $row_prellel['operation_code'];
+				}
+			}
 			$b_doc_num_exp = explode(',',$b_doc_num1[$key]);
 			$to_add_doc_val = 0;
 			$cumulative_qty = $b_rep_qty[$key];
@@ -121,7 +122,8 @@ if($barcode_generation == 1)
 				if($emb_cut_check_flag != 0)
 				{
 					if(sizeof($parellel_ops)>0){
-						$retreving_remaining_qty_qry = "SELECT min(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code in (".implode(',',$parellel_ops).")";
+						$retreving_remaining_qty_qry =  "SELECT MIN(recevied_qty) AS balance_to_report FROM brandix_bts.bundle_creation_data  
+						WHERE docket_number IN ($doc_value) AND size_title='$b_sizes[$key]' AND operation_id IN (".implode(',',$parellel_ops).")";
 
 					}else{
 						$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
@@ -243,7 +245,8 @@ if($barcode_generation == 1)
 				{
 					
 					if(sizeof($parellel_ops)>0){
-						$retreving_remaining_qty_qry = "SELECT min(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code in (".implode(',',$parellel_ops).")";
+						$retreving_remaining_qty_qry =  "SELECT MIN(recevied_qty) AS balance_to_report FROM brandix_bts.bundle_creation_data  
+						WHERE docket_number IN ($doc_value) AND size_title='$b_sizes[$key]' AND operation_id IN (".implode(',',$parellel_ops).")";
 
 					}else{
 						$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
@@ -443,7 +446,8 @@ if($barcode_generation == 1)
 				if($emb_cut_check_flag != 0)
 				{
 					if(sizeof($parellel_ops)>0){
-						$retreving_remaining_qty_qry = "SELECT min(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code in (".implode(',',$parellel_ops).")";
+						$retreving_remaining_qty_qry =  "SELECT MIN(recevied_qty) AS balance_to_report FROM brandix_bts.bundle_creation_data  
+						WHERE docket_number IN ($doc_value) AND size_title='$b_sizes[$key]' AND operation_id IN (".implode(',',$parellel_ops).")";
 					}else{
 						$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
 					}
@@ -564,7 +568,8 @@ if($barcode_generation == 1)
 					if($emb_cut_check_flag != 0)
 					{
 						if(sizeof($parellel_ops)>0){
-							$retreving_remaining_qty_qry = "SELECT min(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code in (".implode(',',$parellel_ops).")";
+							$retreving_remaining_qty_qry =  "SELECT MIN(recevied_qty) AS balance_to_report FROM brandix_bts.bundle_creation_data  
+							WHERE docket_number IN ($doc_value) AND size_title='$b_sizes[$key]' AND operation_id IN (".implode(',',$parellel_ops).")";
 						}else{
 							$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
 						}
