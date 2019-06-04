@@ -4,6 +4,7 @@ kirang / 2015-12-18 / Service Request#13345467 // Need MRN Duplicate Print Optio
 
 -->
 <?php
+
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $mrn_id=$_GET["tid"];
 //Print Status
@@ -13,7 +14,7 @@ if($_GET["print_status"]==1)
 }
 else
 {
-	$print_status="Orginal";
+	$print_status="Original";
 }
 
 $sql="select * from $bai_rm_pj2.mrn_track where tid=$mrn_id";
@@ -1469,25 +1470,28 @@ TABLE {page: rotated}
 body { zoom:75%;}
 #ad{ display:none;}
 #leftbar{ display:none;}
-#Book1_29570{ width:75%; margin-left:20px;}
+#Book1_14212{ width:75%; margin-left:20px;}
 }
+div.solid {border-style: solid;}
 </style>
 
 <script>
 function printpr()
 {
-var OLECMDID = 7;
-/* OLECMDID values:
-* 6 - print
-* 7 - print preview
-* 1 - open window
-* 4 - Save As
-*/
-var PROMPT = 1; // 2 DONTPROMPTUSER
-var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
-document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
-WebBrowser1.ExecWB(OLECMDID, PROMPT);
-WebBrowser1.outerHTML = "";
+	window.print();
+	/* var OLECMDID = 7;
+	OLECMDID values:
+	* 6 - print
+	* 7 - print preview
+	* 1 - open window
+	* 4 - Save As
+
+	var PROMPT = 1; // 2 DONTPROMPTUSER
+	var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
+	document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
+	WebBrowser1.ExecWB(OLECMDID, PROMPT);
+	WebBrowser1.outerHTML = "";
+	*/
 }
 </script>
 </head>
@@ -1505,10 +1509,9 @@ tags will be replaced.-->
 <!-START OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD -->
 
 
-<div id="Book1_14212" align=center x:publishsource="Excel">
+<div id="Book1_14212" class="solid" align=center x:publishsource="Excel">
 
-<table border=0 cellpadding=0 cellspacing=0 width=960 style='border-collapse:
- collapse;table-layout:fixed;width:720pt'>
+<table border=0 cellpadding=0 cellspacing=0 width=960 style='border-collapse:collapse;table-layout:fixed;width:720pt'>
  <col width=64 style='width:48pt'>
  <col class=xl6614212 width=64 style='width:48pt'>
  <col class=xl1514212 width=64 span=12 style='width:48pt'>
@@ -1526,14 +1529,15 @@ tags will be replaced.-->
   <td class=xl6414212 width=64 style='width:48pt'>&nbsp;</td>
   <td class=xl6414212 width=64 style='width:48pt'>&nbsp;</td>
   <td class=xl6414212 width=64 style='width:48pt'>&nbsp;</td>
-  <td class=xl6414212 width=64 style='width:48pt'><?php echo $print_status; ?></td>
+  <td class=xl6414212 width=64 style='width:48pt'><h2><b><?php echo $print_status; ?></b></h2></td>
   <td class=xl6414212 width=64 style='width:48pt'>&nbsp;</td>
   <td class=xl6514212 width=64 style='width:48pt'>&nbsp;</td>
  </tr>
+ <br/><br/>
  <tr height=20 style='height:15.0pt'>
   
   <td colspan=9 rowspan=2 class=xl7514212>Additional Material Request <Br/>Transaction Note</td>
-  <?php $lgurl = getFullURLLevel($_GET['r'],'common/images/BEK_image1.png',1,'R'); ?>
+  <?php $lgurl="../../../cutting/common/images/BEK_image1.png"; ?>
   <td  height=20 align="right" colspan=4 class=xl6614212 style='height:75.0pt'><img src="<?= $logo ?>"></img><br/></br></td>
   <td class=xl1514212></td>
   <td class=xl1514212></td>

@@ -199,7 +199,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 							
 
 						$sql="select * from $bai_rm_pj2.mrn_track where month(req_date)=month(\"$date\") and year(req_date)=year(\"$date\") and status=".$_GET['status_filter']." order by status,req_date desc";
-
+						
 						}
 						//echo $sql;
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -235,7 +235,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 							//Add the new column as other remarks as a popup to display the all the remarks in each level.
 							$link_remarks=getFullURL($_GET['r'],'remarks_log.php','N');
 							echo "<td><a class='btn btn-info btn-xs' href=\"$link_remarks&ref_tid=$ref_tid\" onclick=\"return popituprem('$link_remarks&ref_tid=$ref_tid')\">Remarks</a></td>";
-								$sql_ref_tid="select * from $bai_rm_pj2.remarks_log where tid=\"$ref_tid\" and level=\"updated\"";
+								$sql_ref_tid="select * from $bai_rm_pj2.remarks_log where tid=\"$ref_tid\" and level=\"Approved\"";
 								$sql_result_ref_tid=mysqli_query($link, $sql_ref_tid) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$row1=mysqli_num_rows($sql_result_ref_tid);
 								$rem='';
@@ -352,7 +352,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 							echo "<td>".$tid."</td>";
 
 							$link2 = getFullURL($_GET['r'],'update_form.php','N');
-							$link3 = getFullURL($_GET['r'],'mrn_print.php','N');
+							$link3 = getFullURL($_GET['r'],'mrn_print.php','R');
 
 							switch($sql_row['status'])
 							{
@@ -384,7 +384,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 								}
 								case 7:
 								{
-									echo "<td><a href=\"$link3&tid=$ref_tid&print_status=0\" onclick=\"return popitup('$link3&tid=$ref_tid&print_status=0')\"><button class='btn btn-success btn-xs'>Print</button></a></td>";
+									echo "<td><a href=\"$link3?tid=$ref_tid&print_status=0\" onclick=\"return popitup('$link3?tid=$ref_tid&print_status=0')\"><button class='btn btn-success btn-xs'>Print</button></a></td>";
 									break;
 								}
 								case 8:
@@ -398,7 +398,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 									//echo "<td>Closed</td>";
 									if(in_array($username,$duplicate_print_users))
 									{
-										echo "<td><a href=\"$link3&tid=$ref_tid&print_status=1\" onclick=\"return popitup('$link3&tid=$ref_tid&print_status=1')\"><button class='btn btn-success btn-xs'>Closed</button></a></td>";
+										echo "<td><a href=\"$link3?tid=$ref_tid&print_status=1\" onclick=\"return popitup('$link3?tid=$ref_tid&print_status=1')\"><button class='btn btn-success btn-xs'>Closed</button></a></td>";
 									}
 									else
 									{
