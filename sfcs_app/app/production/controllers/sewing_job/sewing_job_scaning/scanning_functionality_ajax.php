@@ -1257,7 +1257,13 @@ else if($concurrent_flag == 0)
 							$pre_recieved_qty = $row['recieved_qty'];
 						}
 
-						$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."' where bundle_number =$b_tid[$key] and operation_id = ".$ops_dep;
+						if($pre_recieved_qty>0){
+							$ops_dep_update_qty=$pre_recieved_qty;
+						}else{
+							$ops_dep_update_qty=$final_rep_qty;
+						}
+
+						$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$ops_dep_update_qty."' where bundle_number =$b_tid[$key] and operation_id = ".$ops_dep;
 						// $query_post_dep.'</br>';
 						$result_query = $link->query($query_post_dep) or exit('query error in updating');
 				
