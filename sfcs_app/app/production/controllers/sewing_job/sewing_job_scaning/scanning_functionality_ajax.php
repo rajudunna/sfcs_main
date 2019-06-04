@@ -69,18 +69,6 @@ $barcode_generation =  $new_data['barcode_generation'];
 $emb_cut_check_flag = $new_data['emb_cut_check_flag'];
 
 
-//getting dependency operation
-$parellel_ops=array();
-$qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_dependency='$operation_code'";
-$qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
-if($qry_parellel_ops_result->num_rows > 0){
-	while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
-	{ 
-		$parellel_ops[] = $row_prellel['operation_code'];
-	}
-}
-
-
 if($barcode_generation == 1)
 {
 	$concurrent_flag = 0;
@@ -107,7 +95,18 @@ if($barcode_generation == 1)
 	{
 		// for positives
 		foreach($b_tid as $key => $value)
-		{
+		{	
+
+			//getting dependency operation
+			$parellel_ops=array();
+			$qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors[$key]' and ops_dependency='$operation_code'";
+			$qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
+			if($qry_parellel_ops_result->num_rows > 0){
+				while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
+				{ 
+					$parellel_ops[] = $row_prellel['operation_code'];
+				}
+			}
 
 			$b_doc_num_exp = explode(',',$b_doc_num1[$key]);
 			$to_add_doc_val = 0;
@@ -429,7 +428,19 @@ if($barcode_generation == 1)
 	{
 		//for positive quantities 
 		foreach($b_tid as $key => $value)
-		{
+		{	
+
+			//getting dependency operation
+			$parellel_ops=array();
+			$qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors[$key]' and ops_dependency='$operation_code'";
+			$qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
+			if($qry_parellel_ops_result->num_rows > 0){
+				while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
+				{ 
+					$parellel_ops[] = $row_prellel['operation_code'];
+				}
+			}
+
 			$module_cum = $b_module[$key];
 			$r_reasons = explode(",", $r_reason[$value]);
 			$r_qty = explode(",", $r_qtys[$value]);
@@ -548,7 +559,19 @@ if($barcode_generation == 1)
 		if(array_sum($r_qtys) > 0)
 		{
 			foreach($b_tid as $key => $value)
-			{
+			{	
+
+				//getting dependency operation
+				$parellel_ops=array();
+				$qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors[$key]' and ops_dependency='$operation_code'";
+				$qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
+				if($qry_parellel_ops_result->num_rows > 0){
+					while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
+					{ 
+						$parellel_ops[] = $row_prellel['operation_code'];
+					}
+				}
+				
 				$r_reasons = explode(",", $r_reason[$value]);
 				// var_dump($r_reasons);
 				$r_qty = explode(",", $r_qtys[$value]);
