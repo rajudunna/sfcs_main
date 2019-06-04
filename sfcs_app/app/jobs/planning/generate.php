@@ -9,7 +9,16 @@ error_reporting(0);
 <?php
 
 $shifts_array = $conf->get('shifts');
-$date=date("Y-m-d");
+//$date=date("Y-m-d");
+if($_GET['date'])
+{
+	$date=$_GET['date'];
+}
+else
+{
+	$date=date("Y-m-d");
+}
+//echo $date;
 
 $sql="delete from $bai_pro.bai_bac";
 mysqli_query($link, $sql) or exit("Sql Error1-$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
