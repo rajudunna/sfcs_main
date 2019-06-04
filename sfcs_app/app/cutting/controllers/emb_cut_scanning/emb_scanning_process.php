@@ -205,16 +205,20 @@ $concurrent_flag = 0;
 $bulk_insert_rej = "INSERT INTO $bai_pro3.bai_qms_db(`qms_style`, `qms_schedule`,`qms_color`,`log_user`, `log_date`, `qms_size`, `qms_qty`, `qms_tran_type`,`remarks`, `ref1`, `doc_no`, `input_job_no`, `operation_id`, `qms_remarks`, `bundle_no`) VALUES";
 
 //loop fpr docket
-$doc_qtys_array = [];
-$pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id in (".implode(',',$emb_operations).")";
-// echo $pre_send_qty_qry;
-// die();
-$result_pre_send_qty = $link->query($pre_send_qty_qry);
-while($doc_row = $result_pre_send_qty->fetch_assoc()) 
+if($flag == 'parallel_scanning')
 {
-    $doc_qtys_array[$b_doc_no][$doc_row['size_title']] = $doc_row['recieved_qty'];
+    $doc_qtys_array = [];
+    $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id in (".implode(',',$emb_operations).")";
+    // echo $pre_send_qty_qry;
+    // die();
+    $result_pre_send_qty = $link->query($pre_send_qty_qry);
+    while($doc_row = $result_pre_send_qty->fetch_assoc()) 
+    {
+        $doc_qtys_array[$b_doc_no][$doc_row['size_title']] = $doc_row['recieved_qty'];
 
+    }
 }
+
 
 
 foreach($b_tid as $key => $value)
