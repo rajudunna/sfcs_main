@@ -204,6 +204,19 @@ $concurrent_flag = 0;
 //Bulk insertions into QMS_DB
 $bulk_insert_rej = "INSERT INTO $bai_pro3.bai_qms_db(`qms_style`, `qms_schedule`,`qms_color`,`log_user`, `log_date`, `qms_size`, `qms_qty`, `qms_tran_type`,`remarks`, `ref1`, `doc_no`, `input_job_no`, `operation_id`, `qms_remarks`, `bundle_no`) VALUES";
 
+//loop fpr docket
+$doc_qtys_array = [];
+$pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id in (".implode(',',$emb_operations).")";
+// echo $pre_send_qty_qry;
+// die();
+$result_pre_send_qty = $link->query($pre_send_qty_qry);
+while($doc_row = $result_pre_send_qty->fetch_assoc()) 
+{
+    $doc_qtys_array[$b_doc_no][$doc_row['size_title']] = $doc_row['recieved_qty'];
+
+}
+
+
 foreach($b_tid as $key => $value)
 {
 
@@ -420,17 +433,28 @@ foreach($b_tid as $key => $value)
         // echo $flag;
         if($flag == 'parallel_scanning')
         {
-           $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id in (".implode(',',$emb_operations).")";
-           // echo $pre_send_qty_qry;
-           // die();
-            $result_pre_send_qty = $link->query($pre_send_qty_qry);
-            while($row = $result_pre_send_qty->fetch_assoc()) 
-            {
-                $pre_recieved_qty = $row['recieved_qty'];
+           if($doc_qtys_array[$b_doc_no][$b_sizes[$key]] > 0){
+               $pre_send_qty_qry = "select carton_act_qty from $bai_pro3.packing_summary_input where doc_no =$b_doc_no 
+                   and size_title='". $b_sizes[$key]."'";
+               // echo $pre_send_qty_qry;
+               // die();
+                $result_pre_send_qty = $link->query($pre_send_qty_qry);
+                while($row = $result_pre_send_qty->fetch_assoc()) 
+                {
+                    $bundle_qty = $row['carton_act_qty'];
+                    if($doc_qtys_array[$b_doc_no][$b_sizes[$key]] > $bundle_qty){
+                        $query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$bundle_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and size_title='". $b_sizes[$key]."' and operation_id = ".$next_operation;
+                        $result_query = $link->query($query_post_dep) or exit('query error in updating'); 
+                        $doc_qtys_array[$b_doc_no][$b_sizes[$key]] -= $bundle_qty;
+                    }else{
+                        $query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$doc_qtys_array[$b_doc_no][$b_sizes[$key]]."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and size_title='". $b_sizes[$key]."' and operation_id = ".$next_operation;
+                        $result_query = $link->query($query_post_dep) or exit('query error in updating'); 
+                        $doc_qtys_array[$b_doc_no][$b_sizes[$key]] = 0 ;
+                    }
+                }
             }
 
-            $query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and size_title='". $b_sizes[$key]."' and operation_id = ".$next_operation;
-            $result_query = $link->query($query_post_dep) or exit('query error in updating');   
+             
         }
         else
         {
