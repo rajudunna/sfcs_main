@@ -50,7 +50,7 @@ if(isset($_POST['formSubmit']))
     $sql1="insert into $bai_pro3.maker_stat_log(date,cat_ref,order_tid,mklength,mk_ver) values (\"".date("Y-m-d")."\",".$cat_ref.",\"$order_tid\",".$mklen.",'".$patt_ver."')";
     mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
     $ilastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
-    $sql1="update $bai_pro3.recut_v2 set p_plies=".$plies.",a_plies=".$plies.",mk_ref=$ilastid where doc_no=".$doc_nos;
+    $sql1="update $bai_pro3.recut_v2 set fabric_status='0',p_plies=".$plies.",a_plies=".$plies.",mk_ref=$ilastid where doc_no=".$doc_nos;
     mysqli_query($link, $sql1) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sql1="update $bai_pro3.plandoc_stat_log set p_plies=".$plies.",a_plies=".$plies.",mk_ref=$ilastid where doc_no=".$doc_nos;
     mysqli_query($link, $sql1) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -82,6 +82,19 @@ if(isset($_POST['formIssue']))
     $issueval = $_POST['issueval'];
     $bcd_id = $_POST['bcd_id'];
     $doc_no_ref = $_POST['doc_no_ref'];
+    $get_recut_status="select max(status) as recut_status from $bai_pro3.recut_v2_child_issue_track where recut_id=".$doc_no_ref."";
+    $get_recut_result=mysqli_query($link, $get_recut_status)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($recut_row = mysqli_fetch_array($get_recut_result))
+    {
+        if($recut_row['recut_status']!='')
+        {
+            $issue_status=$recut_row['recut_status']+1;
+        }
+        else
+        {
+            $issue_status=1;
+        }       
+    }
     foreach($issueval as $key=>$value)
     {
         //retreaving remaining_qty from recut_v2_child
@@ -117,7 +130,11 @@ if(isset($_POST['formIssue']))
                 //updating recut_v2_child
                 $update_recut_v2_child = "update $bai_pro3.recut_v2_child set issued_qty = issued_qty+$to_add where bcd_id = $bundle_number and parent_id = $doc_no_ref";
                mysqli_query($link, $update_recut_v2_child) or exit("update_recut_v2_child".mysqli_error($GLOBALS["___mysqli_ston"]));
-                //updating rejection_log_child
+
+              $insert_query_track= "INSERT INTO $bai_pro3.`recut_v2_child_issue_track` (`recut_id`, `bcd_id`, `issued_qty`, `status`) VALUES ( $doc_no_ref, $bundle_number, $to_add, $issue_status)"; 
+              mysqli_query($link, $insert_query_track) or exit("Inserting_recut_v2_issue_track_table_track".mysqli_error($GLOBALS["___mysqli_ston"]));
+               
+               //updating rejection_log_child
                 $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set issued_qty=issued_qty+$to_add where bcd_id = $bundle_number";
                mysqli_query($link, $updating_rejection_log_child) or exit("updating_rejection_log_child".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $issued_to_module = issued_to_module($bundle_number,$to_add,2);
@@ -208,27 +225,26 @@ function issued_to_module($bcd_id,$qty,$ref)
                 SELECT * FROM `$bai_pro3`.`plan_dashboard_input_backup`
                 WHERE input_job_no_random_ref = '$input_job_no_random_ref'";
                 mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
+            }            
+            $qry_ops_mapping_after = "SELECT of.operation_code FROM `$brandix_bts`.`tbl_style_ops_master` tm 
+            LEFT JOIN brandix_bts.`tbl_orders_ops_ref` of ON of.`operation_code`=tm.`operation_code`
+            WHERE tm.`style` ='$style' AND tm.`color` = '$mapped_color'
+            AND category = 'sewing' AND display_operations='yes' and of.operation_code>1 ORDER BY operation_order*1 LIMIT 1";
+            $result_qry_ops_mapping_after = $link->query($qry_ops_mapping_after);
+            if(mysqli_num_rows($result_qry_ops_mapping_after) > 0)
+            {
+                while($ops_post = $result_qry_ops_mapping_after->fetch_assoc()) 
+                {
+                    $input_ops_code = $ops_post['operation_code'];
+                }
             }
-            $input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);
-            // $qry_ops_mapping_after = "SELECT of.operation_code FROM `$brandix_bts`.`tbl_style_ops_master` tm 
-            // LEFT JOIN brandix_bts.`tbl_orders_ops_ref` of ON of.`operation_code`=tm.`operation_code`
-            // WHERE tm.`style` ='$style' AND tm.`color` = '$mapped_color'
-            // AND category = 'sewing'";
-            // // echo $qry_ops_mapping_after;
-            // $result_qry_ops_mapping_after = $link->query($qry_ops_mapping_after);
-            // if(mysqli_num_rows($result_qry_ops_mapping_after) > 0)
-            // {
-            //     while($ops_post = $result_qry_ops_mapping_after->fetch_assoc()) 
-            //     {
-            //         $input_ops_code = $ops_post['operation_code'];
-                    $update_qry_bcd_input = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where bundle_number = $bundle_number and operation_id = $input_ops_code";
-                    // echo $update_qry_bcd_input;
-                    mysqli_query($link, $update_qry_bcd_input) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
-            //     }
-            // }
+            else
+            {
+                $input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);  
+            }    
+            $update_qry_bcd_input = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where bundle_number = $bundle_number and operation_id = $input_ops_code";
+            mysqli_query($link, $update_qry_bcd_input) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));            
         }   
-    // }
-    // die();
     return;
 }
 $shifts_array = ["IssueToModule","AlreadyIssued","WaitingForApproval","UpdateMarkers","ReportPending"];
@@ -350,7 +366,13 @@ echo $drp_down;
                         $dock_checking_flag = 1;
                     }
                     $rem_qty = $row['recut_reported_qty'] - $row['issued_qty'];
-                    if($row['mk_ref'] == '0')
+
+                    if($row['fabric_status'] == '98' && $row['mk_ref'] == '0')
+                    {
+                        $button_html = "<button type='button' style='border-color: #f4d142;border-width: 4px;' class='btn btn-danger' onclick='editmarkers(".$id.")'>Markers Rejected</button>";
+                        $html_hiding = "MarkersRejected";
+                    }
+                    else if($row['mk_ref'] == '0')
                     {
                         $button_html = "<button type='button'class='btn btn-danger' onclick='editmarkers(".$id.")'>Update Markers</button>";
                         $html_hiding = "UpdateMarkers";
@@ -378,7 +400,8 @@ echo $drp_down;
                     else
                     {
                         $button_html = "<button type='button'class='btn btn-danger' onclick='issuemodule(".$id.")'>Issue To Module</button>";
-                        $html_hiding = "IssueToModule";
+                      
+						$html_hiding = "IssueToModule";
                     }
                     echo "<tr><td>$s_no</td>";
                     echo "<td>".$row['doc_no']."</td>";

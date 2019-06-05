@@ -82,7 +82,7 @@ if(isset($_GET['delete']))
 			$doc_type=$row12["doc_type"];
 		}
 		
-		$sql13="update $bai_rm_pj1.store_in set qty_allocated=(qty_allocated - \"$allocated_qty\"),allotment_status='0' where tid=\"$roll_id\" ";
+		$sql13="update $bai_rm_pj1.store_in set qty_allocated=(qty_allocated - \"$allocated_qty\"),allotment_status='0',status='0' where tid=\"$roll_id\" ";
 		mysqli_query($link, $sql13) or exit("Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql14="delete from $bai_rm_pj1.fabric_cad_allocation where tran_pin=$tran_pin";
 		mysqli_query($link, $sql14) or exit("Error14".mysqli_error($GLOBALS["___mysqli_ston"]));

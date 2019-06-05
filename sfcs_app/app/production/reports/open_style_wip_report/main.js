@@ -58,8 +58,8 @@ class ReactApp extends React.Component {
         let dynamicColumns = this.state.columnsData;
         const operations = ['good','rej','wip']; // A hardcoded array,Change this in accordance with the keys getting from php file 
 		//let mainHeader = ["","","","","Good","","","","","","","Rejected","","","","","","","WIP"];
-		let mainHeader = ["","","","","","Good"];
-        let headerCol = ["Style","Customer Order No","Schedule","Color","Size"];
+		let mainHeader = ["","","","","","","Good"];
+        let headerCol = ["Style","Customer Order No","Schedule","Color","Size","Order Quantity"];
         let sheet_data = [];        
         const file_name = 'Open Style Wip Report.xlsx';
        
@@ -83,7 +83,7 @@ class ReactApp extends React.Component {
 		sheet_data.push(headerCol);
 		console.log('checkcount= '+display);
 		console.log('count= '+count);
-		var main =5;
+		var main =6;
 		
 		var merge  = { s: {r:0, c:main }, e: {r:0, c:main + display} };
 		var merge1 = { s: {r:0, c:main + display + 1}, e: {r:0, c:main + display + display + 1} };
@@ -109,7 +109,7 @@ class ReactApp extends React.Component {
 			console.log(newKeys);
 			
             let item = [];
-            item.push(items.style,items.cono,items.schedule,items.color,items.size);
+            item.push(items.style,items.cono,items.schedule,items.color,items.size,items.orderqty);
             if(newKeys.length>0){                
                 newKeys.forEach(res=>{
                     let op_val = 0;

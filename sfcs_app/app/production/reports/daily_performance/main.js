@@ -85,7 +85,9 @@ class ReactApp extends React.Component {
 
         if(data.length>0){
             this.displayExcel(data);
-        }
+        }else{
+		    swal('Please wait until loading is completed');
+		}
         
     }
 
@@ -104,7 +106,11 @@ class ReactApp extends React.Component {
             let newKeys = [];
             let keys = Object.keys(items);
             dynamicColumns.forEach(vals=>{ 
-                keys.forEach(res=>{ 
+			console.log('vals');
+			console.log(vals);
+                keys.forEach(res=>{
+                    console.log('res');
+                    console.log(res);					
                     if(vals.op_code == res){
                         newKeys.push(vals.op_code);
                     }

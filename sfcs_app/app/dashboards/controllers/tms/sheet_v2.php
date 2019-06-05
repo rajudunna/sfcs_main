@@ -142,7 +142,7 @@ if(count($colors)>0){
                         if($mo_numrows>0){
                             while($mo_row=mysqli_fetch_array($mo_sql_result))
                             {
-                                $mo_no = $mo_row['mo_no'];
+                                $mo_no = trim($mo_row['mo_no']);
                                 $api_url = $host.":".$port."/m3api-rest/execute/PMS100MI/SelMaterials;returncols=MTNO,ITDS,CNQT,MSEQ,PRNO,MFNO,OPNO?CONO=$company_num&FACI=$plant_code&MFNO=".$mo_no;
                                 
                                 $api_data = $obj->getCurlAuthRequest($api_url);
@@ -187,7 +187,7 @@ if(count($colors)>0){
                                 if(mysqli_num_rows($op_sql_result) > 0){
                                     $value1['trim_type'] = 'STRIM';
                                     //call the api to get the wastage
-                                    $mfno = $value1['MFNO'];
+                                    $mfno = trim($value1['MFNO']);
                                     $prno = urlencode($value1['PRNO']);
                                     $mseq = $value1['MSEQ'];
 
@@ -217,7 +217,7 @@ if(count($colors)>0){
                                 if(mysqli_num_rows($op_ptrim_sql_result) > 0){
                                     $value1['trim_type'] = 'PTRIM';                                
                                     //call the api to get the wastage
-                                    $mfno = $value1['MFNO'];
+                                    $mfno = trim($value1['MFNO']);
                                     $prno = urlencode($value1['PRNO']);
                                     $mseq = $value1['MSEQ'];
 

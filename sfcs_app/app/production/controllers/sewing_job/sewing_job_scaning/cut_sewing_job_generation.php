@@ -164,12 +164,22 @@ if(isset($_POST) && isset($_POST['main_data'])){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     $doc_no = $_POST['del_recs'];
     // 217
-    $validation_query="SELECT * FROM $bai_pro3.plandoc_stat_log WHERE doc_no IN (".$doc_no.") and act_cut_status = 'DONE' "; 
-    $sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data"); 
-    $count= mysqli_num_rows($sql_result); 
+    $ips_op_codes=array();
+	$ips_op_codes[]=0;
+	$op_code_query="SELECT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE category='sewing'";
+	            $op_code_result = mysqli_query($link,$op_code_query);
+	while($row = mysqli_fetch_array($op_code_result))
+	{
+	    $ips_op_codes[] = $row['operation_code'];
+	}
+	$ips_op_code=implode(",",$ips_op_codes);
+	$validation_query = "SELECT id from $brandix_bts.bundle_creation_data where docket_number in (".$doc_no.") and recevied_qty > 0
+	            and operation_id in (".$ips_op_code.")";
+	$sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data");      
+	$count= mysqli_num_rows($sql_result);
     if ($count>0) 
     {
-        echo 'cutting_done';
+        echo 'sewing_done';
     } 
     else 
     {
@@ -343,7 +353,7 @@ if($schedule != "" && $color != "")
     $ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm bd
    LEFT JOIN bai_pro3.cat_stat_log csl ON bd.order_tid = csl.order_tid 
    LEFT JOIN bai_pro3.plandoc_stat_log psl ON csl.tid = psl.cat_ref AND psl.order_tid = bd.order_tid 
-   WHERE csl.category IN ('Body','Front') AND bd.order_del_no='".$schedule."' AND TRIM(bd.order_col_des) =trim('".$color."') AND psl.order_tid <> ''";
+   WHERE csl.category IN ('Body','Front') AND bd.order_del_no='".$schedule."' AND TRIM(bd.order_col_des) =trim('".$color."') AND psl.order_tid <> '' AND psl.remarks='Normal' ";
   //echo $ratio_query;
     $doc_nos = [];
     $view_shows=[];
@@ -458,7 +468,7 @@ if($schedule != "" && $color != "")
                     $view_shows[] = implode(',',$old_doc_nos);
                     $imp_data = implode(',',$old_doc_nos);
                     echo "<td><a class='btn btn-warning' onclick='show_view_form(\"$imp_data\")'>View</a>"; 
-                    if($old_cut_status=='')
+                    //if($old_cut_status=='')
                         echo "<a class='btn btn-danger' id='del-$imp_data' onclick='delet(\"$imp_data\")'>Delete</a>
                                 <div id='delete_message_$imp_data' style='display:none'><h3 class='badge progress-bar-success'>Deleting...</h3></div>";
                     echo "</td>";
@@ -535,7 +545,7 @@ if($schedule != "" && $color != "")
                 $view_shows[] = implode(',',$old_doc_nos);
                 $imp_data = implode(',',$old_doc_nos);
                 echo "<td><a class='btn btn-warning' onclick='show_view_form(\"$imp_data\")'>View</a>"; 
-                if($old_cut_status=='')
+                //if($old_cut_status=='')
                     echo "<a class='btn btn-danger' id='del-$imp_data' onclick='delet(\"$imp_data\")'>Delete</a>
                             <div id='delete_message_$imp_data' style='display:none'><h3 class='badge progress-bar-success'>Deleting...</h3></div>";
                 echo "</td>";
@@ -1013,15 +1023,15 @@ function delet(docs_id){
     $("#delete_message_"+docs_id).css("display", "block");
     $.post( "<?= trim($url) ?>", { del_recs: docs_id } ).done(function(data) {
     
-        if(data=='cutting_done'){
-            swal('Cutting Already Done for this Docket','Cannot Delete Sewing Jobs','error');
-            setTimeout(function(){ location.reload(); }, 300);
+        if(data=='sewing_done'){
+            swal('Scanning is Already Performed','Cannot Delete Sewing Jobs','error');
+            setTimeout(function(){ location.reload(); }, 600);
         }else if(data=='success'){
             swal('Jobs Deleted successfully.');
-            setTimeout(function(){ location.reload(); }, 300);
+            setTimeout(function(){ location.reload(); }, 600);
         }else{
             swal('Jobs Deletion Failed.');
-            setTimeout(function(){ location.reload(); }, 300);
+            setTimeout(function(){ location.reload(); }, 600);
         }
     });
 

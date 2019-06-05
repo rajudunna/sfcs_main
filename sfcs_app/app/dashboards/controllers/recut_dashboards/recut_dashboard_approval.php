@@ -183,7 +183,8 @@ if(isset($_POST['reject']))
         $update_bcd_qry="update $brandix_bts.bundle_creation_data set original_qty = $act_ratio where docket_number = $doc_no and size_id = '$size_code' and operation_id <> 15";
         mysqli_query($link, $update_bcd_qry) or exit("Updating recut_v2 for rejected docket".mysqli_error($GLOBALS["___mysqli_ston"]));
     }
-    $update_qry = "update $bai_pro3.recut_v2 set mk_ref = '0',a_plies=1,p_plies=1 where doc_no = $doc_no";
+    //For New CR #1869 updated new value 98 in fabric status
+    $update_qry = "update $bai_pro3.recut_v2 set mk_ref = '0',fabric_status='98',a_plies=1,p_plies=1 where doc_no = $doc_no";
     mysqli_query($link, $update_qry) or exit("Updating recut_v2 for rejected docket".mysqli_error($GLOBALS["___mysqli_ston"]));
     $update_qry = "update $bai_pro3.plandoc_stat_log set mk_ref = '0',a_plies=1,p_plies=1 where doc_no = $doc_no";
     mysqli_query($link, $update_qry) or exit("Updating recut_v2 for rejected docket".mysqli_error($GLOBALS["___mysqli_ston"]));
