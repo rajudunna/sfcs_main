@@ -4,9 +4,11 @@ $start_timestamp = microtime(true);
 error_reporting(0);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
+$status ="'pending','fail'" ;
 
-$sql="select *,sum(quantity) as qty from $bai_pro3.m3_transactions where response_status='pending' group by mo_no,workstation_id,op_code,reason";
+$sql="select *,sum(quantity) as qty from $bai_pro3.m3_transactions where response_status in ($status) group by mo_no,workstation_id,op_code,reason";
 $transaction_result=mysqli_query($link, $sql) or exit("m3_transactions ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 while($row=mysqli_fetch_array($transaction_result))
 {
    
@@ -24,14 +26,14 @@ while($row=mysqli_fetch_array($transaction_result))
     $ref_no = $row['ref_no'];
     $response_status = $row['response_status'];
     $m3_ops_code = $row['m3_ops_code'];
-    $m3_trail_count = $row['m3_trail_count'];
+    $m3_trail_count = $row['m3_trail_count']; 
     $api_type = $row['api_type'];
     $date_time = $row['date_time'];
 
   
     $cur_date = date('Y-m-d H:s:i');
-    $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_bulk_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`m3_ops_code`,`response_status`,`api_type`) 
-    VALUES ('$date_time','$mo_number',$quantity,'$reason','$remarks','$log_user','$tran_status_code','$module_no','$shift',$op_code,'$op_des',$ref_no,'$workstation_id','$m3_ops_code','pending','$api_type')";
+    $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_bulk_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`m3_ops_code`,`response_status`,`m3_trail_count`,`api_type`) 
+    VALUES ('$date_time','$mo_number',$quantity,'$reason','$remarks','$log_user','$tran_status_code','$module_no','$shift',$op_code,'$op_des',$ref_no,'$workstation_id','$m3_ops_code','$response_status',$m3_trail_count,'$api_type')";
     mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
 
     $insert_id=mysqli_insert_id($link);
