@@ -212,6 +212,36 @@
                         </tr>
                         <?php
                             $toggle=0; 
+                            $bundles_new=array();
+                            $input_qty=array();
+                            	//To get input operation
+                                $application='IPS';
+
+                                $scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+                                $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                while($sql_row1111=mysqli_fetch_array($scanning_result))
+                                {
+                                    $operation_name=$sql_row1111['operation_name'];
+                                    $input_code=$sql_row1111['operation_code'];
+                                } 
+
+                            $sql12="select pac_tid from $bai_pro3.ims_log where ims_mod_no='$module' and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by pac_tid";
+                            $sql12_result=mysqli_query($link, $sql12) or exit("Sql Error2.1");
+                            while($sql_row12=mysqli_fetch_array($sql12_result)) 
+                            {
+                                $bundles_new[]=$sql_row12['pac_tid']; 
+                            }
+                            
+                            if(sizeof($bundles_new)>0)
+                            {
+                                $sql123="select bundle_number,send_qty from $brandix_bts.bundle_creation_data where bundle_number in (".implode(",",$bundles_new).") and operation_id=".$input_code."";
+                                //echo $sql123."<br>";
+                                $sql12_result123=mysqli_query($link, $sql123) or exit("Sql Error2ww.1");
+                                while($sql_row123=mysqli_fetch_array($sql12_result123)) 
+                                {
+                                    $input_qty[$sql_row123['bundle_number']]=$sql_row123['send_qty']; 
+                                }
+                            }
                             $sql="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref,pac_tid,tid from $bai_pro3.ims_log where ims_mod_no='$module' and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by tid";
                             $sql_result=mysqli_query($link, $sql) or exit("Sql Error2.1");
                             while($sql_row=mysqli_fetch_array($sql_result)) 
@@ -351,13 +381,13 @@
                                                 <td>".$display_prefix1."</td>
                                                 <td>".chr($color_code).leading_zeros($cutno,3)."</td>
                                                 <td>".strtoupper($size_value)."</td>
-                                                <td>".$sql_row12['ims_qty']."</td>
+                                                <td>".$input_qty[$pac_tid]."</td>
                                                 <td>".$sql_row12['ims_pro_qty']."</td>
                                                 <td>".$rejected."</td>
-                                                <td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']+$rejected))."</td>
+                                                <td>".($input_qty[$pac_tid]-($sql_row12['ims_pro_qty']+$rejected))."</td>
                                                 <td>".$sql_row12['ims_remarks']."</td>
                                                 <td>".$aging."</td>
-                                                <td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>
+                                                <td>".($input_qty[$pac_tid]-($sql_row12['ims_pro_qty']+$rejected))."</td>
                                         </tr>"; 
                                 }
                             }
@@ -444,7 +474,7 @@
         col_8: "select",
         col_9: "none",
         col_10: "none",
-        col_11: "none",
+        col_11: "select",
         col_12: "none",
         col_13: "none",
         col_14: "none",
