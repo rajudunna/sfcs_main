@@ -399,8 +399,9 @@ function getjobdetails($job_number)
 								$previous_minqty=$row_result_min_prevops['min_recieved_qty'];
 							}
 
-							//get Current operation qty
-							$current_recieved_qty="SELECT sum(recevied_qty+rejected_qty) AS current_recieved_qty FROM brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND size_id ='$size' AND $column_in_where_condition ='$column_to_search' AND operation_id = '$job_number[4]'";
+							//get Current operation alaready scanned qty
+                            $current_recieved_qty="SELECT sum(recevied_qty+rejected_qty) AS current_recieved_qty FROM brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND size_id ='$size' AND operation_id = '$job_number[4]'";
+                            //echo "</br>".$current_recieved_qty."</br>";
 							$result_current_recieved_qty = $link->query($current_recieved_qty);
 							while($row_result_current_recieved_qty = $result_current_recieved_qty->fetch_assoc()){
 								$current_ops_qty=$row_result_current_recieved_qty['current_recieved_qty'];
