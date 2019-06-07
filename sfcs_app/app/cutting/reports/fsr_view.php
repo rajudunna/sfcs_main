@@ -6,9 +6,10 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/me
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/header_scripts.php',1,'R')); 
 //include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'header_scripts.php','R'));
 // $view_access=user_acl("SFCS_0007",$username,1,$group_id_sfcs); 
-$table_csv = '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
-$excel_form_action = '../'.getFullURLLevel($_GET['r'],'common/php/export_excel.php',1,'R');
-
+// $table_csv = '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
+// $excel_form_action = '../'.getFullURLLevel($_GET['r'],'common/php/export_excel.php',1,'R');
+$excel_form_action = getFullURL($_GET['r'],'export_excel.php','R');
+$table_csv = getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
 ?>
 
 <html xmlns:v="urn:schemas-microsoft-com:vml"
@@ -264,13 +265,16 @@ if(isset($_POST['submit']) && $reptype == 1)
 	//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error d".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
+     if($sql_num_check>0){
 
-	echo '<div id="export"  class="pull-right">
-			<form action="'.$excel_form_action.'" method ="post" > 
-				<input type="hidden" name="csv_text" id="csv_text">
-				<input class="btn btn-warning btn-sm" type="submit" value="Export to Excel" onclick="getCSVData()">
-			</form>
-			</div>';	
+	
+		echo '<span class="pull-right">
+		<form action="'.$excel_form_action.'" method ="post" > 
+			<input type="hidden" name="csv_123" id="csv_123">
+			<input class="btn btn-info btn-sm" type="submit" value="Export to Excel" onclick="getCSVData()">
+		</form></span>
+	';
+	
 	echo "<div class='col-sm-12' style='overflow-x:scroll;overflow-y:scroll;max-height:600px;'><br>";
 	echo "<h5><b>Detailed Report</b></h5>";
 	echo "<table class='table table-bordered table-responsive' id='report'>";	
@@ -442,6 +446,19 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$color_code=$sql_row1['color_code'];
 			$color=$sql_row1['order_col_des'];
 		}		
+
+		  
+        $sql1="SELECT * FROM $bai_rm_pj2.mrn_track WHERE issued_qty>0";
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row1=mysqli_fetch_array($sql_result1))
+		{
+			$avail_qty=$sql_row1['avail_qty'];
+			$issued_qty=$sql_row1['issued_qty'];
+		}
+		$doc_req=$doc_req+$avail_qty;
+		$fab_rec=$fab_rec+$issued_qty;
+
+
 			$net_util=$fab_rec-$fab_ret-$damages-$shortages;
 			$act_con=round(($fab_rec-$fab_ret)/$act_total,4);
 			$net_con=round($net_util/$act_total,4);
@@ -482,7 +499,12 @@ if(isset($_POST['submit']) && $reptype == 1)
 		echo "</tr>";
 	}
 	echo "</table>
+	
 	</div>";
+}else{
+	echo "data not found";
+}
+
  }
  
  ?>
@@ -847,13 +869,18 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 </div><!-- panel body -->
 </div><!--  panel -->
 </div>
-<script>
+<!-- <script>
 function getCSVData(){
  var csv_value=$('#report').table2CSV({delivery:'value'});
  $("#csv_text").val(csv_value);	
 }
-</script>
-
+</script> -->
+<script>
+				function getCSVData(){
+				var csv_value=$('#table_one').table2CSV({delivery:'value'});
+				$("#csv_123").val(csv_value);	
+				}
+			</script>
 <script>
 	document.getElementById("msg").style.display="none";
 	document.getElementById("export").style.display="";		
