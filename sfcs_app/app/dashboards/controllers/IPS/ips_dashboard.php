@@ -160,14 +160,14 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						$input_ops_code = $ops_post['operation_code'];
 					}
 				}
-				$sql1212="SELECT sum(recut_in+replace_in) as qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$ops_code";
+				$sql1212="SELECT sum(recut_in+replace_in) as qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$input_ops_code";
 				// echo $sql12.';<br>';
 				$sql_result1212=mysqli_query($link, $sql1212) or exit($sql12."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1212=mysqli_fetch_array($sql_result1212))
 				{
-					if($sql_row12['qty'] > 0)
+					if($sql_row1212['qty'] > 0)
 					{
-						$rej_qty = $sql_row12['qty'];
+						$rej_qty = $sql_row1212['qty'];
 					}
 				}
 				$sql12="SELECT sum(recevied_qty+recut_in) as input FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$ops_code";
