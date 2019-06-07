@@ -131,7 +131,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				
 			
 				// echo $id;
-				$sqly="SELECT type_of_sewing,order_style_no,order_del_no,GROUP_CONCAT(DISTINCT TRIM(order_col_des)) AS order_col_des,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no,sum(carton_act_qty) as carton_qty,order_col_des FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
+				$sqly="SELECT type_of_sewing,order_style_no,order_del_no,GROUP_CONCAT(DISTINCT TRIM(order_col_des)) AS order_col_des,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no,sum(carton_act_qty) as carton_qty,order_col_des as cols FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
 				//echo $sqly."<br>";
 				$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowy=mysqli_fetch_array($resulty))
@@ -143,7 +143,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$style=$sql_rowy['order_style_no'];
 					$schedule=$sql_rowy['order_del_no'];
 					$order_col=$sql_rowy['order_col_des'];
-					$color_info=$sql_rowy['order_col_des'];
+					$color_info=$sql_rowy['cols'];
 					$input_job_no=$sql_rowy['input_job_no'];
 					$schedule_no=$sql_rowy['order_del_no'];
 					$type_of_sewing=$sql_rowy['type_of_sewing'];
