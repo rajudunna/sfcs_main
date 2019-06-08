@@ -63,7 +63,7 @@
 				</div>
 				<div class='form-group col-md-3'>
 					<label>Remarks:<span style="color:red">*</span></label>
-					<select class='form-control sampling' name='sampling' id='sampling' style='width:100%;' required><option value='Normal' selected>Normal</option><option value='sample'>Sample</option><option value='Shipment_Sample'>Shipment_Sample</option></select>
+					<select class='form-control sampling' name='sampling' id='sampling' style='width:100%;' required><option value='Excess' selected>Excess</option><option value='Normal' selected>Normal</option><option value='sample'>Sample</option><option value='Shipment_Sample'>Shipment_Sample</option></select>
 				</div>
 				<div class="form-group col-md-3">
 					<label for="title">Select Module:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
