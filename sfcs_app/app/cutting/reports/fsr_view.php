@@ -8,8 +8,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/he
 // $view_access=user_acl("SFCS_0007",$username,1,$group_id_sfcs); 
 // $table_csv = '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
 // $excel_form_action = '../'.getFullURLLevel($_GET['r'],'common/php/export_excel.php',1,'R');
+// $table_csv = getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
+// $excel_form_action = '../'.getFullURL($_GET['r'],'export_excel.php','R');
 $excel_form_action = getFullURL($_GET['r'],'export_excel.php','R');
 $table_csv = getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
+
 ?>
 
 <html xmlns:v="urn:schemas-microsoft-com:vml"
@@ -39,6 +42,8 @@ th{
 	color : #000;
 }
 </style>
+<script type="text/javascript" src="<?php echo $table_csv ?>" ></script>	
+
 <script type="text/javascript">
 function verify_date(){
 		var val1 = $('#sdate').val();
@@ -265,16 +270,20 @@ if(isset($_POST['submit']) && $reptype == 1)
 	//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error d".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
-     if($sql_num_check>0){
+	
+	
 
-	
-		echo '<span class="pull-right">
-		<form action="'.$excel_form_action.'" method ="post" > 
-			<input type="hidden" name="csv_123" id="csv_123">
-			<input class="btn btn-info btn-sm" type="submit" value="Export to Excel" onclick="getCSVData()">
-		</form></span>
-	';
-	
+if($sql_num_check > 0) {
+	// $export_excel = getFullURLLevel($_GET['r'],'export_excel.php',0,'R');
+
+	echo '<span id="export" class="pull-right">
+			<form action="'.$excel_form_action.'" method ="post" > 
+				<input type="hidden" name="csv_123" id="csv_123">
+				<input class="btn btn-info btn-sm" type="submit" value="Export to Excel" onclick="getCSVData2()">
+			</form></span>
+		';
+
+
 	echo "<div class='col-sm-12' style='overflow-x:scroll;overflow-y:scroll;max-height:600px;'><br>";
 	echo "<h5><b>Detailed Report</b></h5>";
 	echo "<table class='table table-bordered table-responsive' id='report'>";	
@@ -445,10 +454,9 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$schedule=$sql_row1['order_del_no'];
 			$color_code=$sql_row1['color_code'];
 			$color=$sql_row1['order_col_des'];
-		}		
-
-		  
-        $sql1="SELECT * FROM $bai_rm_pj2.mrn_track WHERE issued_qty>0";
+        }		
+        
+        	$sql1="SELECT * FROM $bai_rm_pj2.mrn_track WHERE issued_qty>0";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -459,6 +467,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		$fab_rec=$fab_rec+$issued_qty;
 
 
+
 			$net_util=$fab_rec-$fab_ret-$damages-$shortages;
 			$act_con=round(($fab_rec-$fab_ret)/$act_total,4);
 			$net_con=round($net_util/$act_total,4);
@@ -466,6 +475,9 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$act_saving_pct=round((($cat_yy-$act_con)/$cat_yy)*100,0);
 			$net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),1);
 			$net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,0);
+
+
+
 		
 		echo "<tr height=17 style='height:12.75pt'>";
 		//echo "<td height=17 class=xl6418241 style='height:12.75pt'></td>";
@@ -499,10 +511,11 @@ if(isset($_POST['submit']) && $reptype == 1)
 		echo "</tr>";
 	}
 	echo "</table>
-	
+
 	</div>";
 }else{
-	echo "data not found";
+	echo "<div style='color:Red' font-size:12px;><center><b><h3>! No data Found</h3></b></center></div>";
+
 }
 
  }
@@ -567,9 +580,10 @@ $sql="select distinct section from $bai_pro3.act_cut_status where date between \
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
+
 	echo "<div class='col-sm-12' style='overflow-x:scroll;overflow-y:scroll;max-height:600px;'>";
 	echo "<h5>Summary Report</h5>";
-	echo "<table class='table table-bordered table-responsive' id='report'>";	
+	echo "<table class='table table-bordered table-responsive' id='report1'>";	
 	echo "<tr class='info'>";
 	echo "<th>Section</th>";
 	echo "<th>Shift</th>";
@@ -829,6 +843,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 }
 	echo "<table>
 	</div>";
+
 }
  
 ?>
@@ -875,15 +890,15 @@ function getCSVData(){
  $("#csv_text").val(csv_value);	
 }
 </script> -->
-<script>
-				function getCSVData(){
-				var csv_value=$('#table_one').table2CSV({delivery:'value'});
-				$("#csv_123").val(csv_value);	
-				}
-			</script>
+
 <script>
 	document.getElementById("msg").style.display="none";
 	document.getElementById("export").style.display="";		
 </script>
-
+<script type="text/javascript" language="javascript">
+	function getCSVData2(){
+	var csv_value=$('#report').table2CSV({delivery:'value'});
+	$("#csv_123").val(csv_value);	
+}
+</script>
 
