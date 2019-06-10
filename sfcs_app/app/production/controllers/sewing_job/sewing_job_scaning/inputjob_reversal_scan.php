@@ -63,7 +63,7 @@
 				</div>
 				<div class='form-group col-md-3'>
 					<label>Remarks:<span style="color:red">*</span></label>
-					<select class='form-control sampling' name='sampling' id='sampling' style='width:100%;' required><option value='Normal' selected>Normal</option><option value='sample'>Sample</option><option value='Shipment_Sample'>Shipment_Sample</option></select>
+					<select class='form-control sampling' name='sampling' id='sampling' style='width:100%;' required><option value='Excess' selected>Excess</option><option value='Normal' selected>Normal</option><option value='sample'>Sample</option><option value='Shipment_Sample'>Shipment_Sample</option></select>
 				</div>
 				<div class="form-group col-md-3">
 					<label for="title">Select Module:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
@@ -869,8 +869,24 @@
 				}
 				// if((int)$docket_n > 0)
 				// {
-					$update_query = "Update $bai_pro3.cps_log set remaining_qty = remaining_qty + $reversal_value 
-					where doc_no = '$docket_n' and size_title = '$up_size' and operation_code = '$post_ops_code'";
+					//getting dependency and update cps remaining qty
+					$parellel_ops=array();
+					$qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and ops_dependency='$job_number[4]'";
+                    $qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
+					if($qry_parellel_ops_result->num_rows > 0){
+						while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
+						{ 
+							$parellel_ops[] = $row_prellel['operation_code'];
+						}
+					}
+					if(sizeof($parellel_ops)>0){
+						$update_query = "Update $bai_pro3.cps_log set remaining_qty = remaining_qty + $reversal_value 
+						where doc_no = '$docket_n' and size_title = '$up_size' and operation_code in (".implode(',',$parellel_ops).")";
+					}else{
+						$update_query = "Update $bai_pro3.cps_log set remaining_qty = remaining_qty + $reversal_value 
+						where doc_no = '$docket_n' and size_title = '$up_size' and operation_code = '$post_ops_code'";
+					}
+					
 					// echo $update_query;
 					mysqli_query($link,$update_query) or exit("Some problem while updating cps log");
 				//}	
