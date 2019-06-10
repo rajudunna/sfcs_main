@@ -236,8 +236,7 @@ else
 		$ops_query_result=$link->query($get_ops_query);
 		while ($row1 = $ops_query_result->fetch_assoc())
 		{
-
-		  $ops_get_code[$row1['operation_code']] = $row1['operation_name'];
+			$ops_get_code[$row1['operation_code']] = $row1['operation_name'];
 		}
 
 		// echo $get_ops_query;
@@ -281,7 +280,7 @@ else
 		{
 			   $bcd_root_query =  $bcd_root_query.',size_title';  
 		}
-		//echo $bcd_root_query;
+		//echo $bcd_root_query."<br>";
 		//To get order Qty
 		foreach($sizes_array as $size)
 		{
@@ -307,8 +306,14 @@ else
 		   // echo $get_order_qty;
 		    if($_GET['size'] != '')
 		    {
-
-		   	   $bcd_data_query .= " and size_title='$size' group by operation_id";
+			    $sql_report="select size_code from $bai_pro3.pac_stat_log where schedule='$schedule' and color='$color' and size_tit='$size'";
+				$size_tit_rep = mysqli_query($link,$sql_report);
+     			while($row_siz_tit = mysqli_fetch_array($size_tit_rep))
+				{
+					$size_code=$row_siz_tit['size_code'];
+				}		   
+			   
+			   $bcd_data_query .= " and size_title='$size' group by operation_id";
 		   	   //$get_order_qty.= " and title_size_$size_code = '$size'";
 		   	    $get_order_qty="select (order_s_$size_code) as order_qty from $bai_pro3.bai_orders_db_confirm where order_style_no='$style' and order_del_no='$schedule' and order_col_des='$color' ";
 		    }else{
@@ -316,7 +321,8 @@ else
 		       $bcd_data_query .= " group by operation_id";
 
 		    }
-		   // echo "$get_order_qty";
+		  // echo $get_order_qty."<br>";
+		   //echo $bcd_data_query."<br>";
 
 		    $get_order_result =$link->query($get_order_qty);
 			while ($row2 = $get_order_result->fetch_assoc())
@@ -337,12 +343,13 @@ else
 		    $to_get_cpk="select sum(carton_act_qty) as  carton_qty from $bai_pro3.pac_stat_log where style='$style' and schedule='$schedule' and color='$color' and status='DONE'";
             if($_GET['size'] != '')
 		    {
-		       $to_get_cpk .= " and size_code='$size_code'";
+		       $to_get_cpk .= " and size_tit='$size'";
 		    }
 		    else
 		    {
                $to_get_cpk .= " group by color";
-		    }
+				}
+			//	echo $to_get_cpk."<br>";
 		    $to_get_cpk_result= $link->query($to_get_cpk);
 		    while ($row3 = $to_get_cpk_result->fetch_assoc())
 		    {
@@ -398,7 +405,7 @@ else
 						$seq_id = $row['id'];
 						$ops_order = $row['operation_order'];
 					}
-					$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) < '$ops_order' AND operation_code not in (10) ORDER BY operation_order DESC LIMIT 1";
+					$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) < '$ops_order' AND display_operations='yes' ORDER BY operation_order DESC LIMIT 1";
 					$result_post_ops_check = $link->query($post_ops_check);
 		            //echo $post_ops_check.'<br/>';
 					$row = mysqli_fetch_array($result_post_ops_check);
