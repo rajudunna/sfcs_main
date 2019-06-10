@@ -153,6 +153,40 @@ if(in_array($category_act,$category))
 {
     $emb_cut_check_flag = 1;
 }
+
+//*To check Parallel Operations
+ 
+
+$dep_ops_check = "select ops_dependency from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' AND operation_code = $b_op_id";
+ // echo $dep_ops_check;
+ // die();
+$result_dep_ops_check = $link->query($dep_ops_check);
+if($result_dep_ops_check->num_rows > 0)
+{
+    while($row22 = $result_dep_ops_check->fetch_assoc()) 
+    {
+        $next_operation = $row22['ops_dependency'];
+    }
+}
+else
+{
+    $next_operation = '';
+}
+$flag ='';
+if($next_operation > 0)
+{
+   $flag = 'parallel_scanning';
+    $get_ops_dep = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_dependency = $next_operation";
+   // echo $get_ops_dep;
+   $result_ops_dep = $link->query($get_ops_dep);
+   while($row_dep = $result_ops_dep->fetch_assoc()) 
+   {
+      $emb_operations[] = $row_dep['operation_code'];
+   }
+   //$emb_operations = implode(',',$operations);
+}
+
+//End Here
 /* END:--operation dependency and previous operation validation*/
 
 //Start:-- Size/Bundle level logic for Cut*/
@@ -169,6 +203,23 @@ $concurrent_flag = 0;
 
 //Bulk insertions into QMS_DB
 $bulk_insert_rej = "INSERT INTO $bai_pro3.bai_qms_db(`qms_style`, `qms_schedule`,`qms_color`,`log_user`, `log_date`, `qms_size`, `qms_qty`, `qms_tran_type`,`remarks`, `ref1`, `doc_no`, `input_job_no`, `operation_id`, `qms_remarks`, `bundle_no`) VALUES";
+
+//loop fpr docket
+if($flag == 'parallel_scanning')
+{
+    $doc_qtys_array = [];
+    $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id in (".implode(',',$emb_operations).")";
+    // echo $pre_send_qty_qry;
+    // die();
+    $result_pre_send_qty = $link->query($pre_send_qty_qry);
+    while($doc_row = $result_pre_send_qty->fetch_assoc()) 
+    {
+        $doc_qtys_array[$b_doc_no][$doc_row['size_title']] = $doc_row['recieved_qty'];
+
+    }
+}
+
+
 
 foreach($b_tid as $key => $value)
 {
@@ -380,12 +431,45 @@ foreach($b_tid as $key => $value)
                 $bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_no.'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_doc_no.'","'.$b_doc_no.'","'.$b_shift.'","'.$b_module.'","Normal")';               
                 $result_query_001_temp = $link->query($bulk_insert_post_temp) or exit('bulk_insert_post query error in updating');
             }
-        }	
-        if($post_ops_code != null && $emb_cut_check_flag == 1)
-        {
-            $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id = ".$post_ops_code;
-            $result_query = $link->query($query_post) or exit('query error in updating');
         }
+        // echo $emb_cut_check_flag;
+        // echo $post_ops_code;
+        // echo $flag;
+        if($flag == 'parallel_scanning')
+        {
+           if($doc_qtys_array[$b_doc_no][$b_sizes[$key]] > 0){
+               $pre_send_qty_qry = "select carton_act_qty from $bai_pro3.packing_summary_input where doc_no =$b_doc_no 
+                   and size_title='". $b_sizes[$key]."'";
+               // echo $pre_send_qty_qry;
+               // die();
+                $result_pre_send_qty = $link->query($pre_send_qty_qry);
+                while($row = $result_pre_send_qty->fetch_assoc()) 
+                {
+                    $bundle_qty = $row['carton_act_qty'];
+                    if($doc_qtys_array[$b_doc_no][$b_sizes[$key]] > $bundle_qty){
+                        $query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$bundle_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and size_title='". $b_sizes[$key]."' and operation_id = ".$next_operation;
+                        $result_query = $link->query($query_post_dep) or exit('query error in updating'); 
+                        $doc_qtys_array[$b_doc_no][$b_sizes[$key]] -= $bundle_qty;
+                    }else{
+                        $query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$doc_qtys_array[$b_doc_no][$b_sizes[$key]]."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and size_title='". $b_sizes[$key]."' and operation_id = ".$next_operation;
+                        $result_query = $link->query($query_post_dep) or exit('query error in updating'); 
+                        $doc_qtys_array[$b_doc_no][$b_sizes[$key]] = 0 ;
+                    }
+                }
+            }
+
+             
+        }
+        else
+        {
+            if($post_ops_code != null && $emb_cut_check_flag == 1)
+            {
+                $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id = ".$post_ops_code;
+               
+                $result_query = $link->query($query_post) or exit('query error in updating');
+            }
+         }	
+       
         if($ops_dep)
         {
             $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where bundle_number ='".$b_tid[$key]."' and operation_id in (".implode(',',$dep_ops_codes).")";

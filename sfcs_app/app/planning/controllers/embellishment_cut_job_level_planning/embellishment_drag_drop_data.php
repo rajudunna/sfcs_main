@@ -1,1 +1,1 @@
-<?php $style_ref="ACZ06SF8       "; $schedule_ref="493322"; $color_ref="BLK : BLACK                   "; $cat_ref_ref="10458460"; $code_ref="524845-A01-*"; ?>
+<?php $style_ref="CA5179G8       "; $schedule_ref="579851"; $color_ref="020 020 GREY HEATHER          "; $cat_ref_ref="12249019"; $code_ref="20565-A01-*20566-A02-*20567-A03-*"; ?>
