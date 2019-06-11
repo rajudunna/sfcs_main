@@ -174,7 +174,7 @@ error_reporting(0);
                         $seq_id = $row7['id'];
                         $ops_order = $row7['operation_order'];
                     }
-                    $post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = '$ops_seq'  AND CAST(operation_order AS CHAR) < '$ops_order' AND display_operations='yes' ORDER BY operation_order DESC LIMIT 1";
+                    $post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = '$ops_seq'  AND CAST(operation_order AS CHAR) < '$ops_order' ORDER BY operation_order DESC LIMIT 1";
                     $result_post_ops_check = $link->query($post_ops_check);
                     //echo $post_ops_check.'<br/>';
                     $row8 = mysqli_fetch_array($result_post_ops_check);
