@@ -407,11 +407,15 @@ function getjobdetails($job_number)
 
 							//get Current operation alaready scanned qty
                             $current_recieved_qty="SELECT ((send_qty+recut_in+replace_in)-(recevied_qty+rejected_qty)) AS current_recieved_qty FROM brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND size_id ='$size' AND operation_id = '$job_number[4]'";
-                            //echo "</br>".$current_recieved_qty."</br>";
-							$result_current_recieved_qty = $link->query($current_recieved_qty);
-							while($row_result_current_recieved_qty = $result_current_recieved_qty->fetch_assoc()){
-								$current_ops_qty=$row_result_current_recieved_qty['current_recieved_qty'];
-							}
+                            $result_current_recieved_qty = $link->query($current_recieved_qty);
+                            if($result_current_recieved_qty->num_rows > 0)
+                            {
+                                while($row_result_current_recieved_qty = $result_current_recieved_qty->fetch_assoc()){
+                                    $current_ops_qty=$row_result_current_recieved_qty['current_recieved_qty'];
+                                }
+                            }else{
+                                $current_ops_qty=0;
+                            }
 							//echo "</br>Testing ".$current_ops_qty."</br>";
 							$bal_toreport=($previous_minqty-$current_ops_qty);
 							if($bal_toreport>0){
