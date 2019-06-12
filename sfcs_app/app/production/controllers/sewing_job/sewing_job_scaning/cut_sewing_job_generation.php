@@ -173,11 +173,14 @@ if(isset($_POST) && isset($_POST['main_data'])){
 	    $ips_op_codes[] = $row['operation_code'];
 	}
 	$ips_op_code=implode(",",$ips_op_codes);
+	$validation_query1 = "SELECT * FROM `bai_pro3`.`pac_stat_log_input_job` WHERE doc_no IN(".$doc_no.") and mrn_status=1";
+	$sql_result1=mysqli_query($link, $validation_query1) or exit("Error while getting validation data");     
+	$count1= mysqli_num_rows($sql_result1);
 	$validation_query = "SELECT id from $brandix_bts.bundle_creation_data where docket_number in (".$doc_no.") and recevied_qty > 0
 	            and operation_id in (".$ips_op_code.")";
 	$sql_result=mysqli_query($link, $validation_query) or exit("Error while getting validation data");      
 	$count= mysqli_num_rows($sql_result);
-    if ($count>0) 
+    if ($count1>0 || $count>0) 
     {
         echo 'sewing_done';
     } 
@@ -1024,7 +1027,7 @@ function delet(docs_id){
     $.post( "<?= trim($url) ?>", { del_recs: docs_id } ).done(function(data) {
     
         if(data=='sewing_done'){
-            swal('Scanning is Already Performed','Cannot Delete Sewing Jobs','error');
+            swal('Scanning/MRN is Already Performed','Cannot Delete Sewing Jobs','error');
             setTimeout(function(){ location.reload(); }, 600);
         }else if(data=='success'){
             swal('Jobs Deleted successfully.');
