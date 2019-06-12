@@ -327,18 +327,24 @@ function getjobdetails($job_number)
             if($flag == 'packing_summary_input')
             {
                 $job_number_reference = $row['type_of_sewing'];
-                if($job_number_reference == 3)
-                {
-                    $row['remarks'] = 'Sample';
-                }
-                else if($job_number_reference == 2)
-                {
-                    $row['remarks'] = 'Excess';
-                }
-                else
-                {
-                    $row['remarks'] = 'Normal';
-                }
+                // if($job_number_reference == 3)
+                // {
+                    // $row['remarks'] = 'Sample';
+                // }
+                // else if($job_number_reference == 2)
+                // {
+                    // $row['remarks'] = 'Excess';
+                // }
+                // else
+                // {
+                    // $row['remarks'] = 'Normal';
+                // }
+				$get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix WHERE id= $job_number_reference";
+				$get_remark_arry_req = $link->query($get_remark);
+				while($row_remark = $get_remark_arry_req->fetch_assoc()) 
+				{
+					$row['remarks']  = $row_remark['prefix_name'];
+				}
                 $select_modudle_qry = "select input_module from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$actual_input_job_number'";
                 $result_select_modudle_qry = $link->query($select_modudle_qry);
                 if($result_select_modudle_qry->num_rows > 0)

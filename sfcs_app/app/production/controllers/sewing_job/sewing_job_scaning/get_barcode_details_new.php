@@ -452,6 +452,12 @@
                 {
                     
                     $job_number_reference = $row['type_of_sewing'];
+					$get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix WHERE id= $job_number_reference";
+					$get_remark_arry_req = $link->query($get_remark);
+					while($row_remark = $get_remark_arry_req->fetch_assoc()) 
+					{
+						$b_remarks[] = $row_remark['prefix_name'];
+					}
                     if($job_number_reference == 2)
                     {
                         $selecting_sample_qtys = "SELECT input_qty FROM $bai_pro3.sp_sample_order_db WHERE order_tid = (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_col_des='$color' ) AND sizes_ref = '$size'";
@@ -497,7 +503,10 @@
                 $b_tid[] = $row['tid'];
                 $b_inp_job_ref[] = $row['input_job_no'];
                 $b_a_cut_no[] = $row['acutno'];
-                $b_remarks[] = 'Normal';
+                if($flag = 'bundle_creation_data')
+				{
+					 $b_remarks[] = $row['remarks'];
+				}
                 $b_shift = $shift;
                 if($flag == 'bundle_creation_data'){
                     $mapped_color = $row['mapped_color'];
