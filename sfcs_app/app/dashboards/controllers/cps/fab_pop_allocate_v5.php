@@ -1143,7 +1143,7 @@ if(isset($_POST['allocate']))
 			echo "<td id='col1'>".$sql_row['item']."</td>";
 			echo "<td id='col1'>".$sql_row['lot_no']."</td>";
 			echo "<td>".$sql_row['shade']."</td>";
-			if($shrinkage_inspection == 'yes')
+			if($shrinkage_inspection == 'yes') 
 	        {
 			echo "<td>".$sql_row['shrinkage_group']."</td>";
 			echo "<td>".$sql_row['shrinkage_width']."</td>";
