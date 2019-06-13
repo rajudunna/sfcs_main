@@ -1004,6 +1004,7 @@ if(isset($_POST['allocate']))
 	  }
 		echo "<th>Roll No</th>";	
 		echo "<th id='col'>Location</th>";	
+		echo "<th>Remarks</th>";	
 		echo "<th>Group</th>";	
 		echo "<th>Tkt<br/>Width</th>";	
 		echo "<th>Ctx Width</th>";	
@@ -1142,7 +1143,7 @@ if(isset($_POST['allocate']))
 			echo "<td id='col1'>".$sql_row['item']."</td>";
 			echo "<td id='col1'>".$sql_row['lot_no']."</td>";
 			echo "<td>".$sql_row['shade']."</td>";
-			if($shrinkage_inspection == 'yes')
+			if($shrinkage_inspection == 'yes') 
 	        {
 			echo "<td>".$sql_row['shrinkage_group']."</td>";
 			echo "<td>".$sql_row['shrinkage_width']."</td>";
@@ -1150,6 +1151,7 @@ if(isset($_POST['allocate']))
 			}
 			echo "<td>".$sql_row['ref2']."</td>";
 			echo "<td>".$sql_row['ref1']."</td>";
+			echo "<td>".$sql_row['remarks']."</td>";
 			echo "<td>".$sql_row['shade']."</td>";
 			echo "<td>".$sql_row['ref6']."</td>";
 			echo "<td>".$sql_row['ref3']."</td>";
