@@ -403,22 +403,47 @@ echo $drp_down;
                       
 						$html_hiding = "IssueToModule";
                     }
-                    echo "<tr><td>$s_no</td>";
-                    echo "<td>".$row['doc_no']."</td>";
-                    echo "<td>".$row['style']."</td>";
-                    echo "<td>".$row['schedule']."</td>";
-                    echo "<td>".$row['color']."</td>";
-                    echo "<td>".$row['category']."</td>";
-                    echo "<td>".$row['rejected_qty']."</td>";
-                    echo "<td>".$row['recut_qty']."</td>";
-                    echo "<td>".$row['recut_reported_qty']."</td>";
-                    echo "<td>".$row['issued_qty']."</td>";
-                    echo "<td>".$rem_qty."</td>";
-                    echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
-                    echo "<td style='display:none'>$html_hiding</td>"; 
-                    echo "<td>$button_html</td>"; 
-                    echo "</tr>";
-                    $s_no++;
+					if($html_hiding == "ReportPending")
+					{
+						if(strtolower($row['category'])=='body' or strtolower($row['front']))
+						{
+							echo "<tr><td>$s_no</td>";
+							echo "<td>".$row['doc_no']."</td>";
+							echo "<td>".$row['style']."</td>";
+							echo "<td>".$row['schedule']."</td>";
+							echo "<td>".$row['color']."</td>";
+							echo "<td>".$row['category']."</td>";
+							echo "<td>".$row['rejected_qty']."</td>";
+							echo "<td>".$row['recut_qty']."</td>";
+							echo "<td>".$row['recut_reported_qty']."</td>";
+							echo "<td>".$row['issued_qty']."</td>";
+							echo "<td>".$rem_qty."</td>";
+							echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
+							echo "<td style='display:none'>$html_hiding</td>"; 
+							echo "<td>$button_html</td>"; 
+							echo "</tr>";
+							$s_no++;
+						}
+					}
+					else
+					{
+						echo "<tr><td>$s_no</td>";
+						echo "<td>".$row['doc_no']."</td>";
+						echo "<td>".$row['style']."</td>";
+						echo "<td>".$row['schedule']."</td>";
+						echo "<td>".$row['color']."</td>";
+						echo "<td>".$row['category']."</td>";
+						echo "<td>".$row['rejected_qty']."</td>";
+						echo "<td>".$row['recut_qty']."</td>";
+						echo "<td>".$row['recut_reported_qty']."</td>";
+						echo "<td>".$row['issued_qty']."</td>";
+						echo "<td>".$rem_qty."</td>";
+						echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
+						echo "<td style='display:none'>$html_hiding</td>"; 
+						echo "<td>$button_html</td>"; 
+						echo "</tr>";
+						$s_no++;
+					}
                 }
             }
             else
