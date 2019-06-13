@@ -170,7 +170,19 @@
                         $recut_allowing_qty = 0;
                     }
                     foreach ($insert_id_act as $key_insert => $val_insert) 
+                    { 
+					
+					$category_new = "SELECT * FROM `$bai_pro3`.`cat_stat_log` where tid in (select cat_ref from  `$bai_pro3`.`plandoc_stat_log` where doc_no=$val_insert)";
+					
+					$category_new_res = $link->query($category_new);
+                    while($category_new_res1 = $category_new_res->fetch_assoc()) 
                     {
+                        $cty =$category_new_res1['category'];
+                    }
+					
+					if(strtolower($cty) == 'body' || strtolower($cty) == 'front')
+					{
+						
                         if($to_add > 0)
                         {
                             $inserting_into_recut_v2_child = "INSERT INTO `$bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`,`size_id`)
@@ -238,6 +250,7 @@
                             $update_rejection_log = "update $bai_pro3.rejections_log set recut_qty = recut_qty+$to_add,remaining_qty = remaining_qty - $to_add where style = '$style' and schedule = '$scheule' and color = '$color'";
                             mysqli_query($link,$update_rejection_log) or exit("While updating rejection log".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
+					}
                         if($val_insert == $insert_id)
                         {
                             $mo_changes = mofillingforrecutreplace($to_add_mo,$bcd_act_id);
@@ -247,7 +260,7 @@
             }
         }
         $url = '?r='.$_GET['r'];
-        echo "<script>sweetAlert('Recut Successfully Raised','','success');window.location = '".$url."'</script>";   
+       echo "<script>sweetAlert('Recut Successfully Raised','','success');window.location = '".$url."'</script>";   
     }
     if(isset($_POST['formSubmit1']))
     {
