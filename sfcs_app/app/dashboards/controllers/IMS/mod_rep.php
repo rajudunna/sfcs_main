@@ -234,12 +234,12 @@
                             
                             if(sizeof($bundles_new)>0)
                             {
-                                $sql123="select bundle_number,send_qty from $brandix_bts.bundle_creation_data where bundle_number in (".implode(",",$bundles_new).") and operation_id=".$input_code."";
+                                $sql123="select bundle_number,recevied_qty from $brandix_bts.bundle_creation_data where bundle_number in (".implode(",",$bundles_new).") and operation_id=".$input_code."";
                                 //echo $sql123."<br>";
                                 $sql12_result123=mysqli_query($link, $sql123) or exit("Sql Error2ww.1");
                                 while($sql_row123=mysqli_fetch_array($sql12_result123)) 
                                 {
-                                    $input_qty[$sql_row123['bundle_number']]=$sql_row123['send_qty']; 
+                                    $input_qty[$sql_row123['bundle_number']]=$sql_row123['recevied_qty']; 
                                 }
                             }
                             $sql="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref,pac_tid,tid from $bai_pro3.ims_log where ims_mod_no='$module' and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by tid";
