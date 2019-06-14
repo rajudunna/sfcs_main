@@ -560,7 +560,6 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                 $sqlred="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output,ims_doc_no,ims_style,ims_schedule,ims_color,rand_track,group_concat(ims_size) as ims_size,ims_remarks,input_job_no_ref AS inputjobno,input_job_rand_no_ref AS inputjobnorand,ims_date,pac_tid,acutno FROM $bai_pro3.ims_log
                 LEFT JOIN $bai_pro3.plandoc_stat_log ON ims_log.ims_doc_no=plandoc_stat_log .doc_no  WHERE ims_mod_no='$module' AND ims_status <> 'DONE' GROUP BY inputjobnorand ORDER BY ims_date limit $ims_priority_boxes";
                 $sql_resultred=mysqli_query($link, $sqlred) or exit("Sql Error11111".mysqli_error($GLOBALS["___mysqli_ston"]));
-
                 $total_qty="0";
                 $total_out="0";
                 //docket boxes Loop -start
@@ -575,9 +574,10 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                   $schedul_no=$sql_rowred['ims_schedule'];  // schedul no
                   $rand_track=$sql_rowred['rand_track'];
                   $ims_remarks=$sql_rowred['ims_remarks'];
-                  $ims_size=$sql_rowred['ims_size'];
+                  //$ims_size=$sql_rowred['ims_size'];
                   $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des in (".$color_ref.") and order_del_no",$schedul_no,$link);
-				          $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedul_no,$link);
+				  $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedul_no,$link);
+				  
                   $cut_no=$sql_rowred['acutno'];
                   $inputno=$sql_rowred['inputjobno'];
                   $inputjobnorand=$sql_rowred['inputjobnorand'];
@@ -586,8 +586,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                   $total_out=$total_out+$output_qty;
                   $input_date=$sql_rowred['ims_date'];
                   $ijrs[] = $inputjobnorand;
-           
-
+					
                   $sql22="select order_tid from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
                   $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
                   while($sql_row22=mysqli_fetch_array($sql_result22))
@@ -601,22 +600,20 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                   {
                     $ims_color=$sql_row33['order_col_des'];
                   }
-                  $size_value=array();
-                  $sizes_explode=explode(",",$ims_size);
-                  for($i=0;$i<sizeof($sizes_explode);$i++)
+				  $sql331="select type_of_sewing,group_concat(distinct size_code) as size_tit, group_concat(distinct old_size) as size_ref from $bai_pro3.pac_stat_log_input_job where input_job_no_random='$inputjobnorand'";
+                  $sql_result331=mysqli_query($link, $sql331) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+                  while($sql_row331=mysqli_fetch_array($sql_result331))
                   {
-                    $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
-                  }
-                  $sizes_implode="'".implode("','",$size_value)."'";   
-                  //$main_size=substr($ims_size, 2);  
-                   for($i=0;$i<sizeof($sizes_explode);$i++)
-                  {				  
-                    $main_size[]=substr($sizes_explode[$i], 2);  
-				          }	
-                  $sizes_implode1="'".implode("','",$main_size)."'"; 				  
+                    $size_tit=$sql_row331['size_tit'];
+                    $ims_size=$sql_row331['size_ref'];
+					$type_of_sewing=$sql_row331['type_of_sewing'];
+				 }
+				  $sizes_explode=array();
+                  $sizes_explode=explode(",",$ims_size);
+                  //$size_value=explode(",",$size_tit);
+				  $sizes_implode1="'".implode("','",$sizes_explode)."'"; 				  
                   $rejected=0;
-
-                 
+                  unset($sizes_explode);
                   $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule='".$sql_rowred['ims_schedule']."' and qms_color in (".$color_ref.") and qms_size in ($sizes_implode1) and input_job_no='".$sql_rowred['inputjobnorand']."' and qms_style='".$sql_rowred['ims_style']."' and operation_id=$operation_out_code and qms_remarks in ('".$ims_remarks."')";
                   $sql_result33=mysqli_query($link, $sql33) ;
                   //echo  $sql33;
@@ -624,9 +621,8 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                   {
                     $rejected=$sql_row33['rejected']; 
                   }   
-
-                  $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedul_no,$color_name,$inputno,$link);
-                  
+                  $sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","id",$type_of_sewing,$link);
+                  $display = $sewing_prefi.leading_zeros($inputno,3);
                
                   //To get tool-tip values
                   $ims_tool="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output from bai_pro3.ims_log where  input_job_rand_no_ref='".$sql_rowred['inputjobnorand']."' and ims_mod_no='$module' ";
