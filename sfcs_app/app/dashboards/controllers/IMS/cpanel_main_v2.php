@@ -387,6 +387,33 @@ $dashboard_name="IMS";
 $start_timestamp = microtime(true);
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+$application='IMS_OUT';
+
+$scanning_query="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row=mysqli_fetch_array($scanning_result))
+{
+  $operation_out_code=$sql_row['operation_code'];
+}
+
+$application2='IPS';
+
+$scanning_query12="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application2'";
+$scanning_result12=mysqli_query($link, $scanning_query12)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row123=mysqli_fetch_array($scanning_result12))
+{
+  $operation_in_code=$sql_row123['operation_code'];
+}
+
+$application1='IMS';
+
+$scanning_query1="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application1'";
+$scanning_result1=mysqli_query($link, $scanning_query1)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row1=mysqli_fetch_array($scanning_result1))
+{
+  $operation_name=$sql_row1['operation_name'];
+  $operation_code=$sql_row1['operation_code'];
+} 
 ?>
 <body>
 <div class="panel panel-primary">
@@ -496,26 +523,41 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
             <!-- module number DIV start -->  
             <div class="line_no">                
               <?php 
-                $sqlwip="SELECT SUM(ims_qty-ims_pro_qty) AS WIP ,ims_doc_no  FROM $bai_pro3.ims_log WHERE ims_mod_no='$module' and ims_status<>'DONE'";
-                $sql_resultwip=mysqli_query($link, $sqlwip) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                while($sql_rowwip=mysqli_fetch_array($sql_resultwip))
+               
+               $wip='0';  
+                $sqlwip="SELECT pac_tid FROM $bai_pro3.ims_log WHERE ims_mod_no='$module' and ims_status<>'DONE'";
+                $sql_resultwip=mysqli_query($link, $sqlwip) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
+                if(mysqli_num_rows($sql_resultwip)>0)
                 {
+                  while($sql_rowwip=mysqli_fetch_array($sql_resultwip))
+                  {
+                      $bundle_numbers[]=$sql_rowwip['pac_tid'];
+                  }
+                  $sqlwip12="SELECT sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output FROM $brandix_bts.bundle_creation_data WHERE bundle_number in (".implode(",",$bundle_numbers).") and assigned_module='$module'";
+                 // echo $sqlwip12."<br>";
+                  $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+                  while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
+                  {
+                    $wip=$sql_rowwip12['input']-$sql_rowwip12['output'];
+                  } 
+                  unset($bundle_numbers);
+                }
                 ?>
                   <a href="#" data-toggle="tootip" tile="M-<?php echo $module; ?> WIP :  
-                  <?php echo $sql_rowwip['WIP']; 
-                  $wip='0';
-                  $wip=$sql_rowwip['WIP'];
+                  <?php echo $wip; 
+                 
+                  //$wip=$sql_rowwip['WIP'];
                   ?>" class="red-tooltip" 
                   onclick="window.open('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?= $module ?>', 'myPop1');">
                   <?= $module ?></a>
               <?php 
-                } 
+                
               ?>
             </div>  
             <!-- module number DIV END -->
             <div style="float:left;padding-left:25px;">
               <?php 
-                $sqlred="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output,ims_doc_no,ims_style,ims_schedule,ims_color,rand_track,ims_size,ims_remarks,input_job_no_ref AS inputjobno,input_job_rand_no_ref AS inputjobnorand,ims_date,pac_tid,acutno FROM $bai_pro3.ims_log
+                $sqlred="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output,ims_doc_no,ims_style,ims_schedule,ims_color,rand_track,group_concat(ims_size) as ims_size,ims_remarks,input_job_no_ref AS inputjobno,input_job_rand_no_ref AS inputjobnorand,ims_date,pac_tid,acutno FROM $bai_pro3.ims_log
                 LEFT JOIN $bai_pro3.plandoc_stat_log ON ims_log.ims_doc_no=plandoc_stat_log .doc_no  WHERE ims_mod_no='$module' AND ims_status <> 'DONE' GROUP BY inputjobnorand ORDER BY ims_date limit $ims_priority_boxes";
                 $sql_resultred=mysqli_query($link, $sqlred) or exit("Sql Error11111".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -535,7 +577,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                   $ims_remarks=$sql_rowred['ims_remarks'];
                   $ims_size=$sql_rowred['ims_size'];
                   $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des in (".$color_ref.") and order_del_no",$schedul_no,$link);
-				  $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedul_no,$link);
+				          $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedul_no,$link);
                   $cut_no=$sql_rowred['acutno'];
                   $inputno=$sql_rowred['inputjobno'];
                   $inputjobnorand=$sql_rowred['inputjobnorand'];
@@ -566,19 +608,16 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                     $size_value[]=ims_sizes($order_tid,$schedul_no,$style_no,$ims_color,$sizes_explode[$i],$link);
                   }
                   $sizes_implode="'".implode("','",$size_value)."'";   
-                  $main_size=substr($ims_size, 2);   
+                  //$main_size=substr($ims_size, 2);  
+                   for($i=0;$i<sizeof($sizes_explode);$i++)
+                  {				  
+                    $main_size[]=substr($sizes_explode[$i], 2);  
+				          }	
+                  $sizes_implode1="'".implode("','",$main_size)."'"; 				  
                   $rejected=0;
 
-                  $application='IMS_OUT';
-
-                  $scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
-                  $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                  while($sql_row=mysqli_fetch_array($scanning_result))
-                  {
-                    $operation_out_code=$sql_row['operation_code'];
-                  }
-
-                  $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule='".$sql_rowred['ims_schedule']."' and qms_color in (".$color_ref.") and qms_size in ('".$main_size."') and input_job_no='".$sql_rowred['inputjobnorand']."' and qms_style='".$sql_rowred['ims_style']."' and operation_id=$operation_out_code and qms_remarks in ('".$ims_remarks."')";
+                 
+                  $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule='".$sql_rowred['ims_schedule']."' and qms_color in (".$color_ref.") and qms_size in ($sizes_implode1) and input_job_no='".$sql_rowred['inputjobnorand']."' and qms_style='".$sql_rowred['ims_style']."' and operation_id=$operation_out_code and qms_remarks in ('".$ims_remarks."')";
                   $sql_result33=mysqli_query($link, $sql33) ;
                   //echo  $sql33;
                   while($sql_row33=mysqli_fetch_array($sql_result33))
@@ -587,15 +626,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                   }   
 
                   $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedul_no,$color_name,$inputno,$link);
-                  $application1='IMS';
-
-                  $scanning_query1="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application1'";
-                  $scanning_result1=mysqli_query($link, $scanning_query1)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                  while($sql_row1=mysqli_fetch_array($scanning_result1))
-                  {
-                    $operation_name=$sql_row1['operation_name'];
-                    $operation_code=$sql_row1['operation_code'];
-                  } 
+                  
                
                   //To get tool-tip values
                   $ims_tool="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output from bai_pro3.ims_log where  input_job_rand_no_ref='".$sql_rowred['inputjobnorand']."' and ims_mod_no='$module' ";
@@ -623,7 +654,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                 ?>
                   <a href="javascript:void(0);" onclick="loadpopup('<?= $ui_url1;?>', 'myPop1',800,600);"  title="
                   Style No : <?php echo $style_no."<br/>"; ?>
-				  Co No : <?php echo $co_no."<br/>"; ?>
+				          Co No : <?php echo $co_no."<br/>"; ?>
                   Schedul No :<?php echo $schedul_no."<br/>"; ?>
                   Color : <?php echo $color_name."<br/>"; ?>
                   Docket No : <?php echo $docket_no."<br/>"; ?>
