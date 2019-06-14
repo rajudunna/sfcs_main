@@ -417,8 +417,12 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 {
 	$mklength=$sql_row2['mklength'];
 	$mk_remarks=$sql_row2['remarks'];
+	$remark1=$sql_row2['remark1'];
+	$remark2=$sql_row2['remark2'];
+	$remark3=$sql_row2['remark3'];
+	$remark4=$sql_row2['remark4'];
 	$patt_ver=$sql_row2['mk_ver'];
-}
+}	
 	$sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_id." and doc_type=\"normal\"";
  //echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -438,7 +442,11 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
 		$mklength=$sql_row2['mklength'];
 		$mk_file=$sql_row2['remarks'];
-		
+		$remark1=$sql_row2['remark1'];
+		$remark2=$sql_row2['remark2'];
+		$remark3=$sql_row2['remark3'];
+		$remark4=$sql_row2['remark4'];
+	
 		$sql22="select * from $bai_pro3.marker_ref_matrix where marker_ref=$mk_ref and cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=$system_width";
 		// echo $sql22."<br>";
 		$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -2462,7 +2470,7 @@ tags will be replaced.-->
   <td rowspan=2 class=xl774118  width=64 style='border-bottom:.5pt solid black;  width:48pt'>Pattern Version</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:70pt'>No of Plies</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Pur Width</td>
-  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Marker Length</td>
+  <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Lay Length</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Cutting Wastage %</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:48pt'>Binding Cons.</td>
   <td rowspan=2 class=xl1144118 width=64 style='border-bottom:.5pt solid black;  width:90pt'>Fab. Requirement for lay</td>
@@ -2882,13 +2890,9 @@ $tot_bind_len=0;
   <th class=xl704118>Bundling</th>
   <th class=xl704118>Dispatch</th>
   <th></th>
-  <th class=xl654118>Act Con</th>
-  <th class=xl864118>&nbsp;</th>
-  <th class=xl864118>&nbsp;</th>
-  <th class=xl864118>&nbsp;</th>
-  <th class=xl654118></th>
-  <th class=xl654118></th>
-  <th class=xl654118></th>
+  <th class=xl654118>Remark 1:<td height=20 class=xl654118 style='height:15.0pt'><u><?php echo $remark1?></u></td></th>
+  <th></th>
+  
  </tr>
  <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
@@ -2902,13 +2906,7 @@ $tot_bind_len=0;
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td></td>
-  <td class=xl654118>Saving %</td>
-  <td class=xl894118 style='border-top:none'>&nbsp;</td>
-  <td class=xl894118 style='border-top:none'>&nbsp;</td>
-  <td class=xl894118 style='border-top:none'>&nbsp;</td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
+  <th class=xl654118>Remark 2:<td height=20 class=xl654118 style='height:15.0pt'><u><?php echo $remark2?></u></td></th>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:30pt'></td>
@@ -2922,13 +2920,7 @@ $tot_bind_len=0;
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td></td>
-  <td class=xl654118>Reason</td>
-  <td class=xl894118 style='border-top:none'>&nbsp;</td>
-  <td class=xl894118 style='border-top:none'>&nbsp;</td>
-  <td class=xl894118 style='border-top:none'>&nbsp;</td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
+  <th class=xl654118>Remark 3:<td height=20 class=xl654118 style='height:15.0pt'><u><?php echo $remark3?></u></td></th>
  </tr>
  <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
@@ -2942,13 +2934,7 @@ $tot_bind_len=0;
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td></td>
-  <td class=xl654118>Approved</td>
-  <td class=xl894118 style='border-top:none'>&nbsp;</td>
-  <td class=xl894118 style='border-top:none'>&nbsp;</td>
-  <td class=xl894118 style='border-top:none'>&nbsp;</td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
+  <th class=xl654118>Remark 4:<td height=20 class=xl654118 style='height:15.0pt'><u><?php echo $remark4?></u></td></th>
  </tr>
  <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
@@ -2962,9 +2948,11 @@ $tot_bind_len=0;
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
+ 
+  <td class=xl654118>Act Con</td>
+  <td class=xl894118 style='border-top:none'>&nbsp;</td>
+  <td class=xl894118 style='border-top:none'>&nbsp;</td>
+  <td class=xl894118 style='border-top:none'>&nbsp;</td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -2981,9 +2969,10 @@ $tot_bind_len=0;
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
-  <td class=xl654118></td>
+  <td class=xl654118>Saving %</td>
+  <td class=xl894118 style='border-top:none'>&nbsp;</td>
+  <td class=xl894118 style='border-top:none'>&nbsp;</td>
+  <td class=xl894118 style='border-top:none'>&nbsp;</td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
@@ -3000,9 +2989,32 @@ $tot_bind_len=0;
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td class=xl654118></td>
+
+  <td class=xl654118>Reason</td>
+  <td class=xl894118 style='border-top:none'>&nbsp;</td>
+  <td class=xl894118 style='border-top:none'>&nbsp;</td>
+  <td class=xl894118 style='border-top:none'>&nbsp;</td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
+ </tr>
+ <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
+  <td height=20 class=xl654118 style='height:30pt'></td>
+  <td class=xl654118></td>
+  <td class=xl804118><?php //echo date("H:i",strtotime($plan_log_time)); ?></td>
+  <td class=xl814118>&nbsp;</td>
+  <td class=xl814118>&nbsp;</td>
+  <td class=xl814118>&nbsp;</td>
+  <td class=xl814118>&nbsp;</td>
+  <td class=xl814118>&nbsp;</td>
+  <td class=xl814118>&nbsp;</td>
+  <td class=xl814118>&nbsp;</td>
+  <td class=xl654118></td>
+
+  <td class=xl654118>Approved</td>
+  <td class=xl894118 style='border-top:none'>&nbsp;</td>
+  <td class=xl894118 style='border-top:none'>&nbsp;</td>
+  <td class=xl894118 style='border-top:none'>&nbsp;</td>
   <td class=xl654118></td>
   <td class=xl654118></td>
   <td class=xl654118></td>
