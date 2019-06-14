@@ -1113,11 +1113,14 @@ function isInt(t)
 }
     function checks(){
         $('#recut').hide();
-        $('input[type=checkbox]').each((key,val)=>{
-            if(val.checked == true){
-                $('#recut').show();
-            }
-        });
+            var val = [];
+            $(':checkbox:checked').each(function(i){
+                val[i] = $(this).val().toLowerCase();
+                if(val[i]=='body' || val[i]=='front')
+                {
+                    $('#recut').show();
+                }
+            });
     }
 
 $(document).ready(function() 
