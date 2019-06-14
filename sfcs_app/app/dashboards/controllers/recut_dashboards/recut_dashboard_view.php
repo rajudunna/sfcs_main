@@ -179,13 +179,9 @@
                     {
                         $cty =$category_new_res1['category'];
                     }
-					
-					if(strtolower($cty) == 'body' || strtolower($cty) == 'front')
-					{
-						
-                        if($to_add > 0)
-                        {
-                            $inserting_into_recut_v2_child = "INSERT INTO `$bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`,`size_id`)
+					 if($to_add > 0)
+                    {
+						 $inserting_into_recut_v2_child = "INSERT INTO `$bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`,`size_id`)
                             VALUES($val_insert,$bcd_act_id,$operation_id,$actual_allowing_to_recut,$to_add,0,0,'$size_id')";
                             mysqli_query($link,$inserting_into_recut_v2_child) or exit("While inserting into the recut v2 child".mysqli_error($GLOBALS["___mysqli_ston"]));
                             //retreaving bundle_number of recut docket from bcd and inserting into moq
@@ -195,6 +191,11 @@
                             {
                                 $bundle_number_recut = $row_bcd_recut['bundle_number'];
                             }
+					if(strtolower($cty) == 'body' || strtolower($cty) == 'front')
+					    {
+						
+                       
+                           
                             $multiple_mos_tot_qty = $to_add;
                             $array_mos = array();
                             //retreaving mo_number which is related to that bcd_act_id
