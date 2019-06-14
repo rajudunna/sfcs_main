@@ -161,6 +161,17 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						$input_ops_code = $ops_post['operation_code'];
 					}
 				}
+				else
+				{
+					$application2='IPS';
+
+					$scanning_query12="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application2'";
+					$scanning_result12=mysqli_query($link, $scanning_query12)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row123=mysqli_fetch_array($scanning_result12))
+					{
+					  $input_ops_code=$sql_row123['operation_code'];
+					}
+				}				
 				$sql1212="SELECT sum(recut_in+replace_in) as qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$input_ops_code";
 				// echo $sql12.';<br>';
 				$sql_result1212=mysqli_query($link, $sql1212) or exit($sql12."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
