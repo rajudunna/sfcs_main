@@ -1151,7 +1151,7 @@ if(isset($_POST['allocate']))
 			}
 			echo "<td>".$sql_row['ref2']."</td>";
 			echo "<td>".$sql_row['ref1']."</td>";
-			echo "<td>".$sql_row['remarks']."</td>";
+			echo "<td>".$sql_row['roll_remarks']."</td>";
 			echo "<td>".$sql_row['shade']."</td>";
 			echo "<td>".$sql_row['ref6']."</td>";
 			echo "<td>".$sql_row['ref3']."</td>";
