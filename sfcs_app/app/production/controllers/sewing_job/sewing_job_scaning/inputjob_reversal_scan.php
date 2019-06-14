@@ -63,7 +63,16 @@
 				</div>
 				<div class='form-group col-md-3'>
 					<label>Remarks:<span style="color:red">*</span></label>
-					<select class='form-control sampling' name='sampling' id='sampling' style='width:100%;' required><option value='Excess' selected>Excess</option><option value='Normal' selected>Normal</option><option value='sample'>Sample</option><option value='Shipment_Sample'>Shipment_Sample</option></select>
+					<select class='form-control sampling' name='sampling' id='sampling' style='width:100%;' required>	
+					<?php
+					$get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix";
+					$get_remark_arry_req = $link->query($get_remark);
+					while($row_remark = $get_remark_arry_req->fetch_assoc()) 
+					{
+						echo "<option value='".$row_remark['prefix_name']."' >".$row_remark['prefix_name']."</option>";
+					}
+					?>					
+					</select>
 				</div>
 				<div class="form-group col-md-3">
 					<label for="title">Select Module:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
