@@ -320,13 +320,18 @@ if($mk_ref!=0)
 		$mkeff=$sql_row2['mkeff'];
 		$mkver=$sql_row2['mk_ver'];
 		$mk_remarks=$sql_row2['remarks'];
+		$mk_remarks_1=$sql_row2['remark1'];
+		$mk_remarks_2=$sql_row2['remark2'];
+		$mk_remarks_3=$sql_row2['remark3'];
+		$mk_remarks_4=$sql_row2['remark4'];
 	}
 }
 else
 {
 	$mklength=0;
 	$mkeff=0;
-	$mkremarks="NIL";			
+	$mkremarks="NIL";
+	
 }
 
 
@@ -347,7 +352,7 @@ while($sql_row22=mysqli_fetch_array($sql_result22))
 
 if($i==0)
 {
-	echo "<tr><td>Marker Length</td><td>:</td><td><div class=\"col-sm-1\">".$sql_row22['marker_width']."</div> &nbsp;&nbsp;<input type=\"hidden\" name=\"in_pwidth[]\" value=\"".$sql_row22['marker_width']."\"> <div class=\"col-sm-4\"> <INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' required type=\"text\" id='d1' name=\"in_mklength[]\" value=\"".$sql_row22['marker_length']."\" size=\"10\"></td></tr>";	
+	echo "<tr><td>Lay length</td><td>:</td><td><div class=\"col-sm-1\">".$sql_row22['marker_width']."</div> &nbsp;&nbsp;<input type=\"hidden\" name=\"in_pwidth[]\" value=\"".$sql_row22['marker_width']."\"> <div class=\"col-sm-4\"> <INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' required type=\"text\" id='d1' name=\"in_mklength[]\" value=\"".$sql_row22['marker_length']."\" size=\"10\"></td></tr>";	
 }
 else
 {
@@ -357,7 +362,7 @@ $i++;
 
 }
 if(mysqli_num_rows($sql_result22)==0)
-{
+{	
 	echo "<tr><div class=\"col-md-4\"><td>Marker Length</td><td>:</td></div><td><div class=\"col-sm-1\">".$pur_width."</div> &nbsp;&nbsp;<input type=\"hidden\" name=\"in_pwidth[]\" value=\"".$pur_width."\"> <div class=\"col-sm-4\"><INPUT type=\"text\" pattern='^[0-9]+\.?[0-9]*$'  name=\"in_mklength[]\" value=\"".$mklength."\" size=\"10\" ></div></td></tr>";
 	echo "<tr><td>Marker Length 2</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' type=\"text\" id='d4' name=\"in_pwidth[]\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control\" type=\"text\" name=\"in_mklength[]\" value=\"0\" pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  size=\"10\" ></div></td></tr>";
 	echo "<tr><td>Marker Length 3</td><td>:</td><td> <div class=\"col-sm-4\"><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' title='Please enter numbers and decimals'  type=\"text\"   id='d5' name=\"in_pwidth[]\" value=\"0\"></div> <div class=\"col-sm-4\"><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);'  type=\"text\"  id='d9' name=\"in_mklength[]\" value=\"0\" size=\"10\" ></div></td></tr>";
@@ -377,7 +382,12 @@ else
 echo "<tr><td>Marker Efficiency</td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control float\" type=\"text\"  id='d15' name=\"in_mkeff\" value=\"".$mkeff."\" size=\"10\"></div></div></td></tr>";
 echo "<tr><td>Marker Version</td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control alpha\"type=\"text \" required  id='d16' name=\"in_mkver\" value=\"".$mkver."\" size=\"10\" ></div> </td></tr>";
 
-echo "<tr><td>Remarks (Marker File Name): </td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control\" id=\"remarks_id\"  type=\"text\"  name=\"remarks\" value=\"".$mk_remarks."\" onkeyup=\"validate_remarks()\"></div></td></tr>";
+echo "<tr><td>Marker Name:</td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control\" id=\"remarks_id\"  type=\"text\"  name=\"remarks\" value=\"".$mk_remarks."\" onkeyup=\"validate_remarks()\"></div></td></tr>";
+echo "<tr><td>Remark 1:</td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control\" id=\"remarks_id\"  type=\"text\"  name=\"remark1\" value=\"".$mk_remarks_1."\" onkeyup=\"validate_remarks()\"></div></td></tr>";
+echo "<tr><td>Remark 2:</td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control\" id=\"remarks_id\"  type=\"text\"  name=\"remark2\" value=\"".$mk_remarks_2."\" onkeyup=\"validate_remarks()\"></div></td></tr>";
+echo "<tr><td>Remark 3:</td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control\" id=\"remarks_id\"  type=\"text\"  name=\"remark3\" value=\"".$mk_remarks_3."\" onkeyup=\"validate_remarks()\"></div></td></tr>";
+echo "<tr><td>Remark 4:</td><td>:</td><td><div class=\"col-sm-4\"><input class=\"form-control\" id=\"remarks_id\"  type=\"text\"  name=\"remark4\" value=\"".$mk_remarks_4."\" onkeyup=\"validate_remarks()\"></div></td></tr>";
+
 echo "</table>";
 
 echo "<input type=\"hidden\" name=\"cat_ref\"  size=2 value=\"".$cat_ref."\">";
