@@ -567,7 +567,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                 {            
                   $docket_no=$sql_rowred['ims_doc_no'];   // capturing docket number
                   $style_no=$sql_rowred['ims_style'];     // style
-                  //$color_name=$sql_rowred['ims_color'];  
+                  $color_name=$sql_rowred['ims_color'];  
                   $colors_modal[] = $sql_rowred['ims_color']; // color
                   $color_ref="'".str_replace(",","','",$sql_rowred['ims_color'])."'"; 
                   $remarks_ref="'".str_replace(",","','",$sql_rowred['ims_remarks'])."'"; 
