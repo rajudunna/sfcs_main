@@ -323,6 +323,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$mklength=$sql_row2['mklength'];
 		$mk_remarks=$sql_row2['remarks'];
 		$patt_ver=$sql_row2['mk_ver'];
+		$mk_file=$sql_row2['remarks'];
+		$remark1=$sql_row2['remark1'];
+		$remark2=$sql_row2['remark2'];
+		$remark3=$sql_row2['remark3'];
+		$remark4=$sql_row2['remark4'];
 	}
 	//echo ' total '.$a_ratio_tot;
 //echo implode(",",$docs);
@@ -4173,11 +4178,13 @@ echo "</tbody></table>";
   <td colspan=3 class=xl8017319>Dispatch</td>
   <td colspan=6 ></td>
   <td colspan=2 class=xl6417319>Act Con</td>
+  <td colspan=2 class=xl6417319>Remark 1: <?php $remark1 ?></td>
   <td colspan=3>_____________________________________</td>
  </tr>
  <tr height=30 style='height:30pt'>
   <td height=30 class=xl6417319 style='height:30pt'></td>
   <td colspan=2 class=xl6417319>Team</td>
+  <td colspan=2 class=xl6417319>Remark 2: <?php $remark2 ?></td>
   <td colspan=2 class=xl7017319>&nbsp;</td>
   <td colspan=2 class=xl7517319>&nbsp;</td>
   <td colspan=2 class=xl7517319>&nbsp;</td>
@@ -4191,6 +4198,7 @@ echo "</tbody></table>";
   <td colspan=3>_____________________________________</td>
   <td colspan=2 class=xl6417319></td>
   <td colspan=2 class=xl6417319></td>
+  <td colspan=2 class=xl6417319>Remark 3: <?php $remark3 ?></td>
   <td colspan=2 class=xl6417319></td>
  </tr>
  <tr height=30 style='height:30pt'>
@@ -4205,6 +4213,7 @@ echo "</tbody></table>";
   <td colspan=2 class=xl7517319>&nbsp;</td>
   <td colspan=3 class=xl7517319>&nbsp;</td>
   <td colspan=6 ></td>
+  <td colspan=2 class=xl6417319>Remark 4: <?php $remark4 ?></td>
   <td colspan=2 class=xl6417319>Reason</td>
   <td colspan=3>_____________________________________</td>
   <td colspan=2 class=xl6417319></td>
