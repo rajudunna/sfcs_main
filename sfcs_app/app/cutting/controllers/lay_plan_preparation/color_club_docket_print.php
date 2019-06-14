@@ -3747,7 +3747,7 @@ tags will be replaced.-->
   <td rowspan=2  colspan=2 class='autox xl8917319' width=80 style='border-bottom:.5pt solid black;
   width:70px'>Fab. Req for Binding</td>
   <td rowspan=2  colspan=2 class='autox xl8917319' style='border-bottom:.5pt solid black'>Total Fab. Req</td>
-  <td rowspan=2 colspan=2  class=xl8917319 style='border-bottom:.5pt solid black;width:auto'>Marker Length<br/>(actual)</td>
+  <td rowspan=2 colspan=2  class=xl8917319 style='border-bottom:.5pt solid black;width:auto'>Lay Length<br/>(actual)</td>
   <td colspan=2 rowspan=2 class=xl8917319  style='border-bottom:.5pt solid black;'>Act. Req Qty (<?php echo $fab_uom; ?>)</td>
   <td colspan=2 rowspan=2 class=xl8917319  style='border-bottom:.5pt solid black;'>Issued Qty (<?php echo $fab_uom; ?>)</td>
   <td colspan=1 rowspan=2 class=xl8917319  style='width: 115px;border-bottom:.5pt solid black;'>Return Qty (<?php echo $fab_uom; ?>)</td>
