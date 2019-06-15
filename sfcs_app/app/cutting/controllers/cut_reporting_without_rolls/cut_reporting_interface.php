@@ -106,6 +106,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     <td>Fab Received</td>
                     <td>Fab Returned</td>
                     <td>Fab Damages</td>
+                    <td>Fab joints</td>
+                    <td>Fab endbits</td>
                     <td>Fab Shortages</td>
                 </tr>
                 <tr>
@@ -122,6 +124,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     <td id='d_fab_rec'></td>
                     <td id='d_fab_ret'></td>
                     <td id='d_damages'></td>
+                    <td id='d_joints'></td>
+                    <td id='d_endbits'></td>
                     <td id='d_shortages'></td>
                 </tr>
                 
@@ -202,6 +206,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <th>Fabric Received</th>
                             <th>Fabric Returned</th>
                             <th>Damages</th>
+                            <th>Joints</th>
+                            <th>Endbits</th>
                             <th>Shortages</th>
                             <th>Rejection Pieces</th>
                             <th>Action</th>
@@ -229,6 +235,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                                 </span>
                             </td>
                             <td><input type='text' class='form-control float' value='0' id='damages'></td>
+                            <td><input type='text' class='form-control float' value='0' id='joints'></td>
+                            <td><input type='text' class='form-control float' value='0' id='endbits'></td>
                             <td><input type='text' class='form-control float' value='0' id='shortages'></td>
                             <!-- <td><input type='text' class='form-control integer' place-holder='Rejections' id='rejection_pieces' name='rejection_pieces'><br><br> -->
                             <td>
@@ -436,6 +444,13 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var rec     = Number($('#fab_received').val());
         var returned_to = $('#returned_to').val();
         var damages = Number($('#damages').val());
+        var joints = Number($('#joints').val());
+        var endbits = Number($('#endbits').val());       
+        var joints_endbits = joints +'^'+ endbits;       
+        //var joints_endbits = Number($('#joint_endbits').val());
+        // $(this).closest("td").append(joints_endbits);
+        // var joints = Number($('#joint').val());
+        // var endbits = Number($('#endbits').val());
         var shortages = Number($('#shortages').val());
         var bundle_location = $('#bundle_location').val();
         var shift     = $('#shift').val();
@@ -533,7 +548,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
         var form_data = {
                         doc_no:post_doc_no,c_plies:c_plies,fab_returned:ret_to,
-                        fab_received:rec,returned_to:returned_to,damages:damages,
+                        fab_received:rec,returned_to:returned_to,damages:damages,joints:joints,endbits:endbits,
                         shortages:shortages,bundle_location:bundle_location,shift:shift,
                         cut_table:cut_table,team_leader:team_leader,doc_target_type:doc_target_type,
                         style:style,color:color,schedule:schedule,rejections_flag:rejections_flag,rejections:rejections_post,
@@ -698,6 +713,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $('#fab_received').val(0);
         $('#damages').val(0);
         $('#fab_returned').val(0);
+        $('#joints').val(0);
+        $('#endbits').val(0);
         $('#shortages').val(0);
         $('#returned_to').val('');
         $('#returned_to').css({'display':'none'});
@@ -986,6 +1003,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#d_fab_rec').html(data.fab_received);
             $('#d_fab_ret').html(data.fab_returned);
             $('#d_damages').html(data.damages);
+            $('#d_joints').html(data.joints);
+            $('#d_endbits').html(data.endbits);
             $('#d_shortages').html(data.shortages);
             $('#r_doc_qty').html(data.doc_qty);
             //setting values for reporting table
