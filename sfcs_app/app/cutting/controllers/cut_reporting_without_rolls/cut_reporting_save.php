@@ -26,6 +26,7 @@ $team_leader = $data['team_leader'];
 $bundle_location = $data['bundle_location'];
 $returned_to = $data['returned_to'];
 $damages = $data['damages'];
+$joints_endbits = $data['joints_endbits'];
 $shortages = $data['shortages'];
 $style   = $data['style'];
 $schedule= $data['schedule'];
@@ -85,13 +86,13 @@ if($plies == 0 && $full_reporting_flag == 1){
     //inserting to act_cutstatus 
     $remarks = "$date^$cut_table^$shift^$f_rec^$f_ret^$damages^$shortages^$returned_to^$plies";
     $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, 
-                    damages,shortages,remarks,log_date,bundle_loc,leader_name) 
-                    values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader')
+                    damages,shortages,remarks,log_date,bundle_loc,leader_name,joints_endbits) 
+                    values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader','$joints_endbits')
                     ON DUPLICATE KEY 
                     UPDATE date='$date',section='$cut_table',shift='$shift',fab_received=fab_received + $f_rec,fab_returned='$f_ret',damages='$damages',shortages='$shortages',
                     remarks=CONCAT(remarks,'$','$remarks'),
-                    log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader' ";
-
+                    log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader',joints_endbits=CONCAT(joints_endbits,'$','$joints_endbits')";
+    echo $insert_query;
     $update_psl_query = "UPDATE $bai_pro3.plandoc_stat_log set act_cut_status='DONE' 
                     where doc_no = $doc_no or org_doc_no = $doc_no";
     $insert_result = mysqli_query($link,$insert_query) or exit('Query Error 0 Cut 1');   
@@ -132,20 +133,14 @@ if($plies == 0 && $full_reporting_flag == 1){
 //Other categroy dockets Saving Logic
 if(strpos($target,'_other')==true){
     $remarks = "$date^$cut_table^$shift^$f_rec^$f_ret^$damages^$shortages^$returned_to^$plies";
-    $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, 
-                    damages,shortages,remarks,log_date,bundle_loc,leader_name) 
-                    values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader')
-                    ON DUPLICATE KEY 
-                    UPDATE date='$date',section='$cut_table',shift='$shift',fab_received=fab_received + $f_rec,fab_returned='$f_ret',damages='$damages',shortages='$shortages',
-                    remarks=CONCAT(remarks,'$','$remarks'),
-                    log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader' ";
+    $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned,damages,shortages,remarks,log_date,bundle_loc,leader_name,joints_endbits) values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader','$joints_endbits') ON DUPLICATE KEY UPDATE date='$date',section='$cut_table',shift='$shift',fab_received=fab_received + $f_rec,fab_returned='$f_ret',damages='$damages',shortages='$shortages', remarks=CONCAT(remarks,'$','$remarks'), log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader',joints_endbits=CONCAT(joints_endbits,'$','$joints_endbits')";
 
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
                     act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
     $update_query2 = "UPDATE $bai_pro3.plandoc_stat_log SET act_cut_status='DONE',fabric_status=5 where org_doc_no = $doc_no ";                
-    $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1');  
-    $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2'); 
-    $update_result2 = mysqli_query($link,$update_query2) or force_exit('Query Error Cut 2');
+    $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1.0');  
+    $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2.0'); 
+    $update_result2 = mysqli_query($link,$update_query2) or force_exit('Query Error Cut 2.1');
     $response_data['saved'] = 1;
     $response_data['pass'] = 1;
     echo json_encode($response_data);
@@ -216,20 +211,12 @@ if($target == 'normal'){
     $remarks = "$date^$cut_table^$shift^$f_rec^$f_ret^$damages^$shortages^$returned_to^$plies";
     // $link2 = mysqli_connect($host, $user, $pass) or force_exit("Could not connect Normal ");
     // mysqli_begin_transaction($link2) or force_exit("Cant Begin Transaction");
-    $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, 
-                    damages,shortages,remarks,log_date,bundle_loc,leader_name) 
-                    values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader')
-                    ON DUPLICATE KEY 
-                    UPDATE date='$date',section='$cut_table',shift='$shift',fab_received=fab_received + $f_rec,fab_returned='$f_ret',damages='$damages',shortages='$shortages',
-                    remarks=CONCAT(remarks,'$','$remarks'),
-                    log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader' ";
+    $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, damages,shortages,remarks,log_date,bundle_loc,leader_name,joints_endbits) values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader','$joints_endbits') ON DUPLICATE KEY UPDATE date='$date',section='$cut_table',shift='$shift',fab_received=fab_received + $f_rec,fab_returned='$f_ret',damages='$damages',shortages='$shortages', remarks=CONCAT(remarks,'$','$remarks'),log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader',joints_endbits=CONCAT(joints_endbits,'$','$joints_endbits')";
+    $insert_result = mysqli_query($link,$insert_query);  
 
-    $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
-                    act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
-    $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1');   
-    
-    if($insert_result > 0){
-        $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2');
+    $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
+    if($insert_result){
+        $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2.2');
         if($update_result){
             $response_data['saved'] = 1;
             // $stat = mysqli_commit($link2)  or force_exit("Cant Commit Transaction");
@@ -284,19 +271,19 @@ if($target == 'schedule_clubbed'){
     // $link2 = mysqli_connect($host, $user, $pass) or force_exit("Could not connect Schedule Clubbed");
     // mysqli_begin_transaction($link2) or force_exit("Cant Begin Transaction");
     $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, 
-                    damages,shortages,remarks,log_date,bundle_loc,leader_name) 
-                    values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader')
+                    damages,shortages,remarks,log_date,bundle_loc,leader_name,joints_endbits) 
+                    values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader','$joints_endbits')
                     ON DUPLICATE KEY 
                     UPDATE date='$date',section='$cut_table',shift='$shift',fab_received=fab_received + $f_rec,fab_returned='$f_ret',damages='$damages',shortages='$shortages',
                     remarks=CONCAT(remarks,'$','$remarks'),
-                    log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader' ";
+                    log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader',joints_endbits=CONCAT(joints_endbits,'$','$joints_endbits')";
     
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
                     act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
-    $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1');   
+    $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1.1');   
     
     if($insert_result > 0){
-        $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2');
+        $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2.3');
         if($update_result){
             $response_data['saved'] = 1;
             // $stat = mysqli_commit($link2)  or force_exit('Cant Commit Transaction');
@@ -484,19 +471,19 @@ if($target == 'style_clubbed'){
     // $link2 = mysqli_connect($host, $user, $pass) or force_exit("Could not connect Style Clubbed ");
     // mysqli_begin_transaction($link2) or force_exit("Cant Begin Transaction");
     $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, 
-                    damages,shortages,remarks,log_date,bundle_loc,leader_name) 
-                    values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader')
+                    damages,shortages,remarks,log_date,bundle_loc,leader_name,joints_endbits) 
+                    values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader','$joints_endbits')
                     ON DUPLICATE KEY 
                     UPDATE date='$date',section='$cut_table',shift='$shift',fab_received=fab_received + $f_rec,fab_returned='$f_ret',damages='$damages',shortages='$shortages',
                     remarks=CONCAT(remarks,'$','$remarks'),
-                    log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader' ";
+                    log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader',joints_endbits=CONCAT(joints_endbits,'$','$joints_endbits')";
 
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
                     act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
-    $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1');   
+    $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1.2');   
 
     if($insert_result > 0){
-        $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2');
+        $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2.4');
         if($update_result){
             $response_data['saved'] = 1;
             // $stat = mysqli_commit($link2) or force_exit("Cant Commit Transaction");
