@@ -474,31 +474,17 @@ $sql11 = "SELECT joints_endbits FROM $bai_pro3.act_cut_status";
 				 while($row=mysqli_fetch_array($result))
 				 {
 					 
-					  $joints_endbits=$row["joints_endbits"];
-					 
+							
+	$joints_endbits=$row["joints_endbits"];
+	$jo_int_check=explode('$',$joints_endbits);
+	 $joints=0;$endbits=0;	
+	for($ii=0;$ii<sizeof($jo_int_check);$ii++)
+	{
+		$values_joint=explode('^',$joints_endbits);
+		$joints=$joints+$values_joint[0];
+		$endbits=$endbits+$values_joint[1];			
+	}				 
 				 
-					  $search_val = array("^","$");
-					  $replace_val = array(",",",");
-					  
-					  $d = str_replace($search_val,$replace_val,$joints_endbits);
-					  $c = explode(",",$d);
-					  $joints = 0;
-					  $endbits = 0;
-					  foreach ($c as $index=>$value) {
-					   
-						  if ($index % 2 == 0){
-							  $endbits += $value;
-						  } 
-						  else {
-							  $joints += $value;
-						  }
-					  }
-			 //  $joints = explode('^', $joits_endbits,0);
-			 //  $endbits = explode('^', $joits_endbits,1);
-			// print_r( str_replace("$",$joints_endbits)));
-			//  $joints =	 explode('^', $joints_endbits);
-			//  $endbits =  explode('^', $joints_endbits);
-
 
 echo "<tr>";
 echo "<td>".$buyer."</td>";
@@ -540,7 +526,9 @@ $recut_docketno="";
 $recut_docketnos="";
 $docketno="";
 $docketnos="";
-					}
+
+					
+}
 }
 ?>
 	</div><!-- panel body -->

@@ -408,6 +408,16 @@ if(isset($_POST['submit']))
 		$fab_ret=$sql_row['fab_returned'];
 		$damages=round($sql_row['damages'],2);
 		$shortages=round($sql_row['shortages'],2);
+
+		$joints_endbits=$sql_row["joints_endbits"];
+		$jo_int_check=explode('$',$joints_endbits);
+		 $joints=0;$endbits=0;	
+		for($ii=0;$ii<sizeof($jo_int_check);$ii++)
+		{
+			$values_joint=explode('^',$joints_endbits);
+			$joints=$joints+$values_joint[0];
+			$endbits=$endbits+$values_joint[1];			
+		}				 
 	
 	}
 	

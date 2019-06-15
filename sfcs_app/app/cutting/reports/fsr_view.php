@@ -224,6 +224,16 @@ if(isset($_POST['submit']) && $reptype == 1)
 		{
 			$doc_ref_no=$sql_row2['doc_no'];
 			
+		$joints_endbits=$sql_row2["joints_endbits"];
+		$jo_int_check=explode('$',$joints_endbits);
+		 $joints=0;$endbits=0;	
+		for($ii=0;$ii<sizeof($jo_int_check);$ii++)
+		{
+			$values_joint=explode('^',$joints_endbits);
+			$joints=$joints+$values_joint[0];
+			$endbits=$endbits+$values_joint[1];			
+		}				 
+			
 			
 			$sql="select * from $bai_pro3.plandoc_stat_log where doc_no=\"$doc_ref_no\"";
 			
@@ -316,9 +326,8 @@ if(isset($_POST['submit']) && $reptype == 1)
 		$fab_ret=$sql_row['fab_returned'];
 		$damages=round($sql_row['damages'],2);
 		$shortages=round($sql_row['shortages'],2);
-		$leader_name = $sql_row['leader_name'];
-
-		//
+		$leader_name = $sql_row['leader_name'];	
+		
 			$s="select emp_name from $bai_pro3.tbl_leader_name where id = '$leader_name'";
 		
 			$sql_result22=mysqli_query($link, $s) or exit("Sql Error ef".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -452,49 +461,6 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),1);
 			$net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,0);
 		
-			
-       
-				$sql11 = "SELECT joints_endbits FROM $bai_pro3.act_cut_status";
-	  
-
-				$result=mysqli_query($link, $sql11) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-						 while($row=mysqli_fetch_array($result))
-						 {
-							 
-							  $joints_endbits=$row["joints_endbits"];
-							 
-						 
-							  $search_val = array("^","$");
-							  $replace_val = array(",",",");
-							  
-							  $d = str_replace($search_val,$replace_val,$joints_endbits);
-							  $c = explode(",",$d);
-							  $joints = 0;
-							  $endbits = 0;
-							  foreach ($c as $index=>$value) {
-							   
-								  if ($index % 2 == 0){
-									  $endbits += $value;
-								  } 
-								  else {
-									  $joints += $value;
-								  }
-							  }
-					 //  $joints = explode('^', $joits_endbits,0);
-					 //  $endbits = explode('^', $joits_endbits,1);
-					// print_r( str_replace("$",$joints_endbits)));
-					//  $joints =	 explode('^', $joints_endbits);
-					//  $endbits =  explode('^', $joints_endbits);
-
-
-
-
-
-
-
-
-
-
 		echo "<tr height=17 style='height:12.75pt'>";
 		//echo "<td height=17 class=xl6418241 style='height:12.75pt'></td>";
 		echo "<td class=xl6618241 style='border-top:none'>$date</td>";
@@ -528,11 +494,11 @@ if(isset($_POST['submit']) && $reptype == 1)
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$leader_name1</td>";
 		// echo "<td class=xl6618241 style='border-top:none;border-left:none'>$net_saving_pct%</td>";
 		echo "</tr>";
-							}
+	}	
 	}
 	echo "</table>
 	</div>";
- }
+
  
  ?>
  
@@ -603,6 +569,8 @@ $sql_num_check=mysqli_num_rows($sql_result);
 	echo "<th>Cut Qty</th>";
 	echo "<th>Damages</th>";
 	echo "<th>Shortages</th>";
+	echo "<th>Joints</th>";
+	echo "<th>Endbits</th>";
 	echo "<th>ActualSaving</th>";
 	echo "<th>Pct %</th>";
 	echo "<th>Net Saving</th>";
@@ -687,7 +655,15 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	$damages_new=$sql_row33['damages'];
 	$shortages_new=$sql_row33['shortages'];
 	$leader_name = $sql_row33['leader_name'];
-
+	$joints_endbits=$sql_row33["joints_endbits"];
+	$jo_int_check=explode("$",$joints_endbits);
+	$joints=0;$endbits=0;	
+	for($ii=0;$ii<sizeof($jo_int_check);$ii++)
+	{
+		$values_joint=explode("^",$joints_endbits);
+		$joints=$joints+$values_joint[0];
+		$endbits=$endbits+$values_joint[1];			
+	}
 	
 	
 	$sql1="select * from $bai_pro3.plandoc_stat_log where doc_no='$doc_no'";
@@ -846,6 +822,8 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	echo "<td>$cut_qty</td>";
 	echo "<td>$damages</td>";
 	echo "<td>$shortages</td>";
+	echo "<td>$joints</td>";
+	echo "<td>$endbits</td>";
 	echo "<td>$act_saving_sum</td>";
 	echo "<td>".$act_saving_pct."%</td>";
 	echo "<td>$net_saving_sum</td>";
