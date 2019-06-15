@@ -212,6 +212,7 @@ if(isset($_POST['submit']))
 $reptype = $_POST['reptype'];
 //echo 'rep type = '.$reptype;
 if(isset($_POST['submit']) && $reptype == 1)
+
 {
 
 //NEW Enhancement for category breakup		 
@@ -232,6 +233,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$values_joint=explode('^',$joints_endbits);
 			$joints=$joints+$values_joint[0];
 			$endbits=$endbits+$values_joint[1];			
+			
 		}				 
 			
 			

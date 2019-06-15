@@ -418,6 +418,7 @@ if(isset($_POST['submit']))
 			$joints=$joints+$values_joint[0];
 			$endbits=$endbits+$values_joint[1];			
 		}				 
+		
 	
 	}
 	
