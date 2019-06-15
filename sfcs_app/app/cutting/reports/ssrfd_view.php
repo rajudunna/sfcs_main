@@ -765,7 +765,7 @@ if(isset($_POST['submit']))
 			$cut_date="";
 			$cut_section="";
 			$cut_shift="";
-		
+		$joints=0;$endbits=0;	
 		$sql="select * from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -775,6 +775,14 @@ if(isset($_POST['submit']))
 			$cut_date=$sql_row['date'];
 			$cut_section=$sql_row['section'];
 			$cut_shift=$sql_row['shift'];
+			$joints_endbits=$sql_row["joints_endbits"];
+			$jo_int_check=explode('$',$joints_endbits);	
+			for($ii=0;$ii<sizeof($jo_int_check);$ii++)
+			{
+				$values_joint=explode('^',$jo_int_check[$ii]);
+				$joints=$joints+$values_joint[0];
+				$endbits=$endbits+$values_joint[1];			
+			}
 		}
 		
 
@@ -867,41 +875,6 @@ if(isset($_POST['submit']))
 		$net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),1);
 		$net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,0);
 
-
-		$sql11 = "SELECT joints_endbits FROM $bai_pro3.act_cut_status";
-	  
-
-		$result=mysqli_query($link, $sql11) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-				 while($row=mysqli_fetch_array($result))
-				 {
-					 
-					  $joints_endbits=$row["joints_endbits"];
-					 
-				 
-					  $search_val = array("^","$");
-					  $replace_val = array(",",",");
-					  
-					  $d = str_replace($search_val,$replace_val,$joints_endbits);
-					  $c = explode(",",$d);
-					  $joints = 0;
-					  $endbits = 0;
-					  foreach ($c as $index=>$value) {
-					   
-						  if ($index % 2 == 0){
-							  $endbits += $value;
-						  } 
-						  else {
-							  $joints += $value;
-						  }
-					  }
-			 //  $joints = explode('^', $joits_endbits,0);
-			 //  $endbits = explode('^', $joits_endbits,1);
-			// print_r( str_replace("$",$joints_endbits)));
-			//  $joints =	 explode('^', $joints_endbits);
-			//  $endbits =  explode('^', $joints_endbits);
-
-
-
 		echo "<tr>";
 		echo "<td>".leading_zeros($act_doc_no,9)."</td>";
 		echo "<td>".chr($color_code).leading_zeros($act_cut_no,3)."</td>";
@@ -914,7 +887,7 @@ if(isset($_POST['submit']))
 		echo "<td>$damages</td>";
 		echo "<td>$shortages</td>";
 		echo "<td>$joints</td>";
-		echo "<td>$endbits</td>";
+		echo "<td>".round($endbits,4)."</td>";
 		echo "<td>$net_util</td>";
 		echo "<td>$cat_yy</td>";
 		echo "<td>$act_con</td>";
@@ -933,7 +906,7 @@ if(isset($_POST['submit']))
 	{
 		echo "<h4>No Data Found</h4>";
 	}
-  }
+  
  }
 }//closing isset(POST) 
 ?>

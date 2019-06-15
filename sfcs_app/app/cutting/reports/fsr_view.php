@@ -225,16 +225,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		{
 			$doc_ref_no=$sql_row2['doc_no'];
 			
-		$joints_endbits=$sql_row2["joints_endbits"];
-		$jo_int_check=explode('$',$joints_endbits);
-		 $joints=0;$endbits=0;	
-		for($ii=0;$ii<sizeof($jo_int_check);$ii++)
-		{
-			$values_joint=explode('^',$joints_endbits);
-			$joints=$joints+$values_joint[0];
-			$endbits=$endbits+$values_joint[1];			
-
-		}				 
+							 
 			
 			
 			$sql="select * from $bai_pro3.plandoc_stat_log where doc_no=\"$doc_ref_no\"";
@@ -329,7 +320,16 @@ if(isset($_POST['submit']) && $reptype == 1)
 		$damages=round($sql_row['damages'],2);
 		$shortages=round($sql_row['shortages'],2);
 		$leader_name = $sql_row['leader_name'];	
-		
+		$joints_endbits=$sql_row["joints_endbits"];
+		$jo_int_check=explode('$',$joints_endbits);
+		$joints=0;$endbits=0;	
+		for($ii=0;$ii<sizeof($jo_int_check);$ii++)
+		{
+			$values_joint=explode('^',$jo_int_check[$ii]);
+			$joints=$joints+$values_joint[0];
+			$endbits=$endbits+$values_joint[1];		
+		}
+
 			$s="select emp_name from $bai_pro3.tbl_leader_name where id = '$leader_name'";
 		
 			$sql_result22=mysqli_query($link, $s) or exit("Sql Error ef".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -485,7 +485,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$damages</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$shortages</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$joints</td>";
-		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$endbits</td>";
+		echo "<td class=xl6618241 style='border-top:none;border-left:none'>".round($endbits,4)."</td>";
 
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$net_util</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$cat_yy</td>";
@@ -499,8 +499,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		echo "</tr>";
 	}	
 	}
-	echo "</table>
-	</div>";
+	echo "</table>";
 
  
  ?>
@@ -516,6 +515,7 @@ if(isset($_POST['submit']) && $reptype==2)
  		$doc_ref_new="";
 		
 		$sql2="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\"";
+		
 		//mysqli_query($link, $sql2) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -524,7 +524,7 @@ if(isset($_POST['submit']) && $reptype==2)
 			
 			
 			$sql="select * from $bai_pro3.plandoc_stat_log where doc_no='$doc_ref_no'";
-			
+			//echo $sql."<br>";
 			//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error 2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -532,13 +532,13 @@ if(isset($_POST['submit']) && $reptype==2)
 				$cat_ref_new=$sql_row['cat_ref'];
 			}
 
-			$sql="select * from $bai_pro3.cat_stat_log where category in ($cat) and tid='$cat_ref_new'";
-			
+			$sql1="select * from $bai_pro3.cat_stat_log where category in ($cat) and tid='$cat_ref_new'";
+			//echo $sql."<br>";
 			//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_num_check=mysqli_num_rows($sql_result);
+			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_num_check1=mysqli_num_rows($sql_result1);
 			
-			if($sql_num_check>0)
+			if($sql_num_check1>0)
 			{
 				$doc_ref_new=$doc_ref_new.$doc_ref_no.", ";
 			}
@@ -549,7 +549,7 @@ if(isset($_POST['submit']) && $reptype==2)
 		$query="";
 		if( strlen($doc_ref_new)>0)
 		{
-			$query="and doc_no in ('$doc_ref_new')";
+			$query="and doc_no in ($doc_ref_new)";
 		}
 		else
 		{
@@ -557,7 +557,7 @@ if(isset($_POST['submit']) && $reptype==2)
 		}
 //NEW Enhancement for category breakup	
    
-$sql="select distinct section from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and shift in ($shift) and section in ($section) ".$query. "order by section";
+$sql="select section from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and shift in ($shift) and section in ($section) ".$query. " group by section order by section";
 
 //mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -567,7 +567,7 @@ $sql_num_check=mysqli_num_rows($sql_result);
 	echo "<h5>Summary Report</h5>";
 	echo "<table class='table table-bordered table-responsive' id='report'>";	
 	echo "<tr class='info'>";
-	echo "<th>Section</th>";
+	echo "<th>Table</th>";
 	echo "<th>Shift</th>";
 	echo "<th>Cut Qty</th>";
 	echo "<th>Damages</th>";
@@ -582,9 +582,8 @@ $sql_num_check=mysqli_num_rows($sql_result);
 	echo "</tr>";
 
 while($sql_row=mysqli_fetch_array($sql_result))
-
-{	$section_new=$sql_row['section'];
-	
+{
+	$section_new=$sql_row['section'];
 	$sql11="select distinct shift from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and section in ($section_new) and shift in ($shift) ".$query. "order by shift";
 	//mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 6".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -644,7 +643,7 @@ $sql33="select * from $bai_pro3.act_cut_status where section in ($section) and s
 //mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error 10".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check33=mysqli_num_rows($sql_result33);
-
+$joints=0;$endbits=0;	
 while($sql_row33=mysqli_fetch_array($sql_result33))
 {
 	
@@ -659,11 +658,10 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	$shortages_new=$sql_row33['shortages'];
 	$leader_name = $sql_row33['leader_name'];
 	$joints_endbits=$sql_row33["joints_endbits"];
-	$jo_int_check=explode("$",$joints_endbits);
-	$joints=0;$endbits=0;	
+	$jo_int_check=explode("$",$joints_endbits);	
 	for($ii=0;$ii<sizeof($jo_int_check);$ii++)
 	{
-		$values_joint=explode("^",$joints_endbits);
+		$values_joint=explode("^",$jo_int_check[$ii]);
 		$joints=$joints+$values_joint[0];
 		$endbits=$endbits+$values_joint[1];			
 	}
@@ -826,7 +824,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	echo "<td>$damages</td>";
 	echo "<td>$shortages</td>";
 	echo "<td>$joints</td>";
-	echo "<td>$endbits</td>";
+	echo "<td>".round($endbits,4)."</td>";
 	echo "<td>$act_saving_sum</td>";
 	echo "<td>".$act_saving_pct."%</td>";
 	echo "<td>$net_saving_sum</td>";

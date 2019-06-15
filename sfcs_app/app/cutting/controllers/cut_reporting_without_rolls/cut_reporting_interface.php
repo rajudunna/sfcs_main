@@ -447,10 +447,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var joints = Number($('#joints').val());
         var endbits = Number($('#endbits').val());       
         var joints_endbits = joints +'^'+ endbits;       
-        //var joints_endbits = Number($('#joint_endbits').val());
-        // $(this).closest("td").append(joints_endbits);
-        // var joints = Number($('#joint').val());
-        // var endbits = Number($('#endbits').val());
         var shortages = Number($('#shortages').val());
         var bundle_location = $('#bundle_location').val();
         var shift     = $('#shift').val();
@@ -528,7 +524,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var user_msg = '';
         //AJAX Call
         var terminate_flag = 0;
-        console.log(form_data);a
+        console.log(form_data);
         console.log(pieces);
         console.log(cumulative_size);
         if(total_rejected_pieces > 0){
@@ -548,8 +544,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
         var form_data = {
                         doc_no:post_doc_no,c_plies:c_plies,fab_returned:ret_to,
-                        fab_received:rec,returned_to:returned_to,damages:damages,joints:joints,endbits:endbits,
-                        shortages:shortages,bundle_location:bundle_location,shift:shift,
+                        fab_received:rec,returned_to:returned_to,damages:damages,
+                        shortages:shortages,bundle_location:bundle_location,shift:shift,joints_endbits:joints_endbits,
                         cut_table:cut_table,team_leader:team_leader,doc_target_type:doc_target_type,
                         style:style,color:color,schedule:schedule,rejections_flag:rejections_flag,rejections:rejections_post,
                         full_reporting_flag : full_reporting_flag
