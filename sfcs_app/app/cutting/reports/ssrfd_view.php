@@ -719,6 +719,8 @@ if(isset($_POST['submit']))
 			<th>Fabric Returned</th>
 			<th>Damages</th>
 			<th>Shortages</th>
+			<th>Joints</th>
+			<th>Endbits</th>
 			<th>Net Utlization</th>
 			<th>Ordering Consumption</th>
 			<th>Actual Consumption</th>
@@ -853,6 +855,41 @@ if(isset($_POST['submit']))
 		$net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),1);
 		$net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,0);
 
+
+		$sql11 = "SELECT joints_endbits FROM $bai_pro3.act_cut_status";
+	  
+
+		$result=mysqli_query($link, $sql11) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+				 while($row=mysqli_fetch_array($result))
+				 {
+					 
+					  $joints_endbits=$row["joints_endbits"];
+					 
+				 
+					  $search_val = array("^","$");
+					  $replace_val = array(",",",");
+					  
+					  $d = str_replace($search_val,$replace_val,$joints_endbits);
+					  $c = explode(",",$d);
+					  $joints = 0;
+					  $endbits = 0;
+					  foreach ($c as $index=>$value) {
+					   
+						  if ($index % 2 == 0){
+							  $endbits += $value;
+						  } 
+						  else {
+							  $joints += $value;
+						  }
+					  }
+			 //  $joints = explode('^', $joits_endbits,0);
+			 //  $endbits = explode('^', $joits_endbits,1);
+			// print_r( str_replace("$",$joints_endbits)));
+			//  $joints =	 explode('^', $joints_endbits);
+			//  $endbits =  explode('^', $joints_endbits);
+
+
+
 		echo "<tr>";
 		echo "<td>".leading_zeros($act_doc_no,9)."</td>";
 		echo "<td>".chr($color_code).leading_zeros($act_cut_no,3)."</td>";
@@ -864,6 +901,8 @@ if(isset($_POST['submit']))
 		echo "<td>$fab_ret</td>";
 		echo "<td>$damages</td>";
 		echo "<td>$shortages</td>";
+		echo "<td>$joints</td>";
+		echo "<td>$endbits</td>";
 		echo "<td>$net_util</td>";
 		echo "<td>$cat_yy</td>";
 		echo "<td>$act_con</td>";
@@ -875,6 +914,7 @@ if(isset($_POST['submit']))
 		echo "</tr>";
 	}
 		echo "	</table></div>";
+}
 
 	}
 	else

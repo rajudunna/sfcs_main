@@ -175,6 +175,7 @@ if(isset($_POST["submit"]))
 		<table id='table1' class='table table-bordered table-responsive'>
 			<tr class='danger'>
 				<th>Buyer</th>
+				
 				<th>Style</th>
 				<th>Schedule</th>
 				<th>LID</th>
@@ -203,6 +204,8 @@ if(isset($_POST["submit"]))
 				<th>Deaviation%</th>
 				<th>Damages</th>
 				<th>Shortages</th>
+				<th>Joints</th>
+				<th>Endbits</th>
 				<th>Fabric Balance to Issue</th>
 				<th>Fabric Balance Requirement</th>
 				<th>AOD Status</th>
@@ -430,6 +433,8 @@ if(isset($_POST["submit"]))
 					$recut_shortages_qty=$row["shrt"];
 				}
 
+	   
+
 				$sql4="SELECT SUM(ship_s_xs)+SUM(ship_s_s)+SUM(ship_s_m)+SUM(ship_s_l)+SUM(ship_s_xl)+SUM(ship_s_xxxl)+SUM(ship_s_s01)+SUM(ship_s_s02)+SUM(ship_s_s03)+SUM(ship_s_s04)+SUM(ship_s_s05)+SUM(ship_s_s06)+SUM(ship_s_s07)+SUM(ship_s_s08)+SUM(ship_s_s09)+SUM(ship_s_s10)+SUM(ship_s_s11)+SUM(ship_s_s12)+SUM(ship_s_s13)+SUM(ship_s_s14)+SUM(ship_s_s15)+SUM(ship_s_s16)+SUM(ship_s_s17)+SUM(ship_s_s18)+SUM(ship_s_s19)+SUM(ship_s_s20)+SUM(ship_s_s21)+SUM(ship_s_s22)+SUM(ship_s_s23)+SUM(ship_s_s24)+SUM(ship_s_s25)+SUM(ship_s_s26)+SUM(ship_s_s27)+SUM(ship_s_s28)+SUM(ship_s_s29)+SUM(ship_s_s30)+SUM(ship_s_s31)+SUM(ship_s_s32)+SUM(ship_s_s33)+SUM(ship_s_s34)+SUM(ship_s_s35)+SUM(ship_s_s36)+SUM(ship_s_s37)+SUM(ship_s_s38)+SUM(ship_s_s39)+SUM(ship_s_s40)+SUM(ship_s_s41)+SUM(ship_s_s42)+SUM(ship_s_s43)+SUM(ship_s_s44)+SUM(ship_s_s45)+SUM(ship_s_s46)+SUM(ship_s_s47)+SUM(ship_s_s48)+SUM(ship_s_s49)+SUM(ship_s_s50) as ship_qty FROM $bai_pro3.ship_stat_log WHERE ship_schedule=\"$schedule\" and ship_status=\"2\"";
 				////echo $sql4;
 				$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -458,8 +463,50 @@ if(isset($_POST["submit"]))
 						$ship_status="Short Ship";
 					}
 				}	
+
+
+				$sql11 = "SELECT joints_endbits FROM $bai_pro3.act_cut_status";
+	  
+
+				$result=mysqli_query($link, $sql11) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+						 while($row=mysqli_fetch_array($result))
+						 {
+							 
+							  $joints_endbits=$row["joints_endbits"];
+							 
+						 
+							  $search_val = array("^","$");
+							  $replace_val = array(",",",");
+							  
+							  $d = str_replace($search_val,$replace_val,$joints_endbits);
+							  $c = explode(",",$d);
+							  $joints = 0;
+							  $endbits = 0;
+							  foreach ($c as $index=>$value) {
+							   
+								  if ($index % 2 == 0){
+									  $endbits += $value;
+								  } 
+								  else {
+									  $joints += $value;
+								  }
+							  }
+					 //  $joints = explode('^', $joits_endbits,0);
+					 //  $endbits = explode('^', $joits_endbits,1);
+					// print_r( str_replace("$",$joints_endbits)));
+					//  $joints =	 explode('^', $joints_endbits);
+					//  $endbits =  explode('^', $joints_endbits);
+
+                
+					
+				 
+					
+
+
+
 				echo "<tr>";
 				echo "<td>".$buyer."</td>";
+			
 				echo "<td>".$style."</td>";
 				echo "<td>".$schedule."</td>";
 				echo "<td>".$cat_ref."</td>";
@@ -497,6 +544,9 @@ if(isset($_POST["submit"]))
 				}
 				echo "<td>".round($damages_qty+$recut_damages_qty,0)."</td>";
 				echo "<td>".round($shortages_qty+$recut_shortages_qty,0)."</td>";
+				echo "<td>".$joints."</td>";
+				echo "<td>".$endbits."</td>";
+			
 				echo "<td>".(round(($order_yy*$old_order_total),0)-round($issued_qty+$recut_issued_qty+$mrn_issued_qty,0))."</td>";
 				echo "<td>".round((($cut_total_qty-$cut_comp_qty)*round($cad_yy,4)),0)."</td>";
 				echo "<td>".$ship_status."</td>";
@@ -506,6 +556,7 @@ if(isset($_POST["submit"]))
 				$recut_docketnos="";
 				$docketno="";
 				$docketnos="";
+			}
 			}
 		}
 	}else{

@@ -293,6 +293,8 @@ if(isset($_POST['submit']) && $reptype == 1)
 	echo "<th>Fabric Returned</th>";
 	echo "<th>Damages</th>";
 	echo "<th>Shortages</th>";
+	echo "<th>joints</th>";
+	echo "<th>Endbits</th>";
 	echo "<th>Net Utlization</th>";
 	echo "<th>Ordering Consumpt-ion</th>";
 	echo "<th>Actual Consumpt-ion</th>";
@@ -450,6 +452,49 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),1);
 			$net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,0);
 		
+			
+       
+				$sql11 = "SELECT joints_endbits FROM $bai_pro3.act_cut_status";
+	  
+
+				$result=mysqli_query($link, $sql11) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+						 while($row=mysqli_fetch_array($result))
+						 {
+							 
+							  $joints_endbits=$row["joints_endbits"];
+							 
+						 
+							  $search_val = array("^","$");
+							  $replace_val = array(",",",");
+							  
+							  $d = str_replace($search_val,$replace_val,$joints_endbits);
+							  $c = explode(",",$d);
+							  $joints = 0;
+							  $endbits = 0;
+							  foreach ($c as $index=>$value) {
+							   
+								  if ($index % 2 == 0){
+									  $endbits += $value;
+								  } 
+								  else {
+									  $joints += $value;
+								  }
+							  }
+					 //  $joints = explode('^', $joits_endbits,0);
+					 //  $endbits = explode('^', $joits_endbits,1);
+					// print_r( str_replace("$",$joints_endbits)));
+					//  $joints =	 explode('^', $joints_endbits);
+					//  $endbits =  explode('^', $joints_endbits);
+
+
+
+
+
+
+
+
+
+
 		echo "<tr height=17 style='height:12.75pt'>";
 		//echo "<td height=17 class=xl6418241 style='height:12.75pt'></td>";
 		echo "<td class=xl6618241 style='border-top:none'>$date</td>";
@@ -470,6 +515,9 @@ if(isset($_POST['submit']) && $reptype == 1)
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$fab_ret</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$damages</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$shortages</td>";
+		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$joints</td>";
+		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$endbits</td>";
+
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$net_util</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$cat_yy</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$act_con</td>";
@@ -480,6 +528,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$leader_name1</td>";
 		// echo "<td class=xl6618241 style='border-top:none;border-left:none'>$net_saving_pct%</td>";
 		echo "</tr>";
+							}
 	}
 	echo "</table>
 	</div>";
