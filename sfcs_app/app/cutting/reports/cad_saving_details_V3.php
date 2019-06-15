@@ -467,6 +467,7 @@ if($total_rows > 0)
 }	
 
 
+
 $sql11 = "SELECT joints_endbits FROM $bai_pro3.act_cut_status";
 	  
 

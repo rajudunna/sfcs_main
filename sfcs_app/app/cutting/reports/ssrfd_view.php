@@ -418,7 +418,7 @@ if(isset($_POST['submit']))
 			$joints=$joints+$values_joint[0];
 			$endbits=$endbits+$values_joint[1];			
 		}				 
-		
+
 	
 	}
 	
@@ -440,6 +440,7 @@ if(isset($_POST['submit']))
 		$doc_req=$mk_length*$a_plies;
 
 
+		
 		$order_tid=$sql_row1['order_tid'];
 		//Binding Consumption / YY Calculation
 		$sql11="select  COALESCE(binding_consumption,0) as \"binding_consumption\" ,catyy from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_id";

@@ -233,7 +233,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$values_joint=explode('^',$joints_endbits);
 			$joints=$joints+$values_joint[0];
 			$endbits=$endbits+$values_joint[1];			
-			
+
 		}				 
 			
 			
@@ -336,6 +336,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 			while($sql_row22=mysqli_fetch_array($sql_result22))
 			{
 			  $leader_name1 = $sql_row22['emp_name'];
+			  
 			}
 		//
 

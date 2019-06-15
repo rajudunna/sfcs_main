@@ -486,9 +486,9 @@ if(isset($_POST["submit"]))
 					$endbits=$endbits+$values_joint[1];			
 				}				 
 				 
-					
-
 				
+
+
 
 
 				echo "<tr>";
