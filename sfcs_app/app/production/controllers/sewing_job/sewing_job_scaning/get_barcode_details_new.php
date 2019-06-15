@@ -503,7 +503,7 @@
                 $b_tid[] = $row['tid'];
                 $b_inp_job_ref[] = $row['input_job_no'];
                 $b_a_cut_no[] = $row['acutno'];
-                if($flag = 'bundle_creation_data')
+                if($flag == 'bundle_creation_data')
 				{
 					 $b_remarks[] = $row['remarks'];
 				}
