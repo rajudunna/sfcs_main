@@ -88,7 +88,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         </div>
 
         <!-- partial or already reported docket details -->
-        <div class='row' id='hide_details_reported'>
+        <div class='row' id='hide_details_reported'style='overflow-x:scroll;display:none'>
             <div class='col-sm-12'>
             <hr> 
             <table class='table table-bordered' id='reported_table'>
@@ -192,6 +192,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             </div>
 
             <div class='col-sm-12'>
+            <div class='table-responsive'>
             <br/><br/>    
                 <table class='table table-bordered' id='reporting_table'>
                     <thead>
