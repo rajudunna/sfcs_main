@@ -416,21 +416,40 @@ if(isset($_POST["submit"]))
 
 				$damages_qty=0;
 				$shortages_qty=0;
-				$sql="select sum(damages) as dam,sum(shortages) as shrt from $bai_pro3.act_cut_status where doc_no in (".implode(",",$docketno).")";
+				$sql="select  sum(damages) as dam,sum(shortages) as shrt from $bai_pro3.act_cut_status where doc_no in (".implode(",",$docketno).") ";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{
 					$damages_qty=$row["dam"];
 					$shortages_qty=$row["shrt"];
+
+				}
+				$joints=0;$endbits=0;	
+				$sql12="select joints_endbits from $bai_pro3.act_cut_status where doc_no in (".implode(",",$docketno).")";
+				$result12=mysqli_query($link, $sql12) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($row12=mysqli_fetch_array($result12))
+				{
+					$joints_endbits=$row12["joints_endbits"];
+					$jo_int_check=explode('$',$joints_endbits);	
+					for($ii=0;$ii<sizeof($jo_int_check);$ii++)
+					{
+						$values_joint=explode('^',$jo_int_check[$ii]);
+						$joints=$joints+$values_joint[0];
+						$endbits=$endbits+$values_joint[1];			
+					}
 				}
 				$recut_damages_qty=0;
 				$recut_shortages_qty=0;
-				$sql="select sum(damages) as dam,sum(shortages) as shrt from $bai_pro3.act_cut_status_recut_v2 where doc_no in (".implode(",",$recut_docketno).")";
+				$sql="select  sum(damages) as dam,sum(shortages) as shrt from $bai_pro3.act_cut_status_recut_v2 where doc_no in (".implode(",",$recut_docketno).")";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{
 					$recut_damages_qty=$row["dam"];
 					$recut_shortages_qty=$row["shrt"];
+						
+	
+					
+
 				}
 
 	   
@@ -463,44 +482,6 @@ if(isset($_POST["submit"]))
 						$ship_status="Short Ship";
 					}
 				}	
-
-
-				$sql11 = "SELECT joints_endbits FROM $bai_pro3.act_cut_status";
-	  
-
-				$result=mysqli_query($link, $sql11) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-						 while($row=mysqli_fetch_array($result))
-						 {
-							 
-							  $joints_endbits=$row["joints_endbits"];
-							 
-						 
-							  $search_val = array("^","$");
-							  $replace_val = array(",",",");
-							  
-							  $d = str_replace($search_val,$replace_val,$joints_endbits);
-							  $c = explode(",",$d);
-							  $joints = 0;
-							  $endbits = 0;
-							  foreach ($c as $index=>$value) {
-							   
-								  if ($index % 2 == 0){
-									  $endbits += $value;
-								  } 
-								  else {
-									  $joints += $value;
-								  }
-							  }
-					 //  $joints = explode('^', $joits_endbits,0);
-					 //  $endbits = explode('^', $joits_endbits,1);
-					// print_r( str_replace("$",$joints_endbits)));
-					//  $joints =	 explode('^', $joints_endbits);
-					//  $endbits =  explode('^', $joints_endbits);
-
-                
-					
-				 
-					
 
 
 
@@ -545,7 +526,7 @@ if(isset($_POST["submit"]))
 				echo "<td>".round($damages_qty+$recut_damages_qty,0)."</td>";
 				echo "<td>".round($shortages_qty+$recut_shortages_qty,0)."</td>";
 				echo "<td>".$joints."</td>";
-				echo "<td>".$endbits."</td>";
+				echo "<td>".round($endbits,4)."</td>";
 			
 				echo "<td>".(round(($order_yy*$old_order_total),0)-round($issued_qty+$recut_issued_qty+$mrn_issued_qty,0))."</td>";
 				echo "<td>".round((($cut_total_qty-$cut_comp_qty)*round($cad_yy,4)),0)."</td>";
@@ -557,7 +538,7 @@ if(isset($_POST["submit"]))
 				$docketno="";
 				$docketnos="";
 			}
-			}
+			
 		}
 	}else{
 		echo "<div class='alert alert-danger'><b>No Data Found</b></div>";
