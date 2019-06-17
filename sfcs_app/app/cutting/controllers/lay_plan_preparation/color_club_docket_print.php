@@ -300,11 +300,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//ratio total ($a_ratio_tot variable)
 	//$sql="select * from $bai_pro3.plandoc_stat_log where order_tid='$order_tid' and cat_ref=$cat_ref and  doc_no=$doc_id";
 	$a_ratio_tot=array();
+	$mk_ref=array();
+	
 	$sql = "select * from $bai_pro3.plandoc_stat_log where doc_no in ($idocs_2)";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error 2 total ratio".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$mk_ref=$sql_row['mk_ref'];
+		$mk_ref[]=$sql_row['mk_ref'];
+	
 		$print_status=$sql_row['print_status'];
 		$tot=0;
 		for($s=0;$s<sizeof($sizes_code);$s++)
@@ -313,8 +317,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}
 		$a_ratio_tot[$sql_row['doc_no']]=$tot;		
 	}
-	
-	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
+	$remark1=array();
+	$remark2=array();
+	$remark3=array();
+	$remark4=array();
+	$sql2="select * from $bai_pro3.maker_stat_log where tid in (".implode(",",$mk_ref).")";
 
 	$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
 
@@ -324,10 +331,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$mk_remarks=$sql_row2['remarks'];
 		$patt_ver=$sql_row2['mk_ver'];
 		$mk_file=$sql_row2['remarks'];
-		$remark1=$sql_row2['remark1'];
-		$remark2=$sql_row2['remark2'];
-		$remark3=$sql_row2['remark3'];
-		$remark4=$sql_row2['remark4'];
+		$remark1[]=$sql_row2['remark1'];
+		$remark2[]=$sql_row2['remark2'];
+		$remark3[]=$sql_row2['remark3'];
+		$remark4[]=$sql_row2['remark4'];
 	}
 	
 	
@@ -4189,7 +4196,7 @@ echo "</tbody></table>";
   <td colspan=3 class=xl8017319>Dispatch</td>
   <td colspan=6 ></td>
   
-  <th colspan=2 class=xl6417319>Remark 1:<u><?php echo $remark1?></u></th>
+  <th colspan=2 class=xl6417319>Remark 1:<u><?php echo implode(",",$remark1);?></u></th>
  </tr>
  <tr height=30 style='height:30pt'>
   <td height=30 class=xl6417319 style='height:30pt'></td>
@@ -4204,7 +4211,7 @@ echo "</tbody></table>";
   <td colspan=2 class=xl7517319>&nbsp;</td>
   <td colspan=3 class=xl7517319>&nbsp;</td>
   <td colspan=6 ></td>
-  <td colspan=2 class=xl6417319>Remark 2:<u><?php echo $remark2?></u></td>
+  <td colspan=2 class=xl6417319>Remark 2:<u><?php echo  implode(",",$remark2);?></u></td>
   <td colspan=2 class=xl6417319></td>
   <td colspan=2 class=xl6417319></td>
   
@@ -4222,7 +4229,7 @@ echo "</tbody></table>";
   <td colspan=2 class=xl7517319>&nbsp;</td>
   <td colspan=3 class=xl7517319>&nbsp;</td>
   <td colspan=6 ></td>
-  <td colspan=2 class=xl6417319>Remark 3:<u><?php echo $remark3?></u></td>
+  <td colspan=2 class=xl6417319>Remark 3:<u><?php echo  implode(",",$remark3);?></u></td>
   
   <td colspan=2 class=xl6417319></td>
   <td colspan=2 class=xl6417319></td>
@@ -4240,7 +4247,7 @@ echo "</tbody></table>";
   <td colspan=2 class=xl7517319>&nbsp;</td>
   <td colspan=3 class=xl7517319>&nbsp;</td>
   <td colspan=6 ></td>
-  <td colspan=2 class=xl6417319>Remark 4:<u><?php echo $remark4?></u></td>
+  <td colspan=2 class=xl6417319>Remark 4:<u><?php echo  implode(",",$remark4);?></u></td>
  
   <td colspan=2 class=xl6417319></td>
   <td colspan=2 class=xl6417319></td>
