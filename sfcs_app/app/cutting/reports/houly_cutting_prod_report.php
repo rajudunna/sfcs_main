@@ -15,7 +15,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/hea
 		<form method="post" class="form-inline" name="input" action="index.php?r=<?php echo $_GET['r']; ?>">
 			<div class="form-group">
 				<label for="date">Enter Date:</label>
-				<input type="text" data-toggle="datepicker" id="from_date" class="form-control" name="from_date" size=12 value="<?php if($from_date=="") {echo  date("Y-m-d"); } else {echo $from_date;}?>"> 
+				<input type="text" data-toggle="datepicker" id="from_date" class="form-control" name="from_date" size=12 value="<?php  if(isset($_POST['from_date'])) { echo $_POST['from_date']; } else { echo date("Y-m-d"); } ?>"> 
 			</div>
 			<button type="submit" name="submit" class="btn btn-primary">Show</button>
 		</form>
