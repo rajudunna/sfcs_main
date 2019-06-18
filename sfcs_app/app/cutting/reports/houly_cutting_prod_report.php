@@ -84,7 +84,7 @@ if(isset($_POST['submit']))
 					$tot_fab+=$sql_row2['tot_fab'];
 					if ($tot_fab == "")
 					{
-						$tot_fab=0;
+						$tot_fab=0; 
 					}					
 				}				
 				
