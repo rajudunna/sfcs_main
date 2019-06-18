@@ -102,6 +102,10 @@ if(isset($_POST['update']))
 		$cuttable_ref=$_POST['cuttable_ref'];
 		$allocate_ref=$_POST['allocate_ref'];
 		$remarks=$_POST['remarks'];
+		$remarks_1=$_POST['remark1'];
+		$remarks_2=$_POST['remark2'];
+		$remarks_3=$_POST['remark3'];
+		$remarks_4=$_POST['remark4'];
 		$in_mklength=$_POST['in_mklength'];//
 		
 		$in_mkeff=$_POST['in_mkeff'];
@@ -117,7 +121,7 @@ if(isset($_POST['update']))
 		if(strlen(trim($mk_ver))>=1) //System will not update, if no data is not available
 		{	
 
-			$sql="update maker_stat_log set mklength=".$in_mklength[0].", mkeff=$in_mkeff, remarks=\"$remarks\", mk_ver=\"$mk_ver\",date=\"$log_date\",lastup=\"$log_time\" where tid=\"$mk_ref\"";
+			$sql="update maker_stat_log set mklength=".$in_mklength[0].", mkeff=$in_mkeff, remarks=\"$remarks\",remark1=\"$remarks_1\",remark2=\"$remarks_2\",remark3=\"$remarks_3\",remark4=\"$remarks_4\", mk_ver=\"$mk_ver\",date=\"$log_date\",lastup=\"$log_time\" where tid=\"$mk_ref\"";
 			mysqli_query($link, $sql) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				if($lock_status!='1')

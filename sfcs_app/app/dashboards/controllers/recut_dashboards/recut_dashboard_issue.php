@@ -47,6 +47,7 @@ if(isset($_POST['formSubmit']))
         $cat_ref =$row_cat_ref['tid'];
         $patt_ver = $row_cat_ref['patt_ver'];
     }
+	
     $sql1="insert into $bai_pro3.maker_stat_log(date,cat_ref,order_tid,mklength,mk_ver) values (\"".date("Y-m-d")."\",".$cat_ref.",\"$order_tid\",".$mklen.",'".$patt_ver."')";
     mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
     $ilastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
@@ -403,22 +404,47 @@ echo $drp_down;
                       
 						$html_hiding = "IssueToModule";
                     }
-                    echo "<tr><td>$s_no</td>";
-                    echo "<td>".$row['doc_no']."</td>";
-                    echo "<td>".$row['style']."</td>";
-                    echo "<td>".$row['schedule']."</td>";
-                    echo "<td>".$row['color']."</td>";
-                    echo "<td>".$row['category']."</td>";
-                    echo "<td>".$row['rejected_qty']."</td>";
-                    echo "<td>".$row['recut_qty']."</td>";
-                    echo "<td>".$row['recut_reported_qty']."</td>";
-                    echo "<td>".$row['issued_qty']."</td>";
-                    echo "<td>".$rem_qty."</td>";
-                    echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
-                    echo "<td style='display:none'>$html_hiding</td>"; 
-                    echo "<td>$button_html</td>"; 
-                    echo "</tr>";
-                    $s_no++;
+					if($html_hiding == "ReportPending")
+					{
+						if(strtolower($row['category'])=='body' or strtolower($row['front']))
+						{
+							echo "<tr><td>$s_no</td>";
+							echo "<td>".$row['doc_no']."</td>";
+							echo "<td>".$row['style']."</td>";
+							echo "<td>".$row['schedule']."</td>";
+							echo "<td>".$row['color']."</td>";
+							echo "<td>".$row['category']."</td>";
+							echo "<td>".$row['rejected_qty']."</td>";
+							echo "<td>".$row['recut_qty']."</td>";
+							echo "<td>".$row['recut_reported_qty']."</td>";
+							echo "<td>".$row['issued_qty']."</td>";
+							echo "<td>".$rem_qty."</td>";
+							echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
+							echo "<td style='display:none'>$html_hiding</td>"; 
+							echo "<td>$button_html</td>"; 
+							echo "</tr>";
+							$s_no++;
+						}
+					}
+					else
+					{
+						echo "<tr><td>$s_no</td>";
+						echo "<td>".$row['doc_no']."</td>";
+						echo "<td>".$row['style']."</td>";
+						echo "<td>".$row['schedule']."</td>";
+						echo "<td>".$row['color']."</td>";
+						echo "<td>".$row['category']."</td>";
+						echo "<td>".$row['rejected_qty']."</td>";
+						echo "<td>".$row['recut_qty']."</td>";
+						echo "<td>".$row['recut_reported_qty']."</td>";
+						echo "<td>".$row['issued_qty']."</td>";
+						echo "<td>".$rem_qty."</td>";
+						echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
+						echo "<td style='display:none'>$html_hiding</td>"; 
+						echo "<td>$button_html</td>"; 
+						echo "</tr>";
+						$s_no++;
+					}
                 }
             }
             else
@@ -589,6 +615,7 @@ function validationfunction()
 {
     var flag = 0;
     var value = 0;
+	var check= 0;
     var mklen = document.getElementById('mklen').value;
     var a_plies =  document.getElementById('a_plies').value;
     var total_rows = document.getElementById('no_of_rows').value;
@@ -607,10 +634,19 @@ function validationfunction()
         for(var i=1; i<=total_rows;i++)
         {
             value = value + Number(document.getElementById(i).value);
+			if((Number(document.getElementById(i).value)*a_plies)<Number(document.getElementById('dat_'+i).value))
+			{
+				check = 1;
+			}
         }
         if(value == 0)
         {
             swal('Atlease one ratio should be there.','','error');
+            flag = 1;
+        }
+		if(check == 1)
+        {
+            swal('(Ratio * Plies) should be equal or more than requested Quantity per size.','','error');
             flag = 1;
         }
     }
@@ -620,11 +656,11 @@ function validationfunction()
         $('#pre').hide();
         $('#post').show();
         return true;
-   }
-    else
-    {
-        return false;
-    }
+	}
+	else
+	{
+		return false;
+	}
 }
 function isInteger(value) 
 {

@@ -300,11 +300,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//ratio total ($a_ratio_tot variable)
 	//$sql="select * from $bai_pro3.plandoc_stat_log where order_tid='$order_tid' and cat_ref=$cat_ref and  doc_no=$doc_id";
 	$a_ratio_tot=array();
+	$mk_ref=array();
+	
 	$sql = "select * from $bai_pro3.plandoc_stat_log where doc_no in ($idocs_2)";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error 2 total ratio".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$mk_ref=$sql_row['mk_ref'];
+		$mk_ref[]=$sql_row['mk_ref'];
+	
 		$print_status=$sql_row['print_status'];
 		$tot=0;
 		for($s=0;$s<sizeof($sizes_code);$s++)
@@ -313,8 +317,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}
 		$a_ratio_tot[$sql_row['doc_no']]=$tot;		
 	}
-	
-	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
+	$remark1=array();
+	$remark2=array();
+	$remark3=array();
+	$remark4=array();
+	$sql2="select * from $bai_pro3.maker_stat_log where tid in (".implode(",",$mk_ref).")";
 
 	$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
 
@@ -323,7 +330,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$mklength=$sql_row2['mklength'];
 		$mk_remarks=$sql_row2['remarks'];
 		$patt_ver=$sql_row2['mk_ver'];
+		$mk_file=$sql_row2['remarks'];
+		$remark1[]=$sql_row2['remark1'];
+		$remark2[]=$sql_row2['remark2'];
+		$remark3[]=$sql_row2['remark3'];
+		$remark4[]=$sql_row2['remark4'];
 	}
+	
+	
+
 	//echo ' total '.$a_ratio_tot;
 //echo implode(",",$docs);
 
@@ -897,6 +912,14 @@ td,th {
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
+	.respone_td{
+	position: relative;
+    right: 100px;
+    bottom: 11px;
+	}
+	#acs_con{
+		padding:0 65px 0 0;
+	}
 .xl8617319
 	{padding-top:1px;
 	padding-right:1px;
@@ -3742,7 +3765,7 @@ tags will be replaced.-->
   <td rowspan=2  colspan=2 class='autox xl8917319' width=80 style='border-bottom:.5pt solid black;
   width:70px'>Fab. Req for Binding</td>
   <td rowspan=2  colspan=2 class='autox xl8917319' style='border-bottom:.5pt solid black'>Total Fab. Req</td>
-  <td rowspan=2 colspan=2  class=xl8917319 style='border-bottom:.5pt solid black;width:auto'>Marker Length<br/>(actual)</td>
+  <td rowspan=2 colspan=2  class=xl8917319 style='border-bottom:.5pt solid black;width:auto'>Lay Length<br/>(actual)</td>
   <td colspan=2 rowspan=2 class=xl8917319  style='border-bottom:.5pt solid black;'>Act. Req Qty (<?php echo $fab_uom; ?>)</td>
   <td colspan=2 rowspan=2 class=xl8917319  style='border-bottom:.5pt solid black;'>Issued Qty (<?php echo $fab_uom; ?>)</td>
   <td colspan=1 rowspan=2 class=xl8917319  style='width: 115px;border-bottom:.5pt solid black;'>Return Qty (<?php echo $fab_uom; ?>)</td>
@@ -4172,12 +4195,13 @@ echo "</tbody></table>";
   <td colspan=2 class=xl8017319>Bundling</td>
   <td colspan=3 class=xl8017319>Dispatch</td>
   <td colspan=6 ></td>
-  <td colspan=2 class=xl6417319>Act Con</td>
-  <td colspan=3>_____________________________________</td>
+  
+  <th colspan=2 class=xl6417319>Remark 1:<u><?php echo implode(",",$remark1);?></u></th>
  </tr>
  <tr height=30 style='height:30pt'>
   <td height=30 class=xl6417319 style='height:30pt'></td>
   <td colspan=2 class=xl6417319>Team</td>
+ 
   <td colspan=2 class=xl7017319>&nbsp;</td>
   <td colspan=2 class=xl7517319>&nbsp;</td>
   <td colspan=2 class=xl7517319>&nbsp;</td>
@@ -4187,10 +4211,10 @@ echo "</tbody></table>";
   <td colspan=2 class=xl7517319>&nbsp;</td>
   <td colspan=3 class=xl7517319>&nbsp;</td>
   <td colspan=6 ></td>
-  <td colspan=2 class=xl6417319>Saving %</td>
-  <td colspan=3>_____________________________________</td>
+  <td colspan=2 class=xl6417319>Remark 2:<u><?php echo  implode(",",$remark2);?></u></td>
   <td colspan=2 class=xl6417319></td>
   <td colspan=2 class=xl6417319></td>
+  
   <td colspan=2 class=xl6417319></td>
  </tr>
  <tr height=30 style='height:30pt'>
@@ -4205,8 +4229,8 @@ echo "</tbody></table>";
   <td colspan=2 class=xl7517319>&nbsp;</td>
   <td colspan=3 class=xl7517319>&nbsp;</td>
   <td colspan=6 ></td>
-  <td colspan=2 class=xl6417319>Reason</td>
-  <td colspan=3>_____________________________________</td>
+  <td colspan=2 class=xl6417319>Remark 3:<u><?php echo  implode(",",$remark3);?></u></td>
+  
   <td colspan=2 class=xl6417319></td>
   <td colspan=2 class=xl6417319></td>
   <td colspan=2 class=xl6417319></td>
@@ -4223,8 +4247,8 @@ echo "</tbody></table>";
   <td colspan=2 class=xl7517319>&nbsp;</td>
   <td colspan=3 class=xl7517319>&nbsp;</td>
   <td colspan=6 ></td>
-  <td colspan=2 class=xl6417319>Approved</td>
-  <td colspan=3>_____________________________________</td>
+  <td colspan=2 class=xl6417319>Remark 4:<u><?php echo  implode(",",$remark4);?></u></td>
+ 
   <td colspan=2 class=xl6417319></td>
   <td colspan=2 class=xl6417319></td>
   <td colspan=2 class=xl6417319></td>
@@ -4240,14 +4264,9 @@ echo "</tbody></table>";
   <td  colspan=2 class=xl7517319>&nbsp;</td>
   <td  colspan=2 class=xl7517319>&nbsp;</td>
   <td  colspan=3 class=xl7517319>&nbsp;</td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
-  <td colspan=2  class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
+  <td colspan=6 ></td>
+  <td colspan=2 class=xl6417319 id=acs_con>Acs Con</td>
+  <td class=respone_td>_______________________</td>
  </tr>
  <tr height=30 style='height:30pt'>
   <td height=30 class=xl6417319 style='height:30pt'></td>
@@ -4260,14 +4279,9 @@ echo "</tbody></table>";
   <td  colspan=2 class=xl7517319>&nbsp;</td>
   <td  colspan=2 class=xl7517319>&nbsp;</td>
   <td  colspan=3 class=xl7517319>&nbsp;</td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
+  <td colspan=6 ></td>
+  <td colspan=2 class=xl6417319 id=acs_con>Saving %</td>
+  <td class=respone_td>_______________________</td>
  </tr>
  <tr height=30 style='height:30pt'>
   <td height=30 class=xl6417319 style='height:30pt'></td>
@@ -4280,15 +4294,24 @@ echo "</tbody></table>";
   <td  colspan=2 class=xl7517319>&nbsp;</td>
   <td  colspan=2 class=xl7517319>&nbsp;</td>
   <td colspan=3  class=xl7517319>&nbsp;</td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
-  <td colspan=2  class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
-  <td  colspan=2 class=xl6417319></td>
+  <td colspan=6 ></td>
+  <td colspan=2 class=xl6417319 id=acs_con>Reason</td>
+  <td class=respone_td>_______________________</td>
  </tr>
+ <tr height=30 style='height:30pt'>
+  <td height=30 class=xl6417319 style='height:30pt'></td>
+  <td  colspan=2 ></td>
+  <td  colspan=2></td>
+  <td  colspan=2>&nbsp;</td>
+  <td  colspan=2>&nbsp;</td>
+  <td colspan=2>&nbsp;</td>
+  <td  colspan=2>&nbsp;</td>
+  <td  colspan=2>&nbsp;</td>
+  <td  colspan=2>&nbsp;</td>
+  <td colspan=3>&nbsp;</td>
+  <td colspan=6 ></td>
+  <td colspan=2 class=xl6417319 id=acs_con>Approved</td>
+  <td class=respone_td>_______________________</td>
  <tr height=30 style='height:15.75pt'>
  <td height=30 class=xl6417319 style='height:30pt'></td>
   <td  colspan=2 class=xl6417319></td>
