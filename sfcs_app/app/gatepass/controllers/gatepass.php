@@ -4,24 +4,36 @@
     include(getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+ 
     if(isset($_POST['submit']))
 	{
+        
 		$operation_wo=$_POST['operation_wo'];
         $shift=$_POST['shift'];
-        $operation=$_POST['operation'];
+        $operation=$_POST['operation']; 
         $gatepass="G";
 
     if($operation_wo=="with"){
-        
-        getFullURL($_GET['r'], "/production/controllers/sewing_job/sewing_job_scaning/bundle_wise_scanning.php",3,"R");
+        //this will be redirect to Bundle wise scanning
+    $url="http://localhost/index.php?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9zY2FuaW5nL2J1bmRsZV93aXNlX3NjYW5uaW5nLnBocA==";
     }else if($operation_wo=="without"){
-        getFullURL($_GET['r'], "gatepass.php", "R");
+        //this will be redirect to Bundlewise Scaning without operation
+        $url="http://localhost/index.php?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9zY2FuaW5nL3ByZV9idW5kbGVfbGV2ZWxfc2Nhbm5pbmdfd2l0aG91dF9vcHMucGhw";
+
 
     }else{
-        getFullURL($_GET['r'], "gatepass.php", "R");
+       echo "Something went wrong.....!";
     }
-}
-?>
+    echo "<script>
+ 
+        alert('kasljfsjdkf');
+        var operation = document.getElementById('gatepass').value;
+        var shift = document.getElementById('shift').value;
+    window.location = '$url&gatepass='+'G'; 
+    
+    </script>";
+    }
+    ?>
   <script>
         console.log(<?php echo json_encode($_POST); ?>);
     </script>
@@ -34,9 +46,8 @@ function oper_display(){
       document.getElementById("operation_sec").style.display = "block";
     }else{
         document.getElementById("operation_sec").style.display = "none";
-
     }
-   
+  
 }
 
 </script>
@@ -59,7 +70,7 @@ function oper_display(){
                </div>
            <div class="col-sm-2 form-group">
               <label for='style'>Shift:<span style ='color:red'>*</span></label>  
-              <select class='form-control' name="shift" id="per1" required>
+              <select class='form-control' name="shift" id="shift" required>
                 <option selected="selected" value=''>--Select Shift--</option>
                  <?php
                   foreach($shifts_array as $name) { ?>

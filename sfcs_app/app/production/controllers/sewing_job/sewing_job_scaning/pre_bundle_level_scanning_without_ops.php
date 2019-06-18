@@ -1,3 +1,9 @@
+<?php 
+if(isset($_GET['shift'])){
+echo "<button type='button' class='btn btn-primary'><a style='color:white;' href='http://localhost/?r=L3NmY3NfYXBwL2FwcC9nYXRlcGFzcy9jb250cm9sbGVycy9nYXRlcGFzcy5waHA='>Go Back</a></button>";
+   
+}
+?>
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
