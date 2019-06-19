@@ -1,5 +1,13 @@
 <?php 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+
+	if ($_GET['operation_id']) {
+		$operation_id = $_GET['operation_id'];
+		$shift = $_GET['shift'];
+	} else {
+		$operation_id = 200;
+		$shift = '';
+	}
 ?>
 
 <style>
@@ -25,7 +33,7 @@
 					mysqli_query($link, $sql_schedule) or exit("Sql Error_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$url = getFullURL($_GET['r'],'carton_scan_decentral_packing.php','R');
 					echo "<script language=\"javascript\" type=\"text/javascript\">
-							window.open('$url?emp_id=$emp_id&team_id=$team_id','','width=1000,height=500');
+							window.open('$url?emp_id=$emp_id&team_id=$team_id&operation_id=$operation_id&shift=$shift','','width=1000,height=500');
 					</script>";		
 				}
 			}
@@ -42,7 +50,7 @@
 							echo "<tr>
 									<td>".$sql_row_schedule['emp_id']."</td>
 									<td>".$sql_row_schedule['emp_call_name']."</td>
-									<td><a href=\"$url&select=1&team_id=".$sql_row_schedule['team_id']."&emp_id=".$sql_row_schedule['emp_id']."&random=".date("YmdHis").rand(0,99999)."\" class='btn btn-info btn-sm'>Select</a>
+									<td><a href=\"$url&select=1&shift=".$_GET['shift']."&operation_id=".$_GET['operation_id']."&team_id=".$sql_row_schedule['team_id']."&emp_id=".$sql_row_schedule['emp_id']."&random=".date("YmdHis").rand(0,99999)."\" class='btn btn-info btn-sm'>Select</a>
 									</td>
 								</tr>";
 						}
