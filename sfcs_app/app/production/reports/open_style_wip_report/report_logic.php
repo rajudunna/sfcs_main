@@ -63,7 +63,7 @@ error_reporting(0);
         //$today='2019-04-27 12:00:00';
         
 
-     $get_style_wip_data="select * FROM $brandix_bts.open_style_wip group by style,schedule,color,size";
+     $get_style_wip_data="select * FROM $brandix_bts.open_style_wip where (good_qty>0 or rejected_qty>0) group by style,schedule,color,size";
      //echo  $get_style_wip_data;
      $get_style_data_result =$link->query($get_style_wip_data);
      // echo date("Y-m-d H:i:s")."-4st <br/>";
