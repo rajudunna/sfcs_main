@@ -20,6 +20,7 @@ class ReactApp extends React.Component {
               
                 this.setState({ tableData: response.data.main_data, loadingimage: false });
             } else {
+                swal('Info', 'No Data Found', 'info');
                 this.setState({ tableData: [], loadingimage: false });
             }
         }).catch((error) => {
