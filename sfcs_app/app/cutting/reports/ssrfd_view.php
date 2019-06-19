@@ -408,6 +408,17 @@ if(isset($_POST['submit']))
 		$fab_ret=$sql_row['fab_returned'];
 		$damages=round($sql_row['damages'],2);
 		$shortages=round($sql_row['shortages'],2);
+
+		$joints_endbits=$sql_row["joints_endbits"];
+		$jo_int_check=explode('$',$joints_endbits);
+		 $joints=0;$endbits=0;	
+		for($ii=0;$ii<sizeof($jo_int_check);$ii++)
+		{
+			$values_joint=explode('^',$joints_endbits);
+			$joints=$joints+$values_joint[0];
+			$endbits=$endbits+$values_joint[1];			
+		}				 
+
 	
 	}
 	
@@ -429,6 +440,7 @@ if(isset($_POST['submit']))
 		$doc_req=$mk_length*$a_plies;
 
 
+		
 		$order_tid=$sql_row1['order_tid'];
 		//Binding Consumption / YY Calculation
 		$sql11="select  COALESCE(binding_consumption,0) as \"binding_consumption\" ,catyy from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_id";
@@ -719,6 +731,8 @@ if(isset($_POST['submit']))
 			<th>Fabric Returned</th>
 			<th>Damages</th>
 			<th>Shortages</th>
+			<th>Joints</th>
+			<th>Endbits</th>
 			<th>Net Utlization</th>
 			<th>Ordering Consumption</th>
 			<th>Actual Consumption</th>
@@ -751,7 +765,7 @@ if(isset($_POST['submit']))
 			$cut_date="";
 			$cut_section="";
 			$cut_shift="";
-		
+		$joints=0;$endbits=0;	
 		$sql="select * from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -761,6 +775,14 @@ if(isset($_POST['submit']))
 			$cut_date=$sql_row['date'];
 			$cut_section=$sql_row['section'];
 			$cut_shift=$sql_row['shift'];
+			$joints_endbits=$sql_row["joints_endbits"];
+			$jo_int_check=explode('$',$joints_endbits);	
+			for($ii=0;$ii<sizeof($jo_int_check);$ii++)
+			{
+				$values_joint=explode('^',$jo_int_check[$ii]);
+				$joints=$joints+$values_joint[0];
+				$endbits=$endbits+$values_joint[1];			
+			}
 		}
 		
 
@@ -864,6 +886,8 @@ if(isset($_POST['submit']))
 		echo "<td>$fab_ret</td>";
 		echo "<td>$damages</td>";
 		echo "<td>$shortages</td>";
+		echo "<td>$joints</td>";
+		echo "<td>".round($endbits,4)."</td>";
 		echo "<td>$net_util</td>";
 		echo "<td>$cat_yy</td>";
 		echo "<td>$act_con</td>";
@@ -875,13 +899,14 @@ if(isset($_POST['submit']))
 		echo "</tr>";
 	}
 		echo "	</table></div>";
+}
 
 	}
 	else
 	{
 		echo "<h4>No Data Found</h4>";
 	}
-  }
+  
  }
 }//closing isset(POST) 
 ?>
