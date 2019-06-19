@@ -1,3 +1,12 @@
+<?php 
+if(isset($_GET['gatepass'])){
+ echo "<script>
+         $(document).ready(function(){
+         $('#frm1').submit();
+         });
+      </script>";
+}
+?>
 <?php
 include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
@@ -53,8 +62,3 @@ foreach($ops_array1 as $key=>$value)
 </form>
 </div>
 </div>
-<script>
-$(document).ready(function(){
-     $("#frm1").submit();
-});
-</script>

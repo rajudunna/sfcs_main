@@ -1,7 +1,10 @@
 <?php 
 if(isset($_GET['gatepass'])){
-// echo "<button type='button' class='btn btn-primary'><a style='color:white;' href='http://localhost/?r=L3NmY3NfYXBwL2FwcC9nYXRlcGFzcy9jb250cm9sbGVycy9nYXRlcGFzcy5waHA='>Go Back</a></button>";
-
+    echo "<script>
+    $(document).ready(function(){
+         $('#frm1').submit();
+    });
+    </script>";
 }
 ?>
 <?php
@@ -33,8 +36,3 @@ if(isset($_GET['gatepass'])){
     </form>
     </div>
 </div>
-<script>
-$(document).ready(function(){
-     $("#frm1").submit();
-});
-</script>
