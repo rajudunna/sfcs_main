@@ -10,7 +10,7 @@
         
 		$operation_wo=$_POST['operation_wo'];
         $shift=$_POST['shift'];
-        $operation=$_POST['operation']; 
+        $operation=$_POST['operation'];
         $gatepass="G";
 
     if($operation_wo=="with"){
@@ -19,19 +19,12 @@
     }else if($operation_wo=="without"){
         //this will be redirect to Bundlewise Scaning without operation
         $url="http://localhost/index.php?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9zY2FuaW5nL3ByZV9idW5kbGVfbGV2ZWxfc2Nhbm5pbmdfd2l0aG91dF9vcHMucGhw";
-
-
     }else{
        echo "Something went wrong.....!";
     }
-    echo "<script>
- 
-        alert('kasljfsjdkf');
-        var operation = document.getElementById('gatepass').value;
-        var shift = document.getElementById('shift').value;
-    window.location = '$url&gatepass='+'G'; 
-    
-    </script>";
+    echo "<script>     
+           window.location = '$url&gatepass='+'G&shift=$shift&opertion=$operation'; 
+        </script>";
     }
     ?>
   <script>
@@ -70,6 +63,7 @@ function oper_display(){
                </div>
            <div class="col-sm-2 form-group">
               <label for='style'>Shift:<span style ='color:red'>*</span></label>  
+              
               <select class='form-control' name="shift" id="shift" required>
                 <option selected="selected" value=''>--Select Shift--</option>
                  <?php
@@ -96,7 +90,7 @@ function oper_display(){
                                 }
                                 else
                                 {
-                                    echo "<option value=\"".$sql_row['id']."\">".$sql_row['operation_name']."</option>";
+                                    echo "<option value=\"".$sql_row['id']."\">".$sql_row['operation_name'].'-'.$sql_row['operation_code']."</option>";
                                 }
                             }
                             echo "</select>";
