@@ -701,16 +701,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		$act_xl=$sql_row1['a_xl']*$sql_row1['a_plies'];
 		$act_xxl=$sql_row1['a_xxl']*$sql_row1['a_plies'];
 		$act_xxxl=$sql_row1['a_xxxl']*$sql_row1['a_plies'];
-		$sql1="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
-		//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 15".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row1=mysqli_fetch_array($sql_result1))
-		{
-			$style=$sql_row1['order_style_no'];
-			$schedule=$sql_row1['order_del_no'];
-			$color_code=$sql_row1['color_code'];
-			$color=$sql_row1['order_col_des'];
-		}	
+		
 		$req_qty=0;
 		$issued_qty=0;
 		$sql112="SELECT req_qty,issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and schedule='$schedule' and color='$color^$act_cut_no'";
@@ -810,7 +801,16 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		$order_tid=$sql_row1['order_tid'];
 		$cat_yy=$sql_row1['catyy'];
 	}	
-	
+	$sql1="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
+		//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 15".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row1=mysqli_fetch_array($sql_result1))
+		{
+			$style=$sql_row1['order_style_no'];
+			$schedule=$sql_row1['order_del_no'];
+			$color_code=$sql_row1['color_code'];
+			$color=$sql_row1['order_col_des'];
+		}	
 	
 	
 	
