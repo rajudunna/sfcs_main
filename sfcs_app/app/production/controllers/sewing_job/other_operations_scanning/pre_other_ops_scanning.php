@@ -9,17 +9,7 @@ function firstbox()
 	window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&category="+document.other_operation_report.category.value
 }
 
-function secondbox()
-{
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&category="+document.other_operation_report.category.value+"&operation="+document.other_operation_report.operation.value;
-	window.location.href = uriVal;
-}
 
-function thirdbox()
-{
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&category="+document.other_operation_report.category.value+"&operation="+document.other_operation_report.operation.value+"&shift="+encodeURIComponent(document.other_operation_report.shift.value);
-	window.location.href = uriVal;
-}
 $(document).ready(function() {
 	$('#operation').on('click',function(e){
 		var category = $('#category').val();
