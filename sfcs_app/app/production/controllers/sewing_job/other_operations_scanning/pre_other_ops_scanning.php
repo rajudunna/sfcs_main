@@ -121,21 +121,18 @@ echo "  </select>
 <?php
     if($category == 'cutting')
 	{
-      $url = getFullURLLEVEL($_GET['r'],'cut_other_operation_scanning.php',0,'N');
-	}else
+		$url = getFullURLLEVEL($_GET['r'],'cut_other_operation_scanning.php',0,'N');
+	}
+	else if($category == 'packing')
 	{
-      $url = getFullURLLEVEL($_GET['r'],'carton_other_operation_scanning.php',0,'N');
-	}	
-
-echo "<script>
-function fun() {
-	var operation = document.getElementById('operation').value;
-	var shift = document.getElementById('shift').value;
-
- if(operation && shift)
- window.location = '$url&operation_id='+operation+'&shift='+shift; 
- 
-}
-</script>";
-
+		$url = getFullURLLEVEL($_GET['r'],'packing/controllers/central_packing/carton_scan_select_user.php',4,'N');
+	}
+	echo "<script>
+	function fun() {
+		var operation = document.getElementById('operation').value;
+		var shift = document.getElementById('shift').value;
+		if(operation && shift)
+		window.location = '$url&operation_id='+operation+'&shift='+shift; 
+	}
+	</script>";
 ?>
