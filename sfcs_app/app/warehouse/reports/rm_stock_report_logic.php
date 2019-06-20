@@ -77,6 +77,16 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
             $qty_issued=$qty_issued+$rowy["qty"];
             $qty_balance=$qty_rec+$qty_return- $qty_issued;
 		}
+	}
+	
+	$sqlz="select sum(qty_returned) as qty FROM `bai_rm_pj1`.`store_returns` where log_stamp > \"$log_time\" and tran_tid=\"$tid\" and date=\"$current_date\" and tran_tid >0  group by tran_tid";
+    $sql_result1z =$link->query($sqlz);
+    if(mysqli_num_rows($sql_result1z)> 0) {
+        while ($rowz = $sql_result1z->fetch_assoc())
+        {
+            $qty_return=$qty_return+$rowz["qty"];
+            $qty_balance=$qty_rec+$qty_return- $qty_issued;
+		}
     }
  
     $single_data = ["location"=>$location,"lotno"=>$lot_no,"style"=>$style_no,"batchno"=>$batch_no,"sku"=>$item,"itemdescription"=>$item_desc,"itemname"=>$item_name,"box_roll_no"=>$boxno,"measuredwidth"=>$ref3,"receivedqty"=>$qty_rec,"issuedqty"=>$qty_issued,"returnqty"=>$qty_return,"balanceqty"=>$qty_balance,"shade"=>$shade,"invoice"=>$invoice,"status"=>$status,"grndate"=>$grn_date,"remarks"=>$remarks,"labelid"=>$tid,"productgroup"=>$product,"buyer"=>$buyer,"supplier"=>$supplier];
