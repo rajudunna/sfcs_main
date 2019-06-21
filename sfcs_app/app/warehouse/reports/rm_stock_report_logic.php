@@ -69,7 +69,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 		$invoice=$row["inv_no"];
     }
     $current_date=date('Y-m-d');
-    $sqly="select sum(qty_issued) as qty FROM `bai_rm_pj1`.`store_out` where log_stamp > \"$log_time\" and tran_tid=\"$tid\" and date=\"$current_date\" and tran_tid >0  group by tran_tid";
+    $sqly="select sum(ROUND(qty_issued,2)) as qty FROM `bai_rm_pj1`.`store_out` where log_stamp > \"$log_time\" and tran_tid=\"$tid\" and date=\"$current_date\" and tran_tid >0  group by tran_tid";
     $sql_result1y =$link->query($sqly);
     if(mysqli_num_rows($sql_result1y)> 0) {
         while ($rowy = $sql_result1y->fetch_assoc())
@@ -79,7 +79,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 		}
 	}
 	
-	$sqlz="select sum(qty_returned) as qty FROM `bai_rm_pj1`.`store_returns` where log_stamp > \"$log_time\" and tran_tid=\"$tid\" and date=\"$current_date\" and tran_tid >0  group by tran_tid";
+	$sqlz="select sum(ROUND(qty_returned,2)) as qty FROM `bai_rm_pj1`.`store_returns` where log_stamp > \"$log_time\" and tran_tid=\"$tid\" and date=\"$current_date\" and tran_tid >0  group by tran_tid";
     $sql_result1z =$link->query($sqlz);
     if(mysqli_num_rows($sql_result1z)> 0) {
         while ($rowz = $sql_result1z->fetch_assoc())
@@ -88,7 +88,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
             $qty_balance=$qty_rec+$qty_return- $qty_issued;
 		}
     }
- 
+	$qty_balance=round($qty_balance,2);
     $single_data = ["location"=>$location,"lotno"=>$lot_no,"style"=>$style_no,"batchno"=>$batch_no,"sku"=>$item,"itemdescription"=>$item_desc,"itemname"=>$item_name,"box_roll_no"=>$boxno,"measuredwidth"=>$ref3,"receivedqty"=>$qty_rec,"issuedqty"=>$qty_issued,"returnqty"=>$qty_return,"balanceqty"=>$qty_balance,"shade"=>$shade,"invoice"=>$invoice,"status"=>$status,"grndate"=>$grn_date,"remarks"=>$remarks,"labelid"=>$tid,"productgroup"=>$product,"buyer"=>$buyer,"supplier"=>$supplier];
 
     array_push($main_data,array_map('utf8_encode', $single_data));
