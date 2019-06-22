@@ -153,6 +153,15 @@ if($act_cut_status == 'DONE'){
         $fab_rec = $fab_row['fab_received'];
         $fab_ret = $fab_row['fab_returned'];
         $shortages= $fab_row['shortages'];
+        $joints_endbits=$fab_row["joints_endbits"];
+        $jo_int_check=explode('$',$joints_endbits);
+        $joints=0;$endbits=0;   
+        for($ii=0;$ii<sizeof($jo_int_check);$ii++)
+        {
+            $values_joint=explode('^',$jo_int_check[$ii]);
+            $joints=$joints+$values_joint[0];
+            $endbits=$endbits+$values_joint[1];         
+        }
         $damages = $fab_row['damages'];
         $shift   = $fab_row['shift'];
         $section = $fab_row['section'];
@@ -221,6 +230,8 @@ $response_data['fab_status']   = $fabric_status;
 $response_data['fab_received'] = $fab_rec;
 $response_data['fab_returned'] = $fab_ret;
 $response_data['shortages'] = $shortages;
+$response_data['joints'] = $joints;
+$response_data['endbits'] = round($endbits,4);
 $response_data['damages']   = $damages;
 $response_data['shift']     = $shift;
 $response_data['section']   = $section;

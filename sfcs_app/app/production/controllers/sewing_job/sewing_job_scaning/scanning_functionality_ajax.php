@@ -67,6 +67,8 @@ $type = $form;
 $barcode_sequence = $new_data['barcode_sequence'];
 $barcode_generation =  $new_data['barcode_generation'];
 $emb_cut_check_flag = $new_data['emb_cut_check_flag'];
+
+
 if($barcode_generation == 1)
 {
 	$concurrent_flag = 0;
@@ -93,7 +95,19 @@ if($barcode_generation == 1)
 	{
 		// for positives
 		foreach($b_tid as $key => $value)
-		{
+		{	
+
+			//getting dependency operation
+			$parellel_ops=array();
+			$qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors[$key]' and ops_dependency='$operation_code'";
+			$qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
+			if($qry_parellel_ops_result->num_rows > 0){
+				while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
+				{ 
+					$parellel_ops[] = $row_prellel['operation_code'];
+				}
+			}
+
 			$b_doc_num_exp = explode(',',$b_doc_num1[$key]);
 			$to_add_doc_val = 0;
 			$cumulative_qty = $b_rep_qty[$key];
@@ -109,7 +123,14 @@ if($barcode_generation == 1)
 				$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if($emb_cut_check_flag != 0)
 				{
-					$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+					if(sizeof($parellel_ops)>0){
+						$retreving_remaining_qty_qry =  "SELECT MIN(recevied_qty) AS balance_to_report FROM brandix_bts.bundle_creation_data  
+						WHERE docket_number IN ($doc_value) AND size_title='$b_sizes[$key]' AND operation_id IN (".implode(',',$parellel_ops).")";
+
+					}else{
+						$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+					}
+					
 					// echo $retreving_remaining_qty_qry.'</br>';
 					$result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
 					if($result_retreving_remaining_qty_qry->num_rows > 0)
@@ -190,7 +211,13 @@ if($barcode_generation == 1)
 					}	
 				}
 				//updating this to cps log
-				$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+				if(sizeof($parellel_ops)>0){
+					$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code in (".implode(',',$parellel_ops).")";
+
+				}else{
+					$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+				}
+								
 				$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 
 			}
@@ -218,7 +245,15 @@ if($barcode_generation == 1)
 				$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if($emb_cut_check_flag != 0)
 				{
-					$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+					
+					if(sizeof($parellel_ops)>0){
+						$retreving_remaining_qty_qry =  "SELECT MIN(recevied_qty) AS balance_to_report FROM brandix_bts.bundle_creation_data  
+						WHERE docket_number IN ($doc_value) AND size_title='$b_sizes[$key]' AND operation_id IN (".implode(',',$parellel_ops).")";
+
+					}else{
+						$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+					}
+
 					// echo $retreving_remaining_qty_qry.'</br>';
 					$result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
 					if($result_retreving_remaining_qty_qry->num_rows > 0)
@@ -393,7 +428,19 @@ if($barcode_generation == 1)
 	{
 		//for positive quantities 
 		foreach($b_tid as $key => $value)
-		{
+		{	
+
+			//getting dependency operation
+			$parellel_ops=array();
+			$qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors[$key]' and ops_dependency='$operation_code'";
+			$qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
+			if($qry_parellel_ops_result->num_rows > 0){
+				while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
+				{ 
+					$parellel_ops[] = $row_prellel['operation_code'];
+				}
+			}
+
 			$module_cum = $b_module[$key];
 			$r_reasons = explode(",", $r_reason[$value]);
 			$r_qty = explode(",", $r_qtys[$value]);
@@ -412,7 +459,12 @@ if($barcode_generation == 1)
 				$remaining_qty_rec = 0;
 				if($emb_cut_check_flag != 0)
 				{
-					$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+					if(sizeof($parellel_ops)>0){
+						$retreving_remaining_qty_qry =  "SELECT MIN(recevied_qty) AS balance_to_report FROM brandix_bts.bundle_creation_data  
+						WHERE docket_number IN ($doc_value) AND size_title='$b_sizes[$key]' AND operation_id IN (".implode(',',$parellel_ops).")";
+					}else{
+						$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+					}
 					$result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
 					// if($result_retreving_remaining_qty_qry->num_rows > 0)
 					// {
@@ -493,7 +545,11 @@ if($barcode_generation == 1)
 						$to_add += 0;
 					}
 				}
-				$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+				if(sizeof($parellel_ops)>0){
+					$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code in (".implode(',',$parellel_ops).")";
+				}else{
+					$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $doc_value and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+				}
 				$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 			}
 			
@@ -503,7 +559,19 @@ if($barcode_generation == 1)
 		if(array_sum($r_qtys) > 0)
 		{
 			foreach($b_tid as $key => $value)
-			{
+			{	
+
+				//getting dependency operation
+				$parellel_ops=array();
+				$qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors[$key]' and ops_dependency='$operation_code'";
+				$qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
+				if($qry_parellel_ops_result->num_rows > 0){
+					while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
+					{ 
+						$parellel_ops[] = $row_prellel['operation_code'];
+					}
+				}
+				
 				$r_reasons = explode(",", $r_reason[$value]);
 				// var_dump($r_reasons);
 				$r_qty = explode(",", $r_qtys[$value]);
@@ -525,7 +593,13 @@ if($barcode_generation == 1)
 					$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if($emb_cut_check_flag != 0)
 					{
-						$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+						if(sizeof($parellel_ops)>0){
+							$retreving_remaining_qty_qry =  "SELECT MIN(recevied_qty) AS balance_to_report FROM brandix_bts.bundle_creation_data  
+							WHERE docket_number IN ($doc_value) AND size_title='$b_sizes[$key]' AND operation_id IN (".implode(',',$parellel_ops).")";
+						}else{
+							$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+						}
+						
 						$result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
 						if($result_retreving_remaining_qty_qry->num_rows > 0)
 						{
@@ -777,7 +851,12 @@ else if($concurrent_flag == 0)
 		foreach($b_tid as $key=>$value)
 		{
 			$to_add = $b_rep_qty[$key];
-			$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $b_doc_num[$key] and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+			if(sizeof($parellel_ops)>0){
+				$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $b_doc_num[$key] and size_title='$b_sizes[$key]' AND operation_code in (".implode(',',$parellel_ops).")";
+			}else{
+				$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add where doc_no = $b_doc_num[$key] and size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+			}
+			
 			$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 		}
 		// echo $update_qry_cps_log.'</br>';
@@ -814,7 +893,7 @@ else if($concurrent_flag == 0)
 		$is_m3 = $row['default_operration'];
 		$sfcs_smv = $row['smv'];
 	}
-	$ops_dep_qry = "SELECT ops_dependency,operation_code,ops_sequence FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and ops_sequence='$sequnce' AND ops_dependency != 200 AND ops_dependency != 0 group by ops_dependency";
+	$ops_dep_qry = "SELECT tm.ops_dependency,tm.operation_code,tm.ops_sequence FROM brandix_bts.tbl_style_ops_master tm LEFT JOIN brandix_bts.`tbl_orders_ops_ref` tr ON tr.id=tm.operation_name WHERE tm.style='$b_style' AND tm.color = '$mapped_color' AND tm.ops_dependency != 200 AND tm.ops_dependency != 0  and tr.category = 'sewing' and ops_sequence='$sequnce' group by ops_dependency";
 	$result_ops_dep_qry = $link->query($ops_dep_qry);
 	while($row = $result_ops_dep_qry->fetch_assoc()) 
 	{
@@ -839,7 +918,7 @@ else if($concurrent_flag == 0)
 	}
 	if($ops_dep)
 	{
-		$dep_ops_array_qry_seq = "select ops_dependency,operation_code,ops_sequence from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' AND ops_dependency != 200 AND ops_dependency != 0";
+		$dep_ops_array_qry_seq = "select tm.ops_dependency,tm.operation_code,tm.ops_sequence from $brandix_bts.tbl_style_ops_master tm LEFT JOIN brandix_bts.`tbl_orders_ops_ref` tr ON tr.id=tm.operation_name WHERE tm.style='$b_style' AND tm.color = '$mapped_color' AND tm.ops_dependency != 200 AND tm.ops_dependency != 0  and tr.category = 'sewing'";
 		// $dep_ops_array_qry_seq.'</br>';
 		$result_dep_ops_array_qry_seq = $link->query($dep_ops_array_qry_seq);
 		while($row = $result_dep_ops_array_qry_seq->fetch_assoc()) 
@@ -1178,7 +1257,13 @@ else if($concurrent_flag == 0)
 							$pre_recieved_qty = $row['recieved_qty'];
 						}
 
-						$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."' where bundle_number =$b_tid[$key] and operation_id = ".$ops_dep;
+						if($pre_recieved_qty>0){
+							$ops_dep_update_qty=$pre_recieved_qty;
+						}else{
+							$ops_dep_update_qty=$final_rep_qty;
+						}
+
+						$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$ops_dep_update_qty."' where bundle_number =$b_tid[$key] and operation_id = ".$ops_dep;
 						// $query_post_dep.'</br>';
 						$result_query = $link->query($query_post_dep) or exit('query error in updating');
 				
@@ -1489,7 +1574,7 @@ else if($concurrent_flag == 0)
 						/*Insert same data into bai_pro.bai_log_buf table*/
 						$insert_bailogbuf="insert into $bai_pro.bai_log_buf(bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
 						bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
-						) values ('".$b_module[$i]."','".$sec_head."','".$b_rep_qty[$i]."','".$log_time."','".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors[$i]."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty[$i]."','ims_log','".$b_op_id."','".$nop."','".$b_op_id."','".$b_op_id."','".$b_inp_job_ref[$i]."')";
+						) values ('".$b_module[$i]."','".$sec_head."','".$b_rep_qty[$i]."','".$log_time."','".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors[$i]."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty[$i]."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref[$i]."')";
 						//echo "</br>Insert Bailog buf: ".$insert_bailogbuf."</br>";
 						if($b_rep_qty[$i] > 0)
 						{
@@ -1607,8 +1692,12 @@ else if($concurrent_flag == 0)
 					$insert_into_rejections_reason_track_res =$link->query($insert_into_rejections_reason_track);
 					//updating this to cps log
 					if($emb_cut_check_flag)
-					{
-						$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$implode_next[2] where doc_no = $doc_value and size_title='$size_title' AND operation_code = $emb_cut_check_flag";
+					{	
+						if(sizeof($parellel_ops)>0){
+							$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$implode_next[2] where doc_no = $doc_value and size_title='$size_title' AND operation_code in (".implode(',',$parellel_ops).")";
+						}else{
+							$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$implode_next[2] where doc_no = $doc_value and size_title='$size_title' AND operation_code = $emb_cut_check_flag";
+						}
 						$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 					}
 				}
