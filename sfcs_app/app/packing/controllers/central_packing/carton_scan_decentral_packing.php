@@ -7,6 +7,9 @@
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 		$emp_id = $_GET['emp_id'];
 		$team_id = $_GET['team_id'];
+
+		$operation_id = $_GET['operation_id'];
+		$shift = $_GET['shift'];
 	?>
 	<link rel="stylesheet" type="text/css" href="../../common/css/bootstrap.css">
 	<script src="../../common/js/jquery.min.js"></script>
@@ -33,8 +36,25 @@
 		<div class="panel panel-primary">
 			<div class="panel-heading">Carton Scanning - Decentralized Packing </div>
 			<div class="panel-body">
+				<div class="col-md-12">
+					<div class="col-md-4">
+						<font size="5">Operation: <label class='label label-warning'><?= $operation_id; ?></label></font>
+					</div>
+					<?php
+						if ($_GET['shift'] != '') {
+							echo '<div class="col-md-4">
+									<font size="5">Shift: <label class="label label-warning">'.$shift.'</label></font>
+								</div>';
+						}
+					?>
+					
+				</div>
+				<br>
+				<hr>
 				<input type="hidden" name="emp_id" id="emp_id" value="<?php echo $emp_id; ?>">
 				<input type="hidden" name="team_id" id="team_id" value="<?php echo $team_id; ?>">
+				<input type="hidden" name="operation_id" id="operation_id" value="<?php echo $operation_id; ?>">
+				<input type="hidden" name="shift" id="shift" value="<?php echo $shift; ?>">
 				<div class="form-inline col-sm-5">
 					<label><font size="5">Carton ID: </font></label>
 					<input type="text" name="carton_id" class="form-control" id="carton_id" onkeypress="return AcceptOnlyNumbers(event);" placeholder="Enter Carton ID here">
@@ -125,6 +145,8 @@
 			$("#display_result").hide();
 			var emp_id = $("#emp_id").val();
 			var team_id = $("#team_id").val();
+			var operation_id = $("#operation_id").val();
+			var shift = $("#shift").val();
 			if (carton_id != '')
 			{
 				$("#error_msg").hide();
@@ -135,7 +157,7 @@
 					url: function_text,
 					dataType: "json", 
 					type: "GET",
-					data: {carton_id:carton_id,emp_id:emp_id,team_id:team_id},    
+					data: {carton_id:carton_id,emp_id:emp_id,team_id:team_id,operation_id:operation_id,shift:shift},    
 					cache: false,
 					success: function (response) 
 					{
@@ -160,7 +182,7 @@
 							$("#submit_btn").attr("disabled", true);
 							$('#carton_id').focus();
 						}
-						else if(response['status']==0 || response['status']==3 || response['status']==4)
+						else if(response['status']==0 || response['status']==3 || response['status']==4  || response['status']==5)
 						{
 							$("#loading_img").hide();
 							if (response['status']==0)
@@ -174,6 +196,10 @@
 							else if (response['status']==4)
 							{
 								var msg = "Carton Not Eligible Due to Quantity not Available";
+							}
+							else if (response['status']==5)
+							{
+								var msg = "Previous Operation Not Done";
 							}
 							
 							$("#error_msg").show();

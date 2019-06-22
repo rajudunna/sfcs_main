@@ -1186,12 +1186,12 @@ function insert_into_bcd_temp($doc_no,$size,$qty,$rej,$op_code){
     global $link;
     global $brandix_bts;
     $date = date('Y-m-d H:i:s');
-    $insert_query = "INSERT into $brandix_bts.bundle_creation_data_temp(date_time,cut_number,style,SCHEDULE,color,size_id,
+    $insert_query = "INSERT into $brandix_bts.bundle_creation_data_temp(cut_number,style,SCHEDULE,color,size_id,
                 size_title,sfcs_smv,
                 bundle_number,original_qty,send_qty,recevied_qty,missing_qty,rejected_qty,left_over,operation_id,operation_sequence,
                 ops_dependency,docket_number,bundle_status,split_status,sewing_order_status,is_sewing_order,sewing_order,
                 assigned_module,remarks,scanned_date,shift,scanned_user,sync_status,shade,input_job_no,input_job_no_random_ref) (
-            select  date_time,cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,
+            select  cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,
                 bundle_number,original_qty,send_qty,recevied_qty,missing_qty,rejected_qty,left_over,operation_id,operation_sequence,
                 ops_dependency,docket_number,bundle_status,split_status,sewing_order_status,is_sewing_order,sewing_order,
                 assigned_module,remarks,scanned_date,shift,scanned_user,sync_status,shade,input_job_no,input_job_no_random_ref
