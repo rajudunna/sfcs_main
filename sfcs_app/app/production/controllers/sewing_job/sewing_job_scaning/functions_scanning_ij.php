@@ -1588,5 +1588,221 @@ function validating_with_module($pre_array_module)
  }
 }
 
+if(isset($_GET['docket_number']))
+{
+	$docket_number = $_GET['docket_number'];
+	if($docket_number != '')
+	{
+		getotherCutDetails($docket_number);
+	}
+}
+
+ function getotherCutDetails($docket_number){
+ 	$docket_number = explode(",",$docket_number);
+
+ 	$doc_no = $docket_number[0];
+ 	$op_code = $docket_number[1];
+	include("../../../../../common/config/config_ajax.php");
+	// var_dump($doc_no);
+	// var_dump($operation_id);
+
+	//$get_docket_details = "select style,schedule,color from $brandix_bts.bundle_creation_data where docket_number=$doc_no limit 1";
+	$get_docket_details = "SELECT order_style_no,order_del_no,order_col_des FROM $bai_pro3.`bai_orders_db_confirm` bdc LEFT JOIN $bai_pro3.plandoc_stat_log psl ON  psl.order_tid = bdc.order_tid WHERE psl.doc_no=$doc_no";
+	$result_selecting_style_schedule_color_qry = $link->query($get_docket_details);
+	if($result_selecting_style_schedule_color_qry->num_rows > 0)
+	{
+		while($row = $result_selecting_style_schedule_color_qry->fetch_assoc()) 
+		{
+			$style= $row['order_style_no'];
+			$schedule= $row['order_del_no'];
+			$color= $row['order_col_des'];
+		}
+	}
+	else
+	{
+		$result_array['status'] = 'Invalid Input. Please Check And Try Again !!!';
+		echo json_encode($result_array);
+		die();
+	}
+	$result_array['style'] = $style;
+	$result_array['schedule'] = $schedule;
+	$result_array['color'] = $color;
+
+	 if($doc_no)
+    {
+        include("../../../../../common/config/config_ajax.php");
+        $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code=$op_code";
+        $result_ops_seq_check = $link->query($ops_seq_check);
+        if($result_ops_seq_check->num_rows > 0)
+        {
+            while($row = $result_ops_seq_check->fetch_assoc()) 
+            {
+                $ops_seq = $row['ops_sequence'];
+                $seq_id = $row['id'];
+                $ops_order = $row['operation_order'];
+            }
+        }
+        else
+        {
+            $result_array['status'] = 'Invalid Operation for this cut number.Plese verify Operation Mapping.';
+            echo json_encode($result_array);
+            die();
+        }
+
+        $pre_operation_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
+        $result_pre_operation_check = $link->query($pre_operation_check);
+        if($result_pre_operation_check->num_rows > 0)
+        {
+            while($row23 = $result_pre_operation_check->fetch_assoc()) 
+            {
+                $pre_ops_code = $row23['operation_code'];
+            }
+        }   
+
+        $dep_ops_check = "select ops_dependency from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND operation_code = '$pre_ops_code'";
+        //echo $dep_ops_check;
+        $result_dep_ops_check = $link->query($dep_ops_check);
+        if($result_dep_ops_check->num_rows > 0)
+        {
+            while($row22 = $result_dep_ops_check->fetch_assoc()) 
+            {
+                $next_operation = $row22['ops_dependency'];
+            }
+        }
+        else
+        {
+            $next_operation = '';
+        }
+
+        if($next_operation > 0)
+        {
+           if($next_operation == $op_code)
+           {
+               $flag = 'parallel_scanning';
+
+	           $get_ops_dep = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_dependency =$op_code";
+	           $result_ops_dep = $link->query($get_ops_dep);
+	           while($row_dep = $result_ops_dep->fetch_assoc()) 
+	           {
+	              $operations[] = $row_dep['operation_code'];
+	           }
+	           $emb_operations = implode(',',$operations);
+           }
+           
+        }
+        else
+        {
+        	$ops_dep_qry = "SELECT ops_dependency,operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' AND ops_dependency != 200 AND ops_dependency != 0";
+	        //echo $ops_dep_qry;
+	        $result_ops_dep_qry = $link->query($ops_dep_qry);
+	        while($row = $result_ops_dep_qry->fetch_assoc()) 
+	        {
+	            if($row['ops_dependency'])
+	            {
+	                if($row['ops_dependency'] == $op_code)
+	                {
+	                    $ops_dep_code = $row['operation_code'];
+	                    $schedule_count_query = "SELECT sum(recevied_qty)as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id =$ops_dep_code";
+	                    $schedule_count_query = $link->query($schedule_count_query);
+	                    if($schedule_count_query->num_rows > 0)
+	                    {
+	                        while($row = $schedule_count_query->fetch_assoc()) 
+	                        {
+	                            $recevied_qty = $row['recevied_qty'];
+	                        }
+	                        if($recevied_qty == 0)
+	                        {
+	                            $ops_dep_flag =1;
+	                            $result_array['status'] = 'The dependency operations for this operation are not yet done.';
+	                            echo json_encode($result_array);
+	                            die();
+	                        }
+	                    }
+	                }
+	            }
+	        }
+        }
+        
+       
+        $flags=0;       
+
+        if($flag == 'parallel_scanning')
+        {
+            $get_doc = "select size_code FROM $brandix_bts.bundle_creation_data WHERE docket_number = $doc_no";
+           // echo $get_doc ;
+            $result_get_doc_qry = $link->query($get_doc);
+            while($row_doc_pack = $result_get_doc_qry->fetch_assoc()) 
+            {
+                $size =  $row_doc_pack['size_code'];
+            }
+
+        	$qry_min_prevops="SELECT MIN(recevied_qty) AS min_recieved_qty FROM $brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND size_title = '$size' AND operation_id in ($emb_operations)";
+            //echo $qry_min_prevops;
+            $result_qry_min_prevops = $link->query($qry_min_prevops);
+            while($row_result_min_prevops = $result_qry_min_prevops->fetch_assoc())
+            {
+                $previous_minqty=$row_result_min_prevops['min_recieved_qty'];
+            }
+
+            $schedule_query = "SELECT (SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty))-$previous_minqty as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND size_title=$size AND operation_id = $op_code GROUP BY order_col_des,assigned_module order by tid";
+        }
+        else
+        {
+        	$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code != 10 ORDER BY operation_order DESC LIMIT 1";
+	        $result_pre_ops_check = $link->query($pre_ops_check);
+	        if($result_pre_ops_check->num_rows > 0)
+	        {
+	            while($row = $result_pre_ops_check->fetch_assoc()) 
+	            {
+	                if($pre_ops_code == 0){
+					   $pre_ops_code = $row['operation_code'];
+					}
+	            }
+	            $pre_ops_validation = "SELECT sum(recevied_qty)as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id = $pre_ops_code";
+	            $result_pre_ops_validation = $link->query($pre_ops_validation);
+	            while($row = $result_pre_ops_validation->fetch_assoc()) 
+	            {
+	                $recevied_qty_qty = $row['recevied_qty'];
+	            }
+	            if($recevied_qty_qty == 0)
+	            {
+	                $flags = 2;
+	            }
+	            else
+	            {
+	                $schedule_query = "SELECT (SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id = $op_code GROUP BY size_code,order_col_des,assigned_module order by tid";         
+	            }
+	        }
+	        else
+	        {
+	            $schedule_count_query = "SELECT docket_number FROM $brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND operation_id =$op_code";
+	            $schedule_count_query = $link->query($schedule_count_query);
+	            if($schedule_count_query->num_rows > 0)
+	            {
+	                $schedule_query = "SELECT (SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id = $op_code GROUP BY size_code,order_col_des,assigned_module order by tid";
+	                $flags=3;
+	            }   
+	        }
+	    }   
+	        if($flags == 2)
+	        {
+	            $result_array['status'] = 'Previous operation not yet done for this cut job.';
+	        }
+	        else
+	        {
+	            $result_style_data = $link->query($schedule_query);
+	            while($row = $result_style_data->fetch_assoc()) 
+	            {
+	                $result_array['table_data'][] = $row;
+	            }
+	        }
+	        echo json_encode($result_array);
+        	
+        
+    }
+
+ }
+
+
 
 ?>
