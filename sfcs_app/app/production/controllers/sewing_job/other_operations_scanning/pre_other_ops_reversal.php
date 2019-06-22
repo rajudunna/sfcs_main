@@ -71,7 +71,15 @@ if($_GET['category'])
 	$operation_code=$_GET['operation_code']; 
 	$shift=$_GET['shift'];
 	$doc_no=$_GET['doc_no'];
-}else
+
+	if ($category == 'packing') {
+		$display_name = "Carton";
+	} else {
+		$display_name = "Docket";
+	}
+	
+}
+else
 {
   $shift=$_POST['shift'];
   $operation_code=$_POST['operation_code'];
@@ -86,6 +94,7 @@ if($_GET['category'])
 <div class = "panel-heading">Other Operation Reversal</div>
 <div class = "panel-body">
 <form name="other_operation_report" method="post">
+	<input type="hidden" name="scan_type" id="scan_type" value=<?= $display_name ?>>
 <?php
 
 $sql = "SELECT DISTINCT category FROM $brandix_bts.tbl_orders_ops_ref WHERE restricted='no'";	
@@ -150,7 +159,7 @@ echo "  </select>
             </div>
 
             <div class="col-sm-2">
-            <label>Docket Number</label>
+            <label><?= $display_name ?> Number</label>
                 <input type="text"  name="doc_no" id="doc_no"  class="number form-control" required>
             </div>
         </div>
@@ -173,7 +182,7 @@ echo "  </select>
 </form>
 <div class='panel panel-primary'  id="maindiv">
    
-			<div class='panel-heading'>Job Data</div>
+			<div class='panel-heading'>Data</div>
 			<div class="ajax-loader" id="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;">
                 <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
             </div>
@@ -196,67 +205,74 @@ $(document).ready(function()
     $('#doc_no').focus();
     $('#dynamic_table1').html('');
     $('#loading-image').hide();
-    $("#doc_no").change(function()
-    {
-    $('#loading-image').show();
-    var function_text = "<?php echo getFullURL($_GET['r'],'functionallity_scanning.php','R'); ?>";
-    var doc_no = $('#doc_no').val();
-    var operation_code = $('#operation_code').val();
-    var shift = $('#shift').val();
-    // var assign_module = $('#module').val();
-    // var style = $('#style').val();
-    // var schedule = $('#schedule').val();
-    // var color = $('#mapped_color').val();
-    var array = [doc_no,operation_code,shift];
-	$.ajax({
-			type: "POST",
-			url: function_text+"?reversal="+array,
-			dataType: "json",
-			success: function (response) 
-			{	
-                s_no = 0;
-				var data = response['table_data'];
-                if(response['status']){
-					sweetAlert('',response['status'],'error');
-					$('#dynamic_table1').html('No Data Found');
-					document.getElementById('doc_no').value = '';
-				}else if(data){
-					$('#dynamic_table1').html('');
-					document.getElementById('style').value = response['style'];
-     //                document.getElementById('style').innerHTML = response['style'];
-					 document.getElementById('schedule').value = response['schedule'];
-                    //document.getElementById('schedule').innerHTML = response['schedule'];
-					// document.getElementById('mapped_color').value = response['color'];
-					document.getElementById('shifts').value = shift;
-					document.getElementById('operation_id').value = operation_code;
-					 document.getElementById('post_code').value = response['post_ops'];
-                 
-                    var btn = '<div class="pull-right" id="smart_btn_arear"><input type="button" class="btn btn-primary submission" value="Submit" name="formSubmit" id="smartbtn" onclick="return check_pack();"><input type="hidden" id="count_of_data" value='+data.length+'></div>';
-                    console.log(btn);
-                    console.log(data.length);
-					$("#dynamic_table1").append(btn);
+    $("#doc_no").change(function(){
+	    $('#loading-image').show();
+	    var function_text = "<?php echo getFullURL($_GET['r'],'functionallity_scanning.php','R'); ?>";
+	    var doc_no = $('#doc_no').val();
+	    var operation_code = $('#operation_code').val();
+	    var shift = $('#shift').val();
+	    var scan_type = $('#scan_type').val();
+	    // var assign_module = $('#module').val();
+	    // var style = $('#style').val();
+	    // var schedule = $('#schedule').val();
+	    // var color = $('#mapped_color').val();
+	    if (doc_no && operation_code && shift)
+	    {
+	    	var array = [doc_no,operation_code,shift];
+			$.ajax({
+				type: "POST",
+				url: function_text+"?reversal="+array+"&type="+scan_type,
+				dataType: "json",
+				success: function (response) 
+				{	
+	                s_no = 0;
+					var data = response['table_data'];
+	                if(response['status']){
+						sweetAlert('',response['status'],'error');
+						$('#dynamic_table1').html('No Data Found');
+						document.getElementById('doc_no').value = '';
+					}else if(data){
+						$('#dynamic_table1').html('');
+						document.getElementById('style').value = response['style'];
+	                    // document.getElementById('style').innerHTML = response['style'];
+						 document.getElementById('schedule').value = response['schedule'];
+	                    //document.getElementById('schedule').innerHTML = response['schedule'];
+						// document.getElementById('mapped_color').value = response['color'];
+						document.getElementById('shifts').value = shift;
+						document.getElementById('operation_id').value = operation_code;
+						 document.getElementById('post_code').value = response['post_ops'];
+	                 
+	                    var btn = '<div class="pull-right" id="smart_btn_arear"><input type="button" class="btn btn-primary submission" value="Submit" name="formSubmit" id="smartbtn" onclick="return check_pack();"><input type="hidden" id="count_of_data" value='+data.length+'></div>';
+	                    console.log(btn);
+	                    console.log(data.length);
+						$("#dynamic_table1").append(btn);
 
-                    for(var i=0;i<data.length;i++){
-                        if(i==0){
-                            var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>S.No</th><th>Size</th><th>Cut Job Qty</th><th>Cumulative Reported Quantity</th><th>Eligibility To Reverse</th><th>Reversing Quantity</th></tr></thead><tbody>";
-                            $("#dynamic_table1").append(markup);
-                            $("#dynamic_table1").append(btn);
-                        }
-                        var readonly ='';
-                        var temp_var_bal = data[i].balance_to_report;
-                        s_no++;
-                        var markup1 = "<tr><td data-title='S.No'>"+s_no+"</td><td data-title='Size'>"+data[i].size_code.toUpperCase()+"</td><td data-title='Input Job Quantity'>"+data[i].carton_act_qty+"</td><input type='hidden' name='old_size[]' value = '"+data[i].old_size+"'><td  data-title='Cumulative Reported Quantity'>"+data[i].reported_qty+"</td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+temp_var_bal+"</td><td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)'  class='form-control input-md twotextboxes' id='"+i+"reporting' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='"+temp_var_bal+"' required name='reporting_qty[]' onchange = 'validate_reporting_report("+i+") '"+readonly+"></td><td class='hide'><input type='hidden' name='qty_data["+data[i].tid+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='doc_no[]' id='"+i+"doc_no' value='"+data[i].doc_no+"'></td><td class='hide'><input type='hidden' name='colors[]' id='"+i+"colors' value='"+data[i].order_col_des+"'></td><td class='hide'><input type='hidden' name='sizes[]' id='"+i+"sizes' value='"+data[i].size_code+"'></td><td class='hide'><input type='hidden' name='job_qty[]' id='"+i+"job_qty' value='"+data[i].carton_act_qty+"'></td><td class='hide'><input type='hidden' name='tid[]' id='"+i+"tid' value='"+data[i].tid+"'></td><td class='hide'><input type='hidden' name='inp_job_ref[]' id='"+i+"inp_job_no' value='"+data[i].input_job_no+"'></td><td class='hide'><input type='hidden' name='a_cut_no[]' id='"+i+"a_cut_no' value='"+data[i].acutno+"'></td><td class='hide'><input type='hidden' name='old_rep_qty[]' id='"+i+"old_rep_qty' value='"+data[i].reported_qty+"'></td><td class='hide'></td><input type='hidden' name='bundle_numbers[]' id='"+i+"bundle_number' value='"+data[i].tid+"'></td></tr>";
-                        $("#dynamic_table").append(markup1);
-                        $("#dynamic_table").hide();
-					}
-					var markup99 = "</tbody></table></div></div></div>";
-					$("#dynamic_table").append(markup99);
-					$("#dynamic_table").show();
-					//$('#docket_number').val(doc_no);
-                }
-                $('#loading-image').hide();	
-            }
-		});	
+	                    for(var i=0;i<data.length;i++){
+	                        if(i==0){
+	                            var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>S.No</th><th>Size</th><th>Cut Job Qty</th><th>Cumulative Reported Quantity</th><th>Eligibility To Reverse</th><th>Reversing Quantity</th></tr></thead><tbody>";
+	                            $("#dynamic_table1").append(markup);
+	                            $("#dynamic_table1").append(btn);
+	                        }
+	                        var readonly ='';
+	                        var temp_var_bal = data[i].balance_to_report;
+	                        s_no++;
+	                        var markup1 = "<tr><td data-title='S.No'>"+s_no+"</td><td data-title='Size'>"+data[i].size_code.toUpperCase()+"</td><td data-title='Input Job Quantity'>"+data[i].carton_act_qty+"</td><input type='hidden' name='old_size[]' value = '"+data[i].old_size+"'><td  data-title='Cumulative Reported Quantity'>"+data[i].reported_qty+"</td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+temp_var_bal+"</td><td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)'  class='form-control input-md twotextboxes' id='"+i+"reporting' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='"+temp_var_bal+"' required name='reporting_qty[]' onchange = 'validate_reporting_report("+i+") '"+readonly+"></td><td class='hide'><input type='hidden' name='qty_data["+data[i].tid+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='doc_no[]' id='"+i+"doc_no' value='"+data[i].doc_no+"'></td><td class='hide'><input type='hidden' name='colors[]' id='"+i+"colors' value='"+data[i].order_col_des+"'></td><td class='hide'><input type='hidden' name='sizes[]' id='"+i+"sizes' value='"+data[i].size_code+"'></td><td class='hide'><input type='hidden' name='job_qty[]' id='"+i+"job_qty' value='"+data[i].carton_act_qty+"'></td><td class='hide'><input type='hidden' name='tid[]' id='"+i+"tid' value='"+data[i].tid+"'></td><td class='hide'><input type='hidden' name='inp_job_ref[]' id='"+i+"inp_job_no' value='"+data[i].input_job_no+"'></td><td class='hide'><input type='hidden' name='a_cut_no[]' id='"+i+"a_cut_no' value='"+data[i].acutno+"'></td><td class='hide'><input type='hidden' name='old_rep_qty[]' id='"+i+"old_rep_qty' value='"+data[i].reported_qty+"'></td><td class='hide'></td><input type='hidden' name='bundle_numbers[]' id='"+i+"bundle_number' value='"+data[i].tid+"'></td></tr>";
+	                        $("#dynamic_table").append(markup1);
+	                        $("#dynamic_table").hide();
+						}
+						var markup99 = "</tbody></table></div></div></div>";
+						$("#dynamic_table").append(markup99);
+						$("#dynamic_table").show();
+						//$('#docket_number').val(doc_no);
+	                }
+	                $('#loading-image').hide();	
+	            }
+			});
+	    }
+	    else
+	    {
+	    	sweetAlert('Select All Required Fields','','warning');
+	    } 	
     });
 });
 
