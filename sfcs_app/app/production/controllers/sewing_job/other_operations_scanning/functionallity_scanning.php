@@ -468,6 +468,7 @@ function updatereversal($post_data)
 function packingReversal($data)
 {
 	include("../../../../../common/config/config_ajax.php");
+	include("../../../../../common/config/m3Updations.php");
 	$main_data = explode(",",$data);
 	$carton_id = $main_data[0];
 	$b_op_id = $main_data[1];
@@ -558,7 +559,14 @@ function packingReversal($data)
 	            // echo "$before_opn == $opn_status <br>";
 	            if ($opn_status != $before_opn)
 	            {
-	            	$go_here = 0;
+	            	if ($packing_last_opn == $b_op_id)
+	            	{
+	            		$go_here = 1;
+	            	}
+	            	else
+	            	{
+	            		$go_here = 0;
+	            	}
 	            }
 	            else
 	            {
@@ -586,13 +594,15 @@ function packingReversal($data)
 				$imploded_b_tid = implode(",",$b_tid);
 				updateM3CartonScanReversal($b_op_id,$imploded_b_tid, $deduct_from_carton_ready);
 				
-				if ($packing_last_opn == $b_op_id) {
-                	$update_carton_status = ", carton_status='DONE'";
-                } else {
-                	$update_carton_status = "";
-                }
+				
+                $update_carton_status = "";
                 
-				$update_pac_stat_atble="update $bai_pro3.pac_stat set opn_status=".$b_op_id." ".$update_carton_status." where id = '".$carton_id."'";
+                if ($packing_first_opn == $b_op_id) {
+		        	$set_opn = '';
+		        } else {
+		        	$set_opn = $before_opn;
+		        }
+				$update_pac_stat_atble="update $bai_pro3.pac_stat set opn_status='".$set_opn."' ".$update_carton_status." where id = '".$carton_id."'";
 				$pac_stat_log_result = mysqli_query($link, $update_pac_stat_atble) or exit("Error while updating pac_stat_log");
 
 				$get_carton_type=mysqli_fetch_array($carton_details);
@@ -621,7 +631,7 @@ function packingReversal($data)
 					// echo $bcd_temp_insert_query.'<br>';
 					mysqli_query($link,$bcd_temp_insert_query);
 				}
-				$result_array['status'] = 'Carton '.$carton_id.' is Reversed';
+				$result_array['success'] = 'Carton '.$carton_id.' is Reversed';
 		        echo json_encode($result_array);
 		        die();
 			}
