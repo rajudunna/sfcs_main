@@ -61,7 +61,7 @@
     }
 	
     $today=date("Y-m-d");
-	$get_style_wip_data="select style,schedule,color,size FROM $brandix_bts.open_style_wip where style<>'' group by style,schedule,color,size";
+	$get_style_wip_data="select style,schedule,color,size FROM $brandix_bts.open_style_wip where style<>'' and status='open' group by style,schedule,color,size";
 	//echo $get_style_wip_data."<br>";
 	$get_style_data_result =$link->query($get_style_wip_data);
 	while ($row1 = $get_style_data_result->fetch_assoc())
