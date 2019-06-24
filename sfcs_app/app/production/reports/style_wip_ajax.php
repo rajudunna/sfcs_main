@@ -177,26 +177,22 @@ else
 	$size_get = $_GET['size'];
 	if($schedule == 'all')
 	{
-		$get_operations= "SELECT tsm.operation_code AS operation_code FROM brandix_bts.tbl_style_ops_master tsm 
-		LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND tor.display_operations='yes' GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1";			
+		$get_operations= "SELECT operation_code FROM brandix_bts.tbl_style_ops_master WHERE style='$style' GROUP BY operation_code ORDER BY operation_order*1";			
 		$bcd_root_query = "SELECT * from $brandix_bts.bundle_creation_data where style='$style' group by schedule,color";
 	}
 	else if ($schedule == 'all' && $color != 'all')
 	{
-		$get_operations= "SELECT tsm.operation_code AS operation_code FROM brandix_bts.tbl_style_ops_master tsm 
-		LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1";
+		$get_operations= "SELECT operation_code FROM brandix_bts.tbl_style_ops_master WHERE style='$style' AND color='$color' GROUP BY operation_code ORDER BY operation_order*1";
 		$bcd_root_query = "SELECT * from $brandix_bts.bundle_creation_data where style='$style' and color ='$color' group by schedule";                  
 	}
 	else if ($schedule != 'all' && $color == 'all')
 	{
-		$get_operations= "SELECT tsm.operation_code AS operation_code FROM brandix_bts.tbl_style_ops_master tsm 
-		LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND tor.display_operations='yes' GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1";
+		$get_operations= "SELECT operation_code FROM brandix_bts.tbl_style_ops_master WHERE style='$style' GROUP BY operation_code ORDER BY operation_order*1";
 		$bcd_root_query = "SELECT * from $brandix_bts.bundle_creation_data where style='$style' and schedule ='$schedule' group by color";                  
 	}
 	else
 	{	
-		$get_operations= "SELECT tsm.operation_code AS operation_code FROM brandix_bts.tbl_style_ops_master tsm 
-		LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1";
+		$get_operations= "SELECT operation_code FROM brandix_bts.tbl_style_ops_master WHERE style='$style' AND color='$color' GROUP BY operation_code ORDER BY operation_order*1";
 		$bcd_root_query = "SELECT * from $brandix_bts.bundle_creation_data where style='$style' and schedule ='$schedule' and color='$color'";
 		if($_GET['size']!='')
 		{
@@ -207,12 +203,13 @@ else
 			$bcd_root_query =  $bcd_root_query.' limit 1';
 		}
 	}	
+	//echo $get_operations."<bR>";
 	$result1 = $link->query($get_operations);
 	while($row2 = $result1->fetch_assoc())
 	{
-		$operation_code[] = $row2['operation_code'];		
+		$operation_code1[] = $row2['operation_code'];		
 	}
-	$opertions = implode(',',$operation_code);
+	$opertions = implode(',',$operation_code1);
 	
 	$get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions) and display_operations='yes'";
 	//echo $get_ops_query;
@@ -220,6 +217,7 @@ else
 	while ($row1 = $ops_query_result->fetch_assoc())
 	{
 		$ops_get_code[$row1['operation_code']] = $row1['operation_name'];
+		$operation_code[]=$row1['operation_code'];
 	}
 
 	$bcd_data_query .= " and operation_id in ($opertions)";
@@ -272,36 +270,38 @@ else
 		$color = $row_main['color'];
 		$size = $row_main['size_title'];
 		$size_code =  $row_main['size_id'];
-		$cpk_main_qty = 0;
-
-		
+		// $cpk_main_qty = 0;
+		foreach ($operation_code as $key => $value) 
+        {
+			$wip[$value] = 0;
+			$bcd_rec[$value] =0;
+			$bcd_rej[$value] =0;
+        }		
 			
 		$bcd_data_query = "SELECT COALESCE(SUM(recevied_qty),0) as recevied,operation_id,COALESCE(sum(rejected_qty),0) as rejection from $brandix_bts.bundle_creation_data_temp where style='$style' and schedule ='$schedule' and color='$color'";
 		if($_GET['size'] != '')
 		{			  
 			$bcd_data_query .= " and size_title='$size' group by operation_id";
-			$get_order_qty="select * from $bai_pro3.bai_orders_db_confirm where order_style_no='$style' and order_del_no='$schedule' and order_col_des='$color' ";
-			$get_order_result =$link->query($get_order_qty);
-			while ($row2 = $get_order_result->fetch_assoc())
+			$get_size_title = "SELECT order_quantity FROM $brandix_bts.`tbl_orders_sizes_master` AS ch LEFT JOIN $brandix_bts.`tbl_orders_master` AS p ON p.id=ch.parent_id 
+			WHERE p.product_schedule='$schedule' AND ch.order_col_des='$color' AND ch.size_title='$size' limit 1";
+			//echo $get_size_title."<br>";
+			$get_size_title_result =$link->query($get_size_title);
+			while ($row110 = $get_size_title_result->fetch_assoc())
 			{
-				for($k=0;$k<sizeof($sizes_array);$k++)
-				{
-					if(trim($row2["title_size_".$sizes_array[$k].""])==trim($size))
-					{
-						$order_qty = $row2["order_s_".$sizes_array[$k].""];
-					}
-				}				
+				$order_qty = $row110['order_quantity'];
 			}
 
 		}
 		else{
 		   
-		   $bcd_data_query .= " group by operation_id";
-			$get_order_qty="select sum($asum_str) as order_qty from $bai_pro3.bai_orders_db_confirm where order_style_no='$style' and order_del_no='$schedule' and order_col_des='$color' ";
-			$get_order_result =$link->query($get_order_qty);
-			while ($row2 = $get_order_result->fetch_assoc())
+			$bcd_data_query .= " group by operation_id";
+			$get_size_title = "SELECT sum(order_quantity) as order_qty FROM $brandix_bts.`tbl_orders_sizes_master` AS ch LEFT JOIN $brandix_bts.`tbl_orders_master` AS p ON p.id=ch.parent_id 
+			WHERE p.product_schedule='$schedule' AND ch.order_col_des='$color'";
+			//echo $get_size_title."<br>";
+			$get_size_title_result =$link->query($get_size_title);
+			while ($row110 = $get_size_title_result->fetch_assoc())
 			{
-				$order_qty = $row2["order_qty"];
+				$order_qty = $row110['order_qty'];
 			}
 		}
 		
@@ -318,7 +318,6 @@ else
 		{
 		   $table_data .="<td>$size</td>";
 		}
-
 		$table_data .="<td>$order_qty</td>";
 
 		foreach ($operation_code as $key => $value) 
@@ -331,7 +330,7 @@ else
 		} 
 		$ii=1;
 		foreach ($operation_code as $key => $value) 
-		{
+		{ 
 			if($ii==1)
 			{
 				$wip[$value] = $order_qty -($bcd_rec[$value]+$bcd_rej[$value]);
@@ -347,7 +346,7 @@ else
 					$ops_order = $row['operation_order'];
 				}
 				$post_ops_check = "SELECT tsm.operation_code AS operation_code FROM brandix_bts.tbl_style_ops_master tsm 
-				LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND CAST(tor.operation_order AS CHAR) < '$ops_order' GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1";
+				LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND CAST(tsm.operation_order AS CHAR) > '$ops_order' GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1 desc limit 1";
 				$result_post_ops_check = $link->query($post_ops_check);
 				$row = mysqli_fetch_array($result_post_ops_check);
 				$pre_op_code = $row['operation_code'];
