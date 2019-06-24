@@ -31,8 +31,9 @@
 	$pre_op_code = 0;
 	
 	//To get default Operations
-    $get_operations_workflow= "SELECT tsm.operation_name AS operation_name FROM brandix_bts.tbl_style_ops_master tsm 
-	LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE tor.display_operations='yes' GROUP BY operation_code ORDER BY tsm.operation_order*1";
+    $get_operations_workflow= "SELECT tsm.operation_code AS operation_code FROM brandix_bts.tbl_style_ops_master tsm 
+	LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE tor.display_operations='yes' 
+	GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1";
     $result1 = $link->query($get_operations_workflow);
     $op_count = mysqli_num_rows($result1);
     if($op_count>0)
@@ -127,7 +128,7 @@
 		}
 		//To get default Operations for WIP
 		$get_operations_workflow_wip="SELECT tsm.operation_code AS operation_code FROM brandix_bts.tbl_style_ops_master tsm 
-		LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style' AND color='$color' AND tor.display_operations='yes' GROUP BY operation_code ORDER BY tsm.operation_order*1";
+		LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style' AND color='$color' AND tor.display_operations='yes' GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1";
 		$result123 = $link->query($get_operations_workflow_wip);
 		$op_count1 = mysqli_num_rows($result123);
 		if($op_count1>0)
@@ -157,7 +158,7 @@
 				}
 				
 				$post_ops_check = "SELECT tsm.operation_code AS operation_code FROM brandix_bts.tbl_style_ops_master tsm 
-				LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND CAST(tor.operation_order AS CHAR) < '$ops_order' GROUP BY operation_code ORDER BY tsm.operation_order*1";
+				LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND CAST(tor.operation_order AS CHAR) < '$ops_order' GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1";
 				$result_post_ops_check = $link->query($post_ops_check);
 				$row8 = mysqli_fetch_array($result_post_ops_check);
 				$pre_op_code = $row8['operation_code'];
