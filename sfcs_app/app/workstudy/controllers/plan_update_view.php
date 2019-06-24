@@ -6,11 +6,10 @@ body{
 	font-family: Trebuchet MS;
 }
 
-td.leftfloat
+th,td
 {
-	text-align:left;
+	text-align:center;
 }
-
 </style>
 <?php
 // include();
