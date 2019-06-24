@@ -1503,7 +1503,7 @@ if(isset($_GET['docket_number']))
             die();
         }
 
-        $pre_operation_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
+        $pre_operation_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' ORDER BY operation_order DESC LIMIT 1";
         $result_pre_operation_check = $link->query($pre_operation_check);
         if($result_pre_operation_check->num_rows > 0)
         {
@@ -1602,7 +1602,7 @@ if(isset($_GET['docket_number']))
         }
         else
         {
-        	$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code != 10 ORDER BY operation_order DESC LIMIT 1";
+        	$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' ORDER BY operation_order DESC LIMIT 1";
 	        $result_pre_ops_check = $link->query($pre_ops_check);
 	        if($result_pre_ops_check->num_rows > 0)
 	        {
