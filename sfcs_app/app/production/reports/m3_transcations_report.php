@@ -63,6 +63,7 @@
                             <option value=''>All</option>
                             <option value='pass' <?= $_GET['ts']=='pass' ? 'selected' : '' ?>>Pass</option>
                             <option value='fail' <?= $_GET['ts']=='fail' ? 'selected' : '' ?>>Fail</option>
+                            <option value='pending' <?= $_GET['ts']=='pending' ? 'selected' : '' ?>>Pending</option>
                         </select>
                     </div>
                     <div class='col-sm-1'>
