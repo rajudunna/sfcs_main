@@ -1673,7 +1673,8 @@ if(isset($_GET['docket_number']))
         {
             $next_operation = '';
         }
-
+        
+        $flag = '';
         if($next_operation > 0)
         {
            if($next_operation == $op_code)
