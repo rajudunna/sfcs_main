@@ -17,7 +17,7 @@ else
 }
  
 // $from_date = date('Y-m-d H:i:s',strtotime("-1 days"));
-//$today = date("Y-m-d H:i:s");
+$today = $to_date;
 
 $get_last_date = "SELECT updated_time FROM $brandix_bts.open_style_wip ORDER BY updated_time DESC LIMIT 1";
 $get_last_date_result =$link->query($get_last_date);

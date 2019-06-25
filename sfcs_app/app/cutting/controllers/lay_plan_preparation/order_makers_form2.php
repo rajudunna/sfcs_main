@@ -377,18 +377,18 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 
 echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">";
 echo "<tr>
-		<td>Marker Length 1</td><td>:</td>
+		<td>Lay Length 1</td><td>:</td>
 		<input type=\"hidden\" name=\"in_pwidth[]\" value=\"$pur_width\">
 		<td>
 			<INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' type=\"text\" title='Please enter numbers and decimals' required name=\"in_mklength[]\" size=\"10\" id=\"mk_len\">
 		</td>
 		<td><b>Pur Width:</b> <label class='label label-primary'>$pur_width</label></td>
 	</tr>";
-echo "<tr><td>Marker Length 2</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
-echo "<tr><td>Marker Length 3</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
-echo "<tr><td>Marker Length 4</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
-echo "<tr><td>Marker Length 5</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
-echo "<tr><td>Marker Length 6</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
+echo "<tr><td>Lay Length 2</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
+echo "<tr><td>Lay Length 3</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
+echo "<tr><td>Lay Length 4</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
+echo "<tr><td>Lay Length 5</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
+echo "<tr><td>Lay Length 6</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
 
 echo "<tr><td>Marker Efficiency</td>
 		  <td>:</td>
@@ -399,9 +399,14 @@ echo "<tr><td>Marker Version</td><td>:</td>
 	  <td colspan='2'><INPUT class=\"form-control alpha\" type=\"text\" name=\"in_mkver\" id='mk_ver' value=\"$patt_ver\" size=\"10\" required>
 	  </tr>";
 
-echo "<tr><td>Remarks (Marker File Name): </td><td>:</td><td colspan='2'><INPUT class=\"form-control\" type=\"text\" name=\"remarks\"  id=\"remarks_id\" value=\"Nil\" onkeyup=\"validate_remarks()\"></td></tr>";
-echo "</table></div>";
+echo "<tr><td>Marker Name(Marker File Name): </td><td>:</td><td colspan='2'><INPUT class=\"form-control\" type=\"text\" name=\"remarks\"  id=\"remarks_id\" value=\"Nil\" onkeyup=\"validate_remarks()\"></td></tr>";
+//For #2063 CR added new remarks columns
+echo "<tr><td>Remark 1 : </td><td>:</td><td colspan='2'><INPUT class=\"form-control\" type=\"text\" name=\"remark1\"  id=\"remarks1_id\" value=\"Nil\"></td></tr>";
+echo "<tr><td>Remark 2 : </td><td>:</td><td colspan='2'><INPUT class=\"form-control\" type=\"text\" name=\"remark2\"  id=\"remarks2_id\" value=\"Nil\"></td></tr>";
+echo "<tr><td>Remark 3 : </td><td>:</td><td colspan='2'><INPUT class=\"form-control\" type=\"text\" name=\"remark3\"  id=\"remarks3_id\" value=\"Nil\"></td></tr>";
+echo "<tr><td>Remark 4 : </td><td>:</td><td colspan='2'><INPUT class=\"form-control\" type=\"text\" name=\"remark4\"  id=\"remarks4_id\" value=\"Nil\"></td></tr>";
 
+echo "</table></div>";
 echo "<input class=\"form-control\" type=\"hidden\" name=\"cat_ref\"  size=2 value=\"".$cat_ref."\">";
 echo "<input class=\"form-control\" type=\"hidden\" name=\"cuttable_ref\" size=2 value=\"".$cuttable_ref."\">";
 echo "<input class=\"form-control\" type=\"hidden\" name=\"allocate_ref\"  size=2 value=\"".$allocate_ref."\">";
@@ -586,4 +591,3 @@ function verify_null(){
 }
 
 </script>
-

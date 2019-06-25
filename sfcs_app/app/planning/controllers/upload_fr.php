@@ -16,7 +16,7 @@ session_start();
 ?>
 
 <div class="panel panel-primary">
-<div class="panel-heading">Upload FR Plan</div>
+<div class="panel-heading"><h5 class="panel-title pull-right"><a href="<?= getFullURLLevel($_GET['r'],'template_vplan.csv',0,'R'); ?>" title="Download Sample File"><i class="glyphicon glyphicon-download-alt"></i></a></h5>Upload FR Plan</div>
 <div class="panel-body">
 
 <form action="<?= getFullURL($_GET['r'],'importData.php','N'); ?>" method="post" enctype="multipart/form-data" id="importFrm"> 

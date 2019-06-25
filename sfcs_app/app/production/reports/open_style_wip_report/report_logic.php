@@ -143,7 +143,7 @@ error_reporting(0);
 
             
              //To get default Operations for WIP
-              $get_operations_workflow_wip= "SELECT DISTINCT(operation_code) FROM $brandix_bts.`tbl_style_ops_master` where operation_code not in ('10','1') and style='$style' and color='$color' order by operation_order*1";
+              $get_operations_workflow_wip= "SELECT DISTINCT(operation_code) FROM $brandix_bts.`tbl_style_ops_master` where display_operations='yes' and style='$style' and color='$color' order by operation_order*1";
              // echo $get_operations_workflow;
               $result123 = $link->query($get_operations_workflow_wip);
               $op_count1 = mysqli_num_rows($result123);
@@ -174,7 +174,7 @@ error_reporting(0);
                         $seq_id = $row7['id'];
                         $ops_order = $row7['operation_order'];
                     }
-                    $post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = '$ops_seq'  AND CAST(operation_order AS CHAR) < '$ops_order' AND operation_code not in (10) ORDER BY operation_order DESC LIMIT 1";
+                    $post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_sequence = '$ops_seq'  AND CAST(operation_order AS CHAR) < '$ops_order' ORDER BY operation_order DESC LIMIT 1";
                     $result_post_ops_check = $link->query($post_ops_check);
                     //echo $post_ops_check.'<br/>';
                     $row8 = mysqli_fetch_array($result_post_ops_check);
