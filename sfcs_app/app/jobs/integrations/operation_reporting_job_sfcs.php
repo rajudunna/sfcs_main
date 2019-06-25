@@ -32,8 +32,8 @@ while($row=mysqli_fetch_array($transaction_result))
 
   
     $cur_date = date('Y-m-d H:s:i');
-    $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_bulk_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`m3_ops_code`,`response_status`,`m3_trail_count`,`api_type`) 
-    VALUES ('$date_time','$mo_number',$quantity,'$reason','$remarks','$log_user','$tran_status_code','$module_no','$shift',$op_code,'$op_des',$ref_no,'$workstation_id','$m3_ops_code','$response_status',$m3_trail_count,'$api_type')";
+    $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_bulk_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`m3_ops_code`,`response_status`,`m3_trail_count`,`api_type`)
+    VALUES ('$cur_date','$mo_number',$quantity,'$reason','$remarks','$log_user','$tran_status_code','$module_no','$shift',$op_code,'$op_des',$ref_no,'$workstation_id','$m3_ops_code','$response_status',$m3_trail_count,'$api_type')";
     mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
 
     $insert_id=mysqli_insert_id($link);
