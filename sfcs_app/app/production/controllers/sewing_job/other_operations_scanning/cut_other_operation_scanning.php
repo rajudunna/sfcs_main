@@ -220,6 +220,7 @@ $(document).ready(function()
 					document.getElementById('docket_number').value = '';
 				}else if(data){
 					$('#dynamic_table1').html('');
+                    document.getElementById('maindiv').style.display = 'block';
 					document.getElementById('style').value = response['style'];
                     document.getElementById('style_show').innerHTML = response['style'];
 					document.getElementById('schedule').value = response['schedule'];

@@ -229,7 +229,7 @@ $(document).ready(function()
 					var data = response['table_data'];
 					if(response['success']){
 						sweetAlert('',response['status'],'success');
-	                else if(response['status']){
+	                }else if(response['status']){
 						sweetAlert('',response['status'],'error');
 						$('#dynamic_table1').html('No Data Found');
 						document.getElementById('doc_no').value = '';
