@@ -388,6 +388,13 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$act_cut_no=$sql_row1['acutno'];
 	$cut_no_ref=$sql_row1['acutno'];
 	$order_id_ref=$sql_row1['order_tid'];
+	$sql1="SELECT binding_consumption,seperate_docket from $bai_pro3.cat_stat_log where order_tid='$order_id_ref'";
+	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row2=mysqli_fetch_array($sql_result1))
+	{
+		$binding_consumption=$sql_row2['binding_consumption'];
+		$seperate_docket=$sql_row2['seperate_docket'];
+	}
 	/* $order_id_ref1 = explode(" ",$sql_row1['order_tid']);
 	echo $order_id_ref1[0];
 	echo $order_id_ref1[7]; */
@@ -535,16 +542,21 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		}
 	}
 	//$output_trimmed = array_map("trim", explode(',', $input));
-	//echo "</br>Seperated".$seperated_lots;
+	// echo "</br>Seperated".$seperate_docket;
+	if($seperate_docket=='No'){
+		$material_requirement_orig=$sql_row1['material_req'];
+	}else{
+		$material_requirement_orig=$sql_row1['material_req']-$binding_consumption;
+	}
 	echo "<tr><td>".$sql_row1['category']."</td>";
 	echo "<td>".$sql_row1['compo_no']."</td>";
 	echo "<td>".$sql_row1['col_des'].'-'.$sql_row1['doc_no']."</td>";
 	$extra=0;
 	//echo "<br>1=".$sql_row1['material_req'];
 	//if(substr($style_ref,0,1)=="M") { $extra=round(($material_req*0.01),2); }
-	{ $extra=round(($sql_row1['material_req']*$sql_row1['savings']),2); }
-	echo "<td>".($sql_row1['material_req']+$extra)."</td>";
-	$temp_tot=$sql_row1['material_req']+$extra;
+	{ $extra=round(($material_requirement_orig*$sql_row1['savings']),2); }
+	echo "<td>".($material_requirement_orig+$extra)."</td>";
+	$temp_tot=$material_requirement_orig+$extra;
 	$total+=$temp_tot;
 	$temp_tot=0;
 	$club_id=$sql_row1['clubbing'];
@@ -553,7 +565,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$newOrderTid=$sql_row1['order_tid'];
 	$doc_cat=$sql_row1['category'];
 	$doc_com=$sql_row1['compo_no'];
-	$doc_mer=($sql_row1['material_req']+$extra);
+	$doc_mer=($material_requirement_orig+$extra);
 	$cat_ref=$sql_row1['cat_ref'];
 	
 	//For new implementation

@@ -173,12 +173,12 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 			echo "<div class=\"table-responsive\"><table class=\"table table-striped jambo_table bulk_action\"><tbody>";
 			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Fab Code</th><td class=\"  \">:</td><div class=\"col-md-4\"><td class=\"  \">".$sql_row['compo_no']."</div></td>";
 			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Fab Description</th><td class=\"  \">:</td><div class=\"col-md-4\"><td class=\"  \">".$sql_row['fab_des']."</div></td>";
-			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Consumption</th><td class=\"  \">:</td><div class=\"col-md-4\"><td class=\"  \">".$sql_row['catyy']."</div></td>";
+			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Consumption</th><td class=\"  \">:</td><div class=\"col-md-4\"><td class=\"  \"><input type=\"hidden\" class=\"form-control\" name=\"consumption\" id=\"consumption\" value=\"".$sql_row['catyy']."\">".$sql_row['catyy']."</div></td>";
 			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Date</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><INPUT class=\"form-control\" type=\"text\" data-toggle='datepicker' required name=\"in_date\" value=";if($sql_row['date']=="0000-00-00"){echo date("Y-m-d");}else{echo $sql_row['date'];} 
 			echo "></div></td>";
 			$sql4="select * from $bai_pro3.tbl_category where status='1'";
 			$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Category</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><select class=\"form-control\" required name=\"in_cat\">";
+			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Category</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><select class=\"form-control\" required name=\"in_cat\" id=\"in_cat\">";
 			while($sql_row4=mysqli_fetch_array($sql_result4))
 			{
 				if($sql_row['category']==$sql_row4['cat_name'])
@@ -198,8 +198,8 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 			</div></td></tr>";
 			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Binding Consumption</th><td class=\"  \">:</td><td class=\"  \">
 			<div class=\"col-md-4\">
-			<input class='form-control float' type=\"text\" name=\"binding_consumption\" id='binding_consumption' value=\"".$sql_row['binding_consumption']."\"  required >
-			</div></td></tr>";
+			<input class='form-control float' type=\"text\" name=\"binding_consumption\" id=\"binding_consumption\"  value=\"".$sql_row['binding_consumption']."\"  required >
+			</div><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><input type=\"checkbox\"  id=\"seperate_docket\" name=\"seperate_docket\"  value='1'>Generate Separate Docket For Binding</span></td></tr>";
 
 			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Gmt Way</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><select class=\"form-control\" name=\"gmt_way\">";
 			echo "<option value=\"N\""; if($sql_row['gmtway']=='N'){ echo "selected"; } echo ">All Gmt One Way</option>";
@@ -234,6 +234,13 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 		$get_style=$_POST['get_style'];
 		$tran_order_tid=$_POST['order_tid'];
 		$in_cat=$_POST['in_cat'];
+		if($_POST['seperate_docket'] == '1') {
+			$seperate_docket = 'Yes';
+		} else {
+			$seperate_docket = 'No';
+		}
+
+		// var_dump($_POST);die();
 
 		$cat_exist = verify_category($tran_order_tid,$in_cat);
 		if($cat_exist == 1)
@@ -246,6 +253,7 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 		$in_date=$_POST['in_date'];
 		$in_width=$_POST['in_width'];
 		$binding_consumption=$_POST['binding_consumption'];
+		
 		$patt_ver=$_POST['patt_ver'];
 		$gmt_way=$_POST['gmt_way'];
 		$strip_match=$_POST['strip_match'];
@@ -303,7 +311,7 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 			}
 			else
 			{
-				$sql="update $bai_pro3.cat_stat_log set date=\"$in_date\", category=\"$in_cat\", purwidth=$in_width, patt_ver=\"$patt_ver\", gmtway=\"$gmt_way\",binding_consumption=\"$binding_consumption\", strip_match=\"$strip_match\", gusset_sep=\"$guess_sep\", remarks=\"$remarks\", lastup=\"$lupdate\" where tid=$cat_tid";
+				$sql="update $bai_pro3.cat_stat_log set date=\"$in_date\", category=\"$in_cat\", purwidth=$in_width, patt_ver=\"$patt_ver\", gmtway=\"$gmt_way\",binding_consumption=\"$binding_consumption\",seperate_docket=\"$seperate_docket\", strip_match=\"$strip_match\", gusset_sep=\"$guess_sep\", remarks=\"$remarks\", lastup=\"$lupdate\" where tid=$cat_tid";
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
@@ -373,4 +381,27 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 		}
 		return true;
 	}
+
+	$(document).ready(function(){
+		$('#in_cat').on('change',function(){
+			var category = $("#in_cat option:selected").val();
+			
+			if(category == 'Body' || category == 'Front'){
+				$("#seperate_docket").show();
+			}
+			else{
+				$("#seperate_docket").hide();
+			}
+
+		});
+		$('#binding_consumption').on('change',function(){
+			var consumption = $("#consumption").val();
+			var binding_consumption = $("#binding_consumption").val();
+			if(binding_consumption > consumption){
+				sweetAlert('Binding Consumption Should be less than Consumption '+consumption,'','warning');
+				$("#binding_consumption").val()= '';
+			}
+		});
+	});
+
 </script>
