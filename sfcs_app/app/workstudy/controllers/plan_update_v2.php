@@ -98,7 +98,7 @@ function auto_cal_clh(){
 	    if(isset($_POST['submit']))
 		{
 		  $date=$_POST['date'];	
-		 
+	
 		  ?>
 		<div class='row'>
 		  <div class='panel panel-primary'>
@@ -108,11 +108,11 @@ function auto_cal_clh(){
 			<div class='panel-body' style='overflow: scroll;height: 616px;'>
 			<form method="post" action="<?php echo getFullURL($_GET['r'], "plan_update_v2.php", "N"); ?>">
 			<?php
-			   '<input type="text" name="date_ref" value="'.$date.'" size="8"/>';  
-			  echo '<p align=right><strong><a class="btn btn-primary btn-xs" href="'.getFullURL($_GET['r'], "plan_update_view.php", "N").'">Plan Review >><strong></a></p>';
-			  
-		?>
-	
+			 echo '<input type="hidden" name="date_ref" value="'.$date.'" size="8"/>';  
+			    echo '<p align=right><strong><a class="btn btn-primary btn-xs" href="'.getFullURL($_GET['r'], "plan_update_view.php", "N").'">Plan Review >><strong></a></p>';
+
+			?>
+
 			<table style="padding:0" class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'>
 				<thead>
                 	<tr>
@@ -138,26 +138,27 @@ function auto_cal_clh(){
 				  </tr>
 				  </thead>
 					 <?php 
-					 $table_data="select * from bai_pro.`tbl_freez_plan_log` where date='$date'";
-						//  echo  $table_data."<br>";
-						$selectRes=mysqli_query($link,$table_data) or exit($table_data."Error at something");
-						while( $row = mysqli_fetch_assoc( $selectRes ))
-						{
-							$data_array_eff[$row['mod_no']][$row['shift']] = $row['plan_eff'];
-							$data_array_pro[$row['mod_no']][$row['shift']] = $row['plan_pro'];
-							$data_array_pchrs[$row['mod_no']][$row['shift']] = $row['plan_clh'];
-							$data_array_sah[$row['mod_no']][$row['shift']] = $row['plan_sah'];
-							$data_array_nop[$row['mod_no']][$row['shift']] = $row['nop'];
-							$data_array_mod[]=$row['mod_no'];	
-												
-						}	
+					//  $table_data="select * from bai_pro.`tbl_freez_plan_log` where date='$date'";
+					// 	//  echo  $table_data."<br>";
+					// 	$selectRes=mysqli_query($link,$table_data) or exit($table_data."Error at something");
+					// 	while( $row = mysqli_fetch_assoc( $selectRes ))
+					// 	{
+						
+					// 		// $data_array_eff[$row['mod_no']][$row['shift']] = $row['plan_eff'];
+					// 		// $data_array_pro[$row['mod_no']][$row['shift']] = $row['plan_pro'];
+					// 		// $data_array_pchrs[$row['mod_no']][$row['shift']] = $row['plan_clh'];
+					// 		// $data_array_sah[$row['mod_no']][$row['shift']] = $row['plan_sah'];
+					// 		// $data_array_nop[$row['mod_no']][$row['shift']] = $row['nop'];
+					// 		// $data_array_mod[]=$row['mod_no'];					
+					// 	}	
 					
 						$table_data1="select * from bai_pro3.`module_master` where status='Active' order by module_name*1";
+					// echo $table_data1.'<br>';
 						$selectRes1=mysqli_query($link,$table_data1) or exit($table_data."Error at something");
 						$num_rows = mysqli_num_rows($selectRes1);
 						$j=0;
 						echo '<input type="hidden" id="outer_hid" value="'.$num_rows.'">';
-						echo '<input type="hidden" id="actyhrs" name="act_hours" value=7.5>';
+						echo '<input type="hidden" id="actyhrs" name="act_hours" value="'.$plant_hours.'">';
 						echo '<input type="hidden" id="shift_details" value="'.implode(",",$shifts_array).'">';
 						while($row1 = mysqli_fetch_assoc($selectRes1))
 						{  			
@@ -175,7 +176,7 @@ function auto_cal_clh(){
 							}else{
 								$nop=0;	
 							}	
-						
+					
 							if($data_array_eff[$row1['module_name']][$shifts_array[$ii]]!=''){
 								$eff=$data_array_eff[$row1['module_name']][$shifts_array[$ii]];
 								}else{
@@ -198,14 +199,15 @@ function auto_cal_clh(){
 								}else{
 									$pchrs=0;
 								}
-								
+							
+							
 							$quotes = "''";
 							echo '<td><input type="text" onfocus="if(this.value==0){this.value='.$quotes.'}" onblur="javascript: if(this.value=='.$quotes.'){this.value=0;}" class= "integer" id='."'an_$shifts_array[$ii]_".$j."'".' name="nop_'.$shifts_array[$ii].'[]" value="'.$nop.'"></td>';
 							echo '<td><input type="text" onfocus="if(this.value==0){this.value='.$quotes.'}" onblur="javascript: if(this.value=='.$quotes.'){this.value=0;}" class= "float" name="eff_'.$shifts_array[$ii].'[]" value="'.$eff.'" size="4"></td>';
 							echo '<td><input type="text" onfocus="if(this.value==0){this.value='.$quotes.'}" onblur="javascript: if(this.value=='.$quotes.'){this.value=0;}" class= "float" name="pro_'.$shifts_array[$ii].'[]" value="'.$pro.'" size="4"></td>';
 							echo '<td><input type="text" onfocus="if(this.value==0){this.value='.$quotes.'}" onblur="javascript: if(this.value=='.$quotes.'){this.value=0;}" class= "float" name="sah_'.$shifts_array[$ii].'[]" value="'.$sah.'" size="4"></td>';
 							echo '<td><input type="text" onfocus="if(this.value==0){this.value='.$quotes.'}" onblur="javascript: if(this.value=='.$quotes.'){this.value=0;}" class= "float" id='."'ac_$shifts_array[$ii]_".$j."'".' name="ach_'.$shifts_array[$ii].'[]" value="'.$pchrs.'" size="4"></td>';
-							echo '<td><input type="text" onfocus="if(this.value==0){this.value='.$quotes.'}" onblur="javascript: if(this.value=='.$quotes.'){this.value=0;}" class= "float" id='."'ah_$shifts_array[$ii]_".$j."'".' value="7.5" name="ach_'.$shifts_array[$ii].'[]"></td>';
+							echo '<td><input type="text" onfocus="if(this.value==0){this.value='.$quotes.'}" onblur="javascript: if(this.value=='.$quotes.'){this.value=0;}" class= "float" id='."'ah_$shifts_array[$ii]_".$j."'".' value="'.$plant_hours.'" name="plant_'.$shifts_array[$ii].'[]" size="4"></td>';
 							
 						}
 						
@@ -239,12 +241,12 @@ function auto_cal_clh(){
 					$section=$_POST['sec_no'];		
 					// echo implode(",",$section);
 					
-					$act_hours=$_POST['act_hours'];
+					// $act_hours=$_POST['act_hours'];
 					$plan_eff=$_POST['plan_eff'];
 					$plan_pro=$_POST['plan_pro'];
 					$plan_sah=$_POST['plan_sah'];
 					$plan_clh=$_POST['plan_clh'];
-					
+				
 					for($i=0;$i<sizeof($module);$i++)
 					{
 						
@@ -256,7 +258,7 @@ function auto_cal_clh(){
 							$nop=$_POST['nop_'.$shifts_array[$x].''];
 							$eff=$_POST['eff_'.$shifts_array[$x].''];
 								
-						
+							$plant_hrs=$_POST['plant_'.$shifts_array[$x].''];
 							$pro=$_POST['pro_'.$shifts_array[$x].''];
 						
 							$sah=$_POST['sah_'.$shifts_array[$x].''];
@@ -276,14 +278,14 @@ function auto_cal_clh(){
 									// echo $sql1."<br>";		
 								mysqli_query($link, $sql1) or exit("Sql Error512".mysqli_error($GLOBALS["___mysqli_ston"]));
 								
-								$sql12="update bai_pro.`pro_plan_today` set sec_no='".$section[$i]."', date=\"$date_sub\", mod_no='".$module[$i]."', shift=\"$shifts_array[$x]\", plan_eff='".$eff[$i]."',  plan_pro='".$pro[$i]."', fix_nop='".$nop[$i]."', plan_clh='".$clh[$i]."',plan_sah='".$sah[$i]."',act_hours='7.5' where plan_tag=\"".$plan_tag."\"";
+								$sql12="update bai_pro.`pro_plan_today` set sec_no='".$section[$i]."', date=\"$date_sub\", mod_no='".$module[$i]."', shift=\"$shifts_array[$x]\", plan_eff='".$eff[$i]."',  plan_pro='".$pro[$i]."', fix_nop='".$nop[$i]."', plan_clh='".$clh[$i]."',plan_sah='".$sah[$i]."',act_hours='".$plant_hrs[$i]."' where plan_tag=\"".$plan_tag."\"";
 								// echo "first----:".$sql2."<br>";
 								mysqli_query($link, $sql12) or exit("Sql Error6 $sql12".mysqli_error($GLOBALS["___mysqli_ston"]));
 								
 								// $sql123="insert ignore into bai_pro.`pro_plan_today` (plan_tag) values (\"$plan_tag\")";
 								// mysqli_query($link, $sql123) or exit("Sql Error513".mysqli_error($GLOBALS["___mysqli_ston"]));
 								// // echo "second----:".$sql12."<br>";			
-								// $sql121="update bai_pro.`pro_plan_today` set sec_no='".$section[$i]."', date=\"$date_sub\", mod_no='".$module[$i]."', shift=\"$shifts_array[$x]\", plan_eff='".$eff[$i]."',  plan_pro='".$pro[$i]."', fix_nop='".$nop[$i]."', plan_clh='".$clh[$i]."',plan_sah='".$sah[$i]."', act_hours='7.5'where plan_tag=\"".$plan_tag."\"";
+								// $sql121="update bai_pro.`pro_plan_today` set sec_no='".$section[$i]."', date=\"$date_sub\", mod_no='".$module[$i]."', shift=\"$shifts_array[$x]\", plan_eff='".$eff[$i]."',  plan_pro='".$pro[$i]."', fix_nop='".$nop[$i]."', plan_clh='".$clh[$i]."',plan_sah='".$sah[$i]."', act_hours='$plant_hrs'where plan_tag=\"".$plan_tag."\"";
 								// // echo "third----".$sql1212."<br>";
 								// mysqli_query($link, $sql121) or exit("Sql Error6 $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 							
@@ -296,7 +298,7 @@ function auto_cal_clh(){
 								// echo "2ndfist".$sql12."<br>";	
 								mysqli_query($link, $sql12) or exit("Sql Error514".mysqli_error($GLOBALS["___mysqli_ston"]));
 										
-								$sql1212="update bai_pro.`pro_plan` set sec_no='".$section[$i]."', date=\"$date_sub\", mod_no='".$module[$i]."', shift=\"$shifts_array[$x]\", plan_eff='".$eff[$i]."',plan_pro='".$pro[$i]."', fix_nop='".$nop[$i]."', plan_clh='".$clh[$i]."',plan_sah='".$sah[$i]."',act_hours='7.5' where plan_tag=\"".$plan_tag."\"";
+								$sql1212="update bai_pro.`pro_plan` set sec_no='".$section[$i]."', date=\"$date_sub\", mod_no='".$module[$i]."', shift=\"$shifts_array[$x]\", plan_eff='".$eff[$i]."',plan_pro='".$pro[$i]."', fix_nop='".$nop[$i]."', plan_clh='".$clh[$i]."',plan_sah='".$sah[$i]."',act_hours='".$plant_hrs[$i]."' where plan_tag=\"".$plan_tag."\"";
 								// echo "second seco".$sql1212."<br>";
 								mysqli_query($link, $sql1212) or exit("Sql Error6 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));								
 								// echo "Test=".implode(",",$eff[$i])."<br>";
