@@ -289,7 +289,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	// {
 		$link_delete=getFullURL($_GET['r'],'delete_transaction.php','N');
 		$link_edit=getFullURL($_GET['r'],'edit_transaction.php','N');
-		echo "<td><a class='btn btn-danger btn-xs confirm-submit' id='delete' href='$link_delete&tid=$tid'>Delete</a>&nbsp";
+		echo "<td><a class='btn btn-danger btn-xs confirm-submit' id='$tid' href='$link_delete&tid=$tid'>Delete</a>&nbsp";
 		echo "<a class='btn btn-warning btn-xs' onclick=\"return popitupnew('$link_edit&tid=$tid')\" href='$link_edit&tid=$tid'>Edit</a></td>";
 	// }
 	// else
