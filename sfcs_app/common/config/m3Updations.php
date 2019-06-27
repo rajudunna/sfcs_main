@@ -587,25 +587,36 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
             $good_quantity_past = $nop_qry_row['good_quantity'];
             $id = $nop_qry_row['id'];
 
-            $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty - $mo_quantity where mo_no= '$mo_number'";
-            // echo $insert_update_tbl_carton_ready;
-            mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating tbl_carton_ready");
+            $check_for_duplicates = "SELECT sum(quantity) as quantity from $bai_pro3.m3_transactions where ref_no='$id' and op_code=$b_op_id";
+            $result = mysqli_query($link,$check_for_duplicates) or exit("While checking for duplicate entries");
+            while($res = mysqli_fetch_array($result))
+            {
+                $sum = $res['quantity'];
+            }
+            if ($sum > 0) {
+                # dont insert into m3_transactions
+            } 
+            else 
+            {
+                $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty - $mo_quantity where mo_no= '$mo_number'";
+                // echo $insert_update_tbl_carton_ready;
+                mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating tbl_carton_ready");
 
-            $update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $mo_quantity where id = $id";
-            // echo $update_qry;
-            mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites");        
+                $update_qry = "update $bai_pro3.mo_operation_quantites set good_quantity = $mo_quantity where id = $id";
+                // echo $update_qry;
+                mysqli_query($link,$update_qry) or exit("While updating mo_operation_quantites");        
             
-            //M3 Rest API Call START
+                //M3 Rest API Call START
                 //getting m3_op_code
-                $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $b_op_id";
-                $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
-                if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
-                {
-                    while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
+                    $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $b_op_id";
+                    $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
                     {
-                        $main_ops_code = $row_bundle_creation_data_check_result['Main_OperationNumber'];
+                        while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
+                        {
+                            $main_ops_code = $row_bundle_creation_data_check_result['Main_OperationNumber'];
+                        }
                     }
-                }
                 // 200 Operation start
                     $inserting_into_m3_tran_log_pms070mi = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`module_no`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`,`api_type`) VALUES ('".date('Y-m-d H:i:s')."','$mo_number','$mo_quantity','','Normal','$username','$team_id','$b_op_id','$short_key_code','$id','$work_station_id','pending','$main_ops_code','opn')";
                     // echo $inserting_into_m3_tran_log_pms070mi;
@@ -687,7 +698,8 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id)
                     //     }
                     // }                        
                 // FG End
-            //M3 Rest API Call END
+                //M3 Rest API Call END
+            }
         }
 
         return 1;
@@ -726,7 +738,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid)
         $good_quantity_past = $nop_qry_row['good_quantity'];
         $id = $nop_qry_row['id'];
         $negative_qty = $good_quantity_past * -1;
-
+        
         $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $good_quantity_past where mo_no= '$mo_number'";
         // echo $insert_update_tbl_carton_ready;
         mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating tbl_carton_ready");
