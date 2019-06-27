@@ -1,29 +1,45 @@
 <html>
 <head>
-<?php 
+<?php  
     include(getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     
     if(isset($_POST['submit']))
-	{
-        
-		$operation_wo=$_POST['operation_wo'];
+	{        
+		//$operation_wo=$_POST['operation_wo'];
         $shift=$_POST['shift'];
         $operation=$_POST['operation'];
-        $gatepass="G";
-
-    if($operation_wo=="with"){
-        //this will be redirect to Bundle wise scanning
-    $url="http://localhost/index.php?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9zY2FuaW5nL2J1bmRsZV93aXNlX3NjYW5uaW5nLnBocA==";
-    }else if($operation_wo=="without"){
-        //this will be redirect to Bundlewise Scaning without operation
-        $url="http://localhost/index.php?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9zY2FuaW5nL3ByZV9idW5kbGVfbGV2ZWxfc2Nhbm5pbmdfd2l0aG91dF9vcHMucGhw";
-    }else{
-       echo "Something went wrong.....!";
-    }
-    echo "<script>     
-           window.location = '$url&gatepass='+'G&shift=$shift&opertion=$operation'; 
+		$operation_name=$_POST['operation'];
+		//$gatepass="G";
+		if($_POST['operation']=='0')
+		{
+			$sql="INSERT INTO $brandix_bts.`gatepass_table` (`shift`, `gatepass_status`, `date`) VALUES ('".$shift."', '1', '".date("Y-m-d")."')";
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		}
+		else
+		{
+			$sql="INSERT INTO $brandix_bts.`gatepass_table` (`shift`, `gatepass_status`, `date`, `operation`) VALUES ('".$shift."', '1', '".date("Y-m-d")."', '".$operation."')";
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		}
+		$gate_id=mysqli_insert_id($link);
+		$url="http://localhost//index.php?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9zY2FuaW5nL3NjYW5fYmFyY29kZV93b3V0X2tleXN0cm9rZS5waHA=";
+       
+		// if($operation_wo=="with"){
+			//this will be redirect to Bundle wise scanning
+		// $url="http://localhost/index.php?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9zY2FuaW5nL2J1bmRsZV93aXNlX3NjYW5uaW5nLnBocA==";
+		// }
+		// else if($operation_wo=="without")
+		// {
+			//this will be redirect to Bundlewise Scaning without operation
+			// $url="http://localhost/index.php?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9zY2FuaW5nL3ByZV9idW5kbGVfbGV2ZWxfc2Nhbm5pbmdfd2l0aG91dF9vcHMucGhw";
+		// }
+		// else
+		// {
+		   // echo "Something went wrong.....!";
+		// }
+		echo "<script>     
+			   window.location = '$url&gatepass=G&shift=$shift&opertion=$operation&id=$gate_id'; 
         </script>";
     }
     ?>
@@ -35,12 +51,10 @@ function oper_display(){
   
     var oper_sel=document.getElementById("gatepass").value;
     // alert(oper_sel);
-    if(oper_sel=="without"){  
+    if(oper_sel=="without"){
       document.getElementById("operation_sec").style.display = "block";
-      document.getElementById("operation").setAttribute('required','required');
     }else{
         document.getElementById("operation_sec").style.display = "none";
-        document.getElementById("operation");
     }
   
 }
@@ -55,6 +69,7 @@ function oper_display(){
    </div>
    	<div class="panel-body">
 	    <form method="post" name="test">
+		<!--		
         <div class="col-sm-2 form-group">
               <label for='style'>Operation Selection:<span style ='color:red'>*</span></label>  
               <select class='form-control' name="operation_wo" id="gatepass" required onchange="oper_display()">
@@ -63,6 +78,7 @@ function oper_display(){
                 <option value="without">WithOut Operation</option>
                </select>
                </div>
+			   -->
            <div class="col-sm-2 form-group">
               <label for='style'>Shift:<span style ='color:red'>*</span></label>  
               
@@ -76,23 +92,22 @@ function oper_display(){
                         ?>
                 </select> 
              </div>     
-             <div class="col-sm-2 form-group" id="operation_sec" style="display:none">
+             <div class="col-sm-2 form-group" id="operation_sec" >
                         <label for='operation'>Select Operation:<span style ='color:red'>*</span></label>
 						<?php
 							echo "<select class='form-control' name='operation' id='operation'>";
-                            $sql="SELECT * FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE category ='sewing' group by operation_name";
+                            $sql="SELECT * FROM $brandix_bts.`tbl_orders_ops_ref` WHERE category ='sewing' and display_operations='yes' group by operation_name";
                             $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-                            echo "<option value='' selected='selected'>--Select Operation--</option>";
+                            echo "<option value='0' selected='selected'>--Select Operation--</option>";
                             while($sql_row=mysqli_fetch_array($sql_result))
                             {
-                                if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$operation_name))
+                                if(str_replace(" ","",$sql_row['operation_code'])==str_replace(" ","",$operation_name))
                                 {
-                                    echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['operation_name'].'-'.$sql_row['operation_code']."</option>";
+                                    echo "<option value=\"".$sql_row['operation_code']."\" selected>".$sql_row['operation_name'].'-'.$sql_row['operation_code']."</option>";
                                 }
                                 else
                                 {
-                                    echo "<option value=\"".$sql_row['id']."\">".$sql_row['operation_name'].'-'.$sql_row['operation_code']."</option>";
+                                    echo "<option value=\"".$sql_row['operation_code']."\">".$sql_row['operation_name'].'-'.$sql_row['operation_code']."</option>";
                                 }
                             }
                             echo "</select>";
@@ -102,7 +117,7 @@ function oper_display(){
                     </div>	
                     <div class="col-sm-2 form-group" style="padding-top:20px;">
                         <?php
-                          echo "<input class='btn btn-success' type=\"submit\" value=\"Submit\" name=\"submit\" id=\"submit_data\">";
+                          echo "<input class='btn btn-success' type=\"submit\" value=\"Start\" name=\"submit\" id=\"submit_data\">";
                         ?>
                     </div> 
                     <br>  
