@@ -155,8 +155,23 @@ function issued_to_module($bcd_id,$qty,$ref)
     mysqli_query($link, $update_qry_cps) or exit("update_qry_cps".mysqli_error($GLOBALS["___mysqli_ston"]));
     $update_qry_bcd = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and size_id = '$size_id' and operation_id = 15";
      mysqli_query($link, $update_qry_bcd) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
-    //retreaving emblishment operations from operatoin master
-    $ops_master_qry = "select MIN(operation_code) as operation_code from $brandix_bts.tbl_orders_ops_ref where category in ('Send PF')"; 
+     //validate parellel operations for updating recut_in
+     $qry_prellel_ops="select COUNT(*) as cnt from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and ops_dependency>0";
+     $result_qry_prellel_ops = $link->query($qry_prellel_ops);
+    while($row_ops = $result_qry_prellel_ops->fetch_assoc()) 
+    {
+       $parellel_ops_cnt = $row_ops['cnt'];
+    }
+
+    if($parellel_ops_cnt>0){
+        
+        //retreaving emblishment operations from operatoin master
+        $ops_master_qry = "select operation_code from $brandix_bts.tbl_orders_ops_ref where category in ('Send PF')";
+    }else{
+
+        //retreaving emblishment operations from operatoin master
+        $ops_master_qry = "select MIN(operation_code) as operation_code from $brandix_bts.tbl_orders_ops_ref where category in ('Send PF')"; 
+    }
     $result_ops_master_qry = $link->query($ops_master_qry);
     while($row_ops = $result_ops_master_qry->fetch_assoc()) 
     {
