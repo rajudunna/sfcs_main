@@ -35,10 +35,12 @@ function oper_display(){
   
     var oper_sel=document.getElementById("gatepass").value;
     // alert(oper_sel);
-    if(oper_sel=="without"){
+    if(oper_sel=="without"){  
       document.getElementById("operation_sec").style.display = "block";
+      document.getElementById("operation").setAttribute('required','required');
     }else{
         document.getElementById("operation_sec").style.display = "none";
+        document.getElementById("operation");
     }
   
 }

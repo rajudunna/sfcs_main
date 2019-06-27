@@ -36,7 +36,7 @@ if(isset($_GET['gatepassid']) && isset($_GET['vehicle_no']) ){
                     <div class="col-md-2">
                         <input type="submit" value="Generate Gate Pass" name="submit" class="btn btn-success"  style="margin-top:22px;">
                     </div>
-                </div>
+                </div> 
             </form>
           <?php
         }else{
