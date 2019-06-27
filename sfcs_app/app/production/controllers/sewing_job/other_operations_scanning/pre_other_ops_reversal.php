@@ -1,8 +1,8 @@
 <script type="text/javascript">
 	function validateQty(e,t) 
 	{
-		if(e.keyCode == 13)
-				return;
+		// if(e.keyCode == 13)
+		// 		return;
 			var p = String.fromCharCode(e.which);
 			var c = /^[0-9]+$/;
 			var v = document.getElementById(t.id);
@@ -93,7 +93,7 @@ else
 <div class = "panel panel-primary">
 <div class = "panel-heading">Other Operation Reversal</div>
 <div class = "panel-body">
-<form name="other_operation_report" method="post">
+
 	<input type="hidden" name="scan_type" id="scan_type" value=<?= $display_name ?>>
 <?php
 
@@ -179,7 +179,7 @@ echo "  </select>
  
     </div>
 </div>
-</form>
+
 <div class='panel panel-primary'  id="maindiv">
    
 			<div class='panel-heading'>Data</div>
