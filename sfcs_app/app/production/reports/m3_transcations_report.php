@@ -57,13 +57,27 @@
                         <label>To Date</label><br/>
                         <input data-toggle='datepicker' placeholder="YYYY-MM-DD" type="text" class="form-control" id='tdate' name='tdate' value="<?= $_GET['tdate'] ?? '' ?>" required>
                     </div>
+                    <?php
+                        $sql="SELECT DISTINCT `response_status` as response_status FROM bai_pro3.m3_transactions WHERE response_status !=''";	
+                        $sql_result=mysqli_query($link_ui, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    ?>
                     <div class="form-group col-sm-2">
                         <label>Transcation Status</label><br/>
                         <select class="form-control" name='ts' id='ts'>
                             <option value=''>All</option>
-                            <option value='pass' <?= $_GET['ts']=='pass' ? 'selected' : '' ?>>Pass</option>
-                            <option value='fail' <?= $_GET['ts']=='fail' ? 'selected' : '' ?>>Fail</option>
-                            <option value='pending' <?= $_GET['ts']=='pending' ? 'selected' : '' ?>>Pending</option>
+                            <?php
+                            while($sql_row=mysqli_fetch_array($sql_result))
+                            {
+                                if($sql_row['response_status'] == $_GET['ts'])
+                                {
+                                    echo "<option value=\"".$sql_row['response_status']."\" selected>".$sql_row['response_status']."</option>";
+                                }
+                                else
+                                {
+                                    echo "<option value=\"".$sql_row['response_status']."\">".$sql_row['response_status']."</option>";
+                                }
+                            }
+                            ?>
                         </select>
                     </div>
                     <div class='col-sm-1'>
@@ -83,12 +97,11 @@
         if(($_GET['tdate'] && $_GET['fdate']) || $_GET['schedule']){
             $resp_stat[] = $_GET['ts'] ? 'response_status="'.$_GET["ts"].'"' : '';
             $resp_stat[] = $_GET['schedule'] ? 'schedule="'.$_GET["schedule"].'"' : '';
-            $resp_stat[] = ($_GET['tdate'] && $_GET['fdate']) ? 'DATE(m3_bulk_transactions.date_time) between  "'.$_GET["fdate"].'" and "'.$_GET["tdate"].'"' : '';
+            $resp_stat[] = ($_GET['tdate'] && $_GET['fdate']) ? 'DATE(m3_transactions.date_time) between  "'.$_GET["fdate"].'" and "'.$_GET["tdate"].'"' : '';
             $ar_nw = array_filter($resp_stat);
-            $qry_m3_trans = "SELECT style,schedule,color,size,m3_bulk_transactions.date_time as dt,m3_bulk_transactions.mo_no,op_code,quantity,response_status,m3_bulk_transactions.id,m3_bulk_transactions.log_user,m3_bulk_transactions.ref_no,m3_bulk_transactions.reason,m3_bulk_transactions.module_no,m3_bulk_transactions.api_type,m3_bulk_transactions.workstation_id,m3_trail_count,m3_ops_code
-            FROM bai_pro3.`m3_bulk_transactions`  
-            LEFT JOIN bai_pro3.`mo_details` ON m3_bulk_transactions.mo_no=mo_details.mo_no WHERE ".implode(' and ',$ar_nw);
-
+            $qry_m3_trans = "SELECT style,schedule,color,size,m3_transactions.date_time as dt,m3_transactions.mo_no,op_code,quantity,response_status,m3_transactions.id,m3_transactions.log_user,m3_transactions.ref_no,m3_transactions.reason,m3_transactions.module_no,m3_transactions.api_type,m3_transactions.workstation_id,m3_trail_count,m3_ops_code
+            FROM bai_pro3.`m3_transactions`  
+            LEFT JOIN bai_pro3.`mo_details` ON m3_transactions.mo_no=mo_details.mo_no WHERE ".implode(' and ',$ar_nw);
             $result_m3_trans = mysqli_query($link_ui, $qry_m3_trans);
             $ary_res = mysqli_fetch_all($result_m3_trans,MYSQLI_ASSOC);
             if(count($ary_res)>0){
