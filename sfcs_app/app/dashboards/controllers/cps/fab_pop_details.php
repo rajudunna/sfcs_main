@@ -388,6 +388,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$act_cut_no=$sql_row1['acutno'];
 	$cut_no_ref=$sql_row1['acutno'];
 	$order_id_ref=$sql_row1['order_tid'];
+	
 	$sql1="SELECT binding_consumption,seperate_docket from $bai_pro3.cat_stat_log where order_tid='$order_id_ref'";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result1))
@@ -395,6 +396,21 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$binding_consumption=$sql_row2['binding_consumption'];
 		$seperate_docket=$sql_row2['seperate_docket'];
 	}
+	// echo "order_tid".$order_id_ref."<br>";
+	// echo "binding_consumption".$binding_consumption."<br>";
+
+	$sql2="SELECT (p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as qty FROM plandoc_stat_log WHERE order_tid='$order_id_ref'";
+	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row2=mysqli_fetch_array($sql_result2))
+	{
+		$p_qty=$sql_row2['qty'];
+	}
+	// echo "p_qty".$p_qty."<br>";
+
+	// if($binding_consumption && $p_qty){
+		$binding_consumption_qty = $binding_consumption * $p_qty;
+	// }
+	
 	/* $order_id_ref1 = explode(" ",$sql_row1['order_tid']);
 	echo $order_id_ref1[0];
 	echo $order_id_ref1[7]; */
@@ -542,11 +558,14 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		}
 	}
 	//$output_trimmed = array_map("trim", explode(',', $input));
-	// echo "</br>Seperated".$seperate_docket;
+	// echo "</br>Seperated--".$seperate_docket;
+	// echo "</br>material_req--".$sql_row1['material_req'];
+	// echo "</br>binding_consumption_qty--".$binding_consumption_qty;
+
 	if($seperate_docket=='No'){
 		$material_requirement_orig=$sql_row1['material_req'];
 	}else{
-		$material_requirement_orig=$sql_row1['material_req']-$binding_consumption;
+		$material_requirement_orig=$sql_row1['material_req']-$binding_consumption_qty;
 	}
 	echo "<tr><td>".$sql_row1['category']."</td>";
 	echo "<td>".$sql_row1['compo_no']."</td>";
