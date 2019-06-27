@@ -5,19 +5,14 @@
 	{
 		$shift = $_GET['shift'];
 		$op_code=$_GET['opertion'];
-		$type=$_GET['gatepass'];
 		$gate_id=$_GET['id'];
 	}
 	else
 	{
 		$shift = $_POST['shift'];
 		$op_code=$_POST['operation_code'];
-		$type='N';
 		$gate_id=0;
 	}
-    echo $shift."---".$op_code."---".$type."---".$gate_id."<br>";
-	
-	
     $has_permission=haspermission($_GET['r']);
     if (in_array($override_sewing_limitation,$has_permission))
     {
@@ -27,7 +22,7 @@
     {
         $value = 'not_authorized';
     }
-	
+	$url = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',0,'N');
 ?>
 
 <style>
@@ -62,8 +57,7 @@ th,td{
     <?php }?>
     <div class="panel-body"  ng-controller="scanctrl">
         <div class="row jumbotron " ng-init="shift='<?= $shift ?>'">
-		<div class="row jumbotron " ng-init="type='<?= $type ?>'">
-		<div class="row jumbotron " ng-init="gate_id='<?= $gate_id ?>'">
+	
             <div class="col-md-5">
 			    <?php if($op_code)
 				{?>
@@ -73,15 +67,27 @@ th,td{
 					<div class="col-padding">
 				<?php }?>
                     <input type="text" id="barcode_scan" class="form-control input-lg" ng-model="barcode" ng-keypress="scanned($event)" placeholder="scan here" autofocus>
-					
+					<input type="hidden" id="pass_id" ng-model="pass_id" ng-init="pass_id='<?= $gate_id; ?>'">
                     <input type="hidden" id="user_permission" ng-model="user_permission" ng-init="user_permission='<?= $value; ?>'">
                     <input type="hidden" class="form-control" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'get_barcode_details_new.php',0,'R') ?>'">
+					<?php
+					if($gate_id>0)
+					{
+						?>
+						<div class="col-sm-2 form-group" style="padding-top:20px;">
+						<form method ='POST' id='frm1' action='<?php echo $url ?>'>
+						<?php
+						
+						  echo "<input class='btn btn-warning' type=\"submit\" value=\"Finish\">";
+						?>
+						</form>
+						</div> 
+						<br>					
+						<?php
+					}
+					?>					
                 </div>
             </div>
-			
-			
-			
-			
 			
             <div class="vline"></div>
             <div class="col-md-5 pull-right">
@@ -139,3 +145,9 @@ th,td{
     </div>
 </div>
 <script src="<?= getFullURLLevel($_GET['r'],'common/js/scan_barcode.js',3,'R') ?>"></script>
+<script>
+function gatepass_page(i)
+{
+	//window.location = $url&?gatepassid=".$gate_id.""; 
+}
+</script>
