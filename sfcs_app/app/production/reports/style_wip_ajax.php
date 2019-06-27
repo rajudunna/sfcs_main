@@ -3,7 +3,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 error_reporting(0);
 if($_GET['some'] == 'bundle_no')
 {
-	    //Bundle Wise Report Code
+	    //Bundle Wise Report C
 		$bundle_number = $_GET['bundle'];
 		$CAT = 'sewing';
 
@@ -333,7 +333,12 @@ else
 		{ 
 			if($ii==1)
 			{
-				$wip[$value] = $order_qty -($bcd_rec[$value]+$bcd_rej[$value]);
+				$diff = $order_qty -($bcd_rec[$value]+$bcd_rej[$value]); 
+				if($diff < 0)  
+				{
+					$diff = 0;
+				}
+				$wip[$value] = $diff;
 			}
 			else
 			{	
@@ -346,7 +351,7 @@ else
 					$ops_order = $row['operation_order'];
 				}
 				$post_ops_check = "SELECT tsm.operation_code AS operation_code FROM brandix_bts.tbl_style_ops_master tsm 
-				LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND CAST(tsm.operation_order AS CHAR) > '$ops_order' GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1 desc limit 1";
+				LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND CAST(tsm.operation_order AS CHAR) < '$ops_order' GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1 desc limit 1";
 				$result_post_ops_check = $link->query($post_ops_check);
 				$row = mysqli_fetch_array($result_post_ops_check);
 				$pre_op_code = $row['operation_code'];
@@ -354,8 +359,10 @@ else
 				// echo $pre_op_code."--<br>";
 				$diff= $bcd_rec[$pre_op_code] - ($bcd_rec[$value]+$bcd_rej[$value]);
 				
-				if($diff < 0)
+				if($diff < 0)  
+				{
 					$diff = 0;
+				}
 				$wip[$value] = $diff;
 			}
 			if(strlen($ops_get_code[$value]) > 0)
