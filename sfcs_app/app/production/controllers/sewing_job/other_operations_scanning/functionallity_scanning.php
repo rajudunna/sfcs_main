@@ -137,39 +137,54 @@ function getreversal($data)
           $get_bundles = "select distinct(tid) as bundle_no from $bai_pro3.packing_summary_input where doc_no = $doc_no";
           //echo $get_bundles;
           $result_bundles = $link->query($get_bundles);
+          $module_result = $result_bundles->num_rows;
           while($bundle_row = $result_bundles->fetch_assoc()) 
 	      {
              $bundle_numbers[] = $bundle_row['bundle_no'];
 	      }
-
-	      $post_ops_validation = "SELECT sum(recevied_qty)as recevied_qty,size_title as size FROM $brandix_bts.bundle_creation_data WHERE bundle_number in (".implode(',',$bundle_numbers).") AND operation_id = $post_ops_code";
-	        $result_pre_ops_validation = $link->query($post_ops_validation);
-	        while($row = $result_pre_ops_validation->fetch_assoc()) 
-	        {
-	            $recevied_qty_qty = $row['recevied_qty'];
-	            $size = $row['size'];
-	        
-	        if($recevied_qty_qty > 0)
-	        {
-              $job_details_qry = "SELECT id,`size_title` AS size_code,size_id as old_size,`color` as order_col_des,`bundle_number` AS tid,`original_qty` AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(recevied_qty)-$recevied_qty_qty AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id FROM $brandix_bts.bundle_creation_data WHERE docket_number = '$doc_no'  AND size_title = '$size' AND operation_id = $op_code GROUP BY size_title,color order by bundle_number";
-	        	$result_style_data = $link->query($job_details_qry);
-	            while($row = $result_style_data->fetch_assoc()) 
-	            {
-	                $result_array['table_data'][] = $row;
-	            }
-	        }
-	        else
-	        {
+          
+           if($module_result > 0)
+           {
+              $post_ops_validation = "SELECT sum(recevied_qty)as recevied_qty,size_title as size FROM $brandix_bts.bundle_creation_data WHERE bundle_number in (".implode(',',$bundle_numbers).") AND operation_id = $post_ops_code";
+		        $result_pre_ops_validation = $link->query($post_ops_validation);
+		        while($row = $result_pre_ops_validation->fetch_assoc()) 
+		        {
+		            $recevied_qty_qty = $row['recevied_qty'];
+		            $size = $row['size'];
+		        
+			        if($recevied_qty_qty > 0)
+			        {
+			        	$job_details_qry = "SELECT id,`size_title` AS size_code,size_id as old_size,`color` as order_col_des,`bundle_number` AS tid,`original_qty` AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(recevied_qty)-$recevied_qty_qty AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id FROM $brandix_bts.bundle_creation_data WHERE docket_number = '$doc_no'  AND size_title = '$size' AND operation_id = $op_code GROUP BY size_title,color order by bundle_number";
+			        	$result_style_data = $link->query($job_details_qry);
+			            while($row = $result_style_data->fetch_assoc()) 
+			            {
+			                $result_array['table_data'][] = $row;
+			            }
+			        }
+			        else
+			        {
+                       $job_details_qry = "SELECT id,`size_title` AS size_code,size_id as old_size,`color` as order_col_des,`bundle_number` AS tid,`original_qty` AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(recevied_qty) AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id FROM $brandix_bts.bundle_creation_data WHERE docket_number = '$doc_no' AND operation_id = $op_code GROUP BY size_title,color order by bundle_number";
+			        	$result_style_data = $link->query($job_details_qry);
+			            while($row = $result_style_data->fetch_assoc()) 
+			            {
+			                $result_array['table_data'][] = $row;
+			            }
+			        }
+		              
+			        
+		        }
+		         echo json_encode($result_array);
+			}
+            else
+		    {
 	        	$job_details_qry = "SELECT id,`size_title` AS size_code,size_id as old_size,`color` as order_col_des,`bundle_number` AS tid,`original_qty` AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(recevied_qty) AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id FROM $brandix_bts.bundle_creation_data WHERE docket_number = '$doc_no' AND operation_id = $op_code GROUP BY size_title,color order by bundle_number";
 	        	$result_style_data = $link->query($job_details_qry);
 	            while($row = $result_style_data->fetch_assoc()) 
 	            {
 	                $result_array['table_data'][] = $row;
 	            }
-	        }	
-	        	
-	        }
-	        echo json_encode($result_array);   
+		        echo json_encode($result_array); 
+		    }	
 
         }
         else
@@ -213,8 +228,11 @@ if(isset($_GET['get_details']))
 } 
 
 function updatereversal($post_data)
-{
-    
+{  
+
+    error_reporting(0);   
+    include("../../../../../common/config/config_ajax.php");
+    include("../../../../../common/config/m3Updations.php");
  	parse_str($post_data,$new_data);
     $b_style= $new_data['style'];
     $b_schedule=$new_data['schedule'];
@@ -245,9 +263,7 @@ function updatereversal($post_data)
 
 	//Total reproted quantity for the docket
 	$tot_report_qty_doc = $rep_sum_qty;
-    
-    include("../../../../../common/config/config_ajax.php");
-    include("../../../../../common/config/m3Updations.php");
+ 
 	$ops_seq_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors' and operation_code='$b_op_id'";
 	$result_ops_seq_check = $link->query($ops_seq_check);
 	while($row = $result_ops_seq_check->fetch_assoc()) 
@@ -443,7 +459,7 @@ function updatereversal($post_data)
 
 			}
         }
-        var_dump($main_bundle);
+        //var_dump($main_bundle);
         foreach($b_sizes as $key=>$value)
 		{
 

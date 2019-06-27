@@ -189,6 +189,7 @@ echo "  </select>
 			<form name= "smartform" method="post" id="smartform">
 				<input type="hidden" name="style" id="style" value=<?=$style?>>
                  <input type="hidden" name="schedule" id="schedule" value=<?=$schedule?>>
+                 <input type="hidden" name="color" id="mapped_color" value=<?=urlencode($color)?>>
 				 <input type="hidden" name="shifts" id='shifts' value="<?php echo $shift;?>">
 				 <input type="hidden" name="operation_id" id='operation_id' value="<?php echo $operation_code;?>">
 				 <input type="hidden" name="post_code" id="post_code" value="<?php echo $post_ops?>">
@@ -239,7 +240,7 @@ $(document).ready(function()
 	                    // document.getElementById('style').innerHTML = response['style'];
 						 document.getElementById('schedule').value = response['schedule'];
 	                    //document.getElementById('schedule').innerHTML = response['schedule'];
-						// document.getElementById('mapped_color').value = response['color'];
+						 document.getElementById('mapped_color').value = response['color'];
 						document.getElementById('shifts').value = shift;
 						document.getElementById('operation_id').value = operation_code;
 						 document.getElementById('post_code').value = response['post_ops'];
