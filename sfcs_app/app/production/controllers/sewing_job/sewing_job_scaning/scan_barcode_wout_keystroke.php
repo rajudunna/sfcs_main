@@ -22,7 +22,7 @@
     {
         $value = 'not_authorized';
     }
-	$url = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',0,'N');
+	$url1 = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',2,'N');
 ?>
 
 <style>
@@ -77,8 +77,7 @@ th,td{
 						<div class="col-sm-2 form-group" style="padding-top:20px;">
 						<form method ='POST' id='frm1' action='<?php echo $url ?>'>
 						<?php
-						
-						  echo "<input class='btn btn-warning' type=\"submit\" value=\"Finish\">";
+						echo "<a class='btn btn-warning' href='$url1&gatepassid=".$gate_id."&status=2' >Finish</a>";
 						?>
 						</form>
 						</div> 

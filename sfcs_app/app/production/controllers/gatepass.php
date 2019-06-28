@@ -4,7 +4,7 @@
     include(getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
    
-	$username='sfcsproject1';
+	//$username='sfcsprwojessct1';
 	
     ?>
 <script>
@@ -83,11 +83,13 @@ function oper_display(){
 						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($sql_result1)>0)
 						{			
+							
+							
 							$url1 = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',0,'N');
 							while($sql_row1=mysqli_fetch_array($sql_result1))
 							{
 								echo "<div class='col-sm-10'><br><div class='alert alert-info' style='font-size:13px;padding:5px'>Info! Still one gate pass is pending please close that and proceed. Click below to close.
-								<a class='btn btn-warning' href='$url1?gatepassid=".$sql_row1['id']."' >Gate Pass No: ".$sql_row1['id']."</a>									
+								<a class='btn btn-warning' href='$url1&gatepassid=".$sql_row1['id']."' >Gate Pass No: ".$sql_row1['id']."</a>									
 								</div>";
 							}
 						}
