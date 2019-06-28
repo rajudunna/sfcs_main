@@ -312,6 +312,7 @@ foreach($b_tid as $key => $value)
                     $implode_next[2] = array_sum($r_qty_array);
                     //retreving bcd id from bundle_ceration_data and inserting into the rejection_log table and rejection_log_child
                     $bcd_id_qry = "select id,style,schedule,color,docket_number,size_title,size_id,assigned_module,input_job_no_random_ref,bundle_number from $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$key] and operation_id = $b_op_id";
+                   // echo $bcd_id_qry;
                     $bcd_id_qry_result=mysqli_query($link,$bcd_id_qry) or exit("Bcd id qry".mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($bcd_id_row=mysqli_fetch_array($bcd_id_qry_result))
                     {
@@ -362,7 +363,8 @@ foreach($b_tid as $key => $value)
                             $parent_id=mysqli_insert_id($link);
 
                         }
-                        $inserting_into_rejection_log_child_qry = "INSERT INTO `bai_pro3`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`) values($parent_id,$bcd_id,$doc_no,$input_job_random_ref,'$size_id','$size_title',$assigned_module,$implode_next[2],$b_op_id)";
+                        $inserting_into_rejection_log_child_qry = "INSERT INTO `bai_pro3`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`) values($parent_id,$bcd_id,$doc_no,$input_job_random_ref,'$size_id','$size_title','$assigned_module',$implode_next[2],$b_op_id)";
+                       // echo  $inserting_into_rejection_log_child_qry;
                         $insert_qry_rej_child = $link->query($inserting_into_rejection_log_child_qry);
                     }
                     // echo $bundle_number.','.$b_op_id.','.$r_qty_array.','.$r_reasons_array.'</br>';
