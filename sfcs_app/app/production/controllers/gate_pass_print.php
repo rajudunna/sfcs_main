@@ -668,7 +668,7 @@ tags will be replaced.-->
   <td class=xl6632160>&nbsp;</td>
   <td class=xl7332160>Style</td>
   <td class=xl7332160>Schedule</td>
-  <td colspan=2 class=xl8132160>Color</td>
+  <td colspan=2 class=xl8132160  style='text-align: left;'>Color</td>
   <td class=xl7332160>Size</td>
   <td class=xl7332160>Qty</td>
   <td class=xl7432160 width=72 style='width:54pt'>Number Of <br>
@@ -717,9 +717,9 @@ tags will be replaced.-->
  <tr height=19 style='height:14.4pt'>
   <td height=19 class=xl1532160 style='height:14.4pt'></td>
   <td class=xl6632160>&nbsp;</td>
-  <td colspan=5 class=xl8032160>Grand Total</td>
-  <td class=xl7532160 align=right><?php echo $tot_qty;?></td>
-  <td class=xl7532160 align=right><?php echo $tot_bds;?></td>
+  <td colspan=5 class=xl8032160 style='font-weight: bold;'>Grand Total</td>
+  <td class=xl7532160 align=left><?php echo $tot_qty;?></td>
+  <td class=xl7532160 align=left><?php echo $tot_bds;?></td>
   <td class=xl1532160></td>
   <td class=xl6732160>&nbsp;</td>
   <td class=xl1532160></td>
@@ -736,9 +736,9 @@ tags will be replaced.-->
 				echo "<tr height=19 style='height:14.4pt'>
 				<td height=19 class=xl1532160 style='height:14.4pt'></td>
 				<td class=xl6632160>&nbsp;</td>
-				<td class=xl7632160>".$styles[$i]."</td>
+				<td class=xl7632160>".trim($styles[$i])."</td>
 				<td class=xl7632160>".$schedule[$ii]."</td>
-				<td colspan=2 class=xl7632160>".$color[$iii]."</td>
+				<td colspan=2 class=xl7632160>".substr($color[$iii],0,15)."</td>
 				<td class=xl7632160>&nbsp;</td>
 				<td class=xl7632160>".$quantity_val[$schedule[$ii]][$color[$iii]]."</td>
 				<td class=xl7632160>".$bundles_val[$schedule[$ii]][$color[$iii]]."</td>
@@ -754,9 +754,9 @@ tags will be replaced.-->
 					echo "<tr height=19 style='height:14.4pt'>
 					<td height=19 class=xl1532160 style='height:14.4pt'></td>
 					<td class=xl6632160>&nbsp;</td>
-					<td class=xl7732160>".$styles[$i]."</td>
+					<td class=xl7732160>".trim($styles[$i])."</td>
 					<td class=xl7732160>".$schedule[$ii]."</td>
-					<td colspan=2 class=xl7732160>".$color[$iii]."</td>
+					<td colspan=2 class=xl7732160>".substr($color[$iii],0,15)."</td>
 					<td class=xl7732160>".$size[$iiii]."</td>
 					<td class=xl7732160>".$quantity[$schedule[$ii]][$color[$iii]][$size[$iiii]]."</td>
 					<td class=xl7732160>".$bundles[$schedule[$ii]][$color[$iii]][$size[$iiii]]."</td>
