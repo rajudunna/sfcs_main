@@ -1,11 +1,12 @@
-<?php
+<?php 
     error_reporting(0);
     include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
     include 'functions_scanning_ij.php';
     $barcode = $_POST['barcode'];
     $shift = $_POST['shift'];
-    $user_permission = $_POST['auth'];
-    $b_shift = $shift;
+    $gate_id = $_POST['gate_id'];
+	$user_permission = $_POST['auth'];
+    $b_shift = $shift;	
     //changing for #978 cr 
     $barcode_number = explode('-', $barcode)[0];
     //retriving original bundle_number from this barcode
@@ -62,21 +63,22 @@
             die();
         } else if ($ret == 2) {
             if ($user_permission == 'authorized') {
-                getjobdetails1($string, $bundle_no, $op_no, $shift);
+                getjobdetails1($string, $bundle_no, $op_no, $shift ,$gate_id);
             } else {
                 $result_array['status'] = 'You are Not Authorized to report more than Block Priorities';
                 echo json_encode($result_array);
                 die();
             }
         } else if ($ret == 0) {
-            getjobdetails1($string, $bundle_no, $op_no, $shift);
+            getjobdetails1($string, $bundle_no, $op_no, $shift ,$gate_id);
         }        
     }    
-    function getjobdetails1($job_number, $bundle_no, $op_no, $shift)
+    function getjobdetails1($job_number, $bundle_no, $op_no, $shift ,$gate_id)
     {
         error_reporting(0);
         $job_number = explode(",",$job_number);
         $job_number[4]=$job_number[1];
+		$gate_pass_no=$gate_id;
         include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
         include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
         
@@ -697,7 +699,12 @@
                                 {
                                     $bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$previously_scanned .'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$username.'")';  
                                     $result_query_001_temp = $link->query($bulk_insert_post_temp) or exit('bulk_insert_post query error in updating');
-
+									if($gate_pass_no>0)
+									{
+										$sql_gate="insert into $brandix_bts.`gatepass_track` (`gate_id`, `bundle_no`, `bundle_qty`, `style`, `schedule`, `color`, `size`,operation_id) values ('".$gate_pass_no."', ".$b_tid[$key].", '".$b_rep_qty[$key]."', '".$b_style."','".$b_schedule."','".$b_colors[$key]."','".$b_sizes[$key]."','".$b_op_id."')";
+										$result_sql_temp = $link->query($sql_gate) or exit('Gate_pass_child query error in updating');
+									
+									}
                                     $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previously_scanned where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code in ($emb_operations)";
                                             $update_qry_cps_log_res = $link->query($update_qry_cps_log);
                                     
@@ -743,6 +750,14 @@
                     if($b_rep_qty[$key] > 0 )
                     {
                         $bulk_insert_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$username.'"),';
+						if($gate_pass_no>0)
+						{
+							$sql_gate="insert into $brandix_bts.`gatepass_track` (`gate_id`, `bundle_no`, `bundle_qty`, `style`, `schedule`, `color`, `size`,operation_id) values ('".$gate_pass_no."', ".$b_tid[$key].", '".$b_rep_qty[$key]."', '".$b_style."','".$b_schedule."','".$b_colors[$key]."','".$b_sizes[$key]."','".$b_op_id."')";
+							$result_sql_temp = $link->query($sql_gate) or exit('Gate_pass_child query error in updating');
+						
+						}
+						
+						
                         if($emb_cut_check_flag == 1)
                         {
                             $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$b_rep_qty[$key] where doc_no = '".$b_doc_num[$key]."' and size_title='".$b_sizes[$key]."' AND operation_code = $pre_ops_code";
@@ -766,6 +781,13 @@
                                 $b_query[$op_code] .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$send_qty.'","'.$rec_qty.'","'.$rej_qty.'","'.$left_over_qty.'","'. $op_code.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$mapped_color.'","'.$barcode_sequence[$key].'","'.$b_tid[$key].'"),';
 
                                 $b_query_temp[$op_code] .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$send_qty.'","'.$rec_qty.'","'.$rej_qty.'","'.$left_over_qty.'","'. $op_code.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$username.'"),';
+								
+								if($gate_pass_no>0)
+								{
+									$sql_gate="insert into $brandix_bts.`gatepass_track` (`gate_id`, `bundle_no`, `bundle_qty`, `style`, `schedule`, `color`, `size`,operation_id) values ('".$gate_pass_no."', ".$b_tid[$key].", '".$send_qty."', '".$b_style."','".$b_schedule."','".$b_colors[$key]."','".$b_sizes[$key]."','".$b_op_id."')";
+									$result_sql_temp = $link->query($sql_gate) or exit('Gate_pass_child query error in updating');								
+								}								
+								
                                 $count++;
                             }
                         }
@@ -878,6 +900,14 @@
                                     {
                                         $bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$previously_scanned .'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$username.'")';	
                                         $result_query_001_temp = $link->query($bulk_insert_post_temp) or exit('bulk_insert_post query error in updating');
+										
+										if($gate_pass_no>0)
+										{
+											$sql_gate="insert into $brandix_bts.`gatepass_track` (`gate_id`, `bundle_no`, `bundle_qty`, `style`, `schedule`, `color`, `size`,operation_id) values ('".$gate_pass_no."', ".$b_tid[$key].", '".$previously_scanned."', '".$b_style."','".$b_schedule."','".$b_colors[$key]."','".$b_sizes[$key]."','".$b_op_id."')";
+											$result_sql_temp = $link->query($sql_gate) or exit('Gate_pass_child query error in updating');
+										
+										}
+										
                                         if($emb_cut_check_flag == 1)
                                         {
                                             $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previously_scanned where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code = $pre_ops_code";
