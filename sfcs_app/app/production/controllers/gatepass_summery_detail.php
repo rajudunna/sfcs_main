@@ -6,8 +6,12 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jque
 if(isset($_GET['gatepassid']))
 {
 $gatepassid=$_GET['gatepassid'];
-?>
-<div class="panel panel-primary">
+$sql12="select vehicle_no from $brandix_bts.gatepass_table where id=".$gatepassid." and vehicle_no=''";
+$sql_result123=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+if(mysqli_num_rows($sql_result123)>0)
+{	
+	?>
+	<div class="panel panel-primary">
     <div class="panel-heading">Gate Pass</div>
     <div class="panel-body">
             <form method="post" name="input" action="<?php echo '?r='.$_GET['r']; ?>">
@@ -24,13 +28,26 @@ $gatepassid=$_GET['gatepassid'];
                     </div>
                 </div> 
             </form><br/>
+	<?php	
+}
+else
+{
+	while($sql_row12=mysqli_fetch_array($sql_result123))
+	{
+		$vehicle_no=$sql_row12['vehicle_no'];	
+	}
+	$url = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',0,'N');
+	echo "<script>window.location = '$url&vehicle_no=$vehicle_no&status=0&gatepassno=$gatepassid';</script>";	
+}
+?>
+
 <?php
 
 }
 
 
 
-if(!isset($_GET['gatepassid']) && !isset($_POST['submit']))
+if(!isset($_GET['gatepassid']) && !isset($_POST['submit']) && !isset($_GET['status']))
 {
     ?>
     <div class="panel panel-primary">
@@ -63,14 +80,24 @@ th,td{
 
 
 <?php
-if(isset($_POST['submit'])){
-    $vehicle_number=$_POST['vehicle_no'];
-    $gate_id=$_POST['gatepassno'];
+if(isset($_POST['submit']) || isset($_GET['status'])){
+
+	if($_GET['gatepassno']>0)
+	{
+		$vehicle_number=$_POST['vehicle_no'];
+		$gate_id=$_POST['gatepassno'];
+		$sql33="update $brandix_bts.gatepass_table set vehicle_no='$vehicle_number',gatepass_status=2 where id=".$gate_id."";
+		mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+   	}
+	else
+	{
+		$vehicle_number=$_GET['vehicle_no'];
+		$gate_id=$_GET['gatepassno'];	
+	}
+    
 	// echo $vehicle_number."---".$gate_id."<br>";
 	// die();
-	$sql33="update $brandix_bts.gatepass_table set vehicle_no='$vehicle_number',gatepass_status=2 where id=".$gate_id."";
-	mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-   
+	
 	$sql_total="SELECT style,schedule,color,SUM(bundle_qty) AS qty_bundle,COUNT(bundle_no) AS bundle_count FROM $brandix_bts.`gatepass_track` where gate_id=".$gate_id." GROUP BY style,schedule,color";
 	$sql_grand_total_res = mysqli_query($link,$sql_total) or exit('error in heading table view');
 	while($res_row12 = mysqli_fetch_array($sql_grand_total_res))
@@ -178,12 +205,11 @@ if(isset($_POST['submit'])){
 		$date=$_POST['date'];
 		$sql_date="select * from $brandix_bts.`gatepass_table` where date='$date' ";
 	// echo $sql_date;
-	  $date_gatepass = mysqli_query($link,$sql_date) or exit('error in heading table view222');
-	  echo  "<div class='panel-body'>";
-	  echo "<div class='panel panel-primary'>";
-		echo '<table class="table table-bordered"><tr class="warning"><th class="tblheading">Gate Pass Id</th><th class="tblheading">Shift</th><th class="tblheading">Operation</th><th class="tblheading">Vehicle No</th><th class="tblheading">Status</th><th class="tblheading">Date</th></tr>';
-		$url="http://localhost//index.php?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL2dhdGVwYXNzX3N1bW1lcnlfZGV0YWlsLnBocA==";
-
+		$date_gatepass = mysqli_query($link,$sql_date) or exit('error in heading table view222');
+		echo  "<div class='panel-body'>";
+		echo "<div class='panel panel-primary'>";
+		echo '<table class="table table-bordered"><tr class="warning"><th class="tblheading">Date</th><th class="tblheading">Gate Pass Id</th><th class="tblheading">Operation</th><th class="tblheading">Vehicle No</th><th class="tblheading">Shift</th><th class="tblheading">Status</th></tr>';
+		$url = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',2,'N');
 		while($data_res = mysqli_fetch_array($date_gatepass))
 		{
 			$id=$data_res['id'];
@@ -191,8 +217,22 @@ if(isset($_POST['submit'])){
 			$status=$data_res['gatepass_status'];    
 			$operation=$data_res['operation'];    
 			$vehicle_no=$data_res['vehicle_no'];    
-			$date_get=$data_res['date'];    
-			echo "<tr><td><a href='$url&gatepassid=$id'>$id</a></td><td>$shift</td><td>$operation</td><td>$vehicle_no</td><td>$status</td><td>$date_get</td></tr>";
+			$date_get=$data_res['date'];   
+			$sql1122="select operation_name from $brandix_bts.tbl_orders_ops_ref where operation_code=".$operation."";
+			$sql_result1w23=mysqli_query($link, $sql1122) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
+			while($sql_row1212=mysqli_fetch_array($sql_result1w23))
+			{
+				$ops_name=$sql_row1212['operation_name'];
+			}
+			if($status==1)
+			{
+				$remark='In Progress';	
+			}	
+			else
+			{
+				$remark='Completed';
+			}			
+			echo "<tr><td>$date_get</td><td><a class='btn btn-warning' href='$url?pass_id=".$id."&type=1' >Print Gate Pass - ".$id."</a></td><td>$ops_name</td><td>$vehicle_no</td><td>$shift</td><td>$remark</td></tr>";
 		 }
 		 echo '</table></div></div>';
 	 
