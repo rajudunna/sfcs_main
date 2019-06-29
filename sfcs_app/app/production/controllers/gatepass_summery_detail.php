@@ -49,7 +49,15 @@ else
 
 if(!isset($_GET['gatepassid']) && !isset($_POST['submit']) && !isset($_GET['status']))
 {
-    ?>
+    if($_POST['date']<>'')
+	{
+		$date=$_POST['date'];
+	}
+	else
+	{
+		$date=date('Y-m-d');
+	}
+	?>
     <div class="panel panel-primary">
     <div class="panel-heading">Gate Pass</div>
     <div class="panel-body">
@@ -57,7 +65,7 @@ if(!isset($_GET['gatepassid']) && !isset($_POST['submit']) && !isset($_GET['stat
                 <div class="row">
                     <div class="col-md-2">
                         <label>Select Date: </label>
-                        <input type="text" data-toggle="datepicker" id="date_select"  name="date" class="form-control"  size=8/>
+                        <input type="text" data-toggle="datepicker" id="date_select"  name="date" value="<?php echo $date;?>" class="form-control"  size=8/>
                          <input type="hidden"  id="gatepassno"  name="gatepassno" class="form-control"  value="<?=$gatepassid; ?>" />
                     </div>
                     <div class="row">
