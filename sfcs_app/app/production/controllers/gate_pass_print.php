@@ -1,6 +1,7 @@
 <?php include('../../../common/config/config.php'); 
 	include('../../../common/config/functions.php');  
 $gate_id=$_GET['pass_id'];
+$print_type=$_GET['type'];
 $sql12="select * from $brandix_bts.gatepass_table where id=".$gate_id."";
 $sql_result123=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
 while($sql_row12=mysqli_fetch_array($sql_result123))
@@ -678,11 +679,11 @@ tags will be replaced.-->
   <td class=xl1532160></td>
  </tr>
  <?php
- $sql="select style,schedule,color,size from $brandix_bts.gatepass_track where gate_id=".$gate_id." group by style,schedule,color,size";
+	$sql="select style,schedule,color,size from $brandix_bts.gatepass_track where gate_id=".$gate_id." group by style,schedule,color,size";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
-    $sql_num_check=mysqli_num_rows($sql_result);
-    while($sql_row=mysqli_fetch_array($sql_result))
-    {
+	$sql_num_check=mysqli_num_rows($sql_result);
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
 		$styles[]=$sql_row['style'];
 		$schedule[]=$sql_row['schedule'];
 		$color[]=$sql_row['color'];	
@@ -696,8 +697,8 @@ tags will be replaced.-->
 	$tot_bds=0;
 	$sql1="select style,schedule,color,size,sum(bundle_qty) as qty,count(bundle_no) as cnts from $brandix_bts.gatepass_track where gate_id=".$gate_id." group by style,schedule,color,size";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
-    while($sql_row1=mysqli_fetch_array($sql_result1))
-    {
+	while($sql_row1=mysqli_fetch_array($sql_result1))
+	{
 		$quantity[$sql_row1['schedule']][$sql_row1['color']][$sql_row1['size']]=$sql_row1['qty'];
 		$bundles[$sql_row1['schedule']][$sql_row1['color']][$sql_row1['size']]=$sql_row1['cnts'];
 		$tot_qty=$tot_qty+$sql_row1['qty'];
@@ -705,8 +706,8 @@ tags will be replaced.-->
 	}
 	$sql12="select schedule,color,sum(bundle_qty) as qty,count(bundle_no) as cnts from $brandix_bts.gatepass_track where gate_id=".$gate_id." group by schedule,color";
 	$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
-    while($sql_row12=mysqli_fetch_array($sql_result12))
-    {
+	while($sql_row12=mysqli_fetch_array($sql_result12))
+	{
 		$quantity_val[$sql_row12['schedule']][$sql_row12['color']]=$sql_row12['qty'];
 		$bundles_val[$sql_row12['schedule']][$sql_row12['color']]=$sql_row12['cnts'];
 	}
@@ -747,23 +748,26 @@ tags will be replaced.-->
 				<td class=xl1532160></td>
 				</tr>";
 			}
-			for($iiii=0;$iiii<sizeof($size);$iiii++)
+			if($print_type==2)
 			{
-				if($bundles[$schedule[$ii]][$color[$iii]][$size[$iiii]]<>'')
-				{				
-					echo "<tr height=19 style='height:14.4pt'>
-					<td height=19 class=xl1532160 style='height:14.4pt'></td>
-					<td class=xl6632160>&nbsp;</td>
-					<td class=xl7732160>".trim($styles[$i])."</td>
-					<td class=xl7732160>".$schedule[$ii]."</td>
-					<td colspan=2 class=xl7732160>".substr($color[$iii],0,15)."</td>
-					<td class=xl7732160>".$size[$iiii]."</td>
-					<td class=xl7732160>".$quantity[$schedule[$ii]][$color[$iii]][$size[$iiii]]."</td>
-					<td class=xl7732160>".$bundles[$schedule[$ii]][$color[$iii]][$size[$iiii]]."</td>
-					<td class=xl1532160></td>
-					<td class=xl6732160>&nbsp;</td>
-					<td class=xl1532160></td>
-					</tr>";
+				for($iiii=0;$iiii<sizeof($size);$iiii++)
+				{
+					if($bundles[$schedule[$ii]][$color[$iii]][$size[$iiii]]<>'')
+					{				
+						echo "<tr height=19 style='height:14.4pt'>
+						<td height=19 class=xl1532160 style='height:14.4pt'></td>
+						<td class=xl6632160>&nbsp;</td>
+						<td class=xl7732160>".trim($styles[$i])."</td>
+						<td class=xl7732160>".$schedule[$ii]."</td>
+						<td colspan=2 class=xl7732160>".substr($color[$iii],0,15)."</td>
+						<td class=xl7732160>".$size[$iiii]."</td>
+						<td class=xl7732160>".$quantity[$schedule[$ii]][$color[$iii]][$size[$iiii]]."</td>
+						<td class=xl7732160>".$bundles[$schedule[$ii]][$color[$iii]][$size[$iiii]]."</td>
+						<td class=xl1532160></td>
+						<td class=xl6732160>&nbsp;</td>
+						<td class=xl1532160></td>
+						</tr>";
+					}
 				}
 			}
 		}
