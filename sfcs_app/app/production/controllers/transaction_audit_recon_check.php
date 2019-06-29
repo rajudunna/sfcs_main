@@ -17,12 +17,12 @@ function quality_qty($schedule,$color,$tran_type,$size,$link,$module)
 	$size=str_replace("a_","",$size);
 	if($module!=0 or $module!='')
 	{
-		$sql="SELECT qms_color,qms_tran_type,CONCAT('a_',qms_size) AS qms_size,SUBSTRING_INDEX(remarks,'-',1) AS module,SUM(qms_qty) AS qty FROM $bai_pro3.bai_qms_db WHERE qms_schedule='.$schedule.' and qms_color='.$color.' and qms_tran_type IN ('.$tran_type.') and qms_size='.$size.' and SUBSTRING_INDEX(remarks,'-',1)='.$module.' GROUP BY qms_tran_type,qms_size,SUBSTRING_INDEX(remarks,'-',1)";
+		$sql='SELECT qms_color,qms_tran_type,CONCAT("a_",qms_size) AS qms_size,SUBSTRING_INDEX(remarks,"-",1) AS module,SUM(qms_qty) AS qty FROM bai_pro3.bai_qms_db WHERE qms_schedule='.$schedule.' and qms_color="'.$color.'" and qms_tran_type IN ('.$tran_type.') and qms_size="'.$size.'" and SUBSTRING_INDEX(remarks,"-",1)="'.$module.'" GROUP BY qms_tran_type,qms_size,SUBSTRING_INDEX(remarks,"-",1)';
 	mysqli_query($link,$sql) or exit("Sql Error1".mysqli_error());
 	}
 	else
 	{
-		$sql="SELECT qms_color,qms_tran_type,CONCAT('a_',qms_size) AS qms_size,SUBSTRING_INDEX(remarks,'-',1) AS module,SUM(qms_qty) AS qty FROM $bai_pro3.bai_qms_db WHERE qms_schedule='.$schedule.' and qms_color='.$color.' and qms_tran_type IN ('.$tran_type.') and qms_size='.$size.' GROUP BY qms_tran_type,qms_size";
+		$sql='SELECT qms_color,qms_tran_type,CONCAT("a_",qms_size) AS qms_size,SUBSTRING_INDEX(remarks,"-",1) AS module,SUM(qms_qty) AS qty FROM bai_pro3.bai_qms_db WHERE qms_schedule='.$schedule.' and qms_color="'.$color.'" and qms_tran_type IN ('.$tran_type.') and qms_size="'.$size.'" GROUP BY qms_tran_type,qms_size';
 	mysqli_query($link,$sql) or exit("Sql Error2".mysqli_error());
 	}
 	
