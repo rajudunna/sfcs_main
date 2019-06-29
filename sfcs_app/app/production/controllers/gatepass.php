@@ -106,7 +106,7 @@ function oper_display(){
 								$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							}
 							$gate_id=mysqli_insert_id($link);
-							$url="http://localhost//index.php?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2Ivc2V3aW5nX2pvYl9zY2FuaW5nL3NjYW5fYmFyY29kZV93b3V0X2tleXN0cm9rZS5waHA=";
+							$url = getFullURLLEVEL($_GET['r'],'scan_barcode_wout_keystroke.php',0,'N');
 							echo "<script>window.location = '$url&gatepass=G&shift=$shift&opertion=$operation&id=$gate_id';</script>";		
 						}
 					}
