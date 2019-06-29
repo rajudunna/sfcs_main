@@ -276,7 +276,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 				
 		//SPEED - Online Status updates
 		
-		// echo $schedule."-".$status."-";
+		 echo $schedule."-".$status."-";
 		
 		$status=6; //RM
 		if($cut_total==0)
@@ -362,7 +362,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		}
 		
 		
-		// echo $order."-".$cut_total."-".$input_total."-".$qty_temp."-".$fgqty."-".$internal_audited."-".$status."<br/>";
+		echo $order."-".$cut_total."-".$input_total."-".$qty_temp."-".$fgqty."-".$internal_audited."-".$status."<br/>";
 		
 	/*	$status=6;
 		if($fgqty>=$order and $internal_audited==$order)
@@ -405,7 +405,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		$query_add="";
 		if($counter_check>0)
 		{
-			//$query_add=", act_in=$input_total";
+			$query_add=", act_in=$input_total";
 		}
 		
 		
