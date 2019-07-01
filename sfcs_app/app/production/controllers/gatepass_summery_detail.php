@@ -5,45 +5,47 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jque
 
 if(isset($_GET['gatepassid']))
 {
-$gatepassid=$_GET['gatepassid'];
-$sql12="select vehicle_no from $brandix_bts.gatepass_table where id=".$gatepassid." and vehicle_no=''";
-$sql_result123=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-if(mysqli_num_rows($sql_result123)>0)
-{	
-	?>
-	<div class="panel panel-primary">
-    <div class="panel-heading">Gate Pass</div>
-    <div class="panel-body">
-            <form method="post" name="input" action="<?php echo '?r='.$_GET['r']; ?>">
-                <div class="row">
-                    <div class="col-md-2">
-                        <label>Enter Vehice Number: </label>
-                        <input type="text"  id="vehicle_no"  name="vehicle_no" class="form-control"  value="<?php  if(isset($_POST['vehicle_no'])) { echo $_POST['vehicle_no']; } else { echo ""; } ?>" />
-                         <input type="hidden"  id="gatepassno"  name="gatepassno" class="form-control"  value="<?=$gatepassid; ?>" />
-                    </div>
-                    <div class="row">
-                    <div class="col-md-8">
-                        <input type="submit" value="Generate Gate Pass" name="submit" class="btn btn-success"  style="margin-top:22px;">
-                    </div>
-                    </div>
-                </div> 
-            </form><br/>
-	<?php	
-}
-else
-{
+	$gatepassid=$_GET['gatepassid'];
+	$sql12="select vehicle_no from $brandix_bts.gatepass_table where id=".$gatepassid." and vehicle_no<>''";
+	//echo $sql12."<br>"; 
+	$sql_result123=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row12=mysqli_fetch_array($sql_result123))
 	{
 		$vehicle_no=$sql_row12['vehicle_no'];	
-	}
-	$url = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',0,'N');
-	echo "<script>window.location = '$url&vehicle_no=$vehicle_no&status=0&gatepassno=$gatepassid';</script>";	
+		if($vehicle_no=='')
+		{
+			?>
+			<div class="panel panel-primary">
+			<div class="panel-heading">Gate Pass</div>
+			<div class="panel-body">
+					<form method="post" name="input" action="<?php echo '?r='.$_GET['r']; ?>">
+						<div class="row">
+							<div class="col-md-2">
+								<label>Enter Vehice Number: </label>
+								<input type="text"  id="vehicle_no"  name="vehicle_no" class="form-control"  value="<?php  if(isset($_POST['vehicle_no'])) { echo $_POST['vehicle_no']; } else { echo ""; } ?>" />
+								 <input type="hidden"  id="gatepassno"  name="gatepassno" class="form-control"  value="<?=$gatepassid; ?>" />
+							</div>
+							<div class="row">
+							<div class="col-md-8">
+								<input type="submit" value="Generate Gate Pass" name="submit" class="btn btn-success"  style="margin-top:22px;">
+							</div>
+							</div>
+						</div> 
+					</form><br/>
+			<?php	
+		}
+		else
+		{
+			$url = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',0,'N');
+			echo "<script>window.location = '$url&vehicle_no=$vehicle_no&status=0&gatepassno=$gatepassid';</script>";
+		}
+	}	
 }
+
 ?>
 
 <?php
 
-}
 
 
 
@@ -58,9 +60,9 @@ if(!isset($_GET['gatepassid']) && !isset($_POST['submit']) && !isset($_GET['stat
 		$date=date('Y-m-d');
 	}
 	?>
-    <div class="panel panel-primary">
-    <div class="panel-heading">Gate Pass</div>
-    <div class="panel-body">
+   <div class="panel panel-primary">
+			<div class="panel-heading">Gate Pass</div>
+			<div class="panel-body">
             <form method="post" name="input" action="<?php echo '?r='.$_GET['r']; ?>">
                 <div class="row">
                     <div class="col-md-2">
@@ -88,24 +90,29 @@ th,td{
 
 
 <?php
+
+			
 if(isset($_POST['submit']) || isset($_GET['status'])){
 
-	if($_GET['gatepassno']>0)
+	?>
+	<div class="panel panel-primary">
+			<div class="panel-heading">Gate Pass</div>
+			<div class="panel-body">
+	<?php
+	
+	if($_GET['status']==0)
 	{
+		$vehicle_number=$_GET['vehicle_no'];
+		$gate_id=$_GET['gatepassno'];
+   	}
+	else
+	{		
 		$vehicle_number=$_POST['vehicle_no'];
 		$gate_id=$_POST['gatepassno'];
 		$sql33="update $brandix_bts.gatepass_table set vehicle_no='$vehicle_number',gatepass_status=2 where id=".$gate_id."";
 		mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-   	}
-	else
-	{
-		$vehicle_number=$_GET['vehicle_no'];
-		$gate_id=$_GET['gatepassno'];	
 	}
-    
-	// echo $vehicle_number."---".$gate_id."<br>";
-	// die();
-	
+   
 	$sql_total="SELECT style,schedule,color,SUM(bundle_qty) AS qty_bundle,COUNT(bundle_no) AS bundle_count FROM $brandix_bts.`gatepass_track` where gate_id=".$gate_id." GROUP BY style,schedule,color";
 	$sql_grand_total_res = mysqli_query($link,$sql_total) or exit('error in heading table view');
 	while($res_row12 = mysqli_fetch_array($sql_grand_total_res))
@@ -152,7 +159,7 @@ if(isset($_POST['submit']) || isset($_GET['status'])){
 	echo "</br></br>";
 	$url=getFullURL($_GET['r'],'gate_pass_print.php','R');
 	echo "<div class='col-sm-12'><br><div class='alert alert-info' style='font-size:13px;padding:5px'>Generated gatepass Summary View.           
-	<a class='btn btn-warning' href='$url?pass_id=".$gate_id."&type=1' >Print Gate Pass - ".$gate_id."</a>									
+	<a class='btn btn-warning' href='$url?pass_id=".$gate_id."&type=1' target='_blank'>Print Gate Pass - ".$gate_id."</a>									
 	</div>";
 	 echo"<div class='panel-body'>
     <div class='panel panel-primary'>
@@ -172,7 +179,7 @@ if(isset($_POST['submit']) || isset($_GET['status'])){
 	
 	/* Summary View */
 	echo "<div class='col-sm-12'><br><div class='alert alert-info' style='font-size:13px;padding:5px'>Generated gatepass Detailed View. 
-	<a class='btn btn-warning' href='$url?pass_id=".$gate_id."&type=2' >Print Gate Pass - ".$gate_id."</a></div>";
+	<a class='btn btn-warning' href='$url?pass_id=".$gate_id."&type=2' target='_blank'>Print Gate Pass - ".$gate_id."</a></div>";
 	echo"<div class='panel-body'>
     <div class='panel panel-primary'>
 	<table class='table table-bordered'>";
@@ -205,7 +212,7 @@ if(isset($_POST['submit']) || isset($_GET['status'])){
 		}
 	}
 		  
-	echo "</table></div></div>";
+	echo "</table></div></div></div></div>";
 	
 	}
 
@@ -217,7 +224,7 @@ if(isset($_POST['submit']) || isset($_GET['status'])){
 		echo  "<div class='panel-body'>";
 		echo "<div class='panel panel-primary'>";
 		echo '<table class="table table-bordered"><tr class="warning"><th class="tblheading">Date</th><th class="tblheading">Gate Pass Id</th><th class="tblheading">Operation</th><th class="tblheading">Vehicle No</th><th class="tblheading">Shift</th><th class="tblheading">Status</th></tr>';
-		$url = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',2,'N');
+		$url = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',0,'N');
 		while($data_res = mysqli_fetch_array($date_gatepass))
 		{
 			$id=$data_res['id'];
@@ -240,7 +247,7 @@ if(isset($_POST['submit']) || isset($_GET['status'])){
 			{
 				$remark='Completed';
 			}			
-			echo "<tr><td>$date_get</td><td><a class='btn btn-warning' href='$url?pass_id=".$id."&type=1' >Print Gate Pass - ".$id."</a></td><td>$ops_name</td><td>$vehicle_no</td><td>$shift</td><td>$remark</td></tr>";
+			echo "<tr><td>$date_get</td><td><a class='btn btn-warning' href='$url&gatepassid=".$id."&type=1' >Print Gate Pass - ".$id."</a></td><td>$ops_name</td><td>$vehicle_no</td><td>$shift</td><td>$remark</td></tr>";
 		 }
 		 echo '</table></div></div>';
 	 
