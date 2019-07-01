@@ -1,10 +1,12 @@
 <?php 
-if(isset($_GET['gatepass'])){
+if(isset($_GET['id'])){
  echo "<script>
          $(document).ready(function(){
          $('#frm1').submit();
          });
       </script>";
+	$gate_id= $_GET['id']; 
+	
 }
 ?>
 <?php
@@ -13,8 +15,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 $url = getFullURLLEVEL($_GET['r'],'scan_barcode_wout_keystroke.php',0,'N');
 $category="'sewing'";
     $query_get_schedule_data= "SELECT tm.operation_code,tm.id,tm.operation_name FROM $brandix_bts.tbl_orders_ops_ref tm
-    WHERE tm.operation_code NOT IN (10,200,15) 
-    AND category IN ($category) AND display_operations='yes'
+    WHERE category IN ($category) AND display_operations='yes'
 GROUP BY tm.operation_code ORDER BY tm.operation_code";
     $result = $link->query($query_get_schedule_data);
     while($row = $result->fetch_assoc()){
@@ -30,6 +31,7 @@ GROUP BY tm.operation_code ORDER BY tm.operation_code";
 <form method ='POST' id='frm1' action='<?php echo $url ?>'>
 <div class="row">
 <div class="col-md-4">
+<input type='text' id='gate_id' name ='gate_id' value=<?php echo $gate_id; ?>>
 <label>Shift:<span style="color:red">*</span></label>
 <select class="form-control shift" name="shift" id="shift" style="width:100%;" required>
 <option value="">Select Shift</option>
@@ -47,7 +49,7 @@ for ($i=0; $i < sizeof($shifts_array); $i++) {?>
 <?php
 foreach($ops_array1 as $key=>$value)
 {
-  if($_GET['opertion']==$value){
+  if($_GET['opertion']==$key){
     echo "<option value='$key' selected>$ops_array[$key] - $key </option>"; 
 
   }else{
