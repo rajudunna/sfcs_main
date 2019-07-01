@@ -107,7 +107,7 @@ function oper_display(){
 							}
 							$gate_id=mysqli_insert_id($link);
 							$url = getFullURLLEVEL($_GET['r'],'sewing_job/sewing_job_scaning/pre_bundle_level_scanning_without_ops.php',0,'N');
-							echo "<script>window.location = '$url&gatepass=G&shift=$shift&opertion=$operation&id=$gate_id';</script>";		
+							echo "<script>window.location = '$url&shift=$shift&opertion=$operation&id=$gate_id';</script>";		
 						}
 					}
 					?>
