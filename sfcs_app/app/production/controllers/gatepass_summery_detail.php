@@ -6,7 +6,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jque
 if(isset($_GET['gatepassid']))
 {
 	$gatepassid=$_GET['gatepassid'];
-	$sql12="select vehicle_no from $brandix_bts.gatepass_table where id=".$gatepassid." and vehicle_no<>''";
+	$sql12="select vehicle_no from $brandix_bts.gatepass_table where id=".$gatepassid."";
 	//echo $sql12."<br>"; 
 	$sql_result123=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row12=mysqli_fetch_array($sql_result123))
