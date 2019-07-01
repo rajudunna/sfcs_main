@@ -99,7 +99,7 @@
             $resp_stat[] = $_GET['schedule'] ? 'schedule="'.$_GET["schedule"].'"' : '';
             $resp_stat[] = ($_GET['tdate'] && $_GET['fdate']) ? 'DATE(m3_transactions.date_time) between  "'.$_GET["fdate"].'" and "'.$_GET["tdate"].'"' : '';
             $ar_nw = array_filter($resp_stat);
-            $qry_m3_trans = "SELECT style,schedule,color,size,m3_transactions.date_time as dt,m3_transactions.mo_no,op_code,quantity,response_status,m3_transactions.id,m3_transactions.log_user,m3_transactions.ref_no,m3_transactions.reason,m3_transactions.module_no,m3_transactions.api_type,m3_transactions.workstation_id,m3_trail_count,m3_ops_code
+            $qry_m3_trans = "SELECT style,schedule,color,size,m3_transactions.date_time as dt,m3_transactions.mo_no,op_code,quantity,response_status,m3_transactions.id,m3_transactions.log_user,m3_transactions.ref_no,m3_transactions.reason,m3_transactions.module_no,m3_transactions.api_type,m3_transactions.m3_bulk_tran_id as m3_bulk_tran_id,m3_transactions.workstation_id,m3_trail_count,m3_ops_code
             FROM bai_pro3.`m3_transactions`  
             LEFT JOIN bai_pro3.`mo_details` ON m3_transactions.mo_no=mo_details.mo_no WHERE ".implode(' and ',$ar_nw);
             $result_m3_trans = mysqli_query($link_ui, $qry_m3_trans);
@@ -133,8 +133,10 @@
                     }
                     
                     if($reason=='fail'){
-                        $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`transactions_log` WHERE transaction_id=".$res['id']." order by sno desc limit 1"))['response_message'] ?? 'fail with no reason.';
-                        $reason = '<label class="label label-danger">'.$ndr."</label>";
+                        if($res['m3_bulk_tran_id'] !='' || $res['m3_bulk_tran_id'] != NULL){
+                            $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`transactions_log` WHERE transaction_id=".$res['m3_bulk_tran_id']." order by sno desc limit 1"))['response_message'] ?? 'fail with no reason.';
+                         $reason = '<label class="label label-danger">'.$ndr."</label>";
+                        }
                     }else{
                         $reason = "<label class='label label-success'>".$reason."</label>";
                     }
