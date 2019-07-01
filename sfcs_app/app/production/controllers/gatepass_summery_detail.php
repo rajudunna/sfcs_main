@@ -37,7 +37,7 @@ if(isset($_GET['gatepassid']))
 		else
 		{
 			$url = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',0,'N');
-			echo "<script>window.location = '$url&vehicle_no=$vehicle_no&status=0&gatepassno=$gatepassid';</script>";
+			echo "<script>window.location = '$url&vehicle_no=$vehicle_no&status=1&gatepassno=$gatepassid';</script>";
 		}
 	}	
 }
@@ -100,7 +100,7 @@ if(isset($_POST['submit']) || isset($_GET['status'])){
 			<div class="panel-body">
 	<?php
 	
-	if($_GET['status']==0)
+	if($_GET['status']==1)
 	{
 		$vehicle_number=$_GET['vehicle_no'];
 		$gate_id=$_GET['gatepassno'];
@@ -216,14 +216,17 @@ if(isset($_POST['submit']) || isset($_GET['status'])){
 						}
 					}
 				}
-			}
+			} 
 		}
 			  
 		echo "</table></div></div></div></div>";
 	}
 	else
 	{
+		$url = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',0,'N');
 		echo "<div class='col-sm-12'><br><div class='alert alert-info' style='font-size:13px;padding:5px'>No transactions are happened for this gate pass.</div>";
+		echo "<script>window.location = '$url';</script>";
+		
 	}	
 	}
 
