@@ -106,7 +106,7 @@ function oper_display(){
 								$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							}
 							$gate_id=mysqli_insert_id($link);
-							$url = getFullURLLEVEL($_GET['r'],'scan_barcode_wout_keystroke.php',0,'N');
+							$url = getFullURLLEVEL($_GET['r'],'sewing_job/sewing_job_scaning/pre_bundle_level_scanning_without_ops.php',0,'N');
 							echo "<script>window.location = '$url&gatepass=G&shift=$shift&opertion=$operation&id=$gate_id';</script>";		
 						}
 					}
