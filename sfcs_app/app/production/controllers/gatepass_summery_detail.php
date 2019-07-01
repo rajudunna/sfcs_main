@@ -92,7 +92,7 @@ th,td{
 <?php
 
 			
-if(isset($_POST['submit']) || isset($_GET['status'])){
+if(isset($_POST['submit']) || ($_GET['status']==1)){
 
 	?>
 	<div class="panel panel-primary">

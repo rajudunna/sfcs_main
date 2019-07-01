@@ -31,7 +31,7 @@ GROUP BY tm.operation_code ORDER BY tm.operation_code";
 <form method ='POST' id='frm1' action='<?php echo $url ?>'>
 <div class="row">
 <div class="col-md-4">
-<input type='text' id='gate_id' name ='gate_id' value=<?php echo $gate_id; ?>>
+<input type='hidden' id='gate_id' name ='gate_id' value=<?php echo $gate_id; ?>>
 <label>Shift:<span style="color:red">*</span></label>
 <select class="form-control shift" name="shift" id="shift" style="width:100%;" required>
 <option value="">Select Shift</option>
