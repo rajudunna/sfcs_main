@@ -562,7 +562,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=4 class=xl772606>Plot # 12 , BEK SEZ,</td>
+  <td colspan=4 class=xl772606><?= $plant_name ?></td>
   <td class=xl662606></td>
   <td class=xl662606></td>
   <td class=xl662606></td>
@@ -1122,7 +1122,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=4 class=xl772606>Plot # 12, BEK SEZ</td>
+  <td colspan=4 class=xl772606><?= $plant_name ?></td>
   <td class=xl662606></td>
   <td class=xl662606></td>
   <td class=xl662606></td>
@@ -1685,7 +1685,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=4 class=xl772606>Plot # 12, BEK SEZ, </td>
+  <td colspan=4 class=xl772606><?= $plant_name ?> </td>
   <td class=xl662606></td>
   <td class=xl662606></td>
   <td class=xl662606></td>
@@ -2242,7 +2242,7 @@ tags will be replaced.-->
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl662606 style='height:16.5pt'></td>
-  <td colspan=4 class=xl772606>Plot # 12, BEK SEZ,</td>
+  <td colspan=4 class=xl772606><?= $plant_name ?></td>
   <td class=xl662606></td>
   <td class=xl662606></td>
   <td class=xl662606></td>

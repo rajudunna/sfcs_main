@@ -1,23 +1,19 @@
 <?php 
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
-	if($_GET['shift']<>'')
+	$shift = $_POST['shift'];
+	$op_code=$_POST['operation_code'];
+	$gate_id=$_POST['gate_id'];	
+	if($gate_id=='')
 	{
-		$shift = $_GET['shift'];
-		$op_code=$_GET['opertion'];
-		$gate_id=$_GET['id'];
-	}
-	else
-	{
-		$shift = $_POST['shift'];
-		$op_code=$_POST['operation_code'];
 		$gate_id=0;
 	}
+	//echo $gate_id."--".$op_code."--".$shift."<br>";
     $has_permission=haspermission($_GET['r']);
     if (in_array($override_sewing_limitation,$has_permission))
     {
         $value = 'authorized';
-    }
+    } 
     else
     {
         $value = 'not_authorized';
@@ -77,7 +73,7 @@ th,td{
 						<div class="col-sm-2 form-group" style="padding-top:20px;">
 						<form method ='POST' id='frm1' action='<?php echo $url ?>'>
 						<?php
-						echo "<a class='btn btn-warning' href='$url1&gatepassid=".$gate_id."&status=2' >Finish</a>";
+							echo "<a class='btn btn-warning' href='$url1&gatepassid=".$gate_id."&status=2' >Finish</a>";
 						?>
 						</form>
 						</div> 
