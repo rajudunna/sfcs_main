@@ -405,7 +405,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		$query_add="";
 		if($counter_check>0)
 		{
-			$query_add=", act_in=$input_total";
+			//$query_add=", act_in=$input_total";
 		}
 		
 		
