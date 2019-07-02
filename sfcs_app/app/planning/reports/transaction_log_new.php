@@ -193,22 +193,22 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 	{
 		echo "<div>";
 		echo "<div  class ='table-responsive'>";
-		echo "<table id=\"table1\"  border=1 class=\"table\" cellpadding=\"0\" cellspacing=\"0\" style='margin-top:10pt;'><thead><tr class='tblheading' style='color:white;'><th>Date</th><th>Time<th>Module</th><th>Section</th><th>Shift</th><th>Style</th><th>Schedule</th><th>Color</th><th>Cut No</th><th>Input Job No</th><th>Size</th><th>Quantity</th></tr></thead><tbody>";
+		echo "<table id=\"table1\"  border=1 class=\"table\" cellpadding=\"0\" cellspacing=\"0\" style='margin-top:10pt;'><thead><tr class='tblheading' style='color:white;'><th>Date</th><th>Time<th>Module</th><th>Section</th><th>Shift</th><th>Style</th><th>Schedule</th><th>Color</th><th>Cut No</th><th>Input Job No</th><th>Size</th><th>SMV</th><th>Quantity</th><th>SAH</th></tr></thead><tbody>";
 		$total_qty=0;
 		do{
 			for($ii=$hour_from;$ii<=$hour_to;$ii++)
 			{
-				$sql2212="SELECT start_time,end_time,time_display FROM $bai_pro3.tbl_plant_timings where time_value='$ii'"; 
+				$sql2212="SELECT start_time,end_time,time_display,day_part FROM $bai_pro3.tbl_plant_timings where time_value='$ii'"; 
 				$sql_result2212=mysqli_query($link, $sql2212) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($rows12=mysqli_fetch_array($sql_result2212))
 				{
 					$time_display=$rows12['time_display'];
-					$time_display=$rows12['time_display'];
+					$day_part=$rows12['day_part'];
 					$start_hour=$rows12['start_time'];
 					$end_hour=$rows12['end_time'];
 					$time_query=" AND TIME(log_time) BETWEEN ('".$rows12['start_time']."') and ('".$rows12['end_time']."')";
 				}
-				$sql1="select smv,nop,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,$append log_time from $bai_pro.bai_log where bac_date='".$sdate."' $time_query $shift_value $section_value  GROUP BY bac_sec,bac_no,bac_style,delivery,jobno,color,ims_doc_no ORDER BY bac_style,delivery,jobno*1";
+				$sql1="select smv,nop,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,$append log_time from $bai_pro.bai_log where bac_date='".$sdate."' $time_query $shift_value $section_value  GROUP BY bac_sec,bac_no,bac_style,delivery,jobno,color,ims_doc_no ORDER BY bac_style,delivery,bac_shift,jobno*1";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result1)>0)
 				{
@@ -225,14 +225,23 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 						$log_time=$sql_row['log_time'];
 						$schedule=$sql_row['delivery'];
 						$color=$sql_row['color'];
-						$smv=$sql_row['smv'];
-						$nop=$sql_row['nop'];
+						$smv=round($sql_row['smv'],3);	
+						$nop=$sql_row['nop'];						
 						for($i=0;$i<sizeof($sizes_array);$i++)
 						{
 							if($sql_row["size_".$sizes_array[$i].""]>0)
 							{						
 								$sizes[$sizes_array[$i]]=$sql_row["size_".$sizes_array[$i].""];
-								$sizes_val[]=$sizes_array[$i];								
+								
+								$sizes_val[]=$sizes_array[$i];
+								if($smv>0)
+								{								
+									$sah[$sizes_array[$i]]=round($sql_row["size_".$sizes_array[$i].""]*$smv/60,3);
+								}
+								else
+								{
+									$sah[$sizes_array[$i]]=0;
+								}								
 							}
 						}
 						$input_job = $sql_row['jobno'];
@@ -285,9 +294,11 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 								$finalized_title_size_value = $sql_result_fetch["size"];
 							}
 							$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
-							echo "<tr bgcolor=\"$bgcolor\"><td>$sdate</td><td>".$time_display."</td><td>$module</td><td>$section</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>$display_prefix1</td><td>$finalized_title_size_value</td><td >".$sizes[$sizes_val[$k]]."</td></tr>";
+							echo "<tr bgcolor=\"$bgcolor\"><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$module</td><td>$section</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>$display_prefix1</td><td>$finalized_title_size_value</td><td>$smv</td><td>".$sizes[$sizes_val[$k]]."</td><td>".$sah[$sizes_val[$k]]."</td></tr>";
 							$total_qty=$total_qty+$sizes[$sizes_val[$k]];							
+							$total_qty_sah=$total_qty_sah+$sah[$sizes_val[$k]];							
 						}				
+						unset($sah);
 						unset($sizes_val);
 						unset($sizes);				
 					}
@@ -297,7 +308,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 			$sdate = date ("Y-m-d", strtotime("+1 days", strtotime($sdate)));			
 		}
 		while (strtotime($sdate) <= strtotime($edate)); 
-		echo "<tr style='background-color:#FFFFCC;' class='total_excel'><td colspan=11>Total</td><td id='table1Tot1'>$total_qty</td></tr></tbody></table></div></div>";
+		echo "<tr style='background-color:#FFFFCC;' class='total_excel' id='total_excel'><td colspan=12>Total</td><td id='table1Tot1'>$total_qty</td><td id='table1Tot2'>$total_qty_sah</td></tr></tbody></table></div></div>";
 	}
 	else
 	{
@@ -315,7 +326,7 @@ var fnsFilters = {
 	rows_counter: true,
 	sort_select: true,
 		on_change: true,
-		display_all_text: " [ Show all ] ",
+		display_all_text: " [ Select ] ",
 		loader_text: "Filtering data...",  
 	loader: true,
 	loader_text: "Filtering data...",
@@ -330,17 +341,15 @@ var fnsFilters = {
 	col_8: 'select',
 	col_9: 'select',
 	col_10: 'select',
-	col_11: 'select',
-	
 	btn_reset: true,
 		alternate_rows: true,
 		btn_reset_text: "Clear",
 	col_operation: {						
-						id: ["table1Tot1"],
-						col: [11],  
-						operation: ["sum"],
-						decimal_precision: [1],
-						write_method: ["innerHTML"] 
+						id: ["table1Tot1","table1Tot2"],
+						col: [12,13],  
+						operation: ["sum","sum"],
+						decimal_precision: [1,1],
+						write_method: ["innerHTML","innerHTML"] 
 					},
 	rows_always_visible: [grabTag(grabEBI('table1'),"tr").length]
 		

@@ -170,10 +170,18 @@
                         $recut_allowing_qty = 0;
                     }
                     foreach ($insert_id_act as $key_insert => $val_insert) 
+                    { 
+					
+					$category_new = "SELECT * FROM `$bai_pro3`.`cat_stat_log` where tid in (select cat_ref from  `$bai_pro3`.`plandoc_stat_log` where doc_no=$val_insert)";
+					
+					$category_new_res = $link->query($category_new);
+                    while($category_new_res1 = $category_new_res->fetch_assoc()) 
                     {
-                        if($to_add > 0)
-                        {
-                            $inserting_into_recut_v2_child = "INSERT INTO `$bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`,`size_id`)
+                        $cty =$category_new_res1['category'];
+                    }
+					 if($to_add > 0)
+                    {
+						 $inserting_into_recut_v2_child = "INSERT INTO `$bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`,`size_id`)
                             VALUES($val_insert,$bcd_act_id,$operation_id,$actual_allowing_to_recut,$to_add,0,0,'$size_id')";
                             mysqli_query($link,$inserting_into_recut_v2_child) or exit("While inserting into the recut v2 child".mysqli_error($GLOBALS["___mysqli_ston"]));
                             //retreaving bundle_number of recut docket from bcd and inserting into moq
@@ -183,6 +191,11 @@
                             {
                                 $bundle_number_recut = $row_bcd_recut['bundle_number'];
                             }
+					if(strtolower($cty) == 'body' || strtolower($cty) == 'front')
+					    {
+						
+                       
+                           
                             $multiple_mos_tot_qty = $to_add;
                             $array_mos = array();
                             //retreaving mo_number which is related to that bcd_act_id
@@ -238,6 +251,7 @@
                             $update_rejection_log = "update $bai_pro3.rejections_log set recut_qty = recut_qty+$to_add,remaining_qty = remaining_qty - $to_add where style = '$style' and schedule = '$scheule' and color = '$color'";
                             mysqli_query($link,$update_rejection_log) or exit("While updating rejection log".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
+					}
                         if($val_insert == $insert_id)
                         {
                             $mo_changes = mofillingforrecutreplace($to_add_mo,$bcd_act_id);
@@ -247,7 +261,7 @@
             }
         }
         $url = '?r='.$_GET['r'];
-        echo "<script>sweetAlert('Recut Successfully Raised','','success');window.location = '".$url."'</script>";   
+       echo "<script>sweetAlert('Recut Successfully Raised','','success');window.location = '".$url."'</script>";   
     }
     if(isset($_POST['formSubmit1']))
     {
@@ -1100,11 +1114,14 @@ function isInt(t)
 }
     function checks(){
         $('#recut').hide();
-        $('input[type=checkbox]').each((key,val)=>{
-            if(val.checked == true){
-                $('#recut').show();
-            }
-        });
+            var val = [];
+            $(':checkbox:checked').each(function(i){
+                val[i] = $(this).val().toLowerCase();
+                if(val[i]=='body' || val[i]=='front')
+                {
+                    $('#recut').show();
+                }
+            });
     }
 
 $(document).ready(function() 
