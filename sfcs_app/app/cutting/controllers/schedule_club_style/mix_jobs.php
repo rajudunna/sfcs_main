@@ -466,7 +466,18 @@ if(isset($_POST['submit']))
 					unset($order_tids);
 					unset($destination_id_new);
 					unset($val);
-					$available=0;
+					$available=array();
+					$dels=array();
+					$colrsnew=array();
+					$del_qty=array();
+					$order_tids=array();
+					$destination_id_new=array();
+					$cutno=array();
+					$cut_ref=array();
+					$mk_ref=array();
+					$cat_ref=array();
+					$plies_ref=array();
+					$docs=array();
 					$cutno=0;
 					$pend=0;
 					$tot_split=0;$req_qty=0;
@@ -484,6 +495,7 @@ if(isset($_POST['submit']))
 							$destination_id_new[$del]=$sql_row19['destination'];
 							$req_qty=$req_qty+$sql_row19['ord_qty'];
 						}	
+						$max_del[]=max($dels);
 						$sql14="select * from $bai_pro3.mix_temp_source where size=\"p_".$sizes_array[$i]."\" and qty>0 and cat_ref='$cat_ref' group by doc_no order by doc_no*1";
 						$sql_result114=mysqli_query( $link, $sql14) or exit("Sql Error96".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						if(mysqli_num_rows($sql_result114)>0)
@@ -536,8 +548,58 @@ if(isset($_POST['submit']))
 									}while($eligble>0 && $available[$docs[$jj]]>0)									
 								}								
 							}
+						}
+						if(array_sum($available)>0)
+						{
+							for($j=0;$j<sizeof($max_del);$j++)
+							{
+								$eligble=floor(($del_qty[$dels[$j]]/$req_qty)/$tot_qty_exces,0);
+								if($eligble>0)
+								{
+									for($jj=0;$jj<sizeof($docs);$jj++)
+									{
+										do
+										{	
+											if($eligble<$available[$docs[$jj]][$sizes_array[$i]])
+											{
+												$sqlx3="insert into $bai_pro3.mix_temp_desti(allo_new_ref,cat_ref,cutt_ref,mk_ref,size,qty,order_tid,order_col_des,order_del_no,destination,plies,doc_no,cutno) values ('".$docs[$jj]."','".$cat_ref[$docs[$jj]][$sizes_array[$i]]."','".$cut_ref[$docs[$jj]][$sizes_array[$i]]."','".$mk_ref[$docs[$jj]][$sizes_array[$i]]."',\"p_".$sizes_array[$i]."\",\"".$eligble."\",\"".$order_tids[$dels[$j]]."\",\"".$colrsnew[$dels[$j]]."\",\"".$dels[$j]."\",\"".$destination_id_new[$dels[$j]]."\",\"".$plies_ref[$docs[$jj]][$sizes_array[$i]]."\",\"".$docs[$jj]."\",\"".$cutno[$docs[$jj]][$sizes_array[$i]]."\")"; 
+												//echo $sqlx3."<br>";
+												mysqli_query( $link, $sqlx3) or exit("Sql Errorx3".mysqli_error($GLOBALS["___mysqli_ston"]));	
+												$sqlx71="update $bai_pro3.mix_temp_source set qty='0' where doc_no='".$docs[$jj]."' and size='p_".$sizes_array[$i]."'";
+												//echo $sqlx7."<br>";
+												mysqli_query($link, $sqlx71) or exit("Sql Errorx7".mysqli_error($GLOBALS["___mysqli_ston"]));
+												$available[$docs[$jj]][$sizes_array[$i]]=$available[$docs[$jj]][$sizes_array[$i]]-$eligble;
+												$eligble=0;
+											}
+											else
+											{
+												$sqlx3="insert into $bai_pro3.mix_temp_desti(allo_new_ref,cat_ref,cutt_ref,mk_ref,size,qty,order_tid,order_col_des,order_del_no,destination,plies,doc_no,cutno) values ('".$docs[$jj]."','".$cat_ref[$docs[$jj]][$sizes_array[$i]]."','".$cut_ref[$docs[$jj]][$sizes_array[$i]]."','".$mk_ref[$docs[$jj]][$sizes_array[$i]]."',\"p_".$sizes_array[$i]."\",\"".$eligble."\",\"".$order_tids[$dels[$j]]."\",\"".$colrsnew[$dels[$j]]."\",\"".$dels[$j]."\",\"".$destination_id_new[$dels[$j]]."\",\"".$plies_ref[$docs[$jj]][$sizes_array[$i]]."\",\"".$docs[$jj]."\",\"".$cutno[$docs[$jj]][$sizes_array[$i]]."\")"; 
+												//echo $sqlx3."<br>";
+												mysqli_query( $link, $sqlx3) or exit("Sql Errorx3".mysqli_error($GLOBALS["___mysqli_ston"]));	
+												$sqlx71="update $bai_pro3.mix_temp_source set qty='0' where doc_no='".$docs[$jj]."' and size='p_".$sizes_array[$i]."'";
+												//echo $sqlx7."<br>";
+												mysqli_query($link, $sqlx71) or exit("Sql Errorx7".mysqli_error($GLOBALS["___mysqli_ston"]));
+												$eligble=$eligble-$available[$docs[$jj]][$sizes_array[$i]];
+												$available[$docs[$jj]][$sizes_array[$i]]=0;	
+											}										
+										}while($eligble>0 && $available[$docs[$jj]]>0)									
+									}								
+								}
+							}						
 						}						
-					}					
+					}
+					unset($available);
+					unset($dels);
+					unset($colrsnew);
+					unset($del_qty);
+					unset($order_tids);
+					unset($destination_id_new);
+					unset($mk_ref);
+					unset($cat_ref);
+					unset($cutno);
+					unset($cat_ref);
+					unset($plies_ref);
+					unset($docs);										
 				}				
 				$size_p=array();
 				$size_q=array();
