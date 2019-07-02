@@ -96,6 +96,7 @@
 
             <form action="<?= $action_url ?>" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
                 <input type='hidden' id='q_id' name='q_id' value="<?php echo $q_id; ?>" >
+                <input type='hidden' id='q_location_type' name='q_location_type' value="<?php echo $q_location_type; ?>" >
                 <div class="container-fluid shadow">
                     <div class="row">
                         <div id="valErr" class="row viewerror clearfix hidden">
@@ -179,13 +180,13 @@
         document.getElementById("qms_location_id").value = v1+'-'+v2+'-'+v3;
         if(v1=='RES'){
             document.getElementById("qms_location").value = "Surplus Room for Reserver";
-
+            document.getElementById("q_location_type").value = "1";
         }else if(v1=='INT'){
             document.getElementById("qms_location").value = "Internal Destroy";
-
+            document.getElementById("q_location_type").value = "0";
         }else{
             document.getElementById("qms_location").value = "Surplus Room ";
-
+            document.getElementById("q_location_type").value = "0";
         }
         }
 

@@ -952,7 +952,7 @@ cy9tZWRpYS9pbWFnZTEuanBlZ1BLBQYAAAAABgAGAIUBAAAsHgAAAAA=
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl6323201 style='height:16.5pt'></td>
-  <td colspan=4 class=xl6923201>Plot # 12, BEK SEZ,</td>
+  <td colspan=4 class=xl6923201><?= $plant_address ?>,</td>
   <td class=xl6323201></td>
   <td class=xl6323201></td>
   <td class=xl6323201></td>

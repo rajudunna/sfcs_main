@@ -4,6 +4,7 @@
 <?php
 
 $q_id = $_POST['q_id'];
+$q_location_type = $_POST['q_location_type'];
 $qms_location_id=$_POST['qms_location_id'];
 $qms_location=$_POST['qms_location'];
 $qms_location_cap=$_POST['qms_location_cap'];
@@ -44,7 +45,7 @@ else
 	if($q_id>0)
 	{
 		//update
-		$sql = "update $bai_pro3.bai_qms_location_db set  qms_location='$qms_location', active_status='$active_status',qms_location_cap='$qms_location_cap'
+		$sql = "update $bai_pro3.bai_qms_location_db set  qms_location='$qms_location', active_status='$active_status',qms_location_cap='$qms_location_cap',location_type='q_location_type'
 		where q_id=$q_id";
 		
 		if (mysqli_query($conn, $sql)) {
@@ -95,8 +96,8 @@ else
 		}
 		else
 		{
-			$sql = "INSERT INTO $bai_pro3.bai_qms_location_db ( qms_location_id,qms_location, qms_location_cap, qms_cur_qty, active_status )
-			VALUES ('$qms_location_id', '$qms_location','$qms_location_cap','$qms_cur_qty','$active_status')";
+			$sql = "INSERT INTO $bai_pro3.bai_qms_location_db ( qms_location_id,qms_location, qms_location_cap, qms_cur_qty, active_status,location_type )
+			VALUES ('$qms_location_id', '$qms_location','$qms_location_cap','$qms_cur_qty','$active_status','$q_location_type')";
 
 			if (mysqli_query($conn, $sql)) 
 			{
