@@ -145,7 +145,12 @@
 			$diff = 0;
 			if($i == 1)
 			{
-				$wip[$value] = $order_qty -($bcd_rec[$value]+$bcd_rej[$value]);
+				$diff = $order_qty -($bcd_rec[$value]+$bcd_rej[$value]);
+				if($diff < 0)
+				{
+					$diff = 0;
+				}	
+				$wip[$value] = $diff;				
 			}
 			else
 			{   
@@ -158,9 +163,9 @@
 					$seq_id = $row7['id'];
 					$ops_order = $row7['operation_order'];
 				}
-				
+				 
 				$post_ops_check = "SELECT tsm.operation_code AS operation_code FROM $brandix_bts.tbl_style_ops_master tsm 
-				LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND CAST(tsm.operation_order AS CHAR) > '$ops_order' GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1 DESC limit 1";
+				LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND CAST(tsm.operation_order AS CHAR) < '$ops_order' GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1 DESC limit 1";
 				//echo $post_ops_check."<br>";
 				$result_post_ops_check = $link->query($post_ops_check);
 				$row8 = mysqli_fetch_array($result_post_ops_check);
