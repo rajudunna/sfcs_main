@@ -13,7 +13,7 @@ $company_num = $company_no;
 $host= $api_hostname;
 $port= $api_port_no;
 $current_date = date('Y-m-d h:i:s');
-$status ="'fail'" ;
+$status ="'pending'" ;
 //getting failure transactions from m3_transactions
  $get_operations="select operation_code from $brandix_bts.tbl_orders_ops_ref where operation_name='Laying'";
 //echo $get_operations;
