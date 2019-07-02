@@ -1,8 +1,6 @@
 
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));?> 
-<?php  
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 	  
+<?php 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));	  
 	$view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs); 
 ?> 
 <style>
@@ -471,80 +469,74 @@ if(isset($_POST['submit']))
 					$available=0;
 					$cutno=0;
 					$pend=0;
-					$tot_split=0;
-					//$qty_fill=array();
+					$tot_split=0;$req_qty=0;
 					for($i=0;$i<sizeof($o_s_t);$i++) 
 					{ 
-						$sql9="select order_tid, order_del_no, order_col_des, order_s_".$sizes_array[$i]." as ord_qty,destination from $bai_pro3.bai_orders_db_club_confirm where order_joins=\"$orders_join\" and order_s_".$sizes_array[$i].">0 group by order_del_no order by order_del_no limit 1";
+						$sql9="select order_tid, order_del_no, order_col_des, order_s_".$sizes_array[$i]." as ord_qty,destination from $bai_pro3.bai_orders_db_club_confirm where order_joins=\"$orders_join\" and order_s_".$sizes_array[$i].">0 group by order_del_no order by order_del_no*1";
 						$sql_result19=mysqli_query( $link, $sql9) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						$tot_col=mysqli_num_rows($sql_result19);
 						while($sql_row19=mysqli_fetch_array($sql_result19)) 
 						{
-							$del=$sql_row19["order_del_no"];
-							$colrsnew=$sql_row19["order_col_des"];
-							$order_tids=$sql_row19["order_tid"];
-							$destination_id_new=$sql_row19['destination'];
-						}
+							$dels[]=$sql_row19["order_del_no"];
+							$colrsnew[$del]=$sql_row19["order_col_des"];
+							$del_qty[$del]=$sql_row19['ord_qty'];
+							$order_tids[$del]=$sql_row19["order_tid"];
+							$destination_id_new[$del]=$sql_row19['destination'];
+							$req_qty=$req_qty+$sql_row19['ord_qty'];
+						}	
 						$sql14="select * from $bai_pro3.mix_temp_source where size=\"p_".$sizes_array[$i]."\" and qty>0 and cat_ref='$cat_ref' group by doc_no order by doc_no*1";
-						//echo $sql14."<br>"; 
-						//$qty_fill=array();
 						$sql_result114=mysqli_query( $link, $sql14) or exit("Sql Error96".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						if(mysqli_num_rows($sql_result114)>0)
 						{
 							while($sql_row11=mysqli_fetch_array($sql_result114)) 
-							{ 
-								$available=$sql_row11['qty'];
-								$cutno=$sql_row11['cutno'];
-								// if($available<$tot_col)
-								// {
-									// for($kk=1;$kk<=$available;$kk++)
-									// {	
-										// $val[$del[$kk]][$sizes_array[$i]]=1;
-									// }
-								// }
-								// else
-								// {
-									// $pend=$available%$tot_col;
-									// $tot_split=($available-$pend)/$tot_col;
-									// for($kk=0;$kk<sizeof($del);$kk++)
-									// {	
-										// if($pend>0)
-										// {
-											// $val[$del[$kk]][$sizes_array[$i]]=$tot_split+$pend;
-											// $pend=0;
-										// }
-										// else
-										// {
-											// $val[$del[$kk]][$sizes_array[$i]]=$tot_split;
-										// }
-									// }
-								// }
-								//$val[$del[0]][$sizes_array[$i]]=$available;								
-								//$p_fill=0;
-								$doc_no=$sql_row11['doc_no']; 
-								$cut_ref=$sql_row11['cutt_ref']; 
-								$mk_ref=$sql_row11['mk_ref']; 
-								$cat_ref=$sql_row11['cat_ref']; 
-								$plies_ref=$sql_row11['plies'];
-								$sqlx3="insert into $bai_pro3.mix_temp_desti(allo_new_ref,cat_ref,cutt_ref,mk_ref,size,qty,order_tid,order_col_des,order_del_no,destination,plies,doc_no,cutno) values ($doc_no,$cat_ref,$cut_ref,$mk_ref,\"p_".$sizes_array[$i]."\",\"".$available."\",\"".$order_tids."\",\"".$colrsnew."\",\"".$del."\",\"".$destination_id_new."\",\"".$plies_ref."\",\"".$doc_no."\",\"".$cutno."\")"; 
-								//echo $sqlx3."<br>";
-								mysqli_query( $link, $sqlx3) or exit("Sql Errorx3".mysqli_error($GLOBALS["___mysqli_ston"]));	
-								$sqlx71="update $bai_pro3.mix_temp_source set qty='0' where doc_no='".$doc_no."' and size='p_".$sizes_array[$i]."'";
-								//echo $sqlx7."<br>";
-								mysqli_query($link, $sqlx71) or exit("Sql Errorx7".mysqli_error($GLOBALS["___mysqli_ston"]));								
-								/*
-								for($kk=0;$kk<sizeof($del);$kk++)
-								{
-									$sqlx3="insert into mix_temp_desti(allo_new_ref,cat_ref,cutt_ref,mk_ref,size,qty,order_tid,order_col_des,order_del_no,destination,plies,doc_no,cutno) values ($doc_no,$cat_ref,$cut_ref,$mk_ref,\"p_".$sizes_array[$i]."\",\"".$available."\",\"".$order_tids."\",\"".$colrsnew[$kk]."\",\"".$del[$kk]."\",\"".$destination_id_new[$kk]."\",\"".$plies_ref."\",\"".$doc_no."\",\"".$cutno."\")"; 
-									echo $sqlx3."<br>";
-									//mysql_query($sqlx3, $link) or exit("Sql Errorx3".mysql_error());	
-									$sqlx71="update mix_temp_source set qty='".$available."' where doc_no='".$doc_no."' and size='p_".$sizes_array[$i]."'";
-									//echo $sqlx7."<br>";
-									mysql_query($sqlx71,$link) or exit("Sql Errorx7".mysql_error());
-								}
-								*/								
+							{
+								$available[$sql_row11['doc_no']][$sizes_array[$i]]=$sql_row11['qty'];
+								$cutno[$sql_row11['doc_no']][$sizes_array[$i]]=$sql_row11['cutno'];
+								$doc_no[$sql_row11['doc_no']][$sizes_array[$i]]=$sql_row11['doc_no']; 
+								$cut_ref[$sql_row11['doc_no']][$sizes_array[$i]]=$sql_row11['cutt_ref']; 
+								$mk_ref[$sql_row11['doc_no']][$sizes_array[$i]]=$sql_row11['mk_ref']; 
+								$cat_ref[$sql_row11['doc_no']][$sizes_array[$i]]=$sql_row11['cat_ref']; 
+								$plies_ref[$sql_row11['doc_no']][$sizes_array[$i]]=$sql_row11['plies'];
+								$tot_qty_exces=	$tot_qty_exces+$sql_row11['qty'];
+								$docs[]=$sql_row11['doc_no'];
 							}
-						}
+							$docs=array_values(array_unique($docs));	
+						}						
+						for($j=0;$j<sizeof($dels);$j++)
+						{
+							$eligble=floor(($del_qty[$dels[$j]]/$req_qty)/$tot_qty_exces,0);
+							if($eligble>0)
+							{
+								for($jj=0;$jj<sizeof($docs);$jj++)
+								{
+									do
+									{	
+										if($eligble<$available[$docs[$jj]])
+										{
+											$sqlx3="insert into $bai_pro3.mix_temp_desti(allo_new_ref,cat_ref,cutt_ref,mk_ref,size,qty,order_tid,order_col_des,order_del_no,destination,plies,doc_no,cutno) values ('".$docs[$jj]."','".$cat_ref[$docs[$jj]][$sizes_array[$i]]."','".$cut_ref[$docs[$jj]][$sizes_array[$i]]."','".$mk_ref[$docs[$jj]][$sizes_array[$i]]."',\"p_".$sizes_array[$i]."\",\"".$eligble."\",\"".$order_tids[$dels[$j]]."\",\"".$colrsnew[$dels[$j]]."\",\"".$dels[$j]."\",\"".$destination_id_new[$dels[$j]]."\",\"".$plies_ref[$docs[$jj]][$sizes_array[$i]]."\",\"".$docs[$jj]."\",\"".$cutno[$docs[$jj]][$sizes_array[$i]]."\")"; 
+											//echo $sqlx3."<br>";
+											mysqli_query( $link, $sqlx3) or exit("Sql Errorx3".mysqli_error($GLOBALS["___mysqli_ston"]));	
+											$sqlx71="update $bai_pro3.mix_temp_source set qty='0' where doc_no='".$docs[$jj]."' and size='p_".$sizes_array[$i]."'";
+											//echo $sqlx7."<br>";
+											mysqli_query($link, $sqlx71) or exit("Sql Errorx7".mysqli_error($GLOBALS["___mysqli_ston"]));
+											$available[$docs[$jj]][$sizes_array[$i]]=$available[$docs[$jj]][$sizes_array[$i]]-$eligble;
+											$eligble=0;
+										}
+										else
+										{
+											$sqlx3="insert into $bai_pro3.mix_temp_desti(allo_new_ref,cat_ref,cutt_ref,mk_ref,size,qty,order_tid,order_col_des,order_del_no,destination,plies,doc_no,cutno) values ('".$docs[$jj]."','".$cat_ref[$docs[$jj]][$sizes_array[$i]]."','".$cut_ref[$docs[$jj]][$sizes_array[$i]]."','".$mk_ref[$docs[$jj]][$sizes_array[$i]]."',\"p_".$sizes_array[$i]."\",\"".$eligble."\",\"".$order_tids[$dels[$j]]."\",\"".$colrsnew[$dels[$j]]."\",\"".$dels[$j]."\",\"".$destination_id_new[$dels[$j]]."\",\"".$plies_ref[$docs[$jj]][$sizes_array[$i]]."\",\"".$docs[$jj]."\",\"".$cutno[$docs[$jj]][$sizes_array[$i]]."\")"; 
+											//echo $sqlx3."<br>";
+											mysqli_query( $link, $sqlx3) or exit("Sql Errorx3".mysqli_error($GLOBALS["___mysqli_ston"]));	
+											$sqlx71="update $bai_pro3.mix_temp_source set qty='0' where doc_no='".$docs[$jj]."' and size='p_".$sizes_array[$i]."'";
+											//echo $sqlx7."<br>";
+											mysqli_query($link, $sqlx71) or exit("Sql Errorx7".mysqli_error($GLOBALS["___mysqli_ston"]));
+											$eligble=$eligble-$available[$docs[$jj]][$sizes_array[$i]];
+											$available[$docs[$jj]][$sizes_array[$i]]=0;	
+										}										
+									}while($eligble>0 && $available[$docs[$jj]]>0)									
+								}								
+							}
+						}						
 					}					
 				}				
 				$size_p=array();
