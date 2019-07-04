@@ -69,7 +69,7 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                      }
                      if($color==''){
                        $color="--";
-                     }else{
+                     }else{ 
                        $color;
                      } if($size==''){
                         $size="--";
