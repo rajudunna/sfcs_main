@@ -701,7 +701,7 @@ x\:* {behavior:url(#default#VML);}
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
---></style>
+></style>
 </head>
 <script>
 function printpr()
@@ -945,7 +945,7 @@ cy9tZWRpYS9pbWFnZTEuanBlZ1BLBQYAAAAABgAGAIUBAAAsHgAAAAA=
    </tr>
   </table>
   </span></td>
-  <td colspan=4 class=xl7623201>Brandix Essentials Limited, <?= $plant_name ?></td>
+  <td colspan=4 class=xl7623201><?php echo $plant_head .", ".  $plant_name ?></td>
   <td class=xl6323201></td>
   <td class=xl7223201>Surplus Copy</td>
   <td class=xl6323201></td>
@@ -966,7 +966,7 @@ cy9tZWRpYS9pbWFnZTEuanBlZ1BLBQYAAAAABgAGAIUBAAAsHgAAAAA=
  </tr>
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl6323201 style='height:16.5pt'></td>
-  <td colspan=4 class=xl6923201>Sri Lanka.</td>
+  <td colspan=4 class=xl6923201><?= $plant_location ?>.</td>
   <td class=xl6323201></td>
   <td class=xl7023201>DEST#<?php echo $desnote; ?></td>
   <td class=xl6323201></td>
@@ -1011,7 +1011,7 @@ cy9tZWRpYS9pbWFnZTEuanBlZ1BLBQYAAAAABgAGAIUBAAAsHgAAAAA=
  <tr height=22 style='height:16.5pt'>
   <td height=22 class=xl6323201 style='height:16.5pt'></td>
   <td class=xl6323201></td>
-  <td colspan=4 class=xl7423201>BAI 1</td>
+  <td colspan=4 class=xl7423201><?= $plant_name ?></td>
   <td colspan=2 class=xl6423201>Destruction Mode:</td>
   <td class=xl6623201>Shredding</td>
   <td class=xl6323201></td>
