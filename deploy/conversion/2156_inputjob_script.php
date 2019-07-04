@@ -52,10 +52,10 @@ while($sql_row11=mysqli_fetch_array($sql_result11))
 	$sql15="update brandix_bts.bundle_creation_data_temp set input_job_no='$ijno' where bundle_number=$pac_tid and operation_id in($op_code) ";
 	$sql_result15=mysqli_query($link, $sql15) or exit("Sql Error15--".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql16="update bai_pro.bai_log set jobno='$ijno' where SUBSTRING_INDEX(ims_pro_ref, '-', 1)=$pac_tid and operation_id in($op_code) ";
+	$sql16="update bai_pro.bai_log set jobno='$ijno' where SUBSTRING_INDEX(ims_pro_ref, '-', 1)=$pac_tid";
 	$sql_result16=mysqli_query($link, $sql16) or exit("Sql Error16--".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql17="update bai_pro.bai_log_buf set jobno='$ijno' where SUBSTRING_INDEX(ims_pro_ref, '-', 1)=$pac_tid and operation_id in($op_code) ";
+	$sql17="update bai_pro.bai_log_buf set jobno='$ijno' where SUBSTRING_INDEX(ims_pro_ref, '-', 1)=$pac_tid";
 	$sql_result17=mysqli_query($link, $sql17) or exit("Sql Error17--".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 }
