@@ -5,6 +5,7 @@ th,td{
 .btn{
    float:right;
 }
+
 </style>
 <script>
 function checkAll()
@@ -35,15 +36,19 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                $count=mysqli_num_rows($sql_result);
+               
                if($count>0){
                echo '<div class="panel panel-primary">
-                      <div class="panel-heading">M3 Bulk Opration Reconfirm Report</div>
+                      <div class="panel-heading">M3 Bulk Opration Reconfirm Interface</div>
+                      <br/>
+                      <form action="'.getFullURLLevel($_GET["r"],"m3_transcations_reconfirm_report.php","0","N").'" name="print" method="POST">                    
+                       
                         <div class="panel-body">
-                           <div class="table-responsive">
+                        <div class="table-responsive">
                                  <table id="example" cellspacing="0" width="100%" class="table table-bordered">
+                                 <input type="submit" value="Re-Confirm" class="btn btn-primary">
                                  <tr><th>Mo No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Reason</th><th>Response Status</th>';
-                           echo '<form action="'.getFullURLLevel($_GET["r"],"m3_transcations_reconfirm_report.php","0","N").'" name="print" method="POST">
-                                       <th><input type="checkbox" onClick="checkAll()"/>Select All</th></tr>';
+                           echo  '<th><input type="checkbox" onClick="checkAll()"/>Select All</th></tr>';
                      
                 while($sql_row=mysqli_fetch_array($sql_result))
                 {
@@ -84,7 +89,11 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                     echo "<td><input type='checkbox' name='bindingdata[]' value='".$id.'-'.$m3_bulk_tran_id."'></td>";
 
                 }
-              echo '</table><input type="submit" value="Re-confirm" class="btn btn-primary"></form></div></div></div>';  
+               //  echo $count;
+                if($count>25){
+                $reconfirm='<input type="submit" value="Re-Confirm" class="btn btn-primary">';
+                }
+              echo '</table>'."$reconfirm".'</form></div></div></div>';  
                }else{
                   echo '<div class="panel panel-primary">
                   <div class="panel-heading" style="text-align:center;">Data Not Found....!</div>';
@@ -102,7 +111,7 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
             $id = $binddetails[$j];
             $exp=explode("-",$id);
             $id_status=$exp[0];
-            $reconfim_id=$exp[1];
+            $reconfim_id=$exp[1]; 
             // echo $reconfim_id;
             $update_sql="update $bai_pro3.`m3_transactions` set m3_trail_count='0' where id='$id_status'";
             // echo $update_sql;
