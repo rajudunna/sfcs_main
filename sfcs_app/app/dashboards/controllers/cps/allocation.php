@@ -486,7 +486,7 @@ if(isset($_POST['allocate_new']))
 {
 	$doc_ref=$_POST['doc_ref']; //array
 	$dash=$_POST['dashboard']; //array
-
+    $row_id_new = $_POST['row_id1'];
 	$min_width=$_POST['min_width'];	//array
 	$lot_db=$_POST['lot_db']; //array
 	$process_cat=$_POST['process_cat'];
@@ -672,7 +672,7 @@ if(isset($_POST['allocate_new']))
 		}
 		
 	}
-    $update_parent="update $bai_pro3.binding_consumption set status='Allocated' where id=$row_id";
+    $update_parent="update $bai_pro3.binding_consumption set status='Allocated' where id=$row_id_new";
     mysqli_query($link, $update_parent) or exit("Sql Error: $update_parent".mysqli_error($GLOBALS["___mysqli_ston"]));
     
 	//Exit Code
@@ -704,6 +704,8 @@ if(isset($_POST['allocate_new']))
 
 if(isset($_POST['allocate']))
 {
+    // var_dump($_POST);
+    // die();
 	echo "<form name='input' method='post' action='allocation.php' onkeypress='return event.keyCode != 13'>";
 	$doc=$_POST['doc'];
 	$dash=$_POST['dashboard'];
@@ -810,7 +812,7 @@ if(isset($_POST['allocate']))
 		if(sizeof($lot_db_2)>0)
 		{
 		
-		echo "<input type=\"hidden\" name=\"row_id\" value=\"".$row_id."\">";
+		echo "<input type=\"hidden\" name=\"row_id1\" value=\"".$row_id."\">";
 		echo "<input type=\"hidden\" name=\"doc_ref[$i]\" value=\"".$doc_ref."\">";
 		echo "<input type=\"hidden\" name=\"process_cat\" value=\"".$process_cat."\">";
 		echo "<input type=\"hidden\" name=\"mat_req[$i]\" value=\"".$mat_req."\">";
@@ -853,7 +855,9 @@ if(isset($_POST['allocate']))
 
 
 		//Current Version
-		$sql="select * from $bai_rm_pj1.fabric_status_v3 where lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1) order by shade";
+        $sql="select * from $bai_rm_pj1.fabric_status_v3 where lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1) order by shade";
+        // var_dump($sql);
+        // // die();
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error12: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$row_count=mysqli_num_rows($sql_result);
 		$j=0;
@@ -894,7 +898,7 @@ if(isset($_POST['allocate']))
 				$temp_var.="<td>";
 				
 				$sql1="select max(log_time),doc_type,doc_no from $bai_rm_pj1.fabric_cad_allocation where roll_id=".$sql_row['tid'];
-				// $temp_var.="</br>Qry : ".$sql1."</br>";
+				$temp_var.="</br>Qry : ".$sql1."</br>";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))
 				{
