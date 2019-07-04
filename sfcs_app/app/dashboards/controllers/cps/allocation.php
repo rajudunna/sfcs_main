@@ -407,6 +407,7 @@ function check_qty2(x,m,n,doc,row_count,doc_count_no,act_count)
 	var bal = parseFloat(document.getElementById("balal"+doc).innerHTML);
 	if(document.getElementById(m).checked)
 	{
+        console.log(bal+'hiiii');
 		if(bal <= 0)
 		{
             if(bal == 0) {
@@ -419,9 +420,9 @@ function check_qty2(x,m,n,doc,row_count,doc_count_no,act_count)
 		}
 		else
 		{
-            document.getElementById('allocate_new').disabled=true;
-			console.log("issued"+doc+"["+act_count+"]");
-			console.log("balal"+doc);
+            document.getElementById('allocate_new').disabled=false;
+			// console.log("issued"+doc+"["+act_count+"]");
+			// console.log("balal"+doc);
 			var issued_qty=parseFloat(document.input["val"+doc+"["+act_count+"]"].value);
 			var balance = parseFloat(document.getElementById("balal"+doc).innerHTML);
 			var allocate = parseFloat(document.getElementById("alloc"+doc).innerHTML);
