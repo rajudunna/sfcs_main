@@ -308,7 +308,7 @@ function auto_cal_clh(){
 					}
 			
 					echo "<script>swal('Successfully Updated','','success');</script>";
-					$url=getFullURL($_GET['r'],'plan_update_v2.php','N');
+					$url=getFullURL($_GET['r'],'plan_update_v2.php','N'); 
 					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"$url\"; }</script>";
 				 }
 				 
