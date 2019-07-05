@@ -358,11 +358,12 @@ echo "<h2>Cut Docket Print</h2>";
 echo "<form name=\"ins\" method=\"post\" action=\"allocation.php\">"; //new_Version
 echo "<input type=\"hidden\" value=\"1\" name=\"process_cat\">"; //this is to identify recut or normal processing of docket (1 for normal 2 for recut)
 echo "<input type=\"hidden\" value=\"$style\" name=\"style_ref\">";  
+echo "<input type=\"hidden\" value=\"$schedule\" name=\"schedule\">";  
 echo "<input type=\"hidden\" value=\"$dash\" name=\"dashboard\">";  
 echo "<input type=\"hidden\" name=\"row_id\" value=\"".$doc_num."\">";
 
 
-echo "<table class='table table-bordered'><tr><th>Category</th><th>Item Code</th><th>Color Desc. - Docket No</th><th>Required<br/>Qty</th><th>Control</th><th>Roll Details</th></tr>";
+echo "<table class='table table-bordered'><tr><th>Category</th><th>Item Code</th><th>Color Desc. - Docket No</th><th>Required<br/>Qty</th><th>Control</th></tr>";
 
 
 // if(strtolower($docket_remarks) == 'normal')
@@ -547,14 +548,14 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 
 // 		echo "<td><img src=\"Wrong.png\"></td>";
 // }
-echo "<td>";	
-	getDetails("D",$sql_row1['doc_no']);
-	echo "</td>";
+// echo "<td>";	
+// 	getDetails("D",$sql_row1['doc_no']);
+// 	echo "</td>";
 
 echo "</tr>";
 unset($lotnos_array);	
 }
-echo "<tr><td colspan=3><center>Total Required Material</center></td><td>$total</td><td></td><td></td><td></td></tr>";
+echo "<tr><td colspan=3><center>Total Required Material</center></td><td>$total</td><td></td></tr>";
 echo "</table>";
 if($enable_allocate_button==1)
 {	

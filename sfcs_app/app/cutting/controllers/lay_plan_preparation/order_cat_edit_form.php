@@ -199,7 +199,7 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Binding Consumption</th><td class=\"  \">:</td><td class=\"  \">
 			<div class=\"col-md-4\">
 			<input class='form-control float' type=\"text\" name=\"binding_consumption\" id=\"binding_consumption\"  value=\"".$sql_row['binding_consumption']."\"  required >
-			</div><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><input type=\"checkbox\"  id=\"seperate_docket\" name=\"seperate_docket\"  value='1'>Generate Separate Docket For Binding</span></td></tr>";
+			</div><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id=\"seperate_docket\"><input type=\"checkbox\"  name=\"seperate_docket\"  value='1'>Generate Separate Docket For Binding</span></td></tr>";
 
 			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Gmt Way</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><select class=\"form-control\" name=\"gmt_way\">";
 			echo "<option value=\"N\""; if($sql_row['gmtway']=='N'){ echo "selected"; } echo ">All Gmt One Way</option>";
@@ -398,8 +398,12 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 			var consumption = $("#consumption").val();
 			var binding_consumption = $("#binding_consumption").val();
 			if(binding_consumption > consumption){
+				// $("#binding_consumption").val()= '';
+				document.getElementById('binding_consumption').value = '';
+				// alert($("#binding_consumption").val());
+
 				sweetAlert('Binding Consumption Should be less than Consumption '+consumption,'','warning');
-				$("#binding_consumption").val()= '';
+
 			}
 		});
 	});

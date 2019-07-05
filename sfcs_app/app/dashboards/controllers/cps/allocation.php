@@ -386,7 +386,7 @@ function check_qty23(x,m,n,doc,row_count,doc_count_no)
 		else
 		{
 			check=1;
-			alloc_disab=Number(alloc_disab)+Number(check);
+            alloc_disab=Number(alloc_disab)+Number(check);
 			document.getElementById(doc_ref).style.backgroundColor = "GREEN";
 			document.getElementById('alloc'+doc_ref).innerHTML=parseFloat(alloc_qty.toFixed(2));
 			if((mat_req-selc)<=0){
@@ -410,17 +410,16 @@ function check_qty2(x,m,n,doc,row_count,doc_count_no,act_count)
         console.log(bal+'hiiii');
 		if(bal <= 0)
 		{
-            if(bal == 0) {
-                document.getElementById('allocate_new').disabled=false;
-            } else {
-                document.getElementById('allocate_new').disabled=true;
-            }
+            // if(bal == 0) {
+            //     document.getElementById('allocate_new').disabled=false;
+            // } else {
+            //     document.getElementById('allocate_new').disabled=true;
+            // }
 			sweetAlert("You Met Required quantity","","warning");
 			document.getElementById(m).checked = false;
 		}
 		else
 		{
-            document.getElementById('allocate_new').disabled=false;
 			// console.log("issued"+doc+"["+act_count+"]");
 			// console.log("balal"+doc);
 			var issued_qty=parseFloat(document.input["val"+doc+"["+act_count+"]"].value);
@@ -434,6 +433,8 @@ function check_qty2(x,m,n,doc,row_count,doc_count_no,act_count)
 			document.getElementById("alloc"+doc).innerHTML =  parseFloat(allocate)+parseFloat(eligibile);
 			var bal_qty_colorchnage=parseFloat(balance)-parseFloat(eligibile);
 			if(bal_qty_colorchnage==0){
+                // document.getElementById('allocate_new').disabled=false;
+                document.getElementById('allocate_new').disabled=false;
 				document.getElementById(doc_ref).style.backgroundColor = "GREEN";
 			}else{
 				document.getElementById(doc_ref).style.backgroundColor = "RED";
@@ -491,6 +492,8 @@ if(isset($_POST['allocate_new']))
 	$min_width=$_POST['min_width'];	//array
 	$lot_db=$_POST['lot_db']; //array
 	$process_cat=$_POST['process_cat'];
+	$style=$_POST['style_ref1'];
+	$schedule=$_POST['schedule1'];
     
     // var_dump($_POST);
     // die();
@@ -604,15 +607,16 @@ if(isset($_POST['allocate_new']))
 						}
 
 
-					}
-					if($process_cat==1)
-					{
-						$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'normal',".$issued_ref[$j].",'1')";
-					}
-					else
-					{
-						$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'recut',".$issued_ref[$j].",'1')";
-					}
+                    }
+                    $row_id_new1 = 'B'.$row_id_new;
+					// if($process_cat==1)
+					// {
+						$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values('".$row_id_new1."',".$tid_ref[$j].",".$width_ref[$j].",'binding',".$issued_ref[$j].",'1')";
+					// }
+					// else
+					// {
+					// 	$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values('".$row_id_new1."',".$tid_ref[$j].",".$width_ref[$j].",'binding',".$issued_ref[$j].",'1')";
+					// }
 					
 					//Uncheck this
 					mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -620,20 +624,78 @@ if(isset($_POST['allocate_new']))
 					if($issued_ref[$j] > 0)
 					{
 						$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
-					}
+                    }
+                    
+
+
+
+
+
+                    $sql111="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$row_id_new1."'";
+                    //echo $sql111."</br>";
+                    $sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if(mysqli_num_rows($sql_result111)>0)
+                    {
+                        while($row2=mysqli_fetch_array($sql_result111))
+                        {
+                            $code=$row2['roll_id'];
+                            $tran_pin=$row2['tran_pin'];
+                            $sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty from $bai_rm_pj1.store_in where roll_status in (0,2) and tid=\"$code\"";
+                            $sql_result=mysqli_query($link, $sql1) or exit("Sql Error--15".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            while($sql_row=mysqli_fetch_array($sql_result))
+                            {
+                                $qty_rec=$sql_row['qty_rec']-$sql_row['partial_appr_qty'];
+                                $qty_issued=$sql_row['qty_issued'];
+                                $qty_ret=$sql_row['qty_ret'];
+                            }
+
+                            $qty_iss=$row2['allocated_qty'];
+                            //echo "Qty Issued :".$qty_iss."</br>";
+                            // $balance=$qty_rec-$qty_issued+$qty_ret;	
+                            // $balance1=$qty_rec+$qty_ret-($qty_issued+$qty_iss);
+                            $status=2;
+                            // $condi1=(($qty_rec+$qty_ret)-($qty_iss+$qty_issued));
+                            // if((($qty_rec-($qty_iss+$qty_issued))+$qty_ret)>=0 && $qty_iss > 0)
+				            {
+                                $sql22="update $bai_rm_pj1.store_in set qty_issued=".($qty_issued+$qty_iss).",qty_allocated=".$qty_iss.", status=$status, allotment_status=$status where tid=\"$code\"";
+                                mysqli_query($link, $sql22) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                                // $sql211="select * from $bai_rm_pj1.store_out where tran_tid='".$code."' and qty_issued='".$qty_iss."' and Style='".$style."' and Schedule='".$schedule."' and date='".date("Y-m-d")."' and updated_by='".$username."' and remarks='".$reason."' and log_stamp='".date("Y-m-d H:i:s")."' ";
+                                // $sql_result211=mysqli_query($link, $sql211) or exit("Sql Error--211: $sql211".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                // $sql_num_check=mysqli_num_rows($sql_result211);
+                                // if($sql_num_check==0)
+                                // {
+                                    $sql23="insert into $bai_rm_pj1.store_out (tran_tid,qty_issued,Style,Schedule,date,updated_by,log_stamp) values ('".$code."', '".$qty_iss."','".$style."','".$schedule."','".date("Y-m-d")."','".$username."','".date("Y-m-d H:i:s")."')";
+                                    mysqli_query($link, $sql23) or exit("Sql Error----4".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                // }
+
+                                $sql24="update $bai_rm_pj1.fabric_cad_allocation set status=2 where tran_pin=\"$tran_pin\"";
+                                mysqli_query($link, $sql24) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            }
+                        }
+                    }
+
+
+
+
+
+
+
+
 
 				}
-			}
+            }
+            //doubt
 			//To confirm docket as allocated
-			if($process_cat==1)
-			{
+			// if($process_cat==1)
+			// {
 				$sql1="update plandoc_stat_log set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
-			}
-			else
-			{
-				$sql1="update recut_v2 set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
-			}
-			
+			// }
+			// else
+			// {
+			// 	$sql1="update recut_v2 set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
+			// }
+			//doubt
 			mysqli_query($link, $sql1) or exit("Sql Error5: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			//TO update Marker Matrix
@@ -720,7 +782,9 @@ if(isset($_POST['allocate']))
 	$cat_ref=$_POST['cat_ref'];
 	
 	$process_cat=$_POST['process_cat'];
-	$style_ref=$_POST['style_ref'];
+    $style_ref=$_POST['style_ref'];
+	$schedule=$_POST['schedule'];
+    
 	$size_doc=sizeof($doc);
 	$note="";
 	echo "<input type='hidden' id='size_doc' value=\"$size_doc\"></>";
@@ -813,7 +877,10 @@ if(isset($_POST['allocate']))
 		if(sizeof($lot_db_2)>0)
 		{
 		
-		echo "<input type=\"hidden\" name=\"row_id1\" value=\"".$row_id."\">";
+        echo "<input type=\"hidden\" name=\"row_id1\" value=\"".$row_id."\">";
+		echo "<input type=\"hidden\" name=\"style_ref1\" value=\"".$style_ref."\">";
+		echo "<input type=\"hidden\" name=\"schedule1\" value=\"".$schedule."\">";
+        
 		echo "<input type=\"hidden\" name=\"doc_ref[$i]\" value=\"".$doc_ref."\">";
 		echo "<input type=\"hidden\" name=\"process_cat\" value=\"".$process_cat."\">";
 		echo "<input type=\"hidden\" name=\"mat_req[$i]\" value=\"".$mat_req."\">";
@@ -1098,7 +1165,7 @@ if(isset($_POST['allocate']))
 
 	}
 
-	echo "<input type=\"submit\" id=\"allocate_new\" name=\"allocate_new\" value=\"Allocate\" class='btn btn-success'>";
+	echo "<input type=\"submit\" id=\"allocate_new\" name=\"allocate_new\" value=\"Issue\" class='btn btn-success'>";
 	echo "</form>";
 }
 ?>

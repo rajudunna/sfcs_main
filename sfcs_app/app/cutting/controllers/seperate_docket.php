@@ -32,32 +32,27 @@
                             <th></th>
                         </tr>
                         <?php
-                                $query = "select * from $bai_pro3.binding_consumption where status='Open'";
-                                $sql_result = mysqli_query($link,$query);
-                                while($sql_row=mysqli_fetch_array($sql_result))
-                                {
-                                    $i = $sql_row['id'];
-                                    echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'>$i</td>";
-                                    echo "<td>".$sql_row['style']."</td>";
-                                    echo "<td>".$sql_row['schedule']."</td>";
-                                    echo "<td>".$sql_row['color']."</td>";
-                                    echo "<td>".$sql_row['tot_req_qty']."</td>";
-                                    echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
-                                    echo "<td><select name='issue_status$i' id='issue_status-$i' class='select2_single form-control' onchange='IssueAction($i);'>";
-                                    echo "<option value=''>Please Select</option>";
-                                    echo "<option value='Allocate'>Allocate</option>";
-                                    echo "<option value='Reject'>Reject</option>";
-                                    echo "</select></td>";
-                                    echo "<td><input type='submit' name='submit$i' id='submit-$i' class='btn btn-info' value='Submit' disabled='disabled' onclick='UpdateDamageStatus($i);'></td>";
-                                    echo "</tr>";
-                                }
-
-                            
-                                // for($i=1;$i<=5;$i++){
-
-                                    
-                                // }
-                            ?>
+                            $query = "select * from $bai_pro3.binding_consumption where status='Open'";
+                            $sql_result = mysqli_query($link,$query);
+                            while($sql_row=mysqli_fetch_array($sql_result))
+                            {
+                                $i = $sql_row['id'];
+                                $index+=1;
+                                echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'>$index</td>";
+                                echo "<td>".$sql_row['style']."</td>";
+                                echo "<td>".$sql_row['schedule']."</td>";
+                                echo "<td>".$sql_row['color']."</td>";
+                                echo "<td>".$sql_row['tot_req_qty']."</td>";
+                                echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
+                                echo "<td><select name='issue_status$i' id='issue_status-$i' class='select2_single form-control' onchange='IssueAction($i);'>";
+                                echo "<option value=''>Please Select</option>";
+                                echo "<option value='Allocate'>Allocate</option>";
+                                echo "<option value='Reject'>Reject</option>";
+                                echo "</select></td>";
+                                echo "<td><input type='submit' name='submit$i' id='submit-$i' class='btn btn-info' value='Submit' disabled='disabled' onclick='UpdateDamageStatus($i);'></td>";
+                                echo "</tr>";
+                            }
+                        ?>
                     </table>
                 </div>
             </div>
@@ -74,29 +69,28 @@
                             <th>Status</th>
                             <th></th>
                         </tr>
-                        <?php
+                        <?php   
+                                $path = getFullURLLevel($_GET['r'],'lay_plan_preparation/Book3_print_binding.php',0,'R'); 
+                             
                                 $query = "select * from $bai_pro3.binding_consumption where status='Allocated'";
                                 $sql_result = mysqli_query($link,$query);
+                                $index=0;
                                 while($sql_row=mysqli_fetch_array($sql_result))
                                 {
                                     $i = $sql_row['id'];
-                                    echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'>$i</td>";
+                                    $index+=1;
+                                    echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'>$index</td>";
                                     echo "<td>".$sql_row['style']."</td>";
                                     echo "<td>".$sql_row['schedule']."</td>";
                                     echo "<td>".$sql_row['color']."</td>";
                                     echo "<td>".$sql_row['tot_req_qty']."</td>";
                                     echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
                                     echo "<td>".$sql_row['status']."</td>";
-                                    
-                                    echo "<td><a href='#' class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
+                                      
+                                    echo "<td><a href=\"$path?binding_id=$i\" onclick=\"Popup1=window.open('$path?binding_id=$i','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
                                     echo "</tr>";
                                 }
-
                             
-                                // for($i=1;$i<=5;$i++){
-
-                                    
-                                // }
                             ?>
                     </table>
                 </div>         
@@ -174,9 +168,14 @@
             var status = $('#issue_status-'+i).val();
             var row_id = i
             //  console.log($_GET['r']);
+            if(status=='Allocate') {
+                url_path = "<?php echo getFullURLLevel($_GET['r'],'dashboards/controllers/cps/binding_consumption_allocation.php',2,'R'); ?>";
+                window.open(url_path+"?doc_no=B"+row_id+"&status="+status);
+            } else {
+                url_path = "<?php echo getFullURLLevel($_GET['r'],'cutting/controllers/binding_consumption.php',2,'R'); ?>";
+                window.open(url_path+"?row_id="+row_id+"&status="+status);
+            }
             
-            url_path = "<?php echo getFullURLLevel($_GET['r'],'dashboards/controllers/cps/binding_consumption_allocation.php',2,'R'); ?>";
-            window.open(url_path+"?doc_no=B"+row_id+"&status="+status);
             // $.ajax({
             //     type: "POST",
             //     url: url_path+"?doc_no=B"+row_id+"&status="+status,
