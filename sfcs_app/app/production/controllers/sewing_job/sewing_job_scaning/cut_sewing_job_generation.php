@@ -164,7 +164,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
 			$max_job_count1=$max_oldqty_jobcount1['result'];
 		}
 		$j=1;
-		$sql_query = "SELECT tid FROM $bai_pro3.pac_stat_log_input WHERE input_job_no='E1' and doc_no in ('".implode(",",$docs)."')";
+		$sql_query = "SELECT tid FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no='E1' and doc_no in ('".implode(",",$docs)."')";
 		$result_1 = mysqli_query($link, $sql_query) or exit("Sql Error : old_jobs_count_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($result_1)>0)
 		{
@@ -172,14 +172,14 @@ if(isset($_POST) && isset($_POST['main_data'])){
 			{
 				if($row1['tid']>0)
 				{
-					$updatesql = "UPDATE $bai_pro3.`pac_stat_log_ipnut_job` set barcode_sequence = '".$j."' where tid='".$row1['tid']."'";
+					$updatesql = "UPDATE $bai_pro3.`pac_stat_log_input_job` set barcode_sequence = '".$j."' where tid='".$row1['tid']."'";
 					mysqli_query($link,$updatesql) or exit("Problem while inserting to sewing jos ref");
 					$j++;
 				}
 			}
 		}
 		$jj=1;
-		$sql_query1 = "SELECT tid FROM $bai_pro3.pac_stat_log_input WHERE input_job_no='E1' and doc_no in ('".implode(",",$docs)."')";
+		$sql_query1 = "SELECT tid FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no='E1' and doc_no in ('".implode(",",$docs)."')";
 		$result_11 = mysqli_query($link, $sql_query1) or exit("Sql Error : old_jobs_count_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($result_11)>0)
 		{
@@ -187,18 +187,18 @@ if(isset($_POST) && isset($_POST['main_data'])){
 			{
 				if($row11['tid']>0)
 				{
-					$updatesql1 = "UPDATE $bai_pro3.`pac_stat_log_ipnut_job` set barcode_sequence = '".$jj."' where tid='".$row11['tid']."'";
+					$updatesql1 = "UPDATE $bai_pro3.`pac_stat_log_input_job` set barcode_sequence = '".$jj."' where tid='".$row11['tid']."'";
 					mysqli_query($link,$updatesql1) or exit("Problem while inserting to sewing jos ref");
 					$j++;
 				}
 			}
 		}
 		$rand1=$schedule.date("ymd").$max_job_count1;	
-		$update_query_e = "UPDATE $bai_pro3.`pac_stat_log_ipnut_job` set input_job_no = '".$max_job_count1."',input_job_no_random='".$rand1."' where input_job_no='E1' and doc_no in ('".implode(",",$docs)."') ";
+		$update_query_e = "UPDATE $bai_pro3.`pac_stat_log_input_job` set input_job_no = '".$max_job_count1."',input_job_no_random='".$rand1."' where input_job_no='E1' and doc_no in ('".implode(",",$docs)."') ";
         mysqli_query($link,$update_query_e) or exit("Problem while inserting to sewing jos ref");
 		$max_job_count1++;
 		$rand2=$schedule.date("ymd").$max_job_count1;
-		$update_query_s = "UPDATE $bai_pro3.`pac_stat_log_ipnut_job` set input_job_no = '".$max_job_count1."',input_job_no_random='".$rand2."' where input_job_no='S1' and doc_no in ('".implode(",",$docs)."') ";
+		$update_query_s = "UPDATE $bai_pro3.`pac_stat_log_input_job` set input_job_no = '".$max_job_count1."',input_job_no_random='".$rand2."' where input_job_no='S1' and doc_no in ('".implode(",",$docs)."') ";
         mysqli_query($link,$update_query_s) or exit("Problem while inserting to sewing jos ref");
 		
         //echo $count;
