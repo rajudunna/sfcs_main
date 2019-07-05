@@ -41,8 +41,31 @@ $has_permission = haspermission($_GET['r']);
 	    if(isset($_POST['submit']))
 		{
 		  $date=$_POST['date'];	
-		 
+		  if($date==date('Y-m-d')){
+			$sql_query="select * from `bai_pro`.`pro_plan_today` where date='$date' group by mod_no,shift";
+			$selectRes=mysqli_query($link,$sql_query) or exit($sql_query."Error at something");
+		}else{
+		$sql_query="select * from `bai_pro`.`pro_plan` where date='$date' group by mod_no,shift";
+		$selectRes=mysqli_query($link,$sql_query) or exit($sql_query."Error at something");
+		}
+		$count=mysqli_num_rows($selectRes);
+               if($count<=0){
+				echo "<div class='row'>
+				<div class='panel panel-primary'>
+				  <div class='panel-heading' style='text-align:center;'>
+					  <b>Sorry....There is No plan in this Date</b>";
+					
+			   }else{
+		while( $row = mysqli_fetch_assoc( $selectRes ))
+		{
+			$mod_no[]=$row['mod_no'];
+			$sec_no[]=$row['sec_no'];
+		$nop[$row['mod_no']][$row['shift']]=$row;
+		
+		}
+		$mod_no=array_unique($mod_no);
 		  ?>
+		  
 		<div class='row'>
 		  <div class='panel panel-primary'>
 			<div class='panel-heading'>
@@ -79,21 +102,7 @@ $has_permission = haspermission($_GET['r']);
 				  </tr>
 				  </thead>
 					<?php 
-					if($date==date('Y-m-d')){
-						$sql_query="select * from `bai_pro`.`pro_plan_today` where date='$date' group by mod_no,shift";
-						$selectRes=mysqli_query($link,$sql_query) or exit($sql_query."Error at something");
-					}else{
-					$sql_query="select * from `bai_pro`.`pro_plan` where date='$date' group by mod_no,shift";
-					$selectRes=mysqli_query($link,$sql_query) or exit($sql_query."Error at something");
-					}
-					while( $row = mysqli_fetch_assoc( $selectRes ))
-					{
-						$mod_no[]=$row['mod_no'];
-						$sec_no[]=$row['sec_no'];
-					$nop[$row['mod_no']][$row['shift']]=$row;
-					
-					}
-					$mod_no=array_unique($mod_no); 
+					 
 					//$nop=json_encode($nop);
 					//var_dump($nop[2]['A']['sec_no']);
 					$table_row1='';
@@ -117,6 +126,7 @@ $has_permission = haspermission($_GET['r']);
 		</div>
 			<?php
 			  }
+			}
 			?>     
 			</body>
    </html>
