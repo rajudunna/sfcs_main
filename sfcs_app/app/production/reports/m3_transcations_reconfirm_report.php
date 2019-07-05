@@ -47,12 +47,12 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                         <div class="table-responsive">
                                  <table id="example" cellspacing="0" width="100%" class="table table-bordered">
                                  <input type="submit" value="Re-Confirm" class="btn btn-primary">
-                                 <tr><th>Mo No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Reason</th><th>Response Status</th>';
+                                 <tr><th>S.No</th><th>Mo No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Reason</th><th>Response Status</th>';
                            echo  '<th><input type="checkbox" onClick="checkAll()"/>Select All</th></tr>';
-                     
+                     $i=1;
                 while($sql_row=mysqli_fetch_array($sql_result))
                 {
-                    
+                        
                      $id=$sql_row['id'];
                      $m3_bulk_tran_id=$sql_row['m3_bulk_tran_id'];
                      $style=$sql_row['style'];
@@ -85,10 +85,11 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                      }else{
                         $remarks;
                      }
-                    echo "<tr><td>".$sql_row['mo_no']."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$size."</td><td>".$remarks."</td><td>".$sql_row['response_status']."</td>";
+                    echo "<tr><td>".$i++."</td><td>".$sql_row['mo_no']."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$size."</td><td>".$remarks."</td><td>".$sql_row['response_status']."</td>";
                     echo "<td><input type='checkbox' name='bindingdata[]' value='".$id.'-'.$m3_bulk_tran_id."'></td>";
-
+                  
                 }
+                
                //  echo $count;
                 if($count>25){
                 $reconfirm='<input type="submit" value="Re-Confirm" class="btn btn-primary">';
