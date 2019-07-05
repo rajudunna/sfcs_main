@@ -138,19 +138,19 @@ function auto_cal_clh(){
 				  </tr>
 				  </thead>
 					 <?php 
-					//  $table_data="select * from bai_pro.`tbl_freez_plan_log` where date='$date'";
-					// 	//  echo  $table_data."<br>";
-					// 	$selectRes=mysqli_query($link,$table_data) or exit($table_data."Error at something");
-					// 	while( $row = mysqli_fetch_assoc( $selectRes ))
-					// 	{
+					 $table_data="select * from bai_pro.`tbl_freez_plan_log` where date='$date'";
+						//  echo  $table_data."<br>";
+						$selectRes=mysqli_query($link,$table_data) or exit($table_data."Error at something");
+						while( $row = mysqli_fetch_assoc( $selectRes ))
+						{
 						
-					// 		// $data_array_eff[$row['mod_no']][$row['shift']] = $row['plan_eff'];
-					// 		// $data_array_pro[$row['mod_no']][$row['shift']] = $row['plan_pro'];
-					// 		// $data_array_pchrs[$row['mod_no']][$row['shift']] = $row['plan_clh'];
-					// 		// $data_array_sah[$row['mod_no']][$row['shift']] = $row['plan_sah'];
-					// 		// $data_array_nop[$row['mod_no']][$row['shift']] = $row['nop'];
-					// 		// $data_array_mod[]=$row['mod_no'];					
-					// 	}	
+							$data_array_eff[$row['mod_no']][$row['shift']] = $row['plan_eff'];
+							$data_array_pro[$row['mod_no']][$row['shift']] = $row['plan_pro'];
+							$data_array_pchrs[$row['mod_no']][$row['shift']] = $row['plan_clh'];
+							$data_array_sah[$row['mod_no']][$row['shift']] = $row['plan_sah'];
+							$data_array_nop[$row['mod_no']][$row['shift']] = $row['nop'];
+							$data_array_mod[]=$row['mod_no'];					
+						}	
 					
 						$table_data1="select * from bai_pro3.`module_master` where status='Active' order by module_name*1";
 					// echo $table_data1.'<br>';
