@@ -651,7 +651,7 @@ echo "</div></div></div></div>";
 
 <!--p><a href="#" onclick="showhide('div10');">Carton Qty</a></p>
 <div id="div10" style="display: none;"> 
-<?php include("carton_qty.php"); ?>
+<?php// include("carton_qty.php"); ?>
 </div> 
 -->
 <!-- <p>Remarks: 
@@ -683,7 +683,7 @@ echo "</div></div></div></div>";
 <?php //include("main_interface_2.php"); ?>
 </div> -->
 
-<!-- carton quantities added -->
+<!-- 
 <div class='col-sm-12 row'>
 	<div class='panel panel-info'>
 		<div class='panel-heading' style='text-align:center;'>
@@ -696,8 +696,7 @@ echo "</div></div></div></div>";
 						
 						<th>Pack Method</th>
 			<?php
-			//var_dump($s_tit);
-	//getting the dynamic sizes from top $s_tit array
+			/*
 			$sql="select * from $bai_pro3.carton_qty_chart where user_style='$style_id' and user_schedule='$schedule' and status=0";
 			//echo $sql;
 			$th_count = 0;
@@ -713,7 +712,6 @@ echo "</div></div></div></div>";
 					}
 				}
 				$cstyle = $row['user_style'];
-				//$cbuyer = $row['buyer'];
 				$cpakcmethod = $row['packing_method'];
 				$cremarks = $row['remarks'];
 				if($th_count==0){
@@ -728,20 +726,17 @@ echo "</div></div></div></div>";
 					if($csizes[$value] > 0){
 						echo "<td>$csizes[$value]</td>";
 					}
-				}//or the below
-				// foreach($csizes as $key=>$value){
-				// 	echo "<td>$value</td>";
-				// }
-				echo "	  <td>$remarks</td>
+				}	echo "	  <td>$remarks</td>
 					</tr>";
 			}
+			*/
 			?>
 			</table>
 		</div>
 		</div>
 	</div>
 </div>
-
+-->
 <div class="col-md-12 row">
 <div class = "panel panel-info">
 	<div class="panel-heading" style='text-align:center;'>
@@ -802,7 +797,10 @@ if ($sql_result)
 			$date_cat = $sql_row['date'];
 			if($sql_row['category']<>'')
 			{
-				$cats_ids[]=$sql_row['tid'];
+				if($tran_order_tid==$sql_row['order_tid'])
+				{
+					$cats_ids[]=$sql_row['tid'];
+				}
 			}	
 
 			if($date_cat == '0000-00-00'){
@@ -1575,125 +1573,141 @@ foreach($cats_ids as $key=>$value)
 	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check=mysqli_num_rows($sql_result);
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$mk_status=$sql_row['mk_status'];
-	
-	$check_id=$sql_row['cuttable_ref'];
-	echo "<tr>";
-	// echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
-	//echo "<td class=\" \"><center>".$check_id."</center></td>";
-	echo "<td class=\"  \"><center>".$sql_row['ratio']."</center></td>";
-	
-	$cat_ref=$sql_row['cat_ref'];
-	$sql2="select *,COALESCE(binding_consumption,0) AS binding_con from $bai_pro3.cat_stat_log where tid=$cat_ref order by catyy DESC";
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row2=mysqli_fetch_array($sql_result2))
-	{
+	//$sql_num_check=mysqli_num_rows($sql_result);
+    while($sql_row=mysqli_fetch_array($sql_result))
+    { 
+		$mk_status=$sql_row['mk_status'];
+		$tot_size=array();
+		$check_id=$sql_row['cuttable_ref'];
+		echo "<tr>";
+		// echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
+		//echo "<td class=\" \"><center>".$check_id."</center></td>";
+		echo "<td class=\"  \"><center>".$sql_row['ratio']."</center></td>";		
+		$cat_ref=$sql_row['cat_ref'];
+		$sql2="select *,COALESCE(binding_consumption,0) AS binding_con from $bai_pro3.cat_stat_log where tid=$cat_ref order by catyy ";
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row2=mysqli_fetch_array($sql_result2))
+		{
 			$cat_yy=$sql_row2['catyy'];
 			$category=$sql_row2['category'];
 			$mo_status=$sql_row2['mo_status'];
-			$binding_consumption=$sql_row2['binding_con'];
-	}
-	
-	echo "<td class=\"  \"><center>".$category."</center></td>";
-	echo "<td class=\"  \"><center>".$sql_row['plies']."</td><td class=\"  \"><center>".$sql_row['pliespercut']."</center></td>";
-	$tot=0;
-	for($s=0;$s<sizeof($s_tit);$s++)
-	{
-		echo "<td class=\"  \"><center>".$sql_row["allocate_s".$sizes_code[$s].""]."</center></td>";
-		$tot+=$sql_row["allocate_s".$sizes_code[$s].""];
-		if($category=='Body' || $category=='Front')
-		{
-			$tot_size[$s] = (int)$tot_size[$s]+((int)$sql_row['plies']*(int)$sql_row["allocate_s".$sizes_code[$s].""]);
+			$binding_consumption=$sql_row2['binding_con'];		
 		}
-		//echo " <th class=\"heading2\" style='background-color:#29759C;color:white;'>".$s_tit[$sizes_code[$s]]."</th>";
-	}
-
-	$used_yards[$category][$sql_row['ratio']] = $sql_row['plies'] * $tot * $binding_consumption;
-	echo "<td class=\"  \"><center>".$tot."</center></td>";
-
-	if($sql_row['mk_status']==9)
-	{
-		echo "<td class=\"  \"><center>Lay Plan Prepared</center></td>";
-	}
-	else{
-		echo "<td class=\"  \"><center>";
-		
-		$sql21="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid\" and allocate_ref='".$sql_row['tid']."'";
-		$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if(mysqli_num_rows($sql_result21)==0)
+		echo "<td class=\"  \"><center>".$category."</center></td>";
+		echo "<td class=\"  \"><center>".$sql_row['plies']."</td><td class=\"  \"><center>".$sql_row['pliespercut']."</center></td>";
+		$tot=0;
+		for($s=0;$s<sizeof($s_tit);$s++)
 		{
-			echo "<a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2_edit.php", "N")."&check_id=".$check_id."&tran_order_tid=".$tran_order_tid."&cat_id=".$cat_id."&ref_id=".$sql_row['tid']."\">Edit</a>";
+			echo "<td class=\"  \"><center>".$sql_row["allocate_s".$sizes_code[$s].""]."</center></td>";
+			$tot+=$sql_row["allocate_s".$sizes_code[$s].""];
+			echo (int)$tot_size[$s_tit[$sizes_code[$s]]]."---".(int)$sql_row['plies']."--".(int)$sql_row["allocate_s".$sizes_code[$s].""]."<br>";
+			$tot_size[$s_tit[$sizes_code[$s]]] = (int)$tot_size[$s]+((int)$sql_row['plies']*(int)$sql_row["allocate_s".$sizes_code[$s].""]);
+			echo $category."---".$s_tit[$sizes_code[$s]]."--".$tot_size[$s_tit[$sizes_code[$s]]]."<br>";
+		}
+		$used_yards[$category][$sql_row['ratio']] = $sql_row['plies'] * $tot * $binding_consumption;
+		echo "<td class=\"  \"><center>".$tot."</center></td>";
+		if($sql_row['mk_status']==9)
+		{
+			echo "<td class=\"  \"><center>Lay Plan Prepared</center></td>";
 		}
 		else
 		{
-			$mk_status=9;
-			echo "Lay Plan Prepared";
+			echo "<td class=\"  \"><center>";
+			$sql21="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid\" and allocate_ref='".$sql_row['tid']."'";
+			$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_result21)==0)
+			{
+				echo "<a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2_edit.php", "N")."&check_id=".$check_id."&tran_order_tid=".$tran_order_tid."&cat_id=".$cat_id."&ref_id=".$sql_row['tid']."\">Edit</a>";
+			}
+			else
+			{
+				$mk_status=9;
+				echo "Lay Plan Prepared";
 
+			}
+			echo "</center></td>";
 		}
-		echo "</center></td>";
+		switch ($mk_status)
+		{
+			case 1:
+			{
+				echo "<td class=\"  \"><center>NEW</center></td>";
+				break;
+			}
+				
+			case 2:
+			{
+				echo "<td class=\"  \"><center>VERIFIED</center></td>";
+				break;
+			}
+				
+			case 3:
+			{
+				echo "<td class=\"  \"><center>REVISE</center></td>";
+				break;
+			}
+			case 9:
+			{
+				echo "<td class=\"  \"><center>Docket Generated</center></td>";
+				break;
+			}
+			default:
+			{
+				echo "<td class=\"  \"><center>NEW</center></td>";
+				break;
+			}
+				
+		}
+		echo "<td class=\"  \"><center>".$sql_row['remarks']."</center></td>";
+		echo "</tr>";
+		$allc_ref = $sql_row['tid'];
+		$sql2="select * from $bai_pro3.maker_stat_log where allocate_ref=$allc_ref and cuttable_ref > 0";
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row2=mysqli_fetch_array($sql_result2))
+		{		
+			$used_fabric+=$sql_row2['mklength'] * $sql_row['plies'];	
+		}			
 	}
-
-
-
-	switch ($mk_status)
+	$sql11 = "select * from $bai_pro3.sp_sample_order_db where order_tid='$order_tid'";
+	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row11=mysqli_fetch_array($sql_result11))
 	{
-		case 1:
-		{
-			echo "<td class=\"  \"><center>NEW</center></td>";
-			break;
-		}
-			
-		case 2:
-		{
-			echo "<td class=\"  \"><center>VERIFIED</center></td>";
-			break;
-		}
-			
-		case 3:
-		{
-			echo "<td class=\"  \"><center>REVISE</center></td>";
-			break;
-		}
-		case 9:
-		{
-			echo "<td class=\"  \"><center>Docket Generated</center></td>";
-			break;
-		}
-		default:
-		{
-			echo "<td class=\"  \"><center>NEW</center></td>";
-			break;
-		}
-			
+		$input_qty[$sql_row11['size']] = $sql_row11['input_qty'];		
 	}
-	echo "<td class=\"  \"><center>".$sql_row['remarks']."</center></td>";
-	echo "</tr>";
-	$allc_ref = $sql_row['tid'];
-	$sql2="select * from $bai_pro3.maker_stat_log where allocate_ref=$allc_ref and cuttable_ref > 0";
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row2=mysqli_fetch_array($sql_result2))
-	{		
-		$used_fabric+=$sql_row2['mklength'] * $sql_row['plies'];	
+	echo "<tr><td colspan=3> Total Planned Quantity</center><td>";
+	for($s=0;$s<sizeof($s_tit);$s++)
+	{
+		if ($tot_size[$s_tit[$sizes_code[$s]]] >= 0)
+		{
+			echo "<td class=\"  \" style='background-color:#4cff4c'><center>".$tot_size[$s_tit[$sizes_code[$s]]] ."</center></td>";
+		}
+		else
+		{
+			echo "<td class=\"b1\" style='background-color:#f8d7da'><center>".$tot_size[$s_tit[$sizes_code[$s]]]."</center></td>";
+		}
+	}	
+	echo "<td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><tdclass=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td></tr>";
+	echo "<tr><td colspan=3>Excess / Less <td>";
+	for($s=0;$s<sizeof($s_tit);$s++)
+	{
+		if($input_qty[$s_tit[$sizes_code[$s]]]=='')
+		{
+			$input_qty[$s_tit[$sizes_code[$s]]]=0;
+		}
+		if ((($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s])-$tot_size[$s_tit[$sizes_code[$s]]]) >= 0)
+		{
+			echo "<td class=\"  \" style='background-color:#4cff4c'><center>".(($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s])-$tot_size[$s_tit[$sizes_code[$s]]])."</center></td>";
+		}
+		else
+		{
+			echo "<td class=\"b1\" style='background-color:#f8d7da'><center>".(($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s])-$tot_size[$s_tit[$sizes_code[$s]]])."</center></td>";
+		}
 	}
+	unset($tot_size);
+	unset($input_qty);		
+	echo "<td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td></tr>";
+}
 
-}
-}
-echo "<tr><td colspan=3> Total Planned Quantity</center><td>";
-for($s=0;$s<sizeof($s_tit);$s++)
-{
-	echo "<td class=\"  \"><center>$tot_size[$s]</center></td>";
-}	
-echo "<td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><tdclass=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td></tr>";
-echo "<tr><td colspan=3>Excess / Less <td>";
-for($s=0;$s<sizeof($s_tit);$s++)
-{
-	//$temp="cuttable_".$sizes_array[$s];
-	echo "<td class=\"  \"><center>".($tot_size[$s]-$s_ord[$s])."</center></td>";
-}	
-echo "<td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td></tr>";
 echo "</table></div>
 </div></div></div></div>";
 
