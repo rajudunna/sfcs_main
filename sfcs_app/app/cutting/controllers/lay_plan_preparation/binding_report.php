@@ -299,7 +299,7 @@ if(isset($_POST['submit']))
 		echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td>";
 		echo "<td>".round($finalqtyexcludingbind,2)."</td>";
 		echo "<td>Binding</td>";
-		echo "<td>".$bindreqqty."</td>";
+		echo "<td>".round($bindreqqty,2)."</td>";
 		if($sql_num_confirm<1)
 		{
 			echo "<td><input type='checkbox'  name='bindingdata[]' value='".$compono.'/'.$category.'/'.$cutno.'/'.$bindingconsqty.'/'.$finalqtyexcludingbind.'/'.$bindreqqty.'/'.$docno.'/'.$style.'/'.$schedule.'/'.$color."'></td>";
@@ -316,7 +316,7 @@ if(isset($_POST['submit']))
 	echo "<td colspan=3 style='text-align: center;'> <b>Total :</b></td>";
 	echo "<td>".round($totordqty,2)."</td>";
 	echo "<td></td>";
-	echo "<td>".$finalbindingqty."</td>";
+	echo "<td>".round($finalbindingqty,2)."</td>";
 	echo "<td></td>";	
 	echo "</tr>";
 	echo "</table>";
