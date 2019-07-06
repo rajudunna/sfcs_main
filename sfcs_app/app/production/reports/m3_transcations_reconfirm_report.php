@@ -7,7 +7,6 @@ th,td{
 }
 body {
   background: #FFF url("sfcs_app/common/img/bootstrap-colorpicker/KheAuef.png") top left repeat-x;
-  font-family: 'Alex Brush', cursive !important;
 }
 
 .page    { display: none; padding: 0 0.5em; }
@@ -168,6 +167,6 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
          }
       header("Refresh:0");
       echo '<div id="loading"></div>';
-   }
+    }
 
 ?>
