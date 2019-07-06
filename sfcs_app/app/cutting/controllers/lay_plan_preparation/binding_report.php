@@ -257,8 +257,8 @@ if(isset($_POST['submit']))
 	{
 		$bindingconsqty=$sql_row33['binding_consumption']; //Color Code
 	}
-	
-	$details_qry="select compo_no,category,pcutno,SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies*mklength as qty,SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies*$bindingconsqty as bindreqqty,doc_no from $bai_pro3.order_cat_doc_mk_mix where order_tid='$order_tid' and category in ('Body','Front') group by pcutno";
+	// var_dump($in_categories);
+	$details_qry="select compo_no,category,pcutno,(p_plies*mklength) as qty,SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies*$bindingconsqty as bindreqqty,doc_no from $bai_pro3.order_cat_doc_mk_mix where order_tid='$order_tid' and category in ('Body','Front') group by pcutno";
 	// echo $details_qry;
 	$sql_result_det=mysqli_query($link, $details_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -320,7 +320,7 @@ if(isset($_POST['submit']))
 	echo "<td></td>";	
 	echo "</tr>";
 	echo "</table>";
-	echo "<input type='submit'  value='Save' class='btn btn-primary'></form>";
+	echo "<input type='submit'  value='Confirm To Request' class='btn btn-primary'></form>";
 	
 }
 
