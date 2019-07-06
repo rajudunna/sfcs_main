@@ -9,14 +9,35 @@
     }
     
 ?>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
+<style>
+table {	
+	text-align:center;
+	font-size:12px;
+	width:100%;
+	padding: 1em 1em 1em 1em;
+	color:black;
+}
+th{
+	background-color:#29759c;
+	color:white;
+	text-align:center;
+}
+</style>
 <div class="panel panel-primary">
     <div class="panel-heading"><b>Binding Allocation Form</b></div>
     <div class="panel-body">
+    <div class='pull-right'><span class='label label-info fa fa-list fa-xl' >&nbsp;&nbsp;&nbsp;To Show Binding Items</span></div>
+   
         <ul id="rowTab" class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#tab_a"><b>Requests</b></a></li>
             <li><a data-toggle="tab" href="#tab_b"><b>Allocated (<?= $count; ?>)</b></a></li>
+            <li><a data-toggle="tab" href="#tab_c"><b>Closed</b></a></li>
+            
+            
         </ul>
-
+        
         <div class="tab-content">
             <div id="tab_a" class="tab-pane fade active in">
                 <div style='overflow:scroll;' class='table-responsive'>
@@ -28,7 +49,7 @@
                             <th>Color</th>
                             <th>Total Required Quantity</th>
                             <th>Total Binding Required Quantity</th>
-                            <th>Status</th>
+                            <th>Control</th>
                             <th></th>
                         </tr>
                         <?php
@@ -38,7 +59,7 @@
                             {
                                 $i = $sql_row['id'];
                                 $index+=1;
-                                echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'>$index</td>";
+                                echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'><span class='label label-info fa fa-list fa-xl' >&nbsp;&nbsp;&nbsp;$index</span></td>";
                                 echo "<td>".$sql_row['style']."</td>";
                                 echo "<td>".$sql_row['schedule']."</td>";
                                 echo "<td>".$sql_row['color']."</td>";
@@ -58,7 +79,7 @@
             </div>
             <div id="tab_b" class="tab-pane fade">
                 <div style='overflow:scroll;' class='table-responsive'>
-                    <table id='table1' class='table table-bordered'>
+                    <table id='table2' class='table table-bordered'>
                         <tr>
                             <th>SNo.</th>
                             <th>Style</th>
@@ -66,7 +87,7 @@
                             <th>Color</th>
                             <th>Total Required Quantity</th>
                             <th>Total Binding Required Quantity</th>
-                            <th>Status</th>
+                            <th>Control</th>
                             <th></th>
                         </tr>
                         <?php   
@@ -79,7 +100,7 @@
                                 {
                                     $i = $sql_row['id'];
                                     $index+=1;
-                                    echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'>$index</td>";
+                                    echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'><span class='label label-info fa fa-list fa-xl' >&nbsp;&nbsp;&nbsp;$index</span></td>";
                                     echo "<td>".$sql_row['style']."</td>";
                                     echo "<td>".$sql_row['schedule']."</td>";
                                     echo "<td>".$sql_row['color']."</td>";
@@ -88,6 +109,40 @@
                                     echo "<td>".$sql_row['status']."</td>";
                                       
                                     echo "<td><a href=\"$path?binding_id=$i\" onclick=\"Popup1=window.open('$path?binding_id=$i','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
+                                    echo "</tr>";
+                                }
+                            
+                            ?>
+                    </table>
+                </div>         
+            </div>
+            <div id="tab_c" class="tab-pane fade">
+                <div style='overflow:scroll;' class='table-responsive'>
+                    <table id='table3' class='table table-bordered'>
+                        <tr>
+                            <th>SNo.</th>
+                            <th>Style</th>
+                            <th>Schedule</th>
+                            <th>Color</th>
+                            <th>Total Required Quantity</th>
+                            <th>Total Binding Required Quantity</th>
+                        </tr>
+                        <?php   
+                                $path = getFullURLLevel($_GET['r'],'lay_plan_preparation/Book3_print_binding.php',0,'R'); 
+                             
+                                $query = "select * from $bai_pro3.binding_consumption where status='Close'";
+                                $sql_result = mysqli_query($link,$query);
+                                $index=0;
+                                while($sql_row=mysqli_fetch_array($sql_result))
+                                {
+                                    $i = $sql_row['id'];
+                                    $index+=1;
+                                    echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'><span class='label label-info fa fa-list fa-xl' >&nbsp;&nbsp;&nbsp;$index</span></td>";
+                                    echo "<td>".$sql_row['style']."</td>";
+                                    echo "<td>".$sql_row['schedule']."</td>";
+                                    echo "<td>".$sql_row['color']."</td>";
+                                    echo "<td>".$sql_row['tot_req_qty']."</td>";
+                                    echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
                                     echo "</tr>";
                                 }
                             
@@ -192,3 +247,20 @@
         
     }
     </script>
+<script language="javascript" type="text/javascript">
+$('document').ready(function(){
+    $('#reset_table3').addClass('btn btn-warning');
+	var table_Props = 	{
+							rows_counter: true,
+							btn_reset: true,
+							btn_reset_text: "Clear",
+							loader: true,
+							loader_text: "Filtering data..."
+						};
+    setFilterGrid( "table1",table_Props );
+    setFilterGrid( "table2",table_Props );
+    setFilterGrid( "table3",table_Props );
+})
+	
+   
+</script>
