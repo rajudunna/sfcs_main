@@ -5,8 +5,30 @@ th,td{
 .btn{
    float:right;
 }
+body {
+  background: #FFF url("sfcs_app/common/img/bootstrap-colorpicker/KheAuef.png") top left repeat-x;
+  font-family: 'Alex Brush', cursive !important;
+}
 
+.page    { display: none; padding: 0 0.5em; }
+.page h1 { font-size: 2em; line-height: 1em; margin-top: 1.1em; font-weight: bold; }
+.page p  { font-size: 1.5em; line-height: 1.275em; margin-top: 0.15em; }
+
+#loading {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(192, 192, 192, 0.5);
+  background-image: url("sfcs_app/common/img/bootstrap-colorpicker/MnyxU.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+}
 </style>
+
 <script>
 function checkAll()
 {
@@ -20,7 +42,23 @@ function checkAll()
          }
      }
 }
+function onReady(callback) {
+  var intervalId = window.setInterval(function() {
+    if (document.getElementsByTagName('body')[0] !== undefined) {
+      window.clearInterval(intervalId);
+      callback.call(this);
+    }
+  }, 1000);
+}
 
+function setVisible(selector, visible) {
+  document.querySelector(selector).style.display = visible ? 'block' : 'none';
+}
+
+onReady(function() {
+  setVisible('.page', true);
+  setVisible('#loading', false);
+});
 </script>
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
@@ -104,6 +142,8 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                   echo '<div class="panel panel-primary">
                   <div class="panel-heading" style="text-align:center;">Data Not Found....!</div>';
                }
+             
+              
            ?>
         <?php
    if(isset($_POST['bindingdata']))
@@ -127,6 +167,7 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
 
          }
       header("Refresh:0");
+      echo '<div id="loading"></div>';
    }
 
 ?>
