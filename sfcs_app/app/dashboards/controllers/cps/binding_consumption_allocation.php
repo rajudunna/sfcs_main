@@ -417,7 +417,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		// $clubbing=$sql_row1['clubbing'];
 		
 		$qry_lotnos="SELECT p.order_tid,p.doc_no,c.compo_no,s.style_no,s.lot_no,s.batch_no FROM $bai_pro3.plandoc_stat_log p LEFT JOIN bai_pro3.cat_stat_log c ON 
-		c.order_tid=p.order_tid LEFT JOIN bai_rm_pj1.sticker_report s ON s.item=c.compo_no WHERE style_no='$style' and item='$componentno_lot' and  p.doc_no='$docno_lot' and s.product_group='Fabric'";
+		c.order_tid=p.order_tid LEFT JOIN bai_rm_pj1.sticker_report s ON s.item=c.compo_no WHERE style_no='$style' and item='$componentno_lot' and s.product_group='Fabric'";
 		$sql_lotresult=mysqli_query($link, $qry_lotnos) or exit("lot numbers Sql Error ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_lotrow=mysqli_fetch_array($sql_lotresult))
 		{
