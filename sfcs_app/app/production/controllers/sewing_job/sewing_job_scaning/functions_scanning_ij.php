@@ -1529,6 +1529,21 @@ if(isset($_GET['docket_number']))
         }
         
         $flag = '';
+       
+        $get_child_docs = "select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no =$doc_no";
+        //echo $get_child_docs;
+        $result_get_child_docs_check = $link->query($get_child_docs);
+        if($result_get_child_docs_check->num_rows > 0)
+        {
+        	 while($row_club = $result_get_child_docs_check->fetch_assoc()) 
+            {
+                $doc[] = $row_club['doc_no'];
+            }
+        	$flag = 'clubbing';
+        	// $result_array['child_dockets'] = $doc;
+
+        }
+
         if($next_operation > 0)
         {
            if($next_operation == $op_code)
@@ -1579,72 +1594,93 @@ if(isset($_GET['docket_number']))
         }
         
        
-        $flags=0;       
+        $flags=0; 
 
-        if($flag == 'parallel_scanning')
+        if($flag == 'clubbing')
         {
-            $get_doc = "select size_code FROM $brandix_bts.bundle_creation_data WHERE docket_number = $doc_no";
-           // echo $get_doc ;
-            $result_get_doc_qry = $link->query($get_doc);
-            while($row_doc_pack = $result_get_doc_qry->fetch_assoc()) 
-            {
-                $size =  $row_doc_pack['size_code'];
-            }
+        	$dockets = implode(',',$doc);
+        	$result_array['child_docket'] = $dockets;
 
-        	$qry_min_prevops="SELECT MIN(recevied_qty) AS min_recieved_qty FROM $brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND size_title = '$size' AND operation_id in ($emb_operations)";
-            //echo $qry_min_prevops;
-            $result_qry_min_prevops = $link->query($qry_min_prevops);
-            while($row_result_min_prevops = $result_qry_min_prevops->fetch_assoc())
-            {
-                $previous_minqty=$row_result_min_prevops['min_recieved_qty'];
-            }
+        	// $get_sizes = "select DISTINCT(size_title) FROM $brandix_bts.bundle_creation_data WHERE docket_number in ($dockets)";
+        	// //echo $get_sizes; 
+        	// $result_get_sizes = $link->query($get_sizes);
+         //    while($row_size = $result_get_sizes->fetch_assoc()) 
+         //    {
+         //        $size =  $row_size['size_title'];
+         //    }
+            $schedule_query = "SELECT (SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module,'clubbing' as flag FROM $brandix_bts.bundle_creation_data WHERE docket_number in ($dockets)  AND operation_id = $op_code GROUP BY size_title order by tid";
 
-            $schedule_query = "SELECT (SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty))-$previous_minqty as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND size_title=$size AND operation_id = $op_code GROUP BY order_col_des,assigned_module order by tid";
-        }
+        }  
         else
         {
-        	$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' ORDER BY operation_order DESC LIMIT 1";
-	        $result_pre_ops_check = $link->query($pre_ops_check);
-	        if($result_pre_ops_check->num_rows > 0)
+            if($flag == 'parallel_scanning')
 	        {
-	            while($row = $result_pre_ops_check->fetch_assoc()) 
+	            $get_doc = "select size_title FROM $brandix_bts.bundle_creation_data WHERE docket_number = $doc_no";
+	           // echo $get_doc ;
+	            $result_get_doc_qry = $link->query($get_doc);
+	            while($row_doc_pack = $result_get_doc_qry->fetch_assoc()) 
 	            {
-	                if($pre_ops_code == 0){
-					   $pre_ops_code = $row['operation_code'];
-					}
+	                $size =  $row_doc_pack['size_title'];
 	            }
-	            $pre_ops_validation = "SELECT sum(recevied_qty)as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id = $pre_ops_code";
-	            $result_pre_ops_validation = $link->query($pre_ops_validation);
-	            while($row = $result_pre_ops_validation->fetch_assoc()) 
+
+	        	$qry_min_prevops="SELECT MIN(recevied_qty) AS min_recieved_qty FROM $brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND size_title = '$size' AND operation_id in ($emb_operations)";
+	            //echo $qry_min_prevops;
+	            $result_qry_min_prevops = $link->query($qry_min_prevops);
+	            while($row_result_min_prevops = $result_qry_min_prevops->fetch_assoc())
 	            {
-	                $recevied_qty_qty = $row['recevied_qty'];
+	                $previous_minqty=$row_result_min_prevops['min_recieved_qty'];
 	            }
-	            if($recevied_qty_qty == 0)
-	            {
-	                $flags = 2;
-	            }
-	            else
-	            {
-	                $schedule_query = "SELECT (SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id = $op_code GROUP BY size_code,order_col_des,assigned_module order by tid";         
-	            }
+
+	            $schedule_query = "SELECT (SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty))-$previous_minqty as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND size_title=$size AND operation_id = $op_code GROUP BY order_col_des,assigned_module order by tid";
 	        }
 	        else
 	        {
-	            $schedule_count_query = "SELECT docket_number FROM $brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND operation_id =$op_code";
-	            $schedule_count_query = $link->query($schedule_count_query);
-	            if($schedule_count_query->num_rows > 0)
-	            {
-	                $schedule_query = "SELECT (SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id = $op_code GROUP BY size_code,order_col_des,assigned_module order by tid";
-	                $flags=3;
-	            }   
-	        }
-	    }   
+	        	$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' ORDER BY operation_order DESC LIMIT 1";
+		        $result_pre_ops_check = $link->query($pre_ops_check);
+		        if($result_pre_ops_check->num_rows > 0)
+		        {
+		            while($row = $result_pre_ops_check->fetch_assoc()) 
+		            {
+		                if($pre_ops_code == 0){
+						   $pre_ops_code = $row['operation_code'];
+						}
+		            }
+		            $pre_ops_validation = "SELECT sum(recevied_qty)as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id = $pre_ops_code";
+		            $result_pre_ops_validation = $link->query($pre_ops_validation);
+		            while($row = $result_pre_ops_validation->fetch_assoc()) 
+		            {
+		                $recevied_qty_qty = $row['recevied_qty'];
+		            }
+		            if($recevied_qty_qty == 0)
+		            {
+		                $flags = 2;
+		            }
+		            else
+		            {
+		                $schedule_query = "SELECT (SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id = $op_code GROUP BY size_code,order_col_des,assigned_module order by tid";         
+		            }
+		        }
+		        else
+		        {
+		            $schedule_count_query = "SELECT docket_number FROM $brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND operation_id =$op_code";
+		            $schedule_count_query = $link->query($schedule_count_query);
+		            if($schedule_count_query->num_rows > 0)
+		            {
+		                $schedule_query = "SELECT (SUM(send_qty)+SUM(recut_in)+SUM(replace_in))as send_qty,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,sum(original_qty) as carton_act_qty,sum(recevied_qty) as reported_qty,sum(rejected_qty) as rejected_qty,(SUM(send_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'bundle_creation_data' as flag,size_id as old_size,remarks,assigned_module FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id = $op_code GROUP BY size_code,order_col_des,assigned_module order by tid";
+		                $flags=3;
+		            }   
+		        }
+		    }
+        } 
+
+   
 	        if($flags == 2)
 	        {
 	            $result_array['status'] = 'Previous operation not yet done for this cut job.';
 	        }
 	        else
 	        {
+	        	//echo $schedule_query;
 	            $result_style_data = $link->query($schedule_query);
 	            while($row = $result_style_data->fetch_assoc()) 
 	            {
