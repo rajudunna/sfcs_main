@@ -13,7 +13,12 @@ $company_num = $company_no;
 $host= $api_hostname;
 $port= $api_port_no;
 $current_date = date('Y-m-d h:i:s');
-$status ="'fail'" ;
+if($_GET['status']){
+    $status =$_GET['status'];
+}else{
+    $status=$argv[1];
+}
+// $status ="'fail'" ;
 //getting failure transactions from m3_transactions
  $get_operations="select operation_code from $brandix_bts.tbl_orders_ops_ref where operation_name='Laying'";
 //echo $get_operations;
@@ -23,7 +28,7 @@ while($row=mysqli_fetch_array($sql_result111))
   $operation=$row['operation_code'];
 }
 
-$transactions_query = "SELECT * from $bai_pro3.m3_bulk_transactions where response_status in ($status) and m3_trail_count < 4 ";
+$transactions_query = "SELECT * from $bai_pro3.m3_bulk_transactions where response_status='$status' and m3_trail_count < 4 ";
 $transaction_result = mysqli_query($link, $transactions_query) or 
                     exit("Error at getting transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($transaction_result))
