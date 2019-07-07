@@ -472,13 +472,13 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			}
 			//For Color Clubbing
 			$club_c_code=array();
-			$sql33x1="SELECT color_code,acutno FROM $bai_pro3.plan_dash_doc_summ where doc_no in (".$doc_no_ref.") order by doc_no*1";
+			$sql33x1="SELECT color_code,acutno FROM $bai_pro3.order_cat_doc_mk_mix where doc_no in (".$doc_no_ref.") order by doc_no*1";
 			$sql_result33x1=mysqli_query($link, $sql33x1) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
-			//echo $sql33x1;
 			while($sql_row33x1=mysqli_fetch_array($sql_result33x1))
 			{
-				$club_c_code[]=chr($sql_row33x1['color_code']).leading_zeros($sql_row33x1['acutno'],3);
-			}			
+				$club_c_code[]=chr($sql_row33x1['color_code']).leading_zeros($sql_row33x1['acutno'],3);			
+			}	
+			
 			$club_c_code=array_unique($club_c_code);
 			$ex_factory="NIP";
 			$sql11="select order_date as ex_factory_date_new from $bai_pro3.bai_orders_db where order_del_no='$schedule'";
@@ -495,7 +495,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				{
 					$ex_factory="<span style=\"background-color:blue; color:white;\">$ex_factory</span>";
 				}								
-			}		
+			}
+			
 			if($schedule!='')
 			{			
 				echo "<td>".$style."<br/><strong>".$schedule."<br/>".$display_prefix1."</strong><br/>".implode(", ",$club_c_code)."<br/>".$total_qty."</td><td><b>Back Col</b>:".strtoupper($id)."</br><b>Col</b>:".strtoupper($order_col)."</br><b>Ex-FT: $ex_factory</b><br/><b>DID: ".$doc_no_ref."</b></td>";
