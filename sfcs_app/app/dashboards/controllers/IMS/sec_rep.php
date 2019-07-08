@@ -487,6 +487,18 @@ if(isset($_GET['val']))
 
 				//To get Age from ims_log
 				$get_detais_ims="select tid,team_comm,ims_date From $bai_pro3.ims_log where ims_mod_no=$module_ref and input_job_rand_no_ref='$input_job' and ims_status<>'DONE'";
+				 //******To get Age bundle wise
+				 if(isset($_POST['submit']))
+				 {
+					 $input_selection=$_POST['input_selection'];
+					 if($input_selection=='bundle_wise'){
+						 $get_detais_ims.=" AND pac_tid=$bundle_number";
+					 }
+				 }else{
+					 $get_detais_ims.=" ";
+				 }
+					//*******
+				
 				$sql_result31=mysqli_query($link, $get_detais_ims) or exit("Sql Error7111 =$get_detais_ims".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row32=mysqli_fetch_array($sql_result31))
 				{
