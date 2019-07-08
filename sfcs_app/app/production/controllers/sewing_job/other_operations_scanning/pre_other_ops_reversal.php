@@ -190,6 +190,7 @@ echo "  </select>
 				<input type="hidden" name="style" id="style" value=<?=$style?>>
                  <input type="hidden" name="schedule" id="schedule" value=<?=$schedule?>>
                  <input type="hidden" name="color" id="mapped_color" value=<?=urlencode($color)?>>
+				 <input type="hidden" name="docket_number" id="docket_number">
 				 <input type="hidden" name="shifts" id='shifts' value="<?php echo $shift;?>">
 				 <input type="hidden" name="operation_id" id='operation_id' value="<?php echo $operation_code;?>">
 				 <input type="hidden" name="post_code" id="post_code" value="<?php echo $post_ops?>">
@@ -266,7 +267,7 @@ $(document).ready(function()
 						var markup99 = "</tbody></table></div></div></div>";
 						$("#dynamic_table").append(markup99);
 						$("#dynamic_table").show();
-						//$('#docket_number').val(doc_no);
+						$('#docket_number').val(doc_no);
 	                }
 	                $('#loading-image').hide();	
 	            }
@@ -330,7 +331,7 @@ function check_pack()
 		$('.progress-bar').css('width', 80+'%').attr('aria-valuenow', 40); 
 		document.getElementById('maindiv').style.display = 'none';
 		document.getElementById('dynamic_table1').innerHTML = '';
-		// document.getElementById('docket_number').value = '';
+		 document.getElementById('docket_number').value = '';
   //       document.getElementById('style').innerHTML = '';
   //       document.getElementById('schedule').innerHTML = '';
   //       document.getElementById('mapped_color').innerHTML = '';

@@ -10,6 +10,8 @@ $b_style= $new_data['style'];
 //var_dump($b_style);
 $b_schedule=$new_data['schedule'];
 $b_colors=$new_data['colors'];
+$colors=$new_data['colors'][0];
+
 $b_sizes = $new_data['sizes'];
 $b_size_code = $new_data['old_size'];
 $b_doc_no = $new_data['docket_number'];
@@ -31,6 +33,7 @@ $b_old_rep_qty = $new_data['old_rep_qty'];
 $b_old_rej_qty = $new_data['old_rej_qty'];
 $post_ops_code='';
 $page_flag = $new_data['page_flag'];
+$child_doc = $new_data['child_docket'];
 $form = 'P';
 $ops_dep='';
 $qry_status='';
@@ -42,6 +45,11 @@ $type = $form;
 
 //Total reproted quantity for the docket
 $tot_report_qty_doc = $rep_sum_qty+$rej_sum_qty;
+if($b_module == '')
+{
+    $b_module = 0;
+}
+
 
 
 
@@ -49,13 +57,48 @@ $tot_report_qty_doc = $rep_sum_qty+$rej_sum_qty;
     1) to update shift and module number and good qty,rejected qty and reasons in BCD
     2) to update remaing quantity in CPS log
 */
+//To check clubbing dockets
+$flag = '';
+$get_child_docs = "select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no = $b_doc_no";
+$result_get_child_docs_check = $link->query($get_child_docs);
+if($result_get_child_docs_check->num_rows > 0)
+{
+     while($row_club = $result_get_child_docs_check->fetch_assoc()) 
+    {
+        $doc[] = $row_club['doc_no'];
+    }
+    $flag = 'clubbing';
+   // $schedule_count = true;
+
+}
+else
+{
+    //Start:-- Size/Bundle level logic for Cut*/
+    $schedule_count_query = "SELECT cut_number FROM $brandix_bts.bundle_creation_data WHERE cut_number = $b_doc_no AND operation_id ='$b_op_id'";
+    $schedule_count_query = $link->query($schedule_count_query) or exit('No data in bundle creation data for the opeartion');
+        
+    if($schedule_count_query->num_rows > 0)
+    {
+        $schedule_count = true;
+    }else{
+        $schedule_count = false;
+    }
+
+}
 
 $mapped_color_query = "SELECT mapped_color FROM $brandix_bts.bundle_creation_data WHERE cut_number = $b_doc_no AND operation_id ='$b_op_id' group by cut_number";
 //echo $mapped_color_query;
 $mapped_color_result = $link->query($mapped_color_query) or exit('No data in bundle creation data for the Cut Job');
-while($row0 = $mapped_color_result->fetch_assoc()) 
+if($mapped_color_result->num_rows > 0)
 {
-    $mapped_color = $row0['mapped_color'];
+    while($row0 = $mapped_color_result->fetch_assoc()) 
+    {
+        $mapped_color = $row0['mapped_color'];
+    }
+}    
+else
+{
+   $mapped_color = $colors;
 }
 /* START:--operation dependency and previous operation validation code*/
 $remarks_var = $b_module.'-'.$b_shift.'-'.$type;
@@ -130,7 +173,7 @@ if($result_pre_ops_check->num_rows > 0)
     }
 }
 $post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = '".$ops_seq."'  AND CAST(operation_order AS CHAR) > '$ops_order' ORDER BY operation_order ASC LIMIT 1";
-
+//echo $post_ops_check;
 $result_post_ops_check = $link->query($post_ops_check);
 if($result_post_ops_check->num_rows > 0)
 {
@@ -153,258 +196,541 @@ if(in_array($category_act,$category))
 }
 /* END:--operation dependency and previous operation validation*/
 
-//Start:-- Size/Bundle level logic for Cut*/
-$schedule_count_query = "SELECT cut_number FROM $brandix_bts.bundle_creation_data WHERE cut_number = $b_doc_no AND operation_id ='$b_op_id'";
-$schedule_count_query = $link->query($schedule_count_query) or exit('No data in bundle creation data for the opeartion');
-    
-if($schedule_count_query->num_rows > 0)
+ 
+$size_wise_good_qtys = [];
+$size_wise_rej_qtys = [];
+foreach($b_sizes as $key=>$size)
 {
-    $schedule_count = true;
-}else{
-    $schedule_count = false;
+    $size_wise_good_qtys[$size] = $b_rep_qty[$key];
+    $size_wise_rej_qtys[$size] = $b_rej_qty[$key];
 }
+
+
+
+
 $concurrent_flag = 0;
 
 //Bulk insertions into QMS_DB
 $bulk_insert_rej = "INSERT INTO $bai_pro3.bai_qms_db(`qms_style`, `qms_schedule`,`qms_color`,`log_user`, `log_date`, `qms_size`, `qms_qty`, `qms_tran_type`,`remarks`, `ref1`, `doc_no`, `input_job_no`, `operation_id`, `qms_remarks`, `bundle_no`) VALUES";
 
-foreach($b_tid as $key => $value)
+if($flag == 'clubbing')
 {
+   $dockets = implode(',',$doc);
+   $bal_qty = [];
+   $rej_qty = [];
+   $bundle_numbers = [];
+  //Bulk insertions into Bundle creation data temp
+  $bulk_insert_post_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES";
 
-    //Bulk insertions into Bundle creation data temp
-    $bulk_insert_post_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES";
-    
-    //Total reproted quantity for the size
-    $tot_report_qty = $b_rep_qty[$key];
-    
-    //for prev operation updating remaining quantity in cps log
-    $cps_log_qry_pre = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty-$tot_report_qty WHERE doc_no = '$b_doc_no' AND operation_code = '$pre_ops_code' AND size_title='". $b_sizes[$key]."'"; 
-    $cps_log_result_pre = $link->query($cps_log_qry_pre) or exit('CPS LOG query pre error');
-
-        
-    //update shift and module against to each bundle number in BCD insert rejection in qms_db
-    $select_send_qty = "SELECT (send_qty+recut_in+replace_in)as send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
-    $result_select_send_qty = $link->query($select_send_qty) or exit('Error getting data from Bundle creation data');
-    if($result_select_send_qty->num_rows >0)
+    if($concurrent_flag == 0)
     {
-        while($row = $result_select_send_qty->fetch_assoc()) 
+      
+        //To Update Rejections
+
+        $get_bcd_qty ="select (original_qty - (recevied_qty + rejected_qty)) as balance_qty,rejected_qty,original_qty,docket_number,size_title,bundle_number,id,input_job_no_random_ref,size_id From $brandix_bts.bundle_creation_data where docket_number in ($dockets) and operation_id = '$b_op_id'";
+        //echo  $get_bcd_qty;
+        $result_get_bcd_qty = $link->query($get_bcd_qty);
+        while($row_bcd_qry = $result_get_bcd_qty->fetch_assoc()) 
         {
-            $send_qty = $row['send_qty'];
-            $pre_recieved_qty = $row['recevied_qty'];
-            $rejected_qty = $row['rejected_qty'];
-            $act_reciving_qty = $b_rep_qty[$key]+$b_rej_qty[$key];
-            $total_rec_qty = $pre_recieved_qty + $act_reciving_qty+$rejected_qty;
-            if($total_rec_qty > $send_qty)
+
+            $docket_number =  $row_bcd_qry['docket_number'];
+            $size =  $row_bcd_qry['size_title'];
+            $original_qty = $row_bcd_qry['original_qty'];
+            $bundle_no = $row_bcd_qry['bundle_number'];
+            $bcd_id = $row_bcd_qry['id'];
+            $input_job_random_ref = $row_bcd_qry['input_job_no_random_ref'];
+            $size_id = $row_bcd_qry['size_id'];
+
+            if($size_wise_rej_qtys[$size] > 0)
             {
-                $concurrent_flag = 1;
-            }
-            else
-            {
-                $rec_qty_from_temp = "select (sum(recevied_qty)+sum(rejected_qty))as recevied_qty FROM $brandix_bts.bundle_creation_data_temp WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
-                $result_rec_qty_from_temp = $link->query($rec_qty_from_temp);
-                while($row_temp = $result_rec_qty_from_temp->fetch_assoc()) 
+
+                $rej_qty[$size] = $row_bcd_qry['balance_qty'];
+
+                if($rej_qty[$size] > $size_wise_rej_qtys[$size])
                 {
-                    $pre_recieved_qty_temp = $row_temp['recevied_qty'];
-                    $act_reciving_qty_temp = $b_rep_qty[$key]+$b_rej_qty[$key];
-                    if($act_reciving_qty_temp > $send_qty)
+                // 100                  200
+
+                $final_rejected_qty = $size_wise_rej_qtys[$size];
+
+                $size_wise_rej_qtys[$size] = 0;
+                }         
+                else
+                {
+
+                $final_rejected_qty = $rej_qty[$size];
+
+
+                $size_wise_rej_qtys[$size]  -= $rej_qty[$size];
+                }
+
+
+                //Updating BCD
+                $query = "UPDATE $brandix_bts.bundle_creation_data SET  `rejected_qty`='". $final_rejected_qty."' where bundle_number ='".$bundle_no."' and operation_id = ".$b_op_id;
+                //echo $query;
+                $result_query = $link->query($query) or exit('query error in updating');
+
+                $remarks_code = "";
+                //var_dump($r_qtys);
+                foreach ($r_qtys as $key => $value)
+                {
+                    if($r_qtys[$key] != null && $r_reason[$key] != null)
                     {
-                        // $concurrent_flag = 1;
+                      $r_qty_array = explode(',',$r_qtys[$key]);
+                      $r_reasons_array = explode(',',$r_reason[$key]);
+                       //var_dump($r_reasons_array);
+
+                        if(sizeof($r_qty_array)>0)
+                        {
+                          $flag_decision = true;
+                        }
+                        foreach ($r_qty_array as $index => $r_qnty) 
+                        {                      
+                            $rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where m3_reason_code= '$r_reasons_array[$index]'";
+                            //echo $rejection_code_fetech_qry;
+                            $result_rejection_code_fetech_qry = $link->query($rejection_code_fetech_qry);
+                            while($rowresult_rejection_code_fetech_qry = $result_rejection_code_fetech_qry->fetch_assoc()) 
+                            {
+                               $reason_code = $rowresult_rejection_code_fetech_qry['reason_code'];
+                            }
+                            if($index == sizeof($r_qty_array)-1){
+                               $remarks_code .= $reason_code.'-'.$r_qnty;
+                            }else {
+                               $remarks_code .= $reason_code.'-'.$r_qnty.'$';
+                            }
+
+                        }
                     }
                 }
+                $bcd_id_searching_qry = "select id from $bai_pro3.rejection_log_child where bcd_id = $bcd_id";
+                $bcd_id_searching_qry_result=mysqli_query($link,$bcd_id_searching_qry) or exit("bcd_id_searching_qry_result".mysqli_error($GLOBALS["___mysqli_ston"]));
+                if($bcd_id_searching_qry_result->num_rows > 0)
+                {
+                    $update_rejection_log_child_qry = "update $bai_pro3.rejection_log_child set rejected_qty=rejected_qty+$final_rejected_qty where bcd_id = $bcd_id";
+                    //echo $update_rejection_log_child_qry;
+                    mysqli_query($link,$update_rejection_log_child_qry) or exit("update_rejection_log_child_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $update_qry_rej_lg = "update $bai_pro3.rejections_log set rejected_qty = rejected_qty+$final_rejected_qty,remaining_qty=remaining_qty+$final_rejected_qty where style='$b_style' and schedule='$b_schedule' and color='$mapped_color'";
+                    $update_qry_rej_lg = $link->query($update_qry_rej_lg);
+                }
+                else
+                {
+                    $search_qry="SELECT id FROM $bai_pro3.rejections_log where style='$b_style' and schedule='$b_schedule' and color='$mapped_color'";
+                    // echo $search_qry;
+                    $result_search_qry = mysqli_query($link,$search_qry) or exit("rejections_log search query".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if($result_search_qry->num_rows > 0)
+                    {
+                       while($row_result_search_qry=mysqli_fetch_array($result_search_qry))
+                       {   
+
+                        $rejection_log_id = $row_result_search_qry['id'];
+                        $update_qry_rej_lg = "update $bai_pro3.rejections_log set rejected_qty = rejected_qty+$final_rejected_qty,remaining_qty=remaining_qty+$final_rejected_qty where id = $rejection_log_id";
+                        // echo $update_qry_rej_lg;
+                        $update_qry_rej_lg = $link->query($update_qry_rej_lg);
+                        $parent_id = $rejection_log_id;
+
+                       }
+
+                    }
+                    else
+                    {
+                        $insert_qty_rej_log = "INSERT INTO $bai_pro3.rejections_log (style,schedule,color,rejected_qty,recut_qty,remaining_qty) VALUES ('$b_style','$b_schedule','$mapped_color',$final_rejected_qty,'0',$final_rejected_qty)";
+                        $res_insert_qty_rej_log = $link->query($insert_qty_rej_log);
+                        $parent_id=mysqli_insert_id($link);
+
+                    }
+                    $inserting_into_rejection_log_child_qry = "INSERT INTO `bai_pro3`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`) values($parent_id,$bcd_id,$docket_number,$input_job_random_ref,'$size_id','$size','$b_module',$final_rejected_qty,$b_op_id)";
+                    // echo  $inserting_into_rejection_log_child_qry;
+                    $insert_qry_rej_child = $link->query($inserting_into_rejection_log_child_qry);
+                }
+                
+                    $bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$mapped_color.'",user(),"'.date('Y-m-d').'","'.$size.'","'.$final_rejected_qty.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$docket_number.'","'.$docket_number.'","'. $b_op_id.'","Normal","'.$bundle_no.'"),';
+                    $reason_flag = true;
+
+                    //M3 rejection Updation
+                    updateM3TransactionsRejections($bundle_no,$b_op_id,$final_rejected_qty,$r_reasons_array);
+            }
+
+            $bal_qty[$size] = 0;
+            $rej_qty[$size] = 0;
+            //$final_reported_qty = 0;
+            $final_rejected_qty = 0;
+            $left_over_qty = 0;
+        }
+
+        //Good Qty Logic
+        $get_bcd_qty ="select (original_qty - (recevied_qty + rejected_qty)) as balance_qty,rejected_qty,original_qty,send_qty,docket_number,size_title,bundle_number,size_id,cut_number From $brandix_bts.bundle_creation_data where docket_number in ($dockets) and operation_id = '$b_op_id'";
+        // echo  $get_bcd_qty;
+        $result_get_bcd_qty = $link->query($get_bcd_qty);
+        while($row_bcd_qry = $result_get_bcd_qty->fetch_assoc()) 
+        {
+
+            $docket_number =  $row_bcd_qry['docket_number'];
+            $size =  $row_bcd_qry['size_title'];
+            $original_qty = $row_bcd_qry['original_qty'];
+            $bundle_no = $row_bcd_qry['bundle_number'];
+            $size_id = $row_bcd_qry['size_id'];
+            $send_qty = $row_bcd_qry['send_qty'];
+            $cut_no = $row_bcd_qry['cut_number'];
+
+            if($size_wise_good_qtys[$size] > 0)
+            {
+                $bal_qty[$size] = $row_bcd_qry['balance_qty'];
+                $rej_qty[$size] = $row_bcd_qry['rejected_qty'];
+
+                if($bal_qty[$size] > $size_wise_good_qtys[$size])
+                {
+                // 100                  200
+
+                    $final_reported_qty = $size_wise_good_qtys[$size];
+                    $final_rejected_qty = $size_wise_rej_qtys[$size];
+
+                    $left_over_qty = $original_qty - $final_reported_qty - $final_rejected_qty;
+
+                    $size_wise_good_qtys[$size] = 0;
+                    $size_wise_rej_qtys[$size] = 0;
+                }         
+                else
+                {
+
+                    $final_reported_qty = $bal_qty[$size];
+                    $final_rejected_qty = $rej_qty[$size];
+
+                    $left_over_qty = $original_qty - $final_reported_qty - $final_rejected_qty;
+
+                    $size_wise_good_qtys[$size] -= $bal_qty[$size];
+                    $size_wise_rej_qtys[$size]  -= $rej_qty[$size];
+                }
+                $m3[$bundle_no] = $final_reported_qty;
+                //For prev operation updating remaining quantity in cps log
+                $cps_log_qry_pre = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty-'$final_reported_qty' WHERE doc_no = '$docket_number' AND operation_code = '$pre_ops_code' AND size_title='$size'"; 
+                //echo $cps_log_qry_pre;
+                $cps_log_result_pre = $link->query($cps_log_qry_pre) or exit('CPS LOG query pre error');
+
+                //Updating BCD
+                $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= recevied_qty+$final_reported_qty, `left_over`= '".$left_over_qty."' , `scanned_date`='". date('Y-m-d')."',`shift`= '".$b_shift."',`assigned_module`= '".$b_module."' where docket_number ='".$docket_number."' and size_title='$size' and operation_id = ".$b_op_id;
+                //echo $query;
+                $result_query = $link->query($query) or exit('query error in updating');
+
+                //based on the bundle creation data current operation quantites we are changing reported status
+                $get_cumi_qtys = "SELECT (sum(send_qty)-sum(recevied_qty+rejected_qty)) as bal_report  FROM $brandix_bts.bundle_creation_data WHERE docket_number ='".$docket_number."' AND size_title='$size' AND operation_id = '$b_op_id'";
+                $result_get_cumi_qtys = $link->query($get_cumi_qtys) or exit('Error getting data from Bundle creation data for cumilative');
+
+                if($result_get_cumi_qtys->num_rows >0)
+                {
+                    while($row = $result_get_cumi_qtys->fetch_assoc()) 
+                    {
+                      $bal_report = $row['bal_report'];
+
+                    }
+                    if($bal_report == 0){
+                      $reported_status = 'F';
+                    }else{
+                      $reported_status = 'P';
+                    }
+                    //update remaining quantity in cps_log table
+                    $cps_log_qry = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty+$final_reported_qty,`reported_status`='$reported_status' where doc_no = '$docket_number' and size_title='$size' and operation_code='$b_op_id'";
+                    // echo $cps_log_qry;
+                    $cps_log_result = $link->query($cps_log_qry) or exit('CPS LOG query error');
+
+                }
+                if($post_ops_code != null && $emb_cut_check_flag == 1)
+                {
+                    $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_reported_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number ='".$docket_number."' and size_title='$size' and operation_id = ".$post_ops_code;
+                    //echo $query_post;
+                    $result_query = $link->query($query_post) or exit('query error in updating');
+                }
+                if($ops_dep)
+                {
+                    $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where docket_number ='".$docket_number."' and size_title='$size' and operation_id in (".implode(',',$dep_ops_codes).")";
+                    $result_pre_send_qty = $link->query($pre_send_qty_qry);
+                    while($row = $result_pre_send_qty->fetch_assoc()) 
+                    {
+                        $pre_recieved_qty = $row['recieved_qty'];
+                    }
+
+                    $query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number ='".$docket_number."' and size_title='$size' and operation_id = ".$ops_dep;
+                    $result_query = $link->query($query_post_dep) or exit('query error in updating');    
+                }         
 
             }
+            
+            $smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
+            //echo $smv_query;
+            $result_smv_query = $link->query($smv_query);
+            while($row_ops = $result_smv_query->fetch_assoc()) 
+            {
+               $sfcs_smv = $row_ops['smv'];
+            }
+            
+            if($result_query)
+            {
+                
+                $bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$mapped_color.'","'.$size_id.'","'. $size.'","'. $sfcs_smv.'","'.$bundle_no.'","'.$original_qty.'","'.$send_qty.'","'.$final_reported_qty.'","'.$final_rejected_qty.'","'.$left_over_qty.'","'. $b_op_id.'","'.$docket_number.'","'.date('Y-m-d').'","'.$cut_no.'","'.$docket_number.'","'.$docket_number.'","'.$b_shift.'","'.$b_module.'","Normal"),';   
+                //echo  $bulk_insert_post_temp;            
+               
+                
+            }
+
+            $bal_qty[$size] = 0;
+            $rej_qty[$size] = 0;
+            $final_reported_qty = 0;
+            $final_rejected_qty = 0;
+            $left_over_qty = 0;
+        }
+
+        $result_query_001_temp = $link->query(rtrim($bulk_insert_post_temp,',') ) or exit('bulk_insert_post query error in updating11111');
+        foreach($m3 as $bundle => $rev_qty)
+        {
+            
+            //M3 API Call and operation quantites updatation and M3 Transactions and log tables for good quantity
+            updateM3Transactions($bundle,$b_op_id,$rev_qty);
+
+            
         }
     }
-    if($concurrent_flag == 0)
-    {       
+}
+else
+{
+    foreach($b_tid as $key => $value)
+    {
 
-        $smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$b_colors[$key]' and operation_code = $b_op_id";
-        $result_smv_query = $link->query($smv_query);
-        while($row_ops = $result_smv_query->fetch_assoc()) 
-        {
-            $sfcs_smv = $row_ops['smv'];
-        }
-        $remarks_code = "";
-        if($b_rep_qty[$key] == null){
-            $b_rep_qty[$key] = 0;
-        }
-        if($b_rej_qty[$key] == null){
-            $b_rej_qty[$key] = 0;
-        }
-        if($r_qtys[$value] != null && $r_reason[$value] != null){
-            $r_qty_array = explode(',',$r_qtys[$value]);
-            $r_reasons_array = explode(',',$r_reason[$value]);
-            if(sizeof($r_qty_array)>0)
-            {
-                $flag_decision = true;
-            }
-            foreach ($r_qty_array as $index => $r_qnty) {                      
-                $rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where m3_reason_code= '$r_reasons_array[$index]'";
-                $result_rejection_code_fetech_qry = $link->query($rejection_code_fetech_qry);
-                while($rowresult_rejection_code_fetech_qry = $result_rejection_code_fetech_qry->fetch_assoc()) 
-                {
-                    $reason_code = $rowresult_rejection_code_fetech_qry['reason_code'];
-                }
-                if($index == sizeof($r_qty_array)-1){
-                    $remarks_code .= $reason_code.'-'.$r_qnty;
-                }else {
-                    $remarks_code .= $reason_code.'-'.$r_qnty.'$';
-                }
-            }
-        }	
-        $select_send_qty = "SELECT recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
-        $result_select_send_qty = $link->query($select_send_qty);
+        //Bulk insertions into Bundle creation data temp
+        $bulk_insert_post_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) VALUES";
+        
+        //Total reproted quantity for the size
+        $tot_report_qty = $b_rep_qty[$key];
+        
+        //for prev operation updating remaining quantity in cps log
+        $cps_log_qry_pre = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty-$tot_report_qty WHERE doc_no = '$b_doc_no' AND operation_code = '$pre_ops_code' AND size_title='". $b_sizes[$key]."'"; 
+        $cps_log_result_pre = $link->query($cps_log_qry_pre) or exit('CPS LOG query pre error');
+
+            
+        //update shift and module against to each bundle number in BCD insert rejection in qms_db
+        $select_send_qty = "SELECT (send_qty+recut_in+replace_in)as send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
+        //echo $select_send_qty;
+        $result_select_send_qty = $link->query($select_send_qty) or exit('Error getting data from Bundle creation data');
         if($result_select_send_qty->num_rows >0)
         {
             while($row = $result_select_send_qty->fetch_assoc()) 
             {
-                $b_old_rep_qty_new = $row['recevied_qty'];
-                $b_old_rej_qty_new = $row['rejected_qty'];
+                $send_qty = $row['send_qty'];
+                $pre_recieved_qty = $row['recevied_qty'];
+                $rejected_qty = $row['rejected_qty'];
+                $act_reciving_qty = $b_rep_qty[$key]+$b_rej_qty[$key];
+                $total_rec_qty = $pre_recieved_qty + $act_reciving_qty+$rejected_qty;
+                if($total_rec_qty > $send_qty)
+                {
+                    $concurrent_flag = 1;
+                }
+                else
+                {
+                    $rec_qty_from_temp = "select (sum(recevied_qty)+sum(rejected_qty))as recevied_qty FROM $brandix_bts.bundle_creation_data_temp WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
+                    $result_rec_qty_from_temp = $link->query($rec_qty_from_temp);
+                    while($row_temp = $result_rec_qty_from_temp->fetch_assoc()) 
+                    {
+                        $pre_recieved_qty_temp = $row_temp['recevied_qty'];
+                        $act_reciving_qty_temp = $b_rep_qty[$key]+$b_rej_qty[$key];
+                        if($act_reciving_qty_temp > $send_qty)
+                        {
+                            // $concurrent_flag = 1;
+                        }
+                    }
 
+                }
             }
         }
-        $final_rep_qty = $b_old_rep_qty_new + $b_rep_qty[$key];
-        $final_rej_qty = $b_old_rej_qty_new + $b_rej_qty[$key];
-        $left_over_qty = $b_in_job_qty[$key] - $final_rep_qty - $final_rej_qty;
-        if($schedule_count){
-            $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `rejected_qty`='". $final_rej_qty."', `left_over`= '".$left_over_qty."' , `scanned_date`='". date('Y-m-d')."',`shift`= '".$b_shift."',`assigned_module`= '".$b_module."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$b_op_id;
-            
-            $result_query = $link->query($query) or exit('query error in updating');
+        if($concurrent_flag == 0)
+        {       
 
-
-            //based on the bundle creation data current operation quantites we are changing reported status
-            $get_cumi_qtys = "SELECT (sum(send_qty)-sum(recevied_qty+rejected_qty)) as bal_report  FROM $brandix_bts.bundle_creation_data WHERE bundle_number ='".$b_tid[$key]."' AND operation_id = '$b_op_id'";
-            $result_get_cumi_qtys = $link->query($get_cumi_qtys) or exit('Error getting data from Bundle creation data for cumilative');
-
-            if($result_get_cumi_qtys->num_rows >0)
+            $smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$b_colors[$key]' and operation_code = $b_op_id";
+            $result_smv_query = $link->query($smv_query);
+            while($row_ops = $result_smv_query->fetch_assoc()) 
             {
-                while($row = $result_get_cumi_qtys->fetch_assoc()) 
-                {
-                    $bal_report = $row['bal_report'];
-    
-                }
-                if($bal_report == 0){
-                    $reported_status = 'F';
-                }else{
-                    $reported_status = 'P';
-                }
-                //update remaining quantity in cps_log table
-                $cps_log_qry = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty+$tot_report_qty,`reported_status`='$reported_status' where id = '".$b_tid[$key]."' and operation_code='$b_op_id'";
-                // echo $cps_log_qry;
-                $cps_log_result = $link->query($cps_log_qry) or exit('CPS LOG query error');
-
-            }         
-
-            //M3 API Call and operation quantites updatation and M3 Transactions and log tables for good quantity
-            updateM3Transactions($b_tid[$key],$b_op_id,$b_rep_qty[$key]);
-
-            //To send rejections qunatities and reasons array to M3 API Function
+                $sfcs_smv = $row_ops['smv'];
+            }
+            $remarks_code = "";
+            if($b_rep_qty[$key] == null){
+                $b_rep_qty[$key] = 0;
+            }
+            if($b_rej_qty[$key] == null){
+                $b_rej_qty[$key] = 0;
+            }
             if($r_qtys[$value] != null && $r_reason[$value] != null){
                 $r_qty_array = explode(',',$r_qtys[$value]);
                 $r_reasons_array = explode(',',$r_reason[$value]);
-                // foreach($r_qty_array as $qty_key => $qty_value)
-                // {
-                    $r_qty = array();
-                    $r_reasons = array();
-                    $r_qty[] = $r_qty_array;
-                    $r_reasons[] = $r_reasons_array;
-                    //$b_tid = $b_tid[$key];
-                    $implode_next[2] = array_sum($r_qty_array);
-                    //retreving bcd id from bundle_ceration_data and inserting into the rejection_log table and rejection_log_child
-                    $bcd_id_qry = "select id,style,schedule,color,docket_number,size_title,size_id,assigned_module,input_job_no_random_ref,bundle_number from $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$key] and operation_id = $b_op_id";
-                   // echo $bcd_id_qry;
-                    $bcd_id_qry_result=mysqli_query($link,$bcd_id_qry) or exit("Bcd id qry".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    while($bcd_id_row=mysqli_fetch_array($bcd_id_qry_result))
+                if(sizeof($r_qty_array)>0)
+                {
+                    $flag_decision = true;
+                }
+                foreach ($r_qty_array as $index => $r_qnty) {                      
+                    $rejection_code_fetech_qry = "select reason_code from $bai_pro3.bai_qms_rejection_reason where m3_reason_code= '$r_reasons_array[$index]'";
+                    $result_rejection_code_fetech_qry = $link->query($rejection_code_fetech_qry);
+                    while($rowresult_rejection_code_fetech_qry = $result_rejection_code_fetech_qry->fetch_assoc()) 
                     {
-                        $bcd_id = $bcd_id_row['id'];
-                        $style = $bcd_id_row['style'];
-                        $schedule = $bcd_id_row['schedule'];
-                        $color = $bcd_id_row['color'];
-                        $doc_no = $bcd_id_row['docket_number'];
-                        $size_title = $bcd_id_row['size_title'];
-                        $size_id = $bcd_id_row['size_id'];
-                        $assigned_module = $bcd_id_row['assigned_module'];
-                        $input_job_random_ref = $bcd_id_row['input_job_no_random_ref'];
-                        $bundle_number = $bcd_id_row['bundle_number'];
+                        $reason_code = $rowresult_rejection_code_fetech_qry['reason_code'];
                     }
-                    //searching the bcd_id in rejection log child or not
-                    $bcd_id_searching_qry = "select id from $bai_pro3.rejection_log_child where bcd_id = $bcd_id";
-                    $bcd_id_searching_qry_result=mysqli_query($link,$bcd_id_searching_qry) or exit("bcd_id_searching_qry_result".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    if($bcd_id_searching_qry_result->num_rows > 0)
-                    {
-                        $update_rejection_log_child_qry = "update $bai_pro3.rejection_log_child set rejected_qty=rejected_qty+$implode_next[2] where bcd_id = $bcd_id";
-                        mysqli_query($link,$update_rejection_log_child_qry) or exit("update_rejection_log_child_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        $update_qry_rej_lg = "update $bai_pro3.rejections_log set rejected_qty = rejected_qty+$implode_next[2],remaining_qty=remaining_qty+$implode_next[2] where style='$style' and schedule='$schedule' and color='$color'";
-                        $update_qry_rej_lg = $link->query($update_qry_rej_lg);
+                    if($index == sizeof($r_qty_array)-1){
+                        $remarks_code .= $reason_code.'-'.$r_qnty;
+                    }else {
+                        $remarks_code .= $reason_code.'-'.$r_qnty.'$';
                     }
-                    else
+                }
+            }   
+            $select_send_qty = "SELECT recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$b_tid[$key]' AND operation_id = '$b_op_id'";
+            $result_select_send_qty = $link->query($select_send_qty);
+            if($result_select_send_qty->num_rows >0)
+            {
+                while($row = $result_select_send_qty->fetch_assoc()) 
+                {
+                    $b_old_rep_qty_new = $row['recevied_qty'];
+                    $b_old_rej_qty_new = $row['rejected_qty'];
+
+                }
+            }
+            $final_rep_qty = $b_old_rep_qty_new + $b_rep_qty[$key];
+            $final_rej_qty = $b_old_rej_qty_new + $b_rej_qty[$key];
+            $left_over_qty = $b_in_job_qty[$key] - $final_rep_qty - $final_rej_qty;
+            if($schedule_count){
+                $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `rejected_qty`='". $final_rej_qty."', `left_over`= '".$left_over_qty."' , `scanned_date`='". date('Y-m-d')."',`shift`= '".$b_shift."',`assigned_module`= '".$b_module."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$b_op_id;
+                
+                $result_query = $link->query($query) or exit('query error in updating');
+
+
+                //based on the bundle creation data current operation quantites we are changing reported status
+                $get_cumi_qtys = "SELECT (sum(send_qty)-sum(recevied_qty+rejected_qty)) as bal_report  FROM $brandix_bts.bundle_creation_data WHERE bundle_number ='".$b_tid[$key]."' AND operation_id = '$b_op_id'";
+                $result_get_cumi_qtys = $link->query($get_cumi_qtys) or exit('Error getting data from Bundle creation data for cumilative');
+
+                if($result_get_cumi_qtys->num_rows >0)
+                {
+                    while($row = $result_get_cumi_qtys->fetch_assoc()) 
                     {
-                        $search_qry="SELECT id FROM $bai_pro3.rejections_log where style='$style' and schedule='$schedule' and color='$color'";
-                        // echo $search_qry;
-                        $result_search_qry = mysqli_query($link,$search_qry) or exit("rejections_log search query".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        if($result_search_qry->num_rows > 0)
+                        $bal_report = $row['bal_report'];
+        
+                    }
+                    if($bal_report == 0){
+                        $reported_status = 'F';
+                    }else{
+                        $reported_status = 'P';
+                    }
+                    //update remaining quantity in cps_log table
+                    $cps_log_qry = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty+$tot_report_qty,`reported_status`='$reported_status' where id = '".$b_tid[$key]."' and operation_code='$b_op_id'";
+                    // echo $cps_log_qry;
+                    $cps_log_result = $link->query($cps_log_qry) or exit('CPS LOG query error');
+
+                }         
+
+                //M3 API Call and operation quantites updatation and M3 Transactions and log tables for good quantity
+                updateM3Transactions($b_tid[$key],$b_op_id,$b_rep_qty[$key]);
+
+                //To send rejections qunatities and reasons array to M3 API Function
+                if($r_qtys[$value] != null && $r_reason[$value] != null){
+                    $r_qty_array = explode(',',$r_qtys[$value]);
+                    $r_reasons_array = explode(',',$r_reason[$value]);
+                    // foreach($r_qty_array as $qty_key => $qty_value)
+                    // {
+                        $r_qty = array();
+                        $r_reasons = array();
+                        $r_qty[] = $r_qty_array;
+                        $r_reasons[] = $r_reasons_array;
+                        //$b_tid = $b_tid[$key];
+                        $implode_next[2] = array_sum($r_qty_array);
+                        //retreving bcd id from bundle_ceration_data and inserting into the rejection_log table and rejection_log_child
+                        $bcd_id_qry = "select id,style,schedule,color,docket_number,size_title,size_id,assigned_module,input_job_no_random_ref,bundle_number from $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$key] and operation_id = $b_op_id";
+                       // echo $bcd_id_qry;
+                        $bcd_id_qry_result=mysqli_query($link,$bcd_id_qry) or exit("Bcd id qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($bcd_id_row=mysqli_fetch_array($bcd_id_qry_result))
                         {
-                            while($row_result_search_qry=mysqli_fetch_array($result_search_qry))
-                            {
-
-                                $rejection_log_id = $row_result_search_qry['id'];
-                                $update_qry_rej_lg = "update $bai_pro3.rejections_log set rejected_qty = rejected_qty+$implode_next[2],remaining_qty=remaining_qty+$implode_next[2] where id = $rejection_log_id";
-                                // echo $update_qry_rej_lg;
-                                $update_qry_rej_lg = $link->query($update_qry_rej_lg);
-                                $parent_id = $rejection_log_id;
-
-                            }
-
+                            $bcd_id = $bcd_id_row['id'];
+                            $style = $bcd_id_row['style'];
+                            $schedule = $bcd_id_row['schedule'];
+                            $color = $bcd_id_row['color'];
+                            $doc_no = $bcd_id_row['docket_number'];
+                            $size_title = $bcd_id_row['size_title'];
+                            $size_id = $bcd_id_row['size_id'];
+                            $assigned_module = $bcd_id_row['assigned_module'];
+                            $input_job_random_ref = $bcd_id_row['input_job_no_random_ref'];
+                            $bundle_number = $bcd_id_row['bundle_number'];
+                        }
+                        //searching the bcd_id in rejection log child or not
+                        $bcd_id_searching_qry = "select id from $bai_pro3.rejection_log_child where bcd_id = $bcd_id";
+                        $bcd_id_searching_qry_result=mysqli_query($link,$bcd_id_searching_qry) or exit("bcd_id_searching_qry_result".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if($bcd_id_searching_qry_result->num_rows > 0)
+                        {
+                            $update_rejection_log_child_qry = "update $bai_pro3.rejection_log_child set rejected_qty=rejected_qty+$implode_next[2] where bcd_id = $bcd_id";
+                            mysqli_query($link,$update_rejection_log_child_qry) or exit("update_rejection_log_child_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            $update_qry_rej_lg = "update $bai_pro3.rejections_log set rejected_qty = rejected_qty+$implode_next[2],remaining_qty=remaining_qty+$implode_next[2] where style='$style' and schedule='$schedule' and color='$color'";
+                            $update_qry_rej_lg = $link->query($update_qry_rej_lg);
                         }
                         else
                         {
-                            $insert_qty_rej_log = "INSERT INTO bai_pro3.rejections_log (style,schedule,color,rejected_qty,recut_qty,remaining_qty) VALUES ('$style','$schedule','$color',$implode_next[2],'0',$implode_next[2])";
-                            $res_insert_qty_rej_log = $link->query($insert_qty_rej_log);
-                            $parent_id=mysqli_insert_id($link);
+                            $search_qry="SELECT id FROM $bai_pro3.rejections_log where style='$style' and schedule='$schedule' and color='$color'";
+                            // echo $search_qry;
+                            $result_search_qry = mysqli_query($link,$search_qry) or exit("rejections_log search query".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            if($result_search_qry->num_rows > 0)
+                            {
+                                while($row_result_search_qry=mysqli_fetch_array($result_search_qry))
+                                {
 
+                                    $rejection_log_id = $row_result_search_qry['id'];
+                                    $update_qry_rej_lg = "update $bai_pro3.rejections_log set rejected_qty = rejected_qty+$implode_next[2],remaining_qty=remaining_qty+$implode_next[2] where id = $rejection_log_id";
+                                    // echo $update_qry_rej_lg;
+                                    $update_qry_rej_lg = $link->query($update_qry_rej_lg);
+                                    $parent_id = $rejection_log_id;
+
+                                }
+
+                            }
+                            else
+                            {
+                                $insert_qty_rej_log = "INSERT INTO $bai_pro3.rejections_log (style,schedule,color,rejected_qty,recut_qty,remaining_qty) VALUES ('$style','$schedule','$color',$implode_next[2],'0',$implode_next[2])";
+                                $res_insert_qty_rej_log = $link->query($insert_qty_rej_log);
+                                $parent_id=mysqli_insert_id($link);
+
+                            }
+                            $inserting_into_rejection_log_child_qry = "INSERT INTO `bai_pro3`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`) values($parent_id,$bcd_id,$doc_no,$input_job_random_ref,'$size_id','$size_title','$assigned_module',$implode_next[2],$b_op_id)";
+                           // echo  $inserting_into_rejection_log_child_qry;
+                            $insert_qry_rej_child = $link->query($inserting_into_rejection_log_child_qry);
                         }
-                        $inserting_into_rejection_log_child_qry = "INSERT INTO `bai_pro3`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`) values($parent_id,$bcd_id,$doc_no,$input_job_random_ref,'$size_id','$size_title','$assigned_module',$implode_next[2],$b_op_id)";
-                       // echo  $inserting_into_rejection_log_child_qry;
-                        $insert_qry_rej_child = $link->query($inserting_into_rejection_log_child_qry);
-                    }
-                    // echo $bundle_number.','.$b_op_id.','.$r_qty_array.','.$r_reasons_array.'</br>';
-                    updateM3TransactionsRejections($bundle_number,$b_op_id,$r_qty_array,$r_reasons_array);
-                // }
-            }            
-        }
-               
-        if($result_query)
-        {
-            if($b_rep_qty[$key] > 0 || $b_rej_qty[$key] >0)
-            {
-                $bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_no.'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_doc_no.'","'.$b_doc_no.'","'.$b_shift.'","'.$b_module.'","Normal")';               
-                $result_query_001_temp = $link->query($bulk_insert_post_temp) or exit('bulk_insert_post query error in updating');
+                        // echo $bundle_number.','.$b_op_id.','.$r_qty_array.','.$r_reasons_array.'</br>';
+                        updateM3TransactionsRejections($bundle_number,$b_op_id,$r_qty_array,$r_reasons_array);
+                    // }
+                }            
             }
-        }	
-        if($post_ops_code != null && $emb_cut_check_flag == 1)
-        {
-            $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id = ".$post_ops_code;
-            $result_query = $link->query($query_post) or exit('query error in updating');
-        }
-        if($ops_dep)
-        {
-            $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where bundle_number ='".$b_tid[$key]."' and operation_id in (".implode(',',$dep_ops_codes).")";
-            $result_pre_send_qty = $link->query($pre_send_qty_qry);
-            while($row = $result_pre_send_qty->fetch_assoc()) 
+                   
+            if($result_query)
             {
-                $pre_recieved_qty = $row['recieved_qty'];
+                if($b_rep_qty[$key] > 0 || $b_rej_qty[$key] >0)
+                {
+                    $bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_no.'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_doc_no.'","'.$b_doc_no.'","'.$b_shift.'","'.$b_module.'","Normal")';               
+                    $result_query_001_temp = $link->query($bulk_insert_post_temp) or exit('bulk_insert_post query error in updating');
+                }
+            }   
+            if($post_ops_code != null && $emb_cut_check_flag == 1)
+            {
+                $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id = ".$post_ops_code;
+                $result_query = $link->query($query_post) or exit('query error in updating');
             }
+            if($ops_dep)
+            {
+                $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where bundle_number ='".$b_tid[$key]."' and operation_id in (".implode(',',$dep_ops_codes).")";
+                $result_pre_send_qty = $link->query($pre_send_qty_qry);
+                while($row = $result_pre_send_qty->fetch_assoc()) 
+                {
+                    $pre_recieved_qty = $row['recieved_qty'];
+                }
 
-            $query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$ops_dep;
-            $result_query = $link->query($query_post_dep) or exit('query error in updating');    
-        }
-               
-        if($r_qtys[$value] != null && $r_reason[$value] != null){
-            $bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$b_colors[$key].'",user(),"'.date('Y-m-d').'","'.$b_sizes[$key].'","'.$b_rej_qty[$key].'","3","'.$remarks_var.'","'.$remarks_code.'","'.$b_doc_no.'","'.$b_doc_no.'","'. $b_op_id.'","Normal","'.$b_tid[$key].'"),';
-            $reason_flag = true;
-        }   
-    }    
+                $query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$ops_dep;
+                $result_query = $link->query($query_post_dep) or exit('query error in updating');    
+            }
+                   
+            if($r_qtys[$value] != null && $r_reason[$value] != null){
+                $bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$b_colors[$key].'",user(),"'.date('Y-m-d').'","'.$b_sizes[$key].'","'.$b_rej_qty[$key].'","3","'.$remarks_var.'","'.$remarks_code.'","'.$b_doc_no.'","'.$b_doc_no.'","'. $b_op_id.'","Normal","'.$b_tid[$key].'"),';
+                $reason_flag = true;
+            }   
+        }    
+    }
 }
+
+
 if($concurrent_flag == 1)
 {
     echo "<h1 style='color:red;'>You are Scanning More than eligible quantity.</h1>";
