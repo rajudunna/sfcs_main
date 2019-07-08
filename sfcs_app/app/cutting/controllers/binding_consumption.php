@@ -19,7 +19,8 @@ if(isset($_GET['row_id']))
     if($status== 'Reject'){
         $status_new = 'Close';
     }
-    $query = "UPDATE $bai_pro3.binding_consumption set status = '".$status_new."' where id = $row_id";
+    
+    $query = "UPDATE $bai_pro3.binding_consumption set status = '".$status_new."',status_at= '".date("Y-m-d H:i:s")."' where id = $row_id";
     $update_query = mysqli_query($link,$query);
 
     echo"<script>swal('Successfully Deleted.','','success')</script>";

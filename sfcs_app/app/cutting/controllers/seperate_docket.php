@@ -1,5 +1,10 @@
 <?php
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+	$has_permission=haspermission($_GET['r']);
+    $per = 'No';
+
+    $close_url = getFullURLLevel($_GET['r'],'closed_docket.php',0,'R');
+    
     $query = "select * from $bai_pro3.binding_consumption where status='Allocated'";
     $sql_result = mysqli_query($link,$query);
     if(mysqli_num_rows($sql_result)>0){
@@ -31,7 +36,9 @@ th{
     <div class='pull-right'><span class='label label-info fa fa-list fa-xl' >&nbsp;&nbsp;&nbsp;To Show Binding Items</span></div>
    
         <ul id="rowTab" class="nav nav-tabs">
+            
             <li class="active"><a data-toggle="tab" href="#tab_a"><b>Requests</b></a></li>
+           
             <li><a data-toggle="tab" href="#tab_b"><b>Allocated (<?= $count; ?>)</b></a></li>
             <li><a data-toggle="tab" href="#tab_c"><b>Closed</b></a></li>
             
@@ -73,6 +80,9 @@ th{
                                 echo "<td><input type='submit' name='submit$i' id='submit-$i' class='btn btn-info' value='Submit' disabled='disabled' onclick='UpdateDamageStatus($i);'></td>";
                                 echo "</tr>";
                             }
+                            if($index==0) {
+                                echo "<tr><td colspan=8>No Data Found!</td></tr>";
+                            }
                         ?>
                     </table>
                 </div>
@@ -111,44 +121,40 @@ th{
                                     echo "<td><a href=\"$path?binding_id=$i\" onclick=\"Popup1=window.open('$path?binding_id=$i','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
                                     echo "</tr>";
                                 }
-                            
+                                if($index==0) {
+                                    echo "<tr><td colspan=8>No Data Found!</td></tr>";
+                                }
                             ?>
                     </table>
                 </div>         
             </div>
             <div id="tab_c" class="tab-pane fade">
-                <div style='overflow:scroll;' class='table-responsive'>
+                <div class="row">
+
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-md-2">
+                        <input class="form-control" type="text" data-toggle='datepicker' name="sdat" id="sdate" size=8 placeholder='Select Date' onchange='DateChange();'/>
+                    </div>
+                    <div class="col-md-1">
+                        <input type='buttom' name='submit1' id='submit1' class='btn btn-success' value='Filter' disabled='disabled' onclick='FilterFunction();'>
+                    </div>
+                </div>
+             
+                <div style='overflow:scroll;' class='table-responsive' id='closed'>
                     <table id='table3' class='table table-bordered'>
-                        <tr>
+                        <!-- <tr>
                             <th>SNo.</th>
                             <th>Style</th>
                             <th>Schedule</th>
                             <th>Color</th>
                             <th>Total Required Quantity</th>
                             <th>Total Binding Required Quantity</th>
-                        </tr>
-                        <?php   
-                                $path = getFullURLLevel($_GET['r'],'lay_plan_preparation/Book3_print_binding.php',0,'R'); 
-                             
-                                $query = "select * from $bai_pro3.binding_consumption where status='Close'";
-                                $sql_result = mysqli_query($link,$query);
-                                $index=0;
-                                while($sql_row=mysqli_fetch_array($sql_result))
-                                {
-                                    $i = $sql_row['id'];
-                                    $index+=1;
-                                    echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'><span class='label label-info fa fa-list fa-xl' >&nbsp;&nbsp;&nbsp;$index</span></td>";
-                                    echo "<td>".$sql_row['style']."</td>";
-                                    echo "<td>".$sql_row['schedule']."</td>";
-                                    echo "<td>".$sql_row['color']."</td>";
-                                    echo "<td>".$sql_row['tot_req_qty']."</td>";
-                                    echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
-                                    echo "</tr>";
-                                }
-                            
-                            ?>
+                        </tr> -->
                     </table>
-                </div>         
+                </div>
+                         
             </div>
             
         </div>
@@ -211,9 +217,21 @@ th{
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function(){
-    });
-
+    var table_Props;
+    $('document').ready(function(){
+        $('#closed').hide();
+        $('#reset_table3').addClass('btn btn-warning');
+        table_Props = 	{
+                                rows_counter: true,
+                                btn_reset: true,
+                                btn_reset_text: "Clear",
+                                loader: true,
+                                loader_text: "Filtering data..."
+                            };
+        setFilterGrid( "table1",table_Props );
+        setFilterGrid( "table2",table_Props );
+        setFilterGrid( "table3",table_Props );
+    })
     function IssueAction(i)
     {
         document.getElementById('submit-'+i).disabled = false;
@@ -230,37 +248,26 @@ th{
                 url_path = "<?php echo getFullURLLevel($_GET['r'],'cutting/controllers/binding_consumption.php',2,'R'); ?>";
                 window.open(url_path+"?row_id="+row_id+"&status="+status);
             }
-            
-            // $.ajax({
-            //     type: "POST",
-            //     url: url_path+"?doc_no=B"+row_id+"&status="+status,
-            //     dataType: "json",
-            //     success: function (response) 
-            //     {
-            //         console.log(response);
-                   
-            //         // var url1 = ' //getFullURL($_GET['r'],'seperate_docket.php','N'); ';
-            //         // window.location.href = url1;
-            //     }
-            // });
+        }
+        
+    }
+
+    function DateChange() {
+        if($('#sdate').val()) {
+            document.getElementById('submit1').disabled = false;
+        }
+    }
+    function FilterFunction() {
+        if($('#sdate').val()) {
+            $('#closed').show();
+            $.ajax({
+            url  : '<?= $close_url ?>?date='+$('#sdate').val(),
+            type : 'GET',
+            }).then(function(res){
+                $('#table3').html(res);
+                setFilterGrid( "table3",table_Props );
+            });
         }
         
     }
     </script>
-<script language="javascript" type="text/javascript">
-$('document').ready(function(){
-    $('#reset_table3').addClass('btn btn-warning');
-	var table_Props = 	{
-							rows_counter: true,
-							btn_reset: true,
-							btn_reset_text: "Clear",
-							loader: true,
-							loader_text: "Filtering data..."
-						};
-    setFilterGrid( "table1",table_Props );
-    setFilterGrid( "table2",table_Props );
-    setFilterGrid( "table3",table_Props );
-})
-	
-   
-</script>

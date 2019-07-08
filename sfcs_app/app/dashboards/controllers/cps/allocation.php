@@ -734,8 +734,9 @@ if(isset($_POST['allocate_new']))
 			
 		}
 		
-	}
-    $update_parent="update $bai_pro3.binding_consumption set status='Allocated' where id=$row_id_new";
+    }
+    
+    $update_parent="update $bai_pro3.binding_consumption set status='Allocated',status_at='".date("Y-m-d H:i:s")."' where id=$row_id_new";
     mysqli_query($link, $update_parent) or exit("Sql Error: $update_parent".mysqli_error($GLOBALS["___mysqli_ston"]));
     
 	//Exit Code
