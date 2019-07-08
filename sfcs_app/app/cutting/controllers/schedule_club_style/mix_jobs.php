@@ -1,8 +1,7 @@
 
 <?php 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));	  
-	$view_access=user_acl("SFCS_0092",$username,1,$group_id_sfcs); 
-?> 
+	?> 
 <style>
 
 #loading-image{
@@ -20,6 +19,7 @@
   filter: alpha(opacity=40); /* For IE8 and earlier */
 }
 </style>
+
 
 
 <script>
@@ -55,10 +55,11 @@
 		}
 	}
 </script>
-
 <div class="ajax-loader" id="loading-image" style="display: none">
     <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
 </div>
+
+
 <div class="panel panel-primary">
 	<div class="panel-heading">Schedule Club Splitting (Schedule Level)</div>
 	<div class="panel-body">
@@ -466,7 +467,7 @@ if(isset($_POST['submit']))
 					unset($destination_id_new);
 					unset($val);
 					
-					for($i=0;$i<1;$i++) 
+					for($i=0;$i<sizeof($o_s_t);$i++) 
 					{ 
 						$available=array();
 						$dels=array();
@@ -484,7 +485,7 @@ if(isset($_POST['submit']))
 						$tot_split=0;$req_qty=0;
 						$eligble=0;
 						$sql9="select order_tid, order_del_no, order_col_des, order_s_".$sizes_array[$i]." as ord_qty,destination from $bai_pro3.bai_orders_db_club_confirm where order_joins=\"$orders_join\" and order_s_".$sizes_array[$i].">0 group by order_del_no order by order_del_no*1";
-						echo $sql9."<b>";
+					//	echo $sql9."<br>";
 						$sql_result19=mysqli_query( $link, $sql9) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						$tot_col=mysqli_num_rows($sql_result19);
 						while($sql_row19=mysqli_fetch_array($sql_result19)) 
@@ -498,7 +499,7 @@ if(isset($_POST['submit']))
 						}	
 						$max_del=max($dels);
 						$sql14="select * from $bai_pro3.mix_temp_source where size=\"p_".$sizes_array[$i]."\" and qty>0 and cat_ref='$cat_ref' group by doc_no order by doc_no*1";
-						//echo $sql14."<br>";
+					//	echo $sql14."<br>";
 						$sql_result114=mysqli_query( $link, $sql14) or exit("Sql Error96".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						if(mysqli_num_rows($sql_result114)>0)
 						{
@@ -551,8 +552,8 @@ if(isset($_POST['submit']))
 											mysqli_query($link, $sqlx71) or exit("Sql Errorx7".mysqli_error($GLOBALS["___mysqli_ston"]));
 											$eligble=$eligble-$available[$docs[$jj]][$sizes_array[$i]];
 											$available[$docs[$jj]][$sizes_array[$i]]=0;	
-										//	echo "TEst pa2-----".$available[$docs[$jj]][$sizes_array[$i]]."<br>";
-										//	echo "TEst pa2---1--".$eligble."<br>";
+											//echo "TEst pa2-----".$available[$docs[$jj]][$sizes_array[$i]]."<br>";
+											//echo "TEst pa2---1--".$eligble."<br>";
 										}										
 									}while($eligble>0 && $available[$docs[$jj]][$sizes_array[$i]]>0);									
 								}								
@@ -561,16 +562,16 @@ if(isset($_POST['submit']))
 						//echo var_dump($available)."<br>";
 						//echo array_sum($available)."<br>";
 						//if(array_sum($available)>0)
-						//{
-							//for($j=0;$j<sizeof($max_del);$j++)
-							//{
+					//	{
+							// for($j=0;$j<sizeof($max_del);$j++)
+							// {
 								for($jj=0;$jj<sizeof($docs);$jj++)
 								{
 								//	echo $cat_ref."---".$sizes_array[$i]."---".$max_del[$j]."====".$available[$docs[$jj]][$sizes_array[$i]]."<br>";
 									if($available[$docs[$jj]][$sizes_array[$i]]>0)
 									{	
 										$sqlx31="insert into $bai_pro3.mix_temp_desti(allo_new_ref,cat_ref,cutt_ref,mk_ref,size,qty,order_tid,order_col_des,order_del_no,destination,plies,doc_no,cutno) values ('".$docs[$jj]."','".$cat_ref."','".$cut_ref[$docs[$jj]][$sizes_array[$i]]."','".$mk_ref[$docs[$jj]][$sizes_array[$i]]."',\"p_".$sizes_array[$i]."\",\"".$available[$docs[$jj]][$sizes_array[$i]]."\",\"".$order_tids[$max_del]."\",\"".$colrsnew[$max_del]."\",\"".$max_del."\",\"".$destination_id_new[$max_del]."\",\"".$plies_ref[$docs[$jj]][$sizes_array[$i]]."\",\"".$docs[$jj]."\",\"".$cutno[$docs[$jj]][$sizes_array[$i]]."\")"; 
-									//	echo $sqlx3."--<br>";
+									//	echo $sqlx31."--<br>";
 										mysqli_query($link, $sqlx31) or exit($sqlx3."Sql Errorx3".mysqli_error($GLOBALS["___mysqli_ston"]));	
 										$sqlx71="update $bai_pro3.mix_temp_source set qty='0' where doc_no='".$docs[$jj]."' and size='p_".$sizes_array[$i]."'";
 									//	echo $sqlx71."<br>";
@@ -578,8 +579,9 @@ if(isset($_POST['submit']))
 										$available[$docs[$jj]][$sizes_array[$i]]=0;												
 									}									
 								}								
-							//}						
-						//}	
+							// }						
+					//	}
+						$tot_qty_exces=0;	
 						unset($available);
 						unset($dels);
 						unset($colrsnew);
@@ -592,7 +594,8 @@ if(isset($_POST['submit']))
 						unset($plies_ref);
 						unset($docs);						
 					}														
-				}			
+				}
+							
 				$size_p=array();
 				$size_q=array();
 				// Sample Checking
@@ -864,11 +867,13 @@ if(isset($_POST['submit']))
 				
 			}
 		}
+		
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 		function Redirect() {
 			location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',1,'N')."&color=$color&style=$style&schedule=$order_sch&club_status=2\";
 			}
 		</script>";
+		
 	} 
 	else 
 	{ 		
