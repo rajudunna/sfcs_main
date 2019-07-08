@@ -494,7 +494,7 @@ function updatereversal($post_data)
 		                    
 		                }
 
-		               
+		               $m3[$bundle_no] = $final_reversal_qty;
 		                //Updating CPS Log
 		                $cps_log_qry_pre = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty-$final_reversal_qty WHERE doc_no = '".$docket_number."' AND operation_code = '$b_op_id' AND size_title='".$size."'"; 
 		                //echo $cps_log_qry_pre;
@@ -541,8 +541,7 @@ function updatereversal($post_data)
 						}         
 
 		            }
-		            //M3 API Call and operation quantites updatation and M3 Transactions and log tables for good quantity
-		            //updateM3Transactions($b_tid[$key],$b_op_id,$b_rep_qty[$key]);
+		           
 		            $smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
 		            //echo $smv_query;
 		            $result_smv_query = $link->query($smv_query);
@@ -555,7 +554,7 @@ function updatereversal($post_data)
 		            {
 		            
 		                
-		                $bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$mapped_color.'","'.$size_id.'","'. $size.'","'. $sfcs_smv.'","'.$bundle_no.'","'.$original_qty.'","'.$send_qty.'","'.$final_reversal_qty.'","0","0","'. $b_op_id.'","'.$docket_number.'","'.date('Y-m-d').'","'.$cut_no.'","'.$docket_number.'","'.$docket_number.'","'.$b_shift.'","'.$b_module.'","Normal"),';   
+		                $bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$mapped_color.'","'.$size_id.'","'. $size.'","'. $sfcs_smv.'","'.$bundle_no.'","'.$original_qty.'","'.$send_qty.'",'-'"'.$final_reversal_qty.'","0","0","'. $b_op_id.'","'.$docket_number.'","'.date('Y-m-d').'","'.$cut_no.'","'.$docket_number.'","'.$docket_number.'","'.$b_shift.'","'.$b_module.'","Normal"),';   
 		                //echo  $bulk_insert_post_temp;            
 		               
 		                
@@ -567,6 +566,15 @@ function updatereversal($post_data)
 		        }
 
 		        $result_query_001_temp = $link->query(rtrim($bulk_insert_post_temp,',') ) or exit('bulk_insert_post query error in updating11111');
+
+		        foreach($m3 as $bundle => $rev_qty)
+		        {
+		        	
+		        	//M3 API Call and operation quantites updatation and M3 Transactions and log tables for good quantity
+		            updateM3Transactions($bundle,$b_op_id,$rev_qty);
+
+		        	
+		        }
 			}
 			else
 			{

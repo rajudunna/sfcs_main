@@ -344,6 +344,9 @@ if($flag == 'clubbing')
                 
                     $bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$mapped_color.'",user(),"'.date('Y-m-d').'","'.$size.'","'.$final_rejected_qty.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$docket_number.'","'.$docket_number.'","'. $b_op_id.'","Normal","'.$bundle_no.'"),';
                     $reason_flag = true;
+
+                    //M3 rejection Updation
+                    updateM3TransactionsRejections($bundle_no,$b_op_id,$final_rejected_qty,$r_reasons_array);
             }
 
             $bal_qty[$size] = 0;
@@ -396,7 +399,7 @@ if($flag == 'clubbing')
                     $size_wise_good_qtys[$size] -= $bal_qty[$size];
                     $size_wise_rej_qtys[$size]  -= $rej_qty[$size];
                 }
-
+                $m3[$bundle_no] = $final_reported_qty;
                 //For prev operation updating remaining quantity in cps log
                 $cps_log_qry_pre = "UPDATE $bai_pro3.cps_log SET `remaining_qty`= remaining_qty-'$final_reported_qty' WHERE doc_no = '$docket_number' AND operation_code = '$pre_ops_code' AND size_title='$size'"; 
                 //echo $cps_log_qry_pre;
@@ -449,8 +452,7 @@ if($flag == 'clubbing')
                 }         
 
             }
-            //M3 API Call and operation quantites updatation and M3 Transactions and log tables for good quantity
-            //updateM3Transactions($b_tid[$key],$b_op_id,$b_rep_qty[$key]);
+            
             $smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
             //echo $smv_query;
             $result_smv_query = $link->query($smv_query);
@@ -476,6 +478,14 @@ if($flag == 'clubbing')
         }
 
         $result_query_001_temp = $link->query(rtrim($bulk_insert_post_temp,',') ) or exit('bulk_insert_post query error in updating11111');
+        foreach($m3 as $bundle => $rev_qty)
+        {
+            
+            //M3 API Call and operation quantites updatation and M3 Transactions and log tables for good quantity
+            updateM3Transactions($bundle,$b_op_id,$rev_qty);
+
+            
+        }
     }
 }
 else
@@ -671,7 +681,7 @@ else
                             }
                             else
                             {
-                                $insert_qty_rej_log = "INSERT INTO bai_pro3.rejections_log (style,schedule,color,rejected_qty,recut_qty,remaining_qty) VALUES ('$style','$schedule','$color',$implode_next[2],'0',$implode_next[2])";
+                                $insert_qty_rej_log = "INSERT INTO $bai_pro3.rejections_log (style,schedule,color,rejected_qty,recut_qty,remaining_qty) VALUES ('$style','$schedule','$color',$implode_next[2],'0',$implode_next[2])";
                                 $res_insert_qty_rej_log = $link->query($insert_qty_rej_log);
                                 $parent_id=mysqli_insert_id($link);
 
