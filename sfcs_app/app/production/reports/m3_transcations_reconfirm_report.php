@@ -67,8 +67,10 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
 ?>
              <?php 
                //  $sql="SELECT id,ref_no,response_status,mo_no,m3_bulk_tran_id FROM $bai_pro3.`m3_transactions` WHERE response_status='fail' AND m3_trail_count=4";
-              $sql="SELECT `bai_pro3`.`m3_transactions`.id,remarks,response_status,`bai_pro3`.`m3_transactions`.mo_no,m3_bulk_tran_id,style,schedule,color,size,quantity FROM `bai_pro3`.`m3_transactions` LEFT JOIN `bai_pro3`.`mo_details` ON `bai_pro3`.`mo_details`.`mo_no`=`bai_pro3`.`m3_transactions`.`mo_no`
-              WHERE response_status='fail' AND m3_trail_count=4";
+              $sql="SELECT `bai_pro3`.`m3_transactions`.id,m3_trail_count,response_status,`bai_pro3`.`m3_transactions`.mo_no,m3_bulk_tran_id,style,SCHEDULE,color,size,quantity,`brandix_bts`.`transactions_log`.`response_message` FROM `bai_pro3`.`m3_transactions`  
+              LEFT JOIN `bai_pro3`.`mo_details` ON `bai_pro3`.`mo_details`.`mo_no`=`bai_pro3`.`m3_transactions`.`mo_no`
+              LEFT JOIN `brandix_bts`.`transactions_log` ON `brandix_bts`.`transactions_log`.`transaction_id`=`bai_pro3`.`m3_transactions`.`m3_bulk_tran_id`
+               WHERE `bai_pro3`.`m3_transactions`.`response_status`='fail' AND `bai_pro3`.`m3_transactions`.`m3_trail_count`=4";
           
                mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -84,7 +86,7 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                         <div class="table-responsive">
                                  <table id="example" cellspacing="0" width="100%" class="table table-bordered">
                                  <input type="submit" value="Re-Confirm" class="btn btn-primary">
-                                 <tr><th>S.No</th><th>Mo No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th><th>Reason</th><th>Response Status</th>';
+                                 <tr><th>S.No</th><th>Mo No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th><th>Failed Reason</th><th>Failed Count</th><th>Response Status</th>';
                            echo  '<th><input type="checkbox" onClick="checkAll()"/>Select All</th></tr>';
                      $i=1;
                 while($sql_row=mysqli_fetch_array($sql_result))
@@ -96,9 +98,9 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                      $schedule=$sql_row['schedule'];
                      $color=$sql_row['color'];
                      $size=$sql_row['size'];
-                     $remarks=$sql_row['remarks'];
+                     $remarks=$sql_row['response_message'];
                      $mo_qty=$sql_row['quantity'];
-
+                     $trail_count=$sql_row['m3_trail_count'];
                      // echo $m3_bulk_tran_id; 
                      if($style==''){
                         $style="--";
@@ -127,7 +129,7 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                      }else{
                         $mo_qty;
                      }
-                    echo "<tr><td>".$i++."</td><td>".$sql_row['mo_no']."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$size."</td><td>".$mo_qty."</td><td>".$remarks."</td><td>".$sql_row['response_status']."</td>";
+                    echo "<tr><td>".$i++."</td><td>".$sql_row['mo_no']."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$size."</td><td>".$mo_qty."</td><td>".$remarks."</td><td>".$trail_count."</td><td>".$sql_row['response_status']."</td>";
                     echo "<td><input type='checkbox' name='bindingdata[]' value='".$id.'-'.$m3_bulk_tran_id."'></td>";
                   
                 }
