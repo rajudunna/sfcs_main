@@ -1,12 +1,23 @@
+<?php 
+if(isset($_GET['gatepass'])){
+    echo "<script>
+    $(document).ready(function(){
+         $('#frm1').submit();
+    });
+    </script>";
+}
+?>
 <?php
+    include(getFullURLLevel($_GET['r'],'common/js/jquery-1.12.4.js',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
     $url = getFullURLLEVEL($_GET['r'],'scan_barcode_wout_keystroke.php',0,'N');
 ?>
+
 <div class="panel panel-primary " id="bundlewise_scanBarcode">
     <div class="panel-heading">Bundle Barcode Scanning</div>
     <div class="panel-body">
-    <form method ='POST' action='<?php echo $url ?>'>
+    <form method ='POST' id="frm1" action='<?php echo $url ?>'>
         <div class="row">
             <div class="col-md-4">
                 <label>Shift:<span style="color:red">*</span></label>

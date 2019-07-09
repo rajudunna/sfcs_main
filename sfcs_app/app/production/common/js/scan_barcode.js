@@ -4,6 +4,7 @@ app.controller('scanctrl', function ($scope, $http, $window) {
     $scope.barcode = '';
     $scope.url = '';
     $scope.user_permission = '';
+    $scope.pass_id = '';
     $scope.showtable = false;
     $scope.showscanlist = false;
     $scope.scanned_barcode_details = [];
@@ -17,7 +18,7 @@ app.controller('scanctrl', function ($scope, $http, $window) {
         $scope.op_code = op_code;
     });
     $scope.scanned = function(event){
-        if(event.charCode == 13){
+	        if(event.charCode == 13){
             $('#loading-image').show();
             if($scope.op_code != undefined)
             {
@@ -28,6 +29,7 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                 $scope.last_barcode = $scope.barcode;
             }
             console.log($scope.last_barcode);
+            console.log($scope.pass_id);
             $scope.last_barcode_status = 'In-Progress';
             $scope.last_barcode_status_remarks = '';
             $scope.showtable = true;
@@ -54,7 +56,8 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                             var params = $.param({
                                 auth: $scope.user_permission,
                                 barcode: $scope.last_barcode,
-                                shift: $scope.shift
+                                shift: $scope.shift,
+                                gate_id: $scope.pass_id								
                             });
                             var req = {
                                 method: 'POST',
