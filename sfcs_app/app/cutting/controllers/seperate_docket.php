@@ -12,6 +12,9 @@
     } else {
         $count = 0;
     }
+
+    $table1_rows = 0;
+    $table2_rows = 0;
     
 ?>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script>
@@ -37,10 +40,10 @@ th{
    
         <ul id="rowTab" class="nav nav-tabs">
             
-            <li class="active"><a data-toggle="tab" href="#tab_a"><b>Requests</b></a></li>
+            <li class="active"><a data-toggle="tab" href="#tab_a"><b><span class='label label-default' style='font-size:15px'>Requests</span></b></a></li>
            
-            <li><a data-toggle="tab" href="#tab_b"><b>Allocated (<?= $count; ?>)</b></a></li>
-            <li><a data-toggle="tab" href="#tab_c"><b>Closed</b></a></li>
+            <li><a data-toggle="tab" href="#tab_b"><b><span class='label label-default' style='font-size:15px'>Allocated (<?= $count; ?>)</span></b></a></li>
+            <li><a data-toggle="tab" href="#tab_c"><b><span class='label label-default' style='font-size:15px'>Closed</span></b></a></li>
             
             
         </ul>
@@ -49,6 +52,7 @@ th{
             <div id="tab_a" class="tab-pane fade active in">
                 <div style='overflow:scroll;' class='table-responsive'>
                     <table id='table1' class='table table-bordered'>
+                        <thead>
                         <tr>
                             <th>SNo.</th>
                             <th>Style</th>
@@ -59,11 +63,14 @@ th{
                             <th>Control</th>
                             <th></th>
                         </tr>
+                        </thead>
+                        <tbody>
                         <?php
                             $query = "select * from $bai_pro3.binding_consumption where status='Open'";
                             $sql_result = mysqli_query($link,$query);
                             while($sql_row=mysqli_fetch_array($sql_result))
                             {
+                                $table1_rows++;
                                 $i = $sql_row['id'];
                                 $index+=1;
                                 echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'><span class='label label-info fa fa-list fa-xl' >&nbsp;&nbsp;&nbsp;$index</span></td>";
@@ -81,9 +88,11 @@ th{
                                 echo "</tr>";
                             }
                             if($index==0) {
-                                echo "<tr><td colspan=8>No Data Found!</td></tr>";
+                                
+                                echo "<tr><td colspan=8>No Data Found</td></tr>";
                             }
                         ?>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -108,6 +117,7 @@ th{
                                 $index=0;
                                 while($sql_row=mysqli_fetch_array($sql_result))
                                 {
+                                    $table2_rows++;
                                     $i = $sql_row['id'];
                                     $index+=1;
                                     echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'><span class='label label-info fa fa-list fa-xl' >&nbsp;&nbsp;&nbsp;$index</span></td>";
@@ -122,6 +132,7 @@ th{
                                     echo "</tr>";
                                 }
                                 if($index==0) {
+                                    
                                     echo "<tr><td colspan=8>No Data Found!</td></tr>";
                                 }
                             ?>
@@ -183,10 +194,10 @@ th{
                             
                             $index += 1;
                             if($index == 1) {
-                                echo "<div class='row'><div class='col-md-3'><b>Style :</b>$child_row[style]</div><div class='col-md-3'><b>Schedule:</b>$child_row[schedule]</div><div class='col-md-3'><b>Color:</b>$child_row[color]</div></div><br/>";
+                                echo "<div class='row'><div class='col-md-3'><b>Style : </b><span class='label label-info'>$child_row[style]</span></div><div class='col-md-3'><b>Schedule : </b><span class='label label-info'>$child_row[schedule]</span></div><div class='col-md-3'><b>Color : </b><span class='label label-info'>$child_row[color]</span></div></div><br/>";
                                 echo "<table class='table table-bordered '>
                                         <thead>
-                                            <tr class='danger'>
+                                            <tr class='primary'>
                                                 <th>#</th><th>Component Number</th><th>Docket Number</th><th>Category</th><th>Cut Number</th><th>Required Qty.</th><th>Binding Category</th><th>Binding Required Qty.</th>
                                             </tr>
                                         </thead>
@@ -228,7 +239,9 @@ th{
                                 loader: true,
                                 loader_text: "Filtering data..."
                             };
-        setFilterGrid( "table1",table_Props );
+        <?php if($table1_rows > 1)
+            echo 'setFilterGrid( "table1",table_Props );';
+        ?>
         setFilterGrid( "table2",table_Props );
         setFilterGrid( "table3",table_Props );
     })
