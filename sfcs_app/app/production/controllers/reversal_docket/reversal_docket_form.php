@@ -85,7 +85,7 @@ if(isset($_POST['formSubmit']))
         echo "<script>swal('You Cannot Reverse a Clubbed Docket','','error')</script>";        
         exit();
     }
-    $get_operation_code_qry = "SELECT * FROM $brandix_bts.tbl_style_ops_master WHERE style=(SELECT order_style_no FROM $bai_pro3.bai_orders_db WHERE order_tid IN (SELECT order_tid FROM bai_pro3.plandoc_stat_log WHERE doc_no=$docket_number_post)) AND color=(SELECT order_col_des FROM $bai_pro3.bai_orders_db WHERE order_tid IN (SELECT order_tid FROM bai_pro3.plandoc_stat_log WHERE doc_no=$docket_number_post)) AND operation_code > 15 LIMIT 1";
+    $get_operation_code_qry = "SELECT * FROM $brandix_bts.tbl_style_ops_master WHERE style=(SELECT order_style_no FROM $bai_pro3.bai_orders_db WHERE order_tid IN (SELECT order_tid FROM bai_pro3.plandoc_stat_log WHERE doc_no=$docket_number_post)) AND color=(SELECT order_col_des FROM $bai_pro3.bai_orders_db WHERE order_tid IN (SELECT order_tid FROM bai_pro3.plandoc_stat_log WHERE doc_no=$docket_number_post)) AND operation_code > 15 ORDER BY operation_order*1 LIMIT 1";
     $get_operation_code_qry_result = mysqli_query($link,$get_operation_code_qry) or exit(" Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
     if(mysqli_num_rows($get_operation_code_qry_result)>0)
     {
@@ -96,7 +96,7 @@ if(isset($_POST['formSubmit']))
         }
     }
     $emb_check_flag = 0;
-    $category=['cutting','Send PF','Receive PF'];
+    $category=['cutting','Send PF','Receive PF','sewing'];
     $checking_qry = "SELECT category FROM $brandix_bts.tbl_orders_ops_ref WHERE operation_code = $pre_ops_code";
     // echo $checking_qry.'<br/>';
     $result_checking_qry = $link->query($checking_qry);

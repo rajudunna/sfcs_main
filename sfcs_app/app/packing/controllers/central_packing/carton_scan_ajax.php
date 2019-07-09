@@ -80,9 +80,20 @@
 					{
 						$date = date('Y-m-d H:i:s');
 						$bundle_tid = $row['tid'];
-						$bcd_temp_insert_query = "INSERT into $brandix_bts.bundle_creation_data_temp(date_time,style,schedule,color,size_id,size_title,bundle_number,original_qty,send_qty,recevied_qty,operation_id,bundle_status,assigned_module,remarks,scanned_date,scanned_user,input_job_no,input_job_no_random_ref) values ('$date', '".$row['style']."', '".$row['schedule']."', '".$row['color']."', '".$row['size_code']."', '".$row['size_tit']."', $bundle_tid, ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", $b_op_id, 'DONE', '$team_id', '$carton_type', '$date', '$username', $carton_id, '$carton_id')";
-						// echo $bcd_temp_insert_query.'<br>';
-						mysqli_query($link,$bcd_temp_insert_query);
+
+						$check_for_duplicates_bcd_temp = "SELECT sum(original_qty) as quantity from $brandix_bts.bundle_creation_data_temp where bundle_number='$bundle_tid' and operation_id=$b_op_id";
+						$result = mysqli_query($link,$check_for_duplicates_bcd_temp) or exit("While checking for duplicate entries");
+						while($res = mysqli_fetch_array($result))
+						{
+							$sum = $res['quantity'];
+						}
+						if ($sum > 0) {
+							# code...
+						} else {
+							$bcd_temp_insert_query = "INSERT into $brandix_bts.bundle_creation_data_temp(date_time,style,schedule,color,size_id,size_title,bundle_number,original_qty,send_qty,recevied_qty,operation_id,bundle_status,assigned_module,remarks,scanned_date,scanned_user,input_job_no,input_job_no_random_ref) values ('$date', '".$row['style']."', '".$row['schedule']."', '".$row['color']."', '".$row['size_code']."', '".$row['size_tit']."', $bundle_tid, ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", $b_op_id, 'DONE', '$team_id', '$carton_type', '$date', '$username', $carton_id, '$carton_id')";
+							// echo $bcd_temp_insert_query.'<br>';
+							mysqli_query($link,$bcd_temp_insert_query);
+						}
 					}
 
 					if (!$pac_stat_log_result)

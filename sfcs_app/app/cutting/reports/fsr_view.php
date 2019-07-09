@@ -455,14 +455,29 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$schedule=$sql_row1['order_del_no'];
 			$color_code=$sql_row1['color_code'];
 			$color=$sql_row1['order_col_des'];
-		}		
-			$net_util=$fab_rec-$fab_ret-$damages-$shortages;
-			$act_con=round(($fab_rec-$fab_ret)/$act_total,4);
-			$net_con=round($net_util/$act_total,4);
-			$act_saving=round(($cat_yy*$act_total)-($act_con*$act_total),1);
-			$act_saving_pct=round((($cat_yy-$act_con)/$cat_yy)*100,0);
-			$net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),1);
-			$net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,0);
+		}	
+        $req_qty=0;
+		$issued_qty=0;
+        $sql112="SELECT req_qty,issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and style='$style' and schedule='$schedule' and color='$color^$act_cut_no'";
+		$sql_result112=mysqli_query($link, $sql112) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_result112)>0)
+		{
+			while($sql_row112=mysqli_fetch_array($sql_result112))
+			{
+				$req_qty=$sql_row112['req_qty'];
+				$issued_qty=$sql_row112['issued_qty'];
+			}
+		}
+		$doc_req=$doc_req+$req_qty;
+		$fab_rec=$fab_rec+$issued_qty;
+
+        $net_util=$fab_rec-$fab_ret-$damages-$shortages-$endbits;
+        $act_con=round(($fab_rec-$fab_ret)/$act_total,4);
+        $net_con=round($net_util/$act_total,4);
+        $act_saving=round(($cat_yy*$act_total)-($act_con*$act_total),1);
+        $act_saving_pct=round((($cat_yy-$act_con)/$cat_yy)*100,0);
+        $net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),1);
+        $net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,0);
 		
 		echo "<tr height=17 style='height:12.75pt'>";
 		//echo "<td height=17 class=xl6418241 style='height:12.75pt'></td>";
@@ -672,6 +687,9 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
+		
+		//Binding Consumption / YY Calculation
+		$order_tid=$sql_row1['order_tid'];
 		$cat_ref=$sql_row1['cat_ref'];
 		$act_cut_no=$sql_row1['acutno'];
 		$mk_ref=$sql_row1['mk_ref'];
@@ -684,6 +702,20 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		$act_xxl=$sql_row1['a_xxl']*$sql_row1['a_plies'];
 		$act_xxxl=$sql_row1['a_xxxl']*$sql_row1['a_plies'];
 		
+		$req_qty=0;
+		$issued_qty=0;
+		$sql112="SELECT req_qty,issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and schedule='$schedule' and color='$color^$act_cut_no'";
+		$sql_result112=mysqli_query($link, $sql112) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_result112)>0)
+		{
+			while($sql_row112=mysqli_fetch_array($sql_result112))
+			{
+				$req_qty=$sql_row112['req_qty'];
+				$issued_qty=$sql_row112['issued_qty'];
+			}
+			$fab_rec=$fab_rec+$issued_qty;
+		}
+
 			$act_s01=$sql_row1['a_s01']*$sql_row1['a_plies'];
 			$act_s02=$sql_row1['a_s02']*$sql_row1['a_plies'];
 			$act_s03=$sql_row1['a_s03']*$sql_row1['a_plies'];
@@ -747,8 +779,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		
 		$doc_req=$mk_length*$a_plies;
 		
-		//Binding Consumption / YY Calculation
-		$order_tid=$sql_row1['order_tid'];
+		
 
 		$sql1="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where tid='$cat_ref'";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -758,6 +789,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		}	
 		$doc_req+=$act_total*$binding_consumption;
 	}
+	
 	
 	$sql1="select * from $bai_pro3.cat_stat_log where tid='$cat_ref'";
 	//echo $sql1."<br>";
@@ -769,21 +801,21 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		$order_tid=$sql_row1['order_tid'];
 		$cat_yy=$sql_row1['catyy'];
 	}	
-	
 	$sql1="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
-	//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 15".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row1=mysqli_fetch_array($sql_result1))
-	{
-		$style=$sql_row1['order_style_no'];
-		$schedule=$sql_row1['order_del_no'];
-		$color_code=$sql_row1['color_code'];
-		$color=$sql_row1['order_col_des'];
-	}	
+		//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 15".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row1=mysqli_fetch_array($sql_result1))
+		{
+			$style=$sql_row1['order_style_no'];
+			$schedule=$sql_row1['order_del_no'];
+			$color_code=$sql_row1['color_code'];
+			$color=$sql_row1['order_col_des'];
+		}	
 	
 	
 	
-	$net_util=$fab_rec-$fab_ret-$damages_new-$shortages_new;
+	
+	$net_util=$fab_rec-$fab_ret-$damages_new-$shortages_new-$endbits;
 	$act_con=round(($fab_rec-$fab_ret)/$act_total,4);
 	$net_con=round($net_util/$act_total,4);
 	$act_saving=round(($cat_yy*$act_total)-($act_con*$act_total),1);
