@@ -1569,6 +1569,7 @@ else
 $used_fabric =0;
 foreach($cats_ids as $key=>$value)
 {
+	$tot_size=array();
 	$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$value order by tid";
 	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1577,7 +1578,7 @@ foreach($cats_ids as $key=>$value)
     while($sql_row=mysqli_fetch_array($sql_result))
     { 
 		$mk_status=$sql_row['mk_status'];
-		$tot_size=array();
+		
 		$check_id=$sql_row['cuttable_ref'];
 		echo "<tr>";
 		// echo "<td class=\"  \"><center>".$sql_row['tid']."</center></td>";
@@ -1600,9 +1601,7 @@ foreach($cats_ids as $key=>$value)
 		{
 			echo "<td class=\"  \"><center>".$sql_row["allocate_s".$sizes_code[$s].""]."</center></td>";
 			$tot+=$sql_row["allocate_s".$sizes_code[$s].""];
-			echo (int)$tot_size[$s_tit[$sizes_code[$s]]]."---".(int)$sql_row['plies']."--".(int)$sql_row["allocate_s".$sizes_code[$s].""]."<br>";
-			$tot_size[$s_tit[$sizes_code[$s]]] = (int)$tot_size[$s]+((int)$sql_row['plies']*(int)$sql_row["allocate_s".$sizes_code[$s].""]);
-			echo $category."---".$s_tit[$sizes_code[$s]]."--".$tot_size[$s_tit[$sizes_code[$s]]]."<br>";
+			$tot_size[$s_tit[$sizes_code[$s]]] = (int)$tot_size[$s_tit[$sizes_code[$s]]]+((int)$sql_row['plies']*(int)$sql_row["allocate_s".$sizes_code[$s].""]);
 		}
 		$used_yards[$category][$sql_row['ratio']] = $sql_row['plies'] * $tot * $binding_consumption;
 		echo "<td class=\"  \"><center>".$tot."</center></td>";
@@ -1690,17 +1689,18 @@ foreach($cats_ids as $key=>$value)
 	echo "<tr><td colspan=3>Excess / Less <td>";
 	for($s=0;$s<sizeof($s_tit);$s++)
 	{
+		
 		if($input_qty[$s_tit[$sizes_code[$s]]]=='')
 		{
 			$input_qty[$s_tit[$sizes_code[$s]]]=0;
 		}
-		if ((($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s])-$tot_size[$s_tit[$sizes_code[$s]]]) >= 0)
+		if (($tot_size[$s_tit[$sizes_code[$s]]])-($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]) >= 0)
 		{
-			echo "<td class=\"  \" style='background-color:#4cff4c'><center>".(($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s])-$tot_size[$s_tit[$sizes_code[$s]]])."</center></td>";
+			echo "<td class=\"  \" style='background-color:#4cff4c'><center>".(($tot_size[$s_tit[$sizes_code[$s]]])-($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]))."</center></td>";
 		}
 		else
 		{
-			echo "<td class=\"b1\" style='background-color:#f8d7da'><center>".(($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s])-$tot_size[$s_tit[$sizes_code[$s]]])."</center></td>";
+			echo "<td class=\"b1\" style='background-color:#f8d7da'><center>".(($tot_size[$s_tit[$sizes_code[$s]]])-($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]))."</center></td>";
 		}
 	}
 	unset($tot_size);
