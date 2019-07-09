@@ -230,9 +230,9 @@ $(document).ready(function()
 	                s_no = 0;
 					var data = response['table_data'];
 					if(response['success']){
-						sweetAlert('',response['status'],'success');
+						swal('',response['status'],'success');
 	                }else if(response['status']){
-						sweetAlert('',response['status'],'error');
+						swal('',response['status'],'error');
 						$('#dynamic_table1').html('No Data Found');
 						document.getElementById('doc_no').value = '';
 					}else if(data){
