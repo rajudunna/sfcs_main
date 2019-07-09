@@ -65,8 +65,7 @@ central_administration_sfcs.tbl_menu_list
 
     (menu_pid, page_id, fk_group_id, fk_app_id, parent_id, link_type, link_status, link_visibility, link_location, link_description, link_tool_tip, link_cmd)
 VALUES
-    ('1657', 'SFCS_0008', '8', '8', '1656', '1', '1', '1', '/sfcs_app
-/app/production/controllers/gatepass.php', 'Gatepass Generation', '', '');
+    ('1657', 'SFCS_0008', '8', '8', '1656', '1', '1', '1', '/sfcs_app/app/production/controllers/gatepass.php', 'Gatepass Generation', '', '');
 
 
 
@@ -80,13 +79,10 @@ central_administration_sfcs.tbl_menu_list
 
     (menu_pid, page_id, fk_group_id, fk_app_id, parent_id, link_type, link_status, link_visibility, link_location, link_description, link_tool_tip, link_cmd)
 VALUES
-    ('1658', 'SFCS_0009', '8', '8', '1656', '1', '1', '1', '/sfcs_app
-/app/production/controllers/gatepass_summery_detail.php', 'Day wise Gatepass
-Details', '2', '');
+    ('1658', 'SFCS_0009', '8', '8', '1656', '1', '1', '1', '/sfcs_app/app/production/controllers/gatepass_summery_detail.php', 'Day wise Gatepass Details', '2', '');
 
 
 INSERT INTO central_administration_sfcs.rbac_role_menu
     (menu_pid, menu_description, roll_id)
 VALUES
-    ('1658',
-        'Day wise Gatepass Details', '1');
+    ('1658','Day wise Gatepass Details', '1');
