@@ -342,7 +342,7 @@ if($flag == 'clubbing')
                     $insert_qry_rej_child = $link->query($inserting_into_rejection_log_child_qry);
                 }
                 
-                    $bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$mapped_color.'",user(),"'.date('Y-m-d').'","'.$size.'","'.$final_rejected_qty.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$docket_number.'","'.$docket_number.'","'. $b_op_id.'","Normal","'.$bundle_no.'"),';
+                    $bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$mapped_color.'",user(),"'.date('Y-m-d').'","'.$size_id.'","'.$final_rejected_qty.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$docket_number.'","'.$docket_number.'","'. $b_op_id.'","Normal","'.$bundle_no.'"),';
                     $reason_flag = true;
 
                     //M3 rejection Updation
