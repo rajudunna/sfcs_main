@@ -145,7 +145,7 @@ function getreversal($data)
 		}
 		$result_array['post_ops'][] = $post_ops_code;
 
-		$get_sewing_operation = "SELECT tor.operation_code AS operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name  WHERE category='sewing' LIMIT 1";
+		$get_sewing_operation = "SELECT tor.operation_code AS operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name  WHERE category='sewing' and style ='$style' and color ='$color' ORDER BY operation_order LIMIT 1";
 		$result_sewing_operation = $link->query($get_sewing_operation);
 	    while($sewing_row = $result_sewing_operation->fetch_assoc()) 
 	    {
