@@ -362,10 +362,10 @@ if(isset($_POST['bindingdata']))
 			
 					
 		}
-		$is_exists="select * from $bai_pro3.binding_consumption where style='$style' and schedule='$schedule' and color='$color'";
-		$exists_result=mysqli_query($link, $is_exists) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$exists_result_count=mysqli_num_rows($exists_result);
-		if($exists_result_count == 0){
+		// $is_exists="select * from $bai_pro3.binding_consumption where style='$style' and schedule='$schedule' and color='$color'";
+		// $exists_result=mysqli_query($link, $is_exists) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// $exists_result_count=mysqli_num_rows($exists_result);
+		// if($exists_result_count == 0){
 			$insertqry="INSERT INTO $bai_pro3.binding_consumption(style,schedule,color,tot_req_qty,tot_bindreq_qty,status) VALUES (\"".$style."\",\"".$schedule."\",\"".$color."\",\"".$totordqty."\",\"".$finalbindingqty."\",'Open')";
 			mysqli_query($link, $insertqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
@@ -387,7 +387,7 @@ if(isset($_POST['bindingdata']))
 				mysqli_query($link, $insertbinditems) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 			echo "<script>swal('Binding Fabric Requested','Successfully','success')</script>";
-		}
+		// }
 		
 	}
 	else
