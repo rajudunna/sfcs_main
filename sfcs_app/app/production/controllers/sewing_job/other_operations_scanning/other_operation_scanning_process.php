@@ -739,8 +739,8 @@ else
             }
              if($previous_operation != null)
             {
-                $parallel_update = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."'' and operation_id in (".implode(',',$parallel_operations).")";
-                //echo $query_post;
+                $parallel_update = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id in (".implode(',',$parallel_operations).")";
+                //echo $parallel_update;
                 $result_query = $link->query($parallel_update) or exit('query error in updating');
             }
             if($ops_dep)
