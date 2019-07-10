@@ -182,6 +182,28 @@ if($result_post_ops_check->num_rows > 0)
         $post_ops_code = $row8['operation_code'];
     }
 }
+//To get parallel operations
+$parallel_ops_check = "select previous_operation from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND operation_code = '$post_ops_code'";
+//echo $pre_ops_check;
+$result_parallel_ops_check = $link->query($parallel_ops_check);
+if($result_parallel_ops_check->num_rows > 0)
+{
+    while($row22 = $result_parallel_ops_check->fetch_assoc()) 
+    {
+        $previous_operation = $row22['previous_operation'];
+    }
+
+    $get_parallel_ops = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND previous_operation = '$previous_operation'";
+    $result_get_parallel_ops = $link->query($get_parallel_ops);
+    while($row33 = $result_get_parallel_ops->fetch_assoc()) 
+    {
+        $parallel_operations[] = $row33['operation_code'];
+    }
+}
+else
+{
+    $previous_operation = '';
+}
 $emb_cut_check_flag = 0;
 $category=['cutting','Send PF','Receive PF'];
 $checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$post_ops_code'";
@@ -437,6 +459,12 @@ if($flag == 'clubbing')
                     $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_reported_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number ='".$docket_number."' and size_title='$size' and operation_id = ".$post_ops_code;
                     //echo $query_post;
                     $result_query = $link->query($query_post) or exit('query error in updating');
+                }
+                if($previous_operation != null)
+                {
+                    $parallel_update = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_reported_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number ='".$docket_number."' and size_title='$size' and operation_id in (".implode(',',$parallel_operations).")";
+                    //echo $query_post;
+                    $result_query = $link->query($parallel_update) or exit('query error in updating');
                 }
                 if($ops_dep)
                 {
@@ -708,6 +736,12 @@ else
             {
                 $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id = ".$post_ops_code;
                 $result_query = $link->query($query_post) or exit('query error in updating');
+            }
+             if($previous_operation != null)
+            {
+                $parallel_update = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."'' and operation_id in (".implode(',',$parallel_operations).")";
+                //echo $query_post;
+                $result_query = $link->query($parallel_update) or exit('query error in updating');
             }
             if($ops_dep)
             {
