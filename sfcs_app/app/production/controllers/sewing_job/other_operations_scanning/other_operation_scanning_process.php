@@ -183,7 +183,7 @@ if($result_post_ops_check->num_rows > 0)
     }
 }
 //To get parallel operations
-$parallel_ops_check = "select previous_operation from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND operation_code = '$post_ops_code'";
+$parallel_ops_check = "select previous_operation from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' AND operation_code = '$post_ops_code'";
 //echo $pre_ops_check;
 $result_parallel_ops_check = $link->query($parallel_ops_check);
 if($result_parallel_ops_check->num_rows > 0)
@@ -193,7 +193,7 @@ if($result_parallel_ops_check->num_rows > 0)
         $previous_operation = $row22['previous_operation'];
     }
 
-    $get_parallel_ops = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND previous_operation = '$previous_operation'";
+    $get_parallel_ops = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' AND previous_operation = '$previous_operation'";
     $result_get_parallel_ops = $link->query($get_parallel_ops);
     while($row33 = $result_get_parallel_ops->fetch_assoc()) 
     {
