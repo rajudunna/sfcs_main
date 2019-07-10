@@ -757,8 +757,15 @@ else
             }
                    
             if($r_qtys[$value] != null && $r_reason[$value] != null){
-                $bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$b_colors[$key].'",user(),"'.date('Y-m-d').'","'.$b_sizes[$key].'","'.$b_rej_qty[$key].'","3","'.$remarks_var.'","'.$remarks_code.'","'.$b_doc_no.'","'.$b_doc_no.'","'. $b_op_id.'","Normal","'.$b_tid[$key].'"),';
-                $reason_flag = true;
+               $bcd_id_qry = "select size_id from $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$key] and operation_id = $b_op_id";
+                // echo $bcd_id_qry;
+                $bcd_id_qry_result=mysqli_query($link,$bcd_id_qry) or exit("Bcd id qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($bcd_id_row=mysqli_fetch_array($bcd_id_qry_result))
+                {
+                    $size_id = $bcd_id_row['size_id'];
+                    $bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$b_colors[$key].'",user(),"'.date('Y-m-d').'","'.$size_id.'","'.$b_rej_qty[$key].'","3","'.$remarks_var.'","'.$remarks_code.'","'.$b_doc_no.'","'.$b_doc_no.'","'. $b_op_id.'","Normal","'.$b_tid[$key].'"),';
+                   $reason_flag = true;
+                }
             }   
         }    
     }
