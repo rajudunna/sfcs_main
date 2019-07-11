@@ -376,7 +376,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	if(strtolower($sql_row1['remarks']) == 'recut')
 		$appender = 'R';
 	else	
-		$appender = chr($sql_row1['color_code']);
+	$appender = chr($sql_row1['color_code']);
 	$style=$sql_row1['order_style_no'];
 	$schedule=$sql_row1['order_del_no'];
 	echo "<tr>";
@@ -388,6 +388,19 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$act_cut_no=$sql_row1['acutno'];
 	$cut_no_ref=$sql_row1['acutno'];
 	$order_id_ref=$sql_row1['order_tid'];
+	
+	
+	// echo "order_tid".$order_id_ref."<br>";
+
+	// $sql2="SELECT (p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as qty FROM plandoc_stat_log WHERE order_tid='$order_id_ref'";
+	// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($sql_row2=mysqli_fetch_array($sql_result2))
+	// {
+		// $p_qty=$sql_row2['qty'];
+	// }
+	// echo "p_qty".$p_qty."<br>";
+	
+	
 	/* $order_id_ref1 = explode(" ",$sql_row1['order_tid']);
 	echo $order_id_ref1[0];
 	echo $order_id_ref1[7]; */
@@ -473,7 +486,7 @@ if($clubbing>0)
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result1);
 $for_Staus_dis=$sql_num_check;
-//echo "Rows:".$sql_num_check;
+// echo "Rows:".$sql_num_check;
 $enable_allocate_button=0;
 $comp_printed=array();
 $docket_num=array();
@@ -502,7 +515,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$path="../../../cutting/controllers/lay_plan_preparation/Book3_print.php";
 		}
-
+		
 
 		
 		// echo "<br>DocNo: ".$docno_lot.'Component No: '.$componentno_lot;
@@ -534,6 +547,12 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 			$seperated_lots= trim(implode(",", $lotnos_array));
 		}
 	}
+	$sql2="SELECT (p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as qty FROM plandoc_stat_log WHERE doc_no=".$sql_row1['doc_no']."";
+	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row2=mysqli_fetch_array($sql_result2))
+	{
+		$p_qty=$sql_row2['qty'];
+	}
 	//$output_trimmed = array_map("trim", explode(',', $input));
 	//echo "</br>Seperated".$seperated_lots;
 	// $ref="select reference from $bai_pro3.plandoc_stat_log where doc_no='$doc_no'";
@@ -542,7 +561,6 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		while($row007=mysqli_fetch_array($sql_result007))
 		{
 			$reference=$row007["reference"];
-			// $requirment=$row007["seperate_docket"];
 		}
 	echo "<tr><td>".$sql_row1['category']."</td>";
 	echo "<td>".$sql_row1['compo_no']."</td>";
@@ -561,7 +579,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$newOrderTid=$sql_row1['order_tid'];
 	$doc_cat=$sql_row1['category'];
 	$doc_com=$sql_row1['compo_no'];
-	$doc_mer=($sql_row1['material_req']+$extra);
+	$doc_mer=($material_requirement_orig+$extra);
 	$cat_ref=$sql_row1['cat_ref'];
 	
 	//For new implementation

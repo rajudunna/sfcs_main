@@ -474,15 +474,20 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 	// echo "Pur Length=".$purlength."<br>";
 	//Binding Consumption / YY Calculation
 	
-	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\",seperate_docket from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	if($sql_num_check > 0)
 	{
 		while($sql_row2=mysqli_fetch_array($sql_result))
 		{
-			$binding_con = $sql_row2['binding_consumption'];
-			$bind_con= $binding_con *($a_ratio_tot*$plies);
+			if($sql_row2['seperate_docket'] == 'Yes') {
+				$binding_con=0;
+				$bind_con=0;
+			} else{
+				$binding_con = $sql_row2['binding_consumption'];
+				$bind_con= $binding_con *($a_ratio_tot*$plies);
+			} 
 
 
 		}
@@ -491,7 +496,6 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
 		$binding_con=0;
 		$bind_con=0;
-
 	}
 	
 //chr($color_code).leading_zeros($cutno, 3)	
@@ -3142,3 +3146,4 @@ $(document).ready(function(){
 	$("table tbody th, table tbody td").wrapInner("<div></div>");
 });
 </script>
+
