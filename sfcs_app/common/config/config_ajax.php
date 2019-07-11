@@ -49,6 +49,7 @@ $temp_pool_db="temp_pool_db";
 $fabric_categories_array = $conf1->get('category-display-dashboard');
 $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
 $shifts_array = $conf1->get('shifts');
+$stock_report_product_group_array=$conf1->get('stock_report_product_group');
 $fabric_validation_for_cut_report = $conf1->get('FabricValidation');
 
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));

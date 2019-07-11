@@ -160,6 +160,8 @@ $result_oper2 = $link->query($qry_get_suppliers);
 					<label class="radio-inline"><input type="radio" name="optradio2" value = "No" id= 'optradio2' onclick="autooperseq()" checked>No</label><br><br>
 					<label>Operation Group </label>
 					<input class="form-control input-sm integer" id="oper_seq2" type="text" onchange='verify_num_seq1(this)' value='0'>
+					<label>Previous Operation</label>
+					<input class="form-control input-sm integer" id="oper_prev2" type="text">
 					<label>Next Operation</label>
 					<input class="form-control input-sm integer" id="oper_depe2" type="text">
 					<label>Component</label>
@@ -242,6 +244,8 @@ $result_oper2 = $link->query($qry_get_suppliers);
 			<label class="radio-inline"><input type="radio" name="optradio" value = "No" id= 'None' onclick="autooperseq()">No</label><br><br>
 			<label>Operation Group</label>
 			<input class="form-control input-sm integer" id="oper_seq1" type="text"  onchange='verify_num_seq2(this)' value = '0'>
+			<label>Previous Operation</label>
+			<input class="form-control input-sm integer" id="oper_prev1" type="text">
 			<label>Next Operation</label>
 			<input class="form-control input-sm integer" id="oper_depe1" type="text">
 			<label>Component</label>
@@ -343,7 +347,7 @@ $(document).ready(function(){
 						{
 							var data = jQuery.parseJSON(response);
 							console.log(data.length);
-							var markup = "<table class = 'table table-striped' id='dynamic_table'><thead><tr><th>Operation Code</th><th class='none'>Style</th><th class='none'>Color</th><th>Operation Name</th><th>Operation Group</th><th>Report To ERP</th><th>M3_SMV</th><th>Barcode</th><th>Embellishment Supplier</th><th>Next Operations</th><th>Component</th><th></th><th style='text-align:center;'>Controls</th><th><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,0);'><i class='fa fa-plus' aria-hidden='true'></i></button></th>";
+							var markup = "<table class = 'table table-striped' id='dynamic_table'><thead><tr><th>Operation Code</th><th class='none'>Style</th><th class='none'>Color</th><th>Operation Name</th><th>Operation Group</th><th>Report To ERP</th><th>M3_SMV</th><th>Barcode</th><th>Embellishment Supplier</th><th>Previous Operations</th><th>Next Operations</th><th>Component</th><th></th><th style='text-align:center;'>Controls</th><th><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,0);'><i class='fa fa-plus' aria-hidden='true'></i></button></th>";
 							<?php
 								if(in_array($update,$has_permission))
 								{	?>
@@ -367,6 +371,10 @@ $(document).ready(function(){
 								{
 									data[i].ops_dependency = '';
 								}
+								if(data[i].previous_operation == null)
+		                        {
+		                            data[i].previous_operation = '';
+		                        }
 								if(data[i].component == null)
 								{
 									data[i].component = '';
@@ -385,7 +393,7 @@ $(document).ready(function(){
 									var editing_class = '';
 								}
 								var editing_class = '';
-								var markup1 = "<tr><td class='none' id="+data[i].main_id+"operation_id>"+data[i]['operation_id']+"</td><td id="+data[i].main_id+"ops_code>"+data[i]['operation_code']+"</td><td class='none'>"+style_name+"</td><td class='none'>"+data[i]['color']+"</td><td class='none' id="+data[i].main_id+"ops_order>"+data[i]['operation_order']+"</td><td id="+data[i].main_id+"operation_name>"+data[i]['ops_name']+"</td><td id="+data[i].main_id+"seq>"+data[i].ops_sequence+"</td><td  id="+data[i].main_id+"rep_to_erp>"+data[i]['default_operration']+"</td></td><td id="+data[i].main_id+"smv>"+data[i]['smv']+"</td><td id="+data[i].main_id+"barcode>"+data[i].barcode+"</td><td id="+data[i].main_id+"supplier_id hidden='true'>"+data[i].emb_supplier+"</td><td id="+data[i].main_id+"supplier>"+data[i].supplier_name+"</td><td id="+data[i].main_id+"dep>"+data[i].ops_dependency+"</td><td id="+data[i].main_id+"comp>"+data[i].component+"</td><td>";
+								var markup1 = "<tr><td class='none' id="+data[i].main_id+"operation_id>"+data[i]['operation_id']+"</td><td id="+data[i].main_id+"ops_code>"+data[i]['operation_code']+"</td><td class='none'>"+style_name+"</td><td class='none'>"+data[i]['color']+"</td><td class='none' id="+data[i].main_id+"ops_order>"+data[i]['operation_order']+"</td><td id="+data[i].main_id+"operation_name>"+data[i]['ops_name']+"</td><td id="+data[i].main_id+"seq>"+data[i].ops_sequence+"</td><td  id="+data[i].main_id+"rep_to_erp>"+data[i]['default_operration']+"</td></td><td id="+data[i].main_id+"smv>"+data[i]['smv']+"</td><td id="+data[i].main_id+"barcode>"+data[i].barcode+"</td><td id="+data[i].main_id+"supplier_id hidden='true'>"+data[i].emb_supplier+"</td><td id="+data[i].main_id+"supplier>"+data[i].supplier_name+"</td><td id="+data[i].main_id+"prev>"+data[i].previous_operation+"</td><td id="+data[i].main_id+"dep>"+data[i].ops_dependency+"</td><td id="+data[i].main_id+"comp>"+data[i].component+"</td><td>";
 								<?php
 									if(in_array($edit,$has_permission))
 									{	?>
@@ -555,6 +563,7 @@ $(document).ready(function(){
 			var supplier = $('#supplier2 option:selected').text();
 			var supplier_id = $('#supplier2').val();
 			var oper_seq = $('#oper_seq2').val();
+			var oper_prev = $('#oper_prev2').val();
 			var oper_dep = $('#oper_depe2').val();
 			if(m3_smv == '')
 			{
@@ -563,6 +572,10 @@ $(document).ready(function(){
 			if(oper_dep == '')
 			{
 				oper_dep = 0;
+			}
+			if(oper_prev == '')
+			{
+				oper_prev = 0;
 			}
 			//alert(oper_dep);
 			var component = $('#component2').val();
@@ -603,8 +616,8 @@ $(document).ready(function(){
 			}
 			// console.log("actual_ops_order"+actual_ops_order);
 
-			var saving_data = [style_id,oper_name_id,actual_ops_order,0,m3_smv,m3_smv,s,oper_def1,s,style1,color1,2,barcode1,supplier_id,oper_seq,oper_dep,component1];
-			//console.log(saving_data);
+			var saving_data = [style_id,oper_name_id,actual_ops_order,0,m3_smv,m3_smv,s,oper_def1,s,style1,color1,2,barcode1,supplier_id,oper_seq,oper_prev,oper_dep,component1];
+			console.log(saving_data);
 			  $.ajax
 				({
 						type: "POST",
@@ -624,6 +637,10 @@ $(document).ready(function(){
 							}
 							else
 							{
+								if(oper_dep == 0)
+								{
+									oper_dep = '';
+								}
 								var data = jQuery.parseJSON(response);
 								var response = data['last_id'];
 								var changing = data['changed_ids'];
@@ -640,7 +657,7 @@ $(document).ready(function(){
 								{
 									supplier = '';
 								}
-								var markup = "<tr><td class='none' id="+response+"operation_id>"+oper_name_id+"</td><td class='none' id="+response+"ops_order>"+actual_ops_order+"</td><td id="+response+"ops_code>"+s+"</td><td class='none'>"+pro_style_name+"</td><td class='none'>"+color+"</td><td id="+response+"operation_name>"+oper_name+"</td><td id="+response+"seq>"+oper_seq+"</td><td id="+response+"rep_to_erp>"+oper_def+"</td><td id="+response+"smv>"+m3_smv+"</td><td id="+response+"barcode>"+barcode+"</td><td id="+response+"supplier_id hidden='true'>"+supplier_id+"</td><td id="+response+"supplier>"+supplier+"</td><td id="+response+"dep>"+oper_dep+"</td><td id="+response+"comp>"+component+"</td><td><button type='button' class='btn btn-info btn-sm particular' id='particularedit'  onclick='myfunctionedit(this,"+response+")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></td><td><button type='button' class='btn btn-danger btn-sm'  onclick='default_oper("+response+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></td></button><td><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,"+response+");'><i class='fa fa-plus' aria-hidden='true'></i></button></td></tr>";
+								var markup = "<tr><td class='none' id="+response+"operation_id>"+oper_name_id+"</td><td class='none' id="+response+"ops_order>"+actual_ops_order+"</td><td id="+response+"ops_code>"+s+"</td><td class='none'>"+pro_style_name+"</td><td class='none'>"+color+"</td><td id="+response+"operation_name>"+oper_name+"</td><td id="+response+"seq>"+oper_seq+"</td><td id="+response+"rep_to_erp>"+oper_def+"</td><td id="+response+"smv>"+m3_smv+"</td><td id="+response+"barcode>"+barcode+"</td><td id="+response+"supplier_id hidden='true'>"+supplier_id+"</td><td id="+response+"supplier>"+supplier+"</td><td id="+response+"prev>"+oper_prev+"</td><td id="+response+"dep>"+oper_dep+"</td><td id="+response+"comp>"+component+"</td><td><button type='button' class='btn btn-info btn-sm particular' id='particularedit'  onclick='myfunctionedit(this,"+response+")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></td><td><button type='button' class='btn btn-danger btn-sm'  onclick='default_oper("+response+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></td></button><td><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,"+response+");'><i class='fa fa-plus' aria-hidden='true'></i></button></td></tr>";
 								//$('#dynamic_table').append(markup);	
 								var row = $("#rowIndex").val();
 								//$('#dynamic_table > tbody > tr').eq(row-1).after(markup);
@@ -691,6 +708,7 @@ $(document).ready(function(){
 		}
 		//$("input:radio[name=optradio2]:checked").val('No') ;
 		$('#oper_seq2').val('0');
+		$('#oper_prev2').val('0');
 		$('#oper_depe2').val('');
 		$('#component2').val('')		
 	  });
@@ -794,6 +812,7 @@ $("#edit").click(function()
 	var supplier = $('#supplier option:selected').text();
 	var supplier_id = $('#supplier').val();
 	var oper_seq = $('#oper_seq1').val();
+	var oper_prev = $('#oper_prev1').val();
 	var oper_dep = $('#oper_depe1').val();
 	var component = $('#component1').val();
 	var ops_code1 = $('#ops_code1').val();
@@ -822,9 +841,12 @@ $("#edit").click(function()
 		// sweetAlert("Please Enter Component Name","","warning");
 		// flag= 0;
 	}
+
+	
 	if(flag == 1)
 	{
-		editable_data = [id,barcode_text,supplier_id,oper_seq,oper_dep,component1,style,color,ops_code1,report_to_erp_text];
+		editable_data = [id,barcode_text,supplier_id,oper_seq,oper_prev,oper_dep,component1,style,color,ops_code1,report_to_erp_text];
+		console.log(editable_data);
 	$.ajax
 		({
 			
@@ -848,6 +870,7 @@ $("#edit").click(function()
 						//alert(supplier_id);
 						$("#"+id+"supplier_id").html(supplier_id);
 						$("#"+id+"seq").html(oper_seq);
+						$("#"+id+"prev").html(oper_prev);
 						$("#"+id+"dep").html(oper_dep);
 						$("#"+id+"comp").html(component);
 						$("#"+id+"ops_code").html(ops_code1);
@@ -1285,6 +1308,7 @@ function myfunctionedit(val,id)
 					document.getElementById('editable_id').value = id;
 					actual_barcode = id+"barcode";
 					seq = id+"seq";
+					prev = id+"prev";
 					dep = id+"dep";
 					comp=id+"comp";
 					sup_id = id+"supplier_id";
@@ -1296,6 +1320,7 @@ function myfunctionedit(val,id)
 					//var barcode = "#"+actual_barcode;
 					barcode = document.getElementById(actual_barcode).innerText;
 					seqence = document.getElementById(seq).innerText;
+					prev = document.getElementById(prev).innerText;
 					dep = document.getElementById(dep).innerText;
 					comp = document.getElementById(comp).innerText;
 					sup_id = document.getElementById(sup_id).innerText;
@@ -1317,6 +1342,7 @@ function myfunctionedit(val,id)
 						dep = '';
 						document.getElementById('dep_flag').value = 'Yes';
 					}
+					document.getElementById('oper_prev1').value = prev;
 					document.getElementById('oper_depe1').value = dep;
 					document.getElementById('component1').value = comp;
 					//document.getElementById('optradio').value = 'Yes';

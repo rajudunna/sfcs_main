@@ -31,7 +31,7 @@ function savingdata($saving)
    if($cnt > 0)
    {
 	    //var_dump($saving);
-		$saving_sub_oper_data_qry = "insert into $brandix_bts.default_operation_workflow (operation_name,operation_code,operation_order,default_operration,ops_sequence,ops_dependency,component,barcode) values ($saving)";
+		$saving_sub_oper_data_qry = "insert into $brandix_bts.default_operation_workflow (operation_name,operation_code,operation_order,default_operration,ops_sequence,previous_operation,ops_dependency,component,barcode) values ($saving)";
 		// echo $saving_sub_oper_data_qry;
 		$spdr = $link->query($saving_sub_oper_data_qry);
 		//echo $saving_sub_oper_data_qry;
@@ -46,7 +46,7 @@ function savingdata($saving)
 			{
 				$retriving_whole_value = explode('.',$saving1[2]);
 				$act_val = $retriving_whole_value[0] +1;
-				$saving_sub_oper_data_qry = "insert into $brandix_bts.default_operation_workflow (operation_name,operation_code,operation_order,default_operration,ops_sequence,ops_dependency,component,barcode) values ($saving)";
+				$saving_sub_oper_data_qry = "insert into $brandix_bts.default_operation_workflow (operation_name,operation_code,operation_order,default_operration,ops_sequence,previous_operation,ops_dependency,component,barcode) values ($saving)";
 				$checking_for_same_ops_order = "select id,operation_order from $brandix_bts.default_operation_workflow where CAST(operation_order AS CHAR) >= '$saving1[2]'  and id != $last_id and CAST(operation_order AS CHAR) < '$act_val'order by operation_order";
 				$result_checking_for_same_ops_order = $link->query($checking_for_same_ops_order);
 				if($result_checking_for_same_ops_order->num_rows > 0)
@@ -307,11 +307,11 @@ function updating($editable_data)
 	{
 		if($editable_data[4] == '')
 		{
-			$qry_updation = "update $brandix_bts.default_operation_workflow set barcode=$editable_data[1],ops_sequence=$editable_data[2],ops_dependency='',component=$editable_data[4],operation_code = $editable_data[5] where id=$editable_data[0]";
+			$qry_updation = "update $brandix_bts.default_operation_workflow set barcode=$editable_data[1],ops_sequence=$editable_data[2],previous_operation=$editable_data[3],ops_dependency='',component=$editable_data[5],operation_code = $editable_data[6] where id=$editable_data[0]";
 		}
 		else
 		{
-			$qry_updation = "update $brandix_bts.default_operation_workflow set barcode=$editable_data[1],ops_sequence=$editable_data[2],ops_dependency=$editable_data[3],component=$editable_data[4],operation_code = $editable_data[5] where id=$editable_data[0]";
+			$qry_updation = "update $brandix_bts.default_operation_workflow set barcode=$editable_data[1],ops_sequence=$editable_data[2],previous_operation=$editable_data[3],ops_dependency=$editable_data[4],component=$editable_data[5],operation_code = $editable_data[6] where id=$editable_data[0]";
 		}
 
 		// echo $qry_updation;

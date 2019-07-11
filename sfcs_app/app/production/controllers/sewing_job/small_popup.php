@@ -11,7 +11,7 @@ error_reporting(0);
 $schedule=$_GET['schedule'];
 $jobno=$_GET['jobno'];
 
-$details="select * from $bai_pro3.packing_summary_input where input_job_no_random like '%$schedule%' and input_job_no='$jobno'";
+$details="select * from $bai_pro3.packing_summary_input where order_del_no='$schedule' AND input_job_no='$jobno'";
 $finaldet=mysqli_query($link, $details) or exit("Sql Error2");
 
 echo "<div class='panel panel-primary'>";

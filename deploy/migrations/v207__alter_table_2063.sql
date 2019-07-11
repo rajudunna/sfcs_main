@@ -1,0 +1,20 @@
+/*#2063 alter queries*/
+
+USE `bai_pro3`;
+ALTER TABLE bai_pro3.maker_stat_log ADD COLUMN remark1 VARCHAR
+(500) NOT NULL AFTER mk_ver,
+ADD COLUMN remark2 VARCHAR
+(500) NOT NULL AFTER remark1,
+ADD COLUMN remark3 VARCHAR
+(500) NOT NULL AFTER remark2,
+ADD COLUMN remark4 VARCHAR
+(500) NOT NULL AFTER remark3;
+
+ALTER TABLE bai_pro3.maker_stat_log_archive ADD COLUMN remark1 VARCHAR
+(500) NOT NULL AFTER mk_ver,
+ADD COLUMN remark2 VARCHAR
+(500) NOT NULL AFTER remark1,
+ADD COLUMN remark3 VARCHAR
+(500) NOT NULL AFTER remark2,
+ADD COLUMN remark4 VARCHAR
+(500) NOT NULL AFTER remark3;

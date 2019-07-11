@@ -659,8 +659,7 @@ $module_limit=14;
 		if($job_status=='')
 		{
 			$code.=$sql_row['input_job_no_random']."-".$display_prefix1."-".$job_status."-".$sql_row["carton_qty"]."-".$sql_row["doc_no"]."-A".$sql_row["acutno"]."-".$module."-".$sql_row['type_of_sewing']."*";
-			//echo "Doc=".$doc_no."<br>";
-			$style=$sql_row['order_style_no'];
+		  $style=$sql_row['order_style_no'];
 		}
 	}
 
@@ -760,6 +759,17 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 		mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		$sql="CREATE TABLE $temp_table_name ENGINE = MYISAM SELECT act_cut_status,psl.doc_no AS doc_no,order_style_no,order_del_no,order_col_des,SUM(pslij.carton_act_qty) AS total,input_job_no AS acutno,type_of_sewing,GROUP_CONCAT(DISTINCT CHAR(color_code) ORDER BY color_code) AS color_code,input_job_no,input_job_no_random_ref,input_module FROM bai_orders_db_confirm AS bodc,cat_stat_log AS csl,plandoc_stat_log AS psl,pac_stat_log_input_job AS pslij,plan_dashboard_input AS pdi	WHERE (pdi.input_trims_status!=4 OR pdi.input_trims_status IS NULL OR pdi.input_panel_status!=2 OR pdi.input_panel_status IS NULL)	AND bodc.order_tid=csl.order_tid AND bodc.order_tid=psl.order_tid AND pslij.doc_no=psl.doc_no AND pdi.input_job_no_random_ref=pslij.input_job_no_random GROUP BY pdi.input_job_no_random_ref ORDER BY pdi.input_priority";
+	/*
+		$sql="CREATE TABLE $temp_table_name ENGINE = MYISAM SELECT MIN(act_cut_status) AS act_cut_status,GROUP_CONCAT(DISTINCT pslij.doc_no) AS doc_no,order_style_no,order_del_no,order_col_des,SUM(carton_act_qty) AS total,
+		acutno,MIN(type_of_sewing) AS type_of_sewing,GROUP_CONCAT(DISTINCT CHAR(color_code) ORDER BY color_code) AS color_code,input_job_no,
+		input_job_no_random,input_module 
+		FROM $bai_pro3.bai_orders_db_confirm AS bodc
+		LEFT JOIN $bai_pro3.plandoc_stat_log AS pasl ON bodc.order_tid=pasl.order_tid
+		LEFT JOIN $bai_pro3.pac_stat_log_input_job AS pslij ON pslij.doc_no=pasl.doc_no
+		LEFT JOIN $bai_pro3.plan_dashboard_input AS pdi ON pslij.input_job_no_random=pdi.input_job_no_random_ref
+		WHERE (pdi.input_trims_status!=4 OR pdi.input_trims_status IS NULL OR pdi.input_panel_status!=2 OR pdi.input_panel_status IS NULL) 
+		AND input_module IS NOT NULL GROUP BY pslij.input_job_no_random ORDER BY pdi.input_priority";
+		*/
 		mysqli_query($link, $sql) or exit("$sql Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		$sql_ix="ALTER TABLE $temp_table_name ADD index input_module_ix(input_module)";
@@ -830,7 +840,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 							$style1=$sql_row1['order_style_no'];
 							$schedule1=$sql_row1['order_del_no'];
 							$color1=$sql_row1['order_col_des'];
-							$total_qty1=$sql_row1['total'];
+							$total_qty1=echo_title("$bai_pro3.pac_stat_log_input_job","sum(carton_act_qty)","input_job_no_random",$doc_no,$link);
 							$cut_no1=$sql_row1['acutno'];
 							$color_code1=$sql_row1['color_code'];
 							
@@ -841,7 +851,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 								$style_id_new=$sql_row_id["sid"];
 							}
 								
-							$get_fab_req_details="SELECT * FROM $bai_pro3.fabric_priorities WHERE doc_ref_club=\"$doc_no_ref\" ";
+							$get_fab_req_details="SELECT * FROM $bai_pro3.fabric_priorities WHERE doc_ref in (".$doc_no_ref.")";
 							$get_fab_req_result=mysqli_query($link, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$resulted_rows = mysqli_num_rows($get_fab_req_result);
 
@@ -897,7 +907,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 							{
 								$code_db_new=array();
 								$code_db_new=explode("-",$code_db[$i]);
-								
+							
 								if($code_db_new[2]=="DONE")
 								{
 									$check="#cce5ff";

@@ -235,7 +235,7 @@ function savingdata($saving)
    if($cnt > 0)
    {
 	    //var_dump($saving);
-		$saving_sub_oper_data_qry = "insert into $brandix_bts.tbl_style_ops_master (parent_id,operation_name,operation_order,smo,smv,m3_smv,operation_code,default_operration,priority,style,color,from_m3_check,barcode,emb_supplier,ops_sequence,ops_dependency,component) values ($saving)";
+		$saving_sub_oper_data_qry = "insert into $brandix_bts.tbl_style_ops_master (parent_id,operation_name,operation_order,smo,smv,m3_smv,operation_code,default_operration,priority,style,color,from_m3_check,barcode,emb_supplier,ops_sequence,previous_operation,ops_dependency,component) values ($saving)";
 		//echo $saving_sub_oper_data_qry;
 		$spdr = $link->query($saving_sub_oper_data_qry);
 		//echo $saving_sub_oper_data_qry;
@@ -453,7 +453,8 @@ function updating($editable_data)
 	//echo $editable_data[6];
 	if($editable_data[4] != '')
 	{
-		$qry_check_dependency = "select count(*)as cnt from $brandix_bts.tbl_style_ops_master where style=$editable_data[6] and color = $editable_data[7] and operation_code=$editable_data[4]";
+		$qry_check_dependency = "select count(*)as cnt from $brandix_bts.tbl_style_ops_master where style=$editable_data[7] and color = $editable_data[8] and operation_code=$editable_data[9]";
+		//echo $qry_check_dependency;
 		$result_chck_cnt = $link->query($qry_check_dependency);
 		  while($row = $result_chck_cnt->fetch_assoc()){
 			$cnt = $row['cnt'];
@@ -469,11 +470,11 @@ function updating($editable_data)
 	{
 		if($editable_data[4] == '')
 		{
-			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],ops_dependency='',component=$editable_data[5],operation_code = $editable_data[8],default_operration = $editable_data[9] where id=$editable_data[0]";
+			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation='',ops_dependency='',component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10] where id=$editable_data[0]";
 		}
 		else
 		{
-			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],ops_dependency=$editable_data[4],component=$editable_data[5],operation_code = $editable_data[8],default_operration = $editable_data[9] where id=$editable_data[0]";
+			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation=$editable_data[4],ops_dependency=$editable_data[5],component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10] where id=$editable_data[0]";
 		}
 
 		//echo $qry_updation;

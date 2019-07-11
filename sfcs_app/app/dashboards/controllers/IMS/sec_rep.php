@@ -303,7 +303,7 @@ if(isset($_GET['val']))
 								<th rowspan=2>Balance</th>
 								<th rowspan=2>Input Remarks</th>
 								<th rowspan=2>Ex-Factory</th>
-								<th width='150'>Remarks</th>
+								<th width='150'  rowspan=2>Remarks</th>
 								<th rowspan=2>Age</th>
 								<th rowspan=2>WIP</th>
 							</tr>
@@ -324,7 +324,24 @@ if(isset($_GET['val']))
 			$new_module = $module_ref;
 			$rowcount_check=0;
 
-			$sql12="select sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output, count(*) as count from $brandix_bts.bundle_creation_data where assigned_module='$module_ref' and  send_qty > 0";
+			$sqlwip="SELECT pac_tid FROM $bai_pro3.ims_log WHERE ims_mod_no='$module_ref' and ims_status<>'DONE'";
+			$sql_resultwip=mysqli_query($link, $sqlwip) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_resultwip)>0)
+			{
+				while($sql_rowwip=mysqli_fetch_array($sql_resultwip))
+				{
+						$bundle_numbers[]=$sql_rowwip['pac_tid'];
+				}
+				// $sqlwip12="SELECT sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output FROM $brandix_bts.bundle_creation_data WHERE bundle_number in (".explode(",",$bundle_numbers).") assigned_module='$module'";
+				// $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
+				// {
+				// 	$wip=$sql_rowwip12['input']-$sql_rowwip12['output'];
+				// } 
+				//unset($bundle_numbers);
+		
+
+			$sql12="select sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output, count(*) as count from $brandix_bts.bundle_creation_data where bundle_number in (".implode(",",$bundle_numbers).") and assigned_module='$module_ref' and  send_qty > 0";
 			//echo $sql12;
 			if(isset($_POST['submit']))
 			{
@@ -372,7 +389,7 @@ if(isset($_GET['val']))
 			
 			
 		$row_counter = 0;
-		$get_job="select distinct input_job_no_random_ref from $brandix_bts.bundle_creation_data where style in ($styles)  and original_qty != recevied_qty and  send_qty > 0 and operation_id in($sewing_operations)";
+		$get_job="select distinct input_job_no_random_ref from $brandix_bts.bundle_creation_data where bundle_number in (".implode(",",$bundle_numbers).")  and original_qty != recevied_qty and  send_qty > 0 and operation_id in($sewing_operations)";
 		//echo $get_job;
 		$sql_result=mysqli_query($link, $get_job) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -602,6 +619,7 @@ if(isset($_GET['val']))
 				$old_module = $module_ref;				
 			}
 		}
+	}
 	}
 	    echo "</table></div></div>";
 ?>

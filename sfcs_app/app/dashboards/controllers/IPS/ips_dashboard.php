@@ -131,7 +131,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				
 			
 				// echo $id;
-				$sqly="SELECT type_of_sewing,order_style_no,order_del_no,GROUP_CONCAT(DISTINCT TRIM(order_col_des)) AS order_col_des,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no,sum(carton_act_qty) as carton_qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
+				$sqly="SELECT type_of_sewing,order_style_no,order_del_no,GROUP_CONCAT(DISTINCT TRIM(order_col_des)) AS order_col_des,GROUP_CONCAT(DISTINCT input_job_no) AS input_job_no,GROUP_CONCAT(DISTINCT doc_no) AS doc_no,sum(carton_act_qty) as carton_qty,order_col_des as cols FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='".$input_job_no_random_ref."' ORDER BY acutno";
 				//echo $sqly."<br>";
 				$resulty=mysqli_query($link, $sqly) or die("Error=$sqly".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowy=mysqli_fetch_array($resulty))
@@ -143,6 +143,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$style=$sql_rowy['order_style_no'];
 					$schedule=$sql_rowy['order_del_no'];
 					$order_col=$sql_rowy['order_col_des'];
+					$color_info=$sql_rowy['cols'];
 					$input_job_no=$sql_rowy['input_job_no'];
 					$schedule_no=$sql_rowy['order_del_no'];
 					$type_of_sewing=$sql_rowy['type_of_sewing'];
@@ -150,7 +151,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$rej_qty=0;
 				$qry_ops_mapping_after = "SELECT of.operation_code FROM `$brandix_bts`.`tbl_style_ops_master` tm 
 				LEFT JOIN brandix_bts.`tbl_orders_ops_ref` of ON of.`operation_code`=tm.`operation_code`
-				WHERE tm.`style` ='$style' AND tm.`color` = '$order_col'
+				WHERE tm.`style` ='$style' AND tm.`color` = '$color_info'
 				AND category = 'sewing' AND display_operations='yes' ORDER BY operation_order*1 LIMIT 1";
 				$result_qry_ops_mapping_after = $link->query($qry_ops_mapping_after);
 				if(mysqli_num_rows($result_qry_ops_mapping_after) > 0)
@@ -160,14 +161,25 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						$input_ops_code = $ops_post['operation_code'];
 					}
 				}
-				$sql1212="SELECT sum(recut_in+replace_in) as qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$ops_code";
+				else
+				{
+					$application2='IPS';
+
+					$scanning_query12="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application2'";
+					$scanning_result12=mysqli_query($link, $scanning_query12)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row123=mysqli_fetch_array($scanning_result12))
+					{
+					  $input_ops_code=$sql_row123['operation_code'];
+					}
+				}				
+				$sql1212="SELECT sum(recut_in+replace_in) as qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$input_ops_code";
 				// echo $sql12.';<br>';
 				$sql_result1212=mysqli_query($link, $sql1212) or exit($sql12."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1212=mysqli_fetch_array($sql_result1212))
 				{
-					if($sql_row12['qty'] > 0)
+					if($sql_row1212['qty'] > 0)
 					{
-						$rej_qty = $sql_row12['qty'];
+						$rej_qty = $sql_row1212['qty'];
 					}
 				}
 				$sql12="SELECT sum(recevied_qty+recut_in) as input FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$ops_code";

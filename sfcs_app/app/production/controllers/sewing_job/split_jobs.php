@@ -28,7 +28,8 @@
 			if(mysqli_num_rows($result1)==0 && mysqli_num_rows($result2)==0)
 			{				
 				echo '<h4><b>Sewing Job No : <a href="#" class="btn btn-warning">'.$job_no.'</a></b></h4><hr>';
-				$sql="SELECT *, UPPER(size_code) as size_code FROM $bai_pro3.packing_summary_input where order_del_no='$schedule' AND input_job_no='$job_no' order by input_job_no*1"; 
+				$sql="SELECT *, UPPER(size_code) as size_code FROM $bai_pro3.packing_summary_input where 
+				order_del_no='$schedule' AND input_job_no='$job_no' order by order_col_des*1,size_code*1"; 
 				$result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				echo '<form action='.getFullURLLevel($_GET['r'],'split_success.php',0,'N').' method="post" onsubmit="return verify_qty()">'; 
 				echo "<table class='table table-bordered table-striped'> 
