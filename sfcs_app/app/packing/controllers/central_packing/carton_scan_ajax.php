@@ -19,6 +19,8 @@
 	{
 		$emp_id = $_GET['emp_id'];
 		$team_id = $_GET['team_id'];
+		$pack_team = $_GET['pack_team'];
+		$pack_method = $_GET['pack_method'];
 		$carton_id = $_GET['carton_id'];
 		$count_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id='".$carton_id."';";
 		$count_result = mysqli_query($link,$count_query);
