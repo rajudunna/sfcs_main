@@ -162,55 +162,70 @@ function GetSelectedItem()
 <div class="panel-body">
 <hr>
 <!--<?php echo "Docket No = ".$doc_no; ?>-->
-
+<div class='table-responsive'>
+<form method="POST" name="apply">
 <table class="table table-bordered">
 
-<tr><th>Style</th><th>Schedule</th><th>Color</th><th>Docket No</th><th>Job No</th></tr>
+<tr><th>Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>Category</th><th>Item Code</th><th>Docket No</th><th>Requirment</th><th>Reference</th></tr>
 <?php
-//echo date("Y")."-".date("m")."-".date("d")." ".(date("H")+3).":".date("i").":".date("s");
-	$doc_nos_splitx=explode(",",$doc_no);
-		
-	for($i=0;$i<sizeof($doc_nos_splitx);$i++)
+	$sql11x1="select order_tid,acutno from $bai_pro3.plandoc_stat_log where doc_no='".$doc_no."'";	
+	$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row111x1=mysqli_fetch_array($sql_result11x1))
 	{
-		echo "<tr>";
-		$sql11x="select order_tid,acutno,remarks from $bai_pro3.plandoc_stat_log where doc_no=\"".$doc_nos_splitx[$i]."\"";
-		$sql_result11x=mysqli_query($link, $sql11x) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($row11x=mysqli_fetch_array($sql_result11x))
+		$order_ti=$row111x1["order_tid"];
+		$cut_no=$row111x1["acutno"];
+	}
+	$sql11x132="select order_style_no from $bai_pro3.bai_orders_db_confirm where order_tid='".$order_ti."'";	
+	$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row111x112=mysqli_fetch_array($sql_result11x112))
+	{
+		$stylex=$row111x112["order_style_no"];
+	}
+	$sql111x="select compo_no,category,order_del_no,order_col_des,color_code,doc_no,cat_ref,acutno,material_req,(sum(p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50
+	)*p_plies) as qty from $bai_pro3.order_cat_doc_mk_mix where order_tid='".$order_ti."' and pcutno='".$cut_no."' group by doc_no";
+	$sql_result111x=mysqli_query($link, $sql111x) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row111x=mysqli_fetch_array($sql_result111x))
+	{
+		$schedulex=$row111x["order_del_no"];
+		$colorx=$row111x["order_col_des"];	
+		$docs_no[] = $row111x["doc_no"];	
+		$appender = $row111x["color_code"];
+		$doc_qty[$row111x["doc_no"]] = $row111x["qty"];
+		$cat_refnce[$row111x["doc_no"]] = $row111x["category"];
+		$cat_compo[$row111x["doc_no"]] = $row111x["compo_no"];
+		$sql111x12="select seperate_docket,binding_consumption from $bai_pro3.cat_Stat_log where order_tid='".$order_ti."' and tid='".$row111x["cat_ref"]."'";
+		$sql_result111x12=mysqli_query($link, $sql111x12) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row111x2=mysqli_fetch_array($sql_result111x12))
 		{
-			$order_tidx=$row11x["order_tid"];
-			$cut_nosx=$row11x["acutno"];
-			$remarks = $row11x["remarks"];
-		}
+			if($row111x2['seperate_docket']=='No')
+			{
+				$doc_mat[$row111x["doc_no"]] = $row111x["material_req"];				
+			}
+			else
+			{
+				$bindin_val = round($row111x2["binding_consumption"]*$row111x["qty"],4);
+				$doc_mat[$row111x["doc_no"]] = $row111x["material_req"]-$bindin_val;	
+			}
+		}		
+	}
 
-		$sql21x="select order_style_no,order_del_no,order_col_des,order_div,color_code from $bai_pro3.bai_orders_db where order_tid=\"".$order_tidx."\"";
-		$sql_result21x=mysqli_query($link, $sql21x) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($row21x=mysqli_fetch_array($sql_result21x))
-		{
-			$stylex=$row21x["order_style_no"];
-			$schedulex=$row21x["order_del_no"];
-			$colorx=$row21x["order_col_des"];
-			$buyerx=$row21x["order_div"];
-			$color_codex=$row21x["color_code"];
-		}
-		if(strtolower($remarks) == 'recut')
-			$appender = 'R';
-		else
-			$appender = chr($color_codex);
-			
-
+	for($i=0;$i<sizeof($cat_refnce);$i++)
+	{	
 		echo "<td>".$stylex."</td>";
 		echo "<td>".$schedulex."</td>";
 		echo "<td>".$colorx."</td>";
-		echo "<td>".$doc_nos_splitx[$i]."</td>";
-		echo "<td>".$appender.leading_zeros($cut_nosx,3)."</td>";
-		// echo "<td>".$appender."00".$cut_nosx."</td>";
+		echo "<td>".chr($appender).leading_zeros($cut_no,3)."</td>";
+		echo "<td>".$cat_refnce[$docs_no[$i]]."</td>";
+		echo "<td>".$cat_compo[$docs_no[$i]]."</td>";
+		echo "<td>".$docs_no[$i]."</td>";
+		echo "<td>".$doc_mat[$docs_no[$i]]."</td>";
+		echo "<td><input type='hidden' name='doc_details[]' value='".$docs_no[$i]."'> <input type='text' name='reference[]' value=''></td>";
 		echo "</tr>";
 	}
 
 ?>
 </table><br/><br/>
 
-<form action="#" method="POST" name="apply">
 	<table class="table table-bordered">
 		<tr>
 
@@ -349,6 +364,7 @@ function GetSelectedItem()
 		</tr>
 	</table>
 </form>
+</div>
 <br/><br/>
 
 <?php
@@ -361,7 +377,18 @@ if(isset($_POST["submit"]))
 	$group_docs=$_POST["group_docs"];
 	$secs=$_POST["secs"];
 	$mods=$_POST["mods"];
+	$ref=$_POST['reference'];
+	$dockets=$_POST['doc_details'];
 	
+	for($i=0;$i < count($ref);$i++ )
+	{		
+		$insert="Update $bai_pro3.`plandoc_stat_log` set reference='".$ref[$i]."' where doc_no='".$dockets[$i]."'";
+		mysqli_query($link, $insert) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
+	// var_dump($insert);
+	// die();
+	// $insert= substr_replace($insert, "", -1);
+	$i=mysqli_query($link,$insert);
 	//Date: 2013-10-09
 	//Old Logic
 	//Validation for Requested time and log time 
