@@ -22,7 +22,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 //getting catref
-$catrefqty="select cat_ref from $bai_pro3.order_cat_doc_mk_mix where order_tid='$order_tid'";
+$catrefqty="select cat_ref from $bai_pro3.order_cat_doc_mk_mix where order_tid='$order_tid' and category in ($in_categories)";
 $sql_result_cat=mysqli_query($link, $catrefqty) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result_cat))
 {
