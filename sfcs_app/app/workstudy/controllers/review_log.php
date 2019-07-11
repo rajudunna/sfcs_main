@@ -72,6 +72,8 @@ if(isset($_GET['exec']))
 			}
 			$fac_sah=$fac_sah+$sql_row1["sah"];
 		}
+		$vs_value=$fac_sah;
+		
 		$sec_sah="";$i=0;
 		$sql12="SELECT sec_no,SUM(plan_sah) AS sah FROM $bai_pro.`tbl_freez_plan_log` WHERE LEFT(DATE,7)='$dat_mo' AND sec_no>0 GROUP BY sec_no*1;";
 
