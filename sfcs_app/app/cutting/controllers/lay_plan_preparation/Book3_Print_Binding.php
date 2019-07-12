@@ -14,6 +14,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$category=$sql_row['category'];
 }
 
+
 //getting order tid
 $sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des='$color'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -29,6 +30,7 @@ while($sql_row=mysqli_fetch_array($sql_result_cat))
 {
 	$cat_ref=$sql_row['cat_ref'];
 }
+
 
 //getting doc ids
 $docsqry="select doc_no from $bai_pro3.binding_consumption_items where parent_id='$bindid'";
