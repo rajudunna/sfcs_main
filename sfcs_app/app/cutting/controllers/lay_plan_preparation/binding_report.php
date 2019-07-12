@@ -21,6 +21,11 @@ function thirdbox()
 	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value);
 	window.location.href = uriVal;
 }
+function fourthbox()
+{
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value)+"&category="+document.test.category.value;
+	window.location.href = uriVal;
+}
 $(document).ready(function() {
 	$('#schedule').on('click',function(e){
 		var style = $('#style').val();
@@ -65,10 +70,11 @@ function checkAll()
 	$style=$_GET['style'];
 	$schedule=$_GET['schedule']; 
 	$color=$_GET['color'];
+	$category=$_GET['category'];
 ?>
 
 <div class = "panel panel-primary">
-<div class = "panel-heading">Binding Consumption Report</div>
+<div class = "panel-heading">Binding Request Form</div>
 <div class = "panel-body">
 <form name="test" action="<?php echo getFullURLLevel($_GET['r'],'binding_report.php','0','N'); ?>" method="post">
 <?php
@@ -177,7 +183,27 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$order_tid=$sql_row['order_tid'];
 }
 
+//getting category for dropdown
+echo "<div class='col-sm-3'><label>Select Category:</label><select class='form-control' name=\"category\" onchange=\"fourthbox();\" id='category'>";
+$sqlcat="select distinct category from $bai_pro3.order_cat_doc_mk_mix where order_tid=\"$order_tid\"";
+$sql_result=mysqli_query($link, $sqlcat) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check=mysqli_num_rows($sql_result);
+echo "<option value='' disabled selected>Please Select</option>";
+while($sql_row=mysqli_fetch_array($sql_result))
+{
+	if(str_replace(" ","",$sql_row['category'])==str_replace(" ","",$category)){
+		echo "<option value=\"".$sql_row['category']."\" selected>".$sql_row['category']."</option>";
+	}else{
+		echo "<option value=\"".$sql_row['category']."\">".$sql_row['category']."</option>";
+	}
+}
 
+echo "</select>
+	</div>";
+	
+	
+	
+	
 $sql="select seperate_docket from $bai_pro3.cat_stat_log where order_tid='$order_tid' and seperate_docket='Yes'";
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -187,25 +213,27 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$seperate_docket=$sql_row['seperate_docket'];
 }
 
-
-
-if($seperate_docket=="Yes")
+if($category!='')
 {
-	echo "<div class='col-sm-3'> 
-			<br/>
-			<b>Separate Docket  :</b>&nbsp;<span class='label label-success'>&nbsp;".$seperate_docket."&nbsp;</span>&nbsp;&nbsp;";
-	echo "<input class='btn btn-success' type=\"submit\" value=\"Submit\" name=\"submit\" id='submit'>
-		  </div>";	
-}
-else
-{
-	echo "<div class='col-sm-3'>
-			<br/>
-			<b>Seperate Docket : </b> <span class='label label-danger'>&nbsp;No&nbsp;</span>
-		 ";
-	echo "</div>";
-		  // <input class='btn btn-danger' type=\"submit\" value=\"Submit\" name=\"submit\">
-}
+
+	if($seperate_docket=="Yes")
+	{
+		echo "<div class='col-sm-3'> 
+				<br/>
+				<b>Separate Docket  :</b>&nbsp;<span class='label label-success'>&nbsp;".$seperate_docket."&nbsp;</span>&nbsp;&nbsp;";
+		echo "<input class='btn btn-success' type=\"submit\" value=\"Submit\" name=\"submit\" id='submit'>
+			  </div>";	
+	}
+	else
+	{
+		echo "<div class='col-sm-3'>
+				<br/>
+				<b>Seperate Docket : </b> <span class='label label-danger'>&nbsp;No&nbsp;</span>
+			 ";
+		echo "</div>";
+			  // <input class='btn btn-danger' type=\"submit\" value=\"Submit\" name=\"submit\">
+	}
+}	
 echo "</div>"
 ?>
 
@@ -220,6 +248,7 @@ if(isset($_POST['submit']))
 	$style=$_POST['style'];
 	$color=$_POST['color'];
 	$schedule=$_POST['schedule'];
+	$category=$_POST['category'];
 	
 	echo "<div class='col-sm-3'>
 	<b>Style : </b> <h4><span class='label label-primary'>".$style."</span></h4>";
@@ -258,7 +287,7 @@ if(isset($_POST['submit']))
 		$bindingconsqty=$sql_row33['binding_consumption']; //Color Code
 	}
 	// var_dump($in_categories);
-	$details_qry="select compo_no,category,pcutno,material_req as qty,SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies*$bindingconsqty as bindreqqty,doc_no from $bai_pro3.order_cat_doc_mk_mix where order_tid='$order_tid' and category in ($in_categories) group by pcutno";
+	$details_qry="select compo_no,category,pcutno,material_req as qty,SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies*$bindingconsqty as bindreqqty,doc_no from $bai_pro3.order_cat_doc_mk_mix where order_tid='$order_tid' and category='$category' group by pcutno";
 	// echo $details_qry;
 	$sql_result_det=mysqli_query($link, $details_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -366,7 +395,7 @@ if(isset($_POST['bindingdata']))
 		// $exists_result=mysqli_query($link, $is_exists) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		// $exists_result_count=mysqli_num_rows($exists_result);
 		// if($exists_result_count == 0){
-			$insertqry="INSERT INTO $bai_pro3.binding_consumption(style,schedule,color,tot_req_qty,tot_bindreq_qty,status) VALUES (\"".$style."\",\"".$schedule."\",\"".$color."\",\"".$totordqty."\",\"".$finalbindingqty."\",'Open')";
+			$insertqry="INSERT INTO $bai_pro3.binding_consumption(style,schedule,color,category,tot_req_qty,tot_bindreq_qty,status) VALUES (\"".$style."\",\"".$schedule."\",\"".$color."\",\"".$category."\",\"".$totordqty."\",\"".$finalbindingqty."\",'Open')";
 			mysqli_query($link, $insertqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$parent_id = mysqli_insert_id($link);
