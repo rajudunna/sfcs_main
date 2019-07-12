@@ -59,7 +59,7 @@ th{
                             <th>Schedule</th>
                             <th>Color</th>
                             <th>Total Required Quantity</th>
-                            <th>Total Binding Required Quantity</th>
+                            <!---<th>Total Binding Required Quantity</th>--->
                             <th>Control</th>
                             <th></th>
                         </tr>
@@ -78,7 +78,7 @@ th{
                                 echo "<td>".$sql_row['schedule']."</td>";
                                 echo "<td>".$sql_row['color']."</td>";
                                 echo "<td>".$sql_row['tot_req_qty']."</td>";
-                                echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
+                                // echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
                                 echo "<td><select name='issue_status$i' id='issue_status-$i' class='select2_single form-control' onchange='IssueAction($i);'>";
                                 echo "<option value=''>Please Select</option>";
                                 echo "<option value='Allocate'>Allocate</option>";
@@ -105,7 +105,7 @@ th{
                             <th>Schedule</th>
                             <th>Color</th>
                             <th>Total Required Quantity</th>
-                            <th>Total Binding Required Quantity</th>
+                            <!---<th>Total Binding Required Quantity</th>--->
                             <th>Control</th>
                             <th></th>
                         </tr>
@@ -125,7 +125,7 @@ th{
                                     echo "<td>".$sql_row['schedule']."</td>";
                                     echo "<td>".$sql_row['color']."</td>";
                                     echo "<td>".$sql_row['tot_req_qty']."</td>";
-                                    echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
+                                    // echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
                                     echo "<td>".$sql_row['status']."</td>";
                                       
                                     echo "<td><a href=\"$path?binding_id=$i\" onclick=\"Popup1=window.open('$path?binding_id=$i','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
@@ -146,10 +146,10 @@ th{
                 <br/>
                 <div class="row">
                     <div class="col-md-2">
-                        <input class="form-control" type="text" data-toggle='datepicker' name="sdat" id="sdate" size=8 placeholder='Select Date' onchange='DateChange();'/>
+                        <input class="form-control" type="text" data-toggle='datepicker' name="sdat" id="sdate" size=8 placeholder='Select Date' value='<?php echo date('Y-m-d') ?>' />
                     </div>
                     <div class="col-md-1">
-                        <input type='buttom' name='submit1' id='submit1' class='btn btn-success' value='Filter' disabled='disabled' onclick='FilterFunction();'>
+                        <input type='buttom' name='submit1' id='submit1' class='btn btn-success' value='Filter' onclick='FilterFunction();'>
                     </div>
                 </div>
              
