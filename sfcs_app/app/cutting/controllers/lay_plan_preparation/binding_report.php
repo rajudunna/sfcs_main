@@ -204,7 +204,7 @@ echo "</select>
 	
 	
 	
-$sql="select seperate_docket from $bai_pro3.cat_stat_log where order_tid='$order_tid' and seperate_docket='Yes'";
+$sql="select seperate_docket from $bai_pro3.cat_stat_log where order_tid='$order_tid' and seperate_docket='Yes' and category='$category'";
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
