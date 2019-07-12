@@ -32,10 +32,10 @@ $b_a_cut_no = $new_data['a_cut_no'];
 $b_old_rep_qty = $new_data['old_rep_qty'];
 $b_old_rej_qty = $new_data['old_rej_qty'];
 $post_ops_code='';
+$previous_operation='';
 $page_flag = $new_data['page_flag'];
 $child_doc = $new_data['child_docket'];
 $form = 'P';
-$ops_dep='';
 $qry_status='';
 if($b_op_id >=130 && $b_op_id < 300)
 {
@@ -113,20 +113,7 @@ while($row1 = $result_dep_ops_array_qry->fetch_assoc())
     $sfcs_smv = $row1['smv'];
 }
 
-$ops_dep_qry = "SELECT ops_dependency,operation_code,ops_sequence FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and ops_sequence='$sequnce' AND ops_dependency != 200 AND ops_dependency != 0 group by ops_dependency";
-//echo $ops_dep_qry;
-$result_ops_dep_qry = $link->query($ops_dep_qry);
-while($row2 = $result_ops_dep_qry->fetch_assoc()) 
-{
-    $ops_dep = $row2['ops_dependency'];
-}
-$dep_ops_array_qry_raw = "select operation_code from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and ops_dependency='$ops_dep'";
-//echo $dep_ops_array_qry_raw;
-$result_dep_ops_array_qry_raw = $link->query($dep_ops_array_qry_raw);
-while($row3 = $result_dep_ops_array_qry_raw->fetch_assoc()) 
-{
-    $dep_ops_codes[] = $row3['operation_code'];	
-}
+
 $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code='$b_op_id'";
 $result_ops_seq_check = $link->query($ops_seq_check);
 while($row4 = $result_ops_seq_check->fetch_assoc()) 
@@ -136,32 +123,7 @@ while($row4 = $result_ops_seq_check->fetch_assoc())
     $ops_order = $row4['operation_order'];
 }
 
-if($ops_dep)
-{
-    $dep_ops_array_qry_seq = "select ops_dependency,operation_code,ops_sequence from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' AND ops_dependency != 200 AND ops_dependency != 0";
-    $result_dep_ops_array_qry_seq = $link->query($dep_ops_array_qry_seq);
-    while($row5 = $result_dep_ops_array_qry_seq->fetch_assoc()) 
-    {
-        $ops_dep_ary[] = $row5['ops_dependency'];
-    }
-}
-else
-{
-    $ops_dep_ary[] = null;
-}
-if($ops_dep_ary[0] != null)
-{
-    $ops_seq_qrs = "select ops_sequence from $brandix_bts.tbl_style_ops_master WHERE style='".$b_style."' AND color = '".$mapped_color."' AND operation_code in (".implode(',',$ops_dep_ary).")";
-    $result_ops_seq_qrs = $link->query($ops_seq_qrs);
-    while($row6 = $result_ops_seq_qrs->fetch_assoc()) 
-    {
-        $ops_seq_dep[] = $row6['ops_sequence'];
-    }
-}
-else
-{
-    $ops_seq_dep[] = $ops_seq;
-}
+
 $pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = $ops_seq  AND CAST(operation_order AS CHAR) < '$ops_order' AND operation_code not in (10,200) ORDER BY operation_order DESC LIMIT 1";
 //echo $pre_ops_check;
 $result_pre_ops_check = $link->query($pre_ops_check);
@@ -174,6 +136,7 @@ if($result_pre_ops_check->num_rows > 0)
 }
 $post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and ops_sequence = '".$ops_seq."'  AND CAST(operation_order AS CHAR) > '$ops_order' ORDER BY operation_order ASC LIMIT 1";
 //echo $post_ops_check;
+
 $result_post_ops_check = $link->query($post_ops_check);
 if($result_post_ops_check->num_rows > 0)
 {
@@ -183,8 +146,8 @@ if($result_post_ops_check->num_rows > 0)
     }
 }
 //To get parallel operations
-$parallel_ops_check = "select previous_operation from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' AND operation_code = '$post_ops_code'";
-//echo $pre_ops_check;
+$parallel_ops_check = "select previous_operation from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' AND operation_code = '$post_ops_code' and previous_operation > 0";
+//echo $parallel_ops_check;
 $result_parallel_ops_check = $link->query($parallel_ops_check);
 if($result_parallel_ops_check->num_rows > 0)
 {
@@ -288,7 +251,7 @@ if($flag == 'clubbing')
 
                 //Updating BCD
                 $query = "UPDATE $brandix_bts.bundle_creation_data SET  `rejected_qty`='". $final_rejected_qty."' where bundle_number ='".$bundle_no."' and operation_id = ".$b_op_id;
-                //echo $query;
+                // echo $query;
                 $result_query = $link->query($query) or exit('query error in updating');
 
                 $remarks_code = "";
@@ -429,7 +392,7 @@ if($flag == 'clubbing')
 
                 //Updating BCD
                 $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= recevied_qty+$final_reported_qty, `left_over`= '".$left_over_qty."' , `scanned_date`='". date('Y-m-d')."',`shift`= '".$b_shift."',`assigned_module`= '".$b_module."' where docket_number ='".$docket_number."' and size_title='$size' and operation_id = ".$b_op_id;
-                //echo $query;
+                // echo $query ."<br>1";
                 $result_query = $link->query($query) or exit('query error in updating');
 
                 //based on the bundle creation data current operation quantites we are changing reported status
@@ -457,27 +420,17 @@ if($flag == 'clubbing')
                 if($post_ops_code != null && $emb_cut_check_flag == 1)
                 {
                     $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_reported_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number ='".$docket_number."' and size_title='$size' and operation_id = ".$post_ops_code;
-                    //echo $query_post;
+                    // echo $query_post."<br>2";
                     $result_query = $link->query($query_post) or exit('query error in updating');
                 }
                 if($previous_operation != null)
                 {
+
                     $parallel_update = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_reported_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number ='".$docket_number."' and size_title='$size' and operation_id in (".implode(',',$parallel_operations).")";
-                    //echo $query_post;
+                    // echo $query_post."<br>3";
                     $result_query = $link->query($parallel_update) or exit('query error in updating');
                 }
-                if($ops_dep)
-                {
-                    $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where docket_number ='".$docket_number."' and size_title='$size' and operation_id in (".implode(',',$dep_ops_codes).")";
-                    $result_pre_send_qty = $link->query($pre_send_qty_qry);
-                    while($row = $result_pre_send_qty->fetch_assoc()) 
-                    {
-                        $pre_recieved_qty = $row['recieved_qty'];
-                    }
-
-                    $query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number ='".$docket_number."' and size_title='$size' and operation_id = ".$ops_dep;
-                    $result_query = $link->query($query_post_dep) or exit('query error in updating');    
-                }         
+                         
 
             }
             
@@ -743,18 +696,7 @@ else
                 //echo $parallel_update;
                 $result_query = $link->query($parallel_update) or exit('query error in updating');
             }
-            if($ops_dep)
-            {
-                $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where bundle_number ='".$b_tid[$key]."' and operation_id in (".implode(',',$dep_ops_codes).")";
-                $result_pre_send_qty = $link->query($pre_send_qty_qry);
-                while($row = $result_pre_send_qty->fetch_assoc()) 
-                {
-                    $pre_recieved_qty = $row['recieved_qty'];
-                }
-
-                $query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$ops_dep;
-                $result_query = $link->query($query_post_dep) or exit('query error in updating');    
-            }
+            
                    
             if($r_qtys[$value] != null && $r_reason[$value] != null){
                $bcd_id_qry = "select size_id from $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$key] and operation_id = $b_op_id";

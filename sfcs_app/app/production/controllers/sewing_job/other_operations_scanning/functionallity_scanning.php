@@ -25,8 +25,10 @@ function getreversal($data)
     include("../../../../../common/config/config_ajax.php");
 
     $flag = '';
+    $previous_operation='';
     //To check Clubbing
     $get_child_docs = "select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no = $doc_no";
+    //echo $get_child_docs;
 	$result_get_child_docs_check = $link->query($get_child_docs);
 	if($result_get_child_docs_check->num_rows > 0)
 	{
@@ -145,6 +147,31 @@ function getreversal($data)
 		}
 		$result_array['post_ops'][] = $post_ops_code;
 
+		//To get parallel operations
+		$parallel_ops_check = "select previous_operation from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND operation_code = '$post_ops_code' and previous_operation > 0";
+		//echo $parallel_ops_check;
+		$result_parallel_ops_check = $link->query($parallel_ops_check);
+		if($result_parallel_ops_check->num_rows > 0)
+		{
+		    while($row22 = $result_parallel_ops_check->fetch_assoc()) 
+		    {
+		        $previous_operation = $row22['previous_operation'];
+		    }
+
+		    $get_parallel_ops = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND previous_operation = '$previous_operation'";
+		    //echo $get_parallel_ops;
+		    $result_get_parallel_ops = $link->query($get_parallel_ops);
+		    while($row33 = $result_get_parallel_ops->fetch_assoc()) 
+		    {
+		        $parallel_operations[] = $row33['operation_code'];
+		    }
+		   
+		}
+		else
+		{
+		    $previous_operation = '';
+		}
+
 		$get_sewing_operation = "SELECT tor.operation_code AS operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name  WHERE category='sewing' and style ='$style' and color ='$color' ORDER BY operation_order LIMIT 1";
 		$result_sewing_operation = $link->query($get_sewing_operation);
 	    while($sewing_row = $result_sewing_operation->fetch_assoc()) 
@@ -152,7 +179,9 @@ function getreversal($data)
 	        $sewing_code = $sewing_row['operation_code'];
 	    }
 
-		if($flag == 'clubbing')
+	
+
+	    if($flag == 'clubbing')
 		{
             $dockets = implode(',',$doc);
 			if($post_ops_code == $sewing_code)
@@ -178,6 +207,7 @@ function getreversal($data)
 				        if($recevied_qty_qty > 0)
 				        {
 				        	$job_details_qry = "SELECT id,`size_title` AS size_code,size_id as old_size,`color` as order_col_des,`bundle_number` AS tid,sum(original_qty) AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(recevied_qty)-$recevied_qty_qty AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id FROM $brandix_bts.bundle_creation_data WHERE docket_number in ($dockets)  AND size_title = '$size' AND operation_id = $op_code GROUP BY size_title,color order by bundle_number";
+				        	//echo $job_details_qry ."<br>1";
 				        	$result_style_data = $link->query($job_details_qry);
 				            while($row = $result_style_data->fetch_assoc()) 
 				            {
@@ -186,7 +216,9 @@ function getreversal($data)
 				        }
 				        else
 				        {
+
 			               $job_details_qry = "SELECT id,`size_title` AS size_code,size_id as old_size,`color` as order_col_des,`bundle_number` AS tid,sum(original_qty) AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(recevied_qty) AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id FROM $brandix_bts.bundle_creation_data WHERE docket_number in ($dockets) AND operation_id = $op_code GROUP BY size_title,color order by bundle_number";
+			              // echo $job_details_qry ."<br>2";
 				        	$result_style_data = $link->query($job_details_qry);
 				            while($row = $result_style_data->fetch_assoc()) 
 				            {
@@ -201,6 +233,7 @@ function getreversal($data)
 			    else
 			    {
 			    	$job_details_qry = "SELECT id,`size_title` AS size_code,size_id as old_size,`color` as order_col_des,`bundle_number` AS tid,sum(original_qty) AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(recevied_qty) AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id FROM $brandix_bts.bundle_creation_data WHERE docket_number in ($dockets) AND operation_id = $op_code GROUP BY size_title,color order by bundle_number";
+			    	//echo $job_details_qry ."<br>3";
 			    	$result_style_data = $link->query($job_details_qry);
 			        while($row = $result_style_data->fetch_assoc()) 
 			        {
@@ -212,26 +245,53 @@ function getreversal($data)
 			}
 			else
 			{
-				$post_ops_validation = "SELECT sum(recevied_qty)as recevied_qty,size_title as size,docket_number FROM $brandix_bts.bundle_creation_data WHERE docket_number in ($dockets) AND operation_id = $post_ops_code group by size_title";
-				//echo $post_ops_validation;
-			    $result_pre_ops_validation = $link->query($post_ops_validation);
-			    while($row = $result_pre_ops_validation->fetch_assoc()) 
-			    {
-			        $recevied_qty_qty = $row['recevied_qty'];
-			        $size = $row['size'];
-			        $docket_number = $row['docket_number'];
-
-
-			        $job_details_qry = "SELECT id,`size_title` AS size_code,size_id as old_size,`color` as order_col_des,`bundle_number` AS tid,sum(original_qty) AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(recevied_qty)-$recevied_qty_qty AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id FROM $brandix_bts.bundle_creation_data WHERE docket_number in ($dockets) AND size_title = '$size' AND operation_id = $op_code GROUP BY size_title order by bundle_number";
-			       // echo $job_details_qry;
-			        $result_style_data = $link->query($job_details_qry);
-			        while($row = $result_style_data->fetch_assoc()) 
+				if($previous_operation != null)
+				{
+                    $post_ops_validation = "SELECT max(recevied_qty)as recevied_qty,size_title as size FROM $brandix_bts.bundle_creation_data WHERE docket_number in ($dockets) AND operation_id in (".implode(',',$parallel_operations).") group by size_title";
+		        	//echo $post_ops_validation;
+			        $result_pre_ops_validation = $link->query($post_ops_validation);
+			        while($row = $result_pre_ops_validation->fetch_assoc()) 
 			        {
-			            $result_array['table_data'][] = $row;
-			        }
-			  
-			    }
-			    echo json_encode($result_array); 
+			            $recevied_qty_qty = $row['recevied_qty'];
+			            $size = $row['size'];
+
+                        
+                            $job_details_qry = "SELECT id,`size_title` AS size_code,size_id as old_size,`color` as order_col_des,`bundle_number` AS tid,sum(original_qty) AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(recevied_qty)-$recevied_qty_qty AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id FROM $brandix_bts.bundle_creation_data WHERE docket_number in ($dockets) AND size_title = '$size' AND operation_id = $op_code GROUP BY size_title order by bundle_number";
+				            //echo $job_details_qry ."<br>4";
+				            $result_style_data = $link->query($job_details_qry);
+				            while($row = $result_style_data->fetch_assoc()) 
+				            {
+				                $result_array['table_data'][] = $row;
+				            }
+                    }
+			        
+				}
+				else
+				{
+					$post_ops_validation = "SELECT sum(recevied_qty)as recevied_qty,size_title as size,docket_number FROM $brandix_bts.bundle_creation_data WHERE docket_number in ($dockets) AND operation_id = $post_ops_code group by size_title";
+					//echo $post_ops_validation;
+				    $result_pre_ops_validation = $link->query($post_ops_validation);
+				    while($row = $result_pre_ops_validation->fetch_assoc()) 
+				    {
+				        $recevied_qty_qty = $row['recevied_qty'];
+				        $size = $row['size'];
+				        $docket_number = $row['docket_number'];
+
+
+				        $job_details_qry = "SELECT id,`size_title` AS size_code,size_id as old_size,`color` as order_col_des,`bundle_number` AS tid,sum(original_qty) AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(recevied_qty)-$recevied_qty_qty AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id FROM $brandix_bts.bundle_creation_data WHERE docket_number in ($dockets) AND size_title = '$size' AND operation_id = $op_code GROUP BY size_title order by bundle_number";
+				        //echo $job_details_qry ."<br>6";
+				        $result_style_data = $link->query($job_details_qry);
+				        while($row = $result_style_data->fetch_assoc()) 
+				        {
+				            $result_array['table_data'][] = $row;
+				        }
+				  
+				    }
+				     
+				}	
+				echo json_encode($result_array);
+
+			    
 			   
 			}
 		}
@@ -295,24 +355,49 @@ function getreversal($data)
 	        }
 	        else
 	        {
-	        	$post_ops_validation = "SELECT sum(recevied_qty)as recevied_qty,size_title as size FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id = $post_ops_code group by size_title";
-	        	//echo $post_ops_validation;
-		        $result_pre_ops_validation = $link->query($post_ops_validation);
-		        while($row = $result_pre_ops_validation->fetch_assoc()) 
-		        {
-		            $recevied_qty_qty = $row['recevied_qty'];
-		            $size = $row['size'];
+	        	if($previous_operation != null)
+				{
+                    $post_ops_validation = "SELECT max(recevied_qty)as recevied_qty,size_title as size FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id in ($previous_operation) group by size_title";
+		        	//echo $post_ops_validation;
+			        $result_pre_ops_validation = $link->query($post_ops_validation);
+			        while($row = $result_pre_ops_validation->fetch_assoc()) 
+			        {
+			            $recevied_qty_qty = $row['recevied_qty'];
+			            $size = $row['size'];
 
 
-		            $job_details_qry = "SELECT id,`size_title` AS size_code,size_id as old_size,`color` as order_col_des,`bundle_number` AS tid,sum(original_qty) AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(recevied_qty)-$recevied_qty_qty AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id FROM $brandix_bts.bundle_creation_data WHERE docket_number = '$doc_no' AND size_title = '$size' AND operation_id = $op_code GROUP BY size_title order by bundle_number";
-		            //echo $job_details_qry;
-		            $result_style_data = $link->query($job_details_qry);
-		            while($row = $result_style_data->fetch_assoc()) 
-		            {
-		                $result_array['table_data'][] = $row;
-		            }
-		      
-		        }
+			            $job_details_qry = "SELECT id,`size_title` AS size_code,size_id as old_size,`color` as order_col_des,`bundle_number` AS tid,sum(original_qty) AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(recevied_qty)-$recevied_qty_qty AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id FROM $brandix_bts.bundle_creation_data WHERE docket_number = '$doc_no' AND size_title = '$size' AND operation_id = $op_code GROUP BY size_title order by bundle_number";
+			            echo $job_details_qry;
+			            $result_style_data = $link->query($job_details_qry);
+			            while($row = $result_style_data->fetch_assoc()) 
+			            {
+			                $result_array['table_data'][] = $row;
+			            }
+			      
+			        }
+				}
+				else
+				{
+					$post_ops_validation = "SELECT sum(recevied_qty)as recevied_qty,size_title as size FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id = $post_ops_code group by size_title";
+		        	//echo $post_ops_validation;
+			        $result_pre_ops_validation = $link->query($post_ops_validation);
+			        while($row = $result_pre_ops_validation->fetch_assoc()) 
+			        {
+			            $recevied_qty_qty = $row['recevied_qty'];
+			            $size = $row['size'];
+
+
+			            $job_details_qry = "SELECT id,`size_title` AS size_code,size_id as old_size,`color` as order_col_des,`bundle_number` AS tid,sum(original_qty) AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(recevied_qty)-$recevied_qty_qty AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id FROM $brandix_bts.bundle_creation_data WHERE docket_number = '$doc_no' AND size_title = '$size' AND operation_id = $op_code GROUP BY size_title order by bundle_number";
+			            //echo $job_details_qry;
+			            $result_style_data = $link->query($job_details_qry);
+			            while($row = $result_style_data->fetch_assoc()) 
+			            {
+			                $result_array['table_data'][] = $row;
+			            }
+			      
+			        }
+				}	
+	        	
 		        echo json_encode($result_array); 
 		       
 	        }
@@ -387,6 +472,28 @@ function updatereversal($post_data)
 	   {
 		 $post_ops_code = $row['operation_code'];
 	   }
+	}
+	//To get parallel operations
+	$parallel_ops_check = "select previous_operation from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors' AND operation_code = '$post_ops_code' and previous_operation > 0";
+	//echo $parallel_ops_check;
+	$result_parallel_ops_check = $link->query($parallel_ops_check);
+	if($result_parallel_ops_check->num_rows > 0)
+	{
+	    while($row22 = $result_parallel_ops_check->fetch_assoc()) 
+	    {
+	        $previous_operation = $row22['previous_operation'];
+	    }
+
+	    $get_parallel_ops = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors' AND previous_operation = '$previous_operation'";
+	    $result_get_parallel_ops = $link->query($get_parallel_ops);
+	    while($row33 = $result_get_parallel_ops->fetch_assoc()) 
+	    {
+	        $parallel_operations[] = $row33['operation_code'];
+	    }
+	}
+	else
+	{
+	    $previous_operation = '';
 	}
 
 	 $pre_operation_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
@@ -511,6 +618,14 @@ function updatereversal($post_data)
 				            $result_query = $link->query($query_post_dep) or exit('query error in updating6');
 				        }
 
+				        if($previous_operation != null)
+		                {
+
+		                    $parallel_update = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = send_qty-$final_reversal_qty, `scanned_date`='". date('Y-m-d')."' where docket_number ='".$docket_number."' and size_title='$size' and operation_id in (".implode(',',$parallel_operations).")";
+		                    // echo $query_post."<br>3";
+		                    $result_query = $link->query($parallel_update) or exit('query error in updating');
+		                }
+
 		                
 		                if($ops_dependency != 0)
 						{
@@ -554,8 +669,11 @@ function updatereversal($post_data)
 		            {
 		            
 		                
-		                $bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$mapped_color.'","'.$size_id.'","'. $size.'","'. $sfcs_smv.'","'.$bundle_no.'","'.$original_qty.'","'.$send_qty.'",'-'"'.$final_reversal_qty.'","0","0","'. $b_op_id.'","'.$docket_number.'","'.date('Y-m-d').'","'.$cut_no.'","'.$docket_number.'","'.$docket_number.'","'.$b_shift.'","'.$b_module.'","Normal"),';   
-		                //echo  $bulk_insert_post_temp;            
+		                // $bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$mapped_color.'","'.$size_id.'","'. $size.'","'. $sfcs_smv.'","'.$bundle_no.'","'.$original_qty.'","'.$send_qty.'",'-'"'.$final_reversal_qty.'","0","0","'. $b_op_id.'","'.$docket_number.'","'.date('Y-m-d').'","'.$cut_no.'","'.$docket_number.'","'.$docket_number.'","'.$b_shift.'","'.$b_module.'","Normal"),';   
+                        $date = date('Y-m-d');
+		                $bulk_insert_post_temp .= "('$b_style','$b_schedule','$mapped_color','$size_id','$size','$sfcs_smv','$bundle_no',$original_qty,$send_qty,-$final_reversal_qty,0,0,$b_op_id,$docket_number,'$date','$cut_no','$docket_number','$docket_number','$b_shift','$b_module','Normal'),";
+		                
+
 		               
 		                
 		            }
@@ -564,6 +682,7 @@ function updatereversal($post_data)
 		            $final_reversal_qty = 0;
 		        
 		        }
+		        //echo  $bulk_insert_post_temp; 
 
 		        $result_query_001_temp = $link->query(rtrim($bulk_insert_post_temp,',') ) or exit('bulk_insert_post query error in updating11111');
 
@@ -597,6 +716,13 @@ function updatereversal($post_data)
 				            // echo $query_post_dep;
 				            $result_query = $link->query($query_post_dep) or exit('query error in updating6');
 				        }
+				        if($previous_operation != null)
+		                {
+
+		                    $parallel_update = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$act_rec_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number ='".$b_doc_no[$key]."' and size_title='". $b_sizes[$key]."' and operation_id in (".implode(',',$parallel_operations).")";
+		                    // echo $query_post."<br>3";
+		                    $result_query = $link->query($parallel_update) or exit('query error in updating');
+		                }
 				}
 				if($ops_dependency != 0)
 				{
