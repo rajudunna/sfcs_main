@@ -448,7 +448,7 @@ function updatereversal($post_data)
 		
 		if($concurrent_flag == 0)
 		{
-			if($flag = 'clubbing')
+			if($flag == 'clubbing')
 			{
 				$bal_qty = [];
                 $rec_qty = [];

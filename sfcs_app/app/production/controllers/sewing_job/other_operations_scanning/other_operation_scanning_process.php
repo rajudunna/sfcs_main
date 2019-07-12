@@ -183,7 +183,7 @@ if($result_post_ops_check->num_rows > 0)
     }
 }
 //To get parallel operations
-$parallel_ops_check = "select previous_operation from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND operation_code = '$post_ops_code'";
+$parallel_ops_check = "select previous_operation from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' AND operation_code = '$post_ops_code'";
 //echo $pre_ops_check;
 $result_parallel_ops_check = $link->query($parallel_ops_check);
 if($result_parallel_ops_check->num_rows > 0)
@@ -193,7 +193,7 @@ if($result_parallel_ops_check->num_rows > 0)
         $previous_operation = $row22['previous_operation'];
     }
 
-    $get_parallel_ops = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND previous_operation = '$previous_operation'";
+    $get_parallel_ops = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' AND previous_operation = '$previous_operation'";
     $result_get_parallel_ops = $link->query($get_parallel_ops);
     while($row33 = $result_get_parallel_ops->fetch_assoc()) 
     {
@@ -739,8 +739,8 @@ else
             }
              if($previous_operation != null)
             {
-                $parallel_update = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."'' and operation_id in (".implode(',',$parallel_operations).")";
-                //echo $query_post;
+                $parallel_update = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_no and size_title='". $b_sizes[$key]."' and operation_id in (".implode(',',$parallel_operations).")";
+                //echo $parallel_update;
                 $result_query = $link->query($parallel_update) or exit('query error in updating');
             }
             if($ops_dep)
@@ -757,8 +757,15 @@ else
             }
                    
             if($r_qtys[$value] != null && $r_reason[$value] != null){
-                $bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$b_colors[$key].'",user(),"'.date('Y-m-d').'","'.$b_sizes[$key].'","'.$b_rej_qty[$key].'","3","'.$remarks_var.'","'.$remarks_code.'","'.$b_doc_no.'","'.$b_doc_no.'","'. $b_op_id.'","Normal","'.$b_tid[$key].'"),';
-                $reason_flag = true;
+               $bcd_id_qry = "select size_id from $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$key] and operation_id = $b_op_id";
+                // echo $bcd_id_qry;
+                $bcd_id_qry_result=mysqli_query($link,$bcd_id_qry) or exit("Bcd id qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($bcd_id_row=mysqli_fetch_array($bcd_id_qry_result))
+                {
+                    $size_id = $bcd_id_row['size_id'];
+                    $bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$b_colors[$key].'",user(),"'.date('Y-m-d').'","'.$size_id.'","'.$b_rej_qty[$key].'","3","'.$remarks_var.'","'.$remarks_code.'","'.$b_doc_no.'","'.$b_doc_no.'","'. $b_op_id.'","Normal","'.$b_tid[$key].'"),';
+                   $reason_flag = true;
+                }
             }   
         }    
     }

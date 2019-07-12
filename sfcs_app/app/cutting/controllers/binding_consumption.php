@@ -20,8 +20,13 @@ if(isset($_GET['row_id']))
         $status_new = 'Close';
     }
     
-    $query = "UPDATE $bai_pro3.binding_consumption set status = '".$status_new."',status_at= '".date("Y-m-d H:i:s")."' where id = $row_id";
-    $update_query = mysqli_query($link,$query);
+	$deletedata="delete from $bai_pro3.binding_consumption_items where parent_id='$row_id'";
+	$deletedata_query = mysqli_query($link,$deletedata);
+	
+	$deletemain="delete from $bai_pro3.binding_consumption where id = '$row_id'";
+	$deletemain_query = mysqli_query($link,$deletemain);
+    // $query = "UPDATE $bai_pro3.binding_consumption set status = '".$status_new."',status_at= '".date("Y-m-d H:i:s")."' where id = $row_id";
+    // $update_query = mysqli_query($link,$query);
 
     echo"<script>swal('Successfully Deleted.','','success')</script>";
 	echo"<script>location.href =  '".$url1."';</script>"; 

@@ -50,7 +50,7 @@ $(document).ready(function() {
 <form name="other_operation_report" method="post">
 <?php
 
-$sql = "SELECT DISTINCT category FROM $brandix_bts.tbl_orders_ops_ref WHERE restricted='no'";	
+$sql = "SELECT DISTINCT category FROM $brandix_bts.tbl_orders_ops_ref WHERE restriction='no'";	
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 echo "<div class=\"row\"><div class=\"col-sm-3\"><label>Select category:</label><select class='form-control' name=\"category\"  id=\"category\" onchange=\"firstbox();\" >";
