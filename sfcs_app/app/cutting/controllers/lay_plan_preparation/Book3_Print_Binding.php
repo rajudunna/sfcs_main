@@ -4,13 +4,14 @@ include('../../../../common/config/functions.php');
 //getting style and scheduele and color
 $bindid=$_GET['binding_id'];
 
-$gettingstyle="select style,schedule,color from $bai_pro3.binding_consumption where id='$bindid'";
+$gettingstyle="select style,schedule,color,category from $bai_pro3.binding_consumption where id='$bindid'";
 $sql_result=mysqli_query($link, $gettingstyle) or exit("gettingstyle Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$style=$sql_row['style'];
 	$schedule=$sql_row['schedule'];
 	$color=$sql_row['color'];
+	$category=$sql_row['category'];
 }
 
 //getting order tid
@@ -22,7 +23,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 //getting catref
-$catrefqty="select cat_ref from $bai_pro3.order_cat_doc_mk_mix where order_tid='$order_tid' and category in ($in_categories)";
+$catrefqty="select cat_ref from $bai_pro3.order_cat_doc_mk_mix where order_tid='$order_tid' and category='$category'";
 $sql_result_cat=mysqli_query($link, $catrefqty) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result_cat))
 {
@@ -3218,3 +3219,18 @@ $(document).ready(function(){
 	$("table tbody th, table tbody td").wrapInner("<div></div>");
 });
 </script>
+
+<?php
+$printqry="select status from $bai_pro3.binding_consumption where id='$bindid'";
+$sql_result_print=mysqli_query($link, $printqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row=mysqli_fetch_array($sql_result_print))
+{
+	$printstatus=$sql_row['status'];
+}
+
+if($printstatus!='Close')
+{
+	$query = "UPDATE $bai_pro3.binding_consumption set status = 'Close',status_at= '".date("Y-m-d H:i:s")."' where id = $bindid";
+    $update_query = mysqli_query($link,$query);
+}
+?>
