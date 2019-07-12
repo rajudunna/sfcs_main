@@ -39,6 +39,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
+	// $reference=$sql_row['reference'];
 	$style=$sql_row['order_style_no']; //Style
 	$color=$sql_row['order_col_des']; //color
 	$ord_joins=$sql_row['order_joins']; // Order joins
@@ -179,13 +180,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
             while($rows=mysqli_fetch_array($result))
             {
                 $order_tidss[]=$rows['order_tid'];
-				$select_sql1="select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no='".$doc_id."' and order_tid='".$rows['order_tid']."'";
+				$select_sql1="select doc_no,reference from $bai_pro3.plandoc_stat_log where org_doc_no='".$doc_id."' and order_tid='".$rows['order_tid']."'";
 				$result1=mysqli_query($link, $select_sql1);
 				if(mysqli_num_rows($result1)>0)
 				{
 					while($rows1=mysqli_fetch_array($result1))
 					{
 						$original_details[]=$rows['order_col_des']."-".$rows1['doc_no'];
+						$reference_details[]=$rows['reference'];
 					}
 				}
 				else
@@ -399,6 +401,7 @@ $a_s50=$sql_row['a_s50'];
 	
 	$cutno=$sql_row['acutno'];
 	$plies=$sql_row['p_plies']; //20110911
+	$reference=$sql_row['reference'];
 	$docketno=$sql_row['doc_no'];
 	$docketdate=$sql_row['date'];
 	$mk_ref=$sql_row['mk_ref'];
@@ -536,6 +539,12 @@ if($print_status==NULL)
 
 */
 // echo $docketno.'<br>';
+$child_ref_query="SELECT reference AS reference FROM $bai_pro3.plandoc_stat_log WHERE doc_no='$doc_no'";
+$child_ref_result=mysqli_query($link, $child_ref_query) or exit("error while getting original doc nos");
+while($sql_row=mysqli_fetch_array($child_ref_result))
+{
+	$reference[]=$sql_row['reference'];
+}
 $child_dockets_query="SELECT doc_no AS doc_no FROM $bai_pro3.plandoc_stat_log WHERE org_doc_no='$docketno'";
 $child_dockets_result=mysqli_query($link, $child_dockets_query) or exit("error while getting original doc nos");
 while($sql_row=mysqli_fetch_array($child_dockets_result))
@@ -2208,9 +2217,8 @@ tags will be replaced.-->
  </tr>
  <tr class=xl654118 height=26 style='mso-height-source:userset;height:19.5pt'>
   <td height=26 class=xl654118 style='height:19.5pt'></td>
-  <td class=xl654118></td>
-  <td class=xl1014118></td>
-  <td class=xl1014118></td>
+  <!-- <td class=xl654118></td> -->
+  <td colspan=3 style='font-size:24px;font-weight:bold'>Reference : <?php echo $reference; ?></td>
   <td class=xl1014118></td>
   <td class=xl1014118></td>
   <td colspan=3 style='font-size:24px;font-weight:bold'>Cutting Docket</td>
@@ -3138,3 +3146,4 @@ $(document).ready(function(){
 	$("table tbody th, table tbody td").wrapInner("<div></div>");
 });
 </script>
+
