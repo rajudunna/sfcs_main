@@ -386,12 +386,12 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 		$('#in_cat').on('change',function(){
 			var category = $("#in_cat option:selected").val();
 			
-			if(category == 'Body' || category == 'Front'){
+			// if(category == 'Body' || category == 'Front'){
 				$("#seperate_docket").show();
-			}
-			else{
-				$("#seperate_docket").hide();
-			}
+			// }
+			// else{
+				// $("#seperate_docket").hide();
+			// }
 
 		});
 		$('#binding_consumption').on('change',function(){
