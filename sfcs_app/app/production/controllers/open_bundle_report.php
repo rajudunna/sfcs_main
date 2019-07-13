@@ -217,7 +217,9 @@ function check_val()
                                                  $bundle_nums=implode(',',$operation_bundles);
 												if(sizeof($operation_bundles)>0 || sizeof($ijno1))
                                                 {
-                                                    $selectSQL = "SELECT input_job_no,original_qty,bundle_number,size_title,color,recut_in,rejected_qty,recevied_qty,operation_id FROM `brandix_bts`.`bundle_creation_data` WHERE style='".$style."' AND schedule='".$schedule."' AND operation_id IN ($opcodes) AND bundle_number IN ($bundle_nums) order by input_job_no*1,bundle_number";
+                                                    if(sizeof($operation_bundles)>0)
+													{
+													$selectSQL = "SELECT input_job_no,original_qty,bundle_number,size_title,color,recut_in,rejected_qty,recevied_qty,operation_id FROM `brandix_bts`.`bundle_creation_data` WHERE style='".$style."' AND schedule='".$schedule."' AND operation_id IN ($opcodes) AND bundle_number IN ($bundle_nums) order by input_job_no*1,bundle_number";
                                                     $selectRes=mysqli_query($link,$selectSQL) or exit($selectSQL."Error at something");
                                                     while( $row = mysqli_fetch_assoc( $selectRes ))
                                                     {                                                    
@@ -230,6 +232,10 @@ function check_val()
                                                         $tot_bundles[] = $row['bundle_number'];
                                                         $data_array_qty[$row['bundle_number']] = $row['original_qty'];
                                                     }
+													
+													}
+													if(sizeof($ijno1)>0)
+													{
 													$pack_bundles111="SELECT * FROM `bai_pro3`.`packing_summary_input` WHERE input_job_no_random in($ijno11)"; 
                                                  //echo $pack_bundles111;
 												    $pack_bundles12=mysqli_query($link,$pack_bundles111) or exit($pack_bundles."Error at something");
@@ -241,6 +247,7 @@ function check_val()
 													  $data_array_qty[$row_2112['tid']] = $row_2112['carton_act_qty'];
 													  $tot_bundles[]=$row_2112['tid'];
                                                     }
+													}
                                                     $tot_bundles=array_values(array_unique($tot_bundles));
                                                     for($i=0;$i<sizeof($tot_bundles);$i++)
                                                     {                                     
