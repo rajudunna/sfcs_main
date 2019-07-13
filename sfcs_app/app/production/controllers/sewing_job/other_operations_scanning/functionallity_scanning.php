@@ -247,7 +247,7 @@ function getreversal($data)
 			{
 				if($previous_operation != null)
 				{
-                    $post_ops_validation = "SELECT max(recevied_qty)as recevied_qty,size_title as size FROM $brandix_bts.bundle_creation_data WHERE docket_number in ($dockets) AND operation_id in (".implode(',',$parallel_operations).") group by size_title";
+                    $post_ops_validation = "SELECT max(recevied_qty+rejected_qty)as recevied_qty,size_title as size FROM $brandix_bts.bundle_creation_data WHERE docket_number in ($dockets) AND operation_id in (".implode(',',$parallel_operations).") group by size_title";
 		        	//echo $post_ops_validation;
 			        $result_pre_ops_validation = $link->query($post_ops_validation);
 			        while($row = $result_pre_ops_validation->fetch_assoc()) 
@@ -357,7 +357,7 @@ function getreversal($data)
 	        {
 	        	if($previous_operation != null)
 				{
-                    $post_ops_validation = "SELECT max(recevied_qty)as recevied_qty,size_title as size FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id in (".implode(',',$parallel_operations).") group by size_title";
+                    $post_ops_validation = "SELECT max(recevied_qty+rejected_qty)as recevied_qty,size_title as size FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id in (".implode(',',$parallel_operations).") group by size_title";
 		        	//echo $post_ops_validation;
 			        $result_pre_ops_validation = $link->query($post_ops_validation);
 			        while($row = $result_pre_ops_validation->fetch_assoc()) 
