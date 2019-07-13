@@ -357,7 +357,7 @@ function getreversal($data)
 	        {
 	        	if($previous_operation != null)
 				{
-                    $post_ops_validation = "SELECT max(recevied_qty)as recevied_qty,size_title as size FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id in ($previous_operation) group by size_title";
+                    $post_ops_validation = "SELECT max(recevied_qty)as recevied_qty,size_title as size FROM $brandix_bts.bundle_creation_data WHERE docket_number=$doc_no AND operation_id in (".implode(',',$parallel_operations).") group by size_title";
 		        	//echo $post_ops_validation;
 			        $result_pre_ops_validation = $link->query($post_ops_validation);
 			        while($row = $result_pre_ops_validation->fetch_assoc()) 
@@ -367,7 +367,7 @@ function getreversal($data)
 
 
 			            $job_details_qry = "SELECT id,`size_title` AS size_code,size_id as old_size,`color` as order_col_des,`bundle_number` AS tid,sum(original_qty) AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(recevied_qty)-$recevied_qty_qty AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id FROM $brandix_bts.bundle_creation_data WHERE docket_number = '$doc_no' AND size_title = '$size' AND operation_id = $op_code GROUP BY size_title order by bundle_number";
-			            echo $job_details_qry;
+			            //echo $job_details_qry;
 			            $result_style_data = $link->query($job_details_qry);
 			            while($row = $result_style_data->fetch_assoc()) 
 			            {
