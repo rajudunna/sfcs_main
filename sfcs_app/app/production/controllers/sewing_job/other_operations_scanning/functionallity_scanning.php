@@ -426,7 +426,8 @@ function updatereversal($post_data)
  	parse_str($post_data,$new_data);
     $b_style= $new_data['style'];
     $b_schedule=$new_data['schedule'];
-	$b_colors=$new_data['colors'];
+	$colors=$new_data['colors'];
+	$b_colors=$new_data['colors'][0];
 	$b_sizes = $new_data['sizes'];
 	$b_size_code = $new_data['old_size'];
 	$b_doc_no = $new_data['doc_no'];
@@ -464,7 +465,7 @@ function updatereversal($post_data)
 		$ops_dependency = $row['ops_dependency'];
 		$ops_order = $row['operation_order'];
 	}
-	$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors' AND ops_sequence = $ops_seq AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
+	$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors' and ops_sequence = '".$ops_seq."'  AND CAST(operation_order AS CHAR) > '$ops_order' ORDER BY operation_order ASC LIMIT 1";
 	$result_post_ops_check = $link->query($post_ops_check);
 	if($result_post_ops_check->num_rows > 0)
 	{
