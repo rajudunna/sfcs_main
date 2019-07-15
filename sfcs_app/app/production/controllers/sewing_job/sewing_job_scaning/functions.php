@@ -235,8 +235,8 @@ function savingdata($saving)
    if($cnt > 0)
    {
 	    //var_dump($saving);
-		$saving_sub_oper_data_qry = "insert into $brandix_bts.tbl_style_ops_master (parent_id,operation_name,operation_order,smo,smv,m3_smv,operation_code,default_operration,priority,style,color,from_m3_check,barcode,emb_supplier,ops_sequence,previous_operation,ops_dependency,component) values ($saving)";
-		//echo $saving_sub_oper_data_qry;
+		$saving_sub_oper_data_qry = "insert into $brandix_bts.tbl_style_ops_master (parent_id,operation_name,operation_order,smo,smv,m3_smv,operation_code,default_operration,priority,style,color,from_m3_check,barcode,emb_supplier,ops_sequence,previous_operation,ops_dependency,component,manual_smv) values ($saving)";
+		// echo $saving_sub_oper_data_qry;
 		$spdr = $link->query($saving_sub_oper_data_qry);
 		//echo $saving_sub_oper_data_qry;
 		$last_id = mysqli_insert_id($link);
@@ -465,16 +465,17 @@ function updating($editable_data)
 		$cnt = 1;
 		$editable_data[4] = null;
 	}
-   //echo $editable_data[4];
+   echo $editable_data[4];
    if($cnt > 0)
 	{
+		var_dump($editable_data[11]);
 		if($editable_data[4] == '')
 		{
-			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation='',ops_dependency='',component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10] where id=$editable_data[0]";
+			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation='',ops_dependency='',component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10],manual_smv = $editable_data[11] where id=$editable_data[0]";
 		}
 		else
 		{
-			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation=$editable_data[4],ops_dependency=$editable_data[5],component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10] where id=$editable_data[0]";
+			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation=$editable_data[4],ops_dependency=$editable_data[5],component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10],manual_smv = $editable_data[11] where id=$editable_data[0]";
 		}
 
 		//echo $qry_updation;

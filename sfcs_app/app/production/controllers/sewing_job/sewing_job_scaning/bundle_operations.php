@@ -20,6 +20,7 @@ function verify_num(t){
 </head>
 <body>
 <?php
+error_reporting (0);
 //code by Srinu
 // include("dbconf.php");
 	// include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
@@ -27,7 +28,7 @@ function verify_num(t){
 	include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
 	$has_permission=haspermission($_GET['r']);
 	// include("../../../../../common/config/config_ajax.php");
-// error_reporting (0);
+
 $qry_get_product_style = "SELECT id,style FROM $brandix_bts.tbl_style_ops_master  where style != '' group by style";
 // echo $qry_get_product_style;
 $result = $link->query($qry_get_product_style);
@@ -95,7 +96,7 @@ $result_oper2 = $link->query($qry_get_suppliers);
         <div class="modal-body">
 				<input type="hidden" name="rowIndex" id="rowIndex">
 				<input type="hidden" name="rowId" id="rowId">
-				<input type = "hidden" name = "first_ops_id" id = "first_ops_id" value = "0">
+				<input type="hidden" name = "first_ops_id" id = "first_ops_id" value = "0">
 				<input type="hidden" name="chaged_id" id="chaged_id">
 				<input type="hidden" name="changed_value" id="changed_value">
 				<input type="hidden" name="actual_value" id="actual_value">
@@ -158,7 +159,7 @@ $result_oper2 = $link->query($qry_get_suppliers);
 					<label>Barcode <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 					<label class="radio-inline"><input type="radio" name="optradio2" value ="Yes" id='optradio2' onclick="autooperseq1()">Yes</label>
 					<label class="radio-inline"><input type="radio" name="optradio2" value = "No" id= 'optradio2' onclick="autooperseq()" checked>No</label><br><br>
-					<label>Operation Group </label>
+					<label>Operation Group</label>
 					<input class="form-control input-sm integer" id="oper_seq2" type="text" onchange='verify_num_seq1(this)' value='0'>
 					<label>Previous Operation</label>
 					<input class="form-control input-sm integer" id="oper_prev2" type="text">
@@ -166,6 +167,10 @@ $result_oper2 = $link->query($qry_get_suppliers);
 					<input class="form-control input-sm integer" id="oper_depe2" type="text">
 					<label>Component</label>
 					<input class="form-control input-sm" id="component2" type="text">
+					<div style="display:none" id="manual_smv_1">
+					<label>Manual SMV</label>
+					<input class="form-control input-sm" id="manual_smv_insert" type="text">
+					</div>
 					<label></label><br/>
 					<button class="btn btn-primary btn-sm" hidden='true' id='add-row1'>Add Manual Operation </button>
 				</div>
@@ -250,6 +255,10 @@ $result_oper2 = $link->query($qry_get_suppliers);
 			<input class="form-control input-sm integer" id="oper_depe1" type="text">
 			<label>Component</label>
 			<input class="form-control input-sm" id="component1" type="text">
+			<div style="display:none" id="manual_smv">
+			<label>Manual SMV</label>
+			<input class="form-control input-sm" type="text" id="manual_smv_update">
+			</div>
 			<br></br></br>
 			<button class="btn btn-primary btn-sm" id="edit">Update</button>
 		</div>
@@ -342,12 +351,12 @@ $(document).ready(function(){
 					{
 						$("#dynamic_table1").html(" ");
 						$('#loading-image').hide();
-						console.log(response);
+						console.log("madhumadhu"+response);
 						if(response != 100)
 						{
 							var data = jQuery.parseJSON(response);
-							console.log(data.length);
-							var markup = "<table class = 'table table-striped' id='dynamic_table'><thead><tr><th>Operation Code</th><th class='none'>Style</th><th class='none'>Color</th><th>Operation Name</th><th>Operation Group</th><th>Report To ERP</th><th>M3_SMV</th><th>Barcode</th><th>Embellishment Supplier</th><th>Previous Operations</th><th>Next Operations</th><th>Component</th><th></th><th style='text-align:center;'>Controls</th><th><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,0);'><i class='fa fa-plus' aria-hidden='true'></i></button></th>";
+							console.log("madhumadhu22"+response);
+							var markup = "<table class = 'table table-striped' id='dynamic_table'><thead><tr><th>Operation Code</th><th class='none'>Style</th><th class='none'>Color</th><th>Operation Name</th><th>Operation Group</th><th>Report To ERP</th><th>M3_SMV</th><th>Manual SMV</th><th>Barcode</th><th>Embellishment Supplier</th><th>Previous Operations</th><th>Next Operations</th><th>Component</th><th></th><th style='text-align:center;'>Controls</th><th><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,0);'><i class='fa fa-plus' aria-hidden='true'></i></button></th>";
 							<?php
 								if(in_array($update,$has_permission))
 								{	?>
@@ -393,15 +402,17 @@ $(document).ready(function(){
 									var editing_class = '';
 								}
 								var editing_class = '';
-								var markup1 = "<tr><td class='none' id="+data[i].main_id+"operation_id>"+data[i]['operation_id']+"</td><td id="+data[i].main_id+"ops_code>"+data[i]['operation_code']+"</td><td class='none'>"+style_name+"</td><td class='none'>"+data[i]['color']+"</td><td class='none' id="+data[i].main_id+"ops_order>"+data[i]['operation_order']+"</td><td id="+data[i].main_id+"operation_name>"+data[i]['ops_name']+"</td><td id="+data[i].main_id+"seq>"+data[i].ops_sequence+"</td><td  id="+data[i].main_id+"rep_to_erp>"+data[i]['default_operration']+"</td></td><td id="+data[i].main_id+"smv>"+data[i]['smv']+"</td><td id="+data[i].main_id+"barcode>"+data[i].barcode+"</td><td id="+data[i].main_id+"supplier_id hidden='true'>"+data[i].emb_supplier+"</td><td id="+data[i].main_id+"supplier>"+data[i].supplier_name+"</td><td id="+data[i].main_id+"prev>"+data[i].previous_operation+"</td><td id="+data[i].main_id+"dep>"+data[i].ops_dependency+"</td><td id="+data[i].main_id+"comp>"+data[i].component+"</td><td>";
+								var markup1 = "<tr><td class='none' id="+data[i].main_id+"operation_id>"+data[i]['operation_id']+"</td><td id="+data[i].main_id+"ops_code>"+data[i]['operation_code']+"</td><td class='none'>"+style_name+"</td><td class='none'>"+data[i]['color']+"</td><td class='none' id="+data[i].main_id+"ops_order>"+data[i]['operation_order']+"</td><td id="+data[i].main_id+"operation_name>"+data[i]['ops_name']+"</td><td id="+data[i].main_id+"seq>"+data[i].ops_sequence+"</td><td  id="+data[i].main_id+"rep_to_erp>"+data[i]['default_operration']+"</td></td><td id="+data[i].main_id+"smv>"+data[i]['smv']+"</td><td id="+data[i].main_id+"manual_smv>"+data[i]['manual_smv']+"</td><td id="+data[i].main_id+"barcode>"+data[i].barcode+"</td><td id="+data[i].main_id+"supplier_id hidden='true'>"+data[i].emb_supplier+"</td><td id="+data[i].main_id+"supplier>"+data[i].supplier_name+"</td><td id="+data[i].main_id+"prev>"+data[i].previous_operation+"</td><td id="+data[i].main_id+"dep>"+data[i].ops_dependency+"</td><td id="+data[i].main_id+"comp>"+data[i].component+"</td><td>";
+
+									
 								<?php
 									if(in_array($edit,$has_permission))
 									{	?>
-										markup1+="<button type='button' class='btn btn-info btn-sm particular "+editing_class+"' id='particularedit'  onclick='myfunctionedit(this,"+data[i].main_id+")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button>";
+										markup1+="<button type='button' class='btn btn-info btn-sm particular "+editing_class+"' id='particularedit'  onclick='myfunctionedit(this,"+data[i].main_id+","+data[i].m3_smv+")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button>";
 										<?php	
-									} 
+									}2 
 								?>
-								var adding_html	= "<td><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,"+data[i].main_id+");'><i class='fa fa-plus' aria-hidden='true'></i></button></td>";
+								var adding_html	= "<td><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,"+data[i].main_id+","+data[i].m3_smv+");'><i class='fa fa-plus' aria-hidden='true'></i></button></td>";
 								var deleting_html = "<td><button type='button' id='deletable' class='btn btn-danger btn-sm'  onclick='default_oper("+data[i].main_id+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></button></td>";
 								markup1+=deleting_html+adding_html+"</tr>";
 								s_no++;
@@ -420,7 +431,7 @@ $(document).ready(function(){
 					}	
 				
 			});
-		var params_smv =[color_name,style_name];
+			var params_smv =[color_name,style_name];
 			$.ajax
 			({
 					type: "POST",
@@ -434,7 +445,7 @@ $(document).ready(function(){
 						count++;
 						});
 						console.log(count);
-						//alert(count);
+						// alert(count);
 						if(count == 1)
 						{
 							console.log("count1");
@@ -552,7 +563,7 @@ $(document).ready(function(){
 			var style = $('#style option:selected').text();
 			var color = $('#color option:selected').text();
 			var m3_smv =$('#m3_smv1').val();
-			console.log(m3_smv);
+			var manual_smv_ins =$('#manual_smv_insert').val();
 			//var oper_def1 = "'"+oper_def+"'";
 			var color1 = "'"+color+"'";
 			var style1 = "'"+pro_style_name+"'";
@@ -577,10 +588,12 @@ $(document).ready(function(){
 			{
 				oper_prev = 0;
 			}
+			
 			//alert(oper_dep);
 			var component = $('#component2').val();
 			if(component == '')
 			{
+				
 				component = '';
 			}
 			var component1 =  "'"+component+"'";
@@ -615,9 +628,9 @@ $(document).ready(function(){
 				var actual_ops_order = pre_ops_order;
 			}
 			// console.log("actual_ops_order"+actual_ops_order);
-
-			var saving_data = [style_id,oper_name_id,actual_ops_order,0,m3_smv,m3_smv,s,oper_def1,s,style1,color1,2,barcode1,supplier_id,oper_seq,oper_prev,oper_dep,component1];
-			console.log(saving_data);
+ 
+			var saving_data = [style_id,oper_name_id,actual_ops_order,0,m3_smv,m3_smv,s,oper_def1,s,style1,color1,2,barcode1,supplier_id,oper_seq,oper_prev,oper_dep,component1,manual_smv_ins];
+			console.log("haiiii"+saving_data);
 			  $.ajax
 				({
 						type: "POST",
@@ -625,7 +638,7 @@ $(document).ready(function(){
 						data: {saving: $('#saving').val()},
 						success: function(response)
 						{
-							console.log(response);
+							console.log("testtt"+response);
 							//response = 'None';
 							if(response == 'None')
 							{
@@ -657,7 +670,7 @@ $(document).ready(function(){
 								{
 									supplier = '';
 								}
-								var markup = "<tr><td class='none' id="+response+"operation_id>"+oper_name_id+"</td><td class='none' id="+response+"ops_order>"+actual_ops_order+"</td><td id="+response+"ops_code>"+s+"</td><td class='none'>"+pro_style_name+"</td><td class='none'>"+color+"</td><td id="+response+"operation_name>"+oper_name+"</td><td id="+response+"seq>"+oper_seq+"</td><td id="+response+"rep_to_erp>"+oper_def+"</td><td id="+response+"smv>"+m3_smv+"</td><td id="+response+"barcode>"+barcode+"</td><td id="+response+"supplier_id hidden='true'>"+supplier_id+"</td><td id="+response+"supplier>"+supplier+"</td><td id="+response+"prev>"+oper_prev+"</td><td id="+response+"dep>"+oper_dep+"</td><td id="+response+"comp>"+component+"</td><td><button type='button' class='btn btn-info btn-sm particular' id='particularedit'  onclick='myfunctionedit(this,"+response+")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></td><td><button type='button' class='btn btn-danger btn-sm'  onclick='default_oper("+response+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></td></button><td><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,"+response+");'><i class='fa fa-plus' aria-hidden='true'></i></button></td></tr>";
+								var markup = "<tr><td class='none' id="+response+"operation_id>"+oper_name_id+"</td><td class='none' id="+response+"ops_order>"+actual_ops_order+"</td><td id="+response+"ops_code>"+s+"</td><td class='none'>"+pro_style_name+"</td><td class='none'>"+color+"</td><td id="+response+"operation_name>"+oper_name+"</td><td id="+response+"seq>"+oper_seq+"</td><td id="+response+"rep_to_erp>"+oper_def+"</td><td id="+response+"smv>"+m3_smv+"</td><td id="+response+"manual_smv_ins>"+manual_smv_ins+"</td><td id="+response+"barcode>"+barcode+"</td><td id="+response+"supplier_id hidden='true'>"+supplier_id+"</td><td id="+response+"supplier>"+supplier+"</td><td id="+response+"prev>"+oper_prev+"</td><td id="+response+"dep>"+oper_dep+"</td><td id="+response+"comp>"+component+"</td><td><button type='button' class='btn btn-info btn-sm particular' id='particularedit'  onclick='myfunctionedit(this,"+response+")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></td><td><button type='button' class='btn btn-danger btn-sm'  onclick='default_oper("+response+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></td></button><td><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,"+response+");'><i class='fa fa-plus' aria-hidden='true'></i></button></td></tr>";
 								//$('#dynamic_table').append(markup);	
 								var row = $("#rowIndex").val();
 								//$('#dynamic_table > tbody > tr').eq(row-1).after(markup);
@@ -697,6 +710,7 @@ $(document).ready(function(){
 								$("#oper_name").val(0);
 								$("#supplier2").val(0);
 								$("#m3_smv").val(0);
+
 								document.getElementById('component1').readOnly=false;
 								document.getElementById('component2').readOnly=false;
 								//alert("Operation Successfully Inserted");
@@ -815,7 +829,9 @@ $("#edit").click(function()
 	var oper_prev = $('#oper_prev1').val();
 	var oper_dep = $('#oper_depe1').val();
 	var component = $('#component1').val();
+	var manual_smv_up = $('#manual_smv_update').val();
 	var ops_code1 = $('#ops_code1').val();
+	var manual_smv = $('#manual_smv_update').val();
 	var style = $('#pro_style option:selected').text();
 	var color = $('#color option:selected').text();
 	var component1 = "'"+component+"'";
@@ -845,7 +861,7 @@ $("#edit").click(function()
 	
 	if(flag == 1)
 	{
-		editable_data = [id,barcode_text,supplier_id,oper_seq,oper_prev,oper_dep,component1,style,color,ops_code1,report_to_erp_text];
+		editable_data = [id,barcode_text,supplier_id,oper_seq,oper_prev,oper_dep,component1,style,color,ops_code1,report_to_erp_text,manual_smv_up];
 		console.log(editable_data);
 	$.ajax
 		({
@@ -874,6 +890,7 @@ $("#edit").click(function()
 						$("#"+id+"dep").html(oper_dep);
 						$("#"+id+"comp").html(component);
 						$("#"+id+"ops_code").html(ops_code1);
+						$("#"+id+"manual_smv").html(manual_smv_up);
 						$("#"+id+"rep_to_erp").html(report_to_erp);
 					}
 					else if(response == 0)
@@ -1168,8 +1185,13 @@ $('#m3_smv1').change(function()
 				}
 		});
 });
-function value_edition(btn,id_of_main)
+function value_edition(btn,id_of_main,m3_smv)
 {
+	if(m3_smv>0){
+		document.getElementById("manual_smv_1").style.display="none";
+	}else{
+		document.getElementById("manual_smv_1").style.display="block";
+	}
 	console.log("working");
 	var style = $('#pro_style option:selected').text();
 	var color = $('#color option:selected').text();
@@ -1279,10 +1301,19 @@ function initialize(count)
 {
 	document.getElementById('new_rowId').value = count;
 }
-function myfunctionedit(val,id)
+function myfunctionedit(val,id,manual_smv)
 {
+	if(manual_smv>0){
+		document.getElementById("manual_smv").style.display="none";
+		
+		
+	}else{
+		document.getElementById("manual_smv").style.display="block";
+	
+	}
 	dep = id+"ops_code";
 	var dependency_ops = document.getElementById(dep).innerText;
+	// alert(dep);
 	var style = $('#pro_style option:selected').text();
 	var color = $('#color option:selected').text();
 	var dependency_ops_ary = [dependency_ops,style,color];
@@ -1293,6 +1324,7 @@ function myfunctionedit(val,id)
 			data: {},
 			success: function(response)
 			{
+				console.log("update"+response);	
 				if(response == 2)
 				{
 					sweetAlert("You can't Edit this operation because this operation Group already sent for scanning.","","warning");
@@ -1310,6 +1342,7 @@ function myfunctionedit(val,id)
 					seq = id+"seq";
 					prev = id+"prev";
 					dep = id+"dep";
+					manu_smv = id+"manual_smv";
 					comp=id+"comp";
 					sup_id = id+"supplier_id";
 					oper_id = id+"operation_name";
@@ -1322,6 +1355,8 @@ function myfunctionedit(val,id)
 					seqence = document.getElementById(seq).innerText;
 					prev = document.getElementById(prev).innerText;
 					dep = document.getElementById(dep).innerText;
+					manu_smv = document.getElementById(manu_smv).innerText;
+					// alert("check"+manu_smv);
 					comp = document.getElementById(comp).innerText;
 					sup_id = document.getElementById(sup_id).innerText;
 					oper_na = document.getElementById(oper_id).innerText;
@@ -1333,6 +1368,7 @@ function myfunctionedit(val,id)
 					document.getElementById('operation_name_comp').value = comp;
 					document.getElementById('ops_code1').value = oper_code;
 					document.getElementById('pre_ops_code').value = oper_code;
+					document.getElementById('manual_smv_update').value = manu_smv;
 					if(seqence != '')
 					{
 						document.getElementById('component1').readOnly=true;
@@ -1448,4 +1484,4 @@ function verify_num_seq1()
 {
 	display:none;
 }
-</style>
+</style>  
