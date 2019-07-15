@@ -43,7 +43,7 @@ function gettabledata($params)
 	$params = explode(",",$params);
 	include("../../../../../common/config/config_ajax.php");
 
-	$qry_get_table_data_oper_data = "select *,tor.id as operation_id,tor.operation_name as ops_name,tos.id as main_id,supplier_name,tos.operation_name as operation_id,tos.operation_code as operation_code from $brandix_bts.tbl_style_ops_master tos left join $brandix_bts.tbl_orders_ops_ref tor on tor.id=tos.operation_name left join $brandix_bts.tbl_suppliers_master tsm on tsm.id = tos.emb_supplier where style = '$params[1]' and color = '$params[0]' order by tos.operation_order";
+	$qry_get_table_data_oper_data = "select *,tor.id as operation_id,tor.operation_name as ops_name,tos.id as main_id,supplier_name,tos.operation_name as operation_id,tos.operation_code as operation_code from $brandix_bts.tbl_style_ops_master tos left join $brandix_bts.tbl_orders_ops_ref tor on tor.id=tos.operation_name left join $brandix_bts.tbl_suppliers_master tsm on tsm.id = tos.emb_supplier where style = '$params[1]' and color = '$params[0]' order by tos.operation_order*1";
 	//echo $qry_get_table_data_oper_data;
 	$result_style_data = $link->query($qry_get_table_data_oper_data);
 	if ($result_style_data->num_rows > 0) {
@@ -465,11 +465,11 @@ function updating($editable_data)
 		$cnt = 1;
 		$editable_data[4] = null;
 	}
-   echo $editable_data[4];
+//    echo $editable_data[4];
    if($cnt > 0)
 	{
-		var_dump($editable_data[11]);
-		if($editable_data[4] == '')
+		// var_dump($editable_data[11]);
+		if($editable_data[4] == '') 
 		{
 			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation='',ops_dependency='',component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10],manual_smv = $editable_data[11] where id=$editable_data[0]";
 		}
@@ -478,7 +478,7 @@ function updating($editable_data)
 			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation=$editable_data[4],ops_dependency=$editable_data[5],component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10],manual_smv = $editable_data[11] where id=$editable_data[0]";
 		}
 
-		//echo $qry_updation;
+		// echo $qry_updation;
 		$condi = $link->query($qry_updation);
 		if(!$condi)
 		{
