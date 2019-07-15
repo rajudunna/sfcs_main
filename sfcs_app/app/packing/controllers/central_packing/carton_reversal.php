@@ -44,6 +44,18 @@
 							$get_all_tid = "SELECT group_concat(tid) as tid,min(status) as status, style, color FROM bai_pro3.`pac_stat_log` WHERE pac_stat_id = '".$carton_id."'";
 							$tid_result = mysqli_query($link,$get_all_tid);
 							while($row12=mysqli_fetch_array($tid_result))
+						
+							$sql211="DELETE FROM $bai_pro3.`carton_packing_details` where carton_id='".$carton_id."' and operation_id='".$b_op_id."'";
+							mysqli_query($link, $sql211) or exit("Insert while updating pac_stat");
+
+							$update_pac_stat_log = "UPDATE $bai_pro3.pac_stat_log SET status=NULL,scan_user='',scan_date='' WHERE pac_stat_id = '".$carton_id."'";
+							mysqli_query($link, $update_pac_stat_log) or exit("Error while updating pac_stat_log");
+							$imploded_b_tid = implode(",",$b_tid);
+							updateM3CartonScanReversal($b_op_id,$imploded_b_tid);
+							
+							$get_carton_type=mysqli_fetch_array($carton_details);
+							$carton_type = $get_carton_type['carton_mode'];
+							if ($get_carton_type['carton_mode'] == 'P')
 							{
 								$b_tid=explode(",",$row12['tid']);
 								$status=$row12['status'];

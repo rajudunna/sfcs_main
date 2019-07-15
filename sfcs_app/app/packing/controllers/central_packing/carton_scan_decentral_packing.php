@@ -7,9 +7,10 @@
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 		$emp_id = $_GET['emp_id'];
 		$team_id = $_GET['team_id'];
-
-		$operation_id = $_GET['operation_id'];
 		$shift = $_GET['shift'];
+		$pack_method = $_GET['pack_method'];
+		$pack_team = $_GET['pack_team'];
+		$operation_id = $_GET['operation_id'];
 	?>
 	<link rel="stylesheet" type="text/css" href="../../common/css/bootstrap.css">
 	<script src="../../common/js/jquery.min.js"></script>
@@ -55,6 +56,8 @@
 				<input type="hidden" name="team_id" id="team_id" value="<?php echo $team_id; ?>">
 				<input type="hidden" name="operation_id" id="operation_id" value="<?php echo $operation_id; ?>">
 				<input type="hidden" name="shift" id="shift" value="<?php echo $shift; ?>">
+				<input type="hidden" name="pack_method" id="pack_method" value="<?php echo $pack_method; ?>">
+				<input type="hidden" name="pack_team" id="pack_team" value="<?php echo $pack_team; ?>">
 				<div class="form-inline col-sm-5">
 					<label><font size="5">Carton ID: </font></label>
 					<input type="text" name="carton_id" class="form-control" id="carton_id" onkeypress="return AcceptOnlyNumbers(event);" placeholder="Enter Carton ID here">
@@ -147,6 +150,8 @@
 			var team_id = $("#team_id").val();
 			var operation_id = $("#operation_id").val();
 			var shift = $("#shift").val();
+			var pack_method = $("#pack_method").val();
+			var pack_team = $("#pack_team").val();
 			if (carton_id != '')
 			{
 				$("#error_msg").hide();
@@ -157,7 +162,7 @@
 					url: function_text,
 					dataType: "json", 
 					type: "GET",
-					data: {carton_id:carton_id,emp_id:emp_id,team_id:team_id,operation_id:operation_id,shift:shift},    
+					data: {carton_id:carton_id,emp_id:emp_id,team_id:team_id,pack_method:pack_method,pack_team:pack_team,operation_id:operation_id,shift:shift},    
 					cache: false,
 					success: function (response) 
 					{
