@@ -10,7 +10,7 @@
 	}
 	$pack_method='';
 	$packing_team='';
-	$select_pack_method='No';				
+				
 ?>
 <script language="javascript" type="text/javascript">
 	
@@ -46,7 +46,7 @@
 				$sql_schedule="update bai_pro3.tbl_fg_crt_handover_team_list set selected_user=USER(), lastup='".date("Y-m-d H:i:s")."' where team_id=$team_id and emp_id='$emp_id'";
 				// echo $sql_schedule;
 				mysqli_query($link, $sql_schedule) or exit("Sql Error_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if($select_pack_method=='Yes')
+				if($select_pack_method=='yes')
 				{					
 					//echo "<table class='table table-bordered'><tr>";
 					echo "<form name=\"pac_method\" action=\"#\" method=\"post\" class='form-inline'>
@@ -60,14 +60,7 @@
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row=mysqli_fetch_array($sql_result))
 					{
-						if(str_replace(" ","",$sql_row['packing_method_code'])==str_replace(" ","",$pack_method))
-						{
-							echo "<option value=\"".$sql_row['packing_method_code']."\" selected>".$sql_row['packing_method_code']." - ".$sql_row['packing_description']."</option>";
-						}
-						else
-						{
-							echo "<option value=\"".$sql_row['packing_method_code']."\">".$sql_row['packing_method_code']." - ".$sql_row['packing_description']."</option>";
-						}
+						echo "<option value=\"".$sql_row['packing_method_code']."$".$sql_row['packing_description']."$".$sql_row['smv']."\" selected>".$sql_row['packing_method_code']." - ".$sql_row['packing_description']."</option>";						
 					}
 					echo "</select></td><td><label>Select Packing Team:</label></td><td>";
 					// Schedule
@@ -76,14 +69,7 @@
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row=mysqli_fetch_array($sql_result))
 					{
-						if(str_replace(" ","",$sql_row['packing_team'])==str_replace(" ","",$pack_team))
-						{
-							echo "<option value=\"".$sql_row['packing_team']."\" selected>".$sql_row['packing_team']."</option>";
-						}
-						else
-						{
-							echo "<option value=\"".$sql_row['packing_team']."\">".$sql_row['packing_team']."</option>";
-						}
+						echo "<option value=\"".$sql_row['packing_team']."\">".$sql_row['packing_team']."</option>";						
 					}
 					echo "</select></td><td><input type='submit' name='submit' id='submit' class='btn btn-success' value='Click to Move' onclick= 'go_to_scan();'></td></tr></table>";
 					?>
@@ -97,7 +83,7 @@
 				{	
 					$url = getFullURL($_GET['r'],'carton_scan_decentral_packing.php','R');
 					echo "<script language=\"javascript\" type=\"text/javascript\">
-							window.open('$url?emp_id=$emp_id&team_id=$team_id&pack_method=0&pack_team=0','','width=1000,height=500');
+							window.open('$url?emp_id=$emp_id&team_id=$team_id&pack_method=0$0$0&pack_team=0&operation_id=$operation_id','','width=1000,height=500');
 					</script>";
 				}
 			}
