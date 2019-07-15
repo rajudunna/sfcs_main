@@ -1569,12 +1569,14 @@ else
 $used_fabric =0;
 foreach($cats_ids as $key=>$value)
 {
+	$get_cat_ref_query="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$value group by cat_ref order by tid";
+	$cat_ref_result=mysqli_query($link, $get_cat_ref_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));	
+	if(mysqli_num_rows($cat_ref_result)>0 )
+	{		
 	$tot_size=array();
 	$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$value order by tid";
-	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	//$sql_num_check=mysqli_num_rows($sql_result);
     while($sql_row=mysqli_fetch_array($sql_result))
     { 
 		$mk_status=$sql_row['mk_status'];
@@ -1671,10 +1673,8 @@ foreach($cats_ids as $key=>$value)
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{		
 			$used_fabric+=$sql_row2['mklength'] * $sql_row['plies'];	
-		}	
-
-	}
-	
+		}
+	}	
 	echo "<tr><td colspan=3> Total Planned Quantity</center><td>";
 	for($s=0;$s<sizeof($s_tit);$s++)
 	{
@@ -1709,7 +1709,7 @@ foreach($cats_ids as $key=>$value)
 	unset($input_qty);		
 	echo "<td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td></tr>";
 }
-
+}
 echo "</table></div>
 </div></div></div></div>";
 

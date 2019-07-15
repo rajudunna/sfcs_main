@@ -274,7 +274,7 @@ document.getElementById('process_message').style.visibility="hidden";
 
 <?php
 
-echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"red\">Please wait while preparing data...</font></h1></center></div>";
+// echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"red\">Please wait while preparing data...</font></h1></center></div>";
 	
 	ob_end_flush();
 	flush();
@@ -301,7 +301,7 @@ echo "</tr>";
 // $sql1="SELECT bodc.order_style_no,bodc.order_del_no,bodc.order_col_des,bodc.color_code,psl.acutno,bodc.order_tid,csl.clubbing,psl.remarks FROM bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc,bai_pro3.cat_stat_log AS csl WHERE psl.order_tid= bodc.order_tid AND csl.order_tid = bodc.order_tid AND 
 // csl.order_tid=psl.order_tid AND csl.tid= psl.cat_ref AND psl.doc_no = $doc_no";
 
-$sql1= "SELECT * from binding_consumption where id=$doc_num";
+$sql1= "SELECT * from $bai_pro3.binding_consumption where id=$doc_num";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result1);
 $sizes_table ='';
@@ -311,7 +311,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$style=$sql_row1['style'];
 	$schedule=$sql_row1['schedule'];
 	$color=$sql_row1['color'];
-	$binding_consumption_qty=$sql_row1['tot_bindreq_qty'];
+	$binding_consumption_qty=$sql_row1['tot_req_qty'];
 	echo "<tr>";
 	echo "<td>".$sql_row1['style']."</td>";
 	echo "<td>".$sql_row1['schedule']."</td>";
@@ -417,7 +417,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		// $clubbing=$sql_row1['clubbing'];
 		
 		$qry_lotnos="SELECT p.order_tid,p.doc_no,c.compo_no,s.style_no,s.lot_no,s.batch_no FROM $bai_pro3.plandoc_stat_log p LEFT JOIN bai_pro3.cat_stat_log c ON 
-		c.order_tid=p.order_tid LEFT JOIN bai_rm_pj1.sticker_report s ON s.item=c.compo_no WHERE style_no='$style' and item='$componentno_lot' and s.product_group='Fabric'";
+		c.order_tid=p.order_tid LEFT JOIN bai_rm_pj1.sticker_report s ON s.item=c.compo_no WHERE style_no='$style' and item='$componentno_lot' and s.product_group='Fabric' group by s.lot_no";
 		$sql_lotresult=mysqli_query($link, $qry_lotnos) or exit("lot numbers Sql Error ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_lotrow=mysqli_fetch_array($sql_lotresult))
 		{

@@ -262,7 +262,7 @@ if(isset($_POST['submit']))
 	<b>Color : </b> <h4><span class='label label-success'>".$color."</span></h4>";
 	echo "</div>";
 	
-	$sql="select order_tid from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des='$color'";
+	$sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des='$color'";
 	// echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
@@ -271,7 +271,7 @@ if(isset($_POST['submit']))
 		$order_tid=$sql_row['order_tid'];
 	}
 	
-	$sql33="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
+	$sql33="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
 	mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row33=mysqli_fetch_array($sql_result33))
@@ -279,7 +279,7 @@ if(isset($_POST['submit']))
 		$color_code=$sql_row33['color_code']; //Color Code
 	}
 	
-	$bindingqty="select binding_consumption from $bai_pro3.cat_stat_log where order_tid='$order_tid' and seperate_docket='Yes'";
+	$bindingqty="select binding_consumption from $bai_pro3.cat_stat_log where order_tid='$order_tid' and seperate_docket='Yes' and category='$category'";
 	// mysqli_query($link, $bindingqty) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result33=mysqli_query($link, $bindingqty) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row33=mysqli_fetch_array($sql_result33))
@@ -318,6 +318,28 @@ if(isset($_POST['submit']))
 		$sql_result=mysqli_query($link, $gettingexistdata) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_confirm=mysqli_num_rows($sql_result);
 		
+		$gettingparentid="select parent_id from $bai_pro3.binding_consumption_items where compo_no='$compono' and cutno='$cutno' and doc_no='$docno'";
+		$sql_result_parent=mysqli_query($link, $gettingparentid) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($sql_result_parent))
+		{
+			$parentid=$sql_row['parent_id'];
+		}
+		
+		$printqry="select status from $bai_pro3.binding_consumption where id='$parentid'";
+		$sql_result_print=mysqli_query($link, $printqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($sql_result_print))
+		{
+			$printstatus=$sql_row['status'];
+		}
+		
+		if($printstatus=='Open')
+		{
+			$status='Already Requested';
+		}
+		else
+		{
+			$status=$printstatus;
+		}
 		
 		$finalqtyexcludingbind = $orderqty - $bindreqqty;
 		$finalbindingqty=$finalbindingqty+$bindreqqty;
@@ -335,7 +357,7 @@ if(isset($_POST['submit']))
 		}
 		else
 		{
-			echo"<td>Already Requested</td>";
+			echo"<td>".$status."</td>";
 		}
 		echo "</tr>";
 		
@@ -425,6 +447,8 @@ if(isset($_POST['bindingdata']))
 	}
 	
 }
+
+
 ?>  
 
 
