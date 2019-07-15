@@ -257,7 +257,7 @@ $result_oper2 = $link->query($qry_get_suppliers);
 			<input class="form-control input-sm" id="component1" type="text">
 			<div style="display:none" id="manual_smv">
 			<label>Manual SMV</label>
-			<input class="form-control input-sm" type="text" id="manual_smv_update" >
+			<input class="form-control input-sm float" type="text" id="manual_smv_update" >
 			</div>
 			<br></br></br>
 			<button class="btn btn-primary btn-sm" id="edit">Update</button>
