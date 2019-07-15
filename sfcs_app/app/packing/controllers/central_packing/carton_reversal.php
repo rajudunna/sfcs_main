@@ -51,9 +51,8 @@
 						else
 						{
 						
-							$sql21="update $bai_pro3.pac_stat set pack_code='0',pack_desc='0',pack_smv='0',pack_team='0' where id = '".$carton_id."'";
-							// echo $sql;
-							mysqli_query($link, $sql21) or exit("Error while updating pac_stat");
+							$sql211="DELETE FROM $bai_pro3.`carton_packing_details` where carton_id='".$carton_id."' and operation_id='".$b_op_id."'";
+							mysqli_query($link, $sql211) or exit("Insert while updating pac_stat");
 
 							$update_pac_stat_log = "UPDATE $bai_pro3.pac_stat_log SET status=NULL,scan_user='',scan_date='' WHERE pac_stat_id = '".$carton_id."'";
 							mysqli_query($link, $update_pac_stat_log) or exit("Error while updating pac_stat_log");

@@ -76,9 +76,9 @@
 					{
 						$carton_type = 'Full';
 					}
-					$sql21="update $bai_pro3.pac_stat set pack_code='".$data_val[0]."',pack_desc='".$data_val[1]."',pack_smv='".$data_val[2]."',pack_team='".$pack_team."' where id = '".$carton_id."'";
-					// echo $sql;
-					mysqli_query($link, $sql21) or exit("Error while updating pac_stat");
+					
+					$sql211="INSERT INTO $bai_pro3.`carton_packing_details` (`carton_id`, `operation_id`, `pack_code`, `pack_desc`, `pack_smv`, `pack_team`,scan_time) VALUES ('".$carton_id."', '".$b_op_id."', '".$data_val[0]."', '".$data_val[1]."', '".$data_val[2]."', '".$pack_team."','".date('Y-m-d H:i:s')."')";
+					mysqli_query($link, $sql211) or exit("Insert while updating pac_stat");
 
 					$get_details_to_insert_bcd_temp = "SELECT * FROM $bai_pro3.`pac_stat_log` WHERE pac_stat_id = ".$carton_id;
 					// echo $get_details_to_insert_bcd_temp.'<br><br>';
