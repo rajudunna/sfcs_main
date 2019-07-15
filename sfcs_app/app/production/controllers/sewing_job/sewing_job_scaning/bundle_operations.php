@@ -257,7 +257,7 @@ $result_oper2 = $link->query($qry_get_suppliers);
 			<input class="form-control input-sm" id="component1" type="text">
 			<div style="display:none" id="manual_smv">
 			<label>Manual SMV</label>
-			<input class="form-control input-sm" type="text" id="manual_smv_update">
+			<input class="form-control input-sm float" type="text" id="manual_smv_update" >
 			</div>
 			<br></br></br>
 			<button class="btn btn-primary btn-sm" id="edit">Update</button>
@@ -392,7 +392,10 @@ $(document).ready(function(){
 								{
 									data[i].ops_dependency = '';
 								}
-
+								if(data[i].manual_smv == null)
+								{
+									data[i].manual_smv = '0.0000';
+								}
 								if(data[i]['operation_code'] == 10 || data[i]['operation_code'] == 15|| data[i]['operation_code'] == 200)
 								{
 									var editing_class = 'none';
@@ -580,6 +583,10 @@ $(document).ready(function(){
 			{
 				m3_smv = 0;
 			}
+			if(manual_smv_ins == '')
+			{
+				manual_smv_ins = 0;
+			}
 			if(oper_dep == '')
 			{
 				oper_dep = 0;
@@ -630,7 +637,7 @@ $(document).ready(function(){
 			// console.log("actual_ops_order"+actual_ops_order);
  
 			var saving_data = [style_id,oper_name_id,actual_ops_order,0,m3_smv,m3_smv,s,oper_def1,s,style1,color1,2,barcode1,supplier_id,oper_seq,oper_prev,oper_dep,component1,manual_smv_ins];
-			console.log("haiiii"+saving_data);
+			console.log(saving_data);
 			  $.ajax
 				({
 						type: "POST",
@@ -638,8 +645,7 @@ $(document).ready(function(){
 						data: {saving: $('#saving').val()},
 						success: function(response)
 						{
-							console.log("testtt"+response);
-							//response = 'None';
+
 							if(response == 'None')
 							{
 								sweetAlert("Please eneter valid Next Operation.","","warning");
