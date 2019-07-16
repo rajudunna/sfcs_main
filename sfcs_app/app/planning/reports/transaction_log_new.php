@@ -216,6 +216,13 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 					{
 						$module=$sql_row['bac_no'];
 						$section=$sql_row['bac_sec'];
+						$sql44="select * from $bai_pro3.sections_master where sec_name = ".$section;
+						//echo $sql1."<br>";
+						$sql_result44=mysqli_query($link, $sql44) or exit("Sql Errorrr4--".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row44=mysqli_fetch_array($sql_result44))
+						{
+							$section_name=$sql_row44['section_display_name'];
+						}
 						$date=$sql_row['bac_date'];
 						$shift=$sql_row['bac_shift'];
 						$qty=$sql_row['bac_Qty'];
@@ -294,7 +301,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 								$finalized_title_size_value = $sql_result_fetch["size"];
 							}
 							$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
-							echo "<tr bgcolor=\"$bgcolor\"><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$module</td><td>$section</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>$display_prefix1</td><td>$finalized_title_size_value</td><td>$smv</td><td>".$sizes[$sizes_val[$k]]."</td><td>".$sah[$sizes_val[$k]]."</td></tr>";
+							echo "<tr bgcolor=\"$bgcolor\"><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$module</td><td>$section_name</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>$display_prefix1</td><td>$finalized_title_size_value</td><td>$smv</td><td>".$sizes[$sizes_val[$k]]."</td><td>".$sah[$sizes_val[$k]]."</td></tr>";
 							$total_qty=$total_qty+$sizes[$sizes_val[$k]];							
 							$total_qty_sah=$total_qty_sah+$sah[$sizes_val[$k]];							
 						}				
