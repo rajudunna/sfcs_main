@@ -166,7 +166,7 @@ error_reporting (0);
 
 // var_dump($params1);
 	$qry_get_miniorder_no = "SELECT min_order_ref FROM $brandix_bts.tbl_style_ops_master WHERE scan_status=1 AND color='$params1[0]' AND style='$params1[1]' ";
-	echo $qry_get_miniorder_no;
+	// echo $qry_get_miniorder_no;
 	$miniorder = $link->query($qry_get_miniorder_no);
 	//$row = $miniorder->fetch_assoc();
 	while($row = $miniorder->fetch_assoc()) 
@@ -234,7 +234,7 @@ function savingdata($saving)
    //echo $cnt;
    if($cnt > 0)
    {
-	    //var_dump($saving);
+	    // var_dump("sssssiii".$saving);
 		$saving_sub_oper_data_qry = "insert into $brandix_bts.tbl_style_ops_master (parent_id,operation_name,operation_order,smo,smv,m3_smv,operation_code,default_operration,priority,style,color,from_m3_check,barcode,emb_supplier,ops_sequence,previous_operation,ops_dependency,component,manual_smv) values ($saving)";
 		// echo $saving_sub_oper_data_qry;
 		$spdr = $link->query($saving_sub_oper_data_qry);
@@ -256,7 +256,7 @@ function savingdata($saving)
 				// $temp = "'%".$sub_ops_code_compare."%'";
 				// echo "Hi".$temp."</br>";
 				//echo $sub_ops_code_compare;
-				$saving_sub_oper_data_qry = "insert into $brandix_bts.tbl_style_ops_master (operation_name,operation_code,operation_order,default_operration,ops_sequence,ops_dependency,component,barcode) values ($saving)";
+				$saving_sub_oper_data_qry = "insert into $brandix_bts.tbl_style_ops_master (operation_name,operation_code,operation_order,default_operration,ops_sequence,ops_dependency,component,barcode,manual_smv) values ($saving)";
 				$checking_for_same_ops_order = "select id,operation_order from $brandix_bts.tbl_style_ops_master where CAST(operation_order AS CHAR) >= '$saving1[2]' and id != $last_id and style = $saving1[9] and color = $saving1[10] and CAST(operation_order AS CHAR) like '$sub_ops_code_compare' order by operation_order";
 			// echo $checking_for_same_ops_order;
 				$result_checking_for_same_ops_order = $link->query($checking_for_same_ops_order);
