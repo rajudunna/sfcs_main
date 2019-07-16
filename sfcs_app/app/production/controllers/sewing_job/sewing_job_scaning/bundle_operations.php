@@ -70,7 +70,7 @@ $result_oper = $link->query($qry_get_operation_name);
 			</div>
 			<hr>
 			
-		<div id ="dynamic_table1">
+		<div id ="dynamic_table1" class="table-responsive">
 		</div>
 <?php
 $qry_get_operation_name = "SELECT id,operation_name,default_operation,operation_code FROM $brandix_bts.tbl_orders_ops_ref";
@@ -1362,7 +1362,6 @@ function myfunctionedit(val,id,manual_smv)
 					prev = document.getElementById(prev).innerText;
 					dep = document.getElementById(dep).innerText;
 					manu_smv = document.getElementById(manu_smv).innerText;
-					// alert("check"+manu_smv);
 					comp = document.getElementById(comp).innerText;
 					sup_id = document.getElementById(sup_id).innerText;
 					oper_na = document.getElementById(oper_id).innerText;
