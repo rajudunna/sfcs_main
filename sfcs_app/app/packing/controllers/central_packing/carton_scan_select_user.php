@@ -56,16 +56,18 @@
 					<input type=\"hidden\" id=\"emp_id\" name=\"emp_id\" value=\"$emp_id\">
 					<input type=\"hidden\" id=\"operation_id\" name=\"operation_id\" value=\"$operation_id\">";
 					echo "<select  name=\"pack_method\" id=\"pack_method\" class='form-control' onchange=\"firstbox();\" >";
+					echo "<option value='0$0$0' selected>select Method</option>";
 					$sql="select * from $brandix_bts.packing_method_master where status='Active'";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row=mysqli_fetch_array($sql_result))
 					{
-						echo "<option value=\"".$sql_row['packing_method_code']."$".$sql_row['packing_description']."$".$sql_row['smv']."\" selected>".$sql_row['packing_method_code']." - ".$sql_row['packing_description']."</option>";						
+						echo "<option value=\"".$sql_row['packing_method_code']."$".$sql_row['packing_description']."$".$sql_row['smv']."\" >".$sql_row['packing_method_code']." - ".$sql_row['packing_description']."</option>";						
 					}
 					echo "</select></td><td><label>Select Packing Team:</label></td><td>";
 					// Schedule
 					echo "<select class='form-control' name=\"pack_team\" id=\"pack_team\" >";
 					$sql="select * from $brandix_bts.packing_team_master where status='Active'";
+					echo "<option value='0' selected>select Team</option>";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row=mysqli_fetch_array($sql_result))
 					{
