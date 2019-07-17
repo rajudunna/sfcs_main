@@ -169,7 +169,7 @@ $result_oper2 = $link->query($qry_get_suppliers);
 					<input class="form-control input-sm" id="component2" type="text">
 					<div style="display:none" id="manual_smv_1">
 					<label>Manual SMV</label>
-					<input class="form-control input-sm" id="manual_smv_insert" type="text">
+					<input class="form-control input-sm float" id="manual_smv_insert" type="text">
 					</div>
 					<label></label><br/>
 					<button class="btn btn-primary btn-sm" hidden='true' id='add-row1'>Add Manual Operation </button>
@@ -566,6 +566,7 @@ $(document).ready(function(){
 			var style = $('#style option:selected').text();
 			var color = $('#color option:selected').text();
 			var m3_smv =$('#m3_smv1').val();
+
 			var manual_smv_ins =$('#manual_smv_insert').val();
 			//var oper_def1 = "'"+oper_def+"'";
 			var color1 = "'"+color+"'";
@@ -676,7 +677,7 @@ $(document).ready(function(){
 								{
 									supplier = '';
 								}
-								var markup = "<tr><td class='none' id="+response+"operation_id>"+oper_name_id+"</td><td class='none' id="+response+"ops_order>"+actual_ops_order+"</td><td id="+response+"ops_code>"+s+"</td><td class='none'>"+pro_style_name+"</td><td class='none'>"+color+"</td><td id="+response+"operation_name>"+oper_name+"</td><td id="+response+"seq>"+oper_seq+"</td><td id="+response+"rep_to_erp>"+oper_def+"</td><td id="+response+"smv>"+m3_smv+"</td><td id="+response+"manual_smv_ins>"+manual_smv_ins+"</td><td id="+response+"barcode>"+barcode+"</td><td id="+response+"supplier_id hidden='true'>"+supplier_id+"</td><td id="+response+"supplier>"+supplier+"</td><td id="+response+"prev>"+oper_prev+"</td><td id="+response+"dep>"+oper_dep+"</td><td id="+response+"comp>"+component+"</td><td><button type='button' class='btn btn-info btn-sm particular' id='particularedit'  onclick='myfunctionedit(this,"+response+")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></td><td><button type='button' class='btn btn-danger btn-sm'  onclick='default_oper("+response+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></td></button><td><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,"+response+");'><i class='fa fa-plus' aria-hidden='true'></i></button></td></tr>";
+								var markup = "<tr><td class='none' id="+response+"operation_id>"+oper_name_id+"</td><td class='none' id="+response+"ops_order>"+actual_ops_order+"</td><td id="+response+"ops_code>"+s+"</td><td class='none'>"+pro_style_name+"</td><td class='none'>"+color+"</td><td id="+response+"operation_name>"+oper_name+"</td><td id="+response+"seq>"+oper_seq+"</td><td id="+response+"rep_to_erp>"+oper_def+"</td><td id="+response+"smv>"+m3_smv+"</td><td id="+response+"manual_smv>"+manual_smv_ins+"</td><td id="+response+"barcode>"+barcode+"</td><td id="+response+"supplier_id hidden='true'>"+supplier_id+"</td><td id="+response+"supplier>"+supplier+"</td><td id="+response+"prev>"+oper_prev+"</td><td id="+response+"dep>"+oper_dep+"</td><td id="+response+"comp>"+component+"</td><td><button type='button' class='btn btn-info btn-sm particular' id='particularedit'  onclick='myfunctionedit(this,"+response+")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></td><td><button type='button' class='btn btn-danger btn-sm'  onclick='default_oper("+response+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></td></button><td><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,"+response+");'><i class='fa fa-plus' aria-hidden='true'></i></button></td></tr>";
 								//$('#dynamic_table').append(markup);	
 								var row = $("#rowIndex").val();
 								//$('#dynamic_table > tbody > tr').eq(row-1).after(markup);
@@ -716,7 +717,7 @@ $(document).ready(function(){
 								$("#oper_name").val(0);
 								$("#supplier2").val(0);
 								$("#m3_smv").val(0);
-
+								$("#manual_smv_insert").val(0);
 								document.getElementById('component1').readOnly=false;
 								document.getElementById('component2').readOnly=false;
 								//alert("Operation Successfully Inserted");
@@ -837,7 +838,6 @@ $("#edit").click(function()
 	var component = $('#component1').val();
 	var manual_smv_up = $('#manual_smv_update').val();
 	var ops_code1 = $('#ops_code1').val();
-	var manual_smv = $('#manual_smv_update').val();
 	var style = $('#pro_style option:selected').text();
 	var color = $('#color option:selected').text();
 	var component1 = "'"+component+"'";

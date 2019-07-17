@@ -451,7 +451,7 @@ function updating($editable_data)
 	include("../../../../../common/config/config_ajax.php");
 
 	//echo $editable_data[6];
-	if($editable_data[4] != '')
+	if($editable_data[4] != ''|| $editable_data[4] !=0)
 	{
 		$qry_check_dependency = "select count(*)as cnt from $brandix_bts.tbl_style_ops_master where style=$editable_data[7] and color = $editable_data[8] and operation_code=$editable_data[9]";
 		//echo $qry_check_dependency;
@@ -468,14 +468,14 @@ function updating($editable_data)
 //    echo $editable_data[4];
    if($cnt > 0)
 	{
-		// var_dump($editable_data[11]);
-		if($editable_data[4] == '') 
+		// var_dump($editable_data[5]);
+		if($editable_data[4] == '' || $editable_data[4] != 0) 
 		{
 			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation='',ops_dependency='',component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10],manual_smv = $editable_data[11] where id=$editable_data[0]";
 		}
 		else
 		{
-			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation=$editable_data[4],ops_dependency=$editable_data[5],component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10],manual_smv = $editable_data[11] where id=$editable_data[0]";
+			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation=$editable_data[4],ops_dependency='$editable_data[5]',component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10],manual_smv = $editable_data[11] where id=$editable_data[0]";
 		}
 
 		// echo $qry_updation;
