@@ -96,7 +96,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                      $ratio_num=$data[0];                 
                     
                         //  echo $data[$total_plies_index];
-                            if (($data[$total_plies_index])>=($data[$max_plies_index]))
+                            if ((($data[$total_plies_index])>=($data[$max_plies_index]))&&($data[$total_plies_index]!=''))
                             {
                             $query .= "('".$ratio_num."','".$style_val."','".$order_tid."','".$category."','".$cuttable_sum."','"
                             .$username."',now()),";
