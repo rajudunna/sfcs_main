@@ -892,13 +892,12 @@ else if($concurrent_flag == 0)
 		$sequnce = $row['ops_sequence'];
 		$is_m3 = $row['default_operration'];
 		$sfcs_smv = $row['smv'];
-		$manual_smv= $row['manual_smv'];
+		if($sfcs_smv=='0.0000')
+		{
+			$sfcs_smv = $row['manual_smv'];	
+		}
 	}
-	if($sfcs_smv > 0){
-		$sfcs_smv=$manual_smv;
-	}else{
-		$sfcs_smv;
-	}
+	
 	$ops_dep_qry = "SELECT tm.ops_dependency,tm.operation_code,tm.ops_sequence FROM brandix_bts.tbl_style_ops_master tm LEFT JOIN brandix_bts.`tbl_orders_ops_ref` tr ON tr.id=tm.operation_name WHERE tm.style='$b_style' AND tm.color = '$mapped_color' AND tm.ops_dependency != 200 AND tm.ops_dependency != 0  and tr.category = 'sewing' and ops_sequence='$sequnce' group by ops_dependency";
 	$result_ops_dep_qry = $link->query($ops_dep_qry);
 	while($row = $result_ops_dep_qry->fetch_assoc()) 
@@ -1003,13 +1002,12 @@ else if($concurrent_flag == 0)
 				while($row_ops = $result_smv_query->fetch_assoc()) 
 				{
 					$sfcs_smv = $row_ops['smv'];
-					$manual_smv = $row_ops['manual_smv'];
+					if($sfcs_smv=='0.0000')
+					{
+						$sfcs_smv = $row_ops['manual_smv'];	
+					}
 				}
-				if($sfcs_smv > 0){
-					$sfcs_smv=$manual_smv;
-				}else{
-					$sfcs_smv;
-				}
+				
 				$remarks_code = "";
 
 				if($b_rep_qty[$key] == null){
@@ -1205,13 +1203,12 @@ else if($concurrent_flag == 0)
 			while($row_ops = $result_smv_query->fetch_assoc()) 
 			{
 				$sfcs_smv = $row_ops['smv'];
-				$manual_smv = $row_ops['manual_smv'];
+				if($sfcs_smv=='0.0000')
+				{
+					$sfcs_smv = $row_ops['manual_smv'];	
+				}
 			}
-			if($sfcs_smv > 0){
-				$sfcs_smv=$manual_smv;
-			}else{
-				$sfcs_smv;
-			}
+			
 			$bulk_insert_post_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`,`scanned_user`,`sync_status`) VALUES";
 			$schedule_count = true;
 			$concurrent_flag = 0;
