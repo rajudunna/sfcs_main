@@ -1740,13 +1740,13 @@ foreach($cats_ids as $key=>$value)
 		{
 			$input_qty[$s_tit[$sizes_code[$s]]]=0;
 		}
-		if (($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]-$tot_size[$s_tit[$sizes_code[$s]]]) >= 0)
+		if ($tot_size[$s_tit[$sizes_code[$s]]]-($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]) >= 0)
 		{
-			echo "<td class=\"  \" style='background-color:#4cff4c'><center>".($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]-$tot_size[$s_tit[$sizes_code[$s]]])."</center></td>";
+			echo "<td class=\"  \" style='background-color:#4cff4c'><center>".($tot_size[$s_tit[$sizes_code[$s]]]-($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]))."</center></td>";
 		}
 		else
 		{
-			echo "<td class=\"b1\" style='background-color:#f8d7da'><center>".($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]-$tot_size[$s_tit[$sizes_code[$s]]])."</center></td>";
+			echo "<td class=\"b1\" style='background-color:#f8d7da'><center>".($tot_size[$s_tit[$sizes_code[$s]]]-($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]))."</center></td>";
 		}
 	}
 	unset($tot_size);
