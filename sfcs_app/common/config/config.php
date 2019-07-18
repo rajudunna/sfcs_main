@@ -162,7 +162,7 @@ $logo = '/sfcs_app/common/images/logo.png';
 $icon2='/sfcs_app/common/images/BAI_Logo.JPG';
 
 $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
-
+$select_pack_method= $conf1->get('pack_code');
 $plant_start_time = $conf1->get('plant-start-time');
 $plant_end_time = $conf1->get('plant-end-time');
 $detailed_bundle_sticker = $conf1->get('detailed-bundle-sticker');

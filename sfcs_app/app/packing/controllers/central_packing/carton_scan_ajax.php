@@ -22,7 +22,10 @@
 		$carton_id = $_GET['carton_id'];
 		$b_op_id = $_GET['operation_id'];
 		$shift = $_GET['shift'];
-
+		$pack_team = $_GET['pack_team'];
+		$pack_method = $_GET['pack_method'];
+		$data_val=explode("$",$pack_method);
+		
 		$count_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id='".$carton_id."';";
 		$count_result = mysqli_query($link,$count_query);
 		if(mysqli_num_rows($count_result)>0)
@@ -141,7 +144,10 @@
 	                    } else {
 	                    	$update_carton_status = "";
 	                    }
-	                    
+						
+	                    $sql211="INSERT INTO $bai_pro3.`carton_packing_details` (`carton_id`, `operation_id`, `pack_code`, `pack_desc`, `pack_smv`, `pack_team`,scan_time) VALUES ('".$carton_id."', '".$b_op_id."', '".$data_val[0]."', '".$data_val[1]."', '".$data_val[2]."', '".$pack_team."','".date('Y-m-d H:i:s')."')";
+						mysqli_query($link, $sql211) or exit("Insert while updating pac_stat");
+						
 						$update_pac_stat_atble="update $bai_pro3.pac_stat set opn_status=".$b_op_id." ".$update_carton_status." where id = '".$carton_id."'";
 						$pac_stat_log_result = mysqli_query($link, $update_pac_stat_atble) or exit("Error while updating pac_stat_log");
 

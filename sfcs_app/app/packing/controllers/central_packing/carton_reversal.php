@@ -149,7 +149,9 @@
 								{
 									$carton_type = 'Full';
 								}
-
+								
+								$sql211="DELETE FROM $bai_pro3.`carton_packing_details` where carton_id='".$carton_id."' and operation_id='".$b_op_id."'";
+								mysqli_query($link, $sql211) or exit("Insert while updating pac_stat");
 								
 								$get_details_to_insert_bcd_temp = "SELECT * FROM $bai_pro3.`pac_stat_log` WHERE pac_stat_id = ".$carton_id;
 								// echo $get_details_to_insert_bcd_temp.'<br><br>';

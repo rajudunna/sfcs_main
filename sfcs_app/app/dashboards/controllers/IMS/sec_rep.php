@@ -494,8 +494,11 @@ if(isset($_GET['val']))
 					 if($input_selection=='bundle_wise'){
 						 $get_detais_ims.=" AND pac_tid=$bundle_number";
 					 }
+					 if($input_selection=='input_wise'){
+						 $get_detais_ims.=" ";
+					}
 				 }else{
-					 $get_detais_ims.=" ";
+					 $get_detais_ims.=" AND pac_tid=$bundle_number";
 				 }
 					//*******
 				

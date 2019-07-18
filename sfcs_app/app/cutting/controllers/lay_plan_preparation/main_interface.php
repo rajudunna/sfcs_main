@@ -4,9 +4,11 @@ Change Log:
 kirang/ 2015-02-25/ Service Request #244611 :  Add Remarks Tab in Cut plan (for Sample pieces)
 kirang/2016-12-27/ CR: 536: Adding MPO Number in Cut Plan
 -->
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+<?php 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 $url1 = getFullURL($_GET['r'],'excess_cut.php','N');
 ?>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/table2CSV.js',2,'R')?>"></script>
 <div class="ajax-loader" id="loading-image" style="display: none">
     <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
 </div>
@@ -427,16 +429,32 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$size49 = $sql_row['title_size_s49'];
 			$size50 = $sql_row['title_size_s50'];
 		
-		
+			$excel_input_table='<table border="1" id="table_one" style="visibility:hidden">';
+			$excel_input_table .='<thead><tr>
+			<th class="column-title" style="width:190px;">Ratio Number</th>';
+			$excel_input_table_body='<tr>
+			<td></td>';
+			$sizes_reference="";
 		for($s=0;$s<sizeof($sizes_code);$s++)
 		{
 			if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
 			{
 				$s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
+				$excel_input_table .='<th class="column-title">'.$sql_row["title_size_s".$sizes_code[$s].""].'</th>';
+				$excel_input_table_body.='<td></td>';
+				$sizes_reference .=$sql_row["title_size_s".$sizes_code[$s].""].",";
 			}	
 		}
+		$excell_heading="Upload File Format";
 		
-			
+		$excel_input_table .='<th class="title">Total Plies</th>';
+		$excel_input_table .='<th class="title">Max Plies Per Lay</th>';
+		$excel_input_table .='</tr></thead>';
+		$excel_input_table_body.='<td></td><td></td></tr>';
+		for($i=0;$i<5;$i++){
+			$excel_input_table_body.=$excel_input_table_body;
+		}
+		$excel_input_table .=$excel_input_table_body;	
 		$order_joins = $sql_row['order_joins'];
 		$flag = $sql_row['title_flag'];
 		/* Start  Adding MPO Number  */
@@ -557,7 +575,6 @@ if($order_no == 0){
 }
 
 echo "<table class=\"table table-bordered\">";
-
 if($flag==1)
 {
 	
@@ -1276,7 +1293,8 @@ echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">
 			<th class=\"column-title\"><center>Category</center></th><th class=\"column-title\"><center>Cuttable</center></th>
 			<th class=\"column-title\"><center>Allocated</center></center></th><th class=\"column-title\"><center>Excess /Shortage </center></th>
 			
-			<th class=\"column-title\"><center>Controls</center></th><th><center>Action</center></th></tr></thead>";
+			<th class=\"column-title\"><center>Controls</center></th><th><center>Action</center></th>
+			<th class=\"column-title\"><center>Download Format</center></th><th><center>Upload file</center></th></tr></thead>";
 foreach($cats_ids as $key=>$value)
 {
 $sql="select * from $bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\" and cat_id=$value order by tid";
@@ -1344,7 +1362,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$cuttable_ref=$sql_row['tid'];
 	
 	$cuttable_sum=$cuttable_s01+$cuttable_s02+$cuttable_s03+$cuttable_s04+$cuttable_s05+$cuttable_s06+$cuttable_s07+$cuttable_s08+$cuttable_s09+$cuttable_s10+$cuttable_s11+$cuttable_s12+$cuttable_s13+$cuttable_s14+$cuttable_s15+$cuttable_s16+$cuttable_s17+$cuttable_s18+$cuttable_s19+$cuttable_s20+$cuttable_s21+$cuttable_s22+$cuttable_s23+$cuttable_s24+$cuttable_s25+$cuttable_s26+$cuttable_s27+$cuttable_s28+$cuttable_s29+$cuttable_s30+$cuttable_s31+$cuttable_s32+$cuttable_s33+$cuttable_s34+$cuttable_s35+$cuttable_s36+$cuttable_s37+$cuttable_s38+$cuttable_s39+$cuttable_s40+$cuttable_s41+$cuttable_s42+$cuttable_s43+$cuttable_s44+$cuttable_s45+$cuttable_s46+$cuttable_s47+$cuttable_s48+$cuttable_s49+$cuttable_s50;
-
+	
 	$sql2="select ((allocate_s01+allocate_s02+allocate_s03+allocate_s04+allocate_s05+allocate_s06+allocate_s07+allocate_s08+allocate_s09+allocate_s10+allocate_s11+allocate_s12+allocate_s13+allocate_s14+allocate_s15+allocate_s16+allocate_s17+allocate_s18+allocate_s19+allocate_s20+allocate_s21+allocate_s22+allocate_s23+allocate_s24+allocate_s25+allocate_s26+allocate_s27+allocate_s28+allocate_s29+allocate_s30+allocate_s31+allocate_s32+allocate_s33+allocate_s34+allocate_s35+allocate_s36+allocate_s37+allocate_s38+allocate_s39+allocate_s40+allocate_s41+allocate_s42+allocate_s43+allocate_s44+allocate_s45+allocate_s46+allocate_s47+allocate_s48+allocate_s49+allocate_s50)*plies) as \"total\" from $bai_pro3.allocate_stat_log left join cat_stat_log on  allocate_stat_log.order_tid=cat_stat_log.order_tid where allocate_stat_log.order_tid=\"$tran_order_tid\" and allocate_stat_log.cuttable_ref='$cuttable_ref' and cat_stat_log.category in ($in_categories)";
 	//echo $sql2."<br>";	
 	// mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1388,6 +1406,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<td class=\"b1\" style='background-color:#4cff4c'><center>".($total_allocated-$cuttable_sum)."</center></td>";
 
 	}
+	
 	/* STATUS FIELD COMMENTED
 	if(($total_allocated-$cuttable_sum)<0)
 	{
@@ -1437,6 +1456,31 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	else {
 		echo "<td class=\"  \"><center><a class='btn btn-info btn-xs' disabled>Copy to Other</a></center></td>";
 	}
+	echo "<td class=\"  \"><center>";?>
+	<form  name="input_excell" action="<?php echo getFullURL($_GET['r'],'export_excel.php','R')?>" method="post" id="input_excell">
+	<input type="hidden" name="table" id="csv_123" value="<?php 
+	echo str_replace("'","",str_replace('"',"",$excel_input_table)); ?>">
+
+	<input type="hidden" name="title" value="<?php echo $schedule.'_'.$color.'_'.$category_new ?>">
+	<input type="submit" class="btn btn-xs btn-info" name="submit" value="Download" onclick="getCSVData()">
+	</form>
+	<?php
+	echo "</center></td>";
+	echo "<td class=\"  \">
+	<center>";?>
+              <form method="POST" action="<?php echo getFullURL($_GET['r'],'csv_file_parcer.php','N')?>" enctype="multipart/form-data">
+              	<input type="hidden" name="style" value="<?php echo $style ?>">
+              	<input type="hidden" name="color" value="<?php echo $color ?>">
+              	<input type="hidden" name="schedule" value="<?php echo $schedule ?>">
+				<input type="hidden" name="category" value="<?php echo $value ?>">  
+				<input type="hidden" name="cuttable" value="<?php echo $cuttable_sum ?>"> 
+				<input type="hidden" name="user" value="<?php echo $user ?>">
+				<input type="hidden" name="sizes_reference" value="<?php echo $sizes_reference ?>"> 
+				
+               <input type="file" name="file">
+               <button type="submit" name="Submit" class="btn btn-success">Upload</button>
+           </form>
+		<?php echo "</center></td>";
 	echo "</tr>";
 }
 }
@@ -2187,7 +2231,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 </div>";
 
 ?>
-
 <!--<p><a href="#" onclick="showhide('div9');">Docket Flow</a></p>
 <div id="div9" style="display: none;">
 <?php //include("main_interface_9.php"); ?>
@@ -2232,6 +2275,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 </div>
 </div>
+<?php echo $excel_input_table;?>
 <style>
 .word-wrap {
 		word-wrap: break-word; 
@@ -2277,6 +2321,11 @@ $(document).ready(function(){
 		$("#loading-image").show();
 	});
 })
+function getCSVData(){
+var csv_value=$('#table_one').table2CSV({delivery:'value'});
+$("#csv_123").val(csv_value);	
+}
+
 </script>
 <script> 
    function clickAndDisable(link) {

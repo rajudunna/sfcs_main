@@ -311,7 +311,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$style=$sql_row1['style'];
 	$schedule=$sql_row1['schedule'];
 	$color=$sql_row1['color'];
-	$binding_consumption_qty=$sql_row1['tot_req_qty'];
+	$binding_consumption_qty=$sql_row1['tot_bindreq_qty'];
 	echo "<tr>";
 	echo "<td>".$sql_row1['style']."</td>";
 	echo "<td>".$sql_row1['schedule']."</td>";
