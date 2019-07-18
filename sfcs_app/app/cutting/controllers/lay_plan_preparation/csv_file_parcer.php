@@ -98,6 +98,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                         //  echo $data[$total_plies_index];
                             if (($data[$total_plies_index])>=($data[$max_plies_index]))
                             {
+                            if ($data[$total_plies_index]!='')
+                            {
                             $query .= "('".$ratio_num."','".$style_val."','".$order_tid."','".$category."','".$cuttable_sum."','"
                             .$username."',now()),";
                             $query_alloc .=
@@ -111,7 +113,12 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                              
                              $query_alloc=rtrim($query_alloc,",");
                              $query_alloc .=" ),";
-                             
+                            }
+                            else
+                            {
+                                echo '<script>swal("Your Missed an empty line","Fill and insert it", "warning");</script>';
+                                die();
+                            }
                             }
                             
                             else

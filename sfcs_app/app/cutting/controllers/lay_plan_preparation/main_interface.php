@@ -1477,7 +1477,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				<input type="hidden" name="user" value="<?php echo $user ?>">
 				<input type="hidden" name="sizes_reference" value="<?php echo $sizes_reference ?>"> 
 				
-               <input type="file" name="file">
+               <input type="file" name="file" required>
                <button type="submit" name="Submit" class="btn btn-success">Upload</button>
            </form>
 		<?php echo "</center></td>";
