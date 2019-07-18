@@ -718,6 +718,7 @@ $(document).ready(function(){
 								$("#supplier2").val(0);
 								$("#m3_smv").val(0);
 								$("#manual_smv_insert").val(0);
+								$("#manual_smv_update").val(0);
 								document.getElementById('component1').readOnly=false;
 								document.getElementById('component2').readOnly=false;
 								//alert("Operation Successfully Inserted");
