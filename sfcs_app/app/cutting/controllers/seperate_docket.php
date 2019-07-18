@@ -43,7 +43,7 @@ th{
             <li class="active"><a data-toggle="tab" href="#tab_a"><b><span class='label label-default' style='font-size:15px'>Requests</span></b></a></li>
            
             <li><a data-toggle="tab" href="#tab_b"><b><span class='label label-default' style='font-size:15px'>Allocated (<?= $count; ?>)</span></b></a></li>
-            <li><a data-toggle="tab" href="#tab_c"><b><span class='label label-default' style='font-size:15px'>Closed</span></b></a></li>
+            <li><a data-toggle="tab" href="#tab_c"><b><span class='label label-default' style='font-size:15px'>Print Completed</span></b></a></li>
             
             
         </ul>
