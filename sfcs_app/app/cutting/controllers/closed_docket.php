@@ -23,7 +23,7 @@ if(isset($_GET['date']))
         $response_table.= "<td>".$sql_row['style']."</td>";
         $response_table.= "<td>".$sql_row['schedule']."</td>";
         $response_table.= "<td>".$sql_row['color']."</td>";
-        $response_table.= "<td>".$sql_row['tot_req_qty']."</td>";
+        $response_table.= "<td>".$sql_row['tot_bindreq_qty']."</td>";
         // $response_table.= "<td>".$sql_row['tot_bindreq_qty']."</td>";
         $response_table.= "<td><a href=\"$path?binding_id=$i\" onclick=\"Popup1=window.open('$path?binding_id=$i','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
         $response_table.= "</tr>";
