@@ -77,7 +77,7 @@ th{
                                 echo "<td>".$sql_row['style']."</td>";
                                 echo "<td>".$sql_row['schedule']."</td>";
                                 echo "<td>".$sql_row['color']."</td>";
-                                echo "<td>".$sql_row['tot_req_qty']."</td>";
+                                echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
                                 // echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
                                 echo "<td><select name='issue_status$i' id='issue_status-$i' class='select2_single form-control' onchange='IssueAction($i);'>";
                                 echo "<option value=''>Please Select</option>";
@@ -124,7 +124,7 @@ th{
                                     echo "<td>".$sql_row['style']."</td>";
                                     echo "<td>".$sql_row['schedule']."</td>";
                                     echo "<td>".$sql_row['color']."</td>";
-                                    echo "<td>".$sql_row['tot_req_qty']."</td>";
+                                    echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
                                     // echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
                                     echo "<td>".$sql_row['status']."</td>";
                                       
