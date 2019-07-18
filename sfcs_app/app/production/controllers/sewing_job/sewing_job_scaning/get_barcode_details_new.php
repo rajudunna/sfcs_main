@@ -528,13 +528,17 @@
 
         // checking ops ..............................................
 
-        $dep_ops_array_qry = "select operation_code,ops_sequence, default_operration,smv from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and operation_code=$b_op_id";
+        $dep_ops_array_qry = "select operation_code,ops_sequence, default_operration,smv,manual_smv from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and operation_code=$b_op_id";
         $result_dep_ops_array_qry = $link->query($dep_ops_array_qry);
         while($row = $result_dep_ops_array_qry->fetch_assoc()) 
         {
             $sequnce = $row['ops_sequence'];
             $is_m3 = $row['default_operration'];
             $sfcs_smv = $row['smv'];
+			if($sfcs_smv=='0.0000')
+			{
+				$sfcs_smv = $row_ops['manual_smv'];	
+			}
         }
         
         $ops_dep_qry = "SELECT ops_dependency,operation_code,ops_sequence FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and ops_sequence='$sequnce' AND ops_dependency != 200 AND ops_dependency != 0 group by ops_dependency";
@@ -637,11 +641,15 @@
             {
                 if($b_tid[$key] == $bundle_no)
                 {
-                  $smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
+                  $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
                         $result_smv_query = $link->query($smv_query);
                         while($row_ops = $result_smv_query->fetch_assoc()) 
                         {
                             $sfcs_smv = $row_ops['smv'];
+							if($sfcs_smv=='0.0000')
+							{
+								$sfcs_smv = $row_ops['manual_smv'];	
+							}
                         }
                         $bulk_insert_post = "INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`) VALUES";
 
@@ -720,12 +728,16 @@
 
                 foreach ($b_tid as $key => $tid)
                 {
-                    $smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
+                    $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
                     $result_smv_query = $link->query($smv_query);
                     while($row_ops = $result_smv_query->fetch_assoc()) 
                     {
                         $sfcs_smv = $row_ops['smv'];
-                    }
+						if($sfcs_smv=='0.0000')
+						{
+							 $sfcs_smv = $row_ops['manual_smv'];
+						}
+					}
                     $left_over_qty = $b_in_job_qty[$key] - ($b_rep_qty[$key] + $b_rej_qty[$key]);
                     // appending all values to query for bulk insert....
                     // if($flag == 'parallel_scanning')
@@ -818,11 +830,15 @@
                     if($b_tid[$key] == $bundle_no){
                         if($concurrent_flag == 0)
                         {
-                            $smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
+                            $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
                             $result_smv_query = $link->query($smv_query);
                             while($row_ops = $result_smv_query->fetch_assoc()) 
                             {
                                 $sfcs_smv = $row_ops['smv'];
+								if($sfcs_smv=='0.0000')
+								{
+									$sfcs_smv = $row_ops['manual_smv'];	
+								}
                             }
                             $bulk_insert_post = "INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`) VALUES";
 
