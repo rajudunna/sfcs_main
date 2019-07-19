@@ -80,13 +80,15 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                                        
                             $query_alloc .=" ) VALUES  ";
                         }else{
-                         echo "incorrect file format";die();
+                         echo "incorrect file format";
+                         unlink(realpath($path));
+                         die();
                         } 
                    } else
                     {
                         //var_dump($data);
-                        echo '<pre>';
-                        // print_r($data);
+                       // echo '<pre>';
+                      //  print_r($data);
                     //    var_dump($cuttable_sum);
                      for($j=1;$j<$total_plies_index;$j++){
                          $style_val.=$data[$j].",";
@@ -96,9 +98,15 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                      $ratio_num=$data[0];                 
                     
                         //  echo $data[$total_plies_index];
+                        $check_empty=0;
                             if (($data[$total_plies_index])>=($data[$max_plies_index]))
                             {
-                            if ($data[$total_plies_index]!='')
+                                for($k=0;$k<$max_plies_index;$k++){
+                                    if($data[$k]==''){
+                                        $check_empty=1;
+                                    }
+                                }
+                            if ($check_empty==0)
                             {
                             $query .= "('".$ratio_num."','".$style_val."','".$order_tid."','".$category."','".$cuttable_sum."','"
                             .$username."',now()),";
@@ -117,6 +125,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                             else
                             {
                                 echo '<script>swal("Your Missed an empty line","Fill and insert it", "warning");</script>';
+                                unlink(realpath($path));
                                 die();
                             }
                             }
@@ -124,6 +133,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                             else
                             {
                                 echo '<script>swal("Total Piles Should be Greater than or equal to max piles", "check in inserted sheet and re-insert", "warning");</script>';
+                                unlink(realpath($path));
                                 die();
                                 
                             }
@@ -131,14 +141,25 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                    }
                    $i++;
                }
+            if($i==2){
+                echo '<script>swal("You have Uploaded an empty file","Fill and insert it", "warning");</script>';
+                unlink(realpath($path));
+                die();
+                
+            }
             //    echo $query."<br>".$query_alloc;
                if($i>2){      
                $query=rtrim($query,",");
                $query_alloc=rtrim($query_alloc,",");
             //  var_dump($query_alloc);
-               $sql_result=mysqli_query($link, $query) or exit("Sql Error");
-             $sql_result_alloc=mysqli_query($link, $query_alloc) or exit("Sql Error at query_alloc");
-                 echo "<script type=\"text/javascript\"> 
+             $sql_result=mysqli_query($link, $query) or exit("Sql Error");
+             $sql_result_alloc_check=mysqli_query($link, $query_alloc);// or exit("Sql Error at query_alloc");
+             if (!$sql_result_alloc_check) {
+                 print_r("Error Occoured because of:".mysqli_error($link));
+                 unlink(realpath($path));
+                 exit();
+             }    
+             echo "<script type=\"text/javascript\"> 
                 swal('Data successfully inserted', 'Thank You', 'success');
                 setTimeout(\"Redirect()\",3000); 
                 function Redirect(){	 

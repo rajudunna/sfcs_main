@@ -1458,11 +1458,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 	echo "<td class=\"  \"><center>";?>
 	<form  name="input_excell" action="<?php echo getFullURL($_GET['r'],'export_excel.php','R')?>" method="post" id="input_excell">
-	<input type="hidden" name="table" id="csv_123" value="<?php 
+	<input type="hidden" name="table" id="csv_123_<?php echo $value;?>" value="<?php 
 	echo str_replace("'","",str_replace('"',"",$excel_input_table)); ?>">
 
 	<input type="hidden" name="title" value="<?php echo $schedule.'_'.$color.'_'.$category_new ?>">
-	<input type="submit" class="btn btn-xs btn-info" name="submit" value="Download" onclick="getCSVData()">
+	<input type="submit" class="btn btn-xs btn-info" id="<?php echo $value;?>" name="submit" value="Download" onclick="getCSVData(this.id)">
 	</form>
 	<?php
 	echo "</center></td>";
@@ -2321,9 +2321,9 @@ $(document).ready(function(){
 		$("#loading-image").show();
 	});
 })
-function getCSVData(){
+function getCSVData(str){
 var csv_value=$('#table_one').table2CSV({delivery:'value'});
-$("#csv_123").val(csv_value);	
+$("#csv_123_"+str).val(csv_value);	
 }
 
 </script>
