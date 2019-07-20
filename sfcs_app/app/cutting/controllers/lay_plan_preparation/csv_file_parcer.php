@@ -16,6 +16,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
            $category=$_POST['category'];//cat_ref
            $username = getrbac_user()['uname'];
            $sizes_reference=$_POST['sizes_reference'];
+           $tran_order_tid=$_POST['tran_order_tid'];
             // var_dump($cuttable_sum);
            
           
@@ -90,6 +91,25 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                        // echo '<pre>';
                       //  print_r($data);
                     //    var_dump($cuttable_sum);
+                    $ratiocount=0;
+                    $sql="select max(ratio) as \"ratio\" from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cuttable_ref=$cuttable_sum";
+                    // echo $sql;
+                    // mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $sql_result=mysqli_query($link, $sql) or exit("Sql Error741".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $sql_num_check=mysqli_num_rows($sql_result);
+
+                    while($sql_row=mysqli_fetch_array($sql_result))
+                    {
+                        if($sql_row['ratio']){
+                            $ratiocount=$sql_row['ratio'];
+                        }
+                        // var_dump($ratiocount);
+                    }
+
+                    $ratiocount=$ratiocount+1;
+
+
+
                      for($j=1;$j<$total_plies_index;$j++){
                          $style_val.=$data[$j].",";
                      }
@@ -108,10 +128,10 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                                 }
                             if ($check_empty==0)
                             {
-                            $query .= "('".$ratio_num."','".$style_val."','".$order_tid."','".$category."','".$cuttable_sum."','"
+                            $query .= "('".$ratiocount."','".$style_val."','".$tran_order_tid."','".$category."','".$cuttable_sum."','"
                             .$username."',now()),";
                             $query_alloc .=
-                             "(now(), '".$category."', '".$cuttable_sum."','".$order_tid."','".$ratio_num."', '".$data[$total_plies_index]."', '".$data[$max_plies_index]."', now(), 'Normal','2',";
+                             "(now(), '".$category."', '".$cuttable_sum."','".$tran_order_tid."','".$ratio_num."', '".$data[$total_plies_index]."', '".$data[$max_plies_index]."', now(), 'Normal','2',";
                              
                              $style_array=explode(",",$style_val);
                              
@@ -155,7 +175,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
              $sql_result=mysqli_query($link, $query) or exit("Sql Error");
              $sql_result_alloc_check=mysqli_query($link, $query_alloc);// or exit("Sql Error at query_alloc");
              if (!$sql_result_alloc_check) {
-                 print_r("Error Occoured because of:".mysqli_error($link));
+                 $e_info=mysqli_error($link);
+                echo '<script>swal("Failed to Upload Details","'.$e_info.'", "error");</script>';
+                 //print_r("Error Occoured because of:".mysqli_error($link));
                  unlink(realpath($path));
                  exit();
              }    
