@@ -16,6 +16,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
            $category=$_POST['category'];//cat_ref
            $username = getrbac_user()['uname'];
            $sizes_reference=$_POST['sizes_reference'];
+        //    echo "<br>".var_dump($sizes_reference);
            $tran_order_tid=$_POST['tran_order_tid'];
             // var_dump($cuttable_sum);
            
@@ -50,7 +51,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                    $style_val="";
                    $length=sizeof($data);
                    $total_plies_index=$length-2;//cut_count
-                //    var_dump($total_plies_index);
+                //    echo "<br>".var_dump($length);
                    $max_plies_index=$length-1;//pilespercut
                   // echo $total_plies_index."-".$max_plies_index;  
                   
@@ -60,8 +61,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                             $sizes_reference_array=explode(",",$sizes_reference);
                             // var_dump($sizes_reference_array);
                             $sizes_reference_array = array_map('strtolower', $sizes_reference_array);
-                        
-                            if(sizeof($sizes_reference_array)==$total_plies_index)
+                            // echo sizeof($sizes_reference_array);
+                            // echo "<br>".$total_plies_index;
+                            if((sizeof($sizes_reference_array)+1)==($total_plies_index))
                             {
                                 for($x=1;$x<$total_plies_index;$x++){
                                     if(in_array(strtolower($data[$x]), $sizes_reference_array)){
@@ -88,8 +90,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                    } else
                     {
                         //var_dump($data);
-                       // echo '<pre>';
-                      //  print_r($data);
+                    //  echo '<pre>';
+                    //  print_r($data);
                     //    var_dump($cuttable_sum);
                     $ratiocount=0;
                     $sql="select max(ratio) as \"ratio\" from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cuttable_ref=$cuttable_sum";
@@ -141,6 +143,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                              
                              $query_alloc=rtrim($query_alloc,",");
                              $query_alloc .=" ),";
+                            //  echo $query_alloc;
                             }
                             else
                             {
