@@ -445,6 +445,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$sizes_reference .=$sql_row["title_size_s".$sizes_code[$s].""].",";
 			}	
 		}
+		$sizes_reference=rtrim($sizes_reference,",");
 		$excell_heading="Upload File Format";
 		
 		$excel_input_table .='<th class="title">Total Plies</th>';
@@ -1393,7 +1394,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$sql6="select * from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" order by catyy DESC";	
 	$sql_result6=mysqli_query($link, $sql6) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check3=mysqli_num_rows($sql_result6);
-	echo "<td class=\"  \"><center>".$category_new."</center></td>";
+
+	$path44="".getFullURLLevel($_GET['r'], "category_wise_ratio_details_popup.php", "0", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_id&cat_desc=$category_new&sizes_reference=$sizes_reference";
+
+	echo "<td class=\"  \"><center>".$category_new."&nbsp;<span class=\"fas fa-external-link-alt\" style=\"cursor: pointer;\" data-toggle=\"tooltip\" title=\"Click Here To Get Category wise Ratio Details\" 
+	onclick=\"return popup("."'".$path44."'".")\"></span></center></td>";
 	echo "<td class=\"  \"><center>".$cuttable_sum."</center></td>";
 	echo "<td class=\"  \"><center>".$total_allocated."</center></td>";
 	$total_cuttable_qty=$total_allocated-$cuttable_sum;
@@ -1425,6 +1430,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		echo "<td class=\"b1\"><a href=\"dumindu/order_allocation_form2.php?tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id\"  onclick='".'alert("Cuttable Quantity Fullfilled")'."'>Update</a></td>";
 	} */
+	//$check_id_csv=$cuttable_ref;
 	echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty\">Add Ratios</a></center></td>";
 	$sql17="select * from bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\"";
     // echo $sql15;
@@ -1458,26 +1464,27 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 	echo "<td class=\"  \"><center>";?>
 	<form  name="input_excell" action="<?php echo getFullURL($_GET['r'],'export_excel.php','R')?>" method="post" id="input_excell">
-	<input type="hidden" name="table" id="csv_123" value="<?php 
+	<input type="hidden" name="table" id="csv_123_<?php echo $value;?>" value="<?php 
 	echo str_replace("'","",str_replace('"',"",$excel_input_table)); ?>">
 
 	<input type="hidden" name="title" value="<?php echo $schedule.'_'.$color.'_'.$category_new ?>">
-	<input type="submit" class="btn btn-xs btn-info" name="submit" value="Download" onclick="getCSVData()">
+	<input type="submit" class="btn btn-xs btn-info" id="<?php echo $value;?>" name="submit" value="Download" onclick="getCSVData(this.id)">
 	</form>
 	<?php
 	echo "</center></td>";
 	echo "<td class=\"  \">
 	<center>";?>
               <form method="POST" action="<?php echo getFullURL($_GET['r'],'csv_file_parcer.php','N')?>" enctype="multipart/form-data">
-              	<input type="hidden" name="style" value="<?php echo $style ?>">
-              	<input type="hidden" name="color" value="<?php echo $color ?>">
-              	<input type="hidden" name="schedule" value="<?php echo $schedule ?>">
-				<input type="hidden" name="category" value="<?php echo $value ?>">  
-				<input type="hidden" name="cuttable" value="<?php echo $cuttable_sum ?>"> 
-				<input type="hidden" name="user" value="<?php echo $user ?>">
-				<input type="hidden" name="sizes_reference" value="<?php echo $sizes_reference ?>"> 
+              	<input type="hidden" name="style" value="<?php echo $style; ?>">
+              	<input type="hidden" name="color" value="<?php echo $color; ?>">
+              	<input type="hidden" name="schedule" value="<?php echo $schedule; ?>">
+				<input type="hidden" name="category" value="<?php echo $value; ?>">  
+				<input type="hidden" name="cuttable" value="<?php echo $cuttable_ref; ?>"> 
+				<input type="hidden" name="user" value="<?php echo $user; ?>">
+				<input type="hidden" name="sizes_reference" value="<?php echo $sizes_reference; ?>"> 
+				<input type="hidden" name="tran_order_tid" value="<?php echo $tran_order_tid; ?>"> 
 				
-               <input type="file" name="file">
+               <input type="file" name="file" required>
                <button type="submit" name="Submit" class="btn btn-success">Upload</button>
            </form>
 		<?php echo "</center></td>";
@@ -1620,6 +1627,7 @@ foreach($cats_ids as $key=>$value)
 	$tot_size=array();
 	$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$value order by tid";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row=mysqli_fetch_array($sql_result))
     { 
@@ -1740,13 +1748,13 @@ foreach($cats_ids as $key=>$value)
 		{
 			$input_qty[$s_tit[$sizes_code[$s]]]=0;
 		}
-		if (($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]-$tot_size[$s_tit[$sizes_code[$s]]]) >= 0)
+		if ($tot_size[$s_tit[$sizes_code[$s]]]-($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]) >= 0)
 		{
-			echo "<td class=\"  \" style='background-color:#4cff4c'><center>".($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]-$tot_size[$s_tit[$sizes_code[$s]]])."</center></td>";
+			echo "<td class=\"  \" style='background-color:#4cff4c'><center>".($tot_size[$s_tit[$sizes_code[$s]]]-($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]))."</center></td>";
 		}
 		else
 		{
-			echo "<td class=\"b1\" style='background-color:#f8d7da'><center>".($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]-$tot_size[$s_tit[$sizes_code[$s]]])."</center></td>";
+			echo "<td class=\"b1\" style='background-color:#f8d7da'><center>".($tot_size[$s_tit[$sizes_code[$s]]]-($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]))."</center></td>";
 		}
 	}
 	unset($tot_size);
@@ -2321,11 +2329,17 @@ $(document).ready(function(){
 		$("#loading-image").show();
 	});
 })
-function getCSVData(){
+function getCSVData(str){
 var csv_value=$('#table_one').table2CSV({delivery:'value'});
-$("#csv_123").val(csv_value);	
+$("#csv_123_"+str).val(csv_value);	
 }
-
+function popup(Site)
+{
+	window.open(Site,'PopupName','toolbar=no,statusbar=yes,menubar=yes,location=no,scrollbars=yes,resizable=yes,width=775,height=700');
+}
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
 </script>
 <script> 
    function clickAndDisable(link) {

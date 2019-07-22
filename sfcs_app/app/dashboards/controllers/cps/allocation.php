@@ -1173,7 +1173,7 @@ if(isset($_POST['allocate']))
 </div>
 <script>
 	document.getElementById("msg").style.display="none";	
-    document.getElementById('allocate_new').disabled=true;
+    //document.getElementById('allocate_new').disabled=true;
 </script>
 <style>
     th{

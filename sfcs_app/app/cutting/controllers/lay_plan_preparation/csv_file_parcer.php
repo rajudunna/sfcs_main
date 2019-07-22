@@ -16,6 +16,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
            $category=$_POST['category'];//cat_ref
            $username = getrbac_user()['uname'];
            $sizes_reference=$_POST['sizes_reference'];
+           $tran_order_tid=$_POST['tran_order_tid'];
             // var_dump($cuttable_sum);
            
           
@@ -80,14 +81,35 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                                        
                             $query_alloc .=" ) VALUES  ";
                         }else{
-                         echo "incorrect file format";die();
+                         echo "incorrect file format";
+                         unlink(realpath($path));
+                         die();
                         } 
                    } else
                     {
                         //var_dump($data);
-                        echo '<pre>';
-                        // print_r($data);
+                       // echo '<pre>';
+                      //  print_r($data);
                     //    var_dump($cuttable_sum);
+                    $ratiocount=0;
+                    $sql="select max(ratio) as \"ratio\" from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cuttable_ref=$cuttable_sum";
+                    // echo $sql;
+                    // mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $sql_result=mysqli_query($link, $sql) or exit("Sql Error741".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $sql_num_check=mysqli_num_rows($sql_result);
+
+                    while($sql_row=mysqli_fetch_array($sql_result))
+                    {
+                        if($sql_row['ratio']){
+                            $ratiocount=$sql_row['ratio'];
+                        }
+                        // var_dump($ratiocount);
+                    }
+
+                    $ratiocount=$ratiocount+1;
+
+
+
                      for($j=1;$j<$total_plies_index;$j++){
                          $style_val.=$data[$j].",";
                      }
@@ -96,12 +118,20 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                      $ratio_num=$data[0];                 
                     
                         //  echo $data[$total_plies_index];
+                        $check_empty=0;
                             if (($data[$total_plies_index])>=($data[$max_plies_index]))
                             {
-                            $query .= "('".$ratio_num."','".$style_val."','".$order_tid."','".$category."','".$cuttable_sum."','"
+                                for($k=0;$k<$max_plies_index;$k++){
+                                    if($data[$k]==''){
+                                        $check_empty=1;
+                                    }
+                                }
+                            if ($check_empty==0)
+                            {
+                            $query .= "('".$ratiocount."','".$style_val."','".$tran_order_tid."','".$category."','".$cuttable_sum."','"
                             .$username."',now()),";
                             $query_alloc .=
-                             "(now(), '".$category."', '".$cuttable_sum."','".$order_tid."','".$ratio_num."', '".$data[$total_plies_index]."', '".$data[$max_plies_index]."', now(), 'Normal','2',";
+                             "(now(), '".$category."', '".$cuttable_sum."','".$tran_order_tid."','".$ratio_num."', '".$data[$total_plies_index]."', '".$data[$max_plies_index]."', now(), 'Normal','2',";
                              
                              $style_array=explode(",",$style_val);
                              
@@ -111,12 +141,19 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                              
                              $query_alloc=rtrim($query_alloc,",");
                              $query_alloc .=" ),";
-                             
+                            }
+                            else
+                            {
+                                echo '<script>swal("Your Missed an empty line","Fill and insert it", "warning");</script>';
+                                unlink(realpath($path));
+                                die();
+                            }
                             }
                             
                             else
                             {
                                 echo '<script>swal("Total Piles Should be Greater than or equal to max piles", "check in inserted sheet and re-insert", "warning");</script>';
+                                unlink(realpath($path));
                                 die();
                                 
                             }
@@ -124,14 +161,27 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                    }
                    $i++;
                }
+            if($i==2){
+                echo '<script>swal("You have Uploaded an empty file","Fill and insert it", "warning");</script>';
+                unlink(realpath($path));
+                die();
+                
+            }
             //    echo $query."<br>".$query_alloc;
                if($i>2){      
                $query=rtrim($query,",");
                $query_alloc=rtrim($query_alloc,",");
             //  var_dump($query_alloc);
-               $sql_result=mysqli_query($link, $query) or exit("Sql Error");
-             $sql_result_alloc=mysqli_query($link, $query_alloc) or exit("Sql Error at query_alloc");
-                 echo "<script type=\"text/javascript\"> 
+             $sql_result=mysqli_query($link, $query) or exit("Sql Error");
+             $sql_result_alloc_check=mysqli_query($link, $query_alloc);// or exit("Sql Error at query_alloc");
+             if (!$sql_result_alloc_check) {
+                 $e_info=mysqli_error($link);
+                echo '<script>swal("Failed to Upload Details","'.$e_info.'", "error");</script>';
+                 //print_r("Error Occoured because of:".mysqli_error($link));
+                 unlink(realpath($path));
+                 exit();
+             }    
+             echo "<script type=\"text/javascript\"> 
                 swal('Data successfully inserted', 'Thank You', 'success');
                 setTimeout(\"Redirect()\",3000); 
                 function Redirect(){	 
