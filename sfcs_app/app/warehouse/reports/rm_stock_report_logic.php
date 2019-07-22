@@ -26,7 +26,7 @@ $product='';
 $buyer='';
 $supplier='';
 $main_data = [];
-$stock_report_inventory="select * FROM $bai_rm_pj1.stock_report_inventory where tid >0 and product_group IN ('".implode("', '", $stock_report_product_group_array)."')";
+$stock_report_inventory="select * FROM $bai_rm_pj1.stock_report_inventory";
 $stock_report_inventory_result =$link->query($stock_report_inventory);
 while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 {
@@ -69,7 +69,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 		$invoice=$row["inv_no"];
     }
     $current_date=date('Y-m-d');
-    $sqly="select sum(ROUND(qty_issued,2)) as qty FROM `bai_rm_pj1`.`store_out` where log_stamp > \"$log_time\" and tran_tid=\"$tid\" and date=\"$current_date\" and tran_tid >0  group by tran_tid";
+    $sqly="select sum(ROUND(qty_issued,2)) as qty FROM `bai_rm_pj1`.`store_out` where log_stamp > \"$log_time\" and tran_tid=\"$tid\" and date=\"$current_date\" ";
     $sql_result1y =$link->query($sqly);
     if(mysqli_num_rows($sql_result1y)> 0) {
         while ($rowy = $sql_result1y->fetch_assoc())
@@ -79,7 +79,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 		}
 	}
 	
-	$sqlz="select sum(ROUND(qty_returned,2)) as qty FROM `bai_rm_pj1`.`store_returns` where log_stamp > \"$log_time\" and tran_tid=\"$tid\" and date=\"$current_date\" and tran_tid >0  group by tran_tid";
+	$sqlz="select sum(ROUND(qty_returned,2)) as qty FROM `bai_rm_pj1`.`store_returns` where log_stamp > \"$log_time\" and tran_tid=\"$tid\" and date=\"$current_date\"";
     $sql_result1z =$link->query($sqlz);
     if(mysqli_num_rows($sql_result1z)> 0) {
         while ($rowz = $sql_result1z->fetch_assoc())
