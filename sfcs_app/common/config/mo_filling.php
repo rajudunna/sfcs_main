@@ -626,7 +626,9 @@
 										{     
 											if($ops_m_id[$last_mo][$ops[$l]]>0)
 											{  
-												$sql = "Update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity + $qty where mo_no ='$last_mo' and	ref_no=".$row1234['tid']." and op_code =".$ops_m_id[$last_mo][$ops[$l]];
+												
+												$sql="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$last_mo."','".$row1234['tid']."','".$qty."', '".$ops_m_id[$mo_no[$kk]][$ops[$jj]]."', '".$ops_m_id[$last_mo][$ops[$l]]."')";
+												echo $sql;
 												$result1=mysqli_query($link, $sql) or exit('Error Encountered');
 												$res=1;
 											}
