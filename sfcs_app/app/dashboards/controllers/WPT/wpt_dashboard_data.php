@@ -38,7 +38,7 @@ if($section > 0){
             /*  BLOCK - 1 */
             //getting the WIP OF module in a section
             $ims_wip_query = "SELECT SUM(ims_qty-ims_pro_qty) AS WIP  from $bai_pro3.ims_log
-                              WHERE ims_mod_no='$module' and ims_status<>'DONE' AND input_job_rand_no_ref NOT IN (SELECT input_job_no_random FROM bai_pro3.pac_stat_log_input_job WHERE type_of_sewing='3')";
+                              WHERE ims_mod_no='$module' and ims_status<>'DONE' ";
             //echo $ims_wip_query;                  
             $ims_wip_result = mysqli_query($link,$ims_wip_query) or exit($data.='Problem in ims wip');
             while($row = mysqli_fetch_array($ims_wip_result)){
@@ -46,8 +46,6 @@ if($section > 0){
                 $wip[$module]   = $ims_wip;
                 //$module_smv[$module] = $row['SMV'] * $ims_wip;
             }
-
-            //
 
             $wip_color = '';
             if($ims_wip == '')
