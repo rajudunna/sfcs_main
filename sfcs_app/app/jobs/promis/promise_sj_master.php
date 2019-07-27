@@ -70,7 +70,7 @@ while($row1=mysqli_fetch_array($result1))
 		}
 	}
 	
-	$inserting_qry = "INSERT IGNORE INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo,
+	$inserting_qry = "INSERT INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo,
      CO_ID,
      Schedule_ID,
      Colour_Code,
