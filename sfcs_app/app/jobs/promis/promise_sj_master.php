@@ -71,7 +71,9 @@ while($row1=mysqli_fetch_array($result1))
 	}
 	
 	//color column length is 15 so we are trimming
-    $color1 = substr($color,13);
+    $color1 = substr($color,0,13);
+  
+
 
 
 	$inserting_qry = "INSERT INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo,
