@@ -34,12 +34,12 @@ $m3_db = $conf->get('m3_db');
 $conn_string = "DRIVER={iSeries Access ODBC Driver};System=".$host_ms.";Uid=".$user_ms.";Pwd=".$password_ms.";";
 
 //Promis Configurations
-$promis_sql_odbc_host = $conf1->get('promis-mssql-odbc');
-$promis_sql_odbc_server = $conf1->get('promis-server-name');
-$promis_sql_odbc_user = $conf1->get('promis-user-name');
-$mpromis_sql_odbc_pass = $conf1->get('promis-password');
-$promis_db = $conf1->get('promisdatabase');
-$promis_sql_driver_name = $conf1->get('promis-driver_name');
+$promis_sql_odbc_host = $conf->get('promis-mssql-odbc');
+$promis_sql_odbc_server = $conf->get('promis-server-name');
+$promis_sql_odbc_user = $conf->get('promis-user-name');
+$promis_sql_odbc_pass = $conf->get('promis-password');
+$promis_db = $conf->get('promisdatabase');
+$promis_sql_driver_name = $conf->get('promis_driver_name');
 
 
 //sfcs-ffsp configurations
