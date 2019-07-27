@@ -66,7 +66,7 @@ while($row1=mysqli_fetch_array($result1))
 		else
 		{
 			$module=0;
-			$log_time='0000-00-00 00:00:00';
+			$log_time=NULL;
 		}
 	}
 	
