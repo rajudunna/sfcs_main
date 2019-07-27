@@ -13,8 +13,8 @@ while($row1=mysqli_fetch_array($result1))
     $job_no = $row1['input_job_no'];
     $quantity = $row1['qty'];
     $size = $row1['size_code'];
-    $docket = $row['doc_no'];
-    $type = $row['type_of_sewing'];
+    $docket = $row1['doc_no'];
+    $type = $row1['type_of_sewing'];
 
     if($type == 2)
     {
@@ -25,13 +25,14 @@ while($row1=mysqli_fetch_array($result1))
        $sewing_type ='0';
     }
 
-    $get_details = "select style,schedule,color from $bai_pro3.order_cat_doc_mix where doc_no = '$docket'";
+    $get_details = "select order_style_no,order_del_no,order_col_des from $bai_pro3.order_cat_doc_mix where doc_no = '$docket'";
+    //echo $get_details;
     $result_checking_qry = $link->query($get_details);
 	while($row2 = $result_checking_qry->fetch_assoc()) 
 	{
-		$style = $row2['style'];
-		$schedule = $row2['schedule'];
-		$color = $row2['color'];
+		$style = $row2['order_style_no'];
+		$schedule = $row2['order_del_no'];
+		$color = $row2['order_col_des'];
 	}
 	$get_co_details = "select co_no from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' limit 1";
 	$result_co_details = $link->query($get_co_details);
@@ -39,7 +40,8 @@ while($row1=mysqli_fetch_array($result1))
 	{
        $co_no = $row4['co_no'];
 	}
-	$get_planning_details = "select input_module,DATE(log_time) from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='$input_job'";
+	$get_planning_details = "select input_module,DATE(log_time) as log_time from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='$input_job'";
+	// echo $get_planning_details;
 	$result_planning_details = $link->query($get_planning_details);
 	if(mysqli_num_rows($result_planning_details)>0)
 	{
@@ -51,7 +53,7 @@ while($row1=mysqli_fetch_array($result1))
 	}
 	else
 	{
-		$get_planning_details1 = "select input_module,DATE(log_time) from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref='$input_job' limit 1";
+		$get_planning_details1 = "select input_module,DATE(log_time) as log_time from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref='$input_job' limit 1";
 		$result_planning_details1 = $link->query($get_planning_details1);
 		if(mysqli_num_rows($result_planning_details1)>0)
 		{
@@ -64,11 +66,11 @@ while($row1=mysqli_fetch_array($result1))
 		else
 		{
 			$module=0;
-			$log_time='0000-00-00'
+			$log_time='0000-00-00';
 		}
 	}
 	
-	$inserting_qry = "INSERT IGNORE INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo,
+	$inserting_qry = "INSERT INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo,
      CO_ID,
      Schedule_ID,
      Colour_Code,
@@ -79,14 +81,12 @@ while($row1=mysqli_fetch_array($result1))
      Quantity,
      Prod_Line,
      Plan_Date,
-     Shade,
-     ERP_MRNNo,
      Manual_Flag,
-     Error_Flag,
      Freez_Flag,
-     Block_Flag,
      Sew_Line,
      Plan_Date2) values('".$job_no."','".$co_no."','".$schedule."','".$color."','".$size."','1','".$color."','".$size."','".$quantity."','".$module."','".$log_time."','".$sewing_type."','1','NULL','NULL')";
+     // echo $inserting_qry;
+     // die();
 	odbc_exec($conn, $inserting_qry);	
 	
 	$sql1221="INSERT INTO `bai_pro3`.`job_pro_track` (`input_job_no_random`, `log_time`) VALUES ('".$input_job."', '".date('Y-m-d H:i:s')."')";
