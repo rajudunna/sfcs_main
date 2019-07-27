@@ -88,7 +88,7 @@ while($row1=mysqli_fetch_array($result1))
      Manual_Flag,
      Freez_Flag,
      Sew_Line,
-     Plan_Date2) values('".$job_no."','".$co_no."','".$schedule."','".$color1."','".$size."','1','".$color."','".$size."','".$quantity."','".$module."','".$log_time."','".$sewing_type."','1','NULL','NULL')";
+     Plan_Date2) values('".$job_no."','".$co_no."','".$schedule."','".$color1."','".$size."','1','".$color."','".$size."','".$quantity."','".$module."','".$log_time."','".$sewing_type."','1','NULL',NULL)";
       // echo $inserting_qry;
       // die();
 	odbc_exec($conn, $inserting_qry);	
