@@ -40,7 +40,7 @@ while($row1=mysqli_fetch_array($result1))
 	{
        $co_no = $row4['co_no'];
 	}
-	$get_planning_details = "select input_module,DATE(log_time) as log_time from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='$input_job'";
+	$get_planning_details = "select input_module,log_time from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='$input_job'";
 	// echo $get_planning_details;
 	$result_planning_details = $link->query($get_planning_details);
 	if(mysqli_num_rows($result_planning_details)>0)
@@ -53,7 +53,7 @@ while($row1=mysqli_fetch_array($result1))
 	}
 	else
 	{
-		$get_planning_details1 = "select input_module,DATE(log_time) as log_time from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref='$input_job' limit 1";
+		$get_planning_details1 = "select input_module,log_time from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref='$input_job' limit 1";
 		$result_planning_details1 = $link->query($get_planning_details1);
 		if(mysqli_num_rows($result_planning_details1)>0)
 		{
@@ -66,10 +66,14 @@ while($row1=mysqli_fetch_array($result1))
 		else
 		{
 			$module=0;
-			$log_time='0000-00-00';
+			$log_time='0000-00-00 00:00:00';
 		}
 	}
 	
+	//color column length is 15 so we are trimming
+    $color1 = rtrim($color,'13');
+
+
 	$inserting_qry = "INSERT INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo,
      CO_ID,
      Schedule_ID,
@@ -84,9 +88,9 @@ while($row1=mysqli_fetch_array($result1))
      Manual_Flag,
      Freez_Flag,
      Sew_Line,
-     Plan_Date2) values('".$job_no."','".$co_no."','".$schedule."','".$color."','".$size."','1','".$color."','".$size."','".$quantity."','".$module."','".$log_time."','".$sewing_type."','1','NULL','NULL')";
-     // echo $inserting_qry;
-     // die();
+     Plan_Date2) values('".$job_no."','".$co_no."','".$schedule."','".$color1."','".$size."','1','".$color."','".$size."','".$quantity."','".$module."','".$log_time."','".$sewing_type."','1','NULL','NULL')";
+      // echo $inserting_qry;
+      // die();
 	odbc_exec($conn, $inserting_qry);	
 	
 	$sql1221="INSERT INTO `bai_pro3`.`job_pro_track` (`input_job_no_random`, `log_time`) VALUES ('".$input_job."', '".date('Y-m-d H:i:s')."')";
