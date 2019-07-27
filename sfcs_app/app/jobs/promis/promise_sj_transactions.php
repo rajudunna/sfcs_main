@@ -1,8 +1,13 @@
-<?php 
+<?php
+error_reporting(0); 
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
-
+// echo "promis_sql_driver_name : ".$promis_sql_driver_name."</br>";
+// echo "promis_sql_odbc_server : ".$promis_sql_odbc_server."</br>";
+// echo "promis_db : ".$promis_db."</br>";
+// echo "promis_sql_odbc_user : ".$promis_sql_odbc_user."</br>";
+// echo "promis_sql_odbc_pass : ".$promis_sql_odbc_pass."</br>";
 if(isset($_GET["date"]))
 {
     $date=$_GET["date"];
@@ -11,7 +16,6 @@ else
 {
     $date = date("Y-m-d");
 }
-
 $get_details1 = "select operation_code,category from $brandix_bts.tbl_orders_ops_ref";
 $result1=mysqli_query($link, $get_details1) or die ("Error1.1=".$get_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row1=mysqli_fetch_array($result1))
@@ -26,15 +30,13 @@ while($row_mod = $result_module->fetch_assoc())
 	$module_desc[$row_mod['module_name']] = $row_mod['module_description'];
 }
 //To get user id
-$get_user_id = "select uid,username from $central_administration_sfcs.user_list";
+$get_user_id = "select uid,username from central_administration_sfcs.user_list";
 $result_user = $link->query($get_user_id);
 while($row_user = $result_user->fetch_assoc())
 {
-	$uid[$row_user['uid']] = $row_user['uid'];
+	$uid[$row_user['username']] = $row_user['uid'];
 }
-
 $conn = odbc_connect("$promis_sql_driver_name;Server=$promis_sql_odbc_server;Database=$promis_db;", $promis_sql_odbc_user,$promis_sql_odbc_pass);
-
 //Deletion in Promis
 if(isset($_GET["date"]))
 {
@@ -77,6 +79,9 @@ while($row1=mysqli_fetch_array($result1))
 	{
 		$rejection_reason = 'NONE';
 	}
+	if($gate_pass_no=' '){
+		$gate_pass_no=0;
+	}
 	// $Hour = date('H');
 	// $min = date('i');
 	// if($min>0)
@@ -100,7 +105,7 @@ while($row1=mysqli_fetch_array($result1))
 		
 		$val=explode("-",$trans_date);
 			
-		$inserting_qry = "INSERT IGNORE INTO [$promis_db].[dbo].[ProMIS_SX_OR_Day_Unique](Unique_ID,
+		$inserting_qry = "INSERT INTO [$promis_db].[dbo].[ProMIS_SX_OR_Day_Unique](Unique_ID,
 		CO_ID,
 		Colour_Code,
 		Colour_Description,
@@ -122,12 +127,13 @@ while($row1=mysqli_fetch_array($result1))
 		UID,
 		GPNO,
 		Session_ID)		
-		Values('".$unique_id."','".$co_no."','".$color_code."','".$color_desc."','".$size_code."','".$size_desc."','".$schedule."','".$z_code."','".$z_desc."','1','".$sewing_job_no."',0,'".$bundle_no."','".$operation_id."','".$mo_number."','".$date."','".$module_desc[$module]."','".$val[1].$val[2].$time."','".$reported_quantity."','".$uid[$user_id]."','".$gate_pass_no."','NULL')";
+		Values('".$unique_id."','".$co_no."','".$color_code."','".$color_desc."','".$size_code."','".$size_desc."','".$schedule."','".$z_code."','".$z_desc."','1','".$sewing_job_no."',0,'".$bundle_no."','".$operation_id."','".$mo_number."','".$date."','".$module_desc[$module]."','".$val[1].$val[2].$time."','".$reported_quantity."','".$uid[$user_id]."','".$gate_pass_no."','0')";
+		
 	}
 	else
 	{
 		$sewing_job_no = 1;		
-		$inserting_qry = "INSERT IGNORE INTO [$promis_db].[dbo].[ProMIS_SX_OR_Day_MQTY](Auto_Unique,
+		$inserting_qry = "INSERT INTO [$promis_db].[dbo].[ProMIS_SX_OR_Day_MQTY](
 		CO_ID,
 		Colour_Code,
 		Colour_Description,
@@ -147,7 +153,7 @@ while($row1=mysqli_fetch_array($result1))
 		Module_Mode,
 		Reason_Code,
 		Remarks)
-		Values('".$id."','".$co_no."','".$color_code."','".$color_desc."','".$size_code."','".$size_desc."','".$schedule."','".$z_code."','".$z_desc."','1','".$sewing_job_no."','".$operation_id."','".$mo_number."','".$date."',0,'".$reported_quantity."','".$uid[$user_id]."','".$rejection_reason."','NULL')";			
+		Values('".$co_no."','".$color_code."','".$color_desc."','".$size_code."','".$size_desc."','".$schedule."','".$z_code."','".$z_desc."','1','".$sewing_job_no."','".$operation_id."','".$mo_number."','".$date."',0,'".$reported_quantity."','".$uid[$user_id]."',0,'".$rejection_reason."','NULL')";			
 	}
 	odbc_exec($conn, $inserting_qry);	
 }	
