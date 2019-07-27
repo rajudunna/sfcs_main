@@ -68,6 +68,7 @@ while($row1=mysqli_fetch_array($result1))
 	$time = $row1['slot_id'];
 	$gate_pass_no = $row1['gate_pass_no'];
 	$id = $row1['unique_id'];
+	$trans_date = $row1['trans_date'];
 	if($reason > 0)
 	{
 		$rejection_reason = $reason;
@@ -95,7 +96,10 @@ while($row1=mysqli_fetch_array($result1))
 		while($row_job = $result_get_sewing_job->fetch_assoc()) 
 		{
 			$sewing_job_no = $row_job['input_job_no'];
-		}		
+		}
+		
+		$val=explode("-",$trans_date);
+			
 		$inserting_qry = "INSERT IGNORE INTO [$promis_db].[dbo].[ProMIS_SX_OR_Day_Unique](Unique_ID,
 		CO_ID,
 		Colour_Code,
@@ -118,7 +122,7 @@ while($row1=mysqli_fetch_array($result1))
 		UID,
 		GPNO,
 		Session_ID)		
-		Values('$unique_id','$co_no','$color_code','$color_desc','$size_code','$size_desc','$schedule','$z_code','$z_desc','1','$sewing_job_no',0,'$bundle_no','$operation_id','$mo_number','$date','".$module_desc[$module]."','$time','$reported_quantity','".$uid[$user_id]."','$gate_pass_no','NULL')";
+		Values('".$unique_id."','".$co_no."','".$color_code."','".$color_desc."','".$size_code."','".$size_desc."','".$schedule."','".$z_code."','".$z_desc."','1','".$sewing_job_no."',0,'".$bundle_no."','".$operation_id."','".$mo_number."','".$date."','".$module_desc[$module]."','".$val[1].$val[2].$time."','".$reported_quantity."','".$uid[$user_id]."','".$gate_pass_no."','NULL')";
 	}
 	else
 	{
@@ -143,7 +147,7 @@ while($row1=mysqli_fetch_array($result1))
 		Module_Mode,
 		Reason_Code,
 		Remarks)
-		Values('$id','$co_no','$color_code','$color_desc','$size_code','$size_desc','$schedule','$z_code','$z_desc','1','$sewing_job_no','$operation_id','$mo_number','$date',0,'$reported_quantity','".$uid[$user_id]."','".$rejection_reason."','NULL')";			
+		Values('".$id."','".$co_no."','".$color_code."','".$color_desc."','".$size_code."','".$size_desc."','".$schedule."','".$z_code."','".$z_desc."','1','".$sewing_job_no."','".$operation_id."','".$mo_number."','".$date."',0,'".$reported_quantity."','".$uid[$user_id]."','".$rejection_reason."','NULL')";			
 	}
 	odbc_exec($conn, $inserting_qry);	
 }	
