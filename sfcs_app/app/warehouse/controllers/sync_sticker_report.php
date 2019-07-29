@@ -125,8 +125,8 @@ if(isset($_POST['download']))
 				$style = str_replace('"', '\"', $row['STYLE']);
 				$order_type = str_replace('"', '\"', $row['ORDER_TYPE']);
 				$warehouse = str_replace('"', '\"', $row['WAREHOUSE']);
-				$po_line = str_replace('"', '\"', $row['PO_line_number']); 
-				$po_subline = str_replace('"', '\"', $row['PO_sub_line_number']);
+				$po_line = str_replace('"', '\"', $row['PO_LINE_NUMBER']); 
+				$po_subline = str_replace('"', '\"', $row['PO_SUB_LINE_NUMBER']);
 				
 				$sql_lot = "INSERT IGNORE INTO $bai_rm_pj1.sticker_report (lot_no) VALUES (\"".$lot_num."\")";
 				//echo $sql_lot."</br>";
