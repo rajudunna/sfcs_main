@@ -19,7 +19,7 @@ $conn = odbc_connect("$promis_sql_driver_name;Server=$promis_sql_odbc_server;Dat
 if($conn)
 {
 	$get_details = "SELECT * FROM [$promis_db].[dbo].[ProMIS_SX_WH_Inventory] WHERE SFCS_Sync = 0 and Inspect_Approve = 1";
-	$sql_result1 = odbc_exec($connect, $get_details);
+	$sql_result1 = odbc_exec($conn, $get_details);
 	while(odbc_fetch_row($sql_result1))
 	{ 
 		$id = odbc_result($sql_result1,'id'); 
