@@ -20,24 +20,27 @@ if($conn)
 {
 	$get_details = "SELECT * FROM [$promis_db].[dbo].[ProMIS_SX_WH_Inventory] WHERE SFCS_Sync = 0 and Inspect_Approve = 1";
 	$result = odbc_exec($connect, $get_details);
-	while(odbc_result($result))
+	while(odbc_fetch_row($result))
 	{ 
-		$id = odbc_result($result, 1);
-		$rol_no = odbc_result($result, 11);
-		$qty_rec = odbc_result($result, 12);
-		$ctex_length = odbc_result($result, 46);
+		$id = odbc_result($sql_result1,'id');
+		$rol_no = odbc_result($sql_result1,'Roll_Number');
+		$qty_rec = odbc_result($sql_result1,'Qty');
+		$ctex_length = odbc_result($sql_result1,'CTex_Length');
+		$ctex_width = odbc_result($sql_result1,'CTex_Width');
+		$user_id = odbc_result($sql_result1,'User_ID');
+		$loc_id = odbc_result($sql_result1,'Loc_ID');
+		$shade = odbc_result($sql_result1,'CPL');
+		$split_id = odbc_result($sql_result1,'Split_ID');
+		$rol_remars = odbc_result($sql_result1,'Comments');
+		$po_number = odbc_result($sql_result1,'PO_Number');
+		$po_subline = odbc_result($sql_result1,'PO_SubLine');
+		$po_line = odbc_result($sql_result1,'PO_Line');
 		$ticket_width = 0;
-		$ctex_width = odbc_result($result, 47);
-		$user_id = odbc_result($result, 23);
-		$loc_id = odbc_result($result, 22);
-		$shade = odbc_result($result, 19);
-		$split_id = odbc_result($result, 54);
-		$rol_remars = odbc_result($result, 37);
 		$status = 0;
 		$date=date('Y-m-d');
 		$remarks='From Promis';
 		$barcode=$id;
-		$lot_no= get_lot_no("bai_rm_pj1.sticker_report","lot_no","po_number='".odbc_result($result, 8)."' and po_subline=".odbc_result($result, 41)." and po_line",odbc_result($result, 40),$link);
+		$lot_no= get_lot_no("bai_rm_pj1.sticker_report","lot_no","po_number='".$po_number."' and po_subline=".$po_subline." and po_line",$po_line,$link);
 		if($lot_no>0)
 		{
 			$sql="INSERT INTO `bai_rm_pj1`.`store_in`(`tid`, `lot_no`, `ref1`, `ref2`, `ref3`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `log_user`, `remarks`, `log_stamp`, `status`, `ref4`, `ref5`, `ref6`, `allotment_status`, `qty_allocated`, `roll_joins`, `roll_status`, `partial_appr_qty`, `upload_file`, `shrinkage_length`, `shrinkage_width`, `shrinkage_group`, `roll_remarks`, `rejection_reason`, `m3_call_status`, `split_roll`, `barcode_number`, `ref_tid`)
