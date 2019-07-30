@@ -40,7 +40,7 @@ if($conn)
 		$date=date('Y-m-d');
 		$remarks='From Promis';
 		$barcode=$id;
-		$lot_no= get_lot_no("bai_rm_pj1.sticker_report","lot_no","po_number='".$po_number."' and po_subline=".$po_subline." and po_line",$po_line,$link);
+		$lot_no= get_lot_no("bai_rm_pj1.sticker_report","lot_no","po_no='".$po_number."' and po_subline=".$po_subline." and po_line",$po_line,$link);
 		if($lot_no>0)
 		{
 			$sql="INSERT INTO `bai_rm_pj1`.`store_in`(`tid`, `lot_no`, `ref1`, `ref2`, `ref3`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `log_user`, `remarks`, `log_stamp`, `status`, `ref4`, `ref5`, `ref6`, `allotment_status`, `qty_allocated`, `roll_joins`, `roll_status`, `partial_appr_qty`, `upload_file`, `shrinkage_length`, `shrinkage_width`, `shrinkage_group`, `roll_remarks`, `rejection_reason`, `m3_call_status`, `split_roll`, `barcode_number`, `ref_tid`)
