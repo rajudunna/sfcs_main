@@ -18,7 +18,7 @@ function get_lot_no($table_name,$field,$compare,$key,$link)
 $conn = odbc_connect("$promis_sql_driver_name;Server=$promis_sql_odbc_server;Database=$promis_db;", $promis_sql_odbc_user,$promis_sql_odbc_pass);
 if($conn)
 {
-	$get_details = "SELECT * FROM [$promis_db].[dbo].[ProMIS_SX_WH_Inventory] WHERE SFCS_Sync = 0 and Inspect_Approve = 1";
+	$get_details = "SELECT * FROM [$promis_db].[dbo].[ProMIS_SX_WH_Inventory] WHERE SFCS_Sync = 0 and Inspect_Approve = 1 and PO_Line>0 and PO_SubLine>0";
 	$sql_result1 = odbc_exec($conn, $get_details);
 	while(odbc_fetch_row($sql_result1))
 	{ 
@@ -47,9 +47,10 @@ if($conn)
 			VALUES (".$id.", '".$lot_no."', '', '".$loc_id."', '".$ctex_width."', '".$qty_rec."', '0.00', '0.00', '".$date."', '".$user_id."', 'Directly came ".$remarks."', '".date("Y-m-d H:i:s")."', '0', '".$shade."', '".$ctex_length."', '".$ticket_width."', '0', '0.00', '0', '0', '0.00', NULL, '0', '0', '0', '".$rol_remars."', '', 'N', '".$split_id."', '".$barcode."', '0')";
 			$result_module = $link->query($sql);
 			
-			$update_query = "UPDATE [$promis_db].[dbo].[ProMIS_SX_WH_Inventory] SFCS_Sync = 1 WHERE ID = '".$id."'";
+			$update_query = "UPDATE [$promis_db].[dbo].[ProMIS_SX_WH_Inventory] set SFCS_Sync = 1 WHERE ID = '".$id."'";
 			odbc_exec($conn, $update_query);
-		}		
+		}
+				
 	}
 }
 else
