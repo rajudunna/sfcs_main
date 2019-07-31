@@ -590,7 +590,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				}				
 				$input_job_no_random_ref=$row["input_job_no_random_ref"];
 				$input_trims_status=$row["input_trims_status"];
-				$sql2="SELECT order_style_no,order_del_no,input_job_no,order_col_des,group_concat(distinct order_col_des) as cols,sum(carton_act_qty) as qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$input_job_no_random_ref'";	
+				$sql2="SELECT order_style_no,order_del_no,input_job_no,order_col_des,type_of_sewing,group_concat(distinct order_col_des) as cols,sum(carton_act_qty) as qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$input_job_no_random_ref'";	
 				$result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row2=mysqli_fetch_array($result2))
 				{
@@ -601,7 +601,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$get_color = $row2["order_col_des"];				
 					$order_col=$row2["cols"];
 					$qty=$row2["qty"];
+					$type_of_sewing=$row2['type_of_sewing'];
 				}
+				//echo "<script>alert('$qty');</script>";
 				$co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedule,$link);				
 				$trims_status=echo_title("$bai_pro3.bai_orders_db_confirm","min(st_status)"," order_col_des in ('".implode("','",explode(",",$order_col))."') and order_del_no",$schedule,$link);
 				$sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing='$type_of_sewing'";
