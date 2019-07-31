@@ -18,7 +18,7 @@ function get_lot_no($table_name,$field,$compare,$key,$link)
 $conn = odbc_connect("$promis_sql_driver_name;Server=$promis_sql_odbc_server;Database=$promis_db;", $promis_sql_odbc_user,$promis_sql_odbc_pass);
 if($conn)
 {
-	$get_details = "SELECT * FROM [$promis_db].[dbo].[ProMIS_SX_WH_Inventory] WHERE SFCS_Sync = 0 and Inspect_Approve = 1 and PO_Line>0 and PO_SubLine>0";
+	$get_details = "SELECT * FROM [$promis_db].[dbo].[ProMIS_SX_WH_Inventory] WHERE SFCS_Sync = 0 and Inspect_Approve = 1 and PO_Line IS NOT NULL and PO_SubLine IS NOT NULL";
 	$sql_result1 = odbc_exec($conn, $get_details);
 	while(odbc_fetch_row($sql_result1))
 	{ 
