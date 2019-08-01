@@ -254,7 +254,7 @@ else
 }
 // End  ---------  03-Nov-2014 -  Added by Chathurangad
 
-echo "<h3>Style:$style / Schedule:$join_sch / Input Job#: J".leading_zeros($jobno,3)."</h3>";
+echo "<h3>Style:$style / Schedule:$join_sch / Input Job#: $prefix".leading_zeros($jobno,3)."</h3>";
 
 $sql="SELECT GROUP_CONCAT(CONCAT(\"'\",order_col_des,\"'\")) AS colorset,GROUP_CONCAT(sizegroup) AS size_group FROM (
 SELECT DISTINCT order_col_des,GROUP_CONCAT(sizeset SEPARATOR '*') AS sizegroup FROM (
