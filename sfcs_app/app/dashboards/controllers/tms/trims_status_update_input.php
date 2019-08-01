@@ -144,6 +144,7 @@ if(isset($_POST["doc"]) or isset($_POST["section"]))
 	$schedule=$_POST["schedule"];
 	$jobno=$_POST["jobno"];
 	$module_no=$_POST["moduleno"];
+	$prefix=$_POST['prefix'];
 	//echo $doc."<br>";
 }
 else
@@ -154,6 +155,7 @@ else
 	$schedule=$_GET["schedule"];
 	$jobno=$_GET["jobno"];
 	$module_no=$_GET["module"];
+	$prefix=$_GET['prefix'];
 	//echo $doc."<br>";
 }
 //echo $doc;
@@ -350,6 +352,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error8832 $sql".mysqli_error(
 		$imsinputqty=doc_in_status($link,'IMSINPUTQTY',$sql_row['size_code'],$sql_row['doc_no'],'');
 		$balance=($sql_row['carton_act_qty']-$inputqty);
 		$allowedqty=0;
+		//echo $sql_row['size_code'];
 		//echo $cutqty."-".$inputqty."-".$imsinputqty."-".$sql_row['carton_act_qty']."<br>";
 		if(($cutqty-$imsinputqty)>=$balance)
 		{
