@@ -339,7 +339,7 @@ function getjobdetails($job_number)
                 // {
                     // $row['remarks'] = 'Normal';
                 // }
-				$get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix WHERE id= $job_number_reference";
+				$get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing= $job_number_reference";
 				$get_remark_arry_req = $link->query($get_remark);
 				while($row_remark = $get_remark_arry_req->fetch_assoc()) 
 				{

@@ -18,7 +18,7 @@ function get_lot_no($table_name,$field,$compare,$key,$link)
 $conn = odbc_connect("$promis_sql_driver_name;Server=$promis_sql_odbc_server;Database=$promis_db;", $promis_sql_odbc_user,$promis_sql_odbc_pass);
 if($conn)
 {
-	$get_details = "SELECT * FROM [$promis_db].[dbo].[ProMIS_SX_WH_Inventory] WHERE SFCS_Sync = 0 and Inspect_Approve = 1 and PO_Line>0 and PO_SubLine>0";
+	$get_details = "SELECT * FROM [$promis_db].[dbo].[ProMIS_SX_WH_Inventory] WHERE SFCS_Sync = 0 and Inspect_Approve = 1 and PO_Line IS NOT NULL and PO_SubLine IS NOT NULL";
 	$sql_result1 = odbc_exec($conn, $get_details);
 	while(odbc_fetch_row($sql_result1))
 	{ 
@@ -40,7 +40,7 @@ if($conn)
 		$date=date('Y-m-d');
 		$remarks='From Promis';
 		$barcode=$id;
-		$lot_no= get_lot_no("bai_rm_pj1.sticker_report","lot_no","po_number='".$po_number."' and po_subline=".$po_subline." and po_line",$po_line,$link);
+		$lot_no= get_lot_no("bai_rm_pj1.sticker_report","lot_no","po_no='".$po_number."' and po_subline=".$po_subline." and po_line",$po_line,$link);
 		if($lot_no>0)
 		{
 			$sql="INSERT INTO `bai_rm_pj1`.`store_in`(`tid`, `lot_no`, `ref1`, `ref2`, `ref3`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `log_user`, `remarks`, `log_stamp`, `status`, `ref4`, `ref5`, `ref6`, `allotment_status`, `qty_allocated`, `roll_joins`, `roll_status`, `partial_appr_qty`, `upload_file`, `shrinkage_length`, `shrinkage_width`, `shrinkage_group`, `roll_remarks`, `rejection_reason`, `m3_call_status`, `split_roll`, `barcode_number`, `ref_tid`)
