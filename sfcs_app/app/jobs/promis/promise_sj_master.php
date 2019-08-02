@@ -67,17 +67,14 @@ if($conn)
 			}
 			else
 			{
-				$module=0;
-				$log_time=' ';
+				$module='NA';
+				$log_time='';
 			}
 		}
 		
 		//color column length is 15 so we are trimming
 	    $color1 = substr($color,0,13);
-	  
-
-
-
+		
 		$inserting_qry = "INSERT INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo,
 	     CO_ID,
 	     Schedule_ID,
@@ -92,10 +89,8 @@ if($conn)
 	     Manual_Flag,
 	     Freez_Flag,
 	     Sew_Line,
-	     Plan_Date2) values('".$job_no."','".$co_no."','".$schedule."','".$color1."','".$size."','1','".$color."','".$size."','".$quantity."','".$module."','".$log_time."','".$sewing_type."','1','NULL',NULL)";
-	      // echo $inserting_qry;
-	      // die();
-		odbc_exec($conn, $inserting_qry);	
+	     Plan_Date2,Error_Flag) values('".$job_no."','".$co_no."','".$schedule."','".$color1."','".$size."','1','".$color."','".$size."','".$quantity."','".$module."','".$log_time."','".$sewing_type."','1','NULL',NULL,0)";
+	   	odbc_exec($conn, $inserting_qry);	
 		
 		$sql1221="INSERT INTO `bai_pro3`.`job_pro_track` (`input_job_no_random`, `log_time`) VALUES ('".$input_job."', '".date('Y-m-d H:i:s')."')";
 		$link->query($sql1221);

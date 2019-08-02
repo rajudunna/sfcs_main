@@ -20,6 +20,13 @@ $conn = odbc_connect("$promis_sql_driver_name;Server=$promis_sql_odbc_server;Dat
 
 if($conn)
 {
+	$ops_arry=array(30,75,200,15,144,50,115,143,40,110,144,50,115,143,40,110,148,143,125,120,115,110,200,10,190,50,40,130,6,5,22,21,1,100,190,195,148,70,147,60,125,120,500);
+	$ops_arry_1=array(610,20,200,15,144,50,115,143,40,110,144,50,115,143,40,110,148,143,125,120,115,110,200,10,190,50,40,800,6,5,25,22,1,30,190,195,148,70,147,60,125,120,500);
+	for($i=0;$i<sizeof($ops_arry);$i++)
+	{
+		$ops_value[$ops_arry[$i]]=$ops_arry_1[$i];
+	}
+
     $get_details1 = "select operation_code,category from $brandix_bts.tbl_orders_ops_ref";
 	$result1=mysqli_query($link, $get_details1) or die ("Error1.1=".$get_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
@@ -75,7 +82,7 @@ if($conn)
 		$gate_pass_no = $row1['gate_pass_no'];
 		$id = $row1['unique_id'];
 		$trans_date = $row1['trans_date'];
-		if($reason > 0)
+		if($reason <> '')
 		{
 			$rejection_reason = $reason;
 		}
@@ -107,7 +114,7 @@ if($conn)
 				$sewing_job_no = $row_job['input_job_no'];
 			}
 			
-			$val=explode("-",$trans_date);
+			//$val=explode("-",$trans_date);
 				
 			$inserting_qry = "INSERT INTO [$promis_db].[dbo].[ProMIS_SX_OR_Day_Unique](Unique_ID,
 			CO_ID,
@@ -131,11 +138,21 @@ if($conn)
 			UID,
 			GPNO,
 			Session_ID)		
-			Values('".$unique_id."','".$co_no."','".$color_code."','".$color_desc."','".$size_code."','".$size_desc."','".$schedule."','".$z_code."','".$z_desc."','1','".$sewing_job_no."',0,'".$bundle_no."','".$operation_id."','".$mo_number."','".$date."','".$module_desc[$module]."','".$val[1].$val[2].$time."','".$reported_quantity."','".$uid[$user_id]."','".$gate_pass_no."','0')";
+			Values('".$unique_id."','".$co_no."','".$color_code."','".$color_desc."','".$size_code."','".$size_desc."','".$schedule."','".$z_code."','".$z_desc."','1','".$sewing_job_no."',0,'".$bundle_no."','".$ops_value[$operation_id]."','".$mo_number."','".$date."','".$module_desc[$module]."','".$time."','".$reported_quantity."','".$uid[$user_id]."','".$gate_pass_no."','0')";
 			
 		}
 		else
 		{
+			if($reason <> '')
+			{
+				$div_code = 'RJCT';
+				$mod_mode = 2;
+			}
+			else
+			{
+				$div_code = 'DIV';
+				$mod_mode = 1;
+			}
 			$sewing_job_no = 1;		
 			$inserting_qry = "INSERT INTO [$promis_db].[dbo].[ProMIS_SX_OR_Day_MQTY](
 			CO_ID,
@@ -157,7 +174,7 @@ if($conn)
 			Module_Mode,
 			Reason_Code,
 			Remarks)
-			Values('".$co_no."','".$color_code."','".$color_desc."','".$size_code."','".$size_desc."','".$schedule."','".$z_code."','".$z_desc."','1','".$sewing_job_no."','".$operation_id."','".$mo_number."','".$date."',0,'".$reported_quantity."','".$uid[$user_id]."',0,'".$rejection_reason."','NULL')";			
+			Values('".$co_no."','".$color_code."','".$color_desc."','".$size_code."','".$size_desc."','".$schedule."','".$z_code."','".$z_desc."','1','".$sewing_job_no."','".$ops_value[$operation_id]."','".$mo_number."','".$date."','".$div_code."','".$reported_quantity."','".$uid[$user_id]."','".$mod_mode."','".$rejection_reason."','NULL')";			
 		}
 		odbc_exec($conn, $inserting_qry);	
 	}
