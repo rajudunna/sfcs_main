@@ -724,7 +724,8 @@ echo "<td>";
 	echo "</td>";
 
 echo "</tr>";
-unset($lotnos_array);	
+unset($lotnos_array);
+unset($seperated_lots);	
 }
 echo "<tr><td colspan=3><center>Total Required Material</center></td><td>$total</td><td></td><td></td><td></td></tr>";
 echo "</table>";
