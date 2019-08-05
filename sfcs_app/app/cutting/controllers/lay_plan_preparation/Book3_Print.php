@@ -2964,7 +2964,7 @@ $previouse='0';
   <th class=xl704118>Bundling</th>
   <th class=xl704118>Dispatch</th>
   <th></th>
-  <th class=xl654118>Remark 1:<td height=20 class=xl654118 style='height:15.0pt'><u><?php echo $remark1?></u></td></th>
+  <th class=xl654118>Remark 1:<td colspan="8" height=20 class=xl654118 style='height:15.0pt'><u><?php echo $remark1?></u></td></th>
   <th></th>
   
  </tr>
@@ -2980,7 +2980,7 @@ $previouse='0';
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td></td>
-  <th class=xl654118>Remark 2:<td height=20 class=xl654118 style='height:15.0pt'><u><?php echo $remark2?></u></td></th>
+  <th class=xl654118>Remark 2:<td colspan="8" height=20 class=xl654118 style='height:15.0pt'><u><?php echo $remark2?></u></td></th>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:30pt'></td>
@@ -2994,7 +2994,7 @@ $previouse='0';
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td></td>
-  <th class=xl654118>Remark 3:<td height=20 class=xl654118 style='height:15.0pt'><u><?php echo $remark3?></u></td></th>
+  <th class=xl654118>Remark 3:<td colspan="8" height=20 class=xl654118 style='height:15.0pt'><u><?php echo $remark3?></u></td></th>
  </tr>
  <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
@@ -3008,7 +3008,7 @@ $previouse='0';
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td></td>
-  <th class=xl654118>Remark 4:<td height=20 class=xl654118 style='height:15.0pt'><u><?php echo $remark4?></u></td></th>
+  <th class=xl654118>Remark 4:<td colspan="8" height=20 class=xl654118 style='height:15.0pt'><u><?php echo $remark4?></u></td></th>
  </tr>
  <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
