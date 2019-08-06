@@ -459,10 +459,36 @@
 							$employee_no = substr($employee_no,-10);
 						}					
 						$tid1=implode(",",$tid);
+						if($promis_val==1)
+						{
+							$sql23="select tid,size_code,sum(carton_act_qty) as qty from $bai_pro3.pac_stat_log_input_job where tid in ($tid1) froup by size_code";
+							$sql_result532=mysqli_query($link, $sql23) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row532=mysqli_fetch_array($sql_result532))
+							{
+								$sql34="SELECT mo_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no=".$sql_row532['tid']." and op_code='$op_code' limit 1";
+								$sql_result23=mysqli_query($link, $sql34) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($sql_row5232=mysqli_fetch_array($sql_result23))
+								{																
+									$get_codes = "select schedule,referenceorder,colorcode,sizecode,zcode,COLOURDESC,SIZEDESC from $m3_inputs.mo_details where monumber=".$sql_row5232['mo_no']."";
+									//echo $get_details;
+									$get_codes_result = $link->query($get_codes);
+									while($row21 = $get_codes_result->fetch_assoc()) 
+									{
+										$color_code = $row21['colorcode'];
+										$colorname = $row21['COLOURDESC'];
+										$sizecode = $row21['sizecode'];
+										$size = $row21['SIZEDESC'];
+										$co_no = $row21['referenceorder'];
+										$schedule = $row21['schedule'];
+									}	
+									$insert_qry="INSERT IGNORE INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo, CO_ID, Schedule_ID, Colour_Code, Size_Code, Country_ID, Colour_Description,    Size_Description, Quantity, Prod_Line, Plan_Date, Manual_Flag, Freez_Flag, Sew_Line, Plan_Date2, Error_Flag) values('".$input_job_no."','".$co_no."','".$schedule."','".$color_code."','".$sizecode."', '1' ,'".$colorname."','".$size."','".$sql_row532['qty']."','".$prom_div_name[$input_module]."','". $log_time ."','".$sewing_type."','1','NULL',NULL,'0')"; 
+									odbc_exec($conn, $insert_qry);
+								}
+							}
+						}						
+						
 						$mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid1) and op_code='$op_code' group by mo_no";
-						//echo $mo_operation_quantites_query."<br>";
-						//die();
-						//added m3 db in query
+						
 						$mssql_insert_query="insert into [$mssql_db].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status,DSP1,DSP2,DSP3,DSP4) values";
 						$values_promis = array();
 						$values = array();
@@ -476,23 +502,7 @@
 							$op_code=$sql_row5['op_code'];
 							$op_desc=$sql_row5['op_desc'];
 							$ref_no[]=$sql_row5['ref_no'];
-							if($promis_val==1)
-							{							
-								$get_codes = "select schedule,referenceorder,colorcode,sizecode,zcode,COLOURDESC,SIZEDESC from $m3_inputs.mo_details where monumber='$mo_no'";
-								//echo $get_details;
-								$get_codes_result = $link->query($get_codes);
-								while($row21 = $get_codes_result->fetch_assoc()) 
-								{
-									$color_code = $row21['colorcode'];
-									$colorname = $row21['COLOURDESC'];
-									$sizecode = $row21['sizecode'];
-									$size = $row21['SIZEDESC'];
-									$co_no = $row21['referenceorder'];
-									$schedule = $row21['schedule'];
-								}	
-								$insert_qry="INSERT IGNORE INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo, CO_ID, Schedule_ID, Colour_Code, Size_Code, Country_ID, Colour_Description,    Size_Description, Quantity, Prod_Line, Plan_Date, Manual_Flag, Freez_Flag, Sew_Line, Plan_Date2, Error_Flag) values('".$input_job_no."','".$co_no."','".$schedule."','".$color_code."','".$sizecode."', '1' ,'".$colorname."','".$size."','".$bundle_quantity."','".$prom_div_name[$input_module]."','". $log_time ."','".$sewing_type."','1','NULL',NULL,'0')"; 
-								odbc_exec($conn, $insert_qry);
-							}
+							
 							array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_no . "','" . $op_code . "','" . $bundle_quantity . "','".$employee_no."','".$remarks."','".$co_no."','".$order_del_no."',NULL,'1','1','1','1')"); 
 						}
 						$ref_no1=implode(",",$ref_no);
