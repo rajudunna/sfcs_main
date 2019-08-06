@@ -686,16 +686,18 @@ if(isset($_POST['fix']))
 					}	
 				}				
 			}	
-					
-			echo "<h2>New Style: $style</h2>";
-			echo "<h2>New Schedule: $new_sch</h2>";
-			echo "<h2>New Color: $color</h2>";
-			echo "<h2>Successfully Completed.</h2>";	
+				
+		
 			
 			$sql451="select * from $bai_pro3.bai_orders_db_confirm where order_del_no='".$new_sch."' and order_col_des=\"".$color."\" ";
 			$sql_result451=mysqli_query($link, $sql451) or exit(message_sql());
 			if(mysqli_num_rows($sql_result451)>0)
 			{
+				echo "<h2>New Style: $style</h2>";
+				echo "<h2>New Schedule: $new_sch</h2>";
+				echo "<h2>New Color: $color</h2>";
+				echo "<h2>Successfully Completed.</h2>";	
+				
 				while($sql_row451=mysqli_fetch_array($sql_result451))
 				{
 					echo "<table class='table table-bordered table-responsive'><tr class='info'><th>Style </th><th>Schedule No</th><th>Color</th><th> Orginal schedules</th>";
@@ -724,19 +726,19 @@ if(isset($_POST['fix']))
 					echo "<br>";
 				}
 				echo "<script>swal('Clubbing Completed Successfully.','','success');</script>";
-				echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");				
+				// echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");				
 			}			
 		}																								
 		else
 		{
 			echo "<script>swal('You cannot proceed Schedule Clubbing.','Some of the Item codes are not equal for selected Schedules.','warning');</script>";
-			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");
+			// echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");
 		}
 	}
 	else
 	{
 		echo "<script>swal('Please select more than one schedule for clubbing.','','warning');";
-		echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");
+		// echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");
 	}
 	
 }
