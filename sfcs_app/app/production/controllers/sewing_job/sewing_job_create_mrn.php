@@ -422,7 +422,7 @@
 					{
 						$co_no=$sql_row14['co_no'];
 					}
-					$sql76="SELECT input_module  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno'";
+					$sql76="SELECT input_module,log_time  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno'";
 					$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row76=mysqli_fetch_array($sql_result76))
 					{
@@ -482,7 +482,7 @@
 							$ref_no[]=$sql_row5['ref_no'];
 							if($promis_val==1)
 							{							
-								$get_codes = "select colorcode,sizecode,zcode,COLOURDESC,SIZEDESC from $m3_inputs.mo_details where monumber='$mo_no'";
+								$get_codes = "select referenceorder,colorcode,sizecode,zcode,COLOURDESC,SIZEDESC from $m3_inputs.mo_details where monumber='$mo_no'";
 								//echo $get_details;
 								$get_codes_result = $link->query($get_codes);
 								while($row21 = $get_codes_result->fetch_assoc()) 
