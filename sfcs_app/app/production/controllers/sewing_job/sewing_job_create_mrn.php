@@ -461,7 +461,7 @@
 						$tid1=implode(",",$tid);
 						if($promis_val==1)
 						{
-							$sql23="select tid,size_code,sum(carton_act_qty) as qty from $bai_pro3.pac_stat_log_input_job where tid in ($tid1) froup by size_code";
+							$sql23="select tid,size_code,sum(carton_act_qty) as qty from $bai_pro3.pac_stat_log_input_job where tid in ($tid1) group by size_code";
 							$sql_result532=mysqli_query($link, $sql23) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row532=mysqli_fetch_array($sql_result532))
 							{
@@ -481,7 +481,7 @@
 										$co_no = $row21['referenceorder'];
 										$schedule = $row21['schedule'];
 									}	
-									$insert_qry="INSERT IGNORE INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo, CO_ID, Schedule_ID, Colour_Code, Size_Code, Country_ID, Colour_Description,    Size_Description, Quantity, Prod_Line, Plan_Date, Manual_Flag, Freez_Flag, Sew_Line, Plan_Date2, Error_Flag) values('".$input_job_no."','".$co_no."','".$schedule."','".$color_code."','".$sizecode."', '1' ,'".$colorname."','".$size."','".$sql_row532['qty']."','".$prom_div_name[$input_module]."','". $log_time ."','".$sewing_type."','1','NULL',NULL,'0')"; 
+									$insert_qry="INSERT INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo, CO_ID, Schedule_ID, Colour_Code, Size_Code, Country_ID, Colour_Description,    Size_Description, Quantity, Prod_Line, Plan_Date, Manual_Flag, Freez_Flag, Sew_Line, Plan_Date2, Error_Flag) values('".$input_job_no."','".$co_no."','".$schedule."','".$color_code."','".$sizecode."', '1' ,'".$colorname."','".$size."','".$sql_row532['qty']."','".$prom_div_name[$input_module]."','". $log_time ."','".$sewing_type."','1','NULL',NULL,'0')"; 
 									odbc_exec($conn, $insert_qry);
 								}
 							}
