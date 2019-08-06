@@ -2688,10 +2688,8 @@ $tkt_width[]=$sql_row['ref6'];
 <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 width=64 style='height:15.0pt'></td>
   <td class='xl764118'>Shade</td>
-  <td class='xl764118'>Lot No</td>
-  
-
   <td class='xl764118'>Batch</td>
+  <td class='xl764118'>Lot No</td>
   <td class='xl764118'>Location</td>
   <td class=xl7742018>Roll</br>No</td>
   <td class='xl764118'>Fabric Name</td>
@@ -2749,9 +2747,10 @@ $previouse='0';
 	  <td height=20 class=xl654118 style='height:30pt'></td>
 	  <td class='xl814118 check_tr'><?php echo $shade_det[$i]; ?></td>	  
 	  
-	  <td class=xl814118 style='font-size: 100%;'><?php echo $lot_det[$i]; ?></td>
+	  
 	
 	  <td class=xl804118><?php echo $batch_det[$i]; ?></td>
+	  <td class=xl814118 style='font-size: 100%;'><?php echo $lot_det[$i]; ?></td>
 	  <td class=xl814118><?php echo $location_det[$i]; ?></td>
 	  <td class=xl814118><?php echo $roll_det[$i]; ?></td>
 	  <td class=xl804118><?php echo $item_name[$i]; ?></td>
@@ -2781,9 +2780,10 @@ $previouse='0';
 	 <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
 	  <td height=20 class=xl654118 style='height:30pt'></td>
 	  <td class='xl814118 check_tr' ><?php echo $shade_det[$i]; ?></td>	  
-	  <td class=xl814118 style='font-size: 100%;'><?php echo $lot_det[$i]; ?></td>
+	 
 	
 	  <td class=xl804118><?php echo $batch_det[$i]; ?></td>
+	  <td class=xl814118 style='font-size: 100%;'><?php echo $lot_det[$i]; ?></td>
 	  <td class=xl814118><?php echo $location_det[$i]; ?></td>
 	  <td class=xl814118><?php echo $roll_det[$i]; ?></td>
 	  <td class=xl804118><?php echo $item_name[$i]; ?></td>
