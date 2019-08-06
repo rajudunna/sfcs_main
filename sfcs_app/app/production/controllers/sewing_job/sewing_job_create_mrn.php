@@ -482,7 +482,7 @@
 										$schedule = $row21['schedule'];
 									}	
 									$insert_qry="INSERT INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo, CO_ID, Schedule_ID, Colour_Code, Size_Code, Country_ID, Colour_Description,    Size_Description, Quantity, Prod_Line, Plan_Date, Manual_Flag, Freez_Flag, Sew_Line, Plan_Date2, Error_Flag) values('".$input_job_no."','".$co_no."','".$schedule."','".$color_code."','".$sizecode."', '1' ,'".$colorname."','".$size."','".$sql_row532['qty']."','".$prom_div_name[$input_module]."','". $log_time ."','".$sewing_type."','1','NULL',NULL,'0')"; 
-									odbc_exec($conn, $insert_qry);
+									odbc_exec($conn2, $insert_qry);
 								}
 							}
 						}						
