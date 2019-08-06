@@ -152,7 +152,10 @@ if($conn)
 				//echo "Table - ProMIS_SX_OR_Day_MQTY ---".$inserting_qry."<br>";			
 			}
 		}
-		odbc_exec($conn, $inserting_qry);	
+		odbc_exec($conn, $inserting_qry);
+				
+		$sql_update="UPDATE $bai_pro3.`m3_transactions` SET `promis_status` = 1 WHERE `id` = ".$id."";
+		$sql_result=mysqli_query($link, $sql_update) or exit("Updatting issue".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 }
 else
