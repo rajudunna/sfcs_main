@@ -463,10 +463,6 @@
 						//echo $mo_operation_quantites_query."<br>";
 						//die();
 						//added m3 db in query
-						if($promis_val==1)
-						{
-							$mssql_insert_query_promis="INSERT INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo, CO_ID, Schedule_ID, Colour_Code, Size_Code, Country_ID, Colour_Description,    Size_Description, Quantity, Prod_Line, Plan_Date, Manual_Flag, Freez_Flag, Sew_Line, Plan_Date2, Error_Flag) values";
-						}
 						$mssql_insert_query="insert into [$mssql_db].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status,DSP1,DSP2,DSP3,DSP4) values";
 						$values_promis = array();
 						$values = array();
@@ -494,17 +490,13 @@
 									$co_no = $row21['referenceorder'];
 									$schedule = $row21['schedule'];
 								}	
-								array_push($values_promis, "('".$input_job_no . "','" . $co_no . "','" . $schedule . "','" . $color_code . "','" . $sizecode . "', '1' ,'".$colorname."','".$size."','".$bundle_quantity."','".$prom_div_name[$input_module]."','". $log_time ."','".$sewing_type."','1','NULL',NULL,'0')"); 
+								$insert_qry="INSERT INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo, CO_ID, Schedule_ID, Colour_Code, Size_Code, Country_ID, Colour_Description,    Size_Description, Quantity, Prod_Line, Plan_Date, Manual_Flag, Freez_Flag, Sew_Line, Plan_Date2, Error_Flag) values('".$input_job_no."','".$co_no."','".$schedule."','".$color_code."','".$sizecode."', '1' ,'".$colorname."','".$size."','".$bundle_quantity."','".$prom_div_name[$input_module]."','". $log_time ."','".$sewing_type."','1','NULL',NULL,'0')"; 
+								odbc_exec($conn, $insert_qry);
 							}
 							array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_no . "','" . $op_code . "','" . $bundle_quantity . "','".$employee_no."','".$remarks."','".$co_no."','".$order_del_no."',NULL,'1','1','1','1')"); 
 						}
 						$ref_no1=implode(",",$ref_no);
 						$mssql_insert_query_result=odbc_exec($conn, $mssql_insert_query . implode(', ', $values));
-						
-						if($promis_val==1)
-						{
-							odbc_exec($conn2, $mssql_insert_query_promis . implode(', ', $values_promis));
-						}
 						
 						$sql_num_check5=odbc_num_rows($mssql_insert_query_result);
 						
