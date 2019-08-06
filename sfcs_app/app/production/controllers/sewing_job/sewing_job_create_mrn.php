@@ -478,7 +478,7 @@
 							$ref_no[]=$sql_row5['ref_no'];
 							if($promis_val==1)
 							{							
-								$get_codes = "select referenceorder,colorcode,sizecode,zcode,COLOURDESC,SIZEDESC from $m3_inputs.mo_details where monumber='$mo_no'";
+								$get_codes = "select schedule,referenceorder,colorcode,sizecode,zcode,COLOURDESC,SIZEDESC from $m3_inputs.mo_details where monumber='$mo_no'";
 								//echo $get_details;
 								$get_codes_result = $link->query($get_codes);
 								while($row21 = $get_codes_result->fetch_assoc()) 
@@ -490,7 +490,7 @@
 									$co_no = $row21['referenceorder'];
 									$schedule = $row21['schedule'];
 								}	
-								$insert_qry="INSERT INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo, CO_ID, Schedule_ID, Colour_Code, Size_Code, Country_ID, Colour_Description,    Size_Description, Quantity, Prod_Line, Plan_Date, Manual_Flag, Freez_Flag, Sew_Line, Plan_Date2, Error_Flag) values('".$input_job_no."','".$co_no."','".$schedule."','".$color_code."','".$sizecode."', '1' ,'".$colorname."','".$size."','".$bundle_quantity."','".$prom_div_name[$input_module]."','". $log_time ."','".$sewing_type."','1','NULL',NULL,'0')"; 
+								$insert_qry="INSERT IGNORE INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo, CO_ID, Schedule_ID, Colour_Code, Size_Code, Country_ID, Colour_Description,    Size_Description, Quantity, Prod_Line, Plan_Date, Manual_Flag, Freez_Flag, Sew_Line, Plan_Date2, Error_Flag) values('".$input_job_no."','".$co_no."','".$schedule."','".$color_code."','".$sizecode."', '1' ,'".$colorname."','".$size."','".$bundle_quantity."','".$prom_div_name[$input_module]."','". $log_time ."','".$sewing_type."','1','NULL',NULL,'0')"; 
 								odbc_exec($conn, $insert_qry);
 							}
 							array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_no . "','" . $op_code . "','" . $bundle_quantity . "','".$employee_no."','".$remarks."','".$co_no."','".$order_del_no."',NULL,'1','1','1','1')"); 
