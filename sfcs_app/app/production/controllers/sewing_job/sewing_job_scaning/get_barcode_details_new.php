@@ -7,7 +7,8 @@
     $gate_id = $_POST['gate_id'];
 	$user_permission = $_POST['auth'];
     $b_shift = $shift;	
-    //changing for #978 cr 
+    //changing for #978 cr
+    $barcode="24458-18"; 
     $barcode_number = explode('-', $barcode)[0];
     //retriving original bundle_number from this barcode
     $selct_qry = "SELECT bundle_number FROM $brandix_bts.bundle_creation_data 
@@ -761,7 +762,9 @@
                         if($emb_cut_check_flag == 1)
                         {
                             $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$b_rep_qty[$key] where doc_no = '".$b_doc_num[$key]."' and size_title='".$b_sizes[$key]."' AND operation_code = $pre_ops_code";
-                            $update_qry_cps_log_res = $link->query($update_qry_cps_log);
+                            //echo "ram</br>".$update_qry_cps_log."</br>";
+                            $updat_cps_qry_array[]=$update_qry_cps_log;
+                            //$update_qry_cps_log_res = $link->query($update_qry_cps_log);
                         }
                         
                     }
@@ -814,8 +817,21 @@
             }else{
                 $final_query_000_temp = $bulk_insert_temp;
             }
-            $bundle_creation_result_temp = $link->query($final_query_000_temp);
-            $sql_message = 'Data inserted successfully';
+            if($bundle_creation_result){
+                $bundle_creation_result_temp = $link->query($final_query_000_temp);
+                if($bundle_creation_result_temp){
+                    if(count($updat_cps_qry_array)>0){
+                        for($i=0;$i<count($updat_cps_qry_array);$i++){
+                            $update_qry_cps_log_res = $link->query($updat_cps_qry_array[$i]);
+                        }
+                    }    
+                }
+            }
+            if(update_qry_cps_log_res){
+                $sql_message = 'Data inserted successfully';
+            }else{
+                $sql_message = 'Data Not inserted';
+            }
                     //all operation codes query.. (not tested)
         }
         else
