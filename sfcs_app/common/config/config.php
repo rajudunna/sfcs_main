@@ -25,6 +25,15 @@ $ms_sql_odbc_pass = $conf1->get('mssql-password');
 $mssql_db = $conf1->get('m3database');
 $ms_sql_driver_name = $conf1->get('driver_name');
 
+//Promis Configurations
+$promis_val = $conf->get('promis_val');
+$promis_sql_odbc_host = $conf->get('promis-mssql-odbc');
+$promis_sql_odbc_server = $conf->get('promis-server-name');
+$promis_sql_odbc_user = $conf->get('promis-user-name');
+$promis_sql_odbc_pass = $conf->get('promis-password');
+$promis_db = $conf->get('promisdatabase');
+$promis_sql_driver_name = $conf->get('promis_driver_name');
+
 //Barcode Configuration
 $barcode_4x2 = $conf1->get('4x2-barcode');
 $barcode_2x1 = $conf1->get('2x1-barcode');
