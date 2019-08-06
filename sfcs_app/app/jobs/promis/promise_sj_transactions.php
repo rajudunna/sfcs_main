@@ -12,7 +12,6 @@ else
 {
     $date = date("Y-m-d");
 }
-$date='2019-08-05';
 
 $conn = odbc_connect("$promis_sql_driver_name;Server=$promis_sql_odbc_server;Database=$promis_db;", $promis_sql_odbc_user,$promis_sql_odbc_pass);
 
