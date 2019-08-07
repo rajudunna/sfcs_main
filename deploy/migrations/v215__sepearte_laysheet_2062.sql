@@ -67,8 +67,7 @@ ALTER TABLE `bai_rm_pj1`.`fabric_cad_allocation` CHANGE `doc_no` `doc_no` VARCHA
 USE `central_administration_sfcs`;
 
 INSERT INTO central_administration_sfcs.tbl_menu_list
-    ( `menu_pid`,`page_id
-`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_status`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES
+    ( `menu_pid`,`page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_status`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES
 ('1659','SFCS_0189','8','8','179','1','1','1','/sfcs_app/app/cutting/controllers/seperate_docket.php','Binding Allocation Form','8','');
 
 INSERT INTO central_administration_sfcs.rbac_role_menu
@@ -77,8 +76,7 @@ VALUES
     ('1659', 'Binding Allocation Form', '1');
 
 INSERT INTO central_administration_sfcs.tbl_menu_list
-    (`menu_pid`,`page_id
-`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_status`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES
+    (`menu_pid`,`page_id`, `fk_group_id`, `fk_app_id`, `parent_id`, `link_type`, `link_status`, `link_visibility`, `link_location`, `link_description`, `link_tool_tip`, `link_cmd`) VALUES
 ('1660','SFCS_0190','8','8','109','1','1','1','/sfcs_app/app/cutting/controllers/lay_plan_preparation/binding_report.php','Binding Request Form','9','');
 
 INSERT INTO central_administration_sfcs.rbac_role_menu
