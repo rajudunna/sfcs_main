@@ -1054,14 +1054,14 @@
     	$sql="Delete from $brandix_bts.tbl_miniorder_data where mini_order_ref='".$carton_id."'";
     	mysqli_query($link, $sql) or exit("Failed to Delete tbl_miniorder_data");
 
-    	$sql1="Delete from $brandix_bts.`tbl_carton_ref` where id='".$c_ref."'";
-    	mysqli_query($link, $sql1) or exit("Failed to Delete tbl_carton_ref");
+    	$sql1="UPDATE $brandix_bts.`tbl_carton_ref` SET merge_status='' where id='".$c_ref."'";
+    	mysqli_query($link, $sql1) or exit("Failed to update tbl_carton_ref");
 
-    	$sql2="Delete from $brandix_bts.`tbl_carton_size_ref` where parent_id='".$c_ref."'";
-    	mysqli_query($link, $sql2) or exit("Failed to Delete tbl_carton_size_ref");
+    	$sql2="UPDATE $brandix_bts.`tbl_carton_size_ref` SET split_qty='', no_of_cartons='' where parent_id='".$c_ref."'";
+    	mysqli_query($link, $sql2) or exit("Failed to update tbl_carton_size_ref");
 
     	//echo "<h2>Error in sewing job generation please regenerate the sewing job<h2>";
-    	echo "<script>sweetAlert('Error in sewing job generation please regenerate the sewing job and Pack ratio!','warning');</script>";
+    	echo "<script>sweetAlert('Error in sewing job generation please regenerate the sewing job!','warning');</script>";
     	echo("<script>setTimeout(function(){location.href = '".getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N')."'},5000);</script>");
     	die();
     }
