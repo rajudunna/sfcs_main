@@ -8,7 +8,6 @@
 	$user_permission = $_POST['auth'];
     $b_shift = $shift;	
     //changing for #978 cr
-    $barcode="24458-18"; 
     $barcode_number = explode('-', $barcode)[0];
     //retriving original bundle_number from this barcode
     $selct_qry = "SELECT bundle_number FROM $brandix_bts.bundle_creation_data 
