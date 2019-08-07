@@ -39,7 +39,6 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	// $reference=$sql_row['reference'];
 	$style=$sql_row['order_style_no']; //Style
 	$color=$sql_row['order_col_des']; //color
 	$ord_joins=$sql_row['order_joins']; // Order joins
@@ -400,7 +399,6 @@ $a_s50=$sql_row['a_s50'];
 	
 	$cutno=$sql_row['acutno'];
 	$plies=$sql_row['p_plies']; //20110911
-	$reference=$sql_row['reference'];
 	$docketno=$sql_row['doc_no'];
 	$docketdate=$sql_row['date'];
 	$mk_ref=$sql_row['mk_ref'];
