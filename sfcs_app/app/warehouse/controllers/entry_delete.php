@@ -440,7 +440,7 @@ if(isset($_POST['put']))
 			}				
 			else
 			{
-				echo "<script>sweetAlert('Unable To Delete','Please Cross Check Details','error')</script>";
+				echo "<script>sweetAlert('Lot Number Deleted Successfully','Rolls are not updated for this lot','success')</script>";
 				//echo "<h2><font color=red>Transaction un-successful, please cross check the details.</font></h2>";
 				$url = getFullURL($_GET['r'],'entry_delete.php','N');
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",3000); function Redirect() {  location.href = \"$url\"; }</script>";

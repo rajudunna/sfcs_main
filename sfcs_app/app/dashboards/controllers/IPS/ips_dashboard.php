@@ -272,6 +272,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$display_prefix1=$prefix.leading_zeros($input_job_no,3);
 
 				$ft_status_min="";
+				$cut_status=0;
+				$fabric_status=0;
+				$fabric_req=0;
 				if($schedule!="")
 				{
 					$doc_no_ref_explode=explode(",",$doc_no_ref);
@@ -279,6 +282,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$sql1x1="select * from $bai_pro3.plandoc_stat_log where act_cut_status<>'DONE' and doc_no in ($doc_no_ref)";
 					//echo $sql1x1."<bR>";
 					$sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+						
 					if(mysqli_num_rows($sql_result1x1)>0)
 					{
 						$cut_status="0";
@@ -287,7 +291,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					{
 						$cut_status="5";
 					}
-					
+						
 					$fabric_status="";
 					$sql1x11="select * from $bai_pro3.plandoc_stat_log where fabric_status<>'5' and doc_no in ($doc_no_ref)";
 					//echo $sql1x11."<br>";

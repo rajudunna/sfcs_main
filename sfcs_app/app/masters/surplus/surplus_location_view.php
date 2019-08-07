@@ -24,6 +24,7 @@
 		while($row = $result->fetch_assoc()) 
 		{
 	        $q_id = $row['q_id'];
+	        $q_location_type = $row['location_type'];
 			$qms_location_id=$row['qms_location_id'];
 			$qms_location=$row['qms_location'];
 			$qms_location_cap=$row['qms_location_cap'];
@@ -36,8 +37,8 @@
 				$cat_status = "In-Active";
 			}
 			echo "<tr><td>".$sno++."</td><td>".$row["qms_location_id"]."</td><td>".$row["qms_location"]."</td><td>".$row["qms_location_cap"]." </td><td>".$row["qms_cur_qty"]."</td><td>".$cat_status."</td>
-			<td><a href='$url&rowid=$q_id&qms_location_id=$qms_location_id&qms_location=$qms_location&qms_location_cap=$qms_location_cap&qms_cur_qty=$qms_cur_qty&active_status=$cat_status' class='btn btn-warning btn-xs editor_edit'>Edit</a> /
-			 <a href='$url1&rowid=$q_id&qms_location_id=$qms_location_id&qms_location=$qms_location&qms_location_cap=$qms_location_cap&qms_cur_qty=$qms_cur_qty&active_status=$cat_status' class='btn btn-danger btn-xs' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
+			<td><a href='$url&rowid=$q_id&qms_location_id=$qms_location_id&qms_location=$qms_location&qms_location_cap=$qms_location_cap&qms_cur_qty=$qms_cur_qty&active_status=$cat_status&q_location_type=$q_location_type' class='btn btn-warning btn-xs editor_edit'>Edit</a> /
+			 <a href='$url1&rowid=$q_id&qms_location_id=$qms_location_id&qms_location=$qms_location&qms_location_cap=$qms_location_cap&qms_cur_qty=$qms_cur_qty&active_status=$cat_status&q_location_type=$q_location_type' class='btn btn-danger btn-xs' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
 		}
 		echo "</tbody></table>";
 	} else {

@@ -116,7 +116,7 @@
 								</tr>
 								<tr>
 									<td colspan=4><b>Job Number:</b>'.$display1.'</td>
-									<td colspan=2><b>Size:</b>'.trim($barcode_rslt['size_code']).'</td>';
+									<td colspan=2><b>:</b>'.trim($barcode_rslt['size_code']).'</td>';
 						if($shade != '')
 							$html.= "<td colspan=4><b>Shade:</b>$shade</td>";	
 						else
@@ -132,7 +132,7 @@
 						</div><br><br><br><br><br>';
 			}
 			//Dummy sticker Ends
-			$operation_det="SELECT tor.operation_name as operation_name,tor.operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style ' AND color='$color' and tsm.barcode='Yes' and tor.operation_code not in (10,15,200) ORDER BY operation_order";
+			$operation_det="SELECT tor.operation_name as operation_name,tor.operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style ' AND color='$color' and tsm.barcode='Yes' and tor.category='sewing' AND tor.display_operations='yes' ORDER BY operation_order*1";
 			$sql_result1=mysqli_query($link, $operation_det) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($ops = mysqli_fetch_array($sql_result1))
 			{	
