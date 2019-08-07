@@ -563,7 +563,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			echo "<tr class=\"bottom\">";
 			echo "<td class=\"bottom\"><strong><a href=\"javascript:void(0)\" 
 			 if (window.focus) {Popup.focus()} return false;\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
-			$y=0;
+			$y=0;   
 
 			$show_block = calculateJobsCount($table_name,$module,$order_div_ref);
 			if($show_block > 0){
@@ -696,8 +696,8 @@ include('include_legends_tms.php');
 
 function calculateJobsCount($table_name,$module,$order_div_ref){
 	global $link;
-	$ijs_query  = "SELECT group_concat(distinct \"'\",input_job_no_random_ref,\"'\")  as jobs FROM $bai_pro3.plan_dash_doc_summ_input WHERE input_trims_status=4  
-							 AND input_module=$module $order_div_ref";
+	$ijs_query  = "SELECT group_concat(distinct \"'\",input_job_no_random_ref,\"'\")  as jobs FROM $bai_pro3.plan_dashboard_ipnut WHERE input_trims_status=4  
+							 AND input_module='$module'";
 							
 	$ijs_result = mysqli_query($link,$ijs_query);
 	while($row = mysqli_fetch_array($ijs_result)){
@@ -708,7 +708,7 @@ function calculateJobsCount($table_name,$module,$order_div_ref){
 		return 0;
 	else{
 		$ips_jobs_query = "SELECT count(distinct \"'\",input_job_no_random_ref,\"'\") AS ips_jobs_match_count FROM bai_pro3.plan_dashboard_input WHERE input_trims_status=4  
-		AND input_module=$module ";
+		AND input_module='$module'";
 		$inps_jobs_result = mysqli_query($link,$ips_jobs_query);
 		while($row = mysqli_fetch_array($inps_jobs_result)){
 				$ips_jobs_count = $row['ips_jobs_match_count'];
