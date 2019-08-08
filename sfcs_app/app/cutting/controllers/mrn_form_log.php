@@ -368,7 +368,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 								case 1:
 								{
 									//echo "<td><a href=\"update_form.php?ref=$tid&level=1&product=$product&reason_code=$reason_code&ref_tid=$ref_tid\">App./Rej.</a></td>";
-									if(in_array($mrn_approve,$has_permission))
+									if(in_array($authorizeLevel_1,$has_permission))
                                     { 
 									echo "<td><a href='$link2&ref=$tid&level=1&product=$product&reason_code=$reason_code&ref_tid=$ref_tid' onclick=\"return popitupnew('$link2&ref=$tid&level=1&product=$product&reason_code=$reason_code&ref_tid=$ref_tid')\"><button class='btn btn-success btn-xs'>App./Rej.</button></a></td>";
 									}
@@ -380,7 +380,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 								}
 								case 2:
 								{
-									if(in_array($mrn_approve,$has_permission))
+									if(in_array($authorizeLevel_2,$has_permission))
                                     {
 									echo "<td><a href=\"$link2&ref=$tid&level=2&product=$product&reason_code=$reason_code&ref_tid=$ref_tid\" onclick=\"return popitupnew('$link2&ref=$tid&level=2&product=$product&reason_code=$reason_code&ref_tid=$ref_tid')\"><button class='btn btn-success btn-xs'>Update</button></a></td>";
 									//echo "<td><a href=\"update_form.php?ref=$tid&level=2&product=$product&reason_code=$reason_code&ref_tid=$ref_tid\">Update</a></td>";
@@ -399,7 +399,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 								}
 								case 5:
 								{
-									if(in_array($mrn_rm,$has_permission))
+									if(in_array($authorizeLevel_3,$has_permission))
                                     {
 									echo "<td><a href=\"$link2&ref=$tid&level=3&product=$product&reason_code=$reason_code&ref_tid=$ref_tid\" onclick=\"return popitupnew('$link2&ref=$tid&level=3&product=$product&reason_code=$reason_code&ref_tid=$ref_tid')\"><button class='btn btn-success btn-xs'>Allocate</button></a></td>";
 									//echo "<td><a href=\"update_form.php?ref=$tid&level=3&product=$product&reason_code=$reason_code&ref_tid=$ref_tid\">Allocate</a></td>";
@@ -412,7 +412,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 								}
 								case 7:
 								{
-									if(in_array($mrn_rm,$has_permission))
+									if(in_array($authorizeLevel_4,$has_permission))
                                     {
 									echo "<td><a href=\"$link3?tid=$ref_tid&print_status=0\" onclick=\"return popitup('$link3?tid=$ref_tid&print_status=0')\"><button class='btn btn-success btn-xs'>Print</button></a></td>";
 									}
@@ -424,7 +424,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 								}
 								case 8:
 								{
-									if(in_array($mrn_rm,$has_permission))
+									if(in_array($authorizeLevel_5,$has_permission))
                                     {
 									echo "<td><a href=\"$link2&ref=$tid&level=8&product=$product&reason_code=$reason_code&ref_tid=$ref_tid\" onclick=\"return popitupnew('$link2&ref=$tid&level=8&product=$product&reason_code=$reason_code&ref_tid=$ref_tid')\"><button class='btn btn-success btn-xs'>Issue</button></a></td>";
 								//	echo "<td><a href=\"update_form.php?ref=$tid&level=8&product=$product&reason_code=$reason_code&ref_tid=$ref_tid\">Issue</a></td>";
