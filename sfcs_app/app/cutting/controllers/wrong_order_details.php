@@ -148,13 +148,11 @@ $(document).ready(function() {
                                $order_tid = $row1['order_tid'];
                         }
 
-                     
 						$check_layplan="select * from $bai_pro3.plandoc_stat_log where order_tid = '$order_tid'";
 						$result4 = $link->query($check_layplan);
-						
                         if(mysqli_num_rows($result4) > 0)
                         {
-                           echo "<script>swal('','Already Lay-Plan Genereated','warning') </script>";
+						 echo "<script>swal('','Already Lay-Plan Genereated','warning') </script>";
                         }
                         else
                         {
@@ -205,17 +203,28 @@ $(document).ready(function() {
 	                        $result14 = $link->query($del_cat_stat_log);
 
 	                        $del_schedule_operation="DELETE FROM $bai_pro3.schedule_oprations_master WHERE Style='$style' AND Description ='$color' AND ScheduleNumber='$schdule'";  
-	                        $result15 = $link->query($del_schedule_operation);
+							$result15 = $link->query($del_schedule_operation);
+
+							$bai_orders_confirm="SELECT * FROM $bai_pro3.bai_orders_db_confirm WHERE order_style_no='$style' AND order_col_des='$color' ";
+							$result18 = $link->query($bai_orders_confirm);
+							
+							if(mysqli_num_rows($result18) > 0)
+							{
+								// var_dump($result18);
+								echo "<script>swal('','Except style operation masters All records Deleted Successfully','warning') </script>";
+
+							}
+							else
+							{
+								$tbl_style_ops_master="DELETE FROM $brandix_bts.tbl_style_ops_master WHERE Style='$style' AND color ='$color'";  
+								$result17 = $link->query($tbl_style_ops_master);
+								echo "<script>swal('','Records Deleted Successfully','warning') </script>";
+							}
 
 	                        $user1=getrbac_user()['uname'];
 	                        $delete_track="insert into $brandix_bts.delete_log (user,style,schedule,color) values('$user1','$style','$schdule','$color')";
 	                        $result16 = $link->query($delete_track);
-	                          //echo  $delete_track;
-
-
-	                        echo "<script>swal('','Deleted Successfully','warning') </script>";
-
-
+	                        
                         }	
 					}
 				?>
