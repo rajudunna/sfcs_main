@@ -2068,7 +2068,7 @@ body { zoom:72%;}
 <script>
 function printpr()
 {
-	window.print();
+	//window.print();
 	// var OLECMDID = 7;
 	// /* OLECMDID values:
 	// * 6 - print
@@ -2560,7 +2560,7 @@ tags will be replaced.-->
   <td rowspan="2" colspan="11" class=xl764118 style='border-bottom:.5pt solid black;' >Inspection Comments:
   
   <?php
-  $sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='normal'  group by roll_id order by batch_no,ref4 asc";
+  $sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='normal'  group by roll_id  order by batch_no,ref4 asc";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -2617,7 +2617,7 @@ $tkt_width[]=$sql_row['ref6'];
  <?php
  $roll_length = array();
 //  $roll_det = array();
- $sql123="SELECT batch_no as batch,ref2,ref4,SUM(allocated_qty) AS shade_lengt FROM $bai_rm_pj1.docket_ref WHERE doc_no=$doc_id AND doc_type='normal' GROUP BY ref4";
+ $sql123="SELECT batch_no as batch,ref2,ref4,SUM(allocated_qty) AS shade_lengt FROM $bai_rm_pj1.docket_ref WHERE doc_no=$doc_id AND doc_type='normal' GROUP BY ref4 order by batch,ref2 asc";
  $sql_result123=mysqli_query($link, $sql123) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($sql_row123=mysqli_fetch_array($sql_result123))
 {
@@ -2730,19 +2730,19 @@ $previouse='0';
 		if ($previouse == $shade_det[$i]){?>
 			<tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
 	  <td height=20 class=xl654118 style='height:30pt'></td>
-	  <td class='xl814118 check_tr'><?php echo $shade_det[$i]; ?></td>	  
+	  <td class=xl804118><?php echo $shade_det[$i]; ?></td>	  
 	  
 	  
 	
-	  <td class=xl804118><?php echo $batch_det[$i]; ?></td>
+	  <td class=xl814118><?php echo $batch_det[$i]; ?></td>
 	  <td class=xl814118 style='font-size: 100%;'><?php echo $lot_det[$i]; ?></td>
 	  <td class=xl814118><?php echo $location_det[$i]; ?></td>
 	  <td class=xl814118><?php echo $roll_det[$i]; ?></td>
-	  <td class=xl804118><?php echo $item_name[$i]; ?></td>
-	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $tkt_len[$i]; $tot_tick_len=$tot_tick_len+$tkt_len[$i];?></td>
-	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_len[$i]; $tot_ctex_len=$tot_ctex_len+$ctex_len[$i];?></td>
-	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_width[$i]; ?></td>
-	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $leng_det[$i]; $tot_alloc_qty=$tot_alloc_qty+$leng_det[$i];
+	  <td class=xl814118><?php echo $item_name[$i]; ?></td>
+	  <td class=xl814118 ><?php echo $tkt_len[$i]; $tot_tick_len=$tot_tick_len+$tkt_len[$i];?></td>
+	  <td class=xl814118 ><?php echo $ctex_len[$i]; $tot_ctex_len=$tot_ctex_len+$ctex_len[$i];?></td>
+	  <td class=xl814118 ><?php echo $ctex_width[$i]; ?></td>
+	  <td class=xl814118 ><?php echo $leng_det[$i]; $tot_alloc_qty=$tot_alloc_qty+$leng_det[$i];
 	  $shade_tot = $shade_tot+$leng_det[$i];?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>&nbsp;</td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>&nbsp;</td>
@@ -2758,24 +2758,30 @@ $previouse='0';
 	  <?php
 	 }else{
 			if($previouse!='0'){
-			echo "<tr><td colspan=10 class=xl684118>Total</td><td class=xl684118 style='text-align:right'>".$shade_tot."</td><td colspan=9 class=xl684118></td></tr>";
+			echo "<tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
+			 <td height=20 class=xl654118 style='height:30pt'></td>
+			<td colspan=9 class=xl804118 check_tr'>Total</td>
+			<td class=xl814118>".$shade_tot."</td>
+			<td colspan=10 class=xl684118>
+			</td>
+			</tr>";
 			}
 			$shade_tot = 0;
 			?>
 	 <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
 	  <td height=20 class=xl654118 style='height:30pt'></td>
-	  <td class='xl814118 check_tr' ><?php echo $shade_det[$i]; ?></td>	  
+	  <td class=xl804118><?php echo $shade_det[$i]; ?></td>	  
 	 
 	
-	  <td class=xl804118><?php echo $batch_det[$i]; ?></td>
+	  <td class=xl814118><?php echo $batch_det[$i]; ?></td>
 	  <td class=xl814118 style='font-size: 100%;'><?php echo $lot_det[$i]; ?></td>
 	  <td class=xl814118><?php echo $location_det[$i]; ?></td>
 	  <td class=xl814118><?php echo $roll_det[$i]; ?></td>
-	  <td class=xl804118><?php echo $item_name[$i]; ?></td>
-	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $tkt_len[$i]; $tot_tick_len=$tot_tick_len+$tkt_len[$i];?></td>
-	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_len[$i]; $tot_ctex_len=$tot_ctex_len+$ctex_len[$i];?></td>
-	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $ctex_width[$i]; ?></td>
-	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'><?php echo $leng_det[$i]; $tot_alloc_qty=$tot_alloc_qty+$leng_det[$i];
+	  <td class=xl814118><?php echo $item_name[$i]; ?></td>
+	  <td class=xl814118 ><?php echo $tkt_len[$i]; $tot_tick_len=$tot_tick_len+$tkt_len[$i];?></td>
+	  <td class=xl814118 ><?php echo $ctex_len[$i]; $tot_ctex_len=$tot_ctex_len+$ctex_len[$i];?></td>
+	  <td class=xl814118 ><?php echo $ctex_width[$i]; ?></td>
+	  <td class=xl814118 ><?php echo $leng_det[$i]; $tot_alloc_qty=$tot_alloc_qty+$leng_det[$i];
 	  $shade_tot = $shade_tot+$leng_det[$i];?></td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>&nbsp;</td>
 	  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>&nbsp;</td>
@@ -2837,24 +2843,27 @@ $previouse='0';
 	<?php
 	//  }
  ?>
- <tr><td colspan=10 class=xl684118>Total</td><td class=xl684118 ><?= $shade_tot; ?></td><td colspan=9 class=xl684118  ></td></tr>
- 	<tr>
-	<td colspan=7 class=xl684118>Grand Total </td>
+ <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
+			 <td height=20 class=xl654118 style='height:30pt'></td>
+			<td colspan=9 class='xl804118'>Total</td><td class=xl814118 ><?= $shade_tot; ?></td><td colspan=10 class=xl684118  ></td></tr>
+ 	<tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
+			 <td height=20 class=xl654118 style='height:30pt'></td>
+			<td colspan=6 class='xl804118 '>Grand Total </td>
 	<?php
 	// for($i=0;$i<sizeof($roll_det);$i++)
 	// {
-		echo "<td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_tick_len."</td>
-			  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_ctex_len."</td>
+		echo "<td class=xl814118 >".$tot_tick_len."</td>
+			  <td class=xl814118 >".$tot_ctex_len."</td>
 			  <td class=xl814118></td>
-			  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_alloc_qty."</td>
-			  <td class=xl814118></td>
-			  <td class=xl814118></td>
+			  <td class=xl814118 >".$tot_alloc_qty."</td>
 			  <td class=xl814118></td>
 			  <td class=xl814118></td>
 			  <td class=xl814118></td>
 			  <td class=xl814118></td>
 			  <td class=xl814118></td>
-			  <td class=xl814118 style='text-align:right;padding-bottom:5pt;'>".$tot_bind_len."</td>
+			  <td class=xl814118></td>
+			  <td class=xl814118></td>
+			  <td class=xl684118 style='text-align:right;padding-bottom:5pt;'>".$tot_bind_len."</td>
 			  <td class=xl814118></td>";
 	// }
 	?>
