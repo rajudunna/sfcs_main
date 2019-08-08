@@ -205,9 +205,13 @@ $(document).ready(function() {
 	                        $del_schedule_operation="DELETE FROM $bai_pro3.schedule_oprations_master WHERE Style='$style' AND Description ='$color' AND ScheduleNumber='$schdule'";  
 							$result15 = $link->query($del_schedule_operation);
 
+							$user1=getrbac_user()['uname'];
+	                        $delete_track="insert into $brandix_bts.delete_log (user,style,schedule,color) values('$user1','$style','$schdule','$color')";
+	                        $result16 = $link->query($delete_track);
+							
 							$bai_orders_confirm="SELECT * FROM $bai_pro3.bai_orders_db_confirm WHERE order_style_no='$style' AND order_col_des='$color' ";
 							$result18 = $link->query($bai_orders_confirm);
-							
+
 							if(mysqli_num_rows($result18) > 0)
 							{
 								// var_dump($result18);
@@ -221,9 +225,7 @@ $(document).ready(function() {
 								echo "<script>swal('','Records Deleted Successfully','warning') </script>";
 							}
 
-	                        $user1=getrbac_user()['uname'];
-	                        $delete_track="insert into $brandix_bts.delete_log (user,style,schedule,color) values('$user1','$style','$schdule','$color')";
-	                        $result16 = $link->query($delete_track);
+	                        
 	                        
                         }	
 					}
