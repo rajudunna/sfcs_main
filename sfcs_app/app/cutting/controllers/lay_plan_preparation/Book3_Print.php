@@ -2561,27 +2561,40 @@ tags will be replaced.-->
   <td rowspan="2" colspan="11" class=xl764118 style='border-bottom:.5pt solid black;' >Inspection Comments:
   
   <?php
-$sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='normal' group by roll_id  ORDER BY ref4,batch_no,lot_no,qty_rec DESC";
+ $sql1="select ref4,sum(qty_rec) as qty from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='normal' group by ref4 order by qty desc";
 //echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
+$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row1=mysqli_fetch_array($sql_result1))
 {
-	$roll_det[]=$sql_row['ref2'];
-	$width_det[]=round($sql_row['roll_width'],2);
-	$leng_det[]=$sql_row['allocated_qty'];
-	$batch_det[]=trim($sql_row['batch_no']);
-	$shade_det[]=$sql_row['ref4'];
-	$location_det[]=$sql_row['ref1'];
-	$invoice_no[]=$sql_row['inv_no'];
-	$locan_det[]=$sql_row['ref1'];
-	$lot_det[]=$sql_row['lot_no'];
-	$roll_id[]=$sql_row['roll_id'];
-	$ctex_len[]=$sql_row['ref5'];
-	$tkt_len[]=$sql_row['qty_rec'];
-	$item_name[] = $sql_row['item'];
-	$ctex_width[]=$sql_row['ref3'];
-	$tkt_width[]=$sql_row['ref6'];
-} 
+	$shades[]=$sql_row1['ref4'];
+}
+if(sizeof($shades)>0)
+{ 
+	for($i=0;$i<sizeof($shades);$i++)
+	{ 
+		$sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='normal' and ref4='".$shades[$i]."' group by roll_id  ORDER BY ref4,batch_no,lot_no,qty_rec DESC";
+		//echo $sql;
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+			$roll_det[]=$sql_row['ref2'];
+			$width_det[]=round($sql_row['roll_width'],2);
+			$leng_det[]=$sql_row['allocated_qty'];
+			$batch_det[]=trim($sql_row['batch_no']);
+			$shade_det[]=$sql_row['ref4'];
+			$location_det[]=$sql_row['ref1'];
+			$invoice_no[]=$sql_row['inv_no'];
+			$locan_det[]=$sql_row['ref1'];
+			$lot_det[]=$sql_row['lot_no'];
+			$roll_id[]=$sql_row['roll_id'];
+			$ctex_len[]=$sql_row['ref5'];
+			$tkt_len[]=$sql_row['qty_rec'];
+			$item_name[] = $sql_row['item'];
+			$ctex_width[]=$sql_row['ref3'];
+			$tkt_width[]=$sql_row['ref6'];
+		} 
+	}
+}
   //echo ($bind_con>0)?"Binding/Rib Quantity: $bind_con YDS":"";
    if(sizeof($batch_det) > 0)
    {
