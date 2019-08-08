@@ -697,7 +697,7 @@ include('include_legends_tms.php');
 
 <?php
 
-function calculateJobsCount($table_name,$module,$order_div_ref){
+function calculateJobsCount($table_name,$module,$order_div_ref){ 
 	global $link;
 	$ijs_query  = "SELECT group_concat(distinct \"'\",input_job_no_random_ref,\"'\")  as jobs FROM $bai_pro3.plan_dashboard_input WHERE input_trims_status=4  
 							 AND input_module='$module'";

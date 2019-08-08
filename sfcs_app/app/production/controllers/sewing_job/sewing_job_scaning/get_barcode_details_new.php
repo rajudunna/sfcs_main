@@ -1049,6 +1049,7 @@
                 $output_ops_code = 130;
             }
 			
+			
 			$application='IPS';
 			$scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
 			//echo $scanning_query;
@@ -1083,8 +1084,8 @@
 				$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$b_job_no."'";
 				mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));	
 			}
-						
 			
+
             for($i=0;$i<sizeof($b_tid);$i++)
             {
                 if($b_tid[$i] == $bundle_no){
