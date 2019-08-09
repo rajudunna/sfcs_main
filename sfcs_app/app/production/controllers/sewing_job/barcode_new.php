@@ -170,7 +170,7 @@
 							$html.= "<td colspan=4></td>";	
 						$html.='</tr> 
 								<tr>
-									<td colspan=10><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
+									<td colspan=10><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,35).'</td>
 								</tr>
 								<tr>	
 									<td colspan=7><b>Operation:</b>'.substr(str_replace(' ','',$operations),0,18).' - '.$opscode.'</td>
