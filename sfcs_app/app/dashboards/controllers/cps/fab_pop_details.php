@@ -455,7 +455,7 @@ echo "<input type=\"hidden\" value=\"1\" name=\"process_cat\">"; //this is to id
 echo "<input type=\"hidden\" value=\"$style_ref\" name=\"style_ref\">";  
 echo "<input type=\"hidden\" value=\"$dash\" name=\"dashboard\">";  
 
-echo "<table class='table table-bordered'><tr><th>Category</th><th>Item Code</th><th>Color Desc. - Docket No</th><th>Required<br/>Qty</th><th>Control</th><th>Print Status</th><th>Roll Details</th></tr>";
+echo "<table class='table table-bordered'><tr><th>Category</th><th>Item Code</th><th>Color Desc. - Docket No</th><th>Required<br/>Qty</th><th>Reference</th><th>Control</th><th>Print Status</th><th>Roll Details</th></tr>";
 //$sql1="SELECT plandoc_stat_log.plan_lot_ref,plandoc_stat_log.cat_ref,plandoc_stat_log.print_status,plandoc_stat_log.doc_no,cat_stat_log.category from plandoc_stat_log left join cat_stat_log on plandoc_stat_log.cat_ref=cat_stat_log.tid  where plandoc_stat_log.order_tid=\"$order_id_ref\" and plandoc_stat_log.acutno=$cut_no_ref";
 
 if(strtolower($docket_remarks) == 'normal')
@@ -503,8 +503,8 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	if($style_flag==0)
 	{
 		$docno_lot=$sql_row1['doc_no'];
+		// var_dump($docno_lot);
 		$componentno_lot=$sql_row1['compo_no'];
-		
 		$clubbing=$sql_row1['clubbing'];
 		//echo $docno_lot."--".$clubbing."<br>";
 		if($clubbing>0)
@@ -554,6 +554,14 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$p_qty=$sql_row2['qty'];
 	}
 	//$output_trimmed = array_map("trim", explode(',', $input));
+	//echo "</br>Seperated".$seperated_lots;
+	// $ref="select reference from $bai_pro3.plandoc_stat_log where doc_no='$doc_no'";
+	$sql007="select * from $bai_pro3.plandoc_stat_log where doc_no=\"".$docno_lot."\"";
+		$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row007=mysqli_fetch_array($sql_result007))
+		{
+			$reference=$row007["reference"];
+		}
 	// echo "</br>Seperated--".$seperate_docket;
 	$sql5="SELECT binding_consumption,seperate_docket from $bai_pro3.cat_stat_log where  tid=\"".$sql_row1['cat_ref']."\"";
 	$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -577,16 +585,16 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	echo "<td>".$sql_row1['compo_no']."</td>";
 	echo "<td>".$sql_row1['col_des'].'-'.$sql_row1['doc_no']."</td>";
 	$extra=0;
-	//echo "<br>1=".$sql_row1['material_req'];
-	//if(substr($style_ref,0,1)=="M") { $extra=round(($material_req*0.01),2); }
+
+
 	{ $extra=round(($material_requirement_orig*$sql_row1['savings']),2); }
 	echo "<td>".($material_requirement_orig+$extra)."</td>";
+	echo "<td>".$reference."</td>";
 	$temp_tot=$material_requirement_orig+$extra;
 	$total+=$temp_tot;
 	$temp_tot=0;
 	$club_id=$sql_row1['clubbing'];
 	//For new implementation
-	
 	$newOrderTid=$sql_row1['order_tid'];
 	$doc_cat=$sql_row1['category'];
 	$doc_com=$sql_row1['compo_no'];
