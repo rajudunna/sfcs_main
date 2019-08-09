@@ -479,8 +479,15 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
 		while($sql_row2=mysqli_fetch_array($sql_result))
 		{
-			$binding_con = $sql_row2['binding_consumption'];
-			$bind_con= $binding_con *($a_ratio_tot*$plies);	
+			if($sql_row2['seperate_docket'] == 'Yes') {
+				$binding_con=0;
+				$bind_con=0;
+			} else{
+				$binding_con = $sql_row2['binding_consumption'];
+				$bind_con= $binding_con *($a_ratio_tot*$plies);
+			} 
+
+
 		}
 	}
 	else
@@ -530,7 +537,12 @@ if($print_status==NULL)
 
 */
 // echo $docketno.'<br>';
-
+$child_ref_query="SELECT reference AS reference FROM $bai_pro3.plandoc_stat_log WHERE doc_no='$doc_no'";
+$child_ref_result=mysqli_query($link, $child_ref_query) or exit("error while getting original doc nos");
+while($sql_row=mysqli_fetch_array($child_ref_result))
+{
+	$reference[]=$sql_row['reference'];
+}
 $child_dockets_query="SELECT doc_no AS doc_no FROM $bai_pro3.plandoc_stat_log WHERE org_doc_no='$docketno'";
 $child_dockets_result=mysqli_query($link, $child_dockets_query) or exit("error while getting original doc nos");
 while($sql_row=mysqli_fetch_array($child_dockets_result))
@@ -2211,7 +2223,7 @@ tags will be replaced.-->
  <tr class=xl654118 height=26 style='mso-height-source:userset;height:19.5pt'>
   <td height=26 class=xl654118 style='height:19.5pt'></td>
   <!-- <td class=xl654118></td> -->
-  <td class=xl1014118></td>
+  <td colspan=3 style='font-size:24px;font-weight:bold'>Reference : <?php echo $reference; ?></td>
   <td class=xl1014118></td>
   <td class=xl1014118></td>
   <td colspan=3 style='font-size:24px;font-weight:bold'>Cutting Docket</td>

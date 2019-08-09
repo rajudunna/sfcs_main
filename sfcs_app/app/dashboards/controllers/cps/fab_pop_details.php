@@ -554,6 +554,14 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$p_qty=$sql_row2['qty'];
 	}
 	//$output_trimmed = array_map("trim", explode(',', $input));
+	//echo "</br>Seperated".$seperated_lots;
+	// $ref="select reference from $bai_pro3.plandoc_stat_log where doc_no='$doc_no'";
+	$sql007="select * from $bai_pro3.plandoc_stat_log where doc_no=\"".$docno_lot."\"";
+		$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row007=mysqli_fetch_array($sql_result007))
+		{
+			$reference=$row007["reference"];
+		}
 	// echo "</br>Seperated--".$seperate_docket;
 	$sql5="SELECT binding_consumption,seperate_docket from $bai_pro3.cat_stat_log where  tid=\"".$sql_row1['cat_ref']."\"";
 	$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -585,8 +593,8 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	echo "<td>".$sql_row1['compo_no']."</td>";
 	echo "<td>".$sql_row1['col_des'].'-'.$sql_row1['doc_no']."</td>";
 	$extra=0;
-	//echo "<br>1=".$sql_row1['material_req'];
-	//if(substr($style_ref,0,1)=="M") { $extra=round(($material_req*0.01),2); }
+
+
 	{ $extra=round(($material_requirement_orig*$sql_row1['savings']),2); }
 	echo "<td>".($material_requirement_orig+$extra)."</td>";
 	echo "<td>".$reference."</td>";
