@@ -885,14 +885,19 @@ else if($concurrent_flag == 0)
 	}
 	$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
 	$reason_flag = false;
-	$dep_ops_array_qry = "select operation_code,ops_sequence, default_operration,smv from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and operation_code=$b_op_id";
+	$dep_ops_array_qry = "select operation_code,ops_sequence, default_operration,smv,manual_smv from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and operation_code=$b_op_id";
 	$result_dep_ops_array_qry = $link->query($dep_ops_array_qry);
 	while($row = $result_dep_ops_array_qry->fetch_assoc()) 
 	{
 		$sequnce = $row['ops_sequence'];
 		$is_m3 = $row['default_operration'];
 		$sfcs_smv = $row['smv'];
+		if($sfcs_smv=='0.0000')
+		{
+			$sfcs_smv = $row['manual_smv'];	
+		}
 	}
+	
 	$ops_dep_qry = "SELECT tm.ops_dependency,tm.operation_code,tm.ops_sequence FROM brandix_bts.tbl_style_ops_master tm LEFT JOIN brandix_bts.`tbl_orders_ops_ref` tr ON tr.id=tm.operation_name WHERE tm.style='$b_style' AND tm.color = '$mapped_color' AND tm.ops_dependency != 200 AND tm.ops_dependency != 0  and tr.category = 'sewing' and ops_sequence='$sequnce' group by ops_dependency";
 	$result_ops_dep_qry = $link->query($ops_dep_qry);
 	while($row = $result_ops_dep_qry->fetch_assoc()) 
@@ -992,12 +997,17 @@ else if($concurrent_flag == 0)
 				{
 					$bar_value=$barcode_row['barcode_sequence'];
 				}
-				$smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$b_colors[$key]' and operation_code = $b_op_id";
+				$smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$b_colors[$key]' and operation_code = $b_op_id";
 				$result_smv_query = $link->query($smv_query);
 				while($row_ops = $result_smv_query->fetch_assoc()) 
 				{
 					$sfcs_smv = $row_ops['smv'];
+					if($sfcs_smv=='0.0000')
+					{
+						$sfcs_smv = $row_ops['manual_smv'];	
+					}
 				}
+				
 				$remarks_code = "";
 
 				if($b_rep_qty[$key] == null){
@@ -1184,16 +1194,21 @@ else if($concurrent_flag == 0)
 			//all operation codes query.. (not tested)
 	}
 	else
-	{
+	{ 
 		$query = '';
 		if($table_name == 'bundle_creation_data')
 		{
-			$smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
+			$smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
 			$result_smv_query = $link->query($smv_query);
 			while($row_ops = $result_smv_query->fetch_assoc()) 
 			{
 				$sfcs_smv = $row_ops['smv'];
+				if($sfcs_smv=='0.0000')
+				{
+					$sfcs_smv = $row_ops['manual_smv'];	
+				}
 			}
+			
 			$bulk_insert_post_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`,`scanned_user`,`sync_status`) VALUES";
 			$schedule_count = true;
 			$concurrent_flag = 0;
