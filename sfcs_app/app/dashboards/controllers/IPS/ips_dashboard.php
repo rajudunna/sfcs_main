@@ -45,21 +45,21 @@ while($sql_row=mysqli_fetch_array($scanning_result))
 	$operation_name=$sql_row['operation_name'];
 	$operation_code=$sql_row['operation_code'];
 }
-$remove_docs=array();
-$sqlx="select distinct input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where $bai_pro3.input_job_input_status(input_job_no_random_ref,$operation_code)=\"DONE\"";
-$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_rowx=mysqli_fetch_array($sql_resultx))
-{
-	$remove_docs[]="'".$sql_rowx['doc_no']."'";
-}
-if(sizeof($remove_docs)>0)
-{
-	$backup_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref in (".implode(",",$remove_docs).")";
-	mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
+// $remove_docs=array();
+// $sqlx="select distinct input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where $bai_pro3.input_job_input_status(input_job_no_random_ref,$operation_code)=\"DONE\"";
+// $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+// while($sql_rowx=mysqli_fetch_array($sql_resultx))
+// {
+	// $remove_docs[]="'".$sql_rowx['doc_no']."'";
+// }
+// if(sizeof($remove_docs)>0)
+// {
+	// $backup_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref in (".implode(",",$remove_docs).")";
+	// mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
 
-	$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_docs).")";
-	mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));	
-}
+	// $sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_docs).")";
+	// mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));	
+// }
 
 $sec_id=$_GET["sec"];
 
@@ -98,10 +98,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$module=$mods[$x];
 			$blink_check=0;
 			
-			$sql11="select sum(ims_qty-ims_pro_qty) as \"wip\" from $bai_pro3.ims_log where ims_mod_no=$module";
-			 
-			//$ips_data.="query=".$sql11;
-			// mysqli_query($link, $sql11) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql11="select sum(ims_qty-ims_pro_qty) as \"wip\" from $bai_pro3.ims_log where ims_mod_no='$module' AND input_job_rand_no_ref NOT IN (SELECT input_job_no_random FROM bai_pro3.pac_stat_log_input_job WHERE type_of_sewing=3)";
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row11=mysqli_fetch_array($sql_result11))
 			{
@@ -113,7 +110,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$id="yash";
 			$y=0;
 		
-			$sql="SELECT input_job_no_random_ref,input_trims_status FROM $table_name WHERE input_module=$module and (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and date(log_time) >=\"2013-01-09\" GROUP BY input_job_no_random_ref order by input_priority asc limit ".$_GET['priority_limit'];	
+			$sql="SELECT input_job_no_random_ref,input_trims_status FROM $table_name WHERE input_module='$module' and (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and date(log_time) >=\"2013-01-09\" GROUP BY input_job_no_random_ref order by input_priority asc limit ".$_GET['priority_limit'];	
 			// echo $sql."<br>";
 			$result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row=mysqli_fetch_array($result))
@@ -428,7 +425,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					if($id=="blue" || $id=="yellow")
 					{
 					
-						$cut_input_report_query="select sum(original_qty) as cut_qty,sum(recevied_qty+rejected_qty) as report_qty,sum(recevied_qty) as recevied_qty from brandix_bts.bundle_creation_data where input_job_no_random_ref='$input_job_no_random_ref' and operation_id='".$operation_code."'";
+						$cut_input_report_query="select sum(original_qty) as cut_qty,sum(recevied_qty+rejected_qty) as report_qty,sum(recevied_qty) as recevied_qty from brandix_bts.bundle_creation_data where input_job_no_random_ref='$input_job_no_random_ref' and operation_id=".$operation_code."";
 						$cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 						while($sql_row=mysqli_fetch_array($cut_input_report_result))

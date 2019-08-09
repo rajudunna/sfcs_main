@@ -144,6 +144,7 @@ if(isset($_POST["doc"]) or isset($_POST["section"]))
 	$schedule=$_POST["schedule"];
 	$jobno=$_POST["jobno"];
 	$module_no=$_POST["moduleno"];
+	$prefix=$_POST['prefix'];
 	//echo $doc."<br>";
 }
 else
@@ -154,6 +155,7 @@ else
 	$schedule=$_GET["schedule"];
 	$jobno=$_GET["jobno"];
 	$module_no=$_GET["module"];
+	$prefix=$_GET['prefix'];
 	//echo $doc."<br>";
 }
 //echo $doc;
@@ -252,7 +254,7 @@ else
 }
 // End  ---------  03-Nov-2014 -  Added by Chathurangad
 
-echo "<h3>Style:$style / Schedule:$join_sch / Input Job#: J".leading_zeros($jobno,3)."</h3>";
+echo "<h3>Style:$style / Schedule:$join_sch / Input Job#: $prefix".leading_zeros($jobno,3)."</h3>";
 
 $sql="SELECT GROUP_CONCAT(CONCAT(\"'\",order_col_des,\"'\")) AS colorset,GROUP_CONCAT(sizegroup) AS size_group FROM (
 SELECT DISTINCT order_col_des,GROUP_CONCAT(sizeset SEPARATOR '*') AS sizegroup FROM (
@@ -350,6 +352,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error8832 $sql".mysqli_error(
 		$imsinputqty=doc_in_status($link,'IMSINPUTQTY',$sql_row['size_code'],$sql_row['doc_no'],'');
 		$balance=($sql_row['carton_act_qty']-$inputqty);
 		$allowedqty=0;
+		//echo $sql_row['size_code'];
 		//echo $cutqty."-".$inputqty."-".$imsinputqty."-".$sql_row['carton_act_qty']."<br>";
 		if(($cutqty-$imsinputqty)>=$balance)
 		{

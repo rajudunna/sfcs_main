@@ -563,7 +563,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			echo "<tr class=\"bottom\">";
 			echo "<td class=\"bottom\"><strong><a href=\"javascript:void(0)\" 
 			 if (window.focus) {Popup.focus()} return false;\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
-			$y=0;
+			$y=0;   
 
 			$show_block = calculateJobsCount($table_name,$module,$order_div_ref);
 			if($show_block > 0){
@@ -590,7 +590,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				}				
 				$input_job_no_random_ref=$row["input_job_no_random_ref"];
 				$input_trims_status=$row["input_trims_status"];
-				$sql2="SELECT order_style_no,order_del_no,input_job_no,order_col_des,group_concat(distinct order_col_des) as cols,sum(carton_act_qty) as qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$input_job_no_random_ref'";	
+				$sql2="SELECT order_style_no,order_del_no,input_job_no,order_col_des,type_of_sewing,group_concat(distinct order_col_des) as cols,sum(carton_act_qty) as qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$input_job_no_random_ref'";	
 				$result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row2=mysqli_fetch_array($result2))
 				{
@@ -601,7 +601,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$get_color = $row2["order_col_des"];				
 					$order_col=$row2["cols"];
 					$qty=$row2["qty"];
+					$type_of_sewing=$row2['type_of_sewing'];
 				}
+				//echo "<script>alert('$qty');</script>";
+				//echo $input_job_no;
 				$co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedule,$link);				
 				$trims_status=echo_title("$bai_pro3.bai_orders_db_confirm","min(st_status)"," order_col_des in ('".implode("','",explode(",",$order_col))."') and order_del_no",$schedule,$link);
 				$sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing='$type_of_sewing'";
@@ -650,7 +653,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$order_col='';
 				if(in_array($authorized,$has_permission))
 				{
-					echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter</font></a></div></div></div>";
+					echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?prefix=$prefix&jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter</font></a></div></div></div>";
 				}
 				else
 				{
@@ -694,10 +697,10 @@ include('include_legends_tms.php');
 
 <?php
 
-function calculateJobsCount($table_name,$module,$order_div_ref){
+function calculateJobsCount($table_name,$module,$order_div_ref){ 
 	global $link;
-	$ijs_query  = "SELECT group_concat(distinct \"'\",input_job_no_random_ref,\"'\")  as jobs FROM $bai_pro3.plan_dash_doc_summ_input WHERE input_trims_status=4  
-							 AND input_module=$module $order_div_ref";
+	$ijs_query  = "SELECT group_concat(distinct \"'\",input_job_no_random_ref,\"'\")  as jobs FROM $bai_pro3.plan_dashboard_input WHERE input_trims_status=4  
+							 AND input_module='$module'";
 							
 	$ijs_result = mysqli_query($link,$ijs_query);
 	while($row = mysqli_fetch_array($ijs_result)){
@@ -708,7 +711,7 @@ function calculateJobsCount($table_name,$module,$order_div_ref){
 		return 0;
 	else{
 		$ips_jobs_query = "SELECT count(distinct \"'\",input_job_no_random_ref,\"'\") AS ips_jobs_match_count FROM bai_pro3.plan_dashboard_input WHERE input_trims_status=4  
-		AND input_module=$module ";
+		AND input_module='$module'";
 		$inps_jobs_result = mysqli_query($link,$ips_jobs_query);
 		while($row = mysqli_fetch_array($inps_jobs_result)){
 				$ips_jobs_count = $row['ips_jobs_match_count'];
