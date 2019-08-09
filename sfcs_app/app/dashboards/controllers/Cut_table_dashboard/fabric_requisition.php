@@ -193,7 +193,7 @@ function GetSelectedItem()
 		$doc_qty[$row111x["doc_no"]] = $row111x["qty"];
 		$cat_refnce[$row111x["doc_no"]] = $row111x["category"];
 		$cat_compo[$row111x["doc_no"]] = $row111x["compo_no"];
-		$sql111x12="select seperate_docket,binding_consumption from $bai_pro3.cat_Stat_log where order_tid='".$order_ti."' and tid='".$row111x["cat_ref"]."'";
+		$sql111x12="select seperate_docket,binding_consumption from $bai_pro3.cat_stat_log where order_tid='".$order_ti."' and tid='".$row111x["cat_ref"]."'";
 		$sql_result111x12=mysqli_query($link, $sql111x12) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row111x2=mysqli_fetch_array($sql_result111x12))
 		{
