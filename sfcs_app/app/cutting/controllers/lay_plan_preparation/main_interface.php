@@ -815,7 +815,7 @@ if ($sql_result)
 			$date_cat = $sql_row['date'];
 			if($sql_row['category']<>'')
 			{
-				if($tran_order_tid==$sql_row['order_tid'])
+				if(trim($tran_order_tid)==trim($sql_row['order_tid']))
 				{
 					$cats_ids[]=$sql_row['tid'];
 				}
