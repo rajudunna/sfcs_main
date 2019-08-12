@@ -110,7 +110,7 @@ if(isset($_GET['doc_no']))
 
 if(isset($_POST['submit']))
 {
-	
+	 
 	$mk_length=$_POST['mk_length'];
 	if($mk_length == '')
 	{

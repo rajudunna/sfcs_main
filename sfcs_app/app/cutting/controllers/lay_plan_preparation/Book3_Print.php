@@ -2919,7 +2919,7 @@ else
   <th></th>
   <th class=xl654118>Remark 1:<td colspan="8" height=20 class=xl654118 style='height:15.0pt'><u><?php echo substr($remark1,0,50); ?></u></td></th>
   <th></th>
-  
+   
  </tr>
  <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
