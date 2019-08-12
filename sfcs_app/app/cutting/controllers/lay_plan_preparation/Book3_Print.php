@@ -415,7 +415,6 @@ $a_s50=$sql_row['a_s50'];
 $sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
 // echo $sql2."<br>";
 $sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
-
 while($sql_row2=mysqli_fetch_array($sql_result2))
 {
 	$mklength=$sql_row2['mklength'];
@@ -2918,7 +2917,7 @@ else
   <th class=xl704118>Bundling</th>
   <th class=xl704118>Dispatch</th>
   <th></th>
-  <th class=xl654118>Remark 1:<td colspan="8" height=20 class=xl654118 style='height:15.0pt'><u><?php echo substr($remark1,0,-50) ?></u></td></th>
+  <th class=xl654118>Remark 1:<td colspan="8" height=20 class=xl654118 style='height:15.0pt'><u><?php echo substr($remark1,0,50); ?></u></td></th>
   <th></th>
   
  </tr>
@@ -2934,7 +2933,7 @@ else
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td></td>
-  <th class=xl654118>Remark 2:<td colspan="8" height=20 class=xl654118 style='height:15.0pt'><u><?php echo substr($remark2,0,-50) ?></u></td></th>
+  <th class=xl654118>Remark 2:<td colspan="8" height=20 class=xl654118 style='height:15.0pt'><u><?php echo substr($remark2,0,50); ?></u></td></th>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:30pt'></td>
@@ -2948,7 +2947,7 @@ else
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td></td>
-  <th class=xl654118>Remark 3:<td colspan="8" height=20 class=xl654118 style='height:15.0pt'><u><?php echo substr($remark3,0,-50) ?></u></td></th>
+  <th class=xl654118>Remark 3:<td colspan="8" height=20 class=xl654118 style='height:15.0pt'><u><?php echo substr($remark3,0,50); ?></u></td></th>
  </tr>
  <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
@@ -2962,8 +2961,12 @@ else
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td></td>
+  <th class=xl654118>Remark 4:<td colspan="8" height=20 class=xl654118 style='height:15.0pt'><u><?php echo substr($remark4,0,50); ?></u></td></th>
  </tr>
-  <td class=xl804118>&nbsp;</td>
+ <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
+  <td height=20 class=xl654118 style='height:15.0pt'></td>
+  <td class=xl654118>Emp No3</td>
+  <td class=xl804118><?php //echo date("y/m/d",strtotime($plan_log_time)); ?></td>
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
@@ -2972,7 +2975,6 @@ else
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td class=xl654118></td>
- 
   <td class=xl654118>Act Con</td>
   <td class=xl894118 style='border-top:none'>&nbsp;</td>
   <td class=xl894118 style='border-top:none'>&nbsp;</td>
