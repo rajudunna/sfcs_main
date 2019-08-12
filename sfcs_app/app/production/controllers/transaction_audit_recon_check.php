@@ -32,7 +32,7 @@ function quality_qty($schedule,$color,$tran_type,$size,$link,$module)
 		return $sql_row['qty'];
 	}
 }
-function get_qty($schedule,$type,$size,$color,$link)
+function get_qty($schedule,$type,$size,$color,$link,$module)
 {
 	$size=str_replace("a_","", $size);
 	$sql_schedule_id='SELECT `id` FROM bai_pro3.rejections_log WHERE `schedule`='.$schedule.' and `color`="'.$color.'"';
@@ -40,7 +40,7 @@ function get_qty($schedule,$type,$size,$color,$link)
 	while($sql_row_id=mysqli_fetch_array($result_schedule_id))
 	{
 		$id=$sql_row_id["id"];
-		$sql_qty='SELECT sum('.$type.') AS qty FROM bai_pro3.rejection_log_child WHERE `parent_id`='.$id.' and `size_id`="'.$size.'"';
+		$sql_qty='SELECT sum('.$type.') AS qty FROM bai_pro3.rejection_log_child WHERE `parent_id`='.$id.' and `size_id`="'.$size.'" and `assigned_module`="'.$module.'"';
 		$get_qty=mysqli_query($link,$sql_qty) or exit("sql Error2".mysqli_error());
 		while($getqty=mysqli_fetch_array($get_qty)){
 			return $getqty['qty'];
@@ -174,8 +174,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			// 	$recut_req_db[]=$sql_row2['p_s28'];
 			// 	$recut_req_db[]=$sql_row2['p_s30'];
 			// }
-		$recut_qty=get_qty($schedule,recut_qty,$sql_row['ims_size'],$sql_row['ims_color'],$link);
-		$replaced=get_qty($schedule,replaced_qty,$sql_row['ims_size'],$sql_row['ims_color'],$link);
+		$recut_qty=get_qty($schedule,recut_qty,$sql_row['ims_size'],$sql_row['ims_color'],$link,$sql_row["ims_mod_no"]);
+		$replaced=get_qty($schedule,replaced_qty,$sql_row['ims_size'],$sql_row['ims_color'],$link,$sql_row["ims_mod_no"]);
 		//$replaced=quality_qty($schedule,$sql_row['ims_color'],2,$sql_row['ims_size'],$link,$sql_row["ims_mod_no"]);
 		$transfer=quality_qty($schedule,$sql_row['ims_color'],11,$sql_row['ims_size'],$link,$sql_row["ims_mod_no"]);
 		$rejections=quality_qty($schedule,$sql_row['ims_color'],3,$sql_row['ims_size'],$link,$sql_row["ims_mod_no"]);
