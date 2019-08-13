@@ -61,14 +61,6 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 	$log_time=$sql_row1['log_time'];
 	
 	
-   $current_date=date('Y-m-d');
-   $sql1="SELECT max(tid) as tid FROM $bai_rm_pj1.store_in WHERE date=\"$current_date\"";
-   $sql1_result11 =$link->query($sql1);
-   while ($row = $sql1_result11->fetch_assoc())
-   {
-	   $tid=$row["tid"];
-   }
-	
 	$sql1x="select ref4,inv_no from $bai_rm_pj1.sticker_ref where tid=$tid";
     $sql_result1x =$link->query($sql1x);
     while ($row = $sql_result1x->fetch_assoc())
