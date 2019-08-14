@@ -295,7 +295,7 @@
 		$op_codes_result = mysqli_query($link,$op_codes_query) or exit('Problem in getting the op codes for sewing');   
 		while($row = mysqli_fetch_array($op_codes_result)){
 			$opst[]=$row['operation_code'];
-			$op_namem[]=$row['operation_name'];
+			$op_namem[$row['operation_code']]=$row['operation_name'];
 		}
 		
 		$jobs_style_query = "Select order_style_no as style from $bai_pro3.packing_summary_input where 
