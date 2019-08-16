@@ -2626,8 +2626,25 @@ if(sizeof($shades)>0)
 	    while($sql_row=mysqli_fetch_array($sql_result))
 	    {
 	    	$rem=$sql_row["rem"];
-	    }
-	    echo $rem;
+		}
+		$overall_message_length=strlen($rem);
+		$break_start=0;
+		$break_length=100;
+		while($break_start<$overall_message_length)
+		{
+			echo '<br>'.substr($rem,$break_start,$break_length);
+			$break_start=$break_start+$break_length;
+		}
+		// for($len_break=1;$overall_message_length>$len_break;$len_break$len_break+$break_start){
+		// 	echo substr($rem,$break_start,$break_length).'<br>';
+		// 	$break_start=$break_start+$break_start;
+		// }
+		// if (strlen($rem)>40) {
+		// 	echo substr($rem,0,40).'<br>';
+		// 	echo substr($rem,41,strlen($rem)).'<br>';
+		// }else{
+		// 	echo $rem;
+		// }
    }
 
 ?>
