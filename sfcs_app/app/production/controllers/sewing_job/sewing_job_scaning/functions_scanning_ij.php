@@ -1474,7 +1474,7 @@ function validating_with_module($pre_array_module)
         }               
     }
 
-    if ($operation == $opn_routing_code && $screen == 'scan')
+    if (($operation == $opn_routing_code && $screen == 'scan') or ($operation == $opn_routing_code && $screen == 'wout_keystroke'))
     {
         $check_tms_status_query = "SELECT input_trims_status FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='$job_no'";
         $tms_check_result = $link->query($check_tms_status_query);
