@@ -95,12 +95,13 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                      $id=$sql_row['id'];
                      $m3_bulk_tran_id=$sql_row['m3_bulk_tran_id'];
                      $style=$sql_row['style'];
-                     $schedule=$sql_row['schedule'];
+                     $schedule=$sql_row['SCHEDULE'];
                      $color=$sql_row['color'];
                      $size=$sql_row['size'];
                      $remarks=$sql_row['response_message'];
                      $mo_qty=$sql_row['quantity'];
                      $trail_count=$sql_row['m3_trail_count'];
+                     $response=$sql_row['response_status'];
                      // echo $m3_bulk_tran_id; 
                      if($style==''){
                         $style="--";
@@ -129,7 +130,12 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                      }else{
                         $mo_qty;
                      }
-                    echo "<tr><td>".$i++."</td><td>".$sql_row['mo_no']."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$size."</td><td>".$mo_qty."</td><td>".$remarks."</td><td>".$trail_count."</td><td>".$sql_row['response_status']."</td>";
+                     if($response=='fail'){
+                        $response='Fail';
+                     }else{
+                        $response;
+                     }
+                    echo "<tr><td>".$i++."</td><td>".$sql_row['mo_no']."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$size."</td><td>".$mo_qty."</td><td>".$remarks."</td><td>".$trail_count."</td><td>".$response."</td>";
                     echo "<td><input type='checkbox' name='bindingdata[]' value='".$id.'-'.$m3_bulk_tran_id."'></td>";
                   
                 }
@@ -159,15 +165,16 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
             $exp=explode("-",$id);
             $id_status=$exp[0];
             $reconfim_id=$exp[1]; 
-            // echo $reconfim_id;
-            $update_sql="update $bai_pro3.`m3_transactions` set m3_trail_count='0' where id='$id_status'";
-            // echo $update_sql;
+            echo $reconfim_id;
+            $update_sql="update $bai_pro3.`m3_transactions` set m3_trail_count=0 where id=$id_status";
+            echo $update_sql;
             mysqli_query($link, $update_sql) or exit("Sql Update Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $update_bulk_sql="update $bai_pro3.`m3_bulk_transactions` set m3_trail_count='0' where id='$reconfim_id'";
+            $update_bulk_sql="update $bai_pro3.`m3_bulk_transactions` set m3_trail_count=0 where id='$reconfim_id'";
+            echo $update_bulk_sql;
             mysqli_query($link, $update_bulk_sql) or exit("Sql Update bulk Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
          }
-      header("Refresh:0");
+      header("Refresh:0"); 
       echo '<div id="loading"></div>';
     }
 
