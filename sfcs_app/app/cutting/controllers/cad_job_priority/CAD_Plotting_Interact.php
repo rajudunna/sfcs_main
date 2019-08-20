@@ -126,7 +126,7 @@ if(isset($_POST['submit']))
 	$cat_ref=$_POST['cat_ref'];
 	$allocate_ref=$_POST['allocate_ref'];
 	
-	$sql="insert into $bai_pro3.maker_stat_log(DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver,remark1,remark2,remark3,remark4) select DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver,remark1,remark2,remark3,remark4,mklength from $bai_pro3.maker_stat_log where tid='$mk_ref'";
+	$sql="insert into $bai_pro3.maker_stat_log(DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver,remark1,remark2,remark3,remark4) select DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver,remark1,remark2,remark3,remark4 from $bai_pro3.maker_stat_log where tid='$mk_ref'";
 
 	// $sql="insert into $bai_pro3.maker_stat_log(DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver) select DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver from $bai_pro3.maker_stat_log where tid='$mk_ref'";
 	mysqli_query($link, $sql) or exit("Sql Error1x".mysqli_error($GLOBALS["___mysqli_ston"]));
