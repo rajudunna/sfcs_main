@@ -377,6 +377,12 @@
 <?php
 	if(isset($_POST['formSubmit']))
 	{
+	mysqli_begin_transaction($link);
+	try{
+	function message_sql(){ 
+		echo "<script>swal('Reversing Quantity not updated......please update again','','warning');</script>";
+		}
+	// echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "block";</script>';
 		$ids = $_POST['id'];
 		$reversalval = $_POST['reversalval'];
 		//var_dump($reversalval);
@@ -581,12 +587,12 @@
 				}
 				$act_rec_qty = $rec_qty - $reversalval[$key];
 				$update_present_qry = "update $brandix_bts.bundle_creation_data  set recevied_qty = $act_rec_qty where id = $id";
-				$result_query = $link->query($update_present_qry) or exit('query error in updating2');
+				$result_query = $link->query($update_present_qry) or exit(message_sql());
 				if($post_code)
 				{
 					$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$act_rec_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$bundle_no[$key]."' and operation_id = ".$post_code[0];
 					// echo $query_post_dep;
-					$result_query = $link->query($query_post_dep) or exit('query error in updating6');
+					$result_query = $link->query($query_post_dep) or exit(message_sql());
 				}
 			}
 			if($ops_dep != 0)
@@ -613,7 +619,7 @@
 					}
 					$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number ='".$bundle_no[$key]."' and operation_id = ".$ops_dep;
 					// echo $query_post_dep;
-					$result_query = $link->query($query_post_dep) or exit('query error in updating6');
+					$result_query = $link->query($query_post_dep) or exit(message_sql());
 				}
 			}
 			$b_tid = '';
@@ -665,7 +671,7 @@
 					{
 						$final_query_000_temp = $bulk_insert_temp;
 					}
-					$bundle_creation_result_temp = $link->query($final_query_000_temp) or exit('query error in updating 8');
+					$bundle_creation_result_temp = $link->query($final_query_000_temp) or exit(message_sql());
 					//Checking with ims_log 
 				}
 
@@ -701,11 +707,11 @@
 						$act_ims_qty = $pre_ims_qty - $reversalval[$key];
 						//updating the ims_qty when it was there in ims_log
 						$update_query = "update $bai_pro3.ims_log set ims_qty = $act_ims_qty where tid = $updatable_id";
-						mysqli_query($link,$update_query) or exit("While updating ims_qty in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
+						mysqli_query($link,$update_query) or exit(message_sql());
 						if($act_ims_qty == 0 && $pre_pro_ims_qty == 0)
 						{
 							$ims_delete="delete from $bai_pro3.ims_log where tid=$updatable_id";
-							mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
+							mysqli_query($link,$ims_delete) or exit(message_sql());
 						}
 					}
 				}
@@ -739,7 +745,7 @@
 							$actual_ims_pro_qty = $pre_ims_qty - $reversalval[$key];
 							//updating ims_pro_qty in ims log table
 							$update_ims_pro_qty = "update $bai_pro3.ims_log set ims_pro_qty = $actual_ims_pro_qty where tid=$updatable_id";
-							$ims_pro_qty_updating = mysqli_query($link,$update_ims_pro_qty) or exit("While updating ims_pro_qty in ims_log_".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$ims_pro_qty_updating = mysqli_query($link,$update_ims_pro_qty) or exit(message_sql());
 							
 						}
 						else
@@ -761,15 +767,15 @@
 								if($reversalval[$key] > 0)
 								{
 									$update_query = "update $bai_pro3.ims_log_backup set ims_pro_qty = $act_ims_qty where tid = $updatable_id";
-									$ims_pro_qty_updating = mysqli_query($link,$update_query) or exit("While updating ims_pro_qty in ims_log_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+									$ims_pro_qty_updating = mysqli_query($link,$update_query) or exit(message_sql());
 									if($ims_pro_qty_updating)
 									{
 										$update_status_query = "update $bai_pro3.ims_log_backup set ims_status = '' where tid = $updatable_id";
-										mysqli_query($link,$update_status_query) or exit("While updating status in ims_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+										mysqli_query($link,$update_status_query) or exit(message_sql());
 										$ims_backup="insert ignore into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
-										mysqli_query($link,$ims_backup) or exit("Error while inserting into ims log".mysqli_error($GLOBALS["___mysqli_ston"]));
+										mysqli_query($link,$ims_backup) or exit(message_sql());
 										$ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
-										mysqli_query($link,$ims_delete) or exit("While Deleting ims log backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+										mysqli_query($link,$ims_delete) or exit(message_sql());
 									}
 								}						
 							}
@@ -835,7 +841,7 @@
 				//echo "Bai log : ".$insert_bailog."</br>";
 				if($reversalval[$key] > 0)
 				{
-					$qry_status=mysqli_query($link,$insert_bailog) or exit("BAI Log Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$qry_status=mysqli_query($link,$insert_bailog) or exit(message_sql());
 				}
 				if($qry_status)
 				{
@@ -847,7 +853,7 @@
 					//echo "Bai log Buff: ".$insert_bailog."</br>";
 					if($reversalval[$key] > 0)
 					{
-						$qry_status=mysqli_query($link,$insert_bailog_buf) or exit("BAI Log Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$qry_status=mysqli_query($link,$insert_bailog_buf) or exit(message_sql());
 					}
 				}
 				
@@ -897,7 +903,7 @@
 					}
 					
 					// echo $update_query;
-					mysqli_query($link,$update_query) or exit("Some problem while updating cps log");
+					mysqli_query($link,$update_query) or exit(message_sql());
 				//}	
 			}
 			$updating = updateM3TransactionsReversal($bundle_no[$key],$reversalval[$key],$operation_id);
@@ -910,12 +916,18 @@
 		{
 			// insert into plan_dashboard_input if sewing job not exists
 			$insert_qry_ips = "INSERT IGNORE INTO $bai_pro3.`plan_dashboard_input` SELECT * FROM $bai_pro3.`plan_dashboard_input_backup` WHERE input_job_no_random_ref = '$input_job_no_random'";
-			mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips");
+			mysqli_query($link, $insert_qry_ips) or exit(message_sql());
 		}
 
 		$url = '?r='.$_GET['r']."&shift=$b_shift";
 		echo "<script>window.location = '".$url."'</script>";
-	}
+		}
+		mysqli_commit($link);
+		}
+		catch(Exception $e){
+		mysqli_rollback($link);
+		}
+		
 }
 ?>
 
