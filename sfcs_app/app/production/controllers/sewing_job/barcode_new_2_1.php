@@ -151,7 +151,7 @@
 							$html.= " / <b>$shade</b></td>";	
 						else
 							$html.= "</td>";	
-						$html.=' 
+						$html.='  
 							
 						<td colspan=5>'.chr($color_code).leading_zeros($cutno,3).' / '.$display1.' / '.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
 						
