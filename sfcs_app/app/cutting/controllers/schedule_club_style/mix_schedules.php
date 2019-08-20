@@ -120,7 +120,8 @@ mysqli_begin_transaction($link);
 
 try{
 	function message_sql(){ 
-		echo "<script>swal('something went wrong......please try again','','warning');</script>";
+		echo "<script>swal('Clubbing Not Completed......Please Club Again','','warning');</script>";
+		
 		}
 if(isset($_POST['submit']) || $_GET['color']<>'')
 {
@@ -598,24 +599,19 @@ if(isset($_POST['fix']))
 				$tid2=str_replace($sql_row['order_del_no'],$new_sch,$sql_row['order_tid2']);
 				$com_no=$sql_row['compo_no'];
 				$sql1="insert ignore into $bai_pro3.cat_stat_log (order_tid,order_tid2,catyy,fab_des,col_des,mo_status,compo_no) values (\"".$tid."\",\"".$tid2."\",".$sql_row['catyy'].",\"".$sql_row['fab_des']."\",\"".$sql_row['col_des']."\",\"Y\",\"$com_no\")";
-				mysqli_query($link, $sql1) or exit('UNABLE TO REPORT6');
+				mysqli_query($link, $sql1) or exit(message_sql());
 			}
 			
 			$sql1="delete from $bai_pro3.bai_orders_db_club where order_del_no in (".implode(",",$selected).") and order_col_des=\"$color\"";
-			//echo $sql1."<br>";
 			mysqli_query($link, $sql1) or exit(message_sql());
 			
 			$sql1="insert ignore into $bai_pro3.bai_orders_db_club select * from $bai_pro3.bai_orders_db where order_del_no in (".implode(",",$selected).") and order_col_des=\"$color\"";
-
-			//echo $sql1."<br>";
 			mysqli_query($link, $sql1) or exit(message_sql());
 				
 			$sql1="insert ignore into $bai_pro3.bai_orders_db_confirm select * from $bai_pro3.bai_orders_db where order_del_no in (".implode(",",$selected).") and order_col_des=\"$color\"";
-			//echo $sql1."<br>";
 			mysqli_query($link, $sql1) or exit(message_sql());
-			//echo $new_sch."<br>";
+			
 			$sql1="insert ignore into $bai_pro3.bai_orders_db(order_tid,order_date,order_upload_date,order_last_mod_date,order_last_upload_date,order_div,order_style_no,order_del_no,order_col_des,order_col_code,order_cat_stat,order_cut_stat,order_ratio_stat,order_cad_stat,order_stat,Order_remarks,order_po_no,order_no,color_code,order_joins,packing_method,style_id,carton_id,carton_print_status,ft_status,st_status,pt_status,trim_cards,trim_status,fsp_time_line,fsp_last_up,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination,zfeature,co_no,order_s_s01,order_s_s02,order_s_s03,order_s_s04,order_s_s05,order_s_s06,order_s_s07,order_s_s08,order_s_s09,order_s_s10,order_s_s11,order_s_s12,order_s_s13,order_s_s14,order_s_s15,order_s_s16,order_s_s17,order_s_s18,order_s_s19,order_s_s20,order_s_s21,order_s_s22,order_s_s23,order_s_s24,order_s_s25,order_s_s26,order_s_s27,order_s_s28,order_s_s29,order_s_s30,order_s_s31,order_s_s32,order_s_s33,order_s_s34,order_s_s35,order_s_s36,order_s_s37,order_s_s38,order_s_s39,order_s_s40,order_s_s41,order_s_s42,order_s_s43,order_s_s44,order_s_s45,order_s_s46,order_s_s47,order_s_s48,order_s_s49,order_s_s50,old_order_s_s01,old_order_s_s02,old_order_s_s03,old_order_s_s04,old_order_s_s05,old_order_s_s06,old_order_s_s07,old_order_s_s08,old_order_s_s09,old_order_s_s10,old_order_s_s11,old_order_s_s12,old_order_s_s13,old_order_s_s14,old_order_s_s15,old_order_s_s16,old_order_s_s17,old_order_s_s18,old_order_s_s19,old_order_s_s20,old_order_s_s21,old_order_s_s22,old_order_s_s23,old_order_s_s24,old_order_s_s25,old_order_s_s26,old_order_s_s27,old_order_s_s28,old_order_s_s29,old_order_s_s30,old_order_s_s31,old_order_s_s32,old_order_s_s33,old_order_s_s34,old_order_s_s35,old_order_s_s36,old_order_s_s37,old_order_s_s38,old_order_s_s39,old_order_s_s40,old_order_s_s41,old_order_s_s42,old_order_s_s43,old_order_s_s44,old_order_s_s45,old_order_s_s46,old_order_s_s47,old_order_s_s48,old_order_s_s49,old_order_s_s50) select \"".$style.$new_sch.$color."\",order_date,order_upload_date,order_last_mod_date,order_last_upload_date,order_div,order_style_no,$new_sch,order_col_des,order_col_code,order_cat_stat,order_cut_stat,order_ratio_stat,order_cad_stat,order_stat,Order_remarks,order_po_no,order_no,$new_color_code,1,packing_method,style_id,carton_id,carton_print_status,ft_status,st_status,pt_status,trim_cards,trim_status,fsp_time_line,fsp_last_up,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination,zfeature,co_no,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
-			//echo $sql1."<br><br>";
 			mysqli_query($link, $sql1) or exit(message_sql());
 			
 			$sql1="update $bai_pro3.bai_orders_db set order_joins='J".$new_sch."' where order_del_no in (".implode(",",$selected).") and order_col_des=\"$color\"";
@@ -648,13 +644,9 @@ if(isset($_POST['fix']))
 				{
 					//echo $original_size_code_ref_explode[$i1]."<br>";
 					$sql46="update $bai_pro3.bai_orders_db set order_s_".$original_size_code_ref_explode[$i1]."=".$order_qty_ref_explode[$i1].",old_order_s_".$original_size_code_ref_explode[$i1]."=".$order_qty_ref_explode[$i1].",title_size_".$original_size_code_ref_explode[$i1]."=\"".$size_code_ref_explode[$i1]."\" where order_del_no=\"".$order_del_no_ref."\" and order_col_des=\"".$order_col_des_ref."\"";
-					//echo $sql46."<br>";
 					mysqli_query($link, $sql46) or exit(message_sql());
-					
 					$sql47="update $bai_pro3.bai_orders_db_confirm set order_s_".$original_size_code_ref_explode[$i1]."=".$order_qty_ref_explode[$i1].",old_order_s_".$original_size_code_ref_explode[$i1]."=".$order_qty_ref_explode[$i1].",title_size_".$original_size_code_ref_explode[$i1]."=\"".$size_code_ref_explode[$i1]."\" where order_del_no=\"".$order_del_no_ref."\" and order_col_des=\"".$order_col_des_ref."\"";
-					//echo $sql47."<br>";
 					mysqli_query($link, $sql47) or exit(message_sql());
-					
 					$sql121="update $bai_pro3.bai_orders_db_confirm set order_s_".$original_size_code_ref_explode[$i1]."=order_s_".$original_size_code_ref_explode[$i1]."+".$order_qty_ref_explode[$i1].",old_order_s_".$original_size_code_ref_explode[$i1]."=old_order_s_".$original_size_code_ref_explode[$i1]."+".$order_qty_ref_explode[$i1].",title_size_".$original_size_code_ref_explode[$i1]."=\"".$size_code_ref_explode[$i1]."\",title_flag=1  where order_del_no='$new_sch'";
 				   mysqli_query($link, $sql121) or exit(message_sql());
 				   $sql121="update $bai_pro3.bai_orders_db set order_s_".$original_size_code_ref_explode[$i1]."=order_s_".$original_size_code_ref_explode[$i1]."+".$order_qty_ref_explode[$i1].",old_order_s_".$original_size_code_ref_explode[$i1]."=old_order_s_".$original_size_code_ref_explode[$i1]."+".$order_qty_ref_explode[$i1].",title_size_".$original_size_code_ref_explode[$i1]."=\"".$size_code_ref_explode[$i1]."\",title_flag=1  where order_del_no='$new_sch'";
@@ -726,19 +718,19 @@ if(isset($_POST['fix']))
 					echo "<br>";
 				}
 				echo "<script>swal('Clubbing Completed Successfully.','','success');</script>";
-				// echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");				
+				echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");				
 			}			
 		}																								
 		else
 		{
 			echo "<script>swal('You cannot proceed Schedule Clubbing.','Some of the Item codes are not equal for selected Schedules.','warning');</script>";
-			// echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");
+			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");
 		}
 	}
 	else
 	{
 		echo "<script>swal('Please select more than one schedule for clubbing.','','warning');";
-		// echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");
+		 echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");
 	}
 	
 }
