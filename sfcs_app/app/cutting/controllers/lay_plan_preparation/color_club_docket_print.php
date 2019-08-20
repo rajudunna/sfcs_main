@@ -241,7 +241,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$remarks=$sql_row['remarks'];
 	$mk_files[]=$sql_row['mk_file'];
 
-	$sql1="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where tid=".$sql_row['cat_ref']."";
+	$sql1="select COALESCE(binding_consumption,0) as \"binding_consumption\",seperate_docket from $bai_pro3.cat_stat_log where tid=".$sql_row['cat_ref']."";
 	// echo $sql1."<br>";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check1=mysqli_num_rows($sql_result1);
@@ -249,8 +249,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		while($sql_row21=mysqli_fetch_array($sql_result1))
 		{
-			//echo $sql_row21['binding_consumption']."<br>";
-			$binding_con1[] = $sql_row21['binding_consumption'];
+			if($sql_row21['seperate_docket']=='No')
+			{
+				$binding_con1[] = $sql_row21['binding_consumption'];
+			}
+			else
+			{
+				$binding_con1[]=0;	
+			}
 		}
 	}
 	else
@@ -267,6 +273,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$allocate_ref=$sql_row['allocate_ref'];
 
 }
+
 $idocs_2 = "'" . implode ( "', '", $docs ) . "'";
 //var_dump($met_req);
 $sql="select * from $bai_pro3.cat_stat_log where tid=$cat_ref";

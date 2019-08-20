@@ -1175,7 +1175,7 @@ echo "<option value=\"Pilot\">Pilot";
 echo "</select></div>";
 
 echo "<input type\"text\" name=\"ratio\" value=\"".$ratiocount."\" id=\"ratio\" style=\"visibility:hidden\">";
-
+// var_dump($ratiocount);
 //echo "<div class=\"col-sm-4\"><input type=\"checkbox\"  name=\"option\"  id=\"option\" onclick=\"javascript:enableButton();\">Enable</div>
 echo "<div class=\"col-sm-4\"><input type = \"submit\" class = \"btn btn-sm btn-success\" id=\"update\" name = \"Update\" value = \"Update\"  style='margin-top:22px;'></div>";
 echo "</div>";

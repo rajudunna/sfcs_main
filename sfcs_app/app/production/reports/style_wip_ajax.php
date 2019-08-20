@@ -3,7 +3,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 error_reporting(0);
 if($_GET['some'] == 'bundle_no')
 {
-	    //Bundle Wise Report Code
+	    //Bundle Wise Report C
 		$bundle_number = $_GET['bundle'];
 		$CAT = 'sewing';
 
@@ -107,7 +107,7 @@ if($_GET['some'] == 'bundle_no')
 					$bcd_rej[$row3['operation_id']] = $row3['rejection'];
 					// $user = $row3['scanned_user'];
 					$user_name[$row3['operation_id']] = $row3['scanned_user'];
-					$shift = $row3['shift'];
+					$shift[$row3['operation_id']] = $row3['shift'];
 					$scanned_time[$row3['operation_id']] = $row3['max'];
 					$module = $row3['assigned_module'];
 			    }
@@ -126,7 +126,7 @@ if($_GET['some'] == 'bundle_no')
 
 								<tr>
 								   <th>Shift</th>
-								   <td>$shift</td>
+								   <td>$shift[$value]</td>
 								</tr>
 								<tr>
 								   <th>Module</th>
@@ -134,6 +134,7 @@ if($_GET['some'] == 'bundle_no')
 								</tr>
 								<tr>
 								   <th>Scanned User</th>
+
 								   <td>$user_name[$value]</td>
 								</tr>
 								<tr>
@@ -157,7 +158,7 @@ if($_GET['some'] == 'bundle_no')
 					 }
 					 else{
 						$table_data .="<td>No Quantity Reported</td>";
-					 }
+					 } 
 					}
 				} 
 		         

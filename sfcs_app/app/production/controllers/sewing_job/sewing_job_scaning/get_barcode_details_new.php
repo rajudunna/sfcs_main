@@ -7,7 +7,7 @@
     $gate_id = $_POST['gate_id'];
 	$user_permission = $_POST['auth'];
     $b_shift = $shift;	
-    //changing for #978 cr 
+    //changing for #978 cr
     $barcode_number = explode('-', $barcode)[0];
     //retriving original bundle_number from this barcode
     $selct_qry = "SELECT bundle_number FROM $brandix_bts.bundle_creation_data 
@@ -454,7 +454,7 @@
                 {
                     
                     $job_number_reference = $row['type_of_sewing'];
-					$get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix WHERE id= $job_number_reference";
+					$get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing= $job_number_reference";
 					$get_remark_arry_req = $link->query($get_remark);
 					while($row_remark = $get_remark_arry_req->fetch_assoc()) 
 					{
@@ -530,13 +530,17 @@
 
         // checking ops ..............................................
 
-        $dep_ops_array_qry = "select operation_code,ops_sequence, default_operration,smv from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and operation_code=$b_op_id";
+        $dep_ops_array_qry = "select operation_code,ops_sequence, default_operration,smv,manual_smv from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and operation_code=$b_op_id";
         $result_dep_ops_array_qry = $link->query($dep_ops_array_qry);
         while($row = $result_dep_ops_array_qry->fetch_assoc()) 
         {
             $sequnce = $row['ops_sequence'];
             $is_m3 = $row['default_operration'];
             $sfcs_smv = $row['smv'];
+			if($sfcs_smv=='0.0000')
+			{
+				$sfcs_smv = $row_ops['manual_smv'];	
+			}
         }
         
         $ops_dep_qry = "SELECT ops_dependency,operation_code,ops_sequence FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and ops_sequence='$sequnce' AND ops_dependency != 200 AND ops_dependency != 0 group by ops_dependency";
@@ -639,11 +643,15 @@
             {
                 if($b_tid[$key] == $bundle_no)
                 {
-                  $smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
+                  $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
                         $result_smv_query = $link->query($smv_query);
                         while($row_ops = $result_smv_query->fetch_assoc()) 
                         {
                             $sfcs_smv = $row_ops['smv'];
+							if($sfcs_smv=='0.0000')
+							{
+								$sfcs_smv = $row_ops['manual_smv'];	
+							}
                         }
                         $bulk_insert_post = "INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`) VALUES";
 
@@ -727,12 +735,16 @@
 
                 foreach ($b_tid as $key => $tid)
                 {
-                    $smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
+                    $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
                     $result_smv_query = $link->query($smv_query);
                     while($row_ops = $result_smv_query->fetch_assoc()) 
                     {
                         $sfcs_smv = $row_ops['smv'];
-                    }
+						if($sfcs_smv=='0.0000')
+						{
+							 $sfcs_smv = $row_ops['manual_smv'];
+						}
+					}
                     $left_over_qty = $b_in_job_qty[$key] - ($b_rep_qty[$key] + $b_rej_qty[$key]);
                     // appending all values to query for bulk insert....
                     // if($flag == 'parallel_scanning')
@@ -761,7 +773,9 @@
                         if($emb_cut_check_flag == 1)
                         {
                             $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$b_rep_qty[$key] where doc_no = '".$b_doc_num[$key]."' and size_title='".$b_sizes[$key]."' AND operation_code = $pre_ops_code";
-                            $update_qry_cps_log_res = $link->query($update_qry_cps_log);
+                            //echo "ram</br>".$update_qry_cps_log."</br>";
+                            $updat_cps_qry_array[]=$update_qry_cps_log;
+                            //$update_qry_cps_log_res = $link->query($update_qry_cps_log);
                         }
                         
                     }
@@ -814,8 +828,21 @@
             }else{
                 $final_query_000_temp = $bulk_insert_temp;
             }
-            $bundle_creation_result_temp = $link->query($final_query_000_temp);
-            $sql_message = 'Data inserted successfully';
+            if($bundle_creation_result){
+                $bundle_creation_result_temp = $link->query($final_query_000_temp);
+                if($bundle_creation_result_temp){
+                    if(count($updat_cps_qry_array)>0){
+                        for($i=0;$i<count($updat_cps_qry_array);$i++){
+                            $update_qry_cps_log_res = $link->query($updat_cps_qry_array[$i]);
+                        }
+                    }    
+                }
+            }
+            if(update_qry_cps_log_res){
+                $sql_message = 'Data inserted successfully';
+            }else{
+                $sql_message = 'Data Not inserted';
+            }
                     //all operation codes query.. (not tested)
         }
         else
@@ -840,11 +867,15 @@
                     if($b_tid[$key] == $bundle_no){
                         if($concurrent_flag == 0)
                         {
-                            $smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
+                            $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
                             $result_smv_query = $link->query($smv_query);
                             while($row_ops = $result_smv_query->fetch_assoc()) 
                             {
                                 $sfcs_smv = $row_ops['smv'];
+								if($sfcs_smv=='0.0000')
+								{
+									$sfcs_smv = $row_ops['manual_smv'];	
+								}
                             }
                             $bulk_insert_post = "INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`) VALUES";
 
@@ -1017,6 +1048,44 @@
             {
                 $output_ops_code = 130;
             }
+			
+			
+			$application='IPS';
+			$scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+			//echo $scanning_query;
+			$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row=mysqli_fetch_array($scanning_result))
+			{
+			  $operation_name=$sql_row['operation_name'];
+			  $operation_code=$sql_row['operation_code'];
+			}
+			$sql="SELECT COALESCE(SUM(recevied_qty),0) AS rec_qty,COALESCE(SUM(send_qty),0) AS s_qty,COALESCE(SUM(recut_in),0) AS rc_qty,COALESCE(SUM(replace_in),0) AS rp_qty,COALESCE(SUM(rejected_qty),0) AS rej_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '".$b_job_no."' AND operation_id = $operation_code";
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row=mysqli_fetch_array($sql_result))
+			{
+					$rec_qty=$sql_row["rec_qty"];
+					$s_qty=$sql_row["s_qty"];
+					$rc_qty=$sql_row["rc_qty"];
+					$rp_qty=$sql_row["rp_qty"];
+					$rej_qty=$sql_row["rej_qty"];
+			}
+			$sql2="SELECT COALESCE(SUM(carton_act_qty),0) as job_qty FROM bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='".$b_job_no."'";
+			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row2=mysqli_fetch_array($sql_result2))
+			{
+					$job_qty=$sql_row2["job_qty"];
+			}
+
+			if(($rec_qty >= $job_qty) AND ($s_qty+$rc_qty+$rp_qty=$rec_qty+$rej_qty)) 
+			{
+				$backup_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='".$b_job_no."'";
+				mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
+
+				$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$b_job_no."'";
+				mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));	
+			}
+			
+
             for($i=0;$i<sizeof($b_tid);$i++)
             {
                 if($b_tid[$i] == $bundle_no){
