@@ -224,7 +224,7 @@ $module_limit=14;
 	
 	************************************************************************************************************/
 	var boxSizeArray = [];
-	for(var i=0; i<120; i++){
+	for(var i=0; i<200; i++){
 		boxSizeArray.push('<?= $module_limit; ?>');
 	}
 	
@@ -844,7 +844,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 							$cut_no1=$sql_row1['acutno'];
 							$color_code1=$sql_row1['color_code'];
 							
-							$sql_style_id="SELECT DISTINCT style_id as sid FROM $bai_pro3.BAI_ORDERS_DB WHERE order_STYLE_NO=\"$style1\" and order_del_no=\"$schedule1\" LIMIT 1";
+							$sql_style_id="SELECT DISTINCT style_id as sid FROM $bai_pro3.bai_orders_db WHERE order_STYLE_NO=\"$style1\" and order_del_no=\"$schedule1\" LIMIT 1";
 							$sql_result_id=mysqli_query($link, $sql_style_id) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row_id=mysqli_fetch_array($sql_result_id))
 							{
