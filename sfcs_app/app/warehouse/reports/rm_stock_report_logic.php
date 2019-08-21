@@ -61,12 +61,14 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 	$log_time=$sql_row1['log_time'];
 	
 	
-	$sql1x="select ref4,inv_no from $bai_rm_pj1.sticker_ref where tid=$tid";
+	$sql1x="select ref4,inv_no,ref1,ref3 from $bai_rm_pj1.sticker_ref where tid=$tid";
     $sql_result1x =$link->query($sql1x);
     while ($row = $sql_result1x->fetch_assoc())
 	{
 		$shade=$row["ref4"];
 		$invoice=$row["inv_no"];
+		$location=trim($row['ref1']);
+		$ref3=trim($row['ref3']);
     }
     $current_date=date('Y-m-d');
     $sqly="select sum(ROUND(qty_issued,2)) as qty FROM `bai_rm_pj1`.`store_out` where log_stamp > \"$log_time\" and tran_tid=\"$tid\" and date=\"$current_date\" ";
@@ -148,12 +150,14 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 	   $tid=$row["tid"];
    }
 	
-	$sql1x="select ref4,inv_no from $bai_rm_pj1.sticker_ref where tid=$tid";
+	$sql1x="select ref4,inv_no,ref1,ref3 from $bai_rm_pj1.sticker_ref where tid=$tid";
     $sql_result1x =$link->query($sql1x);
     while ($row = $sql_result1x->fetch_assoc())
 	{
 		$shade=$row["ref4"];
 		$invoice=$row["inv_no"];
+		$location=trim($row['ref1']);
+		$ref3=trim($row['ref3']);
     }
     $current_date=date('Y-m-d');
     $sqly="select sum(ROUND(qty_issued,2)) as qty FROM `bai_rm_pj1`.`store_out` where log_stamp > \"$log_time\" and tran_tid=\"$tid\" and date=\"$current_date\" ";
