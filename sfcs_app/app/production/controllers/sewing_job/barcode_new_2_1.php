@@ -74,7 +74,7 @@
 			$display1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$input_job,$sewing_job_random_id,$link);
 			//A dummy sticker for each bundle
 			//echo $detailed_bundle_sticker.'-';
-			if((int)$detailed_bundle_sticker == 1)
+			if((int)$detailed_bundle_sticker == 0)
 			{
 				$html.= '<div>
 							<table width="100%" style="font-size:8px;">
@@ -99,9 +99,9 @@
 								</tr>
 								<tr>
 									<td colspan=2><b>Job#</b>'.$display1.'</td>
-									<td colspan=6><b>Size:</b>'.substr($barcode_rslt['size_code'],0,7).'</td>';
+									<td colspan=8><b>Size:</b>'.substr("ABC DEFGHI JKLMN",0,7).'</td>';
 						if($shade != '')
-							$html.= "<td colspan=6><b>Sha#</b>$shade</td>";	
+							$html.= "<td colspan=5><b>Sha#</b>$shade</td>";	
 						else
 							$html.= "<td colspan=2></td>";
 						$html.='</tr> 
