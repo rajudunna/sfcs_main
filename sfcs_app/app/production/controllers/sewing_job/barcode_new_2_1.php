@@ -81,7 +81,7 @@
 							
 								<tr>
 									<td colspan=3><b>Sty#</b>'.$barcode_rslt['order_style_no'].'</td>
-									<td colspan=5><b>Sch#</b>'.$schedule.'</td>
+									<td colspan=9><b>Sch#</b>'.$schedule.'</td>
 									<td rowspan="0" style="border: 1px solid black;	border-top-right-radius: 1px 1px; font-size:4px; text-align:center;width:10%">
 								           <p style= "font-size: 6px;font-weight: bold;">'.$seq_num.'</p>
 									</td>
@@ -91,7 +91,7 @@
 								</tr>
 								<tr>
 									<td colspan=3><b>Barcode#</b>'.trim($barcode).'</td>
-									<td colspan=3><b>Qty#</b>'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
+									<td colspan=8><b>Qty#</b>'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
 									
 								</tr>
 								<tr>
@@ -99,9 +99,9 @@
 								</tr>
 								<tr>
 									<td colspan=2><b>Job#</b>'.$display1.'</td>
-									<td colspan=2><b>Size:</b>'.substr($barcode_rslt['size_code'],0,8).'</td>';
+									<td colspan=6><b>Size:</b>'.substr($barcode_rslt['size_code'],0,7).'</td>';
 						if($shade != '')
-							$html.= "<td colspan=8><b>Sha#</b>$shade</td>";	
+							$html.= "<td colspan=6><b>Sha#</b>$shade</td>";	
 						else
 							$html.= "<td colspan=2></td>";
 						$html.='</tr> 
