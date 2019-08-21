@@ -289,7 +289,7 @@ if(isset($_POST['submit']))
 			while($row2=mysqli_fetch_array($sql2))
 			{	
 				$flag = $row2['title_flag'];
-				for($i = 1; $i<=50; $i++){				
+				for($i = 1; $i<=200; $i++){				
 					if($i<10){
 						$a = 's0'.$i.'_old';
 						$b = 's0'.$i;
@@ -364,7 +364,7 @@ if(isset($_POST['submit']))
 				$flag = $row2['title_flag'];				
 				echo '<input type="hidden" name="color'.$cnt.'" value="'.$row2['order_col_des'].'">';
 				$j =11;
-				for($i = 1; $i<=50; $i++){				
+				for($i = 1; $i<=200; $i++){				
 					if($i<10){
 						$a = 's0'.$i.'_old';
 						$b = 's0'.$i;
@@ -454,7 +454,7 @@ if(isset($_POST["update"])){
 		{	
 			$val=0;
 			$color = $_POST['color'.$i];
-			$sel_check="select count(*) as cnt from $bai_pro3.bai_orders_db where where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_joins='0'";
+			$sel_check="select count(*) as cnt from $bai_pro3.bai_orders_db where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_joins='0'";
 			//echo $sel_club."<br>";
 			$sql_check=mysqli_query($link, $sel_check);
 			if(mysqli_num_rows($sql_check)>0)
