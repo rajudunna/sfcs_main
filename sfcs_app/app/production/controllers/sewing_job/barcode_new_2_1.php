@@ -99,7 +99,7 @@
 								</tr>
 								<tr>
 									<td colspan=2><b>Job#</b>'.$display1.'</td>
-									<td colspan=8><b>Size:</b>'.substr("ABC DEFGHI JKLMN",0,7).'</td>';
+									<td colspan=6><b>Size:</b>'.substr($barcode_rslt['size_code'],0,7).'</td>';
 						if($shade != '')
 							$html.= "<td colspan=5><b>Sha#</b>$shade</td>";	
 						else
