@@ -77,7 +77,7 @@
 			if((int)$detailed_bundle_sticker == 1)
 			{
 				$html.= '<div>
-							<table width="100%" style="font-size:9px;">
+							<table width="100%" style="font-size:8px;">
 							
 								<tr>
 									<td colspan=3><b>Sty#</b>'.$barcode_rslt['order_style_no'].'</td>
@@ -91,7 +91,7 @@
 								</tr>
 								<tr>
 									<td colspan=3><b>Barcode#</b>'.trim($barcode).'</td>
-									<td colspan=2><b>Qty#</b>'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
+									<td colspan=3><b>Qty#</b>'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
 									
 								</tr>
 								<tr>
@@ -99,7 +99,7 @@
 								</tr>
 								<tr>
 									<td colspan=2><b>Job#</b>'.$display1.'</td>
-									<td colspan=2><b>Size:</b>'.trim($barcode_rslt['size_code']).'</td>';
+									<td colspan=2><b>Size:</b>'.substr($barcode_rslt['size_code'],0,8).'</td>';
 						if($shade != '')
 							$html.= "<td colspan=8><b>Sha#</b>$shade</td>";	
 						else
