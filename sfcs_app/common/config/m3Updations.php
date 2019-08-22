@@ -333,23 +333,23 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
         if($def_op=='yes') {
             $main_ops_code = $main_operationnumber;
         }else{
-            $dep_ops_array_qry2 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order > '$operation_order' limit 1 ASC";
+            $dep_ops_array_qry2 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order > '$operation_order' order by ASC limit 1";
             $result_dep_ops_array_qry2 = $link->query($dep_ops_array_qry2);
-            if(mysql_num_rows($result_dep_ops_array_qry2!=''))
+            if(mysqli_num_rows($result_dep_ops_array_qry2) > 0)
             {
-            while($row2 = $result_dep_ops_array_qry2->fetch_assoc()) 
+                while($row2 = $result_dep_ops_array_qry2->fetch_assoc()) 
+                {
+                    $main_ops_code = $row2['main_operationnumber'];
+                }
+            }else
             {
-                $main_ops_code = $row2['main_operationnumber'];
+                $dep_ops_array_qry3 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order < '$operation_order' order by DESC limit 1";
+                $result_dep_ops_array_qry3 = $link->query($dep_ops_array_qry3);
+                while($row3 = $result_dep_ops_array_qry2->fetch_assoc()) 
+                {
+                    $main_ops_code = $row3['main_operationnumber'];
+                } 
             }
-        }else
-        {
-            $dep_ops_array_qry3 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order > '$operation_order' limit 1 DESC";
-            $result_dep_ops_array_qry3 = $link->query($dep_ops_array_qry3);
-            while($row3 = $result_dep_ops_array_qry2->fetch_assoc()) 
-            {
-                $main_ops_code = $row3['main_operationnumber'];
-            } 
-        }
         }
 
     }
@@ -686,21 +686,21 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
     if($def_op=='yes') {
         $main_ops_code = $main_operationnumber;
     }else{
-        $dep_ops_array_qry2 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order > '$operation_order' limit 1 ASC";
-        $result_dep_ops_array_qry2 = $link->query($dep_ops_array_qry2);
-        if(mysql_num_rows($result_dep_ops_array_qry2!=''))
+        $dep_ops_array_qry4 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order > '$operation_order' order by ASC limit 1";
+        $result_dep_ops_array_qry4 = $link->query($dep_ops_array_qry4);
+        if(mysqli_num_rows($result_dep_ops_array_qry4) > 0)
         {
-        while($row2 = $result_dep_ops_array_qry2->fetch_assoc()) 
+        while($row4 = $result_dep_ops_array_qry4->fetch_assoc()) 
         {
-            $main_ops_code = $row2['main_operationnumber'];
+            $main_ops_code = $row4['main_operationnumber'];
         }
     }else
     {
-        $dep_ops_array_qry3 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order > '$operation_order' limit 1 DESC";
-        $result_dep_ops_array_qry3 = $link->query($dep_ops_array_qry3);
-        while($row3 = $result_dep_ops_array_qry2->fetch_assoc()) 
+        $dep_ops_array_qry5 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order <'$operation_order' order by DESC limit 1 ";
+        $result_dep_ops_array_qry5 = $link->query($dep_ops_array_qry5);
+        while($row5 = $result_dep_ops_array_qry5->fetch_assoc()) 
         {
-            $main_ops_code = $row3['main_operationnumber'];
+            $main_ops_code = $row5['main_operationnumber'];
         } 
     }
     }
