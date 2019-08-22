@@ -1376,7 +1376,7 @@ else if($concurrent_flag == 0)
 					}
 				}
 
-				$hout_ops_qry = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='Down_Time'";
+				$hout_ops_qry = "SELECT smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code=$b_op_id";
 				// echo $hout_ops_qry;
 				$hout_ops_result = $link->query($hout_ops_qry);
 
@@ -1384,11 +1384,11 @@ else if($concurrent_flag == 0)
 				{
 					while($hout_ops_result_data = $hout_ops_result->fetch_assoc()) 
 					{
-						$hout_ops_code = $hout_ops_result_data['operation_code'];
+						$smv = $hout_ops_result_data['smv'];
 					}
 
 					
-					if($b_op_id == $hout_ops_code){
+					if($smv>0){
 						$hout_data_qry = "select id,out_date,out_time,team,qty from $bai_pro2.hout where out_date = '$tod_date' and team = '$b_module[$i]' and time_parent_id = $plant_time_id";
 						// echo $hout_data_qry;
 						$hout_data_result = $link->query($hout_data_qry);
