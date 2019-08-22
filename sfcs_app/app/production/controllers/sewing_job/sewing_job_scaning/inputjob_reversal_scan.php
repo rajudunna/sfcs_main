@@ -378,11 +378,14 @@
 	if(isset($_POST['formSubmit']))
 	{
 	mysqli_begin_transaction($link);
-	try{
-	function message_sql(){ 
+     try{
+	    function message_sql()
+	    { 
 		echo "<script>swal('Reversing Quantity not updated......please update again','','warning');</script>";
+		$url = '?r='.$_GET['r']."&shift=$b_shift";
+		echo "<script>window.location = '".$url."'</script>";
 		}
-	// echo '<script type="text/javascript">document.getElementById("loading-image").style.display = "block";</script>';
+
 		$ids = $_POST['id'];
 		$reversalval = $_POST['reversalval'];
 		//var_dump($reversalval);
@@ -921,10 +924,11 @@
 
 		$url = '?r='.$_GET['r']."&shift=$b_shift";
 		echo "<script>window.location = '".$url."'</script>";
-		}
+	   }
 		mysqli_commit($link);
-		}
-		catch(Exception $e){
+	}
+		catch(Exception $e)
+		{
 		mysqli_rollback($link);
 		}
 		
