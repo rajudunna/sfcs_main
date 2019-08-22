@@ -880,7 +880,7 @@ if ($sql_result)
 				// Control End
 
 				// Go To Start
-				if ($sql_row['order_tid'] == $tran_order_tid)
+				if (trim($sql_row['order_tid']) == trim($tran_order_tid))
 				{
 					echo "<td class=\"  \"><center>N/A</center></td>";
 				}
@@ -908,7 +908,7 @@ if ($sql_result)
 			}
 			else
 			{
-				if ($sql_row['order_tid'] == $tran_order_tid)
+				if (trim($sql_row['order_tid']) == trim($tran_order_tid))
 				{
 					// Control
 					echo "<td class=\"  \"><center>N/A</center></td>";
