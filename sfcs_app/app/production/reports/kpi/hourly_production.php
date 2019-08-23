@@ -185,7 +185,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				// echo $sql6.'<br><br>';
 				// $res6=mysqli_query($link,$sql6);
 
-				$sqlsc="SELECT SUM(bac_Qty) AS sumqty FROM $bai_pro.bai_log where bac_no='$team' AND bac_date='$frdate'";
+				$sqlsc="SELECT SUM(qty) AS sumqty FROM $bai_pro2.hout where team='$team' AND out_date='$frdate'";
 				// echo $sqlsc;
 				$resc=mysqli_query($link,$sqlsc);
 				if($rowc=mysqli_fetch_array($resc))
@@ -194,7 +194,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				}
 				else
 				{
-					$sumcty="";
+					$sumscqty="";
 				}
 						
 				?>
