@@ -8,17 +8,21 @@
 	$port= $api_port_no;
 	$current_date = date('Y-m-d h:i:s');
 	// $b_op_id='200';
-	$b_op_id_query = "SELECT operation_code FROM brandix_bts.`tbl_orders_ops_ref` WHERE category='packing' AND default_operation='Yes';";
-	$sql_result=mysqli_query($link, $b_op_id_query) or exit("Error while fetching operation code");
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		$b_op_id=$sql_row['operation_code'];
-	}
+	// $b_op_id_query = "SELECT operation_code FROM brandix_bts.`tbl_orders_ops_ref` WHERE category='packing' AND default_operation='Yes'";
+	// $sql_result=mysqli_query($link, $b_op_id_query) or exit("Error while fetching operation code");
+	// while($sql_row=mysqli_fetch_array($sql_result))
+	// {
+		// $b_op_id=$sql_row['operation_code'];
+	// }
 
 	if (isset($_GET['carton_id']))
 	{
+		$b_op_id = $_GET['operation_id'];
 		$emp_id = $_GET['emp_id'];
 		$team_id = $_GET['team_id'];
+		$pack_team = $_GET['pack_team'];
+		$pack_method = $_GET['pack_method'];
+		$data_val=explode("$",$pack_method);
 		$carton_id = $_GET['carton_id'];
 		$count_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id='".$carton_id."';";
 		$count_result = mysqli_query($link,$count_query);
@@ -54,7 +58,7 @@
 			{
 				$imploded_b_tid = implode(",",$b_tid);
 				$reply = updateM3CartonScan($b_op_id,$imploded_b_tid,$team_id);
-
+			
 				if ($reply == 1)
 				{
 					// Carton Scan eligible
@@ -73,6 +77,9 @@
 						$carton_type = 'Full';
 					}
 					
+					$sql211="INSERT INTO $bai_pro3.`carton_packing_details` (`carton_id`, `operation_id`, `pack_code`, `pack_desc`, `pack_smv`, `pack_team`,scan_time) VALUES ('".$carton_id."', '".$b_op_id."', '".$data_val[0]."', '".$data_val[1]."', '".$data_val[2]."', '".$pack_team."','".date('Y-m-d H:i:s')."')";
+					mysqli_query($link, $sql211) or exit("Insert while updating pac_stat");
+
 					$get_details_to_insert_bcd_temp = "SELECT * FROM $bai_pro3.`pac_stat_log` WHERE pac_stat_id = ".$carton_id;
 					// echo $get_details_to_insert_bcd_temp.'<br><br>';
 					$bcd_detail_result = mysqli_query($link,$get_details_to_insert_bcd_temp);

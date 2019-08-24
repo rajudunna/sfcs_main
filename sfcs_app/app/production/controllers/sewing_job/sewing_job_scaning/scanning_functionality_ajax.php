@@ -885,14 +885,19 @@ else if($concurrent_flag == 0)
 	}
 	$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
 	$reason_flag = false;
-	$dep_ops_array_qry = "select operation_code,ops_sequence, default_operration,smv from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and operation_code=$b_op_id";
+	$dep_ops_array_qry = "select operation_code,ops_sequence, default_operration,smv,manual_smv from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and operation_code=$b_op_id";
 	$result_dep_ops_array_qry = $link->query($dep_ops_array_qry);
 	while($row = $result_dep_ops_array_qry->fetch_assoc()) 
 	{
 		$sequnce = $row['ops_sequence'];
 		$is_m3 = $row['default_operration'];
 		$sfcs_smv = $row['smv'];
+		if($sfcs_smv=='0.0000')
+		{
+			$sfcs_smv = $row['manual_smv'];	
+		}
 	}
+	
 	$ops_dep_qry = "SELECT tm.ops_dependency,tm.operation_code,tm.ops_sequence FROM brandix_bts.tbl_style_ops_master tm LEFT JOIN brandix_bts.`tbl_orders_ops_ref` tr ON tr.id=tm.operation_name WHERE tm.style='$b_style' AND tm.color = '$mapped_color' AND tm.ops_dependency != 200 AND tm.ops_dependency != 0  and tr.category = 'sewing' and ops_sequence='$sequnce' group by ops_dependency";
 	$result_ops_dep_qry = $link->query($ops_dep_qry);
 	while($row = $result_ops_dep_qry->fetch_assoc()) 
@@ -992,12 +997,17 @@ else if($concurrent_flag == 0)
 				{
 					$bar_value=$barcode_row['barcode_sequence'];
 				}
-				$smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$b_colors[$key]' and operation_code = $b_op_id";
+				$smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$b_colors[$key]' and operation_code = $b_op_id";
 				$result_smv_query = $link->query($smv_query);
 				while($row_ops = $result_smv_query->fetch_assoc()) 
 				{
 					$sfcs_smv = $row_ops['smv'];
+					if($sfcs_smv=='0.0000')
+					{
+						$sfcs_smv = $row_ops['manual_smv'];	
+					}
 				}
+				
 				$remarks_code = "";
 
 				if($b_rep_qty[$key] == null){
@@ -1184,16 +1194,21 @@ else if($concurrent_flag == 0)
 			//all operation codes query.. (not tested)
 	}
 	else
-	{
+	{ 
 		$query = '';
 		if($table_name == 'bundle_creation_data')
 		{
-			$smv_query = "select smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
+			$smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
 			$result_smv_query = $link->query($smv_query);
 			while($row_ops = $result_smv_query->fetch_assoc()) 
 			{
 				$sfcs_smv = $row_ops['smv'];
+				if($sfcs_smv=='0.0000')
+				{
+					$sfcs_smv = $row_ops['manual_smv'];	
+				}
 			}
+			
 			$bulk_insert_post_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`,`scanned_user`,`sync_status`) VALUES";
 			$schedule_count = true;
 			$concurrent_flag = 0;
@@ -1308,6 +1323,41 @@ else if($concurrent_flag == 0)
 		{
 			$output_ops_code = 130;
 		}
+		
+		$application='IPS';
+		$scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+		//echo $scanning_query;
+		$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($scanning_result))
+		{
+		  $operation_name=$sql_row['operation_name'];
+		  $operation_code=$sql_row['operation_code'];
+		}
+		$sql="SELECT COALESCE(SUM(recevied_qty),0) AS rec_qty,COALESCE(SUM(send_qty),0) AS s_qty,COALESCE(SUM(recut_in),0) AS rc_qty,COALESCE(SUM(replace_in),0) AS rp_qty,COALESCE(SUM(rejected_qty),0) AS rej_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '".$b_job_no."' AND operation_id = $operation_code";
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+				$rec_qty1=$sql_row["rec_qty"];
+				$s_qty1=$sql_row["s_qty"];
+				$rc_qty1=$sql_row["rc_qty"];
+				$rp_qty1=$sql_row["rp_qty"];
+				$rej_qty1=$sql_row["rej_qty"];
+		}
+		$sql2="SELECT COALESCE(SUM(carton_act_qty),0) as job_qty FROM bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='".$b_job_no."'";
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row2=mysqli_fetch_array($sql_result2))
+		{
+				$job_qty1=$sql_row2["job_qty"];
+		}
+		if(($rec_qty1 >= $job_qty1) AND ($s_qty1+$rc_qty1+$rp_qty1=$rec_qty1+$rej_qty1)) 
+		{
+			$backup_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='".$b_job_no."'";
+			mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
+
+			$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$b_job_no."'";
+			mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));	
+		}
+
 		//echo $output_ops_code;
 		for($i=0;$i<sizeof($b_tid);$i++)
 		{
