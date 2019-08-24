@@ -7,7 +7,7 @@ $get_operation = $_GET['operations'];
 
 $data = '';
 $jquery_data = '';
-$line_breaker = 0;
+$line_breaker = '';
 if($section > 0){
    
     //getting all modules against to the section
@@ -37,7 +37,25 @@ if($section > 0){
             $data.= $sewing_wip;
             $data.="&nbsp;</td>";
 
+            /* BLOCK -2 */
 
+            // $wip_color = '';
+            // if($wip == '')
+            //     $wip = 0;
+            // if($wip <= 216)
+            //     $wip = 'gloss-red';
+            // elseif($wip >= 751)  
+            //     $wip_color = 'gloss-black';
+            // else
+            //     $wip_color = 'gloss-green';
+
+            // if($wip == '')
+            //     $wip = 0;
+            // else{              
+                $data.="<td rowspan=2 class='wip-td'>";    
+                $data.="<span class='ims-wip $wip_color'><b>WIP : $total_wip</b></span>";
+                $data.="</td>";
+            // }
  
             $data.="</tr>";
 
@@ -73,8 +91,6 @@ echo json_encode($section_data);
     // }
    
 
-    
-
     $get_input_jobs = "select distinct(input_job_no_random_ref) from $bai_pro3.plan_dashboard_input where input_module =$module";
    // echo  $get_input_jobs;
     $result_get_input_jobs = $link->query($get_input_jobs);
@@ -82,9 +98,10 @@ echo json_encode($section_data);
     {
       $input_job[] = $row['input_job_no_random_ref'];
     }  
+    // var_dump($input_job);
 
-        $get_style_details = "select distinct(schedule),style,mapped_color,input_job_no_random_ref From $brandix_bts.bundle_creation_data where input_job_no_random_ref in ('".implode("','",$input_job)."') and operation_id=$get_operation";
-       // echo $get_style_details;
+        $get_style_details = "select distinct(schedule),style,mapped_color,input_job_no_random_ref,docket_number From $brandix_bts.bundle_creation_data where input_job_no_random_ref in ('".implode("','",$input_job)."') and operation_id=$get_operation";
+    //    echo $get_style_details;
         $result_get_style_details = $link->query($get_style_details);
         while($row1 = $result_get_style_details->fetch_assoc()) 
         {
@@ -92,6 +109,7 @@ echo json_encode($section_data);
             $schedule = $row1['schedule'];
             $color = $row1['mapped_color'];
             $job_no = $row1['input_job_no_random_ref'];
+            $docket_number = $row1['docket_number'];
 
             $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code=$get_operation";
             $result_ops_seq_check = $link->query($ops_seq_check);
@@ -115,16 +133,52 @@ echo json_encode($section_data);
             $previous_operation = $pre_ops_code;
             $present_operation = $get_operation;
 
-            $get_jobs = "select sum(if(operation_id = $previous_operation,recevied_qty,0)) as previous_output,sum(if(operation_id = $present_operation,recevied_qty,0)) as present_output From $brandix_bts.bundle_creation_data where assigned_module=$module and input_job_no_random_ref = '$job_no' and operation_id in ($previous_operation,$present_operation) GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $previous_operation,recevied_qty,0)) != SUM(IF(operation_id = $present_operation,recevied_qty,0))";
-            //echo $get_jobs;
+            $get_jobs = "select input_job_no_random_ref,sum(if(operation_id = $previous_operation,recevied_qty,0)) as previous_output,sum(if(operation_id = $present_operation,recevied_qty,0)) as present_output From $brandix_bts.bundle_creation_data where assigned_module=$module and input_job_no_random_ref = '$job_no' and operation_id in ($previous_operation,$present_operation) GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $previous_operation,recevied_qty,0)) != SUM(IF(operation_id = $present_operation,recevied_qty,0))";
+            // echo $get_jobs;
             $get_jobs_result = $link->query($get_jobs);
             while($row4 = mysqli_fetch_array($get_jobs_result))
             {
               $previous_output = $row4['previous_output'];
               $present_output = $row4['present_output'];   
+              $job_no1 = $row4['input_job_no_random_ref'];
+            //   var_dump($job_no1);
             }
-
             $wip = $previous_output - $present_output;
+        
+        
+            for($x=0;$x<sizeof($job_no1);$x++)
+            {
+            $tool_tip_text = "<p style=\"width : 500px \">
+            <v><c>Style </c> : $style </v>
+            <v><c>Schedule </c> : $schedule</v>
+            <v><c>Color </c> : $color</v>
+            <v><c>Docket No </c> : $docket_number</v>
+            <v><c>Wip </c> : $wip</v>
+            </p>";
+            $href= "$url&module=$module&section=$section&operations=$get_operation";
+            $docs_data.="<span class='block'>
+            <span class='cut-block blue'>
+                <span class='mytooltip'>
+                    <a rel='tooltip' data-toggle='tooltip' data-placement='top' data-title='$tool_tip_text'
+                    onclick=\"window.open('index.php?r=$href','yourWindowName','width=800,height=600')\"
+                    data-html='true'>
+                        &nbsp;&nbsp;&nbsp;
+                    </a>
+                </span>
+            </span>
+            </span>"; 
+            }
         }
+
+            enough : NULL; 
+            $module = str_replace(".","-",$module);
+            if($job_no1 == 0 || $job_no1 == '')
+                $jquery_data.= "<script>$('#cut-wip-td-$module').remove()</script>"; 
+            else
+                $jquery_data.= "<script>$('#cut-wip-$module').html('$job_no1')</script>"; 
+        
+            return $docs_data; 
+    
     }
+   
 ?>
