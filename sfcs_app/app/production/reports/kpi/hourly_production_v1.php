@@ -144,7 +144,7 @@ if(isset($_GET['submit']))
 					$sec_tot_plan_eff=0; $sec_tot_act_eff=0; $sec_tot_hitrate=0; $sec_tot_required=0; $module_count=0;
 					$section = $Sec['section_id'];  $sec_tot_qty_array = array(); $sec_tot_balance=0;
 					// $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
-					$sql="SELECT fr_data.*, plan_modules.section_id FROM $bai_pro2.fr_data  LEFT JOIN $bai_pro3.plan_modules ON fr_data.team = plan_modules. module_id WHERE fr_data.frdate='$frdate' AND plan_modules.section_id='$section' GROUP BY fr_data.team ORDER BY fr_data.team*1;";
+					$sql="SELECT fr_data.*, plan_modules.section_id FROM $bai_pro2.fr_data  LEFT JOIN $bai_pro3.plan_modules ON fr_data.team = plan_modules. module_id WHERE fr_data.frdate='$frdate' AND plan_modules.section_id='$section' GROUP BY fr_data.team,fr_data.style,fr_data.smv ORDER BY fr_data.team*1;";
 					// echo $sql.'<br>';
 					$res=mysqli_query($link,$sql);
 					if (mysqli_num_rows($res) > 0) 
