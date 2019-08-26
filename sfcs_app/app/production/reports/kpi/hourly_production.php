@@ -92,7 +92,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 			// list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
 			// $minutes_29 = $minutes-1;
 
-			$sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
+			$sql="SELECT *,fr.team FROM $bai_pro2.`fr_data` fr LEFT JOIN bai_pro2.`hout`  h ON h.`out_date`=fr.`frdate` WHERE DATE(frdate)='$frdate' GROUP BY fr.team,fr.style,fr.smv ORDER BY fr.team*1";
 			// echo $sql.'<br>';
 			$res=mysqli_query($link,$sql);
 	
@@ -155,19 +155,19 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				$team=$row['team'];
 				// echo $team;
 				//get styles which run in lines
-				$sql1="SELECT distinct style FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
+				$sql1="SELECT distinct style FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
 				$res1=mysqli_query($link,$sql1);
 
-				$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
+				$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
 				$res2=mysqli_query($link,$sql2);
 
-				$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
+				$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
 				$res3=mysqli_query($link,$sql3);
 
 				$sql4="SELECT qty FROM $bai_pro3.line_forecast where date='$frdate' AND module='$team'";
 				$res4=mysqli_query($link,$sql4);
 
-				$sql5="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
+				$sql5="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
 				$res5=mysqli_query($link,$sql5);
 
 				$get_nop_query="SELECT fix_nop FROM $bai_pro.pro_plan WHERE date='$frdate' and mod_no='$team'";
