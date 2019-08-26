@@ -1207,6 +1207,22 @@
                     
                                     }
                                 }
+                               //get bundle qty status
+                               $get_bundle_status = "select bundle_qty_status from $brandix_bts.bundle_creation_data where bundle_number = '$b_tid[$i]' and assigned_module = '$b_module[$i]' and operation_id=$operation_code"; 
+                               $result_get_bundle_status = $link->query($get_bundle_status);
+                               while($bundle_row = $result_get_bundle_status->fetch_assoc())
+                               {
+                                 $bundle_status = $bundle_row['bundle_qty_status'];
+                               }
+                               if($bundle_status == 1)
+                               {
+                                    $update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where tid = $updatable_id";
+                                    mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    $ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where tid=$updatable_id";
+                                    mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    $ims_delete="delete from $bai_pro3.ims_log where tid=$updatable_id";
+                                    mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
+                               }
                             }
                         }
                     }

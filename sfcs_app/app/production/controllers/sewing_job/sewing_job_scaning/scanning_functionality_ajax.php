@@ -980,9 +980,9 @@ else if($concurrent_flag == 0)
 	}
 	if($table_name == 'packing_summary_input')
 	{
-		$bulk_insert = "INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`,`mapped_color`,`barcode_sequence`,`barcode_number`) VALUES";
+		$bulk_insert = "INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`,`mapped_color`,`barcode_sequence`,`barcode_number`,`bundle_qty_status`) VALUES";
 		// temp table data insertion query.........
-		$bulk_insert_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`,`scanned_user`,`sync_status`) VALUES";
+		$bulk_insert_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`,`scanned_user`,`sync_status`,`bundle_qty_status`) VALUES";
 
 		// $bulk_insert_post = $bulk_insert;mapped_color
 			if($barcode_generation != 1)
@@ -1017,6 +1017,14 @@ else if($concurrent_flag == 0)
 					$b_rej_qty[$key] = 0;
 				}
 				$left_over_qty = $b_in_job_qty[$key] - ($b_rep_qty[$key] + $b_rej_qty[$key]);
+				//To check orginal_qty = send_qty + rejected_qty
+                $bundle_status = 0;
+                $b_original_qty = $b_in_job_qty[$key];
+                $reported_qty = $b_rep_qty[$key] + $b_rej_qty[$key];
+                if($b_original_qty == $reported_qty)
+                {
+                    $bundle_status = 1;
+                }
 				// appending all values to query for bulk insert....
 
 				if($r_qty[$tid] != null && $r_reasons[$tid] != null)
@@ -1044,12 +1052,12 @@ else if($concurrent_flag == 0)
 					}
 				}		
 				// (`qms_style`, `qms_schedule`,`qms_color`, `log_date`, `qms_size`, `qms_qty`, `qms_tran_type`, `remarks`, `doc_no`, `input_job_no`)
-				$bulk_insert .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d h:i:s').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$mapped_color.'","'.$bar_value.'","'.$b_tid[$key].'"),';
+				$bulk_insert .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d h:i:s').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$mapped_color.'","'.$bar_value.'","'.$b_tid[$key].'","'.$bundle_status.'"),';
 
 				// temp table data insertion query.........
 				if($b_rep_qty[$key] > 0 || $b_rej_qty[$key] > 0)
 				{
-					$bulk_insert_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$username.'",1),';
+					$bulk_insert_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$username.'","'.$bundle_status.'",1),';
 				}
 				//m3 operations............. 
 				if($b_rep_qty[$key] > 0) {
@@ -1225,7 +1233,7 @@ else if($concurrent_flag == 0)
 					}
 					$left_over_qty = $b_in_job_qty[$key] - ($b_rep_qty[$key] + $b_rej_qty[$key]);
 					// appending all values to query for bulk insert....
-					$select_send_qty = "SELECT recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = $b_tid[$key] AND operation_id =$b_op_id";
+					$select_send_qty = "SELECT recevied_qty,rejected_qty,original_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = $b_tid[$key] AND operation_id =$b_op_id";
 					//echo "sele".$select_send_qty;
 					$result_select_send_qty = $link->query($select_send_qty);
 					if($result_select_send_qty->num_rows >0)
@@ -1234,17 +1242,33 @@ else if($concurrent_flag == 0)
 						{
 							$b_old_rep_qty_new = $row['recevied_qty'];
 							$b_old_rej_qty_new = $row['rejected_qty'];
+							$b_original_qty = $row['original_qty'];
 
 						}
 					}
 					$final_rep_qty = $b_old_rep_qty_new + $b_rep_qty[$key];
 					$final_rej_qty = $b_old_rej_qty_new + $b_rej_qty[$key];
 					$left_over_qty = $b_in_job_qty[$key] - $final_rep_qty - $final_rej_qty;
+                     
+                    //To check orginal_qty = send_qty + rejected_qty
+                    $bundle_status = 0;
+                    $reported_qty = $final_rep_qty + $final_rej_qty;
+                    if($b_original_qty == $reported_qty)
+                    {
+                        $bundle_status = 1;
+                    } 
+
 					if($schedule_count){
 					$query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `rejected_qty`='". $final_rej_qty."', `left_over`= '".$left_over_qty."' , `scanned_date`='". date('Y-m-d h:i:s')."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
 					
 					$result_query = $link->query($query) or exit('query error in updating');
 					}
+					if($bundle_status = 1)
+                    {
+                        $status_update_query = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
+                        
+                        $status_result_query = $link->query($status_update_query) or exit('query error in updating status');
+                    }
 					//m3 operations............. 
 					if($b_rep_qty[$key] > 0){
 						$flag_decision = true;
@@ -1451,6 +1475,7 @@ else if($concurrent_flag == 0)
 							$ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
 							mysqli_query($link,$ims_delete) or exit("While Deleting ims log backup".mysqli_error($GLOBALS["___mysqli_ston"]));
 						}
+
 					}
 					else
 					{
@@ -1561,6 +1586,23 @@ else if($concurrent_flag == 0)
 				
 								}
 							}
+							//get bundle qty status
+                            $get_bundle_status = "select bundle_qty_status from $brandix_bts.bundle_creation_data where bundle_number = '$b_tid[$i]' and assigned_module = '$b_module[$i]' and operation_id=$input_ops_code"; 
+                            $result_get_bundle_status = $link->query($get_bundle_status);
+                            while($bundle_row = $result_get_bundle_status->fetch_assoc())
+                            {
+                                $bundle_status = $bundle_row['bundle_qty_status'];
+                            }
+                            if($bundle_status == 1)
+                            {
+                                $update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where tid = $updatable_id";
+                                mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                $ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where tid=$updatable_id";
+                                mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                $ims_delete="delete from $bai_pro3.ims_log where tid=$updatable_id";
+                                mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            }
+
 						}
 					}
 				}
