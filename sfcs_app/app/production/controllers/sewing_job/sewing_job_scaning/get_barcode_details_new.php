@@ -1214,15 +1214,16 @@
                                while($bundle_row = $result_get_bundle_status->fetch_assoc())
                                {
                                  $bundle_status = $bundle_row['bundle_qty_status'];
-                               }
-                               if($bundle_status == 1)
-                               {
-                                    $update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where tid = $updatable_id";
-                                    mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                    $ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where tid=$updatable_id";
-                                    mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                    $ims_delete="delete from $bai_pro3.ims_log where tid=$updatable_id";
-                                    mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                                   if($bundle_status == 1)
+                                   {
+                                        $update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where pac_tid = '$b_tid[$i]'";
+                                        mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        $ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where pac_tid= '$b_tid[$i]'";
+                                        mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        $ims_delete="delete from $bai_pro3.ims_log where pac_tid= '$b_tid[$i]'";
+                                        mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                   }
                                }
                             }
                         }
