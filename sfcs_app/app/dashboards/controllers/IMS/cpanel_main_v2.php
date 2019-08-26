@@ -285,9 +285,9 @@ setTimeout(function()
 {
     var shift = document.getElementById('shift').value; 
     var url = window.location.href+'&shift='+shift;
-    if(shift){
+    // if(shift){
         window.location.href = url;    
-    }
+    // }
 }, 120000);
 
 function doBlink() {
@@ -421,12 +421,12 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
     Input Management System - Production WIP Dashboard -
     <span style="color:#fff;font-size:12px;margin-left:15px;">Refresh Rate: 120 Sec.</span>
     <?php
-    $sql="select max(ims_log_date) as lastup from $bai_pro3.ims_log";
-    $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-    while($sql_row=mysqli_fetch_array($sql_result))
-    {   
-      echo '<span style="font-size:12px;color:#CCC;">Last Update at:'.$sql_row['lastup'].'</span>';
-    }
+    // $sql="select max(ims_log_date) as lastup from $bai_pro3.ims_log";
+    // $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    // while($sql_row=mysqli_fetch_array($sql_result))
+    // {   
+    //   echo '<span style="font-size:12px;color:#CCC;">Last Update at:'.$sql_row['lastup'].'</span>';
+    // }
     ?>
   </div>
   <div class="panel-body">
