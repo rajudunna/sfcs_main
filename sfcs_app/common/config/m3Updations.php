@@ -333,7 +333,10 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
         if($def_op=='yes') {
             $main_ops_code = $main_operationnumber;
         }else{
-            $dep_ops_array_qry2 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order > '$operation_order' order by ASC limit 1";
+            //query excluding packing in rejection
+            $dep_ops_array_qry2="SELECT tm.main_operationnumber FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.operation_code=tm.operation_code WHERE tm.style ='$style' AND tm.color='$color' AND default_operration='yes' AND tr.category <> 'packing' and tm.operation_order > '$operation_order' ORDER BY tm.operation_order ASC limit 1";
+
+            // $dep_ops_array_qry2 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order > '$operation_order' order by ASC limit 1";//quiry with including packing
             $result_dep_ops_array_qry2 = $link->query($dep_ops_array_qry2);
             if(mysqli_num_rows($result_dep_ops_array_qry2) > 0)
             {
@@ -343,9 +346,12 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                 }
             }else
             {
-                $dep_ops_array_qry3 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order < '$operation_order' order by DESC limit 1";
+                //query excluding packing in rejections
+                $dep_ops_array_qry3="SELECT tm.main_operationnumber FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.operation_code=tm.operation_code WHERE tm.style ='$style' AND tm.color='$color' AND default_operration='yes' AND tr.category <> 'packing' and tm.operation_order < '$operation_order' ORDER BY tm.operation_order DESC limit 1";
+               
+                // $dep_ops_array_qry3 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order < '$operation_order' order by DESC limit 1";//query including packing in rejections
                 $result_dep_ops_array_qry3 = $link->query($dep_ops_array_qry3);
-                while($row3 = $result_dep_ops_array_qry2->fetch_assoc()) 
+                while($row3 = $result_dep_ops_array_qry3->fetch_assoc()) 
                 {
                     $main_ops_code = $row3['main_operationnumber'];
                 } 
@@ -674,33 +680,39 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
     //         $main_ops_code = $row_bundle_creation_data_check_result['OperationNumber'];
     //     }
     // }
-    $dep_ops_array_qry1 = "select default_operration,operation_order,main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and operation_code='$op_code'";
-    $result_dep_ops_array_qry1 = $link->query($dep_ops_array_qry1);
-    while($row1 = $result_dep_ops_array_qry1->fetch_assoc()) 
+    $dep_ops_array_qry4 = "select default_operration,operation_order,main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and operation_code='$op_code'";
+    $result_dep_ops_array_qry4 = $link->query($dep_ops_array_qry4);
+    while($row4= $result_dep_ops_array_qry4->fetch_assoc()) 
     {
-        $def_op = $row1['default_operration'];
-        $operation_order = $row1['operation_order'];
-        $main_operationnumber = $row1['main_operationnumber'];
+        $def_op = $row4['default_operration'];
+        $operation_order = $row4['operation_order'];
+        $main_operationnumber = $row4['main_operationnumber'];
     }
 
     if($def_op=='yes') {
         $main_ops_code = $main_operationnumber;
     }else{
-        $dep_ops_array_qry4 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order > '$operation_order' order by ASC limit 1";
-        $result_dep_ops_array_qry4 = $link->query($dep_ops_array_qry4);
-        if(mysqli_num_rows($result_dep_ops_array_qry4) > 0)
+        // query excluding packing in rejection reversal 
+        $dep_ops_array_qry5= "SELECT tm.main_operationnumber FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.operation_code=tm.operation_code WHERE tm.style ='$style' AND tm.color='$color' AND default_operration='yes' AND tr.category <> 'packing' and tm.operation_order > '$operation_order' ORDER BY tm.operation_order ASC limit 1";
+
+        // $dep_ops_array_qry4 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order > '$operation_order' order by ASC limit 1";//query including packing in rejection reversal
+        $result_dep_ops_array_qry5 = $link->query($dep_ops_array_qry5);
+        if(mysqli_num_rows($result_dep_ops_array_qry5) > 0)
         {
-        while($row4 = $result_dep_ops_array_qry4->fetch_assoc()) 
+        while($row5= $result_dep_ops_array_qry5->fetch_assoc()) 
         {
-            $main_ops_code = $row4['main_operationnumber'];
+            $main_ops_code = $row5['main_operationnumber'];
         }
     }else
     {
-        $dep_ops_array_qry5 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order <'$operation_order' order by DESC limit 1 ";
-        $result_dep_ops_array_qry5 = $link->query($dep_ops_array_qry5);
-        while($row5 = $result_dep_ops_array_qry5->fetch_assoc()) 
+        // query excluding packing in rejection reversal 
+        $dep_ops_array_qry6="SELECT tm.main_operationnumber FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.operation_code=tm.operation_code WHERE tm.style ='$style' AND tm.color='$color' AND default_operration='yes' AND tr.category <> 'packing' and tm.operation_order < '$operation_order' ORDER BY tm.operation_order DESC limit 1";
+
+        // $dep_ops_array_qry6= "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order <'$operation_order' order by DESC limit 1 ";//query including packing in rejection reversal
+        $result_dep_ops_array_qry6= $link->query($dep_ops_array_qry6);
+        while($row6= $result_dep_ops_array_qry6->fetch_assoc()) 
         {
-            $main_ops_code = $row5['main_operationnumber'];
+            $main_ops_code = $row6['main_operationnumber'];
         } 
     }
     }
