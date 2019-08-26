@@ -78,7 +78,7 @@
         <?php
             }
         ?>
-            <div class='row'></div>
+            <!-- <div class='row'></div>
 
 
             <div class='row'>
@@ -95,7 +95,7 @@
                     <span class="b-block gloss-black" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'> - Line WIP &ge; 751</span>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>
@@ -197,7 +197,7 @@
         border : 1px solid #aaa;
         border-radius : 4px;
     }    
-    .cut-wip{
+     .cut-wip{
         //background : #D00B7C;
         width : parent;
         height : 35px;
@@ -259,10 +259,10 @@
         min-height : 25px;
         border : 1px solid #3c3c3c;
     }
-    .l-text{
+    /* .l-text{
         color : #444;
         font-weight : bold;
-    }
+    } */
     .b-block{
         border : 1px solid #3c3c3c;
     }
