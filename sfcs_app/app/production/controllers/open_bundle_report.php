@@ -191,7 +191,7 @@ function check_val()
                                          </tr>
                                     </thead>
                                          <?php  
-										        $openbundle_sql1="SELECT input_job_no_random_ref FROM `brandix_bts`.`bundle_creation_data` WHERE style='".$style."' AND schedule='".$schedule."'  AND operation_id=130 GROUP BY input_job_no_random_ref"; 
+										        $openbundle_sql1="SELECT input_job_no_random_ref FROM `brandix_bts`.`bundle_creation_data` WHERE style='".$style."' AND schedule='".$schedule."'  AND operation_id=130 AND bundle_qty_status=0 GROUP BY input_job_no_random_ref"; 
                                                 $select_bundlenum1=mysqli_query($link,$openbundle_sql1) or exit($openbundle_sql1."Error at something");
                                                 $ijno_nums=array();
                                                  while($row_21 = mysqli_fetch_assoc( $select_bundlenum1)){
