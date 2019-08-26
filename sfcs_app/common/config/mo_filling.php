@@ -738,6 +738,7 @@
 				}
 				$b_size_code = $key;
 				$b_sizes = $size_title;
+				
 				$sfcs_smv = 0;
 				$b_tid = $doc_no_ref;
 				$b_in_job_qty = $value;
@@ -753,12 +754,23 @@
 				$b_module = '0';
 				$b_remarks = 'Normal';
 				$mapped_color = $b_colors;
+				$sfcs_smv=0;
 				foreach($operation_codes as $index => $op_code)
 				{
 					if($op_code != 15)
 					{
 						$send_qty = 0; 
 					}
+					$smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$b_colors' and operation_code = $op_code";
+					$result_smv_query = $link->query($smv_query);
+					while($row_ops = $result_smv_query->fetch_assoc()) 
+					{
+						$sfcs_smv = $row_ops['smv'];
+						if($sfcs_smv=='0.0000')
+						{
+							$sfcs_smv = $row_ops['manual_smv'];	
+						}
+					}	
 
 					$b_cps_qty[$op_code] = "INSERT INTO $bai_pro3.cps_log(`operation_code`,`short_key_code`,`cut_quantity`,`remaining_qty`,`doc_no`,`size_code`,`size_title`) VALUES";
 					$b_cps_qty[$op_code] .= '("'.$op_code.'","'. $short_key_code[$index].'","'.$b_in_job_qty.'","0","'. $b_job_no.'","'.$b_size_code.'","'. $b_sizes.'")';

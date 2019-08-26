@@ -331,7 +331,7 @@
 							$bundle_quantity=$sql_row5['bundle_quantity']*-1;
 							$op_code=$sql_row5['op_code'];
 							$op_desc=$sql_row5['op_desc'];
-							$ref_no[]=$sql_row5['ref_no'];
+							$ref_no[]=$sql_row5['ref_no'];							
 							array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_no . "','" . $op_code . "','" . $bundle_quantity . "','".$employee_no."','".$remarks."','".$co_no."','".$order_del_no."',NULL,'1','1','1','1')"); 
 						}
 						$ref_no1=implode(",",$ref_no);
@@ -401,23 +401,35 @@
 				elseif($_GET['var1']==2)
 				{	
 					$conn = odbc_connect("$ms_sql_driver_name;Server=$ms_sql_odbc_server;Database=$mssql_db;", $ms_sql_odbc_user,$ms_sql_odbc_pass);
+					if($promis_val==1)
+					{
+						$conn2 = odbc_connect("$promis_sql_driver_name;Server=$promis_sql_odbc_server;Database=$promis_db;", $promis_sql_odbc_user,$promis_sql_odbc_pass);
+						$get_module_desc = "select * from $bai_pro3.promis_module_mapping";
+						$result_module = $link->query($get_module_desc);
+						while($row_mod = $result_module->fetch_assoc())
+						{
+							$prom_div_name[$row_mod['sfcs_module_name']] = $row_mod['promis_division_name'];
+						}
+					}
 					$schedule=$_GET['schedule'];
 					$style=$_GET['style'];
 					$inputjobno=$_GET['inputjobno'];
 					$op_code=1;
+					
 					$sql14="SELECT co_no FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule' and order_style_no='$style'";					
 					$sql_result14=mysqli_query($link, $sql14) or exit("Sql Error71".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row14=mysqli_fetch_array($sql_result14))
 					{
 						$co_no=$sql_row14['co_no'];
 					}
-					$sql76="SELECT input_module  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno'";
+					$sql76="SELECT input_module,log_time  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno'";
 					$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row76=mysqli_fetch_array($sql_result76))
 					{
+						$log_time=$sql_row76['log_time'];
 						$input_module=$sql_row76['input_module'];
 					}
-					$sql55="SELECT tid,input_job_no,order_del_no,mrn_status  FROM $bai_pro3.packing_summary_input WHERE  input_job_no_random='$inputjobno' AND (mrn_status IS NULL OR mrn_status='0')";
+					$sql55="SELECT tid,input_job_no,order_del_no,mrn_status,type_of_Sewing  FROM $bai_pro3.packing_summary_input WHERE  input_job_no_random='$inputjobno' AND (mrn_status IS NULL OR mrn_status='0')";
 					$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// $tid=array();
 					$sql_num_check1=mysqli_num_rows($sql_result01);
@@ -432,17 +444,53 @@
 							$date=date('Ymd');
 							$employee_no=$order_del_no."-".$input_job_no;
 							$remarks="Team"."-".$input_module."::".$date;
+							$type = $sql_row01['type_of_sewing'];
+							if($type == 2)
+							{
+							   $sewing_type =1;
+							}
+							else
+							{
+							   $sewing_type =0;
+							}
 						}
 						if(strlen($employee_no) > 10)
 						{
 							$employee_no = substr($employee_no,-10);
 						}					
 						$tid1=implode(",",$tid);
+						if($promis_val==1)
+						{
+							$sql23="select tid,size_code,sum(carton_act_qty) as qty from $bai_pro3.pac_stat_log_input_job where tid in ($tid1) group by size_code";
+							$sql_result532=mysqli_query($link, $sql23) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row532=mysqli_fetch_array($sql_result532))
+							{
+								$sql34="SELECT mo_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no=".$sql_row532['tid']." and op_code='$op_code' limit 1";
+								$sql_result23=mysqli_query($link, $sql34) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($sql_row5232=mysqli_fetch_array($sql_result23))
+								{																
+									$get_codes = "select schedule,referenceorder,colorcode,sizecode,zcode,COLOURDESC,SIZEDESC from $m3_inputs.mo_details where monumber=".$sql_row5232['mo_no']."";
+									//echo $get_details;
+									$get_codes_result = $link->query($get_codes);
+									while($row21 = $get_codes_result->fetch_assoc()) 
+									{
+										$color_code = $row21['colorcode'];
+										$colorname = $row21['COLOURDESC'];
+										$sizecode = $row21['sizecode'];
+										$size = $row21['SIZEDESC'];
+										$co_no = $row21['referenceorder'];
+										$schedule = $row21['schedule'];
+									}	
+									$insert_qry="INSERT INTO [$promis_db].[dbo].[ProMIS_SX_SJ_Master](MRNNo, CO_ID, Schedule_ID, Colour_Code, Size_Code, Country_ID, Colour_Description,    Size_Description, Quantity, Prod_Line, Plan_Date, Manual_Flag, Freez_Flag, Sew_Line, Plan_Date2, Error_Flag) values('".$input_job_no."','".$co_no."','".$schedule."','".$color_code."','".$sizecode."', '1' ,'".$colorname."','".$size."','".$sql_row532['qty']."','".$prom_div_name[$input_module]."','". $log_time ."','".$sewing_type."','1',NULL,NULL,'0')"; 
+									$query_result=odbc_exec($conn2, $insert_qry);
+								}
+							}
+						}						
+						
 						$mo_operation_quantites_query="SELECT mo_no,sum(bundle_quantity) as bundle_quantity,op_code,op_desc,ref_no FROM $bai_pro3.mo_operation_quantites WHERE ref_no in ($tid1) and op_code='$op_code' group by mo_no";
-						//echo $mo_operation_quantites_query."<br>";
-						//die();
-						//added m3 db in query
+						
 						$mssql_insert_query="insert into [$mssql_db].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status,DSP1,DSP2,DSP3,DSP4) values";
+						$values_promis = array();
 						$values = array();
 						$ref_no = array();
 						$sql_result5=mysqli_query($link, $mo_operation_quantites_query) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -454,10 +502,12 @@
 							$op_code=$sql_row5['op_code'];
 							$op_desc=$sql_row5['op_desc'];
 							$ref_no[]=$sql_row5['ref_no'];
+							
 							array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_no . "','" . $op_code . "','" . $bundle_quantity . "','".$employee_no."','".$remarks."','".$co_no."','".$order_del_no."',NULL,'1','1','1','1')"); 
 						}
 						$ref_no1=implode(",",$ref_no);
 						$mssql_insert_query_result=odbc_exec($conn, $mssql_insert_query . implode(', ', $values));
+						
 						$sql_num_check5=odbc_num_rows($mssql_insert_query_result);
 						
 						$sql="select * from $brandix_bts.tbl_orders_style_ref where product_style='$style'";

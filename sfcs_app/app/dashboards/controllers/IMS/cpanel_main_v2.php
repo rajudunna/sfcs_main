@@ -525,7 +525,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
               <?php 
                
                $wip='0';  
-                $sqlwip="SELECT pac_tid FROM $bai_pro3.ims_log WHERE ims_mod_no='$module' and ims_status<>'DONE' AND input_job_rand_no_ref NOT IN (SELECT input_job_no_random FROM bai_pro3.pac_stat_log_input_job WHERE type_of_sewing='3')";
+                $sqlwip="SELECT pac_tid FROM $bai_pro3.ims_log WHERE ims_mod_no='$module' and ims_status<>'DONE' AND input_job_rand_no_ref NOT IN (SELECT input_job_no_random FROM bai_pro3.pac_stat_log_input_job WHERE type_of_sewing=3)";
                 $sql_resultwip=mysqli_query($link, $sqlwip) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
                 if(mysqli_num_rows($sql_resultwip)>0)
                 {

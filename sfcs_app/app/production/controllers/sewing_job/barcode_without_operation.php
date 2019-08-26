@@ -72,35 +72,38 @@
 			$html.= '<div>
 						<table>
 							<tr rowspan=2>
-								<td colspan=5><b>Stab Here:</b></td>
-								<td colspan=4>
+								<td colspan=13><b>Stab Here:</b></td>
+								<td colspan=3>
 									<svg height="20" width="20">
 										<circle cx="10" cy="10" r="8"  />
 									</svg>
 								</td>
-								<td colspan=3 style="border: 4px solid black;width:50px; height:40px; text-align:center;"><p style= "font-size: 15px;"><b>'.$seq_num.'</b></p></td>
+								<td colspan=5 style="border: 4px solid black;width:50px; height:40px; text-align:center;"><p style= "font-size: 15px;"><b>'.$seq_num.'</b></p></td>
 							</tr>	
-							<tr><td><b>Style:</b></td><td>'.$barcode_rslt['order_style_no'].'</td>
-								<td><b>Schedule:</b></td><td>'.$schedule.'</td>
+							<tr><td colspan=4><b>Style:</b></td><td colspan=5>'.$barcode_rslt['order_style_no'].'</td>
+								<td colspan=4><b>Schedule:</b></td><td colspan=5>'.$schedule.'</td>
 							</tr>';
 							
 					if($shade != '')
 						$html.= '
-							<tr><td colspan=2><b>JobNumber:</b>'.$display1.'</td>
-								<td><b>Size:</b>'.$barcode_rslt['size_code'].'</td>
-								<td><b>Shade:</b>'.$shade.'</td>
+							<tr><td colspan=4><b>JobNumber:</b></td><td colspan=2>'.$display1.'</td>
+								<td colspan=3><b>Size:</b></td><td colspan=3>'.$barcode_rslt['size_code'].'</td>
+								<td colspan=5><b>Shade:</b>'.$shade.'</td>
 							</tr>';
 					else 
-						$html.= '<tr><td><b>JobNumber:</b></td><td>'.$display1.'</td>
-									<td><b>Size:</b></td><td>'.$barcode_rslt['size_code'].'</td>
+						$html.= '<tr><td colspan=4><b>JobNumber:</b></td><td colspan=5>'.$display1.'</td>
+									<td colspan=3><b>Size:</b></td><td colspan=3>'.$barcode_rslt['size_code'].'</td>
 								</tr>';
 
-					$html.='<tr><td><b>BarcodeID:</b></td><td>'.$barcode.'</td>
-								<td><b>CutNo:</b></td><td>'.chr($color_code).leading_zeros($cutno, 3).'</td>
+					$html.='<tr><td colspan=4><b>BarcodeID:</b></td><td colspan=5>'.$barcode.'</td>
+								<td colspan=3><b>CutNo:</b></td><td colspan=5>'.chr($color_code).leading_zeros($cutno, 3).'</td>
 							</tr>
-							<tr><td><b>Color:</b></td><td colspan=3>'.substr($barcode_rslt['order_col_des'],0,35).'</td></tr>
-							<tr><td><b>CountryCode:</b></td><td>'.$destination.'</td>
-								<td><b>Qty:</b></td><td>'.$quantity.'</td>
+							<tr>
+								<td colspan=3><b>Color:</b></td><td colspan=15>'.substr($barcode_rslt['order_col_des'],0,35).'</td>
+							</tr>
+
+							<tr><td colspan=5><b>CountryCode:</b></td><td colspan=5>'.$destination.'</td>
+								<td colspan=3><b>Qty:</b></td><td colspan=3>'.$quantity.'</td>
 							</tr>
 							</table>
 							<div style="margin-left:60px;"><barcode code="'.$barcode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>
