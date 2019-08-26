@@ -284,10 +284,14 @@ function loadpopup(url)
 setTimeout(function()
 {
     var shift = document.getElementById('shift').value; 
-    var url = window.location.href+'&shift='+shift;
-    // if(shift){
+    var url = window.location.href;
+    var url1 = window.location.href.split('&')[0];
+    if(shift){
+      window.location.href = url1+'&shift='+shift;  
+    }
+    else{
         window.location.href = url;    
-    // }
+    }
 }, 120000);
 
 function doBlink() {
