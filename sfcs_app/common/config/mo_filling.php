@@ -621,7 +621,7 @@
 										}
 									}
 
-									//Excess allocate to Last MO
+									//Excess allocate to Last MO Number
 									if($qty > 0)
 									{
 										for($l=0;$l<sizeof($ops);$l++)
