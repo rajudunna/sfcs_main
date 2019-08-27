@@ -144,7 +144,7 @@ if(isset($_GET['submit']))
 					$sec_tot_plan_eff=0; $sec_tot_act_eff=0; $sec_tot_hitrate=0; $sec_tot_required=0; $module_count=0;
 					$section = $Sec['section_id'];  $sec_tot_qty_array = array(); $sec_tot_balance=0;
 					// $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
-					$sql="SELECT fr_data.*, plan_modules.section_id FROM $bai_pro2.fr_data  LEFT JOIN $bai_pro3.plan_modules ON fr_data.team = plan_modules. module_id WHERE fr_data.frdate='$frdate' AND plan_modules.section_id='$section' GROUP BY fr_data.team ORDER BY fr_data.team*1;";
+					$sql="SELECT fr_data.*, plan_modules.section_id FROM $bai_pro2.fr_data  LEFT JOIN $bai_pro3.plan_modules ON fr_data.team = plan_modules. module_id WHERE fr_data.frdate='$frdate' AND plan_modules.section_id='$section' GROUP BY fr_data.team,fr_data.style,fr_data.smv ORDER BY fr_data.team*1;";
 					// echo $sql.'<br>';
 					$res=mysqli_query($link,$sql);
 					if (mysqli_num_rows($res) > 0) 
@@ -162,19 +162,19 @@ if(isset($_GET['submit']))
 							$team=$row['team'];
 							
 							//get styles which run in lines
-							$sql1="SELECT distinct style FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
+							$sql1="SELECT distinct style FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
 							$res1=mysqli_query($link,$sql1);
 							
-							$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
+							$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
 							$res2=mysqli_query($link,$sql2);
 							
-							$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
+							$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
 							$res3=mysqli_query($link,$sql3);
 							
 							$sql4="SELECT qty FROM $bai_pro3.line_forecast where date='$frdate' AND module='$team'";
 							$res4=mysqli_query($link,$sql4);
 							
-							$sql5="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
+							$sql5="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
 							$res5=mysqli_query($link,$sql5);
 							
 							$get_nop_query="SELECT fix_nop FROM $bai_pro.pro_plan WHERE date='$frdate' and mod_no='$team'";
@@ -185,7 +185,7 @@ if(isset($_GET['submit']))
 								$nop = $result['fix_nop'].'<br>';
 							}
 
-							$sqlsc="SELECT SUM(bac_Qty) AS sumqty FROM $bai_pro.bai_log where bac_no='$team' AND bac_date='$frdate'";
+							$sqlsc="SELECT SUM(qty) AS sumqty FROM $bai_pro2.hout where team='$team' AND out_date='$frdate'";
 							// echo $sqlsc;
 							$resc=mysqli_query($link,$sqlsc);
 							if($rowc=mysqli_fetch_array($resc))
@@ -194,7 +194,7 @@ if(isset($_GET['submit']))
 							}
 							else
 							{
-								$sumcty="";
+								$sumscqty="";
 							}
 							
 							?>
