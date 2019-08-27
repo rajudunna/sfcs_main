@@ -28,27 +28,25 @@
                     <select class='form-control'  name='operations' id='operations'>
                         <option value='0' selected disabled>Please Select</option>
                        <?php
-                        $get_count = "SELECT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE category ='sewing' AND operation_code='130'";
+                        $get_count = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where category ='sewing'";
                        
                         $sql_count_result=mysqli_query($link, $get_count) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($sql_count=mysqli_fetch_array($sql_count_result)) 
                         {
-                          $cnt=$sql_count['operation_code'];
-                       
-                        // $get_operations ="select operation_code from $brandix_bts.tbl_orders_ops_ref where category ='sewing' limit 1,$cnt"; 
-                        // $result=mysqli_query($link,$get_operations);
-                        // while ($test = mysqli_fetch_array($result))
-                        // {
-                         echo '<option value="'.$cnt.'">'.$cnt.'</option>';
+                          $cnt=$sql_count['cnt'];
+                        }
+                        $get_operations ="select operation_code from $brandix_bts.tbl_orders_ops_ref where category ='sewing' limit 1,$cnt"; 
+                        $result=mysqli_query($link,$get_operations);
+                        while ($test = mysqli_fetch_array($result))
+                        {
+                         echo '<option value="'.$test['operation_code'].'">'.$test['operation_code'].'</option>';
                         } 
                        ?>
                     </select>
                 </div>
                 <div class='col-sm-1'>
                     <label for='submit'><br/></label><br/>
-                    
                     <input class='btn btn-success btn-sm' type='button' value='submit' onclick='load_data()' name='submit'>
-                    
                 </div>
             </div><hr>
             
@@ -65,7 +63,7 @@
                     $section_display_name=$sql_rowx1['section_display_name'];
                 }
         ?>    
-               <div class='section_div' style='width:25vw;float:left;padding:5px'>
+                <div class='section_div' style='width:25vw;float:left;padding:5px'>
                     <div class='panel panel-success'>
                         <div class='panel-body sec-box'>
                             <center><span class='section-heading'><b><?= $section_display_name; ?></b></span></center>
@@ -82,6 +80,7 @@
         ?>
             <!-- <div class='row'></div>
 
+
             <div class='row'>
                 <hr/>
                 <div class='l-div col-sm-3'>
@@ -96,10 +95,10 @@
                     <span class="b-block gloss-black" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
                     <span class='l-text'> - Line WIP &ge; 751</span>
                 </div>
-            </div> -->
+            </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <script>
     var sections_str = '<?= $sections_str ?>';
@@ -198,7 +197,7 @@
         border : 1px solid #aaa;
         border-radius : 4px;
     }    
-     .cut-wip{
+    .cut-wip{
         //background : #D00B7C;
         width : parent;
         height : 35px;
@@ -260,10 +259,10 @@
         min-height : 25px;
         border : 1px solid #3c3c3c;
     }
-    /* .l-text{
+    .l-text{
         color : #444;
         font-weight : bold;
-    } */
+    }
     .b-block{
         border : 1px solid #3c3c3c;
     }
