@@ -729,7 +729,23 @@
 						$seq_id = $row['id'];
 					}
 
-					$input_ops_code =100;
+					
+				// $input_ops_code =100;
+					$application = 'IPS';
+					$sewing_id_query = "select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application'";
+					$sewing_id_query_result = mysqli_query($link,$sewing_id_query);
+					if(mysqli_num_rows($sewing_id_query_result)>0)
+					{
+						while($sewing_ops_id = $sewing_id_query_result->fetch_assoc()) 
+						{
+							$input_ops_code = $sewing_ops_id['operation_code'];
+						}
+					}
+					else
+					{
+						$input_ops_code =100;
+					}
+				
 				
 					//echo "PAC TID = $b_tid + $value";
 					if($input_ops_code == 100 || $input_ops_code == 129)
