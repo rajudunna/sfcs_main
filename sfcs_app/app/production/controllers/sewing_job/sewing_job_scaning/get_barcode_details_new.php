@@ -1095,24 +1095,23 @@
 			  $operation_name=$sql_row['operation_name'];
 			  $operation_code=$sql_row['operation_code'];
 			}
-			$sql="SELECT COALESCE(SUM(recevied_qty),0) AS rec_qty,COALESCE(SUM(send_qty),0) AS s_qty,COALESCE(SUM(recut_in),0) AS rc_qty,COALESCE(SUM(replace_in),0) AS rp_qty,COALESCE(SUM(rejected_qty),0) AS rej_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '".$b_job_no."' AND operation_id = $operation_code";
+			$sql="SELECT COALESCE(SUM(recevied_qty),0) AS rec_qty,COALESCE(SUM(rejected_qty),0) AS rej_qty,,COALESCE(SUM(original_qty),0) AS org_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '".$b_job_no."' AND operation_id = $operation_code";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
 					$rec_qty=$sql_row["rec_qty"];
-					$s_qty=$sql_row["s_qty"];
-					$rc_qty=$sql_row["rc_qty"];
-					$rp_qty=$sql_row["rp_qty"];
 					$rej_qty=$sql_row["rej_qty"];
+                    $orginal_qty=$sql_row["org_qty"];
 			}
-			$sql2="SELECT COALESCE(SUM(carton_act_qty),0) as job_qty FROM bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='".$b_job_no."'";
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row2=mysqli_fetch_array($sql_result2))
-			{
-					$job_qty=$sql_row2["job_qty"];
-			}
+            //commented due to #2390 CR(original_qty = recevied_qty + rejected_qty)
+			// $sql2="SELECT COALESCE(SUM(carton_act_qty),0) as job_qty FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='".$b_job_no."'";
+			// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// while($sql_row2=mysqli_fetch_array($sql_result2))
+			// {
+			// 		$job_qty=$sql_row2["job_qty"];
+			// }
 
-			if(($rec_qty >= $job_qty) AND ($s_qty+$rc_qty+$rp_qty=$rec_qty+$rej_qty)) 
+			if($orginal_qty=$rec_qty+$rej_qty) 
 			{
 				$backup_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='".$b_job_no."'";
 				mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
@@ -1214,15 +1213,16 @@
                                while($bundle_row = $result_get_bundle_status->fetch_assoc())
                                {
                                  $bundle_status = $bundle_row['bundle_qty_status'];
-                               }
-                               if($bundle_status == 1)
-                               {
-                                    $update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where tid = $updatable_id";
-                                    mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                    $ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where tid=$updatable_id";
-                                    mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                    $ims_delete="delete from $bai_pro3.ims_log where tid=$updatable_id";
-                                    mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                                   if($bundle_status == 1)
+                                   {
+                                        $update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where pac_tid = '$b_tid[$i]'";
+                                        mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        $ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where pac_tid= '$b_tid[$i]'";
+                                        mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        $ims_delete="delete from $bai_pro3.ims_log where pac_tid= '$b_tid[$i]'";
+                                        mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                   }
                                }
                             }
                         }
