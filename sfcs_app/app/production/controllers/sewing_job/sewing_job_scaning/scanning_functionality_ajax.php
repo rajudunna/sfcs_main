@@ -1365,13 +1365,14 @@ else if($concurrent_flag == 0)
 				$rej_qty1=$sql_row["rej_qty"];
                 $orginal_qty=$sql_row["org_qty"];
 		}
-		$sql2="SELECT COALESCE(SUM(carton_act_qty),0) as job_qty FROM bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='".$b_job_no."'";
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row2=mysqli_fetch_array($sql_result2))
-		{
-				$job_qty1=$sql_row2["job_qty"];
-		}
-		if(($rec_qty1 >= $job_qty1) AND ($orginal_qty=$rec_qty1+$rej_qty1)) 
+		//commented due to #2390 CR(original_qty = recevied_qty + rejected_qty)
+		// $sql2="SELECT COALESCE(SUM(carton_act_qty),0) as job_qty FROM bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='".$b_job_no."'";
+		// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($sql_row2=mysqli_fetch_array($sql_result2))
+		// {
+		// 		$job_qty1=$sql_row2["job_qty"];
+		// }
+		if($orginal_qty=$rec_qty1+$rej_qty1) 
 		{
 			$backup_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='".$b_job_no."'";
 			mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
