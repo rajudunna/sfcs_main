@@ -103,8 +103,11 @@
 <script>
     var sections_str = '<?= $sections_str ?>';
     var sections = sections_str.split(',');
-
-
+    $(document).ready(function(){
+        load_data();
+        $('[data-toggle="tooltip"]').tooltip(); 
+    });
+    
     function load_data(){
         console.log();
         for(var i=0;i<sections.length;i++){
