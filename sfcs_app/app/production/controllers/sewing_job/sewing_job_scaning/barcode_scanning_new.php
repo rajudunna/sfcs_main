@@ -25,6 +25,14 @@ GROUP BY tm.operation_code ORDER BY tm.operation_code";
 // var_dump($ops_array1);
 
 ?>
+<?php
+$sql1="SELECT module_name FROM bai_pro3.module_master  ORDER BY module_name*1";
+$result=mysqli_query($link, $sql1) ;
+while($row=mysqli_fetch_array($result))
+{
+    $Modules_array[]=$row['module_name'];
+}
+?>
 <div class="panel panel-primary " id="bundlewise_scanBarcode">
 <div class="panel-heading">Bundle Barcode Scanning Without Operation</div>
 <div class="panel-body">
@@ -32,12 +40,12 @@ GROUP BY tm.operation_code ORDER BY tm.operation_code";
 <div class="row">
 <div class="col-md-4">
 <input type='hidden' id='gate_id' name ='gate_id' value=<?php echo $gate_id; ?>>
-<label>Shift:<span style="color:red">*</span></label>
-<select class="form-control shift" name="shift" id="shift" style="width:100%;" required>
-<option value="">Select Shift</option>
+<label>Module:<span style="color:red">*</span></label>
+<select class="form-control Module" name="Module" id="Module" style="width:100%;" required>
+<option value="">Select Module</option>
 <?php 
-for ($i=0; $i < sizeof($shifts_array); $i++) {?>
-<option <?php echo 'value="'.$shifts_array[$i].'"'; if($_GET['shift']==$shifts_array[$i]){ echo "selected";} ?>><?php echo $shifts_array[$i] ?></option>
+for ($i=0; $i < sizeof($Modules_array); $i++) {?>
+<option <?php echo 'value="'.$Modules_array[$i].'"'; if($_GET['Module']==$Modules_array[$i]){ echo "selected";} ?>><?php echo $Modules_array[$i] ?></option>
 <?php }
 ?>
 </select>
