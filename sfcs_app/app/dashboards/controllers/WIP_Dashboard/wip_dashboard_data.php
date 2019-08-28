@@ -1,8 +1,48 @@
 <?php
-error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 $section = $_GET['section'];
 $get_operation = $_GET['operations'];
+
+function leading_zeros($value, $places)
+{
+    $leading='';
+    
+    if(is_numeric($value))
+    {
+        for($x = 1; $x <= $places; $x++)
+        {
+            $ceiling = pow(10, $x);
+            if($value < $ceiling)
+            {
+                $zeros = $places - $x;
+                for($y = 1; $y <= $zeros; $y++)
+                {
+                    $leading .= "0";
+                }
+            $x = $places + 1;
+            }
+        }
+        $output = $leading . $value;
+    }
+    else{
+        $output = $value;
+    }
+    
+    return $output;
+}
+function echo_title($table_name,$field,$compare,$key,$link)
+{
+    //GLOBAL $menu_table_name;
+    //GLOBAL $link;
+    $sql="select $field as result from $table_name where $compare='$key'";
+    // echo $sql."<br>";
+    $sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_row=mysqli_fetch_array($sql_result))
+    {
+        return $sql_row['result'];
+    }
+    ((mysqli_free_result($sql_result) || (is_object($sql_result) && (get_class($sql_result) == "mysqli_result"))) ? true : false);
+}
 
 
 $data = '';
@@ -63,21 +103,21 @@ echo json_encode($section_data);
 
 <?php
 
-   function getsewingJobsData($section,$module,$get_operation)
-   {
+function getsewingJobsData($section,$module,$get_operation)
+{
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    
-
-    $get_input_jobs = "select distinct(input_job_no_random_ref) from $bai_pro3.plan_dashboard_input where input_module =$module";
-   // echo  $get_input_jobs;
+    //include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+    $get_input_jobs = "select distinct(input_job_no_random_ref) from $bai_pro3.plan_dashboard_input where input_module = '$module'";
+    // echo  $get_input_jobs;
     $result_get_input_jobs = $link->query($get_input_jobs);
     while($row = $result_get_input_jobs->fetch_assoc())
     {
       $input_job[] = $row['input_job_no_random_ref'];
     }  
-    // var_dump($input_job);
-
-        $get_style_details = "select distinct(schedule),style,mapped_color,input_job_no_random_ref From $brandix_bts.bundle_creation_data where input_job_no_random_ref in ('".implode("','",$input_job)."') and operation_id=$get_operation";
+    
+    if(mysqli_num_rows($result_get_input_jobs)>0)
+    {
+       $get_style_details = "select distinct(schedule),style,mapped_color,input_job_no_random_ref From $brandix_bts.bundle_creation_data where input_job_no_random_ref in ('".implode("','",$input_job)."') and operation_id=$get_operation and bundle_qty_status = 0";
        // echo $get_style_details;
         $result_get_style_details = $link->query($get_style_details);
         while($row1 = $result_get_style_details->fetch_assoc()) 
@@ -86,6 +126,7 @@ echo json_encode($section_data);
             $schedule = $row1['schedule'];
             $color = $row1['mapped_color'];
             $job_no = $row1['input_job_no_random_ref'];
+            $color_ref="'".str_replace(",","','",$color)."'"; 
 
 
           
@@ -111,7 +152,7 @@ echo json_encode($section_data);
             $previous_operation = $pre_ops_code;
             $present_operation = $get_operation;
 
-            $get_jobs = "select cut_number,docket_number,remarks,input_job_no_random_ref,sum(if(operation_id = $previous_operation,recevied_qty,0)) as previous_output,sum(if(operation_id = $present_operation,recevied_qty,0)) as present_output From $brandix_bts.bundle_creation_data where assigned_module=$module and input_job_no_random_ref = '$job_no' and operation_id in ($previous_operation,$present_operation) GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $previous_operation,recevied_qty,0)) != SUM(IF(operation_id = $present_operation,recevied_qty,0))";
+            $get_jobs = "select cut_number,docket_number,remarks,input_job_no_random_ref,input_job_no,COALESCE(SUM(rejected_qty),0) as rejected_qty,sum(if(operation_id = $previous_operation,recevied_qty,0)) as previous_output,sum(if(operation_id = $present_operation,recevied_qty,0)) as present_output From $brandix_bts.bundle_creation_data where assigned_module=$module and input_job_no_random_ref = '$job_no' and operation_id in ($previous_operation,$present_operation) and (recevied_qty >0 or rejected_qty >0) GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $previous_operation,recevied_qty,0)) != SUM(IF(operation_id = $present_operation,recevied_qty,0))";
             // echo $get_jobs;
             $get_jobs_result = $link->query($get_jobs);
             while($row4 = mysqli_fetch_array($get_jobs_result))
@@ -122,70 +163,89 @@ echo json_encode($section_data);
               $docket_number = $row4['docket_number'];
               $remarks = $row4['remarks'];
               $cut_no = $row4['cut_number'];
-             
+              $rejected = $row4['rejected_qty'];
+              $inputno = $row4['input_job_no'];
 
             //   var_dump($job_no1);
             }
-          $sql1 =  "select SUM(IF(qms_tran_type=3,qms_qty,0)) AS rejected from $bai_pro3.bai_qms_db where qms_schedule='$schedule'";
-          $sql1_result = $link->query($sql1);
-          while($row5 = mysqli_fetch_array($sql1_result))
-          {
-            $rejected = $row5['rejected'];
-          }
-          $sql44="select ims_date from $bai_pro3.ims_log where ims_schedule=$schedule";
+            $sql331="select type_of_sewing from $bai_pro3.pac_stat_log_input_job where input_job_no_random='$job_no'";
+            //echo $sql331;
+            $sql_result331=mysqli_query($link, $sql331) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+            while($sql_row331=mysqli_fetch_array($sql_result331))
+            {
+                $type_of_sewing=$sql_row331['type_of_sewing'];
+            }
+
+            $prefix="";
+            $sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing='$type_of_sewing'";
+            // echo $sql."<br>";
+            $sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($sql_row=mysqli_fetch_array($sql_result))
+            {
+                $prefix = $sql_row['result'];
+            }
+            $display_prefix1=$prefix.leading_zeros($inputno,3);
+
+            // $sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","id",$type_of_sewing,$link);
+            // $display = $sewing_prefi.leading_zeros($inputno,3);
+
+            $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des in (".$color_ref.") and order_del_no",$schedule,$link);
+            $display1=chr($color_code).leading_zeros($cut_no,3); 
+             $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedule,$link);
+
+
+            $sql44="select ims_date from $bai_pro3.ims_log where ims_schedule=$schedule";
             $sql44 =   $link->query($sql44);
             while($row44 = mysqli_fetch_array($sql44))
             {
-              $input_date = $row44['ims_date'];
+                $input_date = $row44['ims_date'];
             }
-
-            // var_dump($job_no1);
-            
-
             $wip = $previous_output - $present_output;
+            
+            $totalwip = $totalwip+$wip;
         
-        $totalwip = $totalwip+$wip;
         
-        
-		for($x=0;$x<sizeof($job_no1);$x++)
-		{
-        $tool_tip_text = "<p style=\"width : 500px \">
-        <v><c>Style </c> : $style </v>
-        <v><c>Schedule </c> : $schedule</v>
-        <v><c>Color </c> : $color</v>
-        <v><c>input_date </c> : $input_date</v>
-        <v><c>Wip </c> : $wip</v>
-        <v><c>Cut No </c> :$cut_no</v>
-        <v><c>Doc_no </c> : $docket_number</v>
-        <v><c>rejected </c> : $rejected</v>
-        <v><c>remarks </c> : $remarks</v>
-      
-       </p>";
-       $href= "$url&module=$module&section=$section&operations=$get_operation";
-        $docs_data.="<span class='block'>
-        <span class='cut-block blue'>
-            <span class='mytooltip'>
-                <a rel='tooltip' data-toggle='tooltip' data-placement='top' data-title='$tool_tip_text'
-                onclick=\"window.open('index.php?r=$href','yourWindowName','width=800,height=600')\"
-                data-html='true'>
-                    &nbsp;&nbsp;&nbsp;
-                </a>
-            </span>
-        </span>
-    </span>"; 
+            for($x=0;$x<sizeof($job_no1);$x++)
+            {
+                $tool_tip_text = "<p style=\"width : 500px \">
+                <v><c>Style </c> : $style </v>
+                <v><c>Schedule </c> : $schedule</v>
+                <v><c>Color </c> : $color</v>
+                <v><c>Co No </c> : $co_no</v>
+                <v><c>input_date </c> : $input_date</v>
+                <v><c>Wip </c> : $wip</v>
+                <v><c>Job No </c> : $display_prefix1</v>
+                <v><c>Cut No </c> :$cut_no</v>
+                <v><c>Doc_no </c> : $docket_number</v>
+                <v><c>rejected </c> : $rejected</v>
+                <v><c>remarks </c> : $remarks</v>
+              
+               </p>";
+               $href= "$url&module=$module&section=$section&operations=$get_operation";
+                $docs_data.="<span class='block'>
+                <span class='cut-block blue'>
+                    <span class='mytooltip'>
+                        <a rel='tooltip' data-toggle='tooltip' data-placement='top' data-title='$tool_tip_text'
+                        onclick=\"window.open('index.php?r=$href','yourWindowName','width=800,height=600')\"
+                        data-html='true'>
+                            &nbsp;&nbsp;&nbsp;
+                        </a>
+                    </span>
+                </span>
+              </span>"; 
+            }
         }
-    }
 
-    $docs_data.="<span class='block'>
-    <span class='red'>
-        <span class='ims-wip'>
-        Wip  : $totalwip
-            <a  data-toggle='tooltip' data-placement='top' data-title='$tool_tip_text1'>
-                &nbsp;&nbsp;&nbsp;
-            </a>
-        </span>
-    </span>
-</span>"; 
+            $docs_data.="<span class='block'>
+            <span class='red'>
+                <span class='ims-wip'>
+                Wip  : $totalwip
+                    <a  data-toggle='tooltip' data-placement='top' data-title='$tool_tip_text1'>
+                        &nbsp;&nbsp;&nbsp;
+                    </a>
+                </span>
+              </span>
+            </span>"; 
     
    
             enough : NULL; 
@@ -196,7 +256,7 @@ echo json_encode($section_data);
                 $jquery_data.= "<script>$('#cut-wip-$module').html('$job_no')</script>"; 
         
             return $docs_data; 
-    
     }
+}
    
 ?>
