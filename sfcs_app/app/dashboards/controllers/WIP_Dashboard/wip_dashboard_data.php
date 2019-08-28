@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 $section = $_GET['section'];
 $get_operation = $_GET['operations'];
@@ -106,7 +107,6 @@ echo json_encode($section_data);
 function getsewingJobsData($section,$module,$get_operation)
 {
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    //include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
     $get_input_jobs = "select distinct(input_job_no_random_ref) from $bai_pro3.plan_dashboard_input where input_module = '$module'";
     // echo  $get_input_jobs;
     $result_get_input_jobs = $link->query($get_input_jobs);
@@ -118,7 +118,7 @@ function getsewingJobsData($section,$module,$get_operation)
     if(mysqli_num_rows($result_get_input_jobs)>0)
     {
        $get_style_details = "select distinct(schedule),style,mapped_color,input_job_no_random_ref From $brandix_bts.bundle_creation_data where input_job_no_random_ref in ('".implode("','",$input_job)."') and operation_id=$get_operation and bundle_qty_status = 0";
-       // echo $get_style_details;
+    //    echo $get_style_details;
         $result_get_style_details = $link->query($get_style_details);
         while($row1 = $result_get_style_details->fetch_assoc()) 
         {
@@ -151,7 +151,7 @@ function getsewingJobsData($section,$module,$get_operation)
             }
             $previous_operation = $pre_ops_code;
             $present_operation = $get_operation;
-
+            $inputno ="";
             $get_jobs = "select cut_number,docket_number,remarks,input_job_no_random_ref,input_job_no,COALESCE(SUM(rejected_qty),0) as rejected_qty,sum(if(operation_id = $previous_operation,recevied_qty,0)) as previous_output,sum(if(operation_id = $present_operation,recevied_qty,0)) as present_output From $brandix_bts.bundle_creation_data where assigned_module=$module and input_job_no_random_ref = '$job_no' and operation_id in ($previous_operation,$present_operation) and (recevied_qty >0 or rejected_qty >0) GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $previous_operation,recevied_qty,0)) != SUM(IF(operation_id = $present_operation,recevied_qty,0))";
             // echo $get_jobs;
             $get_jobs_result = $link->query($get_jobs);
@@ -195,8 +195,8 @@ function getsewingJobsData($section,$module,$get_operation)
 
 
             $sql44="select ims_date from $bai_pro3.ims_log where ims_schedule=$schedule";
-            $sql44 =   $link->query($sql44);
-            while($row44 = mysqli_fetch_array($sql44))
+            $sql_result =   $link->query($sql44);
+            while($row44 = mysqli_fetch_array($sql_result))
             {
                 $input_date = $row44['ims_date'];
             }
