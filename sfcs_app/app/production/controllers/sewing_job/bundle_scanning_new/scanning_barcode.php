@@ -25,22 +25,26 @@
                 <table class="table ">
     <thead>
       <tr >
-      <td colspan="4"><center>Scanned Count</center></td>
+      <div colspan="4"><center>Scanned Count</center></div>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>previous hr:</td>
-        <td><span class="btn btn-sm btn-success">hai</span></td>
-        <td><span class="btn btn-sm btn-danger">hai</span></td>
-        <td><span class="btn btn-sm btn-warning">hai</span></td>
+      <div>
+        <div class="col-sm-3">previous hr: </div>
+        <div class="btn btn-sm btn-success">00</div>
+        <div class="btn btn-sm btn-danger"> 00</div>
+        <div class="btn btn-sm btn-warning">00</div>
+      <div>
       </tr>
       <tr>
-        <td>current hr:</td>
-        <td><span class="btn btn-sm btn-success">hai</span></td>
-        <td><span class="btn btn-sm btn-danger">hai</span></td>
-        <td><span class="btn btn-sm btn-warning">hai</span></td>
+      <div>
+        <div class="col-sm-3">current hr:</div>
+        <div class="btn btn-sm btn-success">00</div>
+        <div class="btn btn-sm btn-danger"> 00</div>
+        <div class="btn btn-sm btn-warning">00</div>
       </tr>
+      </div>
     </tbody>
   </table>
                 
@@ -58,9 +62,9 @@
         <td><span>Action :</span></td>
         <td style="width: 323px;">
         <div>
-        <button type="button" style="height: 80px;"  class="btn btn-info">Add</button>
+        <button type="button" style="height: 80px;width: 76px;."  class="btn btn-info">Add</button>
         <button type="button" style="height: 80px;" class="btn btn-info">Reverse</button>
-        <button type="button" style="height: 80px;" class="btn btn-info">Reset</button>
+        <button type="button" style="height: 80px;width: 76px;" class="btn btn-info">Reset</button>
         </div>
         </td>
         <td style="width: 10 5px;"></td>
@@ -89,10 +93,10 @@
         </br></br></br>
         <tr>
         <td><label>Tx Mode:</label></td>
-        <td><button type="button" style="height: 80px;"  class="btn btn-success">Good</button>
-        <button type="button" style="height: 80px;" class="btn btn-danger">Scarp</button>
-        <button type="button" style="height: 80px;" class="btn btn-warning">Rework</button>
-        <button type="button" style="height: 50px;width: 213px;" class="btn btn-primary">Good/Scarp</button></td>
+        <td><button type="button" style="height: 80px;width: 76px"  class="btn btn-success">Good</button>
+        <button type="button" style="height: 80px;width: 76px" class="btn btn-danger">Scarp</button>
+        <button type="button" style="height: 80px;width: 76px" class="btn btn-warning">Rework</button>
+        <button type="button" style="height: 50px;width: 245px;" class="btn btn-primary">Good/Scarp</button></td>
         <td style="width: 125px;"></td>
         <td><div class="container" style="width: 570px;">
         <div class="panel panel-basic">
@@ -108,12 +112,13 @@
                 <div class="col-sm-8 col-md-8 col-xs-8">Size:</div>
                 <button type="button" style="height: 60px;width:100px;" class="btn btn-info">Reset</button>
                 <div class="col-sm-8 col-md-8 col-xs-8">Operation :</div>
+                <div class="col-sm-3  ">Count</div>
                 </div>
             </div>
         </td>
         </tr>
         <tr>
-        <td><label>Scrap Reason : </label></td>
+        <td><label> Scrap Reason: </label></td>
         <td><input type="text" style="max-width: 250px;"  class="form-control" name="Scrap Reason"></td>
         <td></td>
         <td></td>
