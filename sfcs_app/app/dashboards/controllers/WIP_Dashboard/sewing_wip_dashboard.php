@@ -1,9 +1,8 @@
-
-
 <?php 
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
     $url = getFullURLLevel($_GET['r'],'wip_dashboard_data.php',0,'R');
-  $RELOAD_TIME = (int)$wip_refresh_time;
+    // $RELOAD_TIME = (int)$wip_refresh_time;
+    $RELOAD_TIME = (int)$wpt_refresh_time;
     $dashboard_name="WIP";
     // $sections_query = "Select sec_id from $bai_pro3.sections_db where sec_id > 0";
     $sections_query = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section>0 GROUP BY section ORDER BY section + 0";
@@ -19,14 +18,14 @@
     <div class='panel panel-primary'>
         <div class='panel-heading'>
             <b>WIP DASHBOARD</b>
-            <p class='pull-right'>Auto-Refresh : <?= $RELOAD_TIME ?> mins </p>
+            <p class='pull-right' >Auto-Refresh : <?= $RELOAD_TIME ?> mins </p>
         </div>
         <div class='panel-body'>
             <div class='row'>
                 <div class='col-sm-2'>
                     <label for='operations'>Sewing Operations</label>
-                    <select class='form-control'  name='operations' id='operations'>
-                        <option value='0' selected disabled>Please Select</option>
+                    <select class='form-control'  name='operations' id='operations' onchange="load_data()">
+                        <!-- <option value='0' selected disabled>Please Select</option> -->
                        <?php
                         $get_count = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where category ='sewing'";
                        
@@ -39,17 +38,20 @@
                         $result=mysqli_query($link,$get_operations);
                         while ($test = mysqli_fetch_array($result))
                         {
+                        
                          echo '<option value="'.$test['operation_code'].'">'.$test['operation_code'].'</option>';
                         } 
                        ?>
                     </select>
+                   
                 </div>
-                <div class='col-sm-1'>
-                    <label for='submit'><br/></label><br/>
-                    <input class='btn btn-success btn-sm' type='button' value='submit' onclick='load_data()' name='submit'>
-                </div>
+               
             </div><hr>
-            
+            <div class='panel-heading'>
+           <center> <b> <p id='demo' style="color:red"> </p></b>
+           </center>
+        </div>
+   
         <?php
             foreach($sections as $section)
             {
@@ -63,14 +65,15 @@
                     $section_display_name=$sql_rowx1['section_display_name'];
                 }
         ?>    
+
                 <div class='section_div' style='width:25vw;float:left;padding:5px'>
                     <div class='panel panel-success'>
                         <div class='panel-body sec-box'>
                             <center><span class='section-heading'><b><?= $section_display_name; ?></b></span></center>
-                            <span style='height:50px'>&nbsp;</span>
+                            <span style='height:50px'>
+                            &nbsp;</span>
                             <div class='loading-block' id='<?= $id1 ?>' style='display:block'></div>
                             <div id='<?= $id2 ?>'>
-
                             </div>
                         </div>
                     </div>
@@ -78,36 +81,23 @@
         <?php
             }
         ?>
-            <!-- <div class='row'></div>
-
-
-            <div class='row'>
-                <hr/>
-                <div class='l-div col-sm-3'>
-                    <span class="b-block gloss-red" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
-                    <span class='l-text'> - Line WIP &le; 216</span>
-                </div>
-                <div class='l-div col-sm-3'>
-                    <span class="b-block gloss-green" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
-                    <span class='l-text'> - Line WIP &ge; 217 && &le; 750</span>
-                </div>
-                <div class='l-div col-sm-3'>
-                    <span class="b-block gloss-black" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 
-                    <span class='l-text'> - Line WIP &ge; 751</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->
+         
 
 <script>
+  
     var sections_str = '<?= $sections_str ?>';
     var sections = sections_str.split(',');
     $(document).ready(function(){
         load_data();
         $('[data-toggle="tooltip"]').tooltip(); 
     });
+
     
+    setInterval(function() {
+        call_ajax(sections[0],true);
+    }, <?= $RELOAD_TIME * 6000 ?>);
+
+
     function load_data(){
         console.log();
         for(var i=0;i<sections.length;i++){
@@ -121,6 +111,7 @@
            
         $('#sec-load-'+section).css('display','block');
         $('#sec-'+section).html('');
+        $('#sec-'+operations).html('');
         $.ajax({
             url: "<?= $url ?>?section="+section+"&operations="+operations
         }).done(function(data) {
@@ -160,11 +151,11 @@
                 }
             }
         });
+        $("select").change(function(){
+            document.getElementById("demo").innerHTML= "SELECTED SEWING OPERATION : "+document.getElementById("operations").value;
+        });
     }
-
-
-    
-
+     
 </script>
 
 
