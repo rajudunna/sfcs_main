@@ -36,8 +36,8 @@ $view_access=user_acl("SFCS_0049",$username,1,$group_id_sfcs);
 	<div class='col-md-2'>
 		Team: <select name="team" class="form-control">
 				<?php 
-				for ($i=0; $i < sizeof($teams_array); $i++) {?>
-				<option <?php echo 'value="'.$teams_array[$i].'"'; if($shift==$teams_array[$i]){ echo "selected";} ?>><?php echo $teams_array[$i] ?></option>
+				for ($i=0; $i < sizeof($shifts_array); $i++) {?>
+				<option <?php echo 'value="'.$shifts_array[$i].'"'; if($shift==$shifts_array[$i]){ echo "selected";} ?>><?php echo $shifts_array[$i] ?></option>
 				<?php }
 				?>
 				</select>
