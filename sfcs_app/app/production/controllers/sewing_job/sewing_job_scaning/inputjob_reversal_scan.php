@@ -914,10 +914,10 @@
 							}
 						}
 						if(sizeof($parellel_ops)>0){
-							$update_query = "Update $bai_pro3.cps_log set remaining_qt = remaining_qty + $reversal_value 
+							$update_query = "Update $bai_pro3.cps_log set remaining_qty = remaining_qty + $reversal_value 
 							where doc_no = '$docket_n' and size_title = '$up_size' and operation_code in (".implode(',',$parellel_ops).")";
 						}else{
-							$update_query = "Update $bai_pro3.cps_log set remaining_qt = remaining_qty + $reversal_value 
+							$update_query = "Update $bai_pro3.cps_log set remaining_qty = remaining_qty + $reversal_value 
 							where doc_no = '$docket_n' and size_title = '$up_size' and operation_code = '$post_ops_code'";
 						}
 						
