@@ -684,11 +684,6 @@
 
                             //To check orginal_qty = send_qty + rejected_qty
                             $bundle_status = 0;
-                            $reported_qty = $final_rep_qty + $final_rej_qty;
-                            if($b_original_qty == $reported_qty)
-                            {
-                                $bundle_status = 1;
-                            }
                             if($previously_scanned == 0){
                                 if($b_send_qty == $b_old_rej_qty_new){
                                     $result_array['status'] = 'This Bundle Qty Is Completely Rejected';
@@ -709,13 +704,6 @@
                                 $result_query_001 = $link->query($bulk_insert_post) or exit('bulk_insert_post query error in updating');
                             }
 
-                            if($bundle_status = 1)
-                            {
-                                $status_update_query = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
-                                
-                                $status_result_query = $link->query($status_update_query) or exit('query error in updating status');
-                            }
-                            
                             if($result_query)
                             {
                                 if($b_rep_qty[$key] > 0)
@@ -763,12 +751,12 @@
                     $left_over_qty = $b_in_job_qty[$key] - ($b_rep_qty[$key] + $b_rej_qty[$key]);
                     //To check orginal_qty = send_qty + rejected_qty
                     $bundle_status = 0;
-                    $b_original_qty = $b_in_job_qty[$key];
-                    $reported_qty = $b_rep_qty[$key] + $b_rej_qty[$key];
-                    if($b_original_qty == $reported_qty)
-                    {
-                        $bundle_status = 1;
-                    }
+                    // $b_original_qty = $b_in_job_qty[$key];
+                    // $reported_qty = $b_rep_qty[$key] + $b_rej_qty[$key];
+                    // if($b_original_qty == $reported_qty)
+                    // {
+                    //     $bundle_status = 1;
+                    // }
 
                     // appending all values to query for bulk insert....
                     if($tid == $bundle_no){
@@ -954,7 +942,7 @@
                                     $result_query_001 = $link->query($bulk_insert_post) or exit('bulk_insert_post query error in updating');
                                 }
 
-                                if($bundle_status = 1)
+                                if($bundle_status == 1)
                                 {
                                     $status_update_query = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
                                     
@@ -1095,7 +1083,7 @@
 			  $operation_name=$sql_row['operation_name'];
 			  $operation_code=$sql_row['operation_code'];
 			}
-			$sql="SELECT COALESCE(SUM(recevied_qty),0) AS rec_qty,COALESCE(SUM(rejected_qty),0) AS rej_qty,,COALESCE(SUM(original_qty),0) AS org_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '".$b_job_no."' AND operation_id = $operation_code";
+			$sql="SELECT COALESCE(SUM(recevied_qty),0) AS rec_qty,COALESCE(SUM(rejected_qty),0) AS rej_qty,COALESCE(SUM(original_qty),0) AS org_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '".$b_job_no."' AND operation_id = $operation_code";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -1111,7 +1099,7 @@
 			// 		$job_qty=$sql_row2["job_qty"];
 			// }
 
-			if($orginal_qty=$rec_qty+$rej_qty) 
+			if($orginal_qty==$rec_qty+$rej_qty) 
 			{
 				$backup_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='".$b_job_no."'";
 				mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
@@ -1298,11 +1286,40 @@
                     }
                 }
             }
+            foreach ($b_tid as $key => $tid) 
+            {
+               //To check orginal_qty = send_qty + rejected_qty
+                $bundle_status = 0;
+                 $get_bundle_status = "select original_qty,recevied_qty,rejected_qty from $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$key] and operation_id = $b_op_id";
+                $get_bundle_status_result=mysqli_query($link,$get_bundle_status) or exit("barcode status Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($status_row=mysqli_fetch_array($get_bundle_status_result))
+                {
+                    $orginal_bundle_qty = $status_row['original_qty'];
+                    $recevied_bundle_qty = $status_row['recevied_qty'];
+                    $rejected_bundle_qty = $status_row['rejected_qty'];
+                }
+                $b_original_qty = $orginal_bundle_qty;
+                $reported_qty = $recevied_bundle_qty + $rejected_bundle_qty;
+                if($b_original_qty == $reported_qty)
+                {
+                    $bundle_status = 1;
+                }
+                
+                
+                 if($bundle_status ==1)
+                {
+                    $status_update_query = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
+                    $status_result_query = $link->query($status_update_query) or exit('query error in updating status');
+
+                    $status_update_query = "UPDATE $brandix_bts.bundle_creation_data_temp SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
+                    $status_result_query = $link->query($status_update_query) or exit('query error in updating status');
+                }
+            }
             //updating into  m3 transactions for positives
-			for($i=0;$i<sizeof($b_tid);$i++)
-			{
-				$updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$b_rep_qty[$i]);
-			}
+            for($i=0;$i<sizeof($b_tid);$i++)
+            {
+                $updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$b_rep_qty[$i]);
+            }
             $result_array['bundle_no'] = $bundle_no;
             $result_array['op_no'] = $op_no;
             echo json_encode($result_array);
