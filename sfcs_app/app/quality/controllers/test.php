@@ -699,6 +699,11 @@ else
 				$temp=1;
 				break;
 			}
+			default:
+			{
+				$temp=1;
+				break;
+			}
 		}
 		
 		$usr_msg="<br/>
