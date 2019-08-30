@@ -331,15 +331,55 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
     //getting main operation_code from operation mapping
     if($op_code != 15)
     {
-        $bundle_creation_data_check = "SELECT DISTINCT OperationNumber FROM $bai_pro3.schedule_oprations_master WHERE style ='$style' AND description ='$color'  AND SMV > 0";
-        $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
-        if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
+        // $bundle_creation_data_check = "SELECT DISTINCT OperationNumber FROM $bai_pro3.schedule_oprations_master WHERE style ='$style' AND description ='$color'  AND SMV > 0";
+        // $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
+        // if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
+        // {
+        //     while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
+        //     {
+        //         $main_ops_code = $row_bundle_creation_data_check_result['OperationNumber'];
+        //     }
+        // }
+        
+        $dep_ops_array_qry1 = "select default_operration,operation_order,main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and operation_code=$op_code";
+        $result_dep_ops_array_qry1 = $link->query($dep_ops_array_qry1);
+        while($row1 = $result_dep_ops_array_qry1->fetch_assoc()) 
         {
-            while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
+            $def_op = $row1['default_operration'];
+            $operation_order = $row1['operation_order'];
+            $main_operationnumber = $row1['main_operationnumber'];
+        }
+
+        if($def_op=='yes'|| $def_op=='Yes')
+         {
+            $main_ops_code = $main_operationnumber;
+        }
+        else{
+            //query excluding packing in rejection
+            $dep_ops_array_qry2="SELECT tm.main_operationnumber FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.operation_code=tm.operation_code WHERE tm.style ='$style' AND tm.color='$color' AND default_operration='yes' AND tr.category <> 'packing' and tm.operation_order > '$operation_order' ORDER BY tm.operation_order ASC limit 1";
+
+            // $dep_ops_array_qry2 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order > '$operation_order' order by ASC limit 1";//quiry with including packing
+            $result_dep_ops_array_qry2 = $link->query($dep_ops_array_qry2);
+            if(mysqli_num_rows($result_dep_ops_array_qry2) > 0)
             {
-                $main_ops_code = $row_bundle_creation_data_check_result['OperationNumber'];
+                while($row2 = $result_dep_ops_array_qry2->fetch_assoc()) 
+                {
+                    $main_ops_code = $row2['main_operationnumber'];
+                }
+            }else
+            {
+                //query excluding packing in rejections
+                $dep_ops_array_qry3="SELECT tm.main_operationnumber FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.operation_code=tm.operation_code WHERE tm.style ='$style' AND tm.color='$color' AND default_operration='yes' AND tr.category <> 'packing' and tm.operation_order < '$operation_order' ORDER BY tm.operation_order DESC limit 1";
+               
+                // $dep_ops_array_qry3 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order < '$operation_order' order by DESC limit 1";//query including packing in rejections
+                $result_dep_ops_array_qry3 = $link->query($dep_ops_array_qry3);
+                while($row3 = $result_dep_ops_array_qry3->fetch_assoc()) 
+                {
+                    $main_ops_code = $row3['main_operationnumber'];
+                } 
             }
         }
+
     }
     else
     {
@@ -409,15 +449,15 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                         $is_m3 = $row['default_operration'];
                     }
                         //getting m3_op_code
-                        $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $main_ops_code";
-                        $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
-                        {
-                            while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
-                            {
-                                $main_ops_code = $row_bundle_creation_data_check_result['Main_OperationNumber'];
-                            }
-                        }
+                        // $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $main_ops_code";
+                        // $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        // if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
+                        // {
+                            // while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
+                            // {
+                                // $main_ops_code = $row_bundle_creation_data_check_result['Main_OperationNumber'];
+                            // }
+                        // }
                         //got the main ops code
                     // if(strtolower($is_m3) == 'yes')
                     // {
@@ -636,18 +676,56 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
         $color = $row['mapped_color'];
         $b_colors = $row['mapped_color'];
     }
-    //getting main operation_code from operation mapping
+   //getting main operation_code from operation mapping
     //$bundle_creation_data_check = "SELECT main_operationnumber FROM `$brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color ='$color' and operation_code = '$op_code'";
     $main_ops_code = $op_code;
-    $bundle_creation_data_check = "SELECT DISTINCT OperationNumber FROM $bai_pro3.schedule_oprations_master WHERE style ='$style' AND description ='$color'  AND SMV > 0";
-    // echo $bundle_creation_data_check;
-    $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
-    if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
+    // $bundle_creation_data_check = "SELECT DISTINCT OperationNumber FROM $bai_pro3.schedule_oprations_master WHERE style ='$style' AND description ='$color'  AND SMV > 0";
+    // // echo $bundle_creation_data_check;
+    // $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
+    // if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
+    // {
+    //     while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
+    //     {
+    //         $main_ops_code = $row_bundle_creation_data_check_result['OperationNumber'];
+    //     }
+    // }
+    $dep_ops_array_qry4 = "select default_operration,operation_order,main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and operation_code=$op_code";
+    $result_dep_ops_array_qry4 = $link->query($dep_ops_array_qry4);
+    while($row4= $result_dep_ops_array_qry4->fetch_assoc()) 
     {
-        while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
+        $def_op = $row4['default_operration'];
+        $operation_order = $row4['operation_order'];
+        $main_operationnumber = $row4['main_operationnumber'];
+    }
+
+    if($def_op=='yes'||$def_op=='Yes') 
+    {
+        $main_ops_code = $main_operationnumber;
+    }
+    else{
+        // query excluding packing in rejection reversal 
+        $dep_ops_array_qry5= "SELECT tm.main_operationnumber FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.operation_code=tm.operation_code WHERE tm.style ='$style' AND tm.color='$color' AND default_operration='yes' AND tr.category <> 'packing' and tm.operation_order > '$operation_order' ORDER BY tm.operation_order ASC limit 1";
+
+        // $dep_ops_array_qry4 = "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order > '$operation_order' order by ASC limit 1";//query including packing in rejection reversal
+        $result_dep_ops_array_qry5 = $link->query($dep_ops_array_qry5);
+        if(mysqli_num_rows($result_dep_ops_array_qry5) > 0)
         {
-            $main_ops_code = $row_bundle_creation_data_check_result['OperationNumber'];
+        while($row5= $result_dep_ops_array_qry5->fetch_assoc()) 
+        {
+            $main_ops_code = $row5['main_operationnumber'];
         }
+		}else
+		{
+			// query excluding packing in rejection reversal 
+			$dep_ops_array_qry6="SELECT tm.main_operationnumber FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.operation_code=tm.operation_code WHERE tm.style ='$style' AND tm.color='$color' AND default_operration='yes' AND tr.category <> 'packing' and tm.operation_order < '$operation_order' ORDER BY tm.operation_order DESC limit 1";
+
+			// $dep_ops_array_qry6= "select main_operationnumber from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and default_operration='yes' and operation_order <'$operation_order' order by DESC limit 1 ";//query including packing in rejection reversal
+			$result_dep_ops_array_qry6= $link->query($dep_ops_array_qry6);
+			while($row6= $result_dep_ops_array_qry6->fetch_assoc()) 
+			{
+				$main_ops_code = $row6['main_operationnumber'];
+			} 
+		}
     }
     if($op_code == 15)
         $main_ops_code = $op_code;
@@ -720,15 +798,15 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
                     {
                         $is_m3 = $row['default_operration'];
                     }
-                     $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $main_ops_code";
-                        $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
-                        {
-                            while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
-                            {
-                                $main_ops_code = $row_bundle_creation_data_check_result['Main_OperationNumber'];
-                            }
-                        }
+                     // $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $main_ops_code";
+                        // $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        // if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
+                        // {
+                            // while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
+                            // {
+                                // $main_ops_code = $row_bundle_creation_data_check_result['Main_OperationNumber'];
+                            // }
+                        // }
                     // if(strtolower($is_m3) == 'yes')
                     // {
                         $to_update_qty = -$to_update_qty;

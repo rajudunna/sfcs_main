@@ -236,7 +236,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 						$nop=$sql_row['nop'];						
 						for($i=0;$i<sizeof($sizes_array);$i++)
 						{
-							if($sql_row["size_".$sizes_array[$i].""]>0)
+							if($sql_row["size_".$sizes_array[$i].""]>0 || $sql_row["size_".$sizes_array[$i].""]<0)
 							{						
 								$sizes[$sizes_array[$i]]=$sql_row["size_".$sizes_array[$i].""];
 								
