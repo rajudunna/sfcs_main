@@ -228,7 +228,7 @@
         min-width : 40px;
     }
     .wip-td{
-        min-width : 80px;    
+        min-width : 0px;    
     }
     .cut-td{
         width    : auto;
