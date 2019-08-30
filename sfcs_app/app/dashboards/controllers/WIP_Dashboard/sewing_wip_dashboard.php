@@ -95,7 +95,7 @@
     
     setInterval(function() {
         call_ajax(sections[0],true);
-    }, <?= $RELOAD_TIME * 6000 ?>);
+    }, <?= $RELOAD_TIME * 60000 ?>);
 
 
     function load_data(){
@@ -312,9 +312,12 @@
         line-height : 1px;
     }
     td{
-        width : auto;
-        line-height : 1px;
-        white-space: nowrap;
+        border-bottom: 1px solid white; 
+        padding-bottom: 2px;
+        padding-top: 2px;
+        white-space:inherit;
+        border-collapse:collapse;
+        display:table-cell;
     }
     a{
         text-decoration : none;
