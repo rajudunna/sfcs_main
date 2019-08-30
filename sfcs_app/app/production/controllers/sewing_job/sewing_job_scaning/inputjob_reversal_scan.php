@@ -894,7 +894,7 @@
 				$reversal_value = $reversalval[$key];
 				if($emb_cut_check_flag == 1)
 				{
-					$doc_query = "Select docket_number,size_title from $brandix_bts.bundle_creation_data where bundle_number='$b_no' limit 1";
+					$doc_query = "Select docket_number,size_title from $brandix_bts.bundle_creation_data where bundle_number='$b_no' and operation_id='$operation_id' limit 1";
 					$doc_result = mysqli_query($link,$doc_query) or exit("Error in getting the docket for the bundle");
 					while($row  = mysqli_fetch_array($doc_result))
 					{
