@@ -48,7 +48,7 @@ if(isset($_POST['approve']))
             $cut_done_qty[$size_code] = $qty_ration;
         }
         //retreaving buffer qty
-        $qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.recut_v2 WHERE doc_no = '$doc_nos' and remarks in ('Body','Front') ";
+        $qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.recut_v2 WHERE doc_no = '$doc_nos' ";
         $result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
         while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
         {
@@ -62,9 +62,7 @@ if(isset($_POST['approve']))
                 }
             }
         }
-    if($result_qry_cut_qty_check_qry->num_rows > 0)
-    {    
-        $retreaving_last_sewing_job_qry = "SELECT MAX(input_job_no_random)as input_job_no_random,MAX(CAST(input_job_no AS DECIMAL)) as input_job_no,destination,packing_mode,sref_id,pac_seq_no FROM `$bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$schedule'";
+    $retreaving_last_sewing_job_qry = "SELECT MAX(input_job_no_random)as input_job_no_random,MAX(CAST(input_job_no AS DECIMAL)) as input_job_no,destination,packing_mode,sref_id,pac_seq_no FROM `$bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$schedule'";
         $res_retreaving_last_sewing_job_qry = $link->query($retreaving_last_sewing_job_qry);
         if($res_retreaving_last_sewing_job_qry->num_rows > 0)
         {
@@ -157,9 +155,8 @@ if(isset($_POST['approve']))
             }
             // $i++;   
         }
-    }
-    $url = '?r='.$_GET['r'];
-    echo "<script>sweetAlert('Successfully Approved','','success');window.location = '".$url."'</script>";
+        $url = '?r='.$_GET['r'];
+        echo "<script>sweetAlert('Successfully Approved','','success');window.location = '".$url."'</script>";
   
 }
 if(isset($_POST['reject']))

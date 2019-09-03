@@ -85,7 +85,7 @@
 				{	
 					$url = getFullURL($_GET['r'],'carton_scan_decentral_packing.php','R');
 					echo "<script language=\"javascript\" type=\"text/javascript\">
-							window.open('$url?emp_id=$emp_id&team_id=$team_id&pack_method=0$0$0&pack_team=0&operation_id=$operation_id&shift=$shift','','width=1000,height=500');
+							window.open('$url?emp_id=$emp_id&team_id=$team_id&pack_method=0$0$0&pack_team=0&operation_id=$operation_id','','width=1000,height=500');
 					</script>";
 				}
 			}
