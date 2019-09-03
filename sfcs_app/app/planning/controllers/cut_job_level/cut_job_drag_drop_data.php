@@ -1,1 +1,1 @@
-<?php $style_ref="A0923SS9       "; $schedule_ref="542341"; $color_ref="BLACK MARL BLACK COLORBLOCK   "; $cat_ref_ref="10453185"; $code_ref="524855-A02-*"; ?>
+<?php $style_ref="Y09791D8       "; $schedule_ref="19071100002"; $color_ref="BLACK-A                       "; $cat_ref_ref="2152"; $code_ref="5788-R007-*"; ?>

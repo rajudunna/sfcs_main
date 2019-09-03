@@ -628,7 +628,7 @@
         if($table_name == 'parallel_scanning')
         {
 
-            $schedule_count_query = "SELECT input_job_no_random_ref FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = $b_job_no AND operation_id =$b_op_id";
+            $schedule_count_query = "SELECT input_job_no_random_ref FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$b_job_no' AND operation_id =$b_op_id";
 
             $schedule_count_query = $link->query($schedule_count_query) or exit('query error');
             
@@ -851,7 +851,7 @@
 
             if($table_name == 'bundle_creation_data')
             {
-                $schedule_count_query = "SELECT input_job_no_random_ref FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = $b_job_no AND operation_id =$b_op_id";
+                $schedule_count_query = "SELECT input_job_no_random_ref FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$b_job_no' AND operation_id =$b_op_id";
 
                 $schedule_count_query = $link->query($schedule_count_query) or exit('query error');
                 
@@ -1090,8 +1090,8 @@
             {
                 if($b_tid[$i] == $bundle_no){
                     if($b_op_id == 100 || $b_op_id == 129)
-                    {
-                        //Searching whethere the operation was present in the ims log and ims buff
+                    {                       
+					   //Searching whethere the operation was present in the ims log and ims buff
                         $searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = $b_tid[$i] AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref=$b_job_no AND operation_id=$b_op_id AND ims_remarks = '$b_remarks[$i]'";
                         $result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
                         if($result_searching_query_in_imslog->num_rows > 0)
@@ -1141,6 +1141,7 @@
                           $operation_name=$sql_row['operation_name'];
                           $operation_code=$sql_row['operation_code'];
                         }
+						
                         if($operation_code == 100 || $operation_code == 129)
                         {
                             //updating ims_pro_qty against the input
