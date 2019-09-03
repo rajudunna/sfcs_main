@@ -2520,7 +2520,7 @@ tags will be replaced.-->
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_bind = $binding_con*$plies*$a_ratio_tot; echo round($fab_bind,2).'<br/>('.$fab_uom.')'; ?></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo round($fab_bind+$fab_lay,2).'<br/>('.$fab_uom.')'; ?></td>
   <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $actwidth; ?></td> 
-  <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $revi_mk_length; ?></td>
+  <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $act_mk_length; ?></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php if($act_mk_length > 0){$fab_revised_lay = $act_mk_length*(1+$cuttable_wastage)*$plies; echo round($fab_revised_lay+$fab_bind,2).'<br/>('.$fab_uom.')';} else { echo "0";}?></td>
 <!--<td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php //if(substr($style,0,1)=="M") 
