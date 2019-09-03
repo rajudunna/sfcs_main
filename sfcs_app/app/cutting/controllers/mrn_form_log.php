@@ -3,11 +3,10 @@
 //include("security1.php");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
-//include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
     $php_self = explode('/',$_SERVER['PHP_SELF']);
     array_pop($php_self);
-    //$url_r = base64_encode(	implode('/',$php_self)."/mrn_form_log.php");
-	$url_r = $_GET['r'];
+    $url_r = base64_encode(	implode('/',$php_self)."/mrn_form_log.php");
 	$has_permission=haspermission($url_r);
 	$user_name = getrbac_user()['uname'];
 	error_reporting(0);
