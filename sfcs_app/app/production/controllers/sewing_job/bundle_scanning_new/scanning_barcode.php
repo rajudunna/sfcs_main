@@ -1,6 +1,45 @@
-<div class="panel panel-primary">
+<?php
+$module = $_POST['Module'];
+$op_code=$_POST['operation_code'];
+?>
+<style>
+.radio-toolbar {
+  margin: 10px;
+}
+
+.radio-toolbar input[type="radio"] {
+  opacity: 0;
+  position: fixed;
+  width: 0;
+}
+
+.radio-toolbar label {
+    color: whitesmoke;
+    display: inline-block;
+    background-color: #ddd;
+    padding: 18px 13px;
+    font-family: sans-serif, Arial;
+    font-size: 16px;
+    border: 2px solid #444;
+    border-radius: 4px;
+}
+
+.radio-toolbar label:hover {
+  background-color: #dfd;
+}
+
+.radio-toolbar input[type="radio"]:focus + label {
+    border: 2px dashed #444;
+}
+
+.radio-toolbar input[type="radio"]:checked + label {
+    background-color: #bfb;
+    border-color: #4c4;
+}
+</style>
+<div class="panel panel-primary" id="scanned_barcode" ng-app="scanning_interface_new">
     <div class="panel-heading">Bundle Scanning</div>
-    <div class="panel-body" style="background-color: darkslategray;">
+    <div class="panel-body" style="background-color: darkslategray;" ng-controller="scancode_ctrl">
        <table border=0;> 
        <tr>
         <td><label>Style : </label><br/><br/><label>Color : </label></td>
@@ -56,16 +95,23 @@
         </td>
         </tr>
         <td><label>Bar code :</label></td>
-        <td><input type="text" style="max-width: 250px;"  class="form-control" name="Bar code"></td>
-        <td>
+        <td><input type="text" style="max-width: 250px;"  class="form-control" ng-model="barcode_value" id="barcode_value" placeholder="scan barcode here" autofocus></td>
+        <input type="hidden" id="module" ng-model="module" ng-init="module='<?= $module; ?>'">
+        <input type="hidden" id="op_code" ng-model="op_code" ng-init="op_code='<?= $op_code; ?>'">
+        <input type="hidden" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'get_newbarcode_details.php',0,'R') ?>'"> 
         <tr>
-        <td><span>Action :</span></td>
-        <td style="width: 323px;">
-        <div>
-        <button type="button" style="height: 80px;width: 76px;."  class="btn btn-info">Add</button>
-        <button type="button" style="height: 80px;" class="btn btn-info">Reverse</button>
-        <button type="button" style="height: 80px;width: 76px;" class="btn btn-info">Reset</button>
-        </div>
+        <td><label>Tx Mode:</label></td>
+        <td>
+            <div class="radio-toolbar" ng-init="trans_mode='good'">
+            <input type="radio" id="radiogood" name="trans_mode" ng-model='trans_mode' ng-value='"good"'>
+            <label for="radiogood" style="background-color: #256325;">Good</label>
+            <input type="radio" id="radioscrap" name="trans_mode" ng-model='trans_mode' ng-value='"scrap"'>
+            <label for="radioscrap" style="background-color: #f31c06;">Scrap</label>
+            <input type="radio" id="radiorework" name="trans_mode" ng-model='trans_mode' ng-value='"rework"'>
+            <label for="radiorework" style="background-color: #557520f2;">Rework</label>
+            <input type="radio" id="radiogudscrap" name="trans_mode" ng-model='trans_mode' ng-value='"gudscrap"'>
+            <label for="radiogudscrap" style="background-color: #a5980df5;">Good&Scrap</label> 
+            </div>
         </td>
         <td style="width: 10 5px;"></td>
         <td><div class="container" style="width: 570px;">
@@ -92,11 +138,14 @@
         </tr>
         </br></br></br>
         <tr>
-        <td><label>Tx Mode:</label></td>
-        <td><button type="button" style="height: 80px;width: 76px"  class="btn btn-success">Good</button>
-        <button type="button" style="height: 80px;width: 76px" class="btn btn-danger">Scarp</button>
-        <button type="button" style="height: 80px;width: 76px" class="btn btn-warning">Rework</button>
-        <button type="button" style="height: 50px;width: 245px;" class="btn btn-primary">Good/Scarp</button></td>
+        <td><span>Action :</span></td>
+        <td style="width: 323px;">
+        <div>
+        <button type="button" style="height: 80px;width: 76px;."  class="btn btn-info"  ng-click="barcode_submit('add');">Add</button>
+        <button type="button" style="height: 80px;" class="btn btn-info" ng-click="barcode_submit('reverse');">Reverse</button>
+        <button type="button" style="height: 80px;width: 76px;" class="btn btn-info">Reset</button>
+        </div>
+        </td>
         <td style="width: 125px;"></td>
         <td><div class="container" style="width: 570px;">
         <div class="panel panel-basic">
@@ -126,6 +175,8 @@
         </table>  
     </div>
 </div>
+
+<script src="<?= getFullURLLevel($_GET['r'],'common/js/new_scan_barcode.js',3,'R') ?>"></script>
 
  
 
