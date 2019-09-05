@@ -41,6 +41,7 @@ $view_access=user_acl("SFCS_0049",$username,1,$group_id_sfcs);
 				for ($i=0; $i < sizeof($shifts_array); $i++) {?>
 				<option <?php echo 'value="'.$shifts_array[$i].'"'; if($shift==$shifts_array[$i]){ echo "selected";} ?>><?php echo $shifts_array[$i] ?></option>
 				<?php }
+				echo "<option value='ALL'>ALL</option>";
 				?>
 				</select>
 	</div><br/>
