@@ -1,11 +1,4 @@
-<?php
-$username="sfcsproject1";
-$view_access=array("sfcsproject1");
-$authorized=array("sfcsproject1");
-$authorized2=array("sfcsproject1");
-$authorized3=array("sfcsproject1");
 
-?>
 <?php
 set_time_limit(9000);
 $start_date_w=time();
@@ -324,7 +317,6 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			</p>';
 		echo '</form>';
 		echo '<table id="tableone" name="tableone" cellspacing="0" class="table table-bordered"><thead>';
-
 		echo '
 				<tr class="danger">
 				<th>S. No</th>
@@ -373,7 +365,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 					<th>Actual</th>';
 		}
 
-		echo '  <th>Plan Module</th>
+		echo '<th>Plan Module</th>
 				<th>Actual Module</th>
 				<th>Planning Remarks</th>
 				<th>Production Remarks</th>
@@ -881,33 +873,33 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			
 			$highlight=" bgcolor=\"".$color_code_ref1."\" ";
 
-		if(in_array(strtolower($username),$authorized))
-		{
+		// if(in_array(strtolower($username),$authorized))
+		// {
 			
 			//$edit_rem="<td class=\"editable\" rel=\"B$edit_ref\">".$remarks[1]."</td>";
 			$edit_rem="<td><input type=\"text\" name=\"B[]\" value=\"".$remarks[1]."\"><input type=\"hidden\" name=\"REF[]\" value=\"".$edit_ref."\"><input type=\"hidden\" name=\"REM_REF[]\" value=\"".implode("^",$remarks)."\"><input type=\"hidden\" name=\"C[]\" value=\"".$remarks[2]."\"><input type=\"hidden\" name=\"A[]\" value=\"".$remarks[0]."\"><input type=\"hidden\" name=\"code[]\" value=\"B\"><input type=\"hidden\" name=\"rev_exfa[]\" value=\"".$rev_ex_factory_date."\"></td>";
-		}
-		else
-		{
-			//$edit_rem="<td $highlight>".$remarks[1]."</td>";
-			$edit_rem="<td $highlight>".$remarks[1]."</td>";
-		}
+		// }
+		// else
+		// {
+		// 	//$edit_rem="<td $highlight>".$remarks[1]."</td>";
+		// 	$edit_rem="<td $highlight>".$remarks[1]."</td>";
+		// }
 
 
-		if(!(in_array(strtolower($username),$authorized2)))
-		{
-			$edit_rem2="<td $highlight>".$remarks[2]."</td>";
-		}
-		else
-		{
+		// if(!(in_array(strtolower($username),$authorized2)))
+		// {
+		// 	$edit_rem2="<td $highlight>".$remarks[2]."</td>";
+		// }
+		// else
+		// {
 			//$edit_rem="<td $highlight>".$remarks[1]."</td>";
 			//$edit_rem2="<td class=\"editable\" rel=\"C$edit_ref\">".$remarks[2]."</td>";
 			$edit_rem2="<td><input type=\"text\" name=\"C[]\" value=\"".$remarks[2]."\">";
 			$edit_rem2.="<input type=\"hidden\" name=\"REF[]\" value=\"".$edit_ref."\"><input type=\"hidden\" name=\"REM_REF[]\" value=\"".implode("^",$remarks)."\"><input type=\"hidden\" name=\"B[]\" value=\"".$remarks[1]."\"><input type=\"hidden\" name=\"A[]\" value=\"".$remarks[0]."\"><input type=\"hidden\" name=\"code[]\" value=\"C\"><input type=\"hidden\" name=\"rev_exfa[]\" value=\"".$rev_ex_factory_date."\"></td>";
-		}
+		// }
 
-		if(!(in_array(strtolower($username),$authorized3)))
-		{
+		// if(!(in_array(strtolower($username),$authorized3)))
+		// {
 			//CR#930 //Displaying the Reasons List to Users for selecting the appropriate reason of the schedule.
 			$reason_ref2="";
 			$sql_res2="select * from $bai_pro4.weekly_cap_reasons where sno=\"".$remarks[0]."\"";
@@ -918,9 +910,9 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 				$reason_ref2=$sql_row_res2["reason"];		
 			}
 			$edit_rem3="".$reason_ref2."";
-		}
-		else
-		{
+		// }
+		// else
+		// {
 			//$edit_rem3="<input type=\"text\" name=\"A[]\" value=\"".$remarks[0]."\">";
 			//CR#930 //Displaying the Reasons List to Users for selecting the appropriate reason of the schedule.
 			$edit_rem3="<select name=\"A[]\">";
@@ -944,7 +936,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			$edit_rem3.="</select>";
 			$edit_rem3.="<input type=\"hidden\" name=\"REF[]\" value=\"".$edit_ref."\"><input type=\"hidden\" name=\"REM_REF[]\" value=\"".implode("^",$remarks)."\"><input type=\"hidden\" name=\"B[]\" value=\"".$remarks[1]."\"><input type=\"hidden\" name=\"C[]\" value=\"".$remarks[2]."\"><input type=\"hidden\" name=\"code[]\" value=\"A\">";
 			$rev_ex_factory_date="<input type=\"text\" name=\"rev_exfa[]\" value=\"".$rev_ex_factory_date."\">";
-		}
+		// }
 		//Restricted Editing for Packing Team
 
 			if(!isset($_POST['custom']))
