@@ -1374,7 +1374,6 @@ else if($concurrent_flag == 0)
 			$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$b_job_no."'";
 			mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));	
 		}
-
 		//echo $output_ops_code;
 		for($i=0;$i<sizeof($b_tid);$i++)
 		{

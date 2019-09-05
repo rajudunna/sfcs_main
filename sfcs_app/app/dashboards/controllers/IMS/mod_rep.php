@@ -158,9 +158,10 @@
 
                         $bund_update="update $brandix_bts.bundle_creation_data set assigned_module ='$to_module' where bundle_number='$pac_tid'";
                         $sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
-
-                        $bund_update="update $brandix_bts.bundle_creation_data_temp set assigned_module ='$to_module' where bundle_number='$pac_tid'";
-                        $sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                        
+                        //commented in #2391
+                        // $bund_update="update $brandix_bts.bundle_creation_data_temp set assigned_module ='$to_module' where bundle_number='$pac_tid'";
+                        // $sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
                         $sql="select  ims_mod_no, ims_qty,input_job_no_ref,pac_tid from $bai_pro3.ims_log where tid='$selected'"; 
                         //echo $sql."<br>";
