@@ -9,13 +9,19 @@ $view_access=user_acl("SFCS_0049",$username,1,$group_id_sfcs);
 
 <?php   
 
-$reasons=array("Miss Yarn","Fabric Holes","Slub","Foreign Yarn","Stain Mark","Color Shade","Panel Un-Even","Stain Mark","Strip Match","Cut Dmg","Stain Mark","Heat Seal","M ment Out","Shape Out","Emb Defects");
+// $reasons=array("Miss Yarn","Fabric Holes","Slub","Foreign Yarn","Stain Mark","Color Shade","Panel Un-Even","Stain Mark","Strip Match","Cut Dmg","Stain Mark","Heat Seal","M ment Out","Shape Out","Emb Defects");
 
-//Rejection Reasons
-$reasons=array("Miss Yarn","Fabric Holes","Slub","F.Yarn","Stain Mark","Color Shade","Panel Un-Even","Stain Mark","Strip Match","Cut Damage","Stain Mark","Heat Seal","M' ment Out","Shape Out","Others EMB","Heat Seal","Trim","Un Even","Shape Out Leg","Shape Out waist","With out Label","Trim shortage","Sewing Excess","Cut Holes","Slip Stitch’s","Oil Marks","Foil Defects","Embroidery","Print","Sequence","Bead","Dye","wash");
+// //Rejection Reasons
+// $reasons=array("Miss Yarn","Fabric Holes","Slub","F.Yarn","Stain Mark","Color Shade","Panel Un-Even","Stain Mark","Strip Match","Cut Damage","Stain Mark","Heat Seal","M' ment Out","Shape Out","Others EMB","Heat Seal","Trim","Un Even","Shape Out Leg","Shape Out waist","With out Label","Trim shortage","Sewing Excess","Cut Holes","Slip Stitch’s","Oil Marks","Foil Defects","Embroidery","Print","Sequence","Bead","Dye","wash");
 
-$categories=array("Fabric","Fabric","Fabric","Fabric","Fabric","Fabric","Cutting","Cutting","Cutting","Sewing","Sewing","Sewing","Sewing","Sewing","Embellishment","Fabric","Fabric","Sewing","Sewing","Sewing","Sewing","Sewing","Sewing","Machine Damages","Machine Damages","Machine Damages","Embellishment","Embellishment","Embellishment","Embellishment","Embellishment","Embellishment","Embellishment");
-	
+// $categories=array("Fabric","Fabric","Fabric","Fabric","Fabric","Fabric","Cutting","Cutting","Cutting","Sewing","Sewing","Sewing","Sewing","Sewing","Embellishment","Fabric","Fabric","Sewing","Sewing","Sewing","Sewing","Sewing","Sewing","Machine Damages","Machine Damages","Machine Damages","Embellishment","Embellishment","Embellishment","Embellishment","Embellishment","Embellishment","Embellishment");
+$reasons_sql="select * from bai_pro3.bai_qms_rejection_reason order by reason_order";
+$sql_res_rej=mysqli_query($link, $reasons_sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row_rej=mysqli_fetch_array($sql_res_rej))
+{
+	$reasons[$sql_row_rej['reason_code']]=$sql_row_rej['reason_desc'];
+	$categories[$sql_row_rej['reason_code']]=$sql_row_rej['reason_cat'];
+}
 ?>
 
 <script type="text/javascript" src="<?php echo getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R') ?>" ></script>
@@ -173,7 +179,7 @@ if(isset($_POST['filter']))
 				$roll_ids=array();
 				$roll_ids[]=-1;
 				
-				$sql_roll_ids="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE DOC_NO in ('".$doc_ref."') ORDER BY DOC_NO";
+				$sql_roll_ids="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE DOC_NO in (".$doc_ref.") ORDER BY DOC_NO";
 				 //echo "<br>".$sql_roll_ids."<br>";
 				$sql_result_roll_ids=mysqli_query($link, $sql_roll_ids) or exit("Sql Error43".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row_roll_ids=mysqli_fetch_array($sql_result_roll_ids))
@@ -245,30 +251,27 @@ if(isset($_POST['filter']))
 				$size_value=ims_sizes('',$sql_row['qms_schedule'],$sql_row['qms_style'],$sql_row['qms_color'],strtoupper($sql_row['qms_size']),$link);
 				
 				echo "<td>".$size_value."</td>";
-				/*if($temp2[0]>=0 and $temp2[0]<=5)
-				{
-					$cat="Fabric";
-				}
-				
-				if($temp2[0]>=6 and $temp2[0]<=8)
-				{
-					$cat="Cutting";
-				}
-				
-				if($temp2[0]>=9 and $temp2[0]<=13)
-				{
-					$cat="Sewing";
-				}
-				
-				if($temp2[0]==14)
-				{
-					$cat="Embellishment";
-				}*/
 				
 				$x=$temp2[0];
 				//Based on array, fetch the rejection and department category names
-				echo "<td class=\"lef\">".$categories[$x]."</td>";
-				echo "<td class=\"lef\">".$reasons[$x]."</td>";
+				// echo "<td class=\"lef\">".$categories[$x]."</td>";
+				// echo "<td class=\"lef\">".$reasons[$x]."</td>";
+				if($categories[$x])
+				{
+					echo "<td class=\"lef\">".$categories[$x]."</td>";
+				}
+				else
+				{
+					echo "<td class=\"lef\">Category deleted</td>";
+				}
+				if($reasons[$x])
+				{
+					echo "<td class=\"lef\">".$reasons[$x]."</td>";
+				}
+				else
+				{
+					echo "<td class=\"lef\">Reason deleted</td>";
+				}
 				echo "<td>".$temp2[1]."</td>";
 				
 				//Replace Qty.
