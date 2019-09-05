@@ -194,7 +194,7 @@ function getsewingJobsData($section,$module,$get_operation)
         
         $totalwip = $totalwip+$wip;
     
-    
+     
         for($x=0;$x<sizeof($job_no1);$x++)
         {
             $tool_tip_text = "<p style=\"width : 500px \">
@@ -202,13 +202,13 @@ function getsewingJobsData($section,$module,$get_operation)
             <v><c>Schedule </c> : $schedule</v>
             <v><c>Color </c> : $color</v>
             <v><c>Co No </c> : $co_no</v>
-            <v><c>input_date </c> : $input_date</v>
+            <v><c>Input_date </c> : $input_date</v>
             <v><c>Wip </c> : $wip</v>
             <v><c>Job No </c> : $display_prefix1</v>
             <v><c>Cut No </c> :$cut_no</v>
             <v><c>Doc_no </c> : $docket_number</v>
-            <v><c>rejected </c> : $rejected</v>
-            <v><c>remarks </c> : $remarks</v>
+            <v><c>Rejected </c> : $rejected</v>
+            <v><c>Remarks </c> : $remarks</v>
           
            </p>";
            $href= "$url&module=$module&section=$section&operations=$get_operation";
@@ -218,7 +218,7 @@ function getsewingJobsData($section,$module,$get_operation)
                     <a rel='tooltip' data-toggle='tooltip' data-placement='top' data-title='$tool_tip_text'
                     onclick=\"window.open('index.php?r=$href','yourWindowName','width=800,height=600')\"
                     data-html='true'>
-                        &nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;
                     </a>
                 </span>
             </span>
