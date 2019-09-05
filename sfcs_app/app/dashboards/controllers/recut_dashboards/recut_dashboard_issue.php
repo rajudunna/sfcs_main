@@ -6,33 +6,33 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 <?php
 if(isset($_POST['formSubmit']))
 {
-	$cat=$_POST['cat'];
-	$mklen=$_POST['mklen'];
-	$plies=$_POST['plies'];
-	$order_tid=$_POST['order_tid'];
-	$style=$_POST['style'];
-	$schedule=$_POST['schedule'];
-	$color=$_POST['color'];
-	$module=$_POST['module'];
-	$cat_name=$_POST['cat_name'];
+    $cat=$_POST['cat'];
+    $mklen=$_POST['mklen'];
+    $plies=$_POST['plies'];
+    $order_tid=$_POST['order_tid'];
+    $style=$_POST['style'];
+    $schedule=$_POST['schedule'];
+    $color=$_POST['color'];
+    $module=$_POST['module'];
+    $cat_name=$_POST['cat_name'];
     $doc_nos=$_POST['doc_no_ref'];
     // $size = $_POST['size'];
     $ratioval =$_POST['ratioval'];
-	$codes='2';
+    $codes='2';
     $docket_no = '';
     $qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.recut_v2 WHERE doc_no = '$doc_nos' ";
-	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
-	while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
-	{
-		for ($i=0; $i < sizeof($sizes_array); $i++)
-		{ 
-			if ($row['a_'.$sizes_array[$i]] > 0)
-			{
+    $result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
+    while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
+    {
+        for ($i=0; $i < sizeof($sizes_array); $i++)
+        { 
+            if ($row['a_'.$sizes_array[$i]] > 0)
+            {
                 $cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $row['a_plies'];
                 $size[] = $sizes_array[$i];
                 // $ratioval[$sizes_array[$i]][] = $row['a_'.$sizes_array[$i]];
-			}
-		}
+            }
+        }
     }
     $query="SELECT* FROM $bai_pro3.`cuttable_stat_log` WHERE order_tid='$order_tid'";
     $sql_result111=mysqli_query($link, $query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -47,7 +47,7 @@ if(isset($_POST['formSubmit']))
         $cat_ref =$row_cat_ref['tid'];
         $patt_ver = $row_cat_ref['patt_ver'];
     }
-	
+    
     $sql1="insert into $bai_pro3.maker_stat_log(date,cat_ref,order_tid,mklength,mk_ver) values (\"".date("Y-m-d")."\",".$cat_ref.",\"$order_tid\",".$mklen.",'".$patt_ver."')";
     mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
     $ilastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
@@ -149,13 +149,14 @@ if(isset($_POST['formIssue']))
 function issued_to_module($bcd_id,$qty,$ref)
 {
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    $op_code = '15';
     $bcd_colum_ref = "replace_in";
     if($ref == 2)
     {
         $bcd_colum_ref = "recut_in";
     }
     $bcd_qry = "select style,mapped_color,docket_number,assigned_module,input_job_no_random_ref,operation_id,bundle_number,size_id from $brandix_bts.bundle_creation_data where id = $bcd_id";
-    // echo $bcd_qry;
+   //  echo $bcd_qry;
     $result_bcd_qry = $link->query($bcd_qry);
     while($row = $result_bcd_qry->fetch_assoc()) 
     {
@@ -174,7 +175,7 @@ function issued_to_module($bcd_id,$qty,$ref)
     $update_qry_bcd = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and size_id = '$size_id' and operation_id = 15";
      mysqli_query($link, $update_qry_bcd) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
      //validate parellel operations for updating recut_in
-     $qry_prellel_ops="select COUNT(*) as cnt from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and ops_dependency>0";
+     $qry_prellel_ops="select COUNT(*) as cnt from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and ops_dependency>0 and operation_code=15";
      $result_qry_prellel_ops = $link->query($qry_prellel_ops);
     while($row_ops = $result_qry_prellel_ops->fetch_assoc()) 
     {
@@ -187,9 +188,22 @@ function issued_to_module($bcd_id,$qty,$ref)
         $ops_master_qry = "select operation_code from $brandix_bts.tbl_orders_ops_ref where category in ('Send PF')";
     }else{
 
-        //retreaving emblishment operations from operatoin master
-        $ops_master_qry = "select MIN(operation_code) as operation_code from $brandix_bts.tbl_orders_ops_ref where category in ('Send PF')"; 
+        //retreaving operations from operatoin master
+        $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and operation_code=$op_code";
+        //echo  $ops_seq_check;
+        $result_ops_seq_check = $link->query($ops_seq_check);
+        if($result_ops_seq_check->num_rows > 0)
+        {
+            while($row = $result_ops_seq_check->fetch_assoc()) 
+            {
+                $ops_seq = $row['ops_sequence'];
+                $seq_id = $row['id'];
+                $ops_order = $row['operation_order'];
+            }
+        }
+        $ops_master_qry = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and ops_sequence = '$ops_seq'  AND CAST(operation_order AS CHAR) > '$ops_order' and operation_code not in (10,200) ORDER BY operation_order ASC LIMIT 1"; 
     }
+   // echo $ops_master_qry;
     $result_ops_master_qry = $link->query($ops_master_qry);
     while($row_ops = $result_ops_master_qry->fetch_assoc()) 
     {
@@ -197,6 +211,7 @@ function issued_to_module($bcd_id,$qty,$ref)
     }
     $qry_ops_mapping = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and  operation_code in (".implode(',',$emb_ops).")";
     // echo $qry_ops_mapping;
+    // die();
     $result_qry_ops_mapping = $link->query($qry_ops_mapping);
     if(mysqli_num_rows($result_qry_ops_mapping) > 0)
     {
@@ -302,7 +317,7 @@ echo $drp_down;
                         <div class='panel-body' id="dynamic_table_panel">
                             <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
                                 <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
-                            </div>	
+                            </div>  
                                 <div id ="dynamic_table1"></div>
                         </div>
                         <p style='color:red;'>Note:The excess quantity will create as excess sewing job for respective style,schedule and color.</p>
@@ -310,7 +325,7 @@ echo $drp_down;
                     </div>
                 </form>
                 <div id='post'>
-                        <div class='panel-body'>	
+                        <div class='panel-body'>    
                              <b style='color:red'>Please wait while Updating Markers!!!</b>
                         </div>
                 </div>
@@ -330,13 +345,13 @@ echo $drp_down;
                         <div class='panel-body' id="dynamic_table_panel">
                             <div class="ajax-loader" class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;display:none;">
                                 <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
-                            </div>	
+                            </div>  
                                 <div id ="dynamic_table2"></div>
                         </div>
                         <div class="pull-right"><input type="submit" class="btn btn-primary" value="Submit" name="formIssue"></div>
                     </div>
                     <div id='post_post'>
-                        <div class='panel-body'>	
+                        <div class='panel-body'>    
                              <b style='color:red'>Please wait while Issuing To Module!!!</b>
                         </div>
                     </div>
@@ -417,49 +432,49 @@ echo $drp_down;
                     {
                         $button_html = "<button type='button'class='btn btn-danger' onclick='issuemodule(".$id.")'>Issue To Module</button>";
                       
-						$html_hiding = "IssueToModule";
+                        $html_hiding = "IssueToModule";
                     }
-					if($html_hiding == "ReportPending")
-					{
-						if(strtolower($row['category'])=='body' or strtolower($row['front']))
-						{
-							echo "<tr><td>$s_no</td>";
-							echo "<td>".$row['doc_no']."</td>";
-							echo "<td>".$row['style']."</td>";
-							echo "<td>".$row['schedule']."</td>";
-							echo "<td>".$row['color']."</td>";
-							echo "<td>".$row['category']."</td>";
-							echo "<td>".$row['rejected_qty']."</td>";
-							echo "<td>".$row['recut_qty']."</td>";
-							echo "<td>".$row['recut_reported_qty']."</td>";
-							echo "<td>".$row['issued_qty']."</td>";
-							echo "<td>".$rem_qty."</td>";
-							echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
-							echo "<td style='display:none'>$html_hiding</td>"; 
-							echo "<td>$button_html</td>"; 
-							echo "</tr>";
-							$s_no++;
-						}
-					}
-					else
-					{
-						echo "<tr><td>$s_no</td>";
-						echo "<td>".$row['doc_no']."</td>";
-						echo "<td>".$row['style']."</td>";
-						echo "<td>".$row['schedule']."</td>";
-						echo "<td>".$row['color']."</td>";
-						echo "<td>".$row['category']."</td>";
-						echo "<td>".$row['rejected_qty']."</td>";
-						echo "<td>".$row['recut_qty']."</td>";
-						echo "<td>".$row['recut_reported_qty']."</td>";
-						echo "<td>".$row['issued_qty']."</td>";
-						echo "<td>".$rem_qty."</td>";
-						echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
-						echo "<td style='display:none'>$html_hiding</td>"; 
-						echo "<td>$button_html</td>"; 
-						echo "</tr>";
-						$s_no++;
-					}
+                    if($html_hiding == "ReportPending")
+                    {
+                        if(strtolower($row['category'])=='body' or strtolower($row['front']))
+                        {
+                            echo "<tr><td>$s_no</td>";
+                            echo "<td>".$row['doc_no']."</td>";
+                            echo "<td>".$row['style']."</td>";
+                            echo "<td>".$row['schedule']."</td>";
+                            echo "<td>".$row['color']."</td>";
+                            echo "<td>".$row['category']."</td>";
+                            echo "<td>".$row['rejected_qty']."</td>";
+                            echo "<td>".$row['recut_qty']."</td>";
+                            echo "<td>".$row['recut_reported_qty']."</td>";
+                            echo "<td>".$row['issued_qty']."</td>";
+                            echo "<td>".$rem_qty."</td>";
+                            echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
+                            echo "<td style='display:none'>$html_hiding</td>"; 
+                            echo "<td>$button_html</td>"; 
+                            echo "</tr>";
+                            $s_no++;
+                        }
+                    }
+                    else
+                    {
+                        echo "<tr><td>$s_no</td>";
+                        echo "<td>".$row['doc_no']."</td>";
+                        echo "<td>".$row['style']."</td>";
+                        echo "<td>".$row['schedule']."</td>";
+                        echo "<td>".$row['color']."</td>";
+                        echo "<td>".$row['category']."</td>";
+                        echo "<td>".$row['rejected_qty']."</td>";
+                        echo "<td>".$row['recut_qty']."</td>";
+                        echo "<td>".$row['recut_reported_qty']."</td>";
+                        echo "<td>".$row['issued_qty']."</td>";
+                        echo "<td>".$rem_qty."</td>";
+                        echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
+                        echo "<td style='display:none'>$html_hiding</td>"; 
+                        echo "<td>$button_html</td>"; 
+                        echo "</tr>";
+                        $s_no++;
+                    }
                 }
             }
             else
@@ -489,11 +504,11 @@ function viewrecutdetails(id)
     $('#myModal').modal('toggle');
     $.ajax({
 
-			type: "POST",
-			url: function_text+"?recut_doc_id="+id,
-			//dataType: "json",
-			success: function (response) 
-			{
+            type: "POST",
+            url: function_text+"?recut_doc_id="+id,
+            //dataType: "json",
+            success: function (response) 
+            {
                 document.getElementById('main-content').innerHTML = response;
                 $('.loading-image').hide();
             }
@@ -510,11 +525,11 @@ function editmarkers(id)
     document.getElementById('dynamic_table2').innerHTML = '';
     $.ajax({
 
-			type: "POST",
-			url: function_text+"?markers_update_doc_id="+id,
-			//dataType: "json",
-			success: function (response) 
-			{
+            type: "POST",
+            url: function_text+"?markers_update_doc_id="+id,
+            //dataType: "json",
+            success: function (response) 
+            {
                 document.getElementById('dynamic_table1').innerHTML = response;
                 $('.loading-image').hide();
             }
@@ -533,11 +548,11 @@ function issuemodule(id)
     document.getElementById('dynamic_table2').innerHTML = '';
     $.ajax({
 
-			type: "POST",
-			url: function_text+"?issued_to_module_process="+id,
-			//dataType: "json",
-			success: function (response) 
-			{
+            type: "POST",
+            url: function_text+"?issued_to_module_process="+id,
+            //dataType: "json",
+            success: function (response) 
+            {
                 document.getElementById('dynamic_table2').innerHTML = response;
                 $('.loading-image').hide();
 
@@ -630,7 +645,7 @@ function validationfunction()
 {
     var flag = 0;
     var value = 0;
-	var check= 0;
+    var check= 0;
     var mklen = document.getElementById('mklen').value;
     var a_plies =  document.getElementById('a_plies').value;
     var total_rows = document.getElementById('no_of_rows').value;
@@ -649,17 +664,17 @@ function validationfunction()
         for(var i=1; i<=total_rows;i++)
         {
             value = value + Number(document.getElementById(i).value);
-			if((Number(document.getElementById(i).value)*a_plies)<Number(document.getElementById('dat_'+i).value))
-			{
-				check = 1;
-			}
+            if((Number(document.getElementById(i).value)*a_plies)<Number(document.getElementById('dat_'+i).value))
+            {
+                check = 1;
+            }
         }
         if(value == 0)
         {
             swal('Atlease one ratio should be there.','','error');
             flag = 1;
         }
-		if(check == 1)
+        if(check == 1)
         {
             swal('(Ratio * Plies) should be equal or more than requested Quantity per size.','','error');
             flag = 1;
@@ -671,11 +686,11 @@ function validationfunction()
         $('#pre').hide();
         $('#post').show();
         return true;
-	}
-	else
-	{
-		return false;
-	}
+    }
+    else
+    {
+        return false;
+    }
 }
 function isInteger(value) 
 {
