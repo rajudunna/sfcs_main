@@ -581,14 +581,6 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	}else{
 		$material_requirement_orig=$sql_row1['material_req']-$binding_consumption_qty;
 	}
-	//echo "</br>Seperated".$seperated_lots;
-	// $ref="select reference from $bai_pro3.plandoc_stat_log where doc_no='$doc_no'";
-	$sql007="select * from $bai_pro3.plandoc_stat_log where doc_no=\"".$docno_lot."\"";
-		$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($row007=mysqli_fetch_array($sql_result007))
-		{
-			$reference=$row007["reference"];
-		}
 	echo "<tr><td>".$sql_row1['category']."</td>";
 	echo "<td>".$sql_row1['compo_no']."</td>";
 	echo "<td>".$sql_row1['col_des'].'-'.$sql_row1['doc_no']."</td>";

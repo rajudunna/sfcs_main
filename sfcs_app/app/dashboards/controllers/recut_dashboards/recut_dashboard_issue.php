@@ -228,14 +228,13 @@ if(isset($_POST['formIssue']))
 function issued_to_module($bcd_id,$qty,$ref)
 {
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    $op_code = '15';
     $bcd_colum_ref = "replace_in";
     if($ref == 2)
     {
         $bcd_colum_ref = "recut_in";
     }
     $bcd_qry = "select style,mapped_color,docket_number,assigned_module,input_job_no_random_ref,operation_id,bundle_number,size_id from $brandix_bts.bundle_creation_data where id = $bcd_id";
-   //  echo $bcd_qry;
+    // echo $bcd_qry;
     $result_bcd_qry = $link->query($bcd_qry);
     while($row = $result_bcd_qry->fetch_assoc()) 
     {
@@ -254,7 +253,7 @@ function issued_to_module($bcd_id,$qty,$ref)
     $update_qry_bcd = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and size_id = '$size_id' and operation_id = 15";
      mysqli_query($link, $update_qry_bcd) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
      //validate parellel operations for updating recut_in
-     $qry_prellel_ops="select COUNT(*) as cnt from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and ops_dependency>0 and operation_code=15";
+     $qry_prellel_ops="select COUNT(*) as cnt from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and ops_dependency>0";
      $result_qry_prellel_ops = $link->query($qry_prellel_ops);
     while($row_ops = $result_qry_prellel_ops->fetch_assoc()) 
     {
@@ -267,22 +266,9 @@ function issued_to_module($bcd_id,$qty,$ref)
         $ops_master_qry = "select operation_code from $brandix_bts.tbl_orders_ops_ref where category in ('Send PF')";
     }else{
 
-        //retreaving operations from operatoin master
-        $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and operation_code=$op_code";
-        //echo  $ops_seq_check;
-        $result_ops_seq_check = $link->query($ops_seq_check);
-        if($result_ops_seq_check->num_rows > 0)
-        {
-            while($row = $result_ops_seq_check->fetch_assoc()) 
-            {
-                $ops_seq = $row['ops_sequence'];
-                $seq_id = $row['id'];
-                $ops_order = $row['operation_order'];
-            }
-        }
-        $ops_master_qry = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and ops_sequence = '$ops_seq'  AND CAST(operation_order AS CHAR) > '$ops_order' and operation_code not in (10,200) ORDER BY operation_order ASC LIMIT 1"; 
+        //retreaving emblishment operations from operatoin master
+        $ops_master_qry = "select MIN(operation_code) as operation_code from $brandix_bts.tbl_orders_ops_ref where category in ('Send PF')"; 
     }
-   // echo $ops_master_qry;
     $result_ops_master_qry = $link->query($ops_master_qry);
     while($row_ops = $result_ops_master_qry->fetch_assoc()) 
     {
@@ -290,7 +276,6 @@ function issued_to_module($bcd_id,$qty,$ref)
     }
     $qry_ops_mapping = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and  operation_code in (".implode(',',$emb_ops).")";
     // echo $qry_ops_mapping;
-    // die();
     $result_qry_ops_mapping = $link->query($qry_ops_mapping);
     if(mysqli_num_rows($result_qry_ops_mapping) > 0)
     {

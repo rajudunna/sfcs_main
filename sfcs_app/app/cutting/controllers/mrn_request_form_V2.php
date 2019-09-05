@@ -768,17 +768,6 @@ $(document).ready(function(){
                                 {
                                     echo "<td><input type=\"hidden\" id=\"product_$x\" name=\"product[]\" value=\"STRIM\">STRIM</td>";
                                 }
-                               
-                                $main_array = ['FAB','ETRIM','PTRIM','STRIM'];
-                                if($opno > 200)
-                                {
-                                    echo "<td><select name=\"data[]\" id=\"data\">";
-                                    for($i=0;$i<sizeof($main_array);$i++)
-                                    {
-                                        echo "<option value=\"".$main_array[$i]."\">".$main_array[$i]."</option>";
-                                    }
-                                    echo "</select></td>"; 
-                                }
                                 
 
                                 $item_code = $finalrecords[$x]['MTNO'];

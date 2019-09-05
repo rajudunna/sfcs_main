@@ -41,6 +41,7 @@ $view_access=user_acl("SFCS_0049",$username,1,$group_id_sfcs);
 				for ($i=0; $i < sizeof($shifts_array); $i++) {?>
 				<option <?php echo 'value="'.$shifts_array[$i].'"'; if($shift==$shifts_array[$i]){ echo "selected";} ?>><?php echo $shifts_array[$i] ?></option>
 				<?php }
+				echo "<option value='ALL'>ALL</option>";
 				?>
 				</select>
 	</div><br/>
@@ -84,7 +85,7 @@ if(isset($_POST['filter']))
 	if($team!="ALL"){
 		$sql="select qms_tid,qms_style,qms_schedule,qms_color,substring_index(remarks,\"-\",1) as \"module\",substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",substring_index(remarks,\"-\",-1) as \"form\",qms_size,log_date,ref1,SUBSTRING_INDEX(doc_no,'D',-1) as doc_no from $bai_pro3.bai_qms_db where qms_tran_type=3 and log_date between \"$sdate\" and \"$edate\" and substring_index(substring_index(remarks,\"-\",2),\"-\",-1)=\"$team\" order by log_date,substring_index(remarks,\"-\",1)+0,substring_index(remarks,\"-\",-1),qms_style,qms_schedule,qms_color,qms_size";
 	}
-	// echo "<br>".$sql."<br>";
+	//echo "<br>".$sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	if(mysqli_num_rows($sql_result) > 0) {
@@ -131,12 +132,11 @@ if(isset($_POST['filter']))
 				$rep_qty=$sql_rowxx['qms_qty'];
 			}		
 			// echo $rep_qty;
-
 			for($i=0;$i<sizeof($temp);$i++)
 			{
 				$temp2=array();
 				$temp2=explode("-",$temp[$i]);
-				// var_dump($temp2);
+				
 				//Define the rejection form a garment or panel
 				//*P=Panel; *G=Garment
 				$form="Panel";
@@ -295,6 +295,7 @@ if(isset($_POST['filter']))
 					echo "<td class=\"lef\">Reason deleted</td>";
 				}
 				echo "<td>".$temp2[1]."</td>";
+				
 				//Replace Qty.
 				if($rep_qty>=$temp2[1]){
 					echo "<td>".$temp2[1]."</td>";
