@@ -34,13 +34,23 @@
                         {
                           $cnt=$sql_count['cnt'];
                         }
-                        $get_operations ="select operation_code from $brandix_bts.tbl_orders_ops_ref where category ='sewing' limit 1,$cnt"; 
+                        $get_operations ="select operation_code,operation_name from $brandix_bts.tbl_orders_ops_ref where category ='sewing' limit 1,$cnt"; 
                         $result=mysqli_query($link,$get_operations);
                         while ($test = mysqli_fetch_array($result))
                         {
+                            $ops_array[$test['operation_code']] = $test['operation_name'];
+                        }
+                            foreach($ops_array as $key=>$value)
+                            {
+                            if($_GET['opertion']==$key){
+                                echo "<option value='$key' name='".$ops_array[$key] - $key."' selected>$ops_array[$key] - $key </option>"; 
+
+                            }else{
+                                echo "<option value='$key' name='$ops_array[$key] - $key'>$ops_array[$key] - $key </option>"; 
+                            }
+                            }
+                        //  echo '<option value="'.$test['operation_code'].'">'.$test['operation_code'].' - '.$test['operation_name'].'</option>';
                         
-                         echo '<option value="'.$test['operation_code'].'">'.$test['operation_code'].'</option>';
-                        } 
                        ?>
                     </select>
                    
@@ -152,7 +162,8 @@
             }
         });
         $("select").change(function(){
-            document.getElementById("demo").innerHTML= "SELECTED SEWING OPERATION : "+document.getElementById("operations").value;
+            var val = $(this).find('option:selected').attr("name");
+            document.getElementById("demo").innerHTML= "SELECTED SEWING OPERATION : "+val;
         });
     }
      
@@ -239,11 +250,14 @@
         min-width  : 25px;
         min-height : 25px;
         padding    : 2px;
+        float:left;
     }
     .cut-block{
-        width  : 25px;
-        height : 25px;
+        width  : 20px;
+        height : 20px;
         border : 1px solid #000;
+        /* position: relative; */
+        display:block;
     }
     .l-div{
         min-height : 40px;
