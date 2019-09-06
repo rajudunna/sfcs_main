@@ -61,7 +61,7 @@ while($row=mysqli_fetch_array($transaction_result))
         $message=$decoded['Message'];
        
         //validating response pass/fail and inserting log
-        if($type!='ServerReturnedNOK')
+        if($type!='ServerReturnedNOK' && $type!='BackendInternalError')
         {
             //updating response status in m3_bulk_transactions
             $qry_m3_bulk_transactions="UPDATE $bai_pro3.m3_bulk_transactions SET response_status='pass' WHERE id=".$transaction_id;
@@ -113,7 +113,7 @@ while($row=mysqli_fetch_array($transaction_result))
                 $message=$decoded['Message'];
               
                 //validating response pass/fail and inserting log
-                if($type!='ServerReturnedNOK')
+                if($type!='ServerReturnedNOK' && $type!='BackendInternalError')
                 {
                     //updating response status in m3_bulk_transactions
                     $qry_m3_bulk_transactions="UPDATE $bai_pro3.m3_bulk_transactions SET response_status='pass' WHERE id=".$transaction_id;
@@ -167,7 +167,7 @@ while($row=mysqli_fetch_array($transaction_result))
                 $message=$decoded['Message'];
                 
                 //validating response pass/fail and inserting log
-                if($type!='ServerReturnedNOK')
+                if($type!='ServerReturnedNOK' && $type!='BackendInternalError')
                 {
                     //updating response status in m3_bulk_transactions
                     $qry_m3_bulk_transactions="UPDATE $bai_pro3.m3_bulk_transactions SET response_status='pass' WHERE id=".$transaction_id;
