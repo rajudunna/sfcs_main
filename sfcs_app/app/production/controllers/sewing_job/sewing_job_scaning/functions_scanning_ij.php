@@ -1476,7 +1476,7 @@ function validating_with_module($pre_array_module)
 
     if (($operation == $opn_routing_code && $screen == 'scan') or ($operation == $opn_routing_code && $screen == 'wout_keystroke'))
     {
-        $check_tms_status_query = "SELECT input_trims_status FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='$job_no'";
+        $check_tms_status_query = "SELECT max(input_trims_status) as input_trims_status FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='$job_no'";
         $tms_check_result = $link->query($check_tms_status_query);
         if (mysqli_num_rows($tms_check_result) > 0) {
             while ($tms_result = mysqli_fetch_array($tms_check_result))
@@ -1484,7 +1484,7 @@ function validating_with_module($pre_array_module)
                 $tms_status = $tms_result['input_trims_status'];
             }
         } else {
-            $check_tms_status_query_backup = "SELECT input_trims_status FROM $bai_pro3.plan_dashboard_input_backup WHERE input_job_no_random_ref='$job_no'";
+            $check_tms_status_query_backup = "SELECT max(input_trims_status) as input_trims_status FROM $bai_pro3.plan_dashboard_input_backup WHERE input_job_no_random_ref='$job_no'";
             $tms_check_result_backup = $link->query($check_tms_status_query_backup);
             while ($tms_result_backup = mysqli_fetch_array($tms_check_result_backup))
             {
