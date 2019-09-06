@@ -1227,7 +1227,7 @@ else if($concurrent_flag == 0)
 					}
 					$left_over_qty = $b_in_job_qty[$key] - ($b_rep_qty[$key] + $b_rej_qty[$key]);
 					// appending all values to query for bulk insert....
-					$select_send_qty = "SELECT recevied_qty,rejected_qty,original_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = $b_tid[$key] AND operation_id =$b_op_id";
+					$select_send_qty = "SELECT recevied_qty,rejected_qty,original_qty,send_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = $b_tid[$key] AND operation_id =$b_op_id";
 					//echo "sele".$select_send_qty;
 					$result_select_send_qty = $link->query($select_send_qty);
 					if($result_select_send_qty->num_rows >0)
@@ -1237,6 +1237,7 @@ else if($concurrent_flag == 0)
 							$b_old_rep_qty_new = $row['recevied_qty'];
 							$b_old_rej_qty_new = $row['rejected_qty'];
 							$b_original_qty = $row['original_qty'];
+							$b_send_qty = $row['send_qty'];
 
 						}
 					}
@@ -1244,10 +1245,10 @@ else if($concurrent_flag == 0)
 					$final_rej_qty = $b_old_rej_qty_new + $b_rej_qty[$key];
 					$left_over_qty = $b_in_job_qty[$key] - $final_rep_qty - $final_rej_qty;
                      
-                    //To check orginal_qty = send_qty + rejected_qty
+                    //To check send_qty = send_qty + rejected_qty
                     $bundle_status = 0;
                     $reported_qty = $final_rep_qty + $final_rej_qty;
-                    if($b_original_qty == $reported_qty)
+                    if($b_send_qty == $reported_qty)
                     {
                         $bundle_status = 1;
                     } 
@@ -1255,7 +1256,7 @@ else if($concurrent_flag == 0)
 					if($schedule_count){
 					$query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `rejected_qty`='". $final_rej_qty."', `left_over`= '".$left_over_qty."' , `scanned_date`='". date('Y-m-d h:i:s')."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
 					
-					$result_query = $link->query($query) or exit('query error in updating');
+					$result_query = $link->query($query) or exit('query error in updating1');
 					}
 					if($bundle_status == 1)
                     {
@@ -1277,8 +1278,8 @@ else if($concurrent_flag == 0)
 					}	
 					if($post_ops_code != null)
 					{
-						$query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."' where bundle_number =$b_tid[$key] and operation_id = ".$post_ops_code;
-						$result_query = $link->query($query_post) or exit('query error in updating');
+						$query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."',bundle_qty_status= 0 where bundle_number =$b_tid[$key] and operation_id = ".$post_ops_code;
+						$result_query = $link->query($query_post) or exit('query error in updating2');
 					}
 					if($ops_dep)
 					{
@@ -1298,7 +1299,7 @@ else if($concurrent_flag == 0)
 
 						$query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$ops_dep_update_qty."' where bundle_number =$b_tid[$key] and operation_id = ".$ops_dep;
 						// $query_post_dep.'</br>';
-						$result_query = $link->query($query_post_dep) or exit('query error in updating');
+						$result_query = $link->query($query_post_dep) or exit('query error in updating3');
 				
 					}
 					if($barcode_generation != 1)
@@ -1563,21 +1564,23 @@ else if($concurrent_flag == 0)
 							$act_ims_qty = $pre_ims_qty + $b_rep_qty[$i] ;
 							//echo $act_ims_qty.'-'.$pre_ims_qty.'-'.$b_rep_qty[$i].'</br>';
 							//updating the ims_qty when it was there in ims_log
-							$update_query = "update $bai_pro3.ims_log set ims_pro_qty = $act_ims_qty where tid = $updatable_id";
-							$ims_pro_qty_updating = mysqli_query($link,$update_query) or exit("While updating ims_pro_qty in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
-							if($ims_pro_qty_updating)
-							{
-								if($act_ims_input_qty <= $act_ims_qty)
-								{
-									$update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where tid = $updatable_id";
-									mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
-									$ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where tid=$updatable_id";
-									mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
-									$ims_delete="delete from $bai_pro3.ims_log where tid=$updatable_id";
-									mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
-								}
-							}
+							//get bundle qty status
+	                        $get_bundle_status = "select bundle_qty_status from $brandix_bts.bundle_creation_data where bundle_number = '$b_tid[$i]' and assigned_module = '$b_module[$i]' and operation_id=$b_op_id"; 
+	                        $result_get_bundle_status = $link->query($get_bundle_status);
+	                        while($bundle_row = $result_get_bundle_status->fetch_assoc())
+	                        {
+	                            $bundle_status = $bundle_row['bundle_qty_status'];
+
+	                            if($bundle_status == 1)
+	                            {
+	                                $update_status_query = "update $bai_pro3.ims_log set ims_pro_qty = $act_ims_qty,ims_status = 'DONE' where pac_tid = '$b_tid[$i]'";
+	                                mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                                $ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where pac_tid = '$b_tid[$i]'";
+	                                mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                                $ims_delete="delete from $bai_pro3.ims_log where pac_tid = '$b_tid[$i]'";
+	                                mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                            }
+	                        }
                         }
 					}
 				}
@@ -1651,42 +1654,6 @@ else if($concurrent_flag == 0)
 				}			
 				
 
-			}
-			if($b_rep_qty[$i] > 0 || $b_rej_qty[$i] > 0)
-			{
-				 if($b_op_id == $output_ops_code)
-				 {
-				  $input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);
-				  //To get Sewing In operation From Operation Routing
-				  $application='IPS';
-				  $scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
-				  $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                  while($sql_row11111=mysqli_fetch_array($scanning_result))
-                  {
-                    $operation_out_code=$sql_row11111['operation_code'];
-                  }
-		        			
-					if($input_ops_code == $operation_out_code)
-					{
-					 //get bundle qty status
-	                        $get_bundle_status = "select bundle_qty_status from $brandix_bts.bundle_creation_data where bundle_number = '$b_tid[$i]' and assigned_module = '$b_module[$i]' and operation_id=$input_ops_code"; 
-	                        $result_get_bundle_status = $link->query($get_bundle_status);
-	                        while($bundle_row = $result_get_bundle_status->fetch_assoc())
-	                        {
-	                            $bundle_status = $bundle_row['bundle_qty_status'];
-
-	                            if($bundle_status == 1)
-	                            {
-	                                $update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where pac_tid = '$b_tid[$i]'";
-	                                mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
-	                                $ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where pac_tid = '$b_tid[$i]'";
-	                                mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
-	                                $ims_delete="delete from $bai_pro3.ims_log where pac_tid = '$b_tid[$i]'";
-	                                mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
-	                            }
-	                        }
-					}
-				}
 			}
 			if($b_rep_qty[$i] > 0 || $b_rej_qty[$i] > 0)
 			{
@@ -1808,30 +1775,29 @@ else if($concurrent_flag == 0)
 	            {
 	               //To check orginal_qty = send_qty + rejected_qty
 	                $bundle_status = 0;
-	                 $get_bundle_status = "select original_qty,recevied_qty,rejected_qty from $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$key] and operation_id = $b_op_id";
+	                 $get_bundle_status = "select original_qty,recevied_qty,rejected_qty,send_qty from $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$key] and operation_id = $b_op_id";
 	                $get_bundle_status_result=mysqli_query($link,$get_bundle_status) or exit("barcode status Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	                while($status_row=mysqli_fetch_array($get_bundle_status_result))
 	                {
 	                    $orginal_bundle_qty = $status_row['original_qty'];
 	                    $recevied_bundle_qty = $status_row['recevied_qty'];
 	                    $rejected_bundle_qty = $status_row['rejected_qty'];
+	                    $send_bundle_qty = $status_row['send_qty'];
+
 	                }
 	                $b_original_qty = $orginal_bundle_qty;
+	                $b_send_qty = $send_bundle_qty;
 	                $reported_qty = $recevied_bundle_qty + $rejected_bundle_qty;
-	                if($b_original_qty == $reported_qty)
+	                if($b_send_qty == $reported_qty)
 	                {
 	                    $bundle_status = 1;
-	                }
-	                
-	                
-	                 if($bundle_status ==1)
-	                {
-	                    $status_update_query = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
+                        $status_update_query = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
 	                    $status_result_query = $link->query($status_update_query) or exit('query error in updating status');
 
 	                    $status_update_query = "UPDATE $brandix_bts.bundle_creation_data_temp SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
 	                    $status_result_query = $link->query($status_update_query) or exit('query error in updating status');
 	                }
+
 	            }
 				updateM3TransactionsRejections($b_tid,$b_op_id,$r_qty,$r_reasons);
 			}
