@@ -14,8 +14,8 @@ include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 $url = getFullURLLEVEL($_GET['r'],'bundle_transfer_barcode_scaning.php',0,'N');
 $category="sewing";
-    $query_get_schedule_data= "SELECT tm.operation_code,tm.id,tm.operation_name FROM $brandix_bts.tbl_orders_ops_ref tm
-    WHERE category='".$category."' AND tm.display_operations='yes' ORDER BY tm.id";
+    $query_get_schedule_data= "SELECT id,operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref 
+    WHERE category='".$category."' AND display_operations='yes' ORDER BY id";
     $result = $link->query($query_get_schedule_data);
     while($row = $result->fetch_assoc()){
         $ops_array[$row['operation_code']] = $row['operation_name'];
@@ -45,10 +45,10 @@ $result1 = $link->query($modules);
 foreach($ops_array1 as $key=>$value)
 {
   if($_GET['opertion']==$key){
-    echo "<option value='$key' selected>$ops_array[$key] - $key </option>"; 
+    echo "<option value='$ops_array[$key] - $key' selected>$ops_array[$key] - $key </option>"; 
 
   }else{
-    echo "<option value='$key'>$ops_array[$key] - $key </option>"; 
+    echo "<option value='$ops_array[$key] - $key'>$ops_array[$key] - $key </option>"; 
    }
 }
 ?>
