@@ -1376,6 +1376,38 @@ else if($concurrent_flag == 0)
 			mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));	
 		}
 
+        if($b_rep_qty[$i] > 0 || $b_rej_qty[$i] > 0)
+        {
+        	foreach ($b_tid as $key => $tid) 
+	        {
+	           //To check orginal_qty = send_qty + rejected_qty
+	            $bundle_status = 0;
+	             $get_bundle_status = "select original_qty,recevied_qty,rejected_qty,send_qty from $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$key] and operation_id = $b_op_id";
+	            $get_bundle_status_result=mysqli_query($link,$get_bundle_status) or exit("barcode status Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	            while($status_row=mysqli_fetch_array($get_bundle_status_result))
+	            {
+	                $orginal_bundle_qty = $status_row['original_qty'];
+	                $recevied_bundle_qty = $status_row['recevied_qty'];
+	                $rejected_bundle_qty = $status_row['rejected_qty'];
+	                $send_bundle_qty = $status_row['send_qty'];
+
+	            }
+	            $b_original_qty = $orginal_bundle_qty;
+	            $b_send_qty = $send_bundle_qty;
+	            $reported_qty = $recevied_bundle_qty + $rejected_bundle_qty;
+	            if($b_send_qty == $reported_qty)
+	            {
+	                $bundle_status = 1;
+	                $status_update_query = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
+	                $status_result_query = $link->query($status_update_query) or exit('query error in updating status');
+
+	                $status_update_query = "UPDATE $brandix_bts.bundle_creation_data_temp SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
+	                $status_result_query = $link->query($status_update_query) or exit('query error in updating status');
+	            }
+	        }
+        }
+		
+
 		//echo $output_ops_code;
 		for($i=0;$i<sizeof($b_tid);$i++)
 		{
@@ -1772,34 +1804,7 @@ else if($concurrent_flag == 0)
 						$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 					}
 				}
-				foreach ($b_tid as $key => $tid) 
-	            {
-	               //To check orginal_qty = send_qty + rejected_qty
-	                $bundle_status = 0;
-	                 $get_bundle_status = "select original_qty,recevied_qty,rejected_qty,send_qty from $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$key] and operation_id = $b_op_id";
-	                $get_bundle_status_result=mysqli_query($link,$get_bundle_status) or exit("barcode status Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	                while($status_row=mysqli_fetch_array($get_bundle_status_result))
-	                {
-	                    $orginal_bundle_qty = $status_row['original_qty'];
-	                    $recevied_bundle_qty = $status_row['recevied_qty'];
-	                    $rejected_bundle_qty = $status_row['rejected_qty'];
-	                    $send_bundle_qty = $status_row['send_qty'];
 
-	                }
-	                $b_original_qty = $orginal_bundle_qty;
-	                $b_send_qty = $send_bundle_qty;
-	                $reported_qty = $recevied_bundle_qty + $rejected_bundle_qty;
-	                if($b_send_qty == $reported_qty)
-	                {
-	                    $bundle_status = 1;
-                        $status_update_query = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
-	                    $status_result_query = $link->query($status_update_query) or exit('query error in updating status');
-
-	                    $status_update_query = "UPDATE $brandix_bts.bundle_creation_data_temp SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
-	                    $status_result_query = $link->query($status_update_query) or exit('query error in updating status');
-	                }
-
-	            }
 				updateM3TransactionsRejections($b_tid,$b_op_id,$r_qty,$r_reasons);
 			}
 		}	
