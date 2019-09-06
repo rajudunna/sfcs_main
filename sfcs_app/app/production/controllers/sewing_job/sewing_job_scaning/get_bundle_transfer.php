@@ -1,7 +1,8 @@
 <?php
    
     include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
-    $op_code=$_POST['op_code'];
+    error_reporting(0);
+    $ops_code=$_POST['ops_code'];
     $module = $_POST['module'];
     $barcode = $_POST['barcode'];
 
@@ -13,14 +14,14 @@
         $selct_qry_result_row = mysqli_fetch_assoc($selct_qry_result);
         $style = $selct_qry_result_row['style'];
         $color = $selct_qry_result_row['color'];
-        $check_prev_operation = "SELECT * FROM `brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color='$color' AND operation_code ='$op_code'";
+        $check_prev_operation = "SELECT * FROM `brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color='$color' AND operation_code ='$ops_code'";
         $prev_result=mysqli_query($link,$check_prev_operation) or exit("while retriving prev".mysqli_error($GLOBALS["___mysqli_ston"]));
         
         $selct_qry_result_row1 = mysqli_fetch_assoc($prev_result);
 
         $operation_order = $selct_qry_result_row1['operation_order'];
 
-        $check_present="select if((recevied_qty+rejected_qty=0),1,0) as pre_otp from $brandix_bts.bundle_creation_data WHERE bundle_number='$barcode_number' and operation_id='$op_code'";
+        $check_present="select if((recevied_qty+rejected_qty=0),1,0) as pre_otp from $brandix_bts.bundle_creation_data WHERE bundle_number='$barcode_number' and operation_id='$ops_code'";
         $present_check_result=mysqli_query($link,$check_present) or exit("while retriving present".mysqli_error($GLOBALS["___mysqli_ston"]));
         $check_present_row = mysqli_fetch_assoc($present_check_result);
         $check_output = $check_present_row['pre_otp'];
@@ -34,7 +35,7 @@
             $operation_code_prev = $get_opcode_res_row['operation_code'];
             
                 
-            $present = "select IF(original_qty=SUM(recevied_qty+rejected_qty) or (recevied_qty+rejected_qty=0),1,0) AS otp from $brandix_bts.bundle_creation_data WHERE bundle_number='$barcode_number' and operation_id='$operation_code_prev'";          
+            $present = "select IF(original_qty=SUM(recevied_qty+rejected_qty),1,0) AS otp from $brandix_bts.bundle_creation_data WHERE bundle_number='$barcode_number' and operation_id='$operation_code_prev'";          
 
             $present_result=mysqli_query($link,$present) or exit("while retriving present".mysqli_error($GLOBALS["___mysqli_ston"]));
             $present_row = mysqli_fetch_assoc($present_result);
@@ -42,7 +43,7 @@
             
             if($output==1)
             {
-                $assign_module="update $brandix_bts.bundle_creation_data set assigned_module='$module' where bundle_number='$barcode_number' and operation_id >='$op_code'";
+                $assign_module="update $brandix_bts.bundle_creation_data set assigned_module='$module' where bundle_number='$barcode_number' and operation_id >='$ops_code'";
                 $assign_module_result=mysqli_query($link,$assign_module) or exit("while retriving assigned_module".mysqli_error($GLOBALS["___mysqli_ston"]));
                 echo " Module Transfered successfully";
 
