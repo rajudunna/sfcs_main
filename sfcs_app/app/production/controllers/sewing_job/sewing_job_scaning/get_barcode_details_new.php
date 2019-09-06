@@ -917,7 +917,7 @@
                                 //To check orginal_qty = send_qty + rejected_qty
                                 $bundle_status = 0;
                                 $reported_qty = $final_rep_qty + $final_rej_qty;
-                                if($b_original_qty == $reported_qty)
+                                if($b_send_qty == $reported_qty)
                                 {
                                     $bundle_status = 1;
                                 }
@@ -973,7 +973,7 @@
                                 
                                 if($post_ops_code != null)
                                 {
-                                    $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$post_ops_code;
+                                    $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."',bundle_qty_status= 0 where bundle_number =$b_tid[$key] and operation_id = ".$post_ops_code;
                                     $result_query = $link->query($query_post) or exit('query error in updating');
                                 }
                                 if($ops_dep)
@@ -1179,23 +1179,23 @@
                                 }
                                 $act_ims_qty = $pre_ims_qty + $b_rep_qty[$i] ;
                                 //updating the ims_qty when it was there in ims_log
-                                $update_query = "update $bai_pro3.ims_log set ims_pro_qty = $act_ims_qty where tid = $updatable_id";
-                                $ims_pro_qty_updating = mysqli_query($link,$update_query) or exit("While updating ims_pro_qty in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                if($ims_pro_qty_updating)
-                                {
-                                    if($act_ims_input_qty == $act_ims_qty)
-                                    {
-                                        $update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where tid = $updatable_id";
-                                        mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                        $ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where tid=$updatable_id";
-                                        mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                        $ims_delete="delete from $bai_pro3.ims_log where tid=$updatable_id";
-                                        mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                // $update_query = "update $bai_pro3.ims_log set ims_pro_qty = $act_ims_qty where tid = $updatable_id";
+                                // $ims_pro_qty_updating = mysqli_query($link,$update_query) or exit("While updating ims_pro_qty in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                // if($ims_pro_qty_updating)
+                                // {
+                                //     if($act_ims_input_qty == $act_ims_qty)
+                                //     {
+                                //         $update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where tid = $updatable_id";
+                                //         mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                //         $ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where tid=$updatable_id";
+                                //         mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                //         $ims_delete="delete from $bai_pro3.ims_log where tid=$updatable_id";
+                                //         mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
                     
-                                    }
-                                }
+                                //     }
+                                // }
                                //get bundle qty status
-                               $get_bundle_status = "select bundle_qty_status from $brandix_bts.bundle_creation_data where bundle_number = '$b_tid[$i]' and assigned_module = '$b_module[$i]' and operation_id=$operation_code"; 
+                               $get_bundle_status = "select bundle_qty_status from $brandix_bts.bundle_creation_data where bundle_number = '$b_tid[$i]' and assigned_module = '$b_module[$i]' and operation_id=$b_op_id"; 
                                $result_get_bundle_status = $link->query($get_bundle_status);
                                while($bundle_row = $result_get_bundle_status->fetch_assoc())
                                {
@@ -1203,7 +1203,7 @@
 
                                    if($bundle_status == 1)
                                    {
-                                        $update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where pac_tid = '$b_tid[$i]'";
+                                        $update_status_query = "update $bai_pro3.ims_log set ims_pro_qty = $act_ims_qty,ims_status = 'DONE' where pac_tid = '$b_tid[$i]'";
                                         mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         $ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where pac_tid= '$b_tid[$i]'";
                                         mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1297,10 +1297,12 @@
                     $orginal_bundle_qty = $status_row['original_qty'];
                     $recevied_bundle_qty = $status_row['recevied_qty'];
                     $rejected_bundle_qty = $status_row['rejected_qty'];
+                    $send_bundle_qty = $status_row['send_qty'];
                 }
                 $b_original_qty = $orginal_bundle_qty;
+                $b_send_qty = $send_bundle_qty;
                 $reported_qty = $recevied_bundle_qty + $rejected_bundle_qty;
-                if($b_original_qty == $reported_qty)
+                if($b_send_qty == $reported_qty)
                 {
                     $bundle_status = 1;
                 }
