@@ -135,7 +135,7 @@ if(isset($_POST['submit']))
                     }
                 }
 
-                //To remove Jobs in Cut Table Dashboard
+                //To remove Jobs in Cut Table Dashboard and Emblishment dashboard will cover
               
                 $cut_table_query="select distinct doc_no as doc_nos from $bai_pro3.plan_doc_summ where order_style_no = '$style' and order_del_no = '$schedule'";
                 $cut_table_query_resultx=mysqli_query($link, $cut_table_query) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -171,6 +171,25 @@ if(isset($_POST['submit']))
                     $recut_table_update_resultx=mysqli_query($link, $recut_table_update) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if($recut_table_update_resultx) {
                         $remarks[]="'Recut',";
+                    }
+                }
+
+
+                //to remove jobs in WIP Dashboard
+                $wip_dash_table_query="select distinct input_job_no_random_ref as input_jobs from $brandix_bts.bundle_creation_data where style = '$style' and schedule = '$schedule'";
+                $wip_dash_table_query_resultx=mysqli_query($link, $wip_dash_table_query) or exit("Sql Error133".mysqli_error($GLOBALS["___mysqli_ston"]));
+                //using existing column bundle_qty_status so changing status for temporory purpose (2-permanenent, 3-temporary) 
+                if($status==1) {
+                    $change_status = 3;
+                } else {
+                    $change_status = 2;
+                }
+                while($wip_dash_table_rowx=mysqli_fetch_array($wip_dash_table_query_resultx))
+                { 
+                    $wip_dash_table_update="UPDATE $brandix_bts.`bundle_creation_data` SET bundle_qty_status=$change_status WHERE input_job_no_random_ref =".$wip_dash_table_rowx['input_jobs'];
+                    $wip_dash_table_update_resultx=mysqli_query($link, $wip_dash_table_update) or exit("Sql Error144".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if($wip_dash_table_update_resultx) {
+                        $remarks[]="'WIP',";
                     }
                 }
 
