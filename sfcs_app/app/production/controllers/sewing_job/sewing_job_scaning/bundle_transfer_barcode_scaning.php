@@ -103,13 +103,13 @@ th,td{
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="bar_code_details in scanned_barcode_details.reverse()">
+                    <tr ng-repeat="bar_code_details  in scanned_barcode_details">
                         <td>{{$index+1}}</td>
-                        <td>{{bundle}}</td>
-                        <td>{{op_code}}</td>
-                        <td>{{module}}</td>
-                        <td>{{last_barcode_status}}</td>
-                        <td>{{last_barcode_status_remarks}}</td>
+                        <td>{{bar_code_details.bundle}}</td>
+                        <td>{{bar_code_details.operation_code}}</td>
+                        <td>{{bar_code_details.module}}</td>
+                        <td>{{bar_code_details.status}}</td> 
+                        <td>{{bar_code_details.last_barcode_status_remarks}}</td>
                     </tr>
                 </tbody>
             </table>

@@ -99,6 +99,11 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                                         $scope.showscanlist = true;
                                         $scope.scanned_barcode_details.push({
                                             'data' : response.data,
+                                            'bundle' : $scope['bundle'],
+                                            'operation_code' : $scope['op_code'],
+                                            'module' : $scope['module'],
+                                            'status' : 'Success',
+                                            'last_barcode_status_remarks' : 'Module Transfer Successfully'
                                         });
                                         $('#loading-image').hide();
                                                                             
