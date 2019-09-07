@@ -67,7 +67,7 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                                
                                 $('#loading-image').hide();
                                 $scope.last_barcode_status = 'Error';
-                                $scope.last_barcode_status_remarks = 'Please Check Barcode you scanned a';
+                                $scope.last_barcode_status_remarks = 'Please Check Barcode you scanned';
                                
                                 $scope.barcode = '';
                             }else{
