@@ -135,7 +135,7 @@ echo "	</select>
 
 <div class="col-sm-3">
 <label>Select Date:</label>
-    <input type="text" size="8" data-toggle="datepicker" class="form-control" name="date" id="date" value="<?php  if(isset($_POST['date'])) { echo $_POST['date']; } else { echo date("Y-m-d"); } ?>" />
+    <input type="text" size="8" data-toggle="datepicker" class="form-control" name="date" id="date" value="<?php  if(isset($_POST['date'])) { echo $_POST['date']; } else { echo ''; } ?>" />
 </div>
 </div><br/>
 <div class = "row">
@@ -146,15 +146,14 @@ echo "	</select>
 
 </form>
 
-<hr/>
 <?php
 if(isset($_POST['submit']))
 {
     // var_dump($_POST['date']);
     if($_POST['style'] != null || $_POST['schedule'] != null || $_POST['type'] != null || $_POST['date'] != null){
-
+        
         // var_dump($type);
-        $srt_shipment_data = "select * from $bai_pro3.short_shipment_job_track where id > 0";
+        $srt_shipment_data = "select * from $bai_pro3.short_shipment_job_track where id > 0 and remove_type <> '0' ";
         if($date){
             $srt_shipment_data.= " and date(date_time) = '$date'";
         }
@@ -172,7 +171,8 @@ if(isset($_POST['submit']))
         $srt_shipment_data_result=mysqli_query($link, $srt_shipment_data) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
         $s_no = 0;
         if(mysqli_num_rows($srt_shipment_data_result) > 0 ){
-    
+            
+            echo "<hr/>";
             echo "<table class = 'table' border = 1 >
                 <thead>
                     <tr>
@@ -208,11 +208,11 @@ if(isset($_POST['submit']))
                 // var_dump(mysqli_fetch_array($srt_shipment_data_result, MYSQLI_ASSOC));die();
             echo "</table>";
         }else{
-            echo "<hr><center><h3><span class='label label-warning'>!No Short Shipment Jobs Found</span></h3></center>";
+            echo "<center><h3><span class='label label-warning'>!No Short Shipment Jobs Found</span></h3></center>";
             
         }
     }else{
-        echo "<hr><center><h3><span class='label label-warning'>!Please Select</span></h3></center>";
+        echo "<center><h3><span class='label label-warning'>!Please Select</span></h3></center>";
     } 
 	
 }
