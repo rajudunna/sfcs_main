@@ -1020,7 +1020,7 @@ else if($concurrent_flag == 0)
 				//To check orginal_qty = send_qty + rejected_qty
                     $bundle_status = 0;
                     $b_send_qty = $b_in_job_qty[$key];
-                    $reported_qty = $b_rep_qty[$key] + $b_rej_qty[$key]
+                    $reported_qty = $b_rep_qty[$key] + $b_rej_qty[$key];
                     if($b_send_qty == $reported_qty)
                     {
                         $bundle_status = 1;
