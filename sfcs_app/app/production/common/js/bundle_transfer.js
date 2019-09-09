@@ -16,7 +16,7 @@ app.controller('scanctrl', function ($scope, $http, $window) {
         $scope.module = module; 
     });
 
-
+   
 	
     $scope.scanned = function(event){
        
@@ -87,12 +87,19 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                                 };
                                 $http(req).then(function(response) {
                                     console.log(response);
+                                    var unique =  $scope.scanned_barcode_details.find(bundelfunc);
+                                   
+                                    let obj_length = 0;
+                                    if(unique != undefined )
+                                    {
+                                        obj_length = (Object.keys(unique).length);
+                                    }
                                     
-                                    if(response.data.status){
+                                    if(response.data.status || obj_length > 0){
                                         $('#loading-image').hide();
                                                                            
                                         $scope.last_barcode_status = 'Not Done';
-                                        $scope.last_barcode_status_remarks = response.data.status;
+                                        $scope.last_barcode_status_remarks = 'This Bundle Already in Same Module';
                                         $('.bgcolortable').css("background-color", "#d04d4d70");
                                        
                                     }else{
@@ -112,10 +119,11 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                                         $scope.last_barcode_status_remarks =response.data;
                                         
                                         $('.bgcolortable').css("background-color", "#00800085");
+                                       
                                     }
     
                                 });
-                                $scope.barcode = '';
+                                $scope.barcode = ''; 
                             }
     
                         }else{
@@ -154,7 +162,11 @@ app.controller('scanctrl', function ($scope, $http, $window) {
         }
 
     }
+    function bundelfunc(bundel_id) { 
+       
+        return bundel_id.bundle === $scope['bundle'];
 
+      }
     
 });
 angular.bootstrap($('#scanBarcode'), ['scanning_interface']);
