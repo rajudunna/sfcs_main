@@ -90,8 +90,8 @@ if(isset($_POST['submit']))
         if(mysqli_num_rows($is_style_schedule_exists_result) == 0) {
             $insert_qry = "insert into short_shipment_job_track(style,schedule,remove_type,remove_reason,removed_by) values('$style','$schedule','$status','$reason','$username')";
             $insert_qry_result=mysqli_query($link, $insert_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-            // if($insert_qry_result) {
-
+            if($insert_qry_result) {
+                
                 //To remove Jobs in IPS and TMS
                 $remove_docs=array();
                 $sqlx="select distinct input_job_no_random_ref as job_numbers from $bai_pro3.plan_dash_doc_summ_input where order_style_no = '$style' and order_del_no = '$schedule'";
@@ -135,7 +135,7 @@ if(isset($_POST['submit']))
                     }
                 }
 
-                //To remove Jobs in Cut Table Dashboard and Emblishment dashboard will cover
+                //To remove Jobs in Cut Table Dashboard
               
                 $cut_table_query="select distinct doc_no as doc_nos from $bai_pro3.plan_doc_summ where order_style_no = '$style' and order_del_no = '$schedule'";
                 $cut_table_query_resultx=mysqli_query($link, $cut_table_query) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -144,10 +144,22 @@ if(isset($_POST['submit']))
                     $cut_table_update="UPDATE `bai_pro3`.`cutting_table_plan` SET short_shipment_status=".$status." WHERE doc_no =".$cut_table_rowx['doc_nos'];
                     $cut_table_update_resultx=mysqli_query($link, $cut_table_update) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if($cut_table_update_resultx) {
-                        $remarks[]="'Cut Table',";
+                        $remarks[]="'CUT',";
                     }
                 }
 
+                //To remove Jobs in Embellishment Dashboard
+              
+                $emb_table_query="select distinct doc_no as doc_nos from $bai_pro3.plan_doc_summ where order_style_no = '$style' and order_del_no = '$schedule'";
+                $emb_table_query_resultx=mysqli_query($link, $emb_table_query) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($emb_table_rowx=mysqli_fetch_array($emb_table_query_resultx))
+                { 
+                    $emb_table_update="UPDATE `bai_pro3`.`embellishment_plan_dashboard` SET short_shipment_status=".$status." WHERE doc_no =".$emb_table_rowx['doc_nos'];
+                    $emb_table_update_resultx=mysqli_query($link, $emb_table_update) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if($emb_table_update_resultx) {
+                        $remarks[]="'EMB',";
+                    }
+                }
                 //To remove Jobs in Rejection Dashboard-(ims,cutt(2),Rejection)
               
                 $rej_table_query="select * from $bai_pro3.rejections_log where style = '$style' and schedule = '$schedule'";
@@ -158,7 +170,7 @@ if(isset($_POST['submit']))
                     $rej_table_update="UPDATE `bai_pro3`.`rejections_log` SET short_shipment_status=".$status." WHERE style = '$style' and schedule = '$schedule'";
                     $rej_table_update_result=mysqli_query($link, $rej_table_update) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if($rej_table_update_result) {
-                        $remarks[]="'Cut Table',";
+                        $remarks[]="'Rejections',";
                     }
                 }
 
@@ -192,10 +204,13 @@ if(isset($_POST['submit']))
                         $remarks[]="'WIP',";
                     }
                 }
-
+                
+                // var_dump($remarks);
+                // $update_revers_qry = "update $bai_pro3.`short_shipment_job_track` set remarks='".implode(",",$remarks)."' where id=".$id;
+                // $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                 echo "<script>swal('Short Shipment Job Successfully Removed.','','success');</script>";
-            // }
+            }
         } else {
             echo "<script>swal('Short Shipment Jobs as Already Allocated','','warning');</script>";
         }

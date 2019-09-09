@@ -20,17 +20,15 @@
             }
             $id = $row['id'];
 			$edit_url = getFullURL($_GET['r'],'reverse_short_shipment_jobs.php','N');
-			// $delete_url = getFullURL($_GET['r'],'delete_production_rejection_reasons.php','N');
             echo "<tr><td>".$sno++."</td><td>".$row["date_time"]." </td><td>".$row["style"]."</td><td>".$row["schedule"]."</td><td>".$status."</td><td>".$row["removed_by"]."</td><td>".$row["remove_reason"]."</td>
             
-            <td><a href='$edit_url&id=$id' class='btn btn-warning btn-xs editor_edit glyphicon glyphicon-retweet' onclick='return confirm_reverse(event,this);'> REMOVE </a></td>
+            <td><a href='$edit_url&id=$id' class='btn btn-warning btn-sm editor_edit glyphicon glyphicon-retweet' onclick='return confirm_reverse(event,this);'> REMOVE </a></td>
             </tr>";
 		}
 		echo "</tbody></table>";
 	} else {
 		echo "0 results";
 	}
-	// echo "<script>swal('Enter data correctly.')</script>";
 	?>
 
 
