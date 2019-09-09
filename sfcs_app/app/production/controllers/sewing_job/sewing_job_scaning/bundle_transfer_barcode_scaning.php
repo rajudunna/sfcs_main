@@ -37,10 +37,10 @@ th,td{
 					<div class="col-padding" ng-init="op_code='<?= $op_code ?>'">
                         <div class="row">
                             <div class="col-md-12">
-                            <h4><label>Operation Name : </label><?php echo $op_code;?></h4>                    
+                            <h4><label>Operation Name : </label> <?php echo $op_code;?></h4>                    
                             </div>
                             <div class="col-md-12">
-                            <h4><label>Module Name: </label>  <?php echo $module;?></h4>
+                            <h4><label>Module Name : </label>  <?php echo $module;?></h4>
                             </div>
                         </div>
                         <br/>
