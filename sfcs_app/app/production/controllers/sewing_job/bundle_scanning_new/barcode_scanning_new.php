@@ -6,7 +6,7 @@ if(isset($_GET['id'])){
          });
       </script>";
 	$gate_id= $_GET['id']; 
-	
+	$shift = $_POST['shift'];
 }
 ?>
 <?php
@@ -36,12 +36,13 @@ while($row=mysqli_fetch_array($result))
 <div class="panel panel-primary " id="bundlewise_scanBarcode">
 <div class="panel-heading">Bundle Barcode Scanning Without Operation</div>
 <div class="panel-body">
-<form method ='POST' id='frm1' action='<?php echo $url ?>'>
+<form role="form" method ='POST' id='frm1' action='<?php echo $url ?>'>
 <div class="row">
-<div class="col-md-4">
+<div class="col-sm-3">
+<div  class="form-group">
 <input type='hidden' id='gate_id' name ='gate_id' value=<?php echo $gate_id; ?>>
-<label>Module:<span style="color:red">*</span></label>
-<select class="form-control Module" name="Module" id="Module" style="width:100%;" required>
+<label>Module:<span style="color:red"></span></label>
+<select class="form-control Module"   name="Module" id="Module"  required>
 <option value="">Select Module</option>
 <?php 
 for ($i=0; $i < sizeof($Modules_array); $i++) {?>
@@ -50,10 +51,25 @@ for ($i=0; $i < sizeof($Modules_array); $i++) {?>
 ?>
 </select>
 </div>
-<div class="col-md-4">
+</div>
+<div class="col-sm-3">
+<div  class="form-group">
+<label>Shift:<span style="color:red"></span></label>
+<select class="form-control shift"  name="shift" id="shift"  required>
+<option value="">Select Shift</option>
+<?php 
+for ($i=0; $i < sizeof($shift_array); $i++) {?>
+<option <?php echo 'value="'.$shift_array[$i].'"'; if($_GET['shift']==$Modules_array[$i]){ echo "selected";} ?>><?php echo $shift_array[$i] ?></option>
+<?php }
+?>
+</select>
+</div>
+</div>
+<div class="col-sm-3">
+<div class="form-group">
 <label for="title">Select Operation:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 <select class="form-control select2" name="operation_code" id="operation" required>
-<option value="">Select Operation</option>
+<option value="">Select Operation</option> -->
 <?php
 foreach($ops_array1 as $key=>$value)
 {
@@ -66,8 +82,12 @@ foreach($ops_array1 as $key=>$value)
 }
 ?>
 </select>
-</div><br>
+</div>
+</div>
+<div class="col-sm-3">
+<br/>
 <input type="submit" id="continue" class="btn btn-success" value="CONTINUE">
+</div>
 </div>
 </form>
 </div>
