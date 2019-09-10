@@ -41,8 +41,8 @@ while($row=mysqli_fetch_array($result))
 <div class="col-sm-3">
 <div  class="form-group">
 <input type='hidden' id='gate_id' name ='gate_id' value=<?php echo $gate_id; ?>>
-<label>Module:<span style="color:red"></span></label>
-<select class="form-control Module"   name="Module" id="Module"  required>
+<label>Module:<span style="color:red">*</span></label>
+<select class="form-control Module" name="Module" id="module"  required>
 <option value="">Select Module</option>
 <?php 
 for ($i=0; $i < sizeof($Modules_array); $i++) {?>
@@ -54,9 +54,12 @@ for ($i=0; $i < sizeof($Modules_array); $i++) {?>
 </div>
 <div class="col-sm-3">
 <div  class="form-group">
-<label>Shift:<span style="color:red"></span></label>
-<select class="form-control shift"  name="shift" id="shift"  required>
+<label>Shift:<span style="color:red">*</span></label>
+<select class="form-control shift" name="shift" id="shift"  required>
 <option value="">Select Shift</option>
+<option value="A">Shift-A</option>
+<option value="B">Shift-B</option>
+<option value="G">Shift-G</option>
 <?php 
 for ($i=0; $i < sizeof($shift_array); $i++) {?>
 <option <?php echo 'value="'.$shift_array[$i].'"'; if($_GET['shift']==$Modules_array[$i]){ echo "selected";} ?>><?php echo $shift_array[$i] ?></option>
