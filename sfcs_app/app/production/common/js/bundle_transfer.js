@@ -95,14 +95,23 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                                         obj_length = (Object.keys(unique).length);
                                     }
                                     
-                                    if(response.data.status || obj_length > 0){
+                                    if(response.data.status){
                                         $('#loading-image').hide();
                                                                            
                                         $scope.last_barcode_status = 'Not Done';
-                                        $scope.last_barcode_status_remarks = 'This Bundle Already in Same Module';
+                                        $scope.last_barcode_status_remarks = response.data.status;
                                         $('.bgcolortable').css("background-color", "#d04d4d70");
+                                    }
+                                        else if(response.data.status || obj_length > 0){
+                                            $('#loading-image').hide();
+                                            $scope.last_barcode_status = 'Not Done';
+                                            $scope.last_barcode_status_remarks = 'This Bundle Already in Same Module';
+                                            $('.bgcolortable').css("background-color", "#d04d4d70");
+    
+                                        
+                                        }
                                        
-                                    }else{
+                                    else{
                                         $scope.showscanlist = true;
                                         $scope.scanned_barcode_details.push({
                                             'data' : response.data,
