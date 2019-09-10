@@ -1,7 +1,7 @@
 <?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     
-	$sql = "SELECT * FROM $bai_pro3.short_shipment_job_track`";
+	$sql = "SELECT * FROM $bai_pro3.`short_shipment_job_track`";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$norows = mysqli_num_rows($sql_result);
 	$sno = 1;
@@ -17,12 +17,16 @@
                 $status = 'Permanent';
             } else {
                 $status = 'Reversed';
-            }
+			}
+			$rem_type = $row["remove_type"];
+			// echo $rem_type;die();
             $id = $row['id'];
+            $style = $row['style'];
+            $schedule = $row['schedule'];
 			$edit_url = getFullURL($_GET['r'],'reverse_short_shipment_jobs.php','N');
             echo "<tr><td>".$sno++."</td><td>".$row["date_time"]." </td><td>".$row["style"]."</td><td>".$row["schedule"]."</td><td>".$status."</td><td>".$row["removed_by"]."</td><td>".$row["remove_reason"]."</td>
             
-            <td><a href='$edit_url&id=$id' class='btn btn-warning btn-sm editor_edit glyphicon glyphicon-retweet' onclick='return confirm_reverse(event,this);'> REMOVE </a></td>
+            <td><a href='$edit_url&id=$id&style=$style&schedule=$schedule&rem_type=$rem_type' class='btn btn-warning btn-sm editor_edit glyphicon glyphicon-retweet' onclick='return confirm_reverse(event,this);'> REMOVE </a></td>
             </tr>";
 		}
 		echo "</tbody></table>";

@@ -92,74 +92,115 @@ if(isset($_POST['submit']))
             $insert_qry_result=mysqli_query($link, $insert_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
             if($insert_qry_result) {
                 
-                //To remove Jobs in IPS and TMS
                 $remove_docs=array();
-                $sqlx="select distinct input_job_no_random_ref as job_numbers from $bai_pro3.plan_dash_doc_summ_input where order_style_no = '$style' and order_del_no = '$schedule'";
-                $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-                while($sql_rowx=mysqli_fetch_array($sql_resultx))
+                $remove_ref_nums=array();
+                //Get Ref Numbers
+                $sql_ref_nums="select distinct input_job_no_random as job_numbers from $bai_pro3.packing_summary_input where order_style_no = '$style' and order_del_no = '$schedule'";
+                $sql_ref_nums_res=mysqli_query($link, $sql_ref_nums) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($sql_rowx=mysqli_fetch_array($sql_ref_nums_res))
                 {
-                    $remove_docs[]="'".$sql_rowx['job_numbers']."'";
+                    $remove_ref_nums[]="'".$sql_rowx['job_numbers']."'";
                 }
+                //Get Doc Numbers
+                $sql_doc_nums="select distinct doc_no as doc_numbers from $bai_pro3.packing_summary_input where order_style_no = '$style' and order_del_no = '$schedule'";
+                $sql_doc_nums_res=mysqli_query($link, $sql_doc_nums) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($sql_rows=mysqli_fetch_array($sql_doc_nums_res))
+                {
+                    $remove_docs[]="'".$sql_rows['doc_numbers']."'";
+                }
+
+
+
+                if(sizeof($remove_ref_nums)>0)
+                {
+                    //To remove Jobs in IPS and TMS
+                    $remarks = array();
+                    $ips_chck_qry = "select * from $bai_pro3.`plan_dashboard_input` where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                    $ips_chck_qry_res = mysqli_query($link, $ips_chck_qry) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if($ips_chck_qry_res > 0){
+                        $backup_ips_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                        $backup_ips_query_result = mysqli_query($link, $backup_ips_query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $update_ips_qry = "update $bai_pro3.`plan_dashboard_input_backup` set short_shipment_status = '$status' where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                        $update_ips_qry_result = mysqli_query($link, $update_ips_qry) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $del_ips_sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                        $del_ips_sqlx_result = mysqli_query($link, $del_ips_sqlx) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if($backup_ips_query_result && $update_ips_qry_result && $del_ips_sqlx_result) {
+                            $remarks[]="'IPS','TMS',";
+                        }
+                    }
+                    // die();
+
+                    //To remove Jobs in IMS
+                    $ims_chck_qry = "select * from $bai_pro3.`ims_log` where input_job_rand_no_ref in (".implode(",",$remove_ref_nums).")";
+                    $ims_chck_qry_res = mysqli_query($link, $ims_chck_qry) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if($ims_chck_qry_res > 0){
+                        $backup_ims_query="INSERT IGNORE INTO $bai_pro3.ims_log_backup SELECT * FROM $bai_pro3.`ims_log` WHERE input_job_rand_no_ref in (".implode(",",$remove_ref_nums).")";
+                        mysqli_query($link, $backup_ims_query) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $update_ims_qry = "update $bai_pro3.`ims_log_backup` set short_shipment_status = '$status' where input_job_rand_no_ref in (".implode(",",$remove_ref_nums).") and ims_status <> 'DONE'";
+                        $update_ims_qry_res =mysqli_query($link, $update_ims_qry) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $del_ims_sqlx = "delete from $bai_pro3.ims_log where input_job_rand_no_ref in (".implode(",",$remove_ref_nums).")";
+                        $del_ims_sqlx_res =mysqli_query($link, $del_ims_sqlx) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if($update_ims_qry_res && $del_ims_sqlx_res) {
+                            $remarks[]="'IMS',";
+                        }
+                    }
+                    // die();
+                    
+
+                    //to remove jobs in WIP Dashboard
+                    if($status==1) {
+                        $change_status = 3;
+                    } else {
+                        $change_status = 2;
+                    }
+                    $wip_chck_qry = "select * from $brandix_bts.`bundle_creation_data` where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                    $wip_chck_qry_res=mysqli_query($link, $wip_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if($wip_chck_qry_res > 0){
+                        $wip_dash_table_update="UPDATE $brandix_bts.`bundle_creation_data` SET bundle_qty_status=$change_status WHERE input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                        $wip_dash_table_update_resultx=mysqli_query($link, $wip_dash_table_update) or exit("Sql Error144".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if($wip_dash_table_update_resultx) {
+                            $remarks[]="'WIP',";
+                        }
+                    }
+                }
+
                 if(sizeof($remove_docs)>0)
                 {
-                    $remarks = array();
-                    $backup_ips_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref in (".implode(",",$remove_docs).")";
-                    $backup_ips_query_result = mysqli_query($link, $backup_ips_query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    $update_ips_qry = "update $bai_pro3.`plan_dashboard_input_backup` set shipment_remove_status = '$status' where input_job_no_random_ref in (".implode(",",$remove_docs).")";
-                    $update_ips_qry_result = mysqli_query($link, $update_ips_qry) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    $del_ips_sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_docs).")";
-                    $del_ips_sqlx_result = mysqli_query($link, $del_ips_sqlx) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    if($backup_ips_query_result && $update_ips_qry_result && $del_ips_sqlx_result) {
-                        $remarks[]="'IPS','TMS',";
+                    
+                    //To remove Jobs in Cut Table Dashboard
+                    $cut_chck_qry = "select * from $bai_pro3.`cutting_table_plan` where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                    $cut_chck_qry_res=mysqli_query($link, $cut_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if($cut_chck_qry_res > 0){
+                        $cut_table_update="UPDATE $bai_pro3.`cutting_table_plan` SET short_shipment_status=".$status." WHERE doc_no in (".implode(",",$remove_docs).")";
+                        $cut_table_update_resultx=mysqli_query($link, $cut_table_update) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if($cut_table_update_resultx) {
+                            $remarks[]="'CUT',";
+                        }
                     }
-                }
 
-                //To remove Jobs in IMS
-                $remove_ims_jobs=array();
-                $ims_sqlx="select distinct input_job_rand_no_ref as ims_job from $bai_pro3.ims_log where ims_style = '$style' and ims_schedule = '$schedule'";
-                $ims_sqlx_res=mysqli_query($link, $ims_sqlx) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
-                while($sql_ims_rowx=mysqli_fetch_array($ims_sqlx_res))
-                {
-                    $remove_ims_jobs[]="'".$sql_ims_rowx['ims_job']."'";
-                }
-                
-                if(sizeof($remove_ims_jobs) >0) {
-                    $backup_ims_query="INSERT IGNORE INTO $bai_pro3.ims_log_backup SELECT * FROM $bai_pro3.`ims_log` WHERE input_job_rand_no_ref in (".implode(",",$remove_ims_jobs).")";
-                    mysqli_query($link, $backup_ims_query) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    $update_ims_qry = "update $bai_pro3.`ims_log_backup` set shipment_remove_status = '$status' where input_job_rand_no_ref in (".implode(",",$remove_ims_jobs).")";
-                    $update_ims_qry_res =mysqli_query($link, $update_ims_qry) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    $del_ims_sqlx = "delete from $bai_pro3.ims_log where input_job_rand_no_ref in (".implode(",",$remove_ims_jobs).")";
-                    $del_ims_sqlx_res =mysqli_query($link, $del_ims_sqlx) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    if($update_ims_qry_res && $del_ims_sqlx_res) {
-                        $remarks[]="'IMS',";
+                    //To remove Jobs in Embellishment Dashboard
+                    $emblishment_chck_qry = "select * from $bai_pro3.`embellishment_plan_dashboard` where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                    $emblishment_chck_qry_res=mysqli_query($link, $emblishment_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if($emblishment_chck_qry_res > 0){
+                        $emb_table_update="UPDATE $bai_pro3.`embellishment_plan_dashboard` SET short_shipment_status=".$status." WHERE doc_no in (".implode(",",$remove_docs).")";
+                        $emb_table_update_resultx=mysqli_query($link, $emb_table_update) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if($emb_table_update_resultx) {
+                            $remarks[]="'EMB',";
+                        }
                     }
-                }
 
-                //To remove Jobs in Cut Table Dashboard
-              
-                $cut_table_query="select distinct doc_no as doc_nos from $bai_pro3.plan_doc_summ where order_style_no = '$style' and order_del_no = '$schedule'";
-                $cut_table_query_resultx=mysqli_query($link, $cut_table_query) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-                while($cut_table_rowx=mysqli_fetch_array($cut_table_query_resultx))
-                { 
-                    $cut_table_update="UPDATE `bai_pro3`.`cutting_table_plan` SET short_shipment_status=".$status." WHERE doc_no =".$cut_table_rowx['doc_nos'];
-                    $cut_table_update_resultx=mysqli_query($link, $cut_table_update) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    if($cut_table_update_resultx) {
-                        $remarks[]="'CUT',";
+                    //to remove jobs in Recut Dashboard
+                    $recut_chck_qry = "select * from $bai_pro3.`recut_v2` where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                    $recut_chck_qry_res=mysqli_query($link, $recut_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if($recut_chck_qry_res > 0){
+                        $recut_table_update="UPDATE $bai_pro3.`recut_v2` SET short_shipment_status=".$status." WHERE doc_no in (".implode(",",$remove_docs).")";
+                        $recut_table_update_resultx=mysqli_query($link, $recut_table_update) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if($recut_table_update_resultx) {
+                            $remarks[]="'Recut',";
+                        }
                     }
                 }
-
-                //To remove Jobs in Embellishment Dashboard
-              
-                $emb_table_query="select distinct doc_no as doc_nos from $bai_pro3.plan_doc_summ where order_style_no = '$style' and order_del_no = '$schedule'";
-                $emb_table_query_resultx=mysqli_query($link, $emb_table_query) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-                while($emb_table_rowx=mysqli_fetch_array($emb_table_query_resultx))
-                { 
-                    $emb_table_update="UPDATE `bai_pro3`.`embellishment_plan_dashboard` SET short_shipment_status=".$status." WHERE doc_no =".$emb_table_rowx['doc_nos'];
-                    $emb_table_update_resultx=mysqli_query($link, $emb_table_update) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    if($emb_table_update_resultx) {
-                        $remarks[]="'EMB',";
-                    }
-                }
+               
                 //To remove Jobs in Rejection Dashboard-(ims,cutt(2),Rejection)
               
                 $rej_table_query="select * from $bai_pro3.rejections_log where style = '$style' and schedule = '$schedule'";
@@ -174,37 +215,6 @@ if(isset($_POST['submit']))
                     }
                 }
 
-                //to remove jobs in Recut Dashboard
-                $recut_table_query="select distinct doc_no as doc_nos from $bai_pro3.plan_doc_summ where order_style_no = '$style' and order_del_no = '$schedule'";
-                $recut_table_query_resultx=mysqli_query($link, $recut_table_query) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-                while($recut_table_rowx=mysqli_fetch_array($recut_table_query_resultx))
-                { 
-                    $recut_table_update="UPDATE `bai_pro3`.`recut_v2` SET short_shipment_status=".$status." WHERE doc_no =".$recut_table_rowx['doc_nos'];
-                    $recut_table_update_resultx=mysqli_query($link, $recut_table_update) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    if($recut_table_update_resultx) {
-                        $remarks[]="'Recut',";
-                    }
-                }
-
-
-                //to remove jobs in WIP Dashboard
-                $wip_dash_table_query="select distinct input_job_no_random_ref as input_jobs from $brandix_bts.bundle_creation_data where style = '$style' and schedule = '$schedule'";
-                $wip_dash_table_query_resultx=mysqli_query($link, $wip_dash_table_query) or exit("Sql Error133".mysqli_error($GLOBALS["___mysqli_ston"]));
-                //using existing column bundle_qty_status so changing status for temporory purpose (2-permanenent, 3-temporary) 
-                if($status==1) {
-                    $change_status = 3;
-                } else {
-                    $change_status = 2;
-                }
-                while($wip_dash_table_rowx=mysqli_fetch_array($wip_dash_table_query_resultx))
-                { 
-                    $wip_dash_table_update="UPDATE $brandix_bts.`bundle_creation_data` SET bundle_qty_status=$change_status WHERE input_job_no_random_ref =".$wip_dash_table_rowx['input_jobs'];
-                    $wip_dash_table_update_resultx=mysqli_query($link, $wip_dash_table_update) or exit("Sql Error144".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    if($wip_dash_table_update_resultx) {
-                        $remarks[]="'WIP',";
-                    }
-                }
-                
                 // var_dump($remarks);
                 // $update_revers_qry = "update $bai_pro3.`short_shipment_job_track` set remarks='".implode(",",$remarks)."' where id=".$id;
                 // $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));

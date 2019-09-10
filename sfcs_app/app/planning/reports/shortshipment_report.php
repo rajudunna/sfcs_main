@@ -70,76 +70,75 @@ $sql="select distinct order_style_no from bai_pro3.bai_orders_db";
     // var_dump($link);	
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($link));
 $sql_num_check=mysqli_num_rows($sql_result);
-echo "<div class=\"row\"><div class=\"col-sm-3\"><label>Select Style:</label><select class='form-control' name=\"style\"  id=\"style\" onchange=\"firstbox();\" id='style'>";
+echo "<div class=\"row\"><div class=\"col-sm-2\"><label>Select Style:</label><select class='form-control' name=\"style\"  id=\"style\" onchange=\"firstbox();\" id='style'>";
 
-echo "<option value='' disabled selected>Please Select</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
+    echo "<option value='' disabled selected>Please Select</option>";
+    while($sql_row=mysqli_fetch_array($sql_result))
+    {
 
-	if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
-	{
-		echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
-	}
-	else
-	{
-		echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
-	}
-
-}
-echo "  </select>
-	</div>";
-?>
-
-<?php
-
-echo "<div class='col-sm-3'><label>Select Schedule:</label> 
-	  <select class='form-control' name=\"schedule\" id=\"schedule\" onchange=\"secondbox();\" id='schedule'>";
-
-	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";	
-
-mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-
-echo "<option value='' disabled selected>Please Select</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule)){
-        // if()
-			echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
-		}
-	else{
-		echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
-	}
-}
-
-echo "	</select>
-	 </div>";
-?>
-<div class='col-sm-3'><label>Select Type:</label> 
-    <select id="remove_type" class="form-control" data-role="select" selected="selected" name="remove_type"  data-parsley-errors-container="#errId3">
-        <?php
-        if(1 == $type){
-            $tmp_sel = "selected";
+        if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
+        {
+            echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
         }
-        if(2 == $type){
-            $per_sel = "selected";
+        else
+        {
+            echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
         }
-            echo '<option value=" " disabled selected>Please Select</option>';
-            echo '<option value="1" '.$tmp_sel.'>Temporary</option>';
-            echo '<option value="2" '.$per_sel.'>Permanent</option>';
-        ?>
-    </select>
-	  
-</div>
 
-<div class="col-sm-3">
-<label>Select Date:</label>
-    <input type="text" size="8" data-toggle="datepicker" class="form-control" name="date" id="date" value="<?php  if(isset($_POST['date'])) { echo $_POST['date']; } else { echo ''; } ?>" />
-</div>
-</div><br/>
-<div class = "row">
+    }
+    echo "  </select>
+        </div>";
+    ?>
+
+    <?php
+
+    echo "<div class='col-sm-2'><label>Select Schedule:</label> 
+        <select class='form-control' name=\"schedule\" id=\"schedule\" onchange=\"secondbox();\" id='schedule'>";
+
+        $sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";	
+
+    mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $sql_num_check=mysqli_num_rows($sql_result);
+
+    echo "<option value='' disabled selected>Please Select</option>";
+    while($sql_row=mysqli_fetch_array($sql_result))
+    {
+        if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule)){
+            // if()
+                echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
+            }
+        else{
+            echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
+        }
+    }
+
+    echo "	</select>
+        </div>";
+    ?>
+    <div class='col-sm-3'><label>Select Type:</label> 
+        <select id="remove_type" class="form-control" data-role="select" selected="selected" name="remove_type"  data-parsley-errors-container="#errId3">
+            <?php
+            if(1 == $type){
+                $tmp_sel = "selected";
+            }
+            if(2 == $type){
+                $per_sel = "selected";
+            }
+                echo '<option value=" " disabled selected>Please Select</option>';
+                echo '<option value="1" '.$tmp_sel.'>Temporary</option>';
+                echo '<option value="2" '.$per_sel.'>Permanent</option>';
+            ?>
+        </select>
+        
+    </div>
+
     <div class="col-sm-3">
+    <label>Select Date:</label>
+        <input type="text" size="8" data-toggle="datepicker" class="form-control" name="date" id="date" value="<?php  if(isset($_POST['date'])) { echo $_POST['date']; } else { echo ''; } ?>" />
+    </div>
+    <br/>
+    <div class="col-sm-2">
         <input class="btn btn-primary" type="submit" value="Submit" name="submit">
     </div>
 </div>
@@ -173,7 +172,7 @@ if(isset($_POST['submit']))
         if(mysqli_num_rows($srt_shipment_data_result) > 0 ){
             
             echo "<hr/>";
-            echo "<table class = 'table' border = 1 >
+            echo "<table class = 'table' id = 'shortshipmentjobReport'>
                 <thead>
                     <tr>
                         <th>#</th>
@@ -208,12 +207,49 @@ if(isset($_POST['submit']))
                 // var_dump(mysqli_fetch_array($srt_shipment_data_result, MYSQLI_ASSOC));die();
             echo "</table>";
         }else{
-            echo "<center><h3><span class='label label-warning'>!No Short Shipment Jobs Found</span></h3></center>";
+            echo "<script>swal('No Short Shipment Jobs Found.','','warning');</script>";
             
         }
     }else{
-        echo "<center><h3><span class='label label-warning'>!Please Select</span></h3></center>";
+        echo "<script>swal('Please Select','','warning');</script>";
     } 
 	
 }
 ?>
+<script>
+    $(document).ready(function() {
+    $('#shortshipmentjobReport').DataTable();
+} );
+</script>
+<style>
+table th
+{
+	border: 1px solid grey;
+	text-align: center;
+    background-color: #003366;
+	color: WHITE;
+	white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+table{
+	white-space:nowrap; 
+	border-collapse:collapse;
+	font-size:12px;
+	background-color: white;
+}
+table tr
+{
+	border: 1px solid grey;
+	text-align: right;
+	white-space:nowrap; 
+}
+
+table td
+{
+	border: 1px solid grey;
+	text-align: center;
+	white-space:nowrap;
+	color:black;
+}
+</style>
