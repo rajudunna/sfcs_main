@@ -55,7 +55,7 @@
             }
             else
             {
-                $result_array['status'] = 'Partially Scan This Module';
+                $result_array['status'] = 'Partially Scanned';
                 echo json_encode($result_array);
             } 
             
