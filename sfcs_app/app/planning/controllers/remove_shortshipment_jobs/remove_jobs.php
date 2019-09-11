@@ -7,7 +7,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; 
     $username = getrbac_user()['uname'];
 	$style=$_GET['style'];
-	$schedule=$_GET['schedule']; 
+    $schedule=$_GET['schedule']; 
+    $mail = getFullURL($_GET['r'],'mail_configuration.php','R');
+    
 ?>
 
 <div class = "panel panel-primary">
@@ -208,7 +210,7 @@ if(isset($_POST['submit']))
                 $rej_table_rowx=mysqli_num_rows($rej_table_query_resultx);
                 if($rej_table_rowx>0)
                 { 
-                    $rej_table_update="UPDATE `bai_pro3`.`rejections_log` SET short_shipment_status=".$status." WHERE style = '$style' and schedule = '$schedule'";
+                    $rej_table_update="UPDATE $bai_pro3.`rejections_log` SET short_shipment_status=".$status." WHERE style = '$style' and schedule = '$schedule'";
                     $rej_table_update_result=mysqli_query($link, $rej_table_update) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if($rej_table_update_result) {
                         $remarks[]="'Rejections',";
@@ -218,6 +220,7 @@ if(isset($_POST['submit']))
                 // var_dump($remarks);
                 // $update_revers_qry = "update $bai_pro3.`short_shipment_job_track` set remarks='".implode(",",$remarks)."' where id=".$id;
                 // $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = '$mail?style=$style&schedule=$schedule'}</script>";
 
                 echo "<script>swal('Short Shipment Job Successfully Removed.','','success');</script>";
             }
