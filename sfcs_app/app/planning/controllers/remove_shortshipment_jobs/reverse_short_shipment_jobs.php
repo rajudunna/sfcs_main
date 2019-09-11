@@ -10,9 +10,9 @@
 
     $update_revers_qry = "update $bai_pro3.`short_shipment_job_track` set remove_type='0',updated_by='".$username."',updated_at='".$updated_date."' where id=".$id;
     // die();
-    // $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
     
-    // if($update_revers_qry_result) {
+    if($update_revers_qry_result) {
         //To Reverse jobs IPS and TMS
         $remove_docs=array();
         $remove_ref_nums=array();
@@ -38,11 +38,11 @@
             $rev_ips_chk_qry_res = mysqli_query($link, $rev_ips_chk_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
             if($rev_ips_chk_qry_res > 0){
                 $reverse_ips_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input SELECT * FROM $bai_pro3.`plan_dashboard_input_backup` WHERE input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
-                // $backup_ips_query_result = mysqli_query($link, $reverse_ips_query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $backup_ips_query_result = mysqli_query($link, $reverse_ips_query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $update_ips_qry = "update $bai_pro3.`plan_dashboard_input` set short_shipment_status = '0' where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
-                // $update_ips_qry_result = mysqli_query($link, $update_ips_qry) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $update_ips_qry_result = mysqli_query($link, $update_ips_qry) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $del_ips_bckup_sqlx="delete from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
-                // $del_ips_bckup_sqlx_result = mysqli_query($link, $del_ips_bckup_sqlx) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $del_ips_bckup_sqlx_result = mysqli_query($link, $del_ips_bckup_sqlx) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
             
             //To reverse Jobs in IMS
@@ -50,11 +50,11 @@
             $rev_ims_chk_qry_res = mysqli_query($link, $rev_ims_chk_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
             if($rev_ims_chk_qry_res > 0){
                 $reverse_ims_query="INSERT IGNORE INTO $bai_pro3.ims_log SELECT * FROM $bai_pro3.`ims_log_backup` WHERE input_job_rand_no_ref in (".implode(",",$remove_ref_nums).") and short_shipment_status = '1'";
-                // mysqli_query($link, $reverse_ims_query) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+                mysqli_query($link, $reverse_ims_query) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $update_ims_qry = "update $bai_pro3.`ims_log` set short_shipment_status = '0' where input_job_rand_no_ref in (".implode(",",$remove_ref_nums).") and short_shipment_status = '1'";
-                // $update_ims_qry_res =mysqli_query($link, $update_ims_qry) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $update_ims_qry_res =mysqli_query($link, $update_ims_qry) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $del_ims_bckup_sqlx = "delete from $bai_pro3.ims_log_backup where input_job_rand_no_ref in (".implode(",",$remove_ref_nums).") and short_shipment_status = '1'";
-                // $del_ims_bckup_sqlx_res =mysqli_query($link, $del_ims_bckup_sqlx) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $del_ims_bckup_sqlx_res =mysqli_query($link, $del_ims_bckup_sqlx) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
 
             //To Reverse Jobs In WIP Dashboard
@@ -73,12 +73,12 @@
                 // }
             }
         }
-
+        
         if(sizeof($remove_docs)>0)
         {
             
             //To Reverse Jobs in Cut Table Dashboard
-            $cut_chck_qry = "select * from $bai_pro3.`cutting_table_plan` where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+            $cut_chck_qry = "select * from $bai_pro3.`cutting_table_plan` where doc_no in (".implode(",",$remove_ref_nums).")";
             $cut_chck_qry_res=mysqli_query($link, $cut_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
             if($cut_chck_qry_res > 0){
                 $cut_table_update="UPDATE $bai_pro3.`cutting_table_plan` SET short_shipment_status='0' WHERE doc_no in (".implode(",",$remove_docs).") and short_shipment_status = '1'";
@@ -87,32 +87,31 @@
                 //     $remarks[]="'CUT',";
                 // }
             }
-
+            
             //To Reverse Jobs in Embellishment Dashboard
-            $emblishment_chck_qry = "select * from $bai_pro3.`embellishment_plan_dashboard` where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+            $emblishment_chck_qry = "select * from $bai_pro3.`embellishment_plan_dashboard` where doc_no in (".implode(",",$remove_ref_nums).")";
             $emblishment_chck_qry_res=mysqli_query($link, $emblishment_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
             if($emblishment_chck_qry_res > 0){
                 $emb_table_update="UPDATE $bai_pro3.`embellishment_plan_dashboard` SET short_shipment_status='0' WHERE doc_no in (".implode(",",$remove_docs).") and short_shipment_status = '1'";
                 $emb_table_update_resultx=mysqli_query($link, $emb_table_update) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
                 // if($emb_table_update_resultx) {
-                //     $remarks[]="'EMB',";
-                // }
+                    //     $remarks[]="'EMB',";
+                    // }
             }
-
+                
             //to Reverse jobs in Recut Dashboard
-            $recut_chck_qry = "select * from $bai_pro3.`recut_v2` where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+            $recut_chck_qry = "select * from $bai_pro3.`recut_v2` where doc_no in (".implode(",",$remove_ref_nums).")";
             $recut_chck_qry_res=mysqli_query($link, $recut_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
             if($recut_chck_qry_res > 0){
                 $recut_table_update="UPDATE $bai_pro3.`recut_v2` SET short_shipment_status='0' WHERE doc_no in (".implode(",",$remove_docs).") and short_shipment_status = '1'";
                 $recut_table_update_resultx=mysqli_query($link, $recut_table_update) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
                 // if($recut_table_update_resultx) {
-                //     $remarks[]="'Recut',";
-                // }
+                    //     $remarks[]="'Recut',";
+                    // }
             }
         }
-
+                
         //To remove Jobs in Rejection Dashboard-(ims,cutt(2),Rejection)
-            
         $rej_table_query="select * from $bai_pro3.rejections_log where style = '$style' and schedule = '$schedule'";
         $rej_table_query_resultx=mysqli_query($link, $rej_table_query) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
         $rej_table_rowx=mysqli_num_rows($rej_table_query_resultx);
@@ -121,17 +120,18 @@
             $rej_table_update="UPDATE `bai_pro3`.`rejections_log` SET short_shipment_status='0' WHERE style = '$style' and schedule = '$schedule' and short_shipment_status='1'";
             $rej_table_update_result=mysqli_query($link, $rej_table_update) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
             // if($rej_table_update_result) {
-            //     $remarks[]="'Rejections',";
-            // }
+                //     $remarks[]="'Rejections',";
+                // }
         }
-                       
+        // echo $recut_table_update;die();
+                    
         // echo $reverse_ims_query."<br/>".$update_ims_qry."<br/>".$del_ims_bckup_sqlx."<br/>";die();
-
-       
-
-
-
-    // }
-
+                    
+                    
+                    
+                    
+                    
+    }
+                    
 ?>
 

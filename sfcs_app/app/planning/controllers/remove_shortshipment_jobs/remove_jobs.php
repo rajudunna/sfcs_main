@@ -130,7 +130,6 @@ if(isset($_POST['submit']))
                             $remarks[]="'IPS','TMS',";
                         }
                     }
-                    // die();
 
                     //To remove Jobs in IMS
                     $ims_chck_qry = "select * from $bai_pro3.`ims_log` where input_job_rand_no_ref in (".implode(",",$remove_ref_nums).")";
@@ -146,7 +145,6 @@ if(isset($_POST['submit']))
                             $remarks[]="'IMS',";
                         }
                     }
-                    // die();
                     
 
                     //to remove jobs in WIP Dashboard
@@ -170,7 +168,7 @@ if(isset($_POST['submit']))
                 {
                     
                     //To remove Jobs in Cut Table Dashboard
-                    $cut_chck_qry = "select * from $bai_pro3.`cutting_table_plan` where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                    $cut_chck_qry = "select * from $bai_pro3.`cutting_table_plan` where doc_no in (".implode(",",$remove_ref_nums).")";
                     $cut_chck_qry_res=mysqli_query($link, $cut_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if($cut_chck_qry_res > 0){
                         $cut_table_update="UPDATE $bai_pro3.`cutting_table_plan` SET short_shipment_status=".$status." WHERE doc_no in (".implode(",",$remove_docs).")";
@@ -179,9 +177,9 @@ if(isset($_POST['submit']))
                             $remarks[]="'CUT',";
                         }
                     }
-
+                    
                     //To remove Jobs in Embellishment Dashboard
-                    $emblishment_chck_qry = "select * from $bai_pro3.`embellishment_plan_dashboard` where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                    $emblishment_chck_qry = "select * from $bai_pro3.`embellishment_plan_dashboard` where doc_no in (".implode(",",$remove_ref_nums).")";
                     $emblishment_chck_qry_res=mysqli_query($link, $emblishment_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if($emblishment_chck_qry_res > 0){
                         $emb_table_update="UPDATE $bai_pro3.`embellishment_plan_dashboard` SET short_shipment_status=".$status." WHERE doc_no in (".implode(",",$remove_docs).")";
@@ -190,9 +188,9 @@ if(isset($_POST['submit']))
                             $remarks[]="'EMB',";
                         }
                     }
-
+                    
                     //to remove jobs in Recut Dashboard
-                    $recut_chck_qry = "select * from $bai_pro3.`recut_v2` where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                    $recut_chck_qry = "select * from $bai_pro3.`recut_v2` where doc_no in (".implode(",",$remove_ref_nums).")";
                     $recut_chck_qry_res=mysqli_query($link, $recut_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if($recut_chck_qry_res > 0){
                         $recut_table_update="UPDATE $bai_pro3.`recut_v2` SET short_shipment_status=".$status." WHERE doc_no in (".implode(",",$remove_docs).")";
@@ -202,10 +200,11 @@ if(isset($_POST['submit']))
                         }
                     }
                 }
-               
+                
                 //To remove Jobs in Rejection Dashboard-(ims,cutt(2),Rejection)
-              
+                
                 $rej_table_query="select * from $bai_pro3.rejections_log where style = '$style' and schedule = '$schedule'";
+                // echo $rej_table_query;die();
                 $rej_table_query_resultx=mysqli_query($link, $rej_table_query) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $rej_table_rowx=mysqli_num_rows($rej_table_query_resultx);
                 if($rej_table_rowx>0)
@@ -216,6 +215,7 @@ if(isset($_POST['submit']))
                         $remarks[]="'Rejections',";
                     }
                 }
+                // die();
 
                 // var_dump($remarks);
                 // $update_revers_qry = "update $bai_pro3.`short_shipment_job_track` set remarks='".implode(",",$remarks)."' where id=".$id;
