@@ -82,8 +82,8 @@
         if(($_GET['tdate'] && $_GET['fdate']) || $_GET['schedule']){
             $resp_stat[] = $_GET['ts'] ? 'response_status="'.$_GET["ts"].'"' : '';
             $resp_stat[] = $_GET['schedule'] ? 'schedule="'.$_GET["schedule"].'"' : '';
-            $resp_stat[] = ($_GET['tdate'] && $_GET['fdate']) ? 'DATE(m3_transactions.date_time) between  "'.$_GET["fdate"].'" and "'.$_GET["tdate"].'"' : '';
-            $ar_nw = array_filter($resp_stat);
+            $resp_stat[] = ($_GET['tdate'] && $_GET['fdate']) ? 'm3_transactions.date_time between  "'.$_GET["fdate"].' 00:00:00" and "'.$_GET["tdate"].' 23:59:59"' : '';
+            $ar_nw = array_filter($resp_stat); 
             $qry_m3_trans = "SELECT style,schedule,color,size,m3_transactions.date_time as dt,m3_transactions.mo_no,op_code,quantity,response_status,m3_transactions.id,m3_transactions.m3_bulk_tran_id,m3_transactions.log_user,m3_transactions.ref_no,m3_transactions.reason,m3_transactions.module_no,m3_transactions.api_type,m3_transactions.workstation_id,m3_trail_count,m3_ops_code
             FROM bai_pro3.`m3_transactions`  
             LEFT JOIN bai_pro3.`mo_details` ON m3_transactions.mo_no=mo_details.mo_no WHERE ".implode(' and ',$ar_nw);
