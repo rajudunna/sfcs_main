@@ -415,7 +415,6 @@ $a_s50=$sql_row['a_s50'];
 $sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
 // echo $sql2."<br>";
 $sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
-
 while($sql_row2=mysqli_fetch_array($sql_result2))
 {
 	$mklength=$sql_row2['mklength'];
@@ -2524,7 +2523,7 @@ tags will be replaced.-->
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_bind = $binding_con*$plies*$a_ratio_tot; echo round($fab_bind,2).'<br/>('.$fab_uom.')'; ?></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo round($fab_bind+$fab_lay,2).'<br/>('.$fab_uom.')'; ?></td>
   <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $actwidth; ?></td> 
-  <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $revi_mk_length; ?></td>
+  <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $act_mk_length; ?></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php if($act_mk_length > 0){$fab_revised_lay = $act_mk_length*(1+$cuttable_wastage)*$plies; echo round($fab_revised_lay+$fab_bind,2).'<br/>('.$fab_uom.')';} else { echo "0";}?></td>
 <!--<td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php //if(substr($style,0,1)=="M") 
@@ -2935,9 +2934,9 @@ else
   <th class=xl704118>Bundling</th>
   <th class=xl704118>Dispatch</th>
   <th></th>
-  <th class=xl654118 >Remark 1:<td height=20 colspan=12 class=xl654118  style='height:15.0pt'><u><?php echo $remark1?></u></td></th>
+  <th class=xl654118>Remark 1:<td colspan="8" height=20 class=xl654118 style='height:15.0pt'><u><?php echo substr($remark1,0,50); ?></u></td></th>
   <th></th>
-  
+   
  </tr>
  <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
@@ -2951,7 +2950,7 @@ else
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td></td>
-  <th class=xl654118>Remark 2:<td height=20 colspan=12 class=xl654118 style='height:15.0pt'><u><?php echo $remark2?></u></td></th>
+  <th class=xl654118>Remark 2:<td colspan="8" height=20 class=xl654118 style='height:15.0pt'><u><?php echo substr($remark2,0,50); ?></u></td></th>
  </tr>
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:30pt'></td>
@@ -2965,7 +2964,7 @@ else
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td></td>
-  <th class=xl654118>Remark 3:<td height=20 colspan=12 class=xl654118 style='height:15.0pt'><u><?php echo $remark3?></u></td></th>
+  <th class=xl654118>Remark 3:<td colspan="8" height=20 class=xl654118 style='height:15.0pt'><u><?php echo substr($remark3,0,50); ?></u></td></th>
  </tr>
  <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
@@ -2979,12 +2978,12 @@ else
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td></td>
-  <th class=xl654118>Remark 4:<td height=20 colspan=12 class=xl654118 style='height:15.0pt'><u><?php echo $remark4?></u></td></th>
+  <th class=xl654118>Remark 4:<td colspan="8" height=20 class=xl654118 style='height:15.0pt'><u><?php echo substr($remark4,0,50); ?></u></td></th>
  </tr>
  <tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118>Emp No3</td>
-  <td class=xl804118>&nbsp;</td>
+  <td class=xl804118><?php //echo date("y/m/d",strtotime($plan_log_time)); ?></td>
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
@@ -2993,7 +2992,6 @@ else
   <td class=xl814118>&nbsp;</td>
   <td class=xl814118>&nbsp;</td>
   <td class=xl654118></td>
- 
   <td class=xl654118>Act Con</td>
   <td class=xl894118 style='border-top:none'>&nbsp;</td>
   <td class=xl894118 style='border-top:none'>&nbsp;</td>
