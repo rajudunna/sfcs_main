@@ -42,12 +42,12 @@ if(isset($_POST['formSubmit']))
 	mysqli_query($link, $insdupdoc) or exit("insert_qry_recut".mysqli_error($GLOBALS["___mysqli_ston"]));
     $last_doc_no=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
     
-    //inserting in plandoc_stat_log
-    $insplandoc="INSERT INTO `bai_pro3`.`plandoc_stat_log` (`date`, `cat_ref`, `cuttable_ref`, `allocate_ref`, `mk_ref`, `order_tid`, `pcutno`, `ratio`, `p_xs`, `p_s`, `p_m`, `p_l`, `p_xl`, `p_xxl`, `p_xxxl`, `p_plies`, `doc_no`, `acutno`, `a_xs`, `a_s`, `a_m`, `a_l`, `a_xl`, `a_xxl`, `a_xxxl`, `a_plies`, `lastup`, `remarks`, `act_cut_status`, `act_cut_issue_status`, `pcutdocid`, `print_status`, `a_s01`, `a_s02`, `a_s03`, `a_s04`, `a_s05`, `a_s06`, `a_s07`, `a_s08`, `a_s09`, `a_s10`, `a_s11`, `a_s12`, `a_s13`, `a_s14`, `a_s15`, `a_s16`, `a_s17`, `a_s18`, `a_s19`, `a_s20`, `a_s21`, `a_s22`, `a_s23`, `a_s24`, `a_s25`, `a_s26`, `a_s27`, `a_s28`, `a_s29`, `a_s30`, `a_s31`, `a_s32`, `a_s33`, `a_s34`, `a_s35`, `a_s36`, `a_s37`, `a_s38`, `a_s39`, `a_s40`, `a_s41`, `a_s42`, `a_s43`, `a_s44`, `a_s45`, `a_s46`, `a_s47`, `a_s48`, `a_s49`, `a_s50`, `p_s01`, `p_s02`, `p_s03`, `p_s04`, `p_s05`, `p_s06`, `p_s07`, `p_s08`, `p_s09`, `p_s10`, `p_s11`, `p_s12`, `p_s13`, `p_s14`, `p_s15`, `p_s16`, `p_s17`, `p_s18`, `p_s19`, `p_s20`, `p_s21`, `p_s22`, `p_s23`, `p_s24`, `p_s25`, `p_s26`, `p_s27`, `p_s28`, `p_s29`, `p_s30`, `p_s31`, `p_s32`, `p_s33`, `p_s34`, `p_s35`, `p_s36`, `p_s37`, `p_s38`, `p_s39`, `p_s40`, `p_s41`, `p_s42`, `p_s43`, `p_s44`, `p_s45`, `p_s46`, `p_s47`, `p_s48`, `p_s49`, `p_s50`, `rm_date`, `cut_inp_temp`, `plan_module`, `fabric_status`, `plan_lot_ref`, `log_update`, `org_doc_no`, `org_plies`, `docket_printed_person`) SELECT`date`, `cat_ref`, `cuttable_ref`, `allocate_ref`, `mk_ref`, `order_tid`, `pcutno`, `ratio`, `p_xs`, `p_s`, `p_m`, `p_l`, `p_xl`, `p_xxl`, `p_xxxl`, `p_plies`, `doc_no`, `acutno`, `a_xs`, `a_s`, `a_m`, `a_l`, `a_xl`, `a_xxl`, `a_xxxl`, `a_plies`, `lastup`, `remarks`, `act_cut_status`, `act_cut_issue_status`, `pcutdocid`, `print_status`, `a_s01`, `a_s02`, `a_s03`, `a_s04`, `a_s05`, `a_s06`, `a_s07`, `a_s08`, `a_s09`, `a_s10`, `a_s11`, `a_s12`, `a_s13`, `a_s14`, `a_s15`, `a_s16`, `a_s17`, `a_s18`, `a_s19`, `a_s20`, `a_s21`, `a_s22`, `a_s23`, `a_s24`, `a_s25`, `a_s26`, `a_s27`, `a_s28`, `a_s29`, `a_s30`, `a_s31`, `a_s32`, `a_s33`, `a_s34`, `a_s35`, `a_s36`, `a_s37`, `a_s38`, `a_s39`, `a_s40`, `a_s41`, `a_s42`, `a_s43`, `a_s44`, `a_s45`, `a_s46`, `a_s47`, `a_s48`, `a_s49`, `a_s50`, `p_s01`, `p_s02`, `p_s03`, `p_s04`, `p_s05`, `p_s06`, `p_s07`, `p_s08`, `p_s09`, `p_s10`, `p_s11`, `p_s12`, `p_s13`, `p_s14`, `p_s15`, `p_s16`, `p_s17`, `p_s18`, `p_s19`, `p_s20`, `p_s21`, `p_s22`, `p_s23`, `p_s24`, `p_s25`, `p_s26`, `p_s27`, `p_s28`, `p_s29`, `p_s30`, `p_s31`, `p_s32`, `p_s33`, `p_s34`, `p_s35`, `p_s36`, `p_s37`, `p_s38`, `p_s39`, `p_s40`, `p_s41`, `p_s42`, `p_s43`, `p_s44`, `p_s45`, `p_s46`, `p_s47`, `p_s48`, `p_s49`, `p_s50`, `rm_date`, `cut_inp_temp`, `plan_module`, `fabric_status`, `plan_lot_ref`, `log_update`, `org_doc_no`, `org_plies`, `docket_printed_person` FROM $bai_pro3.plandoc_stat_log WHERE doc_no = '$doc_nos'";
-    mysqli_query($link, $insplandoc) or exit("insert_qry_plandoc".mysqli_error());
-    $lastdoc_no=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+    // //inserting in plandoc_stat_log
+    // $insplandoc="INSERT INTO `bai_pro3`.`plandoc_stat_log` (`date`, `cat_ref`, `cuttable_ref`, `allocate_ref`, `mk_ref`, `order_tid`, `pcutno`, `ratio`, `p_xs`, `p_s`, `p_m`, `p_l`, `p_xl`, `p_xxl`, `p_xxxl`, `p_plies`, `doc_no`, `acutno`, `a_xs`, `a_s`, `a_m`, `a_l`, `a_xl`, `a_xxl`, `a_xxxl`, `a_plies`, `lastup`, `remarks`, `act_cut_status`, `act_cut_issue_status`, `pcutdocid`, `print_status`, `a_s01`, `a_s02`, `a_s03`, `a_s04`, `a_s05`, `a_s06`, `a_s07`, `a_s08`, `a_s09`, `a_s10`, `a_s11`, `a_s12`, `a_s13`, `a_s14`, `a_s15`, `a_s16`, `a_s17`, `a_s18`, `a_s19`, `a_s20`, `a_s21`, `a_s22`, `a_s23`, `a_s24`, `a_s25`, `a_s26`, `a_s27`, `a_s28`, `a_s29`, `a_s30`, `a_s31`, `a_s32`, `a_s33`, `a_s34`, `a_s35`, `a_s36`, `a_s37`, `a_s38`, `a_s39`, `a_s40`, `a_s41`, `a_s42`, `a_s43`, `a_s44`, `a_s45`, `a_s46`, `a_s47`, `a_s48`, `a_s49`, `a_s50`, `p_s01`, `p_s02`, `p_s03`, `p_s04`, `p_s05`, `p_s06`, `p_s07`, `p_s08`, `p_s09`, `p_s10`, `p_s11`, `p_s12`, `p_s13`, `p_s14`, `p_s15`, `p_s16`, `p_s17`, `p_s18`, `p_s19`, `p_s20`, `p_s21`, `p_s22`, `p_s23`, `p_s24`, `p_s25`, `p_s26`, `p_s27`, `p_s28`, `p_s29`, `p_s30`, `p_s31`, `p_s32`, `p_s33`, `p_s34`, `p_s35`, `p_s36`, `p_s37`, `p_s38`, `p_s39`, `p_s40`, `p_s41`, `p_s42`, `p_s43`, `p_s44`, `p_s45`, `p_s46`, `p_s47`, `p_s48`, `p_s49`, `p_s50`, `rm_date`, `cut_inp_temp`, `plan_module`, `fabric_status`, `plan_lot_ref`, `log_update`, `org_doc_no`, `org_plies`, `docket_printed_person`) SELECT`date`, `cat_ref`, `cuttable_ref`, `allocate_ref`, `mk_ref`, `order_tid`, `pcutno`, `ratio`, `p_xs`, `p_s`, `p_m`, `p_l`, `p_xl`, `p_xxl`, `p_xxxl`, `p_plies`, `doc_no`, `acutno`, `a_xs`, `a_s`, `a_m`, `a_l`, `a_xl`, `a_xxl`, `a_xxxl`, `a_plies`, `lastup`, `remarks`, `act_cut_status`, `act_cut_issue_status`, `pcutdocid`, `print_status`, `a_s01`, `a_s02`, `a_s03`, `a_s04`, `a_s05`, `a_s06`, `a_s07`, `a_s08`, `a_s09`, `a_s10`, `a_s11`, `a_s12`, `a_s13`, `a_s14`, `a_s15`, `a_s16`, `a_s17`, `a_s18`, `a_s19`, `a_s20`, `a_s21`, `a_s22`, `a_s23`, `a_s24`, `a_s25`, `a_s26`, `a_s27`, `a_s28`, `a_s29`, `a_s30`, `a_s31`, `a_s32`, `a_s33`, `a_s34`, `a_s35`, `a_s36`, `a_s37`, `a_s38`, `a_s39`, `a_s40`, `a_s41`, `a_s42`, `a_s43`, `a_s44`, `a_s45`, `a_s46`, `a_s47`, `a_s48`, `a_s49`, `a_s50`, `p_s01`, `p_s02`, `p_s03`, `p_s04`, `p_s05`, `p_s06`, `p_s07`, `p_s08`, `p_s09`, `p_s10`, `p_s11`, `p_s12`, `p_s13`, `p_s14`, `p_s15`, `p_s16`, `p_s17`, `p_s18`, `p_s19`, `p_s20`, `p_s21`, `p_s22`, `p_s23`, `p_s24`, `p_s25`, `p_s26`, `p_s27`, `p_s28`, `p_s29`, `p_s30`, `p_s31`, `p_s32`, `p_s33`, `p_s34`, `p_s35`, `p_s36`, `p_s37`, `p_s38`, `p_s39`, `p_s40`, `p_s41`, `p_s42`, `p_s43`, `p_s44`, `p_s45`, `p_s46`, `p_s47`, `p_s48`, `p_s49`, `p_s50`, `rm_date`, `cut_inp_temp`, `plan_module`, `fabric_status`, `plan_lot_ref`, `log_update`, `org_doc_no`, `org_plies`, `docket_printed_person` FROM $bai_pro3.plandoc_stat_log WHERE doc_no = '$doc_nos'";
+    // mysqli_query($link, $insplandoc) or exit("insert_qry_plandoc".mysqli_error());
+    // $lastdoc_no=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
     
-	$date=date("Y-m-d", mktime(0,0,0,date("m") ,date("d"),date("Y")));
+	// $date=date("Y-m-d", mktime(0,0,0,date("m") ,date("d"),date("Y")));
     $query="SELECT* FROM $bai_pro3.`cuttable_stat_log` WHERE order_tid='$order_tid'";
     $sql_result111=mysqli_query($link, $query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row111=mysqli_fetch_array($sql_result111))
@@ -140,20 +140,20 @@ if(isset($_POST['formSubmit']))
 
             }
         
-        $getquantity="select  $a_string as quantity,$p_string from bai_pro3.plandoc_stat_log where doc_no = $doc_nos";
-		$sql_result_fin = $link->query($getquantity);
-		while($rows_quant =$sql_result_fin->fetch_assoc()) 
-		{
-			$quant_plan=$rows_quant['quantity'];
-		}
-		$finalquantity=$quant_plan-$qty_a_stringind_ratio;
+        // $getquantity="select  $a_string as quantity,$p_string from bai_pro3.plandoc_stat_log where doc_no = $doc_nos";
+		// $sql_result_fin = $link->query($getquantity);
+		// while($rows_quant =$sql_result_fin->fetch_assoc()) 
+		// {
+		// 	$quant_plan=$rows_quant['quantity'];
+		// }
+		// $finalquantity=$quant_plan-$qty_a_stringind_ratio;
 		
-        $update_qry_plandoc = "update  $bai_pro3.plandoc_stat_log set $a_string=$finalquantity,$p_string=$finalquantity where doc_no = $doc_nos";
-        mysqli_query($link, $update_qry_plandoc) or exit("while updating into recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
+        // $update_qry_plandoc = "update  $bai_pro3.plandoc_stat_log set $a_string=$finalquantity,$p_string=$finalquantity where doc_no = $doc_nos";
+        // mysqli_query($link, $update_qry_plandoc) or exit("while updating into recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-		//update recut_v2 details
-		$updateplan="update bai_pro3.plandoc_stat_log set date='".date("Y-m-d")."',pcutno='$newcut_no',acutno='$newcut_no',fabric_status='98',$a_string=$qty_ind_ratio,$p_string=$qty_ind_ratio where doc_no='$last_doc_no'";
-        mysqli_query($link, $updateplan) or exit("while updating into recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// //update recut_v2 details
+		// $updateplan="update bai_pro3.plandoc_stat_log set date='".date("Y-m-d")."',pcutno='$newcut_no',acutno='$newcut_no',fabric_status='98',$a_string=$qty_ind_ratio,$p_string=$qty_ind_ratio where doc_no='$last_doc_no'";
+        // mysqli_query($link, $updateplan) or exit("while updating into recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
     }
