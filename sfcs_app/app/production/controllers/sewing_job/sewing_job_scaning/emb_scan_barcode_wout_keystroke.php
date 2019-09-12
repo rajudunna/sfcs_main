@@ -65,7 +65,7 @@ th,td{
                     <input type="text" id="barcode_scan" class="form-control input-lg" ng-model="barcode" ng-keypress="scanned($event)" placeholder="scan here" autofocus>
 					<input type="hidden" id="pass_id" ng-model="pass_id" ng-init="pass_id='<?= $gate_id; ?>'">
                     <input type="hidden" id="user_permission" ng-model="user_permission" ng-init="user_permission='<?= $value; ?>'">
-                    <input type="hidden" class="form-control" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'get_barcode_details_new.php',0,'R') ?>'">
+                    <input type="hidden" class="form-control" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'emb_get_barcode_details_new.php',0,'R') ?>'">
 					<?php
 					if($gate_id>0)
 					{
