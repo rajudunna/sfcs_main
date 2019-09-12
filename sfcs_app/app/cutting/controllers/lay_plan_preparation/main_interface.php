@@ -5,7 +5,11 @@ kirang/ 2015-02-25/ Service Request #244611 :  Add Remarks Tab in Cut plan (for 
 kirang/2016-12-27/ CR: 536: Adding MPO Number in Cut Plan
 -->
 <?php 
+
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+
+
 $url1 = getFullURL($_GET['r'],'excess_cut.php','N');
 ?>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/table2CSV.js',2,'R')?>"></script>
@@ -669,11 +673,7 @@ echo "</div></div></div></div>";
 
 <!--p><a href="#" onclick="showhide('div10');">Carton Qty</a></p>
 <div id="div10" style="display: none;"> 
-<?php// include("carton_qty.php"); ?>
-</div> 
--->
-<!-- <p>Remarks: 
-<?php //include("main_interface_remarks.php"); ?>
+
 </p> -->
 
 	<!-- <div class="col-sm-12">
@@ -1431,7 +1431,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<td class=\"b1\"><a href=\"dumindu/order_allocation_form2.php?tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id\"  onclick='".'alert("Cuttable Quantity Fullfilled")'."'>Update</a></td>";
 	} */
 	//$check_id_csv=$cuttable_ref;
-	echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty\">Add Ratios</a></center></td>";
+	
+	
+	echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&style=$style&schedule=$schedule&color=$color\">Add Ratios</a></center></td>";
 	$sql17="select * from bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\"";
     // echo $sql15;
     $sql_result27=mysqli_query($link, $sql17) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -2348,4 +2350,5 @@ $(document).ready(function(){
         event.preventDefault();
      }
    }   
+   
 </script>
