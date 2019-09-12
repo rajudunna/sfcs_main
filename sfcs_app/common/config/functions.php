@@ -21,11 +21,11 @@ function job_rec_status($input_job_no,$op_code)
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-			$rec_qty=$sql_row["rec_qty"];
-			$s_qty=$sql_row["s_qty"];
-			$rc_qty=$sql_row["rc_qty"];
-			$rp_qty=$sql_row["rp_qty"];
-			$rej_qty=$sql_row["rej_qty"];
+		$rec_qty=$sql_row["rec_qty"];
+		$s_qty=$sql_row["s_qty"];
+		$rc_qty=$sql_row["rc_qty"];
+		$rp_qty=$sql_row["rp_qty"];
+		$rej_qty=$sql_row["rej_qty"];
 	}
 
 	$sql2="SELECT COALESCE(SUM(carton_act_qty),0) as job_qty FROM bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='".$input_job_no."'";
@@ -345,5 +345,25 @@ echo "<script language=\"javascript\" type=\"text/javascript\">
             if (window.focus) {newwindow.focus()}
             return false;
         }
-    </script>";
+	</script>";
+	
+
+
+function short_shipment_status($style,$schedule) {
+	var_dump($style.','.$schedule);
+	die();
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	$sql15="select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
+	// var_dump($sql15);
+	$sql_result15=mysqli_query($link, $sql15) or exit("Short Shipment is Done".$sql13.mysqli_error($GLOBALS["___mysqli_ston"]));
+	$count=mysqli_num_rows($sql_result15);
+	if($count > 0) {
+		echo "<script>swal('Short Shipment Already Generated','','error');</script>";
+		return false;
+	} else {
+		return true;
+	}
+}
+
 ?>
+
