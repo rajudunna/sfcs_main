@@ -349,16 +349,15 @@ echo "<script language=\"javascript\" type=\"text/javascript\">
 	
 
 
-function short_shipment_status($style,$schedule) {
-	var_dump($style.','.$schedule);
-	die();
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-	$sql15="select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
-	// var_dump($sql15);
-	$sql_result15=mysqli_query($link, $sql15) or exit("Short Shipment is Done".$sql13.mysqli_error($GLOBALS["___mysqli_ston"]));
-	$count=mysqli_num_rows($sql_result15);
-	if($count > 0) {
-		echo "<script>swal('Short Shipment Already Generated','','error');</script>";
+function short_shipment_status($style,$schedule,$link) {
+	
+	$short_shipment_qry = mysqli_fetch_array(mysqli_query($link, "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'"));
+	if(sizeof($short_shipment_qry)) {
+		if($short_shipment_qry['remove_type']==1) {
+			echo "<script>swal('Short Shipment Done Temporarly','','error');</script>";
+		}else{
+			echo "<script>swal('Short Shipment Done Permanently','','error');</script>";
+		}
 		return false;
 	} else {
 		return true;
