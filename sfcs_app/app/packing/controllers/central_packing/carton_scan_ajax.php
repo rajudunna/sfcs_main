@@ -31,7 +31,7 @@
 		if(mysqli_num_rows($count_result)>0)
 		{
 			$b_tid = array();
-			$get_all_tid = "SELECT group_concat(tid) as tid,min(status) as status, style, color FROM bai_pro3.`pac_stat_log` WHERE pac_stat_id = '".$carton_id."'";
+			$get_all_tid = "SELECT group_concat(tid) as tid,min(status) as status, style, color FROM bai_pro3.`pac_stat_log` WHERE pac_stat_id = ".$carton_id."";
 			$tid_result = mysqli_query($link,$get_all_tid);
 			while($row12=mysqli_fetch_array($tid_result))
 			{
@@ -98,7 +98,7 @@
             }
             // echo $go_here;
             // die();
-			$final_details = "SELECT carton_no,order_style_no, order_del_no, GROUP_CONCAT(DISTINCT TRIM(order_col_des) SEPARATOR '<br>') AS colors, GROUP_CONCAT(DISTINCT size_tit) AS sizes, SUM(carton_act_qty) AS carton_qty FROM $bai_pro3.`packing_summary` WHERE pac_stat_id = '".$carton_id."'";
+			$final_details = "SELECT carton_no,order_style_no, order_del_no, GROUP_CONCAT(DISTINCT TRIM(order_col_des) SEPARATOR '<br>') AS colors, GROUP_CONCAT(DISTINCT size_tit) AS sizes, SUM(carton_act_qty) AS carton_qty FROM $bai_pro3.`packing_summary` WHERE pac_stat_id = ".$carton_id."";
 			$final_result = mysqli_query($link,$final_details);
 			while($row=mysqli_fetch_array($final_result))
 			{
@@ -126,7 +126,7 @@
 						// Carton Scan eligible
 						if ($b_op_id == 200)
 						{
-							$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",scan_date=\"".date("Y-m-d H:i:s")."\",scan_user='$username' where pac_stat_id = '".$carton_id."'";
+							$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",scan_date=\"".date("Y-m-d H:i:s")."\",scan_user='$username' where pac_stat_id = ".$carton_id."";
 							// echo $sql;
 							$pac_stat_log_result = mysqli_query($link, $sql) or exit("Error while updating pac_stat_log");
 						}
@@ -148,7 +148,7 @@
 	                    $sql211="INSERT INTO $bai_pro3.`carton_packing_details` (`carton_id`, `operation_id`, `pack_code`, `pack_desc`, `pack_smv`, `pack_team`,scan_time) VALUES ('".$carton_id."', '".$b_op_id."', '".$data_val[0]."', '".$data_val[1]."', '".$data_val[2]."', '".$pack_team."','".date('Y-m-d H:i:s')."')";
 						mysqli_query($link, $sql211) or exit("Insert while updating pac_stat");
 						
-						$update_pac_stat_atble="update $bai_pro3.pac_stat set opn_status=".$b_op_id." ".$update_carton_status." where id = '".$carton_id."'";
+						$update_pac_stat_atble="update $bai_pro3.pac_stat set opn_status=".$b_op_id." ".$update_carton_status." where id = ".$carton_id."";
 						$pac_stat_log_result = mysqli_query($link, $update_pac_stat_atble) or exit("Error while updating pac_stat_log");
 
 						$get_carton_type=mysqli_fetch_array($count_result);
@@ -167,10 +167,24 @@
 						$bcd_detail_result = mysqli_query($link,$get_details_to_insert_bcd_temp);
 						while($row=mysqli_fetch_array($bcd_detail_result))
 						{
+							
+							$date = date('Y-m-d H:i:s');
 							$bundle_tid = $row['tid'];
-							$bcd_temp_insert_query = "INSERT into $brandix_bts.bundle_creation_data_temp(date_time,style,schedule,color,size_id,size_title,bundle_number,original_qty,send_qty,recevied_qty,operation_id,bundle_status,assigned_module,remarks,scanned_date,scanned_user,input_job_no,input_job_no_random_ref) values ('".date('Y-m-d H:i:s')."', '".$row['style']."', '".$row['schedule']."', '".$row['color']."', '".$row['size_code']."', '".$row['size_tit']."', $bundle_tid, ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", $b_op_id, 'DONE', '$team_id', '$carton_type', '".date('Y-m-d H:i:s')."', '$username', $carton_id, '$carton_id')";
-							// echo $bcd_temp_insert_query.'<br>';
-							mysqli_query($link,$bcd_temp_insert_query);
+
+							$check_for_duplicates_bcd_temp = "SELECT sum(original_qty) as quantity from $brandix_bts.bundle_creation_data_temp where bundle_number=$bundle_tid and operation_id=$b_op_id";
+							$result = mysqli_query($link,$check_for_duplicates_bcd_temp) or exit("While checking for duplicate entries");
+							while($res = mysqli_fetch_array($result))
+							{
+								$sum = $res['quantity'];
+							}	
+							if ($sum > 0) {
+								# code...
+							} else {
+								$bcd_temp_insert_query = "INSERT into $brandix_bts.bundle_creation_data_temp(date_time,style,schedule,color,size_id,size_title,bundle_number,original_qty,send_qty,recevied_qty,operation_id,bundle_status,assigned_module,remarks,scanned_date,scanned_user,input_job_no,input_job_no_random_ref) values ('$date', '".$row['style']."', '".$row['schedule']."', '".$row['color']."', '".$row['size_code']."', '".$row['size_tit']."', $bundle_tid, ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", $b_op_id, 'DONE', '$team_id', '$carton_type', '$date', '$username', $carton_id, '$carton_id')";
+								// echo $bcd_temp_insert_query.'<br>';
+								mysqli_query($link,$bcd_temp_insert_query);
+							}
+
 						}
 
 						if (!$pac_stat_log_result)

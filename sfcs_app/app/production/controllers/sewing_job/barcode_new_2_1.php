@@ -45,10 +45,14 @@
 				<body>';
 
 		$barcode_qry="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job."' order by doc_no*1,barcode_sequence*1";
-		$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));	
+
+		$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+	
 		while($barcode_rslt = mysqli_fetch_array($sql_barcode))
 		{
 			$sewing_job_random_id=$barcode_rslt['input_job_no_random'];
+			//$barcode=$barcode_rslt['tid'];
 			$barcode=leading_zeros($barcode_rslt['tid'],4);
 			$color=$barcode_rslt['order_col_des'];
 			$style=$barcode_rslt['order_style_no'];
@@ -58,6 +62,7 @@
 			$seq_num=$barcode_rslt['barcode_sequence'];
 			$shade = strtoupper($barcode_rslt['shade_group']);
 			
+
 			$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color."' and order_del_no",$schedule,$link);
 			//$display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 			$get_destination="select destination from bai_pro3.bai_orders_db where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."' ";
@@ -67,36 +72,51 @@
             	$destination=$dest_row['destination'];
 			}
 			$display1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$input_job,$sewing_job_random_id,$link);
+			//A dummy sticker for each bundle
+			//echo $detailed_bundle_sticker.'-';
 			if((int)$detailed_bundle_sticker == 1)
 			{
 				$html.= '<div>
-							<table width="100%" style="font-size:9px;">
-							 
+							<table width="100%" style="font-size:8px;">
+							
 								<tr>
-									<td colspan=11><b>Sty#</b>'.$barcode_rslt['order_style_no'].'&nbsp;&nbsp;&nbsp;<b>Sch#</b>'.$schedule.'
+									<td colspan=3><b>Sty#</b>'.$barcode_rslt['order_style_no'].'</td>
+									<td colspan=9><b>Sch#</b>'.$schedule.'</td>
 									<td rowspan="0" style="border: 1px solid black;	border-top-right-radius: 1px 1px; font-size:4px; text-align:center;width:10%">
-								         <p style= "font-size: 6px;font-weight: bold;">'.$seq_num.'</p>
+								           <p style= "font-size: 6px;font-weight: bold;">'.$seq_num.'</p>
 									</td>
 								</tr>
 								<tr>
-									<td colspan=13><b>Barc#</b>'.trim($barcode).'&nbsp;&nbsp;&nbsp;&nbsp;
-									<b>Qty#</b>'.$quantity.'</td>									
-								</tr>								
-								<tr>
-									<td colspan=13><b>Job#</b>'.$display1.'';
-						if($shade != '')
-							$html.= '&nbsp;<b>Size:</b>'.substr($size,0,9).'&nbsp;<b>Sha#</b>'.$shade.'</td>';	
-						else
-							$html.= '&nbsp;&nbsp;<b>Size:</b>'.$size.'</td>';
-						$html.='</tr> 
-								
-								<tr>
-									<td colspan=13><b>Color:</b>'.substr($color,0,50).'</td>
+								<td colspan=15></td>
 								</tr>
-								
+								<tr>
+									<td colspan=3><b>Barcode#</b>'.trim($barcode).'</td>
+									<td colspan=8><b>Qty#</b>'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
+									
+								</tr>
+								<tr>
+								<td colspan=15></td>
+								</tr>
+								<tr>
+									<td colspan=2><b>Job#</b>'.$display1.'</td>
+									<td colspan=6><b>Size:</b>'.substr($barcode_rslt['size_code'],0,7).'</td>';
+						if($shade != '')
+							$html.= "<td colspan=5><b>Sha#</b>$shade</td>";	
+						else
+							$html.= "<td colspan=2></td>";
+						$html.='</tr> 
+								<tr>
+								<td colspan=15></td>
+								</tr>
+								<tr>
+									<td colspan=12><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,30).'</td>
+								</tr>
+								<tr>
+								<td colspan=15></td>
+								</tr>
 								<tr>	
-									<td colspan=13><b>CutNo:</b>'.chr($color_code).leading_zeros($cutno, 3).'&nbsp;&nbsp;&nbsp;
-									<b>Country:</b>'.trim($destination).'</td>
+									<td colspan=3><b>CutNo:</b>'.chr($color_code).leading_zeros($cutno, 3).'</td>
+									<td colspan=8><b>Country:</b>'.trim($destination).'</td>
 								</tr>
 							</table>
 						</div><br><br><br><br><br>';
