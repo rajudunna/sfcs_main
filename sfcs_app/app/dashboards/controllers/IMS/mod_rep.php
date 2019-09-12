@@ -410,9 +410,12 @@
                                     $break_counter++;
                                     $section=$sql_rowx['sec_id'];
                                     $section_head=$sql_rowx['sec_head'];
-                                    $section_mods[]=$sql_rowx['sec_mods']; 
                                     
-                            
+									if($sql_rowx['sec_mods']!='')
+									{
+										 $section_mods[]=$sql_rowx['sec_mods']; 
+									}
+                                    
                                     $mods1 = implode(',',$section_mods);
 
                                     $get_operations="SELECT * FROM $brandix_bts.`tbl_orders_ops_ref` WHERE default_operation='yes' AND  (work_center_id IS NULL OR work_center_id='')";
