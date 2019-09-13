@@ -73,7 +73,7 @@
         $query = "SELECT * FROM $bai_pro3.sections_master";
         $result = $conn->query($query);
         while($row = $result->fetch_assoc()) 
-        {
+        { 
             $operation_id=$row['id'];
             $sec_name=$row['sec_name'];
             
