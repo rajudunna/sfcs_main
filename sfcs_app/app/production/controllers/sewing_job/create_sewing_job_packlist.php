@@ -134,18 +134,18 @@
 				</form>
 		<div class="col-md-12">
 			<?php
-			if(isset($_POST['submit']) or ($_GET['style'] and $_GET['schedule']))
+			if ($_GET['style'] and $_GET['schedule'])
+			{
+				$style=$_GET['style'];
+				$schedule = $_GET['schedule'];
+			} 
+			else if ($_POST['style'] and $_POST['schedule'])
+			{
+				$style=$_POST['style'];
+				$schedule = $_POST['schedule'];	
+			}
+			if((isset($_POST['submit']) or ($_GET['style'] and $_GET['schedule'])) && short_shipment_status($style,$schedule,$link))
 			{					
-				if ($_GET['style'] and $_GET['schedule'])
-				{
-					$style=$_GET['style'];
-					$schedule = $_GET['schedule'];
-				} 
-				else if ($_POST['style'] and $_POST['schedule'])
-				{
-					$style=$_POST['style'];
-					$schedule = $_POST['schedule'];	
-				}
 				
 				$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
 				$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
