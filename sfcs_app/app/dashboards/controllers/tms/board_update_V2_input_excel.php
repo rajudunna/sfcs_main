@@ -2,6 +2,7 @@
 <?php
     include ("../../../../common/config/config.php");
     include ("../../../../common/config/functions.php");
+  
 //     // Report all PHP errors (see changelog)
 // error_reporting(E_ALL);
 
@@ -22,6 +23,8 @@
 		
  if(isset($_POST['export_excel'])){
         $section=$_POST["section"];
+        $username=$_POST["uname1"];
+        // echo $username;
         $sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
