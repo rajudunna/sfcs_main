@@ -41,15 +41,21 @@
         echo json_encode($result_array);
         die();  
     }
-
-    $sss="select * from bai_pro3.short_shipment_job_track where style='$style' and schedule='$schedule'";
-    $ppp = $link->query($sss);
-    if($ppp->num_rows > 0)
-    {
-        $short_ship_status=1;
-    }else{
-        $short_ship_status=0;
+    $short_ship_status=0;
+    $query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
+    $shortship_res = mysqli_query($link,$query_short_shipment);
+    $count_short_ship = mysqli_num_rows($shortship_res);
+    if($count_short_ship >0) {
+        while($row_set=mysqli_fetch_array($shortship_res))
+        {
+            if($row_set['remove_type']==1) {
+                $short_ship_status=1;
+            }else{
+                $short_ship_status=2;
+            }
+        }
     }
+    
     //ends on #978
     $op_no = explode('-', $barcode)[1];
     $emb_cut_check_flag = 0;
@@ -76,7 +82,12 @@
         $ret = validating_with_module($stri);
         // 5 = Trims not issued to Module, 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
         if($short_ship_status==1){
-             $result_array['status'] = 'Short Shipment Done';
+             $result_array['status'] = 'Short Shipment Done Temporarly';
+            echo json_encode($result_array);
+            die();
+        }
+        else if ($short_ship_status==2) {
+            $result_array['status'] = 'Short Shipment Done Permanently';
             echo json_encode($result_array);
             die();
         }
