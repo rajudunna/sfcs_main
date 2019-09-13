@@ -51,9 +51,6 @@
 				$sizes=$row['sizes'];
 				$carton_qty=$row['carton_qty'];
 			}
-			$short_ship_status=0;
-			$short_shipment_qry=[];
-			$short_shipment_qry = mysqli_fetch_array(mysqli_query($link, "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'"));
 			$short_ship_status =0;
 			$query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
 			$shortship_res = mysqli_query($link,$query_short_shipment);
