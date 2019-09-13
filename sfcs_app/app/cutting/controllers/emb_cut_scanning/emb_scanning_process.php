@@ -323,6 +323,34 @@ foreach($b_tid as $key => $value)
             $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `rejected_qty`='". $final_rej_qty."', `left_over`= '".$left_over_qty."' , `scanned_date`='". date('Y-m-d')."',`shift`= '".$b_shift."',`assigned_module`= '".$b_module."' where bundle_number ='".$b_tid[$key]."' and operation_id = ".$b_op_id;
             
             $result_query = $link->query($query) or exit('query error in updating');
+			
+			
+			//checking if data exists or not
+			$check_data_qry="select * from $bai_pro3.emb_bundles where doc_no='$b_doc_no' and ops_code='".$b_op_id."' and size='".$b_sizes[$key]."'";
+			$check_data_qry_result=mysqli_query($link,$check_data_qry) or exit("while retriving data from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if($check_data_qry_result->num_rows > 0)
+			{
+				while($qry_result_row=mysqli_fetch_array($check_data_qry_result))
+				{
+					$tid=$qry_result_row['tid'];
+					$barcodeno=$qry_result_row['barcode'];
+					$clubstatus=$qry_result_row['club_status'];
+					$orgqty=$qry_result_row['quantity'];
+					$goodqty=$qry_result_row['good_qty'];
+					$rejectqty=$qry_result_row['reject_qty'];
+					$tranid=$qry_result_row['tran_id'];
+					$status=$qry_result_row['status'];
+					
+					//if data exists update emb_bundles
+					$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='".$final_rep_qty."',update_time='". date('Y-m-d')."' where doc_no='$b_doc_no' and ops_code='".$b_op_id."' and size='".$b_sizes[$key]."'";
+					$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');	
+					
+					//insert data into emb_bundles_temp
+					$insert_emb_bundles="INSERT INTO $bai_pro3.emb_bundles_temp(tid,  doc_no,  size,    ops_code,  barcode,  quantity,  good_qty,  reject_qty,  insert_time,  update_time,  club_status,  log_user,  tran_id,  status) VALUES ('".$tid."','".$b_doc_no."','".$b_sizes[$key]."','".$b_op_id."','".$barcodeno."','".$orgqty."','".$goodqty."','".$rejectqty."','".date('Y-m-d')."','','".$clubstatus."','".$username."','".$tranid."','".$status."')";
+					$result_emb_temp = $link->query($insert_emb_bundles) or exit('error while insert into emb_bundles_temp');
+				}
+			}
+			
 
 
             //based on the bundle creation data current operation quantites we are changing reported status
@@ -457,6 +485,32 @@ foreach($b_tid as $key => $value)
                     }
                 }
             }
+			
+			//checking if data exists or not
+			$check_data_qry="select * from $bai_pro3.emb_bundles where doc_no='$b_doc_no' and ops_code='".$next_operation."' and size='".$b_sizes[$key]."'";
+			$check_data_qry_result=mysqli_query($link,$check_data_qry) or exit("while retriving data from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if($check_data_qry_result->num_rows > 0)
+			{
+				while($qry_result_row=mysqli_fetch_array($check_data_qry_result))
+				{
+					$tid=$qry_result_row['tid'];
+					$barcodeno=$qry_result_row['barcode'];
+					$clubstatus=$qry_result_row['club_status'];
+					$orgqty=$qry_result_row['quantity'];
+					$goodqty=$qry_result_row['good_qty'];
+					$rejectqty=$qry_result_row['reject_qty'];
+					$tranid=$qry_result_row['tran_id'];
+					$status=$qry_result_row['status'];
+					
+					//if data exists update emb_bundles
+					$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='".$doc_qtys_array[$b_doc_no][$b_sizes[$key]]."',update_time='". date('Y-m-d')."' where doc_no='$b_doc_no' and ops_code='".$next_operation."' and size='".$b_sizes[$key]."'";
+					$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');	
+					
+					//insert data into emb_bundles_temp
+					$insert_emb_bundles="INSERT INTO $bai_pro3.emb_bundles_temp(tid,  doc_no,  size,    ops_code,  barcode,  quantity,  good_qty,  reject_qty,  insert_time,  update_time,  club_status,  log_user,  tran_id,  status) VALUES ('".$tid."','".$b_doc_no."','".$b_sizes[$key]."','".$next_operation."','".$barcodeno."','".$orgqty."','".$goodqty."','".$rejectqty."','".date('Y-m-d')."','','".$clubstatus."','".$username."','".$tranid."','".$status."')";
+					$result_emb_temp = $link->query($insert_emb_bundles) or exit('error while insert into emb_bundles_temp');
+				}
+			}
 
              
         }
