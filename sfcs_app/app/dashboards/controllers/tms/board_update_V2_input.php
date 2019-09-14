@@ -11,7 +11,7 @@ set_time_limit(2000);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
 $section_no=$_GET['section_no'];
-$username = $_GET['uname'];
+$username=$_GET['uname'];
 ?>
 
 
