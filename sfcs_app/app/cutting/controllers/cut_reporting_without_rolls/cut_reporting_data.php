@@ -28,6 +28,37 @@ if($_GET['rejection_docket']!=''){
     $doc_no = $_GET['doc_no'];
 }
 
+$get_shipment_details="select order_style_no as style,order_del_no as schedule from $bai_pro3.packing_summary_input where doc_no =".$doc_no;
+$get_shipment_details_res=mysqli_query($link, $get_shipment_details) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_rowx121=mysqli_fetch_array($get_shipment_details_res))
+{
+    $style=$sql_rowx121['style'];
+    $schedule=$sql_rowx121['schedule'];
+}
+$short_ship_status =0;
+$query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
+$shortship_res = mysqli_query($link,$query_short_shipment);
+$count_short_ship = mysqli_num_rows($shortship_res);
+if($count_short_ship >0) {
+    while($row_set=mysqli_fetch_array($shortship_res))
+    {
+        if($row_set['remove_type']==1) {
+            $short_ship_status=1;
+        }else{
+            $short_ship_status=2;
+        }
+    }
+}
+if($short_ship_status==1){
+    $response_data['error'] = '2';
+    echo json_encode($response_data);
+    exit();
+}
+else if($short_ship_status==2){
+    $response_data['error'] = '3';
+    echo json_encode($response_data);
+    exit();
+}
 $doc_status_query  = "SELECT a_plies,p_plies,acutno,act_cut_status,order_tid,org_doc_no,remarks,($a_sizes_sum) as ratio 
                     from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
 $doc_status_result = mysqli_query($link,$doc_status_query);
