@@ -66,10 +66,15 @@ if(isset($_POST['save']))
 
 	             $update_status = "update $bai_rm_pj1.inspection_population SET status=4 where supplier_roll_no='$supplier_no' and sfcs_roll_no='$roll_no' and lot_no='$lot_num'";
 	             $result_query_update = $link->query($update_status) or exit('query error in updating');
+	             echo "<script>sweetAlert('Data Saved Sucessfully','','info');</script>";
 	           }
+	           else
+		  	   {
+		  	     echo "<script>sweetAlert('Please fill Reason Code','','error');</script>";
+		  	   }
 	    }
 	}
-	echo "<script>sweetAlert('Data Saved Sucessfully','','info');</script>";
+	
 }
 
 ?>
@@ -110,10 +115,15 @@ if(isset($_POST['confirm']))
 
 	             $update_status = "update $bai_rm_pj1.inspection_population SET status=4 where supplier_roll_no='$supplier_no' and sfcs_roll_no='$roll_no' and lot_no='$lot_num'";
 	             $result_query_update = $link->query($update_status) or exit('query error in updating');
+	             echo "<script>sweetAlert('Updated Sucessfully','','info');</script>";
 	           }
+	           else
+		  	   {
+		  	     echo "<script>sweetAlert('Please fill Reason Code','','error');</script>";
+		  	   }
 	    }
 	}
-	echo "<script>sweetAlert('Updated Sucessfully','','info');</script>";
+	
 }
 
 ?>
@@ -165,9 +175,9 @@ if(isset($_POST['confirm']))
 					  				<td>
 					  					<select  name="inspection_status" id="inspection_status" value="<?= $status ?>">
 				                     	<option value="" disabled selected>Select Status</option>
-				                     	<option value="Aprroval">Aprroval</option>
-				                     	<option value="Rejected">Rejected</option>
-				                     	<option value="Partial Rejected">Partial Rejected</option>
+				                     	<option value="approval">Aprroval</option>
+				                     	<option value="rejected">Rejected</option>
+				                     	<option value="partial rejected">Partial Rejected</option>
 									</select>
 					  				</td>
 					  			</tr>

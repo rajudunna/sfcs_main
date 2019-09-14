@@ -1,8 +1,8 @@
 <?php
 
  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
- $lot_number = $_get['lot_no'];
- //$lot_number = ['5231799003','5231799002'];
+ //$lot_number = $_get['lot_no'];
+ $lot_number = ['5231799003','5231799002'];
  $get_details="select * from `bai_rm_pj1`.`inspection_population` where lot_no in(".implode(',',$lot_number).") and status in(3,4)";
  //echo $get_details;
  $details_result=mysqli_query($link,$get_details) or exit("get_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -76,9 +76,9 @@
 					  				<td>
 					  					<select  name="inspection_status" id="inspection_status" value="<?= $status ?>" required>
 				                     	<option value="" disabled selected>Select Status</option>
-				                     	<option value="1">Aprroval</option>
-				                     	<option value="1">Rejected</option>
-				                     	<option value="1">Partial Rejected</option>
+				                     	<option value="approval">Aprroval</option>
+				                     	<option value="rejected">Rejected</option>
+				                     	<option value="partial rejected">Partial Rejected</option>
 									</select>
 					  				</td>
 					  			</tr>
@@ -326,10 +326,15 @@ if(isset($_POST['save']))
 					  $update_status = "update $bai_rm_pj1.inspection_population SET status=4 where supplier_roll_no='$supplier_no' and sfcs_roll_no='$roll_no' and lot_no='$lots'";
 					  $result_query_update = $link->query($update_status) or exit('query error in updating');
 				    }
+				    echo "<script>sweetAlert('Data Saved Sucessfully','','info');</script>";
 		  	    }
+		  	    else
+		  	    {
+		  	    	echo "<script>sweetAlert('Please fill Reason Code','','error');</script>";
+		  	    }	
 	  	}
 	}
-	echo "<script>sweetAlert('Data Saved Sucessfully','','info');</script>";
+	
 }
 ?>
 
@@ -342,7 +347,7 @@ if(isset($_POST['confirm']))
   $spec_weight = $_POST['spec_weight'];
   $repeat_length = $_POST['repeat_length'];
   $lab_testing = $_POST['lab_testing'];
-  $lot_num[] = $_POST['lot_no'];
+  $lot_nums = $_POST['lot_nos'];
   $tolerance = $_POST['tolerance'];
 
     if(isset($_POST['code']))
@@ -361,7 +366,7 @@ if(isset($_POST['confirm']))
 
 		  	   if($point1 != 0 || $point2 != 0 || $point3 != 0 || $point4 != 0)
 		  	   {
-		  	  	 $get_lot_details="select supplier_no,ref2 as roll_no from $bai_rm_pj1.store_in where lot_no in(".implode(',',$lot_num).")";
+		  	  	 $get_lot_details="select supplier_no,ref2 as roll_no from $bai_rm_pj1.store_in where lot_no in($lot_nums)";
 				   //echo $get_lot_details;
 				   $lot_details_result=mysqli_query($link,$get_lot_details) or exit("get_lot_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				   while($row3=mysqli_fetch_array($lot_details_result))
@@ -378,10 +383,15 @@ if(isset($_POST['confirm']))
 					  $update_status = "update $bai_rm_pj1.inspection_population SET status=5 where supplier_roll_no='$supplier_no' and sfcs_roll_no='$roll_no' and lot_no='$lots'";
 					  $result_query_update = $link->query($update_status) or exit('query error in updating');
 				    }
+				    echo "<script>sweetAlert('Updated Sucessfully','','info');</script>";
 		  	    }
+		  	    else
+		  	    {
+		  	    	echo "<script>sweetAlert('Please fill Reason Code','','error');</script>";
+		  	    }	
 	  	}
 	}
-	echo "<script>sweetAlert('Updated Sucessfully','','info');</script>";
+	
 }
 ?>
 
