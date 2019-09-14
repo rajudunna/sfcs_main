@@ -1,8 +1,8 @@
 <?php
 
  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
- //$lot_number = $_get['lot_no'];
- $lot_number = ['5231799003','5231799002'];
+ $lot_number = $_get['lot_no'];
+ //$lot_number = ['5231799003','5231799002'];
  $get_details="select * from `bai_rm_pj1`.`inspection_population` where lot_no in(".implode(',',$lot_number).") and status in(3,4)";
  //echo $get_details;
  $details_result=mysqli_query($link,$get_details) or exit("get_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
