@@ -540,7 +540,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo "<p>";
 		echo "<table>";
 		
-		echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$url_path?section_no=$section& uname=$username"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$section_display_name</a></h2></th></th></tr>";
+		echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$url_path?section_no=$section&uname=$username"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$section_display_name</a></h2></th></th></tr>";
 		
 		//For Section level blinking
 		$blink_minimum=0;
