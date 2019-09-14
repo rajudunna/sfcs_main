@@ -268,7 +268,7 @@ $(document).ready(function(){
 				});
 			}
 		 });
-		alert('hi');
+		//alert('hi');
 		
 		$.ajax({
 			url: 'sfcs_app/app/cutting/controllers/mrn_request_form_update_V2.php',
@@ -279,8 +279,8 @@ $(document).ready(function(){
 				$("#loading-image").hide();
 				if(data!=''){
 						swal({
-							title: "Wow!",
-							text: "Message!",
+							title: "Please click on ok to continue..!",
+							text: "Request successfully updated",
 							type: "success"
 						}).then(function() {
 							  location.reload(true);
