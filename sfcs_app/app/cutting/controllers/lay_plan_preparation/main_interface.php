@@ -7,7 +7,6 @@ kirang/2016-12-27/ CR: 536: Adding MPO Number in Cut Plan
 <?php 
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 
 
 $url1 = getFullURL($_GET['r'],'excess_cut.php','N');
