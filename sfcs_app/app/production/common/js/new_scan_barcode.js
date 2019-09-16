@@ -15,7 +15,7 @@ function validateQty(e,t)
 //validation for no of reasons and reason quantities
 function validateQty1(e,t) 
 	{
-		console.log(e.Keycode);
+		//console.log(e.Keycode);
 		if(e.keyCode == 13)
 				return;
 			var p = String.fromCharCode(e.which);
@@ -63,11 +63,14 @@ function validating_cumulative(e,t)
 //mandatory validations for rejection reasons in modal
 $('#rejec_reasons').on('click', function(){
 	var qty_data = [];
-	var reason_data = [];
+    var reason_data = [];
+    //console.log(reason_data);
+    //console.log(qty_data);
+
 	var id = $('#changed_rej_id').val();
 	
 	$('input[name="quantity[]"]').each(function(key, value){
-		console.log($(this).val());
+		//console.log($(this).val());
 		if($(this).val() != '') {
 			qty_data.push($(this).val());
 		}
@@ -80,19 +83,28 @@ $('#rejec_reasons').on('click', function(){
 	// console.log($('input[name="no_reason"]').val());
 	// console.log(qty_data);
 	// console.log(reason_data);
-	console.log($('#reason').val());
+	// console.log($('#reason').val());
 	if(qty_data.length == reason_data.length && $('#reason').val() > 0){
 		$('#'+id+'qty_data').val(qty_data);
 		$('#'+id+'reason_data').val(reason_data);
 		$('#'+id+'tot_reasons').val($('input[name="no_reason"]').val());
-		$('#myModal').modal('toggle');
+        $('#myModal').modal('toggle');
+        var reject_data = reason_data.reduce((acc, value, i) => (acc[value] = qty_data[i], acc), {});
+        console.log(reject_data);
+        //$("#rej_data").val("hello");
+        var controllerElement = document.querySelector('[ng-controller="scancode_ctrl"]');
+        var scope = angular.element(controllerElement).scope();
+        scope.$apply(function () {
+            scope.rej_data = reject_data;
+        });
+        
 		//$('#'+id+'rejections').prop('readonly', true);
 	}else{
 		sweetAlert('','Please Fill all details in form','error');
 	}
-	console.log($('#'+id+'qty_data').val());
-	console.log($('#'+id+'reason_data').val());
-	
+	// console.log($('#'+id+'qty_data').val());
+	// console.log($('#'+id+'reason_data').val());
+	//console.log(reject_data);
 })    
 
 function neglecting_function()
@@ -154,7 +166,8 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
             method: 'POST',
             url: $scope.url,
             data: $.param({
-                barcode_info: $scope.barcode_value
+                barcode_info: $scope.barcode_value,
+                op_code: $scope.op_code
             }),
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }).success(function (data, status, headers, config) {
@@ -190,8 +203,8 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
         });
     }
 
-
-    $scope.barcode_submit = function(taskId){    
+    $scope.barcode_submit = function(taskId){
+        var task_action=taskId;
             $http({
                 method: 'POST',
                 url: $scope.url,
@@ -199,11 +212,15 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                     barcode_value: $scope.barcode_value,
                     module:$scope.module,
                     op_code: $scope.op_code,
-                    trans_mode:$scope.trans_mode
+                    trans_mode:$scope.trans_mode,
+                    shift:$scope.shift,
+                    trans_action:task_action,
+                    rej_data:$scope.rej_data
                 }),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).success(function (data, status, headers, config) {
-                 //console.log(data)
+                console.log(data);
+                $scope.scanned_status=data.status;
             }).error(function (data, status, headers, config) {
                 // handle error things
             });

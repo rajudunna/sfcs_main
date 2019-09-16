@@ -2,6 +2,7 @@
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
     $module = $_POST['Module'];
+    $shift = $_POST['shift'];
     $op_code=$_POST['operation_code'];
     //To Get Sewing Operations
 	$category = 'sewing';
@@ -153,7 +154,9 @@ $result_rejections = $link->query($qery_rejection_resons);
         <td><label>Bar code :</label></td>
         <td><input type="text" style="max-width: 250px;"  class="form-control" ng-model="barcode_value" ng-keypress="scanned($event)" id="barcode_value" onkeyup="validateQty(event,this);" placeholder="scan barcode here" autofocus></td>
         <input type="hidden" id="module" ng-model="module" ng-init="module='<?= $module; ?>'">
+        <input type="hidden" id="shift" ng-model="shift" ng-init="shift='<?= $shift; ?>'">
         <input type="hidden" id="op_code" ng-model="op_code" ng-init="op_code='<?= $op_code; ?>'">
+        <input type="hidden" id="rej_data" ng-model="rej_data">
         <input type="hidden" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'get_newbarcode_details.php',0,'R') ?>'"> 
         <tr>
         <td><label>Tx Mode:</label></td>
@@ -199,9 +202,9 @@ $result_rejections = $link->query($qery_rejection_resons);
         <td style="width: 323px;">
             <div class="radio-toolbar1" ng-init="action_mode='add'">
                 <input type="radio" id="radioadd" name="action_mode" ng-model='action_mode' ng-value='"add"'>
-                <label for="radioadd" style="background-color: #2396c5;">Add</label>
+                <label for="radioadd" style="background-color: #2396c5;" class="btn btn-info"  ng-click="barcode_submit('add');" >Add</label>
                 <input type="radio" id="radioreverse" name="action_mode" ng-model='action_mode' ng-value='"reverse"'>
-                <label for="radioreverse" style="background-color: #2396c5;">Reverse</label>
+                <label for="radioreverse" style="background-color: #2396c5;" class="btn btn-info"  ng-click="barcode_submit('reverse');">Reverse</label>
             </div>
             <!--<div>
             <button type="button" style="height: 80px;width: 76px;."  class="btn btn-info"  ng-click="barcode_submit('add');">Add</button>
