@@ -145,6 +145,7 @@ if(isset($_POST["doc"]) or isset($_POST["section"]))
 	$jobno=$_POST["jobno"];
 	$module_no=$_POST["moduleno"];
 	$prefix=$_POST['prefix'];
+
 	//echo $doc."<br>";
 }
 else
@@ -269,7 +270,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$colorset=$sql_row['colorset'];
 	$size_group=$sql_row['size_group'];
 }
+$seq="select pac_seq_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'";
+$sql_result1=mysqli_query($link, $seq) or exit("Sql Error888 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row=mysqli_fetch_array($sql_result1))
 
+{
+	$seq1=$sql_row['pac_seq_no'];
+	
+}
 // echo "<h4>Ratio Sheet</h4>";
 // echo "<a class='btn btn-info btn-sm' href=\"print_input_sheet.php?schedule=$org_schs\" onclick=\"return popitup_new('print_input_sheet.php?schedule=$org_schs')\">Print Input Job Sheet - Job Wise</a><br>";
 
@@ -286,6 +294,8 @@ while($row4=mysqli_fetch_array($result4))
 // if($t_status==1)
 // {
 echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\"><button class='equal btn btn-success'>Job Sheet</button></a>";
+
+echo "&nbsp;&nbsp;&nbsp;<u><b><a href=\"../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$org_schs&seq_no=$seq1\" onclick=\"return popitup('../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$org_schs&seq_no=$seq1')\">Print Input Job Sheet - Job Wise</a></b></u><br>";
 // }
 echo "<br><br>";
 // if($schedule!=''){
