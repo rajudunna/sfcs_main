@@ -58,8 +58,9 @@
 						$bundle_info[]=$bundle_data_data['bundle_number'];
 						$bcd_id[$bundle_data_data['bundle_number']]=$bundle_data_data['id'];
 					}
-					$barcode_qry="select * from $bai_pro3.packing_summary_input where tid in (".implode(",",$bundle_info).") order by tid";
+					//$barcode_qry="select * from $bai_pro3.packing_summary_input where tid in (".implode(",",$bundle_info).") order by tid";
 					//echo $barcode_qry."<br>"; 
+					$barcode_qry="select * from $bai_pro3.packing_summary_input where doc_no='$id' order by tid";
 					$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($barcode_rslt = mysqli_fetch_array($sql_barcode))
 					{
