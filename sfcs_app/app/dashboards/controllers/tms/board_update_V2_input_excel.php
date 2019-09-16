@@ -64,7 +64,7 @@
                     $report_data_ary[$i]['req_time']=$jobsresult["input_trims_request_time"];
                     $report_data_ary[$i]['issue_time']=$jobsresult["log_time"];
                     $status = $jobsresult['input_trims_status'];
-                $sql2="SELECT min(st_status) as st_status,order_style_no,order_del_no,input_job_no FROM $temp_pool_db.plan_doc_summ_input_tms_$username WHERE input_job_no_random='$job_ref_no'";	
+                $sql2="SELECT min(st_status) as st_status,order_style_no,order_del_no,input_job_no FROM $bai_pro3.plan_dash_doc_summ_input WHERE input_job_no_random='$job_ref_no'";	
 				$result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row2=mysqli_fetch_array($result2))
 				{
