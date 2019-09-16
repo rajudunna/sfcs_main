@@ -238,6 +238,7 @@ function check_val()
 													{
 													$pack_bundles111="SELECT * FROM `bai_pro3`.`packing_summary_input` WHERE input_job_no_random in($ijno11)"; 
                                                  //echo $pack_bundles111;
+                                                    //echo $pack_bundles111;
 												    $pack_bundles12=mysqli_query($link,$pack_bundles111) or exit($pack_bundles."Error at something");
                                                      $ijno111=array();
                                                      while($row_2112 = mysqli_fetch_assoc( $pack_bundles12)){
