@@ -29,16 +29,18 @@ function issue_to_sewing($job_no,$size,$qty,$doc)
 	        $assigned_module = $row['assigned_module'];
         }
 
-	    $ops_master_query = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master 
-	                    WHERE style = '$style' and color='$mapped_color' ";
-        $ops_master_result = mysqli_query($link,$ops_master_query) or exit('Problem in getting the op codes for sewing in opsmaster'); 
-		while($row_ops = mysqli_fetch_array($ops_master_result))
-	    {
-		 $ops_operation_code[]=$row_ops['operation_code'];
-		} 
-         $op_codes_query = "SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref 
-	                    WHERE category = '$sewing_cat' and operation_code in (".implode(',',$ops_operation_code).")";
-	     $op_codes_result = mysqli_query($link,$op_codes_query) or exit('Problem in getting the op codes for sewing');   
+	    // $ops_master_query = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master 
+	                    // WHERE style = '$style' and color='$mapped_color' ";
+        // $ops_master_result = mysqli_query($link,$ops_master_query) or exit('Problem in getting the op codes for sewing in opsmaster'); 
+		// while($row_ops = mysqli_fetch_array($ops_master_result))
+	    // {
+		 // $ops_operation_code[]=$row_ops['operation_code'];
+		// } 
+         // $op_codes_query = "SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref 
+	                    // WHERE category = '$sewing_cat' and operation_code in (".implode(',',$ops_operation_code).")";
+	     // $op_codes_result = mysqli_query($link,$op_codes_query) or exit('Problem in getting the op codes for sewing');
+		 $op_codes_query = "SELECT tor.operation_code,tor.operation_name FROM brandix_bts.tbl_orders_ops_ref AS tor LEFT JOIN `brandix_bts`.`tbl_style_ops_master` AS tosm ON tor.operation_code=tosm.operation_code WHERE category = 'sewing' AND display_operations='yes' AND style='$style' AND color='$mapped_color' ORDER BY operation_order*1 ";
+		 $op_codes_result = mysqli_query($link,$op_codes_query) or exit('Problem in getting the op codes for sewing');
 	     while($row = mysqli_fetch_array($op_codes_result))
 	     {
 	        $opst[]=$row['operation_code'];
