@@ -74,11 +74,11 @@
 					  			<tr>	
 					  				<td>Inspection Status</td>
 					  				<td>
-					  					<select  name="inspection_status" id="inspection_status" value="<?= $status ?>" required>
+					  					<select  name="inspection_status" id="inspection_status" required>
 				                     	<option value="" disabled selected>Select Status</option>
-				                     	<option value="approval">Aprroval</option>
-				                     	<option value="rejected">Rejected</option>
-				                     	<option value="partial rejected">Partial Rejected</option>
+				                     	<option value="approval" <?php if($status=="approval") echo "selected" ?>>Aprroval</option>
+				                     	<option value="rejected" <?php if($status=="rejected") echo "selected" ?>>Rejected</option>
+				                     	<option value="partial rejected" <?php if($status=="partial rejected") echo "selected" ?>>Partial Rejected</option>
 									</select>
 					  				</td>
 					  			</tr>
