@@ -1342,7 +1342,6 @@ if (isset($_POST["trans_action"])){
                     getjobdetails1($string, $bundle_no, $op_no, $shift ,$gate_id,$trans_mode);
                 }        
             }
-                    getjobdetails1($string, $bundle_no, $op_no, $shift ,$gate_id,$trans_mode);
 }
 
 ?>
