@@ -26,6 +26,17 @@ if (isset($_POST["barcode_info"])){
                     $json['zfeature']=$row_orderdetails['zfeature'];
                     $json['vpo']=$row_orderdetails['vpo']; 
                 }
+                //getting elegible qty bundle wise
+                $qry_eligible_qty="SELECT * FROM brandix_bts.`bundle_creation_data` WHERE bundle_number='".$barcode_info."' and operation_id='".$op_code."'";
+                $result_qry_eligible_qty = $link->query($qry_eligible_qty);
+                if($result_qry_eligible_qty->num_rows > 0){
+                    while($row_eligible_qty = $result_qry_eligible_qty->fetch_assoc()){
+                        $json['bundle_eligibl_qty']=$row_eligible_qty['send_qty']-($row_eligible_qty['recevied_qty']+$row_eligible_qty['rejected_qty']);
+                    }
+                }else{
+                    $json['bundle_eligibl_qty']=$row['carton_act_qty'];
+                }
+
                 $json['style']=$row['order_style_no'];
                 $json['schedule']=$row['order_del_no'];
                 $json['color']=$row['order_col_des'];
@@ -45,9 +56,14 @@ if (isset($_POST["barcode_info"])){
     //logic for Saving good qunatities
 if (isset($_POST["trans_action"])){
            
-            function getjobdetails1($job_number, $bundle_no, $op_no, $shift ,$gate_id,$trans_mode)
+            function getjobdetails1($job_number, $bundle_no, $op_no, $shift ,$gate_id,$trans_mode,$rej_data)
             {   
-                // var_dump($job_number);echo "</br>Bundle : ".$bundle_no."- Op no :".$op_no." Shift ".$shift." Gate : ".$gate_id." trans mode : ".$trans_mode."</br>";
+                if($rej_data!=''){
+                    $total_rej_qty=array_sum($rej_data);   
+                }else{
+                    $total_rej_qty=0;
+                }
+                // var_dump($rej_data);echo "</br>Bundle : ".$bundle_no."- Op no :".$op_no." Shift ".$shift." Gate : ".$gate_id." - trans mode : ".$trans_mode." - Tota Rej qty : ".$total_rej_qty."</br>";
                 // exit;
                 error_reporting(0);
                 $job_number = explode(",",$job_number);
@@ -469,11 +485,13 @@ if (isset($_POST["trans_action"])){
                             if($parallel_balance_report>0)
                             {
                                 
-                            $b_rep_qty[]=$parallel_balance_report;
+                            $b_rep_qty[]=$parallel_balance_report-$total_rej_qty;
                     
                             }
+                        }else{
+                            $b_rep_qty[]=$row['balance_to_report']-$total_rej_qty;
                         }   
-                        $b_rep_qty[]=$row['balance_to_report'];
+                        
                         $b_rej_qty[]=0;
                         $b_op_id = $op_no;
                         $b_tid[] = $row['tid'];
@@ -654,6 +672,11 @@ if (isset($_POST["trans_action"])){
                                     $left_over_qty_update = $b_send_qty - $final_rep_qty;
 
                                     $previously_scanned = $parallel_balance_report;
+
+                                    //if any rejections updated
+                                    if($total_rej_qty>0){
+                                        $final_rep_qty=$final_rep_qty-$total_rej_qty;
+                                    }
                                     
                                     if($previously_scanned == 0){
                                         if($b_send_qty == $b_old_rej_qty_new){
@@ -663,6 +686,8 @@ if (isset($_POST["trans_action"])){
                                         }
                                         echo json_encode($result_array);
                                         die();
+                                    }else{
+                                        $previously_scanned=$previously_scanned-$total_rej_qty;
                                     }
                                     
                                     if($schedule_count){
@@ -726,7 +751,7 @@ if (isset($_POST["trans_action"])){
                             //     $b_rep_qty[$key] = $parallel_balance_report;
                             // }else 
                             if($tid == $bundle_no){
-                                $b_rep_qty[$key] = $b_in_job_qty[$key];
+                                $b_rep_qty[$key] = $b_in_job_qty[$key]-$total_rej_qty;
                             }else{
                                 $b_rep_qty[$key] = 0;
                             }
@@ -879,6 +904,10 @@ if (isset($_POST["trans_action"])){
 
                                         $previously_scanned = $b_send_qty - ($b_old_rep_qty_new + $b_old_rej_qty_new);
                                         
+                                        //if any rejections updated
+                                        if($total_rej_qty>0){
+                                            $final_rep_qty=$final_rep_qty-$total_rej_qty;
+                                        }
 
                                         if($previously_scanned == 0){
                                             if($b_send_qty == $b_old_rej_qty_new){
@@ -888,8 +917,11 @@ if (isset($_POST["trans_action"])){
                                             }
                                             echo json_encode($result_array);
                                             die();
+                                        }else{
+                                            $previously_scanned=$previously_scanned-$total_rej_qty;
                                         }
                                         if($schedule_count){
+                                               
                                             $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `left_over`= '".$left_over_qty_update."' , `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
                                             
                                             $result_query = $link->query($query) or exit('query error in updating');
@@ -1234,12 +1266,13 @@ if (isset($_POST["trans_action"])){
             }
 
             $trans_action = $_POST['trans_action'];
+            $trans_mode=$_POST['trans_mode'];
             $barcode = $_POST['barcode_value'];
             $selected_module=$_POST['module'];
             $op_code=$_POST['op_code'];
             $shift=$_POST['shift'];
             $b_shift = $shift;
-            $trans_mode=$_POST['trans_mode'];
+            $rej_data=$_POST['rej_data'];
             $job_no=$barcode;
             /*Below two parameters for gatepass and aunthentication due to that assigned satic values*/
             //$gate_id = $_POST['gate_id'];
@@ -1331,7 +1364,7 @@ if (isset($_POST["trans_action"])){
                     die();
                 } else if ($ret == 2) {
                     if ($user_permission == 'authorized') {
-                        getjobdetails1($string, $bundle_no, $op_no, $shift ,$gate_id,$trans_action);
+                        getjobdetails1($string, $bundle_no, $op_no, $shift ,$gate_id,$trans_mode,$rej_data);
                     } else {
                         $result_array['status'] = 'You are Not Authorized to report more than Block Priorities';
                         echo json_encode($result_array);
@@ -1339,7 +1372,7 @@ if (isset($_POST["trans_action"])){
                     }
                 } else if ($ret == 0) {
 
-                    getjobdetails1($string, $bundle_no, $op_no, $shift ,$gate_id,$trans_mode);
+                    getjobdetails1($string, $bundle_no, $op_no, $shift ,$gate_id,$trans_mode,$rej_data);
                 }        
             }
 }
