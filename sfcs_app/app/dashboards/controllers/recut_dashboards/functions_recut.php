@@ -299,7 +299,7 @@ function ReplaceProcess($replace_id_edit)
                     {
                         $cps_row_excess = $cps_row['remaining_qty'];
                     }
-
+zz
                 }
                 $exces_qty = min($exces_qty_org,$cps_row_excess);
             }
@@ -309,7 +309,7 @@ function ReplaceProcess($replace_id_edit)
                 $count++;
                 $rec_qty = 0;
                 $already_replaced_qty = 0;
-                $bcd_checking_qry = "select sum(recevied_qty)+sum(rejected_qty)as rec_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref in ($input_job_no_excess) and size_title = '$excess_size_title' and operation_id = $input_ops_code";
+                $bcd_checking_qry = "select sum(recevied_qty)+sum(rejected_qty)as rec_qty,sum(send_qty)as send_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref in ($input_job_no_excess) and size_title = '$excess_size_title' and color = '$color' and operation_id = $input_ops_code";
                 $result_bcd_checking_qry = $link->query($bcd_checking_qry);
                 if($result_bcd_checking_qry->num_rows > 0)
                 {
@@ -329,7 +329,6 @@ function ReplaceProcess($replace_id_edit)
                         $already_replaced_qty = $row_replace_already['replaced_qty'];
                     }
                 }
-                $exces_qty = ($exces_qty) - ($rec_qty + $already_replaced_qty);
                 if($rec_qty == '')
                 {
                     $rec_qty = 0;
@@ -338,9 +337,13 @@ function ReplaceProcess($replace_id_edit)
                 {
                     $already_replaced_qty = 0;
                 }
-                if($exces_qty < 0)
+                if($rec_qty > 0)
                 {
-                    $exces_qty = 0;
+                    $exces_qty = min($exces_qty,($send_qty - $rec_qty + $already_replaced_qty));
+                }
+                else
+                {
+                     $exces_qty = ($exces_qty) - ($rec_qty + $already_replaced_qty);
                 }
                 $excess_table .= "<tr><td>".$input_job_no_excess."</td><td>".$excess_size_title."</td><td>$rec_qty</td><td>$already_replaced_qty</td><td id='$excess_size_title'>".$exces_qty."</td></tr>";
                 $excess_table .= "<input type='hidden' name='input_job_no_random_ref_replace[$excess_size_title]' value='$input_job_no_excess'>";
