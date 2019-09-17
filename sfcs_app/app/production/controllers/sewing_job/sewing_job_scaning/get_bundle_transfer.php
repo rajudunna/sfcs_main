@@ -7,13 +7,14 @@
     $barcode = $_POST['barcode'];
 
     $barcode_number = explode('-', $barcode)[0];
-    $selct_qry = "select * from $brandix_bts.bundle_creation_data where barcode_number = '$barcode_number'";
+    $selct_qry = "select style,color,assigned_module from $brandix_bts.bundle_creation_data where barcode_number = $barcode_number and operation_id=$ops_code";
     $selct_qry_result=mysqli_query($link,$selct_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
     if($selct_qry_result->num_rows > 0)
     {       
         $selct_qry_result_row = mysqli_fetch_assoc($selct_qry_result);
         $style = $selct_qry_result_row['style'];
         $color = $selct_qry_result_row['color'];
+        $from_module = $selct_qry_result_row['assigned_module'];
         $check_prev_operation = "SELECT * FROM `brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color='$color' AND operation_code ='$ops_code'";
         $prev_result=mysqli_query($link,$check_prev_operation) or exit("while retriving prev".mysqli_error($GLOBALS["___mysqli_ston"]));
         
@@ -41,11 +42,14 @@
             $present_row = mysqli_fetch_assoc($present_result);
             $output = $present_row['otp'];
             
-            if($output==1)
-            {
-                $assign_module="update $brandix_bts.bundle_creation_data set assigned_module='$module' where bundle_number='$barcode_number' and operation_id >='$ops_code'";
-                $assign_module_result=mysqli_query($link,$assign_module) or exit("while retriving assigned_module".mysqli_error($GLOBALS["___mysqli_ston"]));
-                echo " Module Transfered successfully";
+                if($output==1)
+                {
+                    $assign_module="update $brandix_bts.bundle_creation_data set assigned_module='$module' where bundle_number='$barcode_number' and operation_id >='$ops_code'";
+                    $assign_module_result=mysqli_query($link,$assign_module) or exit("while retriving assigned_module".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                    $insert_log="insert into $brandix_bts.module_transfer_track (username,bundle_number,operation_code,from_module,to_module,time) values ('$user','$barcode_number','$ops_code','$from_module','$module','".date('y-m-d h:i:s')."')";
+                    $sql_result0=mysqli_query($link, $insert_log) or exit("Sql Error5.0".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                    echo " Module Transfered successfully";
 
                 }else
                 {
