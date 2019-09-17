@@ -299,7 +299,7 @@ function ReplaceProcess($replace_id_edit)
                     {
                         $cps_row_excess = $cps_row['remaining_qty'];
                     }
-zz
+                    
                 }
                 $exces_qty = min($exces_qty_org,$cps_row_excess);
             }
