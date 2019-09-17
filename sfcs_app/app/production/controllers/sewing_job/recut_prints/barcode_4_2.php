@@ -60,7 +60,7 @@
 					}
 					//$barcode_qry="select * from $bai_pro3.packing_summary_input where tid in (".implode(",",$bundle_info).") order by tid";
 					//echo $barcode_qry."<br>"; 
-					$barcode_qry="select * from $bai_pro3.packing_summary_input where doc_no='$id' order by tid";
+					$barcode_qry="select * from $bai_pro3.packing_summary_input where doc_no='$id' and doc_type='R' order by tid";
 					$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($barcode_rslt = mysqli_fetch_array($sql_barcode))
 					{
