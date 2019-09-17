@@ -403,13 +403,14 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $doc_ref[]=0;
       $req_time[]=0;
       $req_date_time[]=0;
-
-      $sql2="select doc_no,module from $bai_pro3.embellishment_plan_dashboard where module in ($section_mods) and orginal_qty<>send_qty  order by log_time,module";
+      $track_ids = [];
+      $sql2="select track_id,doc_no,module from $bai_pro3.embellishment_plan_dashboard where module in ($section_mods) and orginal_qty<>send_qty  order by log_time,module";
       $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($row2=mysqli_fetch_array($result2))
       {
           $doc_ref[]=$row2['doc_no'];
           $req_time[]=$row2['module'].") ".date("M-d H:i",strtotime($row2['req_time']));
+          $track_ids[] = $row2['track_id'];
       }
 
       $sql1="SELECT * from $bai_pro3.plan_dash_doc_summ_embl where doc_no in (".implode(",",$doc_ref).") order by field(doc_no,".implode(",",$doc_ref).")";
@@ -437,6 +438,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       if($sql_num_check>0){
       while($sql_row1=mysqli_fetch_array($sql_result1))
       {
+          $track_id=$sql_row1['track_id'];
+
+          if(!in_array($track_id,$track_ids))
+              continue;
           $cut_new=$sql_row1['act_cut_status'];
           $cut_input_new=$sql_row1['act_cut_issue_status'];
           $rm_new=strtolower(chop($sql_row1['rm_date']));
@@ -447,7 +452,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $ord_style=$sql_row1['order_style_no'];
           //$fabric_status=$sql_row1['fabric_status'];
           $plan_lot_ref_v1=$sql_row1['plan_lot_ref'];
-          $track_id=$sql_row1['track_id'];
+         
 
           $fabric_status=$sql_row1['fabric_status_new']; //NEW due to plan dashboard clearing regularly and to stop issuing issued fabric.
           if($fabric_status==null or $fabric_status==0)
@@ -489,6 +494,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           {
             $co_no=$sql_row112['co_no'];
           }
+          
 
           $sql21="select orginal_qty,send_qty,receive_qty,send_op_code,receive_op_code from $bai_pro3.embellishment_plan_dashboard where doc_no='".$doc_no."' and track_id=$track_id";
           // echo $sql2;
@@ -501,7 +507,6 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             $send_op_code=$row21['send_op_code'];
             $receive_op_code=$row21['receive_op_code'];
           }
-
           $id="yash";
           if($cut_new=="DONE")
           {

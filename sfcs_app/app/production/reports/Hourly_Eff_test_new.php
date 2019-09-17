@@ -698,11 +698,12 @@ for ($j=0;$j<sizeof($sections);$j++)
 { 
     $sec=$sections[$j];
     $sec_head=""; 
-    $sql="select * from $bai_pro3.sections_master where sec_name=$sec";                  
+    $sql="select section_head,section_display_name from $bai_pro3.sections_master where sec_name=$sec";                  
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($sql_row=mysqli_fetch_array($sql_result)) 
     { 
-        $sec_head=$sql_row['section_head']; 
+        $sec_head=$sql_row['section_head'];
+        $section_name=$sql_row['section_display_name']; 
     } 
     // $sql="select mod_style, mod_no from $pro_mod where mod_sec=$sec and mod_date=\"$date\" order by mod_no*1";  
 	$sql="select 0 as mod_style,module_name as mod_no FROM $bai_pro3.module_master WHERE section=$sec and status='Active' order by module_name*1";      
@@ -762,7 +763,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 				$styledb=$styledb.$sql_row2['bac_style']; 
 			} 
 		} 
-		echo "<tr><td>".$sec."</td><td>".$mod."</td>";
+		echo "<tr><td>".$section_name."</td><td>".$mod."</td>";
 		$max=0; 
 		$sql2="select bac_style, couple,smv,nop, sum(bac_qty) as \"qty\" from $table_name 
 		where bac_date=\"$date\" and bac_no=$mod and  bac_shift in ($team) $time_query group by bac_style"; 
