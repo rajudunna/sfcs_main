@@ -316,6 +316,7 @@ function ReplaceProcess($replace_id_edit)
                     while($bcd_row_rec = $result_bcd_checking_qry->fetch_assoc()) 
                     {
                         $rec_qty = $bcd_row_rec['rec_qty'];
+                        $send_qty = $bcd_row_rec['send_qty'];
                     }
                 }
                 //checking the input job already replaced or not
