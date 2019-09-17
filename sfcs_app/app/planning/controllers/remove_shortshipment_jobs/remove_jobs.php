@@ -258,10 +258,10 @@ if(isset($_POST['submit']))
                 }
 
                 // var_dump($remarks);
-                $short_shipment_remark=rtrim($remarks,',');
-                $update_revers_qry = "update $bai_pro3.short_shipment_job_track set remarks='".$short_shipment_remark."' where id=".$short_shipment_job_track_id;
-                // echo $update_revers_qry;
-                $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                // $short_shipment_remark=rtrim($remarks,',');
+                // $update_revers_qry = "update $bai_pro3.short_shipment_job_track set remarks='".$short_shipment_remark."' where id=".$short_shipment_job_track_id;
+                // // echo $update_revers_qry;
+                // $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                 include('mail_configuration.php');
         
