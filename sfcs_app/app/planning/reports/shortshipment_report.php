@@ -19,12 +19,12 @@ function secondbox()
 }
 
 $(document).ready(function() {
-	$('#schedule').on('click',function(e){
-		var style = $('#style').val();
-		if(style == null){
-			sweetAlert('Please Select Style','','warning');
-		}
-	});
+	// $('#schedule').on('click',function(e){
+	// 	var style = $('#style').val();
+	// 	if(style == null){
+	// 		sweetAlert('Please Select Style','','warning');
+	// 	}
+	// });
 });
 
 // function validate(){
@@ -95,7 +95,7 @@ echo "<div class=\"row\"><div class=\"col-sm-2\"><label>Select Style:</label><se
     echo "<div class='col-sm-2'><label>Select Schedule:</label> 
         <select class='form-control' name=\"schedule\" id=\"schedule\" onchange=\"secondbox();\" id='schedule'>";
 
-        $sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";	
+    $sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";	
 
     mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -148,8 +148,8 @@ echo "<div class=\"row\"><div class=\"col-sm-2\"><label>Select Style:</label><se
 <?php
 if(isset($_POST['submit']))
 {
-    // var_dump($_POST['date']);
-    if($_POST['style'] != null || $_POST['schedule'] != null || $_POST['type'] != null || $_POST['date'] != null){
+    // var_dump($_POST);
+    if($_POST['style'] != null || $_POST['schedule'] != null || $_POST['remove_type'] != null || $_POST['date'] != null){
         
         // var_dump($type);
         $srt_shipment_data = "select * from $bai_pro3.short_shipment_job_track where id > 0 and remove_type <> '0' ";
@@ -211,7 +211,7 @@ if(isset($_POST['submit']))
             
         }
     }else{
-        echo "<script>swal('Please Select','','warning');</script>";
+        echo "<script>swal('Please Select Atleast One field','','warning');</script>";
     } 
 	
 }
