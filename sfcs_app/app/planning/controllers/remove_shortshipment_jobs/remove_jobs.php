@@ -83,16 +83,18 @@ if(isset($_POST['submit']))
     
     if($style && $schedule && $status) {
 
-        $is_style_schedule_exists = "select * from $bai_pro3.short_shipment_job_track where style='".$style."' and schedule='".$schedule."'";
+        $is_style_schedule_exists = "select * from $bai_pro3.short_shipment_job_track where style='".$style."' and schedule='".$schedule."' and remove_type in ('1','2')";
         $is_style_schedule_exists_result=mysqli_query($link, $is_style_schedule_exists) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-        $repeat = "select * from $bai_pro3.short_shipment_job_track where style='".$style."' and schedule='".$schedule."' and remove_type in ('1','2')";
-        $repeat_result=mysqli_query($link, $repeat) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-        if(mysqli_num_rows($repeat_result) > 0) {
-            $exists = 1;
-        } else {
-            $exists = 0;
-        }
-        if((mysqli_num_rows($is_style_schedule_exists_result) == 0 && $exists != 0) || (mysqli_num_rows($is_style_schedule_exists_result) > 0 && $exists == 0)) {
+        // $repeat = "select * from $bai_pro3.short_shipment_job_track where style='".$style."' and schedule='".$schedule."' and remove_type in ('1','2')";
+        // $repeat_result=mysqli_query($link, $repeat) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+        // if(mysqli_num_rows($repeat_result) > 0) {
+        //     $exists = 1;
+        // } else {
+        //     $exists = 0;
+        // }
+        // echo mysqli_num_rows($is_style_schedule_exists_result);
+        // echo $exists;
+        if(mysqli_num_rows($is_style_schedule_exists_result) == 0) {
             
             $insert_qry = "insert into $bai_pro3.short_shipment_job_track(style,schedule,remove_type,remove_reason,removed_by) values('$style','$schedule','$status','$reason','$username')";
             $insert_qry_result=mysqli_query($link, $insert_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
