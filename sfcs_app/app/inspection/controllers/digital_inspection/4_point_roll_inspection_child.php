@@ -5,6 +5,7 @@
  $roll_id = $_GET['roll'];
  $supplier_id = $_GET['supplier'];
  $get_details="select * from `bai_rm_pj1`.`inspection_population` where lot_no='$lot_number' and supplier_roll_no='$supplier_id' and sfcs_roll_no='$roll_id'";
+ // echo $get_details;
  $details_result=mysqli_query($link,$get_details) or exit("get_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($row1=mysqli_fetch_array($details_result))
  {
@@ -16,7 +17,7 @@
     $item_desc = $row1['item_desc'];
  }
 
- $inspection_details = "select fabric_composition,spec_width,inspection_status,spec_weight,repeat_length,lab_testing from $bai_rm_pj1.roll_inspection where lot_no='$lot_number' and supplier_roll_no='$supplier_id' and sfcs_roll_no='$roll_id'";
+ $inspection_details = "select * from $bai_rm_pj1.roll_inspection_child where lot_no='$lot_number' and supplier_roll_no='$supplier_id' and sfcs_roll_no='$roll_id'";
   //echo $inspection_details;
   $inspection_details_result=mysqli_query($link,$inspection_details) or exit("inspection_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
   while($row4=mysqli_fetch_array($inspection_details_result))
@@ -27,6 +28,29 @@
      $weight = $row4['spec_weight'];
      $length = $row4['repeat_length'];
      $testing = $row4['lab_testing'];
+     $fabric = $row4['fabric_composition'];
+     $width = $row4['spec_width'];
+     $status = $row4['inspection_status'];
+     $weight = $row4['spec_weight'];
+     $length = $row4['repeat_length'];
+     $testing = $row4['lab_testing'];
+     $tolerance = $row4['tolerance'];
+     $item_code1 = $row4['item_code'];
+     $roll_no = $row4['roll_no'];
+     $inspected_per = $row4['inspected_per'];
+     $inspected_qty = $row4['inspected_qty'];
+     $invoice_qty = $row4['invoice_qty'];
+     $s = $row4['width_s'];
+     $m = $row4['width_m'];
+     $e = $row4['width_e'];
+     $actual_height = $row4['actual_height'];
+     $actual_repeat_height = $row4['actual_repeat_height'];
+     $skw = $row4['skw'];
+     $bow = $row4['bow'];
+     $ver = $row4['ver'];
+     $gsm = $row4['gsm'];
+     $comment = $row4['comment'];
+     $marker_type = $row4['marker_type'];
   }
 ?>
 
@@ -43,12 +67,35 @@ if(isset($_POST['save']))
   $supplier_no = $_POST['supply_no'];
   $roll_no = $_POST['roll'];
   $tolerance = $_POST['tolerance'];
+  $item_code = $_POST['item_code'];
+  $roll_no = $_POST['roll_no'];
+  $inspected_per = $_POST['inspected_per'];
+  $inspected_qty = $_POST['inspected_qty'];
+  $invoice_qty = $_POST['invoice_qty'];
+  $s = $_POST['s'];
+  $m = $_POST['m'];
+  $e = $_POST['e'];
+  $actual_height = $_POST['actual_height'];
+  $actual_repeat_height = $_POST['actual_repeat_height'];
+  $skw = $_POST['skw'];
+  $bow = $_POST['bow'];
+  $ver = $_POST['ver'];
+  $gsm = $_POST['gsm'];
+  $comment = $_POST['comment'];
+  $marker_type = $_POST['marker_type'];
+  $po_no = $_POST['po'];
+  $batch_no = $_POST['batch'];
+  $color = $_POST['color'];
 
     if(isset($_POST['code']))
 	{
 	    $code = $_POST['code'];
 	    $count=count($code);
 	    $damage = $_POST['damage'];
+	    $insert_roll_details = "insert into $bai_rm_pj1.roll_inspection(po_no,batch_no,color) values ('$po_no','$batch_no','$color')";
+       	//echo $insert_roll_details;
+  	   	 mysqli_query($link, $insert_roll_details) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"]));
+         $id = mysqli_insert_id($link);
 	    for($i=0;$i<$count;$i++)
 	    {
 	          $code1 = $_POST['code'][$i];
@@ -58,9 +105,10 @@ if(isset($_POST['save']))
 	          $point3 = $_POST['point3'][$i];
 	          $point4 = $_POST['point4'][$i];
 
+
 	           if($point1 != 0 || $point2 != 0 || $point3 != 0 || $point4 != 0)
 	           {
-	             $insert_query="insert into $bai_rm_pj1.roll_inspection(lot_no,supplier_roll_no,sfcs_roll_no,fabric_composition,spec_width,inspection_status,spec_weight,repeat_length,lab_testing,tolerance,code,damage_desc,1_points,2_points,3_points,4_points) values ('$lot_num','$supplier_no','$roll_no','$fabric_composition','$spec_width','$inspection_status','$spec_weight','$repeat_length','$lab_testing','$tolerance','$code1','$damage1','$point1','$point2','$point3','$point4')";
+	             $insert_query="insert into $bai_rm_pj1.roll_inspection_child(lot_no,supplier_roll_no,sfcs_roll_no,fabric_composition,spec_width,inspection_status,spec_weight,repeat_length,lab_testing,tolerance,item_code,roll_no,inspected_per,inspected_qty,invoice_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,code,damage_desc,1_points,2_points,3_points,4_points,parent_id) values ('$lot_num','$supplier_no','$roll_no','$fabric_composition','$spec_width','$inspection_status','$spec_weight','$repeat_length','$lab_testing','$tolerance','$item_code','$roll_no','$inspected_per','$inspected_qty','$invoice_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type','$code1','$damage1','$point1','$point2','$point3','$point4','$id')";
 	              //echo $insert_query;
 	             $result_query = $link->query($insert_query) or exit('query error in inserting');
 
@@ -92,12 +140,34 @@ if(isset($_POST['confirm']))
   $supplier_no = $_POST['supply_no'];
   $roll_no = $_POST['roll'];
   $tolerance = $_POST['tolerance'];
+  $item_code = $_POST['item_code'];
+  $roll_no = $_POST['roll_no'];
+  $inspected_per = $_POST['inspected_per'];
+  $inspected_qty = $_POST['inspected_qty'];
+  $invoice_qty = $_POST['invoice_qty'];
+  $s = $_POST['s'];
+  $m = $_POST['m'];
+  $e = $_POST['e'];
+  $actual_height = $_POST['actual_height'];
+  $actual_repeat_height = $_POST['actual_repeat_height'];
+  $skw = $_POST['skw'];
+  $bow = $_POST['bow'];
+  $ver = $_POST['ver'];
+  $gsm = $_POST['gsm'];
+  $comment = $_POST['comment'];
+  $marker_type = $_POST['marker_type'];
+  $po_no = $_POST['po'];
+  $batch_no = $_POST['batch'];
+  $color = $_POST['color'];
 
     if(isset($_POST['code']))
 	{
 	    $code = $_POST['code'];
 	    $count=count($code);
 	    $damage = $_POST['damage'];
+	    $insert_roll_details = "insert into $bai_rm_pj1.roll_inspection(po_no,batch_no,color) values ('$po_no','$batch_no','$color')";
+	   	mysqli_query($link, $insert_roll_details) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $id = mysqli_insert_id($link);
 	    for($i=0;$i<$count;$i++)
 	    {
 	          $code1 = $_POST['code'][$i];
@@ -109,7 +179,8 @@ if(isset($_POST['confirm']))
 
 	           if($point1 != 0 || $point2 != 0 || $point3 != 0 || $point4 != 0)
 	           {
-	             $insert_query="insert into $bai_rm_pj1.roll_inspection(lot_no,supplier_roll_no,sfcs_roll_no,fabric_composition,spec_width,inspection_status,spec_weight,repeat_length,lab_testing,tolerance,code,damage_desc,1_points,2_points,3_points,4_points) values ('$lot_num','$supplier_no','$roll_no','$fabric_composition','$spec_width','$inspection_status','$spec_weight','$repeat_length','$lab_testing','$tolerance','$code1','$damage1','$point1','$point2','$point3','$point4')";
+
+	             $insert_query="insert into $bai_rm_pj1.roll_inspection_child(lot_no,supplier_roll_no,sfcs_roll_no,fabric_composition,spec_width,inspection_status,spec_weight,repeat_length,lab_testing,tolerance,item_code,roll_no,inspected_per,inspected_qty,invoice_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,code,damage_desc,1_points,2_points,3_points,4_points,parent_id) values ('$lot_num','$supplier_no','$roll_no','$fabric_composition','$spec_width','$inspection_status','$spec_weight','$repeat_length','$lab_testing','$tolerance','$item_code','$roll_no','$inspected_per','$inspected_qty','$invoice_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type','$code1','$damage1','$point1','$point2','$point3','$point4','$id')";
 	              //echo $insert_query;
 	             $result_query = $link->query($insert_query) or exit('query error in inserting');
 
@@ -167,8 +238,8 @@ if(isset($_POST['confirm']))
 						  		</tr>		
 					  			<tr>	
 					  				<td>Fabric Composition</td>
-					  				<td><input type="text" id="fabric_composition" name="fabric_composition" value="<?= $fabric ?>" class="integer"></td>
-					  				<td rowspan="2"><input type="text" id="tolerance" name="tolerance"></td>
+					  				<td><input type="text" id="fabric_composition" name="fabric_composition" value="<?= $fabric ?>" <?php if($fabric) echo "readonly" ?> class="float" required></td>
+					  				<td rowspan="2"><input type="text" id="tolerance" name="tolerance" value="<?= $tolerance ?>" <?php if($tolerance) echo "readonly" ?> class="float" required></td>
 					  			</tr>
 					  			<tr>	
 					  				<td>Inspection Status</td>
@@ -186,26 +257,26 @@ if(isset($_POST['confirm']))
 					  			</tr>	
 					  			<tr>
 					  				<td>Spec Width</td>
-					  				<td><input type="text" id="spec_width" name="spec_width" value="<?= $width ?>" class="integer"></td>
-					  				<td><input type="text" id="tolerance" name="tolerance"></td>
+					  				<td><input type="text" id="spec_width" name="spec_width" value="<?= $width ?>" <?php if($fabric) echo "readonly" ?> class="float" required></td>
+					  				<!-- <td><input type="text" id="tolerance" name="tolerance"></td> -->
 					  			</tr>
 					  			<tr>
 					  				<td>Spec Weight</td>
-					  				<td><input type="text" id="spec_weight" name="spec_weight" value="<?= $weight ?>" class="integer"></td>
-					  				<td><input type="text" id="tolerance" name="tolerance"></td>
+					  				<td><input type="text" id="spec_weight" name="spec_weight" value="<?= $weight ?>" <?php if($fabric) echo "readonly" ?> class="float" required></td>
+					  				<!-- <td><input type="text" id="tolerance" name="tolerance"></td> -->
 					  			</tr>
 					  			<tr>
 					  				<td>Repeat Length</td>
-					  				<td><input type="text" id="repeat_length" name="repeat_length" value="<?= $length ?>" class="integer"></td>
-					  				<td><input type="text" id="tolerance" name="tolerance"></td>
+					  				<td><input type="text" id="repeat_length" name="repeat_length" value="<?= $length ?>" <?php if($fabric) echo "readonly" ?> class="float" required></td>
+					  				<!-- <td><input type="text" id="tolerance" name="tolerance"></td> -->
 					  			</tr>
 					  			<tr>
 					  				<th style=text-align:center colspan=3>Inspection Summary</th>
 					  			</tr>
 					  			<tr>
 					  				<td>Lab Testing</td>
-					  				<td><input type="text" id="lab_testing" name="lab_testing" value="<?= $testing ?>" class="integer"></td>
-					  				<td rowspan="2"><input type="text" id="tolerance" name="tolerance"></td>
+					  				<td><input type="text" id="lab_testing" name="lab_testing" value="<?= $testing ?>" <?php if($fabric) echo "readonly" ?> class="float" required></td>
+					  				<!-- <td rowspan="2"><input type="text" id="tolerance" name="tolerance"></td> -->
 					  			</tr>	
 					  		</tbody>	
 					  	</table>	
@@ -271,22 +342,22 @@ if(isset($_POST['confirm']))
 					      		<th>Marker Type</th>
 					      	</tr>
 					      	<tr>
-					      		<td></td>
-					      		<td></td>
-					      		<td></td>
-					      		<td></td>
-					      		<td></td>
-					      		<td></td>
-					      		<td></td>
-					      		<td></td>
-					      		<td></td>
-					      		<td></td>
-					      		<td></td>
-					      		<td></td>
-					      		<td></td>
-					      		<td></td>
-					      		<td></td>
-					      		<td></td>
+					      		<td><input type="text" id="item_code" name="item_code" value="<?= $item_code1 ?>"></td>
+					      		<td><input type="text" id="roll_no" name="roll_no" value="<?= $roll_no ?>"></td>
+					      		<td><input type="text" id="inspected_per" name="inspected_per" value="<?= $inspected_per ?>" <?php if($inspected_per) echo "readonly" ?> class="float" required></td>
+					      		<td><input type="text" id="inspected_qty" name="inspected_qty" value="<?= $inspected_qty ?>" <?php if($inspected_qty) echo "readonly" ?> class="float" required></td>
+					      		<td><input type="text" id="invoice_qty" name="invoice_qty" value="<?= $invoice_qty ?>" <?php if($invoice_qty) echo "readonly" ?> class="float" required></td>
+					      		<td><center>S</center><input type="text" id="s" name="s" colspan=3 value="<?= $s ?>" <?php if($s) echo "readonly" ?> class="float" required></td>
+					      		<td><center>M</center><input type="text" id="m" name="m" colspan=3 value="<?= $m ?>" <?php if($m) echo "readonly" ?> class="float" required></td>
+					      		<td><center>E</center><input type="text" id="e" name="e" colspan=3 value="<?= $e ?>" <?php if($e) echo "readonly" ?> class="float" required></td>
+					      		<td><input type="text" id="actual_height" name="actual_height" value="<?= $actual_height ?>" <?php if($actual_height) echo "readonly" ?> class="float" required></td>
+					      		<td><input type="text" id="actual_repeat_height" name="actual_repeat_height" value="<?= $actual_repeat_height ?>" <?php if($actual_repeat_height) echo "readonly" ?> class="float" required></td>
+					      		<td><input type="text" id="skw" name="skw" value="<?= $skw ?>" <?php if($skw) echo "readonly" ?> required></td>
+					      		<td><input type="text" id="bow" name="bow" value="<?= $bow ?>" <?php if($bow) echo "readonly" ?> required></td>
+					      		<td><input type="text" id="ver" name="ver" value="<?= $ver ?>" <?php if($ver) echo "readonly" ?> required></td>
+					      		<td><input type="text" id="gsm" name="gsm" value="<?= $gsm ?>" <?php if($gsm) echo "readonly" ?> required></td>
+					      		<td><input type="text" id="comment" name="comment" value="<?= $comment ?>" <?php if($comment) echo "readonly" ?> required></td>
+					      		<td><input type="text" id="marker_type" name="marker_type" value="<?= $marker_type ?>" <?php if($marker_type) echo "readonly" ?> required></td>
 					      	</tr>	
 					     </tbody>
 					    </table>
@@ -368,7 +439,10 @@ if(isset($_POST['confirm']))
                     </div>
                     <input type="hidden" name="lot_no" value='<?= $lot_number ?>'> 
                     <input type="hidden" name="supply_no" value='<?= $supplier_id ?>'> 
-                    <input type="hidden" name="roll" value='<?= $roll_id ?>'>    
+                    <input type="hidden" name="roll" value='<?= $roll_id ?>'> 
+                    <input type="hidden" name="po" value='<?=  $po ?>'> 
+                    <input type="hidden" name="batch" value='<?=  $batch ?>'> 
+                    <input type="hidden" name="color" value='<?=  $color ?>'>    
 				   </form>      	  	
 				</div>
 			</div>
