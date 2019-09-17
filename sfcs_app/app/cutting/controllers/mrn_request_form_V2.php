@@ -779,7 +779,17 @@ $(document).ready(function(){
                                     }
                                     echo "</select></td>"; 
                                 }
-                                
+								
+								$main_array = ['FAB','ETRIM','PTRIM','STRIM'];
+                                if($opno > 200)
+                                {
+                                    echo "<td><select name=\"data[]\" id=\"data\">";
+                                    for($i=0;$i<sizeof($main_array);$i++)
+                                    {
+                                        echo "<option value=\"".$main_array[$i]."\">".$main_array[$i]."</option>";
+                                    }
+                                    echo "</select></td>"; 
+                                } 
 
                                 $item_code = $finalrecords[$x]['MTNO'];
                                 echo "<td><input type=\"hidden\" name=\"item_code[]\" id='item_code$x' value=\"$item_code\" style=\"background-color:#66FFCC;\" readonly='true'>$item_code</td>";
