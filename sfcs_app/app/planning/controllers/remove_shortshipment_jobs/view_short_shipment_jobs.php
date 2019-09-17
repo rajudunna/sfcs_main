@@ -11,22 +11,24 @@
 		echo "<table id='shortshipmentjob' class='table'><thead><tr><th>S.No</th><th>Date Time</th><th>Style</th><th>Schedule</th><th>Remove Type</th><th>Removed By</th><th>Remove Reason</th><th>Control</th></tr></thead><tbody>";
 		// output data of each row
 		while($row=mysqli_fetch_array($sql_result)) {
-			if($row["remove_type"]==1) {
-                $status = 'Temporary';
-            } else if($row["remove_type"]==2) {
-                $status = 'Permanent';
-            }
 			$rem_type = $row["remove_type"];
 			// echo $rem_type;die();
             $id = $row['id'];
             $style = $row['style'];
             $schedule = $row['schedule'];
 			$edit_url = getFullURL($_GET['r'],'reverse_short_shipment_jobs.php','N');
-            echo "<tr><td>".$sno++."</td><td>".$row["date_time"]." </td><td>".$row["style"]."</td><td>".$row["schedule"]."</td><td>".$status."</td><td>".$row["removed_by"]."</td><td>".$row["remove_reason"]."</td>";
+			echo "<tr><td>".$sno++."</td><td>".$row["date_time"]." </td><td>".$row["style"]."</td><td>".$row["schedule"]."</td>";
+			if($row["remove_type"]==1) {
+				echo "<td><label class='label label-success'>Temporary</label></td>";
+			}else{
+				echo "<td><label class='label label-danger'>Permanent</label></td>";
+			}
+			
+			echo "<td>".$row["removed_by"]."</td><td>".$row["remove_reason"]."</td>";
 			if($status == 'Temporary') {
-				echo "<td><a href='$edit_url&id=$id&style=$style&schedule=$schedule&rem_type=$rem_type' class='btn btn-warning btn-sm editor_edit glyphicon glyphicon-retweet' onclick='return confirm_reverse(event,this);'> REMOVE </a></td>";
+				echo "<td><a href='$edit_url&id=$id&style=$style&schedule=$schedule&rem_type=$rem_type' class='btn btn-warning btn-sm editor_edit glyphicon glyphicon-retweet' onclick='return confirm_reverse(event,this);'> REVERSE </a></td>";
 			} else {
-				echo "<td>Can't Reverse</td>";
+				echo "<td><label class='label label-sm label-danger'>Can't Reverse</label></td>";
 			}
             
             echo "</tr>";

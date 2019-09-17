@@ -108,12 +108,11 @@ if($exists==1){
         $message.='<br/>No Input Job Numbers/Docket Numbers are Generated For this Style and Schedule';
     }
     else if($doc_status==1 && $job_status !=1){
-        $message.='<br/>No Input Job Numbers are Generated';
+        $message.='<br/>Input Job Numbers are not yet Generated';
     }
     else if($doc_status!=1 && $job_status ==1){
-        $message.='<br/>No Docket Numbers are Generated';
+        $message.='<br/>Docket Numbers are not yet Generated';
     }
-
 
     $message.='<br/>Message Sent Via:'.$plant_name;
     $message.= '</body></html>';

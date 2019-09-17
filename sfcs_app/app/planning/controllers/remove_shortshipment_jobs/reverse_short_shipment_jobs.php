@@ -7,7 +7,7 @@
     $username = getrbac_user()['uname'];
     $updated_date = date("Y-m-d h:i:s");
 
-    $update_revers_qry = "update $bai_pro3.short_shipment_job_track set remove_type='0',updated_by='".$username."',updated_at='".$updated_date."' where id=".$id;
+    $update_revers_qry = "update $bai_pro3.short_shipment_job_track set remove_type=0,updated_by='".$username."',updated_at='".$updated_date."' where id=".$id;
     $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
     
     if($update_revers_qry_result) {
@@ -69,17 +69,18 @@
                 $del_ims_bckup_sqlx_res =mysqli_query($link, $del_ims_bckup_sqlx) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
 
+        }
           
-            $wip_chck_qry = "select distinct input_job_no_random_ref as wip_jobs from $brandix_bts.bundle_creation_data where input_job_no_random_ref in (".implode(",",$remove_ref_nums).") and bundle_qty_status=3";
-            $wip_chck_qry_res=mysqli_query($link, $wip_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
-            while($wip_chck_row=mysqli_fetch_array($wip_chck_qry_res))
-            {
-                $wip_jobs[]="'".$wip_chck_row['wip_jobs']."'";
-            }
-            if(sizeof($wip_jobs)>0){
-                $wip_dash_table_update="UPDATE $brandix_bts.bundle_creation_data SET bundle_qty_status=0 WHERE input_job_no_random_ref in (".implode(",",$wip_jobs).") and bundle_qty_status=3";
-                $wip_dash_table_update_resultx=mysqli_query($link, $wip_dash_table_update) or exit("Sql Error144".mysqli_error($GLOBALS["___mysqli_ston"]));
-            }
+            
+        $wip_chck_qry = "select id from $brandix_bts.bundle_creation_data where style='".$style."' and schedule='".$schedule."'and bundle_qty_status=3";
+        $wip_chck_qry_res=mysqli_query($link, $wip_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($wip_chck_row=mysqli_fetch_array($wip_chck_qry_res))
+        {
+            $wip_jobs[]="'".$wip_chck_row['id']."'";
+        }
+        if(sizeof($wip_jobs)>0){
+            $wip_dash_table_update="UPDATE $brandix_bts.bundle_creation_data SET bundle_qty_status=0 WHERE id in (".implode(",",$wip_jobs).") and bundle_qty_status=3";
+            $wip_dash_table_update_resultx=mysqli_query($link, $wip_dash_table_update) or exit("Sql Error144".mysqli_error($GLOBALS["___mysqli_ston"]));
         }
         
         if(sizeof($remove_docs)>0)
