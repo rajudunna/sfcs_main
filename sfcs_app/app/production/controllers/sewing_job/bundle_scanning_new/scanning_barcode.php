@@ -43,7 +43,7 @@ $result_rejections = $link->query($qery_rejection_resons);
     padding: 18px 13px;
     font-family: sans-serif, Arial;
     font-size: 16px;
-    border: 2px solid #444;
+    border: 0px solid #444;
     border-radius: 14px;
 }
 
@@ -93,40 +93,50 @@ $result_rejections = $link->query($qery_rejection_resons);
     background-color: #bfb;
     border-color: #d81414;
 }
+.btn-group-sm>.btn, .btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.1;
+}
+.form-control {
+    display: block;
+    width: 100%;
+    height: 24px;
+}
 </style>
 <div class="panel panel-primary" id="scanned_barcode" ng-app="scanning_interface_new">
     <div class="panel-heading">Bundle Scanning</div>
-    <div class="panel-body" style="background-color: darkslategray;" ng-controller="scancode_ctrl">
+    <div class="panel-body" style="background-color: black;" ng-controller="scancode_ctrl">
        <table border=0;> 
        <tr>
-        <td><label>Style : </label><br/><br/><label>Color : </label></td>
+        <td>Style : </label><br/><br/><label>Color : </label></td>
         <td><input type="text" style="max-width: 150px;" class="form-control" name="style" ng-model="style" ng-readonly="true"><br/><br/>
        <input type="text" style="max-width: 150px;" class="form-control" name="color" ng-model="color" ng-readonly="true"></td>
        <td style="width: 10 5px;"></td>
         <td><div class="container" style="width: 570px;">
-        <div class="panel panel-basic">
+        <div class="panel panel-basic" style=";background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
          <div class="panel-heading">
                 <div class="row">
-                <div class="col-sm-3 col-md-3 col-xs-3">Barcode: {{barcode_value}}</div>
-                <div class="col-sm-3 col-md-3 col-xs-3">Action: {{action_mode | uppercase }}</div>
-                <div class="col-sm-3 col-md-3 col-xs-3">Tx Mode: {{trans_mode | uppercase }}</div>
-                <div class="col-sm-3 col-md-3 col-xs-3">Tot Qty: <input type="text"  style="max-width: 70px;" class="form-control" ng-model="changed_rej" name="changed_rej" id="changed_rej" ng-readonly="true"></div>
+                <div class="btn btn-sm btn-success" style="width: 160px;" >Barcode: {{barcode_value}}</div>
+                <div class="btn btn-sm btn-success" style="width: 107px;">Action: {{action_mode | uppercase }}</div>
+                <div class="btn btn-sm btn-success" style="width: 118px;">Tx Mode: {{trans_mode | uppercase }}</div>
+                <div class="btn btn-sm btn-success">Tot Qty: <input type="text"  style="max-width: 70px;" class="form-control" ng-model="changed_rej" name="changed_rej" id="changed_rej" ng-readonly="true"></div>
                 </div>
                 </div>
                 <div class="panel-body"> 
                 <div class="row">
-                <div class="col-sm-4 col-md-4 col-xs-4">Scanned Status:  {{scanned_status}}</div>
-                <div class="col-sm-8 col-md-8 col-xs-8 table-responsive">
+                <div class="col-sm-4 col-md-4 col-xs-4" style="text-decoration: underline;">Scanned Status </br></br> {{scanned_status}}</div>
+                <div class="col-sm-8 col-md-8 col-xs-8 table-responsive" style="font-size: 13px;">
                 
                 <table class="table ">
     <thead>
       <tr >
-      <div colspan="4"><center>Scanned Count</center></div>
+      <div colspan="4" style="text-decoration: underline;"><center>Scanned Count</center></br></div>
       </tr>
     </thead>
-    <tbody>
-      <tr>
-      <div>
+    <tbody >
+     <tr>
+     <div>
         <div class="col-sm-3">previous hr: </div>
         <div class="btn btn-sm btn-success">00</div>
         <div class="btn btn-sm btn-danger"> 00</div>
@@ -152,22 +162,24 @@ $result_rejections = $link->query($qery_rejection_resons);
         </td>
         </tr>
         <td><label>Bar code :</label></td>
-        <td><input type="text" style="max-width: 250px;"  class="form-control" ng-model="barcode_value" ng-keypress="scanned($event)" id="barcode_value" onkeyup="validateQty(event,this);" placeholder="scan barcode here" autofocus></td>
+        <td><input type="text" style="max-width: 150px;"  class="form-control" ng-model="barcode_value" ng-keypress="scanned($event)" id="barcode_value" onkeyup="validateQty(event,this);" placeholder="scan barcode here" autofocus></td>
         <input type="hidden" id="module" ng-model="module" ng-init="module='<?= $module; ?>'">
         <input type="hidden" id="shift" ng-model="shift" ng-init="shift='<?= $shift; ?>'">
         <input type="hidden" id="op_code" ng-model="op_code" ng-init="op_code='<?= $op_code; ?>'">
         <input type="hidden" id="rej_data" ng-model="rej_data">
-        <input type="hidden" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'get_newbarcode_details.php',0,'R') ?>'"> 
+        <input type="hidden" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'get_newbarcode_details.php',0,'R') ?>'">
+        </tr>
         <tr>
         <td><label>Tx Mode:</label></td>
-        <td>
-            <div class="radio-toolbar" ng-init="trans_mode='good'">
+        <td  >
+            <div class="radio-toolbar" ng-init="trans_mode='good'" style="width: 323px;padding: 8px 6px 8px 17px;
+            background-color: #55514a;border-radius: 20px">
             <input type="radio" id="radiogood" name="trans_mode" ng-model='trans_mode' ng-value='"good"'>
-            <label for="radiogood" style="background-color: #256325;">Good</label>
+            <label for="radiogood" style="background-color: #45b645;width:90px;">Good</label> &nbsp;
             <input type="radio" id="radioscrap" name="trans_mode" ng-model='trans_mode' ng-value='"scrap"'>
-            <label for="radioscrap" style="background-color: #f31c06;" class="btn btn-primary" data-toggle="modal" focus-element="autofocus" data-target=".bs-example-modal-lg">Scrap</label>
+            <label for="radioscrap" style="background-color: #f31c06;width:90px;" class="btn btn-primary" data-toggle="modal" focus-element="autofocus" data-target=".bs-example-modal-lg">Scrap</label>
             <input type="radio" id="radiorework" name="trans_mode" ng-model='trans_mode' ng-value='"rework"'>
-            <label for="radiorework" style="background-color: #714f1b;">Rework</label>
+            <label for="radiorework" style="background-color: #714f1b;width:90px;">Rework</label>
             
             <!--<input type="radio" id="radiogudscrap" name="trans_mode" ng-model='trans_mode' ng-value='"gudscrap"'>
             <label for="radiogudscrap" style="background-color: #a5980df5;" class="btn btn-primary" data-toggle="modal" focus-element="autofocus" data-target=".bs-example-modal-lg">Good&Scrap</label>--> 
@@ -175,8 +187,8 @@ $result_rejections = $link->query($qery_rejection_resons);
         </td>
         <td style="width: 10 5px;"></td>
         <td><div class="container" style="width: 570px;">
-        <div class="panel panel-basic">
-         <div class="panel-heading">
+        <div class="panel panel-basic" style="border: 1px solid;border-radius: 11px;">
+         <div class="panel-heading" style="font-size: large;background-color: #2e2d2c;border: 1px solid;border-radius: 11px;">
                 <div class="row">
                 <div class="col-sm-3 col-md-3 col-xs-3">PO: {{vpo}}</div>
                 <div class="col-sm-3 col-md-3 col-xs-3"></div>
@@ -199,12 +211,13 @@ $result_rejections = $link->query($qery_rejection_resons);
         </br></br></br>
         <tr>
         <td><span>Action :</span></td>
-        <td style="width: 323px;">
-            <div class="radio-toolbar1" ng-init="action_mode='add'">
+        <td>
+            <div class="radio-toolbar1" ng-init="action_mode='add'"style="width: 220px;padding: 10px 18px 4px 25px;
+            background-color: #55514a;border-radius: 20px;">
                 <input type="radio" id="radioadd" name="action_mode" ng-model='action_mode' ng-value='"add"'>
-                <label for="radioadd" style="background-color: #2396c5;" class="btn btn-info"  ng-click="barcode_submit('add');" >Add</label>
+                <label for="radioadd" style="background-color: #2396c5;border: 0px;width: 80px;" class="btn btn-info"  ng-click="barcode_submit('add');" >Add</label>
                 <input type="radio" id="radioreverse" name="action_mode" ng-model='action_mode' ng-value='"reverse"'>
-                <label for="radioreverse" style="background-color: #2396c5;" class="btn btn-info"  ng-click="barcode_submit('reverse');">Reverse</label>
+                <label for="radioreverse" style="background-color: #2355c5;border: 0px;width: 80px;" class="btn btn-info"  ng-click="barcode_submit('reverse');">Reverse</label>
             </div>
             <!--<div>
             <button type="button" style="height: 80px;width: 76px;."  class="btn btn-info"  ng-click="barcode_submit('add');">Add</button>
@@ -214,8 +227,8 @@ $result_rejections = $link->query($qery_rejection_resons);
         </td>
         <td style="width: 125px;"></td>
         <td><div class="container" style="width: 570px;">
-        <div class="panel panel-basic">
-         <div class="panel-heading">
+        <div class="panel panel-basic" style="border: 1px solid;border-radius: 15px;">
+         <div class="panel-heading" style="font-size: large;background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
                 <div class="row">
                 <div class="col-sm-3 col-md-3 col-xs-3">Factory : {{global_facility_code}}</div>
                 <div class="panel-heading"></div>
@@ -225,7 +238,7 @@ $result_rejections = $link->query($qery_rejection_resons);
                 <div class="panel-heading"></div>
                 <div class="row"></div>
                 <div class="col-sm-8 col-md-8 col-xs-8">Team: {{module}}</div>
-                <button type="button" style="height: 60px;width:100px;" class="btn btn-info">Reset</button>
+                <button type="button" style="height: 35px;width:70px;" class="btn btn-info">Reset</button>
                 <div class="col-sm-8 col-md-8 col-xs-8">Operation :{{operation_name}}</div>
                 <div class="col-sm-3  ">Count</div>
                 </div>
