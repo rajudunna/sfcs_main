@@ -5,9 +5,8 @@
     $ops_code=$_POST['ops_code'];
     $module = $_POST['module'];
     $barcode = $_POST['barcode'];
-
     $barcode_number = explode('-', $barcode)[0];
-    $selct_qry = "select style,color,assigned_module from $brandix_bts.bundle_creation_data where barcode_number = $barcode_number and operation_id=$ops_code";
+    $selct_qry = "select style,color,assigned_module,original_qty,schedule from $brandix_bts.bundle_creation_data where barcode_number = $barcode_number and operation_id=$ops_code";
     $selct_qry_result=mysqli_query($link,$selct_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
     if($selct_qry_result->num_rows > 0)
     {       
@@ -15,6 +14,10 @@
         $style = $selct_qry_result_row['style'];
         $color = $selct_qry_result_row['color'];
         $from_module = $selct_qry_result_row['assigned_module'];
+        $result_array['from_module'] = $selct_qry_result_row['assigned_module'];
+        $result_array['schedule'] = $selct_qry_result_row['schedule'];
+        $result_array['original_qty'] = $selct_qry_result_row['original_qty'];
+        // echo $original_qty;
         $check_prev_operation = "SELECT * FROM `brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color='$color' AND operation_code ='$ops_code'";
         $prev_result=mysqli_query($link,$check_prev_operation) or exit("while retriving prev".mysqli_error($GLOBALS["___mysqli_ston"]));
         
@@ -48,17 +51,22 @@
                     $assign_module_result=mysqli_query($link,$assign_module) or exit("while retriving assigned_module".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                     $insert_log="insert into $brandix_bts.module_transfer_track (username,bundle_number,operation_code,from_module,to_module,time) values ('$user','$barcode_number','$ops_code','$from_module','$module','".date('y-m-d h:i:s')."')";
-                    $sql_result0=mysqli_query($link, $insert_log) or exit("Sql Error5.0".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                    echo " Module Transfered successfully";
+                    $sql_result0=mysqli_query($link, $insert_log) or exit("Sql Error5.0".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $result_array['flag']=0; 
+                    $result_array['status'] = 'Module Transferred Successfully';
+                    echo json_encode($result_array);
+                    //echo "Module Transferred Successfully";
 
                 }else
-                {
+                {   
+                    $result_array['flag']=1;
                     $result_array['status'] = 'Previous operation not completed';
                     echo json_encode($result_array);
                 }
             }
             else
-            {
+            {   
+                $result_array['flag']=1;
                 $result_array['status'] = 'Partially Scanned';
                 echo json_encode($result_array);
             } 
@@ -66,7 +74,8 @@
 
         }    
         else
-        {
+        {   
+            $result_array['flag']=1;
             $result_array['status'] = 'Invalid Input. Please Check And Try Again !!!';
             echo json_encode($result_array);
         }

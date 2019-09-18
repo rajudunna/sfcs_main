@@ -1,8 +1,12 @@
-<?php 
+<?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/get_bundle_transfer.php',5,'R'));
     $op_code=$_POST['operation_code'];
     $module = $_POST['Module'];
+    $from_module = $_POST['assigned_module'];
+    $schedule = $_POST['schedule'];
+    $original_qty = $_POST['original_qty'];
     $ops_code = explode("-",$op_code)[1];
 ?>
 
@@ -32,7 +36,7 @@ th,td{
     
         <div class="panel-heading" >Bundle Transfer Barcode Scanning</div>
     <div class="panel-body"  ng-controller="scanctrl">
-        <div class="row jumbotron " ng-init="module='<?= $module ?>'">
+        <div class="row jumbotron " ng-init="module='<?= $module ?>'"> 
             <div class="col-md-5"  ng-init="ops_code='<?= $ops_code ?>'" >
 					<div class="col-padding" ng-init="op_code='<?= $op_code ?>'">
                         <div class="row">
@@ -48,7 +52,10 @@ th,td{
                     <input type="hidden" id="module" class="form-control input-lg" ng-model="module" >
                     <input type="text" id="barcode_scan" class="form-control input-lg" ng-model="barcode" ng-keypress="scanned($event)" >
                     <input type="hidden" name="barcode" class="form-control" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'get_bundle_transfer.php',0,'R') ?>'">
-                    
+                    <input type="hidden" id="assigned_module" class="form-control input-lg" ng-model="from_module" >
+                    <input type="hidden" id="schedule" class="form-control input-lg" ng-model="schedule" >
+                    <input type="hidden" id="original_qty" class="form-control input-lg" ng-model="original_qty" >
+
 						<div class="col-sm-2 form-group" style="padding-top:20px;">
 						<form method ='POST' id='frm1' action='<?php echo $url ?>'>
 						
@@ -96,8 +103,11 @@ th,td{
                     <tr>
                         <th>S.no</th>
                         <th>Bundle Number</th>
+                        <th>Schedule</th>
                         <th>Operation Description</th>
-                        <th>Module Name</th>
+                        <th>Bundle Qty</th>
+                        <th>From Module</th>
+                        <th>To Module</th>
                         <th>status</th>
                         <th>Remarks</th>
                     </tr>
@@ -106,7 +116,10 @@ th,td{
                     <tr ng-repeat="bar_code_details  in scanned_barcode_details">
                         <td>{{$index+1}}</td>
                         <td>{{bar_code_details.bundle}}</td>
+                        <td>{{bar_code_details.schedule}}</td>
                         <td>{{bar_code_details.operation_code}}</td>
+                        <td>{{bar_code_details.original_qty}}</td>
+                        <td>{{bar_code_details.from_module}}</td>
                         <td>{{bar_code_details.module}}</td>
                         <td>{{bar_code_details.status}}</td> 
                         <td>{{bar_code_details.last_barcode_status_remarks}}</td>
