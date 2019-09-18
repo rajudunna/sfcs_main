@@ -97,13 +97,15 @@ $result_rejections = $link->query($qery_rejection_resons);
     padding: 5px 10px;
     font-size: 12px;
     line-height: 1.1;
+    text-align: left;
 }
 .form-control {
     display: block;
     width: 100%;
-    height: 24px;
+    height: 32px;
 }
 </style>
+<body class="nav-md" style="color: #f6faff;">
 <div class="panel panel-primary" id="scanned_barcode" ng-app="scanning_interface_new">
     <div class="panel-heading">Bundle Scanning</div>
     <div class="panel-body" style="background-color: black;" ng-controller="scancode_ctrl">
@@ -117,7 +119,7 @@ $result_rejections = $link->query($qery_rejection_resons);
         <div class="panel panel-basic" style=";background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
          <div class="panel-heading">
                 <div class="row">
-                <div class="btn btn-sm btn-success" style="width: 160px;" >Barcode: {{barcode_value}}</div>
+                <div class="btn btn-sm btn-success" style="width: 160px;padding: 6px 0px 6px 0px;" >Barcode: {{barcode_value}}</div>
                 <div class="btn btn-sm btn-success" style="width: 107px;">Action: {{action_mode | uppercase }}</div>
                 <div class="btn btn-sm btn-success" style="width: 118px;">Tx Mode: {{trans_mode | uppercase }}</div>
                 <div class="btn btn-sm btn-success">Tot Qty: <input type="text"  style="max-width: 70px;" class="form-control" ng-model="changed_rej" name="changed_rej" id="changed_rej" ng-readonly="true"></div>
@@ -137,7 +139,7 @@ $result_rejections = $link->query($qery_rejection_resons);
     <tbody >
      <tr>
      <div>
-        <div class="col-sm-3">previous hr: </div>
+        <div class="col-sm-3" style="padding: 3px 15px 3px 66px;width:44%">previous hr: </div>
         <div class="btn btn-sm btn-success">00</div>
         <div class="btn btn-sm btn-danger"> 00</div>
         <div class="btn btn-sm btn-warning">00</div>
@@ -145,7 +147,7 @@ $result_rejections = $link->query($qery_rejection_resons);
       </tr>
       <tr>
       <div>
-        <div class="col-sm-3">current hr:</div>
+        <div class="col-sm-3" style="padding: 3px 15px 3px 66px;width:44%">current hr:</div>
         <div class="btn btn-sm btn-success">00</div>
         <div class="btn btn-sm btn-danger"> 00</div>
         <div class="btn btn-sm btn-warning">00</div>
@@ -171,15 +173,15 @@ $result_rejections = $link->query($qery_rejection_resons);
         </tr>
         <tr>
         <td><label>Tx Mode:</label></td>
-        <td  >
+        <td>
             <div class="radio-toolbar" ng-init="trans_mode='good'" style="width: 323px;padding: 8px 6px 8px 17px;
-            background-color: #55514a;border-radius: 20px">
+            background-color: #2e2d2c;border-radius: 20px">
             <input type="radio" id="radiogood" name="trans_mode" ng-model='trans_mode' ng-value='"good"'>
-            <label for="radiogood" style="background-color: #45b645;width:90px;">Good</label> &nbsp;
+            <label for="radiogood" style="border: 2px solid;border-color: #9d9a9a;background-color: #45b645;width:90px;">Good</label> &nbsp;
             <input type="radio" id="radioscrap" name="trans_mode" ng-model='trans_mode' ng-value='"scrap"'>
-            <label for="radioscrap" style="background-color: #f31c06;width:90px;" class="btn btn-primary" data-toggle="modal" focus-element="autofocus" data-target=".bs-example-modal-lg">Scrap</label>
+            <label for="radioscrap" style="border: 2px solid;border-color: #9d9a9a;background-color: #f31c06;width:90px;" class="btn btn-primary" data-toggle="modal" focus-element="autofocus" data-target=".bs-example-modal-lg">Scrap</label>
             <input type="radio" id="radiorework" name="trans_mode" ng-model='trans_mode' ng-value='"rework"'>
-            <label for="radiorework" style="background-color: #714f1b;width:90px;">Rework</label>
+            <label for="radiorework" style="border: 2px solid;border-color: #7979a5;background-color: #714f1b;width:90px;">Rework</label>
             
             <!--<input type="radio" id="radiogudscrap" name="trans_mode" ng-model='trans_mode' ng-value='"gudscrap"'>
             <label for="radiogudscrap" style="background-color: #a5980df5;" class="btn btn-primary" data-toggle="modal" focus-element="autofocus" data-target=".bs-example-modal-lg">Good&Scrap</label>--> 
@@ -192,12 +194,10 @@ $result_rejections = $link->query($qery_rejection_resons);
                 <div class="row">
                 <div class="col-sm-3 col-md-3 col-xs-3">PO: {{vpo}}</div>
                 <div class="col-sm-3 col-md-3 col-xs-3"></div>
-                <div class="col-sm-3 col-md-3 col-xs-3"></div>
                 <div class="col-sm-3 col-md-3 col-xs-3">Size: {{size_title}}</div>
                 <div class="panel-body">  </div>
                 <div class="row"> </div>
                 <div class="col-sm-3 col-md-3 col-xs-3" > Z feature: {{zfeature}}</div>
-                <div class="col-sm-3 col-md-3 col-xs-3"></div>
                 <div class="col-sm-3 col-md-3 col-xs-3"></div>
                 <div class="col-sm-3 col-md-3 col-xs-3">Schedule: {{schedule}}</div>
                 <div class="panel-body">  </div>
@@ -213,11 +213,11 @@ $result_rejections = $link->query($qery_rejection_resons);
         <td><span>Action :</span></td>
         <td>
             <div class="radio-toolbar1" ng-init="action_mode='add'"style="width: 220px;padding: 10px 18px 4px 25px;
-            background-color: #55514a;border-radius: 20px;">
+            background-color: #2e2d2c;border-radius: 20px;">
                 <input type="radio" id="radioadd" name="action_mode" ng-model='action_mode' ng-value='"add"'>
-                <label for="radioadd" style="background-color: #2396c5;border: 0px;width: 80px;" class="btn btn-info"  ng-click="barcode_submit('add');" >Add</label>
+                <label for="radioadd" style="border: 2px solid;border-color: #7979a5;background-color: #2396c5;width: 80px;" class="btn btn-info"  ng-click="barcode_submit('add');" >Add</label>
                 <input type="radio" id="radioreverse" name="action_mode" ng-model='action_mode' ng-value='"reverse"'>
-                <label for="radioreverse" style="background-color: #2355c5;border: 0px;width: 80px;" class="btn btn-info"  ng-click="barcode_submit('reverse');">Reverse</label>
+                <label for="radioreverse" style="border: 2px solid;border-color: #7979a5;background-color: #2355c5;width: 80px;" class="btn btn-info"  ng-click="barcode_submit('reverse');">Reverse</label>
             </div>
             <!--<div>
             <button type="button" style="height: 80px;width: 76px;."  class="btn btn-info"  ng-click="barcode_submit('add');">Add</button>
@@ -231,15 +231,15 @@ $result_rejections = $link->query($qery_rejection_resons);
          <div class="panel-heading" style="font-size: large;background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
                 <div class="row">
                 <div class="col-sm-3 col-md-3 col-xs-3">Factory : {{global_facility_code}}</div>
+                <!-- <div class="panel-heading"></div>
+                <div class="row"></div> -->
                 <div class="panel-heading"></div>
                 <div class="row"></div>
                 <div class="panel-heading"></div>
                 <div class="row"></div>
-                <div class="panel-heading"></div>
-                <div class="row"></div>
-                <div class="col-sm-8 col-md-8 col-xs-8">Team: {{module}}</div>
+                <div class="col-sm-7 col-md-7 col-xs-7">Team: {{module}}</div>
                 <button type="button" style="height: 35px;width:70px;" class="btn btn-info">Reset</button>
-                <div class="col-sm-8 col-md-8 col-xs-8">Operation :{{operation_name}}</div>
+                <div class="col-sm-7 col-md-7 col-xs-7">Operation :{{operation_name}}</div>
                 <div class="col-sm-3  ">Count</div>
                 </div>
             </div>
