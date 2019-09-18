@@ -268,7 +268,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				}				
 				default:
 				{
-					$id="yash";
+					$id="Ash";
 					$rem="Not Update";
 					break;
 				}
@@ -337,7 +337,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			{
 				if($trims_status=="NULL" || $trims_status=="" || $trims_status=="(NULL)")
 				{
-					$trimid="YASH";
+					$trimid="Ash";
 				}			
 				else if($trims_status == 0 || $trims_status == 9)
 				{
