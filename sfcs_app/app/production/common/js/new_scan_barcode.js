@@ -114,14 +114,14 @@ function neglecting_function()
     }
 
 $("#reason").change(function(){
-	var tot = $('#changed_rej').val();
+    
+    var tot = $('#changed_rej').val();
 	var result = $('#reason').val();
-	// console.log(tot);
-	// console.log(result);
 	if(Number(result) > Number(tot))
 	{
-		sweetAlert("","No. Of reasons should not greater than Bundle quantity","error");
-		$('#reason').val(0);
+		sweetAlert("","No. Of reasons should not greater than bundle eligible quantity","error");
+        $('#reason').val(0);
+        $('#reason').change();
 	}
 	else
 	{
@@ -175,7 +175,9 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
             if(validate_barcode>0){
                 $scope.style=data.style.trim();
                 $scope.color=data.color.trim();
-                $scope.changed_rej=data.original_qty;
+                $scope.bundle_qty=data.original_qty;
+                //$scope.changed_rej=data.bundle_eligibl_qty;
+                $('#changed_rej').val(data.bundle_eligibl_qty);
                 $scope.schedule= data.schedule;
                 $scope.size_title= data.size_title;
                 $scope.operation_name= data.operation_name;
@@ -183,6 +185,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 $scope.zfeature=data.zfeature;
                 $scope.vpo=data.vpo;
                 $scope.scanned_status="Please Proceed";
+                
 
             }else{
                 $scope.style="";
@@ -219,7 +222,6 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 }),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).success(function (data, status, headers, config) {
-                console.log(data);
                 $scope.scanned_status=data.status;
             }).error(function (data, status, headers, config) {
                 // handle error things
