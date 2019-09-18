@@ -1,10 +1,11 @@
 <?php
 
  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
- $lot_number = $_get['lot_no'];
- //$lot_number = ['5231799003','5231799002'];
- $get_details="select * from `bai_rm_pj1`.`inspection_population` where lot_no in(".implode(',',$lot_number).") and status in(3,4)";
- //echo $get_details;
+ $lot_number = $_GET['lot_no'];
+//  echo $lot_number;
+//  $lot_number = ['5231799003','5231799002'];
+ $get_details="select * from `bai_rm_pj1`.`inspection_population` where lot_no in($lot_number) and status in(1,2)";
+//  echo $get_details;
  $details_result=mysqli_query($link,$get_details) or exit("get_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($row1=mysqli_fetch_array($details_result))
  {
@@ -25,7 +26,7 @@
  	$id_no = $row12['id'];
  }
 
- $path= getFullURLLevel($_GET['r'], "fabric_inspection_report.php", "0", "R")."?id=$id_no";
+ $path= getFullURLLevel($_GET['r'], "fabric_inspection_report.php", "0", "R")."?id=$id_no&color=$color&batch=$batch";
  $lot_details = implode(',',$lot_num);
   $inspection_details = "select * from $bai_rm_pj1.roll_inspection_child where lot_no in(".$lot_details.")";
   //echo $inspection_details;
@@ -257,14 +258,14 @@
 							       <tbody>
 							      	<tr>
 							      	<?php
-							      		echo "<td><a class='btn btn-xs btn-info' href='$path' onclick='return popitup("."'".$path."'".")'>Print Report</a></td>";
+							      		echo "<td><a class='btn btn-sm btn-primary' href='$path' onclick='return popitup("."'".$path."'".")'>Print Report</a></td>";
 							      	?>
 							      	</tr>
 							      	<tr>	
-							      		<td><button type="sumbit" class="btn btn-outline-primary" name="save" id="save">Save</button></td>
+							      		<td><button type="sumbit" class='btn btn-sm btn-primary' name="save" id="save">Save</button></td>
 							      	</tr>
 							      	<tr>	
-							      		<td><button type="sumbit" class="btn btn-outline-primary" name="confirm" id="confirm">Confirm</button></td>
+							      		<td><button type="sumbit" class='btn btn-sm btn-primary' name="confirm" id="confirm">Confirm</button></td>
 							      	</tr>
 							      </tbody>
 							     </table>
@@ -377,10 +378,11 @@ if(isset($_POST['save']))
 					  //echo $insert_query;
 					  $result_query = $link->query($insert_query) or exit('query error in inserting');
 
-					  $update_status = "update $bai_rm_pj1.inspection_population SET status=4 where supplier_roll_no='$supplier_no' and sfcs_roll_no='$roll_no' and lot_no='$lots'";
+					  $update_status = "update $bai_rm_pj1.inspection_population SET status=2 where supplier_roll_no='$supplier_no' and sfcs_roll_no='$roll_no' and lot_no='$lots'";
 					  $result_query_update = $link->query($update_status) or exit('query error in updating');
 				    }
-				    echo "<script>sweetAlert('Data Saved Sucessfully','','info');</script>";
+					echo "<script>sweetAlert('Data Saved Sucessfully','','info');</script>";
+					die();
 		  	    }
 		  	    else
 		  	    {
@@ -457,10 +459,11 @@ if(isset($_POST['confirm']))
 					  // echo $insert_query;
 					  $result_query = $link->query($insert_query) or exit('query error in inserting');
 
-					  $update_status = "update $bai_rm_pj1.inspection_population SET status=5 where supplier_roll_no='$supplier_no' and sfcs_roll_no='$roll_no' and lot_no='$lots'";
+					  $update_status = "update $bai_rm_pj1.inspection_population SET status=3 where supplier_roll_no='$supplier_no' and sfcs_roll_no='$roll_no' and lot_no='$lots'";
 					  $result_query_update = $link->query($update_status) or exit('query error in updating');
 				    }
-				    echo "<script>sweetAlert('Updated Sucessfully','','info');</script>";
+					echo "<script>sweetAlert('Updated Sucessfully','','info');</script>";
+					die();
 		  	    }
 		  	    else
 		  	    {
