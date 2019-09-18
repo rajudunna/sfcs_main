@@ -171,7 +171,6 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
             }),
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }).success(function (data, status, headers, config) {
-            //alert(data.bundle_eligibl_qty);
             var validate_barcode=data.validate_barcode;
             if(validate_barcode>0){
                 $scope.style=data.style.trim();

@@ -120,7 +120,7 @@ $result_rejections = $link->query($qery_rejection_resons);
                 <div class="btn btn-sm btn-success" style="width: 160px;" >Barcode: {{barcode_value}}</div>
                 <div class="btn btn-sm btn-success" style="width: 107px;">Action: {{action_mode | uppercase }}</div>
                 <div class="btn btn-sm btn-success" style="width: 118px;">Tx Mode: {{trans_mode | uppercase }}</div>
-                <div class="btn btn-sm btn-success">Tot Qty: <input type="text"  style="max-width: 70px;" class="form-control" ng-model="changed_rej" name="changed_rej" id="changed_rej" ng-readonly="true"></div>
+                <div class="btn btn-sm btn-success">Bundle Qty: <input type="text"  style="max-width: 50px;" class="form-control" ng-model="bundle_qty" name="bundle_qty" id="bundle_qty" ng-readonly="true"></div>
                 </div>
                 </div>
                 <div class="panel-body"> 
@@ -166,6 +166,7 @@ $result_rejections = $link->query($qery_rejection_resons);
         <input type="hidden" id="module" ng-model="module" ng-init="module='<?= $module; ?>'">
         <input type="hidden" id="shift" ng-model="shift" ng-init="shift='<?= $shift; ?>'">
         <input type="hidden" id="op_code" ng-model="op_code" ng-init="op_code='<?= $op_code; ?>'">
+        <input type="hidden" id="changed_rej" name="changed_rej">
         <input type="hidden" id="rej_data" ng-model="rej_data">
         <input type="hidden" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'get_newbarcode_details.php',0,'R') ?>'">
         </tr>
