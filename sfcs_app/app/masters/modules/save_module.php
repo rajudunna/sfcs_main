@@ -60,24 +60,24 @@ else
 	{
 		$modulestatus = 'In-Active';
 
-    	$plan_dashboard="select * from $bai_pro3.plan_dashboard where module='$module'";
+    	$plan_dashboard="select module from $bai_pro3.plan_dashboard where module=$module";
 		$result1= mysqli_query($conn, $plan_dashboard);
 		$rowcount1=mysqli_num_rows($result1);
 		
-		$plan_dashboard_input="select * from $bai_pro3.plan_dashboard_input where input_module='$module'";
+		$plan_dashboard_input="select input_module from $bai_pro3.plan_dashboard_input where input_module=$module";
 		$result2= mysqli_query($conn, $plan_dashboard_input);
 		$rowcount2=mysqli_num_rows($result2);
 			
-		$fabric_priorities="select * from $bai_pro3.fabric_priorities where module='$module'";
+		$fabric_priorities="select module from $bai_pro3.fabric_priorities where module=$module";
 		$result3= mysqli_query($conn, $fabric_priorities);
 		$rowcount3=mysqli_num_rows($result3);
 		
-		$ims_log="select * from $bai_pro3.ims_log where ims_mod_no='$module'";
+		$ims_log="select ims_mod_no from $bai_pro3.ims_log where ims_mod_no=$module";
 		$result4= mysqli_query($conn, $ims_log);
 		$rowcount4=mysqli_num_rows($result4);
 
 
-		$embellishment_plan_dashboard="select * from $bai_pro3.`embellishment_plan_dashboard` WHERE module='$module'";
+		$embellishment_plan_dashboard="select module from $bai_pro3.`embellishment_plan_dashboard` WHERE module=$module";
 		$result6= mysqli_query($conn, $embellishment_plan_dashboard);
 		$rowcount6=mysqli_num_rows($result6);
 
