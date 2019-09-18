@@ -112,8 +112,12 @@ if($conn)
 				UID,
 				GPNO,
 				Session_ID)		
-				Values('".$id."','".$co_no."','".$color_code."','".$color_desc."','".$size_code."','".$size_desc."','".$schedule."','".$z_code."','".$z_desc."','1','".$sewing_job_no."',0,'".$bundle_no."','".$promis_op_code[$operation_id]."','".$mo_number."','".$date."','".$prom_div_code[$module]."','".$time."','".$reported_quantity."','".$uid[$user_id]."','".$gate_pass_no."','0')";
+				Values('".$id."','".$co_no."','".$color_code."','".$color_desc."','".$size_code."','".$size_desc."','".$schedule."','".$z_code."','".$z_desc."','1','".$sewing_job_no."',0,'".$bundle_no."','".$promis_op_code[$operation_id]."','".$mo_number."','".$trans_date."','".$prom_div_code[$module]."','".$time."','".$reported_quantity."','".$uid[$user_id]."','".$gate_pass_no."','0')";
 				//echo "Table - ProMIS_SX_OR_Day_Unique ---".$inserting_qry."<br>";
+				odbc_exec($conn, $inserting_qry);
+				
+				$sql_update="UPDATE $bai_pro3.`m3_transactions` SET `promis_status` = 1 WHERE `id` = ".$id."";
+				$sql_result=mysqli_query($link, $sql_update) or exit("Updatting issue".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 			else
 			{
@@ -148,14 +152,15 @@ if($conn)
 				Module_Mode,
 				Reason_Code,
 				Remarks)
-				Values('".$co_no."','".$color_code."','".$color_desc."','".$size_code."','".$size_desc."','".$schedule."','".$z_code."','".$z_desc."','1','".$sewing_job_no."','".$promis_op_code[$operation_id]."','".$mo_number."','".$date."','".$div_code."','".$reported_quantity."','".$uid[$user_id]."','".$mod_mode."','".$rejection_reason."','NULL')";	
-				//echo "Table - ProMIS_SX_OR_Day_MQTY ---".$inserting_qry."<br>";			
+				Values('".$co_no."','".$color_code."','".$color_desc."','".$size_code."','".$size_desc."','".$schedule."','".$z_code."','".$z_desc."','1','".$sewing_job_no."','".$promis_op_code[$operation_id]."','".$mo_number."','".$trans_date."','".$div_code."','".$reported_quantity."','".$uid[$user_id]."','".$mod_mode."','".$rejection_reason."','NULL')";	
+				//echo "Table - ProMIS_SX_OR_Day_MQTY ---".$inserting_qry."<br>";	
+				odbc_exec($conn, $inserting_qry);
+				
+				$sql_update="UPDATE $bai_pro3.`m3_transactions` SET `promis_status` = 1 WHERE `id` = ".$id."";
+				$sql_result=mysqli_query($link, $sql_update) or exit("Updatting issue".mysqli_error($GLOBALS["___mysqli_ston"]));		
 			}
 		}
-		odbc_exec($conn, $inserting_qry);
-				
-		$sql_update="UPDATE $bai_pro3.`m3_transactions` SET `promis_status` = 1 WHERE `id` = ".$id."";
-		$sql_result=mysqli_query($link, $sql_update) or exit("Updatting issue".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
 	}
 }
 else

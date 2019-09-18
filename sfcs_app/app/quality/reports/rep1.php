@@ -183,7 +183,7 @@ if(isset($_POST['filter']))
 				$roll_ids[]=-1;
 				
 				$sql_roll_ids="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE DOC_NO in (".$doc_ref.") ORDER BY DOC_NO";
-				 // echo "<br>".$sql_roll_ids."<br>";
+				 //echo "<br>".$sql_roll_ids."<br>";
 				$sql_result_roll_ids=mysqli_query($link, $sql_roll_ids) or exit("Sql Error43".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row_roll_ids=mysqli_fetch_array($sql_result_roll_ids))
 				{
