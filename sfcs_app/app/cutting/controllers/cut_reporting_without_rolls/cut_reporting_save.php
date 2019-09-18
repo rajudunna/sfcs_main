@@ -15,102 +15,124 @@ $doc_no=$_POST['doc_no'];
 $schedule= $_POST['schedule'];
 $num=1;
 
-if($rollwisedata){
-
-
-
-foreach($rollwisedata as $value)
-{ 
-    $laysequence=$value[1]?$value[1]:0;
-    
+if($rollwisedata)
+{
+    foreach($rollwisedata as $value)
+    { 
+        $laysequence=$value[1]?$value[1]:0;
         $exec ="INSERT INTO $bai_pro3.`docket_roll_info` (docket,lay_sequence,roll_no,shade,width,fabric_rec_qty,reporting_plies,damages,joints,endbits,shortages,fabric_return)
-        VALUES (".$doc_no.",".$laysequence.",".$value[2].","."'".$value[3]."'".",".$value[4].",".$value[5].",".$value[6].",".$value[7].",".$value[8].",".$value[9].",".$value[10].",".$value[11].")";
-       $result= mysqli_query($link,$exec);   
-}
+        VALUES (".$doc_no.",".$laysequence.",'".$value[2]."','".$value[3]."','".$value[4]."','".$value[5]."','".$value[6]."','".$value[7]."','".$value[8]."','".$value[9]."','".$value[10]."','".$value[11]."')";
+        $result= mysqli_query($link,$exec);   
+    }
 
-if($result)
-{
- $docketexisted="SELECT * from $bai_pro3.docket_number_info where doc_no=".$doc_no;
- $docketexistedresult=mysqli_query($link,$docketexisted);
-if($docketexistedresult)
-{
-     $scheduleddata="select doc_no from $bai_pro3.`order_cat_doc_mk_mix` where order_del_no=".$schedule;
-     $scheduleddataresult= mysqli_query($link,$scheduleddata);
-     if(mysqli_num_rows($scheduleddataresult) > 0)
-     {
-                         while($dockts = mysqli_fetch_array($scheduleddataresult))
-                         {
-                             $scheduledockets[] = $dockts['doc_no'];
-                         }
-     }
-    $docketnumberexisted="SELECT max(bundle_end) as bundle_end,max(bundle_no) as bundle_no from $bai_pro3.docket_number_info where doc_no IN ( '" . implode( "', '" , $scheduledockets ) . "' )";
-     $docketnumberexistedresult=mysqli_query($link,$docketnumberexisted);
-     $docketno = mysqli_fetch_array($docketnumberexistedresult);
-         if(mysqli_num_rows($docketnumberexistedresult) > 0)
-         {
-             $padded = sprintf('%1$04d', ($docketno['bundle_end']));
-             $bundle=$docketno['bundle_no'];
-         }
-         else
-         {
-             $padded = str_pad(1,4,"0",STR_PAD_LEFT);
-             $bundle=0;
-         }
-}
+    if($result)
+    {
+        $docketexisted="SELECT * from $bai_pro3.docket_number_info where doc_no=".$doc_no;
+        $docketexistedresult=mysqli_query($link,$docketexisted);
+        if($docketexistedresult)
+        {
+            $scheduleddata="select doc_no from $bai_pro3.`order_cat_doc_mk_mix` where order_del_no=".$schedule;
+            $scheduleddataresult= mysqli_query($link,$scheduleddata);
+            if(mysqli_num_rows($scheduleddataresult) > 0)
+            {
+                while($dockts = mysqli_fetch_array($scheduleddataresult))
+                {
+                    $scheduledockets[] = $dockts['doc_no'];
+                }
+            }
+            $docketnumberexisted="SELECT max(bundle_end) as bundle_end,max(bundle_no) as bundle_no from $bai_pro3.docket_number_info where doc_no IN (".implode(",",$scheduledockets).")";
+            $docketnumberexistedresult=mysqli_query($link,$docketnumberexisted);
+            $docketno = mysqli_fetch_array($docketnumberexistedresult);
+            if(mysqli_num_rows($docketnumberexistedresult) > 0)
+            {
+                $padded = $docketno['bundle_end']+1;
+                $bundle=$docketno['bundle_no']+1;
+            }
+            
+        }
+        else
+        {
+            $scheduleddata="select doc_no from $bai_pro3.`order_cat_doc_mk_mix` where order_del_no=".$schedule;
+            $scheduleddataresult= mysqli_query($link,$scheduleddata);
+            if(mysqli_num_rows($scheduleddataresult) > 0)
+            {
+                while($dockts = mysqli_fetch_array($scheduleddataresult))
+                {
+                    $scheduledockets[] = $dockts['doc_no'];
+                }
+            }
+            $docketnumberexisted="SELECT max(bundle_end) as bundle_end from $bai_pro3.docket_number_info where doc_no IN (".implode(",",$scheduledockets).")";
+            $docketnumberexistedresult=mysqli_query($link,$docketnumberexisted);
+            $docketno = mysqli_fetch_array($docketnumberexistedresult);
+            if(mysqli_num_rows($docketnumberexistedresult) > 0)
+            {
+                $padded = $docketno['bundle_end']+1;
+            }
+            else
+            {            
+                $padded = 1;
+                $bundle = 1;
+            }
+        }
 
+            
+        $size_query = "SELECT * FROM $bai_pro3.plandoc_stat_log WHERE doc_no=$doc_no";
+        $size_result = mysqli_query($link, $size_query) or exit("error while getting details for child doc nos");
+        while($sql_row=mysqli_fetch_array($size_result))
+        {
+            $order_tid = $sql_row['order_tid'];
+            for($s=0;$s<sizeof($sizes_code);$s++)
+            {
+                $planned_s[$sizes_code[$s]]=$sql_row["p_s".$sizes_code[$s].""];
+            }				
+        }
+        $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
+        $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($sql_row=mysqli_fetch_array($sql_result))
+        {
+            for($ss=0;$ss<sizeof($sizes_code);$ss++)
+            {
+                $o_s[$sizes_code[$ss]]=$sql_row["order_s_s".$sizes_code[$ss].""];
+            }
+        }		
 
+        for($jj=0;$jj<sizeof($o_s);$jj++)
+        {
+            $ratios_list[$o_s[$sizes_code[$jj]]]= $planned_s[$sizes_code[$jj]];
+        }
 
-
- $ratios=$_POST['ratios'];
- $ratios=array('S'=>$ratios[0],'XM'=>$ratios[1],'SM'=>$ratios[2],'M'=>$ratios[3],'L'=>$ratios[4],'XL'=>$ratios[5]);
-
- $docket_query="SELECT *,sum(reporting_plies) as totalplies FROM $bai_pro3.`docket_roll_info` where docket=".$doc_no."  group by shade order by lay_sequence asc";
- $docket_queryresult = mysqli_query($link,$docket_query);
- if(mysqli_num_rows($docket_queryresult) > 0)
- {
-     while($row = mysqli_fetch_array($docket_queryresult))
-     {
-         $docket_info[] = $row;
-     }
-             $sizeofrolls=count($docket_info);
-             
-             $bundleno=0;
-             $shadebundleno=0;
-             $num=0;
-             
-             foreach($ratios as $key=>$value)// no.of. ratios
-             {
-                 
-                 for($i=0;$i<$value;$i++)// value of each ratio
-                 {
-                     $bundle++;
-                     
-                     for($k=0;$k<$sizeofrolls;$k++)
-                     {
-                         $shadebundleno++;
-                         $startno=$padded;
-                         $padded+=$docket_info[$k]['totalplies'];
-                         $padded = str_pad($padded, 4, 0, STR_PAD_LEFT);
-                         
-                         
-
-                     $docketrolinfo ="INSERT INTO $bai_pro3.`docket_number_info` (doc_no,size,bundle_no,shade_bundle,bundle_start,bundle_end)
-                                 VALUES (".$doc_no.","."'".$key."'".",".$bundle.","."'".$bundle."-".$shadebundleno."'".","."'".$startno."'".","."'".$padded."'".")";
-                             
-                             $result= mysqli_query($link,$docketrolinfo);
-                     
-                     }
-                     $shadebundleno=0;
-                     
-                 }
-
-             }           
-     
-
- }
-
-}
-
+        $docket_query="SELECT *,sum(reporting_plies) as totalplies FROM $bai_pro3.`docket_roll_info` where docket=".$doc_no."  group by shade,lay_sequence order by lay_sequence asc";
+        $docket_queryresult = mysqli_query($link,$docket_query);
+        if(mysqli_num_rows($docket_queryresult) > 0)
+        {
+            while($row = mysqli_fetch_array($docket_queryresult))
+            {
+                $docket_info[] = $row;
+            }
+            $sizeofrolls=count($docket_info);
+            $bundleno=1;
+            $shadebundleno=0;
+            $num=0;
+            
+            foreach($ratios_list as $key=>$value)// no.of. ratios
+            {            
+                for($i=0;$i<$value;$i++)// value of each ratio
+                {   
+                    for($k=0;$k<$sizeofrolls;$k++)
+                    {
+                        $shadebundleno++;
+                        $startno=$padded;
+                        $padded+=$docket_info[$k]['totalplies'];
+                        $docketrolinfo ="INSERT INTO $bai_pro3.`docket_number_info` (doc_no,size,bundle_no,shade_bundle,bundle_start,bundle_end)
+                        VALUES (".$doc_no.",'".$key."',".$bundle.",'".$bundle."-".$shadebundleno."',".$startno.",".$padded.")";
+                        $result= mysqli_query($link,$docketrolinfo);                                          
+                    }   
+                    $bundle++;    
+                    $shadebundleno=0;                    
+                }
+            }         
+        }
+    }
 }
 
 
