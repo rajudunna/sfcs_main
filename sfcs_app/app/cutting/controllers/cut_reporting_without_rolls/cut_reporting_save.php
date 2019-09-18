@@ -25,10 +25,7 @@ foreach($rollwisedata as $value)
     
         $exec ="INSERT INTO $bai_pro3.`docket_roll_info` (docket,lay_sequence,roll_no,shade,width,fabric_rec_qty,reporting_plies,damages,joints,endbits,shortages,fabric_return)
         VALUES (".$doc_no.",".$laysequence.",".$value[2].","."'".$value[3]."'".",".$value[4].",".$value[5].",".$value[6].",".$value[7].",".$value[8].",".$value[9].",".$value[10].",".$value[11].")";
-       $result= mysqli_query($link,$exec);
-  
-       
-        
+       $result= mysqli_query($link,$exec);   
 }
 
 if($result)
@@ -56,7 +53,7 @@ if($docketexistedresult)
          }
          else
          {
-             $padded = sprintf('%1$04d', (++$num));
+             $padded = str_pad(1,4,"0",STR_PAD_LEFT);
              $bundle=0;
          }
 }

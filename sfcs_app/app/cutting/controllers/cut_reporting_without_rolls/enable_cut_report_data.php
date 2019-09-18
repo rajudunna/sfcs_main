@@ -27,7 +27,7 @@ $finishedrollsresult = mysqli_query($link,$finishedrolls);
                     WHEN roll_id IN ( '" . implode( "', '" , $response_data ) . "' ) THEN 1 
                     ELSE 0
                 END) AS existed
-            FROM $bai_rm_pj1.`fabric_cad_allocation` left join `bai_rm_pj1`.`store_in` on `bai_rm_pj1`.`fabric_cad_allocation`.roll_id=`bai_rm_pj1`.`store_in`.tid left join `bai_pro3`.`docket_roll_info` on `bai_pro3`.`docket_roll_info`.roll_no=`bai_rm_pj1`.`fabric_cad_allocation`.roll_id WHERE doc_no=".$doc_no." order by `bai_rm_pj1`.`store_in`.ref4" ; 
+            FROM $bai_rm_pj1.`fabric_cad_allocation` left join `bai_rm_pj1`.`store_in` on `bai_rm_pj1`.`fabric_cad_allocation`.roll_id=`bai_rm_pj1`.`store_in`.tid left join `bai_pro3`.`docket_roll_info` on `bai_pro3`.`docket_roll_info`.roll_no=`bai_rm_pj1`.`fabric_cad_allocation`.roll_id WHERE doc_no=".$doc_no." order by `bai_rm_pj1`.`store_in`.ref4, bai_rm_pj1.fabric_cad_allocation.allocated_qty" ; 
             $docketrollsresult = mysqli_query($link,$docketrolls);
             $response_data=array();
             if(mysqli_num_rows($docketrollsresult) > 0){
@@ -62,7 +62,7 @@ $finishedrollsresult = mysqli_query($link,$finishedrolls);
                                 $mlengthresult = mysqli_query($link,$mlength);
                                 $marklength = mysqli_fetch_array($mlengthresult);
 
-                                $docketrolls="SELECT * FROM $bai_rm_pj1.`fabric_cad_allocation` left join `bai_rm_pj1`.`store_in` on `bai_rm_pj1`.`fabric_cad_allocation`.roll_id=`bai_rm_pj1`.`store_in`.tid left join `bai_pro3`.`docket_roll_info` on `bai_pro3`.`docket_roll_info`.roll_no=`bai_rm_pj1`.`fabric_cad_allocation`.roll_id  WHERE doc_no=".$doc_no ." order by `bai_rm_pj1`.`store_in`.ref4"; 
+                                $docketrolls="SELECT * FROM $bai_rm_pj1.`fabric_cad_allocation` left join `bai_rm_pj1`.`store_in` on `bai_rm_pj1`.`fabric_cad_allocation`.roll_id=`bai_rm_pj1`.`store_in`.tid left join `bai_pro3`.`docket_roll_info` on `bai_pro3`.`docket_roll_info`.roll_no=`bai_rm_pj1`.`fabric_cad_allocation`.roll_id  WHERE doc_no=".$doc_no ." order by `bai_rm_pj1`.`store_in`.ref4, bai_rm_pj1.fabric_cad_allocation.allocated_qty"; 
                                 $docketrollsresult = mysqli_query($link,$docketrolls);
                                 $response_data=array();
                                 if(mysqli_num_rows($docketrollsresult) > 0)
