@@ -16,7 +16,15 @@
     $item_code = $row1['item_code'];
     $item_desc = $row1['item_desc'];
  }
+ $get_parent_id ="select id from $bai_rm_pj1.roll_inspection where batch_no='$batch' and po_no='$po'";
+ //echo $get_parent_id;
+ $get_parent_id_result=mysqli_query($link,$get_parent_id) or exit("get_parent_id Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+ while($row12=mysqli_fetch_array($get_parent_id_result))
+ {
+ 	$id_no = $row12['id'];
+ }
 
+ $path= getFullURLLevel($_GET['r'], "fabric_inspection_report.php", "0", "R")."?id=$id_no&color=$color&batch=$batch";
  $inspection_details = "select * from $bai_rm_pj1.roll_inspection_child where lot_no='$lot_number' and supplier_roll_no='$supplier_id' and sfcs_roll_no='$roll_id'";
   //echo $inspection_details;
   $inspection_details_result=mysqli_query($link,$inspection_details) or exit("inspection_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -112,9 +120,10 @@ if(isset($_POST['save']))
 	              //echo $insert_query;
 	             $result_query = $link->query($insert_query) or exit('query error in inserting');
 
-	             $update_status = "update $bai_rm_pj1.inspection_population SET status=4 where supplier_roll_no='$supplier_no' and sfcs_roll_no='$roll_no' and lot_no='$lot_num'";
+	             $update_status = "update $bai_rm_pj1.inspection_population SET status=2 where supplier_roll_no='$supplier_no' and sfcs_roll_no='$roll_no' and lot_no='$lot_num'";
 	             $result_query_update = $link->query($update_status) or exit('query error in updating');
-	             echo "<script>sweetAlert('Data Saved Sucessfully','','info');</script>";
+				 echo "<script>sweetAlert('Data Saved Sucessfully','','info');</script>";
+				 die();
 	           }
 	           else
 		  	   {
@@ -184,9 +193,10 @@ if(isset($_POST['confirm']))
 	              //echo $insert_query;
 	             $result_query = $link->query($insert_query) or exit('query error in inserting');
 
-	             $update_status = "update $bai_rm_pj1.inspection_population SET status=4 where supplier_roll_no='$supplier_no' and sfcs_roll_no='$roll_no' and lot_no='$lot_num'";
+	             $update_status = "update $bai_rm_pj1.inspection_population SET status=3 where supplier_roll_no='$supplier_no' and sfcs_roll_no='$roll_no' and lot_no='$lot_num'";
 	             $result_query_update = $link->query($update_status) or exit('query error in updating');
-	             echo "<script>sweetAlert('Updated Sucessfully','','info');</script>";
+				 echo "<script>sweetAlert('Updated Sucessfully','','info');</script>";
+				 die();
 	           }
 	           else
 		  	   {
@@ -394,7 +404,9 @@ if(isset($_POST['confirm']))
 							     <table class="table table-bordered">
 							       <tbody>
 							      	<tr>
-							      		<td><button type="button" class="btn btn-outline-primary">Print Report</button></td>
+									  <?php
+							      		echo "<td><a class='btn btn-sm btn-primary' href='$path' onclick='return popitup("."'".$path."'".")'>Print Report</a></td>";
+							      	?>
 							      	</tr>
 							      	<tr>	
 							      		<td><button type="sumbit" class="btn btn-outline-primary" name="save" id="save">Save</button></td>
