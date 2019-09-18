@@ -311,41 +311,41 @@ switch (trim($product_group))
 {
 	case "Elastic":
 	{
-		$labels=array("Box No:", "", "Received Qty:");
-		$status=array("text", "hidden", "text");
-		$names=array("ref2", "ref3", "qty");
+		$labels=array("Supplier No:","Box No:", "", "Received Qty:");
+		$status=array("text","text", "hidden", "text");
+		$names=array("ref4","ref2", "ref3", "qty");
 		$uoe="YRD";
 		break;
 	}
 	case "Lace":
 	{
-		$labels=array("Box No:", "Art No:", "Received Qty:");
-		$status=array("text", "text", "text");
-		$names=array("ref2", "ref3", "qty");
+		$labels=array("Supplier No:","Box No:", "Art No:", "Received Qty:");
+		$status=array("text","text", "text", "text");
+		$names=array("ref4","ref2", "ref3", "qty");
 		$uoe=$fab_uom;
 		break;
 	}
 	case "Fabric":
 	{
-		$labels=array( "Roll No:", "", "Roll Qty:");
-		$status=array("text", "hidden", "text");
-		$names=array("ref2", "ref3", "qty");
+		$labels=array("Supplier No:","Roll No:", "", "Roll Qty:");
+		$status=array("text","text", "hidden", "text");
+		$names=array("ref4","ref2", "ref3", "qty");
 		$uoe="YRD";
 		break;
 	}
 	case "Thread":
 	{
-		$labels=array( "Box No:", "", "Received Qty:");
-		$status=array("text", "hidden", "text");
-		$names=array("ref2", "ref3", "qty");
+		$labels=array("Supplier No:","Box No:", "", "Received Qty:");
+		$status=array("text","text", "hidden", "text");
+		$names=array("ref4","ref2", "ref3", "qty");
 		$uoe="CON";
 		break;
 	}
 	default:
 	{
-		$labels=array( "BOX No", "", "Received Qty:");
-		$status=array("text", "hidden", "text");
-		$names=array("ref2", "ref3", "qty");
+		$labels=array("Supplier No:","BOX No", "", "Received Qty:");
+		$status=array("text","text", "hidden", "text");
+		$names=array("ref4","ref2", "ref3", "qty");
 		$uoe="PC";
 		break;
 	}
@@ -483,7 +483,7 @@ echo"<table width='400' id='upload'>
 // echo "<div class='panel panel-default'><div class='panel-body'>";
 echo "<div class='row col-md-12' style='width:102%;'><table id='table' class='table table-bordered'>";
 echo "<tr><td><div class=\"col-md-12 col-md-offset-3\"><input type=\"text\" size=\"5\" value=\"1\" name=\"s_start\" class='integer'>&nbsp;&nbsp;<a href=\"#\" onclick=\"javascript:fill_sr();\" class=\"btn btn-info btn-xs\" style='margin-top:4px;'>Fill Series</a></div></td>
-	<td>
+	<td colspan='2'>
 	<div class='row'>
 		<div class='col-md-12 col-md-offset-2'><b>Qty :</b>&nbsp;<input type=\"text\" size=\"5\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\"  name=\"auto_qty\" id=\"auto_qty\" class=\"float\">
 		<b>X Number of Rolls</b>

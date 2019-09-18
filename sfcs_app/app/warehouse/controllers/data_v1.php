@@ -50,6 +50,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 		$ref1=$_POST['ref1'];
 		$ref2=$_POST['ref2'];
 		$ref3=$_POST['ref3'];
+		$ref4=$_POST['ref4'];
 		$qty=$_POST['qty'];
 		$lot_no=$_POST['lot_no'];
 		$remarks=$_POST['remarks'];
@@ -193,6 +194,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 		$ref1=$_POST['ref1'];
 		$ref2=$_POST['ref2'];
 		$ref3=$_POST['ref3'];
+		$ref4=$_POST['ref4'];
 		$qty=$_POST['qty'];
 		$lot_no=$_POST['lot_no'];
 		$remarks=$_POST['remarks'];
@@ -250,7 +252,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							}
 						}
 					}
-						$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, ref3, qty_rec, date, remarks, log_user) values ('$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', $qty[$i], '$date', '$remarks','".$username."-".$plant_name."')";
+						$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, ref3,supplier_no, qty_rec, date, remarks, log_user) values ('$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', '$ref4[$i]', $qty[$i], '$date', '$remarks','".$username."-".$plant_name."')";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$qty_count += 1;
 					$last_id = mysqli_insert_id($link);
@@ -259,7 +261,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 					$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				}
-
+				
 				// if(!$sql_result)
 				// {
 				// 	echo "Failed to insert record<br/>";
