@@ -146,6 +146,14 @@
 					{
 						sweetAlert(response['module_status'],'','error');
 					}
+					else if(response['invalid_status'])
+					{
+						sweetAlert(response['invalid_status'],'','error');
+					}
+					else if(response['short_shipment_status'])
+					{
+						sweetAlert(response['short_shipment_status'],'','error');
+					}
 					else
 					{
 						// console.log(response);

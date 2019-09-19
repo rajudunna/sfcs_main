@@ -134,21 +134,21 @@
 				</form>
 		<div class="col-md-12">
 			<?php
-			if(isset($_POST['submit']) or ($_GET['style'] and $_GET['schedule']))
+			if ($_GET['style'] and $_GET['schedule'])
+			{
+				$style=$_GET['style'];
+				$schedule = $_GET['schedule'];
+			} 
+			else if ($_POST['style'] and $_POST['schedule'])
+			{
+				$style=$_POST['style'];
+				$schedule = $_POST['schedule'];	
+			}
+			$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
+			$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
+			if((isset($_POST['submit']) or ($_GET['style'] and $_GET['schedule'])) && short_shipment_status($style_id,$schedule_id,$link))
 			{					
-				if ($_GET['style'] and $_GET['schedule'])
-				{
-					$style=$_GET['style'];
-					$schedule = $_GET['schedule'];
-				} 
-				else if ($_POST['style'] and $_POST['schedule'])
-				{
-					$style=$_POST['style'];
-					$schedule = $_POST['schedule'];	
-				}
 				
-				$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
-				$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
 				// echo $style."---".$schedule;
 				$packing_summary_input_check_cut_based = echo_title("$bai_pro3.packing_summary_input","count(*)","pac_seq_no = -1 and order_del_no",$schedule,$link);
 				$pac_stat_input_check = echo_title("$bai_pro3.pac_stat_input","count(*)","schedule",$schedule,$link);

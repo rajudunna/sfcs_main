@@ -66,7 +66,7 @@
 
             <input type=\"submit\" name=\"submit\" value=\"Submit\" class=\"btn btn-success\"><br><br>";
 
-if(isset($_POST['submit']) || ($_GET['style'] && $_GET['schedule']))
+if((isset($_POST['submit']) || ($_GET['style'] && $_GET['schedule'])) &&  short_shipment_status($style,$schedule,$link))
 {
     // $sql="SELECT DISTINCT pack_method FROM $bai_pro3.`pac_stat_log` WHERE schedule='$schedule' order by pack_method";
     $sql="SELECT seq_no,pack_description,pack_method FROM $bai_pro3.pac_stat LEFT JOIN $bai_pro3.tbl_pack_ref ON tbl_pack_ref.schedule=pac_stat.schedule LEFT JOIN $bai_pro3.tbl_pack_size_ref ON tbl_pack_ref.id=tbl_pack_size_ref.parent_id AND pac_stat.pac_seq_no=tbl_pack_size_ref.seq_no where pac_stat.schedule='$schedule'	GROUP BY seq_no ORDER BY seq_no*1";
