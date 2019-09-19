@@ -152,7 +152,7 @@ if(isset($_POST['submit']))
     if($_POST['style'] != null || $_POST['schedule'] != null || $_POST['remove_type'] != null || $_POST['date'] != null){
         
         // var_dump($type);
-        $srt_shipment_data = "select * from $bai_pro3.short_shipment_job_track where id > 0 and remove_type <> '0' ";
+        $srt_shipment_data = "select * from $bai_pro3.short_shipment_job_track where id > 0 and remove_type in('1','2')";
         if($date){
             $srt_shipment_data.= " and date(date_time) = '$date'";
         }
