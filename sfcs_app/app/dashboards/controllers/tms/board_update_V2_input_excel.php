@@ -2,6 +2,7 @@
 <?php
     include ("../../../../common/config/config.php");
     include ("../../../../common/config/functions.php");
+  
 //     // Report all PHP errors (see changelog)
 // error_reporting(E_ALL);
 
@@ -22,6 +23,8 @@
 		
  if(isset($_POST['export_excel'])){
         $section=$_POST["section"];
+        $username=$_POST["uname1"];
+        // echo $username;
         $sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
@@ -61,7 +64,7 @@
                     $report_data_ary[$i]['req_time']=$jobsresult["input_trims_request_time"];
                     $report_data_ary[$i]['issue_time']=$jobsresult["log_time"];
                     $status = $jobsresult['input_trims_status'];
-                $sql2="SELECT min(st_status) as st_status,order_style_no,order_del_no,input_job_no FROM $temp_pool_db.plan_doc_summ_input_tms_$username WHERE input_job_no_random='$job_ref_no'";	
+                $sql2="SELECT min(st_status) as st_status,order_style_no,order_del_no,input_job_no FROM $bai_pro3.plan_dash_doc_summ_input WHERE input_job_no_random='$job_ref_no'";	
 				$result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row2=mysqli_fetch_array($result2))
 				{
