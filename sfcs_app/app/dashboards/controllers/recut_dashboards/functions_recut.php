@@ -281,7 +281,7 @@ function ReplaceProcess($replace_id_edit)
     { 
         $size_replace =  $replace_sizes['size_id'];
         $excess_size_title = $replace_sizes['size_title'];
-        $excess_job_qry = "SELECT GROUP_CONCAT(input_job_no_random order by input_job_no_random)AS input_job_no_random_ref,SUM(carton_act_qty)as excess_qty,group_concat(distinct doc_no)as doc_nos FROM `$bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$scheule' AND order_col_des = '$color' AND old_size = '$size_replace' AND type_of_sewing = '2'";
+        $excess_job_qry = "SELECT GROUP_CONCAT(distinct input_job_no_random order by input_job_no_random)AS input_job_no_random_ref,SUM(carton_act_qty)as excess_qty,group_concat(distinct doc_no)as doc_nos FROM `$bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$scheule' AND order_col_des = '$color' AND old_size = '$size_replace' AND type_of_sewing = '2'";
         $result_excess_job_qry = $link->query($excess_job_qry);
         if($result_excess_job_qry->num_rows > 0)
         {
