@@ -513,15 +513,15 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                                         existed="";
                                         complted=0;
                                     }
-                                    
-                                    if(data[i]["lay_sequence"]==null)
-                                    {
-                                        laysequnce="";
-                                    }
-                                    else{
-                                        laysequnce=data[i]["lay_sequence"];
-                                    }
-                                    row = $('<tr><td id='+i+'>'+sno+'</td><td><input type="text" id='+i+"laysequece"+' value ="'+laysequnce+'"class="form-control" '+existed+'></td><td>'+data[i]["ref2"]+'</td><td>'+data[i]["ref4"]+'</td><td>'+data[i]["roll_width"]+'</td><td>'+data[i]["allocated_qty"]+'</td><td><input type="text"  onchange="calculatecutreport(\''+i+'creportingplies\');" id='+i+'creportingplies value='+parseInt(data[i]["allocated_qty"]/marklength)+' class="form-control" '+existed+'></td><td><input type="text"  value="0"  onchange="calculatecutreport();"  id='+i+'cdamages class="form-control" '+existed+'></td><td><input type="text"  value="0" onchange="calculatecutreport();" id='+i+'cjoints class="form-control" '+existed+'></td><td><input type="text"  value="0" onchange="calculatecutreport();" id='+i+'cendbits class="form-control" '+existed+'></td><td><input type="text"  onchange="calculatecutreport();"  value="0"  id='+i+'cshortages class="form-control"  '+existed+'></td><td><input type="text"  value="0" id='+i+'cfabricreturn class="form-control" readonly></td><td style="display:none;"><button style="background-color: DodgerBlue;color: white;"class="btn fa fa-trash" id="del'+i+'"></td><td style="display:none;"><input type="text"  value='+marklength+' onchange="calculatecutreport();" id="mlength" class="form-control"></td><td style="display:none;">'+data[i]["roll_id"]+'</td><td style="display:none;">'+data[i]["shade"]+'</td style="display:none;"><td style="display:none;">'+complted+'</td></tr>'); //create row
+
+                                    // if(data[i]["lay_sequence"]==null)
+                                    // {
+                                    //     laysequnce="";
+                                    // }
+                                    // else{
+                                    //     laysequnce=data[i]["lay_sequence"];
+                                    // }
+                                    row = $('<tr><td id='+i+'>'+sno+'</td><td><input type="text" id='+i+"laysequece"+'  class="form-control" '+existed+'></td><td>'+data[i]["ref2"]+'</td><td>'+data[i]["ref4"]+'</td><td>'+data[i]["roll_width"]+'</td><td>'+data[i]["allocated_qty"]+'</td><td><input type="text"  onchange="calculatecutreport(\''+i+'creportingplies\');" id='+i+'creportingplies value='+parseInt(data[i]["allocated_qty"]/marklength)+' class="form-control" '+existed+'></td><td><input type="text"  value="0"  onchange="calculatecutreport();"  id='+i+'cdamages class="form-control" '+existed+'></td><td><input type="text"  value="0" onchange="calculatecutreport();" id='+i+'cjoints class="form-control" '+existed+'></td><td><input type="text"  value="0" onchange="calculatecutreport();" id='+i+'cendbits class="form-control" '+existed+'></td><td><input type="text"  onchange="calculatecutreport();"  value="0"  id='+i+'cshortages class="form-control"  '+existed+'></td><td><input type="text"  value="0" id='+i+'cfabricreturn class="form-control" readonly></td><td style="display:none;"><button style="background-color: DodgerBlue;color: white;"class="btn fa fa-trash" id="del'+i+'"></td><td style="display:none;"><input type="text"  value='+marklength+' onchange="calculatecutreport();" id="mlength" class="form-control"></td><td style="display:none;">'+data[i]["roll_id"]+'</td><td style="display:none;">'+data[i]["shade"]+'</td style="display:none;"><td style="display:none;">'+complted+'</td></tr>'); //create row
                                     totalreportingplies+=parseInt(data[i]["allocated_qty"]/marklength);
                                     $('#c_plies').val(totalreportingplies);
                                     totalfabricreturn+=marklength;
@@ -545,7 +545,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             }
 
                     }catch(e){
-                        swal('Cut Reporting Problem','Data Problem or Failed','warning');
+                        swal('Reporting Plies Not Available','Data Problem or Failed','warning');
                        
                     }
                     }
@@ -900,16 +900,17 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     });
 
     
+             if(check==1)
+            {
+                swal('Please Enter LaySequence','Or Check LaySequence','error');
+                return false;
+            }else
+            {
+               data;
+            }
     // layseqnce=checklaysequence();
     //     if(layseqnce)
     //     {
-    //          if(check==1)
-    //         {
-    //             swal('Please Enter LaySequence','Or Check LaySequence','error');
-    //         }else
-    //         {
-    //            data;
-    //         }
     //     }
     //     else{
     //         swal('LaySequence Problem','Please Check','error');
@@ -1112,7 +1113,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             loadDetails(post_doc_no);
             console.log(res);
         });
-
 
 
     });
