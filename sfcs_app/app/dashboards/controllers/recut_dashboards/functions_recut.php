@@ -773,8 +773,16 @@ function IssuedtoModuleProcess($issued_to_module_process)
             $s_no_rem = $s_no."rems";
             $table_data .= "<td id='$s_no_rem'>".$remaining_qty."</td>";
             $bcd_id = $row_cat['bcd_id'];
+            
+            if(!in_array($cat,$category))
+            {
+               $job_no = $row_cat['input_job_no_random_ref'];
+               $table_data .= "<input type='hidden' name='job_no[]' value='$job_no'>";
+            }
+            $size = $row_cat['size_title'];
             $table_data .= "<input type='hidden' name='doc_no_ref' value='$issued_to_module_process'>";
             $table_data .= "<input type='hidden' name='bcd_id[]' value='$bcd_id'>";
+            $table_data .= "<input type='hidden' name='size[]' value='$size'>";
             $table_data .= "<td><input class='form-control integer' name='issueval[]' value='0'  min='0' id='$s_no' onchange='validatingremaining($s_no)' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)' type='Number' onkeyup='return isInt(this);' required></td>";
         }
         //$table_data .= "<input type='hidden' id='no_of_rows' value='$s_no'>";
