@@ -1608,31 +1608,31 @@ else if($concurrent_flag == 0)
 							{
 								$updatable_id = $row['tid'];
 								$pre_ims_qty = $row['ims_pro_qty'];
-								$act_ims_input_qty = $row['ims_qty'];
 							}
 							$act_ims_qty = $pre_ims_qty + $b_rep_qty[$i] ;
-							//echo $act_ims_qty.'-'.$pre_ims_qty.'-'.$b_rep_qty[$i].'</br>';
 							//updating the ims_qty when it was there in ims_log
 							//get bundle qty status
 							
-                            $update_query = "update $bai_pro3.ims_log set ims_pro_qty = $act_ims_qty where tid = $updatable_id";
-                            $ims_pro_qty_updating = mysqli_query($link,$update_query) or exit("While updating ims_pro_qty in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-	                        $get_bundle_status = "select bundle_qty_status from $brandix_bts.bundle_creation_data where bundle_number = $b_tid[$i] and assigned_module = '$b_module[$i]' and operation_id=$b_op_id"; 
+                            
+	                        $get_bundle_status = "select bundle_qty_status from $brandix_bts.bundle_creation_data where bundle_number = $b_tid[$i] and operation_id=$b_op_id"; 
 	                        $result_get_bundle_status = $link->query($get_bundle_status);
 	                        while($bundle_row = $result_get_bundle_status->fetch_assoc())
-	                        {
-	                            $bundle_status = $bundle_row['bundle_qty_status'];
-
+	                        {	                            
+								$bundle_status = $bundle_row['bundle_qty_status'];
 	                            if($bundle_status == 1)
 	                            {
-	                                $update_status_query = "update $bai_pro3.ims_log set ims_pro_qty = $act_ims_qty and ims_status = 'DONE' where pac_tid = $b_tid[$i]";
+	                                $update_status_query = "update $bai_pro3.ims_log set ims_pro_qty = $act_ims_qty, ims_status = 'DONE' where pac_tid = $b_tid[$i]";
 	                                mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
 	                                $ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where pac_tid = $b_tid[$i]";
 	                                mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
 	                                $ims_delete="delete from $bai_pro3.ims_log where pac_tid = $b_tid[$i]";
 	                                mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
 	                            }
+								else
+								{
+									$update_query = "update $bai_pro3.ims_log set ims_pro_qty = $act_ims_qty where tid = $updatable_id";
+									$ims_pro_qty_updating = mysqli_query($link,$update_query) or exit("While updating ims_pro_qty in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
+								}
 	                        }
                         }
 					}
