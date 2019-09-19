@@ -375,51 +375,35 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 }
 
 
-echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">";
-echo "<tr>
-		<td>Lay Length 1</td><td>:</td>
-		<input type=\"hidden\" name=\"in_pwidth[]\" value=\"$pur_width\">
-		<td>
-			<INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' type=\"text\" title='Please enter numbers and decimals' required name=\"in_mklength[]\" size=\"10\" id=\"mk_len\">
-		</td>
-		<td><b>Pur Width:</b> <label class='label label-primary'>$pur_width</label></td>
-	</tr>";
-echo "<tr><td>Lay Length 2</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
-echo "<tr><td>Lay Length 3</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
-echo "<tr><td>Lay Length 4</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
-echo "<tr><td>Lay Length 5</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
-echo "<tr><td>Lay Length 6</td><td>:</td><td><input class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\" name=\"in_pwidth[]\" value=\"0\" ></td><td><INPUT class=\"form-control float\" onkeypress='return validateFloatKeyPress(this,event);' pattern='^[0-9]+\.?[0-9]*$' title='Please enter numbers and decimals'  type=\"text\"  name=\"in_mklength[]\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" size=\"10\" ></td></tr>";
+echo '<div class="table-responsive"><table class="table table-bordered" id = "table-data">';
+echo "<tr bgcolor= #ffffff; color= white; ><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks</th></tr>";
+echo '<tbody id = "body-data">';
+for ($i=0; $i < 5; $i++) { 
+	
 
-echo "<tr><td>Marker Efficiency</td>
-		  <td>:</td>
-		  <td colspan='2'><INPUT class=\"form-control float\" type=\"text\" min=0 value=\"0\" id='mk_eff' name=\"in_mkeff\" size=\"10\">
-		  </td>
-	 </tr>";
-echo "<tr><td>Marker Version</td><td>:</td>
-	  <td colspan='2'><INPUT class=\"form-control alpha\" type=\"text\" name=\"in_mkver\" id='mk_ver' value=\"$patt_ver\" size=\"10\" required>
-	  </tr>";
-
-echo "<tr><td>Marker Name(Marker File Name): </td><td>:</td><td colspan='2'><INPUT class=\"form-control\" type=\"text\" name=\"remarks\"  id=\"remarks_id\" value=\"Nil\" onkeyup=\"validate_remarks()\"></td></tr>";
-//For #2063 CR added new remarks columns
-echo "<tr><td>Remark 1 : </td><td>:</td><td colspan='2'><INPUT class=\"form-control\" type=\"text\" name=\"remark1\"  id=\"remarks1_id\" value=\"Nil\"></td></tr>";
-echo "<tr><td>Remark 2 : </td><td>:</td><td colspan='2'><INPUT class=\"form-control\" type=\"text\" name=\"remark2\"  id=\"remarks2_id\" value=\"Nil\"></td></tr>";
-echo "<tr><td>Remark 3 : </td><td>:</td><td colspan='2'><INPUT class=\"form-control\" type=\"text\" name=\"remark3\"  id=\"remarks3_id\" value=\"Nil\"></td></tr>";
-echo "<tr><td>Remark 4 : </td><td>:</td><td colspan='2'><INPUT class=\"form-control\" type=\"text\" name=\"remark4\"  id=\"remarks4_id\" value=\"Nil\"></td></tr>";
-
-echo "</table></div>";
-echo "<input class=\"form-control\" type=\"hidden\" name=\"cat_ref\"  size=2 value=\"".$cat_ref."\">";
-echo "<input class=\"form-control\" type=\"hidden\" name=\"cuttable_ref\" size=2 value=\"".$cuttable_ref."\">";
-echo "<input class=\"form-control\" type=\"hidden\" name=\"allocate_ref\"  size=2 value=\"".$allocate_ref."\">";
+	echo '<tr>
+		<td><input class="form-control"  type="text" name="in_mktype['.$i.']" id="mk_type_'.$i.'"  title="please enter numbers and decimals"></td>
+		<td><input class="form-control"  type="text" name= "in_mkver['.$i.']" id= "mk_ver_'.$i.'" onchange="validate_data('.$i.',this)" title="please enter numbers and decimals"></td>
+		<td><input class="form-control"  type="text" name= "in_skgrp['.$i.']" id= "sk_grp_'.$i.'" onchange="validate_data('.$i.',this)" title="please enter numbers and decimals"></td>
+		<td><input class="form-control"  type="text" name= "in_width['.$i.']" id= "width_'.$i.'" onchange="validate_data('.$i.',this)" title="please enter numbers and decimals"></td>
+		<td><input class="form-control"  type="text" name= "in_mklen['.$i.']" id= "mk_len_'.$i.'" onchange="validate_data('.$i.',this)" title="please enter numbers and decimals"></td>
+		<td><input class="form-control"  type="text" name= "in_mkname['.$i.']" id="mk_name_'.$i.'" title="please enter numbers and decimals"></td>
+		<td><input class="form-control"  type="text" name= "in_ptrname['.$i.']" id="ptr_name_'.$i.'" title="please enter numbers and decimals"></td>
+		<td><input class="form-control"  type="text" name= "in_mkeff['.$i.']" id= "mk_eff_'.$i.'" title="please enter numbers and decimals"></td>
+		<td><input class="form-control"  type="text" name= "in_permts['.$i.']" id= "permts_'.$i.'" title="please enter numbers and decimals"></td>
+		<td><input class="form-control"  type="text" name= "in_rmks['.$i.']" id= "rmks_'.$i.'" title="please enter numbers and decimals"></td>
+		
+		</tr>';
+}
+// echo "<input class='form-control'  type='text' name= 'rows' id= 'rows' value =".$j.">";
+echo '<tbody>';
 echo "</table>";
-//echo "<div class=\"col-md-offset-8\"><input type=\"checkbox\" name=\"option\"  id=\"option\" onclick=\"javascript:enableButton();\">Enable&nbsp;&nbsp;&nbsp;";
-echo "<INPUT class=\"btn btn-sm btn-success\" onclick='return verify_null()' type = \"submit\" id=\"create\" name = \"update\" value = \"Create\"></div>";
+echo '<input class="btn btn-sm btn-success pull-right" onclick="add_input_row()" type = "add" id="add_row" name = "update" value = " + Add Row"></div>';
+
+//echo "<div class="col-md-offset-8\"><input type=\"checkbox\" name=\"option\"  id=\"option\" onclick=\"javascript:enableButton();\">Enable&nbsp;&nbsp;&nbsp;";
+echo "<input class=\"btn btn-sm btn-success\" onclick='return verify_null()' type = \"submit\" id=\"create\" name = \"update\" value = \"Create\"></div>";
 echo "</form>";
 echo "</div>";
-?> 
-
-
-<?php
-
 echo "<br/>";
 
 echo "<h2 style=\"padding-left:10px;\"><span class=\"label label-default\" >Reference of Existing Workouts:</span></h2>";
@@ -544,6 +528,95 @@ if($num_rows>0)
 </div></div>
 
 <script type="text/javascript">
+Array.prototype.diff = function(arr2) {
+    var ret = [];
+    for(var i in this) {   
+		if(this[i] != ''){
+			if(arr2.indexOf(this[i]) > -1){
+            	ret.push(this[i]);
+        	}
+		}
+
+    }
+    return ret;
+};
+// function arraysEqual(_arr1, _arr2) {
+// 	if (!Array.isArray(_arr1) || ! Array.isArray(_arr2) || _arr1.length !== _arr2.length)
+// 	return false;
+
+// // 	var arr1 = _arr1.concat().sort();
+// // 	var arr2 = _arr2.concat().sort();
+// // console.log(_arr2);
+// 	for (var i = 0; i < _arr1.length; i++) {
+// 		console.log(_arr1);
+// 		if (_arr1[i] !== _arr2[i])
+// 			return false;
+
+// 	}
+
+// 	return true;
+
+// }
+function compareArrays(arr1, arr2){
+	
+	// console.log(JSON.stringify(arr1));
+
+	if(arr1.toString() == arr2.toString()){
+		return true;
+	}else{
+		return false;
+	}
+}
+// var array1 = ["cat", "sum","fun", "run", "hut"];
+// var array2 = ["bat", "cat","dog","sun", "hut", "gut"];
+
+// console.log(array1.diff(array2));
+function validate_data(b, id_name) {
+	console.log(id_name.id);
+	// alert(b);
+	// console.log([1,2].equals([1,2]));
+	if($("#mk_ver_"+b).val() != '' && $("#sk_grp_"+b).val() != '' && $("#width_"+b).val() != '' && $("#mk_len_"+b).val()){
+		var rowData=[];
+		var CurData=[];
+
+		var rows = document.getElementById('rows').value;
+		var mk_Ref;
+		var mk_shr;
+		var mk_len;
+		var table = $("#body-data");
+		CurData = [$("#mk_ver_"+b).val(), $("#sk_grp_"+b).val(), $("#width_"+b).val(), $("#mk_len_"+b).val()];
+		// CurData = $("#sk_grp_"+b).val();
+		// CurData[] = $("#width_"+b).val();
+		// CurData[] = $("#mk_len_"+b).val();
+		// console.log(CurData);
+		var tr_length= table.find('tr').length;
+		// console.log(tr_length);
+		for (let index = 0; index < tr_length; index++) {
+		// console.log($("#mk_ver_"+index).val());
+			if(index!= b && $("#mk_ver_"+index).val() != '' && $("#sk_grp_"+index).val() != '' && $("#width_"+index).val() != '' && $("#mk_len_"+index).val()){
+
+				for (let index1 = 1; index1 <= 4; index1++) {
+
+					rowData = [$("#mk_ver_"+index).val(), $("#sk_grp_"+index).val(), $("#width_"+index).val(), $("#mk_len_"+index).val()];
+					// rowData[index] = $("#sk_grp_"+index).val();
+					// rowData[index] = $("#width_"+index).val();
+					// rowData[index] = $("#mk_len_"+index).val();
+
+					console.log(CurData);
+					console.log(rowData);
+
+					console.log(compareArrays(CurData, rowData));
+					if(compareArrays(CurData, rowData)){
+						swal('Error');
+						$("#"+id_name.id).val('');
+						return true;
+					}
+
+				}
+			}
+		}
+	}
+}
 	function validateQty(event) 
 	{
 		event = (event) ? event : window.event;
@@ -568,8 +641,31 @@ if($num_rows>0)
 
 function verify_null(){
 	var ver = document.getElementById('mk_ver').value;
-	var eff =  document.getElementById('mk_eff').value;
+	var eff =  document.getElementById('sk_grp').value;
+	var width = document.getElementById('width').value;
 	var mklen = document.getElementById('mk_len').value;
+
+	console.log(ver);
+	console.log(eff);
+	console.log(width);
+	console.log(mklen);
+	if(ver == ''){
+		sweetAlert('Please enter valid Marker Version','','warning');
+		return false;
+	}
+	if(eff == ''){
+		sweetAlert('Please enter valid Marker Eff','','warning');
+		return false;
+	}
+	if(mklen <=0)
+	{
+		sweetAlert('Please enter valid Marker Length','','warning');
+		return false;
+	}
+	if(width <=0){
+		sweetAlert('Please enter valid Marker Width','','warning');
+		return false;
+	}
 	if(mklen == ''|| mklen <=0){
 		sweetAlert('Please enter valid Marker Length','','warning');
 		return false;
@@ -589,5 +685,31 @@ function verify_null(){
 	document.getElementById('create').style.display="none";
 	return true;
 }
-
+function add_input_row() {
+	var row = $('#table-data >tbody >tr').length;
+	var rowCount = row -1;
+	var table = document.getElementById("table-data");
+	var row = table.insertRow();
+	var cell1 = row.insertCell(0);
+	var cell2 = row.insertCell(1);
+	var cell3 = row.insertCell(2);
+	var cell4 = row.insertCell(3);
+	var cell5 = row.insertCell(4);
+	var cell6 = row.insertCell(5);
+	var cell7 = row.insertCell(6);
+	var cell8 = row.insertCell(7);
+	var cell9 = row.insertCell(8);
+	var cell10 = row.insertCell(9);
+	cell1.innerHTML = "<input class='form-control float'  name='in_mktype["+rowCount+"]' id='mk_type["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
+	cell2.innerHTML = "<input class='form-control float'  name='in_mkver["+rowCount+"]' id='mk_ver["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
+	cell3.innerHTML = "<input class='form-control float'  name='in_skgrp["+rowCount+"]' id='sk_grp["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
+	cell4.innerHTML = "<input class='form-control float'  name='in_width["+rowCount+"]' id='width["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
+	cell5.innerHTML = "<input class='form-control float'  name='in_mklen["+rowCount+"]' id='mk_len["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
+	cell6.innerHTML = "<input class='form-control float'  name='in_mkname["+rowCount+"]' id='mk_name["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
+	cell7.innerHTML = "<input class='form-control float'  name='in_ptrname["+rowCount+"]' id='ptr_name["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
+	cell8.innerHTML = "<input class='form-control float'  name='in_mkeff["+rowCount+"]' id='mk_eff["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
+	cell9.innerHTML = "<input class='form-control float'  name='in_permts["+rowCount+"]' id='permts["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
+	cell10.innerHTML = "<input class='form-control float'  name='in_rmks["+rowCount+"]' id='rmks["+rowCount+"]'  type='text' title='Please enter numbers and decimals'>";
+}
 </script>
+ 
