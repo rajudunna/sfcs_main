@@ -19,8 +19,7 @@ if($_GET['status']){
     $status=$argv[1];
 }
 $operation=15;
-
-$transactions_query = "SELECT * from $bai_pro3.m3_bulk_transactions where response_status='$status' and m3_trail_count < 4 ";
+$transactions_query = "SELECT * from m3_bulk_ops_rep_db.m3_bulk_transactions where response_status='$status' and m3_trail_count < 4 ";
 $transaction_result = mysqli_query($link_sfcs, $transactions_query) or 
                     exit("Error at getting transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($transaction_result))

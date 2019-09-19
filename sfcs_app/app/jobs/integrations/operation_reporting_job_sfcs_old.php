@@ -7,7 +7,7 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 $cur_date = date('Y-m-d H:s:i');
 $add_filter_qry="IF(m3_op_des in ('ASPS','ASPR','BSPS','BSPR'),'1',IF(m3_op_des in ('SIN','PS','PR','CUT','LAY'),'01',IF(sfcs_mod_no>0,LPAD(CAST(sfcs_mod_no as SIGNED),2,0),'01')))";
 
-$sql="SELECT *,sum(quantity) as qty,group_concat(id) as ids,concat('$facility_code_old',m3_op_des,$add_filter_qry) as work_center FROM `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log` where sfcs_status ='10' and m3_bulk_tran_id IS NULL group by m3_mo_no,m3_op_code,sfcs_reason";
+$sql="SELECT *,sum(sfcs_qty) as qty,group_concat(sfcs_tid) as ids,concat('$facility_code_old',m3_op_des,$add_filter_qry) as work_center FROM `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log` where sfcs_status ='10' and m3_bulk_tran_id IS NULL group by m3_mo_no,m3_op_code,sfcs_reason";
 $transaction_result=mysqli_query($link_sfcs, $sql) or exit("m3_transactions ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($transaction_result))
 {
@@ -32,18 +32,19 @@ while($row=mysqli_fetch_array($transaction_result))
 	if($op_code==200)
 	{
 		$inserting_into_m3_tran_log1 = "INSERT INTO m3_bulk_ops_rep_db.`m3_bulk_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`m3_ops_code`,`response_status`,`m3_trail_count`,`api_type`)
-		VALUES ('$cur_date','$mo_number',$quantity,'$reason','$remarks','$log_user','$tran_status_code','$module_no','$shift',$op_code,'$op_des',$ref_no,'$workstation_id','$m3_ops_code','$response_status',$m3_trail_count,'fg')";
-		mysqli_query($link_sfcs,$inserting_into_m3_tran_log1) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
+        VALUES ('$cur_date','$mo_number','$quantity','$reason','$remarks','$log_user','$tran_status_code','$module_no','$shift','$op_code','$op_des','$ref_no','$workstation_id','$m3_ops_code','$response_status','$m3_trail_count','fg')";
 		
 		$inserting_into_m3_tran_log = "INSERT INTO m3_bulk_ops_rep_db.`m3_bulk_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`m3_ops_code`,`response_status`,`m3_trail_count`,`api_type`)
-		VALUES ('$cur_date','$mo_number',$quantity,'$reason','$remarks','$log_user','$tran_status_code','$module_no','$shift',$op_code,'$op_des',$ref_no,'$workstation_id','$m3_ops_code','$response_status',$m3_trail_count,'$api_type')";
-		mysqli_query($link_sfcs,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));	
+        VALUES ('$cur_date','$mo_number','$quantity','$reason','$remarks','$log_user','$tran_status_code','$module_no','$shift','$op_code','$op_des','$ref_no','$workstation_id','$m3_ops_code','$response_status','$m3_trail_count','$api_type')";
+        
+		mysqli_query($link_sfcs,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog2".mysqli_error($GLOBALS["___mysqli_ston"]));	
 	}
 	else
 	{
 		$inserting_into_m3_tran_log = "INSERT INTO m3_bulk_ops_rep_db.`m3_bulk_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`m3_ops_code`,`response_status`,`m3_trail_count`,`api_type`)
-		VALUES ('$cur_date','$mo_number',$quantity,'$reason','$remarks','$log_user','$tran_status_code','$module_no','$shift',$op_code,'$op_des',$ref_no,'$workstation_id','$m3_ops_code','$response_status',$m3_trail_count,'$api_type')";
-		mysqli_query($link_sfcs,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));		
+        VALUES ('$cur_date','$mo_number','$quantity','$reason','$remarks','$log_user','$tran_status_code','$module_no','$shift','$op_code','$op_des','$ref_no','$workstation_id','$m3_ops_code','$response_status','$m3_trail_count','$api_type')";
+        
+		mysqli_query($link_sfcs,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog3".mysqli_error($GLOBALS["___mysqli_ston"]));		
 	}    
 	$insert_id=mysqli_insert_id($link_sfcs);
 	
