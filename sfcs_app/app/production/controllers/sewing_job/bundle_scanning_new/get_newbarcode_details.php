@@ -1,5 +1,5 @@
 <?php
-//error_reporting(0);
+error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 include('../sewing_job_scaning/functions_scanning_ij.php');
 
@@ -62,7 +62,7 @@ if(isset($_POST["trans_action"])){
                 //this is for updating rejection qunatities
                 function updaterejectdetails($bundle_no, $op_no, $shift ,$rej_data,$selected_module)
                     {
-                        
+                        error_reporting(0);   
                         include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
                         include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
                             //getting data from packing sumary input
@@ -1506,6 +1506,7 @@ if(isset($_POST["trans_action"])){
                         $get_module_no = "SELECT input_module FROM $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (select input_job_no_random from $bai_pro3.pac_stat_log_input_job where tid=$job_no)";
                         $get_module_no_bcd = "SELECT assigned_module FROM $brandix_bts.bundle_creation_data WHERE bundle_number = '$job_no'";
                         $module_rsult = $link->query($get_module_no);
+                        $module=0;
                         if (mysqli_num_rows($module_rsult) > 0)
                         {
                             while($sql_row11 = $module_rsult->fetch_assoc()) 
