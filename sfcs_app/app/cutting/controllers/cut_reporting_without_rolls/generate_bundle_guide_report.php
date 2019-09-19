@@ -8,36 +8,34 @@
 
     <div class='panel-body'> 
     <div class="container">
-        <div class="row">
-            <div class="col-sm-3">
-                <label>Schedule</label>
-               <input type="text" name="schedule" id="schedule" class="form-control"> 
+            <div class="row">
+                <div class="col-sm-2">
+                    <label>Style</label>
+                <input type="text" name="Style" id="Style" class="form-control"> 
+                </div>
+                <div class="col-sm-2">
+                    <label>Schedule</label>
+                <input type="text" name="schedule" id="schedule" class="form-control"> 
+                </div>
+                <div class="col-sm-2">
+                    <label>Color</label>
+                <input type="text" name="color" id="color" class="form-control"> 
+                </div>
+                <div class="col-sm-3">
+                    <label></label>
+                    <input type="submit" name="submit" class="btn btn-sm btn-primary form-control" onclick="getdetails()" id="submit"> 
+                </div>
             </div>
-            <div class="col-sm-3">
-                <label>Docket</label>
-                <input type="text" name="docket" id="docket" class="form-control"> 
-             </div>
-             <div class="col-sm-3">
-                 <label></label>
-                <input type="submit" name="submit" class="btn btn-sm btn-primary form-control" onclick="getdetails()" id="submit"> 
-             </div>
-        </div>
     </div>
-    <br/><br/><br/>
+    <br/><br/>
     <div class='col-sm-12' id = "generated_bundle_guide">
-                    <div class="table-responsive">
-                    <table class='table table-bordered' >
+            <div class="table-responsive">
+                    <table class="table">
                     <thead>
                         <tr class='info'>
                             <th>S. No</th>
                             <th>Docket No.</th>
-                            <th>Size</th>
-                            <th>Bundle No.</th>
-                            <th>Shade Bundle No.</th>
-                            <th>Shade</th>
-                            <th>Bundle Start No.</th>
-                            <th>Bundle End No.</th>
-                            <th>Qty</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody id='enablerolls' >
@@ -51,27 +49,57 @@
                     <h4 style="color:red;">~~~~Not Found~~~~</h4>
         </div>
     </div>
+
+
+
+    <div class='col-sm-12' id = "generated_bundle_guide_print">
+            <div class="table-responsive">
+                    <table class="table">
+                    <thead>
+                        <tr class='info'>
+                            <th>S. No</th>
+                            <th>Docket No.</th>
+                            <th>Size</th>
+                            <th>Bundle No.</th>
+                            <th>Shade Bundle No.</th>
+                            <th>Shade</th>
+                            <th>Bundle Start No.</th>
+                            <th>Bundle End No.</th>
+                        </tr>
+                    </thead>
+                    <tbody id='enablerollsprint' >
+                       
+                    </tbody>
+                </table>    
+           </div>
+        </div>
+    </div>
   
 </div>
 
 <script>
 
 $('#generated_bundle_guide').css({'display':'none'});
+$('#generated_bundle_guide_print').css({'display':'none'});
+
 $('#not_found').css({'display':'none'});
 function getdetails()
-{
+{   
+    var style=$('#style').val();
     var schedule=$('#schedule').val();
+    var color=$('#color').val();
     var docket=$('#docket').val();
     $('#generated_bundle_guide').css({'display':'none'});
     $('#enablerolls').html('');
     $('#not_found').css({'display':'none'});
 
              var form_data = {
-                        doc_no:docket,
-                        schedule:schedule
+                        schedule:schedule,
+                        style:style,
+                        color:color,
                     };    
                 $.ajax({
-                    url  : '<?= $generated_bundle_url?>',
+                    url  : '<?= $generated_bundle_url.'?action=docketdetails.'?>',
                     type : 'POST',
                     data : form_data
                 }).done(function(res){
@@ -93,12 +121,58 @@ function getdetails()
                                             {
                                                 for(i=0;i<noofrolls;i++)
                                                 {
-                                                        row = $('<tr><td id='+i+'>'+sno+'</td><td>'+data[i]['doc_no']+'</td><td>'+data[i]['size']+'</td><td>'+data[i]['bundle_no']+'</td><td>'+data[i]['shade_bundle']+'</td><td></td><td>'+data[i]['bundle_start']+'</td><td>'+data[i]['bundle_end']+'</td><td></td></tr>'); //create row
+                                                        row = $('<tr><td id='+i+'>'+sno+'</td><td>'+data[i]['doc_no']+'</td><td><input type="button" class="btn btn-sm btn-primary" value="Print" onclick="printdetails('+data[i]['doc_no']+')"></td></tr>'); //create row
                                                         $('#enablerolls').append(row);
                                                         sno++;
                                                 }
                                             $('#generated_bundle_guide').css({'display':'block'});
                                             }
+                                            else
+                                            {
+                                                $('#not_found').css({'display':'block'}); 
+                                            }
+                                        }catch(e){
+                                        
+                                        }
+                }).fail(function(res){
+                
+                });
+}
+
+function printdetails(doc_no)
+{
+    
+                $.ajax({
+                    url  : '<?= $generated_bundle_url.'?action=printdetails.' ?>',
+                    type : 'POST',
+                    data : {doc_no:doc_no}
+                }).done(function(res){
+                   if(res)
+                   {
+                    var data = $.parseJSON(res);
+                   }
+                   else{
+                    var data = [];
+                   }
+                    
+                        var noofrolls=data.length;
+                        var i;
+                        var sno=1;
+                        var notdisplay=0;
+                                        try
+                                        {
+                                            if(noofrolls>0)
+                                            {
+                                                for(i=0;i<noofrolls;i++)
+                                                {
+                                                        row = $('<tr><td id='+i+'>'+sno+'</td><td>'+data[i]['doc_no']+'</td><td>'+data[i]['size']+'</td><td>'+data[i]['bundle_no']+'</td><td>'+data[i]['shade_bundle']+'</td><td></td><td>'+data[i]['bundle_start']+'</td><td>'+data[i]['bundle_end']+'</td></tr>'); //create row
+                                                        $('#enablerollsprint').append(row);
+                                                        sno++;
+                                                }
+                                            $('#generated_bundle_guide_print').css({'display':'block'}); 
+                                            $('#generated_bundle_guide_print').print(); 
+                                            }
+                                            
                                             else
                                             {
                                                 $('#not_found').css({'display':'block'}); 

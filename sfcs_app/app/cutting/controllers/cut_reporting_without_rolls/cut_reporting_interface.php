@@ -429,7 +429,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     var SIZE_COUNT = 0;
     var CLEAR_FLAG = 0;
        
-       
     $('td input#creportingplies.form-control').click(function(){
         alert();
     var row_index = $(this).parent().index();
@@ -521,7 +520,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                                     // else{
                                     //     laysequnce=data[i]["lay_sequence"];
                                     // }
-                                    row = $('<tr><td id='+i+'>'+sno+'</td><td><input type="text" id='+i+"laysequece"+'  class="form-control" '+existed+'></td><td>'+data[i]["ref2"]+'</td><td>'+data[i]["ref4"]+'</td><td>'+data[i]["roll_width"]+'</td><td>'+data[i]["allocated_qty"]+'</td><td><input type="text"  onchange="calculatecutreport(\''+i+'creportingplies\');" id='+i+'creportingplies value='+parseInt(data[i]["allocated_qty"]/marklength)+' class="form-control" '+existed+'></td><td><input type="text"  value="0"  onchange="calculatecutreport();"  id='+i+'cdamages class="form-control" '+existed+'></td><td><input type="text"  value="0" onchange="calculatecutreport();" id='+i+'cjoints class="form-control" '+existed+'></td><td><input type="text"  value="0" onchange="calculatecutreport();" id='+i+'cendbits class="form-control" '+existed+'></td><td><input type="text"  onchange="calculatecutreport();"  value="0"  id='+i+'cshortages class="form-control"  '+existed+'></td><td><input type="text"  value="0" id='+i+'cfabricreturn class="form-control" readonly></td><td style="display:none;"><button style="background-color: DodgerBlue;color: white;"class="btn fa fa-trash" id="del'+i+'"></td><td style="display:none;"><input type="text"  value='+marklength+' onchange="calculatecutreport();" id="mlength" class="form-control"></td><td style="display:none;">'+data[i]["roll_id"]+'</td><td style="display:none;">'+data[i]["shade"]+'</td style="display:none;"><td style="display:none;">'+complted+'</td></tr>'); //create row
+                                    row = $('<tr><td id='+i+'>'+sno+'</td><td><input type="text" id='+i+"laysequece"+'  class="form-control" '+existed+'></td><td>'+data[i]["ref2"]+'</td><td>'+data[i]["ref4"]+'</td><td>'+data[i]["roll_width"]+'</td><td>'+data[i]["allocated_qty"]+'</td><td><input type="text"  onchange="calculatecutreport(\''+i+'creportingplies\');" id='+i+'creportingplies value='+parseInt(data[i]["allocated_qty"]/marklength)+' class="form-control" '+existed+'></td><td><input type="text"  value="0"  onchange="calculatecutreport(\''+i+'cdamages\');"  id='+i+'cdamages class="form-control" '+existed+'></td><td><input type="text"  value="0" onchange="calculatecutreport(\''+i+'cjoints\');" id='+i+'cjoints class="form-control" '+existed+'></td><td><input type="text"  value="0" onchange="calculatecutreport(\''+i+'cendbits\');" id='+i+'cendbits class="form-control" '+existed+'></td><td><input type="text"  onchange="calculatecutreport(\''+i+'cshortages\');"  value="0"  id='+i+'cshortages class="form-control"  '+existed+'></td><td><input type="text"  value="0" id='+i+'cfabricreturn class="form-control" readonly></td><td style="display:none;"><button style="background-color: DodgerBlue;color: white;"class="btn fa fa-trash" id="del'+i+'"></td><td style="display:none;"><input type="text"  value='+marklength+' onchange="calculatecutreport();" id="mlength" class="form-control"></td><td style="display:none;">'+data[i]["roll_id"]+'</td><td style="display:none;">'+data[i]["shade"]+'</td style="display:none;"><td style="display:none;">'+complted+'</td></tr>'); //create row
                                     totalreportingplies+=parseInt(data[i]["allocated_qty"]/marklength);
                                     $('#c_plies').val(totalreportingplies);
                                     totalfabricreturn+=marklength;
@@ -643,7 +642,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             swal('Please Enter Reporting Plies/Damages/End Bits/Shortages Correctly','Or Check','error');
             reportingplies = $tds.find('#'+i+'creportingplies').val(0);
             $('#'+i+'creportingplies').prop('readonly', false);
-            calculatecutreport();
+           // calculatecutreport();
         }
         else{
             $tds.find('#'+i+'cfabricreturn').val(fabricreturnqty);
@@ -660,15 +659,18 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
            
             // if(makeselectedrow==0)
             // {
+                
                 if(indextype)
                 {
-                    swal('Please Enter Reporting Plies Correctly','Or Check','error');
-                    $('#'+indextype).val(0);
+                       //swal('Please Enter Reporting Plies Correctly','Or Check','error');
+                       $('#'+indextype).val(0);
                     sumofreporting=sumofreporting-parseFloat(reportingplies);
                     calculatecutreport();
+                   
 
                 }
                 else{
+
                     $tds.find('#'+i+'creportingplies').val(0);
                     sumofreporting=sumofreporting-parseFloat(reportingplies);
                     calculatecutreport();
@@ -678,46 +680,64 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             // makeselectedrow=1;
             
         }
-       
 
-        sumofpile=parseFloat(damages)+parseFloat(joints)+parseFloat(endbits)+parseFloat(shortages)+parseFloat(fabricreturn);
-        var x=0;
-        if(sumofpile>reportingplies)
+
+        if(shortages>receivedqty)
         {
-            
-            removesum=parseFloat(damages);
-            if(removesum>reportingplies)
-            {
-                x=1;
-                $tds.find('#'+i+'cdamages').val(0);
-                swal('Please Enter Plies Correctly','Or Check','error');
-                calculatecutreport();
-            }
-            removesum+=parseFloat(joints);
-            if(removesum>reportingplies&&x!=1)
-            {
-                x=1;
-                $tds.find('#'+i+'cjoints').val(0);
-                swal('Please Enter Plies Correctly','Or Check','error');
-                calculatecutreport();
-            }
-            removesum+=parseFloat(endbits);
-            if(removesum>reportingplies&&x!=1)
-            {
-                x=1;
-                $tds.find('#'+i+'cendbits').val(0);
-                swal('Please Enter Plies Correctly','Or Check','error');
-                calculatecutreport();
-            }
-            removesum+=parseFloat(shortages);
-            if(removesum>reportingplies&&x!=1)
-            {
-                x=1;
-                $tds.find('#'+i+'cshortages').val(0);
-                swal('Please Enter Plies Correctly','Or Check','error');
-                calculatecutreport();
-            }
+            $('#'+indextype).val(0);
+            swal('Please Enter Shortages Correctly','Or Check','error');
+            calculatecutreport();
+            return 0;
         }
+      
+
+        // sumofpile=parseFloat(damages)+parseFloat(joints)+parseFloat(endbits)+parseFloat(shortages)+parseFloat(fabricreturn);
+        // var x=0;
+    
+        // if(sumofpile>reportingplies)
+        // {
+          
+        //     if(indextype)
+        //     {
+        //         $('#'+indextype).val(0);
+                
+        //         swal('Please Enter Plies Correctly','Or Check','error');
+        //         calculatecutreport();
+        //     }
+            
+            // removesum=parseFloat(damages);
+            // if(removesum>reportingplies)
+            // {
+            //     x=1;
+            //     $tds.find('#'+i+'cdamages').val(0);
+            //     swal('Please Enter Plies Correctly','Or Check','error');
+            //     calculatecutreport();
+            // }
+            // removesum+=parseFloat(joints);
+            // if(removesum>reportingplies&&x!=1)
+            // {
+            //     x=1;
+            //     $tds.find('#'+i+'cjoints').val(0);
+            //     swal('Please Enter Plies Correctly','Or Check','error');
+            //     calculatecutreport();
+            // }
+            // removesum+=parseFloat(endbits);
+            // if(removesum>reportingplies&&x!=1)
+            // {
+            //     x=1;
+            //     $tds.find('#'+i+'cendbits').val(0);
+            //     swal('Please Enter Plies Correctly','Or Check','error');
+            //     calculatecutreport();
+            // }
+            // removesum+=parseFloat(shortages);
+            // if(removesum>reportingplies&&x!=1)
+            // {
+            //     x=1;
+            //     $tds.find('#'+i+'cshortages').val(0);
+            //     swal('Please Enter Plies Correctly','Or Check','error');
+            //     calculatecutreport();
+            // }
+       // }
 
 
        
@@ -732,6 +752,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         sumofshortages+=parseFloat(shortages);
         $('#shortages').val(sumofshortages);
         sumoffabricreturn+=parseFloat(fabricreturnqty);
+
         if(sumoffabricreturn<0)
         {
             $('#fab_returned').val(0);
@@ -753,7 +774,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         {
             $('#returend_to_parent').css({'display':'none'});
 
-            calculatecutreport();
+            //calculatecutreport();
         }
             
         
@@ -869,10 +890,17 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#c_plies').val(sumofreporting);
         }else{
             swal('Please Enter Reporting Plies Correctly','Or Check','error');
+            return false;
             
         }
         
         if((laysequence=='')&&!(reportingplies==0))
+        {
+            check=1;
+            
+        }
+
+        if((laysequence)&&(reportingplies==0))
         {
             check=1;
             
