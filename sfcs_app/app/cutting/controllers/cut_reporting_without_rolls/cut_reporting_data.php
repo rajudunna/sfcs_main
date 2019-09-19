@@ -16,19 +16,28 @@ $a_sizes_str = rtrim($a_sizes_str,',');
 if($_GET['rejection_docket']!=''){
     $r_doc = $_GET['rejection_docket'];
     //if clubbed docket then getting all child dockets
-    $child_docs_query = "SELECT GROUP_CONCAT(doc_no) as doc_no from $bai_pro3.plandoc_stat_log where org_doc_no = $r_doc ";
+    $child_docs_query = "SELECT GROUP_CONCAT(doc_no) as doc_no,order_tid from $bai_pro3.plandoc_stat_log where org_doc_no = $r_doc ";
     $child_docs_result = mysqli_query($link,$child_docs_query);
     while($row = mysqli_fetch_array($child_docs_result)){
         $doc_no = $row['doc_no'];
+        $order_tid = $row['order_tid'];
         $child_docs = $doc_no;
     }
     getRejectionDetails($r_doc,$child_docs);
     exit();
 }else{
     $doc_no = $_GET['doc_no'];
+    $child_docs_query1 = "SELECT order_tid from $bai_pro3.plandoc_stat_log where doc_no = $doc_no ";
+    // echo $child_docs_query1;
+    $child_docs_result1 = mysqli_query($link,$child_docs_query1);
+    while($row1 = mysqli_fetch_array($child_docs_result1)){
+        $order_tid = $row1['order_tid'];
+        $child_docs = $doc_no;
+    }
 }
 
-$get_shipment_details="select order_style_no as style,order_del_no as schedule from $bai_pro3.packing_summary_input where doc_no =".$doc_no;
+$get_shipment_details="select order_style_no as style,order_del_no as schedule from $bai_pro3.bai_orders_db where order_tid ='".$order_tid."'";
+
 $get_shipment_details_res=mysqli_query($link, $get_shipment_details) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx121=mysqli_fetch_array($get_shipment_details_res))
 {

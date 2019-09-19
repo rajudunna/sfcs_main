@@ -82,28 +82,51 @@ if($exists==1){
         $message .= '</table>';
     }
     $message .= '<br>';
-    $order_tid_qry="select distinct order_tid as order_tids from $bai_pro3.bai_orders_db where order_style_no = '$style' and order_del_no = '$schedule'";
+    $order_tid_qry="select order_tid,color_code from $bai_pro3.bai_orders_db where order_style_no = '$style' and order_del_no = '$schedule'";
     $order_tid_res=mysqli_query($link, $order_tid_qry) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_rowr=mysqli_fetch_array($order_tid_res))
     {
-        $order_tids[]="'".$sql_rowr['order_tids']."'";
+        $order_tid=$sql_rowr['order_tid'];
+        $color_code=$sql_rowr['color_code'];
+
+        //Get Doc Numbers
+        $sql_doc_nums="select doc_no,acutno,remarks from $bai_pro3.plandoc_stat_log where order_tid ='".$order_tid."'";
+        $sql_doc_nums_res=mysqli_query($link, $sql_doc_nums) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $sql_num_check1=mysqli_num_rows($sql_doc_nums_res);
+        if($sql_num_check1 > 0) {
+            $message .= '<table border=1><tr><th>Docket Numbers</th><th>Cut Numbers</th></tr>';
+            $doc_status =1;
+            while($sql_rows1=mysqli_fetch_array($sql_doc_nums_res))
+            {
+                $acutno=$sql_rows1['acutno'];
+                $remarks=$sql_rows1['remarks'];
+                $doc_no=$sql_rows1['doc_no'];
+
+
+                if($remarks=="Normal")
+                {
+                    $cut_no=chr($color_code).leading_zeros($acutno,3);
+                }else if(strtolower($remarks)=="recut")
+                {
+                    $cut_no="R".leading_zeros($acutno,3);
+                }
+                else
+                {
+                    if($remarks=="Pilot")
+                    {
+                        $cut_no="Pilot";
+                    }
+                }
+
+                $message .= '<tr>';
+                $message .= '<td>'.$doc_no.'</td>';
+                $message .= '<td>'.$cut_no.'</td>';
+                $message .= '</tr>';
+            }
+            $message .= '</table>';
+        }
     }
 
-    //Get Doc Numbers
-    $sql_doc_nums="select distinct doc_no as doc_numbers from $bai_pro3.plandoc_stat_log where order_tid in(".implode(",",$order_tids).")";
-    $sql_doc_nums_res=mysqli_query($link, $sql_doc_nums) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-    $sql_num_check1=mysqli_num_rows($sql_doc_nums_res);
-    if($sql_num_check1 > 0) {
-        $message .= '<table border=1><tr><th>Docket Numbers</th></tr>';
-        $doc_status =1;
-        while($sql_rows1=mysqli_fetch_array($sql_doc_nums_res))
-        {
-            $message .= '<tr>';
-            $message .= '<td>'.$sql_rows1['doc_numbers'].'</td>';
-            $message .= '</tr>';
-        }
-        $message .= '</table>';
-    }
     if($doc_status!=1 && $job_status !=1){
         $message.='<br/>No Input Job Numbers/Docket Numbers are Generated For this Style and Schedule';
     }
