@@ -234,6 +234,10 @@ if(isset($_POST['delete']))
 			$num6=mysqli_affected_rows($link);
 			if($num6>0)
 			{
+				$sql8="delete FROM $bai_rm_pj1.stock_report_inventory where lot_no='$lot_no'";
+				$sql_result8=mysqli_query($link, $sql8) or exit($sql8."<br/>Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$num8=mysqli_affected_rows($link);
+
 				$sql7="delete FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
 				//echo "<br/>".$sql7;
 				$sql_result7=mysqli_query($link, $sql7) or exit($sql7."<br/>Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -420,6 +424,10 @@ if(isset($_POST['put']))
 				
 				if($num5==$num6)
 				{
+					$sql8="delete FROM $bai_rm_pj1.stock_report_inventory where lot_no='$lot_no'";
+					$sql_result8=mysqli_query($link, $sql8) or exit($sql8."<br/>Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$num8=mysqli_affected_rows($link);
+
 					$sql7="delete FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
 			 		// "<br/>".$sql7;
 			 
@@ -481,6 +489,10 @@ if(isset($_POST['put']))
 				
 					if($num5==$num6)
 					{
+						$sql8="delete FROM $bai_rm_pj1.stock_report_inventory where lot_no='$lot_no'";
+						$sql_result8=mysqli_query($link, $sql8) or exit($sql8."<br/>Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$num8=mysqli_affected_rows($link);
+
 						$sql7="delete FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
 						$sql_result7=mysqli_query($link, $sql7) or exit($sql7."<br/>Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$num7=mysqli_affected_rows($link);
