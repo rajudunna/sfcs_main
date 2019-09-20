@@ -53,7 +53,7 @@ if (isset($_POST["barcode_info"])){
     }
 }
    
-    //logic for Saving good qunatities
+    //logic for Saving good qunatities and rejections
 if(isset($_POST["trans_action"])){
         $trans_action = $_POST['trans_action'];
         //this is for good and rejection positive add
@@ -1564,8 +1564,9 @@ if(isset($_POST["trans_action"])){
                                   
         }
         
-        //this is for reverse transactions for both good
+        //this is for reverse transactions for both good and rejections
         if($trans_action=="reverse"){
+            //this is for good reversal
             $trans_mode=$_POST['trans_mode'];
             if($trans_mode=='good'){
                     $barcode_val = $_POST['barcode_value'];
@@ -2481,6 +2482,180 @@ if(isset($_POST["trans_action"])){
                             echo json_encode($result_array);
                             die();
                         }
+            }
+            //this is for rejection reversal
+            if($trans_mode=='scrap'){
+                include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+                include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
+                $barcode_val = $_POST['barcode_value'];
+                $selected_module=$_POST['module'];
+                $op_code=$_POST['op_code'];
+                $shift=$_POST['shift'];
+                if($barcode_val!=''){
+                    $sql="SELECT rej.`parent_id`,rej.`bcd_id`,qms.qms_tid AS qms_tid,qms.`bundle_no` AS bundle_no,qms.`qms_qty` AS qms_qty,rej.`recut_qty`,
+                    ref1,location_id,SUBSTRING_INDEX(qms.remarks,'-',-1) AS form,qms_style,qms_schedule,qms_color,qms_size,qms_remarks,qms.operation_id,qms.input_job_no,qms.log_date,log_time 
+                    FROM bai_pro3.bai_qms_db qms 
+                    LEFT JOIN brandix_bts.`bundle_creation_data` bts ON bts.`bundle_number` = qms.`bundle_no` AND bts.`operation_id` = qms.`operation_id` 
+                    LEFT JOIN bai_pro3.`rejection_log_child` rej ON rej.`bcd_id` = bts.`id` WHERE qms_tran_type=3 AND bundle_number='$barcode_val' 
+                    AND recut_qty = 0 AND replaced_qty = 0";
+                    $result=mysqli_query($link, $sql) or die("Sql error".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
+                    if(mysqli_num_rows($result)>0)
+                    {
+                        while($row=mysqli_fetch_array($result))
+                            {
+                                $tid_ref=$row["qms_tid"];
+                                $locationid=$row["location_id"];
+                                $qms_qty=$row["qms_qty"];
+                                $bcd_id = $row['bcd_id'];
+                                $parent_id = $row['parent_id']; 
+                                $form = $row['form'];
+
+                                if($row['form']=="G")
+                                {
+                                    $form="Garment";
+                                }else
+                                {
+                                    $form="Panel";
+                                }   
+                                    $sql1="select bundle_no,qms_style,qms_color,input_job_no,operation_id,qms_size,SUBSTRING_INDEX(remarks,'-',1) as module,SUBSTRING_INDEX(remarks,'-',-1) AS form,ref1,doc_no,qms_schedule from $bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
+                                    $result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
+                                    while($sql_row=mysqli_fetch_array($result1))
+                                    {
+                                        $input_job_no=$sql_row["input_job_no"];
+                                        $operation_id=$sql_row["operation_id"];
+                                        $qms_size=$sql_row["qms_size"];
+                                        $module_ref=$sql_row["module"];
+                                        $rejections_ref=$sql_row["ref1"];
+                                        $style=$sql_row["qms_style"];
+                                        $color=$sql_row["qms_color"];
+                                        $bundle_no_ref=$sql_row["bundle_no"];
+                                        $doc_no = $sql_row['doc_no'];
+                                        $schedule = $sql_row['qms_schedule'];
+                                        $form = $sql_row['form'];
+                                    }
+                                    
+                                    $emb_cut_check_flag = 0;
+                                    $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code=$operation_id";
+                                    // echo $ops_seq_check;
+                                    $result_ops_seq_check = $link->query($ops_seq_check);
+                                    if($result_ops_seq_check->num_rows > 0)
+                                    {
+                                        while($row = $result_ops_seq_check->fetch_assoc()) 
+                                        {
+                                            $ops_seq = $row['ops_sequence'];
+                                            $seq_id = $row['id'];
+                                            $ops_order = $row['operation_order'];
+                                        }
+                                    }
+                                    $pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
+                                    $result_pre_ops_check = $link->query($pre_ops_check);
+                                    if($result_pre_ops_check->num_rows > 0)
+                                    {
+                                        while($row = $result_pre_ops_check->fetch_assoc()) 
+                                        {
+                                            $pre_ops_code = $row['operation_code'];
+                                        }
+                                        $category=['cutting','Send PF','Receive PF'];
+                                        $checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$pre_ops_code'";
+                                        $result_checking_qry = $link->query($checking_qry);
+                                        while($row_cat = $result_checking_qry->fetch_assoc()) 
+                                        {
+                                            $category_act = $row_cat['category'];
+                                        }
+                                        if(in_array($category_act,$category))
+                                        {
+                                            $emb_cut_check_flag = 1;
+                                        }
+                                    }
+
+                                    if($emb_cut_check_flag == 1)
+                                    {
+                                        $cps_update = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$qms_qty where doc_no = $doc_no and operation_code = $pre_ops_code and size_code = '$qms_size'";
+                                        mysqli_query($link, $cps_update) or die("Sql error".$cps_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
+                                    }
+                                    
+                                    $reason = array();	$r_reasons = array();	$reason_qty = array();
+                                    $rejections_ref_explode=explode("$",$rejections_ref);
+                                    for ($i=0; $i < sizeof($rejections_ref_explode); $i++)
+                                    { 
+                                        $rejections_ref_explode_ref=explode("-",$rejections_ref_explode[$i]);
+                                        $reason[] = $rejections_ref_explode_ref[0];
+                                        $reason_qty[] = $rejections_ref_explode_ref[1];
+                                    }
+                                    
+                                
+                                    for ($z=0; $z < sizeof($reason); $z++)
+                                    { 
+                                        $rej_code="select m3_reason_code from $bai_pro3.bai_qms_rejection_reason where form_type='".$form."' and reason_code='".$reason[$z]."'";
+                                        $rej_code_sql_result=mysqli_query($link,$rej_code) or exit("m3_reason_code Error".$ops_dependency.mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        while($rej_code_row = mysqli_fetch_array($rej_code_sql_result))
+                                        {
+                                            $r_reasons[]=$rej_code_row["m3_reason_code"];
+                                        }
+                                    }
+                                    // die();
+                                    $bts_update="update $brandix_bts.bundle_creation_data set rejected_qty=rejected_qty-".$qms_qty." where bundle_number='".$bundle_no_ref."' and input_job_no_random_ref='".$input_job_no."' and operation_id='".$operation_id."' and assigned_module='".$module_ref."' and size_id='".$qms_size."'";
+                                    //echo $bts_update."<br>";
+                                    mysqli_query($link, $bts_update) or die("Sql error".$bts_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
+                                    //echo $bts_update.'</br>';
+                                    $bts_insert="insert into $brandix_bts.bundle_creation_data_temp(cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,rejected_qty,docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id) select cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,'".(-1*$qms_qty)."',docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id from $brandix_bts.bundle_creation_data_temp where bundle_number='".$bundle_no_ref."' and input_job_no_random_ref='".$input_job_no."' and operation_id='".$operation_id."' and assigned_module='".$module_ref."' and size_id='".$qms_size."' limit 1";
+                                    //echo $bts_insert;
+                                    mysqli_query($link,$bts_insert) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
+                                    
+                                    $updated = updateM3TransactionsRejectionsReversal($bundle_no_ref,$operation_id,$reason_qty,$r_reasons);
+                                
+                                    //Insert selected row into table deleted table
+                                    $sql1="insert ignore into $bai_pro3.bai_qms_db_deleted select * from bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
+                                    // echo $sql1."<br>";
+                                    $result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
+                                    //reduce qty from location table based on location
+                                    if($locationid != null) {
+                                        $sql3="update $bai_pro3.bai_qms_location_db set qms_cur_qty=(qms_cur_qty-$qms_qty) where qms_location_id='".$locationid."'";
+                                        // echo $sql3."<br>";
+                                        $result3=mysqli_query($link, $sql3) or die("Sql error".$sql3.mysqli_errno($GLOBALS["___mysqli_ston"]));
+                                    }
+                                    //delete selected row from bai_qms_db table
+                                    $sql2="delete from $bai_pro3.bai_qms_db where qms_tid='".$tid_ref."'";
+                                    // echo $sql2."<br>";
+                                    $result2=mysqli_query($link, $sql2) or die("Sql error".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
+                                    
+                                    //updating rejection_log_chile
+                                
+                                    $update_qry = "update $bai_pro3.rejection_log_child set rejected_qty = rejected_qty-$qms_qty where bcd_id = $bcd_id";
+                                    // echo $update_qry.'</br>';
+                                    mysqli_query($link, $update_qry) or die("update_qry".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
+                                
+                                    $search_qry="SELECT id FROM $bai_pro3.rejections_log where style='$style' and schedule='$schedule' and color='$color'";
+                                                    // echo $search_qry;
+                                    $result_search_qry = mysqli_query($link,$search_qry) or exit("rejections_log search query".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    if($result_search_qry->num_rows > 0)
+                                    {
+                                        while($row_result_search_qry=mysqli_fetch_array($result_search_qry))
+                                        {
+                                
+                                            $rejection_log_id = $row_result_search_qry['id'];
+                                            $update_qry_rej_lg = "update $bai_pro3.rejections_log set rejected_qty = rejected_qty-$qms_qty,remaining_qty=remaining_qty-$qms_qty where id = $rejection_log_id";
+                                            // echo $update_qry_rej_lg;
+                                            $update_qry_rej_lg = $link->query($update_qry_rej_lg);
+                                            $parent_id = $rejection_log_id;
+                                
+                                        }
+                                
+                                    }
+                                    
+                                    $result_array['status'] = 'Rejected qunatities deleted this bundle..!';
+                                    echo json_encode($result_array);
+                                    die();
+                            }
+                    }else{
+                        $result_array['status'] = 'No rejected qty for this bundle..!';
+                        echo json_encode($result_array);
+                        die();
+                    }
+
+                }
+                
+
             }
         }
 }
