@@ -243,6 +243,15 @@ if(isset($_POST['delete']))
 				$sql_result7=mysqli_query($link, $sql7) or exit($sql7."<br/>Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
+		else
+		{
+			$label_id = explode('-',$lid);
+			// echo $label_id[1];
+
+			$sql9="delete FROM $bai_rm_pj1.stock_report_inventory where tid='$label_id[1]'";
+			$sql_result8=mysqli_query($link, $sql9) or exit($sql9."<br/>Sql Error label_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// $num9=mysqli_affected_rows($link);
+		}
 			$sql1="delete from $bai_rm_pj1.store_in where barcode_number=\"$lid\"";
 			$sql_result1=mysqli_query($link, $sql1) or exit($sql1."<br/>Sql Error 1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
