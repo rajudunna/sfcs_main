@@ -43,9 +43,21 @@ if(isset($_POST['reverse']))
 	$barcode=$_POST['barcode'];
 	$barcodeno=explode('-', $barcode)[0];
 	$operation=explode('-', $barcode)[1];
+	$seqno=explode('-', $barcode)[2];
+	
+	$get_data_qry="select size from $bai_pro3.emb_bundles where barcode='$barcode'";	
+	$selct_qry_result=mysqli_query($link,$get_data_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
+    if($selct_qry_result->num_rows > 0)
+	{
+		while($selct_qry_result_row=mysqli_fetch_array($selct_qry_result))
+        {
+            $size = $selct_qry_result_row['size'];
+        }
+	}
+	
 	
 	//getting data from bundle_creation_data
-	$getbundledata="Select * From $brandix_bts.bundle_creation_data where bundle_number = '$barcodeno' and operation_id='$operation'";
+	$getbundledata="Select * From $brandix_bts.bundle_creation_data where docket_number = '$barcodeno' and operation_id='$operation' and size_title='$size'";
 	$check_data_qry_result=mysqli_query($link,$getbundledata) or exit("while retriving data from bundle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($check_data_qry_result))
 	{

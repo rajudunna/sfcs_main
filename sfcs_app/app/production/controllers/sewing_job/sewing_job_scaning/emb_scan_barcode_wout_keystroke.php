@@ -139,7 +139,7 @@ th,td{
         </div>
     </div>
 </div>
-<script src="<?= getFullURLLevel($_GET['r'],'common/js/scan_barcode.js',3,'R') ?>"></script>
+<script src="<?= getFullURLLevel($_GET['r'],'common/js/emb_scan_barcode.js',3,'R') ?>"></script>
 <script>
 function gatepass_page(i)
 {

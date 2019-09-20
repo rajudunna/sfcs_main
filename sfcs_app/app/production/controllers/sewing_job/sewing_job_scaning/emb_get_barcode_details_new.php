@@ -10,24 +10,51 @@
     //changing for #978 cr
     $barcode_number = explode('-', $barcode)[0];
     //retriving original bundle_number from this barcode
-    $selct_qry = "SELECT bundle_number FROM $brandix_bts.bundle_creation_data
-    WHERE bundle_number =$barcode_number";
-    $selct_qry_result=mysqli_query($link,$selct_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
+    // $selct_qry = "SELECT bundle_number FROM $brandix_bts.bundle_creation_data
+    // WHERE bundle_number =$barcode_number";
+    // $selct_qry_result=mysqli_query($link,$selct_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
+    // if($selct_qry_result->num_rows > 0)
+	// {
+   
+        // while($selct_qry_result_row=mysqli_fetch_array($selct_qry_result))
+        // {
+            // $bundle_no = $selct_qry_result_row['bundle_number'];
+        // }
+    // }
+    // else
+    // {
+        // $bundle_no = explode('-', $barcode)[0];
+    // }
+    //ends on #978
+	
+	//getting details from emb_bundles
+	$get_data_qry="select size from $bai_pro3.emb_bundles where barcode='$barcode'";	
+	$selct_qry_result=mysqli_query($link,$get_data_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
     if($selct_qry_result->num_rows > 0)
 	{
-   
-        while($selct_qry_result_row=mysqli_fetch_array($selct_qry_result))
+		while($selct_qry_result_row=mysqli_fetch_array($selct_qry_result))
         {
-            $bundle_no = $selct_qry_result_row['bundle_number'];
+            $size = $selct_qry_result_row['size'];
+        }
+	}
+	
+	$doc_no = explode('-', $barcode)[0];
+    $op_no = explode('-', $barcode)[1];
+	$seqno = explode('-', $barcode)[2];
+	
+	//getting bundle number from bundle_creation_data
+	$selct_qry = "SELECT bundle_number FROM $brandix_bts.bundle_creation_data  WHERE docket_number =$doc_no AND operation_id='$op_no' AND size_title='$size'";
+    $selct_qry_res=mysqli_query($link,$selct_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
+    if($selct_qry_res->num_rows > 0)
+	{
+   
+        while($selct_qry_result_rows=mysqli_fetch_array($selct_qry_res))
+        {
+            $bundle_no = $selct_qry_result_rows['bundle_number'];
         }
     }
-    else
-    {
-
-        $bundle_no = explode('-', $barcode)[0];
-    }
-    //ends on #978
-    $op_no = explode('-', $barcode)[1];
+	
+	
     $emb_cut_check_flag = 0;
     $msg = 'Scanned Successfully';
 
