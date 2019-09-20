@@ -111,8 +111,8 @@ $result_rejections = $link->query($qery_rejection_resons);
     <div class="panel-body" style="background-color: black;" ng-controller="scancode_ctrl">
        <table border=0;> 
        <tr>
-        <td>Style : </label><br/><br/><label>Color : </label></td>
-        <td><input type="text" style="max-width: 150px;" class="form-control" name="style" ng-model="style" ng-readonly="true"><br/><br/>
+        <td><label>Style : </label><br/><br/><label>Color : </label></td>
+        <td style="padding: 0px 0px 0px 23px;"><input type="text" style="max-width: 150px;" class="form-control" name="style" ng-model="style" ng-readonly="true"><br/><br/>
        <input type="text" style="max-width: 150px;" class="form-control" name="color" ng-model="color" ng-readonly="true"></td>
        <td style="width: 10 5px;"></td>
         <td><div class="container" style="width: 570px;">
@@ -164,7 +164,7 @@ $result_rejections = $link->query($qery_rejection_resons);
         </td>
         </tr>
         <td><label>Bar code :</label></td>
-        <td><input type="text" style="max-width: 150px;"  class="form-control" ng-model="barcode_value" ng-keypress="scanned($event)" id="barcode_value" onkeyup="validateQty(event,this);" placeholder="scan barcode here" autofocus></td>
+        <td style="padding: 0px 0px 0px 23px;"><input type="text" style="max-width: 150px;"  class="form-control" ng-model="barcode_value" ng-keypress="scanned($event)" id="barcode_value" onkeyup="validateQty(event,this);" placeholder="scan barcode here" autofocus></td>
         <input type="hidden" id="module" ng-model="module" ng-init="module='<?= $module; ?>'">
         <input type="hidden" id="shift" ng-model="shift" ng-init="shift='<?= $shift; ?>'">
         <input type="hidden" id="op_code" ng-model="op_code" ng-init="op_code='<?= $op_code; ?>'">
@@ -211,7 +211,7 @@ $result_rejections = $link->query($qery_rejection_resons);
         </tr>
         </br></br></br>
         <tr>
-        <td><span>Action :</span></td>
+        <td><span><label>Action :</label></span></td>
         <td>
             <div class="radio-toolbar1" ng-init="action_mode='add'"style="width: 220px;padding: 10px 18px 4px 25px;
             background-color: #2e2d2c;border-radius: 20px;">
