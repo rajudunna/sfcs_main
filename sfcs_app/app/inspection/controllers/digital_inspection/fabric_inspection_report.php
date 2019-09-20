@@ -42,6 +42,33 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
    $supplier = $row3['supplier'];
    $buyer = $row3['buyer'];
  }
+ //To get inspected_qty
+ $get_inspectd_qty = "select sum(inspected_qty) as inspected_qty,SUM(1_points) as 1_points,SUM(2_points) as 2_points,SUM(3_points) as 
+  3_points,SUM(4_points) as 4_points from $bai_rm_pj1.roll_inspection_child where supplier_roll_no in($roll_details)";
+ //echo $get_inspectd_qty;
+ $inspectd_qty_details=mysqli_query($link,$get_inspectd_qty) or exit("get_inspectd_qty Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+ while($row5=mysqli_fetch_array($inspectd_qty_details))
+ {
+   $total_inspected_qty=$row5['inspected_qty'];
+   $point1=$row5['1_points']*1;
+   $point2=$row5['2_points']*2;
+   $point3=$row5['3_points']*3;
+   $point4=$row5['4_points']*4;
+ }
+ $main_points =  $point1+$point2+$point3+$point4;
+ if($main_points < 0)
+ {
+   $total_points =0;
+ }
+ else
+ {
+   $total_points = $main_points;
+ }
+ //To change into Yards
+ $total_qty=round($total_inspected_qty*0.9144,2);
+ //Caliculation for Average points
+  $average_points = ($main_points/$total_qty) * (36/49.21) * 100;
+  //echo $average_points ; 
 ?>
 <link rel="stylesheet" type="text/css" href="../../../../common/css/page_style.css" />
 <link rel="stylesheet" href="../../../../common/css/bootstrap.min.css">
@@ -145,7 +172,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
                     echo "<tr>
                       <td></td>
                       <td></td>
-                      <td></td>
+                      <td>".$average_points."</td>
                       <td></td>
                       <td></td>
                       <td>".$testing."</td>
@@ -187,6 +214,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
                     $point3=$row3['3_points']*3;
                     $point4=$row3['4_points']*4;
                     $main_points =  $point1+$point2+$point3+$point4;
+                     
                   echo "
                   <td>".$row3['supplier_roll_no']."</td>
                   <td></td>
@@ -213,7 +241,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
               </tbody> 
             </table>
            </div> 
-            <h6>Total Inspected Qty - <?= $ticket_length[$roll_id]?><u></u></h6><h6>Actual Points Counted - <?= $main_points?><u></u></h6> 
+            <h6>Total Inspected Qty - <?= $total_inspected_qty?><u></u></h6><h6>Actual Points Counted - <?= $main_points?><u></u></h6> 
             <hr>    
         </div>
       </div>

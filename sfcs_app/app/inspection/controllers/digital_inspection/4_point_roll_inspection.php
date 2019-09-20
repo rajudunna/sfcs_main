@@ -3,7 +3,7 @@
  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
  $lot_number = $_GET['lot_no'];
 //  echo $lot_number;
-//  $lot_number = ['5231799003','5231799002'];
+  //$lot_number = ['5231799003','5231799002'];
  $get_details="select * from `bai_rm_pj1`.`inspection_population` where lot_no in($lot_number) and status in(1,2)";
 //  echo $get_details;
  $details_result=mysqli_query($link,$get_details) or exit("get_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -27,8 +27,8 @@
  }
 
  $path= getFullURLLevel($_GET['r'], "fabric_inspection_report.php", "0", "R")."?id=$id_no&color=$color&batch=$batch";
- $lot_details = implode(',',$lot_num);
-  $inspection_details = "select * from $bai_rm_pj1.roll_inspection_child where lot_no in(".$lot_details.")";
+ $lot_details = implode("','",$lot_num);
+  $inspection_details = "select * from $bai_rm_pj1.roll_inspection_child where lot_no in('".$lot_details."')";
   //echo $inspection_details;
   $inspection_details_result=mysqli_query($link,$inspection_details) or exit("inspection_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
   while($row4=mysqli_fetch_array($inspection_details_result))
@@ -42,6 +42,7 @@
      $tolerance = $row4['tolerance'];
      $item_code1 = $row4['item_code'];
      $roll_no = $row4['roll_no'];
+     $rolls[] = $row4['roll_no']; 
      $inspected_per = $row4['inspected_per'];
      $inspected_qty = $row4['inspected_qty'];
      $invoice_qty = $row4['invoice_qty'];
@@ -57,6 +58,7 @@
      $comment = $row4['comment'];
      $marker_type = $row4['marker_type'];
   }
+
 ?>
 
 <div class="container-fluid">
@@ -156,8 +158,8 @@
 					      	</tr>
 					      	<!-- <tr> -->
 					      	<?php
-					      	  $url = getFullURLLevel($_GET['r'],'4_point_roll_inspection_child.php',0,'N');
-                             $get_details1="select supplier_no,ref2 as roll_no,ref5 as ctex_length,ref3 as ctex_width,qty_issued,lot_no from $bai_rm_pj1.store_in where lot_no in(".$lot_details.")";
+					      	 $url = getFullURLLevel($_GET['r'],'4_point_roll_inspection_child.php',0,'N');
+					      	$get_details1="select supplier_no,ref2 as roll_no,ref5 as ctex_length,ref3 as ctex_width,qty_issued,lot_no from $bai_rm_pj1.store_in where lot_no in('".$lot_details."')";
                              $details1_result=mysqli_query($link,$get_details1) or exit("get_details1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                              while($row2=mysqli_fetch_array($details1_result))
                              {
@@ -176,12 +178,26 @@
 					      		<td>".$color."</td>
 	                            <td>".$item_desc[$lot_id]."</td>
 	                            <td>".$lot_id."</td>
-	                            <td>".$row2['qty_issued']."</td>
-	                            <td></td>
-	                            <td></td>
-					      	   </tr>";
+	                            <td>".$row2['qty_issued']."</td>";
+	                             $get_status_details="select SUM(1_points) as 1_points,SUM(2_points) as 2_points,SUM(3_points) as 3_points,SUM(4_points) as 4_points,supplier_roll_no,inspection_status from $bai_rm_pj1.roll_inspection_child where supplier_roll_no = '$roll_id'";
+	                             //echo $get_status_details;
+						      	 $status_details_result=mysqli_query($link,$get_status_details) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                             while($row5=mysqli_fetch_array($status_details_result))
+	                             { 
+	                               $roll=$row5['supplier_roll_no']; 
+	                               $status=$row5['inspection_status'];
+	                               $point1=$row5['1_points']*1;
+								   $point2=$row5['2_points']*2;
+								   $point3=$row5['3_points']*3;
+								   $point4=$row5['4_points']*4;
+								   $main_points =  $point1+$point2+$point3+$point4;
+		                            echo"
+		                            <td>".$main_points."</td>
+		                            <td>".$status."</td>
+						      	   </tr>";
+                                }
                              }
-					      	?>	
+                             ?>	
 					      </tbody>
 					    </table>
 					  </div>
@@ -205,8 +221,8 @@
 					      		<th>Marker Type</th>
 					      	</tr>
 					      	<tr>
-                                <td><input type="text" id="item_code1" name="item_code1" value="<?= $item_code1 ?>"></td>
-					      		<td><input type="text" id="roll_no1" name="roll_no1" value="<?= $roll_no ?>"></td>
+                                <td><input type="text" id="item_code1" name="item_code1"></td>
+					      		<td><input type="text" id="roll_no1" name="roll_no1"></td>
 					      		<td><input type="text" id="inspected_per" name="inspected_per" class="float"></td>
 					      		<td><input type="text" id="inspected_qty" name="inspected_qty" class="float"></td>
 					      		<td><input type="text" id="invoice_qty" name="invoice_qty" class="float"></td>

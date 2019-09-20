@@ -248,13 +248,13 @@ if(isset($_POST['confirm']))
 						  		</tr>		
 					  			<tr>	
 					  				<td>Fabric Composition</td>
-					  				<td><input type="text" id="fabric_composition" name="fabric_composition" value="<?= $fabric ?>" <?php if($fabric) echo "readonly" ?> class="float" required></td>
-					  				<td rowspan="2"><input type="text" id="tolerance" name="tolerance" value="<?= $tolerance ?>" <?php if($tolerance) echo "readonly" ?> class="float" required></td>
+					  				<td><input type="text" id="fabric_composition" name="fabric_composition" value="<?= $fabric ?>" <?php if($fabric) echo "readonly" ?> class="float"></td>
+					  				<td rowspan="2"><input type="text" id="tolerance" name="tolerance" value="<?= $tolerance ?>" <?php if($tolerance) echo "readonly" ?> class="float"></td>
 					  			</tr>
 					  			<tr>	
 					  				<td>Inspection Status</td>
 					  				<td>
-					  				<select  name="inspection_status" id="inspection_status" required>
+					  				<select  name="inspection_status" id="inspection_status">
 				                     	<option value="" disabled selected>Select Status</option>
 				                     	<option value="approval" <?php if($status=="approval") echo "selected" ?>>Aprroval</option>
 				                     	<option value="rejected" <?php if($status=="rejected") echo "selected" ?>>Rejected</option>
@@ -267,17 +267,17 @@ if(isset($_POST['confirm']))
 					  			</tr>	
 					  			<tr>
 					  				<td>Spec Width</td>
-					  				<td><input type="text" id="spec_width" name="spec_width" value="<?= $width ?>" <?php if($fabric) echo "readonly" ?> class="float" required></td>
+					  				<td><input type="text" id="spec_width" name="spec_width" value="<?= $width ?>" <?php if($fabric) echo "readonly" ?> class="float"></td>
 					  				<!-- <td><input type="text" id="tolerance" name="tolerance"></td> -->
 					  			</tr>
 					  			<tr>
 					  				<td>Spec Weight</td>
-					  				<td><input type="text" id="spec_weight" name="spec_weight" value="<?= $weight ?>" <?php if($fabric) echo "readonly" ?> class="float" required></td>
+					  				<td><input type="text" id="spec_weight" name="spec_weight" value="<?= $weight ?>" <?php if($fabric) echo "readonly" ?> class="float"></td>
 					  				<!-- <td><input type="text" id="tolerance" name="tolerance"></td> -->
 					  			</tr>
 					  			<tr>
 					  				<td>Repeat Length</td>
-					  				<td><input type="text" id="repeat_length" name="repeat_length" value="<?= $length ?>" <?php if($fabric) echo "readonly" ?> class="float" required></td>
+					  				<td><input type="text" id="repeat_length" name="repeat_length" value="<?= $length ?>" <?php if($fabric) echo "readonly" ?> class="float"></td>
 					  				<!-- <td><input type="text" id="tolerance" name="tolerance"></td> -->
 					  			</tr>
 					  			<tr>
@@ -285,7 +285,7 @@ if(isset($_POST['confirm']))
 					  			</tr>
 					  			<tr>
 					  				<td>Lab Testing</td>
-					  				<td><input type="text" id="lab_testing" name="lab_testing" value="<?= $testing ?>" <?php if($fabric) echo "readonly" ?> class="float" required></td>
+					  				<td><input type="text" id="lab_testing" name="lab_testing" value="<?= $testing ?>" <?php if($fabric) echo "readonly" ?> class="float"></td>
 					  				<!-- <td rowspan="2"><input type="text" id="tolerance" name="tolerance"></td> -->
 					  			</tr>	
 					  		</tbody>	
@@ -323,10 +323,24 @@ if(isset($_POST['confirm']))
 					      		<td>".$color."</td>
 	                            <td>".$item_desc."</td>
 	                            <td>".$lot_number."</td>
-	                            <td>".$row2['qty_issued']."</td>
-	                            <td></td>
-	                            <td></td>
-					      	   </tr>";
+	                            <td>".$row2['qty_issued']."</td>";
+	                            $get_status_details="select SUM(1_points) as 1_points,SUM(2_points) as 2_points,SUM(3_points) as 3_points,SUM(4_points) as 4_points,supplier_roll_no,inspection_status from $bai_rm_pj1.roll_inspection_child where supplier_roll_no = '$roll_id'";
+	                             //echo $get_status_details;
+						      	$status_details_result=mysqli_query($link,$get_status_details) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                            while($row5=mysqli_fetch_array($status_details_result))
+	                            { 
+	                               $roll=$row5['supplier_roll_no']; 
+	                               $status=$row5['inspection_status'];
+	                               $point1=$row5['1_points']*1;
+								   $point2=$row5['2_points']*2;
+								   $point3=$row5['3_points']*3;
+								   $point4=$row5['4_points']*4;
+								   $main_points =  $point1+$point2+$point3+$point4;
+		                            echo"
+		                            <td>".$main_points."</td>
+		                            <td>".$status."</td>
+						      	   </tr>";
+                                }
                              }
 					      	?>	
 					      </tbody>
@@ -354,20 +368,20 @@ if(isset($_POST['confirm']))
 					      	<tr>
 					      		<td><input type="text" id="item_code" name="item_code" value="<?= $item_code1 ?>"></td>
 					      		<td><input type="text" id="roll_no" name="roll_no" value="<?= $roll_no ?>"></td>
-					      		<td><input type="text" id="inspected_per" name="inspected_per" value="<?= $inspected_per ?>" <?php if($inspected_per) echo "readonly" ?> class="float" required></td>
-					      		<td><input type="text" id="inspected_qty" name="inspected_qty" value="<?= $inspected_qty ?>" <?php if($inspected_qty) echo "readonly" ?> class="float" required></td>
-					      		<td><input type="text" id="invoice_qty" name="invoice_qty" value="<?= $invoice_qty ?>" <?php if($invoice_qty) echo "readonly" ?> class="float" required></td>
-					      		<td><center>S</center><input type="text" id="s" name="s" colspan=3 value="<?= $s ?>" <?php if($s) echo "readonly" ?> class="float" required></td>
-					      		<td><center>M</center><input type="text" id="m" name="m" colspan=3 value="<?= $m ?>" <?php if($m) echo "readonly" ?> class="float" required></td>
-					      		<td><center>E</center><input type="text" id="e" name="e" colspan=3 value="<?= $e ?>" <?php if($e) echo "readonly" ?> class="float" required></td>
-					      		<td><input type="text" id="actual_height" name="actual_height" value="<?= $actual_height ?>" <?php if($actual_height) echo "readonly" ?> class="float" required></td>
-					      		<td><input type="text" id="actual_repeat_height" name="actual_repeat_height" value="<?= $actual_repeat_height ?>" <?php if($actual_repeat_height) echo "readonly" ?> class="float" required></td>
-					      		<td><input type="text" id="skw" name="skw" value="<?= $skw ?>" <?php if($skw) echo "readonly" ?> required></td>
-					      		<td><input type="text" id="bow" name="bow" value="<?= $bow ?>" <?php if($bow) echo "readonly" ?> required></td>
-					      		<td><input type="text" id="ver" name="ver" value="<?= $ver ?>" <?php if($ver) echo "readonly" ?> required></td>
-					      		<td><input type="text" id="gsm" name="gsm" value="<?= $gsm ?>" <?php if($gsm) echo "readonly" ?> required></td>
-					      		<td><input type="text" id="comment" name="comment" value="<?= $comment ?>" <?php if($comment) echo "readonly" ?> required></td>
-					      		<td><input type="text" id="marker_type" name="marker_type" value="<?= $marker_type ?>" <?php if($marker_type) echo "readonly" ?> required></td>
+					      		<td><input type="text" id="inspected_per" name="inspected_per" value="<?= $inspected_per ?>" <?php if($inspected_per) echo "readonly" ?> class="float"></td>
+					      		<td><input type="text" id="inspected_qty" name="inspected_qty" value="<?= $inspected_qty ?>" <?php if($inspected_qty) echo "readonly" ?> class="float"></td>
+					      		<td><input type="text" id="invoice_qty" name="invoice_qty" value="<?= $invoice_qty ?>" <?php if($invoice_qty) echo "readonly" ?> class="float"></td>
+					      		<td><center>S</center><input type="text" id="s" name="s" colspan=3 value="<?= $s ?>" <?php if($s) echo "readonly" ?> class="float"></td>
+					      		<td><center>M</center><input type="text" id="m" name="m" colspan=3 value="<?= $m ?>" <?php if($m) echo "readonly" ?> class="float"></td>
+					      		<td><center>E</center><input type="text" id="e" name="e" colspan=3 value="<?= $e ?>" <?php if($e) echo "readonly" ?> class="float"></td>
+					      		<td><input type="text" id="actual_height" name="actual_height" value="<?= $actual_height ?>" <?php if($actual_height) echo "readonly" ?> class="float"></td>
+					      		<td><input type="text" id="actual_repeat_height" name="actual_repeat_height" value="<?= $actual_repeat_height ?>" <?php if($actual_repeat_height) echo "readonly" ?> class="float"></td>
+					      		<td><input type="text" id="skw" name="skw" value="<?= $skw ?>" <?php if($skw) echo "readonly" ?>></td>
+					      		<td><input type="text" id="bow" name="bow" value="<?= $bow ?>" <?php if($bow) echo "readonly" ?>></td>
+					      		<td><input type="text" id="ver" name="ver" value="<?= $ver ?>" <?php if($ver) echo "readonly" ?>></td>
+					      		<td><input type="text" id="gsm" name="gsm" value="<?= $gsm ?>" <?php if($gsm) echo "readonly" ?>></td>
+					      		<td><input type="text" id="comment" name="comment" value="<?= $comment ?>" <?php if($comment) echo "readonly" ?>></td>
+					      		<td><input type="text" id="marker_type" name="marker_type" value="<?= $marker_type ?>" <?php if($marker_type) echo "readonly" ?>></td>
 					      	</tr>	
 					     </tbody>
 					    </table>
@@ -409,10 +423,10 @@ if(isset($_POST['confirm']))
 							      	?>
 							      	</tr>
 							      	<tr>	
-							      		<td><button type="sumbit" class="btn btn-outline-primary" name="save" id="save">Save</button></td>
+							      		<td><button type="sumbit" class="btn btn-sm btn-primary" name="save" id="save">Save</button></td>
 							      	</tr>
 							      	<tr>	
-							      		<td><button type="sumbit" class="btn btn-outline-primary" name="confirm" id="confirm">Confirm</button></td>
+							      		<td><button type="sumbit" class="btn btn-sm btn-primary" name="confirm" id="confirm">Confirm</button></td>
 							      	</tr>
 							      </tbody>
 							     </table>
