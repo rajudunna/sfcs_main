@@ -342,11 +342,11 @@ foreach($b_tid as $key => $value)
 					$status=$qry_result_row['status'];
 					
 					//if data exists update emb_bundles
-					$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='".$final_rep_qty."',update_time='". date('Y-m-d')."' where doc_no='$b_doc_no' and ops_code='".$b_op_id."' and size='".$b_sizes[$key]."'";
+					$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='".$orgqty."',update_time='". date('Y-m-d')."' where doc_no='$b_doc_no' and ops_code='".$b_op_id."' and size='".$b_sizes[$key]."'";
 					$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');	
 					
 					//insert data into emb_bundles_temp
-					$insert_emb_bundles="INSERT INTO $bai_pro3.emb_bundles_temp(tid,  doc_no,  size,    ops_code,  barcode,  quantity,  good_qty,  reject_qty,  insert_time,  update_time,  club_status,  log_user,  tran_id,  status) VALUES ('".$tid."','".$b_doc_no."','".$b_sizes[$key]."','".$b_op_id."','".$barcodeno."','".$orgqty."','".$goodqty."','".$rejectqty."','".date('Y-m-d')."','','".$clubstatus."','".$username."','".$tranid."','".$status."')";
+					$insert_emb_bundles="INSERT INTO $bai_pro3.emb_bundles_temp(tid,  doc_no,  size,    ops_code,  barcode,  quantity,  good_qty,  reject_qty,  insert_time,  update_time,  club_status,  log_user,  tran_id,  status) VALUES ('".$tid."','".$b_doc_no."','".$b_sizes[$key]."','".$b_op_id."','".$barcodeno."','".$orgqty."','".$orgqty."','".$rejectqty."','".date('Y-m-d')."','','".$clubstatus."','".$username."','".$tranid."','".$status."')";
 					$result_emb_temp = $link->query($insert_emb_bundles) or exit('error while insert into emb_bundles_temp');
 				}
 			}
