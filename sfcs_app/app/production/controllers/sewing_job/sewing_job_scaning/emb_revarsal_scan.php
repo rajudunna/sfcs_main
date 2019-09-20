@@ -162,7 +162,7 @@ if(isset($_POST['reverse']))
 		}
 		
 		//update cps_log
-		$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=0 where doc_no = '".$b_doc_num."' and size_title='". $size_id."' AND operation_code = $b_op_id";
+		$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=0 where doc_no = '".$b_doc_num."' and size_code='". $size_id."' AND operation_code = $b_op_id";
 		$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 		
 		$updating = updateM3TransactionsReversal($barcodeno,$recieved_qty,$b_op_id);
@@ -171,5 +171,49 @@ if(isset($_POST['reverse']))
 	{
 		echo "<script>swal('Next Operation Already Scanned','','warning')</script>";
 	}
+	echo "<script>swal('Reversal Done','Successfully','Success');</script>";
+	
+	//to check for parallel scanning
+	
+	// $dep_ops_check = "select ops_dependency from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$color' AND operation_code = $b_op_id";
+	// $result_dep_ops_check = $link->query($dep_ops_check);
+	// if($result_dep_ops_check->num_rows > 0)
+	// {
+		// while($row22 = $result_dep_ops_check->fetch_assoc()) 
+		// {
+			// $next_operation = $row22['ops_dependency'];
+		// }
+	// }
+	// else
+	// {
+		// $next_operation = '';
+	// }
+	// $flag ='';
+	
+	// if($next_operation > 0)
+	// {
+	   // $flag = 'parallel_scanning';
+		// $get_ops_dep = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$color' and ops_dependency = $next_operation";
+	   // $result_ops_dep = $link->query($get_ops_dep);
+	   // while($row_dep = $result_ops_dep->fetch_assoc()) 
+	   // {
+		  // $emb_operations[] = $row_dep['operation_code'];
+	   // }
+	// }
+	
+	// if($flag == 'parallel_scanning')
+	// {
+		// $doc_qtys_array = [];
+		// $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where docket_number =$b_doc_num and size_title='". $size_title."' and operation_id in (".implode(',',$emb_operations).")";
+		// $result_pre_send_qty = $link->query($pre_send_qty_qry);
+		// while($doc_row = $result_pre_send_qty->fetch_assoc()) 
+		// {
+			// $doc_qtys_array[$b_doc_num][$doc_row['size_title']] = $doc_row['recieved_qty'];
+		// }
+		
+		
+		
+	// }
+	
 }
 ?>	
