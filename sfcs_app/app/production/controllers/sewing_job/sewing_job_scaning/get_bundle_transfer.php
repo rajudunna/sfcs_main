@@ -6,6 +6,17 @@
     $module = $_POST['module'];
     $barcode = $_POST['barcode'];
     $barcode_number = explode('-', $barcode)[0];
+   
+    $application='IPS'; 
+			$scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+			
+			$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row=mysqli_fetch_array($scanning_result))
+			{
+			  $operation_name=$sql_row['operation_name'];
+              $operation_code_ims=$sql_row['operation_code'];
+            }
+
     $selct_qry = "select style,color,assigned_module,original_qty,schedule from $brandix_bts.bundle_creation_data where barcode_number = $barcode_number and operation_id=$ops_code";
     $selct_qry_result=mysqli_query($link,$selct_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
     if($selct_qry_result->num_rows > 0)
@@ -50,7 +61,10 @@
                     $assign_module="update $brandix_bts.bundle_creation_data set assigned_module='$module' where bundle_number='$barcode_number' and operation_id >='$ops_code'";
                     $assign_module_result=mysqli_query($link,$assign_module) or exit("while retriving assigned_module".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                    $insert_log="insert into $brandix_bts.module_transfer_track (username,bundle_number,operation_code,from_module,to_module,time) values ('$user','$barcode_number','$ops_code','$from_module','$module','".date('y-m-d h:i:s')."')";
+                    $ims_update="update $bai_pro3.ims_log set ims_mod_no='$module' where pac_tid='$barcode_number' and operation_id='$operation_code_ims'";
+                    $ims_update_result=mysqli_query($link,$ims_update) or exit("while retriving assigned_module".mysqli_error($GLOBALS["___mysqli_ston"]));
+                   
+                    $insert_log="insert into $brandix_bts.module_transfer_track (username,bundle_number,operation_code,from_module,to_module,time) values ('$user','$barcode_number','$ops_code','$from_module','$module',NOW())";
                     $sql_result0=mysqli_query($link, $insert_log) or exit("Sql Error5.0".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $result_array['flag']=0; 
                     $result_array['status'] = 'Module Transferred Successfully';
