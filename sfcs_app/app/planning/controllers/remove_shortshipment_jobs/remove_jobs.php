@@ -63,8 +63,8 @@ $schedule=$_GET['schedule'];
         </select>
     </div>
     <div class="col-md-3">
-        <label class="control-label control-label-left col-sm-3" for="reason">Reason</label><br/>
-        <textarea id="reason" type="text" class="form-control k-textbox" data-role="text" placeholder="Enter Reason" name="reason" data-parsley-errors-container="#errId1"></textarea><span id="errId1" class="error"></span>
+        <label class="control-label control-label-left col-sm-4" for="reason">Reason<span style="color:red;"> *</span></label><br/>
+        <textarea id="reason" type="text" class="form-control k-textbox" data-role="text" placeholder="Enter Reason" name="reason" data-parsley-errors-container="#errId4" required></textarea><span id="errId4" class="error"></span>
     </div><br/>
     <div class="col-md-2">
         <input class="btn btn-primary" type="submit" value="Submit" name="submit">
