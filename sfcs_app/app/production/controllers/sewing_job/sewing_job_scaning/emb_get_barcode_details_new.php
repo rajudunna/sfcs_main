@@ -5,7 +5,7 @@
     $barcode = $_POST['barcode'];
     $shift = $_POST['shift'];
     $gate_id = $_POST['gate_id'];
-	$user_permission = $_POST['auth'];
+$user_permission = $_POST['auth'];
     $b_shift = $shift;
     //changing for #978 cr
     $barcode_number = explode('-', $barcode)[0];
@@ -14,7 +14,7 @@
     WHERE bundle_number =$barcode_number";
     $selct_qry_result=mysqli_query($link,$selct_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
     if($selct_qry_result->num_rows > 0)
-	{
+{
    
         while($selct_qry_result_row=mysqli_fetch_array($selct_qry_result))
         {
@@ -575,10 +575,10 @@ $sfcs_smv = $row_ops['manual_smv'];
                         while($row_ops = $result_smv_query->fetch_assoc())
                         {
                             $sfcs_smv = $row_ops['smv'];
-if($sfcs_smv=='0.0000')
-{
-$sfcs_smv = $row_ops['manual_smv'];
-}
+							if($sfcs_smv=='0.0000')
+							{
+							$sfcs_smv = $row_ops['manual_smv'];
+							}
                         }
                         $bulk_insert_post = "INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`) VALUES";
 
@@ -628,36 +628,36 @@ $sfcs_smv = $row_ops['manual_smv'];
                                 $result_query_001 = $link->query($bulk_insert_post) or exit('bulk_insert_post query error in updating');
                             }
                            
-//checking data exist in emb_bundles or not
-$check_data_qry="select * from $bai_pro3.emb_bundles where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]'";
-$check_data_qry_result=mysqli_query($link,$check_data_qry) or exit("while retriving data from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
-if($check_data_qry_result->num_rows > 0)
-{
-while($qry_result_row=mysqli_fetch_array($check_data_qry_result))
-{
-$tid=$qry_result_row['tid'];
-$barcodeno=$qry_result_row['barcode'];
-$clubstatus=$qry_result_row['club_status'];
-$orgqty=$qry_result_row['quantity'];
-$goodqty=$qry_result_row['good_qty'];
-$rejectqty=$qry_result_row['reject_qty'];
-$tranid=$qry_result_row['tran_id'];
-$status=$qry_result_row['status'];
+							//checking data exist in emb_bundles or not
+							$check_data_qry="select * from $bai_pro3.emb_bundles where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]'";
+							$check_data_qry_result=mysqli_query($link,$check_data_qry) or exit("while retriving data from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
+							if($check_data_qry_result->num_rows > 0)
+							{
+							while($qry_result_row=mysqli_fetch_array($check_data_qry_result))
+							{
+							$tid=$qry_result_row['tid'];
+							$barcodeno=$qry_result_row['barcode'];
+							$clubstatus=$qry_result_row['club_status'];
+							$orgqty=$qry_result_row['quantity'];
+							$goodqty=$qry_result_row['good_qty'];
+							$rejectqty=$qry_result_row['reject_qty'];
+							$tranid=$qry_result_row['tran_id'];
+							$status=$qry_result_row['status'];
 
-//if data exists update emb_bundles
-$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='$b_rep_qty[$key]',reject_qty='$b_rej_qty[$key]',update_time='". date('Y-m-d')."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]'";
-$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');
+							//if data exists update emb_bundles
+							$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='$orgqty',reject_qty='$b_rej_qty[$key]',update_time='". date('Y-m-d')."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]'";
+							$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');
 
-//insert data into emb_bundles_temp
-$insert_emb_bundles="INSERT INTO $bai_pro3.emb_bundles_temp(tid,  doc_no,  size,    ops_code,  barcode,  quantity,  good_qty,  reject_qty,  insert_time,  update_time,  club_status,  log_user,  tran_id,  status) VALUES ('".$tid."','".$b_doc_num[$key]."','".$b_sizes[$key]."','".$b_op_id."','".$barcodeno."','".$orgqty."','".$goodqty."','".$rejectqty."','".date('Y-m-d')."','','".$clubstatus."','".$username."','".$tranid."','".$status."')";
-$result_emb_temp = $link->query($insert_emb_bundles) or exit('error while insert into emb_bundles_temp');
-}
-}
-// else
-// {
-// insert data into emb_bundles
+							//insert data into emb_bundles_temp
+							$insert_emb_bundles="INSERT INTO $bai_pro3.emb_bundles_temp(tid,  doc_no,  size,    ops_code,  barcode,  quantity,  good_qty,  reject_qty,  insert_time,  update_time,  club_status,  log_user,  tran_id,  status) VALUES ('".$tid."','".$b_doc_num[$key]."','".$b_sizes[$key]."','".$b_op_id."','".$barcodeno."','".$orgqty."','".$orgqty."','".$rejectqty."','".date('Y-m-d')."','','".$clubstatus."','".$username."','".$tranid."','".$status."')";
+							$result_emb_temp = $link->query($insert_emb_bundles) or exit('error while insert into emb_bundles_temp');
+							}
+							}
+							// else
+							// {
+							// insert data into emb_bundles
 
-// }
+							// }
 
                             if($result_query)
                             {
@@ -665,12 +665,12 @@ $result_emb_temp = $link->query($insert_emb_bundles) or exit('error while insert
                                 {
                                     $bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$previously_scanned .'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$username.'")';  
                                     $result_query_001_temp = $link->query($bulk_insert_post_temp) or exit('bulk_insert_post query error in updating');
-if($gate_pass_no>0)
-{
-$sql_gate="insert into $brandix_bts.`gatepass_track` (`gate_id`, `bundle_no`, `bundle_qty`, `style`, `schedule`, `color`, `size`,operation_id) values ('".$gate_pass_no."', ".$b_tid[$key].", '".$b_rep_qty[$key]."', '".$b_style."','".$b_schedule."','".$b_colors[$key]."','".$b_sizes[$key]."','".$b_op_id."-1')";
-$result_sql_temp = $link->query($sql_gate) or exit('Gate_pass_child query error in updating');
+									if($gate_pass_no>0)
+									{
+									$sql_gate="insert into $brandix_bts.`gatepass_track` (`gate_id`, `bundle_no`, `bundle_qty`, `style`, `schedule`, `color`, `size`,operation_id) values ('".$gate_pass_no."', ".$b_tid[$key].", '".$b_rep_qty[$key]."', '".$b_style."','".$b_schedule."','".$b_colors[$key]."','".$b_sizes[$key]."','".$b_op_id."-1')";
+									$result_sql_temp = $link->query($sql_gate) or exit('Gate_pass_child query error in updating');
 
-}
+									}
                                     $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previously_scanned where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code in ($emb_operations)";
                                             $update_qry_cps_log_res = $link->query($update_qry_cps_log);
                                    
@@ -863,4 +863,3 @@ $updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$b_rep_qty[$i]);
        
     }
 ?>
-
