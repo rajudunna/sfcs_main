@@ -22,6 +22,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
      $tolerance = $row1['tolerance'];
      $rolls[] = $row1['supplier_roll_no'];
   }
+  $count_rolls = sizeof($rolls);
   $roll_details = implode(',',$rolls);
   $get_details1="select ref5 as ctex_length,ref2 as roll_id from $bai_rm_pj1.store_in where ref2 in($roll_details)";
   //echo $get_details1;
@@ -67,7 +68,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
  //To change into Yards
  $total_qty=round($total_inspected_qty*0.9144,2);
  //Caliculation for Average points
-  $average_points = ($main_points/$total_qty) * (36/49.21) * 100;
+  $average_points = round((($main_points/$total_qty) * (36/49.21) * 100),2);
   //echo $average_points ; 
 ?>
 <link rel="stylesheet" type="text/css" href="../../../../common/css/page_style.css" />
@@ -171,9 +172,9 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
                     <?php
                     echo "<tr>
                       <td></td>
-                      <td></td>
+                      <td>".$count_rolls."</td>
+                      <td>".$total_inspected_qty."</td>
                       <td>".$average_points."</td>
-                      <td></td>
                       <td></td>
                       <td>".$testing."</td>
                     </tr>";
