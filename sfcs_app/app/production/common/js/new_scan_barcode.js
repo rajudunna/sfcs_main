@@ -172,6 +172,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }).success(function (data, status, headers, config) {
             var validate_barcode=data.validate_barcode;
+            $('#loading-image').hide();
             if(validate_barcode>0){
                 $scope.style=data.style.trim();
                 $scope.color=data.color.trim();
@@ -212,6 +213,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
     }
 
     $scope.barcode_submit = function(taskId){
+        $('#loading-image').show();
         var task_action=taskId;
             $http({
                 method: 'POST',
@@ -227,6 +229,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 }),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).success(function (data, status, headers, config) {
+                $('#loading-image').hide();
                 $scope.color_cod=data.color_code;
                 $scope.scanned_status=data.status;
             }).error(function (data, status, headers, config) {

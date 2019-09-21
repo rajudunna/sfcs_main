@@ -40,15 +40,22 @@ $result_rejections = $link->query($qery_rejection_resons);
     color: whitesmoke;
     display: inline-block;
     background-color: #ddd;
-    padding: 18px 13px;
+    padding: 5px 15px;
     font-family: sans-serif, Arial;
     font-size: 16px;
     border: 0px solid #444;
     border-radius: 14px;
+    width: auto !important;
 }
+ 
 
-.radio-toolbar label:hover {
-  background-color: #dfd;
+.radio-toolbar label:hover,.radio-toolbar label:focus,.radio-toolbar label:active {
+  padding: 15px 15px !important;
+  cursor : pointer;
+}
+.radio-toolbar input[type="radio"]:checked + label 
+{
+  padding: 15px 15px !important;
 }
 
 .radio-toolbar input[type="radio"]:focus + label {
@@ -63,13 +70,31 @@ $result_rejections = $link->query($qery_rejection_resons);
 .radio-toolbar1 {
   margin: 10px;
 }
+.radio-toolbar1 input[type="radio"]:checked + label 
+{
+  padding: 15px 15px !important;
+}
+.radio-toolbar1 label
+{
+    color: whitesmoke;
+    display: inline-block;
+    background-color: #ddd;
+    padding: 5px 15px !important;
+    font-family: sans-serif, Arial;
+    font-size: 16px;
+    border: 0px solid #444;
+    border-radius: 14px;
+   
+}
 
 .radio-toolbar1 input[type="radio"] {
   opacity: 0;
   position: fixed;
   width: 0;
 }
-
+.ng-binding{
+  max-height: 90px;
+}
 .radio-toolbar1 label {
     color: whitesmoke;
     display: inline-block;
@@ -82,7 +107,7 @@ $result_rejections = $link->query($qery_rejection_resons);
 }
 
 .radio-toolbar1 label:hover {
-  background-color: #dfd;
+  padding: 15px 20px;
 }
 
 .radio-toolbar1 input[type="radio"]:focus + label {
@@ -104,7 +129,46 @@ $result_rejections = $link->query($qery_rejection_resons);
     width: 100%;
     height: 32px;
 }
+#txmode{
+  padding-left:4px;
+}
+#txmode:hover,#time:hover{
+  border-color:unset;
+  border:1px solid #169F85;
+  background: #26B99A;
+  cursor: auto;
+}
+#timered:hover{ 
+  border-color:#d43f3a;
+  background-color: #d9534f;
+  border:1px solid #d43f3a;
+  cursor: auto;
+}
+#timeyellow:hover{ 
+  border-color:#eea236;
+  background-color: #f0ad4e;
+  border:1px solid #eea236;
+  cursor: auto;
+}
+
+#loading-image{
+  position:fixed;
+  top:0px;
+  right:0px;
+  width:100%;
+  height:100%;
+  background-color:black;
+  /* background-image:url('ajax-loader.gif'); */
+  background-repeat:no-repeat;
+  background-position:center;
+  z-index:10000000;
+  opacity: 0.4;
+  filter: alpha(opacity=40); /* For IE8 and earlier */
+}
 </style>
+<div class="ajax-loader" id="loading-image" style="display: none">
+    <center><img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+</div>
 <body class="nav-md" style="color: #f6faff;">
 <div class="panel panel-primary" id="scanned_barcode" ng-app="scanning_interface_new">
     <div class="panel-heading">Bundle Scanning</div>
@@ -119,15 +183,15 @@ $result_rejections = $link->query($qery_rejection_resons);
         <div class="panel panel-basic" style="background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
          <div class="panel-heading">
                 <div class="row">
-                <div class="btn btn-sm btn-success" style="width: 160px;padding: 6px 0px 6px 0px;" >Barcode: {{barcode_value}}</div>
-                <div class="btn btn-sm btn-success" style="width: 107px;">Action: {{action_mode | uppercase }}</div>
-                <div class="btn btn-sm btn-success" style="width: 118px;">Tx Mode: {{trans_mode | uppercase }}</div>
-                <div class="btn btn-sm btn-success">Bundle Qty: <input type="text"  style="max-width: 50px;" class="form-control" ng-model="bundle_qty" name="bundle_qty" id="bundle_qty" ng-readonly="true"></div>
+                <div class="btn btn-sm btn-success"  id="txmode" style="width: 160px;padding: 6px 0px 6px 0px;" >Barcode: {{barcode_value}}</div>
+                <div class="btn btn-sm btn-success" id="txmode" style="width: 107px;">Action: {{action_mode | uppercase }}</div>
+                <div class="btn btn-sm btn-success" id="txmode" style="width: 118px;">Tx Mode: {{trans_mode | uppercase }}</div>
+                <div class="btn btn-sm btn-success" id="txmode">Bundle Qty: <input type="text"  style="max-width: 50px;" class="form-control" ng-model="bundle_qty" name="bundle_qty" id="bundle_qty" ng-readonly="true"></div>
                 </div>
                 </div>
                 <div class="panel-body"> 
                 <div class="row">
-                <div class="col-sm-4 col-md-4 col-xs-4"><center><b>Scanned Status </b></center></br><div class="ng-binding"  style="border: 1px solid;border-radius: 15px;padding: 9px 0px 44px 12px;background-color:{{color_cod}};"> {{scanned_status}}</div></div>
+                <div class="col-sm-4 col-md-4 col-xs-4"><center><b>Scanned Status </b></center></br><div class="ng-binding"  style="border: 1px solid;border-radius: 15px;padding: 9px;background-color:{{color_cod}}; height:90px"> {{scanned_status}}</div></div>
                 <div class="col-sm-8 col-md-8 col-xs-8 table-responsive" style="font-size: 13px;">
                 
                 <table class="table">
@@ -140,17 +204,17 @@ $result_rejections = $link->query($qery_rejection_resons);
      <tr>
      <div>
         <div class="col-sm-3" style="padding: 3px 15px 3px 66px;width:44%">previous hr: </div>
-        <div class="btn btn-sm btn-success">00</div>
-        <div class="btn btn-sm btn-danger"> 00</div>
-        <div class="btn btn-sm btn-warning">00</div>
+        <div id="time" class="btn btn-sm btn-success">00</div>
+        <div id="timered" class="btn btn-sm btn-danger"> 00</div>
+        <div id="timeyellow" class="btn btn-sm btn-warning">00</div>
       <div>
       </tr>
       <tr>
       <div>
         <div class="col-sm-3" style="padding: 3px 15px 3px 66px;width:44%">current hr:</div>
-        <div class="btn btn-sm btn-success">00</div>
-        <div class="btn btn-sm btn-danger"> 00</div>
-        <div class="btn btn-sm btn-warning">00</div>
+        <div id="time" class="btn btn-sm btn-success">00</div>
+        <div id="timered" class="btn btn-sm btn-danger"> 00</div>
+        <div id="timeyellow" class="btn btn-sm btn-warning">00</div>
       </tr>
       </div>
     </tbody>
@@ -163,7 +227,7 @@ $result_rejections = $link->query($qery_rejection_resons);
             </div>
         </td>
         </tr>
-        <td><label>Bar code :</label></td>
+        <td width="90"><label>Bar code :</label></td>
         <td style="padding: 0px 0px 0px 23px;"><input type="text" style="max-width: 150px;"  class="form-control" ng-model="barcode_value" ng-keypress="scanned($event)" id="barcode_value" onkeyup="validateQty(event,this);" placeholder="scan barcode here" autofocus></td>
         <input type="hidden" id="module" ng-model="module" ng-init="module='<?= $module; ?>'">
         <input type="hidden" id="shift" ng-model="shift" ng-init="shift='<?= $shift; ?>'">
@@ -175,7 +239,7 @@ $result_rejections = $link->query($qery_rejection_resons);
         <tr>
         <td><label>Tx Mode:</label></td>
         <td>
-            <div class="radio-toolbar" ng-init="trans_mode='good'" style="width: 323px;padding: 8px 6px 8px 17px;
+            <div class="radio-toolbar" ng-init="trans_mode='good'" style="width: 300px;padding: 8px 6px 8px 17px;
             background-color: #2e2d2c;border-radius: 20px">
             <input type="radio" id="radiogood" name="trans_mode" ng-model='trans_mode' ng-value='"good"'>
             <label for="radiogood" style="border: 2px solid;border-color: #9d9a9a;background-color: #45b645;width:90px;">Good</label> &nbsp;
@@ -216,7 +280,7 @@ $result_rejections = $link->query($qery_rejection_resons);
                 <input type="radio" id="radioadd" name="action_mode" ng-model='action_mode' ng-value='"add"'>
                 <label for="radioadd" style="border: 2px solid;border-color: #7979a5;background-color: #2396c5;width: 80px;" class="btn btn-info"  ng-click="barcode_submit('add');" >Add</label>
                 <input type="radio" id="radioreverse" name="action_mode" ng-model='action_mode' ng-value='"reverse"'>
-                <label for="radioreverse" style="border: 2px solid;border-color: #7979a5;background-color: #2355c5;width: 80px;" class="btn btn-info"  ng-click="barcode_submit('reverse');">Reverse</label>
+                <label for="radioreverse" style="border: 2px solid;border-color: #7979a5;background-color: #2355c5;width: 80px;padding-left: 7px !important;" class="btn btn-info"  ng-click="barcode_submit('reverse');">Reverse</label>
             </div>
             <!--<div>
             <button type="button" style="height: 80px;width: 76px;."  class="btn btn-info"  ng-click="barcode_submit('add');">Add</button>
