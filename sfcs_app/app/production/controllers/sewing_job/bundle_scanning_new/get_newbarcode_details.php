@@ -1558,12 +1558,20 @@ if(isset($_POST["trans_action"])){
                                         $module = $sql_row11_bcd['assigned_module'];
                                     }
                                 }
-                                if($selected_module!=$module){
-                                    $result_array['status'] = 'Please verify slected module once..!';
-                                    $result_array['color_code'] = "#f31c06";
-                                    echo json_encode($result_array);
-                                    die();
+                                if($module>0){
+                                        if($selected_module!=$module){
+                                            $result_array['status'] = 'Please verify slected module once..!';
+                                            $result_array['color_code'] = "#f31c06";
+                                            echo json_encode($result_array);
+                                            die();
+                                        }
+                                }else{
+                                        $result_array['status'] = 'No module assigned for this Bundle...!';
+                                        $result_array['color_code'] = "#f31c06";
+                                        echo json_encode($result_array);
+                                        die();
                                 }
+                                
 
                                 $ret = validating_with_module($stri);
                                 // 5 = Trims not issued to Module, 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
