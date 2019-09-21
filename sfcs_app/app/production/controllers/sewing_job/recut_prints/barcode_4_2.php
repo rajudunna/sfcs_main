@@ -71,7 +71,8 @@
 						$style=$barcode_rslt['order_style_no'];
 						$schedule=$barcode_rslt['order_del_no'];
 						$cutno=$barcode_rslt['acutno'];
-						$quantity=$ids_qty[$bcd_id[$barcode_rslt['tid']]];
+						// $quantity=$ids_qty[$bcd_id[$barcode_rslt['tid']]];
+						$quantity=$barcode_rslt['carton_act_qty'];
 						$type=$barcode_rslt['type_of_sewing'];
 						$size=$barcode_rslt['size_code'];
 						$seq_num=$barcode_rslt['barcode_sequence'];
