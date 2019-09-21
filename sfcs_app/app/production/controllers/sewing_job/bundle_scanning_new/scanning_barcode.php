@@ -116,7 +116,7 @@ $result_rejections = $link->query($qery_rejection_resons);
        <input type="text" style="max-width: 150px;" class="form-control" name="color" ng-model="color" ng-readonly="true"></td>
        <td style="width: 10 5px;"></td>
         <td><div class="container" style="width: 570px;">
-        <div class="panel panel-basic" style=";background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
+        <div class="panel panel-basic" style="background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
          <div class="panel-heading">
                 <div class="row">
                 <div class="btn btn-sm btn-success" style="width: 160px;padding: 6px 0px 6px 0px;" >Barcode: {{barcode_value}}</div>
@@ -130,7 +130,7 @@ $result_rejections = $link->query($qery_rejection_resons);
                 <div class="col-sm-4 col-md-4 col-xs-4"><center><b>Scanned Status </b></center></br><div class="ng-binding"  style="border: 1px solid;border-radius: 15px;padding: 9px 0px 44px 12px;background-color: red;"> {{scanned_status}}</div></div>
                 <div class="col-sm-8 col-md-8 col-xs-8 table-responsive" style="font-size: 13px;">
                 
-                <table class="table ">
+                <table class="table">
     <thead>
       <tr >
       <div colspan="4"><center><b>Scanned Count</b></center></br></div>
@@ -193,14 +193,12 @@ $result_rejections = $link->query($qery_rejection_resons);
         <div class="panel panel-basic" style="border: 1px solid;border-radius: 11px;">
          <div class="panel-heading" style="font-size: large;background-color: #2e2d2c;border: 1px solid;border-radius: 11px;">
                 <div class="row">
-                <div class="col-sm-3 col-md-3 col-xs-3">PO: {{vpo}}</div>
-                <div class="col-sm-3 col-md-3 col-xs-3"></div>
-                <div class="col-sm-3 col-md-3 col-xs-3">Size: {{size_title}}</div>
+                <div class="col-sm-6 col-md-6 col-xs-6">PO: {{vpo}}</div>
+                <div class="col-sm-6 col-md-6 col-xs-6">Size: {{size_title}}</div>
                 <div class="panel-body">  </div>
                 <div class="row"> </div>
-                <div class="col-sm-3 col-md-3 col-xs-3" > Z feature: {{zfeature}}</div>
-                <div class="col-sm-3 col-md-3 col-xs-3"></div>
-                <div class="col-sm-3 col-md-3 col-xs-3">Schedule: {{schedule}}</div>
+                <div class="col-sm-6 col-md-6 col-xs-6" > Z feature: {{zfeature}}</div>
+                <div class="col-sm-6 col-md-6 col-xs-6">Schedule: {{schedule}}</div>
                 <div class="panel-body">  </div>
                 <div class="row"> </div>
                 <div class="col-sm-6 col-md-6 col-xs-6">Color : {{color}}</div>
@@ -231,7 +229,7 @@ $result_rejections = $link->query($qery_rejection_resons);
         <div class="panel panel-basic" style="border: 1px solid;border-radius: 15px;">
          <div class="panel-heading" style="font-size: large;background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
                 <div class="row">
-                <div class="col-sm-3 col-md-3 col-xs-3">Factory : {{global_facility_code}}</div>
+                <div class="col-sm-9 col-md-9 col-xs-9">Factory : {{global_facility_code}}</div>
                 <!-- <div class="panel-heading"></div>
                 <div class="row"></div> -->
                 <div class="panel-heading"></div>
@@ -241,7 +239,7 @@ $result_rejections = $link->query($qery_rejection_resons);
                 <div class="col-sm-7 col-md-7 col-xs-7">Team: {{module}}</div>
                 <button type="button" style="height: 35px;width:70px;" class="btn btn-info">Reset</button>
                 <div class="col-sm-7 col-md-7 col-xs-7">Operation :{{operation_name}}</div>
-                <div class="col-sm-3  ">Count</div>
+                <div class="col-sm-5  ">Count</div>
                 </div>
             </div>
         </td>
