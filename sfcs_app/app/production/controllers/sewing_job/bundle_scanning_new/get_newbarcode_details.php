@@ -234,6 +234,9 @@ if(isset($_POST["trans_action"])){
                                             }
                                             updateM3TransactionsRejections($b_tid,$op_no,$r_qty,$m3_reason_code);
                                         }
+                                    $result_array['status'] = 'Bundle updated successfully !!!';
+                                    $result_array['color_code'] = "#45b645";
+                                    echo json_encode($result_array);
                                 }
                     }
                 
@@ -295,6 +298,7 @@ if(isset($_POST["trans_action"])){
                         else
                         {
                             $result_array['status'] = 'Invalid Input. Please Check And Try Again !!!';
+                            $result_array['color_code'] = "#f31c06";
                             echo json_encode($result_array);
                             die();
                         }
@@ -387,6 +391,7 @@ if(isset($_POST["trans_action"])){
                                             {
                                                 $ops_dep_flag =1;
                                                 $result_array['status'] = 'The dependency operations for this operation are not yet done.';
+                                                $result_array['color_code'] = "#f31c06";
                                                 echo json_encode($result_array);
                                                 die();
                                             }
@@ -420,6 +425,7 @@ if(isset($_POST["trans_action"])){
                                 else
                                 {
                                     $result_array['status'] = 'Invalid Operation for this input job number.Plese verify Operation Mapping.';
+                                    $result_array['color_code'] = "#f31c06";
                                     echo json_encode($result_array);
                                     die();
                                 }
@@ -527,7 +533,8 @@ if(isset($_POST["trans_action"])){
 
                         if($flags == 2)
                         {
-                            $result_array['status'] .= 'Previous operation not yet done for this job.';
+                            $result_array['status'] = 'Previous operation not yet done for this job.';
+                            $result_array['color_code'] = "#f31c06";
                             echo json_encode($result_array);
                             die();
                         }
@@ -559,6 +566,7 @@ if(isset($_POST["trans_action"])){
                                 if($parallel_balance_report<0)
                                 {
                                     $result_array['status'] = 'Previous operation not yet done.';
+                                    $result_array['color_code'] = "#f31c06";
                                     echo json_encode($result_array);
                                     die();
                                 }
@@ -608,6 +616,7 @@ if(isset($_POST["trans_action"])){
                                             if($sum_balance < $row['balance_to_report'])
                                             {
                                                 $result_array['status'] = 'Previous operation not yet done for this jobs.';
+                                                $result_array['color_code'] = "#f31c06";
                                                 echo json_encode($result_array);
                                                 die();
 
@@ -863,8 +872,10 @@ if(isset($_POST["trans_action"])){
                                             if($previously_scanned == 0){
                                                 if($b_send_qty == $b_old_rej_qty_new){
                                                     $result_array['status'] = 'This Bundle Qty Is Completely Rejected';
+                                                    $result_array['color_code'] = "#f31c06";
                                                 }else{
                                                     $result_array['status'] = 'Already Scanned';
+                                                    $result_array['color_code'] = "#f31c06";
                                                 }
                                                 echo json_encode($result_array);
                                                 die();
@@ -899,6 +910,9 @@ if(isset($_POST["trans_action"])){
                                                         
                                                    
                                                 }
+                                                $result_array['status'] = 'Bundle updated successfully !!!';
+                                                $result_array['color_code'] = "#45b645";
+                                                echo json_encode($result_array);
                                             }
                                             
 
@@ -1019,9 +1033,15 @@ if(isset($_POST["trans_action"])){
                                 }
                             }
                             if(update_qry_cps_log_res){
-                                $sql_message = 'Data inserted successfully';
+                                //$sql_message = 'Data inserted successfully';
+                                $result_array['status'] = 'Data inserted successfully !!!';
+                                $result_array['color_code'] = "#45b645";
+                                echo json_encode($result_array);
                             }else{
-                                $sql_message = 'Data Not inserted';
+                                //$sql_message = 'Data Not inserted';
+                                $result_array['status'] = 'Data Not inserted,Please verify once !!!';
+                                $result_array['color_code'] = "#45b645";
+                                echo json_encode($result_array);
                             }
                                     //all operation codes query.. (not tested)
                         }
@@ -1093,8 +1113,10 @@ if(isset($_POST["trans_action"])){
                                                 if($previously_scanned == 0){
                                                     if($b_send_qty == $b_old_rej_qty_new){
                                                         $result_array['status'] = 'This Bundle Qty Is Completely Rejected';
+                                                        $result_array['color_code'] = "#f31c06";
                                                     }else{
                                                         $result_array['status'] = 'Already Scanned';
+                                                        $result_array['color_code'] = "#f31c06";
                                                     }
                                                     echo json_encode($result_array);
                                                     die();
@@ -1160,7 +1182,8 @@ if(isset($_POST["trans_action"])){
                                 if($concurrent_flag == 1)
                                 {
                                     //echo "<h1 style='color:red;'>You are Scanning More than eligible quantity.</h1>";
-                                    $result_array['status'] = 'You are Scanning More than eligible quantity.';
+                                $result_array['status'] = 'You are Scanning More than eligible quantity.';
+                                $result_array['color_code'] = "#f31c06";
                                 echo json_encode($result_array);
                                 die();
                                 }
@@ -1627,10 +1650,12 @@ if(isset($_POST["trans_action"])){
                             $sql_resultx = mysqli_query($link, $sql2) or exit("Sql Error2$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
                             if($sql_resultx){
                                 $result_array['status'] = 'Bundle updated successfully..!';
+                                $result_array['color_code'] = "#45b645";
                                 echo json_encode($result_array);
                                 die();
                             }else{
                                 $result_array['status'] = 'Bundle not updated..!';
+                                $result_array['color_code'] = "#f31c06";
                                 echo json_encode($result_array);
                                 die();
                             } 
@@ -1638,6 +1663,7 @@ if(isset($_POST["trans_action"])){
                         else{
                             //echo "<script>alert('orginal quatity must be less than are equl to rework quantity ');</script>";
                             $result_array['status'] = 'No qunatity for rework...!';
+                            $result_array['color_code'] = "#f31c06";
                             echo json_encode($result_array);
                             die();
                         }
@@ -1678,16 +1704,19 @@ if(isset($_POST["trans_action"])){
                                                 //echo "Proceed";
                                             }else{
                                                 $result_array['status'] = 'Remarks not updated for this bundle... !!!';
+                                                $result_array['color_code'] = "#f31c06";
                                                 echo json_encode($result_array);
                                                 die(); 
                                             }
                                     }else{
                                         $result_array['status'] = 'No module assigned for this bundle... !!!';
+                                        $result_array['color_code'] = "#f31c06";
                                         echo json_encode($result_array);
                                         die();  
                                     }
                             }else{
                                 $result_array['status'] = 'No eligible qunatity for reversal... !!!';
+                                $result_array['color_code'] = "#f31c06";
                                 echo json_encode($result_array);
                                 die();
                             }
@@ -1951,6 +1980,7 @@ if(isset($_POST["trans_action"])){
                                     else
                                     {
                                         $result_array['status'] = 'Invalid Operation';
+                                        $result_array['color_code'] = "#f31c06";  
                                         echo json_encode($result_array);
                                         die();
                                     }
@@ -1976,6 +2006,7 @@ if(isset($_POST["trans_action"])){
                                             function message_sql()
                                             {   
                                                 $result_array['status'] = 'Reversing Quantity not updated......please update again !!!';
+                                                $result_array['color_code'] = "#f31c06";
                                                 echo json_encode($result_array);
                                                 //echo "<script>swal('Reversing Quantity not updated......please update again','','warning');</script>";
                                                 //$url = '?r='.$_GET['r']."&shift=$b_shift";
@@ -2164,6 +2195,7 @@ if(isset($_POST["trans_action"])){
                                         {
                                             //echo "<h1 style='color:red;'>You are Reversing More than eligible quantity.</h1>";
                                             $result_array['status'] = 'You are Reversing More than eligible quantity... !!!';
+                                            $result_array['color_code'] = "#f31c06";
                                             echo json_encode($result_array);
                                             die();
                                         }
@@ -2532,6 +2564,7 @@ if(isset($_POST["trans_action"])){
                                             //$url = '?r='.$_GET['r']."&shift=$b_shift";
                                             //echo "<script>window.location = '".$url."'</script>";
                                             $result_array['status'] = 'Reversal Qunatity updated Successfully !!!';
+                                            $result_array['color_code'] = "#45b645";
                                             echo json_encode($result_array);
                                         }
                                             mysqli_commit($link);
@@ -2543,6 +2576,7 @@ if(isset($_POST["trans_action"])){
                                 //if end for proc qty validation
                                 }else{
                                     $result_array['status'] = 'No quantity for reversal...Please Check And Try Again !!!';
+                                    $result_array['color_code'] = "#f31c06";
                                     echo json_encode($result_array);
                                     die();
                                 }
@@ -2560,6 +2594,7 @@ if(isset($_POST["trans_action"])){
                         
                         }else{
                             $result_array['status'] = 'Bundle Not scanned..Please Check And Try Again !!!';
+                            $result_array['color_code'] = "#f31c06";
                             echo json_encode($result_array);
                             die();
                         }
@@ -2724,12 +2759,14 @@ if(isset($_POST["trans_action"])){
                                 
                                     }
                                     
-                                    $result_array['status'] = 'Rejected qunatities deleted this bundle..!';
+                                    $result_array['status'] = 'Rejected qunatities deleted for this bundle..!';
+                                    $result_array['color_code'] = "#45b645";
                                     echo json_encode($result_array);
                                     die();
                             }
                     }else{
                         $result_array['status'] = 'No rejected qty for this bundle..!';
+                        $result_array['color_code'] = "#f31c06";
                         echo json_encode($result_array);
                         die();
                     }
