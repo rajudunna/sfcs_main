@@ -77,18 +77,19 @@ else
 		$rowcount4=mysqli_num_rows($result4);
 
 
-		$embellishment_plan_dashboard="select module from $bai_pro3.`embellishment_plan_dashboard` WHERE module='$module'";
-		$result6= mysqli_query($conn, $embellishment_plan_dashboard);
-		$rowcount6=mysqli_num_rows($result6);
+		// $embellishment_plan_dashboard="select module from $bai_pro3.`embellishment_plan_dashboard` WHERE module='$module'";
+		// $result6= mysqli_query($conn, $embellishment_plan_dashboard);
+		// $rowcount6=mysqli_num_rows($result6);
 
-	
+		$embellishment_plan_dashboard_check_bcd="select * from $brandix_bts.bundle_creation_data WHERE assigned_module='$module' and bundle_qty_status=0";
+		$result61= mysqli_query($conn, $embellishment_plan_dashboard_check_bcd);
+		$rowcount61=mysqli_num_rows($result61);
+
 		
-		if($rowcount1>0 or $rowcount2>0 or $rowcount3>0 or $rowcount4>0 or $rowcount6>0)
+		if($rowcount1>0 or $rowcount2>0 or $rowcount3>0 or $rowcount4>0 or $rowcount61>0)
 		{
 			
-			$test=0;
-
-			
+			$test=0;		
 
 		}
 		else
