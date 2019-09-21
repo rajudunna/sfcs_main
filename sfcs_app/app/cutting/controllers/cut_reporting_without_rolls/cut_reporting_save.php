@@ -328,7 +328,8 @@ if($target == 'normal'){
 // $doc_no = 524879; 
 //Schedule Clubbing Docket Saving
 
-if($target == 'schedule_clubbed'){
+if($target == 'schedule_clubbed')
+{
     $rejection_details_each = [];
     $quit_counter1 = 0;
     $quit_counter2 = 0;
@@ -346,7 +347,72 @@ if($target == 'schedule_clubbed'){
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
                     act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
     $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1.1');   
-    
+	
+    if($barcode_gen_emb=='yes')
+	{	
+		$sql_check="SELECT tsm.operation_code AS operation_code,tsm.previous_operation AS previous_operation,tsm.ops_dependency AS ops_dependency FROM brandix_bts.tbl_style_ops_master tsm 
+		LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE 
+		style='$style' AND color='$color' AND tor.category IN ('Send PF','Receive PF')";
+		$result_check=mysqli_query($link,$sql_check) or exit('verifying the codes');
+		if(mysqli_num_rows($result_check)>0)
+		{
+			while($rows = mysqli_fetch_array($result_check))
+			{
+				$ops_codes[] = $rows['operation_code'];
+				$next_ops[] = $rows['ops_dependency'];
+				$prev_ops[] = $rows['previous_operation'];
+			}
+			$doc_qty_query1 = "SELECT * from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
+				$doc_qty_result1 = mysqli_query($link,$doc_qty_query1);
+			while($row1 = mysqli_fetch_array($doc_qty_result1))
+			{
+				foreach($sizes_array as $size)
+				{
+					if($row1['p_'.$size] > 0)
+					{
+						$doc_qty_query12 = "SELECT title_size_".$size." as size_tit from $bai_pro3.bai_orders_db_confirm where order_tid = '".$row1['order_tid']."'";
+						$doc_qty_result12 = mysqli_query($link,$doc_qty_query12);
+						while($row12 = mysqli_fetch_array($doc_qty_result12))
+						{
+							$size_val=$row12['size_tit'];	
+						}
+						$ratio[$size_val] = $row1['p_'.$size];
+						$sizes_tot[]=$size_val;
+					}
+				}
+			}
+			$sql_check_id="SELECT max(tran_id)+1 as barcode from $bai_pro3.emb_bundles where doc_no=$doc_no";
+			$result_check_id=mysqli_query($link,$sql_check_id) or exit('verifying the codes');
+			while($row12_id = mysqli_fetch_array($result_check_id))
+			{
+				if($row12_id['barcode']==0 || $row12_id['barcode']=='')
+				{
+					$ids=1;
+				}
+				else
+				{
+					$ids=$row12_id['barcode'];
+				}			
+			}
+			for($j=0;$j<sizeof($sizes_tot);$j++)
+			{			
+				do
+				{				
+					for($jj=0;$jj<sizeof($ops_codes);$jj++)
+					{					
+						$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `club_status`, `log_user`, `tran_id`,`club_status`) 
+						VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '0', '".$user."', ".$ids.",'1')";
+						mysqli_query($link,$sql_insert);
+					}
+					$ids++;
+					$ratio[$sizes_tot[$j]]--;
+				}while($ratio[$sizes_tot[$j]]>0);			
+			}			
+		}
+	}
+	
+	
+	
     if($insert_result > 0){
         $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2.3');
         if($update_result){
@@ -546,7 +612,70 @@ if($target == 'style_clubbed'){
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
                     act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
     $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1.2');   
-
+	
+	if($barcode_gen_emb=='yes')
+	{	
+		$sql_check="SELECT tsm.operation_code AS operation_code,tsm.previous_operation AS previous_operation,tsm.ops_dependency AS ops_dependency FROM brandix_bts.tbl_style_ops_master tsm 
+		LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE 
+		style='$style' AND color='$color' AND tor.category IN ('Send PF','Receive PF')";
+		$result_check=mysqli_query($link,$sql_check) or exit('verifying the codes');
+		if(mysqli_num_rows($result_check)>0)
+		{
+			while($rows = mysqli_fetch_array($result_check))
+			{
+				$ops_codes[] = $rows['operation_code'];
+				$next_ops[] = $rows['ops_dependency'];
+				$prev_ops[] = $rows['previous_operation'];
+			}
+			$doc_qty_query1 = "SELECT * from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
+				$doc_qty_result1 = mysqli_query($link,$doc_qty_query1);
+			while($row1 = mysqli_fetch_array($doc_qty_result1))
+			{
+				foreach($sizes_array as $size)
+				{
+					if($row1['p_'.$size] > 0)
+					{
+						$doc_qty_query12 = "SELECT title_size_".$size." as size_tit from $bai_pro3.bai_orders_db_confirm where order_tid = '".$row1['order_tid']."'";
+						$doc_qty_result12 = mysqli_query($link,$doc_qty_query12);
+						while($row12 = mysqli_fetch_array($doc_qty_result12))
+						{
+							$size_val=$row12['size_tit'];	
+						}
+						$ratio[$size_val] = $row1['p_'.$size];
+						$sizes_tot[]=$size_val;
+					}
+				}
+			}
+			$sql_check_id="SELECT max(tran_id)+1 as barcode from $bai_pro3.emb_bundles where doc_no=$doc_no";
+			$result_check_id=mysqli_query($link,$sql_check_id) or exit('verifying the codes');
+			while($row12_id = mysqli_fetch_array($result_check_id))
+			{
+				if($row12_id['barcode']==0 || $row12_id['barcode']=='')
+				{
+					$ids=1;
+				}
+				else
+				{
+					$ids=$row12_id['barcode'];
+				}			
+			}
+			for($j=0;$j<sizeof($sizes_tot);$j++)
+			{			
+				do
+				{				
+					for($jj=0;$jj<sizeof($ops_codes);$jj++)
+					{					
+						$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `club_status`, `log_user`, `tran_id`,`club_status`) 
+						VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '0', '".$user."', ".$ids.",'1')";
+						mysqli_query($link,$sql_insert);
+					}
+					$ids++;
+					$ratio[$sizes_tot[$j]]--;
+				}while($ratio[$sizes_tot[$j]]>0);			
+			}			
+		}
+	}
+	
     if($insert_result > 0){
         $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2.4');
         if($update_result){
