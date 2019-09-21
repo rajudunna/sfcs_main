@@ -184,7 +184,10 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 $scope.global_facility_code=data.global_facility_code;
                 $scope.zfeature=data.zfeature;
                 $scope.vpo=data.vpo;
-                $scope.scanned_status="Please Proceed";
+                $scope.scanned_status=data.status;
+                $scope.color_cod=data.color_code;
+                //$scope.scanned_status="Please Proceed";
+
                 
 
             }else{
@@ -197,7 +200,9 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 $scope.global_facility_code="";
                 $scope.zfeature="";
                 $scope.vpo="";
-                $scope.scanned_status="Please Verify Barcode Once..!";
+                $scope.scanned_status=data.status;
+                $scope.color_cod=data.color_code;
+                //$scope.scanned_status="Please Verify Barcode Once..!";
             }
 
         }).error(function (data, status, headers, config) {

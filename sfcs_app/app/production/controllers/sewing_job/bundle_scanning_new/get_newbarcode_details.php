@@ -44,9 +44,14 @@ if (isset($_POST["barcode_info"])){
                 $json['size_title']=$row['m3_size_code'];
                 $json['global_facility_code']=$global_facility_code;
                 $json['validate_barcode'] = 1;
+                $json['color_code'] = "#45b645";
+                $json['status'] = "Proceed";
             }
         }else{
             $json['validate_barcode'] = 0;
+            $json['color_code'] = "#f31c06";
+            $json['status'] = "Please verify Barcode once";
+            
             
         }
         echo json_encode($json);
@@ -232,6 +237,7 @@ if(isset($_POST["trans_action"])){
                                 }
                     }
                 
+                    //this is for updating good qunatities
                 function getjobdetails1($job_number, $bundle_no, $op_no, $shift ,$gate_id,$trans_mode,$rej_data,$selected_module)
                     {   
                         error_reporting(0);
@@ -1449,6 +1455,7 @@ if(isset($_POST["trans_action"])){
                     
                     }
 
+                    //this is for good and rejection transmode
                     if(($trans_mode=='good') or ($trans_mode=='scrap')){
                             $barcode = $_POST['barcode_value'];
                             $selected_module=$_POST['module'];
@@ -1560,6 +1567,73 @@ if(isset($_POST["trans_action"])){
                                 }        
                             }
     
+                    }
+
+                    //this is for rwork qunatity
+                    if($trans_mode=='rework'){
+                        //echo $trans_mode;
+                        include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+                        include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
+
+                        $barcode = $_POST['barcode_value'];
+                        $selected_module=$_POST['module'];
+                        $op_code=$_POST['op_code'];
+                        $shift=$_POST['shift'];
+
+                        $sql = "select * from $brandix_bts.bundle_creation_data where operation_id='$op_code' and bundle_number=$barcode";
+                        $sql_result=mysqli_query($link, $sql) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $rework_qty=0;
+                        while($sql_row=mysqli_fetch_array($sql_result))
+                        {
+                            $original_qty = $sql_row['original_qty'];
+                            $send_qty = $sql_row['send_qty'];
+                            $recevied_qty = $sql_row['recevied_qty'];
+                            $shift= $sql_row['shift'];
+                            $assigned_module=$sql_row['assigned_module'];
+                            $date_time=$sql_row['date_time'];
+                            $color=$sql_row['color'];
+                            $style=$sql_row['style'];
+                            $schedule=$sql_row['schedule'];
+                            $remarks=$sql_row['remarks'];
+                            // echo $remarks;  
+                        
+                            $sql1 = "SELECT section FROM bai_pro3.`module_master` where module_name='$assigned_module'";
+                            $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            while($sql_row1=mysqli_fetch_array($sql_result1))
+                            {
+                                $section = $sql_row1['section'];
+                            }
+                            $sql11 = "SELECT buyer_division FROM $bai_pro4.bai_cut_to_ship_ref where style='$style' and schedule_no='$schedule' and color='$color'"; 
+                            $sql_result=mysqli_query($link, $sql11) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            while($sql_row=mysqli_fetch_array($sql_result))
+                            {
+                                $buyer_division = $sql_row['buyer_division'];
+                            }
+
+                            $rework_qty =  $send_qty-$recevied_qty;
+                        }
+                        
+                        if($rework_qty>0)
+                        {
+                            $sql2="insert into $bai_pro.bai_quality_log (bac_no, bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser) values (\"$assigned_module\", \"$section\", \"$rework_qty\", \"$date_time\", \"$date_time\", \"$shift\", \"$style\", \"$remarks\",  \"$date_time\",  \"$color\", \"$buyer_division\", \"$schedule\",USER())";
+                            //echo $sql2;exit;
+                            $sql_resultx = mysqli_query($link, $sql2) or exit("Sql Error2$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            if($sql_resultx){
+                                $result_array['status'] = 'Bundle updated successfully..!';
+                                echo json_encode($result_array);
+                                die();
+                            }else{
+                                $result_array['status'] = 'Bundle not updated..!';
+                                echo json_encode($result_array);
+                                die();
+                            } 
+                        }
+                        else{
+                            //echo "<script>alert('orginal quatity must be less than are equl to rework quantity ');</script>";
+                            $result_array['status'] = 'No qunatity for rework...!';
+                            echo json_encode($result_array);
+                            die();
+                        }
                     }
                                   
         }

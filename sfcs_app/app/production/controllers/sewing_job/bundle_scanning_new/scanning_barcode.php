@@ -127,7 +127,7 @@ $result_rejections = $link->query($qery_rejection_resons);
                 </div>
                 <div class="panel-body"> 
                 <div class="row">
-                <div class="col-sm-4 col-md-4 col-xs-4"><center><b>Scanned Status </b></center></br><div class="ng-binding"  style="border: 1px solid;border-radius: 15px;padding: 9px 0px 44px 12px;background-color: red;"> {{scanned_status}}</div></div>
+                <div class="col-sm-4 col-md-4 col-xs-4"><center><b>Scanned Status </b></center></br><div class="ng-binding"  style="border: 1px solid;border-radius: 15px;padding: 9px 0px 44px 12px;background-color:{{color_cod}};"> {{scanned_status}}</div></div>
                 <div class="col-sm-8 col-md-8 col-xs-8 table-responsive" style="font-size: 13px;">
                 
                 <table class="table">
