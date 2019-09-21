@@ -1,8 +1,11 @@
 <?php
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+
     $id=$_GET['id'];
     var_dump($id);
 
     $is_requested="SELECT * FROM $bai_rm_pj1.material_deallocation_track WHERE id=$id";
+    echo $is_requested;
     $is_requested_result=mysqli_query($link, $is_requested) or exit("Sql Error0: fabric_status_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row1=mysqli_fetch_array($is_requested_result))
     {
@@ -45,7 +48,14 @@
             
                         $update_plan_qry="update $bai_pro3.plandoc_stat_log set plan_lot_ref='',print_status='' where doc_no=".$doc_no;
                         $update_plan_qry_fab_result=mysqli_query($link, $update_plan_qry) or exit("Sql Error5: update plan".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
+                        $update_req_qry = "update $bai_rm_pj1.material_deallocation_track set status='Approved' where id=".$id;
+                        $update_req_qry_result=mysqli_query($link, $update_req_qry) or exit("Sql Error2: material_deallocation_track".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
                         echo "<script>swal('sucess','Material De-Allocated Successfully','success')</script>";
+                        
                         $url = getFullUrlLevel($_GET['r'],'material_deallocation.php',0,'N');
                         echo "<script>setTimeout(function(){
                                     location.href='$url' 

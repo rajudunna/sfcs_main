@@ -138,7 +138,12 @@ if(isset($_POST['formSubmit']))
                     $insert_req_qry = "INSERT INTO $bai_rm_pj1.material_deallocation_track(doc_no,qty,requested_by,requested_at,status) values ($doc_no,$allocated_qty,'$username','$req_at','Open')";
                     $insert_req_qry_result=mysqli_query($link, $insert_req_qry) or exit("Sql Error2: material_deallocation_track".mysqli_error($GLOBALS["___mysqli_ston"]));
                     echo "<script>swal('success','Request Sent Successfully','success')</script>";
-                    
+                    $url = getFullUrlLevel($_GET['r'],'material_deallocation.php',0,'N');
+                    echo "<script>setTimeout(function(){
+                                location.href='$url' 
+                            },2000);
+                            </script>";
+                    exit();
                             // $req_no_qry="SELECT * FROM $bai_rm_pj1.material_deallocation_track";
                             // $req_no_qry_result=mysqli_query($link, $req_no_qry) or exit("Sql Error3: material_deallocation_track".mysqli_error($GLOBALS["___mysqli_ston"]));
                             // $sno = 0;
