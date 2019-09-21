@@ -34,7 +34,7 @@ while($row=mysqli_fetch_array($result))
 }
 ?>
 <div class="panel panel-primary " id="bundlewise_scanBarcode">
-<div class="panel-heading">Bundle Barcode Scanning Without Operation</div>
+<div class="panel-heading">Bundle Barcode Scanning</div>
 <div class="panel-body">
 <form role="form" method ='POST' id='frm1' action='<?php echo $url ?>'>
 <div class="row">

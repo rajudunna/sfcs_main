@@ -1684,6 +1684,7 @@ if(isset($_POST["trans_action"])){
             //this is for good reversal
             $trans_mode=$_POST['trans_mode'];
             if($trans_mode=='good'){
+                    error_reporting(0);
                     $barcode_val = $_POST['barcode_value'];
                     $selected_module=$_POST['module'];
                     $op_code=$_POST['op_code'];
@@ -1850,12 +1851,14 @@ if(isset($_POST["trans_action"])){
                                                             $rec_qtys=$eligible;
                                                             //$result_array['carton_ready_qty'][] = $eligible;
                                                             $carton_ready_qty=$eligible;
+                                                            $conditional_flag=0;
 
                                                         }
                                                         else
                                                         {
                                                             //$result_array['rec_qtys'][] = $qty;
                                                             $rec_qtys=$qty;
+                                                            $conditional_flag=1;
                                                         }    
                                                     }
                                             }
@@ -1863,6 +1866,7 @@ if(isset($_POST["trans_action"])){
                                             {
                                                 //$result_array['rec_qtys'][] = 0;
                                                 $rec_qtys=0;
+                                                $conditional_flag=1;
                                             }
                                         }
                                     }
@@ -2536,7 +2540,7 @@ if(isset($_POST["trans_action"])){
                                                     // {
                                                         //getting dependency and update cps remaining qty
                                                         $parellel_ops=array();
-                                                        $qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and ops_dependency='$job_number[4]'";
+                                                        $qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$mapped_color' and ops_dependency='$job_number[4]'";
                                                         $qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
                                                         if($qry_parellel_ops_result->num_rows > 0){
                                                             while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
