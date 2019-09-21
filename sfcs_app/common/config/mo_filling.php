@@ -254,10 +254,19 @@
 				}
 			}
 			//Updating all excess to last mo 
+			// if($qty > 0){
+			// 	$update_query = "Update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity + $qty 
+			// 					 where mo_no = '$last_mo' and ref_no = $ref_id and op_code = $op_code";
+			// 	mysqli_query($link,$update_query) or exit("Error 3 In Updating excess qty to MO Qtys for mo : ".$mo);
+			// }
+			// //$last_mo = max($mo);
+			
 			if($qty > 0){
-				$update_query = "Update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity + $qty 
-								 where mo_no = '$last_mo' and ref_no = $ref_id and op_code = $op_code";
-				mysqli_query($link,$update_query) or exit("Error 3 In Updating excess qty to MO Qtys for mo : ".$mo);
+				$excess_insert_query = "Insert into $bai_pro3.mo_operation_quantites 
+									(`date_time`, `mo_no`,`ref_no`,`bundle_quantity`, `op_code`, `op_desc`)
+									values 
+									('".date('Y-m-d H:i:s')."','$last_mo','$ref_id','$qty','$op_code','$op_desc[$mo]')";
+				mysqli_query($link,$excess_insert_query) or exit("Error 3 In Updating excess qty to MO Qtys for mo : ".$last_mo);
 			}
 		}
 	}
