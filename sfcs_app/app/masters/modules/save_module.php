@@ -60,35 +60,36 @@ else
 	{
 		$modulestatus = 'In-Active';
 
-    	$plan_dashboard="select module from $bai_pro3.plan_dashboard where module='$module'";
-		$result1= mysqli_query($conn, $plan_dashboard);
-		$rowcount1=mysqli_num_rows($result1);
+    	// $plan_dashboard="select module from $bai_pro3.plan_dashboard where module='$module'";
+		// $result1= mysqli_query($conn, $plan_dashboard);
+		// $rowcount1=mysqli_num_rows($result1);
 		
 		$plan_dashboard_input="select input_module from $bai_pro3.plan_dashboard_input where input_module='$module'";
 		$result2= mysqli_query($conn, $plan_dashboard_input);
 		$rowcount2=mysqli_num_rows($result2);
 			
-		$fabric_priorities="select module from $bai_pro3.fabric_priorities where module='$module'";
-		$result3= mysqli_query($conn, $fabric_priorities);
-		$rowcount3=mysqli_num_rows($result3);
+		// $fabric_priorities="select module from $bai_pro3.fabric_priorities where module='$module'";
+		// $result3= mysqli_query($conn, $fabric_priorities);
+		// $rowcount3=mysqli_num_rows($result3);
 		
 		$ims_log="select ims_mod_no from $bai_pro3.ims_log where ims_mod_no='$module'";
 		$result4= mysqli_query($conn, $ims_log);
 		$rowcount4=mysqli_num_rows($result4);
 
 
-		$embellishment_plan_dashboard="select module from $bai_pro3.`embellishment_plan_dashboard` WHERE module='$module'";
-		$result6= mysqli_query($conn, $embellishment_plan_dashboard);
-		$rowcount6=mysqli_num_rows($result6);
+		// $embellishment_plan_dashboard="select module from $bai_pro3.`embellishment_plan_dashboard` WHERE module='$module'";
+		// $result6= mysqli_query($conn, $embellishment_plan_dashboard);
+		// $rowcount6=mysqli_num_rows($result6);
 
-	
+		$embellishment_plan_dashboard_check_bcd="select * from $brandix_bts.bundle_creation_data WHERE assigned_module='$module' and bundle_qty_status=0";
+		$result61= mysqli_query($conn, $embellishment_plan_dashboard_check_bcd);
+		$rowcount61=mysqli_num_rows($result61);
+
 		
-		if($rowcount1>0 or $rowcount2>0 or $rowcount3>0 or $rowcount4>0 or $rowcount6>0)
+		if($rowcount2>0 or $rowcount4>0 or $rowcount61>0)
 		{
 			
-			$test=0;
-
-			
+			$test=0;		
 
 		}
 		else
