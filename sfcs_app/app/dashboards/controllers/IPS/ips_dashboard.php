@@ -169,7 +169,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					  $input_ops_code=$sql_row123['operation_code'];
 					}
 				}				
-				$sql1212="SELECT sum(rejected_qty) as qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$input_ops_code";
+				$sql1212="SELECT sum(carton_act_qty) as qty FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random ='$input_job_no_random_ref' and doc_type='R'";
 				// echo $sql12.';<br>';
 				$sql_result1212=mysqli_query($link, $sql1212) or exit($sql12."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1212=mysqli_fetch_array($sql_result1212))
