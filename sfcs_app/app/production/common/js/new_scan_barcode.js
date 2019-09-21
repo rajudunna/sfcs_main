@@ -227,6 +227,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 }),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).success(function (data, status, headers, config) {
+                $scope.color_cod=data.color_code;
                 $scope.scanned_status=data.status;
             }).error(function (data, status, headers, config) {
                 // handle error things

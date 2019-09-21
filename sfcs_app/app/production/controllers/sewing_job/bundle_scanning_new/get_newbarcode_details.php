@@ -895,10 +895,9 @@ if(isset($_POST["trans_action"])){
                                                     
                                                     }
                                                     $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previously_scanned where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code in ($emb_operations)";
-                                                            $update_qry_cps_log_res = $link->query($update_qry_cps_log);
-                                                    
+                                                    $update_qry_cps_log_res = $link->query($update_qry_cps_log);
                                                         
-                                                    
+                                                   
                                                 }
                                             }
                                             
@@ -1449,6 +1448,8 @@ if(isset($_POST["trans_action"])){
                             
                             $result_array['bundle_no'] = $bundle_no;
                             $result_array['op_no'] = $op_no;
+                            $result_array['color_code'] = "#45b645";
+                            $result_array['status'] = 'Bundle Updated successfully !!!';
                             echo json_encode($result_array);
                             
                         }
@@ -1503,6 +1504,7 @@ if(isset($_POST["trans_action"])){
                             if($category_act != 'sewing')
                             {
                                 $result_array['status'] = 'Invalid opeartion!!! You can only scan Sewing operatinos here';
+                                $result_array['color_code'] = "#f31c06";
                                 echo json_encode($result_array);
                                 die();
                             }
@@ -1535,6 +1537,7 @@ if(isset($_POST["trans_action"])){
                                 }
                                 if($selected_module!=$module){
                                     $result_array['status'] = 'Please verify slected module once..!';
+                                    $result_array['color_code'] = "#f31c06";
                                     echo json_encode($result_array);
                                     die();
                                 }
@@ -1543,14 +1546,17 @@ if(isset($_POST["trans_action"])){
                                 // 5 = Trims not issued to Module, 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
                                 if ($ret == 5) {
                                     $result_array['status'] = 'Trims Not Issued';
+                                    $result_array['color_code'] = "#f31c06";
                                     echo json_encode($result_array);
                                     die();
                                 } else if ($ret == 4) {
                                     $result_array['status'] = 'No module for Bundle';
+                                    $result_array['color_code'] = "#f31c06";
                                     echo json_encode($result_array);
                                     die();
                                 } else if ($ret == 3) {
                                     $result_array['status'] = 'No valid Block Priotities';
+                                    $result_array['color_code'] = "#f31c06";
                                     echo json_encode($result_array);
                                     die();
                                 } else if ($ret == 2) {
@@ -1558,6 +1564,7 @@ if(isset($_POST["trans_action"])){
                                         getjobdetails1($string, $bundle_no, $op_no, $shift ,$gate_id,$trans_mode,$rej_data,$selected_module);
                                     } else {
                                         $result_array['status'] = 'You are Not Authorized to report more than Block Priorities';
+                                        $result_array['color_code'] = "#f31c06";
                                         echo json_encode($result_array);
                                         die();
                                     }
