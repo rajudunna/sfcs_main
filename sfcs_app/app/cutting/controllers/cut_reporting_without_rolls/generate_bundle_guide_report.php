@@ -54,7 +54,7 @@
 
     <div class='col-sm-12' id = "generated_bundle_guide_print">
             <div class="table-responsive">
-                    <table class="table">
+                    <table border=1 class="table table-bordered">
                     <thead>
                         <tr class='info'>
                             <th>S. No</th>
@@ -147,9 +147,13 @@ function printdetails(doc_no)
                     type : 'POST',
                     data : {doc_no:doc_no}
                 }).done(function(res){
+                    
+                    
                    if(res)
                    {
-                    var data = $.parseJSON(res);
+                    result=$.parseJSON(res);
+                    var data = result.response_data;
+                    var ratioslist=result.ratios_list;
                    }
                    else{
                     var data = [];
@@ -163,6 +167,12 @@ function printdetails(doc_no)
                                         {
                                             if(noofrolls>0)
                                             {
+                                                // $.each( ratioslist, function( index, value ){
+                                                    
+                                                // });
+                                              //  $("#generated_bundle_guide_print").append("<div>Style :"+data[0]['schedule']+"</div>");
+                                               // $("#generated_bundle_guide_print").html("<div>Style :"+data[0]['schedule']+"</div>");
+
                                                 for(i=0;i<noofrolls;i++)
                                                 {
                                                         row = $('<tr><td id='+i+'>'+sno+'</td><td>'+data[i]['doc_no']+'</td><td>'+data[i]['size']+'</td><td>'+data[i]['bundle_no']+'</td><td>'+data[i]['shade_bundle']+'</td><td></td><td>'+data[i]['bundle_start']+'</td><td>'+data[i]['bundle_end']+'</td></tr>'); //create row
@@ -170,7 +180,7 @@ function printdetails(doc_no)
                                                         sno++;
                                                 }
                                             $('#generated_bundle_guide_print').css({'display':'block'}); 
-                                            $('#generated_bundle_guide_print').print(); 
+                                            printDiv();
                                             }
                                             
                                             else
@@ -183,5 +193,25 @@ function printdetails(doc_no)
                 }).fail(function(res){
                 
                 });
+}
+
+
+
+function printDiv() 
+{
+  var divToPrint=document.getElementById('generated_bundle_guide_print');
+
+  var newWin=window.open('','Print-Window');
+
+  newWin.document.open();
+
+  newWin.document.write('<html><body onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
+
+  newWin.document.close();
+
+  setTimeout(function(){newWin.close();},10);
+  $('#generated_bundle_guide_print').css({'display':'none'});
+  $('#enablerollsprint').html('');
+  $('#not_found').css({'display':'none'}); 
 }
 </script>
