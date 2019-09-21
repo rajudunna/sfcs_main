@@ -1,6 +1,7 @@
 
 <?php 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));	  
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));	  
 	?> 
 <style>
 
@@ -161,7 +162,7 @@
 
 <?php
 
-if(isset($_POST['submit']))
+if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link))
 {
 	mysqli_begin_transaction($link);
 	try{

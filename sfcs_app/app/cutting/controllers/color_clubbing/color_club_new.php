@@ -6,6 +6,7 @@ Deascription: We can club the two colors for single cut plan.
 -->
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 ?>
 
 
@@ -210,7 +211,7 @@ if($total_schedules==$lay_plan_generated and $doc_count==0 || $category!='')
 </form>
 
 <?php
-if(isset($_POST['submit']))
+if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link))
 {
 	$style=$_POST['style'];
 	$schedule=$_POST['schedule'];
