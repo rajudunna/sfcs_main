@@ -2,6 +2,7 @@
 	<script>
 		
 		$(document).ready(function() {
+			$("#disable_id").prop("disabled",true); 
 			var table = $('#myTable').DataTable({
 				"bInfo": false,
 				paging: false,
@@ -44,9 +45,24 @@
 				if (e.target.checked) {
 					$(this).closest("tr").addClass("selected");
 					calculateTotal()
+					if ($('#disable_id').is(":disabled")) {
+						$('#disable_id').prop('disabled', false);
+					}
 				} else {
 					$(this).closest("tr").removeClass("selected");
 					calculateTotal()
+				}
+				let data = table.rows('.selected').data();
+				if (data.length) {
+					if ($('#disable_id').is(":disabled")) {
+						$('#disable_id').prop('disabled', false);
+					}
+					$('#selectAlll').prop( "checked", true );
+				} else {
+					if (!($('#disable_id').is(":disabled"))) {
+						$('#disable_id').prop('disabled', true);
+					}
+					$('#selectAlll').prop( "checked", false );
 				}
 			});
 
@@ -55,19 +71,37 @@
 					var cb = $(this).find("input[type=checkbox]");
 					cb.trigger('click');
 				}
-
+				let data = table.rows('.selected').data();
+				if (data.length) {
+					if ($('#disable_id').is(":disabled")) {
+						$('#disable_id').prop('disabled', false);
+						
+					}
+					$('#selectAlll').prop( "checked", true );
+				} else {
+					if (!($('#disable_id').is(":disabled"))) {
+						$('#disable_id').prop('disabled', true);
+					}
+					$('#selectAlll').prop( "checked", false );
+				}
 			});
+
 			$('#selectAlll').click(function(e) {
 				var tableone = $(e.target).closest('table');
-
 				if (e.target.checked) {
 					$('tr', tableone).addClass("selected");
 					$('td input:checkbox', tableone).prop('checked', true);
 					calculateTotal()
+					if ($('#disable_id').is(":disabled")) {
+						$('#disable_id').prop('disabled', false);
+					}
 				} else {
 					$('tr', tableone).removeClass("selected");
 					$('td input:checkbox', tableone).prop('checked', false);
 					calculateTotal()
+					if (!($('#disable_id').is(":disabled"))) {
+						$('#disable_id').prop('disabled', true);
+					}
 				}
 			});
 			/**
@@ -140,8 +174,34 @@
 			 */
 			calculateTotalForFixed();
 		});
+		
 	</script>
 	<style>
+		.add_fix{
+			position: fixed;
+    		top: 340px;
+    		left: 424px;
+    z-index: 4;
+		}
+		.black{
+			
+            position:sticky;
+            top: 0.25rem;
+			z-index:1;
+		}
+		/* .sticky_div {
+            font-weight: 900;
+            font-size: 1.5rem;
+            line-height: 1.5;
+            padding: 0.25rem 1rem;
+            color: whitesmoke;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+            position:sticky;
+            top: 0.25rem;
+			z-index:1;
+            
+        } */
+		
 		.alert,
 		strong,
 		body,
@@ -160,6 +220,13 @@
 			top: 250px;
 
 		}
+		.position_div{
+			position: relative;
+    		left: 70px;
+		}		
+		.panel-heading{
+			background-color: #f4fdd0;
+		}
 	</style>
 
 	<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'], 'common/js/openbundle_report.min.js', 3, 'R'); ?>"></script>
@@ -176,10 +243,11 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 ?>
 
 <div class="panel panel-primary" id="navbar">
-	<div class="panel-body" >
+<nav>	
+<div class="panel-body sticky_div" >
 		<div class="col-xs-6 col-sm-6 col-lg-6">
-			<div class="panel-body" style="background-color:#f1f1f1;height: 280px;">
-				<div class="row">
+			<div class="panel-body" style="background-color:#f5ecec;height: 280px;">
+				<div class="row position_div">
 					<div class="col-sm-4">
 						<div class="panel panel-default">
 							<div class="panel-heading"><strong>Total Rolls</strong></div>
@@ -195,7 +263,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 						</div>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row position_div">
 					<div class="col-sm-4">
 						<div class="panel panel-default">
 							<div class="panel-heading"><strong>Selected Rolls</strong></div>
@@ -213,7 +281,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 				</div>
 			</div>
 		</div>
-	</div><br/>
+	</div></nav><br/>
 	<div class="panel panel-primary" style="overflow-x: scroll;">
 		<div class="panel-body">
 			<form action="<?php getFullURLLevel($_GET["r"], "digital_inspection_report_v1.php", "0", "N") ?>" method="POST">
@@ -324,8 +392,9 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 						?>
 					</tbody>
 				</table>
+				
 				<div class="button_pop col-sm-4" id="populate_div">
-					<center><input type="submit" class="btn btn-md btn-primary" name="set_insp_pop" value="Proceed for Inspection"> </center>
+					<center><input type="submit" class="btn btn-md btn-primary" name="set_insp_pop" id="disable_id" value="Proceed for Inspection"> </center>
 				</div>
 			</form>
 		</div>
@@ -359,16 +428,27 @@ if (isset($_POST['bindingdata'])) {
 }
 ?>
 <script>
-window.onscroll = function() {myFunction()};
+// window.onscroll = function() {myFunction()};
 
-var navbar = document.getElementById("navbar");
-var sticky = navbar.offsetTop;
+// var navbar = document.getElementById("navbar");
+// var sticky = navbar.offsetTop;
 
-function myFunction() {
-  if (window.pageYOffset >= sticky) {
-    navbar.classList.add("sticky")
-  } else {
-    navbar.classList.remove("sticky");
-  }
-}
+//  function myFunction() {
+//   if (window.pageYOffset >= sticky) {
+//     navbar.classList.add("sticky")
+//   } else {
+//     navbar.classList.remove("sticky");
+//   }
+// }
+// $(window).on("scroll",function(){
+// 			if($(window).scrollTop()){
+// 				$('nav').addClass('black');
+// 				// $('#populate_div').css({'position':'fixed';
+//     			// 				 'top': '336px';
+//     			// 				 'left': '309px';});
+// 			}
+// 			else{
+// 				$('nav').removeClass('black');
+// 			}
+// 		});
 </script>

@@ -1,6 +1,7 @@
 <head>
 	<script>
 		$(document).ready(function() {
+			$("#disable_id").prop("disabled", true);
 			var table = $('#myTable').DataTable({
 				"bInfo": false,
 				paging: false,
@@ -11,7 +12,7 @@
 				},
 				order: [
 					[1, 'asc']
-				], 
+				],
 				initComplete: function() {
 					this.api().columns().every(function() {
 						var column = this;
@@ -43,9 +44,24 @@
 				if (e.target.checked) {
 					$(this).closest("tr").addClass("selected");
 					calculateTotal()
+					if ($('#disable_id').is(":disabled")) {
+						$('#disable_id').prop('disabled', false);
+					}
 				} else {
 					$(this).closest("tr").removeClass("selected");
 					calculateTotal()
+				}
+				let data = table.rows('.selected').data();
+				if (data.length) {
+					if ($('#disable_id').is(":disabled")) {
+						$('#disable_id').prop('disabled', false);
+					}
+					$('#selectAlll').prop( "checked", true );
+				} else {
+					if (!($('#disable_id').is(":disabled"))) {
+						$('#disable_id').prop('disabled', true);
+					}
+					$('#selectAlll').prop( "checked", false );
 				}
 			});
 
@@ -54,19 +70,37 @@
 					var cb = $(this).find("input[type=checkbox]");
 					cb.trigger('click');
 				}
-
+				let data = table.rows('.selected').data();
+				if (data.length) {
+					if ($('#disable_id').is(":disabled")) {
+						$('#disable_id').prop('disabled', false);
+						
+					}
+					$('#selectAlll').prop( "checked", true );
+				} else {
+					if (!($('#disable_id').is(":disabled"))) {
+						$('#disable_id').prop('disabled', true);
+					}
+					$('#selectAlll').prop( "checked", false );
+				}
 			});
+
 			$('#selectAlll').click(function(e) {
 				var tableone = $(e.target).closest('table');
-
 				if (e.target.checked) {
 					$('tr', tableone).addClass("selected");
 					$('td input:checkbox', tableone).prop('checked', true);
 					calculateTotal()
+					if ($('#disable_id').is(":disabled")) {
+						$('#disable_id').prop('disabled', false);
+					}
 				} else {
 					$('tr', tableone).removeClass("selected");
 					$('td input:checkbox', tableone).prop('checked', false);
 					calculateTotal()
+					if (!($('#disable_id').is(":disabled"))) {
+						$('#disable_id').prop('disabled', true);
+					}
 				}
 			});
 			/**
@@ -114,8 +148,17 @@
 			top: 176px;
 			right: 78px;
 		}
+
+		.output_div {
+			font-weight: 900;
+			font-size: 1.5rem;
+			line-height: 1.5;
+			padding: 0.25rem 1rem;
+			color: #d05d5d;
+			text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+		}
 	</style>
-	
+
 	<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'], 'common/js/openbundle_report.min.js', 3, 'R'); ?>"></script>
 
 </head>
@@ -135,7 +178,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 			<div class="panel-body" id="hide_div">
 				<div class="row">
 					<div class="col-xs-6 col-sm-6 col-lg-6">
-						<div class="panel-body" style="background-color:#f1f1f1">
+						<div class="panel-body" style="background-color:#f5ecec">
 							<form class="form-horizontal form-label-left" method="post" name="input2">
 								<div class="form-group">
 									<label class="control-label col-md-3 col-sm-3 col-xs-12">
@@ -249,17 +292,17 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 						} else {
 							?>
 							<div class="col-xs-6 col-sm-6 col-lg-6">
-								<div class="panel-body" style="background-color:#f1f1f1;height:167px;">
+								<div class="panel-body output_div" style="background-color:#f5ecec;height:167px;">
 									<div class="row">
 										<div class="col-sm-4" style="position: relative;left: 62px;">
 											<div class="panel panel-default">
-												<div class="panel-heading"><strong>Total Rolls</strong></div>
+												<div class="panel-heading" style="background-color: #f4fdd0;"><strong>Total Rolls</strong></div>
 												<div class="panel-body" id="total_rolls">0</div>
 											</div>
 										</div>
 										<div class="col-sm-4" style="margin: 0 0 0 123px;">
 											<div class="panel panel-default">
-												<div class="panel-heading"><strong>Total Length</strong></div>
+												<div class="panel-heading" style="background-color: #f4fdd0;"><strong>Total Length</strong></div>
 												<div class="panel-body" id="total_length">0</div>
 											</div>
 										</div>
@@ -271,116 +314,116 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 			</div>
 			<div class="panel panel-primary" style="overflow-x: scroll;">
 				<div class="panel-body">
-				<form action="<?php getFullURLLevel($_GET["r"], "digital_inspection_report_v1.php", "0", "N") ?>" method="POST">
-					<table id="myTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
-						<thead>
-							<tr>
-								<th>Supplier PO</th>
-								<th>Po line</th>
-								<th>Po Subline</th>
-								<th>Supplier Invoice</th>
-								<th>Item Code</th>
-								<th>Item Description</th>
-								<th>Lot No</th>
-								<th>Supplier Batch</th>
-								<th>RM Colour</th>
-								<th>Supplier Roll No</th>
-								<th>FCS Roll No</th>
-								<th>Quantity</th>
+					<form action="<?php getFullURLLevel($_GET["r"], "digital_inspection_report.php", "0", "N") ?>" method="POST">
+						<table id="myTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+							<thead>
+								<tr>
+									<th>Supplier PO</th>
+									<th>Po line</th>
+									<th>Po Subline</th>
+									<th>Supplier Invoice</th>
+									<th>Item Code</th>
+									<th>Item Description</th>
+									<th>Lot No</th>
+									<th>Supplier Batch</th>
+									<th>RM Colour</th>
+									<th>Supplier Roll No</th>
+									<th>FCS Roll No</th>
+									<th>Quantity</th>
 
-								
+
 									<th>Select<input type="checkbox" id="selectAlll"></th>
-							</tr>
-						</thead>
-						<tbody>
-						<?php
-								while ($sql_row = mysqli_fetch_array($sql_result_po)) {
-									$po_no_1 = $sql_row['po_no'];
-									$po_line = $sql_row['po_line'];
-									$po_subline = $sql_row['po_subline'];
-									$inv_no = $sql_row['inv_no'];
-									$item_code = $sql_row['item'];
-									$item_desc = $sql_row['item_desc'];
-									$lot_no = $sql_row['lot_no'];
-									$supplier_batch = $sql_row['supplier'];
-									$supplier_no = $sql_row['supplier_no'];
-									$ref2 = $sql_row['ref2'];
-									$ref3 = $sql_row['ref3'];
+								</tr>
+							</thead>
+							<tbody>
+							<?php
+									while ($sql_row = mysqli_fetch_array($sql_result_po)) {
+										$po_no_1 = $sql_row['po_no'];
+										$po_line = $sql_row['po_line'];
+										$po_subline = $sql_row['po_subline'];
+										$inv_no = $sql_row['inv_no'];
+										$item_code = $sql_row['item'];
+										$item_desc = $sql_row['item_desc'];
+										$lot_no = $sql_row['lot_no'];
+										$supplier_batch = $sql_row['supplier'];
+										$supplier_no = $sql_row['supplier_no'];
+										$ref2 = $sql_row['ref2'];
+										$ref3 = $sql_row['ref3'];
 
-									if ($po_no_1 == '') {
-										$po_no_1 = 0;
-									} else {
-										$po_no_1;
-									}
+										if ($po_no_1 == '') {
+											$po_no_1 = 0;
+										} else {
+											$po_no_1;
+										}
 
-									if ($po_line == '') {
-										$po_line = 0;
-									} else {
-										$po_line;
-									}
-									if ($po_subline == '') {
-										$po_subline = 0;
-									} else {
-										$po_subline;
-									}
-									if ($inv_no == '') {
-										$inv_no = 0;
-									} else {
-										$inv_no;
-									}
-									if ($item_code == '') {
-										$item_code = 0;
-									} else {
-										$item_code;
-									}
-									if ($item_desc == '') {
-										$item_desc = 0;
-									} else {
-										$item_desc;
-									}
-									if ($lot_no == '') {
-										$lot_no = 0;
-									} else {
-										$lot_no;
-									}
-									if ($supplier_batch == '') {
-										$supplier_batch = 0;
-									} else {
-										$supplier_batch;
-									}
-									if ($supplier_no == '') {
-										$supplier_no = 0;
-									} else {
-										$supplier_no;
-									}
-									if ($ref2 == '') {
-										$ref2 = 0;
-									} else {
-										$ref2;
-									}
-									if ($ref3 == '') {
-										$ref3 = 0;
-									} else {
-										$ref3;
-									}
+										if ($po_line == '') {
+											$po_line = '--';
+										} else {
+											$po_line;
+										}
+										if ($po_subline == '') {
+											$po_subline = 0;
+										} else {
+											$po_subline;
+										}
+										if ($inv_no == '') {
+											$inv_no = 0;
+										} else {
+											$inv_no;
+										}
+										if ($item_code == '') {
+											$item_code = 0;
+										} else {
+											$item_code;
+										}
+										if ($item_desc == '') {
+											$item_desc = 0;
+										} else {
+											$item_desc;
+										}
+										if ($lot_no == '') {
+											$lot_no = 0;
+										} else {
+											$lot_no;
+										}
+										if ($supplier_batch == '') {
+											$supplier_batch = 0;
+										} else {
+											$supplier_batch;
+										}
+										if ($supplier_no == '') {
+											$supplier_no = 0;
+										} else {
+											$supplier_no;
+										}
+										if ($ref2 == '') {
+											$ref2 = 0;
+										} else {
+											$ref2;
+										}
+										if ($ref3 == '') {
+											$ref3 = 0;
+										} else {
+											$ref3;
+										}
+										$rm_color=0;
 
-									echo '<tr><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . '--' . '</td><td>' . $supplier_no . '</td><td>' . $ref2 . '</td><td>' . $ref3 . '</td>';
-									echo "<td><input type='checkbox' name='bindingdata[]' value='" . $po_no_1 . '/' . $po_line . '/' . $po_subline . '/' . $inv_no . '/' . $item_code . '/' . $item_desc . '/' . $lot_no . '/' . $supplier_batch . '/' . $supplier_no . '/' . $ref2 . '/' . $ref3 . "'></td></tr>";
+										echo '<tr><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $supplier_no . '</td><td>' . $ref2 . '</td><td>' . $ref3 . '</td>';
+										echo "<td><input type='checkbox' name='bindingdata[]' value='" . $po_no_1 . '/' . $po_line . '/' . $po_subline . '/' . $inv_no . '/' . $item_code . '/' . $item_desc . '/' . $lot_no . '/' . $supplier_batch . '/'.$rm_color .'/'. $supplier_no . '/' . $ref2 . '/' . $ref3 . "'></td></tr>";
+									}
 								}
-							}
-							?>
-						</tbody>
-					</table>
+								?>
+							</tbody>
+						</table>
 
 						<?php
-							if (!$idx)
-							{
+							if (!$idx) {
 								echo '<div class="col-sm-4" id="populate_div">
-								<center><input type="submit" class="btn btn-md btn-primary" name="set_insp_pop" value="Set Inspection Population"> </center>
+								<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Set Inspection Population"> </center>
 								</div>';
 							}
-						?>
-					</div>
+							?>
+				</div>
 				</form>
 				<?php echo $idx; ?>
 			</div>
@@ -395,7 +438,9 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 		$binddetails = $_POST['bindingdata'];
 
 		$count1 = count($binddetails);
+
 		if ($count1 > 0) {
+			$insertbinditems = "INSERT IGNORE INTO $bai_rm_pj1.inspection_population(lot_no,supplier_po,po_line,po_subline,supplier_invoice,item_code,item_desc,supplier_batch,rm_color,supplier_roll_no,sfcs_roll_no,qty,status) VALUES";
 			for ($j = 0; $j < $count1; $j++) {
 				$id = $binddetails[$j];
 				$exp = explode("/", $id);
@@ -411,13 +456,14 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 				$supplier_roll_no = $exp[9];
 				$fcs_no = $exp[10];
 				$qty = $exp[11];
-
-				$insertbinditems = "INSERT ignore INTO $bai_rm_pj1.inspection_population(lot_no,supplier_po,po_line,po_subline,supplier_invoice,item_code,item_desc,supplier_batch,rm_color,supplier_roll_no,sfcs_roll_no,qty,status) VALUES (\"" . $lot_no . "\",\"" . $supplier_po . "\",\"" . $po_line . "\",\"" . $po_subline . "\",\"" . $inv_no . "\",\"" . $item_code . "\",\"" . $item_desc . "\",\"" . $batch . "\",\"0\",\"" . $supplier_roll_no . "\",\"" . $fcs_no . "\",\"" . $qty . "\",0)";
-				mysqli_query($link, $insertbinditems) or exit(message_sql());
+				$insertbinditems.= ' ("'.$lot_no.'","'.$supplier_po.'","'.$po_line.'","'.$po_subline.'","'.$inv_no.'","'.$item_code.'","'.$item_desc.'","'.$batch.'",0,"'.$supplier_roll_no.'","'.$fcs_no.'","'.$qty.'",0),';
 			}
+			$insertbinditems=rtrim($insertbinditems,",");
+			mysqli_query($link, $insertbinditems) or exit(message_sql());
 		}
-		echo "<script>swal('Data inserted...','Successfully','success')</script>";
+		
+		echo "<script>swal('Data inserted.$qty..','Successfully','success')</script>";
 		echo "<script>location.href = '" . getFullURLLevel($_GET['r'], 'digital_inspection_report_v1.php', 0, 'N') . "'</script>";
 	}
 	?>
-	</div> 
+	</div>

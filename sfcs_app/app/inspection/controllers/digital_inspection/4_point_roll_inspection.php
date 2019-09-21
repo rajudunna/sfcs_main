@@ -69,7 +69,7 @@
 					<div class="table-responsive col-sm-12">
 					    <table class="table table-bordered">
 					      <tbody>
-					      <tr>
+					      <tr style="background-color: antiquewhite;">
 					      	<th>Invoice #</th>
 					      	<th>Color</th>
 					      	<th>Batch</th>
@@ -111,7 +111,7 @@
 									</select>
 					  				</td>
 					  			</tr>
-					  			<tr>	
+					  			<tr style="background-color: antiquewhite;">	
 					  				<th style=text-align:center colspan="3">Spec Details</th>
 					  			</tr>	
 					  			<tr>
@@ -129,7 +129,7 @@
 					  				<td><input type="text" id="repeat_length" name="repeat_length" class="float"></td>
 					  				<!-- <td><input type="text" id="tolerance" name="tolerance"></td> -->
 					  			</tr>
-					  			<tr>
+					  			<tr style="background-color: antiquewhite;">
 					  				<th style=text-align:center colspan=3>Inspection Summary</th>
 					  			</tr>
 					  			<tr>
@@ -391,7 +391,7 @@ if(isset($_POST['save']))
 
 				       
 					  $insert_query="insert into $bai_rm_pj1.roll_inspection_child(lot_no,supplier_roll_no,sfcs_roll_no,fabric_composition,spec_width,inspection_status,spec_weight,repeat_length,lab_testing,tolerance,item_code,roll_no,inspected_per,inspected_qty,invoice_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,code,damage_desc,1_points,2_points,3_points,4_points,parent_id) values ('$lot_num','$supplier_no','$roll_no','$fabric_composition','$spec_width','$inspection_status','$spec_weight','$repeat_length','$lab_testing','$tolerance','$item_code1','$roll_no1','$inspected_per','$inspected_qty','$invoice_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type','$code1','$damage1','$point1','$point2','$point3','$point4','$id')";
-					  //echo $insert_query;
+					  
 					  $result_query = $link->query($insert_query) or exit('query error in inserting');
 
 					  $update_status = "update $bai_rm_pj1.inspection_population SET status=2 where supplier_roll_no='$supplier_no' and sfcs_roll_no='$roll_no' and lot_no='$lots'";
