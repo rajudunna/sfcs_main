@@ -24,6 +24,7 @@ $has_permission=haspermission($url_r);
 ?>
 <?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURL($_GET['r'],'marker_length_popup.php','R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	// $username="sfcsproject1";
 	// $users=array("sfcsproject1","rameshk","kirang","duminduw","rajanaa","chandrasekhard","prabathsa","baiadmn","naleenn","priyankat","balasubramanyams","lakshmik","ramalingeswararaoa","baicutsec1","tharangam");
@@ -65,7 +66,8 @@ $has_permission=haspermission($url_r);
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows2=mysqli_num_rows($result2x);	
 	}	
-
+    $get_url = getFullURL($_GET['r'],'fabric_requisition.php',0,'R');
+    
 //echo $doc_no;
 ?>
 
@@ -166,7 +168,7 @@ function GetSelectedItem()
 <form method="POST" name="apply">
 <table class="table table-bordered">
 
-<tr><th>Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>Category</th><th>Item Code</th><th>Docket No</th><th>Requirment</th><th>Reference</th></tr>
+<tr><th>Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>Category</th><th>Item Code</th><th>Docket No</th><th>Requirment</th><th>Reference</th><th>Marker Length</th></tr>
 <?php
 	$sql11x1="select order_tid,acutno from $bai_pro3.plandoc_stat_log where doc_no='".$doc_no."'";	
 	$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -219,12 +221,98 @@ function GetSelectedItem()
 		echo "<td>".$cat_compo[$docs_no[$i]]."</td>";
 		echo "<td>".$docs_no[$i]."</td>";
 		echo "<td>".$doc_mat[$docs_no[$i]]."</td>";
-		echo "<td><input type='hidden' name='doc_details[]' value='".$docs_no[$i]."'> <input type='text' name='reference[]' value=''></td>";
+		echo "<td><input type='hidden' name='doc_details[]' id='doc_details' value='".$docs_no[$i]."'> <input type='text' name='reference[]' value=''></td>";
+		// echo "<td><center><input type='button' value='Create' class='homebutton' id='btnHome' data-target='#theModal' data-toggle='modal' onclick=test('".trim($stylex)."','".trim($schedulex)."','".strstr($colorx, '-', true)."','".trim($docs_no[$i])."'); /></center></td>";
+		echo "<td><center><input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn'".$docs_no[$i]." onclick=test(".$docs_no[$i].") value='Create'></center></td>";
 		echo "</tr>";
+		
+			 
+		
+		 
+		 
+			// echo  $modal;
 	}
 
 ?>
+
 </table><br/><br/>
+<div class="modal fade" id="rejections_modal" role="dialog">
+    <div class="modal-dialog" style="width: 80%;  height: 100%;">
+        <div class="modal-content">
+            <div class="modal-header">Assign Marker Length
+                <button type="button" class="btn btn-danger" value="Close" id = "cancel" data-dismiss="modal" style="float: right;">Close</button>
+            </div>
+            <div class="modal-body">
+                <div class='panel panel-primary'>
+                    <div class='panel-heading'>
+                        Marker Length Details
+                    </div>
+                    <div class='panel-body'>
+                        <div class='col-sm-12'>
+						<table class='table table-bordered rejections_table'>
+							<thead>
+								<tr class='.bg-dark'><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks</th></tr>
+							</thead>
+                                <tbody id='rejections_table_body'>
+								
+								<tr>
+									<td><input class="form-control"  type="text" name="in_mktype" id="mk_type"  title="please enter numbers and decimals"></td>
+									<td><input class="form-control"  type="text" name= "in_mkver" id= "mk_ver" onchange="validate_data(this)" title="please enter numbers and decimals"></td>
+									<td><input class="form-control"  type="text" name= "in_skgrp" id= "sk_grp" onchange="validate_data(this)" title="please enter numbers and decimals"></td>
+									<td><input class="form-control"  type="text" name= "in_width" id= "width" onchange="validate_data(this)" title="please enter numbers and decimals"></td>
+									<td><input class="form-control"  type="text" name= "in_mklen" id= "mk_len" onchange="validate_data(this)" title="please enter numbers and decimals"></td>
+									<td><input class="form-control"  type="text" name= "in_mkname" id="mk_name" title="please enter numbers and decimals"></td>
+									<td><input class="form-control"  type="text" name= "in_ptrname" id="ptr_name" title="please enter numbers and decimals"></td>
+									<td><input class="form-control"  type="text" name= "in_mkeff" id= "mk_eff" title="please enter numbers and decimals"></td>
+									<td><input class="form-control"  type="text" name= "in_permts" id= "permts" title="please enter numbers and decimals"></td>
+									<td><input class="form-control"  type="text" name= "in_rmks" id= "rmks" title="please enter numbers and decimals"></td>
+									
+									</tr>  
+                                </tbody>
+                            </table>
+								<input type='button' class='btn btn-danger pull-right' value='clear' name='clear_rejection' id='clear_rejection'>
+								<input type='button' class='btn btn-warning pull-right' value='+' name='add_rejection' id='add_rejection'>
+                        </div>
+                        <div class='col-sm-12'><hr/></div>
+                        <div class='col-sm-offset-2 col-sm-8'>
+                            <table class='table table-bordered rejections_table'>
+							<thead>
+								<tr class='.bg-dark'><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks</th></tr>
+							</thead>
+                                <tbody id='rejections_table_body'>
+								<input type="hidden" name="product" placeholder="Product Name" value="" id="product_name" />
+								<?php 
+									$doc_no = json_encode($_GET['doc_no']);
+									$sql11x132="select mk_ref from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
+									$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+									while($row111x2=mysqli_fetch_array($sql_result11x112)) {
+										$sql_marker_stat_log_id = "select allocate_ref from $bai_pro3.maker_stat_log where tid='".$row111x2['mk_ref']."'";
+										$sql_marker_stat_log_result=mysqli_query($link, $sql_marker_stat_log_id) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+										while($sql_marker_id=mysqli_fetch_array($sql_marker_stat_log_result))
+										{
+											$sql_marker_details = "select * from $bai_pro3.maker_details where parent_id='".$sql_marker_id['allocate_ref']."'";
+											$sql_marker_details_result=mysqli_query($link, $sql_marker_details) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+											while($sql_marker_details_res=mysqli_fetch_array($sql_marker_details_result)){
+												var_dump($sql_marker_details_res);
+							
+											}
+										}
+									}
+									?>
+                                </tbody>
+                            </table>
+                        </div>  
+
+                    </div>
+                </div>
+                    
+                
+            </div>
+
+        </div>
+    </div>
+</div>
 
 	<table class="table table-bordered">
 		<tr>
@@ -533,3 +621,47 @@ if(isset($_GET['sidemenu'])){
 </div>
 </div>
 </body>
+
+<script>
+
+
+
+// $('#rejections_panel_btn').on('click',function(doc_no){
+// 	$('#rejections_modal').modal('toggle');
+// 	var doc_no = doc_no;
+// 	$.ajax({
+// 	}).done(function(res){
+// 		console.log(res);
+// 	// 	dataR = $.parseJSON(res);
+// 	// 	$.each(dataR.old_new_size,function(key,value){
+// 	// 		pieces[key] = Number(dataR.old_size_ratio[key]) * c_plies;
+			
+// 	// 		size_rej_qty_string += value+' : '+pieces[key]+' &nbsp;&nbsp;'; 
+// 	// 		$('#rejection_size').append('<option value='+key+'>'+value+'</option>');
+// 	// 		rejections_post[key] = {};
+// 	// 	});
+// 	// 	$('.size-rej-pieces').html('<b>'+size_rej_qty_string+'</b>');
+// 	// 	$('#total_pieces').val(ret);
+// 	// 	$('#avl_pieces').val(ret);
+// 	// }).fail(function(){
+// 	// 	alert('fail');
+// 	});
+// });
+function test(doc_no){
+	var t = document.getElementById('doc_details').value;
+	$('#product_name').val(t);
+	$("#rejections_modal").modal('toggle');
+	$.ajax({
+	url : '<?= $get_url ?>?doc_no='+doc_no
+	}).done(function(res){
+		
+		console.log(res);
+	});
+}
+
+// $('#rejections_panel_btn').on('click',function(){
+
+//         $('#rejections_modal').modal('toggle');
+//     });
+
+</script>

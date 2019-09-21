@@ -13,7 +13,7 @@ $log_time=date("Y-m-d H:i:s");
 
 if(isset($_POST['update']))
 {
-
+	$row_count = sizeof($_POST['in_mktype']);
 	$cat_ref=$_POST['cat_ref'];
 	$tran_order_tid=$_POST['tran_order_tid'];
 	$cuttable_ref=$_POST['cuttable_ref'];
@@ -109,24 +109,24 @@ if(isset($_POST['update']))
 		$tran_order_tid=$_POST['tran_order_tid'];
 		$cuttable_ref=$_POST['cuttable_ref'];
 		$allocate_ref=$_POST['allocate_ref'];
-		$remarks=$_POST['remarks'];
-		$in_mklength=$_POST['in_mklength']; //
-		$in_mkeff=$_POST['in_mkeff'];
-		$in_mkver=$_POST['in_mkver'];
-		$in_pwidth=$_POST['in_pwidth']; //
-		$remarks1=$_POST['remark1'];
-		$remarks2=$_POST['remark2'];
-		$remarks3=$_POST['remark3'];
-		$remarks4=$_POST['remark4'];
-		if($in_mkeff == '')
-		{
-		    $in_mkeff = 0;
-		}
+		// $remarks=$_POST['remarks'];
+		// $in_mklength=$_POST['in_mklength']; //
+		// $in_mkeff=$_POST['in_mkeff'];
+		// $in_mkver=$_POST['in_mkver'];
+		// $in_pwidth=$_POST['in_pwidth']; //
+		$remarks1='nill';
+		$remarks2='nill';
+		$remarks3='nill';
+		$remarks4='nill';
+		// if($in_mkeff == '')
+		// {
+		//     $in_mkeff = 0;
+		// }
 		
-		if(strlen(trim($in_mkver))>=1) //System will not update, if no data is not available
+		if(strlen(trim($allocate_ref)) != null) //System will not update, if no data is not available
 		{
 
-				$sql="insert ignore into $bai_pro3.maker_stat_log (date, cat_ref, cuttable_ref, allocate_ref, order_tid, mklength, mkeff, remarks, mk_ver, lastup,remark1,remark2,remark3,remark4) values(\"$log_date\",$cat_ref, $cuttable_ref, $allocate_ref, \"$tran_order_tid\", ".$in_mklength[0].", $in_mkeff, \"$remarks\", \"$in_mkver\",\"$log_time\",\"$remarks1\",\"$remarks2\",\"$remarks3\",\"$remarks4\")";
+				$sql="insert ignore into $bai_pro3.maker_stat_log (date, cat_ref, cuttable_ref, allocate_ref, order_tid, lastup, remark1, remark2, remark3, remark4) values(\"$log_date\",$cat_ref, $cuttable_ref, $allocate_ref, \"$tran_order_tid\", \"$log_time\", \"$remarks1\", \"$remarks2\", \"$remarks3\", \"$remarks4\")";
 			
 			//echo $sql;
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -211,6 +211,7 @@ if(isset($_POST['update']))
 					$allo_c[]="s49=".$sql_row['allocate_s49'];
 					$allo_c[]="s50=".$sql_row['allocate_s50'];
 				}
+
 				for($i=0;$i<sizeof($in_mklength);$i++)
 				{
 					if(strlen($in_pwidth[$i])>0 and $in_pwidth[$i]!="")
@@ -222,6 +223,26 @@ if(isset($_POST['update']))
 						//echo "<br/>".$sql;
 						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
+				}
+				for($i=0; $i<$row_count; $i++)
+				{
+					$in_mktype = $_POST['in_mktype'][$i];
+					$in_mkver = $_POST['in_mkver'][$i];
+					$in_skgrp = $_POST['in_skgrp'][$i];
+					$in_width = $_POST['in_width'][$i];
+					$in_mklen = $_POST['in_mklen'][$i];
+					$in_mkname = $_POST['in_mkname'][$i];
+					$in_ptrname = $_POST['in_ptrname'][$i];
+					$in_mkeff = $_POST['in_mkeff'][$i];
+					$in_permts = $_POST['in_permts'][$i];
+					$in_rmks = $_POST['in_rmks'][$i];
+					$in_mktype = $_POST['in_mktype'][$i];
+
+					$sql="insert ignore into $bai_pro3.maker_details (parent_id, marker_type, marker_version, shrinkage_group, width, marker_length, marker_name, pattern_name, marker_eff, perimeters, remarks) values(\"$allocate_ref\",\"$in_mktype\", \"$in_mkver\", \"$in_skgrp\", \"$in_width\", \"$in_mklen\", \"$in_mkname\", \"$in_ptrname\", \"$in_mkeff\", \"$in_permts\",  \"$in_rmks\")";
+					mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				
+					$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+
 				}
 			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {   sweetAlert('Successfully Updated','','success'); location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
 		}else{
