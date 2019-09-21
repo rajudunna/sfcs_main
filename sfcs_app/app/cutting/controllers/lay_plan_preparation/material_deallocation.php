@@ -13,7 +13,7 @@
                     </div>
                     <br/>
                     <div class="col-md-3">
-                        <input type="submit" id="material_deallocation" class="btn btn-primary" name="formSubmit" value="Ready to Deallocate">
+                        <input type="submit" id="material_deallocation" class="btn btn-primary" name="formSubmit" value="Request to Deallocate">
                     </div>
                     <img id="loading-image" class=""/>  
                 </div>
