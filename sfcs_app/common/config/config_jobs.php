@@ -103,6 +103,9 @@ $emp_active_status = $conf->get('emp_active_status');
 //REST API TimeOut
 $API_CALL_TIME_OUT = $conf->get('api_call_time_out');
 
+//Enable API
+$enable_api_call = $conf->get('enable-api-call');
+
 //Central Administraion Group ID's
 $group_id_sfcs=8;
 $group_id_Main=5;
