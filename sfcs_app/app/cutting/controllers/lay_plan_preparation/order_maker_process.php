@@ -13,6 +13,11 @@ $log_time=date("Y-m-d H:i:s");
 
 if(isset($_POST['update']))
 {
+	$in_mklen = $_POST['in_mklen'][0];
+	$in_mkeff = $_POST['in_mkeff'][0];
+	$in_mkver = $_POST['in_mkver'][0];
+	$in_rmks = $_POST['in_rmks'][0];
+	// var_dump($in_mkeff);
 	$row_count = sizeof($_POST['in_mktype']);
 	$cat_ref=$_POST['cat_ref'];
 	$tran_order_tid=$_POST['tran_order_tid'];
@@ -126,13 +131,14 @@ if(isset($_POST['update']))
 		if(strlen(trim($allocate_ref)) != null) //System will not update, if no data is not available
 		{
 
-				$sql="insert ignore into $bai_pro3.maker_stat_log (date, cat_ref, cuttable_ref, allocate_ref, order_tid, lastup, remark1, remark2, remark3, remark4) values(\"$log_date\",$cat_ref, $cuttable_ref, $allocate_ref, \"$tran_order_tid\", \"$log_time\", \"$remarks1\", \"$remarks2\", \"$remarks3\", \"$remarks4\")";
+				$sql="insert ignore into $bai_pro3.maker_stat_log (date, cat_ref, cuttable_ref, allocate_ref, mklength, mkeff, mk_ver, remarks, order_tid, lastup, remark1, remark2, remark3, remark4) values(\"$log_date\",\"$cat_ref\", \"$cuttable_ref\", \"$allocate_ref\", \"$in_mklen\", \"$in_mkeff\", \"$in_mkver\", \"$in_rmks\", \"$tran_order_tid\", \"$log_time\", \"$remarks1\", \"$remarks2\", \"$remarks3\", \"$remarks4\")";
 			
-			//echo $sql;
+			// echo $sql;die();
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
-				
+				$marker_stat_log_id = $iLastid;
+				// echo $iLastid;die();
 				$sql="update $bai_pro3.allocate_stat_log set mk_status=2 where tid=$allocate_ref";
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
@@ -236,14 +242,28 @@ if(isset($_POST['update']))
 					$in_mkeff = $_POST['in_mkeff'][$i];
 					$in_permts = $_POST['in_permts'][$i];
 					$in_rmks = $_POST['in_rmks'][$i];
-					$in_mktype = $_POST['in_mktype'][$i];
+					if($in_mktype != '' && $in_mkver != '' && $in_skgrp != '' && $in_width != '' && $in_mklen != '' && $in_mkname != '' && $in_ptrname != '' && $in_mkeff != '' && $in_permts != '' && $in_rmks != '') {
+						$sql="insert ignore into $bai_pro3.maker_details (parent_id, marker_type, marker_version, shrinkage_group, width, marker_length, marker_name, pattern_name, marker_eff, perimeters, remarks) values(\"$allocate_ref\",\"$in_mktype\", \"$in_mkver\", \"$in_skgrp\", \"$in_width\", \"$in_mklen\", \"$in_mkname\", \"$in_ptrname\", \"$in_mkeff\", \"$in_permts\",  \"$in_rmks\")";
+						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+						$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 
-					$sql="insert ignore into $bai_pro3.maker_details (parent_id, marker_type, marker_version, shrinkage_group, width, marker_length, marker_name, pattern_name, marker_eff, perimeters, remarks) values(\"$allocate_ref\",\"$in_mktype\", \"$in_mkver\", \"$in_skgrp\", \"$in_width\", \"$in_mklen\", \"$in_mkname\", \"$in_ptrname\", \"$in_mkeff\", \"$in_permts\",  \"$in_rmks\")";
-					mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
-					$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
-
+					}
 				}
+				$sql_maker_allocation = "select allocate_ref from $bai_pro3.maker_stat_log where tid =\"$marker_stat_log_id\"";
+				$sql_maker_allocation_res=mysqli_query($link, $sql_maker_allocation) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_allocation_res=mysqli_fetch_array($sql_maker_allocation_res);
+
+				$sql_min_id = "select MIN(id) as id from $bai_pro3.maker_details where parent_id =\"$sql_allocation_res[allocate_ref]\"";
+				$sql_result=mysqli_query($link, $sql_min_id) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_row=mysqli_fetch_array($sql_result);
+					// var_dump($sql_row);
+				$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set marker_details_id= $sql_row[id] where allocate_ref=$sql_allocation_res[allocate_ref]";
+				// echo $sql_update_marker_length_id;die();
+				mysqli_query($link, $sql_update_marker_length_id) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				
+				// echo $sql_min_id;die();
+				
 			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {   sweetAlert('Successfully Updated','','success'); location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
 		}else{
 			//echo "<h2 class='label label-danger'>Marker Version is not available.</h2>";

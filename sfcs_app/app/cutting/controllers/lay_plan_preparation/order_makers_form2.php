@@ -380,7 +380,6 @@ echo "<tr bgcolor= #ffffff; color= white; ><th>Marker Type</th><th>Marker Versio
 echo '<tbody id = "body-data">';
 for ($i=0; $i < 5; $i++) { 
 	
-
 	echo '<tr>
 		<td><input class="form-control"  type="text" name="in_mktype['.$i.']" id="mk_type_'.$i.'"  title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_mkver['.$i.']" id= "mk_ver_'.$i.'" onchange="validate_data('.$i.',this)" title="please enter numbers and decimals"></td>
@@ -567,22 +566,21 @@ function compareArrays(arr1, arr2){
 		return false;
 	}
 }
-// var array1 = ["cat", "sum","fun", "run", "hut"];
-// var array2 = ["bat", "cat","dog","sun", "hut", "gut"];
 
-// console.log(array1.diff(array2));
 function validate_data(b, id_name) {
-	console.log(id_name.id);
+	// alert();
+	// console.log(b);
 	// alert(b);
 	// console.log([1,2].equals([1,2]));
 	if($("#mk_ver_"+b).val() != '' && $("#sk_grp_"+b).val() != '' && $("#width_"+b).val() != '' && $("#mk_len_"+b).val()){
 		var rowData=[];
 		var CurData=[];
-
-		var rows = document.getElementById('rows').value;
-		var mk_Ref;
-		var mk_shr;
-		var mk_len;
+		// var rows = $('#table-data >tbody >tr').length;
+		
+		// var rows = document.getElementById('rows').value;
+		// var mk_Ref;
+		// var mk_shr;
+		// var mk_len;
 		var table = $("#body-data");
 		CurData = [$("#mk_ver_"+b).val(), $("#sk_grp_"+b).val(), $("#width_"+b).val(), $("#mk_len_"+b).val()];
 		// CurData = $("#sk_grp_"+b).val();
@@ -590,8 +588,8 @@ function validate_data(b, id_name) {
 		// CurData[] = $("#mk_len_"+b).val();
 		// console.log(CurData);
 		var tr_length= table.find('tr').length;
-		// console.log(tr_length);
-		for (let index = 0; index < tr_length; index++) {
+		console.log(tr_length);
+		for (let index = 0; index <= tr_length; index++) {
 		// console.log($("#mk_ver_"+index).val());
 			if(index!= b && $("#mk_ver_"+index).val() != '' && $("#sk_grp_"+index).val() != '' && $("#width_"+index).val() != '' && $("#mk_len_"+index).val()){
 
@@ -602,7 +600,7 @@ function validate_data(b, id_name) {
 					// rowData[index] = $("#width_"+index).val();
 					// rowData[index] = $("#mk_len_"+index).val();
 
-					console.log(CurData);
+					// console.log(CurData);
 					console.log(rowData);
 
 					console.log(compareArrays(CurData, rowData));
@@ -700,16 +698,17 @@ function add_input_row() {
 	var cell8 = row.insertCell(7);
 	var cell9 = row.insertCell(8);
 	var cell10 = row.insertCell(9);
-	cell1.innerHTML = "<input class='form-control float'  name='in_mktype["+rowCount+"]' id='mk_type["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
-	cell2.innerHTML = "<input class='form-control float'  name='in_mkver["+rowCount+"]' id='mk_ver["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
-	cell3.innerHTML = "<input class='form-control float'  name='in_skgrp["+rowCount+"]' id='sk_grp["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
-	cell4.innerHTML = "<input class='form-control float'  name='in_width["+rowCount+"]' id='width["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
-	cell5.innerHTML = "<input class='form-control float'  name='in_mklen["+rowCount+"]' id='mk_len["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
-	cell6.innerHTML = "<input class='form-control float'  name='in_mkname["+rowCount+"]' id='mk_name["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
-	cell7.innerHTML = "<input class='form-control float'  name='in_ptrname["+rowCount+"]' id='ptr_name["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
-	cell8.innerHTML = "<input class='form-control float'  name='in_mkeff["+rowCount+"]' id='mk_eff["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
-	cell9.innerHTML = "<input class='form-control float'  name='in_permts["+rowCount+"]' id='permts["+rowCount+"]' type='text' title='Please enter numbers and decimals'>";
-	cell10.innerHTML = "<input class='form-control float'  name='in_rmks["+rowCount+"]' id='rmks["+rowCount+"]'  type='text' title='Please enter numbers and decimals'>";
+	cell1.innerHTML = "<input class='form-control float'  name='in_mktype["+rowCount+"]' id='mk_type_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
+	cell2.innerHTML = "<input class='form-control float'  name='in_mkver["+rowCount+"]' id='mk_ver_"+rowCount+"' type='text' onchange='validate_data("+rowCount+",this)' title='Please enter numbers and decimals'>";
+	cell3.innerHTML = "<input class='form-control float'  name='in_skgrp["+rowCount+"]' id='sk_grp_"+rowCount+"' type='text' onchange='validate_data("+rowCount+",this)' title='Please enter numbers and decimals'>";
+	cell4.innerHTML = "<input class='form-control float'  name='in_width["+rowCount+"]' id='width_"+rowCount+"' type='text' onchange='validate_data("+rowCount+",this)' title='Please enter numbers and decimals'>";
+	cell5.innerHTML = "<input class='form-control float'  name='in_mklen["+rowCount+"]' id='mk_len_"+rowCount+"' type='text' onchange='validate_data("+rowCount+",this)' title='Please enter numbers and decimals'>";
+	cell6.innerHTML = "<input class='form-control float'  name='in_mkname["+rowCount+"]' id='mk_name_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
+	cell7.innerHTML = "<input class='form-control float'  name='in_ptrname["+rowCount+"]' id='ptr_name_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
+	cell8.innerHTML = "<input class='form-control float'  name='in_mkeff["+rowCount+"]' id='mk_eff_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
+	cell9.innerHTML = "<input class='form-control float'  name='in_permts["+rowCount+"]' id='permts_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
+	cell10.innerHTML = "<input class='form-control float'  name='in_rmks["+rowCount+"]' id='rmks_"+rowCount+"'  type='text' title='Please enter numbers and decimals'>";
+
 }
 </script>
  

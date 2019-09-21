@@ -20,7 +20,6 @@ $has_permission=haspermission($url_r);
 // echo "Authp : ".var_dump($has_permission);
 // die();
 
-
 ?>
 <?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
@@ -66,7 +65,9 @@ $has_permission=haspermission($url_r);
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows2=mysqli_num_rows($result2x);	
 	}	
-    $get_url = getFullURL($_GET['r'],'fabric_requisition.php',0,'R');
+	$get_url = getFullURL($_GET['r'],'fabric_requisition.php',0,'R');
+    $get_url = getFullURLLevel($_GET['r'],'marker_length_popup.php',0,'R');
+	
     
 //echo $doc_no;
 ?>
@@ -248,7 +249,46 @@ function GetSelectedItem()
                         Marker Length Details
                     </div>
                     <div class='panel-body'>
-                        <div class='col-sm-12'>
+					<div class='col-sm-12'>
+                            <table class='table table-bordered rejections_table'>
+							<thead>
+								<tr class='.bg-dark'><th></th><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks</th></tr>
+							</thead>
+                                <tbody id='rejections_table_body'>
+								<input type="hidden" name="product" placeholder="Product Name" value="" id="product_name" />
+								<?php 
+									
+									$doc_no = json_encode($_GET['doc_no']);
+									$sql11x132="select mk_ref from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
+									$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+									while($row111x2=mysqli_fetch_array($sql_result11x112)) {
+										$sql_marker_stat_log_id = "select allocate_ref, marker_details_id from $bai_pro3.maker_stat_log where tid='".$row111x2['mk_ref']."'";
+										$sql_marker_stat_log_result=mysqli_query($link, $sql_marker_stat_log_id) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+										while($sql_marker_id=mysqli_fetch_array($sql_marker_stat_log_result))
+										{
+											$sql_marker_details = "select * from $bai_pro3.maker_details where parent_id='".$sql_marker_id['allocate_ref']."'";
+											$sql_marker_details_result=mysqli_query($link, $sql_marker_details) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+											$no_of_rows = mysqli_num_rows($sql_marker_details_result);
+											while($sql_marker_details_res=mysqli_fetch_array($sql_marker_details_result)){
+												if($sql_marker_details_res[id] == $sql_marker_id[marker_details_id])
+												{
+													echo "<tr><td><input type='radio' name='gender' value='' id='check$sql_marker_details_res[0]' CHECKED></td><td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td></tr>";
+												}
+												else{
+
+												echo "<tr><td><input type='radio' name='gender' value='' id='check$sql_marker_details_res[0]'></td><td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td></tr>";
+													// echo json_encode($sql_marker_details_res[0]);
+												}
+							
+											}
+										}
+									}
+									?>
+                                </tbody>
+                            </table>
+                        </div>  
+                        <div class='col-sm-offset-2 col-sm-8'>
 						<table class='table table-bordered rejections_table'>
 							<thead>
 								<tr class='.bg-dark'><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks</th></tr>
@@ -270,42 +310,13 @@ function GetSelectedItem()
 									</tr>  
                                 </tbody>
                             </table>
-								<input type='button' class='btn btn-danger pull-right' value='clear' name='clear_rejection' id='clear_rejection'>
-								<input type='button' class='btn btn-warning pull-right' value='+' name='add_rejection' id='add_rejection'>
-                        </div>
-                        <div class='col-sm-12'><hr/></div>
-                        <div class='col-sm-offset-2 col-sm-8'>
-                            <table class='table table-bordered rejections_table'>
-							<thead>
-								<tr class='.bg-dark'><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks</th></tr>
-							</thead>
-                                <tbody id='rejections_table_body'>
-								<input type="hidden" name="product" placeholder="Product Name" value="" id="product_name" />
-								<?php 
-									$doc_no = json_encode($_GET['doc_no']);
-									$sql11x132="select mk_ref from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
-									$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-									while($row111x2=mysqli_fetch_array($sql_result11x112)) {
-										$sql_marker_stat_log_id = "select allocate_ref from $bai_pro3.maker_stat_log where tid='".$row111x2['mk_ref']."'";
-										$sql_marker_stat_log_result=mysqli_query($link, $sql_marker_stat_log_id) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-										while($sql_marker_id=mysqli_fetch_array($sql_marker_stat_log_result))
-										{
-											$sql_marker_details = "select * from $bai_pro3.maker_details where parent_id='".$sql_marker_id['allocate_ref']."'";
-											$sql_marker_details_result=mysqli_query($link, $sql_marker_details) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-											while($sql_marker_details_res=mysqli_fetch_array($sql_marker_details_result)){
-												var_dump($sql_marker_details_res);
-							
-											}
-										}
-									}
-									?>
-                                </tbody>
-                            </table>
-                        </div>  
-
+								<input type='button' class='btn btn-danger pull-right' value='clear' name='clear_rejection' id='clear_rejection' onclick='clear_rejection()'>
+								<!-- <input class="btn btn-sm btn-success" onclick="add_Newmklen()" type = 'submit' id='create' name = "update" value = '+'> -->
+								<input type='button' class='btn btn-warning pull-right' value='+' name='add_mklen' onclick = 'add_Newmklen()' id='add_marker_length'>
+								
                     </div>
                 </div>
+				</div>
                     
                 
             </div>
@@ -623,30 +634,88 @@ if(isset($_GET['sidemenu'])){
 </body>
 
 <script>
+function validate_data(id) {
+	// alert(id);
+	
+}
+function add_Newmklen()
+{
+	var mk_type = $('#mk_type').val();
+	var mk_ver = $('#mk_ver').val();
+	var sk_grp = $('#sk_grp').val();
+	var width = $('#width').val();
+	var mk_len = $('#mk_len').val();
+	var mk_name = $('#mk_name').val();
+	var ptr_name = $('#ptr_name').val();
+	var mk_eff = $('#mk_eff').val();
+	var permts = $('#permts').val();
+	var rmks = $('#rmks').val();
+	if(mk_ver == ''){
+		sweetAlert('Please enter valid Marker Version','','warning');
+		return false;
+	}
+	if(mk_eff == ''){
+		sweetAlert('Please enter valid Marker Eff','','warning');
+		return false;
+	}
+	if(mk_len <=0)
+	{
+		sweetAlert('Please enter valid Marker Length','','warning');
+		return false;
+	}
+	if(width <=0){
+		sweetAlert('Please enter valid Marker Width','','warning');
+		return false;
+	}
+	if(mk_len == ''|| mk_len <=0){
+		sweetAlert('Please enter valid Marker Length','','warning');
+		return false;
+	}
+	if(mk_eff == '')
+	{
+		mk_eff = 0;
+	}
+	if(mk_eff>100){
+		sweetAlert('Please enter valid Marker Efficiency','','warning');
+		return false;
+	}
+	if(mk_ver <=0 || mk_ver ==''){
+		sweetAlert('Please enter valid Marker Version','','warning');
+		return false;
+	}
+	$.ajax({
+	url : '<?= $get_url ?>?mk_ver='+mk_ver+'?mk_type='+mk_type+'?sk_grp='+sk_grp+'?mk_eff='+mk_eff+'?mk_len='+mk_len+'?width='+width+'?permts='+permts+'?ptr_name='+ptr_name+'?rmks='+rmks+'?mk_name='+mk_name
+	}).done(function(res){
+		console.log(res);
+	});
+	console.log(mk_ver);
+	console.log(mk_type);
+	console.log(mk_eff);
+	console.log(mk_len);
+	console.log(width);
+	console.log(ptr_name);
+	console.log(permts);
+	console.log(rmks);
 
+	// document.getElementById('create').style.display="none";
+	// $("#rejections_modal").modal('toggle');
 
-
-// $('#rejections_panel_btn').on('click',function(doc_no){
-// 	$('#rejections_modal').modal('toggle');
-// 	var doc_no = doc_no;
-// 	$.ajax({
-// 	}).done(function(res){
-// 		console.log(res);
-// 	// 	dataR = $.parseJSON(res);
-// 	// 	$.each(dataR.old_new_size,function(key,value){
-// 	// 		pieces[key] = Number(dataR.old_size_ratio[key]) * c_plies;
-			
-// 	// 		size_rej_qty_string += value+' : '+pieces[key]+' &nbsp;&nbsp;'; 
-// 	// 		$('#rejection_size').append('<option value='+key+'>'+value+'</option>');
-// 	// 		rejections_post[key] = {};
-// 	// 	});
-// 	// 	$('.size-rej-pieces').html('<b>'+size_rej_qty_string+'</b>');
-// 	// 	$('#total_pieces').val(ret);
-// 	// 	$('#avl_pieces').val(ret);
-// 	// }).fail(function(){
-// 	// 	alert('fail');
-// 	});
-// });
+	// return true;
+}
+function clear_rejection()
+{
+// $('#clear_rejection').on('click',function(){
+	alert($('#mk_type').val());
+	// $('#mk_ver').val(' ');
+	// $('#sk_grp').val(' ');
+	// $('#width').val(' ');
+	// $('#mk_len').val(' ');
+	// $('#mk_name').val(' ');
+	// $('#ptr_name').val(' ');
+	// $('#mk_eff').val(' ');
+	// $('#permts').val(' ');
+	// $('#rmks').val(' ');
+}
 function test(doc_no){
 	var t = document.getElementById('doc_details').value;
 	$('#product_name').val(t);
@@ -654,7 +723,6 @@ function test(doc_no){
 	$.ajax({
 	url : '<?= $get_url ?>?doc_no='+doc_no
 	}).done(function(res){
-		
 		console.log(res);
 	});
 }
