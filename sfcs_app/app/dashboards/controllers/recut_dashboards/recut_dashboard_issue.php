@@ -86,8 +86,10 @@ if(isset($_POST['formIssue']))
     $doc_no_ref = $_POST['doc_no_ref'];
     $job_no = $_POST['job_no'];
     $size = $_POST['size'];
+    // var_dump($bcd_id);
     // var_dump($job_no);
     // var_dump($size);
+	// die();
     $get_recut_status="select max(status) as recut_status from $bai_pro3.recut_v2_child_issue_track where recut_id=".$doc_no_ref."";
     $get_recut_result=mysqli_query($link, $get_recut_status)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($recut_row = mysqli_fetch_array($get_recut_result))
@@ -169,7 +171,7 @@ if(isset($_POST['formIssue']))
                 }
             }
         }
-        $issue_to_sewing = issue_to_sewing($job_no,$size,$issueval,$doc_no_ref);
+        $issue_to_sewing = issue_to_sewing($job_no,$size,$issueval,$doc_no_ref,$bcd_id);
     }
     else
     {
