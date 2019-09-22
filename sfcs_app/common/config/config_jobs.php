@@ -21,14 +21,6 @@ $pass=$mysql_details['db_pass'];
 
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-// SFCS Old Configuration
-$host_old=$conf->get('old_sfcs_name').":".$conf->get('old_sfcs_port');
-$user_old=$conf->get('old_sfcs_user');
-$pass_old=$conf->get('old_db_pass');
-$link_sfcs= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host_old, $user_old, $pass_old)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
-$facility_code_old=$conf->get('plantcode_old');
-$comp_no_old=$conf->get('company_no_old');
-
 // Schedules Operations Capturing
 $serverName=$conf->get('mssql-server-name');
 $uid=$conf->get('mssql-user-name');

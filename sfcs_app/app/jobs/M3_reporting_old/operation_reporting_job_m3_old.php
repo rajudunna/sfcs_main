@@ -2,12 +2,10 @@
 $start_timestamp = microtime(true);
 error_reporting(0);
 $include_path=getenv('config_job_path');
-include($include_path.'\sfcs_app\common\config\config_jobs.php');
-include($include_path.'\sfcs_app\common\config\rest_api_calls.php');
+include($include_path.'\sfcs_app\app\jobs\M3_reporting_old\config_old.php');
+include($include_path.'\sfcs_app\app\jobs\M3_reporting_old\rest_api_calls_old.php');
 set_time_limit(1000000);
 
-//details from config tool
-//$facility_id = $global_facility_code;
 $plant_code = $facility_code_old;
 $company_num = $comp_no_old;
 $host= $api_hostname;
@@ -60,7 +58,7 @@ while($row=mysqli_fetch_array($transaction_result))
             mysqli_query($link_sfcs,$qry_m3_bulk_transactions) or exit("While updating into qry_m3_bulk_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
             if ($api_type == 'opn')
             {
-                $qry_m3_transactions="UPDATE `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log` SET sfcs_status=30 WHERE m3_bulk_tran_id=".$transaction_id;
+                $qry_m3_transactions="UPDATE `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log` SET sfcs_status=30,m3_error_code='TRUE-' WHERE m3_bulk_tran_id=".$transaction_id;
                 mysqli_query($link_sfcs,$qry_m3_transactions) or exit("While updating into qry_m3_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
         }
@@ -118,7 +116,7 @@ while($row=mysqli_fetch_array($transaction_result))
                     mysqli_query($link_sfcs,$qry_m3_bulk_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if ($api_type == 'opn')
 					{
-                        $qry_m3_transactions="UPDATE `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log` SET sfcs_status=30 WHERE m3_bulk_tran_id=".$transaction_id;
+                        $qry_m3_transactions="UPDATE `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log` SET sfcs_status=30,m3_error_code='TRUE-'  WHERE m3_bulk_tran_id=".$transaction_id;
                         mysqli_query($link_sfcs,$qry_m3_transactions) or exit("While updating into qry_m3_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
                     }
 
@@ -178,7 +176,7 @@ while($row=mysqli_fetch_array($transaction_result))
                     mysqli_query($link_sfcs,$qry_m3_bulk_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if ($api_type == 'opn')
 					{
-						$qry_m3_transactions="UPDATE `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log` SET sfcs_status=30 WHERE m3_bulk_tran_id=".$transaction_id;
+						$qry_m3_transactions="UPDATE `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log` SET sfcs_status=30,m3_error_code='TRUE-'  WHERE m3_bulk_tran_id=".$transaction_id;
 						mysqli_query($link_sfcs,$qry_m3_transactions) or exit("While updating into qry_m3_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
                 }
