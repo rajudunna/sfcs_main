@@ -1,5 +1,6 @@
 <?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));  
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));  
 ?>
 <script> 
 
@@ -99,7 +100,7 @@
 
 <?php 
 
-if(isset($_POST['clear'])) 
+if(isset($_POST['clear']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link)) 
 { 
     $style=$_POST['style'];  
     $schedule=$_POST['schedule'];  

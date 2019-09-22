@@ -1,6 +1,15 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/functions.php',4,'R'));?>
+<?php
+$style = $_GET['style'];
+$schedule = $_GET['schedule'];
+$color = $_GET['color'];
 
+if(short_shipment_status($style,$schedule,$link)){
+
+	
+?>
 <!-- <style>
 div.block
 {
@@ -1189,7 +1198,14 @@ echo "</div>";
 
 </div></div>
 </body>
+<?php
+	} else {
 
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
+			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";	
+		
+	}
+?>
 <script>
 function verify_num(event){
 	//var char = String.fromCharCode(event.keyCode);
