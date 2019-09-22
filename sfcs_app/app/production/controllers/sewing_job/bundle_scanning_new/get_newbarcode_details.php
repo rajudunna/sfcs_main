@@ -116,7 +116,7 @@ if(isset($_POST["trans_action"])){
                                     $remarks_code = $reason_code.'-'.$reason_value;
                                     $remarks_var = $selected_module.'-'.$shift.'-'.$type;
                                     $bulk_insert_rej = "INSERT INTO $bai_pro3.bai_qms_db(`qms_style`, `qms_schedule`,`qms_color`,`log_user`, `log_date`, `qms_size`, `qms_qty`, `qms_tran_type`,`remarks`, `ref1`, `doc_no`, `input_job_no`, `operation_id`, `qms_remarks`, `bundle_no`) VALUES";
-                                    $bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$b_colors.'",user(),"'.date('Y-m-d').'","'.$b_size_code.'","'.$remain_qty_value.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$b_doc_num.'","'.$b_job_no.'","'. $op_no.'","'. $b_remarks.'","'.$bundle_individual_number.'")';
+                                    $bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$b_colors.'",user(),"'.date('Y-m-d').'","'.$b_size_code.'","'.$remain_qty_value.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$b_doc_num.'","'.$input_job_no_random.'","'. $op_no.'","'. $b_remarks.'","'.$bundle_individual_number.'")';
                                     $rej_insert_result = $link->query($bulk_insert_rej) or exit('data error');
                                     //updating BCD
                                     if($rej_insert_result){
