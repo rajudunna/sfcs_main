@@ -282,7 +282,7 @@
 		$ops_m_name=array();
 		$size_tit=array();
 		$ops=array();
-		$opst=array();
+		//$opst=array();
 		
 		$op_codes_query = "SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
 						WHERE category = '$sewing_cat' group by category";
@@ -295,7 +295,7 @@
 						WHERE category = '$sewing_cat'";
 		$op_codes_result = mysqli_query($link,$op_codes_query) or exit('Problem in getting the op codes for sewing');   
 		while($row = mysqli_fetch_array($op_codes_result)){
-			$opst[]=$row['operation_code'];
+			$ops[]=$row['operation_code'];
 			$op_namem[$row['operation_code']]=$row['operation_name'];
 		}
 		
@@ -343,7 +343,7 @@
 				}			
 				if(sizeof($mo_no)>0)
 				{
-					$ops=array_unique($opst);
+					//$ops=array_unique($opst);
 					if(sizeof($mo_no)==1)
 					{
 						$last_mo = $mo_no[0];
