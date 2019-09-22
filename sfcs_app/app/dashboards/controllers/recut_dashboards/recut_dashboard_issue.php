@@ -255,7 +255,7 @@ if(isset($_POST['formIssue']))
                 }
             }
         }
-        $issue_to_sewing = issue_to_sewing($job_no,$size,$issueval,$doc_no_ref);
+        $issue_to_sewing = issue_to_sewing($job_no,$size,$issueval,$doc_no_ref,$bcd_id);
     }
     else
     {
