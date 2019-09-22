@@ -67,8 +67,9 @@ if(isset($_POST["trans_action"])){
                 //updating rejections
                 //this is for updating rejection qunatities
                 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
-                function updaterejectdetails($bundle_no, $op_no, $shift ,$rej_data,$selected_module)
-                    {
+                function updaterejectdetails($bundle_no, $op_no, $shift ,$rej_data,$selected_module,$ops_cps_updat)
+                    {   
+                        //var_dump($rej_data);exit;
                         //error_reporting(0);   
                         include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
                             //getting data from packing sumary input
@@ -224,13 +225,16 @@ if(isset($_POST["trans_action"])){
                                                         { 
                                                             $parellel_ops[] = $row_prellel['operation_code'];
                                                         }
-                                                    }	
-                                                    if(sizeof($parellel_ops)>0){
-                                                        $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$implode_next[2] where doc_no = $doc_value and size_title='$size_title' AND operation_code in (".implode(',',$parellel_ops).")";
-                                                    }else{
-                                                        $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$implode_next[2] where doc_no = $doc_value and size_title='$size_title' AND operation_code = $op_no";
                                                     }
-                                                    $update_qry_cps_log_res = $link->query($update_qry_cps_log);
+                                                    if($ops_cps_updat>0){
+                                                        if(sizeof($parellel_ops)>0){
+                                                            $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$implode_next[2] where doc_no = $doc_value and size_title='$size_title' AND operation_code in (".implode(',',$parellel_ops).")";
+                                                        }else{
+                                                            $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$implode_next[2] where doc_no = $doc_value and size_title='$size_title' AND operation_code = $ops_cps_updat";
+                                                        }
+                                                        $update_qry_cps_log_res = $link->query($update_qry_cps_log);
+                                                    }	
+                                                    
                                                 }
                                             }
                                             updateM3TransactionsRejections($b_tid,$op_no,$r_qty,$m3_reason_code);
@@ -444,10 +448,19 @@ if(isset($_POST["trans_action"])){
                                     {
                                         $category_act = $row_cat['category'];
                                     }
+                                    $emb_cut_check_flag=0;
                                     if(in_array($category_act,$category))
                                     {
                                         $emb_cut_check_flag = 1;
                                     }
+
+                                    if($emb_cut_check_flag == 1){
+                                        
+                                        $ops_cps_updat=$pre_ops_code;
+                                    }else{
+                                        $ops_cps_updat=0;
+                                    }
+
                                     if($emb_cut_check_flag != 1)
                                     {
                                         $pre_ops_validation = "SELECT sum(recevied_qty)as recevied_qty FROM  $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id = $pre_ops_code";
@@ -1484,7 +1497,7 @@ if(isset($_POST["trans_action"])){
                             
                             //updating rejection qunatitis
                             if($total_rej_qty>0){
-                                updaterejectdetails($bundle_no, $op_no, $shift,$rej_data,$selected_module);
+                                updaterejectdetails($bundle_no, $op_no, $shift,$rej_data,$selected_module,$ops_cps_updat);
                             }else{
                                 echo json_encode($result_array);
                             }
@@ -1628,7 +1641,6 @@ if(isset($_POST["trans_action"])){
                     if($trans_mode=='rework'){
                         //echo $trans_mode;
                         include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
-                        include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
 
                         $barcode = $_POST['barcode_value'];
                         $selected_module=$_POST['module'];
@@ -2788,11 +2800,11 @@ if(isset($_POST["trans_action"])){
                                 
                                     }
                                     
-                                    $result_array['status'] = 'Rejected qunatities deleted for this bundle..!';
-                                    $result_array['color_code'] = "#45b645";
-                                    echo json_encode($result_array);
-                                    die();
                             }
+                            $result_array['status'] = 'Rejected qunatities deleted for this bundle..!';
+                            $result_array['color_code'] = "#45b645";
+                            echo json_encode($result_array);
+                            die();
                     }else{
                         $result_array['status'] = 'No rejected qty for this bundle..!';
                         $result_array['color_code'] = "#f31c06";
