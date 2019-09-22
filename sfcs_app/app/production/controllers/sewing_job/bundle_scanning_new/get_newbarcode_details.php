@@ -66,11 +66,11 @@ if(isset($_POST["trans_action"])){
                     $trans_mode=$_POST['trans_mode'];
                 //updating rejections
                 //this is for updating rejection qunatities
+                include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
                 function updaterejectdetails($bundle_no, $op_no, $shift ,$rej_data,$selected_module)
                     {
-                        error_reporting(0);   
+                        //error_reporting(0);   
                         include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
-                        include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
                             //getting data from packing sumary input
                             $qry_barcode="SELECT * FROM `$bai_pro3`.`packing_summary_input` WHERE tid=$bundle_no";
                             //echo $qry_barcode;
@@ -111,7 +111,7 @@ if(isset($_POST["trans_action"])){
                                 $remain_qty_key=$reason_key;
                                 $remain_qty_value=$reason_value;
                                 if($reason_value > 0)
-                                {
+                                {   
                                     $actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$remain_qty_key.'-'. $remain_qty_value ;
                                     $remarks_code = $reason_code.'-'.$reason_value;
                                     $remarks_var = $selected_module.'-'.$shift.'-'.$type;
@@ -121,10 +121,11 @@ if(isset($_POST["trans_action"])){
                                     //updating BCD
                                     if($rej_insert_result){
                                         //update query for bcd
-                                        $query = "UPDATE $brandix_bts.bundle_creation_data SET `rejected_qty`= rejected_qty+$remain_qty_value , `left_over`=left_over-$remain_qty_value, `scanned_date`='". date('Y-m-d h:i:s')."' where bundle_number =$bundle_individual_number and operation_id = ".$op_no;
+                                        $query = "UPDATE $brandix_bts.bundle_creation_data SET `rejected_qty`= rejected_qty+$remain_qty_value ,`scanned_date`='". date('Y-m-d h:i:s')."' where bundle_number =$bundle_individual_number and operation_id = ".$op_no;
                                         $result_query = $link->query($query) or exit('query error in updating');
                                             if($result_query){
                                                 //bcd temp
+                                                $sfcs_smv=0;
                                                 $bulk_insert_post_temp = 'INSERT INTO brandix_bts.bundle_creation_data_temp (`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`,`scanned_user`,`sync_status`) VALUES ("'.$b_style.'","'. $b_schedule.'","'.$b_colors.'","'.$b_size_code.'","'. $size_title.'","'. $sfcs_smv.'","'.$bundle_individual_number.'","'.$b_in_job_qty.'","'.$b_in_job_qty.'",0,"'.$remain_qty_value.'",0,"'. $op_no.'","'.$b_doc_num.'","'.date('Y-m-d').'","'.$b_a_cut_no.'","'.$b_job_no.'","'.$input_job_no_random.'","'.$shift.'","'.$selected_module.'","'.$b_remarks.'","'.$username.'",1)';
                                                 //echo $bulk_insert_post_temp;
                                                 $result_query = $link->query($bulk_insert_post_temp) or exit('query error in updating1');
@@ -216,7 +217,7 @@ if(isset($_POST["trans_action"])){
                                                 {
                                                     //getting dependency operation
                                                     $parellel_ops=array();
-                                                    $qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors[$key]' and ops_dependency='$op_no'";
+                                                    $qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors' and ops_dependency='$op_no'";
                                                     $qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
                                                     if($qry_parellel_ops_result->num_rows > 0){
                                                         while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
@@ -227,7 +228,7 @@ if(isset($_POST["trans_action"])){
                                                     if(sizeof($parellel_ops)>0){
                                                         $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$implode_next[2] where doc_no = $doc_value and size_title='$size_title' AND operation_code in (".implode(',',$parellel_ops).")";
                                                     }else{
-                                                        $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$implode_next[2] where doc_no = $doc_value and size_title='$size_title' AND operation_code = $emb_cut_check_flag";
+                                                        $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$implode_next[2] where doc_no = $doc_value and size_title='$size_title' AND operation_code = $op_no";
                                                     }
                                                     $update_qry_cps_log_res = $link->query($update_qry_cps_log);
                                                 }
@@ -243,7 +244,7 @@ if(isset($_POST["trans_action"])){
                     //this is for updating good qunatities
                 function getjobdetails1($job_number, $bundle_no, $op_no, $shift ,$gate_id,$trans_mode,$rej_data,$selected_module)
                     {   
-                        error_reporting(0);
+                        //error_reporting(0);
                         if($rej_data!=''){
                             $total_rej_qty=array_sum($rej_data);   
                         }else{
@@ -255,8 +256,6 @@ if(isset($_POST["trans_action"])){
                         $job_number[4]=$job_number[1];
                         $gate_pass_no=$gate_id;
                         include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
-                        include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
-                        
                         $column_to_search = $job_number[0];
                         $column_in_where_condition = 'input_job_no_random_ref';
                         $column_in_pack_summary = 'input_job_no_random';
@@ -722,16 +721,19 @@ if(isset($_POST["trans_action"])){
                             $sfcs_smv = $row['smv'];
                             if($sfcs_smv=='0.0000')
                             {
-                                $sfcs_smv = $row_ops['manual_smv'];	
+                                $sfcs_smv = $row['manual_smv'];	
                             }
                         }
                         
                         $ops_dep_qry = "SELECT ops_dependency,operation_code,ops_sequence FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and ops_sequence='$sequnce' AND ops_dependency != 200 AND ops_dependency != 0 group by ops_dependency";
                         $result_ops_dep_qry = $link->query($ops_dep_qry);
+                        $ops_dep=0;
                         while($row = $result_ops_dep_qry->fetch_assoc()) 
                         {
                             $ops_dep = $row['ops_dependency'];
+                            
                         }
+            
                         if($ops_dep){
                             $dep_ops_array_qry_raw = "select operation_code from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and ops_dependency=$ops_dep";
                             
@@ -855,6 +857,11 @@ if(isset($_POST["trans_action"])){
                                             }
                                         }
                                             $final_rep_qty = $parallel_balance_report; 
+                                            
+                                            //if any rejections updated
+                                            if($total_rej_qty>0){
+                                                $final_rep_qty=$final_rep_qty-$total_rej_qty;
+                                            }
 
                                             $final_rej_qty = $b_old_rej_qty_new;
 
@@ -863,11 +870,6 @@ if(isset($_POST["trans_action"])){
                                             $left_over_qty_update = $b_send_qty - $final_rep_qty;
 
                                             $previously_scanned = $parallel_balance_report;
-
-                                            //if any rejections updated
-                                            if($total_rej_qty>0){
-                                                $final_rep_qty=$final_rep_qty-$total_rej_qty;
-                                            }
                                             
                                             if($previously_scanned == 0){
                                                 if($b_send_qty == $b_old_rej_qty_new){
@@ -884,7 +886,7 @@ if(isset($_POST["trans_action"])){
                                             }
                                             
                                             if($schedule_count){
-                                                $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `left_over`= '".$left_over_qty_update."' , `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
+                                                $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `left_over`= '".$left_over_qty."' , `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
                                                 
                                                 $result_query = $link->query($query) or exit('query error in updating');
                                             }else{
@@ -939,17 +941,20 @@ if(isset($_POST["trans_action"])){
                                             $sfcs_smv = $row_ops['manual_smv'];
                                         }
                                     }
+
+                                    if($tid == $bundle_no){
+                                        $b_rep_qty[$key] = $b_in_job_qty[$key]-$total_rej_qty;
+                                    }else{
+                                        $b_rep_qty[$key] = 0;
+                                    }
+
                                     $left_over_qty = $b_in_job_qty[$key] - ($b_rep_qty[$key] + $b_rej_qty[$key]);
                                     // appending all values to query for bulk insert....
                                     // if($flag == 'parallel_scanning')
                                     // {
                                     //     $b_rep_qty[$key] = $parallel_balance_report;
                                     // }else 
-                                    if($tid == $bundle_no){
-                                        $b_rep_qty[$key] = $b_in_job_qty[$key]-$total_rej_qty;
-                                    }else{
-                                        $b_rep_qty[$key] = 0;
-                                    }
+                                    
                                     $bulk_insert .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$mapped_color.'","'.$barcode_sequence[$key].'","'.$b_tid[$key].'"),';
 
                                     // temp table data insertion query.........
@@ -1036,12 +1041,12 @@ if(isset($_POST["trans_action"])){
                                 //$sql_message = 'Data inserted successfully';
                                 $result_array['status'] = 'Data inserted successfully !!!';
                                 $result_array['color_code'] = "#45b645";
-                                echo json_encode($result_array);
+                                //echo json_encode($result_array);
                             }else{
                                 //$sql_message = 'Data Not inserted';
                                 $result_array['status'] = 'Data Not inserted,Please verify once !!!';
                                 $result_array['color_code'] = "#45b645";
-                                echo json_encode($result_array);
+                                //echo json_encode($result_array);
                             }
                                     //all operation codes query.. (not tested)
                         }
@@ -1098,6 +1103,10 @@ if(isset($_POST["trans_action"])){
                                                 $final_rep_qty = $b_old_rep_qty_new + $b_send_qty - ($b_old_rep_qty_new + $b_old_rej_qty_new); 
 
                                                 $final_rej_qty = $b_old_rej_qty_new;
+                                                //if any rejections updated
+                                                if($total_rej_qty>0){
+                                                    $final_rep_qty=$final_rep_qty-$total_rej_qty;
+                                                }
 
                                                 $left_over_qty = $b_in_job_qty[$key] - $final_rep_qty - $final_rej_qty;
                                                 // LAST STEP MODIFIED
@@ -1105,10 +1114,7 @@ if(isset($_POST["trans_action"])){
 
                                                 $previously_scanned = $b_send_qty - ($b_old_rep_qty_new + $b_old_rej_qty_new);
                                                 
-                                                //if any rejections updated
-                                                if($total_rej_qty>0){
-                                                    $final_rep_qty=$final_rep_qty-$total_rej_qty;
-                                                }
+                                                
 
                                                 if($previously_scanned == 0){
                                                     if($b_send_qty == $b_old_rej_qty_new){
@@ -1125,7 +1131,7 @@ if(isset($_POST["trans_action"])){
                                                 }
                                                 if($schedule_count){
                                                     
-                                                    $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `left_over`= '".$left_over_qty_update."' , `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
+                                                    $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `left_over`= '".$left_over_qty."' , `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
                                                     
                                                     $result_query = $link->query($query) or exit('query error in updating');
                                                 }else{
@@ -1464,16 +1470,18 @@ if(isset($_POST["trans_action"])){
                             {
                                 $updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$b_rep_qty[$i]);
                             }
-                            //updating rejection qunatitis
-                            if($total_rej_qty>0){
-                                updaterejectdetails($bundle_no, $op_no, $shift,$rej_data,$selected_module);
-                            }
                             
                             $result_array['bundle_no'] = $bundle_no;
                             $result_array['op_no'] = $op_no;
                             $result_array['color_code'] = "#45b645";
                             $result_array['status'] = 'Bundle Updated successfully !!!';
-                            echo json_encode($result_array);
+                            
+                            //updating rejection qunatitis
+                            if($total_rej_qty>0){
+                                updaterejectdetails($bundle_no, $op_no, $shift,$rej_data,$selected_module);
+                            }else{
+                                echo json_encode($result_array);
+                            }
                             
                         }
                     
@@ -1486,7 +1494,10 @@ if(isset($_POST["trans_action"])){
                             $op_code=$_POST['op_code'];
                             $shift=$_POST['shift'];
                             $b_shift = $shift;
-                            $rej_data=$_POST['rej_data'];
+                            $rej_data= array();
+                            if($trans_mode=='scrap'){
+                                $rej_data=$_POST['rej_data'];
+                            }
                             $job_no=$barcode;
                             /*Below two parameters for gatepass and aunthentication due to that assigned satic values*/
                             //$gate_id = $_POST['gate_id'];
@@ -1684,7 +1695,7 @@ if(isset($_POST["trans_action"])){
             //this is for good reversal
             $trans_mode=$_POST['trans_mode'];
             if($trans_mode=='good'){
-                    error_reporting(0);
+                    //error_reporting(0);
                     $barcode_val = $_POST['barcode_value'];
                     $selected_module=$_POST['module'];
                     $op_code=$_POST['op_code'];
@@ -2540,7 +2551,7 @@ if(isset($_POST["trans_action"])){
                                                     // {
                                                         //getting dependency and update cps remaining qty
                                                         $parellel_ops=array();
-                                                        $qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$mapped_color' and ops_dependency='$job_number[4]'";
+                                                        $qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$mapped_color' and ops_dependency='$ops_dep'";
                                                         $qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
                                                         if($qry_parellel_ops_result->num_rows > 0){
                                                             while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
