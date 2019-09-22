@@ -391,6 +391,7 @@ $(document).ready(function()
 										console.log( index + ": " + value );
 										op_codes_str = op_codes_str + '<th>'+value+'</th>';
 									});
+								
 									for(var i=0;i<data.length;i++)
 									{
 										var hidden_class='';
@@ -420,17 +421,19 @@ $(document).ready(function()
 										var readonly ='';
 										var temp_var_bal = 0;
 										var er   = Number(data[i].send_qty);
+										
 										if(data[i].send_qty == null)
 											er = 0;
 										var repq = Number(data[i].reported_qty)+Number(data[i].rejected_qty);
 										var brep = Number(data[i].balance_to_report);
 										if(data[i].send_qty == null)
 											er = 0;
-
+					
 										// if(brep > 0){
 										// 	status = '<font color="green">Scanning Pending</font>';
 										// }else if(brep == 0){
-
+										var cr   = Number(data[i].carton_act_qty);
+										var ch   = er + Number(data[i].rejected_qty);	
 										// }	
 										if(er == 0){//for first time scan
 											if(response['emb_cut_check_flag'] && brep == 0)
@@ -454,14 +457,18 @@ $(document).ready(function()
 											}else if(brep==0){
 												status = '<font color="red">Previous Operation Not Done</font>';
 											}
-										}else if(er != 0 && (repq == 0 || repq == null) && brep > 0) {
+										}	
+										else if(er != 0 && (repq == 0 || repq == null) && brep > 0) {
+											//console.log( er + " ---1 " + repq +"----"+ brep +"-Porg--"+cr+"--rec---"+ch);
 											status = '<font color="green">Scanning Pending</font>';
-										}else if(er == repq){
+										}else if((er == repq) && (cr == ch)){
+											//console.log( er + "---2 " + repq +"----"+ brep +"-Aorg--"+cr+"--rec---"+ch);
 											status = '<font color="red">Already Scanned</font>';
-										}else if( (er != 0 || repq != 0) && er!=repq && brep > 0){
+										}else if( ((er != 0 || repq != 0) && er!=repq && brep > 0) || cr != ch){
+											//console.log( er + "---3 " + repq +"----"+ brep +"-Porg--"+cr+"--rec---"+ch);
 											status = '<font color="green">Partially Scanned</font>';
-										}
-
+										}	
+										console.log(status+"----Ata---"+ cr +"===" +ch);
 										/*	
 										if(Number(data[i].reported_qty) > 0 && Number(data[i].balance_to_report) != 0)
 										{
