@@ -1039,18 +1039,22 @@ if(isset($_POST["trans_action"])){
                                     }    
                                 }
                             }
-                            if(update_qry_cps_log_res){
-                                //$sql_message = 'Data inserted successfully';
-                                $result_array['status'] = 'Data inserted successfully !!!';
-                                $result_array['color_code'] = "#45b645";
-                                //echo json_encode($result_array);
-                            }else{
-                                //$sql_message = 'Data Not inserted';
-                                $result_array['status'] = 'Data Not inserted,Please verify once !!!';
-                                $result_array['color_code'] = "#45b645";
-                                //echo json_encode($result_array);
-                            }
+                            // if(update_qry_cps_log_res){
+                            //     //$sql_message = 'Data inserted successfully';
+                            //     $result_array['status'] = 'Data inserted successfully !!!';
+                            //     $result_array['color_code'] = "#45b645";
+                            //     //echo json_encode($result_array);
+                            // }else{
+                            //     //$sql_message = 'Data Not inserted';
+                            //     $result_array['status'] = 'Data Not inserted,Please verify once !!!';
+                            //     $result_array['color_code'] = "#45b645";
+                            //     //echo json_encode($result_array);
+                            // }
                                     //all operation codes query.. (not tested)
+
+                                    $result_array['status'] = 'Bundle updated successfully !!!';
+                                    $result_array['color_code'] = "#45b645";
+                                    echo json_encode($result_array);
                         }
                         else
                         {
