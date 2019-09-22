@@ -869,6 +869,8 @@ if(isset($_POST["trans_action"])){
                                             // LAST STEP MODIFIED
                                             $left_over_qty_update = $b_send_qty - $final_rep_qty;
 
+                                            $left_over_qty="0";
+
                                             $previously_scanned = $parallel_balance_report;
                                             
                                             if($previously_scanned == 0){
@@ -954,7 +956,7 @@ if(isset($_POST["trans_action"])){
                                     // {
                                     //     $b_rep_qty[$key] = $parallel_balance_report;
                                     // }else 
-                                    
+                                    $left_over_qty="0";
                                     $bulk_insert .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$mapped_color.'","'.$barcode_sequence[$key].'","'.$b_tid[$key].'"),';
 
                                     // temp table data insertion query.........
@@ -1115,7 +1117,7 @@ if(isset($_POST["trans_action"])){
                                                 $previously_scanned = $b_send_qty - ($b_old_rep_qty_new + $b_old_rej_qty_new);
                                                 
                                                 
-
+                                                $left_over_qty="0";
                                                 if($previously_scanned == 0){
                                                     if($b_send_qty == $b_old_rej_qty_new){
                                                         $result_array['status'] = 'This Bundle Qty Is Completely Rejected';
