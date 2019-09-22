@@ -32,13 +32,13 @@ function issue_to_sewing($job_no,$size,$qty,$doc)
 	    }
 
 	    $checking_qry_plan_dashboard = "SELECT * FROM `$bai_pro3`.`plan_dashboard_input` WHERE input_job_no_random_ref = '$input_job_no'";
-        $result_checking_qry_plan_dashboard = $link->query($checking_qry_plan_dashboard);
+		$result_checking_qry_plan_dashboard = $link->query($checking_qry_plan_dashboard);
         if(mysqli_num_rows($result_checking_qry_plan_dashboard) == 0)
         {   
             $insert_qry_ips = "INSERT IGNORE INTO `$bai_pro3`.`plan_dashboard_input` 
             SELECT * FROM `$bai_pro3`.`plan_dashboard_input_backup`
-            WHERE input_job_no_random_ref = '$input_job_no_random_ref'";
-            mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
+            WHERE input_job_no_random_ref = '$input_job_no'";
+		   mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
         }
 
 	    $bcd_qry = "select style,schedule,mapped_color,assigned_module,operation_id,bundle_number,sfcs_smv,remarks from $brandix_bts.bundle_creation_data 
@@ -58,7 +58,7 @@ function issue_to_sewing($job_no,$size,$qty,$doc)
 	        $assigned_module = $row['assigned_module'];
         }
 
-        $get_mo = "select mo_no from $bai_pro3.mo_operation_quantites where ref_no = $bundle_number and op_code in (".implode(",",$ops.") order by mo_no*1 desc limit 1";
+        $get_mo = "select mo_no from $bai_pro3.mo_operation_quantites where ref_no = $bundle_number and op_code in (".implode(",",$ops).") order by mo_no*1 desc limit 1";
         $result_get_mo = $link->query($get_mo);
         while($row_mo = $result_get_mo->fetch_assoc())
         {
