@@ -27,7 +27,7 @@
 			<div class="panel-body">
 				<div class='row'>
 					<div class="form-group col-md-3">
-						<label>Barcode Number - Operation:</label>
+						<label>Barcode Number:</label>
 						<input type="text"  id="barcode" name="barcode" class="form-control" required placeholder="Scan the Barcode..."/>
 					</div>
 					<div class="form-group col-md-3">

@@ -655,10 +655,31 @@
                                 $result_query_001 = $link->query($bulk_insert_post) or exit('bulk_insert_post query error in updating');
                             }
 							
-							//update in emblishment dashboard
-							$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `receive_qty`= receive_qty+$final_rep_qty where doc_no =$b_doc_num[$key] and receive_op_code=$b_op_id";
-							$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
-                           
+							//getting data form embellishment_plan_dashboard
+							$get_data_embd_send_qry="select send_op_code from $bai_pro3.embellishment_plan_dashboard where doc_no=$b_doc_num[$key] and send_op_code=$b_op_id";
+							$check_qry_result=mysqli_query($link,$get_data_embd_send_qry) or exit("while retriving data from embellishment_plan_dashboard".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($qry_row=mysqli_fetch_array($check_qry_result))
+							{
+								$sendop_code=$qry_row['send_op_code'];
+							}
+							$get_data_embd_rec_qry="select receive_op_code from $bai_pro3.embellishment_plan_dashboard where doc_no=$b_doc_num[$key] and receive_op_code=$b_op_id";
+							$check_qry_rec_result=mysqli_query($link,$get_data_embd_rec_qry) or exit("while retriving data from embellishment_plan_dashboard".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($qry_rec_row=mysqli_fetch_array($check_qry_rec_result))
+							{
+								$recop_code=$qry_rec_row['receive_op_code'];
+							}
+							if($sendop_code==$b_op_id)
+							{
+								//update in emblishment dashboard
+								$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `send_qty`= send_qty+$final_rep_qty where doc_no =$b_doc_num[$key] and send_op_code=$b_op_id";
+								$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
+							}
+							if($recop_code==$b_op_id)
+							{
+								//update in emblishment dashboard
+								$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `receive_qty`= receive_qty+$final_rep_qty where doc_no =$b_doc_num[$key] and receive_op_code=$b_op_id";
+								$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
+							}
 							//checking data exist in emb_bundles or not
 							$check_data_qry="select * from $bai_pro3.emb_bundles where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]'";
 							$check_data_qry_result=mysqli_query($link,$check_data_qry) or exit("while retriving data from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -702,7 +723,7 @@
 									$result_sql_temp = $link->query($sql_gate) or exit('Gate_pass_child query error in updating');
 
 									}
-                                    $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previously_scanned where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code in ($emb_operations)";
+                                    $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previously_scanned where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code=$b_op_id";
                                             $update_qry_cps_log_res = $link->query($update_qry_cps_log);
                                    
                                        
@@ -799,9 +820,31 @@
                                     $result_query_001 = $link->query($bulk_insert_post) or exit('bulk_insert_post query error in updating');
                                 }
 								
-								//update in emblishment dashboard
-								$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `receive_qty`= receive_qty+$final_rep_qty where doc_no =$b_doc_num[$key] and receive_op_code=$b_op_id";
-								$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
+								//getting data form embellishment_plan_dashboard
+								$get_data_embd_send_qry="select send_op_code from $bai_pro3.embellishment_plan_dashboard where doc_no=$b_doc_num[$key] and send_op_code=$b_op_id";
+								$check_qry_result=mysqli_query($link,$get_data_embd_send_qry) or exit("while retriving data from embellishment_plan_dashboard".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($qry_row=mysqli_fetch_array($check_qry_result))
+								{
+									$sendop_code=$qry_row['send_op_code'];
+								}
+								$get_data_embd_rec_qry="select receive_op_code from $bai_pro3.embellishment_plan_dashboard where doc_no=$b_doc_num[$key] and receive_op_code=$b_op_id";
+								$check_qry_rec_result=mysqli_query($link,$get_data_embd_rec_qry) or exit("while retriving data from embellishment_plan_dashboard".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($qry_rec_row=mysqli_fetch_array($check_qry_rec_result))
+								{
+									$recop_code=$qry_rec_row['receive_op_code'];
+								}
+								if($sendop_code==$b_op_id)
+								{
+									//update in emblishment dashboard
+									$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `send_qty`= send_qty+$final_rep_qty where doc_no =$b_doc_num[$key] and send_op_code=$b_op_id";
+									$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
+								}
+								if($recop_code==$b_op_id)
+								{
+									//update in emblishment dashboard
+									$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `receive_qty`= receive_qty+$final_rep_qty where doc_no =$b_doc_num[$key] and receive_op_code=$b_op_id";
+									$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
+								}
 								
 								//checking data exist in emb_bundles or not
 								$check_data_qry="select * from $bai_pro3.emb_bundles where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]'";
@@ -851,7 +894,7 @@
 
                                         if($emb_cut_check_flag == 1)
                                         {
-                                            $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previously_scanned where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code = $pre_ops_code";
+                                            $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previously_scanned where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code = $b_op_id";
                                             $update_qry_cps_log_res = $link->query($update_qry_cps_log);
                                         }
                                     }
