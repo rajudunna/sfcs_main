@@ -203,18 +203,18 @@ $result_rejections = $link->query($qery_rejection_resons);
     <tbody >
      <tr>
      <div>
-        <div class="col-sm-3" style="padding: 3px 15px 3px 66px;width:44%">previous hr: </div>
-        <div id="time" class="btn btn-sm btn-success" style="width:50px;">00</div>
-        <div id="timered" class="btn btn-sm btn-danger" style="width:50px;"> 00</div>
-        <div id="timeyellow" class="btn btn-sm btn-warning" style="width:50px;">00</div>
+        <div class="col-sm-3" style="padding: 11px 0px 8px 6px;width: 28%;">previous hr: </div>
+        <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">26497</div>
+        <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">57894</div>
+        <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">5166</div>
       <div>
       </tr>
       <tr>
       <div>
-        <div class="col-sm-3" style="padding: 3px 15px 3px 66px;width:44%">current hr:</div>
-        <div id="time" class="btn btn-sm btn-success" style="width:50px;">00</div>
-        <div id="timered" class="btn btn-sm btn-danger" style="width:50px;"> 00</div>
-        <div id="timeyellow" class="btn btn-sm btn-warning" style="width:50px;">00</div>
+        <div class="col-sm-3" style="padding: 11px 0px 8px 6px;width: 28%;">current hr:</div>
+        <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">5469</div>
+        <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">5450</div>
+        <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">5498</div>
       </tr>
       </div>
     </tbody>
