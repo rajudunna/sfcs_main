@@ -604,7 +604,7 @@ function validate_data(b, id_name) {
 
 					console.log(compareArrays(CurData, rowData));
 					if(compareArrays(CurData, rowData)){
-						swal('Error');
+					swal('Using Same combinations...','Please Check.','warning');
 						$("#"+id_name.id).val('');
 						return true;
 					}

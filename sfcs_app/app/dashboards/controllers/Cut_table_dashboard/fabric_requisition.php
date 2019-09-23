@@ -261,36 +261,51 @@ function GetSelectedItem()
 								<?php 
 									
 									$doc_no = json_encode($_GET['doc_no']);
-									$sql11x132="select mk_ref from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
+									$sql11x132="select allocate_ref,mk_ref_id,mk_ref from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
 									$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-									while($row111x2=mysqli_fetch_array($sql_result11x112)) {
-										$sql_marker_stat_log_id = "select allocate_ref, marker_details_id from $bai_pro3.maker_stat_log where tid='".$row111x2['mk_ref']."'";
-										$sql_marker_stat_log_result=mysqli_query($link, $sql_marker_stat_log_id) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-										while($sql_marker_id=mysqli_fetch_array($sql_marker_stat_log_result))
-										{
-											$sql_marker_details = "select * from $bai_pro3.maker_details where parent_id='".$sql_marker_id['allocate_ref']."'";
-											$sql_marker_details_result=mysqli_query($link, $sql_marker_details) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-											$no_of_rows = mysqli_num_rows($sql_marker_details_result);
-											while($sql_marker_details_res=mysqli_fetch_array($sql_marker_details_result)){
-												if($sql_marker_details_res[id] == $sql_marker_id[marker_details_id])
-												{
-													echo "<tr><td><input type='radio' name='selected_len' value='yes' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]' CHECKED></td><td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[0]'>yes</td></tr>";
-												}
-												else{
-
-												echo "<tr><td><input type='radio' name='selected_len' value='no' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]'></td><td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[0]'>no</td></tr>";
-													// echo json_encode($sql_marker_details_res[0]);
-												}
-							
+									$rows=0;
+									while($row111x2=mysqli_fetch_array($sql_result11x112)) 
+									{
+										$mk_ref_id=$row111x2['mk_ref_id'];
+										$sql_marker_details = "select * from $bai_pro3.maker_details where parent_id='".$row111x2['allocate_ref']."'";
+										$sql_marker_details_result=mysqli_query($link, $sql_marker_details) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+										$values_rows=mysqli_num_rows($sql_marker_details_result);
+										while($sql_marker_details_res=mysqli_fetch_array($sql_marker_details_result))
+										{   
+											$rows++;
+											if($sql_marker_details_res[id] == $mk_ref_id)
+											{
+												echo "<tr><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[0]'>yes</td>
+												<td style='display:none;'  id='id'>$sql_marker_details_res[id]</td>
+												<td style='display:none;'  id='doc_no'>$doc_no</td>
+												<td style='display:none;'  id='all_ref'>".$row111x2['allocate_ref']."</td>
+												<td style='display:none;'  id='mk_ref'>".$row111x2['mk_ref']."</td>
+												<td><input type='radio' name='selected_len' value='yes' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]' CHECKED></td>
+												
+												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td>
+												<td  id='values_rows'>$values_rows</td>
+												</tr>";
 											}
-										}
+											else
+											{
+												echo "<tr><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[0]'>no</td>
+												<td style='display:none;'  id='id'>$sql_marker_details_res[id]</td>
+												<td style='display:none;'  id='doc_no'>$doc_no</td>
+												<td style='display:none;'  id='all_ref'>".$row111x2['allocate_ref']."</td>
+												<td style='display:none;'  id='mk_ref'>".$row111x2['mk_ref']."</td>
+												<td><input type='radio' name='selected_len' value='no' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]'></td>
+												
+												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td>
+												<td  id='values_rows'>$values_rows</td>
+												</tr>";
+											}												
+										}										
 									}
 									?>
                                 </tbody>
                             </table>
                         </div>  
-                        <div class='col-sm-offset-2 col-sm-8'>
+                        <div class='col-sm-offset-2 col-sm-10'>
 						<table class='table table-bordered rejections_table'>
 							<thead>
 								<tr class='.bg-dark'><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks</th></tr>
@@ -678,6 +693,7 @@ function validate_data(id_name)
 }
 function add_Newmklen()
 {
+	
 	var mk_type = $('#mk_type').val();
 	var mk_ver = $('#mk_ver').val();
 	var sk_grp = $('#sk_grp').val();
@@ -688,6 +704,11 @@ function add_Newmklen()
 	var mk_eff = $('#mk_eff').val();
 	var permts = $('#permts').val();
 	var rmks = $('#rmks').val();
+	
+	
+	// var values_rows1 = document.getElementById('values_rows').value();
+	// alert(values_rows1)
+	// /*
 	if(mk_ver == ''){
 		sweetAlert('Please enter valid Marker Version','','warning');
 		return false;
@@ -724,7 +745,7 @@ function add_Newmklen()
 	
 	var table_body = $("#rejections_table_body");
 	console.log(table_body);
-	var new_row = "<tr><td><input type='radio' name='gender' value='' id='check$sql_marker_details_res[0]'></td><td>"+mk_type+"</td><td>"+mk_ver+"</td><td>"+sk_grp+"</td><td>"+width+"</td><td>"+mk_len+"</td><td>"+mk_name+"</td><td>"+ptr_name+"</td><td>"+permts+"</td><td>"+mk_eff+"</td><td>"+rmks+"</td><td style='display:none;'>0</td></tr>";
+	var new_row = "<tr><td><input type='radio' name='gender' value='no' id='check$sql_marker_details_res[0]'></td><td>"+mk_type+"</td><td>"+mk_ver+"</td><td>"+sk_grp+"</td><td>"+width+"</td><td>"+mk_len+"</td><td>"+mk_name+"</td><td>"+ptr_name+"</td><td>"+permts+"</td><td>"+mk_eff+"</td><td>"+rmks+"</td><td style='display:none;'>0</td></tr>";
 	$("#rejections_table_body").append(new_row);
 	$('#mk_type').val(' ');
 	$('#mk_ver').val(' ');
@@ -736,7 +757,8 @@ function add_Newmklen()
 	$('#mk_eff').val(' ');
 	$('#permts').val(' ');
 	$('#rmks').val(' ');
-	
+	// */
+	//document.getElementById('values_rows').value()=values_rows;
 }
 
 function clear_row()

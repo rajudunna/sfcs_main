@@ -17,7 +17,7 @@ if(isset($_POST['update']))
 	$in_mkeff = $_POST['in_mkeff'][0];
 	$in_mkver = $_POST['in_mkver'][0];
 	$in_rmks = $_POST['in_rmks'][0];
-	// var_dump($in_mkeff);
+	//var_dump($in_mkeff);
 	$row_count = sizeof($_POST['in_mktype']);
 	$cat_ref=$_POST['cat_ref'];
 	$tran_order_tid=$_POST['tran_order_tid'];
@@ -242,29 +242,35 @@ if(isset($_POST['update']))
 					$in_mkeff = $_POST['in_mkeff'][$i];
 					$in_permts = $_POST['in_permts'][$i];
 					$in_rmks = $_POST['in_rmks'][$i];
-					if($in_mktype != '' && $in_mkver != '' && $in_skgrp != '' && $in_width != '' && $in_mklen != '' && $in_mkname != '' && $in_ptrname != '' && $in_mkeff != '' && $in_permts != '' && $in_rmks != '') {
-						$sql="insert ignore into $bai_pro3.maker_details (parent_id, marker_type, marker_version, shrinkage_group, width, marker_length, marker_name, pattern_name, marker_eff, perimeters, remarks) values(\"$allocate_ref\",\"$in_mktype\", \"$in_mkver\", \"$in_skgrp\", \"$in_width\", \"$in_mklen\", \"$in_mkname\", \"$in_ptrname\", \"$in_mkeff\", \"$in_permts\",  \"$in_rmks\")";
+					if($in_skgrp != '' && $in_width != '' && $in_mklen ) {
+						$sql="insert ignore into $bai_pro3.maker_details (parent_id, marker_type, marker_version, shrinkage_group, width, marker_length, marker_name, pattern_name, marker_eff, perimeters, remarks) values('".$allocate_ref."','".$in_mktype."', '".$in_mkver."', '".$in_skgrp."', '".$in_width."', '".$in_mklen."', '".$in_mkname."', '".$in_ptrname."', '".$in_mkeff."', '".$in_permts."',  '".$in_rmks."')";
+						//echo $sql."<bR>";
 						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
-						$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+						//$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 
 					}
 				}
 				$sql_maker_allocation = "select allocate_ref from $bai_pro3.maker_stat_log where tid =\"$marker_stat_log_id\"";
-				$sql_maker_allocation_res=mysqli_query($link, $sql_maker_allocation) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_maker_allocation_res=mysqli_query($link, $sql_maker_allocation) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_allocation_res=mysqli_fetch_array($sql_maker_allocation_res);
 
-				$sql_min_id = "select MIN(id) as id from $bai_pro3.maker_details where parent_id =\"$sql_allocation_res[allocate_ref]\"";
-				$sql_result=mysqli_query($link, $sql_min_id) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_row=mysqli_fetch_array($sql_result);
-					// var_dump($sql_row);
-				$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set marker_details_id= $sql_row[id] where allocate_ref=$sql_allocation_res[allocate_ref]";
-				// echo $sql_update_marker_length_id;die();
+				$sql_min_id = "select marker_length,marker_eff from $bai_pro3.maker_details where parent_id =\"$sql_allocation_res[allocate_ref]\" order by id limit 1";
+				$sql_result12=mysqli_query($link, $sql_min_id) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row12=mysqli_fetch_array($sql_result12))
+				{
+					$id=$sql_row12['id'];
+					$mklen=$sql_row12['marker_length'];
+					$mkeff=$sql_row12['marker_eff'];
+				}
+				
+				// var_dump($sql_row);
+				$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set marker_details_id='".$id."', mklength='".$mklen."',mkeff='".$mkeff."' where allocate_ref=$sql_allocation_res[allocate_ref]";
+				//echo $sql_update_marker_length_id;die();
 				mysqli_query($link, $sql_update_marker_length_id) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
-				// echo $sql_min_id;die();
-				
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {   sweetAlert('Successfully Updated','','success'); location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+				 //echo $sql_min_id;die();
+							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {   sweetAlert('Successfully Updated','','success'); location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
 		}else{
 			//echo "<h2 class='label label-danger'>Marker Version is not available.</h2>";
 			echo "<script type='text/javascript'>
