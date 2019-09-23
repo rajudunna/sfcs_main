@@ -557,9 +557,8 @@ Array.prototype.diff = function(arr2) {
 
 // }
 function compareArrays(arr1, arr2){
-	
-	// console.log(JSON.stringify(arr1));
-
+	console.log(arr1.toString());
+	console.log(arr2.toString());
 	if(arr1.toString() == arr2.toString()){
 		return true;
 	}else{

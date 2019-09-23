@@ -1,4 +1,10 @@
 <?php
+// $data = json_decode(stripslashes($_POST['data']));
+$myArray = $_REQUEST['data'];
+var_dump($myArray);
 
-    // echo json_encode($_GET['doc_no']);
+
+// foreach($myArray as $d){
+//    echo $d;
+// }
 ?>

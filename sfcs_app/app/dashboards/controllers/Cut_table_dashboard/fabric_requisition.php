@@ -23,7 +23,7 @@ $has_permission=haspermission($url_r);
 ?>
 <?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURL($_GET['r'],'marker_length_popup.php','R'));
+	// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURL($_GET['r'],'marker_length_popup.php','R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	// $username="sfcsproject1";
 	// $users=array("sfcsproject1","rameshk","kirang","duminduw","rajanaa","chandrasekhard","prabathsa","baiadmn","naleenn","priyankat","balasubramanyams","lakshmik","ramalingeswararaoa","baicutsec1","tharangam");
@@ -66,8 +66,8 @@ $has_permission=haspermission($url_r);
 		$rows2=mysqli_num_rows($result2x);	
 	}	
 	$get_url = getFullURL($_GET['r'],'fabric_requisition.php',0,'R');
-    $get_url = getFullURLLevel($_GET['r'],'marker_length_popup.php',0,'R');
-	
+	$get_url1 = getFullURLLevel($_GET['r'],'marker_length_popup.php',0,'R');
+
     
 //echo $doc_no;
 ?>
@@ -250,12 +250,12 @@ function GetSelectedItem()
                     </div>
                     <div class='panel-body'>
 					<div class='col-sm-12'>
-                            <table class='table table-bordered rejections_table'>
+                            <table class='table table-bordered rejections_table' id='mark_len_table'>
 							<thead>
 								<tr class='.bg-dark'><th></th><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks</th></tr>
 							</thead>
                                 <tbody id='rejections_table_body'>
-								<input type="hidden" name="product" placeholder="Product Name" value="" id="product_name" />
+								<!-- <input type="hidden" name="product" placeholder="Product Name" value="" id="product_name" /> -->
 								<?php 
 									
 									$doc_no = json_encode($_GET['doc_no']);
@@ -273,11 +273,11 @@ function GetSelectedItem()
 											while($sql_marker_details_res=mysqli_fetch_array($sql_marker_details_result)){
 												if($sql_marker_details_res[id] == $sql_marker_id[marker_details_id])
 												{
-													echo "<tr><td><input type='radio' name='gender' value='' id='check$sql_marker_details_res[0]' CHECKED></td><td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td></tr>";
+													echo "<tr><td><input type='radio' name='gender' value='' id='check$sql_marker_details_res[0]' CHECKED></td><td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td></tr>";
 												}
 												else{
 
-												echo "<tr><td><input type='radio' name='gender' value='' id='check$sql_marker_details_res[0]'></td><td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td></tr>";
+												echo "<tr><td><input type='radio' name='gender' value='' id='check$sql_marker_details_res[0]'></td><td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td></tr>";
 													// echo json_encode($sql_marker_details_res[0]);
 												}
 							
@@ -293,7 +293,7 @@ function GetSelectedItem()
 							<thead>
 								<tr class='.bg-dark'><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks</th></tr>
 							</thead>
-                                <tbody id='rejections_table_body'>
+                                <tbody id='rejections_table'>
 								
 								<tr>
 									<td><input class="form-control"  type="text" name="in_mktype" id="mk_type"  title="please enter numbers and decimals"></td>
@@ -310,11 +310,13 @@ function GetSelectedItem()
 									</tr>  
                                 </tbody>
                             </table>
-								<input type='button' class='btn btn-danger pull-right' value='clear' name='clear_rejection' id='clear_rejection' onclick='clear_rejection()'>
-								<!-- <input class="btn btn-sm btn-success" onclick="add_Newmklen()" type = 'submit' id='create' name = "update" value = '+'> -->
+								<input type='button' class='btn btn-danger pull-right' value='clear' name='clear_rejection' id='clear_rejection' onclick='clear_row()'>
 								<input type='button' class='btn btn-warning pull-right' value='+' name='add_mklen' onclick = 'add_Newmklen()' id='add_marker_length'>
-								
+					<br>
+					<input type='button' class='btn btn-success pull-left' value='Submit' name='submit' onclick = 'submit_mklen()' id='submit_length'>
+
                     </div>
+
                 </div>
 				</div>
                     
@@ -324,7 +326,6 @@ function GetSelectedItem()
         </div>
     </div>
 </div>
-
 	<table class="table table-bordered">
 		<tr>
 
@@ -634,9 +635,44 @@ if(isset($_GET['sidemenu'])){
 </body>
 
 <script>
-function validate_data(id) {
-	// alert(id);
+function compareArrays(arr1, arr2){
+	// console.log(arr1.toString());
+	// console.log(arr2.toString());
+	if(arr1.toString() == arr2.toString()){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function validate_data(id_name) 
+{
+	if($("#mk_ver").val() != '' && $("#sk_grp").val() != '' && $("#width").val() != '' && $("#mk_len").val()){
+	var array = [];
+	var CurData=[];
 	
+	$('#mark_len_table tr').has('td').each(function() {
+		var arrayItem = [];
+		$('td', $(this)).each(function(index, item) {
+			console.log($(this));
+			arrayItem[index] = $(item).text();
+		});
+		array.push(arrayItem);
+	});
+	CurData = [$("#mk_ver").val(), $("#sk_grp").val(), $("#width").val(), $("#mk_len").val()];
+		var table = $("#mark_len_table");
+		var tr_length= table.find('tr').length;
+		// console.log(array[0]);
+		for($i=0; $i<tr_length; $i++)
+		{
+			if(compareArrays(CurData, array[$i])){
+				swal('Error');
+				$("#"+id_name.id).val('');
+				return true;
+			}
+		}
+
+	}
 }
 function add_Newmklen()
 {
@@ -683,48 +719,93 @@ function add_Newmklen()
 		sweetAlert('Please enter valid Marker Version','','warning');
 		return false;
 	}
+	
+	var table_body = $("#rejections_table_body");
+	console.log(table_body);
+	var new_row = "<tr><td><input type='radio' name='gender' value='' id='check$sql_marker_details_res[0]'></td><td>"+mk_type+"</td><td>"+mk_ver+"</td><td>"+sk_grp+"</td><td>"+width+"</td><td>"+mk_len+"</td><td>"+mk_name+"</td><td>"+ptr_name+"</td><td>"+permts+"</td><td>"+mk_eff+"</td><td>"+rmks+"</td><td style='display:none;'>0</td></tr>";
+	$("#rejections_table_body").append(new_row);
+	$('#mk_type').val(' ');
+	$('#mk_ver').val(' ');
+	$('#sk_grp').val(' ');
+	$('#width').val(' ');
+	$('#mk_len').val(' ');
+	$('#mk_name').val(' ');
+	$('#ptr_name').val(' ');
+	$('#mk_eff').val(' ');
+	$('#permts').val(' ');
+	$('#rmks').val(' ');
+	
+}
+
+function clear_row()
+{
+	$('#mk_type').val(' ');
+	$('#mk_ver').val(' ');
+	$('#sk_grp').val(' ');
+	$('#width').val(' ');
+	$('#mk_len').val(' ');
+	$('#mk_name').val(' ');
+	$('#ptr_name').val(' ');
+	$('#mk_eff').val(' ');
+	$('#permts').val(' ');
+	$('#rmks').val(' ');
+}
+function submit_mklen()
+{
+	var array = [];
+
+	$('#mark_len_table tr').has('td').each(function() {
+		var arrayItem = {};
+		$('td', $(this)).each(function(index, item) {
+			arrayItem[index] = $(item).text();
+		});
+		array.push(arrayItem);
+	});
+	// console.log(array);
+	var jsonString = JSON.stringify(array);
 	$.ajax({
-	url : '<?= $get_url ?>?mk_ver='+mk_ver+'?mk_type='+mk_type+'?sk_grp='+sk_grp+'?mk_eff='+mk_eff+'?mk_len='+mk_len+'?width='+width+'?permts='+permts+'?ptr_name='+ptr_name+'?rmks='+rmks+'?mk_name='+mk_name
+	url : '<?= $get_url1 ?>',
+	data: {data : jsonString}, 
+	cache: false,
+	
 	}).done(function(res){
 		console.log(res);
 	});
-	console.log(mk_ver);
-	console.log(mk_type);
-	console.log(mk_eff);
-	console.log(mk_len);
-	console.log(width);
-	console.log(ptr_name);
-	console.log(permts);
-	console.log(rmks);
-
-	// document.getElementById('create').style.display="none";
-	// $("#rejections_modal").modal('toggle');
-
-	// return true;
-}
-function clear_rejection()
-{
-// $('#clear_rejection').on('click',function(){
-	alert($('#mk_type').val());
-	// $('#mk_ver').val(' ');
-	// $('#sk_grp').val(' ');
-	// $('#width').val(' ');
-	// $('#mk_len').val(' ');
-	// $('#mk_name').val(' ');
-	// $('#ptr_name').val(' ');
-	// $('#mk_eff').val(' ');
-	// $('#permts').val(' ');
-	// $('#rmks').val(' ');
+	// alert();
+	// var mk_type = $('#mk_type').val();
+	// var mk_ver = $('#mk_ver').val();
+	// var sk_grp = $('#sk_grp').val();
+	// var width = $('#width').val();
+	// var mk_len = $('#mk_len').val();
+	// var mk_name = $('#mk_name').val();
+	// var ptr_name = $('#ptr_name').val();
+	// var mk_eff = $('#mk_eff').val();
+	// var permts = $('#permts').val();
+	// var rmks = $('#rmks').val();
+	// // var form_data = { mk_ver:mk_ver,mk_type:mk_type,sk_grp:sk_grp,
+	// // 	mk_eff:mk_eff,mk_len:mk_len,width:width,permts:permts,ptr_name:ptr_name,rmks:rmks};
+    // //     console.log(form_data);
+	// // $.ajax({
+	// // url : '<?= $get_url1 ?>',
+	// // type : 'POST',
+    // // data : form_data
+	// // }).done(function(res){
+	// // 	console.log(res);
+	// // });
+	// console.log(mk_ver);
+	// console.log(mk_type);
+	// console.log(mk_eff);
+	// console.log(mk_len);
+	// console.log(width);
+	// console.log(ptr_name);
+	// console.log(permts);
+	// console.log(rmks);
 }
 function test(doc_no){
 	var t = document.getElementById('doc_details').value;
 	$('#product_name').val(t);
 	$("#rejections_modal").modal('toggle');
-	$.ajax({
-	url : '<?= $get_url ?>?doc_no='+doc_no
-	}).done(function(res){
-		console.log(res);
-	});
+	
 }
 
 // $('#rejections_panel_btn').on('click',function(){
