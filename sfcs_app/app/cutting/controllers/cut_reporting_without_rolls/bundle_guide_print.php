@@ -484,9 +484,9 @@ tags will be replaced.-->
 	for($i=0;$i<sizeof($bundle_no);$i++)
 	{
 	
-		$getdetails21="SELECT shade_bundle,bundle_start,bundle_end,qty FROM $bai_pro3.docket_number_info where doc_no=".$doc_no." and bundle_no=".$bundle_no[$i]." group by shade_bundle";
+		$getdetails21="SELECT shade_bundle,bundle_start,bundle_end,shade,qty FROM $bai_pro3.docket_number_info where doc_no=".$doc_no." and bundle_no=".$bundle_no[$i]." group by shade_bundle";
 		$getdetailsresult1 = mysqli_query($link,$getdetails21);
-		$ii==1;
+		$ii=1;
 		while($sql_row1=mysqli_fetch_array($getdetailsresult1))
 		{			
 			?>
@@ -496,7 +496,7 @@ tags will be replaced.-->
 			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $size[$i]; ?></td>
 			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $bundle_no[$i]; ?></td>
 			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['shade_bundle']; ?></td>			
-			<td class=xl75305 style='border-top:none;border-left:none'><?php echo 'Test'; ?></td>
+			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['shade']; ?></td>
 			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['bundle_start']; ?></td>
 			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['bundle_end']; ?></td>
 			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['qty']; ?></td>
