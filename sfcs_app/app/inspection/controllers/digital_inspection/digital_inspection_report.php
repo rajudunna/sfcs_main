@@ -142,7 +142,9 @@
 		td {
 			text-align: center;
 		}
-
+		table tr td {
+			cursor: pointer;
+		}
 		#populate_div {
 			position: absolute;
 			top: 176px;
@@ -462,7 +464,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 			mysqli_query($link, $insertbinditems) or exit(message_sql());
 		}
 		
-		echo "<script>swal('Data inserted.$qty..','Successfully','success')</script>";
+		echo "<script>swal('Data inserted...','Successfully','success')</script>";
 		echo "<script>location.href = '" . getFullURLLevel($_GET['r'], 'digital_inspection_report_v1.php', 0, 'N') . "'</script>";
 	}
 	?>

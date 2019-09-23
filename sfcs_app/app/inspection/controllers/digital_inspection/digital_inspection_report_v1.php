@@ -29,7 +29,7 @@
 									.draw();
 							});
 
-						column.data().unique().sort().each(function(d, j) {
+							column.data().unique().sort().each(function(d, j) {
 							select.append('<option value="' + d + '">' + d + '</option>')
 
 						});
@@ -201,7 +201,14 @@
 			z-index:1;
             
         } */
-		
+		.output_div{
+			font-weight: 900;
+			font-size: 1.5rem;
+			line-height: 1.5;
+			padding: 0.25rem 1rem;
+			color: #d05d5d;
+			text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+		}
 		.alert,
 		strong,
 		body,
@@ -246,7 +253,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 <nav>	
 <div class="panel-body sticky_div" >
 		<div class="col-xs-6 col-sm-6 col-lg-6">
-			<div class="panel-body" style="background-color:#f5ecec;height: 280px;">
+			<div class="panel-body output_div" style="background-color:#f5ecec;height: 280px;">
 				<div class="row position_div">
 					<div class="col-sm-4">
 						<div class="panel panel-default">
@@ -392,14 +399,12 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 						?>
 					</tbody>
 				</table>
-				
 				<div class="button_pop col-sm-4" id="populate_div">
 					<center><input type="submit" class="btn btn-md btn-primary" name="set_insp_pop" id="disable_id" value="Proceed for Inspection"> </center>
 				</div>
 			</form>
 		</div>
 	</div>
-
 </div>
 </div>
 <?php
@@ -409,46 +414,21 @@ if (isset($_POST['bindingdata'])) {
 
 	$count1 = count($binddetails);
 
-	if ($count1 > 0) {
-		for ($j = 0; $j < $count1; $j++) {
+	if ($count1 > 0) 
+	{
+		for ($j = 0; $j < $count1; $j++)
+		{
 			$id = $binddetails[$j];
 			$exp = explode("/", $id);
 			$sno = $exp[0];
 			$lot_num[] = $exp[1];
-
 			$insertbinditems = "update $bai_rm_pj1.inspection_population set status=1 where sno=$sno";
 			mysqli_query($link, $insertbinditems) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		$lot_array = implode(",", $lot_num);
-		// echo $lot_array;
 	}
 	echo "<script>swal('Data inserted...','Successfully','success')</script>";
-	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') . "&lot_no=$lot_array";
-	echo "<script>location.href = '" . $url . "'</script>";
+	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') ;
+	echo "<script>location.href = '" . $url . "&lot_no=$lot_array'</script>";
 }
 ?>
-<script>
-// window.onscroll = function() {myFunction()};
-
-// var navbar = document.getElementById("navbar");
-// var sticky = navbar.offsetTop;
-
-//  function myFunction() {
-//   if (window.pageYOffset >= sticky) {
-//     navbar.classList.add("sticky")
-//   } else {
-//     navbar.classList.remove("sticky");
-//   }
-// }
-// $(window).on("scroll",function(){
-// 			if($(window).scrollTop()){
-// 				$('nav').addClass('black');
-// 				// $('#populate_div').css({'position':'fixed';
-//     			// 				 'top': '336px';
-//     			// 				 'left': '309px';});
-// 			}
-// 			else{
-// 				$('nav').removeClass('black');
-// 			}
-// 		});
-</script>

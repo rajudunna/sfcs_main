@@ -65,6 +65,7 @@
 <?php
 if(isset($_POST['save']))
 {
+	echo "haiiii";die();
   $fabric_composition = $_POST['fabric_composition'];
   $spec_width = $_POST['spec_width'];
   $inspection_status = $_POST['inspection_status'];
@@ -215,7 +216,7 @@ if(isset($_POST['confirm']))
 			<div class="panel-body">
 				<div class="container">
 					<?php
-                       echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "4_point_roll_inspection.php", "0", "N")."&lot_number=$lot_number\"><<<< Click here to Go Back</a>";
+                       echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "4_point_roll_inspection.php", "0", "N")."&lot_no=$lot_number\"><<<< Click here to Go Back</a>";
 					?>
 					<div class="table-responsive col-sm-12">
 					    <table class="table table-bordered">
@@ -478,7 +479,7 @@ if(isset($_POST['confirm']))
 
 <script>
 	function clearValues(i){
-		alert();
+		// alert();
 		var id = i;
         $('#point1_'+id).val('');$('#point2_'+id).val('');
         $('#point3_'+id).val('');$('#point4_'+id).val('');
@@ -489,11 +490,11 @@ if(isset($_POST['confirm']))
 		
 
 		$('#clear1').click(function(){
-			alert();
+			// alert();
 	        var id = $(this).val();
 	        $('#point1_'+id).val('');$('#point2_'+id).val('');
 	        $('#point3_'+id).val('');$('#point4_'+id).val('');
-	        alert();
+	        // alert();
 	    });
 	})
 
