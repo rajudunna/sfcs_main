@@ -169,7 +169,7 @@ function GetSelectedItem()
 <form method="POST" name="apply">
 <table class="table table-bordered">
 
-<tr><th>Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>Category</th><th>Item Code</th><th>Docket No</th><th>Requirment</th><th>Reference</th><th>Marker Length</th></tr>
+<tr><th>Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>Category</th><th>Item Code</th><th>Docket No</th><th>Requirment</th><th>Reference</th><th>Marker Length </th><th>Control</th></tr>
 <?php
 	$sql11x1="select order_tid,acutno from $bai_pro3.plandoc_stat_log where doc_no='".$doc_no."'";	
 	$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -184,7 +184,7 @@ function GetSelectedItem()
 	{
 		$stylex=$row111x112["order_style_no"];
 	}
-	$sql111x="select compo_no,category,order_del_no,order_col_des,color_code,doc_no,cat_ref,acutno,material_req,(sum(p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50
+	$sql111x="select mklength,compo_no,category,order_del_no,order_col_des,color_code,doc_no,cat_ref,acutno,material_req,(sum(p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50
 	)*p_plies) as qty from $bai_pro3.order_cat_doc_mk_mix where order_tid='".$order_ti."' and pcutno='".$cut_no."' group by doc_no";
 	$sql_result111x=mysqli_query($link, $sql111x) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row111x=mysqli_fetch_array($sql_result111x))
@@ -209,7 +209,8 @@ function GetSelectedItem()
 				$bindin_val = round($row111x2["binding_consumption"]*$row111x["qty"],4);
 				$doc_mat[$row111x["doc_no"]] = $row111x["material_req"]-$bindin_val;	
 			}
-		}		
+		}
+		$mk_len=$row111x["mklength"];
 	}
 
 	for($i=0;$i<sizeof($cat_refnce);$i++)
@@ -224,7 +225,8 @@ function GetSelectedItem()
 		echo "<td>".$doc_mat[$docs_no[$i]]."</td>";
 		echo "<td><input type='hidden' name='doc_details[]' id='doc_details' value='".$docs_no[$i]."'> <input type='text' name='reference[]' value=''></td>";
 		// echo "<td><center><input type='button' value='Create' class='homebutton' id='btnHome' data-target='#theModal' data-toggle='modal' onclick=test('".trim($stylex)."','".trim($schedulex)."','".strstr($colorx, '-', true)."','".trim($docs_no[$i])."'); /></center></td>";
-		echo "<td><center><input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn'".$docs_no[$i]." onclick=test(".$docs_no[$i].") value='Create'></center></td>";
+		echo "<td>".$mk_len."</td>";
+		echo "<td><center><input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn'".$docs_no[$i]." onclick=test(".$docs_no[$i].") value='Edit'></center></td>";
 		echo "</tr>";
 		
 			 
@@ -240,7 +242,7 @@ function GetSelectedItem()
 <div class="modal fade" id="rejections_modal" role="dialog">
     <div class="modal-dialog" style="width: 80%;  height: 100%;">
         <div class="modal-content">
-            <div class="modal-header">Assign Marker Length
+            <div class="modal-header">Change Marker Length
                 <button type="button" class="btn btn-danger" value="Close" id = "cancel" data-dismiss="modal" style="float: right;">Close</button>
             </div>
             <div class="modal-body">
@@ -273,11 +275,11 @@ function GetSelectedItem()
 											while($sql_marker_details_res=mysqli_fetch_array($sql_marker_details_result)){
 												if($sql_marker_details_res[id] == $sql_marker_id[marker_details_id])
 												{
-													echo "<tr><td><input type='radio' name='gender' value='' id='check$sql_marker_details_res[0]' CHECKED></td><td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td></tr>";
+													echo "<tr><td><input type='radio' name='selected_len' value='yes' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]' CHECKED></td><td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[0]'>yes</td></tr>";
 												}
 												else{
 
-												echo "<tr><td><input type='radio' name='gender' value='' id='check$sql_marker_details_res[0]'></td><td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td></tr>";
+												echo "<tr><td><input type='radio' name='selected_len' value='no' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]'></td><td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[0]'>no</td></tr>";
 													// echo json_encode($sql_marker_details_res[0]);
 												}
 							
@@ -750,22 +752,32 @@ function clear_row()
 	$('#permts').val(' ');
 	$('#rmks').val(' ');
 }
+function valid_button(row_num)
+{
+	$('.checked_value').text('no');
+	$('#checked'+row_num).text('yes');
+	alert(row_num);
+	// $('input[name="selected_len"]').val('no');
+	// $('#'+id.name).val('yes');
+}
 function submit_mklen()
 {
-	var array = [];
+	var tabledata = [];
 
 	$('#mark_len_table tr').has('td').each(function() {
-		var arrayItem = {};
+		var tabledataItem = {};
 		$('td', $(this)).each(function(index, item) {
-			arrayItem[index] = $(item).text();
+			
+			console.log(index,$(item));
+			tabledataItem[index] = $(item).text();
 		});
-		array.push(arrayItem);
+		tabledata.push(tabledataItem);
 	});
-	// console.log(array);
-	var jsonString = JSON.stringify(array);
+	// console.log(tabledata);
+	var jsonString = JSON.stringify(tabledata);
 	$.ajax({
 	url : '<?= $get_url1 ?>',
-	data: {data : jsonString}, 
+	data: {data : tabledata}, 
 	cache: false,
 	
 	}).done(function(res){
