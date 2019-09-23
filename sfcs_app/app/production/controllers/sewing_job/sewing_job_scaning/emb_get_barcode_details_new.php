@@ -8,37 +8,39 @@
 	$user_permission = $_POST['auth'];
     $b_shift = $shift;
     //changing for #978 cr
-    $barcode_number = explode('-', $barcode)[0];
-    //retriving original bundle_number from this barcode
-    // $selct_qry = "SELECT bundle_number FROM $brandix_bts.bundle_creation_data
-    // WHERE bundle_number =$barcode_number";
-    // $selct_qry_result=mysqli_query($link,$selct_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
-    // if($selct_qry_result->num_rows > 0)
-	// {
-   
-        // while($selct_qry_result_row=mysqli_fetch_array($selct_qry_result))
-        // {
-            // $bundle_no = $selct_qry_result_row['bundle_number'];
-        // }
-    // }
-    // else
-    // {
-        // $bundle_no = explode('-', $barcode)[0];
-    // }
-    //ends on #978
+    $docket_no = explode('-', $barcode)[0];
 	
 	//getting details from emb_bundles
-	$get_data_qry="select size from $bai_pro3.emb_bundles where barcode='$barcode'";	
-	$selct_qry_result=mysqli_query($link,$get_data_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$get_data_qry="select size,club_status,quantity from $bai_pro3.emb_bundles where barcode='$barcode'";	
+	$selct_qry_result=mysqli_query($link,$get_data_qry) or exit("error while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
     if($selct_qry_result->num_rows > 0)
 	{
 		while($selct_qry_result_row=mysqli_fetch_array($selct_qry_result))
         {
             $size = $selct_qry_result_row['size'];
+			$clubstatus=$selct_qry_result_row['club_status'];
+			$embquantity=$selct_qry_result_row['quantity'];
         }
 	}
-	
-	$doc_no = explode('-', $barcode)[0];
+	if($clubstatus==1)
+	{
+		//getting original dockets from plandoc_stat_log
+		$get_doc_no_qry="select doc_no from bai_pro3.plandoc_stat_log where org_doc_no=$docket_no";
+		$docno_qry_result=mysqli_query($link,$get_doc_no_qry) or exit("error while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($docno_qry_result_row=mysqli_fetch_array($docno_qry_result))
+        {
+			$clubdocno[]=$docno_qry_result_row['doc_no'];
+		}		
+	}
+	if($clubstatus==1)
+	{
+		$doc_no=implode(',',$clubdocno);
+	}
+	else
+	{
+		$doc_no=explode('-', $barcode)[0];
+	}
+
     $op_no = explode('-', $barcode)[1];
 	$seqno = explode('-', $barcode)[2];
 	
@@ -685,25 +687,25 @@
 							$check_data_qry_result=mysqli_query($link,$check_data_qry) or exit("while retriving data from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
 							if($check_data_qry_result->num_rows > 0)
 							{
-							while($qry_result_row=mysqli_fetch_array($check_data_qry_result))
-							{
-							$tid=$qry_result_row['tid'];
-							$barcodeno=$qry_result_row['barcode'];
-							$clubstatus=$qry_result_row['club_status'];
-							$orgqty=$qry_result_row['quantity'];
-							$goodqty=$qry_result_row['good_qty'];
-							$rejectqty=$qry_result_row['reject_qty'];
-							$tranid=$qry_result_row['tran_id'];
-							$status=$qry_result_row['status'];
+								while($qry_result_row=mysqli_fetch_array($check_data_qry_result))
+								{
+								$tid=$qry_result_row['tid'];
+								$barcodeno=$qry_result_row['barcode'];
+								$clubstatus=$qry_result_row['club_status'];
+								$orgqty=$qry_result_row['quantity'];
+								$goodqty=$qry_result_row['good_qty'];
+								$rejectqty=$qry_result_row['reject_qty'];
+								$tranid=$qry_result_row['tran_id'];
+								$status=$qry_result_row['status'];
 
-							//if data exists update emb_bundles
-							$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='$orgqty',reject_qty='$b_rej_qty[$key]',update_time='". date('Y-m-d')."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]'";
-							$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');
+								//if data exists update emb_bundles
+								$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='$orgqty',reject_qty='$b_rej_qty[$key]',update_time='". date('Y-m-d')."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]'";
+								$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');
 
-							//insert data into emb_bundles_temp
-							$insert_emb_bundles="INSERT INTO $bai_pro3.emb_bundles_temp(tid,  doc_no,  size,    ops_code,  barcode,  quantity,  good_qty,  reject_qty,  insert_time,  update_time,  club_status,  log_user,  tran_id,  status) VALUES ('".$tid."','".$b_doc_num[$key]."','".$b_sizes[$key]."','".$b_op_id."','".$barcodeno."','".$orgqty."','".$orgqty."','".$rejectqty."','".date('Y-m-d')."','','".$clubstatus."','".$username."','".$tranid."','".$status."')";
-							$result_emb_temp = $link->query($insert_emb_bundles) or exit('error while insert into emb_bundles_temp');
-							}
+								//insert data into emb_bundles_temp
+								$insert_emb_bundles="INSERT INTO $bai_pro3.emb_bundles_temp(tid,  doc_no,  size,    ops_code,  barcode,  quantity,  good_qty,  reject_qty,  insert_time,  update_time,  club_status,  log_user,  tran_id,  status) VALUES ('".$tid."','".$b_doc_num[$key]."','".$b_sizes[$key]."','".$b_op_id."','".$barcodeno."','".$orgqty."','".$orgqty."','".$rejectqty."','".date('Y-m-d')."','','".$clubstatus."','".$username."','".$tranid."','".$status."')";
+								$result_emb_temp = $link->query($insert_emb_bundles) or exit('error while insert into emb_bundles_temp');
+								}
 							}
 							// else
 							// {
@@ -811,12 +813,12 @@
                                     die();
                                 }
                                 if($schedule_count){
-                                    $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `left_over`= '".$left_over_qty_update."' , `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
+                                    $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$embquantity."', `left_over`= '".$left_over_qty_update."' , `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
                                    
                                     $result_query = $link->query($query) or exit('query error in updating');
                                 }else{
                                        
-                                    $bulk_insert_post .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'")';
+                                    $bulk_insert_post .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$embquantity.'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'")';
                                     $result_query_001 = $link->query($bulk_insert_post) or exit('bulk_insert_post query error in updating');
                                 }
 								
@@ -836,19 +838,19 @@
 								if($sendop_code==$b_op_id)
 								{
 									//update in emblishment dashboard
-									$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `send_qty`= send_qty+$final_rep_qty where doc_no =$b_doc_num[$key] and send_op_code=$b_op_id";
+									$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `send_qty`= send_qty+$embquantity where doc_no =$b_doc_num[$key] and send_op_code=$b_op_id";
 									$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
 								}
 								if($recop_code==$b_op_id)
 								{
 									//update in emblishment dashboard
-									$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `receive_qty`= receive_qty+$final_rep_qty where doc_no =$b_doc_num[$key] and receive_op_code=$b_op_id";
+									$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `receive_qty`= receive_qty+$embquantity where doc_no =$b_doc_num[$key] and receive_op_code=$b_op_id";
 									$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
 								}
 								
 								//checking data exist in emb_bundles or not
-								$check_data_qry="select * from $bai_pro3.emb_bundles where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]'";
-																//echo $check_data_qry;
+								$check_data_qry="select * from $bai_pro3.emb_bundles where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]' and tran_id=$seqno";
+								//echo $check_data_qry;
 								$check_data_qry_result=mysqli_query($link,$check_data_qry) or exit("while retriving data from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
 								if($check_data_qry_result->num_rows > 0)
 								{
@@ -894,7 +896,7 @@
 
                                         if($emb_cut_check_flag == 1)
                                         {
-                                            $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previously_scanned where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code = $b_op_id";
+                                            $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$embquantity where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code = $b_op_id";
                                             $update_qry_cps_log_res = $link->query($update_qry_cps_log);
                                         }
                                     }
