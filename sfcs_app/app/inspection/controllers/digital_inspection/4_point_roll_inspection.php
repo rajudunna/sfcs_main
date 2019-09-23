@@ -1,10 +1,12 @@
 <?php
-
+if(isset($_GET['parent_id'])){
+	$parent_id=$_GET['parent_id'];
+   	}
  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
  $lot_number = $_GET['lot_no'];
 
   //$lot_number = ['5231799003','5231799002'];
- $get_details="select * from `bai_rm_pj1`.`inspection_population` where lot_no in($lot_number) and status in(1,2)";
+ $get_details="select * from `bai_rm_pj1`.`inspection_population` where lot_no in($lot_number) and parent_id=$parent_id and status in(1,2)";
 //  echo $get_details;
  $details_result=mysqli_query($link,$get_details) or exit("get_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($row1=mysqli_fetch_array($details_result))
@@ -19,7 +21,7 @@
     $item_desc[$lot] = $row1['item_desc'];
  }
  $get_parent_id ="select id from $bai_rm_pj1.roll_inspection where batch_no='$batch' and po_no='$po'";
-//  echo $get_parent_id;
+ echo $get_parent_id;
  $get_parent_id_result=mysqli_query($link,$get_parent_id) or exit("get_parent_id Error".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($row12=mysqli_fetch_array($get_parent_id_result))
  {
@@ -86,7 +88,7 @@
 					      </tbody>
 					    </table>
 					</div>
-					<form id='myForm' method='post' name='input_main' action="?r=<?= $_GET['r']."&lot_no=".$lot_number ?>">
+					<form id='myForm' method='post' name='input_main' action="?r=<?= $_GET['r']."&lot_no=".$lot_number."&parent_id=".$parent_id ?>">
 					  <div class="table-responsive col-sm-12">
 					  	<table class="table table-bordered">
 					  	    <tbody>
@@ -143,7 +145,7 @@
 					  <div class="table-responsive col-sm-12">
 					    <table class="table table-bordered">
 					      <tbody>
-					      	<tr>
+					      	<tr style="background-color: antiquewhite;">
 					      		<th>Supplier Roll No</th>
 					      		<th>SFCS Roll No</th>
 					      		<th>Ticket Length</th>
@@ -161,7 +163,7 @@
 							   $url = getFullURLLevel($_GET['r'],'4_point_roll_inspection_child.php',0,'N');
 							   
 							  $get_details1="select supplier_no,ref2 as roll_no,ref5 as ctex_length,ref3 as ctex_width,qty_issued,lot_no from $bai_rm_pj1.store_in where lot_no in('".$lot_details."')";
-							  
+							
 							 $details1_result=mysqli_query($link,$get_details1) or exit("get_details1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							 
                              while($row2=mysqli_fetch_array($details1_result))
@@ -172,7 +174,7 @@
                               $lot_id = $row2['lot_no'];
                               $lotids[]=$row2['lot_no'];
 					      	  echo 
-					      	  "<tr data-href='$url&supplier=$supplier_id&roll=$roll_id&lot=$lot_id'>
+					      	  "<tr data-href='$url&supplier=$supplier_id&roll=$roll_id&lot=$lot_id&parent_id=$parent_id'>
 					      	    <td>".$row2['supplier_no']."</td>
 					      		<td>".$row2['roll_no']."</td>
 					      		<td>".$row2['ctex_length']."</td>
@@ -293,7 +295,7 @@
                              <div class="table-responsive col-sm-7" style="margin-top:42px;">
 						     <table class="table table-bordered">
 						       <tbody>
-						      	<tr>
+						      	<tr style="background-color: antiquewhite;">
 						      		<th>Code</th>
 						      		<th>Damage Des</th>
 						      		<th>1 Points</th>

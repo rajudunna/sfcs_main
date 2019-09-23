@@ -3,6 +3,7 @@
  include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
  $lot_number = $_GET['lot'];
  $roll_id = $_GET['roll'];
+ $parent_id=$_GET['parent_id'];
  $supplier_id = $_GET['supplier'];
  $get_details="select * from `bai_rm_pj1`.`inspection_population` where lot_no='$lot_number' and supplier_roll_no='$supplier_id' and sfcs_roll_no='$roll_id'";
  // echo $get_details;
@@ -216,7 +217,7 @@ if(isset($_POST['confirm']))
 			<div class="panel-body">
 				<div class="container">
 					<?php
-                       echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "4_point_roll_inspection.php", "0", "N")."&lot_no=$lot_number\"><<<< Click here to Go Back</a>";
+                       echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "4_point_roll_inspection.php", "0", "N")."&lot_no=$lot_number&parent_id=$parent_id\"><<<< Click here to Go Back</a>";
 					?>
 					<div class="table-responsive col-sm-12">
 					    <table class="table table-bordered">

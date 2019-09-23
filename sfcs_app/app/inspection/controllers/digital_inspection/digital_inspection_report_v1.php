@@ -1,3 +1,9 @@
+<?php
+if(isset($_GET['parent_id'])){
+	$parent_id=$_GET['parent_id'];
+}
+?>
+
 <head>
 	<script>
 		
@@ -289,10 +295,17 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 			</div>
 		</div>
 	</div></nav><br/>
-	<div class="panel panel-primary" style="overflow-x: scroll;">
-		<div class="panel-body">
+	
 			<form action="<?php getFullURLLevel($_GET["r"], "digital_inspection_report_v1.php", "0", "N") ?>" method="POST">
-				<table id="myTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+					<?php
+						$sql_query = "select * from $bai_rm_pj1.inspection_population where parent_id=$parent_id and status=0";
+						$sql_result = mysqli_query($link, $sql_query) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+						if (mysqli_num_rows($sql_result) == 0) {
+							echo "<div class='alert alert-info'><strong>Info!</strong> Sorry No Records Found......!</div>";
+						}else{
+							echo '<div class="panel panel-primary" style="overflow-x: scroll;">
+							<div class="panel-body">
+							<table id="myTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
 					<thead>
 						<tr>
 							<th>Supplier PO</th>
@@ -311,11 +324,8 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							<th>Select<input type="checkbox" id="selectAlll"></th>
 						</tr>
 					</thead>
-					<tbody>
-						<?php
-						$sql_query = "select * from $bai_rm_pj1.inspection_population where status=0";
-						$sql_result = mysqli_query($link, $sql_query) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-
+					<tbody>';
+						
 						while ($sql_row = mysqli_fetch_array($sql_result)) {
 							$sno = $sql_row['sno'];
 							$lot_no = $sql_row['lot_no'];
@@ -422,13 +432,14 @@ if (isset($_POST['bindingdata'])) {
 			$exp = explode("/", $id);
 			$sno = $exp[0];
 			$lot_num[] = $exp[1];
-			$insertbinditems = "update $bai_rm_pj1.inspection_population set status=1 where sno=$sno";
+			$insertbinditems = "update $bai_rm_pj1.inspection_population set status=1 where parent_id=$parent_id and sno=$sno";
 			mysqli_query($link, $insertbinditems) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		$lot_array = implode(",", $lot_num);
 	}
 	echo "<script>swal('Data inserted...','Successfully','success')</script>";
 	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') ;
-	echo "<script>location.href = '" . $url . "&lot_no=$lot_array'</script>";
+	echo "<script>location.href = '" . $url . "&lot_no=$lot_array&parent_id=$parent_id'</script>";
+}
 }
 ?>
