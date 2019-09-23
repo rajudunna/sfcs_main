@@ -17,11 +17,13 @@
 	{
 		while($selct_qry_result_row=mysqli_fetch_array($selct_qry_result))
         {
-            $size = $selct_qry_result_row['size'];
+            $sizes = $selct_qry_result_row['size'];
 			$clubstatus=$selct_qry_result_row['club_status'];
 			$embquantity=$selct_qry_result_row['quantity'];
         }
 	}
+	$embquantity=$embquantity;
+
 	if($clubstatus==1)
 	{
 		//getting original dockets from plandoc_stat_log
@@ -45,7 +47,7 @@
 	$seqno = explode('-', $barcode)[2];
 	
 	//getting bundle number from bundle_creation_data
-	$selct_qry = "SELECT bundle_number FROM $brandix_bts.bundle_creation_data  WHERE docket_number =$doc_no AND operation_id='$op_no' AND size_title='$size'";
+	$selct_qry = "SELECT bundle_number FROM $brandix_bts.bundle_creation_data  WHERE docket_number =$doc_no AND operation_id='$op_no' AND size_title='$sizes'";
     $selct_qry_res=mysqli_query($link,$selct_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
     if($selct_qry_res->num_rows > 0)
 	{
@@ -61,9 +63,9 @@
     $msg = 'Scanned Successfully';
 
     $string = $bundle_no.','.$op_no.','.'0';
-    getjobdetails1($string, $bundle_no, $op_no, $shift ,$gate_id);
+    getjobdetails1($string, $bundle_no, $op_no, $shift ,$gate_id, $embquantity, $seqno, $doc_no, $sizes);
    
-    function getjobdetails1($job_number, $bundle_no, $op_no, $shift ,$gate_id)
+    function getjobdetails1($job_number, $bundle_no, $op_no, $shift ,$gate_id, $embquantity, $seqno,$doc_no,$sizes)
     {
         $job_number = explode(",",$job_number);
         $job_number[4]=$job_number[1];
@@ -683,7 +685,7 @@
 								$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
 							}
 							//checking data exist in emb_bundles or not
-							$check_data_qry="select * from $bai_pro3.emb_bundles where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]'";
+							$check_data_qry="select * from $bai_pro3.emb_bundles where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]' and tran_id=$seqno";
 							$check_data_qry_result=mysqli_query($link,$check_data_qry) or exit("while retriving data from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
 							if($check_data_qry_result->num_rows > 0)
 							{
@@ -699,7 +701,7 @@
 								$status=$qry_result_row['status'];
 
 								//if data exists update emb_bundles
-								$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='$orgqty',reject_qty='$b_rej_qty[$key]',update_time='". date('Y-m-d')."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]'";
+								$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='$orgqty',reject_qty='$b_rej_qty[$key]',update_time='". date('Y-m-d')."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]' and tran_id=$seqno";
 								$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');
 
 								//insert data into emb_bundles_temp
@@ -813,7 +815,7 @@
                                     die();
                                 }
                                 if($schedule_count){
-                                    $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$embquantity."', `left_over`= '".$left_over_qty_update."' , `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
+                                    $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= recevied_qty+'".$embquantity."', `left_over`= '".$left_over_qty_update."' , `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
                                    
                                     $result_query = $link->query($query) or exit('query error in updating');
                                 }else{
@@ -866,7 +868,7 @@
 								$status=$qry_result_row['status'];
 
 								//if data exists update emb_bundles
-								$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty=$orgqty,reject_qty='$b_rej_qty[$key]',update_time='". date('Y-m-d')."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]'";
+								$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty=$orgqty,reject_qty='$b_rej_qty[$key]',update_time='". date('Y-m-d')."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]' and tran_id=$seqno";
 																		//echo $update_emb_bundles;
 								$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');
 
@@ -884,7 +886,7 @@
                                 {
                                     if($b_rep_qty[$key] > 0)
                                     {
-                                        $bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$previously_scanned .'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$username.'")';
+                                        $bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$embquantity .'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$username.'")';
                                         $result_query_001_temp = $link->query($bulk_insert_post_temp) or exit('bulk_insert_post query error in updating');
 
 									if($gate_pass_no>0)
@@ -896,7 +898,7 @@
 
                                         if($emb_cut_check_flag == 1)
                                         {
-                                            $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$embquantity where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code = $b_op_id";
+                                            $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$embquantity where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code = $b_op_id";
                                             $update_qry_cps_log_res = $link->query($update_qry_cps_log);
                                         }
                                     }
@@ -904,7 +906,7 @@
                                
                                 if($post_ops_code != null)
                                 {
-                                    $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$post_ops_code;
+                                    $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = send_qty+'".$embquantity."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_num[$key] and size_title='$sizes' and operation_id = ".$post_ops_code;
                                     $result_query = $link->query($query_post) or exit('query error in updating');
                                 }
                                 if($ops_dep)
@@ -916,7 +918,7 @@
                                         $pre_recieved_qty = $row['recieved_qty'];
                                     }
 
-                                    $query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$ops_dep;
+                                    $query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` =send_qty+ '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_num[$key] and size_title='$sizes' and operation_id = ".$ops_dep;
 
                                     $result_query = $link->query($query_post_dep) or exit('query error in updating');
                            
