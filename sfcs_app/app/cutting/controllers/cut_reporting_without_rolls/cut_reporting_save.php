@@ -92,8 +92,8 @@ if($plies == 0 && $full_reporting_flag == 1){
                     UPDATE date='$date',section='$cut_table',shift='$shift',fab_received=fab_received + $f_rec,fab_returned='$f_ret',damages='$damages',shortages='$shortages',
                     remarks=CONCAT(remarks,'$','$remarks'),
                     log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader',joints_endbits=CONCAT(joints_endbits,'$','$joints_endbits')";
-    echo $insert_query;
-    $update_psl_query = "UPDATE $bai_pro3.plandoc_stat_log set act_cut_status='DONE',a_plie=0 
+    
+    $update_psl_query = "UPDATE $bai_pro3.plandoc_stat_log set act_cut_status='DONE',a_plies=0 
                     where doc_no = $doc_no or org_doc_no = $doc_no";
     $insert_result = mysqli_query($link,$insert_query) or exit('Query Error 0 Cut 1');   
     $update_result = mysqli_query($link,$update_psl_query) or exit('Query Error 0 Cut 2');
