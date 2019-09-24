@@ -232,6 +232,15 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 $('#loading-image').hide();
                 $scope.color_cod=data.color_code;
                 $scope.scanned_status=data.status;
+                // var color=data.color_code;
+                // alert(color);
+                // console.log(data.color_code.padStart(20,'A'));
+                $scope.prev_good=(data.prev_good.padStart(6,'0'));
+                $scope.prev_reject=(data.prev_reject.padStart(6,'0'));
+                $scope.prev_rework=(data.prev_rework.padStart(6,'0'));
+                $scope.current_good=(data.current_good.padStart(6,'0'));
+                $scope.current_reject=(data.current_reject.padStart(6,'0'));
+                $scope.curr_rework=(data.curr_rework.padStart(6,'0'));
             }).error(function (data, status, headers, config) {
                 // handle error things
             });

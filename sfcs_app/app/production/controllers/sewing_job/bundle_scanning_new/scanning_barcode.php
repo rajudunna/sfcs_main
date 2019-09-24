@@ -178,7 +178,7 @@ $result_rejections = $link->query($qery_rejection_resons);
         <td><br/><label>Style : </label><br/><br/><br/><br/><label>Color : </label><br/><br/><br/><br/><label>eligible_qty: </label><br/><br/></td>
         <td style="padding: 0px 0px 0px 23px;"><input type="text" style="max-width: 150px;background-color:lightblue;" class="form-control" name="style" ng-model="style" ng-readonly="true"><br/><br/><br/>
        <input type="text" style="max-width: 150px;background-color:lightblue;" class="form-control" name="color" ng-model="color" ng-readonly="true"><br/><br/><br/><br/>
-       <input type="text"  style="max-width: 150px;" class="form-control" name="eligible_qty" ng-model="eligible_qty" ><br/>
+       <input type="text"  style="max-width: 150px;" class="form-control" name="eligible_qty" ng-model="eligible_qty" ng-readonly="true"><br/>
        </td>
        <td style="width: 10 5px;"></td>
         <td><div class="container" style="width: 570px;">
@@ -206,17 +206,17 @@ $result_rejections = $link->query($qery_rejection_resons);
      <tr>
      <div>
         <div class="col-sm-3" style="padding: 11px 0px 8px 6px;width: 28%;">previous hr: </div>
-        <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #45b645;">26497</div>
-        <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #f31c06;">57894</div>
-        <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #714f1b;">5166</div>
+        <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #45b645;">{{prev_good}}</div>
+        <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;;background-color: #f31c06;">{{prev_reject}}</div>
+        <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #714f1b;">{{prev_rework}}</div>
       <div>
       </tr>
       <tr>
       <div>
         <div class="col-sm-3" style="padding: 11px 0px 8px 6px;width: 28%;">current hr:</div>
-        <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #45b645;">5469</div>
-        <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #f31c06;">5450</div>
-        <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #714f1b;">5498</div>
+        <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #45b645;">{{current_good}}</div>
+        <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #f31c06;">{{current_reject}}</div>
+        <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #714f1b;">{{curr_rework}}</div>
       </tr>
       </div>
     </tbody>
