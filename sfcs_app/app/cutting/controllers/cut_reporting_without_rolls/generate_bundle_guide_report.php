@@ -250,7 +250,6 @@ if(isset($_POST['submit']))
             }
             echo "<td>".$sql_row["a_plies"]."</td>";
             $sql12="select * from $bai_pro3.docket_number_info where doc_no=".$sql_row['doc_no'];
-            mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
             $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check12=mysqli_num_rows($sql_result12);
             if($sql_num_check12>0)
@@ -261,7 +260,7 @@ if(isset($_POST['submit']))
             }
             else
             {
-                echo "<td>-</td>";
+                echo "<td> N / A</td>";
             }
           
             echo "</tr>";
