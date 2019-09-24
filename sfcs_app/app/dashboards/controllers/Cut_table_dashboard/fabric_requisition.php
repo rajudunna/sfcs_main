@@ -235,7 +235,7 @@ function GetSelectedItem()
 			if($row111x21['mk_ref_id']>0)
 			{	
 				$sql11x1321="select shrinkage_group,width from $bai_pro3.maker_details where parent_id=".$row111x21['allocate_ref']." and id=".$row111x21['mk_ref_id']."";
-				// echo $row111x21['mk_ref_id'];
+				//echo $sql11x1321."<br>";
 				$sql_result11x11211=mysqli_query($link, $sql11x1321) or die("Error15 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row111x2112=mysqli_fetch_array($sql_result11x11211)) 
 				{
@@ -294,26 +294,31 @@ for($i=0;$i<sizeof($cat_refnce);$i++)
 									
 									$sql11x132="select allocate_ref,mk_ref_id,mk_ref from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
 									$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error16 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-									//$rows=0;
+									$rows=0;
 									while($row111x2=mysqli_fetch_array($sql_result11x112)) 
 									{
 										$mk_ref_id=$row111x2['mk_ref_id'];
 										$sql_marker_details = "select * from $bai_pro3.maker_details where parent_id='".$row111x2['allocate_ref']."'";
 										$sql_marker_details_result=mysqli_query($link, $sql_marker_details) or die("Error17 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-										//$values_rows=mysqli_num_rows($sql_marker_details_result);
+										$values_rows=mysqli_num_rows($sql_marker_details_result);
+										echo "<input type='hidden' name='rows_val' id='rows_val' value='$values_rows' >";
 										while($sql_marker_details_res=mysqli_fetch_array($sql_marker_details_result))
 										{   
-											//$rows++;
+											$rows++;
 											if($sql_marker_details_res[id] == $mk_ref_id)
 											{
+												echo "<input type='hidden' name='first_val' id='first_val' value='$mk_ref_id' >";
+												echo "<input type='hidden' name='all_ref' id='all_ref' value=".$row111x2['allocate_ref']." >";
+												echo "<input type='hidden' name='mk_ref' id='mk_ref' value=".$row111x2['mk_ref']." >";
+												echo "<input type='hidden' name='doc_no' id='doc_no' value='$doc_no' >";
 												echo "<tr><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[0]'>yes</td>
 												<td style='display:none;'  id='id'>$sql_marker_details_res[id]</td>
 												<td style='display:none;'  id='doc_no'>$doc_no</td>
 												<td style='display:none;'  id='all_ref'>".$row111x2['allocate_ref']."</td>
 												<td style='display:none;'  id='mk_ref'>".$row111x2['mk_ref']."</td>
-												<td><input type='radio' name='selected_len' value='yes' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]' CHECKED></td>
+												<td><input type='radio' name='selected_len' value='yes' onchange = valid_button($rows) id='check$rows' CHECKED></td>
 												
-												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td>	
+												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[perimeters]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td>	
 												</tr>";
 											}
 											else
@@ -323,21 +328,15 @@ for($i=0;$i<sizeof($cat_refnce);$i++)
 												<td style='display:none;'  id='doc_no'>$doc_no</td>
 												<td style='display:none;'  id='all_ref'>".$row111x2['allocate_ref']."</td>
 												<td style='display:none;'  id='mk_ref'>".$row111x2['mk_ref']."</td>
-												<td><input type='radio' name='selected_len' value='no' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]'></td>
+												<td><input type='radio' name='selected_len' value='no' onchange = valid_button($rows) id='check$rows'></td>
 												
-												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td></tr>";
+												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[perimeters]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td></tr>";
 											}												
 										}										
 									}
 									?>
                                 </tbody>
-                            <!-- </table>
-                        </div>   -->
-                        <!-- <div class='col-sm-12'>
-						<table class='table table-bordered rejections_table'> -->
-							<!-- <thead>
-								<tr class='.bg-dark'><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks</th></tr>
-							</thead> -->
+
                                 <tbody id='rejections_table'>
 								
 								<tr>
@@ -729,8 +728,7 @@ function validate_data(id_name)
 	// }
 }
 function add_Newmklen()
-{
-	
+{	
 	var mk_type = $('#mk_type').val();
 	var mk_ver = $('#mk_ver').val();
 	var sk_grp = $('#sk_grp').val();
@@ -742,8 +740,16 @@ function add_Newmklen()
 	var permts = $('#permts').val();
 	var rmks = $('#rmks').val();
 	
-	// var values_rows1 = document.getElementById('values_rows').value();
-	// alert(values_rows1)
+	var values_rows1 = $('#first_val').val();
+	var all_refs = $('#all_ref').val();
+	var doc_nos = $('#doc_no').val();
+	var mk_refs = $('#mk_ref').val();
+	var rows_valu = parseInt($('#rows_val').val())+1;
+	//alert(values_rows1)
+	$('#rows_val').val(rows_valu);
+	$('#checked'+values_rows1).text('no');
+	
+	
 	// /*
 	if(mk_ver == ''){
 		sweetAlert('Please enter valid Marker Version','','warning');
@@ -778,10 +784,8 @@ function add_Newmklen()
 		sweetAlert('Please enter valid Marker Version','','warning');
 		return false;
 	}
-	
 	var table_body = $("#rejections_table_body");
-	// console.log(table_body);
-	var new_row = "<tr><td><input type='radio' name='gender' value='no' id='check$sql_marker_details_res[0]'></td><td>"+mk_type+"</td><td>"+mk_ver+"</td><td>"+sk_grp+"</td><td>"+width+"</td><td>"+mk_len+"</td><td>"+mk_name+"</td><td>"+ptr_name+"</td><td>"+permts+"</td><td>"+mk_eff+"</td><td>"+rmks+"</td><td style='display:none;'>0</td></tr>";
+	var new_row = "<tr><td style='display:none;' class='checked_value' id='checked"+rows_valu+"'>yes</td><td style='display:none;' id='id'>"+rows_valu+"</td><td style='display:none;'  id='doc_no' >"+doc_nos+"</td><td style='display:none;'  id='all_ref'>"+all_refs+"</td><td style='display:none;'  id='mk_ref'>"+mk_refs+"</td><td><input type='radio' name='selected_len' value='yes' id='check"+rows_valu+"' onchange = valid_button("+rows_valu+") CHECKED></td><td>"+mk_type+"</td><td>"+mk_ver+"</td><td>"+sk_grp+"</td><td>"+width+"</td><td>"+mk_len+"</td><td>"+mk_name+"</td><td>"+ptr_name+"</td><td>"+permts+"</td><td>"+mk_eff+"</td><td>"+rmks+"</td><td style='display:none;'>0</td></tr>";
 	$("#rejections_table_body").append(new_row);
 	$('#mk_type').val(' ');
 	$('#mk_ver').val(' ');
@@ -793,8 +797,8 @@ function add_Newmklen()
 	$('#mk_eff').val(' ');
 	$('#permts').val(' ');
 	$('#rmks').val(' ');
-	// */
-	//document.getElementById('values_rows').value()=values_rows;
+
+	
 }
 
 function clear_row()
@@ -814,7 +818,7 @@ function valid_button(row_num)
 {
 	$('.checked_value').text('no');
 	$('#checked'+row_num).text('yes');
-	alert(row_num);
+	//alert(row_num);
 	// $('input[name="selected_len"]').val('no');
 	// $('#'+id.name).val('yes');
 }
@@ -841,35 +845,6 @@ function submit_mklen(doc_no)
 	}).done(function(res){
 		console.log(res);
 	});
-	// alert();
-	// var mk_type = $('#mk_type').val();
-	// var mk_ver = $('#mk_ver').val();
-	// var sk_grp = $('#sk_grp').val();
-	// var width = $('#width').val();
-	// var mk_len = $('#mk_len').val();
-	// var mk_name = $('#mk_name').val();
-	// var ptr_name = $('#ptr_name').val();
-	// var mk_eff = $('#mk_eff').val();
-	// var permts = $('#permts').val();
-	// var rmks = $('#rmks').val();
-	// // var form_data = { mk_ver:mk_ver,mk_type:mk_type,sk_grp:sk_grp,
-	// // 	mk_eff:mk_eff,mk_len:mk_len,width:width,permts:permts,ptr_name:ptr_name,rmks:rmks};
-    // //     console.log(form_data);
-	// // $.ajax({
-	// // url : '<?= $get_url1 ?>',
-	// // type : 'POST',
-    // // data : form_data
-	// // }).done(function(res){
-	// // 	console.log(res);
-	// // });
-	// console.log(mk_ver);
-	// console.log(mk_type);
-	// console.log(mk_eff);
-	// console.log(mk_len);
-	// console.log(width);
-	// console.log(ptr_name);
-	// console.log(permts);
-	// console.log(rmks);
 }
 function test(doc_no){
 	// var t = document.getElementById('doc_details').value;
