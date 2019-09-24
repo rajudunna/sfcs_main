@@ -55,7 +55,7 @@
                                 echo "<td>".$sql_row['requested_at']."</td>";
                                 echo "<td><select name='issue_status$i' id='issue_status-$i' class='select2_single form-control' onchange='IssueAction($i);'>";
                                 echo "<option value=''>Please Select</option>";
-                                echo "<option value='Approve'>Approve</option>";
+                                echo "<option value='Deallocated'>Deallocated</option>";
                                 echo "</select></td>";
                                 echo "<td><input type='submit' name='submit$i' id='submit-$i' class='btn btn-info' value='Deallocate' disabled='disabled' onclick='Approve_deallocation($i);'></td>";
                                 echo "</tr>";
@@ -74,12 +74,15 @@
                                 <th>Qty</th>
                                 <th>Requested By</th>
                                 <th>Requested At</th>
+                                <th>Approved By</th>
+                                <th>Approved At</th>
                             </tr>
                         </thead>
                         <?php
-                            $query = "select * from $bai_rm_pj1.material_deallocation_track where status='Deallocated'";
+                            $query = "select * from $bai_rm_pj1.material_deallocation_track where status='Deallocate'";
                             $sql_result = mysqli_query($link,$query);
                             // echo $query;
+                            $index=0;
                             while($sql_row=mysqli_fetch_array($sql_result))
                             {
                                 $table1_rows++;
@@ -90,6 +93,8 @@
                                 echo "<td>".$sql_row['qty']."</td>";
                                 echo "<td>".$sql_row['requested_by']."</td>";
                                 echo "<td>".$sql_row['requested_at']."</td>";
+                                echo "<td>".$sql_row['approved_by']."</td>";
+                                echo "<td>".$sql_row['approved_at']."</td>";
                                 echo "</tr>";
                             }
                         ?>
@@ -171,8 +176,9 @@ function Approve_deallocation(i) {
     if($('#submit-'+i).val()) {
         var status = $('#issue_status-'+i).val();
         var row_id = i;
+        // alert(status);
 
-        if(status=='Approve') {
+        if(status=='Deallocated') {
             url_path = "<?php echo getFullURL($_GET['r'],'update_deallocation_status.php','N'); ?>";
             location.href=url_path+"&id="+row_id+"&status="+status;
         }
