@@ -252,8 +252,9 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							}
 							$lot_number = implode(",", $lot_nos);
 
-							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.supplier as supplier, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.lot_no='$lot_no_inp' AND si.lot_no IN($lot_number) GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
+							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.supplier as supplier, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec, si.tid as tid FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.lot_no='$lot_no_inp' AND si.lot_no IN($lot_number) GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
+						
 						if ($po_no != '' && ($lot_no_inp == '' && $supplier_invoice == '' && $supplier_batch == '')) {
 							$sql_lot_no = "SELECT lot_no FROM $bai_rm_pj1.sticker_report WHERE po_no=\"" . ($po_no) . "\"";
 							$sql_result = mysqli_query($link, $sql_lot_no) or exit(message_sql());
@@ -263,7 +264,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							}
 							$lot_number = implode(",", $lot_nos);
 
-							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.supplier as supplier, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.po_no='$po_no' AND si.lot_no IN($lot_number) GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
+							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.supplier as supplier, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.po_no='$po_no' AND si.lot_no IN($lot_number) GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
 						if ($supplier_invoice != '' && ($lot_no_inp == '' && $po_no == '' && $supplier_batch == '')) {
 							$sql_lot_no = "SELECT lot_no FROM $bai_rm_pj1.sticker_report WHERE inv_no=\"" . ($supplier_invoice) . "\"";
@@ -276,7 +277,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							$lot_number = implode(",", $lot_nos);
 
 
-							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.supplier as supplier, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.inv_no='$supplier_invoice' AND si.lot_no IN($lot_number) GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
+							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.supplier as supplier, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.inv_no='$supplier_invoice' AND si.lot_no IN($lot_number) GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
 						if ($supplier_batch != '' && ($lot_no_inp == '' && $po_no == '' && $supplier_invoice == '')) {
 							$sql_lot_no = "SELECT lot_no FROM $bai_rm_pj1.sticker_report WHERE supplier=\"" . ($supplier_batch) . "\"";
@@ -289,10 +290,9 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							$lot_number = implode(",", $lot_nos);
 
 
-							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.supplier as supplier, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.supplier='$supplier_batch' AND si.lot_no IN($lot_number) GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
+							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.supplier as supplier, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.supplier='$supplier_batch' AND si.lot_no IN($lot_number) GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
-						// echo $sql_po_no;
-
+						
 						$sql_result_po = mysqli_query($link, $sql_po_no) or exit(message_sql());
 						if (mysqli_num_rows($sql_result_po) == 0) {
 							$idx = "<div class='alert alert-info'><strong>Info!</strong> Sorry No Records Found......!</div>";
@@ -349,6 +349,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							<tbody>
 							<?php
 									while ($sql_row = mysqli_fetch_array($sql_result_po)) {
+										$tid=$sql_row['tid'];
 										$po_no_1 = $sql_row['po_no'];
 										$po_line = $sql_row['po_line'];
 										$po_subline = $sql_row['po_subline'];
@@ -419,8 +420,9 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 										}
 										$rm_color=0;
 
-										echo '<tr><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $supplier_no . '</td><td>' . $ref2 . '</td><td>' . $ref3 . '</td>';
-										echo "<td><input type='checkbox' name='bindingdata[]' value='" . $po_no_1 . '/' . $po_line . '/' . $po_subline . '/' . $inv_no . '/' . $item_code . '/' . $item_desc . '/' . $lot_no . '/' . $supplier_batch . '/'.$rm_color .'/'. $supplier_no . '/' . $ref2 . '/' . $ref3 . "'></td></tr>";
+										echo '<tr><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $supplier_no . '</td><td>' . $ref2 . '</td><td>' . $ref3 . '</td><input type="hidden" name="main_id" value="'.$tid.'">';
+										
+										echo "<td><input type='checkbox' name='bindingdata[]' value='" . $po_no_1 . '/' . $po_line . '/' . $po_subline . '/' . $inv_no . '/' . $item_code . '/' . $item_desc . '/' . $lot_no . '/' . $supplier_batch . '/'.$rm_color .'/'. $supplier_no . '/' . $ref2 . '/' . $ref3 . '/'.$tid."'></td></tr>";
 									}
 								}
 								?>
@@ -458,7 +460,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 
 			$lastinsert_id=$link->insert_id;
 
-			$insertbinditems = "INSERT IGNORE INTO $bai_rm_pj1.inspection_population(lot_no,supplier_po,po_line,po_subline,supplier_invoice,item_code,item_desc,supplier_batch,rm_color,supplier_roll_no,sfcs_roll_no,qty,status,parent_id) VALUES";
+			$insertbinditems = "INSERT IGNORE INTO $bai_rm_pj1.inspection_population(lot_no,supplier_po,po_line,po_subline,supplier_invoice,item_code,item_desc,supplier_batch,rm_color,supplier_roll_no,sfcs_roll_no,qty,status,parent_id,store_in_id) VALUES";
 			
 				for ($j = 0; $j < $count1; $j++) {
 			
@@ -476,7 +478,9 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 				$supplier_roll_no = $exp[9];
 				$fcs_no = $exp[10];
 				$qty = $exp[11];
-				$insertbinditems.= ' ("'.$lot_no.'","'.$supplier_po.'","'.$po_line.'","'.$po_subline.'","'.$inv_no.'","'.$item_code.'","'.$item_desc.'","'.$batch.'",0,"'.$supplier_roll_no.'","'.$fcs_no.'","'.$qty.'",0,"'.$lastinsert_id.'"),';
+				$main_id = $exp[12];
+				
+				$insertbinditems.= ' ("'.$lot_no.'","'.$supplier_po.'","'.$po_line.'","'.$po_subline.'","'.$inv_no.'","'.$item_code.'","'.$item_desc.'","'.$batch.'",0,"'.$supplier_roll_no.'","'.$fcs_no.'","'.$qty.'",0,'.$lastinsert_id.','.$main_id.'),';
 			}
 			$insertbinditems=rtrim($insertbinditems,",");
 			mysqli_query($link, $insertbinditems) or exit(message_sql());

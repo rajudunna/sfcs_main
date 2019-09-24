@@ -1,9 +1,9 @@
 <?php
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 if(isset($_GET['parent_id'])){
 	$parent_id=$_GET['parent_id'];
-   	}
- include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
- $lot_number = $_GET['lot_no'];
+	$lot_number = $_GET['lot_no'];
+}
 
   //$lot_number = ['5231799003','5231799002'];
  $get_details="select * from `bai_rm_pj1`.`inspection_population` where lot_no in($lot_number) and parent_id=$parent_id and status in(1,2)";
@@ -21,7 +21,7 @@ if(isset($_GET['parent_id'])){
     $item_desc[$lot] = $row1['item_desc'];
  }
  $get_parent_id ="select id from $bai_rm_pj1.roll_inspection where batch_no='$batch' and po_no='$po'";
- echo $get_parent_id;
+//  echo $get_parent_id;
  $get_parent_id_result=mysqli_query($link,$get_parent_id) or exit("get_parent_id Error".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($row12=mysqli_fetch_array($get_parent_id_result))
  {
@@ -162,8 +162,8 @@ if(isset($_GET['parent_id'])){
 					      	<?php
 							   $url = getFullURLLevel($_GET['r'],'4_point_roll_inspection_child.php',0,'N');
 							   
-							  $get_details1="select supplier_no,ref2 as roll_no,ref5 as ctex_length,ref3 as ctex_width,qty_issued,lot_no from $bai_rm_pj1.store_in where lot_no in('".$lot_details."')";
-							
+							  $get_details1="select supplier_no,ref2 as roll_no,ref5 as ctex_length,ref3 as ctex_width,qty_issued,s.lot_no from $bai_rm_pj1.store_in s left join $bai_rm_pj1.inspection_population r on s.lot_no = r.lot_no where s.lot_no in('".$lot_details."') and r.parent_id=$parent_id";
+							echo   $get_details1;
 							 $details1_result=mysqli_query($link,$get_details1) or exit("get_details1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							 
                              while($row2=mysqli_fetch_array($details1_result))
@@ -367,12 +367,11 @@ if(isset($_POST['save']))
 
     if(isset($_POST['code']))
     {
-		 $code = $_POST['code'];
-		 echo
+		$code = $_POST['code'];
 	 	$count=count($code);
 	 	$damage = $_POST['damage'];
-		  $insert_roll_details = "insert into $bai_rm_pj1.roll_inspection(po_no,batch_no,color) values ('$po_no','$batch_no','$color')";
-		  echo "</br>".$insert_roll_details."</br/>";
+		$insert_roll_details = "insert into $bai_rm_pj1.roll_inspection(po_no,batch_no,color) values ('$po_no','$batch_no','$color')";
+		  
 		 mysqli_query($link, $insert_roll_details) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"]));
          $id = mysqli_insert_id($link);
 	 	for($i=0;$i<$count;$i++)
@@ -427,7 +426,6 @@ if(isset($_POST['confirm']))
   if($spec_width==''){ $spec_width=0; }else{$spec_width;}
 
   $inspection_status = $_POST['inspection_status'];
-  if($inspection_status==''){ $inspection_status=0; }else{$inspection_status;}
 
   $spec_weight = $_POST['spec_weight'];
   if($spec_weight==''){ $spec_weight=0; }else{$spec_weight;}
@@ -550,6 +548,8 @@ if(isset($_POST['confirm']))
 					  $result_query = $link->query($insert_query) or exit('query error in inserting2222');
 
 					  $update_status = "update $bai_rm_pj1.inspection_population SET status=3 where supplier_roll_no=$supplier_no and sfcs_roll_no=$roll_no and lot_no='$lots'";
+					 echo  $update_status;
+
 					  $result_query_update = $link->query($update_status) or exit('query error in updating');
 				    }
 					echo "<script>sweetAlert('Updated Sucessfully','','info');</script>";
