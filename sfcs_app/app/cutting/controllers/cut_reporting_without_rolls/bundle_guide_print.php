@@ -3,7 +3,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 $doc_no=$_GET['doc_no'];
 $bundle_no=array();
-$getdetails2="SELECT doc_no,size,bundle_no,group_concat(shade_bundle) as shade_bun,group_concat(bundle_start) as bundle_start,group_concat(bundle_end) as bundle_end,group_concat(qty) as qty FROM $bai_pro3.docket_number_info where doc_no=".$doc_no." group by bundle_no";
+$getdetails2="SELECT doc_no,size,bundle_no,group_concat(shade_bundle) as shade_bun,group_concat(bundle_start) as bundle_start,group_concat(bundle_end) as bundle_end,group_concat(qty) as qty FROM $bai_pro3.docket_number_info where doc_no=".$doc_no." group by 	bundle_no";
 $getdetailsresult = mysqli_query($link,$getdetails2);
 while($sql_row=mysqli_fetch_array($getdetailsresult))
 {
