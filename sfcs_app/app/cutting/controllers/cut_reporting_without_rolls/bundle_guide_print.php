@@ -3,18 +3,18 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 $doc_no=$_GET['doc_no'];
 $bundle_no=array();
-$getdetails2="SELECT doc_no,size,bundle_no,group_concat(shade_bundle) as shade_bun,group_concat(bundle_start) as bundle_start,group_concat(bundle_end) as bundle_end,group_concat(qty) as qty FROM $bai_pro3.docket_number_info where doc_no=".$doc_no." group by 	bundle_no";
+$getdetails2="SELECT size,bundle_no FROM $bai_pro3.docket_number_info where doc_no=".$doc_no." group by bundle_no order by id";
 $getdetailsresult = mysqli_query($link,$getdetails2);
 while($sql_row=mysqli_fetch_array($getdetailsresult))
 {
 	//echo $sql_row['bundle_no'];
 	$size[] = $sql_row['size'];				
 	$bundle_no[] = $sql_row['bundle_no'];				
-	$shade_bun[] = $sql_row['shade_bun'];				
-	$bundle_start[$sql_row['bundle_no']] = $sql_row['bundle_start'];				
-	$bundle_end[$sql_row['bundle_no']] = $sql_row['bundle_end'];				
-	$qty[$sql_row['bundle_no']] = $sql_row['qty'];				
-	$shade[$sql_row['bundle_no']] = 'Shade';				
+	// $shade_bun[] = $sql_row['shade_bundle'];				
+	// $bundle_start[$sql_row['bundle_no']] = $sql_row['bundle_start'];				
+	// $bundle_end[$sql_row['bundle_no']] = $sql_row['bundle_end'];				
+	// $qty[$sql_row['bundle_no']] = $sql_row['qty'];				
+	// $shade[$sql_row['bundle_no']] = 'Shade';				
 }
 
 $getdetails1="SELECT compo_no,order_col_des,order_del_no,color_code,acutno FROM $bai_pro3.order_cat_doc_mk_mix  where doc_no=".$doc_no;
@@ -481,20 +481,33 @@ tags will be replaced.-->
  <tr height=19 style='height:14.4pt'>  
 	<?php
 	//	var_dump($bundle_no);
+	$bundle=0;
 	for($i=0;$i<sizeof($bundle_no);$i++)
-	{
-	
-		$getdetails21="SELECT shade_bundle,bundle_start,bundle_end,shade,qty FROM $bai_pro3.docket_number_info where doc_no=".$doc_no." and bundle_no=".$bundle_no[$i]." group by shade_bundle";
+	{	
+		$getdetails21="SELECT shade_bundle,bundle_start,bundle_end,shade,sum(qty) as qty FROM $bai_pro3.docket_number_info where doc_no=".$doc_no." and bundle_no=".$bundle_no[$i]." group by id order by id";
 		$getdetailsresult1 = mysqli_query($link,$getdetails21);
-		$ii=1;
 		while($sql_row1=mysqli_fetch_array($getdetailsresult1))
 		{			
 			?>
 			<td height=19 class=xl15305 style='height:14.4pt'></td>
 			<td colspan=2 class=xl75305><?php echo $compo_no; ?></td>
-			<td colspan=3 class=xl75305 style='border-left:none'><?php echo $color; ?></td>			
-			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $size[$i]; ?></td>
-			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $bundle_no[$i]; ?></td>
+			<td colspan=3 class=xl75305 style='border-left:none'><?php echo $color; ?></td>	
+			<?php
+			if($bundle==$bundle_no[$i])
+			{				
+			?>
+				<td class=xl75305 style='border-top:none;border-left:none'></td>
+				<td class=xl75305 style='border-top:none;border-left:none'></td>
+			<?php		
+			}
+			else
+			{	
+			?>
+				<td class=xl75305 style='border-top:none;border-left:none'><?php echo $size[$i]; ?></td>
+				<td class=xl75305 style='border-top:none;border-left:none'><?php echo $bundle_no[$i]; ?></td>
+			<?php	
+			}	
+			?>
 			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['shade_bundle']; ?></td>			
 			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['shade']; ?></td>
 			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['bundle_start']; ?></td>
@@ -503,7 +516,7 @@ tags will be replaced.-->
 			<td class=xl15305></td>
 			</tr>				
 			<?php
-			$ii=0;
+			$bundle=$bundle_no[$i];
 		}
 	}
 	?>
