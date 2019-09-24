@@ -303,7 +303,23 @@ $(document).ready(function()
 			dataType: "json",
 			success: function (response) 
 			{
-				if (response == 5)
+				
+				if (response == 8)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'Invalid Input. Please Check And Try Again !!!';
+				}
+				else if (response == 7)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'Short shipment done Permanently';
+				}
+				else if (response == 6)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'Short shipment done Temporarily';
+				}
+				else if (response == 5)
 				{
 					module_flag = 1; // block
 					restrict_msg = 'Trims Not Issued';

@@ -50,8 +50,10 @@
             $update_plan_qry="update $bai_pro3.plandoc_stat_log set plan_lot_ref='',print_status='',fabric_status=0 where doc_no=".$doc_no;
             $update_plan_qry_fab_result=mysqli_query($link, $update_plan_qry) or exit("Sql Error5: update plan".mysqli_error($GLOBALS["___mysqli_ston"]));
 
+            $username = getrbac_user()['uname'];
+            $approve_at = date("Y-m-d H:i:s");
 
-            $update_req_qry = "update $bai_rm_pj1.material_deallocation_track set status='Deallocated' where id=".$id;
+            $update_req_qry = "update $bai_rm_pj1.material_deallocation_track set approved_by='".$username."',approved_at='".$approve_at."',status='Deallocated' where id=".$id;
             $update_req_qry_result=mysqli_query($link, $update_req_qry) or exit("Sql Error2: material_deallocation_track".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
