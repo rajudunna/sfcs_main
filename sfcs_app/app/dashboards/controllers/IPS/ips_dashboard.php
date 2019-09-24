@@ -63,7 +63,7 @@ while($sql_row=mysqli_fetch_array($scanning_result))
 
 $sec_id=$_GET["sec"];
 
-$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$sec_id GROUP BY section ORDER BY section + 0";
+$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$sec_id and module_master.status='active' GROUP BY section ORDER BY section + 0";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
