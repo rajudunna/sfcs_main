@@ -15,7 +15,7 @@ for($i=0;$i<sizeof($date_maker);$i++)
 			$sql_marker_result=mysqli_query($link, $sql) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$mk_id=mysqli_insert_id($link);
 			
-			$sql_marker = "insert ignore into $bai_pro3.maker_stat_log select * from $bai_pro3.maker_stat_log where cuttable_ref=".$date_maker[0][3]." limit 1";
+			$sql_marker = "insert ignore into $bai_pro3.maker_stat_log select * from $bai_pro3.maker_stat_log where allocate_ref=".$date_maker[0][3]." limit 1";
 			$sql_marker_result=mysqli_query($link, $sql_marker_details) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$mk_ref_id=mysqli_insert_id($link);
 			
@@ -35,7 +35,7 @@ for($i=0;$i<sizeof($date_maker);$i++)
 			{
 				$mk_ref_id=$row111x2['mk_ref_id'];
 				
-				$sql11x1321="select * from $bai_pro3.maker_stat_log where marker_details_id=".$date_maker[$i][1]." and cuttable_ref=".$date_maker[$i][3]." limit 1";
+				$sql11x1321="select * from $bai_pro3.maker_stat_log where marker_details_id=".$date_maker[$i][1]." and allocate_ref=".$date_maker[$i][3]." limit 1";
 				//echo $sql11x1321."<br>";
 				$sql_result11x1121=mysqli_query($link, $sql11x1321) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result11x1121)>0)

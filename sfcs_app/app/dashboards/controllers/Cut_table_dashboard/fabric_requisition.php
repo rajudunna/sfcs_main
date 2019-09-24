@@ -169,14 +169,14 @@ function GetSelectedItem()
 <form method="POST" name="apply">
 <table class="table table-bordered">
 
-<tr><th>Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>Category</th><th>Item Code</th><th>Docket No</th><th>Requirment</th><th>Reference</th><th>Marker Length </th><th>Control</th></tr>
+<tr><th>Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>Category</th><th>Item Code</th><th>Docket No</th><th>Requirment</th><th>Reference</th><th>Length</th><th>Shrinkage</th><th>Width</th><th>Control</th></tr>
 <?php
-	$sql11x1="select order_tid,acutno from $bai_pro3.plandoc_stat_log where doc_no='".$doc_no."'";	
+	$sql11x1="select order_tid,acutno,mk_ref_id,cuttable_ref from $bai_pro3.plandoc_stat_log where doc_no='".$doc_no."'";	
 	$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row111x1=mysqli_fetch_array($sql_result11x1))
 	{
 		$order_ti=$row111x1["order_tid"];
-		$cut_no=$row111x1["acutno"];
+		$cut_no=$row111x1["acutno"];			
 	}
 	$sql11x132="select order_style_no from $bai_pro3.bai_orders_db_confirm where order_tid='".$order_ti."'";	
 	$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -196,6 +196,7 @@ function GetSelectedItem()
 		$doc_qty[$row111x["doc_no"]] = $row111x["qty"];
 		$cat_refnce[$row111x["doc_no"]] = $row111x["category"];
 		$cat_compo[$row111x["doc_no"]] = $row111x["compo_no"];
+		
 		$sql111x12="select seperate_docket,binding_consumption from $bai_pro3.cat_stat_log where order_tid='".$order_ti."' and tid='".$row111x["cat_ref"]."'";
 		$sql_result111x12=mysqli_query($link, $sql111x12) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row111x2=mysqli_fetch_array($sql_result111x12))
@@ -210,6 +211,7 @@ function GetSelectedItem()
 				$doc_mat[$row111x["doc_no"]] = $row111x["material_req"]-$bindin_val;	
 			}
 		}
+		
 		$mk_len=$row111x["mklength"];
 	}
 
@@ -225,8 +227,31 @@ function GetSelectedItem()
 		echo "<td>".$doc_mat[$docs_no[$i]]."</td>";
 		echo "<td><input type='hidden' name='doc_details[]' id='doc_details' value='".$docs_no[$i]."'> <input type='text' name='reference[]' value=''></td>";
 		// echo "<td><center><input type='button' value='Create' class='homebutton' id='btnHome' data-target='#theModal' data-toggle='modal' onclick=test('".trim($stylex)."','".trim($schedulex)."','".strstr($colorx, '-', true)."','".trim($docs_no[$i])."'); /></center></td>";
-		echo "<td>".$mk_len."</td>";
-		echo "<td><center><input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn'".$docs_no[$i]." onclick=test(".$docs_no[$i].") value='Edit'></center></td>";
+		echo "<td>".$mk_len."</td>";		
+		$sql11x132112="select allocate_ref,mk_ref_id from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
+		$sql_result11x1121=mysqli_query($link, $sql11x132112) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//$rows=0;
+		if(mysqli_num_rows($sql_result11x1121)>0)
+		{
+			while($row111x21=mysqli_fetch_array($sql_result11x1121)) 
+			{			
+				$sql11x1321="select shrinkage_group,width from $bai_pro3.maker_details where parent_id=".$row111x21['allocate_ref']." and id=".$row111x21['mk_ref_id']."";
+				$sql_result11x11211=mysqli_query($link, $sql11x1321) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($row111x2112=mysqli_fetch_array($sql_result11x11211)) 
+				{
+					echo "<td>".$row111x2112['shrinkage_group']."</td>";
+					echo "<td>".$row111x2112['width']."</td>";
+					echo "<td><center><input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn'".$docs_no[$i]." onclick=test(".$docs_no[$i].") value='Edit'></center></td>";
+				
+				}
+			}
+		}
+		else
+		{
+			echo "<td><center>N/A</center></td>";
+			echo "<td><center>N/A</center></td>";
+			echo "<td><center>N/A</center></td>";
+		}
 		echo "</tr>";
 		
 			 
@@ -263,16 +288,16 @@ function GetSelectedItem()
 									$doc_no = json_encode($_GET['doc_no']);
 									$sql11x132="select allocate_ref,mk_ref_id,mk_ref from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
 									$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-									$rows=0;
+									//$rows=0;
 									while($row111x2=mysqli_fetch_array($sql_result11x112)) 
 									{
 										$mk_ref_id=$row111x2['mk_ref_id'];
 										$sql_marker_details = "select * from $bai_pro3.maker_details where parent_id='".$row111x2['allocate_ref']."'";
 										$sql_marker_details_result=mysqli_query($link, $sql_marker_details) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-										$values_rows=mysqli_num_rows($sql_marker_details_result);
+										//$values_rows=mysqli_num_rows($sql_marker_details_result);
 										while($sql_marker_details_res=mysqli_fetch_array($sql_marker_details_result))
 										{   
-											$rows++;
+											//$rows++;
 											if($sql_marker_details_res[id] == $mk_ref_id)
 											{
 												echo "<tr><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[0]'>yes</td>
@@ -282,8 +307,7 @@ function GetSelectedItem()
 												<td style='display:none;'  id='mk_ref'>".$row111x2['mk_ref']."</td>
 												<td><input type='radio' name='selected_len' value='yes' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]' CHECKED></td>
 												
-												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td>
-												<td  id='values_rows'>$values_rows</td>
+												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td>	
 												</tr>";
 											}
 											else
@@ -295,9 +319,7 @@ function GetSelectedItem()
 												<td style='display:none;'  id='mk_ref'>".$row111x2['mk_ref']."</td>
 												<td><input type='radio' name='selected_len' value='no' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]'></td>
 												
-												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td>
-												<td  id='values_rows'>$values_rows</td>
-												</tr>";
+												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pat_ver]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td></tr>";
 											}												
 										}										
 									}
