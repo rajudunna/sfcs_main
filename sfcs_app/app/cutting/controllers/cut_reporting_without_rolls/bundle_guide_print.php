@@ -3,14 +3,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 $doc_no=$_GET['doc_no'];
 $bundle_no=array();
-$getdetails2="SELECT * FROM $bai_pro3.docket_number_info where doc_no=".$doc_no." order by id";
+$getdetails2="SELECT doc_no,size,bundle_no,group_concat(shade_bundle) as shade_bun,group_concat(bundle_start) as bundle_start,group_concat(bundle_end) as bundle_end,group_concat(qty) as qty FROM $bai_pro3.docket_number_info where doc_no=".$doc_no." group by bundle_no";
 $getdetailsresult = mysqli_query($link,$getdetails2);
 while($sql_row=mysqli_fetch_array($getdetailsresult))
 {
 	//echo $sql_row['bundle_no'];
 	$size[] = $sql_row['size'];				
 	$bundle_no[] = $sql_row['bundle_no'];				
-	$shade_bun[] = $sql_row['shade_bundle'];				
+	$shade_bun[] = $sql_row['shade_bun'];				
 	$bundle_start[$sql_row['bundle_no']] = $sql_row['bundle_start'];				
 	$bundle_end[$sql_row['bundle_no']] = $sql_row['bundle_end'];				
 	$qty[$sql_row['bundle_no']] = $sql_row['qty'];				
@@ -484,7 +484,7 @@ tags will be replaced.-->
 	for($i=0;$i<sizeof($bundle_no);$i++)
 	{
 	
-		$getdetails21="SELECT shade_bundle,bundle_start,bundle_end,shade,sum(qty) as qty FROM $bai_pro3.docket_number_info where doc_no=".$doc_no." and bundle_no=".$bundle_no[$i]." group by shade order by id";
+		$getdetails21="SELECT shade_bundle,bundle_start,bundle_end,shade,qty FROM $bai_pro3.docket_number_info where doc_no=".$doc_no." and bundle_no=".$bundle_no[$i]." group by shade_bundle";
 		$getdetailsresult1 = mysqli_query($link,$getdetails21);
 		$ii=1;
 		while($sql_row1=mysqli_fetch_array($getdetailsresult1))

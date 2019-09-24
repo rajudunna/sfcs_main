@@ -475,7 +475,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 }).done(function(res){
                     if(res=="Not Available")
                     {
-                        swal('Cut Reporting Problem','Not Available','warning');
+                        swal('Rolls Not Available','Not Available','warning');
                     }else{
                         try{
                            
@@ -544,7 +544,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                                     totalreportingplies+=parseInt(data[i]["allocated_qty"]/marklength);
                                     $('#c_plies').val(totalreportingplies);
                                     totalfabricreturn+=marklength;
-                                    $('#fab_returned').val(totalreportingplies);
+                                    $('#fab_returned').val(parseFloat(Number(totalreportingplies)).toFixed(2));
                                    
                                 sno++;
                                 $('#enablerolls').append(row);
@@ -781,20 +781,20 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     
        
         sumofdamages+=parseFloat(damages);
-        $('#damages').val(sumofdamages);
+        $('#damages').val(Number(sumofdamages).toFixed(2));
         sumofjoints+=parseFloat(joints);
-        $('#joints').val(sumofjoints);
+        $('#joints').val(Number(sumofjoints).toFixed(2));
         sumofendbits+=parseFloat(endbits);
-        $('#endbits').val(sumofendbits);
+        $('#endbits').val(Number(sumofendbits).toFixed(2));
         sumofshortages+=parseFloat(shortages);
-        $('#shortages').val(sumofshortages);
+        $('#shortages').val(Number(sumofshortages).toFixed(2));
         sumoffabricreturn+=parseFloat(fabricreturnqty);
 
         if(sumoffabricreturn<0)
         {
             $('#fab_returned').val(0);
         }else{
-            $('#fab_returned').val(sumoffabricreturn);
+            $('#fab_returned').val(Number(sumoffabricreturn).toFixed(2));
         }
         
                // alert(sumofreporting);
