@@ -235,7 +235,7 @@ function GetSelectedItem()
 			if($row111x21['mk_ref_id']>0)
 			{	
 				$sql11x1321="select shrinkage_group,width from $bai_pro3.maker_details where parent_id=".$row111x21['allocate_ref']." and id=".$row111x21['mk_ref_id']."";
-				echo $row111x21['mk_ref_id'];
+				// echo $row111x21['mk_ref_id'];
 				$sql_result11x11211=mysqli_query($link, $sql11x1321) or die("Error15 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row111x2112=mysqli_fetch_array($sql_result11x11211)) 
 				{
@@ -266,7 +266,11 @@ function GetSelectedItem()
 ?>
 
 </table><br/><br/>
-<div class="modal fade" id="rejections_modal" role="dialog">
+<?php
+for($i=0;$i<sizeof($cat_refnce);$i++)
+{
+?>
+<div class="modal fade" id="rejections_modal<?= $docs_no[$i];?>" role="dialog">
     <div class="modal-dialog" style="width: 80%;  height: 100%;">
         <div class="modal-content">
             <div class="modal-header">Change Marker Length
@@ -284,10 +288,10 @@ function GetSelectedItem()
 								<tr class='.bg-dark'><th></th><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks</th></tr>
 							</thead>
                                 <tbody id='rejections_table_body'>
-								<!-- <input type="hidden" name="product" placeholder="Product Name" value="" id="product_name" /> -->
 								<?php 
 									
-									$doc_no = json_encode($_GET['doc_no']);
+									$doc_no = $docs_no[$i];
+									
 									$sql11x132="select allocate_ref,mk_ref_id,mk_ref from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
 									$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error16 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 									//$rows=0;
@@ -327,16 +331,17 @@ function GetSelectedItem()
 									}
 									?>
                                 </tbody>
-                            </table>
-                        </div>  
-                        <div class='col-sm-offset-2 col-sm-10'>
-						<table class='table table-bordered rejections_table'>
-							<thead>
+                            <!-- </table>
+                        </div>   -->
+                        <!-- <div class='col-sm-12'>
+						<table class='table table-bordered rejections_table'> -->
+							<!-- <thead>
 								<tr class='.bg-dark'><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks</th></tr>
-							</thead>
+							</thead> -->
                                 <tbody id='rejections_table'>
 								
 								<tr>
+									<td></td>
 									<td><input class="form-control"  type="text" name="in_mktype" id="mk_type"  title="please enter numbers and decimals"></td>
 									<td><input class="form-control"  type="text" name= "in_mkver" id= "mk_ver" onchange="validate_data(this)" title="please enter numbers and decimals"></td>
 									<td><input class="form-control"  type="text" name= "in_skgrp" id= "sk_grp" onchange="validate_data(this)" title="please enter numbers and decimals"></td>
@@ -352,9 +357,11 @@ function GetSelectedItem()
                                 </tbody>
                             </table>
 								<input type='button' class='btn btn-danger pull-right' value='clear' name='clear_rejection' id='clear_rejection' onclick='clear_row()'>
-								<input type='button' class='btn btn-warning pull-right' value='+' name='add_mklen' onclick = 'add_Newmklen()' id='add_marker_length'>
+								<input type='button' class='btn btn-warning pull-right' value='Add' name='add_mklen' onclick = 'add_Newmklen()' id='add_marker_length'>
 					<br>
-					<input type='button' class='btn btn-success pull-left' value='Submit' name='submit' onclick = 'submit_mklen()' id='submit_length'>
+					<?php
+					echo "<input type='button' class='btn btn-success pull-left' value='Submit' name='submit' onclick=submit_mklen(".$doc_no.")  id='submit_length'>";
+					?>
 
                     </div>
 
@@ -367,6 +374,9 @@ function GetSelectedItem()
         </div>
     </div>
 </div>
+<?php
+}
+?>
 	<table class="table table-bordered">
 		<tr>
 
@@ -695,7 +705,7 @@ function validate_data(id_name)
 	$('#mark_len_table tr').has('td').each(function() {
 		var arrayItem = [];
 		$('td', $(this)).each(function(index, item) {
-			console.log($(this));
+			// console.log($(this));
 			arrayItem[index] = $(item).text();
 		});
 		array.push(arrayItem);
@@ -714,6 +724,9 @@ function validate_data(id_name)
 		}
 
 	}
+	// else {
+	// 	sweetAlert('Marker Type/Marker Version/Shrinkage Group/Width/Marker Length are mandatory','','warning');
+	// }
 }
 function add_Newmklen()
 {
@@ -729,7 +742,6 @@ function add_Newmklen()
 	var permts = $('#permts').val();
 	var rmks = $('#rmks').val();
 	
-	
 	// var values_rows1 = document.getElementById('values_rows').value();
 	// alert(values_rows1)
 	// /*
@@ -737,10 +749,10 @@ function add_Newmklen()
 		sweetAlert('Please enter valid Marker Version','','warning');
 		return false;
 	}
-	if(mk_eff == ''){
-		sweetAlert('Please enter valid Marker Eff','','warning');
-		return false;
-	}
+	// if(mk_eff == ''){
+	// 	sweetAlert('Please enter valid Marker Eff','','warning');
+	// 	return false;
+	// }
 	if(mk_len <=0)
 	{
 		sweetAlert('Please enter valid Marker Length','','warning');
@@ -768,7 +780,7 @@ function add_Newmklen()
 	}
 	
 	var table_body = $("#rejections_table_body");
-	console.log(table_body);
+	// console.log(table_body);
 	var new_row = "<tr><td><input type='radio' name='gender' value='no' id='check$sql_marker_details_res[0]'></td><td>"+mk_type+"</td><td>"+mk_ver+"</td><td>"+sk_grp+"</td><td>"+width+"</td><td>"+mk_len+"</td><td>"+mk_name+"</td><td>"+ptr_name+"</td><td>"+permts+"</td><td>"+mk_eff+"</td><td>"+rmks+"</td><td style='display:none;'>0</td></tr>";
 	$("#rejections_table_body").append(new_row);
 	$('#mk_type').val(' ');
@@ -806,15 +818,14 @@ function valid_button(row_num)
 	// $('input[name="selected_len"]').val('no');
 	// $('#'+id.name).val('yes');
 }
-function submit_mklen()
+function submit_mklen(doc_no)
 {
 	var tabledata = [];
-
 	$('#mark_len_table tr').has('td').each(function() {
-		var tabledataItem = {};
+		var tabledataItem = [];
 		$('td', $(this)).each(function(index, item) {
 			
-			console.log(index,$(item));
+			// console.log(index,$(item));
 			tabledataItem[index] = $(item).text();
 		});
 		tabledata.push(tabledataItem);
@@ -822,8 +833,9 @@ function submit_mklen()
 	// console.log(tabledata);
 	var jsonString = JSON.stringify(tabledata);
 	$.ajax({
+	type : "POST",
 	url : '<?= $get_url1 ?>',
-	data: {data : tabledata}, 
+	data: {data : jsonString,doc_no:doc_no}, 
 	cache: false,
 	
 	}).done(function(res){
@@ -860,9 +872,9 @@ function submit_mklen()
 	// console.log(rmks);
 }
 function test(doc_no){
-	var t = document.getElementById('doc_details').value;
-	$('#product_name').val(t);
-	$("#rejections_modal").modal('toggle');
+	// var t = document.getElementById('doc_details').value;
+	// $('#product_name').val(t);
+	$("#rejections_modal"+doc_no).modal('toggle');
 	
 }
 
