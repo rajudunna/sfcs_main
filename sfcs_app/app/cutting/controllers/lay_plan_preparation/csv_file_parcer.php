@@ -3,8 +3,8 @@
 
 //To update Form.
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-
-       if (isset($_POST['Submit'])) {
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+       if (isset($_POST['Submit']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link)) {
            //For Bulk Upload
         
            $fname = $_FILES["file"]["name"];
@@ -197,6 +197,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
            }
            unlink(realpath($path));
 
+}else {
+
+    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
+        location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=".$_POST['color']."&style=".$_POST['style']."&schedule=".$_POST['schedule']."\"; }</script>";	
+    
 }
 ?>
 

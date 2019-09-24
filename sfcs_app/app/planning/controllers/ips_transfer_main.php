@@ -6,7 +6,7 @@
     include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
     $url = getFullURLLevel($_GET['r'],'ips_transfer_ajax.php',0,'R');
     
-    $sqlx="select * from $bai_pro3.module_master order by module_name*1";
+    $sqlx="select * from $bai_pro3.module_master where status='active' order by module_name*1";
     //echo $sqlx;
     $sql_resultx=mysqli_query($link, $sqlx) or exit("NO sections availabel");
     while($sql_rowx=mysqli_fetch_array($sql_resultx))

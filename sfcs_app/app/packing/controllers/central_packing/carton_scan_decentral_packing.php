@@ -169,7 +169,7 @@
 							$("#submit_btn").attr("disabled", true);
 							$('#carton_id').focus();
 						}
-						else if(response['status']==0 || response['status']==3 || response['status']==4)
+						else if(response['status']==0 || response['status']==3 || response['status']==4 || response['status']==5 || response['status']==6)
 						{
 							$("#loading_img").hide();
 							if (response['status']==0)
@@ -183,6 +183,13 @@
 							else if (response['status']==4)
 							{
 								var msg = "Carton Not Eligible Due to Quantity not Available";
+							}
+							else if (response['status']==5)
+							{
+								var msg = "Short shipment done Temporarily";
+							}else{
+								var msg = "Short shipment done Permanently" ;
+
 							}
 							
 							$("#error_msg").show();

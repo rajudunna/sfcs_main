@@ -1,6 +1,8 @@
 <?php
 	include('../../../../common/config/config_ajax.php');
 	include("../../../../common/config/m3Updations.php");
+	// include("../../../../common/config/functions.php");
+
 	//API related data
 	$plant_code = $global_facility_code;
 	$company_num = $company_no;
@@ -49,8 +51,28 @@
 				$sizes=$row['sizes'];
 				$carton_qty=$row['carton_qty'];
 			}
-
-			if ($status == 'DONE')
+			$short_ship_status =0;
+			$query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
+			$shortship_res = mysqli_query($link,$query_short_shipment);
+			$count_short_ship = mysqli_num_rows($shortship_res);
+			if($count_short_ship >0) {
+				while($row_set=mysqli_fetch_array($shortship_res))
+				{
+					if($row_set['remove_type']==1) {
+						$short_ship_status=1;
+					}else{
+						$short_ship_status=2;
+					}
+				}
+			}
+		
+			if($short_ship_status==1){
+				$result_array['status'] = 5;
+			}
+			else if($short_ship_status==2){
+				$result_array['status'] = 6;
+			}
+			else if ($status == 'DONE')
 			{
 				$result_array['status'] = 1;
 			}
@@ -120,7 +142,7 @@
 					$result_array['status'] = 4;
 				}           
 			}
-			// 1 = carton already scanned || 2 = carton scanned successfully || 3 = carton scanned failed || 4 =  carton not eligible for scanning
+			// 1 = carton already scanned || 2 = carton scanned successfully || 3 = carton scanned failed || 4 =  carton not eligible for scanning || 5= Temporary short shipment already generated || 6= Permanent short shipment already generated
 			$result_array['carton_no'] = $carton_no;
 			$result_array['style'] = $style;
 			$result_array['schedule'] = $schedule;
