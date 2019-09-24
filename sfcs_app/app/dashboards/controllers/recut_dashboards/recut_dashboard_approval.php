@@ -274,7 +274,7 @@ echo $drp_down;
                 FROM `$bai_pro3`.`recut_v2_child` rc 
                 LEFT JOIN $bai_pro3.`recut_v2` r ON r.doc_no = rc.`parent_id`
                 LEFT JOIN $bai_pro3.`bai_orders_db` b ON b.order_tid = r.`order_tid`
-                WHERE r.mk_ref != '0' and fabric_status <> '99'
+                WHERE r.mk_ref != '0' and fabric_status <> '99' and r.short_shipment_status=0
                 GROUP BY parent_id";
                 $blocks_result = mysqli_query($link,$blocks_query) or exit('Rejections Log Data Retreival Error');
                 if($blocks_result->num_rows > 0)

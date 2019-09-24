@@ -949,6 +949,14 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 swal('Error','Docket Doesnt Exist','error');
                 return false;
             }
+            if(data.error == '2'){
+                swal('Error','Short Shipment Done Temporarly','error');
+                return false;
+            }
+            if(data.error == '3'){
+                swal('Error','Short Shipment Done Perminently','error');
+                return false;
+            }
 
             if(data.partial == '1'){
                 $('#hide_details_reported').css({'display':'block'});
