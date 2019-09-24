@@ -172,21 +172,21 @@ function GetSelectedItem()
 <tr><th>Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>Category</th><th>Item Code</th><th>Docket No</th><th>Requirment</th><th>Reference</th><th>Length</th><th>Shrinkage</th><th>Width</th><th>Control</th></tr>
 <?php
 	$sql11x1="select order_tid,acutno,mk_ref_id,cuttable_ref from $bai_pro3.plandoc_stat_log where doc_no='".$doc_no."'";	
-	$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row111x1=mysqli_fetch_array($sql_result11x1))
 	{
 		$order_ti=$row111x1["order_tid"];
 		$cut_no=$row111x1["acutno"];			
 	}
 	$sql11x132="select order_style_no from $bai_pro3.bai_orders_db_confirm where order_tid='".$order_ti."'";	
-	$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error11 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row111x112=mysqli_fetch_array($sql_result11x112))
 	{
 		$stylex=$row111x112["order_style_no"];
 	}
 	$sql111x="select mklength,compo_no,category,order_del_no,order_col_des,color_code,doc_no,cat_ref,acutno,material_req,(sum(p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50
 	)*p_plies) as qty from $bai_pro3.order_cat_doc_mk_mix where order_tid='".$order_ti."' and pcutno='".$cut_no."' group by doc_no";
-	$sql_result111x=mysqli_query($link, $sql111x) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result111x=mysqli_query($link, $sql111x) or die("Error12 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row111x=mysqli_fetch_array($sql_result111x))
 	{
 		$schedulex=$row111x["order_del_no"];
@@ -198,7 +198,7 @@ function GetSelectedItem()
 		$cat_compo[$row111x["doc_no"]] = $row111x["compo_no"];
 		
 		$sql111x12="select seperate_docket,binding_consumption from $bai_pro3.cat_stat_log where order_tid='".$order_ti."' and tid='".$row111x["cat_ref"]."'";
-		$sql_result111x12=mysqli_query($link, $sql111x12) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result111x12=mysqli_query($link, $sql111x12) or die("Error13 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row111x2=mysqli_fetch_array($sql_result111x12))
 		{
 			if($row111x2['seperate_docket']=='No')
@@ -229,14 +229,14 @@ function GetSelectedItem()
 		// echo "<td><center><input type='button' value='Create' class='homebutton' id='btnHome' data-target='#theModal' data-toggle='modal' onclick=test('".trim($stylex)."','".trim($schedulex)."','".strstr($colorx, '-', true)."','".trim($docs_no[$i])."'); /></center></td>";
 		echo "<td>".$mk_len."</td>";		
 		$sql11x132112="select allocate_ref,mk_ref_id from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
-		$sql_result11x1121=mysqli_query($link, $sql11x132112) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		//$rows=0;
-		if(mysqli_num_rows($sql_result11x1121)>0)
-		{
-			while($row111x21=mysqli_fetch_array($sql_result11x1121)) 
-			{			
+		$sql_result11x1121=mysqli_query($link, $sql11x132112) or die("Error14 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row111x21=mysqli_fetch_array($sql_result11x1121)) 
+		{				//$rows=0;
+			if($row111x21['mk_ref_id']>0)
+			{	
 				$sql11x1321="select shrinkage_group,width from $bai_pro3.maker_details where parent_id=".$row111x21['allocate_ref']." and id=".$row111x21['mk_ref_id']."";
-				$sql_result11x11211=mysqli_query($link, $sql11x1321) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				echo $row111x21['mk_ref_id'];
+				$sql_result11x11211=mysqli_query($link, $sql11x1321) or die("Error15 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row111x2112=mysqli_fetch_array($sql_result11x11211)) 
 				{
 					echo "<td>".$row111x2112['shrinkage_group']."</td>";
@@ -245,13 +245,15 @@ function GetSelectedItem()
 				
 				}
 			}
+			else
+			{
+				echo "<td><center>N/A</center></td>";
+				echo "<td><center>N/A</center></td>";
+				echo "<td><center>N/A</center></td>";
+			}
 		}
-		else
-		{
-			echo "<td><center>N/A</center></td>";
-			echo "<td><center>N/A</center></td>";
-			echo "<td><center>N/A</center></td>";
-		}
+
+		
 		echo "</tr>";
 		
 			 
@@ -287,13 +289,13 @@ function GetSelectedItem()
 									
 									$doc_no = json_encode($_GET['doc_no']);
 									$sql11x132="select allocate_ref,mk_ref_id,mk_ref from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
-									$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+									$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error16 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 									//$rows=0;
 									while($row111x2=mysqli_fetch_array($sql_result11x112)) 
 									{
 										$mk_ref_id=$row111x2['mk_ref_id'];
 										$sql_marker_details = "select * from $bai_pro3.maker_details where parent_id='".$row111x2['allocate_ref']."'";
-										$sql_marker_details_result=mysqli_query($link, $sql_marker_details) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+										$sql_marker_details_result=mysqli_query($link, $sql_marker_details) or die("Error17 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 										//$values_rows=mysqli_num_rows($sql_marker_details_result);
 										while($sql_marker_details_res=mysqli_fetch_array($sql_marker_details_result))
 										{   
@@ -598,14 +600,14 @@ echo "<h2>Already Requested Cut Jobs </h2>";
 echo "<div class='table-responsive'><table class=\"table table-bordered\" id=\"table1\" border=0 cellpadding=0 cellspacing=0>";
 echo "<tr><th>Section</th><th>Module</th><th>Date</th><th>Time</th><th>Requested By</th><th>Style</th><th>Schedule</th><th>Color</th><th>Docket No</th><th>Job No</th><th>Fabric Status</th></tr>";
 $sql2="select * from $bai_pro3.fabric_priorities where (log_user=\"".$username."\"  or section=$section) and issued_time=\"0000-00-00 00:00:00\" order by section,req_time,module";
-$result2=mysqli_query($link, $sql2) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+$result2=mysqli_query($link, $sql2) or die("Error12 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row2=mysqli_fetch_array($result2))
 {
 	$log=$row2["req_time"];
 	$log_split=explode(" ",$log);
 	
 	$sql11="select order_tid,acutno,rm_date from $bai_pro3.plandoc_stat_log where doc_no=\"".$row2["doc_ref"]."\"";
-	$sql_result11=mysqli_query($link, $sql11) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result11=mysqli_query($link, $sql11) or die("Error13 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row11=mysqli_fetch_array($sql_result11))
 	{
 		$order_tid=$row11["order_tid"];
