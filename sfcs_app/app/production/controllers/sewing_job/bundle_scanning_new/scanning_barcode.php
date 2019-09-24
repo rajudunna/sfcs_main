@@ -175,9 +175,11 @@ $result_rejections = $link->query($qery_rejection_resons);
     <div class="panel-body" style="background-color: black;" ng-controller="scancode_ctrl">
        <table border=0;> 
        <tr>
-        <td><label>Style : </label><br/><br/><label>Color : </label></td>
-        <td style="padding: 0px 0px 0px 23px;"><input type="text" style="max-width: 150px;" class="form-control" name="style" ng-model="style" ng-readonly="true"><br/><br/>
-       <input type="text" style="max-width: 150px;" class="form-control" name="color" ng-model="color" ng-readonly="true"></td>
+        <td><br/><label>Style : </label><br/><br/><br/><br/><label>Color : </label><br/><br/><br/><br/><label>eligible_qty: </label><br/><br/></td>
+        <td style="padding: 0px 0px 0px 23px;"><input type="text" style="max-width: 150px;background-color:lightblue;" class="form-control" name="style" ng-model="style" ng-readonly="true"><br/><br/><br/>
+       <input type="text" style="max-width: 150px;background-color:lightblue;" class="form-control" name="color" ng-model="color" ng-readonly="true"><br/><br/><br/><br/>
+       <input type="text"  style="max-width: 150px;" class="form-control" name="eligible_qty" ng-model="eligible_qty" ><br/>
+       </td>
        <td style="width: 10 5px;"></td>
         <td><div class="container" style="width: 570px;">
         <div class="panel panel-basic" style="background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
@@ -204,17 +206,17 @@ $result_rejections = $link->query($qery_rejection_resons);
      <tr>
      <div>
         <div class="col-sm-3" style="padding: 11px 0px 8px 6px;width: 28%;">previous hr: </div>
-        <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">26497</div>
-        <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">57894</div>
-        <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">5166</div>
+        <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #45b645;">26497</div>
+        <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #f31c06;">57894</div>
+        <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #714f1b;">5166</div>
       <div>
       </tr>
       <tr>
       <div>
         <div class="col-sm-3" style="padding: 11px 0px 8px 6px;width: 28%;">current hr:</div>
-        <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">5469</div>
-        <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">5450</div>
-        <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">5498</div>
+        <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #45b645;">5469</div>
+        <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #f31c06;">5450</div>
+        <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #714f1b;">5498</div>
       </tr>
       </div>
     </tbody>
@@ -290,16 +292,13 @@ $result_rejections = $link->query($qery_rejection_resons);
          <div class="panel-heading" style="font-size: large;background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
                 <div class="row">
                 <div class="col-sm-9 col-md-9 col-xs-9">Factory : {{global_facility_code}}</div>
-                <!-- <div class="panel-heading"></div>
-                <div class="row"></div> -->
-                <div class="panel-heading"></div>
+                <div class="col-sm-7  "></div><div   class="btn btn-sm btn-success" id="txmode" >Count:  <input type="text"  style="max-width: 90px;padding:0px 0px" class="form-control" ng-model="count" name="count" id="count" ng-readonly="true"></div>
                 <div class="row"></div>
-                <div class="panel-heading"></div>
+                <div class="col-sm-7 col-md-7 col-xs-7">Team: {{module}}</div><br/>
+                <div class="panel-heading"></div>   
                 <div class="row"></div>
-                <div class="col-sm-7 col-md-7 col-xs-7">Team: {{module}}</div>
-                <button type="button" style="height: 35px;width:70px;" class="btn btn-info">Reset</button>
                 <div class="col-sm-7 col-md-7 col-xs-7">Operation :{{operation_name}}</div>
-                <div class="col-sm-5  ">Count</div>
+                <button type="button" style="height: 35px;width:70px;" class="btn btn-info">Reset</button>
                 </div>
             </div>
         </td>
