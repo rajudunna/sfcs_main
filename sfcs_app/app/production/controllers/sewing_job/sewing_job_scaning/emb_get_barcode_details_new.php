@@ -937,7 +937,7 @@
 			//updating into  m3 transactions for positives
 			for($i=0;$i<sizeof($b_tid);$i++)
 			{
-			$updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$b_rep_qty[$i]);
+			$updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$embquantity);
 			}
             $result_array['bundle_no'] = $bundle_no;
             $result_array['op_no'] = $op_no;
