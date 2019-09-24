@@ -82,7 +82,7 @@ include('dbconf.php');
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
-echo "<div class=\"row\"><div class=\"col-sm-3\"><label>Select Style:</label><select class='form-control' name=\"style\"  id=\"style\" onchange=\"firstbox();\" id='style'>";
+echo "<div class=\"row\"><div class=\"col-sm-2\"><label>Select Style:</label><select class='form-control' name=\"style\"  id=\"style\" onchange=\"firstbox();\" id='style'>";
 
 echo "<option value='' disabled selected>Please Select</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -114,7 +114,7 @@ echo "  </select>
 
 // mysqli_query($link, $sql_update2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-echo "<div class='col-sm-3'><label>Select Schedule:</label> 
+echo "<div class='col-sm-2'><label>Select Schedule:</label> 
 	  <select class='form-control' name=\"schedule\" id=\"schedule\" onchange=\"secondbox();\" id='schedule'>";
 //$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
@@ -143,7 +143,7 @@ echo "	</select>
 
 <?php
 
-echo "<div class='col-sm-3'><label>Select Color:</label><select class='form-control' name=\"color\" onchange=\"thirdbox();\" id='color'>";
+echo "<div class='col-sm-2'><label>Select Color:</label><select class='form-control' name=\"color\" onchange=\"thirdbox();\" id='color'>";
 //$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log) and order_style_no=\"$style\" and order_del_no=\"$schedule\"";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 //{
@@ -249,10 +249,10 @@ if(isset($_POST['submit']))
                 echo "<td>".$sql_row["p_s".$sizes_code[$s].""]."</td>";
             }
             echo "<td>".$sql_row["a_plies"]."</td>";
-            $sql12="select * from $bai_pro3.docket_number_info where doc_no=".$sql_row['doc_no']."";
+            $sql12="select * from $bai_pro3.docket_number_info where doc_no=".$sql_row['doc_no'];
             mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $sql_result12=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $sql_num_check12=mysqli_num_rows($sql_result12);
+            $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_num_check12=mysqli_num_rows($sql_result12);
             if($sql_num_check12>0)
             {
 

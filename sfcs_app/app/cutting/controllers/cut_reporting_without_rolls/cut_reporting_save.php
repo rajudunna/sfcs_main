@@ -32,7 +32,7 @@ if($rollwisedata)
         $docketexistedresult=mysqli_query($link,$docketexisted);
         if($docketexistedresult)
         {
-            $scheduleddata="select doc_no from $bai_pro3.`order_cat_doc_mk_mix` where order_del_no=".$schedule;
+            $scheduleddata="select doc_no from $bai_pro3.`order_cat_doc_mk_mix` where order_del_no='".$schedule."'";
             $scheduleddataresult= mysqli_query($link,$scheduleddata);
             if(mysqli_num_rows($scheduleddataresult) > 0)
             {
@@ -131,8 +131,8 @@ if($rollwisedata)
                         $shadebundleno++;
                         $startno=$padded;
                         $padded+=$docket_info[$k]['totalplies'];
-                        $docketrolinfo ="INSERT INTO $bai_pro3.`docket_number_info` (doc_no,size,bundle_no,shade_bundle,bundle_start,bundle_end)
-                        VALUES (".$doc_no.",'".$key."',".$bundle.",'".$bundle."-".$shadebundleno."',".$startno.",".$padded.")";
+                        $docketrolinfo ="INSERT INTO $bai_pro3.`docket_number_info` (doc_no,size,bundle_no,shade_bundle,shade,bundle_start,bundle_end,qty)
+                        VALUES (".$doc_no.",'".$key."',".$bundle.",'".$bundle."-".$shadebundleno."','".$docket_info[$k]['shade']."',".$startno.",".$padded.",".$docket_info[$k]['totalplies'].")";
                         $result= mysqli_query($link,$docketrolinfo);                                          
                     }   
                     $bundle++;    
