@@ -376,7 +376,7 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 
 
 echo '<div class="table-responsive"><table class="table table-bordered" id = "table-data">';
-echo "<tr bgcolor= #ffffff; color= white; ><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks</th></tr>";
+echo "<tr bgcolor= #ffffff; color= white; ><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks</th><th>Control</th></tr>";
 echo '<tbody id = "body-data">';
 for ($i=0; $i < 5; $i++) { 
 	
@@ -391,7 +391,7 @@ for ($i=0; $i < 5; $i++) {
 		<td><input class="form-control"  type="text" name= "in_mkeff['.$i.']" id= "mk_eff_'.$i.'" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_permts['.$i.']" id= "permts_'.$i.'" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_rmks['.$i.']" id= "rmks_'.$i.'" title="please enter numbers and decimals"></td>
-		
+		<td><input class="btn btn-sm btn-danger" onclick="deleteRow('.$i.')" type = "button" id="delete" name = "delete" value = "Delete Row"></td>
 		</tr>';
 }
 // echo "<input class='form-control'  type='text' name= 'rows' id= 'rows' value =".$j.">";
@@ -683,31 +683,59 @@ function verify_null(){
 	return true;
 }
 function add_input_row() {
-	var row = $('#table-data >tbody >tr').length;
-	var rowCount = row -1;
-	var table = document.getElementById("table-data");
-	var row = table.insertRow();
-	var cell1 = row.insertCell(0);
-	var cell2 = row.insertCell(1);
-	var cell3 = row.insertCell(2);
-	var cell4 = row.insertCell(3);
-	var cell5 = row.insertCell(4);
-	var cell6 = row.insertCell(5);
-	var cell7 = row.insertCell(6);
-	var cell8 = row.insertCell(7);
-	var cell9 = row.insertCell(8);
-	var cell10 = row.insertCell(9);
-	cell1.innerHTML = "<input class='form-control float'  name='in_mktype["+rowCount+"]' id='mk_type_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
-	cell2.innerHTML = "<input class='form-control float'  name='in_mkver["+rowCount+"]' id='mk_ver_"+rowCount+"' type='text' onchange='validate_data("+rowCount+",this)' title='Please enter numbers and decimals'>";
-	cell3.innerHTML = "<input class='form-control float'  name='in_skgrp["+rowCount+"]' id='sk_grp_"+rowCount+"' type='text' onchange='validate_data("+rowCount+",this)' title='Please enter numbers and decimals'>";
-	cell4.innerHTML = "<input class='form-control float'  name='in_width["+rowCount+"]' id='width_"+rowCount+"' type='text' onchange='validate_data("+rowCount+",this)' title='Please enter numbers and decimals'>";
-	cell5.innerHTML = "<input class='form-control float'  name='in_mklen["+rowCount+"]' id='mk_len_"+rowCount+"' type='text' onchange='validate_data("+rowCount+",this)' title='Please enter numbers and decimals'>";
-	cell6.innerHTML = "<input class='form-control float'  name='in_mkname["+rowCount+"]' id='mk_name_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
-	cell7.innerHTML = "<input class='form-control float'  name='in_ptrname["+rowCount+"]' id='ptr_name_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
-	cell8.innerHTML = "<input class='form-control float'  name='in_mkeff["+rowCount+"]' id='mk_eff_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
-	cell9.innerHTML = "<input class='form-control float'  name='in_permts["+rowCount+"]' id='permts_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
-	cell10.innerHTML = "<input class='form-control float'  name='in_rmks["+rowCount+"]' id='rmks_"+rowCount+"'  type='text' title='Please enter numbers and decimals'>";
+	var flag = 0;
+	var table = $("#body-data");
+	var tr_length= table.find('tr').length;
+		for (let index = 0; index < tr_length; index++) {
+			if($("#mk_ver_"+index).val() != '' && $("#sk_grp_"+index).val() != '' && $("#width_"+index).val() != '' && $("#mk_len_"+index).val()){
+				flag = 0;
+			}
+			else{
+				flag = 1;
+			}
 
+		}
+	if(flag == 0)
+	{
+
+		var row = $('#table-data >tbody >tr').length;
+		var rowCount = row -1;
+		var table = document.getElementById("table-data");
+		var row = table.insertRow();
+		var cell1 = row.insertCell(0);
+		var cell2 = row.insertCell(1);
+		var cell3 = row.insertCell(2);
+		var cell4 = row.insertCell(3);
+		var cell5 = row.insertCell(4);
+		var cell6 = row.insertCell(5);
+		var cell7 = row.insertCell(6);
+		var cell8 = row.insertCell(7);
+		var cell9 = row.insertCell(8);
+		var cell10 = row.insertCell(9);
+		var cell11 = row.insertCell(10);
+		cell1.innerHTML = "<input class='form-control float'  name='in_mktype["+rowCount+"]' id='mk_type_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
+		cell2.innerHTML = "<input class='form-control float'  name='in_mkver["+rowCount+"]' id='mk_ver_"+rowCount+"' type='text' onchange='validate_data("+rowCount+",this)' title='Please enter numbers and decimals'>";
+		cell3.innerHTML = "<input class='form-control float'  name='in_skgrp["+rowCount+"]' id='sk_grp_"+rowCount+"' type='text' onchange='validate_data("+rowCount+",this)' title='Please enter numbers and decimals'>";
+		cell4.innerHTML = "<input class='form-control float'  name='in_width["+rowCount+"]' id='width_"+rowCount+"' type='text' onchange='validate_data("+rowCount+",this)' title='Please enter numbers and decimals'>";
+		cell5.innerHTML = "<input class='form-control float'  name='in_mklen["+rowCount+"]' id='mk_len_"+rowCount+"' type='text' onchange='validate_data("+rowCount+",this)' title='Please enter numbers and decimals'>";
+		cell6.innerHTML = "<input class='form-control float'  name='in_mkname["+rowCount+"]' id='mk_name_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
+		cell7.innerHTML = "<input class='form-control float'  name='in_ptrname["+rowCount+"]' id='ptr_name_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
+		cell8.innerHTML = "<input class='form-control float'  name='in_mkeff["+rowCount+"]' id='mk_eff_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
+		cell9.innerHTML = "<input class='form-control float'  name='in_permts["+rowCount+"]' id='permts_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
+		cell10.innerHTML = "<input class='form-control float'  name='in_rmks["+rowCount+"]' id='rmks_"+rowCount+"'  type='text' title='Please enter numbers and decimals'>";
+		cell11.innerHTML = "<input class='btn btn-sm btn-danger' onclick='deleteRow("+rowCount+")' type = 'button' id='delete' name = 'delete' value = 'Delete Row'>";
+	}
+	else{
+		sweetAlert('Please fill the previous rows','','warning');
+	}
 }
+function deleteRow(row) {
+    document.getElementById('table-data').deleteRow(row+1);
+}
+// function delete_row(id) {
+// 	console.log($(this).closest("tr"));
+// 	 $(this).closest("tr").remove();
+// 	// console.log();
+// }
 </script>
  
