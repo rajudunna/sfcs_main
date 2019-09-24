@@ -119,7 +119,7 @@ $result_rejections = $link->query($qery_rejection_resons);
     border-color: #d81414;
 }
 .btn-group-sm>.btn, .btn-sm {
-    padding: 5px 10px;
+    padding: px 21px;
     font-size: 12px;
     line-height: 1.1;
     text-align: left;
@@ -203,23 +203,23 @@ $result_rejections = $link->query($qery_rejection_resons);
     <tbody >
      <tr>
      <div>
-        <div class="col-sm-3" style="padding: 3px 15px 3px 66px;width:44%">previous hr: </div>
-        <div id="time" class="btn btn-sm btn-success">00</div>
-        <div id="timered" class="btn btn-sm btn-danger"> 00</div>
-        <div id="timeyellow" class="btn btn-sm btn-warning">00</div>
+        <div class="col-sm-3" style="padding: 11px 0px 8px 6px;width: 28%;">previous hr: </div>
+        <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">{{prev_good}}</div>
+        <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">{{prev_reject}}</div>
+        <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">{{prev_rework}}</div>
       <div>
       </tr>
       <tr>
       <div>
-        <div class="col-sm-3" style="padding: 3px 15px 3px 66px;width:44%">current hr:</div>
-        <div id="time" class="btn btn-sm btn-success">00</div>
-        <div id="timered" class="btn btn-sm btn-danger"> 00</div>
-        <div id="timeyellow" class="btn btn-sm btn-warning">00</div>
+        <div class="col-sm-3" style="padding: 11px 0px 8px 6px;width: 28%;">current hr:</div>
+        <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">{{current_good}}</div>
+        <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">{{current_reject}}</div>
+        <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px">{{curr_rework}}</div>
       </tr>
       </div>
     </tbody>
   </table>
-                
+
                 </div>
                 </div>
                 </div>
@@ -228,7 +228,7 @@ $result_rejections = $link->query($qery_rejection_resons);
         </td>
         </tr>
         <td width="90"><label>Bar code :</label></td>
-        <td style="padding: 0px 0px 0px 23px;"><input type="text" style="max-width: 150px;"  class="form-control" ng-model="barcode_value" ng-keypress="scanned($event)" id="barcode_value" onkeyup="validateQty(event,this);" placeholder="scan barcode here" autofocus></td>
+        <td style="padding: 0px 0px 0px 23px;"><input type="text" style="max-width: 275px;"  class="form-control" ng-model="barcode_value" ng-keypress="scanned($event)" id="barcode_value" onkeyup="validateQty(event,this);" placeholder="scan barcode here" autofocus></td>
         <input type="hidden" id="module" ng-model="module" ng-init="module='<?= $module; ?>'">
         <input type="hidden" id="shift" ng-model="shift" ng-init="shift='<?= $shift; ?>'">
         <input type="hidden" id="op_code" ng-model="op_code" ng-init="op_code='<?= $op_code; ?>'">
@@ -263,10 +263,6 @@ $result_rejections = $link->query($qery_rejection_resons);
                 <div class="row"> </div>
                 <div class="col-sm-6 col-md-6 col-xs-6" > Z feature: {{zfeature}}</div>
                 <div class="col-sm-6 col-md-6 col-xs-6">Schedule: {{schedule}}</div>
-                <div class="panel-body">  </div>
-                <div class="row"> </div>
-                <div class="col-sm-6 col-md-6 col-xs-6">Color : {{color}}</div>
-                </div>
                  </div>
          </div>
          </td>
