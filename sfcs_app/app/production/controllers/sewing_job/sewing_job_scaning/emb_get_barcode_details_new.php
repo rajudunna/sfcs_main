@@ -140,11 +140,9 @@
 
         if($next_operation > 0)
         {
-            if($next_operation == $job_number[4])
-            {
                $flag = 'parallel_scanning';
 
-               $get_ops_dep = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and ops_dependency = $job_number[4]";
+               $get_ops_dep = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and ops_dependency = $next_operation";
                $result_ops_dep = $link->query($get_ops_dep);
                while($row_dep = $result_ops_dep->fetch_assoc())
                {
@@ -152,7 +150,6 @@
                }
                $emb_operations = implode(',',$operations);
                //parallel_scanning($style,$schedule,$color,$input_job,$operation_id);
-            }
         }
    
         //End Here
@@ -189,14 +186,16 @@
             }
         }
 
-       
-           
-     
 
        
         //  if($next_operation < 0)
         // {
-       
+       if($flag == 'parallel_scanning')
+	   {
+		   $flag = 'parallel_scanning';
+	   }
+	   else
+	   {
                 $flags=0;
                 $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and operation_code=$job_number[4]";
                 //echo $ops_seq_check;
@@ -280,8 +279,7 @@
                     }
                
                 }
-           // }  
-
+      }  
          if($flag == 'parallel_scanning')
          {
 
@@ -295,7 +293,7 @@
             }
 
              //get min qty of previous operations
-            $qry_min_prevops="SELECT MIN(recevied_qty) AS min_recieved_qty FROM $brandix_bts.bundle_creation_data WHERE docket_number = $main_dockets AND size_title = '$size' AND operation_id in ($emb_operations)";
+            $qry_min_prevops="SELECT MIN(recevied_qty) AS min_recieved_qty FROM $brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND size_title = '$sizes' AND operation_id in ($emb_operations)";
             //echo $qry_min_prevops;
             $result_qry_min_prevops = $link->query($qry_min_prevops);
             while($row_result_min_prevops = $result_qry_min_prevops->fetch_assoc())
@@ -304,13 +302,12 @@
             }
 
          
-            $schedule_query = "SELECT `style` as order_style_no,`schedule` as order_del_no,`send_qty`,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,`original_qty` as carton_act_qty,sum(recevied_qty) AS current_recieved_qty,`rejected_qty` as rejected_qty,((send_qty+recut_in+replace_in)-(recevied_qty+rejected_qty)) as balance_to_report`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'parallel_scanning' as flag,size_id as old_size,remarks, mapped_color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE docket_number = $main_dockets AND operation_id = '$job_number[4]' order by tid";
+            $schedule_query = "SELECT `style` as order_style_no,`schedule` as order_del_no,`send_qty`,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,`original_qty` as carton_act_qty,sum(recevied_qty) AS current_recieved_qty,`rejected_qty` as rejected_qty,((send_qty+recut_in+replace_in)-(recevied_qty+rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'parallel_scanning' as flag,size_id as old_size,remarks, mapped_color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND operation_id = '$job_number[4]' and size_title='$sizes' order by tid";
 
             $flags=3;
             $flag = 'parallel_scanning';
                
          }
-
         if($flags == 2)
         {
             $result_array['status'] .= 'Previous operation not yet done for this job.';
@@ -329,114 +326,13 @@
                 $module = $row['input_module'];
             }
             while($row = $result_style_data->fetch_assoc())
-            {
-                if($flag == 'parallel_scanning')
-                {
-                    //echo $flag;
-                   // $doc_no = $row['doc_no'];
-                   // $size = $row['old_size'];
-
-                   $current_ops_qty = $row['balance_to_report'];
-                   // echo $previous_minqty;
-
-                   
-                   $parallel_balance_report=($previous_minqty-$current_ops_qty);
-                   //echo $parallel_balance_report;
-                   if($parallel_balance_report<0)
-                   {
-                     $result_array['status'] = 'Previous operation not yet done.';
-                      echo json_encode($result_array);
-                      die();
-                   }
-
-                    $type_of_sewing_query = "SELECT *,carton_act_qty as balance_to_report, 0 as reported_qty, 0 as rejected_qty, 'packing_summary_input' as flag,tid as bundle_number,barcode_sequence FROM $bai_pro3.packing_summary_input WHERE input_job_no_random = '$job_number[0]' order by tid";
-                     $result_sewing_query = $link->query($type_of_sewing_query);
-                     while($row = $result_sewing_query->fetch_assoc())
-                     {
-                        $job_number_reference = $row['type_of_sewing'];
-                     }
-                    if($job_number_reference == 2)
-                    {
-                        $selecting_sample_qtys = "SELECT input_qty FROM $bai_pro3.sp_sample_order_db WHERE order_tid = (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_col_des='$color' ) AND sizes_ref = '$size'";
-                        $result_selecting_sample_qtys = $link->query($selecting_sample_qtys);
-                        if($result_selecting_sample_qtys->num_rows > 0)
-                        {
-                            while($row_res = $result_selecting_sample_qtys->fetch_assoc())
-                            {
-                                $row['carton_act_qty'] = $row_res['input_qty'];
-                            }
-                        }
-                        else
-                        {
-                            $result_array['status'] = 'Sample Quantities not updated!!!';
-                        }
-                    }  
-   
-                }
-                else
-                {
-                      if($emb_cut_check_flag == 1 && $bundle_no == $row['tid'])
-                      {
-                       
-                            $doc_no = $row['doc_no'];
-                            $size = $row['old_size'];
-
-                            $retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code = $pre_ops_code group by doc_no";
-                           // echo $retreving_remaining_qty_qry;
-                            $result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
-                            if($result_retreving_remaining_qty_qry->num_rows > 0)
-                            {
-                                while($row_remaining = $result_retreving_remaining_qty_qry->fetch_assoc())
-                                {
-                                    $sum_balance = $row_remaining['balance_to_report'];
-                                }
-                            }
-                            if($sum_balance < $row['balance_to_report'])
-                            {
-                                $result_array['status'] = 'Previous operation not yet done for this jobs.';
-                                echo json_encode($result_array);
-                                die();
-
-                            }
-                      }
-                }
-
-               
-               
+            {       
              
                 $style = $job_number[1];
                 $schedule =  $job_number[2];
-                $color = $row['order_col_des'];
-                $size = $row['old_size'];
-                if($flag == 'packing_summary_input')
-                {
-                   
-                    $job_number_reference = $row['type_of_sewing'];
-					$get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix WHERE id= $job_number_reference";
-					$get_remark_arry_req = $link->query($get_remark);
-					while($row_remark = $get_remark_arry_req->fetch_assoc())
-					{
-					$b_remarks[] = $row_remark['prefix_name'];
-					}
-                    if($job_number_reference == 2)
-                    {
-                        $selecting_sample_qtys = "SELECT input_qty FROM $bai_pro3.sp_sample_order_db WHERE order_tid = (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_col_des='$color' ) AND sizes_ref = '$size'";
-                        $result_selecting_sample_qtys = $link->query($selecting_sample_qtys);
-                        if($result_selecting_sample_qtys->num_rows > 0)
-                        {
-                            while($row_res = $result_selecting_sample_qtys->fetch_assoc())
-                            {
-                                $row['carton_act_qty'] = $row_res['input_qty'];
-                            }
-                        }
-                        else
-                        {
-                            $result_array['status'] = 'Sample Quantities not updated!!!';
-                        }
-                    }
-                 
-                    $barcode_sequence[] = $row['barcode_sequence'];
-                }
+                $color = $job_number[3];
+                $size = $sizes;
+               
                 $b_job_no = $row['input_job_no_random'];
                 $b_style= $row['order_style_no'];
                 $b_schedule=$row['order_del_no'];
@@ -450,6 +346,9 @@
 
                 if($flag == 'parallel_scanning')
                 {
+					$current_ops_qty=$row['balance_to_report'];
+					$parallel_balance_report=($previous_minqty-$current_ops_qty);
+					
                     if($parallel_balance_report>0)
                     {
                        
@@ -480,7 +379,6 @@
         }
         $result_array['flag'] = $flag;
         $table_name = $result_array['flag'];
-       
         $style = $result_array['style'];
         $schedule = $result_array['schedule'];
         $color = $result_array['color_dis'];
@@ -585,9 +483,7 @@
         // insert or update based on table
         if($table_name == 'parallel_scanning')
         {
-
             $schedule_count_query = "SELECT input_job_no_random_ref FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = $b_job_no AND operation_id =$b_op_id";
-
             $schedule_count_query = $link->query($schedule_count_query) or exit('query error');
            
             if($schedule_count_query->num_rows > 0)
@@ -601,6 +497,7 @@
             {
                 if($b_tid[$key] == $bundle_no)
                 {
+					
                   $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
                         $result_smv_query = $link->query($smv_query);
                         while($row_ops = $result_smv_query->fetch_assoc())
@@ -650,12 +547,12 @@
                             }
                            
                             if($schedule_count){
-                                $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= '".$final_rep_qty."', `left_over`= '".$left_over_qty_update."' , `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
+                                $query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= recevied_qty+'".$embquantity."', `left_over`= '".$left_over_qty_update."' , `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
                                
                                 $result_query = $link->query($query) or exit('query error in updating');
                             }else{
                                    
-                                $bulk_insert_post .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'")';  
+                                $bulk_insert_post .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$embquantity.'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'")';  
                                 $result_query_001 = $link->query($bulk_insert_post) or exit('bulk_insert_post query error in updating');
                             }
 							
@@ -675,13 +572,13 @@
 							if($sendop_code==$b_op_id)
 							{
 								//update in emblishment dashboard
-								$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `send_qty`= send_qty+$final_rep_qty where doc_no =$b_doc_num[$key] and send_op_code=$b_op_id";
+								$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `send_qty`= send_qty+$embquantity where doc_no =$b_doc_num[$key] and send_op_code=$b_op_id";
 								$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
 							}
 							if($recop_code==$b_op_id)
 							{
 								//update in emblishment dashboard
-								$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `receive_qty`= receive_qty+$final_rep_qty where doc_no =$b_doc_num[$key] and receive_op_code=$b_op_id";
+								$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `receive_qty`= receive_qty+$embquantity where doc_no =$b_doc_num[$key] and receive_op_code=$b_op_id";
 								$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
 							}
 							//checking data exist in emb_bundles or not
@@ -719,7 +616,7 @@
                             {
                                 if($b_rep_qty[$key] > 0)
                                 {
-                                    $bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$previously_scanned .'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$username.'")';  
+                                    $bulk_insert_post_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$embquantity .'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$username.'")';  
                                     $result_query_001_temp = $link->query($bulk_insert_post_temp) or exit('bulk_insert_post query error in updating');
 									if($gate_pass_no>0)
 									{
@@ -727,13 +624,33 @@
 									$result_sql_temp = $link->query($sql_gate) or exit('Gate_pass_child query error in updating');
 
 									}
-                                    $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previously_scanned where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code=$b_op_id";
+                                    $update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$embquantity where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code=$b_op_id";
                                             $update_qry_cps_log_res = $link->query($update_qry_cps_log);
                                    
                                        
                                    
                                 }
                             }
+							
+								if($post_ops_code != null)
+                                {
+                                    $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = send_qty+'".$embquantity."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_num[$key] and size_title='$sizes' and operation_id = ".$post_ops_code;
+                                    $result_query = $link->query($query_post) or exit('query error in updating');
+                                }
+                                if($ops_dep)
+                                {
+                                    $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where bundle_number =$b_tid[$key] and operation_id in (".implode(',',$dep_ops_codes).")";
+                                    $result_pre_send_qty = $link->query($pre_send_qty_qry);
+                                    while($row = $result_pre_send_qty->fetch_assoc())
+                                    {
+                                        $pre_recieved_qty = $row['recieved_qty'];
+                                    }
+
+                                    $query_post_dep = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` =send_qty+ '".$pre_recieved_qty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$b_doc_num[$key] and size_title='$sizes' and operation_id = ".$ops_dep;
+
+                                    $result_query = $link->query($query_post_dep) or exit('query error in updating');
+                           
+                                }                
                            
 
                                                
