@@ -191,24 +191,7 @@ function check_val()
                                          </tr>
                                     </thead>
                                          <?php  
-										        $openbundle_sql1="SELECT input_job_no_random_ref FROM `brandix_bts`.`bundle_creation_data` WHERE style='".$style."' AND schedule='".$schedule."'  AND operation_id=130 AND bundle_qty_status=0 GROUP BY input_job_no_random_ref"; 
-                                                $select_bundlenum1=mysqli_query($link,$openbundle_sql1) or exit($openbundle_sql1."Error at something");
-                                                $ijno_nums=array();
-                                                 while($row_21 = mysqli_fetch_assoc( $select_bundlenum1)){
-                                                    $ijno[]=$row_21['input_job_no_random_ref'];
-                                                 }
-                                                 
-												 $ijno_nums="'" . implode ( "', '", $ijno ) . "'";
-												 $pack_bundles="SELECT distinct(input_job_no_random) as input_job_no_random FROM `bai_pro3`.`packing_summary_input` WHERE input_job_no_random NOT IN ($ijno_nums) and  order_style_no='".$style."' AND order_del_no='".$schedule."'"; 
-                                                 //echo $pack_bundles;
-												 $pack_bundles1=mysqli_query($link,$pack_bundles) or exit($pack_bundles."Error at something");
-                                                $ijno1=array();
-                                                 while($row_211 = mysqli_fetch_assoc( $pack_bundles1)){
-                                                    $ijno1[]=$row_211['input_job_no_random'];
-                                                 }
-												 
-												 $ijno11="'" . implode("', '" ,$ijno1) . "'";
-											     $openbundle_sql="SELECT bundle_number FROM `brandix_bts`.`bundle_creation_data` WHERE style='".$style."' AND schedule='".$schedule."' AND original_qty <> recevied_qty AND operation_id=130 GROUP BY bundle_number"; 
+                                                $openbundle_sql="SELECT bundle_number FROM `brandix_bts`.`bundle_creation_data` WHERE style='".$style."' AND schedule='".$schedule."' AND original_qty <> recevied_qty AND bundle_qty_status=0 AND operation_id='130' GROUP BY bundle_number"; 
                                                 $select_bundlenum=mysqli_query($link,$openbundle_sql) or exit($openbundle_sql."Error at something");
                                                 $operation_bundles=array();
                                                  while($row_2 = mysqli_fetch_assoc( $select_bundlenum)){
