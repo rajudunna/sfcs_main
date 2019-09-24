@@ -49,6 +49,9 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     $rejection_reasons[$row['reason_code'].'-'.$row['m3_reason_code']] = $row['reason_desc'];
 }
 
+$check_rolls = "SELECT * from $bai_rm_pj1.fabrci_cad_allocation where doc_no = ".$doc_no."";
+$check_rolls = mysqli_query($link,$check_rolls); 
+$result_roll = mysqli_num_rows($check_rolls);
 ?>
 
 
@@ -260,8 +263,16 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 <div class='col-sm-12'>
                     <span><b>MARK THIS AS FULLY REPORTED CUT ? &nbsp;&nbsp;</b> 
                     <input type='checkbox' value='1' id='full_reported' onchange='reportingFull(this)'> Yes</span>
+					<?php
+					if($result_roll>0)
+					{
+						?>
                     <span class='pull-right'><b>ENABLE ROLE WISE CUT REPORTING ? &nbsp;&nbsp;</b> 
                     <input type='checkbox' value='1' id='cut_report' onchange='enablecutreport(this)'> Yes</span>
+					<?php
+					}
+					?>
+					
                 </div>
 
             </div>
