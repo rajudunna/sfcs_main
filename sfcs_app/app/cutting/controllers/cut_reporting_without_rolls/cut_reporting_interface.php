@@ -49,9 +49,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     $rejection_reasons[$row['reason_code'].'-'.$row['m3_reason_code']] = $row['reason_desc'];
 }
 
-$check_rolls = "SELECT * from $bai_rm_pj1.fabrci_cad_allocation where doc_no = ".$doc_no."";
-$check_rolls = mysqli_query($link,$check_rolls); 
-$result_roll = mysqli_num_rows($check_rolls);
 ?>
 
 
@@ -263,16 +260,8 @@ $result_roll = mysqli_num_rows($check_rolls);
                 <div class='col-sm-12'>
                     <span><b>MARK THIS AS FULLY REPORTED CUT ? &nbsp;&nbsp;</b> 
                     <input type='checkbox' value='1' id='full_reported' onchange='reportingFull(this)'> Yes</span>
-					<?php
-					if($result_roll>0)
-					{
-						?>
-                    <span class='pull-right'><b>ENABLE ROLE WISE CUT REPORTING ? &nbsp;&nbsp;</b> 
+                <span class='pull-right hidenotavailble'><b>ENABLE ROLE WISE CUT REPORTING ? &nbsp;&nbsp;</b> 
                     <input type='checkbox' value='1' id='cut_report' onchange='enablecutreport(this)'> Yes</span>
-					<?php
-					}
-					?>
-					
                 </div>
 
             </div>
@@ -486,10 +475,11 @@ $result_roll = mysqli_num_rows($check_rolls);
                 }).done(function(res){
                     if(res=="Not Available")
                     {
+                        $('.hidenotavailble').css({'display':'none'});
+
                         swal('Rolls Not Available','Not Available','warning');
                     }else{
                         try{
-                           
                         var res = $.parseJSON(res);
                         data=res.response_data;
                         var marklength=res.marklength;
@@ -516,7 +506,7 @@ $result_roll = mysqli_num_rows($check_rolls);
                                             existed="readonly";
                                         }
                                         
-                                        comp lted=1;
+                                        complted=1;
                                         notdisplay++;
                                     }
                                     else{
