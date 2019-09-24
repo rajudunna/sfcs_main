@@ -235,7 +235,7 @@ if(isset($_POST['submit']))
         echo "<th>Plies</th><th>Control</th></tr></thead>";
        
        
-        $sql="select * from $bai_pro3.order_cat_doc_mk_mix where order_tid='".$orde_tid."' and category in ($in_categories)";
+		$sql="select * from $bai_pro3.order_cat_doc_mk_mix where order_tid='".$orde_tid."' and category in ($in_categories)";
         mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
        // $sql_num_check=mysqli_num_rows($sql_result);
