@@ -146,6 +146,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$type_of_sewing=$sql_rowy['type_of_sewing'];
 				}
 				$rej_qty=0;
+				$rej_qty1=0;
+				$replce_qty=0;
 				$qry_ops_mapping_after = "SELECT of.operation_code FROM `$brandix_bts`.`tbl_style_ops_master` tm 
 				LEFT JOIN brandix_bts.`tbl_orders_ops_ref` of ON of.`operation_code`=tm.`operation_code`
 				WHERE tm.`style` ='$style' AND tm.`color` = '$color_info'
