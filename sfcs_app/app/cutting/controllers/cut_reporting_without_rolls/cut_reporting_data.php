@@ -256,7 +256,11 @@ if(!in_array($category,$fabric_categories_array) ){
         $response_data['cut_done']  = 1;
     }
 }
-    
+$sql12="SELECT * from $bai_rm_pj1.fabric_cad_allocation where doc_no = ".$doc_no."";
+$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check12=mysqli_num_rows($sql_result12);
+
+
 $response_data['doc_no'] = $doc_no;
 $response_data['fab_required'] = $fab_required; 
 $response_data['doc_qty']    = $doc_qty;
@@ -278,6 +282,8 @@ $response_data['section']   = $section;
 $response_data['date']      = $date;
 $response_data['doc_target_type'] = $target_doc_type;
 $response_data['ratio_data']      = getSizesRatio($doc_no,$child_docs);
+$response_data['rollinfo']      = $sql_num_check12;
+
 
 
 echo json_encode($response_data);
