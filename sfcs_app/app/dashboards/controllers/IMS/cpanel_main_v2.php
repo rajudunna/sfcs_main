@@ -614,7 +614,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
 				  $sizes_implode1="'".implode("','",$sizes_explode)."'"; 				  
                   $rejected=0;
                   unset($sizes_explode);
-                  $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule='".$sql_rowred['ims_schedule']."' and qms_color in (".$color_ref.") and qms_size in ($sizes_implode1) and input_job_no='".$sql_rowred['inputjobnorand']."' and qms_style='".$sql_rowred['ims_style']."' and operation_id=$operation_out_code and qms_remarks in ('".$ims_remarks."')";
+                  $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule='".$sql_rowred['ims_schedule']."' and qms_color in (".$color_ref.") and qms_size in ($sizes_implode1) and input_job_no='".$sql_rowred['inputjobnorand']."' and qms_style='".$sql_rowred['ims_style']."' and operation_id=$operation_out_code and SUBSTRING_INDEX(remarks,'-',1) = '$module' and qms_remarks in ('".$ims_remarks."')";
                   $sql_result33=mysqli_query($link, $sql33) ;
                   //echo  $sql33;
                   while($sql_row33=mysqli_fetch_array($sql_result33))
@@ -641,7 +641,9 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                     $input_qty2=$sql_row2['Input'];      // input qty
                     $output_qty2=$sql_row2['Output'];      // output qty
                   }
-
+				  
+				  
+				
                   $input_qty=$input_qty1+$input_qty2;      // input qty
                   $output_qty=$output_qty1+$output_qty2;
 
