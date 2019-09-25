@@ -55,15 +55,13 @@ for ($i=0; $i < sizeof($Modules_array); $i++) {?>
 <div class="col-sm-3">
 <div  class="form-group">
 <label>Shift:<span style="color:red">*</span></label>
-<select class="form-control shift" name="shift" id="shift"  required>
+<select class='form-control' id='shift' name='shift' required>
 <option value="">Select Shift</option>
-<option value="A">Shift-A</option>
-<option value="B">Shift-B</option>
-<option value="G">Shift-G</option>
-<?php 
-for ($i=0; $i < sizeof($shift_array); $i++) {?>
-<option <?php echo 'value="'.$shift_array[$i].'"'; if($_GET['shift']==$Modules_array[$i]){ echo "selected";} ?>><?php echo $shift_array[$i] ?></option>
-<?php }
+<?php foreach($shifts_array as $shift)
+      {
+          echo "<option value='$shift'>$shift</option>";
+      }
+      
 ?>
 </select>
 </div>
