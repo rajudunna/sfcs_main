@@ -16,7 +16,7 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
 	    $bcd_id = $bcd_ids[$key];
 		
 		$bcd_qry = "select style,schedule,assigned_module,operation_id,bundle_number,sfcs_smv,remarks,color from $brandix_bts.bundle_creation_data 
-		where id=".$bcd_id."";
+		where id in (".$bcd_id.") limit 1";
 	   // echo $bcd_qry;
 	    // die();
 	    $result_bcd_qry = $link->query($bcd_qry);
