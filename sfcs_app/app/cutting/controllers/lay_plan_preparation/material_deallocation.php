@@ -7,8 +7,8 @@
 // var_dump(getFullURLLevel($_GET['r'],'dashboards/controllers/Cut_table_dashboard/fabric_requisition.php',5,'R'));
 // die();
     $username = getrbac_user()['uname'];
-    $get_url1 = getFullURLLevel($_GET['r'],'marker_model_popup.php',0,'R');
-    $get_url2 = getFullURLLevel($_GET['r'],'mk_popup.php',0,'N');
+    $get_url1 = getFullURLLevel($_GET['r'],'pop_up_maker.php',0,'R');
+    $get_url2 = getFullURLLevel($_GET['r'],'pop_up_maker.php',0,'N');
     $temp = 0;
 
 ?>
@@ -118,7 +118,8 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                                         echo "<option value=''>Please Select</option>";
                                         echo "<option value='Deallocated'>Deallocated</option>";
                                         echo "</select></td>";
-                                        echo "<td><input type='submit' name='submit$i' id='submit-$i' class='btn btn-info' value='Deallocate' disabled='disabled' onclick='Approve_deallocation($i);'></td>"; 
+                                        echo "<td><input type='submit' name='submit$i' id='submit-$i' class='btn btn-info' value='Deallocate' disabled='disabled' onclick='Approve_deallocation($i);'></td>";
+ 
                                         echo "<td><input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn'".$doc_no." onclick=test(".$doc_no.") value='Edit'></td>"; 
                                         echo "</tr>";
                                    
@@ -141,10 +142,11 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                                 <th>Requested At</th>
                                 <th>Approved By</th>
                                 <th>Approved At</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <?php
-                            $query = "select * from $bai_rm_pj1.material_deallocation_track where status='Deallocate'";
+                            $query = "select * from $bai_rm_pj1.material_deallocation_track where status<>'Open'";
                             $sql_result = mysqli_query($link,$query);
                             // echo $query;
                             $index=0;
@@ -160,6 +162,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                                 echo "<td>".$sql_row['requested_at']."</td>";
                                 echo "<td>".$sql_row['approved_by']."</td>";
                                 echo "<td>".$sql_row['approved_at']."</td>";
+                                echo "<td>".$sql_row['status']."</td>";
                                 echo "</tr>";
                             }
                             ?> 
@@ -204,6 +207,7 @@ for($i=0;$i<sizeof($doc_nos);$i++)
 									while($row111x2=mysqli_fetch_array($sql_result11x112)) 
 									{
 										$mk_ref_id=$row111x2['mk_ref_id'];
+										//echo $mk_ref_id."--".$row111x2['allocate_ref']."<br>";
 										$sql_marker_details = "select * from $bai_pro3.maker_details where parent_id='".$row111x2['allocate_ref']."'";
 										$sql_marker_details_result=mysqli_query($link, $sql_marker_details) or die("Error17 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 										$values_rows=mysqli_num_rows($sql_marker_details_result);
@@ -212,9 +216,11 @@ for($i=0;$i<sizeof($doc_nos);$i++)
 										{   
 											// var_dump($sql_marker_details_res[id]);
 											// var_dump($mk_ref_id);
+											//echo $sql_marker_details_res[id]."<br>";
 											$rows++;
 											if($sql_marker_details_res[id] == $mk_ref_id)
 											{
+												//echo $sql_marker_details_res[id]."--Test--<br>";
 												echo "<input type='hidden' name='first_val' id='first_val".$doc_no."' value='$mk_ref_id' >";
 												echo "<input type='hidden' name='all_ref' id='all_ref".$doc_no."' value=".$row111x2['allocate_ref']." >";
 												echo "<input type='hidden' name='mk_ref' id='mk_ref".$doc_no."' value=".$row111x2['mk_ref']." >";
@@ -224,13 +230,13 @@ for($i=0;$i<sizeof($doc_nos);$i++)
 												<td style='display:none;'  id='doc_no'>$doc_no</td>
 												<td style='display:none;'  id='all_ref".$doc_no."'>".$row111x2['allocate_ref']."</td>
 												<td style='display:none;'  id='mk_ref".$doc_no."'>".$row111x2['mk_ref']."</td>
-												<td><input type='radio' name='selected_len' value='yes' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]' CHECKED></td>
-												
+												<td><input type='radio' name='selected_len' value='yes' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]' checked='checked'></td>												
 												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[perimeters]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td>	
 												</tr>";
 											}
 											else
 											{
+											//	echo $sql_marker_details_res[id]."--Test2--<br>";
 												echo "<tr><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[id]'>no</td>
 												<td style='display:none;'  id='id'>$sql_marker_details_res[id]</td>
 												<td style='display:none;'  id='doc_no'>$doc_no</td>
@@ -543,12 +549,27 @@ function submit_mklen(doc_no)
 	type : "POST",
 	url : '<?= $get_url1 ?>',
 	data: {data : jsonString,doc_no:doc_no}, 
-	cache: false,	
-	
-	}).done(function(res){
-		swal('Success','Marker Details Updated successfully','success');
-		location.reload();
-	
+	}).success(function(response){
+		//console.log(response);
+		//var check_val = response.status_no;
+		var data = jQuery.parseJSON(response);
+		var p1 = data.status_no;
+		//console.log(p1);
+		
+		if(p1 == 1)
+		{
+			swal('Success',data.status,'success');
+		}
+		else if(p1 == 2)
+		{
+			swal('Success',data.status_new,'success');
+		}
+		else
+		{
+			swal('error','Something Went Wrong Please try again..!','error');	
+		}	
+		//swal('Success','Marker Details Updated successfully','success');
+		location.reload();	
 	});
 }
 function test(doc_no){

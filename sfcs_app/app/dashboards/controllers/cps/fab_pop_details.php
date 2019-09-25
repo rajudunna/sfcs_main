@@ -455,7 +455,8 @@ echo "<input type=\"hidden\" value=\"1\" name=\"process_cat\">"; //this is to id
 echo "<input type=\"hidden\" value=\"$style_ref\" name=\"style_ref\">";  
 echo "<input type=\"hidden\" value=\"$dash\" name=\"dashboard\">";  
 
-echo "<table class='table table-bordered'><tr><th>Category</th><th>Item Code</th><th>Color Desc. - Docket No</th><th>Required<br/>Qty</th><th>Reference</th><th>Control</th><th>Print Status</th><th>Roll Details</th></tr>";
+echo "<table class='table table-bordered'><tr><th>Category</th><th>Item Code</th><th>Color Desc. - Docket No</th><th>Required<br/>Qty</th><th>Reference</th>
+<th>Shrinkage</th><th>Width</th><th>Control</th><th>Print Status</th><th>Roll Details</th></tr>";
 //$sql1="SELECT plandoc_stat_log.plan_lot_ref,plandoc_stat_log.cat_ref,plandoc_stat_log.print_status,plandoc_stat_log.doc_no,cat_stat_log.category from plandoc_stat_log left join cat_stat_log on plandoc_stat_log.cat_ref=cat_stat_log.tid  where plandoc_stat_log.order_tid=\"$order_id_ref\" and plandoc_stat_log.acutno=$cut_no_ref";
 
 if(strtolower($docket_remarks) == 'normal')
@@ -562,15 +563,29 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
 		$p_qty=$sql_row2['qty'];
 	}
-	//$output_trimmed = array_map("trim", explode(',', $input));
-	//echo "</br>Seperated".$seperated_lots;
-	// $ref="select reference from $bai_pro3.plandoc_stat_log where doc_no='$doc_no'";
-	$sql007="select * from $bai_pro3.plandoc_stat_log where doc_no=\"".$docno_lot."\"";
-		$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($row007=mysqli_fetch_array($sql_result007))
-		{
-			$reference=$row007["reference"];
+	$shrinkaage='';
+	$mwidt='A';
+	$sql007="select reference,mk_ref_id,allocate_ref from $bai_pro3.plandoc_stat_log where doc_no=\"".$docno_lot."\"";
+	$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row007=mysqli_fetch_array($sql_result007))
+	{
+		$reference=$row007["reference"];
+		if($row007['mk_ref_id']>0)
+		{	
+			$sql11x1321="select shrinkage_group,width,marker_length from $bai_pro3.maker_details where parent_id=".$row007['allocate_ref']." and id=".$row007['mk_ref_id']."";
+			$sql_result11x11211=mysqli_query($link, $sql11x1321) or die("Error15 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($row111x2112=mysqli_fetch_array($sql_result11x11211)) 
+			{
+				$shrinkaage=$row111x2112['shrinkage_group'];
+				$mwidt=$row111x2112['width'];
+			}
 		}
+		else
+		{
+			$shrinkaage='N/A';
+			$mwidt='N/A';
+		}
+}
 	// echo "</br>Seperated--".$seperate_docket;
 	$sql5="SELECT binding_consumption,seperate_docket from $bai_pro3.cat_stat_log where  tid=\"".$sql_row1['cat_ref']."\"";
 	$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -599,6 +614,8 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	{ $extra=round(($material_requirement_orig*$sql_row1['savings']),2); }
 	echo "<td>".($material_requirement_orig+$extra)."</td>";
 	echo "<td>".$reference."</td>";
+	echo "<td>".$shrinkaage."</td>";
+	echo "<td>".$mwidt."</td>";
 	$temp_tot=$material_requirement_orig+$extra;
 	$total+=$temp_tot;
 	$temp_tot=0;
@@ -781,7 +798,7 @@ echo "</tr>";
 unset($lotnos_array);
 unset($seperated_lots);	
 }
-echo "<tr><td colspan=3><center>Total Required Material</center></td><td>$total</td><td></td><td></td><td></td></tr>";
+echo "<tr><td colspan=3><center>Total Required Material</center></td><td>$total</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
 echo "</table>";
 //echo $Disable_allocate_flag;
 if($enable_allocate_button==1)
