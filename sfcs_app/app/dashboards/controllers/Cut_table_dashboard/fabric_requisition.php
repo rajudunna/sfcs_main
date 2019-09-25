@@ -19,7 +19,8 @@ $url_r = base64_encode(implode('/',$php_self)."/fabric_requisition.php");
 $has_permission=haspermission($url_r);
 // echo "Authp : ".var_dump($has_permission);
 // die();
-
+$get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
+						$sidemenu=true;
 ?>
 <?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
@@ -212,7 +213,7 @@ function GetSelectedItem()
 			}
 		}
 		
-		$mk_len=$row111x["mklength"];
+		// $mk_len=$row111x["mklength"];
 	}
 
 	for($i=0;$i<sizeof($cat_refnce);$i++)
@@ -227,19 +228,21 @@ function GetSelectedItem()
 		echo "<td>".$doc_mat[$docs_no[$i]]."</td>";
 		echo "<td><input type='hidden' name='doc_details[]' id='doc_details' value='".$docs_no[$i]."'> <input type='text' name='reference[]' value=''></td>";
 		// echo "<td><center><input type='button' value='Create' class='homebutton' id='btnHome' data-target='#theModal' data-toggle='modal' onclick=test('".trim($stylex)."','".trim($schedulex)."','".strstr($colorx, '-', true)."','".trim($docs_no[$i])."'); /></center></td>";
-		echo "<td>".$mk_len."</td>";		
-		$sql11x132112="select allocate_ref,mk_ref_id from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
+		// echo "<td>".$mk_len."</td>";		
+		$sql11x132112="select allocate_ref,mk_ref_id from $bai_pro3.plandoc_stat_log where doc_no=".$docs_no[$i].";";
 		$sql_result11x1121=mysqli_query($link, $sql11x132112) or die("Error14 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row111x21=mysqli_fetch_array($sql_result11x1121)) 
 		{				//$rows=0;
 			if($row111x21['mk_ref_id']>0)
 			{	
-				$sql11x1321="select shrinkage_group,width from $bai_pro3.maker_details where parent_id=".$row111x21['allocate_ref']." and id=".$row111x21['mk_ref_id']."";
+				$sql11x1321="select shrinkage_group,width,marker_length from $bai_pro3.maker_details where parent_id=".$row111x21['allocate_ref']." and id=".$row111x21['mk_ref_id']."";
 				//echo $sql11x1321."<br>";
 				$sql_result11x11211=mysqli_query($link, $sql11x1321) or die("Error15 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row111x2112=mysqli_fetch_array($sql_result11x11211)) 
 				{
+					echo "<td>".$row111x2112['marker_length']."</td>";
 					echo "<td>".$row111x2112['shrinkage_group']."</td>";
+
 					echo "<td>".$row111x2112['width']."</td>";
 					echo "<td><center><input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn'".$docs_no[$i]." onclick=test(".$docs_no[$i].") value='Edit'></center></td>";
 				
@@ -283,11 +286,11 @@ for($i=0;$i<sizeof($cat_refnce);$i++)
                     </div>
                     <div class='panel-body'>
 					<div class='col-sm-12'>
-                            <table class='table table-bordered rejections_table' id='mark_len_table'>
+                            <table class='table table-bordered rejections_table' id='mark_len_table<?=$docs_no[$i]?>'>
 							<thead>
 								<tr class='.bg-dark'><th></th><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks</th></tr>
 							</thead>
-                                <tbody id='rejections_table_body'>
+                                <tbody id='rejections_table_body<?=$docs_no[$i]?>'>
 								<?php 
 									
 									$doc_no = $docs_no[$i];
@@ -295,6 +298,7 @@ for($i=0;$i<sizeof($cat_refnce);$i++)
 									$sql11x132="select allocate_ref,mk_ref_id,mk_ref from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
 									$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error16 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 									$rows=0;
+									
 									while($row111x2=mysqli_fetch_array($sql_result11x112)) 
 									{
 										$mk_ref_id=$row111x2['mk_ref_id'];
@@ -304,31 +308,33 @@ for($i=0;$i<sizeof($cat_refnce);$i++)
 										echo "<input type='hidden' name='rows_val' id='rows_val' value='$values_rows' >";
 										while($sql_marker_details_res=mysqli_fetch_array($sql_marker_details_result))
 										{   
+											// var_dump($sql_marker_details_res[id]);
+											// var_dump($mk_ref_id);
 											$rows++;
 											if($sql_marker_details_res[id] == $mk_ref_id)
 											{
-												echo "<input type='hidden' name='first_val' id='first_val' value='$mk_ref_id' >";
-												echo "<input type='hidden' name='all_ref' id='all_ref' value=".$row111x2['allocate_ref']." >";
-												echo "<input type='hidden' name='mk_ref' id='mk_ref' value=".$row111x2['mk_ref']." >";
+												echo "<input type='hidden' name='first_val' id='first_val".$doc_no."' value='$mk_ref_id' >";
+												echo "<input type='hidden' name='all_ref' id='all_ref".$doc_no."' value=".$row111x2['allocate_ref']." >";
+												echo "<input type='hidden' name='mk_ref' id='mk_ref".$doc_no."' value=".$row111x2['mk_ref']." >";
 												echo "<input type='hidden' name='doc_no' id='doc_no' value='$doc_no' >";
 												echo "<tr><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[0]'>yes</td>
 												<td style='display:none;'  id='id'>$sql_marker_details_res[id]</td>
 												<td style='display:none;'  id='doc_no'>$doc_no</td>
-												<td style='display:none;'  id='all_ref'>".$row111x2['allocate_ref']."</td>
-												<td style='display:none;'  id='mk_ref'>".$row111x2['mk_ref']."</td>
-												<td><input type='radio' name='selected_len' value='yes' onchange = valid_button($rows) id='check$rows' CHECKED></td>
+												<td style='display:none;'  id='all_ref".$doc_no."'>".$row111x2['allocate_ref']."</td>
+												<td style='display:none;'  id='mk_ref".$doc_no."'>".$row111x2['mk_ref']."</td>
+												<td><input type='radio' name='selected_len' value='yes' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]' CHECKED></td>
 												
 												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[perimeters]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td>	
 												</tr>";
 											}
 											else
 											{
-												echo "<tr><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[0]'>no</td>
+												echo "<tr><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[id]'>no</td>
 												<td style='display:none;'  id='id'>$sql_marker_details_res[id]</td>
 												<td style='display:none;'  id='doc_no'>$doc_no</td>
 												<td style='display:none;'  id='all_ref'>".$row111x2['allocate_ref']."</td>
 												<td style='display:none;'  id='mk_ref'>".$row111x2['mk_ref']."</td>
-												<td><input type='radio' name='selected_len' value='no' onchange = valid_button($rows) id='check$rows'></td>
+												<td><input type='radio' name='selected_len' value='no' onchange = valid_button($sql_marker_details_res[id]) id='check$sql_marker_details_res[0]'></td>
 												
 												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[perimeters]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td></tr>";
 											}												
@@ -341,22 +347,27 @@ for($i=0;$i<sizeof($cat_refnce);$i++)
 								
 								<tr>
 									<td></td>
-									<td><input class="form-control"  type="text" name="in_mktype" id="mk_type"  title="please enter numbers and decimals"></td>
-									<td><input class="form-control"  type="text" name= "in_mkver" id= "mk_ver" onchange="validate_data(this)" title="please enter numbers and decimals"></td>
-									<td><input class="form-control"  type="text" name= "in_skgrp" id= "sk_grp" onchange="validate_data(this)" title="please enter numbers and decimals"></td>
-									<td><input class="form-control"  type="text" name= "in_width" id= "width" onchange="validate_data(this)" title="please enter numbers and decimals"></td>
-									<td><input class="form-control"  type="text" name= "in_mklen" id= "mk_len" onchange="validate_data(this)" title="please enter numbers and decimals"></td>
-									<td><input class="form-control"  type="text" name= "in_mkname" id="mk_name" title="please enter numbers and decimals"></td>
-									<td><input class="form-control"  type="text" name= "in_ptrname" id="ptr_name" title="please enter numbers and decimals"></td>
-									<td><input class="form-control"  type="text" name= "in_mkeff" id= "mk_eff" title="please enter numbers and decimals"></td>
-									<td><input class="form-control"  type="text" name= "in_permts" id= "permts" title="please enter numbers and decimals"></td>
-									<td><input class="form-control"  type="text" name= "in_rmks" id= "rmks" title="please enter numbers and decimals"></td>
+									<?php
+									echo "<input type='hidden' name='doc_no_new' id='doc_no_new' value='$docs_no[$i]' >";
+									?>
+									<td><input class="form-control alpha"  type="text" name="in_mktype" id="mk_type<?=$doc_no ?>"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_mkver" id= "mk_ver<?=$doc_no ?>" onchange="validate_data(this)"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_skgrp" id= "sk_grp<?=$doc_no ?>" onchange="validate_data(this)"></td>
+									<td><input class="form-control float"  type="text" name= "in_width" id= "width<?=$doc_no ?>" onchange="validate_data(this)"></td>
+									<td><input class="form-control float"  type="text" name= "in_mklen" id= "mk_len<?=$doc_no ?>" onchange="validate_data(this)"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_mkname" id="mk_name<?=$doc_no ?>"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_ptrname" id="ptr_name<?=$doc_no ?>"></td>
+									<td><input class="form-control float"  type="text" name= "in_mkeff" id= "mk_eff<?=$doc_no ?>"></td>
+									<td><input class="form-control float"  type="text" name= "in_permts" id= "permts<?=$doc_no ?>"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_rmks" id= "rmks<?=$doc_no ?>"></td>
 									
 									</tr>  
                                 </tbody>
                             </table>
-								<input type='button' class='btn btn-danger pull-right' value='clear' name='clear_rejection' id='clear_rejection' onclick='clear_row()'>
-								<input type='button' class='btn btn-warning pull-right' value='Add' name='add_mklen' onclick = 'add_Newmklen()' id='add_marker_length'>
+								<input type='button' class='btn btn-danger pull-right' value='clear' name='clear_rejection' id='clear_rejection' onclick='clear_row(<?=$doc_no ?>)'>
+								<?php 
+									echo "<input type='button' class='btn btn-warning pull-right' value='Add' name='add_mklen' onclick = 'add_Newmklen(".$doc_no.")' id='add_marker_length'>";
+								?>
 					<br>
 					<?php
 					echo "<input type='button' class='btn btn-success pull-left' value='Submit' name='submit' onclick=submit_mklen(".$doc_no.")  id='submit_length'>";
@@ -701,7 +712,7 @@ function validate_data(id_name)
 	var array = [];
 	var CurData=[];
 	
-	$('#mark_len_table tr').has('td').each(function() {
+	$('#mark_len_table'+doc_no+' tr').has('td').each(function() {
 		var arrayItem = [];
 		$('td', $(this)).each(function(index, item) {
 			// console.log($(this));
@@ -710,7 +721,7 @@ function validate_data(id_name)
 		array.push(arrayItem);
 	});
 	CurData = [$("#mk_ver").val(), $("#sk_grp").val(), $("#width").val(), $("#mk_len").val()];
-		var table = $("#mark_len_table");
+		var table = $('#mark_len_table'+doc_no);
 		var tr_length= table.find('tr').length;
 		// console.log(array[0]);
 		for($i=0; $i<tr_length; $i++)
@@ -727,22 +738,24 @@ function validate_data(id_name)
 	// 	sweetAlert('Marker Type/Marker Version/Shrinkage Group/Width/Marker Length are mandatory','','warning');
 	// }
 }
-function add_Newmklen()
+function add_Newmklen(doc_no)
 {	
-	var mk_type = $('#mk_type').val();
-	var mk_ver = $('#mk_ver').val();
-	var sk_grp = $('#sk_grp').val();
-	var width = $('#width').val();
-	var mk_len = $('#mk_len').val();
-	var mk_name = $('#mk_name').val();
-	var ptr_name = $('#ptr_name').val();
-	var mk_eff = $('#mk_eff').val();
-	var permts = $('#permts').val();
-	var rmks = $('#rmks').val();
-	
+	var mk_type = $('#mk_type'+doc_no).val();
+	var mk_ver = $('#mk_ver'+doc_no).val();
+	var sk_grp = $('#sk_grp'+doc_no).val();
+	var width = $('#width'+doc_no).val();
+	var mk_len = $('#mk_len'+doc_no).val();
+	var mk_name = $('#mk_name'+doc_no).val();
+	var ptr_name = $('#ptr_name'+doc_no).val();
+	var mk_eff = $('#mk_eff'+doc_no).val();
+	var permts = $('#permts'+doc_no).val();
+	var rmks = $('#rmks'+doc_no).val();
 	var values_rows1 = $('#first_val').val();
 	var all_refs = $('#all_ref').val();
-	var doc_nos = $('#doc_no').val();
+	var doc_nos = doc_no;
+	var doc_no_new = doc_no;
+	// alert(doc_nos);
+	// $('#doc_no_new').val(doc_nos);
 	var mk_refs = $('#mk_ref').val();
 	var rows_valu = parseInt($('#rows_val').val())+1;
 	//alert(values_rows1)
@@ -750,7 +763,7 @@ function add_Newmklen()
 	$('#checked'+values_rows1).text('no');
 	
 	
-	// /*
+
 	if(mk_ver == ''){
 		sweetAlert('Please enter valid Marker Version','','warning');
 		return false;
@@ -784,35 +797,48 @@ function add_Newmklen()
 		sweetAlert('Please enter valid Marker Version','','warning');
 		return false;
 	}
-	var table_body = $("#rejections_table_body");
-	var new_row = "<tr><td style='display:none;' class='checked_value' id='checked"+rows_valu+"'>yes</td><td style='display:none;' id='id'>"+rows_valu+"</td><td style='display:none;'  id='doc_no' >"+doc_nos+"</td><td style='display:none;'  id='all_ref'>"+all_refs+"</td><td style='display:none;'  id='mk_ref'>"+mk_refs+"</td><td><input type='radio' name='selected_len' value='yes' id='check"+rows_valu+"' onchange = valid_button("+rows_valu+") CHECKED></td><td>"+mk_type+"</td><td>"+mk_ver+"</td><td>"+sk_grp+"</td><td>"+width+"</td><td>"+mk_len+"</td><td>"+mk_name+"</td><td>"+ptr_name+"</td><td>"+permts+"</td><td>"+mk_eff+"</td><td>"+rmks+"</td><td style='display:none;'>0</td></tr>";
-	$("#rejections_table_body").append(new_row);
-	$('#mk_type').val(' ');
-	$('#mk_ver').val(' ');
-	$('#sk_grp').val(' ');
-	$('#width').val(' ');
-	$('#mk_len').val(' ');
-	$('#mk_name').val(' ');
-	$('#ptr_name').val(' ');
-	$('#mk_eff').val(' ');
-	$('#permts').val(' ');
-	$('#rmks').val(' ');
-
+	var table_body = $("#rejections_table_body"+doc_no);
+	var new_row = "<tr id='unique_d_"+doc_no+"_r_"+rows_valu+"'><td style='display:none;' class='checked_value' id='checked"+values_rows1+"'>yes</td><td style='display:none;' id='id'>"+rows_valu+"</td><td style='display:none;' id='doc_no' >"+doc_no_new+"</td><td style='display:none;'  id='all_ref'>"+all_refs+"</td><td style='display:none;'  id='mk_ref'>"+mk_refs+"</td><td><input type='radio' name='selected_len' value='yes' id='check"+values_rows1+"' onchange = valid_button("+values_rows1+") CHECKED></td><td>"+mk_type+"</td><td>"+mk_ver+"</td><td>"+sk_grp+"</td><td>"+width+"</td><td>"+mk_len+"</td><td>"+mk_name+"</td><td>"+ptr_name+"</td><td>"+permts+"</td><td>"+mk_eff+"</td><td>"+rmks+"</td><td style='display:none;'>0</td><td><input type='button' style='display : block' class='btn btn-sm btn-danger' id=delete_row"+rows_valu+" onclick=delete_row("+rows_valu+","+doc_no+") value='Delete'></td></tr>";
 	
-}
+	// $('#delete_row'+rows_valu).on('click',function(){
+	// alert(rows_valu);
+      	
+    // });
 
-function clear_row()
+	$("#rejections_table_body"+doc_no).append(new_row);
+	$('#mk_type'+doc_no).val(' ');
+	$('#mk_ver'+doc_no).val(' ');
+	$('#sk_grp'+doc_no).val(' ');
+	$('#width'+doc_no).val(' ');
+	$('#mk_len'+doc_no).val(' ');
+	$('#mk_name'+doc_no).val(' ');
+	$('#ptr_name'+doc_no).val(' ');
+	$('#mk_eff'+doc_no).val(' ');
+	$('#permts'+doc_no).val(' ');
+	$('#rmks'+doc_no).val(' ');
+}
+function delete_row(rows_valu,doc_no){
+	// alert('unique_d_'+doc_no+'_r_'+rows_valu);
+	$("#rejections_table_body"+doc_no+" tr#unique_d_"+doc_no+"_r_"+rows_valu).remove();
+	// var table = $("rejections_table_body"+doc_no);
+	// var tr_length= table.find('tr').length;
+	// alert(tr_length);
+	// $('unique_d_'+doc_no+'_r_'+rows_valu).remove();
+	// $("#rejections_table_body"+doc_no).deleteRow(rows_valu);
+	// document.getElementById("rejections_table_body"+doc_no).deleteRow(1);
+}
+function clear_row(doc_no)
 {
-	$('#mk_type').val(' ');
-	$('#mk_ver').val(' ');
-	$('#sk_grp').val(' ');
-	$('#width').val(' ');
-	$('#mk_len').val(' ');
-	$('#mk_name').val(' ');
-	$('#ptr_name').val(' ');
-	$('#mk_eff').val(' ');
-	$('#permts').val(' ');
-	$('#rmks').val(' ');
+	$('#mk_type'+doc_no).val(' ');
+	$('#mk_ver'+doc_no).val(' ');
+	$('#sk_grp'+doc_no).val(' ');
+	$('#width'+doc_no).val(' ');
+	$('#mk_len'+doc_no).val(' ');
+	$('#mk_name'+doc_no).val(' ');
+	$('#ptr_name'+doc_no).val(' ');
+	$('#mk_eff'+doc_no).val(' ');
+	$('#permts'+doc_no).val(' ');
+	$('#rmks'+doc_no).val(' ');
 }
 function valid_button(row_num)
 {
@@ -825,25 +851,29 @@ function valid_button(row_num)
 function submit_mklen(doc_no)
 {
 	var tabledata = [];
-	$('#mark_len_table tr').has('td').each(function() {
+	$('#mark_len_table'+doc_no+' tr').has('td').each(function() {
 		var tabledataItem = [];
 		$('td', $(this)).each(function(index, item) {
 			
 			// console.log(index,$(item));
 			tabledataItem[index] = $(item).text();
+			// console.log(index);
 		});
 		tabledata.push(tabledataItem);
+		// console.log(tabledata);
 	});
-	// console.log(tabledata);
+
 	var jsonString = JSON.stringify(tabledata);
 	$.ajax({
 	type : "POST",
 	url : '<?= $get_url1 ?>',
 	data: {data : jsonString,doc_no:doc_no}, 
-	cache: false,
+	cache: false,	
 	
 	}).done(function(res){
-		console.log(res);
+		swal('Success','Marker Details Updated successfully','success');
+		location.reload();
+	
 	});
 }
 function test(doc_no){
