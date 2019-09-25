@@ -1,16 +1,16 @@
 //validation for numeric values in barcode input
 function validateQty(e,t) 
     {
-        if(e.keyCode == 13)
-                return;
-            var p = String.fromCharCode(e.which);
-            var c = /^[0-9]*\.?[0-9]*$/;
-            var v = document.getElementById(t.id);
-            if( !(v.value.match(c)) && v.value!=null ){
-                v.value = '';
-                return false;
-            }
-            return true;
+        // if(e.keyCode == 13)
+        //         return;
+        //     var p = String.fromCharCode(e.which);
+        //     var c = /^[0-9]*\.?[0-9]*$/;
+        //     var v = document.getElementById(t.id);
+        //     if( !(v.value.match(c)) && v.value!=null ){
+        //         v.value = '';
+        //         return false;
+        //     }
+        //     return true;
     }
 //validation for no of reasons and reason quantities
 function validateQty1(e,t) 
@@ -179,6 +179,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 $scope.bundle_qty=data.original_qty;
                 //$scope.changed_rej=data.bundle_eligibl_qty;
                 $('#changed_rej').val(data.bundle_eligibl_qty);
+                $scope.eligible_qty=data.bundle_eligibl_qty;
                 $scope.schedule= data.schedule;
                 $scope.size_title= data.size_title;
                 $scope.operation_name= data.operation_name;
@@ -211,9 +212,16 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
            
         });
     }
-    var scanned_count = [];
-    var sum =0;
+
+    $scope.functionRESET=function(){
+        $scope.count=0;
+        $scope.scanned_count = [];
+        };
+
+        $scope.scanned_count = [];
+    
     $scope.barcode_submit = function(taskId){
+        var sum =0;
         $('#loading-image').show();
             var task_action=taskId;
             $http({
@@ -233,12 +241,16 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 $('#loading-image').hide();
                 $scope.color_cod=data.color_code;
                 $scope.scanned_status=data.status;
-                var rep_qty=data.reported_qty;
-                //var tot_cnt=rep_qty  ;
-                scanned_count.push(rep_qty);
-                console.log(scanned_count);
-                sum = scanned_count.reduce( (sum, current) => sum + current, 0 );
+                if(data.reported_qty){
+                    var rep_qty=data.reported_qty;
+                }else{
+                    var rep_qty=0;
+                }
+                $scope.scanned_count.push(rep_qty);
+                console.log($scope.scanned_count);
+                sum = $scope.scanned_count.reduce( (sum, current) => sum + current, 0 );
                 console.log(sum);
+                $scope.count=sum;
                 $scope.prev_good=(data.prev_good.padStart(6,'0'));
                 $scope.prev_reject=(data.prev_reject.padStart(6,'0'));
                 $scope.prev_rework=(data.prev_rework.padStart(6,'0'));

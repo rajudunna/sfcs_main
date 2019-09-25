@@ -172,7 +172,7 @@ $result_rejections = $link->query($qery_rejection_resons);
 <body class="nav-md" style="color: #f6faff;">
 <div class="panel panel-primary" id="scanned_barcode" ng-app="scanning_interface_new">
     <div class="panel-heading">Bundle Scanning</div>
-    <div class="panel-body" style="background-color: black;" ng-controller="scancode_ctrl">
+    <div class="panel-body" style="background-color: black;padding: 3px 24px 0px 12px;" ng-controller="scancode_ctrl">
        <table border=0;> 
        <tr>
         <td><label>Style : </label><br/><br/><br/><label>Color : </label><br/></td>
@@ -181,7 +181,7 @@ $result_rejections = $link->query($qery_rejection_resons);
        </td>
        <td style="width: 10 5px;"></td>
         <td>
-        <div class="container" style="width:574px;">
+        <div class="container" style="width:574px;height: 15px;">
             <div class="panel panel-basic" style="background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
                <div class="panel-heading" style="padding: 0px 0px 0px 0px;">
                   <div class="panel-body"> 
@@ -193,7 +193,7 @@ $result_rejections = $link->query($qery_rejection_resons);
                                 <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 168px;">Action: {{action_mode | uppercase }}</div>
                             </div>
                             <div class="col-lg-4">
-                                <div class="btn btn-md btn-success ng-binding" id="" style="padding:3px 73px 0px 0px;text-align: center;line-height: 58px;height: 69px; ">Eligible_qty:{{eligible_qty}} </div>
+                                <div class="btn btn-md btn-success ng-binding" id="" style="padding:3px 73px 0px 0px;text-align: center;line-height: 58px;height: 69px; ">Eligible ty:{{eligible_qty}} </div>
                             </div>
                       </div>
                 </div>
@@ -299,13 +299,13 @@ $result_rejections = $link->query($qery_rejection_resons);
          <div class="panel-heading" style="font-size: large;background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
                 <div class="row">
                 <div class="col-sm-7 col-md-7 col-xs-7">Factory : {{global_facility_code}}</div>
-                <div class="col-sm-5  "></div><div   class="btn btn-sm btn-success" id="txmode" style="width: 152px;padding: 11px 1px 14px"><label>Count: </label>{{count}}</div>
+                <div class="col-sm-5  "></div><div   class="btn btn-sm btn-success" id="txmode" style="width: 152px;padding: 11px 1px 14px"><label>Count : </label>{{count}}</div>
                 <div class="row"></div>
-                <div class="col-sm-7 col-md-7 col-xs-7">Team: {{module}}</div><br/>
+                <div class="col-sm-7 col-md-7 col-xs-7">Team : {{module}}</div><br/>
                 <div class="panel-heading"></div>   
                 <div class="row"></div>
                 <div class="col-sm-7 col-md-7 col-xs-7">Operation :{{operation_name}}</div>
-                <button type="button" style="height: 35px;width:70px;" class="btn btn-info">Reset</button>
+                <button type="button" style="height: 35px;width:70px;" class="btn btn-info" ng-click="functionRESET()">Reset</button>
                 </div>
             </div>
         </td>
