@@ -447,33 +447,16 @@ $sql_num_check12=mysqli_num_rows($sql_result12);
     var col_index = $(this).index();
     });
 
-    function enablecutreport(t)
-    {
-        // $('#c_plies').attr('readonly', true);
-        // $('#fab_received').attr('readonly', true);
-        // $('#fab_returned').attr('readonly', true);
-        // $('#damages').attr('readonly', true);
-        // $('#joints').attr('readonly', true);
-        // $('#endbits').attr('readonly', true);
-        // $('#shortages').attr('readonly', true);
-        doc_no = $('#doc_no').val();
-        var bundleguide ='<?=$generatebundleguide?>';
- 
-        $('#enablerolls').html('');
-        $('#enablecutreportdetails button').html('');
-        $('#enablecutreportdetails a').html('');
-        $('#enablecutreportdetails a.btn').remove();
-        $('#enablecutreportdetails button').remove();
-        $('#enablecutreportdetails').hide();
-        if(t.checked == true)
-            enable_report = $(t).val();
-        else
-            enable_report = 0;
-           
 
-            if(enable_report==1)
-            {
-               
+    function getdetails()
+    {
+         $('#c_plies').attr('readonly', true);
+         $('#fab_received').attr('readonly', true);
+         $('#fab_returned').attr('readonly', true);
+         $('#damages').attr('readonly', true);
+         $('#joints').attr('readonly', true);
+         $('#endbits').attr('readonly', true);
+         $('#shortages').attr('readonly', true);    
                 doc_no = $('#doc_no').val();
                 var form_data = {
                         doc_no:doc_no,
@@ -586,11 +569,32 @@ $sql_num_check12=mysqli_num_rows($sql_result12);
                 }).fail(function(res){
                 
                 });
-            }
+            
+    }
 
-           
-           //$("#cut_report"). prop("checked", false);
-           
+    function enablecutreport(t)
+    {
+        // $('#c_plies').attr('readonly', true);
+        // $('#fab_received').attr('readonly', true);
+        // $('#fab_returned').attr('readonly', true);
+        // $('#damages').attr('readonly', true);
+        // $('#joints').attr('readonly', true);
+        // $('#endbits').attr('readonly', true);
+        // $('#shortages').attr('readonly', true);
+        doc_no = $('#doc_no').val();
+        var bundleguide ='<?=$generatebundleguide?>';
+ 
+        $('#enablerolls').html('');
+        $('#enablecutreportdetails button').html('');
+        $('#enablecutreportdetails a').html('');
+        $('#enablecutreportdetails a.btn').remove();
+        $('#enablecutreportdetails button').remove();
+        $('#enablecutreportdetails').hide();
+        if(t.checked == true)
+            getdetails();
+        else
+            enable_report = 0;
+           //$("#cut_report"). prop("checked", false);     
     }
     function checklaysequence(){
        
@@ -1199,6 +1203,13 @@ $sql_num_check12=mysqli_num_rows($sql_result12);
                 clearRejections();
                 loadDetails(post_doc_no);
                 $('#wait_loader').css({'display':'none'});
+                $('#enablecutreportdetails').css({'display':'none'});
+                if($("#cut_report").is(':checked'))
+                {
+                    $('#enablerolls').html('');
+                    getdetails();
+                }
+                 
             }else{
                 $('#wait_loader').css({'display':'none'});
                 swal('Error Occured While Reporting','Please Report again','error');
