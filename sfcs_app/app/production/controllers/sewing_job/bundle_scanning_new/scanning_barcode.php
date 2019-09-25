@@ -316,7 +316,7 @@ $result_rejections = $link->query($qery_rejection_resons);
 					        	<input type="hidden" value="" id="reject_reasons_count">
                       	<div class="panel panel-primary"> 
 				                  	<div class="panel-heading"><strong>Rejection Reasons</strong></div>				            	
-				                       <div class="panel-body" style="background-color: black;">
+				                       <div class="panel-body" style="color: black;">
 						                     	<div class="form-group col-md-4" id="res">
 			                                 <label>No of Reasons : </label>
                                        <input type="text" onkeyup="validateQty1(event,this);" name="no_reason" min=0 id="reason" class="form-control"  onchange="validating_with_qty()" onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' placeholder="Enter no of reasons"/>

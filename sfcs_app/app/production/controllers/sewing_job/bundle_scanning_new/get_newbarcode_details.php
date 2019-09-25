@@ -492,11 +492,14 @@ if(isset($_POST["trans_action"])){
 
                                     if($emb_cut_check_flag != 1)
                                     {
-                                        $pre_ops_validation = "SELECT sum(recevied_qty)as recevied_qty FROM  $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id = $pre_ops_code";
+                                        $pre_ops_validation = "SELECT sum(recevied_qty)as recevied_qty,send_qty,rejected_qty FROM  $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id = $pre_ops_code";
                                         $result_pre_ops_validation = $link->query($pre_ops_validation);
                                         while($row = $result_pre_ops_validation->fetch_assoc()) 
                                         {
                                             $recevied_qty_qty = $row['recevied_qty'];
+                                            $result_array['prevops_sendqty'] = $row['send_qty'];
+                                            $result_array['prevops_rejeqty'] = $row['rejected_qty'];
+                                            $result_array['pre_ops_code'] =$pre_ops_code;
                                         }
                                         if($recevied_qty_qty == 0)
                                         {
@@ -1523,6 +1526,19 @@ if(isset($_POST["trans_action"])){
                             $result_array['op_no'] = $op_no;
                             $result_array['color_code'] = "#45b645";
                             $result_array['status'] = 'Bundle Updated successfully !!!';
+
+                            
+                            
+                            //quantity count for screen
+                            $result_array['counted_qty']=$result_array['reported_qty']+$result_array['current_reject'];
+
+                            
+                            //this is for alert message if any difference eligible and reported qty
+                            if($result_array['flag']=='bundle_creation_data'){
+
+                                $result_array['present_eligibqty']=$result_array['prevops_sendqty']-$result_array['prevops_rejeqty'];
+                                
+                            }
                             
                             //updating rejection qunatitis
                             if($total_rej_qty>0){
