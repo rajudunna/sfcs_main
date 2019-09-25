@@ -77,7 +77,7 @@ if(!(in_array($view,$has_permission)))
 			<div class="col-md-3">
 				<form name="test" method="post" action="<?php $_SERVER['PHP_SELF']; ?>">
 					<label>Enter Lot #:</label>
-					<input type="text" id="text1" name="lot_no_ref" value="" class="form-control integer" /required>
+					<input type="text" id="text1" name="lot_no_ref" value="" class="form-control" /required>
 			</div>
 			<div class="col-md-3">
 					<input type="submit" name="submit2" value="Search" class="btn btn-success" style="margin-top:18px;" />
@@ -530,11 +530,11 @@ echo "</div>";
 </div>
 </div>
 <script>
-		jQuery('#text1').keyup(function() {
-		var raw_text =  jQuery(this).val();
-		var return_text = raw_text.replace(/[^a-zA-Z0-9 _]/g,'');
-		jQuery(this).val(return_text);
-	});
+	// 	jQuery('#text1').keyup(function() {
+	// 	var raw_text =  jQuery(this).val();
+	// 	var return_text = raw_text.replace(/[^a-zA-Z0-9 _]/g,'');
+	// 	jQuery(this).val(return_text);
+	// });
 
 		function check_reason()
 		{
