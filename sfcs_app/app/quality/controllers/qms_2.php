@@ -318,7 +318,7 @@ if(isset($_GET['tid']))
 }
 if(isset($_POST['search']) || $_GET['schedule_id'])
 {
-
+	
 	$schedule=$_POST['schedule'];
 	if($_GET['schedule_id'])
 	{
@@ -335,39 +335,46 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 	";
 	// echo $sql."<br>";
 	$result=mysqli_query($link, $sql) or die("Sql error".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($result)>0)
+	while($row1=mysqli_fetch_array($result))
 	{
-		$msg="<table border='1px' class=\"table table-bordered\"  id=\"table1\"><tr><th>Style</th><th>ScheduleNo</th><th>Color</th><th>Size</th><th>Qms_remarks</th><th>Rejection Type</th><th>Bundle_no</th><th>Operation_id</th><th>Input_job_no</th><th>Date</th><th>Quantity</th><th>Control</th></tr>";
-		while($row=mysqli_fetch_array($result))
-		{
-			$tid=$row["qms_tid"];
-			$location_id=$row["location_id"];
-			$qms_qty1=$row["qms_qty"];
-			$bcd_id = $row['bcd_id'];
-			$parent_id = $row['parent_id']; 
-			$form = $row['form'];
-
-			
-			if($row['form']=="G")
-			{
-				$form="Garment";
-			}else
-			{
-				$form="Panel";
-			}
-			
-			$url = '?r='.$_GET['r'];
-			$order_tid = '';
-			$qms_size_title = ims_sizes($order_tid,$row["qms_schedule"],$row["qms_style"],$row["qms_color"],$row["qms_size"],$link);
-			
-			$msg.="<tr><td>".$row["qms_style"]."</td><td>".$row["qms_schedule"]."</td><td>".$row["qms_color"]."</td><td>".$qms_size_title."</td><td>".$row["qms_remarks"]."</td><td>".$form."</td><td>".$row["bundle_no"]."</td><td>".$row["operation_id"]."</td><td>".$row["input_job_no"]."</td><td>".$row["log_date"]."</td><td>".$row["qms_qty"]."</td><td><a href=\"$url&tid=$tid&schedule_id=$schedule&location=$location_id&bcd_id=$bcd_id&parent_id=$parent_id&qms_qty1=$qms_qty1\" class=\"btn btn-danger\">Delete</a></td></tr>";		
-		}
-		$msg.="</table>";
-		echo $msg;
+		$qms_style=$row1["qms_style"];
+		$qms_schedule=$row1["qms_schedule"];
 	}
-	else
-	{
-		echo "<script>sweetAlert('This Schedule no is not available','','error')</script>";
+	if(short_shipment_status($qms_style,$qms_schedule,$link)){
+		if(mysqli_num_rows($result)>0)
+		{
+			$msg="<table border='1px' class=\"table table-bordered\"  id=\"table1\"><tr><th>Style</th><th>ScheduleNo</th><th>Color</th><th>Size</th><th>Qms_remarks</th><th>Rejection Type</th><th>Bundle_no</th><th>Operation_id</th><th>Input_job_no</th><th>Date</th><th>Quantity</th><th>Control</th></tr>";
+			while($row=mysqli_fetch_array($result))
+			{
+				$tid=$row["qms_tid"];
+				$location_id=$row["location_id"];
+				$qms_qty1=$row["qms_qty"];
+				$bcd_id = $row['bcd_id'];
+				$parent_id = $row['parent_id']; 
+				$form = $row['form'];
+
+				
+				if($row['form']=="G")
+				{
+					$form="Garment";
+				}else
+				{
+					$form="Panel";
+				}
+				
+				$url = '?r='.$_GET['r'];
+				$order_tid = '';
+				$qms_size_title = ims_sizes($order_tid,$row["qms_schedule"],$row["qms_style"],$row["qms_color"],$row["qms_size"],$link);
+				
+				$msg.="<tr><td>".$row["qms_style"]."</td><td>".$row["qms_schedule"]."</td><td>".$row["qms_color"]."</td><td>".$qms_size_title."</td><td>".$row["qms_remarks"]."</td><td>".$form."</td><td>".$row["bundle_no"]."</td><td>".$row["operation_id"]."</td><td>".$row["input_job_no"]."</td><td>".$row["log_date"]."</td><td>".$row["qms_qty"]."</td><td><a href=\"$url&tid=$tid&schedule_id=$schedule&location=$location_id&bcd_id=$bcd_id&parent_id=$parent_id&qms_qty1=$qms_qty1\" class=\"btn btn-danger\">Delete</a></td></tr>";		
+			}
+			$msg.="</table>";
+			echo $msg;
+		}
+		else
+		{
+			echo "<script>sweetAlert('This Schedule no is not available','','error')</script>";
+		}
 	}
 }
 

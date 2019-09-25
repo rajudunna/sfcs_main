@@ -1538,6 +1538,14 @@ $sql_num_check12=mysqli_num_rows($sql_result12);
                 swal('Error','Docket Doesnt Exist','error');
                 return false;
             }
+            if(data.error == '2'){
+                swal('Error','Short Shipment Done Temporarly','error');
+                return false;
+            }
+            if(data.error == '3'){
+                swal('Error','Short Shipment Done Perminently','error');
+                return false;
+            }
 
             if(data.partial == '1'){
                 $('#hide_details_reported').css({'display':'block'});

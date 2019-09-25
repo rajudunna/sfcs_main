@@ -62,6 +62,45 @@
 if(isset($_POST['formSubmit']))
 {
     $docket_number_post = $_POST['docket_number'];
+    $get_order_tid = "SELECT order_tid from $bai_pro3.plandoc_stat_log where doc_no = $docket_number_post ";
+    // echo $get_order_tid;
+    $get_order_tid_res = mysqli_query($link,$get_order_tid);
+    while($row1 = mysqli_fetch_array($get_order_tid_res)){
+        $order_tid = $row1['order_tid'];
+    }
+    
+    $get_shipment_details="select order_style_no as style,order_del_no as schedule from $bai_pro3.bai_orders_db where order_tid ='".$order_tid."'";
+
+    $get_shipment_details_res=mysqli_query($link, $get_shipment_details) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_rowx121=mysqli_fetch_array($get_shipment_details_res))
+    {
+        $style=$sql_rowx121['style'];
+        $schedule=$sql_rowx121['schedule'];
+    }
+    $short_ship_status =0;
+    $query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
+    $shortship_res = mysqli_query($link,$query_short_shipment);
+    $count_short_ship = mysqli_num_rows($shortship_res);
+    if($count_short_ship >0) {
+        while($row_set=mysqli_fetch_array($shortship_res))
+        {
+            if($row_set['remove_type']==1) {
+                $short_ship_status=1;
+            }else{
+                $short_ship_status=2;
+            }
+        }
+    }
+    if($short_ship_status==1){
+        $url = '?r='.$_GET['r'];
+        echo "<script>swal('Error','Short Shipment Done Temporarly','error');window.location = '".$url."'</script>";
+        exit();
+    }
+    else if($short_ship_status==2){
+        $url = '?r='.$_GET['r'];
+        echo "<script>swal('Error','Short Shipment Done Perminently','error');window.location = '".$url."'</script>";
+        exit();
+    }
     $plies_post = $_POST['plies'];
     $does_docket_exists_flag= '';
     $update_plan_doc_stat_flag = 0;

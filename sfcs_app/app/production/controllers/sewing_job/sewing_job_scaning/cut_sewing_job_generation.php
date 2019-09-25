@@ -330,6 +330,8 @@ if(isset($_POST) && isset($_POST['main_data'])){
         $schedule=$_GET['schedule']; 
         $color  = $_GET['color'];
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+        include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+
         echo '<div class = "panel-body">';
             $sql="select distinct order_style_no from bai_pro3.bai_orders_db_confirm";
             $sql_result=mysqli_query($link, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -400,10 +402,9 @@ if(isset($_POST) && isset($_POST['main_data'])){
     ?>
 </div>
 <?php
-if($schedule != "" && $color != "")
+if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$link))
 {
 
-	
     $ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm bd
    LEFT JOIN bai_pro3.cat_stat_log csl ON bd.order_tid = csl.order_tid 
    LEFT JOIN bai_pro3.plandoc_stat_log psl ON csl.tid = psl.cat_ref AND psl.order_tid = bd.order_tid 

@@ -404,7 +404,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $req_time[]=0;
       $req_date_time[]=0;
       $track_ids = [];
-      $sql2="select track_id,doc_no,module from $bai_pro3.embellishment_plan_dashboard where module in ($section_mods) and orginal_qty<>send_qty  order by log_time,module";
+      $sql2="select track_id,doc_no,module from $bai_pro3.embellishment_plan_dashboard where module in ($section_mods) and orginal_qty<>send_qty and short_shipment_status=0 order by log_time,module";
       $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($row2=mysqli_fetch_array($result2))
       {
