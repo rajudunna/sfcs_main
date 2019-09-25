@@ -1,7 +1,46 @@
 <?php
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+    // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dashboards/controllers/Cut_table_dashboard/fabric_requisition.php',3,'R'));
+	// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURL($_GET['r'],'marker_length_popup.php','R'));
+
+//     var_dump($_GET['r']);
+// var_dump(getFullURLLevel($_GET['r'],'dashboards/controllers/Cut_table_dashboard/fabric_requisition.php',5,'R'));
+// die();
     $username = getrbac_user()['uname'];
+    $get_url1 = getFullURLLevel($_GET['r'],'marker_model_popup.php',0,'R');
+    $get_url2 = getFullURLLevel($_GET['r'],'mk_popup.php',0,'N');
+    $temp = 0;
+
 ?>
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
+<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'TableFilter_EN/filtergrid.css',0,'R'); ?>">
+<style type="text/css" media="screen">
+
+/*====================================================
+  - HTML Table Filter stylesheet
+=====================================================*/
+
+
+/*====================================================
+  - General html elements
+=====================================================*/
+body{ 
+  margin:15px; padding:15px; border:0px solid #666;
+  font-family:Arial, Helvetica, sans-serif; font-size:12px; 
+}
+a {
+  margin:0px; padding:0px;
+}
+caption{ margin:10px 0 0 5px; padding:10px; text-align:left; }
+pre{ font-size:13px; margin:5px; padding:5px; background-color:#f4f4f4; border:1px solid #ccc;  }
+.mytable1{
+  font-size:12px;
+}
+th{ background-color:#003366; color:#FFF; padding:2px; border:1px solid #ccc; }
+td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; white-space:nowrap;}
+</style>
 <div class="panel panel-primary"> 
     <div class="panel-heading">Material Deallocation</div>
         <div class='panel-body'>
@@ -21,7 +60,7 @@
         </div>
         <ul id="rowTab" class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#tab_a"><b><span class='label label-default' style='font-size:15px'>Deallocate Requests</span></b></a></li>
-            <li><a data-toggle="tab" href="#tab_b"><b><span class='label label-default' style='font-size:15px'>Allocated </span></b></a></li>
+            <li><a data-toggle="tab" href="#tab_b"><b><span class='label label-default' style='font-size:15px'>Deallocated List </span></b></a></li>
         </ul>
         <div class="tab-content">
             <div id="tab_a" class="tab-pane fade active in">
@@ -31,34 +70,60 @@
                             <tr>
                                 <th>SNo.</th>
                                 <th>Docket Number</th>
+                                <th>Style</th>
+                                <th>Schedule</th>
                                 <th>Qty</th>
                                 <th>Requested By</th>
                                 <th>Requested At</th>
                                 <th>Status</th>
                                 <th>Control</th>
+                                <th>Control</th>
+
 
                             </tr>
                         </thead>
                         <?php
+                            $doc_nos=array();    
                             $query = "select * from $bai_rm_pj1.material_deallocation_track where status='Open'";
                             $sql_result = mysqli_query($link,$query);
                             // echo $query;
                             while($sql_row=mysqli_fetch_array($sql_result))
                             {
+                                // var_dump($sql_row);
+                                $doc_nos[]=$sql_row['doc_no'];
                                 $table1_rows++;
                                 $i = $sql_row['id'];
+                                $doc_no = $sql_row['doc_no'];
                                 $index+=1;
-                                echo "<tr><td>".$index."</td>";
-                                echo "<td>".$sql_row['doc_no']."</td>";
-                                echo "<td>".$sql_row['qty']."</td>";
-                                echo "<td>".$sql_row['requested_by']."</td>";
-                                echo "<td>".$sql_row['requested_at']."</td>";
-                                echo "<td><select name='issue_status$i' id='issue_status-$i' class='select2_single form-control' onchange='IssueAction($i);'>";
-                                echo "<option value=''>Please Select</option>";
-                                echo "<option value='Deallocated'>Deallocated</option>";
-                                echo "</select></td>";
-                                echo "<td><input type='submit' name='submit$i' id='submit-$i' class='btn btn-info' value='Deallocate' disabled='disabled' onclick='Approve_deallocation($i);'></td>";
-                                echo "</tr>";
+                                $query1 = "select * from $bai_pro3.plandoc_stat_log where doc_no='".$doc_no."'";
+                                $sql_result1 = mysqli_query($link,$query1);
+                                while($sql_row1=mysqli_fetch_array($sql_result1)) 
+                                {
+                                   $order_tid = $sql_row1['order_tid'];
+                                   $query2 = "select * from bai_pro3.bai_orders_db WHERE order_tid='".$order_tid."'";
+                                    $sql_result2 = mysqli_query($link,$query2);
+                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
+                                    {
+                                        // var_dump($sql_row2['order_style_no']);
+                                        // var_dump($sql_row2['order_del_no']);
+
+                                        echo "<tr><td>".$index."</td>";
+                                        echo "<td>".$sql_row['doc_no']."</td>";
+                                        echo "<td>".$sql_row2['order_style_no']."</td>";
+                                        echo "<td>".$sql_row2['order_del_no']."</td>";
+                                        echo "<td>".$sql_row['qty']."</td>";
+                                        echo "<td>".$sql_row['requested_by']."</td>";
+                                        echo "<td>".$sql_row['requested_at']."</td>";
+                                        echo "<td><select name='issue_status$i' id='issue_status-$i' class='select2_single form-control' onchange='IssueAction($i);'>";
+                                        echo "<option value=''>Please Select</option>";
+                                        echo "<option value='Deallocated'>Deallocated</option>";
+                                        echo "</select></td>";
+                                        echo "<td><input type='submit' name='submit$i' id='submit-$i' class='btn btn-info' value='Deallocate' disabled='disabled' onclick='Approve_deallocation($i);'></td>"; 
+                                        echo "<td><input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn'".$doc_no." onclick=test(".$doc_no.") value='Edit'></td>"; 
+                                        echo "</tr>";
+                                   
+                                    }
+                                }
                             }
                         ?>
                     </table>
@@ -97,74 +162,194 @@
                                 echo "<td>".$sql_row['approved_at']."</td>";
                                 echo "</tr>";
                             }
-                        ?>
+                            ?> 
                     </table>
                 </div>
             </div>
             
-            
+    </div>
+   
+   
+</div>
+<?php
+for($i=0;$i<sizeof($doc_nos);$i++)
+{
+?>
+<div class="modal fade" id="rejections_modal<?= $doc_nos[$i];?>" role="dialog">
+    <div class="modal-dialog" style="width: 80%;  height: 100%;">
+        <div class="modal-content">
+            <div class="modal-header">Change Marker Length
+                <button type="button" class="btn btn-danger" value="Close" id = "cancel" data-dismiss="modal" style="float: right;">Close</button>
+            </div>
+            <div class="modal-body">
+                <div class='panel panel-primary'>
+                    <div class='panel-heading'>
+                        Marker Length Details
+                    </div>
+                    <div class='panel-body'>
+					<div class='col-sm-12'>
+                            <table class='table table-bordered rejections_table' id='mark_len_table<?=$doc_nos[$i]?>'>
+							<thead>
+								<tr class='.bg-dark'><th></th><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks</th></tr>
+							</thead>
+                                <tbody id='rejections_table_body<?=$doc_nos[$i]?>'>
+								<?php 
+									
+									$doc_no = $doc_nos[$i];
+									
+									$sql11x132="select allocate_ref,mk_ref_id,mk_ref from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
+									$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error16 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+									$rows=0;
+									
+									while($row111x2=mysqli_fetch_array($sql_result11x112)) 
+									{
+										$mk_ref_id=$row111x2['mk_ref_id'];
+										$sql_marker_details = "select * from $bai_pro3.maker_details where parent_id='".$row111x2['allocate_ref']."'";
+										$sql_marker_details_result=mysqli_query($link, $sql_marker_details) or die("Error17 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+										$values_rows=mysqli_num_rows($sql_marker_details_result);
+										echo "<input type='hidden' name='rows_val' id='rows_val' value='$values_rows' >";
+										while($sql_marker_details_res=mysqli_fetch_array($sql_marker_details_result))
+										{   
+											// var_dump($sql_marker_details_res[id]);
+											// var_dump($mk_ref_id);
+											$rows++;
+											if($sql_marker_details_res[id] == $mk_ref_id)
+											{
+												echo "<input type='hidden' name='first_val' id='first_val".$doc_no."' value='$mk_ref_id' >";
+												echo "<input type='hidden' name='all_ref' id='all_ref".$doc_no."' value=".$row111x2['allocate_ref']." >";
+												echo "<input type='hidden' name='mk_ref' id='mk_ref".$doc_no."' value=".$row111x2['mk_ref']." >";
+												echo "<input type='hidden' name='doc_no' id='doc_no' value='$doc_no' >";
+												echo "<tr><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[0]'>yes</td>
+												<td style='display:none;'  id='id'>$sql_marker_details_res[id]</td>
+												<td style='display:none;'  id='doc_no'>$doc_no</td>
+												<td style='display:none;'  id='all_ref".$doc_no."'>".$row111x2['allocate_ref']."</td>
+												<td style='display:none;'  id='mk_ref".$doc_no."'>".$row111x2['mk_ref']."</td>
+												<td><input type='radio' name='selected_len' value='yes' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]' CHECKED></td>
+												
+												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[perimeters]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td>	
+												</tr>";
+											}
+											else
+											{
+												echo "<tr><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[id]'>no</td>
+												<td style='display:none;'  id='id'>$sql_marker_details_res[id]</td>
+												<td style='display:none;'  id='doc_no'>$doc_no</td>
+												<td style='display:none;'  id='all_ref'>".$row111x2['allocate_ref']."</td>
+												<td style='display:none;'  id='mk_ref'>".$row111x2['mk_ref']."</td>
+												<td><input type='radio' name='selected_len' value='no' onchange = valid_button($sql_marker_details_res[id]) id='check$sql_marker_details_res[0]'></td>
+												
+												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[perimeters]</td><td>$sql_marker_details_res[remarks]</td><td style='display:none;'>1</td></tr>";
+											}												
+										}										
+									}
+									?>
+                                </tbody>
+
+                                <tbody id='rejections_table'>
+								
+								<tr>
+									<td></td>
+									<?php
+									echo "<input type='hidden' name='doc_no_new' id='doc_no_new' value='$doc_nos[$i]' >";
+									?>
+									<td><input class="form-control alpha"  type="text" name="in_mktype" id="mk_type<?=$doc_no ?>"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_mkver" id= "mk_ver<?=$doc_no ?>" onchange="validate_data(this)"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_skgrp" id= "sk_grp<?=$doc_no ?>" onchange="validate_data(this)"></td>
+									<td><input class="form-control float"  type="text" name= "in_width" id= "width<?=$doc_no ?>" onchange="validate_data(this)"></td>
+									<td><input class="form-control float"  type="text" name= "in_mklen" id= "mk_len<?=$doc_no ?>" onchange="validate_data(this)"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_mkname" id="mk_name<?=$doc_no ?>"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_ptrname" id="ptr_name<?=$doc_no ?>"></td>
+									<td><input class="form-control float"  type="text" name= "in_mkeff" id= "mk_eff<?=$doc_no ?>"></td>
+									<td><input class="form-control float"  type="text" name= "in_permts" id= "permts<?=$doc_no ?>"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_rmks" id= "rmks<?=$doc_no ?>"></td>
+									
+									</tr>  
+                                </tbody>
+                            </table>
+								<input type='button' class='btn btn-danger pull-right' value='clear' name='clear_rejection' id='clear_rejection' onclick='clear_row(<?=$doc_no ?>)'>
+								<?php 
+									echo "<input type='button' class='btn btn-warning pull-right' value='Add' name='add_mklen' onclick = 'add_Newmklen(".$doc_no.")' id='add_marker_length'>";
+								?>
+					<br>
+					<?php
+					echo "<input type='button' class='btn btn-success pull-left' value='Submit' name='submit' onclick=submit_mklen(".$doc_no.")  id='submit_length'>";
+					?>
+
+                    </div>
+
+                </div>
+				</div>
+                    
+                
+            </div>
+
         </div>
     </div>
-    <?php
+</div>
+<?php
+}
 
 if(isset($_POST['formSubmit']))
 {
-    $doc_no = $_POST['docket_number'];
+        $doc_no = $_POST['docket_number'];
    
-    $fabric_status_qry="SELECT * FROM $bai_pro3.plandoc_stat_log WHERE doc_no=$doc_no";
-    $fabric_status_qry_result=mysqli_query($link, $fabric_status_qry) or exit("Sql Error0: fabric_status_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-    if(mysqli_num_rows($fabric_status_qry_result)>0)
-    {
-        while($sql_row0=mysqli_fetch_array($fabric_status_qry_result))
+        $fabric_status_qry="SELECT * FROM $bai_pro3.plandoc_stat_log WHERE doc_no=$doc_no";
+        // echo $fabric_status_qry;
+    
+        $fabric_status_qry_result=mysqli_query($link, $fabric_status_qry) or exit("Sql Error0: fabric_status_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+        if(mysqli_num_rows($fabric_status_qry_result)>0)
         {
-            $fabric_status = $sql_row0['fabric_status'];
-        }
-        $fab_qry="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no=$doc_no";
-        $fab_qry_result=mysqli_query($link, $fab_qry) or exit("Sql Error1: fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
-        if(mysqli_num_rows($fab_qry_result)>0)
-        {     
-            if($fabric_status != 5)
+            while($sql_row0=mysqli_fetch_array($fabric_status_qry_result))
             {
-                $is_requested="SELECT * FROM $bai_rm_pj1.material_deallocation_track WHERE doc_no=$doc_no and status='Open'";
-                $is_requested_result=mysqli_query($link, $is_requested) or exit("Sql Error0: fabric_status_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-                if(mysqli_num_rows($is_requested_result)==0)
-                {
-                    $fab_qry="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no=$doc_no";
-                    $fab_qry_result=mysqli_query($link, $fab_qry) or exit("Sql Error1: fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    $allocated_qty=0;
-                    while($sql_row1=mysqli_fetch_array($fab_qry_result))
-                    {
-                        $allocated_qty+=$sql_row1['allocated_qty'];  
-                    }
-                    $req_at = date("Y-m-d H:i:s");
-                    $insert_req_qry = "INSERT INTO $bai_rm_pj1.material_deallocation_track(doc_no,qty,requested_by,requested_at,status) values ($doc_no,$allocated_qty,'$username','$req_at','Open')";
-                    $insert_req_qry_result=mysqli_query($link, $insert_req_qry) or exit("Sql Error2: material_deallocation_track".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    echo "<script>swal('success','Request Sent Successfully','success')</script>";
-                    $url = getFullUrlLevel($_GET['r'],'material_deallocation.php',0,'N');
-                    echo "<script>setTimeout(function(){
-                                location.href='$url' 
-                            },2000);
-                            </script>";
-                    exit();
-                } 
-                else 
-                {
-                    echo "<script>swal('Warning','Material Deallocation Request is Already Sent','warning')</script>";
-                }
-            }else 
-            {
-                echo "<script>swal('Error','Material is Issued to Cutting','error')</script>";
+                $fabric_status = $sql_row0['fabric_status'];
+                $allocate_ref = $sql_row0['allocate_ref'];
             }
-        }
+        
+            $fab_qry="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no=$doc_no";
+            $fab_qry_result=mysqli_query($link, $fab_qry) or exit("Sql Error1: fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
+            if(mysqli_num_rows($fab_qry_result)>0)
+            {     
+                if($fabric_status != 5)
+                {
+                    $is_requested="SELECT * FROM $bai_rm_pj1.material_deallocation_track WHERE doc_no=$doc_no and status='Open'";
+                    $is_requested_result=mysqli_query($link, $is_requested) or exit("Sql Error0: fabric_status_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                    if(mysqli_num_rows($is_requested_result)==0)
+                    {
+                        $fab_qry="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no=$doc_no";
+                        $fab_qry_result=mysqli_query($link, $fab_qry) or exit("Sql Error1: fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $allocated_qty=0;
+                        while($sql_row1=mysqli_fetch_array($fab_qry_result))
+                        {
+                            $allocated_qty+=$sql_row1['allocated_qty'];  
+                        }
+                        $req_at = date("Y-m-d H:i:s");
+                        $insert_req_qry = "INSERT INTO $bai_rm_pj1.material_deallocation_track(doc_no,qty,requested_by,requested_at,status) values ($doc_no,$allocated_qty,'$username','$req_at','Open')";
+                        $insert_req_qry_result=mysqli_query($link, $insert_req_qry) or exit("Sql Error2: material_deallocation_track".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        echo "<script>swal('success','Request Sent Successfully','success')</script>";
+                        $url = getFullUrlLevel($_GET['r'],'material_deallocation.php',0,'N');
+                        echo "<script>setTimeout(function(){
+                                    location.href='$url' 
+                                },2000);
+                                </script>";
+                        exit();
+                    } 
+                    else 
+                    {
+                        echo "<script>swal('Warning','Material Deallocation Request is Already Sent','warning')</script>";
+                    }
+                }else 
+                {
+                    echo "<script>swal('Error','Material is Issued to Cutting','error')</script>";
+                }
+            }
+            else{
+                echo "<script>swal('Error','Material is Not Yet Allocated','error')</script>";
+            }
+        } 
         else{
-            echo "<script>swal('Error','Material is Not Yet Allocated','error')</script>";
+            echo "<script>swal('Error','Enter Valid Docket Number','error')</script>";
         }
-    } 
-    else{
-        echo "<script>swal('Error','Enter Valid Docket Number','error')</script>";
-    }
 }
 ?>
 <script>
@@ -185,4 +370,192 @@ function Approve_deallocation(i) {
     }
     
 }
+
+function compareArrays(arr1, arr2){
+	// console.log(arr1.toString());
+	// console.log(arr2.toString());
+	if(arr1.toString() == arr2.toString()){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function validate_data(id_name) 
+{
+	if($("#mk_ver").val() != '' && $("#sk_grp").val() != '' && $("#width").val() != '' && $("#mk_len").val()){
+	var array = [];
+	var CurData=[];
+	
+	$('#mark_len_table'+doc_no+' tr').has('td').each(function() {
+		var arrayItem = [];
+		$('td', $(this)).each(function(index, item) {
+			// console.log($(this));
+			arrayItem[index] = $(item).text();
+		});
+		array.push(arrayItem);
+	});
+	CurData = [$("#mk_ver").val(), $("#sk_grp").val(), $("#width").val(), $("#mk_len").val()];
+		var table = $('#mark_len_table'+doc_no);
+		var tr_length= table.find('tr').length;
+		// console.log(array[0]);
+		for($i=0; $i<tr_length; $i++)
+		{
+			if(compareArrays(CurData, array[$i])){
+				swal('Error');
+				$("#"+id_name.id).val('');
+				return true;
+			}
+		}
+
+	}
+	// else {
+	// 	sweetAlert('Marker Type/Marker Version/Shrinkage Group/Width/Marker Length are mandatory','','warning');
+	// }
+}
+function add_Newmklen(doc_no)
+{	
+	var mk_type = $('#mk_type'+doc_no).val();
+	var mk_ver = $('#mk_ver'+doc_no).val();
+	var sk_grp = $('#sk_grp'+doc_no).val();
+	var width = $('#width'+doc_no).val();
+	var mk_len = $('#mk_len'+doc_no).val();
+	var mk_name = $('#mk_name'+doc_no).val();
+	var ptr_name = $('#ptr_name'+doc_no).val();
+	var mk_eff = $('#mk_eff'+doc_no).val();
+	var permts = $('#permts'+doc_no).val();
+	var rmks = $('#rmks'+doc_no).val();
+	var values_rows1 = $('#first_val').val();
+	var all_refs = $('#all_ref').val();
+	var doc_nos = doc_no;
+	var doc_no_new = doc_no;
+	// alert(doc_nos);
+	// $('#doc_no_new').val(doc_nos);
+	var mk_refs = $('#mk_ref').val();
+	var rows_valu = parseInt($('#rows_val').val())+1;
+	//alert(values_rows1)
+	$('#rows_val').val(rows_valu);
+	$('#checked'+values_rows1).text('no');
+	
+	
+
+	if(mk_ver == ''){
+		sweetAlert('Please enter valid Marker Version','','warning');
+		return false;
+	}
+	// if(mk_eff == ''){
+	// 	sweetAlert('Please enter valid Marker Eff','','warning');
+	// 	return false;
+	// }
+	if(mk_len <=0)
+	{
+		sweetAlert('Please enter valid Marker Length','','warning');
+		return false;
+	}
+	if(width <=0){
+		sweetAlert('Please enter valid Marker Width','','warning');
+		return false;
+	}
+	if(mk_len == ''|| mk_len <=0){
+		sweetAlert('Please enter valid Marker Length','','warning');
+		return false;
+	}
+	if(mk_eff == '')
+	{
+		mk_eff = 0;
+	}
+	if(mk_eff>100){
+		sweetAlert('Please enter valid Marker Efficiency','','warning');
+		return false;
+	}
+	if(mk_ver <=0 || mk_ver ==''){
+		sweetAlert('Please enter valid Marker Version','','warning');
+		return false;
+	}
+	var table_body = $("#rejections_table_body"+doc_no);
+	var new_row = "<tr id='unique_d_"+doc_no+"_r_"+rows_valu+"'><td style='display:none;' class='checked_value' id='checked"+values_rows1+"'>yes</td><td style='display:none;' id='id'>"+rows_valu+"</td><td style='display:none;' id='doc_no' >"+doc_no_new+"</td><td style='display:none;'  id='all_ref'>"+all_refs+"</td><td style='display:none;'  id='mk_ref'>"+mk_refs+"</td><td><input type='radio' name='selected_len' value='yes' id='check"+values_rows1+"' onchange = valid_button("+values_rows1+") CHECKED></td><td>"+mk_type+"</td><td>"+mk_ver+"</td><td>"+sk_grp+"</td><td>"+width+"</td><td>"+mk_len+"</td><td>"+mk_name+"</td><td>"+ptr_name+"</td><td>"+permts+"</td><td>"+mk_eff+"</td><td>"+rmks+"</td><td style='display:none;'>0</td><td><input type='button' style='display : block' class='btn btn-sm btn-danger' id=delete_row"+rows_valu+" onclick=delete_row("+rows_valu+","+doc_no+") value='Delete'></td></tr>";
+	
+	// $('#delete_row'+rows_valu).on('click',function(){
+	// alert(rows_valu);
+      	
+    // });
+
+	$("#rejections_table_body"+doc_no).append(new_row);
+	$('#mk_type'+doc_no).val(' ');
+	$('#mk_ver'+doc_no).val(' ');
+	$('#sk_grp'+doc_no).val(' ');
+	$('#width'+doc_no).val(' ');
+	$('#mk_len'+doc_no).val(' ');
+	$('#mk_name'+doc_no).val(' ');
+	$('#ptr_name'+doc_no).val(' ');
+	$('#mk_eff'+doc_no).val(' ');
+	$('#permts'+doc_no).val(' ');
+	$('#rmks'+doc_no).val(' ');
+}
+function delete_row(rows_valu,doc_no){
+	// alert('unique_d_'+doc_no+'_r_'+rows_valu);
+	$("#rejections_table_body"+doc_no+" tr#unique_d_"+doc_no+"_r_"+rows_valu).remove();
+	// var table = $("rejections_table_body"+doc_no);
+	// var tr_length= table.find('tr').length;
+	// alert(tr_length);
+	// $('unique_d_'+doc_no+'_r_'+rows_valu).remove();
+	// $("#rejections_table_body"+doc_no).deleteRow(rows_valu);
+	// document.getElementById("rejections_table_body"+doc_no).deleteRow(1);
+}
+function clear_row(doc_no)
+{
+	$('#mk_type'+doc_no).val(' ');
+	$('#mk_ver'+doc_no).val(' ');
+	$('#sk_grp'+doc_no).val(' ');
+	$('#width'+doc_no).val(' ');
+	$('#mk_len'+doc_no).val(' ');
+	$('#mk_name'+doc_no).val(' ');
+	$('#ptr_name'+doc_no).val(' ');
+	$('#mk_eff'+doc_no).val(' ');
+	$('#permts'+doc_no).val(' ');
+	$('#rmks'+doc_no).val(' ');
+}
+function valid_button(row_num)
+{
+	$('.checked_value').text('no');
+	$('#checked'+row_num).text('yes');
+	//alert(row_num);
+	// $('input[name="selected_len"]').val('no');
+	// $('#'+id.name).val('yes');
+}
+function submit_mklen(doc_no)
+{
+	var tabledata = [];
+	$('#mark_len_table'+doc_no+' tr').has('td').each(function() {
+		var tabledataItem = [];
+		$('td', $(this)).each(function(index, item) {
+			
+			// console.log(index,$(item));
+			tabledataItem[index] = $(item).text();
+			// console.log(index);
+		});
+		tabledata.push(tabledataItem);
+		// console.log(tabledata);
+	});
+
+	var jsonString = JSON.stringify(tabledata);
+	$.ajax({
+	type : "POST",
+	url : '<?= $get_url1 ?>',
+	data: {data : jsonString,doc_no:doc_no}, 
+	cache: false,	
+	
+	}).done(function(res){
+		swal('Success','Marker Details Updated successfully','success');
+		location.reload();
+	
+	});
+}
+function test(doc_no){
+	// var t = document.getElementById('doc_details').value;
+	// $('#product_name').val(t);
+	$("#rejections_modal"+doc_no).modal('toggle');
+	
+}
+
 </script>
