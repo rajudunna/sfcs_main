@@ -16,6 +16,11 @@ if(isset($_GET['doc_no'])){
             loadDetails($doc_no);
         });
     </script>";
+
+
+$sql12="SELECT * from $bai_rm_pj1.fabric_cad_allocation where doc_no = ".$doc_no."";
+$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check12=mysqli_num_rows($sql_result12);
 }
 $cut_table_url = getFullURLLevel($_GET['r'],'dashboards/controllers/Cut_table_dashboard/cut_table_dashboard_cutting.php',3,'N');
 $cut_tables   = array();
@@ -49,9 +54,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     $rejection_reasons[$row['reason_code'].'-'.$row['m3_reason_code']] = $row['reason_desc'];
 }
 
-$sql12="SELECT * from $bai_rm_pj1.fabric_cad_allocation where doc_no = ".$doc_no."";
-$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check12=mysqli_num_rows($sql_result12);
+
 
 ?>
 
@@ -227,7 +230,7 @@ $sql_num_check12=mysqli_num_rows($sql_result12);
                             <td id='r_plan_plies'></td>
                             <td id='r_reported_plies'></td>
                             <!-- add validation for ret + rec + dam + short = c_plies -->
-                            <td><input type='text' class='form-control integer' value='0' id='c_plies'></td>
+                            <td><input type='text' class='form-control integer' value='0' id='c_plies' onchange='calculatecutreport("c_plies")' ></td>
                             <td><input type='text' class='form-control float' value='0' id='fab_received'></td>
                             <td><input type='text' class='form-control float' value='0' id='fab_returned'>
                                 <br><br>
@@ -593,6 +596,15 @@ $sql_num_check12=mysqli_num_rows($sql_result12);
         if(t.checked == true)
             getdetails();
         else
+        {
+                $('#c_plies').attr('readonly', false);
+                $('#fab_received').attr('readonly', false);
+                $('#fab_returned').attr('readonly', false);
+                $('#damages').attr('readonly', false);
+                $('#joints').attr('readonly', false);
+                $('#endbits').attr('readonly', false);
+                $('#shortages').attr('readonly', false);
+        }
             enable_report = 0;
            //$("#cut_report"). prop("checked", false);     
     }
@@ -647,6 +659,7 @@ $sql_num_check12=mysqli_num_rows($sql_result12);
                         $('#'+indextype).val('0');
                     }
                     else{
+
                         $('#'+indextype).val('0.00');
                     }
                
@@ -672,6 +685,7 @@ $sql_num_check12=mysqli_num_rows($sql_result12);
         var sumoffabricrecieved=0;
         var data = [];
         var makeselectedrow=0;
+        var partiallyreported=0;
     
         table.find('tr').each(function (i) {
 
@@ -710,7 +724,7 @@ $sql_num_check12=mysqli_num_rows($sql_result12);
        if(!Number(completed)){
         sumofreporting+=parseFloat(reportingplies);
        }
-        
+       partiallyreported+=parseFloat(reportingplies);
         // alert(sumofreporting);
         // alert(r);
         if(sumofreporting<=r){    
@@ -842,6 +856,8 @@ $sql_num_check12=mysqli_num_rows($sql_result12);
 
             //calculatecutreport();
         }
+
+       
             
         
    
@@ -1206,6 +1222,7 @@ $sql_num_check12=mysqli_num_rows($sql_result12);
                 $('#enablecutreportdetails').css({'display':'none'});
                 if($("#cut_report").is(':checked'))
                 {
+                    
                     $('#enablerolls').html('');
                     getdetails();
                 }
