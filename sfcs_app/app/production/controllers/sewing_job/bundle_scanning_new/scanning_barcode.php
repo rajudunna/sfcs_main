@@ -130,7 +130,7 @@ $result_rejections = $link->query($qery_rejection_resons);
     height: 32px;
 }
 #txmode{
-  padding-left:4px;
+  padding:5px 112px 5px 3px;
 }
 #txmode:hover,#time:hover{
   border-color:unset;
@@ -175,62 +175,71 @@ $result_rejections = $link->query($qery_rejection_resons);
     <div class="panel-body" style="background-color: black;" ng-controller="scancode_ctrl">
        <table border=0;> 
        <tr>
-        <td><br/><label>Style : </label><br/><br/><br/><br/><label>Color : </label><br/><br/><br/><br/><label>eligible_qty: </label><br/><br/></td>
-        <td style="padding: 0px 0px 0px 23px;"><input type="text" style="max-width: 150px;background-color:lightblue;" class="form-control" name="style" ng-model="style" ng-readonly="true"><br/><br/><br/>
-       <input type="text" style="max-width: 150px;background-color:lightblue;" class="form-control" name="color" ng-model="color" ng-readonly="true"><br/><br/><br/><br/>
-       <input type="text"  style="max-width: 150px;" class="form-control" name="eligible_qty" ng-model="eligible_qty" ng-readonly="true"><br/>
+        <td><label>Style : </label><br/><br/><br/><label>Color : </label><br/></td>
+        <td style="padding: 0px 0px 19px 23px;"><br/> <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 145px;height: 35px;">{{style}}</div><br/><br/>
+        <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 145px;height: 35px">{{color}}</div>
        </td>
        <td style="width: 10 5px;"></td>
-        <td><div class="container" style="width: 570px;">
-        <div class="panel panel-basic" style="background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
-         <div class="panel-heading">
-                <div class="row">
-                <div class="btn btn-sm btn-success"  id="txmode" style="width: 160px;padding: 6px 0px 6px 0px;" >Barcode: {{barcode_value}}</div>
-                <div class="btn btn-sm btn-success" id="txmode" style="width: 107px;">Action: {{action_mode | uppercase }}</div>
-                <div class="btn btn-sm btn-success" id="txmode" style="width: 118px;">Tx Mode: {{trans_mode | uppercase }}</div>
-                <div class="btn btn-sm btn-success" id="txmode">Bundle Qty: <input type="text"  style="max-width: 50px;" class="form-control" ng-model="bundle_qty" name="bundle_qty" id="bundle_qty" ng-readonly="true"></div>
+        <td>
+        <div class="container" style="width:574px;">
+            <div class="panel panel-basic" style="background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
+               <div class="panel-heading" style="padding: 0px 0px 0px 0px;">
+                  <div class="panel-body"> 
+                      <div class="row">
+                            <div class="col-lg-8">
+                                <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 168px;">Barcode: {{barcode_value}}</div>
+                                <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 168px;">Tx Mode: {{trans_mode | uppercase }}</div>
+                                <div class="btn btn-md btn-success ng-binding" id="txmode" style="  width: 168px;">Bundle Qty: {{bundle_qty}}</div>
+                                <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 168px;">Action: {{action_mode | uppercase }}</div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="btn btn-md btn-success ng-binding" id="" style="padding:3px 73px 0px 0px;text-align: center;line-height: 58px;height: 69px; ">Eligible_qty:{{eligible_qty}} </div>
+                            </div>
+                      </div>
                 </div>
-                </div>
-                <div class="panel-body"> 
-                <div class="row">
-                <div class="col-sm-4 col-md-4 col-xs-4"><center><b>Scanned Status </b></center></br><div class="ng-binding"  style="border: 1px solid;border-radius: 15px;padding: 9px;background-color:{{color_cod}}; height:90px"> {{scanned_status}}</div></div>
-                <div class="col-sm-8 col-md-8 col-xs-8 table-responsive" style="font-size: 13px;">
+             </div>
+                    <div class="panel-body"> 
+                       <div class="row">
+                          <div class="col-sm-4 col-md-4 col-xs-4"><center><b>Scanned Status </b></center></br><div class="ng-binding"  style="border: 1px solid;border-radius: 15px;padding: 9px;background-color:{{color_cod}}; height:90px"> {{scanned_status}}</div>
+                         </div>
+                            <div class="col-sm-8 col-md-8 col-xs-8 table-responsive" style="font-size: 13px;">
                 
-                <table class="table">
-    <thead>
-      <tr >
-      <div colspan="4"><center><b>Scanned Count</b></center></br></div>
-      </tr>
-    </thead>
-    <tbody >
-     <tr>
-     <div>
-        <div class="col-sm-3" style="padding: 11px 0px 8px 6px;width: 28%;">previous hr: </div>
-        <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #45b645;">{{prev_good}}</div>
-        <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;;background-color: #f31c06;">{{prev_reject}}</div>
-        <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #714f1b;">{{prev_rework}}</div>
-      <div>
-      </tr>
-      <tr>
-      <div>
-        <div class="col-sm-3" style="padding: 11px 0px 8px 6px;width: 28%;">current hr:</div>
-        <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #45b645;">{{current_good}}</div>
-        <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #f31c06;">{{current_reject}}</div>
-        <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #714f1b;">{{curr_rework}}</div>
-      </tr>
-      </div>
-    </tbody>
-  </table>
+                              <table class="table">
+                                    <thead>
+                                      <tr >
+                                        <div colspan="4"><center><b>Scanned Count</b></center></br></div>
+                                      </tr>
+                                    </thead>
+                                    <tbody >
+                                            <tr>
+                                              <div>
+                                                  <div class="col-sm-3" style="padding: 11px 0px 8px 6px;width: 28%;">previous hr: </div>
+                                                  <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #45b645;">{{prev_good}}</div>
+                                                  <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;;background-color: #f31c06;">{{prev_reject}}</div>
+                                                  <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #714f1b;">{{prev_rework}}</div>
+                                              <div>
+                                            </tr>
+                                            <tr>
+                                                <div>
+                                                  <div class="col-sm-3" style="padding: 11px 0px 8px 6px;width: 28%;">current hr:</div>
+                                                  <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #45b645;">{{current_good}}</div>
+                                                  <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #f31c06;">{{current_reject}}</div>
+                                                  <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #714f1b;">{{curr_rework}}</div>
+                                        
+                                                </div>
+                                            </tr>
+                                    </tbody>
+                              </table>
 
-                </div>
-                </div>
-                </div>
-                </div>
-            </div>
+                         </div>
+                        </div>
+                       </div>
+                     </div>
+                   </div>
         </td>
         </tr>
-        <td width="90"><label>Bar code :</label></td>
-        <td style="padding: 0px 0px 0px 23px;"><input type="text" style="max-width: 275px;"  class="form-control" ng-model="barcode_value" ng-keypress="scanned($event)" id="barcode_value" onkeyup="validateQty(event,this);" placeholder="scan barcode here" autofocus></td>
+        <td width="90"><label>Bar code :</label><br/><br/><br/></td>
+        <td style="padding: 0px 0px 0px 23px;"><input type="text" style="max-width: 275px;"  class="form-control" ng-model="barcode_value" ng-keypress="scanned($event)" id="barcode_value" onkeyup="validateQty(event,this);" placeholder="scan barcode here" autofocus><br/><br/><br/></td>
         <input type="hidden" id="module" ng-model="module" ng-init="module='<?= $module; ?>'">
         <input type="hidden" id="shift" ng-model="shift" ng-init="shift='<?= $shift; ?>'">
         <input type="hidden" id="op_code" ng-model="op_code" ng-init="op_code='<?= $op_code; ?>'">
@@ -242,16 +251,14 @@ $result_rejections = $link->query($qery_rejection_resons);
         <td><label>Tx Mode:</label></td>
         <td>
             <div class="radio-toolbar" ng-init="trans_mode='good'" style="width: 300px;padding: 8px 6px 8px 17px;
-            background-color: #2e2d2c;border-radius: 20px">
-            <input type="radio" id="radiogood" name="trans_mode" ng-model='trans_mode' ng-value='"good"'>
-            <label for="radiogood" style="border: 2px solid;border-color: #9d9a9a;background-color: #45b645;width:90px;">Good</label> &nbsp;
-            <input type="radio" id="radioscrap" name="trans_mode" ng-model='trans_mode' ng-value='"scrap"'>
-            <label for="radioscrap" style="border: 2px solid;border-color: #9d9a9a;background-color: #f31c06;width:90px;" class="btn btn-primary" data-toggle="modal" focus-element="autofocus" data-target=".bs-example-modal-lg">Scrap</label>
-            <input type="radio" id="radiorework" name="trans_mode" ng-model='trans_mode' ng-value='"rework"'>
-            <label for="radiorework" style="border: 2px solid;border-color: #7979a5;background-color: #714f1b;width:90px;">Rework</label>
-            
-            <!--<input type="radio" id="radiogudscrap" name="trans_mode" ng-model='trans_mode' ng-value='"gudscrap"'>
-            <label for="radiogudscrap" style="background-color: #a5980df5;" class="btn btn-primary" data-toggle="modal" focus-element="autofocus" data-target=".bs-example-modal-lg">Good&Scrap</label>--> 
+                background-color: #2e2d2c;border-radius: 20px">
+                <input type="radio" id="radiogood" name="trans_mode" ng-model='trans_mode' ng-value='"good"'>
+                <label for="radiogood" style="border: 2px solid;border-color: #9d9a9a;background-color: #45b645;width:90px;">Good</label> &nbsp;
+                <input type="radio" id="radioscrap" name="trans_mode" ng-model='trans_mode' ng-value='"scrap"'>
+                <label for="radioscrap" style="border: 2px solid;border-color: #9d9a9a;background-color: #f31c06;width:90px;" class="btn btn-primary" data-toggle="modal" focus-element="autofocus" data-target=".bs-example-modal-lg">Scrap</label>
+                <input type="radio" id="radiorework" name="trans_mode" ng-model='trans_mode' ng-value='"rework"'>
+                <label for="radiorework" style="border: 2px solid;border-color: #7979a5;background-color: #714f1b;width:90px;">Rework</label>
+        
             </div>
         </td>
         <td style="width: 10 5px;"></td>
@@ -259,14 +266,14 @@ $result_rejections = $link->query($qery_rejection_resons);
         <div class="panel panel-basic" style="border: 1px solid;border-radius: 11px;">
          <div class="panel-heading" style="font-size: large;background-color: #2e2d2c;border: 1px solid;border-radius: 11px;">
                 <div class="row">
-                <div class="col-sm-6 col-md-6 col-xs-6">PO: {{vpo}}</div>
-                <div class="col-sm-6 col-md-6 col-xs-6">Size: {{size_title}}</div>
+                        <div class="col-sm-6 col-md-6 col-xs-6">PO: {{vpo}}</div>
+                        <div class="col-sm-6 col-md-6 col-xs-6">Size: {{size_title}}</div>
                 <div class="panel-body">  </div>
-                <div class="row"> </div>
-                <div class="col-sm-6 col-md-6 col-xs-6" > Z feature: {{zfeature}}</div>
-                <div class="col-sm-6 col-md-6 col-xs-6">Schedule: {{schedule}}</div>
-                 </div>
-         </div>
+                    <div class="row"> </div>
+                        <div class="col-sm-6 col-md-6 col-xs-6" > Z feature: {{zfeature}}</div>
+                        <div class="col-sm-6 col-md-6 col-xs-6">Schedule: {{schedule}}</div>
+                    </div>
+                </div>
          </td>
         </tr>
         </br></br></br>
@@ -291,8 +298,8 @@ $result_rejections = $link->query($qery_rejection_resons);
         <div class="panel panel-basic" style="border: 1px solid;border-radius: 15px;">
          <div class="panel-heading" style="font-size: large;background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
                 <div class="row">
-                <div class="col-sm-9 col-md-9 col-xs-9">Factory : {{global_facility_code}}</div>
-                <div class="col-sm-7  "></div><div   class="btn btn-sm btn-success" id="txmode" >Count:  <input type="text"  style="max-width: 90px;padding:0px 0px" class="form-control" ng-model="count" name="count" id="count" ng-readonly="true"></div>
+                <div class="col-sm-7 col-md-7 col-xs-7">Factory : {{global_facility_code}}</div>
+                <div class="col-sm-5  "></div><div   class="btn btn-sm btn-success" id="txmode" style="width: 152px;padding: 11px 1px 14px"><label>Count: </label>{{count}}</div>
                 <div class="row"></div>
                 <div class="col-sm-7 col-md-7 col-xs-7">Team: {{module}}</div><br/>
                 <div class="panel-heading"></div>   
@@ -316,15 +323,15 @@ $result_rejections = $link->query($qery_rejection_resons);
               <div class="modal-content">
 						<div class="modal-header">
 							<button type="button" class="close"  id = "cancel" data-dismiss="modal" onclick='neglecting_function()'>&times;</button>
-						<div class="form-group" id="rej">
-						<input type="hidden" value="" id="reject_reasons_count">
-                        	<div class="panel panel-primary"> 
-				            	<div class="panel-heading"><strong>Rejection Reasons</strong></div>				            	
-				                <div class="panel-body">
-						           	<div class="form-group col-md-4" id="res">
-			                            <label>No of Reasons:</label>
-					                	<input type="text" onkeyup="validateQty1(event,this);" name="no_reason" min=0 id="reason" class="form-control"  onchange="validating_with_qty()" onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' placeholder="Enter no of reasons"/>
-					                </div>
+					    	<div class="form-group" id="rej">
+					        	<input type="hidden" value="" id="reject_reasons_count">
+                      	<div class="panel panel-primary"> 
+				                  	<div class="panel-heading"><strong>Rejection Reasons</strong></div>				            	
+				                       <div class="panel-body">
+						                     	<div class="form-group col-md-4" id="res">
+			                                 <label>No of Reasons:</label>
+                                       <input type="text" onkeyup="validateQty1(event,this);" name="no_reason" min=0 id="reason" class="form-control"  onchange="validating_with_qty()" onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' placeholder="Enter no of reasons"/>
+					                         </div>
 		                            <table class="table table-bordered" id='reson_dynamic_table' width="100" style="height: 50px; overflow-y: scroll;">
 		                            	<thead>
 		                            		<tr>
@@ -353,21 +360,21 @@ $result_rejections = $link->query($qery_rejection_resons);
 												<td><input type='text' class='form-control input-sm' id='quantity'  name='quantity[]' onkeyup='validateQty1(event,this);' onchange='validating_cumulative(event,this)'></td>
 											</tr>
 		                            </table>
-		                        </div>
-								 <div class="panel-footer" hidden='true' id='footer'>
-									<input type = 'button' id="rejec_reasons" class='btn btn-primary' value='Ok..Proceed' name='Save'>
-								 </div>
-                            </div>
-                        </div>
-						</div>
-						<div class="modal-body">
-						</div>
-					</div>
-                </div>
+		                                 </div>
+                                      <div class="panel-footer" hidden='true' id='footer'>
+                                        <input type = 'button' id="rejec_reasons" class='btn btn-primary' value='Ok..Proceed' name='Save'>
+								                       </div>
+                                   </div>
+                                </div>
+					                	</div>
+					              	<div class="modal-body">
+					          	</div>
+				          	</div>
+                 </div>
               </div>
-        </div>  
-    </div>
-</div>
+          </div>  
+     </div>
+  </div>
 
 <script src="<?= getFullURLLevel($_GET['r'],'common/js/new_scan_barcode.js',3,'R') ?>"></script>
 
