@@ -187,13 +187,13 @@ $result_rejections = $link->query($qery_rejection_resons);
                   <div class="panel-body"> 
                       <div class="row">
                             <div class="col-lg-8">
-                                <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 168px;">Barcode: {{barcode_value}}</div>
-                                <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 168px;">Tx Mode: {{trans_mode | uppercase }}</div>
-                                <div class="btn btn-md btn-success ng-binding" id="txmode" style="  width: 168px;">Bundle Qty: {{bundle_qty}}</div>
-                                <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 168px;">Action: {{action_mode | uppercase }}</div>
+                                <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 168px;">Barcode : {{barcode_value}}</div>
+                                <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 168px;">Tx Mode : {{trans_mode | uppercase }}</div>
+                                <div class="btn btn-md btn-success ng-binding" id="txmode" style="  width: 168px;">Bundle Qty : {{bundle_qty}}</div>
+                                <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 168px;">Action : {{action_mode | uppercase }}</div>
                             </div>
                             <div class="col-lg-4">
-                                <div class="btn btn-md btn-success ng-binding" id="" style="padding:3px 73px 0px 0px;text-align: center;line-height: 58px;height: 69px; ">Eligible ty:{{eligible_qty}} </div>
+                                <div class="btn btn-md btn-success ng-binding" id="" style="padding:3px 73px 0px 0px;text-align: center;line-height: 58px;height: 69px; ">Eligible Qty : <label>{{eligible_qty}}</label> </div>
                             </div>
                       </div>
                 </div>
@@ -213,7 +213,7 @@ $result_rejections = $link->query($qery_rejection_resons);
                                     <tbody >
                                             <tr>
                                               <div>
-                                                  <div class="col-sm-3" style="padding: 11px 0px 8px 6px;width: 28%;">previous hr: </div>
+                                                  <div class="col-sm-3" style="padding: 11px 0px 8px 6px;width: 28%;">previous hr : </div>
                                                   <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #45b645;">{{prev_good}}</div>
                                                   <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;;background-color: #f31c06;">{{prev_reject}}</div>
                                                   <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #714f1b;">{{prev_rework}}</div>
@@ -221,7 +221,7 @@ $result_rejections = $link->query($qery_rejection_resons);
                                             </tr>
                                             <tr>
                                                 <div>
-                                                  <div class="col-sm-3" style="padding: 11px 0px 8px 6px;width: 28%;">current hr:</div>
+                                                  <div class="col-sm-3" style="padding: 11px 0px 8px 6px;width: 28%;">current hr :</div>
                                                   <div id="time" class="btn btn-sm btn-success" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #45b645;">{{current_good}}</div>
                                                   <div id="timered" class="btn btn-sm btn-danger" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #f31c06;">{{current_reject}}</div>
                                                   <div id="timeyellow" class="btn btn-sm btn-warning" style="width: 75px;height: 37px;padding: 7px 2px;font-size:20px;background-color: #714f1b;">{{curr_rework}}</div>
@@ -266,12 +266,12 @@ $result_rejections = $link->query($qery_rejection_resons);
         <div class="panel panel-basic" style="border: 1px solid;border-radius: 11px;">
          <div class="panel-heading" style="font-size: large;background-color: #2e2d2c;border: 1px solid;border-radius: 11px;">
                 <div class="row">
-                        <div class="col-sm-6 col-md-6 col-xs-6">PO: {{vpo}}</div>
-                        <div class="col-sm-6 col-md-6 col-xs-6">Size: {{size_title}}</div>
+                        <div class="col-sm-6 col-md-6 col-xs-6">PO : {{vpo}}</div>
+                        <div class="col-sm-6 col-md-6 col-xs-6">Size : {{size_title}}</div>
                 <div class="panel-body">  </div>
                     <div class="row"> </div>
-                        <div class="col-sm-6 col-md-6 col-xs-6" > Z feature: {{zfeature}}</div>
-                        <div class="col-sm-6 col-md-6 col-xs-6">Schedule: {{schedule}}</div>
+                        <div class="col-sm-6 col-md-6 col-xs-6" > Z feature : {{zfeature}}</div>
+                        <div class="col-sm-6 col-md-6 col-xs-6">Schedule : {{schedule}}</div>
                     </div>
                 </div>
          </td>
@@ -287,11 +287,6 @@ $result_rejections = $link->query($qery_rejection_resons);
                 <input type="radio" id="radioreverse" name="action_mode" ng-model='action_mode' ng-value='"reverse"'>
                 <label for="radioreverse" style="border: 2px solid;border-color: #7979a5;background-color: #2355c5;width: 80px;padding-left: 7px !important;" class="btn btn-info"  ng-click="barcode_submit('reverse');">Reverse</label>
             </div>
-            <!--<div>
-            <button type="button" style="height: 80px;width: 76px;."  class="btn btn-info"  ng-click="barcode_submit('add');">Add</button>
-            <button type="button" style="height: 80px;" class="btn btn-info" ng-click="barcode_submit('reverse');">Reverse</button>
-            <button type="button" style="height: 80px;width: 76px;" class="btn btn-info">Reset</button>
-            </div>-->
         </td>
         <td style="width: 125px;"></td>
         <td><div class="container" style="width: 570px;">
@@ -299,23 +294,17 @@ $result_rejections = $link->query($qery_rejection_resons);
          <div class="panel-heading" style="font-size: large;background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
                 <div class="row">
                 <div class="col-sm-7 col-md-7 col-xs-7">Factory : {{global_facility_code}}</div>
-                <div class="col-sm-5  "></div><div   class="btn btn-sm btn-success" id="txmode" style="width: 152px;padding: 11px 1px 14px"><label>Count : </label>{{count}}</div>
+                <div class="col-sm-5  "></div><div   class="btn btn-sm btn-success" id="txmode" style="width: 152px;font-size: 15px;padding: 11px 1px 14px"><label>Count : {{count}}</label></div>
                 <div class="row"></div>
                 <div class="col-sm-7 col-md-7 col-xs-7">Team : {{module}}</div><br/>
                 <div class="panel-heading"></div>   
                 <div class="row"></div>
-                <div class="col-sm-7 col-md-7 col-xs-7">Operation :{{operation_name}}</div>
+                <div class="col-sm-7 col-md-7 col-xs-7">Operation : {{operation_name}}</div>
                 <button type="button" style="height: 35px;width:70px;" class="btn btn-info" ng-click="functionRESET()">Reset</button>
                 </div>
             </div>
         </td>
         </tr>
-        <!--<tr>
-        <td><label> Scrap Reason: </label></td>
-        <td><input type="text" style="max-width: 250px;"  class="form-control" name="Scrap Reason"></td>
-        <td></td>
-        <td></td>
-        </tr>-->
         </table>
         <!-- Large modal -->
         <div class="modal fade bs-example-modal-lg"  id="myModal" focus-group focus-group-head="loop" focus-group-tail="loop" focus-stacktabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -327,9 +316,9 @@ $result_rejections = $link->query($qery_rejection_resons);
 					        	<input type="hidden" value="" id="reject_reasons_count">
                       	<div class="panel panel-primary"> 
 				                  	<div class="panel-heading"><strong>Rejection Reasons</strong></div>				            	
-				                       <div class="panel-body">
+				                       <div class="panel-body" style="background-color: black;">
 						                     	<div class="form-group col-md-4" id="res">
-			                                 <label>No of Reasons:</label>
+			                                 <label>No of Reasons : </label>
                                        <input type="text" onkeyup="validateQty1(event,this);" name="no_reason" min=0 id="reason" class="form-control"  onchange="validating_with_qty()" onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' placeholder="Enter no of reasons"/>
 					                         </div>
 		                            <table class="table table-bordered" id='reson_dynamic_table' width="100" style="height: 50px; overflow-y: scroll;">
