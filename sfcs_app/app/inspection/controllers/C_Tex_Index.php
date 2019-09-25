@@ -26,7 +26,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				    		Enter Lot No<span class="required"></span>
 				    	</label>
 				    	<div class="col-md-4 col-sm-4 col-xs-12">
-				      		<input type="text"  id="course1" name="lot_no1"  class="form-control col-md-3 col-xs-12 input-sm integer">
+				      		<input type="text"  id="course1" name="lot_no1"  class="form-control col-md-3 col-xs-12 input-sm ">
 				    	</div>
 				    	<input type="submit" class="btn btn-primary" onclick="return check_lot();" name="submit1" value="Search">
 				  	</div>

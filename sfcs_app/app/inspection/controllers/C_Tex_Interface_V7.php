@@ -2272,11 +2272,11 @@ tags will be replaced.-->
 
 		if(!in_array($authorized,$has_permission))
 		{
-			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha' name=\"ele_shade[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
+			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha' name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
 		}
 		else
 		{
-			$temp_shade_tag.="<input type=\"text\" class='textbox' class='alpha' ".$readonly." name=\"ele_shade[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
+			$temp_shade_tag.="<input type=\"text\" class='textbox' class='alpha' ".$readonly." name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i)' value=\"".$temp[2]."\" />";
 		}		
 	}
 	else
