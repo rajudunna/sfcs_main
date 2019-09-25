@@ -211,10 +211,11 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
            
         });
     }
-
+    var scanned_count = [];
+    var sum =0;
     $scope.barcode_submit = function(taskId){
         $('#loading-image').show();
-        var task_action=taskId;
+            var task_action=taskId;
             $http({
                 method: 'POST',
                 url: $scope.url,
@@ -232,9 +233,12 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 $('#loading-image').hide();
                 $scope.color_cod=data.color_code;
                 $scope.scanned_status=data.status;
-                // var color=data.color_code;
-                // alert(color);
-                // console.log(data.color_code.padStart(20,'A'));
+                var rep_qty=data.reported_qty;
+                //var tot_cnt=rep_qty  ;
+                scanned_count.push(rep_qty);
+                console.log(scanned_count);
+                sum = scanned_count.reduce( (sum, current) => sum + current, 0 );
+                console.log(sum);
                 $scope.prev_good=(data.prev_good.padStart(6,'0'));
                 $scope.prev_reject=(data.prev_reject.padStart(6,'0'));
                 $scope.prev_rework=(data.prev_rework.padStart(6,'0'));
