@@ -172,7 +172,7 @@ $result_rejections = $link->query($qery_rejection_resons);
 <body class="nav-md" style="color: #f6faff;">
 <div class="panel panel-primary" id="scanned_barcode" ng-app="scanning_interface_new">
     <div class="panel-heading">Bundle Scanning</div>
-    <div class="panel-body" style="background-color: black;" ng-controller="scancode_ctrl">
+    <div class="panel-body" style="background-color: black;padding: 3px 24px 0px 12px;" ng-controller="scancode_ctrl">
        <table border=0;> 
        <tr>
         <td><label>Style : </label><br/><br/><br/><label>Color : </label><br/></td>
@@ -181,7 +181,7 @@ $result_rejections = $link->query($qery_rejection_resons);
        </td>
        <td style="width: 10 5px;"></td>
         <td>
-        <div class="container" style="width:574px;">
+        <div class="container" style="width:574px;height: 15px;">
             <div class="panel panel-basic" style="background-color: #2e2d2c;border: 1px solid;border-radius: 15px;">
                <div class="panel-heading" style="padding: 0px 0px 0px 0px;">
                   <div class="panel-body"> 
