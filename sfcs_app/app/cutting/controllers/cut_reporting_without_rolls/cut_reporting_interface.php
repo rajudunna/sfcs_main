@@ -93,6 +93,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 <input type='text' class='form-control integer' value='' name='doc_no' id='doc_no'> 
             </div>
         </div>
+        
 
         <!-- partial or already reported docket details -->
         <div class='row' id='hide_details_reported'style='overflow-x:scroll;display:none'>
@@ -267,16 +268,10 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 <div class='col-sm-12'>
                     <span><b>MARK THIS AS FULLY REPORTED CUT ? &nbsp;&nbsp;</b> 
                     <input type='checkbox' value='1' id='full_reported' onchange='reportingFull(this)'> Yes</span>
-               <?php
-			   		if($sql_num_check12>0)
-					{
-						?>
-                    <span class='pull-right'><b>ENABLE ROLE WISE CUT REPORTING ? &nbsp;&nbsp;</b> 
+              
+                    <span class='pull-right showifcontain'><b>ENABLE ROLE WISE CUT REPORTING ? &nbsp;&nbsp;</b> 
                     <input type='checkbox' value='1' id='cut_report' onchange='enablecutreport(this)'> Yes</span>
-					<?php
-					}
-					?>
-
+				
                 </div>
 
             </div>
@@ -443,6 +438,13 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     var GLOBAL_CALL = 0;
     var SIZE_COUNT = 0;
     var CLEAR_FLAG = 0;
+    var sql_num_check12='<?=$sql_num_check12?>';
+
+            if(sql_num_check12>0)
+            {
+                $('.showifcontain').css({'display':'block'});
+                
+            }
        
     $('td input#creportingplies.form-control').click(function(){
         alert();
@@ -912,6 +914,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         clearRejections();
         loadDetails(doc_no);
     });
+
+
   
     $('#submit').on('click',function(){
         var x= $('input[id="cut_report"]:checked');
@@ -1650,6 +1654,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             //resetting the submmit button
             $('#submit').css({'display':'block'});
             load_rejections();
+            if(data.rollinfo>0)
+            {
+                $('.showifcontain').css({'display':'block'});
+                
+            }
         }).fail(function(){
             swal('Network Error while getting Details','','error');
             return;
