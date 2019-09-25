@@ -8,6 +8,16 @@ if (isset($_POST["barcode_info"])){
     //getting barocde info to scanning screen
     $barcode_info=$_POST['barcode_info'];
     if($barcode_info!=''){
+        //this is for splitting
+        $barcode_split = explode("-",$barcode_info);
+
+        if($barcode_split[0]!='')
+        {
+            $barcode_info="$barcode_split[0]";
+        }
+        else{
+            $barcode_info="$barcode_split[1]";
+        }
         //validation for barcode exist or not
         $qry_barcode="SELECT * FROM `$bai_pro3`.`packing_summary_input` WHERE tid=$barcode_info";
         $result_qry_barcode = $link->query($qry_barcode);
@@ -44,17 +54,28 @@ if (isset($_POST["barcode_info"])){
                 $json['size_title']=$row['m3_size_code'];
                 $json['global_facility_code']=$global_facility_code;
                 $json['validate_barcode'] = 1;
-                $json['color_code'] = "#45b645";
-                $json['status'] = "Proceed";
+                if($json['bundle_eligibl_qty']>0){
+                    $json['color_code'] = "#45b645";
+                    $json['status'] = "Proceed";
+                    echo json_encode($json);
+                }else{
+                    $json['color_code'] = "#f31c06";
+                    $json['status'] = "No eligible qunatity for this bundle";
+                    echo json_encode($json);
+                    die();
+                }
+                
             }
         }else{
             $json['validate_barcode'] = 0;
             $json['color_code'] = "#f31c06";
             $json['status'] = "Please verify Barcode once";
+            echo json_encode($json);
+            die();
             
             
         }
-        echo json_encode($json);
+        
     }
 }
    

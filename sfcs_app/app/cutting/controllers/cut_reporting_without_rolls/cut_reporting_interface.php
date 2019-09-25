@@ -638,7 +638,14 @@ $sql_num_check12=mysqli_num_rows($sql_result12);
         {
             var checkifitnotavalue=$('#'+indextype).val();
                 if(checkifitnotavalue==''){
-                $('#'+indextype).val('0.00');
+                    if(indextype.indexOf('creportingplies') != -1)
+                    {
+                        $('#'+indextype).val('0');
+                    }
+                    else{
+                        $('#'+indextype).val('0.00');
+                    }
+               
             }
         }
         var r = $("#reporting_table #r_plan_plies").text();
@@ -658,6 +665,7 @@ $sql_num_check12=mysqli_num_rows($sql_result12);
         var removesum=0;
         var fabricreturnqty=0;
         var sumoffabricreturn=0;
+        var sumoffabricrecieved=0;
         var data = [];
         var makeselectedrow=0;
     
@@ -803,12 +811,16 @@ $sql_num_check12=mysqli_num_rows($sql_result12);
         $('#shortages').val(Number(sumofshortages).toFixed(2));
         sumoffabricreturn+=parseFloat(fabricreturnqty);
 
+       
+
         if(sumoffabricreturn<0)
         {
             $('#fab_returned').val(0);
         }else{
             $('#fab_returned').val(Number(sumoffabricreturn).toFixed(2));
         }
+        sumoffabricrecieved+=parseFloat(receivedqty);
+        $('#fab_received').val(Number(sumoffabricrecieved).toFixed(2));
         
                // alert(sumofreporting);
     });
