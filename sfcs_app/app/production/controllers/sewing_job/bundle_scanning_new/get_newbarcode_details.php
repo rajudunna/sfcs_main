@@ -1,5 +1,5 @@
 <?php
-//error_reporting(0);
+error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 include('../sewing_job_scaning/functions_scanning_ij.php');
 
