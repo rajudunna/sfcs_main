@@ -189,6 +189,12 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 $scope.scanned_status=data.status;
                 $scope.color_cod=data.color_code;
                 //$scope.scanned_status="Please Proceed";
+                
+                var trans_mode=$scope.trans_mode;
+                var action_mode=$scope.action_mode;
+                if((action_mode=='add') && (trans_mode=='good')){
+                    $scope.barcode_submit(action_mode);
+                }
 
                 
 
@@ -239,10 +245,17 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).success(function (data, status, headers, config) {
                 $('#loading-image').hide();
+                if(data.present_eligibqty){
+                    if(data.present_eligibqty>data.counted_qty){
+                        //sweetAlert("","Eligible Qty " +data.present_eligibqty+ " greater than Reported " +data.counted_qty+ " Qty","info");
+                        sweetAlert("","You reported Qty " +data.counted_qty+ " less than Eligible Qty " +data.present_eligibqty ,"info");
+
+                    }
+                }
                 $scope.color_cod=data.color_code;
                 $scope.scanned_status=data.status;
-                if(data.reported_qty){
-                    var rep_qty=data.reported_qty;
+                if(data.counted_qty){
+                    var rep_qty=data.counted_qty;
                 }else{
                     var rep_qty=0;
                 }
@@ -251,12 +264,12 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 sum = $scope.scanned_count.reduce( (sum, current) => sum + current, 0 );
                 console.log(sum);
                 $scope.count=sum;
-                $scope.prev_good=(data.prev_good.padStart(6,'0'));
-                $scope.prev_reject=(data.prev_reject.padStart(6,'0'));
-                $scope.prev_rework=(data.prev_rework.padStart(6,'0'));
-                $scope.current_good=(data.current_good.padStart(6,'0'));
-                $scope.current_reject=(data.current_reject.padStart(6,'0'));
-                $scope.curr_rework=(data.curr_rework.padStart(6,'0'));
+                $scope.prev_good=(data.prev_good.padStart(6,' '));
+                $scope.prev_reject=(data.prev_reject.padStart(6,' '));
+                $scope.prev_rework=(data.prev_rework.padStart(6,' '));
+                $scope.current_good=(data.current_good.padStart(6,' '));
+                $scope.current_reject=(data.current_reject.padStart(6,' '));
+                $scope.curr_rework=(data.curr_rework.padStart(6,' '));
             }).error(function (data, status, headers, config) {
                 // handle error things
             });

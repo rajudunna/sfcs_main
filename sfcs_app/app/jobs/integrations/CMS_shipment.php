@@ -13,26 +13,26 @@ if($res)
 {
 	print("Data Inserted into shipment_plan from shipment_plan_original ")."\n";
 }
-function check_style($string)
-{
-	global $link;
-	global $bai_pro2;
-	$check=0;
-	for ($index=0;$index<strlen($string);$index++) {
-    	if(isNumber($string[$index]))
-		{
-			$nums = $string[$index];
-		}
-     	else    
-		{
-			$chars = $string[$index];
-			$check=$check+1;
-			if($check==2)
-			{
-				break;
-			}
-		} 			
-	}
+// function check_style($string)
+// {
+// 	global $link;
+// 	global $bai_pro2;
+// 	$check=0;
+// 	for ($index=0;$index<strlen($string);$index++) {
+//     	if(isNumber($string[$index]))
+// 		{
+// 			$nums = $string[$index];
+// 		}
+//      	else    
+// 		{
+// 			$chars = $string[$index];
+// 			$check=$check+1;
+// 			if($check==2)
+// 			{
+// 				break;
+// 			}
+// 		} 			
+// 	}
 
 	// $sql3="select style_id from $bai_pro2.movex_styles where movex_style=\"$string\"";
 	// $sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -49,7 +49,7 @@ function check_style($string)
 	// {
 	// 	return $nums;
 	// }	
-}
+// }
 
 function isNumber($c) 
 {

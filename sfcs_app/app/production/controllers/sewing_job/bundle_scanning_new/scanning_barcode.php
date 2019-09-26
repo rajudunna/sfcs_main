@@ -239,7 +239,8 @@ $result_rejections = $link->query($qery_rejection_resons);
         </td>
         </tr>
         <td width="90"><label>Bar code :</label><br/><br/><br/></td>
-        <td style="padding: 0px 0px 0px 23px;"><input type="text" style="max-width: 275px;"  class="form-control" ng-model="barcode_value" ng-keypress="scanned($event)" id="barcode_value" onkeyup="validateQty(event,this);" placeholder="scan barcode here" autofocus><br/><br/><br/></td>
+        <td style="padding: 0px 0px 0px 23px;"><input type="text" style="max-width: 275px;"  class="form-control" ng-model="barcode_value" ng-change="scanned($event)" id="barcode_value" onkeyup="validateQty(event,this);" placeholder="scan barcode here" autofocus><br/><br/><br/></td>
+        <!--<td style="padding: 0px 0px 0px 23px;"><input type="text" style="max-width: 275px;"  class="form-control" ng-model="barcode_value" ng-keypress="scanned($event)" id="barcode_value" onkeyup="validateQty(event,this);" placeholder="scan barcode here" autofocus><br/><br/><br/></td>-->
         <input type="hidden" id="module" ng-model="module" ng-init="module='<?= $module; ?>'">
         <input type="hidden" id="shift" ng-model="shift" ng-init="shift='<?= $shift; ?>'">
         <input type="hidden" id="op_code" ng-model="op_code" ng-init="op_code='<?= $op_code; ?>'">
