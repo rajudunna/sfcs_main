@@ -5,8 +5,9 @@
  $roll_id = $_GET['roll'];
  $parent_id=$_GET['parent_id'];
  $supplier_id = $_GET['supplier'];
+ $invoice_get=$_GET['invoice'];
  $get_details="select * from `bai_rm_pj1`.`inspection_population` where lot_no='$lot_number' and supplier_roll_no='$supplier_id' and sfcs_roll_no='$roll_id'";
- // echo $get_details;
+//  echo $get_details;
  $details_result=mysqli_query($link,$get_details) or exit("get_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($row1=mysqli_fetch_array($details_result))
  {
@@ -253,10 +254,10 @@ if(isset($_POST['confirm']))
 	           if($point1 != 0 || $point2 != 0 || $point3 != 0 || $point4 != 0)
 	           {
 
-	             $insert_query="insert into $bai_rm_pj1.roll_inspection_child(lot_no,supplier_roll_no,sfcs_roll_no,fabric_composition,spec_width,inspection_status,spec_weight,repeat_length,lab_testing,tolerance,item_code,roll_no,inspected_per,inspected_qty,invoice_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,code,damage_desc,1_points,2_points,3_points,4_points,parent_id) values ('$lot_num','$supplier_no','$roll_no',$fabric_composition,'$spec_width','$inspection_status','$spec_weight','$repeat_length','$lab_testing','$tolerance','$item_code','$roll_no','$inspected_per','$inspected_qty','$invoice_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type','$code1','$damage1',$point1,$point2,$point3,$point4,$id)";
+	             $insert_query="insert into $bai_rm_pj1.roll_inspection_child(lot_no,supplier_roll_no,sfcs_roll_no,fabric_composition,spec_width,inspection_status,spec_weight,repeat_length,lab_testing,tolerance,item_code,roll_no,inspected_per,inspected_qty,invoice_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,code,damage_desc,1_points,2_points,3_points,4_points,parent_id,status) values ('$lot_num','$supplier_no','$roll_no',$fabric_composition,'$spec_width','$inspection_status','$spec_weight','$repeat_length','$lab_testing','$tolerance','$item_code','$roll_no','$inspected_per','$inspected_qty','$invoice_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type','$code1','$damage1',$point1,$point2,$point3,$point4,$id,1)";
 				  //echo $insert_query;
 				  $get_lot_details="select supplier_no,ref2 as roll_no, lot_no from $bai_rm_pj1.store_in where lot_no in($lot_nums)";
-				  echo $get_lot_details;
+	
 				  $lot_details_result=mysqli_query($link,$get_lot_details) or exit("get_lot_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	             $result_query = $link->query($insert_query) or exit('query error in inserting11111');
@@ -292,7 +293,7 @@ if(isset($_POST['confirm']))
 			<div class="panel-body">
 				<div class="container">
 					<?php
-                       echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "4_point_roll_inspection.php", "0", "N")."&lot_no=$lot_number&parent_id=$parent_id\"><<<< Click here to Go Back</a>";
+                       echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "4_point_roll_inspection.php", "0", "N")."&parent_id=$parent_id\"><<<< Click here to Go Back</a>";
 					?>
 					<div class="table-responsive col-sm-12">
 					    <table class="table table-bordered">
@@ -304,7 +305,8 @@ if(isset($_POST['confirm']))
 					      	<th>PO#</th>
 					      </tr>
 					      <tr>
-					      	<?php
+							  <?php
+							
 						      	echo "<td>$invoice</td>
 						      	<td>$color</td>
 						      	<td>$batch</td>
@@ -527,10 +529,10 @@ if(isset($_POST['confirm']))
 						      	<tr>
 						      		<td><input type="text" id="code" name="code[]" autocomplete="off"></td>
 						      		<td><input type="text" id="damage" name="damage[]" autocomplete="off"></td>
-						      		<td><input type="text" id="point1_<?= $i ?>" name="point1[]" onchange="sample(<?= $i ?>,1)" autocomplete="off"></td>
-						      		<td><input type="text" id="point2_<?= $i ?>" name="point2[]" onchange="sample(<?= $i ?>,2)" autocomplete="off"></td>
-						      		<td><input type="text" id="point3_<?= $i ?>" name="point3[]" onchange="sample(<?= $i ?>,3)" autocomplete="off"></td>
-						      		<td><input type="text" id="point4_<?= $i ?>" name="point4[]" onchange="sample(<?= $i ?>,4)" autocomplete="off"></td>
+						      		<td><input type="checkbox" id="point1_<?= $i ?>" name="point1[]" onchange="sample(<?= $i ?>,1)"></td>
+						      		<td><input type="checkbox" id="point2_<?= $i ?>" name="point2[]" onchange="sample(<?= $i ?>,2)"></td>
+						      		<td><input type="checkbox" id="point3_<?= $i ?>" name="point3[]" onchange="sample(<?= $i ?>,3)"></td>
+						      		<td><input type="checkbox" id="point4_<?= $i ?>" name="point4[]" onchange="sample(<?= $i ?>,4)"></td>
 						      		<td><button type="button" class="btn btn-primary btn-sm" id='clear' onclick='clearValues(<?= $i ?>)' value='<?= $i ?>'>Clear</button></td>
 						      	</tr>
 						      	<?php
@@ -555,10 +557,11 @@ if(isset($_POST['confirm']))
 
 <script>
 	function clearValues(i){
-		// alert();
 		var id = i;
-        $('#point1_'+id).val('');$('#point2_'+id).val('');
-        $('#point3_'+id).val('');$('#point4_'+id).val('');
+        $('#point1_'+id).removeAttr('checked');
+		$('#point2_'+id).removeAttr('checked');
+        $('#point3_'+id).removeAttr('checked');
+		$('#point4_'+id).removeAttr('checked');
 	}
 
 	$(document).ready(function(){
@@ -576,16 +579,16 @@ if(isset($_POST['confirm']))
 
 	function sample(row,column)
 	{
-	 if($('#point'+column+'_'+row).val()) {
+	 if($('#point'+column+'_'+row).attr('checked','checked')) {
        for(var i=1;i<=4;i++)
        {
        	if(column != i)
-       	 $('#point'+i+'_'+row).attr("readonly","true");
+       	 $('#point'+i+'_'+row).removeAttr("checked");
        }
    } else {
    	for(var i=1;i<=4;i++)
        {
-       	 $('#point'+i+'_'+row).attr("readonly",false);
+       	 $('#point'+i+'_'+row).removeAttr("checked");
        }
    }
 	}

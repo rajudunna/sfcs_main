@@ -298,15 +298,16 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 	
 			<form action="<?php getFullURLLevel($_GET["r"], "digital_inspection_report_v1.php", "0", "N") ?>" method="POST">
 					<?php
+						echo "<input type='hidden' value=".$parent_id." name='parent_id'>";
 						$sql_query = "select * from $bai_rm_pj1.inspection_population where parent_id=$parent_id and status=0";
 						$sql_result = mysqli_query($link, $sql_query) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 						if (mysqli_num_rows($sql_result) == 0) {
 							echo "<div class='alert alert-info'><strong>Info!</strong> Sorry No Records Found......!</div>";
 						}else{
-							echo '<div class="panel panel-primary" style="overflow-x: scroll;">
+							echo '<div class="panel panel-primary" style="overflow-x:scroll;">
 							<div class="panel-body">
 							<table id="myTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
-					<thead>
+							<thead>
 						<tr>
 							<th>Supplier PO</th>
 							<th>Po line</th>
@@ -339,69 +340,20 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							$rm_color = $sql_row['rm_color'];
 							$supplier_roll_no = $sql_row['sfcs_roll_no'];
 							$fcs_roll_no = $sql_row['supplier_roll_no'];
-
 							$qty = $sql_row['qty'];
 
-							if ($po_no_1 == '') {
-								$po_no_1 = 0;
-							} else {
-								$po_no_1;
-							}
-							if ($po_line == '') {
-								$po_line = 0;
-							} else {
-								$po_line;
-							}
-							if ($po_subline == '') {
-								$po_subline = 0;
-							} else {
-								$po_subline;
-							}
-							if ($inv_no == '') {
-								$inv_no = 0;
-							} else {
-								$inv_no;
-							}
-							if ($item_code == '') {
-								$item_code = 0;
-							} else {
-								$item_code;
-							}
-							if ($item_desc == '') {
-								$item_desc = 0;
-							} else {
-								$item_desc;
-							}
-							if ($lot_no == '') {
-								$lot_no = 0;
-							} else {
-								$lot_no;
-							}
-							if ($supplier_batch == '') {
-								$supplier_batch = 0;
-							} else {
-								$supplier_batch;
-							}
-							if ($supplier_roll_no == '') {
-								$supplier_roll_no = 0;
-							} else {
-								$supplier_roll_no;
-							}
-							if ($fcs_roll_no == '') {
-								$fcs_roll_no = 0;
-							} else {
-								$fcs_roll_no;
-							}
-							if ($qty == '') {
-								$qty = 0;
-							} else {
-								$qty;
-							}
-							if ($rm_color == '') {
-								$rm_color = '--';
-							} else {
-								$rm_color;
-							}
+							if ($po_no_1 == '') { $po_no_1 = 0;	} else { $po_no_1; }
+							if ($po_line == '') { $po_line = 0; } else { $po_line; }
+							if ($po_subline == '') { $po_subline = 0; } else { $po_subline;	}
+							if ($inv_no == '') { $inv_no = 0; } else { $inv_no;	}
+							if ($item_code == '') {	$item_code = 0;	} else { $item_code; }
+							if ($item_desc == '') {	$item_desc = 0; } else { $item_desc; }
+							if ($lot_no == '') { $lot_no = 0; } else { $lot_no; }
+							if ($supplier_batch == '') { $supplier_batch = 0; } else { $supplier_batch;	}
+							if ($supplier_roll_no == '') { $supplier_roll_no = 0; } else {	$supplier_roll_no; }
+							if ($fcs_roll_no == '') { $fcs_roll_no = 0;	} else { $fcs_roll_no; }
+							if ($qty == '') { $qty = 0;	} else { $qty; }
+							if ($rm_color == '') { $rm_color = '--'; } else { $rm_color; }
 							echo '<tr><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $fcs_roll_no . '</td><td>' . $supplier_roll_no . '</td><td>' . $qty . '</td>';
 							echo "<td><input type='checkbox' name='bindingdata[]' value='" . $sno . '/' . $lot_no . "'></td></tr>";
 						}
@@ -421,6 +373,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 if (isset($_POST['bindingdata'])) {
 
 	$binddetails = $_POST['bindingdata'];
+	$parent_id = $_POST['parent_id'];
 
 	$count1 = count($binddetails);
 
@@ -439,7 +392,7 @@ if (isset($_POST['bindingdata'])) {
 	}
 	echo "<script>swal('Data inserted...','Successfully','success')</script>";
 	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') ;
-	echo "<script>location.href = '" . $url . "&lot_no=$lot_array&parent_id=$parent_id'</script>";
+	echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
 }
 }
 ?>
