@@ -190,12 +190,12 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 $scope.color_cod=data.color_code;
                 //$scope.scanned_status="Please Proceed";
                 
-                var trans_mode=$scope.trans_mode;
-                var action_mode=$scope.action_mode;
+                // var trans_mode=$scope.trans_mode;
+                // var action_mode=$scope.action_mode;
 
-                if((action_mode=='good') && (trans_mode=='add')){
-                    $scope.barcode_submit(action_mode);
-                }
+                // if((action_mode=='good') && (trans_mode=='add')){
+                //     $scope.barcode_submit(action_mode);
+                // }
 
                 
 
