@@ -1664,6 +1664,18 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 $('.showifcontain').css({'display':'none'});
                 
             }
+
+            var fret = Number($('#fab_returned').val());
+            if(fret > 0)
+            {
+                $('#returend_to_parent').css({'display':'block'});
+            } 
+            else
+            {
+                $('#returend_to_parent').css({'display':'none'});
+
+                //calculatecutreport();
+            }
                 $('#c_plies').attr('readonly', false);
                 $('#fab_received').attr('readonly', false);
                 $('#fab_returned').attr('readonly', false);
