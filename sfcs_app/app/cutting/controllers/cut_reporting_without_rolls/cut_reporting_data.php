@@ -260,6 +260,10 @@ $sql12="SELECT * from $bai_rm_pj1.fabric_cad_allocation where doc_no = ".$doc_no
 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check12=mysqli_num_rows($sql_result12);
 
+$checkstock="SELECT * FROM $bai_pro3.`plandoc_stat_log` WHERE plan_lot_ref LIKE '%STOCK%' and doc_no ='$doc_no'";
+$checkstockresult12=mysqli_query($link, $checkstock) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$checkstockresult=mysqli_num_rows($checkstockresult12);
+
 
 $response_data['doc_no'] = $doc_no;
 $response_data['fab_required'] = $fab_required; 
@@ -283,6 +287,8 @@ $response_data['date']      = $date;
 $response_data['doc_target_type'] = $target_doc_type;
 $response_data['ratio_data']      = getSizesRatio($doc_no,$child_docs);
 $response_data['rollinfo']      = $sql_num_check12;
+$response_data['rollinfo1']      = $checkstockresult;
+
 
 
 

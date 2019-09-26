@@ -1659,6 +1659,18 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 $('.showifcontain').css({'display':'block'});
                 
             }
+            if(data.rollinfo1>0)
+            {
+                $('.showifcontain').css({'display':'none'});
+                
+            }
+                $('#c_plies').attr('readonly', false);
+                $('#fab_received').attr('readonly', false);
+                $('#fab_returned').attr('readonly', false);
+                $('#damages').attr('readonly', false);
+                $('#joints').attr('readonly', false);
+                $('#endbits').attr('readonly', false);
+                $('#shortages').attr('readonly', false);
         }).fail(function(){
             swal('Network Error while getting Details','','error');
             return;
