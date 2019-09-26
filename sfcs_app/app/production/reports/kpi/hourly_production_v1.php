@@ -146,7 +146,11 @@ if(isset($_GET['submit']))
 					// $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
 					$sql="SELECT fr_data.*, plan_modules.section_id FROM $bai_pro2.fr_data  LEFT JOIN $bai_pro3.plan_modules ON fr_data.team = plan_modules. module_id WHERE fr_data.frdate='$frdate' AND plan_modules.section_id='$section' GROUP BY fr_data.team,fr_data.style,fr_data.smv ORDER BY fr_data.team*1;";
 					// echo $sql.'<br>';
-					$res=mysqli_query($link,$sql);
+					$result=mysqli_query($link,$sql);
+					while ($row11 = mysqli_fetch_array($result))
+						{
+							echo  "<td>".$row['style']."</td>";
+						}
 					if (mysqli_num_rows($res) > 0) 
 					{
 						while($row=mysqli_fetch_array($res))
@@ -208,7 +212,7 @@ if(isset($_GET['submit']))
 										<?php 
 											while($row1=mysqli_fetch_array($res1))
 											{
-												echo $row1['style'].'<br>';
+											 	echo $row1['style'].'<br>';
 											}
 										?>
 									</center></td>
