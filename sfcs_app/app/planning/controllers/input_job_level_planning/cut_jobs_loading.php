@@ -412,7 +412,7 @@ if($floor_set_count>0)
 ?>
 
 <?php
-if(isset($_POST['submit']))
+if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link))
 {
 	echo "<br><br><center><h2><font color=\"green\">Please Wait...</font></h2></center>";
 	$style=$_POST['style'];

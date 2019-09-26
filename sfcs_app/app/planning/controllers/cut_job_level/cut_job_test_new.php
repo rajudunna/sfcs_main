@@ -172,7 +172,7 @@ echo "<div class='row'>";
 		    echo "Cut Jobs Available:"."<font color=GREEN class='label label-success'>YES</font>"; 
 		    echo "<input type=\"hidden\" name=\"code\" value=\"$code\">"; 
 		    echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">"; 
-		    echo "<input type=\"submit\" class=\"btn btn-primary\" value=\"submit\" name=\"submit\">";     
+		    echo "<input type=\"submit\" class=\"btn btn-primary\" value=\"submit\" name=\"submit\" >";     
 		} 
 		else 
 		{ 
@@ -191,30 +191,31 @@ echo "<div class='row'>";
 ?> 
 </body> 
 <?php 
-if(isset($_POST['submit'])) 
+if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link)) 
 { 
     $style=$_POST['style']; 
     $color=$_POST['color']; 
-    $schedule=$_POST['schedule']; 
-    $code=$_POST['code']; 
+	$schedule=$_POST['schedule']; 
+		$code=$_POST['code']; 
 
-    $cat_ref=$_POST['cat_ref']; 
-     
-    $data_sym="$"; 
-     
+		$cat_ref=$_POST['cat_ref']; 
+		
+		$data_sym="$"; 
+		
 
-    $my_file = getFullURLLevel($_GET['r'],'cut_job_drag_drop_data.php',0,'R'); 
+		$my_file = getFullURLLevel($_GET['r'],'cut_job_drag_drop_data.php',0,'R'); 
 
-    $handle = fopen($my_file, 'w') or die('Cannot open file:  '.$my_file); 
+		$handle = fopen($my_file, 'w') or die('Cannot open file:  '.$my_file); 
 
-    $stringData = "<?php ".$data_sym."style_ref=\"".$style."\"; ".$data_sym."schedule_ref=\"".$schedule."\"; ".$data_sym."color_ref=\"".$color."\"; ".$data_sym."cat_ref_ref=\"".$cat_ref."\"; ".$data_sym."code_ref=\"".$code."\"; ?>"; 
+		$stringData = "<?php ".$data_sym."style_ref=\"".$style."\"; ".$data_sym."schedule_ref=\"".$schedule."\"; ".$data_sym."color_ref=\"".$color."\"; ".$data_sym."cat_ref_ref=\"".$cat_ref."\"; ".$data_sym."code_ref=\"".$code."\"; ?>"; 
 
-    fwrite($handle, $stringData); 
-    fclose(handle); 
+		fwrite($handle, $stringData); 
+		fclose(handle); 
 
-     
-    //echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"drag_drop.php?color=$color&style=$style&schedule=$schedule&code=$code&cat_ref=$cat_ref\"; }</script>"; 
-    $url = getFullURLLevel($_GET['r'],'cut_job_drag_drop.php',0,'N'); 
-    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url\"; }</script>"; 
-} 
+		
+		//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"drag_drop.php?color=$color&style=$style&schedule=$schedule&code=$code&cat_ref=$cat_ref\"; }</script>"; 
+		$url = getFullURLLevel($_GET['r'],'cut_job_drag_drop.php',0,'N'); 
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url\"; }</script>"; 
+	
+}
 ?>

@@ -121,7 +121,7 @@
 		<div class="col-md-12">
 			<?php
 			
-			if(isset($_POST['submit']))
+			if(isset($_POST['submit']) &&  short_shipment_status($_POST['style'],$_POST['schedule'],$link))
 			{	
 				if($_POST['style'] && $_POST['schedule'])
 				{
@@ -209,7 +209,7 @@
 					}		
 				}
 			}
-            if($_GET['schedule'] && $_GET['seq_no'] && $_GET['option'])
+            if($_GET['schedule'] && $_GET['seq_no'] && $_GET['option'] && short_shipment_status($_GET['style'],$_GET['schedule'],$link))
 			{
 				$schedule = $_GET['schedule'];
 				$seqno = $_GET['seq_no'];

@@ -109,7 +109,7 @@ if($_GET['some'] == 'bundle_no')
 					$user_name[$row3['operation_id']] = $row3['scanned_user'];
 					$shift[$row3['operation_id']] = $row3['shift'];
 					$scanned_time[$row3['operation_id']] = $row3['max'];
-					$module = $row3['assigned_module'];
+					$module[$row3['operation_id']] = $row3['assigned_module'];
 			    }
 
 			    
@@ -130,7 +130,7 @@ if($_GET['some'] == 'bundle_no')
 								</tr>
 								<tr>
 								   <th>Module</th>
-								   <td>$module</td>
+								   <td>$module[$value]</td>
 								</tr>
 								<tr>
 								   <th>Scanned User</th>

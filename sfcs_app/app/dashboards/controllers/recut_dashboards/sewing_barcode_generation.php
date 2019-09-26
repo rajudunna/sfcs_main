@@ -63,7 +63,7 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
         {
            $mo_no = $row_mo['mo_no'];
         }
-
+ 
         $pre_send_qty_qry = "select max(carton_act_qty) as bundle_qty,carton_act_qty,destination,packing_mode,sref_id,input_job_no,old_size from $bai_pro3.pac_stat_log_input_job where input_job_no_random = '$input_job_no' and size_code= '$size_title'";
             //echo $pre_send_qty_qry;
             //die();
