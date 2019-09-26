@@ -4,12 +4,13 @@ $data = $_POST['data'];
 $date_maker = json_decode($data, TRUE);
 $doc_no = $_POST['doc_no'];
 $date=date('Y-m-d');
-
+// var_dump($date_maker)."<br>";
+// die();
 for($i=0;$i<(sizeof($date_maker)-1);$i++)
 {
 	if($date_maker[$i][0]=='yes')
 	{
-		if($date_maker[$i][16]=='0')
+		if($date_maker[$i][19]=='0')
 		{
 			$sql="insert ignore into $bai_pro3.maker_details (parent_id, marker_type, marker_version, shrinkage_group, width, marker_length, marker_name, pattern_name, marker_eff, perimeters, remarks1, remarks2, remarks3, remarks4) values('".$date_maker[$i][3]."','".$date_maker[$i][6]."', '".$date_maker[$i][7]."', '".$date_maker[$i][8]."', '".$date_maker[$i][9]."', '".$date_maker[$i][10]."', '".$date_maker[$i][11]."', '".$date_maker[$i][12]."', '".$date_maker[$i][13]."', '".$date_maker[$i][14]."',  '".$date_maker[$i][15]."',  '".$date_maker[$i][16]."',  '".$date_maker[$i][17]."',  '".$date_maker[$i][18]."')";
 			// echo $sql."<br>";
@@ -39,7 +40,6 @@ for($i=0;$i<(sizeof($date_maker)-1);$i++)
 		}
 		else
 		{
-
 			$sql_query24="select mk_ref_id,mk_ref from $bai_pro3.plandoc_stat_log where doc_no=".$date_maker[$i][2]."";
 			// echo $sql_query24."<br>"; 
 			$test_query12=mysqli_query($link, $sql_query24) or die("Error15 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
