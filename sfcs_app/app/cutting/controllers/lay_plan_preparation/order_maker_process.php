@@ -110,6 +110,7 @@ if(isset($_POST['update']))
 		}
 		else
 		{
+			
 		$cat_ref=$_POST['cat_ref'];
 		$tran_order_tid=$_POST['tran_order_tid'];
 		$cuttable_ref=$_POST['cuttable_ref'];
@@ -218,6 +219,56 @@ if(isset($_POST['update']))
 					$allo_c[]="s50=".$sql_row['allocate_s50'];
 				}
 
+			
+				for($i=0; $i<$row_count; $i++)
+				{
+					$in_mktype = $_POST['in_mktype'][$i];
+					$in_mkver = $_POST['in_mkver'][$i];
+					$in_skgrp = $_POST['in_skgrp'][$i];
+					$in_width = $_POST['in_width'][$i];
+					$in_mklen = $_POST['in_mklen'][$i];
+					$in_mkname = $_POST['in_mkname'][$i];
+					$in_ptrname = $_POST['in_ptrname'][$i];
+					$in_mkeff = $_POST['in_mkeff'][$i];
+					$in_permts = $_POST['in_permts'][$i];
+					$in_rmks1 = $_POST['in_rmks1'][$i];
+					$in_rmks2 = $_POST['in_rmks2'][$i];
+					$in_rmks3 = $_POST['in_rmks3'][$i];
+					$in_rmks4 = $_POST['in_rmks4'][$i];
+					if($in_skgrp != '' && $in_width != '' && $in_mklen && $in_mkver != '') {
+						
+						$in_mklength[]=$in_mklen;
+						$in_pwidth[]=$in_width;
+						$sql="insert ignore into $bai_pro3.maker_details (parent_id, marker_type, marker_version, shrinkage_group, width, marker_length, marker_name, pattern_name, marker_eff, perimeters, remarks1, remarks2, remarks3, remarks4) values('".$allocate_ref."','".$in_mktype."', '".$in_mkver."', '".$in_skgrp."', '".$in_width."', '".$in_mklen."', '".$in_mkname."', '".$in_ptrname."', '".$in_mkeff."', '".$in_permts."',  '".$in_rmks1."',  '".$in_rmks2."',  '".$in_rmks3."',  '".$in_rmks4."')";
+						//echo $sql."<bR>";
+						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+						//$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+
+					}
+				}
+				$sql_maker_allocation = "select allocate_ref from $bai_pro3.maker_stat_log where tid =\"$marker_stat_log_id\"";
+				$sql_maker_allocation_res=mysqli_query($link, $sql_maker_allocation) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_allocation_res=mysqli_fetch_array($sql_maker_allocation_res);
+
+				$sql_min_id = "select id,marker_length,marker_eff,remarks1,remarks2,remarks3,remarks4 from $bai_pro3.maker_details where parent_id =".$allocate_ref." order by id limit 1";
+				$sql_result12=mysqli_query($link, $sql_min_id) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row12=mysqli_fetch_array($sql_result12))
+				{
+					$id=$sql_row12['id'];
+					$mklen=$sql_row12['marker_length'];
+					$mkeff=$sql_row12['marker_eff'];
+					$r1=$sql_row12['remarks1'];
+					$r2=$sql_row12['remarks2'];
+					$r3=$sql_row12['remarks3'];
+					$r4=$sql_row12['remarks4'];
+				}
+				
+				// var_dump($sql_row);
+				$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set marker_details_id='".$id."', mklength='".$mklen."',mkeff='".$mkeff."',remark1='".$r1."',remark2='".$r2."',remark3='".$r3."',remark4='".$r4."' where allocate_ref=$sql_allocation_res[allocate_ref]";
+				//echo $sql_update_marker_length_id;die();
+				mysqli_query($link, $sql_update_marker_length_id) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				
 				for($i=0;$i<sizeof($in_mklength);$i++)
 				{
 					if(strlen($in_pwidth[$i])>0 and $in_pwidth[$i]!="")
@@ -230,46 +281,7 @@ if(isset($_POST['update']))
 						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 				}
-				for($i=0; $i<$row_count; $i++)
-				{
-					$in_mktype = $_POST['in_mktype'][$i];
-					$in_mkver = $_POST['in_mkver'][$i];
-					$in_skgrp = $_POST['in_skgrp'][$i];
-					$in_width = $_POST['in_width'][$i];
-					$in_mklen = $_POST['in_mklen'][$i];
-					$in_mkname = $_POST['in_mkname'][$i];
-					$in_ptrname = $_POST['in_ptrname'][$i];
-					$in_mkeff = $_POST['in_mkeff'][$i];
-					$in_permts = $_POST['in_permts'][$i];
-					$in_rmks = $_POST['in_rmks'][$i];
-					if($in_skgrp != '' && $in_width != '' && $in_mklen ) {
-						$sql="insert ignore into $bai_pro3.maker_details (parent_id, marker_type, marker_version, shrinkage_group, width, marker_length, marker_name, pattern_name, marker_eff, perimeters, remarks) values('".$allocate_ref."','".$in_mktype."', '".$in_mkver."', '".$in_skgrp."', '".$in_width."', '".$in_mklen."', '".$in_mkname."', '".$in_ptrname."', '".$in_mkeff."', '".$in_permts."',  '".$in_rmks."')";
-						//echo $sql."<bR>";
-						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					
-						//$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
-
-					}
-				}
-				$sql_maker_allocation = "select allocate_ref from $bai_pro3.maker_stat_log where tid =\"$marker_stat_log_id\"";
-				$sql_maker_allocation_res=mysqli_query($link, $sql_maker_allocation) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_allocation_res=mysqli_fetch_array($sql_maker_allocation_res);
-
-				$sql_min_id = "select marker_length,marker_eff from $bai_pro3.maker_details where parent_id =\"$sql_allocation_res[allocate_ref]\" order by id limit 1";
-				$sql_result12=mysqli_query($link, $sql_min_id) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row12=mysqli_fetch_array($sql_result12))
-				{
-					$id=$sql_row12['id'];
-					$mklen=$sql_row12['marker_length'];
-					$mkeff=$sql_row12['marker_eff'];
-				}
-				
-				// var_dump($sql_row);
-				$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set marker_details_id='".$id."', mklength='".$mklen."',mkeff='".$mkeff."' where allocate_ref=$sql_allocation_res[allocate_ref]";
-				//echo $sql_update_marker_length_id;die();
-				mysqli_query($link, $sql_update_marker_length_id) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
-				 //echo $sql_min_id;die();
+				 
 							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {   sweetAlert('Successfully Updated','','success'); location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
 		}else{
 			//echo "<h2 class='label label-danger'>Marker Version is not available.</h2>";
@@ -281,6 +293,7 @@ if(isset($_POST['update']))
 					}                                     
 					</script>";	
 		}
+		
 	}
 }
 
