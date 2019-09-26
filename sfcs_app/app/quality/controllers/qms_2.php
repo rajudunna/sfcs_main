@@ -324,23 +324,38 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 	{
 		$schedule=$_GET['schedule_id'];
 	}
-
-
-	$sql="SELECT rej.`parent_id`,rej.`bcd_id`,qms.qms_tid AS qms_tid,qms.`bundle_no` AS bundle_no,qms.`qms_qty` AS qms_qty,rej.`recut_qty`,
-	ref1,location_id,SUBSTRING_INDEX(qms.remarks,'-',-1) AS form,qms_style,qms_schedule,qms_color,qms_size,qms_remarks,qms.operation_id,qms.input_job_no,qms.log_date,log_time 
-	FROM bai_pro3.bai_qms_db qms 
-	LEFT JOIN brandix_bts.`bundle_creation_data` bts ON bts.`bundle_number` = qms.`bundle_no` AND bts.`operation_id` = qms.`operation_id` 
-	LEFT JOIN bai_pro3.`rejection_log_child` rej ON rej.`bcd_id` = bts.`id` WHERE qms_tran_type=3 AND qms_schedule='$schedule' 
-	AND recut_qty = 0 AND replaced_qty = 0
-	";
-	// echo $sql."<br>";
-	$result=mysqli_query($link, $sql) or die("Sql error".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
-	while($row1=mysqli_fetch_array($result))
+	$sql3="SELECT order_style_no,order_del_no FROM bai_pro3.`bai_orders_db` WHERE order_del_no='".$schedule."'";
+	$getstyle=mysqli_query($link, $sql3) or die("Sql error".$sql3.mysqli_errno($GLOBALS["___mysqli_ston"]));;
+	while($getresult=mysqli_fetch_array($getstyle))
 	{
-		$qms_style=$row1["qms_style"];
-		$qms_schedule=$row1["qms_schedule"];
+		$qms_style=$getresult['order_style_no'];
+		$qms_schedule=$getresult['order_del_no'];
 	}
+
+
+	// $sql="SELECT rej.`parent_id`,rej.`bcd_id`,qms.qms_tid AS qms_tid,qms.`bundle_no` AS bundle_no,qms.`qms_qty` AS qms_qty,rej.`recut_qty`,
+	// ref1,location_id,SUBSTRING_INDEX(qms.remarks,'-',-1) AS form,qms_style,qms_schedule,qms_color,qms_size,qms_remarks,qms.operation_id,qms.input_job_no,qms.log_date,log_time 
+	// FROM bai_pro3.bai_qms_db qms 
+	// LEFT JOIN brandix_bts.`bundle_creation_data` bts ON bts.`bundle_number` = qms.`bundle_no` AND bts.`operation_id` = qms.`operation_id` 
+	// LEFT JOIN bai_pro3.`rejection_log_child` rej ON rej.`bcd_id` = bts.`id` WHERE qms_tran_type=3 AND qms_schedule='$schedule' 
+	// AND recut_qty = 0 AND replaced_qty = 0
+	// ";
+	// // echo $sql."<br>";
+	// $result=mysqli_query($link, $sql) or die("Sql error".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
+	// while($row1=mysqli_fetch_array($result))
+	// {
+	// 	$qms_style=$row1["qms_style"];
+	// 	$qms_schedule=$row1["qms_schedule"];
+	// }
 	if(short_shipment_status($qms_style,$qms_schedule,$link)){
+		$sql="SELECT rej.`parent_id`,rej.`bcd_id`,qms.qms_tid AS qms_tid,qms.`bundle_no` AS bundle_no,qms.`qms_qty` AS qms_qty,rej.`recut_qty`,
+		ref1,location_id,SUBSTRING_INDEX(qms.remarks,'-',-1) AS form,qms_style,qms_schedule,qms_color,qms_size,qms_remarks,qms.operation_id,qms.input_job_no,qms.log_date,log_time 
+		FROM bai_pro3.bai_qms_db qms 
+		LEFT JOIN brandix_bts.`bundle_creation_data` bts ON bts.`bundle_number` = qms.`bundle_no` AND bts.`operation_id` = qms.`operation_id` 
+		LEFT JOIN bai_pro3.`rejection_log_child` rej ON rej.`bcd_id` = bts.`id` WHERE qms_tran_type=3 AND qms_schedule='$schedule' 
+		AND recut_qty = 0 AND replaced_qty = 0
+		";
+		$result=mysqli_query($link, $sql) or die("Sql error".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($result)>0)
 		{
 			$msg="<table border='1px' class=\"table table-bordered\"  id=\"table1\"><tr><th>Style</th><th>ScheduleNo</th><th>Color</th><th>Size</th><th>Qms_remarks</th><th>Rejection Type</th><th>Bundle_no</th><th>Operation_id</th><th>Input_job_no</th><th>Date</th><th>Quantity</th><th>Control</th></tr>";
