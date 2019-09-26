@@ -249,16 +249,14 @@ if($check_qry_result->num_rows > 0)
 		$diffqty=0;
 		for($i=0;$i<sizeof($clubdocno);$i++)
 		{
-			$embquantity=100;
-			$sendqty=40;
 			//checking if docket quantities
-			// $get_quant_qry="select send_qty as send_qty,(recevied_qty+rejected_qty) as receive_qty from $brandix_bts.bundle_creation_data where docket_number='".$clubdocno[$i]."' and operation_id=$op_no and size_title='$sizes'";
-			// $quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
-			// while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
-			// {
-				// $sendqty=$quant_qry_result_row['send_qty'];
-				// $receivedqty=$quant_qry_result_row['receive_qty'];
-			// }
+			$get_quant_qry="select send_qty as send_qty,(recevied_qty+rejected_qty) as receive_qty from $brandix_bts.bundle_creation_data where docket_number='".$clubdocno[$i]."' and operation_id=$op_no and size_title='$sizes'";
+			$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
+			{
+				$sendqty=$quant_qry_result_row['send_qty'];
+				$receivedqty=$quant_qry_result_row['receive_qty'];
+			}
 			if($embquantity>$sendqty)
 			{
 				if($diffqty==0)
