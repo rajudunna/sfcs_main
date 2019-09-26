@@ -1218,7 +1218,7 @@ if(isset($_POST["trans_action"])){
                                                     $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$post_ops_code;
                                                     $result_query = $link->query($query_post) or exit('query error in updating');
                                                 }
-                                                if($ops_dep)
+                                                if($ops_dep!=$b_op_id)
                                                 {
                                                     $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where bundle_number =$b_tid[$key] and operation_id in (".implode(',',$dep_ops_codes).")";
                                                     $result_pre_send_qty = $link->query($pre_send_qty_qry);
