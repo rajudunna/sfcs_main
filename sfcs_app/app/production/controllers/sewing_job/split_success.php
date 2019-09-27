@@ -54,8 +54,8 @@
 	{
 		$incrementno = 1;
 	}
-	$ninput_job_no=$input_job_no.'.'.$incrementno; 
-	$ninput_job_no_random=$input_job_no_random.'.'.$incrementno;
+	$ninput_job_no=$input_job_no.'.'.str_pad($incrementno,2,"0",STR_PAD_LEFT); 
+	$ninput_job_no_random=$input_job_no_random.'.'.str_pad($incrementno,2,"0",STR_PAD_LEFT);
 
 	// echo "<br>new_ij = $ninput_job_no<br>new_ij_rand = $ninput_job_no_random";
 	// die();
