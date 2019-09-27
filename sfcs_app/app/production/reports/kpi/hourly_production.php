@@ -93,12 +93,12 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 			// $minutes_29 = $minutes-1;
 
 			$sql="SELECT *,fr.team FROM $bai_pro2.`fr_data` fr LEFT JOIN bai_pro2.`hout`  h ON h.`out_date`=fr.`frdate` WHERE DATE(frdate)='$frdate' GROUP BY fr.team,fr.style,fr.smv ORDER BY fr.team*1";
-			 echo $sql.'<br>';
+			//    echo $sql.'<br>';
 			// $res=mysqli_query($link,$sql);
 			$result=mysqli_query($link,$sql);
 			while ($row = mysqli_fetch_array($result))
 			{
-				echo  "<td>".$row['style']."</td>";
+				echo $row1['style'].'<br>';
 			}
 			$i=0; ?>
 			<section class="content-area">
@@ -212,7 +212,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 						<?php 
 							while($row1=mysqli_fetch_array($res1))
 							{
-								echo $row1['style'].'<br>';
+								echo  "<td>".$row['style']."</td>";
 							}
 						?>
 					</center></td>
