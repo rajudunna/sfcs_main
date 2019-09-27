@@ -392,7 +392,7 @@ if (isset($_POST['bindingdata'])) {
 	}
 	echo "<script>swal('Data inserted...','Successfully','success')</script>";
 	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') ;
-	echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+	echo "<script>location.href = '" . $url . "&parent_id=$parent_id'&id=$sno</script>";
 }
 }
 ?>

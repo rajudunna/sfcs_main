@@ -5,32 +5,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 if(isset($_GET['parent_id']))
 {
 	$parent_id=$_GET['parent_id'];
+	$sno=$_GET['id'];
 }
-
- $get_details="select * from `bai_rm_pj1`.`inspection_population` where parent_id=$parent_id and status in(1,2)";
- $details_result=mysqli_query($link,$get_details) or exit("get_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
- 	if (mysqli_num_rows($details_result) == 0) 
- 	{
-	echo "<div class='alert alert-info'><strong>Info!</strong> Sorry No Records Found......!</div>";
-	die();
-	} 
-
- while($row1=mysqli_fetch_array($details_result))
- {
- 	$lot_num[]= $row1['lot_no']; 
- 	$lot = $row1['lot_no'];
-    $invoice = $row1['supplier_invoice'];
-    $color = $row1['rm_color'];
-    $batch = $row1['supplier_batch'];
-    $po = $row1['supplier_po'];
-    $item_code[$lot]= $row1['item_code'];
-    $item_desc[$lot] = $row1['item_desc'];
- }
- 
-
- $path= getFullURLLevel($_GET['r'], "fabric_inspection_report.php", "0", "R")."?id=$parent_id";
- $lot_details = implode("','",$lot_num);
   
 ?>
 
@@ -49,8 +25,17 @@ if(isset($_GET['parent_id']))
 					      	<th>PO#</th>
 					      </tr>
 					      <tr>
-					      	<?php
-						      	echo "<td>$invoice</td>
+							  <?php
+							    $get_details_main="select supplier_invoice,rm_color,supplier_po,supplier_batch from `bai_rm_pj1`.`inspection_population` where parent_id=$parent_id and status=1";
+								$details1_result=mysqli_query($link,$get_details_main) or exit("get_details_main Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($row1=mysqli_fetch_array($details1_result))
+								{
+									$invoice = $row1['supplier_invoice'];
+									$batch = $row1['supplier_batch'];
+									$color = $row1['rm_color'];
+									$po = $row1['supplier_po'];
+								}
+						  echo "<td>$invoice</td>
 						      	<td>$color</td>
 						      	<td>$batch</td>
 						      	<td>$po</td>";
@@ -60,59 +45,13 @@ if(isset($_GET['parent_id']))
 					    </table>
 					</div>
 					<form id='myForm' method='post' name='input_main' action="?r=<?= $_GET['r']."&parent_id=".$parent_id ?>">
-					  <div class="table-responsive col-sm-12">
-					  	<table class="table table-bordered">
-					  	    <tbody>
-						  		<tr>
-						  			<td></td>
-						  			<td></td>
-		                            <td colspan="3">Tolerance</td>
-						  		</tr>		
-					  			<tr>	
-					  				<td>Fabric Composition</td>
-					  				<td><input type="text" id="fabric_composition" name="fabric_composition" class="float" autocomplete="off"></td>
-					  				<td rowspan="2"><input type="text" id="tolerance" name="tolerance" class="float" autocomplete="off"></td>
-					  			</tr>
-					  			<tr>	
-					  				<td>Inspection Status</td>
-					  				<td>
-					  					<select  name="inspection_status" id="inspection_status">
-				                     	<option value="" disabled selected>Select Status</option>
-				                     	<option value="approval">Aprroval</option>
-				                     	<option value="rejected">Rejected</option>
-				                     	<option value="partial rejected">Partial Rejected</option>
-									</select>
-					  				</td>
-					  			</tr>
-					  			<tr style="background-color: antiquewhite;">	
-					  				<th style=text-align:center colspan="3">Spec Details</th>
-					  			</tr>	
-					  			<tr>
-					  				<td>Spec Width</td>
-					  				<td><input type="text" id="spec_width" name="spec_width" class="float" autocomplete="off"></td>
-					  				<!-- <td><input type="text" id="tolerance" name="tolerance"></td> -->
-					  			</tr>
-					  			<tr>
-					  				<td>Spec Weight</td>
-					  				<td><input type="text" id="spec_weight" name="spec_weight" class="float" autocomplete="off"></td>
-					  				<!-- <td><input type="text" id="tolerance" name="tolerance"></td> -->
-					  			</tr>
-					  			<tr>
-					  				<td>Repeat Length</td>
-					  				<td><input type="text" id="repeat_length" name="repeat_length" class="float" autocomplete="off"></td>
-					  				<!-- <td><input type="text" id="tolerance" name="tolerance"></td> -->
-					  			</tr>
-					  			<tr style="background-color: antiquewhite;">
-					  				<th style=text-align:center colspan=3>Inspection Summary</th>
-					  			</tr>
-					  			<tr>
-					  				<td>Lab Testing</td>
-					  				<td><input type="text" id="lab_testing" name="lab_testing" class="float" autocomplete="off"></td>
-					  				<!-- <td rowspan="2"><input type="text" id="tolerance" name="tolerance"></td> -->
-					  			</tr>	
-					  		</tbody>	
-					  	</table>	
-					  </div> 
+					<?php
+					"<input type='hidden' name='invoice_four_point' value='".$invoice."'>";
+					"<input type='hidden' name='color_four_point' value='".$color."'>";
+					"<input type='hidden' name='batch_four_point' value='".$batch."'>";
+					"<input type='hidden' name='po_four_point' value='".$po."'>";
+					?>
+					 
 					  <div class="table-responsive col-sm-12">
 					    <table class="table table-bordered">
 					      <tbody>
@@ -129,41 +68,45 @@ if(isset($_GET['parent_id']))
 					      		<th>Num of Points</th>
 					      		<th>Roll Inspection Status</th>
 					      	</tr>
-					      	<!-- <tr> -->
+					    
 					      	<?php
 							   $url = getFullURLLevel($_GET['r'],'4_point_roll_inspection_child.php',0,'N');
 							   
 							  $get_details1="select * from `bai_rm_pj1`.`inspection_population` where parent_id=$parent_id and status=1";
-						
+								
 							 $details1_result=mysqli_query($link,$get_details1) or exit("get_details1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							 
+							$path= getFullURLLevel($_GET['r'], "fabric_inspection_report.php", "0", "R")."?id=$parent_id";
+							
                              while($row2=mysqli_fetch_array($details1_result))
                              {
-
-                              $roll_id = $row2['supplier_roll_no'];
+							
+							  $roll_id = $row2['supplier_roll_no'];	
                               $supplier_id = $row2['sfcs_roll_no'];	
                               $lot_id = $row2['lot_no'];
 							  $lotids[]=$row2['lot_no'];
 							  $invoice=$row2['supplier_invoice'];
-							 
+							  $store_in_id=$row2['store_in_id'];
 					      	  echo 
-					      	  "<tr data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id'>
+					      	  "<tr data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>
 					      	    <td>".$row2['supplier_roll_no']."</td>
 					      		<td>".$row2['sfcs_roll_no']."</td>
 					      		<td>".$row2['ctex_length']."</td>
 					      		<td>".$row2['ctex_width']."</td>
-					      		<td>".$item_code[$lot_id]."</td>
-					      		<td>".$color."</td>
-	                            <td>".$item_desc[$lot_id]."</td>
+					      		<td>".$row2['item_code']."</td>
+					      		<td>".$row2['rm_color']."</td>
+	                            <td>".$row2['item_desc']."</td>
 	                            <td>".$lot_id."</td>
-	                            <td>".$row2['qty']."</td>";
-	                             $get_status_details="select SUM(1_points) as 1_points,SUM(2_points) as 2_points,SUM(3_points) as 3_points,SUM(4_points) as 4_points,supplier_roll_no,inspection_status from $bai_rm_pj1.roll_inspection_child where supplier_roll_no = '$roll_id'";
-	                            //  echo $get_status_details;
+								<td>".$row2['qty']."</td>";
+
+								 $get_status_details="select SUM(1_points) as 1_points,SUM(2_points) as 2_points,SUM(3_points) as 3_points,SUM(4_points) as 4_points,supplier_roll_no,inspection_status from $bai_rm_pj1.roll_inspection_child where supplier_roll_no in('$roll_id')";
+								 
 						      	 $status_details_result=mysqli_query($link,$get_status_details) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	                             while($row5=mysqli_fetch_array($status_details_result))
 	                             { 
 	                               $roll=$row5['supplier_roll_no']; 
-	                               $status=$row5['inspection_status'];
+								   $status=$row5['inspection_status'];
+								   
 	                               $point1=$row5['1_points']*1;
 								   $point2=$row5['2_points']*2;
 								   $point3=$row5['3_points']*3;
@@ -180,122 +123,11 @@ if(isset($_GET['parent_id']))
 					      </tbody>
 					    </table>
 					  </div>
-					<div class="table-responsive col-sm-12">
-					    <table class="table table-bordered">
-					      <tbody>
-					      	<tr style="background-color: antiquewhite;">
-					      		<th>Item Code</th>
-					      		<th>Roll No</th>
-					      		<th>Inspected %</th>
-					      		<th>Inspected Qty</th>
-					      		<th>Invoice Qty</th>
-					      		<th style=text-align:center colspan=3>Width(cm)</th>
-					      		<th>Actual Height</th>
-					      		<th>Actual Repeat Height</th>
-					      		<th>SKW</th>
-					      		<th>BOW</th>
-					      		<th>Ver</th>
-					      		<th>GSM(s/sqm)</th>
-					      		<th>Comments</th>
-					      		<th>Marker Type</th>
-					      	</tr>
-					      	<tr>
-                                <td><input type="text" id="item_code1" name="item_code1" autocomplete="off"></td>
-					      		<td><input type="text" id="roll_no1" name="roll_no1" autocomplete="off"></td>
-					      		<td><input type="text" id="inspected_per" name="inspected_per" class="float" autocomplete="off"></td>
-					      		<td><input type="text" id="inspected_qty" name="inspected_qty" class="float" autocomplete="off"></td>
-					      		<td><input type="text" id="invoice_qty" name="invoice_qty" class="float" autocomplete="off"></td>
-					      		<td><center>S</center><input type="text" id="s" name="s" colspan=3 class="float" autocomplete="off"></td>
-					      		<td><center>M</center><input type="text" id="m" name="m" colspan=3 class="float" autocomplete="off"></td>
-					      		<td><center>E</center><input type="text" id="e" name="e" colspan=3 class="float" autocomplete="off"></td>
-					      		<td><input type="text" id="actual_height" name="actual_height" class="float" autocomplete="off"></td>
-					      		<td><input type="text" id="actual_repeat_height" name="actual_repeat_height" class="float" autocomplete="off"></td>
-					      		<td><input type="text" id="skw" name="skw" autocomplete="off"></td>
-					      		<td><input type="text" id="bow" name="bow" autocomplete="off"></td>
-					      		<td><input type="text" id="ver" name="ver" autocomplete="off"></td>
-					      		<td><input type="text" id="gsm" name="gsm" autocomplete="off"></td>
-					      		<td><input type="text" id="comment" name="comment" autocomplete="off"></td>
-					      		<td><input type="text" id="marker_type" name="marker_type" autocomplete="off"></td>
-					      	</tr>	
-					     </tbody>
-					    </table>
-					</div>
+				
 					<div class="form-inline col-sm-12">
-							<div class="table-responsive col-sm-3">
-						     <table class="table table-bordered" style="margin-top: 48px;">
-						       <tbody>
-						      	<tr style="background-color: antiquewhite;">
-						      		<th>CODE</th>
-						      		<th>DAMAGE DESCRIPTION</th>
-						      	</tr>
-						      	<tr>
-						      	  <td>C-1</td>
-						      	  <td>Hole</td>
-						      	</tr>
-						      	<tr>
-						      	  <td>C-2</td>
-						      	  <td>Stain Mark</td>
-						      	</tr>
-						      	<tr>
-						      	  <td>C-3</td>
-						      	  <td>Knot</td>
-						      	</tr>
-						      	<tr>
-						      	  <td>C-4</td>
-						      	  <td>Mark</td>
-						      	</tr>
-						       </tbody>
-						     </table>
-						    </div>
-						    <div class="form-horizontal col-sm-2">
-							    <div>
-							     <table class="table table-bordered" style="margin-top: 56px;">
-							       <tbody>
-							      	<tr>
-							      	<?php
-							      		echo "<td><a class='btn btn-sm btn-primary' href='$path' onclick='return popitup("."'".$path."'".")'>Print Report</a></td>";
-							      	?>
-							      	</tr>
-							      	<tr>	
-							      		<td><button type="sumbit" class='btn btn-sm btn-primary' name="save" id="save">Save</button></td>
-							      	</tr>
-							      	<tr>	
-							      		<td><button type="sumbit" class='btn btn-sm btn-primary' name="confirm" id="confirm">Confirm</button></td>
-							      	</tr>
-							      </tbody>
-							     </table>
-							    </div> 
-							 </div> 
-                             <div class="table-responsive col-sm-7" style="margin-top:42px;">
-						     <table class="table table-bordered">
-						       <tbody>
-						      	<tr style="background-color: antiquewhite;">
-						      		<th>Code</th>
-						      		<th>Damage Des</th>
-						      		<th>1 Points</th>
-						      		<th>2 Points</th>
-						      		<th>3 Points</th>
-						      		<th>4 Points</th>
-						      		<th>Control</th>
-						      	</tr>
-						      	<?php 
-						      	    for($i=0;$i<4;$i++){
-						      	?>
-						      	<tr>
-						      		<td><input type="text" id="code" name="code[]" autocomplete="off"></td>
-						      		<td><input type="text" id="damage" name="damage[]" autocomplete="off"></td>
-						      		<td><input type="checkbox" id="point1_<?= $i ?>" name="point1[]" onchange="sample(<?= $i ?>,1)"></td>
-						      		<td><input type="checkbox" id="point2_<?= $i ?>" name="point2[]" onchange="sample(<?= $i ?>,2)"></td>
-						      		<td><input type="checkbox" id="point3_<?= $i ?>" name="point3[]" onchange="sample(<?= $i ?>,3)"></td>
-						      		<td><input type="checkbox" id="point4_<?= $i ?>" name="point4[]" onchange="sample(<?= $i ?>,4)"></td>
-						      		<td><button type="button" class="btn btn-primary btn-sm" id='clear' onclick='clearValues(<?= $i ?>)' value='<?= $i ?>'>Clear</button></td>
-						      	</tr>
-						      	<?php
-						            }
-						      	?>
-						      </tbody>
-						     </table>
-						    </div>
+						<button type="sumbit" class='btn btn-sm btn-primary' name="confirm" id="confirm">Confirm</button>
+					</div> 
+					
                     </div>
                     <?php $implot=implode(',',$lot_num); ?>
                     <input type="hidden" name="lot_nos" value='<?=  $implot ?>'>
@@ -307,287 +139,14 @@ if(isset($_GET['parent_id']))
 			</div>
         </div>
 </div>
-
-<?php
-if(isset($_POST['save']))
-{ 
-	$fabric_composition = $_POST['fabric_composition'];
-	if($fabric_composition==''){ $fabric_composition=0; }else{$fabric_composition;}
-	
-	$spec_width = $_POST['spec_width'];
-	if($spec_width==''){ $spec_width=0; }else{$spec_width;}
-  
-	$inspection_status = $_POST['inspection_status'];
-  
-	$spec_weight = $_POST['spec_weight'];
-	if($spec_weight==''){ $spec_weight=0; }else{$spec_weight;}
-  
-	$repeat_length = $_POST['repeat_length'];
-	if($repeat_length==''){ $repeat_length=0; }else{$repeat_length;}
-  
-	$lab_testing = $_POST['lab_testing'];
-	if($lab_testing==''){ $lab_testing=0; }else{$lab_testing;}
-  
-	$lot_nums = $_POST['lot_nos'];
-	if($lot_nums==''){ $lot_nums=0; }else{$lot_nums;}
-  
-	$tolerance = $_POST['tolerance'];
-	if($tolerance==''){ $tolerance=0; }else{$tolerance;}
-  
-	$item_code1 = $_POST['item_code1'];
-	if($item_code1==''){ $item_code1=0; }else{$item_code1;}
-  
-	$roll_no1 = $_POST['roll_no1'];
-	if($roll_no1==''){ $roll_no1=0; }else{$roll_no1;}
-  
-	$inspected_per = $_POST['inspected_per'];
-	if($inspected_per==''){ $inspected_per=0; }else{$inspected_per;}
-  
-	$inspected_qty = $_POST['inspected_qty'];
-	if($inspected_qty==''){ $inspected_qty=0; }else{$inspected_qty;}
-  
-	$invoice_qty = $_POST['invoice_qty'];
-	if($invoice_qty==''){ $invoice_qty=0; }else{$invoice_qty;}
-  
-	$s = $_POST['s'];
-	if($s==''){ $s=0; }else{$s;}
-  
-	$m = $_POST['m'];
-	if($m==''){ $m=0; }else{$m;}
-  
-	$e = $_POST['e'];
-	if($e==''){ $e=0; }else{$e;}
-  
-	$actual_height = $_POST['actual_height'];
-	if($actual_height==''){ $actual_height=0; }else{$actual_height;}
-  
-	$actual_repeat_height = $_POST['actual_repeat_height'];
-	if($actual_repeat_height==''){ $actual_repeat_height=0; }else{$actual_repeat_height;}
-  
-	$skw = $_POST['skw'];
-	if($skw==''){ $skw=0; }else{$skw;}
-  
-	$bow = $_POST['bow'];
-	if($bow==''){ $bow=0; }else{$bow;}
-  
-	$ver = $_POST['ver'];
-	if($ver==''){ $ver=0; }else{$ver;}
-  
-	$gsm = $_POST['gsm'];
-	if($gsm==''){ $gsm=0; }else{$gsm;}
-  
-	$comment = $_POST['comment'];
-	if($comment==''){ $comment=0; }else{$comment;}
-  
-	$marker_type = $_POST['marker_type'];
-	if($marker_type==''){ $marker_type=0; }else{$marker_type;}
-  
-	$po_no = $_POST['po'];
-	if($po_no==''){ $po_no=0; }else{$po_no;}
-  
-	$batch_no = $_POST['batch'];
-	if($batch_no==''){ $batch_no=0; }else{$batch_no;}
-  
-	$color = $_POST['color'];
-	if($color==''){ $color=0; }else{$color;}
-
-    if(isset($_POST['code']))
-    {
-		$code = $_POST['code'];
-	 	$count=count($code);
-	 	$damage = $_POST['damage'];
-		$insert_roll_details = "insert into $bai_rm_pj1.roll_inspection(po_no,batch_no,color) values ('$po_no','$batch_no','$color')";
-		  
-		 mysqli_query($link, $insert_roll_details) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"]));
-         $id = mysqli_insert_id($link);
-	 	for($i=0;$i<$count;$i++)
-	  	{	
-	  		  $code1 = $_POST['code'][$i];
-	  		  $damage1 = $_POST['damage'][$i];
-		  	  $point1 = $_POST['point1'][$i];
-		  	  $point2 = $_POST['point2'][$i];
-		  	  $point3 = $_POST['point3'][$i];
-		  	  $point4 = $_POST['point4'][$i];
-
-		  	   if($point1 != 0 || $point2 != 0 || $point3 != 0 || $point4 != 0)
-		  	   {
-		  	   	
-                   $get_lot_details="select supplier_no,ref2 as roll_no,lot_no from $bai_rm_pj1.store_in where lot_no in($lot_nums)";
-				//    echo $get_lot_details."</br/>";
-				   $lot_details_result=mysqli_query($link,$get_lot_details) or exit("get_lot_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				   while($row3=mysqli_fetch_array($lot_details_result))
-				   {
-				      $roll_no = $row3['roll_no'];
-					  $supplier_no = $row3['supplier_no'];
-					  if($supplier_no=='') { $supplier_no=0; } else { $supplier_no; };
-				      $lots = $row3['lot_no'];
-
-				       
-					  $insert_query="insert into $bai_rm_pj1.roll_inspection_child(lot_no,supplier_roll_no,sfcs_roll_no,fabric_composition,spec_width,inspection_status,spec_weight,repeat_length,lab_testing,tolerance,item_code,roll_no,inspected_per,inspected_qty,invoice_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,code,damage_desc,1_points,2_points,3_points,4_points,parent_id) values ('$lot_num','$supplier_no','$roll_no',$fabric_composition,$spec_width,'$inspection_status',$spec_weight,$repeat_length,$lab_testing,$tolerance,'$item_code1','$roll_no1','$inspected_per',$inspected_qty,$invoice_qty,$s,$m,$e,'$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type','$code1','$damage1','$point1','$point2','$point3','$point4','$id')";
-				 	
-					  $result_query = $link->query($insert_query) or exit('query1 error in inserting1111');
-					  
-					  $update_status = "update $bai_rm_pj1.inspection_population SET status=2 where supplier_roll_no=$supplier_no and sfcs_roll_no=$roll_no and lot_no='$lots'";
-				
-					  $result_query_update = $link->query($update_status) or exit('query error in updating');
-
-				    }
-					echo "<script>sweetAlert('Data Saved Sucessfully','','info');</script>";
-					die();
-		  	    }
-		  	    else
-		  	    {
-		  	    	echo "<script>sweetAlert('Please fill Reason Code','','error');</script>";
-		  	    }	
-	  	}
-	}
-	
-}
-?>
-
-<?php
+<?php 
 if(isset($_POST['confirm']))
 {
-  $fabric_composition = $_POST['fabric_composition'];
-  if($fabric_composition==''){ $fabric_composition=0; }else{$fabric_composition;}
-  
-  $spec_width = $_POST['spec_width'];
-  if($spec_width==''){ $spec_width=0; }else{$spec_width;}
-
-  $inspection_status = $_POST['inspection_status'];
-
-  $spec_weight = $_POST['spec_weight'];
-  if($spec_weight==''){ $spec_weight=0; }else{$spec_weight;}
-
-  $repeat_length = $_POST['repeat_length'];
-  if($repeat_length==''){ $repeat_length=0; }else{$repeat_length;}
-
-  $lab_testing = $_POST['lab_testing'];
-  if($lab_testing==''){ $lab_testing=0; }else{$lab_testing;}
-
-  $lot_nums = $_POST['lot_nos'];
-  if($lot_nums==''){ $lot_nums=0; }else{$lot_nums;}
-
-  $tolerance = $_POST['tolerance'];
-  if($tolerance==''){ $tolerance=0; }else{$tolerance;}
-
-  $item_code1 = $_POST['item_code1'];
-  if($item_code1==''){ $item_code1=0; }else{$item_code1;}
-
-  $roll_no1 = $_POST['roll_no1'];
-  if($roll_no1==''){ $roll_no1=0; }else{$roll_no1;}
-
-  $inspected_per = $_POST['inspected_per'];
-  if($inspected_per==''){ $inspected_per=0; }else{$inspected_per;}
-
-  $inspected_qty = $_POST['inspected_qty'];
-  if($inspected_qty==''){ $inspected_qty=0; }else{$inspected_qty;}
-
-  $invoice_qty = $_POST['invoice_qty'];
-  if($invoice_qty==''){ $invoice_qty=0; }else{$invoice_qty;}
-
-  $s = $_POST['s'];
-  if($s==''){ $s=0; }else{$s;}
-
-  $m = $_POST['m'];
-  if($m==''){ $m=0; }else{$m;}
-
-  $e = $_POST['e'];
-  if($e==''){ $e=0; }else{$e;}
-
-  $actual_height = $_POST['actual_height'];
-  if($actual_height==''){ $actual_height=0; }else{$actual_height;}
-
-  $actual_repeat_height = $_POST['actual_repeat_height'];
-  if($actual_repeat_height==''){ $actual_repeat_height=0; }else{$actual_repeat_height;}
-
-  $skw = $_POST['skw'];
-  if($skw==''){ $skw=0; }else{$skw;}
-
-  $bow = $_POST['bow'];
-  if($bow==''){ $bow=0; }else{$bow;}
-
-  $ver = $_POST['ver'];
-  if($ver==''){ $ver=0; }else{$ver;}
-
-  $gsm = $_POST['gsm'];
-  if($gsm==''){ $gsm=0; }else{$gsm;}
-
-  $comment = $_POST['comment'];
-  if($comment==''){ $comment=0; }else{$comment;}
-
-  $marker_type = $_POST['marker_type'];
-  if($marker_type==''){ $marker_type=0; }else{$marker_type;}
-
-  $po_no = $_POST['po'];
-  if($po_no==''){ $po_no=0; }else{$po_no;}
-
-  $batch_no = $_POST['batch'];
-  if($batch_no==''){ $batch_no=0; }else{$batch_no;}
-
-  $color = $_POST['color'];
-  if($color==''){ $color=0; }else{$color;}
-
-    if(isset($_POST['code']))
-    {
-		$code = $_POST['code'];
-	 	$count=count($code);
-		$damage = $_POST['damage'];
-	 	$insert_roll_details = "insert into $bai_rm_pj1.roll_inspection(po_no,batch_no,color) values ('$po_no','$batch_no','$color')";
-		mysqli_query($link, $insert_roll_details) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"]));
-        $id = mysqli_insert_id($link);
-	 	for($i=0;$i<$count;$i++)
-	  	{
-			  
-			  $code1 = $_POST['code'][$i];
-			  if($code1==''){ $code1=0; }else{$code1;}
-
-			  $damage1 = $_POST['damage'][$i];
-			  if($damage1==''){ $damage1=0; }else{$damage1;}
-
-			  $point1 = $_POST['point1'][$i];
-			  if($point1==''){ $point1=0; }else{$point1;}
-
-			  $point2 = $_POST['point2'][$i];
-			  if($point2==''){ $point2=0; }else{$point2;}
-
-			 $point3 = $_POST['point3'][$i];
-			 if($point3==''){ $point3=0; }else{$point3;}
-
-		  	  $point4 = $_POST['point4'][$i];
-			  if($point4==''){ $point4=0; }else{$point4;}
-
-		  	   if($point1 != 0 || $point2 != 0 || $point3 != 0 || $point4 != 0)
-		  	   {
-			
-				  
-		  	  	  $get_lot_details="select supplier_no,ref2 as roll_no, lot_no from $bai_rm_pj1.store_in where lot_no in($lot_nums)";
-
-				   $lot_details_result=mysqli_query($link,$get_lot_details) or exit("get_lot_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				   while($row3=mysqli_fetch_array($lot_details_result))
-				   {
-				      $roll_no = $row3['roll_no'];
-					  $supplier_no = $row3['supplier_no'];
-					  if($supplier_no=='') { $supplier_no=0; } else { $supplier_no; };
-					  $lots = $row3['lot_no'];
-					  
-					  $insert_query="insert into $bai_rm_pj1.roll_inspection_child(lot_no,supplier_roll_no,sfcs_roll_no,fabric_composition,spec_width,inspection_status,spec_weight,repeat_length,lab_testing,tolerance,item_code,roll_no,inspected_per,inspected_qty,invoice_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,code,damage_desc,1_points,2_points,3_points,4_points,parent_id) values ('$lots','$supplier_no','$roll_no',$fabric_composition,'$spec_width','$inspection_status','$spec_weight','$repeat_length','$lab_testing','$tolerance','$item_code1','$roll_no1','$inspected_per','$inspected_qty','$invoice_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type','$code1','$damage1',$point1,$point2,$point3,$point4,$id)";
-					  
-					  $result_query = $link->query($insert_query) or exit('query error in inserting2222');
-
-					  $update_status = "update $bai_rm_pj1.inspection_population SET status=3 where supplier_roll_no=$supplier_no and sfcs_roll_no=$roll_no and lot_no='$lots'";
-				
-					  $result_query_update = $link->query($update_status) or exit('query error in updating');
-				    }
-					echo "<script>sweetAlert('Updated Sucessfully','','info');</script>";
-					die();
-		  	    }
-		  	    else
-		  	    {
-		  	    	echo "<script>sweetAlert('Please fill Reason Code','','error');</script>";
-		  	    }	
-	  	}
-	}
+	$po_save=$_POST['po_four_point'];
+	$color_save=$_POST['color_four_point'];
+	$batch_save=$_POST['batch_four_point'];
+	$update_confirm="update $bai_rm_pj1.`roll_inspection` set status=3 where ";
+	$result_query_insert = $link->query($insert_save) or exit('query error in updating111');
 }
 ?>
 
@@ -625,21 +184,7 @@ if(isset($_POST['confirm']))
     });
 });
 
-	function sample(row,column)
-	{
-	 if($('#point'+column+'_'+row).attr('checked','checked')) {
-       for(var i=1;i<=4;i++)
-       {
-       	if(column != i)
-       	 $('#point'+i+'_'+row).removeAttr("checked");
-       }
-   } else {
-   	for(var i=1;i<=4;i++)
-       {
-       	 $('#point'+i+'_'+row).removeAttr("checked");
-       }
-   }
-	}
+	
 </script>
 <style type="text/css">
 	[data-href] {
