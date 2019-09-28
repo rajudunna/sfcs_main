@@ -282,7 +282,6 @@
 		$ops_m_name=array();
 		$size_tit=array();
 		$ops=array();
-		//$opst=array();
 		
 		$op_codes_query = "SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
 						WHERE category = '$sewing_cat' group by category";
@@ -340,7 +339,8 @@
 						$ops_m_id[$row1210['mo_no']][$row1212['OperationNumber']]=$row1212['OperationNumber'];  
 						$ops_m_name[$row1210['mo_no']][$row1212['OperationNumber']]=$row1212['OperationDescription'];
 					}
-				}			
+				}
+				$last_mo=0;
 				if(sizeof($mo_no)>0)
 				{
 					//$ops=array_unique($opst);
@@ -364,6 +364,7 @@
 					else
 					{
 						$bal=0;$qty_tmp=0;
+						$last_mo=max($mo);
 						$sql1234 = "SELECT * FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' and sref_id = $sref_id
 						and trim(order_col_des) = '$trimmed_color'
 						and type_of_sewing=1";
@@ -457,7 +458,6 @@
 					unset($moq);
 					unset($ops_m_id);
 					unset($ops_m_name);         
-					unset($ops);
 				}
 			}
 			unset($sizes);
