@@ -17,7 +17,7 @@
               $operation_code_ims=$sql_row['operation_code'];
             }
 
-    $selct_qry = "select style,color,assigned_module,original_qty,schedule from $brandix_bts.bundle_creation_data where barcode_number = $barcode_number and operation_id=$ops_code";
+    $selct_qry = "select style,color,assigned_module,send_qty,schedule from $brandix_bts.bundle_creation_data where barcode_number = $barcode_number and operation_id=$ops_code";
     $selct_qry_result=mysqli_query($link,$selct_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
     if($selct_qry_result->num_rows > 0)
     {       
@@ -27,7 +27,7 @@
         $from_module = $selct_qry_result_row['assigned_module'];
         $result_array['from_module'] = $selct_qry_result_row['assigned_module'];
         $result_array['schedule'] = $selct_qry_result_row['schedule'];
-        $result_array['original_qty'] = $selct_qry_result_row['original_qty'];
+        $result_array['send_qty'] = $selct_qry_result_row['send_qty'];
         // echo $original_qty;
         $check_prev_operation = "SELECT * FROM `brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color='$color' AND operation_code ='$ops_code'";
         $prev_result=mysqli_query($link,$check_prev_operation) or exit("while retriving prev".mysqli_error($GLOBALS["___mysqli_ston"]));
