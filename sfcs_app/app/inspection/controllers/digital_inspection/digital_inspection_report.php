@@ -139,7 +139,7 @@
 				});
 
 				$('#total_rolls').text(distinctRolls.size);
-				$('#total_length').text(sumValue);
+				$('#total_length').text(sumValue.toFixed(2));
 
 				$('#hide_total').val(sumValue);
 				$('#hide_rolls').val(distinctRolls.size);

@@ -8,11 +8,22 @@ if(isset($_GET['parent_id'])){
 	<script>
 		
 		$(document).ready(function() {
-			$("#disable_id").prop("disabled",true); 
+			$('#disable_id').on('click', function(e) {	
+				let falg_array=new Set();
+				$(".select_Check_flag").each(function() {
+					falg_array.add($(this).val())
+				})
+				if(falg_array.size!=1){
+					e.preventDefault();
+					alert("Please Remove Filter Before Submitting");
+					//$("#disable_id").prop("disabled", true);
+				}
+			})
+			$("#disable_id").prop("disabled", true);
 			var table = $('#myTable').DataTable({
 				"bInfo": false,
 				paging: false,
-				"bSort": true,
+				// "bSort": true,
 				"dom": '<"top"iflp<"clear">>rt',
 				select: {
 					style: 'multi'
@@ -23,7 +34,7 @@ if(isset($_GET['parent_id'])){
 				initComplete: function() {
 					this.api().columns().every(function() {
 						var column = this;
-						var select = $('<select><option value=""></option></select>')
+						var select = $('<select class="select_Check_flag"><option value=""></option></select>')
 							.appendTo($(column.header()))
 							.on('change', function() {
 								var val = $.fn.dataTable.util.escapeRegex(
@@ -35,7 +46,7 @@ if(isset($_GET['parent_id'])){
 									.draw();
 							});
 
-							column.data().unique().sort().each(function(d, j) {
+						column.data().unique().sort().each(function(d, j) {
 							select.append('<option value="' + d + '">' + d + '</option>')
 
 						});

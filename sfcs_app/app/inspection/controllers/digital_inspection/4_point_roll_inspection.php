@@ -1,3 +1,13 @@
+<head>
+	<style>
+		table tr th,
+		td {
+			text-align: center;
+
+		}
+	</style>
+</head>
+
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 
