@@ -999,7 +999,7 @@ if($check_qry_result->num_rows > 0)
 							}
 							else
 							{
-								$cehck_status_qry="select send_qty as good_qty from $brandix_bts.bundle_creation_data where doc_no=$doc_no and operation_id=$b_op_id and size_title='$sizes'";
+								$cehck_status_qry="select send_qty as good_qty from $brandix_bts.bundle_creation_data where docket_number=$doc_no and operation_id=$b_op_id and size_title='$sizes'";
 							}
 							$check_qty_qry_result=mysqli_query($link,$cehck_status_qry) or exit("while retriving data from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($rowss=mysqli_fetch_array($check_qty_qry_result))
