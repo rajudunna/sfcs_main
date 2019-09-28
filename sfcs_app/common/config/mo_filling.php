@@ -364,7 +364,7 @@
 					else
 					{
 						$bal=0;$qty_tmp=0;
-						$last_mo=max($mo);
+						$last_mo=max($mo_no);
 						$sql1234 = "SELECT * FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' and sref_id = $sref_id
 						and trim(order_col_des) = '$trimmed_color'
 						and type_of_sewing=1";
