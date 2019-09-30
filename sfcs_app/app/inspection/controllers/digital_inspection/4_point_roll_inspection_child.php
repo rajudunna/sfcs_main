@@ -65,7 +65,7 @@ while ($row1 = mysqli_fetch_array($details_result)) {
 						</tbody>
 					</table>
 				</div>
-				<form id='myForm' method='post' name='input_main' action="?r=<?= $_GET['r'] ."&supplier=".$supplier_id."&roll=".$roll_id."&invoice=".$invoice_get."&lot=" . $lot_get . "&parent_id=" . $parent_id . "&store_id=" . $store_id ?>">
+				<form id='myForm' method='post' name='input_main' action="">
 					<div class="table-responsive col-sm-12">
 						<table class="table table-bordered">
 							<tbody>
@@ -544,7 +544,7 @@ if (isset($_POST['confirm'])) {
 
 		$id = mysqli_insert_id($link);
 
-		$insert_query = "insert into $bai_rm_pj1.roll_inspection_child(lot_no,supplier_roll_no,sfcs_roll_no,fabric_composition,spec_width,inspection_status,spec_weight,repeat_length,lab_testing,tolerance,item_code,roll_no,inspected_per,inspected_qty,invoice_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,parent_id,status) values ('$lot_num','$supplier_no','$roll_no',$fabric_composition,'$spec_width','$inspection_status','$spec_weight','$repeat_length','$lab_testing','$tolerance','$item_code','$roll_no','$inspected_per','$inspected_qty','$invoice_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type',$id,1)";
+		$insert_query = "insert into $bai_rm_pj1.roll_inspection_child(lot_no,supplier_roll_no,sfcs_roll_no,fabric_composition,spec_width,inspection_status,spec_weight,repeat_length,lab_testing,tolerance,item_code,roll_no,inspected_per,inspected_qty,invoice_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,parent_id,status) values ('$lot_number','$supplier_no','$roll_no',$fabric_composition,'$spec_width','$inspection_status','$spec_weight','$repeat_length','$lab_testing','$tolerance','$item_code','$roll_no','$inspected_per','$inspected_qty','$invoice_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type',$id,1)";
 		$roll_id = mysqli_insert_id($link);
 		//echo $insert_query;
 
@@ -566,6 +566,8 @@ if (isset($_POST['confirm'])) {
 		// }
 	}
 	echo "<script>swal('Data inserted...','Successfully','success')</script>";
+	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') ;
+	echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
 }
 
 
@@ -668,3 +670,4 @@ if (isset($_POST['confirm'])) {
 		});
 	});
 </script>
+

@@ -81,7 +81,7 @@ if(isset($_GET['parent_id']) or isset($_POST['parent_id']))
 					      	<?php
 							   $url = getFullURLLevel($_GET['r'],'4_point_roll_inspection_child.php',0,'N');
 							   
-							  $get_details1="select * from `bai_rm_pj1`.`inspection_population` where parent_id=$parent_id and status in (1,3)";
+							  $get_details1="select * from `bai_rm_pj1`.`inspection_population` where parent_id=$parent_id and status in (1,2)";
 								
 							 $details1_result=mysqli_query($link,$get_details1) or exit("get_details1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							 
@@ -98,7 +98,7 @@ if(isset($_GET['parent_id']) or isset($_POST['parent_id']))
 							  $store_in_id=$row2['store_in_id'];
 							  $id=$row2['sno'];
 							  $status=$row2['status'];
-							if($status = 1){
+							if($status == 1){
 								$tr="<tr data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>";
 							}else{
 								$tr="<tr>";
@@ -118,6 +118,7 @@ if(isset($_GET['parent_id']) or isset($_POST['parent_id']))
 
 								 $get_status_details="select SUM(1_point) as 1_point,SUM(2_point) as 2_point,SUM(3_point) as 3_point,SUM(4_point) as 4_point from $bai_rm_pj1.four_points_table where id='".$id."'";
 								 
+								//  echo $get_status_details;
 						      	 $status_details_result=mysqli_query($link,$get_status_details) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	                             while($row5=mysqli_fetch_array($status_details_result))
 	                             { 
@@ -140,7 +141,7 @@ if(isset($_GET['parent_id']) or isset($_POST['parent_id']))
 					      </tbody>
 					    </table>
 					  </div>
-				
+					
 					<div class="form-inline col-sm-12">
 						<button type="sumbit" class='btn btn-sm btn-primary' name="confirm" id="confirm">Confirm</button>
 					</div> 
@@ -170,8 +171,8 @@ if(isset($_POST['confirm']))
 	// $update_confirm="update $bai_rm_pj1.`roll_inspection` set status=3 where ";
 	// $result_query_insert = $link->query($insert_save) or exit('query error in updating111');
 	echo "<script>swal('Data inserted...','Successfully','success')</script>";
-	// $url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') ;
-	// echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') ;
+	echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
 }
 ?>
 
