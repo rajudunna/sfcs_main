@@ -70,7 +70,6 @@ while ($row1 = mysqli_fetch_array($details_result)) {
 						<table class="table table-bordered">
 							<tbody>
 								<tr>
-									
 									<td></td>
 									<td></td>
 									<td colspan="3">Tolerance</td>
@@ -140,7 +139,7 @@ while ($row1 = mysqli_fetch_array($details_result)) {
 								<?php
 
 								echo
-									"<tr>
+								"<tr>
 					      	    <td>" . $supplier_id . "</td>
 					      		<td>" . $roll_id . "</td>
 					      		<td>" . $ctex_length . "</td>

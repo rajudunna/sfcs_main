@@ -28,6 +28,7 @@
             $date=$_POST['date'];
             
             $sql = "SELECT id,date_time FROM `$bai_rm_pj1`.`main_population_tbl` WHERE DATE(date_time)= DATE('$date')";
+            echo $sql;
             $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
             $no_of_rows = mysqli_num_rows($sql_result);
             if($no_of_rows == 0)
@@ -57,6 +58,7 @@
                  
                 $sql1="SELECT lot_no,supplier_invoice,supplier_batch FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND STATUS='1'";
                 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+                echo $sql1;
                 while($sql_row1=mysqli_fetch_array($sql_result1))
                 {
                     $lot_no=$sql_row1['lot_no'];

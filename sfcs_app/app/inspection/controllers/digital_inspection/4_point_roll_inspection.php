@@ -11,10 +11,10 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 
-if(isset($_GET['parent_id']))
+if(isset($_GET['parent_id']) or isset($_POST['parent_id']))
 {
-	$parent_id=$_GET['parent_id'];
-	$sno=$_GET['id'];
+	$parent_id=$_GET['parent_id']  or $_POST['parent_id'];
+	$sno=$_GET['id']  or $_POST['id'];
 }
 ?>
 
@@ -34,7 +34,7 @@ if(isset($_GET['parent_id']))
 					      </tr>
 					      <tr>
 							  <?php
-								$get_details_main="select supplier_invoice,rm_color,supplier_po,supplier_batch from `bai_rm_pj1`.`inspection_population` where parent_id=$parent_id and status =1";
+								$get_details_main="select supplier_invoice,rm_color,supplier_po,supplier_batch from `bai_rm_pj1`.`inspection_population` where parent_id=$parent_id and status in (1,2)";
 				
 								$details1_result=mysqli_query($link,$get_details_main) or exit("get_details_main Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($row1=mysqli_fetch_array($details1_result))
@@ -44,7 +44,7 @@ if(isset($_GET['parent_id']))
 									$color = $row1['rm_color'];
 									$po = $row1['supplier_po'];
 								}
-						  echo "<td>$invoice</td>
+						  echo "<td>$invoice</td> 
 						      	<td>$color</td>
 						      	<td>$batch</td>
 						      	<td>$po</td>";
@@ -98,7 +98,7 @@ if(isset($_GET['parent_id']))
 							  $store_in_id=$row2['store_in_id'];
 							  $id=$row2['sno'];
 							  $status=$row2['status'];
-							if($status==1){
+							if($status = 1){
 								$tr="<tr data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>";
 							}else{
 								$tr="<tr>";
@@ -170,8 +170,8 @@ if(isset($_POST['confirm']))
 	// $update_confirm="update $bai_rm_pj1.`roll_inspection` set status=3 where ";
 	// $result_query_insert = $link->query($insert_save) or exit('query error in updating111');
 	echo "<script>swal('Data inserted...','Successfully','success')</script>";
-	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') ;
-	echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+	// $url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') ;
+	// echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
 }
 ?>
 
