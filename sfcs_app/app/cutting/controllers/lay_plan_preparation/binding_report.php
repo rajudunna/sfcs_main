@@ -243,7 +243,7 @@ echo "</div>"
 
 
 <?php
-if(isset($_POST['submit']))
+if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link))
 {
 	$style=$_POST['style'];
 	$color=$_POST['color'];

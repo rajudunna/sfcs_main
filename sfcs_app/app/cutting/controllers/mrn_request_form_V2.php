@@ -1,5 +1,6 @@
 <?php
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',3,'R'));
 
@@ -10,8 +11,8 @@
 
     if($flag==0)
     {
-        $validation_ref_select="onchange=\"checkqty($z1)\"";
-        $validation_ref_text="onkeyup=\"checkqty($z1)\"";
+        $validation_ref_select="onchange=\"checkqty($x)\"";
+        $validation_ref_text="onkeyup=\"checkqty($x)\"";
     }
 
 ?>
@@ -53,6 +54,7 @@
         border-collapse:collapse;
         font-size:12px;
     }
+	
 </style>
 
 
@@ -105,6 +107,16 @@
     {
         text-align:left;
     }
+	.ajax-loader{
+		
+		background:black;
+		position:absolute;
+		top:0;
+		right:0;
+		bottom:0;
+		left:0;
+	  opacity:0.5;
+	}
 </style>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R');?>"></script><!-- External script -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter.js',3,'R');?>"></script>
@@ -139,6 +151,9 @@
     {
         window.location.href = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&cutno="+document.test.cutno.value+"&batchno="+document.test.batchno.value
     }
+	
+	
+	
 
     //CR# 376 // kirang // 2015-05-05 // Referred the Batch number details to restrict the request of quantity requirement.
     function checkqty(rows)
@@ -190,9 +205,11 @@
     function enableButton() 
     {
         var ele = document.getElementsByClassName('quantities');
+		
 
         for(var i=0;i<ele.length;i++)
         {
+			
             if(ele[i].value > 0)
             {
                 var clr = document.getElementById('item_color'+i).value;
@@ -212,12 +229,75 @@
         else
             document.getElementById('update').disabled=true;
     }
-
+$(document).ready(function(){
+		 $('#loading-image').hide();
+	});
     function button_disable()
-    {
-        document.getElementById('process_message').style.visibility="visible";
-        document.getElementById('option').style.visibility="hidden";
-        document.getElementById('update').style.visibility="hidden";
+    {   
+	
+		$("#loading-image").show();
+		$("#loading-image").addClass("ajax-loader");
+		var ItemArray= new Array(); 
+		
+			var sty_id=document.getElementById('styles').value;
+			var sch_id=document.getElementById('schedules').value;
+			var color_id=document.getElementById('colors').value;
+			var cut_no=document.getElementById('cutnos').value;
+			var batch_ref=document.getElementById('batch_refs').value;
+			var section=document.getElementById('sections').value;
+			// var reasoniddb=document.getElementById('reasonid').value;
+			// var reasoncodedb=document.getElementById('reasoncode').value;
+			//alert(sty_id);
+		
+		$('input[name^="qty"]').each(function(){
+			var i= $(this).attr("data-id");
+			console.log(i);
+			if($(this).val()>0){
+				
+				ItemArray.push({
+					item : document.getElementById("item_code"+i).value,
+					itemdesc : document.getElementById("item_desc"+i).value,
+					 colr : document.getElementById('item_color'+i).value,
+					  rem : document.getElementById('remarks'+i).value,
+					  price:document.getElementById('price'+i).value,
+					  uom:document.getElementById('uom'+i).value,
+					  qty:document.getElementById('qty_'+i).value,
+					 reason : document.getElementById('resaon_'+i).value,
+					  
+					 products : document.getElementById('product_'+i).value,
+					
+				});
+			}
+		 });
+		//alert('hi');
+		
+		$.ajax({
+			url: 'sfcs_app/app/cutting/controllers/mrn_request_form_update_V2.php',
+			type:'POST',
+			data:{dataset :ItemArray,style:sty_id,schedule:sch_id,color:color_id,cutnum:cut_no,batch_refer:batch_ref,section:section},
+			success: function (data) 
+			{
+				$("#loading-image").hide();
+				if(data!=''){
+						swal({
+							title: "Please click on ok to continue..!",
+							text: "Request successfully updated",
+							type: "success"
+						}).then(function() {
+							  location.reload(true);
+							  console.log(data);
+						});
+					console.log(data);
+				}else{
+					swal('Enter Atleast one Quantity','','warning');
+				}
+			},error: function(error)
+                {
+                    alert("Error AJAX not working: "+ error );
+                } 
+			
+		});
+		
     }
 </script>
 <body>
@@ -242,7 +322,9 @@
 
                 if(!isset($_POST['submit']))
                 {
-                    echo "<div class='col-md-2'>Select Style: <select name=\"style\" onchange=\"firstbox();\" class='form-control'>";
+			       $pageurl = getFullURLLevel($_GET['r'],'mrn_request_form_update_V2.php','0','R');
+				   
+                    echo "<div class='col-md-2'>Select Style: <select name=\"style\"  onchange=\"firstbox();\" class='form-control'>";
                     $sql="select distinct order_style_no from $bai_pro3.bai_orders_db"; 
                     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $sql_num_check=mysqli_num_rows($sql_result);
@@ -479,7 +561,7 @@
             ?>
         </form>
             <?php
-                if(isset($_POST['submit']))
+                if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link))
                 {
                     $inp_1=$_POST['style'];
                     $inp_2=$_POST['schedule'];
@@ -618,11 +700,10 @@
                                 <input type=\"hidden\" id='avl_qty' size=5 value=\"".$available_qty_req."\"/>
                           <br><br>
                             Reserved Qty=<span name=\"trowst12\" id=\"trowst12\">0</span>";
-
                     echo "<h3><center>Additional Material Request Form</center></h3>";
 
-                    $pageurl = getFullURL($_GET['r'],'mrn_request_form_update_V2.php','N');
-                    echo "<form name=\"test\" method=\"post\" action='".$pageurl."'>";
+                    $pageurl = getFullURL($_GET['r'],'mrn_request_form_update_V2.php','R');
+                    echo "<form name=\"test\" id=\"tst\" method=\"post\" action='".$pageurl."'>";
                     echo '<div style=\"overflow:scroll;\" class="table-responsive">
                     <table id="table1" class="table table-bordered">';
                     echo "<tr class='tblheading'>
@@ -657,34 +738,36 @@
                         }
 
                         if(count($finalrecords) > 0)
-                        {                
+                        {         
+							echo "<input type=\"text\" name=\"rest[]\"  id=\"final\" value='".$pageurl."'>ABC";
                             for($x=0;$x<count($finalrecords);$x++)
                             {
                             
                                 $z1=$z1+1;  
                                 $check=1;
-                                echo "<input type=\"hidden\" name=\"price[]\" value=\"0\">";
+                                echo "<input type=\"hidden\" name=\"price[]\" id='price$x' value=\"0\">";
                                 echo "<tr bgcolor='$bgcolor'>";
                                 
                                 //When M3 offline uncomment this
                                 $opno = (int)$finalrecords[$x]['OPNO'];
                                 // echo "<td><select name=\"product[]\"><option value='STRIM' selected>STRIM</option><option value='PRTIM'>PTRIM</option><option value='FAB'>FAB</option></select></td>";
+								
                                 if($opno === 15)
                                 {
-                                    echo "<td><input type=\"hidden\" id=\"product_$z1\" name=\"product[]\" value=\"FAB\">FAB</td>";
+                                    echo "<td><input type=\"hidden\" id=\"product_$x\" name=\"product[]\" value=\"FAB\">FAB</td>";
                                 }
                                 if($opno > 15 && $opno < 100)
                                 {
-                                    echo "<td><input type=\"hidden\" id=\"product_$z1\" name=\"product[]\" value=\"ETRIM\">ETRIM</td>";
+                                    echo "<td><input type=\"hidden\" id=\"product_$x\" name=\"product[]\" value=\"ETRIM\">ETRIM</td>";
                                 }
                                 if($opno === 200)
                                 {
-                                    echo "<td><input type=\"hidden\" id=\"product_$z1\" name=\"product[]\" value=\"PTRIM\">PTRIM</td>";
+                                    echo "<td><input type=\"hidden\" id=\"product_$x\" name=\"product[]\" value=\"PTRIM\">PTRIM</td>";
                                 }
 
                                 if($opno >= 100 && $opno < 200)
                                 {
-                                    echo "<td><input type=\"hidden\" id=\"product_$z1\" name=\"product[]\" value=\"STRIM\">STRIM</td>";
+                                    echo "<td><input type=\"hidden\" id=\"product_$x\" name=\"product[]\" value=\"STRIM\">STRIM</td>";
                                 }
 								
 								$main_array = ['FAB','ETRIM','PTRIM','STRIM'];
@@ -735,20 +818,21 @@
 
                                 echo "<td></td>";
                                 $bom_qty = $finalrecords[$x]['REQT'];
-                                echo "<td>".$bom_qty."</td>";
+                                echo "<td><input type=\"hidden\" name=\"bom[]\" id='bomqty$x' value=\"$bom_qty\" style=\"background-color:#66FFCC;\">".$bom_qty."</td>";
                                 $alloc_qty = $finalrecords[$x]['ALQT'];
-                                echo "<td>".$alloc_qty."</td>";
+                                echo "<td><input type=\"hidden\" name=\"alloc[]\" id='allocqty$x' value=\"$alloc_qty\" style=\"background-color:#66FFCC;\">".$alloc_qty."</td>";
                                 //echo "<td>".round($req_qty,2)."</td>";
                                 //echo "<td>".round($iss_qty,2)."</td>";
-                                echo "<td><input style=\"background-color:#66FFCC;\" class='float quantities' type=\"text\" size=\"5\" value=\"0\" onchange=\"if(this.value=='') { this.value=0; }\" ".$validation_ref_text." id=\"qty_$z1\" onfocus=\"this.focus();this.select();\" name=\"qty[]\"></td>";
+                                echo "<td><input style=\"background-color:#66FFCC;\" class='float quantities' type=\"text\" size=\"5\" value=\"0\" onchange=\"if(this.value=='') { this.value=0; }\" ".$validation_ref_text."  data-id=\"$x\" id=\"qty_$x\" onfocus=\"this.focus();this.select();\" name=\"qty[]\"></td>";
                                 $uom = $finalrecords[$x]['PEUN'];
-                                echo "<td><input type=\"hidden\" name=\"uom[]\" value=\"$uom\">".$uom."</td>";
-                                echo "<td><select name=\"reason[]\" id=\"resaon_$z1\" ".$validation_ref_select." >";
+                                echo "<td><input type=\"hidden\" name=\"uom[]\" id=\"uom$x\" value=\"$uom\">".$uom."</td>";
+                                echo "<td><select name=\"reason[]\" id=\"resaon_$x\" ".$validation_ref_select." >";
                                 for($i=0;$i<sizeof($reason_code_db);$i++)
                                 {
                                     echo "<option value=\"".$reason_id_db[$i]."\">".$reason_code_db[$i]."</option>";
                                 }
                                 echo "</select></td>";
+							
                                 echo "<td><input type=\"text\" value=\"\" name=\"remarks[]\" id='remarks$x' style=\"background-color:#66FFCC;\"></td>";
                                 echo "</tr>";
                             }
@@ -756,17 +840,20 @@
 
                         if(count($finalrecords) == 0)
                         {
+							echo "<input type=\"text\" name=\"rest[]\"  id=\"final\" value=''>ABC";
                             for($x=0;$x<2;$x++)
-                            {
+                            { 
+						        
                                 $z1=$z1+1;  
                                 $check=1;
-                                echo "<input type=\"hidden\" name=\"price[]\" value=\"0\">";
+								
+                                echo "<input type=\"hidden\" name=\"price[]\" id='price$x' value=\"0\">";
                                 echo "<tr bgcolor='$bgcolor'>";
                                 
                                 //When M3 offline uncomment this
-                                echo "<td><select id=\"product_$z1\" name=\"product[]\"><option value='STRIM' selected>STRIM</option><option value='PRTIM'>PTRIM</option><option value='FAB'>FAB</option></select></td>";
-                                echo "<td><input type=\"text\" name=\"item_code[]\" id='item_code$x' value=\"\" style=\"background-color:#66FFCC;\" ></td>";
-                                echo "<td><input type=\"text\" name=\"item_desc[]\" id='item_desc$x' value=\"\" style=\"background-color:#66FFCC;\" ></td>";
+                                echo "<td><select id=\"product_$x\" name=\"product[]\"><option value='STRIM' selected>STRIM</option><option value='PRTIM'>PTRIM</option><option value='FAB'>FAB</option></select></td>";
+                                echo "<td><input type=\"text\" name=\"item_code[]\"  id='item_code$x' value=\"\" style=\"background-color:#66FFCC;\" ></td>";
+                                echo "<td><input type=\"text\" name=\"item_desc[]\"  id='item_desc$x' value=\"\" style=\"background-color:#66FFCC;\" ></td>";
                                 echo "<td><input type=\"text\" name=\"co[]\" id='item_color$x' value=\"\" style=\"background-color:#66FFCC;\"></td>"; 
                                 
                                 echo "<td></td>";
@@ -774,16 +861,16 @@
                                 echo "<td></td>";
                                 //echo "<td>".round($req_qty,2)."</td>";
                                 //echo "<td>".round($iss_qty,2)."</td>";
-                                echo "<td><input style=\"background-color:#66FFCC;\" class='float quantities' type=\"text\" size=\"5\" value=\"0\" onchange=\"if(this.value=='') { this.value=0; }\" ".$validation_ref_text." id=\"qty_$z1\" onfocus=\"this.focus();this.select();\" name=\"qty[]\"></td>";
+                                echo "<td><input style=\"background-color:#66FFCC;\" class='float quantities' type=\"text\" size=\"5\" value=\"0\" onchange=\"if(this.value=='') { this.value=0; }\" ".$validation_ref_text." data-id=\"$x\" id=\"qty_$x\" onfocus=\"this.focus();this.select();\" name=\"qty[]\"></td>";
                                 $uom = $finalrecords[$x]['PEUN'];
-                                echo "<td><select name=\"uom[]\" >
+                                echo "<td><select name=\"uom[]\" id=\"uom$x\">
                                         <option value='PCS'>PCS</option>
                                         <option value='$fab_uom'>$fab_uom</option>
                                         </select>
                                     </td>";
                                 //echo "<td>$uom</td>";
                                 
-                                echo "<td><select name=\"reason[]\" id=\"resaon_$z1\" onchange=\"checkqty($z1)\" >";
+                                echo "<td><select name=\"reason[]\" id=\"resaon_$x\" onchange=\"checkqty($x)\" >";
                                 for($i=0;$i<sizeof($reason_code_db);$i++)
                                 {
                                     echo "<option value=\"".$reason_id_db[$i]."\">".$reason_code_db[$i]."</option>";
@@ -793,14 +880,18 @@
                                 echo "</tr>";
                             }
                         }
+							echo "<td><input type=\"hidden\" value=\"$reason_id_db\"  id='reasonid' style=\"background-color:#66FFCC;\"></td>";
+							echo "<td><input type=\"hidden\" value=\"$reason_code_db\"  id='reasoncode' style=\"background-color:#66FFCC;\"></td>";
                     }
 
                     echo "</table>";
-                    echo "<input type=\"hidden\" name=\"style\" value=\"$inp_1\"><input type=\"hidden\" name=\"schedule\" value=\"$inp_2\"><input type=\"hidden\" name=\"color\" value=\"$inp_3\"><input type=\"hidden\" name=\"cutno\" value=\"$inp_4\"><input type=\"hidden\" name=\"batch_ref\" value=\"$inp_5\"><input type=\"hidden\" name=\"trows\" id=\"trows\" value=\"$z1\">";
+                    echo "<input type=\"hidden\" name=\"style\" id=\"styles\" value=\"$inp_1\"><input type=\"hidden\" name=\"schedule\" id=\"schedules\" value=\"$inp_2\"><input type=\"hidden\" id=\"colors\" name=\"color\" value=\"$inp_3\"><input type=\"hidden\" id=\"cutnos\" name=\"cutno\" value=\"$inp_4\"><input type=\"hidden\"  id=\"batch_refs\" name=\"batch_ref\" value=\"$inp_5\"><input type=\"hidden\" name=\"trows\" id=\"trows\" value=\"$x\">";
+					
+					//echo "<input type=\"text\" name=\"rest[]\"  id=\"final\" value=''>ABC";
                     echo "<br/>";
                     if($check==1)
                     {
-                        echo "<div class='col-md-3'>Section: <select name=\"section\" class='form-control'>";
+                        echo "<div class='col-md-3'>Section: <select name=\"section\" id=\"sections\" class='form-control'>";
                         $sql="SELECT sec_id as secid FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
                         $result17=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($sql_row=mysqli_fetch_array($result17))
@@ -819,7 +910,8 @@
 
                         echo '<div class="col-md-3"><input type="checkbox" name="option" id="option" 
                                 onclick="return enableButton();">Enable';
-                        echo "&nbsp;&nbsp;<input type=\"submit\" style='margin-top:18px;' disabled class='btn btn-success' id=\"update\" name=\"update\" value=\"Submit Request\" onclick=\"javascript:button_disable();\">";
+                        echo "&nbsp;&nbsp;<input type=\"button\" style='margin-top:18px;' disabled class='btn btn-success' id=\"update\" name=\"update\" value=\"Submit Request\" onclick=\"javascript:button_disable();\">";
+						 // echo "&nbsp;&nbsp;<input type=\"button\" style='margin-top:18px;'  class='btn btn-success' id=\"update1\" value=\"Submit Request\" >";
                         echo "</div></form><br>";   
                         //echo '<div id="process_message"><h2><font color="red">Please wait while updating data!!!</font></h2></div>';
                     }
@@ -827,7 +919,10 @@
                     //odbc_close($connect); 
                 }            
             ?> 
+  <div  id="loading-image">
 
+    <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',1,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+</div>
 
             <script language="javascript" type="text/javascript">
                 var MyTableFilter = { 
@@ -835,6 +930,44 @@
                     //col_0:'select'
                 }
                 setFilterGrid( "table1", MyTableFilter );
+				
+			// var count = 0;	
+			// var val = [];
+			// var arrText= new Array();
+			// $('input[type=text]').on('change', function(){
+				// var $this = $(this);
+     // console.log($this.attr('id'));
+	 // val=$this.attr('id');
+	 // console.log(val);
+    // alert($(this).val());
+	// if($(this).val()>0){
+		// count++;
+	// }
+	 // console.log(count);
+
+// });
+
+var qty = '';
+ 
+$( "#update1" ).click(function( event ) {
+	var ItemArray= new Array(); 
+		$('input[name^="qty"]').each(function(){
+				var i= $(this).attr("data-id");
+		console.log(i);
+		  if($(this).val()>0){
+				ItemArray.push({
+					item : document.getElementById("item_code"+i).value,
+					itemdesc : document.getElementById("item_desc"+i).value
+				});
+			}
+			i++;
+		 });
+		console.log(ItemArray);
+		alert('hi');
+		$('#final').val(JSON.stringify(ItemArray));
+});           
+     
+     
             </script>
             </div>
         </div>

@@ -123,11 +123,11 @@ if(isset($_POST['submit']))
 	
 	If($to_shift == 'ALL')
 	{
-       $sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,sum(ims_qty) as ims_qty,ims_style,ims_schedule,ims_color,input_job_no_ref, input_job_rand_no_ref from $bai_pro3.ims_combine where ims_date between \"$from_date\" and \"$to_date\"and ims_mod_no>0 group by ims_style,ims_schedule,ims_color,ims_mod_no,ims_doc_no,ims_size  order by ims_date DESC,ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,ims_size";
+       $sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,sum(ims_qty) as ims_qty,ims_style,ims_schedule,ims_color,input_job_no_ref, input_job_rand_no_ref from $bai_pro3.ims_combine where ims_date between \"$from_date\" and \"$to_date\" and ims_mod_no>0 group by ims_style,ims_schedule,ims_color,ims_mod_no,ims_doc_no,ims_size,input_job_no_ref order by ims_date DESC,ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,input_job_no_ref,ims_size";
 	}
 	else
 	{
-		$sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,sum(ims_qty) as ims_qty,ims_style,ims_schedule,ims_color,input_job_no_ref, input_job_rand_no_ref from $bai_pro3.ims_combine where ims_date between \"$from_date\" and \"$to_date\"and ims_mod_no>0 and ims_shift = '$to_shift' group by ims_style,ims_schedule,ims_color,ims_mod_no,ims_doc_no,ims_size  order by ims_date DESC,ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,ims_size ";
+		$sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,sum(ims_qty) as ims_qty,ims_style,ims_schedule,ims_color,input_job_no_ref, input_job_rand_no_ref from $bai_pro3.ims_combine where ims_date between \"$from_date\" and \"$to_date\" and ims_mod_no>0 and ims_shift = '$to_shift' group by ims_style,ims_schedule,ims_color,ims_mod_no,ims_doc_no,ims_size,input_job_no_ref order by ims_date DESC,ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,input_job_no_ref,ims_size";
 	}	
 	
 

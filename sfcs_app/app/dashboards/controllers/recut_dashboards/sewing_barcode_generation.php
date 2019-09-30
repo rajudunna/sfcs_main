@@ -1,5 +1,5 @@
 <?php
-function issue_to_sewing($job_no,$size,$qty,$doc)
+function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
 {
    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 
@@ -13,18 +13,34 @@ function issue_to_sewing($job_no,$size,$qty,$doc)
 	    $input_job_no = $job_no[$key];
 	    $size_title = $size[$key];
 	    $reported_qty = $qty[$key];
-
-	    $op_codes_query = "SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref 
-	                    WHERE category = '$sewing_cat'";
-	    $op_codes_result = mysqli_query($link,$op_codes_query) or exit('Problem in getting the op codes for sewing');   
-	    while($row = mysqli_fetch_array($op_codes_result))
+	    $bcd_id = $bcd_ids[$key];
+		
+		$bcd_qry = "select style,schedule,assigned_module,operation_id,bundle_number,sfcs_smv,remarks,color from $brandix_bts.bundle_creation_data 
+		where id in (".$bcd_id.") limit 1";
+	   // echo $bcd_qry;
+	    // die();
+	    $result_bcd_qry = $link->query($bcd_qry);
+		while($row = $result_bcd_qry->fetch_assoc()) 
 	    {
-	        $opst[]=$row['operation_code'];
-	        $op_namem[]=$row['operation_name'];
-	    }
+	        $style = $row['style'];
+	        $schedule = $row['schedule'];
+	        $mapped_color = $row['color'];
+	        $ops_code = $row['operation_id'];
+	        $bundle_number = $row['bundle_number'];
+	        $sfcs_smv = $row['sfcs_smv'];
+	        $remarks = $row['remarks'];
+	        $assigned_module = $row['assigned_module'];
+        }
+		
+		$op_codes_query = "SELECT tor.operation_code,tor.operation_name FROM brandix_bts.tbl_orders_ops_ref AS tor LEFT JOIN `brandix_bts`.`tbl_style_ops_master` AS tosm ON tor.operation_code=tosm.operation_code WHERE category = 'sewing' AND display_operations='yes' AND style='$style' AND color='$mapped_color' ORDER BY operation_order*1 ";
+		 $op_codes_result = mysqli_query($link,$op_codes_query) or exit('Problem in getting the op codes for sewing');
+		 while($row = mysqli_fetch_array($op_codes_result))
+		 {
+			$ops[]=$row['operation_code'];
+			$op_namem[]=$row['operation_name'];
+		 }
 
-	    $first_sewing_op = "SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref 
-	                    WHERE category = '$sewing_cat' limit 1";
+	    $first_sewing_op = "SELECT tor.operation_code FROM brandix_bts.tbl_orders_ops_ref AS tor LEFT JOIN `brandix_bts`.`tbl_style_ops_master` AS tosm ON tor.operation_code=tosm.operation_code WHERE category = 'sewing' AND display_operations='yes' AND style='$style' AND color='$mapped_color' ORDER BY operation_order*1 LIMIT 1";
 	    $first_sewing_op_result = mysqli_query($link,$first_sewing_op) or exit('Problem in getting the first code for sewing');   
 	    while($row_code = mysqli_fetch_array($first_sewing_op_result))
 	    {
@@ -37,33 +53,17 @@ function issue_to_sewing($job_no,$size,$qty,$doc)
         {   
             $insert_qry_ips = "INSERT IGNORE INTO `$bai_pro3`.`plan_dashboard_input` 
             SELECT * FROM `$bai_pro3`.`plan_dashboard_input_backup`
-            WHERE input_job_no_random_ref = '$input_job_no_random_ref'";
+            WHERE input_job_no_random_ref = '$input_job_no'";
             mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
-        }
+        }	
 
-	    $bcd_qry = "select style,schedule,mapped_color,assigned_module,operation_id,bundle_number,sfcs_smv,remarks from $brandix_bts.bundle_creation_data where input_job_no_random_ref = $input_job_no limit 1";
-	     // echo $bcd_qry;
-	     // die();
-	    $result_bcd_qry = $link->query($bcd_qry);
-	    while($row = $result_bcd_qry->fetch_assoc()) 
-	    {
-	        $style = $row['style'];
-	        $schedule = $row['schedule'];
-	        $mapped_color = $row['mapped_color'];
-	        $ops_code = $row['operation_id'];
-	        $bundle_number = $row['bundle_number'];
-	        $sfcs_smv = $row['sfcs_smv'];
-	        $remarks = $row['remarks'];
-	        $assigned_module = $row['assigned_module'];
-        }
-
-        $get_mo = "select mo_no from $bai_pro3.mo_operation_quantites where ref_no = $bundle_number";
+        $get_mo = "select mo_no from $bai_pro3.mo_operation_quantites where ref_no = $bundle_number and op_code in (".implode(",",$ops).") order by mo_no*1 desc limit 1";
         $result_get_mo = $link->query($get_mo);
         while($row_mo = $result_get_mo->fetch_assoc())
         {
            $mo_no = $row_mo['mo_no'];
         }
-
+ 
         $pre_send_qty_qry = "select max(carton_act_qty) as bundle_qty,carton_act_qty,destination,packing_mode,sref_id,input_job_no,old_size from $bai_pro3.pac_stat_log_input_job where input_job_no_random = '$input_job_no' and size_code= '$size_title'";
             //echo $pre_send_qty_qry;
             //die();
@@ -84,9 +84,6 @@ function issue_to_sewing($job_no,$size,$qty,$doc)
         {
             $job_counter = $job_counter_tmp1;
         }
-
-        $ops=array_unique($opst);
-
    
         while($reported_qty > 0)
         {
