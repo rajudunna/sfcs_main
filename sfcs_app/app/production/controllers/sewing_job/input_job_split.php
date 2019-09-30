@@ -44,7 +44,7 @@ if(isset($_POST['submit']) || isset($_GET['schedule']))
     }
     echo '<h4><b>Schedule : <a class="btn btn-success">'.$schedule.'</a></b></h4>';
     // $unconditional_remove=$_POST['unconditional_remove'];
-    $sql="SELECT input_job_no,input_job_no_random, order_del_no, order_col_des FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' group by input_job_no ORDER BY input_job_no*1 ";
+    $sql="SELECT input_job_no,input_job_no_random, order_del_no, order_col_des, mrn_status FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' group by input_job_no ORDER BY input_job_no*1 ";
     // echo $sql;
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
     $rowcount=mysqli_num_rows($sql_result);
@@ -60,7 +60,14 @@ if(isset($_POST['submit']) || isset($_GET['schedule']))
 	        $input_job_no_ran=$sql_row['input_job_no_random'];
             $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$order_del_no,$order_col_des,$input_job_no,$link);
 	        $split_jobs = getFullURL($_GET['r'],'split_jobs.php','N');
-	        echo "<a href='$split_jobs&sch=$schedule&job=$input_job_no&rand_no=$input_job_no_ran' class='btn btn-warning'>".$display."</a>"."";
+			if($sql_row['mrn_status']==1)
+			{
+				echo "<a class='btn btn-danger'>".$display."</a>"."";	
+			}
+			else
+			{				
+				echo "<a href='$split_jobs&sch=$schedule&job=$input_job_no&rand_no=$input_job_no_ran' class='btn btn-warning'>".$display."</a>"."";
+			}
 	    }
 	    echo "</div>";
     } else {
