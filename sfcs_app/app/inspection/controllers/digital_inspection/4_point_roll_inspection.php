@@ -16,6 +16,7 @@ if(isset($_GET['parent_id']) or isset($_POST['parent_id']))
 	$parent_id=$_GET['parent_id']  or $_POST['parent_id'];
 	$sno=$_GET['id']  or $_POST['id'];
 }
+$flag = false;
 ?>
 
 <div class="container-fluid">
@@ -142,8 +143,9 @@ if(isset($_GET['parent_id']) or isset($_POST['parent_id']))
 					    </table>
 					  </div>
 					
-					<div class="form-inline col-sm-12">
+					<div class="form-inline col-md-12">
 						<button type="sumbit" class='btn btn-sm btn-primary' name="confirm" id="confirm">Confirm</button>
+						<button type="sumbit" class='btn btn-sm btn-primary' name="print" id="print">Print</button>
 					</div> 
 					
                     </div>
@@ -165,14 +167,11 @@ if(isset($_POST['confirm']))
 
 	$update_inspection="update $bai_rm_pj1.`inspection_population` set status=2 where sno in ($sno_array)";
 	$result_query_update = $link->query($update_inspection) or exit('query error in updating111');
-	// $po_save=$_POST['po_four_point'];
-	// $color_save=$_POST['color_four_point'];
-	// $batch_save=$_POST['batch_four_point'];
-	// $update_confirm="update $bai_rm_pj1.`roll_inspection` set status=3 where ";
-	// $result_query_insert = $link->query($insert_save) or exit('query error in updating111');
+	$flag = true;
 	echo "<script>swal('Data inserted...','Successfully','success')</script>";
 	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') ;
 	echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+
 }
 ?>
 
