@@ -1,11 +1,29 @@
+<?php
+if(isset($_GET['parent_id'])){
+	$parent_id=$_GET['parent_id'];
+}
+?>
+
 <head>
 	<script>
 		
 		$(document).ready(function() {
+			$('#disable_id').on('click', function(e) {	
+				let falg_array=new Set();
+				$(".select_Check_flag").each(function() {
+					falg_array.add($(this).val())
+				})
+				if(falg_array.size!=1){
+					e.preventDefault();
+					alert("Please Remove Filter Before Submitting");
+					//$("#disable_id").prop("disabled", true);
+				}
+			})
+			$("#disable_id").prop("disabled", true);
 			var table = $('#myTable').DataTable({
 				"bInfo": false,
 				paging: false,
-				"bSort": true,
+				// "bSort": true,
 				"dom": '<"top"iflp<"clear">>rt',
 				select: {
 					style: 'multi'
@@ -16,7 +34,7 @@
 				initComplete: function() {
 					this.api().columns().every(function() {
 						var column = this;
-						var select = $('<select><option value=""></option></select>')
+						var select = $('<select class="select_Check_flag"><option value=""></option></select>')
 							.appendTo($(column.header()))
 							.on('change', function() {
 								var val = $.fn.dataTable.util.escapeRegex(
@@ -44,9 +62,24 @@
 				if (e.target.checked) {
 					$(this).closest("tr").addClass("selected");
 					calculateTotal()
+					if ($('#disable_id').is(":disabled")) {
+						$('#disable_id').prop('disabled', false);
+					}
 				} else {
 					$(this).closest("tr").removeClass("selected");
 					calculateTotal()
+				}
+				let data = table.rows('.selected').data();
+				if (data.length) {
+					if ($('#disable_id').is(":disabled")) {
+						$('#disable_id').prop('disabled', false);
+					}
+					$('#selectAlll').prop( "checked", true );
+				} else {
+					if (!($('#disable_id').is(":disabled"))) {
+						$('#disable_id').prop('disabled', true);
+					}
+					$('#selectAlll').prop( "checked", false );
 				}
 			});
 
@@ -55,19 +88,37 @@
 					var cb = $(this).find("input[type=checkbox]");
 					cb.trigger('click');
 				}
-
+				let data = table.rows('.selected').data();
+				if (data.length) {
+					if ($('#disable_id').is(":disabled")) {
+						$('#disable_id').prop('disabled', false);
+						
+					}
+					$('#selectAlll').prop( "checked", true );
+				} else {
+					if (!($('#disable_id').is(":disabled"))) {
+						$('#disable_id').prop('disabled', true);
+					}
+					$('#selectAlll').prop( "checked", false );
+				}
 			});
+
 			$('#selectAlll').click(function(e) {
 				var tableone = $(e.target).closest('table');
-
 				if (e.target.checked) {
 					$('tr', tableone).addClass("selected");
 					$('td input:checkbox', tableone).prop('checked', true);
 					calculateTotal()
+					if ($('#disable_id').is(":disabled")) {
+						$('#disable_id').prop('disabled', false);
+					}
 				} else {
 					$('tr', tableone).removeClass("selected");
 					$('td input:checkbox', tableone).prop('checked', false);
 					calculateTotal()
+					if (!($('#disable_id').is(":disabled"))) {
+						$('#disable_id').prop('disabled', true);
+					}
 				}
 			});
 			/**
@@ -140,8 +191,41 @@
 			 */
 			calculateTotalForFixed();
 		});
+		
 	</script>
 	<style>
+		.add_fix{
+			position: fixed;
+    		top: 340px;
+    		left: 424px;
+    z-index: 4;
+		}
+		.black{
+			
+            position:sticky;
+            top: 0.25rem;
+			z-index:1;
+		}
+		/* .sticky_div {
+            font-weight: 900;
+            font-size: 1.5rem;
+            line-height: 1.5;
+            padding: 0.25rem 1rem;
+            color: whitesmoke;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+            position:sticky;
+            top: 0.25rem;
+			z-index:1;
+            
+        } */
+		.output_div{
+			font-weight: 900;
+			font-size: 1.5rem;
+			line-height: 1.5;
+			padding: 0.25rem 1rem;
+			color: #d05d5d;
+			text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+		}
 		.alert,
 		strong,
 		body,
@@ -160,6 +244,13 @@
 			top: 250px;
 
 		}
+		.position_div{
+			position: relative;
+    		left: 70px;
+		}		
+		.panel-heading{
+			background-color: #f4fdd0;
+		}
 	</style>
 
 	<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'], 'common/js/openbundle_report.min.js', 3, 'R'); ?>"></script>
@@ -176,10 +267,11 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 ?>
 
 <div class="panel panel-primary" id="navbar">
-	<div class="panel-body" >
+<nav>	
+<div class="panel-body sticky_div" >
 		<div class="col-xs-6 col-sm-6 col-lg-6">
-			<div class="panel-body" style="background-color:#f1f1f1;height: 280px;">
-				<div class="row">
+			<div class="panel-body output_div" style="background-color:#f5ecec;height: 280px;">
+				<div class="row position_div">
 					<div class="col-sm-4">
 						<div class="panel panel-default">
 							<div class="panel-heading"><strong>Total Rolls</strong></div>
@@ -195,7 +287,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 						</div>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row position_div">
 					<div class="col-sm-4">
 						<div class="panel panel-default">
 							<div class="panel-heading"><strong>Selected Rolls</strong></div>
@@ -213,12 +305,20 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 				</div>
 			</div>
 		</div>
-	</div><br/>
-	<div class="panel panel-primary" style="overflow-x: scroll;">
-		<div class="panel-body">
+	</div></nav><br/>
+	
 			<form action="<?php getFullURLLevel($_GET["r"], "digital_inspection_report_v1.php", "0", "N") ?>" method="POST">
-				<table id="myTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
-					<thead>
+					<?php
+						echo "<input type='hidden' value=".$parent_id." name='parent_id'>";
+						$sql_query = "select * from $bai_rm_pj1.inspection_population where parent_id=$parent_id and status=0";
+						$sql_result = mysqli_query($link, $sql_query) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+						if (mysqli_num_rows($sql_result) == 0) {
+							echo "<div class='alert alert-info'><strong>Info!</strong> Sorry No Records Found......!</div>";
+						}else{
+							echo '<div class="panel panel-primary" style="overflow-x:scroll;">
+							<div class="panel-body">
+							<table id="myTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+							<thead>
 						<tr>
 							<th>Supplier PO</th>
 							<th>Po line</th>
@@ -236,11 +336,8 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							<th>Select<input type="checkbox" id="selectAlll"></th>
 						</tr>
 					</thead>
-					<tbody>
-						<?php
-						$sql_query = "select * from $bai_rm_pj1.inspection_population where status=0";
-						$sql_result = mysqli_query($link, $sql_query) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-
+					<tbody>';
+						
 						while ($sql_row = mysqli_fetch_array($sql_result)) {
 							$sno = $sql_row['sno'];
 							$lot_no = $sql_row['lot_no'];
@@ -254,69 +351,20 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							$rm_color = $sql_row['rm_color'];
 							$supplier_roll_no = $sql_row['sfcs_roll_no'];
 							$fcs_roll_no = $sql_row['supplier_roll_no'];
-
 							$qty = $sql_row['qty'];
 
-							if ($po_no_1 == '') {
-								$po_no_1 = 0;
-							} else {
-								$po_no_1;
-							}
-							if ($po_line == '') {
-								$po_line = 0;
-							} else {
-								$po_line;
-							}
-							if ($po_subline == '') {
-								$po_subline = 0;
-							} else {
-								$po_subline;
-							}
-							if ($inv_no == '') {
-								$inv_no = 0;
-							} else {
-								$inv_no;
-							}
-							if ($item_code == '') {
-								$item_code = 0;
-							} else {
-								$item_code;
-							}
-							if ($item_desc == '') {
-								$item_desc = 0;
-							} else {
-								$item_desc;
-							}
-							if ($lot_no == '') {
-								$lot_no = 0;
-							} else {
-								$lot_no;
-							}
-							if ($supplier_batch == '') {
-								$supplier_batch = 0;
-							} else {
-								$supplier_batch;
-							}
-							if ($supplier_roll_no == '') {
-								$supplier_roll_no = 0;
-							} else {
-								$supplier_roll_no;
-							}
-							if ($fcs_roll_no == '') {
-								$fcs_roll_no = 0;
-							} else {
-								$fcs_roll_no;
-							}
-							if ($qty == '') {
-								$qty = 0;
-							} else {
-								$qty;
-							}
-							if ($rm_color == '') {
-								$rm_color = '--';
-							} else {
-								$rm_color;
-							}
+							if ($po_no_1 == '') { $po_no_1 = 0;	} else { $po_no_1; }
+							if ($po_line == '') { $po_line = 0; } else { $po_line; }
+							if ($po_subline == '') { $po_subline = 0; } else { $po_subline;	}
+							if ($inv_no == '') { $inv_no = 0; } else { $inv_no;	}
+							if ($item_code == '') {	$item_code = 0;	} else { $item_code; }
+							if ($item_desc == '') {	$item_desc = 0; } else { $item_desc; }
+							if ($lot_no == '') { $lot_no = 0; } else { $lot_no; }
+							if ($supplier_batch == '') { $supplier_batch = 0; } else { $supplier_batch;	}
+							if ($supplier_roll_no == '') { $supplier_roll_no = 0; } else {	$supplier_roll_no; }
+							if ($fcs_roll_no == '') { $fcs_roll_no = 0;	} else { $fcs_roll_no; }
+							if ($qty == '') { $qty = 0;	} else { $qty; }
+							if ($rm_color == '') { $rm_color = '--'; } else { $rm_color; }
 							echo '<tr><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $fcs_roll_no . '</td><td>' . $supplier_roll_no . '</td><td>' . $qty . '</td>';
 							echo "<td><input type='checkbox' name='bindingdata[]' value='" . $sno . '/' . $lot_no . "'></td></tr>";
 						}
@@ -325,50 +373,37 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 					</tbody>
 				</table>
 				<div class="button_pop col-sm-4" id="populate_div">
-					<center><input type="submit" class="btn btn-md btn-primary" name="set_insp_pop" value="Proceed for Inspection"> </center>
+					<center><input type="submit" class="btn btn-md btn-primary" name="set_insp_pop" id="disable_id" value="Proceed for Inspection"> </center>
 				</div>
 			</form>
 		</div>
 	</div>
-
 </div>
 </div>
 <?php
 if (isset($_POST['bindingdata'])) {
 
 	$binddetails = $_POST['bindingdata'];
+	$parent_id = $_POST['parent_id'];
 
 	$count1 = count($binddetails);
 
-	if ($count1 > 0) {
-		for ($j = 0; $j < $count1; $j++) {
+	if ($count1 > 0) 
+	{
+		for ($j = 0; $j < $count1; $j++)
+		{
 			$id = $binddetails[$j];
 			$exp = explode("/", $id);
 			$sno = $exp[0];
 			$lot_num[] = $exp[1];
-
-			$insertbinditems = "update $bai_rm_pj1.inspection_population set status=1 where sno=$sno";
+			$insertbinditems = "update $bai_rm_pj1.inspection_population set status=1 where parent_id=$parent_id and sno=$sno";
 			mysqli_query($link, $insertbinditems) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		$lot_array = implode(",", $lot_num);
-		// echo $lot_array;
 	}
 	echo "<script>swal('Data inserted...','Successfully','success')</script>";
-	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') . "&lot_no=$lot_array";
-	echo "<script>location.href = '" . $url . "'</script>";
+	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') ;
+	echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+}
 }
 ?>
-<script>
-window.onscroll = function() {myFunction()};
-
-var navbar = document.getElementById("navbar");
-var sticky = navbar.offsetTop;
-
-function myFunction() {
-  if (window.pageYOffset >= sticky) {
-    navbar.classList.add("sticky")
-  } else {
-    navbar.classList.remove("sticky");
-  }
-}
-</script>
