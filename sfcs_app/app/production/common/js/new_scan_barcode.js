@@ -187,6 +187,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 $scope.zfeature=data.zfeature;
                 $scope.vpo=data.vpo;
                 $scope.scanned_status=data.status;
+                $scope.scan_proceed=data.status;
                 $scope.color_cod=data.color_code;
                 //$scope.scanned_status="Please Proceed";
                 
@@ -209,6 +210,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 $scope.zfeature="";
                 $scope.vpo="";
                 $scope.scanned_status=data.status;
+                $scope.scan_proceed=data.status;
                 $scope.color_cod=data.color_code;
                 //$scope.scanned_status="Please Verify Barcode Once..!";
             }
@@ -240,7 +242,8 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                     trans_mode:$scope.trans_mode,
                     shift:$scope.shift,
                     trans_action:task_action,
-                    rej_data:$scope.rej_data
+                    rej_data:$scope.rej_data,
+                    scan_proceed:$scope.scan_proceed
                 }),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).success(function (data, status, headers, config) {
