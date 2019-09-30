@@ -88,7 +88,7 @@ th,td{
 					<div class="col-padding">
 				<?php }?>
 				<div class="col-md-3" data-toggle="modal" data-target=".bs-example-modal-lg">
-					Rej Qty:<input type="text" id="rej_id" class="form-control" ng-model="rej_id" ng-init="rej_id ='0'">
+					Rej Qty:<input type="text" id="rej_id" class="form-control" ng-model="rej_id" ng-init="rej_id ='0'" readonly>
 				</div>
 				<div class="col-md-9">				
                     Barcode:<input type="text" id="barcode_scan" class="form-control input-lg" ng-model="barcode" ng-keypress="scanned($event)" placeholder="scan here" autofocus>

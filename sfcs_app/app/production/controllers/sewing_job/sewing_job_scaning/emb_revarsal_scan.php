@@ -252,7 +252,7 @@ if(isset($_POST['reverse']))
 		
 		$updating = updateM3TransactionsReversal($bundle_no,$updatequant,$op_no);
 		
-		echo "<script>swal('Embellishment Bundle Recersed','Successfully','success');</script>";
+		echo "<script>swal('Embellishment Bundle Reversed','Successfully','success');</script>";
 		
 	}
 	
@@ -344,7 +344,7 @@ if(isset($_POST['reverse']))
 			{
 				$remqty=$quant_qry_result_row['remaining_qty'];
 			}
-			if($remqty>$reverseqty)
+			if($remqty>=$reverseqty)
 			{
 				foreach($normdoc as $child_doc)
 				{
