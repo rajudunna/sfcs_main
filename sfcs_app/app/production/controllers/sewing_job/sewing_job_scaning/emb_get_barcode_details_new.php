@@ -179,6 +179,7 @@ if($check_qry_result->num_rows > 0)
 						}
 					}
 					
+									
 					//updating data in bundle_creation_data
 					$query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= recevied_qty+'".$diffqty."',`rejected_qty`=rejected_qty+'".$rejctedqty."', `scanned_date`='". date('Y-m-d')."' where bundle_number =$bundle_no and operation_id = ".$b_op_id;
 					$result_query = $link->query($query) or exit('query error in updating bundle_creation_data');
@@ -253,7 +254,7 @@ if($check_qry_result->num_rows > 0)
 					// echo $update_qry_cps_log;
 					$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 					
-					$update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$embquantity where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code = $pre_ops_code";   
+					$update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$diffqty where doc_no = '".$docno."' and size_title='". $sizes."' AND operation_code = $pre_ops_code";   
 					$update_cps_log_res = $link->query($update_pre_qty);
 					//update send qty to next operation if available
 					if($post_ops_code != null)
@@ -275,6 +276,7 @@ if($check_qry_result->num_rows > 0)
 					$result_array['reported_qty'] = $diffqty;
 					echo json_encode($result_array);
 					die();
+				
 		}
 		else
 		{
