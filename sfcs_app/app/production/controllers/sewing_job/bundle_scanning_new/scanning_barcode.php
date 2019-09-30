@@ -246,6 +246,7 @@ $result_rejections = $link->query($qery_rejection_resons);
         <input type="hidden" id="op_code" ng-model="op_code" ng-init="op_code='<?= $op_code; ?>'">
         <input type="hidden" id="changed_rej" name="changed_rej">
         <input type="hidden" id="rej_data" ng-model="rej_data">
+        <input type="hidden" id="scan_proceed" ng-model="scan_proceed">
         <input type="hidden" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'get_newbarcode_details.php',0,'R') ?>'">
         </tr>
         <tr>
