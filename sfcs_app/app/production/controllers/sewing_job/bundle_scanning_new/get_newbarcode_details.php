@@ -1734,6 +1734,7 @@ if(isset($_POST["trans_action"])){
                                 $original_qty = $sql_row['original_qty'];
                                 $send_qty = $sql_row['send_qty'];
                                 $recevied_qty = $sql_row['recevied_qty'];
+                                $rejected_qty = $sql_row['rejected_qty'];
                                 $shift= $sql_row['shift'];
                                 $assigned_module=$sql_row['assigned_module'];
                                 $date_time=$sql_row['date_time'];
@@ -1756,19 +1757,19 @@ if(isset($_POST["trans_action"])){
                                     $buyer_division = $sql_row['buyer_division'];
                                 }
 
-                                $rework_qty =  $send_qty-$recevied_qty;
+                                $rework_qty =  $send_qty-($recevied_qty+$rejected_qty);
                             }
                             
                             if($rework_qty>0)
                             {
-                                $sql2="insert into $bai_pro.bai_quality_log (bac_no, bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser) values (\"$assigned_module\", \"$section\", \"$rework_qty\", \"$date_time\", \"$date_time\", \"$shift\", \"$style\", \"$remarks\",  \"$date_time\",  \"$color\", \"$buyer_division\", \"$schedule\",USER())";
+                                $sql2="insert into $bai_pro.bai_quality_log (bac_no, bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser) values (\"$assigned_module\", \"$section\", \"$rework_qty\",NOW(),NOW(),\"$shift\", \"$style\", \"$remarks\",NOW(),\"$color\", \"$buyer_division\", \"$schedule\",USER())";
                                 //echo $sql2;exit;
                                 $sql_resultx = mysqli_query($link, $sql2) or exit("Sql Error2$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 if($sql_resultx){
-                                    $result_array['status'] = 'Bundle updated successfully..!';
+                                    $result_array['status'] = 'Rework qunatity updated successfully..!';
                                     $result_array['color_code'] = "#45b645";
-                                    echo json_encode($result_array);
-                                    die();
+                                    // echo json_encode($result_array);
+                                    // die();
                                 }else{
                                     $result_array['status'] = 'Bundle not updated..!';
                                     $result_array['color_code'] = "#f31c06";
