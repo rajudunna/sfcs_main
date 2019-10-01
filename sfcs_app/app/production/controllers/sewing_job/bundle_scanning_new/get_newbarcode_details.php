@@ -54,16 +54,45 @@ if (isset($_POST["barcode_info"])){
                 $json['size_title']=$row['m3_size_code'];
                 $json['global_facility_code']=$global_facility_code;
                 $json['validate_barcode'] = 1;
-                if($json['bundle_eligibl_qty']>0){
-                    $json['color_code'] = "#45b645";
-                    $json['status'] = "Proceed";
-                    echo json_encode($json);
-                }else{
-                    $json['color_code'] = "#f31c06";
-                    $json['status'] = "No eligible qunatity for this bundle";
-                    echo json_encode($json);
-                    die();
+                //short shipment validation
+                $short_ship_status=0;
+                $query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$row['order_style_no']."' and schedule ='".$row['order_del_no']."'";
+                $shortship_res = mysqli_query($link,$query_short_shipment);
+                $count_short_ship = mysqli_num_rows($shortship_res);
+                if($count_short_ship >0) {
+                    while($row_set=mysqli_fetch_array($shortship_res))
+                    {
+                        if($row_set['remove_type']==1) {
+                            $short_ship_status=1;
+                        }else{
+                            $short_ship_status=2;
+                        }
+                    }
                 }
+
+                if($short_ship_status==1){
+                    $json['color_code'] = "#f31c06";
+                    $json['status'] = 'Short Shipment Done Temporarly';
+                    echo json_encode($json);                   
+                   die();
+               }
+               else if ($short_ship_status==2) {
+                    $json['color_code'] = "#f31c06";
+                    $json['status'] = 'Short Shipment Done Permanently';
+                    echo json_encode($json);                  
+                   die();
+               }else{
+                    if($json['bundle_eligibl_qty']>0){
+                        $json['color_code'] = "#45b645";
+                        $json['status'] = "Proceed";
+                        echo json_encode($json);
+                    }else{
+                        $json['color_code'] = "#f31c06";
+                        $json['status'] = "No eligible qunatity for this bundle";
+                        echo json_encode($json);
+                        die();
+                    }
+               }        
                 
             }
         }else{
@@ -81,10 +110,11 @@ if (isset($_POST["barcode_info"])){
    
     //logic for Saving good qunatities and rejections
 if(isset($_POST["trans_action"])){
-
         $trans_action = $_POST['trans_action'];
         $barcode = $_POST['barcode_value'];
         $operation=$_POST['op_code'];
+        $scan_proceed=$_POST['scan_proceed'];
+    if($scan_proceed=='Proceed'){
         //validating barcode and operation
         if(($barcode!='') && ($operation!='')){
 
@@ -842,6 +872,8 @@ if(isset($_POST["trans_action"])){
                             {
                                 $post_ops_code = $row['operation_code'];
                             }
+                        }else{
+                            $post_ops_code=0;
                         }
                         foreach($pre_ops_code_temp as $index => $op_code)
                         {
@@ -1213,12 +1245,12 @@ if(isset($_POST["trans_action"])){
                                                     }
                                                 }	
                                                 
-                                                if($post_ops_code != null)
+                                                if(($post_ops_code != null) && ($post_ops_code>0))
                                                 {
                                                     $query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."', `scanned_date`='". date('Y-m-d')."' where bundle_number =$b_tid[$key] and operation_id = ".$post_ops_code;
                                                     $result_query = $link->query($query_post) or exit('query error in updating');
                                                 }
-                                                if($ops_dep!=$b_op_id)
+                                                if(($ops_dep!=$b_op_id) && $ops_dep>0)
                                                 {
                                                     $pre_send_qty_qry = "select min(recevied_qty)as recieved_qty from $brandix_bts.bundle_creation_data where bundle_number =$b_tid[$key] and operation_id in (".implode(',',$dep_ops_codes).")";
                                                     $result_pre_send_qty = $link->query($pre_send_qty_qry);
@@ -2948,6 +2980,13 @@ if(isset($_POST["trans_action"])){
         echo json_encode($result_array);
         //echo "Cur good : ".$current_good." Cur reje : ".$current_reject." Cure rew : ".$curr_rework."prev good : ".$prev_good." Prev Reje : ".$prev_reject." Prev Rework :".$prev_rework."</br>";
         
+
+    }else{
+            $json['color_code'] = "#f31c06";
+            $json['status'] = "You cant proceed !!!";
+            echo json_encode($json);
+            die(); 
+    }
 }
 
 ?>
