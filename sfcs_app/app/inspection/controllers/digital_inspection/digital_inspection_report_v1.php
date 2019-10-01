@@ -139,8 +139,8 @@ if(isset($_GET['parent_id'])){
 				};
 				data.map(x => {
 
-					let valtobecheck = x[6] + "-" + x[11];
-					sumValue = intVal(sumValue) + intVal(x[11]);
+					let valtobecheck = x[0] + "-" + x[12];
+					sumValue = intVal(sumValue) + intVal(x[12]);
 					distinctRolls.add(valtobecheck);
 
 				});
@@ -154,7 +154,7 @@ if(isset($_GET['parent_id'])){
 				/**
 				percentage calculations END */
 				let displayvalue_roll_total = (distinctRolls.size).toString() + "(" + totalrollpercent + "%)";
-				let displayvalue_roll_length = sumValue.toString() + "(" + totallengthpercent + "%)";
+				let displayvalue_roll_length = sumValue.toFixed(2) + "(" + totallengthpercent + "%)";
 				$('#total_rolls').text(displayvalue_roll_total);
 				$("#total_length").text(displayvalue_roll_length);
 			}
@@ -176,8 +176,8 @@ if(isset($_GET['parent_id'])){
 							typeof i === 'number' ?
 							i : 0;
 					};
-					let valtobecheck = x[6] + "-" + x[11];
-					sumValue = intVal(sumValue) + intVal(x[11]);
+					let valtobecheck = x[0] + "-" + x[12];
+					sumValue = intVal(sumValue) + intVal(x[12]);
 					distinctRolls.add(valtobecheck);
 
 				});
@@ -310,7 +310,8 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 			<form action="<?php getFullURLLevel($_GET["r"], "digital_inspection_report_v1.php", "0", "N") ?>" method="POST">
 					<?php
 						echo "<input type='hidden' value=".$parent_id." name='parent_id'>";
-						$sql_query = "select * from $bai_rm_pj1.inspection_population where parent_id=$parent_id and status=0";
+						$sql_query = "select * from $bai_rm_pj1.inspection_population where parent_id=$parent_id";
+						$k=0;
 						$sql_result = mysqli_query($link, $sql_query) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 						if (mysqli_num_rows($sql_result) == 0) {
 							echo "<div class='alert alert-info'><strong>Info!</strong> Sorry No Records Found......!</div>";
@@ -320,6 +321,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							<table id="myTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
 							<thead>
 						<tr>
+							<th>S No</th>
 							<th>Supplier PO</th>
 							<th>Po line</th>
 							<th>Po Subline</th>
@@ -339,6 +341,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 					<tbody>';
 						
 						while ($sql_row = mysqli_fetch_array($sql_result)) {
+							$k++;
 							$sno = $sql_row['sno'];
 							$lot_no = $sql_row['lot_no'];
 							$po_no_1 = $sql_row['supplier_po'];
@@ -351,7 +354,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							$rm_color = $sql_row['rm_color'];
 							$supplier_roll_no = $sql_row['sfcs_roll_no'];
 							$fcs_roll_no = $sql_row['supplier_roll_no'];
-							$qty = $sql_row['qty'];
+							$qty = $sql_row['rec_qty'];
 
 							if ($po_no_1 == '') { $po_no_1 = 0;	} else { $po_no_1; }
 							if ($po_line == '') { $po_line = 0; } else { $po_line; }
@@ -365,8 +368,8 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							if ($fcs_roll_no == '') { $fcs_roll_no = 0;	} else { $fcs_roll_no; }
 							if ($qty == '') { $qty = 0;	} else { $qty; }
 							if ($rm_color == '') { $rm_color = '--'; } else { $rm_color; }
-							echo '<tr><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $fcs_roll_no . '</td><td>' . $supplier_roll_no . '</td><td>' . $qty . '</td>';
-							echo "<td><input type='checkbox' name='bindingdata[]' value='" . $sno . '/' . $lot_no . "'></td></tr>";
+							echo '<tr><td>' . $k . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $fcs_roll_no . '</td><td>' . $supplier_roll_no . '</td><td>' . $qty . '</td>';
+							echo "<td><input type='checkbox' name='bindingdata[]' value='" . $sno . '$' . $lot_no . "'></td></tr>";
 						}
 
 						?>
@@ -385,15 +388,13 @@ if (isset($_POST['bindingdata'])) {
 
 	$binddetails = $_POST['bindingdata'];
 	$parent_id = $_POST['parent_id'];
-
 	$count1 = count($binddetails);
-
 	if ($count1 > 0) 
 	{
 		for ($j = 0; $j < $count1; $j++)
 		{
 			$id = $binddetails[$j];
-			$exp = explode("/", $id);
+			$exp = explode("$", $id);
 			$sno = $exp[0];
 			$lot_num[] = $exp[1];
 			$insertbinditems = "update $bai_rm_pj1.inspection_population set status=1 where parent_id=$parent_id and sno=$sno";

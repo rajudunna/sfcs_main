@@ -131,8 +131,8 @@
 							typeof i === 'number' ?
 							i : 0;
 					};
-					let valtobecheck = x[6] + "-" + x[10];
-					sumValue = intVal(sumValue) + intVal(x[11]);
+					let valtobecheck = x[0] + "-" + x[12];
+					sumValue = intVal(sumValue) + intVal(x[12]);
 					distinctRolls.add(valtobecheck);
 
 
@@ -345,6 +345,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 						<table id="myTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
 							<thead>
 								<tr>
+									<th>S NO</th>
 									<th>Supplier PO</th>
 									<th>Po line</th>
 									<th>Po Subline</th>
@@ -364,6 +365,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							</thead>
 							<tbody>
 							<?php
+									$i=1;
 									while ($sql_row = mysqli_fetch_array($sql_result_po)) {
 										$tid = $sql_row['tid'];
 										$po_no_1 = $sql_row['po_no'];
@@ -379,6 +381,8 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 										$ref3 = $sql_row['qty_rec'];
 										$ctex_width = $sql_row['ctex_width'];
 										$ctex_length = $sql_row['ctex_length'];
+										$ctex_length = $sql_row['ctex_length'];
+										$rm_color = $sql_row['rm_color'];
 
 										if ($ctex_width == '') {
 											$ctex_width = 0;
@@ -445,11 +449,12 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 										} else {
 											$ref3;
 										}
-										$rm_color = 0;
+										//$rm_color = 0;
 
-										echo '<tr><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $supplier_no . '</td><td>' . $ref2 . '</td><td>' . $ref3 . '</td><input type="hidden" name="main_id" value="' . $tid . '">';
+										echo '<tr><td>' . $i . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $supplier_no . '</td><td>' . $ref2 . '</td><td>' . $ref3 . '</td><input type="hidden" name="main_id" value="' . $tid . '">';
 
-										echo "<td><input type='checkbox' name='bindingdata[]' value='" . $po_no_1 . '/' . $po_line . '/' . $po_subline . '/' . $inv_no . '/' . $item_code . '/' . $item_desc . '/' . $lot_no . '/' . $supplier_batch . '/' . $rm_color . '/' . $supplier_no . '/' . $ref2 . '/' . $ref3 . '/' . $tid . '/' . $ctex_width . '/' . $ctex_length . "'></td></tr>";
+										echo "<td><input type='checkbox' name='bindingdata[]' value='" . $po_no_1 . '$' . $po_line . '$' . $po_subline . '$' . $inv_no . '$' . $item_code . '$' . $item_desc . '$' . $lot_no . '$' . $supplier_batch . '$' . $rm_color . '$' . $supplier_no . '$' . $ref2 . '$' . $ref3 . '$' . $tid . "'></td></tr>";
+										$i++;
 									}
 								}
 								?>
@@ -484,25 +489,26 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 
 			for ($jj = 0; $jj < $count1; $jj++) {
 				$id = $binddetails[$jj];
-				$exp = explode("/", $id);
+				$exp = explode("$", $id);
 				$pos_array[] = $exp[0];
 				$lot_nos_array[] = $exp[6];
 				$invoice_no_array[] = $exp[3];
 				$batch_no_array[] = $exp[7];
+				$rm_color[] = $exp[8];
 			}
 
-			$insert_main_pop = "insert into $bai_rm_pj1.`main_population_tbl` (no_of_rolls,qty,supplier,invoice_no,batch,lot_no) VALUES('" . $hid_roll . "','" . $hid_total . "','" . rtrim(implode(',', array_unique($pos_array)), ",") . "','" . rtrim(implode(',', array_unique($invoice_no_array)), ",") . "','" . rtrim(implode(',', array_unique($batch_no_array)), ",") . "','" . rtrim(implode(',', array_unique($lot_nos_array)), ",") . "')";
+			$insert_main_pop = "insert into $bai_rm_pj1.`main_population_tbl` (no_of_rolls,qty,supplier,invoice_no,batch,lot_no,rm_color) VALUES('" . $hid_roll . "','" . $hid_total . "','" . rtrim(implode(',', array_unique($pos_array)), ",") . "','" . rtrim(implode(',', array_unique($invoice_no_array)), ",") . "','" . rtrim(implode(',', array_unique($batch_no_array)), ",") . "','" . rtrim(implode(',', array_unique($lot_nos_array)), ",") . "', '" . rtrim(implode(',', array_unique($rm_color)), ",") . "')";
 
 			mysqli_query($link, $insert_main_pop) or exit(message_sql());
 
 			$lastinsert_id = $link->insert_id;
 
-			$insertbinditems = "INSERT IGNORE INTO $bai_rm_pj1.inspection_population(lot_no,supplier_po,po_line,po_subline,supplier_invoice,item_code,item_desc,supplier_batch,rm_color,supplier_roll_no,sfcs_roll_no,ctex_width,ctex_length,qty,status,parent_id,store_in_id) VALUES";
+			$insertbinditems = "INSERT IGNORE INTO $bai_rm_pj1.inspection_population(lot_no,supplier_po,po_line,po_subline,supplier_invoice,item_code,item_desc,supplier_batch,rm_color,supplier_roll_no,sfcs_roll_no,rec_qty,status,parent_id,store_in_id) VALUES";
 
 			for ($j = 0; $j < $count1; $j++) {
 
 				$id = $binddetails[$j];
-				$exp = explode("/", $id);
+				$exp = explode("$", $id);
 				$supplier_po = $exp[0];
 				$po_line = $exp[1];
 				$po_subline = $exp[2];
@@ -518,7 +524,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 				$main_id = $exp[12];
 				$width = $exp[13];
 				$length = $exp[14];
-				$insertbinditems .= ' ("' . $lot_no . '","' . $supplier_po . '","' . $po_line . '","' . $po_subline . '","' . $inv_no . '","' . $item_code . '","' . $item_desc . '","' . $batch . '",0,"' . $supplier_roll_no . '","' . $fcs_no . '","' . $width . '","' . $length . '","' . $qty . '",0,' . $lastinsert_id . ',' . $main_id . '),';
+				$insertbinditems .= ' ("' . $lot_no . '","' . $supplier_po . '","' . $po_line . '","' . $po_subline . '","' . $inv_no . '","' . $item_code . '","' . $item_desc . '","' . $batch . '",0,"' . $supplier_roll_no . '","' . $fcs_no . '","' . $qty . '",0,' . $lastinsert_id . ',' . $main_id . '),';
 
 				$update_4point_status = "update bai_rm_pj1.store_in set four_point_status=1 where tid in ('" . $main_id . "')";
 
