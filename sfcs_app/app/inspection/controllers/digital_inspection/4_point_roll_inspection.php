@@ -79,10 +79,9 @@ $flag = false;
 					      		<th>Roll Inspection Status</th>
 					      	</tr>
 					    
-					      	<?php
+							  <?php
 							   $url = getFullURLLevel($_GET['r'],'4_point_roll_inspection_child.php',0,'N');
-							   
-							  $get_details1="select * from `bai_rm_pj1`.`inspection_population` where parent_id=$parent_id and status in (1,2,3,4)";
+							   $get_details1="select * from `bai_rm_pj1`.`inspection_population` where parent_id=$parent_id and status in (1,2,3,4)";
 								
 							 $details1_result=mysqli_query($link,$get_details1) or exit("get_details1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							 
@@ -99,7 +98,7 @@ $flag = false;
 							  $store_in_id=$row2['store_in_id'];
 							  $id=$row2['sno'];
 							  $status=$row2['status'];
-							if($status == 1 || $status == 3){
+							  if($status == 1 || $status == 3){
 								$tr="<tr data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>";
 							}else{
 								$tr="<tr style='background: #96f7ee;'>";
@@ -117,27 +116,28 @@ $flag = false;
 	                            <td>".$lot_id."</td>
 								<td>".$row2['qty']."</td>";
 
-								 $get_status_details="select SUM(1_point) as 1_point,SUM(2_point) as 2_point,SUM(3_point) as 3_point,SUM(4_point) as 4_point from $bai_rm_pj1.four_points_table where id='".$id."'";
+		
+								 $get_status_details="select sno,inspection_status from $bai_rm_pj1.roll_inspection_child where store_in_tid in ('". $store_in_id."')";
 								 
-								//  echo $get_status_details;
+								 echo $get_status_details;
 						      	 $status_details_result=mysqli_query($link,$get_status_details) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	                             while($row5=mysqli_fetch_array($status_details_result))
 	                             { 
-	                            //    $roll=$row5['supplier_roll_no']; 
-								//    $status=$row5['inspection_status'];
-								   
-	                               $point1=$row5['1_point']*1;
-								   $point2=$row5['2_point']*2;
-								   $point3=$row5['3_point']*3;
-								   $point4=$row5['4_point']*4;
+		
+									$sno=$row5['sno'];
+								}
+								$four_point_count = "select * from ";
+								//    $point2=$row5['2_point']*2;
+								//    $point3=$row5['3_point']*3;
+								//    $point4=$row5['4_point']*4;
 								
-								   $main_points =  $point1+$point2+$point3+$point4;
+								//    $main_points =  $point1+$point2+$point3+$point4;
 		                            echo"
 		                            <td>".$main_points."</td>
-		                            <td>".$roll_insp_status."</td>
+		                            <td>".$row5['inspection_status']."</td>
 						      	   </tr>";
                                 }
-                             }
+                             
                              ?>	
 					      </tbody>
 					    </table>

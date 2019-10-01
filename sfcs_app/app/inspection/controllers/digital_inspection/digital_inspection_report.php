@@ -508,7 +508,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 				$po_subline = $exp[2];
 				$inv_no = $exp[3];
 				$item_code = $exp[4];
-				$item_desc = $exp[5];
+				$item_desc = $exp[5]; 
 				$lot_no = $exp[6];
 				$batch = $exp[7];
 				$rm_color = $exp[8];

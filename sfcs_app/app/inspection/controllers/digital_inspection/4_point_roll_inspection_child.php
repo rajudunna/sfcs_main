@@ -33,7 +33,7 @@ while ($row22 = mysqli_fetch_array($info_result)) {
 	$lab_testing = $row22['lab_testing'];
 	$tolerance = $row22['tolerance'];
 	$item_code_child = $row22['item_code'];
-	$roll_no_child = $row22['roll_no'];
+	$roll_no = $row22['roll_no'];
 	$inspected_per = $row22['inspected_per'];
 	$inspected_qty = $row22['inspected_qty'];
 	$invoice_qty = $row22['invoice_qty'];
@@ -131,7 +131,7 @@ while ($row1 = mysqli_fetch_array($details_result)) {
 								</tr>
 								<tr>
 									<td>Spec Weight</td>
-									<td><input type="text" id="spec_weight" name="spec_weight" autocomplete="off" value="<?= $spec_weight ?>" <?php if ($spec_weight) echo "readonly" ?> class="float"></td>
+									<td><input type="text" id="spec_weight" name="spec_weight" autocomplete="off" value="<?= $spec_weight ?>" <?php if ($spec_weight)  ?> class="float"></td>
 									<!-- <td><input type="text" id="tolerance" name="tolerance"></td> -->
 								</tr>
 								<tr>
@@ -224,7 +224,7 @@ while ($row1 = mysqli_fetch_array($details_result)) {
 								</tr>
 								<tr>
 									<td><input type="text" id="item_code" name="item_code" autocomplete="off" value="<?= $item_code_child ?>"></td>
-									<td><input type="text" id="roll_no" name="roll_no" autocomplete="off" value="<?= $roll_no_child ?>"></td>
+									<td><input type="text" id="roll_no" name="roll_no" autocomplete="off" value="<?= $roll_no ?>"></td>
 									<td><input type="text" id="inspected_per" name="inspected_per" autocomplete="off" value="<?= $inspected_per ?>" <?php if ($inspected_per) echo "readonly" ?> class="float"></td>
 									<td><input type="text" id="inspected_qty" name="inspected_qty" autocomplete="off" value="<?= $inspected_qty ?>" <?php if ($inspected_qty) echo "readonly" ?> class="float"></td>
 									<td><input type="text" id="invoice_qty" name="invoice_qty" autocomplete="off" value="<?= $invoice_qty ?>" <?php if ($invoice_qty) echo "readonly" ?> class="float"></td>
@@ -483,260 +483,7 @@ if (isset($_POST['confirm'])) {
 		$tolerance;
 	}
 
-	$item_code1 = $_POST['item_code1'];
-	if ($item_code1 == '') {
-		$item_code1 = 0;
-	} else {
-		$item_code1;
-	}
-
-	$roll_no = $_POST['roll_no'];
-	if ($roll_no == '') {
-		$roll_no = 0;
-	} else {
-		$roll_no;
-	}
-
-	$inspected_per = $_POST['inspected_per'];
-	if ($inspected_per == '') {
-		$inspected_per = 0;
-	} else {
-		$inspected_per;
-	}
-
-	$inspected_qty = $_POST['inspected_qty'];
-	if ($inspected_qty == '') {
-		$inspected_qty = 0;
-	} else {
-		$inspected_qty;
-	}
-
-	$invoice_qty = $_POST['invoice_qty'];
-	if ($invoice_qty == '') {
-		$invoice_qty = 0;
-	} else {
-		$invoice_qty;
-	}
-
-	$s = $_POST['s'];
-	if ($s == '') {
-		$s = 0;
-	} else {
-		$s;
-	}
-
-	$m = $_POST['m'];
-	if ($m == '') {
-		$m = 0;
-	} else {
-		$m;
-	}
-
-	$e = $_POST['e'];
-	if ($e == '') {
-		$e = 0;
-	} else {
-		$e;
-	}
-
-	$actual_height = $_POST['actual_height'];
-	if ($actual_height == '') {
-		$actual_height = 0;
-	} else {
-		$actual_height;
-	}
-
-	$actual_repeat_height = $_POST['actual_repeat_height'];
-	if ($actual_repeat_height == '') {
-		$actual_repeat_height = 0;
-	} else {
-		$actual_repeat_height;
-	}
-
-	$skw = $_POST['skw'];
-	if ($skw == '') {
-		$skw = 0;
-	} else {
-		$skw;
-	}
-
-	$bow = $_POST['bow'];
-	if ($bow == '') {
-		$bow = 0;
-	} else {
-		$bow;
-	}
-
-	$ver = $_POST['ver'];
-	if ($ver == '') {
-		$ver = 0;
-	} else {
-		$ver;
-	}
-
-	$gsm = $_POST['gsm'];
-	if ($gsm == '') {
-		$gsm = 0;
-	} else {
-		$gsm;
-	}
-
-	$comment = $_POST['comment'];
-	if ($comment == '') {
-		$comment = 0;
-	} else {
-		$comment;
-	}
-
-	$marker_type = $_POST['marker_type'];
-	if ($marker_type == '') {
-		$marker_type = 0;
-	} else {
-		$marker_type;
-	}
-
-	$po_no = $_POST['po'];
-	if ($po_no == '') {
-		$po_no = 0;
-	} else {
-		$po_no;
-	}
-
-	$batch_no = $_POST['batch'];
-	if ($batch_no == '') {
-		$batch_no = 0;
-	} else {
-		$batch_no;
-	}
-
-	$color = $_POST['color'];
-	if ($color == '') {
-		$color = 0;
-	} else {
-		$color;
-	}
-
-
-	if (isset($_POST['code'])) {
-		$code = $_POST['code'];
-		$count = count($code);
-		$damage = $_POST['damage'];
-
-		$insert_roll_details = "insert ignore into $bai_rm_pj1.roll_inspection(po_no,batch_no,color) values ('$po_no','$batch_no','$color')";
-		mysqli_query($link, $insert_roll_details) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
-
-		$check_store_tid = "select sno from $bai_rm_pj1.roll_inspection_child where store_in_tid='" . $store_id . "'";
-		$details_check_store_tid = mysqli_query($link, $check_store_tid) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
-		$row_sid = mysqli_num_rows($details_check_store_tid);
-		$row_store_tid = mysqli_fetch_array($details_check_store_tid);
-		$id_child = $row_store_tid['sno'];
-		if ($row_sid == 1) {
-			$update_status_insp = "update $bai_rm_pj1.roll_inspection_child SET lot_no='" . $lot_number . "',supplier_roll_no='" . $supplier_id . "',sfcs_roll_no='" . $roll_id . "',fabric_composition='" . $fabric_composition . "',spec_width='" . $spec_width . "',inspection_status='" . $inspection_status . "',repeat_length='" . $repeat_length . "',lab_testing='" . $lab_testing . "',tolerance='" . $tolerance . "',item_code='" . $item_code . "',roll_no='" . $roll_no . "',inspected_per='" . $inspected_per . "',inspected_qty='" . $inspected_qty . "',invoice_qty='" . $invoice_qty . "',width_s='" . $s . "',width_m='" . $m . "',width_e='" . $e . "',actual_height='" . $actual_height . "',actual_repeat_height='" . $actual_repeat_height . "',skw='" . $skw . "',bow='" . $bow . "',ver='" . $ver . "',gsm='" . $gsm . "',comment='" . $comment . "',marker_type='" . $marker_type . "' where store_in_tid='".$store_id."'";
-			$roll_inspection_update = $link->query($update_status_insp) or exit('query error in updating222');
-			$delete_child = "Delete from $bai_rm_pj1.four_points_table where insp_child_id='" . $id_child . "'";
-			//echo $delete_child;
-			$roll_inspection_update = $link->query($delete_child) or exit('query error in deleteing222');
-			$insert_four_points = "insert ignore into $bai_rm_pj1.four_points_table(insp_child_id,code,description,1_point,2_point,3_point,4_point) values ";
-			for ($i = 0; $i < $count; $i++) {
-				$submitted_val_array = explode("$", $_POST['submit_value_' . $i]);
-				//$submitted_val_array=
-				$insert_four_points .=  "($roll_id,'$submitted_val_array[0]','$submitted_val_array[1]',
-			'$submitted_val_array[2]','$submitted_val_array[3]','$submitted_val_array[4]','$submitted_val_array[5]'),";
-			}
-			$insert_four_points = rtrim($insert_four_points, ",");
-
-			mysqli_query($link, $insert_four_points) or die("Error---122" . mysqli_error($GLOBALS["___mysqli_ston"]));
-			echo "<script>swal('Data Update...','Successfully','success')</script>";
-			$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N');
-			echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
-			die();
-		} else {
-			$insert_query = "insert into $bai_rm_pj1.roll_inspection_child(lot_no,supplier_roll_no,sfcs_roll_no,fabric_composition,spec_width,inspection_status,spec_weight,repeat_length,lab_testing,tolerance,item_code,roll_no,inspected_per,inspected_qty,invoice_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,parent_id,status,store_in_tid) values ('$lot_number','$supplier_id','$roll_id',$fabric_composition,'$spec_width','$inspection_status','$spec_weight','$repeat_length','$lab_testing','$tolerance','$item_code','$roll_no_child','$inspected_per','$inspected_qty','$invoice_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type',$id_parent,1,$store_id)";
-			//echo $insert_query;
-
-			$result_query = $link->query($insert_query) or exit('query error in inserting11111');
-			$roll_id = mysqli_insert_id($link);
-
-
-			$insert_four_points = "insert ignore into $bai_rm_pj1.four_points_table(insp_child_id,code,description,1_point,2_point,3_point,4_point) values ";
-			for ($i = 0; $i < $count; $i++) {
-				$submitted_val_array = explode("$", $_POST['submit_value_' . $i]);
-				//$submitted_val_array=
-				$insert_four_points .=  "($roll_id,'$submitted_val_array[0]','$submitted_val_array[1]',
-			'$submitted_val_array[2]','$submitted_val_array[3]','$submitted_val_array[4]','$submitted_val_array[5]'),";
-			}
-			$insert_four_points = rtrim($insert_four_points, ",");
-
-			mysqli_query($link, $insert_four_points) or die("Error---122" . mysqli_error($GLOBALS["___mysqli_ston"]));
-			$update_status = "update $bai_rm_pj1.inspection_population SET status=4 where store_in_id='" . $store_id . "'";
-			// echo $update_status;
-			$result_query_update = $link->query($update_status) or exit('query error in updating222');
-
-			// }
-		}
-		echo "<script>swal('Data inserted...','Successfully','success')</script>";
-		$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N');
-		echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
-		die();
-	}
-}
-
-
-?>
-<?php
-if (isset($_POST['save'])) {
-	$fabric_composition = $_POST['fabric_composition'];
-	if ($fabric_composition == '') {
-		$fabric_composition = 0;
-	} else {
-		$fabric_composition;
-	}
-
-	$spec_width = $_POST['spec_width'];
-	if ($spec_width == '') {
-		$spec_width = 0;
-	} else {
-		$spec_width;
-	}
-
-	$inspection_status = $_POST['inspection_status'];
-
-	$spec_weight = $_POST['spec_weight'];
-	if ($spec_weight == '') {
-		$spec_weight = 0;
-	} else {
-		$spec_weight;
-	}
-
-	$repeat_length = $_POST['repeat_length'];
-	if ($repeat_length == '') {
-		$repeat_length = 0;
-	} else {
-		$repeat_length;
-	}
-
-	$lab_testing = $_POST['lab_testing'];
-	if ($lab_testing == '') {
-		$lab_testing = 0;
-	} else {
-		$lab_testing;
-	}
-
-	$lot_nums = $_POST['lot_nos'];
-	if ($lot_nums == '') {
-		$lot_nums = 0;
-	} else {
-		$lot_nums;
-	}
-
-	$tolerance = $_POST['tolerance'];
-	if ($tolerance == '') {
-		$tolerance = 0;
-	} else {
-		$tolerance;
-	}
-
-	$item_code1 = $_POST['item_code1'];
+	$item_code1 = $_POST['item_code'];
 	if ($item_code1 == '') {
 		$item_code1 = 0;
 	} else {
@@ -890,7 +637,270 @@ if (isset($_POST['save'])) {
 		$row_store_tid = mysqli_fetch_array($details_check_store_tid);
 		$id_child = $row_store_tid['sno'];
 		if ($row_sid == 1) {
-			$update_status_insp = "update $bai_rm_pj1.roll_inspection_child SET lot_no='" . $lot_number . "',supplier_roll_no='" . $supplier_id . "',sfcs_roll_no='" . $roll_id . "',fabric_composition='" . $fabric_composition . "',spec_width='" . $spec_width . "',inspection_status='" . $inspection_status . "',repeat_length='" . $repeat_length . "',lab_testing='" . $lab_testing . "',tolerance='" . $tolerance . "',item_code='" . $item_code . "',roll_no='" . $roll_no . "',inspected_per='" . $inspected_per . "',inspected_qty='" . $inspected_qty . "',invoice_qty='" . $invoice_qty . "',width_s='" . $s . "',width_m='" . $m . "',width_e='" . $e . "',actual_height='" . $actual_height . "',actual_repeat_height='" . $actual_repeat_height . "',skw='" . $skw . "',bow='" . $bow . "',ver='" . $ver . "',gsm='" . $gsm . "',comment='" . $comment . "',marker_type='" . $marker_type . "' where store_in_tid='".$store_id."'";
+			$update_status_insp = "update $bai_rm_pj1.roll_inspection_child SET lot_no='" . $lot_number . "',supplier_roll_no='" . $supplier_id . "',sfcs_roll_no='" . $roll_id . "',fabric_composition='" . $fabric_composition . "',spec_width='" . $spec_width . "',inspection_status='" . $inspection_status . "',repeat_length='" . $repeat_length . "',lab_testing='" . $lab_testing . "',tolerance='" . $tolerance . "',item_code='" . $item_code_child . "',roll_no='" . $roll_no . "',inspected_per='" . $inspected_per . "',inspected_qty='" . $inspected_qty . "',invoice_qty='" . $invoice_qty . "',width_s='" . $s . "',width_m='" . $m . "',width_e='" . $e . "',actual_height='" . $actual_height . "',actual_repeat_height='" . $actual_repeat_height . "',skw='" . $skw . "',bow='" . $bow . "',ver='" . $ver . "',gsm='" . $gsm . "',comment='" . $comment . "',marker_type='" . $marker_type . "',status = 1 where store_in_tid='".$store_id."'";
+			 echo $update_status_insp;
+			$roll_inspection_update = $link->query($update_status_insp) or exit('query error in updating222');
+			$delete_child = "Delete from  $bai_rm_pj1.four_points_table where insp_child_id='" .$id_child. "'";
+			//echo $delete_child;
+			$roll_inspection_update = $link->query($delete_child) or exit('query error in deleteing222');
+			$insert_four_points = "insert ignore into $bai_rm_pj1.four_points_table(insp_child_id,code,description,1_point,2_point,3_point,4_point) values ";
+			for ($i = 0; $i < $count; $i++) {
+				$submitted_val_array = explode("$", $_POST['submit_value_' . $i]);
+				//$submitted_val_array=
+				$insert_four_points .=  "($roll_id,'$submitted_val_array[0]','$submitted_val_array[1]',
+			'$submitted_val_array[2]','$submitted_val_array[3]','$submitted_val_array[4]','$submitted_val_array[5]'),";
+			}
+			$insert_four_points = rtrim($insert_four_points, ",");
+
+			mysqli_query($link, $insert_four_points) or die("Error---122" . mysqli_error($GLOBALS["___mysqli_ston"]));
+			$update_status = "update $bai_rm_pj1.inspection_population SET status=4 where store_in_id='" . $store_id . "'";
+			// echo $update_status;
+			$result_query_update = $link->query($update_status) or exit('query error in updating222');
+			echo "<script>swal('Data Update...','Successfully','success')</script>";
+			$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N');
+			echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+			die();
+		} else {
+			$insert_query = "insert into $bai_rm_pj1.roll_inspection_child(lot_no,supplier_roll_no,sfcs_roll_no,fabric_composition,spec_width,inspection_status,spec_weight,repeat_length,lab_testing,tolerance,item_code,roll_no,inspected_per,inspected_qty,invoice_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,parent_id,status,store_in_tid) values ('$lot_number','$supplier_id','$roll_id',$fabric_composition,'$spec_width','$inspection_status','$spec_weight','$repeat_length','$lab_testing','$tolerance','$item_code_child','$roll_no','$inspected_per','$inspected_qty','$invoice_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type',$id_parent,1,$store_id)";
+			//echo $insert_query;
+
+			$result_query = $link->query($insert_query) or exit('query error in inserting11111');
+			$roll_id = mysqli_insert_id($link);
+
+
+			$insert_four_points = "insert ignore into $bai_rm_pj1.four_points_table(insp_child_id,code,description,1_point,2_point,3_point,4_point) values ";
+			for ($i = 0; $i < $count; $i++) {
+				$submitted_val_array = explode("$", $_POST['submit_value_' . $i]);
+				//$submitted_val_array=
+				$insert_four_points .=  "($roll_id,'$submitted_val_array[0]','$submitted_val_array[1]',
+			'$submitted_val_array[2]','$submitted_val_array[3]','$submitted_val_array[4]','$submitted_val_array[5]'),";
+			}
+			$insert_four_points = rtrim($insert_four_points, ",");
+
+			mysqli_query($link, $insert_four_points) or die("Error---122" . mysqli_error($GLOBALS["___mysqli_ston"]));
+			$update_status = "update $bai_rm_pj1.inspection_population SET status=4 where store_in_id='" . $store_id . "'";
+			// echo $update_status;
+			$result_query_update = $link->query($update_status) or exit('query error in updating222');
+
+			// }
+		}
+		echo "<script>swal('Data inserted...','Successfully','success')</script>";
+		$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N');
+		echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+		die();
+	}
+}
+
+
+?>
+<?php
+if (isset($_POST['save'])) {
+	$fabric_composition = $_POST['fabric_composition'];
+	if ($fabric_composition == '') {
+		$fabric_composition = 0;
+	} else {
+		$fabric_composition;
+	}
+
+	$spec_width = $_POST['spec_width'];
+	if ($spec_width == '') {
+		$spec_width = 0;
+	} else {
+		$spec_width;
+	}
+
+	$inspection_status = $_POST['inspection_status'];
+
+	$spec_weight = $_POST['spec_weight'];
+	if ($spec_weight == '') {
+		$spec_weight = 0;
+	} else {
+		$spec_weight;
+	}
+
+	$repeat_length = $_POST['repeat_length'];
+	if ($repeat_length == '') {
+		$repeat_length = 0;
+	} else {
+		$repeat_length;
+	}
+
+	$lab_testing = $_POST['lab_testing'];
+	if ($lab_testing == '') {
+		$lab_testing = 0;
+	} else {
+		$lab_testing;
+	}
+
+	$lot_nums = $_POST['lot_nos'];
+	if ($lot_nums == '') {
+		$lot_nums = 0;
+	} else {
+		$lot_nums;
+	}
+
+	$tolerance = $_POST['tolerance'];
+	if ($tolerance == '') {
+		$tolerance = 0;
+	} else {
+		$tolerance;
+	}
+
+	$item_code1 = $_POST['item_code'];
+	if ($item_code1 == '') {
+		$item_code1 = 0;
+	} else {
+		$item_code1;
+	}
+
+	$roll_no = $_POST['roll_no'];
+	if ($roll_no == '') {
+		$roll_no = 0;
+	} else {
+		$roll_no;
+	}
+
+	$inspected_per = $_POST['inspected_per'];
+	if ($inspected_per == '') {
+		$inspected_per = 0;
+	} else {
+		$inspected_per;
+	}
+
+	$inspected_qty = $_POST['inspected_qty'];
+	if ($inspected_qty == '') {
+		$inspected_qty = 0;
+	} else {
+		$inspected_qty;
+	}
+
+	$invoice_qty = $_POST['invoice_qty'];
+	if ($invoice_qty == '') {
+		$invoice_qty = 0;
+	} else {
+		$invoice_qty;
+	}
+
+	$s = $_POST['s'];
+	if ($s == '') {
+		$s = 0;
+	} else {
+		$s;
+	}
+
+	$m = $_POST['m'];
+	if ($m == '') {
+		$m = 0;
+	} else {
+		$m;
+	}
+
+	$e = $_POST['e'];
+	if ($e == '') {
+		$e = 0;
+	} else {
+		$e;
+	}
+
+	$actual_height = $_POST['actual_height'];
+	if ($actual_height == '') {
+		$actual_height = 0;
+	} else {
+		$actual_height;
+	}
+
+	$actual_repeat_height = $_POST['actual_repeat_height'];
+	if ($actual_repeat_height == '') {
+		$actual_repeat_height = 0;
+	} else {
+		$actual_repeat_height;
+	}
+
+	$skw = $_POST['skw'];
+	if ($skw == '') {
+		$skw = 0;
+	} else {
+		$skw;
+	}
+
+	$bow = $_POST['bow'];
+	if ($bow == '') {
+		$bow = 0;
+	} else {
+		$bow;
+	}
+
+	$ver = $_POST['ver'];
+	if ($ver == '') {
+		$ver = 0;
+	} else {
+		$ver;
+	}
+
+	$gsm = $_POST['gsm'];
+	if ($gsm == '') {
+		$gsm = 0;
+	} else {
+		$gsm;
+	}
+
+	$comment = $_POST['comment'];
+	if ($comment == '') {
+		$comment = 0;
+	} else {
+		$comment;
+	}
+
+	$marker_type = $_POST['marker_type'];
+	if ($marker_type == '') {
+		$marker_type = 0;
+	} else {
+		$marker_type;
+	}
+
+	$po_no = $_POST['po'];
+	if ($po_no == '') {
+		$po_no = 0;
+	} else {
+		$po_no;
+	}
+
+	$batch_no = $_POST['batch'];
+	if ($batch_no == '') {
+		$batch_no = 0;
+	} else {
+		$batch_no;
+	}
+
+	$color = $_POST['color'];
+	if ($color == '') {
+		$color = 0;
+	} else {
+		$color;
+	}
+
+
+	if (isset($_POST['code'])) {
+		$code = $_POST['code'];
+		$count = count($code);
+		$damage = $_POST['damage'];
+
+		$insert_roll_details = "insert ignore into $bai_rm_pj1.roll_inspection(po_no,batch_no,color) values ('$po_no','$batch_no','$color')";
+		mysqli_query($link, $insert_roll_details) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
+
+		$insert_roll_details_select = "select id from $bai_rm_pj1.roll_inspection where po_no='" . $po_no . "' and batch_no='" . $batch_no . "' and color='" . $color . "'";
+
+		$details_result_select = mysqli_query($link, $insert_roll_details_select) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
+		$row1 = mysqli_fetch_array($details_result_select);
+		$id_parent = $row1['id'];
+
+		$check_store_tid = "select sno from $bai_rm_pj1.roll_inspection_child where store_in_tid='" . $store_id . "'";
+		$details_check_store_tid = mysqli_query($link, $check_store_tid) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
+		$row_sid = mysqli_num_rows($details_check_store_tid);
+		$row_store_tid = mysqli_fetch_array($details_check_store_tid);
+		$id_child = $row_store_tid['sno'];
+		if ($row_sid == 1) {
+			$update_status_insp = "update $bai_rm_pj1.roll_inspection_child SET lot_no='" . $lot_number . "',supplier_roll_no='" . $supplier_id . "',sfcs_roll_no='" . $roll_id . "',fabric_composition='" . $fabric_composition . "',spec_width='" . $spec_width . "',inspection_status='" . $inspection_status . "',repeat_length='" . $repeat_length . "',lab_testing='" . $lab_testing . "',tolerance='" . $tolerance . "',item_code='" . $item_code1 . "',roll_no='" . $roll_no . "',inspected_per='" . $inspected_per . "',inspected_qty='" . $inspected_qty . "',invoice_qty='" . $invoice_qty . "',width_s='" . $s . "',width_m='" . $m . "',width_e='" . $e . "',actual_height='" . $actual_height . "',actual_repeat_height='" . $actual_repeat_height . "',skw='" . $skw . "',bow='" . $bow . "',ver='" . $ver . "',gsm='" . $gsm . "',comment='" . $comment . "',marker_type='" . $marker_type . "' where store_in_tid='".$store_id."'";
 			 echo $update_status_insp;
 			$roll_inspection_update = $link->query($update_status_insp) or exit('query error in updating222');
 			$delete_child = "Delete from  $bai_rm_pj1.four_points_table where insp_child_id='" . $id_child . "'";
@@ -911,7 +921,7 @@ if (isset($_POST['save'])) {
 			echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
 			die();
 		} else {
-			$insert_query = "insert into $bai_rm_pj1.roll_inspection_child(lot_no,supplier_roll_no,sfcs_roll_no,fabric_composition,spec_width,inspection_status,spec_weight,repeat_length,lab_testing,tolerance,item_code,roll_no,inspected_per,inspected_qty,invoice_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,parent_id,status,store_in_tid) values ('$lot_number','$supplier_id','$roll_id',$fabric_composition,'$spec_width','$inspection_status','$spec_weight','$repeat_length','$lab_testing','$tolerance','$item_code','$roll_no_child','$inspected_per','$inspected_qty','$invoice_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type',$id_parent,2,$store_id)";
+			$insert_query = "insert into $bai_rm_pj1.roll_inspection_child(lot_no,supplier_roll_no,sfcs_roll_no,fabric_composition,spec_width,inspection_status,spec_weight,repeat_length,lab_testing,tolerance,item_code,roll_no,inspected_per,inspected_qty,invoice_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,parent_id,status,store_in_tid) values ('$lot_number','$supplier_id','$roll_id',$fabric_composition,'$spec_width','$inspection_status','$spec_weight','$repeat_length','$lab_testing','$tolerance','$item_code1','$roll_no','$inspected_per','$inspected_qty','$invoice_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type',$id_parent,2,$store_id)";
 			//echo $insert_query;
 
 			$result_query = $link->query($insert_query) or exit('query error in inserting11111');
@@ -958,9 +968,28 @@ if (isset($_POST['save'])) {
 
 	$(document).ready(function() {
 		$('input.code').on('change', function(e) {
-			//alert("hai")
+			
 			var url = "<?php echo getFullURL($_GET['r'], 'submit.php', 'R'); ?>"
 			const target_id = "damage_" + (e.target.id).split("_")[1];
+			const code_id_array=['code_0','code_1','code_2','code_3'];
+			let present_id=e.target.id;
+			let present_value=e.target.value;
+			const newcode_id_array=code_id_array.filter((codeid)=>{
+				return codeid !=present_id;
+			})
+			let flag_for_duplicate=0;
+			newcode_id_array.forEach((code_id)=>{
+			let presnt_code_valu=$('#'+code_id).val();
+			if(presnt_code_valu == present_value)
+			{
+				flag_for_duplicate=1;
+			}
+
+			})	
+			console.log(newcode_id_array);
+			console.log(flag_for_duplicate);
+			if(!flag_for_duplicate)
+			{
 			$.ajax({
 				url: url,
 				dataType: 'text',
@@ -983,7 +1012,11 @@ if (isset($_POST['save'])) {
 				}
 			});
 			console.log(e.target.id + "-->" + e.target.value)
-		});
+	
+		} else{
+			alert('Sorry this is a duplicate value');
+			$('#' + e.target.id).val('');
+		}
 		$('#clear1').click(function() {
 			// alert();
 			var id = $(this).val();
@@ -1029,7 +1062,7 @@ if (isset($_POST['save'])) {
 				$('#submit_value_' + i).val(x)
 			}
 			var inspected_per = $("#inspected_per").val();
-			var ddlFruits = $("#inspection_status");
+			var ddlFruits = $("#inspection_status");	
 			if (inspected_per > 100) {
 				alert("Enter only bellow 100%");
 				return false;
@@ -1072,4 +1105,5 @@ if (isset($_POST['save'])) {
 			return true;
 		});
 	});
+});
 </script>
