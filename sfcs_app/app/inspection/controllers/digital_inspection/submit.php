@@ -20,7 +20,7 @@ if (isset($_POST['getalldata'])) {
     } else {
         $responseObject = array(
             'status' => 404,
-            'message' => "No Records Found"
+            'message' => "Please Enter Valid Damage Code.....!"
         );
         echo json_encode($responseObject);
     }
