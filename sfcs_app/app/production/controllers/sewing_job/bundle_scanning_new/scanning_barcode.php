@@ -187,7 +187,7 @@ $result_rejections = $link->query($qery_rejection_resons);
                   <div class="panel-body"> 
                       <div class="row">
                             <div class="col-lg-8">
-                                <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 168px;">Barcode : {{barcode_value}}</div>
+                                <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 168px;">Barcode : {{barcodeiew}}</div>
                                 <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 168px;">Tx Mode : {{trans_mode | uppercase }}</div>
                                 <div class="btn btn-md btn-success ng-binding" id="txmode" style="  width: 168px;">Bundle Qty : {{bundle_qty}}</div>
                                 <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 168px;">Action : {{action_mode | uppercase }}</div>
