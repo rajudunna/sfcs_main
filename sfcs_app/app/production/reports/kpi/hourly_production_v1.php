@@ -149,7 +149,7 @@ if(isset($_GET['submit']))
 					$result=mysqli_query($link,$sql);
 					while ($row11 = mysqli_fetch_array($result))
 						{
-							echo  "<td>".$row['style']."</td>";
+							echo  $row['style'].'<br>';
 						}
 					if (mysqli_num_rows($res) > 0) 
 					{
