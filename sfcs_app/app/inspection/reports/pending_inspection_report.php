@@ -23,70 +23,102 @@
               
 <?php
     if(isset($_POST['submit']))
-    {                   
-        
-            $date=$_POST['date'];
-            
-            $sql = "SELECT id,date_time FROM `$bai_rm_pj1`.`main_population_tbl` WHERE DATE(date_time)= DATE('$date')";
-            echo $sql;
-            $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $no_of_rows = mysqli_num_rows($sql_result);
-            if($no_of_rows == 0)
-            {
-                echo "<script>sweetAlert('No Data Found','','warning');
-                $('#main_div').hide()</script>";
-            }
-            else
-            {
-                echo "<div class='panel-body'>";
-                echo "<div id='main_div'>";
-                echo "<table id='table1' class = 'table table-striped jambo_table bulk_action table-bordered'><thead>";
-                echo "<tr class='headings'>";
-                echo "<th>S No</th>";
-                echo "<th>Date Time</th>";
-                echo "<th>Lot No</th>";
-                echo "<th>Suppliers Po</th>";
-                echo "<th>Supplier Batch</th>";
-                echo "<th></th>";
-                echo "</tr>";
-                echo "</thead>";
-                $s_no=1;
-                while($sql_row=mysqli_fetch_array($sql_result))
-                {
-                    $id=$sql_row['id'];
-                    $date=$sql_row['date_time'];
-                 
-                $sql1="SELECT lot_no,supplier_invoice,supplier_batch FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND STATUS='1'";
-                $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-                echo $sql1;
-                while($sql_row1=mysqli_fetch_array($sql_result1))
-                {
-                    $lot_no=$sql_row1['lot_no'];
-                    $supplier_invoice=$sql_row1['supplier_invoice'];
-                    $supplier_batch=$sql_row1['supplier_batch'];
-                
-                    
-                    echo "<tr>";
-                    echo "<td>$s_no</td>";
-                    echo "<td>$date</td>";
-                    echo "<td>$lot_no</td>";
-                    echo "<td>$supplier_invoice</td>";
-                    echo "<td>$supplier_batch</td>";     
-                    echo "<td>"; 
-                    ?>
-                    <input type="submit" class="btn btn-success" value="print " name="submit">
-                    <input type="submit" class="btn btn-success" value="Inspection " name="submit">
-                    <?php
-                    echo "</td>";
-                    echo "</tr>";
-                    $s_no++;
-                }
-              }
-            }
-           
+    {   
+		$date=$_POST['date'];
+		
+		$sql = "SELECT id,date_time FROM `$bai_rm_pj1`.`main_population_tbl` WHERE DATE(date_time)= DATE('$date')";
+		echo $sql;
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$no_of_rows = mysqli_num_rows($sql_result);
+		if($no_of_rows == 0)
+		{
+			echo "<script>sweetAlert('No Data Found','','warning');
+			$('#main_div').hide()</script>";
+		}
+		else
+		{
+			echo "<div class='panel-body'>";
+			echo "<div id='main_div'>";
+			echo "<table id='table1' class = 'table table-striped jambo_table bulk_action table-bordered'><thead>";
+			echo "<tr class='headings'>";
+			echo "<th>S No</th>";
+			echo "<th>Lot No</th>";
+			echo "<th>Suppliers Po</th>";
+			echo "<th>Supplier Batch</th>";
+			echo "<th>Invoice</th>";
+			echo "<th>RM Color</th>";
+			echo "<th>Total Rolls</th>";
+			echo "<th>Total Quantity</th>";
+			echo "<th>Control Step 1</th>";
+			echo "<th>Control Step 2</th>";
+			echo "<th>Report</th>";
+			echo "</tr>";
+			echo "</thead>";
+			$s_no=1;
+			while($sql_row=mysqli_fetch_array($sql_result))
+			{
+				$id=$sql_row['id'];                 	
+				echo "<tr>";
+				echo "<td>$s_no</td>";
+				echo "<td>".$sql_result['lot_no']."</td>";
+				echo "<td>".$sql_result['supplier']."</td>";
+				echo "<td>".$sql_result['batch']."</td>";
+				echo "<td>".$sql_result['invoice_no']."</td>";
+				echo "<td>".$sql_result['rm_color']."</td>";
+				echo "<td>".$sql_result['no_of_rolls']."</td>";
+				echo "<td>".$sql_result['qty']."</td>";
+				$sql1="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND status<>0";
+				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql_result1)==0)
+				{
+					echo '<td><div class="col-sm-4" id="populate_div">
+									<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Set Inspection Population"> </center>
+									</div></td>';
+				}	
+				else
+				{
+					echo '<td><div class="col-sm-4" id="populate_div">
+									<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Not Available"> </center>
+									</div></td>';
+				}						
+
+				$sql12="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND (status<>3 && status<>0)";
+				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql_result12)>0)
+				{
+					echo '<td><div class="col-sm-4" id="populate_div">
+					<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Proceed for Inspection"> </center>
+					</div></td>';
+				}
+				else
+				{
+					echo '<td><div class="col-sm-4" id="populate_div">
+					<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Not Available"> </center>
+					</div></td>';
+				}						
+				
+				$sql12="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND (status=0 && statu<>3)";
+				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql_result12)==0)
+				{
+					echo '<td><div class="col-sm-4" id="populate_div">
+					<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Get Inspection Report"> </center>
+					</div></td>';
+				}
+				else
+				{
+					echo '<td><div class="col-sm-4" id="populate_div">
+					<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Not Available"> </center>
+					</div></td>';
+				}
+					echo "</tr>";
+					$s_no++;
+				}
+			}
+                     
             echo "</div></table></div>";
-            
-    }
+    }       
+    
                           
 ?>
     </div>  
