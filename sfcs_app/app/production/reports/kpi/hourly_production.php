@@ -212,7 +212,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 						<?php 
 							while($row1=mysqli_fetch_array($res1))
 							{
-								echo  "<td>".$row['style']."</td>";
+								echo $row['style'].'<br>';
 							}
 						?>
 					</center></td>
