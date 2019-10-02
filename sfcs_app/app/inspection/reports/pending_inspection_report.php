@@ -18,15 +18,13 @@
                                     </div>
                      </div>
                 </form>
-             </div>
-          </div> 
+            
               
 <?php
     if(isset($_POST['submit']))
     {   
 		$date=$_POST['date'];
-		
-		$sql = "SELECT id,date_time FROM `$bai_rm_pj1`.`main_population_tbl` WHERE DATE(date_time)= DATE('$date')";
+		$sql = "SELECT * FROM `$bai_rm_pj1`.`main_population_tbl` WHERE DATE(date_time)= DATE('$date')";
 		echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$no_of_rows = mysqli_num_rows($sql_result);
@@ -60,13 +58,13 @@
 				$id=$sql_row['id'];                 	
 				echo "<tr>";
 				echo "<td>$s_no</td>";
-				echo "<td>".$sql_result['lot_no']."</td>";
-				echo "<td>".$sql_result['supplier']."</td>";
-				echo "<td>".$sql_result['batch']."</td>";
-				echo "<td>".$sql_result['invoice_no']."</td>";
-				echo "<td>".$sql_result['rm_color']."</td>";
-				echo "<td>".$sql_result['no_of_rolls']."</td>";
-				echo "<td>".$sql_result['qty']."</td>";
+				echo "<td>".$sql_row['lot_no']."</td>";
+				echo "<td>".$sql_row['supplier']."</td>";
+				echo "<td>".$sql_row['batch']."</td>";
+				echo "<td>".$sql_row['invoice_no']."</td>";
+				echo "<td>".$sql_row['rm_color']."</td>";
+				echo "<td>".$sql_row['no_of_rolls']."</td>";
+				echo "<td>".$sql_row['qty']."</td>";
 				$sql1="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND status<>0";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result1)==0)
@@ -96,13 +94,15 @@
 					<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Not Available"> </center>
 					</div></td>';
 				}						
-				
-				$sql12="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND (status=0 && statu<>3)";
-				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if(mysqli_num_rows($sql_result12)==0)
+				$path1= "<a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "4_point_roll_inspection.php", "0", "N") . "&parent_id=$parent_id\">Get Inspection Report</a>";
+				$path1=
+				$path1=
+				$sql121="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND (status<>0 && status<>3)";
+				$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql_result121)==0)
 				{
 					echo '<td><div class="col-sm-4" id="populate_div">
-					<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Get Inspection Report"> </center>
+					<center>$path1</center>
 					</div></td>';
 				}
 				else

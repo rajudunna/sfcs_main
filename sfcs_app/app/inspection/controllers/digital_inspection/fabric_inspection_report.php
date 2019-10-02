@@ -15,8 +15,6 @@ color:black;
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 
  $parent_id = $_GET['id'];
- $batch_no = $_GET['batch'];
- $color = $_GET['color'];
  $get_table_details = "select * from $bai_rm_pj1.roll_inspection_child where parent_id=$parent_id";
   $table_details_result=mysqli_query($link,$get_table_details) or exit("get_table_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
   while($row1=mysqli_fetch_array($table_details_result))
