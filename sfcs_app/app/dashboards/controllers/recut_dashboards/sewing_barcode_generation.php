@@ -16,7 +16,7 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
 	    $bcd_id = $bcd_ids[$key];
 		
 		$bcd_qry = "select style,schedule,assigned_module,operation_id,bundle_number,sfcs_smv,remarks,color from $brandix_bts.bundle_creation_data 
-		where id=".$bcd_id."";
+		where id in (".$bcd_id.") limit 1";
 	   // echo $bcd_qry;
 	    // die();
 	    $result_bcd_qry = $link->query($bcd_qry);
@@ -36,7 +36,7 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
 		 $op_codes_result = mysqli_query($link,$op_codes_query) or exit('Problem in getting the op codes for sewing');
 		 while($row = mysqli_fetch_array($op_codes_result))
 		 {
-			$opst[]=$row['operation_code'];
+			$ops[]=$row['operation_code'];
 			$op_namem[]=$row['operation_name'];
 		 }
 
@@ -57,7 +57,7 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
             mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
         }	
 
-        $get_mo = "select mo_no from $bai_pro3.mo_operation_quantites where ref_no = $bundle_number and op_code in (".implode(",",$opst).") order by mo_no*1 desc limit 1";
+        $get_mo = "select mo_no from $bai_pro3.mo_operation_quantites where ref_no = $bundle_number and op_code in (".implode(",",$ops).") order by mo_no*1 desc limit 1";
         $result_get_mo = $link->query($get_mo);
         while($row_mo = $result_get_mo->fetch_assoc())
         {
@@ -84,17 +84,6 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
         {
             $job_counter = $job_counter_tmp1;
         }
-
-        //$ops=array_unique($opst);
-		$checking_qry_plan_dashboard = "SELECT * FROM `$bai_pro3`.`plan_dashboard_input` WHERE input_job_no_random_ref = '$input_job'";
-		$result_checking_qry_plan_dashboard = $link->query($checking_qry_plan_dashboard);
-		if(mysqli_num_rows($result_checking_qry_plan_dashboard) == 0)
-		{   
-			$insert_qry_ips = "INSERT IGNORE INTO `$bai_pro3`.`plan_dashboard_input` 
-			SELECT * FROM `$bai_pro3`.`plan_dashboard_input_backup`
-			WHERE input_job_no_random_ref = '$input_job_no_random_ref'";
-			mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
-		}
    
         while($reported_qty > 0)
         {

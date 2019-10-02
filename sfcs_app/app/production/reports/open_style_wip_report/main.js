@@ -109,7 +109,7 @@ class ReactApp extends React.Component {
 			console.log(newKeys);
 			
             let item = [];
-            item.push(items.style,items.cono,items.schedule,items.color,items.size,items.orderqty);
+            item.push(items.style,items.cono,items.schedule,items.color,items.size,parseInt(items.orderqty));
             if(newKeys.length>0){                
                 newKeys.forEach(res=>{
                     let op_val = 0;

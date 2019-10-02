@@ -281,7 +281,7 @@ function ReplaceProcess($replace_id_edit)
     { 
         $size_replace =  $replace_sizes['size_id'];
         $excess_size_title = $replace_sizes['size_title'];
-        $excess_job_qry = "SELECT GROUP_CONCAT(input_job_no_random order by input_job_no_random)AS input_job_no_random_ref,SUM(carton_act_qty)as excess_qty,group_concat(distinct doc_no)as doc_nos FROM `$bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$scheule' AND order_col_des = '$color' AND old_size = '$size_replace' AND type_of_sewing = '2'";
+        $excess_job_qry = "SELECT GROUP_CONCAT(distinct input_job_no_random order by input_job_no_random)AS input_job_no_random_ref,SUM(carton_act_qty)as excess_qty,group_concat(distinct doc_no)as doc_nos FROM `$bai_pro3`.`packing_summary_input` WHERE order_style_no = '$style' AND order_del_no = '$scheule' AND order_col_des = '$color' AND old_size = '$size_replace' AND type_of_sewing = '2'";
         $result_excess_job_qry = $link->query($excess_job_qry);
         if($result_excess_job_qry->num_rows > 0)
         {
@@ -299,7 +299,7 @@ function ReplaceProcess($replace_id_edit)
                     {
                         $cps_row_excess = $cps_row['remaining_qty'];
                     }
-
+                    
                 }
                 $exces_qty = min($exces_qty_org,$cps_row_excess);
             }
@@ -309,13 +309,14 @@ function ReplaceProcess($replace_id_edit)
                 $count++;
                 $rec_qty = 0;
                 $already_replaced_qty = 0;
-                $bcd_checking_qry = "select sum(recevied_qty)+sum(rejected_qty)as rec_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref in ($input_job_no_excess) and size_title = '$excess_size_title' and operation_id = $input_ops_code";
+                $bcd_checking_qry = "select sum(recevied_qty)+sum(rejected_qty)as rec_qty,sum(send_qty)as send_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref in ($input_job_no_excess) and size_title = '$excess_size_title' and color = '$color' and operation_id = $input_ops_code";
                 $result_bcd_checking_qry = $link->query($bcd_checking_qry);
                 if($result_bcd_checking_qry->num_rows > 0)
                 {
                     while($bcd_row_rec = $result_bcd_checking_qry->fetch_assoc()) 
                     {
                         $rec_qty = $bcd_row_rec['rec_qty'];
+                        $send_qty = $bcd_row_rec['send_qty'];
                     }
                 }
                 //checking the input job already replaced or not
@@ -329,7 +330,6 @@ function ReplaceProcess($replace_id_edit)
                         $already_replaced_qty = $row_replace_already['replaced_qty'];
                     }
                 }
-                $exces_qty = ($exces_qty) - ($rec_qty + $already_replaced_qty);
                 if($rec_qty == '')
                 {
                     $rec_qty = 0;
@@ -338,9 +338,13 @@ function ReplaceProcess($replace_id_edit)
                 {
                     $already_replaced_qty = 0;
                 }
-                if($exces_qty < 0)
+                if($rec_qty > 0)
                 {
-                    $exces_qty = 0;
+                    $exces_qty = min($exces_qty,($send_qty - $rec_qty + $already_replaced_qty));
+                }
+                else
+                {
+                     $exces_qty = ($exces_qty) - ($rec_qty + $already_replaced_qty);
                 }
                 $excess_table .= "<tr><td>".$input_job_no_excess."</td><td>".$excess_size_title."</td><td>$rec_qty</td><td>$already_replaced_qty</td><td id='$excess_size_title'>".$exces_qty."</td></tr>";
                 $excess_table .= "<input type='hidden' name='input_job_no_random_ref_replace[$excess_size_title]' value='$input_job_no_excess'>";
