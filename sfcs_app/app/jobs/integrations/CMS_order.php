@@ -99,6 +99,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$sql3="update $bai_pro3.cat_stat_log set order_tid=\"$ssc_code\", mo_status=\"$mo_status\", compo_no=\"$compo_no\", catyy=$order_yy, fab_des=\"$item_des\", col_des=\"$col_des\",".$transaction_time." where order_tid2='".$ssc_code2."'";
 				echo $sql3."<br></br>";
 				mysqli_query($link, $sql3) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+				unset($mo_qty);
+				unset($Required_Qty);	
 
 				$vpo='';
 				$customer_style='';
@@ -117,8 +119,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					echo $sql31."<br><br>";
 					mysqli_query($link, $sql31) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
-				unset($mo_qty);
-				unset($Required_Qty);	
 			}		
 		}		
 	}		
