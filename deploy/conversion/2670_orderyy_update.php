@@ -3,7 +3,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 $mo_qty=array();
 $Required_Qty=array();
-$sql22="SELECT order_style_no,order_del_no,order_col_des,cs.order_tid,cs.compo_no as comp,cs.order_tid2 as tid2 FROM bai_pro3.bai_orders_db AS bd LEFT JOIN bai_pro3.cat_stat_log AS cs ON cs.order_tid=bd.order_tid ";
+$sql22="SELECT order_style_no,order_del_no,order_col_des,cs.order_tid,cs.compo_no as comp,cs.order_tid2 as tid2 FROM bai_pro3.bai_orders_db AS bd LEFT JOIN bai_pro3.cat_stat_log AS cs ON cs.order_tid=bd.order_tid where cs.order_tid2 IS NOT NULL";
 $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row22=mysqli_fetch_array($sql_result22))
 {	
@@ -22,8 +22,11 @@ while($sql_row22=mysqli_fetch_array($sql_result22))
 	{
 		$mo_qty[$sql_row312['MO_NUMBER']]=$sql_row312['MO_Qty'];
 		$Required_Qty[]=$sql_row312['Required_Qty'];
-	}	
-	$order_yy=round(array_sum($Required_Qty)/array_sum($mo_qty),4);
+	}
+	if(array_sum($mo_qty) >0)	
+	{
+		$order_yy=round(array_sum($Required_Qty)/array_sum($mo_qty),4);
+	}
 
 	$sql3="update $bai_pro3.cat_stat_log set catyy=$order_yy where order_tid2='".$ssc_code2."'";
 	echo $sql3."<br></br>";
