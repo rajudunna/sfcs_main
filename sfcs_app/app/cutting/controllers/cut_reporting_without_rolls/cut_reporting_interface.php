@@ -1032,7 +1032,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
         if((laysequence)&&(reportingplies==0))
         {
-            check=1;
+            check=2;
             
         }
        
@@ -1057,15 +1057,25 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         
     });
 
+   
+
     
              if(check==1)
             {
                 swal('Please Enter LaySequence','Or Check LaySequence','error');
                 return false;
-            }else
+               
+            }
+            else if(check==2)
+            {
+                swal('Please Check Reporting Plies','Not Given','error');
+                return false;
+            }
+            else
             {
                data;
             }
+
     // layseqnce=checklaysequence();
     //     if(layseqnce)
     //     {
