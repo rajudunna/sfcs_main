@@ -103,6 +103,9 @@ $emp_active_status = $conf->get('emp_active_status');
 //REST API TimeOut
 $API_CALL_TIME_OUT = $conf->get('api_call_time_out');
 
+//rm dashboard api
+$rm_dashboard_api = $conf->get('rm_dashboard_api');
+
 //Enable API
 $enable_api_call = $conf->get('enable-api-call');
 
