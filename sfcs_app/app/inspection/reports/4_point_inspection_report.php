@@ -1,6 +1,6 @@
 <?php
 include('../../../common/config/config.php');
-$inpsect_id=$_GET['id'];
+$inpsect_id=$_GET['parent_id'];
 $get_details = "select * from $bai_rm_pj1.`inspection_population` where parent_id=".$inpsect_id." and status <>0";
 $details_result = mysqli_query($link, $get_details) or exit("get_details Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1 = mysqli_fetch_array($details_result))
@@ -1953,7 +1953,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
  ?>
  <tr height=19 style='height:14.4pt'>
   <td height=19 class=xl1519758 style='height:14.4pt'></td>
-  <td colspan=2 class=xl9619758><?php echo $tot_qty;?></td>
+  <td colspan=2 class=xl9619758 style='border-top:none;'> <?php echo $tot_qty;?></td>
   <td colspan=2 class=xl9719758>36&quot;</td>
   <td class=xl10419758></td>
   <td class=xl10419758></td>
@@ -1973,8 +1973,8 @@ for($i=0;$i<sizeof($tot_ids);$i++)
  </tr>
  <tr height=19 style='height:14.4pt'>
   <td height=19 class=xl1519758 style='height:14.4pt'></td>
-  <td colspan=2 class=xl9619758>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp --------------  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp X</td>
-  <td colspan=2 class=xl9719758>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp --------------  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp X</font>
+  <td colspan=2 class=xl9619758>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ____________ &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp X</td>
+  <td colspan=2 class=xl9719758>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ____________  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp X</font>
   
   </td>
   <td class=xl10419758 align=right>100</td>
