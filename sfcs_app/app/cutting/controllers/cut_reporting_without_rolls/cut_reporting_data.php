@@ -227,6 +227,49 @@ if($a_plies != $p_plies && $act_cut_status == 'DONE'){
     $response_data['a_plies']  = $a_plies;
 }
 
+$rollwisecutdedetailssum="SELECT sum(reporting_plies) as rollwisereportedsum from $bai_pro3.docket_roll_info where docket=$doc_no";
+$rollwisecutdedetailssumresult= mysqli_query($link,$rollwisecutdedetailssum);
+if($rollwisecutdedetailssumresult)
+{
+    $rollwisereportedsum = mysqli_fetch_array($rollwisecutdedetailssumresult);
+    $rollwisereportedsum = $rollwisereportedsum['rollwisereportedsum'];
+    
+
+    $rollwisecutdedetails="SELECT * from $bai_pro3.docket_roll_info where docket=$doc_no";
+    $rollwisecutdedetailsresult= mysqli_query($link,$rollwisecutdedetails);
+     
+    while($detials=mysqli_fetch_array($rollwisecutdedetailsresult))
+    {
+         $rollwisesummarydetials[]=$detials;
+    } 
+
+    $response_data['rollwisedetails'] = $rollwisesummarydetials;
+    $response_data['rollwisedetailsdone'] = $rollwisecutdedetailssumresult;
+
+
+    if($rollwisereportedsum == $p_plies && $act_cut_status == 'DONE'){
+    $response_data['cut_done_roll_wise']  = 1;
+    $response_data['avl_plies_roll_wise'] = 0;
+    $response_data['a_plies_roll_wise']  = $p_plies;
+    }else{
+        $response_data['cut_done_roll_wise'] = 0;
+        $response_data['avl_plies_roll_wise']= $p_plies;
+        $response_data['a_plies_roll_wise']  = 0;
+    }
+
+    if($rollwisereportedsum != $p_plies && $act_cut_status == 'DONE'){
+        $response_data['avl_plies_roll_wise'] = $p_plies - $rollwisereportedsum;
+        $response_data['partial_roll_wise'] = 1;
+        $response_data['a_plies_roll_wise']  = $rollwisereportedsum;
+    }
+}
+
+
+
+
+
+
+
 //Verifying for the 'F' forcefully reported docket
 $nfully_report = 0;
 $cps_full_status_query = "SELECT reported_status from $bai_pro3.cps_log where doc_no IN ($child_docs) 
@@ -288,6 +331,7 @@ $response_data['doc_target_type'] = $target_doc_type;
 $response_data['ratio_data']      = getSizesRatio($doc_no,$child_docs);
 $response_data['rollinfo']      = $sql_num_check12;
 $response_data['rollinfo1']      = $checkstockresult;
+
 
 
 

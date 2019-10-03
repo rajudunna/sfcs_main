@@ -15,6 +15,9 @@ $doc_no=$_POST['doc_no'];
 $style   = $_POST['style'];
 $schedule= $_POST['schedule'];
 $color   = $_POST['color'];
+$rollwisestatus   = $_POST['rollwisestatus'];
+
+
 $num=1;
 if($rollwisedata)
 {

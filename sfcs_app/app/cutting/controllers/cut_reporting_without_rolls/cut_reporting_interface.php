@@ -96,7 +96,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         
 
         <!-- partial or already reported docket details -->
-        <div class='row' id='hide_details_reported'style='overflow-x:scroll;display:none'>
+        <div class='row' id='hide_details_reported' style='overflow-x:scroll;display:none'>
             <div class='col-sm-12'>
             <hr> 
             <table class='table table-bordered' id='reported_table'>
@@ -140,7 +140,32 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             </table>
             </div>
             <hr>
-        </div><br/><br/>
+        </div><br/>
+        <div class='row' id='hide_details_reported_roll_wise' style='overflow-x:scroll;display:none'>
+            <div class='col-sm-12'>
+            <hr> 
+            <table class='table table-bordered' id='reported_table_roll_wise'>
+                <tr class='danger'>
+                    <td>S. No</td>
+                    <td>LaySequence</td>
+                    <td>Shade</td>
+                    <td>Fab Received</td>
+                    <td>Fab Returned</td>
+                    <td>Reporting Plie</td>
+                    <td>Fab Damages</td>
+                    <td>Fab joints</td>
+                    <td>Fab endbits</td>
+                    <td>Fab Shortages</td>
+                </tr>
+            </table>
+            </div>
+            <hr>
+        </div>
+        <br/>
+
+        
+
+        
 
         <!-- This div to show the size wise ratios -->
         <div class='col-sm-12' id='hide_details_reporting_ratios' style='overflow-x:scroll;display:none'>
@@ -726,6 +751,28 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         
        if(!Number(completed)){
         sumofreporting+=parseFloat(reportingplies);
+            if(reportingplies!=0)
+            {
+                sumoffabricreturn+=parseFloat(fabricreturnqty);
+            }
+        
+            if(sumoffabricreturn<0)
+            {
+                $('#fab_returned').val(0);
+            }else{
+                $('#fab_returned').val(Number(sumoffabricreturn).toFixed(2));
+            }
+            sumofdamages+=parseFloat(damages);
+            $('#damages').val(Number(sumofdamages).toFixed(2));
+            sumofjoints+=parseFloat(joints);
+            $('#joints').val(Number(sumofjoints).toFixed(2));
+            sumofendbits+=parseFloat(endbits);
+            $('#endbits').val(Number(sumofendbits).toFixed(2));
+            sumofshortages+=parseFloat(shortages);
+            $('#shortages').val(Number(sumofshortages).toFixed(2));
+        
+            sumoffabricrecieved+=parseFloat(receivedqty);
+            $('#fab_received').val(Number(sumoffabricrecieved).toFixed(2));
        }
        partiallyreported+=parseFloat(reportingplies);
         // alert(sumofreporting);
@@ -822,26 +869,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
        
     
        
-        sumofdamages+=parseFloat(damages);
-        $('#damages').val(Number(sumofdamages).toFixed(2));
-        sumofjoints+=parseFloat(joints);
-        $('#joints').val(Number(sumofjoints).toFixed(2));
-        sumofendbits+=parseFloat(endbits);
-        $('#endbits').val(Number(sumofendbits).toFixed(2));
-        sumofshortages+=parseFloat(shortages);
-        $('#shortages').val(Number(sumofshortages).toFixed(2));
-        sumoffabricreturn+=parseFloat(fabricreturnqty);
-
-       
-
-        if(sumoffabricreturn<0)
-        {
-            $('#fab_returned').val(0);
-        }else{
-            $('#fab_returned').val(Number(sumoffabricreturn).toFixed(2));
-        }
-        sumoffabricrecieved+=parseFloat(receivedqty);
-        $('#fab_received').val(Number(sumoffabricrecieved).toFixed(2));
+   
         
                // alert(sumofreporting);
     });
@@ -921,6 +949,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     $('#submit').on('click',function(){
         var x= $('input[id="cut_report"]:checked');
         var ratiostable = $("#hide_details_reporting_ratios table");
+        var rollwisestatus=false;
         // var ratios=[];
         // ratiostable.find('tr').each(function (i) {
             
@@ -942,6 +971,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             // }
         var doc_no = $("#reporting_table #r_doc_no").text();
        // alert(r);
+        var rollwisestatus=true;
         var table = $("#enablerolls");
         var sumofreporting=0;
         var sumofdamages=0;
@@ -1161,6 +1191,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                         style:style,color:color,schedule:schedule,rejections_flag:rejections_flag,rejections:rejections_post,
                         full_reporting_flag : full_reporting_flag,  
                         data:data,
+                        rollwisestatus:rollwisestatus,
                         //ratios:ratios
                     };    
 
@@ -1594,6 +1625,39 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 $('#hide_details_reporting_ratios').css({'display':'block'});
                 //alert();
             }
+            if(data.partial_roll_wise == '1'){
+                $('#hide_details_reported_roll_wise').css({'display':'block'});
+                $rollwisestatus=true;
+            }
+            else if(data.cut_done_roll_wise == '1'){
+                $('#hide_details_reported_roll_wise').css({'display':'block'});
+                $rollwisestatus=true;
+            }else{
+                $('#hide_details_reported_roll_wise').css({'display':'none'});
+                $rollwisestatus=false;
+            }
+            var i;
+            var sno=1;
+            if($rollwisestatus)
+            {
+                rollwisedetialslength=data.rollwisedetails.length;
+                rolwisedet=data.rollwisedetails;
+                for(i=0;i<rollwisedetialslength;i++)
+                {
+                    if(rolwisedet[i]['fabric_return']<0)
+                    {
+                        fabreturn=rolwisedet[i]['fabric_return'];
+                    }
+                    else{
+                        fabreturn=rolwisedet[i]['fabric_return']; 
+                    }
+                    row = $('<tr><td>'+sno+'</td><td>'+rolwisedet[i]['lay_sequence']+'</td><td>'+rolwisedet[i]['shade']+'</td><td>'+rolwisedet[i]['fabric_rec_qty']+'</td><td>'+fabreturn+'</td><td>'+rolwisedet[i]['reporting_plies']+'</td><td>'+rolwisedet[i]['damages']+'</td><td>'+rolwisedet[i]['joints']+'</td><td>'+rolwisedet[i]['endbits']+'</td><td>'+rolwisedet[i]['shortages']+'</td></tr>');
+                    $('#reported_table_roll_wise').append(row);
+                    sno++;
+                }
+
+            }
+
             $('.d_doc_type').css({'display':'block'});
             $('#d_total_rejections').css({'display':'none'});
             //storing doc,plies in hidden fields for post refference
