@@ -59,10 +59,66 @@
 				$id=$sql_row['id'];                 	
 				echo "<tr>";
 				echo "<td>$s_no</td>";
-				echo "<td>".$sql_row['lot_no']."</td>";
-				echo "<td>".$sql_row['supplier']."</td>";
-				echo "<td>".$sql_row['batch']."</td>";
-				echo "<td>".$sql_row['invoice_no']."</td>";
+				$lots=explode(",",$sql_row['lot_no']);
+				$suppliers=explode(",",$sql_row['supplier']);
+				$batchs=explode(",",$sql_row['batch']);
+				$invoice_nos=explode(",",$sql_row['invoice_no']);
+				if(sizeof($lots)>1)
+				{
+					echo "<td>";
+					for($i=0;$i<sizeof($lots);$i++)
+					{
+						echo $lots[$i]."<br>";
+					}
+					echo "</td>";
+				}
+				else
+				{
+					echo "<td>".$sql_row['lot_no']."</td>";
+				}
+				
+				if(sizeof($suppliers)>1)
+				{
+					echo "<td>";
+					for($i=0;$i<sizeof($suppliers);$i++)
+					{
+						echo $suppliers[$i]."<br>";
+					}
+					echo "</td>";
+				}
+				else
+				{
+					echo "<td>".$sql_row['supplier']."</td>";
+				}
+				
+				if(sizeof($batchs)>1)
+				{
+					echo "<td>";
+					for($i=0;$i<sizeof($batchs);$i++)
+					{
+						echo $batchs[$i]."<br>";
+					}
+					echo "</td>";
+				}
+				else
+				{
+					echo "<td>".$sql_row['batch']."</td>";
+				}
+				
+				if(sizeof($invoice_nos)>1)
+				{
+					echo "<td>";
+					for($i=0;$i<sizeof($invoice_nos);$i++)
+					{
+						echo $invoice_nos[$i]."<br>";
+					}
+					echo "</td>";
+				}
+				else
+				{
+					echo "<td>".$sql_row['invoice_no']."</td>";
+				}
+				
 				echo "<td>".$sql_row['rm_color']."</td>";
 				echo "<td>".$sql_row['no_of_rolls']."</td>";
 				echo "<td>".$sql_row['qty']."</td>";
@@ -74,7 +130,7 @@
 				$sql1="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND status<>0";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				// echo $sql1;
-				if(mysqli_num_rows($sql_result1)<>0)
+				if(mysqli_num_rows($sql_result1)==0)
 				{
 					
 						echo "<td><div class='col-sm-4' id='populate_div'>
@@ -91,7 +147,7 @@
 
 				$sql12="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND (status<>3 && status<>0)";
 				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if(mysqli_num_rows($sql_result12)==0)
+				if(mysqli_num_rows($sql_result12)>0)
 				{
 					
 					echo "<td><div class='col-sm-4' id='populate_div'>
@@ -109,7 +165,7 @@
 				$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result121)==0)
 				{
-					echo "<td><a class='btn btn-primary' href=\"$pop_up_path?id=$id\" onclick=\"Popup1=window.open('$pop_up_path?id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td>";
+					echo "<td><a class='btn btn-primary' href=\"$pop_up_path?id=$id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td>";
 				}
 				else
 				{
