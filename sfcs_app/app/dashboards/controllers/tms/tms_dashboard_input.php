@@ -296,10 +296,20 @@ border: 1px solid black;
   background-color: #ff00ff;
 }
 
-.orange {
+/* .orange {
   width:20px;
   height:20px;
   background-color: #991144;
+  display:block;
+  float: left;
+  margin: 2px;
+border: 1px solid black;
+} */
+/*Below option added due to partially issued before we dont have this option by r@m*/
+.orange {
+  width:20px;
+  height:20px;
+  background-color: #eda11e;
   display:block;
   float: left;
   margin: 2px;
@@ -621,9 +631,12 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				{
 					$id="pink"; 
 				}
-				else if($input_trims_status == 2 or $input_trims_status == 3)
+				else if($input_trims_status == 2)
 				{
 					$id="blue"; 
+				}else if($input_trims_status == 3)
+				{	//this option previously we odnt have for #2677 added by r@m
+					$id="orange";
 				}
 				else if($input_trims_status == 1)
 				{
