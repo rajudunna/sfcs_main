@@ -89,7 +89,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
         while ($row_mrn = $sql_result_mrn->fetch_assoc())
         {
             $qty_issued=$qty_issued-$row_mrn["mrn_qty"];
-            $qty_balance=$qty_rec+$qty_return- $qty_issued;
+            $qty_balance=$qty_rec+$qty_return + $qty_issued;
 		}
 	}
 	
@@ -181,7 +181,7 @@ if($max_id>0){
 			if(mysqli_num_rows($sql_result_mrn)> 0) {
 				while ($row_mrn = $sql_result_mrn->fetch_assoc())
 				{
-					$qty_issued=$qty_issued-$row_mrn["mrn_qty"];
+					$qty_issued=$qty_issued+$row_mrn["mrn_qty"];
 					$qty_balance=$qty_rec+$qty_return- $qty_issued;
 				}
 			}
