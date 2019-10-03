@@ -93,15 +93,13 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 			// $minutes_29 = $minutes-1;
 
 			$sql="SELECT *,fr.team FROM $bai_pro2.`fr_data` fr LEFT JOIN bai_pro2.`hout`  h ON h.`out_date`=fr.`frdate` WHERE DATE(frdate)='$frdate' GROUP BY fr.team,fr.style,fr.smv ORDER BY fr.team*1";
-			// echo $sql;
-			//    echo $sql.'<br>';
+			// echo $sql.'<br>';
 			 $res=mysqli_query($link,$sql);
-			$result=mysqli_query($link,$sql);
 			
-			while ($row = mysqli_fetch_array($result))
-			{
-				echo $row1['style'].'<br>';
-			}
+			// while ($row = mysqli_fetch_array($result))
+			// {
+			// 	echo $row['style'].'<br>';
+			// }
 			$i=0; ?>
 			<section class="content-area">
 			<div class='table-responsive'>
@@ -141,11 +139,20 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				</tr>
 			</thead>
 			<?php 
-				$tot_reported_plantWise=array(); $tot_frqty_plantWise=array(); $tot_forecast_qty_plantWise=array();
-				$tot_scanned_plantWise=array(); $tot_scanned_sah_plantWise=array(); $tot_fr_sah_plantWise=array();
-				$tot_forecast_sah_plantWise=array(); $tot_act_sah_plantWise=array(); $tot_sah_diff_plantWise=array();
-				$tot_plan_eff_plantWise=array(); $tot_act_eff_plantWise=array(); $tot_balance_plantWise=array();
-				$tot_hit_rate_plantWise=array();	$grand_tot_qty_time_array1 = array(); 
+				$tot_reported_plantWise=array(); 
+				$tot_frqty_plantWise=array(); 
+				$tot_forecast_qty_plantWise=array();
+				$tot_scanned_plantWise=array(); 
+				$tot_scanned_sah_plantWise=array(); 
+				$tot_fr_sah_plantWise=array();
+				$tot_forecast_sah_plantWise=array(); 
+				$tot_act_sah_plantWise=array(); 
+				$tot_sah_diff_plantWise=array();
+				$tot_plan_eff_plantWise=array(); 
+				$tot_act_eff_plantWise=array(); 
+				$tot_balance_plantWise=array();
+				$tot_hit_rate_plantWise=array();	
+				$grand_tot_qty_time_array1 = array(); 
 			
 			while($row=mysqli_fetch_array($res))
 			{
@@ -161,21 +168,24 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				$team=$row['team'];
 				// echo $team;
 				//get styles which run in lines
-				$sql1="SELECT distinct style FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
+				$sql1="SELECT distinct style FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."'   group by style,team,smv";
 				//  echo $sql1."</br>";
 				$res1=mysqli_query($link,$sql1);
 
-				$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
+				$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."'   and schedule='".$row['schedule']."'group by style,team,smv,schedule";
 				// echo $sql2;
 				$res2=mysqli_query($link,$sql2);
 
-				$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
+				$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."' and schedule='".$row['schedule']."'  group by style,team,smv";
+				// echo $sql3."</br>";
 				$res3=mysqli_query($link,$sql3);
 
-				$sql4="SELECT qty FROM $bai_pro3.line_forecast where date='$frdate' AND module='$team'";
+				$sql4="SELECT qty FROM $bai_pro3.line_forecast where date='$frdate' AND module='$team' group by module*1";
+				//    echo $sql4."</br>";
 				$res4=mysqli_query($link,$sql4);
 
-				$sql5="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
+				$sql5="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."' and schedule='".$row['schedule']."' group by style,team,smv";
+				//  echo $sql5."</br>";
 				$res5=mysqli_query($link,$sql5);
 
 				$get_nop_query="SELECT fix_nop FROM $bai_pro.pro_plan WHERE date='$frdate' and mod_no='$team'";
@@ -194,7 +204,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				// $res6=mysqli_query($link,$sql6);
 
 				$sqlsc="SELECT SUM(qty) AS sumqty FROM $bai_pro2.hout where team='$team' AND out_date='$frdate'";
-				// echo $sqlsc;
+				//  echo $sqlsc;
 				$resc=mysqli_query($link,$sqlsc);
 				if($rowc=mysqli_fetch_array($resc))
 				{
