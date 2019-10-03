@@ -174,6 +174,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
             var validate_barcode=data.validate_barcode;
             $('#loading-image').hide();
             if(validate_barcode>0){
+                $scope.barcodeiew=$scope.barcode_value;
                 $scope.style=data.style.trim();
                 $scope.color=data.color.trim();
                 $scope.bundle_qty=data.original_qty;
@@ -187,6 +188,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 $scope.zfeature=data.zfeature;
                 $scope.vpo=data.vpo;
                 $scope.scanned_status=data.status;
+                $scope.scan_proceed=data.short_shipment;
                 $scope.color_cod=data.color_code;
                 //$scope.scanned_status="Please Proceed";
                 
@@ -209,6 +211,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 $scope.zfeature="";
                 $scope.vpo="";
                 $scope.scanned_status=data.status;
+                $scope.scan_proceed="";
                 $scope.color_cod=data.color_code;
                 //$scope.scanned_status="Please Verify Barcode Once..!";
             }
@@ -240,7 +243,8 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                     trans_mode:$scope.trans_mode,
                     shift:$scope.shift,
                     trans_action:task_action,
-                    rej_data:$scope.rej_data
+                    rej_data:$scope.rej_data,
+                    scan_proceed:$scope.scan_proceed
                 }),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).success(function (data, status, headers, config) {
@@ -270,6 +274,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 $scope.current_good=(data.current_good.padStart(6,' '));
                 $scope.current_reject=(data.current_reject.padStart(6,' '));
                 $scope.curr_rework=(data.curr_rework.padStart(6,' '));
+                $scope.barcode_value="";
             }).error(function (data, status, headers, config) {
                 // handle error things
             });

@@ -119,7 +119,7 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                                             'module' : $scope['module'],
                                             'schedule' : response.data.schedule,
                                             'from_module' : response.data.from_module,
-                                            'original_qty' : response.data.original_qty,
+                                            'send_qty' : response.data.send_qty,
                                             'status' : 'Success',
                                             'last_barcode_status_remarks' : 'Module Transfer Successfully'
                                         });

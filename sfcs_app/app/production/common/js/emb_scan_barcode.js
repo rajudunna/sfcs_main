@@ -5,23 +5,24 @@ app.controller('scanctrl', function ($scope, $http, $window) {
     $scope.url = '';
     $scope.user_permission = '';
     $scope.pass_id = '';
+$scope.rej_id = '';
     $scope.showtable = false;
     $scope.showscanlist = false;
     $scope.scanned_barcode_details = [];
     $scope.session_barcodes = [];
-    
+   
     $scope.shift = '';
     $scope.$watch('shift', function(shift){
         $scope.shift = shift;
     });
-	$scope.$watch('op_code', function(op_code){
+$scope.$watch('op_code', function(op_code){
         $scope.op_code = op_code;
     });
-	// $scope.$watch('seqno', function(seqno){
+// $scope.$watch('seqno', function(seqno){
         // $scope.seqno = seqno;
     // });
     $scope.scanned = function(event){
-	        if(event.charCode == 13){
+       if(event.charCode == 13){
             $('#loading-image').show();
             if($scope.op_code != undefined)
             {
@@ -42,8 +43,8 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                     var split = $scope.last_barcode.split('-');
                     if(split.length == 3){
                         var bundle_num = split[0];
-                        var op_no = split[1]; 
-						var seqno = split[2];	
+                        var op_no = split[1];
+var seqno = split[2];
                         if (isNaN(bundle_num) || isNaN(op_no)){
                             //$('#barcode_scan').focus();
                             $('#loading-image').hide();
@@ -61,7 +62,8 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                                 auth: $scope.user_permission,
                                 barcode: $scope.last_barcode,
                                 shift: $scope.shift,
-                                gate_id: $scope.pass_id								
+                                gate_id: $scope.pass_id,
+rej_id:$scope.rej_id
                             });
                             var req = {
                                 method: 'POST',
@@ -96,6 +98,7 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                                     $scope.last_barcode_status_remarks = 'Bundle qty inserted.';
                                     console.log($scope.scanned_barcode_details);
                                     $('.bgcolortable').css("background-color", "#00800085");
+$scope.rej_id='';
                                 }
 
                             });
@@ -145,6 +148,6 @@ app.controller('scanctrl', function ($scope, $http, $window) {
 
     }
 
-    
+   
 });
 angular.bootstrap($('#scanBarcode'), ['scanning_interface']);

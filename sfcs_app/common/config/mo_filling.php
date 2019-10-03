@@ -282,7 +282,6 @@
 		$ops_m_name=array();
 		$size_tit=array();
 		$ops=array();
-		//$opst=array();
 		
 		$op_codes_query = "SELECT category,group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
 						WHERE category = '$sewing_cat' group by category";
@@ -340,7 +339,8 @@
 						$ops_m_id[$row1210['mo_no']][$row1212['OperationNumber']]=$row1212['OperationNumber'];  
 						$ops_m_name[$row1210['mo_no']][$row1212['OperationNumber']]=$row1212['OperationDescription'];
 					}
-				}			
+				}
+				$last_mo=0;
 				if(sizeof($mo_no)>0)
 				{
 					//$ops=array_unique($opst);
@@ -363,6 +363,7 @@
 					}
 					else
 					{
+						$last_mo = max($mo_no);
 						$bal=0;$qty_tmp=0;
 						$sql1234 = "SELECT * FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' and sref_id = $sref_id
 						and trim(order_col_des) = '$trimmed_color'
@@ -373,7 +374,8 @@
 							$qty=$row1234['carton_act_qty'];
 							$bundle_no = $row1234['tid'];
 							for($kk=0;$kk<sizeof($mo_no);$kk++)
-							{								    
+							{               
+								    
 								$m_fil=0;
 								$sql12345="SELECT sum(bundle_quantity) as qty FROM $bai_pro3.mo_operation_quantites WHERE mo_no='".$mo_no[$kk]."' and op_code IN ($ops[0]) GROUP BY op_code";
 								$result12345=mysqli_query($link, $sql12345) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -456,8 +458,7 @@
 					unset($mo_no);
 					unset($moq);
 					unset($ops_m_id);
-					unset($ops_m_name);         
-					unset($ops);
+					unset($ops_m_name); 					
 				}
 			}
 			unset($sizes);

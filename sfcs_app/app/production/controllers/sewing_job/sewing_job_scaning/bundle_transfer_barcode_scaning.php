@@ -118,7 +118,7 @@ th,td{
                         <td>{{bar_code_details.bundle}}</td>
                         <td>{{bar_code_details.schedule}}</td>
                         <td>{{bar_code_details.operation_code}}</td>
-                        <td>{{bar_code_details.original_qty}}</td>
+                        <td>{{bar_code_details.send_qty}}</td>
                         <td>{{bar_code_details.from_module}}</td>
                         <td>{{bar_code_details.module}}</td>
                         <td>{{bar_code_details.status}}</td> 

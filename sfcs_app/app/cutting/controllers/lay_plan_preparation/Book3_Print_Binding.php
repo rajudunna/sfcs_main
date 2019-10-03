@@ -504,7 +504,7 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 			$actwidth=$sql_row22['marker_width'];
 			$act_mk_length=$sql_row22['marker_length'];
 		}
-		
+		$act_mk_length=0;
 		$sql22="select * from $bai_pro3.marker_ref_matrix where marker_ref=$mk_ref and cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=\"$purwidth\"";
 		// echo $sql22."<br>";
 		$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -2264,7 +2264,7 @@ tags will be replaced.-->
   <td colspan=2 style='border-right:1px solid black;font-size:20px;font-weight:bold;text-align:right' style='border-right:.5pt solid black'>Docket
   Number</td>
   <td colspan=3 class=xl1024118 style='border-right:.5pt solid black;
-  border-left:none'>B<?php echo leading_zeros($docketno,9); ?></td>
+  border-left:none'>B<?php echo leading_zeros($bindid,9); ?></td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=23 style='mso-height-source:userset;height:17.25pt'>
@@ -2643,7 +2643,7 @@ tags will be replaced.-->
   <td rowspan="2" colspan="11" class=xl764118 style='border-bottom:.5pt solid black;' >Inspection Comments:
   
   <?php
-  $sql="select * from $bai_rm_pj1.docket_ref where doc_no in ($doc_id) and doc_type='normal'  group by roll_id order by batch_no,ref4 asc";
+  $sql="select * from $bai_rm_pj1.docket_ref where doc_no=\"B".$bindid."\" and doc_type='binding'  group by roll_id order by batch_no,ref4 asc";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -2699,7 +2699,7 @@ $item_name[] = $sql_row['item'];
  <?php
  $roll_length = array();
 //  $roll_det = array();
- $sql123="SELECT ref2,ref4,SUM(allocated_qty) AS shade_lengt FROM $bai_rm_pj1.docket_ref WHERE doc_no in ($doc_id) AND doc_type='normal' GROUP BY ref4";
+ $sql123="SELECT ref2,ref4,SUM(allocated_qty) AS shade_lengt FROM $bai_rm_pj1.docket_ref WHERE doc_no=\"B".$bindid."\" AND doc_type='binding' GROUP BY ref4";
  $sql_result123=mysqli_query($link, $sql123) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($sql_row123=mysqli_fetch_array($sql_result123))
 {
