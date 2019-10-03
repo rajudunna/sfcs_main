@@ -101,6 +101,24 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				mysqli_query($link, $sql3) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 				unset($mo_qty);
 				unset($Required_Qty);	
+
+				$vpo='';
+				$customer_style='';
+				$vpo_query="select VPO_NO,Customer_Style_No from $m3_inputs.order_details where GMT_Color=\"$color\" and Schedule=\"$sch_no\" and Style=\"$style\"";
+				echo $vpo_query."<br>";
+				$vpo_result=mysqli_query($link, $vpo_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row3=mysqli_fetch_array($vpo_result))
+				{		
+					$vpo=$sql_row3['VPO_NO'];
+					$customer_style=$sql_row3['Customer_Style_No'];
+				}
+				if($vpo!='')
+				{
+				
+					$sql31="update $bai_pro3.bai_orders_db set vpo=\"$vpo\",customer_style_no=\"$customer_style\" where order_style_no=\"$style\" and order_del_no=\"$sch_no\" and order_col_des =\"$color\" ";//vpo updating#2635
+					echo $sql31."<br><br>";
+					mysqli_query($link, $sql31) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
 			}		
 		}		
 	}		
