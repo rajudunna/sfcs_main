@@ -754,6 +754,17 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             if(reportingplies!=0)
             {
                 sumoffabricreturn+=parseFloat(fabricreturnqty);
+                sumofdamages+=parseFloat(damages);
+                $('#damages').val(Number(sumofdamages).toFixed(2));
+                sumofjoints+=parseFloat(joints);
+                $('#joints').val(Number(sumofjoints).toFixed(2));
+                sumofendbits+=parseFloat(endbits);
+                $('#endbits').val(Number(sumofendbits).toFixed(2));
+                sumofshortages+=parseFloat(shortages);
+                $('#shortages').val(Number(sumofshortages).toFixed(2));
+            
+                sumoffabricrecieved+=parseFloat(receivedqty);
+                $('#fab_received').val(Number(sumoffabricrecieved).toFixed(2));
             }
         
             if(sumoffabricreturn<0)
@@ -762,17 +773,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             }else{
                 $('#fab_returned').val(Number(sumoffabricreturn).toFixed(2));
             }
-            sumofdamages+=parseFloat(damages);
-            $('#damages').val(Number(sumofdamages).toFixed(2));
-            sumofjoints+=parseFloat(joints);
-            $('#joints').val(Number(sumofjoints).toFixed(2));
-            sumofendbits+=parseFloat(endbits);
-            $('#endbits').val(Number(sumofendbits).toFixed(2));
-            sumofshortages+=parseFloat(shortages);
-            $('#shortages').val(Number(sumofshortages).toFixed(2));
-        
-            sumoffabricrecieved+=parseFloat(receivedqty);
-            $('#fab_received').val(Number(sumoffabricrecieved).toFixed(2));
+       
        }
        partiallyreported+=parseFloat(reportingplies);
         // alert(sumofreporting);
