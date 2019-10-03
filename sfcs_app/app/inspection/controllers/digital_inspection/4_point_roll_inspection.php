@@ -16,6 +16,7 @@ if(isset($_GET['parent_id']) or isset($_POST['parent_id']))
 	$parent_id=$_GET['parent_id']  or $_POST['parent_id'];
 	$sno=$_GET['id']  or $_POST['id'];
 }
+$pop_up_path="../sfcs_app/app/inspection/reports/4_point_inspection_report.php";
 $flag = false;
 ?>
 
@@ -148,8 +149,9 @@ $flag = false;
 								<td>".$ins_status."</td>
 								</tr>";
 							}
-                             
-                             ?>	
+							echo "<tr><td><a class='btn btn-primary' href=\"$pop_up_path?id=$parent_id\" onclick=\"Popup1=window.open('$pop_up_path?id=$parent_id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td></tr>";
+							?>
+							
 					      </tbody>
 					    </table>
 					  </div>

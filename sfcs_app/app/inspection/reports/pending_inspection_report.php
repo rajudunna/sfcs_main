@@ -1,5 +1,6 @@
 <?php
  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+
 ?> 
 
 <div class="panel panel-primary">
@@ -25,7 +26,6 @@
     {   
 		$date=$_POST['date'];
 		$sql = "SELECT * FROM `$bai_rm_pj1`.`main_population_tbl` WHERE DATE(date_time)= DATE('$date')";
-		echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$no_of_rows = mysqli_num_rows($sql_result);
 		if($no_of_rows == 0)
@@ -37,7 +37,8 @@
 		{
 			echo "<div class='panel-body'>";
 			echo "<div id='main_div'>";
-			echo "<table id='table1' class = 'table table-striped jambo_table bulk_action table-bordered'><thead>";
+			echo "<div class='table-responsive col-sm-12'>";
+			echo "<table id='table1' class = 'table table-striped jambo_table bulk_action table-bordered' width='100'><thead>";
 			echo "<tr class='headings'>";
 			echo "<th>S No</th>";
 			echo "<th>Lot No</th>";
@@ -65,13 +66,21 @@
 				echo "<td>".$sql_row['rm_color']."</td>";
 				echo "<td>".$sql_row['no_of_rolls']."</td>";
 				echo "<td>".$sql_row['qty']."</td>";
+				
+				$path1= "<a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "4_point_roll_inspection.php", "0", "N") . "&parent_id=$parent_id\">Get Inspection Report</a>";
+				$path2= "<a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "digital_inspection_report_v1.php", "0", "N") . "&parent_id=$parent_id\">Get Inspection Report</a>";
+				$pop_up_path="../sfcs_app/app/inspection/reports/4_point_inspection_report.php";
+				
 				$sql1="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND status<>0";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if(mysqli_num_rows($sql_result1)==0)
+				// echo $sql1;
+				if(mysqli_num_rows($sql_result1)<>0)
 				{
-					echo '<td><div class="col-sm-4" id="populate_div">
-									<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Set Inspection Population"> </center>
-									</div></td>';
+					
+						echo "<td><div class='col-sm-4' id='populate_div'>
+						<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/digital_inspection_report_v1.php", "1", "N") . "&parent_id=$id\">Set Inspection Population</a></center>
+						</div></td>";
+									
 				}	
 				else
 				{
@@ -82,11 +91,12 @@
 
 				$sql12="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND (status<>3 && status<>0)";
 				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if(mysqli_num_rows($sql_result12)>0)
+				if(mysqli_num_rows($sql_result12)==0)
 				{
-					echo '<td><div class="col-sm-4" id="populate_div">
-					<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Proceed for Inspection"> </center>
-					</div></td>';
+					
+					echo "<td><div class='col-sm-4' id='populate_div'>
+						<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/4_point_roll_inspection.php", "1", "N") . "&parent_id=$id\">Proceed for Inspection</a></center>
+						</div></td>";
 				}
 				else
 				{
@@ -94,16 +104,12 @@
 					<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Not Available"> </center>
 					</div></td>';
 				}						
-				$path1= "<a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "4_point_roll_inspection.php", "0", "N") . "&parent_id=$parent_id\">Get Inspection Report</a>";
-				$path1=
-				$path1=
+				
 				$sql121="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND (status<>0 && status<>3)";
 				$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result121)==0)
 				{
-					echo '<td><div class="col-sm-4" id="populate_div">
-					<center>$path1</center>
-					</div></td>';
+					echo "<td><a class='btn btn-primary' href=\"$pop_up_path?id=$id\" onclick=\"Popup1=window.open('$pop_up_path?id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td>";
 				}
 				else
 				{
@@ -113,10 +119,9 @@
 				}
 					echo "</tr>";
 					$s_no++;
-				}
 			}
-                     
-            echo "</div></table></div>";
+		}                     
+            echo "</div></table></div></div>";
     }       
     
                           
