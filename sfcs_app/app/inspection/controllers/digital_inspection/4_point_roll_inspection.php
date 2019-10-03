@@ -149,7 +149,7 @@ $flag = false;
 								<td>".$ins_status."</td>
 								</tr>";
 							}
-							echo "<tr><td><a class='btn btn-primary' href=\"$pop_up_path?id=$parent_id\" onclick=\"Popup1=window.open('$pop_up_path?id=$parent_id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td></tr>";
+							echo "<tr><td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$parent_id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$parent_id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td></tr>";
 							?>
 							
 					      </tbody>
