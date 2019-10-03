@@ -533,7 +533,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                   {
                       $bundle_numbers[]=$sql_rowwip['pac_tid'];
                   }
-                  $sqlwip12="SELECT sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output FROM $brandix_bts.bundle_creation_data WHERE bundle_number in (".implode(",",$bundle_numbers).") and assigned_module='$module'";
+                  $sqlwip12="SELECT sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output FROM $brandix_bts.bundle_creation_data WHERE bundle_number in (".implode(",",$bundle_numbers).")";
                  // echo $sqlwip12."<br>";
                   $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
                   while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
@@ -543,7 +543,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                   unset($bundle_numbers);
                 }
                 ?>
-                  <a href="#" data-toggle="tootip" tile="M-<?php echo $module; ?> WIP :  
+                  <a href="#" data-toggle="tooltip" tile="M-<?php echo $module; ?> WIP :  
                   <?php echo $wip; 
                  
                   //$wip=$sql_rowwip['WIP'];
