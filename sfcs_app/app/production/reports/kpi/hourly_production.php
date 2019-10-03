@@ -93,9 +93,11 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 			// $minutes_29 = $minutes-1;
 
 			$sql="SELECT *,fr.team FROM $bai_pro2.`fr_data` fr LEFT JOIN bai_pro2.`hout`  h ON h.`out_date`=fr.`frdate` WHERE DATE(frdate)='$frdate' GROUP BY fr.team,fr.style,fr.smv ORDER BY fr.team*1";
+			// echo $sql;
 			//    echo $sql.'<br>';
-			// $res=mysqli_query($link,$sql);
+			 $res=mysqli_query($link,$sql);
 			$result=mysqli_query($link,$sql);
+			
 			while ($row = mysqli_fetch_array($result))
 			{
 				echo $row1['style'].'<br>';
@@ -160,9 +162,11 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				// echo $team;
 				//get styles which run in lines
 				$sql1="SELECT distinct style FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
+				//  echo $sql1."</br>";
 				$res1=mysqli_query($link,$sql1);
 
 				$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
+				// echo $sql2;
 				$res2=mysqli_query($link,$sql2);
 
 				$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
@@ -175,7 +179,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				$res5=mysqli_query($link,$sql5);
 
 				$get_nop_query="SELECT fix_nop FROM $bai_pro.pro_plan WHERE date='$frdate' and mod_no='$team'";
-				// echo $get_nop_query;
+				//  echo $get_nop_query;
 				$nop_result=mysqli_query($link,$get_nop_query);
 				while($result=mysqli_fetch_array($nop_result))
 				{
@@ -212,7 +216,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 						<?php 
 							while($row1=mysqli_fetch_array($res1))
 							{
-								echo $row['style'].'<br>';
+								echo $row1['style'].'<br>';
 							}
 						?>
 					</center></td>
