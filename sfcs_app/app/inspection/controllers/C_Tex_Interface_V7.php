@@ -1704,7 +1704,7 @@ $reverse_url= getFullURL($_GET['r'],'trims_inspection_update.php','N');
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/supplier_db.php',1,'R')); 
 
-if(strlen($lot_no)>0 or strlen($lot_ref)>0)
+if(strlen($lot_no)>0 or strlen('$lot_ref')>0)
 {
 echo '<form id="myForm" name="input" action="index.php?r='.$_GET['r'].'" method="post">';
 echo "<input type='hidden' id='head_check' name='head_check' value=''>";
@@ -2486,7 +2486,7 @@ echo '</form>';
   
 for($i=0;$i<$shade_count;$i++)
   {
-  	$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$i]."\"";
+  	$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ('$lot_ref') and ref4=\"".$scount_temp2[$i]."\"";
 	$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row_sc=mysqli_fetch_array($result_sc))
 	{
