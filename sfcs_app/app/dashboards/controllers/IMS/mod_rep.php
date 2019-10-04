@@ -358,7 +358,7 @@
                                                 { 
                                                     if($recevied_qty1 == 0)
                                                     {    
-                                                        echo "N/A";
+                                                        echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$sql_row12['tid']."\">"; 
                                                     }
                                                     else 
                                                     { 

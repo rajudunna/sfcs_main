@@ -58,7 +58,7 @@
             
                 if($output==1)
                 {
-                    $assign_module="update $brandix_bts.bundle_creation_data set assigned_module='$module' where bundle_number='$barcode_number' and operation_id >='$ops_code'";
+                    $assign_module="update $brandix_bts.bundle_creation_data set assigned_module='$module' where bundle_number='$barcode_number'";
                     $assign_module_result=mysqli_query($link,$assign_module) or exit("while retriving assigned_module".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                     $ims_update="update $bai_pro3.ims_log set ims_mod_no='$module' where pac_tid='$barcode_number' and operation_id='$operation_code_ims'";
