@@ -161,7 +161,7 @@
 					</div></td>';
 				}						
 				
-				$sql121="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND (status<>0 && status<>3)";
+				$sql121="SELECT * FROM $bai_rm_pj1.`roll_inspection_child` WHERE parent_id='$id'";
 				$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result121)==0)
 				{

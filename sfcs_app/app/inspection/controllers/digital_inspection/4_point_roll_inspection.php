@@ -83,12 +83,12 @@ $flag = false;
 					    
 							 <?php
 							$url = getFullURLLevel($_GET['r'],'4_point_roll_inspection_child.php',0,'N');
-							$get_details1="select * from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id and status in (1,2,3,4)";
+							$get_details1="select * from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id and status<>0";
 
 							$details1_result=mysqli_query($link,$get_details1) or exit("get_details1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 							$path= getFullURLLevel($_GET['r'], "fabric_inspection_report.php", "0", "R")."?id=$parent_id";
-
+							$val=0;
 							while($row2=mysqli_fetch_array($details1_result))
 							{
 								$roll_id = $row2['supplier_roll_no'];	
@@ -120,36 +120,36 @@ $flag = false;
 								<td>".$row2['item_desc']."</td>
 								<td>".$lot_id."</td>
 								<td>".$row2['rec_qty']."</td>";
-								$sno=0;
+								$sno=0;$ins_status='Pending';$main_points=0;
 								$get_status_details="select sno,inspection_status from $bai_rm_pj1.roll_inspection_child where store_in_tid=".$store_in_id."";
 								//echo $get_status_details;
 								$status_details_result=mysqli_query($link,$get_status_details) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-								while($row5=mysqli_fetch_array($status_details_result))
-								{ 
-									$sno=$row5['sno'];
-									$inspection_status=$row5['inspection_status'];
-								}
-								
-								if($sno>0)
-								{									
-									$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id=".$sno."";	
-									$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								if(mysqli_num_rows($status_details_result)>0)
+								{	
+									while($row5=mysqli_fetch_array($status_details_result))
+									{ 
+										$ins_status=$row5['inspection_status'];
+										$val=1;
+									}
+								}									
+								$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id=".$store_in_id."";	
+								$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								if(mysqli_num_rows($status_details_result2)>0)
+								{
 									while($row52=mysqli_fetch_array($status_details_result2))
 									{ 
 										$main_points=$row52['pnt'];
-									}
-									$ins_status=$inspection_status;
+									}									
 								}
-								else
-								{
-									$ins_status='Pending';
-									$main_points=0;	
-								}								
+																
 								echo"<td>".$main_points."</td>
 								<td>".$ins_status."</td>
 								</tr>";
 							}
+							if($val==1)
+							{
 							echo "<tr><td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$parent_id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$parent_id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td></tr>";
+							}
 							?>
 							
 					      </tbody>

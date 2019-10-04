@@ -1,7 +1,32 @@
 <?php
 include('../../../common/config/config.php');
 $inpsect_id=$_GET['parent_id'];
-$get_details = "select * from $bai_rm_pj1.`inspection_population` where parent_id=".$inpsect_id." and status <>0";
+$get_details21 = "select * from $bai_rm_pj1.`inspection_population` where parent_id=".$inpsect_id."";
+$details_result21 = mysqli_query($link, $get_details21) or exit("get_details Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
+$tot_rolls_data=mysqli_num_rows($details_result21);
+
+$get_inspection_population_info = "select * from $bai_rm_pj1.`roll_inspection_child` where parent_id=".$inpsect_id."";
+$info_result = mysqli_query($link, $get_inspection_population_info) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
+while ($row22 = mysqli_fetch_array($info_result)) 
+{
+	$inspected_per[$row22['store_in_tid']] = $row22['inspected_per'];
+	$inspected_qty[$row22['store_in_tid']] = $row22['inspected_qty'];
+	$width_s[$row22['store_in_tid']] = $row22['width_s'];
+	$width_m[$row22['store_in_tid']] = $row22['width_m'];
+	$width_e[$row22['store_in_tid']] = $row22['width_e'];
+	$actual_height[$row22['store_in_tid']] = $row22['actual_height'];
+	$actual_repeat_height[$row22['store_in_tid']] = $row22['actual_repeat_height'];
+	$skw[$row22['store_in_tid']] = $row22['skw'];
+	$bow[$row22['store_in_tid']] = $row22['bow'];
+	$ver[$row22['store_in_tid']] = $row22['ver'];
+	$gsm[$row22['store_in_tid']] = $row22['gsm'];
+	$comment[$row22['store_in_tid']] = $row22['comment'];
+	$marker_type[$row22['store_in_tid']] = $row22['marker_type'];
+	$inspection_status[$row22['store_in_tid']] = $row22['inspection_status'];
+	$tot_ids[]=	$row22['store_in_tid'];
+}
+
+$get_details = "select * from $bai_rm_pj1.`inspection_population` where store_in_id in (".implode(",",$tot_ids).")";
 $details_result = mysqli_query($link, $get_details) or exit("get_details Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1 = mysqli_fetch_array($details_result))
 {
@@ -23,49 +48,9 @@ while ($row1 = mysqli_fetch_array($details_result))
 	elseif($row1['status']==2)
 	{
 		$status='In Progress';
-	}
-	$tot_ids[]=	$store_in_id;
+	}	
 }
 
-$get_inspection_population_info = "select * from $bai_rm_pj1.`roll_inspection_child` where store_in_tid in (".implode(",",$tot_ids).") and status=3";
-$info_result = mysqli_query($link, $get_inspection_population_info) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
-while ($row22 = mysqli_fetch_array($info_result)) 
-{
-	$inspected_per[$row22['store_in_tid']] = $row22['inspected_per'];
-	$inspected_qty[$row22['store_in_tid']] = $row22['inspected_qty'];
-	$width_s[$row22['store_in_tid']] = $row22['width_s'];
-	$width_m[$row22['store_in_tid']] = $row22['width_m'];
-	$width_e[$row22['store_in_tid']] = $row22['width_e'];
-	$actual_height[$row22['store_in_tid']] = $row22['actual_height'];
-	$actual_repeat_height[$row22['store_in_tid']] = $row22['actual_repeat_height'];
-	$skw[$row22['store_in_tid']] = $row22['skw'];
-	$bow[$row22['store_in_tid']] = $row22['bow'];
-	$ver[$row22['store_in_tid']] = $row22['ver'];
-	$gsm[$row22['store_in_tid']] = $row22['gsm'];
-	$comment[$row22['store_in_tid']] = $row22['comment'];
-	$marker_type[$row22['store_in_tid']] = $row22['marker_type'];
-	$inspection_status[$row22['store_in_tid']] = $row22['inspection_status'];
-}
-
-$get_inspection_population_info = "select * from $bai_rm_pj1.`roll_inspection_child` where store_in_tid in (".implode(",",$tot_ids).") and status=3";
-$info_result = mysqli_query($link, $get_inspection_population_info) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
-while ($row22 = mysqli_fetch_array($info_result)) 
-{
-	$inspected_per[$row22['store_in_tid']] = $row22['inspected_per'];
-	$inspected_qty[$row22['store_in_tid']] = $row22['inspected_qty'];
-	$width_s[$row22['store_in_tid']] = $row22['width_s'];
-	$width_m[$row22['store_in_tid']] = $row22['width_m'];
-	$width_e[$row22['store_in_tid']] = $row22['width_e'];
-	$actual_height[$row22['store_in_tid']] = $row22['actual_height'];
-	$actual_repeat_height[$row22['store_in_tid']] = $row22['actual_repeat_height'];
-	$skw[$row22['store_in_tid']] = $row22['skw'];
-	$bow[$row22['store_in_tid']] = $row22['bow'];
-	$ver[$row22['store_in_tid']] = $row22['ver'];
-	$gsm[$row22['store_in_tid']] = $row22['gsm'];
-	$comment[$row22['store_in_tid']] = $row22['comment'];
-	$marker_type[$row22['store_in_tid']] = $row22['marker_type'];
-	$inspection_status[$row22['store_in_tid']] = $row22['inspection_status'];
-}
 
 
 $get_details1 = "select * from $bai_rm_pj1.`main_population_tbl` where id=$inpsect_id";
@@ -90,10 +75,9 @@ while ($row1112 = mysqli_fetch_array($details_result12))
 	$grn_no = $row1112['po_no'];
 	$color = $row1112['rm_color'];
 	$invoice_no = $row1112['inv_no'];
-	$inv_type = $row1112['uom'];
 	$fab_qua = $row1112['item_desc'];	
 }
-
+$tot_points=0;
 $get_inspection_population_info12 = "select insp_child_id,points,sum(points) as tot from $bai_rm_pj1.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") group by insp_child_id,points";
 $info_result12 = mysqli_query($link, $get_inspection_population_info12) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($info_result12)>0)
@@ -101,8 +85,11 @@ if(mysqli_num_rows($info_result12)>0)
 	while ($row2212 = mysqli_fetch_array($info_result12)) 
 	{
 		$ins_child[$row2212['insp_child_id']][$row2212['points']] = $row2212['tot'];
+		$tot_points=$row2212['tot']+$tot_points;
 	}
 }
+
+	
 ?>
 
 
@@ -1327,7 +1314,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <script>
 function printpr()
 {
-	window.print();
+	//window.print();
 	// var OLECMDID = 7;
 	// /* OLECMDID values:
 	// * 6 - print
@@ -1538,7 +1525,7 @@ tags will be replaced.-->
   <td colspan=2 class=xl7919758>Spec weight(cm)</td>
   <td class=xl7719758 style='border-top:none'>- <?php echo $spec_weight;?></td>
   <td colspan=2 class=xl7919758 style='border-left:none'>No of Rolls</td>
-  <td class=xl7719758 style='border-top:none'>- <?php echo sizeof($tot_ids);?></td>
+  <td class=xl7719758 style='border-top:none'>- <?php echo $tot_rolls_data;?></td>
   <td class=xl1519758></td>
  </tr>
  <tr height=19 style='height:14.4pt'>
@@ -1577,7 +1564,10 @@ tags will be replaced.-->
   <td colspan=2 class=xl7919758>Repeat length</td>
   <td class=xl7719758 style='border-top:none'>- <?php echo $repeat_length;?></td>
   <td colspan=2 class=xl7919758 style='border-left:none'>Average Points</td>
-  <td class=xl7719758 style='border-top:none'>- </td>
+  <td class=xl7719758 style='border-top:none'><?php 
+  $rate = round(($tot_points/array_sum($invoice_qty))*(36/49.21)*100,2);
+	echo "- ".$rate;
+?></td>
   <td class=xl1519758></td>
  </tr>
  <tr height=19 style='height:14.4pt'>
@@ -1689,9 +1679,9 @@ tags will be replaced.-->
   <td colspan=2 rowspan=2 class=xl7519758 style='border-right:.5pt solid black;
   border-bottom:.5pt solid black'>Batch Number</td>
   <td rowspan=2 class=xl8519758 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'>Ticket Length</td>
+  width:48pt'>Ticket Length (<?php echo $uom;?>)</td>
   <td rowspan=2 class=xl8519758 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'>Actual Length</td>
+  width:48pt'>Actual Length (<?php echo $uom;?>)</td>
   <td colspan=3 class=xl7019758 style='border-right:.5pt solid black;
   border-left:none'>Usable Width (cm)</td>
   <td colspan=4 class=xl7019758 style='border-right:.5pt solid black;
@@ -1741,7 +1731,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 	<td class=xl8919758 style='border-top:none'><?php echo $sfcs_roll[$tot_ids[$i]]; ?>   /  <?php echo $supp_roll[$tot_ids[$i]]; ?></td> 
 	<td colspan=2 class=xl9019758 style='border-right:.5pt solid black;border-left:none'><?php echo $batch[$tot_ids[$i]]; ?></td>
 	<td class=xl9219758 style='border-top:none;border-left:none'><?php echo $invoice_qty[$tot_ids[$i]]; $tot_qty_g=$tot_qty_g+$invoice_qty[$tot_ids[$i]];?></td>
-	<td class=xl8919758 style='border-top:none;border-left:none'>(<?php echo $inv_type; ?>)</td>
+	<td class=xl8919758 style='border-top:none;border-left:none'></td>
 	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $width_s[$tot_ids[$i]]; ?></td>
 	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $width_m[$tot_ids[$i]]; ?></td>
 	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $width_e[$tot_ids[$i]]; ?></td>
@@ -1749,8 +1739,12 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 	<td class=xl8919758 style='border-top:none;border-left:none'><?php if($ins_child[$tot_ids[$i]][2]<>''){echo $ins_child[$tot_ids[$i]][2]; $tot=$tot+$ins_child[$tot_ids[$i]][2];}else{ echo "0";}?></td>
 	<td class=xl8919758 style='border-top:none;border-left:none'><?php if($ins_child[$tot_ids[$i]][3]<>''){echo $ins_child[$tot_ids[$i]][3]; $tot=$tot+$ins_child[$tot_ids[$i]][3];}else{ echo "0";}?></td>
 	<td class=xl8919758 style='border-top:none;border-left:none'><?php if($ins_child[$tot_ids[$i]][4]<>''){echo $ins_child[$tot_ids[$i]][4]; $tot=$tot+$ins_child[$tot_ids[$i]][4];}else{ echo "0";}?></td>
-	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $tot; $tot_qty=$tot_qty+$tot;?></td> 
-	<td class=xl8919758 style='border-top:none;border-left:none'>0.00</td>
+	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $tot; $tot_qty=$tot_qty+$tot;
+	$rate=0;
+	$rate = round(($tot/$tot_qty_g)*(36/49.21)*100,2); 
+	
+	?></td> 
+	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $rate; ?></td>
 	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $comment[$tot_ids[$i]]; ?></td>
 	<?php	
 	$count=0;$data='';
@@ -1933,7 +1927,21 @@ for($i=0;$i<sizeof($tot_ids);$i++)
   <td class=xl1519758></td>
   <td class=xl11119758 colspan=3>Accepted</td>
   <td class=xl11319758>&nbsp;</td>
-  <td class=xl6819758 style='border-left:none'>&nbsp;</td>
+  <?php
+	$calclation = round(($tot_qty/$tot_qty_g)*(36/49.21)*100,2); 
+	if($calclation<28)
+	{
+	  ?>
+	  <td class=xl6819758 style='border-left:none;background-color: black;'>&nbsp;</td>
+	  <?php
+	}
+	else
+	{
+	 ?>
+		<td class=xl6819758 style='border-left:none;'>&nbsp;</td>
+	<?php
+	}
+	?>	
   <td class=xl6419758></td>
   <td class=xl6419758></td>
   <td class=xl6419758></td>
@@ -1965,10 +1973,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
   <td class=xl8919758 style='border-left:none'>&nbsp;</td>
   <td class=xl1519758></td>
  </tr>
- <?php
-	$yard=round($tot_qty_g * 0.9144,2);
-	$calclation = round(($tot_qty/$yard)*(36/49.21)*100,2); 
- ?>
+ 
  <tr height=19 style='height:14.4pt'>
   <td height=19 class=xl1519758 style='height:14.4pt'></td>
   <td colspan=2 class=xl9619758 style='border-top:none;'> <?php echo $tot_qty;?></td>
@@ -1980,8 +1985,21 @@ for($i=0;$i<sizeof($tot_ids);$i++)
   <td class=xl1519758></td>
   <td class=xl11119758 colspan=3>Rejected</td>
   <td class=xl11319758>&nbsp;</td>
-  <td class=xl6819758 style='border-left:none'>&nbsp;</td>
-  <td class=xl1519758></td>
+  <?php
+  if($calclation>28)
+	{
+	  ?>
+	  <td class=xl6819758 style='border-left:none;background-color: black;'>&nbsp;</td>
+	  <?php
+	}
+	else
+	{
+	 ?>
+		<td class=xl6819758 style='border-left:none;'>&nbsp;</td>
+	<?php
+	}
+	?>	
+   <td class=xl1519758></td>
   <td class=xl1519758></td>
   <td class=xl1519758>GSM</td>
   <td class=xl6819758 style='border-top:none'>&nbsp;</td>

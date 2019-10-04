@@ -183,7 +183,7 @@ if(isset($_GET['parent_id'])){
 				});
 				$('#fixed_rolls').text(distinctRolls.size);
 				$('#fixed_rolls_input_val').val(distinctRolls.size);
-				$("#fixed_length").text(sumValue);
+				$("#fixed_length").text(sumValue.toFixed(2));
 				$('#fixed_length_input_val').val(sumValue);
 			}
 			/**
@@ -402,7 +402,7 @@ if (isset($_POST['bindingdata'])) {
 		}
 		$lot_array = implode(",", $lot_num);
 	}
-	echo "<script>swal('Data inserted...','Successfully','success')</script>";
+	echo "<script>swal('Get ready form Inspection Process.','Successfully','success')</script>";
 	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') ;
 	echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
 }

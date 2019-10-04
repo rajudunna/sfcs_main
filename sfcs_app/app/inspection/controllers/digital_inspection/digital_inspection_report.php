@@ -8,7 +8,7 @@
 				})
 				if(falg_array.size!=1){
 					e.preventDefault();
-					alert("Please Remove Filter Before Submitting");
+					swal("warning","Please Remove Filter Before Submitting..","warning");
 					//$("#disable_id").prop("disabled", true);
 				}
 			})
@@ -248,7 +248,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 
 					function message_sql()
 					{
-						echo "<script>swal('something went wrong......please try again','','warning');</script>";
+						echo "<script>swal('warning','Data not avaible for this criteria','warning');</script>";
 					}
 
 					if (isset($_POST['submit'])) {
@@ -535,7 +535,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 			mysqli_query($link, $insertbinditems) or exit(message_sql());
 		}
 
-		echo "<script>swal('Data inserted...','Successfully','success')</script>";
+		echo "<script>swal('Successfully Selected.','Successfully','success')</script>";
 		$url = getFullURLLevel($_GET['r'], 'digital_inspection_report_v1.php', 0, 'N');
 		echo "<script>location.href = '" . $url . "&parent_id=$lastinsert_id'</script>";
 	}
