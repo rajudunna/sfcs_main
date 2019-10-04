@@ -621,13 +621,26 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="myModal3" role="dialog">
+    <div class="modal-dialog" style="width: 85%;">
+        <div class="modal-content">
+            <div class="modal-header">Recut Lay Plan
+            <button type="button" class="btn btn-danger" value="Close" id = "cancel" data-dismiss="modal" style="float: right;">Close</button>
+            </div>
+            <div class="modal-body" id='dynamic_table3'>
+                <div  class="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;">
+                <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" /></div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class='row'>
     <div class='panel panel-primary'>
         <div class='panel-heading'>
             <b>Rejections Dashboard</b>
         </div>
         <div class='panel-body'>
-           <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Raised Quantity</th><th>Replaced Quantity</th><th>Eligibility to allow recut</th><th>View</th><th>Recut</th><th>Replace</th>
+           <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Raised Quantity</th><th>Replaced Quantity</th><th>Eligibility to allow recut</th><th>View</th><th>Recut</th><th>Replace</th><th>Layplan</th>
             </thead>
             <?php  
             $s_no = 1;
@@ -657,6 +670,9 @@
                         $button_html_replace = "<button type='button'class='btn btn-success' onclick='editreplacedetails(".$id.")'>Replace</button>";
                         $html_hiding = "RecutPending";
                     }
+                    $style = $row['style'];
+                    $schedule = $row['SCHEDULE'];
+                    $color = $row['color'];
                     echo "<tr><td>$s_no</td>";
                     echo "<td>".$row['style']."</td>";
                     echo "<td>".$row['SCHEDULE']."</td>";
@@ -669,6 +685,8 @@
                     echo "<td>$button_html_recut</td>";
                     echo "<td style='display:none'>$html_hiding</td>"; 
                     echo "<td>$button_html_replace</td>"; 
+                    echo "<td><a class=\"btn btn-xs btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\">Lay Plan</a></td>";
+                    // echo "<td><button type='button'class='btn btn-warning' onclick='recut_layplan(".$id.")'>Lay Plan</button></td>";
                     echo "</tr>";
                     $s_no++;
                 }                
@@ -799,6 +817,24 @@ function viewrecutdetails(id)
             }
 
     });
+}
+function recut_layplan(id){
+    var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
+
+    $('#myModal3').modal('toggle');
+    $.ajax({
+
+			type: "POST",
+			url: function_text+"?recut_layplan_id="+id,
+			//dataType: "json",
+			success: function (response) 
+			{
+                // alert(response);
+                document.getElementById('dynamic_table3').innerHTML = response;
+            }
+
+    });
+
 }
 function editrecutdetails(id)
 {
