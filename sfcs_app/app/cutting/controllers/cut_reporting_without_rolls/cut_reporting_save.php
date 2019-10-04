@@ -8,7 +8,7 @@ error_reporting(0);
 $LEFT_THRESHOLD = 10000;
 $THRESHOLD = 200; //This Constant ensures the loop to force quit if it was struck in an infinte loop
 $LEFT = 0;
-
+ 
 
 $rollwisedata=$_POST['data'];
 $doc_no=$_POST['doc_no'];
@@ -233,7 +233,7 @@ if($plies == 0 && $full_reporting_flag == 1){
 	}
 	else
 	{
-		$query_check='a_plies=0';
+		$query_check='a_plies=0,';
 	}
 
     //inserting to act_cutstatus 
@@ -246,7 +246,7 @@ if($plies == 0 && $full_reporting_flag == 1){
                     remarks=CONCAT(remarks,'$','$remarks'),
                     log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader',joints_endbits=CONCAT(joints_endbits,'$','$joints_endbits')";
    // echo $insert_query;
-   $update_psl_query = "UPDATE $bai_pro3.plandoc_stat_log set act_cut_status='DONE' $query_check 
+   $update_psl_query = "UPDATE $bai_pro3.plandoc_stat_log set $query_check act_cut_status='DONE',manual_flag=1 
                     where doc_no = $doc_no or org_doc_no = $doc_no";
     $insert_result = mysqli_query($link,$insert_query) or exit('Query Error 0 Cut 1');   
     $update_result = mysqli_query($link,$update_psl_query) or exit('Query Error 0 Cut 2');
