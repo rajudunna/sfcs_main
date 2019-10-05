@@ -428,19 +428,22 @@ if($check_qry_result->num_rows > 0)
 
 					}
 
-					$pre_operation_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
-					//echo $pre_operation_check;
-					$result_pre_operation_check = $link->query($pre_operation_check);
-					if($result_pre_operation_check->num_rows > 0)
+					//getting previous and next operations
+					$prev_ops_check = "select previous_operation from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND operation_code = '$op_no'";
+					$result_prev_ops_check = $link->query($prev_ops_check);
+					if($result_prev_ops_check->num_rows > 0)
 					{
-						while($row23 = $result_pre_operation_check->fetch_assoc())
+						while($rows = $result_prev_ops_check->fetch_assoc())
 						{
-							$pre_ops_code = $row23['operation_code'];
+							$prev_operation = $rows['previous_operation'];
 						}
-					}  
+					}
+					else
+					{
+						$prev_operation = '';
+					}
 
-					$dep_ops_check = "select ops_dependency from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND operation_code = '$pre_ops_code'";
-					//echo $dep_ops_check;
+					$dep_ops_check = "select ops_dependency from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND operation_code = '$op_no'";
 					$result_dep_ops_check = $link->query($dep_ops_check);
 					if($result_dep_ops_check->num_rows > 0)
 					{
@@ -453,19 +456,30 @@ if($check_qry_result->num_rows > 0)
 					{
 						$next_operation = '';
 					}
-
-					if($next_operation > 0)
+					
+					if($next_operation>0 || $prev_operation>0)
 					{
-						   $flag = 'parallel_scanning';
-
-						   $get_ops_dep = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and ops_dependency = $next_operation";
-						   $result_ops_dep = $link->query($get_ops_dep);
-						   while($row_dep = $result_ops_dep->fetch_assoc())
-						   {
-							  $operations[] = $row_dep['operation_code'];
-						   }
-						   $emb_operations = implode(',',$operations);
-						   //parallel_scanning($style,$schedule,$color,$input_job,$operation_id);
+						if($next_operation>0)
+						{
+							$get_ops_dep = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and ops_dependency = $next_operation";
+							$result_ops_dep = $link->query($get_ops_dep);
+							   while($row_dep = $result_ops_dep->fetch_assoc())
+							   {
+								  $operations[] = $row_dep['operation_code'];
+							   }
+							   $emb_operations = implode(',',$operations);
+						}
+						if($prev_operation>0)
+						{
+							$get_ops_dep = "select previous_operation from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and ops_dependency = $prev_operation";
+							$result_ops_dep = $link->query($get_ops_dep);
+							   while($row_dep = $result_ops_dep->fetch_assoc())
+							   {
+								  $operations[] = $row_dep['previous_operation'];
+							   }
+							   $emb_operations = implode(',',$operations);
+						}
+						$flag='parallel_scanning';
 					}
 			   
 					//End Here
@@ -598,16 +612,6 @@ if($check_qry_result->num_rows > 0)
 				  }  
 					 if($flag == 'parallel_scanning')
 					 {
-
-						$get_doc = "select DISTINCT(doc_no) as docket_number,size_code FROM $bai_pro3.packing_summary_input WHERE tid = $bundle_no";
-					   // echo $get_doc ;
-						$result_get_doc_qry = $link->query($get_doc);
-						while($row_doc_pack = $result_get_doc_qry->fetch_assoc())
-						{
-							$main_dockets = $row_doc_pack['docket_number'];
-							$size =  $row_doc_pack['size_code'];
-						}
-
 						 //get min qty of previous operations
 						$qry_min_prevops="SELECT MIN(recevied_qty) AS min_recieved_qty FROM $brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND size_title = '$sizes' AND operation_id in ($emb_operations)";
 						//echo $qry_min_prevops;
@@ -933,10 +937,10 @@ if($check_qry_result->num_rows > 0)
 														$result_sql_temp = $link->query($sql_gate) or exit('Gate_pass_child query error in updating');
 
 														}
-														$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$embquantity where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code=$b_op_id";
+														$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$previous_minqty where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code=$b_op_id";
 														$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 													   
-														$update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$embquantity where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code = $pre_ops_code";   
+														$update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previous_minqty where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code = $pre_ops_code";   
 														$update_cps_log_res = $link->query($update_pre_qty);
 													}
 												}
