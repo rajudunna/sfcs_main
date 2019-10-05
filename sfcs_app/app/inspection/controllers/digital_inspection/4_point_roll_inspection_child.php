@@ -225,41 +225,46 @@ while ($row111 = mysqli_fetch_array($details_result1))
                             <tbody>
 
                                 <tr style="background-color: antiquewhite;">
-                                    <th>Item Code</th>
-                                    <th>Roll No</th>
-                                    <th>Inspected %</th>
-                                    <th>Inspected Qty</th>
-                                    <th>Invoice Qty</th>
+                                    <th rowspan="2">Item Code</th>
+                                    <th rowspan="2">Roll No</th>
+                                    <th rowspan="2">Inspected %</th>
+                                    <th rowspan="2">Inspected Qty</th>
+                                    <th rowspan="2">Invoice Qty</th>
                                     <th style=text-align:center colspan=3>Width(cm)</th>
-                                    <th>Actual Height</th>
-                                    <th>Actual Repeat Height</th>
-                                    <th>SKW</th>
-                                    <th>BOW</th>
-                                    <th>Ver</th>
-                                    <th>GSM(s/sqm)</th>
-                                    <th>Comments</th>
-                                    <th>Marker Type</th>
+                                    <th rowspan="2">Actual Height</th>
+                                    <th rowspan="2">Actual Repeat Height</th>
+                                    <th rowspan="2">SKW</th>
+                                    <th rowspan="2">BOW</th>
+                                    <th rowspan="2">Ver</th>
+                                    <th rowspan="2">GSM(s/sqm)</th>
+                                    <th rowspan="2">Comments</th>
+                                    <th rowspan="2">Marker Type</th>
+                                </tr>
+								<tr style="background-color: antiquewhite;">
+								<th><center>S</center></th>
+								<th><center>M</center></th>
+								<th><center>E</center></th>
                                 </tr>
                                 <tr>
                                     <td><input type="hidden" id="item_code" name="item_code" autocomplete="off" value="<?= $item_code ?>"><?php echo $item_code; ?></td>
                                     <td><input type="hidden" id="roll_no" name="roll_no" autocomplete="off" value="<?= $sfcs_roll ?>"><?php echo $sfcs_roll; ?></td>
-                                    <td><input type="text" id="inspected_per" name="inspected_per" autocomplete="off" value="<?= $inspected_per ?>" <?php if ($inspected_per)   ?> class="float"></td>
-                                    <td><input type="text" id="inspected_qty" name="inspected_qty" autocomplete="off" value="<?= $inspected_qty ?>" <?php if ($inspected_qty)   ?> class="float"></td>
+                                    <td><input type="text" id="inspected_per" name="inspected_per" size="4" autocomplete="off" value="<?= $inspected_per ?>" <?php if ($inspected_per)   ?> class="float"></td>
+                                    <td><input type="text" id="inspected_qty" name="inspected_qty" size="4" autocomplete="off" value="<?= $inspected_qty ?>" <?php if ($inspected_qty)   ?> class="float"></td>
                                     <td><input type="hidden" id="invoice_qty" name="invoice_qty" autocomplete="off" value="<?= $invoice_qty ?>" class="float"><?php echo $invoice_qty; ?></td><td>
-                                        <center>S</center><input type="text" id="s" name="s" colspan=3 autocomplete="off" value="<?= $width_s ?>" <?php if ($width_s)   ?> class="float">
+                                       <input type="text" id="s" size="4" name="s" colspan=3 autocomplete="off" value="<?= $width_s ?>" <?php if ($width_s)   ?> class="float">
                                     </td>
                                     <td>
-                                        <center>M</center><input type="text" id="m" name="m" colspan=3 autocomplete="off" value="<?= $width_m ?>" <?php if ($width_m)   ?> class="float">
+                                       <input type="text" id="m" size="4" name="m" colspan=3 autocomplete="off" value="<?= $width_m ?>" <?php if ($width_m)   ?> class="float">
                                     </td>
                                     <td>
-                                        <center>E</center><input type="text" id="e" name="e" colspan=3 autocomplete="off" value="<?= $width_e ?>" <?php if ($width_e)   ?> class="float">
+                                        <input type="text" id="e" size="4" name="e" colspan=3 autocomplete="off" value="<?= $width_e ?>" <?php if ($width_e)   ?> class="float">
                                     </td>
-                                    <td><input type="text" id="actual_height" name="actual_height" autocomplete="off" value="<?= $actual_height ?>" <?php if ($actual_height)   ?> class="float"></td>
-                                    <td><input type="text" id="actual_repeat_height" autocomplete="off" name="actual_repeat_height" value="<?= $actual_repeat_height ?>" <?php if ($actual_repeat_height)   ?> class="float"></td>
-                                    <td><input type="text" id="skw" name="skw" autocomplete="off" value="<?= $skw ?>" <?php if ($skw)   ?>></td>
-                                    <td><input type="text" id="bow" name="bow" autocomplete="off" value="<?= $bow ?>" <?php if ($bow)   ?>></td>
-                                    <td><input type="text" id="ver" name="ver" autocomplete="off" value="<?= $ver ?>" <?php if ($ver)   ?>></td>
-                                    <td><input type="text" id="gsm" name="gsm" autocomplete="off" value="<?= $gsm ?>" <?php if ($gsm)   ?>></td>
+                                    <td><input type="text" id="actual_height" size="4" name="actual_height" autocomplete="off" value="<?= $actual_height ?>" <?php if ($actual_height)   ?> class="float"></td>
+                                    <td><input type="text" id="actual_repeat_height" size="4" autocomplete="off" name="actual_repeat_height" value="<?= $actual_repeat_height ?>" <?php if ($actual_repeat_height)   ?> class="float"></td>
+                                    <td><input type="text" id="skw" size="4" name="skw" autocomplete="off" value="<?= $skw ?>" <?php if ($skw)   ?>></td>
+                                    <td><input type="text" id="bow" size="4"  name="bow" autocomplete="off" value="<?= $bow ?>" <?php if ($bow)   ?>></td>
+                                    <td><input type="text" id="ver" size="4" name="ver" autocomplete="off" value="<?= $ver ?>" <?php if ($ver)   ?>></td>
+                                    <td><input type="text" id="gsm" size="4" name="gsm" autocomplete="off" value="<?= $gsm ?>" <?php if ($gsm)   ?>></td>
                                     <td><input type="text" id="comment" name="comment" autocomplete="off" value="<?= $comment ?>" <?php if ($comment)   ?>></td>
                                     <td><input type="text" id="marker_type" name="marker_type" autocomplete="off" value="<?= $marker_type ?>" <?php if ($marker_type)   ?>></td>
                                 </tr>
@@ -343,7 +348,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                             
                                             
                                         echo '<tr>
-                                        <td><input type="hidden" value = '.$i.' name="submit_value_point[]" ><input type="text" class="code" id="code_' . $i . '" name="code[]" autocomplete="off" value = "' . $code . '"></td>
+                                        <td><input type="hidden" value = '.$i.' name="submit_value_point[]" ><input type="text" class="code" id="code_' . $i . '" name="code[]" size="4" autocomplete="off" value = "' . $code . '"></td>
                                         <td><input type="text" class="damage" value = "' . $description . '" id="damage_' . $i . '" name="damage[]" readonly></td>';
                                             if ($first_point == 1) {
                                                 echo '<td><input type="radio" value="1" id="point1_' . $i . '" name="point_'.$i.'" checked="checked"></td>';
@@ -378,7 +383,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                             ?>
                                             <tr>
                                                 <td><input type="hidden" value='0' name="submit_value_point[]" >
-                                                <input type="text" class="code" id="code_<?php echo $i; ?>" name="code[]" autocomplete="off"></td>
+                                                <input type="text" size="4" class="code" id="code_<?php echo $i; ?>" name="code[]" autocomplete="off"></td>
                                                 <td><input type="text" class="damage" id="damage_<?php echo $i; ?>" name="damage[]" readonly></td>
                                                 <td><input type="radio" value="1" id="point1_<?= $i ?>" name="point_0"></td>
                                                 <td><input type="radio" value="2" id="point2_<?= $i ?>" name="point_0"></td>
@@ -896,6 +901,23 @@ if (isset($_POST['save'])) {
 
 <script>
     $(document).ready(function() {
+		
+		    $('#inspected_per').keyup(function(){
+			  if ($(this).val() > 100){
+				swal('warning','Enter only bellow 100%','warning');
+				$(this).val('');
+			  }
+			});
+
+			$('#inspected_qty').change(function(){
+				
+				var invoice_q= $("#invoice_qty").val();
+				if (parseInt(invoice_q) < $(this).val()  ){
+					swal('warning','Inspected Qty Should be less than Invoice Qty','warning');
+					$(this).val('');
+				 }
+			});
+
         var table_length = $('#points_tbl tbody > tr').length;
         var clicks = table_length-1;
         $('#hidenMaxCount').val(table_length)
@@ -941,7 +963,7 @@ if (isset($_POST['save'])) {
                     if (data.status == 200)
                         $('#' + target_id).val(data.message);
                     else {
-                        alert(data.message);
+                        swal('warning',data.message,'warning');
                         $('#' + e.target.id).val('');
                     }
                 },
