@@ -1314,7 +1314,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <script>
 function printpr()
 {
-	//window.print();
+	window.print();
 	// var OLECMDID = 7;
 	// /* OLECMDID values:
 	// * 6 - print
@@ -1679,9 +1679,9 @@ tags will be replaced.-->
   <td colspan=2 rowspan=2 class=xl7519758 style='border-right:.5pt solid black;
   border-bottom:.5pt solid black'>Batch Number</td>
   <td rowspan=2 class=xl8519758 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'>Ticket Length (<?php echo $uom;?>)</td>
+  width:48pt'>Ticket Length (<?php echo $fab_uom;?>)</td>
   <td rowspan=2 class=xl8519758 width=64 style='border-bottom:.5pt solid black;
-  width:48pt'>Actual Length (<?php echo $uom;?>)</td>
+  width:48pt'>Actual Length (<?php echo $fab_uom;?>)</td>
   <td colspan=3 class=xl7019758 style='border-right:.5pt solid black;
   border-left:none'>Usable Width (cm)</td>
   <td colspan=4 class=xl7019758 style='border-right:.5pt solid black;
@@ -1850,7 +1850,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
   
   <?php
 	$count1=0;$data1='';
-	$get_inspection_population_info1221 = "select code,description from $bai_rm_pj1.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).")";
+	$get_inspection_population_info1221 = "select code,description from $bai_rm_pj1.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") group by code";
 	//echo $get_inspection_population_info1221."<br>";
 	$info_result1221 = mysqli_query($link, $get_inspection_population_info1221) or exit("get_details Error25" . mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($info_result1221)>0)
