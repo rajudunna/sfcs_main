@@ -82,7 +82,7 @@ $allocate_table = " <div class=\"row col-md-12 panel panel-info\">
                                     </thead><tbody>";
 foreach($cats_ids as $key=>$value)
 {
-    $sql="select * from $bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\" and cat_id=$value order by tid";
+    $sql="select * from $bai_pro3.cuttable_stat_log_recut where order_tid=\"$tran_order_tid\" and cat_id=$value order by tid";
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row=mysqli_fetch_array($sql_result))
     {
@@ -103,7 +103,7 @@ foreach($cats_ids as $key=>$value)
             }
         }
 
-        $sql2="select ((allocate_s01+allocate_s02+allocate_s03+allocate_s04+allocate_s05+allocate_s06+allocate_s07+allocate_s08+allocate_s09+allocate_s10+allocate_s11+allocate_s12+allocate_s13+allocate_s14+allocate_s15+allocate_s16+allocate_s17+allocate_s18+allocate_s19+allocate_s20+allocate_s21+allocate_s22+allocate_s23+allocate_s24+allocate_s25+allocate_s26+allocate_s27+allocate_s28+allocate_s29+allocate_s30+allocate_s31+allocate_s32+allocate_s33+allocate_s34+allocate_s35+allocate_s36+allocate_s37+allocate_s38+allocate_s39+allocate_s40+allocate_s41+allocate_s42+allocate_s43+allocate_s44+allocate_s45+allocate_s46+allocate_s47+allocate_s48+allocate_s49+allocate_s50)*plies) as \"total\" from $bai_pro3.allocate_stat_log left join cat_stat_log on  allocate_stat_log.order_tid=cat_stat_log.order_tid where allocate_stat_log.order_tid=\"$tran_order_tid\" and allocate_stat_log.cuttable_ref='$cuttable_ref' and cat_stat_log.category in ($in_categories)";
+        $sql2="select ((allocate_s01+allocate_s02+allocate_s03+allocate_s04+allocate_s05+allocate_s06+allocate_s07+allocate_s08+allocate_s09+allocate_s10+allocate_s11+allocate_s12+allocate_s13+allocate_s14+allocate_s15+allocate_s16+allocate_s17+allocate_s18+allocate_s19+allocate_s20+allocate_s21+allocate_s22+allocate_s23+allocate_s24+allocate_s25+allocate_s26+allocate_s27+allocate_s28+allocate_s29+allocate_s30+allocate_s31+allocate_s32+allocate_s33+allocate_s34+allocate_s35+allocate_s36+allocate_s37+allocate_s38+allocate_s39+allocate_s40+allocate_s41+allocate_s42+allocate_s43+allocate_s44+allocate_s45+allocate_s46+allocate_s47+allocate_s48+allocate_s49+allocate_s50)*plies) as \"total\" from $bai_pro3.allocate_stat_log left join cat_stat_log on  allocate_stat_log.order_tid=cat_stat_log.order_tid where allocate_stat_log.order_tid=\"$tran_order_tid\" and allocate_stat_log.cuttable_ref='$cuttable_ref' and cat_stat_log.category in ($in_categories) and allocate_stat_log.recut_lay_plan='yes' ";
         $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $sql_num_check2=mysqli_num_rows($sql_result2);
         while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -130,7 +130,7 @@ foreach($cats_ids as $key=>$value)
         $allocate_table .= "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty\">Add Ratios</a></center></td>";
 
         $pliespercut=0;
-        $sql15="select * from bai_pro3.allocate_stat_log where cat_ref=$cat_id";
+        $sql15="select * from bai_pro3.allocate_stat_log where cat_ref=$cat_id and recut_lay_plan='yes'";
         $sql_result15=mysqli_query($link, $sql15) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $cut_count = mysqli_num_rows($sql_result15);
         while($sql_row15=mysqli_fetch_array($sql_result15))
@@ -138,7 +138,7 @@ foreach($cats_ids as $key=>$value)
             $pliespercut+=$sql_row15['pliespercut'];
         }
 
-        $sql16="select * from bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\"";
+        $sql16="select * from bai_pro3.cuttable_stat_log_recut where order_tid=\"$tran_order_tid\"";
         $sql_result16=mysqli_query($link, $sql16) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $cut_count1 = mysqli_num_rows($sql_result16);
 
@@ -182,10 +182,16 @@ while($sql_row1=mysqli_fetch_array($sql_result))
             $s_tit[$sizes_code[$s]]=$sql_row1["title_size_s".$sizes_code[$s].""];
         }	
     }
-    for($s=0;$s<sizeof($sizes_code);$s++)
+    $sql1_recut="select * from $bai_pro3.cuttable_stat_log_recut where order_tid=\"$tran_order_tid\" limit 1";
+    $sql1_res_recut=mysqli_query($link, $sql1_recut) or exit("Sql Error255".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_row1_recut=mysqli_fetch_array($sql1_res_recut))
     {
-        $s_ord[$s]=$sql_row1["order_s_s".$sizes_code[$s].""];
+        for($s=0;$s<sizeof($sizes_code);$s++)
+        {
+            $s_ord[$s]=$sql_row1_recut["cuttable_s_s".$sizes_code[$s].""];
+        }
     }
+    
     $flag = $sql_row1['title_flag'];
 }
 if($flag== 1)
@@ -208,7 +214,7 @@ foreach($cats_ids as $key=>$value)
 {
 			
 	$tot_size=array();
-	$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$value order by tid";
+	$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$value  and recut_lay_plan='yes' order by tid";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	// echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -295,15 +301,15 @@ foreach($cats_ids as $key=>$value)
 				
 		}
 		$ratios_table .= "<td class=\"  \"><center>".$sql_row['remarks']."</center></td>";
-		$sql3 ="select * from $bai_pro3.sp_sample_order_db where order_tid='$tran_order_tid'";
-		$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error e".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row3=mysqli_fetch_array($sql_result3))
-	    {
-		$input_qty[$sql_row3['size']] = $sql_row3['input_qty'];		
-	    }			
+		// $sql3 ="select * from $bai_pro3.sp_sample_order_db where order_tid='$tran_order_tid'";
+		// $sql_result3=mysqli_query($link, $sql3) or exit("Sql Error e".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($sql_row3=mysqli_fetch_array($sql_result3))
+	    // {
+		//     $input_qty[$sql_row3['size']] = $sql_row3['input_qty'];		
+	    // }			
 		$ratios_table .= "</tr>";
 		$allc_ref = $sql_row['tid'];
-		$sql2="select * from $bai_pro3.maker_stat_log where allocate_ref=$allc_ref and cuttable_ref > 0";
+		$sql2="select * from $bai_pro3.maker_stat_log where allocate_ref=$allc_ref and cuttable_ref > 0 and recut_lay_plan='yes'";
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{		
@@ -366,7 +372,6 @@ $marker_table = "<div class=\"row col-md-12 panel panel-info\">
                                     </strong>
                                 </span>
                             </center><br/>
-                        </div>
                         <table  class=\"table table-bordered\" style=\"overflow-x:auto;\">
                         <thead>
                             <tr>
@@ -401,13 +406,13 @@ $tran_order_tid1=$tran_order_tid;
 
 foreach($cats_ids as $key=>$value)
 {
-    $get_cat_ref_query="SELECT cat_ref FROM $bai_pro3.allocate_stat_log WHERE order_tid=\"$tran_order_tid1\" and cat_ref=$value group by cat_ref ORDER BY tid";
+    $get_cat_ref_query="SELECT cat_ref FROM $bai_pro3.allocate_stat_log WHERE order_tid=\"$tran_order_tid1\" and cat_ref=$value and recut_lay_plan='yes' group by cat_ref ORDER BY tid";
     $cat_ref_result=mysqli_query($link, $get_cat_ref_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($cat_row=mysqli_fetch_array($cat_ref_result))
     {
         $grand_tot_used_fab = 0;
         $grand_tot_used_binding = 0;
-        $sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and cat_ref=".$cat_row['cat_ref']." ORDER BY ratio";
+        $sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and cat_ref=".$cat_row['cat_ref']." and recut_lay_plan='yes'  ORDER BY ratio";
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($sql_row=mysqli_fetch_array($sql_result))
         {
@@ -446,7 +451,7 @@ foreach($cats_ids as $key=>$value)
                 $binding_consumption=$sql_row2['binding_con'];
             }
 
-            $sql2="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref1";
+            $sql2="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref1  and recut_lay_plan='yes' ";
             $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
             while($sql_row2=mysqli_fetch_array($sql_result2))
             {
@@ -501,7 +506,7 @@ foreach($cats_ids as $key=>$value)
                     $marker_table .=  "<td class=\"word-wrap\"><center>Lay plan Prepared";		
                 }	
                 
-                $sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and tid=$allocate_ref1 ";
+                $sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and tid=$allocate_ref1  and recut_lay_plan='yes' ";
                 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($sql_row2=mysqli_fetch_array($sql_result2))
                 {	
@@ -582,12 +587,133 @@ foreach($cats_ids as $key=>$value)
     }
 }
 $marker_table .= "</tbody></table>
+                        </div>
                     </div>
                 </div>
             </div>";
+
+$docket_creation ="
+<div class=\"col-sm-12 row\">
+	<div class = \"panel panel-info\">
+		<div class=\"panel-heading\" style=\"text-align:center;\">
+		<span class=\"label label-default pull-left\">Available Slots</span>
+				<a data-toggle=\"collapse\" href=\"#docket_creation\"><strong><b>Docket Creation / Edit</b></strong></a>
+			</div>
+			<div id=\"docket_creation\" class=\"panel-collapse collapse-in collapse in\" aria-expanded=\"true\">
+                <div class=\"panel-body\">";
+ 
+
+$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+if(mysqli_num_rows($sql_result)>0)
+{
+	$ord_tbl_name="bai_orders_db_confirm";	
+}
+else{
+	$ord_tbl_name="bai_orders_db";		
+}
+
+
+$docket_creation .= "<div><table class=\"table table-bordered\">";
+
+$docket_creation .= "<thead><tr><th class=\"column-title \"><center>Category</center></th><th class=\"column-title \"><center>Total Cut</center></th><th class=\"column-title \"><center>Ratio Ref</center></th><th class=\"column-title \"><center>MO Status</center></th><th class=\"column-title \"><center>Control</center></th><th class=\"column-title \"><center>Ratio wise Savings%</center></th><th class=\"column-title \"><center>Proceed</center></th><th class=\"column-title \"><center>Remarks</center></th></tr></thead>";
+
+$sql="select * from $bai_pro3.maker_stat_log where order_tid=\"$tran_order_tid\" and allocate_ref > 0 and recut_lay_plan='yes' order by allocate_ref";
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check=mysqli_num_rows($sql_result);
+while($sql_row=mysqli_fetch_array($sql_result))
+{
+	$mkref=$sql_row['tid'];
+	$docket_creation .= "<tr>";
+	// <td class=\"  \"><center>".$mkref."</center></td>";
+	$allocate_ref=$sql_row['allocate_ref'];
+	$cutcount=0;
+	$mklength=$sql_row['mklength'];
+	$cat_ref=$sql_row['cat_ref'];
+	
+	$sql2="select * from $bai_pro3.cat_stat_log where tid=$cat_ref order by catyy DESC";
+	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row2=mysqli_fetch_array($sql_result2))
+	{
+			$cat_yy=$sql_row2['catyy'];
+			$category=$sql_row2['category'];
+			$mo_status=$sql_row2['mo_status'];
+	}
+
+	$docket_creation .= "<td class=\"  \"><center>".$category."</center></td>";
+	
+	$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and tid=$allocate_ref  and recut_lay_plan='yes'";
+	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row2=mysqli_fetch_array($sql_result2))
+	{
+		$ratio=$sql_row2['ratio'];
+		if($sql_row2['pliespercut']>0)
+		{			
+			$cutcount=ceil($sql_row2['plies']/$sql_row2['pliespercut']);
+		}
+		$docket_creation .= "<td class=\"  \"><center>".$cutcount."</center></td>";
+		$docket_creation .= "<td class=\"  \"><center>".$ratio."</center></td>";
+		
+		$totalplies=$sql_row2['allocate_s01']+$sql_row2['allocate_s02']+$sql_row2['allocate_s03']+$sql_row2['allocate_s04']+$sql_row2['allocate_s05']+$sql_row2['allocate_s06']+$sql_row2['allocate_s07']+$sql_row2['allocate_s08']+$sql_row2['allocate_s09']+$sql_row2['allocate_s10']+$sql_row2['allocate_s11']+$sql_row2['allocate_s12']+$sql_row2['allocate_s13']+$sql_row2['allocate_s14']+$sql_row2['allocate_s15']+$sql_row2['allocate_s16']+$sql_row2['allocate_s17']+$sql_row2['allocate_s18']+$sql_row2['allocate_s19']+$sql_row2['allocate_s20']+$sql_row2['allocate_s21']+$sql_row2['allocate_s22']+$sql_row2['allocate_s23']+$sql_row2['allocate_s24']+$sql_row2['allocate_s25']+$sql_row2['allocate_s26']+$sql_row2['allocate_s27']+$sql_row2['allocate_s28']+$sql_row2['allocate_s29']+$sql_row2['allocate_s30']+$sql_row2['allocate_s31']+$sql_row2['allocate_s32']+$sql_row2['allocate_s33']+$sql_row2['allocate_s34']+$sql_row2['allocate_s35']+$sql_row2['allocate_s36']+$sql_row2['allocate_s37']+$sql_row2['allocate_s38']+$sql_row2['allocate_s39']+$sql_row2['allocate_s40']+$sql_row2['allocate_s41']+$sql_row2['allocate_s42']+$sql_row2['allocate_s43']+$sql_row2['allocate_s44']+$sql_row2['allocate_s45']+$sql_row2['allocate_s46']+$sql_row2['allocate_s47']+$sql_row2['allocate_s48']+$sql_row2['allocate_s49']+$sql_row2['allocate_s50'];
+		$remarks=$sql_row2['remarks'];
+
+		$ratiotot=0;
+		for($s=0;$s<sizeof($s_tit);$s++)
+		{
+			$ratiotot+=$sql_row2["allocate_s".$sizes_code[$s].""];
+		}
+	}
+
+	if($mo_status=="Y")
+	{
+		$docket_creation .= "<td class=\"  \" align='center'><span class='label label-success'>YES</span></td>";
+	}
+	else
+	{
+		$docket_creation .= "<td class=\"  \" align='center'><span class='label label-danger'>NO</span></td>";
+	}
+	
+
+    $sql2="select count(pcutdocid) as \"count\" from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid\" and allocate_ref=$allocate_ref ";
+    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_row2=mysqli_fetch_array($sql_result2))
+    {
+        if($sql_row2['count']==0 && $mo_status=="Y" && $cutcount>0 && $totalplies>0)
+        {
+            $docket_creation .= "<td class=\"  \"><center><a class=\"btn btn-xs btn-primary\" href=\"".getFullURL($_GET['r'], "doc_gen_form.php", "N")."&tran_order_tid=$tran_order_tid&mkref=$mkref&allocate_ref=$allocate_ref&cat_ref=$cat_ref&color=$color&schedule=$schedule\">Generate</a></center></td>";
+        }
+        else
+        {
+            $docket_creation .= "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "doc_view_admin.php", "N")."&order_tid=$tran_order_tid&cat_ref=$cat_ref\">View</a></center></td>";	
+        }
+    }
+	
+	
+	$cad_consumption = $mklength/$ratiotot;
+	$realYY = $cat_yy-$bind_con;
+
+	if($totalplies>0 and $cat_yy>0)
+	{
+		$savings=round((($realYY-$cad_consumption)/$realYY)*100,0);		
+	}
+	$docket_creation .= "<td class=\"  \"><center>".$savings."%</center></td>";
+	
+	$docket_creation .= "<td class=\"  \"><center>"; if($savings>=2){$docket_creation .= "<span class='label label-success'>Yes</span>"; } else {$docket_creation .= "<span class='label label-danger'>No</span>"; } $docket_creation .= "</center></td>";
+	
+	$docket_creation .= "<td class=\"  \"><center>".$remarks."</center></td>";
+	$docket_creation .= "</tr>";
+}
+
+$docket_creation .= "</table></div></div>
+</div>
+</div>
+</div>";
+
 $html .= $allocate_table;
 $html .= $ratios_table;
 $html .= $marker_table;
+$html .= $docket_creation;
+
 $html .= "</div></div>";
 echo $html;
 
@@ -599,3 +725,15 @@ function popup(Site)
 	window.open(Site,'PopupName','toolbar=no,statusbar=yes,menubar=yes,location=no,scrollbars=yes,resizable=yes,width=775,height=700');
 }
 </script>
+<style>
+.word-wrap {
+		word-wrap: break-word; 
+		white-space: normal !important; 
+    }
+    .no-wrap {
+        white-space: nowrap;
+    }
+    .fixed {
+        table-layout: fixed;
+    }
+</style>
