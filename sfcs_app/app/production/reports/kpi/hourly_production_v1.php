@@ -197,18 +197,18 @@ if(isset($_GET['submit']))
 							//  echo $sql1;
 							$res1=mysqli_query($link,$sql1);
 							
-							$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."' and schedule='".$row2['schedule']."'  group by style,team,smv";
+							$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."'   group by style,team,smv";
 							// echo $sql2;
 							$res2=mysqli_query($link,$sql2);
 							
-							$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."'  group by style,team,smv";
+							$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."'  and color='".$row['color']."' group by style,team,smv";
 							// echo $sql3;
 							$res3=mysqli_query($link,$sql3);
 							
 							$sql4="SELECT qty FROM $bai_pro3.line_forecast where date='$frdate' AND module='$team'";
 							$res4=mysqli_query($link,$sql4);
 							
-							$sql5="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."'  group by style,team,smv";
+							$sql5="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."' and color='".$row['color']."'  group by style,team,smv";
 							//  echo $sql5;
 							$res5=mysqli_query($link,$sql5);
 							

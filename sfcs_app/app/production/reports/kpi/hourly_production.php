@@ -172,11 +172,15 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				//  echo $sql1."</br>";
 				$res1=mysqli_query($link,$sql1);
 
-				$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."'   and schedule='".$row2['schedule']."'group by style,team,smv,schedule";
+				$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."'   group by style,team,smv,";
 				// echo $sql2;
 				$res2=mysqli_query($link,$sql2);
 
-				$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."'   group by style,team,smv";
+				$sql22="SELECT distinct color FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."' group by style,team,smv";
+				// echo $sql2;
+				$res12=mysqli_query($link,$sql22);
+
+				$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."' and color='".$row['color']."'  group by style,team,smv";
 				// echo $sql3."</br>";
 				$res3=mysqli_query($link,$sql3);
 
@@ -184,12 +188,12 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				//    echo $sql4."</br>";
 				$res4=mysqli_query($link,$sql4);
 
-				$sql5="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."'  group by style,team,smv";
-				//  echo $sql5."</br>";
+				$sql5="SELECT  AVG(smv) AS smv   FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."' and color='".$row['color']."'  group by style,team,smv";
+				//    echo $sql5."</br>";
 				$res5=mysqli_query($link,$sql5);
 
 				$get_nop_query="SELECT fix_nop FROM $bai_pro.pro_plan WHERE date='$frdate' and mod_no='$team'";
-				//  echo $get_nop_query;
+				//   echo $get_nop_query."<br>";
 				$nop_result=mysqli_query($link,$get_nop_query);
 				while($result=mysqli_fetch_array($nop_result))
 				{
@@ -238,6 +242,16 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 							}
 						?>
 					</center></td>
+					 <td style='display:none;'>	
+						<?php 
+							while($row23=mysqli_fetch_array($res12))
+							{
+								echo $row23['color'].'<br>';
+							}
+						?>
+					</center></td> 
+
+
 					<td><center>
 						<?php 
 							while($row3=mysqli_fetch_array($res3))
