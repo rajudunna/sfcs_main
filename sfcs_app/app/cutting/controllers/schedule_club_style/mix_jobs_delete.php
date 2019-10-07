@@ -76,7 +76,7 @@
 
 <?php 
 
-if(isset($_POST['clear'])) 
+if(isset($_POST['clear']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link)) 
 { 
     $style=$_POST['style'];  
     $schedule=$_POST['schedule'];  

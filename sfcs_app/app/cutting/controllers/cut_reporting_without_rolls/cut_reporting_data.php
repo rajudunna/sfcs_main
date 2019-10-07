@@ -16,18 +16,58 @@ $a_sizes_str = rtrim($a_sizes_str,',');
 if($_GET['rejection_docket']!=''){
     $r_doc = $_GET['rejection_docket'];
     //if clubbed docket then getting all child dockets
-    $child_docs_query = "SELECT GROUP_CONCAT(doc_no) as doc_no from $bai_pro3.plandoc_stat_log where org_doc_no = $r_doc ";
+    $child_docs_query = "SELECT GROUP_CONCAT(doc_no) as doc_no,order_tid from $bai_pro3.plandoc_stat_log where org_doc_no = $r_doc ";
     $child_docs_result = mysqli_query($link,$child_docs_query);
     while($row = mysqli_fetch_array($child_docs_result)){
         $doc_no = $row['doc_no'];
+        $order_tid = $row['order_tid'];
         $child_docs = $doc_no;
     }
     getRejectionDetails($r_doc,$child_docs);
     exit();
 }else{
     $doc_no = $_GET['doc_no'];
+    $child_docs_query1 = "SELECT order_tid from $bai_pro3.plandoc_stat_log where doc_no = $doc_no ";
+    // echo $child_docs_query1;
+    $child_docs_result1 = mysqli_query($link,$child_docs_query1);
+    while($row1 = mysqli_fetch_array($child_docs_result1)){
+        $order_tid = $row1['order_tid'];
+        $child_docs = $doc_no;
+    }
 }
 
+$get_shipment_details="select order_style_no as style,order_del_no as schedule from $bai_pro3.bai_orders_db where order_tid ='".$order_tid."'";
+
+$get_shipment_details_res=mysqli_query($link, $get_shipment_details) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_rowx121=mysqli_fetch_array($get_shipment_details_res))
+{
+    $style=$sql_rowx121['style'];
+    $schedule=$sql_rowx121['schedule'];
+}
+$short_ship_status =0;
+$query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
+$shortship_res = mysqli_query($link,$query_short_shipment);
+$count_short_ship = mysqli_num_rows($shortship_res);
+if($count_short_ship >0) {
+    while($row_set=mysqli_fetch_array($shortship_res))
+    {
+        if($row_set['remove_type']==1) {
+            $short_ship_status=1;
+        }else{
+            $short_ship_status=2;
+        }
+    }
+}
+if($short_ship_status==1){
+    $response_data['error'] = '2';
+    echo json_encode($response_data);
+    exit();
+}
+else if($short_ship_status==2){
+    $response_data['error'] = '3';
+    echo json_encode($response_data);
+    exit();
+}
 $doc_status_query  = "SELECT a_plies,p_plies,acutno,act_cut_status,order_tid,org_doc_no,remarks,($a_sizes_sum) as ratio 
                     from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
 $doc_status_result = mysqli_query($link,$doc_status_query);

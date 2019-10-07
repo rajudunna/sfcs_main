@@ -5,7 +5,10 @@ kirang/ 2015-02-25/ Service Request #244611 :  Add Remarks Tab in Cut plan (for 
 kirang/2016-12-27/ CR: 536: Adding MPO Number in Cut Plan
 -->
 <?php 
+
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+
+
 $url1 = getFullURL($_GET['r'],'excess_cut.php','N');
 ?>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/table2CSV.js',2,'R')?>"></script>
@@ -1427,8 +1430,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<td class=\"b1\"><a href=\"dumindu/order_allocation_form2.php?tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id\"  onclick='".'alert("Cuttable Quantity Fullfilled")'."'>Update</a></td>";
 	} */
 	//$check_id_csv=$cuttable_ref;
-	echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty\">Add Ratios</a></center></td>";
-	$sql17="select * from bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and recut_lay_plan='no'";
+	
+	
+	echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&style=$style&schedule=$schedule&color=$color\">Add Ratios</a></center></td>";
+	$sql17="select * from bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\"";
     // echo $sql15;
     $sql_result27=mysqli_query($link, $sql17) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$cut_count_new = mysqli_num_rows($sql_result27);
@@ -2345,4 +2350,5 @@ $(document).ready(function(){
         event.preventDefault();
      }
    }   
+   
 </script>
