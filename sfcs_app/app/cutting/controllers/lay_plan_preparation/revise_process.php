@@ -27,10 +27,10 @@ div.block
 $allocate_ref=$_GET['allocate_ref'];
 $tran_order_tid=$_POST['tran_order_tid'];
 
-$sql="update $bai_pro3.allocate_stat_log set mk_status=3 where tid=$allocate_ref";
+$sql="update $bai_pro3.allocate_stat_log set mk_status=3 where tid=$allocate_ref and recut_lay_plan='no'";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$sql="select * from $bai_pro3.bai_orders_db where order_tid=(select order_tid from $bai_pro3.allocate_stat_log where tid=$allocate_ref)";
+$sql="select * from $bai_pro3.bai_orders_db where order_tid=(select order_tid from $bai_pro3.allocate_stat_log where tid=$allocate_ref and recut_lay_plan='no')";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);

@@ -1433,7 +1433,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	
 	echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&style=$style&schedule=$schedule&color=$color\">Add Ratios</a></center></td>";
-	$sql17="select * from bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\"";
+	$sql17="select * from bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and recut_lay_plan='no'";
     // echo $sql15;
     $sql_result27=mysqli_query($link, $sql17) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$cut_count_new = mysqli_num_rows($sql_result27);
@@ -1598,7 +1598,7 @@ while($sql_row1=mysqli_fetch_array($sql_result))
 
 
 $sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and recut_lay_plan='no' order by tid";
-//echo $sql;
+// echo $sql;
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);

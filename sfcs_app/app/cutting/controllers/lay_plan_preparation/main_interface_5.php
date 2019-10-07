@@ -97,7 +97,7 @@ echo "<div>
 							$binding_consumption=$sql_row2['binding_con'];
 						}
 
-						$sql2="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref1";
+						$sql2="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref1 and recut_lay_plan='no'";
 						$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row2=mysqli_fetch_array($sql_result2))
 						{
@@ -153,7 +153,7 @@ echo "<div>
 								echo "<td class=\"word-wrap\"><center>Lay plan Prepared";		
 							}	
 							
-							$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and tid=$allocate_ref1 ";
+							$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and tid=$allocate_ref1 and recut_lay_plan='no'";
 							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row2=mysqli_fetch_array($sql_result2))
 							{	

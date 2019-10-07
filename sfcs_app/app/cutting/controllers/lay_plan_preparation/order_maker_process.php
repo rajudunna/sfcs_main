@@ -133,7 +133,7 @@ if(isset($_POST['update']))
 				
 				$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 				
-				$sql="update $bai_pro3.allocate_stat_log set mk_status=2 where tid=$allocate_ref";
+				$sql="update $bai_pro3.allocate_stat_log set mk_status=2 where tid=$allocate_ref and recut_lay_plan='no'";
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				
@@ -149,7 +149,7 @@ if(isset($_POST['update']))
 				}
 				
 				$allo_c=array();
-				$sql="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref";
+				$sql="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref and recut_lay_plan='no'";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{

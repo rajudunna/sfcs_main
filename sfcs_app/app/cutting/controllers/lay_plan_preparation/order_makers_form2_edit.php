@@ -269,7 +269,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 //echo "</table>";
 
 
-$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and tid=$allocate_ref";
+$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and tid=$allocate_ref and recut_lay_plan='no'";
 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -434,7 +434,7 @@ echo "<h2><span class=\"label label-default\">Reference of Existing Workouts:</s
 
 
 $allo_c=array();
-$sql="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref";
+$sql="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref and recut_lay_plan='no'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {

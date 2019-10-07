@@ -547,7 +547,7 @@ $aoq_s50=0;
 
 
 
-$sql2="select sum(allocate_s01 * plies) as \"s01\", sum(allocate_s02 * plies) as \"s02\", sum(allocate_s03 * plies) as \"s03\", sum(allocate_s04 * plies) as \"s04\", sum(allocate_s05 * plies) as \"s05\", sum(allocate_s06 * plies) as \"s06\", sum(allocate_s07 * plies) as \"s07\", sum(allocate_s08 * plies) as \"s08\", sum(allocate_s09 * plies) as \"s09\", sum(allocate_s10 * plies) as \"s10\", sum(allocate_s11 * plies) as \"s11\", sum(allocate_s12 * plies) as \"s12\", sum(allocate_s13 * plies) as \"s13\", sum(allocate_s14 * plies) as \"s14\", sum(allocate_s15 * plies) as \"s15\", sum(allocate_s16 * plies) as \"s16\", sum(allocate_s17 * plies) as \"s17\", sum(allocate_s18 * plies) as \"s18\", sum(allocate_s19 * plies) as \"s19\", sum(allocate_s20 * plies) as \"s20\", sum(allocate_s21 * plies) as \"s21\", sum(allocate_s22 * plies) as \"s22\", sum(allocate_s23 * plies) as \"s23\", sum(allocate_s24 * plies) as \"s24\", sum(allocate_s25 * plies) as \"s25\", sum(allocate_s26 * plies) as \"s26\", sum(allocate_s27 * plies) as \"s27\", sum(allocate_s28 * plies) as \"s28\", sum(allocate_s29 * plies) as \"s29\", sum(allocate_s30 * plies) as \"s30\", sum(allocate_s31 * plies) as \"s31\", sum(allocate_s32 * plies) as \"s32\", sum(allocate_s33 * plies) as \"s33\", sum(allocate_s34 * plies) as \"s34\", sum(allocate_s35 * plies) as \"s35\", sum(allocate_s36 * plies) as \"s36\", sum(allocate_s37 * plies) as \"s37\", sum(allocate_s38 * plies) as \"s38\", sum(allocate_s39 * plies) as \"s39\", sum(allocate_s40 * plies) as \"s40\", sum(allocate_s41 * plies) as \"s41\", sum(allocate_s42 * plies) as \"s42\", sum(allocate_s43 * plies) as \"s43\", sum(allocate_s44 * plies) as \"s44\", sum(allocate_s45 * plies) as \"s45\", sum(allocate_s46 * plies) as \"s46\", sum(allocate_s47 * plies) as \"s47\", sum(allocate_s48 * plies) as \"s48\", sum(allocate_s49 * plies) as \"s49\", sum(allocate_s50 * plies) as \"s50\" from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cuttable_ref=$check_id";
+$sql2="select sum(allocate_s01 * plies) as \"s01\", sum(allocate_s02 * plies) as \"s02\", sum(allocate_s03 * plies) as \"s03\", sum(allocate_s04 * plies) as \"s04\", sum(allocate_s05 * plies) as \"s05\", sum(allocate_s06 * plies) as \"s06\", sum(allocate_s07 * plies) as \"s07\", sum(allocate_s08 * plies) as \"s08\", sum(allocate_s09 * plies) as \"s09\", sum(allocate_s10 * plies) as \"s10\", sum(allocate_s11 * plies) as \"s11\", sum(allocate_s12 * plies) as \"s12\", sum(allocate_s13 * plies) as \"s13\", sum(allocate_s14 * plies) as \"s14\", sum(allocate_s15 * plies) as \"s15\", sum(allocate_s16 * plies) as \"s16\", sum(allocate_s17 * plies) as \"s17\", sum(allocate_s18 * plies) as \"s18\", sum(allocate_s19 * plies) as \"s19\", sum(allocate_s20 * plies) as \"s20\", sum(allocate_s21 * plies) as \"s21\", sum(allocate_s22 * plies) as \"s22\", sum(allocate_s23 * plies) as \"s23\", sum(allocate_s24 * plies) as \"s24\", sum(allocate_s25 * plies) as \"s25\", sum(allocate_s26 * plies) as \"s26\", sum(allocate_s27 * plies) as \"s27\", sum(allocate_s28 * plies) as \"s28\", sum(allocate_s29 * plies) as \"s29\", sum(allocate_s30 * plies) as \"s30\", sum(allocate_s31 * plies) as \"s31\", sum(allocate_s32 * plies) as \"s32\", sum(allocate_s33 * plies) as \"s33\", sum(allocate_s34 * plies) as \"s34\", sum(allocate_s35 * plies) as \"s35\", sum(allocate_s36 * plies) as \"s36\", sum(allocate_s37 * plies) as \"s37\", sum(allocate_s38 * plies) as \"s38\", sum(allocate_s39 * plies) as \"s39\", sum(allocate_s40 * plies) as \"s40\", sum(allocate_s41 * plies) as \"s41\", sum(allocate_s42 * plies) as \"s42\", sum(allocate_s43 * plies) as \"s43\", sum(allocate_s44 * plies) as \"s44\", sum(allocate_s45 * plies) as \"s45\", sum(allocate_s46 * plies) as \"s46\", sum(allocate_s47 * plies) as \"s47\", sum(allocate_s48 * plies) as \"s48\", sum(allocate_s49 * plies) as \"s49\", sum(allocate_s50 * plies) as \"s50\" from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cuttable_ref=$check_id and recut_lay_plan='no'";
 // mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error124".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check2=mysqli_num_rows($sql_result2);
@@ -718,7 +718,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 }
 
-$sql="select * from $bai_pro3.allocate_stat_log where cat_ref=$cat_id";
+$sql="select * from $bai_pro3.allocate_stat_log where cat_ref=$cat_id and recut_lay_plan='no'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error789".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
@@ -738,7 +738,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 $ratiocount=0;
 
-$sql="select max(ratio) as \"ratio\" from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cuttable_ref=$check_id";
+$sql="select max(ratio) as \"ratio\" from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cuttable_ref=$check_id and recut_lay_plan='no'";
 // mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error741".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
