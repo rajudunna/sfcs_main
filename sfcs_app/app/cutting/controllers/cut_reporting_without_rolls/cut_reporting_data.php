@@ -4,7 +4,7 @@ error_reporting(1);
 
 $response_data = array();
 $op_code = 15;
-
+ 
 foreach($sizes_array as $size){
     $a_sizes_sum .= 'a_'.$size.'+';
     $a_sizes_str .= 'a_'.$size.',';
@@ -68,7 +68,7 @@ else if($short_ship_status==2){
     echo json_encode($response_data);
     exit();
 }
-$doc_status_query  = "SELECT a_plies,p_plies,acutno,act_cut_status,order_tid,org_doc_no,remarks,($a_sizes_sum) as ratio 
+$doc_status_query  = "SELECT manual_flag,a_plies,p_plies,acutno,act_cut_status,order_tid,org_doc_no,remarks,($a_sizes_sum) as ratio 
                     from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
 $doc_status_result = mysqli_query($link,$doc_status_query);
 if(mysqli_num_rows($doc_status_result)>0){
@@ -76,6 +76,7 @@ if(mysqli_num_rows($doc_status_result)>0){
     $a_plies = $row['a_plies'];
     $p_plies = $row['p_plies'];
     $act_cut_status = $row['act_cut_status'];
+    $manual_flag = $row['manual_flag'];
    
     $order_tid = $row['order_tid'];
     $org_doc_no = $row['org_doc_no'];
@@ -211,7 +212,7 @@ if($act_cut_status == 'DONE'){
 
 
 
-if($a_plies == $p_plies && $act_cut_status == 'DONE'){
+if($a_plies == $p_plies && $act_cut_status == 'DONE' && $manual_flag==0){
     $response_data['cut_done']  = 1;
     $response_data['avl_plies'] = 0;
     $response_data['a_plies']  = $p_plies;
@@ -221,7 +222,7 @@ if($a_plies == $p_plies && $act_cut_status == 'DONE'){
     $response_data['a_plies']  = 0;
 }
 
-if($a_plies != $p_plies && $act_cut_status == 'DONE'){
+if($a_plies != $p_plies && $act_cut_status == 'DONE' && $manual_flag==0){
     $response_data['avl_plies'] = $p_plies - $a_plies;
     $response_data['partial'] = 1;
     $response_data['a_plies']  = $a_plies;
@@ -240,7 +241,7 @@ while($row=mysqli_fetch_array($cps_full_status_result)){
         $response_data['cut_done'] = 1;
     }    
 }            
-if($response_data['cut_done'] == 1 && $fully_report =0 )
+if($response_data['cut_done'] == 1 && $manual_flag = 1)
     $response_data['partial']  = 0;        
 
 if(!in_array($category,$fabric_categories_array) ){

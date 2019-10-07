@@ -90,7 +90,7 @@ $uom_ref=$fab_uom;
 $child_lots="";
 $symbol='"';
 
-$sql="select group_concat(right(lot_no,4) SEPARATOR \" /\") as child_lots from $bai_rm_pj1.sticker_report where REPLACE(REPLACE(batch_no,".$symbol."'".$symbol.",".$symbol."".$symbol."),'".$symbol."','')=\"".$ref_batch_no."\" and REPLACE(REPLACE(inv_no,".$symbol."'".$symbol.",".$symbol."".$symbol."),'".$symbol."','')=\"".$ref_inv_no."\" and item=\"".$item."\" and lot_no not in ($lot_no)";
+$sql="select group_concat(right(lot_no,4) SEPARATOR \" /\") as child_lots from $bai_rm_pj1.sticker_report where REPLACE(REPLACE(batch_no,".$symbol."'".$symbol.",".$symbol."".$symbol."),'".$symbol."','')=\"".$ref_batch_no."\" and REPLACE(REPLACE(inv_no,".$symbol."'".$symbol.",".$symbol."".$symbol."),'".$symbol."','')=\"".$ref_inv_no."\" and item=\"".$item."\" and lot_no not in ('$lot_no')";
 // echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -100,7 +100,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 $sql="select * from $bai_rm_pj1.store_in where lot_no like \"%".trim($lot_no)."%\"";
 //echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 $tot_labels=mysqli_num_rows($sql_result);
 $x=1;
 //$sql_row=mysqli_fetch_array($sql_result)
