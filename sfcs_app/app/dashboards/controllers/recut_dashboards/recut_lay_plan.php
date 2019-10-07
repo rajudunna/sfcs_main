@@ -108,7 +108,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
         }
     }
 }
-$allocate_table = " <div class=\"row col-md-12 panel panel-info\">
+$allocate_table = " <div class=\"row col-md-12\">
+                            <div class=\"panel panel-info\">
                             <div class=\"panel-heading\" style=\"text-align:center;\">
                                 <a data-toggle=\"collapse\" href=\"#Allocation\"><strong><b>Allocation</b></strong></a>
                             </div>
@@ -206,8 +207,9 @@ foreach($cats_ids as $key=>$value)
 $allocate_table .= "</tbody></table>
                 </div>
             </div>
-        </div><br/>";
-$ratios_table = "<div class=\"row col-md-12 panel panel-info\">
+        </div></div><br/>";
+$ratios_table = "<div class=\"row col-md-12\">
+                    <div class=\"panel panel-info\">
                     <div class=\"panel-heading\" style=\"text-align:center;\">
                         <a data-toggle=\"collapse\" href=\"#Ratios\"><strong><b>Ratios</b></strong></a>
                     </div>
@@ -374,9 +376,10 @@ foreach($cats_ids as $key=>$value)
 $ratios_table .= "</tbody></table>
                 </div>
                 </div>
-                </div>";
+                </div></div>";
 
-$marker_table = "<div class=\"row col-md-12 panel panel-info\">
+$marker_table = "<div class=\"row col-md-12\">
+                <div class=\"panel panel-info\">
                 <div class=\"panel-heading\" style=\"text-align:center;\">
                     <a data-toggle=\"collapse\" href=\"#Marker\"><strong><b>Marker</b></strong></a>
                 </div>
@@ -610,7 +613,7 @@ $marker_table .= "</tbody></table>
                         </div>
                     </div>
                 </div>
-            </div>";
+            </div></div>";
 
 $docket_creation ="
 <div class=\"col-sm-12 row\">
