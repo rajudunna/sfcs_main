@@ -1012,7 +1012,7 @@ function packingReversal($data)
 					// echo $bcd_temp_insert_query.'<br>';
 					mysqli_query($link,$bcd_temp_insert_query);
 				}
-				$result_array['status'] = 'Carton '.$carton_id.' is Reversed';
+				 $result_array['status'] = 'Carton '.$carton_id.' is Reversed';
 		        echo json_encode($result_array);
 		        die();
 			}
