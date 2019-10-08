@@ -16,7 +16,7 @@ if($_GET['status']){
 }else{
     $status=$argv[1];
 }
-$operation=15;
+$operation=10;
 $transactions_query = "SELECT * from m3_bulk_ops_rep_db.m3_bulk_transactions where response_status='$status' and m3_trail_count < 4 ";
 $transaction_result = mysqli_query($link_sfcs, $transactions_query) or 
                     exit("Error at getting transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -88,7 +88,7 @@ while($row=mysqli_fetch_array($transaction_result))
             }
             else if ($api_type == 'opn')
             {
-                $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&REMK=$transaction_id&OPNO=$op_code&DPLG=$workstation_id&SCQA=$quantity&MAQA=$quantity&SCRE=$reason&RPDT=$api_date&RPTM=$api_time&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+                $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&REMK=$transaction_id&OPNO=$op_code&DPLG=$workstation_id&SCQA=$quantity&MAQA=$quantity&SCRE=$reason&RPDT=$api_date&RPTM=$api_time&DSP1=1&DSP2=1&DSP3=1&DSP4=1&EMNO=$cut_no";
             }
 
             else
@@ -149,7 +149,7 @@ while($row=mysqli_fetch_array($transaction_result))
             }
             else if ($api_type == 'opn')
             {
-                $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&OPNO=$op_code&DPLG=$workstation_id&MAQA=$quantity&REMK=$transaction_id&RPDT=$api_date&RPTM=$api_time&DSP1=1&DSP2=1&DSP3=1&DSP4=1";
+                $api_url = $host.":".$port."/m3api-rest/execute/PMS070MI/RptOperation?CONO=$company_num&FACI=$plant_code&MFNO=$mo_no&OPNO=$op_code&DPLG=$workstation_id&MAQA=$quantity&REMK=$transaction_id&RPDT=$api_date&RPTM=$api_time&DSP1=1&DSP2=1&DSP3=1&DSP4=1&EMNO=$cut_no";
             }
             else
             {

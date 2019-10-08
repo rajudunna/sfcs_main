@@ -4,18 +4,21 @@ $start_timestamp = microtime(true);
 error_reporting(0);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\app\jobs\M3_reporting_old\config_old.php');
-$cur_date = date('Y-m-d H:i:s');
+$cur_time = date('H:i:s');
+
 $add_filter_qry="IF(m3_op_des in ('ASPS','ASPR','BSPS','BSPR'),'1',IF(m3_op_des in ('SIN','PS','PR','CUT','LAY'),'01',IF(sfcs_mod_no>0,LPAD(CAST(sfcs_mod_no as SIGNED),2,0),'01')))";
 
-$sql="SELECT *,sum(sfcs_qty) as qty,group_concat(sfcs_tid) as ids,concat('$facility_code_old',m3_op_des,$add_filter_qry) as work_center FROM `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log` where sfcs_status ='10' and m3_bulk_tran_id IS NULL group by m3_mo_no,m3_op_code,sfcs_reason";
+$sql="SELECT *,sum(sfcs_qty) as qty,group_concat(sfcs_tid) as ids,concat('$facility_code_old',m3_op_des,$add_filter_qry) as work_center FROM `m3_bulk_ops_rep_db`.`m3_sfcs_tran_log` where sfcs_status ='10' and m3_bulk_tran_id IS NULL  group by m3_mo_no,m3_op_code,sfcs_job_no,sfcs_reason";
 $transaction_result=mysqli_query($link_sfcs, $sql) or exit("m3_transactions ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($transaction_result))
 {
-    $mo_number = $row['m3_mo_no'];
+	
+    $sfcs_date = $row['sfcs_date'];
+	$mo_number = $row['m3_mo_no'];
     $op_code = $row['m3_op_code'];
     $workstation_id = $row['work_center'];
     $quantity = $row['qty'];
-    $remarks = $row['sfcs_remarks'];
+    $remarks = $row['sfcs_job_no'];
     $log_user = $row['sfcs_log_user'];
     $tran_status_code = 0;
     $shift = $row['sfcs_shift'];
@@ -29,11 +32,12 @@ while($row=mysqli_fetch_array($transaction_result))
     $date_time = $row['sfcs_log_time'];
     $ids=$row['ids'];  
     $api_type='opn';
+	$cur_date = date('Y-m-d H:i:s', strtotime("$sfcs_date $cur_time"));
 	if($op_code==200)
 	{
 		$inserting_into_m3_tran_log1 = "INSERT INTO m3_bulk_ops_rep_db.`m3_bulk_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`m3_ops_code`,`response_status`,`m3_trail_count`,`api_type`)
         VALUES ('$cur_date','$mo_number','$quantity','$reason','$remarks','$log_user','$tran_status_code','$module_no','$shift','$op_code','$op_des','$ref_no','$workstation_id','$m3_ops_code','$response_status','$m3_trail_count','fg')";
-		
+		mysqli_query($link_sfcs,$inserting_into_m3_tran_log1) or exit("While inserting into m3_tranlog2".mysqli_error($GLOBALS["___mysqli_ston"]));	
 		$inserting_into_m3_tran_log = "INSERT INTO m3_bulk_ops_rep_db.`m3_bulk_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`m3_ops_code`,`response_status`,`m3_trail_count`,`api_type`)
         VALUES ('$cur_date','$mo_number','$quantity','$reason','$remarks','$log_user','$tran_status_code','$module_no','$shift','$op_code','$op_des','$ref_no','$workstation_id','$m3_ops_code','$response_status','$m3_trail_count','$api_type')";
         
