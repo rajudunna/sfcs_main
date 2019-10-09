@@ -604,11 +604,7 @@ if (isset($_POST['confirm'])) {
                     } 
                     $flag_var=0;
                 }
-            }
-            echo "<script>swal('Data Update...','Successfully','success')</script>";
-            $url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N');
-            echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
-            
+            }                  
         }
         else 
         {
@@ -847,10 +843,6 @@ if (isset($_POST['save'])) {
             
         
             }
-            echo "<script>swal('Data Update...','Successfully','success')</script>";
-            $url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N');
-            echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
-          die();
         }
         else 
         {
@@ -890,7 +882,7 @@ if (isset($_POST['save'])) {
             echo $update_status."<br>";
             $result_query_update = $link->query($update_status) or exit('query error in updating222---');
         }
-        echo "<script>swal('Confirmation Updated..','Successfully','success')</script>";
+        echo "<script>swal('Data Updated..','Successfully','success')</script>";
         $url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N');
         echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
         die();
