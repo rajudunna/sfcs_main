@@ -614,8 +614,7 @@ if (isset($_POST['confirm'])) {
             $insert_query = "insert into $bai_rm_pj1.roll_inspection_child(inspection_status,inspected_per,inspected_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,parent_id,status,store_in_tid) values ('$inspection_status','$inspected_per','$inspected_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type','$id_parent','3','$store_id')";
             $result_query = $link->query($insert_query) or exit('query error in inserting11111');
             $roll_id = $store_id;
-            echo $_POST['submit_value_point'];
-            die();
+        
             $array_point_size=$_POST['submit_value_point'];
             if(sizeof($array_point_size)>0)
             {
@@ -834,7 +833,6 @@ if (isset($_POST['save'])) {
                 
                     if($flag_var!=''){
                         $insert_four_points = "insert ignore into $bai_rm_pj1.four_points_table(insp_child_id,code,description,points) values('$roll_id','".$code[$i]."','".$damage[$i]."',$flag_var)";
-                        echo $insert_four_points;
                         mysqli_query($link, $insert_four_points) or exit("third ErrorError-2" . mysqli_error($GLOBALS["___mysqli_ston"]));
                         $i++;
                     }
@@ -873,7 +871,6 @@ if (isset($_POST['save'])) {
                     
                         if($flag_var!=''){
                             $insert_four_points = "insert ignore into $bai_rm_pj1.four_points_table(insp_child_id,code,description,points) values('$roll_id','".$code[$i]."','".$damage[$i]."',$flag_var)";
-                            echo $insert_four_points;
                             mysqli_query($link, $insert_four_points) or exit("third ErrorError-2" . mysqli_error($GLOBALS["___mysqli_ston"]));
                             $i++;
                         }
