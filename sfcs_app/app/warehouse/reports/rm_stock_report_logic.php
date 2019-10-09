@@ -82,6 +82,16 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
             $qty_balance=$qty_rec+$qty_return- $qty_issued;
 		}
 	}
+
+	$sql_mrn="SELECT sum(ROUND(iss_qty,2)) as mrn_qty FROM `bai_rm_pj2`.`mrn_out_allocation`  WHERE  lable_id = \"$tid\" and DATE(log_time)=\"$current_date\" GROUP BY lable_id";
+    $sql_result_mrn =$link->query($sql_mrn);
+    if(mysqli_num_rows($sql_result_mrn)> 0) {
+        while ($row_mrn = $sql_result_mrn->fetch_assoc())
+        {
+            $qty_issued=$qty_issued+$row_mrn["mrn_qty"];
+            $qty_balance=$qty_rec+$qty_return - $qty_issued;
+		}
+	}
 	
 	$sqlz="select sum(ROUND(qty_returned,2)) as qty FROM `bai_rm_pj1`.`store_returns` where log_stamp > \"$log_time\" and tran_tid=\"$tid\" and date=\"$current_date\"";
     $sql_result1z =$link->query($sqlz);
@@ -165,6 +175,17 @@ if($max_id>0){
 				}
 			}
 			
+
+			$sql_mrn="SELECT sum(ROUND(iss_qty,2)) as mrn_qty FROM `bai_rm_pj2`.`mrn_out_allocation`  WHERE  lable_id = \"$tid\" and DATE(log_time)=\"$current_date\" GROUP BY lable_id";
+			$sql_result_mrn =$link->query($sql_mrn);
+			if(mysqli_num_rows($sql_result_mrn)> 0) {
+				while ($row_mrn = $sql_result_mrn->fetch_assoc())
+				{
+					$qty_issued=$qty_issued+$row_mrn["mrn_qty"];
+					$qty_balance=$qty_rec+$qty_return- $qty_issued;
+				}
+			}
+
 			$sqlz="select sum(ROUND(qty_returned,2)) as qty FROM `bai_rm_pj1`.`store_returns` where log_stamp > \"$log_time\" and tran_tid=\"$tid\" and date=\"$current_date\"";
 			$sql_result1z =$link->query($sqlz);
 			if(mysqli_num_rows($sql_result1z)> 0) {

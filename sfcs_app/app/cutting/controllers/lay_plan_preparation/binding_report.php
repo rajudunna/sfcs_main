@@ -87,7 +87,7 @@ include('dbconf.php');
 //}
 //echo $sql;exit;
 
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 echo "<div class=\"row\"><div class=\"col-sm-3\"><label>Select Style:</label><select class='form-control' name=\"style\"  id=\"style\" onchange=\"firstbox();\" id='style'>";
 
@@ -129,8 +129,8 @@ echo "<div class='col-sm-3'><label>Select Schedule:</label>
 	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\"";	
 //}
 
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
 echo "<option value='' disabled selected>Please Select</option>";
@@ -157,7 +157,7 @@ echo "<div class='col-sm-3'><label>Select Color:</label><select class='form-cont
 	$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_joins<'4'";
 //}
 // mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
 echo "<option value='' disabled selected>Please Select</option>";
@@ -176,7 +176,7 @@ echo "</select>
 
 $sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des='$color'";
 // echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -186,7 +186,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 //getting category for dropdown
 echo "<div class='col-sm-3'><label>Select Category:</label><select class='form-control' name=\"category\" onchange=\"fourthbox();\" id='category'>";
 $sqlcat="select distinct category from $bai_pro3.order_cat_doc_mk_mix where order_tid=\"$order_tid\"";
-$sql_result=mysqli_query($link, $sqlcat) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sqlcat) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 echo "<option value='' disabled selected>Please Select</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -206,7 +206,7 @@ echo "</select>
 	
 $sql="select seperate_docket from $bai_pro3.cat_stat_log where order_tid='$order_tid' and seperate_docket='Yes' and category='$category'";
 // echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -264,7 +264,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 	
 	$sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des='$color'";
 	// echo $sql;
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -272,8 +272,8 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 	}
 	
 	$sql33="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
-	mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	mysqli_query($link, $sql33) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row33=mysqli_fetch_array($sql_result33))
 	{
 		$color_code=$sql_row33['color_code']; //Color Code
@@ -281,7 +281,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 	
 	$bindingqty="select binding_consumption from $bai_pro3.cat_stat_log where order_tid='$order_tid' and seperate_docket='Yes' and category='$category'";
 	// mysqli_query($link, $bindingqty) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result33=mysqli_query($link, $bindingqty) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result33=mysqli_query($link, $bindingqty) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row33=mysqli_fetch_array($sql_result33))
 	{
 		$bindingconsqty=$sql_row33['binding_consumption']; //Color Code
@@ -289,7 +289,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 	// var_dump($in_categories);
 	$details_qry="select compo_no,category,pcutno,material_req as qty,SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies*$bindingconsqty as bindreqqty,doc_no from $bai_pro3.order_cat_doc_mk_mix where order_tid='$order_tid' and category='$category' group by pcutno";
 	// echo $details_qry;
-	$sql_result_det=mysqli_query($link, $details_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result_det=mysqli_query($link, $details_qry) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	echo "<table class='table table-bordered'>";
 	echo "<tr>
@@ -319,14 +319,14 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 		$sql_num_confirm=mysqli_num_rows($sql_result);
 		
 		$gettingparentid="select parent_id from $bai_pro3.binding_consumption_items where compo_no='$compono' and cutno='$cutno' and doc_no='$docno'";
-		$sql_result_parent=mysqli_query($link, $gettingparentid) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result_parent=mysqli_query($link, $gettingparentid) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result_parent))
 		{
 			$parentid=$sql_row['parent_id'];
 		}
 		
 		$printqry="select status from $bai_pro3.binding_consumption where id='$parentid'";
-		$sql_result_print=mysqli_query($link, $printqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result_print=mysqli_query($link, $printqry) or exit("Sql Error23".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result_print))
 		{
 			$printstatus=$sql_row['status'];
@@ -353,7 +353,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 		echo "<td>".round($bindreqqty,2)."</td>";
 		if($sql_num_confirm<1)
 		{
-			echo "<td><input type='checkbox'  name='bindingdata[]' value='".$compono.'/'.$category.'/'.$cutno.'/'.$bindingconsqty.'/'.$finalqtyexcludingbind.'/'.$bindreqqty.'/'.$docno.'/'.$style.'/'.$schedule.'/'.$color."'></td>";
+			echo "<td><input type='checkbox'  name='bindingdata[]' value='".$compono.'#'.$category.'#'.$cutno.'#'.$bindingconsqty.'#'.$finalqtyexcludingbind.'#'.$bindreqqty.'#'.$docno.'#'.$style.'#'.$schedule.'#'.$color."'></td>";
 		}
 		else
 		{
@@ -386,7 +386,7 @@ if(isset($_POST['bindingdata']))
 		for($j=0;$j<$count1;$j++)
 		{
 			$id = $binddetails[$j];
-			$exp=explode("/",$id);
+			$exp=explode("#",$id);
 			$compono=$exp[0];
 			$category=$exp[1];
 			$cutno=$exp[2];
@@ -404,7 +404,7 @@ if(isset($_POST['bindingdata']))
 			
 			//getting order tid 
 			$ordertidqry="select order_tid from $bai_pro3.order_cat_doc_mk_mix where compo_no='$compono' and category='$category' and pcutno='$cutno'";
-			$sql_result=mysqli_query($link, $ordertidqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $ordertidqry) or exit("Sql Error24".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -417,15 +417,15 @@ if(isset($_POST['bindingdata']))
 		// $exists_result=mysqli_query($link, $is_exists) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		// $exists_result_count=mysqli_num_rows($exists_result);
 		// if($exists_result_count == 0){
-			$insertqry="INSERT INTO $bai_pro3.binding_consumption(style,schedule,color,category,tot_req_qty,tot_bindreq_qty,status) VALUES (\"".$style."\",\"".$schedule."\",\"".$color."\",\"".$category."\",\"".$totordqty."\",\"".$finalbindingqty."\",'Open')";
-			mysqli_query($link, $insertqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$insertqry="INSERT INTO $bai_pro3.binding_consumption(style,schedule,color,category,tot_req_qty,tot_bindreq_qty,status) VALUES ('".$style."','".$schedule."','".$color."','".$category."',".$totordqty.",".$finalbindingqty.",'Open')";
+			mysqli_query($link, $insertqry) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$parent_id = mysqli_insert_id($link);
 
 			for($j=0;$j<$count1;$j++)
 			{
 				$id = $binddetails[$j];
-				$exp=explode("/",$id);
+				$exp=explode("#",$id);
 				$compono=$exp[0];
 				$category=$exp[1];
 				$cutno=$exp[2];
@@ -434,8 +434,9 @@ if(isset($_POST['bindingdata']))
 				$bindreqqty=$exp[5];
 				$docno=$exp[6];
 				
-				$insertbinditems="INSERT INTO $bai_pro3.binding_consumption_items(parent_id,compo_no,category,cutno,req_qty,bind_category,bind_req_qty,doc_no) VALUES (\"".$parent_id."\",\"".$compono."\",\"".$category."\",\"".$cutno."\",\"".$reqqty."\",'Binding',\"".$bindreqqty."\",\"".$docno."\")";
-				mysqli_query($link, $insertbinditems) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$insertbinditems="INSERT INTO $bai_pro3.binding_consumption_items(parent_id,compo_no,category,cutno,req_qty,bind_category,bind_req_qty,doc_no) VALUES (".$parent_id.",'".$compono."','".$category."','".$cutno."',".$reqqty.",'Binding',".$bindreqqty.",".$docno.")";
+				
+				mysqli_query($link, $insertbinditems) or exit("Sql Error26".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 			echo "<script>swal('Binding Fabric Requested','Successfully','success')</script>";
 		// }

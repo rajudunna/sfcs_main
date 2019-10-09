@@ -12,7 +12,7 @@
 		$ret_str="<table><tr><th>Size</th><th>Qty</th></tr>";
 		//New Extra Shipment Order Quantities
 		$sql1="select p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50,p_plies from plandoc_stat_log where doc_no=$doc_no";
-		$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error11".mysql_error());
+		$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error11".mysqli_error());
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$ret_str.=($sql_row1['p_xs']>0?'<tr><td>XS</td><td>'.($sql_row1['p_xs']*$sql_row1['p_plies']).'</td></tr>':'');
@@ -731,8 +731,8 @@
 								
 								
 								$sqlx="select * from $bai_pro3.tbl_emb_table where emb_table_id>0";
-								// mysqli_query($link,$sqlx) or exit("Sql Error".mysql_error());
-								$sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error5".mysql_error());
+								// mysqli_query($link,$sqlx) or exit("Sql Error".mysqli_error());
+								$sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error5".mysqli_error());
 								while($sql_rowx=mysqli_fetch_array($sql_resultx))
 								{
 									// $section=$sql_rowx['sec_id'];
@@ -753,12 +753,12 @@
 													//<li id="node16">Student P</li>
 													
 													$module=$mods[$x];
-													$sql1="SELECT act_cut_status,act_cut_issue_status,rm_date,cut_inp_temp,doc_no,order_style_no,order_del_no,order_col_des,total,acutno,color_code from $bai_pro3.plan_dash_doc_summ_embl where module=$module order by priority"; //KK223422
+													$sql1="SELECT act_cut_status,act_cut_issue_status,rm_date,cut_inp_temp,doc_no,order_style_no,order_del_no,order_col_des,total,acutno,color_code from $bai_pro3.plan_dash_doc_summ_embl where module=$module and short_shipment_status = 0 order by priority"; //KK223422
 
 													// echo $sql1;
 													// die();
-													// mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
-													$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error7".mysql_error());
+													// mysql_query($sql1,$link) or exit("Sql Error".mysqli_error());
+													$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error7".mysqli_error());
 													$sql_num_check=mysqli_num_rows($sql_result1);
 													while($sql_row1=mysqli_fetch_array($sql_result1))
 													{
@@ -778,8 +778,8 @@
 														
 														$sql="select color_code,acutno,order_style_no,order_del_no,order_col_des from $bai_pro3.plan_doc_summ where doc_no=$doc_no";
 														// echo $sql."<br>";
-														// mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-														$sql_result=mysqli_query($link,$sql) or exit("Sql Error8".mysql_error());
+														// mysql_query($sql,$link) or exit("Sql Error".mysqli_error());
+														$sql_result=mysqli_query($link,$sql) or exit("Sql Error8".mysqli_error());
 														$sql_num_check=mysqli_num_rows($sql_result);
 														
 														//docketno-colorcode cutno-cut_status
