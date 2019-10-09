@@ -597,11 +597,12 @@ if (isset($_POST['confirm'])) {
                 for($points=0;$points<$array_point_size;$points++)
                 {
                     $flag_var = $_POST["point_".$points.""];
-                    
+                    if($flag_var>0)
+                    {
                         $insert_four_points = "insert ignore into $bai_rm_pj1.four_points_table(insp_child_id,code,description,points) values('$roll_id','".$code[$points]."','".$damage[$points]."',$flag_var)";
-                    
-                        mysqli_query($link, $insert_four_points) or exit("third ErrorError-1" . mysqli_error($GLOBALS["___mysqli_ston"]));
-                
+                       mysqli_query($link, $insert_four_points) or exit("third ErrorError-1" . mysqli_error($GLOBALS["___mysqli_ston"]));
+                    } 
+                    $flag_var=0;
                 }
             }
             echo "<script>swal('Data Update...','Successfully','success')</script>";
@@ -836,6 +837,8 @@ if (isset($_POST['save'])) {
                         mysqli_query($link, $insert_four_points) or exit("third ErrorError-2" . mysqli_error($GLOBALS["___mysqli_ston"]));
                         $i++;
                     }
+
+                    $flag_var=0;
                 
                   }
                     
@@ -874,7 +877,8 @@ if (isset($_POST['save'])) {
                             mysqli_query($link, $insert_four_points) or exit("third ErrorError-2" . mysqli_error($GLOBALS["___mysqli_ston"]));
                             $i++;
                         }
-                    
+                        
+                        $flag_var=0;
                       }
                         
                     
