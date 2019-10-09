@@ -471,11 +471,11 @@ if($check_qry_result->num_rows > 0)
 						}
 						if($prev_operation>0)
 						{
-							$get_ops_dep = "select previous_operation from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and ops_dependency = $prev_operation";
+							$get_ops_dep = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and previous_operation = $prev_operation";
 							$result_ops_dep = $link->query($get_ops_dep);
 							   while($row_dep = $result_ops_dep->fetch_assoc())
 							   {
-								  $operations[] = $row_dep['previous_operation'];
+								  $operations[] = $row_dep['operation_code'];
 							   }
 							   $emb_operations = implode(',',$operations);
 						}
@@ -614,16 +614,13 @@ if($check_qry_result->num_rows > 0)
 					 {
 						 //get min qty of previous operations
 						$qry_min_prevops="SELECT MIN(recevied_qty) AS min_recieved_qty FROM $brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND size_title = '$sizes' AND operation_id in ($emb_operations)";
-						//echo $qry_min_prevops;
 						$result_qry_min_prevops = $link->query($qry_min_prevops);
 						while($row_result_min_prevops = $result_qry_min_prevops->fetch_assoc())
 						{
 							$previous_minqty=$row_result_min_prevops['min_recieved_qty'];
 						}
-
-					 
+						
 						$schedule_query = "SELECT `style` as order_style_no,`schedule` as order_del_no,`send_qty`,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,`original_qty` as carton_act_qty,sum(recevied_qty) AS current_recieved_qty,`rejected_qty` as rejected_qty,((send_qty+recut_in+replace_in)-(recevied_qty+rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'parallel_scanning' as flag,size_id as old_size,remarks, mapped_color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND operation_id = '$job_number[4]' and size_title='$sizes' order by tid";
-
 						$flags=3;
 						$flag = 'parallel_scanning';
 						   
@@ -803,6 +800,7 @@ if($check_qry_result->num_rows > 0)
 					// insert or update based on table
 					if($table_name == 'parallel_scanning')
 					{
+						
 						if($docstatus==0 || $docstatus=='' ||  $docstatus==2)
 						{
 								$schedule_count_query = "SELECT input_job_no_random_ref FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = $b_job_no AND operation_id =$b_op_id";
@@ -911,7 +909,7 @@ if($check_qry_result->num_rows > 0)
 													$status=$qry_result_row['status'];
 
 													//if data exists update emb_bundles
-													$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='$embquantity',status=1,reject_qty='$rejctedqty',update_time='". date('Y-m-d')."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]' and tran_id=$seqno";
+													$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='$orgqty',status=1,reject_qty='$rejctedqty',update_time='". date('Y-m-d')."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]' and tran_id=$seqno";
 													$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');
 
 													//insert data into emb_bundles_temp
@@ -1138,7 +1136,7 @@ if($check_qry_result->num_rows > 0)
 														$status=$qry_result_row['status'];
 
 														//if data exists update emb_bundles
-														$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty=$embquantity,status=1,reject_qty='$rejctedqty',update_time='". date('Y-m-d')."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]' and tran_id=$seqno";
+														$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty=$orgqty,status=1,reject_qty='$rejctedqty',update_time='". date('Y-m-d')."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]' and tran_id=$seqno";
 																								//echo $update_emb_bundles;
 														$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');
 
