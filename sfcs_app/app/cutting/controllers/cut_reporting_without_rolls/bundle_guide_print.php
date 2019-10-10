@@ -61,6 +61,11 @@ $sql="select * from $bai_pro3.order_cat_doc_mk_mix where order_tid='".$orde_tid.
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result1=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 // $sql_num_check=mysqli_num_rows($sql_result);
+
+$totalplies="select sum(reporting_plies) as totalplies from $bai_pro3.docket_roll_info where docket=$doc_no";
+mysqli_query($link, $totalplies) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$totalpliesresult=mysqli_query($link, $totalplies) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$totalpliesresult=mysqli_fetch_array($totalpliesresult);
 ?>
 
 
@@ -409,64 +414,10 @@ tags will be replaced.-->
 <!----------------------------->
 <!--START OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD -->
 <!----------------------------->
-<div id="bundle_guide_305" align="left" x:publishsource="Excel" style="margin-left:60px;">
+
+<div id="bundle_guide_305" align="left" x:publishsource="Excel" >
 <table border=0 cellpadding=0 cellspacing=0 width=300 style='border-collapse:
  collapse;table-layout:fixed;'>
-<tr>
-		<?php
-		for($s=0;$s<sizeof($s_tit);$s++)
-        {
-            echo "<td class=xl73305 style='background-color: gainsboro;'>".$s_tit[$sizes_code[$s]]."</td>";
-            
-        }
-		?>
-</tr>
-<tr>
-<?php 
-while($sql_row=mysqli_fetch_array($sql_result1))
-	{
-	for($s=0;$s<sizeof($s_tit);$s++)
-	{
-	   // $code="p_s".$sizes_code[$s];
-		//echo "<th>".$s_tit[$sizes_code[$s]]."</th>";
-		echo "<td class=xl75305 style='border-top:none;text-align:center;'>".$sql_row["p_s".$sizes_code[$s].""]."</td>";
-	}
-	}
-?>
-</tr>
-</table>
-</div>
-<br><br>
-<div id="bundle_guide_305" align="left" x:publishsource="Excel" style="margin-left:60px;">
-<table border=0 cellpadding=0 cellspacing=0 width=600 style='border-collapse:
- collapse;table-layout:fixed;'>
-
-<tr height=19 style='height:14.4pt'>
-  <td class=xl73305 style='background-color: gainsboro;'>Laysequence</td>
-  <td class=xl73305 style='background-color: gainsboro;'>Shade</td>
-  <td class=xl74305 width=70 style='width:53pt;background-color: gainsboro;'>Total Plies</td>
- </tr>
-			<?php 
-			while($docketdetials_row=mysqli_fetch_array($docketdetials_result))
-			{	
-				?>
-			<tr height=19 style='height:14.4pt'>
-			<td class=xl75305 style='border-top:none;text-align:center;'><?php echo $docketdetials_row['lay_sequence']; ?></td>			
-			<td class=xl75305 style='border-top:none;text-align:center;'><?php echo $docketdetials_row['shade']; ?></td>
-			<td class=xl75305 style='border-top:none;text-align:center;'><?php echo $docketdetials_row['reporting_plies']; ?></td>
-			</tr>				
-			<?php
-		}?>
-</table>
-</div>
-
-<div id="bundle_guide_305" align="left" x:publishsource="Excel">
-
-<table border=0 cellpadding=0 cellspacing=0 width=902 style='border-collapse:
- collapse;table-layout:fixed;width:677pt'>
- <col width=64 span=8 style='width:48pt'>
- <col width=70 style='mso-width-source:userset;mso-width-alt:2503;width:53pt'>
- <col width=64 span=5 style='width:48pt'>
  <tr height=19 style='height:14.4pt'>
   <td height=19 class=xl15305 width=64 style='height:14.4pt;width:48pt'></td>
   <td class=xl15305 width=64 style='width:48pt'></td>
@@ -521,22 +472,87 @@ while($sql_row=mysqli_fetch_array($sql_result1))
   <td class=xl67305>&nbsp;</td>
   <td class=xl15305></td>
  </tr>
- <tr height=12 style='mso-height-source:userset;height:9.0pt'>
-  <td height=12 class=xl15305 style='height:9.0pt'></td>
-  <td class=xl66305>&nbsp;</td>
-  <td class=xl15305></td>
-  <td class=xl15305></td>
-  <td class=xl15305></td>
-  <td class=xl15305></td>
-  <td class=xl15305></td>
-  <td class=xl15305></td>
-  <td class=xl15305></td>
-  <td class=xl15305></td>
-  <td class=xl15305></td>
-  <td class=xl15305></td>
-  <td class=xl67305>&nbsp;</td>
+ <tr height=12 style='mso-height-source:userset;height:9.0pt;'>
+  <td  height=12 class=xl15305 style='height:9.0pt;'></td>
+  <td style='border-bottom:1px solid black;' class=xl66305>&nbsp;</td>
+  <td style='border-bottom:1px solid black;' class=xl15305></td>
+  <td style='border-bottom:1px solid black;' class=xl15305></td>
+  <td style='border-bottom:1px solid black;' class=xl15305></td>
+  <td style='border-bottom:1px solid black;' class=xl15305></td>
+  <td style='border-bottom:1px solid black;' class=xl15305></td>
+  <td style='border-bottom:1px solid black;' class=xl15305></td>
+  <td style='border-bottom:1px solid black;' class=xl15305></td>
+  <td style='border-bottom:1px solid black;' class=xl15305></td>
+  <td style='border-bottom:1px solid black;' class=xl15305></td>
+  <td style='border-bottom:1px solid black;' class=xl15305></td>
+  <td style='border-bottom:1px solid black;' class=xl67305>&nbsp;</td>
   <td class=xl15305></td>
  </tr>
+</table>
+</div> 
+<br><br>
+<div id="bundle_guide_305" align="left" x:publishsource="Excel" style="margin-left:60px;">
+<table border=0 cellpadding=0 cellspacing=0 width=300 style='border-collapse:
+ collapse;table-layout:fixed;'>
+<tr>
+		<?php
+		for($s=0;$s<sizeof($s_tit);$s++)
+        {
+            echo "<td class=xl73305 style='background-color: gainsboro;'>".$s_tit[$sizes_code[$s]]."</td>";
+            
+        }
+		echo "<td class=xl73305 style='background-color: gainsboro;'>No Of Plies</td>";
+		?>
+
+</tr>
+<tr>
+<?php 
+while($sql_row=mysqli_fetch_array($sql_result1))
+	{
+	for($s=0;$s<sizeof($s_tit);$s++)
+	{
+	   // $code="p_s".$sizes_code[$s];
+		//echo "<th>".$s_tit[$sizes_code[$s]]."</th>";
+		echo "<td class=xl75305 style='border-top:none;text-align:center;'>".$sql_row["p_s".$sizes_code[$s].""]."</td>";
+	}
+		echo "<td class=xl75305 style='border-top:none;text-align:center;'>".$totalpliesresult['totalplies']."</td>";
+	}
+?>
+</tr>
+</table>
+</div>
+<br><br>
+<div id="bundle_guide_305" align="left" x:publishsource="Excel" style="margin-left:60px;">
+<table border=0 cellpadding=0 cellspacing=0 width=600 style='border-collapse:
+ collapse;table-layout:fixed;'>
+
+<tr height=19 style='height:14.4pt'>
+  <td class=xl73305 style='background-color: gainsboro;'>Laysequence</td>
+  <td class=xl73305 style='background-color: gainsboro;'>Shade</td>
+  <td class=xl74305 width=70 style='width:53pt;background-color: gainsboro;'>Total Plies</td>
+ </tr>
+			<?php 
+			while($docketdetials_row=mysqli_fetch_array($docketdetials_result))
+			{	
+				?>
+			<tr height=19 style='height:14.4pt'>
+			<td class=xl75305 style='border-top:none;text-align:center;'><?php echo $docketdetials_row['lay_sequence']; ?></td>			
+			<td class=xl75305 style='border-top:none;text-align:center;'><?php echo $docketdetials_row['shade']; ?></td>
+			<td class=xl75305 style='border-top:none;text-align:center;'><?php echo $docketdetials_row['reporting_plies']; ?></td>
+			</tr>				
+			<?php
+		}?>
+</table>
+</div>
+<br><br><br>
+<div id="bundle_guide_305" align="left" x:publishsource="Excel">
+
+<table border=0 cellpadding=0 cellspacing=0 width=902 style='border-collapse:
+ collapse;table-layout:fixed;width:677pt'>
+ <col width=64 span=8 style='width:48pt'>
+ <col width=70 style='mso-width-source:userset;mso-width-alt:2503;width:53pt'>
+ <col width=64 span=5 style='width:48pt'>
+
  <tr height=19 style='height:14.4pt'>
   <td height=19 class=xl15305 style='height:14.4pt'></td>
   <td colspan=2 rowspan=2 class=xl73305 style='background-color: gainsboro;'>RM Color Code</td>
