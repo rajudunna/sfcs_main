@@ -32,8 +32,35 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS
 while($sql_row=mysqli_fetch_array($sql_result))
 {	
 	$style_no= $sql_row['order_style_no'];	
-}		
+}
 
+$docketdetials="select * from $bai_pro3.docket_roll_info where docket=".$doc_no." order by shade";
+$docketdetials_result=mysqli_query($link, $docketdetials) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
+$sql="select * from $bai_pro3.bai_orders_db_confirm  where order_style_no='".$style_no."' and order_del_no='".$schedule."' and order_col_des='".$color."'";
+mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check=mysqli_num_rows($sql_result);
+while($sql_row=mysqli_fetch_array($sql_result))
+{
+	$orde_tid=$sql_row['order_tid'];
+	for($s=0;$s<sizeof($sizes_code);$s++)
+	{
+		if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
+		{
+			$s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
+			$s_code[]=$sizes_code[$s];
+		}	
+	}
+}
+
+
+   
+$sql="select * from $bai_pro3.order_cat_doc_mk_mix where order_tid='".$orde_tid."' and category in ($in_categories) and doc_no=$doc_no";
+mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result1=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// $sql_num_check=mysqli_num_rows($sql_result);
 ?>
 
 
@@ -382,8 +409,58 @@ tags will be replaced.-->
 <!----------------------------->
 <!--START OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD -->
 <!----------------------------->
+<div id="bundle_guide_305" align="left" x:publishsource="Excel" style="margin-left:60px;">
+<table border=0 cellpadding=0 cellspacing=0 width=300 style='border-collapse:
+ collapse;table-layout:fixed;'>
+<tr>
+		<?php
+		for($s=0;$s<sizeof($s_tit);$s++)
+        {
+            echo "<td class=xl73305 style='background-color: gainsboro;'>".$s_tit[$sizes_code[$s]]."</td>";
+            
+        }
+		?>
+</tr>
+<tr>
+<?php 
+while($sql_row=mysqli_fetch_array($sql_result1))
+	{
+	for($s=0;$s<sizeof($s_tit);$s++)
+	{
+	   // $code="p_s".$sizes_code[$s];
+		//echo "<th>".$s_tit[$sizes_code[$s]]."</th>";
+		echo "<td class=xl75305 style='border-top:none;text-align:center;'>".$sql_row["p_s".$sizes_code[$s].""]."</td>";
+	}
+	}
+?>
+</tr>
+</table>
+</div>
+<br><br>
+<div id="bundle_guide_305" align="left" x:publishsource="Excel" style="margin-left:60px;">
+<table border=0 cellpadding=0 cellspacing=0 width=600 style='border-collapse:
+ collapse;table-layout:fixed;'>
 
-<div id="bundle_guide_305" align=center x:publishsource="Excel">
+<tr height=19 style='height:14.4pt'>
+  <td class=xl73305 style='background-color: gainsboro;'>Laysequence</td>
+  <td class=xl73305 style='background-color: gainsboro;'>Shade</td>
+  <td class=xl74305 width=70 style='width:53pt;background-color: gainsboro;'>Total Plies</td>
+ </tr>
+			<?php 
+			while($docketdetials_row=mysqli_fetch_array($docketdetials_result))
+			{	
+				?>
+			<tr height=19 style='height:14.4pt'>
+			<td class=xl75305 style='border-top:none;text-align:center;'><?php echo $docketdetials_row['lay_sequence']; ?></td>			
+			<td class=xl75305 style='border-top:none;text-align:center;'><?php echo $docketdetials_row['shade']; ?></td>
+			<td class=xl75305 style='border-top:none;text-align:center;'><?php echo $docketdetials_row['reporting_plies']; ?></td>
+			</tr>				
+			<?php
+		}?>
+</table>
+</div>
+
+<div id="bundle_guide_305" align="left" x:publishsource="Excel">
 
 <table border=0 cellpadding=0 cellspacing=0 width=902 style='border-collapse:
  collapse;table-layout:fixed;width:677pt'>

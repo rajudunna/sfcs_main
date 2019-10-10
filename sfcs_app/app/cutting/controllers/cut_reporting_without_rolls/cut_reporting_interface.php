@@ -145,6 +145,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             <div class='col-sm-12'>
             <hr> 
             <table class='table table-bordered' id='reported_table_roll_wise'>
+            <thead>
                 <tr class='danger'>
                     <td>S. No</td>
                     <td>LaySequence</td>
@@ -157,6 +158,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     <td>Fab endbits</td>
                     <td>Fab Shortages</td>
                 </tr>
+                </thead>
             </table>
             </div>
             <hr>
@@ -1582,6 +1584,13 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     */
     //Rejection Panel Code Ends
 
+    function camelCase(str) { 
+            return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) 
+            { 
+                return index == 0 ? word.toUpperCase() : word.toLowerCase(); 
+            }).replace(/\s+/g, ''); 
+        }
+
     function loadDetails(doc_no){
         $.ajax({
             url : '<?= $get_url ?>?doc_no='+doc_no
@@ -1649,6 +1658,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             }
             var i;
             var sno=1;
+            $('#reported_table_roll_wise tbody').html('');
             if($rollwisestatus)
             {
                 rollwisedetialslength=data.rollwisedetails.length;
@@ -1682,7 +1692,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
 
             //doc type
-            $('#d_doc_type').html(data.doc_target_type+' Docket');
+             
+            $('#d_doc_type').html(camelCase(data.doc_target_type)+' Docket');
             
             //setting size wise ratios
             $('#hide_details_reporting_ratios').html(data.ratio_data);
