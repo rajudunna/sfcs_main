@@ -71,7 +71,7 @@
 if(isset($_GET['submit']))
 {
 	$plant_timings_query="SELECT * FROM $bai_pro3.tbl_plant_timings";
-	// echo $plant_timings_query;
+	//  echo $plant_timings_query;
 	$plant_timings_result=mysqli_query($link,$plant_timings_query);
 	while ($row = mysqli_fetch_array($plant_timings_result))
 	{
@@ -79,6 +79,8 @@ if(isset($_GET['submit']))
 		$end_time[] = $row['end_time'];
 		$time_display[] = $row['time_display'].'<br>'.$row['day_part'];
 	}
+
+			 
    	?>
  
     <div class="table-area">
@@ -119,13 +121,23 @@ if(isset($_GET['submit']))
 	    
 				<?php 
 				$section_query = "SELECT DISTINCT(section_id) FROM $bai_pro3.plan_modules";
+				// echo $section_query.'<br>';
 				$section_result=mysqli_query($link,$section_query);
 
-				$tot_reported_plantWise=array(); $tot_frqty_plantWise=array(); $tot_forecast_qty_plantWise=array();
-				$tot_scanned_plantWise=array(); $tot_scanned_sah_plantWise=array(); $tot_fr_sah_plantWise=array();
-				$tot_forecast_sah_plantWise=array(); $tot_act_sah_plantWise=array(); $tot_sah_diff_plantWise=array();
-				$tot_plan_eff_plantWise=array(); $tot_act_eff_plantWise=array(); $tot_balance_plantWise=array();
-				$tot_hit_rate_plantWise=array();	$grand_tot_qty_time_array1 = array();
+					$tot_reported_plantWise=array();
+					$tot_frqty_plantWise=array();
+					$tot_forecast_qty_plantWise=array();
+					$tot_scanned_plantWise=array();
+					$tot_scanned_sah_plantWise=array();
+					$tot_fr_sah_plantWise=array();
+					$tot_forecast_sah_plantWise=array();
+					$tot_act_sah_plantWise=array();
+					$tot_sah_diff_plantWise=array();
+					$tot_plan_eff_plantWise=array();
+					$tot_act_eff_plantWise=array();
+					$tot_balance_plantWise=array();
+					$tot_hit_rate_plantWise=array();
+					$grand_tot_qty_time_array1 = array();
 
 				// $grand_tot_qty_time_array = array(); $grand_tot_plan_sah=0;
 				// $grand_tot_fr_qty = 0; $grand_tot_forecast_qty=0; $grand_tot_total_qty=0; $grand_tot_scanned_qty=0; 
@@ -138,19 +150,34 @@ if(isset($_GET['submit']))
 					$section_wise_total++;
 					$dummy[$section_wise_total] = array();
 
-					$section_count++; $sec_tot_plan_sah=0;
-					$sec_tot_fr_qty = 0; $sec_tot_forecast_qty=0; $sec_tot_total_qty=0; $sec_tot_scanned_qty=0; 
-					$sec_tot_scanned_sah=0; $sec_tot_forecast_sah=0; $sec_tot_act_sah=0; $sec_tot_sah_diff=0;
-					$sec_tot_plan_eff=0; $sec_tot_act_eff=0; $sec_tot_hitrate=0; $sec_tot_required=0; $module_count=0;
-					$section = $Sec['section_id'];  $sec_tot_qty_array = array(); $sec_tot_balance=0;
+						$section_count++;
+						$sec_tot_plan_sah=0;
+						$sec_tot_fr_qty = 0; 
+						$sec_tot_forecast_qty=0;
+						$sec_tot_total_qty=0;
+						$sec_tot_scanned_qty=0; 
+						$sec_tot_scanned_sah=0;
+						$sec_tot_forecast_sah=0;
+						$sec_tot_act_sah=0;
+						$sec_tot_sah_diff=0;
+						$sec_tot_plan_eff=0;
+						$sec_tot_act_eff=0;
+						$sec_tot_hitrate=0; 
+						$sec_tot_required=0; 
+						$module_count=0;
+						$section = $Sec['section_id'];
+						$sec_tot_qty_array = array();
+						$sec_tot_balance=0;
 					// $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
-					$sql="SELECT fr_data.*, plan_modules.section_id FROM $bai_pro2.fr_data  LEFT JOIN $bai_pro3.plan_modules ON fr_data.team = plan_modules. module_id WHERE fr_data.frdate='$frdate' AND plan_modules.section_id='$section' GROUP BY fr_data.team,fr_data.style,fr_data.smv ORDER BY fr_data.team*1;";
-					// echo $sql.'<br>';
-					$result=mysqli_query($link,$sql);
+					$sql="SELECT fr_data.*, plan_modules.section_id FROM $bai_pro2.fr_data  LEFT JOIN $bai_pro3.plan_modules ON fr_data.team = plan_modules. module_id WHERE fr_data.frdate='$frdate' AND plan_modules.section_id='$section' GROUP BY fr_data.team,fr_data.style,fr_data.smv,plan_modules.section_id ORDER BY fr_data.team*1";
+					//   echo $sql.'<br>';
+					$res=mysqli_query($link,$sql);
 					while ($row11 = mysqli_fetch_array($result))
-						{
+					
+						   {
 							echo  $row['style'].'<br>';
-						}
+						
+							}
 					if (mysqli_num_rows($res) > 0) 
 					{
 						while($row=mysqli_fetch_array($res))
@@ -166,23 +193,27 @@ if(isset($_GET['submit']))
 							$team=$row['team'];
 							
 							//get styles which run in lines
-							$sql1="SELECT distinct style FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
+							$sql1="SELECT distinct style FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."'  group by style,team,smv";
+							//  echo $sql1;
 							$res1=mysqli_query($link,$sql1);
 							
-							$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
+							$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."'   group by style,team,smv";
+							// echo $sql2;
 							$res2=mysqli_query($link,$sql2);
 							
-							$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
+							$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."'  and color='".$row['color']."' group by style,team,smv";
+							// echo $sql3;
 							$res3=mysqli_query($link,$sql3);
 							
 							$sql4="SELECT qty FROM $bai_pro3.line_forecast where date='$frdate' AND module='$team'";
 							$res4=mysqli_query($link,$sql4);
 							
-							$sql5="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' group by style,team,smv";
+							$sql5="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team' and style='".$row['style']."' and color='".$row['color']."'  group by style,team,smv";
+							//  echo $sql5;
 							$res5=mysqli_query($link,$sql5);
 							
 							$get_nop_query="SELECT fix_nop FROM $bai_pro.pro_plan WHERE date='$frdate' and mod_no='$team'";
-							// echo $get_nop_query;
+							//   echo $get_nop_query;
 							$nop_result=mysqli_query($link,$get_nop_query);
 							while($result=mysqli_fetch_array($nop_result))
 							{
@@ -190,7 +221,7 @@ if(isset($_GET['submit']))
 							}
 
 							$sqlsc="SELECT SUM(qty) AS sumqty FROM $bai_pro2.hout where team='$team' AND out_date='$frdate'";
-							// echo $sqlsc;
+							//  echo $sqlsc;
 							$resc=mysqli_query($link,$sqlsc);
 							if($rowc=mysqli_fetch_array($resc))
 							{
@@ -337,7 +368,8 @@ if(isset($_GET['submit']))
 													$reasons = array();
 													$break_resons = array(20,21,22);
 
-													$sql6_2x="SELECT distinct(reason_id) FROM $bai_pro2.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+													$sql6_2x="SELECT distinct(reason_id) FROM $bai_pro2.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team'";
+													// echo $sql6_2x;
 													$res6_12x=mysqli_query($link,$sql6_2x);
 													$k = 0;
 													while ($rows = mysqli_fetch_array($res6_12x))
@@ -610,6 +642,7 @@ if(isset($_GET['submit']))
 									<?php
 						}
 							$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
+							// echo $sql12;
 							$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row12=mysqli_fetch_array($result12))
 							{

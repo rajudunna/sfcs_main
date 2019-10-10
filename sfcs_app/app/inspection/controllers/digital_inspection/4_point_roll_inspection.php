@@ -16,6 +16,7 @@ if(isset($_GET['parent_id']) or isset($_POST['parent_id']))
 	$parent_id=$_GET['parent_id']  or $_POST['parent_id'];
 	$sno=$_GET['id']  or $_POST['id'];
 }
+$pop_up_path="../sfcs_app/app/inspection/reports/4_point_inspection_report.php";
 $flag = false;
 ?>
 
@@ -32,23 +33,25 @@ $flag = false;
 					      	<th>Color</th>
 					      	<th>Batch</th>
 					      	<th>PO#</th>
+					      	<th>Lot No</th>
 					      </tr>
 					      <tr>
 							  <?php
-								$get_details_main="select supplier_invoice,rm_color,supplier_po,supplier_batch from `bai_rm_pj1`.`inspection_population` where parent_id=$parent_id and status in (1,2,3)";
-					
+								$get_details_main="select * from $bai_rm_pj1.main_population_tbl where id=$parent_id";					
 								$details1_result=mysqli_query($link,$get_details_main) or exit("get_details_main Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($row1=mysqli_fetch_array($details1_result))
 								{
-									$invoice = $row1['supplier_invoice'];
-									$batch = $row1['supplier_batch'];
+									$invoice = $row1['invoice_no'];
+									$batch = $row1['batch'];
 									$color = $row1['rm_color'];
-									$po = $row1['supplier_po'];
+									$po = $row1['supplier'];
+									$lot_no = $row1['lot_no'];
 								}
 						  echo "<td>$invoice</td> 
 						      	<td>$color</td>
 						      	<td>$batch</td>
-						      	<td>$po</td>";
+						      	<td>$po</td>
+						      	<td>$lot_no</td>";
 					      	?>
 					      </tr>
 					      </tbody>
@@ -60,6 +63,7 @@ $flag = false;
 					"<input type='hidden' name='color_four_point' value='".$color."'>";
 					"<input type='hidden' name='batch_four_point' value='".$batch."'>";
 					"<input type='hidden' name='po_four_point' value='".$po."'>";
+					"<input type='hidden' name='lot_four_point' value='".$lot_no."'>";
 					?>
 					 
 					  <div class="table-responsive col-sm-12">
@@ -68,8 +72,6 @@ $flag = false;
 					      	<tr style="background-color: antiquewhite;">
 					      		<th>Supplier Roll No</th>
 					      		<th>SFCS Roll No</th>
-					      		<th>Ticket Length</th>
-					      		<th>Ticket Width</th>
 					      		<th>Item Code</th>
 					      		<th>Color</th>
 					      		<th>Description</th>
@@ -79,66 +81,77 @@ $flag = false;
 					      		<th>Roll Inspection Status</th>
 					      	</tr>
 					    
-					      	<?php
-							   $url = getFullURLLevel($_GET['r'],'4_point_roll_inspection_child.php',0,'N');
-							   
-							  $get_details1="select * from `bai_rm_pj1`.`inspection_population` where parent_id=$parent_id and status in (1,2,3,4)";
-								
-							 $details1_result=mysqli_query($link,$get_details1) or exit("get_details1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							 
-							$path= getFullURLLevel($_GET['r'], "fabric_inspection_report.php", "0", "R")."?id=$parent_id";
-							
-                             while($row2=mysqli_fetch_array($details1_result))
-                             {
-							
-							  $roll_id = $row2['supplier_roll_no'];	
-                              $supplier_id = $row2['sfcs_roll_no'];	
-                              $lot_id = $row2['lot_no'];
-							  $lotids[]=$row2['lot_no'];
-							  $invoice=$row2['supplier_invoice'];
-							  $store_in_id=$row2['store_in_id'];
-							  $id=$row2['sno'];
-							  $status=$row2['status'];
-							if($status == 1 || $status == 3){
-								$tr="<tr data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>";
-							}else{
-								$tr="<tr style='background: #96f7ee;'>";
-							}
-					      	  echo 
-					      	  "$tr
-								 <input type='hidden' name='insp_id[$id]' id='insp_id[$id]' value=$id> 
-								<td>".$row2['supplier_roll_no']."</td>
-					      		<td>".$row2['sfcs_roll_no']."</td>
-					      		<td>".$row2['ctex_length']."</td>
-					      		<td>".$row2['ctex_width']."</td>
-					      		<td>".$row2['item_code']."</td>
-					      		<td>".$row2['rm_color']."</td>
-	                            <td>".$row2['item_desc']."</td>
-	                            <td>".$lot_id."</td>
-								<td>".$row2['qty']."</td>";
+							 <?php
+							$url = getFullURLLevel($_GET['r'],'4_point_roll_inspection_child.php',0,'N');
+							$get_details1="select * from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id and status<>0";
 
-								 $get_status_details="select SUM(1_point) as 1_point,SUM(2_point) as 2_point,SUM(3_point) as 3_point,SUM(4_point) as 4_point from $bai_rm_pj1.four_points_table where id='".$id."'";
-								 
-								//  echo $get_status_details;
-						      	 $status_details_result=mysqli_query($link,$get_status_details) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	                             while($row5=mysqli_fetch_array($status_details_result))
-	                             { 
-	                            //    $roll=$row5['supplier_roll_no']; 
-								//    $status=$row5['inspection_status'];
-								   
-	                               $point1=$row5['1_point']*1;
-								   $point2=$row5['2_point']*2;
-								   $point3=$row5['3_point']*3;
-								   $point4=$row5['4_point']*4;
+							$details1_result=mysqli_query($link,$get_details1) or exit("get_details1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+							$path= getFullURLLevel($_GET['r'], "fabric_inspection_report.php", "0", "R")."?id=$parent_id";
+							$val=0;
+							while($row2=mysqli_fetch_array($details1_result))
+							{
+								$roll_id = $row2['supplier_roll_no'];	
+								$supplier_id = $row2['sfcs_roll_no'];	
+								$lot_id = $row2['lot_no'];
+								$lotids[]=$row2['lot_no'];
+								$invoice=$row2['supplier_invoice'];
+								$store_in_id=$row2['store_in_id'];
+								$id=$row2['sno'];
+								$status=$row2['status'];
+								if($status == 1)
+								{
+									 echo "<tr  data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>";
+								}
+								else if($status == 2)
+								{
+									 echo  "<tr style='background: red;color:white;' data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>";
+								}
+								else if($status == 3)
+								{
+									 echo "<tr style='background: green;color:white;'>";
+								}
 								
-								   $main_points =  $point1+$point2+$point3+$point4;
-		                            echo"
-		                            <td>".$main_points."</td>
-		                            <td>".$roll_insp_status."</td>
-						      	   </tr>";
-                                }
-                             }
-                             ?>	
+								echo "<input type='hidden' name='insp_id[$id]' id='insp_id[$id]' value=$id> 
+								<td>".$row2['supplier_roll_no']."</td>
+								<td>".$row2['sfcs_roll_no']."</td>
+								<td>".$row2['item_code']."</td>
+								<td>".$row2['rm_color']."</td>
+								<td>".$row2['item_desc']."</td>
+								<td>".$lot_id."</td>
+								<td>".$row2['rec_qty']."</td>";
+								$sno=0;$ins_status='Pending';$main_points=0;
+								$get_status_details="select sno,inspection_status from $bai_rm_pj1.roll_inspection_child where store_in_tid=".$store_in_id."";
+								//echo $get_status_details;
+								$status_details_result=mysqli_query($link,$get_status_details) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								if(mysqli_num_rows($status_details_result)>0)
+								{	
+									while($row5=mysqli_fetch_array($status_details_result))
+									{ 
+										$ins_status=$row5['inspection_status'];
+										$val=1;
+									}
+								}									
+								$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id=".$store_in_id."";	
+								$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								if(mysqli_num_rows($status_details_result2)>0)
+								{
+									while($row52=mysqli_fetch_array($status_details_result2))
+									{ 
+										$main_points=$row52['pnt'];
+									}									
+								}
+																
+								echo"<td>".$main_points."</td>
+								<td>".$ins_status."</td>
+								</tr>";
+							}
+							if($val==1)
+							{
+							echo "<tr><td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$parent_id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$parent_id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td></tr>";
+							}
+							?>
+							
 					      </tbody>
 					    </table>
 					  </div>
