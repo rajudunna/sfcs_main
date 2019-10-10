@@ -231,7 +231,7 @@ if($a_plies != $p_plies && $act_cut_status == 'DONE' && $manual_flag==0){
 //Verifying for the 'F' forcefully reported docket
 $nfully_report = 0;
 $cps_full_status_query = "SELECT reported_status from $bai_pro3.cps_log where doc_no IN ($child_docs) 
-                    and operation_code = $op_code ";                                        
+                    and operation_code = $op_code ORDER BY reported_status ASC";                                        
 $cps_full_status_result = mysqli_query($link,$cps_full_status_query);
 while($row=mysqli_fetch_array($cps_full_status_result)){
     if($row['reported_status'] == 'P' || $row['reported_status'] == ''){
