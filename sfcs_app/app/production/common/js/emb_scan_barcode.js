@@ -79,7 +79,7 @@ $('#rejec_reasons').on('click', function(){
         var reject_data = reason_data.reduce((acc, value, i) => (acc[value] = qty_data[i], acc), {});
         console.log(reject_data);
         //$("#rej_data").val("hello");
-        var controllerElement = document.querySelector('[ng-controller="scancode_ctrl"]');
+        var controllerElement = document.querySelector('[ng-controller="scanctrl"]');
         var scope = angular.element(controllerElement).scope();
         scope.$apply(function () {
             scope.rej_data = reject_data;
@@ -190,7 +190,7 @@ $scope.$watch('op_code', function(op_code){
                     if(split.length == 3){
                         var bundle_num = split[0];
                         var op_no = split[1];
-var seqno = split[2];
+						var seqno = split[2];
                         if (isNaN(bundle_num) || isNaN(op_no)){
                             //$('#barcode_scan').focus();
                             $('#loading-image').hide();
@@ -209,7 +209,8 @@ var seqno = split[2];
                                 barcode: $scope.last_barcode,
                                 shift: $scope.shift,
                                 gate_id: $scope.pass_id,
-rej_id:$scope.rej_id
+								rej_id:$scope.rej_id,
+								rej_data:$scope.rej_data,
                             });
                             var req = {
                                 method: 'POST',

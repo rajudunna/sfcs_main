@@ -5,6 +5,7 @@
 
     $barcode = $_POST['barcode'];
 	$rejqty=$_POST['rej_id'];
+	$rej_data=$_POST['rej_data'];
 	if($rejqty!='' || $rejqty!=0)
 	{
 		$rejctedqty=$rejqty;
