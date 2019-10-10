@@ -28,7 +28,7 @@
 		$pack_method = $_GET['pack_method'];
 		$data_val=explode("$",$pack_method);
 		
-		$count_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id='".$carton_id."';";
+		$count_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id='".$carton_id."'";
 		$count_result = mysqli_query($link,$count_query);
 		if(mysqli_num_rows($count_result)>0)
 		{
