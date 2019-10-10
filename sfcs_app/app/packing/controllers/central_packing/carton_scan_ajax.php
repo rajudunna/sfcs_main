@@ -23,7 +23,7 @@
 		$b_op_id = $_GET['operation_id'];
 		$shift = $_GET['shift'];
 
-		$count_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id='".$carton_id."';";
+		$count_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id='".$carton_id."'";
 		$count_result = mysqli_query($link,$count_query);
 		if(mysqli_num_rows($count_result)>0)
 		{
@@ -39,7 +39,7 @@
 			}
 
 			$application='packing';
-            $get_first_opn_packing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY tbl_orders_ops_ref.operation_code*1 LIMIT 1;";
+            $get_first_opn_packing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY tbl_orders_ops_ref.operation_code*1 LIMIT 1";
             $result_first_opn_packing=mysqli_query($link, $get_first_opn_packing) or exit("1=error while fetching pre_op_code_b4_carton_ready");
             if (mysqli_num_rows($result_first_opn_packing) > 0)
             {
@@ -67,7 +67,7 @@
 	                $ops_sequence = $op_order['ops_sequence'];
 	                $operation_order = $op_order['operation_order'];
 
-	                $get_pre_op_code_b4_carton_ready = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code  WHERE style='$style' AND color = '$color' AND ops_sequence = '$ops_sequence' AND category='$application' AND CAST(operation_order AS CHAR) < '$operation_order' AND tbl_style_ops_master.operation_code NOT IN (10,15) ORDER BY operation_order DESC LIMIT 1";
+	                $get_pre_op_code_b4_carton_ready = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code  WHERE style='$style' AND color = '$color' AND ops_sequence = '$ops_sequence' AND category='$application' AND CAST(operation_order AS CHAR) = '$operation_order' AND tbl_style_ops_master.operation_code NOT IN (10,15) ORDER BY operation_order DESC LIMIT 1";
 	                $result_pre_op_b4_carton_ready=mysqli_query($link, $get_pre_op_code_b4_carton_ready) or exit("3=error while fetching pre_op_code_b4_carton_ready".$get_pre_op_code_b4_carton_ready);
 	                if (mysqli_num_rows($result_pre_op_b4_carton_ready) > 0)
 	                {
