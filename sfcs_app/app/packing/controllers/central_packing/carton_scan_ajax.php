@@ -1,8 +1,6 @@
 <?php
 	include('../../../../common/config/config_ajax.php');
 	include("../../../../common/config/m3Updations.php");
-	// include("../../../../common/config/functions.php");
-
 	//API related data
 	$plant_code = $global_facility_code;
 	$company_num = $company_no;
@@ -24,10 +22,7 @@
 		$carton_id = $_GET['carton_id'];
 		$b_op_id = $_GET['operation_id'];
 		$shift = $_GET['shift'];
-		$pack_team = $_GET['pack_team'];
-		$pack_method = $_GET['pack_method'];
-		$data_val=explode("$",$pack_method);
-		
+
 		$count_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id='".$carton_id."'";
 		$count_result = mysqli_query($link,$count_query);
 		if(mysqli_num_rows($count_result)>0)
@@ -44,7 +39,7 @@
 			}
 
 			$application='packing';
-            $get_first_opn_packing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY tbl_orders_ops_ref.operation_code*1 LIMIT 1;";
+            $get_first_opn_packing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY tbl_orders_ops_ref.operation_code*1 LIMIT 1";
             $result_first_opn_packing=mysqli_query($link, $get_first_opn_packing) or exit("1=error while fetching pre_op_code_b4_carton_ready");
             if (mysqli_num_rows($result_first_opn_packing) > 0)
             {
@@ -111,28 +106,8 @@
 				$sizes=$row['sizes'];
 				$carton_qty=$row['carton_qty'];
 			}
-			$short_ship_status =0;
-			$query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
-			$shortship_res = mysqli_query($link,$query_short_shipment);
-			$count_short_ship = mysqli_num_rows($shortship_res);
-			if($count_short_ship >0) {
-				while($row_set=mysqli_fetch_array($shortship_res))
-				{
-					if($row_set['remove_type']==1) {
-						$short_ship_status=1;
-					}else{
-						$short_ship_status=2;
-					}
-				}
-			}
-		
-			if($short_ship_status==1){
-				$result_array['status'] = 5;
-			}
-			else if($short_ship_status==2){
-				$result_array['status'] = 6;
-			}
-			else if ($status == 'DONE')
+
+			if ($status == 'DONE')
 			{
 				$result_array['status'] = 1;
 			}
@@ -166,10 +141,7 @@
 	                    } else {
 	                    	$update_carton_status = "";
 	                    }
-						
-	                    $sql211="INSERT INTO $bai_pro3.`carton_packing_details` (`carton_id`, `operation_id`, `pack_code`, `pack_desc`, `pack_smv`, `pack_team`,scan_time) VALUES ('".$carton_id."', '".$b_op_id."', '".$data_val[0]."', '".$data_val[1]."', '".$data_val[2]."', '".$pack_team."','".date('Y-m-d H:i:s')."')";
-						mysqli_query($link, $sql211) or exit("Insert while updating pac_stat");
-						
+	                    
 						$update_pac_stat_atble="update $bai_pro3.pac_stat set opn_status=".$b_op_id." ".$update_carton_status." where id = ".$carton_id."";
 						$pac_stat_log_result = mysqli_query($link, $update_pac_stat_atble) or exit("Error while updating pac_stat_log");
 
@@ -189,24 +161,10 @@
 						$bcd_detail_result = mysqli_query($link,$get_details_to_insert_bcd_temp);
 						while($row=mysqli_fetch_array($bcd_detail_result))
 						{
-							
-							$date = date('Y-m-d H:i:s');
 							$bundle_tid = $row['tid'];
-
-							$check_for_duplicates_bcd_temp = "SELECT sum(original_qty) as quantity from $brandix_bts.bundle_creation_data_temp where bundle_number=$bundle_tid and operation_id=$b_op_id";
-							$result = mysqli_query($link,$check_for_duplicates_bcd_temp) or exit("While checking for duplicate entries");
-							while($res = mysqli_fetch_array($result))
-							{
-								$sum = $res['quantity'];
-							}	
-							if ($sum > 0) {
-								# code...
-							} else {
-								$bcd_temp_insert_query = "INSERT into $brandix_bts.bundle_creation_data_temp(date_time,style,schedule,color,size_id,size_title,bundle_number,original_qty,send_qty,recevied_qty,operation_id,bundle_status,assigned_module,remarks,scanned_date,scanned_user,input_job_no,input_job_no_random_ref) values ('$date', '".$row['style']."', '".$row['schedule']."', '".$row['color']."', '".$row['size_code']."', '".$row['size_tit']."', $bundle_tid, ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", $b_op_id, 'DONE', '$team_id', '$carton_type', '$date', '$username', $carton_id, '$carton_id')";
-								// echo $bcd_temp_insert_query.'<br>';
-								mysqli_query($link,$bcd_temp_insert_query);
-							}
-
+							$bcd_temp_insert_query = "INSERT into $brandix_bts.bundle_creation_data_temp(date_time,style,schedule,color,size_id,size_title,bundle_number,original_qty,send_qty,recevied_qty,operation_id,bundle_status,assigned_module,remarks,scanned_date,scanned_user,input_job_no,input_job_no_random_ref) values ('".date('Y-m-d H:i:s')."', '".$row['style']."', '".$row['schedule']."', '".$row['color']."', '".$row['size_code']."', '".$row['size_tit']."', $bundle_tid, ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", ".$row['carton_act_qty'].", $b_op_id, 'DONE', '$team_id', '$carton_type', '".date('Y-m-d H:i:s')."', '$username', $carton_id, '$carton_id')";
+							// echo $bcd_temp_insert_query.'<br>';
+							mysqli_query($link,$bcd_temp_insert_query);
 						}
 
 						if (!$pac_stat_log_result)
@@ -232,7 +190,7 @@
 					$result_array['status'] = 5;
 				}           
 			}
-			// 1 = carton already scanned || 2 = carton scanned successfully || 3 = carton scanned failed || 4 =  carton not eligible for scanning || 5= Temporary short shipment already generated || 6= Permanent short shipment already generated
+			// 1 = carton already scanned || 2 = carton scanned successfully || 3 = carton scanned failed || 4 =  carton not eligible for scanning || 5 = previous opn not done
 			$result_array['carton_no'] = $carton_no;
 			$result_array['style'] = $style;
 			$result_array['schedule'] = $schedule;
