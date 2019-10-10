@@ -308,7 +308,10 @@ while($row=mysqli_fetch_array($result))
 	$recut_docketno[]=$row["doc_no"];
 }
 //echo implode(",",$docketnos);
-$sql="select max(ex_factory_date_new) as dat,max(ship_tid) as tid from $bai_pro4.week_delivery_plan_ref where schedule_no='$schedule'  and color='$color'";
+// $sql="select max(ex_factory_date_new) as dat,max(ship_tid) as tid from $bai_pro4.week_delivery_plan_ref where schedule_no='$schedule'  and color='$color'";
+$sql="SELECT MAX(ship_tid) AS tid,IF(`week_delivery_plan`.`rev_exfactory` = '0000-00-00',
+max(`week_delivery_plan`.`act_exfact`),max(`week_delivery_plan`.`rev_exfactory`)) AS dat
+FROM bai_pro4.shipment_plan LEFT JOIN `bai_pro4`.`week_delivery_plan` ON `week_delivery_plan`.`shipment_plan_id` = `shipment_plan`.`ship_tid` WHERE schedule_no='$schedule' and color='$color'";
 //echo $sql."<br>";
 //$sql="select ex_factory_date,ship_tid from bai_pro4.shipment_plan where schedule_no=$schedule and color=\"".$color."\"";
 $result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
