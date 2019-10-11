@@ -210,7 +210,7 @@ $scope.$watch('op_code', function(op_code){
                                 shift: $scope.shift,
                                 gate_id: $scope.pass_id,
 								rej_id:$scope.rej_id,
-								rej_data:$scope.rej_data,
+								rej_data:$scope.rej_data
                             });
                             var req = {
                                 method: 'POST',
