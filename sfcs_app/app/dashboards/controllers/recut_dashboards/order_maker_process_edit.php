@@ -126,7 +126,7 @@ if(isset($_POST['update']))
 				
 				if($lock_status!='1')
 				{
-					$sql="update allocate_stat_log set mk_status=2 where tid=$allocate_ref";
+					$sql="update allocate_stat_log set mk_status=2 where tid=$allocate_ref and recut_lay_plan='yes'";
 					mysqli_query($link, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 				

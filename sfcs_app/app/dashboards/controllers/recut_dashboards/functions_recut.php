@@ -183,6 +183,9 @@ function RecutProcess($recut_id_edit)
             $table_data .= "<input type='hidden' name='ids[$bcd_id]' value='$ids'>";
             $table_data .= "<input type='hidden' name='size[]' value='$size'>";
             $table_data .= "<input type='hidden' name='bcd_ids[]' value='$bcd_id'>";
+            $table_data .= "<input type='hidden' name='rej_qty[]' value='$rej_qty'>";
+            $table_data .= "<input type='hidden' name='recut_qty[]' value='$recut_qty'>";
+            $table_data .= "<input type='hidden' name='replace_qty[]' value='$replace_qty'>";
         }
         //$table_data .= "<input type='hidden' id='total_rows' value='$s_no'>";
        // $table_data .= "<td style='display:none' id='total_rows'>$s_no</td>";
