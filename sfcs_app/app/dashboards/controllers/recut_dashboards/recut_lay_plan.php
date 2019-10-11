@@ -49,7 +49,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $sizes_reference=rtrim($sizes_reference,",");
-
+$sql_cat="select * from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" and category in ($in_categories)";
+$sql_result_cat=mysqli_query($link, $sql_cat) or exit("Sql Error555".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row_cat=mysqli_fetch_array($sql_result_cat))
+{
+    $cat_ref_id=$sql_row_cat['tid'];
+}
 $o_total = 0;
 $sql1="select * from $ord_tbl_name where order_tid=\"$tran_order_tid\"";
 $sql_result=mysqli_query($link, $sql1) or exit("Sql Error55".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -62,14 +67,16 @@ while($sql_row1=mysqli_fetch_array($sql_result))
             $s_tit[$sizes_code[$s]]=$sql_row1["title_size_s".$sizes_code[$s].""];
         }	
     }
-    $sql1_recut="select * from $bai_pro3.cuttable_stat_log_recut where order_tid=\"$tran_order_tid\" limit 1";
+    $sql1_recut="select sum(cuttable_s_s01) as \"s01\", sum(cuttable_s_s02) as \"s02\", sum(cuttable_s_s03) as \"s03\", sum(cuttable_s_s04) as \"s04\", sum(cuttable_s_s05) as \"s05\", sum(cuttable_s_s06) as \"s06\", sum(cuttable_s_s07) as \"s07\", sum(cuttable_s_s08) as \"s08\", sum(cuttable_s_s09) as \"s09\", sum(cuttable_s_s10) as \"s10\", sum(cuttable_s_s11) as \"s11\", sum(cuttable_s_s12) as \"s12\", sum(cuttable_s_s13) as \"s13\", sum(cuttable_s_s14) as \"s14\", sum(cuttable_s_s15) as \"s15\", sum(cuttable_s_s16) as \"s16\", sum(cuttable_s_s17) as \"s17\", sum(cuttable_s_s18) as \"s18\", sum(cuttable_s_s19) as \"s19\", sum(cuttable_s_s20) as \"s20\", sum(cuttable_s_s21) as \"s21\", sum(cuttable_s_s22) as \"s22\", sum(cuttable_s_s23) as \"s23\", sum(cuttable_s_s24) as \"s24\", sum(cuttable_s_s25) as \"s25\", sum(cuttable_s_s26) as \"s26\", sum(cuttable_s_s27) as \"s27\", sum(cuttable_s_s28) as \"s28\", sum(cuttable_s_s29) as \"s29\", sum(cuttable_s_s30) as \"s30\", sum(cuttable_s_s31) as \"s31\", sum(cuttable_s_s32) as \"s32\", sum(cuttable_s_s33) as \"s33\", sum(cuttable_s_s34) as \"s34\", sum(cuttable_s_s35) as \"s35\", sum(cuttable_s_s36) as \"s36\", sum(cuttable_s_s37) as \"s37\", sum(cuttable_s_s38) as \"s38\", sum(cuttable_s_s39) as \"s39\", sum(cuttable_s_s40) as \"s40\", sum(cuttable_s_s41) as \"s41\", sum(cuttable_s_s42) as \"s42\", sum(cuttable_s_s43) as \"s43\", sum(cuttable_s_s44) as \"s44\", sum(cuttable_s_s45) as \"s45\", sum(cuttable_s_s46) as \"s46\", sum(cuttable_s_s47) as \"s47\", sum(cuttable_s_s48) as \"s48\", sum(cuttable_s_s49) as \"s49\", sum(cuttable_s_s50) as \"s50\"  from $bai_pro3.cuttable_stat_log_recut  where order_tid=\"$tran_order_tid\" and cat_id=$cat_ref_id group by cat_id";
+    // left join cat_stat_log on  cuttable_stat_log_recut.order_tid=cat_stat_log.order_tid 
+    // and cat_stat_log.category in ($in_categories)
     $sql1_res_recut=mysqli_query($link, $sql1_recut) or exit("Sql Error255".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row1_recut=mysqli_fetch_array($sql1_res_recut))
     {
         for($s=0;$s<sizeof($sizes_code);$s++)
         {
-            $s_ord[$s]=$sql_row1_recut["cuttable_s_s".$sizes_code[$s].""];
-            $o_total += $sql_row1_recut["cuttable_s_s".$sizes_code[$s]];
+            $s_ord[$s]=$sql_row1_recut["s".$sizes_code[$s].""];
+            $o_total += $sql_row1_recut["s".$sizes_code[$s]];
         }
     }
     
@@ -147,7 +154,7 @@ foreach($cats_ids as $key=>$value)
         }
 
         $sql2="select ((allocate_s01+allocate_s02+allocate_s03+allocate_s04+allocate_s05+allocate_s06+allocate_s07+allocate_s08+allocate_s09+allocate_s10+allocate_s11+allocate_s12+allocate_s13+allocate_s14+allocate_s15+allocate_s16+allocate_s17+allocate_s18+allocate_s19+allocate_s20+allocate_s21+allocate_s22+allocate_s23+allocate_s24+allocate_s25+allocate_s26+allocate_s27+allocate_s28+allocate_s29+allocate_s30+allocate_s31+allocate_s32+allocate_s33+allocate_s34+allocate_s35+allocate_s36+allocate_s37+allocate_s38+allocate_s39+allocate_s40+allocate_s41+allocate_s42+allocate_s43+allocate_s44+allocate_s45+allocate_s46+allocate_s47+allocate_s48+allocate_s49+allocate_s50)*plies) as \"total\" from $bai_pro3.allocate_stat_log left join cat_stat_log on  allocate_stat_log.order_tid=cat_stat_log.order_tid where allocate_stat_log.order_tid=\"$tran_order_tid\" and allocate_stat_log.cuttable_ref='$cuttable_ref' and cat_stat_log.category in ($in_categories) and allocate_stat_log.recut_lay_plan='yes' ";
-        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
         $sql_num_check2=mysqli_num_rows($sql_result2);
         while($sql_row2=mysqli_fetch_array($sql_result2))
         {
@@ -175,7 +182,7 @@ foreach($cats_ids as $key=>$value)
 
         $pliespercut=0;
         $sql15="select * from bai_pro3.allocate_stat_log where cat_ref=$cat_id and recut_lay_plan='yes'";
-        $sql_result15=mysqli_query($link, $sql15) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $sql_result15=mysqli_query($link, $sql15) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
         $cut_count = mysqli_num_rows($sql_result15);
         while($sql_row15=mysqli_fetch_array($sql_result15))
         {
@@ -239,7 +246,9 @@ foreach($cats_ids as $key=>$value)
 	$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$value  and recut_lay_plan='yes' order by tid";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	// echo $sql;
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $sql_result=mysqli_query($link, $sql) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $temp = 0;
+    
     while($sql_row=mysqli_fetch_array($sql_result))
     { 
 		$mk_status=$sql_row['mk_status'];
@@ -332,45 +341,49 @@ foreach($cats_ids as $key=>$value)
 		$ratios_table .= "</tr>";
 		$allc_ref = $sql_row['tid'];
 		$sql2="select * from $bai_pro3.maker_stat_log where allocate_ref=$allc_ref and cuttable_ref > 0 and recut_lay_plan='yes'";
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error323".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{		
 			$used_fabric+=$sql_row2['mklength'] * $sql_row['plies'];	
-		}
-	}	
-	$ratios_table .= "<tr><td colspan=3> Total Planned Quantity</center><td>";
-	for($s=0;$s<sizeof($s_tit);$s++)
-	{
-		if ($tot_size[$s_tit[$sizes_code[$s]]] >= 0)
-		{
-			$ratios_table .= "<td class=\"  \" style='background-color:#4cff4c'><center>".$tot_size[$s_tit[$sizes_code[$s]]] ."</center></td>";
-		}
-		else
-		{
-			$ratios_table .= "<td class=\"b1\" style='background-color:#f8d7da'><center>".$tot_size[$s_tit[$sizes_code[$s]]]."</center></td>";
-		}
-	}	
-	$ratios_table .= "<td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><tdclass=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td></tr>";
-	$ratios_table .= "<tr><td colspan=3>Excess / Less <td>";
-	for($s=0;$s<sizeof($s_tit);$s++)
-	{
-		
-		if($input_qty[$s_tit[$sizes_code[$s]]]=='')
-		{
-			$input_qty[$s_tit[$sizes_code[$s]]]=0;
-		}
-		if ($tot_size[$s_tit[$sizes_code[$s]]]-($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]) >= 0)
-		{
-			$ratios_table .= "<td class=\"  \" style='background-color:#4cff4c'><center>".($tot_size[$s_tit[$sizes_code[$s]]]-($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]))."</center></td>";
-		}
-		else
-		{
-			$ratios_table .= "<td class=\"b1\" style='background-color:#f8d7da'><center>".($tot_size[$s_tit[$sizes_code[$s]]]-($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]))."</center></td>";
-		}
-	}
-	unset($tot_size);
-	unset($input_qty);		
-	$ratios_table .= "<td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td></tr>";
+        }
+        $temp = 1;
+    }	
+    if($temp == 1){
+
+        $ratios_table .= "<tr><td colspan=3> Total Planned Quantity</center><td>";
+        for($s=0;$s<sizeof($s_tit);$s++)
+        {
+            if ($tot_size[$s_tit[$sizes_code[$s]]] >= 0)
+            {
+                $ratios_table .= "<td class=\"  \" style='background-color:#4cff4c'><center>".$tot_size[$s_tit[$sizes_code[$s]]] ."</center></td>";
+            }
+            else
+            {
+                $ratios_table .= "<td class=\"b1\" style='background-color:#f8d7da'><center>".$tot_size[$s_tit[$sizes_code[$s]]]."</center></td>";
+            }
+        }	
+        $ratios_table .= "<td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><tdclass=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td></tr>";
+        $ratios_table .= "<tr><td colspan=3>Excess / Less <td>";
+        for($s=0;$s<sizeof($s_tit);$s++)
+        {
+            
+            if($input_qty[$s_tit[$sizes_code[$s]]]=='')
+            {
+                $input_qty[$s_tit[$sizes_code[$s]]]=0;
+            }
+            if ($tot_size[$s_tit[$sizes_code[$s]]]-($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]) >= 0)
+            {
+                $ratios_table .= "<td class=\"  \" style='background-color:#4cff4c'><center>".($tot_size[$s_tit[$sizes_code[$s]]]-($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]))."</center></td>";
+            }
+            else
+            {
+                $ratios_table .= "<td class=\"b1\" style='background-color:#f8d7da'><center>".($tot_size[$s_tit[$sizes_code[$s]]]-($input_qty[$s_tit[$sizes_code[$s]]]+$s_ord[$s]))."</center></td>";
+            }
+        }
+        unset($tot_size);
+        unset($input_qty);		
+        $ratios_table .= "<td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td></tr>";
+    }
 
 }
 $ratios_table .= "</tbody></table>
@@ -430,13 +443,13 @@ $tran_order_tid1=$tran_order_tid;
 foreach($cats_ids as $key=>$value)
 {
     $get_cat_ref_query="SELECT cat_ref FROM $bai_pro3.allocate_stat_log WHERE order_tid=\"$tran_order_tid1\" and cat_ref=$value and recut_lay_plan='yes' group by cat_ref ORDER BY tid";
-    $cat_ref_result=mysqli_query($link, $get_cat_ref_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $cat_ref_result=mysqli_query($link, $get_cat_ref_query) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($cat_row=mysqli_fetch_array($cat_ref_result))
     {
         $grand_tot_used_fab = 0;
         $grand_tot_used_binding = 0;
         $sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and cat_ref=".$cat_row['cat_ref']." and recut_lay_plan='yes'  ORDER BY ratio";
-        $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $sql_result=mysqli_query($link, $sql) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($sql_row=mysqli_fetch_array($sql_result))
         {
             $cat_ref1=$sql_row['cat_ref'];
@@ -475,7 +488,7 @@ foreach($cats_ids as $key=>$value)
             }
 
             $sql2="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref1  and recut_lay_plan='yes' ";
-            $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1116".mysqli_error($GLOBALS["___mysqli_ston"]));
             while($sql_row2=mysqli_fetch_array($sql_result2))
             {
                 $ratio=$sql_row2['ratio'];
@@ -531,7 +544,7 @@ foreach($cats_ids as $key=>$value)
                 }	
                 
                 $sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and tid=$allocate_ref1  and recut_lay_plan='yes' ";
-                $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($sql_row2=mysqli_fetch_array($sql_result2))
                 {	
                     if($sql_row2['pliespercut']>0)
@@ -643,7 +656,7 @@ $docket_creation .= "<div><table class=\"table table-bordered\">";
 $docket_creation .= "<thead><tr><th class=\"column-title \"><center>Category</center></th><th class=\"column-title \"><center>Total Cut</center></th><th class=\"column-title \"><center>Ratio Ref</center></th><th class=\"column-title \"><center>MO Status</center></th><th class=\"column-title \"><center>Control</center></th><th class=\"column-title \"><center>Ratio wise Savings%</center></th><th class=\"column-title \"><center>Proceed</center></th><th class=\"column-title \"><center>Remarks</center></th></tr></thead>";
 
 $sql="select * from $bai_pro3.maker_stat_log where order_tid=\"$tran_order_tid\" and allocate_ref > 0 and recut_lay_plan='yes' order by allocate_ref";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error777".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -667,7 +680,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$docket_creation .= "<td class=\"  \"><center>".$category."</center></td>";
 	
 	$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and tid=$allocate_ref  and recut_lay_plan='yes'";
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
 		$ratio=$sql_row2['ratio'];

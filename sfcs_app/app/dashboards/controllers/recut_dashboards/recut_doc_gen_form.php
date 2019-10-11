@@ -306,7 +306,7 @@ if($sql_result1_res==0){
                             $inserting_into_recut_v2_child = "INSERT INTO `$bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`,`size_id`)
                             VALUES($docket_no,$bcd_act_id,$operation_id,$actual_allowing_to_recut,$to_add,0,0,'$size_id')";
                             mysqli_query($link,$inserting_into_recut_v2_child) or exit("While inserting into the recut v2 child".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                echo $inserting_into_recut_v2_child."<br>";
+                                // echo $inserting_into_recut_v2_child."<br>";
 
                             //retreaving bundle_number of recut docket from bcd and inserting into moq
                             $retreaving_qry="select bundle_number from $brandix_bts.bundle_creation_data where docket_number='$docket_no' and operation_id ='15' and size_id = '$size_id'";
@@ -367,20 +367,20 @@ if($sql_result1_res==0){
                                     }
                                 }
                                 $update_rejection_log_child = "update $bai_pro3.rejection_log_child set recut_qty = recut_qty+$to_add where bcd_id = $bcd_act_id";
-                                echo $update_rejection_log_child."<br>";
+                                // echo $update_rejection_log_child."<br>";
                                 mysqli_query($link,$update_rejection_log_child) or exit("While updating rejection log child".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 $to_add_mo += $to_add;
                                 $update_rejection_log = "update $bai_pro3.rejections_log set recut_qty = recut_qty+$to_add,remaining_qty = remaining_qty - $to_add where style = '$style' and schedule = '$schedule' and color = '$color'";
-                                echo $update_rejection_log."<br>";
+                                // echo $update_rejection_log."<br>";
 
                                 mysqli_query($link,$update_rejection_log) or exit("While updating rejection log".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 
-                                echo $to_add_mo."<br>";
-                                echo $bcd_act_id."<br>";
+                                // echo $to_add_mo."<br>";
+                                // echo $bcd_act_id."<br>";
                                 $mo_changes11 = mofillingforrecutreplace($to_add_mo,$bcd_act_id);
                             }
                             $update_lay_plan_recut_track = "update $bai_pro3.lay_plan_recut_track set recut_allocated_qty = recut_allocated_qty+$to_add,remaining_qty = remaining_qty-$to_add  where bcd_id = $bcd_act_id and cat_ref=$cat_ref";
-                            echo $update_lay_plan_recut_track."<br>";
+                            // echo $update_lay_plan_recut_track."<br>";
                             mysqli_query($link,$update_lay_plan_recut_track) or exit("While updating lay_plan_recut_track".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
                     }
@@ -394,7 +394,6 @@ if($sql_result1_res==0){
 
     //// For back Redirection
     $sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
-    mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sql_num_check=mysqli_num_rows($sql_result);
 
@@ -405,12 +404,12 @@ if($sql_result1_res==0){
         $schedule=$sql_row['order_del_no'];
     }
 
-    // echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-    //     function Redirect() {
-    //         sweetAlert('Successfully Generated','','success');
-    //         location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
-    //         }
-    //     </script>";
+    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+        function Redirect() {
+            sweetAlert('Successfully Generated','','success');
+            location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+            }
+        </script>";
    
 
 }
@@ -427,12 +426,12 @@ else
 		$style=$sql_row['order_style_no'];
 		$schedule=$sql_row['order_del_no'];
 	}
-	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-	// 	function Redirect() {
-	// 		sweetAlert('Dockets Already Generated','','warning');
-	// 		location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
-	// 		}
-	// 	</script>";
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+		function Redirect() {
+			sweetAlert('Dockets Already Generated','','warning');
+			location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+			}
+		</script>";
 }
 
 ((is_null($___mysqli_res = mysqli_close($link))) ? false : $___mysqli_res);
