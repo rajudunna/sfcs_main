@@ -51,7 +51,7 @@ if(isset($_POST['reverse']))
 	function updatedata($updatedoc,$updatequant,$sizes,$op_no,$seqno,$barcode,$clubstatus)
 	{
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
-		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
+		// include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
 		
 		//getting bundle number from bundle_creation_data
 		$selct_qry = "SELECT bundle_number FROM $brandix_bts.bundle_creation_data  WHERE docket_number =$updatedoc AND operation_id='$op_no' AND size_title='$sizes'";
@@ -250,9 +250,13 @@ if(isset($_POST['reverse']))
 		$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$updatequant where doc_no = '".$updatedoc."' and size_title='". $sizes."' AND operation_code = $op_no";
 		$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 		
+		$update_qry_cps_log_qunt = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$updatequant where doc_no = '".$updatedoc."' and size_title='". $sizes."' AND operation_code = $pre_ops_code";
+		$update_qry_cps_log_res_quant = $link->query($update_qry_cps_log_qunt);
+		
+		
 		$updating = updateM3TransactionsReversal($bundle_no,$updatequant,$op_no);
 		
-		echo "<script>swal('Embellishment Bundle Recersed','Successfully','success');</script>";
+		echo "<script>swal('Embellishment Bundle Reversed','Successfully','success');</script>";
 		
 	}
 	
@@ -344,7 +348,7 @@ if(isset($_POST['reverse']))
 			{
 				$remqty=$quant_qry_result_row['remaining_qty'];
 			}
-			if($remqty>$reverseqty)
+			if($remqty>=$reverseqty)
 			{
 				foreach($normdoc as $child_doc)
 				{
