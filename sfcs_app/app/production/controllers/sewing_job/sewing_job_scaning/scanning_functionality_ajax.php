@@ -1442,7 +1442,7 @@ else if($concurrent_flag == 0)
 					}
 				}
 
-				$hout_ops_qry = "SELECT smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code=$b_op_id";
+				$hout_ops_qry = "SELECT smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors[$i]' and operation_code=$b_op_id";
 				// echo $hout_ops_qry;
 				$hout_ops_result = $link->query($hout_ops_qry);
 
@@ -1455,29 +1455,29 @@ else if($concurrent_flag == 0)
 
 					
 					if($smv>0){
-						$hout_data_qry = "select id,out_date,out_time,team,qty from $bai_pro2.hout where out_date = '$tod_date' and team = '$b_module[$i]' and time_parent_id = $plant_time_id";
-						// echo $hout_data_qry;
-						$hout_data_result = $link->query($hout_data_qry);
+						// $hout_data_qry = "select id,out_date,out_time,team,qty from $bai_pro2.hout where out_date = '$tod_date' and team = '$b_module[$i]' and time_parent_id = $plant_time_id";
+						//echo $hout_data_qry;
+						// $hout_data_result = $link->query($hout_data_qry);
 
-						if($hout_data_result->num_rows > 0)
-						{
-							while($hout_result_data = $hout_data_result->fetch_assoc()) 
-							{
-								$row_id = $hout_result_data['id'];
-								$hout_date = $hout_result_data['out_date'];
-								$out_time = $hout_result_data['out_time'];
-								$team = $hout_result_data['team'];
-								$qty = $hout_result_data['qty'];
-							}
-							$upd_qty = $qty + $b_rep_qty[$i];
-							$hout_update_qry = "update $bai_pro2.hout set qty = '$upd_qty' where id= $row_id";
-							$hout_update_result = $link->query($hout_update_qry);
-							// update
-						}else{
-							$hout_insert_qry = "insert into $bai_pro2.hout(out_date, out_time, team, qty, status, remarks, rep_start_time, rep_end_time, time_parent_id) values('$tod_date','$cur_hour','$b_module[$i]','$b_rep_qty[$i]', '1', 'NA', '$plant_start_timing', '$plant_end_timing', '$plant_time_id')";
+						// if($hout_data_result->num_rows > 0)
+						// {
+							// while($hout_result_data = $hout_data_result->fetch_assoc()) 
+							// {
+								// $row_id = $hout_result_data['id'];
+								// $hout_date = $hout_result_data['out_date'];
+								// $out_time = $hout_result_data['out_time'];
+								// $team = $hout_result_data['team'];
+								// $qty = $hout_result_data['qty'];
+							// }
+							// $upd_qty = $qty + $b_rep_qty[$i];
+							// $hout_update_qry = "update $bai_pro2.hout set qty = '$upd_qty' where id= $row_id";
+							// $hout_update_result = $link->query($hout_update_qry);
+						//	update
+						// }else{
+							$hout_insert_qry = "insert into $bai_pro2.hout(out_date, out_time, team, qty, status, remarks, rep_start_time, rep_end_time, time_parent_id, style,color,smv,bcd_id) values('$tod_date','$cur_hour','$b_module[$i]','$b_rep_qty[$i]', '1', 'NA', '$plant_start_timing', '$plant_end_timing', '$plant_time_id','$b_style','$b_colors[$i]','$smv','$b_tid[$i]')";
 							$hout_insert_result = $link->query($hout_insert_qry);
 							// insert
-						}
+						//}
 					}
 				}
                   
