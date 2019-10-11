@@ -42,6 +42,7 @@ function validating_cumulative(e,t)
                     result += Number($(this).val());
                 }
             });
+			// alert(result);
             if(result>0){
                  $('#footer').show();
 				 $('#rej_id').val(result);
@@ -151,7 +152,7 @@ app.controller('scanctrl', function ($scope, $http, $window) {
     $scope.url = '';
     $scope.user_permission = '';
     $scope.pass_id = '';
-$scope.rej_id = '';
+//$scope.rej_id = '';
     $scope.showtable = false;
     $scope.showscanlist = false;
     $scope.scanned_barcode_details = [];
@@ -210,7 +211,7 @@ $scope.$watch('op_code', function(op_code){
                                 shift: $scope.shift,
                                 gate_id: $scope.pass_id,
 								rej_id:$scope.rej_id,
-								rej_data:$scope.rej_data
+								rej_data:$scope.rej_data,
                             });
                             var req = {
                                 method: 'POST',
@@ -245,7 +246,8 @@ $scope.$watch('op_code', function(op_code){
                                     $scope.last_barcode_status_remarks = 'Bundle qty inserted.';
                                     console.log($scope.scanned_barcode_details);
                                     $('.bgcolortable').css("background-color", "#00800085");
-$scope.rej_id='';
+									$scope.rej_id=0;
+									$scope.rej_data='';
                                 }
 
                             });

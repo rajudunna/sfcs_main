@@ -4,16 +4,23 @@
     include 'functions_scanning_ij.php';
 
     $barcode = $_POST['barcode'];
-	$rejqty=$_POST['rej_id'];
+	//$rejqty=$_POST['rej_id'];
 	$rej_data=$_POST['rej_data'];
-	if($rejqty!='' || $rejqty!=0)
-	{
-		$rejctedqty=$rejqty;
-	}
-	else
-	{
-		$rejctedqty=0;
-	}
+	// $rejqty=array_sum($rej_data);
+	// if($rejqty!='' || $rejqty!=0)
+	// {
+		// $rejctedqty=$rejqty;
+	// }
+	// else
+	// {
+		// $rejctedqty=0;
+	// }
+	
+		if($rej_data!=''){
+				$rejctedqty=array_sum($rej_data);		
+			}else{
+				$rejctedqty=0;
+		}
 	
     $shift = $_POST['shift'];
     $gate_id = $_POST['gate_id'];
@@ -29,8 +36,12 @@ $docno_qry_result=mysqli_query($link,$get_doc_no_qry) or exit("error while retri
 while($docno_qry_result_row=mysqli_fetch_array($docno_qry_result))
 {
 	$clubdocno[]=$docno_qry_result_row['doc_no'];
-}	
+}
+if(count($clubdocno)>0){	
 $child_docs=implode(',',$clubdocno);
+}else{
+	$clubdocno='';
+}	
 if($child_docs!='')
 {
 	$docket_no=$child_docs;
@@ -483,24 +494,11 @@ if($check_qry_result->num_rows > 0)
 								
 								
 								
+								if($rejctedqty>0)
+								{
 								
-								
-								
-										$qry_barcode="SELECT * FROM `$bai_pro3`.`packing_summary_input` WHERE tid=$bundle_no";
-										$result_qry_barcode = $link->query($qry_barcode);
-											if($result_qry_barcode->num_rows > 0){
-												while($row = $result_qry_barcode->fetch_assoc())
-												{
-													$input_job_no_random=$row['input_job_no_random'];
-													$job_number_reference = $row['type_of_sewing'];
-												}
-											}
-											$get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing= $job_number_reference";
-											$get_remark_arry_req = $link->query($get_remark);
-											while($row_remark = $get_remark_arry_req->fetch_assoc()) 
-											{
-												$b_remarks  = $row_remark['prefix_name'];
-											}
+												$b_remarks  = '';
+											
 										$actual_rejection_reason_array_string = array();
 										foreach($rej_data as $reason_key=>$reason_value)
 										{   
@@ -635,13 +633,13 @@ if($check_qry_result->num_rows > 0)
 													updateM3TransactionsRejections($b_tid,$b_op_id,$r_qty,$m3_reason_code);
 												}
 										}
-						
+								}
 						
 										for($i=0;$i<sizeof($b_tid);$i++)
 										{
 										$updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$diffqty);
 										}
-										$result_array['bundle_no'] = $bundle_no;
+										$result_array['bundle_no'] = $docno;
 										$result_array['op_no'] = $op_no;
 										$result_array['style'] = $style;
 										$result_array['schedule'] = $schedule;
@@ -737,22 +735,11 @@ if($check_qry_result->num_rows > 0)
 							$result_query = $link->query($query_post) or exit('query error in updating');
 						}
 						
-						
-										$qry_barcode="SELECT * FROM `$bai_pro3`.`packing_summary_input` WHERE tid=$bundle_no";
-										$result_qry_barcode = $link->query($qry_barcode);
-											if($result_qry_barcode->num_rows > 0){
-												while($row = $result_qry_barcode->fetch_assoc())
-												{
-													$input_job_no_random=$row['input_job_no_random'];
-													$job_number_reference = $row['type_of_sewing'];
-												}
-											}
-											$get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing= $job_number_reference";
-											$get_remark_arry_req = $link->query($get_remark);
-											while($row_remark = $get_remark_arry_req->fetch_assoc()) 
-											{
-												$b_remarks  = $row_remark['prefix_name'];
-											}
+						if($rejctedqty>0)
+						{
+										
+												$b_remarks  = '';
+										
 										$actual_rejection_reason_array_string = array();
 										foreach($rej_data as $reason_key=>$reason_value)
 										{   
@@ -888,14 +875,14 @@ if($check_qry_result->num_rows > 0)
 												}
 										}
 						
-						
+						}
 						
 						
 						for($i=0;$i<sizeof($b_tid);$i++)
 						{
 						$updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$diffqty);
 						}
-						$result_array['bundle_no'] = $bundle_no;
+						$result_array['bundle_no'] = $docno;
 						$result_array['op_no'] = $op_no;
 						$result_array['style'] = $style;
 						$result_array['schedule'] = $schedule;
@@ -1607,23 +1594,11 @@ if($check_qry_result->num_rows > 0)
 								
 								
 								
+								if($rejctedqty>0)
+								{
 								
-								
-										$qry_barcode="SELECT * FROM `$bai_pro3`.`packing_summary_input` WHERE tid=$bundle_no";
-										$result_qry_barcode = $link->query($qry_barcode);
-											if($result_qry_barcode->num_rows > 0){
-												while($row = $result_qry_barcode->fetch_assoc())
-												{
-													$input_job_no_random=$row['input_job_no_random'];
-													$job_number_reference = $row['type_of_sewing'];
-												}
-											}
-											$get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing= $job_number_reference";
-											$get_remark_arry_req = $link->query($get_remark);
-											while($row_remark = $get_remark_arry_req->fetch_assoc()) 
-											{
-												$b_remarks  = $row_remark['prefix_name'];
-											}
+										$b_remarks  = '';
+										
 										$actual_rejection_reason_array_string = array();
 										foreach($rej_data as $reason_key=>$reason_value)
 										{   
@@ -1759,7 +1734,7 @@ if($check_qry_result->num_rows > 0)
 												}
 										}
 								
-								
+								}
 								
 								
 								
@@ -1774,7 +1749,7 @@ if($check_qry_result->num_rows > 0)
 								{
 								$updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$embquantity);
 								}
-								$result_array['bundle_no'] = $bundle_no;
+								$result_array['bundle_no'] = $doc_no;
 								$result_array['op_no'] = $op_no;
 								$result_array['size'] = $sizes;
 								$result_array['reported_qty'] = $embquantity;
@@ -1935,7 +1910,7 @@ if($check_qry_result->num_rows > 0)
 														$status=$qry_result_row['status'];
 
 														//if data exists update emb_bundles
-														$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty=$orgqty,status=1,reject_qty='$rejctedqty',update_time='". date('Y-m-d')."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]' and tran_id=$seqno";
+														$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty=$embquantity,status=1,reject_qty='$rejctedqty',update_time='". date('Y-m-d')."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]' and tran_id=$seqno";
 																								//echo $update_emb_bundles;
 														$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');
 
@@ -2002,25 +1977,12 @@ if($check_qry_result->num_rows > 0)
 											echo "<h1 style='color:red;'>You are Scanning More than eligible quantity.</h1>";
 										}
 										
+									
 										
-										
-										
-										$qry_barcode="SELECT * FROM `$bai_pro3`.`packing_summary_input` WHERE tid=$bundle_no";
-										$result_qry_barcode = $link->query($qry_barcode);
-											if($result_qry_barcode->num_rows > 0){
-												while($row = $result_qry_barcode->fetch_assoc())
-												{
-													$input_job_no_random=$row['input_job_no_random'];
-													$job_number_reference = $row['type_of_sewing'];
-												}
-											}
-											$get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing= $job_number_reference";
-											$get_remark_arry_req = $link->query($get_remark);
-											while($row_remark = $get_remark_arry_req->fetch_assoc()) 
-											{
-												$b_remarks  = $row_remark['prefix_name'];
-											}
-										$actual_rejection_reason_array_string = array();
+								if($rejctedqty>0)
+								{
+									$b_remarks  = '';
+									$actual_rejection_reason_array_string = array();
 										foreach($rej_data as $reason_key=>$reason_value)
 										{   
 											//to get form type
@@ -2155,6 +2117,9 @@ if($check_qry_result->num_rows > 0)
 												}
 										}
 										
+								}									
+										
+										
 										
 										
 										
@@ -2173,7 +2138,7 @@ if($check_qry_result->num_rows > 0)
 										{
 										$updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$embquantity);
 										}
-										$result_array['bundle_no'] = $bundle_no;
+										$result_array['bundle_no'] = $doc_no;
 										$result_array['op_no'] = $op_no;
 										$result_array['size'] = $sizes;
 										$result_array['reported_qty'] = $embquantity;
