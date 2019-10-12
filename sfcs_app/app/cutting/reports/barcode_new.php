@@ -41,8 +41,8 @@
 					<script type="text/javascript" src="../../../common/js/table2CSV.js" ></script>
 				</head>
 				<body>';
-                $getdetails1="SELECT order_col_des,order_del_no,color_code,acutno FROM $bai_pro3.order_cat_doc_mk_mix  where doc_no=".$doc_no;
-                $getdetailsresult1 = mysqli_query($link,$getdetails1);
+				$getdetails1="SELECT order_col_des,order_del_no,color_code,acutno FROM $bai_pro3.order_cat_doc_mk_mix  where doc_no='$doc_no'";
+			    $getdetailsresult1 = mysqli_query($link,$getdetails1);
                 while($sql_row1=mysqli_fetch_array($getdetailsresult1))
                 {
                     $schedule = $sql_row1['order_del_no'];
@@ -50,7 +50,9 @@
                     $cut_no= chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3);	
                 }
 
-                $sql="select order_style_no from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."'";
+				$sql="select order_style_no from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."'";
+				// echo $sql1;
+				// die();
                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($sql_row=mysqli_fetch_array($sql_result))
                 {	
