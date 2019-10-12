@@ -330,7 +330,7 @@ else
 									{
 										//logic for insert inspected db details based on batch
 										$insert_insp_db = "insert into $bai_rm_pj1.inspection_db (batch_ref,act_gsm,pur_width,act_width,sp_rem,qty_insp,gmt_way,pts,fallout,skew,skew_cat,shrink_l,shrink_w,supplier,log_date,unique_id,status,track_id,pur_gsm,consumption) values('".$sticker_data['batch_no']."','".$inspection_data['act_gsm']."','".$inspection_data['pur_width']."','".$inspection_data['act_width']."','".$inspection_data['sp_rem']."','".$inspection_data['qty_insp']."','".$inspection_data['gmt_way']."','".$inspection_data['pts']."','".$inspection_data['fallout']."','".$inspection_data['skew']."','".$inspection_data['skew_cat']."','".$inspection_data['shrink_l']."','".$inspection_data['shrink_w']."','".$inspection_data['supplier']."','".$inspection_data['log_date']."','".$inspection_data['unique_id']."','".$inspection_data['status']."','".$inspection_data['track_id']."','".$inspection_data['pur_gsm']."','".$inspection_data['consumption']."')";
-										echo $insert_insp_db;
+										//echo $insert_insp_db;
 										$qry_inspectiondb_check = $link->query($insert_insp_db);
 									}
 
