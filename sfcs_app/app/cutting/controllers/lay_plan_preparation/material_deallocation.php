@@ -52,7 +52,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 						{ 
 							echo '<input type="submit" id="material_deallocation" class="btn btn-primary" name="formSubmit" value="Request to Deallocate">';
 						} else {
-							echo '<br/><span class="label label-warning label-lg" style="font-size:15px">Unauthorized to Request Material Deallocate</span>';
+							echo '<br/><span class="label label-warning label-lg" style="font-size:13px">Unauthorized to Request Material for Deallocate</span>';
 						}
 					?>
                     </div>
