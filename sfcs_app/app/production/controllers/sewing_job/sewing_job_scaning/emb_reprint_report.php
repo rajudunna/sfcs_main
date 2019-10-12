@@ -73,7 +73,7 @@ Start Date: <input id="demo1" onclick="javascript:NewCssCal('demo1','yyyymmdd','
 					<div class="col-md-6">
 						 <b style='font-size:12px;padding-left:2px;'>End Date:</b>   <input id="demo2" class="form-control" onclick="javascript:NewCssCal('demo2','yyyymmdd','dropdown')" type="text" data-toggle='datepicker' size="8" name="edate" value=<?php if(isset($_REQUEST['edate'])) { echo $_REQUEST['edate']; } else { echo date("Y-m-d"); } ?>>
 					</div></td>
-<td style='padding-left:38px;'><input type="checkbox" name="check_list[]" value="1"><b style='font-size:12px;'>Module</b> <input type="checkbox" name="check_list[]" value="2"><b style='font-size:12px;'>Employee</b> <input type="checkbox" name="check_list[]" value="3"><b style='font-size:12px;'>Shift</b></td> 
+<td style='padding-left:38px;'> <input type="checkbox" name="check_list[]" value="2"><b style='font-size:12px;'>Employee</b> <input type="checkbox" name="check_list[]" value="3"><b style='font-size:12px;'>Shift</b></td> 
 <td>
 
 
@@ -105,11 +105,7 @@ if(isset($_POST['submit']))
 			for($i=0;$i < sizeof($check_box);$i++)
 			{
 				//echo $check_box[$i]."<br>";
-				if($check_box[$i]==1)
-				{
-					$filter.="module_id,";
-				}
-				else if($check_box[$i]==2)
+				if($check_box[$i]==2)
 				{
 					$filter.="emp_id,";
 				}
@@ -136,7 +132,7 @@ if(isset($_POST['submit']))
 	
 	
 //echo $filter."<br>";
-	$sql="SELECT date(date_time) as date_time,$filter bundle_id,user_name,remark from $brandix_bts.re_print_table where date(date_time)
+	$sql="SELECT date(date_time) as date_time,$filter barcode,username,remarks from $bai_pro3.emb_reprint_track where date(date_time)
 BETWEEN '$sdate' AND '$edate' GROUP BY date_time $filter_n ORDER BY date_time";
 //echo $sql."<br>";
 	//$sets=explode(",",$filter_n);
@@ -156,11 +152,7 @@ BETWEEN '$sdate' AND '$edate' GROUP BY date_time $filter_n ORDER BY date_time";
 				for($i=0;$i < sizeof($check_box);$i++)
 				{
 					//echo $check_box[$i]."<br>";
-					if($check_box[$i]==1)
-					{
-						echo "<th>Module</th>";
-					}
-					else if($check_box[$i]==2)
+					if($check_box[$i]==2)
 					{
 						echo "<th>Employee</th>";
 					}
@@ -179,7 +171,7 @@ BETWEEN '$sdate' AND '$edate' GROUP BY date_time $filter_n ORDER BY date_time";
 		//{
 		//	echo "<th>".$hours[$i]."</th>";
 		//}
-		echo "<th>Bundle Number</th>";
+		echo "<th>Barcode</th>";
 		echo "<th>Username</th>";
 		echo "<th>Remark</th></tr>";
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -193,11 +185,7 @@ BETWEEN '$sdate' AND '$edate' GROUP BY date_time $filter_n ORDER BY date_time";
 				for($i=0;$i < sizeof($check_box);$i++)
 				{
 					//echo $check_box[$i]."<br>";
-					if($check_box[$i]==1)
-					{
-						echo "<td>".$sql_row['module_id']."</td>";
-					}
-					else if($check_box[$i]==2)
+					if($check_box[$i]==2)
 					{
 						echo "<td>".$sql_row['emp_id']."</td>";
 					}
@@ -209,9 +197,9 @@ BETWEEN '$sdate' AND '$edate' GROUP BY date_time $filter_n ORDER BY date_time";
 				}
 			}
 			
-			echo "<td>".$sql_row['bundle_id']."</td>";
-			echo "<td>".$sql_row['user_name']."</td>";
-			echo "<td>".$sql_row['remark']."</td>";
+			echo "<td>".$sql_row['barcode']."</td>";
+			echo "<td>".$sql_row['username']."</td>";
+			echo "<td>".$sql_row['remarks']."</td>";
 			
 			echo "</tr>";
 		}

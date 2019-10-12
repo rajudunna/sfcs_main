@@ -1,6 +1,7 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/js/jquery-1.12.4.js',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/config_ajax.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
     // $url = getFullURLLEVEL($_GET['r'],'emb_reprint.php',0,'N');
 ?>
