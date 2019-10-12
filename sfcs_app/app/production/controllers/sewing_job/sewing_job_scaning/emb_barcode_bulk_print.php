@@ -1,10 +1,8 @@
 <?php
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-//$path=$_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'bundle_guide_print.php',0,'R');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 $path="".getFullURLLevel($_GET['r'], "barcode_new.php", "0", "r")."";
 $path2="".getFullURLLevel($_GET['r'], "barcode2_1.php", "0", "r")."";
-//$path="../../sfcs_app/cutting/controllers/cut_reporting_without_rolls/bundle_guide_print.php";
 ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
 
@@ -69,7 +67,7 @@ $(document).ready(function() {
 ?>
 
 <div class = "panel panel-primary">
-<div class = "panel-heading">Emb Report</div>
+<div class = "panel-heading">Embellishment Barcode Print</div>
 <div class = "panel-body">
 <form name="test" action="?r=<?php echo $_GET['r']; ?>" method="post">
 <?php
@@ -78,12 +76,12 @@ include('dbconf.php');
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 //{
 	//$sql="select distinct order_style_no from bai_orders_db where left(order_style_no,1) in (".$global_style_codes.")";	
-	$sql="select distinct order_style_no from bai_orders_db";	
+	$sql="SELECT order_style_no FROM $bai_pro3.emb_bundles AS eb LEFT JOIN $bai_pro3.`plandoc_stat_log` AS pd ON pd.`doc_no`=eb.`doc_no` 
+LEFT JOIN $bai_pro3.`bai_orders_db_confirm` AS bd ON pd.`order_tid`=bd.`order_tid` GROUP BY order_style_no";	
 //}
-//echo $sql;exit;
 
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 echo "<div class=\"row\"><div class=\"col-sm-3\"><label>Select Style:</label><select class='form-control' name=\"style\"  id=\"style\" onchange=\"firstbox();\" id='style'>";
 
 echo "<option value='' disabled selected>Please Select</option>";
@@ -105,28 +103,14 @@ echo "  </select>
 ?>
 
 <?php
-// $sql_update='UPDATE bai_orders_db SET order_tid=REPLACE(order_tid,"é","e"),order_col_des=REPLACE(order_col_des,"é","e")';
-// mysqli_query($link, $sql_update) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-// $sql_update1='UPDATE bai_orders_db_confirm SET order_tid=REPLACE(order_tid,"é","e"),order_col_des=REPLACE(order_col_des,"é","e")';
-// mysqli_query($link, $sql_update1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-// $sql_update2='UPDATE cat_stat_log SET order_tid=REPLACE(order_tid,"é","e"),order_tid2=REPLACE(order_tid2,"é","e"),col_des=REPLACE(col_des,"é","e")';
-// //echo $sql_update2;
-
-// mysqli_query($link, $sql_update2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 echo "<div class='col-sm-3'><label>Select Schedule:</label> 
 	  <select class='form-control' name=\"schedule\" id=\"schedule\" onchange=\"secondbox();\" id='schedule'>";
-//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
-//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
-//{
-	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";	
-//}
 
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
+	$sql="SELECT order_del_no FROM $bai_pro3.emb_bundles AS eb LEFT JOIN $bai_pro3.`plandoc_stat_log` AS pd ON pd.`doc_no`=eb.`doc_no` 
+LEFT JOIN $bai_pro3.`bai_orders_db_confirm` AS bd ON pd.`order_tid`=bd.`order_tid` where order_style_no='".$style."' GROUP BY order_del_no";	
+
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error--2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 echo "<option value='' disabled selected>Please Select</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -146,13 +130,10 @@ echo "	</select>
 <?php
 
 echo "<div class='col-sm-3'><label>Select Color:</label><select class='form-control' name=\"color\" onchange=\"thirdbox();\" id='color'>";
-//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log) and order_style_no=\"$style\" and order_del_no=\"$schedule\"";
-//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
-//{
+
 	$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_joins<'4'";
-//}
-// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error--4".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
 echo "<option value='' disabled selected>Please Select</option>";
@@ -251,21 +232,9 @@ if(isset($_POST['submit']))
                 echo "<td>".$sql_row["p_s".$sizes_code[$s].""]."</td>";
             }
             echo "<td>".$sql_row["a_plies"]."</td>";
-            $sql12="select * from $bai_pro3.docket_number_info where doc_no=".$sql_row['doc_no']."";
-            mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $sql_result12=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $sql_num_check12=mysqli_num_rows($sql_result12);
-            if($sql_num_check12>0)
-            {
-
-                echo "<td><a href=\"$path?doc_no=".$sql_row['doc_no']."\" onclick=\"Popup1=window.open('$path?doc_no=".$sql_row['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print </a></td><td><a href=\"$path2?doc_no=".$sql_row['doc_no']."\" onclick=\"Popup1=window.open('$path2?doc_no=".$sql_row['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print </a></td>";
+            echo "<td><a href=\"$path?doc_no=".$sql_row['doc_no']."&id=0\" onclick=\"Popup1=window.open('$path?doc_no=".$sql_row['doc_no']."&id=0','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print </a></td><td><a href=\"$path2?doc_no=".$sql_row['doc_no']."&id=0\" onclick=\"Popup1=window.open('$path2?doc_no=".$sql_row['doc_no']."&id=0','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print </a></td>";
                 //echo "<td><a href='".$url."?doc_no=".$sql_row['doc_no']."' class='btn btn-sm btn-primary'>Print</a></td>";
-            }
-            else
-            {
-                echo "<td>-</td>";
-            }
-          
+           
             echo "</tr>";
             }
 	
