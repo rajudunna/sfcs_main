@@ -20,7 +20,9 @@ $count=0;
 //looping the data to send it in API
 foreach($store_data as $data){
 
-    $url  = 'http://gd-app-01/rmd/api/ScheduleStatus?style='.$data['style'].'&schedule='.$data['schedule'].'&color='.$data['color'];	
+    //$url  = 'http://gd-app-01/rmd/api/ScheduleStatus?style='.$data['style'].'&schedule='.$data['schedule'].'&color='.$data['color'];
+    //this is updated due to #2581 
+    $url  = $rm_dashboard_api.'api/ScheduleStatus?style='.$data['style'].'&schedule='.$data['schedule'].'&color='.$data['color'];	
 	$url = str_replace(" ", '%20', $url);	
 	$start_timestamp = microtime(true);
     $result = $obj->getCurlRequest($url);	
