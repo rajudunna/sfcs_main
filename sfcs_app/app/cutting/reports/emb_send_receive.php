@@ -3,6 +3,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 //$path=$_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'bundle_guide_print.php',0,'R');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 $path="".getFullURLLevel($_GET['r'], "barcode_new.php", "0", "r")."";
+$path2="".getFullURLLevel($_GET['r'], "barcode2_1.php", "0", "r")."";
 //$path="../../sfcs_app/cutting/controllers/cut_reporting_without_rolls/bundle_guide_print.php";
 ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
@@ -233,7 +234,7 @@ if(isset($_POST['submit']))
             echo "<th>".$s_tit[$sizes_code[$s]]."</th>";
             
         }
-        echo "<th>Plies</th><th>Control</th></tr></thead>";
+        echo "<th>Plies</th><th>Emb barcode</th><th>Emb barcode2*1</th></tr></thead>";
        
        
         $sql="select * from $bai_pro3.order_cat_doc_mk_mix where order_tid='".$orde_tid."' and category in ($in_categories)";
@@ -257,7 +258,7 @@ if(isset($_POST['submit']))
             if($sql_num_check12>0)
             {
 
-                echo "<td><a href=\"$path?doc_no=".$sql_row['doc_no']."\" onclick=\"Popup1=window.open('$path?doc_no=".$sql_row['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print </a></td>";
+                echo "<td><a href=\"$path?doc_no=".$sql_row['doc_no']."\" onclick=\"Popup1=window.open('$path?doc_no=".$sql_row['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print </a></td><td><a href=\"$path2?doc_no=".$sql_row['doc_no']."\" onclick=\"Popup1=window.open('$path2?doc_no=".$sql_row['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print </a></td>";
                 //echo "<td><a href='".$url."?doc_no=".$sql_row['doc_no']."' class='btn btn-sm btn-primary'>Print</a></td>";
             }
             else
