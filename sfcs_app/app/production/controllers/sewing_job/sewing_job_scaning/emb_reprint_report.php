@@ -206,7 +206,7 @@ BETWEEN '$sdate' AND '$edate' GROUP BY date_time $filter_n ORDER BY date_time";
 	echo "</table></div>";
 	echo "<br>";
 	}else{
-		echo "<script>sweetAlert('No Data Found Between the Selected Dates','','warning');</script>";
+		echo "<b style='font-size: 30px;'><center>No Data Found Between Selected Dates</center></b>";
 	}
 	
 
