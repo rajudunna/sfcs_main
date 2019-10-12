@@ -8,7 +8,6 @@ error_reporting(0);
 	$include_path=getenv('config_job_path');
 	include($include_path.'\sfcs_app\common\config\config_jobs.php');
 	include($include_path.'\sfcs_app\common\config\config_ajax.php');	
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	set_time_limit(90000);
 //Temp Pool
 
