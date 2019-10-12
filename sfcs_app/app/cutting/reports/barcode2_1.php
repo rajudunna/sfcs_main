@@ -46,8 +46,8 @@
 				</head>
 				<body>';
 
-                $getdetails1="SELECT order_col_des,order_del_no,color_code,acutno FROM $bai_pro3.order_cat_doc_mk_mix  where doc_no=".$doc_no;
-                $getdetailsresult1 = mysqli_query($link,$getdetails1);
+				$getdetails1="SELECT order_col_des,order_del_no,color_code,acutno FROM $bai_pro3.order_cat_doc_mk_mix  where doc_no=".$doc_no;
+				$getdetailsresult1 = mysqli_query($link,$getdetails1);
                 while($sql_row1=mysqli_fetch_array($getdetailsresult1))
                 {
                     // $compo_no = $sql_row1['compo_no'];
@@ -56,14 +56,18 @@
                     $cut_no= chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3);	
                 }
 
-                $sql="select order_style_no from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."'";
+				$sql="select DISTINCT order_style_no as style from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."'";
+				// echo $sql;
+				// die();
                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($sql_row=mysqli_fetch_array($sql_result))
                 {	
                     $style= $sql_row['order_style_no'];	
                 }
-                $barcode_qry="SELECT doc_no,size, barcode,quantity FROM $bai_pro3.emb_bundles where doc_no=".$doc_no."";
-                    // echo $barcode_qry;		
+				$barcode_qry="SELECT doc_no,size, barcode,quantity FROM $bai_pro3.emb_bundles where doc_no=".$doc_no."";
+				// echo $barcode_qry;
+				// die();
+              
                     $sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $seq_num=1;
                     while($barcode_rslt = mysqli_fetch_array($sql_barcode))
@@ -94,20 +98,19 @@
 								<td colspan=15></td>
 								</tr>
 								<tr>
-									<td colspan=3><b>Barcode#</b>'.trim($barcode).'</td>
-									<td colspan=8><b>Qty#</b>'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
+									<td colspan=3><b>Barcode#</b>'.$barcode.'</td>
+									<td colspan=8><b>Qty#</b>'.$quantity.'</td>
 									
 								</tr>
 								<tr>
 								<td colspan=15></td>
 								</tr>
 								<tr>
-									<td colspan=2><b>Job#</b>'.$display1.'</td>
-									<td colspan=6><b>Size:</b>'.substr($barcode_rslt['size_code'],0,7).'</td>';
-						if($shade != '')
-							$html.= "<td colspan=5><b>Sha#</b>$shade</td>";	
-						else
-							$html.= "<td colspan=2></td>";
+									<td colspan=6><b>Size:</b>'.$size.'</td>';
+						// if($shade != '')
+						// 	$html.= "<td colspan=5><b>Sha#</b>$shade</td>";	
+						// else
+						// 	$html.= "<td colspan=2></td>";
 						$html.='</tr> 
 								<tr>
 								<td colspan=15></td>
@@ -126,7 +129,9 @@
 						</div><br><br><br><br><br>';
 			}
 			//Dummy sticker Ends
-			$operation_det="SELECT tor.operation_name as operation_name,tor.operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style ' AND color='$color' and tsm.barcode='Yes' and  tor.category in 'Send PF,Receive PF	' AND tor.display_operations='yes' ORDER BY operation_order*1";
+			$operation_det="SELECT tor.operation_name as operation_name,tor.operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style ' AND color='$color' and tsm.barcode='Yes' and  tor.category in ('Send PF','Receive PF	') AND tor.display_operations='yes' ORDER BY operation_order*1";
+			echo $operation_det;
+			die();
 			$sql_result1=mysqli_query($link, $operation_det) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($ops = mysqli_fetch_array($sql_result1))
 			{	

@@ -45,8 +45,8 @@
 					<script type="text/javascript" src="../../../common/js/table2CSV.js" ></script>
 				</head>
 				<body>';
-                $getdetails1="SELECT order_col_des,order_del_no,color_code,acutno FROM $bai_pro3.order_cat_doc_mk_mix  where doc_no=".$doc_no;
-                $getdetailsresult1 = mysqli_query($link,$getdetails1);
+				$getdetails1="SELECT order_col_des,order_del_no,color_code,acutno FROM $bai_pro3.order_cat_doc_mk_mix  where doc_no='$doc_no'";
+			    $getdetailsresult1 = mysqli_query($link,$getdetails1);
                 while($sql_row1=mysqli_fetch_array($getdetailsresult1))
                 {
                     // $compo_no = $sql_row1['compo_no'];
@@ -55,13 +55,18 @@
                     $cut_no= chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3);	
                 }
 
-                $sql="select order_style_no from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."'";
+				$sql="select order_style_no from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."'";
+				// echo $sql1;
+				// die();
                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($sql_row=mysqli_fetch_array($sql_result))
                 {	
                     $style= $sql_row['order_style_no'];	
                 }
-                $barcode_qry="SELECT doc_no,size, barcode,quantity FROM $bai_pro3.emb_bundles where doc_no=".$doc_no."";
+				$barcode_qry="SELECT doc_no,size, barcode,quantity FROM $bai_pro3.emb_bundles where doc_no=".$doc_no."";
+				
+				// echo $barcode_qry;
+				// die();
                     // echo $barcode_qry;		
                     $sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $seq_num=1;
@@ -87,7 +92,7 @@
 								 <td colspan=5 style="border: 4px solid black;width:50px; height:40px; text-align:center;"><p style= "font-size: 15px;"><b>'.$seq_num.'</b></p></td>
 							     </tr>	
                                  <tr><td colspan=3><b>Style:</b></td><td colspan=7>'.$style.'</td>
-                                 <td colspan=1><b>Size:</b></td><td colspan=4>'.$size['size'].'</td>
+                                 <td colspan=1><b>Size:</b></td><td colspan=4>'.$size.'</td>
 								 </tr>';
 					
                         $html.= '<tr><td colspan=3><b>schedule:</b></td><td colspan=7>'.$schedule.'</td>
