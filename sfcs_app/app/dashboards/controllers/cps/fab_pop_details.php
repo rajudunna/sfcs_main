@@ -587,12 +587,16 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		}
 }
 	// echo "</br>Seperated--".$seperate_docket;
-	$sql5="SELECT binding_consumption,seperate_docket from $bai_pro3.cat_stat_log where  tid=\"".$sql_row1['cat_ref']."\"";
+	$sql5="SELECT binding_consumption,seperate_docket,purwidth from $bai_pro3.cat_stat_log where  tid=\"".$sql_row1['cat_ref']."\"";
 	$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row5=mysqli_fetch_array($sql_result5))
 	{
 		$binding_consumption=$sql_row5['binding_consumption'];
 		$seperate_docket=$sql_row5['seperate_docket'];
+		$purwidth=$sql_row5['purwidth'];
+		if($mwidt=='N/A'){
+			$mwidt= $purwidth;
+		}
 	}
 	// echo "Quaty=====".$p_qty."<br>";
 	// echo "binding_consumption".$binding_consumption."<br>";

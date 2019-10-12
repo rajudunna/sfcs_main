@@ -235,7 +235,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$plan_log_time=$sql_row['log_time'];
 }
-	
+
+		
+
 $sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -247,7 +249,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$body_yy=$sql_row['catyy'];
 	$waist_yy=$sql_row['Waist_yy'];
 	$leg_yy=$sql_row['Leg_yy'];
-	$purwidth=$sql_row['purwidth'];
+	if($purwidth=='N/A'){
+		$purwidth=$sql_row['purwidth'];
+	}
 	$compo_no=$sql_row['compo_no'];
 	$strip_match=$sql_row['strip_match'];
 	$gusset_sep=$sql_row['gusset_sep'];
@@ -412,13 +416,42 @@ $a_s50=$sql_row['a_s50'];
 	$allocate_ref=$sql_row['allocate_ref'];
 	$savings=$sql_row['savings'];
 }
+$shrinkaage='';
+$pur_width='A';
+$mk_remarks='';
+$sql007="select reference,mk_ref_id,allocate_ref from $bai_pro3.plandoc_stat_log where doc_no=\"".$doc_id."\"";
+// echo $sql007;
+$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($row007=mysqli_fetch_array($sql_result007))
+{
+	$reference=$row007["reference"];
+	if($row007['mk_ref_id']>0)
+	{	
+		$sql11x1321="select shrinkage_group,width,marker_length,marker_name from $bai_pro3.maker_details where parent_id=".$row007['allocate_ref']." and id=".$row007['mk_ref_id']."";
+		$sql_result11x11211=mysqli_query($link, $sql11x1321) or die("Error15 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row111x2112=mysqli_fetch_array($sql_result11x11211)) 
+		{
+			$shrinkaage=$row111x2112['shrinkage_group'];
+			$purwidth=$row111x2112['width'];
+			$mk_remarks=$row111x2112['marker_name'];
+		}
+	}
+	else
+	{
+		$shrinkaage='N/A';
+		$purwidth='N/A';
+		$mk_remarks='N/A';
+	}
+}
 $sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
 // echo $sql2."<br>";
 $sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
 while($sql_row2=mysqli_fetch_array($sql_result2))
 {
 	$mklength=$sql_row2['mklength'];
-	$mk_remarks=$sql_row2['remarks'];
+	if($marker_name == 'N/A'){
+		$mk_remarks=$sql_row2['remarks'];
+	}
 	$remark1=$sql_row2['remark1'];
 	$remark2=$sql_row2['remark2'];
 	$remark3=$sql_row2['remark3'];
