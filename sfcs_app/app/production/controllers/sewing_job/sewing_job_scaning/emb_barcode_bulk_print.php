@@ -1,5 +1,5 @@
 <?php
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 $path="".getFullURLLevel($_GET['r'], "barcode_new.php", "0", "r")."";
 $path2="".getFullURLLevel($_GET['r'], "barcode2_1.php", "0", "r")."";
@@ -79,10 +79,9 @@ include('dbconf.php');
 	$sql="SELECT order_style_no FROM $bai_pro3.emb_bundles AS eb LEFT JOIN $bai_pro3.`plandoc_stat_log` AS pd ON pd.`doc_no`=eb.`doc_no` 
 LEFT JOIN $bai_pro3.`bai_orders_db_confirm` AS bd ON pd.`order_tid`=bd.`order_tid` GROUP BY order_style_no";	
 //}
-//echo $sql;exit;
 
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 echo "<div class=\"row\"><div class=\"col-sm-3\"><label>Select Style:</label><select class='form-control' name=\"style\"  id=\"style\" onchange=\"firstbox();\" id='style'>";
 
 echo "<option value='' disabled selected>Please Select</option>";
@@ -111,10 +110,7 @@ echo "<div class='col-sm-3'><label>Select Schedule:</label>
 	$sql="SELECT order_del_no FROM $bai_pro3.emb_bundles AS eb LEFT JOIN $bai_pro3.`plandoc_stat_log` AS pd ON pd.`doc_no`=eb.`doc_no` 
 LEFT JOIN $bai_pro3.`bai_orders_db_confirm` AS bd ON pd.`order_tid`=bd.`order_tid` where order_style_no='".$style."' GROUP BY order_del_no";	
 
-
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error--2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 echo "<option value='' disabled selected>Please Select</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -137,7 +133,7 @@ echo "<div class='col-sm-3'><label>Select Color:</label><select class='form-cont
 
 	$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_joins<'4'";
 
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error--4".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
 echo "<option value='' disabled selected>Please Select</option>";
