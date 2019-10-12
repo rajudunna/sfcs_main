@@ -1,9 +1,12 @@
 <?php
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-    $username = getrbac_user()['uname'];
+	$username = getrbac_user()['uname'];
+	$url_r = $_GET['r'];
+	$has_permission=haspermission($url_r);
     $get_url1 = getFullURLLevel($_GET['r'],'pop_up_maker.php',0,'R');
     $get_url2 = getFullURLLevel($_GET['r'],'pop_up_maker.php',0,'N');
-    $temp = 0;
+	$temp = 0;
+	// var_dump($has_permission);
 
 ?>
 
@@ -44,7 +47,14 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                     </div>
                     <br/>
                     <div class="col-md-3">
-                        <input type="submit" id="material_deallocation" class="btn btn-primary" name="formSubmit" value="Request to Deallocate">
+					<?php 
+						if(in_array($authorizeLevel_1,$has_permission))
+						{ 
+							echo '<input type="submit" id="material_deallocation" class="btn btn-primary" name="formSubmit" value="Request to Deallocate">';
+						} else {
+							echo '<br/><span class="label label-warning label-lg" style="font-size:15px">Unauthorized to Request Material Deallocate</span>';
+						}
+					?>
                     </div>
                     <img id="loading-image" class=""/>  
                 </div>
@@ -67,11 +77,14 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                                 <th>Qty</th>
                                 <th>Requested By</th>
                                 <th>Requested At</th>
-                                <th>Status</th>
-                                <th>Control</th>
-                                <th>Control</th>
-
-
+								<?php
+									if(in_array($authorizeLevel_2,$has_permission))
+									{ 
+										echo "<th>Status</th>
+										<th>Control</th>
+										<th>Control</th>";
+									}
+								?>
                             </tr>
                         </thead>
                         <?php
@@ -105,14 +118,18 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                                         echo "<td>".$sql_row2['order_del_no']."</td>";
                                         echo "<td>".$sql_row['qty']."</td>";
                                         echo "<td>".$sql_row['requested_by']."</td>";
-                                        echo "<td>".$sql_row['requested_at']."</td>";
-                                        echo "<td><select name='issue_status$i' id='issue_status-$i' class='select2_single form-control' onchange='IssueAction($i);'>";
-                                        echo "<option value=''>Please Select</option>";
-                                        echo "<option value='Deallocated'>Deallocated</option>";
-                                        echo "</select></td>";
-                                        echo "<td><input type='submit' name='submit$i' id='submit-$i' class='btn btn-info' value='Deallocate' disabled='disabled' onclick='Approve_deallocation($i);'></td>";
- 
-                                        echo "<td><input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn'".$doc_no." onclick=test(".$doc_no.") value='Edit'></td>"; 
+										echo "<td>".$sql_row['requested_at']."</td>";
+										if(in_array($authorizeLevel_2,$has_permission))
+										{ 
+											echo "<td><select name='issue_status$i' id='issue_status-$i' class='select2_single form-control' onchange='IssueAction($i);'>";
+											echo "<option value=''>Please Select</option>";
+											echo "<option value='Deallocated'>Deallocated</option>";
+											echo "<option value='Reject'>Reject</option>";
+											echo "</select></td>";
+											echo "<td><input type='submit' name='submit$i' id='submit-$i' class='btn btn-primary' value='Deallocate' disabled='disabled' onclick='Approve_deallocation($i);'><input type='reject' name='reject$i' id='reject-$i' class='btn btn-danger' value='Reject' disabled='disabled' onclick='Reject_deallocation($i);'></td>";
+											echo "<td><input type='button' style='display : block' class='btn btn-sm btn-warning' id='rejections_panel_btn'".$doc_no." onclick=test(".$doc_no.") value='Edit'></td>"; 
+										}
+										
                                         echo "</tr>";
                                    
                                     }
@@ -356,18 +373,53 @@ if(isset($_POST['formSubmit']))
 }
 ?>
 <script>
+// $(document).ready(function(){
+// 	document.getElementById('material_deallocation').style.visibility='hidden';
+// });
+// $('#docket_number').on('change',function(){
+
+// 	document.getElementById('material_deallocation').style.visibility='hidden';
+// 	// document.getElementById('material_deallocation_message').style.visibility='visible';
+// });
+// $(document).ready(function(){
+// 	document.getElementById('submit-'+i).style.visibility='hidden';
+// 	document.getElementById('reject-'+i).style.visibility='hidden';
+
+// });
 function IssueAction(i)
 {
-    document.getElementById('submit-'+i).disabled = false;
+	if($('#issue_status-'+i).val()=='Deallocated'){
+	    document.getElementById('submit-'+i).disabled = false;
+	    document.getElementById('reject-'+i).disabled = true;
+		// document.getElementById('submit-'+i).style.visibility='visible';
+		// document.getElementById('reject-'+i).style.visibility='hidden';
+	} else {
+	    document.getElementById('reject-'+i).disabled = false;
+	    document.getElementById('submit-'+i).disabled = true;
+		// document.getElementById('reject-'+i).style.visibility='visible';
+		// document.getElementById('submit-'+i).style.visibility='hidden';
+	}
 }
 function Approve_deallocation(i) {
     if($('#submit-'+i).val()) {
         var status = $('#issue_status-'+i).val();
         var row_id = i;
-        // alert(status);
 
         if(status=='Deallocated') {
             url_path = "<?php echo getFullURL($_GET['r'],'update_deallocation_status.php','N'); ?>";
+            location.href=url_path+"&id="+row_id+"&status="+status;
+        }
+    }
+    
+}
+
+function Reject_deallocation(i) {
+    if($('#reject-'+i).val()) {
+        var status = $('#issue_status-'+i).val();
+        var row_id = i;
+
+        if(status=='Reject') {
+            url_path = "<?php echo getFullURL($_GET['r'],'delete_deallocation.php','N'); ?>";
             location.href=url_path+"&id="+row_id+"&status="+status;
         }
     }
