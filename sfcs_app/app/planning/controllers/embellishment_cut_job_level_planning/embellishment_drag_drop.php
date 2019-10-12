@@ -807,23 +807,32 @@
 														
 														$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".chr($color_code1).leading_zeros($acutno1,3),50)."\n".str_pad("Qty:".$total_qty1,50);
                                                         
-                                                        $remove_docs=array();
-														$sql2="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no=$doc_no and send_qty = receive_qty and send_qty <> 0 and receive_qty <> 0";
-
+                                                        $emb_category = 'Send PF';
+                                                        $get_operations = "select operation_code from $brandix_bts.tbl_orders_ops_ref where category ='$emb_category' limit 1";
+													    //echo $get_operations;
+													    $result_ops = $link->query($get_operations);
+													    while($row_ops = $result_ops->fetch_assoc())
+													    {
+													      $emb_operations = $row_ops['operation_code'];
+													    }
+                                                      
+														$sql2="select send_qty,orginal_qty from $bai_pro3.embellishment_plan_dashboard where doc_no=$doc_no and send_op_code =$emb_operations";
+                                                        //echo $sql2;
 														$sql_resultx1=mysqli_query($link,$sql2) or exit("Sql Error2".mysqli_error());
 														while($sql_rowx=mysqli_fetch_array($sql_resultx1))
 														{
-														  $remove_docs=$sql_rowx['doc_no'];
+														  $send_qty=$sql_rowx['send_qty'];
+														  $orginal_qty=$sql_rowx['orginal_qty'];
 														}
 														
-														if(sizeof($remove_docs)>0)
+														if($orginal_qty<>$send_qty)
 														{
-
+                                                          echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
+														  //echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';
 														}
 														else
 														{
-														echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
-														//echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';
+														
 														}	
 														
 														

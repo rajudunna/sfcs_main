@@ -19,6 +19,30 @@
         $value = 'not_authorized';
     }
 	$url1 = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',2,'N');
+	
+	
+ //To Get Emblishment Operations
+	$category =['Send PF','Receive PF'];
+	$get_operations = "select operation_code from $brandix_bts.tbl_orders_ops_ref where category IN ('".implode("','",$category)."')";
+	$operations_result_out=mysqli_query($link, $get_operations)or exit("get_operations_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row_out=mysqli_fetch_array($operations_result_out))
+	{
+		$sewing_operations[]=$sql_row_out['operation_code'];
+	}
+
+	//echo $operation_code;
+	if(in_array($operation_code,$sewing_operations))
+	{
+	$form = "'G','P'";
+	}else
+	{
+		$form = "'P'";
+	}
+	$qery_rejection_resons = "select * from $bai_pro3.bai_qms_rejection_reason where form_type in ($form)";
+	$result_rejections = $link->query($qery_rejection_resons);	
+	
+	
+	
 ?>
 
 <style>
@@ -63,13 +87,14 @@ th,td{
 				{?>
 					<div class="col-padding">
 				<?php }?>
-				<div class="col-md-3">
-					Rej Qty:<input type="text" id="rej_id" class="form-control" ng-model="rej_id">
+				<div class="col-md-3" data-toggle="modal" data-target=".bs-example-modal-lg">
+					Rej Qty:<input type="text" id="rej_id" class="form-control" ng-model="rej_id" ng-init="rej_id ='0'" readonly>
 				</div>
 				<div class="col-md-9">				
                     Barcode:<input type="text" id="barcode_scan" class="form-control input-lg" ng-model="barcode" ng-keypress="scanned($event)" placeholder="scan here" autofocus>
 				</div>
 					<input type="hidden" id="pass_id" ng-model="pass_id" ng-init="pass_id='<?= $gate_id; ?>'">
+					<input type="hidden" id="rej_data" ng-model="rej_data">
                     <input type="hidden" id="user_permission" ng-model="user_permission" ng-init="user_permission='<?= $value; ?>'">
                     <input type="hidden" class="form-control" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'emb_get_barcode_details_new.php',0,'R') ?>'">
 					<?php
@@ -143,6 +168,61 @@ th,td{
                 </tbody>
             </table>
         </div>
+		
+		<div class="modal fade bs-example-modal-lg"  id="myModal" focus-group focus-group-head="loop" focus-group-tail="loop" focus-stacktabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+              <div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close"  id = "cancel" data-dismiss="modal" onclick='neglecting_function()'>&times;</button>
+					    	<div class="form-group" id="rej">
+					        	<input type="hidden" value="" id="reject_reasons_count">
+                      	<div class="panel panel-primary"> 
+				                  	<div class="panel-heading"><strong>Rejection Reasons</strong></div>				            	
+				                       <div class="panel-body" style="color: black;">
+						                     	<div class="form-group col-md-4" id="res">
+			                                 <label>No of Reasons : </label>
+                                       <input type="text" onkeyup="validateQty1(event,this);" name="no_reason" min=0 id="reason" class="form-control"  onchange="validating_with_qty()" onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' placeholder="Enter no of reasons"/>
+					                         </div>
+		                            <table class="table table-bordered" id='reson_dynamic_table' width="100" style="height: 50px; overflow-y: scroll;">
+		                            	<thead>
+		                            		<tr>
+		                            			<th style="width: 7%;">S.No</th>	                            			
+		                            			<th>Reason</th>
+		                            			<th style="width: 20%;">Quantity</th>
+		                            		</tr>
+		                            	</thead>
+		                            	<tbody id="tablebody">
+										</tbody>
+											<tr id='repeat_tr' hidden='true'>
+												<td>
+												<select id="reason_drop" class="form-control" id="style" name="reason[]">
+													<option value=''>Select Reason</option>
+													<?php				    	
+														if ($result_rejections->num_rows > 0) {
+															while($row = $result_rejections->fetch_assoc()) {
+																echo "<option value='".$row['sno']."'>".$row['form_type']."-".$row['reason_desc']."</option>";
+															}
+														} else {
+															echo "<option value=''>No Data Found..</option>";
+														}
+													?>
+												</select>
+												</td>
+												<td><input type='text' class='form-control input-sm' id='quantity'  name='quantity[]' onkeyup='validateQty1(event,this);' onchange='validating_cumulative(event,this)'></td>
+											</tr>
+		                            </table>
+		                                 </div>
+                                      <div class="panel-footer" hidden='true' id='footer'>
+                                        <input type = 'button' id="rejec_reasons" class='btn btn-primary' value='Ok..Proceed' name='Save'>
+								                       </div>
+                                   </div>
+                                </div>
+					                	</div>
+					              	<div class="modal-body">
+					          	</div>
+				          	</div>
+                 </div>
+              </div>
     </div>
 </div>
 <script src="<?= getFullURLLevel($_GET['r'],'common/js/emb_scan_barcode.js',3,'R') ?>"></script>
