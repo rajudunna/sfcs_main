@@ -158,7 +158,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                 </tr>
                                 <tr>
                                     <td>Lab Testing</td>
-                                    <td><input type="text" id="lab_testing" name="lab_testing" autocomplete="off" value="<?= $lab_testing ?>" <?php if ($lab_testing)   ?> class="float"></td>
+                                    <td><input type="text" id="lab_testing" name="lab_testing" autocomplete="off" value="<?= $lab_testing ?>" <?php if ($lab_testing)   ?>></td>
                                     <!-- <td rowspan="2"><input type="text" id="tolerance" name="tolerance"></td> -->
                                 </tr>
                             </tbody>
@@ -303,17 +303,17 @@ while ($row111 = mysqli_fetch_array($details_result1))
                             <div>
                                 <table class="table table-bordered" style="margin-top: 56px;">
                                     <tbody>
-                                        <tr>
-                                            <?php
-                                            $pop_up_path="../sfcs_app/app/inspection/reports/4_point_inspection_report.php";
-                                            echo "<td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$parent_id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$parent_id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td>";
+                                         <tr>
+                                             <?php
+                                            // $pop_up_path="../sfcs_app/app/inspection/reports/4_point_inspection_report.php";
+                                            // echo "<td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$parent_id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$parent_id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td>";
                                             ?>
+                                        </tr> 
+                                            <td colspan="2"><button type="sumbit" class="btn btn-sm btn-primary" name="save" id="save">Save</button></td>
                                         </tr>
                                         <tr>
-                                            <td><button type="sumbit" class="btn btn-sm btn-primary" name="save" id="save">Save</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td><button type="sumbit" class="btn btn-sm btn-primary" name="confirm" id="confirm">Confirm</button></td>
+                                        <td><input type = "checkbox" id="check_true"></td>
+                                            <td><button type="sumbit" class="btn btn-sm btn-primary" name="confirm" id="confirm"  disabled = 'disabled'>Confirm</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -894,7 +894,16 @@ if (isset($_POST['save'])) {
 
 <script>
     $(document).ready(function() {
-		
+
+        $('#check_true').click(function() {
+        if ($(this).is(':checked')) {
+         $('#confirm').removeAttr('disabled');
+          
+        } else {
+             $('#confirm').attr('disabled', 'disabled');
+        }
+        });
+
 		    $('#inspected_per').keyup(function(){
 			  if ($(this).val() > 100){
 				swal('warning','Enter only bellow 100%','warning');
@@ -921,11 +930,11 @@ if (isset($_POST['save'])) {
             // console.log(xxx);
             // var count_tr = "<tr><td><input type='hidden' value='"+xxx+"' name='submit_value_point[]' ><input type='text' class='code' id='code_"+xxx+"' name='code[]' autocomplete='off'></td><td><input type='text' class='damage' id='damage_"+xxx+"' name='damage[]' readonly></td><td><input type='radio' value='1' id='point1_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='2' id='point2_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='3' id='point3_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='4' id='point4_"+xxx+"' name='point_"+xxx+"'></td><td><a href='javascript:void(0);' class='remove'><span class='glyphicon glyphicon-remove'></span></a></td></tr>";
             
-            var count_tr = "<tr><td><input type='hidden' value='"+xxx+"' name='submit_value_point[]' ><input type='text' class='code' id='code_"+xxx+"' name='code[]' autocomplete='off'></td><td><input type='text' class='damage' id='damage_"+xxx+"' name='damage[]' readonly></td><td><input type='radio' value='1' id='point1_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='2' id='point2_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='3' id='point3_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='4' id='point4_"+xxx+"' name='point_"+xxx+"'></td><td><a href='javascript:void(0);' class='remove'><span class='glyphicon glyphicon-remove'></span></a></td></tr>";
+            var count_tr = "<tr><td><input type='hidden' value='"+xxx+"' name='submit_value_point[]' ><input type='text' class='code' size='4' id='code_"+xxx+"' name='code[]' autocomplete='off'></td><td><input type='text' class='damage' id='damage_"+xxx+"' name='damage[]' readonly></td><td><input type='radio' value='1' id='point1_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='2' id='point2_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='3' id='point3_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='4' id='point4_"+xxx+"' name='point_"+xxx+"'></td><td><a href='javascript:void(0);' class='remove'><span class='glyphicon glyphicon-remove'></span></a></td></tr>";
             $("#points_tbl").append(count_tr);
         //  clicks=xxx;
           });
-
+          
           $(document).on('click', '.remove', function() {
             var table_length = $('#points_tbl tbody > tr').length;
             $('#hidenMaxCount').val(table_length)
