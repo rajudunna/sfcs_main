@@ -12,11 +12,7 @@
 		'format' => [25, 50], 
 		'orientation' => 'L'
 	]);
-    $order_tid=$_GET['order_tid'];
-	$doc_no=$_GET['doc_no'];
-	$style=$_GET['style'];
-	$schedule=$_GET['schedule'];
-    $color=$_GET['color'];
+  	$doc_no=$_GET['doc_no'];
 	?>
 
 	<?php
@@ -50,7 +46,6 @@
                 $getdetailsresult1 = mysqli_query($link,$getdetails1);
                 while($sql_row1=mysqli_fetch_array($getdetailsresult1))
                 {
-                    // $compo_no = $sql_row1['compo_no'];
                     $schedule = $sql_row1['order_del_no'];
                     $color = $sql_row1['order_col_des'];
                     $cut_no= chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3);	
@@ -62,122 +57,92 @@
                 {	
                     $style= $sql_row['order_style_no'];	
                 }
-                $barcode_qry="SELECT doc_no,size, barcode,quantity FROM $bai_pro3.emb_bundles where doc_no=".$doc_no."";
-                    // echo $barcode_qry;		
-                    $sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    $seq_num=1;
-                    while($barcode_rslt = mysqli_fetch_array($sql_barcode))
-                    {				
-                        // $barcode=$barcode_rslt['tid'];
-                        $barcode=leading_zeros($barcode_rslt['tid'],4);
-                        $cutno=$barcode_rslt['acutno'];
-                        $size=$barcode_rslt['size'];
-                        $barcode=$barcode_rslt['barcode'];
-                        $quantity=$barcode_rslt['quantity'];
-						// $qty[$barcode_rslt['barcode']] = $barcode_rslt['qty'];
-			$display1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$input_job,$sewing_job_random_id,$link);
-			//A dummy sticker for each bundle
-			//echo $detailed_bundle_sticker.'-';
-			if((int)$detailed_bundle_sticker == 1)
-			{
-				$html.= '<div>
-							<table width="100%" style="font-size:8px;">
-							
-								<tr>
-									<td colspan=3><b>Sty#</b>'.$barcode_rslt['order_style_no'].'</td>
-									<td colspan=9><b>Sch#</b>'.$schedule.'</td>
-									<td rowspan="0" style="border: 1px solid black;	border-top-right-radius: 1px 1px; font-size:4px; text-align:center;width:10%">
-								           <p style= "font-size: 6px;font-weight: bold;">'.$seq_num.'</p>
-									</td>
-								</tr>
-								<tr>
-								<td colspan=15></td>
-								</tr>
-								<tr>
-									<td colspan=3><b>Barcode#</b>'.trim($barcode).'</td>
-									<td colspan=8><b>Qty#</b>'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
+				//$detailed_bundle_sticker=1;
+				$check=0;               
+                $barcode_qry="SELECT tran_id, doc_no,size, barcode,quantity, ops_code FROM $bai_pro3.emb_bundles where doc_no=".$doc_no."";
+				// echo $barcode_qry;		
+				$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($barcode_rslt = mysqli_fetch_array($sql_barcode))
+				{				
+					$barcode=leading_zeros($barcode_rslt['tid'],4);
+					$cutno=$barcode_rslt['acutno'];
+					$size=$barcode_rslt['size'];
+					$barcode=$barcode_rslt['barcode'];
+					$quantity=$barcode_rslt['quantity'];
+					$get_ops="SELECT operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code=".$barcode_rslt['ops_code']."";
+					$get_ops_res=mysqli_query($link, $get_ops) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($get_ops_row = mysqli_fetch_array($get_ops_res))
+					{
+						$code=trim($get_ops_row['operation_name'])."-".$barcode_rslt['ops_code'];
+					}
+					if((int)$detailed_bundle_sticker == 1 && $check<>$barcode_rslt['tran_id'])
+					{
+						$check=$barcode_rslt['tran_id'];
+						$html.= '<div>
+									<table width="100%" style="font-size:8px;">
 									
-								</tr>
-								<tr>
-								<td colspan=15></td>
-								</tr>
-								<tr>
-									<td colspan=2><b>Job#</b>'.$display1.'</td>
-									<td colspan=6><b>Size:</b>'.substr($barcode_rslt['size_code'],0,7).'</td>';
-						if($shade != '')
-							$html.= "<td colspan=5><b>Sha#</b>$shade</td>";	
-						else
-							$html.= "<td colspan=2></td>";
-						$html.='</tr> 
-								<tr>
-								<td colspan=15></td>
-								</tr>
-								<tr>
-									<td colspan=12><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,30).'</td>
-								</tr>
-								<tr>
-								<td colspan=15></td>
-								</tr>
-								<tr>	
-									<td colspan=3><b>CutNo:</b>'.chr($color_code).leading_zeros($cutno, 3).'</td>
-									<td colspan=8><b>Country:</b>'.trim($destination).'</td>
-								</tr>
-							</table>
-						</div><br><br><br><br><br>';
-			}
-			//Dummy sticker Ends
-			$operation_det="SELECT tor.operation_name as operation_name,tor.operation_code as operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style ' AND color='$color' and tsm.barcode='Yes' and  tor.category in 'Send PF,Receive PF	' AND tor.display_operations='yes' ORDER BY operation_order*1";
-			$sql_result1=mysqli_query($link, $operation_det) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($ops = mysqli_fetch_array($sql_result1))
-			{	
-				$operations=$ops['operation_name'];
-				$opscode=$ops['operation_code'];
-				//$display1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
-				
-				$html.= '<div>
-							<table width="98%" style="font-size:7px;">
-							   <tr>	
-							      <td colspan=8> '.str_replace(' ','',$barcode_rslt['order_style_no']).'/'.$schedule.'/'.substr(str_replace(' ','',$operations),0,18).' - '.$opscode.'</td>
-							      <td rowspan="0" style="border: 1px solid black;	border-top-right-radius: 1px 1px; font-size:4px; text-align:center;width:10%">
-								           <p style= "font-size: 6px;font-weight: bold;">'.$seq_num.'</p>
-							</td>							
-						   </tr>
-						   
-						    <tr>
-								<td colspan=8>'.substr($color,0,25).'</td>						
-							</tr>	
-						   <tr>
-							  <td colspan=8>
-										<div>
-											<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="1.73" size="0.55" text="1">
-										</div>
-									<center>'.trim($barcode).'</td>
-							</tr>
-							<tr>
-									<td colspan=5>'.trim($barcode_rslt['size_code']).' / '.trim($destination);
-
-						if($shade != '')
-							$html.= " / <b>$shade</b></td>";	
-						else
-							$html.= "</td>";	
-						$html.='  
-							
-						<td colspan=5>'.chr($color_code).leading_zeros($cutno,3).' / '.$display1.' / '.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
-						
-			           </tr>
-							</table>
-						</div><br><br><br><br><br>';
-				$update_bundle_print_status="UPDATE $bai_pro3.pac_stat_log_input_job SET bundle_print_status='1', bundle_print_time=now() WHERE tid='".$barcode."'";	
-				mysqli_query($link, $update_bundle_print_status)  or exit("Error while updatiing bundle print status for bundle: ".$barcode);			 
-			}
-			$seq_num++;
-			//reset sequence number by size and color
-			$size_temp=$size;
-			$color_temp=$color;
-			$cutno_temp=$cutno;
-			$update_bundle_print_status="UPDATE $bai_pro3.pac_stat_log_input_job SET bundle_print_status='1', bundle_print_time=now() WHERE tid='".$barcode."'";	
-			mysqli_query($link, $update_bundle_print_status)  or exit("Error while updatiing bundle print status for bundle: ".$barcode);
-		}
+										<tr>
+											<td colspan=3><b>Sty#</b>'.$style.'</td>
+											<td colspan=9><b>Sch#</b>'.$schedule.'</td>	
+											<td ><b>Stab#</b></td>	
+											<td rowspan="0" style="border: 1px solid black;	border-top-right-radius: 1px 1px; font-size:4px; text-align:center;width:10%">
+											  
+											</td>
+										</tr>
+										<tr>
+										<td colspan=15></td>
+										</tr>
+										<tr>
+											<td colspan=3><b>Barcode#</b>'.trim($barcode).'</td>
+											<td colspan=5><b>Qty#</b>'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
+											<td colspan=3><b>Bundle#</b>'.leading_zeros($barcode_rslt['tran_id'],4).'</td>
+											
+										</tr>
+										<tr>
+										<td colspan=15></td>
+										</tr>
+										<tr>
+											<td colspan=2><b>Doc No#</b>'.$doc_no.'</td>
+											<td colspan=6><b>Size:</b>'.substr($barcode_rslt['size'],0,7).'</td>
+											<td colspan=3><b>CutNo:</b>'.$cut_no.'</td>';
+								$html.='</tr> 
+										<tr>
+											<td colspan=12><b>Color:</b>'.substr($color,0,30).'</td>
+										</tr>
+										<tr>
+										<td colspan=15></td>
+										</tr>
+										<tr>	
+										<td colspan=12><b>Ops:</b>'.$code.'</td>	
+										</tr>
+									</table>
+								</div><br><br><br><br><br>';
+					}
+					
+						$html.= '<div>
+									<table width="98%" style="font-size:7px;">
+									   <tr>	<td colspan=15> '.str_replace(' ','',$style).'/'.$schedule.'/'.$code.'</td>
+										  
+									</td>							
+								   </tr>
+								   
+									<tr>
+										<td colspan=8>'.substr($color,0,25).'</td>						
+									</tr>	
+								   <tr>
+									  <td colspan=8>
+												<div>
+													<barcode code="'.$barcode.'" type="C39"/ height="1.73" size="0.55" text="1">
+												</div>
+											<center>'.trim($barcode).'</td>
+									</tr>
+									<tr>
+											<td>'.trim($barcode_rslt['size']).' / '.$doc_no.' / '.$cut_no.' / '.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
+								
+							   </tr>
+									</table>
+								</div><br><br><br><br><br>';					
+				}
 	$html.='
 				</body>
 			</html>';

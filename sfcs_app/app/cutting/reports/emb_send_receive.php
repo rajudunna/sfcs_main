@@ -69,7 +69,7 @@ $(document).ready(function() {
 ?>
 
 <div class = "panel panel-primary">
-<div class = "panel-heading">Emb Report</div>
+<div class = "panel-heading">Embellishment Barcode Print</div>
 <div class = "panel-body">
 <form name="test" action="?r=<?php echo $_GET['r']; ?>" method="post">
 <?php
@@ -78,7 +78,8 @@ include('dbconf.php');
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 //{
 	//$sql="select distinct order_style_no from bai_orders_db where left(order_style_no,1) in (".$global_style_codes.")";	
-	$sql="select distinct order_style_no from bai_orders_db";	
+	$sql="SELECT order_style_no FROM $bai_pro3.emb_bundles AS eb LEFT JOIN $bai_pro3.`plandoc_stat_log` AS pd ON pd.`doc_no`=eb.`doc_no` 
+LEFT JOIN $bai_pro3.`bai_orders_db_confirm` AS bd ON pd.`order_tid`=bd.`order_tid` GROUP BY order_style_no";	
 //}
 //echo $sql;exit;
 
@@ -121,7 +122,8 @@ echo "<div class='col-sm-3'><label>Select Schedule:</label>
 //$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 //{
-	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";	
+	$sql="SELECT order_del_no FROM $bai_pro3.emb_bundles AS eb LEFT JOIN $bai_pro3.`plandoc_stat_log` AS pd ON pd.`doc_no`=eb.`doc_no` 
+LEFT JOIN $bai_pro3.`bai_orders_db_confirm` AS bd ON pd.`order_tid`=bd.`order_tid` where order_style_no='".$style."' GROUP BY order_del_no";	
 //}
 
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
