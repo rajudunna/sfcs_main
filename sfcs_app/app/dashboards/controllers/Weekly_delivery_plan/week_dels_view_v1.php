@@ -23,7 +23,8 @@ $end_date_w=$start_date_w+(60*60*24*6); // define sunday
 $start_date_w=date("Y-m-d",$start_date_w);
 $end_date_w=date("Y-m-d",$end_date_w);
 ?>
-
+<html>
+<head>
 <style>
 
 #otherdiv2 table,th
@@ -129,7 +130,7 @@ function redirect_view()
     var y=document.filter.ex_fact.value;
     // var z=document.filter.status.value;
     // window.location = "index.php?r=<?= $_GET['r'] ?>&view_div="+encodeURIComponent(x)+"&ex_fact="+y+"&status="+z;
-	window.location = "index.php?r=<?= $_GET['r'] ?>&view_div="+encodeURIComponent(x)+"&ex_fact="+y;
+	window.location = "index.php?r=<?= $_GET['r'] ?>&view_div="+encodeURIComponent(x)+"&ex_fact="+y+"&status="+z;
 }
 
 </script>
@@ -458,6 +459,7 @@ document.getElementById('otherdiv2').style.height = contentH;
 
 //]]>
 </script>
-
+</html>
+</head>
 </div></div>
 </div>
