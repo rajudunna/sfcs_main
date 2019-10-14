@@ -70,8 +70,17 @@ echo "<div>
 						$mklength1=0;
 						$mkeff1=0;
 						$mk_ref1=0;
-
-						$sql2="select * from $bai_pro3.maker_stat_log where allocate_ref=$allocate_ref1 and cuttable_ref > 0";
+						$mk_version='';
+						$remark1='';
+						$remark2='';
+						$remark3='';
+						$remark4='';
+						// $cat_yy1='';
+						// $category1='';
+						$ratio ='';
+						$mk_remarks1 ='';
+						$binding_consumption='';
+						$sql2="select * from $bai_pro3.maker_stat_log left join maker_details on  maker_details.id=maker_stat_log.marker_details_id where allocate_ref=$allocate_ref1 and cuttable_ref > 0";
 						// echo "</br> Maker Qry : ".$sql2."</br>";		
 						$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -79,7 +88,7 @@ echo "<div>
 							$mklength1=$sql_row2['mklength'];
 							$mkeff1=$sql_row2['mkeff'];
 							$mk_ref1=$sql_row2['tid'];
-							$mk_remarks1=$sql_row2['remarks'];
+							$mk_remarks1=$sql_row2['marker_name'];
 							$mk_version=$sql_row2['mk_ver'];
 							$remark1=$sql_row2['remark1'];
 							$remark2=$sql_row2['remark2'];
