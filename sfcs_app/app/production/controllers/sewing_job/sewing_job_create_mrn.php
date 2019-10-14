@@ -140,13 +140,22 @@
 					{
 						$style_id=$_GET['style'];
 						$sch_id=$_GET['schedule'];
+						$schedule1 = $_GET['schedule'];
+						$style1 = $_GET['style'];
 					} 
 					else if ($_POST['style'] and $_POST['schedule'])
 					{
 						$style_id=$_POST['style'];
 						$sch_id=$_POST['schedule'];	
-					}
+						$style1 = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style_id,$link);
+						$schedule1 = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$sch_id,$link);
 
+					}
+					
+					
+					if(short_shipment_status($style1,$schedule1,$link)) 
+					{
+					
 					$op_code1=1;
 					if ($style_id =='NIL' or $sch_id =='NIL') 
 					{						
@@ -247,8 +256,11 @@
 										$sql66="SELECT input_job_no_random_ref FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='".$sql_row['input_job_no_random']."'";
 										$sql_result012=mysqli_query($link, $sql66) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 										$sql_num_check_count=mysqli_num_rows($sql_result012);
+										$sql58="SELECT input_job_no_random_ref FROM $bai_pro3.plan_dashboard_input_backup WHERE input_job_no_random_ref='".$sql_row['input_job_no_random']."' limit 1";
+										$sql_result58=mysqli_query($link, $sql58) or exit("Sql Error58".mysqli_error($GLOBALS["___mysqli_ston"]));
+										$sql_num_check_count_new=mysqli_num_rows($sql_result58);
 									
-										if($sql_num_check_count>0 or $ims_log_backup_count>0){
+										if($sql_num_check_count>0 or $ims_log_backup_count>0 or $sql_num_check_count_new>0){
 										echo "<td ><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&style=$style&schedule=".$schedule."&inputjobno=".$sql_row['input_job_no_random']."&var1=2\" onclick=\"clickAndDisable(this);\">Confirm</a></center></td>";
 										echo "<td></td>";
 										}else{
@@ -292,11 +304,25 @@
 					{
 						$co_no=$sql_row14['co_no'];
 					}
-					$sql76="SELECT input_module  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno'";
+					$sql76="SELECT input_module,log_time  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno'";
 					$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row76=mysqli_fetch_array($sql_result76))
+					if(mysqli_num_rows($sql_result76)>0)
 					{
-						$input_module=$sql_row76['input_module'];
+						while($sql_row76=mysqli_fetch_array($sql_result76))
+						{
+							$log_time=$sql_row76['log_time'];
+							$input_module=$sql_row76['input_module'];
+						}
+					}
+					else
+					{
+						$sql76="SELECT input_module,log_time  FROM $bai_pro3.plan_dashboard_input_backup WHERE  input_job_no_random_ref='$inputjobno'";
+						$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row76=mysqli_fetch_array($sql_result76))
+						{
+							$log_time=$sql_row76['log_time'];
+							$input_module=$sql_row76['input_module'];
+						}
 					}
 					$sql55="SELECT tid,input_job_no,order_del_no,mrn_status  FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$inputjobno' AND mrn_status ='1'";
 					$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -424,11 +450,24 @@
 					}
 					$sql76="SELECT input_module,log_time  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno'";
 					$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row76=mysqli_fetch_array($sql_result76))
+					if(mysqli_num_rows($sql_result76)>0)
 					{
-						$log_time=$sql_row76['log_time'];
-						$input_module=$sql_row76['input_module'];
+						while($sql_row76=mysqli_fetch_array($sql_result76))
+						{
+							$log_time=$sql_row76['log_time'];
+							$input_module=$sql_row76['input_module'];
+						}
 					}
+					else
+					{
+						$sql76="SELECT input_module,log_time  FROM $bai_pro3.plan_dashboard_input_backup WHERE  input_job_no_random_ref='$inputjobno'";
+						$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row76=mysqli_fetch_array($sql_result76))
+						{
+							$log_time=$sql_row76['log_time'];
+							$input_module=$sql_row76['input_module'];
+						}
+					}				
 					$sql55="SELECT tid,input_job_no,order_del_no,mrn_status,type_of_Sewing  FROM $bai_pro3.packing_summary_input WHERE  input_job_no_random='$inputjobno' AND (mrn_status IS NULL OR mrn_status='0')";
 					$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// $tid=array();
@@ -571,7 +610,10 @@
 							</script>";
 					}
 				}
+
 		    }
+			
+			}
 		}
 			?> 
 		</div>

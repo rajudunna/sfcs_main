@@ -18,7 +18,7 @@ if($section > 0){
     $ips_op_code = mysqli_fetch_array($ips_op_code_result)['operation_code'];
 
     //getting all modules against to the section
-    $modules_query = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$section GROUP BY section ORDER BY section + 0";
+    $modules_query = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE module_master.status='active' and section=$section GROUP BY section ORDER BY section + 0";
     $modules_result = mysqli_query($link,$modules_query) or exit($data.="No modules Found");
     while($row = mysqli_fetch_array($modules_result)){
         $modules_str = $row['sec_mods'];

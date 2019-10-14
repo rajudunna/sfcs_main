@@ -416,7 +416,7 @@
                                 }
                                 if($to_add_sj > 0)
                                 {
-                                    $insertion_qry = "INSERT INTO `$bai_pro3`.`replacment_allocation_log` (`bcd_id`,`input_job_no_random_ref`,`replaced_qty`,`size_title`) values ($bundle_number,$sj,$to_add_sj,'$size_title')";
+                                    $insertion_qry = "INSERT INTO `$bai_pro3`.`replacment_allocation_log` (`bcd_id`,`input_job_no_random_ref`,`replaced_qty`,`size_title`) values ($bundle_number,'$sj',$to_add_sj,'$size_title')";
                                     // echo $insertion_qry.'</br>';
                                     mysqli_query($link, $insertion_qry) or exit("insertion_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -632,7 +632,7 @@
             <?php  
             $s_no = 1;
             $blocks_query  = "SELECT r.id,style,SCHEDULE,color,r.rejected_qty,r.recut_qty,r.remaining_qty,r.replaced_qty,GROUP_CONCAT(DISTINCT bcd_id)as bcd_ids FROM $bai_pro3.rejections_log r
-            LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id`
+            LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` WHERE short_shipment_status=0
             GROUP BY r.`style`,r.`schedule`,r.`color` HAVING (rejected_qty-(recut_qty+replaced_qty)) > 0 order by r.id";
             $blocks_result = mysqli_query($link,$blocks_query) or exit('Rejections Log Data Retreival Error');
             if($blocks_result->num_rows > 0)

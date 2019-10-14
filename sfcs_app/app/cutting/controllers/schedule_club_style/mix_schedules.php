@@ -305,7 +305,28 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 							$result411112=mysqli_query($link, $sql5431112) or exit(message_sql());
 							if(mysqli_num_rows($result411112)==0)
 							{
-								echo "<td><input type=\"checkbox\" name=\"sch[]\" value=\"$schedule\" check></td>";
+								$query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
+									$shortship_res = mysqli_query($link,$query_short_shipment);
+									$count_short_ship = mysqli_num_rows($shortship_res);
+									$short_ship_status=0;
+									if($count_short_ship >0) {
+										while($row_set=mysqli_fetch_array($shortship_res))
+										{
+											if($row_set['remove_type']==1) {
+												$short_ship_status=1;
+											}else{
+												$short_ship_status=2;
+											}
+										}
+									}
+									if($short_ship_status==1){
+										echo "<td>Short Shipment Done Temporarly</td>";
+									} else if($short_ship_status==2){
+										echo "<td>Short Shipment Done Permanently</td>";
+									} else {
+										echo "<td><input type=\"checkbox\" name=\"sch[]\" value=\"$schedule\" check></td>";
+									}
+								
 							}
 							else
 							{

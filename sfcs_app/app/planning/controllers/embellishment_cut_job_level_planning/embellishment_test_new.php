@@ -5,6 +5,7 @@
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',1,'R'));
 
@@ -245,7 +246,7 @@ if($floor_set_count>0)
 ?>
 </body>
 <?php
-if(isset($_POST['submit']))
+if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link))
 {
 	$style=$_POST['style'];
 	$color=$_POST['color'];
