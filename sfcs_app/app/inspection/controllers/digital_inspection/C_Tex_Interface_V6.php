@@ -2716,7 +2716,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	if($head_check>0)
 	{
 		$sql="insert ignore into $bai_rm_pj1.inspection_db(batch_ref) values (\"$lot_no_new\")";
-		echo $sql;
+		//echo $sql;
 		mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 		if(mysqli_affected_rows($link))
@@ -2747,12 +2747,12 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 				
 			  }
 		  	$sql="update $bai_rm_pj1.inspection_db set unique_id=\"$count\" where batch_ref=\"$lot_no_new\"";
-		  	echo $sql;
+		  	//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		
 		$sql="update $bai_rm_pj1.inspection_db set pur_gsm=\"$pur_gsm\",consumption=\"".$consumption_ref."\",act_gsm=\"$act_gsm\",pur_width=\"$pur_width\",act_width=\"$act_width\",sp_rem=\"$sp_rem\",qty_insp=\"$qty_insp\",gmt_way=\"$gmt_way\",pts=\"$pts\",fallout=\"$fallout\",skew=\"$skew\",skew_cat=\"$skew_cat\",shrink_l=\"$shrink_l\",shrink_w=\"$shrink_w\",supplier=\"$supplier\" where batch_ref=\"$lot_no_new\"";
-		 echo "Upadte Qry :".$sql;
+		// echo "Upadte Qry :".$sql;
 		// exit;
 		mysqli_query($link, $sql) or exit("Sql Error8=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
