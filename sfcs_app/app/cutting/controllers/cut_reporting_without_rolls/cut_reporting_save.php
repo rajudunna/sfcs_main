@@ -10,6 +10,149 @@ $THRESHOLD = 200; //This Constant ensures the loop to force quit if it was struc
 $LEFT = 0;
  
 
+$rollwisedata=$_POST['data'];
+$doc_no=$_POST['doc_no'];
+$style   = $_POST['style'];
+$schedule= $_POST['schedule'];
+$color   = $_POST['color'];
+$rollwisestatus   = $_POST['rollwisestatus'];
+
+
+$num=1;
+if($rollwisedata)
+{
+    foreach($rollwisedata as $value)
+    { 
+        $laysequence=$value[1]?$value[1]:0;
+        $exec ="INSERT INTO $bai_pro3.`docket_roll_info` (style,schedule,color,docket,lay_sequence,roll_no,shade,width,fabric_rec_qty,reporting_plies,damages,joints,endbits,shortages,fabric_return)
+        VALUES ('".$style."','".$schedule."','".$color."',".$doc_no.",".$laysequence.",'".$value[2]."','".$value[3]."','".$value[4]."','".$value[5]."','".$value[6]."','".$value[7]."','".$value[8]."','".$value[9]."','".$value[10]."','".$value[11]."')";
+        $result= mysqli_query($link,$exec);   
+    }
+
+    if($result)
+    {
+        $docketexisted="SELECT * from $bai_pro3.docket_number_info where doc_no=".$doc_no;
+        $docketexistedresult=mysqli_query($link,$docketexisted);
+        if($docketexistedresult)
+        {
+            $scheduleddata="select doc_no from $bai_pro3.`order_cat_doc_mk_mix` where order_del_no='".$schedule."'";
+            $scheduleddataresult= mysqli_query($link,$scheduleddata);
+            if(mysqli_num_rows($scheduleddataresult) > 0)
+            {
+                while($dockts = mysqli_fetch_array($scheduleddataresult))
+                {
+                    $scheduledockets[] = $dockts['doc_no'];
+                }
+            }
+            $docketnumberexisted="SELECT max(bundle_end) as bundle_end,max(bundle_no) as bundle_no from $bai_pro3.docket_number_info where doc_no IN (".implode(",",$scheduledockets).")";
+            $docketnumberexistedresult=mysqli_query($link,$docketnumberexisted);
+            $docketno = mysqli_fetch_array($docketnumberexistedresult);
+            if(mysqli_num_rows($docketnumberexistedresult) > 0)
+            {
+                $padded = $docketno['bundle_end']+1;
+                $bundle=$docketno['bundle_no']+1;
+            }
+            
+        }
+        else
+        {
+            $scheduleddata="select doc_no from $bai_pro3.`order_cat_doc_mk_mix` where order_del_no=".$schedule;
+            $scheduleddataresult= mysqli_query($link,$scheduleddata);
+            if(mysqli_num_rows($scheduleddataresult) > 0)
+            {
+                while($dockts = mysqli_fetch_array($scheduleddataresult))
+                {
+                    $scheduledockets[] = $dockts['doc_no'];
+                }
+            }
+            $docketnumberexisted="SELECT max(bundle_end) as bundle_end from $bai_pro3.docket_number_info where doc_no IN (".implode(",",$scheduledockets).")";
+            $docketnumberexistedresult=mysqli_query($link,$docketnumberexisted);
+            $docketno = mysqli_fetch_array($docketnumberexistedresult);
+            if(mysqli_num_rows($docketnumberexistedresult) > 0)
+            {
+                $padded = $docketno['bundle_end']+1;
+            }
+            else
+            {            
+                $padded = 1;
+                $bundle = 1;
+            }
+        }
+
+            
+        $size_query = "SELECT * FROM $bai_pro3.plandoc_stat_log WHERE doc_no=$doc_no";
+        $size_result = mysqli_query($link, $size_query) or exit("error while getting details for child doc nos");
+        while($sql_row=mysqli_fetch_array($size_result))
+        {
+            $order_tid = $sql_row['order_tid'];
+            for($s=0;$s<sizeof($sizes_array);$s++)
+            {
+                $planned_s[$sizes_code[$s]]=$sql_row["p_".$sizes_array[$s].""];
+            }				
+        }
+
+        $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid='".$order_tid."'";
+        $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($sql_row=mysqli_fetch_array($sql_result))
+        {
+            for($ss=0;$ss<sizeof($sizes_array);$ss++)
+            {
+               if($sql_row["title_size_".$sizes_array[$ss].""]<>'')
+               {
+                     $o_s[$sizes_array[$ss]]=$sql_row["title_size_".$sizes_array[$ss].""];
+                     
+               }
+            }
+        }		
+
+        for($jj=0;$jj<sizeof($planned_s);$jj++)
+        {
+            $ratios_list[$o_s[$sizes_array[$jj]]]= $planned_s[$sizes_code[$jj]];
+           
+        }
+
+
+        $docket_query="SELECT *,sum(reporting_plies) as totalplies FROM $bai_pro3.`docket_roll_info` where docket=".$doc_no."  group by shade,lay_sequence order by lay_sequence asc";
+        $docket_queryresult = mysqli_query($link,$docket_query);
+        if(mysqli_num_rows($docket_queryresult) > 0)
+        {
+            while($row = mysqli_fetch_array($docket_queryresult))
+            {
+                $docket_info[] = $row;
+            }
+            $sizeofrolls=count($docket_info);
+            $bundleno=1;
+            $shadebundleno=0;
+            $num=0;
+            
+            foreach($ratios_list as $key=>$value)// no.of. ratios
+            {            
+                for($i=0;$i<$value;$i++)// value of each ratio
+                {   
+                    for($k=0;$k<$sizeofrolls;$k++)
+                    {
+                        $shadebundleno++;
+                        $startno=$padded;
+                        $padded+=$docket_info[$k]['totalplies'];
+                        $docketrolinfo ="INSERT INTO $bai_pro3.`docket_number_info` (doc_no,size,bundle_no,shade_bundle,shade,bundle_start,bundle_end,qty)
+                        VALUES (".$doc_no.",'".$key."',".$bundle.",'".$bundle."-".$shadebundleno."','".$docket_info[$k]['shade']."',".$startno.",".$padded.",".$docket_info[$k]['totalplies'].")";
+                        $result= mysqli_query($link,$docketrolinfo);                                          
+                    }   
+                    $bundle++;    
+                    $shadebundleno=0;                    
+                }
+            }         
+        }
+    }
+}
+
+
+
+
+
+
+
+
 
 $response_data = array();
 $data = $_POST;
@@ -42,6 +185,8 @@ $color = $colors[0];
 //for schedule clubbing we are grabbing all schedules
 $schedules = explode(',',$schedule);
 $schedule = $schedules[0];
+
+
 
 
 $size_update_string = '';
@@ -1215,4 +1360,7 @@ function insert_into_bcd_temp($doc_no,$size,$qty,$rej,$op_code){
 
 
 ?>
+
+
+
 

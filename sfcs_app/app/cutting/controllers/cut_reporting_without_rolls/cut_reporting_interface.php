@@ -16,6 +16,11 @@ if(isset($_GET['doc_no'])){
             loadDetails($doc_no);
         });
     </script>";
+
+
+$sql12="SELECT * from $bai_rm_pj1.fabric_cad_allocation where doc_no = ".$doc_no."";
+$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check12=mysqli_num_rows($sql_result12);
 }
 $cut_table_url = getFullURLLevel($_GET['r'],'dashboards/controllers/Cut_table_dashboard/cut_table_dashboard_cutting.php',3,'N');
 $cut_tables   = array();
@@ -48,6 +53,8 @@ $rejection_reason_result = mysqli_query($link,$rejection_reason_query);
 while($row = mysqli_fetch_array($rejection_reason_result)){
     $rejection_reasons[$row['reason_code'].'-'.$row['m3_reason_code']] = $row['reason_desc'];
 }
+
+
 
 ?>
 
@@ -86,9 +93,10 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 <input type='text' class='form-control integer' value='' name='doc_no' id='doc_no'> 
             </div>
         </div>
+        
 
         <!-- partial or already reported docket details -->
-        <div class='row' id='hide_details_reported'style='overflow-x:scroll;display:none'>
+        <div class='row' id='hide_details_reported' style='overflow-x:scroll;display:none'>
             <div class='col-sm-12'>
             <hr> 
             <table class='table table-bordered' id='reported_table'>
@@ -132,7 +140,34 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             </table>
             </div>
             <hr>
-        </div><br/><br/>
+        </div><br/>
+        <div class='row' id='hide_details_reported_roll_wise' style='overflow-x:scroll;display:none'>
+            <div class='col-sm-12'>
+            <hr> 
+            <table class='table table-bordered' id='reported_table_roll_wise'>
+            <thead>
+                <tr class='danger'>
+                    <td>S. No</td>
+                    <td>LaySequence</td>
+                    <td>Shade</td>
+                    <td>Fab Received</td>
+                    <td>Fab Returned</td>
+                    <td>Reporting Plie</td>
+                    <td>Fab Damages</td>
+                    <td>Fab joints</td>
+                    <td>Fab endbits</td>
+                    <td>Fab Shortages</td>
+                </tr>
+                </thead>
+            </table>
+            </div>
+            <hr>
+        </div>
+        <br/>
+
+        
+
+        
 
         <!-- This div to show the size wise ratios -->
         <div class='col-sm-12' id='hide_details_reporting_ratios' style='overflow-x:scroll;display:none'>
@@ -223,7 +258,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <td id='r_plan_plies'></td>
                             <td id='r_reported_plies'></td>
                             <!-- add validation for ret + rec + dam + short = c_plies -->
-                            <td><input type='text' class='form-control integer' value='0' id='c_plies'></td>
+                            <td><input type='text' class='form-control integer' value='0' id='c_plies' onchange='calculatecutreport("c_plies")' ></td>
                             <td><input type='text' class='form-control float' value='0' id='fab_received'></td>
                             <td><input type='text' class='form-control float' value='0' id='fab_returned'>
                                 <br><br>
@@ -258,18 +293,46 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
 
                 <div class='col-sm-12'>
-                    <b>MARK THIS AS FULLY REPORTED CUT ? &nbsp;&nbsp;</b> 
-                    <input type='checkbox' value='1' id='full_reported' onchange='reportingFull(this)'> Yes
+                    <span><b>MARK THIS AS FULLY REPORTED CUT ? &nbsp;&nbsp;</b> 
+                    <input type='checkbox' value='1' id='full_reported' onchange='reportingFull(this)'> Yes</span>
+              
+                    <span class='pull-right showifcontain'><b>ENABLE ROLE WISE CUT REPORTING ? &nbsp;&nbsp;</b> 
+                    <input type='checkbox' value='1' id='cut_report' onchange='enablecutreport(this)'> Yes</span>
+				
                 </div>
 
             </div>
         </div>
-                    
-        <div class='col-sm-12'>
-           
+               <br/><br/>     
+        <div class='col-sm-12' id = "enablecutreportdetails">
+                    <div class="table-responsive">
+                    <table class='table table-bordered' >
+                    <thead>
+                        <tr class='info'>
+                            <th>S. No</th>
+                            <th>Lay Sequence</th>
+                            <th>Roll No</th>
+                            <th>Shade</th>
+                            <th>Width</th>
+                            <th>Fabric Received Qty</th>
+                            <th>Reporting Plies</th>
+                            <th>Damages</th>
+                            <th>Joints</th>
+                            <th>End bits</th>
+                            <th>Shortages</th>
+                            <th>Fabric Return</th>
+                            <!-- <th>Action</th> -->
+                        </tr>
+                    </thead>
+                    <tbody id='enablerolls' >
+                       
+                    </tbody>
+                </table>    
+           </div>
         </div>
     </div>
 </div>
+
 
 <div class="modal fade" id="rejections_show_modal" role="dialog">
     <div class="modal-dialog" style="width: 60%;  height: 100%;">
@@ -375,9 +438,15 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     $get_url = getFullURLLevel($_GET['r'],'cut_reporting_data.php',0,'R');
     $post_url = getFullURLLevel($_GET['r'],'cut_reporting_save.php',0,'R');
     $rej_url = getFullURLLevel($_GET['r'],'cut_rejections_save.php',0,'R');
+    $getenablecutreport_url = getFullURLLevel($_GET['r'],'enable_cut_report_data.php',0,'R');
+    $generatedata=getFullURLLevel($_GET['r'],'create_cut_report_data.php',0,'R');
+    $generatebundleguide=getFullURLLevel($_GET['r'],'generate_bundle_guide.php',0,'N');
+    $generatebundleguidereport=getFullURLLevel($_GET['r'],'generate_bundle_guide_report.php',0,'N');
+
 ?>
 
 <script>
+    $('#enablecutreportdetails').hide();
     var avl_plies = 0;
     var doc_no = 0;
     var c_plies = 0;
@@ -396,6 +465,442 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     var GLOBAL_CALL = 0;
     var SIZE_COUNT = 0;
     var CLEAR_FLAG = 0;
+    var sql_num_check12='<?=$sql_num_check12?>';
+
+            if(sql_num_check12>0)
+            {
+                $('.showifcontain').css({'display':'block'});
+                
+            }
+       
+    $('td input#creportingplies.form-control').click(function(){
+        alert();
+    var row_index = $(this).parent().index();
+    var col_index = $(this).index();
+    });
+
+
+    function getdetails()
+    {
+         $('#c_plies').attr('readonly', true);
+         $('#fab_received').attr('readonly', true);
+         $('#fab_returned').attr('readonly', true);
+         $('#damages').attr('readonly', true);
+         $('#joints').attr('readonly', true);
+         $('#endbits').attr('readonly', true);
+         $('#shortages').attr('readonly', true);    
+                doc_no = $('#doc_no').val();
+                var form_data = {
+                        doc_no:doc_no,
+                    };    
+
+      
+                $.ajax({
+                    url  : '<?= $getenablecutreport_url?>',
+                    type : 'POST',
+                    data : form_data
+                }).done(function(res){
+                    if(res=="Not Available")
+                    {
+                        $('.hidenotavailble').css({'display':'none'});
+
+                        swal('Rolls Not Available','Not Available','warning');
+                    }else{
+                        try{
+                        var res = $.parseJSON(res);
+                        data=res.response_data;
+                        var marklength=res.marklength;
+                        var noofrolls=data.length;
+                        if(res.totalreportedplie){
+                            var totalreportedplie=res.totalreportedplie.totalreportedplies;
+                            $('#r_reported_plies').html(totalreportedplie);
+                        }
+                       
+                        var i;
+                        var totalreportingplies=0;
+                        var totalfabricreturn=0;
+                        var sno=1;
+                        var existed=0;
+                        var notdisplay=0;
+                            if(noofrolls>0){
+                                for(i=0;i<noofrolls;i++)
+                                {
+                                    if(data[i]["existed"]==1)
+                                    {
+                                        if(parseInt(data[i]["allocated_qty"]/marklength)==0){
+                                            existed="";
+                                        }
+                                        else{
+                                            existed="readonly";
+                                        }
+                                        
+                                        complted=1;
+                                        notdisplay++;
+                                    }
+                                    else{
+                                        existed="";
+                                        complted=0;
+                                    }
+
+                                    if(data[i]["lay_sequence"]==null)
+                                    {
+                                       lay = "";
+                                    }
+                                    else{
+                                        lay= "value ="+data[i]["lay_sequence"]+"";
+                                        
+                                    }
+                                    if(data[i]["reporting_plies"])
+                                    {
+                                      
+                                       roll= "value ="+data[i]["reporting_plies"]+"";
+                                       damages= "value ="+data[i]["damages"]+"";
+                                       joints= "value ="+data[i]["joints"]+"";
+                                       endbits= "value ="+data[i]["endbits"]+"";
+                                       shortages= "value ="+data[i]["shortages"]+"";
+                                       fabric_return= "value ="+data[i]["fabric_return"]+"";
+                                    }
+                                    else{
+                                        
+                                       roll = "value ="+parseInt(data[i]["allocated_qty"]/marklength)+"";
+                                       damages= "value =0.00";
+                                       joints= "value =0.00";
+                                       endbits= "value =0.00";
+                                       shortages= "value =0.00";
+                                       fabric_return= "value =0.00"; 
+                                    }
+                                    row = $('<tr><td id='+i+'>'+sno+'</td><td><input type="number" id='+i+"laysequece"+'  '+lay+' class="form-control integer" '+existed+'></td><td>'+data[i]["ref2"]+'</td><td>'+data[i]["ref4"]+'</td><td>'+data[i]["roll_width"]+'</td><td>'+data[i]["allocated_qty"]+'</td><td><input type="number"  onchange="calculatecutreport(\''+i+'creportingplies\');" id='+i+'creportingplies '+roll+' class="form-control float" '+existed+'></td><td><input type="number"  '+damages+'  onchange="calculatecutreport(\''+i+'cdamages\');"  id='+i+'cdamages class="form-control float" '+existed+'></td><td><input type="number"  '+joints+' onchange="calculatecutreport(\''+i+'cjoints\');" id='+i+'cjoints class="form-control float" '+existed+'></td><td><input type="number"  '+endbits+' onchange="calculatecutreport(\''+i+'cendbits\');" id='+i+'cendbits class="form-control float" '+existed+'></td><td><input type="number"  onchange="calculatecutreport(\''+i+'cshortages\');"  '+shortages+'  id='+i+'cshortages class="form-control float"  '+existed+'></td><td><input type="number"  '+fabric_return+' id='+i+'cfabricreturn class="form-control float" readonly></td><td style="display:none;"><button style="background-color: DodgerBlue;color: white;"class="btn fa fa-trash" id="del'+i+'"></td><td style="display:none;"><input type="text"  value='+marklength+' onchange="calculatecutreport();" id="mlength" class="form-control"></td><td style="display:none;">'+data[i]["roll_id"]+'</td><td style="display:none;">'+data[i]["shade"]+'</td style="display:none;"><td style="display:none;">'+complted+'</td></tr>'); //create row
+                                    totalreportingplies+=parseInt(data[i]["allocated_qty"]/marklength);
+                                    $('#c_plies').val(totalreportingplies);
+                                    totalfabricreturn+=marklength;
+                                    $('#fab_returned').val(parseFloat(Number(totalreportingplies)).toFixed(2));
+                                   
+                                sno++;
+                                $('#enablerolls').append(row);
+                                }
+                                $('#r_reported_plies').html(totalreportedplie);
+                                // if(notdisplay!=noofrolls)
+                                // {
+                                //     row1 = $('<button onclick="generatereport()" class="btn btn-success btn-sm pull-right">Submit</button>');
+                                //     $('#enablecutreportdetails').append(row1);
+                                // } 
+                                // else{
+                                //     row1 = $('<a href="'+bundleguide+"&doc_no="+doc_no+'" class="btn btn-success btn-sm pull-right">Generate Bundle Guide</a>');
+                                //     $('#enablecutreportdetails').append(row1);
+                                // }                            
+                                $('#enablecutreportdetails').show();
+                                calculatecutreport();
+                            }
+
+                    }catch(e){
+                        swal('Rolls Not Available','Data Problem or Failed','warning');
+                       
+                    }
+                    }
+                   
+                
+                }).fail(function(res){
+                
+                });
+            
+    }
+
+    function enablecutreport(t)
+    {
+        // $('#c_plies').attr('readonly', true);
+        // $('#fab_received').attr('readonly', true);
+        // $('#fab_returned').attr('readonly', true);
+        // $('#damages').attr('readonly', true);
+        // $('#joints').attr('readonly', true);
+        // $('#endbits').attr('readonly', true);
+        // $('#shortages').attr('readonly', true);
+        doc_no = $('#doc_no').val();
+        var bundleguide ='<?=$generatebundleguide?>';
+ 
+        $('#enablerolls').html('');
+        $('#enablecutreportdetails button').html('');
+        $('#enablecutreportdetails a').html('');
+        $('#enablecutreportdetails a.btn').remove();
+        $('#enablecutreportdetails button').remove();
+        $('#enablecutreportdetails').hide();
+        if(t.checked == true)
+            getdetails();
+        else
+        {
+                $('#c_plies').attr('readonly', false);
+                $('#fab_received').attr('readonly', false);
+                $('#fab_returned').attr('readonly', false);
+                $('#damages').attr('readonly', false);
+                $('#joints').attr('readonly', false);
+                $('#endbits').attr('readonly', false);
+                $('#shortages').attr('readonly', false);
+        }
+            enable_report = 0;
+           //$("#cut_report"). prop("checked", false);     
+    }
+    function checklaysequence(){
+       
+        var laysequnces=[];
+        var alreadygiven;
+        var table = $("#enablerolls");
+       // var i=0;
+        table.find('tr').each(function (i) {
+       
+        var $tds = $(this).find('td'),
+            laysequence = $tds.find('#'+i+'laysequece').val();
+        
+            if(!(laysequence=="")){
+                laysequnces.push(laysequence);
+            }
+        
+        });
+        var laysequncesArray = laysequnces.filter(function(elem, index, self) {
+          alreadygiven = (index === self.indexOf(elem)); 
+        if(!alreadygiven){
+          
+            swal('Lay Sequence','Check Lay Sequence'+elem+' already given','warning');
+        }
+        });
+        return alreadygiven;
+    }
+  
+//    $('table tbody').on('click','.btn',function(){
+//        $(this).closest('tr').remove();
+//        calculatecutreport();
+//    });
+
+    // function generatereport()
+    // {
+       
+   
+   
+
+
+    // }
+
+    function calculatecutreport(indextype)
+    {
+        if(indextype)
+        {
+            var checkifitnotavalue=$('#'+indextype).val();
+                if(checkifitnotavalue==''){
+                    if(indextype.indexOf('creportingplies') != -1)
+                    {
+                        $('#'+indextype).val('0');
+                    }
+                    else{
+
+                        $('#'+indextype).val('0.00');
+                    }
+               
+            }
+        }
+        var r = $("#reporting_table #r_plan_plies").text();
+        var alreadyreportedplies =$("#reporting_table #r_reported_plies").text();
+      
+        if(alreadyreportedplies)
+        {
+            r=Number(r)-Number(alreadyreportedplies);
+        }
+        var table = $("#enablerolls");
+        var sumofreporting=0;
+        var sumofdamages=0;
+        var sumofjoints=0;
+        var sumofendbits=0;
+        var sumofshortages=0;
+        var sumofpile=0;
+        var removesum=0;
+        var fabricreturnqty=0;
+        var sumoffabricreturn=0;
+        var sumoffabricrecieved=0;
+        var data = [];
+        var makeselectedrow=0;
+        var partiallyreported=0;
+    
+        table.find('tr').each(function (i) {
+
+        var $tds = $(this).find('td'),
+            Sno = $tds.eq(0).text(),
+            laysequence = $tds.find('#'+i+'laysequece').val(),
+            rollno = $tds.eq(14).text();
+            shade = $tds.eq(3).text();
+            width = $tds.eq(4).text();
+            receivedqty = $tds.eq(5).text();
+            reportingplies = $tds.find('#'+i+'creportingplies').val();
+            damages = $tds.find('#'+i+'cdamages').val();
+            joints =$tds.find('#'+i+'cjoints').val();
+            endbits = $tds.find('#'+i+'cendbits').val();
+            shortages =$tds.find('#'+i+'cshortages').val();
+            fabricreturn=$tds.find('#'+i+'cfabricreturn').val();
+            mlength=$tds.find('#mlength').val();
+            completed = $tds.eq(16).text();
+          
+        // do something with laysequence, rollno, shade
+        fabricreturnqty = parseFloat(Number(receivedqty) - ((Number(reportingplies*mlength)) + Number(endbits) + Number(shortages))).toFixed(2);
+        //fabricreturnqty=fabricreturnqty.toFixed(2);
+        
+        // if(fabricreturnqty<0)
+        // {
+        //     $tds.find('#'+i+'cfabricreturn').val(0);
+        //     swal('Please Enter Reporting Plies/Damages/End Bits/Shortages Correctly','Or Check','error');
+        //     reportingplies = $tds.find('#'+i+'creportingplies').val(0);
+        //     $('#'+i+'creportingplies').prop('readonly', false);
+        //    // calculatecutreport();
+        // }
+        // else{
+            $tds.find('#'+i+'cfabricreturn').val(fabricreturnqty);
+        // }
+        
+       if(!Number(completed)){
+        sumofreporting+=parseFloat(reportingplies);
+            if(reportingplies!=0)
+            {
+                sumoffabricreturn+=parseFloat(fabricreturnqty);
+                sumofdamages+=parseFloat(damages);
+                $('#damages').val(Number(sumofdamages).toFixed(2));
+                sumofjoints+=parseFloat(joints);
+                $('#joints').val(Number(sumofjoints).toFixed(2));
+                sumofendbits+=parseFloat(endbits);
+                $('#endbits').val(Number(sumofendbits).toFixed(2));
+                sumofshortages+=parseFloat(shortages);
+                $('#shortages').val(Number(sumofshortages).toFixed(2));
+            
+                sumoffabricrecieved+=parseFloat(receivedqty);
+                $('#fab_received').val(Number(sumoffabricrecieved).toFixed(2));
+            }
+        
+            if(sumoffabricreturn<0)
+            {
+                $('#fab_returned').val(0);
+            }else{
+                $('#fab_returned').val(Number(sumoffabricreturn).toFixed(2));
+            }
+       
+       }
+       partiallyreported+=parseFloat(reportingplies);
+        // alert(sumofreporting);
+        // alert(r);
+        if(sumofreporting<=r){    
+           
+            $('#c_plies').val(sumofreporting);
+        }else{
+           
+           
+            // if(makeselectedrow==0)
+            // {
+                
+                if(indextype)
+                {
+                       swal('Please Enter Reporting Plies Correctly','Or Check','error');
+                       $('#'+indextype).val(0);
+                    sumofreporting=sumofreporting-parseFloat(reportingplies);
+                    calculatecutreport();
+                   
+
+                }
+                else{
+
+                    $tds.find('#'+i+'creportingplies').val(0);
+                    sumofreporting=sumofreporting-parseFloat(reportingplies);
+                    calculatecutreport();
+                }
+                
+            // }
+            // makeselectedrow=1;
+            
+        }
+      
+        if(Number(shortages)>Number(receivedqty))
+        {
+          
+            $('#'+indextype).val(0);
+            swal('Please Enter Shortages Correctly','Or Check','error');
+            calculatecutreport();
+            return 0;
+        }
+      
+
+        // sumofpile=parseFloat(damages)+parseFloat(joints)+parseFloat(endbits)+parseFloat(shortages)+parseFloat(fabricreturn);
+        // var x=0;
+    
+        // if(sumofpile>reportingplies)
+        // {
+          
+        //     if(indextype)
+        //     {
+        //         $('#'+indextype).val(0);
+                
+        //         swal('Please Enter Plies Correctly','Or Check','error');
+        //         calculatecutreport();
+        //     }
+            
+            // removesum=parseFloat(damages);
+            // if(removesum>reportingplies)
+            // {
+            //     x=1;
+            //     $tds.find('#'+i+'cdamages').val(0);
+            //     swal('Please Enter Plies Correctly','Or Check','error');
+            //     calculatecutreport();
+            // }
+            // removesum+=parseFloat(joints);
+            // if(removesum>reportingplies&&x!=1)
+            // {
+            //     x=1;
+            //     $tds.find('#'+i+'cjoints').val(0);
+            //     swal('Please Enter Plies Correctly','Or Check','error');
+            //     calculatecutreport();
+            // }
+            // removesum+=parseFloat(endbits);
+            // if(removesum>reportingplies&&x!=1)
+            // {
+            //     x=1;
+            //     $tds.find('#'+i+'cendbits').val(0);
+            //     swal('Please Enter Plies Correctly','Or Check','error');
+            //     calculatecutreport();
+            // }
+            // removesum+=parseFloat(shortages);
+            // if(removesum>reportingplies&&x!=1)
+            // {
+            //     x=1;
+            //     $tds.find('#'+i+'cshortages').val(0);
+            //     swal('Please Enter Plies Correctly','Or Check','error');
+            //     calculatecutreport();
+            // }
+       // }
+
+
+       
+    
+       
+   
+        
+               // alert(sumofreporting);
+    });
+
+
+
+            var fret = Number($('#fab_returned').val());
+        if(fret > 0)
+        {
+            $('#returend_to_parent').css({'display':'block'});
+        } 
+        else
+        {
+            $('#returend_to_parent').css({'display':'none'});
+
+            //calculatecutreport();
+        }
+
+       
+            
+        
+   
+
+    }
+
+
+
+    
   
     function reportingFull(t){
         if(t.checked == true)
@@ -426,6 +931,9 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     });
 
     $('#doc_no').on('change',function(){
+        $('#enablerolls').html('');
+        $('#enablecutreportdetails').hide();
+        $("#cut_report"). prop("checked", false);
         $('#wait_loader').hide();
         doc_no = $('#doc_no').val();
         GLOBAL_CALL = 0;
@@ -439,7 +947,153 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         loadDetails(doc_no);
     });
 
+
+  
     $('#submit').on('click',function(){
+        var x= $('input[id="cut_report"]:checked');
+        var ratiostable = $("#hide_details_reporting_ratios table");
+        var rollwisestatus=false;
+        // var ratios=[];
+        // ratiostable.find('tr').each(function (i) {
+            
+        // var $tds = $(this).find('td'),
+        //     M = $tds.eq(0).text();
+        //     L= $tds.eq(1).text();
+        //     XL= $tds.eq(2).text();
+        //     ratios.push(M,L,XL);
+        // });
+
+        if(x[0])
+        {
+            // var sumofreportingplie = $("#reporting_table #r_plan_plies").text();
+            // var alreadyreportedplies =$("#reporting_table #r_reported_plies").text();
+      
+            // if(alreadyreportedplies)
+            // {
+            //     sumofreportingplie=Number(sumofreportingplie)-Number(alreadyreportedplies);
+            // }
+        var doc_no = $("#reporting_table #r_doc_no").text();
+       // alert(r);
+        var rollwisestatus=true;
+        var table = $("#enablerolls");
+        var sumofreporting=0;
+        var sumofdamages=0;
+        var sumofjoints=0;
+        var sumofendbits=0;
+        var sumofshortages=0;
+        var sumoffabricreturn=0;
+        var fabricreturnqty=0;
+        var totalfabricreturnqty=0;
+        var data = [];
+        var check=0;
+        var i=0;
+        table.find('tr').each(function (i) {
+
+        var $tds = $(this).find('td'),
+            Sno = $tds.eq(0).text(),
+            laysequence = $tds.find('#'+i+'laysequece').val(),
+            rollno = $tds.eq(14).text();
+            shade = $tds.eq(3).text();
+            width = $tds.eq(4).text();
+            receivedqty = $tds.eq(5).text();
+            reportingplies = $tds.find('#'+i+'creportingplies').val();
+            damages = $tds.find('#'+i+'cdamages').val();
+            joints =$tds.find('#'+i+'cjoints').val();
+            endbits = $tds.find('#'+i+'cendbits').val();
+            shortages =$tds.find('#'+i+'cshortages').val();
+            fabricreturn=$tds.find('#'+i+'cfabricreturn').val();
+            mlength=$tds.find('#mlength').val();
+            preparedroll = $tds.eq(16).text();
+        // do something with laysequence, rollno, shade
+        
+        fabricreturnqty = parseFloat(Number(receivedqty) - (Number(reportingplies*mlength) + Number(endbits) + Number(shortages))).toFixed(2);
+        //fabricreturnqty=fabricreturnqty.toFixed(2);
+        $tds.find('#'+i+'cfabricreturn').val(fabricreturnqty);
+
+        totalfabricreturnqty+=fabricreturnqty;
+        // if(sumofreporting<sumofreportingplie){ 
+        //     alert(sumofreporting);
+        //     alert(sumofreportingplie);
+        //      if(!preparedroll)
+        //      {
+        //         sumofreporting+=parseFloat(reportingplies);
+        //      }  
+           
+        //     $('#c_plies').val(sumofreporting);
+        // }else{
+        //     swal('Please Enter Reporting Plies Correctly','Or Check','error');
+        //     return false;
+            
+        // }
+        
+        if((laysequence=='')&&!(reportingplies==0))
+        {
+            check=1;
+            
+        }
+
+        if((laysequence)&&(reportingplies==0))
+        {
+            check=2;
+            
+        }
+       
+        sumofdamages+=parseFloat(damages);
+        $('#damages').val(sumofdamages);
+        sumofjoints+=parseFloat(joints);
+        $('#joints').val(sumofjoints);
+        sumofendbits+=parseFloat(endbits);
+        $('#endbits').val(sumofendbits);
+        sumofshortages+=parseFloat(shortages);
+        $('#shortages').val(sumofshortages);
+        sumoffabricreturn+=parseFloat(fabricreturn);
+        $('#fab_returned').val(sumoffabricreturn);
+        
+       
+        if(preparedroll==0){
+            if(laysequence!='')
+            {
+                data.push([Sno,laysequence,rollno,shade,width,receivedqty,reportingplies,damages,joints,endbits,shortages,fabricreturn] );     
+            }
+        }
+        
+    });
+
+   
+
+    
+             if(check==1)
+            {
+                swal('Please Enter LaySequence','Or Check LaySequence','error');
+                return false;
+               
+            }
+            else if(check==2)
+            {
+                swal('Please Check Reporting Plies','Not Given','error');
+                return false;
+            }
+            else
+            {
+               data;
+            }
+
+    // layseqnce=checklaysequence();
+    //     if(layseqnce)
+    //     {
+    //     }
+    //     else{
+    //         swal('LaySequence Problem','Please Check','error');
+    //     }
+
+
+
+        }else{
+           data=0;
+        //    ratios;
+        }
+              
+
         c_plies = Number($('#c_plies').val());
         var ret_to     = Number($('#fab_returned').val());
         var rec     = Number($('#fab_received').val());
@@ -542,14 +1196,16 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         
         if(total_rejected_pieces > 0)
             rejections_flag = 1;
-
         var form_data = {
                         doc_no:post_doc_no,c_plies:c_plies,fab_returned:ret_to,
                         fab_received:rec,returned_to:returned_to,damages:damages,
                         shortages:shortages,bundle_location:bundle_location,shift:shift,joints_endbits:joints_endbits,
                         cut_table:cut_table,team_leader:team_leader,doc_target_type:doc_target_type,
                         style:style,color:color,schedule:schedule,rejections_flag:rejections_flag,rejections:rejections_post,
-                        full_reporting_flag : full_reporting_flag
+                        full_reporting_flag : full_reporting_flag,  
+                        data:data,
+                        rollwisestatus:rollwisestatus,
+                        //ratios:ratios
                     };    
 
         $('#submit').css({'display':'none'});
@@ -612,6 +1268,14 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 clearRejections();
                 loadDetails(post_doc_no);
                 $('#wait_loader').css({'display':'none'});
+                $('#enablecutreportdetails').css({'display':'none'});
+                if($("#cut_report").is(':checked'))
+                {
+                    
+                    $('#enablerolls').html('');
+                    getdetails();
+                }
+                 
             }else{
                 $('#wait_loader').css({'display':'none'});
                 swal('Error Occured While Reporting','Please Report again','error');
@@ -625,6 +1289,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             loadDetails(post_doc_no);
             console.log(res);
         });
+
+
     });
 
     $('#fab_returned').on('change',function(){
@@ -918,6 +1584,13 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     */
     //Rejection Panel Code Ends
 
+    function camelCase(str) { 
+            return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) 
+            { 
+                return index == 0 ? word.toUpperCase() : word.toLowerCase(); 
+            }).replace(/\s+/g, ''); 
+        }
+
     function loadDetails(doc_no){
         $.ajax({
             url : '<?= $get_url ?>?doc_no='+doc_no
@@ -972,6 +1645,43 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 $('#hide_details_reporting_ratios').css({'display':'block'});
                 //alert();
             }
+            if(data.partial_roll_wise == '1'){
+                $('#hide_details_reported_roll_wise').css({'display':'block'});
+                $rollwisestatus=true;
+            }
+            else if(data.cut_done_roll_wise == '1'){
+                $('#hide_details_reported_roll_wise').css({'display':'block'});
+                $rollwisestatus=true;
+            }else{
+                $('#hide_details_reported_roll_wise').css({'display':'none'});
+                $rollwisestatus=false;
+            }
+            var i;
+            var sno=1;
+            $('#reported_table_roll_wise tbody').html('');
+            if($rollwisestatus)
+            {
+                if(data.rollwisedetails) 
+                {
+                    rollwisedetialslength=data.rollwisedetails.length;
+                    rolwisedet=data.rollwisedetails;
+                    for(i=0;i<rollwisedetialslength;i++)
+                    {
+                        if(rolwisedet[i]['fabric_return']<0)
+                        {
+                            fabreturn=rolwisedet[i]['fabric_return'];
+                        }
+                        else{
+                            fabreturn=rolwisedet[i]['fabric_return']; 
+                        }
+                        row = $('<tr><td>'+sno+'</td><td>'+rolwisedet[i]['lay_sequence']+'</td><td>'+rolwisedet[i]['shade']+'</td><td>'+rolwisedet[i]['fabric_rec_qty']+'</td><td>'+fabreturn+'</td><td>'+rolwisedet[i]['reporting_plies']+'</td><td>'+rolwisedet[i]['damages']+'</td><td>'+rolwisedet[i]['joints']+'</td><td>'+rolwisedet[i]['endbits']+'</td><td>'+rolwisedet[i]['shortages']+'</td></tr>');
+                        $('#reported_table_roll_wise').append(row);
+                        sno++;
+                    }
+                }
+
+            }
+
             $('.d_doc_type').css({'display':'block'});
             $('#d_total_rejections').css({'display':'none'});
             //storing doc,plies in hidden fields for post refference
@@ -985,7 +1695,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
 
             //doc type
-            $('#d_doc_type').html(data.doc_target_type+' Docket');
+             
+            $('#d_doc_type').html(camelCase(data.doc_target_type)+' Docket');
             
             //setting size wise ratios
             $('#hide_details_reporting_ratios').html(data.ratio_data);
@@ -1033,6 +1744,35 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             //resetting the submmit button
             $('#submit').css({'display':'block'});
             load_rejections();
+            if(data.rollinfo>0)
+            {
+                $('.showifcontain').css({'display':'block'});
+                
+            }
+            if(data.rollinfo1>0)
+            {
+                $('.showifcontain').css({'display':'none'});
+                
+            }
+
+            var fret = Number($('#fab_returned').val());
+            if(fret > 0)
+            {
+                $('#returend_to_parent').css({'display':'block'});
+            } 
+            else
+            {
+                $('#returend_to_parent').css({'display':'none'});
+
+                //calculatecutreport();
+            }
+                $('#c_plies').attr('readonly', false);
+                $('#fab_received').attr('readonly', false);
+                $('#fab_returned').attr('readonly', false);
+                $('#damages').attr('readonly', false);
+                $('#joints').attr('readonly', false);
+                $('#endbits').attr('readonly', false);
+                $('#shortages').attr('readonly', false);
         }).fail(function(){
             swal('Network Error while getting Details','','error');
             return;
