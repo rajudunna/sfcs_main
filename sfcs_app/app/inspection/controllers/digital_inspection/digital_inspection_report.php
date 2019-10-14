@@ -153,7 +153,7 @@
 
 		});
 	</script>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
 	<style>
 		.alert,
 		strong,
@@ -189,13 +189,13 @@
 		{
 		margin: 0 0 0 123px;
 		}
-		@media only screen and (min-width:1187px) {
-			#second_row_child_div{
+		/* @media only screen and (min-width:1187px) {
+			{
 				position: absolute;
     			margin: 0 0 0 233px;
 				
 			}
-		}
+		} */
 	
 	</style>
 
