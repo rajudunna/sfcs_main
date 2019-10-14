@@ -13,11 +13,14 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
 	    $input_job_no = $job_no[$key];
 	    $size_title = $size[$key];
 	    $reported_qty = $qty[$key];
-	    $bcd_id = $bcd_ids[$key];
+        $bcd_id = $bcd_ids[$key];
+        $ops=array();
+        $op_namem=array();
+
 		
 		$bcd_qry = "select style,schedule,assigned_module,operation_id,bundle_number,sfcs_smv,remarks,color from $brandix_bts.bundle_creation_data 
 		where id in (".$bcd_id.") limit 1";
-	   // echo $bcd_qry;
+        // echo $bcd_qry;
 	    // die();
 	    $result_bcd_qry = $link->query($bcd_qry);
 		while($row = $result_bcd_qry->fetch_assoc()) 
@@ -47,7 +50,7 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
 	        $op_code=$row_code['operation_code'];
 	    }
 
-	    $checking_qry_plan_dashboard = "SELECT * FROM `$bai_pro3`.`plan_dashboard_input` WHERE input_job_no_random_ref = '$input_job_no'";
+        $checking_qry_plan_dashboard = "SELECT * FROM `$bai_pro3`.`plan_dashboard_input` WHERE input_job_no_random_ref = '$input_job_no'";
         $result_checking_qry_plan_dashboard = $link->query($checking_qry_plan_dashboard);
         if(mysqli_num_rows($result_checking_qry_plan_dashboard) == 0)
         {   

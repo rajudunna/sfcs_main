@@ -242,7 +242,14 @@ if($sql_result1_res==0){
         mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
         $docket_no = mysqli_insert_id($link);
-        $sql_recut_v2="insert into $bai_pro3.recut_v2 (pcutdocid, date, cat_ref, cuttable_ref, allocate_ref, mk_ref, order_tid,pcutno, ratio, p_s01, p_s02, p_s03, p_s04, p_s05, p_s06, p_s07, p_s08, p_s09, p_s10, p_s11, p_s12, p_s13, p_s14, p_s15, p_s16, p_s17, p_s18, p_s19, p_s20, p_s21, p_s22, p_s23, p_s24, p_s25, p_s26, p_s27, p_s28, p_s29, p_s30, p_s31, p_s32, p_s33, p_s34, p_s35, p_s36, p_s37, p_s38, p_s39, p_s40, p_s41, p_s42, p_s43, p_s44, p_s45, p_s46, p_s47, p_s48, p_s49, p_s50, p_plies, acutno, a_s01, a_s02, a_s03, a_s04, a_s05, a_s06, a_s07, a_s08, a_s09, a_s10, a_s11, a_s12, a_s13, a_s14, a_s15, a_s16, a_s17, a_s18, a_s19, a_s20, a_s21, a_s22, a_s23, a_s24, a_s25, a_s26, a_s27, a_s28, a_s29, a_s30, a_s31, a_s32, a_s33, a_s34, a_s35, a_s36, a_s37, a_s38, a_s39, a_s40, a_s41, a_s42, a_s43, a_s44, a_s45, a_s46, a_s47, a_s48, a_s49, a_s50,  a_plies,doc_no) values (\"$pcutdocid\", \"$date\", $cat_ref, $cuttable_ref, $allocate_ref, $mk_ref, \"$tran_order_tid\",$count, $ratio, $s01, $s02, $s03, $s04, $s05, $s06, $s07, $s08, $s09, $s10, $s11, $s12, $s13, $s14, $s15, $s16, $s17, $s18, $s19, $s20, $s21, $s22, $s23, $s24, $s25, $s26, $s27, $s28, $s29, $s30, $s31, $s32, $s33, $s34, $s35, $s36, $s37, $s38, $s39, $s40, $s41, $s42, $s43, $s44, $s45, $s46, $s47, $s48, $s49, $s50, $pliespercut, $count, $s01, $s02, $s03, $s04, $s05, $s06, $s07, $s08, $s09, $s10, $s11, $s12, $s13, $s14, $s15, $s16, $s17, $s18, $s19, $s20, $s21, $s22, $s23, $s24, $s25, $s26, $s27, $s28, $s29, $s30, $s31, $s32, $s33, $s34, $s35, $s36, $s37, $s38, $s39, $s40, $s41, $s42, $s43, $s44, $s45, $s46, $s47, $s48, $s49, $s50, $pliespercut,$docket_no)";
+        $category_new = "SELECT category FROM `$bai_pro3`.`cat_stat_log` where tid in (select cat_ref from  `$bai_pro3`.`plandoc_stat_log` where doc_no=$docket_no)";
+        $category_new_res = $link->query($category_new);
+        while($category_new_res1 = $category_new_res->fetch_assoc()) 
+        {
+            $cty =$category_new_res1['category'];
+        }
+
+        $sql_recut_v2="insert into $bai_pro3.recut_v2 (pcutdocid, date, cat_ref, cuttable_ref, allocate_ref, mk_ref, order_tid,pcutno, ratio, p_s01, p_s02, p_s03, p_s04, p_s05, p_s06, p_s07, p_s08, p_s09, p_s10, p_s11, p_s12, p_s13, p_s14, p_s15, p_s16, p_s17, p_s18, p_s19, p_s20, p_s21, p_s22, p_s23, p_s24, p_s25, p_s26, p_s27, p_s28, p_s29, p_s30, p_s31, p_s32, p_s33, p_s34, p_s35, p_s36, p_s37, p_s38, p_s39, p_s40, p_s41, p_s42, p_s43, p_s44, p_s45, p_s46, p_s47, p_s48, p_s49, p_s50, p_plies, acutno, a_s01, a_s02, a_s03, a_s04, a_s05, a_s06, a_s07, a_s08, a_s09, a_s10, a_s11, a_s12, a_s13, a_s14, a_s15, a_s16, a_s17, a_s18, a_s19, a_s20, a_s21, a_s22, a_s23, a_s24, a_s25, a_s26, a_s27, a_s28, a_s29, a_s30, a_s31, a_s32, a_s33, a_s34, a_s35, a_s36, a_s37, a_s38, a_s39, a_s40, a_s41, a_s42, a_s43, a_s44, a_s45, a_s46, a_s47, a_s48, a_s49, a_s50,  a_plies,doc_no, remarks) values (\"$pcutdocid\", \"$date\", $cat_ref, $cuttable_ref, $allocate_ref, $mk_ref, \"$tran_order_tid\",$count, $ratio, $s01, $s02, $s03, $s04, $s05, $s06, $s07, $s08, $s09, $s10, $s11, $s12, $s13, $s14, $s15, $s16, $s17, $s18, $s19, $s20, $s21, $s22, $s23, $s24, $s25, $s26, $s27, $s28, $s29, $s30, $s31, $s32, $s33, $s34, $s35, $s36, $s37, $s38, $s39, $s40, $s41, $s42, $s43, $s44, $s45, $s46, $s47, $s48, $s49, $s50, $pliespercut, $count, $s01, $s02, $s03, $s04, $s05, $s06, $s07, $s08, $s09, $s10, $s11, $s12, $s13, $s14, $s15, $s16, $s17, $s18, $s19, $s20, $s21, $s22, $s23, $s24, $s25, $s26, $s27, $s28, $s29, $s30, $s31, $s32, $s33, $s34, $s35, $s36, $s37, $s38, $s39, $s40, $s41, $s42, $s43, $s44, $s45, $s46, $s47, $s48, $s49, $s50, $pliespercut,$docket_no,'$cty')";
         mysqli_query($link,$sql_recut_v2) or exit("While inserting into the recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
         //checking for body/front categories
         $cat_query = "SELECT category from $bai_pro3.cat_stat_log where tid='$cat_ref' and category in ($in_categories)";
@@ -257,6 +264,7 @@ if($sql_result1_res==0){
             }
         } 
         $lay_plan_recut_track="SELECT * FROM `bai_pro3`.`lay_plan_recut_track` WHERE allocated_id='$cuttable_ref' AND cat_ref=$cat_ref";
+        echo $lay_plan_recut_track."<br>";
         $lay_plan_recut_track_res = mysqli_query($link,$lay_plan_recut_track);
         if(mysqli_num_rows($lay_plan_recut_track_res) > 0)
         {
@@ -264,11 +272,10 @@ if($sql_result1_res==0){
             {
                 $act_id=$lay_plan_recut_track_row['bcd_id'];
                 $cat_ref=$lay_plan_recut_track_row['cat_ref'];
-                $size_id=$lay_plan_recut_track_row['size_id'];
-                $recut_allowing_qty = $s_tit[$size_id];
-                if($recut_allowing_qty > 0)
-                {
+             
                     $retreaving_bcd_data = "SELECT * FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
+                    // echo $retreaving_bcd_data."<br>";
+
                     $retreaving_bcd_data_res = $link->query($retreaving_bcd_data);
                     while($row_bcd = $retreaving_bcd_data_res->fetch_assoc()) 
                     {
@@ -281,30 +288,28 @@ if($sql_result1_res==0){
                         $retreaving_rej_qty_res = $link->query($retreaving_rej_qty);
                         while($child_details = $retreaving_rej_qty_res->fetch_assoc()) 
                         {
+                            $size_id22=$child_details['size_id'];
+                            $recut_allowing_qty = $s_tit[$size_id22];
                             $actual_allowing_to_recut = $child_details['recut_raised_qty']-$child_details['recut_allocated_qty'];
                         }
-                        if($actual_allowing_to_recut < $recut_allowing_qty)
-                        {
-                            $to_add = $actual_allowing_to_recut;
-                            $recut_allowing_qty = $recut_allowing_qty - $actual_allowing_to_recut;
-                        }
-                        else
-                        {
-                            $to_add = $recut_allowing_qty;
-                            $recut_allowing_qty = 0;
-                        }
-                        
-                        $category_new = "SELECT * FROM `$bai_pro3`.`cat_stat_log` where tid in (select cat_ref from  `$bai_pro3`.`plandoc_stat_log` where doc_no=$docket_no)";
-                        
-                        $category_new_res = $link->query($category_new);
-                        while($category_new_res1 = $category_new_res->fetch_assoc()) 
-                        {
-                            $cty =$category_new_res1['category'];
-                        }
+                            if($actual_allowing_to_recut < $recut_allowing_qty)
+                            {
+                                
+                                $to_add = $actual_allowing_to_recut;
+                                $recut_allowing_qty = $recut_allowing_qty - $actual_allowing_to_recut;
+                                $s_tit[$size_id22]= $s_tit[$size_id22]-$to_add;
+                            }
+                            else
+                            {
+                                $to_add = $recut_allowing_qty;
+                                $recut_allowing_qty = 0;
+                                $s_tit[$size_id22]= $to_add-$s_tit[$size_id22];
+                            }
+                       
                         if($to_add > 0)
                         {
                             $inserting_into_recut_v2_child = "INSERT INTO `$bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`,`size_id`)
-                            VALUES($docket_no,$bcd_act_id,$operation_id,$actual_allowing_to_recut,$to_add,0,0,'$size_id')";
+                            VALUES($docket_no,$bcd_act_id,$operation_id,$to_add,$to_add,0,0,'$size_id')";
                             mysqli_query($link,$inserting_into_recut_v2_child) or exit("While inserting into the recut v2 child".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 // echo $inserting_into_recut_v2_child."<br>";
 
@@ -384,7 +389,6 @@ if($sql_result1_res==0){
                             mysqli_query($link,$update_lay_plan_recut_track) or exit("While updating lay_plan_recut_track".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
                     }
-                }
             
             }
 
@@ -416,7 +420,6 @@ if($sql_result1_res==0){
 else
 {
     $sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 
