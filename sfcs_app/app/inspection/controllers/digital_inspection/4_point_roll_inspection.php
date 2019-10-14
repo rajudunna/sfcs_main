@@ -1,5 +1,8 @@
 <head>
 	<style>
+		.selected{
+			background-color:#B0BED9;
+		}
 		table tr th,
 		td {
 			text-align: center;
@@ -49,9 +52,12 @@ $flag = false;
 										echo "<div class='alert alert-info'><strong>Info!</strong> Sorry No Records Found......!</div>";
 									}else{
 								?>
-									<tbody>
+									<thead>
 										<tr>
-											<th>S No</th>
+											
+											<th>Select<input type="checkbox" id="selectAlll"></th>
+											<th>Supplier Roll No</th>
+											<th>FCS Roll No</th>
 											<th>Supplier PO</th>
 											<th>Po line</th>
 											<th>Po Subline</th>
@@ -61,11 +67,9 @@ $flag = false;
 											<th>Lot No</th>
 											<th>Supplier Batch</th>
 											<th>RM Colour</th>
-											<th>Supplier Roll No</th>
-											<th>FCS Roll No</th>
 											<th>Quantity</th>
-											<th>Select<input type="checkbox" id="selectAlll"></th>
 										</tr>
+									</thead>
 										<?php
 										while ($sql_row = mysqli_fetch_array($sql_result)) {
 							$k++;
@@ -95,8 +99,9 @@ $flag = false;
 							if ($fcs_roll_no == '') { $fcs_roll_no = 0;	} else { $fcs_roll_no; }
 							if ($qty == '') { $qty = 0;	} else { $qty; }
 							if ($rm_color == '') { $rm_color = '--'; } else { $rm_color; }
-							echo '<tr><td>' . $k . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $fcs_roll_no . '</td><td>' . $supplier_roll_no . '</td><td>' . $qty . '</td>';
-							echo "<td><input type='checkbox' name='bindingdata[]' value='" . $sno . '$' . $lot_no . "'></td></tr>";
+					
+
+							echo '<tbody><tr><td><input type="checkbox" name="bindingdata[]" value="' . $sno . "$" . $lot_no . '"></td><td>' . $fcs_roll_no . '</td><td>' . $supplier_roll_no . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $qty . '</td></tr>';
 						}
 					}
 						?>										
@@ -147,6 +152,7 @@ $flag = false;
 									$po = $row1['supplier'];
 									$lot_no = $row1['lot_no'];
 								}
+								if($color==''){	$color='--'; }else{	$color;	}
 						  echo "<td>$invoice</td> 
 						      	<td>$color</td>
 						      	<td>$batch</td>
@@ -402,6 +408,7 @@ if(isset($_POST['confirm']))
 	}
 
 	$(document).ready(function(){
+		
 
 		$('#clear1').click(function(){
 		
@@ -461,7 +468,7 @@ if(isset($_POST['confirm']))
 			$('#selectAlll').click(function(e) {
 				var tableone = $(e.target).closest('table');
 				if (e.target.checked) {
-					$('tr', tableone).addClass("selected");
+					$('tbody tr', tableone).addClass("selected");
 					$('td input:checkbox', tableone).prop('checked', true);
 					calculateTotal()
 					if ($('#disable_id').is(":disabled")) {

@@ -93,6 +93,7 @@
 						$('#disable_id').prop('disabled', true);
 					}
 					$('#selectAlll').prop("checked", false);
+			
 				}
 			});
 
@@ -131,8 +132,8 @@
 							typeof i === 'number' ?
 							i : 0;
 					};
-					let valtobecheck = x[0] + "-" + x[12];
-					sumValue = intVal(sumValue) + intVal(x[12]);
+					let valtobecheck = x[0] + "-" + x[11];
+					sumValue = intVal(sumValue) + intVal(x[11]);
 					distinctRolls.add(valtobecheck);
 
 
@@ -152,6 +153,7 @@
 
 		});
 	</script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<style>
 		.alert,
 		strong,
@@ -171,7 +173,7 @@
 			right: 78px;
 		}
 
-		.output_div {
+		#output_div {
 			font-weight: 900;
 			font-size: 1.5rem;
 			line-height: 1.5;
@@ -179,6 +181,22 @@
 			color: #d05d5d;
 			text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
 		}
+		#second_row_div{
+			position: relative;
+			left: 62px;
+		}
+		#second_row_child_div
+		{
+		margin: 0 0 0 123px;
+		}
+		@media only screen and (min-width:1187px) {
+			#second_row_child_div{
+				position: absolute;
+    			margin: 0 0 0 233px;
+				
+			}
+		}
+	
 	</style>
 
 	<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'], 'common/js/openbundle_report.min.js', 3, 'R'); ?>"></script>
@@ -315,16 +333,16 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 						} else {
 							?>
 							<div class="col-xs-6 col-sm-6 col-lg-6">
-
-								<div class="panel-body output_div" style="background-color:#f5ecec;height:167px;">
+							
+								<div class="panel-body" id="output_div" style="background-color:#f5ecec;height:167px;">
 									<div class="row">
-										<div class="col-sm-4" style="position: relative;left: 62px;">
+										<div class="col-sm-4" id="second_row_div">
 											<div class="panel panel-default">
 												<div class="panel-heading" style="background-color: #f4fdd0;"><strong>Total Rolls</strong></div>
 												<div class="panel-body" id="total_rolls">0</div>
 											</div>
 										</div>
-										<div class="col-sm-4" style="margin: 0 0 0 123px;">
+										<div class="col-sm-4" id="second_row_child_div">
 											<div class="panel panel-default">
 												<div class="panel-heading" style="background-color: #f4fdd0;"><strong>Total Length</strong></div>
 												<div class="panel-body" id="total_length">0</div>
@@ -345,7 +363,9 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 						<table id="myTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
 							<thead>
 								<tr>
-									<th>S NO</th>
+									<!-- <th>S NO</th> -->
+									<th>Supplier Roll No</th>
+									<th>FCS Roll No</th>
 									<th>Supplier PO</th>
 									<th>Po line</th>
 									<th>Po Subline</th>
@@ -355,8 +375,6 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 									<th>Lot No</th>
 									<th>Supplier Batch</th>
 									<th>RM Colour</th>
-									<th>Supplier Roll No</th>
-									<th>FCS Roll No</th>
 									<th>Quantity</th>
 
 
@@ -451,7 +469,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 										}
 										//$rm_color = 0;
 
-										echo '<tr><td>' . $i . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $supplier_no . '</td><td>' . $ref2 . '</td><td>' . $ref3 . '</td><input type="hidden" name="main_id" value="' . $tid . '">';
+										echo '<tr><td>' . $supplier_no . '</td><td>' . $ref2 . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $ref3 . '</td><input type="hidden" name="main_id" value="' . $tid . '">';
 
 										echo "<td><input type='checkbox' name='bindingdata[]' value='" . $po_no_1 . '$' . $po_line . '$' . $po_subline . '$' . $inv_no . '$' . $item_code . '$' . $item_desc . '$' . $lot_no . '$' . $supplier_batch . '$' . $rm_color . '$' . $supplier_no . '$' . $ref2 . '$' . $ref3 . '$' . $tid . "'></td></tr>";
 										$i++;

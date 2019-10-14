@@ -1,16 +1,19 @@
 <head>
-
     <style>
-        table tr th,
-        td {
+        table tr th,td 
+        {
             text-align: center;
-
         }
-.tableBodyScroll tbody {
-  display: block;
-  max-height: 300px;
-  overflow-y: scroll;
-}
+        #check_true
+        {
+            cursor:pointer;
+        }
+        .tableBodyScroll tbody 
+        {
+            display: block;
+            max-height: 300px;
+            overflow-y: scroll;
+        }
     </style>
 </head>
 <?php
@@ -64,6 +67,10 @@ while ($row1 = mysqli_fetch_array($details_result)) {
     elseif($row1['status']==2)
     {
         $status='In Progress';
+    }    
+    elseif($row1['status']==3)
+    {
+        $status='Completed';
     }       
 }
 
@@ -121,18 +128,21 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                 </tr>
                                 <tr>
                                     <td>Fabric Composition</td>
-                                    <td><input type="text" id="fabric_composition" name="fabric_composition" autocomplete="off" autocomplete="off" value="<?= $fabric_composition ?>" <?php if ($fabric_composition)   ?> class="float"></td>
-                                    <td rowspan="2"><input type="text" id="tolerance" name="tolerance" value="<?= $tolerance ?>" <?php if ($tolerance)   ?> class="float"></td>
+                                    <td><input type="text" id="fabric_composition" name="fabric_composition" autocomplete="off" autocomplete="off" value="<?= $fabric_composition ?>" <?php if ($fabric_composition)   ?>></td>
+                                    <td rowspan="2"><input type="text" id="tolerance" name="tolerance" value="<?= $tolerance ?>" <?php if ($tolerance)   ?>></td>
                                 </tr>
                                 <tr>
                                     <td>Inspection Status</td>
                                     <td>
-                                        <select name="inspection_status" id="inspection_status">
+                                        <!-- <select name="inspection_status" id="inspection_status">
                                             <option value="" selected>Select Status</option>
                                             <option value="Approved" <?php if ($inspection_status == "Approved") echo "selected" ?>>Approved</option>
                                             <option value="Rejected" <?php if ($inspection_status == "Rejected") echo "selected" ?>>Rejected</option>
                                             <option value="Partial Rejected" <?php if ($inspection_status == "Partial Rejected") echo "selected" ?>>Partial Rejected</option>
-                                        </select>
+                                        </select> -->
+                                        <?php 
+                                        echo '<b>'.$status.'</b>';
+                                        ?>
                                     </td>
                                 </tr>
                                 <tr style="background-color: antiquewhite;">
@@ -229,7 +239,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                     <th rowspan="2">Roll No</th>
                                     <th rowspan="2">Inspected %</th>
                                     <th rowspan="2">Inspected Qty</th>
-                                    <th rowspan="2">Invoice Qty</th>
+                                    <th rowspan="2">Ticket Length</th>
                                     <th style=text-align:center colspan=3>Width(cm)</th>
                                     <th rowspan="2">Actual Height</th>
                                     <th rowspan="2">Actual Repeat Height</th>

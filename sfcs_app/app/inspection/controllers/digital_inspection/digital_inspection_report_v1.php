@@ -154,7 +154,7 @@ if(isset($_GET['parent_id'])){
 				};
 				data.map(x => {
 
-					let valtobecheck = x[0] + "-" + x[12];
+					let valtobecheck = x[1] + "-" + x[12];
 					sumValue = intVal(sumValue) + intVal(x[12]);
 					distinctRolls.add(valtobecheck);
 
@@ -191,7 +191,7 @@ if(isset($_GET['parent_id'])){
 							typeof i === 'number' ?
 							i : 0;
 					};
-					let valtobecheck = x[0] + "-" + x[12];
+					let valtobecheck = x[1] + "-" + x[12];
 					sumValue = intVal(sumValue) + intVal(x[12]);
 					distinctRolls.add(valtobecheck);
 
@@ -258,6 +258,7 @@ if(isset($_GET['parent_id'])){
 		#populate_div {
 			position: absolute;
 			top: 250px;
+    		right: 433px;
 
 		}
 		.position_div{
@@ -337,7 +338,9 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							<table id="myTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
 							<thead>
 						<tr>
-							<th>S No</th>
+						<th>Select<input type="checkbox" id="selectAlll"></th>
+							<th>Supplier Roll No</th>
+							<th>FCS Roll No</th>
 							<th>Supplier PO</th>
 							<th>Po line</th>
 							<th>Po Subline</th>
@@ -347,11 +350,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							<th>Lot No</th>
 							<th>Supplier Batch</th>
 							<th>RM Colour</th>
-							<th>Supplier Roll No</th>
-							<th>FCS Roll No</th>
 							<th>Quantity</th>
-
-							<th>Select<input type="checkbox" id="selectAlll"></th>
 						</tr>
 					</thead>
 					<tbody>';
@@ -384,16 +383,16 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							if ($fcs_roll_no == '') { $fcs_roll_no = 0;	} else { $fcs_roll_no; }
 							if ($qty == '') { $qty = 0;	} else { $qty; }
 							if ($rm_color == '') { $rm_color = '--'; } else { $rm_color; }
-							echo '<tr><td>' . $k . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $fcs_roll_no . '</td><td>' . $supplier_roll_no . '</td><td>' . $qty . '</td>';
-							echo "<td><input type='checkbox' name='bindingdata[]' value='" . $sno . '$' . $lot_no . "'></td></tr>";
+							echo '<tr><td><input type="checkbox" name="bindingdata[]" value="' . $sno . "$" . $lot_no . '"></td><td>' . $fcs_roll_no . '</td><td>' . $supplier_roll_no . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $qty . '</td></tr>';
+							
 						}
 
 						?>
 					</tbody>
 				</table>
-				<div class="button_pop col-sm-4" id="populate_div">
-					<input type="submit" class="btn btn-md btn-primary" name="set_insp_pop" id="disable_id" value="Proceed for Inspection">
-					<input type="submit" class="btn btn-md btn-primary" name="color_report" id="disable_id1" value="Color Contuinity Report">
+				<div class="button_pop col-sm-8" id="populate_div">
+					<input type="submit" class="btn btn-sm btn-primary" name="set_insp_pop" id="disable_id" value="Proceed for Inspection" style="margin-right: 25px;">
+					<input type="submit" class="btn btn-sm btn-primary" name="color_report" id="disable_id1" value="Color Contuinity Report" style="margin-right: 25px;">
 					<input type="hidden" name='submit_type' id="submit_type" value="">
 				</div>
 				
