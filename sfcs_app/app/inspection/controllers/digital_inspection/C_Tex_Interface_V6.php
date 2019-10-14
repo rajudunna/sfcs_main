@@ -2836,11 +2836,11 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	}
 
 	echo "<h2>Please Wait While Updating Data.</h2>";
-	// $url = getURL(getBASE($_GET['r'])['base'].'/C_Tex_Interface_V6.php')['url'];
-	// echo "<script type='text/javascript'>";
-	// echo "setTimeout('Redirect()',0);";
-	// echo "var url='".$url."&batch_no=".$lot_no_new."&lot_ref=".$lot_ref."&parent_id=".$main_id."';";
-	// echo "function Redirect(){location.href=url;}</script>";	
+	$url = getURL(getBASE($_GET['r'])['base'].'/C_Tex_Interface_V6.php')['url'];
+	echo "<script type='text/javascript'>";
+	echo "setTimeout('Redirect()',0);";
+	echo "var url='".$url."&batch_no=".$lot_no_new."&lot_ref=".$lot_ref."&parent_id=".$main_id."';";
+	echo "function Redirect(){location.href=url;}</script>";	
 }
 ?>
 
