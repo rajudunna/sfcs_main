@@ -1741,7 +1741,14 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 	<td class=xl8919758 style='border-top:none;border-left:none'><?php if($ins_child[$tot_ids[$i]][4]<>''){echo $ins_child[$tot_ids[$i]][4]; $tot=$tot+$ins_child[$tot_ids[$i]][4];}else{ echo "0";}?></td>
 	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $tot; $tot_qty=$tot_qty+$tot;
 	$rate=0;
-	$rate = round(($tot/$tot_qty_g)*(36/49.21)*100,2); 
+	$qty=0;
+	if($fab_uom == "meters"){
+		$qty=round($invoice_qty[$tot_ids[$i]]*1.09361,2);
+	}else
+	{
+		$qty=$invoice_qty[$tot_ids[$i]];
+	}
+	$rate = round(($tot/$qty)*(36/49.21)*100,2); 
 	
 	?></td> 
 	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $rate; ?></td>
@@ -1928,6 +1935,12 @@ for($i=0;$i<sizeof($tot_ids);$i++)
   <td class=xl11119758 colspan=3>Accepted</td>
   <td class=xl11319758>&nbsp;</td>
   <?php
+	if($fab_uom == "meters"){
+		$tot_qty_g=round($tot_qty_g*1.09361,2);
+	}else
+	{
+		$tot_qty_g;
+	}
 	$calclation = round(($tot_qty/$tot_qty_g)*(36/49.21)*100,2); 
 	if($calclation<28)
 	{

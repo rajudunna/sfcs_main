@@ -231,7 +231,7 @@ $flag = false;
 								{ 
 									$invoice_qty=$row522['rec_qty'];
 									if($fab_uom == "meters"){
-										$invoice_qty=round($invoice_qty*0.09361,2);
+										$invoice_qty=round($invoice_qty*1.09361,2);
 									}else
 									{
 										$invoice_qty;
@@ -269,39 +269,41 @@ $flag = false;
 								{
 									$back_color="";
 								}	
-								
+								$h_ref="";
 								if($status == 1)
 								{
 									$status_main = 'Pending';
+									$h_ref="data-href='$url&parent_id=$parent_id&store_id=$store_in_id'";
 								}
 								else if($status == 2)
 								{
-									$status_main = 'Inprogress';	
+									$status_main = 'Inprogress';
+									$h_ref="data-href='$url&parent_id=$parent_id&store_id=$store_in_id'";									
 								}
 								else
 								{
 									$val2=1;
 									$status_main = 'Complete';
+									$h_ref="";
 								}	
 								
 								echo "<tr $back_color>";
 								echo "<input type='hidden' name='insp_id[$id]' id='insp_id[$id]' value=$id> 
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['supplier_roll_no']."</td>
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['sfcs_roll_no']."</td>
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['item_code']."</td>
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['rm_color']."</td>
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['item_desc']."</td>
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$lot_id."</td>
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['rec_qty']."</td>									
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$main_points."</td>
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$status_main."</td>";
+								<td $h_ref>".$row2['supplier_roll_no']."</td>
+								<td $h_ref>".$row2['sfcs_roll_no']."</td>
+								<td $h_ref>".$row2['item_code']."</td>
+								<td $h_ref>".$row2['rm_color']."</td>
+								<td $h_ref>".$row2['item_desc']."</td>
+								<td $h_ref>".$lot_id."</td>
+								<td $h_ref>".$row2['rec_qty']."</td>									
+								<td $h_ref>".$main_points."</td>
+								<td $h_ref>".$status_main."</td>";
 								if($status == 3)
 								{
 									echo "<td> <span class='glyphicon glyphicon-ok'></span></td></tr>";
 								}
 								else
-								{
-									
+								{									
 									echo "<td><span class='glyphicon glyphicon-glyphicon glyphicon-trash' style = 'cursor:pointer;' onclick = delete_row(event,$store_in_id)></span></td></tr>";
 								}									
 							
