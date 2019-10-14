@@ -816,16 +816,15 @@
 													      $emb_operations = $row_ops['operation_code'];
 													    }
                                                       
-														$sql2="select send_qty,orginal_qty from $bai_pro3.embellishment_plan_dashboard where doc_no=$doc_no and send_op_code =$emb_operations";
+														$sql2="select send_qty from $bai_pro3.embellishment_plan_dashboard where doc_no=$doc_no and send_op_code =$emb_operations";
                                                         //echo $sql2;
 														$sql_resultx1=mysqli_query($link,$sql2) or exit("Sql Error2".mysqli_error());
 														while($sql_rowx=mysqli_fetch_array($sql_resultx1))
 														{
 														  $send_qty=$sql_rowx['send_qty'];
-														  $orginal_qty=$sql_rowx['orginal_qty'];
 														}
 														
-														if($orginal_qty<>$send_qty)
+														if($total_qty1<>$send_qty)
 														{
                                                           echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
 														  //echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';
