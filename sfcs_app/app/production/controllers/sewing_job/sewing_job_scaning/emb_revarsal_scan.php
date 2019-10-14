@@ -290,7 +290,7 @@ if(isset($_POST['reverse']))
 				$clubdocno[]=$docno_qry_result_row['doc_no'];
 			}
 			
-			$get_quant_qry="select sum(remaining_qty) as remaining_qty from $bai_pro3.cps_log where doc_no IN (".implode(',',$clubdocno).") and operation_code=$op_no and size_title='$sizes'";
+			$get_quant_qry="select sum(recevied_qty) as remaining_qty from $brandix_bts.bundle_creation_data where docket_number IN (".implode(',',$clubdocno).") and operation_id=$op_no and size_title='$sizes'";
 			$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
 			{
@@ -301,7 +301,7 @@ if(isset($_POST['reverse']))
 			{
 				foreach($clubdocno as $child_doc)
 				{
-					$get_quant_qry="select id,remaining_qty from $bai_pro3.cps_log where doc_no='".$child_doc."' and operation_code=$op_no and size_title='$sizes'";
+					$get_quant_qry="select id,recevied_qty from $brandix_bts.bundle_creation_data where docket_number='".$child_doc."' and operation_id=$op_no and size_title='$sizes'";
 					$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
 					{
@@ -342,7 +342,7 @@ if(isset($_POST['reverse']))
 		}
 		else
 		{
-			$get_quant_qry="select sum(remaining_qty) as remaining_qty from $bai_pro3.cps_log where doc_no IN (".implode(',',$normdoc).") and operation_code=$op_no and size_title='$sizes'";
+			$get_quant_qry="select sum(recevied_qty) as remaining_qty from $brandix_bts.bundle_creation_data where docket_number IN (".implode(',',$normdoc).") and operation_id=$op_no and size_title='$sizes'";
 			$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
 			{
@@ -352,7 +352,7 @@ if(isset($_POST['reverse']))
 			{
 				foreach($normdoc as $child_doc)
 				{
-					$get_quant_qry="select id,remaining_qty from $bai_pro3.cps_log where doc_no='".$child_doc."' and operation_code=$op_no and size_title='$sizes'";
+					$get_quant_qry="select id,recevied_qty as remaining_qty from $brandix_bts.bundle_creation_data where docket_number='".$child_doc."' and operation_id=$op_no and size_title='$sizes'";
 					$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
 					{
