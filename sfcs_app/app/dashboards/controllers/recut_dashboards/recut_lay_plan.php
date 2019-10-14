@@ -230,7 +230,7 @@ if($flag== 1)
 	{
 		$ratios_table .=  " <th class=\"column-title\"><center>".$s_tit[$sizes_code[$s]]."</center></th>";
 	}
-	$ratios_table .=  "<th class=\"column-title\"><center>Ratio Total</center></th><th class=\"column-title\"><center>Controls</center></th><th class=\"column-title\"><center>Current Status</center></th><th class=\"column-title\"><center>Remarks</center></th></tr></thead><tbody>";
+	$ratios_table .=  "<th class=\"column-title\"><center>Ratio Total</center></th><th class=\"column-title\"><center>Controls</center></th></tr></thead><tbody>";
 }
 else
 {
@@ -300,38 +300,7 @@ foreach($cats_ids as $key=>$value)
 			}
 			$ratios_table .= "</center></td>";
 		}
-		switch ($mk_status)
-		{
-			case 1:
-			{
-				$ratios_table .= "<td class=\"  \"><center>NEW</center></td>";
-				break;
-			}
-				
-			case 2:
-			{
-				$ratios_table .= "<td class=\"  \"><center>VERIFIED</center></td>";
-				break;
-			}
-				
-			case 3:
-			{
-				$ratios_table .= "<td class=\"  \"><center>REVISE</center></td>";
-				break;
-			}
-			case 9:
-			{
-				$ratios_table .= "<td class=\"  \"><center>Docket Generated</center></td>";
-				break;
-			}
-			default:
-			{
-				$ratios_table .= "<td class=\"  \"><center>NEW</center></td>";
-				break;
-			}
-				
-		}
-		$ratios_table .= "<td class=\"  \"><center>".$sql_row['remarks']."</center></td>";
+		
 		// $sql3 ="select * from $bai_pro3.sp_sample_order_db where order_tid='$tran_order_tid'";
 		// $sql_result3=mysqli_query($link, $sql3) or exit("Sql Error e".mysqli_error($GLOBALS["___mysqli_ston"]));
 		// while($sql_row3=mysqli_fetch_array($sql_result3))
@@ -362,7 +331,7 @@ foreach($cats_ids as $key=>$value)
                 $ratios_table .= "<td class=\"b1\" style='background-color:#f8d7da'><center>".$tot_size[$s_tit[$sizes_code[$s]]]."</center></td>";
             }
         }	
-        $ratios_table .= "<td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><tdclass=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td></tr>";
+        $ratios_table .= "<td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><tdclass=\"  \"><center></center></td></tr>";
         $ratios_table .= "<tr><td colspan=3>Excess / Less <td>";
         for($s=0;$s<sizeof($s_tit);$s++)
         {
@@ -382,7 +351,7 @@ foreach($cats_ids as $key=>$value)
         }
         unset($tot_size);
         unset($input_qty);		
-        $ratios_table .= "<td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td><td class=\"  \"><center></center></td></tr>";
+        $ratios_table .= "<td class=\"  \"><center></center></td><td class=\"  \"><center></center></td></tr>";
     }
 
 }
@@ -399,15 +368,7 @@ $marker_table = "<div class=\"row col-md-12\">
                 <div id=\"Marker\" class=\"panel-collapse collapse-in collapse in\" aria-expanded=\"true\">
                     <div class=\"panel-body\">
                         <div style=\"overflow-x:auto;\">
-                            <center>
-                                <span class=\"pull-right\">
-                                    <strong>
-                                        Overall Savings%: 
-                                        &nbsp;&nbsp;|&nbsp;&nbsp;
-                                        Overall CAD Consumption: 
-                                    </strong>
-                                </span>
-                            </center><br/>
+                            
                         <table  class=\"table table-bordered\" style=\"overflow-x:auto;\">
                         <thead>
                             <tr>
@@ -416,16 +377,6 @@ $marker_table = "<div class=\"row col-md-12\">
                                 <th class=\"word-wrap\"><center>Lay Length</center></th><th class=\"word-wrap\"><center>Marker EFF%</center></th>
                                 <th class=\"column-title\"><center>Version</center></th><th class=\"column-title\"><center>Controls</center></th>
                                 <th class=\"word-wrap\"><center>Delete Control</center></th>
-                                <th class=\"word-wrap\"><center>Ratio wise Savings%</center></th>
-                                <th class=\"word-wrap\"><center>Ratio wise CAD Consumption</center></th>
-                                <th class=\"word-wrap\"><center>Used $fab_uom</center></th>
-                                <th class=\"word-wrap\"><center>Used $fab_uom For Binding</center></th>
-                                <th class=\"word-wrap\"><center>Current Status</center></th>
-                                <th class=\"column-title\"><center>Marker Name</center></th>
-                                <th class=\"column-title\"><center>Remark1</center></th>
-                                <th class=\"column-title\"><center>Remark2</center></th>
-                                <th class=\"column-title\"><center>Remark3</center></th>
-                                <th class=\"column-title\"><center>Remark4</center></th>
                             </tr>
                         </thead><tbody>";
                         
@@ -573,54 +524,54 @@ foreach($cats_ids as $key=>$value)
                 {
                     $savings1=0;
                 }
-                $marker_table .=  "<td class=\"  \"><center>".$savings1."%</center></td>";
-                $marker_table .=  "<td class=\"  \"><center>".round($cad_consumption,4)."</center></td>";
-                $marker_table .=  "<td class=\"  \"><center>".round($usedFabric,2)."</center></td>";
-                $marker_table .=  "<td class=\"  \"><center>".$used_yards[$category1][$ratio]."</center></td>";
+                // $marker_table .=  "<td class=\"  \"><center>".$savings1."%</center></td>";
+                // $marker_table .=  "<td class=\"  \"><center>".round($cad_consumption,4)."</center></td>";
+                // $marker_table .=  "<td class=\"  \"><center>".round($usedFabric,2)."</center></td>";
+                // $marker_table .=  "<td class=\"  \"><center>".$used_yards[$category1][$ratio]."</center></td>";
 
                 $grand_tot_used_fab = $grand_tot_used_fab + round($usedFabric,2);
                 $grand_tot_used_binding = $grand_tot_used_binding + $used_yards[$category1][$ratio];
                     
-                switch ($mk_status1)
-                {
-                    case 1:
-                    {
-                        $marker_table .=  "<td class=\"  \"><center>NEW</center></td>";
-                        break;
-                    }
+                // switch ($mk_status1)
+                // {
+                //     case 1:
+                //     {
+                //         $marker_table .=  "<td class=\"  \"><center>NEW</center></td>";
+                //         break;
+                //     }
                         
-                    case 2:
-                    {
-                        $marker_table .=  "<td class=\"  \"><center>VERIFIED</center></td>";
-                        break;
-                    }
+                //     case 2:
+                //     {
+                //         $marker_table .=  "<td class=\"  \"><center>VERIFIED</center></td>";
+                //         break;
+                //     }
                         
-                    case 3:
-                    {
-                        $marker_table .=  "<td class=\"  \"><center>REVISE</center></td>";
-                        break;
-                    }
-                    case 9:
-                    {
-                        $marker_table .=  "<td class=\"  \"><center>Docket Generated</center></td>";
-                        break;
-                    }
-                    default:
-                    {
-                        $marker_table .=  "<td class=\"  \"><center>NEW</center></td>";
-                        break;
-                    }
-                }
+                //     case 3:
+                //     {
+                //         $marker_table .=  "<td class=\"  \"><center>REVISE</center></td>";
+                //         break;
+                //     }
+                //     case 9:
+                //     {
+                //         $marker_table .=  "<td class=\"  \"><center>Docket Generated</center></td>";
+                //         break;
+                //     }
+                //     default:
+                //     {
+                //         $marker_table .=  "<td class=\"  \"><center>NEW</center></td>";
+                //         break;
+                //     }
+                // }
 
-                $marker_table .=  "<td class=\"word-wrap\"><center>".$mk_remarks1."</center></td>";
-                $marker_table .=  "<td class=\"word-wrap\"><center>".$remark1."</center></td>";
-                $marker_table .=  "<td class=\"word-wrap\"><center>".$remark2."</center></td>";
-                $marker_table .=  "<td class=\"word-wrap\"><center>".$remark3."</center></td>";
-                $marker_table .=  "<td class=\"word-wrap\"><center>".$remark4."</center></td>";
+                // $marker_table .=  "<td class=\"word-wrap\"><center>".$mk_remarks1."</center></td>";
+                // $marker_table .=  "<td class=\"word-wrap\"><center>".$remark1."</center></td>";
+                // $marker_table .=  "<td class=\"word-wrap\"><center>".$remark2."</center></td>";
+                // $marker_table .=  "<td class=\"word-wrap\"><center>".$remark3."</center></td>";
+                // $marker_table .=  "<td class=\"word-wrap\"><center>".$remark4."</center></td>";
                 $marker_table .=  "
             </tr>";
         }
-        $marker_table .=  "<tr style='background-color: yellow;'><td colspan=9><center><b>Total ($category1) </b></center></td><td><center><b>$grand_tot_used_fab</b></center></td><td><center><b>$grand_tot_used_binding</b></center></td><td colspan=6></td></tr>";
+        // $marker_table .=  "<tr style='background-color: yellow;'><td colspan=3><center><b>Total ($category1) </b></center></td><td><center><b>$grand_tot_used_fab</b></center></td><td><center><b>$grand_tot_used_binding</b></center></td><td colspan=6></td></tr>";
     }
 }
 $marker_table .= "</tbody></table>
@@ -633,7 +584,6 @@ $docket_creation ="
 <div class=\"col-sm-12 row\">
 	<div class = \"panel panel-info\">
 		<div class=\"panel-heading\" style=\"text-align:center;\">
-		<span class=\"label label-default pull-left\">Available Slots</span>
 				<a data-toggle=\"collapse\" href=\"#docket_creation\"><strong><b>Docket Creation / Edit</b></strong></a>
 			</div>
 			<div id=\"docket_creation\" class=\"panel-collapse collapse-in collapse in\" aria-expanded=\"true\">
@@ -653,7 +603,7 @@ else{
 
 $docket_creation .= "<div><table class=\"table table-bordered\">";
 
-$docket_creation .= "<thead><tr><th class=\"column-title \"><center>Category</center></th><th class=\"column-title \"><center>Total Cut</center></th><th class=\"column-title \"><center>Ratio Ref</center></th><th class=\"column-title \"><center>MO Status</center></th><th class=\"column-title \"><center>Control</center></th><th class=\"column-title \"><center>Ratio wise Savings%</center></th><th class=\"column-title \"><center>Proceed</center></th><th class=\"column-title \"><center>Remarks</center></th></tr></thead>";
+$docket_creation .= "<thead><tr><th class=\"column-title \"><center>Category</center></th><th class=\"column-title \"><center>Total Cut</center></th><th class=\"column-title \"><center>Ratio Ref</center></th><th class=\"column-title \"><center>MO Status</center></th><th class=\"column-title \"><center>Control</center></th></tr></thead>";
 
 $sql="select * from $bai_pro3.maker_stat_log where order_tid=\"$tran_order_tid\" and allocate_ref > 0 and recut_lay_plan='yes' order by allocate_ref";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error777".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -733,11 +683,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$savings=round((($realYY-$cad_consumption)/$realYY)*100,0);		
 	}
-	$docket_creation .= "<td class=\"  \"><center>".$savings."%</center></td>";
+	// $docket_creation .= "<td class=\"  \"><center>".$savings."%</center></td>";
 	
-	$docket_creation .= "<td class=\"  \"><center>"; if($savings>=2){$docket_creation .= "<span class='label label-success'>Yes</span>"; } else {$docket_creation .= "<span class='label label-danger'>No</span>"; } $docket_creation .= "</center></td>";
+	// $docket_creation .= "<td class=\"  \"><center>"; if($savings>=2){$docket_creation .= "<span class='label label-success'>Yes</span>"; } else {$docket_creation .= "<span class='label label-danger'>No</span>"; } $docket_creation .= "</center></td>";
 	
-	$docket_creation .= "<td class=\"  \"><center>".$remarks."</center></td>";
+	// $docket_creation .= "<td class=\"  \"><center>".$remarks."</center></td>";
 	$docket_creation .= "</tr>";
 }
 
