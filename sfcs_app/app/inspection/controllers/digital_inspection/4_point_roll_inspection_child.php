@@ -1,16 +1,19 @@
 <head>
-
     <style>
-        table tr th,
-        td {
+        table tr th,td 
+        {
             text-align: center;
-
         }
-.tableBodyScroll tbody {
-  display: block;
-  max-height: 300px;
-  overflow-y: scroll;
-}
+        #check_true
+        {
+            cursor:pointer;
+        }
+        .tableBodyScroll tbody 
+        {
+            display: block;
+            max-height: 300px;
+            overflow-y: scroll;
+        }
     </style>
 </head>
 <?php
@@ -64,6 +67,10 @@ while ($row1 = mysqli_fetch_array($details_result)) {
     elseif($row1['status']==2)
     {
         $status='In Progress';
+    }    
+    elseif($row1['status']==3)
+    {
+        $status='Completed';
     }       
 }
 
@@ -121,18 +128,21 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                 </tr>
                                 <tr>
                                     <td>Fabric Composition</td>
-                                    <td><input type="text" id="fabric_composition" name="fabric_composition" autocomplete="off" autocomplete="off" value="<?= $fabric_composition ?>" <?php if ($fabric_composition)   ?> class="float"></td>
-                                    <td rowspan="2"><input type="text" id="tolerance" name="tolerance" value="<?= $tolerance ?>" <?php if ($tolerance)   ?> class="float"></td>
+                                    <td><input type="text" id="fabric_composition" name="fabric_composition" autocomplete="off" autocomplete="off" value="<?= $fabric_composition ?>" <?php if ($fabric_composition)   ?>></td>
+                                    <td rowspan="2"><input type="text" id="tolerance" name="tolerance" value="<?= $tolerance ?>" <?php if ($tolerance)   ?>></td>
                                 </tr>
                                 <tr>
                                     <td>Inspection Status</td>
                                     <td>
-                                        <select name="inspection_status" id="inspection_status">
+                                        <!-- <select name="inspection_status" id="inspection_status">
                                             <option value="" selected>Select Status</option>
                                             <option value="Approved" <?php if ($inspection_status == "Approved") echo "selected" ?>>Approved</option>
                                             <option value="Rejected" <?php if ($inspection_status == "Rejected") echo "selected" ?>>Rejected</option>
                                             <option value="Partial Rejected" <?php if ($inspection_status == "Partial Rejected") echo "selected" ?>>Partial Rejected</option>
-                                        </select>
+                                        </select> -->
+                                        <?php 
+                                        echo '<b>'.$status.'</b>';
+                                        ?>
                                     </td>
                                 </tr>
                                 <tr style="background-color: antiquewhite;">
@@ -158,7 +168,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                 </tr>
                                 <tr>
                                     <td>Lab Testing</td>
-                                    <td><input type="text" id="lab_testing" name="lab_testing" autocomplete="off" value="<?= $lab_testing ?>" <?php if ($lab_testing)   ?> class="float"></td>
+                                    <td><input type="text" id="lab_testing" name="lab_testing" autocomplete="off" value="<?= $lab_testing ?>" <?php if ($lab_testing)   ?>></td>
                                     <!-- <td rowspan="2"><input type="text" id="tolerance" name="tolerance"></td> -->
                                 </tr>
                             </tbody>
@@ -229,7 +239,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                     <th rowspan="2">Roll No</th>
                                     <th rowspan="2">Inspected %</th>
                                     <th rowspan="2">Inspected Qty</th>
-                                    <th rowspan="2">Invoice Qty</th>
+                                    <th rowspan="2">Ticket Length</th>
                                     <th style=text-align:center colspan=3>Width(cm)</th>
                                     <th rowspan="2">Actual Height</th>
                                     <th rowspan="2">Actual Repeat Height</th>
@@ -303,17 +313,17 @@ while ($row111 = mysqli_fetch_array($details_result1))
                             <div>
                                 <table class="table table-bordered" style="margin-top: 56px;">
                                     <tbody>
-                                        <tr>
-                                            <?php
-                                            $pop_up_path="../sfcs_app/app/inspection/reports/4_point_inspection_report.php";
-                                            echo "<td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$parent_id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$parent_id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td>";
+                                         <tr>
+                                             <?php
+                                            // $pop_up_path="../sfcs_app/app/inspection/reports/4_point_inspection_report.php";
+                                            // echo "<td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$parent_id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$parent_id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td>";
                                             ?>
+                                        </tr> 
+                                            <td colspan="2"><button type="sumbit" class="btn btn-sm btn-primary" name="save" id="save">Save</button></td>
                                         </tr>
                                         <tr>
-                                            <td><button type="sumbit" class="btn btn-sm btn-primary" name="save" id="save">Save</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td><button type="sumbit" class="btn btn-sm btn-primary" name="confirm" id="confirm">Confirm</button></td>
+                                        <td><input type = "checkbox" id="check_true"></td>
+                                            <td><button type="sumbit" class="btn btn-sm btn-primary" name="confirm" id="confirm"  disabled = 'disabled'>Confirm</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -894,7 +904,16 @@ if (isset($_POST['save'])) {
 
 <script>
     $(document).ready(function() {
-		
+
+        $('#check_true').click(function() {
+        if ($(this).is(':checked')) {
+         $('#confirm').removeAttr('disabled');
+          
+        } else {
+             $('#confirm').attr('disabled', 'disabled');
+        }
+        });
+
 		    $('#inspected_per').keyup(function(){
 			  if ($(this).val() > 100){
 				swal('warning','Enter only bellow 100%','warning');
@@ -921,11 +940,11 @@ if (isset($_POST['save'])) {
             // console.log(xxx);
             // var count_tr = "<tr><td><input type='hidden' value='"+xxx+"' name='submit_value_point[]' ><input type='text' class='code' id='code_"+xxx+"' name='code[]' autocomplete='off'></td><td><input type='text' class='damage' id='damage_"+xxx+"' name='damage[]' readonly></td><td><input type='radio' value='1' id='point1_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='2' id='point2_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='3' id='point3_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='4' id='point4_"+xxx+"' name='point_"+xxx+"'></td><td><a href='javascript:void(0);' class='remove'><span class='glyphicon glyphicon-remove'></span></a></td></tr>";
             
-            var count_tr = "<tr><td><input type='hidden' value='"+xxx+"' name='submit_value_point[]' ><input type='text' class='code' id='code_"+xxx+"' name='code[]' autocomplete='off'></td><td><input type='text' class='damage' id='damage_"+xxx+"' name='damage[]' readonly></td><td><input type='radio' value='1' id='point1_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='2' id='point2_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='3' id='point3_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='4' id='point4_"+xxx+"' name='point_"+xxx+"'></td><td><a href='javascript:void(0);' class='remove'><span class='glyphicon glyphicon-remove'></span></a></td></tr>";
+            var count_tr = "<tr><td><input type='hidden' value='"+xxx+"' name='submit_value_point[]' ><input type='text' class='code' size='4' id='code_"+xxx+"' name='code[]' autocomplete='off'></td><td><input type='text' class='damage' id='damage_"+xxx+"' name='damage[]' readonly></td><td><input type='radio' value='1' id='point1_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='2' id='point2_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='3' id='point3_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='4' id='point4_"+xxx+"' name='point_"+xxx+"'></td><td><a href='javascript:void(0);' class='remove'><span class='glyphicon glyphicon-remove'></span></a></td></tr>";
             $("#points_tbl").append(count_tr);
         //  clicks=xxx;
           });
-
+          
           $(document).on('click', '.remove', function() {
             var table_length = $('#points_tbl tbody > tr').length;
             $('#hidenMaxCount').val(table_length)

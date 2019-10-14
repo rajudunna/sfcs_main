@@ -1,9 +1,14 @@
 <head>
 	<style>
+		.selected{
+			background-color:#B0BED9;
+		}
 		table tr th,
 		td {
 			text-align: center;
-
+		}
+		#myTable tr td {
+			cursor: pointer;
 		}
 	</style>
 </head>
@@ -19,22 +24,122 @@ if(isset($_GET['parent_id']) or isset($_POST['parent_id']))
 $pop_up_path="../sfcs_app/app/inspection/reports/4_point_inspection_report.php";
 $flag = false;
 ?>
+	<div class="modal fade" id="myModalHorizontal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    				<div class="modal-dialog">
+     	 			  <div class="modal-content">
+            				<!-- Modal Header -->
+            					<div class="modal-header">
+               						 <button type="button" class="close" data-dismiss="modal">
+                      					 <span aria-hidden="true">&times;</span>
+                       							<span class="sr-only">Close</span>
+               						 </button>
+              						  <h4 class="modal-title" id="myModalLabel"> Add more rolls from here</h4>
+            					</div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <form class="form-horizontal" role="form" action="<?php getFullURLLevel($_GET["r"], "4_point_roll_inspection.php", "0", "N") ?>" method="POST">
+					<div class="panel-body">
+						<div class="panel panel-primary" style="overflow-x:scroll;">
+							<div class="panel-body">
+								<table class="table table-bordered" id="myTable">  
+								<?php
+									echo "<input type='hidden' value=".$parent_id." name='parent_id'>";
+									$sql_query = "select * from $bai_rm_pj1.inspection_population where parent_id=$parent_id and status = 0";
+									$k=0;
+									$sql_result = mysqli_query($link, $sql_query) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+									if (mysqli_num_rows($sql_result) == 0) {
+										echo "<div class='alert alert-info'><strong>Info!</strong> Sorry No Records Found......!</div>";
+									}else{
+								?>
+									<thead>
+										<tr>
+											
+											<th>Select<input type="checkbox" id="selectAlll"></th>
+											<th>Supplier Roll No</th>
+											<th>FCS Roll No</th>
+											<th>Supplier PO</th>
+											<th>Po line</th>
+											<th>Po Subline</th>
+											<th>Supplier Invoice</th>
+											<th>Item Code</th>
+											<th>Item Description</th>
+											<th>Lot No</th>
+											<th>Supplier Batch</th>
+											<th>RM Colour</th>
+											<th>Quantity</th>
+										</tr>
+									</thead>
+										<?php
+										while ($sql_row = mysqli_fetch_array($sql_result)) {
+							$k++;
+							$sno = $sql_row['sno'];
+							$lot_no = $sql_row['lot_no'];
+							$po_no_1 = $sql_row['supplier_po'];
+							$po_line = $sql_row['po_line'];
+							$po_subline = $sql_row['po_subline'];
+							$inv_no = $sql_row['supplier_invoice'];
+							$item_code = $sql_row['item_code'];
+							$item_desc = $sql_row['item_desc'];
+							$supplier_batch = $sql_row['supplier_batch'];
+							$rm_color = $sql_row['rm_color'];
+							$supplier_roll_no = $sql_row['sfcs_roll_no'];
+							$fcs_roll_no = $sql_row['supplier_roll_no'];
+							$qty = $sql_row['rec_qty'];
 
+							if ($po_no_1 == '') { $po_no_1 = 0;	} else { $po_no_1; }
+							if ($po_line == '') { $po_line = 0; } else { $po_line; }
+							if ($po_subline == '') { $po_subline = 0; } else { $po_subline;	}
+							if ($inv_no == '') { $inv_no = 0; } else { $inv_no;	}
+							if ($item_code == '') {	$item_code = 0;	} else { $item_code; }
+							if ($item_desc == '') {	$item_desc = 0; } else { $item_desc; }
+							if ($lot_no == '') { $lot_no = 0; } else { $lot_no; }
+							if ($supplier_batch == '') { $supplier_batch = 0; } else { $supplier_batch;	}
+							if ($supplier_roll_no == '') { $supplier_roll_no = 0; } else {	$supplier_roll_no; }
+							if ($fcs_roll_no == '') { $fcs_roll_no = 0;	} else { $fcs_roll_no; }
+							if ($qty == '') { $qty = 0;	} else { $qty; }
+							if ($rm_color == '') { $rm_color = '--'; } else { $rm_color; }
+					
+
+							echo '<tbody><tr><td><input type="checkbox" name="bindingdata[]" value="' . $sno . "$" . $lot_no . '"></td><td>' . $fcs_roll_no . '</td><td>' . $supplier_roll_no . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $qty . '</td></tr>';
+						}
+					}
+						?>										
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+			
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<!-- <button type="button" class="btn btn-primary">Procede</button> -->
+				<input type="submit" class="btn btn-md btn-primary" name="set_insp_pop" id="disable_id" value="Proceed">
+
+			</div>
+			</form>
+        </div>
+    </div>
+</div>
 <div class="container-fluid">
 		<div class="panel panel-primary">
 			<div class="panel-heading">4 Point Roll Inspection Update</div>
-			<div class="panel-body">
-				<div class="container">
-					<div class="table-responsive col-sm-12">
-					    <table class="table table-bordered">
-					      <tbody>
-					      <tr style="background-color: antiquewhite;">
-					      	<th>Invoice #</th>
-					      	<th>Color</th>
-					      	<th>Batch</th>
-					      	<th>PO#</th>
-					      	<th>Lot No</th>
-					      </tr>
+				<div class="panel-body">
+					<div class="container">
+						<div class="table-responsive col-sm-12">
+					    	<table class="table table-bordered">
+					      		<tbody>
+					      		<tr style="background-color: antiquewhite;">
+									<th>Invoice #</th>
+									<th>Color</th>
+									<th>Batch</th>
+									<th>PO#</th>
+									<th>Lot No</th>
+								</tr>
 					      <tr>
 							  <?php
 								$get_details_main="select * from $bai_rm_pj1.main_population_tbl where id=$parent_id";					
@@ -47,6 +152,7 @@ $flag = false;
 									$po = $row1['supplier'];
 									$lot_no = $row1['lot_no'];
 								}
+								if($color==''){	$color='--'; }else{	$color;	}
 						  echo "<td>$invoice</td> 
 						      	<td>$color</td>
 						      	<td>$batch</td>
@@ -78,9 +184,10 @@ $flag = false;
 					      		<th>Lot No</th>
 					      		<th>Qty</th>
 					      		<th>Num of Points</th>
-					      		<th>Roll Inspection Status</th>
+								<th>Roll Inspection Status</th>
+								  <th><p class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModalHorizontal"> Add</p></th>
 					      	</tr>
-					    
+		
 							 <?php
 							$url = getFullURLLevel($_GET['r'],'4_point_roll_inspection_child.php',0,'N');
 							$get_details1="select * from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id and status<>0";
@@ -99,27 +206,6 @@ $flag = false;
 								$store_in_id=$row2['store_in_id'];
 								$id=$row2['sno'];
 								$status=$row2['status'];
-								if($status == 1)
-								{
-									 echo "<tr  data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>";
-								}
-								else if($status == 2)
-								{
-									 echo  "<tr style='background: red;color:white;' data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>";
-								}
-								else if($status == 3)
-								{
-									 echo "<tr style='background: green;color:white;'>";
-								}
-								
-								echo "<input type='hidden' name='insp_id[$id]' id='insp_id[$id]' value=$id> 
-								<td>".$row2['supplier_roll_no']."</td>
-								<td>".$row2['sfcs_roll_no']."</td>
-								<td>".$row2['item_code']."</td>
-								<td>".$row2['rm_color']."</td>
-								<td>".$row2['item_desc']."</td>
-								<td>".$lot_id."</td>
-								<td>".$row2['rec_qty']."</td>";
 								$sno=0;$ins_status='Pending';$main_points=0;
 								$get_status_details="select sno,inspection_status from $bai_rm_pj1.roll_inspection_child where store_in_tid=".$store_in_id."";
 								//echo $get_status_details;
@@ -131,20 +217,81 @@ $flag = false;
 										$ins_status=$row5['inspection_status'];
 										$val=1;
 									}
-								}									
+								}		
+								$get_details_points = "select rec_qty from $bai_rm_pj1.`inspection_population` where store_in_id=$store_in_id";
+								$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+
+									while($row522=mysqli_fetch_array($details_result_points))
+									{ 
+										$invoice_qty=$row522['rec_qty'];
+										if($fab_uom == "meters"){
+											$invoice_qty=round($invoice_qty*0.09361,2);
+										}else
+										{
+											$invoice_qty;
+										}
+									}			
 								$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id=".$store_in_id."";	
 								$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-								if(mysqli_num_rows($status_details_result2)>0)
-								{
+								
+								
 									while($row52=mysqli_fetch_array($status_details_result2))
 									{ 
 										$main_points=$row52['pnt'];
-									}									
+										$main_points=((($main_points/$invoice_qty)*(36/49.21))*100);
+										$main_points = (round($main_points,2));
+									}			
+								if($status == 1)
+								{
+									$status_main = 'Pending';
+									echo "<tr>";
+									echo "<input type='hidden' name='insp_id[$id]' id='insp_id[$id]' value=$id> 
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['supplier_roll_no']."</td>
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['sfcs_roll_no']."</td>
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['item_code']."</td>
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['rm_color']."</td>
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['item_desc']."</td>
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$lot_id."</td>
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['rec_qty']."</td>									
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$main_points."</td>
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$status_main."</td>
+								<td><span class='glyphicon glyphicon-glyphicon glyphicon-trash' style = 'cursor:pointer;' onclick = delete_row(event,$store_in_id)></span></td></tr>";
+								} 
+							
+								else if($status == 2)
+								{
+									// echo "<tr>";
+									$status_main = 'Inprogress';
+									 echo  "<tr style='background: red;color:white;'>";
+									 echo "<input type='hidden' name='insp_id[$id]' id='insp_id[$id]' value=$id> 
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['supplier_roll_no']."</td>
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['sfcs_roll_no']."</td>
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['item_code']."</td>
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['rm_color']."</td>
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['item_desc']."</td>
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$lot_id."</td>
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['rec_qty']."</td>									
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$main_points."</td>
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$status_main."</td>
+								<td><span class='glyphicon glyphicon-glyphicon glyphicon-trash' style = 'cursor:pointer;' onclick = delete_row(event,$store_in_id)></span></td></tr>";
 								}
-																
-								echo"<td>".$main_points."</td>
-								<td>".$ins_status."</td>
-								</tr>";
+								else if($status == 3)
+								{
+									$status_main = 'Completed';
+									 echo "<tr style='background: green;color:white;'>";
+									 echo "<input type='hidden' name='insp_id[$id]' id='insp_id[$id]' value=$id> 
+									<td>".$row2['supplier_roll_no']."</td>
+									<td>".$row2['sfcs_roll_no']."</td>
+									<td>".$row2['item_code']."</td>
+									<td>".$row2['rm_color']."</td>
+									<td>".$row2['item_desc']."</td>
+									<td>".$lot_id."</td>
+									<td>".$row2['rec_qty']."</td>									
+									<td>".$main_points."</td>
+									<td>".$status_main."</td>
+									<td> <span class='glyphicon glyphicon-ok'></span></td></tr>";
+								}
+							
 							}
 							if($val==1)
 							{
@@ -173,6 +320,33 @@ $flag = false;
         </div>
 </div>
 <?php 
+
+if (isset($_POST['bindingdata'])) {
+
+	$binddetails = $_POST['bindingdata'];
+	$parent_id = $_POST['parent_id'];
+	$count1 = count($binddetails);
+	if ($count1 > 0) 
+	{
+		for ($j = 0; $j < $count1; $j++)
+		{
+			$id = $binddetails[$j];
+			$exp = explode("$", $id);
+			$sno = $exp[0];
+			$lot_num[] = $exp[1];
+			$insertbinditems = "update $bai_rm_pj1.inspection_population set status=1 where parent_id=$parent_id and sno=$sno";
+			mysqli_query($link, $insertbinditems) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+		}
+		$lot_array = implode(",", $lot_num);
+	}
+	echo "<script>swal('Get ready form Inspection Process.','Successfully','success')</script>";
+	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php',0, 'N') ;
+	echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+	echo "<script>swal('Data Updated..','Successfully','success')</script>";
+	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N');
+	echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+	die();
+}
 if(isset($_POST['confirm']))
 {
 	$insp_id=$_POST['insp_id'];
@@ -189,6 +363,41 @@ if(isset($_POST['confirm']))
 ?>
 
 <script>
+	function delete_row(e,store_in_id){
+		e.preventDefault();
+        var v = sweetAlert({
+            title: "Are you sure to Delete this Roll?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+            buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+        }).then(function(isConfirm){
+            if (isConfirm) {
+				var delete_sid =store_in_id;
+		$.ajax({
+		
+   		 url : "<?php echo getFullURL($_GET['r'], 'submit.php', 'R'); ?>",  
+   		 type: "POST",
+   		 data : {"delete_id" : delete_sid},
+			success: function(data) {
+                    var data = $.parseJSON(data);
+                    if (data.status == 200){
+					swal('Deleted..','Successfully','success');
+					setTimeout(function(){
+          			 location.reload();
+      				}, 1000); 
+					}
+       				else {
+                       console.log('error');
+                    }
+                }
+     		});
+            return true;
+            } 
+    
+	});
+ };
+	
 	function clearValues(i){
 		
 		var id = i;
@@ -199,7 +408,6 @@ if(isset($_POST['confirm']))
 	}
 
 	$(document).ready(function(){
-
 		
 
 		$('#clear1').click(function(){
@@ -212,7 +420,70 @@ if(isset($_POST['confirm']))
 	        alert();
 	    });
 	})
-	
+	$("#myTable tbody tr input[type=checkbox]").change(function(e) {
+				if (e.target.checked) {
+					$(this).closest("tr").addClass("selected");
+					calculateTotal()
+					if ($('#disable_id').is(":disabled")) {
+						$('#disable_id').prop('disabled', false);
+					}
+				} else {
+					$(this).closest("tr").removeClass("selected");
+					calculateTotal()
+				}
+				let data = table.rows('.selected').data();
+				if (data.length) {
+					if ($('#disable_id').is(":disabled")) {
+						$('#disable_id').prop('disabled', false);
+					}
+					$('#selectAlll').prop( "checked", true );
+				} else {
+					if (!($('#disable_id').is(":disabled"))) {
+						$('#disable_id').prop('disabled', true);
+					}
+					$('#selectAlll').prop( "checked", false );
+				}
+			});
+
+			$("#myTable tbody tr").click(function(e) {
+				if (e.target.type != 'checkbox' && e.target.tagName != 'A') {
+					var cb = $(this).find("input[type=checkbox]");
+					cb.trigger('click');
+				}
+				let data = table.rows('.selected').data();
+				if (data.length) {
+					if ($('#disable_id').is(":disabled")) {
+						$('#disable_id').prop('disabled', false);
+						
+					}
+					$('#selectAlll').prop( "checked", true );
+				} else {
+					if (!($('#disable_id').is(":disabled"))) {
+						$('#disable_id').prop('disabled', true);
+					}
+					$('#selectAlll').prop( "checked", false );
+				}
+			});
+
+			$('#selectAlll').click(function(e) {
+				var tableone = $(e.target).closest('table');
+				if (e.target.checked) {
+					$('tbody tr', tableone).addClass("selected");
+					$('td input:checkbox', tableone).prop('checked', true);
+					calculateTotal()
+					if ($('#disable_id').is(":disabled")) {
+						$('#disable_id').prop('disabled', false);
+					}
+				} else {
+					$('tr', tableone).removeClass("selected");
+					$('td input:checkbox', tableone).prop('checked', false);
+					calculateTotal()
+					if (!($('#disable_id').is(":disabled"))) {
+						$('#disable_id').prop('disabled', true);
+					}
+				}
+			});
+		
 </script>
 
 <script type="text/javascript">

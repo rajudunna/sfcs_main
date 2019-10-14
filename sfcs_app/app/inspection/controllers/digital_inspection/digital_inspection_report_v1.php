@@ -5,9 +5,16 @@ if(isset($_GET['parent_id'])){
 ?>
 
 <head>
-	<script>
+ <script>
 		
 		$(document).ready(function() {
+			$('#disable_id').on('click',function(){
+		        $('#submit_type').val('Proceed for Inspection');
+			});
+			$('#disable_id1').on('click',function(){
+		        $('#submit_type').val('Color Contuinity Report');
+			});
+
 			$('#disable_id').on('click', function(e) {	
 				let falg_array=new Set();
 				$(".select_Check_flag").each(function() {
@@ -19,6 +26,8 @@ if(isset($_GET['parent_id'])){
 					//$("#disable_id").prop("disabled", true);
 				}
 			})
+			
+
 			$("#disable_id").prop("disabled", true);
 			var table = $('#myTable').DataTable({
 				"bInfo": false,
@@ -65,6 +74,7 @@ if(isset($_GET['parent_id'])){
 					if ($('#disable_id').is(":disabled")) {
 						$('#disable_id').prop('disabled', false);
 					}
+				
 				} else {
 					$(this).closest("tr").removeClass("selected");
 					calculateTotal()
@@ -74,11 +84,13 @@ if(isset($_GET['parent_id'])){
 					if ($('#disable_id').is(":disabled")) {
 						$('#disable_id').prop('disabled', false);
 					}
+				
 					$('#selectAlll').prop( "checked", true );
 				} else {
 					if (!($('#disable_id').is(":disabled"))) {
 						$('#disable_id').prop('disabled', true);
 					}
+				
 					$('#selectAlll').prop( "checked", false );
 				}
 			});
@@ -94,11 +106,13 @@ if(isset($_GET['parent_id'])){
 						$('#disable_id').prop('disabled', false);
 						
 					}
+					
 					$('#selectAlll').prop( "checked", true );
 				} else {
 					if (!($('#disable_id').is(":disabled"))) {
 						$('#disable_id').prop('disabled', true);
 					}
+					
 					$('#selectAlll').prop( "checked", false );
 				}
 			});
@@ -112,6 +126,7 @@ if(isset($_GET['parent_id'])){
 					if ($('#disable_id').is(":disabled")) {
 						$('#disable_id').prop('disabled', false);
 					}
+					
 				} else {
 					$('tr', tableone).removeClass("selected");
 					$('td input:checkbox', tableone).prop('checked', false);
@@ -139,7 +154,7 @@ if(isset($_GET['parent_id'])){
 				};
 				data.map(x => {
 
-					let valtobecheck = x[0] + "-" + x[12];
+					let valtobecheck = x[1] + "-" + x[12];
 					sumValue = intVal(sumValue) + intVal(x[12]);
 					distinctRolls.add(valtobecheck);
 
@@ -176,7 +191,7 @@ if(isset($_GET['parent_id'])){
 							typeof i === 'number' ?
 							i : 0;
 					};
-					let valtobecheck = x[0] + "-" + x[12];
+					let valtobecheck = x[1] + "-" + x[12];
 					sumValue = intVal(sumValue) + intVal(x[12]);
 					distinctRolls.add(valtobecheck);
 
@@ -238,10 +253,12 @@ if(isset($_GET['parent_id'])){
 		table tr td {
 			cursor: pointer;
 		}
-
+        
+       
 		#populate_div {
 			position: absolute;
 			top: 250px;
+    		right: 433px;
 
 		}
 		.position_div{
@@ -307,12 +324,12 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 		</div>
 	</div></nav><br/>
 	
-			<form action="<?php getFullURLLevel($_GET["r"], "digital_inspection_report_v1.php", "0", "N") ?>" method="POST">
+			<form action="<?php getFullURLLevel($_GET["r"], "digital_inspection_report_v1.php", "0", "N") ?>" method="POST" name="form1" id="form1">
 					<?php
 						echo "<input type='hidden' value=".$parent_id." name='parent_id'>";
 						$sql_query = "select * from $bai_rm_pj1.inspection_population where parent_id=$parent_id";
 						$k=0;
-						$sql_result = mysqli_query($link, $sql_query) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_result = mysqli_query($link, $sql_query) or exit("Sql Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 						if (mysqli_num_rows($sql_result) == 0) {
 							echo "<div class='alert alert-info'><strong>Info!</strong> Sorry No Records Found......!</div>";
 						}else{
@@ -321,7 +338,9 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							<table id="myTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
 							<thead>
 						<tr>
-							<th>S No</th>
+						<th>Select<input type="checkbox" id="selectAlll"></th>
+							<th>Supplier Roll No</th>
+							<th>FCS Roll No</th>
 							<th>Supplier PO</th>
 							<th>Po line</th>
 							<th>Po Subline</th>
@@ -331,11 +350,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							<th>Lot No</th>
 							<th>Supplier Batch</th>
 							<th>RM Colour</th>
-							<th>Supplier Roll No</th>
-							<th>FCS Roll No</th>
 							<th>Quantity</th>
-
-							<th>Select<input type="checkbox" id="selectAlll"></th>
 						</tr>
 					</thead>
 					<tbody>';
@@ -368,43 +383,74 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							if ($fcs_roll_no == '') { $fcs_roll_no = 0;	} else { $fcs_roll_no; }
 							if ($qty == '') { $qty = 0;	} else { $qty; }
 							if ($rm_color == '') { $rm_color = '--'; } else { $rm_color; }
-							echo '<tr><td>' . $k . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $fcs_roll_no . '</td><td>' . $supplier_roll_no . '</td><td>' . $qty . '</td>';
-							echo "<td><input type='checkbox' name='bindingdata[]' value='" . $sno . '$' . $lot_no . "'></td></tr>";
+							echo '<tr><td><input type="checkbox" name="bindingdata[]" value="' . $sno . "$" . $lot_no . '"></td><td>' . $fcs_roll_no . '</td><td>' . $supplier_roll_no . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $qty . '</td></tr>';
+							
 						}
 
 						?>
 					</tbody>
 				</table>
-				<div class="button_pop col-sm-4" id="populate_div">
-					<center><input type="submit" class="btn btn-md btn-primary" name="set_insp_pop" id="disable_id" value="Proceed for Inspection"> </center>
+				<div class="button_pop col-sm-8" id="populate_div">
+					<input type="submit" class="btn btn-sm btn-primary" name="set_insp_pop" id="disable_id" value="Proceed for Inspection" style="margin-right: 25px;">
+					<input type="submit" class="btn btn-sm btn-primary" name="color_report" id="disable_id1" value="Color Contuinity Report" style="margin-right: 25px;">
+					<input type="hidden" name='submit_type' id="submit_type" value="">
 				</div>
+				
 			</form>
 		</div>
 	</div>
 </div>
 </div>
-<?php
-if (isset($_POST['bindingdata'])) {
+<Script>
 
-	$binddetails = $_POST['bindingdata'];
-	$parent_id = $_POST['parent_id'];
-	$count1 = count($binddetails);
-	if ($count1 > 0) 
-	{
-		for ($j = 0; $j < $count1; $j++)
+</Script>
+<?php
+    
+	if($_POST['submit_type'] == "Proceed for Inspection")
+    {
+      	if (isset($_POST['bindingdata'])) 
 		{
-			$id = $binddetails[$j];
-			$exp = explode("$", $id);
-			$sno = $exp[0];
-			$lot_num[] = $exp[1];
-			$insertbinditems = "update $bai_rm_pj1.inspection_population set status=1 where parent_id=$parent_id and sno=$sno";
-			mysqli_query($link, $insertbinditems) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-		}
-		$lot_array = implode(",", $lot_num);
-	}
-	echo "<script>swal('Get ready form Inspection Process.','Successfully','success')</script>";
-	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') ;
-	echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
-}
+			$binddetails = $_POST['bindingdata'];
+			$parent_id = $_POST['parent_id'];
+			$count1 = count($binddetails);
+			if ($count1 > 0) 
+			{
+				for ($j = 0; $j < $count1; $j++)
+				{
+					$id = $binddetails[$j];
+					$exp = explode("$", $id);
+					$sno = $exp[0];
+					$lot_num[] = $exp[1];
+					$insertbinditems = "update $bai_rm_pj1.inspection_population set status=1 where parent_id=$parent_id and sno=$sno";
+					mysqli_query($link, $insertbinditems) or exit("Sql Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
+				$lot_array = implode(",", $lot_num);
+			}
+			 echo "<script>swal('Get ready form Inspection Process.','Successfully','success')</script>";
+	         $url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') ;
+	         echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+	    }
+    }
+    else 
+    {
+      if($_POST['submit_type'] == "Color Contuinity Report")
+      {
+          $parent_id = $_POST['parent_id'];
+	      $insertbinditems = "update $bai_rm_pj1.inspection_population set status=1 where parent_id=$parent_id";
+		  mysqli_query($link, $insertbinditems) or exit("Sql Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
+	      	
+	      $get_details = "select lot_no,supplier_batch from $bai_rm_pj1.inspection_population where parent_id=$parent_id";
+	      $sql_result=mysqli_query($link, $get_details) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+		  while($sql_row=mysqli_fetch_array($sql_result))
+		  {
+		  	$lot = $sql_row['lot_no'];
+		  	$batch = $sql_row['supplier_batch'];
+		  }
+	      echo "<script>swal('Proceed to Color Contunity Report','Successfully','success')</script>";
+	      $url = getFullURLLevel($_GET['r'], 'C_Tex_Interface_V6.php', 0, 'N') ;
+	      echo "<script>location.href = '" . $url . "&batch_no=".urlencode($batch)."&lot_ref=".urlencode($lot)."&parent_id=$parent_id'</script>";
+      }
+    }	
 }
 ?>
+
