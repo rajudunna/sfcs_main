@@ -1661,20 +1661,23 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#reported_table_roll_wise tbody').html('');
             if($rollwisestatus)
             {
-                rollwisedetialslength=data.rollwisedetails.length;
-                rolwisedet=data.rollwisedetails;
-                for(i=0;i<rollwisedetialslength;i++)
+                if(data.rollwisedetails) 
                 {
-                    if(rolwisedet[i]['fabric_return']<0)
+                    rollwisedetialslength=data.rollwisedetails.length;
+                    rolwisedet=data.rollwisedetails;
+                    for(i=0;i<rollwisedetialslength;i++)
                     {
-                        fabreturn=rolwisedet[i]['fabric_return'];
+                        if(rolwisedet[i]['fabric_return']<0)
+                        {
+                            fabreturn=rolwisedet[i]['fabric_return'];
+                        }
+                        else{
+                            fabreturn=rolwisedet[i]['fabric_return']; 
+                        }
+                        row = $('<tr><td>'+sno+'</td><td>'+rolwisedet[i]['lay_sequence']+'</td><td>'+rolwisedet[i]['shade']+'</td><td>'+rolwisedet[i]['fabric_rec_qty']+'</td><td>'+fabreturn+'</td><td>'+rolwisedet[i]['reporting_plies']+'</td><td>'+rolwisedet[i]['damages']+'</td><td>'+rolwisedet[i]['joints']+'</td><td>'+rolwisedet[i]['endbits']+'</td><td>'+rolwisedet[i]['shortages']+'</td></tr>');
+                        $('#reported_table_roll_wise').append(row);
+                        sno++;
                     }
-                    else{
-                        fabreturn=rolwisedet[i]['fabric_return']; 
-                    }
-                    row = $('<tr><td>'+sno+'</td><td>'+rolwisedet[i]['lay_sequence']+'</td><td>'+rolwisedet[i]['shade']+'</td><td>'+rolwisedet[i]['fabric_rec_qty']+'</td><td>'+fabreturn+'</td><td>'+rolwisedet[i]['reporting_plies']+'</td><td>'+rolwisedet[i]['damages']+'</td><td>'+rolwisedet[i]['joints']+'</td><td>'+rolwisedet[i]['endbits']+'</td><td>'+rolwisedet[i]['shortages']+'</td></tr>');
-                    $('#reported_table_roll_wise').append(row);
-                    sno++;
                 }
 
             }
