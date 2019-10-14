@@ -564,7 +564,6 @@ if (isset($_POST['confirm'])) {
         $count = count($code);
         $damage = $_POST['damage'];
 
-        var_dump($_POST);
         
         $sql_rows="update $bai_rm_pj1.main_population_tbl set fab_composition='" . $fabric_composition . "',s_width='" . $spec_width . "',s_weight='" . $spec_weight . "',repeat_len='" . $repeat_length . "',lab_testing='" . $lab_testing . "',tolerence='" . $tolerance . "' where id=".$parent_id."";
         mysqli_query($link, $sql_rows) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -925,7 +924,7 @@ if (isset($_POST['save'])) {
 				
 				var invoice_q= $("#invoice_qty").val();
 				if (parseInt(invoice_q) < $(this).val()  ){
-					swal('warning','Inspected Qty Should be less than Invoice Qty','warning');
+					swal('warning','Inspected Qty Should be less than Ticket Length','warning');
 					$(this).val('');
 				 }
 			});

@@ -170,6 +170,10 @@ $flag = false;
 					"<input type='hidden' name='batch_four_point' value='".$batch."'>";
 					"<input type='hidden' name='po_four_point' value='".$po."'>";
 					"<input type='hidden' name='lot_four_point' value='".$lot_no."'>";
+					$url = getFullURLLevel($_GET['r'],'4_point_roll_inspection_child.php',0,'N');
+					$get_details12="select * from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id and status<>0";
+					$details1_result22=mysqli_query($link,$get_details12) or exit("get_details1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$val=mysqli_num_rows($details1_result22);
 					?>
 					 
 					  <div class="table-responsive col-sm-12">
@@ -183,19 +187,32 @@ $flag = false;
 					      		<th>Description</th>
 					      		<th>Lot No</th>
 					      		<th>Qty</th>
-					      		<th>Num of Points</th>
+					      		<th>Points Rate</th>
 								<th>Roll Inspection Status</th>
-								  <th><p class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModalHorizontal"> Add</p></th>
+								<?php
+								if($val>0)
+								{
+									?>
+								
+								<th><p class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModalHorizontal"> Add</p></th>
+								
+								<?php
+								}
+								else
+								{
+									?>
+									<th><p> Control</p></th>
+									<?php
+								}
+									?>									
 					      	</tr>
 		
 							 <?php
-							$url = getFullURLLevel($_GET['r'],'4_point_roll_inspection_child.php',0,'N');
+							
+							$val2=0;
 							$get_details1="select * from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id and status<>0";
-
 							$details1_result=mysqli_query($link,$get_details1) or exit("get_details1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
 							$path= getFullURLLevel($_GET['r'], "fabric_inspection_report.php", "0", "R")."?id=$parent_id";
-							$val=0;
 							while($row2=mysqli_fetch_array($details1_result))
 							{
 								$roll_id = $row2['supplier_roll_no'];	
@@ -206,64 +223,69 @@ $flag = false;
 								$store_in_id=$row2['store_in_id'];
 								$id=$row2['sno'];
 								$status=$row2['status'];
-								$sno=0;$ins_status='Pending';$main_points=0;
-								$get_status_details="select sno,inspection_status from $bai_rm_pj1.roll_inspection_child where store_in_tid=".$store_in_id."";
-								//echo $get_status_details;
-								$status_details_result=mysqli_query($link,$get_status_details) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-								if(mysqli_num_rows($status_details_result)>0)
-								{	
-									while($row5=mysqli_fetch_array($status_details_result))
-									{ 
-										$ins_status=$row5['inspection_status'];
-										$val=1;
-									}
-								}		
+								$main_points=0;
+									
 								$get_details_points = "select rec_qty from $bai_rm_pj1.`inspection_population` where store_in_id=$store_in_id";
 								$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-
-									while($row522=mysqli_fetch_array($details_result_points))
-									{ 
-										$invoice_qty=$row522['rec_qty'];
-										if($fab_uom == "meters"){
-											$invoice_qty=round($invoice_qty*0.09361,2);
-										}else
-										{
-											$invoice_qty;
-										}
-									}			
+								while($row522=mysqli_fetch_array($details_result_points))
+								{ 
+									$invoice_qty=$row522['rec_qty'];
+									if($fab_uom == "meters"){
+										$invoice_qty=round($invoice_qty*0.09361,2);
+									}else
+									{
+										$invoice_qty;
+									}
+								}
+								$back_color="";		
 								$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id=".$store_in_id."";	
 								$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-								
-								
+								if(mysqli_num_rows($status_details_result2)>0)
+								{	
 									while($row52=mysqli_fetch_array($status_details_result2))
 									{ 
-										$main_points=$row52['pnt'];
-										$main_points=((($main_points/$invoice_qty)*(36/49.21))*100);
-										$main_points = (round($main_points,2));
-									}			
+										$point=$row52['pnt'];
+										$main_points=((($row52['pnt']/$invoice_qty)*(36/49.21))*100);
+										$main_points = round($main_points,2);
+									}
+									
+									if($point>0)
+									{	
+										if($main_points<28)
+										{
+											$back_color="style='background: green;color:white;'";
+										}
+										else
+										{
+											$back_color="style='background: red;color:white;'";
+										}
+									}
+									else
+									{
+										$back_color="";
+									}	
+								}
+								else
+								{
+									$back_color="";
+								}	
+								
 								if($status == 1)
 								{
 									$status_main = 'Pending';
-									echo "<tr>";
-									echo "<input type='hidden' name='insp_id[$id]' id='insp_id[$id]' value=$id> 
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['supplier_roll_no']."</td>
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['sfcs_roll_no']."</td>
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['item_code']."</td>
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['rm_color']."</td>
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['item_desc']."</td>
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$lot_id."</td>
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['rec_qty']."</td>									
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$main_points."</td>
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$status_main."</td>
-								<td><span class='glyphicon glyphicon-glyphicon glyphicon-trash' style = 'cursor:pointer;' onclick = delete_row(event,$store_in_id)></span></td></tr>";
-								} 
-							
+								}
 								else if($status == 2)
 								{
-									// echo "<tr>";
-									$status_main = 'Inprogress';
-									 echo  "<tr style='background: red;color:white;'>";
-									 echo "<input type='hidden' name='insp_id[$id]' id='insp_id[$id]' value=$id> 
+									$status_main = 'Inprogress';	
+								}
+								else
+								{
+									$val2=1;
+									$status_main = 'Complete';
+								}	
+								
+								echo "<tr $back_color>";
+								echo "<input type='hidden' name='insp_id[$id]' id='insp_id[$id]' value=$id> 
 								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['supplier_roll_no']."</td>
 								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['sfcs_roll_no']."</td>
 								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['item_code']."</td>
@@ -272,30 +294,21 @@ $flag = false;
 								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$lot_id."</td>
 								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$row2['rec_qty']."</td>									
 								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$main_points."</td>
-								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$status_main."</td>
-								<td><span class='glyphicon glyphicon-glyphicon glyphicon-trash' style = 'cursor:pointer;' onclick = delete_row(event,$store_in_id)></span></td></tr>";
-								}
-								else if($status == 3)
+								<td data-href='$url&supplier=$roll_id&roll=$supplier_id&invoice=$invoice&lot=$lot_id&parent_id=$parent_id&store_id=$store_in_id'>".$status_main."</td>";
+								if($status == 3)
 								{
-									$status_main = 'Completed';
-									 echo "<tr style='background: green;color:white;'>";
-									 echo "<input type='hidden' name='insp_id[$id]' id='insp_id[$id]' value=$id> 
-									<td>".$row2['supplier_roll_no']."</td>
-									<td>".$row2['sfcs_roll_no']."</td>
-									<td>".$row2['item_code']."</td>
-									<td>".$row2['rm_color']."</td>
-									<td>".$row2['item_desc']."</td>
-									<td>".$lot_id."</td>
-									<td>".$row2['rec_qty']."</td>									
-									<td>".$main_points."</td>
-									<td>".$status_main."</td>
-									<td> <span class='glyphicon glyphicon-ok'></span></td></tr>";
+									echo "<td> <span class='glyphicon glyphicon-ok'></span></td></tr>";
 								}
+								else
+								{
+									
+									echo "<td><span class='glyphicon glyphicon-glyphicon glyphicon-trash' style = 'cursor:pointer;' onclick = delete_row(event,$store_in_id)></span></td></tr>";
+								}									
 							
 							}
-							if($val==1)
+							if($val2==1)
 							{
-							echo "<tr><td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$parent_id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$parent_id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td></tr>";
+								echo "<tr><td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$parent_id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$parent_id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td></tr>";
 							}
 							?>
 							
@@ -382,7 +395,7 @@ if(isset($_POST['confirm']))
 			success: function(data) {
                     var data = $.parseJSON(data);
                     if (data.status == 200){
-					swal('Deleted..','Successfully','success');
+					swal('Removed from 4 point..','Successfully','success');
 					setTimeout(function(){
           			 location.reload();
       				}, 1000); 
