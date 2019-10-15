@@ -5,7 +5,7 @@
 			 
 				swal("warning","Roll Already inspected...","warning");
 				var id='data_'+y;
-				document.getElementByClassName(id).checked = false;
+				document.getElementById(id).checked = false;
 			}
 		}
 		$(document).ready(function() {
@@ -493,17 +493,19 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 											$ref3;
 										}
 										//$rm_color = 0;
-										if($four_point_status==1){
+										if($four_point_status==1)
+										{
 											$check_status = 'disabled';
 											$check_tr_class='tr-class-disable';
 										}
-										else{
-										
-											$check_tr_class='tr-class-enable';
+										else
+										{
+											$check_status = '';
+										    $check_tr_class='tr-class-enable';
 										}
 										echo '<tr class="'.$check_tr_class.'" onclick=foo("'.$four_point_status.'","'.$i.'")><td>' . $supplier_no . '</td><td>' . $ref2 . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $ref3 . '</td><input type="hidden" name="main_id" value="' . $tid . '">';
 										
-										echo "<td><span class='$var'><input type='checkbox' $check_status class='data_$i' name='bindingdata[]' value='" . $po_no_1 . '$' . $po_line . '$' . $po_subline . '$' . $inv_no . '$' . $item_code . '$' . $item_desc . '$' . $lot_no . '$' . $supplier_batch . '$' . $rm_color . '$' . $supplier_no . '$' . $ref2 . '$' . $ref3 . '$' . $tid . "'>
+										echo "<td><span class='$var'><input type='checkbox' $check_status id='data_$i' name='bindingdata[]' value='" . $po_no_1 . '$' . $po_line . '$' . $po_subline . '$' . $inv_no . '$' . $item_code . '$' . $item_desc . '$' . $lot_no . '$' . $supplier_batch . '$' . $rm_color . '$' . $supplier_no . '$' . $ref2 . '$' . $ref3 . '$' . $tid . "'>
 										</span></td>";
 										
 										echo "</tr>";
