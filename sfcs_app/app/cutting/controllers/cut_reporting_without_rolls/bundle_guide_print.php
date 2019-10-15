@@ -58,10 +58,18 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
    
 $sql="select * from $bai_pro3.order_cat_doc_mk_mix where order_tid='".$orde_tid."' and category in ($in_categories) and doc_no=$doc_no";
-// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result1=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-// $sql_num_check=mysqli_num_rows($sql_result);
-
+while($sql_row1=mysqli_fetch_array($sql_result1))
+{
+	for($s=0;$s<sizeof($sizes_code);$s++)
+	{
+		if($sql_row1["p_s".$sizes_code[$s].""]<>'')
+		{
+			$p_s_tit[$sizes_code[$s]]=$sql_row1["p_s".$sizes_code[$s].""];
+			$p_s_code[]=$sizes_code[$s];
+		}
+	}
+}
 $totalplies="select sum(reporting_plies) as totalplies from $bai_pro3.docket_roll_info where docket=$doc_no";
 mysqli_query($link, $totalplies) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $totalpliesresult=mysqli_query($link, $totalplies) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -345,6 +353,26 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-pattern:auto;
 	white-space:nowrap;}
 	.xl73305b
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:black;
+	font-size:11.0pt;
+	font-weight:400;
+	width: 80;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Calibri, sans-serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	border:.5pt solid windowtext;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+	/* .xl73305b
 	{
 	padding-top:1px;
 	padding-right:1px;
@@ -361,10 +389,10 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-number-format:General;
 	text-align:center;
 	vertical-align:middle;
-	/* border:.5pt solid windowtext; */
+	border:.5pt solid windowtext;
 	mso-background-source:auto;
 	mso-pattern:auto;
-	white-space:nowrap;}
+	white-space:nowrap;} */
 .xl73305
 	{padding-top:1px;
 	padding-right:1px;
@@ -559,12 +587,10 @@ tags will be replaced.-->
 $temp_len1 = 0;
 $temp_len = 0;
 $divide=10;
-/* var_dump(mysqli_fetch_array($sql_result1)); */
 for($s=0;$s<$total_size;$s++)
 {
-    
     if($temp == 0){
-		echo "<table border=0 cellpadding=0 cellspacing=0 width=300 style='border-collapse:
+echo "<table border=0 cellpadding=0 cellspacing=0 width=300 style='border-collapse:
  collapse;table-layout:fixed;'><tr style='margin-top:5pt;'>";
         echo "<td class=xl73305a style='background-color: gainsboro;'>Size</td>";
         $temp = 1;
@@ -575,28 +601,23 @@ for($s=0;$s<$total_size;$s++)
         echo "</tr>";
         echo "<tr>
             <td class=xl73305a>Ratio</td>";
-			while($sql_row=mysqli_fetch_array($sql_result1)){
-        		for($i=$temp_len1;$i<$temp_len;$i++) {
-					/* $sql_row["p_s".$sizes_code[$i].""] */
-                	echo "<td class=xl73305a style='border-top:none;text-align:center;'>".$sql_row["p_s".$sizes_code[$i].""]."</td>";
-				}
-            }
+        	for($i=$temp_len1;$i<$temp_len;$i++) 
+			{
+                echo "<td class=xl73305a style='border-top:none;text-align:center;'>".$p_s_tit[$sizes_code[$i]]."</td>";
+			}
         echo "</tr>";
         $temp = 0;
         $temp_len1=$temp_len;
     }
     if($s+1==$total_size) {
-		
+
         echo "<td class=xl73305b>No Of Plies</td></tr><tr><td class=xl73305a>Ratio</td>";
-		
-		while($sql_row222=mysqli_fetch_array($sql_result1)){
-			
-			for($i=$temp_len1;$i<$total_size;$i++) {
-				echo "<td class=xl73305a style='border-top:none;text-align:center;'>".$sql_row222["p_s".$sizes_code[$i].""]."</td>";
-			}
+
+		for($i=$temp_len1;$i<$total_size;$i++) {
+			echo "<td class=xl73305a style='border-top:none;text-align:center;'>".$p_s_tit[$sizes_code[$i]]."</td>";
 		}
-        echo "<td class=xl73305b>".$totalpliesresult['totalplies']."</td></tr></table><br/>";
-    }
+		echo "<td class=xl73305a>".$totalpliesresult['totalplies']."</td></tr></table><br/>";
+	}
 }
 ?>
 <tr>
