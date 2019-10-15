@@ -1387,9 +1387,10 @@ else if($concurrent_flag == 0)
         {
         	foreach ($b_tid as $key => $tid) 
 	        {
+	           
 	           //To check orginal_qty = send_qty + rejected_qty
 	            $bundle_status = 0;
-	             $get_bundle_status = "select original_qty,recevied_qty,rejected_qty,send_qty from $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$key] and operation_id = $b_op_id";
+	            $get_bundle_status = "select original_qty,recevied_qty,rejected_qty,send_qty from $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$key] and operation_id = $b_op_id";
 	            $get_bundle_status_result=mysqli_query($link,$get_bundle_status) or exit("barcode status Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	            while($status_row=mysqli_fetch_array($get_bundle_status_result))
 	            {
@@ -1612,14 +1613,25 @@ else if($concurrent_flag == 0)
 							$act_ims_qty = $pre_ims_qty + $b_rep_qty[$i] ;
 							//updating the ims_qty when it was there in ims_log
 							//get bundle qty status
-							
+							$ims_removal_flag = 0;	
+			                $get_qty_details="select sum(if(operation_id = $operation_code,recevied_qty,0)) as input,sum(if(operation_id = $output_ops_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$i]";
+			                $get_qty_result=mysqli_query($link,$get_qty_details) or exit("barcode status Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+			                while($qty_details=mysqli_fetch_array($get_qty_result))
+			                {
+			               	  $input_qty = $qty_details['input'];
+			               	  $output_qty = $qty_details['output'];
+			                }
+			                if($input_qty == $output_qty)
+			                {
+			               	  $ims_removal_flag = 1;
+			                }
                             
 	                        $get_bundle_status = "select bundle_qty_status from $brandix_bts.bundle_creation_data where bundle_number = $b_tid[$i] and operation_id=$b_op_id"; 
 	                        $result_get_bundle_status = $link->query($get_bundle_status);
 	                        while($bundle_row = $result_get_bundle_status->fetch_assoc())
 	                        {	                            
 								$bundle_status = $bundle_row['bundle_qty_status'];
-	                            if($bundle_status == 1)
+	                            if($bundle_status == 1 && $ims_removal_flag == 1)
 	                            {
 	                                $update_status_query = "update $bai_pro3.ims_log set ims_pro_qty = $act_ims_qty, ims_status = 'DONE' where pac_tid = $b_tid[$i]";
 	                                mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
