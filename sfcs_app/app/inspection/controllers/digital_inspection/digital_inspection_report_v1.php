@@ -213,7 +213,7 @@ if(isset($_GET['parent_id'])){
 			position: fixed;
     		top: 340px;
     		left: 424px;
-    z-index: 4;
+   			z-index: 4;
 		}
 		.black{
 			
@@ -243,9 +243,8 @@ if(isset($_GET['parent_id'])){
 		}
 		.alert,
 		strong,
-		body,
-		table th,
-		td {
+		#myTable th,
+		td,.position_div {
 			text-align: center;
 
 		}
@@ -258,7 +257,7 @@ if(isset($_GET['parent_id'])){
 		#populate_div {
 			position: absolute;
 			top: 250px;
-    		right: 433px;
+    		right: 254px;
 
 		}
 		.position_div{
