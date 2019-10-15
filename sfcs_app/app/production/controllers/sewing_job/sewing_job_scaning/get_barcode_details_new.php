@@ -1328,8 +1328,8 @@
                                 // }
                                //get bundle qty status
 							   $ims_removal_flag = 0;  
-                               $get_qty_details="select sum(if(operation_id = $operation_code,recevied_qty,0)) as input,sum(if(operation_id = $output_ops_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where where bundle_number=$b_tid[$i]";
-                               $get_qty_result=mysqli_query($link,$get_qty_details) or exit("barcode status Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                               $get_qty_details="select sum(if(operation_id = $operation_code,recevied_qty,0)) as input,sum(if(operation_id = $output_ops_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where  bundle_number=$b_tid[$i]";
+                               $get_qty_result=mysqli_query($link,$get_qty_details) or exit("barcode status Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
                                while($qty_details=mysqli_fetch_array($get_qty_result))
                                {
                                  $input_qty = $qty_details['input'];
