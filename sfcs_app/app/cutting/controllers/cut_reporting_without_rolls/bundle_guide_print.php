@@ -332,7 +332,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	color:black;
 	font-size:11.0pt;
 	font-weight:400;
-	width: 40;
+	width: 60;
 	font-style:normal;
 	text-decoration:none;
 	font-family:Calibri, sans-serif;
@@ -558,7 +558,7 @@ tags will be replaced.-->
  $temp = 0;
 $temp_len1 = 0;
 $temp_len = 0;
-$divide=17;
+$divide=10;
 /* var_dump(mysqli_fetch_array($sql_result1)); */
 for($s=0;$s<$total_size;$s++)
 {
@@ -569,7 +569,7 @@ for($s=0;$s<$total_size;$s++)
         echo "<td class=xl73305a style='background-color: gainsboro;'>Size</td>";
         $temp = 1;
     }
-    echo  "<td class=xl73305a style='background-color: gainsboro;'>".$s_tit[$sizes_code[$s]]."</td>";
+    echo  "<td class=xl73305a style='background-color: gainsboro;'>".trim($s_tit[$sizes_code[$s]])."</td>";
     if(($s+1) % $divide == 0){
         $temp_len = $s+1;
         echo "</tr>";
