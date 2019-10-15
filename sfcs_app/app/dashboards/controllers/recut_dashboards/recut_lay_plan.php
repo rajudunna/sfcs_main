@@ -10,6 +10,17 @@ $cuttable_sum=0;
 $style=$_GET['style'];
 $schedule=$_GET['schedule'];
 $color=$_GET['color'];
+$qry_order_tid = "SELECT order_tid FROM `$bai_pro3`.`bai_orders_db` WHERE order_style_no = '$style' AND order_del_no ='$schedule' AND order_col_des = '$color'";
+// echo $qry_order_tid;die();
+$res_qry_order_tid = $link->query($qry_order_tid);
+while($row_row_row = $res_qry_order_tid->fetch_assoc()) 
+{
+    $order_tid = $row_row_row['order_tid'];
+}
+$sql111="select * from $bai_pro3.cuttable_stat_log_recut where order_tid=\"$order_tid\"";	
+// echo $sql111;
+$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
+if(mysqli_num_rows($sql_result111)>0){
 
 $html .= "<div class='panel panel-primary'>
 <div class='panel-heading'>Recut Layplan</div>
@@ -703,7 +714,11 @@ $html .= $docket_creation;
 
 $html .= "</div></div>";
 echo $html;
-
+}  else {
+    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000); function Redirect(){
+        sweetAlert('Recut is not Yet Raised','','error');	 
+        location.href = \"".getFullURLLevel($_GET['r'], "recut_dashboard_view.php", "0", "N")."\"; }</script>";
+}
 ?>
 <script>
 
