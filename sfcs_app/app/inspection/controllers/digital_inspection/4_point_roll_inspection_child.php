@@ -560,7 +560,7 @@ if (isset($_POST['confirm'])) {
         $marker_type;
     }
 
-    if (isset($_POST['code'])) {
+    if (isset($_POST['code'])!='' || isset($_POST['code'])=='') {
         $code = $_POST['code'];
         $count = count($code);
         $damage = $_POST['damage'];
@@ -792,11 +792,11 @@ if (isset($_POST['save'])) {
     } else {
         $marker_type;
     }
-// var_dump($_POST);
 
-    if (isset($_POST['code'])) {
+    if (isset($_POST['code'])!='' || isset($_POST['code'])=='') {
         $code = $_POST['code'];
         $count = count($code);
+        
         $damage = $_POST['damage'];
         
         $sql_rows="update $bai_rm_pj1.main_population_tbl set fab_composition='" . $fabric_composition . "',s_width='" . $spec_width . "',s_weight='" . $spec_weight . "',repeat_len='" . $repeat_length . "',lab_testing='" . $lab_testing . "',tolerence='" . $tolerance . "' where id=".$parent_id."";
@@ -819,17 +819,17 @@ if (isset($_POST['save'])) {
             if($rows_id>0)
             {
                 $delete_child = "Delete from  $bai_rm_pj1.four_points_table where insp_child_id='" .$store_id. "'";
-                $roll_inspection_update = $link->query($delete_child) or exit('query error in deleteing222---2');
+               $roll_inspection_update = $link->query($delete_child) or exit('query error in deleteing222---2');
             }
             $update_status = "update $bai_rm_pj1.inspection_population SET status=2 where store_in_id='" . $store_id . "'";
             $result_query_update = $link->query($update_status) or exit('query error in updating2221---21');
             $roll_id = $store_id;
         
             $array_point_size=sizeof($_POST['submit_value_point']);
-        
-			if($array_point_size>0)
-			{
-				$arraVal = [];
+          
+            if($array_point_size>0)
+			{   
+                $arraVal = [];
 				$i=0;
                 for($points=0;$points<=$_POST['hidenMaxCount'];$points++)
                 {
@@ -846,7 +846,7 @@ if (isset($_POST['save'])) {
 						$flag_var=0;                
 					}                
                 }        
-            }
+        }
         }
         else 
         {
