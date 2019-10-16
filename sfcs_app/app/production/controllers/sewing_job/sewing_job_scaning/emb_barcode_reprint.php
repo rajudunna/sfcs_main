@@ -65,9 +65,9 @@ if(isset($_POST['continue']))
 		$sql_result=mysqli_query($link, $sql) or exit($sql."<br/> Error while insert into emb_reprint_track");
 		echo "<table class='table table-bordered'><tr><th rospan=4>You are going to take bundle print</th>";
 		$url1 = getFullURLLevel($_GET['r'],'barcode_new.php',0,'R');
-		echo "<td><a class='btn btn-info btn-sm' href='$url1?doc_no=".$val[0]."&id=".$val[2]."' onclick=\"return popitup2('$url1?doc_no=".$val[0]."&id=".$val[2]."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print With Operation</a></td>";
+		echo "<td><a class='btn btn-info btn-sm' href='$url1?doc_no=".$val[0]."&id=".$val[2]."' onclick=\"return popitup2('$url1?doc_no=".$val[0]."&id=".$val[2]."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Emb Barcode</a></td>";
 		$url2 = getFullURLLevel($_GET['r'],'barcode2_1.php',0,'R');
-		echo "<td><a class='btn btn-info btn-sm' href='$url2?doc_no=".$val[0]."&id=".$val[2]."' onclick=\"return popitup2('$url2?doc_no=".$val[0]."&id=".$val[2]."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print With Out Operation</a></td>";
+		echo "<td><a class='btn btn-info btn-sm' href='$url2?doc_no=".$val[0]."&id=".$val[2]."' onclick=\"return popitup2('$url2?doc_no=".$val[0]."&id=".$val[2]."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Emb Barcode 2*1</a></td>";
 		echo "</tr>";
 		echo "</table>";
 	}
