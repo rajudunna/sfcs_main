@@ -188,7 +188,7 @@ $flag = false;
 					      		<th>Lot No</th>
 					      		<th>Qty</th>
 					      		<th>Points Rate</th>
-								<th>Roll Inspection Status</th>
+								<th>Inspection Status</th>
 								<?php
 								if($val>0)
 								{

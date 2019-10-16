@@ -57,12 +57,68 @@
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				$id=$sql_row['id'];                 	
-				echo "<tr>";
-				echo "<td>$s_no</td>";
+				$sql121="SELECT * FROM $bai_rm_pj1.`roll_inspection_child` WHERE parent_id=$id";
+				$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$rows=mysqli_num_rows($sql_result121);
+				
 				$lots=explode(",",$sql_row['lot_no']);
 				$suppliers=explode(",",$sql_row['supplier']);
 				$batchs=explode(",",$sql_row['batch']);
 				$invoice_nos=explode(",",$sql_row['invoice_no']);
+				
+				$get_details_points = "select sum(rec_qty) as qty from $bai_rm_pj1.`inspection_population` where parent_id=$id and status=3";
+				$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($row522=mysqli_fetch_array($details_result_points))
+				{ 					
+					if($row522['qty']>0)
+					{
+						$invoice_qty=$row522['qty'];
+						if($fab_uom == "meters"){
+							$invoice_qty=round($invoice_qty*1.09361,2);
+						}else
+						{
+							$invoice_qty;
+						}				
+						$back_color="";		
+						$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id in (select store_in_id from $bai_rm_pj1.`inspection_population` where parent_id=$id)";	
+						$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						if(mysqli_num_rows($status_details_result2)>0)
+						{	
+							while($row52=mysqli_fetch_array($status_details_result2))
+							{ 
+								$point=$row52['pnt'];
+								$main_points=((($row52['pnt']/$invoice_qty)*(36/49.21))*100);
+								$main_points = round($main_points,2);
+							}
+							
+							if($point>0 && $rows>0)
+							{	
+								if($main_points<28)
+								{
+									$back_color="style='background: green;color:white;'";
+								}
+								else
+								{
+									$back_color="style='background: red;color:white;'";
+								}
+							}
+							else
+							{
+								$back_color="";
+							}	
+						}
+						else
+						{
+							$back_color="";
+						}
+					}else
+					{
+						$back_color="";
+					}						
+				}
+				
+				echo "<tr $back_color>";
+				echo "<td>$s_no</td>";
 				if(sizeof($lots)>1)
 				{
 					echo "<td>";
@@ -131,18 +187,21 @@
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				// echo $sql1;
 				if(mysqli_num_rows($sql_result1)==0)
-				{
-					
-						echo "<td><div class='col-sm-4' id='populate_div'>
-						<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/digital_inspection_report_v1.php", "1", "N") . "&parent_id=$id\">Set Inspection Population</a></center>
-						</div></td>";
+				{					
+					echo "<td><div class='col-sm-4' id='populate_div'>
+					<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/digital_inspection_report_v1.php", "1", "N") . "&parent_id=$id\">Set Inspection Population</a></center>
+					</div></td>";
 									
 				}	
 				else
 				{
 					echo '<td><div class="col-sm-4" id="populate_div">
-									<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Not Available"> </center>
-									</div></td>';
+					<center><a class="btn btn-primary"> Complete </a></center>
+					</div><br><br>';
+					
+					echo "<div class='col-sm-4' id='populate_div'>
+					<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/digital_inspection_report_v1.php", "1", "N") . "&parent_id=$id&status=1\">Click to Inspection Population</a></center>
+					</div></td>";
 				}						
 
 				$sql12="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND (status<>3 && status<>0)";
@@ -157,7 +216,7 @@
 				else
 				{
 					echo '<td><div class="col-sm-4" id="populate_div">
-					<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Not Available"> </center>
+					<center><a class="btn btn-primary"	> Complete </a></center>
 					</div></td>';
 				}						
 				
@@ -165,12 +224,12 @@
 				$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result121)>0)
 				{
-					echo "<td><a class='btn btn-primary' href=\"$pop_up_path?parent_idid=$id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td>";
+					echo "<td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td>";
 				}
 				else
 				{
 					echo '<td><div class="col-sm-4" id="populate_div">
-					<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Not Available"> </center>
+					<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Pending"> </center>
 					</div></td>';
 				}
 					echo "</tr>";

@@ -1812,7 +1812,7 @@ $avg_c_width=0;
 $print_check=0;
 //removed validation of print button
 // $sql="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
-$get_roll_details = "select distinct(sfcs_roll_no) as roll_numbers,status from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".")";
+$get_roll_details = "select distinct(store_in_id) as roll_numbers,status from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".")";
  // echo $get_roll_details;
 $roll_details_result=mysqli_query($link, $get_roll_details) or exit("roll details error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rolls=mysqli_fetch_array($roll_details_result))
@@ -1821,7 +1821,7 @@ while($sql_rolls=mysqli_fetch_array($roll_details_result))
   $status=$sql_rolls['status'];
 }
 $roll_num = implode(",",$rolls);
-$sql="select *, if((length(ref4)=0 and qty_allocated <=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and ref2 in ($roll_num) order by ref2+0";
+$sql="select *, if((length(ref4)=0 and qty_allocated <=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ($roll_num) order by tid";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
@@ -2307,7 +2307,58 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
  </tr>"; */
  $shade_group_total=array();
  echo "<input type=\"hidden\" id=\"rowcount\" value=\"".sizeof($values)."\" />";
+$get_details_points = "select sum(rec_qty) as qty from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id and status=3";
+	$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row522=mysqli_fetch_array($details_result_points))
+	{ 					
+		if($row522['qty']>0)
+		{
+			$invoice_qty=$row522['qty'];
+			if($fab_uom == "meters"){
+				$invoice_qty=round($invoice_qty*1.09361,2);
+			}else
+			{
+				$invoice_qty;
+			}
+		
+			$back_color="";		
+			$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id in (select store_in_id from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id)";	
+			$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($status_details_result2)>0)
+			{	
+				while($row52=mysqli_fetch_array($status_details_result2))
+				{ 
+					$point=$row52['pnt'];
+					$main_points=((($row52['pnt']/$invoice_qty)*(36/49.21))*100);
+					$main_points = round($main_points,2);
+				}
 
+				if($point>0)
+				{	
+					if($main_points<28)
+					{
+						$status_main="Accept";
+					}
+					else
+					{
+						$status_main="Reject";
+					}
+				}
+				else
+				{
+					$status_main="";
+				}	
+			}
+			else
+			{
+				$status_main="";
+			}
+		}else
+		{
+			$status_main="";
+		}						
+	}
+	
  for($i=0;$i<sizeof($values);$i++)
  {
  	$check_status=3;
@@ -2396,26 +2447,8 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	{
 		$insp_status="";
 	}	
-	$sql23="select status from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id and lot_no =".$temp[7]." and status<>0";
-	$sql_result23=mysqli_query($link, $sql23) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($sql_result23)>0)
-	{
-		while($sql_row12=mysqli_fetch_array($sql_result23))
-		{
-			if($status == 1)
-			{
-				$status_main = 'Pending';
-			}
-			else if($status == 2)
-			{
-				$status_main = 'Inprogress';									
-			}
-			else
-			{
-				$status_main = 'Complete';
-			}
-		}
-	}
+	
+	
 	
 	$sgroup = $temp[13];
 	if($sgroup=='')
