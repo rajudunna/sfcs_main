@@ -446,17 +446,18 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
       if($_POST['submit_type'] == "Color Contuinity Report")
       {
           $parent_id = $_POST['parent_id'];
- 	
-	      $get_details = "select lot_no,supplier_batch from $bai_rm_pj1.inspection_population where parent_id=$parent_id";
-	      $sql_result=mysqli_query($link, $get_details) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-		  while($sql_row=mysqli_fetch_array($sql_result))
-		  {
-		  	$lot = $sql_row['lots'];
-		  	$batch = $sql_row['supplier_batch'];
-		  }
+ 	      //$lot = array();
+	   //    $get_details = "select lot_no,supplier_batch from $bai_rm_pj1.inspection_population where parent_id=$parent_id";
+	   //    $sql_result=mysqli_query($link, $get_details) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+		  // while($sql_row=mysqli_fetch_array($sql_result))
+		  // {
+		  // 	$lot = $sql_row['lot_no'];
+		  // 	$batch = $sql_row['supplier_batch'];
+		  // }
 	      echo "<script>swal('Proceed to Color Contunity Report','Successfully','success')</script>";
 	      $url = getFullURLLevel($_GET['r'], 'C_Tex_Interface_V6.php', 0, 'N') ;
-	      echo "<script>location.href = '" . $url . "&batch_no=".urlencode($batch)."&lot_ref=".urlencode($lot)."&parent_id=$parent_id'</script>";
+	       echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+	     // echo "<script>location.href = '" . $url . "&batch_no=".urlencode($batch)."&lot_ref=".urlencode($lot)."&parent_id=$parent_id'</script>";
       }
     }	
 }

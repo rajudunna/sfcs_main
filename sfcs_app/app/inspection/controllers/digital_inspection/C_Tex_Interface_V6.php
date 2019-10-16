@@ -1720,25 +1720,32 @@ table
 
 <?php
 
-
-	if(isset($_POST['submit']))
+	if(isset($_POST['submit']) || isset($_POST['put']) || isset($_POST['confirm']))
 	{
 		$lot_no=$_POST['lot_no'];
-		$parent_id=$_POST['main_id'];
+		$parent_id=$_POST['parent_id'];
 	}
 	else
 	{
-		$lot_no=urldecode($_GET['batch_no']);
-		$lot_ref=urldecode($_GET['lot_ref']);
 		$parent_id=$_GET['parent_id'];
+
+		$lot = array();
+		$get_details = "select distinct(lot_no),supplier_batch from $bai_rm_pj1.inspection_population where parent_id='$parent_id'";
+	    //echo $get_details;
+	    $sql_result=mysqli_query($link, $get_details) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+		  $lot[] = $sql_row['lot_no'];
+		  $batch = $sql_row['supplier_batch'];
+		}
+		$lot_no=$batch;
+		$lot_ref=implode(",",$lot);
+		// $lot_no=$_GET['batch_no'];
+		// $lot_ref=$_GET['lot_ref'];
 	}
-?>
-
-
-<?php
+	
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/supplier_db.php',2,'R')); 
 //Configuration
-$parent_id=$parent_id;
 if(strlen($lot_no)>0 and strlen($lot_ref)>0)
 {
 ?>
@@ -1813,7 +1820,7 @@ $print_check=0;
 //removed validation of print button
 // $sql="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
 $get_roll_details = "select distinct(store_in_id) as roll_numbers,status from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".")";
- // echo $get_roll_details;
+  echo $get_roll_details;
 $roll_details_result=mysqli_query($link, $get_roll_details) or exit("roll details error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rolls=mysqli_fetch_array($roll_details_result))
 {
@@ -1888,7 +1895,7 @@ $shade_count=sizeof($scount_temp2);
 
 
 $sql="select  COUNT(DISTINCT REPLACE(ref2,\"*\",\"\"))  as \"count\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".")";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error4=".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error42=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$total_rolls=$sql_row['count'];
@@ -2273,8 +2280,8 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
   <td class=xl13324082 dir=LTR width=99 style='border-left:none;width:74pt'>Width  Deviation</td>
   <td class=xl13324082 colspan=2 dir=LTR width=99 style='border-left:none;width:100px'>Lot No</td>
   <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Roll Status</td>
-  <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Inspection Status</td>
   <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Rejection reason</td>
+  <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Inspection Status</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Partial Rej Qty</td>
   <?php
 //   if($shrinkage_inspection == 'yes')
@@ -2439,7 +2446,7 @@ $get_details_points = "select sum(rec_qty) as qty from $bai_rm_pj1.`inspection_p
 	{
 	   $i_status = $sql_status['status'];
 	}
-	if($i_status==2)
+	if($i_status > 0)
 	{
 		$insp_status="orange";			
 	}
@@ -2447,6 +2454,30 @@ $get_details_points = "select sum(rec_qty) as qty from $bai_rm_pj1.`inspection_p
 	{
 		$insp_status="";
 	}	
+
+	$sql23="select inspection_status from $bai_rm_pj1.roll_inspection_child where store_in_tid=".$temp[0]."";
+	$sql_result23=mysqli_query($link, $sql23) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($sql_result23)>0)
+	{
+		while($sql_row12=mysqli_fetch_array($sql_result23))
+		{
+			if($sql_row12['inspection_status']=='Approved')
+			{
+				$check_status=0;
+				$check_status_val=$sql_row12['inspection_status'];
+			}
+			elseif($sql_row12['inspection_status']=='Rejected')
+			{
+				$check_status=1;
+				$check_status_val=$sql_row12['inspection_status'];
+			}
+			elseif($sql_row12['inspection_status']=='Partial Rejected')
+			{
+				$check_status=2;
+				$check_status_val=$sql_row12['inspection_status'];
+			}
+		}
+	}
 	
 	
 	
@@ -2494,6 +2525,12 @@ $get_details_points = "select sum(rec_qty) as qty from $bai_rm_pj1.`inspection_p
 
 	  <td class=xl12824082 colspan='2' style='border-left:none;width:100px'>".$temp[7]."</td>";
 	
+	  if($check_status<3 || $insp_status== 'orange')
+	  {
+		echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>".$check_status_val."<input type=\"hidden\" class='textbox' id=\"roll_status[$i]\"  name=\"roll_status[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' /></td>";	  
+	  }
+	else
+		{	
 			  if(in_array($authorized,$has_permission))
 			  {	  
 				echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>
@@ -2511,9 +2548,12 @@ $get_details_points = "select sum(rec_qty) as qty from $bai_rm_pj1.`inspection_p
 				}
 				echo "</select></td>";
 			  } 	
+			  else
+			  {
+				echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>".$roll_status[$temp[10]]."<input type=\"hidden\" class='textbox' id=\"roll_status[$i]\"  name=\"roll_status[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$temp[10]."\" /></td>";	
+			  }
+		} 	
 			  
-
-	  echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>".$status_main."<input type=\"hidden\" class='textbox' id=\"roll_status[$i]\"  name=\"roll_status[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$check_status."\" /></td>";
 
 	  echo " <td class=xl13024082 colspan=2 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>";
 	  		$reject_reason_query="select * FROM $bai_rm_pj1.reject_reasons ";
@@ -2548,9 +2588,10 @@ $get_details_points = "select sum(rec_qty) as qty from $bai_rm_pj1.`inspection_p
 				}
 				
 		echo "</select>
-	  </td>
-
-	  <td class=xl12824082 style='border-left:none'><input class='textbox float par_rej' ".$readonly."  type='text' min='0' name='ele_par_length[$i]' id='ele_par_length[$i]' value='".$temp[9]."' onchange='change_body(2,this.name,$i)'></td>";
+	  </td>";
+      
+	  echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>".$status_main."<input type=\"hidden\" class='textbox' id=\"inspection_status[$i]\"  name=\"inspection_status\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$check_status."\" /></td>";
+	  echo "<td class=xl12824082 style='border-left:none'><input class='textbox float par_rej' ".$readonly."  type='text' min='0' name='ele_par_length[$i]' id='ele_par_length[$i]' value='".$temp[9]."' onchange='change_body(2,this.name,$i)'></td>";
 	  
 	 echo "<td class=xl12824082 colspan=3 style='border-left:none'><input class='textbox' ".$readonly." type='text' id='roll_remarks[$i]' name='roll_remarks[$i]' value='".$temp[14]."' onchange='change_body(2,this.name,$i)'></td>
 	 
