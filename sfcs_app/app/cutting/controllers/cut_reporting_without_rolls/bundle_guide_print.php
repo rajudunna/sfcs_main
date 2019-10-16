@@ -358,9 +358,9 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	padding-left:1px;
 	mso-ignore:padding;
 	color:black;
-	font-size:11.0pt;
+	font-size:9.0pt;
 	font-weight:400;
-	width: 80;
+	width: 120;
 	font-style:normal;
 	text-decoration:none;
 	font-family:Calibri, sans-serif;
@@ -611,12 +611,14 @@ echo "<table border=0 cellpadding=0 cellspacing=0 width=300 style='border-collap
     }
     if($s+1==$total_size) {
 
-        echo "<td class=xl73305b>No Of Plies</td></tr><tr><td class=xl73305a>Ratio</td>";
-
+        echo "<td class=xl73305b>No Of Plies</td></tr><tr>";
+		if($temp_len1!=$total_size){
+			echo "<td class=xl73305a>Ratio</td>";
+		}
 		for($i=$temp_len1;$i<$total_size;$i++) {
 			echo "<td class=xl73305a style='border-top:none;text-align:center;'>".$p_s_tit[$sizes_code[$i]]."</td>";
 		}
-		echo "<td class=xl73305a>".$totalpliesresult['totalplies']."</td></tr></table><br/>";
+		echo "<td class=xl73305b>".$totalpliesresult['totalplies']."</td></tr></table><br/>";
 	}
 }
 ?>
