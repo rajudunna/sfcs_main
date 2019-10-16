@@ -335,7 +335,7 @@ function issued_to_module($bcd_id,$qty,$ref)
             {   
                 $insert_qry_ips = "INSERT IGNORE INTO `$bai_pro3`.`plan_dashboard_input` 
                 SELECT * FROM `$bai_pro3`.`plan_dashboard_input_backup`
-                WHERE input_job_no_random_ref = '$input_job_no_random_ref'";
+                WHERE input_job_no_random_ref = '$input_job_no_random_ref' order by input_trims_status limit 1";
                 mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
             }            
             $qry_ops_mapping_after = "SELECT of.operation_code FROM `$brandix_bts`.`tbl_style_ops_master` tm 
