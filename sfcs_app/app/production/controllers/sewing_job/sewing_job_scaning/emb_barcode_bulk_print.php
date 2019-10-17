@@ -247,30 +247,24 @@ if(isset($_POST['submit']))
 				echo "<td rowspan=$rowspan>".$sql_row["a_plies"]."</td>";
 				for($i=0;$i<sizeof($seq);$i++)
 				{
-					$get_print_status_qry="select print_status,print_status_sm from $bai_pro3.emb_bundles where doc_no=".$sql_row['docno']." and report_seq=".$seq[$i]."";
+					$get_print_status_qry="select print_status from $bai_pro3.emb_bundles where doc_no=".$sql_row['docno']." and report_seq=".$seq[$i]."";
 					$sql_result123=mysqli_query($link, $get_print_status_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row123=mysqli_fetch_array($sql_result123))
 					{
 						$printstat=$sql_row123['print_status'];
-						$printstatsm=$sql_row123['print_status_sm'];
 					}
 					if($i==0)
 					{
 						if($printstat==0 || $printstat=='')
 						{
 							echo "<td><a href=\"$path?doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&id=0\" onclick=\"Popup1=window.open('$path?doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&id=0','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print with 4*2 </a></td>";
-						}
-						else
-						{
-							echo "<td>Print Done</td>";	
-						}
-						if($printstatsm==0 || $printstatsm=='')
-						{
+						
 							echo "<td><a href=\"$path2?doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&id=0\" onclick=\"Popup1=window.open('$path2?doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&id=0','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print with 2*1</a></td>";			   
 							echo "</tr>";
 						}
 						else
 						{
+							echo "<td>Print Done</td>";
 							echo "<td>Print Done</td>";
 							if(in_array($authorized,$has_permission))
 							{
@@ -287,17 +281,12 @@ if(isset($_POST['submit']))
 						if($printstat==0 || $printstat=='')
 						{
 						echo "<td><a href=\"$path?doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&id=0\" onclick=\"Popup1=window.open('$path?doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&id=0','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print with 4*2</a></td>";
-						}
-						else
-						{
-							echo "<td>Print Done</td>";	
-						}
-						if($printstatsm==0 || $printstatsm=='')
-						{
+						
 						echo "<td><a href=\"$path2?doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&id=0\" onclick=\"Popup1=window.open('$path2?doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&id=0','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print with 2*1</a></td>";
 						}
 						else
 						{
+							echo "<td>Print Done</td>";
 							echo "<td>Print Done</td>";
 							if(in_array($authorized,$has_permission))
 							{

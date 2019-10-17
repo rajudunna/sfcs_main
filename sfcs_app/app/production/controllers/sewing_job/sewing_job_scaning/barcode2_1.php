@@ -69,7 +69,7 @@
 				}
 				
 				
-				$update_psl_query = "UPDATE $bai_pro3.emb_bundles set print_status_sm=1 where doc_no=".$doc_no." and report_seq=".$reqseqid."";  
+				$update_psl_query = "UPDATE $bai_pro3.emb_bundles set print_status=1 where doc_no=".$doc_no." and report_seq=".$reqseqid."";  
 				$update_result = mysqli_query($link,$update_psl_query) or exit('Query Error');
 				
 				//$detailed_bundle_sticker=1;
