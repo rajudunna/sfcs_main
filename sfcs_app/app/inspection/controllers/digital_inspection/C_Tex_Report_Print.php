@@ -1760,8 +1760,8 @@ function printpr()
 if(strlen($lot_no)>0 and strlen($lot_ref)>0)
 {
 
-$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item SEPARATOR ', ') as \"item_batch\",group_concat(distinct pkg_no) as \"pkg_no_batch\",group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no SEPARATOR ', ') as \"lot_ref_batch\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\" from $bai_rm_pj1.sticker_report where lot_no in ($lot_ref) and right(lot_no,1)<> 'R' and batch_no=\"".trim($lot_no)."\"";
-
+$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item SEPARATOR ', ') as \"item_batch\",group_concat(distinct pkg_no) as \"pkg_no_batch\",group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no SEPARATOR ',') as \"lot_ref_batch\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\" from $bai_rm_pj1.sticker_report where lot_no in ($lot_ref) and right(lot_no,1)<> 'R' and batch_no=\"".trim($lot_no)."\"";
+// echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -1828,7 +1828,7 @@ $ctex_sum=0;
 $avg_t_width=0;
 $avg_c_width=0;
 
-$get_roll_details = "select distinct(sfcs_roll_no) as roll_numbers from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".")";
+$get_roll_details = "select distinct(store_in_id) as roll_numbers from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".")";
 // echo $get_roll_details;
 $roll_details_result=mysqli_query($link, $get_roll_details) or exit("roll details error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rolls=mysqli_fetch_array($roll_details_result))
@@ -1836,7 +1836,8 @@ while($sql_rolls=mysqli_fetch_array($roll_details_result))
   $rolls[]=$sql_rolls['roll_numbers'];
 }
 $roll_num = implode(",",$rolls);
-$sql="select * from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch) and ref2 in ($roll_num) order by ref2+0";
+$sql="select * from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch) and tid in ($roll_num) order by tid";
+//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errorc".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))

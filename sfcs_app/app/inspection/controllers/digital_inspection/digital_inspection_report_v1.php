@@ -2,6 +2,10 @@
 if(isset($_GET['parent_id'])){
 	$parent_id=$_GET['parent_id'];
 }
+$status=0;
+if(isset($_GET['status'])>0){
+	$status=$_GET['status'];
+}
 ?>
 
 <head>
@@ -213,7 +217,7 @@ if(isset($_GET['parent_id'])){
 			position: fixed;
     		top: 340px;
     		left: 424px;
-    z-index: 4;
+   			z-index: 4;
 		}
 		.black{
 			
@@ -243,9 +247,8 @@ if(isset($_GET['parent_id'])){
 		}
 		.alert,
 		strong,
-		body,
-		table th,
-		td {
+		#myTable th,
+		td,.position_div {
 			text-align: center;
 
 		}
@@ -258,7 +261,7 @@ if(isset($_GET['parent_id'])){
 		#populate_div {
 			position: absolute;
 			top: 250px;
-    		right: 433px;
+    		right: 254px;
 
 		}
 		.position_div{
@@ -391,7 +394,14 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 					</tbody>
 				</table>
 				<div class="button_pop col-sm-8" id="populate_div">
-					<input type="submit" class="btn btn-sm btn-primary" name="set_insp_pop" id="disable_id" value="Proceed for Inspection" style="margin-right: 25px;">
+					<?php
+					if($status==0)
+					{
+					?>
+					<input type="submit" class="btn btn-sm btn-primary" name="set_insp_pop" id="disable_id" value="Proceed for 4 Point Inspection" style="margin-right: 25px;">
+					<?php
+					}
+					?>					
 					<input type="submit" class="btn btn-sm btn-primary" name="color_report" id="disable_id1" value="Color Contuinity Report" style="margin-right: 25px;">
 					<input type="hidden" name='submit_type' id="submit_type" value="">
 				</div>
@@ -436,19 +446,18 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
       if($_POST['submit_type'] == "Color Contuinity Report")
       {
           $parent_id = $_POST['parent_id'];
-	      $insertbinditems = "update $bai_rm_pj1.inspection_population set status=1 where parent_id=$parent_id";
-		  mysqli_query($link, $insertbinditems) or exit("Sql Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
-	      	
-	      $get_details = "select lot_no,supplier_batch from $bai_rm_pj1.inspection_population where parent_id=$parent_id";
-	      $sql_result=mysqli_query($link, $get_details) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-		  while($sql_row=mysqli_fetch_array($sql_result))
-		  {
-		  	$lot = $sql_row['lot_no'];
-		  	$batch = $sql_row['supplier_batch'];
-		  }
+ 	      //$lot = array();
+	   //    $get_details = "select lot_no,supplier_batch from $bai_rm_pj1.inspection_population where parent_id=$parent_id";
+	   //    $sql_result=mysqli_query($link, $get_details) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+		  // while($sql_row=mysqli_fetch_array($sql_result))
+		  // {
+		  // 	$lot = $sql_row['lot_no'];
+		  // 	$batch = $sql_row['supplier_batch'];
+		  // }
 	      echo "<script>swal('Proceed to Color Contunity Report','Successfully','success')</script>";
 	      $url = getFullURLLevel($_GET['r'], 'C_Tex_Interface_V6.php', 0, 'N') ;
-	      echo "<script>location.href = '" . $url . "&batch_no=".urlencode($batch)."&lot_ref=".urlencode($lot)."&parent_id=$parent_id'</script>";
+	       echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+	     // echo "<script>location.href = '" . $url . "&batch_no=".urlencode($batch)."&lot_ref=".urlencode($lot)."&parent_id=$parent_id'</script>";
       }
     }	
 }

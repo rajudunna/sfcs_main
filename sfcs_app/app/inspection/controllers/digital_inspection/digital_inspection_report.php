@@ -1,6 +1,15 @@
 <head>
 	<script>
+		function foo(x,y){
+			if(x==1){
+			 
+				swal("warning","Roll Already inspected...","warning");
+				var id='data_'+y;
+				document.getElementById(id).checked = false;
+			}
+		}
 		$(document).ready(function() {
+			$(".tr-class-disable").css('background-color', '#70eb77')
 			$('#disable_id').on('click', function(e) {	
 				let falg_array=new Set();
 				$(".select_Check_flag").each(function() {
@@ -53,8 +62,10 @@
 			 */
 			$("#myTable tbody tr input[type=checkbox]").change(function(e) {
 				if (e.target.checked) {
+					foo()
 					$(this).closest("tr").addClass("selected");
 					calculateTotal()
+					
 					if ($('#disable_id').is(":disabled")) {
 						$('#disable_id').prop('disabled', false);
 					}
@@ -77,6 +88,7 @@
 			});
 
 			$("#myTable tbody tr").click(function(e) {
+				foo()
 				if (e.target.type != 'checkbox' && e.target.tagName != 'A') {
 					var cb = $(this).find("input[type=checkbox]");
 					cb.trigger('click');
@@ -98,11 +110,22 @@
 			});
 
 			$('#selectAlll').click(function(e) {
+				// foo()
 				var tableone = $(e.target).closest('table');
 				if (e.target.checked) {
-					$('tr', tableone).addClass("selected");
-					$('td input:checkbox', tableone).prop('checked', true);
+					// $('tr', tableone).addClass("selected");
+					$(".need-to-check").each(function() {
+						// $('tr', tableone).addClass("selected");
+						$(".tr-class-enable").addClass("selected")
+						$('.need-to-check input:checkbox').prop('checked', true);
+						// if($(this).hasClass('tr-class-enable')){
+						// 	$(this).addClass("selected")
+						// }
+					})
+					// if($('tr', tableone).hasClass("need-to-check"))
+					// 	$('td input:checkbox', tableone).prop('checked', true);
 					calculateTotal()
+				
 					if ($('#disable_id').is(":disabled")) {
 						$('#disable_id').prop('disabled', false);
 					}
@@ -153,20 +176,19 @@
 
 		});
 	</script>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
 	<style>
 		.alert,
 		strong,
-		body,
-		table th,
-		td {
+		#myTable th,
+		td,#populate_div,#second_row_div,#second_row_child_div {
 			text-align: center;
 		}
 
 		table tr td {
 			cursor: pointer;
 		}
-
+		
 		#populate_div {
 			position: absolute;
 			top: 176px;
@@ -189,13 +211,13 @@
 		{
 		margin: 0 0 0 123px;
 		}
-		@media only screen and (min-width:1187px) {
-			#second_row_child_div{
+		/* @media only screen and (min-width:1187px) {
+			{
 				position: absolute;
     			margin: 0 0 0 233px;
 				
 			}
-		}
+		} */
 	
 	</style>
 
@@ -203,7 +225,6 @@
 
 </head>
 <?php
-
 include(getFullURLLevel($_GET['r'], 'common/config/config.php', 4, 'R'));
 include(getFullURLLevel($_GET['r'], 'common/config/functions.php', 4, 'R'));
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/config.php', 3, 'R'));
@@ -285,7 +306,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							}
 							$lot_number = implode(",", $lot_nos);
 
-							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec, si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.lot_no='$lot_no_inp' AND si.lot_no IN($lot_number) AND si.four_point_status=0 GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
+							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec, si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.lot_no='$lot_no_inp' AND si.lot_no IN($lot_number) GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
 
 						if ($po_no != '' && ($lot_no_inp == '' && $supplier_invoice == '' && $supplier_batch == '')) {
@@ -297,7 +318,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							}
 							$lot_number = implode(",", $lot_nos);
 
-							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length FROM $bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no AND si.four_point_status=0 WHERE sr.po_no='$po_no' AND si.lot_no IN($lot_number) GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
+							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status FROM $bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.po_no='$po_no' AND si.lot_no IN($lot_number) GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
 						if ($supplier_invoice != '' && ($lot_no_inp == '' && $po_no == '' && $supplier_batch == '')) {
 							$sql_lot_no = "SELECT lot_no FROM $bai_rm_pj1.sticker_report WHERE inv_no=\"" . ($supplier_invoice) . "\"";
@@ -310,7 +331,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							$lot_number = implode(",", $lot_nos);
 
 
-							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no AND si.four_point_status=0 WHERE sr.inv_no='$supplier_invoice' AND si.lot_no IN($lot_number) GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
+							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.inv_no='$supplier_invoice' AND si.lot_no IN($lot_number) GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
 						if ($supplier_batch != '' && ($lot_no_inp == '' && $po_no == '' && $supplier_invoice == '')) {
 							$sql_lot_no = "SELECT lot_no FROM $bai_rm_pj1.sticker_report WHERE batch_no=\"" . ($supplier_batch) . "\"";
@@ -323,7 +344,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							$lot_number = implode(",", $lot_nos);
 
 
-							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.batch_no='$supplier_batch' and si.four_point_status=0  AND si.lot_no IN($lot_number) GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
+							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.batch_no='$supplier_batch' AND si.lot_no IN($lot_number) GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
 
 						$sql_result_po = mysqli_query($link, $sql_po_no) or exit(message_sql());
@@ -385,6 +406,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							<?php
 									$i=1;
 									while ($sql_row = mysqli_fetch_array($sql_result_po)) {
+										$var = '';
 										$tid = $sql_row['tid'];
 										$po_no_1 = $sql_row['po_no'];
 										$po_line = $sql_row['po_line'];
@@ -401,7 +423,10 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 										$ctex_length = $sql_row['ctex_length'];
 										$ctex_length = $sql_row['ctex_length'];
 										$rm_color = $sql_row['rm_color'];
-
+										$four_point_status = $sql_row['four_point_status'];
+										if($four_point_status==0){
+											$var = 'need-to-check';
+										}
 										if ($ctex_width == '') {
 											$ctex_width = 0;
 										} else {
@@ -468,10 +493,22 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 											$ref3;
 										}
 										//$rm_color = 0;
-
-										echo '<tr><td>' . $supplier_no . '</td><td>' . $ref2 . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $ref3 . '</td><input type="hidden" name="main_id" value="' . $tid . '">';
-
-										echo "<td><input type='checkbox' name='bindingdata[]' value='" . $po_no_1 . '$' . $po_line . '$' . $po_subline . '$' . $inv_no . '$' . $item_code . '$' . $item_desc . '$' . $lot_no . '$' . $supplier_batch . '$' . $rm_color . '$' . $supplier_no . '$' . $ref2 . '$' . $ref3 . '$' . $tid . "'></td></tr>";
+										if($four_point_status==1)
+										{
+											$check_status = 'disabled';
+											$check_tr_class='tr-class-disable';
+										}
+										else
+										{
+											$check_status = '';
+										    $check_tr_class='tr-class-enable';
+										}
+										echo '<tr class="'.$check_tr_class.'" onclick=foo("'.$four_point_status.'","'.$i.'")><td>' . $supplier_no . '</td><td>' . $ref2 . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $ref3 . '</td><input type="hidden" name="main_id" value="' . $tid . '">';
+										
+										echo "<td><span class='$var'><input type='checkbox' $check_status id='data_$i' name='bindingdata[]' value='" . $po_no_1 . '$' . $po_line . '$' . $po_subline . '$' . $inv_no . '$' . $item_code . '$' . $item_desc . '$' . $lot_no . '$' . $supplier_batch . '$' . $rm_color . '$' . $supplier_no . '$' . $ref2 . '$' . $ref3 . '$' . $tid . "'>
+										</span></td>";
+										
+										echo "</tr>";
 										$i++;
 									}
 								}
