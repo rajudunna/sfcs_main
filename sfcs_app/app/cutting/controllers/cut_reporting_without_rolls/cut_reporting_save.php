@@ -357,17 +357,19 @@ if($target == 'recut'){
 					}
 				}
 			}
-			$sql_check_id="SELECT max(tran_id)+1 as barcode from $bai_pro3.emb_bundles where doc_no=$doc_no";
+			$sql_check_id="SELECT max(tran_id)+1 as barcode,max(report_seq)+1 as seqid from $bai_pro3.emb_bundles where doc_no=$doc_no";
 			$result_check_id=mysqli_query($link,$sql_check_id) or exit('verifying the codes');
 			while($row12_id = mysqli_fetch_array($result_check_id))
 			{
 				if($row12_id['barcode']==0 || $row12_id['barcode']=='')
 				{
 					$ids=1;
+					$seqids=1;
 				}
 				else
 				{
 					$ids=$row12_id['barcode'];
+					$seqids=$row12_id['seqid'];
 				}			
 			}
 			for($j=0;$j<sizeof($sizes_tot);$j++)
@@ -376,8 +378,8 @@ if($target == 'recut'){
 				{				
 					for($jj=0;$jj<sizeof($ops_codes);$jj++)
 					{					
-						$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `club_status`, `log_user`, `tran_id`,`club_status`) 
-						VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '0', '".$user."', ".$ids.",'1')";
+						$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `club_status`, `log_user`, `tran_id`,`report_seq`) 
+						VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '0', '".$user."', ".$ids.",".$seqids.")";
 						mysqli_query($link,$sql_insert);
 					}
 					$ids++;
@@ -469,17 +471,19 @@ if($target == 'normal'){
 					}
 				}
 			}
-			$sql_check_id="SELECT max(tran_id)+1 as barcode from $bai_pro3.emb_bundles where doc_no=$doc_no";
+			$sql_check_id="SELECT max(tran_id)+1 as barcode,max(report_seq)+1 as seqid from $bai_pro3.emb_bundles where doc_no=$doc_no";
 			$result_check_id=mysqli_query($link,$sql_check_id) or exit('verifying the codes');
 			while($row12_id = mysqli_fetch_array($result_check_id))
 			{
 				if($row12_id['barcode']==0 || $row12_id['barcode']=='')
 				{
 					$ids=1;
+					$seqids=1;
 				}
 				else
 				{
 					$ids=$row12_id['barcode'];
+					$seqids=$row12_id['seqid'];
 				}			
 			}
 			for($j=0;$j<sizeof($sizes_tot);$j++)
@@ -488,8 +492,8 @@ if($target == 'normal'){
 				{				
 					for($jj=0;$jj<sizeof($ops_codes);$jj++)
 					{					
-						$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `club_status`, `log_user`, `tran_id`) 
-						VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '0', '".$user."', ".$ids.")";
+						$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `club_status`, `log_user`, `tran_id`,`report_seq`) 
+						VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '0', '".$user."', ".$ids.",".$seqids.")";
 						mysqli_query($link,$sql_insert);
 					}
 					$ids++;
@@ -602,17 +606,19 @@ if($target == 'schedule_clubbed')
 					}
 				}
 			}
-			$sql_check_id="SELECT max(tran_id)+1 as barcode from $bai_pro3.emb_bundles where doc_no=$doc_no";
+			$sql_check_id="SELECT max(tran_id)+1 as barcode,max(report_seq)+1 as seqid from $bai_pro3.emb_bundles where doc_no=$doc_no";
 			$result_check_id=mysqli_query($link,$sql_check_id) or exit('verifying the codes');
 			while($row12_id = mysqli_fetch_array($result_check_id))
 			{
 				if($row12_id['barcode']==0 || $row12_id['barcode']=='')
 				{
 					$ids=1;
+					$seqids=1;
 				}
 				else
 				{
 					$ids=$row12_id['barcode'];
+					$seqids=$row12_id['seqid'];
 				}			
 			}
 			for($j=0;$j<sizeof($sizes_tot);$j++)
@@ -621,8 +627,8 @@ if($target == 'schedule_clubbed')
 				{				
 					for($jj=0;$jj<sizeof($ops_codes);$jj++)
 					{					
-						$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `log_user`, `tran_id`,`club_status`) 
-						VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '".$user."', ".$ids.",'1')";
+						$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `log_user`, `tran_id`,`club_status`,`report_seq`) 
+						VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '".$user."', ".$ids.",'1',".$seqids.")";
 						mysqli_query($link,$sql_insert);
 					}
 					$ids++;
@@ -867,17 +873,19 @@ if($target == 'style_clubbed'){
 					}
 				}
 			}
-			$sql_check_id="SELECT max(tran_id)+1 as barcode from $bai_pro3.emb_bundles where doc_no=$doc_no";
+			$sql_check_id="SELECT max(tran_id)+1 as barcode,max(report_seq)+1 as seqid from $bai_pro3.emb_bundles where doc_no=$doc_no";
 			$result_check_id=mysqli_query($link,$sql_check_id) or exit('verifying the codes');
 			while($row12_id = mysqli_fetch_array($result_check_id))
 			{
 				if($row12_id['barcode']==0 || $row12_id['barcode']=='')
 				{
 					$ids=1;
+					$seqids=1;
 				}
 				else
 				{
 					$ids=$row12_id['barcode'];
+					$seqids=$row12_id['seqid'];
 				}			
 			}
 			for($j=0;$j<sizeof($sizes_tot);$j++)
@@ -886,8 +894,8 @@ if($target == 'style_clubbed'){
 				{				
 					for($jj=0;$jj<sizeof($ops_codes);$jj++)
 					{					
-						$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `log_user`, `tran_id`,`club_status`) 
-						VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '".$user."', ".$ids.",'1')";
+						$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `log_user`, `tran_id`,`club_status`,`report_seq`) 
+						VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '".$user."', ".$ids.",'1',".$seqids.")";
 						mysqli_query($link,$sql_insert);
 					}
 					$ids++;
