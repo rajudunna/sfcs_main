@@ -937,34 +937,37 @@
 							}								
 						}
 						$destination=echo_title("$bai_pro3.bai_orders_db","UPPER(destination)","order_del_no=\"".$schedule."\" and order_col_des",$color_code,$link);
-						if($status_sew==1)
-						{
-							$input_job_no=1;
-							$job_counter= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(barcode_sequence AS DECIMAL))+1","input_job_no='1' and order_del_no",$schedule,$link);	
-							if($job_counter==0)
-							{
-								$job_counter=1;
-							}
-						}
-						else
-						{
-							$input_job_no_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_del_no",$schedule,$link);
-							$job_counter=1;
-							$input_job_no=$input_job_no_tmp;
-							$input_job_no_tmpn= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(input_job_no AS DECIMAL))","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and pac_seq_no = $seq_no and  order_del_no",$schedule,$link);
-							if($input_job_no_tmpn>0)
-							{
-								$job_counter_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(barcode_sequence AS DECIMAL))+1","input_job_no='".$input_job_no_tmpn."' and order_del_no",$schedule,$link);
-								$input_job_no=$input_job_no_tmpn;
-								$job_counter=$job_counter_tmp;
-							}
-						}
-						$rand=$schedule.date("ymd").$input_job_no;
+						
 						for($iii=1;$iii<=$limit_sewing_job_tmp;$iii++)
 						{
 							$garments_per_carton=$garments_per_cartons[$iii];
 							for($iiii=0;$iiii<sizeof($docs_new);$iiii++)
-							{								
+							{	
+								
+								if($status_sew==1)
+								{
+									$input_job_no=1;
+									$job_counter= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(barcode_sequence AS DECIMAL))+1","input_job_no='1' and order_del_no",$schedule,$link);	
+									if($job_counter==0)
+									{
+										$job_counter=1;
+									}
+								}
+								else
+								{
+									$input_job_no_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_del_no",$schedule,$link);
+									$job_counter=1;
+									$input_job_no=$input_job_no_tmp;
+									$input_job_no_tmpn= echo_title("$bai_pro3.packing_summary_input","MIN(CAST(input_job_no AS DECIMAL))","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot))."') and pac_seq_no = $seq_no and acutno='".$docs_cut[$iiii]."' order_del_no",$schedule,$link);
+									if($input_job_no_tmpn>0)
+									{
+										$job_counter_tmp= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(barcode_sequence AS DECIMAL))+1","input_job_no='".$input_job_no_tmpn."' and order_del_no",$schedule,$link);
+										$input_job_no=$input_job_no_tmpn;
+										$job_counter=$job_counter_tmp;
+									}
+								}
+								$rand=$schedule.date("ymd").$input_job_no;
+						
 								$sql12="SELECT * FROM $bai_pro3.tbl_docket_qty LEFT JOIN $brandix_bts.`tbl_orders_size_ref` ON tbl_orders_size_ref.id = tbl_docket_qty.ref_size  WHERE type='1' and doc_no='".$docs_new[$iiii]."' AND size='".$size_tit."'";
 								// $sql12="SELECT * FROM $brandix_bts.tbl_miniorder_data WHERE mini_order_ref=".$carton_id." AND color='".$color_code."' and size='".$size_ref."' and docket_number='".$docs_new[$iiii]."' group BY cut_num order by cut_num*1";
 								$result12=mysqli_query($link, $sql12) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -1120,6 +1123,7 @@
 										mysqli_query($link, $sqlupdate) or die ("Error1.1=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));		
 									}
 								}
+								$status_sew=0;
 							}
 						}
 						unset($docs_new);
