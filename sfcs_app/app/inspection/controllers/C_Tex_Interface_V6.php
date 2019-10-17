@@ -2389,7 +2389,8 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	if($temp[10] == 1 || $temp[10] == 2){
 		$style = '';
 	}else{
-		$style = 'style=display:none'; 
+		//$style = 'style=display:none'; 
+		$style = '';
 	}
 	  echo "
 	  	<select name=\"rejection_reason[$i]\"  class='listbox rej_reason rej_reason_select2' id='rejection_reason[$i]' onchange='change_body(2,this.name,$i)' ".$style.">
