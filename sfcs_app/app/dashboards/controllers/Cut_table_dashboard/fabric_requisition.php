@@ -268,7 +268,7 @@ function GetSelectedItem()
 
 					<option value=\"0:00\" name=\"0.00\">Select Time</option>";
 					$selected="";
-					for($l=$hours;$l<=21;$l++)
+					for($l=$hours;$l<=23;$l++)
 					{
 						
 						for($k=0;$k<sizeof($mins);$k++)
@@ -328,7 +328,7 @@ function GetSelectedItem()
 						}	
 					}
 
-					echo "<option value=\"22:00\" name=\"r22\">10:00 P.M</option>";
+					echo "<option value=\"23:59:59\" name=\"r22\">11:59 P.M</option>";
 
 					if($rms_request_time==1){
 						$hour = 'Hour';
@@ -339,6 +339,8 @@ function GetSelectedItem()
 
 
 					echo "</SELECT> <strong>Lead time for RM supply is ".$rms_request_time." ".$hour." </strong>";
+					
+
 
 				?>
 			</td>
@@ -349,7 +351,7 @@ function GetSelectedItem()
 			
 		<?php
 					
-				if(date("H:i:s") <= "21:00:00")
+				if(date("H:i:s") <= "23:00:00")
 				{
 					echo "<td><input type=\"checkbox\" onClick=\" document.apply['submit'].disabled =(document.apply['submit'].disabled)? false : true; GetSelectedItem();\" name=\"check\"><input type=\"submit\" id=\"submit\" name=\"submit\" value=\"Submit\" class=\"btn btn-primary\" style=\"float: right;\" disabled></td>	";
 				}
