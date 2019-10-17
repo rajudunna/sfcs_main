@@ -77,41 +77,46 @@
 			if((int)$detailed_bundle_sticker == 1)
 			{
 				$html.= '<div>
-							<table width="100%" style="font-size:4px;">
+							<table width="100%" style="font-size:8px;">
+							
 								<tr>
-									<td colspan=6>
-										<div></div>
+									<td colspan=3><b>Sty#</b>'.$barcode_rslt['order_style_no'].'</td>
+									<td colspan=9><b>Sch#</b>'.$schedule.'</td>
+									<td rowspan="0" style="border: 1px solid black;	border-top-right-radius: 1px 1px; font-size:4px; text-align:center;width:10%">
+								           <p style= "font-size: 6px;font-weight: bold;">'.$seq_num.'</p>
 									</td>
-									<td colspan=2 style="border: 4px solid black;	border-top-right-radius: 30px 12px; font-size:12px; width:60px; height:40px; text-align:center;">
-										<p style= "font-size: 15px;font-weight: bold;">'.$seq_num.'</p>
-									</td>
 								</tr>
 								<tr>
-									<td colspan=2><b></b>'.$barcode_rslt['order_style_no'].'</td>
-									<td colspan=2><b>Schedule:</b>'.$schedule.'</td>
+								<td colspan=15></td>
 								</tr>
 								<tr>
-									<td colspan=2><b>Color:</b>'.$color.'</td>
+									<td colspan=3><b>Barcode#</b>'.trim($barcode).'</td>
+									<td colspan=8><b>Qty#</b>'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
+									
 								</tr>
 								<tr>
-									<td colspan=2><b>Barcode ID:</b>'.trim($barcode).'</td>
-									<td colspan=2><b>Qty:</b>'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
-									<td colspan=2><b>Country:</b>'.trim($destination).'</td>
+								<td colspan=15></td>
 								</tr>
-								
 								<tr>
-									<td colspan=2><b>Job Number:</b>'.$display1.'</td>
-									<td colspan=2><b>Size:</b>'.trim($barcode_rslt['size_code']).'</td>';
+									<td colspan=2><b>Job#</b>'.$display1.'</td>
+									<td colspan=6><b>Size:</b>'.substr($barcode_rslt['size_code'],0,7).'</td>';
 						if($shade != '')
-							$html.= "<td colspan=4><b>Shade:</b>$shade</td>";	
+							$html.= "<td colspan=5><b>Sha#</b>$shade</td>";	
 						else
-							$html.= "<td colspan=4></td>";
+							$html.= "<td colspan=2></td>";
 						$html.='</tr> 
 								<tr>
-									<td colspan=9><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
+								<td colspan=15></td>
+								</tr>
+								<tr>
+									<td colspan=12><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,30).'</td>
+								</tr>
+								<tr>
+								<td colspan=15></td>
 								</tr>
 								<tr>	
-									<td colspan=6><b>CutNo:</b>'.chr($color_code).leading_zeros($cutno, 3).'</td>
+									<td colspan=3><b>CutNo:</b>'.chr($color_code).leading_zeros($cutno, 3).'</td>
+									<td colspan=8><b>Country:</b>'.trim($destination).'</td>
 								</tr>
 							</table>
 						</div><br><br><br><br><br>';
@@ -126,34 +131,34 @@
 				//$display1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 				
 				$html.= '<div>
-							<table width="98%" style="font-size:4px;">
+							<table width="98%" style="font-size:7px;">
 							   <tr>	
-							      <td colspan=6> '.str_replace(' ','',$barcode_rslt['order_style_no']).'/'.$schedule.'/'.substr(str_replace(' ','',$operations),0,18).' - '.$opscode.'</td>
+							      <td colspan=8> '.str_replace(' ','',$barcode_rslt['order_style_no']).'/'.$schedule.'/'.substr(str_replace(' ','',$operations),0,18).' - '.$opscode.'</td>
 							      <td rowspan="0" style="border: 1px solid black;	border-top-right-radius: 1px 1px; font-size:4px; text-align:center;width:10%">
-								           <p style= "font-size: 4px;font-weight: bold;">'.$seq_num.'</p>
+								           <p style= "font-size: 6px;font-weight: bold;">'.$seq_num.'</p>
 							</td>							
 						   </tr>
 						   
 						    <tr>
-									<td colspan=4>'.$color.'</td>
+								<td colspan=8>'.substr($color,0,25).'</td>						
 							</tr>	
 						   <tr>
 							  <td colspan=8>
 										<div>
-											<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="1.73" size="0.65" text="1">
-										</div><br/>
+											<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="1.73" size="0.55" text="1">
+										</div>
 									<center>'.trim($barcode).'</td>
 							</tr>
 							<tr>
-									<td colspan=8>'.trim($barcode_rslt['size_code']).' / '.trim($destination);
+									<td colspan=5>'.trim($barcode_rslt['size_code']).' / '.trim($destination);
 
 						if($shade != '')
 							$html.= " / <b>$shade</b></td>";	
 						else
 							$html.= "</td>";	
-						$html.='</tr> 
-						<tr>	
-						<td colspan=>'.chr($color_code).leading_zeros($cutno,3).' / '.$display1.' / '.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
+						$html.='  
+							
+						<td colspan=5>'.chr($color_code).leading_zeros($cutno,3).' / '.$display1.' / '.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
 						
 			           </tr>
 							</table>

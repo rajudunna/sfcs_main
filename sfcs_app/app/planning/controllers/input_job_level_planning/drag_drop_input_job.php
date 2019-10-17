@@ -777,7 +777,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 		mysqli_query($link, $sql_ix) or exit("$sql_ix Sql Error index creation".mysqli_error($GLOBALS["___mysqli_ston"]));	
 		
 			
-		$sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name GROUP BY section ORDER BY section + 0";
+		$sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name where module_master.status='active' GROUP BY section ORDER BY section + 0";
       $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     
       while($sql_rowx=mysqli_fetch_array($sql_resultx))
@@ -844,7 +844,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 							$cut_no1=$sql_row1['acutno'];
 							$color_code1=$sql_row1['color_code'];
 							
-							$sql_style_id="SELECT DISTINCT style_id as sid FROM $bai_pro3.BAI_ORDERS_DB WHERE order_STYLE_NO=\"$style1\" and order_del_no=\"$schedule1\" LIMIT 1";
+							$sql_style_id="SELECT DISTINCT style_id as sid FROM $bai_pro3.bai_orders_db WHERE order_STYLE_NO=\"$style1\" and order_del_no=\"$schedule1\" LIMIT 1";
 							$sql_result_id=mysqli_query($link, $sql_style_id) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row_id=mysqli_fetch_array($sql_result_id))
 							{
