@@ -1813,8 +1813,9 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBAL
 $num_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."aa~".$sql_row["qty_allocated"]."~".$sql_row["shade_grp"]."~".$sql_row["act_width_grp"]."~".$sql_row["four_point_status"];
+	$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["qty_allocated"];
 //tid,rollno,shade,tlenght,clenght,twidth,cwidth,lot_no
+	
 	$scount_temp[]=$sql_row['ref4'];
 
 	$ctex_sum+= ($sql_row['ref5']);
@@ -1838,7 +1839,7 @@ if(mysqli_num_rows($sql_result1) > 0)
 {
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
-		$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["qty_allocated"]."~".$sql_row["shade_grp"]."~".$sql_row["act_width_grp"];
+		$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["qty_allocated"];
 	//tid,rollno,shade,tlenght,clenght,twidth,cwidth,lot_no
 		
 		$scount_temp[]=$sql_row1['ref4'];
@@ -2212,20 +2213,14 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
   <tr>
  	<td class=xl6424082 dir=LTR width=68 style='width:51pt'>Note: </td>
  	<td colspan="2" class=xl6424082 dir=LTR width=68 style='width:80pt;background-color:red;color:white'>Inspection Not Done</td>
- 	<td colspan="2" class=xl6424082 dir=LTR width=68 style='width:80pt;background-color:green;color:white'>Inspection Done</td>
-	<td colspan="2" class=xl6424082 dir=LTR width=68 style='width:80pt;background-color:orange;color:white'>Set for Inspection Population</td>
+ 	 <td colspan="2" class=xl6424082 dir=LTR width=68 style='width:80pt;background-color:green;color:white'>Inspection Done</td>
  </tr>
  <tr height=21 style='mso-height-source:userset;height:15.75pt'></tr>
  <tr height=21 style='mso-height-source:userset;height:15.75pt'>
  <td class=xl6424082 dir=LTR width=65 style='width:49pt' colspan=1>Auto Fill</td>
   <!-- <td height=21 class=xl6324082 dir=LTR width=80 style='height:15.75pt;  width:60pt'>&nbsp;</td> -->
-  <td class="xl6424082" dir="LTR" width="68" style="width:51pt"></td>
-  <td class="xl6424082" dir="LTR" width="68" style="width:51pt"></td>
-  <td class="xl6424082" dir="LTR" width="68" style="width:51pt"></td>
+
    <td class=xl6524082 dir=LTR width=68 style='width:51pt'><input type="text"  class="alpha" id="fill_shade_grp" name="fill_shade_grp"  maxlength="8"   value="" size="6">&nbsp;<a class="btn btn-success btn-xs" onclick="fill(4)">Fill</a></td>	
-  <td class="xl6424082" dir="LTR" width="68" style="width:51pt"></td>
-  <td class="xl6424082" dir="LTR" width="68" style="width:51pt"></td>
-   
   <td class=xl6424082 dir=LTR width=65 style='width:49pt' colspan=1></td>
   <td class=xl6524082 dir=LTR width=68 style='width:51pt'><input type="text"  class="float" id="fill_c_length" name="fill_c_length"   value="" size="3">&nbsp;<a class="btn btn-success btn-xs" onclick="fill(1)">Fill</a></td>	
   <td class=xl6424082 dir=LTR width=68 style='width:51pt'></td>
@@ -2243,17 +2238,12 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
  </tr>
  <tr height=41 style='height:32pt'>
   <td class=xl13224082 dir=LTR width=68 style='width:51pt'>Roll No</td>
-  <td class=xl13324082 dir=LTR width=64 style='border-left:none;width:48pt'>Shrinkage  Length</td>
-  <td class=xl13324082 dir=LTR width=64 style='border-left:none;width:48pt'>Shrinkage  Width</td>
-  <td class=xl13324082 dir=LTR width=64 style='border-left:none;width:48pt'>Shrinkage  Group</td>
-  <td class=xl13324082 dir=LTR width=20 style='border-left:none;width:19pt'>Shade</td>
   <td class=xl13324082 dir=LTR width=20 style='border-left:none;width:19pt'>Shade Group</td>
-  <td class=xl13324082 dir=LTR width=20 style='border-left:none;width:19pt'>Actual Width Group</td>
   <td class=xl13324082 dir=LTR width=65 style='border-left:none;width:49pt'>Ticket  Length</td>
-  <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Actual  Length</td>
+  <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>C-TEX  Length</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Length  Deviation</td>
   <td class=xl13324082 dir=LTR width=64 style='border-left:none;width:48pt'>Ticket  Width</td>
-  <td class=xl13324082 dir=LTR width=64 style='border-left:none;width:48pt'>Actual  Width</td>
+  <td class=xl13324082 dir=LTR width=64 style='border-left:none;width:48pt'>C-TEX  Width</td>
   <td class=xl13324082 dir=LTR width=99 style='border-left:none;width:74pt'>No of Joins</td>
   <td class=xl13324082 dir=LTR width=99 style='border-left:none;width:74pt'>Width  Deviation</td>
   <td class=xl13324082 colspan=2 dir=LTR width=99 style='border-left:none;width:100px'>Lot No</td>
@@ -2261,12 +2251,12 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
   <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Rejection reason</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Partial Rej Qty</td>
   <?php
-//   if($shrinkage_inspection == 'yes')
-// 	  { ?>
-  <!-- <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Shrinkage  Length</td>
+  if($shrinkage_inspection == 'yes')
+	  { ?>
+  <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Shrinkage  Length</td>
   <td class=xl13324082 dir=LTR  colspan=2 width=68 style='border-left:none;width:51pt'>Shrinkage  Width</td>
   <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Shrinkage  Group</td>
-	 <?php //} ?> -->
+	 <?php } ?>
   <td class=xl13324082 dir=LTR colspan=3 width=68 style='border-left:none;width:51pt'>Roll Remarks</td>
  </tr>
  
@@ -2294,16 +2284,14 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 
  for($i=0;$i<sizeof($values);$i++)
  {
- 	$check_status=3;
-	$temp=array();
+ 	$temp=array();
 	$temp=explode("~",$values[$i]);
-	
-	
 	//for shade wise category
 	if(in_array($temp[2],$scount_temp2))
 	{
 		$shade_group_total[array_search($temp[2],$scount_temp2)]+=$temp[3];
 	}
+	
 	//for shade wise category
 	if(in_array($authorized,$has_permission))
 	{
@@ -2325,32 +2313,11 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		else
 		{
 			$temp_shade_tag.="<input type=\"text\" class='textbox alpha shade_grp unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade[$i]\"  name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i); validate_unique_shade(\"".trim($temp[2])."\", \"".$temp[1]."\", $i)' value=\"".trim($temp[2])."\" />";
-		}	
-
-		if(!in_array($authorized,$has_permission))
-		{
-			$temp_shade_tag1.=$temp[17]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade1[$i]\" name=\"ele_shade1[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);' value=\"".trim($temp[17])."\" />";
-		}
-		else
-		{
-			$temp_shade_tag1.="<input type=\"text\" class='textbox alpha shade_grp1 unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade1[$i]\"  name=\"ele_shade1[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);' \"".$temp[1]."\", $i)' value=\"".trim($temp[17])."\" />";
-		}
-		
-		if(!in_array($authorized,$has_permission))
-		{
-			$temp_shade_tag2.=$temp[18]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade2[$i]\" name=\"ele_shade2[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);' value=\"".trim($temp[18])."\" />";
-		}
-		else
-		{
-			$temp_shade_tag2.="<input type=\"text\" class='textbox alpha shade_grp2 unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade2[$i]\"  name=\"ele_shade2[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);' value=\"".trim($temp[18])."\" />";
-		}
-		
+		}		
 	}
 	else
 	{
 		$temp_shade_tag.=$temp[2];
-		$temp_shade_tag1.=$temp[17];
-		$temp_shade_tag2.=$temp[18];
 	}
 	if($temp[1]=="")
 	{
@@ -2364,72 +2331,19 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	{
 		$insp_status="Red";		
 	}
-	
-	if($temp[19]==1)
-	{
-		$insp_status="orange";	
-		$check_status_val="Pending";			
-	}
-	$sql23="select inspection_status from $bai_rm_pj1.roll_inspection_child where store_in_tid=".$temp[0]."";
-	$sql_result23=mysqli_query($link, $sql23) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($sql_result23)>0)
-	{
-		while($sql_row12=mysqli_fetch_array($sql_result23))
-		{
-			if($sql_row12['inspection_status']=='Approved')
-			{
-				$check_status=0;
-				$check_status_val=$sql_row12['inspection_status'];
-			}
-			elseif($sql_row12['inspection_status']=='Rejected')
-			{
-				$check_status=1;
-				$check_status_val=$sql_row12['inspection_status'];
-			}
-			elseif($sql_row12['inspection_status']=='Partial Rejected')
-			{
-				$check_status=2;
-				$check_status_val=$sql_row12['inspection_status'];
-			}
-		}
-	}
-	
-	$sgroup = $temp[13];
-	if($sgroup=='')
-	{
-		$sgroup=0;
-	}
 	 echo "<input type='hidden' class='roll_no_".$temp[1]."' value='".$temp[1]."'>";
-	 
 	  echo "
 	  <td height=50 class='xl12824082' style='height:15.0pt;background-color: ".$insp_status.";color:white'>".$temp[1]."<input type='hidden' id='ele_tid[$i]' name='ele_tid[$i]' value='".$temp[0]."'><input type='hidden' name='ele_check[$i]' value=''><input type='hidden' name='tot_elements' id='tot_elements' value='".sizeof($values)."'></td>";
-
-	  echo "<td class=xl12824082 style='border-left:none'><input class='textbox float shr_len' ".$readonly."  type='text' min='0' id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
-		<td class=xl12824082 style='border-left:none'><input class='textbox float shr_wid' ".$readonly."  type='text' min='0' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
-		<td class=xl12824082 style='border-left:none'><input class='textbox alpha shr_grp' ".$readonly." type='text' min='0' id='shrinkage_group[$i]'  name='shrinkage_group[$i]' value='".$sgroup."' onchange='change_body(2,this.name,$i)'></td>";
-		// if($shrinkage_inspection == 'yes')
-		// {
-		// echo "<td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox float shr_len' ".$readonly."  type='text' min='0' id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
-		// <td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox float shr_wid' ".$readonly."  type='text' min='0' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
-		// <td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox alpha shr_grp' ".$readonly." type='text' min='0' id='shrinkage_group[$i]'  name='shrinkage_group[$i]' value='".$sgroup."' onchange='change_body(2,this.name,$i)'></td>";
-		// }
-		// else
-		// {
-		// 	echo "<td class=xl12824082  colspan=2 style='border-left:none;display: none;'><input class='textbox float shr_len' ".$readonly."  type='text' min='0' id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
-		// 	<td class=xl12824082  colspan=2 style='border-left:none;display: none;'><input class='textbox float shr_wid' ".$readonly."  type='text' min='0' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
-		// 	<td class=xl12824082  colspan=2 style='border-left:none; display: none;'><input class='textbox alpha shr_grp' ".$readonly." type='text' min='0' id='shrinkage_group[$i]'  name='shrinkage_group[$i]' value='".$sgroup."' onchange='change_body(2,this.name,$i)'></td>";
-		// }
 	  
 	  echo "<td class=xl12824082 style='border-left:none'>".$temp_shade_tag."<input type='hidden' id='ele_shades[$i]'  name='ele_shades[$i]' value='".trim($temp[2])."'></td>
-	  <td class=xl12824082 style='border-left:none'>".$temp_shade_tag1."<input type='hidden' id='ele_shades1[$i]'  name='ele_shades1[$i]' value='".trim($temp[17])."'></td>
-	  <td class=xl12824082 style='border-left:none'>".$temp_shade_tag2."<input type='hidden' id='ele_shades2[$i]'  name='ele_shades2[$i]' value='".trim($temp[18])."'></td>
+
 	  <td class=xl12824082 style='border-left:none'>".$temp[3]."<input class='hidden' type='hidden' id='ele_t_length".$i."' name='ele_t_length[$i]' value='".$temp[3]."' onchange='change_body(2,this.name,$i)'></td>
-	  <td class=xl12824082 style='border-left:none'><input class='textbox ctex_len float' ".$readonly." type='text'  min='0'  id='ele_c_length".$i."'  onkeyup='Subtract(".$i.");' name='ele_c_length[$i]' value='".round($temp[4],2)."' onchange='change_body(2,this.name,$i)' ></td>
+	  <td class=xl12824082 style='border-left:none'><input class='textbox ctex_len float' ".$readonly." type='text'  min='0'  id='ele_c_length".$i."'  onkeyup='Subtract(".$i.");' name='ele_c_length[$i]' value='".$temp[4]."' onchange='change_body(2,this.name,$i)' ></td>
 
 	  <td class=xl12824082 style='border-left:none'><input class='Text_B' type='text' name='subt".$i."' id='subt".$i."' readonly value='".round(($temp[4] - $temp[3]),2)."' ></td>
 
 	  <td class=xl12824082 style='border-left:none'><input class='textbox ticket_wid float' ".$readonly." type='text' min='0'  name='ele_t_width[$i]' id='ele_t_width".$i."' onkeyup='minus(".$i.");' value='".$temp[5]."' onchange='change_body(2,this.name,$i)'></td>
-	  <td class=xl12824082 style='border-left:none'><input class='textbox ctex_wid float' ".$readonly." type='text' min='0'  name='ele_c_width[$i]' id='ele_c_width".$i."' onkeyup='minus(".$i.");' value='".round($temp[6],2)."' onchange='change_body(2,this.name,$i)'></td>
+	  <td class=xl12824082 style='border-left:none'><input class='textbox ctex_wid float' ".$readonly." type='text' min='0'  name='ele_c_width[$i]' id='ele_c_width".$i."' onkeyup='minus(".$i.");' value='".$temp[6]."' onchange='change_body(2,this.name,$i)'></td>
 
 
 	  <td class=xl12824082 style='border-left:none'><input class='textbox el_joins integer' ".$readonly." type='text' id='ele_c_joins[$i]'  name='ele_c_joins[$i]'  value='".$temp[8]."' onchange='change_body(2,this.name,$i)' ></td>
@@ -2437,34 +2351,29 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	  <td class=xl12824082 style='border-left:none'><input class='Text_B' type='text' name='min".$i."' id='min".$i."' readonly value='".round(($temp[6] - $temp[5]),2)."'></td>
 
 	  <td class=xl12824082 colspan='2' style='border-left:none;width:100px'>".$temp[7]."</td>";
-	  if($check_status<3 || $insp_status== 'orange')
+	  
+	  if(in_array($authorized,$has_permission))
+	  {	  
+	    echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>
+	    	<select name=\"roll_status[$i]\" id='roll_status[$i]'  onchange='change_body(2,this.name,$i)' ".$dropdown_read." class='listbox' id='roll_status[$i]'>";
+	    for($iq=0;$iq<sizeof($roll_status);$iq++)
+	    {
+	  	 	if($iq==$temp[10])
+			{
+				echo "<option value='".$iq."' selected>".$roll_status[$iq]."</option>";
+			}	  	
+			else
+			{
+				echo "<option value='".$iq."'>".$roll_status[$iq]."</option>";	
+			}
+	  	}
+		echo "</select></td>";
+	  } 	
+	  else
 	  {
-		echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>".$check_status_val."<input type=\"hidden\" class='textbox' id=\"roll_status[$i]\"  name=\"roll_status[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$check_status."\" /></td>";	  
+	  	echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>".$roll_status[$temp[10]]."<input type=\"hidden\" class='textbox' id=\"roll_status[$i]\"  name=\"roll_status[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$temp[10]."\" /></td>";	
 	  }
-	else
-		{	
-			  if(in_array($authorized,$has_permission))
-			  {	  
-				echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>
-					<select name=\"roll_status[$i]\" id='roll_status[$i]'  onchange='change_body(2,this.name,$i)' ".$dropdown_read." class='listbox' id='roll_status[$i]'>";
-				for($iq=0;$iq<sizeof($roll_status);$iq++)
-				{
-					if($iq==$temp[10])
-					{
-						echo "<option value='".$iq."' selected>".$roll_status[$iq]."</option>";
-					}	  	
-					else
-					{
-						echo "<option value='".$iq."'>".$roll_status[$iq]."</option>";	
-					}
-				}
-				echo "</select></td>";
-			  } 	
-			  else
-			  {
-				echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>".$roll_status[$temp[10]]."<input type=\"hidden\" class='textbox' id=\"roll_status[$i]\"  name=\"roll_status[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$temp[10]."\" /></td>";	
-			  }
-		}
+	  
 	  	
 	  echo " <td class=xl13024082 colspan=2 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>";
 	  		$reject_reason_query="select * FROM $bai_rm_pj1.reject_reasons ";
@@ -2497,18 +2406,31 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 						echo "<option value=".$row1['tid'].">".$row1["reject_desc"]."</option>";
 					}
 				}
-				
+				$sgroup = $temp[13];
+				if($sgroup=='')
+				{
+					$sgroup=0;
+				}
 		echo "</select>
 	  </td>
 
 	  <td class=xl12824082 style='border-left:none'><input class='textbox float par_rej' ".$readonly."  type='text' min='0' name='ele_par_length[$i]' id='ele_par_length[$i]' value='".$temp[9]."' onchange='change_body(2,this.name,$i)'></td>";
-	  
+	  if($shrinkage_inspection == 'yes')
+	  {
+	  echo "<td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox float shr_len' ".$readonly."  type='text' min='0' id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
+	  <td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox float shr_wid' ".$readonly."  type='text' min='0' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
+	  <td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox alpha shr_grp' ".$readonly." type='text' min='0' id='shrinkage_group[$i]'  name='shrinkage_group[$i]' value='".$sgroup."' onchange='change_body(2,this.name,$i)'></td>";
+	  }
+	  else
+	  {
+		echo "<td class=xl12824082  colspan=2 style='border-left:none;display: none;'><input class='textbox float shr_len' ".$readonly."  type='text' min='0' id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
+		<td class=xl12824082  colspan=2 style='border-left:none;display: none;'><input class='textbox float shr_wid' ".$readonly."  type='text' min='0' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
+		<td class=xl12824082  colspan=2 style='border-left:none; display: none;'><input class='textbox alpha shr_grp' ".$readonly." type='text' min='0' id='shrinkage_group[$i]'  name='shrinkage_group[$i]' value='".$sgroup."' onchange='change_body(2,this.name,$i)'></td>";
+	  }
 	 echo "<td class=xl12824082 colspan=3 style='border-left:none'><input class='textbox' ".$readonly." type='text' id='roll_remarks[$i]' name='roll_remarks[$i]' value='".$temp[14]."' onchange='change_body(2,this.name,$i)'></td>
 	 
 	 </tr>";
 	 $temp_shade_tag="";
-	 $temp_shade_tag1="";
-	 $temp_shade_tag2="";
 	
  }
  
@@ -2627,7 +2549,8 @@ echo '</form>';
   
 for($i=0;$i<$shade_count;$i++)
  {
-  	$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$i]."\"";
+	  $sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and ref4=\"".$scount_temp2[$i]."\"";
+	//echo $sql_sc;
 	$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row_sc=mysqli_fetch_array($result_sc))
 	{
@@ -2760,8 +2683,6 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	$ele_t_width=$_POST['ele_t_width'];
 	$ele_c_width=$_POST['ele_c_width'];	
 	$ele_shade=$_POST['ele_shades'];
-	$ele_shade1=$_POST['ele_shades1'];
-	$ele_shade2=$_POST['ele_shades2'];
 	$roll_joins=$_POST['ele_c_joins'];
 	$roll_status_ref=$_POST["roll_status"];
 	$rejection_reason=$_POST['rejection_reason'];
@@ -2775,14 +2696,6 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	{
 		$ele_shade=$_POST['ele_shade'];
 	}
-	if(in_array($authorized,$has_permission))
-	{
-		$ele_shade1=$_POST['ele_shade1'];
-	}
-	if(in_array($authorized,$has_permission))
-	{
-		$ele_shade2=$_POST['ele_shade2'];
-	}
 	
 	for($i=0;$i<$tot_elements;$i++)
 	{	
@@ -2791,28 +2704,24 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			$add_query="";
 			if(in_array($authorized,$has_permission))
 			{
-				$add_query=", ref4=\"".$ele_shade[$i]."\", shade_grp=\"".$ele_shade1[$i]."\", act_width_grp=\"".$ele_shade2[$i]."\"";
+				$add_query=", ref4=\"".$ele_shade[$i]."\"";
 			}
 			if($partial_rej_qty[$i]>0 and $partial_rej_qty[$i]>$ele_t_length[$i] )// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
 			{
-				 $sql= "insert INTO $bai_rm_pj1.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason,shade_grp,act_width_grp)
-				    select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\",\"".$ele_shade1[$i]."\",\"".$ele_shade2[$i]."\"
+				 $sql= "insert INTO $bai_rm_pj1.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason)
+				    select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\"
 				  FROM $bai_rm_pj1.store_in WHERE tid=".$ele_tid[$i];
 				   mysqli_query($link, $sql) or exit("Sql Error25=".mysqli_error($GLOBALS["___mysqli_ston"]));
 					   //
 				  	   
 				  $qty_rec=$ele_t_length[$i]-$partial_rej_qty[$i];
 				  $sql1="update $bai_rm_pj1.store_in set rejection_reason='', qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks='', roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
-				//   echo $sql1.'<br/>';
-				//   die();
 				 mysqli_query($link, $sql1) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			}
 			else
 			{
 				$sql="update $bai_rm_pj1.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
-				// echo $sql.'<br/>';
-				// die();
 				mysqli_query($link, $sql) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
@@ -2934,36 +2843,6 @@ function enableButton1()
 	        		j = j + 1;
 	        	}
 	        }
-			if (parseInt((document.input["ele_shade1[" + i + "]"].value).length) > 0) 
-	        {
-	            j = j + 0;
-	        } 
-	        else
-	        {
-	        	if($('input[name="ele_shade1[' + i + ']"]').is('[readonly]'))
-	        	{
-	    		 	j = j + 0;
-	    		}
-	    		 else
-	        	{
-	        		j = j + 1;
-	        	}
-	        }
-			if (parseInt((document.input["ele_shade2[" + i + "]"].value).length) > 0) 
-	        {
-	            j = j + 0;
-	        } 
-	        else
-	        {
-	        	if($('input[name="ele_shade2[' + i + ']"]').is('[readonly]'))
-	        	{
-	    		 	j = j + 0;
-	    		}
-	    		 else
-	        	{
-	        		j = j + 1;
-	        	}
-	        }
 	       
 	        // if (parseFloat(document.input["ele_c_width[" + i + "]"].value) > 0) 
 	        // {
@@ -3031,42 +2910,6 @@ function enableButton1()
 			if($.trim($('#ele_shade\\['+i+'\\]').val()) == '')
 			{
 				if($('input[name="ele_shade[' + i + ']"]').is('[readonly]'))
-				{
-					v.removeClass('mandate');
-				}
-				else
-				{
-					v.addClass('mandate');
-					counter_man++;
-				}
-			}
-		}
-
-		for(var i=0;i<shade_grp.length;i++){
-			var v = $('#ele_shade1\\['+i+'\\]');
-
-			v.removeClass('mandate');
-			if($.trim($('#ele_shade1\\['+i+'\\]').val()) == '')
-			{
-				if($('input[name="ele_shade1[' + i + ']"]').is('[readonly]'))
-				{
-					v.removeClass('mandate');
-				}
-				else
-				{
-					v.addClass('mandate');
-					counter_man++;
-				}
-			}
-		}
-		
-		for(var i=0;i<shade_grp.length;i++){
-			var v = $('#ele_shade2\\['+i+'\\]');
-
-			v.removeClass('mandate');
-			if($.trim($('#ele_shade2\\['+i+'\\]').val()) == '')
-			{
-				if($('input[name="ele_shade2[' + i + ']"]').is('[readonly]'))
 				{
 					v.removeClass('mandate');
 				}
@@ -3219,8 +3062,6 @@ function fill(x,t,e)
 		var y=document.getElementById('fill_shade_grp').value;
 		if(y != ''){
 			var name1="ele_shade[";
-			// var name3="ele_shade1[";
-			// var name4="ele_shade2[";
 			var name2="qty_allocated[";
 
 			for (var i=0; i < tot_elements; i++)
@@ -3231,12 +3072,8 @@ function fill(x,t,e)
 				else
 				{
 					document.input[name1+i+"]"].value=y;
-					// document.input[name3+i+"]"].value=y;
-					// document.input[name3+i+"]"].value=y;
 					document.input["ele_check["+i+"]"].value=1;
 					document.input[name1+i+"]"].style.background="#FFCCFF";
-					// document.input[name4+i+"]"].style.background="#FFCCFF";
-					// document.input[name4+i+"]"].style.background="#FFCCFF";
 				}
 			
 
@@ -3319,7 +3156,7 @@ function validate_unique_shade(shde, roll, index)
 	var ele_shade = $('#ele_shade\\['+index+'\\]');
 	var ele_shade1 = document.input["ele_shade["+index+"]"].value;
 	if($.trim($('#ele_shade\\['+index+'\\]').val()) == ''){
-		sweetAlert('Please Enter Shade','','warning');
+		sweetAlert('Please Enter Shade Group','','warning');
 		document.input["ele_shade["+index+"]"].style.background="#99ff88";
 		
 	}
@@ -3330,13 +3167,11 @@ function validate_unique_shade(shde, roll, index)
 			arr.push($(this).val().toUpperCase());
 		}
 	});
-	// alert(arr.length);
 	if(arr.length > 0){
 		var unique_elem = $.unique(arr);
-		// alert(unique_elem.length);
 		if(unique_elem.length > 1){
 			ele_shade.val('');
-			swal('Roll Number and shade should be uniquee.');
+			swal('Roll Number and shade group should be unique.');
 		}else{
 			return true;
 		}
@@ -3346,67 +3181,6 @@ function validate_unique_shade(shde, roll, index)
 	
 	// alert();
 }
-// function validate_unique_shade1(shde, roll, index)
-// {
-// 	var ele_shade = $('#ele_shade\\['+index+'\\]');
-// 	var ele_shade1 = document.input["ele_shade["+index+"]"].value;
-// 	if($.trim($('#ele_shade\\['+index+'\\]').val()) == ''){
-// 		sweetAlert('Please Enter Shade Group','','warning');
-// 		document.input["ele_shade["+index+"]"].style.background="#99ff88";
-		
-// 	}
-// 	console.log('ele_shade['+index+']');
-// 	var arr = new Array();
-// 	$('.unique_shade_'+roll).each(function(){
-// 		if($(this).val() != ''){
-// 			arr.push($(this).val().toUpperCase());
-// 		}
-// 	});
-// 	if(arr.length > 0){
-// 		var unique_elem = $.unique(arr);
-// 		if(unique_elem.length > 1){
-// 			ele_shade.val('');
-// 			swal('Roll Number and shade group should be unique.');
-// 		}else{
-// 			return true;
-// 		}
-// 		console.log(arr);
-// 		console.log($.unique(arr));
-// 	}
-	
-// 	// alert();
-// }
-
-// function validate_unique_shade2(shde, roll, index)
-// {
-// 	var ele_shade = $('#ele_shade\\['+index+'\\]');
-// 	var ele_shade1 = document.input["ele_shade["+index+"]"].value;
-// 	if($.trim($('#ele_shade\\['+index+'\\]').val()) == ''){
-// 		sweetAlert('Please Enter Actual width group','','warning');
-// 		document.input["ele_shade["+index+"]"].style.background="#99ff88";
-		
-// 	}
-// 	console.log('ele_shade['+index+']');
-// 	var arr = new Array();
-// 	$('.unique_shade_'+roll).each(function(){
-// 		if($(this).val() != ''){
-// 			arr.push($(this).val().toUpperCase());
-// 		}
-// 	});
-// 	if(arr.length > 0){
-// 		var unique_elem = $.unique(arr);
-// 		if(unique_elem.length > 1){
-// 			ele_shade.val('');
-// 			swal('Roll Number and Actual width group should be unique.');
-// 		}else{
-// 			return true;
-// 		}
-// 		console.log(arr);
-// 		console.log($.unique(arr));
-// 	}
-	
-// 	// alert();
-// }
 function change_head(x,y)
 {
 	document.getElementById('head_check').value=1;
