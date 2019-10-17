@@ -14,6 +14,7 @@
 	]);
     $doc_no=$_GET['doc_no'];
 	$ids=$_GET['id'];
+	$reqseqid=$_GET['repseqid'];
 	?>
 	
 
@@ -65,9 +66,13 @@
 				}
 				
 				
+				$update_psl_query = "UPDATE $bai_pro3.emb_bundles set print_status=1 where doc_no=".$doc_no." and report_seq=".$reqseqid."";  
+				$update_result = mysqli_query($link,$update_psl_query) or exit('Query Error');
+				
+				
 				//$detailed_bundle_sticker=1;
 				$check=0;
-                $barcode_qry="SELECT tran_id, doc_no,size, barcode,quantity, ops_code FROM $bai_pro3.emb_bundles where $query doc_no=".$doc_no."";
+                $barcode_qry="SELECT tran_id, doc_no,size, barcode,quantity, ops_code FROM $bai_pro3.emb_bundles where $query doc_no=".$doc_no."  and report_seq=".$reqseqid."";
 				$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($barcode_rslt = mysqli_fetch_array($sql_barcode))
 				{				

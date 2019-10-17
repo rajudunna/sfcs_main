@@ -138,7 +138,7 @@ function check_sch()
 				$color=$_GET["color"];
 				if($color){
 					//echo $schedule;
-					$sql="select category from $bai_pro3.cat_stat_log where order_tid like \"%$schedule$color%\" order by category";
+					$sql="select category from $bai_pro3.cat_stat_log where order_tid like \"%$schedule$color%\" and category != ''  order by category";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 					//echo "Check = ".$sql_num_check;

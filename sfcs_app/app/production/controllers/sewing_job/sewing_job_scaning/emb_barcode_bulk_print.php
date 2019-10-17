@@ -3,6 +3,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 $path="".getFullURLLevel($_GET['r'], "barcode_new.php", "0", "r")."";
 $path2="".getFullURLLevel($_GET['r'], "barcode2_1.php", "0", "r")."";
+
+$url_r = $_GET['r'];
+$has_permission=haspermission($url_r);
 ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
 
@@ -191,6 +194,7 @@ if(isset($_POST['submit']))
 	$style=$_POST['style'];
 	$color=$_POST['color'];
 	$schedule=$_POST['schedule'];
+	$url1=getFullURL($_GET['r'],'release.php','N');
 	
 	$sql="select * from $bai_pro3.bai_orders_db_confirm  where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."'";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -215,28 +219,91 @@ if(isset($_POST['submit']))
             echo "<th>".$s_tit[$sizes_code[$s]]."</th>";
             
         }
-        echo "<th>Plies</th><th>Emb barcode</th><th>Emb barcode2*1</th></tr></thead>";
+        echo "<th>Plies</th><th>Emb barcode 4*2</th><th>Emb barcode2*1</th></tr></thead>";
        
        
-        $sql="select * from $bai_pro3.order_cat_doc_mk_mix where order_tid='".$orde_tid."' and category in ($in_categories)";
-        mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $sql="select *,bund.doc_no as docno from $bai_pro3.emb_bundles as bund left join $bai_pro3.order_cat_doc_mk_mix as mix on bund.doc_no=mix.doc_no where order_tid='".$orde_tid."' and category in ($in_categories) group by bund.doc_no";
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $sql_num_check=mysqli_num_rows($sql_result);
-            while($sql_row=mysqli_fetch_array($sql_result))
-            {
-            echo "<tr><td>".chr($sql_row['color_code']).leading_zeros($sql_row['acutno'],3)."</td><td>".$sql_row['doc_no']."</td>"; 
-            for($s=0;$s<sizeof($s_tit);$s++)
-            {
-               // $code="p_s".$sizes_code[$s];
-                //echo "<th>".$s_tit[$sizes_code[$s]]."</th>";
-                echo "<td>".$sql_row["p_s".$sizes_code[$s].""]."</td>";
-            }
-            echo "<td>".$sql_row["a_plies"]."</td>";
-            echo "<td><a href=\"$path?doc_no=".$sql_row['doc_no']."&id=0\" onclick=\"Popup1=window.open('$path?doc_no=".$sql_row['doc_no']."&id=0','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print </a></td><td><a href=\"$path2?doc_no=".$sql_row['doc_no']."&id=0\" onclick=\"Popup1=window.open('$path2?doc_no=".$sql_row['doc_no']."&id=0','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print </a></td>";
-                //echo "<td><a href='".$url."?doc_no=".$sql_row['doc_no']."' class='btn btn-sm btn-primary'>Print</a></td>";
-           
-            echo "</tr>";
-            }
+		if($sql_num_check>0)
+		{
+			while($sql_row=mysqli_fetch_array($sql_result))
+			{
+				$seq=array();
+				$sql12="select report_seq from $bai_pro3.emb_bundles where doc_no=".$sql_row['docno']." group by report_seq";
+				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row12=mysqli_fetch_array($sql_result12))
+				{
+					$seq[]=$sql_row12['report_seq'];
+				}
+				
+				$rowspan=sizeof($seq);
+				
+				echo "<tr><td rowspan=$rowspan>".chr($sql_row['color_code']).leading_zeros($sql_row['acutno'],3)."</td><td rowspan=$rowspan>".$sql_row['docno']."</td>"; 
+				for($s=0;$s<sizeof($s_tit);$s++)
+				{
+					echo "<td rowspan=$rowspan>".$sql_row["p_s".$sizes_code[$s].""]."</td>";
+				}
+				echo "<td rowspan=$rowspan>".$sql_row["a_plies"]."</td>";
+				for($i=0;$i<sizeof($seq);$i++)
+				{
+					$get_print_status_qry="select print_status from $bai_pro3.emb_bundles where doc_no=".$sql_row['docno']." and report_seq=".$seq[$i]."";
+					$sql_result123=mysqli_query($link, $get_print_status_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row123=mysqli_fetch_array($sql_result123))
+					{
+						$printstat=$sql_row123['print_status'];
+					}
+					if($i==0)
+					{
+						if($printstat==0 || $printstat=='')
+						{
+							echo "<td><a href=\"$path?doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&id=0\" onclick=\"Popup1=window.open('$path?doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&id=0','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print with 4*2 </a></td>";
+						
+							echo "<td><a href=\"$path2?doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&id=0\" onclick=\"Popup1=window.open('$path2?doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&id=0','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print with 2*1</a></td>";			   
+							echo "</tr>";
+						}
+						else
+						{
+							echo "<td>Print Done</td>";
+							echo "<td>Print Done</td>";
+							if(in_array($authorized,$has_permission))
+							{
+								echo "<td><a href='$url1&doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."' class='btn btn-danger btn-xs'>Release</a></td>";	
+							}
+							echo "</tr>";						
+						}
+													
+						
+					}
+					else
+					{
+						echo "<tr>";
+						if($printstat==0 || $printstat=='')
+						{
+						echo "<td><a href=\"$path?doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&id=0\" onclick=\"Popup1=window.open('$path?doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&id=0','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print with 4*2</a></td>";
+						
+						echo "<td><a href=\"$path2?doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&id=0\" onclick=\"Popup1=window.open('$path2?doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&id=0','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print with 2*1</a></td>";
+						}
+						else
+						{
+							echo "<td>Print Done</td>";
+							echo "<td>Print Done</td>";
+							if(in_array($authorized,$has_permission))
+							{
+								echo "<td><a href='$url1&doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."' class='btn btn-danger btn-xs'>Release</a></td>";	
+							}
+							echo "</tr>";						
+						}						
+						echo "</tr>";
+					}
+				}
+				
+				
+				
+				
+				unset($seq);
+			}
+		}
 	
 	echo "</table></div>";
 	
