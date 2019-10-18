@@ -126,7 +126,7 @@ CREATE TABLE bai_pro3.docket_number_info
 ALTER TABLE bai_pro3.docket_number_info
 ADD KEY doc_no
 (doc_no);
-
+/*
 ALTER TABLE bai_pro3.bai_orders_db
 ADD KEY schedule
 (order_del_no);
@@ -147,6 +147,6 @@ central_administration_sfcs.tbl_menu_list
 INSERT INTO central_administration_sfcs.rbac_role_menu
     (menu_pid, menu_description, roll_id)
 VALUES
-    ('1668', 'Bundle Guide Form', '1');
+    ('1668', 'Bundle Guide Form', '1'); */
 
 
