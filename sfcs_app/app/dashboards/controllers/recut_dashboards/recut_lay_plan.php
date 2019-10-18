@@ -10,6 +10,8 @@ $cuttable_sum=0;
 $style=$_GET['style'];
 $schedule=$_GET['schedule'];
 $color=$_GET['color'];
+echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "recut_dashboard_view.php", "0", "N")."\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a>";
+
 $qry_order_tid = "SELECT order_tid FROM `$bai_pro3`.`bai_orders_db` WHERE order_style_no = '$style' AND order_del_no ='$schedule' AND order_col_des = '$color'";
 // echo $qry_order_tid;die();
 $res_qry_order_tid = $link->query($qry_order_tid);
@@ -203,8 +205,11 @@ foreach($cats_ids as $key=>$value)
         $sql16="select * from bai_pro3.cuttable_stat_log_recut where order_tid=\"$tran_order_tid\"";
         $sql_result16=mysqli_query($link, $sql16) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $cut_count1 = mysqli_num_rows($sql_result16);
-
-        if(($cut_count>=1 && $cut_count1>1)) {
+        $copy_status = 0;
+        if($total_allocated>0){
+            $copy_status = 1;
+        }
+        if(($cut_count>=1 && $cut_count1>1)&& $copy_status != 0) {
             if(($cut_count==$cut_count1)&&($cut_count<0)&&($cuttable_sum>$pliespercut)){
                 $allocate_table .= "<td class=\"  \"><center><a class='btn btn-info btn-xs' disabled>Copy to Other</a></center></td>";
             }
@@ -474,24 +479,7 @@ foreach($cats_ids as $key=>$value)
                 }
                 else
                 {
-                    $print_status_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log where mk_ref=$mk_ref1 
-                        and order_tid='$tran_order_tid1' and print_status is not null ";
-                    if(mysqli_num_rows(mysqli_query($link,$print_status_query)) > 0 ){
-                        $marker_table .=  "<td class=\"  \"><center><a id='revise_form' class=\"btn btn-xs btn-warning\" 
-                        href=\"".getFullURL($_GET['r'], "revise_process.php", "N")."&tran_order_tid=$tran_order_tid1&allocate_ref=$allocate_ref1\">Revise</a></center></td>";
-                    }else{
-						$marker_table .= "<td class=\"  \"><center>Updated</center></td>";
-                        // if($mk_status1==9)
-                        // {
-                        //     $marker_table .=  "<td class=\"  \"><center>
-                        //             <a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_makers_form2_edit.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1&lock_status=1\">Edit</a></center></td>";
-                        // }
-                        // else
-                        // {
-                        //     $marker_table .=  "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_makers_form2_edit.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1\">Edit</a>";
-                        //     $marker_table .=  " | <a id='revise_form' class=\"btn btn-xs btn-warning\" href=\"".getFullURL($_GET['r'], "revise_process.php", "N")."&tran_order_tid=$tran_order_tid1&allocate_ref=$allocate_ref1\">Revise</a></center></td>";
-                        // }
-                    }
+                    $marker_table .= "<td class=\"  \"><center>Updated</center></td>";
                 }	
                 $sql21="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid1\" and mk_ref=$mk_ref1 ";
                 $sql_result21=mysqli_query($link, $sql21) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
