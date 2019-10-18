@@ -81,7 +81,7 @@ function updateM3Transactions($ref_id,$op_code,$qty)
                 // 763 mo filling for new operation start
                     // To get last operation in sewing category for that style and color
                     $application='sewing';
-                    $get_last_opn_sewing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY tbl_orders_ops_ref.operation_code*1 DESC LIMIT 1;";
+                    $get_last_opn_sewing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY tbl_orders_ops_ref.operation_code*1 DESC LIMIT 1";
                     $result_last_opn_sewing=mysqli_query($link, $get_last_opn_sewing) or exit("error while fetching pre_op_code_b4_carton_ready");
                     if (mysqli_num_rows($result_last_opn_sewing) > 0)
                     {
@@ -106,6 +106,7 @@ function updateM3Transactions($ref_id,$op_code,$qty)
                         {
                             $insert_update_tbl_carton_ready = "INSERT INTO $bai_pro3.tbl_carton_ready (operation_id, mo_no, remaining_qty, cumulative_qty) VALUES ('$op_code', '$mo_number', '$to_update_qty', '$to_update_qty');";
                         }
+                        //echo $insert_update_tbl_carton_ready;
                         mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating/inserting tbl_carton_ready");
                     }                                           
                 // 763 mo filling for new operation end
@@ -437,6 +438,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id, $deduct_from_carton_read
 
     $mo_array  = array();   $mo_qty_array = array();
     $validate_qry = "SELECT mo_no,sum(bundle_quantity) as bun_quantity from $bai_pro3.mo_operation_quantites where ref_no in (".$b_tid.") and op_code = $b_op_id group by mo_no*1";
+    //echo $validate_qry;
     $qry_nop_result=mysqli_query($link,$validate_qry) or exit("Bundles Query Error14 => ".$validate_qry);
     while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
     {
@@ -477,7 +479,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id, $deduct_from_carton_read
     {
         $flag_ok = 1;
     }  
-    
+    //echo $flag_nok;
     if ($flag_nok == 0)
     {
         $qry_to_check_mo_numbers = "select * from $bai_pro3.mo_operation_quantites where ref_no in (".$b_tid.") and op_code = $b_op_id";
