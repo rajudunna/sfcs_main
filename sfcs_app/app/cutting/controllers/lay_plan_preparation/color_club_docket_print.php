@@ -273,7 +273,36 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$allocate_ref=$sql_row['allocate_ref'];
 
 }
-
+$shrinkaage='';
+$pur_width='A';
+$mk_remarks='';
+$mk_type='';
+$sql007="select reference,mk_ref_id,allocate_ref from $bai_pro3.plandoc_stat_log where doc_no=\"".$doc_id."\"";
+// echo $sql007;
+$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($row007=mysqli_fetch_array($sql_result007))
+{
+	$reference=$row007["reference"];
+	if($row007['mk_ref_id']>0)
+	{	
+		$sql11x1321="select shrinkage_group,width,marker_length,marker_name,marker_type from $bai_pro3.maker_details where parent_id=".$row007['allocate_ref']." and id=".$row007['mk_ref_id']."";
+		$sql_result11x11211=mysqli_query($link, $sql11x1321) or die("Error15 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row111x2112=mysqli_fetch_array($sql_result11x11211)) 
+		{
+			$shrinkaage=$row111x2112['shrinkage_group'];
+			$purwidth=$row111x2112['width'];
+			$mk_remarks=$row111x2112['marker_name'];
+			$mk_type=$row111x2112['marker_type'];
+		}
+	}
+	else
+	{
+		$shrinkaage='N/A';
+		$purwidth='N/A';
+		$mk_remarks='N/A';
+		$mk_type='N/A';
+	}
+}
 $idocs_2 = "'" . implode ( "', '", $docs ) . "'";
 //var_dump($met_req);
 $sql="select * from $bai_pro3.cat_stat_log where tid=$cat_ref";
@@ -287,7 +316,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$body_yy=$sql_row['catyy'];
 	$waist_yy=$sql_row['waist_yy'];
 	$leg_yy=$sql_row['leg_yy'];
-	$purwidth=$sql_row['purwidth'];
+	if($purwidth=='N/A'){
+		$purwidth=$sql_row['purwidth'];
+	}
 	$compo_no=$sql_row['compo_no'];
 	$strip_match=$sql_row['strip_match'];
 	$gusset_sep=$sql_row['gusset_sep'];
@@ -335,7 +366,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
 		$mklength=$sql_row2['mklength'];
-		$mk_remarks=$sql_row2['remarks'];
+		if($marker_name == 'N/A'){
+			$mk_remarks=$sql_row2['remarks'];
+		}
 		$patt_ver=$sql_row2['mk_ver'];
 		$mk_file=$sql_row2['remarks'];
 		$remark1[]=$sql_row2['remark1'];
@@ -3827,61 +3860,36 @@ tags will be replaced.-->
   <td class=xl6417319></td>
   <td class=xl6417319></td>
  </tr>
- <!-- <tr >
-  <td class=xl6417319 ></td>
-  <td class=xl11117319 width=64 style='width:48pt'></td>
-  <td class=xl11117319 width=64 style='width:48pt'></td>
-  <td class=xl11117319 width=64 style='width:48pt'></td>
-  <td class=xl11117319 width=64 style='width:48pt'></td>
-  <td class=xl11117319 width=64 style='width:48pt'></td>
-  <td class=xl11117319 width=64 style='width:48pt'></td>
-  <td class=xl11117319 width=64 style='width:48pt'></td>
-  <td class=xl11117319 width=64 style='width:48pt'></td>
-  <td class=xl11117319 width=64 style='width:48pt'></td>
-  <td class=xl11117319 width=64 style='width:48pt'></td>
-  <td class=xl11117319 width=64 style='width:48pt'></td>
-  <td class=xl11117319 width=64 style='width:48pt'></td>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl6417319 style='height:16.5pt'></td>
+  <td></td>
   <td class=xl6417319></td>
-  <td class=xl11217319></td>
-  <td class=xl11217319></td>
-  <td class=xl11217319></td>
   <td class=xl6417319></td>
  </tr>
- <td class=xl6417319></td>
- </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
+  <?php 
+ if($shrinkaage<>'N/A')
+ {
+	 ?>
+  <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl6417319 style='height:16.5pt'></td>
+  <td></td>
+  <td class=xl6417319>Shrinkage Group:</td>
+  <td class=xl6417319 colspan=5><?php echo $shrinkaage; ?></td>
+  <td class=xl6417319></td>
+  <td class=xl6417319>Marker Type:</td>
+  <td class=xl6417319 colspan=5> <?php echo $mk_type; ?></td>
   <td class=xl6417319></td>
  </tr>
- <tr height=21 style='height:15.75pt'>
-  <td height=21 class=xl6417319 style='height:15.75pt'></td>
+<?php
+ }
+?>  
+  <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl6417319 style='height:16.5pt'></td>
+  <td></td>
   <td class=xl6417319></td>
   <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319></td>
-  <td class=xl6417319 colspan="3"><br/><br/><u><strong>Quality Authorisation</strong></u><br/><br/><br/><u><strong>Cutting Supervisor Authorization</strong></u></td>
- </tr> -->
-
+ </tr>
+ 
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl8217319 style='height:15.75pt'></td>
   </tr>

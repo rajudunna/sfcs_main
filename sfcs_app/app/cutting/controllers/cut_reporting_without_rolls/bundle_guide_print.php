@@ -58,10 +58,18 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
    
 $sql="select * from $bai_pro3.order_cat_doc_mk_mix where order_tid='".$orde_tid."' and category in ($in_categories) and doc_no=$doc_no";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result1=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-// $sql_num_check=mysqli_num_rows($sql_result);
-
+while($sql_row1=mysqli_fetch_array($sql_result1))
+{
+	for($s=0;$s<sizeof($sizes_code);$s++)
+	{
+		if($sql_row1["p_s".$sizes_code[$s].""]<>'')
+		{
+			$p_s_tit[$sizes_code[$s]]=$sql_row1["p_s".$sizes_code[$s].""];
+			$p_s_code[]=$sizes_code[$s];
+		}
+	}
+}
 $totalplies="select sum(reporting_plies) as totalplies from $bai_pro3.docket_roll_info where docket=$doc_no";
 mysqli_query($link, $totalplies) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $totalpliesresult=mysqli_query($link, $totalplies) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -93,6 +101,24 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	font-style:normal;
 	text-decoration:none;
 	font-family:Calibri, sans-serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+	.xl654118
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:10.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Trebuchet MS", sans-serif;
 	mso-font-charset:0;
 	mso-number-format:General;
 	text-align:general;
@@ -306,6 +332,67 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-background-source:auto;
 	mso-pattern:auto;
 	white-space:nowrap;}
+	.xl73305a
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:black;
+	font-size:11.0pt;
+	font-weight:400;
+	width: 60;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Calibri, sans-serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	border:.5pt solid windowtext;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+	.xl73305b
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:black;
+	font-size:9.0pt;
+	font-weight:400;
+	width: 120;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Calibri, sans-serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	border:.5pt solid windowtext;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+	/* .xl73305b
+	{
+	padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:black;
+	font-size:10.0pt;
+	font-weight:400;
+	width: 40;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Calibri, sans-serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	border:.5pt solid windowtext;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;} */
 .xl73305
 	{padding-top:1px;
 	padding-right:1px;
@@ -492,22 +579,65 @@ tags will be replaced.-->
 </div> 
 <br><br>
 <div id="bundle_guide_305" align="left" x:publishsource="Excel" style="margin-left:60px;">
-<table border=0 cellpadding=0 cellspacing=0 width=300 style='border-collapse:
- collapse;table-layout:fixed;'>
+
+ <?php
+ /* sizeof($s_tit) */
+ $total_size = sizeof($s_tit);
+ $temp = 0;
+$temp_len1 = 0;
+$temp_len = 0;
+$divide=10;
+for($s=0;$s<$total_size;$s++)
+{
+    if($temp == 0){
+echo "<table border=0 cellpadding=0 cellspacing=0 width=300 style='border-collapse:
+ collapse;table-layout:fixed;'><tr style='margin-top:5pt;'>";
+        echo "<td class=xl73305a style='background-color: gainsboro;'>Size</td>";
+        $temp = 1;
+    }
+    echo  "<td class=xl73305a style='background-color: gainsboro;'>".trim($s_tit[$sizes_code[$s]])."</td>";
+    if(($s+1) % $divide == 0){
+        $temp_len = $s+1;
+        echo "</tr>";
+        echo "<tr>
+            <td class=xl73305a>Ratio</td>";
+        	for($i=$temp_len1;$i<$temp_len;$i++) 
+			{
+                echo "<td class=xl73305a style='border-top:none;text-align:center;'>".$p_s_tit[$sizes_code[$i]]."</td>";
+			}
+        echo "</tr>";
+        $temp = 0;
+        $temp_len1=$temp_len;
+    }
+    if($s+1==$total_size) {
+
+        echo "<td class=xl73305b>No Of Plies</td></tr><tr>";
+		if($temp_len1!=$total_size){
+			echo "<td class=xl73305a>Ratio</td>";
+		}
+		for($i=$temp_len1;$i<$total_size;$i++) {
+			echo "<td class=xl73305a style='border-top:none;text-align:center;'>".$p_s_tit[$sizes_code[$i]]."</td>";
+		}
+		echo "<td class=xl73305b>".$totalpliesresult['totalplies']."</td></tr></table><br/>";
+	}
+}
+?>
 <tr>
 		<?php
-		for($s=0;$s<sizeof($s_tit);$s++)
-        {
-            echo "<td class=xl73305 style='background-color: gainsboro;'>".$s_tit[$sizes_code[$s]]."</td>";
+		/* sizeof($s_tit) */
+		/* for($s=0;$s<sizeof($s_tit);$s++)
+        { */
+            /* echo "<td class=xl73305 style='background-color: gainsboro;'>".$s_tit[$sizes_code[$s]]."</td>"; */
+			/* echo "<td class=xl73305a style='background-color: gainsboro;' >".$s."</td>"; */
             
-        }
-		echo "<td class=xl73305 style='background-color: gainsboro;'>No Of Plies</td>";
+        /* }
+		echo "<td class=xl73305 style='background-color: gainsboro;'>No Of Plies</td>"; */
 		?>
 
 </tr>
 <tr>
 <?php 
-while($sql_row=mysqli_fetch_array($sql_result1))
+/* while($sql_row=mysqli_fetch_array($sql_result1))
 	{
 	for($s=0;$s<sizeof($s_tit);$s++)
 	{
@@ -516,7 +646,7 @@ while($sql_row=mysqli_fetch_array($sql_result1))
 		echo "<td class=xl75305 style='border-top:none;text-align:center;'>".$sql_row["p_s".$sizes_code[$s].""]."</td>";
 	}
 		echo "<td class=xl75305 style='border-top:none;text-align:center;'>".$totalpliesresult['totalplies']."</td>";
-	}
+	} */
 ?>
 </tr>
 </table>

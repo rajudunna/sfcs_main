@@ -704,7 +704,8 @@ if(isset($_POST['allocate_new']))
 			$allo_c=array();
 		
 			$sql="select cat_patt_ver,doc_no,material_req,mk_ref,cat_ref,allocate_ref,style_id,mk_ver,category,p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s06,p_s08,p_s10,p_s12,p_s14,p_s16,p_s18,p_s20,p_s22,p_s24,p_s26,p_s28,p_s30,strip_match,gmtway,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where doc_no=\"".$doc_ref[$i]."\"";
-			//echo $sql."<br/>";
+			// echo $sql."<br/>";
+			// die();
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error1 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -724,26 +725,26 @@ if(isset($_POST['allocate_new']))
 				$strip_match=$sql_row['strip_match'];
 				$gmtway=$sql_row['gmtway'];
 				
-				$allo_c[]="xs=".$sql_row['p_xs'];
-				$allo_c[]="s=".$sql_row['p_s'];
-				$allo_c[]="m=".$sql_row['p_m'];
-				$allo_c[]="l=".$sql_row['p_l'];
-				$allo_c[]="xl=".$sql_row['p_xl'];
-				$allo_c[]="xxl=".$sql_row['p_xxl'];
-				$allo_c[]="xxxl=".$sql_row['p_xxxl'];
-				$allo_c[]="s06=".$sql_row['p_s06'];
-				$allo_c[]="s08=".$sql_row['p_s08'];
-				$allo_c[]="s10=".$sql_row['p_s10'];
-				$allo_c[]="s12=".$sql_row['p_s12'];
-				$allo_c[]="s14=".$sql_row['p_s14'];
-				$allo_c[]="s16=".$sql_row['p_s16'];
-				$allo_c[]="s18=".$sql_row['p_s18'];
-				$allo_c[]="s20=".$sql_row['p_s20'];
-				$allo_c[]="s22=".$sql_row['p_s22'];
-				$allo_c[]="s24=".$sql_row['p_s24'];
-				$allo_c[]="s26=".$sql_row['p_s26'];
-				$allo_c[]="s28=".$sql_row['p_s28'];
-				$allo_c[]="s30=".$sql_row['p_s30'];
+				$allo_c[]="xs='".$sql_row['p_xs']."'";
+				$allo_c[]="s='".$sql_row['p_s']."'";
+				$allo_c[]="m='".$sql_row['p_m']."'";
+				$allo_c[]="l='".$sql_row['p_l']."'";
+				$allo_c[]="xl='".$sql_row['p_xl']."'";
+				$allo_c[]="xxl='".$sql_row['p_xxl']."'";
+				$allo_c[]="xxxl='".$sql_row['p_xxxl']."'";
+				$allo_c[]="s06='".$sql_row['p_s06']."'";
+				$allo_c[]="s08='".$sql_row['p_s08']."'";
+				$allo_c[]="s10='".$sql_row['p_s10']."'";
+				$allo_c[]="s12='".$sql_row['p_s12']."'";
+				$allo_c[]="s14='".$sql_row['p_s14']."'";
+				$allo_c[]="s16='".$sql_row['p_s16']."'";
+				$allo_c[]="s18='".$sql_row['p_s18']."'";
+				$allo_c[]="s20='".$sql_row['p_s20']."'";
+				$allo_c[]="s22='".$sql_row['p_s22']."'";
+				$allo_c[]="s24='".$sql_row['p_s24']."'";
+				$allo_c[]="s26='".$sql_row['p_s26']."'";
+				$allo_c[]="s28='".$sql_row['p_s28']."'";
+				$allo_c[]="s30='".$sql_row['p_s30']."'";
 			}
 			//for #1305 ticket in git edite by Srinivas Y .
 			for($j=0;$j<sizeof($tid_ref);$j++)
@@ -876,7 +877,7 @@ if(isset($_POST['allocate']))
 	$dash=$_POST['dashboard'];
 
 	//$lot_db_2 = $_POST["pms$doc[0]"];
-	//var_dump($doc);
+	// var_dump($doc);
 	// echo "DOC : ".sizeof($doc);exit;
 	$doc_cat=$_POST['doc_cat'];
 	$doc_com=$_POST['doc_com'];
@@ -967,11 +968,38 @@ if(isset($_POST['allocate']))
 				}
 			}
 		}
+		$shrinkaage='';
+		$pur_width='A';
+		$sql007="select reference,mk_ref_id,allocate_ref from $bai_pro3.plandoc_stat_log where doc_no=\"".$doc_ref."\"";
+		// echo $sql007;
+		$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row007=mysqli_fetch_array($sql_result007))
+		{
+			$reference=$row007["reference"];
+			if($row007['mk_ref_id']>0)
+			{	
+				$sql11x1321="select shrinkage_group,width,marker_length from $bai_pro3.maker_details where parent_id=".$row007['allocate_ref']." and id=".$row007['mk_ref_id']."";
+				$sql_result11x11211=mysqli_query($link, $sql11x1321) or die("Error15 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($row111x2112=mysqli_fetch_array($sql_result11x11211)) 
+				{
+					$shrinkaage=$row111x2112['shrinkage_group'];
+					$pur_width=$row111x2112['width'];
+				}
+			}
+			else
+			{
+				$shrinkaage='N/A';
+				$pur_width='N/A';
+			}
+		}
 		$sql = "SELECT SUM(purwidth) AS pur_width FROM bai_pro3.cat_stat_log WHERE compo_no='".$doc_com[$i]."'";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error 13 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
-			$pur_width =round($sql_row['pur_width'],2);
+			$purwidth=round($sql_row['pur_width'],2);
+			if($pur_width=='N/A'){
+				$pur_width= $purwidth;
+			}
 		}
 		//Table to show all list of available items
 		if(sizeof($lot_db_2)>0)
@@ -1048,13 +1076,26 @@ if(isset($_POST['allocate']))
 			//if($sql_row['allotment_status']==0 and strlen($sql_row['shade'])>0)
 			if(($sql_row['allotment_status']==0) or($sql_row['allotment_status']==1) and (strlen($sql_row['shade'])>0))
 			{
-				$temp_var.="<td><input type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref',$row_count,'$i','$j')\">";
-				$temp_var.="<input type=\"hidden\" name=\"val".$doc_ref."[$j]\" value=\"".$sql_row['balance']."\">";
-				$temp_var.="<input type=\"hidden\" name=\"width".$doc_ref."[$j]\" value=\"".$sql_row['width']."\">";
-				$temp_var.="<input type=\"hidden\" name=\"lable".$doc_ref."[$j]\" value=\"".$sql_row['tid']."\">";
-				$temp_var.="<input type=\"hidden\" name=\"issued_new1".$doc_ref."[$j]\" id=\"issued_new".$doc_ref."[$j]\">";
+				$temp_var.="<td>";
+					if(strlen($sql_row['shade'])==0)
+					{
+						$tag="Insp. <br/>Pending";
+						$valid_check="display:none";
+						if(strlen($tag)>0)
+						{
+							$temp_var.="<img src=\"lock.png\"> $tag";
+						}
+					}
+					else
+							
+						{
+							$temp_var.="<input type=\"checkbox\" id=\"chk$doc_ref$j\" name=\"chk".$doc_ref."[]\" value=\"".$j."\" onclick=\"check_qty2(".sizeof($doc).",'chk$doc_ref$j','$bg_color','$doc_ref',$row_count,'$i','$j')\">";
+							$temp_var.="<input type=\"hidden\" name=\"val".$doc_ref."[$j]\" value=\"".$sql_row['balance']."\">";
+							$temp_var.="<input type=\"hidden\" name=\"width".$doc_ref."[$j]\" value=\"".$sql_row['width']."\">";
+							$temp_var.="<input type=\"hidden\" name=\"lable".$doc_ref."[$j]\" value=\"".$sql_row['tid']."\">";
+							$temp_var.="<input type=\"hidden\" name=\"issued_new1".$doc_ref."[$j]\" id=\"issued_new".$doc_ref."[$j]\">";
+						}
 				$temp_var.="</td>";
-				
 			}
 			else
 			{
