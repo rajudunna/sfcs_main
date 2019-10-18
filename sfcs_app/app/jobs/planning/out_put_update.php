@@ -9,7 +9,8 @@ ini_set('default_socket_timeout', 3000000);
 
 error_reporting(0);
 $include_path=getenv('config_job_path');
-include($include_path.'\sfcs_app\common\config\config_jobs.php');	
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
+include($include_path.'\sfcs_app\common\config\config_ajax.php');	
 
 $table_ref="$bai_pro4.week_delivery_plan";
 $table_ref2="$bai_pro3.bai_orders_db";
@@ -175,10 +176,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 }
 
-// print(memory_get_usage())."\n";
-$end_timestamp = microtime(true);
-$duration = $end_timestamp - $start_timestamp;
-print("Execution took ".$duration." milliseconds.");
+include("out_put_update_old.php");
 
 ?>
 

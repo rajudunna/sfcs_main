@@ -6,32 +6,10 @@ error_reporting(0);
 
 <?php
 	$include_path=getenv('config_job_path');
-	include($include_path.'\sfcs_app\common\config\config_jobs.php');
-	include($include_path.'\sfcs_app\common\config\config_ajax.php');	
+	// include($include_path.'\sfcs_app\common\config\config_jobs.php');
+	// include($include_path.'\sfcs_app\common\config\config_ajax.php');	
 	set_time_limit(90000);
 //Temp Pool
-
-/* $plandoc_stat_log_cat_log_ref="temp_pool_db.".$username.date("YmdHis")."_"."plandoc_stat_log_cat_log_ref";
-
-$sql="create  table $plandoc_stat_log_cat_log_ref ENGINE = MyISAM select order_del_no,doc_no,act_cut_status,doc_total,act_cut_issue_status,log_update,order_tid from bai_pro3.plandoc_stat_log_cat_log_ref";
-// echo $sql;
-mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-$packing_summary="temp_pool_db.".$username.date("YmdHis")."_"."packing_summary";
-
-$sql="create  table $packing_summary ENGINE = MyISAM select order_del_no,carton_act_qty,status,disp_carton_no,container,lastup,order_col_des from bai_pro3.packing_summary";
-// echo $sql;
-mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-$disp_mix_temp="temp_pool_db.".$username.date("YmdHis")."_"."disp_mix_temp";
-
-$sql="CREATE  TABLE $disp_mix_temp(fca_app bigint, app bigint, scanned bigint, order_del_no bigint) ENGINE = MyISAM";
-mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-//$sql="create table $disp_mix_temp select fca_app,app,scanned,order_del_no from bai_pro3.disp_mix";
-$sql="insert into $disp_mix_temp select fca_app,app,scanned,order_del_no from bai_pro3.disp_mix";
-// echo $sql;
-mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"])); */
 
 
 
@@ -45,10 +23,7 @@ $start_date_w=$start_date_w-(60*60*24); // define monday
 }
 $end_date_w=$start_date_w+(60*60*24*6); // define sunday 
 
-//echo date("Y-m-d",$end_date_w)."<br/>";
-//echo date("Y-m-d",$start_date_w);
-//$start_date_w=date("Y-m-d",$start_date_w);
-//$end_date_w=date("Y-m-d",$end_date_w);
+
 
 $start_date_w=date("Y-m-d",($start_date_w-(60*60*24*7)));
 $end_date_w=date("Y-m-d",($end_date_w+(60*60*24*6)));
@@ -81,26 +56,8 @@ $sec_db=array("actu_sec1","actu_sec2","actu_sec3","actu_sec4","actu_sec5","actu_
 $week_star= date('Y-m-d', mktime(0, 0, 0, date('m'), date('d')-date('w'), date('Y')));
 $week_end= date('Y-m-d', mktime(0, 0, 0, date('m'), date("d") - date("w") + 6, date('Y')));
 
-//echo date("H:i:s");
-// echo "Please wait while processing data!!";
-	
-	//$sql="select ssc_code_new,ship_tid from shipment_plan where ship_tid in (select shipment_plan_id from $table_ref) and ex_factory_date between \"$week_start\" and \"$week_end\"";
-//$sql="select (size_xs+size_s+size_m+size_l+size_xl+size_xxl+size_xxxl+size_s06+size_s08+size_s10+size_s12+size_s14+size_s16+size_s18+size_s20+size_s22+size_s24+size_s26+size_s28+size_s30) as \"order\", ssc_code_new,ship_tid,schedule_no from shipment_plan_ref where ship_tid in (select shipment_plan_id from $table_ref)";
 
-//$sql="select ord_qty_new as \"order\", ssc_code_new,ship_tid,schedule_no from shipment_plan_ref where ship_tid in (select shipment_plan_id from $table_ref) order by schedule_no";
-
-//TO track schedules which are not in weekly delivery plan
 $schedule_db=array();
-
-
-//To transfer Dispatch details to temp table
-/* $sql="truncate $bai_pro3.disp_mix_temp"; */
-// echo $sql."<br/>";
-//mysql_query($sql,$link) or exit("Sql Error1".mysql_error());
-
-/* $sql="insert into $bai_pro3.disp_mix_temp select * from $bai_pro3.disp_mix"; */
-// echo $sql."<br/>";
-//mysql_query($sql,$link) or exit("Sql Error2".mysql_error());
 
 $schedule_db[]=1;
 //To update Speed Deliveries
@@ -121,7 +78,7 @@ if($rowcount > 0)
 }
 
 $sql="select ord_qty_new as \"order\", ssc_code_new,ship_tid,schedule_no,style,color from $bai_pro4.shipment_plan_ref where ship_tid in (select ship_tid from $bai_pro4.week_delivery_plan_ref where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\") order by schedule_no";
-//echo $sql."<br>";	
+// echo $sql."<br>";	
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -138,37 +95,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS
 		$schedule_db[]=$sql_row['schedule_no'];
 		
 		
-		//if($priority_check!=-1)
 		
-		//NEW ORDER QTY TRACK
-		/* $sql1="select * from bai_pro4.shipfast_sum where shipment_plan_id=".$ship_tid;
-		$sql_result1=mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
-		while($sql_row1=mysql_fetch_array($sql_result1))
-		{
-			$size_xs1=$sql_row1['size_xs'];
-			$size_s1=$sql_row1['size_s'];
-			$size_m1=$sql_row1['size_m'];
-			$size_l1=$sql_row1['size_l'];
-			$size_xl1=$sql_row1['size_xl'];
-			$size_xxl1=$sql_row1['size_xxl'];
-			$size_xxxl1=$sql_row1['size_xxxl'];
-			$size_s061=$sql_row1['size_s06'];
-			$size_s081=$sql_row1['size_s08'];
-			$size_s101=$sql_row1['size_s10'];
-			$size_s121=$sql_row1['size_s12'];
-			$size_s141=$sql_row1['size_s14'];
-			$size_s161=$sql_row1['size_s16'];
-			$size_s181=$sql_row1['size_s18'];
-			$size_s201=$sql_row1['size_s20'];
-			$size_s221=$sql_row1['size_s22'];
-			$size_s241=$sql_row1['size_s24'];
-			$size_s261=$sql_row1['size_s26'];
-			$size_s281=$sql_row1['size_s28'];
-			$size_s301=$sql_row1['size_s30'];
-			
-		}
-		$order=$size_xs1+$size_s1+$size_m1+$size_l1+$size_xl1+$size_xxl1+$size_xxxl1+$size_s061+$size_s081+$size_s101+$size_s121+$size_s141+$size_s161+$size_s181+$size_s201+$size_s221+$size_s241+$size_s261+$size_s281+$size_s301; */
-
 		$sql1="select original_order_qty,priority from $bai_pro4.week_delivery_plan where shipment_plan_id=".$ship_tid;
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -518,25 +445,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS
 				}
 			}
 		}
-		// commented to remove hard code value for M&S
-		//Exception to check M&S
-		// if(substr($style,0,1)=="M")
-		// {
-		// 	if($qty_temp>=$fgqty and $qty_temp>0 and $fgqty>=$order) //due to excess percentage of shipment over order qty
-		// 	{
-		// 		$status=2; //FG
-		// 		if($internal_audited>=$fgqty)
-		// 		{
-		// 			$status=1;
-		// 		}
-		// 	} 
-		// 	if($qty_temp>=$order and $qty_temp>0 and $fgqty<$order)
-		// 	{
-		// 		$status=3; //packing
-		// 	}
-		// }
-		// else
-		// {
+		
 			if($qty_temp>=$fgqty and $qty_temp>0 and $fgqty>=$order) //due to excess percentage of shipment over order qty
 			{
 				$status=2; //FG
@@ -549,25 +458,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS
 			{
 				$status=3; //packing
 			}
-		// }
-		
-		//Exception to check M&S
-		
-		/*
-		Earlier Version before M&S issue
-		if($qty_temp>=$fgqty and $qty_temp>0 and $fgqty>=$order) //due to excess percentage of shipment over order qty
-		{
-			$status=2; //FG
-			if($internal_audited==$fgqty)
-			{
-				$status=1;
-			}
-		} 
-		if($qty_temp>=$order and $qty_temp>0 and $fgqty<$order)
-		{
-			$status=3; //packing
-		}
-		*/
+	
 		
 		//to update dispatch status (as per internal system)
 		$sqlx1="select COALESCE(sum(shipped),0) as \"shipped\" from $bai_pro3.bai_ship_cts_ref where ship_style=\"$style\" and ship_schedule=\"$schedule\"";
@@ -585,44 +476,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS
 		
 		echo $order."-".$cut_total."-".$input_total."-".$qty_temp."-".$fgqty."-".$internal_audited."-".$status."<br/>";
 		
-	/*	$status=6;
-		if($fgqty>=$order and $internal_audited==$order)
-		{
-			$status=1; //FCA Completed
-		}
-		else
-		{
-			if($fgqty>0 and $fgqty>=$order)
-			{
-				$status=2; //FG Completed
-			}
-			else
-			{
-				if($qty>=$order)
-				{
-					$status=3; //Sewing Completed
-				}
-				else
-				{
-					if($qty>0)
-					{
-						$status=4; //Not Yet done Sewing
-					}
-					else
-					{
-						if($cut_total>0)
-						{
-							$status=5;//Not Yet done cutting
-						}
-						else
-						{
-							$status=6;//Not Yet done rm
-						}
-					}
-				}
-			}
-		}
-		*/
+	
 		$query_add="";
 		if($counter_check>0)
 		{
@@ -644,11 +498,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS
 		//To Update Orders_db
 		}
 		else
-		{
-			/* $sql3="update $table_ref set priority=6 where shipment_plan_id=$ship_tid";
-		// echo $sql3."-B<br/>";
-			mysqli_query($link, $sql3) or exit("Sql Error23".mysqli_error($GLOBALS["___mysqli_ston"])); */
-			
+		{	
 			//TO Update Orders_db
 			$sql3="update $table_ref2 set priority=6 where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
 			// echo $sql3."-B<br/>";
