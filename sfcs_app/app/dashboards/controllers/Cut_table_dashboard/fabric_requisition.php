@@ -1,17 +1,4 @@
-<!--
-Changes Log:
-
-2014-07-09/ Dharanid /service request #159184 / Add the balasubramanyams,lakshmik,ramalingeswararaoa user names at $users array
-2014-09-06 / dharnid/ service request #800666 : baisec1 user access to kanakalakshmi(baicutsec1).
-
-2014-12-22 / RameshK / Service Request# 354829 / Changed the logic for calculating the difference between two times.
--->
-
 <?php
-// include($_SERVER['DOCUMENT_ROOT']."server/user_acl_v1.php");
-// include($_SERVER['DOCUMENT_ROOT']."server/group_def.php");
-// $view_access=user_acl("SFCS_0208",$username,1,$group_id_sfcs);
-// $users=user_acl("SFCS_0208",$username,43,$group_id_sfcs);
 include($_SERVER['DOCUMENT_ROOT'].'template/helper.php');
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
@@ -26,7 +13,6 @@ $has_permission=haspermission($url_r);
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	// $username="sfcsproject1";
-	// $users=array("sfcsproject1","rameshk","kirang","duminduw","rajanaa","chandrasekhard","prabathsa","baiadmn","naleenn","priyankat","balasubramanyams","lakshmik","ramalingeswararaoa","baicutsec1","tharangam");
 	//$mods=array();
 	$query = "select * from $bai_pro3.tbl_fabric_request_time";
 	$update_request_time=mysqli_query($link, $query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -259,7 +245,7 @@ function GetSelectedItem()
 					$hours=date("H");
 
 					$mints=date("i");
-					$hours=6;
+					$hours=00;
 					$mints=0;
 
 					$mins=array("00","05","10","15","20","25","30","35","40","45","50","55");
@@ -328,7 +314,7 @@ function GetSelectedItem()
 						}	
 					}
 
-					echo "<option value=\"23:59:59\" name=\"r22\">11:59 P.M</option>";
+					echo "<option value=\"23:59:59\" hidden=\"r22\">11:59 P.M</option>";
 
 					if($rms_request_time==1){
 						$hour = 'Hour';
@@ -351,14 +337,14 @@ function GetSelectedItem()
 			
 		<?php
 					
-				if(date("H:i:s") <= "23:00:00")
+				if(date("H:i:s") <= "23:59:59")
 				{
 					echo "<td><input type=\"checkbox\" onClick=\" document.apply['submit'].disabled =(document.apply['submit'].disabled)? false : true; GetSelectedItem();\" name=\"check\"><input type=\"submit\" id=\"submit\" name=\"submit\" value=\"Submit\" class=\"btn btn-primary\" style=\"float: right;\" disabled></td>	";
 				}
-				else
-				{
-					echo "<td><H2>After 9'o Clock You Can't Raise The Fabric Request. If Any Concern Please Concant RM Warehouse Manager.</H2></td>";
-				}	
+				// else
+				// {
+				// 	echo "<td><H2>After 9'o Clock You Can't Raise The Fabric Request. If Any Concern Please Concant RM Warehouse Manager.</H2></td>";
+				// }	
 			}
 		
 		?>	
