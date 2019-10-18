@@ -325,7 +325,7 @@ function verify_date()
 				$sql1="select sum(if(operation_id = 130,recevied_qty,0)) as qty,operation_id,schedule,size_title,size_id,assigned_module,color from $brandix_bts.bundle_creation_data where schedule in ($sch_db_grand) and length(size_id)>0 and assigned_module > 0 group by schedule,color,size_title,assigned_module,size_id";
 			}
 			
-			echo $sql1;
+			//echo $sql1;
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
