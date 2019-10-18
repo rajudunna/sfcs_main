@@ -76,9 +76,8 @@
 					$ex_fact_date=$norows['order_date'];
 
 				}
-				$color_size='';
 				if(strlen($color)>=130){
-					$color_size="style=font-size:10px";
+					$color=substr($color,0,130)."...,";
 				}				
 				$html.= '<div>								
 					<table>
@@ -92,7 +91,7 @@
 							<td> <b>Schedule:</b>'.$schedule.'</td>
 						</tr>
 						<tr rowspan=3>
-							<td '.$color_size.' colspan=2><b>Color:</b>'.substr($color,0,220).' </td>
+							<td colspan=2><b>Color:</b>'.substr($color,0,220).' </td>
 						</tr>
 						<tr>
 							<td colspan=2><b>Size:</b>'.$size.' </td>
