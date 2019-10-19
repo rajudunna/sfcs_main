@@ -83,7 +83,7 @@
 				<tr>
 					<td colspan=8>
 						<div>
-							<barcode code="'.$barcode.'" type="C39"/ height="0.95" size="0.85" text="1">
+							<barcode code="'.$barcode.'" type="C39"/ height="0.85" size="0.65" text="1">
 						<br/>
 					<center>'.trim($barcode).'</td> 
 					</div>
