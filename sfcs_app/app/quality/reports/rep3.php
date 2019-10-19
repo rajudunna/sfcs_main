@@ -278,7 +278,8 @@ function verify_date()
 			{
 				$sch_db_grand[]=$sql_row['schedule_no'];
 			}
-			$sch_db_grand=implode(',',$sch_db_grand);
+			//$sch_db_grand=implode(',',$sch_db_grand);
+			$sch_db_grand="'" . implode ( "', '", $sch_db_grand ) . "'";
 			
 		}
 		//echo $sch_db_grand;
