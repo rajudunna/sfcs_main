@@ -17,6 +17,7 @@
 			$style = $_GET['style'];
 			$schedule = $_GET['schedule'];
 			$doc_no = $_GET['doc_no'];
+			$org_doc_no = $_GET['org_doc_no'];
 			// echo $style.$schedule.$doc_no;
 			$sql12="SELECT order_div FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no='$schedule' limit 1";
 			// echo $sql12;
@@ -770,10 +771,14 @@
 						<td colspan=7 class=xl776065 style='border-right:.5pt solid black;border-left:none'><?php echo date("Y-m-d H:i:s"); ?></td>
 					</tr>
 					<tr height=20 style='height:15.0pt'>
-						<td colspan=2 height=20 class=xl786065 style='border-right:.5pt solid black;height:15.0pt'>Docket Number</td>
-						<td colspan=2 class=xl776065 style='border-right:.5pt solid black;border-left:none'><?php echo $doc_no; ?></td>
+						<td colspan=2 height=20 class=xl786065 style='border-right:.5pt solid black;height:15.0pt'>Original Docket</td>
+						<td colspan=2 class=xl776065 style='border-right:.5pt solid black;border-left:none'><?php echo $org_doc_no; ?></td>
 						<td colspan=2 class=xl806065 style='border-right:.5pt solid black;border-left:none'>Product Category</td>
 						<td colspan=7 class=xl776065 style='border-right:.5pt solid black;border-left:none'><?php echo $order_div; ?></td>
+					</tr>
+					<tr height=20 style='height:15.0pt'>
+						<td colspan=2 height=20 class=xl786065 style='border-right:.5pt solid black;height:15.0pt'>Docket Number</td>
+						<td colspan=2 class=xl776065 style='border-right:.5pt solid black;border-left:none'><?php echo $doc_no; ?></td>
 					</tr>
 					<!-- Header End -->
 
