@@ -53,7 +53,7 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
         {   
             $insert_qry_ips = "INSERT IGNORE INTO `$bai_pro3`.`plan_dashboard_input` 
             SELECT * FROM `$bai_pro3`.`plan_dashboard_input_backup`
-            WHERE input_job_no_random_ref = '$input_job_no'";
+            WHERE input_job_no_random_ref = '$input_job_no' order by input_trims_status desc limit 1";
             mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
         }	
 
@@ -104,7 +104,7 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
                     {
                        $insert_bcd="INSERT INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`,`mapped_color`,`barcode_sequence`,`barcode_number`) VALUES('".$style."','".$schedule."','".$mapped_color."','".$size_id."','".$size_title."','".$sfcs_smv."','".$id."','".$reported_qty."',0,0,0,0,'".$ops[$k]."','".$recut_doc."','".date('Y-m-d')."','".$recut_doc."','".$input_job."','".$input_job_no."','".$shift."','".$assigned_module."','".$remarks."','".$mapped_color."','".$job_counter."','".$id."')";
                     }    
-                     mysqli_query($link,$insert_bcd) or exit("Whille inserting into bcd2222".mysqli_error($GLOBALS["___mysqli_ston"]));
+                     mysqli_query($link,$insert_bcd) or exit("Whille inserting into bcd2222".$insert_bcd.mysqli_error($GLOBALS["___mysqli_ston"]));
 
                      $moq_qry="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$mo_no."', '".$id."','".$reported_qty."', '".$ops[$k]."', '".$op_namem[$k]."')";
                      mysqli_query($link,$moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
