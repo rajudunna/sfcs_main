@@ -180,7 +180,9 @@ function RecutProcess($recut_id_edit)
                 $cat_ref =$row_cat_ref['tid'];
         
             }
-            $getting_full_cut_details = "SELECT sum(recut_raised_qty) as recut_raised_qty,sum(recut_allocated_qty) as recut_allocated_qty  FROM `$bai_pro3`.`lay_plan_recut_track` where bcd_id=$bcd_id and cat_ref=$cat_ref";
+            $sum_recut_raise_qty = 0;
+            $sum_recut_all_qty = 0;
+            $getting_full_cut_details = "SELECT sum(recut_raised_qty) as recut_raised_qty,sum(recut_allocated_qty) as recut_allocated_qty  FROM `$bai_pro3`.`lay_plan_recut_track` where bcd_id in ($bcd_id) and cat_ref=$cat_ref";
             $getting_full_cut_details_result = $link->query($getting_full_cut_details);
             
             if(mysqli_num_rows($getting_full_cut_details_result) > 0){

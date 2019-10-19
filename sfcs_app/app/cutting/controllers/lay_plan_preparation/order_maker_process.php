@@ -138,9 +138,11 @@ if(isset($_POST['update']))
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
-				
+				$marker_stat_log_id = $iLastid;
+				// echo $iLastid;die();
 				$sql="update $bai_pro3.allocate_stat_log set mk_status=2 where tid=$allocate_ref and recut_lay_plan='no'";
-				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// echo $sql;die();
+				mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				
 				$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
@@ -246,7 +248,7 @@ if(isset($_POST['update']))
 
 					}
 				}
-				$sql_maker_allocation = "select allocate_ref from $bai_pro3.maker_stat_log where tid =\"$marker_stat_log_id\"";
+				$sql_maker_allocation = "select allocate_ref from $bai_pro3.maker_stat_log where tid =\"$marker_stat_log_id\" and recut_lay_plan='no'";
 				$sql_maker_allocation_res=mysqli_query($link, $sql_maker_allocation) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_allocation_res=mysqli_fetch_array($sql_maker_allocation_res);
 
@@ -264,7 +266,7 @@ if(isset($_POST['update']))
 				}
 				
 				// var_dump($sql_row);
-				$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set marker_details_id='".$id."', mklength='".$mklen."',mkeff='".$mkeff."',remark1='".$r1."',remark2='".$r2."',remark3='".$r3."',remark4='".$r4."' where allocate_ref=$sql_allocation_res[allocate_ref]";
+				$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set marker_details_id='".$id."', mklength='".$mklen."',mkeff='".$mkeff."',remark1='".$r1."',remark2='".$r2."',remark3='".$r3."',remark4='".$r4."' where allocate_ref=$sql_allocation_res[allocate_ref] and recut_lay_plan='no'";
 				//echo $sql_update_marker_length_id;die();
 				mysqli_query($link, $sql_update_marker_length_id) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				

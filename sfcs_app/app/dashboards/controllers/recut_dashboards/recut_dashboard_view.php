@@ -338,6 +338,16 @@
         $insert_id_b_or_f=0;
         //getting cat stat log
         $date=date("Y-m-d", mktime(0,0,0,date("m") ,date("d"),date("Y")));
+        $it_query = "select max(serial_no) as serial_no from $bai_pro3.cuttable_stat_log_recut where order_tid=\"$order_tid\"";
+            $res_it_query = $link->query($it_query);
+            if($res_it_query->num_rows > 0){
+                while($it_row = $res_it_query->fetch_assoc()) 
+                {
+                    $max_val = ($it_row['serial_no']+1);
+                }
+            } else {
+                $max_val=1;
+            }
         foreach($cat as $key=>$value)
         {
           
@@ -351,8 +361,8 @@
 
             }
             $remarks = 'Recut';
-         
-            $sql_cuttable_stat_log_recut="insert into $bai_pro3.cuttable_stat_log_recut( order_tid,date,cat_id,remarks,$sizes_p)values  (\"$order_tid\", \"$date\", $cat_ref,\"$remarks\",$values)";
+            
+            $sql_cuttable_stat_log_recut="insert into $bai_pro3.cuttable_stat_log_recut( order_tid,date,cat_id,remarks,$sizes_p,serial_no)values  (\"$order_tid\", \"$date\", $cat_ref,\"$remarks\",$values,$max_val)";
             // echo $sql_plandoc;
             mysqli_query($link,$sql_cuttable_stat_log_recut) or exit("While inserting into the cuttable_stat_log_recut".mysqli_error($GLOBALS["___mysqli_ston"]));
             $insert_id=mysqli_insert_id($link);

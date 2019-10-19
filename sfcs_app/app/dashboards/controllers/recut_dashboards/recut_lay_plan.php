@@ -147,11 +147,12 @@ foreach($cats_ids as $key=>$value)
 {
     $sql="select * from $bai_pro3.cuttable_stat_log_recut where order_tid=\"$tran_order_tid\" and cat_id=$value order by tid";
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    
     while($sql_row=mysqli_fetch_array($sql_result))
     {
         $cat_id=$sql_row['cat_id'];
         $cuttable_ref=$sql_row['tid'];
-
+        $serial_no=$sql_row['serial_no'];
         $cuttable_sum=0;
 	    $total_allocated=0;
 
@@ -204,6 +205,7 @@ foreach($cats_ids as $key=>$value)
 
         $sql16="select * from bai_pro3.cuttable_stat_log_recut where order_tid=\"$tran_order_tid\"";
         $sql_result16=mysqli_query($link, $sql16) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        
         $cut_count1 = mysqli_num_rows($sql_result16);
         $copy_status = 0;
         if($total_allocated>0){
@@ -214,7 +216,7 @@ foreach($cats_ids as $key=>$value)
                 $allocate_table .= "<td class=\"  \"><center><a class='btn btn-info btn-xs' disabled>Copy to Other</a></center></td>";
             }
             else {
-                $allocate_table .= "<td class=\"  \"><center><a class='btn btn-info btn-xs'  href=\"".getFullURL($_GET['r'], "save_categories.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&total_allocated=$total_allocated\">Copy to Other</a></center></td>";
+                $allocate_table .= "<td class=\"  \"><center><a class='btn btn-info btn-xs'  href=\"".getFullURL($_GET['r'], "save_categories.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&total_allocated=$total_allocated&serial_no=$serial_no\">Copy to Other</a></center></td>";
             }
         }
         else {
