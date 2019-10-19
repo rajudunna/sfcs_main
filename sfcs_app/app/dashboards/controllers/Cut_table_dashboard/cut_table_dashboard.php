@@ -874,7 +874,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $style=$sql_row1['order_style_no'];
       $schedule=$sql_row1['order_del_no'];
       $color=$sql_row1['order_col_des'];
-      $total_qty=$sql_row1['total'];
+      // $total_qty=$sql_row1['total'];
       
       $cut_no=$sql_row1['acutno'];
       $color_code=$sql_row1['color_code'];
@@ -1190,7 +1190,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             str_pad("Job_No:".implode(", ",$club_c_code),80)."\n".
             $tool_tip.
             str_pad("Docket No:".implode(", ",$club_docs),80)."\n".
-            str_pad("Total_Qty:".$total_qty,80)."\n".
+            // str_pad("Total_Qty:".$total_qty,80)."\n".
             str_pad("Plan_Time:".$log_time,50)."\n".
             str_pad("Lay_Req_Time:".$lay_time[array_search($doc_no,$doc_no_ref)],80)."\n".
             str_pad("Fab_Loc.:".$fabric_location."Bundle_Loc.:".$bundle_location,80);
