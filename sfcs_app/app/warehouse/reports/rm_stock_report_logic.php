@@ -59,6 +59,22 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 	$supplier=$sql_row1['supplier'];
     $buyer=$sql_row1['buyer'];
 	$log_time=$sql_row1['log_time'];
+
+	//For #2711 we will show roll remarks in report if remarks are null/empty values
+	if($remarks==''){
+		$remarks=trim($sql_row1['roll_remarks']);
+		if($remarks==''){
+			$qry_get_rol="SELECT roll_remarks FROM $bai_rm_pj1.stock_report WHERE tid=$tid";
+			$sql_result1x =$link->query($qry_get_rol);
+			if(mysqli_num_rows($sql_result1x)> 0){
+				while ($row = $sql_result1x->fetch_assoc())
+				{
+					$remarks=$row["roll_remarks"];
+				}
+			}
+
+	 	}
+	}
 	
 	
 	$sql1x="select ref4,inv_no,ref1,ref3 from $bai_rm_pj1.sticker_ref where tid=$tid";
@@ -152,6 +168,11 @@ if($max_id>0){
 			$supplier=$sql_row1['supplier'];
 			$buyer=$sql_row1['buyer'];
 			$log_time=$sql_row1['log_time'];
+
+			//For #2711 we will show roll remarks in report if remarks are null/empty values
+			if($remarks==''){
+				$remarks=trim($sql_row1['roll_remarks']);
+			}
 			
 			$sql1x="select ref4,inv_no,ref1,ref3 from $bai_rm_pj1.sticker_ref where tid=$tid";
 			$sql_result1x =$link->query($sql1x);
