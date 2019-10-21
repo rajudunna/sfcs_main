@@ -143,7 +143,7 @@
 										<td colspan=12><b>Ops:</b>'.$code.'</td>';	
 										if($shadedet!='')
 										{
-										$html.='<td><b>S:</b></td><td colspan=5>'.$shadedet.'</td>';
+										$html.='<td><b>S:</b></td><td colspan=15>'.$shadedet.'</td>';
 										}
 									$html.=	'</tr>
 									</table>
