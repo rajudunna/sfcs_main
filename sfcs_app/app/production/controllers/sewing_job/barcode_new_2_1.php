@@ -145,7 +145,7 @@
 						   <tr>
 							  <td colspan=8>
 										<div>
-											<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="1.73" size="0.55" text="1">
+											<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="1.25" size="0.55" text="1">
 										</div>
 									<center>'.trim($barcode).'</td>
 							</tr>
@@ -192,7 +192,7 @@
 
 <?php
 
-	$mpdf = new \Mpdf\Mpdf([
+	$mpdf = new \Mpdf\Mpdf([  
 		'mode' => 'utf-8', 
 		'format' => [25, 50], 
 		'orientation' => 'L'
@@ -325,7 +325,7 @@
 						   <tr>
 							  <td colspan=8>
 										<div>
-											<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.65" text="1">
+											<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="1.25" size="0.55" text="1">
 										</div><br/>
 									<center>'.trim($barcode).'</td> 
 							</tr>
@@ -338,7 +338,7 @@
 							$html.= "</td>";	
 						$html.='</tr> 
 						<tr>	
-						<td colspan=>'.chr($color_code).leading_zeros($cutno,3).' / '.$display1.' / '.trim(str_pad($quantity12333333333333333333,3,"0", STR_PAD_LEFT)).'</td>
+						<td colspan=>'.chr($color_code).leading_zeros($cutno,3).' / '.$display1.' / '.trim(str_pad($quantity1,3,"0", STR_PAD_LEFT)).'</td>
 						
 			           </tr>
 							</table>
