@@ -732,7 +732,7 @@
 							mysqli_query($link,$ims_backup) or exit(message_sql($b_shift));
                             $ims_delete="delete from $bai_pro3.ims_log where tid = $updatable_id";
 							mysqli_query($link,$ims_delete) or exit(message_sql($b_shift));
-							$bcd_update_query = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '1' where bundle_number =$b_tid and operation_id = ".$post_code;
+							$bcd_update_query = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '1' where bundle_number =$b_tid and operation_id = ".$post_code[0];
                             mysqli_query($link,$bcd_update_query) or exit(message_sql($b_shift));
 						}
 					}
