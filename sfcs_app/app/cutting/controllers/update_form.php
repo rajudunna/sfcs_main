@@ -66,7 +66,7 @@ function closepopup()
    }
 
 function DataCheck()
-{
+{   $('#issueid').hide();
 	var chks = document.getElementsByName('issqty[]');  
 	var chks1 = document.getElementsByName('lotbal[]'); 
 	var tot=0;       
@@ -99,6 +99,10 @@ function DataCheck()
 	{
 		document.getElementById("tot").value=parseFloat(tot);
 		document.getElementById("bal").value=parseFloat(avail)-parseFloat(tot);
+	}
+	if(tot>0)
+	{
+		 $('#issueid').show();
 	}
 
 }
@@ -324,7 +328,7 @@ if($_GET["lots"] > 0)
 	}
 	while($sql_row1=mysqli_fetch_array($result1))
 	{
-		if(($sql_row1["qty_rec"]+$sql_row1["qty_ret"]-$sql_row1["qty_issued"]-$sql_row1["qty_allocated"]) > 0)
+		if(($sql_row1["qty_rec"]+$sql_row1["qty_ret"])-($sql_row1["qty_issued"]+$sql_row1["qty_allocated"]) > 0)
 		{	
 		$readonly="readonly";	
 		if(strlen($sql_row1["ref4"]) > 0)
@@ -536,11 +540,11 @@ switch($level)
 	}
 	case 3:
 	{
-		if(strlen($_GET["lots"]) > 0)
-		{
-			echo "<input type=\"submit\" class='btn btn-success' name=\"issue\" value=\"Allocate\">";
+		// if(strlen($_GET["lots"]) > 0)
+		// {
+			echo "<input type=\"submit\" style='display:none' class='btn btn-success' name=\"issue\" id=\"issueid\" value=\"Allocate\">";
 			break;
-		}
+		// }
 	}
 	default:
 	{
