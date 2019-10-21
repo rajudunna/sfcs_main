@@ -72,7 +72,7 @@
 				
 				//$detailed_bundle_sticker=1;
 				$check=0;
-                $barcode_qry="SELECT tran_id, doc_no,size, barcode,quantity, ops_code FROM $bai_pro3.emb_bundles where $query doc_no=".$doc_no."  and report_seq=".$reqseqid."";
+                $barcode_qry="SELECT tran_id, doc_no,size, barcode,quantity, ops_code,num_id FROM $bai_pro3.emb_bundles where $query doc_no=".$doc_no."  and report_seq=".$reqseqid."";
 				$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($barcode_rslt = mysqli_fetch_array($sql_barcode))
 				{				
@@ -82,12 +82,23 @@
 					$size=$barcode_rslt['size'];
 					$barcode=$barcode_rslt['barcode'];
 					$quantity=$barcode_rslt['quantity'];
+					$numbid=$barcode_rslt['num_id'];
 					$code='';
 					$get_ops="SELECT operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code=".$barcode_rslt['ops_code']."";
 					$get_ops_res=mysqli_query($link, $get_ops) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($get_ops_row = mysqli_fetch_array($get_ops_res))
 					{
 						$code=$barcode_rslt['ops_code']." / ". $get_ops_row['operation_name'];
+					}
+					if($numbid!='')
+					{
+						//get shande and bundno from docket_number_info
+						$get_det_qry="select bundle_start,bundle_end,shade from $bai_pro3.docket_number_info where id=$numbid";
+						$get_det_qry_res=mysqli_query($link, $get_det_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($get_det_row = mysqli_fetch_array($get_det_qry_res))
+						{
+							$shadedet=$get_det_row['bundle_start']."-".$get_det_row['shade']."-".$get_det_row['bundle_end'];
+						}
 					}
 					
 					if((int)$detailed_bundle_sticker == 1 && $check<>$barcode_rslt['tran_id'])
@@ -122,8 +133,12 @@
 							</tr> 
 							<tr>
 							<td colspan=5><b>Ops/Des:</b></td><td colspan=15>'.$code.'</td>
-							</tr>
-							<tr>
+							</tr>';
+							if($shadedet!='')
+							{
+							$html.=	'<td colspan=1><b>Shade:</b></td><td colspan=15>'.$shadedet.'</td>';
+							}
+							$html.=	'<tr>
 							<td colspan=5><b>Qty:</b></td><td colspan=7>'.leading_zeros($quantity,4).'</td>
 							<td colspan=5><b>Bundle No:</b></td><td colspan=7>'.leading_zeros($barcode_rslt['tran_id'],7).'</td>
 							<tr>
@@ -162,8 +177,13 @@
 							<td colspan=5><b>Color:</b></td><td colspan=15>'.trim($color).'</td>
 							</tr> 
 							<tr>
-							<td colspan=5><b>Ops/Des:</b></td><td colspan=15>'.$code.'</td>
-							</tr>
+							<td colspan=5><b>Ops/Des:</b></td><td colspan=15>'.$code.'</td>';
+					if($shadedet!='')
+					{
+					$html.=	'<td colspan=1><b>Shade:</b></td><td colspan=15>'.$shadedet.'</td>';
+					}
+							
+					$html.=	'</tr>
 							<tr>
 							<td colspan=5><b>Qty:</b></td><td colspan=7>'.leading_zeros($quantity,4).'</td>
 							<td colspan=5><b>Bundle No:</b></td><td colspan=7>'.leading_zeros($barcode_rslt['tran_id'],7).'</td>
