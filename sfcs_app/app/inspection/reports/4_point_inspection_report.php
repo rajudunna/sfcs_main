@@ -1673,7 +1673,7 @@ tags will be replaced.-->
   <td colspan="2" class="xl8919758">Tot Length</td>
 </tr>
  <?php
-    $get_shade_grp="SELECT SUM(qty_issued) AS rec,shade_grp,ref2,tid FROM $bai_rm_pj1.store_in WHERE ref2 in (".implode(",",$sfcs_roll).") and tid in (".implode(",",$tot_ids).") group by ref2 order by ref2";
+    $get_shade_grp="SELECT SUM(qty_rec) AS rec,shade_grp,ref2,tid FROM $bai_rm_pj1.store_in WHERE ref2 in (".implode(",",$sfcs_roll).") and tid in (".implode(",",$tot_ids).") group by ref2 order by ref2";
    //echo $get_shade_grp;
 	$shade_grp_result = mysqli_query($link, $get_shade_grp) or exit("get_shade_grp Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($shade_grp_result)>0)
