@@ -449,7 +449,7 @@ $sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
 while($sql_row2=mysqli_fetch_array($sql_result2))
 {
 	$mklength=$sql_row2['mklength'];
-	if($marker_name == 'N/A'){
+	if($mk_remarks == 'N/A'){
 		$mk_remarks=$sql_row2['remarks'];
 	}
 	$remark1=$sql_row2['remark1'];
