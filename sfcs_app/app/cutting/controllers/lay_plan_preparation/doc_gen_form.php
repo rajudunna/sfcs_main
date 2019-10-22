@@ -46,11 +46,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 $sql12="SELECT id FROM bai_pro3.`maker_details` where parent_id=".$allocate_ref." order by id limit 1";
 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row12=mysqli_fetch_array($sql_result12))
-{
-	$mk_id=$sql_row12['id'];
+if(mysqli_num_rows($sql_result12)>0){
+	while($sql_row12=mysqli_fetch_array($sql_result12))
+	{
+		$mk_id=$sql_row12['id'];
+	}
+}else{
+	$mk_id=0;
 }
-
 
 {
 if($sql_result1_res==0){
