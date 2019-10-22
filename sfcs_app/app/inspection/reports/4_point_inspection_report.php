@@ -6,6 +6,7 @@ $details_result21 = mysqli_query($link, $get_details21) or exit("get_details Err
 $tot_rolls_data=mysqli_num_rows($details_result21);
 
 $get_inspection_population_info = "select * from $bai_rm_pj1.`roll_inspection_child` where parent_id=".$inpsect_id."";
+//echo $get_inspection_population_info;
 $info_result = mysqli_query($link, $get_inspection_population_info) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row22 = mysqli_fetch_array($info_result)) 
 {
@@ -27,6 +28,7 @@ while ($row22 = mysqli_fetch_array($info_result))
 }
 
 $get_details = "select * from $bai_rm_pj1.`inspection_population` where store_in_id in (".implode(",",$tot_ids).")";
+//echo $get_details;
 $details_result = mysqli_query($link, $get_details) or exit("get_details Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1 = mysqli_fetch_array($details_result))
 {
@@ -48,7 +50,8 @@ while ($row1 = mysqli_fetch_array($details_result))
 	elseif($row1['status']==2)
 	{
 		$status='In Progress';
-	}	
+	}
+
 }
 
 
@@ -67,6 +70,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
 }
 
 $get_details12 = "select * from $bai_rm_pj1.`sticker_report` where po_no=".$po_no." limit 1";
+//echo $get_details12;
 $details_result12 = mysqli_query($link, $get_details12) or exit("get_details Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1112 = mysqli_fetch_array($details_result12)) 
 {
@@ -1336,9 +1340,7 @@ function printpr()
 Page wizard.-->
 <!--If the same item is republished from Excel, all information between the DIV
 tags will be replaced.-->
-<!----------------------------->
-<!--START OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD -->
-<!----------------------------->
+
 
 <div id="digital_report_19758" align=center x:publishsource="Excel">
 
@@ -1434,8 +1436,9 @@ tags will be replaced.-->
   <td class=xl1519758></td>
   <td class=xl1519758></td>
   <td class=xl1519758></td>
-  <td colspan=4 rowspan=2 class=xl6619758 style='border-bottom:.5pt solid black'>UN
-  AUTHIORIZED COPY</td>
+ <!--  <td colspan=4 rowspan=2 class=xl6619758 style='border-bottom:.5pt solid black'>UN
+  AUTHIORIZED COPY</td> -->
+  <td colspan=4 rowspan=2 class=xl6619758 style='border-bottom:.5pt solid black'></td>
   <td class=xl1519758></td>
  </tr>
  <tr height=19 style='height:14.4pt'>
@@ -1494,7 +1497,8 @@ tags will be replaced.-->
   <td class=xl6419758></td>
   <td class=xl6419758>Supplier</td>
   <td class=xl6419758></td>
-  <td class=xl8219758 style='border-top:none'>- <?php echo $supplier;?></td>
+  <!-- <td class=xl8219758 style='border-top:none'>- <?php echo wordwrap($supplier,30,"<br>\n",TRUE);?></td> -->
+  <td class=xl8219758 style='border-top:none'>- <?php echo substr($supplier,0,28);?></td>
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
@@ -1558,8 +1562,9 @@ tags will be replaced.-->
   <td class=xl1519758></td>
   <td class=xl1519758></td>
   <td class=xl1519758></td>
-  <td colspan=7 class=xl7019758 style='border-right:.5pt solid black'>Batch
-  Details</td>
+  <td colspan=7 class=xl1519758></td>
+  <!-- <td colspan=7 class=xl7019758 style='border-right:.5pt solid black'>Batch
+  Details</td> -->
   <td class=xl1519758></td>
   <td colspan=2 class=xl7919758>Repeat length</td>
   <td class=xl7719758 style='border-top:none'>- <?php echo $repeat_length;?></td>
@@ -1646,7 +1651,54 @@ tags will be replaced.-->
   <td class=xl1519758></td>
   <td class=xl1519758></td>
  </tr>
- <tr height=21 style='mso-height-source:userset;height:15.6pt'>
+<!--  <tr>
+ <td colspan=7 class=xl7019758 style='border-right:.5pt solid black'>Batch
+  Details</td>
+ </tr>	
+ <tr>
+  <td class="xl8919758">Batch No</td>
+  <td class="xl8919758">CPL</td>
+  <td colspan="3" class="xl8919758">RollNo</td>
+  <td colspan="2" class="xl8919758">Tot Length</td>
+ </tr> -->
+ <tr>
+ <td class=xl1519758></td>
+ <td colspan=9 class=xl7019758 style='border-right:.5pt solid black'>Batch Details</td>
+ </tr>
+ <tr>
+  <td class=xl1519758></td>
+  <td colspan="3" class="xl8919758">Batch No</td>
+  <td class="xl8919758">CPL</td>
+  <td colspan="3" class="xl8919758">RollNo</td>
+  <td colspan="2" class="xl8919758">Tot Length</td>
+</tr>
+ <?php
+    $get_shade_grp="SELECT SUM(qty_issued) AS rec,shade_grp,ref2,tid FROM $bai_rm_pj1.store_in WHERE ref2 in (".implode(",",$sfcs_roll).") and tid in (".implode(",",$tot_ids).") group by ref2 order by ref2";
+   //echo $get_shade_grp;
+	$shade_grp_result = mysqli_query($link, $get_shade_grp) or exit("get_shade_grp Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($shade_grp_result)>0)
+	{
+		while ($row123 = mysqli_fetch_array($shade_grp_result))
+		{
+		  $roll_no = $row123['ref2'];	
+		  $tot_length = $row123['rec'];
+		  $shade = $row123['shade_grp'];
+		  $tid = $row123['tid'];
+
+		  ?>	
+		  
+		  <tr>
+		  	<td class=xl1519758></td>
+		  	<td colspan="3" class="xl8919758"><?php echo $batch[$tid]; ?></td>
+		  	<td class="xl8919758"><?php echo $shade; ?></td>
+		  	<td colspan="3" class="xl8919758"><?php echo $roll_no; ?></td>
+		  	<td colspan="2" class="xl8919758"><?php echo $tot_length; ?></td>
+		  </tr>
+    <?php	  	
+		}
+	}	
+	?>
+<tr height=21 style='mso-height-source:userset;height:15.6pt'>
   <td height=21 class=xl1519758 style='height:15.6pt'></td>
   <td class=xl1519758></td>
   <td class=xl1519758></td>
