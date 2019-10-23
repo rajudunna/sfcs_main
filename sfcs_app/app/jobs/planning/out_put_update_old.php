@@ -6,8 +6,8 @@ error_reporting(0);
 
 <?php
 	$include_path=getenv('config_job_path');
-	// include($include_path.'\sfcs_app\common\config\config_jobs.php');
-	// include($include_path.'\sfcs_app\common\config\config_ajax.php');	
+	//  include($include_path.'\sfcs_app\common\config\config_jobs.php');
+	//  include($include_path.'\sfcs_app\common\config\config_ajax.php');	
 	set_time_limit(90000);
 //Temp Pool
 
