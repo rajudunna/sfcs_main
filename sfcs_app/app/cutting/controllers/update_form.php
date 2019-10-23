@@ -94,6 +94,7 @@ function DataCheck()
 		{
 			chks[i].value=0;
 		}
+		document.getElementById("#issueid").disabled = true;
 	}
 	else
 	{
