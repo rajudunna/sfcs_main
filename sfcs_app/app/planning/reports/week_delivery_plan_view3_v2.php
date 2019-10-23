@@ -1,4 +1,3 @@
-
 <?php
 set_time_limit(9000);
 $start_date_w=time();
@@ -982,7 +981,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 							<td $highlight>$plan_comp_date</td>
 							<td $highlight>$mode</td>
 							<td $highlight>$rev_mode</td>
-							<td $highlight>".implode(",",$executed_sec)."</td>
+							<td $highlight>".implode(",",$z)."</td>
 							";
 
 						if(!isset($_POST['custom'])){
@@ -1047,4 +1046,3 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 
 
 
-	

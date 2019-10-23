@@ -247,9 +247,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$body_yy=$sql_row['catyy'];
 	$waist_yy=$sql_row['Waist_yy'];
 	$leg_yy=$sql_row['Leg_yy'];
-	if($purwidth=='N/A'){
-		$purwidth=$sql_row['purwidth'];
-	}
+	$purwidth=$sql_row['purwidth'];
 	$compo_no=$sql_row['compo_no'];
 	$strip_match=$sql_row['strip_match'];
 	$gusset_sep=$sql_row['gusset_sep'];
