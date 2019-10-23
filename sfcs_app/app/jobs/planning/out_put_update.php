@@ -10,7 +10,7 @@ ini_set('default_socket_timeout', 3000000);
 error_reporting(0);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
-include($include_path.'\sfcs_app\common\config\config_ajax.php');	
+// include($include_path.'\sfcs_app\common\config\config_ajax.php');	
 
 $table_ref="$bai_pro4.week_delivery_plan";
 $table_ref2="$bai_pro3.bai_orders_db";
