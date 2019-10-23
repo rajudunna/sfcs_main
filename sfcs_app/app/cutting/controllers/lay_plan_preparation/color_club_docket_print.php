@@ -366,7 +366,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
 		$mklength=$sql_row2['mklength'];
-		if($marker_name == 'N/A'){
+		if($mk_remarks == 'N/A'){
 			$mk_remarks=$sql_row2['remarks'];
 		}
 		$patt_ver=$sql_row2['mk_ver'];
