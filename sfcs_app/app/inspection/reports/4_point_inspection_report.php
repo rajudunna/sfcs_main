@@ -1663,17 +1663,18 @@ tags will be replaced.-->
  </tr> -->
  <tr>
  <td class=xl1519758></td>
- <td colspan=9 class=xl7019758 style='border-right:.5pt solid black'>Batch Details</td>
+ <td colspan=11 class=xl7019758 style='border-right:.5pt solid black'>Batch Details</td>
  </tr>
  <tr>
   <td class=xl1519758></td>
   <td colspan="3" class="xl8919758">Batch No</td>
-  <td class="xl8919758">CPL</td>
-  <td colspan="3" class="xl8919758">RollNo</td>
+  <td colspan="2" class="xl8919758">Shade Group</td>
+  <td colspan="2" class="xl8919758">RollNo</td>
   <td colspan="2" class="xl8919758">Tot Length</td>
+  <td colspan="2" class="xl8919758">Width</td>
 </tr>
  <?php
-    $get_shade_grp="SELECT SUM(qty_rec) AS rec,shade_grp,ref2,tid FROM $bai_rm_pj1.store_in WHERE ref2 in (".implode(",",$sfcs_roll).") and tid in (".implode(",",$tot_ids).") group by ref2 order by ref2";
+    $get_shade_grp="SELECT SUM(qty_rec) AS rec,shade_grp,ref2,ref3,tid FROM $bai_rm_pj1.store_in WHERE ref2 in (".implode(",",$sfcs_roll).") and tid in (".implode(",",$tot_ids).") group by ref2 order by ref2";
    //echo $get_shade_grp;
 	$shade_grp_result = mysqli_query($link, $get_shade_grp) or exit("get_shade_grp Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($shade_grp_result)>0)
@@ -1684,15 +1685,17 @@ tags will be replaced.-->
 		  $tot_length = $row123['rec'];
 		  $shade = $row123['shade_grp'];
 		  $tid = $row123['tid'];
+		  $width = $row123['ref3'];
 
 		  ?>	
 		  
 		  <tr>
 		  	<td class=xl1519758></td>
 		  	<td colspan="3" class="xl8919758"><?php echo $batch[$tid]; ?></td>
-		  	<td class="xl8919758"><?php echo $shade; ?></td>
-		  	<td colspan="3" class="xl8919758"><?php echo $roll_no; ?></td>
+		  	<td colspan="2" class="xl8919758"><?php echo $shade; ?></td>
+		  	<td colspan="2" class="xl8919758"><?php echo $roll_no; ?></td>
 		  	<td colspan="2" class="xl8919758"><?php echo $tot_length; ?></td>
+		  	<td colspan="2" class="xl8919758"><?php echo $width; ?></td>
 		  </tr>
     <?php	  	
 		}
