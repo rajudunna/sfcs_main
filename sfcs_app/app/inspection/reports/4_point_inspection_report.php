@@ -80,6 +80,7 @@ while ($row1112 = mysqli_fetch_array($details_result12))
 	$color = $row1112['rm_color'];
 	$invoice_no = $row1112['inv_no'];
 	$fab_qua = $row1112['item_desc'];	
+	$buyer = $row1112['buyer'];
 }
 $tot_points=0;
 $get_inspection_population_info12 = "select insp_child_id,points,sum(points) as tot from $bai_rm_pj1.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") group by insp_child_id,points";
@@ -1443,7 +1444,7 @@ tags will be replaced.-->
  </tr>
  <tr height=19 style='height:14.4pt'>
   <td height=19 class=xl1519758 style='height:14.4pt'></td>
-  <td colspan=11 class=xl6519758>Matreial Inpsection Report</td>
+  <td colspan=11 class=xl6519758>Material Inpsection Report</td>
   <td class=xl6419758></td>
   <td class=xl1519758></td>
   <td class=xl1519758></td>
@@ -1520,7 +1521,7 @@ tags will be replaced.-->
   <td class=xl1519758></td>
   <td class=xl6419758>Buyer</td>
   <td class=xl6419758></td>
-  <td class=xl8219758 style='border-top:none'>- </td>
+  <td class=xl8219758 style='border-top:none'>- <?php echo substr($buyer,0,23)?></td>
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
@@ -1663,43 +1664,48 @@ tags will be replaced.-->
  </tr> -->
  <tr>
  <td class=xl1519758></td>
- <td colspan=11 class=xl7019758 style='border-right:.5pt solid black'>Batch Details</td>
+ <td colspan=13 class=xl7019758 style='border-right:.5pt solid black'>Batch Details</td>
  </tr>
  <tr>
   <td class=xl1519758></td>
   <td colspan="3" class="xl8919758">Batch No</td>
   <td colspan="2" class="xl8919758">Shade Group</td>
-  <td colspan="2" class="xl8919758">RollNo</td>
-  <td colspan="2" class="xl8919758">Tot Length</td>
+  <td colspan="2" class="xl8919758">No Of Rolls</td>
+  <td colspan="4" class="xl8919758">Total Ticket Length</td>
   <td colspan="2" class="xl8919758">Width</td>
 </tr>
  <?php
-    $get_shade_grp="SELECT SUM(qty_rec) AS rec,shade_grp,ref2,ref3,tid FROM $bai_rm_pj1.store_in WHERE ref2 in (".implode(",",$sfcs_roll).") and tid in (".implode(",",$tot_ids).") group by ref2 order by ref2";
-   //echo $get_shade_grp;
-	$shade_grp_result = mysqli_query($link, $get_shade_grp) or exit("get_shade_grp Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($shade_grp_result)>0)
-	{
-		while ($row123 = mysqli_fetch_array($shade_grp_result))
-		{
-		  $roll_no = $row123['ref2'];	
-		  $tot_length = $row123['rec'];
-		  $shade = $row123['shade_grp'];
-		  $tid = $row123['tid'];
-		  $width = $row123['ref3'];
 
-		  ?>	
-		  
-		  <tr>
-		  	<td class=xl1519758></td>
-		  	<td colspan="3" class="xl8919758"><?php echo $batch[$tid]; ?></td>
-		  	<td colspan="2" class="xl8919758"><?php echo $shade; ?></td>
-		  	<td colspan="2" class="xl8919758"><?php echo $roll_no; ?></td>
-		  	<td colspan="2" class="xl8919758"><?php echo $tot_length; ?></td>
-		  	<td colspan="2" class="xl8919758"><?php echo $width; ?></td>
-		  </tr>
-    <?php	  	
-		}
-	}	
+
+          $get_shade_grp="SELECT batch_no,SUM(qty_rec) AS rec,shade_grp,COUNT(*) AS rolls,MIN(ref6) as width FROM $bai_rm_pj1.store_in LEFT JOIN $bai_rm_pj1.sticker_report ON $bai_rm_pj1.sticker_report.lot_no=$bai_rm_pj1.store_in.lot_no WHERE tid IN (".implode(",",$tot_ids).") GROUP BY batch_no,shade_grp";
+			   //echo $get_shade_grp;
+				$shade_grp_result = mysqli_query($link, $get_shade_grp) or exit("get_shade_grp Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($shade_grp_result)>0)
+				{
+					while ($row123 = mysqli_fetch_array($shade_grp_result))
+					{
+					  $roll_no = $row123['rolls'];	
+					  $tot_length = $row123['rec'];
+					  $shade = $row123['shade_grp'];
+					  $tid = $row123['tid'];
+					  $width = $row123['width'];
+					  $batch_no = $row123['batch_no'];
+
+					  ?>	
+					  
+					  <tr>
+					  	<td class=xl1519758></td>
+					  	<td colspan="3" class="xl8919758"><?php echo $batch_no; ?></td>
+					  	<td colspan="2" class="xl8919758"><?php echo $shade; ?></td>
+					  	<td colspan="2" class="xl8919758"><?php echo $roll_no; ?></td>
+					  	<td colspan="4" class="xl8919758"><?php echo $tot_length; ?></td>
+					  	<td colspan="2" class="xl8919758"><?php echo $width; ?></td>
+					  </tr>
+			    <?php	  	
+					}
+				}	
+	
+
 	?>
 <tr height=21 style='mso-height-source:userset;height:15.6pt'>
   <td height=21 class=xl1519758 style='height:15.6pt'></td>
@@ -1807,7 +1813,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 	
 	?></td> 
 	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $rate; ?></td>
-	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $comment[$tot_ids[$i]]; ?></td>
+	<td class=xl9319758 style='border-top:none;border-left:none'><?php echo $comment[$tot_ids[$i]]; ?></td>
 	<?php	
 	$count=0;$data='';
 	$get_inspection_population_info122 = "select code,points from $bai_rm_pj1.`four_points_table` where insp_child_id=".$tot_ids[$i]."";
@@ -2834,9 +2840,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 </div>
 
 
-<!----------------------------->
-<!--END OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD-->
-<!----------------------------->
+
 </body>
 
 </html>
