@@ -181,24 +181,24 @@ function RecutProcess($recut_id_edit)
         
             }
             $sum_recut_raise_qty = 0;
-            $sum_recut_all_qty = 0;
-            $getting_full_cut_details = "SELECT sum(recut_raised_qty) as recut_raised_qty,sum(recut_allocated_qty) as recut_allocated_qty  FROM `$bai_pro3`.`lay_plan_recut_track` where bcd_id in ($bcd_id) and cat_ref=$cat_ref";
+            $getting_full_cut_details = "SELECT sum(recut_raised_qty) as recut_raised_qty FROM `$bai_pro3`.`lay_plan_recut_track` where bcd_id in ($bcd_id) and cat_ref=$cat_ref";
             $getting_full_cut_details_result = $link->query($getting_full_cut_details);
-            
+
             if(mysqli_num_rows($getting_full_cut_details_result) > 0){
 
                 while($row22 = $getting_full_cut_details_result->fetch_assoc()) 
                 {
                     $sum_recut_raise_qty = $row22['recut_raised_qty'];
-                    $sum_recut_all_qty = $row22['recut_allocated_qty'];
+                    $allocated_qty= $row22['recut_raised_qty'];
                 }
-            } 
-            if($sum_recut_raise_qty==''&& $sum_recut_all_qty=='') {
-               
-                $sum_recut_raise_qty = 0;
-                $sum_recut_all_qty = 0;
             }
-            $remaining_qty =  $rej_qty- ($sum_recut_raise_qty + $replace_qty);
+            if($sum_recut_raise_qty=='') {
+                $allocated_qty = $recut_qty;
+                $sum_recut_raise_qty = 0;
+
+            }
+            $remaining_qty =  $rej_qty- ($allocated_qty + $replace_qty);
+        //    echo $rej_qty."rej_qty- (".$sum_recut_raise_qty."sum_recut_raise_qty +".$replace_qty."replace_qty)";
             // $remaining_qty =  $rej_qty- ($recut_qty + $replace_qty);
 
             // $remaining_qty =  $sum_recut_raise_qty;

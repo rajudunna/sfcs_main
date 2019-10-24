@@ -263,7 +263,7 @@ foreach($cats_ids as $key=>$value)
 	$tot_size=array();
 	$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$value  and recut_lay_plan='yes' order by tid";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// echo $sql;
+	// echo $sql;z
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
     $temp = 0;
     
@@ -483,7 +483,8 @@ foreach($cats_ids as $key=>$value)
                 {
                     $marker_table .= "<td class=\"  \"><center>Updated</center></td>";
                 }	
-                $sql21="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid1\" and mk_ref=$mk_ref1 ";
+                $sql21="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid1\" and mk_ref=$mk_ref1 and remarks='Recut' and mk_ref_id!=''";
+                // echo $sql21;    
                 $sql_result21=mysqli_query($link, $sql21) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                 if(mysqli_num_rows($sql_result21)==0)
                 {

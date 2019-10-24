@@ -264,7 +264,7 @@ if($sql_result1_res==0){
             }
         } 
         $lay_plan_recut_track="SELECT * FROM `bai_pro3`.`lay_plan_recut_track` WHERE allocated_id='$cuttable_ref' AND cat_ref=$cat_ref";
-        echo $lay_plan_recut_track."<br>";
+        // echo $lay_plan_recut_track."<br>";
         $lay_plan_recut_track_res = mysqli_query($link,$lay_plan_recut_track);
         if(mysqli_num_rows($lay_plan_recut_track_res) > 0)
         {
