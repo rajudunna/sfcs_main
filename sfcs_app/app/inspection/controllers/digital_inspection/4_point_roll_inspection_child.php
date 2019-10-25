@@ -910,13 +910,13 @@ if (isset($_POST['save'])) {
 			$('#inspected_qty').change(function(){
 				
 				var invoice_q= $("#invoice_qty").val();
-				if (parseInt(invoice_q) < $(this).val()  ){
+				if (parseInt(invoice_q) < $(this).val()){
 					swal('warning','Inspected Qty Should be less than Ticket Length','warning');
 					$(this).val('');
 				 }
 			});
 
-        var table_length = $('#points_tbl tbody > tr').length;
+        var table_length = $('#points_tbl > tbody > tr').length;
         var clicks = table_length-1;
         $('#hidenMaxCount').val(table_length)
         $('#clear').on('click', function() {
@@ -960,21 +960,29 @@ if (isset($_POST['save'])) {
         //         $("#points_tbl").append(count_tr);
         //         count_row=0;
         //     }else{
-                
         //         swal('warning','Please check point','warning');
         //         // return;
         //     }
-    
-        var tr_radio=$('#points_tbl tbody tr').last().find('input[type=radio]').is(':checked');
-        //  clicks=xxx;
-        // alert(tr_radio);
-        if(tr_radio){
+    // if(table_length<0){
+        var table_length = $('#points_tbl tbody > tr').length;
+        // alert(table_length);
+        if(table_length==0){
+            $("#points_tbl").append(count_tr); 
+            return;
+        }else{
+            
+            var tr_radio=$('#points_tbl tbody tr').last().find('input[type=radio]').is(':checked'); 
+            if(tr_radio){
             $("#points_tbl").append(count_tr);
         }
         else{
             swal('warning','Please check point','warning');
         //         // return;
         }
+        }
+        //  clicks=xxx;
+        // alert(tr_radio);
+       
           });
           
           $(document).on('click', '.remove', function() {
@@ -1031,16 +1039,27 @@ if (isset($_POST['save'])) {
 
     $(function() {
         $("#save").click(function(e) {
-            var rowCount = $('#points_tbl >tbody >tr').length;
-            for(var j=0;j<rowCount;j++){
-              var cx=  $("#code_"+j).val();
-              if(cx==""){
-                swal('warning','Please Fill Empty Row or Remove Empty Row','warning');
-                e.preventDefault();
-              }
-            }
-            var tr_radio=$('#points_tbl tbody tr').last().find('input[type=radio]').is(':checked');
-        //  clicks=xxx;
+            // var rowCount = $('#points_tbl >tbody >tr').length;
+            // alert(rowCount);
+            // // e.preventDefault();
+            // for(var j=0;j<=rowCount;j++){
+            //   var cx=  $("#code_"+j).val();
+            //   if(cx==""){
+            //     swal('warning','Please Fill Empty Row or Remove Empty Row','warning');
+            //     e.preventDefault();
+            //   }
+            // }
+            var tr_radio_1=$('#points_tbl tbody tr').last().find('input[type=text]').val(''); 
+            if(tr_radio_1){
+                 swal('warning','Please check point','warning');
+                 e.preventDefault();
+                 }
+                else{
+                 $("#points_tbl").append(count_tr);
+                //         // return;
+                }
+                    var tr_radio=$('#points_tbl tbody tr').last().find('input[type=radio]').is(':checked');
+                //  clicks=xxx;
         // alert(tr_radio);
            if(tr_radio){
             $("#points_tbl").append(count_tr);
@@ -1081,14 +1100,24 @@ if (isset($_POST['save'])) {
     $(function() {
         $("#confirm").click(function(e) {
             // e.preventDefault();
-            var rowCount = $('#points_tbl >tbody >tr').length;
-            for(var j=0;j<rowCount;j++){
-              var cx=  $("#code_"+j).val();
-              if(cx==""){
-                swal('warning','Please Fill Empty Row or Remove Empty Row','warning');
-                e.preventDefault();
-              }
-            }
+            // var rowCount = $('#points_tbl >tbody >tr').length;
+            // for(var j=0;j<rowCount;j++){
+            //   var cx=  $("#code_"+j).val();
+            //   if(cx==""){
+            //     swal('warning','Please Fill Empty Row or Remove Empty Row','warning');
+            //     e.preventDefault();
+            //   }
+            // }
+            var tr_radio_1=$('#points_tbl tbody tr').last().find('input[type=text]').val(''); 
+            if(tr_radio_1){
+                 swal('warning','Please check point','warning');
+                 e.preventDefault();
+                 }
+                else{
+                 $("#points_tbl").append(count_tr);
+                //         // return;
+                }
+            
             var tr_radio=$('#points_tbl tbody tr').last().find('input[type=radio]').is(':checked');
         //  clicks=xxx;
         // alert(tr_radio);
