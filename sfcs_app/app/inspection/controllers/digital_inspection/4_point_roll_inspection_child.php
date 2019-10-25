@@ -14,6 +14,7 @@
             max-height: 300px;
             overflow-y: scroll;
         }
+    
     </style>
 </head>
 <?php
@@ -919,15 +920,61 @@ if (isset($_POST['save'])) {
         var clicks = table_length-1;
         $('#hidenMaxCount').val(table_length)
         $('#clear').on('click', function() {
+
             clicks += 1;
             var xxx = clicks;
-            $('#hidenMaxCount').val(xxx)
+            //  && $(`input:radio[name=${point}]`).not(':checked')
+            $('#hidenMaxCount').val(xxx);
+            for(var j=0;j<xxx;j++){
+              var cx=  $("#code_"+j).val();
+              var point = 'point_'+j;
+              if(cx==""){
+                swal('warning','Please Fill Empty Row or Remove Empty Row','warning');
+               return;
+              }
+            }
+         
+            
             // console.log(xxx);
             // var count_tr = "<tr><td><input type='hidden' value='"+xxx+"' name='submit_value_point[]' ><input type='text' class='code' id='code_"+xxx+"' name='code[]' autocomplete='off'></td><td><input type='text' class='damage' id='damage_"+xxx+"' name='damage[]' readonly></td><td><input type='radio' value='1' id='point1_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='2' id='point2_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='3' id='point3_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='4' id='point4_"+xxx+"' name='point_"+xxx+"'></td><td><a href='javascript:void(0);' class='remove'><span class='glyphicon glyphicon-remove'></span></a></td></tr>";
             
             var count_tr = "<tr><td><input type='hidden' value='"+xxx+"' name='submit_value_point[]' ><input type='text' class='code' size='4' id='code_"+xxx+"' name='code[]' autocomplete='off'></td><td><input type='text' class='damage' id='damage_"+xxx+"' name='damage[]' readonly></td><td><input type='radio' value='1' id='point1_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='2' id='point2_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='3' id='point3_"+xxx+"' name='point_"+xxx+"'></td><td><input type='radio' value='4' id='point4_"+xxx+"' name='point_"+xxx+"'></td><td><a href='javascript:void(0);' class='remove'><span class='glyphicon glyphicon-remove'></span></a></td></tr>";
-            $("#points_tbl").append(count_tr);
+        //    var count_row = 0;
+        //    var b = 0;
+        //    var rowCount_1 = $('#points_tbl >tbody >tr').length;
+        //     for(var j=(xxx-1);j>=0;j--){
+        //       var point = 'point_'+j;
+        //       alert(point);
+        //       if(!$(`input:radio[name=${point}]`).is(':checked')){
+        //           count_row++;
+        //           alert("ji")
+        //         //   alert(count_row);
+        //            }
+        //       else{
+        //         //   alert(count_row);
+        //         b++;
+        //       }
+        //     }
+        //    alert(count_row + "-" + b);
+        //     if(count_row==0){
+        //         $("#points_tbl").append(count_tr);
+        //         count_row=0;
+        //     }else{
+                
+        //         swal('warning','Please check point','warning');
+        //         // return;
+        //     }
+    
+        var tr_radio=$('#points_tbl tbody tr').last().find('input[type=radio]').is(':checked');
         //  clicks=xxx;
+        // alert(tr_radio);
+        if(tr_radio){
+            $("#points_tbl").append(count_tr);
+        }
+        else{
+            swal('warning','Please check point','warning');
+        //         // return;
+        }
           });
           
           $(document).on('click', '.remove', function() {
@@ -984,7 +1031,24 @@ if (isset($_POST['save'])) {
 
     $(function() {
         $("#save").click(function(e) {
-            // e.preventDefault();
+            var rowCount = $('#points_tbl >tbody >tr').length;
+            for(var j=0;j<rowCount;j++){
+              var cx=  $("#code_"+j).val();
+              if(cx==""){
+                swal('warning','Please Fill Empty Row or Remove Empty Row','warning');
+                e.preventDefault();
+              }
+            }
+            var tr_radio=$('#points_tbl tbody tr').last().find('input[type=radio]').is(':checked');
+        //  clicks=xxx;
+        // alert(tr_radio);
+           if(tr_radio){
+            $("#points_tbl").append(count_tr);
+        }
+        else{
+            swal('warning','Please check point','warning');
+            e.preventDefault();
+        }
             for (let i = 0; i < 4; i++) {
                 let point1_value = point2_value = point3_value = point4_value = 0;
                 if ($("#point1_" + i).prop("checked")) {
@@ -1017,6 +1081,24 @@ if (isset($_POST['save'])) {
     $(function() {
         $("#confirm").click(function(e) {
             // e.preventDefault();
+            var rowCount = $('#points_tbl >tbody >tr').length;
+            for(var j=0;j<rowCount;j++){
+              var cx=  $("#code_"+j).val();
+              if(cx==""){
+                swal('warning','Please Fill Empty Row or Remove Empty Row','warning');
+                e.preventDefault();
+              }
+            }
+            var tr_radio=$('#points_tbl tbody tr').last().find('input[type=radio]').is(':checked');
+        //  clicks=xxx;
+        // alert(tr_radio);
+           if(tr_radio){
+            $("#points_tbl").append(count_tr);
+        }
+        else{
+            swal('warning','Please check point','warning');
+            e.preventDefault();
+        }
             for (let i = 0; i < 4; i++) {
                 let point1_value = point2_value = point3_value = point4_value = 0;
                 if ($("#point1_" + i).prop("checked")) {
