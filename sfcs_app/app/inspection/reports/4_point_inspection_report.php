@@ -1,3 +1,20 @@
+<style>
+
+@media print {
+    @page { margin: 0; }
+@page narrow {size: 9in 11in}
+@page rotated {size: landscape}
+DIV {page: narrow}
+TABLE {page: rotated}
+#non-printable { display: none; }
+#printable { display: block; }
+#logo { display: block; }
+body { zoom:72%;}
+#ad{ display:none;}
+#leftbar{ display:none;}
+#CUT_PLAN_NEW_13019{ width:57%; margin-left:20px;}
+}
+</style>
 <?php
 include('../../../common/config/config.php');
 $inpsect_id=$_GET['parent_id'];
