@@ -19,14 +19,16 @@
 			$doc_no = $_GET['doc_no'];
 			$org_doc_no = $_GET['org_doc_no'];
 			// echo $style.$schedule.$doc_no;
-			$sql12="SELECT order_div FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no='$schedule' limit 1";
+			$sql12="SELECT order_div,co_no,order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no='$schedule' limit 1";
 			// echo $sql12;
 			$sql_result12=mysqli_query($link, $sql12) or exit("Error while fetching details for the selected style and schedule");
 			while($m1=mysqli_fetch_array($sql_result12))
 			{
 				$order_div = $m1['order_div'];
+				$co_no = $m1['co_no'];
+				$order_tid = $m1['order_tid'];
 			}
-			$sql123="SELECT bundle_loc FROM $bai_pro3.`act_cut_status` WHERE doc_no='$doc_no' limit 1";
+			$sql123="SELECT bundle_loc FROM $bai_pro3.`act_cut_status` WHERE doc_no=$doc_no limit 1";
 			// echo $sql123;
 			$sql_result123=mysqli_query($link, $sql123) or exit("Error while fetching details for the selected style and schedule");
 			while($m13=mysqli_fetch_array($sql_result123))
@@ -758,6 +760,10 @@
 
 					<!-- Header Start -->
 					<tr height=20 style='height:15.0pt'>
+						<td colspan=2 height=20 class=xl786065 style='border-right:.5pt solid black;height:15.0pt'>CO#</td>
+						<td colspan=2 class=xl776065 style='border-right:.5pt solid black;border-left:none'><?php echo $co_no; ?></td>
+					</tr>
+					<tr height=20 style='height:15.0pt'>
 						<td colspan=2 height=20 class=xl786065 style='border-right:.5pt solid black;height:15.0pt'>Style</td>
 						<td colspan=2 class=xl776065 style='border-right:.5pt solid black;border-left:none'><?php echo $style; ?></td>
 						<td rowspan=3 class=xl9018757>&nbsp;</td>
@@ -789,6 +795,16 @@
 							$display_sewing_job = get_sewing_job_prefix_inp('prefix','brandix_bts.tbl_sewing_job_prefix',$key,$value,$link);
 							$total_bundle_qty = 0;	$total_bundles = 0;
 							$location='';
+							
+							$acut="SELECT order_col_des,plandoc_stat_log.doc_no,org_doc_no,color_code,acutno,GROUP_CONCAT(DISTINCT input_job_no order by input_job_no*1) as input_job_no,GROUP_CONCAT(DISTINCT input_job_no_random) as input_job_no_random,COUNT(*) AS bundles,SUM(carton_act_qty) AS qty 
+							FROM bai_pro3.`pac_stat_log_input_job`
+							LEFT JOIN bai_pro3.`plandoc_stat_log` ON plandoc_stat_log.`doc_no` = pac_stat_log_input_job.`doc_no`
+							LEFT JOIN bai_pro3.`bai_orders_db` ON plandoc_stat_log.`order_tid` = bai_orders_db.`order_tid`
+							WHERE order_style_no='$style' AND order_del_no='$schedule' GROUP BY doc_no order by doc_no";
+							$acut_result=mysqli_query($link, $acut) or exit("Error while fetching details for the selected style and schedule");
+							// echo $acut;
+					while($m=mysqli_fetch_array($acut_result))
+					{
 							if($bundle_loc=='')
 							{
 								$sql1234="SELECT input_module FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='$value' limit 1";
@@ -815,7 +831,7 @@
 							echo "
 								<tr height=20 style='height:15.0pt'></tr>
 								<tr height=20 style='height:15.0pt' bgcolor='#BFBFBF'>
-									<td colspan=14 height=20 class=xl9418757 style='height:15.0pt'>Sewing Job No: ".$value." ($display_sewing_job)</td>
+									<td colspan=14 height=20 class=xl9418757 style='height:15.0pt'>Sewing Job No: ".$value." ($display_sewing_job)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cut No:".chr($m['color_code']).leading_zeros($m['acutno'],3)."</td>
 								</tr>
 								<tr height=20 style='height:15.0pt'>
 									<td height=20 class=xl636065 style='height:15.0pt'>Sno</td>
@@ -823,7 +839,7 @@
 									<td class=xl646065>Size</td>
 									<td class=xl646065>Bundles<br>Total<br>Quantity</td>
 									<td class=xl646065>Bundles<br>Count</td>
-									<td class=xl646065>Bundle<br>Location</td>
+									<td class=xl646065>Location<br>/team</td>
 									<td colspan=7 class=xl746065 style='border-right:.5pt solid black;border-left:none'>Bundle Numbers - Bundle Quantity</td>
 								</tr>";
 								$sql123="SELECT order_col_des,size_code, SUM(carton_act_qty) AS qty, COUNT(*) AS bundle_count,GROUP_CONCAT(tid, '-', carton_act_qty ORDER BY tid) AS bundle_nos 
@@ -881,7 +897,7 @@
 								</tr>
 							";
 						}
-							
+					}
 					?>
 
 
