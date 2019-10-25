@@ -1051,7 +1051,7 @@ if (isset($_POST['save'])) {
             // }
             var tr_radio_1=$('#points_tbl tbody tr').last().find('input[type=text]').val(); 
             if(tr_radio_1==''){
-                 swal('warning','Please check point','warning');
+                 swal('warning','Please Fill Empty Row or Remove Empty Row','warning');
                  e.preventDefault();
                  }
                
@@ -1105,9 +1105,9 @@ if (isset($_POST['save'])) {
             //     e.preventDefault();
             //   }
             // }
-            var tr_radio_1=$('#points_tbl tbody tr').last().find('input[type=text]').val(''); 
-            if(tr_radio_1){
-                 swal('warning','Please check point','warning');
+            var tr_radio_1=$('#points_tbl tbody tr').last().find('input[type=text]').val(); 
+            if(tr_radio_1==''){
+                 swal('warning','Please Fill Empty Row or Remove Empty Row','warning');
                  e.preventDefault();
                  }
                 else{
