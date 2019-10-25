@@ -1838,7 +1838,7 @@ while($sql_rolls=mysqli_fetch_array($roll_details_result))
   $status=$sql_rolls['status'];
 }
 $roll_num = implode(",",$rolls);
-$sql="select *, if((length(ref4)=0 and qty_allocated <=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ($roll_num) order by tid";
+$sql="select *, if((length(ref4)=0 and qty_allocated <=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
@@ -1904,7 +1904,7 @@ $shade_count=sizeof($scount_temp2);
 //Configuration 
 
 
-$sql="select COUNT(ref2)  as \"count\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ($roll_num) order by tid";
+$sql="select COUNT(ref2)  as \"count\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error42=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1925,7 +1925,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 //get inspected_qty
-$get_inspected_qty = "select sum(inspected_qty) as reported_qty from $bai_rm_pj1.roll_inspection_child where store_in_tid in ($roll_num) and parent_id=$parent_id";
+$get_inspected_qty = "select sum(inspected_qty) as reported_qty from $bai_rm_pj1.roll_inspection_child where store_in_tid in ("."'".str_replace(",","','",$roll_num)."'".") and parent_id=$parent_id";
 $inspected_qty_result=mysqli_query($link, $get_inspected_qty) or exit("Sql Errorqty=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($qty_row=mysqli_fetch_array($inspected_qty_result))
 {
