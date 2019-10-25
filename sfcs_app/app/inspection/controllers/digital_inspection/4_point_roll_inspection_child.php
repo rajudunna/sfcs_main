@@ -1049,15 +1049,12 @@ if (isset($_POST['save'])) {
             //     e.preventDefault();
             //   }
             // }
-            var tr_radio_1=$('#points_tbl tbody tr').last().find('input[type=text]').val(''); 
-            if(tr_radio_1){
+            var tr_radio_1=$('#points_tbl tbody tr').last().find('input[type=text]').val(); 
+            if(tr_radio_1==''){
                  swal('warning','Please check point','warning');
                  e.preventDefault();
                  }
-                else{
-                 $("#points_tbl").append(count_tr);
-                //         // return;
-                }
+               
                     var tr_radio=$('#points_tbl tbody tr').last().find('input[type=radio]').is(':checked');
                 //  clicks=xxx;
         // alert(tr_radio);
