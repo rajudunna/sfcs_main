@@ -2543,7 +2543,7 @@ $get_details_points = "select sum(rec_qty) as qty from $bai_rm_pj1.`inspection_p
 
 	  <td class=xl12824082 colspan='2' style='border-left:none;width:100px'>".$temp[7]."</td>";
 	
-	  if($check_status<3 || $insp_status== 'orange')
+	  if($check_status<3)
 	  {
 		echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>".$check_status_val."<input type=\"hidden\" class='textbox' id=\"roll_status[$i]\"  name=\"roll_status[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' /></td>";	  
 	  }
@@ -2689,7 +2689,7 @@ echo '</form>';
  </tr>
 </table>
  
- <table border=0 cellpadding=0 cellspacing=0 width=1126 class=xl11024082 style='border-collapse:collapse;table-layout:fixed;width:1050pt'>
+ <table border=0 cellpadding=0 cellspacing=0 width=1126 class=xl11024082 style='border-collapse:collapse;table-layout:fixed;width:1700pt'>
   	 <?php
   /*echo "<td class=xl6624082 dir=LTR width=68 style='border-left:none;width:51pt'>&nbsp;</td>
   <td class=xl6624082 dir=LTR width=68 style='border-left:none;width:51pt'>&nbsp;</td>

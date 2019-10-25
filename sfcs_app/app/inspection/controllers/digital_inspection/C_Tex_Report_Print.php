@@ -1,3 +1,20 @@
+<style>
+
+@media print {
+    @page { margin: 0; }
+@page narrow {size: 9in 11in}
+@page rotated {size: landscape}
+DIV {page: narrow}
+TABLE {page: rotated}
+#non-printable { display: none; }
+#printable { display: block; }
+#logo { display: block; }
+body { zoom:72%;}
+#ad{ display:none;}
+#leftbar{ display:none;}
+#CUT_PLAN_NEW_13019{ width:57%; margin-left:20px;}
+}
+</style>
 <?php 
 error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
@@ -2328,7 +2345,7 @@ if($num_check>0)
  </tr>
 </table>
 </br>
-<table border=0 cellpadding=0 cellspacing=0 width=1126 class=xl11024082 style='border-collapse:collapse;table-layout:fixed;width:1050pt'>
+<table border=0 cellpadding=0 cellspacing=0 width=1126 class=xl11024082 style='border-collapse:collapse;table-layout:fixed;width:1400pt'>
   	 <?php
   /*echo "<td class=xl6624082 dir=LTR width=68 style='border-left:none;width:51pt'>&nbsp;</td>
   <td class=xl6624082 dir=LTR width=68 style='border-left:none;width:51pt'>&nbsp;</td>
