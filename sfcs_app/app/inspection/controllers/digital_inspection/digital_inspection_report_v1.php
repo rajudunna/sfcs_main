@@ -261,7 +261,7 @@ if(isset($_GET['status'])>0){
 		#populate_div {
 			position: absolute;
 			top: 250px;
-    		right: 254px;
+    		right: 301px;
 
 		}
 		.position_div{
