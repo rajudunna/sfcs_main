@@ -1807,7 +1807,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$pur_width=$sql_row['pur_width'];
 	$act_width=$sql_row['act_width'];
 	$sp_rem=$sql_row['sp_rem'];
-	$qty_insp=$sql_row['qty_insp'];
+	//$qty_insp=$sql_row['qty_insp'];
 	$gmt_way=$sql_row['gmt_way'];
 	$pts=$sql_row['pts'];
 	$fallout=$sql_row['fallout'];
@@ -2689,7 +2689,7 @@ echo '</form>';
  </tr>
 </table>
  
- <table border=0 cellpadding=0 cellspacing=0 width=1126 class=xl11024082 style='border-collapse:collapse;table-layout:fixed;width:1700pt'>
+ <table border=0 cellpadding=0 cellspacing=0 class=xl11024082 style='border-collapse:collapse;table-layout:fixed;width:500pt'>
   	 <?php
   /*echo "<td class=xl6624082 dir=LTR width=68 style='border-left:none;width:51pt'>&nbsp;</td>
   <td class=xl6624082 dir=LTR width=68 style='border-left:none;width:51pt'>&nbsp;</td>
@@ -2697,27 +2697,80 @@ echo '</form>';
   <td class=xl6624082 dir=LTR width=68 style='border-left:none;width:51pt'>&nbsp;</td>
   <td class=xl6624082 dir=LTR width=68 style='border-left:none;width:51pt'>&nbsp;</td>
   <td class=xl6724082 dir=LTR width=68 style='border-left:none;width:51pt'>&nbsp;</td>";*/
-  echo "<td class=xl6824082 style='height:23.25pt;border-top:1pt solid'></td>";
+  // echo "<td class=xl6824082 style='height:23.25pt;border-top:1pt solid'></td>";
+
+for($i=0;$i<$shade_count;$i++)
+{ 
+    $flag=$i;
+  	$flag++;
+	if($flag%5 ==1)
+	{
+		echo "<tr>";
+	}
+		echo "<td colspan=2 class=xl6824082 style='height:23.25pt;border-top:1pt solid;'>".$scount_temp2[$i]."</td>";
+	if($flag%5 ==0)
+	{
+		echo "</tr>";
+	}
+
+	if($flag%5 ==0 )
+	{
+		echo "<tr>";
+		for($j=0;$j<=4;$j++)
+		{
+			echo "<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:none'>Rolls</td>";
+			echo "<td colspan=1 class=xl6824082 dir=LTR width=68 style='border-left:none;width:51pt'>Qty</td>";
+		}
+		echo "</tr><tr>";
+
+		for($j=$flag-5;$j<=$flag-1;$j++)
+		{
+			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$j]."\" and tid in ($roll_num) order by tid";
+		//echo $sql_sc;
+			$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($row_sc=mysqli_fetch_array($result_sc))
+			{
+				$count_sc=$row_sc["cnt"];
+			}
+			echo "<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:1pt solid;'>".$count_sc."</td>";
+			echo "<td colspan=1 class=xl6824082 dir=LTR width=68 style='border-top:none;border-left:none;
+		  width:51pt'>".$shade_group_total[$j]."</td>";
+		}
+		echo "</tr>";
+	}
+	if($flag==$shade_count)
+	{
+		echo "</tr><tr>";
+		for($j=1;$j<=$flag%5;$j++)
+		{
+			echo "<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:none'>Rolls</td>";
+			echo "<td colspan=1 class=xl6824082 dir=LTR width=68 style='border-left:none;width:51pt'>Qty</td>";
+		}
+
+		echo "</tr><tr>";
+
+		for($j=$shade_count-($shade_count%5);$j<=($shade_count)-1;$j++)
+		{
+			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$j]."\" and tid in ($roll_num) order by tid";
+		//echo $sql_sc;
+			$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($row_sc=mysqli_fetch_array($result_sc))
+			{
+				$count_sc=$row_sc["cnt"];
+			}
+			echo "<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:1pt solid;'>".$count_sc."</td>";
+			echo "<td colspan=1 class=xl6824082 dir=LTR width=68 style='border-top:none;border-left:none;
+		  width:51pt'>".$shade_group_total[$j]."</td>";
+		}
+		echo "</tr>";
+	}
+}
+
   
-  for($i=0;$i<$shade_count;$i++)
-  { 
-	echo "<td colspan=2 class=xl6824082 style='height:23.25pt;border-top:1pt solid;'>".$scount_temp2[$i]."</td>";
-	
-  }
-  
-  ?>
+ ?>
+
   <tr>
-  	<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:none'>Group</td>
- 	<?php
-	  for($i=0;$i<$shade_count;$i++)
-	  { 
-		echo "<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:none'>Rolls</td>";
-		echo "<td colspan=1 class=xl6824082 dir=LTR width=68 style='border-left:none;width:51pt'>Qty</td>";
-	  }
-	?>
- </tr>
-  <tr>
-  	<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:none'>Qty</td>
+  <!-- 	<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:none'>Qty</td> -->
   	<?php
   
   /* echo " <td class=xl7124082 dir=LTR width=68 style='border-top:none;border-left:none;
@@ -2733,19 +2786,19 @@ echo '</form>';
   <td class=xl12024082 dir=LTR width=68 style='border-top:none;border-left:
   none;width:51pt'>&nbsp;</td>"; */
   
-for($i=0;$i<$shade_count;$i++)
- {
-  	$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$i]."\" and tid in ($roll_num) order by tid";
-	$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($row_sc=mysqli_fetch_array($result_sc))
-	{
-		$count_sc=$row_sc["cnt"];
-	}
-	echo "<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:1pt solid;'>".$count_sc."</td>";
-	echo "<td colspan=1 class=xl6824082 dir=LTR width=68 style='border-top:none;border-left:none;
-  width:51pt'>".$shade_group_total[$i]."</td>";
+// for($i=0;$i<$shade_count;$i++)
+//  {
+ //  	$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$i]."\" and tid in ($roll_num) order by tid";
+	// $result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($row_sc=mysqli_fetch_array($result_sc))
+	// {
+	// 	$count_sc=$row_sc["cnt"];
+	// }
+	// echo "<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:1pt solid;'>".$count_sc."</td>";
+	// echo "<td colspan=1 class=xl6824082 dir=LTR width=68 style='border-top:none;border-left:none;
+ //  width:51pt'>".$shade_group_total[$i]."</td>";
   
- }  
+ // }  
   ?>
 
   </tr>
