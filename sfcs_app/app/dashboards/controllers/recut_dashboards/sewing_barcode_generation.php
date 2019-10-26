@@ -10,6 +10,7 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
 
    foreach($job_no as $key=>$value)
    {
+        $ops = [];
 	    $input_job_no = $job_no[$key];
 	    $size_title = $size[$key];
 	    $reported_qty = $qty[$key];
