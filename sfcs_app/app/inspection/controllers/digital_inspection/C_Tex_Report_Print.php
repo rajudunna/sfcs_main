@@ -1853,7 +1853,7 @@ while($sql_rolls=mysqli_fetch_array($roll_details_result))
   $rolls[]=$sql_rolls['roll_numbers'];
 }
 $roll_num = implode(",",$rolls);
-$sql="select * from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch) and tid in ($roll_num) order by tid";
+$sql="select * from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch) and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid,ref2";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errorc".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
@@ -1885,7 +1885,7 @@ $shade_count=sizeof($scount_temp2);
 //Configuration 
 
 
-$sql="select COUNT(ref2)  as \"count\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ($roll_num) order by tid";
+$sql="select COUNT(ref2)  as \"count\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errord".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -2381,7 +2381,7 @@ for($i=0;$i<$shade_count;$i++)
 
 		for($j=$flag-5;$j<=$flag-1;$j++)
 		{
-			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$j]."\" and tid in ($roll_num) order by tid";
+			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
 		//echo $sql_sc;
 			$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row_sc=mysqli_fetch_array($result_sc))
@@ -2407,7 +2407,7 @@ for($i=0;$i<$shade_count;$i++)
 
 		for($j=$shade_count-($shade_count%5);$j<=($shade_count)-1;$j++)
 		{
-			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$j]."\" and tid in ($roll_num) order by tid";
+			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
 		//echo $sql_sc;
 			$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row_sc=mysqli_fetch_array($result_sc))
