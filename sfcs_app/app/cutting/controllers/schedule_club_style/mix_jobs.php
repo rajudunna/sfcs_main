@@ -492,7 +492,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 						$eligble=0;
 						$sql9="select order_tid, order_del_no, order_col_des, order_s_".$sizes_array[$i]." as ord_qty,destination from $bai_pro3.bai_orders_db_club_confirm where order_joins=\"$orders_join\" and order_s_".$sizes_array[$i].">0 group by order_del_no order by order_del_no*1";
 					//	echo $sql9."<br>";
-						$sql_result19=mysqli_query( $link, $sql9) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"])); 
+						$sql_result19=mysqli_query( $link, $sql9) or exit(message_sql()); 
 						$tot_col=mysqli_num_rows($sql_result19);
 						while($sql_row19=mysqli_fetch_array($sql_result19)) 
 						{
@@ -506,7 +506,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 						$max_del=max($dels);
 						$sql14="select * from $bai_pro3.mix_temp_source where size=\"p_".$sizes_array[$i]."\" and qty>0 and cat_ref='$cat_ref' group by doc_no order by doc_no*1";
 					//	echo $sql14."<br>";
-						$sql_result114=mysqli_query( $link, $sql14) or exit("Sql Error96".mysqli_error($GLOBALS["___mysqli_ston"])); 
+						$sql_result114=mysqli_query( $link, $sql14) or exit(message_sql()); 
 						if(mysqli_num_rows($sql_result114)>0)
 						{
 							while($sql_row11=mysqli_fetch_array($sql_result114)) 
@@ -539,10 +539,10 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 										{
 											$sqlx3="insert into $bai_pro3.mix_temp_desti(allo_new_ref,cat_ref,cutt_ref,mk_ref,size,qty,order_tid,order_col_des,order_del_no,destination,plies,doc_no,cutno) values ('".$docs[$jj]."','".$cat_ref."','".$cut_ref[$docs[$jj]][$sizes_array[$i]]."','".$mk_ref[$docs[$jj]][$sizes_array[$i]]."',\"p_".$sizes_array[$i]."\",\"".$eligble."\",\"".$order_tids[$dels[$j]]."\",\"".$colrsnew[$dels[$j]]."\",\"".$dels[$j]."\",\"".$destination_id_new[$dels[$j]]."\",\"".$plies_ref[$docs[$jj]][$sizes_array[$i]]."\",\"".$docs[$jj]."\",\"".$cutno[$docs[$jj]][$sizes_array[$i]]."\")"; 
 										//	echo $sqlx3."<br>";
-											mysqli_query( $link, $sqlx3) or exit("Sql Errorx3".mysqli_error($GLOBALS["___mysqli_ston"]));	
+											mysqli_query( $link, $sqlx3) or exit(message_sql());	
 											$sqlx71="update $bai_pro3.mix_temp_source set qty='0' where doc_no='".$docs[$jj]."' and size='p_".$sizes_array[$i]."'";
 										//	echo $sqlx71."<br>";
-											mysqli_query($link, $sqlx71) or exit("Sql Errorx7".mysqli_error($GLOBALS["___mysqli_ston"]));
+											mysqli_query($link, $sqlx71) or exit(message_sql());
 											$available[$docs[$jj]][$sizes_array[$i]]=$available[$docs[$jj]][$sizes_array[$i]]-$eligble;
 										//	echo "TEst pa-----".$available[$docs[$jj]][$sizes_array[$i]]."<br>";
 										//	echo "TEst pa---1--".$eligble."<br>";
@@ -552,10 +552,10 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 										{
 											$sqlx3="insert into $bai_pro3.mix_temp_desti(allo_new_ref,cat_ref,cutt_ref,mk_ref,size,qty,order_tid,order_col_des,order_del_no,destination,plies,doc_no,cutno) values ('".$docs[$jj]."','".$cat_ref."','".$cut_ref[$docs[$jj]][$sizes_array[$i]]."','".$mk_ref[$docs[$jj]][$sizes_array[$i]]."',\"p_".$sizes_array[$i]."\",\"".$available[$docs[$jj]][$sizes_array[$i]]."\",\"".$order_tids[$dels[$j]]."\",\"".$colrsnew[$dels[$j]]."\",\"".$dels[$j]."\",\"".$destination_id_new[$dels[$j]]."\",\"".$plies_ref[$docs[$jj]][$sizes_array[$i]]."\",\"".$docs[$jj]."\",\"".$cutno[$docs[$jj]][$sizes_array[$i]]."\")"; 
 										//	echo $sqlx3."<br>";
-											mysqli_query( $link, $sqlx3) or exit("Sql Errorx3".mysqli_error($GLOBALS["___mysqli_ston"]));	
+											mysqli_query( $link, $sqlx3) or exit(message_sql());	
 											$sqlx71="update $bai_pro3.mix_temp_source set qty='0' where doc_no='".$docs[$jj]."' and size='p_".$sizes_array[$i]."'";
 										//	echo $sqlx71."<br>";
-											mysqli_query($link, $sqlx71) or exit("Sql Errorx7".mysqli_error($GLOBALS["___mysqli_ston"]));
+											mysqli_query($link, $sqlx71) or exit(message_sql());
 											$eligble=$eligble-$available[$docs[$jj]][$sizes_array[$i]];
 											$available[$docs[$jj]][$sizes_array[$i]]=0;	
 											//echo "TEst pa2-----".$available[$docs[$jj]][$sizes_array[$i]]."<br>";
@@ -578,10 +578,10 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 									{	
 										$sqlx31="insert into $bai_pro3.mix_temp_desti(allo_new_ref,cat_ref,cutt_ref,mk_ref,size,qty,order_tid,order_col_des,order_del_no,destination,plies,doc_no,cutno) values ('".$docs[$jj]."','".$cat_ref."','".$cut_ref[$docs[$jj]][$sizes_array[$i]]."','".$mk_ref[$docs[$jj]][$sizes_array[$i]]."',\"p_".$sizes_array[$i]."\",\"".$available[$docs[$jj]][$sizes_array[$i]]."\",\"".$order_tids[$max_del]."\",\"".$colrsnew[$max_del]."\",\"".$max_del."\",\"".$destination_id_new[$max_del]."\",\"".$plies_ref[$docs[$jj]][$sizes_array[$i]]."\",\"".$docs[$jj]."\",\"".$cutno[$docs[$jj]][$sizes_array[$i]]."\")"; 
 									//	echo $sqlx31."--<br>";
-										mysqli_query($link, $sqlx31) or exit($sqlx3."Sql Errorx3".mysqli_error($GLOBALS["___mysqli_ston"]));	
+										mysqli_query($link, $sqlx31) or exit(message_sql());	
 										$sqlx71="update $bai_pro3.mix_temp_source set qty='0' where doc_no='".$docs[$jj]."' and size='p_".$sizes_array[$i]."'";
 									//	echo $sqlx71."<br>";
-										mysqli_query($link, $sqlx71) or exit("Sql Errorx7".mysqli_error($GLOBALS["___mysqli_ston"]));	
+										mysqli_query($link, $sqlx71) or exit(message_sql());	
 										$available[$docs[$jj]][$sizes_array[$i]]=0;												
 									}									
 								}								
