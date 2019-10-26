@@ -138,10 +138,8 @@
                     }
                     
                     if($reason=='fail'){
-                        if($res['m3_bulk_tran_id'] !='' || $res['m3_bulk_tran_id'] != NULL){
-                            $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`transactions_log` WHERE transaction_id=".$res['m3_bulk_tran_id']." order by sno desc limit 1"))['response_message'] ?? 'fail with no reason.';
-                         $reason = '<label class="label label-danger">'.$ndr."</label>";
-                        }
+                        $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`transactions_log` WHERE transaction_id=".$res['m3_bulk_tran_id']." order by sno desc limit 1"))['response_message'] ?? 'fail with no reason.';
+                        $reason = '<label class="label label-danger">'.$ndr."</label>";
                     }else{
                         $reason = "<label class='label label-success'>".$reason."</label>";
                     }
