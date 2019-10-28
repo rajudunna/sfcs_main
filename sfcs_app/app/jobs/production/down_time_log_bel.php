@@ -194,7 +194,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 $sql_delete_log="select * from $bai_pro.down_log_deleted where flag=1";
 
-echo "<br/> sql_delete_log ".$sql_delete_log;
+// echo "<br/> sql_delete_log ".$sql_delete_log;
 
 $result_delete_log=mysqli_query($link,$sql_delete_log) or exit("<br/>Sql Error delete log = ".$sql_delete_log."-".mysqli_error());
 while($delete_row=mysqli_fetch_array($result_delete_log))
