@@ -250,4 +250,13 @@ function get_config_values($config_id){
 }
 
 
+function get_plant_name(){
+    $conf = new confr("configuration/API/saved_fields/fields.json");
+    if($conf->get('plantname')){
+        return $conf->get('plantname');
+    } else {
+         return '';
+    }
+}
+
 ?>

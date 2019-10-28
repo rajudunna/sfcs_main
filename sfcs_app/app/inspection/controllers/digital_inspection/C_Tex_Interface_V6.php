@@ -1838,7 +1838,7 @@ while($sql_rolls=mysqli_fetch_array($roll_details_result))
   $status=$sql_rolls['status'];
 }
 $roll_num = implode(",",$rolls);
-$sql="select *, if((length(ref4)=0 and qty_allocated <=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
+$sql="select *, if((length(ref4)=0 and qty_allocated <=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid,ref2";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
@@ -1995,7 +1995,7 @@ tags will be replaced.-->
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;  border-top:none;width:60pt'>PO Number</td>
   <td  class="scroll_number" colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php echo $po_no; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Qty Inspected</td>
-  <td colspan=2 class=xl10524082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="qty_insp" name="qty_insp" value="'.$qty_insp.'" >'; } else { echo $qty_insp; }?></td>
+  <td colspan=2 class=xl10524082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php echo $qty_insp; ?></td>
   <td class=xl9424082 dir=LTR width=99 style='border-top:none;border-left:none;  width:74pt'>Fallout</td>
   <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;  width:109pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="fallout" name="fallout" value="'.$fallout.'" >'; } else { echo $fallout; }?></td>
   
@@ -2413,11 +2413,11 @@ $get_details_points = "select sum(rec_qty) as qty from $bai_rm_pj1.`inspection_p
 		echo "<input type='hidden' name=\"qty_allocated[$i]\" id=\"qty_allocated[$i]\" value='".$temp[16]."'>";
 		if(!in_array($authorized,$has_permission))
 		{
-			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i); validate_unique_shade(\"".trim($temp[2])."\", \"".$temp[1]."\", $i)' value=\"".trim($temp[2])."\" />";
+			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i); value=\"".trim($temp[2])."\" />";
 		}
 		else
 		{
-			$temp_shade_tag.="<input type=\"text\" class='textbox alpha shade_grp unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade[$i]\"  name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i); validate_unique_shade(\"".trim($temp[2])."\", \"".$temp[1]."\", $i)' value=\"".trim($temp[2])."\" />";
+			$temp_shade_tag.="<input type=\"text\" class='textbox alpha shade_grp unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade[$i]\"  name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);  value=\"".trim($temp[2])."\" />";
 		}	
 
 		if(!in_array($authorized,$has_permission))
@@ -2726,7 +2726,7 @@ for($i=0;$i<$shade_count;$i++)
 
 		for($j=$flag-5;$j<=$flag-1;$j++)
 		{
-			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$j]."\" and tid in ($roll_num) order by tid";
+			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
 		//echo $sql_sc;
 			$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row_sc=mysqli_fetch_array($result_sc))
@@ -2752,7 +2752,7 @@ for($i=0;$i<$shade_count;$i++)
 
 		for($j=$shade_count-($shade_count%5);$j<=($shade_count)-1;$j++)
 		{
-			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$j]."\" and tid in ($roll_num) order by tid";
+			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
 		//echo $sql_sc;
 			$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row_sc=mysqli_fetch_array($result_sc))

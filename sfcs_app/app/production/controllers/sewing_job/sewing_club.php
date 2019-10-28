@@ -124,7 +124,7 @@ if($style != "" && $schedule != "")
 			echo "<th>Quantity</th>";
 			echo "<th>Clubbing Details</th>";  
 			echo "</tr></thead>";
-			$sql = "SELECT order_del_no,input_job_no,input_job_no_random,SUM(carton_act_qty) AS carton_act_qty,order_col_des FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' GROUP BY input_job_no ORDER BY input_job_no*1";
+			$sql = "SELECT order_del_no,input_job_no,input_job_no_random,SUM(carton_act_qty) AS carton_act_qty,order_col_des, mrn_status FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' GROUP BY input_job_no ORDER BY input_job_no*1";
 			$result=mysqli_query($link, $sql) or die("Error8-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($result))
 			{
@@ -171,7 +171,14 @@ if($style != "" && $schedule != "")
 				}
 				else
 				{									
-					echo "<td><input type='checkbox' id='club' name='club[]' value=".$sql_row["input_job_no"]." ></td>";
+					if($sql_row['mrn_status']==1)
+					{
+						echo "<td>MRN Confirmed</td>";
+					}
+					else
+					{
+						echo "<td><input type='checkbox' id='club' name='club[]' value=".$sql_row["input_job_no"]." ></td>";	
+					}
 				}
 				$total_qty1=0;
 				echo "</tr>";							

@@ -96,7 +96,7 @@
 					$style=$_POST['style'];
 					$schedule=$_POST['schedule'];
 					// echo "$style, $schedule <br>";
-					$sql1="SELECT order_col_des,plandoc_stat_log.doc_no,color_code,acutno,GROUP_CONCAT(DISTINCT input_job_no order by input_job_no*1) as input_job_no,GROUP_CONCAT(DISTINCT input_job_no_random) as input_job_no_random,COUNT(*) AS bundles,SUM(carton_act_qty) AS qty 
+					$sql1="SELECT order_col_des,plandoc_stat_log.doc_no,org_doc_no,color_code,acutno,GROUP_CONCAT(DISTINCT input_job_no order by input_job_no*1) as input_job_no,GROUP_CONCAT(DISTINCT input_job_no_random) as input_job_no_random,COUNT(*) AS bundles,SUM(carton_act_qty) AS qty 
 							FROM bai_pro3.`pac_stat_log_input_job`
 							LEFT JOIN bai_pro3.`plandoc_stat_log` ON plandoc_stat_log.`doc_no` = pac_stat_log_input_job.`doc_no`
 							LEFT JOIN bai_pro3.`bai_orders_db` ON plandoc_stat_log.`order_tid` = bai_orders_db.`order_tid`
@@ -153,7 +153,7 @@
 											<td>".$m['bundles']."</td>
 											<td>".$m['qty']."</td>
 											<td >
-												<a class='btn btn-warning' href='$url1?style=$style&schedule=$schedule&doc_no=".$m['doc_no']."'' onclick=\"return popitup2('$url1?style=$style&schedule=$schedule&doc_no=".$m['doc_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Check List</a>
+												<a class='btn btn-warning' href='$url1?style=$style&schedule=$schedule&doc_no=".$m['doc_no']."&org_doc_no=".$m['org_doc_no']."'' onclick=\"return popitup2('$url1?style=$style&schedule=$schedule&doc_no=".$m['doc_no']."&org_doc_no=".$m['org_doc_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Check List</a>
 											</td>
 										</tr>";
 									$rowcount++;
