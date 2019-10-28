@@ -576,7 +576,7 @@
                     echo "<td>$button_html_recut</td>";
                     echo "<td style='display:none'>$html_hiding</td>"; 
                     echo "<td>$button_html_replace</td>"; 
-                    echo "<td><a class=\"btn btn-xs btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\">Lay Plan</a></td>";
+                    echo "<td><a class=\"btn btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\">Lay Plan</a></td>";
                     // echo "<td><button type='button'class='btn btn-warning' onclick='recut_layplan(".$id.")'>Lay Plan</button></td>";
                     echo "</tr>";
                     $s_no++;
