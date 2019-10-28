@@ -256,7 +256,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 										Enter Supplier Invoice<span class="required"></span>
 									</label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
-										<input type="text" id="course1" name="supplier_invoice" class="form-control col-md-3 col-xs-12 input-sm integer" autocomplete="off">
+										<input type="text" id="course1" name="supplier_invoice" class="form-control col-md-3 col-xs-12" autocomplete="off">
 									</div>
 								</div>
 								<b class='text-center col-sm-10'>(OR)</b>
@@ -265,7 +265,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 										Enter Supplier Batch<span class="required"></span>
 									</label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
-										<input type="text" id="course1" name="supplier_batch" class="form-control col-md-3 col-xs-12 input-sm integer" autocomplete="off">
+										<input type="text" id="course1" name="supplier_batch" class="form-control col-md-3 col-xs-12 " autocomplete="off">
 									</div>
 								</div>
 								<b class='text-center col-sm-10'>(OR)</b>
@@ -274,7 +274,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 										Enter lot no<span class="required"></span>
 									</label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
-										<input type="text" id="course1" name="lot_no" class="form-control col-md-3 col-xs-12 input-sm integer" autocomplete="off">
+										<input type="text" id="course1" name="lot_no" class="form-control col-md-3 col-xs-12" autocomplete="off">
 									</div>
 								</div>
 								<div class='col-sm-12'>
@@ -341,12 +341,12 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							while ($row = mysqli_fetch_array($sql_result)) {
 								$lot_nos[] = $row["lot_no"];
 							}
-							$lot_number = implode(",", $lot_nos);
+							$lot_number = implode("','", $lot_nos);
 
 
 							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.batch_no='$supplier_batch' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
-// echo $sql_po_no;
+					//echo $sql_po_no;
 						$sql_result_po = mysqli_query($link, $sql_po_no) or exit(message_sql());
 						$num_rows = mysqli_num_rows($sql_result_po) == 0;
 						if ($num_rows) {
