@@ -1038,6 +1038,7 @@ if (isset($_POST['save'])) {
     })
 
     $(function() {
+
         $("#save").click(function(e) {
             // var rowCount = $('#points_tbl >tbody >tr').length;
             // alert(rowCount);
@@ -1049,7 +1050,10 @@ if (isset($_POST['save'])) {
             //     e.preventDefault();
             //   }
             // }
+            var t=$('#points_tbl tbody tr').size();
+        if(t>1){
             var tr_radio_1=$('#points_tbl tbody tr').last().find('input[type=text]').val(); 
+          
             if(tr_radio_1==''){
                  swal('warning','Please Fill Empty Row or Remove Empty Row','warning');
                  e.preventDefault();
@@ -1092,6 +1096,7 @@ if (isset($_POST['save'])) {
                 return false;
             }
             return true;
+        }
         });
     });
     $(function() {
@@ -1105,6 +1110,9 @@ if (isset($_POST['save'])) {
             //     e.preventDefault();
             //   }
             // }
+            
+            var t=$('#points_tbl tbody tr').size();
+        if(t>1){
             var tr_radio_1=$('#points_tbl tbody tr').last().find('input[type=text]').val(); 
             if(tr_radio_1==''){
                  swal('warning','Please Fill Empty Row or Remove Empty Row','warning');
@@ -1152,6 +1160,7 @@ if (isset($_POST['save'])) {
                 return false;
             }
             return true;
+        }
         });
     });
 });
