@@ -185,6 +185,8 @@ $header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
 $header_name=$smtp_user." Alert";
 $header_mail=$conf1->get('smtp_mail_from');
 $dispatch_mail = $conf1->get('dispatch_mail');
+$short_shipment_mail = $conf1->get('short_shipment_mail');
+
 $wpt_refresh_time = $conf1->get('wpt-refresh-time');
 
 //Central Administration Menu Access

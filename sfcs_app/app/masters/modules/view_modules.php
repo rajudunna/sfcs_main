@@ -29,7 +29,7 @@
 		<th>Module Label</th>
 		<th>Mini Plant</th>
 		<th>Status</th>
-		<th> Edit / Delete </th>
+		<th> Edit </th>
 		</tr>
 		</thead>
 		<tbody>";
@@ -77,7 +77,7 @@
             <td>".$row["label"]."</td>
 			<td>".$mini_plant_name."</td>
 			<td>".$row["status"]." </td>
-			<td><a href='$url&rowid=$rowid&module_name=$module_name&section=$section&status=$status&module_description=$module_description&block_priorities=$block_priorities&mini_plant=$mini_plant&mapped_cut_table=$mapped_cut_table&module_color=$color&module_label=$label' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid&module_name=$module_name&section=$section' class='btn btn-danger btn-xs editor_remove' onclick='return confirm_delete(event,this);'>Delete</a></td>
+			<td><a href='$url&rowid=$rowid&module_name=$module_name&section=$section&status=$status&module_description=$module_description&block_priorities=$block_priorities&mini_plant=$mini_plant&mapped_cut_table=$mapped_cut_table&module_color=$color&module_label=$label' class='btn btn-warning btn-xs editor_edit'>Edit</a></td>
 			</tr>";
 		}
 

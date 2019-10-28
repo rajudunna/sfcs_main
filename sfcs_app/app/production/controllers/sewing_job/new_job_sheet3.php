@@ -117,10 +117,23 @@ xmlns="http://www.w3.org/TR/REC-html40">
     $ssql15="SELECT * FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='$doc'"; 
     // echo $ssql15;     
     $result15=mysqli_query($link, $ssql15) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"])); 
-    while($row15=mysqli_fetch_array($result15)) 
-    { 
-        $team_number=$row15["input_module"]; 
-    } 
+	if(mysqli_num_rows($result15)>0)
+	{
+			while($row15=mysqli_fetch_array($result15)) 
+			{ 
+				$team_number=$row15["input_module"]; 
+			}
+	}
+    else
+	{
+		$ssql15="SELECT * FROM $bai_pro3.plan_dashboard_input_backup WHERE input_job_no_random_ref='$doc' "; 
+		// echo $ssql15;     
+		$result15=mysqli_query($link, $ssql15) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		while($row15=mysqli_fetch_array($result15)) 
+			{ 
+				$team_number=$row15["input_module"]; 
+			}
+	}	
     if ($team_number=='')
     {
         $team_number='No Module <br>Assigned';

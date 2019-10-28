@@ -11,6 +11,7 @@ set_time_limit(2000);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
 $section_no=$_GET['section_no'];
+$username=$_GET['uname'];
 ?>
 
 
@@ -47,6 +48,7 @@ $section_no=$_GET['section_no'];
 <body>
 	<form action="board_update_V2_input_excel.php" method="post">
 		<input type="hidden" name="section" value="<?= $_GET['section_no']; ?>">
+		<input type="hidden" name="uname1" value="<?= $_GET['uname']; ?>">
 		<input type="submit" name="export_excel" value="Export to Excel">
 	</form>
 <div class="panel panel-primary">
@@ -266,7 +268,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				}				
 				default:
 				{
-					$id="yash";
+					$id="Ash";
 					$rem="Not Update";
 					break;
 				}
@@ -335,7 +337,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			{
 				if($trims_status=="NULL" || $trims_status=="" || $trims_status=="(NULL)")
 				{
-					$trimid="YASH";
+					$trimid="Ash";
 				}			
 				else if($trims_status == 0 || $trims_status == 9)
 				{

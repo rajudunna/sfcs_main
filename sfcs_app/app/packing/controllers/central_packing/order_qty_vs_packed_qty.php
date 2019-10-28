@@ -153,7 +153,7 @@
 				</form>
 		<div class="col-md-12">
 			<?php
-			if(isset($_POST['submit']) or $_GET['style'] and $_GET['schedule'])
+			if((isset($_POST['submit']) or $_GET['style'] and $_GET['schedule']) && short_shipment_status($style,$schedule,$link))
 			{	
 				// if($_POST['style'] and $_POST['schedule'])
 				{

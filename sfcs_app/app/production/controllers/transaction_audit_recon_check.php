@@ -32,6 +32,22 @@ function quality_qty($schedule,$color,$tran_type,$size,$link,$module)
 		return $sql_row['qty'];
 	}
 }
+function get_qty($schedule,$type,$size,$color,$link,$module)
+{
+	$size=str_replace("a_","", $size);
+	$sql_schedule_id='SELECT `id` FROM bai_pro3.rejections_log WHERE `schedule`='.$schedule.' and `color`="'.$color.'"';
+	$result_schedule_id=mysqli_query($link,$sql_schedule_id) or exit("sql Error12=".$sql_schedule_id."-".mysql_errno());
+	while($sql_row_id=mysqli_fetch_array($result_schedule_id))
+	{
+		$id=$sql_row_id["id"];
+		$sql_qty='SELECT sum('.$type.') AS qty FROM bai_pro3.rejection_log_child WHERE `parent_id`='.$id.' and `size_id`="'.$size.'" and `assigned_module`="'.$module.'"';
+		$get_qty=mysqli_query($link,$sql_qty) or exit("sql Error2".mysqli_error());
+		while($getqty=mysqli_fetch_array($get_qty)){
+			return $getqty['qty'];
+		}
+	}
+}
+
 
 /*
 function quality_qty_sample($schedule,$color,$tran_type,$size,$link,$module)
@@ -111,57 +127,58 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			
 			
 			
-			$sql1="select coalesce(sum(a_xs*a_plies),0) as \"a_xs\", coalesce(sum(a_s*a_plies),0) as \"a_s\", coalesce(sum(a_m*a_plies),0) as \"a_m\", coalesce(sum(a_l*a_plies),0) as \"a_l\", coalesce(sum(a_xl*a_plies),0) as \"a_xl\", coalesce(sum(a_xxl*a_plies),0) as \"a_xxl\", coalesce(sum(a_xxxl*a_plies),0) as \"a_xxxl\", coalesce(sum(a_s06*a_plies),0) as \"a_s06\", coalesce(sum(a_s08*a_plies),0) as \"a_s08\", coalesce(sum(a_s10*a_plies),0) as \"a_s10\", coalesce(sum(a_s12*a_plies),0) as \"a_s12\", coalesce(sum(a_s14*a_plies),0) as \"a_s14\", coalesce(sum(a_s16*a_plies),0) as \"a_s16\", coalesce(sum(a_s18*a_plies),0) as \"a_s18\", coalesce(sum(a_s20*a_plies),0) as \"a_s20\", coalesce(sum(a_s22*a_plies),0) as \"a_s22\", coalesce(sum(a_s24*a_plies),0) as \"a_s24\", coalesce(sum(a_s26*a_plies),0) as \"a_s26\", coalesce(sum(a_s28*a_plies),0) as \"a_s28\", coalesce(sum(a_s30*a_plies),0) as \"a_s30\",coalesce(sum(p_xs),0) as \"p_xs\", coalesce(sum(p_s),0) as \"p_s\", coalesce(sum(p_m),0) as \"p_m\", coalesce(sum(p_l),0) as \"p_l\", coalesce(sum(p_xl),0) as \"p_xl\", coalesce(sum(p_xxl),0) as \"p_xxl\", coalesce(sum(p_xxxl),0) as \"p_xxxl\", coalesce(sum(p_s06),0) as \"p_s06\", coalesce(sum(p_s08),0) as \"p_s08\", coalesce(sum(p_s10),0) as \"p_s10\", coalesce(sum(p_s12),0) as \"p_s12\", coalesce(sum(p_s14),0) as \"p_s14\", coalesce(sum(p_s16),0) as \"p_s16\", coalesce(sum(p_s18),0) as \"p_s18\", coalesce(sum(p_s20),0) as \"p_s20\", coalesce(sum(p_s22),0) as \"p_s22\", coalesce(sum(p_s24),0) as \"p_s24\", coalesce(sum(p_s26),0) as \"p_s26\", coalesce(sum(p_s28),0) as \"p_s28\", coalesce(sum(p_s30),0) as \"p_s30\" from $bai_pro3.recut_v2_summary where order_tid=(select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no='".$sql_row['ims_style']."' and order_del_no='".$schedule."' and order_col_des='".$sql_row['ims_color']."') and cut_inp_temp=1 and plan_module='".$sql_row['ims_mod_no']."'";
+			// $sql1="select coalesce(sum(a_xs*a_plies),0) as \"a_xs\", coalesce(sum(a_s*a_plies),0) as \"a_s\", coalesce(sum(a_m*a_plies),0) as \"a_m\", coalesce(sum(a_l*a_plies),0) as \"a_l\", coalesce(sum(a_xl*a_plies),0) as \"a_xl\", coalesce(sum(a_xxl*a_plies),0) as \"a_xxl\", coalesce(sum(a_xxxl*a_plies),0) as \"a_xxxl\", coalesce(sum(a_s06*a_plies),0) as \"a_s06\", coalesce(sum(a_s08*a_plies),0) as \"a_s08\", coalesce(sum(a_s10*a_plies),0) as \"a_s10\", coalesce(sum(a_s12*a_plies),0) as \"a_s12\", coalesce(sum(a_s14*a_plies),0) as \"a_s14\", coalesce(sum(a_s16*a_plies),0) as \"a_s16\", coalesce(sum(a_s18*a_plies),0) as \"a_s18\", coalesce(sum(a_s20*a_plies),0) as \"a_s20\", coalesce(sum(a_s22*a_plies),0) as \"a_s22\", coalesce(sum(a_s24*a_plies),0) as \"a_s24\", coalesce(sum(a_s26*a_plies),0) as \"a_s26\", coalesce(sum(a_s28*a_plies),0) as \"a_s28\", coalesce(sum(a_s30*a_plies),0) as \"a_s30\",coalesce(sum(p_xs),0) as \"p_xs\", coalesce(sum(p_s),0) as \"p_s\", coalesce(sum(p_m),0) as \"p_m\", coalesce(sum(p_l),0) as \"p_l\", coalesce(sum(p_xl),0) as \"p_xl\", coalesce(sum(p_xxl),0) as \"p_xxl\", coalesce(sum(p_xxxl),0) as \"p_xxxl\", coalesce(sum(p_s06),0) as \"p_s06\", coalesce(sum(p_s08),0) as \"p_s08\", coalesce(sum(p_s10),0) as \"p_s10\", coalesce(sum(p_s12),0) as \"p_s12\", coalesce(sum(p_s14),0) as \"p_s14\", coalesce(sum(p_s16),0) as \"p_s16\", coalesce(sum(p_s18),0) as \"p_s18\", coalesce(sum(p_s20),0) as \"p_s20\", coalesce(sum(p_s22),0) as \"p_s22\", coalesce(sum(p_s24),0) as \"p_s24\", coalesce(sum(p_s26),0) as \"p_s26\", coalesce(sum(p_s28),0) as \"p_s28\", coalesce(sum(p_s30),0) as \"p_s30\" from $bai_pro3.recut_v2_summary where order_tid=(select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no='".$sql_row['ims_style']."' and order_del_no='".$schedule."' and order_col_des='".$sql_row['ims_color']."') and cut_inp_temp=1 and plan_module='".$sql_row['ims_mod_no']."'";
 			
-			//echo "<br/>".$sql1;
-			$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error12".mysql_error());
-			while($sql_row2=mysqli_fetch_array($sql_result1))
-			{
-				$recut_qty_db[]=$sql_row2['a_xs'];
-				$recut_qty_db[]=$sql_row2['a_s'];
-				$recut_qty_db[]=$sql_row2['a_m'];
-				$recut_qty_db[]=$sql_row2['a_l'];
-				$recut_qty_db[]=$sql_row2['a_xl'];
-				$recut_qty_db[]=$sql_row2['a_xxl'];
-				$recut_qty_db[]=$sql_row2['a_xxxl'];
-				$recut_qty_db[]=$sql_row2['a_s06'];
-				$recut_qty_db[]=$sql_row2['a_s08'];
-				$recut_qty_db[]=$sql_row2['a_s10'];
-				$recut_qty_db[]=$sql_row2['a_s12'];
-				$recut_qty_db[]=$sql_row2['a_s14'];
-				$recut_qty_db[]=$sql_row2['a_s16'];
-				$recut_qty_db[]=$sql_row2['a_s18'];
-				$recut_qty_db[]=$sql_row2['a_s20'];
-				$recut_qty_db[]=$sql_row2['a_s22'];
-				$recut_qty_db[]=$sql_row2['a_s24'];
-				$recut_qty_db[]=$sql_row2['a_s26'];
-				$recut_qty_db[]=$sql_row2['a_s28'];
-				$recut_qty_db[]=$sql_row2['a_s30'];
+			// //echo "<br/>".$sql1;
+			// $sql_result1=mysqli_query($link,$sql1) or exit("Sql Error12".mysql_error());
+			// while($sql_row2=mysqli_fetch_array($sql_result1))
+			// {
+			// 	$recut_qty_db[]=$sql_row2['a_xs'];
+			// 	$recut_qty_db[]=$sql_row2['a_s'];
+			// 	$recut_qty_db[]=$sql_row2['a_m'];
+			// 	$recut_qty_db[]=$sql_row2['a_l'];
+			// 	$recut_qty_db[]=$sql_row2['a_xl'];
+			// 	$recut_qty_db[]=$sql_row2['a_xxl'];
+			// 	$recut_qty_db[]=$sql_row2['a_xxxl'];
+			// 	$recut_qty_db[]=$sql_row2['a_s06'];
+			// 	$recut_qty_db[]=$sql_row2['a_s08'];
+			// 	$recut_qty_db[]=$sql_row2['a_s10'];
+			// 	$recut_qty_db[]=$sql_row2['a_s12'];
+			// 	$recut_qty_db[]=$sql_row2['a_s14'];
+			// 	$recut_qty_db[]=$sql_row2['a_s16'];
+			// 	$recut_qty_db[]=$sql_row2['a_s18'];
+			// 	$recut_qty_db[]=$sql_row2['a_s20'];
+			// 	$recut_qty_db[]=$sql_row2['a_s22'];
+			// 	$recut_qty_db[]=$sql_row2['a_s24'];
+			// 	$recut_qty_db[]=$sql_row2['a_s26'];
+			// 	$recut_qty_db[]=$sql_row2['a_s28'];
+			// 	$recut_qty_db[]=$sql_row2['a_s30'];
 				
-				$recut_req_db[]=$sql_row2['p_xs'];
-				$recut_req_db[]=$sql_row2['p_s'];
-				$recut_req_db[]=$sql_row2['p_m'];
-				$recut_req_db[]=$sql_row2['p_l'];
-				$recut_req_db[]=$sql_row2['p_xl'];
-				$recut_req_db[]=$sql_row2['p_xxl'];
-				$recut_req_db[]=$sql_row2['p_xxxl'];
-				$recut_req_db[]=$sql_row2['p_s06'];
-				$recut_req_db[]=$sql_row2['p_s08'];
-				$recut_req_db[]=$sql_row2['p_s10'];
-				$recut_req_db[]=$sql_row2['p_s12'];
-				$recut_req_db[]=$sql_row2['p_s14'];
-				$recut_req_db[]=$sql_row2['p_s16'];
-				$recut_req_db[]=$sql_row2['p_s18'];
-				$recut_req_db[]=$sql_row2['p_s20'];
-				$recut_req_db[]=$sql_row2['p_s22'];
-				$recut_req_db[]=$sql_row2['p_s24'];
-				$recut_req_db[]=$sql_row2['p_s26'];
-				$recut_req_db[]=$sql_row2['p_s28'];
-				$recut_req_db[]=$sql_row2['p_s30'];
-			}
+			// 	$recut_req_db[]=$sql_row2['p_xs'];
+			// 	$recut_req_db[]=$sql_row2['p_s'];
+			// 	$recut_req_db[]=$sql_row2['p_m'];
+			// 	$recut_req_db[]=$sql_row2['p_l'];
+			// 	$recut_req_db[]=$sql_row2['p_xl'];
+			// 	$recut_req_db[]=$sql_row2['p_xxl'];
+			// 	$recut_req_db[]=$sql_row2['p_xxxl'];
+			// 	$recut_req_db[]=$sql_row2['p_s06'];
+			// 	$recut_req_db[]=$sql_row2['p_s08'];
+			// 	$recut_req_db[]=$sql_row2['p_s10'];
+			// 	$recut_req_db[]=$sql_row2['p_s12'];
+			// 	$recut_req_db[]=$sql_row2['p_s14'];
+			// 	$recut_req_db[]=$sql_row2['p_s16'];
+			// 	$recut_req_db[]=$sql_row2['p_s18'];
+			// 	$recut_req_db[]=$sql_row2['p_s20'];
+			// 	$recut_req_db[]=$sql_row2['p_s22'];
+			// 	$recut_req_db[]=$sql_row2['p_s24'];
+			// 	$recut_req_db[]=$sql_row2['p_s26'];
+			// 	$recut_req_db[]=$sql_row2['p_s28'];
+			// 	$recut_req_db[]=$sql_row2['p_s30'];
+			// }
 		
-		
-		$replaced=quality_qty($schedule,$sql_row['ims_color'],2,$sql_row['ims_size'],$link,$sql_row["ims_mod_no"]);
+		$recut_qty=get_qty($schedule,recut_qty,$sql_row['ims_size'],$sql_row['ims_color'],$link,$sql_row["ims_mod_no"]);
+		$replaced=get_qty($schedule,replaced_qty,$sql_row['ims_size'],$sql_row['ims_color'],$link,$sql_row["ims_mod_no"]);
+		//$replaced=quality_qty($schedule,$sql_row['ims_color'],2,$sql_row['ims_size'],$link,$sql_row["ims_mod_no"]);
 		$transfer=quality_qty($schedule,$sql_row['ims_color'],11,$sql_row['ims_size'],$link,$sql_row["ims_mod_no"]);
 		$rejections=quality_qty($schedule,$sql_row['ims_color'],3,$sql_row['ims_size'],$link,$sql_row["ims_mod_no"]);
 		$outofratio=quality_qty($schedule,$sql_row['ims_color'],5,$sql_row['ims_size'],$link,$sql_row["ims_mod_no"]);
@@ -210,9 +227,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				echo "<td>".($sql_row["ims_qty"]-$transfer)."</td>";
 				$total_input_qty+=($sql_row["ims_qty"]-$transfer);
 				$total_input_qty1=$total_input_qty;
-				echo "<td>".$recut_qty_db[array_search($sql_row["ims_size"],$sizes_db)]."</td>";
-				$recut_qty+=($recut_qty_db[array_search($sql_row["ims_size"],$sizes_db)]);
-				$recut_qty1=$recut_qty;
+				// echo "<td>".$recut_qty_db[array_search($sql_row["ims_size"],$sizes_db)]."</td>";
+				// $recut_qty+=($recut_qty_db[array_search($sql_row["ims_size"],$sizes_db)]);
+				// $recut_qty1=$recut_qty;
+				echo "<td>".$recut_qty."</td>";
+				$recut_qtyy+=$recut_qty;
+				$recut_qty1=$recut_qtyy;
 				echo "<td>".$replaced."</td>";
 				$replaced_qty+=$replaced;
 				$replaced_qty1=$replaced_qty;
@@ -236,11 +256,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$sample_out_qty510=$sample_out_qty5;
 				//08-09-2016/SR#18628309/Removed $sample_in_qty from missing garment output calculation and added $sample_in_qty,$sample_out_qty in input calculation as per mail at 30/08/2016 3:57 PM (subject:IMS removed)
 				echo "<td>".((($sql_row["ims_qty"]-$transfer)
-				+$recut_qty_db[array_search($sql_row["ims_size"],$sizes_db)]
+				+$recut_qty
 				+$replaced
 				+$transfer+$sample_out_qty+$sample_in_qty)-($output+$rejections+$outofratio+$sample_out_qty))."</td>";
 				$missing_qty+=((($sql_row["ims_qty"]-$transfer)
-				+$recut_qty_db[array_search($sql_row["ims_size"],$sizes_db)]
+				+$recut_qty
 				+$replaced
 				+$transfer+$sample_out_qty+$sample_in_qty)-($output+$rejections+$outofratio+$sample_out_qty));
 				$missing_qty1=$missing_qty;		

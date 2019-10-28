@@ -13,43 +13,43 @@ if($res)
 {
 	print("Data Inserted into shipment_plan from shipment_plan_original ")."\n";
 }
-function check_style($string)
-{
-	global $link;
-	global $bai_pro2;
-	$check=0;
-	for ($index=0;$index<strlen($string);$index++) {
-    	if(isNumber($string[$index]))
-		{
-			$nums = $string[$index];
-		}
-     	else    
-		{
-			$chars = $string[$index];
-			$check=$check+1;
-			if($check==2)
-			{
-				break;
-			}
-		} 			
-	}
+// function check_style($string)
+// {
+// 	global $link;
+// 	global $bai_pro2;
+// 	$check=0;
+// 	for ($index=0;$index<strlen($string);$index++) {
+//     	if(isNumber($string[$index]))
+// 		{
+// 			$nums = $string[$index];
+// 		}
+//      	else    
+// 		{
+// 			$chars = $string[$index];
+// 			$check=$check+1;
+// 			if($check==2)
+// 			{
+// 				break;
+// 			}
+// 		} 			
+// 	}
 
-	$sql3="select style_id from $bai_pro2.movex_styles where movex_style=\"$string\"";
-	$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row3=mysqli_fetch_array($sql_result3))
-	{
-		$style_id_new=$sql_row3['style_id'];
-	}
+	// $sql3="select style_id from $bai_pro2.movex_styles where movex_style=\"$string\"";
+	// $sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($sql_row3=mysqli_fetch_array($sql_result3))
+	// {
+	// 	$style_id_new=$sql_row3['style_id'];
+	// }
 	
-	if(strlen($style_id_new)>0)
-	{
-		return $style_id_new;
-	}
-	else
-	{
-		return $nums;
-	}	
-}
+	// if(strlen($style_id_new)>0)
+	// {
+	// 	return $style_id_new;
+	// }
+	// else
+	// {
+	// 	return $nums;
+	// }	
+// }
 
 function isNumber($c) 
 {
@@ -96,12 +96,12 @@ function isNumber($c)
 				$color=str_pad($sql_row2['color'],"30"," ");
 				$ssc_code=$style.$sch_no.$color;
 				// echo $ssc_code."<br>";
-				$style_id=check_style($style);
+				// $style_id=check_style($style);
 				// echo "<br><br>".$style." Len=".strlen($style_id)."<br><br>";
-				if(strlen($style_id)==0)
-				{
+				// if(strlen($style_id)==0)
+				// {
 					$style_id=$style;
-				}
+				// }
 
 				$size_code = [];   
 				$get_sizes = "select size_code from $bai_pro3.shipment_plan where schedule_no=\"$sch_no\" and style_no=\"$style\" and color=\"$color\"";
@@ -321,8 +321,15 @@ function isNumber($c)
 									$vpo=$sql_row3['VPO_NO'];
 									$customer_style=$sql_row3['Customer_Style_No'];
 								}
+								if($vpo!='')
+								{
 								
-								$sql31="update $bai_pro3.bai_orders_db set vpo=\"$vpo\", packing_method=\"$packing_method\",destination=\"$destination\", zfeature=\"$zfeature\", style_id=\"$style_id\",  order_style_no=\"$style\", order_del_no=\"$sch_no\", order_col_des=\"$color\", order_s_".$size[$size_ref]."=$order_qty,title_size_".$size[$size_ref]."=\"".trim($size_code)."\",order_date=\"$exfact_date\",title_flag=\"$flag\", order_po_no=\"$cpo\",co_no=\"$cpo\", order_div=\"$buyer_div\",customer_style_no=\"$customer_style\" where order_tid=\"$ssc_code\"";//co_no added on 2017-12-23
+									$sql32="update $bai_pro3.bai_orders_db set vpo=\"$vpo\" where order_tid=\"$ssc_code\" ";//vpo updating#2635
+									echo $sql32."<br><br>";
+									mysqli_query($link, $sql32) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
+								}
+
+								$sql31="update $bai_pro3.bai_orders_db set  packing_method=\"$packing_method\",destination=\"$destination\", zfeature=\"$zfeature\", style_id=\"$style_id\",  order_style_no=\"$style\", order_del_no=\"$sch_no\", order_col_des=\"$color\", order_s_".$size[$size_ref]."=$order_qty,title_size_".$size[$size_ref]."=\"".trim($size_code)."\",order_date=\"$exfact_date\",title_flag=\"$flag\", order_po_no=\"$cpo\",co_no=\"$cpo\", order_div=\"$buyer_div\",customer_style_no=\"$customer_style\" where order_tid=\"$ssc_code\"";//co_no added on 2017-12-23
 								echo $sql31."<br><br>";
 								mysqli_query($link, $sql31) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$size_ref=$size_ref+1;
