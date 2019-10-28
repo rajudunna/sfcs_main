@@ -3,7 +3,6 @@
 $start_timestamp = microtime(true);
 //CR# 203 / KiranG 2014-08-10
 //Added new query to filer all schedule irrespective of weekly shipment plan.
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 ini_set('mysql.connect_timeout', 3000000);
 ini_set('default_socket_timeout', 3000000);
