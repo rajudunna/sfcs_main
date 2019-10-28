@@ -1,17 +1,16 @@
 
 <?php
 error_reporting(0);
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 ?>
 
 <?php
 	$include_path=getenv('config_job_path');
-	//  include($include_path.'\sfcs_app\common\config\config_jobs.php');
+    include($include_path.'\sfcs_app\common\config\config_jobs.php');
 	//  include($include_path.'\sfcs_app\common\config\config_ajax.php');	
-	set_time_limit(90000);
-//Temp Pool
-
-
+    set_time_limit(90000);
+   //Temp Pool
 
 ?>
 
