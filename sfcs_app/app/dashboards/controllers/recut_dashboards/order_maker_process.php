@@ -95,7 +95,7 @@ if(isset($_POST['update']))
 						sweetAlert('Error','User Style ID was not available for this schedule, Please check with the Planning Team.','error');
 						setTimeout(\"Redirect()\",2000); 
 						function Redirect() {  
-							location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; 
+							location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; 
 						}
 					</script>";
 		}
@@ -104,7 +104,7 @@ if(isset($_POST['update']))
 				echo "<script type=\"text/javascript\"> 
 						sweetAlert('Error','Packing Method was not available for this schedule, Please update the Shipment Plan for this schedule.','error');
 						setTimeout(\"Redirect()\",2000); function Redirect() {  
-							location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; 
+							location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; 
 						}
 					</script>";
 		}
@@ -132,17 +132,16 @@ if(isset($_POST['update']))
 		if(strlen(trim($allocate_ref)) != null) //System will not update, if no data is not available
 		{
 
-				$sql="insert ignore into $bai_pro3.maker_stat_log (date, cat_ref, cuttable_ref, allocate_ref, mklength, mkeff, mk_ver, remarks, order_tid, lastup, remark1, remark2, remark3, remark4) values(\"$log_date\",\"$cat_ref\", \"$cuttable_ref\", \"$allocate_ref\", \"$in_mklen\", \"$in_mkeff\", \"$in_mkver\", \"$in_rmks\", \"$tran_order_tid\", \"$log_time\", \"$remarks1\", \"$remarks2\", \"$remarks3\", \"$remarks4\")";
+				$sql="insert ignore into $bai_pro3.maker_stat_log (date, cat_ref, cuttable_ref, allocate_ref, mklength, mkeff, mk_ver, remarks, order_tid, lastup, remark1, remark2, remark3, remark4,recut_lay_plan) values(\"$log_date\",\"$cat_ref\", \"$cuttable_ref\", \"$allocate_ref\", \"$in_mklen\", \"$in_mkeff\", \"$in_mkver\", \"$in_rmks\", \"$tran_order_tid\", \"$log_time\", \"$remarks1\", \"$remarks2\", \"$remarks3\", \"$remarks4\",'yes')";
 			
-			// echo $sql;die();
+				// echo $sql;die();
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 				$marker_stat_log_id = $iLastid;
 				// echo $iLastid;die();
-				$sql="update $bai_pro3.allocate_stat_log set mk_status=2 where tid=$allocate_ref and recut_lay_plan='no'";
-				// echo $sql;die();
-				mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql="update $bai_pro3.allocate_stat_log set mk_status=2 where tid=$allocate_ref and recut_lay_plan='yes'";
+				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				
 				$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
@@ -157,7 +156,7 @@ if(isset($_POST['update']))
 				}
 				
 				$allo_c=array();
-				$sql="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref and recut_lay_plan='no'";
+				$sql="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref and recut_lay_plan='yes'";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
@@ -248,7 +247,7 @@ if(isset($_POST['update']))
 
 					}
 				}
-				$sql_maker_allocation = "select allocate_ref from $bai_pro3.maker_stat_log where tid =\"$marker_stat_log_id\" and recut_lay_plan='no'";
+				$sql_maker_allocation = "select allocate_ref from $bai_pro3.maker_stat_log where tid =\"$marker_stat_log_id\" and recut_lay_plan='yes'";
 				$sql_maker_allocation_res=mysqli_query($link, $sql_maker_allocation) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_allocation_res=mysqli_fetch_array($sql_maker_allocation_res);
 
@@ -266,7 +265,7 @@ if(isset($_POST['update']))
 				}
 				
 				// var_dump($sql_row);
-				$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set marker_details_id='".$id."', mklength='".$mklen."',mkeff='".$mkeff."',remark1='".$r1."',remark2='".$r2."',remark3='".$r3."',remark4='".$r4."' where allocate_ref=$sql_allocation_res[allocate_ref] and recut_lay_plan='no'";
+				$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set marker_details_id='".$id."', mklength='".$mklen."',mkeff='".$mkeff."',remark1='".$r1."',remark2='".$r2."',remark3='".$r3."',remark4='".$r4."' where allocate_ref=$sql_allocation_res[allocate_ref] and recut_lay_plan='yes'";
 				//echo $sql_update_marker_length_id;die();
 				mysqli_query($link, $sql_update_marker_length_id) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
@@ -283,7 +282,7 @@ if(isset($_POST['update']))
 					}
 				}
 				 
-							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {   sweetAlert('Successfully Updated','','success'); location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {   sweetAlert('Successfully Updated','','success'); location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
 		}else{
 			//echo "<h2 class='label label-danger'>Marker Version is not available.</h2>";
 			echo "<script type='text/javascript'>

@@ -206,7 +206,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$buyer_code=substr($sql_row['order_style_no'],0,1);
 
 }
-echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a></div></br>";
+echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a></div></br>";
 $sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" and tid=$cat_ref";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -221,7 +221,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$category=$sql_row['category'];
 
 	$check=0;
-	$sql2="select sum(cuttable_s_xs) as \"cxs\", sum(cuttable_s_s) as \"cs\", sum(cuttable_s_m) as \"cm\", sum(cuttable_s_l) as \"cl\", sum(cuttable_s_xl) as \"cxl\", sum(cuttable_s_xxl) as \"cxxl\", sum(cuttable_s_xxxl) as \"cxxxl\" from $bai_pro3.cuttable_stat_log where order_tid=\"$tran_order_tid\" and cat_id=".$sql_row['tid'];
+	$sql2="select sum(cuttable_s_xs) as \"cxs\", sum(cuttable_s_s) as \"cs\", sum(cuttable_s_m) as \"cm\", sum(cuttable_s_l) as \"cl\", sum(cuttable_s_xl) as \"cxl\", sum(cuttable_s_xxl) as \"cxxl\", sum(cuttable_s_xxxl) as \"cxxxl\" from $bai_pro3.cuttable_stat_log_recut where order_tid=\"$tran_order_tid\" and cat_id=".$sql_row['tid'];
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -269,7 +269,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 //echo "</table>";
 
 
-$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and tid=$allocate_ref and recut_lay_plan='no'";
+$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and tid=$allocate_ref and recut_lay_plan='yes'";
 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -312,7 +312,7 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 
 if($mk_ref!=0)
 {
-	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
+	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref and recut_lay_plan='yes'";
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -339,7 +339,7 @@ else
 
 /* update*/
 
-//echo "<a href=\"../main_interface.php?color=$color_back&style=$style_back&schedule=$schedule_back\">Click here to Go Back</a>";
+//echo "<a href=\"../recut_lay_plan.php?color=$color_back&style=$style_back&schedule=$schedule_back\">Click here to Go Back</a>";
 echo "<br><br>";
 echo "<div class=\"col-md-12\"><table class=\"table table-bordered\">";
 
@@ -434,7 +434,7 @@ echo "<h2><span class=\"label label-default\">Reference of Existing Workouts:</s
 
 
 $allo_c=array();
-$sql="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref and recut_lay_plan='no'";
+$sql="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref and recut_lay_plan='yes'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {

@@ -124,13 +124,13 @@ function RecutProcess($recut_id_edit)
             $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id  FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
             ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id and category = '$cat' group by doc_no,size_title having  (rejected_qty-(replaced_qty+recut_qty)) > 0 > 0";
             // echo $getting_full_cut_details;
-           $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Recut Raised Qty</th><th>Replaced Qty</th><th>Eligible to recut Qty</th><th>Recut Qty</th></tr></thead><tbody>";
+           $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Layplan Request Qty</th><th>Recut Raised Qty</th><th>Replaced Qty</th><th>Eligible to recut Qty</th><th>Recut Qty</th></tr></thead><tbody>";
         }
         else
         {
             $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
             ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id and category = '$cat' group by input_job_no_random_ref,assigned_module,size_title having  (rejected_qty-(replaced_qty+recut_qty)) > 0 > 0";
-            $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Recut Raised Qty</th><th>Replaced Qty</th><th>Eligible to recut Qty</th><th>Recut Qty</th></tr></thead><tbody>";
+            $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Layplan Request Qty</th><th>Recut Raised Qty</th><th>Replaced Qty</th><th>Eligible to recut Qty</th><th>Recut Qty</th></tr></thead><tbody>";
         }
         // echo $getting_full_cut_details.'</br>';
         //set and reset processs
@@ -173,8 +173,34 @@ function RecutProcess($recut_id_edit)
             $ids=$row_cat['ids'];
             $size = $row_cat['size_id'];
             $bcd_id = $row_cat['bcd_id'];
-            $remaining_qty =  $rej_qty- ($recut_qty + $replace_qty);
+            $qry_to_get = "SELECT * FROM  `$bai_pro3`.`cat_stat_log` WHERE  order_tid = \"$order_tid\" and category in ($in_categories)";
+            $res_qry_to_get = $link->query($qry_to_get);
+            while($row_cat_ref = $res_qry_to_get->fetch_assoc()) 
+            {
+                $cat_ref =$row_cat_ref['tid'];
+        
+            }
+            $sum_recut_raise_qty = 0;
+            $getting_full_cut_details = "SELECT sum(recut_raised_qty) as recut_raised_qty,sum(recut_allocated_qty) as recut_allocated_qty FROM `$bai_pro3`.`lay_plan_recut_track` where bcd_id in ($bcd_id) and cat_ref='$cat_ref'";
+            $getting_full_cut_details_result = $link->query($getting_full_cut_details);
+
+            if(mysqli_num_rows($getting_full_cut_details_result) > 0){
+
+                while($row22 = $getting_full_cut_details_result->fetch_assoc()) 
+                {
+                    $sum_recut_raise_qty = $row22['recut_raised_qty']-$row22['recut_allocated_qty'];
+                }
+            }
+            if($sum_recut_raise_qty=='') {
+                $sum_recut_raise_qty = 0;
+            }
+            $remaining_qty =  $rej_qty - ($sum_recut_raise_qty + $recut_qty + $replace_qty);
+        //    echo $rej_qty."rej_qty- (".$sum_recut_raise_qty."sum_recut_raise_qty +".$replace_qty."replace_qty)";
+            // $remaining_qty =  $rej_qty- ($recut_qty + $replace_qty);
+
+            // $remaining_qty =  $sum_recut_raise_qty;
             $table_data .= "<td>".$row_cat['rejected_qty']."</td>";
+            $table_data .= "<td>".$sum_recut_raise_qty."</td>";
             $table_data .= "<td>".$row_cat['recut_qty']."</td>";
             $table_data .= "<td>".$row_cat['replaced_qty']."</td>";
             $rem_string = $s_no.'rems';
@@ -183,6 +209,9 @@ function RecutProcess($recut_id_edit)
             $table_data .= "<input type='hidden' name='ids[$bcd_id]' value='$ids'>";
             $table_data .= "<input type='hidden' name='size[]' value='$size'>";
             $table_data .= "<input type='hidden' name='bcd_ids[]' value='$bcd_id'>";
+            $table_data .= "<input type='hidden' name='rej_qty[]' value='$rej_qty'>";
+            $table_data .= "<input type='hidden' name='recut_qty[]' value='$recut_qty'>";
+            $table_data .= "<input type='hidden' name='replace_qty[]' value='$replace_qty'>";
         }
         //$table_data .= "<input type='hidden' id='total_rows' value='$s_no'>";
        // $table_data .= "<td style='display:none' id='total_rows'>$s_no</td>";

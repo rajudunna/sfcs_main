@@ -1363,8 +1363,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	$cuttable_sum=$cuttable_s01+$cuttable_s02+$cuttable_s03+$cuttable_s04+$cuttable_s05+$cuttable_s06+$cuttable_s07+$cuttable_s08+$cuttable_s09+$cuttable_s10+$cuttable_s11+$cuttable_s12+$cuttable_s13+$cuttable_s14+$cuttable_s15+$cuttable_s16+$cuttable_s17+$cuttable_s18+$cuttable_s19+$cuttable_s20+$cuttable_s21+$cuttable_s22+$cuttable_s23+$cuttable_s24+$cuttable_s25+$cuttable_s26+$cuttable_s27+$cuttable_s28+$cuttable_s29+$cuttable_s30+$cuttable_s31+$cuttable_s32+$cuttable_s33+$cuttable_s34+$cuttable_s35+$cuttable_s36+$cuttable_s37+$cuttable_s38+$cuttable_s39+$cuttable_s40+$cuttable_s41+$cuttable_s42+$cuttable_s43+$cuttable_s44+$cuttable_s45+$cuttable_s46+$cuttable_s47+$cuttable_s48+$cuttable_s49+$cuttable_s50;
 	
-	$sql2="select ((allocate_s01+allocate_s02+allocate_s03+allocate_s04+allocate_s05+allocate_s06+allocate_s07+allocate_s08+allocate_s09+allocate_s10+allocate_s11+allocate_s12+allocate_s13+allocate_s14+allocate_s15+allocate_s16+allocate_s17+allocate_s18+allocate_s19+allocate_s20+allocate_s21+allocate_s22+allocate_s23+allocate_s24+allocate_s25+allocate_s26+allocate_s27+allocate_s28+allocate_s29+allocate_s30+allocate_s31+allocate_s32+allocate_s33+allocate_s34+allocate_s35+allocate_s36+allocate_s37+allocate_s38+allocate_s39+allocate_s40+allocate_s41+allocate_s42+allocate_s43+allocate_s44+allocate_s45+allocate_s46+allocate_s47+allocate_s48+allocate_s49+allocate_s50)*plies) as \"total\" from $bai_pro3.allocate_stat_log left join cat_stat_log on  allocate_stat_log.order_tid=cat_stat_log.order_tid where allocate_stat_log.order_tid=\"$tran_order_tid\" and allocate_stat_log.cuttable_ref='$cuttable_ref' and cat_stat_log.category in ($in_categories)";
-	//echo $sql2."<br>";	
+	$sql2="select ((allocate_s01+allocate_s02+allocate_s03+allocate_s04+allocate_s05+allocate_s06+allocate_s07+allocate_s08+allocate_s09+allocate_s10+allocate_s11+allocate_s12+allocate_s13+allocate_s14+allocate_s15+allocate_s16+allocate_s17+allocate_s18+allocate_s19+allocate_s20+allocate_s21+allocate_s22+allocate_s23+allocate_s24+allocate_s25+allocate_s26+allocate_s27+allocate_s28+allocate_s29+allocate_s30+allocate_s31+allocate_s32+allocate_s33+allocate_s34+allocate_s35+allocate_s36+allocate_s37+allocate_s38+allocate_s39+allocate_s40+allocate_s41+allocate_s42+allocate_s43+allocate_s44+allocate_s45+allocate_s46+allocate_s47+allocate_s48+allocate_s49+allocate_s50)*plies) as \"total\" from $bai_pro3.allocate_stat_log left join cat_stat_log on  allocate_stat_log.order_tid=cat_stat_log.order_tid where allocate_stat_log.order_tid=\"$tran_order_tid\" and allocate_stat_log.cuttable_ref='$cuttable_ref' and cat_stat_log.category in ($in_categories) and recut_lay_plan='no'";
+	// echo $sql2."<br>";	
 	// mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check2=mysqli_num_rows($sql_result2);
@@ -1433,13 +1433,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	
 	echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&style=$style&schedule=$schedule&color=$color\">Add Ratios</a></center></td>";
-	$sql17="select * from bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\"";
-    // echo $sql15;
+	$sql17="select * from bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and recut_lay_plan='no'";
+    // echo $sql17;
     $sql_result27=mysqli_query($link, $sql17) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$cut_count_new = mysqli_num_rows($sql_result27);
 	
 	$pliespercut=0;
-	$sql15="select * from bai_pro3.allocate_stat_log where cat_ref=$cat_id";
+	$sql15="select * from bai_pro3.allocate_stat_log where cat_ref=$cat_id and recut_lay_plan='no'";
 	// echo $sql15;
 	$sql_result25=mysqli_query($link, $sql15) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$cut_count = mysqli_num_rows($sql_result25);
@@ -1597,8 +1597,8 @@ while($sql_row1=mysqli_fetch_array($sql_result))
 }
 
 
-$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" order by tid";
-//echo $sql;
+$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and recut_lay_plan='no' order by tid";
+// echo $sql;
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -1621,12 +1621,13 @@ else
 $used_fabric =0;
 foreach($cats_ids as $key=>$value)
 {
-	$get_cat_ref_query="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$value group by cat_ref order by tid";
+	$get_cat_ref_query="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$value and recut_lay_plan='no' group by cat_ref order by tid";
+	// echo $get_cat_ref_query;
 	$cat_ref_result=mysqli_query($link, $get_cat_ref_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));	
 	if(mysqli_num_rows($cat_ref_result)>0 )
 	{		
 	$tot_size=array();
-	$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$value order by tid";
+	$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$value and recut_lay_plan='no' order by tid";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	// echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1916,7 +1917,8 @@ echo "<thead><tr><th class=\"column-title \"><center>Category</center></th><th c
 $check_for_excess_cut="select excess_cut_qty from $bai_pro3.excess_cuts_log where schedule_no = '$schedule' and color = '$color'";
 $excess_cut_details=mysqli_query($link, $check_for_excess_cut) or exit("Error while fetching excess cut details");
 
-$sql="select * from $bai_pro3.maker_stat_log where order_tid=\"$tran_order_tid\" and allocate_ref > 0 order by allocate_ref";
+$sql="select * from $bai_pro3.maker_stat_log where order_tid=\"$tran_order_tid\" and recut_lay_plan='no' and allocate_ref > 0  order by allocate_ref";
+// echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1940,7 +1942,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 	echo "<td class=\"  \"><center>".$category."</center></td>";
 	
-	$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and tid=$allocate_ref";
+	$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and tid=$allocate_ref and recut_lay_plan='no'";
+	// echo $sql2;
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -2106,8 +2109,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 	
 		
-	$sql2="select sum((allocate_s01+allocate_s02+allocate_s03+allocate_s04+allocate_s05+allocate_s06+allocate_s07+allocate_s08+allocate_s09+allocate_s10+allocate_s11+allocate_s12+allocate_s13+allocate_s14+allocate_s15+allocate_s16+allocate_s17+allocate_s18+allocate_s19+allocate_s20+allocate_s21+allocate_s22+allocate_s23+allocate_s24+allocate_s25+allocate_s26+allocate_s27+allocate_s28+allocate_s29+allocate_s30+allocate_s31+allocate_s32+allocate_s33+allocate_s34+allocate_s35+allocate_s36+allocate_s37+allocate_s38+allocate_s39+allocate_s40+allocate_s41+allocate_s42+allocate_s43+allocate_s44+allocate_s45+allocate_s46+allocate_s47+allocate_s48+allocate_s49+allocate_s50)*plies) as \"total\" from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$cat_tid_new";
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql2="select sum((allocate_s01+allocate_s02+allocate_s03+allocate_s04+allocate_s05+allocate_s06+allocate_s07+allocate_s08+allocate_s09+allocate_s10+allocate_s11+allocate_s12+allocate_s13+allocate_s14+allocate_s15+allocate_s16+allocate_s17+allocate_s18+allocate_s19+allocate_s20+allocate_s21+allocate_s22+allocate_s23+allocate_s24+allocate_s25+allocate_s26+allocate_s27+allocate_s28+allocate_s29+allocate_s30+allocate_s31+allocate_s32+allocate_s33+allocate_s34+allocate_s35+allocate_s36+allocate_s37+allocate_s38+allocate_s39+allocate_s40+allocate_s41+allocate_s42+allocate_s43+allocate_s44+allocate_s45+allocate_s46+allocate_s47+allocate_s48+allocate_s49+allocate_s50)*plies) as \"total\" from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=\"$cat_tid_new\" and recut_lay_plan='no'";
+	// echo $sql2;
+	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
 		$allocation_qty_new=$sql_row2['total'];
@@ -2132,8 +2136,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 	
 	//echo $cat_tid_new;
-	$sql2="select count(*) as \"ratio_sum\" from $bai_pro3.allocate_stat_log where cat_ref=$cat_tid_new";
-	//echo $sql2;
+	$sql2="select count(*) as \"ratio_sum\" from $bai_pro3.allocate_stat_log where cat_ref=$cat_tid_new and recut_lay_plan='no'";
+	// echo $sql2;
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{

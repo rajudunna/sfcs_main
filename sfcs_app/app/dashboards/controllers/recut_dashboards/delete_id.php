@@ -29,18 +29,11 @@ if($sql_num_check1==0)
 	// {
 		// $tid=$sql_row2['tid'];
 	// }
-	$sql3="delete FROM $bai_pro3.allocate_stat_log where tid=\"$allocate_ref\" and recut_lay_plan='no'";
+	$sql3="delete FROM $bai_pro3.allocate_stat_log where tid=\"$allocate_ref\" and recut_lay_plan='yes'";
 	// echo "<br/>".$sql3."<br/>";
 	mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql4="delete FROM $bai_pro3.maker_stat_log where allocate_ref=\"$allocate_ref\"";
+	$sql4="delete FROM $bai_pro3.maker_stat_log where allocate_ref=\"$allocate_ref\" and recut_lay_plan='yes'";
 	mysqli_query($link, $sql4) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_min_id = "select * from $bai_pro3.maker_details where parent_id =".$allocate_ref."";
-	$sql_result12=mysqli_query($link, $sql_min_id) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($sql_result12))
-	{	
-		$sql41="delete FROM $bai_pro3.maker_details where parent_id=".$allocate_ref."";
-		mysqli_query($link, $sql41) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	}
 	// echo "<br/>".$sql4."<br/>";
 	echo "<script type=\"text/javascript\"> 
 				sweetAlert('Deleted Successfully','','error');			
@@ -67,9 +60,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 echo "<script type=\"text/javascript\"> 
 		setTimeout(\"Redirect()\",0); 
 		function Redirect(){	 
-				location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"; 
+				location.href = \"".getFullURL($_GET['r'], "recut_lay_plan.php","N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"; 
 			}
 	</script>";	
-//echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURL($_GET['r'], "main_interface.php", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"><<<<<< Click here to Go Back</a>";
+//echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURL($_GET['r'], "recut_lay_plan.php", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"><<<<<< Click here to Go Back</a>";
 
 ?>

@@ -239,6 +239,7 @@ function GetSelectedItem()
 				echo "<td><center>N/A</center></td>";
 				echo "<td><center>N/A</center></td>";
 				echo "<td><center>N/A</center></td>";
+				echo "<td><center>N/A</center></td>";
 			}
 		}
 
