@@ -125,7 +125,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	
 	$count=0;
-	$mssql_select="SELECT * FROM [$bel_wisdom_database].[dbo].[$bel_wisdom_table] where TID='".$tid."' and plant2='".$plant_name."'";
+	$mssql_select="SELECT * FROM [$bel_wisdom_database].[dbo].[$bel_wisdom_table] where TID='".$tid."' and plant2='".$global_facility_code."'";
 	$mssql_result=odbc_exec($con,$mssql_select) or exit(odbc_errormsg($con));
 	
 	
@@ -152,7 +152,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
       ,[reason2] = '".$down_reason."'
       ,[lostClkHrs] = '".round($sql_row['dtime']/60,0)."'
 	  ,[schedule] = '".$schedule."'
- WHERE  [TID] = '".$tid."' and [plant2] = '".$plant_name."'";
+ WHERE  [TID] = '".$tid."' and [plant2] = '".$global_facility_code."'";
 		
 		 echo "<br/> sql_update ".$sql_update."<br/>";	
 		 $res=odbc_exec($con,$sql_update);
@@ -161,7 +161,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 	else
 	{
-		$sql_insert="insert into [$bel_wisdom_database].[dbo].[$bel_wisdom_table] (reason,reasonby,buyer,style,lossHrs,date2,plant2,costType2,color,RMtype,reasonDetailed,lineNumber,pieces,reason1,reason2,lostClkHrs,TID,Schedule) values('".$down_machine."','".$dep_name."','".$buyer."','".$style."','".round($sah_loss/100,0)."','".$date."','".$plant_name."','Cost of Lost SAH ($)','','','".$remarks."','".$module."','".$lost_pcs."','".$down_problem."','".$down_reason."','".round($sql_row['dtime']/60,0)."','".$tid."','".$schedule."')";
+		$sql_insert="insert into [$bel_wisdom_database].[dbo].[$bel_wisdom_table] (reason,reasonby,buyer,style,lossHrs,date2,plant2,costType2,color,RMtype,reasonDetailed,lineNumber,pieces,reason1,reason2,lostClkHrs,TID,Schedule) values('".$down_machine."','".$dep_name."','".$buyer."','".$style."','".round($sah_loss/100,0)."','".$date."','".$global_facility_code."','Cost of Lost SAH ($)','','','".$remarks."','".$module."','".$lost_pcs."','".$down_problem."','".$down_reason."','".round($sql_row['dtime']/60,0)."','".$tid."','".$schedule."')";
 		  echo "<br/> sql_insert ".$sql_insert."<br/>";
 		$res=odbc_exec($con,$sql_insert);
 			
@@ -200,7 +200,7 @@ $result_delete_log=mysqli_query($link,$sql_delete_log) or exit("<br/>Sql Error d
 while($delete_row=mysqli_fetch_array($result_delete_log))
 {
 	$delete_tid=$delete_row['tid'];
-	$mssql_select1="SELECT * FROM [$bel_wisdom_database].[dbo].[$bel_wisdom_table] where TID='".$delete_tid."' and plant2='".$plant_name."'";
+	$mssql_select1="SELECT * FROM [$bel_wisdom_database].[dbo].[$bel_wisdom_table] where TID='".$delete_tid."' and plant2='".$global_facility_code."'";
 	
 	
 	$mssql_result1=odbc_exec($con,$mssql_select1);
@@ -212,7 +212,7 @@ while($delete_row=mysqli_fetch_array($result_delete_log))
 	if($count1>0)
 	{
 		$mssql_delete="DELETE FROM [$bel_wisdom_database].[dbo].[$bel_wisdom_table] 
-		WHERE TID='".$delete_tid."' and plant2='".$plant_name."'";
+		WHERE TID='".$delete_tid."' and plant2='".$global_facility_code."'";
 		
 		echo "<br/> mssql_delete   ".$mssql_delete;
 		
