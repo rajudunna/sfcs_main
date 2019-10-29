@@ -423,7 +423,7 @@ if($target == 'normal'){
 	{	
 		$sql_check="SELECT tsm.operation_code AS operation_code,tsm.previous_operation AS previous_operation,tsm.ops_dependency AS ops_dependency FROM brandix_bts.tbl_style_ops_master tsm 
 		LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE 
-		style='$style' AND color='$color' AND tor.category IN ('Send PF','Receive PF')";
+		style='$style' AND color='$color' AND tor.category IN ('Send PF','Receive PF') ORDER BY tsm.`operation_order`*1";
 		$result_check=mysqli_query($link,$sql_check) or exit('verifying the codes');
 		if(mysqli_num_rows($result_check)>0)
 		{
@@ -473,7 +473,7 @@ if($target == 'normal'){
 				{				
 					for($jj=0;$jj<sizeof($ops_codes);$jj++)
 					{					
-						$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `club_status`, `log_user`, `tran_id`,`report_seq`, `shade`, `num_id`,) 
+						$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `club_status`, `log_user`, `tran_id`,`report_seq`, `shade`, `num_id`) 
 						VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '0', '".$user."', ".$ids.",".$seqids.",'N/A','0')";
 						mysqli_query($link,$sql_insert);
 					}
@@ -563,7 +563,7 @@ if($target == 'schedule_clubbed')
 		{	
 			$sql_check="SELECT tsm.operation_code AS operation_code,tsm.previous_operation AS previous_operation,tsm.ops_dependency AS ops_dependency FROM brandix_bts.tbl_style_ops_master tsm 
 			LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE 
-			style='$style' AND color='$color' AND tor.category IN ('Send PF','Receive PF')";
+			style='$style' AND color='$color' AND tor.category IN ('Send PF','Receive PF') ORDER BY tsm.`operation_order`*1";
 			$result_check=mysqli_query($link,$sql_check) or exit('verifying the codes');
 			if(mysqli_num_rows($result_check)>0)
 			{
@@ -613,7 +613,7 @@ if($target == 'schedule_clubbed')
 					{				
 						for($jj=0;$jj<sizeof($ops_codes);$jj++)
 						{					
-							$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `club_status`, `log_user`, `tran_id`,`report_seq`, `shade`, `num_id`,) 
+							$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `club_status`, `log_user`, `tran_id`,`report_seq`, `shade`, `num_id`) 
 							VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '0', '".$user."', ".$ids.",".$seqids.",'N/A','0')";
 							mysqli_query($link,$sql_insert);
 						}
@@ -830,7 +830,7 @@ if($target == 'style_clubbed'){
 		{	
 			$sql_check="SELECT tsm.operation_code AS operation_code,tsm.previous_operation AS previous_operation,tsm.ops_dependency AS ops_dependency FROM brandix_bts.tbl_style_ops_master tsm 
 			LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE 
-			style='$style' AND color='$color' AND tor.category IN ('Send PF','Receive PF')";
+			style='$style' AND color='$color' AND tor.category IN ('Send PF','Receive PF') ORDER BY tsm.`operation_order`*1";
 			$result_check=mysqli_query($link,$sql_check) or exit('verifying the codes');
 			if(mysqli_num_rows($result_check)>0)
 			{
@@ -880,7 +880,7 @@ if($target == 'style_clubbed'){
 					{				
 						for($jj=0;$jj<sizeof($ops_codes);$jj++)
 						{					
-							$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `club_status`, `log_user`, `tran_id`,`report_seq`, `shade`, `num_id`,) 
+							$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `club_status`, `log_user`, `tran_id`,`report_seq`, `shade`, `num_id`) 
 							VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '0', '".$user."', ".$ids.",".$seqids.",'N/A','0')";
 							mysqli_query($link,$sql_insert);
 						}
