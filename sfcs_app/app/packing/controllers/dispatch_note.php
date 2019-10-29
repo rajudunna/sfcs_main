@@ -2237,7 +2237,7 @@ tags will be replaced.-->
   <td colspan=2 rowspan=2 class=xl8217319x valign="top" align="left"><img src="<?= $icon2?>" width="50" height="70"></td>
   <td colspan=4 class=xl822606><?= $plant_head ?> </td>
   <td class=xl662606></td>
-  <td class=xl742606>FG COPY</td>
+  <td class=xl742606>SECURITY COPY</td>
   <td class=xl662606></td>
  </tr>
  <tr height=22 style='height:16.5pt'>
