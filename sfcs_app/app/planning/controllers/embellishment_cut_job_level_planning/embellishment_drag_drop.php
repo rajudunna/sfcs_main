@@ -808,7 +808,7 @@
 														$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".chr($color_code1).leading_zeros($acutno1,3),50)."\n".str_pad("Qty:".$total_qty1,50);
                                                         
                                                         $emb_category = 'Send PF';
-                                                        $get_operations = "select operation_code from $brandix_bts.tbl_orders_ops_ref where category ='$emb_category' limit 1";
+                                                        $get_operations = " SELECT tor.operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tsm.operation_code=tor.operation_code WHERE tsm.style='$style' AND tsm.color='$color' AND tor.category='$emb_category' order by tsm.operation_code LIMIT 1;";
 													    //echo $get_operations;
 													    $result_ops = $link->query($get_operations);
 													    while($row_ops = $result_ops->fetch_assoc())
