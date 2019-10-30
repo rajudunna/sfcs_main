@@ -19,7 +19,9 @@
   margin: 2px;
 border: 1px solid black;
 }
-
+#myTable thead th:first-child select {
+		display:none;
+	}
 .red a {
   display:block;
   float: left;
