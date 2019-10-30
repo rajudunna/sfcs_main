@@ -150,6 +150,7 @@ th,td{
                         <th>Color</th>
                         <th>Size</th>
                         <th>Reported Good Qty</th>
+						<th>Reject Qty</th>
                         <th>Remarks</th>
                     </tr>
                 </thead>
@@ -163,6 +164,7 @@ th,td{
                         <td>{{bar_code_details.data.color_dis}}</td>
                         <td>{{bar_code_details.data.size}}</td>
                         <td>{{bar_code_details.data.reported_qty}}</td>
+                        <td>{{bar_code_details.data.rejected_qty}}</td>
                         <td>All partial/full qty updated as good qty. </td>
                     </tr>
                 </tbody>

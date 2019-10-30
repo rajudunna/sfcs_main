@@ -59,7 +59,7 @@
                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($sql_row=mysqli_fetch_array($sql_result))
                 {	
-                    $style= $sql_row['order_style_no'];	
+                    $style= $sql_row['style'];	
                 }
 				
 				$query="";
