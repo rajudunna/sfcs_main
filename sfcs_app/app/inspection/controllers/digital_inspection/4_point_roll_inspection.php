@@ -10,6 +10,51 @@
 		#myTable tr td {
 			cursor: pointer;
 		}
+.red {
+  width:20px;
+  height:20px;
+  background-color: #ff0000;
+  display:block;
+  float: left;
+  margin: 2px;
+border: 1px solid black;
+}
+
+.red a {
+  display:block;
+  float: left;
+  width:100%;
+  height:100%;
+  text-decoration:none;
+}
+
+.red a:hover {
+  text-decoration:none;
+  background-color: #ff0000;
+}
+
+.green {
+  width:20px;
+  height:20px;
+  background-color: #00ff00;
+  display:block;
+  float: left;
+  margin: 2px;
+border: 1px solid black;
+}
+
+.green a {
+  display:block;
+  float: left;
+  width:100%;
+  height:100%;
+  text-decoration:none;
+}
+
+.green a:hover {
+  text-decoration:none;
+  background-color: #00ff00;
+}
 	</style>
 </head>
 
@@ -316,6 +361,16 @@ $flag = false;
 							
 					      </tbody>
 					    </table>
+						<div style="margin-top:50px;border:1px solid #000;margin-left:750px;padding:3px;font-size:12px;">
+						<h4>Color Legends</h4>
+						<div style="width:120px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
+						<div class="green" ></div> Pass
+						</div>
+						<div style="width:140px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
+						<div class="red" ></div> Rejected
+						</div>
+						<div style="clear: both;"> </div>
+						</div>
 					  </div>
 					
 					<!-- <div class="form-inline col-md-12">
