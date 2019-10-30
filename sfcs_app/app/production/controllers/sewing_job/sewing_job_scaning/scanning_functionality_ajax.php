@@ -1614,7 +1614,7 @@ else if($concurrent_flag == 0)
 							//updating the ims_qty when it was there in ims_log
 							//get bundle qty status
 							$ims_removal_flag = 0;	
-			                $get_qty_details="select sum(if(operation_id = $operation_code,recevied_qty,0)) as input,sum(if(operation_id = $output_ops_code,recevied_qty,0)),sum(if(operation_id = $output_ops_code,rejected_qty,0)) as output_rej From $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$i]";
+			                $get_qty_details="select sum(if(operation_id = $operation_code,recevied_qty,0)) as input,sum(if(operation_id = $output_ops_code,recevied_qty,0)) as output,sum(if(operation_id = $output_ops_code,rejected_qty,0)) as output_rej From $brandix_bts.bundle_creation_data where bundle_number=$b_tid[$i]";
 			                $get_qty_result=mysqli_query($link,$get_qty_details) or exit("barcode status Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			                while($qty_details=mysqli_fetch_array($get_qty_result))
 			                {
