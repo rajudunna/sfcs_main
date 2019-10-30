@@ -2861,3 +2861,13 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 </body>
 
 </html>
+<?php
+$update_query = "update $bai_rm_pj1.main_population_tbl set status=2 where id=".$inpsect_id."";
+mysqli_query($link, $update_query) or exit("Update Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+?>
+<script>
+window.onunload = refreshParent;
+function refreshParent() {
+	window.opener.location.reload();
+}
+</script>

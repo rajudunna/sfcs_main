@@ -151,6 +151,7 @@ $flag = false;
 									$color = $row1['rm_color'];
 									$po = $row1['supplier'];
 									$lot_no = $row1['lot_no'];
+									$pop_status = $row1['status'];
 								}
 								if($color==''){	$color='--'; }else{	$color;	}
 						  echo "<td>$invoice</td> 
@@ -190,7 +191,7 @@ $flag = false;
 					      		<th>Points Rate</th>
 								<th>Inspection Status</th>
 								<?php
-								if($val>0)
+								if($val>0 && $pop_status !=2)
 								{
 									?>
 								
@@ -308,10 +309,10 @@ $flag = false;
 								}									
 							
 							}
-							if($val2==1)
+							if($val2==1 && $status == 3)
 							{
 								echo "<tr><td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$parent_id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$parent_id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td></tr>";
-							}
+                            }
 							?>
 							
 					      </tbody>
