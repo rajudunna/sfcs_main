@@ -92,15 +92,17 @@ while ($row111 = mysqli_fetch_array($details_result1))
 <div class="container-fluid">
     <div class="panel panel-primary">
         <div class="panel-heading">4 Point Roll Inspection Update</div>
-        <div class="panel-body">
+         <div class="panel-body">
             <div class="container">
-                <?php
-                echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "4_point_roll_inspection.php", "0", "N") . "&parent_id=$parent_id\"><<<< Click here to Go Back</a>";
-                ?>
+                <div style="float: right;">
+                    <?php
+                    echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "4_point_roll_inspection.php", "0", "N") . "&parent_id=$parent_id\"><<<< Click here to Go Back</a>";
+                    ?>
+                </div>
                 <div class="table-responsive col-sm-12">
                 <div class="panel panel-primary">
-                <div class="panel-heading"><center>Header Information</center></div>
-                </div>
+                <div class="panel-heading">4 Point Header Information</div>
+                <div class="panel-body">
                     <table class="table table-bordered">
                         <tbody>
                             <tr style="background-color: antiquewhite;">
@@ -121,7 +123,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
                             </tr>
                         </tbody>
                     </table>
-                </div>
+               
                 <form id='myForm' method='post' name='input_main'>
                     <div class="table-responsive col-sm-12">
                         <table class="table table-bordered">
@@ -178,11 +180,13 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                 </tr>
                             </tbody>
                         </table>
+                            </div>
+                        </div>
                     </div>
-                    <div class="table-responsive col-sm-12">
-                    <div class="panel panel-primary">
-                <div class="panel-heading"><center>Roll Information</center></div>
-                </div>
+            <div class="table-responsive col-sm-12">
+            <div class="panel panel-primary">
+              <div class="panel-heading">4Points Roll Information</div>
+                <div class="panel-body">
                         <table class="table table-bordered">
                             <tbody>
                                 <tr style="background-color: antiquewhite;">
@@ -237,7 +241,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                 ?>
                             </tbody>
                         </table>
-                    </div>
+                       
                     <div class="table-responsive col-sm-12">
                         <table class="table table-bordered">
                             <tbody>
@@ -416,11 +420,18 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                 </tbody>
                             </table>
                         </div>
+
                     </div>
+                               
                     <input type="hidden" name="parent_id" value='<?= $parent_id ?>'>
                 </form>
-            </div>
-        </div>
+                </div>
+                </div>
+                          </div>
+                      </div>
+                  </div>
+             </div>
+        </div> 
     </div>
 </div>
 <?php
