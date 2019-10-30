@@ -247,7 +247,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 									</label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
 
-										<input type="text" id="course" name="po_no" class="form-control col-md-3 col-xs-12 input-sm" autocomplete="off">
+										<input type="text" id="course" name="po_no" value="<?php echo $_POST['po_no']; ?>" class="form-control col-md-3 col-xs-12 input-sm" autocomplete="off">
 									</div>
 								</div>
 								<b class='text-center col-sm-10'>(OR)</b>
@@ -256,7 +256,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 										Enter Supplier Invoice<span class="required"></span>
 									</label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
-										<input type="text" id="course1" name="supplier_invoice" class="form-control col-md-3 col-xs-12" autocomplete="off">
+										<input type="text" id="course1" name="supplier_invoice" value="<?php echo $_POST['supplier_invoice']; ?>" class="form-control col-md-3 col-xs-12" autocomplete="off">
 									</div>
 								</div>
 								<b class='text-center col-sm-10'>(OR)</b>
@@ -265,7 +265,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 										Enter Supplier Batch<span class="required"></span>
 									</label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
-										<input type="text" id="course1" name="supplier_batch" class="form-control col-md-3 col-xs-12 " autocomplete="off">
+										<input type="text" id="course1" name="supplier_batch" value="<?php echo $_POST['supplier_batch']; ?>" class="form-control col-md-3 col-xs-12 " autocomplete="off">
 									</div>
 								</div>
 								<b class='text-center col-sm-10'>(OR)</b>
@@ -274,7 +274,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 										Enter lot no<span class="required"></span>
 									</label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
-										<input type="text" id="course1" name="lot_no" class="form-control col-md-3 col-xs-12" autocomplete="off">
+										<input type="text" id="course1" name="lot_no" value="<?php echo $_POST['lot_no']; ?>" class="form-control col-md-3 col-xs-12" autocomplete="off">
 									</div>
 								</div>
 								<div class='col-sm-12'>
