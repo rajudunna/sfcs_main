@@ -256,7 +256,9 @@ if(isset($_GET['status'])>0){
 		table tr td {
 			cursor: pointer;
 		}
-        
+        	#myTable thead th:first-child select {
+		display:none;
+	}
        
 		#populate_div {
 			position: absolute;

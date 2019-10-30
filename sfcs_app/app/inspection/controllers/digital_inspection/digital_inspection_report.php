@@ -1,5 +1,6 @@
 <head>
 	<script>
+	
 		function foo(x,y){
 			if(x==1){
 			 
@@ -9,6 +10,27 @@
 			}
 		}
 		$(document).ready(function() {
+			// $('#myTable thead th:last select').css('visibility','hidden');
+			$("#po_no").change(function(){
+				$("#supplier_invoice").val('');
+				$("#supplier_batch").val('');
+				$("#lot_no").val('');
+			});
+			$("#supplier_invoice").change(function(){
+				$("#po_no").val('');
+				$("#supplier_batch").val('');
+				$("#lot_no").val('');
+			});
+			$("#supplier_batch").change(function(){
+				$("#po_no").val('');
+				$("#supplier_invoice").val('');
+				$("#lot_no").val('');
+			});
+			$("#lot_no").change(function(){
+				$("#po_no").val('');
+				$("#supplier_invoice").val('');
+				$("#supplier_batch").val('');
+			});
 			$(".tr-class-disable").css('background-color', '#70eb77')
 			$('#disable_id').on('click', function(e) {	
 				let falg_array=new Set();
@@ -22,17 +44,20 @@
 				}
 			})
 			$("#disable_id").prop("disabled", true);
+		
 			var table = $('#myTable').DataTable({
 				"bInfo": false,
 				paging: false,
-				// "bSort": true,
+				// "bSort": true, 
 				"dom": '<"top"iflp<"clear">>rt',
 				select: {
 					style: 'multi'
 				},
+		
 				order: [
 					[1, 'asc']
 				],
+				
 				initComplete: function() {
 					this.api().columns().every(function() {
 						var column = this;
@@ -188,13 +213,17 @@
 		table tr td {
 			cursor: pointer;
 		}
-		
+		#myTable thead th:last-child select {
+		display:none;
+	}
 		#populate_div {
 			position: absolute;
 			top: 176px;
 			right: 78px;
 		}
-
+		.colunm-select{
+			visibility: hidden;
+		}
 		#output_div {
 			font-weight: 900;
 			font-size: 1.5rem;
@@ -247,7 +276,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 									</label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
 
-										<input type="text" id="course" name="po_no" value="<?php echo $_POST['po_no']; ?>" class="form-control col-md-3 col-xs-12 input-sm" autocomplete="off">
+										<input type="text" id="po_no" name="po_no" value="<?php echo $_POST['po_no']; ?>" class="form-control col-md-3 col-xs-12 input-sm" autocomplete="off">
 									</div>
 								</div>
 								<b class='text-center col-sm-10'>(OR)</b>
@@ -256,7 +285,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 										Enter Supplier Invoice<span class="required"></span>
 									</label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
-										<input type="text" id="course1" name="supplier_invoice" value="<?php echo $_POST['supplier_invoice']; ?>" class="form-control col-md-3 col-xs-12" autocomplete="off">
+										<input type="text" id="supplier_invoice" name="supplier_invoice" value="<?php echo $_POST['supplier_invoice']; ?>" class="form-control col-md-3 col-xs-12" autocomplete="off">
 									</div>
 								</div>
 								<b class='text-center col-sm-10'>(OR)</b>
@@ -265,7 +294,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 										Enter Supplier Batch<span class="required"></span>
 									</label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
-										<input type="text" id="course1" name="supplier_batch" value="<?php echo $_POST['supplier_batch']; ?>" class="form-control col-md-3 col-xs-12 " autocomplete="off">
+										<input type="text" id="supplier_batch" name="supplier_batch" value="<?php echo $_POST['supplier_batch']; ?>" class="form-control col-md-3 col-xs-12 " autocomplete="off">
 									</div>
 								</div>
 								<b class='text-center col-sm-10'>(OR)</b>
@@ -274,7 +303,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 										Enter lot no<span class="required"></span>
 									</label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
-										<input type="text" id="course1" name="lot_no" value="<?php echo $_POST['lot_no']; ?>" class="form-control col-md-3 col-xs-12" autocomplete="off">
+										<input type="text" id="lot_no" name="lot_no" value="<?php echo $_POST['lot_no']; ?>" class="form-control col-md-3 col-xs-12" autocomplete="off">
 									</div>
 								</div>
 								<div class='col-sm-12'>

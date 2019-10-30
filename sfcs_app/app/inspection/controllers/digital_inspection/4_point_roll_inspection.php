@@ -36,13 +36,19 @@ border: 1px solid black;
 .green {
   width:20px;
   height:20px;
-  background-color: #00ff00;
+  background-color:green;
   display:block;
   float: left;
   margin: 2px;
 border: 1px solid black;
 }
-
+.legend_info{
+	font-weight: 900;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    color: #79787e;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+}
 .green a {
   display:block;
   float: left;
@@ -361,17 +367,26 @@ $flag = false;
 							?>
 							
 					      </tbody>
-					    </table>
-						<div style="margin-top:50px;border:1px solid #000;margin-left:750px;padding:3px;font-size:12px;">
-						<h4>Color Legends</h4>
-						<div style="width:120px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
-						<div class="green" ></div> Pass
+						</table>
+						<div class="table-responsive col-sm-4" style="float: right;">
+					    	<table class="table table-bordered">
+								<tr>
+									<td class="legend_info">Color Legends</td>
+									<td><div class="green" ></div>Pass</td>
+									<td><div class="red" ></div>Rejected</td>
+								</tr>
+							</table>
 						</div>
-						<div style="width:140px;height:45px;margin-top:5px;border:1px solid #FFF;float:left;margin-left:5px;padding:3px;">
-						<div class="red" ></div> Rejected
-						</div>
-						<div style="clear: both;"> </div>
-						</div>
+						<!-- <div>
+							<h4>Color Legends</h4>
+							<div>
+							<div class="green" ></div> <b>Pass</b>
+							</div>
+							<div>
+							<div class="red" ></div><b> Rejected</b>
+							</div>
+							<div style="clear: both;"> </div>
+						</div> -->
 					  </div>
 					
 					<!-- <div class="form-inline col-md-12">
