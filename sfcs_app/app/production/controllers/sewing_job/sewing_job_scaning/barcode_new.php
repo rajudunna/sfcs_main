@@ -130,9 +130,6 @@
 							</tr>
 							<tr>
 							<td colspan=5><b>Color:</b></td><td colspan=15>'.trim($color).'</td>
-							</tr> 
-							<tr>
-							<td colspan=5><b>Ops/Des:</b></td><td colspan=15>'.$code.'</td>
 							</tr>';
 							if($shadedet!='')
 							{

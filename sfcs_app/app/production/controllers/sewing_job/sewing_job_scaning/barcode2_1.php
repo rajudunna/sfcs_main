@@ -139,8 +139,7 @@
 										<tr>
 										<td colspan=15></td>
 										</tr>
-										<tr>	
-										<td colspan=12><b>Ops:</b>'.$code.'</td>';	
+										<tr>';	
 										if($shadedet!='')
 										{
 										$html.='<td><b>S:</b></td><td colspan=15>'.$shadedet.'</td>';
