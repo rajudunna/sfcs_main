@@ -1803,6 +1803,7 @@ if($check_qry_result->num_rows > 0)
 									$result_array['size'] = $sizes;
 									$result_array['reported_qty'] = $embquantity;
 									$result_array['rejected_qty'] = $rejctedqty;
+									$result_array['bunno'] = $seqno;
 									echo json_encode($result_array);
 									die();
 									
@@ -2200,6 +2201,7 @@ if($check_qry_result->num_rows > 0)
 										$result_array['size'] = $sizes;
 										$result_array['reported_qty'] = $embquantity;
 										$result_array['rejected_qty'] = $rejctedqty;
+										$result_array['bunno'] = $seqno;
 										echo json_encode($result_array);
 										die();
 										
