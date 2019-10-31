@@ -143,8 +143,9 @@ th,td{
                 <thead>
                     <tr>
                         <th>S.no</th>
-                        <th>Bundle Number</th>
+                        <th>Doc No</th>
                         <th>Operation Code</th>
+                        <th>Bundle Number</th>
                         <th>Style</th>
                         <th>Schedule</th>
                         <th>Color</th>
@@ -159,6 +160,7 @@ th,td{
                         <td>{{$index+1}}</td>
                         <td>{{bar_code_details.data.bundle_no}}</td>
                         <td>{{bar_code_details.data.op_no}}</td>
+                        <td>{{bar_code_details.data.bunno}}</td>
                         <td>{{bar_code_details.data.style}}</td>
                         <td>{{bar_code_details.data.schedule}}</td>
                         <td>{{bar_code_details.data.color_dis}}</td>
