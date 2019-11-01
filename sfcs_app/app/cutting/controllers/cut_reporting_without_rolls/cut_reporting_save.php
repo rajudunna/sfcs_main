@@ -614,7 +614,7 @@ if($target == 'schedule_clubbed')
 						for($jj=0;$jj<sizeof($ops_codes);$jj++)
 						{					
 							$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `club_status`, `log_user`, `tran_id`,`report_seq`, `shade`, `num_id`) 
-							VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '0', '".$user."', ".$ids.",".$seqids.",'N/A','0')";
+							VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '1', '".$user."', ".$ids.",".$seqids.",'N/A','0')";
 							mysqli_query($link,$sql_insert);
 						}
 						$ids++;
@@ -881,7 +881,7 @@ if($target == 'style_clubbed'){
 						for($jj=0;$jj<sizeof($ops_codes);$jj++)
 						{					
 							$sql_insert="INSERT INTO $bai_pro3.`emb_bundles` (`doc_no`, `size`, `ops_code`, `barcode`, `quantity`, `good_qty`, `reject_qty`, `insert_time`, `club_status`, `log_user`, `tran_id`,`report_seq`, `shade`, `num_id`) 
-							VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '0', '".$user."', ".$ids.",".$seqids.",'N/A','0')";
+							VALUES (".$doc_no.", '".$sizes_tot[$j]."', ".$ops_codes[$jj].", '".$doc_no."-".$ops_codes[$jj]."-".$ids."', ".$plies.", 0, 0, '".date("Y-m-d H:i:s")."', '1', '".$user."', ".$ids.",".$seqids.",'N/A','0')";
 							mysqli_query($link,$sql_insert);
 						}
 						$ids++;
