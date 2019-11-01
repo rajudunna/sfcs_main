@@ -1601,7 +1601,7 @@ function validating_with_module($pre_array_module)
         } else {
             // echo 'three';
 
-            $check_tms_status_query_backup = "SELECT max(input_trims_status) FROM $bai_pro3.plan_dashboard_input_backup WHERE input_job_no_random_ref='$job_no'";
+            $check_tms_status_query_backup = "SELECT max(input_trims_status) as input_trims_status FROM $bai_pro3.plan_dashboard_input_backup WHERE input_job_no_random_ref='$job_no'";
             // echo $check_tms_status_query_backup;
             $tms_check_result_backup = $link->query($check_tms_status_query_backup);
             while ($tms_result_backup = mysqli_fetch_array($tms_check_result_backup))

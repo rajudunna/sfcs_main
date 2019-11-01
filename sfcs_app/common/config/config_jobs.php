@@ -63,6 +63,12 @@ $prod_status_password = $conf->get('prod-status-password');
 $prod_status_database=$conf->get('prod-status-db');
 $prod_status_driver_name=$conf->get('prod-status-driver-name');
 
+//BEL_WISDOM Connections Details
+$bel_wisdom_server_name=$conf->get('belwisdom-prod-status-server-name');
+$bel_wisdom_username=$conf->get('belwisdom-prod-status-user-name');
+$bel_wisdom_password = $conf->get('belwisdom-prod-status-password');
+$bel_wisdom_database=$conf->get('belwisdom-prod-status-db');
+$bel_wisdom_table=$conf->get('belwisdom-prod-status-table');
 
 //m3 integration plant codes
 $grn_details=$conf->get('grndetails');
