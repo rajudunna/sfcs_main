@@ -30,7 +30,7 @@
 				$co_no = $m1['co_no'];
 				$order_tid = $m1['order_tid'];
 			}
-			$sql123="SELECT bundle_loc FROM $bai_pro3.`act_cut_status` WHERE doc_no=$doc_no limit 1";
+			$sql123="SELECT bundle_loc FROM $bai_pro3.`act_cut_status` WHERE doc_no = '$doc_no' limit 1";
 			// echo $sql123;
 			$sql_result123=mysqli_query($link, $sql123) or exit("Error while fetching details for the selected style and schedule");
 			while($m13=mysqli_fetch_array($sql_result123))
@@ -798,15 +798,6 @@
 							$total_bundle_qty = 0;	$total_bundles = 0;
 							$location='';
 							
-							// $acut="SELECT order_col_des,plandoc_stat_log.doc_no,org_doc_no,color_code,acutno,GROUP_CONCAT(DISTINCT input_job_no order by input_job_no*1) as input_job_no,GROUP_CONCAT(DISTINCT input_job_no_random) as input_job_no_random,COUNT(*) AS bundles,SUM(carton_act_qty) AS qty 
-							// FROM bai_pro3.`pac_stat_log_input_job`
-							// LEFT JOIN bai_pro3.`plandoc_stat_log` ON plandoc_stat_log.`doc_no` = pac_stat_log_input_job.`doc_no`
-							// LEFT JOIN bai_pro3.`bai_orders_db` ON plandoc_stat_log.`order_tid` = bai_orders_db.`order_tid`
-							// WHERE order_style_no='$style' AND order_del_no='$schedule' GROUP BY doc_no order by doc_no";
-							// $acut_result=mysqli_query($link, $acut) or exit("Error while fetching details for the selected style and schedule");
-							// echo $acut;
-					// while($m=mysqli_fetch_array($acut_result))
-					// {
 							if($bundle_loc=='')
 							{
 								$sql1234="SELECT input_module FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='$value' limit 1";
@@ -899,7 +890,6 @@
 								</tr>
 							";
 						}
-					// }
 					?>
 
 
