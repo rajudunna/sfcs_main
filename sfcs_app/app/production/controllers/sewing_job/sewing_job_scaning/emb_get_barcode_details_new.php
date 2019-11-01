@@ -637,7 +637,7 @@ if($check_qry_result->num_rows > 0)
 								}
 								else
 								{
-									updateM3Transactions($b_tid,$b_op_id,$diffqty);
+									updateM3Transactions($b_tid[0],$b_op_id,$diffqty);
 								}
 						
 										// for($i=0;$i<sizeof($b_tid);$i++)
@@ -884,7 +884,7 @@ if($check_qry_result->num_rows > 0)
 						}
 						else
 						{
-							updateM3Transactions($b_tid,$b_op_id,$diffqty);
+							updateM3Transactions($b_tid[0],$b_op_id,$diffqty);
 						}
 						
 						
@@ -1819,7 +1819,7 @@ if($check_qry_result->num_rows > 0)
 									}
 									else
 									{
-										updateM3Transactions($b_tid,$b_op_id,$embquantity);
+										updateM3Transactions($b_tid[0],$b_op_id,$embquantity);
 									}
 									
 									
@@ -2232,7 +2232,7 @@ if($check_qry_result->num_rows > 0)
 										
 								}
 								else{
-									updateM3Transactions($b_tid,$b_op_id,$embquantity);
+									updateM3Transactions($b_tid[0],$b_op_id,$embquantity);
 								}								
 																		
 										
