@@ -204,8 +204,9 @@
 							}
 							else if (response['status']==5)
 							{
-								var msg = "Short shipment done Temporarily";
-							}else{
+								var msg = "previous operation not done";
+							}else if (response['status']==6)
+							{
 								var msg = "Short shipment done Permanently" ;
 
 							}
