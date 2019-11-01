@@ -631,14 +631,19 @@ if($check_qry_result->num_rows > 0)
 														// }
 													}
 													updateM3TransactionsRejections($b_tid,$b_op_id,$r_qty,$m3_reason_code);
+													updateM3Transactions($b_tid,$b_op_id,$diffqty);
 												}
 										}
 								}
+								else
+								{
+									updateM3Transactions($b_tid,$b_op_id,$diffqty);
+								}
 						
-										for($i=0;$i<sizeof($b_tid);$i++)
-										{
-										$updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$diffqty);
-										}
+										// for($i=0;$i<sizeof($b_tid);$i++)
+										// {
+										// $updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$diffqty);
+										// }
 										$result_array['bundle_no'] = $docno;
 										$result_array['op_no'] = $op_no;
 										$result_array['style'] = $style;
@@ -872,16 +877,21 @@ if($check_qry_result->num_rows > 0)
 														// }
 													}
 													updateM3TransactionsRejections($b_tid,$b_op_id,$r_qty,$m3_reason_code);
+													updateM3Transactions($b_tid,$b_op_id,$diffqty);
 												}
 										}
 						
 						}
-						
-						
-						for($i=0;$i<sizeof($b_tid);$i++)
+						else
 						{
-						$updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$diffqty);
+							updateM3Transactions($b_tid,$b_op_id,$diffqty);
 						}
+						
+						
+						// for($i=0;$i<sizeof($b_tid);$i++)
+						// {
+						// $updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$diffqty);
+						// }
 						$result_array['bundle_no'] = $docno;
 						$result_array['op_no'] = $op_no;
 						$result_array['style'] = $style;
@@ -1802,9 +1812,14 @@ if($check_qry_result->num_rows > 0)
 															// }
 														}
 														updateM3TransactionsRejections($b_tid,$b_op_id,$r_qty,$m3_reason_code);
+														updateM3Transactions($b_tid,$b_op_id,$embquantity);
 													}
 											}
 									
+									}
+									else
+									{
+										updateM3Transactions($b_tid,$b_op_id,$embquantity);
 									}
 									
 									
@@ -1816,10 +1831,10 @@ if($check_qry_result->num_rows > 0)
 									
 									
 									//updating into  m3 transactions for positives
-									for($i=0;$i<sizeof($b_tid);$i++)
-									{
-									$updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$embquantity);
-									}
+									// for($i=0;$i<sizeof($b_tid);$i++)
+									// {
+									// $updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$embquantity);
+									// }
 									$result_array['bundle_no'] = $doc_no;
 									$result_array['op_no'] = $op_no;
 									$result_array['size'] = $sizes;
@@ -2106,7 +2121,7 @@ if($check_qry_result->num_rows > 0)
 											}
 										}
 
-
+										
 										//update rejections to M3 trasactions
 										if(sizeof($actual_rejection_reason_array_string) > 0)
 										{
@@ -2210,11 +2225,16 @@ if($check_qry_result->num_rows > 0)
 														// }
 													}
 													updateM3TransactionsRejections($b_tid,$b_op_id,$r_qty,$m3_reason_code);
+													updateM3Transactions($b_tid,$b_op_id,$embquantity);
+													
 												}
 										}
 										
-								}									
-										
+								}
+								else{
+									updateM3Transactions($b_tid,$b_op_id,$embquantity);
+								}								
+																		
 										
 										
 										
@@ -2230,10 +2250,10 @@ if($check_qry_result->num_rows > 0)
 										
 										
 										//updating into  m3 transactions for positives
-										for($ii=0;$ii<sizeof($b_tid);$ii++)
-										{
-										$updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$embquantity);
-										}
+										// for($ii=0;$ii<sizeof($b_tid);$ii++)
+										// {
+										// $updation_m3 = updateM3Transactions($b_tid[$ii],$b_op_id,$embquantity);
+										// }
 										$result_array['bundle_no'] = $doc_no;
 										$result_array['op_no'] = $op_no;
 										$result_array['size'] = $sizes;
