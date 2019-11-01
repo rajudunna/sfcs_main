@@ -248,7 +248,9 @@ $scope.$watch('op_code', function(op_code){
                                     $('.bgcolortable').css("background-color", "#00800085");
 									$scope.rej_id=0;
 									$('#rej_id').val(0);
+									$('#reason').val('');
 									$scope.rej_data='';
+									$("#tablebody").html('');
 									$scope.rej_data=[];
 									
                                 }
