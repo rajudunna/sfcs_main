@@ -27,7 +27,6 @@
 		$shift = $_GET['shift'];
 
 		$count_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id='".$carton_id."'";
-		//echo $count_query;
 		$count_result = mysqli_query($link,$count_query);
 		if(mysqli_num_rows($count_result)>0)
 		{
@@ -44,7 +43,6 @@
 
 			$application='packing';
             $get_first_opn_packing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY CAST(tbl_style_ops_master.operation_order AS CHAR) LIMIT 1";
-            //echo $get_first_opn_packing;
             $result_first_opn_packing=mysqli_query($link, $get_first_opn_packing) or exit("1=error while fetching pre_op_code_b4_carton_ready");
             if (mysqli_num_rows($result_first_opn_packing) > 0)
             {
@@ -146,21 +144,21 @@
 
 					if ($reply == 1)
 					{
-						// Carton Scan eligible
-						if ($b_op_id == 200)
-						{
-							$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",scan_date=\"".date("Y-m-d H:i:s")."\",scan_user='$username' where pac_stat_id = ".$carton_id."";
-							// echo $sql;
-							$pac_stat_log_result = mysqli_query($link, $sql) or exit("Error while updating pac_stat_log");
-						}
-
-	                    $get_last_opn_packing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY tbl_orders_ops_ref.operation_code*1 DESC LIMIT 1;";
+	                    $get_last_opn_packing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY tbl_orders_ops_ref.operation_code*1 DESC LIMIT 1";
 	                    $result_last_opn_sewing=mysqli_query($link, $get_last_opn_packing) or exit("error while fetching pre_op_code_b4_carton_ready");
 	                    if (mysqli_num_rows($result_last_opn_sewing) > 0)
 	                    {
 	                        $final_op_code=mysqli_fetch_array($result_last_opn_sewing);
 	                        $packing_last_opn = $final_op_code['operation_code'];
 	                    }
+	                    if($packing_last_opn == $b_op_id)
+	                    {
+	                    	// Carton Scan eligible
+							$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",scan_date=\"".date("Y-m-d H:i:s")."\",scan_user='$username' where pac_stat_id = ".$carton_id."";
+							// echo $sql;
+							$pac_stat_log_result = mysqli_query($link, $sql) or exit("Error while updating pac_stat_log");
+	                    }
+						
 
 	                    if ($packing_last_opn == $b_op_id) {
 	                    	$update_carton_status = ", carton_status='DONE'";
