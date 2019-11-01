@@ -1469,6 +1469,28 @@ if($check_qry_result->num_rows > 0)
 							$statusopqty=$rowss['good_qty'];
 						}
 						
+						if($category_act=='Send PF')
+						{
+							$check_googd_qty_qry="select good_qty from $bai_pro3.emb_bundles where doc_no=$doc_no and ops_code=$b_op_id and size='$sizes' and tran_id=$seqno";
+						}
+						else
+						{
+							$check_googd_qty_qry="select good_qty from $bai_pro3.emb_bundles where doc_no=$doc_no and ops_code=$pre_ops_code and size='$sizes' and tran_id=$seqno";
+						}
+						$check_googd_qty_qry_rslt=mysqli_query($link,$check_googd_qty_qry) or exit("while retriving data from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($rowss=mysqli_fetch_array($check_googd_qty_qry_rslt))
+						{
+							$goodqty=$rowss['good_qty'];
+						}
+						if($goodqty>0)
+						{
+							$embquantity=$goodqty-$rejctedqty;
+						}
+						else
+						{
+							$embquantity=$embquantity;
+						}
+						
 						if($statusopqty>0)
 						{
 							if($docstatus==0 || $docstatus=='' ||  $docstatus==2)
@@ -1842,6 +1864,22 @@ if($check_qry_result->num_rows > 0)
 							{
 								$statusopqty=$rowss['good_qty'];
 							}
+							
+							$check_googd_qty_qry="select good_qty from $bai_pro3.emb_bundles where doc_no=$doc_no and ops_code=$pre_ops_code and size='$sizes' and tran_id=$seqno";
+							$check_googd_qty_qry_rslt=mysqli_query($link,$check_googd_qty_qry) or exit("while retriving data from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($rowss=mysqli_fetch_array($check_googd_qty_qry_rslt))
+							{
+								$goodqty=$rowss['good_qty'];
+							}
+							if($goodqty>0)
+							{
+								$embquantity=$goodqty-$rejctedqty;
+							}
+							else
+							{
+								$embquantity=$embquantity;
+							}
+							
 							
 								if($statusopqty>0)
 								{
