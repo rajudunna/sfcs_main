@@ -111,6 +111,7 @@ if(isset($_GET['tid']))
 	
 	$sql1="select bundle_no,qms_style,qms_color,input_job_no,operation_id,qms_size,SUBSTRING_INDEX(remarks,'-',1) as module,SUBSTRING_INDEX(remarks,'-',-1) AS form,ref1,doc_no,qms_schedule from $bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
 	// echo $sql1."<br>";
+	// die();
 	$result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($result1))
 	{
@@ -235,7 +236,8 @@ if(isset($_GET['tid']))
 
 	for ($z=0; $z < sizeof($reason); $z++)
 	{ 
-		$rej_code="select m3_reason_code from $bai_pro3.bai_qms_rejection_reason where form_type='".$form."' and reason_code='".$reason[$z]."'";
+		$rej_code="select m3_reason_code from $bai_pro3.bai_qms_rejection_reason where form_type in (".$form.") and reason_code='".$reason[$z]."'";
+		// echo $rej_code;
 		$rej_code_sql_result=mysqli_query($link,$rej_code) or exit("m3_reason_code Error".$ops_dependency.mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($rej_code_row = mysqli_fetch_array($rej_code_sql_result))
 		{
@@ -352,9 +354,11 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 		ref1,location_id,SUBSTRING_INDEX(qms.remarks,'-',-1) AS form,qms_style,qms_schedule,qms_color,qms_size,qms_remarks,qms.operation_id,qms.input_job_no,qms.log_date,log_time 
 		FROM bai_pro3.bai_qms_db qms 
 		LEFT JOIN brandix_bts.`bundle_creation_data` bts ON bts.`bundle_number` = qms.`bundle_no` AND bts.`operation_id` = qms.`operation_id` 
-		LEFT JOIN bai_pro3.`rejection_log_child` rej ON rej.`bcd_id` = bts.`id` WHERE qms_tran_type=3 AND qms_schedule='$schedule' 
-		AND recut_qty = 0 AND replaced_qty = 0
+		LEFT JOIN bai_pro3.`rejection_log_child` rej ON rej.`bcd_id` = bts.`id` LEFT JOIN  bai_pro3.`lay_plan_recut_track` track ON track.bcd_id=bts.id  WHERE qms_tran_type=3 AND qms_schedule='$schedule' 
+		AND recut_qty = 0 AND replaced_qty = 0 AND track.recut_raised_qty IS NULL
 		";
+		// echo $sql;
+		
 		$result=mysqli_query($link, $sql) or die("Sql error".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($result)>0)
 		{

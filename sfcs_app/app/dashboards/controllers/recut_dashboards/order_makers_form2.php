@@ -107,7 +107,7 @@ for ($i=0; $i < 5; $i++) {
 		<td><input class="form-control"  type="text" name= "in_skgrp['.$i.']" id= "sk_grp_'.$i.'" onchange="validate_data('.$i.',this)" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_width['.$i.']" id= "width_'.$i.'" onchange="validate_data('.$i.',this)" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_mklen['.$i.']" id= "mk_len_'.$i.'" onchange="validate_data('.$i.',this)" title="please enter numbers and decimals"></td>
-		<td><input class="form-control"  type="text" name= "in_mkname['.$i.']" id="mk_name_'.$i.'" title="please enter numbers and decimals"></td>
+		<td><input class="form-control"  type="text" name= "in_mkname['.$i.']" id="mk_name_'.$i.'" onchange="mk_name_validate('.$i.',this)" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_ptrname['.$i.']" id="ptr_name_'.$i.'" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_mkeff['.$i.']" id= "mk_eff_'.$i.'" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_permts['.$i.']" id= "permts_'.$i.'" title="please enter numbers and decimals"></td>
@@ -163,43 +163,40 @@ function compareArrays(arr1, arr2){
 	}
 }
 
+function mk_name_validate(b,id_name){
+	if($("#mk_name_"+b).val() != ''){
+		var rowData=[];
+		var CurData=[];
+		var table = $("#body-data");
+		CurData = [$("#mk_name_"+b).val()];
+		var tr_length= table.find('tr').length;
+		for (let index = 0; index <= tr_length; index++) {
+			if(index!= b && $("#mk_name_"+index).val()){
+				for (let index1 = 1; index1 <= 4; index1++) {
+					rowData = [$("#mk_name_"+index).val()];
+					if(compareArrays(CurData, rowData)){
+						swal('Marker Name Must be Unique','Warning !','warning');
+						$("#"+id_name.id).val('');
+						return true;
+					}
+				}
+			}
+		}
+	}
+}
+
 function validate_data(b, id_name) {
-	// alert();
-	// console.log(b);
-	// alert(b);
-	// console.log([1,2].equals([1,2]));
 	if($("#mk_ver_"+b).val() != '' && $("#sk_grp_"+b).val() != '' && $("#width_"+b).val() != '' && $("#mk_len_"+b).val()){
 		var rowData=[];
 		var CurData=[];
-		// var rows = $('#table-data >tbody >tr').length;
-		
-		// var rows = document.getElementById('rows').value;
-		// var mk_Ref;
-		// var mk_shr;
-		// var mk_len;
 		var table = $("#body-data");
 		CurData = [$("#mk_ver_"+b).val(), $("#sk_grp_"+b).val(), $("#width_"+b).val(), $("#mk_len_"+b).val()];
-		// CurData = $("#sk_grp_"+b).val();
-		// CurData[] = $("#width_"+b).val();
-		// CurData[] = $("#mk_len_"+b).val();
-		// console.log(CurData);
 		var tr_length= table.find('tr').length;
-		console.log(tr_length);
+		
 		for (let index = 0; index <= tr_length; index++) {
-		// console.log($("#mk_ver_"+index).val());
 			if(index!= b && $("#mk_ver_"+index).val() != '' && $("#sk_grp_"+index).val() != '' && $("#width_"+index).val() != '' && $("#mk_len_"+index).val()){
-
 				for (let index1 = 1; index1 <= 4; index1++) {
-
 					rowData = [$("#mk_ver_"+index).val(), $("#sk_grp_"+index).val(), $("#width_"+index).val(), $("#mk_len_"+index).val()];
-					// rowData[index] = $("#sk_grp_"+index).val();
-					// rowData[index] = $("#width_"+index).val();
-					// rowData[index] = $("#mk_len_"+index).val();
-
-					// console.log(CurData);
-					console.log(rowData);
-
-					console.log(compareArrays(CurData, rowData));
 					if(compareArrays(CurData, rowData)){
 					swal('Using Same combinations...','Please Check.','warning');
 						$("#"+id_name.id).val('');
