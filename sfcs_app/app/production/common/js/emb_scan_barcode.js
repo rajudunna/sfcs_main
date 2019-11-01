@@ -247,7 +247,10 @@ $scope.$watch('op_code', function(op_code){
                                     console.log($scope.scanned_barcode_details);
                                     $('.bgcolortable').css("background-color", "#00800085");
 									$scope.rej_id=0;
+									$('#rej_id').val(0);
 									$scope.rej_data='';
+									$scope.rej_data=[];
+									
                                 }
 
                             });
