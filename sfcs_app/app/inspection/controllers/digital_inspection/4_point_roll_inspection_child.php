@@ -99,7 +99,9 @@ while ($row111 = mysqli_fetch_array($details_result1))
                     echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "4_point_roll_inspection.php", "0", "N") . "&parent_id=$parent_id\"><<<< Click here to Go Back</a>";
                     ?>
                 </div>
-                <div class="table-responsive col-sm-12">
+                
+                <form id='myForm' method='post' name='input_main'>
+                    <div class="table-responsive col-sm-12">
                 <div class="panel panel-primary">
                 <div class="panel-heading">4 Point Header Information</div>
                 <div class="panel-body">
@@ -123,8 +125,6 @@ while ($row111 = mysqli_fetch_array($details_result1))
                             </tr>
                         </tbody>
                     </table>
-               
-                <form id='myForm' method='post' name='input_main'>
                     <div class="table-responsive col-sm-12">
                         <table class="table table-bordered">
                             <tbody>
