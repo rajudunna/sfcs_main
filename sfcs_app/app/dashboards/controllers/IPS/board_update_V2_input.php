@@ -307,12 +307,13 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo "<td>".$mods[$x]."</td>";
 		echo "<td align=\"right\">Style:<br/>Schedule:<br/>Sewing Job:<br/>Cut Job:<br/>Job Qty:<br/></td>";
 		$module=$mods[$x];		
-		$sql1="SELECT type_of_sewing,input_job_no_random_ref,input_module,input_priority,input_trims_status,input_panel_status,track_id,input_job_no,tid,input_job_no_random,order_tid,group_concat(doc_no) as doc_no,color_code,order_style_no,order_del_no,GROUP_CONCAT(DISTINCT trim(order_col_des)) AS order_col, order_col_des,ft_status,st_status,pt_status,trim_status,SUM(carton_act_qty) as carton_act_qty FROM $bai_pro3.plan_dash_doc_summ_input WHERE input_module=$module and (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) GROUP BY input_job_no_random_ref ORDER BY input_priority ASC LIMIT 14";
+		$sql1="SELECT type_of_sewing,input_job_no_random_ref,input_module,input_priority,input_trims_status,input_panel_status,track_id,input_job_no,tid,input_job_no_random,order_tid,group_concat(doc_no) as doc_no,color_code,order_style_no,order_del_no,GROUP_CONCAT(DISTINCT trim(order_col_des)) AS order_col, order_col_des,MIN(ft_status) as ft_status,st_status,pt_status,trim_status,SUM(carton_act_qty) as carton_act_qty FROM $bai_pro3.plan_dash_doc_summ_input WHERE input_module=$module and (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) GROUP BY input_job_no_random_ref ORDER BY input_priority ASC LIMIT 14";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result1);
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$doc_no_ref=$sql_row1['doc_no'];
+			$doc_no_ref1 = $sql_row1['doc_no'];
 			$order_tid=$sql_row1['order_tid'];
 			$input_job_no_random_ref=$sql_row1["input_job_no_random_ref"];
 			$style=$sql_row1['order_style_no'];
@@ -338,6 +339,16 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			{				
 				$order_col .= $cols[$i]."<br>";
 			}
+			if($doc_no_ref != ''){
+					$parent_doc_query = "SELECT GROUP_CONCAT(org_doc_no) as docs from $bai_pro3.plandoc_stat_log  
+										where doc_no IN ($doc_no_ref) and org_doc_no > 0";
+					$parent_doc_result = mysqli_query($link,$parent_doc_query);
+					if($org_row = mysqli_fetch_array($parent_doc_result))
+						$doc_no_ref = $org_row['docs'];
+				}
+				if($doc_no_ref == '')
+					$doc_no_ref = $doc_no_ref1;
+				
 			$sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing='$type_of_sewing'";
 			$sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
