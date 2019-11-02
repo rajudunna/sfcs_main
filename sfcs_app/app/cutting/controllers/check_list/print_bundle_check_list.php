@@ -30,12 +30,13 @@
 				$co_no = $m1['co_no'];
 				$order_tid = $m1['order_tid'];
 			}
-			$sql123="SELECT bundle_loc FROM $bai_pro3.`act_cut_status` WHERE doc_no = '$doc_no' limit 1";
+			$sql123="SELECT bundle_loc,leader_name FROM $bai_pro3.`act_cut_status` WHERE doc_no = '$doc_no' limit 1";
 			// echo $sql123;
 			$sql_result123=mysqli_query($link, $sql123) or exit("Error while fetching details for the selected style and schedule");
 			while($m13=mysqli_fetch_array($sql_result123))
 			{
 				$bundle_loc = $m13['bundle_loc'];
+				$leader_name = $m13['leader_name'];
 			}
 			$sql1="SELECT DISTINCT input_job_no_random, input_job_no FROM $bai_pro3.`pac_stat_log_input_job` WHERE doc_no='$doc_no' order by input_job_no_random*1";
 			// echo $sql1;
@@ -814,7 +815,14 @@
 								}
 								else
 								{
-									$location='-';
+									$sql1235="SELECT emp_name FROM $bai_pro3.`tbl_leader_name` WHERE emp_id='$leader_name' limit 1";
+									// echo $sql1;
+									$sql_result1235=mysqli_query($link, $sql1235) or exit("Error while fetching details for the selected style and schedule");
+									while($m135=mysqli_fetch_array($sql_result1235))
+									{
+										$leader_name1 = $m135['emp_name'];
+									}
+										$location=$leader_name1;
 								}	
 							}
 							else
