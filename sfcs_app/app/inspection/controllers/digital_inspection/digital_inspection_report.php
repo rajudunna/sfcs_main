@@ -61,7 +61,7 @@
 				initComplete: function() {
 					this.api().columns().every(function() {
 						var column = this;
-						var select = $('<select class="select_Check_flag"><option value=""></option></select>')
+						var select = $('<select class="select_Check_flag"><option value="">Select All</option></select>')
 							.appendTo($(column.header()))
 							.on('change', function() {
 								var val = $.fn.dataTable.util.escapeRegex(
