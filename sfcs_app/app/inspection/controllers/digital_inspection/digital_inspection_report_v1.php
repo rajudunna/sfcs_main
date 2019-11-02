@@ -26,7 +26,7 @@ if(isset($_GET['status'])>0){
 				})
 				if(falg_array.size!=1){
 					e.preventDefault();
-					alert("Please Remove Filter Before Submitting");
+					swal("warning","Please Remove Filter Before Submitting..","warning");
 					//$("#disable_id").prop("disabled", true);
 				}
 			})
@@ -47,7 +47,7 @@ if(isset($_GET['status'])>0){
 				initComplete: function() {
 					this.api().columns().every(function() {
 						var column = this;
-						var select = $('<select class="select_Check_flag"><option value=""></option></select>')
+						var select = $('<select class="select_Check_flag"><option value="">Select All</option></select>')
 							.appendTo($(column.header()))
 							.on('change', function() {
 								var val = $.fn.dataTable.util.escapeRegex(
