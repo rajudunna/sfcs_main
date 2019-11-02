@@ -1,9 +1,11 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <?php
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
 // $username="sfcsproject1";
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+
 $has_perm=haspermission($_GET['r']);
 $module_limit=14;
 // $super_user=array("roshanm","muralim","kirang","bainet","rameshk","baiict","gayanl","baisysadmin","chathurangad","buddhikam","saroasa","chathurikap","sfcsproject2","thanushaj","kemijaht","sfcsproject1","ber_databasesvc","saranilaga","thusiyas","thineshas","sudathra");
@@ -89,9 +91,7 @@ $module_limit=14;
 					
 	}
 	#dhtmlgoodies_listOfItems ul{	
-		height:1000vh;	
-		
-
+		height:4000vh;	
 	}
 		
 	div#dhtmlgoodies_listOfItems div{
@@ -202,6 +202,13 @@ $module_limit=14;
 
 
 	<script type="text/javascript">
+	$(document).ready(function(){
+		$("body").scroll(function(e){
+			console.log(e);
+			$("#scrollable_block").css("margin-top","");
+		});
+
+	});
 	/************************************************************************************************************
 	(C) www.dhtmlgoodies.com, November 2005
 	
@@ -253,6 +260,7 @@ $module_limit=14;
 	var contentToBeDragged = false;	// Reference to dragged <li>
 	var contentToBeDragged_src = false;	// Reference to parent of <li> before drag started
 	var contentToBeDragged_next = false; 	// Reference to next sibling of <li> to be dragged
+	var contentToBeDragged_back = false;
 	var destinationObj = false;	// Reference to <UL> or <LI> where element is dropped.
 	var dragDropIndicator = false;	// Reference to small arrow indicating where items will be dropped
 	var ulPositionArray = new Array();
@@ -338,7 +346,6 @@ $module_limit=14;
 	
 	function moveDragContent(e)
 	{
-		
 		if(dragTimer<10){
 			if(contentToBeDragged){
 				if(contentToBeDragged_next){
@@ -378,7 +385,7 @@ $module_limit=14;
 			var ul_topPos = ulPositionArray[no]['top'];	
 			var ul_height = ulPositionArray[no]['height'];
 			var ul_width = ulPositionArray[no]['width'];
-			
+
 			if((x+width) > ul_leftPos && x<(ul_leftPos + ul_width) && (y+height)> ul_topPos && y<(ul_topPos + ul_height)){
 				var noExisting = ulPositionArray[no]['obj'].getElementsByTagName('LI').length;
 				if(indicateDestinationBox && indicateDestinationBox.parentNode==ulPositionArray[no]['obj'])noExisting--;
@@ -447,7 +454,7 @@ $module_limit=14;
 	{
 		// var module_limit = '<?= $module_limit; ?>';
 		// console.log(parseInt(module_limit));
-		
+		// alert('drag end');
 			if(dragTimer==-1)return;
 			if(dragTimer<10){
 				dragTimer = -1;
@@ -534,6 +541,7 @@ $module_limit=14;
 		document.documentElement.onselectstart = cancelEvent;;
 		var listItems = dragDropTopContainer.getElementsByTagName('LI');	// Get array containing all <LI>
 		var itemHeight = false;
+		// alert();
 		for(var no=0;no<listItems.length;no++){
 			listItems[no].onmousedown = initDrag;
 			listItems[no].onselectstart = cancelEvent;
@@ -678,7 +686,7 @@ echo "<b>Style:</b> $style | <b>Schedule:</b> $schedule | <b>Color:</b> $color";
 echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url2' onclick=\"return popitup2('$url2')\" target='_blank'>Sewing Jobs Movement Track</a>";
 ?>
 </div>
-<div class="panel-body">
+<div class="panel-body" id='scrollingBody'>
 <div>
 <h4>Color Legends</h4>
 <div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: white;color: red;">
