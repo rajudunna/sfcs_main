@@ -421,7 +421,36 @@ if($sql_result1_res==0){
         $style=$sql_row['order_style_no'];
         $schedule=$sql_row['order_del_no'];
     }
+    $codes='2';
+    $status='';
+    $module=0;
 
+
+    $qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.recut_v2 WHERE doc_no = '$docket_no' ";
+    $result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
+    while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
+    {
+        for ($i=0; $i < sizeof($sizes_array); $i++)
+        { 
+            if ($row['a_'.$sizes_array[$i]] > 0)
+            {
+                $cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $row['a_plies'];
+                $size[] = $sizes_array[$i];
+            }
+        }
+    }
+    for($j=0;$j<sizeof($size);$j++)
+    {
+
+        $qty_act = $cut_done_qty[$size[$j]];
+        $sql1234="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,log_date,qms_size,qms_qty,qms_tran_type,remarks) values (\"$style\",\"$schedule\",\"$color\",\"".date("Y-m-d")."\",\"".$size[$j]."\",".($qty_act).",9,\"$module-".$docket_no."\")";
+        mysqli_query($link, $sql1234) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+        
+    }
+    $hostname=explode(".",gethostbyaddr($_SERVER['REMOTE_ADDR']));
+    $sql4312="insert into $bai_pro3.recut_track(doc_no,username,sys_name,log_time,level,status) values(\"".$docket_no."\",\"".$username."\",\"".$hostname[0]."\",\"".date("Y-m-d H:i:s")."\",\"".$codes."\",\"".$status."\")";
+    mysqli_query($link, $sql4312) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    
     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
         function Redirect() {
             sweetAlert('Successfully Generated','','success');

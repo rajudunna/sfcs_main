@@ -107,7 +107,7 @@ for ($i=0; $i < 5; $i++) {
 		<td><input class="form-control"  type="text" name= "in_skgrp['.$i.']" id= "sk_grp_'.$i.'" onchange="validate_data('.$i.',this)" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_width['.$i.']" id= "width_'.$i.'" onchange="validate_data('.$i.',this)" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_mklen['.$i.']" id= "mk_len_'.$i.'" onchange="validate_data('.$i.',this)" title="please enter numbers and decimals"></td>
-		<td><input class="form-control"  type="text" name= "in_mkname['.$i.']" id="mk_name_'.$i.'" title="please enter numbers and decimals"></td>
+		<td><input class="form-control"  type="text" name= "in_mkname['.$i.']" id="mk_name_'.$i.'"onchange="mk_name_validate('.$i.',this)" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_ptrname['.$i.']" id="ptr_name_'.$i.'" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_mkeff['.$i.']" id= "mk_eff_'.$i.'" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_permts['.$i.']" id= "permts_'.$i.'" title="please enter numbers and decimals"></td>
@@ -162,7 +162,27 @@ function compareArrays(arr1, arr2){
 		return false;
 	}
 }
-
+function mk_name_validate(b,id_name){
+	if($("#mk_name_"+b).val() != ''){
+		var rowData=[];
+		var CurData=[];
+		var table = $("#body-data");
+		CurData = [$("#mk_name_"+b).val()];
+		var tr_length= table.find('tr').length;
+		for (let index = 0; index <= tr_length; index++) {
+			if(index!= b && $("#mk_name_"+index).val()){
+				for (let index1 = 1; index1 <= 4; index1++) {
+					rowData = [$("#mk_name_"+index).val()];
+					if(compareArrays(CurData, rowData)){
+						swal('Marker Name Must be Unique','Warning !','warning');
+						$("#"+id_name.id).val('');
+						return true;
+					}
+				}
+			}
+		}
+	}
+}
 function validate_data(b, id_name) {
 	// alert();
 	// console.log(b);
