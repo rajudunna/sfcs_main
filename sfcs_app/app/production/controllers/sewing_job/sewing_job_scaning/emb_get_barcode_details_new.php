@@ -731,6 +731,37 @@ if($check_qry_result->num_rows > 0)
 					
 					else
 					{
+						
+						if($category_act=='Send PF' || $category_act=='Receive PF')
+						{
+							$cehck_status_qry="select good_qty from $bai_pro3.emb_bundles where doc_no=$orgdoc and ops_code=$pre_ops_code and size='$sizes' and tran_id=$seqno";
+						}
+						else
+						{
+							$cehck_status_qry="select send_qty as good_qty from $brandix_bts.bundle_creation_data where docket_number=$doc_no and operation_id=$b_op_id and size_title='$sizes'";
+						}
+						$check_qty_qry_result=mysqli_query($link,$cehck_status_qry) or exit("while retriving data from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($rowss=mysqli_fetch_array($check_qty_qry_result))
+						{
+							$statusopqty=$rowss['good_qty'];
+						}
+						
+						$check_googd_qty_qry="select good_qty from $bai_pro3.emb_bundles where doc_no=$orgdoc and ops_code=$pre_ops_code and size='$sizes' and tran_id=$seqno";
+						$check_googd_qty_qry_rslt=mysqli_query($link,$check_googd_qty_qry) or exit("while retriving data from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($rowss=mysqli_fetch_array($check_googd_qty_qry_rslt))
+						{
+							$goodqty=$rowss['good_qty'];
+						}
+						if($goodqty>0)
+						{
+							$diffqty=$goodqty-$rejctedqty;
+						}
+						else
+						{
+							$diffqty=$diffqty;
+						}
+					if($statusopqty>0)
+					{						
 						//updating data in bundle_creation_data
 						$query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= recevied_qty+'".$diffqty."',`rejected_qty`=rejected_qty+'".$rejctedqty."', `scanned_date`='". date('Y-m-d')."' where bundle_number =$bundle_no and operation_id = ".$b_op_id;
 						$result_query = $link->query($query) or exit('query error in updating bundle_creation_data');
@@ -978,7 +1009,13 @@ if($check_qry_result->num_rows > 0)
 						echo json_encode($result_array);
 						die();
 					}
-				
+					else
+					{
+						$result_array['status'] = 'Previous Operation Not Done';
+						echo json_encode($result_array);
+						die();
+					}
+				}	
 		}
 		else
 		{
