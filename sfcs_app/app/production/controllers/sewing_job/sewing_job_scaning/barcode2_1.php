@@ -142,7 +142,7 @@
 										<tr>';	
 										if($shadedet!='')
 										{
-										$html.='<td><b>S:</b></td><td colspan=15>'.$shadedet.'</td>';
+											$html.='<td><b>S#</b></td><td colspan=15>'.$shadedet.'</td>';
 										}
 									$html.=	'</tr>
 									</table>
@@ -170,7 +170,7 @@
 											<td>'.trim($barcode_rslt['size']).' / '.$doc_no.' / '.$cut_no.' / '.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>';
 											if($shadedet!='')
 											{
-											$html.='<td><b>S:</b></td><td colspan=15>'.$shadedet.'</td>';
+											$html.='<td><b>S#</b></td><td colspan=15>'.$shadedet.'</td>';
 											}
 								
 							   $html.='</tr>
