@@ -494,7 +494,7 @@ if($check_qry_result->num_rows > 0)
 													$status=$qry_result_row['status'];
 
 													//if data exists update emb_bundles
-													$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='$diffqty',status=1,reject_qty='$rejctedqty',update_time='". date('Y-m-d')."' where  barcode='$barcode'";
+													$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='$diffqty',status=1,reject_qty='$rejctedqty',update_time='". date("Y-m-d H:i:s")."' where  barcode='$barcode'";
 													$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');
 
 													//insert data into emb_bundles_temp
