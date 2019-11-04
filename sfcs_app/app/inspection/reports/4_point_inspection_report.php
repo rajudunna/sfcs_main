@@ -1523,9 +1523,9 @@ tags will be replaced.-->
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
   <td class=xl1519758></td>
   <td colspan=2 class=xl7819758>Spec.Width(cm)</td>
-  <td class=xl7719758 style='border-top:none'>- <?php echo $spec_width;?></td>
+  <td class=xl7719758 style='border-top:none;text-align:center;'><?php echo $spec_width;?></td>
   <td colspan=2 class=xl7919758 style='border-left:none'>Checked</td>
-  <td class=xl7719758 style='border-top:none'>-</td>
+  <td class=xl7719758 style='border-top:none'></td>
   <td class=xl1519758></td>
  </tr>
  <tr height=19 style='height:14.4pt'>
@@ -1545,9 +1545,9 @@ tags will be replaced.-->
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
   <td class=xl6419758></td>
   <td colspan=2 class=xl7919758>Spec weight(cm)</td>
-  <td class=xl7719758 style='border-top:none'>- <?php echo $spec_weight;?></td>
+  <td class=xl7719758 style='border-top:none;text-align:center;'><?php echo $spec_weight;?></td>
   <td colspan=2 class=xl7919758 style='border-left:none'>No of Rolls</td>
-  <td class=xl7719758 style='border-top:none'>- <?php echo $tot_rolls_data;?></td>
+  <td class=xl7719758 style='border-top:none;text-align:center;'><?php echo $tot_rolls_data;?></td>
   <td class=xl1519758></td>
  </tr>
  <tr height=19 style='height:14.4pt'>
@@ -1567,9 +1567,9 @@ tags will be replaced.-->
   <td class=xl1519758></td>
   <td class=xl1519758></td>
   <td colspan=2 class=xl7919758>Actual Weight(g/sqm)</td>
-  <td class=xl7719758 style='border-top:none'>- </td>
+  <td class=xl7719758 style='border-top:none;text-align:center;'></td>
   <td colspan=2 class=xl7919758 style='border-left:none'>Rolls inspected</td>
-  <td class=xl7719758 style='border-top:none'>- <?php echo sizeof($tot_ids);?></td>
+  <td class=xl7719758 style='border-top:none;text-align:center;'><?php echo sizeof($tot_ids);?></td>
   <td class=xl1519758></td>
  </tr>
  <tr height=19 style='height:14.4pt'>
@@ -1585,11 +1585,11 @@ tags will be replaced.-->
   Details</td> -->
   <td class=xl1519758></td>
   <td colspan=2 class=xl7919758>Repeat length</td>
-  <td class=xl7719758 style='border-top:none'>- <?php echo $repeat_length;?></td>
+  <td class=xl7719758 style='border-top:none;text-align:center;'><?php echo $repeat_length;?></td>
   <td colspan=2 class=xl7919758 style='border-left:none'>Average Points</td>
-  <td class=xl7719758 style='border-top:none'><?php 
+  <td class=xl7719758 style='border-top:none;text-align:center;'><?php 
   $rate = round(($tot_points/array_sum($invoice_qty))*(36/49.21)*100,2);
-	echo "- ".$rate;
+	echo "".$rate;
 ?></td>
   <td class=xl1519758></td>
  </tr>
@@ -1606,9 +1606,9 @@ tags will be replaced.-->
   <td class=xl1519758></td>
   <td class=xl1519758></td>
   <td colspan=2 class=xl7919758>Act.Rpt.Length</td>
-  <td class=xl7719758 style='border-top:none'>- </td>
+  <td class=xl7719758 style='border-top:none;text-align:center;'></td>
   <td colspan=2 class=xl7919758 style='border-left:none'>Length Shortage</td>
-  <td class=xl7719758 style='border-top:none'>- </td>
+  <td class=xl7719758 style='border-top:none;text-align:center;'></td>
   <td class=xl1519758></td>
  </tr>
  <tr height=19 style='height:14.4pt'>
@@ -1626,7 +1626,7 @@ tags will be replaced.-->
   <td colspan=2 class=xl8019758>&nbsp;</td>
   <td class=xl7719758 style='border-top:none'></td>
   <td colspan=2 class=xl8019758 style='border-left:none'>Lab Testing</td>
-  <td class=xl7719758 style='border-top:none'>- <?php echo $lab_testing;?></td>
+  <td class=xl7719758 style='border-top:none;text-align:center;'><?php echo $lab_testing;?></td>
   <td class=xl1519758></td>
  </tr>
  <tr height=19 style='height:14.4pt'>
@@ -1713,10 +1713,10 @@ tags will be replaced.-->
 					  <tr>
 					  	<td class=xl1519758></td>
 					  	<td colspan="3" class="xl8919758"><?php echo $batch_no; ?></td>
-					  	<td colspan="2" class="xl8919758"><?php echo $shade; ?></td>
-					  	<td colspan="2" class="xl8919758"><?php echo $roll_no; ?></td>
-					  	<td colspan="4" class="xl8919758"><?php echo $tot_length; ?></td>
-					  	<td colspan="2" class="xl8919758"><?php echo $width; ?></td>
+					  	<td colspan="2" class="xl8919758" style='text-align:right;'><?php echo $shade; ?></td>
+					  	<td colspan="2" class="xl8919758" style='text-align:right;'><?php echo $roll_no; ?></td>
+					  	<td colspan="4" class="xl8919758" style='text-align:right;'><?php echo $tot_length; ?></td>
+					  	<td colspan="2" class="xl8919758" style='text-align:right;'><?php echo $width; ?></td>
 					  </tr>
 			    <?php	  	
 					}
@@ -1756,7 +1756,7 @@ tags will be replaced.-->
   width:59pt'>Roll No/ Sup</td>
   <td colspan=2 rowspan=2 class=xl7519758 style='border-right:.5pt solid black;
   border-bottom:.5pt solid black'>Batch Number</td>
-  <td rowspan=2 class=xl8519758 width=64 style='border-bottom:.5pt solid black;
+  <td rowspan=2 class=xl8519758 width=64  style='border-bottom:.5pt solid black;
   width:48pt'>Ticket Length (<?php echo $fab_uom;?>)</td>
   <td rowspan=2 class=xl8519758 width=64 style='border-bottom:.5pt solid black;
   width:48pt'>Actual Length (<?php echo $fab_uom;?>)</td>
@@ -1808,16 +1808,16 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 	<td height=39 class=xl6419758 style='height:29.4pt'></td>
 	<td class=xl8919758 style='border-top:none'><?php echo $sfcs_roll[$tot_ids[$i]]; ?>   /  <?php echo $supp_roll[$tot_ids[$i]]; ?></td> 
 	<td colspan=2 class=xl9019758 style='border-right:.5pt solid black;border-left:none'><?php echo $batch[$tot_ids[$i]]; ?></td>
-	<td class=xl9219758 style='border-top:none;border-left:none'><?php echo $invoice_qty[$tot_ids[$i]]; $tot_qty_g=$tot_qty_g+$invoice_qty[$tot_ids[$i]];?></td>
-	<td class=xl8919758 style='border-top:none;border-left:none'></td>
-	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $width_s[$tot_ids[$i]]; ?></td>
-	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $width_m[$tot_ids[$i]]; ?></td>
-	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $width_e[$tot_ids[$i]]; ?></td>
-	<td class=xl8919758 style='border-top:none;border-left:none'><?php if($ins_child[$tot_ids[$i]][1]<>''){echo $ins_child[$tot_ids[$i]][1]; $tot=$tot+$ins_child[$tot_ids[$i]][1];}else{ echo "0";}?></td>
-	<td class=xl8919758 style='border-top:none;border-left:none'><?php if($ins_child[$tot_ids[$i]][2]<>''){echo $ins_child[$tot_ids[$i]][2]; $tot=$tot+$ins_child[$tot_ids[$i]][2];}else{ echo "0";}?></td>
-	<td class=xl8919758 style='border-top:none;border-left:none'><?php if($ins_child[$tot_ids[$i]][3]<>''){echo $ins_child[$tot_ids[$i]][3]; $tot=$tot+$ins_child[$tot_ids[$i]][3];}else{ echo "0";}?></td>
-	<td class=xl8919758 style='border-top:none;border-left:none'><?php if($ins_child[$tot_ids[$i]][4]<>''){echo $ins_child[$tot_ids[$i]][4]; $tot=$tot+$ins_child[$tot_ids[$i]][4];}else{ echo "0";}?></td>
-	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $tot; $tot_qty=$tot_qty+$tot;
+	<td class=xl9219758 style='border-top:none;border-left:none;text-align:right';><?php echo $invoice_qty[$tot_ids[$i]]; $tot_qty_g=$tot_qty_g+$invoice_qty[$tot_ids[$i]];?></td>
+	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'></td>
+	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $width_s[$tot_ids[$i]]; ?></td>
+	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $width_m[$tot_ids[$i]]; ?></td>
+	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $width_e[$tot_ids[$i]]; ?></td>
+	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php if($ins_child[$tot_ids[$i]][1]<>''){echo $ins_child[$tot_ids[$i]][1]; $tot=$tot+$ins_child[$tot_ids[$i]][1];}else{ echo "0";}?></td>
+	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php if($ins_child[$tot_ids[$i]][2]<>''){echo $ins_child[$tot_ids[$i]][2]; $tot=$tot+$ins_child[$tot_ids[$i]][2];}else{ echo "0";}?></td>
+	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php if($ins_child[$tot_ids[$i]][3]<>''){echo $ins_child[$tot_ids[$i]][3]; $tot=$tot+$ins_child[$tot_ids[$i]][3];}else{ echo "0";}?></td>
+	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php if($ins_child[$tot_ids[$i]][4]<>''){echo $ins_child[$tot_ids[$i]][4]; $tot=$tot+$ins_child[$tot_ids[$i]][4];}else{ echo "0";}?></td>
+	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $tot; $tot_qty=$tot_qty+$tot;
 	$rate=0;
 	$qty=0;
 	if($fab_uom == "meters"){
@@ -1829,7 +1829,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 	$rate = round(($tot/$qty)*(36/49.21)*100,2); 
 	
 	?></td> 
-	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $rate; ?></td>
+	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $rate; ?></td>
 	<td class=xl9319758 style='border-top:none;border-left:none'><?php echo $comment[$tot_ids[$i]]; ?></td>
 	<?php	
 	$count=0;$data='';
@@ -1854,10 +1854,10 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 	}
 	?>
 	<td class=xl9319758 width=102 style='border-top:none;border-left:none;width:77pt'><?php echo $data;?></td>
-	<td class=xl8919758 style='border-top:none;border-left:none'><?php echo $gsm[$tot_ids[$i]];?></td>
-	  <td class=xl8919758 style='border-top:none;border-left:none'><?php echo $skw[$tot_ids[$i]];?></td>
-	  <td class=xl8919758 style='border-top:none;border-left:none'><?php echo $bow[$tot_ids[$i]];?></td>
-	  <td class=xl8919758 style='border-top:none;border-left:none'><?php echo $ver[$tot_ids[$i]];?></td>
+	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $gsm[$tot_ids[$i]];?></td>
+	  <td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $skw[$tot_ids[$i]];?></td>
+	  <td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $bow[$tot_ids[$i]];?></td>
+	  <td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $ver[$tot_ids[$i]];?></td>
 	  <td class=xl6419758></td>
 	 </tr>
 	<?php
@@ -1869,12 +1869,12 @@ for($i=0;$i<sizeof($tot_ids);$i++)
  <tr height=19 style='height:14.4pt'>
   <td height=19 class=xl1519758 style='height:14.4pt'></td>
   <td colspan=3 class=xl6919758>Total Inspected Quantity</td>
-  <td class=xl9419758 style='border-top:none'><?php echo $tot_qty_g;?></td>
+  <td class=xl9419758 style='border-top:none;text-align:right'><?php echo number_format($tot_qty_g,2);?></td>
   <td class=xl6419758></td>
   <td class=xl6419758></td>
   <td class=xl6419758></td>
   <td colspan=5 class=xl6919758>Actual Points</td>
-  <td class=xl8219758 style='border-top:none'><?php echo $tot_qty;?></td>
+  <td class=xl8219758 style='border-top:none;text-align:right'><?php echo $tot_qty;?></td>
   <td class=xl6419758></td>
   <td class=xl6419758></td>
   <td class=xl6419758></td>
