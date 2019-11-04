@@ -815,7 +815,7 @@
 								}
 								else
 								{
-									$sql1235="SELECT emp_name FROM $bai_pro3.`tbl_leader_name` WHERE emp_id='$leader_name' limit 1";
+									$sql1235="SELECT emp_name FROM $bai_pro3.`tbl_leader_name` WHERE id=$leader_name limit 1";
 									// echo $sql1;
 									$sql_result1235=mysqli_query($link, $sql1235) or exit("Error while fetching details for the selected style and schedule");
 									while($m135=mysqli_fetch_array($sql_result1235))
