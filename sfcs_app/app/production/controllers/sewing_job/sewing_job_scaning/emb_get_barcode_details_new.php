@@ -289,7 +289,7 @@ if($check_qry_result->num_rows > 0)
 
 						if($category_act=='Send PF')
 						{
-							$cehck_status_qry="select send_qty as good_qty from $brandix_bts.bundle_creation_data where docket_number=$docno and operation_id=$prev_operation and size_title='$sizes'";
+							$cehck_status_qry="select recevied_qty as good_qty from $brandix_bts.bundle_creation_data where docket_number=$docno and operation_id=$prev_operation and size_title='$sizes'";
 						}
 						else
 						{
@@ -338,7 +338,7 @@ if($check_qry_result->num_rows > 0)
 							$previous_minqty=$row_result_min_prevops['min_recieved_qty'];
 						}
 						
-						$schedule_query = "SELECT `style` as order_style_no,`schedule` as order_del_no,`send_qty`,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,`original_qty` as carton_act_qty,sum(recevied_qty) AS current_recieved_qty,`rejected_qty` as rejected_qty,((send_qty+recut_in+replace_in)-(recevied_qty+rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'parallel_scanning' as flag,size_id as old_size,remarks, mapped_color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE docket_number = $docno AND operation_id = '$b_op_id' and size_title='$sizes' order by tid";
+						$schedule_query = "SELECT `style` as order_style_no,`schedule` as order_del_no,`send_qty`,`color` as order_col_des,`size_title` as size_code,`bundle_number` as tid,`original_qty` as carton_act_qty,sum(recevied_qty) AS current_recieved_qty,`rejected_qty` as rejected_qty,((send_qty+recut_in+replace_in)-(recevied_qty+rejected_qty)) as balance_to_report,`docket_number` as doc_no, `cut_number` as acutno, `input_job_no`,`input_job_no_random_ref` as input_job_no_random, 'parallel_scanning' as flag,size_id as old_size,remarks, mapped_color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE docket_number = $docno AND operation_id = $b_op_id and size_title='$sizes' order by tid";
 						$result_style_data = $link->query($schedule_query);
 						$select_modudle_qry = "select input_module from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$string'";
 						$result_select_modudle_qry = $link->query($select_modudle_qry);
@@ -386,7 +386,7 @@ if($check_qry_result->num_rows > 0)
 							$result_array['table_data'][] = $row;
 						}
 						
-						$schedule_count_query = "SELECT input_job_no_random_ref FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = $b_job_no AND operation_id =$b_op_id";
+						$schedule_count_query = "SELECT input_job_no_random_ref FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$b_job_no' AND operation_id =$b_op_id";
 								$schedule_count_query = $link->query($schedule_count_query) or exit('query error');
 							   
 								if($schedule_count_query->num_rows > 0)
@@ -1134,7 +1134,7 @@ if($check_qry_result->num_rows > 0)
 				$seqno = explode('-', $barcode)[2];
 				
 				//getting bundle number from bundle_creation_data
-				$selct_qry = "SELECT bundle_number FROM $brandix_bts.bundle_creation_data  WHERE docket_number =$doc_no AND operation_id='$op_no' AND size_title='$sizes'";
+				$selct_qry = "SELECT bundle_number FROM $brandix_bts.bundle_creation_data  WHERE docket_number =$doc_no AND operation_id=$op_no AND size_title='$sizes'";
 				$selct_qry_res=mysqli_query($link,$selct_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if($selct_qry_res->num_rows > 0)
 				{
@@ -1608,7 +1608,7 @@ if($check_qry_result->num_rows > 0)
 					{
 						if($category_act=='Send PF')
 						{
-							$cehck_status_qry="select send_qty as good_qty from $brandix_bts.bundle_creation_data where docket_number=$doc_no and operation_id=$prev_operation and size_title='$sizes'";
+							$cehck_status_qry="select recevied_qty as good_qty from $brandix_bts.bundle_creation_data where docket_number=$doc_no and operation_id=$prev_operation and size_title='$sizes'";
 						}
 						else
 						{
@@ -2044,7 +2044,7 @@ if($check_qry_result->num_rows > 0)
 								{
 									if($docstatus==0 || $docstatus=='' || $docstatus==2)
 									{
-										$schedule_count_query = "SELECT input_job_no_random_ref FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = $b_job_no AND operation_id =$b_op_id";
+										$schedule_count_query = "SELECT input_job_no_random_ref FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$b_job_no' AND operation_id =$b_op_id";
 
 										$schedule_count_query = $link->query($schedule_count_query) or exit('query error');
 									   
