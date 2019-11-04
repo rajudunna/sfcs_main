@@ -1713,7 +1713,7 @@ tags will be replaced.-->
 					  <tr>
 					  	<td class=xl1519758></td>
 					  	<td colspan="3" class="xl8919758"><?php echo $batch_no; ?></td>
-					  	<td colspan="2" class="xl8919758" style='text-align:right;'><?php echo $shade; ?></td>
+					  	<td colspan="2" class="xl8919758"><?php echo $shade; ?></td>
 					  	<td colspan="2" class="xl8919758" style='text-align:right;'><?php echo $roll_no; ?></td>
 					  	<td colspan="4" class="xl8919758" style='text-align:right;'><?php echo $tot_length; ?></td>
 					  	<td colspan="2" class="xl8919758" style='text-align:right;'><?php echo $width; ?></td>
