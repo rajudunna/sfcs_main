@@ -176,8 +176,18 @@ if($rollwisedata)
                     for($k=0;$k<$sizeofrolls;$k++)
                     {
                         $shadebundleno++;
-                        $startno=$padded;
-                        $padded+=$docket_info[$k]['totalplies'];
+                        
+						if($padded==1)
+						{
+							$startno=$padded;
+							$padded=$docket_info[$k]['totalplies'];
+						}
+						else
+						{
+							$startno=$padded+1;
+							$padded+=$docket_info[$k]['totalplies'];	
+						}					
+                        
                         $docketrolinfo ="INSERT INTO $bai_pro3.`docket_number_info` (doc_no,size,bundle_no,shade_bundle,shade,bundle_start,bundle_end,qty)
                         VALUES (".$doc_no.",'".$key."',".$bundle.",'".$bundle."-".$shadebundleno."','".$docket_info[$k]['shade']."',".$startno.",".$padded.",".$docket_info[$k]['totalplies'].")";
                         $result= mysqli_query($link,$docketrolinfo);
@@ -201,7 +211,7 @@ if($rollwisedata)
         }
     }
 }
-
+//die();
 
 $response_data = array();
 $data = $_POST;

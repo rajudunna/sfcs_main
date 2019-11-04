@@ -133,7 +133,7 @@
 							</tr>';
 							if($shadedet!='')
 							{
-							$html.=	'<td colspan=1><b>Shade:</b></td><td colspan=15>'.$shadedet.'</td>';
+								$html.=	'<td colspan=1><b>S#:</b></td><td colspan=15>'.$shadedet.'</td>';
 							}
 							$html.=	'<tr>
 							<td colspan=5><b>Qty:</b></td><td colspan=7>'.leading_zeros($quantity,4).'</td>
@@ -175,10 +175,10 @@
 							</tr> 
 							<tr>
 							<td colspan=5><b>Ops/Des:</b></td><td colspan=15>'.$code.'</td>';
-					if($shadedet!='')
-					{
-					$html.=	'<td colspan=1><b>Shade:</b></td><td colspan=15>'.$shadedet.'</td>';
-					}
+						if($shadedet!='')
+						{
+							$html.=	'<td colspan=1><b>S#</b></td><td colspan=15>'.$shadedet.'</td>';
+						}
 							
 					$html.=	'</tr>
 							<tr>
