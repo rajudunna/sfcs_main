@@ -359,7 +359,7 @@ function add_input_row() {
 		cell3.innerHTML = "<input class='form-control float'  name='in_skgrp["+rowCount+"]' id='sk_grp_"+rowCount+"' type='text' onchange='validate_data("+rowCount+",this)' title='Please enter numbers and decimals'>";
 		cell4.innerHTML = "<input class='form-control float'  name='in_width["+rowCount+"]' id='width_"+rowCount+"' type='text' onchange='validate_data("+rowCount+",this)' title='Please enter numbers and decimals'>";
 		cell5.innerHTML = "<input class='form-control float'  name='in_mklen["+rowCount+"]' id='mk_len_"+rowCount+"' type='text' onchange='validate_data("+rowCount+",this)' title='Please enter numbers and decimals'>";
-		cell6.innerHTML = "<input class='form-control float'  name='in_mkname["+rowCount+"]' id='mk_name_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
+		cell6.innerHTML = "<input class='form-control float'  name='in_mkname["+rowCount+"]' id='mk_name_"+rowCount+"' onchange='mk_name_validate("+rowCount+",this)' type='text' title='Please enter numbers and decimals'>";
 		cell7.innerHTML = "<input class='form-control float'  name='in_ptrname["+rowCount+"]' id='ptr_name_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
 		cell8.innerHTML = "<input class='form-control float'  name='in_mkeff["+rowCount+"]' id='mk_eff_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
 		cell9.innerHTML = "<input class='form-control float'  name='in_permts["+rowCount+"]' id='permts_"+rowCount+"' type='text' title='Please enter numbers and decimals'>";
