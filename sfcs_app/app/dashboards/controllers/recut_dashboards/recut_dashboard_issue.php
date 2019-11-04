@@ -757,8 +757,9 @@ function valid_button(row_num)
 function compareArrays(arr1, arr2){
 	// console.log(arr1.toString());
 	// console.log(arr2.toString());
-	// arr1 = parseInt(arr1);
-	// arr2 = parseInt(arr2);
+	arr1 = $.trim(arr1);
+	arr2 = $.trim(arr2);
+
 	// console.log(arr1);
 	// console.log(arr2);
 	if(arr1.toString() == arr2.toString()){
@@ -770,6 +771,7 @@ function compareArrays(arr1, arr2){
 
 function marker_validation(id_name, cur_element) 
 {
+    // alert('1');
 	if($("#mk_name"+id_name).val() != ''){
 	var array = [];
 	var CurData=[];
@@ -786,6 +788,7 @@ function marker_validation(id_name, cur_element)
 		for($i=0; $i<tr_length - 1; $i++)
 		{
 			rowData = [array[$i][11]];
+            
 			if(compareArrays(CurData, rowData)){
 				swal('Marker Name Already exists','Please Check.','warning');
 				$("#"+cur_element.id).val('');
