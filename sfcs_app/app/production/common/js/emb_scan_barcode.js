@@ -236,6 +236,12 @@ $scope.$watch('op_code', function(op_code){
                                     //     timer: 2000
                                     // });
                                     // swal(response.data.status);
+									$scope.rej_id=0;
+									$('#rej_id').val(0);
+									$('#reason').val('');
+									$scope.rej_data='';
+									$("#tablebody").html('');
+									$scope.rej_data=[];
                                 }else{
                                     $scope.showscanlist = true;
                                     $scope.scanned_barcode_details.push({

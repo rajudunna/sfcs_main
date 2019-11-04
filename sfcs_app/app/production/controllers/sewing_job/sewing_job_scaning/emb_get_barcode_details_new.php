@@ -65,6 +65,7 @@ if($check_qry_result->num_rows > 0)
 					$sizes = $selct_qry_result_row['size'];
 					$clubstatus=$selct_qry_result_row['club_status'];
 					$embquantity=$selct_qry_result_row['quantity'];
+					$gdqty=$selct_qry_result_row['good_qty'];
 					$docstatus=$selct_qry_result_row['status'];
 				}
 			}
@@ -72,6 +73,7 @@ if($check_qry_result->num_rows > 0)
 
 	if($clubstatus==1)
 	{
+
 	function getdet($quantity,$docno,$op_no,$sizes,$docstatus,$seqno,$barcode,$rejctedqty,$rej_data)
 	{
 		if($rej_data!=''){
@@ -80,6 +82,7 @@ if($check_qry_result->num_rows > 0)
 			$total_rej_qty=0;
 		}
 		$orgdoc=explode('-', $barcode)[0];
+
 		if($docstatus==0 || $docstatus==2 || $docstatus=='')
 		{
 			include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
@@ -491,11 +494,11 @@ if($check_qry_result->num_rows > 0)
 													$status=$qry_result_row['status'];
 
 													//if data exists update emb_bundles
-													$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='$diffqty',status=1,reject_qty='$rejctedqty',update_time='". date('Y-m-d')."' where  barcode='$barcode'";
+													$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='$diffqty',status=1,reject_qty='$rejctedqty',update_time='". date("Y-m-d H:i:s")."' where  barcode='$barcode'";
 													$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');
 
 													//insert data into emb_bundles_temp
-													$insert_emb_bundles="INSERT INTO $bai_pro3.emb_bundles_temp(doc_no,  size,    ops_code,  barcode,  quantity,  good_qty,  reject_qty,  insert_time,  update_time,  club_status,  log_user,  tran_id,  status) VALUES ('".$b_doc_num."','".$b_sizes[$key]."','".$b_op_id."','".$barcodeno."','".$orgqty."','".$diffqty."','".$rejctedqty."','".date('Y-m-d')."','','".$clubstatus."','".$username."','".$tranid."','".$status."')";
+													$insert_emb_bundles="INSERT INTO $bai_pro3.emb_bundles_temp(doc_no,  size,    ops_code,  barcode,  quantity,  good_qty,  reject_qty,  insert_time,  update_time,  club_status,  log_user,  tran_id,  status) VALUES ('".$b_doc_num."','".$b_sizes[$key]."','".$b_op_id."','".$barcodeno."','".$orgqty."','".$diffqty."','".$rejctedqty."','".date("Y-m-d H:i:s")."','','".$clubstatus."','".$username."','".$tranid."','".$status."')";
 													$result_emb_temp = $link->query($insert_emb_bundles) or exit('error while insert into emb_bundles_temp');
 													}
 												}
@@ -731,6 +734,13 @@ if($check_qry_result->num_rows > 0)
 					
 					else
 					{
+						$category=['cutting','Send PF','Receive PF'];
+						$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$pre_ops_code'";
+						$result_checking_qry = $link->query($checking_qry);
+						while($row_cat = $result_checking_qry->fetch_assoc())
+						{
+							$category_act = $row_cat['category'];
+						}
 						
 						if($category_act=='Send PF' || $category_act=='Receive PF')
 						{
@@ -738,8 +748,9 @@ if($check_qry_result->num_rows > 0)
 						}
 						else
 						{
-							$cehck_status_qry="select send_qty as good_qty from $brandix_bts.bundle_creation_data where docket_number=$doc_no and operation_id=$b_op_id and size_title='$sizes'";
+							$cehck_status_qry="select send_qty as good_qty from $brandix_bts.bundle_creation_data where docket_number=$docno and operation_id=$b_op_id and size_title='$sizes'";
 						}
+						
 						$check_qty_qry_result=mysqli_query($link,$cehck_status_qry) or exit("while retriving data from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($rowss=mysqli_fetch_array($check_qty_qry_result))
 						{
@@ -821,12 +832,12 @@ if($check_qry_result->num_rows > 0)
 							$status=$qry_result_row['status'];
 
 							//if data exists update emb_bundles
-							$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty=$diffqty,reject_qty=$rejctedqty,status=1,update_time='". date('Y-m-d')."' where barcode='$barcode'";
+							$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty=$diffqty,reject_qty=$rejctedqty,status=1,update_time='". date("Y-m-d H:i:s")."' where barcode='$barcode'";
 																	//echo $update_emb_bundles;
 							$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');
 
 							//insert data into emb_bundles_temp
-							$insert_emb_bundles="INSERT INTO $bai_pro3.emb_bundles_temp(doc_no,  size,    ops_code,  barcode,  quantity,  good_qty,  reject_qty,  insert_time,  update_time,  club_status,  log_user,  tran_id,  status) VALUES ('".$docno."','".$sizes."','".$b_op_id."','".$barcodeno."','".$orgqty."','".$diffqty."','".$rejctedqty."','".date('Y-m-d')."','','".$clubstatus."','".$username."','".$tranid."','".$status."')";
+							$insert_emb_bundles="INSERT INTO $bai_pro3.emb_bundles_temp(doc_no,  size,    ops_code,  barcode,  quantity,  good_qty,  reject_qty,  insert_time,  update_time,  club_status,  log_user,  tran_id,  status) VALUES ('".$docno."','".$sizes."','".$b_op_id."','".$barcodeno."','".$orgqty."','".$diffqty."','".$rejctedqty."','".date("Y-m-d H:i:s")."','','".$clubstatus."','".$username."','".$tranid."','".$status."')";
 							$result_emb_temp = $link->query($insert_emb_bundles) or exit('error while insert into emb_bundles_temp');
 							}
 						}
@@ -1086,6 +1097,9 @@ if($check_qry_result->num_rows > 0)
 				}
 			}
 		}
+
+	if($repqty!='')
+	{		
 		foreach($repqty as $x => $x_value) {
 			$docno=$x;
 			$quantity=$x_value;
@@ -1097,6 +1111,16 @@ if($check_qry_result->num_rows > 0)
 				getdet($quantity,$docno,$op_no,$sizes,$docstatus,$seqno,$barcode,$rejctedqty,$rej_data);
 			}
 		}
+	}
+	else
+	{
+		foreach($clubdocno as $child_doc)
+		{
+			$docno=$child_doc;
+			$quantity=0;
+			getdet($quantity,$docno,$op_no,$sizes,$docstatus,$seqno,$barcode,$rejctedqty,$rej_data);
+		}
+	}
 
 	
 		
@@ -1728,11 +1752,11 @@ if($check_qry_result->num_rows > 0)
 														$status=$qry_result_row['status'];
 
 														//if data exists update emb_bundles
-														$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='$embquantity',status=1,reject_qty='$rejctedqty',update_time='". date('Y-m-d')."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]' and tran_id=$seqno";
+														$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty='$embquantity',status=1,reject_qty='$rejctedqty',update_time='". date("Y-m-d H:i:s")."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]' and tran_id=$seqno";
 														$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');
 
 														//insert data into emb_bundles_temp
-														$insert_emb_bundles="INSERT INTO $bai_pro3.emb_bundles_temp(doc_no,  size,    ops_code,  barcode,  quantity,  good_qty,  reject_qty,  insert_time,  update_time,  club_status,  log_user,  tran_id,  status) VALUES ('".$b_doc_num[$key]."','".$b_sizes[$key]."','".$b_op_id."','".$barcodeno."','".$orgqty."','".$embquantity."','".$rejctedqty."','".date('Y-m-d')."','','".$clubstatus."','".$username."','".$tranid."','".$status."')";
+														$insert_emb_bundles="INSERT INTO $bai_pro3.emb_bundles_temp(doc_no,  size,    ops_code,  barcode,  quantity,  good_qty,  reject_qty,  insert_time,  update_time,  club_status,  log_user,  tran_id,  status) VALUES ('".$b_doc_num[$key]."','".$b_sizes[$key]."','".$b_op_id."','".$barcodeno."','".$orgqty."','".$embquantity."','".$rejctedqty."','".date("Y-m-d H:i:s")."','','".$clubstatus."','".$username."','".$tranid."','".$status."')";
 														$result_emb_temp = $link->query($insert_emb_bundles) or exit('error while insert into emb_bundles_temp');
 														}
 													}
@@ -2138,12 +2162,12 @@ if($check_qry_result->num_rows > 0)
 														$status=$qry_result_row['status'];
 
 														//if data exists update emb_bundles
-														$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty=$embquantity,status=1,reject_qty='$rejctedqty',update_time='". date('Y-m-d')."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]' and tran_id=$seqno";
+														$update_emb_bundles="UPDATE $bai_pro3.emb_bundles SET good_qty=$embquantity,status=1,reject_qty='$rejctedqty',update_time='". date("Y-m-d H:i:s")."' where doc_no='$b_doc_num[$key]' and ops_code='$b_op_id' and size='$b_sizes[$key]' and tran_id=$seqno";
 																								//echo $update_emb_bundles;
 														$result_query = $link->query($update_emb_bundles) or exit('query error in updating emb_bundles');
 
 														//insert data into emb_bundles_temp
-														$insert_emb_bundles="INSERT INTO $bai_pro3.emb_bundles_temp(doc_no,  size,    ops_code,  barcode,  quantity,  good_qty,  reject_qty,  insert_time,  update_time,  club_status,  log_user,  tran_id,  status) VALUES ('".$b_doc_num[$key]."','".$b_sizes[$key]."','".$b_op_id."','".$barcodeno."','".$orgqty."','".$embquantity."','".$rejctedqty."','".date('Y-m-d')."','','".$clubstatus."','".$username."','".$tranid."','".$status."')";
+														$insert_emb_bundles="INSERT INTO $bai_pro3.emb_bundles_temp(doc_no,  size,    ops_code,  barcode,  quantity,  good_qty,  reject_qty,  insert_time,  update_time,  club_status,  log_user,  tran_id,  status) VALUES ('".$b_doc_num[$key]."','".$b_sizes[$key]."','".$b_op_id."','".$barcodeno."','".$orgqty."','".$embquantity."','".$rejctedqty."','".date("Y-m-d H:i:s")."','','".$clubstatus."','".$username."','".$tranid."','".$status."')";
 														$result_emb_temp = $link->query($insert_emb_bundles) or exit('error while insert into emb_bundles_temp');
 														}
 														}
