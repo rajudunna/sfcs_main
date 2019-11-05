@@ -10,12 +10,13 @@ $view_access=user_acl("SFCS_0003",$username,1,$group_id_sfcs);
 function firstbox()
 {
 	
-	    window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value
+	    window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value;
 }
 
 function secondbox()
 {
-	window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+	var ur1="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+	window.location.href =ur1;
 }
 
 function thirdbox()
@@ -118,11 +119,11 @@ function check_sch()
 
 				if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$_GET['color']))
 				{
-					echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."</option>";
+					echo "<option value=\"".rtrim($sql_row['order_col_des']," ")."\" selected>".$sql_row['order_col_des']."</option>";
 				}
 				else
 				{
-					echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</option>";
+					echo "<option value=\"".rtrim($sql_row['order_col_des']," ")."\">".$sql_row['order_col_des']."</option>";
 				}
 				//For color Clubbing
 
@@ -137,7 +138,7 @@ function check_sch()
 				$color=$_GET["color"];
 				if($color){
 					//echo $schedule;
-					$sql="select category from $bai_pro3.cat_stat_log where order_tid like \"%$schedule$color%\" order by category";
+					$sql="select category from $bai_pro3.cat_stat_log where order_tid like \"%$schedule$color%\" and category != ''  order by category";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 					//echo "Check = ".$sql_num_check;
@@ -307,8 +308,10 @@ while($row=mysqli_fetch_array($result))
 	$recut_docketno[]=$row["doc_no"];
 }
 //echo implode(",",$docketnos);
-$sql="select max(ex_factory_date_new) as dat,max(ship_tid) as tid from $bai_pro4.week_delivery_plan_ref where schedule_no='$schedule' 
-	  and color='$color'";
+// $sql="select max(ex_factory_date_new) as dat,max(ship_tid) as tid from $bai_pro4.week_delivery_plan_ref where schedule_no='$schedule'  and color='$color'";
+$sql="SELECT MAX(ship_tid) AS tid,IF(`week_delivery_plan`.`rev_exfactory` = '0000-00-00',
+max(`week_delivery_plan`.`act_exfact`),max(`week_delivery_plan`.`rev_exfactory`)) AS dat
+FROM bai_pro4.shipment_plan LEFT JOIN `bai_pro4`.`week_delivery_plan` ON `week_delivery_plan`.`shipment_plan_id` = `shipment_plan`.`ship_tid` WHERE schedule_no='$schedule' and color='$color'";
 //echo $sql."<br>";
 //$sql="select ex_factory_date,ship_tid from bai_pro4.shipment_plan where schedule_no=$schedule and color=\"".$color."\"";
 $result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));

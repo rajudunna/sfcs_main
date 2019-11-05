@@ -13,7 +13,7 @@ $Page_Id='SFCS_0051';
 								Enter Lot No: <span class="required"></span>
 					</label>
 					<div class="col-md-4 col-sm-4 col-xs-12">
-						<input class="form-control input-sm integer" required type="text" class='integer' id="course" name="lot_no1"> 
+						<input class="form-control input-sm" required type="text" class='integer' id="course" name="lot_no1"> 
 					</div>
 					 <input  class="btn btn-primary" type="submit" name="submit1" value="Search">
 				</div>

@@ -2390,6 +2390,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		$style = '';
 	}else{
 		$style = 'style=display:none'; 
+		// $style = '';
 	}
 	  echo "
 	  	<select name=\"rejection_reason[$i]\"  class='listbox rej_reason rej_reason_select2' id='rejection_reason[$i]' onchange='change_body(2,this.name,$i)' ".$style.">
@@ -2549,7 +2550,8 @@ echo '</form>';
   
 for($i=0;$i<$shade_count;$i++)
  {
-  	$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$i]."\"";
+	  $sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and ref4=\"".$scount_temp2[$i]."\"";
+	//echo $sql_sc;
 	$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row_sc=mysqli_fetch_array($result_sc))
 	{
@@ -2714,7 +2716,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 					   //
 				  	   
 				  $qty_rec=$ele_t_length[$i]-$partial_rej_qty[$i];
-				  $sql1="update $bai_rm_pj1.store_in set rejection_reason='', qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks='', roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
+				  $sql1="update $bai_rm_pj1.store_in set rejection_reason=\"".$rejection_reason[$i]."\", qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
 				 mysqli_query($link, $sql1) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			}

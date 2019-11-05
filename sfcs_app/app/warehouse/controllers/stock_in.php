@@ -37,7 +37,7 @@
 							<form method="post" name="inputx" action="'.getURL(getBASE($_GET['r'])['path'])['url'].'">
 								<div class="col-md-8">
 									<label>Receiving / Lot #:</label>
-									<input type="text" id="course" name="lot_no" class="form-control alpha" required />
+									<input type="text" id="course" name="lot_no" class="form-control" required />
 								</div>
 								<div class="col-md-4">
 									<input type="submit" name="submit" value="Search" onclick="return check_lot();" class="btn btn-success" style="margin-top: 22px; " >

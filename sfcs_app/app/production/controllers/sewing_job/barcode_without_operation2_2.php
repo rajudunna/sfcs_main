@@ -83,7 +83,7 @@
 				<tr>
 					<td colspan=8>
 						<div>
-							<barcode code="'.$barcode.'" type="C39"/ height="1.05" size="0.85" text="1">
+							<barcode code="'.$barcode.'" type="C39"/ height="0.85" size="0.65" text="1">
 						<br/>
 					<center>'.trim($barcode).'</td> 
 					</div>
@@ -96,7 +96,7 @@
 		else
 			$html.= "</td>";	
 		$html.='	
-			<td colspan=6>'.chr($color_code).leading_zeros($cutno,3).'/'.$display1.'/'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
+			<td colspan=6>'.chr($color_code).leading_zeros($cutno,3).'/ '.$display1.'/'.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
 					
 			</tr>
 

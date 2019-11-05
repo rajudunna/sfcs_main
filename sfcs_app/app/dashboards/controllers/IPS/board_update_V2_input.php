@@ -313,6 +313,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$doc_no_ref=$sql_row1['doc_no'];
+			$doc_no_ref1 = $sql_row1['doc_no'];
 			$order_tid=$sql_row1['order_tid'];
 			$input_job_no_random_ref=$sql_row1["input_job_no_random_ref"];
 			$style=$sql_row1['order_style_no'];
@@ -338,6 +339,16 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			{				
 				$order_col .= $cols[$i]."<br>";
 			}
+			if($doc_no_ref != ''){
+					$parent_doc_query = "SELECT GROUP_CONCAT(org_doc_no) as docs from $bai_pro3.plandoc_stat_log  
+										where doc_no IN ($doc_no_ref) and org_doc_no > 0";
+					$parent_doc_result = mysqli_query($link,$parent_doc_query);
+					if($org_row = mysqli_fetch_array($parent_doc_result))
+						$doc_no_ref = $org_row['docs'];
+				}
+				if($doc_no_ref == '')
+					$doc_no_ref = $doc_no_ref1;
+				
 			$sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing='$type_of_sewing'";
 			$sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))

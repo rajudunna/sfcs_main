@@ -101,6 +101,7 @@
                     </div>
                 </div>
                 <div class='col-sm-3 pull-right text-center'>
+                    <h5 class='text-primary' style="margin-top:-15px;">&nbsp;<b><?= strtoupper(get_plant_name()) ?></b></h5>
                     <h4 class='text-danger'><i class="fas fa-user"></i>&nbsp;<?= getrbac_user()['uname'] ?></h4>
                     <b class='text-info' data-toggle="modal" data-target="#myModalab" style="cursor: pointer;" title="Permissions List"><u data-toggle="tooltip" title="Permissions List" data-placement="bottom"><i class="fas fa-suitcase"></i>&nbsp;<?= getrbac_user()['role'] ?></u></b>
                 </div>
