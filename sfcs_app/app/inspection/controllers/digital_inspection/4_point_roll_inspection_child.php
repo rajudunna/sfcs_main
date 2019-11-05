@@ -253,8 +253,8 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                     <th rowspan="2">Inspected Qty</th>
                                     <th rowspan="2">Ticket Length</th>
                                     <th style=text-align:center colspan=3>Width(cm)</th>
-                                    <th rowspan="2">Actual Height</th>
-                                    <th rowspan="2">Actual Repeat Height</th>
+                                    <th rowspan="2">Actual Weight</th>
+                                    <th rowspan="2">Actual Repeat Length</th>
                                     <th rowspan="2">SKW</th>
                                     <th rowspan="2">BOW</th>
                                     <th rowspan="2">Ver</th>
