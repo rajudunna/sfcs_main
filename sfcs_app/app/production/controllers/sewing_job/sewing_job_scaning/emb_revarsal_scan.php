@@ -69,15 +69,50 @@
 							{
 								$size_title = $row2['size'];
 								$b_op_id = $row2['ops_code'];
+								$clubstatus=$row2['club_status'];
 							}
-							$getbundledata="Select style,schedule,color From $brandix_bts.bundle_creation_data where docket_number = $barcodeno limit 1";
-							$check_data_qry_result=mysqli_query($link,$getbundledata) or exit("while retriving data from bundle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));							
-							while($row=mysqli_fetch_array($check_data_qry_result))
+							
+														
+							if($clubstatus==1)
 							{
-								$b_style = $row['style'];
-								$b_schedule = $row['schedule'];								
-								$color = $row['color'];								
+								//getting child dockets from plandoc_stat_log
+								$get_doc_no_qry="select doc_no from bai_pro3.plandoc_stat_log where org_doc_no=$barcodeno";
+								$docno_qry_result=mysqli_query($link,$get_doc_no_qry) or exit("error while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($docno_qry_result_row=mysqli_fetch_array($docno_qry_result))
+								{
+									$clubdocnoorg=$docno_qry_result_row['doc_no'];
+								}
+								
+								$getbundledata="Select style,schedule,color From $brandix_bts.bundle_creation_data where docket_number = $clubdocnoorg limit 1";
+								$check_data_qry_result=mysqli_query($link,$getbundledata) or exit("while retriving data from bundle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));							
+								while($row=mysqli_fetch_array($check_data_qry_result))
+								{
+									$b_style = $row['style'];
+									$b_schedule = $row['schedule'];								
+									$color = $row['color'];								
+								}
+								
+								//getting clubbed schedule number
+								$get_sch_qry="select order_joins from $bai_pro3.bai_orders_db WHERE order_style_no='$b_style' AND order_col_des='$color' AND order_del_no='$b_schedule'";
+								$sch_res=mysqli_query($link,$get_sch_qry) or exit("error getting clubbed schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($result_rows=mysqli_fetch_array($sch_res))
+								{
+									$sch = $result_rows['order_joins'];
+								}
+								$b_schedule = substr($sch, 1);
 							}
+							else
+							{
+								$getbundledata="Select style,schedule,color From $brandix_bts.bundle_creation_data where docket_number = $barcodeno limit 1";
+								$check_data_qry_result=mysqli_query($link,$getbundledata) or exit("while retriving data from bundle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));							
+								while($row=mysqli_fetch_array($check_data_qry_result))
+								{
+									$b_style = $row['style'];
+									$b_schedule = $row['schedule'];								
+									$color = $row['color'];								
+								}
+							}
+							
 							$get_emb_details="select quantity,good_qty,doc_no from $bai_pro3.emb_bundles where barcode = '$barcode'";
                             $check_emb_details_result=mysqli_query($link,$get_emb_details) or exit("while retriving data from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
                             while($row1=mysqli_fetch_array($check_emb_details_result))
@@ -276,7 +311,7 @@ if(isset($_POST['reverse']))
 		{
 			//update in emblishment dashboard
 			$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `send_qty`= send_qty-$updatequant where doc_no =$updatedoc and send_op_code=$op_no";
-			$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
+			$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query send error');
 		}
 		if($recop_code==$op_no)
 		{
@@ -329,13 +364,8 @@ if(isset($_POST['reverse']))
 	
 	
 	
-	
-	
-	
-	
-	
 	//getting status of the bundle
-	$check_status_qry="select status,size,good_qty,club_status,tid from $bai_pro3.emb_bundles where barcode='$barcode'";
+	$check_status_qry="select status,size,good_qty,club_status,tid,reject_qty from $bai_pro3.emb_bundles where barcode='$barcode'";
 	$check_qry_result=mysqli_query($link,$check_status_qry) or exit("error while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($qry_row=mysqli_fetch_array($check_qry_result))
 	{
@@ -344,137 +374,488 @@ if(isset($_POST['reverse']))
 		$reverseqty=$qry_row['good_qty'];
 		$clubstatus=$qry_row['club_status'];
 		$tid=$qry_row['tid'];
+		$rejqty=$qry_row['reject_qty'];
 	}
-	
-	//getting next operation from emb_bundles
-	$get_next_op_qry="SELECT good_qty+reject_qty as good_qty FROM bai_pro3.`emb_bundles` WHERE doc_no=$docno AND size='$sizes' AND tran_id=$seqno AND tid>$tid ORDER BY tid ASC LIMIT 0,1";
 
-	$get_qry_result=mysqli_query($link,$get_next_op_qry) or exit("error while retriving next ops qty from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($row=mysqli_fetch_array($get_qry_result))
+	if($rejqty==0)
 	{
-		$nextopgoodqty=$row['good_qty'];
-	}
-	if($nextopgoodqty==0 || $nextopgoodqty=='')
-	{
-		if($bundstaus==1)
-		{		
-			if($clubstatus==1)
-			{
-				//getting child dockets from plandoc_stat_log
-				$get_doc_no_qry="select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no=$docno"; 
-				$docno_qry_result=mysqli_query($link,$get_doc_no_qry) or exit("error while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($docno_qry_result_row=mysqli_fetch_array($docno_qry_result))
+			
+			if($bundstaus==1)
+			{		
+				if($clubstatus==1)
 				{
-					$clubdocno[]=$docno_qry_result_row['doc_no'];
-				}
-				
-				$get_quant_qry="select sum(recevied_qty) as remaining_qty from $brandix_bts.bundle_creation_data where docket_number IN (".implode(',',$clubdocno).") and operation_id=$op_no and size_title='$sizes'";
-				$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
-				{
-					$remqty=$quant_qry_result_row['remaining_qty'];
-				}
-				
-				if($remqty>$reverseqty)
-				{
-					foreach($clubdocno as $child_doc)
+					//getting child dockets from plandoc_stat_log
+					$get_doc_no_qry="select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no=$docno"; 
+					$docno_qry_result=mysqli_query($link,$get_doc_no_qry) or exit("error while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($docno_qry_result_row=mysqli_fetch_array($docno_qry_result))
 					{
-						$get_quant_qry="select id,recevied_qty from $brandix_bts.bundle_creation_data where docket_number='".$child_doc."' and operation_id=$op_no and size_title='$sizes'";
-						$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
+						$clubdocno[]=$docno_qry_result_row['doc_no'];
+					}
+					
+					$get_quant_qry="select sum(recevied_qty) as remaining_qty from $brandix_bts.bundle_creation_data where docket_number IN (".implode(',',$clubdocno).") and operation_id=$op_no and size_title='$sizes'";
+					$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
+					{
+						$remqty=$quant_qry_result_row['remaining_qty'];
+					}
+					
+					$selecting_style_schedule_color_qry = "select style,schedule,color,bundle_number from $brandix_bts.bundle_creation_data WHERE docket_number IN (".implode(',',$clubdocno).") and operation_id=$op_no and size_title='$sizes' order by bundle_number";
+					$result_selecting_style_schedule_color_qry = $link->query($selecting_style_schedule_color_qry);
+					if($result_selecting_style_schedule_color_qry->num_rows > 0)
+					{
+						while($row = $result_selecting_style_schedule_color_qry->fetch_assoc())
 						{
-							$chdocno=$child_doc;
-							$bundleno=$quant_qry_result_row['id'];
-							$reaminqty=$quant_qry_result_row['remaining_qty'];
+							$style= $row['style'];
+							$schedule= $row['schedule'];
+							$color= $row['color'];
 						}
-						
-						if($reverseqty>=$reaminqty)
+					}
+					
+					$ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code=$op_no";
+					$result_ops_seq_check = $link->query($ops_seq_check);
+					while($row = $result_ops_seq_check->fetch_assoc())
+					{
+						$ops_seq = $row['ops_sequence'];
+						$seq_id = $row['id'];
+						$ops_order = $row['operation_order'];
+					}
+					
+					$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) > '$ops_order' and operation_code NOT IN (10,200,15) ORDER BY operation_order ASC LIMIT 1";
+					$result_post_ops_check = $link->query($post_ops_check);
+					if($result_post_ops_check->num_rows > 0)
+					{
+						while($row = $result_post_ops_check->fetch_assoc())
 						{
-							if($reverseqty>0)
+							$post_ops_code = $row['operation_code'];
+						}
+					}
+					
+					$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
+					$result_pre_ops_check = $link->query($pre_ops_check);
+					while($row = $result_pre_ops_check->fetch_assoc())
+					{
+						$pre_ops_code = $row['operation_code'];
+					}
+					
+					//getting previous and next operations
+					$prev_ops_check = "select previous_operation from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND operation_code = '$op_no'";
+					$result_prev_ops_check = $link->query($prev_ops_check);
+					if($result_prev_ops_check->num_rows > 0)
+					{
+						while($rows = $result_prev_ops_check->fetch_assoc())
+						{
+							$prev_operation = $rows['previous_operation'];
+						}
+					}
+					else
+					{
+						$prev_operation = '';
+					}
+
+					$dep_ops_check = "select ops_dependency from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND operation_code = '$op_no'";
+					$result_dep_ops_check = $link->query($dep_ops_check);
+					if($result_dep_ops_check->num_rows > 0)
+					{
+						while($row22 = $result_dep_ops_check->fetch_assoc())
+						{
+							$next_operation = $row22['ops_dependency'];
+						}
+					}
+					else
+					{
+						$next_operation = '';
+					}
+					
+					
+					if($next_operation>0 || $prev_operation>0)
+					{
+						if($next_operation>0)
+						{
+							$get_ops_dep = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_dependency = $next_operation";
+							$result_ops_dep = $link->query($get_ops_dep);
+							   while($row_dep = $result_ops_dep->fetch_assoc())
+							   {
+								  $operations[] = $row_dep['operation_code'];
+							   }
+							   $emb_operations = implode(',',$operations);
+						}
+						if($prev_operation>0)
+						{
+							$get_ops_dep = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and previous_operation = $prev_operation";
+							$result_ops_dep = $link->query($get_ops_dep);
+							   while($row_dep = $result_ops_dep->fetch_assoc())
+							   {
+								  $operations[] = $row_dep['operation_code'];
+							   }
+							   $emb_operations = implode(',',$operations);
+						}
+						$flag='parallel_scanning';
+					}
+					
+				   if($flag == 'parallel_scanning')
+				   {
+					   //getting next operation from emb_bundles
+					   if($prev_operation>0)
+					   {
+							$get_next_op_qry="SELECT good_qty+reject_qty as good_qty FROM bai_pro3.`emb_bundles` WHERE doc_no=$docno AND size='$sizes' AND tran_id=$seqno  and ops_code=$post_ops_code";
+							$get_qry_result=mysqli_query($link,$get_next_op_qry) or exit("error while retriving next ops qty from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($row=mysqli_fetch_array($get_qry_result))
 							{
-								$dockdet[$child_doc]=$quant_qry_result_row['remaining_qty'];
-								// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
-								$reverseqty-=$reaminqty;
+								$nextopgoodqty=$row['good_qty'];
+							}
+					   }
+					   else
+					   {
+						$nextopgoodqty=='';   
+					   }
+					   
+						if($nextopgoodqty==0 || $nextopgoodqty=='')
+						{
+							if($remqty>$reverseqty)
+							{
+								foreach($clubdocno as $child_doc)
+								{
+									$get_quant_qry="select id,recevied_qty from $brandix_bts.bundle_creation_data where docket_number='".$child_doc."' and operation_id=$op_no and size_title='$sizes'";
+									$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
+									while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
+									{
+										$chdocno=$child_doc;
+										$bundleno=$quant_qry_result_row['id'];
+										$reaminqty=$quant_qry_result_row['recevied_qty'];
+									}
+									if($reverseqty>=$reaminqty)
+									{
+										if($reverseqty>0)
+										{
+											$dockdet[$child_doc]=$quant_qry_result_row['remaining_qty'];
+											// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
+											$reverseqty-=$reaminqty;
+										}
+										else
+										{
+											break;
+										}
+										
+									}
+									else
+									{
+										$dockdet[$child_doc]=$reverseqty;
+										// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
+										break;
+									}
+									
+								}
+								
 							}
 							else
 							{
-								break;
+								echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
 							}
-							
 						}
 						else
 						{
-							$dockdet[$child_doc]=$reverseqty;
-							// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
-							break;
+							echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
 						}
-						
-					}
-					
+				   }
+				   else
+				   {
+					   //getting next operation from emb_bundles
+						$get_next_op_qry="SELECT good_qty+reject_qty as good_qty FROM bai_pro3.`emb_bundles` WHERE doc_no=$docno AND size='$sizes' AND tran_id=$seqno  and ops_code=$post_ops_code";
+
+						$get_qry_result=mysqli_query($link,$get_next_op_qry) or exit("error while retriving next ops qty from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($row=mysqli_fetch_array($get_qry_result))
+						{
+							$nextopgoodqty=$row['good_qty'];
+						}
+						if($nextopgoodqty==0 || $nextopgoodqty=='')
+						{
+							if($remqty>$reverseqty)
+							{
+								foreach($clubdocno as $child_doc)
+								{
+									$get_quant_qry="select id,recevied_qty from $brandix_bts.bundle_creation_data where docket_number='".$child_doc."' and operation_id=$op_no and size_title='$sizes'";
+									$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
+									while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
+									{
+										$chdocno=$child_doc;
+										$bundleno=$quant_qry_result_row['id'];
+										$reaminqty=$quant_qry_result_row['recevied_qty'];
+									}
+									if($reverseqty>=$reaminqty)
+									{
+										if($reverseqty>0)
+										{
+											$dockdet[$child_doc]=$quant_qry_result_row['remaining_qty'];
+											// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
+											$reverseqty-=$reaminqty;
+										}
+										else
+										{
+											break;
+										}
+										
+									}
+									else
+									{
+										$dockdet[$child_doc]=$reverseqty;
+										// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
+										break;
+									}
+									
+								}
+								
+							}
+							else
+							{
+								echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
+							}
+						}
+						else
+						{
+							echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
+						}
+				   }	
 				}
 				else
 				{
-					echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
-				}
 					
-			}
-			else
-			{
-				$get_quant_qry="select sum(recevied_qty) as remaining_qty from $brandix_bts.bundle_creation_data where docket_number IN (".implode(',',$normdoc).") and operation_id=$op_no and size_title='$sizes'";
-				$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
-				{
-					$remqty=$quant_qry_result_row['remaining_qty'];
-				}
-				if($remqty>=$reverseqty)
-				{
-					foreach($normdoc as $child_doc)
+					$selecting_style_schedule_color_qry = "select style,schedule,color,bundle_number from $brandix_bts.bundle_creation_data WHERE docket_number =$docno and operation_id=$op_no and size_title='$sizes' order by bundle_number";
+					$result_selecting_style_schedule_color_qry = $link->query($selecting_style_schedule_color_qry);
+					if($result_selecting_style_schedule_color_qry->num_rows > 0)
 					{
-						$get_quant_qry="select id,recevied_qty as remaining_qty from $brandix_bts.bundle_creation_data where docket_number='".$child_doc."' and operation_id=$op_no and size_title='$sizes'";
-						$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
+						while($row = $result_selecting_style_schedule_color_qry->fetch_assoc())
 						{
-							$chdocno=$child_doc;
-							$bundleno=$quant_qry_result_row['id'];
-							$reaminqty=$quant_qry_result_row['remaining_qty'];
+							$style= $row['style'];
+							$schedule= $row['schedule'];
+							$color= $row['color'];
 						}
-						if($reverseqty>0)
+					}
+					
+					$ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code=$op_no";
+					$result_ops_seq_check = $link->query($ops_seq_check);
+					while($row = $result_ops_seq_check->fetch_assoc())
+					{
+						$ops_seq = $row['ops_sequence'];
+						$seq_id = $row['id'];
+						$ops_order = $row['operation_order'];
+					}
+					
+					$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) > '$ops_order' and operation_code NOT IN (10,200,15) ORDER BY operation_order ASC LIMIT 1";
+					$result_post_ops_check = $link->query($post_ops_check);
+					if($result_post_ops_check->num_rows > 0)
+					{
+						while($row = $result_post_ops_check->fetch_assoc())
 						{
-							$dockdet[$child_doc]=$reverseqty;
-							// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
+							$post_ops_code = $row['operation_code'];
+						}
+					}
+					
+					$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
+					$result_pre_ops_check = $link->query($pre_ops_check);
+					while($row = $result_pre_ops_check->fetch_assoc())
+					{
+						$pre_ops_code = $row['operation_code'];
+					}
+					
+					//getting previous and next operations
+					$prev_ops_check = "select previous_operation from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND operation_code = '$op_no'";
+					$result_prev_ops_check = $link->query($prev_ops_check);
+					if($result_prev_ops_check->num_rows > 0)
+					{
+						while($rows = $result_prev_ops_check->fetch_assoc())
+						{
+							$prev_operation = $rows['previous_operation'];
+						}
+					}
+					else
+					{
+						$prev_operation = '';
+					}
+
+					$dep_ops_check = "select ops_dependency from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND operation_code = '$op_no'";
+					$result_dep_ops_check = $link->query($dep_ops_check);
+					if($result_dep_ops_check->num_rows > 0)
+					{
+						while($row22 = $result_dep_ops_check->fetch_assoc())
+						{
+							$next_operation = $row22['ops_dependency'];
+						}
+					}
+					else
+					{
+						$next_operation = '';
+					}
+					
+					
+					if($next_operation>0 || $prev_operation>0)
+					{
+						if($next_operation>0)
+						{
+							$get_ops_dep = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_dependency = $next_operation";
+							$result_ops_dep = $link->query($get_ops_dep);
+							   while($row_dep = $result_ops_dep->fetch_assoc())
+							   {
+								  $operations[] = $row_dep['operation_code'];
+							   }
+							   $emb_operations = implode(',',$operations);
+						}
+						if($prev_operation>0)
+						{
+							$get_ops_dep = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and previous_operation = $prev_operation";
+							$result_ops_dep = $link->query($get_ops_dep);
+							   while($row_dep = $result_ops_dep->fetch_assoc())
+							   {
+								  $operations[] = $row_dep['operation_code'];
+							   }
+							   $emb_operations = implode(',',$operations);
+						}
+						$flag='parallel_scanning';
+					}
+					
+				   if($flag == 'parallel_scanning')
+				   {
+					   //getting next operation from emb_bundles
+					   if($prev_operation>0)
+					   {
+							$get_next_op_qry="SELECT good_qty+reject_qty as good_qty FROM bai_pro3.`emb_bundles` WHERE doc_no=$docno AND size='$sizes' AND tran_id=$seqno  and ops_code=$post_ops_code";
+							$get_qry_result=mysqli_query($link,$get_next_op_qry) or exit("error while retriving next ops qty from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($row=mysqli_fetch_array($get_qry_result))
+							{
+								$nextopgoodqty=$row['good_qty'];
+							}
+					   }
+					   else
+					   {
+						$nextopgoodqty=='';   
+					   }
+					   // else
+					   // {
+						// $get_next_op_qry="SELECT good_qty+reject_qty as good_qty FROM bai_pro3.`emb_bundles` WHERE doc_no=$docno AND size='$sizes' AND tran_id=$seqno  and ops_code=$$op_no";   
+					   // }
+
+						
+						
+						if($nextopgoodqty==0 || $nextopgoodqty=='')
+						{
+						
+								$get_quant_qry="select sum(recevied_qty) as remaining_qty from $brandix_bts.bundle_creation_data where docket_number IN (".implode(',',$normdoc).") and operation_id=$op_no and size_title='$sizes'";
+								$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
+								{
+									$remqty=$quant_qry_result_row['remaining_qty'];
+								}
+								if($remqty>=$reverseqty)
+								{
+									foreach($normdoc as $child_doc)
+									{
+										$get_quant_qry="select id,recevied_qty as remaining_qty from $brandix_bts.bundle_creation_data where docket_number='".$child_doc."' and operation_id=$op_no and size_title='$sizes'";
+										$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
+										while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
+										{
+											$chdocno=$child_doc;
+											$bundleno=$quant_qry_result_row['id'];
+											$reaminqty=$quant_qry_result_row['remaining_qty'];
+										}
+										if($reverseqty>0)
+										{
+											$dockdet[$child_doc]=$reverseqty;
+											// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
+										}
+										else
+										{
+											break;
+										}
+										
+									}
+								}
+								else
+								{
+									echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
+								}
 						}
 						else
 						{
-							break;
+							echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
 						}
+				   }
+				   else
+				   {
+					   //getting next operation from emb_bundles
+						$get_next_op_qry="SELECT good_qty+reject_qty as good_qty FROM bai_pro3.`emb_bundles` WHERE doc_no=$docno AND size='$sizes' AND tran_id=$seqno  and ops_code=$post_ops_code";
+
+						$get_qry_result=mysqli_query($link,$get_next_op_qry) or exit("error while retriving next ops qty from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($row=mysqli_fetch_array($get_qry_result))
+						{
+							$nextopgoodqty=$row['good_qty'];
+						}
+						if($nextopgoodqty==0 || $nextopgoodqty=='')
+						{
 						
-					}
+								$get_quant_qry="select sum(recevied_qty) as remaining_qty from $brandix_bts.bundle_creation_data where docket_number IN (".implode(',',$normdoc).") and operation_id=$op_no and size_title='$sizes'";
+								$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
+								{
+									$remqty=$quant_qry_result_row['remaining_qty'];
+								}
+								if($remqty>=$reverseqty)
+								{
+									foreach($normdoc as $child_doc)
+									{
+										$get_quant_qry="select id,recevied_qty as remaining_qty from $brandix_bts.bundle_creation_data where docket_number='".$child_doc."' and operation_id=$op_no and size_title='$sizes'";
+										$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
+										while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
+										{
+											$chdocno=$child_doc;
+											$bundleno=$quant_qry_result_row['id'];
+											$reaminqty=$quant_qry_result_row['remaining_qty'];
+										}
+										if($reverseqty>0)
+										{
+											$dockdet[$child_doc]=$reverseqty;
+											// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
+										}
+										else
+										{
+											break;
+										}
+										
+									}
+								}
+								else
+								{
+									echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
+								}
+						}
+						else
+						{
+							echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
+						}
+				   }
 				}
-			}
-			
-			foreach($dockdet as $x => $x_value) 
-			{
-				$updatedoc=$x;
-				$updatequant=$x_value;
-				updatedata($updatedoc,$updatequant,$sizes,$op_no,$seqno,$barcode,$clubstatus);
-			}
-			
-		}
-		else
-		{
-			if($bundstaus==0)
-			{
-				echo "<script>swal('This Operation Not Yet Reported','','warning');</script>";
+				
+				foreach($dockdet as $x => $x_value) 
+				{
+					$updatedoc=$x;
+					$updatequant=$x_value;
+					updatedata($updatedoc,$updatequant,$sizes,$op_no,$seqno,$barcode,$clubstatus);
+				}
+				
 			}
 			else
 			{
-				echo "<script>swal('Revarsal Already Done','','warning');</script>";
-			}
-		}
+				if($bundstaus==0)
+				{
+					echo "<script>swal('This Operation Not Yet Reported','','warning');</script>";
+				}
+				else
+				{
+					echo "<script>swal('Revarsal Already Done','','warning');</script>";
+				}
+			}		
 	}
 	else
 	{
-		echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
+		echo "<script>swal('Rejection Revarsal Not Possible','','warning');</script>";
 	}
 }
 ?>	
