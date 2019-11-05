@@ -31,6 +31,9 @@ while ($row22 = mysqli_fetch_array($info_result))
 	$width_s[$row22['store_in_tid']] = $row22['width_s'];
 	$width_m[$row22['store_in_tid']] = $row22['width_m'];
 	$width_e[$row22['store_in_tid']] = $row22['width_e'];
+
+	// $minVal = min($row22['width_s'],$row22['width_m'],$row22['width_e']);
+
 	$actual_height[$row22['store_in_tid']] = $row22['actual_height'];
 	$actual_repeat_height[$row22['store_in_tid']] = $row22['actual_repeat_height'];
 	$skw[$row22['store_in_tid']] = $row22['skw'];
@@ -83,6 +86,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
 	$lab_testing = $row111['lab_testing'];
 	$tolerance = $row111['tolerence'];
 	$po_no = $row111['supplier'];
+	$remarks = $row111['remarks'];
 }
 
 $get_details12 = "select * from $bai_rm_pj1.`sticker_report` where po_no=".$po_no." limit 1";
@@ -97,6 +101,7 @@ while ($row1112 = mysqli_fetch_array($details_result12))
 	$invoice_no = $row1112['inv_no'];
 	$fab_qua = $row1112['item_desc'];	
 	$buyer = $row1112['buyer'];
+	$grn_no = $row1112['rec_no'];
 }
 $tot_points=0;
 $get_inspection_population_info12 = "select insp_child_id,points,sum(points) as tot from $bai_rm_pj1.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") group by insp_child_id,points";
@@ -1566,7 +1571,16 @@ tags will be replaced.-->
   <td class=xl1519758></td>
   <td class=xl1519758></td>
   <td colspan=2 class=xl7919758>Actual Weight(g/sqm)</td>
-  <td class=xl7719758 style='border-top:none;text-align:center;'></td>
+  <td class=xl7719758 style='border-top:none;text-align:center;'><?php 
+      for($i=0;$i<sizeof($tot_ids);$i++)
+      {
+		 $actual_height[$tot_ids[$i]];  
+	  }
+	   $act_height=implode(",",$actual_height);
+	   echo $act_height;
+	  ?>
+	  	
+  </td>
   <td colspan=2 class=xl7919758 style='border-left:none'>Rolls inspected</td>
   <td class=xl7719758 style='border-top:none;text-align:center;'><?php echo sizeof($tot_ids);?></td>
   <td class=xl1519758></td>
@@ -1587,7 +1601,7 @@ tags will be replaced.-->
   <td class=xl7719758 style='border-top:none;text-align:center;'><?php echo $repeat_length;?></td>
   <td colspan=2 class=xl7919758 style='border-left:none'>Average Points</td>
   <td class=xl7719758 style='border-top:none;text-align:center;'><?php 
-  $rate = round(($tot_points/array_sum($invoice_qty))*(36/49.21)*100,2);
+  $rate = round(($tot_points/array_sum($invoice_qty))*(36/$inch_value)*100,2);
 	echo "".$rate;
 ?></td>
   <td class=xl1519758></td>
@@ -1605,7 +1619,15 @@ tags will be replaced.-->
   <td class=xl1519758></td>
   <td class=xl1519758></td>
   <td colspan=2 class=xl7919758>Act.Rpt.Length</td>
-  <td class=xl7719758 style='border-top:none;text-align:center;'></td>
+  <td class=xl7719758 style='border-top:none;text-align:center;'><?php
+      for($i=0;$i<sizeof($tot_ids);$i++)
+      {
+		$actual_repeat_height[$tot_ids[$i]];  
+	  }
+	  $act_length=implode(",",$actual_repeat_height);
+	   echo $act_length;	 
+	  ?>
+  </td>
   <td colspan=2 class=xl7919758 style='border-left:none'>Length Shortage</td>
   <td class=xl7719758 style='border-top:none;text-align:center;'></td>
   <td class=xl1519758></td>
@@ -1613,7 +1635,7 @@ tags will be replaced.-->
  <tr height=19 style='height:14.4pt'>
   <td height=19 class=xl1519758 style='height:14.4pt'></td>
   <td colspan=2 class=xl6419758>GRN Number</td>
-  <td colspan=4 class=xl6319758>&nbsp;</td>
+  <td colspan=4 class=xl6319758><?php echo $grn_no?></td>
   <td class=xl1519758></td>
   <td class=xl1519758></td>
   <td class=xl1519758></td>
@@ -1623,7 +1645,7 @@ tags will be replaced.-->
   <td class=xl1519758></td>
   <td class=xl1519758></td>
   <td colspan=2 class=xl8019758>&nbsp;</td>
-  <td class=xl7719758 style='border-top:none'></td>
+  <td class=xl7719758 style='border-top:none'></td></td>
   <td colspan=2 class=xl8019758 style='border-left:none'>Lab Testing</td>
   <td class=xl7719758 style='border-top:none;text-align:center;'><?php echo $lab_testing;?></td>
   <td class=xl1519758></td>
@@ -1692,7 +1714,16 @@ tags will be replaced.-->
 </tr>
  <?php
 
-
+          foreach($width_s as $key=>$val ) {
+          	 $min[] = min($width_s[$key],$width_m[$key],$width_e[$key]);
+          }
+          $minVal = $min[0];
+          foreach($min as $key => $val) {
+          	if($minVal > $val) {
+          		$minVal = $val;
+          	}
+          }
+           $inch_value=round($minVal/(2.54),2);
           $get_shade_grp="SELECT batch_no,SUM(qty_rec) AS rec,shade_grp,COUNT(*) AS rolls,MIN(ref6) as width FROM $bai_rm_pj1.store_in LEFT JOIN $bai_rm_pj1.sticker_report ON $bai_rm_pj1.sticker_report.lot_no=$bai_rm_pj1.store_in.lot_no WHERE tid IN (".implode(",",$tot_ids).") GROUP BY batch_no,shade_grp";
 			   //echo $get_shade_grp;
 				$shade_grp_result = mysqli_query($link, $get_shade_grp) or exit("get_shade_grp Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1715,13 +1746,12 @@ tags will be replaced.-->
 					  	<td colspan="2" class="xl8919758"><?php echo $shade; ?></td>
 					  	<td colspan="2" class="xl8919758" style='text-align:right;'><?php echo $roll_no; ?></td>
 					  	<td colspan="4" class="xl8919758" style='text-align:right;'><?php echo $tot_length; ?></td>
-					  	<td colspan="2" class="xl8919758" style='text-align:right;'><?php echo $width; ?></td>
+					  	<td colspan="2" class="xl8919758" style='text-align:right;'><?php echo $minVal; ?></td>
 					  </tr>
+					  
 			    <?php	  	
 					}
-				}	
-	
-
+				}
 	?>
 <tr height=21 style='mso-height-source:userset;height:15.6pt'>
   <td height=21 class=xl1519758 style='height:15.6pt'></td>
@@ -1764,10 +1794,10 @@ tags will be replaced.-->
   <td colspan=4 class=xl7019758 style='border-right:.5pt solid black;
   border-left:none'>Total Point</td>
   <td rowspan=2 class=xl8719758 width=53 style='width:40pt'>Total Points</td>
-  <td rowspan=2 class=xl8519758 width=49 style='border-bottom:.5pt solid black;
+  <td rowspan=2 class=xl8719758 width=49 style='border-bottom:.5pt solid black;
   width:37pt'>Point Rate</td>
-  <td rowspan=2 class=xl8519758 width=86 style='border-bottom:.5pt solid black;
-  width:65pt'>Comments</td>
+  <td rowspan=2 class=xl8519758 width=102 style='border-bottom:.5pt solid black;
+  width:77pt'>Comments</td>
   <td rowspan=2 class=xl8519758 width=102 style='border-bottom:.5pt solid black;
   width:77pt'>Damanges</td>
   <td rowspan=2 class=xl8519758 width=78 style='border-bottom:.5pt solid black;
@@ -1825,7 +1855,8 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 	{
 		$qty=$invoice_qty[$tot_ids[$i]];
 	}
-	$rate = round(($tot/$qty)*(36/49.21)*100,2); 
+	$rate = round(($tot/$qty)*(36/$inch_value)*100,2); 
+	
 	
 	?></td> 
 	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $rate; ?></td>
@@ -2018,7 +2049,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 	{
 		$tot_qty_g;
 	}
-	$calclation = round(($tot_qty/$tot_qty_g)*(36/49.21)*100,2); 
+	$calclation = round(($tot_qty/$tot_qty_g)*(36/$inch_value)*100,2); 
 	if($calclation<28)
 	{
 	  ?>
@@ -2123,7 +2154,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
  <tr height=19 style='height:14.4pt'>
   <td height=19 class=xl1519758 style='height:14.4pt'></td>
   <td colspan=2 class=xl9619758><?php echo $tot_qty_g;?></td>
-  <td colspan=2 class=xl9719758>49.21</td>
+  <td colspan=2 class=xl9719758><?php echo $inch_value;?></td>
   <td class=xl10419758></td>
   <td class=xl10419758></td>
   <td class=xl10419758></td>
@@ -2251,7 +2282,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
  </tr>
  <tr height=19 style='height:14.4pt'>
   <td height=19 class=xl1519758 style='height:14.4pt'></td>
-  <td class=xl1519758></td>
+  <td class=xl1519758><?php echo $remarks; ?></td>
   <td class=xl1519758></td>
   <td class=xl1519758></td>
   <td class=xl1519758></td>
