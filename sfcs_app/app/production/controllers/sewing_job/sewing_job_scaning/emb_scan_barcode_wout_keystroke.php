@@ -157,7 +157,8 @@ th,td{
                 </thead>
                 <tbody>
                     <tr ng-repeat="bar_code_details in scanned_barcode_details | orderBy:'date_n':true">
-                        <td>{{scanned_barcode_details.length-1}}</td>
+                        <td ng-hide="true">{{scanned_barcode_details.length-1}}</td>
+						<td>{{$index+1}}</td>
                         <td>{{bar_code_details.data.bundle_no}}</td>
                         <td>{{bar_code_details.data.op_no}}</td>
                         <td>{{bar_code_details.data.bunno}}</td>
