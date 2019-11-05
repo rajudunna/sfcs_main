@@ -1282,118 +1282,118 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
   $fab_pop_details = getFullURLLevel($_GET['r'],'fab_pop_details.php',0,'R');
 	$fab_pop_details1 = getFullURLLevel($_GET['r'],'fab_pop_alert.php',0,'R');
-  // if($check_num_rows>0 && $ord_style==$sel_sty)
-  // {
+  if($check_num_rows>0 && $ord_style==$sel_sty)
+  {
 
-  //     if($id=="blue")
-  //     {
-  //       echo "<div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left;' title='$title' >$iustyle $emb_stat_title</div>"; 
-  //     }
-  //     else
-  //     {
-  //       // Ticket #177328 / compare the req_time with current date and time for Blinking Option for Exceeding Fabric Request Dockets
-  //       //echo "blue1 : ".$req_date_time[array_search($doc_no,$doc_ref)]."-".date("Y-m-d H:i:s")."</br>";
-  //       if($req_date_time[array_search($doc_no,$doc_ref)]<date("Y-m-d H:i:s"))
-  //       { 
-  //         echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='fab_pop_details.php?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open('fab_pop_details.php?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><span class='blink'>".$req_time[array_search($doc_no,$doc_ref)]." (".$iustyle."".$emb_stat_title.")</span></a></div></div><br/>";
-  //       }
-  //       else
-  //       {
-  //         echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open('fab_pop_details.php?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>".$req_time[array_search($doc_no,$doc_ref)]." (".$iustyle."".$emb_stat_title.")</a></div></div><br/>";
-  //       }
-  //     }
-  // }
-  // else
-  // {
+      if($id=="blue")
+      {
+        echo "<div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left;' title='$title' >$iustyle $emb_stat_title</div>"; 
+      }
+      else
+      {
+        // Ticket #177328 / compare the req_time with current date and time for Blinking Option for Exceeding Fabric Request Dockets
+        //echo "blue1 : ".$req_date_time[array_search($doc_no,$doc_ref)]."-".date("Y-m-d H:i:s")."</br>";
+        if($req_date_time[array_search($doc_no,$doc_ref)]<date("Y-m-d H:i:s"))
+        { 
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='fab_pop_details.php?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open('fab_pop_details.php?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><span class='blink'>".$req_time[array_search($doc_no,$doc_ref)]." (".$iustyle."".$emb_stat_title.")</span></a></div></div><br/>";
+        }
+        else
+        {
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open('fab_pop_details.php?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>".$req_time[array_search($doc_no,$doc_ref)]." (".$iustyle."".$emb_stat_title.")</a></div></div><br/>";
+        }
+      }
+  }
+  else
+  {
     
-  //     if($id=="blue")
-  //     {
-  //       echo "<div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left;' title='$title' >$emb_stat_title</div>"; 
-  //     }
-  //     else
-  //     {
+      if($id=="blue")
+      {
+        echo "<div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left;' title='$title' >$emb_stat_title</div>"; 
+      }
+      else
+      {
         
-  //       if($id=="lgreen")
-  //       { 
-  //         //echo "Light Green</br>";
-  //         // Ticket #177328 / compare the req_time with current date and time for Blinking Option for Exceeding Fabric Request Dockets
-  //         //echo "Light green :".$req_date_time[array_search($doc_no,$doc_ref)]."-".date("Y-m-d H:i:s")."</br>"; 
-  //         if($req_date_time[array_search($doc_no,$doc_ref)]<date("Y-m-d H:i:s"))
-  //         {
-  //           echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open('fab_pop_details.php?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><span class='blink'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</span></a></div></div><br/>";
-  //         }
-  //         else
-  //         {
-  //           echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open(".$fab_pop_details."'doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</a></div></div><br/>";
-  //         }
-  //       }
-  //       else if($id=="green")
-  //       {   
-  //         //echo "Thick Green</br>";
-  //         //echo "Thick Green :".$req_date_time[array_search($doc_no,$doc_ref)]."-".date("Y-m-d H:i:s")."</br>"; 
-  //         if($req_date_time[array_search($doc_no,$doc_ref)]<date("Y-m-d H:i:s"))
-  //         {
-  //         echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open(".$fab_pop_details."'doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><span class='blink'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</span></a></div></div><br/>";
-  //         }
-  //         else
-  //         {
-  //           echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open(".$fab_pop_details."'doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</a></div></div><br/>";
-  //         }
-  //       }
-  //       else
-  //       { 
-  //         // echo "Hash Color</br>";
-  //         // edited by ram kumar
-  //         // echo "fabric req :".$fabric_required."</br>";
-  //         // echo "total req :".$total_req_qty."</br>";
+        if($id=="lgreen")
+        { 
+          //echo "Light Green</br>";
+          // Ticket #177328 / compare the req_time with current date and time for Blinking Option for Exceeding Fabric Request Dockets
+          //echo "Light green :".$req_date_time[array_search($doc_no,$doc_ref)]."-".date("Y-m-d H:i:s")."</br>"; 
+          if($req_date_time[array_search($doc_no,$doc_ref)]<date("Y-m-d H:i:s"))
+          {
+            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open('fab_pop_details.php?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><span class='blink'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</span></a></div></div><br/>";
+          }
+          else
+          {
+            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open(".$fab_pop_details."'doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</a></div></div><br/>";
+          }
+        }
+        else if($id=="green")
+        {   
+          //echo "Thick Green</br>";
+          //echo "Thick Green :".$req_date_time[array_search($doc_no,$doc_ref)]."-".date("Y-m-d H:i:s")."</br>"; 
+          if($req_date_time[array_search($doc_no,$doc_ref)]<date("Y-m-d H:i:s"))
+          {
+          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open(".$fab_pop_details."'doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><span class='blink'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</span></a></div></div><br/>";
+          }
+          else
+          {
+            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open(".$fab_pop_details."'doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</a></div></div><br/>";
+          }
+        }
+        else
+        { 
+          // echo "Hash Color</br>";
+          // edited by ram kumar
+          // echo "fabric req :".$fabric_required."</br>";
+          // echo "total req :".$total_req_qty."</br>";
 		   
-	// 	  /*For testing logic changed*/ 
-  //         if($fabric_required<=$total_req_qty){
-	// 		  // if($fabric_required>$total_req_qty){
-  //             //$id='blue';
-  //             //echo "<blink>blue2 : ".$req_date_time[array_search($doc_no,$doc_ref)]."-".date("Y-m-d H:i:s")."</blink></br>";
-  //             //allowed
-  //             // Ticket #177328 / compare the req_time with current date and time for Blinking Option for Exceeding Fabric Request Dockets
-  //           if($req_date_time[array_search($doc_no,$doc_ref)]<date("Y-m-d H:i:s"))
-  //           { 
+		  /*For testing logic changed*/ 
+          if($fabric_required<=$total_req_qty){
+			  // if($fabric_required>$total_req_qty){
+              //$id='blue';
+              //echo "<blink>blue2 : ".$req_date_time[array_search($doc_no,$doc_ref)]."-".date("Y-m-d H:i:s")."</blink></br>";
+              //allowed
+              // Ticket #177328 / compare the req_time with current date and time for Blinking Option for Exceeding Fabric Request Dockets
+            if($req_date_time[array_search($doc_no,$doc_ref)]<date("Y-m-d H:i:s"))
+            { 
               
-  //             echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open(".$fab_pop_details."'doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><span class='blink'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</span></a></div></div><br/>";
-  //           }
-  //           else
-  //           {
-  //             echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open(".$fab_pop_details."'doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</a></div></div><br/>";
-  //           }
-  //         }else{
-  //             $id='orange';
-  //             //Not Allowed
-  //           if($username=='sfcsproject1'){
+              echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open(".$fab_pop_details."'doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><span class='blink'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</span></a></div></div><br/>";
+            }
+            else
+            {
+              echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open(".$fab_pop_details."'doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</a></div></div><br/>";
+            }
+          }else{
+              $id='orange';
+              //Not Allowed
+            if($username=='sfcsproject1'){
 
-  //             //echo "orange : ".$req_date_time[array_search($doc_no,$doc_ref)]."-".date("Y-m-d H:i:s")."</br>";
-  //             if($req_date_time[array_search($doc_no,$doc_ref)]<date("Y-m-d H:i:s"))
-  //             {
-  //               echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details1."' onclick='Popup=window.open(".$fab_pop_details1.",'Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><span class='blink'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</span></a></div></div><br/>";
-  //             }
-  //             else
-  //             {
-  //               echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details1."' onclick='Popup=window.open(".$fab_pop_details1.",'Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</a></div></div><br/>";
-  //             }
-  //           }else{
-  //             //echo "Orange : ".$req_date_time[array_search($doc_no,$doc_ref)]."-".date("Y-m-d H:i:s")."</br>";
-  //             if($req_date_time[array_search($doc_no,$doc_ref)]<date("Y-m-d H:i:s"))
-  //             {
-  //               echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open(".$fab_pop_details."'doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><span class='blink'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</span></a></div></div><br/>";
-  //             }
-  //             else
-  //             {
-  //               echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open(".$fab_pop_details."'doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</a></div></div><br/>";
-  //             }
-  //           }
-  //         }
+              //echo "orange : ".$req_date_time[array_search($doc_no,$doc_ref)]."-".date("Y-m-d H:i:s")."</br>";
+              if($req_date_time[array_search($doc_no,$doc_ref)]<date("Y-m-d H:i:s"))
+              {
+                echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details1."' onclick='Popup=window.open(".$fab_pop_details1.",'Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><span class='blink'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</span></a></div></div><br/>";
+              }
+              else
+              {
+                echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details1."' onclick='Popup=window.open(".$fab_pop_details1.",'Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</a></div></div><br/>";
+              }
+            }else{
+              //echo "Orange : ".$req_date_time[array_search($doc_no,$doc_ref)]."-".date("Y-m-d H:i:s")."</br>";
+              if($req_date_time[array_search($doc_no,$doc_ref)]<date("Y-m-d H:i:s"))
+              {
+                echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open(".$fab_pop_details."'doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'><span class='blink'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</span></a></div></div><br/>";
+              }
+              else
+              {
+                echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$id' style='font-size:12px; text-align:center; float:left; color:$id' title='$title' ><a href='".$fab_pop_details."?doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."' onclick='Popup=window.open(".$fab_pop_details."'doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=".implode(",",$club_docs)."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_ref)]."</a></div></div><br/>";
+              }
+            }
+          }
           
-  //       }
+        }
 
-  //     }
-  // }   
+      }
+  }   
 
 //echo "<div id='$id' style='font-size:10px; text-align:center;'><a href='pop_details.php?doc_no=$doc_no' onclick='Popup=window.open('pop_details.php?doc_no=$doc_no"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>".$check_string."</a></div>"; 
       
