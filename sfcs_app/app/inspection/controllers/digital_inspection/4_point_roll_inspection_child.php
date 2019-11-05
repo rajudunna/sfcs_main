@@ -86,6 +86,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
     $spec_weight = $row111['s_weight'];
     $lab_testing = $row111['lab_testing'];
     $tolerance = $row111['tolerence'];
+    $remarks = $row111['remarks'];
 }
 
 ?>
@@ -155,10 +156,17 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                 <tr style="background-color: antiquewhite;">
                                     <th style=text-align:center colspan="3">Spec Details</th>
                                 </tr>
+                                 <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td colspan="3">Remarks</td>
+                                </tr> 
                                 <tr>
                                     <td>Spec Width</td>
                                     <td><input type="text" id="spec_width" name="spec_width" autocomplete="off" value="<?= $spec_width ?>" <?php if ($spec_width)   ?> class="float"></td>
-                                    <!-- <td><input type="text" id="tolerance" name="tolerance"></td> -->
+
+                                    <td rowspan="2"><input type="text" id="remarks" name="remarks" style="width:250px" value="<?= $remarks ?>" <?php if ($remarks)   ?>>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Spec Weight</td>
@@ -169,7 +177,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                     <td>Repeat Length</td>
                                     <td><input type="text" id="repeat_length" name="repeat_length" autocomplete="off" value="<?= $repeat_length ?>" <?php if ($repeat_length)   ?> class="float"></td>
                                     <!-- <td><input type="text" id="tolerance" name="tolerance"></td> -->
-                                </tr>
+                                </tr> 
                                 <tr style="background-color: antiquewhite;">
                                     <th style=text-align:center colspan=3>Inspection Summary</th>
                                 </tr>
@@ -253,8 +261,8 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                     <th rowspan="2">Inspected Qty</th>
                                     <th rowspan="2">Ticket Length</th>
                                     <th style=text-align:center colspan=3>Width(cm)</th>
-                                    <th rowspan="2">Actual Height</th>
-                                    <th rowspan="2">Actual Repeat Height</th>
+                                    <th rowspan="2">Actual Weight</th>
+                                    <th rowspan="2">Actual Repeat Length</th>
                                     <th rowspan="2">SKW</th>
                                     <th rowspan="2">BOW</th>
                                     <th rowspan="2">Ver</th>
@@ -487,6 +495,13 @@ if (isset($_POST['confirm'])) {
         $tolerance;
     }
 
+    $remarks = $_POST['remarks'];
+    if ($remarks == '') {
+        $remarks = 'null';
+    } else {
+        $remarks;
+    }
+
     $inspected_per = $_POST['inspected_per'];
     if ($inspected_per == '') {
         $inspected_per = 0;
@@ -583,7 +598,7 @@ if (isset($_POST['confirm'])) {
         $count = count($code);
         $damage = $_POST['damage'];
         
-        $sql_rows="update $bai_rm_pj1.main_population_tbl set fab_composition='" . $fabric_composition . "',s_width='" . $spec_width . "',s_weight='" . $spec_weight . "',repeat_len='" . $repeat_length . "',lab_testing='" . $lab_testing . "',tolerence='" . $tolerance . "' where id=".$parent_id."";
+        $sql_rows="update $bai_rm_pj1.main_population_tbl set fab_composition='" . $fabric_composition . "',s_width='" . $spec_width . "',s_weight='" . $spec_weight . "',repeat_len='" . $repeat_length . "',lab_testing='" . $lab_testing . "',tolerence='" . $tolerance . "',remarks='" . $remarks . "' where id=".$parent_id."";
         mysqli_query($link, $sql_rows) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
         
         $id_parent = $parent_id;
@@ -720,6 +735,13 @@ if (isset($_POST['save'])) {
         $tolerance;
     }
 
+    $remarks = $_POST['remarks'];
+    if ($remarks == '') {
+        $remarks = 'null';
+    } else {
+        $remarks;
+    }
+
     $inspected_per = $_POST['inspected_per'];
     if ($inspected_per == '') {
         $inspected_per = 0;
@@ -817,7 +839,7 @@ if (isset($_POST['save'])) {
         
         $damage = $_POST['damage'];
         
-        $sql_rows="update $bai_rm_pj1.main_population_tbl set fab_composition='" . $fabric_composition . "',s_width='" . $spec_width . "',s_weight='" . $spec_weight . "',repeat_len='" . $repeat_length . "',lab_testing='" . $lab_testing . "',tolerence='" . $tolerance . "' where id=".$parent_id."";
+        $sql_rows="update $bai_rm_pj1.main_population_tbl set fab_composition='" . $fabric_composition . "',s_width='" . $spec_width . "',s_weight='" . $spec_weight . "',repeat_len='" . $repeat_length . "',lab_testing='" . $lab_testing . "',tolerence='" . $tolerance . "',remarks='" . $remarks . "' where id=".$parent_id."";
         mysqli_query($link, $sql_rows) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
         
         $id_parent = $parent_id;
