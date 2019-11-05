@@ -117,8 +117,18 @@ if($check_qry_result->num_rows > 0)
 					$b_tid[]=$row['bundle_number'];
 				}
 			}
-		
-			$maped_color = $color;			
+			$maped_color = $color;
+			
+			//getting clubbed schedule number
+			$get_sch_qry="select order_joins from $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_col_des='$color' AND order_del_no='$schedule'";
+			$sch_res=mysqli_query($link,$get_sch_qry) or exit("error getting clubbed schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($result_rows=mysqli_fetch_array($sch_res))
+			{
+				$sch = $result_rows['order_joins'];
+			}
+			$clubsch = substr($sch, 1);
+			
+						
 			//*To check Parallel Operations
 					$ops_sequence_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$maped_color' and operation_code=$op_no";
 					$result_ops_sequence_check = $link->query($ops_sequence_check);
@@ -713,7 +723,7 @@ if($check_qry_result->num_rows > 0)
 										$result_array['bundle_no'] = $orgdoc;
 										$result_array['op_no'] = $op_no;
 										$result_array['style'] = $style;
-										$result_array['schedule'] = $schedule;
+										$result_array['schedule'] = $clubsch;
 										$result_array['color_dis'] = $color;
 										$result_array['size'] = $sizes;
 										$result_array['reported_qty'] = $diffqty;
@@ -1012,7 +1022,7 @@ if($check_qry_result->num_rows > 0)
 						$result_array['bundle_no'] = $orgdoc;
 						$result_array['op_no'] = $op_no;
 						$result_array['style'] = $style;
-						$result_array['schedule'] = $schedule;
+						$result_array['schedule'] = $clubsch;
 						$result_array['color_dis'] = $color;
 						$result_array['size'] = $sizes;
 						$result_array['reported_qty'] = $diffqty;
