@@ -710,7 +710,7 @@ if($check_qry_result->num_rows > 0)
 										// {
 										// $updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$diffqty);
 										// }
-										$result_array['bundle_no'] = $docno;
+										$result_array['bundle_no'] = $orgdoc;
 										$result_array['op_no'] = $op_no;
 										$result_array['style'] = $style;
 										$result_array['schedule'] = $schedule;
@@ -1009,7 +1009,7 @@ if($check_qry_result->num_rows > 0)
 						// {
 						// $updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$diffqty);
 						// }
-						$result_array['bundle_no'] = $docno;
+						$result_array['bundle_no'] = $orgdoc;
 						$result_array['op_no'] = $op_no;
 						$result_array['style'] = $style;
 						$result_array['schedule'] = $schedule;
