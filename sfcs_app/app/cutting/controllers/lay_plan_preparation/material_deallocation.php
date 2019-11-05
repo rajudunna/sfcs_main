@@ -262,19 +262,21 @@ for($i=0;$i<sizeof($doc_nos);$i++)
 									?>
                                 </tbody>
 
-                                <tbody id='rejections_table'>
-								
-								<tr>
+                                </tbody>
+
+								<tbody id='rejections_table'>
+												
+									<tr>
 									<td></td>
 									<?php
-									echo "<input type='hidden' name='doc_no_new' id='doc_no_new' value='$doc_nos[$i]' >";
+									echo "<input type='hidden' name='doc_no_new' id='doc_no_new' value='$id' >";
 									?>
 									<td><input class="form-control alpha"  type="text" name="in_mktype" id="mk_type<?=$doc_no ?>"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_mkver" id= "mk_ver<?=$doc_no ?>" onchange="validate_data(this)"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_skgrp" id= "sk_grp<?=$doc_no ?>" onchange="validate_data(this)"></td>
-									<td><input class="form-control float"  type="text" name= "in_width" id= "width<?=$doc_no ?>" onchange="validate_data(this)"></td>
-									<td><input class="form-control float"  type="text" name= "in_mklen" id= "mk_len<?=$doc_no ?>" onchange="validate_data(this)"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_mkname" id="mk_name<?=$doc_no ?>"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_mkver" id= "mk_ver<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_skgrp" id= "sk_grp<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
+									<td><input class="form-control float"  type="text" name= "in_width" id= "width<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
+									<td><input class="form-control float"  type="text" name= "in_mklen" id= "mk_len<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_mkname" id="mk_name<?=$doc_no ?>" onchange="marker_validation(<?=$doc_no ?>, this)"    ></td>
 									<td><input class="form-control alpha"  type="text" name= "in_ptrname" id="ptr_name<?=$doc_no ?>"></td>
 									<td><input class="form-control float"  type="text" name= "in_mkeff" id= "mk_eff<?=$doc_no ?>"></td>
 									<td><input class="form-control alpha"  type="text" name= "in_permts" id= "permts<?=$doc_no ?>"></td>
@@ -284,7 +286,7 @@ for($i=0;$i<sizeof($doc_nos);$i++)
 									<td><input class="form-control alpha"  type="text" name= "in_rmks4" id= "rmks4<?=$doc_no ?>"></td>
 									<td></td>
 									</tr>  
-                                </tbody>
+								</tbody>
                             </table>
 								<input type='button' class='btn btn-danger pull-right' value='clear' name='clear_rejection' id='clear_rejection' onclick='clear_row(<?=$doc_no ?>)'>
 								<?php 
@@ -435,30 +437,67 @@ function compareArrays(arr1, arr2){
 		return false;
 	}
 }
-
-function validate_data(id_name) 
+function marker_validation(id_name, cur_element) 
 {
-	if($("#mk_ver").val() != '' && $("#sk_grp").val() != '' && $("#width").val() != '' && $("#mk_len").val()){
+	if($("#mk_name"+id_name).val() != ''){
 	var array = [];
 	var CurData=[];
-	
-	$('#mark_len_table'+doc_no+' tr').has('td').each(function() {
+	$('#mark_len_table'+id_name+' tr').has('td').each(function() {
 		var arrayItem = [];
 		$('td', $(this)).each(function(index, item) {
-			// console.log($(this));
 			arrayItem[index] = $(item).text();
 		});
 		array.push(arrayItem);
 	});
-	CurData = [$("#mk_ver").val(), $("#sk_grp").val(), $("#width").val(), $("#mk_len").val()];
-		var table = $('#mark_len_table'+doc_no);
+	CurData = [$("#mk_name"+id_name).val()];
+		var table = $('#mark_len_table'+id_name);
 		var tr_length= table.find('tr').length;
-		// console.log(array[0]);
-		for($i=0; $i<tr_length; $i++)
+		for($i=0; $i<tr_length - 1; $i++)
 		{
-			if(compareArrays(CurData, array[$i])){
-				swal('Error');
-				$("#"+id_name.id).val('');
+			rowData = [array[$i][11]];
+			if(compareArrays(CurData, rowData)){
+				swal('Marker Name Already exists','Please Check.','warning');
+				$("#"+cur_element.id).val('');
+				return true;
+			}
+		}
+	}
+}
+function validate_data(id_name, cur_element) 
+{
+	// console.log(id_name);
+	
+	if($("#mk_ver"+id_name).val() != '' && $("#sk_grp"+id_name).val() != '' && $("#width"+id_name).val() != '' && $("#mk_len"+id_name).val()){
+	var array = [];
+	var CurData=[];
+	// console.log($('#mark_len_table'+id_name+' tr'));
+	$('#mark_len_table'+id_name+' tr').has('td').each(function() {
+		var arrayItem = [];
+		$('td', $(this)).each(function(index, item) {
+			// console.log($(item).text());
+			// console.log($(item).val());
+			arrayItem[index] = $(item).text();
+		});
+		array.push(arrayItem);
+	});
+	CurData = [$("#mk_ver"+id_name).val(), $("#sk_grp"+id_name).val(), $("#width"+id_name).val(), Math.round($("#mk_len"+id_name).val())];
+		var table = $('#mark_len_table'+id_name);
+		var tr_length= table.find('tr').length;
+	
+
+		for($i=0; $i<tr_length - 1; $i++)
+		{
+			rowData = [array[$i][7], array[$i][8], array[$i][9], Math.round(array[$i][10])];
+			console.log(CurData);
+			console.log(rowData);
+			// if(compareArrays(CurData, rowData)){
+			// 	swal('Marker Name Must be Unique','','error');
+			// 	$("#"+cur_element.id).val('');
+			// 	return true;
+			// }
+			if(compareArrays(CurData, rowData)){
+				swal('Using Same combinations...','Please Check.','warning');
+				$("#"+cur_element.id).val('');
 				return true;
 			}
 		}

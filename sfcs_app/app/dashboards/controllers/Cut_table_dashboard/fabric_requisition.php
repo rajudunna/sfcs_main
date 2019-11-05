@@ -335,18 +335,18 @@ for($i=0;$i<sizeof($cat_refnce);$i++)
                                 </tbody>
 
                                 <tbody id='rejections_table'>
-								
-								<tr>
+                                                
+									<tr>
 									<td></td>
 									<?php
-									echo "<input type='hidden' name='doc_no_new' id='doc_no_new' value='$docs_no[$i]' >";
+									echo "<input type='hidden' name='doc_no_new' id='doc_no_new' value='$id' >";
 									?>
 									<td><input class="form-control alpha"  type="text" name="in_mktype" id="mk_type<?=$doc_no ?>"></td>
 									<td><input class="form-control alpha"  type="text" name= "in_mkver" id= "mk_ver<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
 									<td><input class="form-control alpha"  type="text" name= "in_skgrp" id= "sk_grp<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
 									<td><input class="form-control float"  type="text" name= "in_width" id= "width<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
 									<td><input class="form-control float"  type="text" name= "in_mklen" id= "mk_len<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_mkname" id="mk_name<?=$doc_no ?>" onchange="marker_validation(<?=$doc_no ?>, this)"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_mkname" id="mk_name<?=$doc_no ?>" onchange="marker_validation(<?=$doc_no ?>, this)"    ></td>
 									<td><input class="form-control alpha"  type="text" name= "in_ptrname" id="ptr_name<?=$doc_no ?>"></td>
 									<td><input class="form-control float"  type="text" name= "in_mkeff" id= "mk_eff<?=$doc_no ?>"></td>
 									<td><input class="form-control alpha"  type="text" name= "in_permts" id= "permts<?=$doc_no ?>"></td>
@@ -356,7 +356,7 @@ for($i=0;$i<sizeof($cat_refnce);$i++)
 									<td><input class="form-control alpha"  type="text" name= "in_rmks4" id= "rmks4<?=$doc_no ?>"></td>
 									<td></td>
 									</tr>  
-                                </tbody>
+								</tbody>
                             </table>
 								<input type='button' class='btn btn-danger pull-right' value='clear' name='clear_rejection' id='clear_rejection' onclick='clear_row(<?=$doc_no ?>)'>
 								<?php 
@@ -694,12 +694,8 @@ if(isset($_GET['sidemenu'])){
 
 <script>
 function compareArrays(arr1, arr2){
-	// console.log(arr1.toString());
-	// console.log(arr2.toString());
-	// arr1 = parseInt(arr1);
-	// arr2 = parseInt(arr2);
-	// console.log(arr1);
-	// console.log(arr2);
+	arr1 = $.trim(arr1);
+	arr2 = $.trim(arr2);
 	if(arr1.toString() == arr2.toString()){
 		return true;
 	}else{
