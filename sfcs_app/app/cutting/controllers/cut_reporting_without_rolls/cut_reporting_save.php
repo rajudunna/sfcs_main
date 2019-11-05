@@ -35,7 +35,15 @@ if($rollwisedata)
         $docketexistedresult=mysqli_query($link,$docketexisted);
         if($docketexistedresult)
         {
-            $scheduleddata="select doc_no from $bai_pro3.`order_cat_doc_mk_mix` where order_del_no='".$schedule."'";
+            $scheduleddata1="select order_del_no from $bai_pro3.`order_cat_doc_mk_mix` where doc_no=".$doc_no."";
+            $scheduleddataresult1= mysqli_query($link,$scheduleddata1);
+            while($dockts1 = mysqli_fetch_array($scheduleddataresult1))
+			{
+				$schedule_new = $dockts1['order_del_no'];
+			}
+            
+			
+			$scheduleddata="select doc_no from $bai_pro3.`order_cat_doc_mk_mix` where order_del_no='".$schedule_new."'";
             $scheduleddataresult= mysqli_query($link,$scheduleddata);
             if(mysqli_num_rows($scheduleddataresult) > 0)
             {
@@ -56,7 +64,14 @@ if($rollwisedata)
         }
         else
         {
-            $scheduleddata="select doc_no from $bai_pro3.`order_cat_doc_mk_mix` where order_del_no=".$schedule;
+            $scheduleddata1="select order_del_no from $bai_pro3.`order_cat_doc_mk_mix` where doc_no=".$doc_no."";
+            $scheduleddataresult1= mysqli_query($link,$scheduleddata1);
+			while($dockts1 = mysqli_fetch_array($scheduleddataresult1))
+			{
+				$schedule_new = $dockts1['order_del_no'];
+			}           
+			
+			$scheduleddata="select doc_no from $bai_pro3.`order_cat_doc_mk_mix` where order_del_no=".$schedule_new;
             $scheduleddataresult= mysqli_query($link,$scheduleddata);
             if(mysqli_num_rows($scheduleddataresult) > 0)
             {
@@ -107,7 +122,7 @@ if($rollwisedata)
 			
 			$sql_check="SELECT tsm.operation_code AS operation_code,tsm.previous_operation AS previous_operation,tsm.ops_dependency AS ops_dependency FROM brandix_bts.tbl_style_ops_master tsm 
 			LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE 
-			style='$style' AND color='$color' AND tor.category IN ('Send PF','Receive PF')";
+			style='$style' AND color='$color' AND tor.category IN ('Send PF','Receive PF') ORDER BY tsm.`operation_order`*1";
 			$result_check=mysqli_query($link,$sql_check) or exit('verifying the codes');
 			if(mysqli_num_rows($result_check)>0)
 			{
@@ -136,7 +151,6 @@ if($rollwisedata)
 
 			}
 		}
-        	
 			
         $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid='".$order_tid."'";
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -146,8 +160,7 @@ if($rollwisedata)
             {
                if($sql_row["title_size_".$sizes_array[$ss].""]<>'')
                {
-                     $o_s[$sizes_array[$ss]]=$sql_row["title_size_".$sizes_array[$ss].""];
-                     
+                    $o_s[$sizes_array[$ss]]=$sql_row["title_size_".$sizes_array[$ss].""];                     
                }
             }
         }		
@@ -191,9 +204,9 @@ if($rollwisedata)
                         $docketrolinfo ="INSERT INTO $bai_pro3.`docket_number_info` (doc_no,size,bundle_no,shade_bundle,shade,bundle_start,bundle_end,qty)
                         VALUES (".$doc_no.",'".$key."',".$bundle.",'".$bundle."-".$shadebundleno."','".$docket_info[$k]['shade']."',".$startno.",".$padded.",".$docket_info[$k]['totalplies'].")";
                         $result= mysqli_query($link,$docketrolinfo);
+						$id=mysqli_insert_id($link);
 						if($emb_check_in_roll==1 && $barcode_gen_emb=='yes')
-						{
-							$id=mysqli_insert_id($link);						
+						{													
 							// inserting bundels
 							for($jj=0;$jj<sizeof($ops_codes);$jj++)
 							{					
@@ -211,7 +224,6 @@ if($rollwisedata)
         }
     }
 }
-//die();
 
 $response_data = array();
 $data = $_POST;
@@ -571,9 +583,21 @@ if($target == 'schedule_clubbed')
     if($insert_result > 0){
 		if($barcode_gen_emb=='yes' && $emb_check_in_roll==0)
 		{	
+			$doc_qty_query12 = "SELECT order_tid from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
+			$doc_qty_result12 = mysqli_query($link,$doc_qty_query12);
+			while($row12 = mysqli_fetch_array($doc_qty_result12))
+			{
+				$doc_qty_query122 = "SELECT order_col_des from $bai_pro3.bai_orders_db_confirm where order_tid = '".$row12['order_tid']."'";
+				$doc_qty_result122 = mysqli_query($link,$doc_qty_query122);
+				while($row122 = mysqli_fetch_array($doc_qty_result122))
+				{
+					$cols=$row122['order_col_des'];
+				}
+			}
+			
 			$sql_check="SELECT tsm.operation_code AS operation_code,tsm.previous_operation AS previous_operation,tsm.ops_dependency AS ops_dependency FROM brandix_bts.tbl_style_ops_master tsm 
 			LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE 
-			style='$style' AND color='$color' AND tor.category IN ('Send PF','Receive PF') ORDER BY tsm.`operation_order`*1";
+			style='$style' AND color='$cols' AND tor.category IN ('Send PF','Receive PF') ORDER BY tsm.`operation_order`*1";
 			$result_check=mysqli_query($link,$sql_check) or exit('verifying the codes');
 			if(mysqli_num_rows($result_check)>0)
 			{
