@@ -511,7 +511,7 @@ if(isset($_POST['reverse']))
 					   
 						if($nextopgoodqty==0 || $nextopgoodqty=='')
 						{
-							if($remqty>$reverseqty)
+							if($remqty>=$reverseqty)
 							{
 								foreach($clubdocno as $child_doc)
 								{
@@ -527,7 +527,7 @@ if(isset($_POST['reverse']))
 									{
 										if($reverseqty>0)
 										{
-											$dockdet[$child_doc]=$quant_qry_result_row['remaining_qty'];
+											$dockdet[$child_doc]=$reaminqty;
 											// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
 											$reverseqty-=$reaminqty;
 										}
@@ -541,7 +541,7 @@ if(isset($_POST['reverse']))
 									{
 										$dockdet[$child_doc]=$reverseqty;
 										// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
-										break;
+										// break;
 									}
 									
 								}
@@ -569,7 +569,7 @@ if(isset($_POST['reverse']))
 						}
 						if($nextopgoodqty==0 || $nextopgoodqty=='')
 						{
-							if($remqty>$reverseqty)
+							if($remqty>=$reverseqty)
 							{
 								foreach($clubdocno as $child_doc)
 								{
@@ -581,11 +581,13 @@ if(isset($_POST['reverse']))
 										$bundleno=$quant_qry_result_row['id'];
 										$reaminqty=$quant_qry_result_row['recevied_qty'];
 									}
+
 									if($reverseqty>=$reaminqty)
 									{
 										if($reverseqty>0)
 										{
-											$dockdet[$child_doc]=$quant_qry_result_row['remaining_qty'];
+											// echo $reaminqty."rema qty";
+											$dockdet[$child_doc]=$reaminqty;
 											// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
 											$reverseqty-=$reaminqty;
 										}
@@ -599,11 +601,10 @@ if(isset($_POST['reverse']))
 									{
 										$dockdet[$child_doc]=$reverseqty;
 										// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
-										break;
+										// break;
 									}
 									
 								}
-								
 							}
 							else
 							{
