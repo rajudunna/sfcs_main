@@ -144,7 +144,7 @@
 
 					if ($reply == 1)
 					{
-	                    $get_last_opn_packing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY tbl_orders_ops_ref.operation_code*1 DESC LIMIT 1";
+	                    $get_last_opn_packing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY tbl_style_ops_master.operation_order*1 DESC LIMIT 1";
 	                    $result_last_opn_sewing=mysqli_query($link, $get_last_opn_packing) or exit("error while fetching pre_op_code_b4_carton_ready");
 	                    if (mysqli_num_rows($result_last_opn_sewing) > 0)
 	                    {

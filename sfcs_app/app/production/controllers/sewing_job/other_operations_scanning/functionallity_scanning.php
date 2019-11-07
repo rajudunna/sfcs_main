@@ -848,6 +848,7 @@ function updatereversal($post_data)
 
 function packingReversal($data)
 {
+	error_reporting(0);
 	include("../../../../../common/config/config_ajax.php");
 	include("../../../../../common/config/m3Updations.php");
 	$main_data = explode(",",$data);
