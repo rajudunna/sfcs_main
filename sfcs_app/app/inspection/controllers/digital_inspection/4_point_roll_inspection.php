@@ -291,15 +291,36 @@ $flag = false;
 										$invoice_qty;
 									}
 								}
+								$get_min_value = "select width_s,width_m,width_e from $bai_rm_pj1.roll_inspection_child where store_in_tid=$store_in_id";
+								$min_value_result=mysqli_query($link,$get_min_value) or exit("get_min_value Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($row_min=mysqli_fetch_array($min_value_result))
+								{
+                                   $width_s = $row_min['width_s'];
+                                   $width_m = $row_min['width_m'];
+                                   $width_e = $row_min['width_e'];
+								}
+                                $min_value = min($width_s,$width_m,$width_e);
+                                $inch_value=round($min_value/(2.54),2);
+                                // echo $min_value;
+                                // echo $inch_value."</br>";
+                                // echo $invoice_qty;
 								$back_color="";		
-								$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id=".$store_in_id."";	
+								$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id=".$store_in_id."";
 								$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								if(mysqli_num_rows($status_details_result2)>0)
 								{	
 									while($row52=mysqli_fetch_array($status_details_result2))
 									{ 
 										$point=$row52['pnt'];
-										$main_points=((($row52['pnt']/$invoice_qty)*(36/49.21))*100);
+										if($inch_value > 0)
+										{
+										  $main_points=((($row52['pnt']/$invoice_qty)*(36/$inch_value))*100);	
+										}
+										else
+										{
+											$main_points=0;
+										}	
+										
 										$main_points = round($main_points,2);
 									}
 									

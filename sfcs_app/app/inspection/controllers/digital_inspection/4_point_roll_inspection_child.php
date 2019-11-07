@@ -165,7 +165,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                     <td>Spec Width</td>
                                     <td><input type="text" id="spec_width" name="spec_width" autocomplete="off" value="<?= $spec_width ?>" <?php if ($spec_width)   ?> class="float"></td>
 
-                                    <td rowspan="2"><input type="text" id="remarks" name="remarks" style="width:250px" value="<?= $remarks ?>" <?php if ($remarks)   ?>>
+                                    <td rowspan="2"><textarea id="remarks" name="remarks" class="form-control" style="min-width: 100%;min-height: 80px" ><?php echo $remarks ?> <?php if ($remarks)?></textarea>
                                     </td>
                                 </tr>
                                 <tr>
