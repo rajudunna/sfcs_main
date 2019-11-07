@@ -15,6 +15,14 @@
                                         if(isset($_POST['date'])) { echo $_POST['date']; } else { echo date("Y-m-d "); } ?>" />  
                                     </div>
                                     <div class='col-lg-2'>
+                                        <label >Select Batch: </label>
+                                        <input type="text" class="form-control" style=" display: inline-block;" id="demo2" name="batch" value="<?php if(isset($_POST['batch'])) { echo $_POST['batch']; }?>"/>  
+                                    </div>
+                                    <div class='col-lg-2'>
+                                        <label >Select Lot No: </label>
+                                        <input type="text" class="form-control" style=" display: inline-block;" id="demo3" name="lot_no" value="<?php if(isset($_POST['lot_no'])) { echo $_POST['lot_no']; }?>"/>  
+                                    </div>
+                                    <div class='col-lg-2'>
                                         <input type="submit" class="btn btn-success" style='margin-top: 25px'  value="submit" name="submit" />
                                     </div>
                      </div>
@@ -24,8 +32,18 @@
 <?php
     if(isset($_POST['submit']))
     {   
-		$date=$_POST['date'];
-		$sql = "SELECT * FROM `$bai_rm_pj1`.`main_population_tbl` WHERE DATE(date_time)= DATE('$date')";
+		if($date=$_POST['date']);
+		{
+			$sql = "SELECT * FROM `$bai_rm_pj1`.`main_population_tbl` WHERE DATE(date_time)= DATE('$date')";
+		}
+		if($batch=$_POST['batch']);
+		{
+           $sql = "SELECT * FROM `$bai_rm_pj1`.`main_population_tbl` WHERE batch= '".$batch."'";
+		}
+		if($lot_no=$_POST['lot_no'])
+		{
+           $sql = "SELECT * FROM `$bai_rm_pj1`.`main_population_tbl` WHERE lot_no = $lot_no";
+		}
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$no_of_rows = mysqli_num_rows($sql_result);
 		if($no_of_rows == 0)

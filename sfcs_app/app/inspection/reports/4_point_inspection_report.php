@@ -22,7 +22,6 @@ $details_result21 = mysqli_query($link, $get_details21) or exit("get_details Err
 $tot_rolls_data=mysqli_num_rows($details_result21);
 
 $get_inspection_population_info = "select * from $bai_rm_pj1.`roll_inspection_child` where parent_id=".$inpsect_id."";
-//echo $get_inspection_population_info;
 $info_result = mysqli_query($link, $get_inspection_population_info) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row22 = mysqli_fetch_array($info_result)) 
 {
@@ -31,10 +30,7 @@ while ($row22 = mysqli_fetch_array($info_result))
 	$width_s[$row22['store_in_tid']] = $row22['width_s'];
 	$width_m[$row22['store_in_tid']] = $row22['width_m'];
 	$width_e[$row22['store_in_tid']] = $row22['width_e'];
-
-	// $minVal = min($row22['width_s'],$row22['width_m'],$row22['width_e']);
-
-	$actual_height[$row22['store_in_tid']] = $row22['actual_height'];
+    $actual_height[$row22['store_in_tid']] = $row22['actual_height'];
 	$actual_repeat_height[$row22['store_in_tid']] = $row22['actual_repeat_height'];
 	$skw[$row22['store_in_tid']] = $row22['skw'];
 	$bow[$row22['store_in_tid']] = $row22['bow'];
@@ -89,6 +85,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
 	$remarks = $row111['remarks'];
 }
 
+
 $get_details12 = "select * from $bai_rm_pj1.`sticker_report` where po_no=".$po_no." limit 1";
 //echo $get_details12;
 $details_result12 = mysqli_query($link, $get_details12) or exit("get_details Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -104,17 +101,30 @@ while ($row1112 = mysqli_fetch_array($details_result12))
 	$grn_no = $row1112['rec_no'];
 }
 $tot_points=0;
-$get_inspection_population_info12 = "select insp_child_id,points,sum(points) as tot from $bai_rm_pj1.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") group by insp_child_id,points";
+$get_inspection_population_info12 = "select insp_child_id,points,sum(points) as tot,count(points) as count from $bai_rm_pj1.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") group by insp_child_id,points";
 $info_result12 = mysqli_query($link, $get_inspection_population_info12) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($info_result12)>0)
 {
 	while ($row2212 = mysqli_fetch_array($info_result12)) 
 	{
+		$ins_child_count[$row2212['insp_child_id']][$row2212['points']] = $row2212['count'];
 		$ins_child[$row2212['insp_child_id']][$row2212['points']] = $row2212['tot'];
 		$tot_points=$row2212['tot']+$tot_points;
 	}
 }
 
+foreach($width_s as $key=>$val ) 
+{
+    $min[] = min($width_s[$key],$width_m[$key],$width_e[$key]);
+}
+  $minVal = $min[0];
+  foreach($min as $key => $val) 
+  {
+  	if($minVal > $val) {
+  		$minVal = $val;
+  	}
+  }
+  $inch_value=round($minVal/(2.54),2);
 	
 ?>
 
@@ -1713,17 +1723,6 @@ tags will be replaced.-->
   <td colspan="2" class="xl8919758">Width</td>
 </tr>
  <?php
-
-          foreach($width_s as $key=>$val ) {
-          	 $min[] = min($width_s[$key],$width_m[$key],$width_e[$key]);
-          }
-          $minVal = $min[0];
-          foreach($min as $key => $val) {
-          	if($minVal > $val) {
-          		$minVal = $val;
-          	}
-          }
-           $inch_value=round($minVal/(2.54),2);
           $get_shade_grp="SELECT batch_no,SUM(qty_rec) AS rec,shade_grp,COUNT(*) AS rolls,MIN(ref6) as width FROM $bai_rm_pj1.store_in LEFT JOIN $bai_rm_pj1.sticker_report ON $bai_rm_pj1.sticker_report.lot_no=$bai_rm_pj1.store_in.lot_no WHERE tid IN (".implode(",",$tot_ids).") GROUP BY batch_no,shade_grp";
 			   //echo $get_shade_grp;
 				$shade_grp_result = mysqli_query($link, $get_shade_grp) or exit("get_shade_grp Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1842,10 +1841,10 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $width_s[$tot_ids[$i]]; ?></td>
 	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $width_m[$tot_ids[$i]]; ?></td>
 	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $width_e[$tot_ids[$i]]; ?></td>
-	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php if($ins_child[$tot_ids[$i]][1]<>''){echo $ins_child[$tot_ids[$i]][1]; $tot=$tot+$ins_child[$tot_ids[$i]][1];}else{ echo "0";}?></td>
-	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php if($ins_child[$tot_ids[$i]][2]<>''){echo $ins_child[$tot_ids[$i]][2]; $tot=$tot+$ins_child[$tot_ids[$i]][2];}else{ echo "0";}?></td>
-	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php if($ins_child[$tot_ids[$i]][3]<>''){echo $ins_child[$tot_ids[$i]][3]; $tot=$tot+$ins_child[$tot_ids[$i]][3];}else{ echo "0";}?></td>
-	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php if($ins_child[$tot_ids[$i]][4]<>''){echo $ins_child[$tot_ids[$i]][4]; $tot=$tot+$ins_child[$tot_ids[$i]][4];}else{ echo "0";}?></td>
+	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php if($ins_child_count[$tot_ids[$i]][1]<>''){echo $ins_child_count[$tot_ids[$i]][1]; $tot=$tot+$ins_child[$tot_ids[$i]][1];}else{ echo "0";}?></td>
+	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php if($ins_child_count[$tot_ids[$i]][2]<>''){echo $ins_child_count[$tot_ids[$i]][2]; $tot=$tot+$ins_child[$tot_ids[$i]][2];}else{ echo "0";}?></td>
+	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php if($ins_child_count[$tot_ids[$i]][3]<>''){echo $ins_child_count[$tot_ids[$i]][3]; $tot=$tot+$ins_child[$tot_ids[$i]][3];}else{ echo "0";}?></td>
+	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php if($ins_child_count[$tot_ids[$i]][4]<>''){echo $ins_child_count[$tot_ids[$i]][4]; $tot=$tot+$ins_child[$tot_ids[$i]][4];}else{ echo "0";}?></td>
 	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $tot; $tot_qty=$tot_qty+$tot;
 	$rate=0;
 	$qty=0;
@@ -1855,7 +1854,11 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 	{
 		$qty=$invoice_qty[$tot_ids[$i]];
 	}
-	$rate = round(($tot/$qty)*(36/$inch_value)*100,2); 
+	
+	$min1 = min($width_s[$tot_ids[$i]],$width_m[$tot_ids[$i]],$width_e[$tot_ids[$i]]);
+	$inch_value1=round($min1/(2.54),2);
+
+	$rate = round(($tot/$qty)*(36/$inch_value1)*100,2); 
 	
 	
 	?></td> 
