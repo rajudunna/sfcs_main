@@ -5,7 +5,7 @@ $start_timestamp = microtime(true);
 //Added new query to filer all schedule irrespective of weekly shipment plan.
 
 
-// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 
 ini_set('mysql.connect_timeout', 3000000);
@@ -160,10 +160,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				{
 					$bac_sec=$sql_row10['bac_sec'];	
 					$output_total=$sql_row10['output'];
-					$sql11="update $table_ref set actu_sec".$bac_sec."='".$output_total."',size_code='$size_ref' where shipment_plan_id='".$ship_tid."'";
+					$sql11="update $table_ref set actu_sec".$bac_sec."='".$output_total."' where size_code='$size_ref' and shipment_plan_id='".$ship_tid."'";
 					// echo $sql11."------A<br/>";
 					$updated_data1=mysqli_query($link, $sql11) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
-					if($updated_data1){
+					if($updated_data1)
+					{
 						//  print("Updated Quantity in ".$table_ref."successfully")."\n" ;
 					}
 				}
