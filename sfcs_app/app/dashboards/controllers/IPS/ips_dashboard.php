@@ -98,7 +98,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$module=$mods[$x];
 			$blink_check=0;
 			
-			$sql11="select sum(ims_qty-ims_pro_qty) as \"wip\" from $bai_pro3.ims_log where ims_mod_no='$module' AND ims_reamrks<>'Sample'";
+			$sql11="select sum(ims_qty-ims_pro_qty) as \"wip\" from $bai_pro3.ims_log where ims_mod_no='$module' AND ims_remarks<>'Sample'";
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row11=mysqli_fetch_array($sql_result11))
 			{

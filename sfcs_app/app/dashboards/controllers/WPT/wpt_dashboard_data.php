@@ -38,7 +38,7 @@ if($section > 0){
             /*  BLOCK - 1 */
             //getting the WIP OF module in a section
             $ims_wip_query = "SELECT SUM(ims_qty-ims_pro_qty) AS WIP  from $bai_pro3.ims_log
-                              WHERE ims_mod_no='$module' and ims_status<>'DONE' AND ims_reamrks<>'Sample'";
+                              WHERE ims_mod_no='$module' and ims_status<>'DONE' AND ims_remarks<>'Sample'";
             //echo $ims_wip_query;                  
             $ims_wip_result = mysqli_query($link,$ims_wip_query) or exit($data.='Problem in ims wip');
             while($row = mysqli_fetch_array($ims_wip_result)){
