@@ -580,8 +580,7 @@ if(isset($_POST['reverse']))
 										$chdocno=$child_doc;
 										$bundleno=$quant_qry_result_row['id'];
 										$reaminqty=$quant_qry_result_row['recevied_qty'];
-									}
-
+									}							
 									if($reverseqty>=$reaminqty)
 									{
 										if($reverseqty>0)
@@ -838,7 +837,10 @@ if(isset($_POST['reverse']))
 				{
 					$updatedoc=$x;
 					$updatequant=$x_value;
-					updatedata($updatedoc,$updatequant,$sizes,$op_no,$seqno,$barcode,$clubstatus);
+					if($updatequant>0)
+					{
+						updatedata($updatedoc,$updatequant,$sizes,$op_no,$seqno,$barcode,$clubstatus);
+					}
 				}
 				
 			}
