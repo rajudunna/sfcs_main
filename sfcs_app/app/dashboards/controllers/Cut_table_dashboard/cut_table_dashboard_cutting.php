@@ -543,7 +543,7 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
                         $clr=trim(implode(',',$colors_db),50);
                         /*Getting required qty and allocated qty and catyy and Cuttable excess% and fab cad alloaction*/
                         //getting allocated qty;
-                        $sql_fabcadallow="SELECT COALESCE(SUM(allocated_qty),0) as allocated_qty FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no='$doc_no'";
+                        $sql_fabcadallow="SELECT COALESCE(SUM(allocated_qty),0) as allocated_qty FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no=$doc_no";
                         $sql_fabcadallow_result=mysqli_query($link, $sql_fabcadallow) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                         $sql_num_check=mysqli_num_rows($sql_fabcadallow_result);
                         while($sql_fabcadallow_row=mysqli_fetch_array($sql_fabcadallow_result))
