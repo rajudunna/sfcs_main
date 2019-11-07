@@ -1,3 +1,4 @@
+/*#2843 alter query */
 
 DROP INDEX IF EXISTS doc_no_op_code ON `bai_pro3`.`cps_log`;
 
