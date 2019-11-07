@@ -266,7 +266,7 @@ if($sql_result1_res==0){
             // $cat_result = mysqli_query($link,$cat_query);
             // if(mysqli_num_rows($cat_result) > 0){
                 if($docket_no > 0){
-                    $insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no,1);
+                    $insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
                     // if($insert_bundle_creation_data){
                         //Data inserted successfully
                     // }
@@ -498,7 +498,7 @@ if($sql_result1_res==0){
             mysqli_query($link,$sql_recut_v2) or exit("While inserting into the recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
             $temp=0;
             if($docket_no > 0){
-                $insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no,1);
+                $insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
             }
             $plndoc_qry = "select * from  `$bai_pro3`.`plandoc_stat_log` where doc_no=$docket_no";
             // echo $plndoc_qry.'plndoc_qry sizes<br/>';
@@ -699,12 +699,12 @@ if($sql_result1_res==0){
     }
 
     
-    // echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-    //     function Redirect() {
-    //         sweetAlert('Successfully Generated','','success');
-    //         location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
-    //         }
-    //     </script>";
+    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+        function Redirect() {
+            sweetAlert('Successfully Generated','','success');
+            location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+            }
+        </script>";
    
 
 }
@@ -720,12 +720,12 @@ else
 		$style=$sql_row['order_style_no'];
 		$schedule=$sql_row['order_del_no'];
 	}
-	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-	// 	function Redirect() {
-	// 		sweetAlert('Dockets Already Generated','','warning');
-	// 		location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
-	// 		}
-	// 	</script>";
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+		function Redirect() {
+			sweetAlert('Dockets Already Generated','','warning');
+			location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+			}
+		</script>";
 }
 ((is_null($___mysqli_res = mysqli_close($link))) ? false : $___mysqli_res);
 ?>
