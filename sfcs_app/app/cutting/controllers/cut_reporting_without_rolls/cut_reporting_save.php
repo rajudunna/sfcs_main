@@ -253,7 +253,7 @@ if($plies == 0 && $full_reporting_flag == 1){
                     remarks=CONCAT(remarks,'$','$remarks'),
                     log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader',joints_endbits=CONCAT(joints_endbits,'$','$joints_endbits')";
    // echo $insert_query;
-   $update_psl_query = "UPDATE $bai_pro3.plandoc_stat_log set $query_check act_cut_status='DONE',manual_flag=1 
+   $update_psl_query = "UPDATE $bai_pro3.plandoc_stat_log set $query_check act_cut_status='DONE' $update_manual_flag
                     where doc_no = $doc_no or org_doc_no = $doc_no";
     $insert_result = mysqli_query($link,$insert_query) or exit('Query Error 0 Cut 1');   
     $update_result = mysqli_query($link,$update_psl_query) or exit('Query Error 0 Cut 2');
