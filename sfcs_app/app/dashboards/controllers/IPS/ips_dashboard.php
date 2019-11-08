@@ -250,7 +250,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$cols_de = str_pad("Color:".trim(implode(",",$colors)),80)."\n";
 				}
 					
-				if($input_trims_status>1)
+				if($input_trims_status>2)
 				{
 					$add_css="";
 				}
