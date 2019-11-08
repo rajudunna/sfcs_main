@@ -419,6 +419,11 @@
                                     $insertion_qry = "INSERT INTO `$bai_pro3`.`replacment_allocation_log` (`bcd_id`,`input_job_no_random_ref`,`replaced_qty`,`size_title`) values ($bundle_number,'$sj',$to_add_sj,'$size_title')";
                                     // echo $insertion_qry.'</br>';
                                     mysqli_query($link, $insertion_qry) or exit("insertion_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                 
+                                    $sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,log_user,log_date,qms_size,qms_qty,qms_tran_type,remarks,input_job_no,operation_id) values (\"$style\",\"$scheule\",\"$color\",\"".date("Y-m-d")."\",\"".str_replace("a_","",$size_title)."\",".$to_add_sj.",2,\"$module".$docno."\",".$input_job_no_excess.",".$input_ops_code.")";
+                                    // echo $sql;
+                                    $sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 
                                     //getting docket_number of replacement input_job
                                     $cps_qry= "select doc_no from $bai_pro3.packing_summary_input where input_job_no_random='$sj'";
