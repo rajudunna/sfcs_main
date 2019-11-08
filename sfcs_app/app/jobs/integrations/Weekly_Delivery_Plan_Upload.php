@@ -5,7 +5,7 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 set_time_limit(6000000);
 	
-$sql="SELECT WEEK(CONCAT(SUBSTR(Ex_Factory,-8,4),\"-\",SUBSTR(Ex_Factory,-4,2),\"-\",SUBSTR(Ex_Factory,-2,2))) AS WEEK_NO,CONCAT(SUBSTR(Ex_Factory,-8,4),'-',SUBSTR(Ex_Factory,-4,2),'-',SUBSTR(Ex_Factory,-2,2)) AS Ex_Factory_New,Customer_Order_No AS A,CO_Line_Status,MPO,CPO,Buyer,Product,Buyer_Division,Style_No,Schedule_No,Colour,Size,ZFeature,SUM(Order_Qty) as qty,Ex_Factory,MODE,Destination,Packing_Method,FOB_Price_per_piece,CM_Value,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H FROM $m3_inputs.shipment_plan WHERE schedule_no > 0 GROUP BY Style_No,Schedule_No,Colour,Size,Ex_Factory,Destination";
+$sql="SELECT WEEK(CONCAT(SUBSTR(Ex_Factory,-8,4),\"-\",SUBSTR(Ex_Factory,-4,2),\"-\",SUBSTR(Ex_Factory,-2,2))) AS WEEK_NO,CONCAT(SUBSTR(Ex_Factory,-8,4),'-',SUBSTR(Ex_Factory,-4,2),'-',SUBSTR(Ex_Factory,-2,2)) AS Ex_Factory_New,Customer_Order_No AS A,CO_Line_Status,MPO,CPO,Buyer,Product,Buyer_Division,Style_No,Schedule_No,Colour,Size,ZFeature,SUM(Order_Qty) as qty,Ex_Factory,MODE,Destination,Packing_Method,FOB_Price_per_piece,CM_Value,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H FROM $m3_inputs.shipment_plan_original WHERE schedule_no > 0 GROUP BY Style_No,Schedule_No,Colour,Size,Ex_Factory,Destination";
 // echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))

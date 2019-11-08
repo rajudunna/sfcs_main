@@ -56,7 +56,7 @@ function isNumber($c)
 	mysqli_query($link,$sql3) or exit("Sql Error".mysql_error());
 
 	$sql3="insert into $bai_pro3.shipment_plan_schedule_level (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination) 
-	select TRIM(BOTH FROM Style_No), TRIM(BOTH FROM Schedule_No), TRIM(BOTH FROM Colour), Order_Qty, Ex_Factory, Customer_Order_No, Buyer_Division, Size, Packing_Method,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H,Destination from $m3_inputs.shipment_plan where TRIM(BOTH FROM Schedule_No)='".$schedule."'";
+	select TRIM(BOTH FROM Style_No), TRIM(BOTH FROM Schedule_No), TRIM(BOTH FROM Colour), Order_Qty, Ex_Factory, Customer_Order_No, Buyer_Division, Size, Packing_Method,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H,Destination from $m3_inputs.shipment_plan_original where TRIM(BOTH FROM Schedule_No)='".$schedule."'";
 	// echo $sql3."<br>";
 	$res=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($res)
