@@ -120,11 +120,12 @@ if(isset($_POST['filter']))
 		{
 			$temp=array();
 			$temp=explode("$",$sql_row['ref1']);
-			
+
 			$qms_tid=$sql_row['qms_tid'];
-		
+			$schedule=$sql_row['qms_schedule'];
+			$size_value1=ims_sizes('',$sql_row['qms_schedule'],$sql_row['qms_style'],$sql_row['qms_color'],strtoupper($sql_row['qms_size']),$link);
 			$rep_qty=0;
-			$sqlxx="select qms_qty from $bai_pro3.bai_qms_db where qms_tran_type=2 and ref1=\"TID-$qms_tid\"";
+			$sqlxx="select  sum(qms_qty) as qms_qty from $bai_pro3.bai_qms_db where qms_tran_type=2 and qms_schedule='$schedule' and qms_size='$size_value1'";
 			// echo $sqlxx;
 			$sql_resultxx=mysqli_query($link, $sqlxx) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowxx=mysqli_fetch_array($sql_resultxx))
