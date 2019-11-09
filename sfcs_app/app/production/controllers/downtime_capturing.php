@@ -19,8 +19,10 @@ if(isset($_POST) && isset($_POST['date_y'])){
     //echo $datt;die();
     $date = date('Y-m-d',strtotime($datt));
     $t = str_pad($_POST['time'],2,"0",STR_PAD_LEFT);
-    $dhour_value = $t.":30:00";
-    $time = $t.":30:00";
+    //$dhour_value = $t.":30:00";
+    //$time = $t.":30:00";
+	$time_val = $t.":".$_POST['mins'].":00";
+	$dhour_value = $time = $time_val;
     $team = $_POST['team'];
     foreach($_POST['main_data'] as $iv){
         $reason = explode('(',$iv['reasons'])[0];
@@ -165,26 +167,30 @@ $result_module = mysqli_query($link, $sql_module) or exit("Sql Error - module".m
 
                     if($actual_qty<$forcast_qty){
                         $hours = $forcast_qty - $actual_qty;
+						//echo $hours;
                         $t = str_pad(explode(":",$r['start_time'])[0],2,"0",STR_PAD_LEFT);
-                        $tmm = $t.":30:00";
+						$m = str_pad(explode(":",$r['start_time'])[1],2,"0",STR_PAD_LEFT);
+                        $tmm = $t.":".$m.":00";
                         $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND time(TIME) = time('".$tmm."') AND team = '".$_GET['module']."'";
                         $hourly_down_time_res = mysqli_query($link, $hourly_down_time_qry) or exit("Sql Error hourly down time".mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($hourly_down_time_res)==0){
-                            $btn="<button class='btn btn-danger pull right' onclick='assignhour(".explode(":",$r['start_time'])[0].",".$hours.")' data-toggle='modal' data-target='#myModal'><i class='fas fa-clock'></i> Update Down Time (".$hours." Quantity)</button>";
+                            $btn="<button class='btn btn-danger pull right' onclick='assignhour(".explode(":",$r['start_time'])[1].",".explode(":",$r['start_time'])[0].",".$hours.")' data-toggle='modal' data-target='#myModal'><i class='fas fa-clock'></i> Update Down Time (".$hours." Quantity)</button>";
                            //echo $hourly_down_time_qry."<br/>"; 
                         }else{
                             $btn="<div class='label label-info'>Down time updated.</div>";
                         }
                     }elseif($actual_qty<$plan_qty && $forcast_qty==0){
-                        $hours = $plan_qty - $actual_qty;
+						$hours = $plan_qty - $actual_qty;
+						//echo $hours;
                         $t = str_pad(explode(":",$r['start_time'])[0],2,"0",STR_PAD_LEFT);
-                        $tmm = $t.":30:00";
+						$m = str_pad(explode(":",$r['start_time'])[1],2,"0",STR_PAD_LEFT);
+                        $tmm = $t.":".$m.":00";
                         
                         $hourly_down_time_qry = "SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE(date) = '".$_GET['mdate']."' AND time(TIME) = time('".$tmm."') AND team = '".$_GET['module']."'";
                         $hourly_down_time_res = mysqli_query($link, $hourly_down_time_qry) or exit("Sql Error hourly down time".mysqli_error($GLOBALS["___mysqli_ston"]));
                         //echo $hourly_down_time_qry."<br/>" ;
                         if(mysqli_num_rows($hourly_down_time_res)==0){
-                            $btn="<button class='btn btn-danger pull right' onclick='assignhour(".explode(":",$r['start_time'])[0].",".$hours.")' data-toggle='modal' data-target='#myModal'><i class='fas fa-clock'></i> Update Down Time (".$hours." Quantity)</button>";
+                            $btn="<button class='btn btn-danger pull right' onclick='assignhour(".explode(":",$r['start_time'])[1].",".explode(":",$r['start_time'])[0].",".$hours.")' data-toggle='modal' data-target='#myModal'><i class='fas fa-clock'></i> Update Down Time (".$hours." Quantity)</button>";
                         }else{
                             $btn="<div class='label label-info'>Down time updated.</div>";
                         }
@@ -281,6 +287,7 @@ app.controller('downtimecontroller', function($scope, $http) {
     $scope.date_m = <?= isset($_GET['mdate']) ? date('m',strtotime($_GET['mdate'])) : 0  ?>;
     $scope.date_d = <?= isset($_GET['mdate']) ? date('d',strtotime($_GET['mdate'])) : 0  ?>;
     $scope.time = 0;
+	$scope.mins = 0;
     $scope.team = <?= isset($_GET['module']) ? $_GET['module'] : 0  ?>;
     $scope.act_hrs = 0;
     $scope.reason = 0;
@@ -303,7 +310,7 @@ $scope.sendData = function(){
     for (var i = 0; i < $scope.downtimeData.length; ++i)
         if ($scope.downtimeData[i] !== undefined) rv[i] = $scope.downtimeData[i];
     var params = $.param({
-        'main_data' : rv,'date_y' :$scope.date_y ,'date_m' :$scope.date_m ,'date_d' :$scope.date_d ,'time' : $scope.time,'team' :$scope.team 
+        'main_data' : rv,'date_y' :$scope.date_y ,'date_m' :$scope.date_m ,'date_d' :$scope.date_d ,'time' : $scope.time,'mins' : $scope.mins,'team' :$scope.team 
      });
     if($scope.downtimeData.length>0 && $scope.act_hrs==$scope.dtimehrs){
         $scope.saveinit = false;
@@ -387,13 +394,14 @@ angular.bootstrap($('#brand'), ['chandu']);
 }
 </style>
 <script>
-function assignhour(time,hours){
+function assignhour(minutes,time,hours){
     //alert(time+" "+hours);
     var controllerElement = document.querySelector('[ng-controller="downtimecontroller"]');
     var scope = angular.element(controllerElement).scope();
     scope.$apply(function () {
         scope.dtimehrs =  hours ;
         scope.time = time;
+		scope.mins = minutes;
     });
 }
 </script>
