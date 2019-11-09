@@ -420,7 +420,7 @@
                                     // echo $insertion_qry.'</br>';
                                     mysqli_query($link, $insertion_qry) or exit("insertion_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
                                  
-                                    $sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,log_date,qms_size,qms_qty,qms_tran_type,input_job_no,operation_id) values (\"$style\",\"$scheule\",\"$color\",\"".date("Y-m-d")."\",\"".str_replace("a_","",$size_title)."\",".$to_add_sj.",2,".$input_job_no_excess.",".$input_ops_code.")";
+                                    $sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,log_date,qms_size,qms_qty,qms_tran_type,doc_no,input_job_no,operation_id) values (\"$style\",\"$scheule\",\"$color\",\"".date("Y-m-d")."\",\"".str_replace("a_","",$size_title)."\",".$to_add_sj.",2,$doc_nos,".$input_job_no_excess.",".$input_ops_code.")";
                                     // echo $sql;
                                     $sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
