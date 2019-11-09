@@ -2333,29 +2333,48 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
  </tr>"; */
  $shade_group_total=array();
  echo "<input type=\"hidden\" id=\"rowcount\" value=\"".sizeof($values)."\" />";
-$get_details_points = "select sum(rec_qty) as qty from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id and status=3";
-	$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($row522=mysqli_fetch_array($details_result_points))
-	{ 					
-		if($row522['qty']>0)
-		{
-			$invoice_qty=$row522['qty'];
+	
+ for($i=0;$i<sizeof($values);$i++)
+ {
+ 	$check_status=3;
+	$temp=array();
+	$temp=explode("~",$values[$i]);
+	
+	$store_in_id=$temp[0];
+	$get_rec_data = "select rec_qty from $bai_rm_pj1.`inspection_population` where store_in_id=$store_in_id";
+		$details_result_points = mysqli_query($link, $get_rec_data) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row521=mysqli_fetch_array($details_result_points))
+		{ 
+			$invoice_qty=$row521['rec_qty'];
 			if($fab_uom == "meters"){
 				$invoice_qty=round($invoice_qty*1.09361,2);
 			}else
 			{
 				$invoice_qty;
 			}
-		
+		}				
+		if($invoice_qty>0)
+		{
+		    
+		    $get_min_value = "select width_s,width_m,width_e from $bai_rm_pj1.roll_inspection_child where store_in_tid=$store_in_id";
+			$min_value_result=mysqli_query($link,$get_min_value) or exit("get_min_value Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($row_min=mysqli_fetch_array($min_value_result))
+			{
+               $width_s = $row_min['width_s'];
+               $width_m = $row_min['width_m'];
+               $width_e = $row_min['width_e'];
+			}
+            $min_value = min($width_s,$width_m,$width_e);
+            $inch_value=round($min_value/(2.54),2);
 			$back_color="";		
-			$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id in (select store_in_id from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id)";	
+			$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id=$store_in_id";	
 			$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($status_details_result2)>0)
 			{	
 				while($row52=mysqli_fetch_array($status_details_result2))
 				{ 
 					$point=$row52['pnt'];
-					$main_points=((($row52['pnt']/$invoice_qty)*(36/49.21))*100);
+					$main_points=((($row52['pnt']/$invoice_qty)*(36/$inch_value))*100);
 					$main_points = round($main_points,2);
 				}
 
@@ -2382,16 +2401,7 @@ $get_details_points = "select sum(rec_qty) as qty from $bai_rm_pj1.`inspection_p
 		}else
 		{
 			$status_main="";
-		}						
-	}
-	
- for($i=0;$i<sizeof($values);$i++)
- {
- 	$check_status=3;
-	$temp=array();
-	$temp=explode("~",$values[$i]);
-	
-	
+		}
 	//for shade wise category
 	if(in_array($temp[2],$scount_temp2))
 	{

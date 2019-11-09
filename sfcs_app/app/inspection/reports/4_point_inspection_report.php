@@ -1586,7 +1586,7 @@ tags will be replaced.-->
       {
 		 $actual_height[$tot_ids[$i]];  
 	  }
-	   $act_height=implode(",",$actual_height);
+	   $act_height=min($actual_height);
 	   echo $act_height;
 	  ?>
 	  	
@@ -1634,7 +1634,7 @@ tags will be replaced.-->
       {
 		$actual_repeat_height[$tot_ids[$i]];  
 	  }
-	  $act_length=implode(",",$actual_repeat_height);
+	  $act_length=min($actual_repeat_height);
 	   echo $act_length;	 
 	  ?>
   </td>
