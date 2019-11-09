@@ -71,7 +71,7 @@ set_time_limit(6000000);
 							if($last_buyer_details['status'] && isset($last_buyer_details['response']['TX40']) && $last_buyer_details['response']['TX40']!='')
 							{
 
-								$sql_mo_check_qry="select * FROM $m3_inputs.mo_details WHERE MONUMBER ='$mo_number'";
+								$sql_mo_check_qry="select MONUMBER FROM $m3_inputs.mo_details WHERE MONUMBER ='$mo_number'";
 								$result_check_mo = $link->query($sql_mo_check_qry);
 								if(($result_check_mo->num_rows) == 0)
 								{
