@@ -139,7 +139,7 @@ if(isset($_POST['formSubmit']))
         }
     }
     $emb_check_flag = 0;
-    $category=['cutting','Send PF','Receive PF','sewing'];
+    $category=['cutting','Send PF','Receive PF'];
     $checking_qry = "SELECT category FROM $brandix_bts.tbl_orders_ops_ref WHERE operation_code = $pre_ops_code";
     // echo $checking_qry.'<br/>';
     $result_checking_qry = $link->query($checking_qry);
