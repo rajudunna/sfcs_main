@@ -1,7 +1,7 @@
 
 <?php
 error_reporting(0);
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 ?>
 
