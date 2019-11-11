@@ -5,7 +5,7 @@ $start_timestamp = microtime(true);
 //Added new query to filer all schedule irrespective of weekly shipment plan.
 
 
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 
 ini_set('mysql.connect_timeout', 3000000);
