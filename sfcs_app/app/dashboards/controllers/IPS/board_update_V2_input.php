@@ -470,7 +470,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				{
 					$operation_code=$sql_row['operation_code'];
 				}
-				$cut_input_report_query="select sum(original_qty) as cut_qty,sum(recevied_qty+rejected_qty) as report_qty,sum(recevied_qty) as recevied_qty from brandix_bts.bundle_creation_data where input_job_no_random_ref='$input_job_no_random_ref' and operation_id='".$operation_code."'";
+				$cut_input_report_query="select sum(original_qty) as cut_qty,sum(recevied_qty+rejected_qty) as report_qty,sum(recevied_qty) as recevied_qty from brandix_bts.bundle_creation_data where input_job_no_random_ref='$input_job_no_random_ref' and operation_id=".$operation_code."";
 				$cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				while($sql_row=mysqli_fetch_array($cut_input_report_result))
