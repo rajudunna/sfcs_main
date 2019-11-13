@@ -32,17 +32,20 @@
 <?php
     if(isset($_POST['submit']))
     {   
-		if($date=$_POST['date']);
+		if($_POST['date'])
 		{
-			$sql = "SELECT * FROM `$bai_rm_pj1`.`main_population_tbl` WHERE DATE(date_time)= $date";
+			$date=$_POST['date'];
+			$sql = "SELECT * FROM `$bai_rm_pj1`.`main_population_tbl` WHERE DATE(date_time)= '".$date."'";
 		}
-		if($batch=$_POST['batch']);
+		if($_POST['batch'])
 		{
+			$batch=$_POST['batch'];
            $sql = "SELECT * FROM `$bai_rm_pj1`.`main_population_tbl` WHERE batch= '".$batch."'";
 		}
-		if($lot_no=$_POST['lot_no'])
+		if($_POST['lot_no'])
 		{
-           $sql = "SELECT * FROM `$bai_rm_pj1`.`main_population_tbl` WHERE lot_no = $lot_no";
+			$lot_no=$_POST['lot_no'];
+           $sql = "SELECT * FROM `$bai_rm_pj1`.`main_population_tbl` WHERE lot_no = '".$lot_no."'";
 		}
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$no_of_rows = mysqli_num_rows($sql_result);
