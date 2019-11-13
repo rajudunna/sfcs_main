@@ -117,6 +117,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     <td>Fab joints</td>
                     <td>Fab endbits</td>
                     <td>Fab Shortages</td>
+                    <td>Reporting process</td>
                 </tr>
                 <tr>
                     <td id='d_doc_no'></td>
@@ -135,6 +136,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     <td id='d_joints'></td>
                     <td id='d_endbits'></td>
                     <td id='d_shortages'></td>
+                    <td id='d_reported'></td>
                 </tr>
                 
             </table>
@@ -906,7 +908,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         if(t.checked == true)
             full_reporting_flag = $(t).val();
         else
-            full_reporting_flag = 0;   
+            full_reporting_flag = 0;
+        // alert(full_reporting_flag);   
     }
 
     $('#cut_tab').on('click',function(){
@@ -1722,6 +1725,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#d_joints').html(data.joints);
             $('#d_endbits').html(data.endbits);
             $('#d_shortages').html(data.shortages);
+            $('#d_reported').html(data.reported);
             $('#r_doc_qty').html(data.doc_qty);
             //setting values for reporting table
             $('#r_doc_no').html(doc_no);

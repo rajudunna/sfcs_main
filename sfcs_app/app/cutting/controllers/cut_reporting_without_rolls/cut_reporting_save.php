@@ -222,7 +222,11 @@ if(mysqli_num_rows($avl_plies_result) > 0){
         exit(0); 
     }
 }
-
+$update_manual_flag ='';
+if($full_reporting_flag == 1)
+{
+    $update_manual_flag = ", manual_flag = 1";
+}
 //0 plies saving logic 
 if($plies == 0 && $full_reporting_flag == 1){
     //Force reporting 0 cut as complete reported
@@ -249,7 +253,7 @@ if($plies == 0 && $full_reporting_flag == 1){
                     remarks=CONCAT(remarks,'$','$remarks'),
                     log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader',joints_endbits=CONCAT(joints_endbits,'$','$joints_endbits')";
    // echo $insert_query;
-   $update_psl_query = "UPDATE $bai_pro3.plandoc_stat_log set $query_check act_cut_status='DONE',manual_flag=1 
+   $update_psl_query = "UPDATE $bai_pro3.plandoc_stat_log set $query_check act_cut_status='DONE' $update_manual_flag
                     where doc_no = $doc_no or org_doc_no = $doc_no";
     $insert_result = mysqli_query($link,$insert_query) or exit('Query Error 0 Cut 1');   
     $update_result = mysqli_query($link,$update_psl_query) or exit('Query Error 0 Cut 2');
@@ -292,8 +296,8 @@ if(strpos($target,'_other')==true){
     $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned,damages,shortages,remarks,log_date,bundle_loc,leader_name,joints_endbits) values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader','$joints_endbits') ON DUPLICATE KEY UPDATE date='$date',section='$cut_table',shift='$shift',fab_received=fab_received + $f_rec,fab_returned='$f_ret',damages='$damages',shortages='$shortages', remarks=CONCAT(remarks,'$','$remarks'), log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader',joints_endbits=CONCAT(joints_endbits,'$','$joints_endbits')";
 
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
-                    act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
-    $update_query2 = "UPDATE $bai_pro3.plandoc_stat_log SET act_cut_status='DONE',fabric_status=5 where org_doc_no = $doc_no ";                
+                    act_cut_status='DONE',fabric_status=5 $update_manual_flag where doc_no = $doc_no ";
+    $update_query2 = "UPDATE $bai_pro3.plandoc_stat_log SET act_cut_status='DONE',fabric_status=5 $update_manual_flag where org_doc_no = $doc_no ";                
     $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1.0');  
     $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2.0'); 
     $update_result2 = mysqli_query($link,$update_query2) or force_exit('Query Error Cut 2.1');
@@ -370,7 +374,7 @@ if($target == 'normal'){
     $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, damages,shortages,remarks,log_date,bundle_loc,leader_name,joints_endbits) values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader','$joints_endbits') ON DUPLICATE KEY UPDATE date='$date',section='$cut_table',shift='$shift',fab_received=fab_received + $f_rec,fab_returned='$f_ret',damages='$damages',shortages='$shortages', remarks=CONCAT(remarks,'$','$remarks'),log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader',joints_endbits=CONCAT(joints_endbits,'$','$joints_endbits')";
     $insert_result = mysqli_query($link,$insert_query);  
 
-    $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
+    $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),act_cut_status='DONE',fabric_status=5 $update_manual_flag where doc_no = $doc_no ";
     if($insert_result){
         $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2.2');
         if($update_result){
@@ -435,7 +439,7 @@ if($target == 'schedule_clubbed'){
                     log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader',joints_endbits=CONCAT(joints_endbits,'$','$joints_endbits')";
     
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
-                    act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
+                    act_cut_status='DONE',fabric_status=5 $update_manual_flag where doc_no = $doc_no ";
     $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1.1');   
     
     if($insert_result > 0){
@@ -635,7 +639,7 @@ if($target == 'style_clubbed'){
                     log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader',joints_endbits=CONCAT(joints_endbits,'$','$joints_endbits')";
 
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
-                    act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
+                    act_cut_status='DONE',fabric_status=5 $update_manual_flag where doc_no = $doc_no ";
     $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1.2');   
 
     if($insert_result > 0){
