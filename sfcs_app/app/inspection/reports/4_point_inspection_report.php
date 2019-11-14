@@ -1588,7 +1588,7 @@ tags will be replaced.-->
 	  }
 	   //$act_height=min($actual_height);
 	   $act_height=implode(",",$actual_height);
-	   $act_height1=substr($supplier,0,15);
+	   $act_height1=substr($act_height,0,15);
 	   echo $act_height1;
 	  ?>
 	  	
