@@ -68,8 +68,10 @@ else if($short_ship_status==2){
     echo json_encode($response_data);
     exit();
 }
+$manual_flag = 0;
 $doc_status_query  = "SELECT manual_flag,a_plies,p_plies,acutno,act_cut_status,order_tid,org_doc_no,remarks,($a_sizes_sum) as ratio 
                     from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
+                    // echo $doc_status_query;
 $doc_status_result = mysqli_query($link,$doc_status_query);
 if(mysqli_num_rows($doc_status_result)>0){
     $row = mysqli_fetch_array($doc_status_result);
@@ -77,7 +79,12 @@ if(mysqli_num_rows($doc_status_result)>0){
     $p_plies = $row['p_plies'];
     $act_cut_status = $row['act_cut_status'];
     $manual_flag = $row['manual_flag'];
-   
+    $cmnt = '';
+    if($manual_flag == '1')
+    {
+        $cmnt = 'Confirmed Manually';
+    }
+    $response_data['reported'] = $cmnt;
     $order_tid = $row['order_tid'];
     $org_doc_no = $row['org_doc_no'];
     $ratio   = $row['ratio'];
@@ -332,9 +339,6 @@ $response_data['doc_target_type'] = $target_doc_type;
 $response_data['ratio_data']      = getSizesRatio($doc_no,$child_docs);
 $response_data['rollinfo']      = $sql_num_check12;
 $response_data['rollinfo1']      = $checkstockresult;
-
-
-
 
 
 echo json_encode($response_data);
