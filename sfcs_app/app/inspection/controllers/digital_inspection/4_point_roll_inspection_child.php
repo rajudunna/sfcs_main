@@ -281,13 +281,13 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                     <td><input type="text" id="inspected_per" name="inspected_per" size="4" autocomplete="off" value="<?= $inspected_per ?>" <?php if ($inspected_per)   ?> class="float"></td>
                                     <td><input type="text" id="inspected_qty" name="inspected_qty" size="4" autocomplete="off" value="<?= $inspected_qty ?>" <?php if ($inspected_qty)   ?> class="float"></td>
                                     <td><input type="hidden" id="invoice_qty" name="invoice_qty" autocomplete="off" value="<?= $invoice_qty ?>" class="float"><?php echo $invoice_qty; ?></td><td>
-                                       <input type="text" id="s" size="4" name="s" colspan=3 autocomplete="off" value="<?= $width_s ?>" <?php if ($width_s)   ?> class="float">
+                                       <input type="text" id="s" size="4" name="s" id="s" colspan=3 autocomplete="off" value="<?= $width_s ?>" <?php if ($width_s)   ?> class="float">
                                     </td>
                                     <td>
-                                       <input type="text" id="m" size="4" name="m" colspan=3 autocomplete="off" value="<?= $width_m ?>" <?php if ($width_m)   ?> class="float">
+                                       <input type="text" id="m" size="4" name="m" id="m" colspan=3 autocomplete="off" value="<?= $width_m ?>" <?php if ($width_m)   ?> class="float">
                                     </td>
                                     <td>
-                                        <input type="text" id="e" size="4" name="e" colspan=3 autocomplete="off" value="<?= $width_e ?>" <?php if ($width_e)   ?> class="float">
+                                        <input type="text" id="e" size="4" name="e" id="e" colspan=3 autocomplete="off" value="<?= $width_e ?>" <?php if ($width_e)   ?> class="float">
                                     </td>
                                     <td><input type="text" id="actual_height" size="4" name="actual_height" autocomplete="off" value="<?= $actual_height ?>" <?php if ($actual_height)   ?> class="float"></td>
                                     <td><input type="text" id="actual_repeat_height" size="4" autocomplete="off" name="actual_repeat_height" value="<?= $actual_repeat_height ?>" <?php if ($actual_repeat_height)   ?> class="float"></td>
@@ -929,6 +929,35 @@ if (isset($_POST['save'])) {
 
 <script>
     $(document).ready(function() {
+         $("#s").keyup(function()
+         {
+           var x=$("#s").val();
+           if(x==0&x!='')
+           {
+            swal('warning','S Value should be greater than zero','warning');
+            $("#s").val('');
+           }
+         });
+
+         $("#m").keyup(function()
+         {
+           var x=$("#m").val();
+           if(x==0&x!='')
+           {
+            swal('warning','M Value should be greater than zero','warning');
+            $("#m").val('');
+           }
+         });
+
+         $("#e").keyup(function()
+         {
+           var x=$("#e").val();
+           if(x==0&x!='')
+           {
+            swal('warning','E Value should be greater than zero','warning');
+            $("#e").val('');
+           }
+         });
 
         $('#check_true').click(function() {
         if ($(this).is(':checked')) {
@@ -1203,4 +1232,32 @@ if (isset($_POST['save'])) {
         });
     });
 });
+
+$(document).ready(function(){
+ 
+
+});
+</script>
+
+<!-- <SCRIPT language=Javascript>
+
+      function isNumberKey(evt)
+      {
+         var charCode = (evt.which) ? evt.which : event.keyCode
+         if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+
+         return true;
+      }
+   </SCRIPT> -->
+<!--    <script type="text/javascript">
+        $('s').keypress(function(e){ 
+        if (this.value.length == 0 && e.which == 48 )
+        {
+          return false;
+        }
+});
+   </script> -->
+<script>
+
 </script>
