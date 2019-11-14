@@ -92,7 +92,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				echo $sql3."<br></br>";
 				$sql14_result=mysqli_query($link, $sql4) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql14_result)==0)
-
 				{
 					$sql3="insert  into $bai_pro3.cat_stat_log (order_tid2) values (\"$ssc_code2\")";
 					echo $sql3."<br></br>";
