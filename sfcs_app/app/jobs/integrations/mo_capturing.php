@@ -18,8 +18,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$GMT_Z_Feature=$sql_row['GMT_Z_Feature'];
 	$Item_Code=$sql_row['Item_Code'];
 	
-	$insert_mos="insert ignore into $bai_pro3.mo_details(date_time,mo_no,mo_quantity,style,schedule,color,size,destination,zfeature,item_code) values('".date("Y-m-d H:i:s")."','".$MO_NUMBER."','".$MO_Qty."','".$Style."','".$SCHEDULE."','".$GMT_Color."','".$GMT_Size."','".$Destination."','".$GMT_Z_Feature."','".$Item_Code."')";
-	mysqli_query($link, $insert_mos) or exit("insert_mos=$insert_mos".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+	$MO_NUMBER=$sql_row['MO_NUMBER'];
+	$insert_mos1="select mo_no,mo_quantity,style,schedule,color,size,destination,zfeature,item_code from $bai_pro3.mo_details where mo_no='$MO_NUMBER' and mo_quantity='$MO_Qty' and style='$Style' and schedule='$SCHEDULE' and color='$GMT_Color' and size='$GMT_Size' and destination='$Destination' and zfeature='$GMT_Z_Feature' and item_code='$Item_Code'";
+	$insert_mos1_result=mysqli_query($link, $insert_mos1) or exit("insert_mos1=$insert_mos".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($insert_mos1_result)==0)
+	{
+		$insert_mos="insert  into $bai_pro3.mo_details(date_time,mo_no,mo_quantity,style,schedule,color,size,destination,zfeature,item_code) values('".date("Y-m-d H:i:s")."','".$MO_NUMBER."','".$MO_Qty."','".$Style."','".$SCHEDULE."','".$GMT_Color."','".$GMT_Size."','".$Destination."','".$GMT_Z_Feature."','".$Item_Code."')";
+		mysqli_query($link, $insert_mos) or exit("insert_mos=$insert_mos".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
 }
 
 // echo "<script language=\"javascript\"> setTimeout(\"CloseWindow()\",0); function CloseWindow(){ window.open('','_self',''); window.close(); } </script>";		

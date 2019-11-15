@@ -72,9 +72,13 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php'
 		}
 		else
 		{
-			$sql="insert ignore into $bai_pro3.plan_dashboard (doc_no) values (".$items[1].")";
-			mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-			
+			$sql11=" select doc_no from $bai_pro3.plan_dashboard where doc_no=".$items[1];
+			$sql11_result=mysql_query($sql11,$link) or exit("Sql Error".mysql_error());
+			if(mysqli_num_rows($sql11_result)==0)
+			{
+				$sql="insert  into $bai_pro3.plan_dashboard (doc_no) values (".$items[1].")";
+				mysql_query($sql,$link) or exit("Sql Error".mysql_error());
+			}
 			if(mysql_insert_id($link)>0)
 			{
 				$sql="update $bai_pro3.plan_dashboard set priority=$x, module=".$items[0].", log_time=\"".date("Y-m-d H:i:s")."\" where doc_no=".$items[1];

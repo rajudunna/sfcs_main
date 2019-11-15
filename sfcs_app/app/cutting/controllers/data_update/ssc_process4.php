@@ -66,11 +66,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				{
 					$transaction_time="updated_time=\"".date("Y-m-d H:i:s")."\"";
 				}
-					
-				$sql33="insert ignore into $bai_pro3.cat_stat_log (order_tid2) values (\"$ssc_code2\")";
-				// echo $sql33."<br>";
-				mysqli_query($link, $sql33) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
+				$sql1111="select order_tid2 from $bai_pro3.cat_stat_log where order_tid2='$ssc_code2'";
+				$sql1111_result=mysqli_query($link, $sql1111) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql1111_result)==0)
+				{	
+					$sql33="insert into $bai_pro3.cat_stat_log (order_tid2) values (\"$ssc_code2\")";
+					// echo $sql33."<br>";
+					mysqli_query($link, $sql33) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
 				$item_des=str_replace('"'," ",$item_des);
 				$item_des=str_replace("'"," ",$item_des);
 				

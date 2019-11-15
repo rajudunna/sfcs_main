@@ -506,12 +506,16 @@ if($log_time==0 or $time_diff>1)
 										
 							$code=$date."-".$module."-".$shift;
 							// echo $code."<br>";
-							$sql2="insert ignore into $bai_pro.grand_rep(tid) values (\"$code\")";
-							$note.=date("His").$sql2."<br/>";
-							// echo $sql2."<br>";
-
-							mysqli_query($link, $sql2) or exit("Sql Error41$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
-						
+							$sql223="select tid from $bai_pro.grand_rep where tid='$code'";
+							$note.=date("His").$sql223."<br/>";
+							$sql223_result=mysqli_query($link, $sql223) or exit("Sql Error412$sql23".mysqli_error($GLOBALS["___mysqli_ston"]));
+							if(mysqli_num_rows($sql223_result)==0)
+							{
+								$sql2="insert  into $bai_pro.grand_rep(tid) values (\"$code\")";
+								$note.=date("His").$sql2."<br/>";
+								// echo $sql2."<br>";
+								mysqli_query($link, $sql2) or exit("Sql Error41$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
+							}
 							//New code to extract values from existing
 							
 							if(date("Y-m-d")>"2014-06-30")

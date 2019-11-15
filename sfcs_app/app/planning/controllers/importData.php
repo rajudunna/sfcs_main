@@ -55,8 +55,14 @@
                                         else
                                         {
                                             // record not there in line_forecast table (so insert)
-                                            $insert_line_forecast="INSERT IGNORE INTO $bai_pro3.line_forecast (forcast_id, module, qty, date, reason) VALUES ('$fr_id', '".$line[1]."', '".$line[7]."', '".$newDate."', 'NIL')";
+                                            $sql13="select forcast_id, module, qty, date, reason from $bai_pro3.line_forecast where forcast_id='$fr_id', and  module='".$line[1]."' and  qty= '".$line[7]."' and  date='".$newDate."' and  reason= 'NIL'";
+                                            $sql13_result=mysqli_query($link, $sql13) or exit("Error while saving to line_forecast (update fr_data)");
+                                            if(mysqli_num_rows($sql13_result)==0)
+
+                                            {
+                                            $insert_line_forecast="INSERT  INTO $bai_pro3.line_forecast (forcast_id, module, qty, date, reason) VALUES ('$fr_id', '".$line[1]."', '".$line[7]."', '".$newDate."', 'NIL')";
                                             mysqli_query($link, $insert_line_forecast) or exit("Error while saving to line_forecast (update fr_data)");
+                                            }
                                         }                                    
                                     }
                                 }
@@ -80,8 +86,13 @@
                                 else
                                 {
                                     // record not there in line_forecast table (so insert)
-                                    $insert_line_forecast="INSERT IGNORE INTO $bai_pro3.line_forecast (forcast_id, module, qty, date, reason) VALUES ('$fr_id', '".$line[1]."', '".$line[7]."', '".$newDate."', 'NIL')";
+                                    $sql134="select forcast_id, module, qty, date, reason from $bai_pro3.line_forecast where forcast_id='$fr_id', and  module='".$line[1]."' and  qty= '".$line[7]."' and  date='".$newDate."' and  reason= 'NIL'";
+                                    $sql134_result=mysqli_query($link, $sql134) or exit("Error while saving to line_forecast (update fr_data)");
+                                    if(mysqli_num_rows($sql134_result)==0)
+                                    {
+                                    $insert_line_forecast="INSERT  INTO $bai_pro3.line_forecast (forcast_id, module, qty, date, reason) VALUES ('$fr_id', '".$line[1]."', '".$line[7]."', '".$newDate."', 'NIL')";
                                     mysqli_query($link, $insert_line_forecast) or exit("Error while saving to line_forecast (insert fr_data)");
+                                    }
                                 }
                             }
                         }
