@@ -76,7 +76,7 @@ echo "  </select>
 <?php
 	 $query_get_schedule_data= "SELECT tm.operation_code,tm.operation_name FROM $brandix_bts.tbl_orders_ops_ref tm
 		WHERE tm.operation_code  
-		AND category IN ('$category')  AND display_operations='yes'
+		AND category IN ('$category')  AND display_operations='yes' AND restriction='no'
 	    GROUP BY tm.operation_code ORDER BY tm.operation_code";
 	    //echo $query_get_schedule_data;
 		$result = $link->query($query_get_schedule_data);
