@@ -306,7 +306,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
                     </div>
             <div class="table-responsive col-sm-12">
             <div class="panel panel-primary">
-              <div class="panel-heading">4 4Points Roll Information</div>
+              <div class="panel-heading">4 Point Roll Information</div>
                 <div class="panel-body">
                         <table class="table table-bordered">
                             <tbody>
@@ -511,7 +511,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                 $order_array=array("1"=>"1","2"=>"2","3"=>"3","4"=>"4");
                                 $points_array=explode(",",$row44['points']);
                                 
-                                $tr.='<tr id="output_newrow_'.$code.'"><td><input type="hidden" value="0" name="submit_value_point[]" readonly><input type="text" size="2" class="code" name="code[]" id="code_'.$code.'" value="'.$code.'" autocomplete="off"></td><td><input type="text" class="damage" value="'.$description.'" name="damage[]" size="11" readonly></td>';
+                                $tr.='<tr id="output_newrow_'.$code.'"><td><input type="hidden" value="0" name="submit_value_point[]"><input type="text" size="2" class="code" name="code[]" id="code_'.$code.'" value="'.$code.'" readonly></td><td><input type="text" class="damage" value="'.$description.'" name="damage[]" size="11" readonly></td>';
                                 foreach ($order_array as $key => $value) 
                                 {
                                    $selected_points_index=array_search($value,$selected_points_array);
@@ -722,15 +722,6 @@ if (isset($_POST['confirm'])) {
             $result_query_update = $link->query($update_status) or exit('query error in updating2221');
             
             $roll_id = $store_id;
-            // $check_val = "select insp_child_id from $bai_rm_pj1.four_points_table where insp_child_id='" . $store_id . "'";
-            // $check_val_ref = mysqli_query($link, $check_val) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
-            // $rows_id = mysqli_num_rows($check_val_ref);
-        
-            // if($rows_id>0)
-            // {
-            //     $delete_child = "Delete from  $bai_rm_pj1.four_points_table where insp_child_id='" .$store_id. "'";
-            //     $roll_inspection_update = $link->query($delete_child) or exit('query error in deleteing222---2');
-            // }
            
             $array_point_size=sizeof($_POST['submit_value_point']);
             if($array_point_size>0)
@@ -757,7 +748,7 @@ if (isset($_POST['confirm'])) {
         else 
         {
             $insert_query = "insert into $bai_rm_pj1.roll_inspection_child(inspection_status,inspected_per,inspected_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,parent_id,status,store_in_tid) values ('$status','$inspected_per','$inspected_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type','$id_parent','3','$store_id')";
-            $result_query = $link->query($insert_query) or exit('query error in inserting11111');
+            $result_query = $link->query($insert_query) or exit('query error in inserting111112');
             $roll_id = $store_id;
             
             $array_point_size=sizeof($_POST['submit_value_point']);
@@ -960,14 +951,6 @@ if (isset($_POST['save'])) {
             $update_status_insp = "update $bai_rm_pj1.roll_inspection_child SET inspection_status='" . $status . "',inspected_per='" . $inspected_per . "',inspected_qty='" . $inspected_qty . "',width_s='" . $s . "',width_m='" . $m . "',width_e='" . $e . "',actual_height='" . $actual_height . "',actual_repeat_height='" . $actual_repeat_height . "',skw='" . $skw . "',bow='" . $bow . "',ver='" . $ver . "',gsm='" . $gsm . "',comment='" . $comment . "',marker_type='" . $marker_type . "',status = '2' where store_in_tid='".$store_id."'";
             $roll_inspection_update = $link->query($update_status_insp) or exit('query error in updating222---3');
             
-            // $check_val = "select insp_child_id from $bai_rm_pj1.four_points_table where insp_child_id='" . $store_id . "'";
-            // $check_val_ref = mysqli_query($link, $check_val) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
-            // $rows_id = mysqli_num_rows($check_val_ref);
-            // if($rows_id>0)
-            // {
-            //     $delete_child = "Delete from  $bai_rm_pj1.four_points_table where insp_child_id='" .$store_id. "'";
-            //    $roll_inspection_update = $link->query($delete_child) or exit('query error in deleteing222---2');
-            // }
             $update_status = "update $bai_rm_pj1.inspection_population SET status=2 where store_in_id='" . $store_id . "'";
             $result_query_update = $link->query($update_status) or exit('query error in updating2221---21');
             $roll_id = $store_id;
@@ -997,8 +980,9 @@ if (isset($_POST['save'])) {
         }
         else 
         {
-            $insert_query = "insert into $bai_rm_pj1.roll_inspection_child(inspection_status,inspected_per,inspected_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,parent_id,status,store_in_tid) values ('$status',$inspected_per','$inspected_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type','$id_parent','2','$store_id')";
-            $result_query = $link->query($insert_query) or exit('query error in inserting11111');
+            $insert_query = "insert into $bai_rm_pj1.roll_inspection_child(inspection_status,inspected_per,inspected_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,parent_id,status,store_in_tid) values ('$status','$inspected_per','$inspected_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type','$id_parent','2','$store_id')";
+            // echo $insert_query;
+            $result_query = $link->query($insert_query) or exit('query error in inserting111113');
             $roll_id = $store_id;
             $array_point_size=sizeof($_POST['submit_value_point']);
             if($array_point_size>0)
@@ -1039,9 +1023,13 @@ if (isset($_POST['save'])) {
 
 $(document).ready(function() {
 
-     $(document).ready(function() {
-     $("#s").keyup(function()
-     {
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#rejection_code_table tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+  $("#s").keyup(function(){
        var x=$("#s").val();
        if(x==0&x!='')
        {
@@ -1050,8 +1038,7 @@ $(document).ready(function() {
        }
      });
 
-     $("#m").keyup(function()
-     {
+     $("#m").keyup(function(){
        var x=$("#m").val();
        if(x==0&x!='')
        {
@@ -1060,23 +1047,14 @@ $(document).ready(function() {
        }
      });
 
-     $("#e").keyup(function()
-     {
+     $("#e").keyup(function(){
        var x=$("#e").val();
        if(x==0&x!='')
        {
         swal('warning','E Value should be greater than zero','warning');
         $("#e").val('');
        }
-     });
-
-  $("#myInput").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $("#rejection_code_table tr").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
     });
-  });
-
     $('#check_true').click(function() {
         if ($(this).is(':checked')) 
         {
@@ -1088,21 +1066,21 @@ $(document).ready(function() {
         });
 
         $('#inspected_per').keyup(function(){
-              if ($(this).val() > 100)
+			  if ($(this).val() > 100)
               {
-                swal('warning','Enter only bellow 100%','warning');
-                $(this).val('');
-              }
-            });
+				swal('warning','Enter only below 100%','warning');
+				$(this).val('');
+			  }
+			});
 
-            $('#inspected_qty').change(function(){
-                
-                var invoice_q= $("#invoice_qty").val();
-                if (parseInt(invoice_q) < $(this).val()){
-                    swal('warning','Inspected Qty Should be less than Ticket Length','warning');
-                    $(this).val('');
-                 }
-            });
+			$('#inspected_qty').change(function(){
+				
+				var invoice_q= $("#invoice_qty").val();
+				if (parseInt(invoice_q) < $(this).val()){
+					swal('warning','Inspected Qty Should be less than Ticket Length','warning');
+					$(this).val('');
+				 }
+			});
 
 $("#rejection_code_table tbody tr").click(function() {
         if($(this).find('td:eq(1)').hasClass('selected')){
@@ -1121,7 +1099,7 @@ $("#rejection_code_table tbody tr").click(function() {
 });   
    
 function addTableRow(codeId,codeDesc){
-        let new_row='<tr id="output_newrow_'+ codeId+'"><td><input type="hidden" value="0" name="submit_value_point[]" readonly><input type="text" size="2" class="code" name="code[]" id="code_'+ codeId+'" value="'+codeId+'" autocomplete="off"></td><td><input type="text" class="damage" size="11" value="'+codeDesc+'" name="damage[]" readonly></td><td><input id="'+codeId+'_point_1" value="0" type="text" name="point_1" size="2" readonly></td><td><input type="text" name="point_2" id="'+codeId+'_point_2" size="2" value="0" readonly></td><td><input id="'+codeId+'_point_3" type="text" name="point_3" size="2" value="0" readonly></td><td><input type="text" id="'+codeId+'_point_4" name="point_4" size="2" value="0" readonly></td></tr>';
+        let new_row='<tr id="output_newrow_'+ codeId+'"><td><input type="hidden" value="0" name="submit_value_point[]" readonly><input type="text" size="2" class="code" name="code[]" id="code_'+ codeId+'" value="'+codeId+'" readonly></td><td><input type="text" class="damage" size="11" value="'+codeDesc+'" name="damage[]" readonly></td><td><input id="'+codeId+'_point_1" value="0" type="text" name="point_1" size="2" readonly></td><td><input type="text" name="point_2" id="'+codeId+'_point_2" size="2" value="0" readonly></td><td><input id="'+codeId+'_point_3" type="text" name="point_3" size="2" value="0" readonly></td><td><input type="text" id="'+codeId+'_point_4" name="point_4" size="2" value="0" readonly></td></tr>';
          if(isExist(codeId)){
              //alert('')
             }else {
@@ -1188,3 +1166,4 @@ $(function() {
     });
 });
 </script>
+
