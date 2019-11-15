@@ -157,32 +157,48 @@ if(isset($_POST['filter']))
 				echo "<td class=\"lef\">".$sql_row['qms_color']."</td>";
 				echo "<td>".$sql_row['doc_no']."</td>";
 				
-				$sql_doc_ref_club="SELECT DISTINCT doc_ref_club AS doc_ref FROM $bai_pro3.fabric_priorities WHERE DOC_ref=\"".$sql_row['doc_no']."\"";
+				// $sql_doc_ref_club="SELECT DISTINCT doc_ref_club AS doc_ref FROM $bai_pro3.fabric_priorities WHERE DOC_ref=\"".$sql_row['doc_no']."\"";
 				// echo $sql_doc_ref_club;
-				$sql_result_doc_ref_club=mysqli_query($link, $sql_doc_ref_club) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row_doc_ref_club=mysqli_fetch_array($sql_result_doc_ref_club))
-				{
-					$doc_ref_club=$sql_row_doc_ref_club["doc_ref"];
-				}
+				// $sql_result_doc_ref_club=mysqli_query($link, $sql_doc_ref_club) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while($sql_row_doc_ref_club=mysqli_fetch_array($sql_result_doc_ref_club))
+				// {
+					// $doc_ref_club=$sql_row_doc_ref_club["doc_ref"];
+				// }
 				
-				$sql_doc_ref="SELECT group_concat(doc_ref) AS doc_ref FROM $bai_pro3.fabric_priorities WHERE DOC_ref_club=\"".$doc_ref_club."\"";
+				// $sql_doc_ref="SELECT group_concat(doc_ref) AS doc_ref FROM $bai_pro3.fabric_priorities WHERE DOC_ref_club=\"".$doc_ref_club."\"";
 				// echo $sql_doc_ref;
-				$sql_result_doc_ref=mysqli_query($link, $sql_doc_ref) or exit("Sql Error42".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row_doc_ref=mysqli_fetch_array($sql_result_doc_ref))
-				{
-					$doc_ref=$sql_row_doc_ref["doc_ref"];
-				}
+				// $sql_result_doc_ref=mysqli_query($link, $sql_doc_ref) or exit("Sql Error42".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while($sql_row_doc_ref=mysqli_fetch_array($sql_result_doc_ref))
+				// {
+					// $doc_ref=$sql_row_doc_ref["doc_ref"];
+				// }
 				
-				if($doc_ref==$sql_row['doc_no'])
-				{
-					$doc_ref=$sql_row['doc_no'];
-				}
+				// if($doc_ref==$sql_row['doc_no'])
+				// {
+					// $doc_ref=$sql_row['doc_no'];
+				// }
 			
-				
+				$doc_ref=$sql_row['doc_no'];
 				$roll_ids=array();
 				$roll_ids[]=-1;
 				
-				$sql_roll_ids="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE DOC_NO in (".$doc_ref.") ORDER BY DOC_NO";
+				$sql11="SELECT * FROM bai_pro3.plandoc_stat_log where doc_no=$doc_ref";
+				$sql11_result=mysqli_query($link, $sql11) or exit("Sql Error42".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql11_result_row=mysqli_fetch_array($sql11_result))
+				{
+					$doc_num=$sql11_result_row["doc_no"];
+					$org_doc_no=$sql11_result_row["org_doc_no"];
+				}
+				if($org_doc_no>1)
+				{
+				   $sql112="SELECT org_doc_no FROM bai_pro3.plandoc_stat_log where doc_no=$doc_num";
+				   $sql112_result=mysqli_query($link, $sql112) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"]));
+				   while($sql112_result_row=mysqli_fetch_array($sql112_result))
+				   {
+					$doc_num=$sql112_result_row["org_doc_no"];
+				   }
+				}
+				$sql_roll_ids="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE DOC_NO='$doc_num' ORDER BY DOC_NO";
 				 //echo "<br>".$sql_roll_ids."<br>";
 				$sql_result_roll_ids=mysqli_query($link, $sql_roll_ids) or exit("Sql Error43".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row_roll_ids=mysqli_fetch_array($sql_result_roll_ids))
