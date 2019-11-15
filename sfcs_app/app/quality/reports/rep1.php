@@ -20,8 +20,8 @@ $view_access=user_acl("SFCS_0049",$username,1,$group_id_sfcs);
 	$sql_res_rej=mysqli_query($link, $reasons_sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row_rej=mysqli_fetch_array($sql_res_rej))
 	{
-		$reasons[$sql_row_rej['reason_code']]=$sql_row_rej['reason_desc'];
-		$categories[$sql_row_rej['reason_code']]=$sql_row_rej['reason_cat'];
+		$reasons[$sql_row_rej['sno']]=$sql_row_rej['reason_desc'];
+		$categories[$sql_row_rej['sno']]=$sql_row_rej['reason_cat'];
 	}
 	
 ?>
