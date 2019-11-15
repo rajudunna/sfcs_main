@@ -87,7 +87,7 @@ if($conn)
 			if($flag_check[$operation_id]=='2' && $reason=='')
 			{
 				// To get sewing job
-				$get_sewing_job = "select input_job_no from $bai_pro3.pac_stat_log_input_job where tid ='$bundle_no'";
+				$get_sewing_job = "select input_job_no from $bai_pro3.pac_stat_log_input_job where tid =$bundle_no";
 				$result_get_sewing_job = $link->query($get_sewing_job);
 				while($row_job = $result_get_sewing_job->fetch_assoc()) 
 				{
