@@ -367,13 +367,19 @@ if($status == '')
 			$product_schedule=$l['order_del_no'];
 			$color_code=$l['order_col_des'];
 			$style_code=$l['style_id'];
-			
-			$insertLayPlanQuery="INSERT ignore INTO $brandix_bts.tbl_cut_master(doc_num,ref_order_num,cut_num,cut_status,planned_module,issued_time,planned_plies,actual_plies,plan_date,style_id,product_schedule,cat_ref,cuttable_ref,mk_ref,col_code) VALUES 
-			('$doc_num',$order_id,$cut_num,'$cut_status','$planned_module','$issued_time',$planned_plies,$actual_plies,'$plan_date',$style_id,'$product_schedule',$cat_ref,$cuttable_ref,$mk_ref,$col_code)";
-			//echo $insertLayPlanQuery."</br>";
-			$result2=mysqli_query($link, $insertLayPlanQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$layplan_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
-			//echo $layplan_id;
+
+
+			$sql22="select * from $brandix_bts.tbl_cut_master where doc_num='$doc_num' and ref_order_num=$order_id and cut_num=$cut_num and cut_status='$cut_status' and planned_module=$planned_module and issued_time='$issued_time' and planned_plies=$planned_plies and actual_plies=$actual_plies and plan_date='$plan_date' and style_id=$style_id and product_schedule='$product_schedule' and cat_ref=$cat_ref and cuttable_ref=$cuttable_ref and mk_ref=$mk_ref and   col_code=$col_code";
+			$sql22_result2=mysqli_query($link, $sql22) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql22_result2)==0)
+			{			
+				$insertLayPlanQuery="INSERT  INTO $brandix_bts.tbl_cut_master(doc_num,ref_order_num,cut_num,cut_status,planned_module,issued_time,planned_plies,actual_plies,plan_date,style_id,product_schedule,cat_ref,cuttable_ref,mk_ref,col_code) VALUES 
+				('$doc_num',$order_id,$cut_num,'$cut_status','$planned_module','$issued_time',$planned_plies,$actual_plies,'$plan_date',$style_id,'$product_schedule',$cat_ref,$cuttable_ref,$mk_ref,$col_code)";
+				//echo $insertLayPlanQuery."</br>";
+				$result2=mysqli_query($link, $insertLayPlanQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$layplan_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+				//echo $layplan_id;
+			}
 			if($layplan_id>0)
 			{
 				//Insert data into layplan reference table (tbl_cut_size_master)

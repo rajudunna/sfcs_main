@@ -24,9 +24,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$product=str_replace('"',"'",$sql_row["Product"]);
 	$style=str_replace('"',"'",$sql_row["Style_No"]);
 
-	$sql1="INSERT IGNORE INTO $bai_pro4.shipment_plan(ssc_code_week_plan) value('".$Style_No.$Schedule_No.$Colour."-".$Size."-".$Ex_Factory."-".$Destination."')";
-	mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
+
+
+	$sql3="select * from $bai_pro4.shipment_plan where ssc_code_week_plan='".$Style_No.$Schedule_No.$Colour."-".$Size."-".$Ex_Factory."-".$Destination."'";
+	$sql3_result43=mysqli_query($link, $sql3) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($sql3_result43)==0)
+	{
+		$sql1="INSERT INTO $bai_pro4.shipment_plan(ssc_code_week_plan) value('".$Style_No.$Schedule_No.$Colour."-".$Size."-".$Ex_Factory."-".$Destination."')";
+		mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
+
 	$sql2="update $bai_pro4.shipment_plan set order_no=\"".$sql_row["A"]."\",delivery_no=\"".$sql_row["A"]."\",del_status=\"".$sql_row["CO_Line_Status"]."\",mpo=\"".$sql_row["MPO"]."\",cpo=\"".$cpo."\",buyer=\"".$buyer."\",product=\"".$product."\",buyer_division=\"".$division."\",style=\"".$style."\",schedule_no=\"".$sql_row["Schedule_No"]."\",color=\"".$color."\",size=\"".$sql_row["Size"]."\",z_feature=\"".$sql_row["ZFeature"]."\",ord_qty='".$sql_row["qty"]."',ex_factory_date='".$Ex_Factory_New."',MODE='".$sql_row["MODE"]."',destination=\"".$sql_row["Destination"]."\",packing_method=\"".$sql_row["Packing_Method"]."\",fob_price_per_piece='".$sql_row["FOB_Price_per_piece"]."',cm_value='".$sql_row["CM_Value"]."',week_code='".$sql_row["WEEK_NO"]."',order_embl_a='".$sql_row["EMB_A"]."',order_embl_b='".$sql_row["EMB_B"]."',order_embl_c='".$sql_row["EMB_C"]."',order_embl_d='".$sql_row["EMB_D"]."',order_embl_e='".$sql_row["EMB_E"]."',order_embl_f='".$sql_row["EMB_F"]."',order_embl_g='".$sql_row["EMB_G"]."',order_embl_h='".$sql_row["EMB_H"]."',ssc_code_new=\"".$Style_No.$Schedule_No.$Colour."\" where ssc_code_week_plan=\"".$Style_No.$Schedule_No.$Colour."-".$Size."-".$Ex_Factory."-".$Destination."\"";
 	mysqli_query($link, $sql2) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
