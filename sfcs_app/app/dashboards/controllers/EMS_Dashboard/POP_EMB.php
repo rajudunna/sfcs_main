@@ -277,10 +277,14 @@ if(isset($_POST['confirm_issue']))
 		
 		if($check_qty==$doc_qty)
 		{
-			$sql="insert ignore into act_cut_issue_status (doc_no, date, mod_no, remarks, shift) values ($input_doc_no, \"$input_date\", $input_module, \"$input_remarks\", \"$input_shift\")";
-			echo "query13".$sql."<br/>";
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
+			$sql1111="select doc_no from $bai_pro3.act_cut_issue_status where doc_no=$input_doc_no";
+			$sql1111_result=mysqli_query($link, $sql1111) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql1111_result)==0)
+			{
+				$sql="insert into act_cut_issue_status (doc_no, date, mod_no, remarks, shift) values ($input_doc_no, \"$input_date\", $input_module, \"$input_remarks\", \"$input_shift\")";
+				echo "query13".$sql."<br/>";
+				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			}
 			$sql="update plandoc_stat_log set act_cut_issue_status=\"DONE\" where doc_no=$input_doc_no";
 			echo "query14".$sql."<br/>";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

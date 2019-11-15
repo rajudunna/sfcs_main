@@ -131,7 +131,7 @@ if(isset($_POST['update']))
 		
 		if(strlen(trim($allocate_ref)) != null) //System will not update, if no data is not available
 		{
-			$iLastid='';
+			
 			$sql1111="select order_tid from $bai_pro3.maker_stat_log where order_tid=\"$tran_order_tid\"";
 			$sql1111_result=mysqli_query($link, $sql1111) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql1111_result)==0)
@@ -141,7 +141,7 @@ if(isset($_POST['update']))
 				
 				$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 				$marker_stat_log_id = $iLastid;
-			}
+			
 				// echo $iLastid;die();
 				$sql="update $bai_pro3.allocate_stat_log set mk_status=2 where tid=$allocate_ref";
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -295,7 +295,8 @@ if(isset($_POST['update']))
 				}
 				 
 							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {   sweetAlert('Successfully Updated','','success'); location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
-		}else{
+		}
+	}else{
 			//echo "<h2 class='label label-danger'>Marker Version is not available.</h2>";
 			echo "<script type='text/javascript'>
 					sweetAlert('Error','Marker Version is not available.','error');

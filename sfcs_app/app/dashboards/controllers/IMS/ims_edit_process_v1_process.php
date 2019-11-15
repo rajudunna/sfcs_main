@@ -16,15 +16,18 @@ if(isset($_POST['Update']))
 
     if($qty>0 and $qty==$allow_qty and $current_mod!=$mod and $mod!=0 and $mod>0) //ERROR CORRECTION 2011 
     { 
-
-    $sql33="insert ignore into $bai_pro3.ims_log_bc (tid, ims_mod_no) select tid, ims_mod_no from ims_log where tid=$tid"; 
-    mysqli_query($link, $sql33) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"])); 
-     
-    $sql33="update $bai_pro3.ims_log set ims_mod_no=$mod where tid=$tid"; 
-    mysqli_query($link, $sql33) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"])); 
-     
-    $sql33="update $bai_pro3.ims_log_backup set ims_mod_no=$mod where tid=$tid"; 
-    mysqli_query($link, $sql33) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        $sql1111="select tid from $bai_pro3.ims_log_bc where tid=$tid";
+        $sql1111_result=mysqli_query($link, $sql1111) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
+        if(mysqli_num_rows($sql1111_result)==0)
+        {
+            $sql33="insert into $bai_pro3.ims_log_bc (tid, ims_mod_no) select tid, ims_mod_no from ims_log where tid=$tid"; 
+            mysqli_query($link, $sql33) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        }    
+            $sql33="update $bai_pro3.ims_log set ims_mod_no=$mod where tid=$tid"; 
+            mysqli_query($link, $sql33) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"])); 
+            
+            $sql33="update $bai_pro3.ims_log_backup set ims_mod_no=$mod where tid=$tid"; 
+            mysqli_query($link, $sql33) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"])); 
      
     } 
     else 
