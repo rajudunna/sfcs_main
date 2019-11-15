@@ -257,9 +257,9 @@ $result_rejections = $link->query($qery_rejection_resons);
         <div class="radio-toolbar1" ng-init="action_mode='add'"style="width: 220px;padding: 10px 18px 4px 25px;
             background-color: #2e2d2c;border-radius: 20px;">
                 <input type="radio" id="radioadd" name="action_mode" ng-model='action_mode' ng-value='"add"'>
-                <label for="radioadd" style="border: 2px solid;border-color: #7979a5;background-color: #2396c5;width: 80px;" class="btn btn-info"  ng-click="barcode_submit('add');" >Add</label>
+                <label for="radioadd" style="border: 2px solid;border-color: #7979a5;background-color: #2396c5;width: 80px;" class="btn btn-info" >Add</label>
                 <input type="radio" id="radioreverse" name="action_mode" ng-model='action_mode' ng-value='"reverse"'>
-                <label for="radioreverse" style="border: 2px solid;border-color: #7979a5;background-color: #2355c5;width: 80px;padding-left: 7px !important;" class="btn btn-info"  ng-click="barcode_submit('reverse');">Reverse</label>
+                <label for="radioreverse" style="border: 2px solid;border-color: #7979a5;background-color: #2355c5;width: 80px;padding-left: 7px !important;" class="btn btn-info">Reverse</label>
 
             </div>
         </td>
@@ -287,11 +287,11 @@ $result_rejections = $link->query($qery_rejection_resons);
         <div class="radio-toolbar" ng-init="trans_mode='good'" style="width: 300px;padding: 8px 6px 8px 17px;
                 background-color: #2e2d2c;border-radius: 20px">
                 <input type="radio" id="radiogood" name="trans_mode" ng-model='trans_mode' ng-value='"good"'>
-                <label for="radiogood" style="border: 2px solid;border-color: #9d9a9a;background-color: #45b645;width:90px;">Good</label> &nbsp;
+                <label for="radiogood" style="border: 2px solid;border-color: #9d9a9a;background-color: #45b645;width:90px;"  ng-click="barcode_submit('good');">Good</label> &nbsp;
                 <input type="radio" id="radioscrap" name="trans_mode" ng-model='trans_mode' ng-value='"scrap"'>
                 <label for="radioscrap" style="border: 2px solid;border-color: #9d9a9a;background-color: #f31c06;width:90px;" class="btn btn-primary" data-toggle="modal" focus-element="autofocus" data-target=".bs-example-modal-lg">Scrap</label>
                 <input type="radio" id="radiorework" name="trans_mode" ng-model='trans_mode' ng-value='"rework"'>
-                <label for="radiorework" style="border: 2px solid;border-color: #7979a5;background-color: #714f1b;width:90px;">Rework</label>
+                <label for="radiorework" style="border: 2px solid;border-color: #7979a5;background-color: #714f1b;width:90px;"  ng-click="barcode_submit('rework');">Rework</label>
         
             </div>
         </td>
@@ -358,7 +358,7 @@ $result_rejections = $link->query($qery_rejection_resons);
 		                            </table>
 		                                 </div>
                                       <div class="panel-footer" hidden='true' id='footer'>
-                                        <input type = 'button' id="rejec_reasons" class='btn btn-primary' value='Ok..Proceed' name='Save'>
+                                        <input type = 'button' id="rejec_reasons" class='btn btn-primary' value='Ok..Proceed' name='Save' >
 								                       </div>
                                    </div>
                                 </div>

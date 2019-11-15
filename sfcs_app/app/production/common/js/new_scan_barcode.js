@@ -97,7 +97,8 @@ $('#rejec_reasons').on('click', function(){
         scope.$apply(function () {
             scope.rej_data = reject_data;
         });
-        
+        alert("Ok..Proceed..!");
+        scope.barcode_submit('scrap');
 		//$('#'+id+'rejections').prop('readonly', true);
 	}else{
 		sweetAlert('','Please Fill all details in form','error');
@@ -232,7 +233,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
     $scope.barcode_submit = function(taskId){
         var sum =0;
         $('#loading-image').show();
-            var task_action=taskId;
+            var trans_mode=taskId;
             $http({
                 method: 'POST',
                 url: $scope.url,
@@ -242,7 +243,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                     op_code: $scope.op_code,
                     trans_mode:$scope.trans_mode,
                     shift:$scope.shift,
-                    trans_action:task_action,
+                    trans_action:$scope.action_mode,
                     rej_data:$scope.rej_data,
                     scan_proceed:$scope.scan_proceed
                 }),
