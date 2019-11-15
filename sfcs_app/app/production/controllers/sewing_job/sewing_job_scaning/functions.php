@@ -49,6 +49,24 @@ function gettabledata($params)
 	if ($result_style_data->num_rows > 0) {
 		while($row = $result_style_data->fetch_assoc()) 
 		{
+			
+			//validation for operations if exists in schedule operations master #2864
+			$qry_ops_validation="SELECT * FROM $bai_pro3.schedule_oprations_master WHERE Style='$params[1]' AND ColorId='$params[0]' and OperationNumber='$row[operation_code]'";
+			$qry_ops_validation_data = $link->query($qry_ops_validation);
+			if ($qry_ops_validation_data->num_rows > 0) {
+				//echo "</br>validation working..!</br>";
+				$row['flag_valid']=1;
+				//$result_array[]=$row;
+				//$result_array[]=$valid_array;
+
+			}else{
+				//echo "</br>validation not working..!</br>";
+				$row['flag_valid']=0;
+				//$result_array[]=$row;
+				//$result_array[]=$valid_array;
+
+			}
+
 			$result_array[] = $row;
 		}
 		$json_data = json_encode($result_array);
