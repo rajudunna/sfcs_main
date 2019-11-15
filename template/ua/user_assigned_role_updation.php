@@ -94,7 +94,7 @@
                   
                     if($_POST['submit'] == 'Update'){
 
-                        $sql_select_query = "SELECT COUNT(*) as count FROM rbac_users WHERE user_id = '$user_id' and role_id='$role_id'";
+                        $sql_select_query = "SELECT COUNT(*) as count FROM rbac_users WHERE user_id = $user_id and role_id=$role_id";
                         $query_result = mysqli_query($link_ui, $sql_select_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                         $assined_role = mysqli_fetch_array($query_result);
@@ -102,7 +102,7 @@
 
                         if($unique_count == 0){
 
-                            $sql_update_query = "update rbac_users set role_id = '$role_id' where user_id='$user_id'";
+                            $sql_update_query = "update rbac_users set role_id = $role_id where user_id=$user_id";
                             $query_result = mysqli_query($link_ui, $sql_update_query) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
                             
                             if ($query_result) {

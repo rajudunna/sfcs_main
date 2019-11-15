@@ -79,7 +79,7 @@
 
                         if($unique_count == 0){
 
-                            $sql_update_query = "update rbac_users set user_name = '$user_name' where user_id='$user_id'";
+                            $sql_update_query = "update rbac_users set user_name = '$user_name' where user_id=$user_id";
                             $query_result = mysqli_query($link_ui, $sql_update_query) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
                             
                             if ($query_result) {
