@@ -192,19 +192,24 @@ function check_val()
                                                     }
                                              ?>
                                          <?php  
-                                                $openbundle_sql="SELECT bundle_number FROM `brandix_bts`.`bundle_creation_data` WHERE style='".$style."' AND schedule='".$schedule."' AND bundle_qty_status=0 and operation_id IN ($opcodes) GROUP BY bundle_number";
+                                                $openbundle_sql="SELECT bundle_number,bundle_qty_status FROM `brandix_bts`.`bundle_creation_data` WHERE style='".$style."' AND schedule='".$schedule."' and operation_id IN ($opcodes) GROUP BY bundle_number";
 												// echo $openbundle_sql;
-                                               $select_bundlenum=mysqli_query($link,$openbundle_sql) or exit($openbundle_sql."Error at something");
-                                                $operation_bundles=array();
-                                                 while($row_2 = mysqli_fetch_assoc( $select_bundlenum)){
-                                                    $operation_bundles[]=$row_2['bundle_number'];
-                                                 }
-                                                 $bundle_nums=implode(',',$operation_bundles);
-												if(sizeof($operation_bundles)>0 || sizeof($ijno1))
-                                                {
-                                                    if(sizeof($operation_bundles)>0)
+												$select_bundlenum=mysqli_query($link,$openbundle_sql) or exit($openbundle_sql."Error at something");
+                                                $operation_bundles=array();$bundle_qty_stats_bundles = array();
+                                                while($row_2 = mysqli_fetch_assoc( $select_bundlenum)){
+													if($row_2['bundle_qty_status'] == 0)
 													{
-                                                        $selectSQL = "SELECT input_job_no,original_qty,bundle_number,size_title,color,recut_in,rejected_qty,recevied_qty,operation_id FROM `brandix_bts`.`bundle_creation_data` WHERE style='".$style."' AND schedule='".$schedule."' AND operation_id IN ($opcodes) AND bundle_number IN ($bundle_nums) order by input_job_no*1,bundle_number";
+														$bundle_qty_stats_bundles[] =  $row_2['bundle_number'];
+													}									
+                                                    $operation_bundles[]=$row_2['bundle_number'];
+                                                }
+												$bundle_qty_stats_bundle_nums=implode(',',$bundle_qty_stats_bundles);
+                                                $bundle_nums=implode(',',$operation_bundles);
+												if(sizeof($operation_bundles)>0)
+                                                {
+                                                    if(sizeof($bundle_qty_stats_bundle_nums)>0)
+													{
+                                                        $selectSQL = "SELECT input_job_no,original_qty,bundle_number,size_title,color,recut_in,rejected_qty,recevied_qty,operation_id FROM `brandix_bts`.`bundle_creation_data` WHERE style='".$style."' AND schedule='".$schedule."' AND operation_id IN ($opcodes) AND bundle_number IN ($bundle_qty_stats_bundle_nums) order by input_job_no*1,bundle_number";
                                                         $selectRes=mysqli_query($link,$selectSQL) or exit($selectSQL."Error at something");
                                                         while( $row = mysqli_fetch_assoc( $selectRes ))
                                                         {                                                    
