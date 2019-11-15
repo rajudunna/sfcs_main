@@ -432,8 +432,15 @@ bai_orders_db_confirm.bts_status
 			}
 			else
 			{
-				$insertStyleCode="INSERT IGNORE INTO `$brandix_bts`.`tbl_orders_style_ref`(`product_style`) VALUES ('$style_code')";
-				$result3=mysqli_query($link, $insertStyleCode) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$insert_query_check = "select id from `$brandix_bts`.`tbl_orders_style_ref` where product_style='$style_code'";
+				$result_insert_check=mysql_query($insert_query_check,$link) or ("Sql error".mysql_error());
+
+				$check_result=mysqli_num_rows($result_insert_check);
+				if($check_result==0){
+					$insertStyleCode="INSERT INTO `$brandix_bts`.`tbl_orders_style_ref`(`product_style`) VALUES ('$style_code')";
+					$result3=mysqli_query($link, $insertStyleCode) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+				}
 				$style_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 				$default_operations="SELECT id FROM tbl_orders_ops_ref where default_operation='YES'";
 				$result4=mysqli_query($link, $default_operations) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));

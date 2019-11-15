@@ -348,21 +348,41 @@ if(isset($_POST['save']))
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error--".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(!in_array($c_block,$country_block))
 		{
-			$sql6="INSERT ignore INTO bai3_finishing.barcode_update (style, schedule, barcode, username, c_block) VALUES ('$style', '$schedule', '$barcode', '$username', '$c_block')";
-			$sql_result6=mysqli_query($link, $sql6) or exit("Sql Erro--6r".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
+			$select_check_ignore="select tid from $bai3_finishing.`barcode_update` where schedule='$schedule' and barcode='$barcode' and username = '$username' and c_block='$c_block'";
+			$result_insert_check=mysql_query($select_check_ignore,$link) or ("Sql error".mysql_error());
+
+			$check_result=mysqli_num_rows($result_insert_check);
+			if($check_result==0)
+			{
+				$sql6="INSERT INTO $bai3_finishing.`barcode_update` (style, schedule, barcode, username, c_block) VALUES ('$style', '$schedule', '$barcode', '$username', '$c_block')";
+				$sql_result6=mysqli_query($link, $sql6) or exit("Sql Erro--6r".mysqli_error($GLOBALS["___mysqli_ston"]));
+			}
 		}
 	}
 	else
 	{
-		$sql1="insert ignore into brandix_bts.tbl_carton_ref (carton_barcode,carton_tot_quantity,ref_order_num,style_code) values('".$barcode."','".$carton_tot."','".$schedule_id."','".$style_id."')";
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$select_check_sec="select id from $brandix_bts.tbl_carton_ref where carton_barcode='$barcode' and carton_tot_quantity=$carton_tot and ref_order_num='$schedule_id' and style_code = $style_id";
+		$result_insert_sec=mysql_query($select_check_sec,$link) or ("Sql error".mysql_error());
+
+		$check_result_sec=mysqli_num_rows($result_insert_sec);
+		if($check_result_sec==0)
+		{
+			$sql1="insert into $brandix_bts.tbl_carton_ref (carton_barcode,carton_tot_quantity,ref_order_num,style_code) values('".$barcode."','".$carton_tot."','".$schedule_id."','".$style_id."')";
+			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		}
 		$id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 		if(!in_array($c_block,$country_block))
 		{
-			$sql7="INSERT ignore INTO bai3_finishing.barcode_update (style, schedule, barcode, username, c_block) VALUES ('$style', '$schedule', '$barcode', '$username', '$c_block')";
-			$sql_result7=mysqli_query($link, $sql7) or exit("Sql Error--7".mysqli_error($GLOBALS["___mysqli_ston"]));
-		}	
+			$select_check_third="select tid from $bai3_finishing.barcode_update where style='$style' and schedule='$schedule' and barcode='$barcode' and username='$username' and c_block='$c_block'";
+			$result_insert_third=mysql_query($select_check_third,$link) or ("Sql error".mysql_error());
+
+			$check_result_third=mysqli_num_rows($result_insert_third);
+			if($check_result_third==0)
+			{
+				$sql7="INSERT INTO $bai3_finishing.barcode_update (style, schedule, barcode, username, c_block) VALUES ('$style', '$schedule', '$barcode', '$username', '$c_block')";
+				$sql_result7=mysqli_query($link, $sql7) or exit("Sql Error--7".mysqli_error($GLOBALS["___mysqli_ston"]));
+			}	
+		}
 	}
 	//echo sizeof($color);
 	for($i=0;$i<sizeof($color);$i++)
@@ -388,14 +408,28 @@ if(isset($_POST['save']))
 			}
 			else
 			{
-				$sql4="insert ignore into brandix_bts.tbl_carton_size_ref (parent_id,color,ref_size_name,quantity) values('".$id."','".$color[$i]."','".$size[$i]."','".$ratio[$i]."')";
-				//echo $sql4."<br>";
-				$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error--4".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$select_check_three="select id from $brandix_bts.tbl_carton_size_ref where parent_id=$id and color='$color[$i]' and ref_size_name='$size[$i]' and quantity='$ratio[$i]'";
+				$result_insert_three=mysql_query($select_check_three,$link) or ("Sql error".mysql_error());
+		
+				$check_result_three=mysqli_num_rows($result_insert_three);
+				if($check_result_three==0)
+				{
+					$sql4="insert into $brandix_bts.tbl_carton_size_ref (parent_id,color,ref_size_name,quantity) values('".$id."','".$color[$i]."','".$size[$i]."','".$ratio[$i]."')";
+					//echo $sql4."<br>";
+					$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error--4".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
 				if(!in_array($c_block,$country_block))
 				{
-					$sql5="INSERT ignore INTO `bai3_finishing`.`input_update` (`style`, `schedule`, `size`, `color`, `ims_qty`, `barcode`, `username`, `c_block`) VALUES ('".$style."', '$schedule', '".$size_tit[$i]."', '".$color[$i]."', '$ratio[$i]', '$barcode', '$username', '$c_block')";
-					//echo $sql5."<br>";
-					$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error--5".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$select_check_four="select tid from $bai3_finishing.`input_update` where schedule='$schedule' and size='$size_tit[$i]' and color='$color[$i]' and barcode='$barcode'";
+					$result_insert_four=mysql_query($select_check_four,$link) or ("Sql error".mysql_error());
+			
+					$check_result_four=mysqli_num_rows($result_insert_four);
+					if($check_result_four==0)
+					{
+						$sql5="INSERT INTO $bai3_finishing.`input_update` (`style`, `schedule`, `size`, `color`, `ims_qty`, `barcode`, `username`, `c_block`) VALUES ('".$style."', '$schedule', '".$size_tit[$i]."', '".$color[$i]."', '$ratio[$i]', '$barcode', '$username', '$c_block')";
+						//echo $sql5."<br>";
+						$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error--5".mysqli_error($GLOBALS["___mysqli_ston"]));
+					}
 				}
 			}
 		}
