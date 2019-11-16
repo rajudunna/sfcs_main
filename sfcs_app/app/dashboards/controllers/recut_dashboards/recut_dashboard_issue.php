@@ -88,7 +88,10 @@ if(isset($_POST['formIssue']))
     $doc_no_ref = $_POST['doc_no_ref'];
     $job_no = $_POST['job_no'];
     $size = $_POST['size'];
-    
+    // var_dump($bcd_id);
+    // var_dump($job_no);
+    // var_dump($size);
+    // die();
     $get_recut_status="select max(status) as recut_status from $bai_pro3.recut_v2_child_issue_track where recut_id=".$doc_no_ref."";
     $get_recut_result=mysqli_query($link, $get_recut_status)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($recut_row = mysqli_fetch_array($get_recut_result))
@@ -104,6 +107,7 @@ if(isset($_POST['formIssue']))
     }
     //To check whether rejection is swing category
     $category=['sewing'];
+$category=['sewing'];
     $get_operation_id = "SELECT operation_id FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN (".implode(',',$bcd_id).") ORDER BY barcode_sequence";
     $get_operation_id_res = $link->query($get_operation_id);
     while($row_ops = $get_operation_id_res->fetch_assoc()) 
@@ -128,7 +132,7 @@ if(isset($_POST['formIssue']))
             {
                 //retreaving remaining_qty from recut_v2_child
                 $act_id = $bcd_id[$key];
-                $recut_allowing_qty = $issueval[$key];
+                $recut_allowing_qty = $issueval[$category_act][$key];
                 $retreaving_bcd_data = "SELECT * FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
                 $retreaving_bcd_data_res = $link->query($retreaving_bcd_data);
                 while($row_bcd = $retreaving_bcd_data_res->fetch_assoc()) 
@@ -231,7 +235,6 @@ if(isset($_POST['formIssue']))
 function issued_to_module($bcd_id,$qty,$ref)
 {
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    $op_code = '15';
     $bcd_colum_ref = "replace_in";
     if($ref == 2)
     {
@@ -239,7 +242,7 @@ function issued_to_module($bcd_id,$qty,$ref)
     }
     $op_code = '15';
     $bcd_qry = "select style,mapped_color,docket_number,assigned_module,input_job_no_random_ref,operation_id,bundle_number,size_id from $brandix_bts.bundle_creation_data where id = $bcd_id";
-   //  echo $bcd_qry;
+    // echo $bcd_qry;
     $result_bcd_qry = $link->query($bcd_qry);
     while($row = $result_bcd_qry->fetch_assoc()) 
     {
@@ -253,11 +256,12 @@ function issued_to_module($bcd_id,$qty,$ref)
     }
     //updating cps log and bts
     $update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$qty where doc_no = $docket_no and operation_code = 15 and size_code ='$size_id'";
+    // echo $update_qry_cps.'</br>';
     mysqli_query($link, $update_qry_cps) or exit("update_qry_cps".mysqli_error($GLOBALS["___mysqli_ston"]));
     $update_qry_bcd = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and size_id = '$size_id' and operation_id = 15";
      mysqli_query($link, $update_qry_bcd) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
      //validate parellel operations for updating recut_in
-     $qry_prellel_ops="select COUNT(*) as cnt from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and ops_dependency>0 and operation_code=15";
+     $qry_prellel_ops="select COUNT(*) as cnt from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and ops_dependency>0";
      $result_qry_prellel_ops = $link->query($qry_prellel_ops);
     while($row_ops = $result_qry_prellel_ops->fetch_assoc()) 
     {
@@ -270,9 +274,8 @@ function issued_to_module($bcd_id,$qty,$ref)
         $ops_master_qry = "select operation_code from $brandix_bts.tbl_orders_ops_ref where category in ('Send PF')";
     }else{
 
-        //retreaving operations from operatoin master
+        //retreaving emblishment operations from operatoin master
         $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and operation_code=$op_code";
-        //echo  $ops_seq_check;
         $result_ops_seq_check = $link->query($ops_seq_check);
         if($result_ops_seq_check->num_rows > 0)
         {
@@ -285,7 +288,6 @@ function issued_to_module($bcd_id,$qty,$ref)
         }
         $ops_master_qry = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and ops_sequence = '$ops_seq'  AND CAST(operation_order AS CHAR) > '$ops_order' and operation_code not in (10,200) ORDER BY operation_order ASC LIMIT 1"; 
     }
-   // echo $ops_master_qry;
     $result_ops_master_qry = $link->query($ops_master_qry);
     while($row_ops = $result_ops_master_qry->fetch_assoc()) 
     {
@@ -293,7 +295,6 @@ function issued_to_module($bcd_id,$qty,$ref)
     }
     $qry_ops_mapping = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and  operation_code in (".implode(',',$emb_ops).")";
     // echo $qry_ops_mapping;
-    // die();
     $result_qry_ops_mapping = $link->query($qry_ops_mapping);
     if(mysqli_num_rows($result_qry_ops_mapping) > 0)
     {
@@ -303,6 +304,7 @@ function issued_to_module($bcd_id,$qty,$ref)
 
             //updating bcd for emblishment in operation 
             $update_bcd_for_emb_qry = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref + $qty where docket_number = $docket_no and operation_id = $emb_input_ops_code and size_id = '$size_id'";
+            // echo $update_bcd_for_emb_qry;
             mysqli_query($link, $update_bcd_for_emb_qry) or exit("update_bcd_for_emb_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
             //updating embellishment_plan_dashboard
@@ -499,7 +501,7 @@ echo $drp_down;
                                                 <tbody id='rejections_table_body<?=$id?>'>
                                                 <?php 
                                                     
-                                                    $doc_no = $id;									
+                                                    $doc_no = $id;                                  
                                                     $sql11x132="select allocate_ref,mk_ref_id,mk_ref from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
                                                     $sql_result11x112=mysqli_query($link, $sql11x132) or die("Error16 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
                                                     $rows=0;
@@ -529,7 +531,7 @@ echo $drp_down;
                                                                 <td style='display:none;'  id='mk_ref".$doc_no."'>".$row111x2['mk_ref']."</td>
                                                                 <td><input type='radio' name='selected_len$doc_no' value='".$sql_marker_details_res[0]."' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]' CHECKED></td>
                                                                 
-                                                                <td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[perimeters]</td><td>$sql_marker_details_res[remarks1]</td><td>$sql_marker_details_res[remarks2]</td><td>$sql_marker_details_res[remarks3]</td><td>$sql_marker_details_res[remarks4]</td><td style='display:none;'>1</td>	
+                                                                <td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[perimeters]</td><td>$sql_marker_details_res[remarks1]</td><td>$sql_marker_details_res[remarks2]</td><td>$sql_marker_details_res[remarks3]</td><td>$sql_marker_details_res[remarks4]</td><td style='display:none;'>1</td> 
                                                                 <td>Can't Delete</td>
                                                                 </tr>";
                                                             }
@@ -547,8 +549,8 @@ echo $drp_down;
                                                                 <td><input type='radio' name='selected_len$doc_no' value='".$sql_marker_details_res[0]."' onchange = valid_button($sql_marker_details_res[id]) id='check$sql_marker_details_res[0]'></td>
                                                                 
                                                                 <td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[perimeters]</td><td>$sql_marker_details_res[remarks1]</td><td>$sql_marker_details_res[remarks2]</td><td>$sql_marker_details_res[remarks3]</td><td>$sql_marker_details_res[remarks4]</td><td style='display:none;'>1</td><td>Can't Delete</td></tr>";
-                                                            }												
-                                                        }										
+                                                            }                                               
+                                                        }                                       
                                                     }
                                                     ?>
                                                 </tbody>
@@ -614,7 +616,7 @@ echo $drp_down;
                         $sql11x132112="select allocate_ref,mk_ref_id from $bai_pro3.plandoc_stat_log where doc_no=".$id.";";
                         $sql_result11x1121=mysqli_query($link, $sql11x132112) or die("Error14 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($row111x21=mysqli_fetch_array($sql_result11x1121)) 
-                        {				//$rows=0;
+                        {               //$rows=0;
                             if($row111x21['mk_ref_id']>0)
                             {
                                 $button_html = "<button type='button' style='border-color: #f4d142;border-width: 4px;' class='btn btn-danger' onclick='test(".$id.")'>Markers Rejected</button>";
@@ -660,41 +662,41 @@ echo $drp_down;
                     {
                         if(strtolower($row['category'])=='body' or strtolower($row['front']))
                         {
-                            echo "<tr><td>$s_no</td>";
-                            echo "<td>".$row['doc_no']."</td>";
-                            echo "<td>".$row['style']."</td>";
-                            echo "<td>".$row['schedule']."</td>";
-                            echo "<td>".$row['color']."</td>";
-                            echo "<td>".$row['category']."</td>";
-                            echo "<td>".$row['rejected_qty']."</td>";
-                            echo "<td>".$row['recut_qty']."</td>";
-                            echo "<td>".$row['recut_reported_qty']."</td>";
-                            echo "<td>".$row['issued_qty']."</td>";
-                            echo "<td>".$rem_qty."</td>";
-                            echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
-                            echo "<td style='display:none'>$html_hiding</td>"; 
-                            echo "<td>$button_html</td>"; 
-                            echo "</tr>";
+                            $main_table.= "<tr><td>$s_no</td>";
+                            $main_table.= "<td>".$row['doc_no']."</td>";
+                            $main_table.= "<td>".$row['style']."</td>";
+                            $main_table.= "<td>".$row['schedule']."</td>";
+                            $main_table.= "<td>".$row['color']."</td>";
+                            $main_table.= "<td>".$row['category']."</td>";
+                            $main_table.= "<td>".$row['rejected_qty']."</td>";
+                            $main_table.= "<td>".$row['recut_qty']."</td>";
+                            $main_table.= "<td>".$row['recut_reported_qty']."</td>";
+                            $main_table.= "<td>".$row['issued_qty']."</td>";
+                            $main_table.= "<td>".$rem_qty."</td>";
+                            $main_table.= "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
+                            $main_table.= "<td style='display:none'>$html_hiding</td>"; 
+                            $main_table.= "<td>$button_html</td>"; 
+                            $main_table.= "</tr>";
                             $s_no++;
                         }
                     }
                     else
                     {
-                        echo "<tr><td>$s_no</td>";
-                        echo "<td>".$row['doc_no']."</td>";
-                        echo "<td>".$row['style']."</td>";
-                        echo "<td>".$row['schedule']."</td>";
-                        echo "<td>".$row['color']."</td>";
-                        echo "<td>".$row['category']."</td>";
-                        echo "<td>".$row['rejected_qty']."</td>";
-                        echo "<td>".$row['recut_qty']."</td>";
-                        echo "<td>".$row['recut_reported_qty']."</td>";
-                        echo "<td>".$row['issued_qty']."</td>";
-                        echo "<td>".$rem_qty."</td>";
-                        echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
-                        echo "<td style='display:none'>$html_hiding</td>"; 
-                        echo "<td>$button_html</td>"; 
-                        echo "</tr>";
+                        $main_table.= "<tr><td>$s_no</td>";
+                        $main_table.= "<td>".$row['doc_no']."</td>";
+                        $main_table.= "<td>".$row['style']."</td>";
+                        $main_table.= "<td>".$row['schedule']."</td>";
+                        $main_table.= "<td>".$row['color']."</td>";
+                        $main_table.= "<td>".$row['category']."</td>";
+                        $main_table.= "<td>".$row['rejected_qty']."</td>";
+                        $main_table.= "<td>".$row['recut_qty']."</td>";
+                        $main_table.= "<td>".$row['recut_reported_qty']."</td>";
+                        $main_table.= "<td>".$row['issued_qty']."</td>";
+                        $main_table.= "<td>".$rem_qty."</td>";
+                        $main_table.= "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
+                        $main_table.= "<td style='display:none'>$html_hiding</td>"; 
+                        $main_table.= "<td>$button_html</td>"; 
+                        $main_table.= "</tr>";
                         $s_no++;
                     }
                 }
@@ -764,254 +766,254 @@ function editmarkers(id)
 }
 
 function test(doc_no){
-	
-	$("#rejections_modal"+doc_no).modal('toggle');
-	
+    
+    $("#rejections_modal"+doc_no).modal('toggle');
+    
 }
 function valid_button(row_num)
 {
-	$('.checked_value').text('no');
-	$('#checked'+row_num).text('yes');
+    $('.checked_value').text('no');
+    $('#checked'+row_num).text('yes');
 }
 function compareArrays(arr1, arr2){
 
-	arr1 = $.trim(arr1);
-	arr2 = $.trim(arr2);
+    arr1 = $.trim(arr1);
+    arr2 = $.trim(arr2);
 
-	if(arr1.toString() == arr2.toString()){
-		return true;
-	}else{
-		return false;
-	}
+    if(arr1.toString() == arr2.toString()){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 function marker_validation(id_name, cur_element) 
 {
-	if($("#mk_name"+id_name).val() != ''){
-	var array = [];
-	var CurData=[];
-	$('#mark_len_table'+id_name+' tr').has('td').each(function() {
-		var arrayItem = [];
-		$('td', $(this)).each(function(index, item) {
-			arrayItem[index] = $(item).text();
-		});
-		array.push(arrayItem);
-	});
-	CurData = [$("#mk_name"+id_name).val()];
-		var table = $('#mark_len_table'+id_name);
-		var tr_length= table.find('tr').length;
-		for($i=0; $i<tr_length - 1; $i++)
-		{
-			rowData = [array[$i][11]];
+    if($("#mk_name"+id_name).val() != ''){
+    var array = [];
+    var CurData=[];
+    $('#mark_len_table'+id_name+' tr').has('td').each(function() {
+        var arrayItem = [];
+        $('td', $(this)).each(function(index, item) {
+            arrayItem[index] = $(item).text();
+        });
+        array.push(arrayItem);
+    });
+    CurData = [$("#mk_name"+id_name).val()];
+        var table = $('#mark_len_table'+id_name);
+        var tr_length= table.find('tr').length;
+        for($i=0; $i<tr_length - 1; $i++)
+        {
+            rowData = [array[$i][11]];
             
-			if(compareArrays(CurData, rowData)){
-				swal('Marker Name Already exists','Please Check.','warning');
-				$("#"+cur_element.id).val('');
-				return true;
-			}
-		}
-	}
+            if(compareArrays(CurData, rowData)){
+                swal('Marker Name Already exists','Please Check.','warning');
+                $("#"+cur_element.id).val('');
+                return true;
+            }
+        }
+    }
 }
 
 function validate_data(id_name, cur_element) 
 {
-	// console.log(id_name);
-	
-	if($("#mk_ver"+id_name).val() != '' && $("#sk_grp"+id_name).val() != '' && $("#width"+id_name).val() != '' && $("#mk_len"+id_name).val()){
-	var array = [];
-	var CurData=[];
-	// console.log($('#mark_len_table'+id_name+' tr'));
-	$('#mark_len_table'+id_name+' tr').has('td').each(function() {
-		var arrayItem = [];
-		$('td', $(this)).each(function(index, item) {
-			// console.log($(item).text());
-			// console.log($(item).val());
-			arrayItem[index] = $(item).text();
-		});
-		array.push(arrayItem);
-	});
-	CurData = [$("#mk_ver"+id_name).val(), $("#sk_grp"+id_name).val(), $("#width"+id_name).val(), Math.round($("#mk_len"+id_name).val())];
-		var table = $('#mark_len_table'+id_name);
-		var tr_length= table.find('tr').length;
-	
+    // console.log(id_name);
+    
+    if($("#mk_ver"+id_name).val() != '' && $("#sk_grp"+id_name).val() != '' && $("#width"+id_name).val() != '' && $("#mk_len"+id_name).val()){
+    var array = [];
+    var CurData=[];
+    // console.log($('#mark_len_table'+id_name+' tr'));
+    $('#mark_len_table'+id_name+' tr').has('td').each(function() {
+        var arrayItem = [];
+        $('td', $(this)).each(function(index, item) {
+            // console.log($(item).text());
+            // console.log($(item).val());
+            arrayItem[index] = $(item).text();
+        });
+        array.push(arrayItem);
+    });
+    CurData = [$("#mk_ver"+id_name).val(), $("#sk_grp"+id_name).val(), $("#width"+id_name).val(), Math.round($("#mk_len"+id_name).val())];
+        var table = $('#mark_len_table'+id_name);
+        var tr_length= table.find('tr').length;
+    
 
-		for($i=0; $i<tr_length - 1; $i++)
-		{
-			rowData = [array[$i][7], array[$i][8], array[$i][9], Math.round(array[$i][10])];
-			console.log(CurData);
-			console.log(rowData);
-			// if(compareArrays(CurData, rowData)){
-			// 	swal('Marker Name Must be Unique','','error');
-			// 	$("#"+cur_element.id).val('');
-			// 	return true;
-			// }
-			if(compareArrays(CurData, rowData)){
-				swal('Using Same combinations...','Please Check.','warning');
-				$("#"+cur_element.id).val('');
-				return true;
-			}
-		}
+        for($i=0; $i<tr_length - 1; $i++)
+        {
+            rowData = [array[$i][7], array[$i][8], array[$i][9], Math.round(array[$i][10])];
+            console.log(CurData);
+            console.log(rowData);
+            // if(compareArrays(CurData, rowData)){
+            //  swal('Marker Name Must be Unique','','error');
+            //  $("#"+cur_element.id).val('');
+            //  return true;
+            // }
+            if(compareArrays(CurData, rowData)){
+                swal('Using Same combinations...','Please Check.','warning');
+                $("#"+cur_element.id).val('');
+                return true;
+            }
+        }
 
-	}
-	// else {
-	// 	sweetAlert('Marker Type/Marker Version/Shrinkage Group/Width/Marker Length are mandatory','','warning');
-	// }
+    }
+    // else {
+    //  sweetAlert('Marker Type/Marker Version/Shrinkage Group/Width/Marker Length are mandatory','','warning');
+    // }
 }
 function add_Newmklen(doc_no)
-{	
-	var mk_type = $('#mk_type'+doc_no).val();
-	var mk_ver = $('#mk_ver'+doc_no).val();
-	var sk_grp = $('#sk_grp'+doc_no).val();
-	var width = $('#width'+doc_no).val();
-	var mk_len = $('#mk_len'+doc_no).val();
-	var mk_name = $('#mk_name'+doc_no).val();
-	var ptr_name = $('#ptr_name'+doc_no).val();
-	var mk_eff = $('#mk_eff'+doc_no).val();
-	var permts = $('#permts'+doc_no).val();
-	var rmks1 = $('#rmks1'+doc_no).val();
-	var rmks2 = $('#rmks2'+doc_no).val();
-	var rmks3 = $('#rmks3'+doc_no).val();
-	var rmks4 = $('#rmks4'+doc_no).val();
-	var values_rows1 = $('#first_val').val();
-	var all_refs = $('#all_ref'+doc_no).val();
-	var doc_nos = doc_no;
-	var doc_no_new = doc_no;
-	// alert(doc_nos);
-	// $('#doc_no_new').val(doc_nos);
-	var mk_refs = $('#mk_ref'+doc_no).val();
-	var rows_valu = parseInt($('#rows_val').val())+1;
-	//alert(values_rows1)
-	//$('#rows_val').val(rows_valu);
-	$('.checked_value').text('no');
-	//$('#checked'+values_rows1).text('no');
-	
-	
+{   
+    var mk_type = $('#mk_type'+doc_no).val();
+    var mk_ver = $('#mk_ver'+doc_no).val();
+    var sk_grp = $('#sk_grp'+doc_no).val();
+    var width = $('#width'+doc_no).val();
+    var mk_len = $('#mk_len'+doc_no).val();
+    var mk_name = $('#mk_name'+doc_no).val();
+    var ptr_name = $('#ptr_name'+doc_no).val();
+    var mk_eff = $('#mk_eff'+doc_no).val();
+    var permts = $('#permts'+doc_no).val();
+    var rmks1 = $('#rmks1'+doc_no).val();
+    var rmks2 = $('#rmks2'+doc_no).val();
+    var rmks3 = $('#rmks3'+doc_no).val();
+    var rmks4 = $('#rmks4'+doc_no).val();
+    var values_rows1 = $('#first_val').val();
+    var all_refs = $('#all_ref'+doc_no).val();
+    var doc_nos = doc_no;
+    var doc_no_new = doc_no;
+    // alert(doc_nos);
+    // $('#doc_no_new').val(doc_nos);
+    var mk_refs = $('#mk_ref'+doc_no).val();
+    var rows_valu = parseInt($('#rows_val').val())+1;
+    //alert(values_rows1)
+    //$('#rows_val').val(rows_valu);
+    $('.checked_value').text('no');
+    //$('#checked'+values_rows1).text('no');
+    
+    
 
-	if(mk_ver == ''){
-		sweetAlert('Please enter valid Marker Version','','warning');
-		return false;
-	}
-	// if(mk_eff == ''){
-	// 	sweetAlert('Please enter valid Marker Eff','','warning');
-	// 	return false;
-	// }
-	if(mk_len <=0)
-	{
-		sweetAlert('Please enter valid Marker Length','','warning');
-		return false;
-	}
-	if(width <=0){
-		sweetAlert('Please enter valid Marker Width','','warning');
-		return false;
-	}
-	if(mk_len == ''|| mk_len <=0){
-		sweetAlert('Please enter valid Marker Length','','warning');
-		return false;
-	}
-	if(mk_eff == '')
-	{
-		mk_eff = 0;
-	}
-	if(mk_eff>100){
-		sweetAlert('Please enter valid Marker Efficiency','','warning');
-		return false;
-	}
-	if(mk_ver <=0 || mk_ver ==''){
-		sweetAlert('Please enter valid Marker Version','','warning');
-		return false;
-	}
-	var table_body = $("#rejections_table_body"+doc_no);
-	var new_row = "<tr id='unique_d_"+doc_no+"_r_"+rows_valu+"'><td style='display:none;' class='checked_value' id='checked"+values_rows1+"'>yes</td><td style='display:none;' id='id'>"+rows_valu+"</td><td style='display:none;' id='doc_no' >"+doc_no_new+"</td><td style='display:none;'  id='all_ref'>"+all_refs+"</td><td style='display:none;'  id='mk_ref'>"+mk_refs+"</td><td><input type='radio' name='selected_len"+doc_no+"' value="+rows_valu+" id='check"+rows_valu+"' onchange = valid_button("+rows_valu+") CHECKED></td><td>"+mk_type+"</td><td>"+mk_ver+"</td><td>"+sk_grp+"</td><td>"+width+"</td><td>"+mk_len+"</td><td>"+mk_name+"</td><td>"+ptr_name+"</td><td>"+permts+"</td><td>"+mk_eff+"</td><td>"+rmks1+"</td><td>"+rmks2+"</td><td>"+rmks3+"</td><td>"+rmks4+"</td><td style='display:none;'>0</td><td><input type='button' style='display : block' class='btn btn-sm btn-danger' id=delete_row"+rows_valu+" onclick=delete_row("+rows_valu+","+doc_no+") value='Delete'></td></tr>";
-	
-	// $('#delete_row'+rows_valu).on('click',function(){
-	// alert(rows_valu);
-      	
+    if(mk_ver == ''){
+        sweetAlert('Please enter valid Marker Version','','warning');
+        return false;
+    }
+    // if(mk_eff == ''){
+    //  sweetAlert('Please enter valid Marker Eff','','warning');
+    //  return false;
+    // }
+    if(mk_len <=0)
+    {
+        sweetAlert('Please enter valid Marker Length','','warning');
+        return false;
+    }
+    if(width <=0){
+        sweetAlert('Please enter valid Marker Width','','warning');
+        return false;
+    }
+    if(mk_len == ''|| mk_len <=0){
+        sweetAlert('Please enter valid Marker Length','','warning');
+        return false;
+    }
+    if(mk_eff == '')
+    {
+        mk_eff = 0;
+    }
+    if(mk_eff>100){
+        sweetAlert('Please enter valid Marker Efficiency','','warning');
+        return false;
+    }
+    if(mk_ver <=0 || mk_ver ==''){
+        sweetAlert('Please enter valid Marker Version','','warning');
+        return false;
+    }
+    var table_body = $("#rejections_table_body"+doc_no);
+    var new_row = "<tr id='unique_d_"+doc_no+"_r_"+rows_valu+"'><td style='display:none;' class='checked_value' id='checked"+values_rows1+"'>yes</td><td style='display:none;' id='id'>"+rows_valu+"</td><td style='display:none;' id='doc_no' >"+doc_no_new+"</td><td style='display:none;'  id='all_ref'>"+all_refs+"</td><td style='display:none;'  id='mk_ref'>"+mk_refs+"</td><td><input type='radio' name='selected_len"+doc_no+"' value="+rows_valu+" id='check"+rows_valu+"' onchange = valid_button("+rows_valu+") CHECKED></td><td>"+mk_type+"</td><td>"+mk_ver+"</td><td>"+sk_grp+"</td><td>"+width+"</td><td>"+mk_len+"</td><td>"+mk_name+"</td><td>"+ptr_name+"</td><td>"+permts+"</td><td>"+mk_eff+"</td><td>"+rmks1+"</td><td>"+rmks2+"</td><td>"+rmks3+"</td><td>"+rmks4+"</td><td style='display:none;'>0</td><td><input type='button' style='display : block' class='btn btn-sm btn-danger' id=delete_row"+rows_valu+" onclick=delete_row("+rows_valu+","+doc_no+") value='Delete'></td></tr>";
+    
+    // $('#delete_row'+rows_valu).on('click',function(){
+    // alert(rows_valu);
+        
     // });
 
-	$("#rejections_table_body"+doc_no).append(new_row);
-	$('#mk_type'+doc_no).val(' ');
-	$('#mk_ver'+doc_no).val(' ');
-	$('#sk_grp'+doc_no).val(' ');
-	$('#width'+doc_no).val(' ');
-	$('#mk_len'+doc_no).val(' ');
-	$('#mk_name'+doc_no).val(' ');
-	$('#ptr_name'+doc_no).val(' ');
-	$('#mk_eff'+doc_no).val(' ');
-	$('#permts'+doc_no).val(' ');
-	$('#rmks1'+doc_no).val(' ');
-	$('#rmks2'+doc_no).val(' ');
-	$('#rmks3'+doc_no).val(' ');
-	$('#rmks4'+doc_no).val(' ');
+    $("#rejections_table_body"+doc_no).append(new_row);
+    $('#mk_type'+doc_no).val(' ');
+    $('#mk_ver'+doc_no).val(' ');
+    $('#sk_grp'+doc_no).val(' ');
+    $('#width'+doc_no).val(' ');
+    $('#mk_len'+doc_no).val(' ');
+    $('#mk_name'+doc_no).val(' ');
+    $('#ptr_name'+doc_no).val(' ');
+    $('#mk_eff'+doc_no).val(' ');
+    $('#permts'+doc_no).val(' ');
+    $('#rmks1'+doc_no).val(' ');
+    $('#rmks2'+doc_no).val(' ');
+    $('#rmks3'+doc_no).val(' ');
+    $('#rmks4'+doc_no).val(' ');
 }
 
 function delete_row(rows_valu,doc_no){
-	
-	$("#rejections_table_body"+doc_no+" tr#unique_d_"+doc_no+"_r_"+rows_valu).remove();
-	var values_rows1 = $("#first_val"+doc_no+"").val();
-	
-	$('.checked_value').text('no');
-	$('#checked'+values_rows1).text('yes');
-	$('#check'+values_rows1).prop('checked', true);
+    
+    $("#rejections_table_body"+doc_no+" tr#unique_d_"+doc_no+"_r_"+rows_valu).remove();
+    var values_rows1 = $("#first_val"+doc_no+"").val();
+    
+    $('.checked_value').text('no');
+    $('#checked'+values_rows1).text('yes');
+    $('#check'+values_rows1).prop('checked', true);
 }
 function clear_row(doc_no)
 {
-	$('#mk_type'+doc_no).val(' ');
-	$('#mk_ver'+doc_no).val(' ');
-	$('#sk_grp'+doc_no).val(' ');
-	$('#width'+doc_no).val(' ');
-	$('#mk_len'+doc_no).val(' ');
-	$('#mk_name'+doc_no).val(' ');
-	$('#ptr_name'+doc_no).val(' ');
-	$('#mk_eff'+doc_no).val(' ');
-	$('#permts'+doc_no).val(' ');
-	$('#rmks1'+doc_no).val(' ');
-	$('#rmks2'+doc_no).val(' ');
-	$('#rmks3'+doc_no).val(' ');
-	$('#rmks4'+doc_no).val(' ');
+    $('#mk_type'+doc_no).val(' ');
+    $('#mk_ver'+doc_no).val(' ');
+    $('#sk_grp'+doc_no).val(' ');
+    $('#width'+doc_no).val(' ');
+    $('#mk_len'+doc_no).val(' ');
+    $('#mk_name'+doc_no).val(' ');
+    $('#ptr_name'+doc_no).val(' ');
+    $('#mk_eff'+doc_no).val(' ');
+    $('#permts'+doc_no).val(' ');
+    $('#rmks1'+doc_no).val(' ');
+    $('#rmks2'+doc_no).val(' ');
+    $('#rmks3'+doc_no).val(' ');
+    $('#rmks4'+doc_no).val(' ');
 }
 function submit_mklen(doc_no)
 {
-	var tabledata = [];
-	$('#mark_len_table'+doc_no+' tr').has('td').each(function() {
-		var tabledataItem = [];
-		$('td', $(this)).each(function(index, item) {
-			
-			// console.log(index,$(item));
-			tabledataItem[index] = $(item).text();
-			// console.log(index);
-		});
-		tabledata.push(tabledataItem);
-		// console.log(tabledata);
-	});
+    var tabledata = [];
+    $('#mark_len_table'+doc_no+' tr').has('td').each(function() {
+        var tabledataItem = [];
+        $('td', $(this)).each(function(index, item) {
+            
+            // console.log(index,$(item));
+            tabledataItem[index] = $(item).text();
+            // console.log(index);
+        });
+        tabledata.push(tabledataItem);
+        // console.log(tabledata);
+    });
 
-	var jsonString = JSON.stringify(tabledata);
+    var jsonString = JSON.stringify(tabledata);
     console.log(jsonString);
-	$.ajax({
-	type : "POST",
-	url : '<?= $get_url1 ?>',
-	data: {data : jsonString,doc_no:doc_no}, 
-	}).success(function(response){
-		//console.log(response);
-		//var check_val = response.status_no;
-		var data = jQuery.parseJSON(response);
-		var p1 = data.status_no;
-		//console.log(p1);
-		
-		if(p1 == 1)
-		{
-			swal('Success',data.status,'success');
-		}
-		else if(p1 == 2)
-		{
-			swal('Success',data.status_new,'success');
-		}
-		else
-		{
-			swal('error','Something Went Wrong Please try again..!','error');	
-		}	
-		//swal('Success','Marker Details Updated successfully','success');
-		location.reload();	
-	});
+    $.ajax({
+    type : "POST",
+    url : '<?= $get_url1 ?>',
+    data: {data : jsonString,doc_no:doc_no}, 
+    }).success(function(response){
+        //console.log(response);
+        //var check_val = response.status_no;
+        var data = jQuery.parseJSON(response);
+        var p1 = data.status_no;
+        //console.log(p1);
+        
+        if(p1 == 1)
+        {
+            swal('Success',data.status,'success');
+        }
+        else if(p1 == 2)
+        {
+            swal('Success',data.status_new,'success');
+        }
+        else
+        {
+            swal('error','Something Went Wrong Please try again..!','error');   
+        }   
+        //swal('Success','Marker Details Updated successfully','success');
+        location.reload();  
+    });
 }
 function issuemodule(id)
 {
