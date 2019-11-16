@@ -97,7 +97,7 @@ $('#rejec_reasons').on('click', function(){
         scope.$apply(function () {
             scope.rej_data = reject_data;
         });
-        
+        scope.barcode_submit('scrap');
 		//$('#'+id+'rejections').prop('readonly', true);
 	}else{
 		sweetAlert('','Please Fill all details in form','error');
@@ -112,6 +112,17 @@ function neglecting_function()
         $('#reason').val(0);
         $('#reason').change();
     }
+//this is validation for if bundle qty 1 then automatically reject qty taken as 1
+$('#radioscrap').on('click', function(){
+    var tot = $('#changed_rej').val();
+    if(tot==1){
+        $('#reason').val(1);
+        $('#reason').change();
+    }
+    
+    
+
+});
 
 $("#reason").change(function(){
     
@@ -132,7 +143,11 @@ $("#reason").change(function(){
 			html_markup = "<tr><td>"+i+"</td>"+$('#repeat_tr').html()+"</tr>";
 			// console.log(html_markup);
 			$("#tablebody").append(html_markup);
-		}
+        }
+        if(tot==1){
+            $('#quantity').val(1);
+            validating_cumulative();
+        }
 	}
 	
 });
@@ -232,7 +247,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
     $scope.barcode_submit = function(taskId){
         var sum =0;
         $('#loading-image').show();
-            var task_action=taskId;
+            var trans_mode=taskId;
             $http({
                 method: 'POST',
                 url: $scope.url,
@@ -242,7 +257,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                     op_code: $scope.op_code,
                     trans_mode:$scope.trans_mode,
                     shift:$scope.shift,
-                    trans_action:task_action,
+                    trans_action:$scope.action_mode,
                     rej_data:$scope.rej_data,
                     scan_proceed:$scope.scan_proceed
                 }),
