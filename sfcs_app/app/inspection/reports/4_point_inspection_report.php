@@ -1586,8 +1586,10 @@ tags will be replaced.-->
       {
 		 $actual_height[$tot_ids[$i]];  
 	  }
-	   $act_height=min($actual_height);
-	   echo $act_height;
+	   //$act_height=min($actual_height);
+	   $act_height=implode(",",$actual_height);
+	   $act_height1=substr($act_height,0,15);
+	   echo $act_height1;
 	  ?>
 	  	
   </td>
@@ -1634,8 +1636,9 @@ tags will be replaced.-->
       {
 		$actual_repeat_height[$tot_ids[$i]];  
 	  }
-	  $act_length=min($actual_repeat_height);
-	   echo $act_length;	 
+	  $act_length=implode(",",$actual_repeat_height);
+	  $act_length1=substr($act_length,0,15);
+	   echo $act_length1;	 
 	  ?>
   </td>
   <td colspan=2 class=xl7919758 style='border-left:none'>Length Shortage</td>

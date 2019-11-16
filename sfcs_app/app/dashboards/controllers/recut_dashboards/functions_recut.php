@@ -816,7 +816,7 @@ function IssuedtoModuleProcess($issued_to_module_process)
             $table_data .= "<input type='hidden' name='doc_no_ref' value='$issued_to_module_process'>";
             $table_data .= "<input type='hidden' name='bcd_id[]' value='$bcd_id'>";
             $table_data .= "<input type='hidden' name='size[]' value='$size'>";
-            $table_data .= "<td><input class='form-control integer' name='issueval[]' value='0'  min='0' id='$s_no' onchange='validatingremaining($s_no)' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)' type='Number' onkeyup='return isInt(this);' required></td>";
+            $table_data .= "<td><input class='form-control integer' name='issueval[$cat][]' value='0'  min='0' id='$s_no' onchange='validatingremaining($s_no)' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)' type='Number' onkeyup='return isInt(this);' required></td>";
         }
         //$table_data .= "<input type='hidden' id='no_of_rows' value='$s_no'>";
         $table_data .= "</tr></tbody></table>";
