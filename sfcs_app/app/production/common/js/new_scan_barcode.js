@@ -97,7 +97,6 @@ $('#rejec_reasons').on('click', function(){
         scope.$apply(function () {
             scope.rej_data = reject_data;
         });
-        alert("Ok..Proceed..!");
         scope.barcode_submit('scrap');
 		//$('#'+id+'rejections').prop('readonly', true);
 	}else{
@@ -113,6 +112,17 @@ function neglecting_function()
         $('#reason').val(0);
         $('#reason').change();
     }
+//this is validation for if bundle qty 1 then automatically reject qty taken as 1
+$('#radioscrap').on('click', function(){
+    var tot = $('#changed_rej').val();
+    if(tot==1){
+        $('#reason').val(1);
+        $('#reason').change();
+    }
+    
+    
+
+});
 
 $("#reason").change(function(){
     
@@ -133,7 +143,11 @@ $("#reason").change(function(){
 			html_markup = "<tr><td>"+i+"</td>"+$('#repeat_tr').html()+"</tr>";
 			// console.log(html_markup);
 			$("#tablebody").append(html_markup);
-		}
+        }
+        if(tot==1){
+            $('#quantity').val(1);
+            validating_cumulative();
+        }
 	}
 	
 });
