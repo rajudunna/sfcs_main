@@ -175,11 +175,13 @@ $result_rejections = $link->query($qery_rejection_resons);
     <div class="panel-body" style="background-color: black;padding: 3px 24px 0px 12px;" ng-controller="scancode_ctrl">
    
        <table border=0;> 
-       <tr><td></td><td  id="time1" style="font-size:30px;color:yellow"></td></tr>
+       <!-- <tr><td></td><td  id="time1" style="font-size:30px;color:yellow"></td></tr> -->
        <tr>
         <td><label>Style : </label><br/><br/><br/><label>Color : </label><br/></td>
-        <td style="padding: 0px 0px 19px 23px;"><br/> <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 145px;height: 35px;">{{style}}</div><br/><br/>
-        <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width: 145px;height: 35px">{{color}}</div>
+        <td style="padding: 0px 0px 75px 23px;"><br/> 
+        <div class="btn btn-md" id="time1" style="font-size:30px;color:yellow"></div>
+        <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width:200px;height: 35px;">{{style}}</div><br/><br/>
+        <div class="btn btn-md btn-success ng-binding" id="txmode" style=" width:200px;height: 35px">{{color}}</div>
        </td>
        <td style="width: 10 5px;"></td>
         <td>
