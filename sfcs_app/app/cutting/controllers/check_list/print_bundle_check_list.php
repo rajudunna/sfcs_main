@@ -30,8 +30,15 @@
 				$co_no = $m1['co_no'];
 				$order_tid = $m1['order_tid'];
 			}
-			$sql123="SELECT bundle_loc,leader_name FROM $bai_pro3.`act_cut_status` WHERE doc_no = '$org_doc_no' limit 1";
+			if($org_doc_no==0)
+			{
+			   $sql123="SELECT bundle_loc,leader_name FROM $bai_pro3.`act_cut_status` WHERE doc_no =$doc_no limit 1";
 			//echo $sql123;
+			}
+			else
+			{
+			   $sql123="SELECT bundle_loc,leader_name FROM $bai_pro3.`act_cut_status` WHERE doc_no =$org_doc_no limit 1";
+			}
 			$sql_result123=mysqli_query($link, $sql123) or exit("Error while fetching details for the selected style and schedule");
 			while($m13=mysqli_fetch_array($sql_result123))
 			{
