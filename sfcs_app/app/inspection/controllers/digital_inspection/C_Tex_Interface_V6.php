@@ -2300,7 +2300,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
   <td class=xl13324082 colspan=2 dir=LTR width=99 style='border-left:none;width:100px'>Lot No</td>
   <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Roll Status</td>
   <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Rejection reason</td>
-  <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Inspection Status</td>
+  <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>4 Roll Inspection Status</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Partial Rej Qty</td>
   <?php
 //   if($shrinkage_inspection == 'yes')
@@ -2373,11 +2373,11 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 				{	
 					if($main_points<28)
 					{
-						$status_main="Accept";
+						$status_main="Approved";
 					}
 					else
 					{
-						$status_main="Reject";
+						$status_main="Rejected";
 					}
 				}
 				else
@@ -2522,8 +2522,8 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	  echo "
 	  <td height=50 class='xl12824082' style='height:15.0pt;background-color: ".$insp_status.";'>".$temp[1]."<input type='hidden' id='ele_tid[$i]' name='ele_tid[$i]' value='".$temp[0]."'><input type='hidden' name='ele_check[$i]' value=''><input type='hidden' name='tot_elements' id='tot_elements' value='".sizeof($values)."'></td>";
 
-	  echo "<td class=xl12824082 style='border-left:none'><input class='textbox float shr_len' ".$readonly."  type='text' min='0' id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
-		<td class=xl12824082 style='border-left:none'><input class='textbox float shr_wid' ".$readonly."  type='text' min='0' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
+	  echo "<td class=xl12824082 style='border-left:none'><input class='textbox float_negitive shr_len' ".$readonly."  type='text' id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
+		<td class=xl12824082 style='border-left:none'><input class='textbox float_negitive shr_wid' ".$readonly."  type='text' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
 		<td class=xl12824082 style='border-left:none'><input class='textbox alpha shr_grp' ".$readonly." type='text' min='0' id='shrinkage_group[$i]'  name='shrinkage_group[$i]' value='".$sgroup."' onchange='change_body(2,this.name,$i)'></td>";
 		// if($shrinkage_inspection == 'yes')
 		// {
@@ -2562,27 +2562,27 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	  }
 	else
 		{	
-			  if(in_array($authorized,$has_permission))
-			  {	  
-				echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>
-					<select name=\"roll_status[$i]\" id='roll_status[$i]'  onchange='change_body(2,this.name,$i)' ".$dropdown_read." class='listbox' id='roll_status[$i]'>";
-				for($iq=0;$iq<sizeof($roll_status);$iq++)
+		  if(in_array($authorized,$has_permission))
+		  {	  
+			echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>
+				<select name=\"roll_status[$i]\" id='roll_status[$i]'  onchange='change_body(2,this.name,$i)' ".$dropdown_read." class='listbox' id='roll_status[$i]'>";
+			for($iq=0;$iq<sizeof($roll_status);$iq++)
+			{
+				if($roll_status[$iq]==$status_main)
 				{
-					if($iq==$temp[10])
-					{
-						echo "<option value='".$iq."' selected>".$roll_status[$iq]."</option>";
-					}	  	
-					else
-					{
-						echo "<option value='".$iq."'>".$roll_status[$iq]."</option>";	
-					}
+					echo "<option value='".$iq."' selected>".$roll_status[$iq]."</option>";
+				}	  	
+				else
+				{
+					echo "<option value='".$iq."'>".$roll_status[$iq]."</option>";	
 				}
-				echo "</select></td>";
-			  } 	
-			  else
-			  {
-				echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>".$roll_status[$temp[10]]."<input type=\"hidden\" class='textbox' id=\"roll_status[$i]\"  name=\"roll_status[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$temp[10]."\" /></td>";	
-			  }
+			}
+			echo "</select></td>";
+		  } 	
+		  else
+		  {
+			echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>".$roll_status[$temp[10]]."<input type=\"hidden\" class='textbox' id=\"roll_status[$i]\"  name=\"roll_status[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$temp[10]."\" /></td>";	
+		  }
 		} 	
 			  
 
@@ -2597,7 +2597,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 			// 	}
 			// }
 
-	if($temp[10] == 1 || $temp[10] == 2){
+	if($temp[10] == 1 || $temp[10] == 2 || $status_main == 'Rejected'){
 		$style = '';
 	}else{
 		$style = 'style=display:none'; 
