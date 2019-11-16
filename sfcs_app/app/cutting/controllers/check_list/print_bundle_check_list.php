@@ -45,10 +45,6 @@
 				$bundle_loc = $m13['bundle_loc'];
 				$leader_name = $m13['leader_name'];
 			}
-			if($bundle_loc=='')
-			{
-				$bundle_loc='';
-			}
 			$sql1="SELECT DISTINCT input_job_no_random, input_job_no FROM $bai_pro3.`pac_stat_log_input_job` WHERE doc_no='$doc_no' order by input_job_no_random*1";
 			// echo $sql1;
 			$sql_result1=mysqli_query($link, $sql1) or exit("Error while fetching details for the selected style and schedule");
