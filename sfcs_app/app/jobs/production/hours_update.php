@@ -42,10 +42,13 @@ else
         $count=mysqli_num_rows($sql_res);
         if($count == 0)
         {
-            $sql1="insert ignore INTO $bai_pro.pro_atten_hours (date,shift,start_time,end_time) VALUES ('".$date."','".$shift."','".$shift_start_time."','".$shift_end_time."')";
-        // echo $sql1."<br>";
-
-            mysqli_query($link, $sql1) or exit("Sql Error88 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $sql13="select * from  $bai_pro.pro_atten_hours where date='".$date."' and shift='".$shift."' and start_time='".$shift_start_time."' and end_time='".$shift_end_time."'";
+            $sql13_result=mysqli_query($link, $sql13) or exit("Sql Error88 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+            if(mysqli_num_rows($sql13_result)==0)
+            {
+                $sql1="insert  INTO $bai_pro.pro_atten_hours (date,shift,start_time,end_time) VALUES ('".$date."','".$shift."','".$shift_start_time."','".$shift_end_time."')";
+                mysqli_query($link, $sql1) or exit("Sql Error88 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+            }
         }
         else
         {

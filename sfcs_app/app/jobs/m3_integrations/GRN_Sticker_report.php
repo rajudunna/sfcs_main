@@ -56,10 +56,16 @@ if($conn)
 		    $api_data = json_decode($api_data, true);
 		    $rm_color = $api_data['MIRecord'][0]['NameValue'][0]['Value'];                           
 			
-			$sql_lot = "INSERT IGNORE INTO $bai_rm_pj1.sticker_report (lot_no) VALUES (\"".$lot_num."\")";
-			
-			$result_lot = mysqli_query($link, $sql_lot);
-			$sql_sticker_det = "UPDATE $bai_rm_pj1.sticker_report SET po_line = \"".$po_line."\" , po_subline = \"".$po_subline."\", item = \"".$item_no."\", item_name = \"".$item_name."\", item_desc = \"".$item_des."\", inv_no = \"".$invoice_no."\", po_no = \"".$po_ro."\", rec_no = \"".$del_no."\", rec_qty = \"".$rec_qty."\", lot_no = \"".$lot_num."\", batch_no = \"".$batch_num ."\", buyer = \"".$buyer_buss_area."\", product_group = \"".$proc_grp."\", pkg_no = '', grn_date = \"".$grn_date."\", supplier = \"".$supp_name."\", uom = \"".$umo."\", grn_location = \"".$grn_loc."\", po_line_price = \"".$po_line."\", po_total_cost = \"".$po_tot_val."\", style_no = \"".$style."\", grn_type = 'GRN',pkg_no='".$grn_entry_no."', rm_color = \"".$rm_color."\"  WHERE lot_no = \"".$lot_num."\"";
+	
+			$sql1="select lot_no from  $bai_rm_pj1.sticker_report where lot_no='$lot_num'";
+			$sql1_result = mysqli_query($link, $sql1);
+			if(mysqli_num_rows($sql1_result)==0)
+			{
+				$sql_lot = "INSERT  INTO $bai_rm_pj1.sticker_report (lot_no) VALUES (\"".$lot_num."\")";			
+				$result_lot = mysqli_query($link, $sql_lot);
+			}
+
+			$sql_sticker_det = "UPDATE $bai_rm_pj1.sticker_report SET po_line = \"".$po_line."\" , po_subline = \"".$po_subline."\", item = \"".$item_no."\", item_name = \"".$item_name."\", item_desc = \"".$item_des."\", inv_no = \"".$invoice_no."\", po_no = \"".$po_ro."\", rec_no = \"".$del_no."\", rec_qty = \"".$rec_qty."\", lot_no = \"".$lot_num."\", batch_no = \"".$batch_num ."\", buyer = \"".$buyer_buss_area."\", product_group = \"".$proc_grp."\", pkg_no = '', grn_date = \"".$grn_date."\", supplier = \"".$supp_name."\", uom = \"".$umo."\", grn_location = \"".$grn_loc."\", po_line_price = \"".$po_line."\", po_total_cost = \"".$po_tot_val."\", style_no = \"".$style."\", grn_type = 'GRN',pkg_no='".$grn_entry_no."'  WHERE lot_no = \"".$lot_num."\"";
 			
 			$result_rec_insert = mysqli_query($link, $sql_sticker_det);
 			if($result_rec_insert ){

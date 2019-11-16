@@ -810,8 +810,15 @@
 									{
 										$update_status_query = "update $bai_pro3.ims_log_backup set ims_status = '' where tid = $updatable_id";
 										mysqli_query($link,$update_status_query) or exit(message_sql($b_shift));
-										$ims_backup="insert ignore into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
-										mysqli_query($link,$ims_backup) or exit(message_sql($b_shift));
+										
+										$select_check_three="select tid from $bai_pro3.`ims_log` where tid='$updatable_id'";
+										$result_insert_three=mysql_query($select_check_three,$link) or ("Sql error".mysql_error());
+										$check_result_three=mysqli_num_rows($result_insert_three);
+										if($check_result_three==0)
+										{
+											$ims_backup="insert into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
+											mysqli_query($link,$ims_backup) or exit(message_sql($b_shift));
+										}
 										$ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
 										mysqli_query($link,$ims_delete) or exit(message_sql($b_shift));
 									}

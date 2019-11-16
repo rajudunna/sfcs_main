@@ -291,18 +291,23 @@ $userName = getrbac_user()['uname'];
 				$log.="<th>".$msc69."</th></tr>";
 			   // echo $insert_log_query.";<br>";
 					
-			}			
-
-			$sql="insert ignore into $bai_pro3.plan_dashboard_input (input_job_no_random_ref) values ('".$items[1]."')";
-			//echo $sql.";<br>";
-			$log.="<tr><th>".$sql."</th>";
-			$msc70=microtime(true);
-			$log.="<th>".$msc70."</th>";
-			mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$msc71=microtime(true);
-			$log.="<th>".$msc71."</th>";
-			$msc72=$msc71-$msc70;
-			$log.="<th>".$msc72."</th></tr>";
+			}	
+			
+			$sql11="select input_job_no_random_ref from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$items[1]."'";
+			sql11_result=mysqli_query($link, $sql11) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql11_result)==0)
+			{
+				$sql="insert  into $bai_pro3.plan_dashboard_input (input_job_no_random_ref) values ('".$items[1]."')";
+				//echo $sql.";<br>";
+				$log.="<tr><th>".$sql."</th>";
+				$msc70=microtime(true);
+				$log.="<th>".$msc70."</th>";
+				mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$msc71=microtime(true);
+				$log.="<th>".$msc71."</th>";
+				$msc72=$msc71-$msc70;
+				$log.="<th>".$msc72."</th></tr>";
+			}
 			if(((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res)>0)
 			{
 				$sql="update $bai_pro3.plan_dashboard_input set input_priority=$x, input_module=".$items[0].", log_time=\"".date("Y-m-d H:i:s")."\" where input_job_no_random_ref='".$items[1]."'";
@@ -454,17 +459,22 @@ $userName = getrbac_user()['uname'];
 							$log.="<th>".$msc102."</th></tr>";
 						}
 					}
-				}				
-				$sqlx="insert ignore into $bai_pro3.plan_dashboard(doc_no) values ('".$dockets_ref[$d]."')";
-				$log.="<tr><th>".$sqlx."</th>";
-				$msc103=microtime(true);
-				$log.="<th>".$msc103."</th>";
-				mysqli_query($link, $sqlx) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$msc104=microtime(true);
-				$log.="<th>".$msc104."</th>";
-				$msc105=$msc104-$msc103;
-				$log.="<th>".$msc105."</th></tr>";
-	
+				}	
+				
+				$sql1234="select doc_no from $bai_pro3.plan_dashboard wheree doc_no='".$dockets_ref[$d]."'";
+				$sql1234_result=mysqli_query($link, $sql1234) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql1234_result)==0)
+				{
+					$sqlx="insert  into $bai_pro3.plan_dashboard(doc_no) values ('".$dockets_ref[$d]."')";
+					$log.="<tr><th>".$sqlx."</th>";
+					$msc103=microtime(true);
+					$log.="<th>".$msc103."</th>";
+					mysqli_query($link, $sqlx) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$msc104=microtime(true);
+					$log.="<th>".$msc104."</th>";
+					$msc105=$msc104-$msc103;
+					$log.="<th>".$msc105."</th></tr>";
+				}			
 				$sqlx1="update $bai_pro3.plan_dashboard set priority=$x1, module=".$items[0].", log_time=\"".date("Y-m-d H:i:s")."\" where doc_no=".$dockets_ref[$d]."";
 				$log.="<tr><th>".$sqlx1."</th>";
 				$msc106=microtime(true);

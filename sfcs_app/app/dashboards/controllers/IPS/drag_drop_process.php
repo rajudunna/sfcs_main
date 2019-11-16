@@ -24,9 +24,13 @@ include("../../../../common/config/functions.php");
 		$sqlx="delete from $bai_pro3.plan_dashboard where doc_no in (".implode(",",$remove_docs).")";
 		mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sqlx="insert ignore into $bai_pro3.fabric_priorities_backup select * from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$remove_docs).")";
-		mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
+		$sql1111="select doc_ref from $bai_pro3.fabric_priorities_backup where doc_ref=".implode(",",$remove_docs)."";
+		$sql1111_result=mysqli_query($link, $sql1111) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql1111_result)==0)
+		{
+			$sqlx="insert into $bai_pro3.fabric_priorities_backup select * from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$remove_docs).")";
+			mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		}
 		//Date : 2014-03-21
 		//Due to color changing from yellow to green due to removing the job from fabric_priorities
 		//Hidden the code
@@ -61,9 +65,13 @@ include("../../../../common/config/functions.php");
 			$sql="delete from $bai_pro3.plan_dashboard where doc_no=".$items[1];
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			$sql="insert ignore into $bai_pro3.fabric_priorities_backup select * from fabric_priorities where doc_ref=".$items[1];
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
+			$sql1112="select doc_ref from $bai_pro3.fabric_priorities_backup where doc_ref=".$items[1]."";
+			$sql1112_result=mysqli_query($link, $sql1112) or exit("Sql Error1112".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql1112_result)==0)
+			{
+				$sql="insert into $bai_pro3.fabric_priorities_backup select * from fabric_priorities where doc_ref=".$items[1];
+				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			}
 			//Date : 2014-03-21
 			//Due to color changing from yellow to green due to removing the job from fabric_priorities
 			//Hidden the code
@@ -76,9 +84,13 @@ include("../../../../common/config/functions.php");
 		}
 		else
 		{
-			$sql="insert ignore into $bai_pro3.plan_dashboard (doc_no) values (".$items[1].")";
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
+			$sql1113="select doc_no from $bai_pro3.plan_dashboard where doc_no=".$items[1]."";
+			$sql1113_result=mysqli_query($link, $sql1113) or exit("Sql Error1113".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql1113_result)==0)
+			{
+				$sql="insert into $bai_pro3.plan_dashboard (doc_no) values (".$items[1].")";
+				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			}
 			if(((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res)>0)
 			{
 				$sql="update $bai_pro3.plan_dashboard set priority=$x, module=".$items[0].", log_time=\"".date("Y-m-d H:i:s")."\" where doc_no=".$items[1];
@@ -144,9 +156,13 @@ include("../../../../common/config/functions.php");
 		$sqlx="delete from $bai_pro3.plan_dashboard where doc_no in (".implode(",",$remove_docs).")";
 		mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql="insert ignore into $bai_pro3.fabric_priorities_backup select * from fabric_priorities where doc_ref=".$items[1];
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
+		$sql1114="select doc_ref from $bai_pro3.fabric_priorities_backup where doc_ref=".$items[1]."";
+		$sql1114_result=mysqli_query($link, $sql1114) or exit("Sql Error1114".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql1114_result)==0)
+		{
+			$sql="insert into $bai_pro3.fabric_priorities_backup select * from fabric_priorities where doc_ref=".$items[1];
+			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		}
 		$sqlx="delete from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$remove_docs).")";
 		mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}

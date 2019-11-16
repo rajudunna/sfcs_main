@@ -16,7 +16,7 @@
         // Delete Old Permission Records
 
         foreach ($old_records as $key => $rid) {
-            $sql_insert_query = "DELETE FROM rbac_role_menu_per WHERE role_menu_per_id = '$rid'";
+            $sql_insert_query = "DELETE FROM rbac_role_menu_per WHERE role_menu_per_id = $rid";
             $query_result = mysqli_query($link_ui, $sql_insert_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
         }
 
@@ -34,7 +34,7 @@
 
             // Delete Old Menu Record
 
-            $sql_insert_query = "DELETE FROM rbac_role_menu WHERE role_menu_id = '$role_menu_id'";
+            $sql_insert_query = "DELETE FROM rbac_role_menu WHERE role_menu_id = $role_menu_id";
             $query_result = mysqli_query($link_ui, $sql_insert_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
         }

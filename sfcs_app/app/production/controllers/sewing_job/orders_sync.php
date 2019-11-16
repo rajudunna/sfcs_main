@@ -419,15 +419,23 @@ bai_pro3.bai_orders_db_confirm.bts_status
 			$bts_status=$r['bts_status'];
 			$col_code=$r['color_code'];
 			//get Style code from product Master
-			$productsQuery=echo_title("brandix_bts.tbl_orders_style_ref","id","product_style",$style_code,$link);
+			$productsQuery=echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style_code,$link);
 			if($productsQuery>0)
 			{
 				$style_id=$productsQuery;
 			}
 			else
 			{
-				$insertStyleCode="INSERT IGNORE INTO tbl_orders_style_ref(product_style) VALUES ('$style_code')";
-				$result3=mysqli_query($link, $insertStyleCode) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+				$select_check_one="select product_style from $brandix_bts.tbl_orders_style_ref where product_style='$style_code'";
+				$result_insert_one=mysql_query($select_check_one,$link) or ("Sql error".mysql_error());
+
+				$check_result_one=mysqli_num_rows($result_insert_one);
+				if($check_result_one==0)
+				{
+					$insertStyleCode="INSERT INTO $brandix_bts.tbl_orders_style_ref(product_style) VALUES ('$style_code')";
+					$result3=mysqli_query($link, $insertStyleCode) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
 				$style_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 				$default_operations="SELECT id FROM tbl_orders_ops_ref where default_operation='YES'";
 				$result4=mysqli_query($link, $default_operations) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -55,12 +55,17 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
         $result_checking_qry_plan_dashboard = $link->query($checking_qry_plan_dashboard);
         if(mysqli_num_rows($result_checking_qry_plan_dashboard) == 0)
         {   
-            $insert_qry_ips = "INSERT IGNORE INTO `$bai_pro3`.`plan_dashboard_input` 
-            SELECT * FROM `$bai_pro3`.`plan_dashboard_input_backup`
-            WHERE input_job_no_random_ref = '$input_job_no' order by input_trims_status desc limit 1";
-            mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
-        }	
-
+            $select_check_three="select input_job_no_random_ref from $bai_pro3.`plan_dashboard_input` where input_job_no_random_ref='$input_job_no_random_ref'";
+            $result_insert_three=mysql_query($select_check_three,$link) or ("Sql error".mysql_error());
+            $check_result_three=mysqli_num_rows($result_insert_three);
+            if($check_result_three==0)
+            {
+                $insert_qry_ips = "INSERT INTO `$bai_pro3`.`plan_dashboard_input` 
+                SELECT * FROM `$bai_pro3`.`plan_dashboard_input_backup`
+                WHERE input_job_no_random_ref = '$input_job_no' order by input_trims_status desc limit 1";
+                mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
+            }	
+        }
         $get_mo = "select mo_no from $bai_pro3.mo_operation_quantites where ref_no = $bundle_number and op_code in (".implode(",",$ops).") order by mo_no*1 desc limit 1";
         $result_get_mo = $link->query($get_mo);
         while($row_mo = $result_get_mo->fetch_assoc())

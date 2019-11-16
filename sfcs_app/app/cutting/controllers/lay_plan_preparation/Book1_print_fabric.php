@@ -3273,8 +3273,13 @@ xmlns="http://www.w3.org/TR/REC-html40">
 
     if($sql_num_check==0) 
     { 
-        $sql="insert ignore into $bai_pro3.bai_orders_db_confirm select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\""; 
-        $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        $sql1111="select order_tid from $bai_pro3.bai_orders_db_confirm where order_tid='$order_tid'";
+		$sql1111_result=mysqli_query($link, $sql1111) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql1111_result)==0)
+		{
+            $sql="insert into $bai_pro3.bai_orders_db_confirm select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\""; 
+            $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        }
         //$sql_num_confirm=mysql_num_rows($sql_result); 
     } 
     //$context = stream_context_create(array('http'=>array('ignore_errors'=>true))); 

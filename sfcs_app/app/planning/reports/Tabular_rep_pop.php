@@ -81,8 +81,13 @@ $sql11="select distinct ssc_code from $bai_pro2.shipment_plan where exfact_date 
 $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row11=mysqli_fetch_array($sql_result11))
 {
-	$sql111="insert ignore into $bai_pro2.ssc_code_temp(ssc_code) values (\"".$sql_row11['ssc_code']."\")";
-	mysqli_query($link, $sql111) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql12="select * from $bai_pro2.ssc_code_temp where ssc_code=\"".$sql_row11['ssc_code']."\" ";
+	$sql12_result=mysqli_query($link, $sql12) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($sql12_result)==0)
+	{
+		$sql111="insert ignore into $bai_pro2.ssc_code_temp(ssc_code) values (\"".$sql_row11['ssc_code']."\")";
+		mysqli_query($link, $sql111) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
 }
 
 

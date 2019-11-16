@@ -328,9 +328,13 @@ function isNumber($c) {
 						$flag=1;
 					}
 					*/
-					$sql3="insert ignore into $bai_pro3.bai_orders_db (order_tid) values (\"$ssc_code\")";
-					mysqli_query($link, $sql3) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
-					
+					$sql1111="select order_tid from $bai_pro3.bai_orders_db where order_tid='$ssc_code'";
+					$sql1111_result=mysqli_query($link, $sql1111) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
+					if(mysqli_num_rows($sql1111_result)==0)
+					{
+						$sql3="insert into $bai_pro3.bai_orders_db (order_tid) values (\"$ssc_code\")";
+						mysqli_query($link, $sql3) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
+					}
 					$sql3="update $bai_pro3.bai_orders_db set order_embl_a=$order_embl_a,order_embl_b=$order_embl_b,order_embl_c=$order_embl_c,order_embl_d=$order_embl_d,order_embl_e=$order_embl_e,order_embl_f=$order_embl_f,order_embl_g=$order_embl_g,order_embl_h=$order_embl_h where order_tid=\"$ssc_code\" and (order_embl_a+order_embl_b+order_embl_c+order_embl_d+order_embl_e+order_embl_f+order_embl_g+order_embl_h)=0";
 					mysqli_query($link, $sql3) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// start new enhancement for dynamic size codes for M&S and CK buyer

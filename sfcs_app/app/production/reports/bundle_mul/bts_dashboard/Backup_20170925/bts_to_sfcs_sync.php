@@ -88,7 +88,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				if(mysqli_num_rows($sql_result_set)==0)
 				{
 					
-					$sql1="insert ignore into bai_pro3.ims_log (rand_track,ims_qty,ims_shift,
+					$sql1="insert into bai_pro3.ims_log (rand_track,ims_qty,ims_shift,
 				ims_mod_no,ims_date,ims_size,ims_style,ims_color,ims_schedule,ims_log_date,
 				ims_doc_no,bai_pro_ref,ims_cid) select bundle_transactions_20_repeat_id,bundle_transactions_20_repeat_quantity,
 				tbl_shifts_master_shift_name,bundle_transactions_module_id,bundle_transactions_date_time,

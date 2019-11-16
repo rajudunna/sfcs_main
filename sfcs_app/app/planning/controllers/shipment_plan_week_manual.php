@@ -155,11 +155,14 @@ for($k=0;$k<sizeof($color_code);$k++)
 				$size_code="size_s0".$i;
 			}
 			$i++;
-			
-			$sql3="insert ignore into $bai_pro4.shipment_plan (ssc_code_week_plan) values(\"$ssc_code_new".$size_code.$DELIVERY_NO."\")";
-			// echo $sql3."<br/>";
-			mysqli_query($link, $sql3) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
+			$sql12="select * from  $bai_pro4.shipment_plan where ssc_code_week_plan=\"$ssc_code_new".$size_code.$DELIVERY_NO."\"";
+			$sql12_result=mysqli_query($link, $sql12) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql12_result)==0)
+			{
+				$sql3="insert  into $bai_pro4.shipment_plan (ssc_code_week_plan) values(\"$ssc_code_new".$size_code.$DELIVERY_NO."\")";
+				// echo $sql3."<br/>";
+				mysqli_query($link, $sql3) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
+			}
 			$sql3="update $bai_pro4.shipment_plan set order_no=\"$ORDER_NO\",delivery_no=$DELIVERY_NO,del_status=\"$DEL_STATUS\",mpo=\"$MPO\",cpo="."'".str_replace('"',' ',$CPO)."'".",buyer="."'".str_replace('"',' ',$BUYER)."'".",product="."'".str_replace('"',' ',$PRODUCT)."'".",buyer_division=\"$BUYER_DIVISION\",style=\"$STYLE\",schedule_no=\"$SCHEDULE_NO\",color=\"$COLOR\",size=\"$size_code\",z_feature=\"$Z_FEATURE\",ord_qty=$ORD_QTY,ex_factory_date=\"$date_code\",mode=\"$MODE\",destination=\"$DESTINATION\",packing_method=\"$PACKING_METHOD\",fob_price_per_piece=$FOB_PRICE_PER_PIECE,cm_value=$CM_VALUE,ssc_code=\"$ssc_code\",week_code=$weekcode,ssc_code_new=\"$ssc_code_new\",order_embl_a=$order_embl_a,order_embl_b=$order_embl_b,order_embl_c=$order_embl_c,order_embl_d=$order_embl_d,order_embl_e=$order_embl_e,order_embl_f=$order_embl_f,order_embl_g=$order_embl_g,order_embl_h=$order_embl_h, cw_check=1 where ssc_code_week_plan=\"$ssc_code_new".$size_code.$DELIVERY_NO."\"";
 			echo $sql3."<br/>";
 			mysqli_query($link, $sql3) or exit("Sql Error4=".mysqli_error($GLOBALS["___mysqli_ston"]));

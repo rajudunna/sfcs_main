@@ -64,14 +64,16 @@ $userName = getrbac_user()['uname'];
             mysqli_query($link, $insert_log_query) or die("Error while saving the track details3 == ".$insert_log_query);
         }
         
-        
-
-        $sql="insert ignore into $bai_pro3.plan_dashboard_input (input_job_no_random_ref) values ('".$items[1]."')";
-        ///echo $sql.";<br>";
-        mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-        
-        //echo mysql_insert_id($link);
-        
+        $sql11="select input_job_no_random_ref from  $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$items[1]."' ";
+        $sql11_result=mysqli_query($link, $sql11) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+        if(mysqli_num_rows($sql11_result)==0)
+        {
+            $sql="insert into $bai_pro3.plan_dashboard_input (input_job_no_random_ref) values ('".$items[1]."')";
+            ///echo $sql.";<br>";
+            mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+            
+            //echo mysql_insert_id($link);
+        }
         if(((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res)>0)
         {
             $sql="update $bai_pro3.plan_dashboard_input set input_priority=$x, input_module=".$items[0].", log_time=\"".date("Y-m-d H:i:s")."\" where input_job_no_random_ref='".$items[1]."'";
@@ -161,14 +163,15 @@ $userName = getrbac_user()['uname'];
                         //echo "M--doc_no".$org_doc_no."<br>";
                     }	
                 }				
-                
-                $sqlx="insert ignore into $bai_pro3.plan_dashboard(doc_no) values ('".$org_doc_no."')";
-                ///echo $sqlx.";<br>";
-                mysqli_query($link, $sqlx) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-                
-                //echo mysql_insert_id($link);
-                
-                //if(mysql_insert_id($link)>0)
+                $sql123="select doc_no from  $bai_pro3.plan_dashboard where doc_no='".$org_doc_no."' ";
+                $sql123_result=mysqli_query($link, $sql123) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+                if(mysqli_num_rows($sql123_result)==0)
+                {
+                    $sqlx="insert  into $bai_pro3.plan_dashboard(doc_no) values ('".$org_doc_no."')";
+                    ///echo $sqlx.";<br>";
+                    mysqli_query($link, $sqlx) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+                }
+
                 {
                     $sqlx1="update $bai_pro3.plan_dashboard set priority=$x1, module=".$items[0].", log_time=\"".date("Y-m-d H:i:s")."\" where doc_no='".$org_doc_no."'";
                     //echo $sqlx1.";<br>";

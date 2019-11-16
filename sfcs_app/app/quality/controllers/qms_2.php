@@ -253,11 +253,18 @@ if(isset($_GET['tid']))
 	mysqli_query($link,$bts_insert) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	
 	$updated = updateM3TransactionsRejectionsReversal($bundle_no_ref,$operation_id,$reason_qty,$r_reasons);
+	
+	$select_check_one="select qms_tid from $bai_pro3.bai_qms_db_deleted where qms_tid=$tid_ref";
+	$result_insert_one=mysql_query($select_check_one,$link) or ("Sql error".mysql_error());
 
-	//Insert selected row into table deleted table
-	$sql1="insert ignore into $bai_pro3.bai_qms_db_deleted select * from bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
-	// echo $sql1."<br>";
-	$result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
+	$check_result_one=mysqli_num_rows($result_insert_one);
+	if($check_result_one==0)
+	{
+		//Insert selected row into table deleted table
+		$sql1="insert into $bai_pro3.bai_qms_db_deleted select * from bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
+		// echo $sql1."<br>";
+		$result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
+	}
 	//reduce qty from location table based on location
 	if($locationid != null) {
 		$sql3="update $bai_pro3.bai_qms_location_db set qms_cur_qty=(qms_cur_qty-$qms_qty) where qms_location_id='".$locationid."'";

@@ -84,11 +84,15 @@ if(isset($_REQUEST['filter']) or isset($_GET['doc_no']))
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		if(mysqli_affected_rows($link)>0)
-		{
-			$sql="insert ignore into $bai_pro3.bai_qms_db_deleted select * from $bai_pro3.bai_qms_db where qms_tid=$qms_tid";
-			//echo $sql."<br/>";
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
+		{ 
+			$sql1116="select qms_tid from $bai_pro3.bai_qms_db_deleted where qms_tid=$qms_tid";
+			$sql1116_result=mysqli_query($link, $sql1116) or exit("Sql Error1116".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql1116_result)==0)
+			{ 
+				$sql="insert into $bai_pro3.bai_qms_db_deleted select * from $bai_pro3.bai_qms_db where qms_tid=$qms_tid";
+				//echo $sql."<br/>";
+				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			}
 			$sql="delete from $bai_pro3.bai_qms_db where qms_tid=$qms_tid";
 			//echo $sql."<br/>";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -59,10 +59,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		}
 		else
 		{
-			$sql="insert ignore into $bai_pro3.plan_dashboard_input (input_job_no_random_ref) values ('".$items[1]."')";
-			///echo $sql.";<br>";
-			mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
+			$sql1111="select input_job_no_random_ref from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$items[1]."'";
+			$sql1111_result=mysqli_query($link, $sql1111) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql1111_result)==0)
+			{
+				$sql="insert into $bai_pro3.plan_dashboard_input (input_job_no_random_ref) values ('".$items[1]."')";
+				///echo $sql.";<br>";
+				mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+			}
 			//echo mysql_insert_id($link);
 			
 			if(((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res)>0)
@@ -151,10 +155,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 						}	
 					}				
 					
-					$sqlx="insert ignore into $bai_pro3.plan_dashboard(doc_no) values ('".$org_doc_no."')";
-					///echo $sqlx.";<br>";
-					mysqli_query($link, $sqlx) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-					
+					$sql1112="select doc_no from $bai_pro3.plan_dashboard where doc_no=".$org_doc_no."";
+					$sql1112_result=mysqli_query($link, $sql1112) or exit("Sql Error1112".mysqli_error($GLOBALS["___mysqli_ston"]));
+					if(mysqli_num_rows($sql1112_result)==0)
+					{
+						$sqlx="insert into $bai_pro3.plan_dashboard(doc_no) values ('".$org_doc_no."')";
+						///echo $sqlx.";<br>";
+						mysqli_query($link, $sqlx) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+					}
 					//echo mysql_insert_id($link);
 					
 					//if(mysql_insert_id($link)>0)

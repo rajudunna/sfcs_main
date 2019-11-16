@@ -387,9 +387,16 @@ if(isset($_POST['save']))
 	}
 	else
 	{
-		$sql1="insert ignore into brandix_bts.tbl_carton_ref (carton_barcode,carton_tot_quantity,ref_order_num,style_code) values('".$barcode."','".$carton_tot."','".$schedule_id."','".$style_id."')";
+
+		$sql22 ="select * from brandix_bts.tbl_carton_ref where carton_barcode='".$barcode."' and carton_tot_quantity='".$carton_tot."' and ref_order_num=,'".$schedule_id."' and style_code '".$style_id."'";
+		$sql22_result=mysqli_query($link, $sql22) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql22_result)==0)
+	 	{
+
+		$sql1="insert  into brandix_bts.tbl_carton_ref (carton_barcode,carton_tot_quantity,ref_order_num,style_code) values('".$barcode."','".$carton_tot."','".$schedule_id."','".$style_id."')";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+		}
 		if(!in_array($c_block,$country_block))
 		{
 			$sql7="INSERT ignore INTO bai3_finishing.barcode_update (style, schedule, barcode, username, c_block) VALUES ('$style', '$schedule', '$barcode', '$username', '$c_block')";
@@ -420,10 +427,15 @@ if(isset($_POST['save']))
 			}
 			else
 			{
-				$sql4="insert ignore into brandix_bts.tbl_carton_size_ref (parent_id,color,ref_size_name,quantity) values('".$id."','".$color[$i]."','".$size[$i]."','".$ratio[$i]."')";
-				//echo $sql4."<br>";
-				$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error--4".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if(!in_array($c_block,$country_block))
+				$sql33="select * from brandix_bts.tbl_carton_size_ref where parent_id='".$id."' and color='".$color[$i]."' and ref_size_name='".$size[$i]."' and quantity='".$ratio[$i]."' ";
+				$sql33_result43=mysqli_query($link, $sql33) or exit("Sql Error--42".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql33_result43)==0)
+				{
+					$sql4="insert  into brandix_bts.tbl_carton_size_ref (parent_id,color,ref_size_name,quantity) values('".$id."','".$color[$i]."','".$size[$i]."','".$ratio[$i]."')";
+					//echo $sql4."<br>";
+					$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error--4".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
+					if(!in_array($c_block,$country_block))
 				{
 					$sql5="INSERT ignore INTO `bai3_finishing`.`input_update` (`style`, `schedule`, `size`, `color`, `ims_qty`, `barcode`, `username`, `c_block`) VALUES ('".$style."', '$schedule', '".$size_tit[$i]."', '".$color[$i]."', '$ratio[$i]', '$barcode', '$username', '$c_block')";
 					//echo $sql5."<br>";

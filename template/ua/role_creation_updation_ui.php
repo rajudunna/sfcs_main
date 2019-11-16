@@ -77,7 +77,7 @@
 
                         if($unique_count == 0){
 
-                            $sql_update_query = "update rbac_roles set role_name = '$role_name' where role_id='$roleid'";
+                            $sql_update_query = "update rbac_roles set role_name = '$role_name' where role_id = $roleid";
                             $query_result = mysqli_query($link_ui, $sql_update_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
                             
                             if ($query_result) {
