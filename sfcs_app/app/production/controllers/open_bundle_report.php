@@ -158,7 +158,7 @@ function check_val()
                             </div>
                             <div class='panel-body' style="overflow: scroll;height: 616px;">
                                             <?php 
-                                                $sql_operation="SELECT tor.operation_name AS operation_name,tor.operation_code AS operation_code FROM brandix_bts.tbl_style_ops_master tsm LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='".$style."' AND tsm.barcode='Yes' AND tor.category = 'sewing' AND tor.display_operations='yes' GROUP BY operation_code ORDER BY tsm.operation_order*1;"; 
+                                                $sql_operation="SELECT tor.operation_name AS operation_name,tor.operation_code AS operation_code FROM brandix_bts.tbl_style_ops_master tsm LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='".$style."' AND tsm.barcode='Yes' AND tor.category = 'sewing' AND tor.display_operations='yes' GROUP BY operation_code ORDER BY CAST(tsm.operation_order AS CHAR);"; 
                                                 //echo "</br>SQL Operation : ".$sql_operation."</br>";       
                                                 $select_opertation=mysqli_query($link,$sql_operation) or exit($sql_operation."Error at something");
                                                     if( mysqli_num_rows( $select_opertation )==0)
@@ -167,7 +167,16 @@ function check_val()
 													 exit();
                                                     }
                                                     else
-                                                    { 
+                                                    {
+														echo '<table style="padding:0px" class = "col-sm-12 table-bordered table-striped table-condensed" id="myTable">
+																<thead>
+																	<tr>
+																		<th rowspan="2">Schedule</th>
+																		<th rowspan="2">Sewing Job</th>
+																		<th rowspan="2">Color</th>
+																		<th rowspan="2">Size</th>
+																		<th rowspan="2">Quantity</th>
+																		<th rowspan="2">Bundle Number</th>';
                                                         $ab="";
                                                         $operation_codes=array();
                                                         while( $row_1 = mysqli_fetch_assoc( $select_opertation ) ){
@@ -177,24 +186,14 @@ function check_val()
                                                                 <th>Rejected Quantity</th>
                                                                 <th>Pending Recutin</th>";
                                                         }
-                                                        echo "</tr><tr>".$ab."</tr>";
+                                                        echo "</tr><tr>".$ab."</tr></thead>";
                                                         $opcodes=implode(',',$operation_codes);
                                                         //   echo $opcodes;
                                                     }
                                              ?>
-								<table style='padding:0px' class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'>
-                                    <thead>
-                                        <tr>
-                                            <th rowspan="2">Schedule</th>
-                                            <th rowspan="2">Sewing Job</th>
-                                            <th rowspan="2">Color</th>
-                                            <th rowspan="2">Size</th>
-                                            <th rowspan="2">Quantity</th>
-                                            <th rowspan="2">Bundle Number</th>
-                                         </tr>
-                                    </thead>
                                          <?php  
-                                                $openbundle_sql="SELECT bundle_number FROM `brandix_bts`.`bundle_creation_data` WHERE style='".$style."' AND schedule='".$schedule."' AND bundle_qty_status=0 AND operation_id IN ($opcodes) GROUP BY bundle_number";
+                                                $openbundle_sql="SELECT bundle_number FROM `brandix_bts`.`bundle_creation_data` WHERE style='".$style."' AND schedule='".$schedule."' AND bundle_qty_status=0 and operation_id IN ($opcodes) GROUP BY bundle_number";
+												// echo $openbundle_sql;
                                                $select_bundlenum=mysqli_query($link,$openbundle_sql) or exit($openbundle_sql."Error at something");
                                                 $operation_bundles=array();
                                                  while($row_2 = mysqli_fetch_assoc( $select_bundlenum)){
