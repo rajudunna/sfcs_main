@@ -330,9 +330,16 @@ if(isset($_POST['submit']))
 								
 							$code=$date."-".$module."-".$shift; 
 								
-							$sql2="insert ignore into $bai_pro.grand_rep(tid) values (\"$code\")"; 
-							mysqli_query($link, $sql2) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"])); 
-				
+							
+							$select_check_one="select tid from $bai_pro.grand_rep where tid='$code'";
+							$result_insert_one=mysql_query($select_check_one,$link) or ("Sql error".mysql_error());
+					
+							$check_result_one=mysqli_num_rows($result_insert_one);
+							if($check_result_one==0)
+							{
+								$sql2="insert ignore into $bai_pro.grand_rep(tid) values (\"$code\")"; 
+								mysqli_query($link, $sql2) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"])); 
+							}
 							//New code to extract values from existing 
 								
 							if(date("Y-m-d")>"2014-06-30") 

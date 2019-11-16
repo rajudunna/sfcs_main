@@ -458,8 +458,15 @@ SUM((plandoc_stat_log.p_xs+plandoc_stat_log.p_s+plandoc_stat_log.p_l+plandoc_sta
 			}
 			else
 			{
-				$insertStyleCode="INSERT IGNORE INTO `$brandix_bts`.`tbl_orders_style_ref`(`product_style`) VALUES ('$style_code')";
-				$result3=mysqli_query($link, $insertStyleCode) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$select_index="select product_style from `$brandix_bts`.`tbl_orders_style_ref` where product_style='$style_code'";
+				$link_select_index = mysql_query($select_index,$link) or ("Sql error".mysql_error());
+
+				$numrows_check=mysqli_num_rows($link_select_index);
+				if($numrows_check==0)
+				{
+					$insertStyleCode="INSERT INTO `$brandix_bts`.`tbl_orders_style_ref`(`product_style`) VALUES ('$style_code')";
+					$result3=mysqli_query($link, $insertStyleCode) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
 				$style_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 				$default_operations="SELECT id FROM tbl_orders_ops_ref where default_operation='YES'";
 				$result4=mysqli_query($link, $default_operations) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -522,11 +529,18 @@ SUM((plandoc_stat_log.p_xs+plandoc_stat_log.p_s+plandoc_stat_log.p_l+plandoc_sta
 					$cat_ref=$l['cat_ref'];
 					$mk_ref=$l['mk_ref'];
 					$cuttable_ref=$l['cuttable_ref'];
-					//Insert data into layplan(tbl_cut_master) table
-					$insertLayPlanQuery="INSERT ignore INTO $brandix_bts.tbl_cut_master(doc_num,ref_order_num,cut_num,cut_status,planned_module,request_time,issued_time,planned_plies,actual_plies,plan_date,style_id,product_schedule,cat_ref,cuttable_ref,mk_ref) VALUES 
-					('$doc_num',$order_id,$cut_num,'$cut_status','$planned_module','$request_time','$issued_time',$planned_plies,$actual_plies,'$plan_date',$style_id,'$product_schedule',$cat_ref,$cuttable_ref,$mk_ref)";
-					//echo $insertLayPlanQuery."</br>";
-					$result8=mysqli_query($link, $insertLayPlanQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+					$exist_query = "select doc_num from $brandix_bts.tbl_cut_master where doc_num='$doc_num'";
+					$result_query=mysql_query($exist_query,$link) or ("Sql error".mysql_error());
+
+					$check_first=mysqli_num_rows($result_query);
+					if($check_first==0){
+						//Insert data into layplan(tbl_cut_master) table
+						$insertLayPlanQuery="INSERT INTO $brandix_bts.tbl_cut_master(doc_num,ref_order_num,cut_num,cut_status,planned_module,request_time,issued_time,planned_plies,actual_plies,plan_date,style_id,product_schedule,cat_ref,cuttable_ref,mk_ref) VALUES 
+						('$doc_num',$order_id,$cut_num,'$cut_status','$planned_module','$request_time','$issued_time',$planned_plies,$actual_plies,'$plan_date',$style_id,'$product_schedule',$cat_ref,$cuttable_ref,$mk_ref)";
+						//echo $insertLayPlanQuery."</br>";
+						$result8=mysqli_query($link, $insertLayPlanQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					}
 					$layplan_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 					if($layplan_id>0)
 					{
@@ -1161,11 +1175,18 @@ SUM((plandoc_stat_log.p_xs+plandoc_stat_log.p_s+plandoc_stat_log.p_l+plandoc_sta
 				$cat_ref=$l['cat_ref'];
 				$mk_ref=$l['mk_ref'];
 				$cuttable_ref=$l['cuttable_ref'];
-				//Insert data into layplan(tbl_cut_master) table
-				$insertLayPlanQuery="INSERT ignore INTO $brandix_bts.tbl_cut_master(doc_num,ref_order_num,cut_num,cut_status,planned_module,request_time,issued_time,planned_plies,actual_plies,plan_date,style_id,product_schedule,cat_ref,cuttable_ref,mk_ref,col_code) VALUES 
-				('$doc_num',$order_id,$cut_num,'$cut_status','$planned_module','$request_time','$issued_time',$planned_plies,$actual_plies,'$plan_date',$style_id,'$product_schedule',$cat_ref,$cuttable_ref,$mk_ref,$col_code)";
-				//echo $insertLayPlanQuery."</br>";
-				$result8=mysqli_query($link, $insertLayPlanQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$exist_query_sec = "select doc_num from $brandix_bts.tbl_cut_master where doc_num='$doc_num'";
+				$result_query_sec=mysql_query($exist_query_sec,$link) or ("Sql error".mysql_error());
+
+				$check_sec=mysqli_num_rows($result_query_sec);
+				if($check_sec==0)
+				{
+					//Insert data into layplan(tbl_cut_master) table
+					$insertLayPlanQuery="INSERT INTO $brandix_bts.tbl_cut_master(doc_num,ref_order_num,cut_num,cut_status,planned_module,request_time,issued_time,planned_plies,actual_plies,plan_date,style_id,product_schedule,cat_ref,cuttable_ref,mk_ref,col_code) VALUES 
+					('$doc_num',$order_id,$cut_num,'$cut_status','$planned_module','$request_time','$issued_time',$planned_plies,$actual_plies,'$plan_date',$style_id,'$product_schedule',$cat_ref,$cuttable_ref,$mk_ref,$col_code)";
+					//echo $insertLayPlanQuery."</br>";
+					$result8=mysqli_query($link, $insertLayPlanQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
 				$layplan_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 				if($layplan_id>0)
 				{

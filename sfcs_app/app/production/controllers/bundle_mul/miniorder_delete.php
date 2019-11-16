@@ -8,10 +8,16 @@ include($_SERVER['DOCUMENT_ROOT'].$global_path."/common/config/user_acl_v1.php")
 $mini_order_ref=$_GET['mini_order_ref'];
 if($_GET['ops']==1)
 {
-	$sql="insert ignore into $brandix_bts.tbl_miniorder_data_deleted select * from brandix_bts.tbl_miniorder_data where mini_order_ref='".$mini_order_ref."'";
-	// echo $sql."<br>";
-	$result=mysqli_query($link, $sql) or exit("Sql Error123456".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
+	$select_index = "select * from $brandix_bts.tbl_miniorder_data_deleted where mini_order_ref='$mini_order_ref'";
+	$resultselect_index=mysqli_query($link, $select_index) or exit("Sql Error123456".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+	$check_result_one=mysqli_num_rows($resultselect_index);
+	if($check_result_one==0)
+	{
+		$sql="insert into $brandix_bts.tbl_miniorder_data_deleted select * from $brandix_bts.tbl_miniorder_data where mini_order_ref='".$mini_order_ref."'";
+		// echo $sql."<br>";
+		$result=mysqli_query($link, $sql) or exit("Sql Error123456".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
 	$sql11="select count(*) from $brandix_bts.tbl_miniorder_data where mini_order_ref='".$mini_order_ref."'";
 	$result11=mysqli_query($link, $sql11) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($result11)>0)
