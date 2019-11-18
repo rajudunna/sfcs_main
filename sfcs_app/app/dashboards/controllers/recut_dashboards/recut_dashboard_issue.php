@@ -83,9 +83,17 @@ if(isset($_POST['formIssue']))
 {
     $issueval = $_POST['issueval'];
     $bcd_id = $_POST['bcd_id'];
+     $newIds = [];
+    foreach($bcd_id as $cat => $bcdIds) {
+        foreach($bcdIds as $id) {
+            $newIds[] = $id;
+        }
+    }
     $doc_no_ref = $_POST['doc_no_ref'];
     $job_no = $_POST['job_no'];
     $size = $_POST['size'];
+    // var_dump($bcd_id1);
+    // die();
     
     $get_recut_status="select max(status) as recut_status from $bai_pro3.recut_v2_child_issue_track where recut_id=".$doc_no_ref."";
     $get_recut_result=mysqli_query($link, $get_recut_status)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -102,7 +110,7 @@ if(isset($_POST['formIssue']))
     }
     //To check whether rejection is swing category
     $category=['sewing'];
-    $get_operation_id = "SELECT operation_id FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN (".implode(',',$bcd_id).") ORDER BY barcode_sequence";
+    $get_operation_id = "SELECT operation_id FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN (".implode(',',$newIds).") ORDER BY barcode_sequence";
     $get_operation_id_res = $link->query($get_operation_id);
     while($row_ops = $get_operation_id_res->fetch_assoc()) 
     {
@@ -125,8 +133,8 @@ if(isset($_POST['formIssue']))
             foreach($issueval[$category_act] as $key=>$value)
             {
                 //retreaving remaining_qty from recut_v2_child
-                $act_id = $bcd_id[$key];
-                $recut_allowing_qty = $issueval[$key];
+                $act_id = $bcd_id[$category_act][$key];
+                $recut_allowing_qty = $issueval[$category_act][$key];
                 $retreaving_bcd_data = "SELECT * FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
                 $retreaving_bcd_data_res = $link->query($retreaving_bcd_data);
                 while($row_bcd = $retreaving_bcd_data_res->fetch_assoc()) 
@@ -168,14 +176,14 @@ if(isset($_POST['formIssue']))
                     }
                 }
             }
-            $issue_to_sewing = issue_to_sewing($job_no,$size,$issueval[$category_act],$doc_no_ref,$bcd_id);
+            $issue_to_sewing = issue_to_sewing($job_no,$size,$issueval[$category_act],$doc_no_ref,$bcd_id[$category_act]);
         }
         else
         {
             foreach($issueval[$category_act] as $key=>$value)
             {
                 //retreaving remaining_qty from recut_v2_child
-                $act_id = $bcd_id[$key];
+                $act_id = $bcd_id[$category_act][$key];
                 $recut_allowing_qty = $issueval[$category_act][$key];
                // var_dump($recut_allowing_qty);
                 $retreaving_bcd_data = "SELECT * FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
