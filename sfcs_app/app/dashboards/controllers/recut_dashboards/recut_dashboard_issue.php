@@ -124,6 +124,7 @@ if(isset($_POST['formIssue']))
     $result_checking_qry = $link->query($checking_qry);
     while($row_cat = $result_checking_qry->fetch_assoc()) 
     {
+        $emb_cut_check_flag = 0;
         $category_act = $row_cat['category'];
             
         if(in_array($category_act,$category))
