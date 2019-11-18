@@ -54,6 +54,41 @@
           });</script>';
 	}	
 	
+	$access_report = $operation_code.'-G';
+	$access_reject = $operation_code.'-R';
+	$access_qry=" select * from $central_administration_sfcs.rbac_permission where permission_name = '$access_report' or permission_name = '$access_reject' and status='active'";
+	$result = $link->query($access_qry);
+	var_dump($$access_report);
+	var_dump($$access_reject);
+	var_dump($has_permission);
+
+	if($result->num_rows > 0){
+		if (in_array($$access_report,$has_permission))
+		{
+			$good_report = '';
+		}
+		else
+		{
+			$good_report = 'readonly';
+		}
+		if (in_array($$access_reject,$has_permission))
+		{
+			$reject_report = '';
+		}
+		else
+		{
+			$reject_report = 'readonly';
+		}
+	} else {
+		$good_report = '';
+		$reject_report = '';
+	}
+
+	// var_dump($good_report);
+	// var_dump($reject_report);
+	echo '<input type="hidden" name="good_report" id="good_report" value="'.$good_report.'">';
+	echo '<input type="hidden" name="reject_report" id="reject_report" value="'.$reject_report.'">';
+
 	$qery_rejection_resons = "select * from $bai_pro3.bai_qms_rejection_reason where form_type = 'P'";
 	$result_rejections = $link->query($qery_rejection_resons);
 ?>
@@ -231,9 +266,13 @@ $(document).ready(function()
                             $("#dynamic_table1").append(btn);
                         }
                         var readonly ='';
-                        var temp_var_bal = data[i].balance_to_report;
-                        s_no++;
-                        var markup1 = "<tr><td data-title='S.No'>"+s_no+"</td><td data-title='Size'>"+data[i].size_code.toUpperCase()+"</td><td data-title='Input Job Quantity'>"+data[i].carton_act_qty+"</td><input type='hidden' name='old_size[]' value = '"+data[i].old_size+"'><td  data-title='Cumulative Reported Quantity'>"+data[i].reported_qty+"</td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+temp_var_bal+"</td><td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)'  class='form-control input-md twotextboxes' id='"+i+"reporting' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='"+temp_var_bal+"' required name='reporting_qty[]' onchange = 'validate_reporting_report("+i+") '"+readonly+"></td><td><input type='text' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' onkeyup='validateQty(event,this)' required value='0' class='form-control input-md twotextboxes' id='"+i+"rejections' name='rejection_qty[]' onchange = 'rejections_capture("+i+")' "+readonly+"></td><td class='hide'><input type='hidden' name='qty_data["+data[i].tid+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+data[i].tid+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td><td class='hide'><input type='hidden' name='doc_no[]' id='"+i+"doc_no' value='"+data[i].doc_no+"'></td><td class='hide'><input type='hidden' name='colors[]' id='"+i+"colors' value='"+data[i].order_col_des+"'></td><td class='hide'><input type='hidden' name='sizes[]' id='"+i+"sizes' value='"+data[i].size_code+"'></td><td class='hide'><input type='hidden' name='job_qty[]' id='"+i+"job_qty' value='"+data[i].carton_act_qty+"'></td><td class='hide'><input type='hidden' name='tid[]' id='"+i+"tid' value='"+data[i].tid+"'></td><td class='hide'><input type='hidden' name='inp_job_ref[]' id='"+i+"inp_job_no' value='"+data[i].input_job_no+"'></td><td class='hide'><input type='hidden' name='a_cut_no[]' id='"+i+"a_cut_no' value='"+data[i].acutno+"'></td><td class='hide'><input type='hidden' name='old_rep_qty[]' id='"+i+"old_rep_qty' value='"+data[i].reported_qty+"'></td><td class='hide'><input type='hidden' name='old_rej_qty[]' id='"+i+"old_rej_qty' value='"+data[i].rejected_qty+"'></td><input type='hidden' name='bundle_numbers[]' id='"+i+"bundle_number' value='"+data[i].tid+"'></td></tr>";
+						s_no++;
+						if($('#good_report').val() == 'readonly'){
+							var temp_var_bal = 0;
+						} else {
+							var temp_var_bal = data[i].balance_to_report;
+						}
+                        var markup1 = "<tr><td data-title='S.No'>"+s_no+"</td><td data-title='Size'>"+data[i].size_code.toUpperCase()+"</td><td data-title='Input Job Quantity'>"+data[i].carton_act_qty+"</td><input type='hidden' name='old_size[]' value = '"+data[i].old_size+"'><td  data-title='Cumulative Reported Quantity'>"+data[i].reported_qty+"</td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+temp_var_bal+"</td><td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)' "+$('#good_report').val()+" class='form-control input-md twotextboxes' id='"+i+"reporting' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='"+temp_var_bal+"' required name='reporting_qty[]' onchange = 'validate_reporting_report("+i+") '"+readonly+" ></td><td><input type='text' onfocus='if($(this).val() == 0){$(this).val(``)}' "+$('#reject_report').val()+" onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' onkeyup='validateQty(event,this)' required value='0' class='form-control input-md twotextboxes' id='"+i+"rejections' name='rejection_qty[]' onchange = 'rejections_capture("+i+")' "+readonly+" ></td><td class='hide'><input type='hidden' name='qty_data["+data[i].tid+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+data[i].tid+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td><td class='hide'><input type='hidden' name='doc_no[]' id='"+i+"doc_no' value='"+data[i].doc_no+"'></td><td class='hide'><input type='hidden' name='colors[]' id='"+i+"colors' value='"+data[i].order_col_des+"'></td><td class='hide'><input type='hidden' name='sizes[]' id='"+i+"sizes' value='"+data[i].size_code+"'></td><td class='hide'><input type='hidden' name='job_qty[]' id='"+i+"job_qty' value='"+data[i].carton_act_qty+"'></td><td class='hide'><input type='hidden' name='tid[]' id='"+i+"tid' value='"+data[i].tid+"'></td><td class='hide'><input type='hidden' name='inp_job_ref[]' id='"+i+"inp_job_no' value='"+data[i].input_job_no+"'></td><td class='hide'><input type='hidden' name='a_cut_no[]' id='"+i+"a_cut_no' value='"+data[i].acutno+"'></td><td class='hide'><input type='hidden' name='old_rep_qty[]' id='"+i+"old_rep_qty' value='"+data[i].reported_qty+"'></td><td class='hide'><input type='hidden' name='old_rej_qty[]' id='"+i+"old_rej_qty' value='"+data[i].rejected_qty+"'></td><input type='hidden' name='bundle_numbers[]' id='"+i+"bundle_number' value='"+data[i].tid+"'></td></tr>";
                         $("#dynamic_table").append(markup1);
                         $("#dynamic_table").hide();
 					}

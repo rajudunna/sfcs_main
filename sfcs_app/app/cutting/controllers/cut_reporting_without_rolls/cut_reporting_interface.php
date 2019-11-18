@@ -1,11 +1,43 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 
+$has_permission=haspermission($_GET['r']); 
+
 if($fabric_validation_for_cut_report == 'yes')
     $FABRIC_VALIDATION = 1;
 else
     $FABRIC_VALIDATION = 0;
 
+//hardcode for temp purpose
+$operation_code = 15;
+$access_report = $operation_code.'-G';
+$access_reject = $operation_code.'-R';
+$access_qry=" select * from $central_administration_sfcs.rbac_permission where permission_name = '$access_report' or permission_name = '$access_reject' and status='active'";
+$result = $link->query($access_qry);
+if($result->num_rows > 0){
+    if (in_array($$access_report,$has_permission))
+    {
+        $good_report = '';
+    }
+    else
+    {
+        $good_report = 'readonly';
+    }
+    if (in_array($$access_reject,$has_permission))
+    {
+        $reject_report = '';
+    }
+    else
+    {
+        $reject_report = 'readonly';
+    }
+} else {
+    $good_report = '';
+    $reject_report = '';
+}
+
+echo '<input type="hidden" name="good_report" id="good_report" value="'.$good_report.'">';
+echo '<input type="hidden" name="reject_report" id="reject_report" value="'.$reject_report.'">';
 if(isset($_GET['doc_no'])){
     $cut_table = $_GET['cut_table'];
     $doc_no = $_GET['doc_no'];
@@ -16,7 +48,7 @@ if(isset($_GET['doc_no'])){
             loadDetails($doc_no);
         });
     </script>";
-
+    
 
 $sql12="SELECT * from $bai_rm_pj1.fabric_cad_allocation where doc_no = ".$doc_no."";
 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -927,6 +959,9 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     });
 
     $(document).ready(function(){
+        if($('#reject_report').val() == 'readonly' ){
+            $('#rejections_panel_btn').attr({'disabled':true});
+        }
         $('.rej_tab').css({'display':'none'});
         $('#hide_details_reporting').css({'display':'none'});
         $('#hide_details_reported').css({'display':'none'});
@@ -944,6 +979,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $('.user_msg').css({'display':'none'});
         $('#hide_details_reported').css({'display':'none'});
         $('#hide_details_reporting').css({'display':'none'});
+       
         clearAll();
         clearFormData();
         clearRejections();
@@ -1737,8 +1773,14 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#d_style').html(data.styles);
             $('#d_schedule').html(data.schedules);
             $('#d_color').html(data.colors);
-
-            $('#c_plies').val(avl_plies);
+            if($('#good_report').val() == 'readonly'){
+                $('#c_plies').attr('readonly', true);
+                // $("#c_plies").attr('readonly', 'readonly');
+                $('#c_plies').val(0);
+            } else {
+                $('#c_plies').val(avl_plies);
+            }
+            // $('#c_plies').val(avl_plies);
             $('#fab_received').val(fab_req);
 
             $('#post_style').val(data.styles);
@@ -1770,7 +1812,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
                 //calculatecutreport();
             }
-                $('#c_plies').attr('readonly', false);
+                // $('#c_plies').attr('readonly', false);
                 $('#fab_received').attr('readonly', false);
                 $('#fab_returned').attr('readonly', false);
                 $('#damages').attr('readonly', false);
