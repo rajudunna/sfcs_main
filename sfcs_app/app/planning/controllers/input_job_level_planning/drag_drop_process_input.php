@@ -294,7 +294,7 @@ $userName = getrbac_user()['uname'];
 			}	
 			
 			$sql11="select input_job_no_random_ref from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$items[1]."'";
-			sql11_result=mysqli_query($link, $sql11) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql11_result=mysqli_query($link, $sql11) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql11_result)==0)
 			{
 				$sql="insert  into $bai_pro3.plan_dashboard_input (input_job_no_random_ref) values ('".$items[1]."')";
@@ -461,7 +461,7 @@ $userName = getrbac_user()['uname'];
 					}
 				}	
 				
-				$sql1234="select doc_no from $bai_pro3.plan_dashboard wheree doc_no='".$dockets_ref[$d]."'";
+				$sql1234="select doc_no from $bai_pro3.plan_dashboard where doc_no='".$dockets_ref[$d]."'";
 				$sql1234_result=mysqli_query($link, $sql1234) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql1234_result)==0)
 				{
