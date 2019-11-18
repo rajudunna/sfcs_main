@@ -804,8 +804,8 @@
 							{
 
 								$select_check_first="select doc_num from $brandix_bts.tbl_cut_master where doc_num='$doc_num'";
-								$result_insert_first=mysql_query($select_check_first,$link) or ("Sql error".mysql_error());
-
+								
+								$result_insert_first=mysqli_query($select_check_first, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$check_result_first=mysqli_num_rows($result_insert_first);
 								if($check_result_first==0)
 								{
@@ -825,8 +825,7 @@
 									if($l["p_".$sizes_array[$i].""]>0)
 									{
 										$select_check_sec="select id from $brandix_bts.tbl_cut_size_master where parent_id=$layplan_id and color='$color_code' and ref_size_name='$sizes_tmp[$i]' and quantity='".$l["p_".$sizes_array[$i].""]."'";
-										$result_insert_sec=mysql_query($select_check_sec,$link) or ("Sql error".mysql_error());
-
+										$result_insert_sec=mysqli_query($select_check_sec, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 										$check_result_sec=mysqli_num_rows($result_insert_sec);
 										if($check_result_sec==0)
 										{
@@ -852,8 +851,8 @@
 					}
 				}
 				$select_check_one="select id from $brandix_bts.tbl_carton_ref where carton_barcode='$schedule_original' and carton_tot_quantity='$tot' and ref_order_num='$schedule' and style_code='$style' and carton_method='$pack_method'";
-				$result_insert_one=mysql_query($select_check_one,$link) or ("Sql error".mysql_error());
-
+				$result_insert_one=mysqli_query($select_check_one,$link) or ("Sql error".mysqli_error());
+		
 				$check_result_one=mysqli_num_rows($result_insert_one);
 				if($check_result_one==0)
 				{
@@ -884,7 +883,7 @@
 							}
 
 							$select_check_second="select id from $brandix_bts.tbl_carton_size_ref where parent_id=$id and color='$color[$i]' and ref_size_name='$ref_size_name' and quantity=$GarPerBag[$i][$j] and poly_bags_per_carton=$BagPerCart[$j] and garments_per_carton=$GarPerCart[$i][$j] and combo_no=$combo[$i] and size_title='$original_size[$j]'";
-							$result_insert_second=mysql_query($select_check_second,$link) or ("Sql error".mysql_error());
+							$result_insert_second=mysqli_query($select_check_second,$link) or ("Sql error".mysqli_error());
 
 							$check_result_second=mysqli_num_rows($result_insert_second);
 							if($check_result_second==0)
@@ -1001,7 +1000,7 @@
 							{
 
 								$select_check_two="select doc_num from $brandix_bts.tbl_cut_master where doc_num='$doc_num'";
-								$result_insert_two=mysql_query($select_check_two,$link) or ("Sql error".mysql_error());
+								$result_insert_two=mysqli_query($select_check_two,$link) or ("Sql error".mysqli_error());
 
 								$check_result_two=mysqli_num_rows($result_insert_two);
 								if($check_result_two==0)
@@ -1022,7 +1021,7 @@
 									if($l["p_".$sizes_array[$i].""]>0)
 									{
 										$select_check_third="select id from $brandix_bts.tbl_cut_size_master where parent_id=$layplan_id and color='$color_code' and ref_size_name='$sizes_tmp[$i]' and quantity='".$l["p_".$sizes_array[$i].""]."'";
-										$result_insert_third=mysql_query($select_check_third,$link) or ("Sql error".mysql_error());
+										$result_insert_third=mysqli_query($select_check_third,$link) or ("Sql error".mysqli_error());
 
 										$check_result_third=mysqli_num_rows($result_insert_third);
 										if($check_result_third==0)
@@ -1051,7 +1050,7 @@
 				// echo $tot;
 
 				$select_check_four="select id from $brandix_bts.tbl_carton_ref where carton_barcode='$schedule_original' and carton_tot_quantity='$tot' and ref_order_num='$schedule' and style_code='$style' and carton_method='$pack_method'";
-				$result_insert_four=mysql_query($select_check_four,$link) or ("Sql error".mysql_error());
+				$result_insert_four=mysqli_query($select_check_four,$link) or ("Sql error".mysqli_error());
 
 				$check_result_four=mysqli_num_rows($result_insert_four);
 				if($check_result_four==0)
@@ -1082,7 +1081,7 @@
 								$ref_size_name = $get_ref_size_deatils['ref_size_name'];
 							}
 							$select_check_fifth="select id from $brandix_bts.tbl_carton_size_ref where parent_id=$id and color='$color[$i]' and ref_size_name='$ref_size_name' and quantity=$GarPerBag[$i][$j] and poly_bags_per_carton=$BagPerCart and garments_per_carton=$GarPerCart[$i][$j] and combo_no=$combo[$i] and size_title='$original_size[$j]'";
-							$result_insert_fifth=mysql_query($select_check_fifth,$link) or ("Sql error".mysql_error());
+							$result_insert_fifth=mysqli_query($select_check_fifth,$link) or ("Sql error".mysqli_error());
 
 							$check_result_fifth=mysqli_num_rows($result_insert_fifth);
 							if($check_result_fifth==0)
