@@ -136,7 +136,7 @@ if(isset($_POST['update']))
 			$sql1111_result=mysqli_query($link, $sql1111) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql1111_result)==0)
 			{
-				$sql="insert into $bai_pro3.maker_stat_log (date, cat_ref, cuttable_ref, allocate_ref, mklength, mkeff, mk_ver, remarks, order_tid, lastup, remark1, remark2, remark3, remark4) values(\"$log_date\",\"$cat_ref\", \"$cuttable_ref\", \"$allocate_ref\", \"$in_mklen\", \"$in_mkeff\", \"$in_mkver\", \"$in_rmks\", \"$tran_order_tid\" \"$log_time\", \"$remarks1\", \"$remarks2\", \"$remarks3\", \"$remarks4\")";
+				$sql="insert into $bai_pro3.maker_stat_log (date, cat_ref, cuttable_ref, allocate_ref, mklength, mkeff, mk_ver, remarks, order_tid, lastup, remark1, remark2, remark3, remark4) values(\"$log_date\",\"$cat_ref\", \"$cuttable_ref\", \"$allocate_ref\", \"$in_mklen\", \"$in_mkeff\", \"$in_mkver\", \"$in_rmks\", \"$tran_order_tid\",\"$log_time\", \"$remarks1\", \"$remarks2\", \"$remarks3\", \"$remarks4\")";
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
