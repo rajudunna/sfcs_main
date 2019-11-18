@@ -106,7 +106,17 @@
 							}else
 							{
 								$invoice_qty;
-							}				
+							}
+							$get_min_value = "select width_s,width_m,width_e from $bai_rm_pj1.roll_inspection_child where store_in_tid in (select store_in_id from $bai_rm_pj1.`inspection_population` where parent_id=$id)";
+							$min_value_result=mysqli_query($link,$get_min_value) or exit("get_min_value Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($row_min=mysqli_fetch_array($min_value_result))
+							{
+                               $width_s = $row_min['width_s'];
+                               $width_m = $row_min['width_m'];
+                               $width_e = $row_min['width_e'];
+							}
+                            $min_value = min($width_s,$width_m,$width_e);
+                            $inch_value=round($min_value/(2.54),2);				
 							$back_color="";		
 							$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id in (select store_in_id from $bai_rm_pj1.`inspection_population` where parent_id=$id)";	
 							$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -115,7 +125,7 @@
 								while($row52=mysqli_fetch_array($status_details_result2))
 								{ 
 									$point=$row52['pnt'];
-									$main_points=((($row52['pnt']/$invoice_qty)*(36/49.21))*100);
+									$main_points=((($row52['pnt']/$invoice_qty)*(36/$inch_value))*100);
 									$main_points = round($main_points,2);
 								}
 								
@@ -245,9 +255,18 @@
 						</div></td>';
 					}						
 					
-					$sql121="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND status=3";
+					$sql121="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND status<>0";
 					$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-					if(mysqli_num_rows($sql_result121)>0)
+					while($row521=mysqli_fetch_array($sql_result121))
+					{
+                       $get_status = $row521['status'];
+                       if($get_status == 3)
+                       {
+                          $val2=1;
+						  // $status_main = 'Complete';
+                       }
+					}
+					if($val2==1 && $get_status == 3)
 					{
 						echo "<td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a>
 						   <br><br>
