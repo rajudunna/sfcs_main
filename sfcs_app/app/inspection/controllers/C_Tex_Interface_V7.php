@@ -2552,14 +2552,13 @@ if($_POST['put'] || $_POST['confirm'])
 	if($head_check>0)
 	{
 		$sql12="select batch_ref from $bai_rm_pj1.inspection_db where batch_ref='$lot_no_new'";
-		mysqli_query($link, $sql12) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql12_result=mysqli_query($link, $sql12) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql12_result=mysqli_query($link, $sql12) or exit("Sql Error5.1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql12_result)==0)
 		{
-			$sql="insert  into $bai_rm_pj1.inspection_db(batch_ref) values (\"$lot_no_new\")";
+			$sql="insert into $bai_rm_pj1.inspection_db(batch_ref) values (\"$lot_no_new\")";
 			mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
-  			if(mysqli_affected_rows($link))
+  		if(mysqli_affected_rows($link))
 		{
 			//For Total batched inspeciton done in current month.
 			$sql="select log_date from $bai_rm_pj1.inspection_db where month(log_date)=".date("m")." and year(log_date)=".date("Y");
