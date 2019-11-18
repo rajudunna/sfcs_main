@@ -2568,7 +2568,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 				<select name=\"roll_status[$i]\" id='roll_status[$i]'  onchange='change_body(2,this.name,$i)' ".$dropdown_read." class='listbox' id='roll_status[$i]'>";
 			for($iq=0;$iq<sizeof($roll_status);$iq++)
 			{
-				if($roll_status[$iq]==$status_main)
+				if($iq==$temp[10])
 				{
 					echo "<option value='".$iq."' selected>".$roll_status[$iq]."</option>";
 				}	  	
