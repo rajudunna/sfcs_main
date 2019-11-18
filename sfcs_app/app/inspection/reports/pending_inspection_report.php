@@ -255,7 +255,7 @@
 						</div></td>';
 					}						
 					
-					$sql121="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND status<>0";
+					$sql121="SELECT status FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND status<>0";
 					$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row521=mysqli_fetch_array($sql_result121))
 					{
@@ -263,7 +263,6 @@
                        if($get_status == 3)
                        {
                           $val2=1;
-						  // $status_main = 'Complete';
                        }
 					}
 					if($val2==1 && $get_status == 3)
