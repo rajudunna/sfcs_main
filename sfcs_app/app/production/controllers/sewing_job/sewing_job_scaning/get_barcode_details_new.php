@@ -19,7 +19,7 @@
     $good_report = 0;
 
     if($op_no != '') {
-        $access_report = $op_no.'-G';
+        $access_report = "$op_no.'-G'";
 
         $access_qry=" select * from $central_administration_sfcs.rbac_permission where permission_name = '$access_report' and status='active'";
         $result = $link->query($access_qry);
