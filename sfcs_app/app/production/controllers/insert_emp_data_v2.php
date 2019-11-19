@@ -7,11 +7,11 @@ $shift=$_POST['shift'];
 $shift_start_time=$_POST['shift_start_time'];
 $shift_end_time=$_POST['shift_end_time'];
 $sql="select * from $bai_pro.pro_atten_hours where date='$date' and shift='$shift'";
-$sql_res=mysqli_query($link, $sql) or exit("Sql Errora $sql11".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_res=mysqli_query($link, $sql) or exit("Sql Error1 $sql11".mysqli_error($GLOBALS["___mysqli_ston"]));
 $count=mysqli_num_rows($sql_res);
 if($count == 0){
 	$select_check_ignore="select * from $bai_pro.pro_atten_hours where date='$date' and shift='$shift' and start_time='$shift_start_time' and end_time='$shift_end_time'";
-		$result_insert_check=mysqli_query($select_check_ignore,$link) or exit("Sql Errora $sql11".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$result_insert_check=mysqli_query($select_check_ignore,$link) or("Sql Error2 $sql11".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 		$check_result=mysqli_num_rows($result_insert_check);
 		if($check_result==0)
