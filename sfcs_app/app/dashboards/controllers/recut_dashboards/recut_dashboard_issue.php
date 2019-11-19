@@ -110,15 +110,15 @@ if(isset($_POST['formIssue']))
     }
     //To check whether rejection is swing category
     $category=['sewing'];
-    $get_operation_id = "SELECT operation_id FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN (".implode(',',$newIds).") ORDER BY barcode_sequence";
+    $get_operation_id = "SELECT DISTINCT(operation_id) as operation_id FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN (".implode(',',$newIds).") ORDER BY barcode_sequence";
     $get_operation_id_res = $link->query($get_operation_id);
     while($row_ops = $get_operation_id_res->fetch_assoc()) 
     {
       $operation_id[] = $row_ops['operation_id'];
     }
     $operations = implode(",",$operation_id);
-    $checking_qry = "SELECT category FROM `$brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code in ($operations)";
-        // echo $checking_qry;
+    $checking_qry = "SELECT DISTINCT(category) as category FROM `$brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code in ($operations)";
+     // echo $checking_qry;
     $result_checking_qry = $link->query($checking_qry);
     while($row_cat = $result_checking_qry->fetch_assoc()) 
     {
@@ -177,7 +177,7 @@ if(isset($_POST['formIssue']))
                     }
                 }
             }
-            $issue_to_sewing = issue_to_sewing($job_no,$size,$issueval[$category_act],$doc_no_ref,$bcd_id[$category_act]);
+            $issue_to_sewing = issue_to_sewing($job_no,$size[$category_act],$issueval[$category_act],$doc_no_ref,$bcd_id[$category_act]);
         }
         else
         {
@@ -217,7 +217,7 @@ if(isset($_POST['formIssue']))
                     {
                         //updating recut_v2_child
                         $update_recut_v2_child = "update $bai_pro3.recut_v2_child set issued_qty = issued_qty+$to_add where bcd_id = $bundle_number and parent_id = $doc_no_ref";
-                       mysqli_query($link, $update_recut_v2_child) or exit("update_recut_v2_child".mysqli_error($GLOBALS["___mysqli_ston"]));
+                      mysqli_query($link, $update_recut_v2_child) or exit("update_recut_v2_child".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                       $insert_query_track= "INSERT INTO $bai_pro3.`recut_v2_child_issue_track` (`recut_id`, `bcd_id`, `issued_qty`, `status`) VALUES ( $doc_no_ref, $bundle_number, $to_add, $issue_status)"; 
                       mysqli_query($link, $insert_query_track) or exit("Inserting_recut_v2_issue_track_table_track".mysqli_error($GLOBALS["___mysqli_ston"]));
