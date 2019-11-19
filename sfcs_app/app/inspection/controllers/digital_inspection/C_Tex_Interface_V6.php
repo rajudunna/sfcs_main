@@ -2470,7 +2470,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		$insp_status="Red";		
 	}
 	
-	$get_status = "select status from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no=".$temp[7]." and sfcs_roll_no='".$temp[1]."'";
+	$get_status = "select status from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no=".$temp[7]." and store_in_id='".$temp[0]."'";
 	//echo $get_status;
 	$status_details_result=mysqli_query($link, $get_status) or exit("status details error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_status=mysqli_fetch_array($status_details_result))
@@ -2486,31 +2486,64 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		$insp_status="";
 	}	
 
-	$sql23="select inspection_status from $bai_rm_pj1.roll_inspection_child where store_in_tid=".$temp[0]."";
-	$sql_result23=mysqli_query($link, $sql23) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($sql_result23)>0)
+	/*-----*/
+	if($temp[2]=='')
 	{
-		while($sql_row12=mysqli_fetch_array($sql_result23))
+		$get_details_points = "select rec_qty from $bai_rm_pj1.`inspection_population` where store_in_id=$temp[0] and status<>0";
+		$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($details_result_points)>0)
 		{
-			if($sql_row12['inspection_status']=='Approved')
-			{
-				$check_status=0;
-				$check_status_val=$sql_row12['inspection_status'];
+			while($row522=mysqli_fetch_array($details_result_points))
+			{ 
+				$invoice_qty=$row522['rec_qty'];
+				if($fab_uom == "meters"){
+					$invoice_qty=round($invoice_qty*1.09361,2);
+				}else
+				{
+					$invoice_qty;
+				}
 			}
-			elseif($sql_row12['inspection_status']=='Rejected')
+			$get_min_value = "select width_s,width_m,width_e from $bai_rm_pj1.roll_inspection_child where store_in_tid=$temp[0]";
+			$min_value_result=mysqli_query($link,$get_min_value) or exit("get_min_value Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($row_min=mysqli_fetch_array($min_value_result))
 			{
-				$check_status=1;
-				$check_status_val=$sql_row12['inspection_status'];
+			   $width_s = $row_min['width_s'];
+			   $width_m = $row_min['width_m'];
+			   $width_e = $row_min['width_e'];
 			}
-			elseif($sql_row12['inspection_status']=='Partial Rejected')
-			{
-				$check_status=2;
-				$check_status_val=$sql_row12['inspection_status'];
+			$min_value = min($width_s,$width_m,$width_e);
+			$inch_value=round($min_value/(2.54),2);
+			$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id=".$temp[0]."";
+			$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($status_details_result2)>0)
+			{	
+				while($row52=mysqli_fetch_array($status_details_result2))
+				{ 
+					$point=$row52['pnt'];
+					if($inch_value > 0)
+					{
+					  $main_points=((($row52['pnt']/$invoice_qty)*(36/$inch_value))*100);	
+					}
+					else
+					{
+						$main_points=0;
+					}	
+					
+					$main_points = round($main_points,2);
+				}
+				
+				if($point>0)
+				{	
+					if($main_points>28)
+					{
+						$temp[10]=1;
+					}
+				}	
 			}
 		}
 	}
 	
-	
+	/*-----*/
 	
 	$sgroup = $temp[13];
 	if($sgroup=='')
@@ -2597,7 +2630,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 			// 	}
 			// }
 
-	if($temp[10] == 1 || $temp[10] == 2 || $status_main == 'Rejected'){
+	if($temp[10] == 1 || $temp[10] == 2){
 		$style = '';
 	}else{
 		$style = 'style=display:none'; 

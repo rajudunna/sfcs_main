@@ -415,7 +415,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 								<tr>
 									<!-- <th>S NO</th> -->
 									<th>Supplier Roll No</th>
-									<th>FCS Roll No</th>
+									<th>SFCS Roll No</th>
 									<th>Supplier PO</th>
 									<th>Po line</th>
 									<th>Po Subline</th>
@@ -568,7 +568,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 
 		if ($count1 > 0) {
 
-			$hid_roll = $_POST['hidden_rolls'];
+			$hid_roll = $count1;
 			$hid_total = $_POST['hidden_total'];
 
 			for ($jj = 0; $jj < $count1; $jj++) {
