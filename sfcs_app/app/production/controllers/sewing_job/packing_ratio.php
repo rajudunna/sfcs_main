@@ -805,7 +805,7 @@
 
 								$select_check_first="select doc_num from $brandix_bts.tbl_cut_master where doc_num='$doc_num'";
 								
-								$result_insert_first=mysqli_query($select_check_first, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$result_insert_first=mysqli_query($select_check_first, $sql) or ("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$check_result_first=mysqli_num_rows($result_insert_first);
 								if($check_result_first==0)
 								{
@@ -825,7 +825,7 @@
 									if($l["p_".$sizes_array[$i].""]>0)
 									{
 										$select_check_sec="select id from $brandix_bts.tbl_cut_size_master where parent_id=$layplan_id and color='$color_code' and ref_size_name='$sizes_tmp[$i]' and quantity='".$l["p_".$sizes_array[$i].""]."'";
-										$result_insert_sec=mysqli_query($select_check_sec, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+										$result_insert_sec=mysqli_query($select_check_sec, $sql) or ("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 										$check_result_sec=mysqli_num_rows($result_insert_sec);
 										if($check_result_sec==0)
 										{

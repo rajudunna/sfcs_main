@@ -351,13 +351,13 @@
 				{
 					$id=$check;
 					$sql="update $brandix_bts.tbl_carton_ref set carton_barcode='".$barcode."',carton_tot_quantity='".$carton_tot."' where id='".$id."'";
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error--".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_result=mysqli_query($link, $sql) or("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				}
 				else
 				{
 					$select_check_ignore="select id from $brandix_bts.tbl_carton_ref where carton_barcode='$barcode' and carton_tot_quantity='$carton_tot' and ref_order_num='$schedule_id' and style_code='$style_id'";
-					$result_insert_check=mysqli_query($select_check_ignore,$link) or exit("Sql Error--".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$result_insert_check=mysqli_query($select_check_ignore,$link) or ("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 					$check_result=mysqli_num_rows($result_insert_check);
 					if($check_result==0)
@@ -380,7 +380,7 @@
 					{
 
 						$select_check_ignore_sec="select id from $brandix_bts.tbl_carton_size_ref where parent_id=$id and color='$color[$i]' and ref_size_name=$size[$i] and quantity=$ratio[$i]";
-						$result_insert_check_sec=mysqli_query($select_check_ignore_sec,$link) or exit("Sql Error--".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$result_insert_check_sec=mysqli_query($select_check_ignore_sec,$link) or ("Sql Error--".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 						$check_result_sec=mysqli_num_rows($result_insert_check_sec);
 						if($check_result_sec==0)
