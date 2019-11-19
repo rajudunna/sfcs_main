@@ -459,7 +459,7 @@ SUM((plandoc_stat_log.p_xs+plandoc_stat_log.p_s+plandoc_stat_log.p_l+plandoc_sta
 			else
 			{
 				$select_index="select product_style from `$brandix_bts`.`tbl_orders_style_ref` where product_style='$style_code'";
-				$link_select_index = mysql_query($select_index,$link) or ("Sql error".mysql_error());
+				$link_select_index = mysqli_query($select_index,$link) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				$numrows_check=mysqli_num_rows($link_select_index);
 				if($numrows_check==0)
@@ -531,7 +531,7 @@ SUM((plandoc_stat_log.p_xs+plandoc_stat_log.p_s+plandoc_stat_log.p_l+plandoc_sta
 					$cuttable_ref=$l['cuttable_ref'];
 					
 					$exist_query = "select doc_num from $brandix_bts.tbl_cut_master where doc_num='$doc_num'";
-					$result_query=mysql_query($exist_query,$link) or ("Sql error".mysql_error());
+					$result_query=mysqli_query($exist_query,$link) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 					$check_first=mysqli_num_rows($result_query);
 					if($check_first==0){
@@ -1176,7 +1176,7 @@ SUM((plandoc_stat_log.p_xs+plandoc_stat_log.p_s+plandoc_stat_log.p_l+plandoc_sta
 				$mk_ref=$l['mk_ref'];
 				$cuttable_ref=$l['cuttable_ref'];
 				$exist_query_sec = "select doc_num from $brandix_bts.tbl_cut_master where doc_num='$doc_num'";
-				$result_query_sec=mysql_query($exist_query_sec,$link) or ("Sql error".mysql_error());
+				$result_query_sec=mysqli_query($exist_query_sec,$link) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				$check_sec=mysqli_num_rows($result_query_sec);
 				if($check_sec==0)
