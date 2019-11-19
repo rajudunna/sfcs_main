@@ -219,9 +219,12 @@
 					
 					$pop_up_path="../sfcs_app/app/inspection/reports/4_point_inspection_report.php";
 					
+					
+					// second Process
 					$sql1="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND status<>0";
 					$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// echo $sql1;
+					$check=mysqli_num_rows($sql_result1);
 					if(mysqli_num_rows($sql_result1)==0)
 					{					
 						echo "<td><div class='col-sm-4' id='populate_div'>
@@ -238,33 +241,58 @@
 						echo "<div class='col-sm-4' id='populate_div'>
 						<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/digital_inspection_report_v1.php", "1", "N") . "&parent_id=$id&status=1\">Click to Inspection Population</a></center>
 						</div></td>";
-					}						
-
-					$sql12="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND (status<>3 && status<>0)";
-					$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-					if(mysqli_num_rows($sql_result12)>0)
-					{					
-						echo "<td><div class='col-sm-4' id='populate_div'>
-							<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/4_point_roll_inspection.php", "1", "N") . "&parent_id=$id\">Proceed 4 Point Inspection</a></center>
-							</div></td>";
+					}
+	
+					// Third Process
+					if($check==0)
+					{
+						echo '<td><div class="col-sm-4" id="populate_div">
+							<center><a class="btn btn-primary"	> Pending to set Inspection Population </a></center>
+							</div></td>';
 					}
 					else
 					{
-						echo '<td><div class="col-sm-4" id="populate_div">
-						<center><a class="btn btn-primary"	> Complete </a></center>
-						</div></td>';
-					}						
-					
-					$sql121="SELECT status FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND status<>0";
-					$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($row521=mysqli_fetch_array($sql_result121))
-					{
-                       $get_status = $row521['status'];
-                       if($get_status == 3)
-                       {
-                          $val2=1;
-                       }
+						$sql12="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id=$id AND (status<>3 && status<>0)";
+						$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						if(mysqli_num_rows($sql_result12)>0)
+						{					
+							echo "<td><div class='col-sm-4' id='populate_div'>
+								<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/4_point_roll_inspection.php", "1", "N") . "&parent_id=$id\">Proceed 4 Point Inspection</a></center>
+								</div></td>";
+						}
+						else
+						{
+							echo '<td><div class="col-sm-4" id="populate_div">
+							<center><a class="btn btn-primary"	> Complete </a></center>
+							</div></td>';
+						}
 					}
+
+					
+					$get_status=0;
+					$sql121="SELECT min(status) as status FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND status<>0";
+					$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+					if(mysqli_num_rows($sql_result121)>0)
+					{
+						while($row521=mysqli_fetch_array($sql_result121))
+						{
+						   $get_status = $row521['status'];
+						   if($get_status == 3)
+						   {
+							  $val2=1;
+						   }
+						   else
+						   {
+							   $val2=0;
+						   } 
+						}
+					}
+					else
+					{
+						 $val2=0;
+					}
+					
+					
 					if($val2==1 && $get_status == 3)
 					{
 						echo "<td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a>
@@ -281,8 +309,10 @@
 	                         <a class='btn btn-xs btn-warning pull-left' href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/C_Tex_Interface_V6.php", "1", "N") . "&parent_id=$id\">Color Contunity Report</a>
 						</td>";
 					}
-						echo "</tr>";
-						$s_no++;
+					echo "</tr>";
+					$s_no++;
+					
+					
 				}
 			}                     
             echo "</div></table></div></div>";

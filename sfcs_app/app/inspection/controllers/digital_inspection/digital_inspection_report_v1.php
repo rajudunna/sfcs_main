@@ -345,7 +345,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 						<tr>
 						<th>Select<input type="checkbox" id="selectAlll"></th>
 							<th>Supplier Roll No</th>
-							<th>FCS Roll No</th>
+							<th>SFCS Roll No</th>
 							<th>Supplier PO</th>
 							<th>Po line</th>
 							<th>Po Subline</th>
