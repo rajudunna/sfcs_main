@@ -130,5 +130,14 @@ $('[data-toggle="datepicker"]').datepicker(
 
 
 
-
+<style>
+.nav-sm .container.body .col-md-3.left_col {
+    min-height: 100%;
+    width: 230px;
+    padding: 0;
+    position: absolute;
+    display: flex !imporatnt;
+    z-index: 1;
+}
+    </style>
 
